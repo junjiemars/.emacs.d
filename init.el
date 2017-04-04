@@ -218,11 +218,11 @@
   (setq package-user-dir (concat user-emacs-directory "elpa/" v-dir))
   ;; define package repositories
   (setq package-archives
-        (append (list '("gnu" . "http://elpa.gnu.org/packages/")
-                      '("melpa-stable" . "http://stable.melpa.org/packages/"))
+        (append (list '("gnu" . "https://elpa.gnu.org/packages/")
+                      '("melpa-stable" . "https://stable.melpa.org/packages/"))
                 (version-supported-p
                     <= 25.1
-                  (list '("melpa" . "http://melpa.org/packages/")))))
+                  (list '("melpa" . "https://melpa.org/packages/")))))
 
   (version-supported-p
       <= 25.1
