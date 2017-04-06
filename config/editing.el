@@ -154,6 +154,8 @@
   (global-set-key (kbd "C-c g l") 'magit-log))
 (safe-do-when magit-log-buffer-file
   (global-set-key (kbd "C-c g b") 'magit-log-buffer-file))
+(safe-do-when magit-checkout
+  (global-set-key (kbd "C-c g c") 'magit-checkout))
 
 
 ;; When you visit a file, point goes to the last place where it
