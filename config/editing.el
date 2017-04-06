@@ -150,6 +150,8 @@
   (global-set-key (kbd "C-c g s") 'magit-status))
 (safe-do-when magit-pull
   (global-set-key (kbd "C-c g p") 'magit-pull))
+(safe-do-when magit-push
+  (global-set-key (kbd "C-c g P") 'magit-push))
 (safe-do-when magit-log
   (global-set-key (kbd "C-c g l") 'magit-log))
 (safe-do-when magit-log-buffer-file
