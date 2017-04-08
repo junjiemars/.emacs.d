@@ -83,6 +83,8 @@ they look like
 * goto line: ```M-g g```
 * goto nth char: ```M-g c```
 * pop global mark: ```C-x C-@```
+* jump to definition: ```M-.```
+* pop back: ```M-,```, on Terminal is ```M-*```
 
 ### Interaction
 * \*scratch\* buffer
