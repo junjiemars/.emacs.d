@@ -92,6 +92,7 @@ they look like
 * via Shell Command: ```M-!```, see *Info>Emacs>Shell*
 * in Dired mode: ```!```, do shell command
 * insert shell output: ```C-u M-!```
+* browse-url: ```C-c b```
 
 ### Editing
 * kill whole line: ```C-S-DEL```

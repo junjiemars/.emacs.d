@@ -21,7 +21,8 @@
 (when (eq browse-url-browser-function
           'browse-url-default-browser)
   (safe-do-when eww-browse-url
-    (setq browse-url-browser-function 'eww-browse-url)))
+    (setq browse-url-browser-function 'eww-browse-url)
+    (global-set-key (kbd "C-c b") 'browse-url)))
 
 
 ;; Toggle linum mode 
