@@ -24,8 +24,7 @@
           (x (split-string p ":")))
      (setenv "PATH" p)
      (while (car x)
-       (when (not (member (car x) exec-path))
-         (add-to-list 'exec-path (car x) t))
+       (add-to-list 'exec-path (car x) t #'string=)
        (setq x (cdr x)))))
 
 
