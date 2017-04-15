@@ -2,16 +2,6 @@
   "Ignores body, yields nil."
   nil)
 
-(defmacro time (expr &optional what)
-  "Evaluates expr and prints the time it took. Returns the value of expr."
-  `(let ((start (current-time))
-         (return ,expr))
-     (print (format "Elapsed %f secs%s"
-                    (float-time
-                     (time-subtract (current-time) start))
-                    (if ,what (concat " <- " ,what " .") ".")))
-     return))
-
 (defvar loading-start-time
   (current-time) "The start time at loading init.el")
 
