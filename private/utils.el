@@ -32,14 +32,15 @@
 
 (defun clone-themes ()
   "Clone themes from github, call it in elisp env."
-  (let* ((url
-          "https://github.com/chriskempson/tomorrow-theme/trunk/GNU%20Emacs")
-         (dir "~/.emacs.d/themes")
-         (saved (if (file-exists-p dir)
-                    (let ((mv (format "mv %s %s.b0" dir dir)))
-                      (bin-exists-p mv))
-                  t)))
-    (when (and saved (bin-exists-p "svn"))
-      (let* ((clone (format "svn export %s %s" url dir))
-             (done (if (bin-exists-p clone) "done" "failed")))
-        (message "#Clone themes ... %s" done)))))
+  (let ((url "https://github.com/chriskempson/tomorrow-theme.git")
+        (src-dir  "/tmp/xyz")
+        (tmp-dir "/tmp"))
+    (if (zerop (shell-command
+                (format "git -C %s clone --depth=1 %s" tmp-dir url)))
+        (progn
+          (when (file-exists-p src-dir)
+            (copy-directory src-dir (format "%s.b0" src-dir) t t t))
+          (copy-directory (format "%s/tomorrow-theme/GNU Emacs" tmp-dir)
+                          src-dir t t t)
+          (message "#clone themes %s." "successed"))
+      (message "#clone themes %s." "failed"))))
