@@ -2,6 +2,33 @@
   "Ignores body, yields nil."
   nil)
 
+(defmacro version-supported-p (c v &rest body)
+  "Run body code if the Emacs on specified version."
+  (declare (indent 2))
+  (when (funcall c v (string-to-number emacs-version))
+    `(progn ,@body)))
+
+(version-supported-p
+    >= 23.1
+  (defvar loading-start-time
+    (current-time) "The start time at loading init.el"))
+
+(defmacro time (expr &optional what)
+  "Evaluates expr and prints the time it took. Returns the value of expr."
+  `(let ((start (current-time))
+         (return ,expr))
+     (print (format "Elapsed %f secs%s"
+                    (float-time
+                     (time-subtract (current-time) start))
+                    (if ,what (concat " <- " ,what " .") ".")))
+     return))
+
+(defmacro version-supported-if (c v then &optional else)
+  "Do else if test yields nil, if true do then"
+  (if (funcall c v (string-to-number emacs-version))
+      `,then
+    `,else))
+
 (defvar v-dir (concat (if (display-graphic-p) "g_" "t_")
                       emacs-version)
   "versionized dir based on grahpic/terminal mode and Emacs's version")
@@ -53,12 +80,6 @@
   (declare (indent 2))
   (when (funcall c v (string-to-number emacs-version))
     `(progn ,@body)))
-
-(defmacro version-supported-if (c v then &optional else)
-  "Do else if test yields nil, if true do then"
-  (if (funcall c v (string-to-number emacs-version))
-      `,then
-    `,else))
 
 (defmacro graphic-supported-p (&rest body)
   "Run body code if the Emacs on graphic mode."
@@ -287,7 +308,15 @@
 
 
 ;; After loaded ...
-(message "#Loading init.el ... done (%s)" (emacs-init-time))
+
+
+(version-supported-if
+ >= 23.1
+ (let ((elapsed
+        (float-time
+         (time-subtract (current-time) loading-start-time))))
+   (message "#Loading init.el ... done (%.3fs)" elapsed))
+ (message "#Loading init.el ... done (%s)" (emacs-init-time)))
 
 
 ;; ^ End of init.el
