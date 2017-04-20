@@ -2,9 +2,6 @@
   "Ignores body, yields nil."
   nil)
 
-(defvar loading-start-time
-  (current-time) "The start time at loading init.el")
-
 (defvar v-dir (concat (if (display-graphic-p) "g_" "t_")
                       emacs-version)
   "versionized dir based on grahpic/terminal mode and Emacs's version")
@@ -290,9 +287,7 @@
 
 
 ;; After loaded ...
-(let ((elapsed
-       (float-time
-        (time-subtract (current-time) loading-start-time))))
-  (message "#Loading init.el ... done (%.3fs)" elapsed))
+(message "#Loading init.el ... done (%s)" (emacs-init-time))
+
 
 ;; ^ End of init.el
