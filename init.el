@@ -204,7 +204,16 @@
      (clean-saved-user-files)
      (kill-emacs 0)))
 
-
+(defmacro save-expr-to-file (expr filename)
+  "Save `expr' to a file"
+  `(save-excursion
+     (let ((expr-buffer (find-file-noselect ,filename)))
+       (set-buffer expr-buffer)
+       (erase-buffer)
+       (print ,expr expr-buffer)
+       (save-buffer)
+       (version-supported-p >= 23 
+         (kill-buffer expr-buffer)))))
 
 ;; (message "PATH=%s" (getenv "PATH"))
 
