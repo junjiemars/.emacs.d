@@ -2,6 +2,11 @@
   "Ignores body, yields nil."
   nil)
 
+(comment
+ (add-to-list 'load-path "/opt/open/benchmark-init-el/")
+ (load "benchmark-init-loaddefs.el")
+ (benchmark-init/activate))
+
 (defmacro version-supported-p (c v &rest body)
   "Run body code if the Emacs on specified version."
   (declare (indent 2))

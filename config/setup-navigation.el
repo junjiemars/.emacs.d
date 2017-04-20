@@ -17,12 +17,11 @@
 ;; a filterable list of possible commands in the minibuffer
 ;; http://www.emacswiki.org/emacs/Smex
 ;; https://github.com/nonsequitur/smex
-(global-set-key [(meta x)]
+(global-set-key (kbd "M-x")
                 (lambda ()
                   (interactive)
                   (or (boundp 'smex-cache)
                       (smex-initialize))
-                  (global-set-key [(meta x)] 'smex)
                   (smex)))
 (safe-setq smex-save-file (concat user-emacs-directory ".smex-items"))
 
