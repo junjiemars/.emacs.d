@@ -212,8 +212,7 @@
        (erase-buffer)
        (print ,expr expr-buffer)
        (save-buffer)
-       (version-supported-p >= 23 
-         (kill-buffer expr-buffer)))))
+       (kill-buffer expr-buffer))))
 
 ;; (message "PATH=%s" (getenv "PATH"))
 
