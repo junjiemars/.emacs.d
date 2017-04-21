@@ -42,7 +42,7 @@
 ;; Graphic / Terminal
 (graphic-supported-if
     ;; load themes on graphic mode
-    (let ((themes-dir "~/.emacs.d/themes")
+    (let ((themes-dir (concat user-emacs-directory "themes"))
           (self-theme (self-symbol "theme")))
       (let ((theme (if (boundp self-theme)
                        (symbol-value self-theme)
