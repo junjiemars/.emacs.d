@@ -7,16 +7,11 @@
  (load "benchmark-init-loaddefs.el")
  (benchmark-init/activate))
 
-(defmacro version-supported-p (c v &rest body)
-  "Run body code if the Emacs on specified version."
-  (declare (indent 2))
-  (when (funcall c v (string-to-number emacs-version))
-    `(progn ,@body)))
 
-(version-supported-p
-    >= 23.1
+(when (fboundp 'emacs-init-time)
   (defvar loading-start-time
     (current-time) "The start time at loading init.el"))
+
 
 (defmacro time (expr &optional what)
   "Evaluates expr and prints the time it took. Returns the value of expr."
@@ -78,6 +73,12 @@
   "Run body code if the Emacs on specified unless OS platforms"
   (declare (indent 1))
   (unless (eq system-type os)
+    `(progn ,@body)))
+
+(defmacro version-supported-p (c v &rest body)
+  "Run body code if the Emacs on specified version."
+  (declare (indent 2))
+  (when (funcall c v (string-to-number emacs-version))
     `(progn ,@body)))
 
 (defmacro version-supported-p (c v &rest body)
@@ -300,8 +301,8 @@
                   (safe-setq* ss (symbol-value ss)))))
      (append basic self))
    "config/"))
-  
- ;; ^ end of support-package-p
+
+;; ^ end of support-package-p
 
 
 (compile-and-load-elisp-files
@@ -323,13 +324,13 @@
 ;; After loaded ...
 
 
-(version-supported-if
- >= 23.1
- (let ((elapsed
-        (float-time
-         (time-subtract (current-time) loading-start-time))))
-   (message "#Loading init.el ... done (%.3fs)" elapsed))
- (message "#Loading init.el ... done (%s)" (emacs-init-time)))
+(safe-do-if emacs-init-time
+    (message "#Loading init.el ... done (%s)" (emacs-init-time))
+  (let ((elapsed
+         (float-time
+          (time-subtract (current-time) loading-start-time))))
+    (message "#Loading init.el ... done (%.3fs)" elapsed)))
+
 
 
 ;; ^ End of init.el
