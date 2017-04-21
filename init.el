@@ -7,27 +7,9 @@
  (load "benchmark-init-loaddefs.el")
  (benchmark-init/activate))
 
+(defvar loading-start-time
+  (current-time) "The start time at loading init.el")
 
-(when (fboundp 'emacs-init-time)
-  (defvar loading-start-time
-    (current-time) "The start time at loading init.el"))
-
-
-(defmacro time (expr &optional what)
-  "Evaluates expr and prints the time it took. Returns the value of expr."
-  `(let ((start (current-time))
-         (return ,expr))
-     (print (format "Elapsed %f secs%s"
-                    (float-time
-                     (time-subtract (current-time) start))
-                    (if ,what (concat " <- " ,what " .") ".")))
-     return))
-
-(defmacro version-supported-if (c v then &optional else)
-  "Do else if test yields nil, if true do then"
-  (if (funcall c v (string-to-number emacs-version))
-      `,then
-    `,else))
 
 (defvar v-dir (concat (if (display-graphic-p) "g_" "t_")
                       emacs-version)
@@ -86,6 +68,12 @@
   (declare (indent 2))
   (when (funcall c v (string-to-number emacs-version))
     `(progn ,@body)))
+
+(defmacro version-supported-if (c v then &optional else)
+  "Do else if test yields nil, if true do then"
+  (if (funcall c v (string-to-number emacs-version))
+      `,then
+    `,else))
 
 (defmacro graphic-supported-p (&rest body)
   "Run body code if the Emacs on graphic mode."
@@ -324,13 +312,11 @@
 ;; After loaded ...
 
 
-(safe-do-if emacs-init-time
-    (message "#Loading init.el ... done (%s)" (emacs-init-time))
-  (let ((elapsed
-         (float-time
-          (time-subtract (current-time) loading-start-time))))
-    (message "#Loading init.el ... done (%.3fs)" elapsed)))
 
+(let ((elapsed
+       (float-time
+        (time-subtract (current-time) loading-start-time))))
+  (message "#Loading init.el ... done (%.3fs)" elapsed))
 
 
 ;; ^ End of init.el
