@@ -170,8 +170,11 @@ If (fboundp fn) yields nil, and there are no ELSE’s, the value is nil.
   `(safe-do-if ,fn (progn ,@body)))
 
 (defmacro safe-setq (x val)
-  "Set x when x has been bound"
-  `(when (boundp ',x) (setq ,x ,val)))
+  "Set X when variable X has been bound.
+
+\(fn X VALUE)"
+  (when (boundp x)
+    `(setq ,x ,val)))
 
 (defmacro safe-setq* (x &rest body)
   "Do body when x is bound"
