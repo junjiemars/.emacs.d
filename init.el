@@ -122,8 +122,8 @@ If in terminal mode, and there are no ELSE’s, the value is nil.
 (defmacro bin-exists-p (b)
   "Returns true if B exists in env.
 
-\(fn BINARY)"
-  (if (eq system-type 'windows-nt)
+\(fn BIN-NAME)"
+  (platform-supported-if windows-nt
       `(zerop (shell-command (concat "where " ,b " >nul 2>&1")))
     `(zerop (shell-command (concat "hash " ,b " &>/dev/null")))))
 
@@ -131,8 +131,10 @@ If in terminal mode, and there are no ELSE’s, the value is nil.
   `(replace-regexp-in-string "\n$" "" (shell-command-to-string ,c)))
 
 (defmacro bin-path (b)
-  "Returns the path of b in env."
-  (if (eq system-type 'windows-nt)
+  "Returns the path of B in env.
+
+\(fn BIN-NAME)"
+  (platform-supported-if windows-nt
       `(shell-command-to-string-no-newline (concat "where " ,b))
     `(shell-command-to-string-no-newline (concat "type -P " ,b))))
 
