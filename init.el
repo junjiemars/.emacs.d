@@ -2,10 +2,10 @@
   "Ignores body, yields nil."
   nil)
 
-(comment
- (add-to-list 'load-path "/opt/open/benchmark-init-el/")
- (load "benchmark-init-loaddefs.el")
- (benchmark-init/activate))
+(comment)
+(add-to-list 'load-path "/opt/open/benchmark-init-el/")
+(load "benchmark-init-loaddefs.el")
+(benchmark-init/activate)
 
 (defvar loading-start-time
   (current-time) "The start time at loading init.el")
@@ -202,19 +202,6 @@
        (print ,expr expr-buffer)
        (save-buffer)
        (kill-buffer expr-buffer))))
-
-
-(defmacro on-exiting (&rest body)
-  "Run on exiting."
-  `(add-hook 'kill-emacs-hook
-             (lambda ()
-               ,@body)))
-
-(defmacro on-initialized (&rest body)
-  "Run on initilaized."
-  `(add-hook 'after-init-hook
-             (lambda ()
-               ,@body)))
 
 
 ;; (message "PATH=%s" (getenv "PATH"))

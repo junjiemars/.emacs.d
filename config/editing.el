@@ -172,15 +172,15 @@
 
 
 ;; Read/Save desktop, don't do slowly (desktop-save-mode 1)
-(defvar self-desktop-path (make-vdir ".desktop/"))
-(setq-default desktop-path (list self-desktop-path))
-(on-initialized 
- (desktop-read self-desktop-path))
-(on-exiting 
- (version-supported-if
-  >= 23
-  (desktop-save self-desktop-path)
-  (desktop-save self-desktop-path t)))
+(add-hook 'after-init-hook
+          (lambda ()
+            (desktop-read (make-vdir ".desktop/"))))
+(add-hook 'kill-emacs-hook
+          (lambda ()
+            (version-supported-if
+             >= 23
+             (desktop-save (make-vdir ".desktop/"))
+             (desktop-save (make-vdir ".desktop/") t))))
 
 
 ;; Emacs can automatically create backup files. This tells Emacs to
