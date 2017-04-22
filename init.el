@@ -143,9 +143,12 @@ If in terminal mode, and there are no ELSE’s, the value is nil.
   `(replace-regexp-in-string "\\\\" "/" ,p))
 
 (defmacro safe-call (fn &rest args)
-  "Call fn with args when fn has been bound"
+  "Call FN with ARGS if FN has been bound.
+
+\(fn FUNCTION ARGS...)"
   (declare (indent 1))
-  `(when (fboundp ',fn) (,fn ,@args)))
+  (when (fboundp fn)
+    `(,fn ,@args)))
 
 (defmacro safe-do-if (fn then &rest else)
   "If (fboundp fn) yields non-nil, do THEN, else do ELSE...
