@@ -9,18 +9,23 @@
 (safe-setq apropos-do-all t)
 
 ;; Makes killing/yanking interact with the clipboard
-(safe-setq x-select-enable-clipboard t)
-
-;; I'm actually not sure what this does but it's recommended?
-;; http://emacswiki.org/emacs/CopyAndPaste
-(safe-setq x-select-enable-primary t)
 
 ;; Save clipboard strings into kill ring before replacing them.
 ;; When one selects something in another program to paste it into Emacs,
 ;; but kills something in Emacs before actually pasting it,
 ;; this selection is gone unless this variable is non-nil
-(safe-setq x-select-enable-clipboard t)
+;; I'm actually not sure what this does but it's recommended?
+;; http://emacswiki.org/emacs/CopyAndPaste
+(version-supported-if
+    <= 25
+    (progn
+      (safe-setq select-enable-clipboard t)
+      (safe-setq select-enable-primary t))
+  (safe-setq x-select-enable-clipboard t)
+  (safe-setq x-select-enable-primary t))
 
+
+;; Save before kill
 (safe-setq save-interprogram-paste-before-kill t)
 
 ;; Mouse yank commands yank at point instead of at click.
