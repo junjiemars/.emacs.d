@@ -66,9 +66,9 @@
     <= 24.0 
   (let ((font (self-symbol "font"))
         (cjk (self-symbol "cjk-font")))
-    (safe-setq* font
+    (safe-do-when* font
       (set-default-font! (symbol-value font)))
-    (safe-setq* cjk
+    (safe-do-when* cjk
       (set-cjk-font! (symbol-value cjk)))))
 
 

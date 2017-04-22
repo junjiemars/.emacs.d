@@ -113,12 +113,12 @@
 
 (eval-after-load 'cider
   '(progn
-     (safe-setq* 'clojure-mode-map
-                 (define-key clojure-mode-map
-                   (kbd "C-c C-v") 'cider-start-http-server)
-                 (define-key clojure-mode-map
-                   (kbd "C-M-r") 'cider-refresh))
-     (safe-setq* 'cider-mode-map
-                 (define-key cider-mode-map
-                   (kbd "C-c u") 'cider-user-ns))
+     (safe-do-when clojure-mode-map
+       (define-key clojure-mode-map
+         (kbd "C-c C-v") 'cider-start-http-server)
+       (define-key clojure-mode-map
+         (kbd "C-M-r") 'cider-refresh))
+     (safe-do-when cider-mode-map
+       (define-key cider-mode-map
+         (kbd "C-c u") 'cider-user-ns))
      (figwheel-after-load-cider)))
