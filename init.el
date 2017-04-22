@@ -13,7 +13,7 @@
 
 (defvar v-dir (concat (if (display-graphic-p) "g_" "t_")
                       emacs-version)
-  "versionized dir based on grahpic/terminal mode and Emacs's version")
+  "Versionized dir based on grahpic/terminal mode and Emacs's version")
 
 (defmacro make-vdir (subdir)
   "Make the versionized subdir under ~/.emacs.d and returns it. "
@@ -55,12 +55,6 @@
   "Run body code if the Emacs on specified unless OS platforms"
   (declare (indent 1))
   (unless (eq system-type os)
-    `(progn ,@body)))
-
-(defmacro version-supported-p (c v &rest body)
-  "Run body code if the Emacs on specified version."
-  (declare (indent 2))
-  (when (funcall c v (string-to-number emacs-version))
     `(progn ,@body)))
 
 (defmacro version-supported-p (c v &rest body)
