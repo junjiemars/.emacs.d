@@ -147,17 +147,24 @@ If in terminal mode, and there are no ELSE’s, the value is nil.
   (declare (indent 1))
   `(when (fboundp ',fn) (,fn ,@args)))
 
-(defmacro safe-do-when (fn &rest body)
-  "Do body when fn is bound"
-  (declare (indent 1))
-  `(when (fboundp ',fn) ,@body))
-
 (defmacro safe-do-if (fn then &rest else)
-  "Do body when fn is bound"
+  "If (fboundp fn) yields non-nil, do THEN, else do ELSE...
+Returns the value of THEN or the value of the last of the ELSE’s.
+THEN must be one expression, but ELSE... can be zero or more expressions.
+If (fboundp fn) yields nil, and there are no ELSE’s, the value is nil.
+
+\(fn FUNCTION THEN ELSE...)"
   (declare (indent 2))
   (if (fboundp fn)
       `,then
     `(progn ,@else)))
+
+(defmacro safe-do-when (fn &rest body)
+  "Do BODY when FN is bound.
+
+\(fn FUNCTION BODY...)"
+  (declare (indent 1))
+  `(safe-do-if ,fn (progn ,@body)))
 
 (defmacro safe-setq (x val)
   "Set x when x has been bound"
