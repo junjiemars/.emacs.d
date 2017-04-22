@@ -20,10 +20,10 @@
 
 
 ;; Enable paredit in minibuffer on gnu/linux platform
-(platform-supported-p
-    gnu/linux
-  (add-hook 'minibuffer-setup-hook
-            #'enable-paredit-mode t))
+(platform-supported-when
+ gnu/linux
+ (add-hook 'minibuffer-setup-hook
+           #'enable-paredit-mode t))
 
 
 ;; Enable paredit in minbuffer on windows/darwin platform
@@ -34,9 +34,9 @@
 
 
 ;; On Windows C-) is not work
-(platform-supported-p
-    windows-nt
-  (global-set-key (kbd "C-c )") 'paredit-forward-slurp-sexp))
+(platform-supported-when
+ windows-nt
+ (global-set-key (kbd "C-c )") 'paredit-forward-slurp-sexp))
 
 
 ;; On Terminal mode, Ctrl+Shift combination can't send to Emacs

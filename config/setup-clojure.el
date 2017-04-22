@@ -36,12 +36,12 @@
 
 
 (defadvice inf-clojure (before inf-clojure-before compile)
-  (platform-supported-p
-      windows-nt
-    ;; Fix returning nothing in Windows
-    (let ((jlinerc "~/.jline.rc"))
-      (when (not (file-exists-p jlinerc))
-        (write-region "jline.terminal=unsupported" "" jlinerc)))))
+  (platform-supported-when
+   windows-nt
+   ;; Fix returning nothing in Windows
+   (let ((jlinerc "~/.jline.rc"))
+     (when (not (file-exists-p jlinerc))
+       (write-region "jline.terminal=unsupported" "" jlinerc)))))
 
 
 ;;;;

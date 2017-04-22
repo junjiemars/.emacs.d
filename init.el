@@ -40,34 +40,50 @@
 
 
 (defmacro package-supported-p (&rest body)
-  "Run body code if the Emacs supports package."
+  "Run BODY code if supports package.
+
+\(fn BODY...)"
   (declare (indent 0))
   (when (>= emacs-major-version 24)
     `(progn ,@body)))
 
-(defmacro platform-supported-p (os &rest body)
-  "Run body code if the Emacs on specified OS platform."
+(defmacro platform-supported-if (os then &rest else)
+  "If (eq system-type OS) yields non-nil, do THEN, else do ELSE...
+Returns the value of THEN or the value of the last of the ELSE’s.
+THEN must be one expression, but ELSE... can be zero or more expressions.
+If (eq system-type OS) yields nil, and there are no ELSE’s, the value is nil.
+
+\(fn OS THEN ELSE...)"
+  (declare (indent 2))
+  (if (eq system-type os)
+      `,then
+    `(progn ,@else)))
+
+(defmacro platform-supported-when (os &rest body)
+  "Run BODY code if on specified OS platform.
+
+\(fn OS BODY...)"
   (declare (indent 1))
-  (when (eq system-type os)
-    `(progn ,@body)))
+  `(platform-supported-if ,os (progn ,@body)))
 
 (defmacro platform-supported-unless (os &rest body)
-  "Run body code if the Emacs on specified unless OS platforms"
-  (declare (indent 1))
-  (unless (eq system-type os)
-    `(progn ,@body)))
+  "Run BODY code unless on specified OS platform.
 
-(defmacro version-supported-if (cond version then &optional else)
+\(fn OS BODY...)"
+  (declare (indent 1))
+  `(platform-supported-if ,os nil ,@body))
+
+(defmacro version-supported-if (cond version then &rest else)
   "If (COND VERSION EMACS-VERSION) yields non-nil, do THEN, else do ELSE...
 Returns the value of THEN or the value of the last of the ELSE’s.
 THEN must be one expression, but ELSE... can be zero or more expressions.
 If (COND VERSION EMACS-VERSION) yields nil, and there are no ELSE’s, the value is nil.
 
-\(fn COND VERSION THEN [ELSE])"
+\(fn COND VERSION THEN ELSE...)"
   (declare (indent 3))
   (if (funcall cond version (string-to-number emacs-version))
       `,then
-    `,else))
+    `(progn ,@else)))
 
 (defmacro version-supported-when (cond version &rest body)
   "If (COND VERSION EMACS-VERSION) yields non-nil, do BODY, else return nil.
@@ -104,7 +120,9 @@ If in terminal mode, and there are no ELSE’s, the value is nil.
   `(graphic-supported-if nil ,@body))
 
 (defmacro bin-exists-p (b)
-  "Returns true if b exists in env."
+  "Returns true if B exists in env.
+
+\(fn BINARY)"
   (if (eq system-type 'windows-nt)
       `(zerop (shell-command (concat "where " ,b " >nul 2>&1")))
     `(zerop (shell-command (concat "hash " ,b " &>/dev/null")))))

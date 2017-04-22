@@ -46,7 +46,7 @@
  )
 
 (comment
- (platform-supported-p
+ (platform-supported-when
      gnu/linux
    (defvar self-gnu/linux-font "White Rabbit-12"
      "default font-size for gnu/linux")
@@ -64,7 +64,7 @@
        (message "#self epilogue ...")))))
 
 (comment
- (platform-supported-p
+ (platform-supported-when
      darwin
    (defvar self-darwin-font "Monaco-13"
      "default font-size for darwin")
@@ -82,7 +82,7 @@
        (message "#self epilogue ...")))))
 
 (comment
- (platform-supported-p
+ (platform-supported-when
      windows-nt
    (defvar self-windows-nt-font "Consolas-13"
      "default font-size for windows nt")

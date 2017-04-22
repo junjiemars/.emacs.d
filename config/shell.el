@@ -58,35 +58,35 @@
 
 
 ;; set PATH on darwin
-(platform-supported-p
-    darwin
-  (load-path-env))
+(platform-supported-when
+ darwin
+ (load-path-env))
 
 
 ;; set PATH on Linux
-(platform-supported-p
-    gnu/linux
-  (set-default-shell "/bin/bash" "\/bash$")
-  (load-path-env))
+(platform-supported-when
+ gnu/linux
+ (set-default-shell "/bin/bash" "\/bash$")
+ (load-path-env))
 
 
 ;; set shell/ansi-term on Windows
-(platform-supported-p
-    windows-nt
-  (defadvice shell (before shell-before compile)
-    (when (bin-exists-p "bash")
-      (let ((prompt "~/.emacs_bash"))
-        (unless (file-exists-p prompt)
-          (copy-file "~/.emacs.d/config/.emacs_bash" prompt)))
-      (add-to-list 'exec-path
-                   (file-name-directory
-                    (windows-nt-path (bin-path "bash"))))
-      (setq shell-file-name "bash")
-      (setenv "SHELL" (bin-path "bash"))))
-  (defadvice ansi-term (around ansi-term-around compile)
-    (let* ((n "*ansi-term*")
-           (b (get-buffer-create n)))
-      (apply 'make-comint-in-buffer n b "cmd" nil nil)
-      (set-window-buffer (selected-window) b))))
+(platform-supported-when
+ windows-nt
+ (defadvice shell (before shell-before compile)
+   (when (bin-exists-p "bash")
+     (let ((prompt "~/.emacs_bash"))
+       (unless (file-exists-p prompt)
+         (copy-file "~/.emacs.d/config/.emacs_bash" prompt)))
+     (add-to-list 'exec-path
+                  (file-name-directory
+                   (windows-nt-path (bin-path "bash"))))
+     (setq shell-file-name "bash")
+     (setenv "SHELL" (bin-path "bash"))))
+ (defadvice ansi-term (around ansi-term-around compile)
+   (let* ((n "*ansi-term*")
+          (b (get-buffer-create n)))
+     (apply 'make-comint-in-buffer n b "cmd" nil nil)
+     (set-window-buffer (selected-window) b))))
 
 
