@@ -175,7 +175,7 @@
 (add-hook 'after-init-hook
           (lambda ()
             (terminal-supported-p
-              (version-supported-p = 24.4
+              (version-supported-when = 24.4
                 (setq-default desktop-restore-forces-onscreen nil)))
             (desktop-read (make-vdir ".desktop/"))))
 (add-hook 'kill-emacs-hook

@@ -57,17 +57,25 @@
   (unless (eq system-type os)
     `(progn ,@body)))
 
-(defmacro version-supported-p (c v &rest body)
-  "Run body code if the Emacs on specified version."
-  (declare (indent 2))
-  (when (funcall c v (string-to-number emacs-version))
-    `(progn ,@body)))
+(defmacro version-supported-if (cond version then &optional else)
+  "If (COND VERSION EMACS-VERSION) yields non-nil, do THEN, else do ELSE...
+Returns the value of THEN or the value of the last of the ELSE’s.
+THEN must be one expression, but ELSE... can be zero or more expressions.
+If (COND VERSION EMACS-VERSION) yields nil, and there are no ELSE’s, the value is nil.
 
-(defmacro version-supported-if (c v then &optional else)
-  "Do else if test yields nil, if true do then"
-  (if (funcall c v (string-to-number emacs-version))
+\(fn COND VERSION THEN [ELSE])"
+  (declare (indent 3))
+  (if (funcall cond version (string-to-number emacs-version))
       `,then
     `,else))
+
+(defmacro version-supported-when (cond version &rest body)
+  "If (COND VERSION EMACS-VERSION) yields non-nil, do BODY, else return nil.
+When (COND VERSION EMACS-VERSION) yields non-nil, eval BODY forms sequentially and return value of last one, or nil if there are none.
+
+\(fn COND VERSION BODY...)"
+  (declare (indent 2))
+  `(version-supported-if ,cond ,version (progn ,@body)))
 
 (defmacro graphic-supported-p (&rest body)
   "Run body code if the Emacs on graphic mode."
@@ -137,7 +145,7 @@
 
 (defmacro start-socks (&optional port server version)
   "Switch on url-gateway to socks"
-  `(version-supported-p < 22
+  `(version-supported-when < 22
      (require 'url)
      (setq url-gateway-method 'socks)
      (setq-default socks-server
@@ -148,7 +156,7 @@
 
 (defmacro stop-socks (&optional method)
   "Switch off url-gateway to native."
-  `(version-supported-p < 22
+  `(version-supported-when < 22
      (require 'url)
      (setq url-gateway-method
            (if ,method  ,method 'native))))
@@ -225,11 +233,11 @@
   (setq package-archives
         (append (list '("gnu" . "https://elpa.gnu.org/packages/")
                       '("melpa-stable" . "https://stable.melpa.org/packages/"))
-                (version-supported-p
+                (version-supported-when
                     <= 25.1
                   (list '("melpa" . "https://melpa.org/packages/")))))
 
-  (version-supported-p
+  (version-supported-when
       <= 25.1
     (setq-default package-archive-priorities
                   (list '("melpa-stable" . 10)
@@ -259,7 +267,7 @@
                    (safe-setq* ss (symbol-value ss)))))
       (append basic (when self self))))
 
-  (version-supported-p
+  (version-supported-when
       <= 25.1
     (safe-setq package-selected-packages installed-packages))
 

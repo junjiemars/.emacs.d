@@ -14,7 +14,7 @@
 
 (defmacro linum-mode-supported-p ()
   "Check Emacs version supports linum mode. "
-  `(version-supported-p <= 23.1 t))
+  `(version-supported-when <= 23.1 t))
 
 
 ;; Default web browser: eww `C-d C-d h'
@@ -42,9 +42,9 @@
           (lambda ()
             (enable-eldoc-mode)
             (version-supported-if
-             <= 24.4
-             (local-set-key (kbd "TAB") #'completion-at-point)
-             (local-set-key (kbd "TAB") #'lisp-complete-symbol))
+                <= 24.4
+                (local-set-key (kbd "TAB") #'completion-at-point)
+              (local-set-key (kbd "TAB") #'lisp-complete-symbol))
             (cond
              ((string= "*scratch*" (buffer-name))
               (local-set-key (kbd "RET")
@@ -52,7 +52,7 @@
                                (interactive)
                                (eval-print-last-sexp)
                                (newline)))
-              (version-supported-p > 24
+              (version-supported-when > 24
                 (local-set-key (kbd "C-j")
                                (lambda ()
                                  (interactive)

@@ -51,18 +51,18 @@
         (add-to-list 'load-path themes-dir)
         (version-supported-if >= 24.1
                               (load-theme theme)
-                              (load-theme theme t))))
+          (load-theme theme t))))
   ;; line number format on Terminal
   (safe-setq linum-format "%2d ")
   ;;above version 23 transient-mark-mode is enabled by default
-  (version-supported-p > 23 (transient-mark-mode t))
+  (version-supported-when > 23 (transient-mark-mode t))
   (set-face-background 'region "white")
   (set-face-foreground 'region "black"))
 
 
 
 ;; Fonts
-(version-supported-p
+(version-supported-when
     <= 24.0 
   (let ((font (self-symbol "font"))
         (cjk (self-symbol "cjk-font")))
@@ -73,7 +73,7 @@
 
 
 ;; Go straight to scratch buffer on startup
-(version-supported-p
+(version-supported-when
     <= 24
   (setq inhibit-splash-screen t))
 
