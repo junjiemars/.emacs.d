@@ -99,7 +99,7 @@ Returns the value of THEN or the value of the last of the ELSE’s.
 THEN must be one expression, but ELSE... can be zero or more expressions.
 If in terminal mode, and there are no ELSE’s, the value is nil.
 
-\(fn THEN [ELSE])"
+\(fn THEN ELSE...)"
   (declare (indent 1))
   (if (display-graphic-p)
       `,then
