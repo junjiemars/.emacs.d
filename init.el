@@ -203,6 +203,20 @@
        (save-buffer)
        (kill-buffer expr-buffer))))
 
+
+(defmacro on-exiting (&rest body)
+  "Run on exiting."
+  `(add-hook 'kill-emacs-hook
+             (lambda ()
+               ,@body)))
+
+(defmacro on-initialized (&rest body)
+  "Run on initilaized."
+  `(add-hook 'after-init-hook
+             (lambda ()
+               ,@body)))
+
+
 ;; (message "PATH=%s" (getenv "PATH"))
 
 

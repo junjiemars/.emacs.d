@@ -171,10 +171,16 @@
   (setq-default save-place-file (concat d "places")))
 
 
-;; Save desktop
-(let ((d (make-vdir ".desktop/")))
-  (setq-default desktop-path (list d))
-  (desktop-save-mode 1))
+;; Read/Save desktop, don't do slowly (desktop-save-mode 1)
+(defvar self-desktop-path (make-vdir ".desktop/"))
+(setq-default desktop-path (list self-desktop-path))
+(on-initialized 
+ (desktop-read self-desktop-path))
+(on-exiting 
+ (version-supported-if
+  >= 23
+  (desktop-save self-desktop-path)
+  (desktop-save self-desktop-path t)))
 
 
 ;; Emacs can automatically create backup files. This tells Emacs to
