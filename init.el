@@ -174,7 +174,7 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
 
 \(fn FN-LOCAL BODY...)"
   (declare (indent 1))
-  `(when (fboundp ',fn) (progn ,@body)))
+  `(when (fboundp ,fn) (progn ,@body)))
 
 (defmacro safe-do-when! (x &rest body)
   "Do BODY when X is bound.
@@ -202,7 +202,7 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
   "Set X when variable X is local bound.
 
 \(fn X-LOCAL VALUE)"
-  `(when (boundp ',x)
+  `(when (boundp (quote ,x))
      (setq ,x ,val)))
 
 (defmacro self-symbol (name)
