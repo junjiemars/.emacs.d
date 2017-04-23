@@ -58,7 +58,7 @@
 
 ;; Where to store the cider history.
 (safe-setq cider-repl-history-file
- "~/.emacs.d/cider-history")
+           (concat (make-vdir ".cider-history/")))
 
 ;; Wrap when navigating history.
 (safe-setq cider-repl-wrap-history t)
@@ -77,11 +77,10 @@
 (defun cider-start-http-server ()
   (interactive)
   (safe-call cider-load-current-buffer)
-  (safe-do-when cider-current-ns
+  (safe-do-when* cider-current-ns
     (let ((ns (cider-current-ns)))
       (safe-call cider-repl-set-ns ns)
-      (safe-do-when
-          cider-interactive-eval
+      (safe-do-when* cider-interactive-eval
         (cider-interactive-eval
          (format "(println '(def server (%s/start))) (println 'server)"
                  ns))
@@ -106,19 +105,19 @@
 
 (defmacro figwheel-after-load-cider ()
   "Enable Figwheel: cider-jack-in-clojurescript"
-  `(safe-setq cider-cljs-lein-repl
-              "(do (require 'figwheel-sidecar.repl-api)
+  `(safe-setq* cider-cljs-lein-repl
+               "(do (require 'figwheel-sidecar.repl-api)
                  (figwheel-sidecar.repl-api/start-figwheel!)
                  (figwheel-sidecar.repl-api/cljs-repl))"))
 
 (eval-after-load 'cider
   '(progn
-     (safe-do-when clojure-mode-map
-       (define-key clojure-mode-map
-         (kbd "C-c C-v") 'cider-start-http-server)
-       (define-key clojure-mode-map
-         (kbd "C-M-r") 'cider-refresh))
-     (safe-do-when cider-mode-map
-       (define-key cider-mode-map
-         (kbd "C-c u") 'cider-user-ns))
+     (safe-do-when!* 'clojure-mode-map
+                     (define-key clojure-mode-map
+                       (kbd "C-c C-v") 'cider-start-http-server)
+                     (define-key clojure-mode-map
+                       (kbd "C-M-r") 'cider-refresh))
+     (safe-do-when!* 'cider-mode-map
+                     (define-key cider-mode-map
+                       (kbd "C-c u") 'cider-user-ns))
      (figwheel-after-load-cider)))

@@ -150,38 +150,60 @@ If in terminal mode, and there are no ELSE’s, the value is nil.
   (when (fboundp fn)
     `(,fn ,@args)))
 
-(defmacro safe-do-if (x then &rest else)
-  "If X is bounded yields non-nil, do THEN, else do ELSE...
+(defmacro safe-do-if (fn then &rest else)
+  "If FN is bounded yields non-nil, do THEN, else do ELSE...
 Returns the value of THEN or the value of the last of the ELSE’s.
 THEN must be one expression, but ELSE... can be zero or more expressions.
-If X is not bounded yields nil, and there are no ELSE’s, the value is nil.
+If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
 
-\(fn FN-OR-VAR THEN ELSE...)"
+\(fn FN THEN ELSE...)"
   (declare (indent 2))
-  (if (or (fboundp x) (boundp x))
+  (if (or (fboundp fn))
       `,then
     `(progn ,@else)))
 
-(defmacro safe-do-when (x &rest body)
+(defmacro safe-do-when (fn &rest body)
+  "Do BODY when FN is bound.
+
+\(fn FN BODY...)"
+  (declare (indent 1))
+  `(safe-do-if ,fn (progn ,@body)))
+
+(defmacro safe-do-when* (fn &rest body)
+  "Do BODY when FN is local bound.
+
+\(fn FN-LOCAL BODY...)"
+  (declare (indent 1))
+  `(when (fboundp ',fn) (progn ,@body)))
+
+(defmacro safe-do-when! (x &rest body)
   "Do BODY when X is bound.
 
-\(fn FN-OR-VAR BODY...)"
+\(fn X BODY...)"
   (declare (indent 1))
-  `(safe-do-if ,x (progn ,@body)))
+  (when (boundp ,x)
+    `,@body))
 
-(defmacro safe-do-when* (x &rest body)
+(defmacro safe-do-when!* (x &rest body)
   "Do BODY when X is local bound.
 
-\(fn X BODY...)"
+\(fn X-LOCAL BODY...)"
   (declare (indent 1))
   `(when (boundp ,x) ,@body))
 
 (defmacro safe-setq (x val)
-  "Set X when variable X has been bound.
+  "Set X when variable X is bound.
 
 \(fn X VALUE)"
   (when (boundp x)
     `(setq ,x ,val)))
+
+(defmacro safe-setq* (x val)
+  "Set X when variable X is local bound.
+
+\(fn X-LOCAL VALUE)"
+  `(when (boundp ',x)
+     (setq ,x ,val)))
 
 (defmacro self-symbol (name)
   `(intern (format "self-%s-%s" system-type ,name)))
@@ -265,7 +287,7 @@ If X is not bounded yields nil, and there are no ELSE’s, the value is nil.
 
 ;; Self do prelogue ...
 (let ((ss (self-symbol "prelogue")))
-  (safe-do-when* ss (funcall (symbol-value ss))))
+  (safe-do-when!* ss (funcall (symbol-value ss))))
 
 
 ;; Start loading ...
@@ -307,7 +329,7 @@ If X is not bounded yields nil, and there are no ELSE’s, the value is nil.
                     sx
                     tagedit))
            (self (let ((ss (self-symbol "packages")))
-                   (safe-do-when* ss (symbol-value ss)))))
+                   (safe-do-when!* ss (symbol-value ss)))))
       (append basic (when self self))))
 
   (version-supported-when
@@ -332,7 +354,7 @@ If X is not bounded yields nil, and there are no ELSE’s, the value is nil.
                    "setup-navigation.el"
                    "setup-python.el"))
           (self (let ((ss (self-symbol "packages-setup")))
-                  (safe-do-when* ss (symbol-value ss)))))
+                  (safe-do-when!* ss (symbol-value ss)))))
      (append basic self))
    "config/"))
 
@@ -352,7 +374,7 @@ If X is not bounded yields nil, and there are no ELSE’s, the value is nil.
 
 ;; Self do epilogue ...
 (let ((ss (self-symbol "epilogue")))
-  (safe-do-when* ss (funcall (symbol-value ss))))
+  (safe-do-when!* ss (funcall (symbol-value ss))))
 
 
 ;; After loaded ...
