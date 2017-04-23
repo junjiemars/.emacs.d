@@ -2,14 +2,8 @@
   "Ignores body, yields nil."
   nil)
 
-(comment
- (add-to-list 'load-path "/opt/open/benchmark-init-el/")
- (load "benchmark-init-loaddefs.el")
- (benchmark-init/activate))
-
 (defvar loading-start-time
   (current-time) "The start time at loading init.el")
-
 
 (defvar v-dir (concat (if (display-graphic-p) "g_" "t_")
                       emacs-version)
