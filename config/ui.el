@@ -93,9 +93,8 @@
 (safe-call blink-cursor-mode 0)
 
 ;; full path in title bar
-(safe-do-when
-    frame-title-format
-  (setq-default frame-title-format "%b (%f)"))
+(graphic-supported-p
+  (safe-setq frame-title-format "%b (%f)"))
 
 ;; Ignore ring bell
 (safe-setq ring-bell-function 'ignore)
