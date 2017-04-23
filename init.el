@@ -15,7 +15,7 @@
                       emacs-version)
   "Versionized dir based on grahpic/terminal mode and Emacs's version")
 
-(defmacro make-vdir (subdir)
+(defmacro make-vdir (&optional subdir)
   "Make the versionized SUBDIR under emacs-home and returns it. "
   (let ((_vdir_ (concat emacs-home subdir v-dir "/")))
     `(progn
@@ -293,7 +293,7 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
 ;; Start loading ...
 (package-supported-p
   ;; define package user dir
-  (setq package-user-dir (concat emacs-home "elpa/" v-dir))
+  (setq package-user-dir (make-vdir "elpa/"))
   ;; define package repositories
   (setq package-archives
         (append (list '("gnu" . "https://elpa.gnu.org/packages/")
