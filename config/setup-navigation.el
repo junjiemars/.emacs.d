@@ -25,7 +25,8 @@
                          (smex-initialize))
                      (smex)))
    
-   (safe-setq smex-save-file (concat user-emacs-directory ".smex-items"))))
+   (safe-setq smex-save-file
+              (concat (make-vdir ".smex/") ".smex-items"))))
 
 
 

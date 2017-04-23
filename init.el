@@ -5,13 +5,19 @@
 (defvar loading-start-time
   (current-time) "The start time at loading init.el")
 
+(defvar emacs-home
+  (if (boundp 'user-emacs-directory)
+      user-emacs-directory
+    "~/.emacs.d/")
+  "The user's emacs home directory")
+
 (defvar v-dir (concat (if (display-graphic-p) "g_" "t_")
                       emacs-version)
   "Versionized dir based on grahpic/terminal mode and Emacs's version")
 
 (defmacro make-vdir (subdir)
-  "Make the versionized subdir under ~/.emacs.d and returns it. "
-  (let ((_vdir_ (concat "~/.emacs.d/" subdir v-dir "/")))
+  "Make the versionized SUBDIR under emacs-home and returns it. "
+  (let ((_vdir_ (concat emacs-home subdir v-dir "/")))
     `(progn
        (when (not (file-exists-p ,_vdir_))
          (make-directory ,_vdir_ t))
@@ -19,7 +25,7 @@
 
 (defmacro compile-and-load-elisp-files (files subdir)
   "Compile and load the elisp files under the subdir."
-  `(let ((d (concat "~/.emacs.d/" ,subdir))
+  `(let ((d (concat emacs-home ,subdir))
          (v (make-vdir ,subdir)))
      (dolist (f ,files)
        (let ((from (concat d f)))
@@ -287,7 +293,7 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
 ;; Start loading ...
 (package-supported-p
   ;; define package user dir
-  (setq package-user-dir (concat user-emacs-directory "elpa/" v-dir))
+  (setq package-user-dir (concat emacs-home "elpa/" v-dir))
   ;; define package repositories
   (setq package-archives
         (append (list '("gnu" . "https://elpa.gnu.org/packages/")
