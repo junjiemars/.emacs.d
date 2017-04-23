@@ -24,7 +24,7 @@
        ,_vdir_)))
 
 (defmacro compile-and-load-elisp-files (files subdir)
-  "Compile and load the elisp files under the subdir."
+  "Compile and load the elisp FILES under the SUBDIR."
   `(let ((d (concat emacs-home ,subdir))
          (v (make-vdir ,subdir)))
      (dolist (f ,files)
