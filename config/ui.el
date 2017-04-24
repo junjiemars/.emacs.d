@@ -64,12 +64,10 @@
 ;; Fonts
 (version-supported-when
     <= 24.0 
-  (let ((font (self-symbol "font"))
-        (cjk (self-symbol "cjk-font")))
-    (safe-do-when!* font
-      (set-default-font! (symbol-value font)))
-    (safe-do-when!* cjk
-      (set-cjk-font! (symbol-value cjk)))))
+  (safe-do-when!* (self-symbol "font")
+    (set-default-font! (symbol-value (self-symbol "font"))))
+  (safe-do-when!* (self-symbol "cjk-font")
+    (set-cjk-font! (symbol-value (self-symbol "cjk-font")))))
 
 
 ;; Go straight to scratch buffer on startup
