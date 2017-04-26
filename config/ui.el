@@ -7,7 +7,7 @@
 (safe-call menu-bar-mode -1)
 
 ;; Disable tool bar
-(safe-call tool-bar-mode -1)
+(graphic-supported-p (safe-call tool-bar-mode -1))
 
 ;; Disable scroll bar
 (safe-call scroll-bar-mode -1)
