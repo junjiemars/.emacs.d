@@ -297,8 +297,6 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
 
 
 
-
-
 ;; Start loading ...
 (package-supported-p
   ;; define package user dir
@@ -341,9 +339,9 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
        (dolist (s ,spec)
          (when (and (plist-get s :cond)
                     (funcall (plist-get s :cond)))
-           (setq packages (append packages (plist-get s :packages))))
-         (when (plist-get s :setup)
-           (setq files (append files (plist-get s :setup)))))
+           (setq packages (append packages (plist-get s :packages)))
+           (when (plist-get s :setup)
+             (setq files (append files (plist-get s :setup))))))
        (list :packages packages :setup files)))
 
   ;; install basic packages
