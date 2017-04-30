@@ -296,6 +296,9 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
   (safe-do-when!* ss (funcall (symbol-value ss))))
 
 
+
+
+
 ;; Start loading ...
 (package-supported-p
   ;; define package user dir
@@ -318,51 +321,61 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
   (require 'package)
   (package-initialize)
 
-  ;; load self packages spec
-  (setf (symbol-value (self-symbol "packages"))
-        (when (fboundp 'self-package-spec)
-          (self-package-spec)))
+  (defmacro install-packages (packages &optional dry)
+    `(let ((not-installed-packages
+            (delete t (mapcar #'(lambda (p)
+                                  (if (package-installed-p p) t p))
+                              ,packages))))
+       (when not-installed-packages
+         (unless ,dry (package-refresh-contents))
+         (message "#Installing the missing %d packages: %s"
+                  (length not-installed-packages)
+                  not-installed-packages)
+         (mapc (lambda (i) (unless ,dry (package-install i)))
+               not-installed-packages)
+         not-installed-packages)))
 
-  ;; guarantee all packages are installed on start
-  (defvar installed-packages
-    (let* ((basic '(aggressive-indent
-                    bing-dict
-                    ido-ubiquitous
-                    markdown-mode
-                    paredit
-                    rainbow-delimiters
-                    smex
-                    sx
-                    tagedit))
-           (self (let ((ss (self-symbol "packages")))
-                   (safe-do-when!* ss (symbol-value ss)))))
-      (append basic (when self self))))
+  (defmacro parse-package-spec (spec)
+    `(let ((packages nil)
+           (files nil))
+       (dolist (s ,spec)
+         (when (and (plist-get s :cond)
+                    (funcall (plist-get s :cond)))
+           (setq packages (append packages (plist-get s :packages))))
+         (when (plist-get s :setup)
+           (setq files (append files (plist-get s :setup)))))
+       (list :packages packages :setup files)))
 
+  ;; install basic packages
+  (defvar basic-packages '(aggressive-indent
+                           bing-dict
+                           ido-ubiquitous
+                           markdown-mode
+                           paredit
+                           rainbow-delimiters
+                           smex
+                           tagedit))
+  (defvar basic-setup-files '("setup-lisp.el"
+                              "setup-navigation.el"
+                              "setup-python.el"))
+  (install-packages basic-packages)
+  (compile-and-load-elisp-files basic-setup-files "config/")
+
+  ;; install self packages
+  (defvar self-packages nil)
+  (defvar self-setup-files nil)
+  (safe-do-when!* (self-symbol "package-spec")
+    (let ((spec (parse-package-spec
+                 (symbol-value (self-symbol "package-spec")))))
+      (install-packages (setq self-packages (plist-get spec :packages)))
+      (compile-and-load-elisp-files
+       (setq self-setup-files (plist-get spec :setup)) "config/")))
+
+  ;; set Emacs' package-selected-packages var
   (version-supported-when
       <= 25.1
-    (safe-setq package-selected-packages installed-packages))
-
-  (let ((not-installed-packages
-         (delete t (mapcar #'(lambda (p)
-                               (if (package-installed-p p) t p))
-                           installed-packages))))
-    (when not-installed-packages
-      (package-refresh-contents)
-      (message "#Installing the missing %d packages: %s"
-               (length not-installed-packages)
-               not-installed-packages)
-      (mapcar #'(lambda (i) (package-install i))
-              not-installed-packages)))
-
-  (compile-and-load-elisp-files
-   ;; compile and load basic elisp files
-   (let* ((basic '("setup-lisp.el"
-                   "setup-navigation.el"
-                   "setup-python.el"))
-          (self (let ((ss (self-symbol "packages-setup")))
-                  (safe-do-when!* ss (symbol-value ss)))))
-     (append basic self))
-   "config/"))
+    (safe-setq package-selected-packages
+               (append basic-packages self-packages))))
 
 ;; ^ end of support-package-p
 
@@ -394,3 +407,4 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
 
 
 ;; ^ End of init.el
+
