@@ -249,7 +249,7 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
                      (make-vdir ".minibuffer/")
                      (make-vdir ".recentf/")
                      (make-vdir ".places/")
-                     (make-vdir ".smex"))))
+                     (make-vdir ".smex/"))))
      (dolist (d dirs)
        (when (file-exists-p d)
          (dolist (f (directory-files d nil "^\\([^.]\\|\\.[^.]\\|\\.\\..\\)"))
