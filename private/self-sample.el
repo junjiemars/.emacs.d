@@ -3,61 +3,64 @@
 ;;                 and named it with self.el
 ;;;;
 
-(comment
- (package-supported-p 
-   (defvar self-darwin-package-spec
-     (list
-      (list
-       :cond (lambda ()
-               (bin-exists-p "latex"))
-       :packages '(auctex))
-      (list
-       :cond (lambda ()
-               (and (version-supported-p '<= 24.4)
-                    (bin-exists-p "java")))
-       :packages '(cider
-                   clojure-mode
-                   clojure-mode-extra-font-locking
-                   inf-clojure)
-       :setup '("setup-clojure.el"))
-      (list
-       :cond (lambda ()
-               (and (version-supported-p '<= 24.4)
-                    (bin-exists-p "docker")))
-       :packages '(dockerfile-mode
-                   docker-tramp))
-      (list
-       :cond (lambda ()
-               (bin-exists-p "erlang"))
-       :packages '(erlang))
-      (list
-       :cond (lambda ()
-               (and (bin-exists-p "erlang")
-                    (bin-exists-p "lfe")))
-       :packages '(lfe-mode)
-       :setup '("setup-lfe.el"))
-      (list
-       :cond (lambda ()
-               (version-supported-p '<= 25.1))
-       :packages '(ereader))
-      (list
-       :cond (lambda ()
-               (and (version-supported-p '<= 24.4)
-                    (bin-exists-p "git")))
-       :packages '(magit))
-      (list
-       :cond (lambda ()
-               (and (version-supported-p '<= 23.2)
-                    (bin-exists-p "racket")))
-       :packages '(geiser))
-      (list
-       :cond (lambda ()
-               (or (bin-exists-p "sbcl")))
-       :packages '(slime)
-       :setup '("setup-slime.el"))
-      (list
-       :cond (lambda () t)
-       :packages '(sx))))))
+
+(package-supported-p 
+  (defmacro def-self-package-spec ()
+    (let ((--spec-- (self-symbol 'package-spec)))
+      `(defvar ,--spec--
+         (list
+          (list
+           :cond (lambda ()
+                   (bin-exists-p "latex"))
+           :packages '(auctex))
+          (list
+           :cond (lambda ()
+                   (and (version-supported-p '<= 24.4)
+                        (bin-exists-p "java")))
+           :packages '(cider
+                       clojure-mode
+                       clojure-mode-extra-font-locking
+                       inf-clojure)
+           :setup '("setup-clojure.el"))
+          (list
+           :cond (lambda ()
+                   (and (version-supported-p '<= 24.4)
+                        (bin-exists-p "docker")))
+           :packages '(dockerfile-mode
+                       docker-tramp))
+          (list
+           :cond (lambda ()
+                   (bin-exists-p "erlang"))
+           :packages '(erlang))
+          (list
+           :cond (lambda ()
+                   (and (bin-exists-p "erlang")
+                        (bin-exists-p "lfe")))
+           :packages '(lfe-mode)
+           :setup '("setup-lfe.el"))
+          (list
+           :cond (lambda ()
+                   (version-supported-p '<= 25.1))
+           :packages '(ereader))
+          (list
+           :cond (lambda ()
+                   (and (version-supported-p '<= 24.4)
+                        (bin-exists-p "git")))
+           :packages '(magit)
+           :setup '("setup-magit.el"))
+          (list
+           :cond (lambda ()
+                   (and (version-supported-p '<= 23.2)
+                        (bin-exists-p "racket")))
+           :packages '(geiser))
+          (list
+           :cond (lambda ()
+                   (or (bin-exists-p "sbcl")))
+           :packages '(slime)
+           :setup '("setup-slime.el"))
+          (list
+           :cond (lambda () t)
+           :packages '(sx)))))))
 
 
 (comment
