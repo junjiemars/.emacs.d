@@ -274,24 +274,89 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
        (kill-buffer expr-buffer))))
 
 
-;; (message "PATH=%s" (getenv "PATH"))
+;; Self defvar and defun
+(defmacro def-self-font (font-size)
+  "Define  default FONT-SIZE of current paltform, 
+ignore it if you don't like it. 
+eg., `Monaco-13', `Consolas-13', `White Rabbit-12'
+
+\(fn FONT-SIZE)"
+  (let ((--font-- (self-symbol 'font)))
+    `(defvar ,--font-- ,font-size)))
+
+(defmacro def-self-cjk-font (font-size)
+  "Define default CJK FONT-SIZE of current paltform, 
+ignore it if you don't like it. 
+eg., (cons \"Microsoft Yahei\" 12)
+
+\(fn FONT-SIZE)"
+  (let ((--font-- (self-symbol 'cjk-font)))
+    `(defvar ,--font-- ,font-size)))
+
+(defmacro def-self-theme (theme)
+  "Define default THEME of current platform, 
+ignore it if you don't like it. 
+eg., 'tomorrow-night-eighties, 'tomorrow-night-blue
+
+\(fn THEME)"
+  (let ((--theme-- (self-symbol 'theme)))
+    `(defvar ,--theme-- ,theme)))
+
+(defmacro def-self-prelogue (&rest body)
+  "Define self-prelogue, it will be run before load other 
+self things.
+
+\(fn BODY...)"
+  (declare (indent 0))
+  (let ((--prelogue-- (self-symbol 'prelogue)))
+    `(defun ,--prelogue-- ()
+       ,@body)))
+
+(defmacro def-self-epilogue (&rest body)
+  "Define self-epilogue, it will be run after load other 
+self things.
+
+\(fn BODY...)"
+  (declare (indent 0))
+  (let ((--epilogue-- (self-symbol 'epilogue)))
+    `(defun ,--epilogue-- ()
+       ,@body)))
 
 
-;; versionized dirs
-(setq-default recentf-save-file (concat (make-vdir ".recentf/") "recentf"))
-(setq-default savehist-file (concat (make-vdir ".minibuffer/") "history"))
+(defmacro self-safe-call (fn)
+  (let ((--fn-- (self-symbol fn)))
+    `(when (fboundp ',--fn--)
+       (,--fn--))))
+
+(defmacro def-self-package-spec (&rest spec)
+  "Define self package SPEC list:
+      :cond t ;; predicat
+      :packages '(x y z) ;; package list
+      :setup '(\"setup-xyz.el\") ;; predefined
+
+\(fn SPEC...)"
+  (package-supported-p 
+    (let ((--spec-- (self-symbol 'package-spec)))
+      `(defvar ,--spec--
+         (list ,@spec)))))
+
+
+;; Versionized dirs
+(setq-default recentf-save-file
+              (concat (make-vdir ".recentf/") "recentf"))
+(setq-default savehist-file
+              (concat (make-vdir ".minibuffer/") "history"))
 
 ;; First to load self, env parts
-(compile-and-load-elisp-files '("self.el") "private/")
+(compile-and-load-elisp-files '("self.el")
+                              "private/")
 (compile-and-load-elisp-files '("ui.el"
                                 "shell.el"
                                 "basic.el")
                               "config/")
 
 ;; Self do prelogue ...
-(let ((ss (self-symbol "prelogue")))
-  (safe-do-when!* ss (funcall (symbol-value ss))))
-
+(self-safe-call "prelogue")
 
 
 ;; Start loading ...
@@ -387,8 +452,8 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
 
 
 ;; Self do epilogue ...
-(let ((ss (self-symbol "epilogue")))
-  (safe-do-when!* ss (funcall (symbol-value ss))))
+(self-safe-call "epilogue")
+
 
 
 ;; After loaded ...
@@ -399,6 +464,7 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
        (float-time
         (time-subtract (current-time) loading-start-time))))
   (message "#Loading init.el ... done (%.3fs)" elapsed))
+
 
 
 ;; ^ End of init.el
