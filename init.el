@@ -281,8 +281,9 @@ ignore it if you don't like it.
 eg., `Monaco-13', `Consolas-13', `White Rabbit-12'
 
 \(fn FONT-SIZE)"
-  (let ((--font-- (self-symbol 'font)))
-    `(defvar ,--font-- ,font-size)))
+  (graphic-supported-p
+    (let ((--font-- (self-symbol 'font)))
+      `(defvar ,--font-- ,font-size))))
 
 (defmacro def-self-cjk-font (font-size)
   "Define default CJK FONT-SIZE of current paltform, 
@@ -290,8 +291,9 @@ ignore it if you don't like it.
 eg., (cons \"Microsoft Yahei\" 12)
 
 \(fn FONT-SIZE)"
-  (let ((--font-- (self-symbol 'cjk-font)))
-    `(defvar ,--font-- ,font-size)))
+  (graphic-supported-p
+    (let ((--font-- (self-symbol 'cjk-font)))
+      `(defvar ,--font-- ,font-size))))
 
 (defmacro def-self-theme (theme)
   "Define default THEME of current platform, 
@@ -299,8 +301,9 @@ ignore it if you don't like it.
 eg., 'tomorrow-night-eighties, 'tomorrow-night-blue
 
 \(fn THEME)"
-  (let ((--theme-- (self-symbol 'theme)))
-    `(defvar ,--theme-- ,theme)))
+  (graphic-supported-p
+    (let ((--theme-- (self-symbol 'theme)))
+      `(defvar ,--theme-- ,theme))))
 
 (defmacro def-self-prelogue (&rest body)
   "Define self-prelogue, it will be run before load other 
