@@ -276,14 +276,14 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
 
 ;; Self defvar and defun
 (defmacro def-self-font (font-size)
-  "Define  default FONT-SIZE of current paltform, 
+  "Define default FONT-SIZE of current paltform, 
 ignore it if you don't like it. 
 eg., `Monaco-13', `Consolas-13', `White Rabbit-12'
 
 \(fn FONT-SIZE)"
   (graphic-supported-p
-    (let ((--font-- (self-symbol 'font)))
-      `(defvar ,--font-- ,font-size))))
+    (let ((_font_ (self-symbol 'font)))
+      `(defvar ,_font_ ,font-size))))
 
 (defmacro def-self-cjk-font (font-size)
   "Define default CJK FONT-SIZE of current paltform, 
@@ -292,8 +292,8 @@ eg., (cons \"Microsoft Yahei\" 12)
 
 \(fn FONT-SIZE)"
   (graphic-supported-p
-    (let ((--font-- (self-symbol 'cjk-font)))
-      `(defvar ,--font-- ,font-size))))
+    (let ((_font_ (self-symbol 'cjk-font)))
+      `(defvar ,_font_ ,font-size))))
 
 (defmacro def-self-theme (theme)
   "Define default THEME of current platform, 
@@ -302,8 +302,8 @@ eg., 'tomorrow-night-eighties, 'tomorrow-night-blue
 
 \(fn THEME)"
   (graphic-supported-p
-    (let ((--theme-- (self-symbol 'theme)))
-      `(defvar ,--theme-- ,theme))))
+    (let ((_theme_ (self-symbol 'theme)))
+      `(defvar ,_theme_ ,theme))))
 
 (defmacro def-self-prelogue (&rest body)
   "Define self-prelogue, it will be run before load other 
@@ -311,8 +311,8 @@ self things.
 
 \(fn BODY...)"
   (declare (indent 0))
-  (let ((--prelogue-- (self-symbol 'prelogue)))
-    `(defun ,--prelogue-- ()
+  (let ((_prelogue_ (self-symbol 'prelogue)))
+    `(defun ,_prelogue_ ()
        ,@body)))
 
 (defmacro def-self-epilogue (&rest body)
@@ -321,15 +321,15 @@ self things.
 
 \(fn BODY...)"
   (declare (indent 0))
-  (let ((--epilogue-- (self-symbol 'epilogue)))
-    `(defun ,--epilogue-- ()
+  (let ((_epilogue_ (self-symbol 'epilogue)))
+    `(defun ,_epilogue_ ()
        ,@body)))
 
 
 (defmacro self-safe-call (fn)
-  (let ((--fn-- (self-symbol fn)))
-    `(when (fboundp ',--fn--)
-       (,--fn--))))
+  (let ((_fn_ (self-symbol fn)))
+    `(when (fboundp ',_fn_)
+       (,_fn_))))
 
 (defmacro def-self-package-spec (&rest spec)
   "Define self package SPEC list:
@@ -339,8 +339,8 @@ self things.
 
 \(fn SPEC...)"
   (package-supported-p 
-    (let ((--spec-- (self-symbol 'package-spec)))
-      `(defvar ,--spec--
+    (let ((_spec_ (self-symbol 'package-spec)))
+      `(defvar ,_spec_
          (list ,@spec)))))
 
 
