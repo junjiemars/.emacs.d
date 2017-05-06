@@ -5,7 +5,7 @@
 
 
 (def-self-font "Monaco-12")
-;; (def-sefl-font "Consolas-13")
+;; (def-self-font "Consolas-13")
 ;; (def-self-font "White Rabbit-12")
 
 (def-self-cjk-font (cons "Microsoft Yahei" 13))
