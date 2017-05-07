@@ -26,7 +26,7 @@
   (list
    :cond (lambda ()
            (bin-exists-p "latex"))
-   :packages '(auctex))
+   :packages '(auctex cdlatex))
   (list
    :cond (lambda ()
            (and (version-supported-p '<= 24.4)
