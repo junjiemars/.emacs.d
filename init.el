@@ -359,7 +359,7 @@ self things.
                               "config/")
 
 ;; Self do prelogue ...
-(self-safe-call "prelogue")
+(self-safe-call prelogue)
 
 
 ;; Start loading ...
@@ -455,7 +455,7 @@ self things.
 
 
 ;; Self do epilogue ...
-(self-safe-call "epilogue")
+(self-safe-call epilogue)
 
 
 

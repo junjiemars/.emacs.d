@@ -24,7 +24,8 @@
     (global-set-key (kbd "C-c a") 'org-agenda))
   (safe-do-when org-capture
     (global-set-key (kbd "C-c c") 'org-capture))
-  (add-hook 'org-mode-hook 'turn-on-org-cdlatex))
+  (safe-do-when turn-on-org-cdlatex
+    (add-hook 'org-mode-hook 'turn-on-org-cdlatex)))
 
 
 (def-self-package-spec
