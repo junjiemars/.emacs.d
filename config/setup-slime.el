@@ -16,10 +16,11 @@
 
 (defun common-lisp-implementations ()
   "Returns a list of common-lisp implementations."
-  (let ((ecl (when (bin-exists-p "ecl") (bin-path "ecl")))
-        (sbcl (when (bin-exists-p "sbcl") (bin-path "sbcl")))
-        (abcl (when (bin-exists-p "sbcl") (bin-path "abcl"))))
+  (let ((sbcl (when (bin-exists-p "sbcl") (bin-path "sbcl")))
+        (abcl (when (bin-exists-p "abcl") (bin-path "abcl")))
+        (ecl (when (bin-exists-p "ecl") (bin-path "ecl"))))
     (remove nil (list (when sbcl (list 'sbcl (list sbcl)))
+                      (when abcl (list 'abcl (list abcl)))
                       (when ecl (list 'ecl (list ecl)))))))
 
 
