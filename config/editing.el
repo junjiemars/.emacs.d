@@ -82,9 +82,7 @@
       (next-line))))
 
 ;; toggle comment key strike
-(global-set-key
- (graphic-supported-if (kbd "C-;") (kbd "C-c ;"))
- 'toggle-comment)
+(global-set-key (kbd "C-c ;") 'toggle-comment)
 
 
 ;; fix weird os x kill error
