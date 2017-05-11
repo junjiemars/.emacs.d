@@ -231,3 +231,7 @@
 ;; Enable upcase/downcase region
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
+
+;; `C-x r g' and `C-x r i' are all bound to insert-register
+;; but `C-x r g' can do thing by one hand
+(global-set-key (kbd "C-x r g") 'string-insert-rectangle)
