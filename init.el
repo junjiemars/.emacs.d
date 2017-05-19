@@ -350,6 +350,96 @@ self things.
 (setq-default savehist-file
               (concat (make-vdir ".minibuffer/") "history"))
 
+
+(defun install-packages (packages &optional dry)
+  "Install missing packages, returns alist of installed packages"
+  (package-supported-p
+    (let ((not-installed-packages
+           (delete t (mapcar #'(lambda (p)
+                                 (if (package-installed-p p) t p))
+                             packages))))
+      (when not-installed-packages
+        (unless dry (package-refresh-contents))
+        (message "#Installing the missing %d packages: %s"
+                 (length not-installed-packages)
+                 not-installed-packages)
+        (mapc (lambda (i) (unless dry (package-install i)))
+              not-installed-packages)
+        not-installed-packages))))
+
+
+(defmacro parse-package-spec (spec)
+  "Returns a list of `:packages' and `:setup' from the SPEC."
+  `(let ((packages nil)
+         (files nil))
+     (dolist (s ,spec)
+       (when (and (plist-get s :cond)
+                  (funcall (plist-get s :cond)))
+         (setq packages (append packages (plist-get s :packages)))
+         (when (plist-get s :setup)
+           (setq files (append files (plist-get s :setup))))))
+     (list :packages packages :setup files)))
+
+
+(defmacro self-install-package ()
+  "Install and setup self's packages, will be called in self's PRELOGUE" 
+  `(package-supported-p
+
+     ;; define package user dir
+     (setq-default package-user-dir (make-vdir "elpa/"))
+     ;; define package repositories
+     (setq-default
+      package-archives
+      (append (list '("gnu" . "https://elpa.gnu.org/packages/")
+                    '("melpa-stable" . "https://stable.melpa.org/packages/"))
+              (version-supported-when
+                  <= 25.1
+                (list '("melpa" . "https://melpa.org/packages/")))))
+
+     (version-supported-when
+         <= 25.1
+       (setq-default package-archive-priorities
+                     (list '("melpa-stable" . 10)
+                           '("melpa" . 5)
+                           '("gnu" . 0))))
+     
+     ;; install basic packages
+     (defvar basic-packages '(aggressive-indent
+                              bing-dict
+                              ido-ubiquitous
+                              markdown-mode
+                              paredit
+                              rainbow-delimiters
+                              smex
+                              tagedit))
+     (defvar basic-setup-files '("setup-lisp.el"
+                                 "setup-navigation.el"
+                                 "setup-python.el"))
+
+     (require 'package)
+     (package-initialize)
+
+     (install-packages basic-packages)
+     (compile-and-load-elisp-files basic-setup-files "config/")
+
+     ;; install self packages
+     (defvar self-packages nil)
+     (defvar self-setup-files nil)
+     (safe-do-when!* (self-symbol "package-spec")
+       (let ((spec (parse-package-spec
+                    (symbol-value (self-symbol "package-spec")))))
+         (install-packages (setq self-packages (plist-get spec :packages)))
+         (compile-and-load-elisp-files
+          (setq self-setup-files (plist-get spec :setup)) "config/")))
+
+     ;; set Emacs' package-selected-packages var
+     (version-supported-when
+         <= 25.1
+       (safe-setq package-selected-packages
+                  (append basic-packages self-packages)))))
+
+
+
 ;; First to load self, env parts
 (compile-and-load-elisp-files '("self.el")
                               "private/")
@@ -360,87 +450,6 @@ self things.
 
 ;; Self do prelogue ...
 (self-safe-call prelogue)
-
-
-;; Start loading ...
-(package-supported-p
-  ;; define package user dir
-  (setq package-user-dir (make-vdir "elpa/"))
-  ;; define package repositories
-  (setq package-archives
-        (append (list '("gnu" . "https://elpa.gnu.org/packages/")
-                      '("melpa-stable" . "https://stable.melpa.org/packages/"))
-                (version-supported-when
-                    <= 25.1
-                  (list '("melpa" . "https://melpa.org/packages/")))))
-
-  (version-supported-when
-      <= 25.1
-    (setq-default package-archive-priorities
-                  (list '("melpa-stable" . 10)
-                        '("melpa" . 5)
-                        '("gnu" . 0))))
-  
-  (require 'package)
-  (package-initialize)
-
-  (defmacro install-packages (packages &optional dry)
-    `(let ((not-installed-packages
-            (delete t (mapcar #'(lambda (p)
-                                  (if (package-installed-p p) t p))
-                              ,packages))))
-       (when not-installed-packages
-         (unless ,dry (package-refresh-contents))
-         (message "#Installing the missing %d packages: %s"
-                  (length not-installed-packages)
-                  not-installed-packages)
-         (mapc (lambda (i) (unless ,dry (package-install i)))
-               not-installed-packages)
-         not-installed-packages)))
-
-  (defmacro parse-package-spec (spec)
-    `(let ((packages nil)
-           (files nil))
-       (dolist (s ,spec)
-         (when (and (plist-get s :cond)
-                    (funcall (plist-get s :cond)))
-           (setq packages (append packages (plist-get s :packages)))
-           (when (plist-get s :setup)
-             (setq files (append files (plist-get s :setup))))))
-       (list :packages packages :setup files)))
-
-  ;; install basic packages
-  (defvar basic-packages '(aggressive-indent
-                           bing-dict
-                           ido-ubiquitous
-                           markdown-mode
-                           paredit
-                           rainbow-delimiters
-                           smex
-                           tagedit))
-  (defvar basic-setup-files '("setup-lisp.el"
-                              "setup-navigation.el"
-                              "setup-python.el"))
-  (install-packages basic-packages)
-  (compile-and-load-elisp-files basic-setup-files "config/")
-
-  ;; install self packages
-  (defvar self-packages nil)
-  (defvar self-setup-files nil)
-  (safe-do-when!* (self-symbol "package-spec")
-    (let ((spec (parse-package-spec
-                 (symbol-value (self-symbol "package-spec")))))
-      (install-packages (setq self-packages (plist-get spec :packages)))
-      (compile-and-load-elisp-files
-       (setq self-setup-files (plist-get spec :setup)) "config/")))
-
-  ;; set Emacs' package-selected-packages var
-  (version-supported-when
-      <= 25.1
-    (safe-setq package-selected-packages
-               (append basic-packages self-packages))))
-
-;; ^ end of support-package-p
 
 
 (compile-and-load-elisp-files
@@ -472,3 +481,17 @@ self things.
 
 ;; ^ End of init.el
 
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (tagedit sx smex slime rainbow-delimiters paredit magit inf-clojure ido-ubiquitous geiser dockerfile-mode docker-tramp clojure-mode-extra-font-locking cider cdlatex bing-dict auctex aggressive-indent))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

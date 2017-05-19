@@ -16,6 +16,7 @@
 (def-self-prelogue
   (message "#self prelogue ...")
   ;; (start-socks)
+  (self-install-package)
   )
 
 (def-self-epilogue
