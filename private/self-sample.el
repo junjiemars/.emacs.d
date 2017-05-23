@@ -11,7 +11,7 @@
 (def-self-cjk-font (cons "Microsoft Yahei" 13))
 
 (def-self-theme 'tomorrow-night-eighties)
-;; (def-self-theme 'tomorrow-day-theme)
+
 
 (def-self-prelogue
   (message "#self prelogue ...")
