@@ -17,12 +17,14 @@
   `(version-supported-when <= 23.1 t))
 
 
-;; Default web browser: eww `C-d C-d h'
+;; Default web browser: eww
+;; open file or url at point
 (when (eq browse-url-browser-function
           'browse-url-default-browser)
   (safe-do-when eww-browse-url
-    (setq browse-url-browser-function 'eww-browse-url)
-    (global-set-key (kbd "C-c b") 'browse-url)))
+    (setq browse-url-browser-function 'eww-browse-url)))
+(safe-do-when find-file-at-point
+  (global-set-key (kbd "C-c b") 'find-file-at-point) )
 
 
 ;; Toggle linum mode 
