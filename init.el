@@ -187,8 +187,8 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
 
 \(fn X BODY...)"
   (declare (indent 1))
-  (when (boundp ,x)
-    `,@body))
+  (when (boundp x)
+    `(progn ,@body)))
 
 (defmacro safe-do-when!* (x &rest body)
   "Do BODY when X is local bound.
