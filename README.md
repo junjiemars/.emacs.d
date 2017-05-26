@@ -41,6 +41,14 @@ and you don't need run ```git clone ...```
 ```sh
 $ HAS_EMACS=1 bash <(curl https://raw.githubusercontent.com/junjiemars/kit/master/win/install-win-kits.sh)
 ```
+Now, the Emacs will works perfect, but if you want to more control and more 
+features, such as themes, packages, and fonts etc., 
+see next section: [self-management][#self-management]
+
+## Self-Management
+Copy _.emacs.d/private/self-sample.el_ to _.emacs.d/private/self.el_
+
+
 
 ## Where
 * Linux, whatever GUI or Terminal;
