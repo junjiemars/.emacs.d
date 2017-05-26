@@ -459,21 +459,12 @@ self things.
    "financial.el"
    "utils.el") "config/")
 
-(comment
- (compile-and-load-elisp-files
-  ;; compile and load private non-package-required elisp files
-  '("financial.el"
-    "utils.el") "private/"))
-
 
 ;; Self do epilogue ...
 (self-safe-call epilogue)
 
 
-
 ;; After loaded ...
-
-
 
 (let ((elapsed
        (float-time
