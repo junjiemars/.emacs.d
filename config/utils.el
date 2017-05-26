@@ -44,3 +44,4 @@
                            src-dir t t t)
            (message "#clone themes %s." "successed"))
        (message "#clone themes %s." "failed")))))
+
