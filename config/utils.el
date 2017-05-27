@@ -45,3 +45,47 @@
            (message "#clone themes %s." "successed"))
        (message "#clone themes %s." "failed")))))
 
+
+(defmacro append-etags-paths (paths)
+  `(let ((--paths-- nil))
+     (setq --paths--
+           (concat --paths-- (message " -path \"%s\"" (car ,paths))))
+     (dolist (p (cdr ,paths))
+       (setq --paths--
+             (concat --paths-- (message " -o -path \"%s\"" p))))
+     --paths--))
+
+(defmacro append-etags-names (names)
+  `(let ((--names-- nil))
+     (setq --names--
+           (concat --names-- (message " -name \"%s\"" (car ,names))))
+     (dolist (n (cdr ,names))
+       (setq --names--
+             (concat --names-- (message " -o -name \"%s\"" n))))
+     --names--))
+
+(defun build-emacs-etags (dir &optional rebuild)
+  "Make tags of DIR via etags."
+  (when (and rebuild
+             (file-exists-p (format "%sTAGS" dir)))
+    (delete-file (format "%sTAGS" dir)))
+  (eshell-command
+   (message
+    "%s"
+    (format
+     "find %s \\\( %s \\\) -prune -o \\\( %s \\\) | xargs etags -o %sTAGS -a "
+     dir
+     (append-etags-paths '("*/.git" "*/elpa" "*/g_*" "*/t_*"))
+     (append-etags-names '("*.el"))
+     dir))))
+
+(defun build-emacs-src-etags (src tags-dir)
+  "Make tags of SRC and append to DIR via etags."
+  (eshell-command
+   (message
+    "%s"
+    (format
+     "find %s -type f \\\( %s \\\) | xargs etags -o %sTAGS -a"
+     src
+     (append-etags-names '("*.c" "*.h"))
+     tags-dir))))
