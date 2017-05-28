@@ -108,11 +108,15 @@
 ;; open now
 (safe-setq ido-use-virtual-buffers t)
 
-
-
 ;; on Drawin: ls does not support --dired;
 ;; see `dired-use-ls-dired' for more defails
 (platform-supported-when
- darwin
- (setq-default ls-lisp-use-insert-directory-program nil)
- (require 'ls-lisp))
+    darwin
+  (setq-default ls-lisp-use-insert-directory-program nil)
+  (require 'ls-lisp))
+
+
+;; Auto-save
+(let ((d (make-vdir ".auto-save/")))
+  (setq auto-save-default nil)
+  (setq auto-save-list-file-prefix (concat d "saves-")))

@@ -179,11 +179,7 @@
   (setq backup-directory-alist `(("." . ,d))))
 
 
-;; Auto-save
-(let ((d (make-vdir ".auto-save/")))
-  (setq auto-save-default nil)
-  (setq auto-save-list-file-prefix (concat d "saves-")))
-
+;; XXX
 
 ;; Bookmarks
 (let ((d (make-vdir ".bookmarks/")))
