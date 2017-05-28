@@ -457,6 +457,7 @@ self things.
  '("editing.el"
    "debugger.el"
    "financial.el"
+   "tags.el"
    "utils.el") "config/")
 
 

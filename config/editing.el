@@ -148,12 +148,6 @@
 ;; (global-set-key (kbd "C-c l") "λ")
 
 
-
-;; Versionized TAGS directories, use `visit-tag-table' to visit
-(comment
- (setq tags-table-list (make-vdir ".tags/")))
-
-
 ;; When you visit a file, point goes to the last place where it
 ;; was when you previously visited the same file.
 ;; http://www.emacswiki.org/emacs/SavePlace
