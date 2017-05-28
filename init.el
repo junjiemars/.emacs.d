@@ -298,7 +298,7 @@ eg., (cons \"Microsoft Yahei\" 12)
 (defmacro def-self-theme (theme)
   "Define default THEME of current platform, 
 ignore it if you don't like it. 
-eg., 'tomorrow-night-eighties, 'tomorrow-night-blue
+eg., (cons <theme-path> '<theme-name>)
 
 \(fn THEME)"
   (graphic-supported-p

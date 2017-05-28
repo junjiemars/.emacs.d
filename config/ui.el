@@ -42,16 +42,17 @@
 ;; Graphic / Terminal
 (graphic-supported-if
     ;; load themes on graphic mode
-    (let ((themes-dir (concat user-emacs-directory "themes"))
-          (self-theme (self-symbol "theme")))
-      (let ((theme (if (boundp self-theme)
-                       (symbol-value self-theme)
-                     'tomorrow-night-eighties)))
-        (add-to-list 'custom-theme-load-path themes-dir)
-        (add-to-list 'load-path themes-dir)
-        (version-supported-if >= 24.1
-                              (load-theme theme)
-          (load-theme theme t))))
+    (let ((self-theme (self-symbol "theme")))
+      (when (and (boundp self-theme)
+                 (consp (symbol-value self-theme)))
+        (let ((theme-dir (car (symbol-value self-theme))) 
+              (theme-name (cdr (symbol-value self-theme))))
+          (add-to-list 'custom-theme-load-path theme-dir)
+          (add-to-list 'load-path theme-dir)
+          (version-supported-if >= 24.1
+                                (load-theme theme-name)
+            (load-theme theme-name t)))))
+  
   ;; line number format on Terminal
   (safe-setq linum-format "%2d ")
   ;;above version 23 transient-mark-mode is enabled by default

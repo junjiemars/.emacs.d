@@ -29,20 +29,5 @@
         (setq i (lsh i -1)))
       (concat "#b" (if (string= s "") (setq s "0") s)))))
 
-(comment
- (defun clone-themes ()
-   "Clone themes from github, call it in elisp env."
-   (let ((url "https://github.com/chriskempson/tomorrow-theme.git")
-         (src-dir  "/tmp/xyz")
-         (tmp-dir "/tmp"))
-     (if (zerop (shell-command
-                 (format "git -C %s clone --depth=1 %s" tmp-dir url)))
-         (progn
-           (when (file-exists-p src-dir)
-             (copy-directory src-dir (format "%s.b0" src-dir) t t t))
-           (copy-directory (format "%s/tomorrow-theme/GNU Emacs" tmp-dir)
-                           src-dir t t t)
-           (message "#clone themes %s." "successed"))
-       (message "#clone themes %s." "failed")))))
 
 
