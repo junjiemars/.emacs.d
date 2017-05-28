@@ -27,7 +27,8 @@ bookmarks
 recentf
 *.b0
 games/
-private/self.el
+!private/self-sample.el
+private/
 *.swp
 nul
 null
