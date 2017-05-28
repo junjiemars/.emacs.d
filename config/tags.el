@@ -23,15 +23,14 @@
          (setq s (concat s (format " -o -name \"%s\"" n))))
        s)))
 
-(defun make-emacs-etags (renew &optional emacs-src emacs-lisp)
+(defun make-emacs-etags (&optional emacs-src emacs-lisp)
   "Make tags of `emacs-home' via etags."
   (let ((tags (concat vdir-tags "TAGS"))
         (lisp-src-format
          "find %s %s %s | xargs etags -o %s -a ")
         (c-src-format
          "find %s -type f \\\( %s \\\) | xargs etags -o %s -a"))
-    (when (and renew (file-exists-p tags))
-      (delete-file tags))
+    (when (file-exists-p tags) (delete-file tags))
     (shell-command
      (format
       lisp-src-format
@@ -54,7 +53,7 @@
       (shell-command
        (format
         lisp-src-format
-        emacs-home
+        emacs-lisp
         ""
         (append-etags-names '("*.el"))
         tags)))))
