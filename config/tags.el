@@ -6,26 +6,26 @@
 
 ;; Versionized TAGS directories, use `visit-tag-table' to visit
 (defvar vdir-tags (expand-file-name (make-vdir ".tags/")))
-(push tags-table-list vdir-tags)
+(setq tags-table-list (list vdir-tags))
 
 
 (defmacro append-etags-paths (paths)
   `(when ,paths
-     (let ((s (concat (message " -path \"%s\"" (car ,paths)))))
+     (let ((s (concat (format " -path \"%s\"" (car ,paths)))))
        (dolist (p (cdr, paths))
-         (setq s (concat s (message " -o -path \"%s\"" p))))
+         (setq s (concat s (format " -o -path \"%s\"" p))))
        s)))
 
 (defmacro append-etags-names (names)
   `(when ,names
-     (let ((s (concat (message " -name \"%s\"" (car ,names)))))
+     (let ((s (concat (format " -name \"%s\"" (car ,names)))))
        (dolist (n (cdr ,names))
-         (setq s (concat s (message " -o -name \"%s\"" n))))
+         (setq s (concat s (format " -o -name \"%s\"" n))))
        s)))
 
 (defun make-emacs-etags (&optional renew &optional emacs-src)
   "Make tags of `emacs-home' via etags."
-  (let ((tags (format "%sTAGS" vdir-tags)))
+  (let ((tags (concat vdir-tags "TAGS")))
     (when (and renew (file-exists-p tags))
       (delete-file tags))
     (shell-command
