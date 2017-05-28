@@ -23,22 +23,38 @@
          (setq s (concat s (format " -o -name \"%s\"" n))))
        s)))
 
-(defun make-emacs-etags (&optional renew &optional emacs-src)
+(defun make-emacs-etags (renew &optional emacs-src emacs-lisp)
   "Make tags of `emacs-home' via etags."
-  (let ((tags (concat vdir-tags "TAGS")))
+  (let ((tags (concat vdir-tags "TAGS"))
+        (lisp-src-format
+         "find %s %s %s | xargs etags -o %s -a ")
+        (c-src-format
+         "find %s -type f \\\( %s \\\) | xargs etags -o %s -a"))
     (when (and renew (file-exists-p tags))
       (delete-file tags))
     (shell-command
      (format
-      "find %s \\\( %s \\\) -prune -o \\\( %s \\\) | xargs etags -o %s -a "
+      lisp-src-format
       emacs-home
-      (append-etags-paths '("*/.git" "*/elpa" "*/g_*" "*/t_*"))
-      (append-etags-names '("*.el"))
+      (format
+       "\\\( %s \\\) -prune "
+       (append-etags-paths '("*/.git" "*/elpa" "*/g_*" "*/t_*")))
+      (format
+       "-o \\\( %s \\\)"
+       (append-etags-names '("*.el")))
       tags))
     (when (and emacs-src (file-exists-p emacs-src))
       (shell-command
        (format
-        "find %s -type f \\\( %s \\\) | xargs etags -o %s -a"
+        c-src-format
         emacs-src
         (append-etags-names '("*.c" "*.h"))
+        tags)))
+    (when (and emacs-lisp (file-exists-p emacs-lisp))
+      (shell-command
+       (format
+        lisp-src-format
+        emacs-home
+        ""
+        (append-etags-names '("*.el"))
         tags)))))
