@@ -16,7 +16,9 @@
 (def-self-prelogue
   (message "#self prelogue ...")
   ;; (start-socks)
+  ;; (setq debug-on-error t)
   (self-install-package)
+  ;; (setq source-directory "/opt/open/emacs/")
   )
 
 (def-self-epilogue
