@@ -49,7 +49,7 @@
         (find-bin (platform-supported-if windows-nt "/usr/bin/find" "find"))
         (xargs-bin (platform-supported-if windows-nt "/usr/bin/xargs" "xargs")))
     (when (file-exists-p tags) (delete-file tags))
-    (platform-supported-when windows-nt (set-windows-nt-shell))
+    (safe-do-when set-windows-nt-shell (set-windows-nt-shell))
     (shell-command
      (build-etags-lisp-command
       find-bin
