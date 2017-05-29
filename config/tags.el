@@ -27,13 +27,16 @@
   "Make tags of `emacs-home' via etags."
   (let ((tags (concat vdir-tags "TAGS"))
         (lisp-src-format
-         "find %s %s %s | xargs etags -o %s -a ")
+         "%s %s %s %s | %s etags -o %s -a ")
         (c-src-format
-         "find %s -type f \\\( %s \\\) | xargs etags -o %s -a"))
+         "%s %s -type f \\\( %s \\\) | %s etags -o %s -a")
+        (find-bin (platform-supported-if windows-nt "/usr/bin/find" "find"))
+        (xargs-bin (platform-supported-if windows-nt "/usr/bin/xargs" "xargs")))
     (when (file-exists-p tags) (delete-file tags))
     (shell-command
      (format
       lisp-src-format
+      find-bin
       emacs-home
       (format
        "\\\( %s \\\) -prune "
@@ -41,19 +44,24 @@
       (format
        "-o \\\( %s \\\)"
        (append-etags-names '("*.el")))
+      xargs-bin
       tags))
     (when (and emacs-src (file-exists-p emacs-src))
       (shell-command
        (format
         c-src-format
+        find-bin
         emacs-src
         (append-etags-names '("*.c" "*.h"))
+        xargs-bin
         tags)))
     (when (and emacs-lisp (file-exists-p emacs-lisp))
       (shell-command
        (format
         lisp-src-format
+        find-bin
         emacs-lisp
         ""
         (append-etags-names '("*.el"))
+        xargs-bin
         tags)))))
