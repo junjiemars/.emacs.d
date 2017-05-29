@@ -17,6 +17,7 @@
        (setq shell-file-name ,shell))))
 
 
+
 (defmacro set-path-env ()
   "Set PATH and exec-path in Emacs."
   `(let* ((p (shell-command-to-string
@@ -72,21 +73,26 @@
 
 ;; set shell/ansi-term on Windows
 (platform-supported-when
- windows-nt
- (defadvice shell (before shell-before compile)
-   (when (bin-exists-p "bash")
-     (let ((prompt "~/.emacs_bash"))
-       (unless (file-exists-p prompt)
-         (copy-file "~/.emacs.d/config/.emacs_bash" prompt)))
-     (add-to-list 'exec-path
-                  (file-name-directory
-                   (windows-nt-path (bin-path "bash"))))
-     (setq shell-file-name "bash")
-     (setenv "SHELL" (bin-path "bash"))))
- (defadvice ansi-term (around ansi-term-around compile)
-   (let* ((n "*ansi-term*")
-          (b (get-buffer-create n)))
-     (apply 'make-comint-in-buffer n b "cmd" nil nil)
-     (set-window-buffer (selected-window) b))))
+    windows-nt
+  
+  (defun set-windows-nt-shell ()
+    (when (bin-exists-p "bash")
+      (let ((prompt "~/.emacs_bash"))
+        (unless (file-exists-p prompt)
+          (copy-file "~/.emacs.d/config/.emacs_bash" prompt)))
+      (add-to-list 'exec-path
+                   (file-name-directory
+                    (windows-nt-path (bin-path "bash"))))
+      (setq shell-file-name "bash")
+      (setenv "SHELL" (bin-path "bash"))))
+  
+  (defadvice shell (before shell-before compile)
+    (set-window-nt-shell))
+  
+  (defadvice ansi-term (around ansi-term-around compile)
+    (let* ((n "*ansi-term*")
+           (b (get-buffer-create n)))
+      (apply 'make-comint-in-buffer n b "cmd" nil nil)
+      (set-window-buffer (selected-window) b))))
 
 
