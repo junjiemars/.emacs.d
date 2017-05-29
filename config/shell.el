@@ -87,7 +87,7 @@
       (setenv "SHELL" (bin-path "bash"))))
   
   (defadvice shell (before shell-before compile)
-    (set-window-nt-shell))
+    (set-windows-nt-shell))
   
   (defadvice ansi-term (around ansi-term-around compile)
     (let* ((n "*ansi-term*")
