@@ -9,6 +9,27 @@
 (setq tags-table-list (list vdir-tags))
 
 
+(defun dir-files-iter (dir ff df fn)
+  (dolist (f (file-name-all-completions "" dir))
+    (unless (member f '("./" "../"))
+      (let ((full-name (expand-file-name f dir)))
+        (if (directory-name-p f)
+            (when (and df (funcall df f)
+                       (dir-files-iter full-name ff df fn)))
+          (when (and ff (funcall ff f)
+                     (funcall fn full-name))))))))
+
+(defun make-emacs-tags (&optional emacs-src)
+  (let ((lisp-ff (lambda (f) (string-match "\.el$" f)))
+        (lisp-df (lambda (d) (not (or (string-match "^\\\..*/" d)
+                                      (string-match "elpa/" d)
+                                      (string-match "theme/" d)
+                                      (string-match "g_.*/" d)
+                                      (string-match "t_.*/" d)))))
+        (fn (lambda (f) (message "%s" f))))
+    (dir-files-iter emacs-home lisp-ff lisp-df fn)))
+
+
 (defmacro append-etags-paths (paths)
   `(when ,paths
      (let ((s (concat (format " -path \"%s\"" (car ,paths)))))
