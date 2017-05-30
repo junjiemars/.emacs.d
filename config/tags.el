@@ -7,27 +7,40 @@
 ;; Versionized TAGS directories, use `visit-tag-table' to visit
 (defvar vdir-tags (expand-file-name (make-vdir ".tags/")))
 (setq tags-table-list (list vdir-tags))
+(defvar vdir-tags-file (concat vdir-tags "TAGS"))
 
 
-(defun dir-files-iter (dir ff df fn)
-  (dolist (f (file-name-all-completions "" dir))
-    (unless (member f '("./" "../"))
-      (let ((full-name (expand-file-name f dir)))
-        (if (directory-name-p f)
-            (when (and df (funcall df f)
-                       (dir-files-iter full-name ff df fn)))
-          (when (and ff (funcall ff f)
-                     (funcall fn full-name))))))))
 
-(defun make-emacs-tags (&optional emacs-src)
-  (let ((lisp-ff (lambda (f) (string-match "\.el$" f)))
-        (lisp-df (lambda (d) (not (or (string-match "^\\\..*/" d)
-                                      (string-match "elpa/" d)
-                                      (string-match "theme/" d)
-                                      (string-match "g_.*/" d)
-                                      (string-match "t_.*/" d)))))
-        (fn (lambda (f) (message "%s" f))))
-    (dir-files-iter emacs-home lisp-ff lisp-df fn)))
+
+(defun make-emacs-tags (&optional emacs-root)
+  "Make `vdir-tags-file' on `emacs-home', if provides `emacs-root' or defined
+`source-directory' append tags into `vdir-tags-file'.
+
+\(FN EMACS-SOURCE-ROOT\)"
+  (let ((lisp-ff (lambda (f) (string-match "\\\.el$" f)))
+        (home-df (lambda (d) (not (or (string-match "^\\\..*/" d)
+                                      (string-match "^elpa/$" d)
+                                      (string-match "^theme/$" d)
+                                      (string-match "^g_.*/$" d)
+                                      (string-match "^t_.*/$" d)
+                                      (string-match "^private/$" d)))))
+        (root-c-ff (lambda (f) (string-match "\\\.[ch]$" f)))
+        (root-df (lambda (d) t))
+        (fn
+         (lambda (f)
+           (message "%s" f)
+           (eshell-command
+            (format "etags -o %s -a %s" vdir-tags-file f)))))
+    (when (file-exists-p vdir-tags-file)
+      (delete-file vdir-tags-file))
+    (dir-files-iterate emacs-home lisp-ff home-df fn)
+    (let* ((root (or emacs-root source-directory))
+           (c-src (concat root "src/"))
+           (lisp-src (concat root "lisp/")))
+      (when (file-exists-p c-src)
+        (dir-files-iterate c-src root-c-ff root-df fn))
+      (when (file-exists-p lisp-src)
+        (dir-files-iterate lisp-src lisp-ff root-df fn)))))
 
 
 (defmacro append-etags-paths (paths)

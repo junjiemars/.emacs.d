@@ -13,11 +13,12 @@
         (setq n1 (1- n1) s1 (cdr s1)))
       (nreverse acc))))
 
+
 (safe-do-when number-sequence (fset 'range 'number-sequence))
+
 
 ;; use `pp-eval-expression' or `pp-eval-last-sexp'
 (safe-do-when cl-prettyexpand (fset 'pprint 'cl-prettyexpand))
-
 
 
 (defun int-to-binary-string (i)

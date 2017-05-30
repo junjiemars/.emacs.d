@@ -120,3 +120,30 @@
 (let ((d (make-vdir ".auto-save/")))
   (setq auto-save-default nil)
   (setq auto-save-list-file-prefix (concat d "saves-")))
+
+
+(safe-do-unless directory-name-p
+  (defun directory-name-p (name)
+  "Return non-nil if NAME ends with a directory separator character."
+  (let ((len (length name))
+        (lastc ?.))
+    (if (> len 0)
+        (setq lastc (aref name (1- len))))
+    (or (= lastc ?/)
+        (and (memq system-type '(windows-nt ms-dos))
+             (= lastc ?\\))))))
+
+
+(defun dir-files-iterate (dir ff df fn)
+  "Iterating DIR, if FILE-FILTER return T then call FN, and if DIR-FILTER return T
+   then iterate into deep DIR.
+
+\(FN DIR FILE-FILTER DIR-FILTER FN\)"
+  (dolist (f (file-name-all-completions "" dir))
+    (unless (member f '("./" "../"))
+      (let ((full-name (expand-file-name f dir)))
+        (if (directory-name-p f)
+            (when (and df (funcall df f)
+                       (dir-files-iterate full-name ff df fn)))
+          (when (and ff (funcall ff f)
+                     (funcall fn full-name))))))))

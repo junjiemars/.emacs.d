@@ -175,6 +175,13 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
   (declare (indent 1))
   `(safe-do-if ,fn (progn ,@body)))
 
+(defmacro safe-do-unless (fn &rest body)
+  "Do BODY unless FN is bound.
+
+\(fn FN BODY...\)"
+  (declare (indent 1))
+  `(safe-do-if ,fn nil ,@body))
+
 (defmacro safe-do-when* (fn &rest body)
   "Do BODY when FN is local bound.
 
