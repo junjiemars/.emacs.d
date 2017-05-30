@@ -33,7 +33,10 @@
     (when (file-exists-p vdir-tags-file)
       (delete-file vdir-tags-file))
     (dir-files-iterate emacs-home lisp-ff home-df fn)
-    (let* ((root (or emacs-root (boundp 'source-directory)))
+    (let* ((root (or emacs-root
+                     (if (boundp 'source-directory)
+                         source-directory
+                         nil)))
            (c-src (concat root "src/"))
            (lisp-src (concat root "lisp/")))
       (when (file-exists-p c-src)
