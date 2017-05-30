@@ -20,9 +20,9 @@
   (self-install-package)
   (comment
    (version-supported-if
-      <= 22
-      (setq source-directory "/opt/open/emacs-22/")
-    (setq source-directory "/opt/open/emacs/")))
+       <= 22
+       (setq source-directory "/opt/open/emacs-22/")
+     (setq source-directory "/opt/open/emacs/")))
   )
 
 (def-self-epilogue
