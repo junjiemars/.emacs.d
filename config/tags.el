@@ -29,12 +29,11 @@
         (root-df (lambda (d) t))
         (fn
          (lambda (f)
-           (message "%s" f)
            (eshell-command
-            (format "etags -o %s -a %s"
-                    (expand-file-name vdir-tags-file) f)))))
+            (format "etags -o %s -a %s ; echo %s"
+                    (expand-file-name vdir-tags-file) f f)))))
     (when (file-exists-p vdir-tags-file)
-      (delete-file vdir-tags-file))
+      (delete-file (expand-file-name vdir-tags-file)))
     (dir-files-iterate emacs-home lisp-ff home-df fn)
     (let* ((root (or emacs-root
                      (if (boundp 'source-directory)
