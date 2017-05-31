@@ -10,7 +10,7 @@
 
 (def-self-cjk-font (cons "Microsoft Yahei" 13))
 
-(def-self-theme (cons (concat emacs-home "themes") 'tomorrow-night-eighties))
+(def-self-theme (cons (concat emacs-home "theme") 'tomorrow-night-eighties))
 
 
 (def-self-prelogue
