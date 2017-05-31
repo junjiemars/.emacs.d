@@ -6,8 +6,10 @@
 
 (defvar vdir-tags (expand-file-name (make-vdir ".tags/"))
   "Versionized TAGS directory, use `visit-tag-table' to visit")
+
 (defvar vdir-tags-file (concat vdir-tags "TAGS")
   "Versionized TAGS file, use `visit-tag-table' to visit")
+
 (setq tags-table-list (list vdir-tags))
 
 
@@ -29,14 +31,15 @@
          (lambda (f)
            (message "%s" f)
            (eshell-command
-            (format "etags -o %s -a %s" vdir-tags-file f)))))
+            (format "etags -o %s -a %s"
+                    (expand-file-name vdir-tags-file) f)))))
     (when (file-exists-p vdir-tags-file)
       (delete-file vdir-tags-file))
     (dir-files-iterate emacs-home lisp-ff home-df fn)
     (let* ((root (or emacs-root
                      (if (boundp 'source-directory)
                          source-directory
-                         nil)))
+                       nil)))
            (c-src (concat root "src/"))
            (lisp-src (concat root "lisp/")))
       (when (file-exists-p c-src)
