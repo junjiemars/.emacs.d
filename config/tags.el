@@ -7,14 +7,15 @@
 (defvar vdir-tags (expand-file-name (make-vdir ".tags/"))
   "Versionized TAGS directory, use `visit-tag-table' to visit")
 
+(defvar vdir-tags-file (concat vdir-tags "TAGS")
+  "Versionized TAGS file, use `visit-tag-table' to visit")
+
 (setq-default tags-table-list (list vdir-tags))
 
 
-(defun make-emacs-tags (&optional emacs-root)
+(defun make-emacs-tags (tags-file &optional emacs-root)
   "Make `vdir-tags-file' on `emacs-home', if provides `emacs-root' or defined
-`source-directory' append tags into `tags-file-name'.
-
-\(FN EMACS-SOURCE-ROOT\)"
+`source-directory' append tags into `tags-file-name'."
   (let ((lisp-ff (lambda (f) (string-match "\\\.el$" f)))
         (home-df (lambda (d) (not (or (string-match "^\\\..*/" d)
                                       (string-match "^elpa/$" d)
@@ -28,9 +29,9 @@
          (lambda (f)
            (eshell-command
             (format "etags -o %s -a %s ; echo %s"
-                    tags-file-name f f)))))
-    (when (file-exists-p tags-file-name)
-      (delete-file (expand-file-name tags-file-name)))
+                    tags-file f f)))))
+    (when (file-exists-p tags-file)
+      (delete-file (expand-file-name tags-file)))
     (dir-files-iterate emacs-home lisp-ff home-df fn)
     (let* ((root (or emacs-root
                      (if (boundp 'source-directory)
