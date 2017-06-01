@@ -34,14 +34,12 @@
 
 
 ;; On Windows C-) is not work
-(platform-supported-when
- windows-nt
- (global-set-key (kbd "C-c )") 'paredit-forward-slurp-sexp))
+;; fix inconsistent `C-)' `C-c )' behavior:#9
+(global-set-key (kbd "C-c )") 'paredit-forward-slurp-sexp)
 
 
 ;; On Terminal mode, Ctrl+Shift combination can't send to Emacs
 (terminal-supported-p
-  (global-set-key (kbd "C-c )") 'paredit-forward-slurp-sexp)
   (global-set-key (kbd "C-c (") 'paredit-backward-slurp-sexp)
   (global-set-key (kbd "C-c }") 'paredit-forward-barf-sexp)
   (global-set-key (kbd "C-c {") 'paredit-backward-barf-sexp))
