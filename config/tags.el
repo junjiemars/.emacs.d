@@ -3,14 +3,26 @@
 ;;
 
 
-
-(defvar vdir-tags (expand-file-name (make-vdir ".tags/"))
-  "Versionized TAGS directory, use `visit-tag-table' to visit")
-
-(defvar vdir-tags-file (concat vdir-tags "TAGS")
+(defvar vdir-tags-file (concat (expand-file-name (make-vdir ".tags/")) "TAGS")
   "Versionized TAGS file, use `visit-tag-table' to visit")
 
-(setq-default tags-table-list (list vdir-tags))
+
+(defmacro make-tags (home tags-file file-filter dir-filter &optional renew)
+  "Make tags."
+  `(when (file-exists-p ,home)
+     (when (and ,renew (file-exists-p ,tags-file))
+       (delete-file ,tags-file))
+     (dir-files-iterate ,home
+                        (when ,file-filter ,file-filter)
+                        (when ,dir-filter ,dir-filter)
+                        (lambda (f)
+                          (eshell-command
+                           (format "etags -o %s -l auto -a %s ; echo %s"
+                                   ,tags-file f f))))
+     (when (and (file-exists-p ,tags-file)
+                (not (member (file-name-directory ,tags-file)
+                             tags-table-list)))
+       (push (file-name-directory ,tags-file) tags-table-list))))
 
 
 (defun make-emacs-tags (tags-file &optional emacs-root)
@@ -24,22 +36,14 @@
                                       (string-match "^t_.*/$" d)
                                       (string-match "^private/$" d)))))
         (root-c-ff (lambda (f) (string-match "\\\.[ch]$" f)))
-        (root-df (lambda (d) t))
-        (fn
-         (lambda (f)
-           (eshell-command
-            (format "etags -o %s -a %s ; echo %s"
-                    tags-file f f)))))
-    (when (file-exists-p tags-file)
-      (delete-file (expand-file-name tags-file)))
-    (dir-files-iterate emacs-home lisp-ff home-df fn)
-    (let* ((root (or emacs-root
-                     (if (boundp 'source-directory)
-                         source-directory
-                       nil)))
-           (c-src (concat root "src/"))
-           (lisp-src (concat root "lisp/")))
-      (when (file-exists-p c-src)
-        (dir-files-iterate c-src root-c-ff root-df fn))
-      (when (file-exists-p lisp-src)
-        (dir-files-iterate lisp-src lisp-ff root-df fn)))))
+        (root-df (lambda (d) t)))
+    (make-tags emacs-home tags-file lisp-ff home-df t)
+    (let ((root (or emacs-root
+                    (if (boundp 'source-directory)
+                        source-directory
+                      nil)))
+          (lisp-src ))
+      (when (file-exists-p (concat root "src/"))
+        (make-tags (concat root "src/") tags-file root-c-ff root-df))
+      (when (file-exists-p (concat root "lisp/"))
+        (make-tags (concat root "lisp/") tags-file lisp-ff root-df)))))
