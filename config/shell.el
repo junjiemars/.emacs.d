@@ -24,7 +24,6 @@
                 "$SHELL -i -c 'echo -n $PATH' 2>/dev/null"))
             (x (split-string p ":")))
        (setenv "PATH" p)
-       (setq path-env-var p)
        (while (car x)
          (add-to-list 'exec-path (car x) t #'string=)
          (setq x (cdr x)))))
@@ -32,8 +31,8 @@
 
   (defvar compiled-path-env-file (concat (make-vdir "config/") ".path-env.elc"))
   (defvar path-env-file (concat (make-vdir "config/") ".path-env.el"))
-  (defvar path-env-var nil)
 
+  
   (defmacro save-path-env ()
     `(add-hook 'kill-emacs-hook
                (lambda ()
@@ -42,9 +41,9 @@
                  (when (file-exists-p compiled-path-env-file)
                    (delete-file compiled-path-env-file))
                  (set-path-env)
-                 (save-expr-to-file
+                 (save-sexpr-to-file
                   (list 'progn
-                        (list 'setenv "PATH" path-env-var)
+                        (list 'setenv "PATH" (getenv "PATH"))
                         (list 'setq 'exec-path (list 'quote exec-path)))
                   path-env-file)
                  (byte-compile-file path-env-file))))

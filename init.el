@@ -278,15 +278,15 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
      (clean-saved-user-files)
      (kill-emacs 0)))
 
-(defmacro save-expr-to-file (expr filename)
-  "Save `expr' to a file"
+(defmacro save-sexpr-to-file (sexpr filename)
+  "Save `sexpr' to a file"
   `(save-excursion
-     (let ((expr-buffer (find-file-noselect ,filename)))
-       (set-buffer expr-buffer)
+     (let ((sexpr-buffer (find-file-noselect ,filename)))
+       (set-buffer sexpr-buffer)
        (erase-buffer)
-       (print ,expr expr-buffer)
+       (print ,sexpr sexpr-buffer)
        (save-buffer)
-       (kill-buffer expr-buffer))))
+       (kill-buffer sexpr-buffer))))
 
 
 ;; Self defvar and defun
