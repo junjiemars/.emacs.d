@@ -134,7 +134,7 @@ If in terminal mode, and there are no ELSE’s, the value is nil.
   `(graphic-supported-if nil ,@body))
 
 (defmacro bin-exists-p (b)
-  "Returns true if B exists in env.
+  "Returns true if BIN-NAME exists in env.
 
 \(fn BIN-NAME)"
   (platform-supported-if windows-nt
@@ -145,7 +145,7 @@ If in terminal mode, and there are no ELSE’s, the value is nil.
   `(replace-regexp-in-string "\n$" "" (shell-command-to-string ,c)))
 
 (defmacro bin-path (b)
-  "Returns the path of B in env.
+  "Returns the path of BIN-NAME in env.
 
 \(fn BIN-NAME)"
   (platform-supported-if windows-nt
