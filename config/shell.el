@@ -5,56 +5,61 @@
 
 ;; Setup shell environment base on OS
 
-(defmacro set-default-shell (shell rshell)
-  "Set default SHELL"
-  `(progn
-     (when (or (null (getenv "SHELL"))
-               (not (string-match ,rshell (getenv "SHELL"))))
-       (setenv "SHELL" ,shell))
-     (when (or (null shell-file-name)
-               (not (string-match ,rshell shell-file-name)))
-       (setq shell-file-name ,shell))))
 
-(defmacro set-path-env ()
-  "Set PATH and exec-path in Emacs."
-  `(let* ((p (shell-command-to-string
-              "$SHELL -i -c 'echo -n $PATH' 2>/dev/null"))
-          (x (split-string p ":")))
-     (setenv "PATH" p)
-     (while (car x)
-       (add-to-list 'exec-path (car x) t #'string=)
-       (setq x (cdr x)))))
+;; Non-Windows OS shell env
+(platform-supported-unless
+    windows-nt
+  
+  (defmacro set-default-shell (shell rshell)
+    "Set default SHELL"
+    `(progn
+       (when (or (null (getenv "SHELL"))
+                 (not (string-match ,rshell (getenv "SHELL"))))
+         (setenv "SHELL" ,shell))
+       (when (or (null shell-file-name)
+                 (not (string-match ,rshell shell-file-name)))
+         (setq shell-file-name ,shell))))
 
-
-(defmacro path-env ()
-  "Return the `cons' of virtualized `path-env' source and compiled file name."
-  `(let ((v (make-vdir "config/")))
-     (cons (concat v ".path-env.el")
-           (concat v ".path-env.elc"))))
-
-(defmacro save-path-env ()
-  `(add-hook 'kill-emacs-hook
-             (lambda ()
-               (let ((env (path-env)))               
-                 (when (file-exists-p (car env))
-                   (delete-file (car env)))
-                 (when (file-exists-p (cdr env))
-                   (delete-file (cdr env)))
-                 (set-path-env)
-                 (save-sexpr-to-file
-                  (list 'progn
-                        (list 'setenv "PATH" (getenv "PATH"))
-                        (list 'setq 'exec-path (list 'quote exec-path)))
-                  (car env))
-                 (byte-compile-file (car env))))))
+  (defmacro set-path-env ()
+    "Set PATH and exec-path in Emacs."
+    `(let* ((p (shell-command-to-string
+                "$SHELL -i -c 'echo -n $PATH' 2>/dev/null"))
+            (x (split-string p ":")))
+       (setenv "PATH" p)
+       (while (car x)
+         (add-to-list 'exec-path (car x) t #'string=)
+         (setq x (cdr x)))))
 
 
-(defmacro load-path-env ()
-  `(let ((env (path-env)))
-     (if (file-exists-p (cdr env))
-         (load (cdr env))
-       (set-path-env))
-     (save-path-env)))
+  (defmacro path-env ()
+    "Return the `cons' of virtualized `path-env' source and compiled file name."
+    `(let ((v (make-vdir "config/")))
+       (cons (concat v ".path-env.el")
+             (concat v ".path-env.elc"))))
+
+  (defmacro save-path-env ()
+    `(add-hook 'kill-emacs-hook
+               (lambda ()
+                 (let ((env (path-env)))               
+                   (when (file-exists-p (car env))
+                     (delete-file (car env)))
+                   (when (file-exists-p (cdr env))
+                     (delete-file (cdr env)))
+                   (set-path-env)
+                   (save-sexpr-to-file
+                    (list 'progn
+                          (list 'setenv "PATH" (getenv "PATH"))
+                          (list 'setq 'exec-path (list 'quote exec-path)))
+                    (car env))
+                   (byte-compile-file (car env))))))
+
+
+  (defmacro load-path-env ()
+    `(let ((env (path-env)))
+       (if (file-exists-p (cdr env))
+           (load (cdr env))
+         (set-path-env))
+       (save-path-env))))
 
 
 ;; set PATH on darwin
