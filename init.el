@@ -288,46 +288,6 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
        (save-buffer)
        (kill-buffer sexpr-buffer))))
 
-
-;; Self defvar and defun
-(defmacro def-self-font (font-size)
-  "Define default FONT-SIZE of current paltform, 
-ignore it if you don't like it. 
-eg., `Monaco-13', `Consolas-13', `White Rabbit-12'
-
-\(fn FONT-SIZE)"
-  (graphic-supported-p
-    (let ((_font_ (self-symbol 'font)))
-      `(defvar ,_font_ ,font-size))))
-
-(defmacro def-self-cjk-font (font-size)
-  "Define default CJK FONT-SIZE of current paltform, 
-ignore it if you don't like it. 
-eg., (cons \"Microsoft Yahei\" 12)
-
-\(fn FONT-SIZE)"
-  (graphic-supported-p
-    (let ((_font_ (self-symbol 'cjk-font)))
-      `(defvar ,_font_ ,font-size))))
-
-
-(defmacro self-load-theme (&optional theme-dir theme-name)
-  "Load THEME of current platform from THEME-DIR by THEME-NAME, if THEME-DIR
-or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
-
-\(fn THEME-DIR THEME-NAME)"
-  `(graphic-supported-p
-     (let ((dir (if (and ,theme-dir (file-exists-p ,theme-dir))
-                    ,theme-dir
-                  (concat emacs-home "theme")))
-           (name (if ,theme-name ,theme-name 'tomorrow-night-eighties)))
-       (add-to-list 'custom-theme-load-path dir)
-       (add-to-list 'load-path dir)
-       (version-supported-if >= 24.1
-                             (load-theme name)
-         (load-theme name t)))))
-
-
 (defmacro def-self-prelogue (&rest body)
   "Define self-prelogue, it will be run before load other 
 self things.
@@ -374,6 +334,7 @@ self things.
               (concat (make-vdir ".minibuffer/") "history"))
 
 
+
 (defun install-packages (packages &optional dry)
   "Install missing packages, returns alist of installed packages"
   (package-supported-p
@@ -404,7 +365,7 @@ self things.
      (list :packages packages :setup files)))
 
 
-(defmacro self-install-package ()
+(defmacro self-install-package! ()
   "Install and setup self's packages, will be called in self's PRELOGUE" 
   `(package-supported-p
 
@@ -463,13 +424,18 @@ self things.
 
 
 
-;; First to load self, env parts
-(compile-and-load-elisp-files '("self.el")
-                              "private/")
+;; Splash
+(compile-and-load-elisp-files '("splash.el") "config/")
+
+;; Load self env
+(compile-and-load-elisp-files '("self.el") "private/")
+
+;; Load ui, shell, basic env
 (compile-and-load-elisp-files '("ui.el"
                                 "shell.el"
                                 "basic.el")
                               "config/")
+
 
 ;; Self do prelogue ...
 (self-safe-call prelogue)
@@ -499,3 +465,17 @@ self things.
 
 ;; ^ End of init.el
 
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (ereader tagedit sx smex slime rainbow-delimiters paredit magit inf-clojure ido-ubiquitous geiser dockerfile-mode docker-tramp clojure-mode-extra-font-locking cider cdlatex bing-dict auctex aggressive-indent))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

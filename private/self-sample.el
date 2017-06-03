@@ -4,25 +4,22 @@
 ;;;;
 
 
-(def-self-font "Monaco-12")
-;; (def-self-font "Consolas-13")
-;; (def-self-font "White Rabbit-12")
-
-(def-self-cjk-font (cons "Microsoft Yahei" 13))
-
-(def-self-theme (cons (concat emacs-home "theme") 'tomorrow-night-eighties))
-
 
 (def-self-prelogue
   (message "#self prelogue ...")
   ;; (start-socks)
   ;; (setq debug-on-error t)
-  (self-install-package)
+
+  (self-default-font! "Monaco-18")
+  (self-load-theme!)
+  ;; (self-load-theme! (concat emacs-home "private/atom-one-dark-theme")
+  ;;                   'atom-one-dark)
   (comment
    (version-supported-if
-       <= 22
-       (setq source-directory "/opt/open/emacs-22/")
-     (setq source-directory "/opt/open/emacs/")))
+       <= 25.2
+       (setq source-directory "/opt/open/emacs-25/")
+     (setq source-directory "/opt/open/emacs-22/")))
+  (self-install-package!)
   )
 
 (def-self-epilogue
@@ -30,7 +27,12 @@
   (safe-do-when org-agenda
     (global-set-key (kbd "C-c a") 'org-agenda))
   (safe-do-when org-capture
-    (global-set-key (kbd "C-c c") 'org-capture)))
+    (global-set-key (kbd "C-c c") 'org-capture))
+  
+  (platform-supported-when
+      windows-nt
+    (self-cjk-font! "Microsoft Yahei" 13))
+  )
 
 
 (def-self-package-spec

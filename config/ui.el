@@ -3,41 +3,21 @@
 ;;;;
 
 
-;; Disable menu bar
-(safe-call menu-bar-mode -1)
 
-;; Disable tool bar
-(graphic-supported-p (safe-call tool-bar-mode -1))
+(defmacro self-cjk-font! (name size)
+  "Set CJK font in Graphic mode.
 
-;; Disable scroll bar
-(safe-call scroll-bar-mode -1)
+\(FN NAME SIZE\)"
+  `(version-supported-when <= 24
+     (graphic-supported-p
+       (when (font-exists-p ,name)
+         (safe-do-when set-fontset-font
+           (dolist (c '(han kana cjk-misc))
+             (set-fontset-font (frame-parameter nil 'font)
+                               c (font-spec :family ,name
+                                            :size ,size))))))))
 
 
-;; Set font based on platform
-
-(defmacro font-exists-p (font)
-  "Return t if font exists"
-  `(when (find-font (font-spec :name ,font))
-     t))
-
-(defmacro set-default-font! (font)
-  `(when (font-exists-p ,font)
-     (add-to-list 'default-frame-alist (cons 'font  ,font))
-     (set-face-attribute 'default t :font ,font)
-     (set-face-attribute 'default nil :font ,font)
-     (version-supported-if <= 24.0
-                           (set-frame-font ,font nil t)
-                           (set-frame-font ,font))))
-
-(defmacro set-cjk-font! (font)
-  `(let ((name (car ,font))
-         (size (cdr ,font)))
-     (when (font-exists-p name)
-       (safe-do-when set-fontset-font
-         (dolist (c '(han kana cjk-misc))
-           (set-fontset-font (frame-parameter nil 'font)
-                             c (font-spec :family name
-                                          :size size)))))))
 
 ;; Terminal style
 (terminal-supported-p
@@ -47,24 +27,6 @@
   (version-supported-when > 23 (transient-mark-mode t))
   (set-face-background 'region "white")
   (set-face-foreground 'region "black"))
-
-
-
-;; Fonts
-(version-supported-when
-    <= 24.0 
-  (safe-do-when!* (self-symbol "font")
-    (set-default-font! (symbol-value (self-symbol "font"))))
-  (safe-do-when!* (self-symbol "cjk-font")
-    (set-cjk-font! (symbol-value (self-symbol "cjk-font")))))
-
-
-;; Go straight to scratch buffer on startup
-(version-supported-when
-    <= 24
-  (setq inhibit-splash-screen t))
-
-
 
 
 ;; These settings relate to how emacs interacts with your platform
@@ -85,4 +47,3 @@
 
 ;; Ignore ring bell
 (safe-setq ring-bell-function 'ignore)
-
