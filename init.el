@@ -310,15 +310,23 @@ eg., (cons \"Microsoft Yahei\" 12)
     (let ((_font_ (self-symbol 'cjk-font)))
       `(defvar ,_font_ ,font-size))))
 
-(defmacro def-self-theme (theme)
-  "Define default THEME of current platform, 
-ignore it if you don't like it. 
-eg., (cons <theme-path> '<theme-name>)
 
-\(fn THEME)"
-  (graphic-supported-p
-    (let ((_theme_ (self-symbol 'theme)))
-      `(defvar ,_theme_ ,theme))))
+(defmacro self-load-theme (&optional theme-dir theme-name)
+  "Load THEME of current platform from THEME-DIR by THEME-NAME, if THEME-DIR
+or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
+
+\(fn THEME-DIR THEME-NAME)"
+  `(graphic-supported-p
+     (let ((dir (if (and ,theme-dir (file-exists-p ,theme-dir))
+                    ,theme-dir
+                  (concat emacs-home "theme")))
+           (name (if ,theme-name ,theme-name 'tomorrow-night-eighties)))
+       (add-to-list 'custom-theme-load-path dir)
+       (add-to-list 'load-path dir)
+       (version-supported-if >= 24.1
+                             (load-theme name)
+         (load-theme name t)))))
+
 
 (defmacro def-self-prelogue (&rest body)
   "Define self-prelogue, it will be run before load other 
