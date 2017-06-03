@@ -23,7 +23,9 @@
 
 (def-self-epilogue
   (message "#self epilogue ...")
+  
   (self-install-package!)
+  
   (safe-do-when org-agenda
     (global-set-key (kbd "C-c a") 'org-agenda))
   (safe-do-when org-capture
