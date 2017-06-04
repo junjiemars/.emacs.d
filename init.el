@@ -2,8 +2,11 @@
   "Ignores body, yields nil."
   nil)
 
+
 (defvar loading-start-time
-  (current-time) "The start time at loading init.el")
+  (current-time)
+  "The start time at loading init.el")
+
 
 (defvar emacs-home
   (if (boundp 'user-emacs-directory)
@@ -19,8 +22,9 @@
     `,_dir_))
 
 
-(defvar v-dir (concat (if (display-graphic-p) "g_" "t_")
-                      emacs-version)
+(defvar v-dir
+  (concat (if (display-graphic-p) "g_" "t_")
+          emacs-version)
   "Versionized dir based on grahpic/terminal mode and Emacs's version")
 
 
@@ -55,6 +59,7 @@
   (declare (indent 0))
   (when (>= emacs-major-version 24)
     `(progn ,@body)))
+
 
 (defmacro platform-supported-if (os then &rest else)
   "If (eq system-type OS) yields non-nil, do THEN, else do ELSE...
