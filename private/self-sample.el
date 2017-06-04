@@ -5,15 +5,21 @@
 
 
 
+(def-self-theme)
+(comment
+ (def-self-theme
+   (emacs-home-path "private/" "atom-one-dark-theme")
+   'atom-one-dark))
+
+(def-self-font "Monaco-18")
+
+
+
 (def-self-prelogue
   (message "#self prelogue ...")
   ;; (start-socks)
   ;; (setq debug-on-error t)
 
-  (self-default-font! "Monaco-18")
-  (self-load-theme!)
-  ;; (self-load-theme! (concat emacs-home "private/atom-one-dark-theme")
-  ;;                   'atom-one-dark)
   (comment
    (version-supported-if
        <= 25.2
