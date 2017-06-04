@@ -3,20 +3,23 @@
 ;;;;
 
 
-
-(defmacro self-cjk-font! (name size)
-  "Set CJK font in Graphic mode.
+(comment
+ (defmacro self-cjk-font! (name size)
+   "Set CJK font in Graphic mode.
 
 \(FN NAME SIZE\)"
-  `(version-supported-when <= 24
-     (graphic-supported-p
-       (when (font-exists-p ,name)
-         (safe-do-when set-fontset-font
-           (dolist (c '(han kana cjk-misc))
-             (set-fontset-font (frame-parameter nil 'font)
-                               c (font-spec :family ,name
-                                            :size ,size))))))))
+   `(when (font-exists-p ,name)
+      (safe-do-when set-fontset-font
+        (dolist (c '(han kana cjk-misc))
+          (set-fontset-font (frame-parameter nil 'font)
+                            c (font-spec :family ,name
+                                         :size ,size))))))
 
+
+ (self-safe-call
+  "cjk-font"
+  (when (consp _val_)
+    (self-cjk-font! (car _val_) (cdr _val_)))))
 
 
 ;; Terminal style

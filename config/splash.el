@@ -21,21 +21,25 @@
 
 
 ;; Theme and Font
-(defmacro self-load-theme! (&optional theme-dir theme-name)
+
+
+(defmacro self-load-theme! (dir name)
   "Load THEME of current platform from THEME-DIR by THEME-NAME, if THEME-DIR
 or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
 
 \(fn THEME-DIR THEME-NAME)"
-  `(graphic-supported-p
-     (let ((dir (if (and ,theme-dir (file-exists-p ,theme-dir))
-                    ,theme-dir
-                  (emacs-home-path "theme/")))
-           (name (if ,theme-name ,theme-name 'tomorrow-night-eighties)))
-       (add-to-list 'custom-theme-load-path dir)
-       (add-to-list 'load-path dir)
-       (version-supported-if >= 24.1
-                             (load-theme name)
-         (load-theme name t)))))
+  `(progn
+     (add-to-list 'custom-theme-load-path ,dir)
+     (add-to-list 'load-path ,dir)
+     (version-supported-if >= 24.1
+                           (load-theme ,name)
+       (load-theme ,name t))))
+
+
+(self-safe-call*
+ "theme"
+ (when (consp _val_)
+   (self-load-theme! (car _val_) (cdr _val_))))
 
 
 (defmacro font-exists-p (font)
@@ -50,12 +54,16 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
   "Set default font in graphic mode.
 
 \(FN FONT\)"
-  `(version-supported-when <= 24
-     (graphic-supported-p
-       (when (font-exists-p ,font)
-         (add-to-list 'default-frame-alist (cons 'font  ,font))
-         (set-face-attribute 'default t :font ,font)
-         (set-face-attribute 'default nil :font ,font)
-         (version-supported-if <= 24.0
-                               (set-frame-font ,font nil t)
-           (set-frame-font ,font))))))
+  `(when (font-exists-p ,font)
+     (add-to-list 'default-frame-alist (cons 'font  ,font))
+     (set-face-attribute 'default t :font ,font)
+     (set-face-attribute 'default nil :font ,font)
+     (version-supported-if <= 24.0
+                           (set-frame-font ,font nil t)
+       (set-frame-font ,font))))
+
+
+(self-safe-call*
+ "font"
+ (self-default-font! _val_))
+

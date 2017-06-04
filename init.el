@@ -302,6 +302,41 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
        (save-buffer)
        (kill-buffer sexpr-buffer))))
 
+(defmacro def-self-theme (&optional dir name)
+  "Define default THEME of current platform, ignore it if you don't like it. 
+ 
+\(FN THEME-DIR THEME-NAME)"
+  (graphic-supported-p
+    (version-supported-when
+        < 23
+      (let ((_theme_ (self-symbol 'theme)))
+        `(defvar ,_theme_
+           (cons (if (and ,dir (file-exists-p ,dir))
+                     ,dir
+                   (emacs-home-path "theme/"))
+                 (if ,name ,name 'tomorrow-night-eighties)))))))
+
+
+(defmacro def-self-font (font)
+  "Define default FONT of current platform, ignore it if you don't like it.
+
+\(FN FONT)"
+  (graphic-supported-p
+    (let ((_font_ (self-symbol 'font)))
+      `(defvar ,_font_ ,font))))
+
+
+(defmacro def-self-cjk-font (name size)
+  "Define default CJK font of current platform, ignore it if you don't like it.
+
+\(FN FONT-NAME FONT-SIZE)"
+  (platform-supported-when
+      windows-nt
+    (graphic-supported-p
+      (let ((_font_ (self-symbol 'cjk-font)))
+        `(defvar ,_font_ (cons ,name ,size))))))
+
+
 (defmacro def-self-prelogue (&rest body)
   "Define self-prelogue, it will be run before load other 
 self things.
@@ -327,6 +362,15 @@ self things.
   (let ((_fn_ (self-symbol fn)))
     `(when (fboundp ',_fn_)
        (,_fn_))))
+
+
+(defmacro self-safe-call* (var &rest body)
+  (let ((_var_ (self-symbol var)))
+    `(when (boundp ',_var_)
+       (let ((_val_ (symbol-value ',_var_)))
+         ,@body))))
+
+
 
 (defmacro def-self-package-spec (&rest spec)
   "Define self package SPEC list:
@@ -437,14 +481,15 @@ self things.
                   (append basic-packages self-packages)))))
 
 
+;; Load self env
+(compile-and-load-elisp-files '("self.el") "private/")
+
 
 ;; Splash
 (compile-and-load-elisp-files '("splash.el") "config/")
 
-;; Load self env
-(compile-and-load-elisp-files '("self.el") "private/")
 
-;; Load ui, shell, basic env
+;; Load ui, shell, basic env:
 (compile-and-load-elisp-files '("ui.el"
                                 "shell.el"
                                 "basic.el")
