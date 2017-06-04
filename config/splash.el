@@ -29,7 +29,7 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
   `(graphic-supported-p
      (let ((dir (if (and ,theme-dir (file-exists-p ,theme-dir))
                     ,theme-dir
-                  (concat emacs-home "theme")))
+                  (emacs-home-path "theme/")))
            (name (if ,theme-name ,theme-name 'tomorrow-night-eighties)))
        (add-to-list 'custom-theme-load-path dir)
        (add-to-list 'load-path dir)

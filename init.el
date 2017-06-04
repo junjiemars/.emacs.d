@@ -11,9 +11,18 @@
     "~/.emacs.d/")
   "The user's emacs home directory")
 
+
+(defmacro emacs-home-path (&rest subdirs)
+  "Return the path under `emacs-home'."
+  (declare (indent 0))
+  (let ((_dir_ (apply #'concat emacs-home subdirs)))
+    `,_dir_))
+
+
 (defvar v-dir (concat (if (display-graphic-p) "g_" "t_")
                       emacs-version)
   "Versionized dir based on grahpic/terminal mode and Emacs's version")
+
 
 (defmacro make-vdir (&optional subdir)
   "Make the versionized SUBDIR under emacs-home and returns it. "
@@ -23,9 +32,10 @@
          (make-directory ,_vdir_ t))
        ,_vdir_)))
 
+
 (defmacro compile-and-load-elisp-files (files subdir)
   "Compile and load the elisp FILES under the SUBDIR."
-  `(let ((d (concat emacs-home ,subdir))
+  `(let ((d (emacs-home-path ,subdir))
          (v (make-vdir ,subdir)))
      (dolist (f ,files)
        (let ((from (concat d f)))
