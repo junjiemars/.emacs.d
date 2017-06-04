@@ -29,7 +29,7 @@
   "Make `vdir-tags-file' on `emacs-home', if provides `emacs-root' or defined
 `source-directory' append tags into `tags-file-name'."
   (let ((lisp-ff (lambda (f) (string-match "\\\.el$" f)))
-        (home-df (lambda (d) (not (or (string-match "^\\\..*/" d)
+        (home-df (lambda (d) (not (or (string-match "^\\\.git/$" d)
                                       (string-match "^elpa/$" d)
                                       (string-match "^theme/$" d)
                                       (string-match "^g_.*/$" d)

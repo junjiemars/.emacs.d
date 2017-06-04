@@ -135,8 +135,8 @@
 
 
 (defun dir-files-iterate (dir ff df fn)
-  "Iterating DIR, if FILE-FILTER return T then call FN, and if DIR-FILTER return T
-   then iterate into deep DIR.
+  "Iterating DIR, if FILE-FILTER return T then call FN, 
+and if DIR-FILTER return T then iterate into deep DIR.
 
 \(FN DIR FILE-FILTER DIR-FILTER FN\)"
   (dolist (f (file-name-all-completions "" dir))
