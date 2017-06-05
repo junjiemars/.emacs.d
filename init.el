@@ -1,3 +1,10 @@
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(package-initialize)
+
 (defmacro comment (&rest body)
   "Ignores body, yields nil."
   nil)
@@ -358,6 +365,19 @@ self things.
        ,@body)))
 
 
+(defmacro def-self-package-spec (&rest spec)
+  "Define self package SPEC list:
+     :cond t ;; predicat
+     :packages '(x y z) ;; package list
+     :setup '(\"setup-xyz.el\") ;; predefined
+
+\(fn SPEC...)"
+  (declare (indent 0))
+  (package-supported-p 
+    (let ((_spec_ (self-symbol 'package-spec)))
+      `(defvar ,_spec_ (list ,@spec)))))
+
+
 (defmacro self-safe-call (fn)
   (let ((_fn_ (self-symbol fn)))
     `(when (fboundp ',_fn_)
@@ -372,19 +392,6 @@ self things.
 
 
 
-(defmacro def-self-package-spec (&rest spec)
-  "Define self package SPEC list:
-     :cond t ;; predicat
-     :packages '(x y z) ;; package list
-     :setup '(\"setup-xyz.el\") ;; predefined
-
-\(fn SPEC...)"
-  (declare (indent 0))
-  (package-supported-p 
-    (let ((_spec_ (self-symbol 'package-spec)))
-      `(defvar ,_spec_ (list ,@spec)))))
-
-
 ;; Versionized dirs
 (setq-default recentf-save-file
               (concat (make-vdir ".recentf/") "recentf"))
@@ -393,76 +400,28 @@ self things.
 
 
 
-(defun install-packages (packages &optional dry)
-  "Install missing packages, returns alist of installed packages"
-  (package-supported-p
-    (let ((not-installed-packages
-           (delete t (mapcar #'(lambda (p)
-                                 (if (package-installed-p p) t p))
-                             packages))))
-      (when not-installed-packages
-        (unless dry (package-refresh-contents))
-        (message "#Installing the missing %d packages: %s"
-                 (length not-installed-packages)
-                 not-installed-packages)
-        (mapc (lambda (i) (unless dry (package-install i)))
-              not-installed-packages)
-        not-installed-packages))))
 
 
-(defmacro parse-package-spec (spec)
-  "Returns a list of `:packages' and `:setup' from the SPEC."
-  `(let ((packages nil)
-         (files nil))
-     (dolist (s ,spec)
-       (when (and (plist-get s :cond)
-                  (funcall (plist-get s :cond)))
-         (setq packages (append packages (plist-get s :packages)))
-         (when (plist-get s :setup)
-           (setq files (append files (plist-get s :setup))))))
-     (list :packages packages :setup files)))
+;; Load self env
+(compile-and-load-elisp-files '("self.el") "private/")
+
+
+;; Load ui, shell, basic env:
+(compile-and-load-elisp-files '("ui.el"
+                                "shell.el"
+                                "basic.el"
+                                "package.el")
+                              "config/")
+
+;; Self do prelogue ...
+(self-safe-call prelogue)
 
 
 (defmacro self-install-package! ()
   "Install and setup self's packages, will be called in self's PRELOGUE" 
   `(package-supported-p
 
-     ;; define package user dir
-     (setq-default package-user-dir (make-vdir "elpa/"))
-     ;; define package repositories
-     (setq-default
-      package-archives
-      (append (list '("gnu" . "https://elpa.gnu.org/packages/")
-                    '("melpa-stable" . "https://stable.melpa.org/packages/"))
-              (version-supported-when
-                  <= 25.1
-                (list '("melpa" . "https://melpa.org/packages/")))))
-
-     (version-supported-when
-         <= 25.1
-       (setq-default package-archive-priorities
-                     (list '("melpa-stable" . 10)
-                           '("melpa" . 5)
-                           '("gnu" . 0))))
      
-     ;; install basic packages
-     (defvar basic-packages '(aggressive-indent
-                              bing-dict
-                              ido-ubiquitous
-                              markdown-mode
-                              paredit
-                              rainbow-delimiters
-                              smex
-                              tagedit))
-     (defvar basic-setup-files '("setup-lisp.el"
-                                 "setup-navigation.el"
-                                 "setup-python.el"))
-
-     (require 'package)
-     (package-initialize)
-
-     (install-packages basic-packages)
-     (compile-and-load-elisp-files basic-setup-files "config/")
 
      ;; install self packages
      (defvar self-packages nil)
@@ -480,19 +439,7 @@ self things.
        (safe-setq package-selected-packages
                   (append basic-packages self-packages)))))
 
-
-;; Load self env
-(compile-and-load-elisp-files '("self.el") "private/")
-
-
-;; Load ui, shell, basic env:
-(compile-and-load-elisp-files '("ui.el"
-                                "shell.el"
-                                "basic.el")
-                              "config/")
-
-;; Self do prelogue ...
-(self-safe-call prelogue)
+;; (self-install-package!)
 
 
 (compile-and-load-elisp-files
