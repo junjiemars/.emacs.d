@@ -77,7 +77,7 @@
                             "setup-navigation.el"
                             "setup-python.el"))
 
-;; (require 'package)
+(require 'package)
 (package-initialize t)
 
 (install-packages basic-packages)

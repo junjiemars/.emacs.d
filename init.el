@@ -94,19 +94,15 @@ If (eq system-type OS) yields nil, and there are no ELSE’s, the value is nil.
   (declare (indent 1))
   `(platform-supported-if ,os nil ,@body))
 
+
 (defmacro version-supported-p (cond version)
   "Return true if (COND VERSION EMACS-VERSION) yields non-nil, else nil.
 
 \(fn COND VERSION)"
-  `(funcall ,cond ,version
-            (let ((v 0.0)
-                  (n 1)
-                  (ss (split-string emacs-version "\\." t)))
-              (while ss
-                (setq v (+ v (* n (string-to-number (car ss)))))
-                (setq n (* n 0.1))
-                (setq ss (cdr ss)))
-              v)))
+  `(funcall ,cond
+            (truncate (* 10 ,version))
+            (+ (* 10 emacs-major-version) emacs-minor-version)))
+
 
 (defmacro version-supported-if (cond version then &rest else)
   "If (COND VERSION EMACS-VERSION) yields non-nil, do THEN, else do ELSE...
@@ -418,7 +414,7 @@ self things.
 
 (package-supported-p
   ;; Basic and self package setup
-  (require 'package)
+  ;; (require 'package)
   ;; (package-initialize t)
   (compile-and-load-elisp-files '("package.el")  "config/"))
 
