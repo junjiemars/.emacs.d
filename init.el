@@ -183,10 +183,6 @@ If in terminal mode, and there are no ELSE’s, the value is nil.
       `(shell-command->str-no-newline ,_b_))))
 
 
-(defmacro windows-nt-path (p)
-  "Return the path that windows-nt can recoganized."
-  `(replace-regexp-in-string "\\\\" "/" ,p))
-
 (defmacro safe-call (fn &rest args)
   "Call FN with ARGS if FN has been bound.
 

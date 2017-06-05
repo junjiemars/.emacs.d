@@ -88,6 +88,11 @@
 ;; set shell/ansi-term on Windows
 (platform-supported-when
     windows-nt
+
+  (defmacro windows-nt-path (p)
+    "Return the path that windows-nt can recoganized."
+    `(replace-regexp-in-string "\\\\" "/" ,p))
+
   
   (defun set-windows-nt-shell ()
     (when (bin-exists-p "bash")
