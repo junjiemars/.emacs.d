@@ -8,7 +8,7 @@
 (def-self-theme)
 (comment
  (def-self-theme
-   (emacs-home-path "private/" "atom-one-dark-theme")
+   (emacs-home* "private/" "atom-one-dark-theme")
    'atom-one-dark))
 
 (def-self-font "Monaco-18")

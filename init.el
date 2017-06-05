@@ -15,10 +15,10 @@
   "The user's emacs home directory")
 
 
-(defmacro emacs-home-path (&rest subdirs)
+(defmacro emacs-home* (&rest subdirs)
   "Return the path under `emacs-home'."
   (declare (indent 0))
-  (let ((_dir_ (apply #'concat emacs-home subdirs)))
+  (let ((_dir_ `(concat emacs-home ,@subdirs)))
     `,_dir_))
 
 
@@ -30,7 +30,7 @@
 
 (defmacro make-vdir (&optional subdir)
   "Make the versionized SUBDIR under emacs-home and returns it. "
-  (let ((_vdir_ (concat emacs-home subdir v-dir "/")))
+  (let ((_vdir_ (emacs-home* subdir v-dir "/")))
     (when (not (file-exists-p _vdir_))
       (make-directory _vdir_ t))
     `,_vdir_))
@@ -38,7 +38,7 @@
 
 (defmacro compile-and-load-elisp-files (files subdir)
   "Compile and load the elisp FILES under the SUBDIR."
-  `(let ((d (emacs-home-path ,subdir))
+  `(let ((d (emacs-home* ,subdir))
          (v (make-vdir ,subdir)))
      (dolist (f ,files)
        (let ((from (concat d f)))
@@ -313,7 +313,7 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
         `(defvar ,_theme_
            (cons (if (and ,dir (file-exists-p ,dir))
                      ,dir
-                   (emacs-home-path "theme/"))
+                   (emacs-home* "theme/"))
                  (if ,name ,name 'tomorrow-night-eighties)))))))
 
 
