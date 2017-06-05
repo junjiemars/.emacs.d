@@ -1,9 +1,9 @@
+;;;;
+;; More reasonable Emacs on MacOS, Windows and Linux
+;;;;
 
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
-(package-initialize)
+
+
 
 (defmacro comment (&rest body)
   "Ignores body, yields nil."
@@ -418,6 +418,8 @@ self things.
 
 (package-supported-p
   ;; Basic and self package setup
+  (require 'package)
+  ;; (package-initialize t)
   (compile-and-load-elisp-files '("package.el")  "config/"))
 
 

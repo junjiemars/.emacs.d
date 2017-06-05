@@ -77,8 +77,8 @@
                             "setup-navigation.el"
                             "setup-python.el"))
 
-(require 'package)
-(package-initialize)
+;; (require 'package)
+(package-initialize t)
 
 (install-packages basic-packages)
 (compile-and-load-elisp-files basic-setup-files "config/")
@@ -104,10 +104,5 @@
     <= 25.1
   (safe-setq package-selected-packages
              (append basic-packages self-packages)))
-
-
-
-
-
 
 
