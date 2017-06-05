@@ -409,35 +409,17 @@ self things.
 ;; Load ui, shell, basic env:
 (compile-and-load-elisp-files '("ui.el"
                                 "shell.el"
-                                "basic.el"
-                                "package.el")
+                                "basic.el")
                               "config/")
 
 ;; Self do prelogue ...
 (self-safe-call prelogue)
 
 
-(defmacro self-install-package! ()
-  "Install and setup self's packages, will be called in self's PRELOGUE" 
-  `(package-supported-p
+(package-supported-p
+  ;; Basic and self package setup
+  (compile-and-load-elisp-files '("package.el")  "config/"))
 
-     
-
-     ;; install self packages
-     (defvar self-packages nil)
-     (defvar self-setup-files nil)
-     (safe-do-when!* (self-symbol "package-spec")
-       (let ((spec (parse-package-spec
-                    (symbol-value (self-symbol "package-spec")))))
-         (install-packages (setq self-packages (plist-get spec :packages)))
-         (compile-and-load-elisp-files
-          (setq self-setup-files (plist-get spec :setup)) "config/")))
-
-     ;; set Emacs' package-selected-packages var
-     (version-supported-when
-         <= 25.1
-       (safe-setq package-selected-packages
-                  (append basic-packages self-packages)))))
 
 ;; (self-install-package!)
 

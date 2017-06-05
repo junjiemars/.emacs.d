@@ -21,8 +21,6 @@
   ;; (start-socks)
   ;; (setq debug-on-error t)
 
-  (self-install-package!)
-
   )
 
 (def-self-epilogue
@@ -94,5 +92,4 @@
   (list
    :cond (lambda () t)
    :packages '(sx)))
-
 
