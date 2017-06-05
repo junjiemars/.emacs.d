@@ -116,13 +116,16 @@ If (COND VERSION EMACS-VERSION) yields nil, and there are no ELSE’s, the value
       `,then
     `(progn ,@else)))
 
+
 (defmacro version-supported-when (cond version &rest body)
   "If (COND VERSION EMACS-VERSION) yields non-nil, do BODY, else return nil.
-When (COND VERSION EMACS-VERSION) yields non-nil, eval BODY forms sequentially and return value of last one, or nil if there are none.
+When (COND VERSION EMACS-VERSION) yields non-nil, eval BODY forms 
+sequentially and return value of last one, or nil if there are none.
 
 \(fn COND VERSION BODY...)"
   (declare (indent 2))
   `(version-supported-if ,cond ,version (progn ,@body)))
+
 
 (defmacro graphic-supported-if (then &rest else)
   "If in graphic mode, do THEN, else do ELSE...
@@ -136,6 +139,7 @@ If in terminal mode, and there are no ELSE’s, the value is nil.
       `,then
     `(progn ,@else)))
 
+
 (defmacro graphic-supported-p (&rest body)
   "Run BODY code if in graphic mode.
 
@@ -143,12 +147,14 @@ If in terminal mode, and there are no ELSE’s, the value is nil.
   (declare (indent 0))
   `(graphic-supported-if (progn ,@body)))
 
+
 (defmacro terminal-supported-p (&rest body)
   "Run BODY code if in terminal mode.
 
 \(fn BODY...)"
   (declare (indent 0))
   `(graphic-supported-if nil ,@body))
+
 
 (defmacro bin-exists-p (b)
   "Returns true if BIN-NAME exists in env.
