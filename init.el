@@ -366,16 +366,11 @@ self things.
 
 (package-supported-p
   ;; Basic and self package setup
-  ;; (require 'package)
-  ;; (package-initialize t)
   (compile-and-load-elisp-files '("module.el")  "config/"))
 
 
-;; (self-install-package!)
-
-
 (compile-and-load-elisp-files
- ;; compile and load non-package-required elisp files
+ ;; Compile and load non-package-required elisp files
  '("editing.el"
    "debugger.el"
    "financial.el"
