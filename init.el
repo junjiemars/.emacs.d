@@ -416,7 +416,7 @@ self things.
   ;; Basic and self package setup
   ;; (require 'package)
   ;; (package-initialize t)
-  (compile-and-load-elisp-files '("package.el")  "config/"))
+  (compile-and-load-elisp-files '("module.el")  "config/"))
 
 
 ;; (self-install-package!)
@@ -447,3 +447,17 @@ self things.
 ;; ^ End of init.el
 
 
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (aggressive-indent bing-dict ido-ubiquitous markdown-mode paredit rainbow-delimiters smex tagedit auctex cdlatex cider clojure-mode clojure-mode-extra-font-locking inf-clojure dockerfile-mode docker-tramp ereader magit geiser slime sx))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

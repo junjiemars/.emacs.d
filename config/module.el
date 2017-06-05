@@ -27,7 +27,7 @@
 
 
 
-(defun install-packages (packages &optional dry)
+(defun install-package! (packages &optional dry)
   "Install missing packages, returns alist of installed packages"
   (let ((not-installed-packages
          (delete t (mapcar #'(lambda (p)
@@ -47,17 +47,17 @@
       not-installed-packages)))
 
 
-(defmacro parse-package-spec (spec)
+(defun parse-package-spec (spec)
   "Returns a list of `:packages' and `:setup' from the SPEC."
-  `(let ((packages nil)
-         (files nil))
-     (dolist (s ,spec)
-       (when (and (plist-get s :cond)
-                  (funcall (plist-get s :cond)))
-         (setq packages (append packages (plist-get s :packages)))
-         (when (plist-get s :setup)
-           (setq files (append files (plist-get s :setup))))))
-     (list :packages packages :setup files)))
+  (let ((packages nil)
+        (files nil))
+    (dolist (s spec)
+      (when (and (plist-get s :cond)
+                 (funcall (plist-get s :cond)))
+        (setq packages (append packages (plist-get s :packages)))
+        (when (plist-get s :setup)
+          (setq files (append files (plist-get s :setup))))))
+    (list :packages packages :setup files)))
 
 
   ;; Install basic packages
@@ -78,9 +78,10 @@
                             "setup-python.el"))
 
 (require 'package)
-(package-initialize t)
+(setq package-enable-at-startup nil)
+(package-initialize)
 
-(install-packages basic-packages)
+(install-package! basic-packages)
 (compile-and-load-elisp-files basic-setup-files "config/")
 
 
@@ -93,7 +94,7 @@
 (self-safe-call*
  "package-spec"
  (let ((spec (parse-package-spec _val_)))
-   (install-packages (setq self-packages (plist-get spec :packages)))
+   (install-package! (setq self-packages (plist-get spec :packages)))
    (compile-and-load-elisp-files
     (setq self-setup-files (plist-get spec :setup)) "config/")))
 
