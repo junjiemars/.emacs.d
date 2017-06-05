@@ -167,8 +167,9 @@ If in terminal mode, and there are no ELSE’s, the value is nil.
       `(zerop (shell-command ,_b_)))))
 
 
-(defmacro shell-command-to-string-no-newline (c)
-  `(replace-regexp-in-string "\n$" "" (shell-command-to-string ,c)))
+(defmacro shell-command->str-no-newline (c)
+  (let ((_s_ (shell-command-to-string `,c)))
+    `(replace-regexp-in-string "\n$" "" ,_s_)))
 
 
 (defmacro bin-path (b)
@@ -177,9 +178,9 @@ If in terminal mode, and there are no ELSE’s, the value is nil.
 \(fn BIN-NAME)"
   (platform-supported-if windows-nt
       (let ((_b_ (concat "where " `,b)))
-        `(shell-command-to-string-no-newline ,_b_))
+        `(shell-command->str-no-newline ,_b_))
     (let ((_b_ (concat "type -P " `,b)))
-      `(shell-command-to-string-no-newline ,_b_))))
+      `(shell-command->str-no-newline ,_b_))))
 
 
 (defmacro windows-nt-path (p)
