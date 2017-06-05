@@ -161,8 +161,10 @@ If in terminal mode, and there are no ELSE’s, the value is nil.
 
 \(fn BIN-NAME)"
   (platform-supported-if windows-nt
-      `(zerop (shell-command (concat "where " ,b " >nul 2>&1")))
-    `(zerop (shell-command (concat "hash " ,b " &>/dev/null")))))
+      (let ((_b_ (concat "where " `,b " >nul 2>&1")))
+        `(zerop (shell-command ,_b_)))
+    (let ((_b_ (concat "hash " `,b " &>/dev/null")))
+      `(zerop (shell-command ,_b_)))))
 
 (defmacro shell-command-to-string-no-newline (c)
   `(replace-regexp-in-string "\n$" "" (shell-command-to-string ,c)))
