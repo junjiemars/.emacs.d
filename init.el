@@ -363,15 +363,15 @@ self things.
 
 (defmacro def-self-package-spec (&rest spec)
   "Define self package SPEC list:
-      :cond t ;; predicat
-      :packages '(x y z) ;; package list
-      :setup '(\"setup-xyz.el\") ;; predefined
+     :cond t ;; predicat
+     :packages '(x y z) ;; package list
+     :setup '(\"setup-xyz.el\") ;; predefined
 
 \(fn SPEC...)"
+  (declare (indent 0))
   (package-supported-p 
     (let ((_spec_ (self-symbol 'package-spec)))
-      `(defvar ,_spec_
-         (list ,@spec)))))
+      `(defvar ,_spec_ (list ,@spec)))))
 
 
 ;; Versionized dirs
@@ -473,12 +473,12 @@ self things.
 ;; Load self env
 (compile-and-load-elisp-files '("self.el") "private/")
 
+
 ;; Load ui, shell, basic env:
 (compile-and-load-elisp-files '("ui.el"
                                 "shell.el"
                                 "basic.el")
                               "config/")
-
 
 ;; Self do prelogue ...
 (self-safe-call prelogue)
@@ -507,4 +507,5 @@ self things.
 
 
 ;; ^ End of init.el
+
 

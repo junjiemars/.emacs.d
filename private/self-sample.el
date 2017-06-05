@@ -6,6 +6,7 @@
 
 
 (def-self-theme)
+
 (comment
  (def-self-theme
    (emacs-home* "private/" "atom-one-dark-theme")
@@ -20,17 +21,12 @@
   ;; (start-socks)
   ;; (setq debug-on-error t)
 
-  (comment
-   (version-supported-if
-       <= 25.2
-       (setq source-directory "/opt/open/emacs-25/")
-     (setq source-directory "/opt/open/emacs-22/")))
+  (self-install-package!)
+
   )
 
 (def-self-epilogue
   (message "#self epilogue ...")
-  
-  (self-install-package!)
   
   (safe-do-when org-agenda
     (global-set-key (kbd "C-c a") 'org-agenda))
@@ -40,6 +36,12 @@
   (platform-supported-when
       windows-nt
     (self-cjk-font! "Microsoft Yahei" 13))
+
+  (comment
+   (version-supported-if
+       <= 25.2
+       (setq source-directory "/opt/open/emacs-25/")
+     (setq source-directory "/opt/open/emacs-22/")))
   )
 
 
