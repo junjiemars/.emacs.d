@@ -326,6 +326,17 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
       `(defvar ,_font_ ,font))))
 
 
+(defmacro def-self-cjk-font (name size)
+  "Define default CJK FONT of current platform, ignore it if you don't like it.
+
+\(FN FONT-NAME FONT-SIZE)"
+  (platform-supported-when
+      windows-nt
+    (graphic-supported-p
+      (let ((_font_ (self-symbol 'cjk-font)))
+        `(defvar ,_font_ (cons ,name ,size))))))
+
+
 (defmacro def-self-prelogue (&rest body)
   "Define self-prelogue, it will be run before load other 
 self things.

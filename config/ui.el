@@ -80,6 +80,10 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
                            c (font-spec :family ,name
                                         :size ,size))))))
 
+(self-safe-call*
+ "cjk-font"
+ (when (consp _val_)
+   (self-cjk-font! (car _val_) (cdr _val_))))
 
 
 ;; Terminal style

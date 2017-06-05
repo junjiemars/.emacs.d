@@ -13,7 +13,7 @@
    'atom-one-dark))
 
 (def-self-font "Monaco-18")
-
+(def-self-cjk-font "Microsoft Yahei" 13)
 
 
 (def-self-prelogue
@@ -33,10 +33,6 @@
   (safe-do-when org-capture
     (global-set-key (kbd "C-c c") 'org-capture))
   
-  (platform-supported-when
-      windows-nt
-    (self-cjk-font! "Microsoft Yahei" 13))
-
   (comment
    (version-supported-if
        <= 25.2
