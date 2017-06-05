@@ -5,6 +5,13 @@
 
 
 
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(package-initialize)
+
 (defmacro comment (&rest body)
   "Ignores body, yields nil."
   nil)
@@ -166,10 +173,22 @@ If in terminal mode, and there are no ELSE’s, the value is nil.
     (let ((_b_ (concat "hash " `,b " &>/dev/null")))
       `(zerop (shell-command ,_b_)))))
 
+(defmacro bin-exists-p0 (b)
+  "Returns true if BIN-NAME exists in env.
+
+\(fn BIN-NAME)"
+  (let ((_b_ (concat "which " `,b)))
+    (eshell-command-result `,_b_ '_bin_exists_p_)
+    `(zerop ,_bin_exists_p_)))
+
 
 (defmacro shell-command->str-no-newline (c)
   (let ((_s_ (shell-command-to-string `,c)))
     `(replace-regexp-in-string "\n$" "" ,_s_)))
+
+
+(defmacro trim-right-newline (s)
+  `(replace-regexp-in-string "\n$" "" ,s))
 
 
 (defmacro bin-path (b)
@@ -181,6 +200,16 @@ If in terminal mode, and there are no ELSE’s, the value is nil.
         `(shell-command->str-no-newline ,_b_))
     (let ((_b_ (concat "type -P " `,b)))
       `(shell-command->str-no-newline ,_b_))))
+
+
+(defmacro bin-path0 (b)
+  "Returns the path of BIN-NAME in env.
+
+\(fn BIN-NAME)"
+  (let ((_p_ (eshell-command-result (concat "which " `,b)
+                                    '_bin_path_))) 
+    (when (zerop _bin_path_)
+      (trim-right-newline `,_p_))))
 
 
 (defmacro safe-call (fn &rest args)
