@@ -252,66 +252,6 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
 (defmacro self-symbol (name)
   `(intern (format "self-%s-%s" system-type ,name)))
 
-(defmacro start-socks (&optional port server version)
-  "Switch on url-gateway to socks"
-  `(version-supported-when < 22
-     (require 'url)
-     (setq url-gateway-method 'socks)
-     (setq-default socks-server
-                   (list "Default server"
-                         (if ,server ,server "127.0.0.1")
-                         (if ,port ,port 32000)
-                         (if ,version ,version 5)))))
-
-(defmacro stop-socks (&optional method)
-  "Switch off url-gateway to native."
-  `(version-supported-when < 22
-     (require 'url)
-     (setq url-gateway-method
-           (if ,method  ,method 'native))))
-
-(defmacro clean-compiled-files ()
-  "Clean all compiled files, need restart Emacs."
-  `(dolist (d (list (make-vdir "config/")
-                    (make-vdir "private/")))
-     (dolist (f (directory-files d nil "\\.elc$"))
-       (message "#Clean compiled file: %s" f)
-       (delete-file (concat d f)))))
-
-(defmacro clean-saved-user-files ()
-  "Clean saved desktop, need restart Emacs."
-  `(let ((dirs (list (make-vdir ".auto-save/")
-                     (make-vdir ".desktop/")
-                     (make-vdir ".bookmarks/")
-                     (make-vdir ".ido/")
-                     (make-vdir ".minibuffer/")
-                     (make-vdir ".recentf/")
-                     (make-vdir ".tags/")
-                     (make-vdir ".places/")
-                     (make-vdir ".smex/")
-                     (make-vdir ".url/"))))
-     (dolist (d dirs)
-       (when (file-exists-p d)
-         (dolist (f (directory-files d nil "^\\([^.]\\|\\.[^.]\\|\\.\\..\\)"))
-           (message "#Clean saved user file: %s" (concat d f))
-           (delete-file (concat d f)))))))
-
-(defmacro reset-emacs ()
-  "Clean all compiled file and desktop, then restart Emacs."
-  `(progn
-     (clean-compiled-files)
-     (clean-saved-user-files)
-     (kill-emacs 0)))
-
-(defmacro save-sexpr-to-file (sexpr filename)
-  "Save `sexpr' to a file"
-  `(save-excursion
-     (let ((sexpr-buffer (find-file-noselect ,filename)))
-       (set-buffer sexpr-buffer)
-       (erase-buffer)
-       (print ,sexpr sexpr-buffer)
-       (save-buffer)
-       (kill-buffer sexpr-buffer))))
 
 (defmacro def-self-theme (&optional dir name)
   "Define default THEME of current platform, ignore it if you don't like it. 
@@ -411,7 +351,7 @@ self things.
 
 
 ;; Load ui, shell, basic env:
-(compile-and-load-elisp-files '("ui.el"
+(compile-and-load-elisp-files '("boot.el"
                                 "shell.el"
                                 "basic.el")
                               "config/")
