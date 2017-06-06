@@ -25,8 +25,7 @@
 (defmacro emacs-home* (&rest subdirs)
   "Return the path under `emacs-home'."
   (declare (indent 0))
-  (let ((_dir_ `(concat emacs-home ,@subdirs)))
-    `,_dir_))
+  `(concat emacs-home ,@subdirs))
 
 
 (defvar vdir
