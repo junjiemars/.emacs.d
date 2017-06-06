@@ -365,6 +365,7 @@ self things.
 
 (package-supported-p
   ;; Basic and self package setup
+  ;;(package-initialize)
   (compile-and-load-elisp-files '("module.el")  "config/"))
 
 
