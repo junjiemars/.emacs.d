@@ -50,20 +50,15 @@
              ,(concat _v_ ".path-env.elc"))))
 
   
-  (defmacro save-path-env ()
-    `(add-hook 'kill-emacs-hook
-               (lambda ()
-                 (let ((env (path-env)))
-                   (dolist (f env)
-                     (when (file-exists-p f)
-                       (delete-file f)))
-                   (set-path-env)
-                   (save-sexpr-to-file
-                    (list 'progn
-                          (list 'setenv "PATH" (getenv "PATH"))
-                          (list 'setq 'exec-path (list 'quote exec-path)))
-                    (car env))
-                   (byte-compile-file (car env))))))
+  (defun save-path-env! ()
+    (let ((env (path-env)))
+      (set-path-env)
+      (save-sexpr-to-file
+       (list 'progn
+             (list 'setenv "PATH" (getenv "PATH"))
+             (list 'setq 'exec-path (list 'quote exec-path)))
+       (car env))
+      (byte-compile-file (car env))))
 
 
   (defmacro load-path-env ()
@@ -71,7 +66,7 @@
        (if (file-exists-p (cdr env))
            (load (cdr env))
          (set-path-env))
-       (save-path-env))))
+       (add-hook 'kill-emacs-hook #'save-path-env!))))
 
 
 ;; set PATH on darwin
