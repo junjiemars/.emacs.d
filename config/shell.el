@@ -47,7 +47,7 @@
     "Return the `cons' of virtualized `path-env' source and compiled file name."
     (let ((_v_ (make-vdir "config/")))
       `(cons ,(concat _v_ ".path-env.el")
-             ,(concat _v_ ".path-env.elc""config/"))))
+             ,(concat _v_ ".path-env.elc"))))
 
   
   (defmacro save-path-env ()
