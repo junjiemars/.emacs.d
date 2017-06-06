@@ -19,6 +19,7 @@
 ;; Non-Windows OS shell env
 (platform-supported-unless
     windows-nt
+
   
   (defmacro set-default-shell (shell rshell)
     "Set default SHELL"
@@ -30,6 +31,7 @@
                  (not (string-match ,rshell shell-file-name)))
          (setq shell-file-name ,shell))))
 
+  
   (defmacro set-path-env ()
     "Set PATH and exec-path in Emacs."
     `(let* ((p (shell-command-to-string
@@ -43,18 +45,18 @@
 
   (defmacro path-env ()
     "Return the `cons' of virtualized `path-env' source and compiled file name."
-    `(let ((v (make-vdir "config/")))
-       (cons (concat v ".path-env.el")
-             (concat v ".path-env.elc"))))
+    (let ((_v_ (make-vdir "config/")))
+      `(cons ,(concat _v_ ".path-env.el")
+             ,(concat _v_ ".path-env.elc""config/"))))
 
+  
   (defmacro save-path-env ()
     `(add-hook 'kill-emacs-hook
                (lambda ()
-                 (let ((env (path-env)))               
-                   (when (file-exists-p (car env))
-                     (delete-file (car env)))
-                   (when (file-exists-p (cdr env))
-                     (delete-file (cdr env)))
+                 (let ((env (path-env)))
+                   (dolist (f env)
+                     (when (file-exists-p f)
+                       (delete-file f)))
                    (set-path-env)
                    (save-sexpr-to-file
                     (list 'progn
