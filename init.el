@@ -29,7 +29,7 @@
     `,_dir_))
 
 
-(defvar v-dir
+(defvar vdir
   (concat (if (display-graphic-p) "g_" "t_")
           emacs-version)
   "Versionized dir based on grahpic/terminal mode and Emacs's version")
@@ -37,7 +37,7 @@
 
 (defmacro make-vdir (&optional subdir)
   "Make the versionized SUBDIR under emacs-home and returns it. "
-  (let ((_vdir_ (emacs-home* subdir v-dir "/")))
+  (let ((_vdir_ (emacs-home* subdir vdir "/")))
     (when (not (file-exists-p _vdir_))
       (make-directory _vdir_ t))
     `,_vdir_))
