@@ -21,18 +21,18 @@
     windows-nt
 
   
-  (defmacro set-default-shell (shell rshell)
+  (defmacro set-default-shell! (shell rshell)
     "Set default SHELL"
     `(progn
-       (when (or (null (getenv "SHELL"))
-                 (not (string-match ,rshell (getenv "SHELL"))))
-         (setenv "SHELL" ,shell))
-       (when (or (null shell-file-name)
-                 (not (string-match ,rshell shell-file-name)))
-         (setq shell-file-name ,shell))))
+       ,(when (or (null (getenv "SHELL"))
+                  (not (string-match rshell (getenv "SHELL"))))
+          `(setenv "SHELL" ,shell))
+       ,(when (or (null shell-file-name)
+                  (not (string-match rshell shell-file-name)))
+          `(setq shell-file-name ,shell))))
 
   
-  (defmacro set-path-env ()
+  (defmacro set-path-env! ()
     "Set PATH and exec-path in Emacs."
     `(let* ((p (shell-command-to-string
                 "$SHELL -i -c 'echo -n $PATH' 2>/dev/null"))
@@ -50,9 +50,9 @@
              ,(concat _v_ ".path-env.elc"))))
 
   
-  (defun save-path-env! ()
+  (defun save-path-env ()
     (let ((env (path-env)))
-      (set-path-env)
+      (set-path-env!)
       (save-sexpr-to-file
        (list 'progn
              (list 'setenv "PATH" (getenv "PATH"))
@@ -65,8 +65,8 @@
     `(let ((env (path-env)))
        (if (file-exists-p (cdr env))
            (load (cdr env))
-         (set-path-env))
-       (add-hook 'kill-emacs-hook #'save-path-env!))))
+         (set-path-env!))
+       (add-hook 'kill-emacs-hook #'save-path-env))))
 
 
 ;; set PATH on darwin
@@ -77,9 +77,9 @@
 
 ;; set PATH on Linux
 (platform-supported-when
- gnu/linux
- (set-default-shell "/bin/bash" "\/bash$")
- (load-path-env))
+    gnu/linux
+  (set-default-shell! "/bin/bash" "\/bash$")
+  (load-path-env))
 
 
 ;; set shell/ansi-term on Windows
