@@ -183,12 +183,13 @@ If in terminal mode, and there are no ELSE’s, the value is nil.
 
 
 (defmacro safe-call (fn &rest args)
-  "Call FN with ARGS if FN has been bound.
+  "Call FN with ARGS if FN has already been bound.
 
 \(fn FN-NAME ARGS...)"
   (declare (indent 1))
   (when (fboundp fn)
     `(,fn ,@args)))
+
 
 (defmacro safe-do-if (fn then &rest else)
   "If FN is bounded yields non-nil, do THEN, else do ELSE...
@@ -284,11 +285,9 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
   "Define default CJK FONT of current platform, ignore it if you don't like it.
 
 \(FN FONT-NAME FONT-SIZE)"
-  (platform-supported-when
-      windows-nt
-    (graphic-supported-p
-      (let ((_font_ (self-symbol 'cjk-font)))
-        `(defvar ,_font_ (cons ,name ,size))))))
+  (graphic-supported-p
+    (let ((_font_ (self-symbol 'cjk-font)))
+      `(defvar ,_font_ (cons ,name ,size)))))
 
 
 (defmacro def-self-prelogue (&rest body)

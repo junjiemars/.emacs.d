@@ -13,7 +13,10 @@
    'atom-one-dark))
 
 (def-self-font "Monaco-18")
-(def-self-cjk-font "Microsoft Yahei" 13)
+
+(platform-supported-when
+    windows-nt
+  (def-self-cjk-font "Microsoft Yahei" 13))
 
 
 (def-self-prelogue
