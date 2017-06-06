@@ -26,7 +26,7 @@
                      (smex)))
    
    (safe-setq smex-save-file
-              (concat (make-vdir ".smex/") ".smex-items"))))
+              (concat (vdir! ".smex/") ".smex-items"))))
 
 
 

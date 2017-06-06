@@ -151,7 +151,7 @@
 ;; When you visit a file, point goes to the last place where it
 ;; was when you previously visited the same file.
 ;; http://www.emacswiki.org/emacs/SavePlace
-(let ((d (make-vdir ".places/")))
+(let ((d (vdir! ".places/")))
   (require 'saveplace)
   (setq-default save-place t)
   (setq-default save-place-file (concat d "places")))
@@ -163,38 +163,38 @@
             (terminal-supported-p
               (version-supported-when = 24.4
                 (setq-default desktop-restore-forces-onscreen nil)))
-            (desktop-read (make-vdir ".desktop/"))))
+            (desktop-read (vdir! ".desktop/"))))
 (add-hook 'kill-emacs-hook
           (lambda ()
             (version-supported-if
-             >= 23
-             (desktop-save (make-vdir ".desktop/"))
-             (desktop-save (make-vdir ".desktop/") t))))
+                >= 23
+                (desktop-save (vdir! ".desktop/"))
+              (desktop-save (vdir! ".desktop/") t))))
 
 
 ;; Emacs can automatically create backup files. This tells Emacs to
 ;; put all backups in ~/.emacs.d/backups. More info:
 ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Backup-Files.html
-(let ((d (make-vdir ".backup/")))
+(let ((d (vdir! ".backup/")))
   (setq backup-directory-alist `(("." . ,d))))
 
 
 ;; XXX
 
 ;; Bookmarks
-(let ((d (make-vdir ".bookmarks/")))
+(let ((d (vdir! ".bookmarks/")))
   (setq-default eww-bookmarks-directory d)
   (setq-default bookmark-default-file (concat d "emacs.bmk")))
 
 
 ;; smex
 (package-supported-p
-  (let ((d (make-vdir ".smex/")))
+  (let ((d (vdir! ".smex/")))
     (setq-default smex-save-file (concat d ".smex-items"))))
 
 ;; semantic db
 (package-supported-p
-  (let ((d (make-vdir ".semanticdb/")))
+  (let ((d (vdir! ".semanticdb/")))
     (setq-default semanticdb-default-system-save-directory d)))
 
 

@@ -35,7 +35,7 @@
   "Versionized dir based on grahpic/terminal mode and Emacs's version")
 
 
-(defmacro make-vdir (&optional subdir)
+(defmacro vdir! (&optional subdir)
   "Make the versionized SUBDIR under emacs-home and returns it. "
   (let ((_vdir_ (emacs-home* subdir vdir "/")))
     (when (not (file-exists-p _vdir_))
@@ -46,7 +46,7 @@
 (defmacro compile-and-load-elisp-files (files subdir)
   "Compile and load the elisp FILES under the SUBDIR."
   `(let ((d (emacs-home* ,subdir))
-         (v (make-vdir ,subdir)))
+         (v (vdir! ,subdir)))
      (dolist (f ,files)
        (let ((from (concat d f)))
          (if (file-exists-p from)
@@ -349,9 +349,9 @@ self things.
 
 ;; Versionized dirs
 (setq-default recentf-save-file
-              (concat (make-vdir ".recentf/") "recentf"))
+              (concat (vdir! ".recentf/") "recentf"))
 (setq-default savehist-file
-              (concat (make-vdir ".minibuffer/") "history"))
+              (concat (vdir! ".minibuffer/") "history"))
 
 
 

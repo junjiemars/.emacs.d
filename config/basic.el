@@ -23,7 +23,7 @@
 (when (eq browse-url-browser-function
           'browse-url-default-browser)
   (safe-do-when eww-browse-url
-    (setq-default url-configuration-directory (make-vdir ".url/"))
+    (setq-default url-configuration-directory (vdir! ".url/"))
     (setq browse-url-browser-function 'eww-browse-url)))
 (safe-do-when find-file-at-point
   (global-set-key (kbd "C-c b") 'find-file-at-point))
@@ -93,7 +93,7 @@
 
 
 ;; Where to save ido.last
-(let ((d (make-vdir ".ido/")))
+(let ((d (vdir! ".ido/")))
   (setq-default ido-save-directory-list-file (concat d "ido.last")))
 
 ;; This allows partial matches, e.g. "tl" will match "Tyrion Lannister"
@@ -119,7 +119,7 @@
 
 
 ;; Auto-save
-(let ((d (make-vdir ".auto-save/")))
+(let ((d (vdir! ".auto-save/")))
   (setq auto-save-default nil)
   (setq auto-save-list-file-prefix (concat d "saves-")))
 

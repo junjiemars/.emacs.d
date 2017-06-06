@@ -58,7 +58,7 @@
 
 ;; Where to store the cider history.
 (safe-setq cider-repl-history-file
-           (concat (make-vdir ".cider-history/")))
+           (concat (vdir! ".cider-history/")))
 
 ;; Wrap when navigating history.
 (safe-setq cider-repl-wrap-history t)

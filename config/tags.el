@@ -3,7 +3,7 @@
 ;;
 
 
-(defvar vdir-tags-file (concat (expand-file-name (make-vdir ".tags/")) "TAGS")
+(defvar vdir-tags-file (concat (expand-file-name (vdir! ".tags/")) "TAGS")
   "Versionized TAGS file, use `visit-tag-table' to visit")
 
 
