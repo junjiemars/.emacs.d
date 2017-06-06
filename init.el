@@ -252,12 +252,14 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
   (when (boundp x)
     `(setq ,x ,val)))
 
+
 (defmacro safe-setq* (x val)
   "Set X when variable X is local bound.
 
 \(fn X-LOCAL VALUE)"
   `(when (boundp (quote ,x))
      (setq ,x ,val)))
+
 
 (defmacro self-symbol (name)
   `(intern (format "self-%s-%s" system-type ,name)))
@@ -305,6 +307,7 @@ self things.
   (let ((_prelogue_ (self-symbol 'prelogue)))
     `(defun ,_prelogue_ ()
        ,@body)))
+
 
 (defmacro def-self-epilogue (&rest body)
   "Define self-epilogue, it will be run after load other 
