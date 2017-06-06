@@ -40,7 +40,7 @@
 
 (defmacro path-env ()
   "Return the `cons' of virtualized `path-env' source and compiled file name."
-  (let ((_v_ (vdir! "config/")))
+  (let ((_v_ (vdir* "config/")))
     `(cons ,(concat _v_ ".path-env.el")
            ,(concat _v_ ".path-env.elc"))))
 

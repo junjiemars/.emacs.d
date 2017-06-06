@@ -163,7 +163,7 @@
             (terminal-supported-p
               (version-supported-when = 24.4
                 (setq-default desktop-restore-forces-onscreen nil)))
-            (desktop-read (vdir! ".desktop/"))))
+            (desktop-read (vdir* ".desktop/"))))
 (add-hook 'kill-emacs-hook
           (lambda ()
             (version-supported-if
