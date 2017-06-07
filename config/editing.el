@@ -157,13 +157,17 @@
   (setq-default save-place-file (vdir! ".places/" "places")))
 
 
+
 ;; Read/Save desktop, don't do slowly (desktop-save-mode 1)
+
+
 (add-hook 'after-init-hook
           (lambda ()
             (terminal-supported-p
               (version-supported-when = 24.4
                 (setq-default desktop-restore-forces-onscreen nil)))
             (desktop-read (vdir* ".desktop/"))))
+
 (add-hook 'kill-emacs-hook
           (lambda ()
             (version-supported-if
