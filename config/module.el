@@ -56,7 +56,7 @@
   (let ((packages nil)
         (files nil))
     (dolist (s spec)
-      (when (and (plist-get s :cond)
+      (when (or (plist-get s :cond)
                  (funcall (plist-get s :cond)))
         (setq packages (append packages (plist-get s :packages)))
         (when (plist-get s :setup)
@@ -68,49 +68,47 @@
 ;; Install basic packages
 
 
-(defvar basic-packages '(aggressive-indent
-                         bing-dict
-                         ido-ubiquitous
-                         markdown-mode
-                         paredit
-                         rainbow-delimiters
-                         smex
-                         tagedit))
-
-
-(defvar basic-setup-files '("setup-lisp.el"
-                            "setup-navigation.el"
-                            "setup-python.el"))
-
-
 (require 'package)
 (setq package-enable-at-startup nil)
 (package-initialize)
 
 
-(install-package! basic-packages)
-(compile-and-load-elisp-files basic-setup-files "config/")
+(defvar basic-package-spec (list (list
+                                  :cond t
+                                  :packages '(aggressive-indent
+                                              bing-dict
+                                              ido-ubiquitous
+                                              markdown-mode
+                                              paredit
+                                              rainbow-delimiters
+                                              smex
+                                              tagedit)
+                                  :setup '("setup-lisp.el"
+                                           "setup-navigation.el"
+                                           "setup-python.el"))))
+
+
+(let ((spec (parse-package-spec basic-package-spec)))
+  (install-package! (plist-get spec :packages))
+  (compile-and-load-elisp-files (plist-get spec :setup) "config/"))
+
 
 
 ;; Install self packages
-
-(defvar self-packages nil)
-(defvar self-setup-files nil)
 
 
 (self-safe-call*
  "package-spec"
  (let ((spec (parse-package-spec _val_)))
-   (install-package! (setq self-packages (plist-get spec :packages)))
-   (compile-and-load-elisp-files
-    (setq self-setup-files (plist-get spec :setup)) "config/")))
+   (install-package! (plist-get spec :packages))
+   (compile-and-load-elisp-files (plist-get spec :setup) "config/")
+   (version-supported-when
+       <= 25.1
+     (safe-setq package-selected-packages
+                (append (plist-get spec :packages))))))
 
 
-;; set Emacs' package-selected-packages var
 
-(version-supported-when
-    <= 25.1
-  (safe-setq package-selected-packages
-             (append basic-packages self-packages)))
+
 
 
