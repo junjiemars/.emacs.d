@@ -118,11 +118,11 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
 
 
 
-(defmacro start-socks (&optional port server version)
+(defmacro start-socks! (&optional port server version)
   "Switch on url-gateway to socks"
   `(version-supported-when < 22
-     (require 'url)
-     (setq url-gateway-method 'socks)
+     (eval-when-compile (require 'url))
+     (setq-default url-gateway-method 'socks)
      (setq-default socks-server
                    (list "Default server"
                          (if ,server ,server "127.0.0.1")
@@ -130,7 +130,15 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
                          (if ,version ,version 5)))))
 
 
-(defmacro stop-socks (&optional method)
+(self-safe-call*
+ "socks"
+ (when (consp _val_)
+   (start-socks! (plist-get _val_ 'port)
+                 (plist-get _val_ 'server)
+                 (plist-get _val_ 'version))))
+
+
+(defmacro stop-socks! (&optional method)
   "Switch off url-gateway to native."
   `(version-supported-when < 22
      (require 'url)

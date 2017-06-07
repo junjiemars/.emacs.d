@@ -303,6 +303,14 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
       `(defvar ,_font_ (cons ,name ,size)))))
 
 
+(defmacro def-self-socks (&optional port server version)
+  "Define socks proxy.
+
+\(FN PORT SERVER VERSION \)"
+  (let ((_socks_ (self-symbol 'socks)))
+    `(defvar ,_socks_ '(port ,port server ,server version ,version))))
+
+
 (defmacro def-self-prelogue (&rest body)
   "Define self-prelogue, it will be run before load other 
 self things.

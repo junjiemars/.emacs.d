@@ -18,10 +18,11 @@
     windows-nt
   (def-self-cjk-font "Microsoft Yahei" 13))
 
+;; (def-self-socks 32000)
 
 (def-self-prelogue
   (message "#self prelogue ...")
-  ;; (start-socks)
+
   ;; (setq debug-on-error t)
 
   )
