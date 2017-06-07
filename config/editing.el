@@ -161,19 +161,23 @@
 ;; Read/Save desktop, don't do slowly (desktop-save-mode 1)
 
 
-(add-hook 'after-init-hook
-          (lambda ()
-            (terminal-supported-p
-              (version-supported-when = 24.4
-                (setq-default desktop-restore-forces-onscreen nil)))
-            (desktop-read (vdir* ".desktop/"))))
+(defun self-desktop-read! ()
+  (terminal-supported-p
+    (version-supported-when = 24.4
+      (setq-default desktop-restore-forces-onscreen nil)))
+  (desktop-read (vdir* ".desktop/")))
 
-(add-hook 'kill-emacs-hook
-          (lambda ()
-            (version-supported-if
-                >= 23
-                (desktop-save (vdir! ".desktop/"))
-              (desktop-save (vdir! ".desktop/") t))))
+
+(defun self-desktop-save! ()
+  (version-supported-if
+      >= 23
+      (desktop-save (vdir! ".desktop/"))
+    (desktop-save (vdir! ".desktop/") t)))
+
+
+(add-hook 'after-init-hook #'self-desktop-read!)
+
+(add-hook 'kill-emacs-hook #'self-desktop-save!)
 
 
 ;; Emacs can automatically create backup files. This tells Emacs to
