@@ -41,7 +41,7 @@
 
 (defmacro vdir! (subdir &optional file)
   "Make the versionized SUBDIR under emacs-home and return it. "
-  (let ((_vdir_ (vdir* subdir file))
+  (let ((_vdir_ (vdir* subdir))
         (_vfile_ (vdir* subdir file)))
     (when (not (file-exists-p _vdir_))
       (make-directory _vdir_ t))
