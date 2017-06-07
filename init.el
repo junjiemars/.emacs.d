@@ -304,7 +304,7 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
 
 
 (defmacro def-self-socks (&optional port server version)
-  "Define socks proxy.
+  "Define SOCKS proxy.
 
 \(FN PORT SERVER VERSION \)"
   (let ((_socks_ (self-symbol 'socks)))

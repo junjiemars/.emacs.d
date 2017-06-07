@@ -141,9 +141,9 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
 (defmacro stop-socks! (&optional method)
   "Switch off url-gateway to native."
   `(version-supported-when < 22
-     (require 'url)
-     (setq url-gateway-method
-           (if ,method  ,method 'native))))
+     (eval-when-compile (require 'url))
+     (setq-default url-gateway-method
+                   (if ,method  ,method 'native))))
 
 
 (defmacro clean-compiled-files ()
