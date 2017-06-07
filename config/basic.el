@@ -93,8 +93,7 @@
 
 
 ;; Where to save ido.last
-(let ((d (vdir! ".ido/")))
-  (setq-default ido-save-directory-list-file (concat d "ido.last")))
+(setq-default ido-save-directory-list-file (vdir! ".ido/" "ido.last"))
 
 ;; This allows partial matches, e.g. "tl" will match "Tyrion Lannister"
 (safe-setq ido-enable-flex-matching t)
@@ -119,21 +118,20 @@
 
 
 ;; Auto-save
-(let ((d (vdir! ".auto-save/")))
-  (setq auto-save-default nil)
-  (setq auto-save-list-file-prefix (concat d "saves-")))
+(setq auto-save-default nil)
+(setq auto-save-list-file-prefix (vdir! ".auto-save/" "saves-"))
 
 
 (safe-do-unless directory-name-p
   (defun directory-name-p (name)
-  "Return non-nil if NAME ends with a directory separator character."
-  (let ((len (length name))
-        (lastc ?.))
-    (if (> len 0)
-        (setq lastc (aref name (1- len))))
-    (or (= lastc ?/)
-        (and (memq system-type '(windows-nt ms-dos))
-             (= lastc ?\\))))))
+    "Return non-nil if NAME ends with a directory separator character."
+    (let ((len (length name))
+          (lastc ?.))
+      (if (> len 0)
+          (setq lastc (aref name (1- len))))
+      (or (= lastc ?/)
+          (and (memq system-type '(windows-nt ms-dos))
+               (= lastc ?\\))))))
 
 
 (defun dir-files-iterate (dir ff df fn)

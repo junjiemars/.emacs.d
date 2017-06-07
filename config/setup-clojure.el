@@ -37,11 +37,11 @@
 
 (defadvice inf-clojure (before inf-clojure-before compile)
   (platform-supported-when
-   windows-nt
-   ;; Fix returning nothing in Windows
-   (let ((jlinerc "~/.jline.rc"))
-     (when (not (file-exists-p jlinerc))
-       (write-region "jline.terminal=unsupported" "" jlinerc)))))
+      windows-nt
+    ;; Fix returning nothing in Windows
+    (let ((jlinerc "~/.jline.rc"))
+      (when (not (file-exists-p jlinerc))
+        (write-region "jline.terminal=unsupported" "" jlinerc)))))
 
 
 ;;;;
@@ -49,19 +49,24 @@
 ;;;;
 
 
+
+
 ;; Go right to the REPL buffer when it's finished connecting
 (safe-setq cider-repl-pop-to-buffer-on-connect t)
+
 
 ;; When there's a cider error, show its buffer and switch to it
 (safe-setq cider-show-error-buffer t)
 (safe-setq cider-auto-select-error-buffer t)
 
+
 ;; Where to store the cider history.
-(safe-setq cider-repl-history-file
-           (concat (vdir! ".cider-history/")))
+(safe-setq cider-repl-history-file (vdir! ".cider-history/"))
+
 
 ;; Wrap when navigating history.
 (safe-setq cider-repl-wrap-history t)
+
 
 ;; minor modes for cider
 (add-hook 'cider-repl-mode-hook

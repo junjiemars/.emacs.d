@@ -151,10 +151,10 @@
 ;; When you visit a file, point goes to the last place where it
 ;; was when you previously visited the same file.
 ;; http://www.emacswiki.org/emacs/SavePlace
-(let ((d (vdir! ".places/")))
+(progn
   (require 'saveplace)
   (setq-default save-place t)
-  (setq-default save-place-file (concat d "places")))
+  (setq-default save-place-file (vdir! ".places/" "places")))
 
 
 ;; Read/Save desktop, don't do slowly (desktop-save-mode 1)
@@ -175,27 +175,24 @@
 ;; Emacs can automatically create backup files. This tells Emacs to
 ;; put all backups in ~/.emacs.d/backups. More info:
 ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Backup-Files.html
-(let ((d (vdir! ".backup/")))
-  (setq backup-directory-alist `(("." . ,d))))
+(setq backup-directory-alist `(("." . ,(vdir! ".backup/"))))
 
 
 ;; XXX
 
 ;; Bookmarks
-(let ((d (vdir! ".bookmarks/")))
-  (setq-default eww-bookmarks-directory d)
-  (setq-default bookmark-default-file (concat d "emacs.bmk")))
+(setq-default eww-bookmarks-directory (vdir! ".bookmarks/"))
+(setq-default bookmark-default-file (vdir! ".bookmarks/" "emacs.bmk"))
 
 
 ;; smex
 (package-supported-p
-  (let ((d (vdir! ".smex/")))
-    (setq-default smex-save-file (concat d ".smex-items"))))
+  (setq-default smex-save-file (vdir! ".smex/" ".smex-items")))
 
 ;; semantic db
 (package-supported-p
-  (let ((d (vdir! ".semanticdb/")))
-    (setq-default semanticdb-default-system-save-directory d)))
+  (setq-default semanticdb-default-system-save-directory
+                (vdir! ".semanticdb/")))
 
 
 ;; Toggle recentf-mode

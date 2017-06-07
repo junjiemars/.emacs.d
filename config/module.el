@@ -6,7 +6,7 @@
 
 ;; define package user dir
 
-(setq-default package-user-dir (vdir! "elpa/"))
+(setq-default package-user-dir (vdir* "elpa/"))
 
 ;; define package repositories
 

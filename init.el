@@ -40,11 +40,12 @@
 
 
 (defmacro vdir! (subdir &optional file)
-  "Make the versionized SUBDIR under emacs-home and returns it. "
-  (let ((_vdir_ (vdir* subdir file)))
+  "Make the versionized SUBDIR under emacs-home and return it. "
+  (let ((_vdir_ (vdir* subdir file))
+        (_vfile_ (vdir* subdir file)))
     (when (not (file-exists-p _vdir_))
       (make-directory _vdir_ t))
-    `,_vdir_))
+    `,_vfile_))
 
 
 (defmacro compile-and-load-elisp-files (files subdir)
