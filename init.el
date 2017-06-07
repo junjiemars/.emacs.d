@@ -217,7 +217,7 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
   `(safe-fn-if ,fn (progn ,@body)))
 
 
-(defmacro safe-do-unless (fn &rest body)
+(defmacro safe-fn-unless (fn &rest body)
   "Do BODY unless FN is bound.
 
 \(fn FN BODY...\)"

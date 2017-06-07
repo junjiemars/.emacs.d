@@ -4,6 +4,7 @@
 
 
 
+
 (defmacro enable-eldoc-mode ()
   "After Emacs 24.4 `turn-on-eldoc-mode is obsoleted, use `eldoc-mode indeed.
   `eldoc-mode shows documentation in the minibuffer when writing code.
@@ -122,7 +123,7 @@
 (setq auto-save-list-file-prefix (vdir! ".auto-save/" "saves-"))
 
 
-(safe-do-unless directory-name-p
+(safe-fn-unless directory-name-p
   (defun directory-name-p (name)
     "Return non-nil if NAME ends with a directory separator character."
     (let ((len (length name))
