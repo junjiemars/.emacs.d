@@ -3,27 +3,29 @@
 ;;
 
 
-(defvar vdir-tags-file (expand-file-name (vdir! ".tags/" "TAGS"))
+(defvar vdir-tags-files
+  (list :emacs-home (expand-file-name (vdir* ".tags/home/" "TAGS"))
+        :emacs-source (expand-file-name (vdir* ".tags/source/" "TAGS")))
   "Versionized TAGS file, use `visit-tag-table' to visit")
 
 
 (defmacro make-tags (home tags-file file-filter dir-filter &optional renew)
   "Make tags."
   `(when (file-exists-p ,home)
-     (when (and ,renew (file-exists-p ,tags-file))
-       (delete-file ,tags-file))
-     (dir-files-iterate ,home
-                        (when ,file-filter ,file-filter)
-                        (when ,dir-filter ,dir-filter)
-                        (lambda (f)
-                          (eshell-command
-                           (format "etags -o %s -l auto -a %s ; echo %s"
-                                   ,tags-file f f))))
-     (when (and (file-exists-p ,tags-file)
-                (not (member (file-name-directory ,tags-file)
-                             tags-table-list)))
-       (add-to-list 'tags-table-list (file-name-directory ,tags-file)
-                    t #'string=))))
+     (let ((tags-dir (file-name-directory ,tags-file)))
+       (if (file-exists-p ,tags-file)
+           (when ,renew (delete-file ,tags-file))
+         (when (not (file-exists-p tags-dir))
+           (make-directory tags-dir t)))
+       (dir-files-iterate ,home
+                          (when ,file-filter ,file-filter)
+                          (when ,dir-filter ,dir-filter)
+                          (lambda (f)
+                            (eshell-command
+                             (format "etags -o %s -l auto -a %s ; echo %s"
+                                     ,tags-file f f))))
+       (when (file-exists-p ,tags-file)
+         (add-to-list 'tags-table-list tags-dir t #'string=)))))
 
 
 (defmacro make-emacs-home-tags (tags-file &optional renew)
@@ -48,4 +50,4 @@
      (when (file-exists-p (concat ,src-root "src/"))
        (make-tags (concat ,src-root "src/") ,tags-file c-ff df ,renew))
      (when (file-exists-p (concat ,src-root "lisp/"))
-       (make-tags (concat ,src-root "lisp/") ,tags-file lisp-ff df ,renew))))
+       (make-tags (concat ,src-root "lisp/") ,tags-file lisp-ff df))))
