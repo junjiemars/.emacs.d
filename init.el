@@ -34,20 +34,17 @@
   "Versionized dir based on grahpic/terminal mode and Emacs's version")
 
 
-(defmacro vdir* (subdir)
+(defmacro vdir* (subdir &optional file)
   "Return the versionized SUBDIR under emacs-home."
-  (let ((_vdir_ (emacs-home* subdir vdir "/")))
+  `(concat emacs-home ,subdir vdir "/" ,file))
+
+
+(defmacro vdir! (subdir &optional file)
+  "Make the versionized SUBDIR under emacs-home and returns it. "
+  (let ((_vdir_ (vdir* subdir file)))
     (when (not (file-exists-p _vdir_))
       (make-directory _vdir_ t))
     `,_vdir_))
-
-
-(defmacro vdir! (subdir)
-  "Make the versionized SUBDIR under emacs-home and returns it. "
-  `(let ((d (emacs-home* ,subdir ,vdir "/")))
-     (when (not (file-exists-p d))
-       (make-directory d t))
-     d))
 
 
 (defmacro compile-and-load-elisp-files (files subdir)
