@@ -88,10 +88,10 @@
 (defun cider-start-http-server ()
   (interactive)
   (safe-call cider-load-current-buffer)
-  (safe-do-when cider-current-ns
+  (safe-fn-when cider-current-ns
     (let ((ns (cider-current-ns)))
       (safe-call cider-repl-set-ns ns)
-      (safe-do-when cider-interactive-eval
+      (safe-fn-when cider-interactive-eval
         (cider-interactive-eval
          (format "(println '(def server (%s/start))) (println 'server)"
                  ns))

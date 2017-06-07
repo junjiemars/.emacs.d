@@ -22,10 +22,10 @@
 ;; open file or url at point
 (when (eq browse-url-browser-function
           'browse-url-default-browser)
-  (safe-do-when eww-browse-url
+  (safe-fn-when eww-browse-url
     (setq-default url-configuration-directory (vdir! ".url/"))
     (setq browse-url-browser-function 'eww-browse-url)))
-(safe-do-when find-file-at-point
+(safe-fn-when find-file-at-point
   (global-set-key (kbd "C-c b") 'find-file-at-point))
 
 

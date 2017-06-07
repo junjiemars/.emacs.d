@@ -74,7 +74,7 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
 
 \(FN NAME SIZE\)"
   `(when (font-exists-p ,name)
-     (safe-do-when set-fontset-font
+     (safe-fn-when set-fontset-font
        (dolist (c '(han kana cjk-misc))
          (set-fontset-font (frame-parameter nil 'font)
                            c (font-spec :family ,name

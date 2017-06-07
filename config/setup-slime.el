@@ -31,10 +31,10 @@
   (add-hook
    'slime-repl-mode-hook
    (lambda ()
-     (safe-do-when slime-close-all-parens-in-sexp
+     (safe-fn-when slime-close-all-parens-in-sexp
        (local-set-key (kbd "C-c C-]")
                       'slime-close-all-parens-in-sexp))
-     (safe-do-when slime-selector 
+     (safe-fn-when slime-selector 
        (global-set-key (kbd "C-c s")
                        'slime-selector))))
   (slime-setup '(slime-fancy slime-asdf)))

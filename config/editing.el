@@ -66,20 +66,20 @@
   (interactive)
   (let (begin end)
     (safe-fn-if region-active-p
-                (if (region-active-p)
-                    (setq begin (region-beginning)
-                          end (region-end))
-                  (setq begin (line-beginning-position)
-                        end (line-end-position)))
-                (if mark-active
-                    (setq begin (region-beginning)
-                          end (region-end))
-                  (setq begin (line-beginning-position)
-                        end (line-end-position))))
+        (if (region-active-p)
+            (setq begin (region-beginning)
+                  end (region-end))
+          (setq begin (line-beginning-position)
+                end (line-end-position)))
+      (if mark-active
+          (setq begin (region-beginning)
+                end (region-end))
+        (setq begin (line-beginning-position)
+              end (line-end-position))))
     (comment-or-uncomment-region begin end)
     (safe-fn-if next-logical-line
-                (next-logical-line)
-                (next-line))))
+        (next-logical-line)
+      (next-line))))
 
 ;; toggle comment key strike
 (global-set-key (kbd "C-c ;") 'toggle-comment)
@@ -88,7 +88,7 @@
 ;; fix weird os x kill error
 (defun ns-get-pasteboard ()
   "Returns the value of the pasteboard, or nil for unsupported formats."
-  (safe-do-when ns-get-selection-internal
+  (safe-fn-when ns-get-selection-internal
     (condition-case nil
         (ns-get-selection-internal 'CLIPBOARD)
       (quit nil))))
@@ -140,7 +140,7 @@
 
 
 ;; bing dict
-(safe-do-when bing-dict-brief
+(safe-fn-when bing-dict-brief
   (global-set-key (kbd "C-c d") 'bing-dict-brief))
 
 
