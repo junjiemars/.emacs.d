@@ -196,7 +196,7 @@ If in terminal mode, and there are no ELSE’s, the value is nil.
     `(,fn ,@args)))
 
 
-(defmacro safe-do-if (fn then &rest else)
+(defmacro safe-fn-if (fn then &rest else)
   "If FN is bounded yields non-nil, do THEN, else do ELSE...
 Returns the value of THEN or the value of the last of the ELSE’s.
 THEN must be one expression, but ELSE... can be zero or more expressions.
@@ -214,7 +214,7 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
 
 \(fn FN BODY...)"
   (declare (indent 1))
-  `(safe-do-if ,fn (progn ,@body)))
+  `(safe-fn-if ,fn (progn ,@body)))
 
 
 (defmacro safe-do-unless (fn &rest body)
@@ -222,7 +222,7 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
 
 \(fn FN BODY...\)"
   (declare (indent 1))
-  `(safe-do-if ,fn nil ,@body))
+  `(safe-fn-if ,fn nil ,@body))
 
 
 (defmacro safe-do-when* (fn &rest body)

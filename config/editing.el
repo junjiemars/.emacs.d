@@ -65,21 +65,21 @@
   "Comment or uncomment current line"
   (interactive)
   (let (begin end)
-    (safe-do-if region-active-p
-        (if (region-active-p)
-            (setq begin (region-beginning)
-                  end (region-end))
-          (setq begin (line-beginning-position)
-                end (line-end-position)))
-      (if mark-active
-          (setq begin (region-beginning)
-                end (region-end))
-        (setq begin (line-beginning-position)
-              end (line-end-position))))
+    (safe-fn-if region-active-p
+                (if (region-active-p)
+                    (setq begin (region-beginning)
+                          end (region-end))
+                  (setq begin (line-beginning-position)
+                        end (line-end-position)))
+                (if mark-active
+                    (setq begin (region-beginning)
+                          end (region-end))
+                  (setq begin (line-beginning-position)
+                        end (line-end-position))))
     (comment-or-uncomment-region begin end)
-    (safe-do-if next-logical-line
-        (next-logical-line)
-      (next-line))))
+    (safe-fn-if next-logical-line
+                (next-logical-line)
+                (next-line))))
 
 ;; toggle comment key strike
 (global-set-key (kbd "C-c ;") 'toggle-comment)
