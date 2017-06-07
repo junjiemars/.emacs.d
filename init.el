@@ -50,7 +50,7 @@
 
 (defmacro compile-and-load-elisp-files (files subdir)
   "Compile and load the elisp FILES under the SUBDIR."
-  `(let ((d (emacs-home* ,subdir))
+  `(let ((d ,(emacs-home* subdir))
          (v (vdir! ,subdir)))
      (dolist (f ,files)
        (let ((from (concat d f)))
