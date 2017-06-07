@@ -4,9 +4,12 @@
 
 
 
+
 ;; define package user dir
 
 (setq-default package-user-dir (vdir* "elpa/"))
+
+
 
 ;; define package repositories
 
@@ -17,6 +20,7 @@
          (version-supported-when
              <= 25.1
            (list '("melpa" . "https://melpa.org/packages/")))))
+
 
 (version-supported-when
     <= 25.1
@@ -60,9 +64,10 @@
     (list :packages packages :setup files)))
 
 
-  ;; Install basic packages
 
-  
+;; Install basic packages
+
+
 (defvar basic-packages '(aggressive-indent
                          bing-dict
                          ido-ubiquitous
@@ -77,9 +82,11 @@
                             "setup-navigation.el"
                             "setup-python.el"))
 
+
 (require 'package)
 (setq package-enable-at-startup nil)
 (package-initialize)
+
 
 (install-package! basic-packages)
 (compile-and-load-elisp-files basic-setup-files "config/")
