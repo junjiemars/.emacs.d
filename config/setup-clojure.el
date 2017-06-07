@@ -3,6 +3,7 @@
 ;;;;
 
 
+
 ;; clojure mode hooks
 (add-hook 'clojure-mode-hook
           (lambda ()
@@ -21,9 +22,13 @@
 (add-to-list 'magic-mode-alist '(".* boot" . clojure-mode))
 
 
+
 ;;;;
 ;; inferior
 ;;;;
+
+
+
 
 ;; minor modes for inf-clojure
 (add-hook 'inf-clojure-mode-hook
@@ -42,6 +47,7 @@
     (let ((jlinerc "~/.jline.rc"))
       (when (not (file-exists-p jlinerc))
         (write-region "jline.terminal=unsupported" "" jlinerc)))))
+
 
 
 ;;;;
@@ -82,10 +88,10 @@
 (defun cider-start-http-server ()
   (interactive)
   (safe-call cider-load-current-buffer)
-  (safe-do-when* 'cider-current-ns
+  (safe-do-when cider-current-ns
     (let ((ns (cider-current-ns)))
       (safe-call cider-repl-set-ns ns)
-      (safe-do-when* 'cider-interactive-eval
+      (safe-do-when cider-interactive-eval
         (cider-interactive-eval
          (format "(println '(def server (%s/start))) (println 'server)"
                  ns))
@@ -103,9 +109,12 @@
   (safe-call cider-repl-set-ns "user"))
 
 
+
 ;;;;
 ;; Figwheel `https://github.com/bhauman/lein-figwheel'
 ;;;;
+
+
 
 
 (defmacro figwheel-after-load-cider ()
@@ -115,14 +124,7 @@
                  (figwheel-sidecar.repl-api/start-figwheel!)
                  (figwheel-sidecar.repl-api/cljs-repl))"))
 
+
 (eval-after-load 'cider
   '(progn
-     (safe-do-when!* 'clojure-mode-map
-                     (define-key clojure-mode-map
-                       (kbd "C-c C-v") 'cider-start-http-server)
-                     (define-key clojure-mode-map
-                       (kbd "C-M-r") 'cider-refresh))
-     (safe-do-when!* 'cider-mode-map
-                     (define-key cider-mode-map
-                       (kbd "C-c u") 'cider-user-ns))
      (figwheel-after-load-cider)))
