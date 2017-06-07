@@ -233,21 +233,13 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
   `(when (fboundp ,fn) ,@body))
 
 
-(defmacro safe-do-when! (x &rest body)
+(defmacro safe-var-when! (x &rest body)
   "Do BODY when X is bound.
 
 \(fn X BODY...)"
   (declare (indent 1))
   (when (boundp x)
     `(progn ,@body)))
-
-
-(defmacro safe-do-when!* (x &rest body)
-  "Do BODY when X is local bound.
-
-\(fn X-LOCAL BODY...)"
-  (declare (indent 1))
-  `(when (boundp ,x) ,@body))
 
 
 (defmacro safe-setq (x val)
