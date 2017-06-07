@@ -3,7 +3,7 @@
 ;;
 
 
-(defvar vdir-tags-file (expand-file-name (vdir* ".tags/" "TAGS"))
+(defvar vdir-tags-file (expand-file-name (vdir! ".tags/" "TAGS"))
   "Versionized TAGS file, use `visit-tag-table' to visit")
 
 
@@ -22,7 +22,8 @@
      (when (and (file-exists-p ,tags-file)
                 (not (member (file-name-directory ,tags-file)
                              tags-table-list)))
-       (push (file-name-directory ,tags-file) tags-table-list))))
+       (add-to-list 'tags-table-list (file-name-directory ,tags-file)
+                    t #'string=))))
 
 
 (defmacro make-emacs-home-tags (tags-file &optional renew)
