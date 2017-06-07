@@ -170,7 +170,7 @@
 
 (defun self-desktop-save! ()
   (setq-default desktop-files-not-to-save
-                "\.el\.gz$\\|tramp$\\|~$")
+                "\.el\.gz\\|~$")
   (version-supported-if
       >= 23
       (desktop-save (vdir! ".desktop/"))
