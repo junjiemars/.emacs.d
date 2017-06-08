@@ -271,14 +271,6 @@ ignore it if you don't like it.
     `(defvar ,_spec_ ,spec)))
 
 
-(defmacro def-self-socks (&optional port server version)
-  "Define SOCKS proxy.
-
-\(FN PORT SERVER VERSION \)"
-  (let ((_socks_ (self-symbol 'socks)))
-    `(defvar ,_socks_ '(port ,port server ,server version ,version))))
-
-
 (defmacro def-self-prelogue (&rest body)
   "Define self-prelogue, it will be run before load other 
 self things.

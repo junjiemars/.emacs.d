@@ -145,11 +145,12 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
 
 
 (self-safe-call*
- "socks"
- (when (consp _val_)
-   (start-socks! (plist-get _val_ 'port)
-                 (plist-get _val_ 'server)
-                 (plist-get _val_ 'version))))
+ "env-spec"
+ (let ((socks (plist-get _val_ :socks)))
+   (when (and socks (plist-get socks :allowed))
+     (start-socks! (plist-get socks :port)
+                   (plist-get socks :server)
+                   (plist-get socks :version)))))
 
 
 (defmacro stop-socks! (&optional method)

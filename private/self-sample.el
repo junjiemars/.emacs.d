@@ -14,7 +14,11 @@
                :allowed t)
    :cjk-font (list :name "Microsoft Yahei"
                    :size 13
-                   :allowed t)))
+                   :allowed t)
+   :socks (list :port 11032
+                :server "127.0.0.1"
+                :version 5
+                :allowed nil)))
 
 
 (platform-supported-when
