@@ -11,7 +11,10 @@
                 :path (emacs-home* "private/atom-one-dark-theme")
                 :allowed t)
    :font (list :name "Monaco-13"
-               :allowed t)))
+               :allowed t)
+   :cjk-font (list :name "Microsoft Yahei"
+                   :size 13
+                   :allowed t)))
 
 
 (platform-supported-when

@@ -72,9 +72,10 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
 
 (self-safe-call*
  "env-spec"
- (let ((font (plist-get _val_ :font)))
-   (when (and font (plist-get font :allowed))
-     (self-default-font! (plist-get font :name)))))
+ (graphic-supported-p 
+   (let ((font (plist-get _val_ :font)))
+     (when (and font (plist-get font :allowed))
+       (self-default-font! (plist-get font :name))))))
 
 
 
@@ -90,9 +91,13 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
                                         :size ,size))))))
 
 (self-safe-call*
- "cjk-font"
- (when (consp _val_)
-   (self-cjk-font! (car _val_) (cdr _val_))))
+ "env-spec"
+ (graphic-supported-p
+   (let ((cjk (plist-get _val_ :cjk-font)))
+     (when (and cjk (plist-get cjk :allowed))
+       (self-cjk-font!
+        (plist-get cjk :name)
+        (plist-get cjk :size))))))
 
 
 ;; Terminal style
