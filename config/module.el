@@ -88,7 +88,18 @@
                                            "setup-python.el"))))
 
 
+
+(version-supported-when
+    <= 25.1
+  (safe-setq% 'package-selected-packages nil))
+
+
 (let ((spec (parse-package-spec basic-package-spec)))
+  (version-supported-when
+      <= 25.1
+    (safe-setq% 'package-selected-packages
+                (plist-get spec :packages)))
+  
   (install-package! (plist-get spec :packages))
   (compile-and-load-elisp-files (plist-get spec :setup) "config/"))
 
@@ -100,11 +111,12 @@
 (self-safe-call*
  "package-spec"
  (let ((spec (parse-package-spec _val_)))
-   (install-package! (plist-get spec :packages))
-   (compile-and-load-elisp-files (plist-get spec :setup) "config/")
    (version-supported-when
        <= 25.1
-     (safe-setq package-selected-packages
-                (append (plist-get spec :packages))))))
+     (safe-setq% 'package-selected-packages
+                 (append package-selected-packages
+                         (plist-get spec :packages))))
+   (install-package! (plist-get spec :packages))
+   (compile-and-load-elisp-files (plist-get spec :setup) "config/")))
 
 
