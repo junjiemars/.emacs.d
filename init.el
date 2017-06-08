@@ -322,11 +322,8 @@ self things.
 
 
 ;; Versionized dirs
-(setq-default recentf-save-file
-              (concat (vdir! ".recentf/") "recentf"))
-(setq-default savehist-file
-              (concat (vdir! ".minibuffer/") "history"))
-
+(setq-default recentf-save-file (vdir! ".recentf/" "recentf"))
+(setq-default savehist-file (vdir! ".minibuffer/" "history"))
 
 
 
