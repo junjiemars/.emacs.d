@@ -71,8 +71,10 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
 
 
 (self-safe-call*
- "font"
- (self-default-font! _val_))
+ "env-spec"
+ (let ((font (plist-get _val_ :font)))
+   (when (and font (plist-get font :allowed))
+     (self-default-font! (plist-get font :name)))))
 
 
 

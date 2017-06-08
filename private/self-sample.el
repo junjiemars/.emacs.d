@@ -5,14 +5,14 @@
 
 
 
-(def-self-theme)
+(def-self-env-spec
+  (list
+   :theme (list :name 'atom-one-dark
+                :path (emacs-home* "private/atom-one-dark-theme")
+                :allowed t)
+   :font (list :name "Monaco-13"
+               :allowed t)))
 
-(comment
- (def-self-theme
-   (emacs-home* "private/" "atom-one-dark-theme")
-   'atom-one-dark))
-
-(def-self-font "Monaco-18")
 
 (platform-supported-when
     windows-nt

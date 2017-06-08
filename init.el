@@ -271,15 +271,6 @@ ignore it if you don't like it.
     `(defvar ,_spec_ ,spec)))
 
 
-(defmacro def-self-font (font)
-  "Define default FONT of current platform, ignore it if you don't like it.
-
-\(FN FONT)"
-  (graphic-supported-p
-    (let ((_font_ (self-symbol 'font)))
-      `(defvar ,_font_ ,font))))
-
-
 (defmacro def-self-cjk-font (name size)
   "Define default CJK FONT of current platform, ignore it if you don't like it.
 
