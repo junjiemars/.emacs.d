@@ -243,17 +243,17 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
 
 
 (defmacro safe-setq (x val)
-  "Set X when variable X is bound.
+  "Set X when variable X already be bounded.
 
-\(fn X VALUE)"
+\(fn X VAL)"
   (when (boundp x)
     `(setq ,x ,val)))
 
 
 (defmacro safe-setq* (x val)
-  "Set X when variable X is local bound.
+  "Set X when variable X already be bounded.
 
-\(fn X-LOCAL VALUE)"
+\(fn X VAL)"
   `(when (boundp (quote ,x))
      (setq ,x ,val)))
 
