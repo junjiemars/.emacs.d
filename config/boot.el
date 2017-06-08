@@ -169,37 +169,3 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
                    (if ,method  ,method 'native))))
 
 
-(defmacro clean-compiled-files ()
-  "Clean all compiled files, need restart Emacs."
-  `(dolist (d (list ,(vdir* "config/")
-                    ,(vdir* "private/")))
-     (dolist (f (directory-files d nil "\\.elc$"))
-       (message "#Clean compiled file: %s" f)
-       (delete-file (concat d f)))))
-
-
-(defmacro clean-saved-user-files ()
-  "Clean saved desktop, need restart Emacs."
-  `(let ((dirs (list ,(vdir*  ".auto-save/")
-                     ,(vdir*  ".desktop/")
-                     ,(vdir*  ".bookmarks/")
-                     ,(vdir*  ".ido/")
-                     ,(vdir*  ".minibuffer/")
-                     ,(vdir*  ".recentf/")
-                     ,(vdir*  ".tags/")
-                     ,(vdir*  ".places/")
-                     ,(vdir*  ".smex/")
-                     ,(vdir*  ".url/"))))
-     (dolist (d dirs)
-       (when (file-exists-p d)
-         (dolist (f (directory-files d nil "^\\([^.]\\|\\.[^.]\\|\\.\\..\\)"))
-           (message "#Clean saved user file: %s" (concat d f))
-           (delete-file (concat d f)))))))
-
-
-(defmacro reset-emacs ()
-  "Clean all compiled file and desktop, then restart Emacs."
-  `(progn
-     (clean-compiled-files)
-     (clean-saved-user-files)
-     (kill-emacs 0)))
