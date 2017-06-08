@@ -96,7 +96,7 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
                                         :size ,size))))))
 
 
-;; Load CJK font
+;; Load cjk font
 (graphic-supported-p
   (self-safe-call*
    "env-spec"
@@ -151,6 +151,7 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
                          (if ,version ,version 5)))))
 
 
+;; Load socks settings
 (self-safe-call*
  "env-spec"
  (let ((socks (plist-get _val_ :socks)))
