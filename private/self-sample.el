@@ -9,7 +9,7 @@
   (list
    :theme (list :name 'atom-one-dark
                 :path (emacs-home* "private/atom-one-dark-theme")
-                :allowed t)
+                :allowed nil)
    :font (list :name "Monaco-13"
                :allowed t)
    :cjk-font (list :name "Microsoft Yahei"

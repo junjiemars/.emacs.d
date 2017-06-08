@@ -36,16 +36,20 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
        (load-theme ,name t))))
 
 
-(self-safe-call*
- "env-spec"
- (graphic-supported-p
-   (version-supported-when
-       < 23
+;; Load theme
+(graphic-supported-p
+  (version-supported-when
+      < 23
+    (self-safe-call*
+     "env-spec"
      (let ((theme (plist-get _val_ :theme)))
-       (when (and theme (plist-get theme :allowed))
+       (if (and theme (plist-get theme :allowed))
+           (self-load-theme!
+            (plist-get theme :path)
+            (plist-get theme :name))
          (self-load-theme!
-          (plist-get theme :path)
-          (plist-get theme :name)))))))
+          (emacs-home* "theme/")
+          'tomorrow-night-eighties))))))
 
 
 
