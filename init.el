@@ -192,8 +192,8 @@ If in terminal mode, and there are no ELSE’s, the value is nil.
 
 \(fn FN-NAME ARGS...)"
   (declare (indent 1))
-  (when (fboundp fn)
-    `(,fn ,@args)))
+  (if (fboundp fn)
+      `(,fn ,@args)))
 
 
 (defmacro safe-fn-if (fn then &rest else)
