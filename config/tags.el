@@ -17,37 +17,34 @@
            (when ,renew (delete-file ,tags-file))
          (when (not (file-exists-p tags-dir))
            (make-directory tags-dir t)))
-       (dir-files-iterate ,home
-                          (when ,file-filter ,file-filter)
-                          (when ,dir-filter ,dir-filter)
-                          (lambda (f)
-                            (eshell-command
-                             (format "etags -o %s -l auto -a %s ; echo %s"
-                                     ,tags-file f f))))
+       (dir-iterate ,home
+                    (when ,file-filter ,file-filter)
+                    (when ,dir-filter ,dir-filter)
+                    (lambda (f)
+                      (eshell-command
+                       (format "etags -o %s -l auto -a %s ; echo %s"
+                               ,tags-file f f))))
        (when (file-exists-p ,tags-file)
          (add-to-list 'tags-table-list tags-dir t #'string=)))))
 
 
 (defmacro make-emacs-home-tags (tags-file &optional renew)
   "Make TAGS-FILE for Emacs' home directory."
-  `(let ((lisp-ff (lambda (f) (string-match "\\\.el$" f)))
-         (home-df (lambda (d) (not (or (string-match "^\\\..*/$" d)
-                                       (string-match "^elpa/$" d)
-                                       (string-match "^theme/$" d)
-                                       (string-match "^g_.*/$" d)
-                                       (string-match "^t_.*/$" d)
-                                       (string-match "^private/$" d)))))
-         (root-c-ff (lambda (f) (string-match "\\\.[ch]$" f)))
-         (root-df (lambda (d) t)))
+  `(let ((lisp-ff (lambda (f a) (string-match "\\\.el$" f)))
+         (home-df
+          (lambda (d a)
+            (or
+             (not (string-match "^\\\..*/$\\|^theme/$\\|^g_.*/$\\|^t_.*/$\\|^private/$" d))
+             (string-match "elpa/" a)))))
      (make-tags emacs-home ,tags-file lisp-ff home-df ,renew)))
 
 
-(defmacro make-emacs-source-tags (tags-file src-root &optional renew)
-  "Make TAGS-FILE for Emacs' C and Lisp source code on SRC-ROOT."
-  `(let ((lisp-ff (lambda (f) (string-match "\\\.el$" f)))
-         (c-ff (lambda (f) (string-match "\\\.[ch]$" f)))
-         (df (lambda (d) t)))
-     (when (file-exists-p (concat ,src-root "src/"))
-       (make-tags (concat ,src-root "src/") ,tags-file c-ff df ,renew))
-     (when (file-exists-p (concat ,src-root "lisp/"))
-       (make-tags (concat ,src-root "lisp/") ,tags-file lisp-ff df))))
+  (defmacro make-emacs-source-tags (tags-file src-root &optional renew)
+    "Make TAGS-FILE for Emacs' C and Lisp source code on SRC-ROOT."
+    `(let ((lisp-ff (lambda (f a) (string-match "\\\.el$" f)))
+           (c-ff (lambda (f a) (string-match "\\\.[ch]$" f)))
+           (df (lambda (d a) t)))
+       (when (file-exists-p (concat ,src-root "src/"))
+         (make-tags (concat ,src-root "src/") ,tags-file c-ff df ,renew))
+       (when (file-exists-p (concat ,src-root "lisp/"))
+         (make-tags (concat ,src-root "lisp/") ,tags-file lisp-ff df))))

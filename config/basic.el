@@ -135,16 +135,19 @@
                (= lastc ?\\))))))
 
 
-(defun dir-files-iterate (dir ff df fn)
+(defun dir-iterate (dir ff df fn)
   "Iterating DIR, if FILE-FILTER return T then call FN, 
 and if DIR-FILTER return T then iterate into deep DIR.
+
+   (defun FILE-FILTER (file-name absolute-name))
+   (defun DIR-FILTER (dir-name absolute-name))
 
 \(FN DIR FILE-FILTER DIR-FILTER FN\)"
   (dolist (f (file-name-all-completions "" dir))
     (unless (member f '("./" "../"))
-      (let ((full-name (expand-file-name f dir)))
+      (let ((a (expand-file-name f dir)))
         (if (directory-name-p f)
-            (when (and df (funcall df f)
-                       (dir-files-iterate full-name ff df fn)))
-          (when (and ff (funcall ff f)
-                     (funcall fn full-name))))))))
+            (when (and df (funcall df f a)
+                       (dir-iterate a ff df fn)))
+          (when (and ff (funcall ff f a)
+                     (funcall fn a))))))))
