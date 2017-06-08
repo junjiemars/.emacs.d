@@ -5,34 +5,14 @@
 
 
 
-(def-self-env-spec
-  (list
-   :theme (list :name 'atom-one-dark
-                :path (emacs-home* "private/atom-one-dark-theme")
-                :allowed nil)
-   :font (list :name "Monaco-13"
-               :allowed nil)
-   :cjk-font (list :name "Microsoft Yahei"
-                   :size 13
-                   :allowed nil)
-   :socks (list :port 11032
-                :server "127.0.0.1"
-                :version 5
-                :allowed nil)))
 
 
-(platform-supported-when
-    windows-nt
-  (def-self-cjk-font "Microsoft Yahei" 13))
-
-;; (def-self-socks 32000)
 
 (def-self-prelogue
   (message "#self prelogue ...")
-
   ;; (setq debug-on-error t)
-
   )
+
 
 (def-self-epilogue
   (message "#self epilogue ...")
@@ -47,9 +27,30 @@
        <= 25.2
        (setq source-directory "/opt/open/emacs-25/")
      (setq source-directory "/opt/open/emacs-22/")))
+  
   )
 
 
+;; define env-spec
+(def-self-env-spec
+  (list
+   :theme (list :name 'atom-one-dark
+                :path (emacs-home* "private/atom-one-dark-theme")
+                :allowed nil)
+   :font (list :name "Monaco-13"
+               :allowed nil)
+   :cjk-font (list :name "Microsoft Yahei"
+                   :size 13
+                   :allowed nil)
+   :desktop (list :files-not-to-save "\.el\.gz\\|~$"
+                  :allowed t)
+   :socks (list :port 11032
+                :server "127.0.0.1"
+                :version 5
+                :allowed nil)))
+
+
+;; define package-spec
 (def-self-package-spec
   (list
    :cond (lambda ()

@@ -169,8 +169,16 @@
 
 
 (defun self-desktop-save! ()
-  (setq-default desktop-files-not-to-save
-                "\.el\.gz\\|~$")
+  
+  (self-safe-call*
+   "env-spec"
+   (let ((desktop (plist-get _val_ :desktop)))
+     (when (and desktop
+                (plist-get desktop :allowed))
+       (let ((not-to-save (plist-get desktop :files-not-to-save)))
+         (when (stringp not-to-save)
+           (setq-default desktop-files-not-to-save not-to-save))))))
+
   (version-supported-if
       >= 23
       (desktop-save (vdir! ".desktop/"))

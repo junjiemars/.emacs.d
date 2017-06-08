@@ -271,6 +271,19 @@ ignore it if you don't like it.
     `(defvar ,_spec_ ,spec)))
 
 
+(defmacro def-self-package-spec (&rest spec)
+  "Define self package SPEC list:
+     :cond t ;; predicat
+     :packages '(x y z) ;; package list
+     :setup '(\"setup-xyz.el\") ;; predefined
+
+\(fn SPEC...)"
+  (declare (indent 0))
+  (package-supported-p 
+    (let ((_spec_ (self-symbol 'package-spec)))
+      `(defvar ,_spec_ (list ,@spec)))))
+
+
 (defmacro def-self-prelogue (&rest body)
   "Define self-prelogue, it will be run before load other 
 self things.
@@ -292,18 +305,6 @@ self things.
     `(defun ,_epilogue_ ()
        ,@body)))
 
-
-(defmacro def-self-package-spec (&rest spec)
-  "Define self package SPEC list:
-     :cond t ;; predicat
-     :packages '(x y z) ;; package list
-     :setup '(\"setup-xyz.el\") ;; predefined
-
-\(fn SPEC...)"
-  (declare (indent 0))
-  (package-supported-p 
-    (let ((_spec_ (self-symbol 'package-spec)))
-      `(defvar ,_spec_ (list ,@spec)))))
 
 
 (defmacro self-safe-call (fn)
