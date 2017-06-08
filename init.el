@@ -204,7 +204,7 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
 
 \(fn FN THEN ELSE...)"
   (declare (indent 2))
-  (if (or (fboundp fn))
+  (if (fboundp fn)
       `,then
     `(progn ,@else)))
 
@@ -243,7 +243,7 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
 
 
 (defmacro safe-setq (x val)
-  "Set X when variable X already be bounded.
+  "Set X when variable X is bound.
 
 \(fn X VAL)"
   (when (boundp x)
@@ -251,7 +251,7 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
 
 
 (defmacro safe-setq* (x val)
-  "Set X when variable X already be bounded.
+  "Set X when variable X is bound.
 
 \(fn X VAL)"
   `(when (boundp (quote ,x))
