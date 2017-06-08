@@ -95,9 +95,11 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
                            c (font-spec :family ,name
                                         :size ,size))))))
 
-(self-safe-call*
- "env-spec"
- (graphic-supported-p
+
+;; Load CJK font
+(graphic-supported-p
+  (self-safe-call*
+   "env-spec"
    (let ((cjk (plist-get _val_ :cjk-font)))
      (when (and cjk (plist-get cjk :allowed))
        (self-cjk-font!
