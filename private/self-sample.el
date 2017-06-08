@@ -11,7 +11,7 @@
                 :path (emacs-home* "private/atom-one-dark-theme")
                 :allowed nil)
    :font (list :name "Monaco-13"
-               :allowed t)
+               :allowed nil)
    :cjk-font (list :name "Microsoft Yahei"
                    :size 13
                    :allowed t)
