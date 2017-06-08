@@ -37,9 +37,16 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
 
 
 (self-safe-call*
- "theme"
- (when (consp _val_)
-   (self-load-theme! (car _val_) (cdr _val_))))
+ "env-spec"
+ (graphic-supported-p
+   (version-supported-when
+       < 23
+     (let ((theme (plist-get _val_ :theme)))
+       (when (and theme (plist-get theme :allowed))
+         (self-load-theme!
+          (plist-get theme :path)
+          (plist-get theme :name)))))))
+
 
 
 (defmacro font-exists-p (font)

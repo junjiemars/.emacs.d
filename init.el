@@ -262,19 +262,13 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
   `(intern (format "self-%s-%s" system-type ,name)))
 
 
-(defmacro def-self-theme (&optional dir name)
-  "Define default THEME of current platform, ignore it if you don't like it. 
+(defmacro def-self-env-spec (spec)
+  "Define default Emacs env SPEC of current platform on current Emacs version, 
+ignore it if you don't like it. 
  
-\(FN THEME-DIR THEME-NAME)"
-  (graphic-supported-p
-    (version-supported-when
-        < 23
-      (let ((_theme_ (self-symbol 'theme)))
-        `(defvar ,_theme_
-           (cons (if (and ,dir (file-exists-p ,dir))
-                     ,dir
-                   (emacs-home* "theme/"))
-                 (if ,name ,name 'tomorrow-night-eighties)))))))
+\(FN SPEC)"
+  (let ((_spec_ (self-symbol 'env-spec)))
+    `(defvar ,_spec_ ,spec)))
 
 
 (defmacro def-self-font (font)
