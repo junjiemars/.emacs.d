@@ -183,13 +183,14 @@
                 (plist-get desktop :allowed))
        
        (let ((f (plist-get desktop :files-not-to-save)))
-         (setq-default desktop-files-not-to-save f))
-       
+         (when f
+           (setq-default desktop-files-not-to-save f)))
        (let ((b (plist-get desktop :buffers-not-to-save)))
-         (setq-default desktop-buffers-not-to-save b))
-       
-       (dolist (m (plist-get desktop :modes-not-to-save))
-         (add-to-list 'desktop-modes-not-to-save m))
+         (when b
+           (setq-default desktop-buffers-not-to-save b)))
+       (let ((m (plist-get desktop :modes-not-to-save)))
+         (setq-default desktop-modes-not-to-save
+                       (append '(tags-table-mode) m)))
        
        (version-supported-if
            >= 23
