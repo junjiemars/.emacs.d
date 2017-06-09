@@ -28,19 +28,18 @@
        (setq source-directory "/opt/open/emacs-25/")
      (setq source-directory "/opt/open/emacs-22/"))))
 
-
 ;; define env-spec
 (def-self-env-spec
   :theme (list :name 'atom-one-dark
                :path (emacs-home* "private/atom-one-dark-theme")
-               :allowed nil)
-  :font (list :name "Monaco-13"
-              :allowed nil)
+               :allowed t)
+  :font (list :name "Monaco-18"
+              :allowed t)
   :cjk-font (list :name "Microsoft Yahei"
                   :size 13
                   :allowed nil)
   :desktop (list :files-not-to-save "\.el\.gz\\|~$"
-                 :allowed t)
+                 :allowed nil)
   (comment
    :socks (list :port 11032
                 :server "127.0.0.1"
@@ -103,7 +102,3 @@
   (list
    :cond (lambda () t)
    :packages '(sx)))
-
-
-
-

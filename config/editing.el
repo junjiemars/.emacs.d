@@ -158,31 +158,35 @@
 
 
 
-;; Read/Save desktop, don't do slowly (desktop-save-mode 1)
+;; Read/Save desktop
 
 
 (defun self-desktop-read! ()
+  
   (terminal-supported-p
     (version-supported-when = 24.4
       (setq-default desktop-restore-forces-onscreen nil)))
-  (desktop-read (v-home* ".desktop/")))
+
+  (self-safe-call*
+   "env-spec"
+   (let ((desktop (plist-get _val_ :desktop)))
+     (when (and desktop
+                (plist-get desktop :allowed))
+       (desktop-read (v-home* ".desktop/"))))))
 
 
 (defun self-desktop-save! ()
-  
   (self-safe-call*
    "env-spec"
    (let ((desktop (plist-get _val_ :desktop)))
      (when (and desktop
                 (plist-get desktop :allowed))
        (let ((not-to-save (plist-get desktop :files-not-to-save)))
-         (when (stringp not-to-save)
-           (setq-default desktop-files-not-to-save not-to-save))))))
-
-  (version-supported-if
-      >= 23
-      (desktop-save (v-home! ".desktop/"))
-    (desktop-save (v-home! ".desktop/") t)))
+         (setq-default desktop-files-not-to-save not-to-save)
+         (version-supported-if
+             >= 23
+             (desktop-save (v-home! ".desktop/"))
+           (desktop-save (v-home! ".desktop/") t)))))))
 
 
 (add-hook 'after-init-hook #'self-desktop-read!)
