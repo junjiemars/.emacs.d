@@ -44,7 +44,7 @@
   (let ((_vdir_ (v-home* subdir))
         (_vfile_ (v-home* subdir file)))
     (when (not (file-exists-p _vdir_))
-      (make-directory _vdir_ t))
+      (make-directory-internal _vdir_))
     `,_vfile_))
 
 

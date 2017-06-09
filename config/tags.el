@@ -16,7 +16,7 @@
        (if (file-exists-p ,tags-file)
            (when ,renew (delete-file ,tags-file))
          (when (not (file-exists-p tags-dir))
-           (make-directory tags-dir t)))
+           (make-directory-internal tags-dir)))
        (dir-iterate ,home
                     (when ,file-filter ,file-filter)
                     (when ,dir-filter ,dir-filter)
