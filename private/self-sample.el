@@ -40,7 +40,7 @@
                   :allowed nil)
   :desktop (list :files-not-to-save "\.el\.gz\\|~$"
                  :buffers-not-to-save "^TAGS\\|\\.log"
-                 :modes-not-to-save '(dired-mode Info-mode info-lookup-mode)
+                 :modes-not-to-save '(dired-mode)
                  :allowed t)
   (comment
    :socks (list :port 11032
