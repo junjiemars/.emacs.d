@@ -51,21 +51,21 @@
       not-installed-packages)))
 
 
-(defun parse-package-spec (spec)
-  "Returns a list of `:packages' and `:setup' from the SPEC."
-  (let ((packages nil)
-        (files nil))
-    (dolist (s spec)
-      (when (or (plist-get s :cond)
-                 (funcall (plist-get s :cond)))
-        (setq packages (append packages (plist-get s :packages)))
-        (when (plist-get s :setup)
-          (setq files (append files (plist-get s :setup))))))
-    (list :packages packages :setup files)))
+(defun parse-package-spec (spec vdir)
+  "Parse SPEC, install packages and setup."
+  (dolist (s spec)
+    (when (or (plist-get s :cond)
+              (funcall (plist-get s :cond)))
+      (install-package! (plist-get s :packages))
+      (let ((setup (plist-get s :setup)))
+        (when setup
+          (cond
+           ((listp setup) (compile-and-load-elisp-files vdir setup))
+           ((functionp setup) (funcall setup))))))))
 
 
 
-;; Install basic packages
+;; Package specs
 
 
 (require 'package)
@@ -98,19 +98,14 @@
       nil)))
 
 
-(let ((spec (parse-package-spec basic-package-spec)))
-  (install-package! (plist-get spec :packages))
-  (compile-and-load-elisp-files vdir (plist-get spec :setup)))
+
+;; Load basic package spec
+(parse-package-spec basic-package-spec vdir)
 
 
-
-;; Install self packages
-
-
+;; Load self packages spec
 (self-safe-call*
  "package-spec"
- (let ((spec (parse-package-spec _val_)))
-   (install-package! (plist-get spec :packages))
-   (compile-and-load-elisp-files vdir (plist-get spec :setup))))
+ (parse-package-spec _val_ vdir))
 
 
