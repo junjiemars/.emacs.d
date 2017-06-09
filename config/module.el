@@ -54,14 +54,17 @@
 (defun parse-package-spec (spec vdir)
   "Parse SPEC, install packages and setup."
   (dolist (s spec)
-    (when (or (plist-get s :cond)
-              (funcall (plist-get s :cond)))
-      (install-package! (plist-get s :packages))
-      (let ((setup (plist-get s :setup)))
-        (when setup
-          (cond
-           ((listp setup) (compile-and-load-elisp-files vdir setup))
-           ((functionp setup) (funcall setup))))))))
+    (let ((pred (plist-get s :cond)))
+      (when (and pred
+                 (cond
+                  ((booleanp pred) pred)
+                  ((functionp pred) (funcall pred))))
+        (install-package! (plist-get s :packages))
+        (let ((setup (plist-get s :setup)))
+          (when setup
+            (cond
+             ((listp setup) (compile-and-load-elisp-files vdir setup))
+             ((functionp setup) (funcall setup)))))))))
 
 
 
