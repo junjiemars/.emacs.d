@@ -91,15 +91,13 @@
 
 (version-supported-when
     <= 25.1
-  (safe-setq% 'package-selected-packages nil))
+  (safe-fn-when package--save-selected-packages
+    (defun package--save-selected-packages (&optional value)
+      "Fake `package-selected-packages' to nil."
+      nil)))
 
 
 (let ((spec (parse-package-spec basic-package-spec)))
-  (version-supported-when
-      <= 25.1
-    (safe-setq% 'package-selected-packages
-                (plist-get spec :packages)))
-  
   (install-package! (plist-get spec :packages))
   (compile-and-load-elisp-files (plist-get spec :setup) "config/"))
 
@@ -111,11 +109,6 @@
 (self-safe-call*
  "package-spec"
  (let ((spec (parse-package-spec _val_)))
-   (version-supported-when
-       <= 25.1
-     (safe-setq% 'package-selected-packages
-                 (append package-selected-packages
-                         (plist-get spec :packages))))
    (install-package! (plist-get spec :packages))
    (compile-and-load-elisp-files (plist-get spec :setup) "config/")))
 
