@@ -142,7 +142,7 @@ If (eq system-type OS) yields nil, and there are no ELSE’s, the value is nil.
   (declare (indent 2))
   (if (eq system-type os)
       `,then
-    `(progn ,@else)))
+    `(progn% ,@else)))
 
 
 (defmacro platform-supported-when (os &rest body)
