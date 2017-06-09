@@ -24,7 +24,7 @@
 (when (eq browse-url-browser-function
           'browse-url-default-browser)
   (safe-fn-when eww-browse-url
-    (setq-default url-configuration-directory (vdir! ".url/"))
+    (setq-default url-configuration-directory (v-home! ".url/"))
     (setq browse-url-browser-function 'eww-browse-url)))
 (safe-fn-when find-file-at-point
   (global-set-key (kbd "C-c b") 'find-file-at-point))
@@ -94,7 +94,7 @@
 
 
 ;; Where to save ido.last
-(setq-default ido-save-directory-list-file (vdir! ".ido/" "ido.last"))
+(setq-default ido-save-directory-list-file (v-home! ".ido/" "ido.last"))
 
 ;; This allows partial matches, e.g. "tl" will match "Tyrion Lannister"
 (safe-setq ido-enable-flex-matching t)
@@ -120,7 +120,7 @@
 
 ;; Auto-save
 (setq auto-save-default nil)
-(setq auto-save-list-file-prefix (vdir! ".auto-save/" "saves-"))
+(setq auto-save-list-file-prefix (v-home! ".auto-save/" "saves-"))
 
 
 (safe-fn-unless directory-name-p

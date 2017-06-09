@@ -4,8 +4,8 @@
 
 
 (defvar vdir-tags-files
-  (list :emacs-home (expand-file-name (vdir* ".tags/home/" "TAGS"))
-        :emacs-source (expand-file-name (vdir* ".tags/source/" "TAGS")))
+  (list :emacs-home (expand-file-name (v-home* ".tags/home/" "TAGS"))
+        :emacs-source (expand-file-name (v-home* ".tags/source/" "TAGS")))
   "Versionized TAGS file, use `visit-tag-table' to visit")
 
 

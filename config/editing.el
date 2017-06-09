@@ -154,7 +154,7 @@
 (progn
   (require 'saveplace)
   (setq-default save-place t)
-  (setq-default save-place-file (vdir! ".places/" "places")))
+  (setq-default save-place-file (v-home! ".places/" "places")))
 
 
 
@@ -165,7 +165,7 @@
   (terminal-supported-p
     (version-supported-when = 24.4
       (setq-default desktop-restore-forces-onscreen nil)))
-  (desktop-read (vdir* ".desktop/")))
+  (desktop-read (v-home* ".desktop/")))
 
 
 (defun self-desktop-save! ()
@@ -181,8 +181,8 @@
 
   (version-supported-if
       >= 23
-      (desktop-save (vdir! ".desktop/"))
-    (desktop-save (vdir! ".desktop/") t)))
+      (desktop-save (v-home! ".desktop/"))
+    (desktop-save (v-home! ".desktop/") t)))
 
 
 (add-hook 'after-init-hook #'self-desktop-read!)
@@ -193,24 +193,24 @@
 ;; Emacs can automatically create backup files. This tells Emacs to
 ;; put all backups in ~/.emacs.d/backups. More info:
 ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Backup-Files.html
-(setq backup-directory-alist `(("." . ,(vdir! ".backup/"))))
+(setq backup-directory-alist `(("." . ,(v-home! ".backup/"))))
 
 
 ;; XXX
 
 ;; Bookmarks
-(setq-default eww-bookmarks-directory (vdir! ".bookmarks/"))
-(setq-default bookmark-default-file (vdir! ".bookmarks/" "emacs.bmk"))
+(setq-default eww-bookmarks-directory (v-home! ".bookmarks/"))
+(setq-default bookmark-default-file (v-home! ".bookmarks/" "emacs.bmk"))
 
 
 ;; smex
 (package-supported-p
-  (setq-default smex-save-file (vdir! ".smex/" ".smex-items")))
+  (setq-default smex-save-file (v-home! ".smex/" ".smex-items")))
 
 ;; semantic db
 (package-supported-p
   (setq-default semanticdb-default-system-save-directory
-                (vdir! ".semanticdb/")))
+                (v-home! ".semanticdb/")))
 
 
 ;; Toggle recentf-mode

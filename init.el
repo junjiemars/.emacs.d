@@ -34,15 +34,15 @@
   "Versionized dir based on grahpic/terminal mode and Emacs's version")
 
 
-(defmacro vdir* (subdir &optional file)
+(defmacro v-home* (subdir &optional file)
   "Return the versionized SUBDIR under emacs-home."
   `(concat ,emacs-home ,subdir ,vdir "/" ,file))
 
 
-(defmacro vdir! (subdir &optional file)
+(defmacro v-home! (subdir &optional file)
   "Make the versionized SUBDIR under emacs-home and return it. "
-  (let ((_vdir_ (vdir* subdir))
-        (_vfile_ (vdir* subdir file)))
+  (let ((_vdir_ (v-home* subdir))
+        (_vfile_ (v-home* subdir file)))
     (when (not (file-exists-p _vdir_))
       (make-directory _vdir_ t))
     `,_vfile_))
@@ -51,7 +51,7 @@
 (defmacro compile-and-load-elisp-files (files subdir)
   "Compile and load the elisp FILES under the SUBDIR."
   `(let ((d ,(emacs-home* subdir))
-         (v (vdir! ,subdir)))
+         (v (v-home! ,subdir)))
      (dolist (f ,files)
        (let ((from (concat d f)))
          (if (file-exists-p from)
@@ -66,8 +66,8 @@
 
 (defmacro clean-compiled-files ()
   "Clean all compiled files, need restart Emacs."
-  `(dolist (d (list ,(vdir* "config/")
-                    ,(vdir* "private/")))
+  `(dolist (d (list ,(v-home* "config/")
+                    ,(v-home* "private/")))
      (dolist (f (directory-files d nil "\\.elc$"))
        (message "#Clean compiled file: %s" f)
        (delete-file (concat d f)))))
@@ -75,16 +75,16 @@
 
 (defmacro clean-saved-user-files ()
   "Clean saved desktop, need restart Emacs."
-  `(let ((dirs (list ,(vdir*  ".auto-save/")
-                     ,(vdir*  ".desktop/")
-                     ,(vdir*  ".bookmarks/")
-                     ,(vdir*  ".ido/")
-                     ,(vdir*  ".minibuffer/")
-                     ,(vdir*  ".recentf/")
-                     ,(vdir*  ".tags/")
-                     ,(vdir*  ".places/")
-                     ,(vdir*  ".smex/")
-                     ,(vdir*  ".url/"))))
+  `(let ((dirs (list ,(v-home*  ".auto-save/")
+                     ,(v-home*  ".desktop/")
+                     ,(v-home*  ".bookmarks/")
+                     ,(v-home*  ".ido/")
+                     ,(v-home*  ".minibuffer/")
+                     ,(v-home*  ".recentf/")
+                     ,(v-home*  ".tags/")
+                     ,(v-home*  ".places/")
+                     ,(v-home*  ".smex/")
+                     ,(v-home*  ".url/"))))
      (dolist (d dirs)
        (when (file-exists-p d)
          (dolist (f (directory-files d nil "^\\([^.]\\|\\.[^.]\\|\\.\\..\\)"))
@@ -362,8 +362,8 @@ self things.
 
 
 ;; Versionized dirs
-(setq-default recentf-save-file (vdir! ".recentf/" "recentf"))
-(setq-default savehist-file (vdir! ".minibuffer/" "history"))
+(setq-default recentf-save-file (v-home! ".recentf/" "recentf"))
+(setq-default savehist-file (v-home! ".minibuffer/" "history"))
 
 
 

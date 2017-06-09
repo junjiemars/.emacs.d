@@ -26,7 +26,7 @@
                         (smex-initialize))
                     (smex)))
   
-  (safe-setq smex-save-file (vdir! ".smex/" ".smex-items")))
+  (safe-setq smex-save-file (v-home! ".smex/" ".smex-items")))
 
 
 (add-hook 'after-init-hook #'self-ido-ubiquitous!)
