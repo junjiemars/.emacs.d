@@ -296,12 +296,6 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
      (setq ,x ,val)))
 
 
-(defmacro safe-setq% (x val &optional comment)
-  "Set X when variable X is bound.
-
-\(fn X VAL)"
-  `(safe-call customize-set-variable ,x ,val ,comment))
-
 
 (defmacro self-symbol (name)
   `(intern (format "self-%s-%s" system-type ,name)))
