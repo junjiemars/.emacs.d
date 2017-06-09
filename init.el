@@ -305,13 +305,14 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
   `(intern (format "self-%s-%s" system-type ,name)))
 
 
-(defmacro def-self-env-spec (spec)
+(defmacro def-self-env-spec (&rest spec)
   "Define default Emacs env SPEC of current platform on current Emacs version, 
 ignore it if you don't like it. 
  
 \(FN SPEC)"
+  (declare (indent 0))
   (let ((_spec_ (self-symbol 'env-spec)))
-    `(defvar ,_spec_ ,spec)))
+    `(defvar ,_spec_ (list ,@spec))))
 
 
 (defmacro def-self-package-spec (&rest spec)
