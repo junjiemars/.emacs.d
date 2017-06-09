@@ -180,7 +180,7 @@ If (COND VERSION EMACS-VERSION) yields nil, and there are no ELSE’s, the value
   (declare (indent 3))
   (if (version-supported-p `,cond `,version)
       `,then
-    `(progn ,@else)))
+    `(progn% ,@else)))
 
 
 (defmacro version-supported-when (cond version &rest body)
