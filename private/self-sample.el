@@ -62,7 +62,7 @@
                clojure-mode
                clojure-mode-extra-font-locking
                inf-clojure)
-   :setup '("setup-clojure.el"))
+   :setup `(,(emacs-home* "config/setup-clojure.el")))
   (list
    :cond (lambda ()
            (and (version-supported-p '<= 24.4)
@@ -78,7 +78,7 @@
            (and (bin-exists-p "erlang")
                 (bin-exists-p "lfe")))
    :packages '(lfe-mode)
-   :setup '("setup-lfe.el"))
+   :setup `(,(emacs-home* "config/setup-lfe.el")))
   (list
    :cond (lambda ()
            (version-supported-p '<= 25.1))
@@ -88,7 +88,7 @@
            (and (version-supported-p '<= 24.4)
                 (bin-exists-p "git")))
    :packages '(magit)
-   :setup '("setup-magit.el"))
+   :setup `(,(emacs-home* "config/setup-magit.el")))
   (list
    :cond (lambda ()
            (and (version-supported-p '<= 23.2)
@@ -98,8 +98,9 @@
    :cond (lambda ()
            (or (bin-exists-p "sbcl")))
    :packages '(slime)
-   :setup '("setup-slime.el"))
+   :setup `(,(emacs-home* "config/setup-slime.el")))
   (list
    :cond (lambda () t)
    :packages '(sx)))
+
 

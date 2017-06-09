@@ -73,19 +73,20 @@
 (package-initialize)
 
 
-(defvar basic-package-spec (list (list
-                                  :cond t
-                                  :packages '(aggressive-indent
-                                              bing-dict
-                                              ido-ubiquitous
-                                              markdown-mode
-                                              paredit
-                                              rainbow-delimiters
-                                              smex
-                                              tagedit)
-                                  :setup '("setup-lisp.el"
-                                           "setup-navigation.el"
-                                           "setup-python.el"))))
+(defvar basic-package-spec
+  (list (list
+         :cond t
+         :packages '(aggressive-indent
+                     bing-dict
+                     ido-ubiquitous
+                     markdown-mode
+                     paredit
+                     rainbow-delimiters
+                     smex
+                     tagedit)
+         :setup `(,(emacs-home* "config/setup-lisp.el")
+                  ,(emacs-home* "config/setup-navigation.el")
+                  ,(emacs-home* "config/setup-python.el")))))
 
 
 
@@ -99,7 +100,7 @@
 
 (let ((spec (parse-package-spec basic-package-spec)))
   (install-package! (plist-get spec :packages))
-  (compile-and-load-elisp-files (plist-get spec :setup) "config/"))
+  (compile-and-load-elisp-files vdir (plist-get spec :setup)))
 
 
 
@@ -110,6 +111,6 @@
  "package-spec"
  (let ((spec (parse-package-spec _val_)))
    (install-package! (plist-get spec :packages))
-   (compile-and-load-elisp-files (plist-get spec :setup) "config/")))
+   (compile-and-load-elisp-files vdir (plist-get spec :setup))))
 
 

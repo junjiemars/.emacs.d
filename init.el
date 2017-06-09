@@ -60,20 +60,19 @@ and return it."
                   (file-name-nondirectory file))))))
 
 
-(defmacro compile-and-load-elisp-files (files subdir)
-  "Compile and load the elisp FILES under the SUBDIR."
-  `(let ((d ,(emacs-home* subdir))
-         (v (v-home! ,subdir)))
-     (dolist (f ,files)
-       (let ((from (concat d f)))
-         (if (file-exists-p from)
-             (let ((c (replace-regexp-in-string "\.el$" "\.elc" f)))
-               (when (or (not (file-exists-p (concat v c)))
-                         (file-newer-than-file-p from (concat v c)))
-                 (copy-file from (concat v f) t)
-                 (byte-compile-file (concat v f)))
-               (load (concat v c)))
-           (message "#Skip compile and load %s.done" from))))))
+(defun compile-and-load-elisp-files (vdir files)
+  "Compile and load the elisp FILES, save compiled files in VDIR."
+  (dolist (f files)
+    (let ((c (v-path! f vdir "elc")))
+      (if c
+          (progn
+            (when (or (not (file-exists-p c))
+                      (file-newer-than-file-p f c))
+              (let ((s (v-path! f vdir)))
+                (copy-file f s t)
+                (byte-compile-file s)))
+            (load c))
+        (message "#Skip compile and load %s.done" f)))))
 
 
 (defmacro clean-compiled-files ()
@@ -380,14 +379,17 @@ self things.
 
 
 ;; Load self env
-(compile-and-load-elisp-files '("self.el") "private/")
+(compile-and-load-elisp-files
+ vdir
+ `(,(emacs-home* "private/self.el")))
 
 
 ;; Load ui, shell, basic env:
-(compile-and-load-elisp-files '("boot.el"
-                                "shell.el"
-                                "basic.el")
-                              "config/")
+(compile-and-load-elisp-files
+ vdir
+ `(,(emacs-home* "config/boot.el")
+   ,(emacs-home* "config/shell.el")
+   ,(emacs-home* "config/basic.el")))
 
 ;; Self do prelogue ...
 (self-safe-call prelogue)
@@ -396,16 +398,19 @@ self things.
 (package-supported-p
   ;; Basic and self package setup
   ;;(package-initialize)
-  (compile-and-load-elisp-files '("module.el")  "config/"))
+  (compile-and-load-elisp-files
+   vdir
+   `(,(emacs-home* "config/module.el"))))
 
 
 (compile-and-load-elisp-files
  ;; Compile and load non-package-required elisp files
- '("editing.el"
-   "debugger.el"
-   "financial.el"
-   "tags.el"
-   "utils.el") "config/")
+ vdir
+ `(,(emacs-home* "config/editing.el")
+   ,(emacs-home* "config/debugger.el")
+   ,(emacs-home* "config/financial.el")
+   ,(emacs-home* "config/tags.el")
+   ,(emacs-home* "config/utils.el")))
 
 
 ;; Self do epilogue ...
