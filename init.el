@@ -116,13 +116,20 @@ and return it."
      (kill-emacs 0)))
 
 
+(defmacro progn% (&rest exps)
+  "Return an expression equivalent to `(progn ,@EXPS).
+
+\(fn EXPS...\)"
+  (if (cdr exps) `(progn ,@exps) (car exps)))
+
+
 (defmacro package-supported-p (&rest body)
   "Run BODY code if supports package.
 
 \(fn BODY...)"
   (declare (indent 0))
   (when (>= emacs-major-version 24)
-    `(progn ,@body)))
+    `(progn% ,@body)))
 
 
 (defmacro platform-supported-if (os then &rest else)
