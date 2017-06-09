@@ -203,7 +203,7 @@ If in terminal mode, and there are no ELSE’s, the value is nil.
   (declare (indent 1))
   (if (display-graphic-p)
       `,then
-    `(progn ,@else)))
+    `(progn% ,@else)))
 
 
 (defmacro graphic-supported-p (&rest body)
