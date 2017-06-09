@@ -150,7 +150,7 @@ If (eq system-type OS) yields nil, and there are no ELSE’s, the value is nil.
 
 \(fn OS BODY...)"
   (declare (indent 1))
-  `(platform-supported-if ,os (progn ,@body)))
+  `(platform-supported-if ,os (progn% ,@body)))
 
 
 (defmacro platform-supported-unless (os &rest body)
