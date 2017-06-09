@@ -267,7 +267,7 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
   (declare (indent 2))
   (if (fboundp fn)
       `,then
-    `(progn ,@else)))
+    `(progn% ,@else)))
 
 
 (defmacro safe-fn-when (fn &rest body)
