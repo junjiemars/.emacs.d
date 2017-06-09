@@ -48,6 +48,11 @@
     `,_vfile_))
 
 
+(defun base-file-name (file)
+  "Return the base name of the FILENAME: no directory, no extension."
+  (file-name-sans-extension (file-name-nondirectory file)))
+
+
 (defun v-path! (file vdir &optional extension)
   "Make the versionized VDIR base on the existing FILE's directory 
 and return it."
@@ -56,7 +61,7 @@ and return it."
       (when (not (file-exists-p v))
         (make-directory-internal v))
       (concat v (if (and extension (file-name-extension file))
-                    (concat (file-name-base file) "." extension)
+                    (concat (base-file-name file) "." extension)
                   (file-name-nondirectory file))))))
 
 
