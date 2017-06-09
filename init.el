@@ -121,12 +121,14 @@ If (eq system-type OS) yields nil, and there are no ELSE’s, the value is nil.
       `,then
     `(progn ,@else)))
 
+
 (defmacro platform-supported-when (os &rest body)
   "Run BODY code if on specified OS platform.
 
 \(fn OS BODY...)"
   (declare (indent 1))
   `(platform-supported-if ,os (progn ,@body)))
+
 
 (defmacro platform-supported-unless (os &rest body)
   "Run BODY code unless on specified OS platform.
