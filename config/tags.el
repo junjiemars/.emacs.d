@@ -33,9 +33,9 @@
   `(let ((lisp-ff (lambda (f a) (string-match "\\\.el$" f)))
          (home-df
           (lambda (d a)
-            (or
-             (not (string-match "^\\\..*/$\\|^theme/$\\|^g_.*/$\\|^t_.*/$\\|^private/$" d))
-             (string-match "elpa/" a)))))
+            (not
+             (string-match
+              "^\\\..*/$\\|^theme/$\\|^g_.*/$\\|^t_.*/$\\|^private/$" d)))))
      (make-tags emacs-home ,tags-file lisp-ff home-df ,renew)))
 
 
