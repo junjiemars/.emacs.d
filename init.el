@@ -190,7 +190,7 @@ sequentially and return value of last one, or nil if there are none.
 
 \(fn COND VERSION BODY...)"
   (declare (indent 2))
-  `(version-supported-if ,cond ,version (progn ,@body)))
+  `(version-supported-if ,cond ,version (progn% ,@body)))
 
 
 (defmacro graphic-supported-if (then &rest else)
