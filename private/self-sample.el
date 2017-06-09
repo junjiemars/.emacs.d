@@ -39,7 +39,9 @@
                   :size 13
                   :allowed nil)
   :desktop (list :files-not-to-save "\.el\.gz\\|~$"
-                 :allowed nil)
+                 :buffers-not-to-save "^TAGS\\|\\.log"
+                 :modes-not-to-save '(dired-mode Info-mode info-lookup-mode)
+                 :allowed t)
   (comment
    :socks (list :port 11032
                 :server "127.0.0.1"

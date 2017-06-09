@@ -181,12 +181,20 @@
    (let ((desktop (plist-get _val_ :desktop)))
      (when (and desktop
                 (plist-get desktop :allowed))
-       (let ((not-to-save (plist-get desktop :files-not-to-save)))
-         (setq-default desktop-files-not-to-save not-to-save)
-         (version-supported-if
-             >= 23
-             (desktop-save (v-home! ".desktop/"))
-           (desktop-save (v-home! ".desktop/") t)))))))
+       
+       (let ((f (plist-get desktop :files-not-to-save)))
+         (setq-default desktop-files-not-to-save f))
+       
+       (let ((b (plist-get desktop :buffers-not-to-save)))
+         (setq-default desktop-buffers-not-to-save b))
+       
+       (dolist (m (plist-get desktop :modes-not-to-save))
+         (add-to-list 'desktop-modes-not-to-save m))
+       
+       (version-supported-if
+           >= 23
+           (desktop-save (v-home! ".desktop/"))
+         (desktop-save (v-home! ".desktop/") t))))))
 
 
 (add-hook 'after-init-hook #'self-desktop-read!)
