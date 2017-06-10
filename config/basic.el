@@ -1,3 +1,4 @@
+;;;; -*- lexical-binding:t -*-
 ;;;;
 ;; Basic
 ;;;;
@@ -42,31 +43,39 @@
   (global-set-key (kbd "C-c l") 'toggle-linum-mode))
 
 
-;; elisp basic setting
-(add-hook 'emacs-lisp-mode-hook
-          (lambda ()
-            (enable-eldoc-mode)
-            (version-supported-if
-                <= 24.4
-                (local-set-key (kbd "TAB") #'completion-at-point)
-              (local-set-key (kbd "TAB") #'lisp-complete-symbol))
-            (cond
-             ((string= "*scratch*" (buffer-name))
-              (local-set-key (kbd "RET")
-                             (lambda ()
-                               (interactive)
-                               (eval-print-last-sexp)
-                               (newline)))
-              (version-supported-when > 24
-                (local-set-key (kbd "C-j")
-                               (lambda ()
-                                 (interactive)
-                                 (newline-and-indent))))))))
 
 
-;; ielm 
-(add-hook 'ielm-mode-hook
-          (lambda () (enable-eldoc-mode)))
+(defun set-emacs-lisp-mode! ()
+  "Elisp basic settings."
+  (enable-eldoc-mode)
+  (version-supported-if
+      <= 24.4
+      (local-set-key (kbd "TAB") #'completion-at-point)
+    (local-set-key (kbd "TAB") #'lisp-complete-symbol))
+  (cond
+   ((string= "*scratch*" (buffer-name))
+    (local-set-key (kbd "RET")
+                   (lambda ()
+                     (interactive)
+                     (eval-print-last-sexp)
+                     (newline)))
+    (version-supported-when > 24
+      (local-set-key (kbd "C-j")
+                     (lambda ()
+                       (interactive)
+                       (newline-and-indent)))))))
+
+;; emacs lisp basic 
+(add-hook 'emacs-lisp-mode-hook #'set-emacs-lisp-mode!)
+
+
+(defun set-ielm-mode! ()
+  "IELM basic settings."
+  (enable-eldoc-mode))
+
+
+;; ielm basic
+(add-hook 'ielm-mode-hook #'set-ielm-mode!)
 
 
 (defmacro safe-setq-inferior-lisp-program (lisp &optional force)
