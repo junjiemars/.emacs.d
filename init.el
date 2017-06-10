@@ -379,7 +379,7 @@ self things.
 (defmacro self-safe-call* (var &rest body)
   (let ((_var_ (self-symbol var)))
     (when (boundp _var_)
-      `(let ((_val_ (symbol-value ',_var_)))
+      `(let ((*val* (symbol-value ',_var_)))
          ,@body))))
 
 

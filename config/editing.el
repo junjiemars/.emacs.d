@@ -169,7 +169,7 @@
 
   (self-safe-call*
    "env-spec"
-   (let ((desktop (plist-get _val_ :desktop)))
+   (let ((desktop (plist-get *val* :desktop)))
      (when (and desktop
                 (plist-get desktop :allowed))
        (desktop-read (v-home* ".desktop/"))))))
@@ -178,7 +178,7 @@
 (defun self-desktop-save! ()
   (self-safe-call*
    "env-spec"
-   (let ((desktop (plist-get _val_ :desktop)))
+   (let ((desktop (plist-get *val* :desktop)))
      (when (and desktop
                 (plist-get desktop :allowed))
        

@@ -110,6 +110,6 @@
 ;; Load self packages spec
 (self-safe-call*
  "package-spec"
- (parse-package-spec _val_ vdir))
+ (parse-package-spec *val* vdir))
 
 

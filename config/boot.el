@@ -42,7 +42,7 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
       < 23
     (self-safe-call*
      "env-spec"
-     (let ((theme (plist-get _val_ :theme)))
+     (let ((theme (plist-get *val* :theme)))
        (if (and theme (plist-get theme :allowed))
            (self-load-theme!
             (plist-get theme :path)
@@ -78,7 +78,7 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
 (graphic-supported-p 
   (self-safe-call*
    "env-spec"
-   (let ((font (plist-get _val_ :font)))
+   (let ((font (plist-get *val* :font)))
      (when (and font (plist-get font :allowed))
        (self-default-font! (plist-get font :name))))))
 
@@ -100,7 +100,7 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
 (graphic-supported-p
   (self-safe-call*
    "env-spec"
-   (let ((cjk (plist-get _val_ :cjk-font)))
+   (let ((cjk (plist-get *val* :cjk-font)))
      (when (and cjk (plist-get cjk :allowed))
        (self-cjk-font!
         (plist-get cjk :name)
@@ -154,7 +154,7 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
 ;; Load socks settings
 (self-safe-call*
  "env-spec"
- (let ((socks (plist-get _val_ :socks)))
+ (let ((socks (plist-get *val* :socks)))
    (when (and socks (plist-get socks :allowed))
      (start-socks! (plist-get socks :port)
                    (plist-get socks :server)
