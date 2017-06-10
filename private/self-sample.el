@@ -59,7 +59,11 @@
   (list
    :cond (lambda ()
            (and (version-supported-p '<= 24.4)
-                (bin-exists-p "java")))
+                (platform-supported-if
+                    darwin
+                    (zerop (shell-command
+                            "/usr/libexec/java_home -V &>/dev/null"))
+                  (bin-exists-p "java"))))
    :packages '(cider
                clojure-mode
                clojure-mode-extra-font-locking
