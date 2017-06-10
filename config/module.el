@@ -1,5 +1,6 @@
+;; -*- lexical-binding:t -*-
 ;;;;
-;; Package Management
+;; Moduel Management 
 ;;;;
 
 
@@ -51,7 +52,7 @@
       not-installed-packages)))
 
 
-(defun parse-package-spec (spec vdir)
+(defun parse-package-spec (spec dir)
   "Parse SPEC, install packages and setup."
   (dolist (s spec)
     (let ((pred (plist-get s :cond)))
@@ -63,7 +64,7 @@
         (let ((setup (plist-get s :setup)))
           (when setup
             (cond
-             ((listp setup) (compile-and-load-elisp-files vdir setup))
+             ((listp setup) (compile-and-load-elisp-files dir setup))
              ((functionp setup) (funcall setup)))))))))
 
 
@@ -96,7 +97,7 @@
 (version-supported-when
     <= 25.1
   (safe-fn-when package--save-selected-packages
-    (defun package--save-selected-packages (&optional value)
+    (defun package--save-selected-packages (&optional _)
       "Fake `package-selected-packages' to nil."
       nil)))
 
