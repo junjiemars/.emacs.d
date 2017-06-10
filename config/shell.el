@@ -1,3 +1,4 @@
+;;;; -*- lexical-binding:t -*-
 ;;;;
 ;; Shell environment base on OS
 ;;;;
@@ -18,13 +19,13 @@
 
 (defmacro set-default-shell! (path regexp)
   "Set default SHELL"
-  `(progn
-     ,(when (or (null (getenv "SHELL"))
-                (not (string-match regexp (getenv "SHELL"))))
-        `(setenv "SHELL" (file-name-base ,path)))
-     ,(when (or (null shell-file-name)
-                (not (string-match regexp shell-file-name)))
-        `(setq shell-file-name ,path))))
+  `(progn%
+    ,(when (or (null (getenv "SHELL"))
+               (not (string-match regexp (getenv "SHELL"))))
+       `(setenv "SHELL" (file-name-base ,path)))
+    ,(when (or (null shell-file-name)
+               (not (string-match regexp shell-file-name)))
+       `(setq shell-file-name ,path))))
 
   
 (defmacro set-path-env! ()
@@ -40,9 +41,9 @@
 
 (defmacro path-env ()
   "Return the `cons' of virtualized `path-env' source and compiled file name."
-  (let ((_v_ (v-home* "config/")))
-    `(cons ,(concat _v_ ".path-env.el")
-           ,(concat _v_ ".path-env.elc"))))
+  (let ((*v* (v-home* "config/")))
+    `(cons ,(concat *v* ".path-env.el")
+           ,(concat *v* ".path-env.elc"))))
 
   
 (defun save-path-env ()
