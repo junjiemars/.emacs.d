@@ -87,7 +87,8 @@
    :setup `(,(emacs-home* "config/setup-lfe.el")))
   (list
    :cond (lambda ()
-           (version-supported-p '<= 25.1))
+           (and (platform-supported-unless darwin t)
+                (version-supported-p '<= 25.1)))
    :packages '(ereader))
   (list
    :cond (lambda ()
