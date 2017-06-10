@@ -44,7 +44,7 @@
   (let ((_vdir_ (v-home* subdir))
         (_vfile_ (v-home* subdir file)))
     (when (not (file-exists-p _vdir_))
-      (make-directory-internal _vdir_))
+      (make-directory _vdir_ t))
     `,_vfile_))
 
 
@@ -53,13 +53,13 @@
   (file-name-sans-extension (file-name-nondirectory file)))
 
 
-(defun v-path! (file vdir &optional extension)
+(defun v-path! (file dir &optional extension)
   "Make the versionized VDIR base on the existing FILE's directory 
 and return it."
   (when (and vdir (file-exists-p file))
-    (let ((v (concat (file-name-directory file) vdir "/")))
+    (let ((v (concat (file-name-directory file) dir "/")))
       (when (not (file-exists-p v))
-        (make-directory-internal v))
+        (make-directory v t))
       (concat v (if (and extension (file-name-extension file))
                     (concat (base-file-name file) "." extension)
                   (file-name-nondirectory file))))))
