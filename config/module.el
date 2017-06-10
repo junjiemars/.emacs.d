@@ -14,21 +14,28 @@
 
 ;; define package repositories
 
-(setq-default
- package-archives
- (append (list '("gnu" . "https://elpa.gnu.org/packages/")
-               '("melpa-stable" . "https://stable.melpa.org/packages/"))
-         (version-supported-when
-             <= 25.1
-           (list '("melpa" . "https://melpa.org/packages/")))))
+(let ((module-initialized nil))
+  
+  (defun init-package-repo! ()
+    (when (not module-initialized)
+      (setq-default
+       package-archives
+       (append (list '("gnu" . "https://elpa.gnu.org/packages/")
+                     '("melpa-stable" . "https://stable.melpa.org/packages/"))
+               (version-supported-when
+                   <= 25.1
+                 (list '("melpa" . "https://melpa.org/packages/")))))
 
+      (version-supported-when
+          <= 25.1
+        (setq-default package-archive-priorities
+                      (list '("melpa-stable" . 10)
+                            '("melpa" . 5)
+                            '("gnu" . 0))))
 
-(version-supported-when
-    <= 25.1
-  (setq-default package-archive-priorities
-                (list '("melpa-stable" . 10)
-                      '("melpa" . 5)
-                      '("gnu" . 0))))
+      (package-refresh-contents)
+
+      (setq module-initialized t))))
 
 
 
@@ -40,7 +47,7 @@
                            packages))))
     (when not-installed-packages
       (unless dry
-        (package-refresh-contents))
+        (init-package-repo!))
       (message "#Installing the missing %d packages: %s"
                (length not-installed-packages)
                not-installed-packages)
