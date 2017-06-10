@@ -418,11 +418,12 @@ self things.
 (compile-and-load-elisp-files
  ;; Compile and load non-package-required elisp files
  vdir
- `(,(emacs-home* "config/editing.el")
-   ,(emacs-home* "config/debugger.el")
+ `(,(emacs-home* "config/debugger.el")
+   ,(emacs-home* "config/editing.el")
    ,(emacs-home* "config/financial.el")
    ,(emacs-home* "config/tags.el")
-   ,(emacs-home* "config/utils.el")))
+   ,(emacs-home* "config/utils.el")
+   ,(emacs-home* "config/session.el")))
 
 
 ;; Self do epilogue ...
