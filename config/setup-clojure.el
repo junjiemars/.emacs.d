@@ -3,17 +3,15 @@
 ;;;;
 
 
-
+(defun set-clojure-mode! ()
+  (enable-eldoc-mode)
+  (enable-paredit-mode)
+  (subword-mode)
+  (rainbow-delimiters-mode)
+  (aggressive-indent-mode)
+  (inf-clojure-minor-mode))
 ;; clojure mode hooks
-(add-hook 'clojure-mode-hook
-          (lambda ()
-            ;; (safe-setq inferior-lisp-program "boot repl")
-            (enable-eldoc-mode)
-            (enable-paredit-mode)
-            (subword-mode)
-            (rainbow-delimiters-mode)
-            (aggressive-indent-mode)
-            (inf-clojure-minor-mode)))
+(add-hook 'clojure-mode-hook #'set-clojure-mode!)
 
 
 ;; use clojure mode for other extensions
@@ -30,14 +28,14 @@
 
 
 
+(defun set-inf-clojure-mode! ()
+  (enable-eldoc-mode)
+  (enable-paredit-mode)
+  (subword-mode)
+  (rainbow-delimiters-mode)
+  (aggressive-indent-mode))
 ;; minor modes for inf-clojure
-(add-hook 'inf-clojure-mode-hook
-          (lambda ()
-            (enable-eldoc-mode)
-            (enable-paredit-mode)
-            (subword-mode)
-            (rainbow-delimiters-mode)
-            (aggressive-indent-mode)))
+(add-hook 'inf-clojure-mode-hook #'set-inf-clojure-mode!)
 
 
 (defadvice inf-clojure (before inf-clojure-before compile)
@@ -74,13 +72,13 @@
 (safe-setq cider-repl-wrap-history t)
 
 
+(defun set-cider-repl-mode! ()
+  (enable-eldoc-mode)
+  (enable-paredit-mode)
+  (rainbow-delimiters-mode)
+  (aggressive-indent-mode)  )
 ;; minor modes for cider
-(add-hook 'cider-repl-mode-hook
-          (lambda ()
-            (enable-eldoc-mode)
-            (enable-paredit-mode)
-            (rainbow-delimiters-mode)
-            (aggressive-indent-mode)))
+(add-hook 'cider-repl-mode-hook #'set-cider-repl-mode!)
 
 
 ;; key bindings

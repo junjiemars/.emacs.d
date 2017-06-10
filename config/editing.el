@@ -114,19 +114,22 @@
 (setq-default tab-width 4)
 
 
-;; cc mode indent level
-(add-hook 'c-mode-common-hook
-          (lambda ()
-            (safe-setq indent-tabs-mode nil)
-            (safe-setq c-basic-offset 4)))
+(defun set-c-mode! ()
+  (safe-setq indent-tabs-mode nil)
+  (safe-setq c-basic-offset 4))
+
+(add-hook 'c-mode-common-hook #'set-c-mode!)
 
 
-;; shell script mode tab-width
-(add-hook 'sh-mode-hook (lambda () (safe-setq tab-width 2)))
+(defun set-sh-mode! ()
+  (safe-setq tab-width 2))
+
+(add-hook 'sh-mode-hook #'set-sh-mode!)
 
 (comment
- ;; Makefile tab-width
- (add-hook 'makefile-mode-hook (lambda () (safe-setq tab-width 4))))
+ (defun set-makefile-mode! ()
+   (safe-setq tab-width 4))
+ (add-hook 'makefile-mode-hook #'set-makefile-mode!))
 
 
 ;; preferred coding system

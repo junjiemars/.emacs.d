@@ -25,25 +25,18 @@
 
 
 
+(defun set-slime-repl-mode! ()
+  (safe-fn-when slime-close-all-parens-in-sexp
+    (local-set-key (kbd "C-c C-]")
+                   'slime-close-all-parens-in-sexp))
+  (safe-fn-when slime-selector 
+    (global-set-key (kbd "C-c s")
+                    'slime-selector)))
+
+
 ;; setup sbcl, it's slow process so be adviced
 (defadvice slime (before slime-before compile)
   (set-default 'slime-lisp-implementations (common-lisp-implementations))
-  (add-hook
-   'slime-repl-mode-hook
-   (lambda ()
-     (safe-fn-when slime-close-all-parens-in-sexp
-       (local-set-key (kbd "C-c C-]")
-                      'slime-close-all-parens-in-sexp))
-     (safe-fn-when slime-selector 
-       (global-set-key (kbd "C-c s")
-                       'slime-selector))))
+  (add-hook 'slime-repl-mode-hook #'set-slime-repl-mode!)
   (slime-setup '(slime-fancy slime-asdf)))
-
-
-
-
-
-
-
-
 

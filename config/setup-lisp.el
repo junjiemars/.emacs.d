@@ -3,20 +3,21 @@
 ;;;;
 
 
+(defun set-lisp-basic-mode! ()
+  ;; structured editing of s-expression data
+  (enable-paredit-mode)
+  ;; enable automatically adjust the identation of code
+  (aggressive-indent-mode)
+  ;; hilighting parentheses,brackets,and braces in minor mode
+  (rainbow-delimiters-mode))
+
 ;; basic lisp mode 
 (dolist (hook '(emacs-lisp-mode-hook
                 ielm-mode-hook
                 scheme-mode-hook
                 lisp-mode-hook
                 lisp-interaction-mode-hook))
-  (add-hook hook
-            (lambda ()
-              ;; structured editing of s-expression data
-              (enable-paredit-mode)
-              ;; enable automatically adjust the identation of code
-              (aggressive-indent-mode)
-              ;; hilighting parentheses,brackets,and braces in minor mode
-              (rainbow-delimiters-mode))))
+  (add-hook hook #'set-lisp-basic-mode!))
 
 
 ;; Enable paredit in minibuffer on gnu/linux platform
