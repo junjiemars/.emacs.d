@@ -114,11 +114,11 @@
 (setq-default tab-width 4)
 
 
-(defun set-c-mode! ()
+(defun set-c-mode-common! ()
   (safe-setq indent-tabs-mode nil)
   (safe-setq c-basic-offset 4))
 
-(add-hook 'c-mode-common-hook #'set-c-mode!)
+(add-hook 'c-mode-common-hook #'set-c-mode-common!)
 
 
 (defun set-sh-mode! ()
