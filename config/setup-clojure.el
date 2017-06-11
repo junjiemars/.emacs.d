@@ -36,8 +36,6 @@
   (subword-mode)
   (rainbow-delimiters-mode)
   (aggressive-indent-mode))
-;; minor modes for inf-clojure
-(add-hook 'inf-clojure-mode-hook #'set-inf-clojure-mode!)
 
 
 (defadvice inf-clojure (before inf-clojure-before compile)
@@ -46,7 +44,9 @@
     ;; Fix returning nothing in Windows
     (let ((jlinerc "~/.jline.rc"))
       (when (not (file-exists-p jlinerc))
-        (write-region "jline.terminal=unsupported" "" jlinerc)))))
+        (write-region "jline.terminal=unsupported" "" jlinerc))))
+  ;; minor modes for inf-clojure
+  (add-hook 'inf-clojure-mode-hook #'set-inf-clojure-mode!))
 
 
 
@@ -78,9 +78,13 @@
   (enable-eldoc-mode)
   (enable-paredit-mode)
   (rainbow-delimiters-mode)
-  (aggressive-indent-mode)  )
-;; minor modes for cider
-(add-hook 'cider-repl-mode-hook #'set-cider-repl-mode!)
+  (aggressive-indent-mode))
+
+
+(defadvice cider-jack-in (before cider-jack-in-before compile)
+  ;; minor modes for cider
+  (add-hook 'cider-repl-mode-hook #'set-cider-repl-mode!))
+
 
 
 ;; key bindings
