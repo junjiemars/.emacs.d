@@ -10,8 +10,7 @@
   (enable-paredit-mode)
   (subword-mode)
   (rainbow-delimiters-mode)
-  (aggressive-indent-mode)
-  (inf-clojure-minor-mode))
+  (aggressive-indent-mode))
 ;; clojure mode hooks
 (add-hook 'clojure-mode-hook #'set-clojure-mode!)
 
@@ -21,32 +20,6 @@
 (add-to-list 'auto-mode-alist '("\\.boot$" . clojure-mode))
 (add-to-list 'magic-mode-alist '(".* boot" . clojure-mode))
 
-
-
-;;;;
-;; inferior
-;;;;
-
-
-
-
-(defun set-inf-clojure-mode! ()
-  (enable-eldoc-mode)
-  (enable-paredit-mode)
-  (subword-mode)
-  (rainbow-delimiters-mode)
-  (aggressive-indent-mode))
-
-
-(defadvice inf-clojure (before inf-clojure-before compile)
-  (platform-supported-when
-      windows-nt
-    ;; Fix returning nothing in Windows
-    (let ((jlinerc "~/.jline.rc"))
-      (when (not (file-exists-p jlinerc))
-        (write-region "jline.terminal=unsupported" "" jlinerc))))
-  ;; minor modes for inf-clojure
-  (add-hook 'inf-clojure-mode-hook #'set-inf-clojure-mode!))
 
 
 

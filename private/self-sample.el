@@ -66,8 +66,7 @@
                   (bin-exists-p "java"))))
    :packages '(cider
                clojure-mode
-               clojure-mode-extra-font-locking
-               inf-clojure)
+               clojure-mode-extra-font-locking)
    :setup `(,(emacs-home* "config/setup-clojure.el")))
   (list
    :cond (lambda ()
