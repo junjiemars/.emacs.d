@@ -76,7 +76,7 @@
                docker-tramp))
   (list
    :cond (lambda ()
-           (bin-exists-p "erlang"))
+           (bin-exists-p "erlc"))
    :packages '(erlang))
   (list
    :cond (lambda ()
