@@ -423,7 +423,7 @@ self things.
    ,(emacs-home* "config/financial.el")
    ,(emacs-home* "config/tags.el")
    ,(emacs-home* "config/utils.el")
-   ,(emacs-home* "config/session.el")))
+   ,(emacs-home* "config/memory.el")))
 
 
 ;; Self do epilogue ...
