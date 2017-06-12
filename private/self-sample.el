@@ -80,7 +80,7 @@
    :packages '(erlang))
   (list
    :cond (lambda ()
-           (and (bin-exists-p "erlang")
+           (and (bin-exists-p "erlc")
                 (bin-exists-p "lfe")))
    :packages '(lfe-mode)
    :setup `(,(emacs-home* "config/setup-lfe.el")))
