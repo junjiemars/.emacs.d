@@ -12,29 +12,27 @@
 
 
 
-;; define package repositories
-(defvar module-initialized nil)
+(defvar module-initialized nil
+  "Just initialize package repository once.")
+
 
 (defun initialize-package-repository! ()
-  (when (not module-initialized)
-    (setq-default
-     package-archives
-     (append (list '("gnu" . "https://elpa.gnu.org/packages/")
-                   '("melpa-stable" . "https://stable.melpa.org/packages/"))
-             (version-supported-when
-                 <= 25.1
-               (list '("melpa" . "https://melpa.org/packages/")))))
+  (setq-default
+   package-archives
+   (append (list '("gnu" . "https://elpa.gnu.org/packages/")
+                 '("melpa-stable" . "https://stable.melpa.org/packages/"))
+           (version-supported-when
+               <= 25.1
+             (list '("melpa" . "https://melpa.org/packages/")))))
 
-    (version-supported-when
-        <= 25.1
-      (setq-default package-archive-priorities
-                    (list '("melpa-stable" . 10)
-                          '("melpa" . 5)
-                          '("gnu" . 0))))
+  (version-supported-when
+      <= 25.1
+    (setq-default package-archive-priorities
+                  (list '("melpa-stable" . 10)
+                        '("melpa" . 5)
+                        '("gnu" . 0))))
 
-    (package-refresh-contents)
-
-    (setq module-initialized t)))
+  (package-refresh-contents))
 
 
 (defun install-package! (packages &optional dry)
@@ -45,7 +43,9 @@
                            packages))))
     (when not-installed-packages
       (unless dry
-        (initialize-package-repository!))
+        (when (not module-initialized)
+          (initialize-package-repository!)
+          (setq module-initialized t)))
       (message "#Installing the missing %d packages: %s"
                (length not-installed-packages)
                not-installed-packages)
