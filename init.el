@@ -54,9 +54,9 @@
 
 
 (defun v-path! (file dir &optional extension)
-  "Make the versionized VDIR base on the existing FILE's directory 
+  "Make the versionized DIR base on the existing FILE's directory 
 and return it."
-  (when (and vdir (file-exists-p file))
+  (when (and dir (file-exists-p file))
     (let ((v (concat (file-name-directory file) dir "/")))
       (when (not (file-exists-p v))
         (make-directory v t))
