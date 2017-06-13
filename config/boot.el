@@ -43,13 +43,10 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
     (self-safe-call*
      "env-spec"
      (let ((theme (plist-get *val* :theme)))
-       (if (and theme (plist-get theme :allowed))
-           (self-load-theme!
-            (plist-get theme :path)
-            (plist-get theme :name))
+       (when (and theme (plist-get theme :allowed))
          (self-load-theme!
-          (emacs-home* "theme/")
-          'tomorrow-night-eighties))))))
+          (plist-get theme :path)
+          (plist-get theme :name)))))))
 
 
 
