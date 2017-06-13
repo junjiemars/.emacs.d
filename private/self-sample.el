@@ -31,8 +31,8 @@
 ;; define env-spec
 (def-self-env-spec
   :theme (list :name 'atom-one-dark
-               :path (emacs-home* "private/atom-one-dark-theme")
-               :allowed t)
+               :path (emacs-home* "theme/")
+               :allowed nil)
   :font (list :name "Monaco-18"
               :allowed t)
   :cjk-font (list :name "Microsoft Yahei"
