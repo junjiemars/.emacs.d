@@ -65,15 +65,15 @@ and return it."
                   (file-name-nondirectory file))))))
 
 
-(defun compile-and-load-elisp-files (vdir files)
-  "Compile and load the elisp FILES, save compiled files in VDIR."
+(defun compile-and-load-elisp-files (dir files)
+  "Compile and load the elisp FILES, save compiled files in DIR."
   (dolist (f files)
-    (let ((c (v-path! f vdir "elc")))
+    (let ((c (v-path! f dir "elc")))
       (if c
           (progn
             (when (or (not (file-exists-p c))
                       (file-newer-than-file-p f c))
-              (let ((s (v-path! f vdir)))
+              (let ((s (v-path! f dir)))
                 (copy-file f s t)
                 (byte-compile-file s)))
             (load c))
