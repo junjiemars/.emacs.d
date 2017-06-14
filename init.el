@@ -383,10 +383,6 @@ self things.
 
 
 
-;; Versionized dirs
-(setq-default recentf-save-file (v-home! ".recentf/" "recentf"))
-(setq-default savehist-file (v-home! ".minibuffer/" "history"))
-
 
 ;; Load strap
 (compile-and-load-elisp-file* v-dir (emacs-home* "config/strap.el"))

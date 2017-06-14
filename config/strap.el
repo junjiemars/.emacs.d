@@ -19,3 +19,6 @@ and return it."
 
 
 
+;; Versionized dirs
+(setq-default recentf-save-file (v-home! ".recentf/" "recentf"))
+(setq-default savehist-file (v-home! ".minibuffer/" "history"))
