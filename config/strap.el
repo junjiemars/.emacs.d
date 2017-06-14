@@ -22,3 +22,14 @@ and return it."
 ;; Versionized dirs
 (setq-default recentf-save-file (v-home! ".recentf/" "recentf"))
 (setq-default savehist-file (v-home! ".minibuffer/" "history"))
+
+
+(defmacro save-sexpr-to-file (sexpr filename)
+  "Save `sexpr' to a file"
+  `(save-excursion
+     (let ((sexpr-buffer (find-file-noselect ,filename)))
+       (set-buffer sexpr-buffer)
+       (erase-buffer)
+       (print ,sexpr sexpr-buffer)
+       (save-buffer)
+       (kill-buffer sexpr-buffer))))

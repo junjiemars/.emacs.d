@@ -274,7 +274,7 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
 
 \(fn FN BODY...)"
   (declare (indent 1))
-  `(safe-fn-if ,fn (progn ,@body)))
+  `(safe-fn-if ,fn (progn% ,@body)))
 
 
 (defmacro safe-fn-unless (fn &rest body)

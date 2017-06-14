@@ -23,7 +23,7 @@
 ;; Theme and Font
 
 
-(defmacro self-load-theme! (dir name)
+(defmacro self-load-theme* (dir name)
   "Load THEME of current platform from THEME-DIR by THEME-NAME, if THEME-DIR
 or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
 
@@ -40,13 +40,17 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
 (graphic-supported-p
   (version-supported-when
       < 23
+    
     (self-safe-call*
      "env-spec"
+     
+     (defun self-load-theme! (dir name)
+       (self-load-theme* dir name))
+     
      (let ((theme (plist-get *val* :theme)))
        (when (and theme (plist-get theme :allowed))
-         (self-load-theme!
-          (plist-get theme :path)
-          (plist-get theme :name)))))))
+         (self-load-theme! (plist-get theme :path)
+                           (plist-get theme :name)))))))
 
 
 

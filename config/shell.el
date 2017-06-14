@@ -6,17 +6,6 @@
 
 
 
-(defmacro save-sexpr-to-file (sexpr filename)
-  "Save `sexpr' to a file"
-  `(save-excursion
-     (let ((sexpr-buffer (find-file-noselect ,filename)))
-       (set-buffer sexpr-buffer)
-       (erase-buffer)
-       (print ,sexpr sexpr-buffer)
-       (save-buffer)
-       (kill-buffer sexpr-buffer))))
-
-
 (defmacro set-default-shell! (path regexp)
   "Set default SHELL"
   `(progn%
