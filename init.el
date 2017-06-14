@@ -48,31 +48,31 @@
     `,_vfile_))
 
 
-(defun base-file-name (file)
+(defmacro base-file-name (file)
   "Return the base name of the FILENAME: no directory, no extension."
-  (file-name-sans-extension (file-name-nondirectory file)))
+  `(file-name-sans-extension (file-name-nondirectory ,file)))
 
 
-(defun v-path! (file dir &optional extension)
+(defmacro v-path* (file dir &optional extension)
   "Make the versionized DIR base on the existing FILE's directory 
 and return it."
-  (when (and dir (file-exists-p file))
-    (let ((v (concat (file-name-directory file) dir "/")))
-      (when (not (file-exists-p v))
-        (make-directory v t))
-      (concat v (if (and extension (file-name-extension file))
-                    (concat (base-file-name file) "." extension)
-                  (file-name-nondirectory file))))))
+  `(when (and ,dir (file-exists-p ,file))
+     (let ((v (concat (file-name-directory ,file) ,dir "/")))
+       (when (not (file-exists-p v))
+         (make-directory v t))
+       (concat v (if (and ,extension (file-name-extension ,file))
+                     (concat (base-file-name ,file) "." ,extension)
+                   (file-name-nondirectory ,file))))))
 
 
 (defmacro compile-and-load-elisp-file* (vdir file)
   "Compile and load the elisp FILE, save compiled files in VDIR."
-  `(let ((c (v-path! ,file ,vdir "elc")))
+  `(let ((c (v-path* ,file ,vdir "elc")))
      (if c
          (progn
            (when (or (not (file-exists-p c))
                      (file-newer-than-file-p ,file c))
-             (let ((s (v-path! ,file ,vdir)))
+             (let ((s (v-path* ,file ,vdir)))
                (copy-file ,file s t)
                (byte-compile-file s)))
            (load c))
