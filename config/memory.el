@@ -9,6 +9,8 @@
 ;; Read/Save desktop
 
 
+(defvar self-previous-env-spec nil)
+
 
 (defmacro env-spec ()
   "Return the `cons' of virtualized `path-env-spec' source 
@@ -24,7 +26,7 @@ and compiled file name."
      "env-spec"
      (message "##:%s"(listp *val*))
      (save-sexpr-to-file
-      (list 'defvar 'self-previous-env-spec (list 'quote *val*))
+      (list 'setq 'self-previous-env-spec (list 'quote *val*))
       (car env))
      (byte-compile-file (car env)))))
 
@@ -49,6 +51,21 @@ and compiled file name."
        (desktop-read (v-home* ".desktop/"))))))
 
 
+(defun self-switch-theme! (previous current)
+  (safe-fn-when self-load-theme!
+    (cond
+     ((or (not current)
+          (not (plist-get current :allowed)))
+      (progn
+        (self-load-theme! 
+         (plist-get previous :path)
+         (plist-get previous :name))
+        (disable-theme (plist-get previous :name))))
+     ((and current (plist-get current :allowed))
+      (when (not (plist-get previous :allowed))
+        (enable-theme (plist-get current :name)))))))
+
+
 (defun self-desktop-save! ()
   (self-safe-call*
    "env-spec"
@@ -67,35 +84,12 @@ and compiled file name."
          (setq-default desktop-modes-not-to-save
                        (append '(tags-table-mode) m)))
 
-       (safe-fn-when self-load-theme!
-         (let ((current (plist-get *val* :theme)))
-           (cond
-            ((or (not current)
-                 (not (plist-get current :allowed)))
-             (progn
-               (load-env-spec)
-               (when (and (symbolp 'self-previous-env-spec)
-                          self-previous-env-spec)
-                 (let ((previous
-                        (plist-get self-previous-env-spec :theme)))
-                   (self-load-theme! (expand-file-name
-                                      (plist-get previous :path))
-                                     (plist-get previous :name))
-                   (list (plist-get previous :name))
-                   (disable-theme (plist-get previous :name))))))
-            ((and current (plist-get current :allowed))
-             (progn
-               (load-env-spec)
-               (when (and (symbolp 'self-previous-env-spec)
-                          self-previous-env-spec)
-                 (let ((previous
-                        (plist-get self-previous-env-spec :theme)))
-                   (when (not (plist-get previous :allowed))
-                     (disable-theme (plist-get previous :name))
-                     (enable-theme (plist-get previous :name))))))))))
+       (load-env-spec)
+       (self-switch-theme!
+        (plist-get *val* :theme)
+        (when (and (symbolp 'self-previous-env-spec)
+                   (plist-get self-previous-env-spec :theme))))
 
-       (save-env-spec)
-       
        (version-supported-if
            >= 23
            (desktop-save (v-home! ".desktop/"))
