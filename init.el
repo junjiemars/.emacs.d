@@ -28,7 +28,7 @@
   `(concat ,emacs-home ,@subdirs))
 
 
-(defvar vdir
+(defvar v-dir
   (concat (if (display-graphic-p) "g_" "t_")
           emacs-version)
   "Versionized dir based on grahpic/terminal mode and Emacs's version")
@@ -36,7 +36,7 @@
 
 (defmacro v-home* (subdir &optional file)
   "Return the versionized SUBDIR under emacs-home."
-  `(concat ,emacs-home ,subdir ,vdir "/" ,file))
+  `(concat ,emacs-home ,subdir ,v-dir "/" ,file))
 
 
 (defmacro v-home! (subdir &optional file)
@@ -65,19 +65,18 @@ and return it."
                   (file-name-nondirectory file))))))
 
 
-(defun compile-and-load-elisp-files (dir files)
-  "Compile and load the elisp FILES, save compiled files in DIR."
-  (dolist (f files)
-    (let ((c (v-path! f dir "elc")))
-      (if c
-          (progn
-            (when (or (not (file-exists-p c))
-                      (file-newer-than-file-p f c))
-              (let ((s (v-path! f dir)))
-                (copy-file f s t)
-                (byte-compile-file s)))
-            (load c))
-        (message "#Skip compile and load %s.done" f)))))
+(defmacro compile-and-load-elisp-file* (vdir file)
+  "Compile and load the elisp FILE, save compiled files in VDIR."
+  `(let ((c (v-path! ,file ,vdir "elc")))
+     (if c
+         (progn
+           (when (or (not (file-exists-p c))
+                     (file-newer-than-file-p ,file c))
+             (let ((s (v-path! ,file ,vdir)))
+               (copy-file ,file s t)
+               (byte-compile-file s)))
+           (load c))
+       (message "#Skip compile and load %s.done" ,file))))
 
 
 (defmacro clean-compiled-files ()
@@ -389,16 +388,19 @@ self things.
 (setq-default savehist-file (v-home! ".minibuffer/" "history"))
 
 
+;; Load strap
+(compile-and-load-elisp-file* v-dir (emacs-home* "config/strap.el"))
+
 
 ;; Load self env
 (compile-and-load-elisp-files
- vdir
+ v-dir
  `(,(emacs-home* "private/self.el")))
 
 
 ;; Load ui, shell, basic env:
 (compile-and-load-elisp-files
- vdir
+ v-dir
  `(,(emacs-home* "config/boot.el")
    ,(emacs-home* "config/shell.el")
    ,(emacs-home* "config/basic.el")))
@@ -411,13 +413,13 @@ self things.
   ;; Basic and self package setup
   ;;(package-initialize)
   (compile-and-load-elisp-files
-   vdir
+   v-dir
    `(,(emacs-home* "config/module.el"))))
 
 
 (compile-and-load-elisp-files
  ;; Compile and load non-package-required elisp files
- vdir
+ v-dir
  `(,(emacs-home* "config/debugger.el")
    ,(emacs-home* "config/editing.el")
    ,(emacs-home* "config/financial.el")

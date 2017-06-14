@@ -109,12 +109,12 @@
 
 
 ;; Load basic package spec
-(parse-package-spec basic-package-spec vdir)
+(parse-package-spec basic-package-spec v-dir)
 
 
 ;; Load self packages spec
 (self-safe-call*
  "package-spec"
- (parse-package-spec *val* vdir))
+ (parse-package-spec *val* v-dir))
 
 
