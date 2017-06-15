@@ -210,7 +210,7 @@ If in terminal mode, and there are no ELSE’s, the value is nil.
 
 \(fn BODY...)"
   (declare (indent 0))
-  `(graphic-supported-if (progn ,@body)))
+  `(graphic-supported-if (progn% ,@body)))
 
 
 (defmacro terminal-supported-p (&rest body)

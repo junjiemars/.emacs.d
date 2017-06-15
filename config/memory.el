@@ -24,11 +24,12 @@ and compiled file name."
   (let ((env (env-spec)))
     (self-safe-call*
      "env-spec"
-     (message "##:%s"(listp *val*))
      (save-sexpr-to-file
       (list 'setq 'self-previous-env-spec (list 'quote *val*))
       (car env))
      (byte-compile-file (car env)))))
+
+(add-hook 'kill-emacs-hook #'save-env-spec)
 
 
 (defmacro load-env-spec ()
@@ -36,9 +37,25 @@ and compiled file name."
      (if (file-exists-p (cdr env))
          (load (cdr env)))))
 
+(load-env-spec)
+
+
+(theme-supported-p
+    (defun switch-theme! (previous current)
+      (safe-fn-when self-load-theme!
+        (cond
+         ((and (not (plist-get current :allowed))
+               (plist-get previous :allowed))
+          (self-load-theme! 
+           (plist-get previous :path)
+           (plist-get previous :name))
+          (disable-theme (plist-get previous :name)))
+         ((and (plist-get current :allowed)
+               (not (plist-get previous :allowed)))
+          (enable-theme (plist-get current :name)))))))
+
 
 (defun self-desktop-read! ()
-  
   (terminal-supported-p
     (version-supported-when = 24.4
       (setq-default desktop-restore-forces-onscreen nil)))
@@ -50,20 +67,8 @@ and compiled file name."
                 (plist-get desktop :allowed))
        (desktop-read (v-home* ".desktop/"))))))
 
+(add-hook 'after-init-hook #'self-desktop-read!)
 
-(defun self-switch-theme! (previous current)
-  (safe-fn-when self-load-theme!
-    (cond
-     ((or (not current)
-          (not (plist-get current :allowed)))
-      (progn
-        (self-load-theme! 
-         (plist-get previous :path)
-         (plist-get previous :name))
-        (disable-theme (plist-get previous :name))))
-     ((and current (plist-get current :allowed))
-      (when (not (plist-get previous :allowed))
-        (enable-theme (plist-get current :name)))))))
 
 
 (defun self-desktop-save! ()
@@ -84,20 +89,14 @@ and compiled file name."
          (setq-default desktop-modes-not-to-save
                        (append '(tags-table-mode) m)))
 
-       (load-env-spec)
-       (self-switch-theme!
-        (plist-get *val* :theme)
-        (when (and (symbolp 'self-previous-env-spec)
-                   (plist-get self-previous-env-spec :theme))))
+       (theme-supported-p
+        (switch-theme!
+         (plist-get self-previous-env-spec :theme)
+         (plist-get *val* :theme)))
 
        (version-supported-if
            >= 23
            (desktop-save (v-home! ".desktop/"))
          (desktop-save (v-home! ".desktop/") t))))))
-
-
-(add-hook 'after-init-hook #'self-desktop-read!)
-
-(add-hook 'kill-emacs-hook #'save-env-spec)
 
 (add-hook 'kill-emacs-hook #'self-desktop-save!)

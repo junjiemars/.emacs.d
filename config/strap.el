@@ -33,3 +33,19 @@ and return it."
        (print ,sexpr sexpr-buffer)
        (save-buffer)
        (kill-buffer sexpr-buffer))))
+
+
+(defmacro theme-supported-p (&rest body)
+  (declare (indent 1))
+  `(graphic-supported-p
+     (version-supported-when
+         < 23
+       ,@body)))
+
+
+(defmacro font-supported-p (&rest body)
+  (declare (indent 1))
+  `(graphic-supported-p
+     ,@body))
+
+

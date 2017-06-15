@@ -23,82 +23,73 @@
 ;; Theme and Font
 
 
-(defmacro self-load-theme* (dir name)
-  "Load THEME of current platform from THEME-DIR by THEME-NAME, if THEME-DIR
+(theme-supported-p
+    
+    (defun self-load-theme! (dir name)
+      "Load THEME of current platform from THEME-DIR by THEME-NAME, if THEME-DIR
 or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
 
 \(fn THEME-DIR THEME-NAME)"
-  `(progn
-     (add-to-list 'custom-theme-load-path ,dir)
-     (add-to-list 'load-path ,dir)
-     (version-supported-if >= 24.1
-                           (load-theme ,name)
-       (load-theme ,name t))))
+      (theme-supported-p
+          (add-to-list 'custom-theme-load-path dir)
+        (add-to-list 'load-path dir)
+        (version-supported-if >= 24.1
+                              (load-theme name)
+          (load-theme name t))))
 
 
-;; Load theme
-(graphic-supported-p
-  (version-supported-when
-      < 23
-    
-    (self-safe-call*
-     "env-spec"
-     
-     (defun self-load-theme! (dir name)
-       (self-load-theme* dir name))
-     
-     (let ((theme (plist-get *val* :theme)))
-       (when (and theme (plist-get theme :allowed))
-         (self-load-theme! (plist-get theme :path)
-                           (plist-get theme :name)))))))
+  ;; Load theme
+  (self-safe-call*
+   "env-spec"
+   (let ((theme (plist-get *val* :theme)))
+     (when (and theme (plist-get theme :allowed))
+       (self-load-theme! (plist-get theme :path)
+                         (plist-get theme :name))))))
+;; End of theme-supported-p
 
 
 
-(defmacro font-exists-p (font)
-  "Return t if font exists
+(font-supported-p
+    (defmacro font-exists-p (font)
+      "Return t if font exists
 
 \(FN FONT\)"
-  `(when (find-font (font-spec :name ,font))
-     t))
+      `(when (find-font (font-spec :name ,font))
+         t))
 
 
-(defmacro self-default-font! (font)
-  "Set default font in graphic mode.
+  (defmacro self-default-font! (font)
+    "Set default font in graphic mode.
 
 \(FN FONT\)"
-  `(when (font-exists-p ,font)
-     (add-to-list 'default-frame-alist (cons 'font  ,font))
-     (set-face-attribute 'default t :font ,font)
-     (set-face-attribute 'default nil :font ,font)
-     (version-supported-if <= 24.0
-                           (set-frame-font ,font nil t)
-       (set-frame-font ,font))))
+    `(when (font-exists-p ,font)
+       (add-to-list 'default-frame-alist (cons 'font  ,font))
+       (set-face-attribute 'default t :font ,font)
+       (set-face-attribute 'default nil :font ,font)
+       (version-supported-if <= 24.0
+                             (set-frame-font ,font nil t)
+         (set-frame-font ,font))))
 
-
-;; Load default font
-(graphic-supported-p 
+  
+  ;; Load default font
   (self-safe-call*
    "env-spec"
    (let ((font (plist-get *val* :font)))
      (when (and font (plist-get font :allowed))
-       (self-default-font! (plist-get font :name))))))
+       (self-default-font! (plist-get font :name)))))
 
-
-
-(defmacro self-cjk-font! (name size)
-  "Set CJK font in Graphic mode.
+  (defmacro self-cjk-font! (name size)
+    "Set CJK font in Graphic mode.
 
 \(FN NAME SIZE\)"
-  `(when (font-exists-p ,name)
-     (safe-fn-when set-fontset-font
-       (dolist (c '(han kana cjk-misc))
-         (set-fontset-font (frame-parameter nil 'font)
-                           c (font-spec :family ,name
-                                        :size ,size))))))
+    `(when (font-exists-p ,name)
+       (safe-fn-when set-fontset-font
+         (dolist (c '(han kana cjk-misc))
+           (set-fontset-font (frame-parameter nil 'font)
+                             c (font-spec :family ,name
+                                          :size ,size))))))
 
-
-;; Load cjk font
-(graphic-supported-p
+  ;; Load cjk font
   (self-safe-call*
    "env-spec"
    (let ((cjk (plist-get *val* :cjk-font)))
@@ -106,6 +97,9 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
        (self-cjk-font!
         (plist-get cjk :name)
         (plist-get cjk :size))))))
+
+;; End of font-supported-p
+
 
 
 ;; Terminal style
