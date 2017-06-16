@@ -32,8 +32,8 @@
 (def-self-env-spec
   :theme (list :name 'atom-one-dark
                :path (emacs-home* "theme/")
-               :allowed nil)
-  :font (list :name "Monaco-18"
+               :allowed t)
+  :font (list :name "Monaco-13"
               :allowed t)
   :cjk-font (list :name "Microsoft Yahei"
                   :size 13
@@ -107,4 +107,5 @@
    :setup `(,(emacs-home* "config/setup-slime.el")))
   (list
    :cond (lambda () t)
-   :packages '(sx)))
+   :packages '(sx)
+   :setup (lambda () (message "# [sx], may be we don't need it."))))
