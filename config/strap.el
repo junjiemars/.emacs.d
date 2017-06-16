@@ -7,7 +7,7 @@
 
 
 (defun v-path! (file dir &optional extension)
-  "Make the versionized DIR base on the existing FILE's directory 
+  "Make the versioned DIR base on the existing FILE's directory 
 and return it."
   (v-path* file dir extension))
 
@@ -19,15 +19,15 @@ and return it."
 
 
 
-;; Versionized dirs
+;; Versioned dirs
 (setq-default recentf-save-file (v-home! ".recentf/" "recentf"))
 (setq-default savehist-file (v-home! ".minibuffer/" "history"))
 
 
-(defmacro save-sexpr-to-file (sexpr filename)
-  "Save `sexpr' to a file"
+(defmacro save-sexpr-to-file (sexpr file)
+  "Save SEXPR to the FILE."
   `(save-excursion
-     (let ((sexpr-buffer (find-file-noselect ,filename)))
+     (let ((sexpr-buffer (find-file-noselect ,file)))
        (set-buffer sexpr-buffer)
        (erase-buffer)
        (print ,sexpr sexpr-buffer)

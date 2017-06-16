@@ -31,16 +31,16 @@
 (defvar v-dir
   (concat (if (display-graphic-p) "g_" "t_")
           emacs-version)
-  "Versionized dir based on grahpic/terminal mode and Emacs's version")
+  "Versioned dir based on [g]rahpic/[t]erminal mode and Emacs's version")
 
 
 (defmacro v-home* (subdir &optional file)
-  "Return the versionized SUBDIR under emacs-home."
+  "Return the versioned SUBDIR under `emacs-home'."
   `(concat ,emacs-home ,subdir ,v-dir "/" ,file))
 
 
 (defmacro v-home! (subdir &optional file)
-  "Make the versionized SUBDIR under emacs-home and return it."
+  "Make the versioned SUBDIR under `emacs-home' and return it."
   (let ((_vdir_ (v-home* subdir))
         (_vfile_ (v-home* subdir file)))
     (when (not (file-exists-p _vdir_))
@@ -54,7 +54,7 @@
 
 
 (defmacro v-path* (file dir &optional extension)
-  "Make the versionized DIR base on the existing FILE's directory 
+  "Make the versioned DIR base on the existing FILE's directory 
 and return it."
   `(when (and ,dir (file-exists-p ,file))
      (let ((v (concat (file-name-directory ,file) ,dir "/")))
