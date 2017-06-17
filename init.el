@@ -404,7 +404,7 @@ self things.
 ;; Load self env
 (compile-and-load-elisp-files!
  v-dir
- `(,(emacs-home* "private/self-path.el")))
+ (list (plist-get self-def-files :path)))
 
 (compile-and-load-elisp-files!
  v-dir

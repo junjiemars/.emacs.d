@@ -49,3 +49,11 @@ and return it."
      ,@body))
 
 
+(defvar self-def-files
+  (let ((p (emacs-home* "private/self-path.el"))
+        (f (emacs-home* "private/self.el")))
+    (when (not (file-exists-p p))
+      (save-sexpr-to-file (list 'def-self-path f) p))
+    (when (not (file-exists-p f))
+      (copy-file (emacs-home* "private/self-sample.el") f t))
+    (list :path p :file f)))
