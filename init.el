@@ -75,7 +75,9 @@ and return it."
              (let ((s (v-path* ,file ,vdir)))
                (copy-file ,file s t)
                (byte-compile-file s)))
-           (load c))
+           (if (file-exists-p c)
+               (load c)
+             (message "#Missing %s" c)))
        (message "#Skip compile and load %s.done" ,file))))
 
 
