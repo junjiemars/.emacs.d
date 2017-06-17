@@ -69,7 +69,7 @@
         (let ((setup (plist-get s :setup)))
           (when setup
             (cond
-             ((listp setup) (compile-and-load-elisp-files dir setup))
+             ((listp setup) (compile-and-load-elisp-files! dir setup))
              ((functionp setup) (funcall setup)))))))))
 
 

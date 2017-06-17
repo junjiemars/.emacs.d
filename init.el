@@ -391,13 +391,13 @@ self things.
 
 
 ;; Load self env
-(compile-and-load-elisp-files
+(compile-and-load-elisp-files!
  v-dir
  `(,(emacs-home* "private/self.el")))
 
 
 ;; Load ui, shell, basic env:
-(compile-and-load-elisp-files
+(compile-and-load-elisp-files!
  v-dir
  `(,(emacs-home* "config/boot.el")
    ,(emacs-home* "config/shell.el")
@@ -410,12 +410,12 @@ self things.
 (package-supported-p
   ;; Basic and self package setup
   ;;(package-initialize)
-  (compile-and-load-elisp-files
+  (compile-and-load-elisp-files!
    v-dir
    `(,(emacs-home* "config/module.el"))))
 
 
-(compile-and-load-elisp-files
+(compile-and-load-elisp-files!
  ;; Compile and load non-package-required elisp files
  v-dir
  `(,(emacs-home* "config/debugger.el")

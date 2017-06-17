@@ -32,6 +32,8 @@ private/
 nul
 null
 private/nul
+!private/self-sample.el
+!private/self-sample-tiny.el
 server/
 TAGS
 config/.nrepl-history
