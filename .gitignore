@@ -32,6 +32,7 @@ private/
 nul
 null
 private/nul
+!private/self-path.el
 !private/self-sample.el
 !private/self-sample-tiny.el
 server/
