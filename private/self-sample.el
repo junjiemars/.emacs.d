@@ -107,5 +107,4 @@
    :setup `(,(emacs-home* "config/setup-slime.el")))
   (list
    :cond (lambda () t)
-   :packages '(sx)
-   :setup (lambda () (message "# [sx], may be we don't need it."))))
+   :packages '(sx)))

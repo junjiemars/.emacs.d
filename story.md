@@ -55,8 +55,15 @@ see next section: [self-management][#self-management]
 
 ## Cook
 
-* tiny: copy ```config/self-sample-tiny.el``` to ```private/self.el```
-* feast: copy ```config/self-sample.el``` to ```private/self.el```
+Change the path in ```private/self-path.el``` 
+```lisp
+(def-self-path (emacs-home* "private/self-sample-tiny.el"))
+;; (def-self-path (emacs-home* "private/self-sample.el"))
+;; (def-self-path (emacs-home* "private/self-sample.el"))
+```
+
+* tiny: use as a start ```private/self-sample-tiny.el```
+* feast: or ```private/self-sample.el```
 
 
 ## Where
