@@ -55,15 +55,8 @@ see next section: [self-management][#self-management]
 
 ## Cook
 
-Change the path in ```private/self-path.el``` 
-```lisp
-(def-self-path (emacs-home* "private/self-sample-tiny.el"))
-;; (def-self-path (emacs-home* "private/self-sample.el"))
-;; (def-self-path (emacs-home* "private/self-sample.el"))
-```
+Cook in ```private/self.el```
 
-* tiny: use as a start ```private/self-sample-tiny.el```
-* feast: or ```private/self-sample.el```
 
 
 ## Where
