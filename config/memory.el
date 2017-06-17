@@ -21,9 +21,9 @@ and compiled file name."
 
 
 (defun save-env-spec ()
-  (let ((env (env-spec)))
-    (self-safe-call*
-     "env-spec"
+  (self-safe-call*
+   "env-spec"
+   (let ((env (env-spec)))
      (save-sexpr-to-file
       (list 'setq 'self-previous-env-spec (list 'quote *val*))
       (car env))

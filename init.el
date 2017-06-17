@@ -325,11 +325,20 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
   `(intern (format "self-%s-%s" system-type ,name)))
 
 
+(defmacro def-self-path (path)
+  "Define the PATH of where your `self.el'.
+ 
+\(fn PATH)"
+  (declare (indent 0))
+  (let ((_path_ (self-symbol 'path)))
+    `(defvar ,_path_ (expand-file-name ,path))))
+
+
 (defmacro def-self-env-spec (&rest spec)
   "Define default Emacs env SPEC of current platform on current Emacs version, 
 ignore it if you don't like it. 
  
-\(FN SPEC)"
+\(fn SPEC)"
   (declare (indent 0))
   (let ((_spec_ (self-symbol 'env-spec)))
     `(defvar ,_spec_ (list ,@spec))))
@@ -387,13 +396,19 @@ self things.
 
 
 ;; Load strap
-(compile-and-load-elisp-file* v-dir (emacs-home* "config/strap.el"))
+(compile-and-load-elisp-file*
+ v-dir
+ (emacs-home* "config/strap.el"))
 
 
 ;; Load self env
 (compile-and-load-elisp-files!
  v-dir
- `(,(emacs-home* "private/self.el")))
+ `(,(emacs-home* "private/self-path.el")))
+
+(compile-and-load-elisp-files!
+ v-dir
+ (self-safe-call* "path" (list *val*)))
 
 
 ;; Load ui, shell, basic env:
@@ -402,6 +417,7 @@ self things.
  `(,(emacs-home* "config/boot.el")
    ,(emacs-home* "config/shell.el")
    ,(emacs-home* "config/basic.el")))
+
 
 ;; Self do prelogue ...
 (self-safe-call prelogue)
