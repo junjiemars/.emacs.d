@@ -50,10 +50,13 @@ and return it."
 
 
 (defvar self-def-files
-  (let ((p (emacs-home* "private/self-path.el"))
+  (let ((d (emacs-home* "private/"))
+        (p (emacs-home* "private/self-path.el"))
         (f (emacs-home* "private/self.el")))
     (when (not (file-exists-p p))
+      (when (not (file-exists-p d))
+        (make-directory d t))
       (save-sexpr-to-file (list 'def-self-path f) p)
       (when (not (file-exists-p f))
-        (copy-file (emacs-home* "private/self-sample.el") f t)))
+        (copy-file (emacs-home* "config/self-sample.el") f t)))
     (list :path p :file f)))
