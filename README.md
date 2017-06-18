@@ -13,7 +13,7 @@ git clone --depth=1 https://github.com/junjiemars/.emacs.d.git
 
 
 Take your time to have a taste, some features may be you never see it in other 
-places. One more thing, it's best to remind you: take case, it's super fast.
+places. One more thing, it's best to remind you: take care, it's super fast.
 
 
 
