@@ -331,7 +331,8 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
 \(fn PATH)"
   (declare (indent 0))
   (let ((_path_ (self-symbol 'path)))
-    `(defvar ,_path_ (expand-file-name ,path))))
+    `(when ,path
+       (defvar ,_path_ ,path))))
 
 
 (defmacro def-self-env-spec (&rest spec)

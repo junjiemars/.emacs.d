@@ -32,6 +32,7 @@ private/
 nul
 null
 private/null
+!private/self-sample.el
 server/
 TAGS
 config/.nrepl-history
