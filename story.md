@@ -55,7 +55,8 @@ see next section: [self-management][#self-management]
 
 ## Cook
 
-Cook in ```private/self.el```
+Cook in ```private/self.el```,
+if has trouble, try ```(clean-compiled-files)``` first
 
 
 
