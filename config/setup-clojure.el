@@ -6,7 +6,6 @@
 
 
 (defun set-clojure-mode! ()
-  (enable-eldoc-mode)
   (enable-paredit-mode)
   (subword-mode)
   (rainbow-delimiters-mode)
