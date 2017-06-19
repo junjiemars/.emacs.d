@@ -160,3 +160,7 @@ and if DIR-FILTER return T then iterate into deep DIR.
                        (dir-iterate a ff df fn)))
           (when (and ff (funcall ff f a)
                      (funcall fn a))))))))
+
+(defmacro save-string-to-file (string file)
+  `(with-temp-file ,file
+     (insert ,string)))
