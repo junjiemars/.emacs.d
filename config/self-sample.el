@@ -52,9 +52,11 @@
 ;; define package-spec
 (def-self-package-spec
   (list
-   :cond (lambda () (bin-exists-p "latex"))
+   :cond (lambda ()
+           (bin-exists-p "latex"))
    :packages '(auctex cdlatex)
-   :setup (lambda () (message "#setup: Hi, LaTex")))
+   :setup (list
+           :run (lambda () (message "#setup: Hi, LaTex"))))
   (list
    :cond (lambda ()
            (and (version-supported-p '<= 24.4)
@@ -66,7 +68,8 @@
    :packages '(cider
                clojure-mode
                clojure-mode-extra-font-locking)
-   :setup `(,(emacs-home* "config/setup-clojure.el")))
+   :setup (list
+           :compile `(,(emacs-home* "config/setup-clojure.el"))))
   (list
    :cond (lambda ()
            (and (version-supported-p '<= 24.4)
@@ -74,7 +77,8 @@
    :packages '(dockerfile-mode
                docker-tramp))
   (list
-   :cond (lambda () (bin-exists-p "erlc"))
+   :cond (lambda ()
+           (bin-exists-p "erlc"))
    :packages '(erlang))
   (list
    :cond (lambda ()
@@ -88,20 +92,26 @@
                 (version-supported-p '<= 25.1)))
    :packages '(ereader))
   (list
-   :cond (and (version-supported-p '<= 24.4)
-              (bin-exists-p "git"))
+   :cond (lambda ()
+           (and (version-supported-p '<= 24.4)
+                (bin-exists-p "git")))
    :packages '(magit)
-   :setup `(,(emacs-home* "config/setup-magit.el")))
+   :setup (list
+           :compile `(,(emacs-home* "config/setup-magit.el"))))
   (list
    :cond (lambda ()
            (and (version-supported-p '<= 23.2)
                 (bin-exists-p "racket")))
    :packages '(geiser))
   (list
-   :cond (lambda () (or (bin-exists-p "sbcl")))
+   :cond (lambda ()
+           (or (bin-exists-p "sbcl")))
    :packages '(slime)
-   :setup `(,(emacs-home* "config/setup-slime.el")))
+   :setup (list
+           :compile `(,(emacs-home* "config/setup-slime.el"))))
   (list
-   :cond t
+   :cond (lambda ()
+           (> 1 0))
    :packages '(sx)))
+
 

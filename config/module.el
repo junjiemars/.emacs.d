@@ -61,16 +61,14 @@
   "Parse SPEC, install packages and setup."
   (dolist (s spec)
     (let ((pred (plist-get s :cond)))
-      (when (and pred
-                 (cond
-                  ((booleanp pred) pred)
-                  ((functionp pred) (funcall pred))))
+      (when (and pred (consp (plist-get s :packages)))
+        (if (booleanp pred) pred (funcall pred))
         (install-package! (plist-get s :packages))
         (let ((setup (plist-get s :setup)))
-          (when setup
-            (cond
-             ((listp setup) (compile-and-load-elisp-files! dir setup))
-             ((functionp setup) (funcall setup)))))))))
+          (when (consp setup)
+            (compile-and-load-elisp-files! dir (plist-get setup :compile))
+            (when (plist-get setup :run)
+              (funcall (plist-get setup :run)))))))))
 
 
 
