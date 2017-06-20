@@ -38,9 +38,9 @@
   :cjk-font (list :name "Microsoft Yahei"
                   :size 13
                   :allowed nil)
-  :desktop (list :files-not-to-save "\.el\.gz\\|~$"
+  :desktop (list :files-not-to-save "\.el\.gz\\|\.desktop\\|~$"
                  :buffers-not-to-save "^TAGS\\|\\.log"
-                 :modes-not-to-save '(dired-mode)
+                 :modes-not-to-save '(dired-mode fundamental-mode)
                  :allowed t)
   (comment
    :socks (list :port 11032
@@ -52,8 +52,7 @@
 ;; define package-spec
 (def-self-package-spec
   (list
-   :cond (lambda ()
-           (bin-exists-p "latex"))
+   :cond (lambda () (bin-exists-p "latex"))
    :packages '(auctex cdlatex)
    :setup (lambda () (message "#setup: Hi, LaTex")))
   (list
@@ -75,8 +74,7 @@
    :packages '(dockerfile-mode
                docker-tramp))
   (list
-   :cond (lambda ()
-           (bin-exists-p "erlc"))
+   :cond (lambda () (bin-exists-p "erlc"))
    :packages '(erlang))
   (list
    :cond (lambda ()
@@ -90,9 +88,8 @@
                 (version-supported-p '<= 25.1)))
    :packages '(ereader))
   (list
-   :cond (lambda ()
-           (and (version-supported-p '<= 24.4)
-                (bin-exists-p "git")))
+   :cond (and (version-supported-p '<= 24.4)
+              (bin-exists-p "git"))
    :packages '(magit)
    :setup `(,(emacs-home* "config/setup-magit.el")))
   (list
@@ -101,10 +98,10 @@
                 (bin-exists-p "racket")))
    :packages '(geiser))
   (list
-   :cond (lambda ()
-           (or (bin-exists-p "sbcl")))
+   :cond (lambda () (or (bin-exists-p "sbcl")))
    :packages '(slime)
    :setup `(,(emacs-home* "config/setup-slime.el")))
   (list
-   :cond (lambda () t)
+   :cond t
    :packages '(sx)))
+
