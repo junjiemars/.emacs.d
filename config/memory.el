@@ -57,8 +57,9 @@ and compiled file name."
 
 (defun self-desktop-read! ()
   (terminal-supported-p
-    (version-supported-when = 24.4
-      (setq-default desktop-restore-forces-onscreen nil)))
+    (version-supported-when <= 24.4
+      (version-supported-when > 26
+        (setq-default desktop-restore-forces-onscreen nil))))
 
   (self-safe-call*
    "env-spec"
