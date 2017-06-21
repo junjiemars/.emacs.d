@@ -60,15 +60,13 @@
 (defun parse-package-spec (spec dir)
   "Parse SPEC, install packages and setup."
   (dolist (s spec)
-    (let ((pred (plist-get s :cond)))
-      (when (and pred (consp (plist-get s :packages)))
-        (if (booleanp pred) pred (funcall pred))
-        (install-package! (plist-get s :packages))
-        (let ((setup (plist-get s :setup)))
-          (when (consp setup)
-            (compile-and-load-elisp-files! dir (plist-get setup :compile))
-            (when (plist-get setup :run)
-              (funcall (plist-get setup :run)))))))))
+    (let ((p (plist-get s :cond))
+          (m (plist-get s :packages))
+          (c (plist-get s :compile)))
+      (when (or (and (booleanp p) p)
+                (funcall p))
+        (when (consp m) (install-package! m))
+        (when (consp c) (compile-and-load-elisp-files! dir c))))))
 
 
 
@@ -91,9 +89,9 @@
                      rainbow-delimiters
                      smex
                      tagedit)
-         :setup `(,(emacs-home* "config/setup-lisp.el")
-                  ,(emacs-home* "config/setup-navigation.el")
-                  ,(emacs-home* "config/setup-python.el")))))
+         :compile `(,(emacs-home* "config/setup-lisp.el")
+                    ,(emacs-home* "config/setup-navigation.el")
+                    ,(emacs-home* "config/setup-python.el")))))
 
 
 
