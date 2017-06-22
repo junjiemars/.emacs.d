@@ -40,21 +40,35 @@ and compiled file name."
 
 
 (theme-supported-p
-    (defun switch-theme! (previous current)
-      (safe-fn-when self-load-theme!
-        (cond
-         ((and (not (plist-get current :allowed))
-               (plist-get previous :allowed))
-          (self-load-theme! 
-           (plist-get previous :path)
-           (plist-get previous :name))
-          (disable-theme (plist-get previous :name)))
-         ((and (plist-get current :allowed)
-               (not (plist-get previous :allowed)))
-          (enable-theme (plist-get current :name)))))))
+    
+    (defun theme-changed-p (previous current)
+      "Return (previous . current)"
+      (cond
+       ((not (eq (plist-get previous :allowed)
+                 (plist-get current :allowed)))
+        (cons (plist-get previous :allowed)
+              (plist-get current :allowed)))
+       ((or (not (eq (plist-get previous :name)
+                     (plist-get current :name)))
+            (not (string= (plist-get previous :path)
+                          (plist-get current :path))))
+        (cons nil t))))
+
+  (defun switch-theme! (previous current)
+    (safe-fn-when self-load-theme!
+      (let ((p->c (theme-changed-p previous current)))
+        (when (consp p->c)
+          (if (and (car p->c) (not (cdr p->c)))
+              (progn
+                (self-load-theme! (plist-get previous :path)
+                                  (plist-get previous :name))
+                (disable-theme (plist-get previous :name)))
+            (enable-theme (plist-get current :name)))
+          (setq-default desktop-restore-frames t))))))
 
 
 (defun self-desktop-read! ()
+  
   (terminal-supported-p
     (version-supported-when <= 24.4
       (version-supported-when > 25
@@ -63,8 +77,15 @@ and compiled file name."
   (self-safe-call*
    "env-spec"
    (let ((desktop (plist-get *val* :desktop)))
-     (when (and desktop
+     (when (and (consp desktop)
                 (plist-get desktop :allowed))
+       
+       (theme-supported-p
+           (when (consp (theme-changed-p
+                         (plist-get self-previous-env-spec :theme)
+                         (plist-get *val* :theme)))
+             (setq-default desktop-restore-frames nil)))
+       
        (desktop-read (v-home* ".desktop/"))))))
 
 (add-hook 'after-init-hook #'self-desktop-read!)
@@ -76,7 +97,7 @@ and compiled file name."
    "env-spec"
    
    (let ((desktop (plist-get *val* :desktop)))
-     (when (and desktop
+     (when (and (consp desktop)
                 (plist-get desktop :allowed))
        
        (let ((f (plist-get desktop :files-not-to-save)))
@@ -90,9 +111,8 @@ and compiled file name."
                        (append '(tags-table-mode) m)))
 
        (theme-supported-p
-        (switch-theme!
-         (plist-get self-previous-env-spec :theme)
-         (plist-get *val* :theme)))
+           (switch-theme! (plist-get self-previous-env-spec :theme)
+                          (plist-get *val* :theme)))
 
        (version-supported-if
            >= 23
