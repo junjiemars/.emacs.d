@@ -52,16 +52,16 @@
      (when (and font (plist-get font :allowed))
        (self-default-font! (plist-get font :name)))))
 
-  (defmacro self-cjk-font! (name size)
+  (defun self-cjk-font! (name size)
     "Set CJK font in Graphic mode.
 
 \(FN NAME SIZE\)"
-    `(when (font-exists-p ,name)
-       (safe-fn-when set-fontset-font
-         (dolist (c '(han kana cjk-misc))
-           (set-fontset-font (frame-parameter nil 'font)
-                             c (font-spec :family ,name
-                                          :size ,size))))))
+    (when (font-exists-p name)
+      (safe-fn-when set-fontset-font
+        (dolist (c '(han kana cjk-misc))
+          (set-fontset-font (frame-parameter nil 'font)
+                            c (font-spec :family name
+                                         :size size))))))
 
   ;; Load cjk font
   (self-safe-call*
@@ -134,16 +134,16 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
 
 ;; Socks
 
-(defmacro start-socks! (&optional port server version)
+(defun start-socks! (&optional port server version)
   "Switch on url-gateway to socks"
-  `(version-supported-when < 22
-     (eval-when-compile (require 'url))
-     (setq-default url-gateway-method 'socks)
-     (setq-default socks-server
-                   (list "Default server"
-                         (if ,server ,server "127.0.0.1")
-                         (if ,port ,port 32000)
-                         (if ,version ,version 5)))))
+  (version-supported-when < 22
+    (eval-when-compile (require 'url))
+    (setq-default url-gateway-method 'socks)
+    (setq-default socks-server
+                  (list "Default server"
+                        (if server server "127.0.0.1")
+                        (if port port 32000)
+                        (if version version 5)))))
 
 
 ;; Load socks settings
@@ -156,11 +156,11 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
                    (plist-get socks :version)))))
 
 
-(defmacro stop-socks! (&optional method)
+(defun stop-socks! (&optional method)
   "Switch off url-gateway to native."
-  `(version-supported-when < 22
-     (eval-when-compile (require 'url))
-     (setq-default url-gateway-method
-                   (if ,method  ,method 'native))))
+  (version-supported-when < 22
+    (eval-when-compile (require 'url))
+    (setq-default url-gateway-method
+                  (if method  method 'native))))
 
 
