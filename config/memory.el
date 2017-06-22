@@ -23,19 +23,18 @@ and compiled file name."
 (defun save-env-spec ()
   (self-safe-call*
    "env-spec"
-   (let ((env (env-spec)))
+   (let ((f (car (env-spec))))
      (save-sexpr-to-file
-      (list 'setq 'self-previous-env-spec (list 'quote *val*))
-      (car env))
-     (byte-compile-file (car env)))))
+      (list 'setq 'self-previous-env-spec (list 'quote *val*)) f)
+     (byte-compile-file f))))
 
 (add-hook 'kill-emacs-hook #'save-env-spec)
 
 
-(defmacro load-env-spec ()
-  `(let ((env (env-spec)))
-     (if (file-exists-p (cdr env))
-         (load (cdr env)))))
+(defun load-env-spec ()
+  (let ((f (cdr (env-spec))))
+    (when (file-exists-p f)
+      (load f))))
 
 (load-env-spec)
 
@@ -58,7 +57,7 @@ and compiled file name."
 (defun self-desktop-read! ()
   (terminal-supported-p
     (version-supported-when <= 24.4
-      (version-supported-when > 26
+      (version-supported-when > 25
         (setq-default desktop-restore-forces-onscreen nil))))
 
   (self-safe-call*
