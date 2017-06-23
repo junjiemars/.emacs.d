@@ -24,12 +24,13 @@
 ;; Theme and Font
 
 (font-supported-p
-    (defmacro font-exists-p (font)
+    
+    (defun font-exists-p (font)
       "Return t if font exists
 
 \(FN FONT\)"
-      `(when (find-font (font-spec :name ,font))
-         t))
+      (when (find-font (font-spec :name font))
+        t))
 
 
   (defun self-default-font! (font)
