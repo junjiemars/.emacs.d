@@ -2,15 +2,19 @@
 ;; sbcl
 ;;;;
 
+
+
+
+
 ;; sbcl path
 (platform-supported-when
- windows-nt
- (let* ((home (getenv "SBCL_HOME"))
-        (path (windows-nt-path
-               (file-name-directory
-                (if home home (bin-path "sbcl"))))))
-   (add-to-list 'exec-path path)
-   (safe-setq-inferior-lisp-program "sbcl" t)))
+    windows-nt
+  (let ((home (getenv "SBCL_HOME")))
+    (add-to-list 'exec-path
+                 (windows-nt-path
+                  (file-name-directory
+                   (if home home (bin-path "sbcl")))))
+    (safe-setq-inferior-lisp-program "sbcl" t)))
 
 
 
