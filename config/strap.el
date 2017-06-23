@@ -12,8 +12,9 @@ and return it."
   (v-path* file dir extension))
 
 
-(defun compile-and-load-elisp-files! (vdir files)
+(defun compile-and-load-elisp-files! (vdir &rest files)
   "Compile and load the elisp FILES, save compiled files in VDIR."
+  (declare (indent 1))
   (dolist (f files)
     (compile-and-load-elisp-file* vdir f)))
 
@@ -49,14 +50,30 @@ and return it."
      ,@body))
 
 
-(defvar self-def-files
+(defun self-def-files! ()
   (let ((d (emacs-home* "private/"))
         (p (emacs-home* "private/self-path.el"))
-        (f (emacs-home* "private/self.el")))
+        (fs `(,(cons (emacs-home* "private/self-env-spec.el")
+                     (emacs-home* "config/sample-self-env-spec.el"))
+              ,(cons (emacs-home* "private/self-package-spec.el")
+                     (emacs-home* "config/sample-self-package-spec.el"))
+              ,(cons (emacs-home* "private/self-prelogure.el")
+                     (emacs-home* "config/sample-self-prelogue.el"))
+              ,(cons (emacs-home* "private/self-epilogue.el")
+                     (emacs-home* "config/sample-self-epilogue.el"))))
+        (paths `(:env-spec ,(emacs-home* "private/self-env-spec.el")
+                           :package-spec nil
+                           :prelogue nil
+                           :epilogue nil)))
     (when (not (file-exists-p p))
-      (when (not (file-exists-p d))
-        (make-directory d t))
-      (save-sexpr-to-file (list 'def-self-path f) p)
-      (when (not (file-exists-p f))
-        (copy-file (emacs-home* "config/self-sample.el") f t)))
-    (list :path p :file f)))
+      (when (not (file-exists-p d)) (make-directory d t))
+      (save-sexpr-to-file (list 'def-self-paths (cons 'list paths)) p)
+      (dolist (f fs)
+        (let ((dst (car f))
+              (src (cdr f)))
+          (when (not (file-exists-p dst))
+            (copy-file src dst t)))))
+    paths))
+
+
+(defvar self-def-paths (self-def-files!))

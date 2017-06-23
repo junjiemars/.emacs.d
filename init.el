@@ -5,6 +5,13 @@
 
 
 
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(package-initialize)
+
 (defmacro comment (&rest body)
   "Ignores body, yields nil."
   nil)
@@ -67,18 +74,17 @@ and return it."
 
 (defmacro compile-and-load-elisp-file* (vdir file)
   "Compile and load the elisp FILE, save compiled files in VDIR."
-  `(let ((c (v-path* ,file ,vdir "elc")))
-     (if c
-         (progn
-           (when (or (not (file-exists-p c))
-                     (file-newer-than-file-p ,file c))
-             (let ((s (v-path* ,file ,vdir)))
-               (copy-file ,file s t)
-               (byte-compile-file s)))
-           (if (file-exists-p c)
-               (load c)
-             (message "#Missing %s" c)))
-       (message "#Skip compile and load %s.done" ,file))))
+  `(if (and (stringp ,file) (file-exists-p ,file))
+       (let ((c (v-path* ,file ,vdir "elc")))
+         (when (or (not (file-exists-p c))
+                   (file-newer-than-file-p ,file c))
+           (let ((s (v-path* ,file ,vdir)))
+             (copy-file ,file s t)
+             (byte-compile-file s)))
+         (if (file-exists-p c)
+             (load c)
+           (message "#Missing %s" c)))
+     (message "#Skip compile and load %s.done" ,file)))
 
 
 (defmacro clean-compiled-files ()
@@ -404,47 +410,50 @@ self things.
 
 ;; Load self env
 (compile-and-load-elisp-files!
- v-dir
- (list (plist-get self-def-files :path)))
+    v-dir
+  (emacs-home* v-dir "private/self-path.el")
+  (plist-get self-def-paths :env-spec))
 
-(compile-and-load-elisp-files!
- v-dir
- (self-safe-call* "path" (list *val*)))
+(comment
+ (compile-and-load-elisp-files!
+  v-dir
+  (self-safe-call* "path" (list *val*))))
 
 
 ;; Load ui, shell, basic env:
 (compile-and-load-elisp-files!
- v-dir
- `(,(emacs-home* "config/boot.el")
-   ,(emacs-home* "config/shell.el")
-   ,(emacs-home* "config/basic.el")))
+    v-dir
+  (emacs-home* "config/boot.el")
+  (emacs-home* "config/shell.el")
+  (emacs-home* "config/basic.el"))
 
 
 ;; Self do prelogue ...
-(self-safe-call prelogue)
+(comment)
+(compile-and-load-elisp-files!
+    v-dir
+  (plist-get self-def-paths :prelogue))
 
 
-(package-supported-p
-  ;; Basic and self package setup
-  ;;(package-initialize)
-  (compile-and-load-elisp-files!
-   v-dir
-   `(,(emacs-home* "config/module.el"))))
+(comment
+ (self-safe-call prelogue))
 
 
 (compile-and-load-elisp-files!
- ;; Compile and load non-package-required elisp files
- v-dir
- `(,(emacs-home* "config/debugger.el")
-   ,(emacs-home* "config/editing.el")
-   ,(emacs-home* "config/financial.el")
-   ,(emacs-home* "config/tags.el")
-   ,(emacs-home* "config/utils.el")
-   ,(emacs-home* "config/memory.el")))
+    ;; Compile and load modules
+    v-dir
+  (emacs-home* "config/module.el")
+  (emacs-home* "config/debugger.el")
+  (emacs-home* "config/editing.el")
+  (emacs-home* "config/financial.el")
+  (emacs-home* "config/tags.el")
+  (emacs-home* "config/utils.el")
+  (emacs-home* "config/memory.el"))
 
 
-;; Self do epilogue ...
-(self-safe-call epilogue)
+(comment
+ ;; Self do epilogue ...
+ (self-safe-call epilogue))
 
 
 ;; After loaded ...

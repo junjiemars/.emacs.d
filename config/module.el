@@ -61,12 +61,11 @@
   "Parse SPEC, install packages and setup."
   (dolist (s spec)
     (let ((p (plist-get s :cond))
-          (m (plist-get s :packages))
-          (c (plist-get s :compile)))
+          (m (plist-get s :packages)))
       (when (or (and (booleanp p) p)
                 (funcall p))
         (when (consp m) (install-package! m))
-        (when (consp c) (compile-and-load-elisp-files! dir c))))))
+        (apply #'compile-and-load-elisp-files! dir (plist-get s :compile))))))
 
 
 
@@ -103,7 +102,7 @@
       nil)))
 
 
-
+(comment
 ;; Load basic package spec
 (parse-package-spec basic-package-spec v-dir)
 
@@ -112,5 +111,5 @@
 (self-safe-call*
  "package-spec"
  (parse-package-spec *val* v-dir))
-
+)
 
