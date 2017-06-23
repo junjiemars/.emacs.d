@@ -146,7 +146,7 @@
 
 (defun dir-iterate (dir ff df fn)
   "Iterating DIR, if FILE-FILTER return T then call FN, 
-and if DIR-FILTER return T then iterate into deep DIR.
+and if DIR-FILTER return T then iterate into deeper DIR.
 
    (defun FILE-FILTER (file-name absolute-name))
    (defun DIR-FILTER (dir-name absolute-name))
@@ -161,6 +161,10 @@ and if DIR-FILTER return T then iterate into deep DIR.
           (when (and ff (funcall ff f a)
                      (funcall fn a))))))))
 
-(defmacro save-string-to-file (string file)
-  `(with-temp-file ,file
-     (insert ,string)))
+
+(defun save-string-to-file (string file)
+  "Save STRING to FILE.
+
+\(FN STRING FILE\)"
+  (with-temp-file file
+    (insert string)))
