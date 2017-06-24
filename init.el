@@ -5,14 +5,6 @@
 
 
 
-
-
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
-(package-initialize)
-
 (defmacro comment (&rest body)
   "Ignores body, yields nil."
   nil)
@@ -398,5 +390,3 @@ ignore it if you don't like it.
 
 
 ;; ^ End of init.el
-
-
