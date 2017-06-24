@@ -6,6 +6,13 @@
 
 
 
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(package-initialize)
+
 (defmacro comment (&rest body)
   "Ignores body, yields nil."
   nil)
@@ -378,61 +385,6 @@ ignore it if you don't like it.
  (emacs-home* "config/strap.el"))
 
 
-(defvar self-def-where (self-def-files!)
-  "Where's the path of self-path.el")
-
-
-;; Load self where
-(compile-and-load-elisp-files!
-    v-dir
-  self-def-where)
-
-
-;; Load self env
-(compile-and-load-elisp-files!
-    v-dir
-  (plist-get self-def-paths :env-spec))
-
-
-;; Load ui, shell, basic env:
-(compile-and-load-elisp-files!
-    v-dir
-  (emacs-home* "config/boot.el")
-  (emacs-home* "config/shell.el")
-  (emacs-home* "config/basic.el"))
-
-
-;; Self do prelogue ...
-(compile-and-load-elisp-files!
-    v-dir
-  (plist-get self-def-paths :prelogue))
-
-
-(package-supported-p
-  ;; (package-initialize)
-
-  ;; Load basic and self modules
-  (compile-and-load-elisp-files!
-      v-dir
-    (plist-get self-def-paths :package-spec)
-    (emacs-home* "config/module.el")))
-
-
-;; Load package independent modules
-(compile-and-load-elisp-files!
-    v-dir
-  (emacs-home* "config/debugger.el")
-  (emacs-home* "config/editing.el")
-  (emacs-home* "config/financial.el")
-  (emacs-home* "config/tags.el")
-  (emacs-home* "config/utils.el")
-  (emacs-home* "config/memory.el"))
-
-
-;; Self do epilogue ...
-(compile-and-load-elisp-files!
-    v-dir
-  (plist-get self-def-paths :epilogue))
 
 
 
