@@ -168,3 +168,36 @@ and if DIR-FILTER return T then iterate into deeper DIR.
 \(FN STRING FILE\)"
   (with-temp-file file
     (insert string)))
+
+
+;; Socks
+
+(defsubst start-socks! (&optional port server version)
+  "Switch on url-gateway to socks"
+  (version-supported-when < 22
+    (eval-when-compile (require 'url))
+    (setq-default url-gateway-method 'socks)
+    (setq-default socks-server
+                  (list "Default server"
+                        (if server server "127.0.0.1")
+                        (if port port 32000)
+                        (if version version 5)))))
+
+
+;; Load socks settings
+(self-safe-call*
+ "env-spec"
+ (let ((socks (plist-get *val* :socks)))
+   (when (and socks (plist-get socks :allowed))
+     (start-socks! (plist-get socks :port)
+                   (plist-get socks :server)
+                   (plist-get socks :version)))))
+
+
+(defsubst stop-socks! (&optional method)
+  "Switch off url-gateway to native."
+  (version-supported-when < 22
+    (eval-when-compile (require 'url))
+    (setq-default url-gateway-method
+                  (if method  method 'native))))
+

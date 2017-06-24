@@ -33,7 +33,7 @@
         t))
 
 
-  (defun self-default-font! (font)
+  (defsubst self-default-font! (font)
     "Set default font in graphic mode.
 
 \(FN FONT\)"
@@ -53,7 +53,7 @@
      (when (and font (plist-get font :allowed))
        (self-default-font! (plist-get font :name)))))
 
-  (defun self-cjk-font! (name size)
+  (defsubst self-cjk-font! (name size)
     "Set CJK font in Graphic mode.
 
 \(FN NAME SIZE\)"
@@ -78,7 +78,7 @@
 
 (theme-supported-p
     
-    (defun self-load-theme! (dir name)
+    (defsubst self-load-theme! (dir name)
       "Load THEME of current platform from THEME-DIR by THEME-NAME, if THEME-DIR
 or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
 
@@ -132,36 +132,5 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
 (safe-setq ring-bell-function 'ignore)
 
 
-
-;; Socks
-
-(defun start-socks! (&optional port server version)
-  "Switch on url-gateway to socks"
-  (version-supported-when < 22
-    (eval-when-compile (require 'url))
-    (setq-default url-gateway-method 'socks)
-    (setq-default socks-server
-                  (list "Default server"
-                        (if server server "127.0.0.1")
-                        (if port port 32000)
-                        (if version version 5)))))
-
-
-;; Load socks settings
-(self-safe-call*
- "env-spec"
- (let ((socks (plist-get *val* :socks)))
-   (when (and socks (plist-get socks :allowed))
-     (start-socks! (plist-get socks :port)
-                   (plist-get socks :server)
-                   (plist-get socks :version)))))
-
-
-(defun stop-socks! (&optional method)
-  "Switch off url-gateway to native."
-  (version-supported-when < 22
-    (eval-when-compile (require 'url))
-    (setq-default url-gateway-method
-                  (if method  method 'native))))
 
 
