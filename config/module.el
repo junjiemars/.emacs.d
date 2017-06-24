@@ -7,9 +7,7 @@
 
 
 ;; define package user dir
-
 (setq-default package-user-dir (v-home* "elpa/"))
-
 
 
 (defvar module-initialized nil
@@ -35,12 +33,19 @@
   (package-refresh-contents))
 
 
+(defun not-yet-installed-packages (packages)
+  (when (not module-initialized)
+    (require 'package)
+    (setq package-enable-at-startup nil)
+    (package-initialize))
+  (delete t (mapcar #'(lambda (p)
+                        (if (package-installed-p p) t p))
+                    packages)))
+
+
 (defun install-package! (packages &optional dry)
   "Install missing packages, returns alist of installed packages"
-  (let ((not-installed-packages
-         (delete t (mapcar #'(lambda (p)
-                               (if (package-installed-p p) t p))
-                           packages))))
+  (let ((not-installed-packages (not-yet-installed-packages packages)))
     (when not-installed-packages
       (unless dry
         (when (not module-initialized)
@@ -67,14 +72,6 @@
         (when (consp m) (install-package! m))
         (apply #'compile-and-load-elisp-files! dir (plist-get s :compile))))))
 
-
-
-;; Package specs
-
-
-(require 'package)
-(setq package-enable-at-startup nil)
-(package-initialize)
 
 
 (defvar basic-package-spec
