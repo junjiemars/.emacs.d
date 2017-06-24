@@ -58,7 +58,7 @@ and return it."
                      (emacs-home* "config/sample-self-env-spec.el"))
               ,(cons (emacs-home* "private/self-package-spec.el")
                      (emacs-home* "config/sample-self-package-spec.el"))
-              ,(cons (emacs-home* "private/self-prelogure.el")
+              ,(cons (emacs-home* "private/self-prelogue.el")
                      (emacs-home* "config/sample-self-prelogue.el"))
               ,(cons (emacs-home* "private/self-epilogue.el")
                      (emacs-home* "config/sample-self-epilogue.el"))))
