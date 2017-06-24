@@ -54,22 +54,18 @@ and return it."
   "Returns the PATH of `self-path.el' and make self-*.el files."
   (let ((d (emacs-home* "private/"))
         (p (emacs-home* "private/self-path.el"))
-        (fs `(,(cons (emacs-home* "private/self-env-spec.el")
+        (fs `(,(cons (emacs-home* "private/self-path.el")
+                     (emacs-home* "config/self-path.el"))
+              ,(cons (emacs-home* "private/self-env-spec.el")
                      (emacs-home* "config/sample-self-env-spec.el"))
               ,(cons (emacs-home* "private/self-package-spec.el")
                      (emacs-home* "config/sample-self-package-spec.el"))
               ,(cons (emacs-home* "private/self-prelogue.el")
                      (emacs-home* "config/sample-self-prelogue.el"))
               ,(cons (emacs-home* "private/self-epilogue.el")
-                     (emacs-home* "config/sample-self-epilogue.el"))))
-        (paths `(:env-spec (emacs-home* "private/self-env-spec.el")
-                           :package-spec nil
-                           :prelogue nil
-                           :epilogue nil)))
+                     (emacs-home* "config/sample-self-epilogue.el")))))
     (when (not (file-exists-p p))
       (when (not (file-exists-p d)) (make-directory d t))
-      (save-sexpr-to-file
-       (list 'defvar'self-def-paths (cons 'list paths)) p)
       (dolist (f fs)
         (let ((dst (car f))
               (src (cdr f)))
