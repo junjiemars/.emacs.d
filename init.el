@@ -409,7 +409,7 @@ ignore it if you don't like it.
 
 
 (package-supported-p
-  ;;(package-initialize)
+  ;; (package-initialize)
 
   ;; Load basic and self modules
   (compile-and-load-elisp-files!
@@ -446,3 +446,17 @@ ignore it if you don't like it.
 
 
 ;; ^ End of init.el
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (sx slime geiser magit lfe-mode erlang docker-tramp dockerfile-mode clojure-mode-extra-font-locking clojure-mode cider cdlatex auctex tagedit smex rainbow-delimiters paredit markdown-mode ido-ubiquitous bing-dict aggressive-indent))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

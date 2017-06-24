@@ -10,8 +10,12 @@
 (setq-default package-user-dir (v-home* "elpa/"))
 
 
-(defvar module-initialized nil
-  "Just initialize package repository once.")
+(defvar *repostory-initialized* nil
+  "Indicate `intialize-package-repository!' whether has been called.")
+
+
+(defvar *package-initialized* nil
+  "Indicate `package-initialize' whether has been called. )")
 
 
 (defun initialize-package-repository! ()
@@ -34,10 +38,10 @@
 
 
 (defun not-yet-installed-packages (packages)
-  (when (not module-initialized)
-    (require 'package)
+  (when (not *package-initialized*)
     (setq package-enable-at-startup nil)
-    (package-initialize))
+    (package-initialize)
+    (setq *package-initialized* t))
   (delete t (mapcar #'(lambda (p)
                         (if (package-installed-p p) t p))
                     packages)))
@@ -48,9 +52,9 @@
   (let ((not-installed-packages (not-yet-installed-packages packages)))
     (when not-installed-packages
       (unless dry
-        (when (not module-initialized)
+        (when (not *repostory-initialized*)
           (initialize-package-repository!)
-          (setq module-initialized t)))
+          (setq *repostory-initialized* t)))
       (message "#Installing the missing %d packages: %s"
                (length not-installed-packages)
                not-installed-packages)
