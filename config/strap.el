@@ -6,7 +6,7 @@
 
 
 
-(defun v-path! (file dir &optional extension)
+(defsubst v-path! (file dir &optional extension)
   "Make the versioned DIR base on the existing FILE's directory 
 and return it."
   (v-path* file dir extension))
@@ -23,6 +23,7 @@ and return it."
 ;; Versioned dirs
 (setq-default recentf-save-file (v-home! ".recentf/" "recentf"))
 (setq-default savehist-file (v-home! ".minibuffer/" "history"))
+
 
 
 (defmacro save-sexpr-to-file (sexpr file)
@@ -50,7 +51,7 @@ and return it."
      ,@body))
 
 
-(defun self-def-files! ()
+(defsubst self-def-files! ()
   "Returns the PATH of `self-path.el' and make self-*.el files."
   (let ((d (emacs-home* "private/"))
         (p (emacs-home* "private/self-path.el"))
