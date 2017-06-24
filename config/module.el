@@ -11,11 +11,7 @@
 
 
 (defvar *repostory-initialized* nil
-  "Indicate `intialize-package-repository!' whether has been called.")
-
-
-(defvar *package-initialized* nil
-  "Indicate `package-initialize' whether has been called. )")
+  "Indicate `initialize-package-repository!' whether has been called.")
 
 
 (defun initialize-package-repository! ()
@@ -37,19 +33,18 @@
   (package-refresh-contents))
 
 
-(defun not-yet-installed-packages (packages)
-  (when (not *package-initialized*)
-    (setq package-enable-at-startup nil)
-    (package-initialize)
-    (setq *package-initialized* t))
-  (delete t (mapcar #'(lambda (p)
-                        (if (package-installed-p p) t p))
-                    packages)))
+;; Package Initialize
+(require 'package)
+(setq package-enable-at-startup nil)
+(package-initialize)
 
 
 (defun install-package! (packages &optional dry)
   "Install missing packages, returns alist of installed packages"
-  (let ((not-installed-packages (not-yet-installed-packages packages)))
+  (let ((not-installed-packages
+         (delete t (mapcar #'(lambda (p)
+                               (if (package-installed-p p) t p))
+                           packages))))
     (when not-installed-packages
       (unless dry
         (when (not *repostory-initialized*)
@@ -61,7 +56,7 @@
       
       (mapc (lambda (i)
               (unless dry
-                (package-install i)))
+                (package-install i t)))
             not-installed-packages)
       not-installed-packages)))
 
@@ -75,7 +70,6 @@
                 (funcall p))
         (when (consp m) (install-package! m))
         (apply #'compile-and-load-elisp-files! dir (plist-get s :compile))))))
-
 
 
 (defvar basic-package-spec
@@ -92,7 +86,6 @@
          :compile `(,(emacs-home* "config/setup-lisp.el")
                     ,(emacs-home* "config/setup-navigation.el")
                     ,(emacs-home* "config/setup-python.el")))))
-
 
 
 (version-supported-when
