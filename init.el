@@ -377,7 +377,8 @@ ignore it if you don't like it.
  (emacs-home* "config/strap.el"))
 
 
-
+(package-supported-p
+  (comment (package-initialize)))
 
 
 ;; After loaded ...
