@@ -58,9 +58,6 @@
    :cond (lambda ()
            (or (bin-exists-p "sbcl")))
    :packages '(slime)
-   :compile `(,(emacs-home* "config/setup-slime.el")))
-  (list
-   :cond t
-   :packages '(sx)))
+   :compile `(,(emacs-home* "config/setup-slime.el"))))
 
 
