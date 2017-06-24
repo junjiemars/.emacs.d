@@ -414,16 +414,11 @@ ignore it if you don't like it.
   (plist-get self-def-paths :prelogue))
 
 
-;; Load basic and self modules
-(compile-and-load-elisp-files!
-    v-dir
-  (plist-get self-def-paths :package-spec)
-  (emacs-home* "config/module.el"))
-
-
 ;; Load package independent modules
 (compile-and-load-elisp-files!
     v-dir
+  (plist-get self-def-paths :package-spec)
+  (emacs-home* "config/module.el")
   (emacs-home* "config/debugger.el")
   (emacs-home* "config/editing.el")
   (emacs-home* "config/financial.el")
