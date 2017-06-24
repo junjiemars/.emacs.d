@@ -1,12 +1,10 @@
 ;;;;
 ;; sample-self-prelogue.el: specify the prelogue of yourself
+;;   define self-prelogue, it will be run after load def-env-spec
 ;;
 ;;;;
 
 
-(comment
- (def-self-prelogue
-   (message "#self prelogue ...")
-   (comment (setq debug-on-error t))))
+(message "#self prelogue ...")
 
-
+;; (setq debug-on-error t)

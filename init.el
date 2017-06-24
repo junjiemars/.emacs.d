@@ -364,29 +364,6 @@ ignore it if you don't like it.
       `(defvar ,_spec_ (list ,@spec)))))
 
 
-(defmacro def-self-prelogue (&rest body)
-  "Define self-prelogue, it will be run before load other 
-self things.
-
-\(fn BODY...)"
-  (declare (indent 0))
-  (let ((_prelogue_ (self-symbol 'prelogue)))
-    `(defun ,_prelogue_ ()
-       ,@body)))
-
-
-(defmacro def-self-epilogue (&rest body)
-  "Define self-epilogue, it will be run after load other 
-self things.
-
-\(fn BODY...)"
-  (declare (indent 0))
-  (let ((_epilogue_ (self-symbol 'epilogue)))
-    `(defun ,_epilogue_ ()
-       ,@body)))
-
-
-
 (defmacro self-safe-call (fn)
   (let ((_fn_ (self-symbol fn)))
     `(when (fboundp ',_fn_)
@@ -437,7 +414,6 @@ self things.
   (plist-get self-def-paths :prelogue))
 
 
-
 ;; Load basic and self modules
 (compile-and-load-elisp-files!
     v-dir
@@ -445,7 +421,7 @@ self things.
   (emacs-home* "config/module.el"))
 
 
-;; Load utils modules
+;; Load package independent modules
 (compile-and-load-elisp-files!
     v-dir
   (emacs-home* "config/debugger.el")
@@ -454,12 +430,6 @@ self things.
   (emacs-home* "config/tags.el")
   (emacs-home* "config/utils.el")
   (emacs-home* "config/memory.el"))
-
-
-;; Load self packages
-(compile-and-load-elisp-files!
-    v-dir
-  (plist-get self-def-paths :package-spec))
 
 
 ;; Self do epilogue ...
@@ -479,6 +449,3 @@ self things.
 
 
 ;; ^ End of init.el
-
-
-
