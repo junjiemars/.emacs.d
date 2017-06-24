@@ -51,6 +51,7 @@ and return it."
 
 
 (defun self-def-files! ()
+  "Returns the PATH of `self-path.el' and make self-*.el files."
   (let ((d (emacs-home* "private/"))
         (p (emacs-home* "private/self-path.el"))
         (fs `(,(cons (emacs-home* "private/self-env-spec.el")
@@ -61,19 +62,17 @@ and return it."
                      (emacs-home* "config/sample-self-prelogue.el"))
               ,(cons (emacs-home* "private/self-epilogue.el")
                      (emacs-home* "config/sample-self-epilogue.el"))))
-        (paths `(:env-spec ,(emacs-home* "private/self-env-spec.el")
+        (paths `(:env-spec (emacs-home* "private/self-env-spec.el")
                            :package-spec nil
                            :prelogue nil
                            :epilogue nil)))
     (when (not (file-exists-p p))
       (when (not (file-exists-p d)) (make-directory d t))
-      (save-sexpr-to-file (list 'def-self-paths (cons 'list paths)) p)
+      (save-sexpr-to-file
+       (list 'defvar'self-def-paths (cons 'list paths)) p)
       (dolist (f fs)
         (let ((dst (car f))
               (src (cdr f)))
           (when (not (file-exists-p dst))
             (copy-file src dst t)))))
-    paths))
-
-
-(defvar self-def-paths (self-def-files!))
+    p))

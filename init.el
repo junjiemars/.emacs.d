@@ -401,23 +401,26 @@ self things.
 
 
 
-
 ;; Load strap
 (compile-and-load-elisp-file*
  v-dir
  (emacs-home* "config/strap.el"))
 
 
+(defvar self-def-where (self-def-files!)
+  "Where's the path of self-path.el")
+
+
+;; Load self where
+(compile-and-load-elisp-files!
+    v-dir
+  self-def-where)
+
+
 ;; Load self env
 (compile-and-load-elisp-files!
     v-dir
-  (emacs-home* v-dir "private/self-path.el")
   (plist-get self-def-paths :env-spec))
-
-(comment
- (compile-and-load-elisp-files!
-  v-dir
-  (self-safe-call* "path" (list *val*))))
 
 
 ;; Load ui, shell, basic env:
@@ -429,20 +432,22 @@ self things.
 
 
 ;; Self do prelogue ...
-(comment)
 (compile-and-load-elisp-files!
     v-dir
   (plist-get self-def-paths :prelogue))
 
 
-(comment
- (self-safe-call prelogue))
 
-
+;; Load basic and self modules
 (compile-and-load-elisp-files!
-    ;; Compile and load modules
     v-dir
-  (emacs-home* "config/module.el")
+  (plist-get self-def-paths :package-spec)
+  (emacs-home* "config/module.el"))
+
+
+;; Load utils modules
+(compile-and-load-elisp-files!
+    v-dir
   (emacs-home* "config/debugger.el")
   (emacs-home* "config/editing.el")
   (emacs-home* "config/financial.el")
@@ -451,9 +456,17 @@ self things.
   (emacs-home* "config/memory.el"))
 
 
-(comment
- ;; Self do epilogue ...
- (self-safe-call epilogue))
+;; Load self packages
+(compile-and-load-elisp-files!
+    v-dir
+  (plist-get self-def-paths :package-spec))
+
+
+;; Self do epilogue ...
+(compile-and-load-elisp-files!
+    v-dir
+  (plist-get self-def-paths :epilogue))
+
 
 
 ;; After loaded ...

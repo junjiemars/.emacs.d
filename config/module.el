@@ -102,7 +102,6 @@
       nil)))
 
 
-(comment
 ;; Load basic package spec
 (parse-package-spec basic-package-spec v-dir)
 
@@ -111,5 +110,5 @@
 (self-safe-call*
  "package-spec"
  (parse-package-spec *val* v-dir))
-)
+
 
