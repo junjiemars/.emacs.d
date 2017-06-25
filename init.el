@@ -53,7 +53,7 @@
   `(file-name-sans-extension (file-name-nondirectory ,file)))
 
 
-(defmacro v-path* (file dir &optional extension)
+(defmacro v-path! (file dir &optional extension)
   "Make the versioned DIR base on the existing FILE's directory 
 and return it."
   `(when (and ,dir (file-exists-p ,file))
@@ -68,10 +68,10 @@ and return it."
 (defmacro compile-and-load-elisp-file* (vdir file)
   "Compile and load the elisp FILE, save compiled files in VDIR."
   `(if (and (stringp ,file) (file-exists-p ,file))
-       (let ((c (v-path* ,file ,vdir "elc")))
+       (let ((c (v-path! ,file ,vdir "elc")))
          (when (or (not (file-exists-p c))
                    (file-newer-than-file-p ,file c))
-           (let ((s (v-path* ,file ,vdir)))
+           (let ((s (v-path! ,file ,vdir)))
              (copy-file ,file s t)
              (byte-compile-file s)))
          (if (file-exists-p c)

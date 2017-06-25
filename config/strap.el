@@ -6,12 +6,6 @@
 
 
 
-(defsubst v-path! (file dir &optional extension)
-  "Make the versioned DIR base on the existing FILE's directory 
-and return it."
-  (v-path* file dir extension))
-
-
 (defun compile-and-load-elisp-files! (vdir &rest files)
   "Compile and load the elisp FILES, save compiled files in VDIR."
   (declare (indent 1))
