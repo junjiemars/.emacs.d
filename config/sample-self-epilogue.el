@@ -24,9 +24,8 @@
 
 (comment
  (require 'rmail)
- (setq rmail-file-name (v-home! ".mail/" "RMAIL"))
  (setq rmail-primary-inbox-list '("<protocal://user:passwd@host>"))
- (setq rmail-remote-password-required t))
+ (setq-default rmail-remote-password-required t))
 
 (comment
  (require 'sendmail)

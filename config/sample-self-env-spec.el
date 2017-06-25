@@ -15,7 +15,7 @@
                   :allowed nil)
   :desktop (list :files-not-to-save "\.el\.gz\\|\.desktop\\|~$"
                  :buffers-not-to-save "^TAGS\\|\\.log"
-                 :modes-not-to-save '(dired-mode fundamental-mode)
+                 :modes-not-to-save '(dired-mode fundamental-mode rmail-mode)
                  :allowed t)
   (comment
    :socks (list :port 11032
