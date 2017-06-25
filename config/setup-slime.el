@@ -5,28 +5,23 @@
 
 
 
-
-;; sbcl path
-(platform-supported-when
-    windows-nt
-  (let ((home (getenv "SBCL_HOME")))
-    (add-to-list 'exec-path
-                 (windows-nt-path
-                  (file-name-directory
-                   (if home home (bin-path "sbcl")))))
-    (safe-setq-inferior-lisp-program "sbcl" t)))
+(defmacro common-lisp-path (name)
+  `(platform-supported-if
+       windows-nt
+       (windows-nt-path (bin-path ,name))
+     (bin-path ,name)))
 
 
-
-(defun common-lisp-implementations ()
+(defsubst common-lisp-implementations ()
   "Returns a list of common-lisp implementations. use `M-- M-x slime'."
-  (let ((sbcl (when (bin-exists-p "sbcl") (bin-path "sbcl")))
-        (abcl (when (bin-exists-p "abcl") (bin-path "abcl")))
-        (ecl (when (bin-exists-p "ecl") (bin-path "ecl"))))
-    (remove nil (list (when sbcl (list 'sbcl (list sbcl)))
-                      (when abcl (list 'abcl (list abcl)))
-                      (when ecl (list 'ecl (list ecl)))))))
-
+  (remove nil
+          (list (when (bin-exists-p "sbcl")
+                  (safe-setq-inferior-lisp-program "sbcl" t)
+                  (list 'sbcl (list (common-lisp-path "sbcl"))))
+                (when (bin-exists-p "abcl")
+                  (list 'abcl (list (common-lisp-path "abcl"))))
+                (when (bin-exists-p "ecl")
+                  (list 'ecl (list (common-lisp-path "ecl")))))))
 
 
 (defun set-slime-repl-mode! ()
