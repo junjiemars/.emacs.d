@@ -19,7 +19,7 @@
 
 
 (defun common-lisp-implementations ()
-  "Returns a list of common-lisp implementations."
+  "Returns a list of common-lisp implementations. use `M-- M-x slime'."
   (let ((sbcl (when (bin-exists-p "sbcl") (bin-path "sbcl")))
         (abcl (when (bin-exists-p "abcl") (bin-path "abcl")))
         (ecl (when (bin-exists-p "ecl") (bin-path "ecl"))))
@@ -30,9 +30,6 @@
 
 
 (defun set-slime-repl-mode! ()
-  (safe-fn-when slime-close-all-parens-in-sexp
-    (local-set-key (kbd "C-c C-]")
-                   'slime-close-all-parens-in-sexp))
   (safe-fn-when slime-selector 
     (global-set-key (kbd "C-c s")
                     'slime-selector)))
