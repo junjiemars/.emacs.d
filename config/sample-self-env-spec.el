@@ -1,7 +1,13 @@
 ;;;;
-;; sample-self-env-spec.el: specify the private environment specs or yourself
+;; sample-self-env-spec.el: specify the private environment specs of yourself
 ;; 
 ;;;;
+
+
+
+;; Basic Emacs' GUI environment configurations:
+;; you can customize your `:theme', `:font', `:desktop' or `:socks',
+;; all those can be Gited in yourself Git repository.
 
 
 (def-self-env-spec
