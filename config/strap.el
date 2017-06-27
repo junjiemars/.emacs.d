@@ -55,8 +55,8 @@
                      (emacs-home* "config/sample-self-env-spec.el"))
               ,(cons (emacs-home* "private/self-package-spec.el")
                      (emacs-home* "config/sample-self-package-spec.el"))
-              ,(cons (emacs-home* "private/self-prelogue.el")
-                     (emacs-home* "config/sample-self-prelogue.el"))
+              ,(cons (emacs-home* "private/self-prologue.el")
+                     (emacs-home* "config/sample-self-prologue.el"))
               ,(cons (emacs-home* "private/self-epilogue.el")
                      (emacs-home* "config/sample-self-epilogue.el")))))
     (when (not (file-exists-p p))
@@ -99,7 +99,7 @@
 ;; Self do prelogue ...
 (compile-and-load-elisp-files!
     v-dir
-  (plist-get self-def-paths :prelogue))
+  (plist-get self-def-paths :prologue))
 
 
 (package-supported-p

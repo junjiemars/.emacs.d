@@ -11,6 +11,6 @@
 (setq self-def-paths
       (list
        :env-spec (emacs-home* "private/self-env-spec.el")
-       :prelogue nil
+       :prologue nil
        :package-spec nil
        :epilogue nil))
