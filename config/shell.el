@@ -16,16 +16,17 @@
                (not (string-match regexp shell-file-name)))
        `(setq shell-file-name ,path))))
 
-  
-(defmacro set-path-env! ()
-  "Set PATH and exec-path in Emacs."
-  `(let* ((p (shell-command-to-string
-              "$SHELL -i -c 'echo -n $PATH' 2>/dev/null"))
-          (x (split-string p ":")))
-     (setenv "PATH" p)
-     (while (car x)
-       (add-to-list 'exec-path (car x) t #'string=)
-       (setq x (cdr x)))))
+
+(defmacro export-path-env! (var &optional add-to-exec-path)
+  "Export path VAR or append to exec-path."
+  `(let ((env (shell-command-to-string
+               (concat "$SHELL -i -c 'echo -n $" ,var "' 2>/dev/null"))))
+     (setenv ,var env)
+     (when (and ,add-to-exec-path ,var)
+       (let ((x (split-string env path-separator)))
+         (while (car x)
+           (add-to-list 'exec-path (car x) t #'string=)
+           (setq x (cdr x)))))))
 
 
 (defmacro path-env ()
@@ -37,11 +38,13 @@
   
 (defun save-path-env ()
   (let ((env (path-env)))
-    (set-path-env!)
+    (export-path-env! "PATH")
+    (export-path-env! "LD_LIBRARY_PATH")
     (save-sexpr-to-file
      (list 'progn
            (list 'setenv "PATH" (getenv "PATH"))
-           (list 'setq 'exec-path (list 'quote exec-path)))
+           (list 'setq 'exec-path (list 'quote exec-path))
+           (list 'setenv "LD_LIBRARY_PATH" (getenv "LD_LIBRARY_PATH")))
      (car env))
     (byte-compile-file (car env))))
 
@@ -50,7 +53,8 @@
   `(let ((env (path-env)))
      (if (file-exists-p (cdr env))
          (load (cdr env))
-       (set-path-env!))
+       (export-path-env! "PATH" t)
+       (export-path-env! "LD_LIBRARY_PATH"))
      (add-hook 'kill-emacs-hook #'save-path-env)))
 
 
