@@ -68,8 +68,9 @@
           (m (plist-get s :packages)))
       (when (or (and (booleanp p) p)
                 (funcall p))
-        (when (consp m) (install-package! m))
-        (apply #'compile-and-load-elisp-files! dir (plist-get s :compile))))))
+        (when (consp m)
+          (install-package! m)
+          (apply #'compile-and-load-elisp-files! dir (plist-get s :compile)))))))
 
 
 (defvar basic-package-spec
