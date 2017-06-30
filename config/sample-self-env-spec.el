@@ -19,7 +19,8 @@
   :cjk-font (list :name "Microsoft Yahei"
                   :size 13
                   :allowed nil)
-  :desktop (list :files-not-to-save "\.el\.gz\\|\.desktop\\|~$"
+  :desktop (list :files-not-to-save
+                 ".*\.t?gz\\|\.desktop\\|~$\\|^su:.*\\|^sudo:.*\\|^ssh:.*"
                  :buffers-not-to-save "^TAGS\\|\\.log"
                  :modes-not-to-save '(dired-mode fundamental-mode rmail-mode)
                  :allowed t)
