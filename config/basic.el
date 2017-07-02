@@ -132,6 +132,10 @@
 (setq auto-save-list-file-prefix (v-home! ".auto-save/" "saves-"))
 
 
+;; Eshell
+(setq-default eshell-directory-name (v-home! ".eshell/"))
+
+
 (safe-fn-unless directory-name-p
   (defun directory-name-p (name)
     "Return non-nil if NAME ends with a directory separator character."
