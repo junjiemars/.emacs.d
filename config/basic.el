@@ -176,8 +176,9 @@ and if DIR-FILTER return T then iterate into deeper DIR.
 
 ;; Socks
 
-(defsubst start-socks! (&optional port server version)
-  "Switch on url-gateway to socks"
+(defun start-socks! (&optional port server version)
+  "Switch on `url-gateway-method' to socks, you can start a ssh proxy before 
+call it: ssh -vnNTD32000 <user>@<host>"
   (version-supported-when < 22
     (eval-when-compile (require 'url))
     (setq-default url-gateway-method 'socks)
@@ -198,10 +199,10 @@ and if DIR-FILTER return T then iterate into deeper DIR.
                    (plist-get socks :version)))))
 
 
-(defsubst stop-socks! (&optional method)
+(defun stop-socks! (&optional method)
   "Switch off url-gateway to native."
   (version-supported-when < 22
     (eval-when-compile (require 'url))
     (setq-default url-gateway-method
-                  (if method  method 'native))))
+                  (if method method 'native))))
 

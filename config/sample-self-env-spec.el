@@ -25,7 +25,7 @@
                  :modes-not-to-save '(dired-mode fundamental-mode rmail-mode)
                  :allowed t)
   (comment
-   :socks (list :port 11032
+   :socks (list :port 32000
                 :server "127.0.0.1"
                 :version 5
                 :allowed t)))
