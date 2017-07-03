@@ -7,8 +7,8 @@
 
 
 (defmacro enable-eldoc-mode ()
-  "After Emacs 24.4 `turn-on-eldoc-mode is obsoleted, use `eldoc-mode indeed.
-  `eldoc-mode shows documentation in the minibuffer when writing code.
+  "After Emacs 24.0 `turn-on-eldoc-mode' is obsoleted, use `eldoc-mode' indeed.
+  `eldoc-mode' shows documentation in the minibuffer when writing code.
   http://www.emacswiki.org/emacs/ElDoc"
   `(version-supported-if < 24.0
                          (eldoc-mode)
