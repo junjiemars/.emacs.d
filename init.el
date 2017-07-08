@@ -64,6 +64,8 @@ and return it."
                      (concat (base-file-name ,file) "." ,extension)
                    (file-name-nondirectory ,file))))))
 
+
+
 
 (defmacro compile-and-load-elisp-file* (vdir file)
   "Compile and load the elisp FILE, save compiled files in VDIR."
@@ -104,7 +106,9 @@ and return it."
                      ,(v-home* ".url/"))))
      (dolist (d dirs)
        (when (file-exists-p d)
-         (dolist (f (directory-files d nil "^\\([^.]\\|\\.[^.]\\|\\.\\..\\)"))
+         (dolist (f (directory-files d
+                                     nil
+                                     "^\\([^.]\\|\\.[^.]\\|\\.\\..\\)"))
            (message "#Clean saved user file: %s" (concat d f))
            (delete-file (concat d f)))))))
 
@@ -116,21 +120,14 @@ and return it."
      (clean-saved-user-files)
      (kill-emacs 0)))
 
+
+
 
 (defmacro progn% (&rest exps)
   "Return an expression equivalent to `(progn ,@EXPS).
 
 \(fn EXPS...\)"
   (if (cdr exps) `(progn ,@exps) (car exps)))
-
-
-(defmacro package-supported-p (&rest body)
-  "Run BODY code if supports package.
-
-\(fn BODY...)"
-  (declare (indent 0))
-  (when (>= emacs-major-version 24)
-    `(progn% ,@body)))
 
 
 (defmacro platform-supported-if (os then &rest else)
@@ -222,6 +219,8 @@ If in terminal mode, and there are no ELSE’s, the value is nil.
   (declare (indent 0))
   `(graphic-supported-if nil ,@body))
 
+
+
 
 (defmacro bin-exists-p (b)
   "Returns true if BIN-NAME exists in env.
@@ -247,6 +246,8 @@ If in terminal mode, and there are no ELSE’s, the value is nil.
         `(trim-right-newline (shell-command-to-string ,_b_)))
     (let ((_b_ (concat "type -P " `,b)))
       `(trim-right-newline (shell-command-to-string ,_b_)))))
+
+
 
 
 (defmacro safe-call (fn &rest args)
@@ -319,6 +320,15 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
   `(when (boundp (quote ,x))
      (setq ,x ,val)))
 
+
+
+
+(defmacro package-supported-p (&rest body)
+  "Run BODY code if supports package.
+
+\(fn BODY...)"
+  (declare (indent 0))
+  `(version-supported-when <= 24.1 ,@body))
 
 
 (defmacro self-symbol (name)
@@ -370,6 +380,7 @@ ignore it if you don't like it.
       `(let ((*val* (symbol-value ',_var_)))
          ,@body))))
 
+
 
 
 ;; Load strap
@@ -379,6 +390,7 @@ ignore it if you don't like it.
 
 
 (package-supported-p
+  (setq package-enable-at-startup nil)
   (comment (package-initialize)))
 
 
