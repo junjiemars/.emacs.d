@@ -39,6 +39,14 @@
 (package-initialize)
 
 
+(defmacro package-installed-p% (packages &optional cached)
+  `(if (consp ,cached)
+       (mapcar #'(lambda (p)
+                   (if (memq p ,cached) t p)) ,packages)
+     (mapcar #'(lambda (p)
+                 (if (package-installed-p p) t p)) ,packages)))
+
+
 (defun install-package! (packages &optional dry)
   "Install missing packages, returns alist of installed packages"
   (let ((not-installed-packages
@@ -70,7 +78,9 @@
                 (funcall p))
         (when (consp m)
           (install-package! m)
-          (apply #'compile-and-load-elisp-files! dir (plist-get s :compile)))))))
+          (apply #'compile-and-load-elisp-files!
+                 dir
+                 (plist-get s :compile)))))))
 
 
 (defvar basic-package-spec
