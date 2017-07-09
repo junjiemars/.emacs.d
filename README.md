@@ -19,6 +19,6 @@ places. One more thing, it's best to remind you: take care, it's super fast.
 
 
 
-
 [story](story.md)
+[mnemonic](mnemonic.md)
 
