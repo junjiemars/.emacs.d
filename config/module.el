@@ -33,18 +33,13 @@
   (package-refresh-contents))
 
 
+
 ;; Package Initialize
-(require 'package)
+;; (require 'package)
+(declare-function package-installed-p "package")
 (setq package-enable-at-startup nil)
 (package-initialize)
 
-
-(defmacro package-installed-p% (packages &optional cached)
-  `(if (consp ,cached)
-       (mapcar #'(lambda (p)
-                   (if (memq p ,cached) t p)) ,packages)
-     (mapcar #'(lambda (p)
-                 (if (package-installed-p p) t p)) ,packages)))
 
 
 (defun install-package! (packages &optional dry)
