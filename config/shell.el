@@ -22,24 +22,28 @@
 (defmacro set-default-shell! (path regexp)
   "Set default SHELL"
   `(progn%
-    ,(when (or (null (getenv "SHELL"))
-               (not (string-match regexp (getenv "SHELL"))))
-       `(setenv "SHELL" (file-name-base ,path)))
     ,(when (or (null shell-file-name)
                (not (string-match regexp shell-file-name)))
-       `(setq shell-file-name ,path))))
+       `(setq shell-file-name ,path))
+    ,(when (or (null (getenv "SHELL"))
+               (not (string-match regexp (getenv "SHELL"))))
+       `(setenv "SHELL" (file-name-base ,path)))))
 
 
 (defmacro export-path-env! (var &optional add-to-exec-path)
   "Export path VAR or append to exec-path."
-  `(let ((env (shell-command-to-string
-               (concat "$SHELL -i -c 'echo -n $" ,var "' 2>/dev/null"))))
-     (setenv ,var env)
-     (when (and ,add-to-exec-path ,var)
-       (let ((x (split-string env path-separator)))
-         (while (car x)
-           (add-to-list 'exec-path (car x) t #'string=)
-           (setq x (cdr x)))))))
+  `(when ,var
+     (let ((env
+            (platform-supported-if windows-nt
+                (trim-right-newline (shell-command-to-string "echo $PATH"))
+              (shell-command-to-string
+               (concat "$SHELL -i -c 'echo -n $" ,var "' 2>/dev/null")))))
+       (setenv ,var env)
+       (when (and ,add-to-exec-path ,var)
+         (let ((x (split-string env ":")))
+           (while (car x)
+             (add-to-list 'exec-path (car x) t #'string=)
+             (setq x (cdr x))))))))
 
 
 (defun save-path-env ()
@@ -50,8 +54,9 @@
          (list 'setenv (plist-get (path-env-spec) :path-var)
                (getenv (plist-get (path-env-spec) :path-var)))
          (list 'setq 'exec-path (list 'quote exec-path))
-         (list 'setenv (plist-get (path-env-spec) :lib-path-var)
-               (getenv (plist-get (path-env-spec) :lib-path-var))))
+         (when (plist-get (path-env-spec) :lib-path-var)
+           (list 'setenv (plist-get (path-env-spec) :lib-path-var)
+                 (getenv (plist-get (path-env-spec) :lib-path-var)))))
    (plist-get (path-env-spec) :source-file))
   (byte-compile-file (plist-get (path-env-spec) :source-file)))
 
@@ -89,10 +94,10 @@
 
 
   (when (bin-exists-p "bash")
-    
+
     (defun set-windows-nt-shell! ()
       (setenv "SHELL" (bin-path "bash"))
-      (set-default-shell! (windows-nt-path (bin-path "bash")) "/bash\.exe$")
+      (set-default-shell! (bin-path "bash") "/bash\.exe$")
       (load-path-env))
 
 
