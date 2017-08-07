@@ -6,17 +6,20 @@
 
 
 
-(defmacro path-env-spec ()
+(defmacro path-env-spec (spec)
   "Return a `plist' of virtualized env-spec."
-  `(list :source-file (concat ,(v-home* "config/") ".path-env.el")
-         :compiled-file (concat ,(v-home* "config/") ".path-env.elc")
-         :path-var "PATH"
-         :lib-path-var
-         (platform-supported-unless windows-nt
-           (platform-supported-if darwin
-               "DYLD_LIBRARY_PATH"
-             (platform-supported-when gnu/linux
-               "LD_LIBRARY_PATH")))))
+  (let ((*env*
+         (list 'list
+               :source-file (concat (v-home* "config/") ".path-env.el")
+               :compiled-file (concat (v-home* "config/") ".path-env.elc")
+               :path-var "PATH"
+               :lib-path-var
+               (platform-supported-unless windows-nt
+                 (platform-supported-if darwin
+                     "DYLD_LIBRARY_PATH"
+                   (platform-supported-when gnu/linux
+                     "LD_LIBRARY_PATH"))))))
+    `(plist-get ,*env* ,spec)))
 
 
 (defmacro set-default-shell! (path regexp)
@@ -47,26 +50,26 @@
 
 
 (defun save-path-env ()
-  (export-path-env! (plist-get (path-env-spec) :path-var))
-  (export-path-env! (plist-get (path-env-spec) :lib-path-var))
+  (export-path-env! (path-env-spec :path-var))
+  (export-path-env! (path-env-spec :lib-path-var))
   (save-sexpr-to-file
    (list 'progn
-         (list 'setenv (plist-get (path-env-spec) :path-var)
-               (getenv (plist-get (path-env-spec) :path-var)))
+         (list 'setenv (path-env-spec :path-var)
+               (getenv (path-env-spec :path-var)))
          (list 'setq 'exec-path (list 'quote exec-path))
-         (when (plist-get (path-env-spec) :lib-path-var)
-           (list 'setenv (plist-get (path-env-spec) :lib-path-var)
-                 (getenv (plist-get (path-env-spec) :lib-path-var)))))
-   (plist-get (path-env-spec) :source-file))
-  (byte-compile-file (plist-get (path-env-spec) :source-file)))
+         (when (path-env-spec :lib-path-var)
+           (list 'setenv (path-env-spec :lib-path-var) 
+                 (getenv (path-env-spec :lib-path-var)))))
+   (path-env-spec :source-file))
+  (byte-compile-file (path-env-spec :source-file)))
 
 
 (defmacro load-path-env ()
   `(progn
-     (if (file-exists-p (plist-get (path-env-spec) :compiled-file))
-         (load (plist-get (path-env-spec) :compiled-file))
-       (export-path-env! (plist-get (path-env-spec) :path-var) t)
-       (export-path-env! (plist-get (path-env-spec) :lib-path-var)))
+     (if (file-exists-p (path-env-spec :compiled-file) )
+         (load (path-env-spec :compiled-file))
+       (export-path-env! (path-env-spec :path-var) t)
+       (export-path-env! (path-env-spec :lib-path-var)))
      (add-hook 'kill-emacs-hook #'save-path-env)))
 
 
