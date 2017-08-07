@@ -6,6 +6,20 @@
 
 
 
+(defmacro path-env-spec ()
+  "Return a `plist' of virtualized env-spec."
+  `(let ((*v* ,(v-home* "config/")))
+     (list :source-file (concat *v* ".path-env.el")
+           :compiled-file (concat *v* ".path-env.elc")
+           :path-var "PATH"
+           :lib-path-var
+           (platform-supported-unless windows-nt
+             (platform-supported-if darwin
+                 "DYLD_LIBRARY_PATH"
+               (platform-supported-when gnu/linux
+                 "LD_LIBRARY_PATH"))))))
+
+
 (defmacro set-default-shell! (path regexp)
   "Set default SHELL"
   `(progn%
@@ -29,33 +43,26 @@
            (setq x (cdr x)))))))
 
 
-(defmacro path-env ()
-  "Return the `cons' of virtualized `path-env' source and compiled file name."
-  (let ((*v* (v-home* "config/")))
-    `(cons ,(concat *v* ".path-env.el")
-           ,(concat *v* ".path-env.elc"))))
-
-  
 (defun save-path-env ()
-  (let ((env (path-env)))
-    (export-path-env! "PATH")
-    (export-path-env! "LD_LIBRARY_PATH")
-    (save-sexpr-to-file
-     (list 'progn
-           (list 'setenv "PATH" (getenv "PATH"))
-           (list 'setq 'exec-path (list 'quote exec-path))
-           (list 'setenv "LD_LIBRARY_PATH" (getenv "LD_LIBRARY_PATH")))
-     (car env))
-    (byte-compile-file (car env))))
+  (export-path-env! (plist-get (path-env-spec) :path-var))
+  (export-path-env! (plist-get (path-env-spec) :lib-path-var))
+  (save-sexpr-to-file
+   (list 'progn
+         (list 'setenv (plist-get (path-env-spec) :path-var)
+               (getenv (plist-get (path-env-spec) :path-var)))
+         (list 'setq 'exec-path (list 'quote exec-path))
+         (list 'setenv (plist-get (path-env-spec) :lib-path-var)
+               (getenv (plist-get (path-env-spec) :lib-path-var))))
+   (plist-get (path-env-spec) :source-file))
+  (byte-compile-file (plist-get (path-env-spec) :source-file)))
 
 
 (defmacro load-path-env ()
-  `(let ((env (path-env)))
-     (if (file-exists-p (cdr env))
-         (load (cdr env))
-       (export-path-env! "PATH" t)
-       (export-path-env! "LD_LIBRARY_PATH"))
-     (add-hook 'kill-emacs-hook #'save-path-env)))
+  (if (file-exists-p (plist-get (path-env-spec) :compiled-file))
+      (load (plist-get (path-env-spec) :compiled-file))
+    (export-path-env! (plist-get (path-env-spec) :path-var) t)
+    (export-path-env! (plist-get (path-env-spec) :lib-path-var)))
+  (add-hook 'kill-emacs-hook #'save-path-env))
 
 
 ;; set shell on darwin
