@@ -8,16 +8,15 @@
 
 (defmacro path-env-spec ()
   "Return a `plist' of virtualized env-spec."
-  `(let ((*v* ,(v-home* "config/")))
-     (list :source-file (concat *v* ".path-env.el")
-           :compiled-file (concat *v* ".path-env.elc")
-           :path-var "PATH"
-           :lib-path-var
-           (platform-supported-unless windows-nt
-             (platform-supported-if darwin
-                 "DYLD_LIBRARY_PATH"
-               (platform-supported-when gnu/linux
-                 "LD_LIBRARY_PATH"))))))
+  `(list :source-file (concat ,(v-home* "config/") ".path-env.el")
+         :compiled-file (concat ,(v-home* "config/") ".path-env.elc")
+         :path-var "PATH"
+         :lib-path-var
+         (platform-supported-unless windows-nt
+           (platform-supported-if darwin
+               "DYLD_LIBRARY_PATH"
+             (platform-supported-when gnu/linux
+               "LD_LIBRARY_PATH")))))
 
 
 (defmacro set-default-shell! (path regexp)
@@ -58,11 +57,12 @@
 
 
 (defmacro load-path-env ()
-  (if (file-exists-p (plist-get (path-env-spec) :compiled-file))
-      (load (plist-get (path-env-spec) :compiled-file))
-    (export-path-env! (plist-get (path-env-spec) :path-var) t)
-    (export-path-env! (plist-get (path-env-spec) :lib-path-var)))
-  (add-hook 'kill-emacs-hook #'save-path-env))
+  `(progn
+     (if (file-exists-p (plist-get (path-env-spec) :compiled-file))
+         (load (plist-get (path-env-spec) :compiled-file))
+       (export-path-env! (plist-get (path-env-spec) :path-var) t)
+       (export-path-env! (plist-get (path-env-spec) :lib-path-var)))
+     (add-hook 'kill-emacs-hook #'save-path-env)))
 
 
 ;; set shell on darwin
