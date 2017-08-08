@@ -7,13 +7,13 @@
 
 
 (defmacro path-env-spec (spec)
-  "Return a `plist' of virtualized env-spec."
+  "Return the value of corresponding SPEC."
   (let ((*env*
          (list 'list
                :source-file (concat (v-home* "config/") ".path-env.el")
                :compiled-file (concat (v-home* "config/") ".path-env.elc")
-               :path-var "PATH"
-               :lib-path-var
+               :path "PATH"
+               :ld-path
                (platform-supported-unless windows-nt
                  (platform-supported-if darwin
                      "DYLD_LIBRARY_PATH"
@@ -50,16 +50,16 @@
 
 
 (defun save-path-env ()
-  (export-path-env! (path-env-spec :path-var))
-  (export-path-env! (path-env-spec :lib-path-var))
+  (export-path-env! (path-env-spec :path))
+  (export-path-env! (path-env-spec :ld-path))
   (save-sexpr-to-file
    (list 'progn
-         (list 'setenv (path-env-spec :path-var)
-               (getenv (path-env-spec :path-var)))
+         (list 'setenv (path-env-spec :path)
+               (getenv (path-env-spec :path)))
          (list 'setq 'exec-path (list 'quote exec-path))
-         (when (path-env-spec :lib-path-var)
-           (list 'setenv (path-env-spec :lib-path-var) 
-                 (getenv (path-env-spec :lib-path-var)))))
+         (when (path-env-spec :ld-path)
+           (list 'setenv (path-env-spec :ld-path) 
+                 (getenv (path-env-spec :ld-path)))))
    (path-env-spec :source-file))
   (byte-compile-file (path-env-spec :source-file)))
 
@@ -68,8 +68,8 @@
   `(progn
      (if (file-exists-p (path-env-spec :compiled-file) )
          (load (path-env-spec :compiled-file))
-       (export-path-env! (path-env-spec :path-var) t)
-       (export-path-env! (path-env-spec :lib-path-var)))
+       (export-path-env! (path-env-spec :path) t)
+       (export-path-env! (path-env-spec :ld-path)))
      (add-hook 'kill-emacs-hook #'save-path-env)))
 
 
