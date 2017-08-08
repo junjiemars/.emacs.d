@@ -12,13 +12,19 @@
          (list 'list
                :source-file (concat (v-home* "config/") ".path-env.el")
                :compiled-file (concat (v-home* "config/") ".path-env.elc")
+               :shell-name "bash"
+               :shell-regexp (platform-supported-if windows-nt
+                                 "/bash\.exe$"
+                               "\/bash$")
+               :shell-path (platform-supported-if windows-nt
+                               (bin-path "bash")
+                             "/bin/bash")
                :path "PATH"
-               :ld-path
-               (platform-supported-unless windows-nt
-                 (platform-supported-if darwin
-                     "DYLD_LIBRARY_PATH"
-                   (platform-supported-when gnu/linux
-                     "LD_LIBRARY_PATH"))))))
+               :ld-path (platform-supported-unless windows-nt
+                          (platform-supported-if darwin
+                              "DYLD_LIBRARY_PATH"
+                            (platform-supported-when gnu/linux
+                              "LD_LIBRARY_PATH"))))))
     `(plist-get ,*env* ,spec)))
 
 
@@ -82,7 +88,8 @@
 ;; set shell on Linux
 (platform-supported-when
     gnu/linux
-  (set-default-shell! "/bin/bash" "\/bash$")
+  (set-default-shell! (path-env-spec :shell-name)
+                      (path-env-spec :shell-regexp))
   (load-path-env))
 
 
@@ -100,7 +107,8 @@
 
     (defun set-windows-nt-shell! ()
       (setenv "SHELL" (bin-path "bash"))
-      (set-default-shell! (bin-path "bash") "/bash\.exe$")
+      (set-default-shell! (path-env-spec :shell-path)
+                          (path-env-spec :shell-regexp))
       (load-path-env))
 
 
