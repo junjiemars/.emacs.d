@@ -8,35 +8,34 @@
 
 (defmacro path-env-spec (spec)
   "Return the value of corresponding SPEC."
-  (let ((*env*
-         (list 'list
-               :source-file (concat (v-home* "config/") ".path-env.el")
-               :compiled-file (concat (v-home* "config/") ".path-env.elc")
+  (plist-get `(:source-file
+               ,(concat (v-home* "config/") ".path-env.el")
+               :compiled-file ,(concat (v-home* "config/") ".path-env.elc")
                :shell-name "bash"
-               :shell-regexp (platform-supported-if windows-nt
-                                 "/bash\.exe$"
-                               "\/bash$")
-               :shell-path (platform-supported-if windows-nt
-                               (bin-path "bash")
-                             "/bin/bash")
+               :shell-regexp ,(platform-supported-if windows-nt
+                                  "/bash\.exe$"
+                                "/bash$")
+               :shell-path ,(platform-supported-if windows-nt
+                                (bin-path "bash")
+                              "/bin/bash")
                :path "PATH"
-               :ld-path (platform-supported-unless windows-nt
-                          (platform-supported-if darwin
-                              "DYLD_LIBRARY_PATH"
-                            (platform-supported-when gnu/linux
-                              "LD_LIBRARY_PATH"))))))
-    `(plist-get ,*env* ,spec)))
+               :ld-path ,(platform-supported-unless windows-nt
+                           (platform-supported-if darwin
+                               "DYLD_LIBRARY_PATH"
+                             (platform-supported-when gnu/linux
+                               "LD_LIBRARY_PATH"))))
+             spec))
 
 
 (defmacro set-default-shell! (path regexp)
   "Set default SHELL"
   `(progn%
-    ,(when (or (null shell-file-name)
-               (not (string-match regexp shell-file-name)))
-       `(setq shell-file-name ,path))
-    ,(when (or (null (getenv "SHELL"))
-               (not (string-match regexp (getenv "SHELL"))))
-       `(setenv "SHELL" (file-name-base ,path)))))
+    (when (or (null shell-file-name)
+              (not (string-match ,regexp shell-file-name)))
+      (setq shell-file-name ,path))
+    (when (or (null (getenv "SHELL"))
+              (not (string-match ,regexp (getenv "SHELL"))))
+      (setenv "SHELL" (file-name-base ,path)))))
 
 
 (defmacro export-path-env! (var &optional add-to-exec-path)
@@ -72,7 +71,7 @@
 
 (defmacro load-path-env ()
   `(progn
-     (if (file-exists-p (path-env-spec :compiled-file) )
+     (if (file-exists-p (path-env-spec :compiled-file))
          (load (path-env-spec :compiled-file))
        (export-path-env! (path-env-spec :path) t)
        (export-path-env! (path-env-spec :ld-path)))
