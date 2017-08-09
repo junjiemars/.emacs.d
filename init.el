@@ -130,16 +130,6 @@ and return it."
   (if (cdr exps) `(progn ,@exps) (car exps)))
 
 
-(defmacro when% (cond &rest body)
-  "If COND yields non-nil, do BODY, else return nil.
-eval COND at compile time.
-
-\(fn COND BODY...)"
-  (declare (indent 1))
-  (if `,cond
-      `(progn% ,@body)))
-
-
 (defmacro platform-supported-if (os then &rest else)
   "If (eq system-type OS) yields non-nil, do THEN, else do ELSE...
 Returns the value of THEN or the value of the last of the ELSE’s.
