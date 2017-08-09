@@ -101,8 +101,9 @@
     "Return the path that windows-nt can recoganized."
     `(replace-regexp-in-string "\\\\" "/" ,p))
 
-  
-  (when `(bin-exists-p ,(path-env-spec :shell-name))
+
+
+  (when% (bin-exists-p (path-env-spec :shell-name))
 
     (defun set-windows-nt-shell! ()
       (setenv "SHELL" (path-env-spec :shell-path))
