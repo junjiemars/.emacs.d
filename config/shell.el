@@ -40,18 +40,23 @@
 
 (defmacro export-path-env! (var &optional add-to-exec-path)
   "Export path VAR or append to exec-path."
-  `(when ,var
-     (let ((env
-            (platform-supported-if windows-nt
-                (trim-right-newline (shell-command-to-string "echo $PATH"))
-              (shell-command-to-string
-               (concat "$SHELL -i -c 'echo -n $" ,var "' 2>/dev/null")))))
-       (setenv ,var env)
-       (when (and ,add-to-exec-path ,var)
-         (let ((x (split-string env ":")))
-           (while (car x)
-             (add-to-list 'exec-path (car x) t #'string=)
-             (setq x (cdr x))))))))
+  `(let ((env
+          (platform-supported-if windows-nt
+              (trim-right-newline (shell-command-to-string "echo $PATH"))
+            (shell-command-to-string
+             (concat "$SHELL -i -c 'echo -n $" ,var "' 2>/dev/null")))))
+     (dolist (x exec-path)
+       (when (not (file-exists-p x))
+         (delete x exec-path)))
+     (let ((x (split-string env ":"))
+           (p nil))
+       (while (car x)
+         (when (file-exists-p (car x))
+           (setq p (concat p (when p ":") (car x)))
+           (when ,add-to-exec-path
+             (add-to-list 'exec-path (car x) t #'string=)))
+         (setq x (cdr x)))
+       (setenv ,var p))))
 
 
 (defun save-path-env ()
