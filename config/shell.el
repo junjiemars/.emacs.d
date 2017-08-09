@@ -101,19 +101,17 @@
     "Return the path that windows-nt can recoganized."
     `(replace-regexp-in-string "\\\\" "/" ,p))
 
-
-  (when (bin-exists-p "bash")
+  
+  (when `(bin-exists-p ,(path-env-spec :shell-name))
 
     (defun set-windows-nt-shell! ()
-      (setenv "SHELL" (bin-path "bash"))
+      (setenv "SHELL" (path-env-spec :shell-path))
       (set-default-shell! (path-env-spec :shell-path)
                           (path-env-spec :shell-regexp))
       (load-path-env))
 
-
     (defadvice shell (before shell-before compile)
       (set-windows-nt-shell!))
-
     
     (defadvice ansi-term (around ansi-term-around compile)
       (let* ((n "*ansi-term*")
