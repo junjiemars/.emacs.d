@@ -38,25 +38,81 @@
       (setenv "SHELL" (file-name-base ,path)))))
 
 
-(defmacro export-path-env! (var sep &optional add-to-exec-path)
-  "Export path VAR or append to exec-path."
-  `(let ((env
-          (platform-supported-if windows-nt
-              (trim-right-newline (shell-command-to-string "echo $PATH"))
-            (shell-command-to-string
-             (concat "$SHELL -i -c 'echo -n $" ,var "' 2>/dev/null")))))
-     (dolist (x exec-path)
-       (when (not (file-exists-p x))
-         (delete x exec-path)))
-     (let ((x (split-string env ,sep))
+(defmacro echo-default-path-var (var)
+  (shell-command-to-string
+   (concat "$SHELL -i -c 'echo -n $" ,var "' 2>/dev/null")))
+
+
+(platform-supported-when windows-nt
+  
+  (defmacro windows-nt-path (p)
+    "Return the path that windows-nt can recoganized."
+    `(replace-regexp-in-string "\\\\" "/" ,p))
+
+  (defmacro echo-path-var (var)
+    (windows-nt-path
+     (replace-regexp-in-string
+      "[ ;]*\n$" ""
+      (shell-command-to-string
+       (concat "echo %" ,var "% 2>nul"))))))
+
+
+(comment
+ (platform-supported-unless windows-nt
+
+   ))
+
+
+(defmacro refine-path (path &optional transfer)
+  `(when (consp ,path)
+     (delete nil
+             (mapcar (lambda (x)
+                       (when (and (not (null x))
+                                  (not (string= "" x))
+                                  (file-exists-p x))
+                         (when (and ,transfer (functionp ,transfer))
+                           (funcall ,transfer x)))) ,path))))
+
+
+(defmacro export-path-env! (path sep &optional add-to-exec-path)
+  "Export PATH var and append it to `exec-path'."
+  `(when (consp ,path)
+     (setq exec-path (refine-path exec-path))
+     (let ((x (split-string ,path ,sep))
            (p nil))
        (while (car x)
-         (when (file-exists-p (car x))
-           (setq p (concat p (when p ,sep) (car x)))
-           (when ,add-to-exec-path
-             (add-to-list 'exec-path (car x) t #'string=)))
+         (let ((refined (refine-path (cons (car x) nil))))
+           (when refined
+             (setq p (concat p (when p ,sep) refined))
+             (when ,add-to-exec-path
+               (add-to-list 'exec-path refined t #'string=))))
          (setq x (cdr x)))
-       (setenv ,var p))))
+       (setenv ,path p))))
+
+(comment
+ (defmacro export-path-env! (var sep &optional add-to-exec-path)
+   "Export path VAR or append to exec-path."
+   `(let ((env
+           (platform-supported-if windows-nt
+               (windows-nt-path
+                (trim-right-newline
+                 (shell-command-to-string
+                  (concat "echo %" ,var "% 2>nul"))))
+             (shell-command-to-string
+              (concat "$SHELL -i -c 'echo -n $" ,var "' 2>/dev/null")))))
+      (dolist (x exec-path)
+        (when (not (file-exists-p x))
+          (delete x exec-path)))
+      (when (not ,add-to-exec-path) env)
+      (let ((x (split-string env ,sep))
+            (p nil))
+        (while (car x)
+          (when (file-exists-p (car x))
+            (setq p (concat p (when p ,sep) (car x)))
+            (when ,add-to-exec-path
+              (add-to-list 'exec-path (car x) t #'string=)))
+          (setq x (cdr x)))
+        (setenv ,var p)))))
 
 
 (defun save-path-env ()
@@ -100,13 +156,6 @@
 ;; set shell on Windows
 (platform-supported-when
     windows-nt
-
-  
-  (defmacro windows-nt-path (p)
-    "Return the path that windows-nt can recoganized."
-    `(replace-regexp-in-string "\\\\" "/" ,p))
-
-
 
   (when `(bin-exists-p ,(path-env-spec :shell-name))
 
