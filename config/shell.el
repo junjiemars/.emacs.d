@@ -38,7 +38,7 @@
       (setenv "SHELL" (file-name-base ,path)))))
 
 
-(defmacro export-path-env! (var &optional add-to-exec-path)
+(defmacro export-path-env! (var sep &optional add-to-exec-path)
   "Export path VAR or append to exec-path."
   `(let ((env
           (platform-supported-if windows-nt
@@ -48,11 +48,11 @@
      (dolist (x exec-path)
        (when (not (file-exists-p x))
          (delete x exec-path)))
-     (let ((x (split-string env ":"))
+     (let ((x (split-string env ,sep))
            (p nil))
        (while (car x)
          (when (file-exists-p (car x))
-           (setq p (concat p (when p ":") (car x)))
+           (setq p (concat p (when p ,sep) (car x)))
            (when ,add-to-exec-path
              (add-to-list 'exec-path (car x) t #'string=)))
          (setq x (cdr x)))
@@ -60,8 +60,8 @@
 
 
 (defun save-path-env ()
-  (export-path-env! (path-env-spec :path))
-  (export-path-env! (path-env-spec :ld-path))
+  (export-path-env! (path-env-spec :path) path-separator)
+  (export-path-env! (path-env-spec :ld-path) path-separator)
   (save-sexpr-to-file
    (list 'progn
          (list 'setenv (path-env-spec :path)
@@ -74,12 +74,12 @@
   (byte-compile-file (path-env-spec :source-file)))
 
 
-(defmacro load-path-env ()
+(defmacro load-path-env (&optional sep)
   `(progn
      (if (file-exists-p (path-env-spec :compiled-file))
          (load (path-env-spec :compiled-file))
-       (export-path-env! (path-env-spec :path) t)
-       (export-path-env! (path-env-spec :ld-path)))
+       (export-path-env! (path-env-spec :path) ,sep t)
+       (export-path-env! (path-env-spec :ld-path) ,sep))
      (add-hook 'kill-emacs-hook #'save-path-env)))
 
 
