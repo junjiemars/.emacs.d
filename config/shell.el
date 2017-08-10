@@ -27,6 +27,10 @@
              spec))
 
 
+(defvar *default-path-env* nil
+  "Default $PATH and `exec-path'")
+
+
 (defmacro set-default-shell! (path regexp)
   "Set default SHELL"
   `(progn%
@@ -38,9 +42,12 @@
       (setenv "SHELL" (file-name-base ,path)))))
 
 
-(defmacro echo-default-path-var (var)
-  (shell-command-to-string
-   (concat "$SHELL -i -c 'echo -n $" ,var "' 2>/dev/null")))
+(defmacro echo-unix-like-path (var &optional transfer)
+  `(let ((v (shell-command-to-string
+             (concat "$SHELL -i -c 'echo -n $" ,var "' 2>/dev/null"))))
+     (if (and ,transfer (functionp ,transfer))
+         (funcall ,transfer v)
+       v)))
 
 
 (platform-supported-when windows-nt
@@ -49,12 +56,11 @@
     "Return the path that windows-nt can recoganized."
     `(replace-regexp-in-string "\\\\" "/" ,p))
 
-  (defmacro echo-path-var (var)
-    `(windows-nt-path
-      (replace-regexp-in-string
-       "[ ;]*\n$" ""
-       (shell-command-to-string
-        (concat "echo %" ,var "% 2>nul"))))))
+  (defmacro echo-windows-nt-path (var &optional transfer)
+    `(let ((v (shell-command-to-string
+               (concat "echo %" ,var "% 2>nul"))))
+       (when (and ,transfer (functionp ,transfer))
+         (funcall ,transfer v)))))
 
 
 (comment
