@@ -42,6 +42,7 @@ they look like
 * kill whole line: ```C-S-DEL```
 * kill all spaces at point: ```M-\```
 * kill all spaces except one at point: ```M-SPC```
+* delete indentation to join line to previous line: ```M-^```
 * dynamic abbreviation: ```M-/```
 * query replace: ```M-%```
 * what cursor position: ```C-x =```
