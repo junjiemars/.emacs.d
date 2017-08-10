@@ -50,11 +50,11 @@
     `(replace-regexp-in-string "\\\\" "/" ,p))
 
   (defmacro echo-path-var (var)
-    (windows-nt-path
-     (replace-regexp-in-string
-      "[ ;]*\n$" ""
-      (shell-command-to-string
-       (concat "echo %" ,var "% 2>nul"))))))
+    `(windows-nt-path
+      (replace-regexp-in-string
+       "[ ;]*\n$" ""
+       (shell-command-to-string
+        (concat "echo %" ,var "% 2>nul"))))))
 
 
 (comment
@@ -134,6 +134,7 @@
   `(progn
      (if (file-exists-p (path-env-spec :compiled-file))
          (load (path-env-spec :compiled-file))
+       
        (export-path-env! (path-env-spec :path) ,sep t)
        (export-path-env! (path-env-spec :ld-path) ,sep))
      (add-hook 'kill-emacs-hook #'save-path-env)))
