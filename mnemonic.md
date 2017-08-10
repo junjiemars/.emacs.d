@@ -50,6 +50,8 @@ they look like
 * transpose words: ```M-t```
 * insert parentheses: ```M-(```, wrap selection in parentheses
 * toggle read-only mode: ```C-x C-q```
+* toggle input method: ```C-\```, switch to __TeX__ ```C-x-RET C-\```
+
 
 ## Basic sexp commands
 * ```forward-sexp```: ```C-M-f```
