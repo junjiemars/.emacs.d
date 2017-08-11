@@ -29,7 +29,7 @@
              spec))
 
 
-(defconst *default-path-env* nil
+(defvar *default-path-env* nil
   "Default path environments")
 
 
@@ -78,30 +78,31 @@
 
 
 (defun save-path-env! ()
-  (setq *default-path-env*
-        (list :path
-              (refine-path
-               (split-string
-                (echo-var (path-env-spec :path)
-                          (lambda (x)
-                            (replace-regexp-in-string
-                             "[ ]*\n$" "" x)))
-                path-separator))
-              :ld-path (platform-supported-unless windows-nt
-                         (refine-path
-                          (split-string
-                           (echo-var (path-env-spec :ld-path)
-                                     (lambda (x)
-                                       (replace-regexp-in-string
-                                        "[ ]*\n$" "" x))))
-                          path-separator))
-              :exec-path nil
-              :shell-file-name (platform-supported-when windows-nt
-                                 (unless (path-env-> :shell-file-name)
-                                   shell-file-name))))
-  (path-env<- :exec-path (append
-                          (path-env-> :path)
-                          (refine-path exec-path)))
+  (unless *default-path-env*
+    (setq *default-path-env*
+          (list :path
+                (refine-path
+                 (split-string
+                  (echo-var (path-env-spec :path)
+                            (lambda (x)
+                              (replace-regexp-in-string
+                               "[ ]*\n$" "" x)))
+                  path-separator))
+                :ld-path (platform-supported-unless windows-nt
+                           (refine-path
+                            (split-string
+                             (echo-var (path-env-spec :ld-path)
+                                       (lambda (x)
+                                         (replace-regexp-in-string
+                                          "[ ]*\n$" "" x))))
+                            path-separator))
+                :exec-path nil
+                :shell-file-name (platform-supported-when windows-nt
+                                   (unless (path-env-> :shell-file-name)
+                                     shell-file-name))))
+    (path-env<- :exec-path (append
+                            (path-env-> :path)
+                            (refine-path exec-path))))
   (save-sexpr-to-file
    (list 'setq '*default-path-env*
          (list 'list
