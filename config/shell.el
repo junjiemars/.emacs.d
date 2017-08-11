@@ -28,17 +28,20 @@
 
 
 (defvar *default-path-env* nil
-  "Default path environments")
+  "Default path environments, get via (path-env-> k) and put via (path-env<- k v) ")
 
 
 (defmacro path-env-> (k)
+  "Extract the value from `*default-path-env*' via K."
   `(plist-get *default-path-env* ,k))
 
 (defmacro path-env<- (k v)
+  "Change the value in `*default-path-env* via K."
   `(plist-put *default-path-env* ,k ,v))
 
 
 (defmacro echo-var (var &optional transfer)
+  "Echo a $VAR, and then TRANSFER it if there has one."
   `(let ((v (shell-command-to-string
              (format (path-env-spec :echo-format) ,var))))
      (if (and ,transfer (functionp ,transfer))
@@ -47,6 +50,7 @@
 
 
 (defmacro refine-path (path)
+  "Refine PATH, non empty or non exists."
   `(when (consp ,path)
      (delete nil
              (mapcar (lambda (x)
@@ -57,6 +61,7 @@
 
 
 (defmacro path->var (path sep)
+  "Convert a list of PATH to $PATH var, base on SEP."
   `(let ((p nil))
      (dolist (x ,path)
        (setq p (concat p (when p ,sep) x)))
