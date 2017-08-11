@@ -25,7 +25,7 @@
                :echo-format
                ,(platform-supported-if windows-nt
                     "echo %%%s%% 2>/nul"
-                  "$SHELL -i -c 'echo -n $%s' 2>/dev/null"))
+                  "$SHELL -i -l -c 'echo -n $%s' 2>/dev/null"))
              spec))
 
 
@@ -38,18 +38,6 @@
 
 (defmacro path-env<- (k v)
   `(plist-put *default-path-env* ,k ,v))
-
-
-
-(defmacro set-default-shell! (path regexp)
-  "Set default SHELL"
-  `(progn%
-    (when (or (null shell-file-name)
-              (not (string-match ,regexp shell-file-name)))
-      (setq shell-file-name ,path))
-    (when (or (null (getenv "SHELL"))
-              (not (string-match ,regexp (getenv "SHELL"))))
-      (setenv "SHELL" (file-name-base ,path)))))
 
 
 (defmacro echo-var (var &optional transfer)
@@ -94,8 +82,8 @@
                              (echo-var (path-env-spec :ld-path)
                                        (lambda (x)
                                          (replace-regexp-in-string
-                                          "[ ]*\n$" "" x))))
-                            path-separator))
+                                          "[ ]*\n$" "" x)))
+                             path-separator)))
                 :exec-path nil
                 :shell-file-name (platform-supported-when windows-nt
                                    (unless (path-env-> :shell-file-name)
@@ -115,24 +103,24 @@
 
 
 (defmacro load-path-env! ()
-  `(when (file-exists-p (path-env-spec :compiled-file))
-     (load (path-env-spec :compiled-file)))
-  (add-hook 'kill-emacs-hook #'save-path-env!))
+  `(progn
+     (when (file-exists-p (path-env-spec :compiled-file))
+       (load (path-env-spec :compiled-file)))
+     (add-hook 'kill-emacs-hook #'save-path-env!)))
 
 
 ;; set shell on darwin
 (platform-supported-when
     darwin
-  (load-path-env!))
+  (load-path-env!)
+  (setenv (path-env-spec :path) (path->var (path-env-> :path) path-separator)))
 
 
 ;; set shell on Linux
 (platform-supported-when
     gnu/linux
-  (set-default-shell! (path-env-spec :shell-name)
-                      (path-env-spec :shell-regexp))
   (load-path-env!)
-  (setenv "SHELL" (path-env-spec )))
+  (setenv "SHELL" (path-env-spec :shell-path)))
 
 
 ;; set shell on Windows
