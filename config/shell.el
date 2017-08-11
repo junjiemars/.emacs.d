@@ -15,20 +15,30 @@
                :shell-regexp ,(platform-supported-if windows-nt
                                   "/bash\.exe$"
                                 "/bash$")
-               :shell-path ,(platform-supported-if windows-nt
-                                (bin-path "bash")
-                              "/bin/bash")
+               :shell-path ,(bin-path "bash")
                :path "PATH"
                :ld-path ,(platform-supported-unless windows-nt
                            (platform-supported-if darwin
                                "DYLD_LIBRARY_PATH"
                              (platform-supported-when gnu/linux
-                               "LD_LIBRARY_PATH"))))
+                               "LD_LIBRARY_PATH")))
+               :echo-format
+               ,(platform-supported-if windows-nt
+                    "echo %%%s%% 2>/nul"
+                  "$SHELL -i -c 'echo -n $%s' 2>/dev/null"))
              spec))
 
 
-(defvar *default-path-env* nil
-  "Default $PATH and `exec-path'")
+(defconst *default-path-env* nil
+  "Default path environments")
+
+
+(defmacro path-env-> (k)
+  `(plist-get *default-path-env* ,k))
+
+(defmacro path-env<- (k v)
+  `(plist-put *default-path-env* ,k ,v))
+
 
 
 (defmacro set-default-shell! (path regexp)
@@ -42,114 +52,77 @@
       (setenv "SHELL" (file-name-base ,path)))))
 
 
-(defmacro echo-unix-like-path (var &optional transfer)
+(defmacro echo-var (var &optional transfer)
   `(let ((v (shell-command-to-string
-             (concat "$SHELL -i -c 'echo -n $" ,var "' 2>/dev/null"))))
+             (format (path-env-spec :echo-format) ,var))))
      (if (and ,transfer (functionp ,transfer))
          (funcall ,transfer v)
        v)))
 
 
-(platform-supported-when windows-nt
-  
-  (defmacro windows-nt-path (p)
-    "Return the path that windows-nt can recoganized."
-    `(replace-regexp-in-string "\\\\" "/" ,p))
-
-  (defmacro echo-windows-nt-path (var &optional transfer)
-    `(let ((v (shell-command-to-string
-               (concat "echo %" ,var "% 2>nul"))))
-       (when (and ,transfer (functionp ,transfer))
-         (funcall ,transfer v)))))
-
-
-(comment
- (platform-supported-unless windows-nt
-
-   ))
-
-
-(defmacro refine-path (path &optional transfer)
+(defmacro refine-path (path)
   `(when (consp ,path)
      (delete nil
              (mapcar (lambda (x)
                        (when (and (not (null x))
                                   (not (string= "" x))
                                   (file-exists-p x))
-                         (when (and ,transfer (functionp ,transfer))
-                           (funcall ,transfer x)))) ,path))))
+                         x)) ,path))))
 
 
-(defmacro export-path-env! (path sep &optional add-to-exec-path)
-  "Export PATH var and append it to `exec-path'."
-  `(when (consp ,path)
-     (setq exec-path (refine-path exec-path))
-     (let ((x (split-string ,path ,sep))
-           (p nil))
-       (while (car x)
-         (let ((refined (refine-path (cons (car x) nil))))
-           (when refined
-             (setq p (concat p (when p ,sep) refined))
-             (when ,add-to-exec-path
-               (add-to-list 'exec-path refined t #'string=))))
-         (setq x (cdr x)))
-       (setenv ,path p))))
-
-(comment
- (defmacro export-path-env! (var sep &optional add-to-exec-path)
-   "Export path VAR or append to exec-path."
-   `(let ((env
-           (platform-supported-if windows-nt
-               (windows-nt-path
-                (trim-right-newline
-                 (shell-command-to-string
-                  (concat "echo %" ,var "% 2>nul"))))
-             (shell-command-to-string
-              (concat "$SHELL -i -c 'echo -n $" ,var "' 2>/dev/null")))))
-      (dolist (x exec-path)
-        (when (not (file-exists-p x))
-          (delete x exec-path)))
-      (when (not ,add-to-exec-path) env)
-      (let ((x (split-string env ,sep))
-            (p nil))
-        (while (car x)
-          (when (file-exists-p (car x))
-            (setq p (concat p (when p ,sep) (car x)))
-            (when ,add-to-exec-path
-              (add-to-list 'exec-path (car x) t #'string=)))
-          (setq x (cdr x)))
-        (setenv ,var p)))))
+(defmacro path->var (path sep)
+  `(let ((p nil))
+     (dolist (x ,path)
+       (setq p (concat p (when p ,sep) x)))
+     p))
 
 
-(defun save-path-env ()
-  (export-path-env! (path-env-spec :path) path-separator)
-  (export-path-env! (path-env-spec :ld-path) path-separator)
+(defun save-path-env! ()
+  (setq *default-path-env*
+        (list :path
+              (refine-path
+               (split-string
+                (echo-var (path-env-spec :path)
+                          (lambda (x)
+                            (replace-regexp-in-string
+                             "[ ]*\n$" "" x)))
+                path-separator))
+              :ld-path (platform-supported-unless windows-nt
+                         (refine-path
+                          (split-string
+                           (echo-var (path-env-spec :ld-path)
+                                     (lambda (x)
+                                       (replace-regexp-in-string
+                                        "[ ]*\n$" "" x))))
+                          path-separator))
+              :exec-path nil
+              :shell-file-name (platform-supported-when windows-nt
+                                 (unless (path-env-> :shell-file-name)
+                                   shell-file-name))))
+  (path-env<- :exec-path (append
+                          (path-env-> :path)
+                          (refine-path exec-path)))
   (save-sexpr-to-file
-   (list 'progn
-         (list 'setenv (path-env-spec :path)
-               (getenv (path-env-spec :path)))
-         (list 'setq 'exec-path (list 'quote exec-path))
-         (when (path-env-spec :ld-path)
-           (list 'setenv (path-env-spec :ld-path) 
-                 (getenv (path-env-spec :ld-path)))))
+   (list 'setq '*default-path-env*
+         (list 'list
+               ':path (list 'quote (path-env-> :path))
+               ':ld-path (list 'quote (path-env-> :ld-path))
+               ':exec-path (list 'quote (path-env-> :exec-path))
+               ':shell-file-name (path-env-> :shell-file-name)))
    (path-env-spec :source-file))
   (byte-compile-file (path-env-spec :source-file)))
 
 
-(defmacro load-path-env (&optional sep)
-  `(progn
-     (if (file-exists-p (path-env-spec :compiled-file))
-         (load (path-env-spec :compiled-file))
-       
-       (export-path-env! (path-env-spec :path) ,sep t)
-       (export-path-env! (path-env-spec :ld-path) ,sep))
-     (add-hook 'kill-emacs-hook #'save-path-env)))
+(defmacro load-path-env! ()
+  `(when (file-exists-p (path-env-spec :compiled-file))
+     (load (path-env-spec :compiled-file)))
+  (add-hook 'kill-emacs-hook #'save-path-env!))
 
 
 ;; set shell on darwin
 (platform-supported-when
     darwin
-  (load-path-env))
+  (load-path-env!))
 
 
 ;; set shell on Linux
@@ -157,7 +130,8 @@
     gnu/linux
   (set-default-shell! (path-env-spec :shell-name)
                       (path-env-spec :shell-regexp))
-  (load-path-env))
+  (load-path-env!)
+  (setenv "SHELL" (path-env-spec )))
 
 
 ;; set shell on Windows
@@ -166,19 +140,24 @@
 
   (when `(bin-exists-p ,(path-env-spec :shell-name))
 
-    (defun set-windows-nt-shell! ()
-      (setenv "SHELL" (path-env-spec :shell-path))
-      (set-default-shell! (path-env-spec :shell-path)
-                          (path-env-spec :shell-regexp))
-      (load-path-env))
-
+    (load-path-env!)
+    
+    (defmacro windows-nt-path (p)
+      "Return the path that windows-nt can recoganized."
+      `(replace-regexp-in-string "\\\\" "/" ,p))
+    
+    
     (defadvice shell (before shell-before compile)
-      (set-windows-nt-shell!))
+      (when (consp path)
+        (setenv "SHELL" (path-env-spec :shell-path))
+        (set-default-shell! (path-env-spec :shell-path)
+                            (path-env-spec :shell-regexp))
+        (path->var (path-env-> :path) ":")))
     
     (defadvice ansi-term (around ansi-term-around compile)
       (let* ((n "*ansi-term*")
              (b (get-buffer-create n)))
+        (setenv "SHELL" (path-env-> :shell-file-name))
+        (path->var (path-env-> :path) path-separator)
         (apply 'make-comint-in-buffer n b "cmd" nil nil)
         (set-window-buffer (selected-window) b)))))
-
-
