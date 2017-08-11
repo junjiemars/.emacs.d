@@ -12,9 +12,6 @@
                ,(concat (v-home* "config/") ".path-env.el")
                :compiled-file ,(concat (v-home* "config/") ".path-env.elc")
                :shell-name "bash"
-               :shell-regexp ,(platform-supported-if windows-nt
-                                  "/bash\.exe$"
-                                "/bash$")
                :shell-path ,(bin-path "bash")
                :path "PATH"
                :ld-path ,(platform-supported-unless windows-nt
@@ -66,38 +63,31 @@
 
 
 (defun save-path-env! ()
-  (unless *default-path-env*
-    (setq *default-path-env*
-          (list :path
-                (refine-path
-                 (split-string
-                  (echo-var (path-env-spec :path)
-                            (lambda (x)
-                              (replace-regexp-in-string
-                               "[ ]*\n$" "" x)))
-                  path-separator))
-                :ld-path (platform-supported-unless windows-nt
-                           (refine-path
-                            (split-string
-                             (echo-var (path-env-spec :ld-path)
-                                       (lambda (x)
-                                         (replace-regexp-in-string
-                                          "[ ]*\n$" "" x)))
-                             path-separator)))
-                :exec-path nil
-                :shell-file-name (platform-supported-when windows-nt
-                                   (unless (path-env-> :shell-file-name)
-                                     shell-file-name))))
-    (path-env<- :exec-path (append
-                            (path-env-> :path)
-                            (refine-path exec-path))))
+  (setq *default-path-env*
+        (list :path
+              (refine-path
+               (split-string
+                (echo-var (path-env-spec :path)
+                          (lambda (x)
+                            (replace-regexp-in-string
+                             "[ ]*\n$" "" x)))
+                path-separator))
+              :ld-path (platform-supported-unless windows-nt
+                         (refine-path
+                          (split-string
+                           (echo-var (path-env-spec :ld-path)
+                                     (lambda (x)
+                                       (replace-regexp-in-string
+                                        "[ ]*\n$" "" x)))
+                           path-separator)))
+              :shell-file-name nil))
   (save-sexpr-to-file
    (list 'setq '*default-path-env*
          (list 'list
                ':path (list 'quote (path-env-> :path))
-               ':ld-path (list 'quote (path-env-> :ld-path))
-               ':exec-path (list 'quote (path-env-> :exec-path))
-               ':shell-file-name (path-env-> :shell-file-name)))
+               ':ld-path (platform-supported-unless windows-nt
+                           (list 'quote (path-env-> :ld-path)))
+               ':shell-file-name nil))
    (path-env-spec :source-file))
   (byte-compile-file (path-env-spec :source-file)))
 
@@ -113,7 +103,8 @@
 (platform-supported-when
     darwin
   (load-path-env!)
-  (setenv (path-env-spec :path) (path->var (path-env-> :path) path-separator)))
+  (setenv (path-env-spec :path)
+          (path->var (path-env-> :path) path-separator)))
 
 
 ;; set shell on Linux
@@ -130,6 +121,7 @@
   (when `(bin-exists-p ,(path-env-spec :shell-name))
 
     (load-path-env!)
+    (path-env<- :shell-file-name shell-file-name)
     
     (defmacro windows-nt-path (p)
       "Return the path that windows-nt can recoganized."
@@ -139,8 +131,9 @@
     (defadvice shell (before shell-before compile)
       (when (consp path)
         (setenv "SHELL" (path-env-spec :shell-path))
-        (set-default-shell! (path-env-spec :shell-path)
-                            (path-env-spec :shell-regexp))
+        (comment
+         (set-default-shell! (path-env-spec :shell-path)
+                             (path-env-spec :shell-regexp)))
         (path->var (path-env-> :path) ":")))
     
     (defadvice ansi-term (around ansi-term-around compile)
