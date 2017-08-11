@@ -13,12 +13,13 @@
                :compiled-file ,(concat (v-home* "config/") ".path-env.elc")
                :shell-name "bash"
                :shell-path ,(bin-path "bash")
-               :path "PATH"
-               :ld-path ,(platform-supported-unless windows-nt
-                           (platform-supported-if darwin
-                               "DYLD_LIBRARY_PATH"
-                             (platform-supported-when gnu/linux
-                               "LD_LIBRARY_PATH")))
+               :shell-var "SHELL"
+               :path-var "PATH"
+               :ld-path-var ,(platform-supported-unless windows-nt
+                               (platform-supported-if darwin
+                                   "DYLD_LIBRARY_PATH"
+                                 (platform-supported-when gnu/linux
+                                   "LD_LIBRARY_PATH")))
                :echo-format
                ,(platform-supported-if windows-nt
                     "echo %%%s%% 2>/nul"
@@ -67,7 +68,7 @@
         (list :path
               (refine-path
                (split-string
-                (echo-var (path-env-spec :path)
+                (echo-var (path-env-spec :path-var)
                           (lambda (x)
                             (replace-regexp-in-string
                              "[ ]*\n$" "" x)))
@@ -75,7 +76,7 @@
               :ld-path (platform-supported-unless windows-nt
                          (refine-path
                           (split-string
-                           (echo-var (path-env-spec :ld-path)
+                           (echo-var (path-env-spec :ld-path-var)
                                      (lambda (x)
                                        (replace-regexp-in-string
                                         "[ ]*\n$" "" x)))
@@ -103,7 +104,7 @@
 (platform-supported-when
     darwin
   (load-path-env!)
-  (setenv (path-env-spec :path)
+  (setenv (path-env-spec :path-var)
           (path->var (path-env-> :path) path-separator)))
 
 
@@ -111,35 +112,43 @@
 (platform-supported-when
     gnu/linux
   (load-path-env!)
-  (setenv "SHELL" (path-env-spec :shell-path)))
+  (setenv (path-env-spec :shell-var)
+          (path-env-spec :shell-path)))
 
 
 ;; set shell on Windows
 (platform-supported-when
     windows-nt
 
+  (defmacro windows-nt-path (p)
+    "Return the path that windows-nt can recoganized."
+    `(replace-regexp-in-string "\\\\" "/" ,p))
+
+  
+  (defadvice ansi-term (around ansi-term-around compile)
+    (let* ((n "*ansi-term*")
+           (b (get-buffer-create n)))
+      (setenv (path-env-spec :shell-var) (path-env-> :shell-file-name))
+      (setq shell-file-name (getenv (path-env-spec :shell-var)))
+      (setenv (path-env-spec :path-var)
+              (path->var (path-env-> :path) path-separator))
+      (setq shell-file-name (path-env-> :shell-file-name))
+      (apply 'make-comint-in-buffer n b "cmd" nil nil)
+      (set-window-buffer (selected-window) b)))
+
+  
   (when `(bin-exists-p ,(path-env-spec :shell-name))
 
     (load-path-env!)
     (path-env<- :shell-file-name shell-file-name)
     
-    (defmacro windows-nt-path (p)
-      "Return the path that windows-nt can recoganized."
-      `(replace-regexp-in-string "\\\\" "/" ,p))
-    
-    
+    (defmacro windows-nt-posix-path (p)
+      "Retrun the posix path that shell can regcoganized on windows-nt."
+      `(replace-regexp-in-string "\\([a-zA-Z]\\):/" "/\\1/"
+                                 (windows-nt-path ,p)))
+
     (defadvice shell (before shell-before compile)
-      (when (consp path)
-        (setenv "SHELL" (path-env-spec :shell-path))
-        (comment
-         (set-default-shell! (path-env-spec :shell-path)
-                             (path-env-spec :shell-regexp)))
-        (path->var (path-env-> :path) ":")))
-    
-    (defadvice ansi-term (around ansi-term-around compile)
-      (let* ((n "*ansi-term*")
-             (b (get-buffer-create n)))
-        (setenv "SHELL" (path-env-> :shell-file-name))
-        (path->var (path-env-> :path) path-separator)
-        (apply 'make-comint-in-buffer n b "cmd" nil nil)
-        (set-window-buffer (selected-window) b)))))
+      (setenv (path-env-spec :shell-var) (path-env-spec :shell-path))
+      (setenv (path-env-spec :path-var)
+              (windows-nt-posix-path (path->var (path-env-> :path) ":")))
+      (setq shell-file-name (getenv (path-env-spec :shell-var))))))
