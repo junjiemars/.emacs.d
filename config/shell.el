@@ -40,13 +40,16 @@
   `(plist-put *default-path-env* ,k ,v))
 
 
-(defmacro echo-var (var &optional transfer)
-  "Echo a $VAR, and then TRANSFER it if there has one."
-  `(let ((v (shell-command-to-string
-             (format (path-env-spec :echo-format) ,var))))
-     (if (and ,transfer (functionp ,transfer))
-         (funcall ,transfer v)
-       v)))
+(defmacro echo-var (var &optional echo-format)
+  "Echo a $VAR."
+  `(shell-command-to-string
+    (format (if ,echo-format ,echo-format
+              (path-env-spec :echo-format)) ,var)))
+
+
+(defmacro refine-var (var regexp rep)
+  "Refine VAR, replace VAR with REP base on REGEXP."
+  `(replace-regexp-in-string ,regexp ,rep ,var))
 
 
 (defmacro refine-path (path)
@@ -72,19 +75,16 @@
   (setq *default-path-env*
         (list :path
               (refine-path
-               (split-string
-                (echo-var (path-env-spec :path-var)
-                          (lambda (x)
-                            (replace-regexp-in-string
-                             "[ ]*\n$" "" x)))
+               (split-string 
+                (refine-var
+                 (echo-var (path-env-spec :path-var)) "[ ]*\n$" "")
                 path-separator))
               :ld-path (platform-supported-unless windows-nt
                          (refine-path
                           (split-string
-                           (echo-var (path-env-spec :ld-path-var)
-                                     (lambda (x)
-                                       (replace-regexp-in-string
-                                        "[ ]*\n$" "" x)))
+                           (refine-var
+                            (echo-var (path-env-spec :ld-path-var))
+                            "[ ]*\n$" "")
                            path-separator)))
               :shell-file-name nil))
   (save-sexpr-to-file
