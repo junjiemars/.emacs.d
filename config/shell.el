@@ -148,7 +148,7 @@
     (path-env<- :shell-file-name shell-file-name)
     
     (defmacro windows-nt-unix-path (p)
-      "Retrun the unix path that shell can regcoganized on windows-nt."
+      "Return the unix path that shell can regcoganized on windows-nt."
       `(replace-regexp-in-string "\\([a-zA-Z]\\):/" "/\\1/"
                                  (windows-nt-posix-path ,p)))
 
