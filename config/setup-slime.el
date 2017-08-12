@@ -8,7 +8,7 @@
 (defmacro common-lisp-path (name)
   `(platform-supported-if
        windows-nt
-       (windows-nt-path (bin-path ,name))
+       (windows-nt-posix-path (bin-path ,name))
      (bin-path ,name)))
 
 

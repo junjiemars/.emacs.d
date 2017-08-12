@@ -125,8 +125,8 @@
 (platform-supported-when
     windows-nt
 
-  (defmacro windows-nt-path (p)
-    "Return the path that windows-nt can recoganized."
+  (defmacro windows-nt-posix-path (p)
+    "Return the posix path that windows-nt can recoganized."
     `(replace-regexp-in-string "\\\\" "/" ,p))
 
   
@@ -147,13 +147,13 @@
     (load-path-env!)
     (path-env<- :shell-file-name shell-file-name)
     
-    (defmacro windows-nt-posix-path (p)
-      "Retrun the posix path that shell can regcoganized on windows-nt."
+    (defmacro windows-nt-unix-path (p)
+      "Retrun the unix path that shell can regcoganized on windows-nt."
       `(replace-regexp-in-string "\\([a-zA-Z]\\):/" "/\\1/"
-                                 (windows-nt-path ,p)))
+                                 (windows-nt-posix-path ,p)))
 
     (defadvice shell (before shell-before compile)
       (setenv (path-env-spec :shell-var) (path-env-spec :shell-path))
       (setenv (path-env-spec :path-var)
-              (windows-nt-posix-path (path->var (path-env-> :path) ":")))
+              (windows-nt-unix-path (path->var (path-env-> :path) ":")))
       (setq shell-file-name (getenv (path-env-spec :shell-var))))))
