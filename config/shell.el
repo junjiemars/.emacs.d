@@ -28,17 +28,20 @@
 
 
 (defvar *default-path-env* nil
-  "Default path environments")
+  "Default path environments, get via (path-env-> k) and put via (path-env<- k v) ")
 
 
 (defmacro path-env-> (k)
+  "Extract the value from `*default-path-env*' via K."
   `(plist-get *default-path-env* ,k))
 
 (defmacro path-env<- (k v)
+  "Change the value in `*default-path-env* via K."
   `(plist-put *default-path-env* ,k ,v))
 
 
 (defmacro echo-var (var &optional transfer)
+  "Echo a $VAR, and then TRANSFER it if there has one."
   `(let ((v (shell-command-to-string
              (format (path-env-spec :echo-format) ,var))))
      (if (and ,transfer (functionp ,transfer))
@@ -47,6 +50,7 @@
 
 
 (defmacro refine-path (path)
+  "Refine PATH, non empty or non exists."
   `(when (consp ,path)
      (delete nil
              (mapcar (lambda (x)
@@ -57,6 +61,7 @@
 
 
 (defmacro path->var (path sep)
+  "Convert a list of PATH to $PATH var, base on SEP."
   `(let ((p nil))
      (dolist (x ,path)
        (setq p (concat p (when p ,sep) x)))
@@ -120,8 +125,8 @@
 (platform-supported-when
     windows-nt
 
-  (defmacro windows-nt-path (p)
-    "Return the path that windows-nt can recoganized."
+  (defmacro windows-nt-posix-path (p)
+    "Return the posix path that windows-nt can recoganized."
     `(replace-regexp-in-string "\\\\" "/" ,p))
 
   
@@ -142,13 +147,13 @@
     (load-path-env!)
     (path-env<- :shell-file-name shell-file-name)
     
-    (defmacro windows-nt-posix-path (p)
-      "Retrun the posix path that shell can regcoganized on windows-nt."
+    (defmacro windows-nt-unix-path (p)
+      "Retrun the unix path that shell can regcoganized on windows-nt."
       `(replace-regexp-in-string "\\([a-zA-Z]\\):/" "/\\1/"
-                                 (windows-nt-path ,p)))
+                                 (windows-nt-posix-path ,p)))
 
     (defadvice shell (before shell-before compile)
       (setenv (path-env-spec :shell-var) (path-env-spec :shell-path))
       (setenv (path-env-spec :path-var)
-              (windows-nt-posix-path (path->var (path-env-> :path) ":")))
+              (windows-nt-unix-path (path->var (path-env-> :path) ":")))
       (setq shell-file-name (getenv (path-env-spec :shell-var))))))
