@@ -42,6 +42,7 @@ they look like
 * kill whole line: ```C-S-DEL```
 * kill all spaces at point: ```M-\```
 * kill all spaces except one at point: ```M-SPC```
+* delete indentation to join line to previous line: ```M-^```
 * dynamic abbreviation: ```M-/```
 * query replace: ```M-%```
 * what cursor position: ```C-x =```
@@ -49,6 +50,8 @@ they look like
 * transpose words: ```M-t```
 * insert parentheses: ```M-(```, wrap selection in parentheses
 * toggle read-only mode: ```C-x C-q```
+* toggle input method: ```C-\```, switch to __TeX__ ```C-x-RET C-\```
+
 
 ## Basic sexp commands
 * ```forward-sexp```: ```C-M-f```
