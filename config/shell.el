@@ -28,7 +28,8 @@
 
 
 (defvar *default-path-env* nil
-  "Default path environments, get via (path-env-> k) and put via (path-env<- k v) ")
+  "Default path environments, 
+get via (path-env-> k) and put via (path-env<- k v) ")
 
 
 (defmacro path-env-> (k)
@@ -36,7 +37,7 @@
   `(plist-get *default-path-env* ,k))
 
 (defmacro path-env<- (k v)
-  "Change the value in `*default-path-env* via K."
+  "Change the value of `*default-path-env* via K."
   `(plist-put *default-path-env* ,k ,v))
 
 
