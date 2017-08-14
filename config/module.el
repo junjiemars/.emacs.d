@@ -38,6 +38,11 @@
 ;; (require 'package)
 (declare-function package-installed-p "package")
 (setq package-enable-at-startup nil)
+
+(version-supported-when
+    <= 25.1
+  (setq custom-file (v-home* "config/" ".selected-packages.el")))
+
 (package-initialize)
 
 
@@ -96,13 +101,6 @@
                     ,(emacs-home* "config/setup-navigation.el")
                     ,(emacs-home* "config/setup-python.el")))))
 
-
-(version-supported-when
-    <= 25.1
-  (safe-fn-when package--save-selected-packages
-    (defun package--save-selected-packages (&optional _)
-      "Fake `package-selected-packages' to nil."
-      nil)))
 
 
 ;; Load basic package spec
