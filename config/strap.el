@@ -56,7 +56,7 @@
 
 
 (defsubst self-def-files! ()
-  "Returns the PATH of `self-path.el' and make self-*.el files."
+  "Return the path of `self-path.el' and make self-*.el files."
   (let ((d (emacs-home* "private/"))
         (p (emacs-home* "private/self-path.el"))
         (fs `(,(cons (emacs-home* "private/self-path.el")
@@ -86,6 +86,10 @@
   "Default `self-def-path', override in `private/self-path.el'")
 
 
+(defmacro self-def-paths-> (k)
+  `(plist-get self-def-paths ,k))
+
+
 ;; Load self where
 (compile-and-load-elisp-files!
     v-dir
@@ -95,7 +99,7 @@
 ;; Load self env
 (compile-and-load-elisp-files!
     v-dir
-  (plist-get self-def-paths :env-spec))
+  (self-def-paths-> :env-spec))
 
 
 ;; Load ui, shell, basic env:
@@ -109,7 +113,7 @@
 ;; Self do prelogue ...
 (compile-and-load-elisp-files!
     v-dir
-  (plist-get self-def-paths :prologue))
+  (self-def-paths-> :prologue))
 
 
 (package-supported-p
@@ -118,7 +122,7 @@
   ;; Load basic and self modules
   (compile-and-load-elisp-files!
       v-dir
-    (plist-get self-def-paths :package-spec)
+    (self-def-paths-> :package-spec)
     (emacs-home* "config/module.el")))
 
 
@@ -136,4 +140,4 @@
 ;; Self do epilogue ...
 (compile-and-load-elisp-files!
     v-dir
-  (plist-get self-def-paths :epilogue))
+  (self-def-paths-> :epilogue))
