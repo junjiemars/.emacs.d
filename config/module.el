@@ -98,8 +98,7 @@
                      smex
                      tagedit)
          :compile `(,(emacs-home* "config/setup-lisp.el")
-                    ,(emacs-home* "config/setup-navigation.el")
-                    ,(emacs-home* "config/setup-python.el")))))
+                    ,(emacs-home* "config/setup-navigation.el")))))
 
 
 
