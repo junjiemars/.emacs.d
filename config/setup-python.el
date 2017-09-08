@@ -10,7 +10,7 @@
   (safe-fn-when* 'pyvenv-deactivate (pyvenv-deactivate)))
 
 
-(defun install-elpy-requirements ()
+(defadvice pyvenv-activate (after pyvenv-activate-after compile)
   (let ((p "autopep8 flake8 importmagic ipython jedi rope yapf"))
     (if (zerop
          (shell-command (concat "pip install " p " >/dev/null")))
@@ -18,14 +18,10 @@
       (message "#Missing some packages[%s] that elpy required" p))))
 
 
-(defadvice pyvenv-activate (after pyvenv-activate-after compile)
-  (install-elpy-requirements))
-
-
 (defadvice elpy-enable (after elpy-enable-after compile)
   (elpy-use-ipython))
 
 
 (add-hook 'kill-emacs-hook #'unload-python-on-exit)
-(add-hook 'pyvenv-post-activate-hooks #'install-elpy-requirements)
+
 
