@@ -4,16 +4,13 @@
 
 
 
-(comment
- (defun set-python-mode! ()
-   ;; Enable paredit for Python
-   (enable-paredit-mode)
-   ;; Working with camel-case tokens
-   (subword-mode))
- (add-hook 'python-mode-hook #'set-python-mode!))
+
+(defun unload-python-on-exit ()
+  (safe-fn-when* 'elpy-disable (elpy-disable))
+  (safe-fn-when* 'pyvenv-deactivate (pyvenv-deactivate)))
 
 
-(defadvice pyvenv-activate (after pyvenv-activate-after compile)
+(defun install-elpy-requirements ()
   (let ((p "autopep8 flake8 importmagic ipython jedi rope yapf"))
     (if (zerop
          (shell-command (concat "pip install " p " >/dev/null")))
@@ -22,8 +19,9 @@
 
 
 (defadvice elpy-enable (after elpy-enable-after compile)
-  (elpy-use-ipython)
-  (add-hook 'kill-emacs-hook #'pyvenv-deactivate)
-  (add-hook 'kill-emacs-hook #'elpy-disable))
+  (elpy-use-ipython))
 
+
+(add-hook 'kill-emacs-hook #'unload-python-on-exit)
+(add-hook 'pyvenv-post-activate-hooks #'install-elpy-requirements)
 
