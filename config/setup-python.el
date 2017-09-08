@@ -18,6 +18,10 @@
       (message "#Missing some packages[%s] that elpy required" p))))
 
 
+(defadvice pyvenv-activate (after pyvenv-activate-after compile)
+  (install-elpy-requirements))
+
+
 (defadvice elpy-enable (after elpy-enable-after compile)
   (elpy-use-ipython))
 
