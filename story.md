@@ -81,7 +81,7 @@ in your ```emacs-home/private``` dirctory, there are default configuration files
 (setq self-def-paths
       (list
        :env-spec (emacs-home* "private/self-env-spec.el")
-       :prologue nil
+       :prologue nil 
        :package-spec nil
        :epilogue nil))
 ```
@@ -95,6 +95,15 @@ in your ```emacs-home/private``` dirctory, there are default configuration files
 ### Shell
 
 ### Package management
+
+```lisp
+(setq self-def-paths
+      (list
+       ;; ...
+       :package-spec (emacs-home* "private/self-package-spec.el")
+       ;; ...
+       ))
+```
 
 ### Common Lisp programming
 
