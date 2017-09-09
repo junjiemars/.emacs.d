@@ -1,8 +1,12 @@
 ;;;;
-;; Python: setup virtualenv and pip first
+;; Python
 ;;;;
 
 
+
+
+;; Requirements: setup `virtualenv' and `pip'
+;; first run `M-x pyvenv' and then `M-x elpy-enable'
 
 
 (defun unload-python-on-exit ()
@@ -16,8 +20,8 @@
          (shell-command
           (concat "pip install " p
                   (platform-supported-if
-                      windows-nt " >/nul")
-                  " >/dev/null")))
+                      windows-nt " >/nul"
+                    " >/dev/null"))))
         (message "#Install elpy required packages[%s]...done" p)
       (message "#Missing some packages[%s] that elpy required" p))))
 
