@@ -23,7 +23,7 @@
                :echo-format
                ,(platform-supported-if windows-nt
                     "echo %%%s%% 2>/nul"
-                  "$SHELL -i -l -c 'echo -n $%s' 2>/dev/null"))
+                  "$SHELL -l -c 'echo -n $%s' 2>/dev/null"))
              spec))
 
 
@@ -78,7 +78,8 @@ get via (path-env-> k) and put via (path-env<- k v) ")
               (refine-path
                (split-string 
                 (refine-var
-                 (echo-var (path-env-spec :path-var)) "[ ]*\n$" "")
+                 (echo-var (path-env-spec :path-var))
+                 "[ ]*\n$" "")
                 path-separator))
               :ld-path (platform-supported-unless windows-nt
                          (refine-path
