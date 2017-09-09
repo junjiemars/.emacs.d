@@ -10,16 +10,21 @@
   "Return the value of corresponding SPEC."
   (plist-get `(:source-file
                ,(concat (v-home* "config/") ".path-env.el")
-               :compiled-file ,(concat (v-home* "config/") ".path-env.elc")
+               
+               :compiled-file
+               ,(concat (v-home* "config/") ".path-env.elc")
+               
                :shell-name "bash"
                :shell-path ,(bin-path "bash")
                :shell-var "SHELL"
                :path-var "PATH"
+               
                :ld-path-var ,(platform-supported-unless windows-nt
                                (platform-supported-if darwin
                                    "DYLD_LIBRARY_PATH"
                                  (platform-supported-when gnu/linux
                                    "LD_LIBRARY_PATH")))
+               
                :echo-format
                ,(platform-supported-if windows-nt
                     "echo %%%s%% 2>/nul"
@@ -54,7 +59,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
 
 
 (defmacro refine-path (path)
-  "Refine PATH, non empty or non exists."
+  "Refine PATH, exclude empty or non-exists."
   `(when (consp ,path)
      (delete nil
              (mapcar (lambda (x)
@@ -65,7 +70,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
 
 
 (defmacro path->var (path sep)
-  "Convert a list of PATH to $PATH var, base on SEP."
+  "Convert a list of PATH to $PATH var, separated by SEP."
   `(let ((p nil))
      (dolist (x ,path)
        (setq p (concat p (when p ,sep) x)))
@@ -81,6 +86,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
                  (echo-var (path-env-spec :path-var))
                  "[ ]*\n$" "")
                 path-separator))
+              
               :ld-path (platform-supported-unless windows-nt
                          (refine-path
                           (split-string
@@ -88,6 +94,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
                             (echo-var (path-env-spec :ld-path-var))
                             "[ ]*\n$" "")
                            path-separator)))
+              
               :shell-file-name nil))
   (save-sexpr-to-file
    (list 'setq '*default-path-env*
@@ -127,6 +134,8 @@ get via (path-env-> k) and put via (path-env<- k v) ")
 (platform-supported-when
     windows-nt
 
+  (load-path-env!)
+
   (defmacro windows-nt-posix-path (p)
     "Return the posix path that windows-nt can recoganized."
     `(replace-regexp-in-string "\\\\" "/" ,p))
@@ -144,9 +153,8 @@ get via (path-env-> k) and put via (path-env<- k v) ")
       (set-window-buffer (selected-window) b)))
 
   
-  (when `(bin-exists-p ,(path-env-spec :shell-name))
-
-    (load-path-env!)
+  (when (file-exists-p (path-env-spec :shell-path))
+    
     (path-env<- :shell-file-name shell-file-name)
     
     (defmacro windows-nt-unix-path (p)
