@@ -32,7 +32,8 @@
              spec))
 
 
-(defvar *default-path-env* nil
+(defvar *default-path-env*
+  (list :path nil :ld-path nil :shell-file-name nil)
   "Default path environments, 
 get via (path-env-> k) and put via (path-env<- k v) ")
 
@@ -77,25 +78,18 @@ get via (path-env-> k) and put via (path-env<- k v) ")
      p))
 
 
+(defmacro refine-path-var (var)
+  "Refine PATH which be specified by VAR."
+  `(refine-path
+    (split-string (refine-var
+                   (echo-var (path-env-spec ,var)) "[ ]*\n$" "")
+                  path-separator)))
+
+
 (defun save-path-env! ()
-  (setq *default-path-env*
-        (list :path
-              (refine-path
-               (split-string 
-                (refine-var
-                 (echo-var (path-env-spec :path-var))
-                 "[ ]*\n$" "")
-                path-separator))
-              
-              :ld-path (platform-supported-unless windows-nt
-                         (refine-path
-                          (split-string
-                           (refine-var
-                            (echo-var (path-env-spec :ld-path-var))
-                            "[ ]*\n$" "")
-                           path-separator)))
-              
-              :shell-file-name nil))
+  (path-env<- :path (refine-path-var :path-var))
+  (path-env<- :ld-path (refine-path-var :ld-path-var))
+  (path-env<- :shell-file-name nil)
   (save-sexpr-to-file
    (list 'setq '*default-path-env*
          (list 'list
@@ -109,8 +103,9 @@ get via (path-env-> k) and put via (path-env<- k v) ")
 
 (defmacro load-path-env! ()
   `(progn
-     (when (file-exists-p (path-env-spec :compiled-file))
-       (load (path-env-spec :compiled-file)))
+     (if (file-exists-p (path-env-spec :compiled-file))
+         (load (path-env-spec :compiled-file))
+       (path-env<- :path (refine-path-var :path-var)))
      (add-hook 'kill-emacs-hook #'save-path-env!)))
 
 
@@ -141,20 +136,16 @@ get via (path-env-> k) and put via (path-env<- k v) ")
     `(replace-regexp-in-string "\\\\" "/" ,p))
 
   
-  (defadvice ansi-term (around ansi-term-around compile)
+  (defadvice ansi-term (before ansi-term-before compile)
     (let* ((n "*ansi-term*")
            (b (get-buffer-create n)))
-      (setenv (path-env-spec :shell-var) (path-env-> :shell-file-name))
-      (setq shell-file-name (getenv (path-env-spec :shell-var)))
-      (setenv (path-env-spec :path-var)
-              (path->var (path-env-> :path) path-separator))
-      (setq shell-file-name (path-env-> :shell-file-name))
       (apply 'make-comint-in-buffer n b "cmd" nil nil)
       (set-window-buffer (selected-window) b)))
 
   
   (when (file-exists-p (path-env-spec :shell-path))
-    
+
+    ;; keep `shell-file-name' between `ansi-term' and `shell'
     (path-env<- :shell-file-name shell-file-name)
     
     (defmacro windows-nt-unix-path (p)
@@ -166,4 +157,10 @@ get via (path-env-> k) and put via (path-env<- k v) ")
       (setenv (path-env-spec :shell-var) (path-env-spec :shell-path))
       (setenv (path-env-spec :path-var)
               (windows-nt-unix-path (path->var (path-env-> :path) ":")))
-      (setq shell-file-name (getenv (path-env-spec :shell-var))))))
+      (setq shell-file-name (getenv (path-env-spec :shell-var))))
+
+    (defadvice shell (after shell-after compile)
+      (setenv (path-env-spec :shell-var) (path-env-> :shell-file-name))
+      (setenv (path-env-spec :path-var)
+              (path->var (path-env-> :path) path-separator))
+      (setq shell-file-name (path-env-> :shell-file-name)))))
