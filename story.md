@@ -13,6 +13,7 @@ The adaptive Emacs which I need is more stable, more smaller, more faster and mo
 * [Where](#where)
 * [What](#what)
 * [Install](#install)
+* [Cook](#cook)
 * [Mnemonic](mnemonic.md)
 
 Now, let's start from the Level Two. And one more thing: teach youself some little Elisp (M-x info).
@@ -25,7 +26,7 @@ Now, let's start from the Level Two. And one more thing: teach youself some litt
 
 
 ## Requirements
-* Emacs installation, the version 24+ is more suitable, but version 24- is ok;
+* Emacs installation, version 22.1.1+ is ok, but version 24+ is more suitable;
 * Any keyboard, not mouse;
 
 
@@ -36,8 +37,8 @@ Now, let's start from the Level Two. And one more thing: teach youself some litt
 
 
 ## What
-* Smart navigating, find, grep, ...
 * You are the master of your Emacs, ...
+* Smart navigating, find, grep, ...
 * Org Mode that's your new life, ...
 * Lisp programming, Common Lisp, Scheme, sexy Clojure/Clojurescript, ...
 * Bash on Windows, ...
@@ -45,13 +46,12 @@ Now, let's start from the Level Two. And one more thing: teach youself some litt
 
 
 ## Install
-Just one thing you need to do, clone it (just <400K) to your HOME directory:
+Just one thing you need to do, clone it (just <400KB) to your HOME directory:
 ```sh
 $ cd
 $ git clone --depth=1 https://github.com/junjiemars/.emacs.d.git
 ```
-Then start Emacs and waiting a while for self-install packages, if you had 
-an Emacs 24+ and you defined ```def-self-package-spec```.
+
 
 On Windows, if you'd [Git-Bash](https://git-scm.com/downloads) installed but no Emacs, you are lucky, a one line code will do it all for you and more: fix some Emacs' issue for you, and you don't need run ```git clone ...```,
 
@@ -63,15 +63,43 @@ $ HAS_EMACS=1 bash <(curl https://raw.githubusercontent.com/junjiemars/kit/maste
 ```
 
 
-Now, the Emacs will works perfect, but if you want to more control and more 
-features, such as themes, packages, and fonts etc., 
-see next section: [self-management][#self-management]
+* First run: start Emacs then exit it, take a while if your Emacs version 24+;
+* Non-First run: start Emacs then run ```(clean-compiled-files)```, then exit;
+
+Now, start Emacs again, it will works perfectly, but if you want to more control and more features, such as themes, packages, and fonts etc., see next section: [cook](#cook)
 
 
 ## Cook
 
-Cook in ```private/self.el```,
-if has trouble, try ```(clean-compiled-files)``` first
+Suppose your Emacs HOME at ```~/.emacs.d``` and annotated it as ```emacs-home``` .
 
+
+After you pull the last version from ```https://github.com/junjiemars/.emacs.d.git```, 
+in your ```emacs-home/private``` dirctory, there are default configuration files:
+
+```lisp
+(setq self-def-paths
+      (list
+       :env-spec (emacs-home* "private/self-env-spec.el")
+       :prologue nil
+       :package-spec nil
+       :epilogue nil))
+```
+
+### Using your private Emacs's configuration anywhere
+
+### Theme
+
+### CJK on Windows or Linux
+
+### Shell
+
+### Package management
+
+### Common Lisp programming
+
+### Clojure programming
+
+### Python programming
 
 
