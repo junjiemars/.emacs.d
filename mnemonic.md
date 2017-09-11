@@ -7,6 +7,7 @@ It's **self-documenting** and great, keep reading it frequently.
 * Tutorial: ```C-h-t```
 * Help for Help: ```C-h C-h```
 * Emacs manual: ```C-h r```
+* Apropos command: ```C-h a```
 * Info: ```C-h i```
 * Info of mode: ```C-h i d m <x>``` *<x>* is the mode
 * Mode: ```C-h-m``` see all the key bindings and documentation of current buffer
@@ -19,6 +20,7 @@ It's **self-documenting** and great, keep reading it frequently.
 * Message: ```C-h e``` see the logging of echo area message
 * Man: ```M-x man``` view UNIX manual page
 * Woman: ```M-x woman``` view UNIX manual page without ```man``` program
+* Coding system: ```C-h C``` describe coding system
 * Colors: ```M-x list-colors-display``` display names of defined colors and show what
 they look like
 
