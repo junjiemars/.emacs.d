@@ -73,10 +73,16 @@ Now, start Emacs again, it will works perfectly, but if you want to more control
 
 Suppose your Emacs HOME at ```~/.emacs.d``` and annotated it as ```emacs-home``` .
 
+Your private configuration directory at ```emacs-home/private/``` 
+and I abbreviate it as ```private/```. All things you can rename, 
+move, delete, and except the ```private/self-path.el``` file.
+
 
 After you pull the last version from ```https://github.com/junjiemars/.emacs.d.git```, 
 in your ```emacs-home/private``` dirctory, there are default configuration files:
 
+
+* content of ```private/self-path.el```
 ```lisp
 (setq self-def-paths
       (list
@@ -86,7 +92,19 @@ in your ```emacs-home/private``` dirctory, there are default configuration files
        :epilogue nil))
 ```
 
+* ```:env-spec``` specify the _basic environement_ specification file;
+* ```:prologue``` specify the _prologue_ file;
+* ```:package-spec``` specify the _package definition_ specificiation file;
+* ```:epilogue``` specify the _epilogue_ file;
+
+
+
 ### Using your private Emacs's configuration anywhere
+
+Host ```private/``` in [GitLab](https://gitlab.com), [GitHub](https://github.com), 
+or your private _versioning server_, then in anywhere you can pull it down 
+into any platform, it will works well: keep the same styles and the same behaviors.
+
 
 ### Theme
 
