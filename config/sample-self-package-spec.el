@@ -61,7 +61,7 @@
    :compile `(,(emacs-home* "config/setup-slime.el")))
   (list
    :cond (lambda ()
-           (and (version-supported-p 24.0)
+           (and (version-supported-p 24.4)
                 (bin-exists-p "virtualenv")))
    :packages '(elpy)
    :compile `(,(emacs-home* "config/setup-python.el"))))
