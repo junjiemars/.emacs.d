@@ -56,8 +56,14 @@
    :packages '(geiser))
   (list
    :cond (lambda ()
-           (or (bin-exists-p "sbcl")))
+           (bin-exists-p "sbcl"))
    :packages '(slime)
-   :compile `(,(emacs-home* "config/setup-slime.el"))))
+   :compile `(,(emacs-home* "config/setup-slime.el")))
+  (list
+   :cond (lambda ()
+           (and (version-supported-p 24.0)
+                (bin-exists-p "virtualenv")))
+   :packages '(elpy)
+   :compile `(,(emacs-home* "config/setup-python.el"))))
 
 
