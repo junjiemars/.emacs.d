@@ -96,6 +96,7 @@ in your ```emacs-home/private``` dirctory, there are default configuration files
 
 ### Package management
 
+* associate ```private/self-package-spec.el``` with ```private/self-path.el```
 ```lisp
 (setq self-def-paths
       (list
@@ -104,6 +105,19 @@ in your ```emacs-home/private``` dirctory, there are default configuration files
        ;; ...
        ))
 ```
+
+* ```private/self-package-spec.el``` looks like:
+```lisp
+(def-self-package-spec
+  (list
+   :cond (lambda ()
+           (and (version-supported-p '<= 24.0)
+                (bin-exists-p "virtualenv")))
+   :packages '(elpy)
+   :compile `(,(emacs-home* "config/setup-python.el"))))
+```
+this _package-spec_ used to support _Python_ programming, 
+[default package spec](config/sample-self-package-spec.el)
 
 ### Common Lisp programming
 
