@@ -178,14 +178,6 @@
 (setq-default bookmark-default-file (v-home! ".bookmarks/" "emacs.bmk"))
 
 
-;; smex
-(package-supported-p
-  (setq-default smex-save-file (v-home! ".smex/" ".smex-items")))
-
-;; semantic db
-(package-supported-p
-  (setq-default semanticdb-default-system-save-directory
-                (v-home! ".semanticdb/")))
 
 
 ;; Toggle recentf-mode

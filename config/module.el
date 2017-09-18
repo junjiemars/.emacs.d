@@ -89,16 +89,21 @@
 (defvar basic-package-spec
   (list (list
          :cond t
-         :packages '(aggressive-indent
+         :packages `(aggressive-indent
                      bing-dict
-                     ido-ubiquitous
+                     ,(version-supported-if <= 24.4
+                                            'ido-completing-read+
+                        'ido-ubiquitous)
                      markdown-mode
                      paredit
                      rainbow-delimiters
-                     smex
+                     ,(version-supported-when <= 24.4
+                        'smex)
                      tagedit)
          :compile `(,(emacs-home* "config/setup-lisp.el")
-                    ,(emacs-home* "config/setup-navigation.el")))))
+                    ,(version-supported-when <= 24.4
+                       (emacs-home* "config/setup-navigation.el")) 
+                    ))))
 
 
 
