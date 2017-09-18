@@ -91,19 +91,15 @@
          :cond t
          :packages `(aggressive-indent
                      bing-dict
-                     ,(version-supported-if <= 24.4
-                                            'ido-completing-read+
-                        'ido-ubiquitous)
+                     ,(version-supported-when <= 24.4 'ido-completing-read+)
                      markdown-mode
                      paredit
                      rainbow-delimiters
-                     ,(version-supported-when <= 24.4
-                        'smex)
+                     ,(version-supported-when <= 24.4 'smex)
                      tagedit)
          :compile `(,(emacs-home* "config/setup-lisp.el")
                     ,(version-supported-when <= 24.4
-                       (emacs-home* "config/setup-navigation.el")) 
-                    ))))
+                       (emacs-home* "config/setup-navigation.el"))))))
 
 
 
