@@ -5,6 +5,7 @@
 ;;;;
 
 
-(message "#self prelogue ...")
+(message "#self prologue ...")
 
 ;; (setq debug-on-error t)
+;; (setq enable-local-variables nil)
