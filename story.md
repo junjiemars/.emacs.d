@@ -126,6 +126,11 @@ into any platform, it will works well: keep the same styles and the same behavio
                :allowed t)
   ;; ...
 )
+
+;; :name => theme's name
+;; :path => where theme file located, if nil then load the built-in theme
+;; :allowed => t to load
+
 ```
 
 * restart Emacs

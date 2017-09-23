@@ -78,13 +78,15 @@
 
 (theme-supported-p
     
-    (defsubst self-load-theme! (dir name)
-      "Load THEME of current platform from THEME-DIR by THEME-NAME, if THEME-DIR
-or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
+    (defsubst self-load-theme! (name &optional dir)
+      "Load theme from THEME-DIR by THEME-NAME, if THEME-DIR is nil then
+load the named built-in theme, if THEME-NAME non-existing then 
+load default `theme/tomorrow-night-eighties'
 
-\(fn THEME-DIR THEME-NAME)"
-      (add-to-list 'custom-theme-load-path dir)
-      (add-to-list 'load-path dir)
+\(fn THEME-NAME &optional THEME-DIR)"
+      (when (and dir (file-exists-p dir))
+        (add-to-list 'custom-theme-load-path dir)
+        (add-to-list 'load-path dir))
       (version-supported-if >= 24.1
                             (load-theme name)
         (load-theme name t)))
@@ -95,8 +97,8 @@ or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
    "env-spec"
    (let ((theme (plist-get *val* :theme)))
      (when (and theme (plist-get theme :allowed))
-       (self-load-theme! (plist-get theme :path)
-                         (plist-get theme :name))))))
+       (self-load-theme! (plist-get theme :name)
+                         (plist-get theme :path))))))
 
 ;; End of theme-supported-p
 

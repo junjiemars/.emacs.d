@@ -60,8 +60,8 @@ and compiled file name."
         (when (consp p->c)
           (if (and (car p->c) (not (cdr p->c)))
               (progn
-                (self-load-theme! (plist-get previous :path)
-                                  (plist-get previous :name))
+                (self-load-theme! (plist-get previous :name)
+                                  (plist-get previous :path))
                 (disable-theme (plist-get previous :name)))
             (enable-theme (plist-get current :name)))
           (setq-default desktop-restore-frames t))))))
