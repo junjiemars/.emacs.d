@@ -24,18 +24,23 @@ places. One more thing, it's best to remind you: take care, it's super fast.
 
 * Toggle Theme
 
-_atom theme_
+_atom theme_:
+
 ![atom theme](https://github.com/junjiemars/images/raw/master/.emacs.d/atom-theme.png)
 
-_default theme_
+_default theme_:
+
 ![default theme](https://github.com/junjiemars/images/raw/master/.emacs.d/default-theme.png)
 
 
+
 * CJK Fonts
+
 ![cjk](https://github.com/junjiemars/images/raw/master/.emacs.d/cjk.png)
 
 
 * Shell
+
 ![shell in windows](https://github.com/junjiemars/images/raw/master/.emacs.d/shell-in-windows.png)
 
 
