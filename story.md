@@ -108,6 +108,28 @@ into any platform, it will works well: keep the same styles and the same behavio
 
 ### Theme
 
+* associate ```private/self-env-spec.el``` with ```private/self-path.el```
+```lisp
+(setq self-def-paths
+      (list
+       ;; ...
+       :env-spec (emacs-home* "private/self-env-spec.el")
+       ;; ...
+       ))
+```
+
+* ```private/self-env-spec.el``` looks like:
+```lisp
+(def-self-env-spec
+  :theme (list :name 'atom-one-dark
+               :path (emacs-home* "theme/")
+               :allowed t)
+  ;; ...
+)
+```
+
+* restart Emacs
+
 ### CJK on Windows or Linux
 
 ### Shell
@@ -121,7 +143,8 @@ into any platform, it will works well: keep the same styles and the same behavio
        ;; ...
        :package-spec (emacs-home* "private/self-package-spec.el")
        ;; ...
-       ))
+       )
+)
 ```
 
 * ```private/self-package-spec.el``` looks like:
