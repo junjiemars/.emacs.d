@@ -110,7 +110,7 @@
   (emacs-home* "config/basic.el"))
 
 
-;; Self do prelogue ...
+;; Self do prologue ...
 (compile-and-load-elisp-files!
     v-dir
   (self-def-paths-> :prologue))
