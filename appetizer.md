@@ -4,22 +4,30 @@
 
 ### atom theme
 
-![atom theme](https://github.com/junjiemars/images/raw/master/.emacs.d/atom-theme.png)
+<img title="atom theme" alt="atom theme" 
+	width="70%"
+	src="https://github.com/junjiemars/images/raw/master/.emacs.d/atom-theme.png" />
 
 ### default theme
 
-![default theme](https://github.com/junjiemars/images/raw/master/.emacs.d/default-theme.png)
+<img title="default theme" alt="default theme"
+	width="70%"
+	src="https://github.com/junjiemars/images/raw/master/.emacs.d/default-theme.png" />
 
 
 
 ## CJK Fonts
 
-![cjk](https://github.com/junjiemars/images/raw/master/.emacs.d/cjk.png)
+<img title="cjk fonts" alt="cjk fonts"
+	width="70%"
+	src="https://github.com/junjiemars/images/raw/master/.emacs.d/cjk.png" />
 
 
 ## Shell
 
-![shell in windows](https://github.com/junjiemars/images/raw/master/.emacs.d/shell-in-windows.png)
+<img title="shell" alt="shell"
+	width="70%"
+	src="https://github.com/junjiemars/images/raw/master/.emacs.d/shell-in-windows.png" />
 
 
 
