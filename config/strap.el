@@ -10,7 +10,7 @@
   "Compile and load the elisp FILES, save compiled files in VDIR."
   (declare (indent 1))
   (dolist (f files)
-    (compile-and-load-elisp-file* vdir f)))
+    (when f (compile-and-load-elisp-file* vdir f))))
 
 
 
