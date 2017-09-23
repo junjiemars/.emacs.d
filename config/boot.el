@@ -83,12 +83,11 @@
 or THEME-NAME non-existing then load default `theme/tomorrow-night-eighties'
 
 \(fn THEME-DIR THEME-NAME)"
-      (theme-supported-p
-          (add-to-list 'custom-theme-load-path dir)
-        (add-to-list 'load-path dir)
-        (version-supported-if >= 24.1
-                              (load-theme name)
-          (load-theme name t))))
+      (add-to-list 'custom-theme-load-path dir)
+      (add-to-list 'load-path dir)
+      (version-supported-if >= 24.1
+                            (load-theme name)
+        (load-theme name t)))
 
 
   ;; Load theme
