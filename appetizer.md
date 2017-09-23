@@ -6,13 +6,13 @@
 
 <img title="atom theme" alt="atom theme" 
 	width="70%"
-	src="https://github.com/junjiemars/images/raw/master/.emacs.d/atom-theme.png" />
+	src="https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/atom-theme.png" />
 
 ### default theme
 
 <img title="default theme" alt="default theme"
 	width="70%"
-	src="https://github.com/junjiemars/images/raw/master/.emacs.d/default-theme.png" />
+	src="https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/default-theme.png" />
 
 
 
@@ -20,14 +20,14 @@
 
 <img title="cjk fonts" alt="cjk fonts"
 	width="70%"
-	src="https://github.com/junjiemars/images/raw/master/.emacs.d/cjk.png" />
+	src="https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/cjk.png" />
 
 
 ## Shell
 
 <img title="shell" alt="shell"
 	width="70%"
-	src="https://github.com/junjiemars/images/raw/master/.emacs.d/shell-in-windows.png" />
+	src="https://raw.github.com/junjiemars/images/master/.emacs.d/shell-in-windows.png" />
 
 
 
