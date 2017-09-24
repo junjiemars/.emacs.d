@@ -345,16 +345,6 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
        (defvar ,_path_ ,path))))
 
 
-(defmacro def-self-env-spec (&rest spec)
-  "Define default Emacs env SPEC of current platform on current Emacs version, 
-ignore it if you don't like it. 
- 
-\(fn SPEC)"
-  (declare (indent 0))
-  (let ((_spec_ (self-symbol 'env-spec)))
-    `(defvar ,_spec_ (list ,@spec))))
-
-
 (defmacro def-self-package-spec (&rest spec)
   "Define self package SPEC list:
      :cond t ;; predicat
@@ -374,11 +364,28 @@ ignore it if you don't like it.
        (,_fn_))))
 
 
+(defmacro self-safe-call% (fn &rest body)
+  (declare (indent 1))
+  (when (fboundp fn)
+    `(progn% ,@body)))
+
+
 (defmacro self-safe-call* (var &rest body)
   (let ((_var_ (self-symbol var)))
     (when (boundp _var_)
       `(let ((*val* (symbol-value ',_var_)))
          ,@body))))
+
+
+(defmacro lexical-scope-if (then &rest else)
+  (declare (indent 1))
+  `(version-supported-if <= 24.1
+                         ,then (progn% ,@else)))
+
+
+(defmacro lexical-scope-when (then)
+  `(lexical-scope-if ,then))
+
 
 
 

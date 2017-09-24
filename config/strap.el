@@ -96,7 +96,33 @@
   self-def-where)
 
 
+;; Load cl
+(lexical-scope-when
+ (eval-when-compile (require 'cl)))
+
+
+(defmacro plist-get* (plist &optional keys)
+  `(if (null ,keys)
+       ,plist
+     (let ((v ,plist))
+       (dolist (k ,keys)
+         (setq v (plist-get v k)))
+       v)))
+
+
 ;; Load self env
+(defun def-self-env-spec (&rest spec)
+  "Define default Emacs env SPEC of current platform on current Emacs version, 
+ignore it if you don't like it. 
+ 
+\(fn SPEC)"
+  (lexical-scope-if
+      (defun self-env-spec-> (&rest keys)
+        (plist-get* spec keys))
+    (lexical-let ((s spec))
+      (defun self-env-spec-> (&rest keys)
+        (plist-get* s keys)))))
+
 (compile-and-load-elisp-files!
     v-dir
   (self-def-paths-> :env-spec))

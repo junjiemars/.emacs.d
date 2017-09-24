@@ -166,13 +166,11 @@ call it: ssh -vnNTD32000 <user>@<host>"
 
 
 ;; Load socks settings
-(self-safe-call*
- "env-spec"
- (let ((socks (plist-get *val* :socks)))
-   (when (and socks (plist-get socks :allowed))
-     (start-socks! (plist-get socks :port)
-                   (plist-get socks :server)
-                   (plist-get socks :version)))))
+(self-safe-call% self-env-spec->
+  (when (self-env-spec-> :socks :allowed)
+    (start-socks! (self-env-spec-> :socks :port)
+                  (self-env-spec-> :socks :server)
+                  (self-env-spec-> :socks :version))))
 
 
 (defun stop-socks! (&optional method)

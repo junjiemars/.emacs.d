@@ -47,11 +47,9 @@
 
   
   ;; Load default font
-  (self-safe-call*
-   "env-spec"
-   (let ((font (plist-get *val* :font)))
-     (when (and font (plist-get font :allowed))
-       (self-default-font! (plist-get font :name)))))
+  (self-safe-call% self-env-spec->
+    (when (self-env-spec-> :font :allowed)
+      (self-default-font! (self-env-spec-> :font :name))))
 
   (defsubst self-cjk-font! (name size)
     "Set CJK font in Graphic mode.
@@ -65,13 +63,11 @@
                                          :size size))))))
 
   ;; Load cjk font
-  (self-safe-call*
-   "env-spec"
-   (let ((cjk (plist-get *val* :cjk-font)))
-     (when (and cjk (plist-get cjk :allowed))
-       (self-cjk-font!
-        (plist-get cjk :name)
-        (plist-get cjk :size))))))
+  (self-safe-call% self-env-spec->
+    (when (self-env-spec-> :cjk-font :allowed)
+      (self-cjk-font!
+       (self-env-spec-> :cjk-font :name)
+       (self-env-spec-> :cjk-font :size)))))
 
 ;; End of font-supported-p
 
@@ -93,12 +89,10 @@ load default `theme/tomorrow-night-eighties'
 
 
   ;; Load theme
-  (self-safe-call*
-   "env-spec"
-   (let ((theme (plist-get *val* :theme)))
-     (when (and theme (plist-get theme :allowed))
-       (self-load-theme! (plist-get theme :name)
-                         (plist-get theme :path))))))
+  (self-safe-call% self-env-spec->
+    (when (self-env-spec-> :theme :allowed)
+      (self-load-theme! (self-env-spec-> :theme :name)
+                        (self-env-spec-> :theme :path)))))
 
 ;; End of theme-supported-p
 
