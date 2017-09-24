@@ -43,14 +43,14 @@ and compiled file name."
     (defun theme-changed-p (previous current)
       "Return (previous . current)"
       (cond
-       ((not (eq (plist-get previous :allowed)
-                 (plist-get current :allowed)))
-        (cons (plist-get previous :allowed)
-              (plist-get current :allowed)))
-       ((or (not (eq (plist-get previous :name)
-                     (plist-get current :name)))
-            (not (string= (plist-get previous :path)
-                          (plist-get current :path))))
+       ((not (eq (self-spec-> previous :allowed)
+                 (self-spec-> current :allowed)))
+        (cons (self-spec-> previous :allowed)
+              (self-spec-> current :allowed)))
+       ((or (not (eq (self-spec-> previous :name)
+                     (self-spec-> current :name)))
+            (not (string= (self-spec-> previous :path)
+                          (self-spec-> current :path))))
         (cons nil t))))
 
   (defun switch-theme! (previous current)
@@ -59,10 +59,10 @@ and compiled file name."
         (when (consp p->c)
           (if (and (car p->c) (not (cdr p->c)))
               (progn
-                (self-load-theme! (plist-get previous :name)
-                                  (plist-get previous :path))
-                (disable-theme (plist-get previous :name)))
-            (enable-theme (plist-get current :name)))
+                (self-load-theme! (self-spec-> previous :name)
+                                  (self-spec-> previous :path))
+                (disable-theme (self-spec-> previous :name)))
+            (enable-theme (self-spec-> current :name)))
           (setq-default desktop-restore-frames t))))))
 
 
@@ -77,7 +77,7 @@ and compiled file name."
     (when (self-env-spec-> :desktop :allowed)
       (theme-supported-p
           (when (consp (theme-changed-p
-                        (plist-get self-previous-env-spec :theme)
+                        (self-spec-> self-previous-env-spec :theme)
                         (self-env-spec-> :theme)))
             (setq-default desktop-restore-frames nil)))
       
@@ -103,7 +103,7 @@ and compiled file name."
                       (append '(tags-table-mode) m)))
 
       (theme-supported-p
-          (switch-theme! (plist-get self-previous-env-spec :theme)
+          (switch-theme! (self-spec-> self-previous-env-spec :theme)
                          (self-env-spec-> :theme)))
 
       (version-supported-if

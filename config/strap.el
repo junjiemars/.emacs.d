@@ -30,6 +30,9 @@
      return))
 
 
+
+
+
 (defmacro save-sexpr-to-file (sexpr file)
   "Save SEXPR to the FILE."
   `(save-excursion
@@ -79,6 +82,9 @@
     p))
 
 
+
+
+
 (defvar self-def-where (self-def-files!)
   "Where's the path of self-path.el")
 
@@ -96,11 +102,6 @@
   self-def-where)
 
 
-;; Load cl
-(lexical-scope-unless
-  (eval-when-compile (require 'cl)))
-
-
 (defmacro plist-get* (plist &optional keys)
   `(if (null ,keys)
        ,plist
@@ -110,18 +111,30 @@
        v)))
 
 
+(defmacro self-spec-> (seq &rest keys)
+  `(plist-get* ,seq (list ,@keys)))
+
+
+
+
+
+;; Load cl
+(lexical-scope-unless
+  (eval-when-compile (require 'cl)))
+
+
 ;; Load self env
 (defun def-self-env-spec (&rest spec)
   "Define default Emacs env SPEC of current platform on current Emacs version, 
 ignore it if you don't like it. 
  
-\(fn SPEC)"
+\(fn SPEC...)"
   (lexical-scope-if
       (defun self-env-spec-> (&rest keys)
         (plist-get* spec keys))
     (lexical-let ((s spec))
-      (defun self-env-spec-> (&rest keys)
-        (plist-get* s keys)))))
+                 (defun self-env-spec-> (&rest keys)
+                   (plist-get* s keys)))))
 
 (compile-and-load-elisp-files!
     v-dir
