@@ -97,8 +97,8 @@
 
 
 ;; Load cl
-(lexical-scope-when
- (eval-when-compile (require 'cl)))
+(lexical-scope-unless
+  (eval-when-compile (require 'cl)))
 
 
 (defmacro plist-get* (plist &optional keys)

@@ -383,8 +383,14 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil.
                          ,then (progn% ,@else)))
 
 
-(defmacro lexical-scope-when (then)
-  `(lexical-scope-if ,then))
+(defmacro lexical-scope-when (&rest then)
+  (declare (indent 0))
+  `(lexical-scope-if (progn% ,@then)))
+
+
+(defmacro lexical-scope-unless (&rest else)
+  (declare (indent 0))
+  `(lexical-scope-if nil (progn% ,@else)))
 
 
 
