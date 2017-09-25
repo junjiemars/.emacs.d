@@ -103,10 +103,10 @@
 
 
 (defmacro plist-get* (plist &optional keys)
-  `(if (null ,keys)
-       ,plist
-     (let ((v ,plist))
-       (dolist (k ,keys)
+  `(let ((v ,plist) (ks ,keys))
+     (if (null ks)
+         v
+       (dolist (k ks)
          (setq v (plist-get v k)))
        v)))
 
