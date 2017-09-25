@@ -130,8 +130,8 @@ ignore it if you don't like it.
  
 \(fn SPEC...)"
   (lexical-scope-if
-      (defun self-env-spec-> (&rest keys)
-        (plist-get* spec keys))
+      (defmacro self-env-spec-> (&rest keys)
+        `(plist-get* ',spec ',keys))
     (lexical-let ((s spec))
                  (defun self-env-spec-> (&rest keys)
                    (plist-get* s keys)))))
