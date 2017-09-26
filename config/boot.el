@@ -69,7 +69,7 @@
        (self-env-spec-> :cjk-font :name)
        (self-env-spec-> :cjk-font :size)))))
 
-;; End of font-supported-p
+ ;; End of font-supported-p
 
 
 (theme-supported-p
@@ -94,7 +94,7 @@ load default `theme/tomorrow-night-eighties'
       (self-load-theme! (self-env-spec-> :theme :name)
                         (self-env-spec-> :theme :path)))))
 
-;; End of theme-supported-p
+ ;; End of theme-supported-p
 
 
 
@@ -108,6 +108,7 @@ load default `theme/tomorrow-night-eighties'
   (set-face-background 'region "white")
   (set-face-foreground 'region "black"))
 
+ ;; end of terminal-supported-p
 
 
 ;; Changes all yes/no questions to y/n type

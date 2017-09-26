@@ -140,6 +140,9 @@ ignore it if you don't like it.
     v-dir
   (self-def-paths-> :env-spec))
 
+ ;; end of Load self env
+
+
 
 ;; Load ui, shell, basic env:
 (compile-and-load-elisp-files!

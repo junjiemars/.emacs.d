@@ -65,6 +65,8 @@ and compiled file name."
             (enable-theme (self-spec-> current :name)))
           (setq-default desktop-restore-frames t))))))
 
+ ;; end of theme-supported-p
+
 
 (defun self-desktop-read! ()
   
