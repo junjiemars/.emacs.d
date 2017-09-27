@@ -47,9 +47,10 @@
 
   
   ;; Load default font
-  (self-safe-call% self-env-spec->
-    (when (self-env-spec-> :font :allowed)
-      (self-default-font! (self-env-spec-> :font :name))))
+  (self-safe-call*
+   "env-spec"
+   (when (self-spec-* :font :allowed)
+     (self-default-font! (self-spec-* :font :name))))
 
   (defsubst self-cjk-font! (name size)
     "Set CJK font in Graphic mode.
@@ -63,13 +64,13 @@
                                          :size size))))))
 
   ;; Load cjk font
-  (self-safe-call% self-env-spec->
-    (when (self-env-spec-> :cjk-font :allowed)
-      (self-cjk-font!
-       (self-env-spec-> :cjk-font :name)
-       (self-env-spec-> :cjk-font :size)))))
+  (self-safe-call*
+   "env-spec"
+   (when (self-spec-* :cjk-font :allowed)
+     (self-cjk-font! (self-spec-* :cjk-font :name)
+                     (self-spec-* :cjk-font :size)))))
 
- ;; End of font-supported-p
+;; End of font-supported-p
 
 
 (theme-supported-p
@@ -89,12 +90,13 @@ load default `theme/tomorrow-night-eighties'
 
 
   ;; Load theme
-  (self-safe-call% self-env-spec->
-    (when (self-env-spec-> :theme :allowed)
-      (self-load-theme! (self-env-spec-> :theme :name)
-                        (self-env-spec-> :theme :path)))))
+  (self-safe-call*
+   "env-spec"
+   (when (self-spec-* :theme :allowed)
+     (self-load-theme! (self-spec-* :theme :name)
+                       (self-spec-* :theme :path)))))
 
- ;; End of theme-supported-p
+;; End of theme-supported-p
 
 
 
@@ -108,7 +110,6 @@ load default `theme/tomorrow-night-eighties'
   (set-face-background 'region "white")
   (set-face-foreground 'region "black"))
 
- ;; end of terminal-supported-p
 
 
 ;; Changes all yes/no questions to y/n type
