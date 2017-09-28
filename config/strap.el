@@ -111,7 +111,7 @@
     x))
 
 
-(defmacro self-spec-* (&rest keys)
+(defmacro self-spec->* (&rest keys)
   (declare (indent 1))
   `(self-spec-> *val* ,@keys))
 

@@ -49,8 +49,8 @@
   ;; Load default font
   (self-safe-call*
    "env-spec"
-   (when (self-spec-* :font :allowed)
-     (self-default-font! (self-spec-* :font :name))))
+   (when (self-spec->* :font :allowed)
+     (self-default-font! (self-spec->* :font :name))))
 
   (defsubst self-cjk-font! (name size)
     "Set CJK font in Graphic mode.
@@ -66,9 +66,9 @@
   ;; Load cjk font
   (self-safe-call*
    "env-spec"
-   (when (self-spec-* :cjk-font :allowed)
-     (self-cjk-font! (self-spec-* :cjk-font :name)
-                     (self-spec-* :cjk-font :size)))))
+   (when (self-spec->* :cjk-font :allowed)
+     (self-cjk-font! (self-spec->* :cjk-font :name)
+                     (self-spec->* :cjk-font :size)))))
 
 ;; End of font-supported-p
 
@@ -92,9 +92,9 @@ load default `theme/tomorrow-night-eighties'
   ;; Load theme
   (self-safe-call*
    "env-spec"
-   (when (self-spec-* :theme :allowed)
-     (self-load-theme! (self-spec-* :theme :name)
-                       (self-spec-* :theme :path)))))
+   (when (self-spec->* :theme :allowed)
+     (self-load-theme! (self-spec->* :theme :name)
+                       (self-spec->* :theme :path)))))
 
 ;; End of theme-supported-p
 

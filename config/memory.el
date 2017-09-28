@@ -76,11 +76,11 @@ and compiled file name."
 
   (self-safe-call*
    "env-spec"
-   (when (self-spec-* :desktop :allowed)
+   (when (self-spec->* :desktop :allowed)
      (theme-supported-p
          (when (consp (theme-changed-p
                        (self-spec-> self-previous-env-spec :theme)
-                       (self-spec-* :theme)))
+                       (self-spec->* :theme)))
            (setq-default desktop-restore-frames nil)))
      
      (desktop-read (v-home* ".desktop/")))))
@@ -93,20 +93,20 @@ and compiled file name."
   (self-safe-call*
    "env-spec"
    
-   (when (self-spec-* :desktop :allowed)
-     (let ((f (self-spec-* :desktop :files-not-to-save)))
+   (when (self-spec->* :desktop :allowed)
+     (let ((f (self-spec->* :desktop :files-not-to-save)))
        (when f
          (setq-default desktop-files-not-to-save f)))
-     (let ((b (self-spec-* :desktop :buffers-not-to-save)))
+     (let ((b (self-spec->* :desktop :buffers-not-to-save)))
        (when b
          (setq-default desktop-buffers-not-to-save b)))
-     (let ((m (self-spec-* :desktop :modes-not-to-save)))
+     (let ((m (self-spec->* :desktop :modes-not-to-save)))
        (setq-default desktop-modes-not-to-save
                      (append '(tags-table-mode) m)))
 
      (theme-supported-p
          (switch-theme! (self-spec-> self-previous-env-spec :theme)
-                        (self-spec-* :theme)))
+                        (self-spec->* :theme)))
 
      (version-supported-if
          >= 23

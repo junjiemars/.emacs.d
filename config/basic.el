@@ -168,10 +168,10 @@ call it: ssh -vnNTD32000 <user>@<host>"
 ;; Load socks settings
 (self-safe-call*
  "env-spec"
-   (when (self-spec-* :socks :allowed)
-     (start-socks! (self-spec-* :socks :port)
-                   (self-spec-* :socks :server)
-                   (self-spec-* :socks :version))))
+   (when (self-spec->* :socks :allowed)
+     (start-socks! (self-spec->* :socks :port)
+                   (self-spec->* :socks :server)
+                   (self-spec->* :socks :version))))
 
 
 (defun stop-socks! (&optional method)
