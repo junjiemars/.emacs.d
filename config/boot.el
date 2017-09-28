@@ -25,25 +25,25 @@
 
 (font-supported-p
     
-    (defun font-exists-p (font)
+    (defmacro font-exists-p (font)
       "Return t if font exists
 
 \(FN FONT\)"
-      (when (find-font (font-spec :name font))
-        t))
+      `(when (find-font (font-spec :name ,font))
+         t))
 
 
-  (defsubst self-default-font! (font)
+  (defmacro self-default-font! (font)
     "Set default font in graphic mode.
 
 \(FN FONT\)"
-    (when (font-exists-p font)
-      (add-to-list 'default-frame-alist (cons 'font font))
-      (set-face-attribute 'default t :font font)
-      (set-face-attribute 'default nil :font font)
-      (version-supported-if <= 24.0
-                            (set-frame-font font nil t)
-        (set-frame-font font))))
+    `(when (font-exists-p ,font)
+       (add-to-list 'default-frame-alist (cons 'font ,font))
+       (set-face-attribute 'default t :font ,font)
+       (set-face-attribute 'default nil :font ,font)
+       (version-supported-if <= 24.0
+                             (set-frame-font ,font nil t)
+         (set-frame-font ,font))))
 
   
   ;; Load default font
@@ -52,16 +52,16 @@
    (when (self-spec->* :font :allowed)
      (self-default-font! (self-spec->* :font :name))))
 
-  (defsubst self-cjk-font! (name size)
+  (defmacro self-cjk-font! (name size)
     "Set CJK font in Graphic mode.
 
 \(FN NAME SIZE\)"
-    (when (font-exists-p name)
-      (safe-fn-when set-fontset-font
-        (dolist (c '(han kana cjk-misc))
-          (set-fontset-font (frame-parameter nil 'font)
-                            c (font-spec :family name
-                                         :size size))))))
+    `(when (font-exists-p ,name)
+       (safe-fn-when set-fontset-font
+         (dolist (c '(han kana cjk-misc))
+           (set-fontset-font (frame-parameter nil 'font)
+                             c (font-spec :family ,name
+                                          :size ,size))))))
 
   ;; Load cjk font
   (self-safe-call*
@@ -75,18 +75,19 @@
 
 (theme-supported-p
     
-    (defsubst self-load-theme! (name &optional dir)
+    (defmacro self-load-theme! (name &optional dir)
       "Load theme from THEME-DIR by THEME-NAME, if THEME-DIR is nil then
 load the named built-in theme, if THEME-NAME non-existing then 
 load default `theme/tomorrow-night-eighties'
 
 \(fn THEME-NAME &optional THEME-DIR)"
-      (when (and dir (file-exists-p dir))
-        (add-to-list 'custom-theme-load-path dir)
-        (add-to-list 'load-path dir))
-      (version-supported-if >= 24.1
-                            (load-theme name)
-        (load-theme name t)))
+      `(progn%
+        (when (and ,dir (file-exists-p ,dir))
+          (add-to-list 'custom-theme-load-path ,dir)
+          (add-to-list 'load-path ,dir))
+        (version-supported-if >= 24.1
+                              (load-theme ,name)
+          (load-theme ,name t))))
 
 
   ;; Load theme
