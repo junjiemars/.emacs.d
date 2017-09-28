@@ -31,44 +31,44 @@ and compiled file name."
 (add-hook 'kill-emacs-hook #'save-env-spec)
 
 
-(defun load-env-spec ()
-  (let ((f (cdr (env-spec))))
-    (when (file-exists-p f)
-      (load f))))
+(defmacro load-env-spec ()
+  `(let ((f (cdr (env-spec))))
+     (when (file-exists-p f)
+       (load f))))
 
 (load-env-spec)
 
 
 (theme-supported-p
     
-    (defun theme-changed-p (previous current)
+    (defmacro theme-changed-p (previous current)
       "Return (previous . current)"
-      (cond
-       ((not (eq (self-spec-> previous :allowed)
-                 (self-spec-> current :allowed)))
-        (cons (self-spec-> previous :allowed)
-              (self-spec-> current :allowed)))
-       ((or (not (eq (self-spec-> previous :name)
-                     (self-spec-> current :name)))
-            (not (string= (self-spec-> previous :path)
-                          (self-spec-> current :path))))
-        (cons nil t))))
+      `(cond
+        ((not (eq (self-spec-> ,previous :allowed)
+                  (self-spec-> ,current :allowed)))
+         (cons (self-spec-> ,previous :allowed)
+               (self-spec-> ,current :allowed)))
+        ((or (not (eq (self-spec-> ,previous :name)
+                      (self-spec-> ,current :name)))
+             (not (string= (self-spec-> ,previous :path)
+                           (self-spec-> ,current :path))))
+         (cons nil t))))
 
-  (defun switch-theme! (previous current)
-    (safe-fn-when self-load-theme!
-      (let ((p->c (theme-changed-p previous current)))
-        (when (consp p->c)
-          (if (and (car p->c) (not (cdr p->c)))
-              (progn
-                (self-load-theme! (self-spec-> previous :name)
-                                  (self-spec-> previous :path))
-                (disable-theme (self-spec-> previous :name)))
-            (enable-theme (self-spec-> current :name)))
-          (setq-default desktop-restore-frames t))))))
+  (defmacro switch-theme! (previous current)
+    `(safe-fn-when self-load-theme!
+       (let ((p->c (theme-changed-p ,previous ,current)))
+         (when (consp p->c)
+           (if (and (car p->c) (not (cdr p->c)))
+               (progn
+                 (self-load-theme! (self-spec-> ,previous :name)
+                                   (self-spec-> ,previous :path))
+                 (disable-theme (self-spec-> ,previous :name)))
+             (enable-theme (self-spec-> ,current :name)))
+           (setq-default desktop-restore-frames t))))))
 
 
+;; Read desktop
 (defun self-desktop-read! ()
-  
   (terminal-supported-p
     (version-supported-when <= 24.4
       (version-supported-when > 25
@@ -88,7 +88,11 @@ and compiled file name."
 (add-hook 'after-init-hook #'self-desktop-read!)
 
 
+ ;; end of Read desktop
 
+
+
+;; Save desktop
 (defun self-desktop-save! ()
   (self-safe-call*
    "env-spec"
