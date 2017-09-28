@@ -14,7 +14,7 @@
   "Indicate `initialize-package-repository!' whether has been called.")
 
 
-(defun initialize-package-repository! ()
+(defsubst initialize-package-repository! ()
   (setq-default
    package-archives
    (append (list '("gnu" . "https://elpa.gnu.org/packages/")
@@ -47,43 +47,43 @@
 
 
 
-(defun install-package! (packages &optional dry)
+(defmacro install-package! (packages &optional dry)
   "Install missing packages, returns alist of installed packages"
-  (let ((not-installed-packages
-         (delete t (mapcar #'(lambda (p)
-                               (if (package-installed-p p) t p))
-                           packages))))
-    (when not-installed-packages
-      (unless dry
-        (when (not *repostory-initialized*)
-          (initialize-package-repository!)
-          (setq *repostory-initialized* t)))
-      (message "#Installing the missing %d packages: %s"
-               (length not-installed-packages)
-               not-installed-packages)
-      
-      (mapc (lambda (i)
-              (unless dry
-                (version-supported-if
-                    <= 24.4
-                    (package-install i t)
-                  (package-install i))))
-            not-installed-packages)
-      not-installed-packages)))
+  `(let ((not-installed-packages
+          (delete t (mapcar #'(lambda (p)
+                                (if (package-installed-p p) t p))
+                            ,packages))))
+     (when not-installed-packages
+       (unless ,dry
+         (when (not *repostory-initialized*)
+           (initialize-package-repository!)
+           (setq *repostory-initialized* t)))
+       (message "#Installing the missing %d ,packages: %s"
+                (length not-installed-packages)
+                not-installed-packages)
+       
+       (mapc (lambda (i)
+               (unless ,dry
+                 (version-supported-if
+                     <= 24.4
+                     (package-install i t)
+                   (package-install i))))
+             not-installed-packages)
+       not-installed-packages)))
 
 
-(defun parse-package-spec (spec dir)
+(defmacro parse-package-spec (dir spec)
   "Parse SPEC, install packages and setup."
-  (dolist (s spec)
-    (let ((p (self-spec-> s :cond))
-          (m (self-spec-> s :packages)))
-      (when (or (and (booleanp p) p)
-                (funcall p))
-        (when (consp m)
-          (install-package! (delete nil m))
-          (apply #'compile-and-load-elisp-files!
-                 dir
-                 (delete nil (self-spec-> s :compile))))))))
+  `(dolist (s ,spec)
+     (let ((p (self-spec-> s :cond))
+           (m (self-spec-> s :packages)))
+       (when (or (and (booleanp p) p)
+                 (funcall p))
+         (when (consp m)
+           (install-package! (delete nil m))
+           (apply #'compile-and-load-elisp-files!
+                  ,dir
+                  (delete nil (self-spec-> s :compile))))))))
 
 
 (defvar basic-package-spec
@@ -104,12 +104,12 @@
 
 
 ;; Load basic package spec
-(parse-package-spec basic-package-spec v-dir)
+(parse-package-spec v-dir basic-package-spec)
 
 
 ;; Load self packages spec
 (self-safe-call*
  "package-spec"
- (parse-package-spec *val* v-dir))
+ (parse-package-spec v-dir (self-spec->*)))
 
 
