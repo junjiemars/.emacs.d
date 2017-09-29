@@ -52,19 +52,21 @@ and compiled file name."
                       (self-spec-> ,current :name)))
              (not (string= (self-spec-> ,previous :path)
                            (self-spec-> ,current :path))))
-         (cons nil t))))
+         (cons nil t)))))
 
-  (defmacro switch-theme! (previous current)
-    `(safe-fn-when self-load-theme!
-       (let ((p->c (theme-changed-p ,previous ,current)))
-         (when (consp p->c)
-           (if (and (car p->c) (not (cdr p->c)))
-               (progn
-                 (self-load-theme! (self-spec-> ,previous :name)
-                                   (self-spec-> ,previous :path))
-                 (disable-theme (self-spec-> ,previous :name)))
-             (enable-theme (self-spec-> ,current :name)))
-           (setq-default desktop-restore-frames t))))))
+(theme-supported-p
+    
+    (defmacro switch-theme! (previous current)
+      `(safe-fn-when self-load-theme!
+         (let ((p->c (theme-changed-p ,previous ,current)))
+           (when (consp p->c)
+             (if (and (car p->c) (not (cdr p->c)))
+                 (progn
+                   (self-load-theme! (self-spec-> ,previous :name)
+                                     (self-spec-> ,previous :path))
+                   (disable-theme (self-spec-> ,previous :name)))
+               (enable-theme (self-spec-> ,current :name)))
+             (setq-default desktop-restore-frames t))))))
 
 
 ;; Read desktop

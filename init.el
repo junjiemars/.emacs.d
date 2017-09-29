@@ -159,13 +159,22 @@ If (eq system-type OS) yields nil, and there are no ELSE’s, the value is nil.
   `(platform-supported-if ,os nil ,@body))
 
 
-(defmacro version-supported-p (cond version)
+(defmacro version-supported? (cond version)
   "Return true if (COND VERSION EMACS-VERSION) yields non-nil, else nil.
 
 \(fn COND VERSION)"
   `(funcall ,cond
             (truncate (* 10 ,version))
             (+ (* 10 emacs-major-version) emacs-minor-version)))
+
+
+(defmacro version-supported-p (cond version)
+  "Return true if (COND VERSION EMACS-VERSION) yields non-nil, else nil.
+It resemble `version-supported?' but it has constant runtime.
+
+\(fn COND VERSION)"
+  (let ((x (version-supported? `,cond `,version)))
+    x))
 
 
 (defmacro version-supported-if (cond version then &rest else)
@@ -176,7 +185,7 @@ If (COND VERSION EMACS-VERSION) yields nil, and there are no ELSE’s, the value
 
 \(fn COND VERSION THEN ELSE...)"
   (declare (indent 3))
-  (if (version-supported-p `,cond `,version)
+  (if (version-supported? `,cond `,version)
       `,then
     `(progn% ,@else)))
 

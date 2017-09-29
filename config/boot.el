@@ -72,7 +72,6 @@
 
 ;; End of font-supported-p
 
-
 (theme-supported-p
     
     (defmacro self-load-theme! (name &optional dir)
@@ -81,21 +80,23 @@ load the named built-in theme, if THEME-NAME non-existing then
 load default `theme/tomorrow-night-eighties'
 
 \(fn THEME-NAME &optional THEME-DIR)"
-      `(progn%
-        (when (and ,dir (file-exists-p ,dir))
-          (add-to-list 'custom-theme-load-path ,dir)
-          (add-to-list 'load-path ,dir))
-        (version-supported-if >= 24.1
-                              (load-theme ,name)
-          (load-theme ,name t))))
+      `(progn
+         (when (and ,dir (file-exists-p ,dir))
+           (add-to-list 'custom-theme-load-path ,dir)
+           (add-to-list 'load-path ,dir))
+         (version-supported-if >= 24.1
+                               (load-theme ,name)
+           (load-theme ,name t)))))
 
 
-  ;; Load theme
-  (self-safe-call*
-   "env-spec"
-   (when (self-spec->* :theme :allowed)
-     (self-load-theme! (self-spec->* :theme :name)
-                       (self-spec->* :theme :path)))))
+;; Load theme
+(theme-supported-p
+    
+    (self-safe-call*
+     "env-spec"
+     (when (self-spec->* :theme :allowed)
+       (self-load-theme! (self-spec->* :theme :name)
+                         (self-spec->* :theme :path)))))
 
 ;; End of theme-supported-p
 
