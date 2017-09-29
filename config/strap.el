@@ -103,7 +103,7 @@
 
 
 (defmacro self-spec-> (seq &rest keys)
-  (declare (indent 0))
+  (declare (indent 1))
   (let ((x seq))
     (when keys
       (dolist (k keys)
@@ -112,7 +112,7 @@
 
 
 (defmacro self-spec->* (&rest keys)
-  (declare (indent 1))
+  (declare (indent 0))
   `(self-spec-> *val* ,@keys))
 
 
