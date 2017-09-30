@@ -242,8 +242,14 @@ If in terminal mode, and there are no ELSE’s, the value is nil.
       `(zerop (shell-command ,_b_)))))
 
 
-(defmacro trim-right-newline (s)
-  `(replace-regexp-in-string "\n$" "" ,s))
+
+(defmacro string-trim> (s)
+  "Remove whitespaces at the end of S.
+
+\(fn STR)"
+  `(if (string-match "[ \t\n\r]+\\'" ,s)
+       (replace-match "" t t ,s)
+     ,s))
 
 
 (defmacro bin-path (b)
@@ -252,9 +258,9 @@ If in terminal mode, and there are no ELSE’s, the value is nil.
 \(fn BIN-NAME)"
   (platform-supported-if windows-nt
       (let ((_b_ (concat "where " `,b)))
-        `(trim-right-newline (shell-command-to-string ,_b_)))
+        `(string-trim> (shell-command-to-string ,_b_)))
     (let ((_b_ (concat "type -P " `,b)))
-      `(trim-right-newline (shell-command-to-string ,_b_)))))
+      `(string-trim> (shell-command-to-string ,_b_)))))
 
 
 
