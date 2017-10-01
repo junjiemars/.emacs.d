@@ -6,36 +6,35 @@
 
 
 
-(defmacro path-env-spec-> (&rest spec)
-  "Return the value of corresponding SPEC."
-  (let ((s `(list
-             :source-file
-             ,(concat (v-home* "config/") ".path-env.el")
-             
-             :compiled-file
-             ,(concat (v-home* "config/") ".path-env.elc")
-             
-             :shell-name "bash"
-             :shell-path ,(bin-path "bash")
-             :shell-var "SHELL"
-             :path-var "PATH"
-             
-             :ld-path-var ,(platform-supported-unless windows-nt
-                             (platform-supported-if darwin
-                                 "DYLD_LIBRARY_PATH"
-                               (platform-supported-when gnu/linux
-                                 "LD_LIBRARY_PATH")))
-             
-             :echo-format
-             ,(platform-supported-if windows-nt
-                  "echo %%%s%% 2>/nul"
-                "$SHELL -l -c 'echo -n $%s' 2>/dev/null"))))
-    `(self-spec-> ,s ,@spec)))
+(defmacro path-env-spec ()
+  "Return the spec of path env."
+  `(list
+    :source-file
+    ,(concat (v-home* "config/") ".path-env.el")
+    
+    :compiled-file
+    ,(concat (v-home* "config/") ".path-env.elc")
+    
+    :shell-name "bash"
+    :shell-path ,(bin-path "bash")
+    :shell-var "SHELL"
+    :path-var "PATH"
+    
+    :ld-path-var ,(platform-supported-unless windows-nt
+                    (platform-supported-if darwin
+                        "DYLD_LIBRARY_PATH"
+                      (platform-supported-when gnu/linux
+                        "LD_LIBRARY_PATH")))
+    
+    :echo-format
+    ,(platform-supported-if windows-nt
+         "echo %%%s%% 2>/nul"
+       "$SHELL -l -c 'echo -n $%s' 2>/dev/null")))
 
 
 (defmacro path-env-spec->% (&rest spec)
   "Return the value of corresponding SPEC at compile time."
-  `(self-spec->% (path-env-spec->) ,@spec))
+  `(self-spec->% (path-env-spec) ,@spec))
 
 
 (defvar *default-path-env*

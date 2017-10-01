@@ -15,15 +15,18 @@
 (defmacro env-spec ()
   "Return the `cons' of virtualized `path-env-spec' source 
 and compiled file name."
-  (let ((*v* (v-home* "config/")))
-    `(cons ,(concat *v* ".env-spec.el")
-           ,(concat *v* ".env-spec.elc"))))
+  `(list :source ,(concat (v-home* "config/") ".env-spec.el")
+         :compiled ,(concat (v-home* "config/") ".env-spec.elc")))
+
+
+(defmacro env-spec->% (&rest keys)
+  `(self-spec->% (env-spec) ,@keys))
 
 
 (defun save-env-spec ()
   (self-safe-call*
    "env-spec"
-   (let ((f (car (env-spec))))
+   (let ((f (env-spec->% :source)))
      (save-sexpr-to-file
       (list 'setq 'self-previous-env-spec (list 'quote *val*)) f)
      (byte-compile-file f))))
@@ -32,7 +35,7 @@ and compiled file name."
 
 
 (defmacro load-env-spec ()
-  `(let ((f (cdr (env-spec))))
+  `(let ((f (env-spec->% :compiled)))
      (when (file-exists-p f)
        (load f))))
 
