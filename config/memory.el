@@ -13,13 +13,13 @@
 
 
 (defmacro env-spec ()
-  "Return the `cons' of virtualized `path-env-spec' source 
-and compiled file name."
+  "Return the `list' of virtualized `path-env-spec'."
   `(list :source ,(concat (v-home* "config/") ".env-spec.el")
          :compiled ,(concat (v-home* "config/") ".env-spec.elc")))
 
 
 (defmacro env-spec->% (&rest keys)
+  "Extract a value from `env-spec' at compile time."
   `(self-spec->% (env-spec) ,@keys))
 
 

@@ -33,7 +33,7 @@
 
 
 (defmacro path-env-spec->% (&rest spec)
-  "Return the value of corresponding SPEC at compile time."
+  "Extract a value from `path-env-spec' at compile time."
   `(self-spec->% (path-env-spec) ,@spec))
 
 
