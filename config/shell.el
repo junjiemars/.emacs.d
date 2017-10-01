@@ -6,35 +6,32 @@
 
 
 
-(defmacro path-env-spec ()
-  "Return the spec of path env."
-  `(list
-    :source-file
-    ,(concat (v-home* "config/") ".path-env.el")
-    
-    :compiled-file
-    ,(concat (v-home* "config/") ".path-env.elc")
-    
-    :shell-name "bash"
-    :shell-path ,(bin-path "bash")
-    :shell-var "SHELL"
-    :path-var "PATH"
-    
-    :ld-path-var ,(platform-supported-unless windows-nt
-                    (platform-supported-if darwin
-                        "DYLD_LIBRARY_PATH"
-                      (platform-supported-when gnu/linux
-                        "LD_LIBRARY_PATH")))
-    
-    :echo-format
-    ,(platform-supported-if windows-nt
-         "echo %%%s%% 2>/nul"
-       "$SHELL -l -c 'echo -n $%s' 2>/dev/null")))
-
-
-(defmacro path-env-spec->% (&rest spec)
-  "Extract a value from `path-env-spec' at compile time."
-  `(self-spec->% (path-env-spec) ,@spec))
+(defmacro path-env-spec->% (&rest keys)
+  "Extract a value from the list of virtualized `path-env-spec' 
+via KEYS at compile time."
+  (let ((spec `(list
+                :source-file
+                ,(concat (v-home* "config/") ".path-env.el")
+                
+                :compiled-file
+                ,(concat (v-home* "config/") ".path-env.elc")
+                
+                :shell-name "bash"
+                :shell-path ,(bin-path "bash")
+                :shell-var "SHELL"
+                :path-var "PATH"
+                
+                :ld-path-var ,(platform-supported-unless windows-nt
+                                (platform-supported-if darwin
+                                    "DYLD_LIBRARY_PATH"
+                                  (platform-supported-when gnu/linux
+                                    "LD_LIBRARY_PATH")))
+                
+                :echo-format
+                ,(platform-supported-if windows-nt
+                     "echo %%%s%% 2>/nul"
+                   "$SHELL -l -c 'echo -n $%s' 2>/dev/null"))))
+    `(self-spec->% ,spec ,@keys)))
 
 
 (defvar *default-path-env*
