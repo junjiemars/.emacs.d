@@ -111,6 +111,11 @@
     x))
 
 
+(defmacro self-spec->% (seq &rest keys)
+  (declare (indent 1))
+  `(eval-when-compile (self-spec-> ,seq ,@keys)))
+
+
 (defmacro self-spec->* (&rest keys)
   (declare (indent 0))
   `(self-spec-> *val* ,@keys))

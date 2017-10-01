@@ -33,6 +33,11 @@
     `(self-spec-> ,s ,@spec)))
 
 
+(defmacro path-env-spec->% (&rest spec)
+  "Return the value of corresponding SPEC at compile time."
+  `(self-spec->% (path-env-spec->) ,@spec))
+
+
 (defvar *default-path-env*
   (list :path nil :ld-path nil :shell-file-name nil)
   "Default path environments, 
@@ -52,7 +57,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
   "Echo a $VAR."
   `(shell-command-to-string
     (format (if ,echo-format ,echo-format
-              (path-env-spec-> :echo-format)) ,var)))
+              (path-env-spec->% :echo-format)) ,var)))
 
 
 (defmacro refine-var (var regexp rep)
@@ -98,14 +103,14 @@ get via (path-env-> k) and put via (path-env<- k v) ")
                ':ld-path (platform-supported-unless windows-nt
                            (list 'quote (path-env-> :ld-path)))
                ':shell-file-name nil))
-   (path-env-spec-> :source-file))
-  (byte-compile-file (path-env-spec-> :source-file)))
+   (path-env-spec->% :source-file))
+  (byte-compile-file (path-env-spec->% :source-file)))
 
 
 (defmacro load-path-env! ()
   `(progn
-     (if (file-exists-p (path-env-spec-> :compiled-file))
-         (load (path-env-spec-> :compiled-file))
+     (if (file-exists-p (path-env-spec->% :compiled-file))
+         (load (path-env-spec->% :compiled-file))
        (path-env<- :path (refine-path-var :path-var)))
      (add-hook 'kill-emacs-hook #'save-path-env!)))
 
@@ -114,7 +119,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
 (platform-supported-when
     darwin
   (load-path-env!)
-  (setenv (path-env-spec-> :path-var)
+  (setenv (path-env-spec->% :path-var)
           (path->var (path-env-> :path) path-separator)))
 
 
@@ -122,8 +127,8 @@ get via (path-env-> k) and put via (path-env<- k v) ")
 (platform-supported-when
     gnu/linux
   (load-path-env!)
-  (setenv (path-env-spec-> :shell-var)
-          (path-env-spec-> :shell-path)))
+  (setenv (path-env-spec->% :shell-var)
+          (path-env-spec->% :shell-path)))
 
 
 ;; set shell on Windows
@@ -144,7 +149,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
       (set-window-buffer (selected-window) b)))
 
   
-  (when (file-exists-p (path-env-spec-> :shell-path))
+  (when (file-exists-p (path-env-spec->% :shell-path))
 
     ;; keep `shell-file-name' between `ansi-term' and `shell'
     (path-env<- :shell-file-name shell-file-name)
@@ -155,13 +160,13 @@ get via (path-env-> k) and put via (path-env<- k v) ")
                                  (windows-nt-posix-path ,p)))
 
     (defadvice shell (before shell-before compile)
-      (setenv (path-env-spec-> :shell-var) (path-env-spec-> :shell-path))
-      (setenv (path-env-spec-> :path-var)
+      (setenv (path-env-spec->% :shell-var) (path-env-spec->% :shell-path))
+      (setenv (path-env-spec->% :path-var)
               (windows-nt-unix-path (path->var (path-env-> :path) ":")))
-      (setq shell-file-name (getenv (path-env-spec-> :shell-var))))
+      (setq shell-file-name (getenv (path-env-spec->% :shell-var))))
 
     (defadvice shell (after shell-after compile)
-      (setenv (path-env-spec-> :shell-var) (path-env-> :shell-file-name))
-      (setenv (path-env-spec-> :path-var)
+      (setenv (path-env-spec->% :shell-var) (path-env-> :shell-file-name))
+      (setenv (path-env-spec->% :path-var)
               (path->var (path-env-> :path) path-separator))
       (setq shell-file-name (path-env-> :shell-file-name)))))
