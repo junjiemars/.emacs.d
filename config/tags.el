@@ -5,14 +5,14 @@
 
 
 
-(defmacro v-tags-> (&rest keys)
+(defmacro v-tags->% (&rest keys)
   "Versionized TAGS file, use `visit-tag-table' to visit"
   (let ((tags `(list
                 :emacs-home
                 ,(expand-file-name (v-home* ".tags/home/" "TAGS"))
                 :emacs-source
                 ,(expand-file-name (v-home* ".tags/source/" "TAGS")))))
-    `(self-spec-> ,tags ,@keys)))
+    `(self-spec->% ,tags ,@keys)))
 
 
 (defun make-tags (home tags-file file-filter dir-filter &optional renew)
