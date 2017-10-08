@@ -28,7 +28,7 @@
 
 ;; semantic db
 (package-supported-p
-  (setq-default semanticdb-default-system-save-directory
+  (setq-default semanticdb-default-save-directory
                 (v-home! ".semanticdb/")))
 
 

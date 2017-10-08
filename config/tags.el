@@ -27,8 +27,8 @@
         (when (not (file-exists-p tags-dir))
           (make-directory tags-dir t)))
       (dir-iterate home
-                   (when file-filter file-filter)
-                   (when dir-filter dir-filter)
+                   file-filter
+                   dir-filter
                    (lambda (f)
                      (eshell-command
                       (format "etags -o %s -l auto -a %s ; echo %s"
