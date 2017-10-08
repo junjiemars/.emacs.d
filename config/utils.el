@@ -1,3 +1,4 @@
+;;;; -*- lexical-binding:t -*-
 ;;;;
 ;; Utils
 ;;;;
@@ -12,6 +13,41 @@
         (setq acc (cons (car s1) acc))
         (setq n1 (1- n1) s1 (cdr s1)))
       (nreverse acc))))
+
+
+(defun drop-while (pred seq)
+  (let ((s seq)
+        (w nil))
+    (while (and (not w) (car s))
+      (if (funcall pred (car s))
+          (setq w t)
+        (setq s (cdr s))))
+    (cdr s)))
+
+
+(defun take-while (pred seq)
+  (let ((s seq)
+        (w nil)
+        (s1 nil))
+    (while (and (not w) (car s))
+      (if (funcall pred (car s))
+          (setq w t)
+        (setq s1 (cons (car s) s1))
+        (setq s (cdr s))))
+    (nreverse s1)))
+
+
+(defmacro string-trim< (s)
+  "Remove leading whitespace from STRING."
+  `(if (string-match "\\`[ \t\n\r]+" ,s)
+       (replace-match "" t t ,s)
+     ,s))
+
+
+(defmacro string-trim>< (s)
+  "Remove leading and trailing whitespace from STRING."
+  `(let ((s1 (string-trim> ,s)))
+     (string-trim< s1)))
 
 
 (safe-fn-when number-sequence (fset 'range 'number-sequence))

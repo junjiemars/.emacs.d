@@ -1,3 +1,4 @@
+;;;; -*- lexical-binding:t -*-
 ;;
 ;; TAGS defintion and make
 ;;
@@ -11,7 +12,9 @@
                 :emacs-home
                 ,(expand-file-name (v-home* ".tags/home/" "TAGS"))
                 :emacs-source
-                ,(expand-file-name (v-home* ".tags/source/" "TAGS")))))
+                ,(expand-file-name (v-home* ".tags/source/" "TAGS"))
+                :os-include
+                ,(expand-file-name (v-home* ".tags/os/" "TAGS")))))
     `(self-spec->% ,tags ,@keys)))
 
 
@@ -36,9 +39,9 @@
 
 (defun make-emacs-home-tags (tags-file &optional renew)
   "Make TAGS-FILE for Emacs' home directory."
-  (let ((lisp-ff (lambda (f a) (string-match "\\\.el$" f)))
+  (let ((lisp-ff (lambda (f _a) (string-match "\\\.el$" f)))
         (home-df
-         (lambda (d a)
+         (lambda (d _)
            (not
             (string-match
              "^\\\..*/$\\|^theme/$\\|^g_.*/$\\|^t_.*/$\\|^private/$" d)))))
@@ -47,10 +50,48 @@
 
 (defun make-emacs-source-tags (tags-file src-root &optional renew)
   "Make TAGS-FILE for Emacs' C and Lisp source code on SRC-ROOT."
-  (let ((lisp-ff (lambda (f a) (string-match "\\\.el$" f)))
-        (c-ff (lambda (f a) (string-match "\\\.[ch]$" f)))
-        (df (lambda (d a) t)))
+  (let ((lisp-ff (lambda (f _) (string-match "\\\.el$" f)))
+        (c-ff (lambda (f _) (string-match "\\\.[ch]$" f)))
+        (df (lambda (_d_ _a_) t)))
     (when (file-exists-p (concat src-root "src/"))
       (make-tags (concat src-root "src/") tags-file c-ff df renew))
     (when (file-exists-p (concat src-root "lisp/"))
       (make-tags (concat src-root "lisp/") tags-file lisp-ff df))))
+
+
+(defun make-c-tags (home tags-file &optional renew)
+  "Make TAGS-FILE for C source code at HOME."
+  (let ((c-ff (lambda (f _) (string-match "\\\.[ch]$" f)))
+        (df (lambda (d _) (not
+                           (string-match
+                            "^\\\.git/$\\|^out/$\\|^objs/$\\|^c\\\+\\\+/$"
+                            d)))))
+    (make-tags home tags-file c-ff df renew)))
+
+
+(defmacro os-include-paths ()
+  `(let* ((str (platform-supported-if windows-nt
+                   nil
+                 (eshell-command-result "echo '' | cc -v -E 2>&1 >/dev/null -")))
+          (seq (split-string str "\n" t "[ \t\r]"))
+          (inc (platform-supported-if windows-nt
+                   nil
+                 (take-while
+                  (lambda (p)
+                    (string-match "End of search list." p))
+                  (drop-while (lambda (p)
+                                (string-match "#include <...> search starts here:" p))
+                              seq)))))
+     (platform-supported-if darwin
+         (take-while (lambda (p)
+                       (string-match "/System/Library/Frameworks (framework directory)" p))
+                     inc)
+       inc)))
+
+
+(defun make-os-c-tags (&optional renew)
+  "Make tags for OS include."
+  (let ((inc (os-include-paths)))
+    (make-c-tags (car inc) (v-tags->% :os-include) renew)
+    (dolist (p (cdr  inc))
+      (make-c-tags p (v-tags->% :os-include)))))

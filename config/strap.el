@@ -135,7 +135,8 @@
     v-dir
   (emacs-home* "config/boot.el")
   (emacs-home* "config/shell.el")
-  (emacs-home* "config/basic.el"))
+  (emacs-home* "config/basic.el")
+  (emacs-home* "config/utils.el"))
 
 
 ;; Self do prologue ...
@@ -161,7 +162,6 @@
   (emacs-home* "config/editing.el")
   (emacs-home* "config/financial.el")
   (emacs-home* "config/tags.el")
-  (emacs-home* "config/utils.el")
   (emacs-home* "config/memory.el"))
 
 
