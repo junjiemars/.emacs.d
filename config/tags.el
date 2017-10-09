@@ -39,7 +39,7 @@
 
 (defun make-emacs-home-tags (tags-file &optional renew)
   "Make TAGS-FILE for Emacs' home directory."
-  (let ((lisp-ff (lambda (f _a) (string-match "\\\.el$" f)))
+  (let ((lisp-ff (lambda (f _) (string-match "\\\.el$" f)))
         (home-df
          (lambda (d _)
            (not
@@ -52,7 +52,7 @@
   "Make TAGS-FILE for Emacs' C and Lisp source code on SRC-ROOT."
   (let ((lisp-ff (lambda (f _) (string-match "\\\.el$" f)))
         (c-ff (lambda (f _) (string-match "\\\.[ch]$" f)))
-        (df (lambda (_d_ _a_) t)))
+        (df (lambda (_ __) t)))
     (when (file-exists-p (concat src-root "src/"))
       (make-tags (concat src-root "src/") tags-file c-ff df renew))
     (when (file-exists-p (concat src-root "lisp/"))
@@ -79,13 +79,15 @@
                  (take-while
                   (lambda (p)
                     (string-match "End of search list." p))
-                  (drop-while (lambda (p)
-                                (string-match "#include <...> search starts here:" p))
-                              seq)))))
+                  (drop-while
+                   (lambda (p)
+                     (string-match "#include <...> search starts here:" p))
+                   seq)))))
      (platform-supported-if darwin
-         (take-while (lambda (p)
-                       (string-match "/System/Library/Frameworks (framework directory)" p))
-                     inc)
+         (take-while
+          (lambda (p)
+            (string-match "/System/Library/Frameworks (framework directory)" p))
+          inc)
        inc)))
 
 
