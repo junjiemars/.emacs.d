@@ -106,9 +106,8 @@
   (declare (indent 1))
   (let ((x seq))
     (when keys
-      (dolist (k keys)
-        (setq x (list 'plist-get x k))))
-    x))
+      (dolist (k keys x)
+        (setq x (list 'plist-get x k))))))
 
 
 (defmacro self-spec->% (seq &rest keys)

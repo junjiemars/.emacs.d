@@ -74,10 +74,9 @@ get via (path-env-> k) and put via (path-env<- k v) ")
 
 (defmacro path->var (path sep)
   "Convert a list of PATH to $PATH var, separated by SEP."
-  `(let ((p nil))
-     (dolist (x ,path)
-       (setq p (concat p (when p ,sep) x)))
-     p))
+  `(let (p)
+     (dolist (x ,path p)
+       (setq p (concat p (when p ,sep) x)))))
 
 
 (defmacro refine-path-var (var)

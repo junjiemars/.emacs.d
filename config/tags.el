@@ -95,5 +95,5 @@
   "Make tags for OS include."
   (let ((inc (os-include-paths)))
     (make-c-tags (car inc) (v-tags->% :os-include) renew)
-    (dolist (p (cdr  inc))
+    (dolist (p (cdr inc))
       (make-c-tags p (v-tags->% :os-include)))))
