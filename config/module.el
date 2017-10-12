@@ -65,7 +65,7 @@
        (mapc (lambda (i)
                (unless ,dry
                  (version-supported-if
-                     <= 24.4
+                     <= 25.0
                      (package-install i t)
                    (package-install i))))
              not-installed-packages)
