@@ -30,45 +30,51 @@
 
 \(FN FONT\)"
       `(when (find-font (font-spec :name ,font))
-         t))
+         t)))
 
-
-  (defmacro self-default-font! (font)
-    "Set default font in graphic mode.
+(font-supported-p
+    
+    (defmacro self-default-font! (font)
+      "Set default font in graphic mode.
 
 \(FN FONT\)"
-    `(when (font-exists-p ,font)
-       (add-to-list 'default-frame-alist (cons 'font ,font))
-       (set-face-attribute 'default t :font ,font)
-       (set-face-attribute 'default nil :font ,font)
-       (version-supported-if <= 24.0
-                             (set-frame-font ,font nil t)
-         (set-frame-font ,font))))
+      `(when (font-exists-p ,font)
+         (add-to-list 'default-frame-alist (cons 'font ,font))
+         (set-face-attribute 'default t :font ,font)
+         (set-face-attribute 'default nil :font ,font)
+         (version-supported-if <= 24.0
+                               (set-frame-font ,font nil t)
+           (set-frame-font ,font)))))
 
-  
-  ;; Load default font
-  (self-safe-call*
-   "env-spec"
-   (when (self-spec->* :font :allowed)
-     (self-default-font! (self-spec->* :font :name))))
+(font-supported-p
+    
+    ;; Load default font
+    (self-safe-call*
+     "env-spec"
+     (when (self-spec->* :font :allowed)
+       (self-default-font! (self-spec->* :font :name)))))
 
-  (defmacro self-cjk-font! (name size)
-    "Set CJK font in Graphic mode.
+(font-supported-p
+
+    (defmacro self-cjk-font! (name size)
+      "Set CJK font in Graphic mode.
 
 \(FN NAME SIZE\)"
-    `(when (font-exists-p ,name)
-       (safe-fn-when set-fontset-font
-         (dolist (c '(han kana cjk-misc))
-           (set-fontset-font (frame-parameter nil 'font)
-                             c (font-spec :family ,name
-                                          :size ,size))))))
+      `(when (font-exists-p ,name)
+         (safe-fn-when set-fontset-font
+           (dolist (c '(han kana cjk-misc))
+             (set-fontset-font (frame-parameter nil 'font)
+                               c (font-spec :family ,name
+                                            :size ,size)))))))
 
-  ;; Load cjk font
-  (self-safe-call*
-   "env-spec"
-   (when (self-spec->* :cjk-font :allowed)
-     (self-cjk-font! (self-spec->* :cjk-font :name)
-                     (self-spec->* :cjk-font :size)))))
+(font-supported-p
+    
+    ;; Load cjk font
+    (self-safe-call*
+     "env-spec"
+     (when (self-spec->* :cjk-font :allowed)
+       (self-cjk-font! (self-spec->* :cjk-font :name)
+                       (self-spec->* :cjk-font :size)))))
 
 ;; End of font-supported-p
 
@@ -105,6 +111,7 @@ load default `theme/tomorrow-night-eighties'
 
 ;; Terminal style
 (terminal-supported-p
+  
   ;; line number format on Terminal
   (safe-setq linum-format "%2d ")
   ;;above version 23 transient-mark-mode is enabled by default
