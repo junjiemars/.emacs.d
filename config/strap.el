@@ -131,10 +131,10 @@
 ;; Load ui, shell, basic env:
 (compile-and-load-elisp-files!
     v-dir
+  (emacs-home* "config/utils.el")
   (emacs-home* "config/boot.el")
   (emacs-home* "config/shell.el")
-  (emacs-home* "config/basic.el")
-  (emacs-home* "config/utils.el"))
+  (emacs-home* "config/basic.el"))
 
 
 ;; Self do prologue ...

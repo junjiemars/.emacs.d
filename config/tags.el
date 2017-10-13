@@ -73,7 +73,7 @@
   `(let* ((str (platform-supported-if windows-nt
                    nil
                  (eshell-command-result "echo '' | cc -v -E 2>&1 >/dev/null -")))
-          (seq (split-string str "\n" t "[ \t\r]"))
+          (seq (split-string>< str "\n" t "[ \t\r]"))
           (inc (platform-supported-if windows-nt
                    nil
                  (take-while
