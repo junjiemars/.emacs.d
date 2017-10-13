@@ -131,7 +131,6 @@
 ;; Load ui, shell, basic env:
 (compile-and-load-elisp-files!
     v-dir
-  (emacs-home* "config/utils.el")
   (emacs-home* "config/boot.el")
   (emacs-home* "config/shell.el")
   (emacs-home* "config/basic.el"))
@@ -156,6 +155,7 @@
 ;; Load package independent modules
 (compile-and-load-elisp-files!
     v-dir
+  (emacs-home* "config/utils.el")
   (emacs-home* "config/debugger.el")
   (emacs-home* "config/editing.el")
   (emacs-home* "config/financial.el")
