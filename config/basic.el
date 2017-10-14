@@ -36,6 +36,7 @@
   (defun toggle-linum-mode ()
     "Toggle linum-mode."
     (interactive)
+    (defvar linum-mode)
     (if (or (not (boundp 'linum-mode))
             (null linum-mode))
         (linum-mode t)
