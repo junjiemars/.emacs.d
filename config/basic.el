@@ -15,11 +15,6 @@
      (turn-on-eldoc-mode)))
 
 
-(defmacro linum-mode-supported-p ()
-  "Check Emacs version supports linum mode. "
-  `(version-supported-when <= 23.1 t))
-
-
 ;; Default web browser: eww
 ;; open file or url at point
 (when (eq browse-url-browser-function
@@ -31,17 +26,24 @@
   (global-set-key (kbd "C-c b") 'find-file-at-point))
 
 
+(defmacro linum-mode-supported-p (expr)
+  "When Emacs version supports linum mode then do EXPR."
+  `(version-supported-when <= 23.1 ,expr))
+
+
 ;; Toggle linum mode 
-(when (linum-mode-supported-p)
-  (defun toggle-linum-mode ()
-    "Toggle linum-mode."
-    (interactive)
-    (defvar linum-mode)
-    (if (or (not (boundp 'linum-mode))
-            (null linum-mode))
-        (linum-mode t)
-      (linum-mode -1)))
-  (global-set-key (kbd "C-c l") 'toggle-linum-mode))
+(linum-mode-supported-p
+ (defun toggle-linum-mode ()
+   "Toggle linum-mode."
+   (interactive)
+   (defvar linum-mode)
+   (if (or (not (boundp 'linum-mode))
+           (null linum-mode))
+       (linum-mode t)
+     (linum-mode -1))))
+
+(linum-mode-supported-p
+ (global-set-key (kbd "C-c l") 'toggle-linum-mode))
 
 
 
