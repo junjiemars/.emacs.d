@@ -15,17 +15,24 @@
      (turn-on-eldoc-mode)))
 
 
-;; Default web browser: eww
+;; default web browser: eww
+(defmacro default-browser-eww ()
+  "If `browser-url-default-browser' has not been touched, 
+then set `eww' to default browser."
+  (when (eq browse-url-browser-function
+            'browse-url-default-browser)
+    `(safe-fn-when eww-browse-url
+       (setq-default url-configuration-directory (v-home! ".url/"))
+       (setq browse-url-browser-function 'eww-browse-url))))
+
+(default-browser-eww)
+
 ;; open file or url at point
-(when (eq browse-url-browser-function
-          'browse-url-default-browser)
-  (safe-fn-when eww-browse-url
-    (setq-default url-configuration-directory (v-home! ".url/"))
-    (setq browse-url-browser-function 'eww-browse-url)))
 (safe-fn-when find-file-at-point
   (global-set-key (kbd "C-c b") 'find-file-at-point))
 
 
+;; linum mode
 (defmacro linum-mode-supported-p (expr)
   "When Emacs version supports linum mode then do EXPR."
   `(version-supported-when <= 23.1 ,expr))
@@ -46,8 +53,7 @@
  (global-set-key (kbd "C-c l") 'toggle-linum-mode))
 
 
-
-
+;; emacs lisp mode
 (defun set-emacs-lisp-mode! ()
   "Elisp basic settings."
   (enable-eldoc-mode)
