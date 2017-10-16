@@ -4,15 +4,6 @@
 ;;;;
 
 
-(defmacro time (expr)
-  "Evaluates expr and prints the time it took. Returns the value of expr."
-  `(let ((start (current-time))
-         (return ,expr))
-     (print (format "Elapsed %f secs."
-                    (float-time
-                     (time-subtract (current-time) start))))
-     return))
-
 
 (defun take (n seq)
   "Returns a sequence of the first n itmes in seq, or all items if
@@ -75,23 +66,27 @@ from STRING.
        (save-buffer)
        (kill-buffer sexpr-buffer))))
 
+
 
-(version-supported-when
-    > 24.4
-  (defmacro split-string>< (string &optional separators omit-nulls trim)
-    "Split STRING into substrings bounded by matches for SEPARATORS, 
+
+;; compatiable functions
+
+
+(defmacro split-string-?trim-if (then &optional else)
+  `(version-supported-if
+       <= 24.4
+       ,then
+     ,else))
+
+(split-string-?trim-if
+ (defalias 'split-string>< 'split-string)
+ (defmacro split-string>< (string &optional separators omit-nulls trim)
+   "Split STRING into substrings bounded by matches for SEPARATORS, 
 like `split-string' Emacs 24.4+"
-    `(if ,trim
-         (mapcar (lambda (s) (string-trim>< s))
-                 (split-string ,string ,separators ,omit-nulls))
-       (split-string ,string ,separators ,omit-nulls))))
-
-(version-supported-when
-    <= 24.4
-  (defmacro split-string>< (&rest args)
-    "An alias of `split-string' Emacs 24.4+"
-    (declare (indent 0))
-    `(split-string ,@args)))
+   `(if ,trim
+        (mapcar (lambda (s) (string-trim>< s))
+                (split-string ,string ,separators ,omit-nulls))
+      (split-string ,string ,separators ,omit-nulls))))
 
 
 (safe-fn-when number-sequence (fset 'range 'number-sequence))
@@ -99,15 +94,4 @@ like `split-string' Emacs 24.4+"
 
 ;; use `pp' `pp-eval-expression' or `pp-eval-last-sexp'
 (safe-fn-when cl-prettyexpand (fset 'pprint 'cl-prettyprint))
-
-
-(defun int-to-binary-string (i)
-  "Display an integer in binary string representation."
-  (let ((s ""))
-    (while (not (= i 0))
-      (setq s (concat (if (= 1 (logand i 1)) "1" "0") s))
-      (setq i (lsh i -1)))
-    (concat "#b" (if (string= s "") (setq s "0") s))))
-
-
 
