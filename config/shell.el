@@ -58,39 +58,21 @@ get via (path-env-> k) and put via (path-env<- k v) ")
               (path-env-spec->% :echo-format)) ,var)))
 
 
-(defmacro refine-var (var regexp rep)
-  "Refine VAR, replace VAR with REP base on REGEXP."
-  `(replace-regexp-in-string ,regexp ,rep ,var))
-
-
-(defmacro refine-path (path)
-  "Refine PATH, exclude empty or non-exists."
-  `(when (consp ,path)
-     (delete nil
-             (mapcar (lambda (x)
-                       (when (and (not (null x))
-                                  (not (string= "" x))
-                                  (file-exists-p x))
-                         x)) ,path))))
-
-
-(defmacro path->var (path sep)
-  "Convert a list of PATH to $PATH var, separated by SEP."
+(defmacro paths->var (path sep)
+  "Convert a list of PATH to $PATH like VAR that separated by SEP."
   `(let (p)
      (dolist (x ,path p)
        (setq p (concat p (when p ,sep) x)))))
 
 
-(defmacro refine-path-var (var)
-  "Refine PATH which be specified by VAR."
-  `(refine-path
-    (split-string (refine-var (echo-var ,var) "[ ]*\n$" "")
-                  path-separator)))
+(defmacro var->paths (var)
+  "Refine VAR like $PATH to list by `path-separator'."
+  `(split-string>< (echo-var ,var) path-separator t "[ ]+\n"))
 
 
 (defun save-path-env! ()
-  (path-env<- :path (refine-path-var (path-env-spec->% :path-var)))
-  (path-env<- :ld-path (refine-path-var (path-env-spec->% :ld-path-var)))
+  (path-env<- :path (var->paths (path-env-spec->% :path-var)))
+  (path-env<- :ld-path (var->paths (path-env-spec->% :ld-path-var)))
   (path-env<- :shell-file-name nil)
   (save-sexpr-to-file
    (list 'setq '*default-path-env*
@@ -107,7 +89,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
   `(progn
      (if (file-exists-p (path-env-spec->% :compiled-file))
          (load (path-env-spec->% :compiled-file))
-       (path-env<- :path (refine-path-var (path-env-spec->% :path-var))))
+       (path-env<- :path (var->paths (path-env-spec->% :path-var))))
      (add-hook 'kill-emacs-hook #'save-path-env!)))
 
 
@@ -116,7 +98,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
     darwin
   (load-path-env!)
   (setenv (path-env-spec->% :path-var)
-          (path->var (path-env-> :path) path-separator)))
+          (paths->var (path-env-> :path) path-separator)))
 
 
 ;; set shell on Linux
@@ -158,11 +140,11 @@ get via (path-env-> k) and put via (path-env<- k v) ")
     (defadvice shell (before shell-before compile)
       (setenv (path-env-spec->% :shell-var) (path-env-spec->% :shell-path))
       (setenv (path-env-spec->% :path-var)
-              (windows-nt-unix-path (path->var (path-env-> :path) ":")))
+              (windows-nt-unix-path (paths->var (path-env-> :path) ":")))
       (setq shell-file-name (getenv (path-env-spec->% :shell-var))))
 
     (defadvice shell (after shell-after compile)
       (setenv (path-env-spec->% :shell-var) (path-env-> :shell-file-name))
       (setenv (path-env-spec->% :path-var)
-              (path->var (path-env-> :path) path-separator))
+              (paths->var (path-env-> :path) path-separator))
       (setq shell-file-name (path-env-> :shell-file-name)))))
