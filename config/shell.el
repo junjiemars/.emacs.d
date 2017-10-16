@@ -35,7 +35,11 @@ via KEYS at compile time."
 
 
 (defvar *default-path-env*
-  (list :path nil :ld-path nil :shell-file-name nil :exec-path nil)
+  (list :path nil
+        :ld-path nil
+        :shell-file-name nil
+        :exec-path nil
+        :env-vars nil)
   "Default path environments, 
 get via (path-env-> k) and put via (path-env<- k v) ")
 
@@ -76,6 +80,12 @@ get via (path-env-> k) and put via (path-env<- k v) ")
   (path-env<- :shell-file-name nil)
   (path-env<- :exec-path (dolist (p (path-env-> :path) exec-path)
                            (add-to-list 'exec-path p t #'string=)))
+  (path-env<- :env-vars (let ((vars (self-safe-call*
+                                     "env-spec"
+                                     (self-spec->* :env-vars)))
+                              (x nil))
+                          (dolist (v vars x)
+                            (push (cons v (echo-var v)) x))))
   (save-sexpr-to-file
    (list 'setq '*default-path-env*
          (list 'list
@@ -83,7 +93,8 @@ get via (path-env-> k) and put via (path-env<- k v) ")
                ':ld-path (platform-supported-unless windows-nt
                            (list 'quote (path-env-> :ld-path)))
                ':shell-file-name nil
-               ':exec-path (list 'quote (path-env-> :exec-path))))
+               ':exec-path (list 'quote (path-env-> :exec-path))
+               ':env-vars (list 'quote (path-env-> :env-vars))))
    (path-env-spec->% :source-file))
   (byte-compile-file (path-env-spec->% :source-file)))
 
@@ -96,6 +107,11 @@ get via (path-env-> k) and put via (path-env<- k v) ")
      (add-hook 'kill-emacs-hook #'save-path-env!)))
 
 
+(defmacro copy-env-vars! (env vars)
+  `(dolist (v ,vars)
+     (setenv v (cdr (assoc-string v ,env)))))
+
+
 ;; set shell on darwin
 (platform-supported-when
     darwin
@@ -103,7 +119,11 @@ get via (path-env-> k) and put via (path-env<- k v) ")
   (setenv (path-env-spec->% :path-var)
           (paths->var (path-env-> :path) path-separator))
   (when (consp (path-env-> :exec-path))
-    (setq exec-path (path-env-> :exec-path))))
+    (setq exec-path (path-env-> :exec-path)))
+  (copy-env-vars! (path-env-> :env-vars)
+                  (self-safe-call*
+                   "env-spec"
+                   (self-spec->* :env-vars))))
 
 
 ;; set shell on Linux
