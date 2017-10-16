@@ -74,6 +74,8 @@ get via (path-env-> k) and put via (path-env<- k v) ")
   (path-env<- :path (var->paths (path-env-spec->% :path-var)))
   (path-env<- :ld-path (var->paths (path-env-spec->% :ld-path-var)))
   (path-env<- :shell-file-name nil)
+  (path-env<- :exec-path (dolist (p (path-env-> :path) exec-path)
+                           (add-to-list 'exec-path p t #'string=)))
   (save-sexpr-to-file
    (list 'setq '*default-path-env*
          (list 'list
@@ -81,8 +83,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
                ':ld-path (platform-supported-unless windows-nt
                            (list 'quote (path-env-> :ld-path)))
                ':shell-file-name nil
-               ':exec-path (dolist (p (path-env-> :path) `(quote ,exec-path))
-                             (add-to-list 'exec-path p t #'string=))))
+               ':exec-path (list 'quote (path-env-> :exec-path))))
    (path-env-spec->% :source-file))
   (byte-compile-file (path-env-spec->% :source-file)))
 
