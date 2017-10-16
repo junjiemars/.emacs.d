@@ -18,31 +18,7 @@
 (setq-default recentf-save-file (v-home! ".recentf/" "recentf"))
 (setq-default savehist-file (v-home! ".minibuffer/" "history"))
 
-
-
-(defmacro time (expr)
-  "Evaluates expr and prints the time it took. Returns the value of expr."
-  `(let ((start (current-time))
-         (return ,expr))
-     (print (format "Elapsed %f secs."
-                    (float-time
-                     (time-subtract (current-time) start))))
-     return))
-
-
 
-
-
-(defmacro save-sexpr-to-file (sexpr file)
-  "Save SEXPR to the FILE."
-  `(save-excursion
-     (let ((sexpr-buffer (find-file-noselect ,file)))
-       (set-buffer sexpr-buffer)
-       (erase-buffer)
-       (print ,sexpr sexpr-buffer)
-       (save-buffer)
-       (kill-buffer sexpr-buffer))))
-
 
 (defmacro theme-supported-p (&rest body)
   (declare (indent 1))
@@ -99,7 +75,8 @@
 ;; Load self where
 (compile-and-load-elisp-files!
     v-dir
-  self-def-where)
+  self-def-where
+  (emacs-home* "config/utils.el"))
 
 
 (defmacro self-spec-> (seq &rest keys)
@@ -155,7 +132,6 @@
 ;; Load package independent modules
 (compile-and-load-elisp-files!
     v-dir
-  (emacs-home* "config/utils.el")
   (emacs-home* "config/debugger.el")
   (emacs-home* "config/editing.el")
   (emacs-home* "config/financial.el")

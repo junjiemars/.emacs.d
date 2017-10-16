@@ -4,6 +4,16 @@
 ;;;;
 
 
+(defmacro time (expr)
+  "Evaluates expr and prints the time it took. Returns the value of expr."
+  `(let ((start (current-time))
+         (return ,expr))
+     (print (format "Elapsed %f secs."
+                    (float-time
+                     (time-subtract (current-time) start))))
+     return))
+
+
 (defun take (n seq)
   "Returns a sequence of the first n itmes in seq, or all items if
    there are fewer than n."
@@ -53,6 +63,17 @@ from STRING.
 \(fn STRING &optional LEFT-REGEXP RIGHT-REGEXP)"
   `(let ((s1 (string-trim> ,s ,rr)))
      (string-trim< s1 ,lr)))
+
+
+(defmacro save-sexpr-to-file (sexpr file)
+  "Save SEXPR to the FILE."
+  `(save-excursion
+     (let ((sexpr-buffer (find-file-noselect ,file)))
+       (set-buffer sexpr-buffer)
+       (erase-buffer)
+       (print ,sexpr sexpr-buffer)
+       (save-buffer)
+       (kill-buffer sexpr-buffer))))
 
 
 (version-supported-when
