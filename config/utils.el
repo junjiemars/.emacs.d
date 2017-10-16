@@ -36,17 +36,23 @@
     (nreverse s1)))
 
 
-(defmacro string-trim< (s)
-  "Remove leading whitespace from STRING."
-  `(if (string-match "\\`[ \t\n\r]+" ,s)
-       (replace-match "" t t ,s)
-     ,s))
+(defmacro string-trim< (s &optional lr)
+  "Remove leading whitespace or the matching of LR from S.
+
+\(fn STRING &optional LEFT-REGEXP)"
+  `(let ((r (if ,lr (concat "\\`" ,lr) "\\`[ \t\n\r]+")))
+     (if (string-match r ,s)
+         (replace-match "" t t ,s)
+       ,s)))
 
 
-(defmacro string-trim>< (s)
-  "Remove leading and trailing whitespace from STRING."
-  `(let ((s1 (string-trim> ,s)))
-     (string-trim< s1)))
+(defmacro string-trim>< (s &optional rr lr)
+  "Remove leading and trailing whitespace or the matching of LR/RR 
+from STRING.
+
+\(fn STRING &optional LEFT-REGEXP RIGHT-REGEXP)"
+  `(let ((s1 (string-trim> ,s ,rr)))
+     (string-trim< s1 ,lr)))
 
 
 (version-supported-when

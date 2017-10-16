@@ -243,13 +243,15 @@ If in terminal mode, and there are no ELSE’s, the value is nil.
 
 
 
-(defmacro string-trim> (s)
-  "Remove whitespaces at the end of S.
+(defmacro string-trim> (s &optional rr)
+  "Remove whitespaces or the matching of RR at the end of S.
 
-\(fn STR)"
-  `(if (string-match "[ \t\n\r]+\\'" ,s)
-       (replace-match "" t t ,s)
-     ,s))
+\(fn STRING &optional RIGHT-REGEXP)"
+  `(let ((r (if ,rr (concat ,rr "\\'")
+              "[ \t\n\r]+\\'" )))
+     (if (string-match r ,s)
+         (replace-match "" t t ,s)
+       ,s)))
 
 
 (defmacro bin-path (b)
