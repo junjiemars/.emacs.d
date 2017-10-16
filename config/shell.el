@@ -101,7 +101,8 @@ get via (path-env-> k) and put via (path-env<- k v) ")
   (load-path-env!)
   (setenv (path-env-spec->% :path-var)
           (paths->var (path-env-> :path) path-separator))
-  (setq exec-path (path-env-> :exec-path)))
+  (when (consp (path-env-> :exec-path))
+    (setq exec-path (path-env-> :exec-path))))
 
 
 ;; set shell on Linux
