@@ -40,9 +40,11 @@ via KEYS at compile time."
 get via (path-env-> k) and put via (path-env<- k v) ")
 
 
-(defmacro path-env-> (k)
+(defmacro path-env-> (&optional k)
   "Extract the value from `*default-path-env*' via K."
-  `(plist-get *default-path-env* ,k))
+  `(if ,k
+       (plist-get *default-path-env* ,k)
+     *default-path-env*))
 
 (defmacro path-env<- (k v)
   "Change the value of `*default-path-env* via K."
