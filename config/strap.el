@@ -75,8 +75,7 @@
 ;; Load self where
 (compile-and-load-elisp-files!
     v-dir
-  self-def-where
-  (emacs-home* "config/utils.el"))
+  self-def-where)
 
 
 (defmacro self-spec-> (seq &rest keys)
@@ -94,6 +93,11 @@
 (defmacro self-spec->* (&rest keys)
   (declare (indent 0))
   `(self-spec-> *val* ,@keys))
+
+
+(compile-and-load-elisp-files!
+ v-dir
+ (emacs-home* "config/utils.el"))
 
 
 (compile-and-load-elisp-files!

@@ -71,22 +71,16 @@ from STRING.
 
 ;; compatiable functions
 
-
-(defmacro split-string-?trim-if (then &optional else)
-  `(version-supported-if
-       <= 24.4
-       ,then
-     ,else))
-
-(split-string-?trim-if
- (defalias 'split-string>< 'split-string)
- (defmacro split-string>< (string &optional separators omit-nulls trim)
-   "Split STRING into substrings bounded by matches for SEPARATORS, 
+(version-supported-if
+    <= 24.4
+    (defalias 'split-string>< 'split-string)
+  (defmacro split-string>< (string &optional separators omit-nulls trim)
+    "Split STRING into substrings bounded by matches for SEPARATORS, 
 like `split-string' Emacs 24.4+"
-   `(if ,trim
-        (mapcar (lambda (s) (string-trim>< s))
-                (split-string ,string ,separators ,omit-nulls))
-      (split-string ,string ,separators ,omit-nulls))))
+    `(if ,trim
+         (mapcar (lambda (s) (string-trim>< s))
+                 (split-string ,string ,separators ,omit-nulls))
+       (split-string ,string ,separators ,omit-nulls))))
 
 
 (safe-fn-when number-sequence (fset 'range 'number-sequence))
