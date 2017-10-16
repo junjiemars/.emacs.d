@@ -47,7 +47,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
      *default-path-env*))
 
 (defmacro path-env<- (k v)
-  "Change the value of `*default-path-env* via K."
+  "Change the value of `*default-path-env* via K and V."
   `(plist-put *default-path-env* ,k ,v))
 
 

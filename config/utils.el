@@ -10,8 +10,8 @@
    there are fewer than n."
   (let ((acc nil) (n1 n) (s1 seq))
     (while (and (> n1 0) s1)
-      (setq acc (cons (car s1) acc))
-      (setq n1 (1- n1) s1 (cdr s1)))
+      (setq acc (cons (car s1) acc)
+            n1 (1- n1) s1 (cdr s1)))
     (nreverse acc)))
 
 
@@ -32,8 +32,8 @@
     (while (and (not w) (car s))
       (if (funcall pred (car s))
           (setq w t)
-        (setq s1 (cons (car s) s1))
-        (setq s (cdr s))))
+        (setq s1 (cons (car s) s1)
+              s (cdr s))))
     (nreverse s1)))
 
 
