@@ -35,7 +35,7 @@ via KEYS at compile time."
 
 
 (defvar *default-path-env*
-  (list :path nil :ld-path nil :shell-file-name nil)
+  (list :path nil :ld-path nil :shell-file-name nil :exec-path nil)
   "Default path environments, 
 get via (path-env-> k) and put via (path-env<- k v) ")
 
@@ -80,7 +80,9 @@ get via (path-env-> k) and put via (path-env<- k v) ")
                ':path (list 'quote (path-env-> :path))
                ':ld-path (platform-supported-unless windows-nt
                            (list 'quote (path-env-> :ld-path)))
-               ':shell-file-name nil))
+               ':shell-file-name nil
+               ':exec-path (dolist (p (path-env-> :path) `(quote ,exec-path))
+                             (add-to-list 'exec-path p t #'string=))))
    (path-env-spec->% :source-file))
   (byte-compile-file (path-env-spec->% :source-file)))
 
@@ -98,7 +100,8 @@ get via (path-env-> k) and put via (path-env<- k v) ")
     darwin
   (load-path-env!)
   (setenv (path-env-spec->% :path-var)
-          (paths->var (path-env-> :path) path-separator)))
+          (paths->var (path-env-> :path) path-separator))
+  (setq exec-path (path-env-> :exec-path)))
 
 
 ;; set shell on Linux
