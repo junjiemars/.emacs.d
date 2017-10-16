@@ -78,8 +78,12 @@ from STRING.
     "Split STRING into substrings bounded by matches for SEPARATORS, 
 like `split-string' Emacs 24.4+"
     `(if ,trim
-         (mapcar (lambda (s) (string-trim>< s))
-                 (split-string ,string ,separators ,omit-nulls))
+         (delete ""
+                 (mapcar (lambda (s)
+                           (if (and (stringp ,trim) (> (length ,trim) 0))
+                               (string-trim>< s ,trim ,trim)
+                             (string-trim>< s)))
+                         (split-string ,string ,separators ,omit-nulls)))
        (split-string ,string ,separators ,omit-nulls))))
 
 
