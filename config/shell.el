@@ -73,7 +73,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
 
 (defmacro var->paths (var)
   "Refine VAR like $PATH to list by `path-separator'."
-  `(split-string>< (echo-var ,var) path-separator t "[ ]+\n"))
+  `(split-string>< ,var path-separator t "[ ]+\n"))
 
 
 (defmacro self-spec->*shell (&rest keys)
@@ -83,9 +83,9 @@ get via (path-env-> k) and put via (path-env<- k v) ")
 
 
 (defun save-path-env! ()
-  (path-env<- :path (var->paths (path-env-spec->% :path-var)))
+  (path-env<- :path (echo-var (path-env-spec->% :path-var)))
   (path-env<- :shell-file-name nil)
-  (path-env<- :exec-path (dolist (p (path-env-> :path) exec-path)
+  (path-env<- :exec-path (dolist (p (var->paths (path-env-> :path)) exec-path)
                            (add-to-list 'exec-path p t #'string=)))
   (path-env<- :env-vars (let ((vars (self-spec->*shell :env-vars))
                               (x nil))
@@ -94,7 +94,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
   (save-sexpr-to-file
    (list 'setq '*default-path-env*
          (list 'list
-               ':path (list 'quote (path-env-> :path))
+               ':path (path-env-> :path)
                ':shell-file-name nil
                ':exec-path (list 'quote (path-env-> :exec-path))
                ':env-vars (list 'quote (path-env-> :env-vars))))
@@ -117,8 +117,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
 
 (defmacro copy-exec-path-var! ()
   `(progn
-     (setenv (path-env-spec->% :path-var)
-             (paths->var (path-env-> :path) path-separator))
+     (setenv (path-env-spec->% :path-var) (path-env-> :path))
      (when (path-env-> :exec-path)
        (setq exec-path (path-env-> :exec-path)))))
 
@@ -173,17 +172,19 @@ get via (path-env-> k) and put via (path-env<- k v) ")
     
     (defmacro windows-nt-unix-path (p)
       "Return the unix path that shell can regcoganized on windows-nt."
-      `(replace-regexp-in-string "\\([a-zA-Z]\\):/" "/\\1/"
-                                 (windows-nt-posix-path ,p)))
+      `(replace-regexp-in-string
+        ";" ":"
+        (replace-regexp-in-string "\\([a-zA-Z]\\):/" "/\\1/"
+                                  (windows-nt-posix-path ,p))))
 
     (defadvice shell (before shell-before compile)
       (setenv (path-env-spec->% :shell-var) (path-env-spec->% :shell-path))
       (setenv (path-env-spec->% :path-var)
-              (windows-nt-unix-path (paths->var (path-env-> :path) ":")))
+              (windows-nt-unix-path (path-env-> :path)))
       (setq shell-file-name (getenv (path-env-spec->% :shell-var))))
 
     (defadvice shell (after shell-after compile)
       (setenv (path-env-spec->% :shell-var) (path-env-> :shell-file-name))
       (setenv (path-env-spec->% :path-var)
-              (paths->var (path-env-> :path) path-separator))
+              (path-env-> :path) path-separator)
       (setq shell-file-name (path-env-> :shell-file-name)))))
