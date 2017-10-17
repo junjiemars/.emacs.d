@@ -19,7 +19,12 @@
   :cjk-font (list :name "Microsoft Yahei"
                   :size 13
                   :allowed nil)
-  :env-vars (list :env-vars '("JAVA_HOME" "PYTHONPATH")
+  :env-vars (list :env-vars `("JAVA_HOME"
+                              "PYTHONPATH"
+                              ,(platform-supported-unless windows-nt
+                                 (platform-supported-if darwin
+                                     "DYLD_LIBRARY_PATH"
+                                   "LD_LIBRARY_PATH")))
                   :interactive-shell nil
                   :exec-path t
                   :allowed nil)

@@ -127,15 +127,15 @@ get via (path-env-> k) and put via (path-env<- k v) ")
 ;; set shell on darwin
 (platform-supported-when
     darwin
-  (load-path-env!)
-  (setenv (path-env-spec->% :path-var)
-          (paths->var (path-env-> :path) path-separator))
-  (when (consp (path-env-> :exec-path))
-    (setq exec-path (path-env-> :exec-path)))
-  (copy-env-vars! (path-env-> :env-vars)
-                  (self-safe-call*
-                   "env-spec"
-                   (self-spec->* :env-vars))))
+
+  (when (self-spec->*shell :allowed)
+    (load-path-env!)
+    (setenv (path-env-spec->% :path-var)
+            (paths->var (path-env-> :path) path-separator))
+    (when (self-spec->*shell :exec-path)
+      (copy-exec-path-var!))
+    (copy-env-vars! (path-env-> :env-vars)
+                    (self-spec->*shell :env-vars))))
 
 
 ;; set shell on Linux
