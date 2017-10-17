@@ -4,14 +4,6 @@
 ;;;;
 
 
-
-
-(defmacro self-spec->*shell (&rest keys)
-  `(self-safe-call*
-    "env-spec"
-    (self-spec->* :shell ,@keys)))
-
-
 (defmacro path-env-spec->% (&rest keys)
   "Extract a value from the list of virtualized `path-env-spec' 
 via KEYS at compile time."
@@ -81,6 +73,12 @@ get via (path-env-> k) and put via (path-env<- k v) ")
 (defmacro var->paths (var)
   "Refine VAR like $PATH to list by `path-separator'."
   `(split-string>< (echo-var ,var) path-separator t "[ ]+\n"))
+
+
+(defmacro self-spec->*shell (&rest keys)
+  `(self-safe-call*
+    "env-spec"
+    (self-spec->* :shell ,@keys)))
 
 
 (defun save-path-env! ()
