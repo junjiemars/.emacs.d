@@ -6,6 +6,12 @@
 
 
 
+(defmacro self-spec->*shell (&rest keys)
+  `(self-safe-call*
+    "env-spec"
+    (self-spec->* :shell ,@keys)))
+
+
 (defmacro path-env-spec->% (&rest keys)
   "Extract a value from the list of virtualized `path-env-spec' 
 via KEYS at compile time."
@@ -30,7 +36,10 @@ via KEYS at compile time."
                 :echo-format
                 ,(platform-supported-if windows-nt
                      "echo %%%s%% 2>/nul"
-                   "$SHELL -l -c 'echo -n $%s' 2>/dev/null"))))
+                   `'((:interactive-shell
+                       . "$SHELL -l -i -c 'echo -n $%s' 2>/dev/null")
+                      (:login-shell
+                       . "$SHELL -l -c 'echo -n $%s' 2>/dev/null"))))))
     `(self-spec->% ,spec ,@keys)))
 
 
@@ -59,7 +68,14 @@ get via (path-env-> k) and put via (path-env<- k v) ")
   "Echo a $VAR."
   `(shell-command-to-string
     (format (if ,echo-format ,echo-format
-              (path-env-spec->% :echo-format)) ,var)))
+              (platform-supported-if windows-nt
+                  (path-env-spec->% :echo-format)
+                (if (self-spec->*shell :interactive-shell)
+                    (alist-get :interactive-shell
+                               (path-env-spec->% :echo-format))
+                  (alist-get :login-shell
+                             (path-env-spec->% :echo-format)))))
+            ,var)))
 
 
 (defmacro paths->var (path sep)
@@ -80,9 +96,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
   (path-env<- :shell-file-name nil)
   (path-env<- :exec-path (dolist (p (path-env-> :path) exec-path)
                            (add-to-list 'exec-path p t #'string=)))
-  (path-env<- :env-vars (let ((vars (self-safe-call*
-                                     "env-spec"
-                                     (self-spec->* :env-vars)))
+  (path-env<- :env-vars (let ((vars (self-spec->*shell :env-vars))
                               (x nil))
                           (dolist (v vars x)
                             (push (cons v (echo-var v)) x))))
@@ -112,6 +126,13 @@ get via (path-env-> k) and put via (path-env<- k v) ")
      (setenv v (cdr (assoc-string v ,env)))))
 
 
+(defmacro copy-exec-path-var! ()
+  `(progn
+     (setenv (path-env-spec->% :path-var)
+             (paths->var (path-env-> :path) path-separator))
+     (setq exec-path (path-env-> :exec-path))))
+
+
 ;; set shell on darwin
 (platform-supported-when
     darwin
@@ -129,9 +150,14 @@ get via (path-env-> k) and put via (path-env<- k v) ")
 ;; set shell on Linux
 (platform-supported-when
     gnu/linux
-  (load-path-env!)
-  (setenv (path-env-spec->% :shell-var)
-          (path-env-spec->% :shell-path)))
+  (when (self-spec->*shell :allowed)
+    (load-path-env!)
+    (setenv (path-env-spec->% :shell-var)
+            (path-env-spec->% :shell-path))
+    (when (self-spec->*shell :exec-path)
+      (copy-exec-path-var!))
+    (copy-env-vars! (path-env-> :env-vars)
+                    (self-spec->*shell :env-vars))))
 
 
 ;; set shell on Windows

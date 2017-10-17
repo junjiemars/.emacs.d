@@ -19,11 +19,15 @@
   :cjk-font (list :name "Microsoft Yahei"
                   :size 13
                   :allowed nil)
-  :env-vars (comment '("JAVA_HOME" "PYTHONPATH"))
+  :env-vars (list :env-vars '("JAVA_HOME" "PYTHONPATH")
+                  :interactive-shell nil
+                  :exec-path t
+                  :allowed nil)
   :desktop (list :files-not-to-save
                  ".*\.t?gz\\|\.desktop\\|~$\\|^su:.*\\|^sudo:.*\\|^ssh:.*"
                  :buffers-not-to-save "^TAGS\\|\\.log"
-                 :modes-not-to-save '(dired-mode fundamental-mode rmail-mode)
+                 :modes-not-to-save
+                 '(dired-mode fundamental-mode rmail-mode)
                  :allowed t)
   :socks (list :port 32000
                :server "127.0.0.1"
