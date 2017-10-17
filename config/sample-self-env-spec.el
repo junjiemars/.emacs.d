@@ -6,7 +6,8 @@
 
 
 ;; Basic Emacs' GUI environment configurations:
-;; you can customize your `:theme', `:font', `:desktop' or `:socks',
+;; you can customize your `:theme', `:font', `:cjk-font',
+;; `:shell', `:desktop' or `:socks',
 ;; all those can be Gited in yourself Git repository.
 
 
@@ -27,6 +28,7 @@
                                 "LD_LIBRARY_PATH")))
                :interactive-shell nil
                :exec-path t
+               :bin-path (comment `,(bin-path "bash"))
                :allowed nil)
   :desktop (list :files-not-to-save
                  ".*\.t?gz\\|\.desktop\\|~$\\|^su:.*\\|^sudo:.*\\|^ssh:.*"

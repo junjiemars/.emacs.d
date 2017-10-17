@@ -14,18 +14,17 @@ via KEYS at compile time."
                 :compiled-file
                 ,(concat (v-home* "config/") ".path-env.elc")
                 
-                :shell-name "bash"
                 :shell-path ,(bin-path "bash")
-                :shell-var "SHELL"
-                :path-var "PATH"
+                :shell-var "shell"
+                :path-var "path"
                 
                 :echo-format
                 ,(platform-supported-if windows-nt
                      "echo %%%s%% 2>/nul"
                    `'((:interactive-shell
-                       . "$SHELL -l -i -c 'echo -n $%s' 2>/dev/null")
+                       . "$shell -l -i -c 'echo -n $%s' 2>/dev/null")
                       (:login-shell
-                       . "$SHELL -l -c 'echo -n $%s' 2>/dev/null"))))))
+                       . "$shell -l -c 'echo -n $%s' 2>/dev/null"))))))
     `(self-spec->% ,spec ,@keys)))
 
 
@@ -34,23 +33,23 @@ via KEYS at compile time."
         :shell-file-name nil
         :exec-path nil
         :env-vars nil)
-  "Default path environments, 
+  "default path environments, 
 get via (path-env-> k) and put via (path-env<- k v) ")
 
 
 (defmacro path-env-> (&optional k)
-  "Extract the value from `*default-path-env*' via K."
+  "extract the value from `*default-path-env*' via k."
   `(if ,k
        (plist-get *default-path-env* ,k)
      *default-path-env*))
 
 (defmacro path-env<- (k v)
-  "Change the value of `*default-path-env* via K and V."
+  "change the value of `*default-path-env* via k and v."
   `(plist-put *default-path-env* ,k ,v))
 
 
 (defmacro echo-var (var &optional echo-format)
-  "Echo a $VAR."
+  "echo a $var."
   `(shell-command-to-string
     (format (if ,echo-format ,echo-format
               (platform-supported-if windows-nt
@@ -64,14 +63,14 @@ get via (path-env-> k) and put via (path-env<- k v) ")
 
 
 (defmacro paths->var (path sep)
-  "Convert a list of PATH to $PATH like VAR that separated by SEP."
+  "convert a list of path to $path like var that separated by sep."
   `(let (p)
      (dolist (x ,path p)
        (setq p (concat p (when p ,sep) x)))))
 
 
 (defmacro var->paths (var)
-  "Refine VAR like $PATH to list by `path-separator'."
+  "refine var like $path to list by `path-separator'."
   `(split-string>< ,var path-separator t "[ ]+\n"))
 
 
@@ -121,11 +120,20 @@ get via (path-env-> k) and put via (path-env<- k v) ")
        (setq exec-path (path-env-> :exec-path)))))
 
 
+(platform-supported-unless windows-nt
+  (defmacro set-shell-var! (path)
+    `(setenv (path-env-spec->% :shell-var) ,path)))
+
+
+
+
 ;; set shell on darwin
 (platform-supported-when darwin
 
   (when (self-spec->*shell :allowed)
     (load-path-env!)
+    (when (self-spec->*shell :bin-path)
+      (set-shell-var! (self-spec->*shell :bin-path)))
     (when (self-spec->*shell :exec-path)
       (copy-exec-path-var!))
     (copy-env-vars! (path-env-> :env-vars)
@@ -139,8 +147,8 @@ get via (path-env-> k) and put via (path-env<- k v) ")
   
   (when (self-spec->*shell :allowed)
     (load-path-env!)
-    (setenv (path-env-spec->% :shell-var)
-            (path-env-spec->% :shell-path))
+    (when (self-spec->*shell :bin-path)
+      (set-shell-var! (self-spec->*shell :bin-path)))
     (when (self-spec->*shell :exec-path)
       (copy-exec-path-var!))
     (copy-env-vars! (path-env-> :env-vars)
