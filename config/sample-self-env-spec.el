@@ -15,7 +15,7 @@
                :path (emacs-home* "theme/")
                :allowed t)
   :font (list :name "Monaco-13"
-              :allowed t)
+              :allowed nil)
   :cjk-font (list :name "Microsoft Yahei"
                   :size 13
                   :allowed nil)
