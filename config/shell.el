@@ -31,7 +31,6 @@ via KEYS at compile time."
 
 (defvar *default-path-env*
   (list :path nil
-        :paths nil
         :shell-file-name nil
         :exec-path nil
         :env-vars nil)
