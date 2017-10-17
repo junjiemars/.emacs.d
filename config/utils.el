@@ -101,3 +101,22 @@ function definition in Emacs25-."
 ;; use `pp' `pp-eval-expression' or `pp-eval-last-sexp'
 (safe-fn-when cl-prettyexpand (fset 'pprint 'cl-prettyprint))
 
+
+
+
+
+;; platform related functions
+
+(platform-supported-when windows-nt
+  (defmacro windows-nt-posix-path (p)
+    "Return the posix path that windows-nt can recoganized."
+    `(replace-regexp-in-string "\\\\" "/" ,p)))
+
+
+(platform-supported-when windows-nt
+  (defmacro windows-nt-unix-path (p)
+    "Return the unix path that shell can regcoganized on windows-nt."
+    `(replace-regexp-in-string
+      ";" ":"
+      (replace-regexp-in-string "\\([a-zA-Z]\\):/" "/\\1/"
+                                (windows-nt-posix-path ,p)))))

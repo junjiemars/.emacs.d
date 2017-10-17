@@ -75,7 +75,7 @@
                  (eshell-command-result "echo '' | cc -v -E 2>&1 >/dev/null -")))
           (seq (split-string>< str "\n" t "[ \t\r]"))
           (inc (platform-supported-if windows-nt
-                   nil
+                   seq
                  (take-while
                   (lambda (p)
                     (string-match "End of search list." p))

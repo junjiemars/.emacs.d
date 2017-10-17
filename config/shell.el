@@ -122,8 +122,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
 
 
 ;; set shell on darwin
-(platform-supported-when
-    darwin
+(platform-supported-when darwin
 
   (when (self-spec->*shell :allowed)
     (load-path-env!)
@@ -132,10 +131,12 @@ get via (path-env-> k) and put via (path-env<- k v) ")
     (copy-env-vars! (path-env-> :env-vars)
                     (self-spec->*shell :env-vars))))
 
+
+
 
 ;; set shell on Linux
-(platform-supported-when
-    gnu/linux
+(platform-supported-when gnu/linux
+  
   (when (self-spec->*shell :allowed)
     (load-path-env!)
     (setenv (path-env-spec->% :shell-var)
@@ -146,36 +147,27 @@ get via (path-env-> k) and put via (path-env<- k v) ")
                     (self-spec->*shell :env-vars))))
 
 
-;; set shell on Windows
-(platform-supported-when
-    windows-nt
+
 
-  (load-path-env!)
-
-  (defmacro windows-nt-posix-path (p)
-    "Return the posix path that windows-nt can recoganized."
-    `(replace-regexp-in-string "\\\\" "/" ,p))
-
+;; set ansi-term on Windows
+(platform-supported-when windows-nt
   
   (defadvice ansi-term (before ansi-term-before compile)
     (let* ((n "*ansi-term*")
            (b (get-buffer-create n)))
       (apply 'make-comint-in-buffer n b "cmd" nil nil)
-      (set-window-buffer (selected-window) b)))
+      (set-window-buffer (selected-window) b))))
 
+
+;; set shell on Windows  
+(platform-supported-when windows-nt
   
   (when (file-exists-p (path-env-spec->% :shell-path))
-
+    (load-path-env!)
+    
     ;; keep `shell-file-name' between `ansi-term' and `shell'
     (path-env<- :shell-file-name shell-file-name)
     
-    (defmacro windows-nt-unix-path (p)
-      "Return the unix path that shell can regcoganized on windows-nt."
-      `(replace-regexp-in-string
-        ";" ":"
-        (replace-regexp-in-string "\\([a-zA-Z]\\):/" "/\\1/"
-                                  (windows-nt-posix-path ,p))))
-
     (defadvice shell (before shell-before compile)
       (setenv (path-env-spec->% :shell-var) (path-env-spec->% :shell-path))
       (setenv (path-env-spec->% :path-var)
