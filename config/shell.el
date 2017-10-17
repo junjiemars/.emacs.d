@@ -27,12 +27,6 @@ via KEYS at compile time."
                 :shell-var "SHELL"
                 :path-var "PATH"
                 
-                :ld-path-var ,(platform-supported-unless windows-nt
-                                (platform-supported-if darwin
-                                    "DYLD_LIBRARY_PATH"
-                                  (platform-supported-when gnu/linux
-                                    "LD_LIBRARY_PATH")))
-                
                 :echo-format
                 ,(platform-supported-if windows-nt
                      "echo %%%s%% 2>/nul"
@@ -45,7 +39,6 @@ via KEYS at compile time."
 
 (defvar *default-path-env*
   (list :path nil
-        :ld-path nil
         :shell-file-name nil
         :exec-path nil
         :env-vars nil)
@@ -92,7 +85,6 @@ get via (path-env-> k) and put via (path-env<- k v) ")
 
 (defun save-path-env! ()
   (path-env<- :path (var->paths (path-env-spec->% :path-var)))
-  (path-env<- :ld-path (var->paths (path-env-spec->% :ld-path-var)))
   (path-env<- :shell-file-name nil)
   (path-env<- :exec-path (dolist (p (path-env-> :path) exec-path)
                            (add-to-list 'exec-path p t #'string=)))
@@ -104,8 +96,6 @@ get via (path-env-> k) and put via (path-env<- k v) ")
    (list 'setq '*default-path-env*
          (list 'list
                ':path (list 'quote (path-env-> :path))
-               ':ld-path (platform-supported-unless windows-nt
-                           (list 'quote (path-env-> :ld-path)))
                ':shell-file-name nil
                ':exec-path (list 'quote (path-env-> :exec-path))
                ':env-vars (list 'quote (path-env-> :env-vars))))
