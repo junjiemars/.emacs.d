@@ -71,10 +71,10 @@ get via (path-env-> k) and put via (path-env<- k v) ")
               (platform-supported-if windows-nt
                   (path-env-spec->% :echo-format)
                 (if (self-spec->*shell :interactive-shell)
-                    (alist-get :interactive-shell
-                               (path-env-spec->% :echo-format))
-                  (alist-get :login-shell
-                             (path-env-spec->% :echo-format)))))
+                    (alist-get-> :interactive-shell
+                                 (path-env-spec->% :echo-format))
+                  (alist-get-> :login-shell
+                               (path-env-spec->% :echo-format)))))
             ,var)))
 
 
@@ -130,7 +130,8 @@ get via (path-env-> k) and put via (path-env<- k v) ")
   `(progn
      (setenv (path-env-spec->% :path-var)
              (paths->var (path-env-> :path) path-separator))
-     (setq exec-path (path-env-> :exec-path))))
+     (when (path-env-> :exec-path)
+       (setq exec-path (path-env-> :exec-path)))))
 
 
 ;; set shell on darwin

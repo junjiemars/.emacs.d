@@ -87,6 +87,14 @@ like `split-string' Emacs 24.4+"
        (split-string ,string ,separators ,omit-nulls))))
 
 
+(defmacro alist-get-> (key alist &optional default)
+  "Return the value associated with KEY in ALIST, using `assq'.
+If KEY is not found in ALIST, return DEFAULT. There're no `alist-get' 
+function definition in Emacs25-."
+  `(let ((x (assq ,key ,alist)))
+     (if x (cdr x) ,default)))
+
+
 (safe-fn-when number-sequence (fset 'range 'number-sequence))
 
 
