@@ -31,6 +31,7 @@ via KEYS at compile time."
 
 (defvar *default-path-env*
   (list :path nil
+        :paths nil
         :shell-file-name nil
         :exec-path nil
         :env-vars nil)
@@ -128,8 +129,6 @@ get via (path-env-> k) and put via (path-env<- k v) ")
 
   (when (self-spec->*shell :allowed)
     (load-path-env!)
-    (setenv (path-env-spec->% :path-var)
-            (paths->var (path-env-> :path) path-separator))
     (when (self-spec->*shell :exec-path)
       (copy-exec-path-var!))
     (copy-env-vars! (path-env-> :env-vars)
