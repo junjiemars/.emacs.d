@@ -114,32 +114,20 @@
 (setq-default tab-width 4)
 
 
-(defun set-c-mode-common! ()
-  (safe-setq indent-tabs-mode nil)
-  (safe-setq c-basic-offset 4))
-
-(add-hook 'c-mode-common-hook #'set-c-mode-common!)
-
-
+;; shell scripts
 (defun set-sh-mode! ()
-  (safe-setq tab-width 2))
+  (let ((w 2))
+    (safe-setq tab-width w)
+    (defvar sh-basic-offset)
+    (defvar sh-indentation)
+    (setq sh-basic-offset w)
+    (setq sh-indentation w)))
 
 (add-hook 'sh-mode-hook #'set-sh-mode!)
-
-(comment
- (defun set-makefile-mode! ()
-   (safe-setq tab-width 4))
- (add-hook 'makefile-mode-hook #'set-makefile-mode!))
 
 
 ;; preferred coding system
 (prefer-coding-system 'utf-8)
-
-
-
-;; shell scripts
-(setq-default sh-basic-offset 2)
-(setq-default sh-indentation 2)
 
 
 ;; bing dict
