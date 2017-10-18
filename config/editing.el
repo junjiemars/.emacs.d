@@ -111,13 +111,12 @@
 
 
 ;; Default tab-width
-(setq-default tab-width 4)
+(setq-default tab-width 2)
 
 
 ;; shell scripts
 (defun set-sh-mode! ()
-  (let ((w 2))
-    (safe-setq tab-width w)
+  (let ((w tab-width))
     (defvar sh-basic-offset)
     (defvar sh-indentation)
     (setq sh-basic-offset w)
