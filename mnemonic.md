@@ -53,7 +53,7 @@ they look like
 * insert parentheses: ```M-(```, wrap selection in parentheses
 * toggle read-only mode: ```C-x C-q```
 * toggle input method: ```C-\```, switch to __TeX__ ```C-x-RET C-\```
-* quoted insert: ```C-q```, such as page break ```C-q C-l```
+* quoted insert: ```C-q```, such as page break ```C-q C-l```, use ```C-x [``` or ```C-x ]``` to backward or forward
 
 
 ## Basic sexp commands
