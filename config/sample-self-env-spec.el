@@ -1,5 +1,5 @@
 ;;;;
-;; sample-self-env-spec.el: specify the private environment specs of yourself
+;; sample-self-env-spec.el: specify the private environment specs
 ;; 
 ;;;;
 
