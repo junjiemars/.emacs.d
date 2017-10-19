@@ -84,7 +84,8 @@ at compile time."
                        (self-spec-> self-previous-env-spec :theme)
                        (self-spec->* :theme)))
            (setq-default desktop-restore-frames nil)))
-     
+     (setq-default desktop-restore-eager
+                   (self-spec->* :desktop :restore-eager))
      (desktop-read (v-home* ".desktop/")))))
 
 (add-hook 'after-init-hook #'self-desktop-read!)
