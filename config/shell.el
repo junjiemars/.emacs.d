@@ -15,16 +15,16 @@ via KEYS at compile time."
                 ,(concat (v-home* "config/") ".path-env.elc")
                 
                 :shell-path ,(bin-path "bash")
-                :shell-var "shell"
-                :path-var "path"
+                :shell-var "SHELL"
+                :path-var "PATH"
                 
                 :echo-format
                 ,(platform-supported-if windows-nt
                      "echo %%%s%% 2>/nul"
                    `'((:interactive-shell
-                       . "$shell -l -i -c 'echo -n $%s' 2>/dev/null")
+                       . "$SHELL -l -i -c 'echo -n $%s' 2>/dev/null")
                       (:login-shell
-                       . "$shell -l -c 'echo -n $%s' 2>/dev/null"))))))
+                       . "$SHELL -l -c 'echo -n $%s' 2>/dev/null"))))))
     `(self-spec->% ,spec ,@keys)))
 
 
@@ -127,30 +127,18 @@ get via (path-env-> k) and put via (path-env<- k v) ")
 
 
 
-;; set shell on darwin
-(platform-supported-when darwin
-
-  (when (self-spec->*shell :allowed)
-    (load-path-env!)
-    (when (self-spec->*shell :bin-path)
-      (set-shell-var! (self-spec->*shell :bin-path)))
-    (when (self-spec->*shell :exec-path)
-      (copy-exec-path-var!))
-    (copy-env-vars! (path-env-> :env-vars)
-                    (self-spec->*shell :env-vars))))
-
-
-
-
-;; set shell on Linux
-(platform-supported-when gnu/linux
+;; set shell on darwin/linux
+(platform-supported-unless window-nt
   
   (when (self-spec->*shell :allowed)
     (load-path-env!)
+    
     (when (self-spec->*shell :bin-path)
       (set-shell-var! (self-spec->*shell :bin-path)))
+    
     (when (self-spec->*shell :exec-path)
       (copy-exec-path-var!))
+    
     (copy-env-vars! (path-env-> :env-vars)
                     (self-spec->*shell :env-vars))))
 
