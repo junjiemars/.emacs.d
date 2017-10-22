@@ -5,13 +5,16 @@
 
 
 
+;; Let `lexical-binding' var safe under Emacs24.1
+(version-supported-when > 24.1
+  (put 'lexical-binding 'safe-local-variable (lambda (x) t)))
+
 
 (defun compile-and-load-elisp-files! (vdir &rest files)
   "Compile and load the elisp FILES, save compiled files in VDIR."
   (declare (indent 1))
   (dolist (f files)
     (when f (compile-and-load-elisp-file* vdir f))))
-
 
 
 ;; Versioned dirs
