@@ -129,7 +129,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
 
 
 ;; set shell on darwin/linux
-(platform-supported-unless window-nt
+(platform-supported-unless windows-nt
   
   (when (self-spec->*shell :allowed)
     (load-path-env!)
