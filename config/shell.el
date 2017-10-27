@@ -90,7 +90,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
                               (x nil))
                           (dolist (v vars x)
                             (push (cons v (echo-var v)) x))))
-  (save-sexpr-to-file
+  (save-sexp-to-file
    (list 'setq '*default-path-env*
          (list 'list
                ':path (path-env-> :path)

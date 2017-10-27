@@ -56,15 +56,15 @@ from STRING.
      (string-trim< s1 ,lr)))
 
 
-(defmacro save-sexpr-to-file (sexpr file)
-  "Save SEXPR to the FILE."
+(defmacro save-sexp-to-file (sexp file)
+  "Save SEXP to the FILE."
   `(save-excursion
-     (let ((sexpr-buffer (find-file-noselect ,file)))
-       (set-buffer sexpr-buffer)
+     (let ((sexp-buffer (find-file-noselect ,file)))
+       (set-buffer sexp-buffer)
        (erase-buffer)
-       (print ,sexpr sexpr-buffer)
+       (print ,sexp sexp-buffer)
        (save-buffer)
-       (kill-buffer sexpr-buffer))))
+       (kill-buffer sexp-buffer))))
 
 
 

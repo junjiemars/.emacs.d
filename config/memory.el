@@ -24,7 +24,7 @@ at compile time."
   (self-safe-call*
    "env-spec"
    (let ((f (env-spec->% :source)))
-     (save-sexpr-to-file
+     (save-sexp-to-file
       (list 'setq 'self-previous-env-spec (list 'quote *val*)) f)
      (byte-compile-file f))))
 
