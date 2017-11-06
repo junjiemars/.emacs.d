@@ -5,7 +5,6 @@
 ### atom theme
 
 <img title="atom theme" alt="atom theme" 
-	width="100%"
 	src="https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/atom-theme.png" />
 
 ### default theme

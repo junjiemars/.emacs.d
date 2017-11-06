@@ -157,7 +157,7 @@ into any platform, it will works well: keep the same styles and the same behavio
 (def-self-package-spec
   (list
    :cond (lambda ()
-           (and (version-supported-p '<= 24.0)
+           (and (version-supported-p <= 24.0)
                 (bin-exists-p "virtualenv")))
    :packages '(elpy)
    :compile `(,(emacs-home* "config/setup-python.el"))))
