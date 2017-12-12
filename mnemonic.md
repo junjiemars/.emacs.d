@@ -1,7 +1,21 @@
 # Mnemonic
 
+* [Emacs Documents](#emacs-documents)
+* [Motion](#motion)
+* [Interaction](#interaction)
+* [Editing](#editing)
+* [Basic sexp commands](#basic-sexp-commands)
+* [Frame](#frame)
+* [Window](#window)
+* [Register](#register)
+* [Bookmarks](#bookmarks)
+* [Region and Rectangle](#region-and-rectangle)
+* [Keyboard Macro](#keyboard-macro)
+* [Shell](#shell)
+* [Remote](#remote)
 
-## Emacs's Documents
+
+## Emacs Documents
 It's **self-documenting** and great, keep reading it frequently.
 
 * Tutorial: ```C-h-t```
@@ -67,15 +81,6 @@ they look like
 * ```pp-eval-last-sexp```: pretty print
 
 
-## Window
-* dired other window: ```C-x 4 d```
-* find file in other window: ```C-x 4 C-f```, or ```C-x 4 f```
-* display buffer: ```C-x 4 C-o```, display the buffer in another window
-* find tag other window: ```C-x 4 .```
-* kill buffer and window: ```C-x 4 0```, just like ```C-x 0``` except kill the buffer
-* switch to buffer other window: ```C-x 4 b```
-* clone indirect buffer other window: ```C-x 4 c```, clone the buffer in another window
-
 ## Frame
 * find file other frame: ```C-x 5 C-f```, or ```C-x 5 f```
 * display buffer other frame: ```C-x 5 C-o```, or ```C-x 5 b```
@@ -88,6 +93,16 @@ they look like
 * find file read only other frame: ```C-x 5 r```
 
 
+## Window
+* dired other window: ```C-x 4 d```
+* find file in other window: ```C-x 4 C-f```, or ```C-x 4 f```
+* display buffer: ```C-x 4 C-o```, display the buffer in another window
+* find tag other window: ```C-x 4 .```
+* kill buffer and window: ```C-x 4 0```, just like ```C-x 0``` except kill the buffer
+* switch to buffer other window: ```C-x 4 b```
+* clone indirect buffer other window: ```C-x 4 c```, clone the buffer in another window
+
+
 ## Register
 * window configuration to register: ```C-x r w <REG>```, <REG> is single character, 
 it can not accross sessions.
@@ -97,6 +112,17 @@ it can not accross sessions.
 * copy to register: ```C-x r s <REG>```
 * insert register: ```C-x r i <REG>```
 * view register
+
+
+## Bookmarks
+Unlike registers, bookmarks have long names, and they persist automatically from one Emacs session to the next.
+
+* set bookmark: ```C-x r m```
+* set named bookmark: ```C-x r m BOOKMARK```
+* jump to bookmark: ```C-x r b BOOKMARK```
+* list all bookmarks: ```C-x r l```
+* save bookmark to file: ```M-x bookmark-save```
+
 
 ## Region and Rectangle
 * kill-rectangle: ```C-x r k```
