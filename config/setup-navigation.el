@@ -26,7 +26,9 @@
 (package-supported-p
   (setq-default smex-save-file (v-home! ".smex/" ".smex-items")))
 
-;; semantic db
+;; Where to save semantic db
+;; Semantic is a suite of Emacs libraries and utilties for parsing
+;; source code
 (package-supported-p
   (setq-default semanticdb-default-save-directory
                 (v-home! ".semanticdb/")))
