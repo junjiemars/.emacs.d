@@ -14,7 +14,7 @@
 (safe-fn-when org-capture
   (global-set-key (kbd "C-c c") 'org-capture))
 
-(comment (semantic-mode t))
+(comment (safe-call semantic-mode t))
 
 (comment
  (version-supported-if
