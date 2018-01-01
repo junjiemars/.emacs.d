@@ -1,12 +1,17 @@
+;;;; -*- lexical-binding:t -*-
 ;;;;
 ;; Python
 ;;;;
 
 
-
-
-;; Requirements: setup `virtualenv' and `pip'
-;; first run `M-x pyvenv' and then `M-x elpy-enable'
+;; Requirements:
+;; `virtualenv'
+;; `pip'
+;;
+;; How to play
+;; 1. `M-x pyvenv' to activate virtual environment
+;; 2. `M-x elpy-enable'
+;; 3. open `*.py' file, `C-c C-c'
 
 
 (defun unload-python-on-exit ()
