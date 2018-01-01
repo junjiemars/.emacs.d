@@ -75,15 +75,16 @@
 (defmacro parse-package-spec (dir spec)
   "Parse SPEC, install packages and setup."
   `(dolist (s ,spec)
-     (let ((p (self-spec-> s :cond))
-           (m (self-spec-> s :packages)))
-       (when (or (and (booleanp p) p)
-                 (funcall p))
-         (when (consp m)
-           (install-package! (delete nil m))
-           (apply #'compile-and-load-elisp-files!
-                  ,dir
-                  (delete nil (self-spec-> s :compile))))))))
+     (when (consp s)
+       (let ((p (self-spec-> s :cond))
+             (m (self-spec-> s :packages)))
+         (when (or (and (booleanp p) p)
+                   (funcall p))
+           (when (consp m)
+             (install-package! (delete nil m))
+             (apply #'compile-and-load-elisp-files!
+                    ,dir
+                    (delete nil (self-spec-> s :compile)))))))))
 
 
 (defvar basic-package-spec
