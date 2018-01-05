@@ -94,6 +94,7 @@ they look like
 
 
 ## Window
+* other window: ```C-x o```
 * dired other window: ```C-x 4 d```
 * find file in other window: ```C-x 4 C-f```, or ```C-x 4 f```
 * display buffer: ```C-x 4 C-o```, display the buffer in another window
