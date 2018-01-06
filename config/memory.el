@@ -88,7 +88,9 @@ at compile time."
                    (self-spec->* :desktop :restore-eager))
      (desktop-read (v-home* ".desktop/")))))
 
-(add-hook 'after-init-hook #'self-desktop-read!)
+;; --batch mode: disable desktop read
+(unless noninteractive
+  (add-hook 'after-init-hook #'self-desktop-read!))
 
 
  ;; end of Read desktop
@@ -120,4 +122,6 @@ at compile time."
          (desktop-save (v-home! ".desktop/"))
        (desktop-save (v-home! ".desktop/") t)))))
 
-(add-hook 'kill-emacs-hook #'self-desktop-save!)
+;; --batch mode: disable desktop save
+(unless noninteractive
+  (add-hook 'kill-emacs-hook #'self-desktop-save!))
