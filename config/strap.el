@@ -143,7 +143,8 @@
   (emacs-home* "config/editing.el")
   (emacs-home* "config/financial.el")
   (emacs-home* "config/tags.el")
-  (emacs-home* "config/memory.el"))
+  ;; --batch mode: disable desktop read/save
+  (unless noninteractive (emacs-home* "config/memory.el")))
 
 
 ;; Self do epilogue ...
