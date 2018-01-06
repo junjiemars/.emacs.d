@@ -31,7 +31,7 @@
                :bin-path (comment `,(bin-path "bash"))
                :allowed nil)
   :desktop (list :files-not-to-save
-                 ".*\.t?gz\\|\.desktop\\|~$\\|^su:.*\\|^sudo:.*\\|^ssh:.*"
+                 ".*\.t?gz\\|\.desktop\\|~$\\|\\/ssh[: ]"
                  :buffers-not-to-save "^TAGS\\|\\.log"
                  :modes-not-to-save
                  '(dired-mode fundamental-mode rmail-mode)
