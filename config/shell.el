@@ -105,7 +105,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
   `(progn
      (if (file-exists-p (path-env-spec->% :compiled-file))
          (load (path-env-spec->% :compiled-file))
-       (path-env<- :path (var->paths (path-env-spec->% :path-var))))
+       (path-env<- :path (getenv (path-env-spec->% :path-var))))
      (add-hook 'kill-emacs-hook #'save-path-env!)))
 
 
