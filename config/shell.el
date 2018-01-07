@@ -9,10 +9,10 @@
 via KEYS at compile time."
   (let ((spec `(list
                 :source-file
-                ,(concat (v-home* "config/") ".path-env.el")
+                ,(concat (v-home* "config/") ".shell-env.el")
                 
                 :compiled-file
-                ,(concat (v-home* "config/") ".path-env.elc")
+                ,(concat (v-home* "config/") ".shell-env.elc")
                 
                 :shell-path ,(bin-path "bash")
                 :shell-var "SHELL"
