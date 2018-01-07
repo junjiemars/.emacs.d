@@ -80,7 +80,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
 
 
 
-(defun save-path-env! ()
+(defun save-shell-env! ()
   (path-env<- :path (echo-var (shell-env-spec->% :path-var)))
   (path-env<- :shell-file-name nil)
   (path-env<- :exec-path (dolist
@@ -106,7 +106,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
      (if (file-exists-p (shell-env-spec->% :compiled-file))
          (load (shell-env-spec->% :compiled-file))
        (path-env<- :path (getenv (shell-env-spec->% :path-var))))
-     (add-hook 'kill-emacs-hook #'save-path-env!)))
+     (add-hook 'kill-emacs-hook #'save-shell-env!)))
 
 
 (defmacro copy-env-vars! (env vars)
