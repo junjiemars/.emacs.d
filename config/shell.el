@@ -28,7 +28,7 @@ via KEYS at compile time."
     `(self-spec->% ,spec ,@keys)))
 
 
-(defvar *default-path-env*
+(defvar *default-shell-env*
   (list :path nil
         :shell-file-name nil
         :exec-path nil
@@ -38,14 +38,14 @@ get via (path-env-> k) and put via (path-env<- k v) ")
 
 
 (defmacro path-env-> (&optional k)
-  "extract the value from `*default-path-env*' via k."
+  "extract the value from `*default-shell-env*' via k."
   `(if ,k
-       (plist-get *default-path-env* ,k)
-     *default-path-env*))
+       (plist-get *default-shell-env* ,k)
+     *default-shell-env*))
 
 (defmacro path-env<- (k v)
-  "change the value of `*default-path-env* via k and v."
-  `(plist-put *default-path-env* ,k ,v))
+  "change the value of `*default-shell-env* via k and v."
+  `(plist-put *default-shell-env* ,k ,v))
 
 (defmacro self-spec->*shell (&rest keys)
   `(self-safe-call*
@@ -91,7 +91,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
                           (dolist (v vars x)
                             (push (cons v (echo-var v)) x))))
   (save-sexp-to-file
-   (list 'setq '*default-path-env*
+   (list 'setq '*default-shell-env*
          (list 'list
                ':path (path-env-> :path)
                ':shell-file-name nil
