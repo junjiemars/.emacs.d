@@ -37,7 +37,7 @@ via KEYS at compile time."
 get via (path-env-> k) and put via (path-env<- k v) ")
 
 
-(defmacro path-env-> (&optional k)
+(defmacro shell-env-> (&optional k)
   "extract the value from `*default-shell-env*' via k."
   `(if ,k
        (plist-get *default-shell-env* ,k)
@@ -84,7 +84,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
   (path-env<- :path (echo-var (shell-env-spec->% :path-var)))
   (path-env<- :shell-file-name nil)
   (path-env<- :exec-path (dolist
-                             (p (var->paths (path-env-> :path)) exec-path)
+                             (p (var->paths (shell-env-> :path)) exec-path)
                            (add-to-list 'exec-path p t #'string=)))
   (path-env<- :env-vars (let ((vars (self-spec->*shell :env-vars))
                               (x nil))
@@ -93,10 +93,10 @@ get via (path-env-> k) and put via (path-env<- k v) ")
   (save-sexp-to-file
    (list 'setq '*default-shell-env*
          (list 'list
-               ':path (path-env-> :path)
+               ':path (shell-env-> :path)
                ':shell-file-name nil
-               ':exec-path (list 'quote (path-env-> :exec-path))
-               ':env-vars (list 'quote (path-env-> :env-vars))))
+               ':exec-path (list 'quote (shell-env-> :exec-path))
+               ':env-vars (list 'quote (shell-env-> :env-vars))))
    (shell-env-spec->% :source-file))
   (byte-compile-file (shell-env-spec->% :source-file)))
 
@@ -116,9 +116,9 @@ get via (path-env-> k) and put via (path-env<- k v) ")
 
 (defmacro copy-exec-path-var! ()
   `(progn
-     (setenv (shell-env-spec->% :path-var) (path-env-> :path))
-     (when (path-env-> :exec-path)
-       (setq exec-path (path-env-> :exec-path)))))
+     (setenv (shell-env-spec->% :path-var) (shell-env-> :path))
+     (when (shell-env-> :exec-path)
+       (setq exec-path (shell-env-> :exec-path)))))
 
 
 
@@ -136,7 +136,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
     (when (self-spec->*shell :exec-path)
       (copy-exec-path-var!))
     
-    (copy-env-vars! (path-env-> :env-vars)
+    (copy-env-vars! (shell-env-> :env-vars)
                     (self-spec->*shell :env-vars))))
 
 
@@ -164,11 +164,11 @@ get via (path-env-> k) and put via (path-env<- k v) ")
     (defadvice shell (before shell-before compile)
       (setenv (shell-env-spec->% :shell-var) (shell-env-spec->% :shell-path))
       (setenv (shell-env-spec->% :path-var)
-              (windows-nt-unix-path (path-env-> :path)))
+              (windows-nt-unix-path (shell-env-> :path)))
       (setq shell-file-name (getenv (shell-env-spec->% :shell-var))))
 
     (defadvice shell (after shell-after compile)
-      (setenv (shell-env-spec->% :shell-var) (path-env-> :shell-file-name))
+      (setenv (shell-env-spec->% :shell-var) (shell-env-> :shell-file-name))
       (setenv (shell-env-spec->% :path-var)
-              (path-env-> :path) path-separator)
-      (setq shell-file-name (path-env-> :shell-file-name)))))
+              (shell-env-> :path) path-separator)
+      (setq shell-file-name (shell-env-> :shell-file-name)))))
