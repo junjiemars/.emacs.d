@@ -158,7 +158,6 @@
 (setq backup-directory-alist `(("." . ,(v-home! ".backup/"))))
 
 
-;; XXX
 
 ;; Bookmarks
 (setq-default eww-bookmarks-directory (v-home! ".bookmarks/"))
@@ -166,25 +165,11 @@
 
 
 
-
-;; Toggle recentf-mode
-(defmacro toggle-recentf-mode (&optional disable)
-  "Toggle recentf-mode, disable recentf-mode unconditional when `disable' is non-nil."
-  `(cond (,disable (recentf-mode -1))
-         ((or (not (boundp 'recentf-mode))
-              (null recentf-mode))
-          ;; (setq-default recentf-auto-cleanup 'never)
-          ;; recentf-list
-          (setq-default recentf-max-saved-items 8)
-          (recentf-mode 1))
-         (t (recentf-mode -1))))
-
-
 ;; Enable save minibuffer history
 (version-supported-if
- <= 24
- (savehist-mode)
- (savehist-mode t))
+    <= 24
+    (savehist-mode)
+  (savehist-mode t))
 
 
 ;; Enable upcase/downcase region

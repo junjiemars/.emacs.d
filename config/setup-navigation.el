@@ -5,7 +5,21 @@
 
 ;; These customizations make it easier for you to navigate files,
 ;; switch buffers, and choose options from the minibuffer.
-;; But it's loading slow, so load it after-init
+;; But be care for some operations will slowdown Emacs
+
+
+
+;; Toggle recentf-mode
+(defmacro toggle-recentf-mode (&optional disable)
+  "Toggle recentf-mode, disable recentf-mode unconditional when `disable' is non-nil."
+  `(cond (,disable (recentf-mode -1))
+         ((or (not (boundp 'recentf-mode))
+              (null recentf-mode))
+          ;; (setq-default recentf-auto-cleanup 'never)
+          ;; recentf-list
+          (setq-default recentf-max-saved-items 8)
+          (recentf-mode 1))
+         (t (recentf-mode -1))))
 
 
 
