@@ -101,7 +101,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
   (byte-compile-file (shell-env-spec->% :source-file)))
 
 
-(defmacro load-shell-env! ()
+(defmacro read-shell-env! ()
   `(progn
      (if (file-exists-p (shell-env-spec->% :compiled-file))
          (load (shell-env-spec->% :compiled-file))
@@ -127,7 +127,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
 (platform-supported-unless windows-nt
   
   (when (self-spec->*shell :allowed)
-    (load-shell-env!)
+    (read-shell-env!)
     
     (when (self-spec->*shell :bin-path)
       (setenv (shell-env-spec->% :shell-var)
@@ -156,7 +156,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
 (platform-supported-when windows-nt
   
   (when (file-exists-p (shell-env-spec->% :shell-path))
-    (load-shell-env!)
+    (read-shell-env!)
     
     ;; keep `shell-file-name' between `ansi-term' and `shell'
     (path-env<- :shell-file-name shell-file-name)
