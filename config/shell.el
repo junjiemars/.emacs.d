@@ -47,6 +47,10 @@ get via (path-env-> k) and put via (path-env<- k v) ")
   "change the value of `*default-path-env* via k and v."
   `(plist-put *default-path-env* ,k ,v))
 
+(defmacro self-spec->*shell (&rest keys)
+  `(self-safe-call*
+    "env-spec"
+    (self-spec->* :shell ,@keys)))
 
 (defmacro echo-var (var &optional echo-format)
   "echo a $var."
@@ -68,16 +72,12 @@ get via (path-env-> k) and put via (path-env<- k v) ")
      (dolist (x ,path p)
        (setq p (concat p (when p ,sep) x)))))
 
-
 (defmacro var->paths (var)
   "refine var like $path to list by `path-separator'."
   `(split-string>< ,var path-separator t "[ ]+\n"))
 
 
-(defmacro self-spec->*shell (&rest keys)
-  `(self-safe-call*
-    "env-spec"
-    (self-spec->* :shell ,@keys)))
+
 
 
 (defun save-path-env! ()
@@ -121,21 +121,17 @@ get via (path-env-> k) and put via (path-env<- k v) ")
        (setq exec-path (path-env-> :exec-path)))))
 
 
-(platform-supported-unless windows-nt
-  (defmacro set-shell-var! (path)
-    `(setenv (path-env-spec->% :shell-var) ,path)))
-
 
 
-
-;; set shell on darwin/linux
+;; Darwin/Linux shell 
 (platform-supported-unless windows-nt
   
   (when (self-spec->*shell :allowed)
     (load-path-env!)
     
     (when (self-spec->*shell :bin-path)
-      (set-shell-var! (self-spec->*shell :bin-path)))
+      (setenv (path-env-spec->% :shell-var)
+              (self-spec->*shell :bin-path)))
     
     (when (self-spec->*shell :exec-path)
       (copy-exec-path-var!))
@@ -146,7 +142,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
 
 
 
-;; set ansi-term on Windows
+;; Windows shell
 (platform-supported-when windows-nt
   
   (defadvice ansi-term (before ansi-term-before compile)
