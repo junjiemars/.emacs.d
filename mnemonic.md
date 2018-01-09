@@ -55,6 +55,7 @@ they look like
 * browse-url: ```C-c b```
 
 ## Editing
+* write file: ```C-x C-w``` same as save as
 * kill whole line: ```C-S-DEL```
 * kill all spaces at point: ```M-\```
 * kill all spaces except one at point: ```M-SPC```
