@@ -16,8 +16,13 @@
     (setq python-shell-process-environment
           (list
            (concat "PATH=" vdir path-separator (shell-env-> :path))
-           (concat "VIRTUAL_ENV=" vdir))
-          python-shell-virtualenv-root vdir)))
+           (concat "VIRTUAL_ENV=" vdir)))
+    (version-supported-if
+        <= 25.1
+        (setq python-shell-virtualenv-root vdir)
+      (setq python-shell-virtualenv-path vdir))))
+
+
 
 ;; (defun unload-python-on-exit ()
 ;;   (safe-fn-when* 'elpy-disable (elpy-disable))
