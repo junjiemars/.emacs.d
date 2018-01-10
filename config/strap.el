@@ -142,7 +142,7 @@
   (emacs-home* "config/debugger.el")
   (emacs-home* "config/editing.el")
   (emacs-home* "config/financial.el")
-  (emacs-home* "config/python.el")
+  (emacs-home* "config/python-env.el")
   (emacs-home* "config/tags.el")
   ;; --batch mode: disable desktop read/save
   (unless noninteractive (emacs-home* "config/memory.el")))

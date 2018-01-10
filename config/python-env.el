@@ -5,22 +5,23 @@
 
 
 
-(eval-when-compile (require 'python)) 
+(version-supported-when
+    <= 24.1
 
+  (eval-when-compile (require 'python))
 
-
-(defun python-virtualenv-activate (&optional vdir)
-  "Activate virtualenv at VDIR"
-  (interactive "Dvirtualenv activate at ")
-  (let ((vdir (or vdir default-directory)))
-    (setq python-shell-process-environment
-          (list
-           (concat "PATH=" vdir path-separator (shell-env-> :path))
-           (concat "VIRTUAL_ENV=" vdir)))
-    (version-supported-if
-        <= 25.1
-        (setq python-shell-virtualenv-root vdir)
-      (setq python-shell-virtualenv-path vdir))))
+  (defun python-virtualenv-activate (&optional vdir)
+    "Activate virtualenv at VDIR"
+    (interactive "Dvirtualenv activate at ")
+    (let ((vdir (or vdir default-directory)))
+      (setq python-shell-process-environment
+            (list
+             (concat "PATH=" vdir path-separator (shell-env-> :path))
+             (concat "VIRTUAL_ENV=" vdir)))
+      (version-supported-if
+          <= 25.1
+          (setq python-shell-virtualenv-root vdir)
+        (setq python-shell-virtualenv-path vdir)))))
 
 
 
