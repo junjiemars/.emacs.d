@@ -116,7 +116,7 @@
 (compile-and-load-elisp-files!
     v-dir
   (emacs-home* "config/boot.el")
-  (emacs-home* "config/shell.el")
+  (emacs-home* "config/shells.el")
   (emacs-home* "config/basic.el"))
 
 
@@ -142,7 +142,7 @@
   (emacs-home* "config/debugger.el")
   (emacs-home* "config/editing.el")
   (emacs-home* "config/financial.el")
-  (emacs-home* "config/python-env.el")
+  (emacs-home* "config/pythons.el")
   (emacs-home* "config/tags.el")
   ;; --batch mode: disable desktop read/save
   (unless noninteractive (emacs-home* "config/memory.el")))
