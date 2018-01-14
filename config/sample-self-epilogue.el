@@ -15,8 +15,8 @@
   (global-set-key (kbd "C-c c") 'org-capture))
 
 (comment (safe-setq enable-local-variables :all))
-
 (comment (safe-call semantic-mode t))
+(comment (setq-default compilation-scroll-output t))
 
 (comment
  (version-supported-if
