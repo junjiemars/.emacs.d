@@ -13,7 +13,7 @@
 * [Keyboard Macro](#keyboard-macro)
 * [Shell](#shell)
 * [Remote](#remote)
-
+* [LaTex Requirements](#latex-requirements)
 
 ## Emacs Documents
 It's **self-documenting** and great, keep reading it frequently.
@@ -157,5 +157,18 @@ such as *x@localhost* or *localhost* if the user *x* is a sudoer.
 * eshell remote: ```cd /ssh:<user>@<remote>:<dir>```
 
 
+## LaTex Requirements
 
+on Darwin
+* ImageMagic
+* texlive-basic
+* texlive-fonts-recommended
+* texlive-latex-extra
+* texlive-latex-recommended
+* texlive-pictures
+* texlive-plain-generic
+
+on Ubuntu:
+
+on Windows:
 
