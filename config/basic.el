@@ -123,10 +123,12 @@ then set `eww' to default browser."
 (defun set-eshell-mode-load-hook! ()
   (eval-when-compile (require 'em-term))
   (require 'em-term)
-  (dolist (x (self-safe-call*
-              "env-spec"
-              (self-spec->* :eshell :visual-commands)))
-    (add-to-list 'eshell-visual-commands x t #'string=)))
+  (self-safe-call*
+   "env-spec"
+   (dolist (x (self-spec->* :eshell :visual-commands))
+     (add-to-list 'eshell-visual-commands x t #'string=))
+   (safe-setq eshell-destroy-buffer-when-process-dies
+              (self-spec->* :eshell :destroy-buffer-when-process-dies))))
 
 (self-safe-call*
  "env-spec"
