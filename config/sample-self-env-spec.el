@@ -39,6 +39,8 @@
                  :allowed t)
   :eshell (list :visual-commands '("mtr")
                 :destroy-buffer-when-process-dies t
+                :visual-subcommands '(("git" "log"))
+                :visual-options nil
                 :allowed nil)
   :socks (list :port 32000
                :server "127.0.0.1"
