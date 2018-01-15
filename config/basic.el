@@ -120,9 +120,8 @@ then set `eww' to default browser."
 ;; Eshell
 (setq-default eshell-directory-name (v-home! ".eshell/"))
 
-(defun set-eshell-mode-load-hook! ()
+(defun set-eshell-mode! ()
   (eval-when-compile (require 'em-term))
-  (require 'em-term)
   (self-safe-call*
    "env-spec"
    (dolist (x (self-spec->* :eshell :visual-commands))
@@ -133,7 +132,8 @@ then set `eww' to default browser."
 (self-safe-call*
  "env-spec"
  (when (self-spec->* :eshell :allowed)
-   (add-hook 'eshell-load-hook #'set-eshell-mode-load-hook!)))
+   (defadvice eshell (after eshell-after compile)
+     (set-eshell-mode!))))
 
 
 ;; versionized `directory-name-p'
