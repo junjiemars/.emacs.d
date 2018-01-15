@@ -38,6 +38,7 @@
                  :restore-eager 8
                  :allowed t)
   :eshell (list :visual-commands '("mtr")
+                :destroy-buffer-when-process-dies t
                 :allowed nil)
   :socks (list :port 32000
                :server "127.0.0.1"
