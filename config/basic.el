@@ -120,7 +120,21 @@ then set `eww' to default browser."
 ;; Eshell
 (setq-default eshell-directory-name (v-home! ".eshell/"))
 
+(defun set-eshell-mode-load-hook! ()
+  (eval-when-compile (require 'em-term))
+  (require 'em-term)
+  (dolist (x (self-safe-call*
+              "env-spec"
+              (self-spec->* :eshell :visual-commands)))
+    (add-to-list 'eshell-visual-commands x t #'string=)))
 
+(self-safe-call*
+ "env-spec"
+ (when (self-spec->* :eshell :allowed)
+   (add-hook 'eshell-load-hook #'set-eshell-mode-load-hook!)))
+
+
+;; versionized `directory-name-p'
 (safe-fn-unless directory-name-p
   (defun directory-name-p (name)
     "Return non-nil if NAME ends with a directory separator character."
