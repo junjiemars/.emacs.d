@@ -171,4 +171,5 @@ on Darwin
 on Ubuntu:
 
 on Windows:
-
+* ImageMagick
+* MiKTex
