@@ -132,9 +132,10 @@ Unlike registers, bookmarks have long names, and they persist automatically from
 * yank-rectangle: ```C-x r y```
 * open-rectangle: ```C-x r o```, insert blank space to fill the space of the region-rectangle
 * clear-rectangle: ```C-x r c```
-* string-rectangle: ```C-x r t STRING <RET>```, replace rectangle contents with STRING on each line
+* string-rectangle: ```C-x r t```, replace rectangle contents with STRING on each line
+* string-insert-rectangle: ```C-x r g```
 * ```M-x delete-whitespace-rectangle```
-* ```M-x string-insert-rectangle <RET> STRING <RET>```
+
 
 ## Keyboard Macro
 * start recording macro: ```C-x (```
