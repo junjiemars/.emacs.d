@@ -63,6 +63,8 @@ they look like
 * dynamic abbreviation: ```M-/```
 * query replace: ```M-%```
 * what cursor position: ```C-x =```
+* upcase region: ```C-x C-u```
+* downcase region: ```C-x C-l```
 * transpose characters: ```C-t```
 * transpose words: ```M-t```
 * insert parentheses: ```M-(```, wrap selection in parentheses
