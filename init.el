@@ -103,6 +103,7 @@ except ALL is t, need restart Emacs."
                      ,(emacs-home* ".recentf/")
                      ,(emacs-home* ".tags/")
                      ,(emacs-home* ".places/")
+                     ,(emacs-home* ".semanticdb/")
                      ,(emacs-home* ".smex/")
                      ,(emacs-home* ".url/"))))
      (dolist (d dirs)
