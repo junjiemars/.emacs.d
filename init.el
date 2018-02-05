@@ -91,26 +91,26 @@ and return it."
        (delete-file (concat d f)))))
 
 
-(defmacro clean-saved-user-files ()
-  "Clean saved desktop, need restart Emacs."
-  `(let ((dirs (list ,(v-home* ".auto-save/")
-                     ,(v-home* ".bookmarks/")
-                     ,(v-home* ".desktop/")
-                     ,(v-home* ".eshell/")
-                     ,(v-home* ".ido/")
-                     ,(v-home* ".minibuffer/")
-                     ,(v-home* ".recentf/")
-                     ,(v-home* ".tags/")
-                     ,(v-home* ".places/")
-                     ,(v-home* ".smex/")
-                     ,(v-home* ".url/"))))
+(defmacro clean-saved-user-files (&optional all)
+  "Clean saved user files but current version, 
+except ALL is t, need restart Emacs."
+  `(let ((dirs (list ,(emacs-home* ".auto-save/")
+                     ,(emacs-home* ".bookmarks/")
+                     ,(emacs-home* ".desktop/")
+                     ,(emacs-home* ".eshell/")
+                     ,(emacs-home* ".ido/")
+                     ,(emacs-home* ".minibuffer/")
+                     ,(emacs-home* ".recentf/")
+                     ,(emacs-home* ".tags/")
+                     ,(emacs-home* ".places/")
+                     ,(emacs-home* ".smex/")
+                     ,(emacs-home* ".url/"))))
      (dolist (d dirs)
        (when (file-exists-p d)
-         (dolist (f (directory-files d
-                                     nil
-                                     "^\\([^.]\\|\\.[^.]\\|\\.\\..\\)"))
-           (message "#Clean saved user file: %s" (concat d f))
-           (delete-file (concat d f)))))))
+         (dolist (f (directory-files d nil "^[gt]_.*$"))
+           (when (or ,all (not (string-match-p v-dir f)))
+             (message "#Clean saved user file: %s" (concat d f))
+             (delete-directory (concat d f) t)))))))
 
 
 (defmacro reset-emacs ()
