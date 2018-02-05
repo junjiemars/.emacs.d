@@ -78,7 +78,8 @@ at compile time."
 
   (self-safe-call*
    "env-spec"
-   (when (self-spec->* :desktop :allowed)
+   (when (and (self-spec->* :desktop :allowed)
+              (file-exists-p (v-home* ".desktop/")))
      (theme-supported-p
          (when (consp (theme-changed-p
                        (self-spec-> self-previous-env-spec :theme)
