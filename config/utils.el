@@ -120,3 +120,42 @@ function definition in Emacs25-."
       ";" ":"
       (replace-regexp-in-string "\\([a-zA-Z]\\):/" "/\\1/"
                                 (windows-nt-posix-path ,p)))))
+
+
+;; Clean Emacs' user files
+
+(defun clean-saved-user-files (&optional all)
+  "Clean saved user files but current version, except ALL is t,
+otherwise default to keep the directories of current version."
+  (let ((dirs (list `,(emacs-home* ".auto-save/")
+                    `,(emacs-home* ".backup/")
+                    `,(emacs-home* ".bookmarks/")
+                    `,(emacs-home* ".desktop/")
+                    `,(emacs-home* ".eshell/")
+                    `,(emacs-home* ".ido/")
+                    `,(emacs-home* ".minibuffer/")
+                    `,(emacs-home* ".recentf/")
+                    `,(emacs-home* ".tags/")
+                    `,(emacs-home* ".places/")
+                    `,(emacs-home* ".semanticdb/")
+                    `,(emacs-home* ".smex/")
+                    `,(emacs-home* ".url/"))))
+    (dolist (d dirs)
+      (when (file-exists-p d)
+        (dolist (f (directory-files d nil "^[gt]_.*$"))
+          (when (or all
+                    (not (string-match-p
+                          (concat "^[gt]_" emacs-version) f)))
+            (message "#Clean saved user file: %s" (concat d f))
+            (platform-supported-if windows-nt
+                (shell-command (concat "rmdir /Q /S " (concat d f)))
+              (shell-command (concat "rm -r " (concat d f))))))))))
+
+
+(defun reset-emacs ()
+  "Clean all compiled file and desktop, then restart Emacs."
+  (progn
+    (clean-saved-user-files t)
+    (clean-compiled-files)
+    (setq kill-emacs-hook nil)
+    (kill-emacs 0)))
