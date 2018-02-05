@@ -109,7 +109,8 @@ except ALL is t, need restart Emacs."
      (dolist (d dirs)
        (when (file-exists-p d)
          (dolist (f (directory-files d nil "^[gt]_.*$"))
-           (when (or ,all (not (string-match-p v-dir f)))
+           (when (or ,all (not (string-match-p
+                                (concat "^[gt]_" emacs-version) f)))
              (message "#Clean saved user file: %s" (concat d f))
              (delete-directory (concat d f) t)))))))
 
