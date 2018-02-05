@@ -92,7 +92,8 @@ and return it."
 
 
 (defmacro clean-saved-user-files (&optional all)
-  "Clean saved user files but current version, except ALL is t"
+  "Clean saved user files but current version, except ALL is t,
+otherwise default to keep the directories of current version."
   `(let ((dirs (list ,(emacs-home* ".auto-save/")
                      ,(emacs-home* ".bookmarks/")
                      ,(emacs-home* ".desktop/")
