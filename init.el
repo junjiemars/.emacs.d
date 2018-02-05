@@ -95,6 +95,7 @@ and return it."
   "Clean saved user files but current version, except ALL is t,
 otherwise default to keep the directories of current version."
   `(let ((dirs (list ,(emacs-home* ".auto-save/")
+                     ,(emacs-home* ".backup/")
                      ,(emacs-home* ".bookmarks/")
                      ,(emacs-home* ".desktop/")
                      ,(emacs-home* ".eshell/")
