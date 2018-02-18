@@ -46,6 +46,7 @@ they look like
 * jump to definition: ```M-.```
 * pop back: ```M-,```, on Terminal is ```M-*```
 
+
 ## Interaction
 * \*scratch\* buffer
 * via Elisp: ```M-:```
@@ -53,6 +54,8 @@ they look like
 * in Dired mode: ```!```, do shell command
 * insert shell output: ```C-u M-!```
 * browse-url: ```C-c b```
+* filename of current buffer: ```(buffer-file-name (current-buffer)```
+
 
 ## Editing
 * write file: ```C-x C-w``` same as save as
