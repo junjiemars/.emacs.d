@@ -15,8 +15,16 @@
   (global-set-key (kbd "C-c c") 'org-capture))
 
 (comment (safe-setq enable-local-variables :all))
-(comment (safe-call semantic-mode t))
 (comment (setq-default compilation-scroll-output t))
+
+(comment
+ (add-hook 'after-init-hook
+           (lambda ()
+             (safe-fn-when semantic-mode
+               (semantic-mode t)
+               (setq-default semanticdb-project-roots
+                             '("/opt/apps/c"))))
+           t))
 
 (comment
  (version-supported-if
