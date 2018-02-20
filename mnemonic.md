@@ -42,9 +42,10 @@ they look like
 ## Motion
 * goto line: ```M-g g```
 * goto nth char: ```M-g c```
-* pop global mark: ```C-x C-@```
+* jump between buffers: ```C-x C-@```, jumps to the global mark acrross buffers
+* jump in buffer: ```C-u C-@```
 * jump to definition: ```M-.```
-* pop back: ```M-,```, on Terminal is ```M-*```
+* pop back to where ```M-.``` was last invoked: ```M-,```, on Terminal is ```M-*```
 
 
 ## Interaction
