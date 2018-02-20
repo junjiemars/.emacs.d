@@ -18,13 +18,14 @@
 (comment (setq-default compilation-scroll-output t))
 
 (comment
- (add-hook 'after-init-hook
-           (lambda ()
-             (safe-fn-when semantic-mode
+ (safe-fn-when semantic-mode
+   (add-hook 'after-init-hook
+             (lambda ()
                (semantic-mode t)
-               (setq-default semanticdb-project-roots
-                             '("/opt/apps/c"))))
-           t))
+               (comment
+                (setq-default semanticdb-project-roots
+                              '("/opt/apps/c"))))
+             t)))
 
 (comment
  (version-supported-if
