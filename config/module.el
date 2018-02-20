@@ -96,9 +96,9 @@
                      rainbow-delimiters
                      ,(version-supported-when <= 24.4 'smex)
                      tagedit)
-         :compile `(,(emacs-home* "config/setup-lisp.el")
+         :compile `(,(emacs-home* "config/lisps.el")
                     ,(version-supported-when <= 24.4
-                       (emacs-home* "config/setup-navigation.el"))))))
+                       (emacs-home* "config/navigation.el"))))))
 
 
 
