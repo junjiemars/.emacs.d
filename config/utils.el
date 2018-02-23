@@ -17,7 +17,8 @@ Or all items if SEQ has fewer items than N."
 
 
 (defun drop-while (pred seq)
-  "Returns a sequence of successive items from SEQ after the item for which (PRED item) returns t."
+  "Returns a sequence of successive items from SEQ after the item 
+for which (PRED item) returns t."
   (let ((s seq) (w nil))
     (while (and (not w) (car s))
       (if (funcall pred (car s))
@@ -27,7 +28,8 @@ Or all items if SEQ has fewer items than N."
 
 
 (defun take-while (pred seq)
-  "Returns a sequence of successive items from SEQ before the item for which (PRED item) returns t."
+  "Returns a sequence of successive items from SEQ before the item 
+for which (PRED item) returns t."
   (let ((s seq) (w nil) (s1 nil))
     (while (and (not w) (car s))
       (if (funcall pred (car s))
@@ -38,9 +40,7 @@ Or all items if SEQ has fewer items than N."
 
 
 (defmacro string-trim< (s &optional lr)
-  "Remove leading whitespace or the matching of LR from S.
-
-\(fn STRING &optional LEFT-REGEXP)"
+  "Remove leading whitespace or the matching of LR from S."
   `(let ((r (if ,lr (concat "\\`" ,lr) "\\`[ \t\n\r]+")))
      (if (string-match r ,s)
          (replace-match "" t t ,s)
@@ -48,10 +48,7 @@ Or all items if SEQ has fewer items than N."
 
 
 (defmacro string-trim>< (s &optional rr lr)
-  "Remove leading and trailing whitespace or the matching of LR/RR 
-from STRING.
-
-\(fn STRING &optional LEFT-REGEXP RIGHT-REGEXP)"
+  "Remove leading and trailing whitespace or the matching of LR/RR from S."
   `(let ((s1 (string-trim> ,s ,rr)))
      (string-trim< s1 ,lr)))
 
@@ -104,8 +101,9 @@ like `split-string' Emacs 24.4+"
 
 
 (defmacro alist-get-> (key alist &optional default)
-  "Return the value associated with KEY in ALIST, using `assq'.
-If KEY is not found in ALIST, return DEFAULT. There're no `alist-get' 
+  "Returns the value associated with KEY in ALIST, using `assq'.
+
+If KEY is not found in ALIST, returns DEFAULT. There're no `alist-get' 
 function definition in Emacs25-."
   `(let ((x (assq ,key ,alist)))
      (if x (cdr x) ,default)))
@@ -125,13 +123,13 @@ function definition in Emacs25-."
 
 (platform-supported-when windows-nt
   (defmacro windows-nt-posix-path (p)
-    "Return the posix path that windows-nt can recoganized."
+    "Returns the posix path from P which can be recognized on`system-type'."
     `(replace-regexp-in-string "\\\\" "/" ,p)))
 
 
 (platform-supported-when windows-nt
   (defmacro windows-nt-unix-path (p)
-    "Return the unix path that shell can regcoganized on windows-nt."
+    "Returns the unix path from P which can be recognized by shell on `system-type'"
     `(replace-regexp-in-string
       ";" ":"
       (replace-regexp-in-string "\\([a-zA-Z]\\):/" "/\\1/"
@@ -141,8 +139,10 @@ function definition in Emacs25-."
 ;; Clean Emacs' user files
 
 (defun clean-saved-user-files (&optional all)
-  "Clean saved user files but current version, except ALL is t,
-otherwise default to keep the directories of current version."
+  "Clean saved user files except current `emacs-version'.
+
+Clean all when ALL is t,
+otherwise default to keep the directories of current `emacs-version'."
   (let ((dirs (list `,(emacs-home* ".auto-save/")
                     `,(emacs-home* ".backup/")
                     `,(emacs-home* ".bookmarks/")
