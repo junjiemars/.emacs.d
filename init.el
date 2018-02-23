@@ -23,7 +23,7 @@
 
 
 (defmacro emacs-home* (&rest subdirs)
-  "Return the path under `emacs-home'."
+  "Returns the path of SUBDIRS under `emacs-home'."
   (declare (indent 0))
   `(concat ,emacs-home ,@subdirs))
 
@@ -35,12 +35,12 @@
 
 
 (defmacro v-home* (subdir &optional file)
-  "Return the versioned SUBDIR under `emacs-home'."
+  "Returns the versioned path of SUBDIR/FILE under `emacs-home'."
   `(concat ,emacs-home ,subdir ,v-dir "/" ,file))
 
 
 (defmacro v-home! (subdir &optional file)
-  "Make the versioned SUBDIR under `emacs-home' and return it."
+  "Make the versioned path of SUBDIR/FILE under `emacs-home' and returns it."
   (let ((_vdir_ (v-home* subdir))
         (_vfile_ (v-home* subdir file)))
     (when (not (file-exists-p _vdir_))
@@ -49,13 +49,12 @@
 
 
 (defmacro base-file-name (file)
-  "Return the base name of the FILENAME: no directory, no extension."
+  "Returns the base name of the FILE with no directory, no extension."
   `(file-name-sans-extension (file-name-nondirectory ,file)))
 
 
 (defmacro v-path! (file dir &optional extension)
-  "Make the versioned DIR base on the existing FILE's directory 
-and return it."
+  "Make the versioned DIR base on the existing FILE's directory and returns it."
   `(when (and ,dir (file-exists-p ,file))
      (let ((v (concat (file-name-directory ,file) ,dir "/")))
        (when (not (file-exists-p v))
@@ -83,7 +82,7 @@ and return it."
 
 
 (defmacro clean-compiled-files ()
-  "Clean all compiled files, need restart Emacs."
+  "Clean all compiled files."
   `(dolist (d (list ,(v-home* "config/")
                     ,(v-home* "private/")))
      (dolist (f (directory-files d nil "\\.elc$"))
@@ -96,9 +95,9 @@ and return it."
 
 
 (defmacro progn% (&rest exps)
-  "Return an expression equivalent to `(progn ,@EXPS).
+  "Returns an `progn'ed expression where EXPS has more than one expressions.
 
-\(fn EXPS...\)"
+Else returns the only one EXPR."
   (if (cdr exps) `(progn ,@exps) (car exps)))
 
 
