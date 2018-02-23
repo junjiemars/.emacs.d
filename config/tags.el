@@ -60,7 +60,9 @@
 
 
 (defun make-c-tags (home tags-file &optional renew)
-  "Make TAGS-FILE for C source code at HOME."
+  "Make TAGS-FILE for C source code at HOME.
+
+Overwrite TAGS-FILE when RENEW is t otherwise append."
   (let ((c-ff (lambda (f _) (string-match "\\\.[ch]$" f)))
         (df (lambda (d _) (not
                            (string-match
@@ -69,31 +71,10 @@
     (make-tags home tags-file c-ff df renew)))
 
 
-(defmacro os-include-paths ()
-  `(let* ((str (platform-supported-if windows-nt
-                   nil
-                 (eshell-command-result "echo '' | cc -v -E 2>&1 >/dev/null -")))
-          (seq (split-string>< str "\n" t "[ \t\r]"))
-          (inc (platform-supported-if windows-nt
-                   seq
-                 (take-while
-                  (lambda (p)
-                    (string-match "End of search list." p))
-                  (drop-while
-                   (lambda (p)
-                     (string-match "#include <...> search starts here:" p))
-                   seq)))))
-     (platform-supported-if darwin
-         (take-while
-          (lambda (p)
-            (string-match "/System/Library/Frameworks (framework directory)" p))
-          inc)
-       inc)))
+(defun make-system-c-tags (includes &optional renew)
+  "Make tags for system INCLUDES.
 
-
-(defun make-os-c-tags (&optional renew)
-  "Make tags for OS include."
-  (let ((inc (os-include-paths)))
-    (make-c-tags (car inc) (v-tags->% :os-include) renew)
-    (dolist (p (cdr inc))
-      (make-c-tags p (v-tags->% :os-include)))))
+INCLUDES should be set with `system-cc-include-paths'."
+  (make-c-tags (car includes) (v-tags->% :os-include) renew)
+  (dolist (p (cdr includes))
+    (make-c-tags p (v-tags->% :os-include))))
