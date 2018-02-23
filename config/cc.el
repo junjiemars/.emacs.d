@@ -1,6 +1,6 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
-;; C
+;; CC
 ;;;;
 
 
@@ -31,9 +31,7 @@
   (defun make-cc-env-bat ()
     (let ((vcvarsall (check-vcvarsall-bat))
           (arch (downcase (getenv "PROCESSOR_ARCHITECTURE")))
-          (where (concat
-                  (expand-file-name semanticdb-default-save-directory)
-                  "cc-env.bat")))
+          (where (v-home* "config/" ".cc-env.bat")))
       (when vcvarsall
         (save-string-to-file 
          (concat
@@ -50,11 +48,12 @@
   
   (defun check-cc-include ()
     (let ((cc-env-bat (make-cc-env-bat)))
-      (var->paths
-       (car (nreverse 
-             (split-string><
-              (shell-command-to-string cc-env-bat)
-              "\n" t "\"")))))))
+      (when cc-env-bat
+        (var->paths
+         (car (nreverse 
+               (split-string><
+                (shell-command-to-string cc-env-bat)
+                "\n" t "\""))))))))
 
 
 (platform-supported-unless windows-nt
@@ -71,6 +70,30 @@
         "echo '' | cc -v -E 2>&1 >/dev/null -")
        "\n" t "[ \t\n]")))))
 
+
+(defvar system-cc-include-paths nil)
+
+(defun system-cc-include-paths (cached)
+  "Return a list of system include dir. Load `system-cc-include-paths' 
+from file when CACHED is t.
+
+\(fn CACHED)"
+  (let ((c (v-home* "config/" ".cc-include.el")))
+    (if (and cached (file-exists-p (concat c "c")))
+        (progn
+          (load (concat c "c"))
+          system-cc-include-paths)
+      (let ((paths (platform-supported-if windows-nt
+                       (check-cc-include)
+                     (platform-supported-if darwin
+                         (mapcar (lambda (x)
+                                   (string-trim> x " (framework directory)"))
+                                 (check-cc-include))
+                       (check-cc-include)))))
+        (save-sexp-to-file
+         `(setq system-cc-include-paths ',paths) c)
+        (byte-compile-file c)
+        (setq system-cc-include-paths paths)))))
 
 
 ;; (defun c-turn-on-eldoc-mode ()
