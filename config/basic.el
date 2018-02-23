@@ -172,11 +172,11 @@ and if DIR-FILTER return T then iterate into deeper DIR.
 
 
 (defun save-string-to-file (string file)
-  "Save STRING to FILE.
-
-\(FN STRING FILE\)"
+  "Save STRING to FILE."
   (with-temp-file file
-    (insert string)))
+    (insert string))
+  (when (file-exists-p file)
+    file))
 
 
 ;; Socks

@@ -57,14 +57,17 @@ from STRING.
 
 
 (defmacro save-sexp-to-file (sexp file)
-  "Save SEXP to the FILE."
-  `(save-excursion
-     (let ((sexp-buffer (find-file-noselect ,file)))
-       (set-buffer sexp-buffer)
-       (erase-buffer)
-       (print ,sexp sexp-buffer)
-       (save-buffer)
-       (kill-buffer sexp-buffer))))
+  "Save SEXP to the FILE. Returns FILE when successed otherwise nil."
+  `(progn
+     (when (and (save-excursion
+                  (let ((sexp-buffer (find-file-noselect ,file)))
+                    (set-buffer sexp-buffer)
+                    (erase-buffer)
+                    (print ,sexp sexp-buffer)
+                    (save-buffer)
+                    (kill-buffer sexp-buffer)))
+                (file-exists-p ,file))
+       ,file)))
 
 
 

@@ -38,10 +38,7 @@
           "@echo off\n"
           "cd /d \"" (file-name-directory vcvarsall) "\"\n"
           "call vcvarsall.bat " arch "\n"
-          "echo \"%INCLUDE%\"\n")
-         where)
-        (when (file-exists-p where)
-          where)))))
+          "echo \"%INCLUDE%\"\n") where)))))
 
 
 (platform-supported-when windows-nt
@@ -75,9 +72,7 @@
 
 (defun system-cc-include-paths (cached)
   "Return a list of system include dir. Load `system-cc-include-paths' 
-from file when CACHED is t.
-
-\(fn CACHED)"
+from file when CACHED is t, otherwise check cc include on the fly."
   (let ((c (v-home* "config/" ".cc-include.el")))
     (if (and cached (file-exists-p (concat c "c")))
         (progn
@@ -90,9 +85,9 @@ from file when CACHED is t.
                                    (string-trim> x " (framework directory)"))
                                  (check-cc-include))
                        (check-cc-include)))))
-        (save-sexp-to-file
-         `(setq system-cc-include-paths ',paths) c)
-        (byte-compile-file c)
+        (when (save-sexp-to-file
+               `(setq system-cc-include-paths ',paths) c)
+          (byte-compile-file c))
         (setq system-cc-include-paths paths)))))
 
 
