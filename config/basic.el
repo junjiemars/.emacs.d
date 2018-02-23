@@ -171,14 +171,6 @@ and if DIR-FILTER return T then iterate into deeper DIR.
                      (funcall fn a))))))))
 
 
-(defun save-string-to-file (string file)
-  "Save STRING to FILE."
-  (with-temp-file file
-    (insert string))
-  (when (file-exists-p file)
-    file))
-
-
 ;; Socks
 
 (defun start-socks! (&optional port server version)

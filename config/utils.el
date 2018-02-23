@@ -57,7 +57,9 @@ from STRING.
 
 
 (defmacro save-sexp-to-file (sexp file)
-  "Save SEXP to the FILE. Returns FILE when successed otherwise nil."
+  "Save SEXP to the FILE. 
+
+Returns FILE when successed otherwise nil."
   `(progn
      (when (and (save-excursion
                   (let ((sexp-buffer (find-file-noselect ,file)))
@@ -68,6 +70,17 @@ from STRING.
                     (kill-buffer sexp-buffer)))
                 (file-exists-p ,file))
        ,file)))
+
+
+(defmacro save-str-to-file (str file)
+  "Save STR to FILE. 
+
+Returns FILE when successed otherwise nil."
+  `(progn
+     (with-temp-file ,file (insert ,str))
+     (when (file-exists-p ,file)
+       ,file)))
+
 
 
 

@@ -33,7 +33,7 @@
           (arch (downcase (getenv "PROCESSOR_ARCHITECTURE")))
           (where (v-home* "config/" ".cc-env.bat")))
       (when vcvarsall
-        (save-string-to-file 
+        (save-str-to-file 
          (concat
           "@echo off\n"
           "cd /d \"" (file-name-directory vcvarsall) "\"\n"
@@ -68,11 +68,16 @@
        "\n" t "[ \t\n]")))))
 
 
-(defvar system-cc-include-paths nil)
+(defvar system-cc-include-paths nil
+  "The system include paths used by the C language.
+
+This should be set with `system-cc-include-paths'")
 
 (defun system-cc-include-paths (cached)
-  "Return a list of system include dir. Load `system-cc-include-paths' 
-from file when CACHED is t, otherwise check cc include on the fly."
+  "Return a list of system include directories. 
+
+Load `system-cc-include-paths' from file when CACHED is t, 
+otherwise check cc include on the fly."
   (let ((c (v-home* "config/" ".cc-include.el")))
     (if (and cached (file-exists-p (concat c "c")))
         (progn
