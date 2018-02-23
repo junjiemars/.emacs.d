@@ -144,6 +144,7 @@
   (emacs-home* "config/financial.el")
   (emacs-home* "config/pythons.el")
   (emacs-home* "config/tags.el")
+  (emacs-home* "config/c.el")
   ;; --batch mode: disable desktop read/save
   (unless noninteractive (emacs-home* "config/memory.el")))
 
