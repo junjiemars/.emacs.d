@@ -90,15 +90,15 @@ get via (path-env-> k) and put via (path-env<- k v) ")
                               (x nil))
                           (dolist (v vars x)
                             (push (cons v (echo-var v)) x))))
-  (save-sexp-to-file
-   (list 'setq '*default-shell-env*
-         (list 'list
-               ':path (shell-env-> :path)
-               ':shell-file-name nil
-               ':exec-path (list 'quote (shell-env-> :exec-path))
-               ':env-vars (list 'quote (shell-env-> :env-vars))))
-   (shell-env-spec->% :source-file))
-  (byte-compile-file (shell-env-spec->% :source-file)))
+  (when (save-sexp-to-file
+         (list 'setq '*default-shell-env*
+               (list 'list
+                     ':path (shell-env-> :path)
+                     ':shell-file-name nil
+                     ':exec-path (list 'quote (shell-env-> :exec-path))
+                     ':env-vars (list 'quote (shell-env-> :env-vars))))
+         (shell-env-spec->% :source-file))
+    (byte-compile-file (shell-env-spec->% :source-file))))
 
 
 (defmacro read-shell-env! ()
