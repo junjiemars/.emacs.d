@@ -25,6 +25,7 @@
           (when (file-exists-p bat)
             bat))))))
 
+
 (platform-supported-when windows-nt
   
   (defun make-cc-env-bat ()
@@ -44,6 +45,7 @@
         (when (file-exists-p where)
           where)))))
 
+
 (platform-supported-when windows-nt
   
   (defun check-cc-include ()
@@ -53,6 +55,20 @@
              (split-string><
               (shell-command-to-string cc-env-bat)
               "\n" t "\"")))))))
+
+
+(platform-supported-unless windows-nt
+
+  (defun check-cc-include ()
+    (take-while
+     (lambda (p)
+       (string-match "End of search list." p))
+     (drop-while
+      (lambda (p)
+        (string-match "#include <...> search starts here:" p))
+      (split-string><
+       (shell-command-to-string
+        "echo '' | cc -v -E 2>&1 >/dev/null -"))))))
 
 
 
