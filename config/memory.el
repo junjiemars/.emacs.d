@@ -24,9 +24,9 @@ at compile time."
   (self-safe-call*
    "env-spec"
    (let ((f (env-spec->% :source)))
-     (save-sexp-to-file
-      (list 'setq 'self-previous-env-spec (list 'quote *val*)) f)
-     (byte-compile-file f))))
+     (when (save-sexp-to-file
+            `(setq self-previous-env-spec ',*val*) f)
+       (byte-compile-file f)))))
 
 (add-hook 'kill-emacs-hook #'save-env-spec)
 
