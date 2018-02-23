@@ -68,7 +68,8 @@
         (string-match "#include <...> search starts here:" p))
       (split-string><
        (shell-command-to-string
-        "echo '' | cc -v -E 2>&1 >/dev/null -"))))))
+        "echo '' | cc -v -E 2>&1 >/dev/null -")
+       "\n" t "[ \t\n]")))))
 
 
 
