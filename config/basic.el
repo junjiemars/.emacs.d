@@ -137,10 +137,9 @@ then set `eww' to default browser."
      (set-eshell-mode!))))
 
 
-;; versionized `directory-name-p'
 (safe-fn-unless directory-name-p
   (defun directory-name-p (name)
-    "Return non-nil if NAME ends with a directory separator character."
+    "Return t if NAME ends with a directory separator character."
     (let ((len (length name))
           (lastc ?.))
       (if (> len 0)
@@ -151,13 +150,11 @@ then set `eww' to default browser."
 
 
 (defun dir-iterate (dir ff df fn)
-  "Iterating DIR, if FILE-FILTER return T then call FN, 
-and if DIR-FILTER return T then iterate into deeper DIR.
+  "Iterating DIR, if FF file-fitler return t then call FN, 
+and if DF dir-filter return t then iterate into deeper DIR.
 
    (defun FILE-FILTER (file-name absolute-name))
-   (defun DIR-FILTER (dir-name absolute-name))
-
-\(FN DIR FILE-FILTER DIR-FILTER FN\)"
+   (defun DIR-FILTER (dir-name absolute-name))"
   (dolist (f (file-name-all-completions "" dir))
     (unless (member f '("./" "../"))
       (let ((a (expand-file-name f dir)))
