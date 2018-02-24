@@ -103,11 +103,10 @@ Else returns the only one EXPR."
 
 (defmacro platform-supported-if (os then &rest else)
   "If (eq system-type OS) yields non-nil, do THEN, else do ELSE...
+
 Returns the value of THEN or the value of the last of the ELSE’s.
 THEN must be one expression, but ELSE... can be zero or more expressions.
-If (eq system-type OS) yields nil, and there are no ELSE’s, the value is nil.
-
-\(fn OS THEN ELSE...)"
+If (eq `system-type' OS) yields nil, and there are no ELSE’s, the value is nil. "
   (declare (indent 2))
   (if (eq system-type os)
       `,then
@@ -115,46 +114,40 @@ If (eq system-type OS) yields nil, and there are no ELSE’s, the value is nil.
 
 
 (defmacro platform-supported-when (os &rest body)
-  "Run BODY code if on specified OS platform.
-
-\(fn OS BODY...)"
+  "Run BODY code if on specified OS platform, else return nil."
   (declare (indent 1))
   `(platform-supported-if ,os (progn% ,@body)))
 
 
 (defmacro platform-supported-unless (os &rest body)
-  "Run BODY code unless on specified OS platform.
-
-\(fn OS BODY...)"
+  "Run BODY code unless on specified OS platform, else return nil."
   (declare (indent 1))
   `(platform-supported-if ,os nil ,@body))
 
 
 (defmacro version-supported* (cond version)
-  "Return true if (COND VERSION EMACS-VERSION) yields non-nil, else nil.
+  "Return t if (COND VERSION EMACS-VERSION) yields non-nil, else nil.
 
-\(fn COND VERSION)"
+COND should be quoted, such as (version-supported* '<= 24)"
   `(funcall ,cond
             (truncate (* 10 ,version))
             (+ (* 10 emacs-major-version) emacs-minor-version)))
 
 
 (defmacro version-supported-p (cond version)
-  "Return true if (COND VERSION EMACS-VERSION) yields non-nil, else nil.
-It resemble `version-supported*' but it has constant runtime.
+  "Returns t if (COND VERSION `emacs-version') yields non-nil, else nil.
 
-\(fn COND VERSION)"
+It resemble `version-supported*' but it has constant runtime."
   (let ((x (version-supported* `,cond `,version)))
     x))
 
 
 (defmacro version-supported-if (cond version then &rest else)
-  "If (COND VERSION EMACS-VERSION) yields non-nil, do THEN, else do ELSE...
+  "If (COND VERSION `emacs-version') yields non-nil, do THEN, else do ELSE...
+
 Returns the value of THEN or the value of the last of the ELSE’s.
 THEN must be one expression, but ELSE... can be zero or more expressions.
-If (COND VERSION EMACS-VERSION) yields nil, and there are no ELSE’s, the value is nil.
-
-\(fn COND VERSION THEN ELSE...)"
+If (COND VERSION EMACS-VERSION) yields nil, and there are no ELSE’s, the value is nil. "
   (declare (indent 3))
   (if (version-supported* `,cond `,version)
       `,then
@@ -162,11 +155,10 @@ If (COND VERSION EMACS-VERSION) yields nil, and there are no ELSE’s, the value
 
 
 (defmacro version-supported-when (cond version &rest body)
-  "If (COND VERSION EMACS-VERSION) yields non-nil, do BODY, else return nil.
-When (COND VERSION EMACS-VERSION) yields non-nil, eval BODY forms 
-sequentially and return value of last one, or nil if there are none.
+  "If (COND VERSION `emacs-version') yields non-nil, do BODY, else return nil.
 
-\(fn COND VERSION BODY...)"
+When (COND VERSION `emacs-version') yields non-nil, eval BODY forms 
+sequentially and return value of last one, or nil if there are none."
   (declare (indent 2))
   `(version-supported-if ,cond ,version (progn% ,@body)))
 
