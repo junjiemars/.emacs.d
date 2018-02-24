@@ -278,9 +278,7 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil."
 
 
 (defmacro package-supported-p (&rest body)
-  "Run BODY code if supports package.
-
-\(fn BODY...)"
+  "Run BODY code if current `emacs-version' supports package."
   (declare (indent 0))
   `(version-supported-when <= 24.1 ,@body))
 
@@ -290,9 +288,7 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil."
 
 
 (defmacro def-self-path (path)
-  "Define the PATH of where your `self.el'.
- 
-\(fn PATH)"
+  "Define the PATH of where your `self-path.el'."
   (declare (indent 0))
   (let ((_path_ (self-symbol 'path)))
     `(when ,path
@@ -300,22 +296,20 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil."
 
 
 (defmacro def-self-env-spec (&rest spec)
-  "Define default Emacs env SPEC of current platform on current Emacs version, 
-ignore it if you don't like it. 
- 
-\(fn SPEC)"
+  "Define default Emacs env SPEC of current platform on current Emacs version.
+
+Ignore it if you don't like it."
   (declare (indent 0))
   (let ((_spec_ (self-symbol 'env-spec)))
     `(defvar ,_spec_ (list ,@spec))))
 
 
 (defmacro def-self-package-spec (&rest spec)
-  "Define self package SPEC list:
-     :cond t ;; predicat
-     :packages '(x y z) ;; package list
-     :setup '(\"setup-xyz.el\") ;; predefined
+  "Define self package SPEC list.
 
-\(fn SPEC...)"
+:cond t ;; predicat
+:packages '(x y z) ;; package list
+:setup '(\"setup-xyz.el\") ;; predefined"
   (declare (indent 0))
   (package-supported-p 
     (let ((_spec_ (self-symbol 'package-spec)))
