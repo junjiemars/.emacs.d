@@ -22,7 +22,8 @@
    (add-hook 'after-init-hook
              (lambda ()
                (semantic-mode t)
-               (eval-when-compile (require 'semantic/dep))
+               (declare-function semantic-reset-system-include "semantic")
+               (declare-function semantic-add-system-include "semantic")
                (semantic-reset-system-include 'c-mode)
                (dolist (x (system-cc-include-paths t))
                  (semantic-add-system-include x 'c-mode))
