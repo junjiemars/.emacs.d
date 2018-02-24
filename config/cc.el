@@ -31,7 +31,7 @@
   (defun make-cc-env-bat ()
     (let ((vcvarsall (check-vcvarsall-bat))
           (arch (downcase (getenv "PROCESSOR_ARCHITECTURE")))
-          (where (v-home* "config/" ".cc-env.bat")))
+          (where (expand-file-name (v-home* "config/" ".cc-env.bat"))))
       (when vcvarsall
         (save-str-to-file 
          (concat
@@ -83,13 +83,14 @@ otherwise check cc include on the fly."
         (progn
           (load (concat c "c"))
           system-cc-include-paths)
-      (let ((paths (platform-supported-if windows-nt
-                       (check-cc-include)
-                     (platform-supported-if darwin
-                         (mapcar (lambda (x)
-                                   (string-trim> x " (framework directory)"))
-                                 (check-cc-include))
-                       (check-cc-include)))))
+      (let ((paths
+             (platform-supported-if windows-nt
+                 (check-cc-include)
+               (platform-supported-if darwin
+                   (mapcar (lambda (x)
+                             (string-trim> x " (framework directory)"))
+                           (check-cc-include))
+                 (check-cc-include)))))
         (when (save-sexp-to-file
                `(setq system-cc-include-paths ',paths) c)
           (byte-compile-file c))
