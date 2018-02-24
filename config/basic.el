@@ -5,14 +5,11 @@
 
 
 
+(version-supported-when >= 24.0
+  (defalias 'eldoc-mode 'turn-on-eldoc-mode
+    "After Emacs 24.0 `turn-on-eldoc-mode' is obsoleted, use `eldoc-mode' indeed.
 
-(defmacro enable-eldoc-mode ()
-  "After Emacs 24.0 `turn-on-eldoc-mode' is obsoleted, use `eldoc-mode' indeed.
-  `eldoc-mode' shows documentation in the minibuffer when writing code.
-  http://www.emacswiki.org/emacs/ElDoc"
-  `(version-supported-if < 24.0
-                         (eldoc-mode)
-     (turn-on-eldoc-mode)))
+Unify this name `eldoc-mode' in Emacs 24.0-, see `http://www.emacswiki.org/emacs/ElDoc'"))
 
 
 ;; default web browser: eww
@@ -56,7 +53,7 @@ then set `eww' to default browser."
 ;; emacs lisp mode
 (defun set-emacs-lisp-mode! ()
   "Elisp basic settings."
-  (enable-eldoc-mode)
+  (eldoc-mode)
   (version-supported-if
       <= 24.4
       (local-set-key (kbd "TAB") #'completion-at-point)
@@ -80,7 +77,7 @@ then set `eww' to default browser."
 
 (defun set-ielm-mode! ()
   "IELM basic settings."
-  (enable-eldoc-mode))
+  (eldoc-mode))
 
 
 ;; ielm basic

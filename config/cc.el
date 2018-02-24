@@ -100,7 +100,7 @@ otherwise check cc include on the fly."
 ;;   (add-function :before-until
 ;;                 (local 'eldoc-documentation-function)
 ;;                 #'c-eldoc-semantic-ia-show-summary)
-;;   (enable-eldoc-mode))
+;;   (eldoc-mode))
 
 ;; (defun c-eldoc-semantic-ia-show-summary ()
 ;;   (interactive)

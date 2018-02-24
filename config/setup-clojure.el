@@ -47,7 +47,7 @@
 
 
 (defun set-cider-repl-mode! ()
-  (enable-eldoc-mode)
+  (eldoc-mode)
   (enable-paredit-mode)
   (rainbow-delimiters-mode)
   (aggressive-indent-mode))
