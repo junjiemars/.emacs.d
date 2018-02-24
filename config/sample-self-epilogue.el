@@ -22,6 +22,10 @@
    (add-hook 'after-init-hook
              (lambda ()
                (semantic-mode t)
+               (eval-when-compile (require 'semantic/dep))
+               (semantic-reset-system-include 'c-mode)
+               (dolist (x (system-cc-include-paths t))
+                 (semantic-add-system-include x 'c-mode))
                (comment
                 (setq-default semanticdb-project-roots
                               '("/opt/apps/c"))))
