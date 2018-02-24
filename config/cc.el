@@ -41,19 +41,16 @@
           "echo \"%INCLUDE%\"\n") where)))))
 
 
-(platform-supported-when windows-nt
-  
-  (defun check-cc-include ()
-    (let ((cc-env-bat (make-cc-env-bat)))
-      (when cc-env-bat
-        (var->paths
-         (car (nreverse 
-               (split-string><
-                (shell-command-to-string cc-env-bat)
-                "\n" t "\""))))))))
-
-
-(platform-supported-unless windows-nt
+(platform-supported-if
+    windows-nt
+    (defun check-cc-include ()
+      (let ((cc-env-bat (make-cc-env-bat)))
+        (when cc-env-bat
+          (var->paths
+           (car (nreverse 
+                 (split-string><
+                  (shell-command-to-string cc-env-bat)
+                  "\n" t "\"")))))))
 
   (defun check-cc-include ()
     (take-while
