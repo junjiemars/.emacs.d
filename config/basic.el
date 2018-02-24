@@ -30,9 +30,9 @@ then set `eww' to default browser."
 
 
 ;; linum mode
-(defmacro linum-mode-supported-p (expr)
-  "When Emacs version supports linum mode then do EXPR."
-  `(version-supported-when <= 23.1 ,expr))
+(defmacro linum-mode-supported-p (body)
+  "When `emacs-version' supports linum mode then do BODY."
+  `(version-supported-when <= 23.1 ,body))
 
 
 ;; Toggle linum mode 
