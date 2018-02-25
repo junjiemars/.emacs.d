@@ -287,16 +287,15 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil."
   `(intern (format "self-%s-%s" system-type ,name)))
 
 
-(defmacro def-self-path (path)
-  "Define the PATH of where your `self-path.el'."
+(defmacro def-self-path-ref (&rest path)
+  "Define the PATH references for all specs in `self-path.el'."
   (declare (indent 0))
   (let ((_path_ (self-symbol 'path)))
-    `(when ,path
-       (defvar ,_path_ ,path))))
+    `(defvar ,_path_ (list ,@path))))
 
 
 (defmacro def-self-env-spec (&rest spec)
-  "Define default Emacs env SPEC of current platform on current Emacs version."
+  "Define default Emacs env SPEC of current platform on current `emacs-version'."
   (declare (indent 0))
   (let ((_spec_ (self-symbol 'env-spec)))
     `(defvar ,_spec_ (list ,@spec))))

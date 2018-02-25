@@ -66,18 +66,14 @@
 (defvar self-def-where (self-def-files!)
   "Where's the path of self-path.el")
 
-(defvar self-def-paths nil
-  "Default `self-def-path', override in `private/self-path.el'")
-
-
-(defmacro self-def-paths-> (k)
-  `(plist-get self-def-paths ,k))
-
-
 ;; Load self where
 (compile-and-load-elisp-files!
     v-dir
   self-def-where)
+
+
+(defmacro self-def-path-ref-> (k)
+  `(plist-get (symbol-value (self-symbol 'path)) ,k))
 
 
 (defmacro self-spec-> (seq &rest keys)
@@ -104,7 +100,7 @@
 
 (compile-and-load-elisp-files!
     v-dir
-  (self-def-paths-> :env-spec))
+  (self-def-path-ref-> :env-spec))
 
 
  ;; end of Load self env
@@ -122,7 +118,7 @@
 ;; Self do prologue ...
 (compile-and-load-elisp-files!
     v-dir
-  (self-def-paths-> :prologue))
+  (self-def-path-ref-> :prologue))
 
 
 (package-supported-p
@@ -131,7 +127,7 @@
   ;; Load basic and self modules
   (compile-and-load-elisp-files!
       v-dir
-    (self-def-paths-> :package-spec)
+    (self-def-path-ref-> :package-spec)
     (emacs-home* "config/module.el")))
 
 
@@ -151,4 +147,4 @@
 ;; Self do epilogue ...
 (compile-and-load-elisp-files!
     v-dir
-  (self-def-paths-> :epilogue))
+  (self-def-path-ref-> :epilogue))
