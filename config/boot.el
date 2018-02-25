@@ -1,6 +1,6 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
-;; Boot
+;; boot
 ;;;;
 
 
@@ -26,18 +26,14 @@
 (font-supported-p
     
     (defmacro font-exists-p (font)
-      "Return t if font exists
-
-\(FN FONT\)"
+      "Return t if FONT exists."
       `(when (find-font (font-spec :name ,font))
          t)))
 
 (font-supported-p
     
     (defmacro self-default-font! (font)
-      "Set default font in graphic mode.
-
-\(FN FONT\)"
+      "Set default FONT in graphic mode."
       `(when (font-exists-p ,font)
          (add-to-list 'default-frame-alist (cons 'font ,font))
          (set-face-attribute 'default t :font ,font)
@@ -57,9 +53,7 @@
 (font-supported-p
 
     (defmacro self-cjk-font! (name size)
-      "Set CJK font in Graphic mode.
-
-\(FN NAME SIZE\)"
+      "Set CJK font's NAME and SIZE in graphic mode."
       `(when (font-exists-p ,name)
          (safe-fn-when set-fontset-font
            (dolist (c '(han kana cjk-misc))
@@ -81,11 +75,10 @@
 (theme-supported-p
     
     (defmacro self-load-theme! (name &optional dir)
-      "Load theme from THEME-DIR by THEME-NAME, if THEME-DIR is nil then
-load the named built-in theme, if THEME-NAME non-existing then 
-load default `theme/tomorrow-night-eighties'
+      "Load theme from theme DIR by theme NAME.
 
-\(fn THEME-NAME &optional THEME-DIR)"
+If theme DIR is nil then load the named built-in theme, 
+else if theme NAME non-existing then load default `theme/tomorrow-night-eighties'."
       `(progn
          (when (and ,dir (file-exists-p ,dir))
            (add-to-list 'custom-theme-load-path ,dir)
