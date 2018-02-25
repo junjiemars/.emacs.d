@@ -160,7 +160,7 @@ otherwise default to keep the directories of current `emacs-version'."
       (when (file-exists-p d)
         (dolist (f (directory-files d nil "^[gt]_.*$"))
           (when (or all
-                    (not (string-match-p
+                    (not (string-match
                           (concat "^[gt]_" emacs-version) f)))
             (message "#Clean saved user file: %s" (concat d f))
             (platform-supported-if windows-nt
