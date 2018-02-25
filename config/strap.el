@@ -94,8 +94,8 @@
 
 
 (compile-and-load-elisp-files!
- v-dir
- (emacs-home* "config/utils.el"))
+    v-dir
+  (emacs-home* "config/shim.el"))
 
 
 (compile-and-load-elisp-files!
@@ -104,7 +104,6 @@
 
 
  ;; end of Load self env
-
 
 
 ;; Load ui, shell, basic env:
