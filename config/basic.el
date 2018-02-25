@@ -1,8 +1,16 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
-;; Basic
+;; basic
 ;;;;
 
+
+
+(defmacro require* (feature)
+  "Require compiled FEATURE in `(v-home* \"config/\")'."
+  `(require ,feature
+            (expand-file-name
+             (concat (v-home* "config/" (symbol-name ,feature))
+                     ".elc"))))
 
 
 (version-supported-when >= 24.0
@@ -231,3 +239,5 @@ for which (PRED item) returns t."
         (setq s1 (cons (car s) s1)
               s (cdr s))))
     (nreverse s1)))
+
+

@@ -1,6 +1,6 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
-;; Financial Calculations
+;; financial calculations
 ;;;;
 
 
@@ -103,3 +103,5 @@
   (let ((R  (- (expt (/. F P) (/. 1 T)) 1))
         (rt (if periods periods 1)))
     (* R rt)))
+
+(provide 'financial)

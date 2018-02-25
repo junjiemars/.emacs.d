@@ -95,9 +95,10 @@
   `(self-spec-> *val* ,@keys))
 
 
+
 (compile!
- v-dir
- (emacs-home* "config/shim.el"))
+    v-dir
+  (emacs-home* "config/shim.el"))
 
 
 (compile!
@@ -134,15 +135,15 @@
 
 ;; Load package independent modules
 (compile!
- v-dir
- (emacs-home* "config/debugger.el")
- (emacs-home* "config/editing.el")
- (emacs-home* "config/financial.el")
- (emacs-home* "config/pythons.el")
- (emacs-home* "config/tags.el")
- (emacs-home* "config/cc.el")
- ;; --batch mode: disable desktop read/save
- (unless noninteractive (emacs-home* "config/memory.el")))
+    v-dir
+  (cons (emacs-home* "config/debugger.el") t)
+  (emacs-home* "config/editing.el")
+  (cons (emacs-home* "config/financial.el") t)
+  (emacs-home* "config/pythons.el")
+  (emacs-home* "config/tags.el")
+  (emacs-home* "config/cc.el")
+  ;; --batch mode: disable desktop read/save
+  (unless noninteractive (emacs-home* "config/memory.el")))
 
 
 ;; Self do epilogue ...

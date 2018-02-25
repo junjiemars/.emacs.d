@@ -10,6 +10,10 @@
 (message "#self epilogue ...")
 
 
+(require* 'financial)
+(require* 'debugger)
+
+
 (safe-fn-when org-agenda
   (global-set-key (kbd "C-c a") 'org-agenda))
 (safe-fn-when org-capture
