@@ -1,6 +1,6 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
-;; Session 
+;; memory
 ;;;;
 
 

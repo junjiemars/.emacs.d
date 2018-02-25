@@ -66,8 +66,10 @@
 
 
 
-(defmacro compile-and-load-elisp-file* (vdir file)
-  "Compile and load the elisp FILE, save compiled files in VDIR."
+(defmacro compile-and-load-elisp-file* (vdir file &optional only-compile)
+  "Compile FILE and save the compiled one in VDIR then load it.
+
+If ONLY-COMPILE is t then do not load FILE."
   `(if (and (stringp ,file) (file-exists-p ,file))
        (let ((c (v-path! ,file ,vdir "elc")))
          (when (or (not (file-exists-p c))
@@ -75,10 +77,8 @@
            (let ((s (v-path! ,file ,vdir)))
              (copy-file ,file s t)
              (byte-compile-file s)))
-         (if (file-exists-p c)
-             (load c)
-           (message "#Missing %s" c)))
-     (message "#Skip compile and load %s.done" ,file)))
+         (or ,only-compile
+             (load c)))))
 
 
 (defmacro clean-compiled-files ()
