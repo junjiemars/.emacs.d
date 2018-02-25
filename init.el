@@ -319,7 +319,7 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil."
   (let ((_var_ (self-symbol var)))
     (when (boundp _var_)
       `(let ((*val* (symbol-value ',_var_)))
-         ,@body))))
+         (when *val* ,@body)))))
 
 
 
