@@ -16,7 +16,7 @@
   (dolist (file files)
     (let ((f (if (atom file) file (car file)))
           (c (if (atom file) nil (cdr file))))
-      (when f (compile-and-load-elisp-file* vdir f c)))))
+      (when f (compile-and-load-file* vdir f c)))))
 
 
 ;; Versioned dirs

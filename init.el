@@ -66,7 +66,7 @@
 
 
 
-(defmacro compile-and-load-elisp-file* (vdir file &optional only-compile)
+(defmacro compile-and-load-file* (vdir file &optional only-compile)
   "Compile FILE and save the compiled one in VDIR then load it.
 
 If ONLY-COMPILE is t then do not load FILE."
@@ -325,7 +325,7 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil."
 
 
 ;; Load strap
-(compile-and-load-elisp-file*
+(compile-and-load-file*
  v-dir
  (emacs-home* "config/strap.el"))
 
