@@ -79,10 +79,10 @@
        (let ((p (self-spec-> s :cond))
              (m (self-spec-> s :packages)))
          (when (and p (consp m))
-	   (install-package! (delete nil m))
-	   (apply #'compile-and-load-elisp-files!
-		  ,dir
-		  (delete nil (self-spec-> s :compile))))))))
+           (install-package! (delete nil m))
+           (apply #'compile!
+                  ,dir
+                  (delete nil (self-spec-> s :compile))))))))
 
 
 (defvar basic-package-spec

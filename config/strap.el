@@ -10,11 +10,13 @@
   (put 'lexical-binding 'safe-local-variable (lambda (x) t)))
 
 
-(defun compile-and-load-elisp-files! (vdir &rest files)
-  "Compile and load the elisp FILES, save compiled files in VDIR."
+(defun compile! (vdir &rest files)
+  "Compile and load the elisp FILES in VDIR."
   (declare (indent 1))
-  (dolist (f files)
-    (when f (compile-and-load-elisp-file* vdir f))))
+  (dolist (file files)
+    (let ((f (if (atom file) file (car file)))
+          (c (if (atom file) nil (cdr file))))
+      (when f (compile-and-load-elisp-file* vdir f c)))))
 
 
 ;; Versioned dirs
@@ -67,9 +69,9 @@
   "Where's the path of self-path.el")
 
 ;; Load self where
-(compile-and-load-elisp-files!
-    v-dir
-  self-def-where)
+(compile!
+ v-dir
+ self-def-where)
 
 
 (defmacro self-def-path-ref-> (k)
@@ -93,57 +95,57 @@
   `(self-spec-> *val* ,@keys))
 
 
-(compile-and-load-elisp-files!
-    v-dir
-  (emacs-home* "config/shim.el"))
+(compile!
+ v-dir
+ (emacs-home* "config/shim.el"))
 
 
-(compile-and-load-elisp-files!
-    v-dir
-  (self-def-path-ref-> :env-spec))
+(compile!
+ v-dir
+ (self-def-path-ref-> :env-spec))
 
 
  ;; end of Load self env
 
 
 ;; Load ui, shell, basic env:
-(compile-and-load-elisp-files!
-    v-dir
-  (emacs-home* "config/boot.el")
-  (emacs-home* "config/shells.el")
-  (emacs-home* "config/basic.el"))
+(compile!
+ v-dir
+ (emacs-home* "config/boot.el")
+ (emacs-home* "config/shells.el")
+ (emacs-home* "config/basic.el"))
 
 
 ;; Self do prologue ...
-(compile-and-load-elisp-files!
-    v-dir
-  (self-def-path-ref-> :prologue))
+(compile!
+ v-dir
+ (self-def-path-ref-> :prologue))
 
 
 (package-supported-p
   ;; (package-initialize)
 
   ;; Load basic and self modules
-  (compile-and-load-elisp-files!
-      v-dir
-    (self-def-path-ref-> :package-spec)
-    (emacs-home* "config/module.el")))
+  (compile!
+   v-dir
+   (self-def-path-ref-> :package-spec)
+   (emacs-home* "config/module.el")))
 
 
 ;; Load package independent modules
-(compile-and-load-elisp-files!
-    v-dir
-  (emacs-home* "config/debugger.el")
-  (emacs-home* "config/editing.el")
-  (emacs-home* "config/financial.el")
-  (emacs-home* "config/pythons.el")
-  (emacs-home* "config/tags.el")
-  (emacs-home* "config/cc.el")
-  ;; --batch mode: disable desktop read/save
-  (unless noninteractive (emacs-home* "config/memory.el")))
+(compile!
+ v-dir
+ (emacs-home* "config/debugger.el")
+ (emacs-home* "config/editing.el")
+ (emacs-home* "config/financial.el")
+ (emacs-home* "config/pythons.el")
+ (emacs-home* "config/tags.el")
+ (emacs-home* "config/cc.el")
+ ;; --batch mode: disable desktop read/save
+ (unless noninteractive (emacs-home* "config/memory.el")))
 
 
 ;; Self do epilogue ...
-(compile-and-load-elisp-files!
-    v-dir
-  (self-def-path-ref-> :epilogue))
+(compile!
+ v-dir
+ (self-def-path-ref-> :epilogue))
