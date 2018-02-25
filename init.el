@@ -296,20 +296,14 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil."
 
 
 (defmacro def-self-env-spec (&rest spec)
-  "Define default Emacs env SPEC of current platform on current Emacs version.
-
-Ignore it if you don't like it."
+  "Define default Emacs env SPEC of current platform on current Emacs version."
   (declare (indent 0))
   (let ((_spec_ (self-symbol 'env-spec)))
     `(defvar ,_spec_ (list ,@spec))))
 
 
 (defmacro def-self-package-spec (&rest spec)
-  "Define self package SPEC list.
-
-:cond t ;; predicat
-:packages '(x y z) ;; package list
-:setup '(\"setup-xyz.el\") ;; predefined"
+  "Define self package SPEC list."
   (declare (indent 0))
   (package-supported-p 
     (let ((_spec_ (self-symbol 'package-spec)))

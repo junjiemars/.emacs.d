@@ -1,3 +1,4 @@
+;;;; -*- lexical-binding:t -*-
 ;;;;
 ;; sample-self-epilogue.el: specify the epilogue of yourself
 ;;   define self-epilogue, it will be run the last end

@@ -1,3 +1,4 @@
+;;;; -*- lexical-binding:t -*-
 ;;;;
 ;; sample-self-env-spec.el: specify the private environment specs
 ;; 

@@ -1,3 +1,4 @@
+;;;; -*- lexical-binding:t -*-
 ;;;;
 ;; sample-self-package-spec.el: specify the package spec of yourself
 ;;
