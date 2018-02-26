@@ -1,6 +1,6 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
-;; CC
+;; cc
 ;;;;
 
 
@@ -65,21 +65,21 @@
        "\n" t "[ \t\n]")))))
 
 
-(defvar system-cc-include-paths nil
+(defvar system-cc-include nil
   "The system include paths used by the C language.
 
-This should be set with `system-cc-include-paths'")
+This should be set with `system-cc-include'")
 
-(defun system-cc-include-paths (cached)
-  "Return a list of system include directories. 
+(defun system-cc-include (cached)
+  "Returns a list of system include directories. 
 
-Load `system-cc-include-paths' from file when CACHED is t, 
+Load `system-cc-include' from file when CACHED is t, 
 otherwise check cc include on the fly."
   (let ((c (v-home* "config/" ".cc-inc.el")))
     (if (and cached (file-exists-p (concat c "c")))
         (progn
           (load (concat c "c"))
-          system-cc-include-paths)
+          system-cc-include)
       (let ((paths
              (platform-supported-if windows-nt
                  (check-cc-include)
@@ -89,9 +89,13 @@ otherwise check cc include on the fly."
                            (check-cc-include))
                  (check-cc-include)))))
         (when (save-sexp-to-file
-               `(setq system-cc-include-paths ',paths) c)
+               `(setq system-cc-include ',paths) c)
           (byte-compile-file c))
-        (setq system-cc-include-paths paths)))))
+        (setq system-cc-include paths)))))
 
+
+(autoload 'system-cc-include
+  "system-cc-include paths `autoload'."
+  (v-home* "config/" "cc.elc"))
 
 (provide 'cc)

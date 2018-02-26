@@ -37,7 +37,7 @@
                (declare-function semantic-reset-system-include "semantic")
                (declare-function semantic-add-system-include "semantic")
                (semantic-reset-system-include 'c-mode)
-               (dolist (x (system-cc-include-paths t))
+               (dolist (x (system-cc-include t))
                  (semantic-add-system-include x 'c-mode))
                (comment
                 (setq-default semanticdb-project-roots
