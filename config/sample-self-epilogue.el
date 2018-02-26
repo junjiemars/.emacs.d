@@ -12,6 +12,8 @@
 
 ;; (require 'financial)
 ;; (require 'debugger)
+;; (require 'eshells)
+
 
 (comment
  (when (require 'tags)

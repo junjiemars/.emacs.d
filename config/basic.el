@@ -9,6 +9,7 @@
 (setq-default recentf-save-file (v-home! ".recentf/" "recentf"))
 (setq-default savehist-file (v-home! ".minibuffer/" "history"))
 (setq auto-save-list-file-prefix (v-home! ".auto-save/" "saves-"))
+(setq-default eshell-directory-name (v-home! ".eshell/"))
 
 
 ;; versioned dirs: load-path
@@ -123,29 +124,6 @@ then set `eww' to default browser."
 
 ;; auto-save
 (setq auto-save-default nil)
-
-
-;; eshell
-(setq-default eshell-directory-name (v-home! ".eshell/"))
-
-(defun set-eshell-mode! ()
-  (eval-when-compile (require 'em-term))
-  (self-safe-call*
-   "env-spec"
-   (dolist (x (self-spec->* :eshell :visual-commands))
-     (add-to-list 'eshell-visual-commands x t #'string=))
-   (safe-setq eshell-destroy-buffer-when-process-dies
-              (self-spec->* :eshell :destroy-buffer-when-process-dies))
-   (safe-setq eshell-visual-subcommands
-              (self-spec->* :eshell :visual-subcommands))
-   (safe-setq eshell-visual-options
-              (self-spec->* :eshell :visual-options))))
-
-(self-safe-call*
- "env-spec"
- (when (self-spec->* :eshell :allowed)
-   (defadvice eshell (after eshell-after compile)
-     (set-eshell-mode!))))
 
 
 (safe-fn-unless directory-name-p

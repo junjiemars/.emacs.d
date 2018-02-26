@@ -135,6 +135,7 @@
     v-dir
   (cons (emacs-home* "config/debugger.el") t)
   (emacs-home* "config/editing.el")
+  (cons (emacs-home* "config/eshells.el") t)
   (cons (emacs-home* "config/financial.el") t)
   (emacs-home* "config/pythons.el")
   (cons (emacs-home* "config/tags.el") t)
