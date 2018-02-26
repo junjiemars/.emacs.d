@@ -13,10 +13,14 @@
   :theme (list :name 'atom-one-dark
                :path (emacs-home* "theme/")
                :allowed t)
-  
-  :font (list :name "Monaco-13"
+
+  :font (list :name (platform-supported-if darwin
+                        "Monaco-13"
+                      (platform-supported-if windows-nt
+                          "Consolas-13"
+                        "DejaVu Sans Mono-12")) 
               :allowed nil)
-  
+
   :cjk-font (list :name "Microsoft Yahei"
                   :size 13
                   :allowed nil)
