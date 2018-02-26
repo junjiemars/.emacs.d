@@ -8,6 +8,17 @@
 (add-to-list 'load-path (v-home* "config/") t #'string=)
 
 
+(version-supported-when >= 24.4
+  (defmacro with-eval-after-load (file &rest body)
+    "Execute BODY after FILE is loaded.
+
+FILE is normally a feature name, but it can also be a file name,
+in case that file does not provide any feature.  See `eval-after-load'
+for more details about the different forms of FILE and their semantics."
+    (declare (indent 1) (debug t))
+    `(eval-after-load ,file (lambda () ,@body))))
+
+
 (version-supported-when >= 24.0
   (defalias 'eldoc-mode 'turn-on-eldoc-mode
     "After Emacs 24.0 `turn-on-eldoc-mode' is obsoleted, use `eldoc-mode' indeed.

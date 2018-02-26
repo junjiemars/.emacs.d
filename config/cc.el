@@ -94,18 +94,4 @@ otherwise check cc include on the fly."
         (setq system-cc-include-paths paths)))))
 
 
-;; (defun c-turn-on-eldoc-mode ()
-;;   "Enable c-eldoc-mode"
-;;   (interactive)
-;;   (add-function :before-until
-;;                 (local 'eldoc-documentation-function)
-;;                 #'c-eldoc-semantic-ia-show-summary)
-;;   (eldoc-mode))
-
-;; (defun c-eldoc-semantic-ia-show-summary ()
-;;   (interactive)
-;;   (semantic-ia-show-summary (point)))
-
-;; (when semantic-mode
-;;   (add-hook 'c-mode-hook #'c-turn-on-eldoc-mode))
-
+(provide 'cc)
