@@ -108,10 +108,10 @@
 
 ;; Load ui, shell, basic env:
 (compile!
- v-dir
- (emacs-home* "config/boot.el")
- (emacs-home* "config/shells.el")
- (emacs-home* "config/basic.el"))
+    v-dir
+  (emacs-home* "config/boot.el")
+
+  (emacs-home* "config/basic.el"))
 
 
 ;; Self do prologue ...
@@ -133,11 +133,12 @@
 ;; Load package independent modules
 (compile!
     v-dir
+  (cons (emacs-home* "config/shells.el") t)
   (cons (emacs-home* "config/debugger.el") t)
   (emacs-home* "config/editing.el")
   (cons (emacs-home* "config/eshells.el") t)
   (cons (emacs-home* "config/financial.el") t)
-  (emacs-home* "config/pythons.el")
+  (cons (emacs-home* "config/pythons.el") t)
   (cons (emacs-home* "config/tags.el") t)
   (cons (emacs-home* "config/cc.el") t)
   ;; --batch mode: disable desktop read/save

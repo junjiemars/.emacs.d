@@ -1,17 +1,18 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
-;; Python environment
+;; pythons
 ;;;;
 
 
 
-(version-supported-when
-    <= 24.1
+(version-supported-when <= 24.1
+  (eval-when-compile
+    (require 'python)
+    (require 'shells)))
 
-  (eval-when-compile (require 'python))
 
+(version-supported-when <= 24.1
   (defun python-virtualenv-activate (&optional vdir)
-    "Activate virtualenv at VDIR"
     (interactive "Dvirtualenv activate at ")
     (let ((vdir (or vdir default-directory)))
       (setq python-shell-process-environment
@@ -24,6 +25,7 @@
         (setq python-shell-virtualenv-path vdir)))))
 
 
+(provide 'pythons)
 
 ;; (defun unload-python-on-exit ()
 ;;   (safe-fn-when* 'elpy-disable (elpy-disable))

@@ -1,6 +1,6 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
-;; Shell environment base on OS
+;; shells
 ;;;;
 
 
@@ -172,3 +172,6 @@ get via (path-env-> k) and put via (path-env<- k v) ")
       (setenv (shell-env-spec->% :path-var)
               (shell-env-> :path) path-separator)
       (setq shell-file-name (shell-env-> :shell-file-name)))))
+
+
+(provide 'shells)
