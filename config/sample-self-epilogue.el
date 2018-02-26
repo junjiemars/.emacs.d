@@ -11,8 +11,14 @@
 
 
 ;; (require 'financial)
-
 ;; (require 'debugger)
+
+(comment
+ (when (require 'tags)
+   (version-supported-if
+       <= 25.2
+       (setq source-directory "/opt/open/emacs-25/")
+     (setq source-directory "/opt/open/emacs-22/"))))
 
 
 (safe-fn-when org-agenda
@@ -38,11 +44,7 @@
                               '("/opt/apps/c"))))
              t)))
 
-(comment
- (version-supported-if
-     <= 25.2
-     (setq source-directory "/opt/open/emacs-25/")
-   (setq source-directory "/opt/open/emacs-22/")))
+
 
 
 (comment

@@ -140,7 +140,7 @@
   (emacs-home* "config/editing.el")
   (cons (emacs-home* "config/financial.el") t)
   (emacs-home* "config/pythons.el")
-  (emacs-home* "config/tags.el")
+  (cons (emacs-home* "config/tags.el") t)
   (emacs-home* "config/cc.el")
   ;; --batch mode: disable desktop read/save
   (unless noninteractive (emacs-home* "config/memory.el")))

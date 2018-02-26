@@ -4,8 +4,6 @@
 ;;
 
 
-
-
 (defmacro v-tags->% (&rest keys)
   "Versionized TAGS file, use `visit-tag-table' to visit"
   (let ((tags `(list
@@ -78,3 +76,6 @@ INCLUDES should be set with `system-cc-include-paths'."
   (make-c-tags (car includes) (v-tags->% :os-include) renew)
   (dolist (p (cdr includes))
     (make-c-tags p (v-tags->% :os-include))))
+
+
+(provide 'tags)
