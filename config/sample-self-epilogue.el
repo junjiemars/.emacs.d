@@ -10,9 +10,9 @@
 (message "#self epilogue ...")
 
 
-;; (require* 'financial)
+;; (require 'financial)
 
-;; (require* 'debugger)
+;; (require 'debugger)
 
 
 (safe-fn-when org-agenda

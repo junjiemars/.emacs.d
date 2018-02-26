@@ -82,7 +82,7 @@ else if theme NAME non-existing then load default `theme/tomorrow-night-eighties
       `(progn
          (when (and ,dir (file-exists-p ,dir))
            (add-to-list 'custom-theme-load-path ,dir)
-           (add-to-list 'load-path ,dir))
+           (add-to-list 'load-path ,dir t #'string=))
          (version-supported-if >= 24.1
                                (load-theme ,name)
            (load-theme ,name t)))))

@@ -5,12 +5,7 @@
 
 
 
-(defmacro require* (feature)
-  "Require compiled FEATURE in `(v-home* \"config/\")'."
-  `(require ,feature
-            (expand-file-name
-             (concat (v-home* "config/" (symbol-name ,feature))
-                     ".elc"))))
+(add-to-list 'load-path (v-home* "config/") t #'string=)
 
 
 (version-supported-when >= 24.0
