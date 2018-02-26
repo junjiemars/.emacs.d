@@ -13,8 +13,12 @@
 
 
 ;; versioned dirs: load-path
+(eval-when-compile
+  (add-to-list 'load-path (v-home* "config/") t #'string=)
+  (add-to-list 'load-path (v-home* "private/") t #'string=))
 (add-to-list 'load-path (v-home* "config/") t #'string=)
 (add-to-list 'load-path (v-home* "private/") t #'string=)
+
 
 
 (version-supported-when >= 24.0
