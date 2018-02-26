@@ -19,11 +19,8 @@
       (when f (compile-and-load-file* vdir f c)))))
 
 
-;; Versioned dirs
-(setq-default recentf-save-file (v-home! ".recentf/" "recentf"))
-(setq-default savehist-file (v-home! ".minibuffer/" "history"))
-
 
+
 
 (defmacro theme-supported-p (&rest body)
   (declare (indent 1))

@@ -4,6 +4,14 @@
 ;;;;
 
 
+
+;; versioned dirs: .*
+(setq-default recentf-save-file (v-home! ".recentf/" "recentf"))
+(setq-default savehist-file (v-home! ".minibuffer/" "history"))
+(setq auto-save-list-file-prefix (v-home! ".auto-save/" "saves-"))
+
+
+;; versioned dirs: load-path
 (add-to-list 'load-path (v-home* "config/") t #'string=)
 (add-to-list 'load-path (v-home* "private/") t #'string=)
 
@@ -113,12 +121,11 @@ then set `eww' to default browser."
   (require 'ls-lisp))
 
 
-;; Auto-save
+;; auto-save
 (setq auto-save-default nil)
-(setq auto-save-list-file-prefix (v-home! ".auto-save/" "saves-"))
 
 
-;; Eshell
+;; eshell
 (setq-default eshell-directory-name (v-home! ".eshell/"))
 
 (defun set-eshell-mode! ()
