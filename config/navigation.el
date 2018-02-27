@@ -85,5 +85,5 @@
   (safe-setq smex-save-file (v-home! ".smex/" ".smex-items")))
 
 
-(add-hook 'after-init-hook #'self-ido-ubiquitous!)
+(append-to-emacs-startup-hook #'self-ido-ubiquitous!)
 
