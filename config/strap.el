@@ -141,6 +141,7 @@
   (cons (emacs-home* "config/pythons.el") t)
   (cons (emacs-home* "config/tags.el") t)
   (cons (emacs-home* "config/cc.el") t)
+  (emacs-home* "config/autoloads.el")
   ;; --batch mode: disable desktop read/save
   (unless noninteractive (emacs-home* "config/memory.el")))
 

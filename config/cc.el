@@ -94,8 +94,4 @@ otherwise check cc include on the fly."
         (setq system-cc-include paths)))))
 
 
-(autoload 'system-cc-include
-  "system-cc-include paths `autoload'."
-  (v-home* "config/" "cc.elc"))
-
 (provide 'cc)
