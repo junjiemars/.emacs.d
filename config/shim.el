@@ -122,6 +122,7 @@ otherwise default to keep the directories of current `emacs-version'."
                     `,(emacs-home* ".tags/")
                     `,(emacs-home* ".places/")
                     `,(emacs-home* ".semanticdb/")
+                    `,(emacs-home* ".server/")
                     `,(emacs-home* ".smex/")
                     `,(emacs-home* ".url/"))))
     (dolist (d dirs)

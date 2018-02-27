@@ -10,6 +10,7 @@
 (setq-default savehist-file (v-home! ".minibuffer/" "history"))
 (setq auto-save-list-file-prefix (v-home! ".auto-save/" "saves-"))
 (setq-default eshell-directory-name (v-home! ".eshell/"))
+(setq-default server-auth-dir (v-home! ".server/"))
 
 
 ;; versioned dirs: load-path
