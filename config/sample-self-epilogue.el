@@ -24,10 +24,10 @@
      (setq source-directory "/opt/open/emacs-22/"))))
 
 
-(safe-fn-when org-agenda
-  (global-set-key (kbd "C-c a") 'org-agenda))
-(safe-fn-when org-capture
+(with-eval-after-load 'org
+  (global-set-key (kbd "C-c a") 'org-agenda)
   (global-set-key (kbd "C-c c") 'org-capture))
+
 
 (comment (safe-setq enable-local-variables :all))
 (comment (setq-default compilation-scroll-output t))
