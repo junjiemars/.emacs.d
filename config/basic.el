@@ -11,6 +11,7 @@
 (setq auto-save-list-file-prefix (v-home! ".auto-save/" "saves-"))
 (setq-default eshell-directory-name (v-home! ".eshell/"))
 (setq-default server-auth-dir (v-home! ".server/"))
+(setq-default image-dired-dir (v-home! ".image-dired/"))
 
 
 ;; versioned dirs: load-path

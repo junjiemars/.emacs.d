@@ -117,6 +117,7 @@ otherwise default to keep the directories of current `emacs-version'."
                     `,(emacs-home* ".desktop/")
                     `,(emacs-home* ".eshell/")
                     `,(emacs-home* ".ido/")
+                    `,(emacs-home* ".image-dired/")
                     `,(emacs-home* ".minibuffer/")
                     `,(emacs-home* ".recentf/")
                     `,(emacs-home* ".tags/")
