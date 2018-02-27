@@ -12,7 +12,9 @@
 (setq-default eshell-directory-name (v-home! ".eshell/"))
 (setq-default server-auth-dir (v-home! ".server/"))
 (setq-default image-dired-dir (v-home! ".image-dired/"))
-(setq-default tramp-persistency-file-name (v-home! ".tramp/" "tramp"))
+(version-supported-when <= 23
+  (setq-default tramp-persistency-file-name (v-home! ".tramp/" "tramp")))
+
 
 ;; versioned dirs: load-path
 (eval-when-compile
