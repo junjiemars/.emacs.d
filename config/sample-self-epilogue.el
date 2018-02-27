@@ -11,9 +11,10 @@
 
 
 ;; (require 'financial)
-;; (require 'debugger)
+;; (require 'shells)
 ;; (require 'eshells)
 ;; (require 'pythons)
+
 
 (comment
  (when (require 'tags)

@@ -136,7 +136,7 @@
   (cons (emacs-home* "config/shells.el") t)
   (cons (emacs-home* "config/debugger.el") t)
   (emacs-home* "config/editing.el")
-  (cons (emacs-home* "config/eshells.el") t)
+  (emacs-home* "config/eshells.el")
   (cons (emacs-home* "config/financial.el") t)
   (cons (emacs-home* "config/pythons.el") t)
   (cons (emacs-home* "config/tags.el") t)
