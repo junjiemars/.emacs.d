@@ -104,7 +104,8 @@
 (compile!
     v-dir
   (emacs-home* "config/boot.el")
-  (emacs-home* "config/basic.el"))
+  (emacs-home* "config/basic.el")
+  (emacs-home* "config/shells.el"))
 
 
 ;; Self do prologue ...
@@ -126,7 +127,6 @@
 ;; Load package independent modules
 (compile!
     v-dir
-  `,(emacs-home* "config/shells.el")
   ;; `,(cons (emacs-home* "config/debugger.el") t)
   `,(emacs-home* "config/editing.el")
   `,(emacs-home* "config/eshells.el")

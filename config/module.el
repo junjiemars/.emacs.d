@@ -93,7 +93,7 @@
                      markdown-mode
                      paredit
                      rainbow-delimiters
-                     tagedit)
+                     ,(version-supported-when <= 24.1 'yaml-mode))
          :compile `(,(emacs-home* "config/lisps.el")
                     ))))
 

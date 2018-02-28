@@ -54,11 +54,6 @@
    :packages '(slime)
    :compile `(,(cons (emacs-home* "config/use-slime.el") t)
               (emacs-home* "config/use-slime-autoload.el")))
-  (list
-   :cond (version-supported-p <= 24.1)
-   :packages '(yaml-mode))
-  (list
-   :cond (version-supported-p <= 24.4)
-   :packages '(groovy-mode)))
+  )
 
 
