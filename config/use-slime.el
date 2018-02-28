@@ -1,7 +1,7 @@
+;;;; -*- lexical-binding:t -*-
 ;;;;
-;; sbcl
+;; use-slime
 ;;;;
-
 
 
 
@@ -13,7 +13,9 @@
 
 
 (defsubst common-lisp-implementations ()
-  "Returns a list of common-lisp implementations. use `M-- M-x slime'."
+  "Returns a list of common-lisp implementations. 
+
+use `M-- M-x slime', \\{slime-repl-mode-map}"
   (remove nil
           (list (when (bin-exists-p "sbcl")
                   (safe-setq-inferior-lisp-program "sbcl" t)
@@ -24,15 +26,13 @@
                   (list 'ecl (list (common-lisp-path "ecl")))))))
 
 
-(defun set-slime-repl-mode! ()
+(defun use-slime-repl-mode! ()
+  "Using slime functions."
   (safe-fn-when slime-selector 
-    (global-set-key (kbd "C-c s")
+    (global-set-key (kbd "C-c s s")
                     'slime-selector)))
 
 
-;; setup sbcl, it's slow process so be adviced
-(defadvice slime (before slime-before compile)
-  (set-default 'slime-lisp-implementations (common-lisp-implementations))
-  (add-hook 'slime-repl-mode-hook #'set-slime-repl-mode!)
-  (slime-setup '(slime-fancy slime-asdf)))
+
+(provide 'use-slime)
 
