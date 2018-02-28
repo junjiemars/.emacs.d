@@ -25,8 +25,8 @@
 
 
 (with-eval-after-load 'org
-  (global-set-key (kbd "C-c a") 'org-agenda)
-  (global-set-key (kbd "C-c c") 'org-capture))
+  (global-set-key (kbd "C-c o a") 'org-agenda)
+  (global-set-key (kbd "C-c o c") 'org-capture))
 
 
 (comment (safe-setq enable-local-variables :all))
