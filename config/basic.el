@@ -148,7 +148,6 @@ otherwise default to keep the directories of current `emacs-version'."
                     `,(emacs-home* ".recentf/")
                     `,(emacs-home* ".semanticdb/")
                     `,(emacs-home* ".server/")
-                    `,(emacs-home* ".smex/")
                     `,(emacs-home* ".tags/")
                     `,(emacs-home* ".tramp/")
                     `,(emacs-home* ".url/"))))
