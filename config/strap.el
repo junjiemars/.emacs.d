@@ -110,7 +110,6 @@
 (compile!
     v-dir
   (emacs-home* "config/boot.el")
-
   (emacs-home* "config/basic.el"))
 
 
@@ -133,17 +132,17 @@
 ;; Load package independent modules
 (compile!
     v-dir
-  (cons (emacs-home* "config/shells.el") t)
-  (cons (emacs-home* "config/debugger.el") t)
-  (emacs-home* "config/editing.el")
-  (emacs-home* "config/eshells.el")
-  (cons (emacs-home* "config/financial.el") t)
-  (cons (emacs-home* "config/pythons.el") t)
-  (cons (emacs-home* "config/tags.el") t)
-  (cons (emacs-home* "config/cc.el") t)
-  (emacs-home* "config/autoloads.el")
+  `,(emacs-home* "config/shells.el")
+  ;; `,(cons (emacs-home* "config/debugger.el") t)
+  `,(emacs-home* "config/editing.el")
+  `,(emacs-home* "config/eshells.el")
+  `,(cons (emacs-home* "config/financial.el") t)
+  `,(cons (emacs-home* "config/pythons.el") t)
+  `,(cons (emacs-home* "config/tags.el") t)
+  `,(cons (emacs-home* "config/cc.el") t)
+  `,(emacs-home* "config/autoloads.el")
   ;; --batch mode: disable desktop read/save
-  (unless noninteractive (emacs-home* "config/memory.el")))
+  `,(unless noninteractive (emacs-home* "config/memory.el")))
 
 
 ;; Self do epilogue ...
