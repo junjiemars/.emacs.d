@@ -32,7 +32,7 @@
    :cond (and (bin-exists-p "erlc")
               (bin-exists-p "lfe"))
    :packages '(lfe-mode)
-   :compile `(,(emacs-home* "config/setup-lfe.el")))
+   :compile `(,(emacs-home* "config/use-lfe-autoload.el")))
   (list
    :cond (and (terminal-supported-p t)
               (platform-supported-unless darwin t)
@@ -42,7 +42,8 @@
    :cond (and (version-supported-p <= 24.4)
               (bin-exists-p "git"))
    :packages '(magit)
-   :compile `(,(emacs-home* "config/setup-magit.el")))
+   :compile `(,(cons (emacs-home* "config/use-magit.el") t)
+              (emacs-home* "config/use-magit-autoload.el")))
   (list
    :cond (and (version-supported-p <= 23.2)
               (or (bin-exists-p "racket")
@@ -51,7 +52,8 @@
   (list
    :cond (or (bin-exists-p "sbcl"))
    :packages '(slime)
-   :compile `(,(emacs-home* "config/setup-slime.el")))
+   :compile `(,(cons (emacs-home* "config/use-slime.el") t)
+              (emacs-home* "config/use-slime-autoload.el")))
   (list
    :cond (version-supported-p <= 24.1)
    :packages '(yaml-mode))
