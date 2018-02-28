@@ -10,8 +10,6 @@
 
 
 
-;; Where to save ido.last
-(setq-default ido-save-directory-list-file (v-home! ".ido/" "ido.last"))
 
 ;; smex
 (package-supported-p

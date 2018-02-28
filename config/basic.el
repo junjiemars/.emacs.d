@@ -17,6 +17,7 @@
 (version-supported-when <= 23
   (setq-default semanticdb-default-save-directory
                 (v-home! ".semanticdb/")))
+(setq-default ido-save-directory-list-file (v-home! ".ido/" "ido.last"))
 
 
 ;; versioned dirs: load-path
