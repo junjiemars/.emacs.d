@@ -202,7 +202,18 @@ call it: ssh -vnNTD32000 <user>@<host>"
                   (if method method 'native))))
 
 
+
+
+
 ;; Computations
+
+
+(safe-fn-when number-sequence (fset 'range 'number-sequence))
+
+
+;; use `pp' `pp-eval-expression' or `pp-eval-last-sexp'
+(safe-fn-when cl-prettyexpand (fset 'pprint 'cl-prettyprint))
+
 
 (defun take (n seq)
   "Returns a sequence of the first N items in SEQ.

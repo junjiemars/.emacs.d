@@ -77,13 +77,6 @@ function definition in Emacs25-."
      (if x (cdr x) ,default)))
 
 
-(safe-fn-when number-sequence (fset 'range 'number-sequence))
-
-
-;; use `pp' `pp-eval-expression' or `pp-eval-last-sexp'
-(safe-fn-when cl-prettyexpand (fset 'pprint 'cl-prettyprint))
-
-
 
 
 
