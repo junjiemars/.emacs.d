@@ -90,7 +90,8 @@
          :cond t
          :packages `(aggressive-indent
                      bing-dict
-                     ,(version-supported-when <= 24.4 'ido-completing-read+)
+                     ,(version-supported-when <= 24.4
+                        'ido-completing-read+)
                      markdown-mode
                      paredit
                      rainbow-delimiters
