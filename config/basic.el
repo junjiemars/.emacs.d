@@ -14,6 +14,9 @@
 (setq-default image-dired-dir (v-home! ".image-dired/"))
 (version-supported-when <= 23
   (setq-default tramp-persistency-file-name (v-home! ".tramp/" "tramp")))
+(version-supported-when <= 23
+  (setq-default semanticdb-default-save-directory
+                (v-home! ".semanticdb/")))
 
 
 ;; versioned dirs: load-path

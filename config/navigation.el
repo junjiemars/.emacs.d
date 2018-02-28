@@ -40,14 +40,6 @@
 (package-supported-p
   (setq-default smex-save-file (v-home! ".smex/" ".smex-items")))
 
-;; Where to save semantic db
-;; Semantic is a suite of Emacs libraries and utilties for parsing
-;; source code
-(package-supported-p
-  (setq-default semanticdb-default-save-directory
-                (v-home! ".semanticdb/")))
-
-
 
 ;; This allows partial matches, e.g. "tl" will match "Tyrion Lannister"
 (safe-setq ido-enable-flex-matching t)
