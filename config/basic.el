@@ -21,12 +21,6 @@
 (add-to-list 'load-path (v-home* "private/") t #'string=)
 
 
-(defmacro append-to-emacs-startup-hook (fn)
-  "Run BODY with `emacs-startup-hook'.
-
-after loading init files and handling the command line."
-  `(add-hook 'emacs-startup-hook ,fn t))
-
 
 (version-supported-when > 24.4
   (defmacro with-eval-after-load (file &rest body)

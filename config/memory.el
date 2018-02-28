@@ -90,7 +90,7 @@ at compile time."
      (desktop-read (v-home* ".desktop/")))))
 
 
-(append-to-emacs-startup-hook #'self-desktop-read!)
+(add-hook 'after-init-hook #'self-desktop-read! t)
 
 
  ;; end of Read desktop

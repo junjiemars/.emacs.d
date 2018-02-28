@@ -34,7 +34,8 @@
 
 (comment
  (safe-fn-when semantic-mode
-   (append-to-emacs-startup-hook
+   (add-hook
+    'after-init-hook
     (lambda ()
       (semantic-mode t)
       (declare-function semantic-reset-system-include "semantic")
@@ -45,7 +46,8 @@
         (semantic-add-system-include x 'c-mode))
       (comment)
       (setq-default semanticdb-project-roots
-                    '("/opt/apps/c"))))))
+                    '("/opt/apps/c")))
+    t)))
 
 (comment
  (require 'rmail)
