@@ -21,5 +21,8 @@
   (global-set-key (kbd "C-c g c") 'magit-checkout))
 (safe-fn-when magit-merge
   (global-set-key (kbd "C-c g m") 'magit-merge))
+(safe-fn-when magit-fetch
+  (global-set-key (kbd "C-c g f") 'magit-fetch))
+
 
 

@@ -12,6 +12,11 @@
   (slime-setup '(slime-fancy slime-asdf)))
 
 
+(defun use-slime-repl-mode! ()
+  "Hook into `slime-repl-mode-hook'"
+  (safe-fn-when slime-selector 
+    (global-set-key (kbd "C-c s s") 'slime-selector)))
+
+
 (autoload 'use-slime-repl-mode!
-  (v-home* "config/" "use-slime.elc")
-  "Using slime functions, `autoload'")
+  (v-home* "config/" "use-slime.elc"))

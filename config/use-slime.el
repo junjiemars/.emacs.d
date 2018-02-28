@@ -6,8 +6,7 @@
 
 
 (defmacro common-lisp-path (name)
-  `(platform-supported-if
-       windows-nt
+  `(platform-supported-if windows-nt
        (windows-nt-posix-path (bin-path ,name))
      (bin-path ,name)))
 
@@ -24,13 +23,6 @@ use `M-- M-x slime', \\{slime-repl-mode-map}"
                   (list 'abcl (list (common-lisp-path "abcl"))))
                 (when (bin-exists-p "ecl")
                   (list 'ecl (list (common-lisp-path "ecl")))))))
-
-
-(defun use-slime-repl-mode! ()
-  "Using slime functions."
-  (safe-fn-when slime-selector 
-    (global-set-key (kbd "C-c s s")
-                    'slime-selector)))
 
 
 
