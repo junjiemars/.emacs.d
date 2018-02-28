@@ -3,6 +3,29 @@
 ;;
 
 
+
+;; linum mode
+(defmacro linum-mode-supported-p (body)
+  "When `emacs-version' supports linum mode then do BODY."
+  `(version-supported-when <= 23.1 ,body))
+
+
+;; Toggle linum mode 
+(linum-mode-supported-p
+ (defun toggle-linum-mode ()
+   "Toggle linum-mode."
+   (interactive)
+   (defvar linum-mode)
+   (if (or (not (boundp 'linum-mode))
+           (null linum-mode))
+       (linum-mode t)
+     (linum-mode -1))))
+
+
+
+
+
+
 ;; Shows all options when running apropos. For more info,
 ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html
 ;;apropos-do-all t
@@ -46,20 +69,6 @@
         try-complete-lisp-symbol))
 
 
-
-;; Interactive search key bindings.
-;; By default, C-s runs isearch-forward, so this swaps the bindings.
-(global-set-key (kbd "C-s") 'isearch-forward-regexp)
-(global-set-key (kbd "C-r") 'isearch-backward-regexp)
-(global-set-key (kbd "C-M-s") 'isearch-forward)
-(global-set-key (kbd "C-M-r") 'isearch-backward)
-
-;; Interactive query replace key bindings.
-(global-set-key (kbd "M-%") 'query-replace-regexp)
-(global-set-key (kbd "C-M-%") 'query-replace-regexp)
-
-
-
 ;; comments
 (defun toggle-comment ()
   "Comment or uncomment current line"
@@ -81,8 +90,6 @@
         (next-logical-line)
       (next-line))))
 
-;; toggle comment key strike
-(global-set-key (kbd "C-c ;") 'toggle-comment)
 
 
 ;; fix weird os x kill error
@@ -129,10 +136,6 @@
 (prefer-coding-system 'utf-8)
 
 
-;; bing dict
-(safe-fn-when bing-dict-brief
-  (global-set-key (kbd "C-c d") 'bing-dict-brief))
-
 
 ;; Greek letters C-x 8 <RET> greek small letter lambda
 ;; (global-set-key (kbd "C-c l") "λ")
@@ -176,6 +179,3 @@
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
-;; `C-x r g' and `C-x r i' are all bound to insert-register
-;; but `C-x r g' can do thing by one hand
-(global-set-key (kbd "C-x r g") 'string-insert-rectangle)

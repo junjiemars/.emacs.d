@@ -193,30 +193,6 @@ then set `eww' to default browser."
 
 (default-browser-eww)
 
-;; open file or url at point
-(safe-fn-when find-file-at-point
-  (global-set-key (kbd "C-c b") 'find-file-at-point))
-
-
-;; linum mode
-(defmacro linum-mode-supported-p (body)
-  "When `emacs-version' supports linum mode then do BODY."
-  `(version-supported-when <= 23.1 ,body))
-
-
-;; Toggle linum mode 
-(linum-mode-supported-p
- (defun toggle-linum-mode ()
-   "Toggle linum-mode."
-   (interactive)
-   (defvar linum-mode)
-   (if (or (not (boundp 'linum-mode))
-           (null linum-mode))
-       (linum-mode t)
-     (linum-mode -1))))
-
-(linum-mode-supported-p
- (global-set-key (kbd "C-c l") 'toggle-linum-mode))
 
 
 ;; emacs lisp mode
@@ -262,11 +238,6 @@ then set `eww' to default browser."
                    (string= "lisp" inferior-lisp-program))
            (setq inferior-lisp-program ,lisp)))
      (setq-default inferior-lisp-program ,lisp)))
-
-
-;; Shows a list of buffers
-(global-set-key (kbd "C-x C-b") #'ibuffer)
-
 
 
 
