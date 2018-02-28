@@ -92,15 +92,9 @@
   `(self-spec-> *val* ,@keys))
 
 
-
 (compile!
     v-dir
-  (emacs-home* "config/shim.el"))
-
-
-(compile!
- v-dir
- (self-def-path-ref-> :env-spec))
+  (self-def-path-ref-> :env-spec))
 
 
  ;; end of Load self env
