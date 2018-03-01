@@ -103,9 +103,9 @@
 ;; Load ui, shell, basic env:
 (compile!
     v-dir
-  (emacs-home* "config/boot.el")
-  (emacs-home* "config/basic.el")
-  (emacs-home* "config/shells.el"))
+  `,(emacs-home* "config/boot.el")
+  `,(emacs-home* "config/basic.el")
+  `,(emacs-home* "config/shells.el"))
 
 
 ;; Self do prologue ...
@@ -119,9 +119,9 @@
 
   ;; Load basic and self modules
   (compile!
-   v-dir
-   (self-def-path-ref-> :package-spec)
-   (emacs-home* "config/module.el")))
+      v-dir
+    (self-def-path-ref-> :package-spec)
+    `,(emacs-home* "config/module.el")))
 
 
 ;; Load package independent modules

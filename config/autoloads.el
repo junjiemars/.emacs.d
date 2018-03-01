@@ -159,14 +159,11 @@
       (add-hook hook #'set-lisp-basic-mode!))
 
     ;; enable paredit in minibuffer on gnu/linux platform
-    (platform-supported-when
+    (platform-supported-if
         gnu/linux
-      (add-hook 'minibuffer-setup-hook
-                #'enable-paredit-mode t))
-
-    ;; enable paredit in minbuffer on windows/darwin platform
-    (platform-supported-unless
-        gnu/linux
+        (add-hook 'minibuffer-setup-hook
+                  #'enable-paredit-mode t)
+      ;; enable paredit in minbuffer on windows/darwin platform
       (add-hook 'eval-expression-minibuffer-setup-hook
                 #'enable-paredit-mode t)))
   
