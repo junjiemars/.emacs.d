@@ -41,7 +41,13 @@
 
   ;; `C-x r g' and `C-x r i' are all bound to insert-register
   ;; but `C-x r g' can do thing by one hand
-  (global-set-key (kbd "C-x r g") 'string-insert-rectangle))
+  (global-set-key (kbd "C-x r g") 'string-insert-rectangle)
+
+  ;; Key binding to use "hippie expand" for text autocompletion
+  ;; http://www.emacswiki.org/emacs/HippieExpand
+  (global-set-key (kbd "M-/") 'hippie-expand)
+
+  )
 
 
 (defun set-default-modes! ()
@@ -52,6 +58,13 @@
   ;; you've typed in
   ;; http://www.emacswiki.org/emacs/InteractivelyDoThings
   (ido-mode t)
+
+  ;; enable save minibuffer history
+  (version-supported-if
+      <= 24
+      (savehist-mode)
+    (savehist-mode t))
+
   )
 
 

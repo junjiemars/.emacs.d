@@ -1,25 +1,10 @@
+;;;; -*- lexical-binding:t -*-
 ;;
 ;; Editing buffer that related to configurations.
 ;;
 
 
 
-;; linum mode
-(defmacro linum-mode-supported-p (body)
-  "When `emacs-version' supports linum mode then do BODY."
-  `(version-supported-when <= 23.1 ,body))
-
-
-;; Toggle linum mode 
-(linum-mode-supported-p
- (defun toggle-linum-mode ()
-   "Toggle linum-mode."
-   (interactive)
-   (defvar linum-mode)
-   (if (or (not (boundp 'linum-mode))
-           (null linum-mode))
-       (linum-mode t)
-     (linum-mode -1))))
 
 
 
@@ -55,9 +40,6 @@
 (safe-setq mouse-yank-at-point t)
 
 
-;; Key binding to use "hippie expand" for text autocompletion
-;; http://www.emacswiki.org/emacs/HippieExpand
-(global-set-key (kbd "M-/") 'hippie-expand)
 
 
 ;; Lisp-friendly hippie expand
@@ -69,26 +51,6 @@
         try-complete-lisp-symbol))
 
 
-;; comments
-(defun toggle-comment ()
-  "Comment or uncomment current line"
-  (interactive)
-  (let (begin end)
-    (safe-fn-if region-active-p
-        (if (region-active-p)
-            (setq begin (region-beginning)
-                  end (region-end))
-          (setq begin (line-beginning-position)
-                end (line-end-position)))
-      (if mark-active
-          (setq begin (region-beginning)
-                end (region-end))
-        (setq begin (line-beginning-position)
-              end (line-end-position))))
-    (comment-or-uncomment-region begin end)
-    (safe-fn-if next-logical-line
-        (next-logical-line)
-      (next-line))))
 
 
 
@@ -139,38 +101,9 @@
 ;; (global-set-key (kbd "C-c l") "λ")
 
 
-;; Rmail file
-(setq rmail-file-name (v-home! ".mail/" "RMAIL"))
-
-
-;; When you visit a file, point goes to the last place where it
-;; was when you previously visited the same file.
-;; http://www.emacswiki.org/emacs/SavePlace
-(progn
-  (require 'saveplace)
-  (setq-default save-place t)
-  (setq-default save-place-file (v-home! ".places/" "places")))
 
 
 
-;; Emacs can automatically create backup files. This tells Emacs to
-;; put all backups in ~/.emacs.d/backups. More info:
-;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Backup-Files.html
-(setq backup-directory-alist `(("." . ,(v-home! ".backup/"))))
-
-
-
-;; Bookmarks
-(setq-default eww-bookmarks-directory (v-home! ".bookmarks/"))
-(setq-default bookmark-default-file (v-home! ".bookmarks/" "emacs.bmk"))
-
-
-
-;; Enable save minibuffer history
-(version-supported-if
-    <= 24
-    (savehist-mode)
-  (savehist-mode t))
 
 
 ;; Enable upcase/downcase region

@@ -10,6 +10,7 @@
 
 
 ;; versioned dirs: .*
+
 (setq-default recentf-save-file (v-home! ".recentf/" "recentf"))
 (setq-default savehist-file (v-home! ".minibuffer/" "history"))
 (setq auto-save-list-file-prefix (v-home! ".auto-save/" "saves-"))
@@ -22,23 +23,32 @@
   (setq-default semanticdb-default-save-directory
                 (v-home! ".semanticdb/")))
 (setq-default ido-save-directory-list-file (v-home! ".ido/" "ido.last"))
+;; Rmail file
+(setq rmail-file-name (v-home! ".mail/" "RMAIL"))
+
+
+;; When you visit a file, point goes to the last place where it
+;; was when you previously visited the same file.
+;; http://www.emacswiki.org/emacs/SavePlace
+(progn
+  (setq-default save-place t)
+  (setq-default save-place-file (v-home! ".places/" "places")))
+
+
+;; Emacs can automatically create backup files. This tells Emacs to
+;; put all backups in ~/.emacs.d/backups. More info:
+;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Backup-Files.html
+(setq backup-directory-alist `(("." . ,(v-home! ".backup/"))))
+
+
+;; Bookmarks
+(setq-default eww-bookmarks-directory (v-home! ".bookmarks/"))
+(setq-default bookmark-default-file (v-home! ".bookmarks/" "emacs.bmk"))
 
 
 ;; versioned dirs: load-path
 (add-to-list 'load-path (v-home* "config/") t #'string=)
 (add-to-list 'load-path (v-home* "private/") t #'string=)
-
-
-
-(version-supported-when > 24.4
-  (defmacro with-eval-after-load (file &rest body)
-    "Execute BODY after FILE is loaded.
-
-FILE is normally a feature name, but it can also be a file name,
-in case that file does not provide any feature.  See ‘eval-after-load’
-for more details about the different forms of FILE and their semantics."
-    `(eval-after-load ,file
-       '(progn% ,@body))))
 
 
 
@@ -64,6 +74,17 @@ for more details about the different forms of FILE and their semantics."
 
 
 ;; Compatiable functions
+
+
+(version-supported-when > 24.4
+  (defmacro with-eval-after-load (file &rest body)
+    "Execute BODY after FILE is loaded.
+
+FILE is normally a feature name, but it can also be a file name,
+in case that file does not provide any feature.  See ‘eval-after-load’
+for more details about the different forms of FILE and their semantics."
+    `(eval-after-load ,file
+       '(progn% ,@body))))
 
 
 (version-supported-if
@@ -99,6 +120,18 @@ like `split-string' Emacs 24.4+"
        (split-string ,string ,separators ,omit-nulls))))
 
 
+(version-supported-when > 25
+  (defun directory-name-p (name)
+    "Returns t if NAME ends with a directory separator character."
+    (let ((len (length name))
+          (lastc ?.))
+      (if (> len 0)
+          (setq lastc (aref name (1- len))))
+      (or (= lastc ?/)
+          (and (memq system-type '(windows-nt ms-dos))
+               (= lastc ?\\))))))
+
+
 
 
 
@@ -128,6 +161,24 @@ Returns FILE when successed otherwise nil."
      (with-temp-file ,file (insert ,str))
      (when (file-exists-p ,file)
        ,file)))
+
+
+
+
+(defun dir-iterate (dir ff df fn)
+  "Iterating DIR, if FF file-fitler return t then call FN, 
+and if DF dir-filter return t then iterate into deeper DIR.
+
+   (defun FILE-FILTER (file-name absolute-name))
+   (defun DIR-FILTER (dir-name absolute-name))"
+  (dolist (f (file-name-all-completions "" dir))
+    (unless (member f '("./" "../"))
+      (let ((a (expand-file-name f dir)))
+        (if (directory-name-p f)
+            (when (and df (funcall df f a)
+                       (dir-iterate a ff df fn)))
+          (when (and ff (funcall ff f a)
+                     (funcall fn a))))))))
 
 
 
@@ -260,32 +311,6 @@ then set `eww' to default browser."
 (setq auto-save-default nil)
 
 
-(safe-fn-unless directory-name-p
-  (defun directory-name-p (name)
-    "Return t if NAME ends with a directory separator character."
-    (let ((len (length name))
-          (lastc ?.))
-      (if (> len 0)
-          (setq lastc (aref name (1- len))))
-      (or (= lastc ?/)
-          (and (memq system-type '(windows-nt ms-dos))
-               (= lastc ?\\))))))
-
-
-(defun dir-iterate (dir ff df fn)
-  "Iterating DIR, if FF file-fitler return t then call FN, 
-and if DF dir-filter return t then iterate into deeper DIR.
-
-   (defun FILE-FILTER (file-name absolute-name))
-   (defun DIR-FILTER (dir-name absolute-name))"
-  (dolist (f (file-name-all-completions "" dir))
-    (unless (member f '("./" "../"))
-      (let ((a (expand-file-name f dir)))
-        (if (directory-name-p f)
-            (when (and df (funcall df f a)
-                       (dir-iterate a ff df fn)))
-          (when (and ff (funcall ff f a)
-                     (funcall fn a))))))))
 
 
 
@@ -388,3 +413,45 @@ for which (PRED item) returns t."
     (nreverse s1)))
 
 
+
+
+;; falvour mode functions
+
+;; linum mode
+(defmacro linum-mode-supported-p (body)
+  "When `emacs-version' supports linum mode then do BODY."
+  `(version-supported-when <= 23.1 ,body))
+
+
+;; Toggle linum mode 
+(linum-mode-supported-p
+ (defun toggle-linum-mode ()
+   "Toggle linum-mode."
+   (interactive)
+   (defvar linum-mode)
+   (if (or (not (boundp 'linum-mode))
+           (null linum-mode))
+       (linum-mode t)
+     (linum-mode -1))))
+
+
+;; comments
+(defun toggle-comment ()
+  "Comment or uncomment current line"
+  (interactive)
+  (let (begin end)
+    (safe-fn-if region-active-p
+        (if (region-active-p)
+            (setq begin (region-beginning)
+                  end (region-end))
+          (setq begin (line-beginning-position)
+                end (line-end-position)))
+      (if mark-active
+          (setq begin (region-beginning)
+                end (region-end))
+        (setq begin (line-beginning-position)
+              end (line-end-position))))
+    (comment-or-uncomment-region begin end)
+    (safe-fn-if next-logical-line
+        (next-logical-line)
+      (next-line))))
