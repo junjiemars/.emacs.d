@@ -446,3 +446,4 @@ for which (PRED item) returns t."
     (defvar sh-indentation)
     (setq sh-basic-offset w)
     (setq sh-indentation w)))
+

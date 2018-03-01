@@ -135,6 +135,19 @@
   (put 'upcase-region 'disabled nil)
 
   (add-hook 'sh-mode-hook #'set-sh-mode!)
+
+
+  (package-supported-p
+    
+    ;; basic lisp mode 
+    (dolist (hook '(emacs-lisp-mode-hook
+                    ielm-mode-hook
+                    scheme-mode-hook
+                    lisp-mode-hook
+                    lisp-interaction-mode-hook))
+      (add-hook hook #'set-lisp-basic-mode!))
+
+    (set-paredit-mode!))
   
   )
 
