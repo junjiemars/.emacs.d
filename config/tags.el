@@ -4,20 +4,30 @@
 ;;
 
 
-(defmacro v-tags->% (&rest keys)
-  "Versionized TAGS file, use `visit-tag-table' to visit"
-  (let ((tags `(list
+(defmacro v-tags->% (&rest key)
+  "Returns the name of versionized tags file via KEY.
+
+\(v-tags->% :emacs-home\)
+\(v-tags->% :emacs-source\)
+\(v-tags->% :emacs-os-include\)"
+  (let ((name `(list
                 :emacs-home
                 ,(expand-file-name (v-home* ".tags/home/" "TAGS"))
                 :emacs-source
                 ,(expand-file-name (v-home* ".tags/source/" "TAGS"))
                 :os-include
                 ,(expand-file-name (v-home* ".tags/os/" "TAGS")))))
-    `(self-spec->% ,tags ,@keys)))
+    `(self-spec->% ,name ,@key)))
 
 
 (defun make-tags (home tags-file file-filter dir-filter &optional renew)
-  "Make tags."
+  "Make tags.
+
+HOME where the source files locate,
+TAGS-FILE where the tags file to save,
+FILE-FILTER file filter function,
+DIR-FILTER directory filter function,
+RENEW create tags file when t"
   (when (file-exists-p home)
     (let ((tags-dir (file-name-directory tags-file)))
       (if (file-exists-p tags-file)
@@ -47,7 +57,11 @@
 
 
 (defun make-emacs-source-tags (tags-file src-root &optional renew)
-  "Make TAGS-FILE for Emacs' C and Lisp source code on SRC-ROOT."
+  "Make TAGS-FILE for Emacs' C and Lisp source code in SRC-ROOT.
+
+\(make-emacs-source-tags
+   \(`v-tags->%' :emacs-home\)
+   `source-directory' t\)"
   (let ((lisp-ff (lambda (f _) (string-match "\\\.el$" f)))
         (c-ff (lambda (f _) (string-match "\\\.[ch]$" f)))
         (df (lambda (_ __) t)))
@@ -58,9 +72,7 @@
 
 
 (defun make-c-tags (home tags-file &optional renew)
-  "Make TAGS-FILE for C source code at HOME.
-
-Overwrite TAGS-FILE when RENEW is t otherwise append."
+  "Make TAGS-FILE for C source code in HOME."
   (let ((c-ff (lambda (f _) (string-match "\\\.[ch]$" f)))
         (df (lambda (d _) (not
                            (string-match
@@ -72,7 +84,7 @@ Overwrite TAGS-FILE when RENEW is t otherwise append."
 (defun make-system-c-tags (includes &optional renew)
   "Make tags for system INCLUDES.
 
-INCLUDES should be set with `system-cc-include-paths'."
+INCLUDES should be set with `system-cc-include'."
   (make-c-tags (car includes) (v-tags->% :os-include) renew)
   (dolist (p (cdr includes))
     (make-c-tags p (v-tags->% :os-include))))
