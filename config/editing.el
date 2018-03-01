@@ -132,8 +132,6 @@
 (add-hook 'sh-mode-hook #'set-sh-mode!)
 
 
-;; preferred coding system
-(prefer-coding-system 'utf-8)
 
 
 

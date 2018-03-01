@@ -42,8 +42,7 @@
    :cond (and (version-supported-p <= 24.4)
               (bin-exists-p "git"))
    :packages '(magit)
-   :compile `(,(cons (emacs-home* "config/use-magit.el") t)
-              (emacs-home* "config/use-magit-autoload.el")))
+   :compile `(,(emacs-home* "config/use-magit-autoload.el")))
   (list
    :cond (and (version-supported-p <= 23.2)
               (or (bin-exists-p "racket")
@@ -53,7 +52,7 @@
    :cond (or (bin-exists-p "sbcl"))
    :packages '(slime)
    :compile `(,(cons (emacs-home* "config/use-slime.el") t)
-              (emacs-home* "config/use-slime-autoload.el")))
+              ,(emacs-home* "config/use-slime-autoload.el")))
   )
 
 

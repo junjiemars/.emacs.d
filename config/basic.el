@@ -5,6 +5,10 @@
 
 
 
+;; preferred coding system
+(prefer-coding-system 'utf-8)
+
+
 ;; versioned dirs: .*
 (setq-default recentf-save-file (v-home! ".recentf/" "recentf"))
 (setq-default savehist-file (v-home! ".minibuffer/" "history"))
