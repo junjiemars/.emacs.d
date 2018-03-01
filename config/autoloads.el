@@ -8,19 +8,15 @@
   (v-home* "config/" "cc.elc")
   "Returns a list of system include directories.")
 
-(comment
-(defmacro package-installed-p* (packages &rest body)
-  "Run BODY if the list of PACKAGES had been installed."
-  (declare (indent 0))
+
+(defmacro package-installed-p% (package &rest body)
+  "Run BODY if the PACKAGE had been installed in compile-time."
+  (declare (indent 1))
   (package-supported-p
-    (eval-when-compile (require 'package))
-    (let ((*acc* 0))
-      (dolist (x packages *acc*)
-        (when (package-installed-p x)
-          (setq acc (1+ *acc*))))
-      (when (= *acc* (length *packages*))
-        `,@body))))
-)
+    (require 'package)
+    (when (package-installed-p (quote package))
+      `(progn% ,package ,@body))))
+
 
 
 (defun set-global-key! ()
@@ -61,7 +57,7 @@
   ;; http://www.emacswiki.org/emacs/HippieExpand
   (global-set-key (kbd "M-/") 'hippie-expand)
 
-  (package-supported-p
+  (package-installed-p% 'paredit
     ;; On Windows C-) is not work
     ;; fix inconsistent `C-)' `C-c )' behavior:#9
     (global-set-key (kbd "C-c )") 'paredit-forward-slurp-sexp)
@@ -169,8 +165,7 @@
   (add-hook 'sh-mode-hook #'set-sh-mode!)
 
 
-  (package-supported-p
-    
+  (package-installed-p% 'paredit
     ;; basic lisp mode 
     (dolist (hook '(emacs-lisp-mode-hook
                     ielm-mode-hook
