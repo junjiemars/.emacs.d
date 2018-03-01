@@ -20,6 +20,8 @@
   (setq inhibit-splash-screen t))
 
 
+
+
 
 ;; Theme and Font
 
@@ -97,9 +99,8 @@ else if theme NAME non-existing then load default `theme/tomorrow-night-eighties
        (self-load-theme! (self-spec->* :theme :name)
                          (self-spec->* :theme :path)))))
 
-;; End of theme-supported-p
 
-
+ ;; end of theme-supported-p
 
 
 ;; Terminal style
@@ -112,13 +113,6 @@ else if theme NAME non-existing then load default `theme/tomorrow-night-eighties
   (set-face-background 'region "white")
   (set-face-foreground 'region "black"))
 
-
-
-;; Changes all yes/no questions to y/n type
-(fset 'yes-or-no-p 'y-or-n-p)
-
-;; Highlights matching parenthesis
-(show-paren-mode 1)
 
 ;; No cursor blinking, it's distracting
 (safe-call blink-cursor-mode 0)

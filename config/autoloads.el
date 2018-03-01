@@ -8,6 +8,20 @@
   (v-home* "config/" "cc.elc")
   "Returns a list of system include directories.")
 
+(comment
+(defmacro package-installed-p* (packages &rest body)
+  "Run BODY if the list of PACKAGES had been installed."
+  (declare (indent 0))
+  (package-supported-p
+    (eval-when-compile (require 'package))
+    (let ((*acc* 0))
+      (dolist (x packages *acc*)
+        (when (package-installed-p x)
+          (setq acc (1+ *acc*))))
+      (when (= *acc* (length *packages*))
+        `,@body))))
+)
+
 
 (defun set-global-key! ()
   
@@ -62,6 +76,13 @@
 
 
 (defun set-flavor-mode! ()
+  
+  ;; Changes all yes/no questions to y/n type
+  (fset 'yes-or-no-p 'y-or-n-p)
+
+  ;; Highlights matching parenthesis
+  (show-paren-mode 1)
+
   ;; ido-mode allows you to more easily navigate choices. For example,
   ;; when you want to switch buffers, ido presents you with a list
   ;; of buffers in the the mini-buffer. As you start to type a buffer's
