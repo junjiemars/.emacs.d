@@ -47,6 +47,17 @@
   ;; http://www.emacswiki.org/emacs/HippieExpand
   (global-set-key (kbd "M-/") 'hippie-expand)
 
+  (package-supported-p
+    ;; On Windows C-) is not work
+    ;; fix inconsistent `C-)' `C-c )' behavior:#9
+    (global-set-key (kbd "C-c )") 'paredit-forward-slurp-sexp)
+
+    ;; On Terminal mode, Ctrl+Shift combination can't send to Emacs
+    (terminal-supported-p
+      (global-set-key (kbd "C-c (") 'paredit-backward-slurp-sexp)
+      (global-set-key (kbd "C-c }") 'paredit-forward-barf-sexp)
+      (global-set-key (kbd "C-c {") 'paredit-backward-barf-sexp)))
+
   )
 
 
@@ -147,7 +158,17 @@
                     lisp-interaction-mode-hook))
       (add-hook hook #'set-lisp-basic-mode!))
 
-    (set-paredit-mode!))
+    ;; enable paredit in minibuffer on gnu/linux platform
+    (platform-supported-when
+        gnu/linux
+      (add-hook 'minibuffer-setup-hook
+                #'enable-paredit-mode t))
+
+    ;; enable paredit in minbuffer on windows/darwin platform
+    (platform-supported-unless
+        gnu/linux
+      (add-hook 'eval-expression-minibuffer-setup-hook
+                #'enable-paredit-mode t)))
   
   )
 
