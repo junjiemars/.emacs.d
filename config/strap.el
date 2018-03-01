@@ -128,7 +128,6 @@
 (compile!
     v-dir
   ;; `,(cons (emacs-home* "config/debugger.el") t)
-  `,(emacs-home* "config/editing.el")
   `,(emacs-home* "config/eshells.el")
   `,(cons (emacs-home* "config/financial.el") t)
   `,(cons (emacs-home* "config/pythons.el") t)

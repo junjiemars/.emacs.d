@@ -121,7 +121,7 @@ like `split-string' Emacs 24.4+"
 
 
 (version-supported-when > 25
-  (defun directory-name-p (name)
+  (defsubst directory-name-p (name)
     "Returns t if NAME ends with a directory separator character."
     (let ((len (length name))
           (lastc ?.))
@@ -249,43 +249,6 @@ then set `eww' to default browser."
        (setq-default url-configuration-directory (v-home! ".url/"))
        (setq browse-url-browser-function 'eww-browse-url))))
 
-(default-browser-eww)
-
-
-
-;; emacs lisp mode
-(defun set-emacs-lisp-mode! ()
-  "Elisp basic settings."
-  (eldoc-mode)
-  (version-supported-if
-      <= 24.4
-      (local-set-key (kbd "TAB") #'completion-at-point)
-    (local-set-key (kbd "TAB") #'lisp-complete-symbol))
-  (cond
-   ((string= "*scratch*" (buffer-name))
-    (local-set-key (kbd "RET")
-                   (lambda ()
-                     (interactive)
-                     (eval-print-last-sexp)
-                     (newline)))
-    (version-supported-when > 24
-      (local-set-key (kbd "C-j")
-                     (lambda ()
-                       (interactive)
-                       (newline-and-indent)))))))
-
-;; emacs lisp basic 
-(add-hook 'emacs-lisp-mode-hook #'set-emacs-lisp-mode!)
-
-
-(defun set-ielm-mode! ()
-  "IELM basic settings."
-  (eldoc-mode))
-
-
-;; ielm basic
-(add-hook 'ielm-mode-hook #'set-ielm-mode!)
-
 
 (defmacro safe-setq-inferior-lisp-program (lisp &optional force)
   "Safe set inferior-lisp-program var, it must be set before slime start."
@@ -307,10 +270,6 @@ then set `eww' to default browser."
   (require 'ls-lisp))
 
 
-;; auto-save
-(setq auto-save-default nil)
-
-
 
 
 
@@ -330,6 +289,7 @@ then set `eww' to default browser."
       ";" ":"
       (replace-regexp-in-string "\\([a-zA-Z]\\):/" "/\\1/"
                                 (windows-nt-posix-path ,p)))))
+
 
 
 
@@ -455,3 +415,34 @@ for which (PRED item) returns t."
     (safe-fn-if next-logical-line
         (next-logical-line)
       (next-line))))
+
+
+;; emacs lisp mode
+(defun set-emacs-lisp-mode! ()
+  "Elisp basic settings."
+  (eldoc-mode)
+  (version-supported-if
+      <= 24.4
+      (local-set-key (kbd "TAB") #'completion-at-point)
+    (local-set-key (kbd "TAB") #'lisp-complete-symbol))
+  (cond
+   ((string= "*scratch*" (buffer-name))
+    (local-set-key (kbd "RET")
+                   (lambda ()
+                     (interactive)
+                     (eval-print-last-sexp)
+                     (newline)))
+    (version-supported-when > 24
+      (local-set-key (kbd "C-j")
+                     (lambda ()
+                       (interactive)
+                       (newline-and-indent)))))))
+
+
+;; shell scripts
+(defun set-sh-mode! ()
+  (let ((w tab-width))
+    (defvar sh-basic-offset)
+    (defvar sh-indentation)
+    (setq sh-basic-offset w)
+    (setq sh-indentation w)))
