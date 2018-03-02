@@ -49,7 +49,7 @@
               ,(cons (emacs-home* "private/self-epilogue.el")
                      (emacs-home* "config/sample-self-epilogue.el")))))
     (unless (file-exists-p (caar fs))
-      (make-directory (emacs-home* "private/") t)
+      (make-directory `,(emacs-home* "private/") t)
       (dolist (f fs)
         (let ((dst (car f)) (src (cdr f)))
           (unless (file-exists-p dst)
