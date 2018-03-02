@@ -43,7 +43,7 @@
   "Make the versioned path of SUBDIR/FILE under `emacs-home' and returns it."
   (let ((_vdir_ (v-home* subdir))
         (_vfile_ (v-home* subdir file)))
-    (when (not (file-exists-p _vdir_))
+    (unless (file-exists-p _vdir_)
       (make-directory _vdir_ t))
     `,_vfile_))
 
