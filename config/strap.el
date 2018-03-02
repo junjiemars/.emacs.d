@@ -70,7 +70,9 @@
 
 
 (defmacro self-def-path-ref-> (k)
-  `(plist-get (symbol-value (self-symbol 'path)) ,k))
+  `(let ((*s* (self-symbol 'path)))
+     (when (boundp *s*)
+       (plist-get (symbol-value *s*) ,k))))
 
 
 (defmacro self-spec-> (seq &rest keys)
