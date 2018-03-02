@@ -38,9 +38,7 @@
 
 (defsubst self-def-files! ()
   "Returns the path of `(emacs-home* \"private/\" \"self-path.el\")' and make self-*.el files."
-  (let ((d (emacs-home* "private/"))
-        (p (emacs-home* "private/self-path.el"))
-        (fs `(,(cons (emacs-home* "private/self-path.el")
+  (let ((fs `(,(cons (emacs-home* "private/self-path.el")
                      (emacs-home* "config/sample-self-path.el"))
               ,(cons (emacs-home* "private/self-env-spec.el")
                      (emacs-home* "config/sample-self-env-spec.el"))
@@ -50,13 +48,13 @@
                      (emacs-home* "config/sample-self-prologue.el"))
               ,(cons (emacs-home* "private/self-epilogue.el")
                      (emacs-home* "config/sample-self-epilogue.el")))))
-    (when (not (file-exists-p p))
-      (when (not (file-exists-p d)) (make-directory d t))
+    (unless (file-exists-p (caar fs))
+      (make-directory (emacs-home* "private/") t)
       (dolist (f fs)
         (let ((dst (car f)) (src (cdr f)))
-          (when (not (file-exists-p dst))
+          (unless (file-exists-p dst)
             (copy-file src dst t)))))
-    p))
+    (caar fs)))
 
 
 
