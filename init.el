@@ -49,19 +49,19 @@
 
 
 (defmacro base-file-name (file)
-  "Returns the base name of the FILE with no directory, no extension."
+  "Return base name of FILE with no directory, no extension."
   `(file-name-sans-extension (file-name-nondirectory ,file)))
 
 
 (defmacro v-path! (file dir &optional extension)
-  "Make the versioned DIR base on the existing FILE's directory and returns it."
+  "Return versioned DIR base on existing FILE's directory and return it."
   `(when (and ,dir (file-exists-p ,file))
      (let ((v (concat (file-name-directory ,file) ,dir "/")))
-       (when (not (file-exists-p v))
-         (make-directory v t))
+       (unless (file-exists-p v) (make-directory v t))
        (concat v (if (and ,extension (file-name-extension ,file))
                      (concat (base-file-name ,file) "." ,extension)
                    (file-name-nondirectory ,file))))))
+
 
 
 
