@@ -19,7 +19,8 @@
    :packages '(cider
                clojure-mode
                clojure-mode-extra-font-locking)
-   :compile `(,(emacs-home* "config/setup-clojure.el")))
+   :compile `(,(cons (emacs-home* "config/use-cider.el") t)
+              ,(emacs-home* "config/use-cider-autoload.el")))
   (list
    :cond (and (version-supported-p <= 24.4)
               (bin-exists-p "docker"))

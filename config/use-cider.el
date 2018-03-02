@@ -1,8 +1,12 @@
+;;;; -*- lexical-binding:t -*-
+;;;;
+;; use-cider
+;;;;
+
+
 ;;;;
 ;; Clojure
 ;;;;
-
-
 
 
 (defun set-clojure-mode! ()
@@ -20,13 +24,9 @@
 (add-to-list 'magic-mode-alist '(".* boot" . clojure-mode))
 
 
-
-
 ;;;;
 ;; Cider
 ;;;;
-
-
 
 
 ;; Go right to the REPL buffer when it's finished connecting
@@ -46,16 +46,8 @@
 (safe-setq cider-repl-wrap-history t)
 
 
-(defun set-cider-repl-mode! ()
-  (eldoc-mode)
-  (enable-paredit-mode)
-  (rainbow-delimiters-mode)
-  (aggressive-indent-mode))
 
 
-(defadvice cider-jack-in (before cider-jack-in-before compile)
-  ;; minor modes for cider
-  (add-hook 'cider-repl-mode-hook #'set-cider-repl-mode!))
 
 
 
@@ -85,12 +77,9 @@
   (safe-call cider-repl-set-ns "user"))
 
 
-
 ;;;;
 ;; Figwheel `https://github.com/bhauman/lein-figwheel'
 ;;;;
-
-
 
 
 (defmacro figwheel-after-load-cider ()
@@ -104,3 +93,5 @@
 (eval-after-load 'cider
   '(progn
      (figwheel-after-load-cider)))
+
+(provide 'use-cider)
