@@ -6,14 +6,33 @@
 
 ;; versioned dirs: .*
 
+;; load-path
+(add-to-list 'load-path (v-home* "config/") t #'string=)
+(add-to-list 'load-path (v-home* "private/") t #'string=)
+
+;; Recentf
 (setq-default recentf-save-file (v-home! ".recentf/" "recentf"))
+
+;; History
 (setq-default savehist-file (v-home! ".minibuffer/" "history"))
+
+;; Auto-save
 (setq auto-save-list-file-prefix (v-home! ".auto-save/" "saves-"))
+
+;; Eshell
 (setq-default eshell-directory-name (v-home! ".eshell/"))
+
+;; Server
 (setq-default server-auth-dir (v-home! ".server/"))
+
+;; Image dired
 (setq-default image-dired-dir (v-home! ".image-dired/"))
+
+;; Semantic
 (version-supported-when <= 23
   (setq-default tramp-persistency-file-name (v-home! ".tramp/" "tramp")))
+
+;; Tramp
 (version-supported-when <= 23
   (setq-default semanticdb-default-save-directory
                 (v-home! ".semanticdb/")))
@@ -41,9 +60,6 @@
 (setq-default bookmark-default-file (v-home! ".bookmarks/" "emacs.bmk"))
 
 
-;; versioned dirs: load-path
-(add-to-list 'load-path (v-home* "config/") t #'string=)
-(add-to-list 'load-path (v-home* "private/") t #'string=)
 
 
 
@@ -168,8 +184,6 @@ Returns the name of FILE when successed otherwise nil."
       file)))
 
 
-
-
 (defun dir-iterate (dir ff df fn)
   "Iterating DIR, if FF file-fitler return t then call FN, 
 and if DF dir-filter return t then iterate into deeper DIR.
@@ -230,50 +244,6 @@ otherwise default to keep the directories of current `emacs-version'."
     (clean-compiled-files)
     (setq kill-emacs-hook nil)
     (kill-emacs 0)))
-
-
-
-
-
-
-(version-supported-when >= 24.0
-  (defalias 'eldoc-mode 'turn-on-eldoc-mode
-    "After Emacs 24.0 `turn-on-eldoc-mode' is obsoleted, use `eldoc-mode' indeed.
-
-Unify this name `eldoc-mode' in Emacs 24.0-, 
-see `http://www.emacswiki.org/emacs/ElDoc'"))
-
-
-;; default web browser: eww
-(defmacro default-browser-eww ()
-  "If `browser-url-default-browser' has not been touched, 
-then set `eww' to default browser."
-  (when (eq browse-url-browser-function
-            'browse-url-default-browser)
-    `(safe-fn-when eww-browse-url
-       (setq-default url-configuration-directory (v-home! ".url/"))
-       (setq browse-url-browser-function 'eww-browse-url))))
-
-
-(defmacro safe-setq-inferior-lisp-program (lisp &optional force)
-  "Safe set inferior-lisp-program var, it must be set before slime start."
-  `(if (boundp 'inferior-lisp-program)
-       (if ,force
-           (setq inferior-lisp-program ,lisp)
-         (when (or (not (string= ,lisp inferior-lisp-program))
-                   (string= "lisp" inferior-lisp-program))
-           (setq inferior-lisp-program ,lisp)))
-     (setq-default inferior-lisp-program ,lisp)))
-
-
-
-;; on Drawin: ls does not support --dired;
-;; see `dired-use-ls-dired' for more defails
-(platform-supported-when
-    darwin
-  (setq-default ls-lisp-use-insert-directory-program nil)
-  (require 'ls-lisp))
-
 
 
 
@@ -395,6 +365,44 @@ for which (PRED item) returns t."
 
 
 ;; falvour mode functions
+
+(version-supported-when >= 24.0
+  (defalias 'eldoc-mode 'turn-on-eldoc-mode
+    "After Emacs 24.0 `turn-on-eldoc-mode' is obsoleted, use `eldoc-mode' indeed.
+
+Unify this name `eldoc-mode' in Emacs 24.0-, 
+see `http://www.emacswiki.org/emacs/ElDoc'"))
+
+
+;; default web browser: eww
+(defmacro default-browser-eww ()
+  "If `browser-url-default-browser' has not been touched, 
+then set `eww' to default browser."
+  (when (eq browse-url-browser-function
+            'browse-url-default-browser)
+    `(safe-fn-when eww-browse-url
+       (setq-default url-configuration-directory (v-home! ".url/"))
+       (setq browse-url-browser-function 'eww-browse-url))))
+
+
+(defmacro safe-setq-inferior-lisp-program (lisp &optional force)
+  "Safe set inferior-lisp-program var, it must be set before slime start."
+  `(if (boundp 'inferior-lisp-program)
+       (if ,force
+           (setq inferior-lisp-program ,lisp)
+         (when (or (not (string= ,lisp inferior-lisp-program))
+                   (string= "lisp" inferior-lisp-program))
+           (setq inferior-lisp-program ,lisp)))
+     (setq-default inferior-lisp-program ,lisp)))
+
+
+;; on Drawin: ls does not support --dired;
+;; see `dired-use-ls-dired' for more defails
+(platform-supported-when
+    darwin
+  (setq-default ls-lisp-use-insert-directory-program nil)
+  (require 'ls-lisp))
+
 
 ;; linum mode
 (defmacro linum-mode-supported-p (body)
