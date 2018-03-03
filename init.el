@@ -165,30 +165,6 @@ sequentially and return value of last one, or nil if there are none."
   `(version-supported-if ,cond ,version (progn% ,@body)))
 
 
-(defmacro graphic-supported-if (then &rest else)
-  "If in graphic mode, do THEN, else do ELSE...
-
-Returns the value of THEN or the value of the last of the ELSE’s.
-THEN must be one expression, but ELSE... can be zero or more expressions.
-If in terminal mode, and there are no ELSE’s, the value is nil. "
-  (declare (indent 1))
-  (if (display-graphic-p)
-      `,then
-    `(progn% ,@else)))
-
-
-(defmacro graphic-supported-p (&rest body)
-  "Run BODY code if in graphic mode, else returns nil."
-  (declare (indent 0))
-  `(graphic-supported-if (progn% ,@body)))
-
-
-(defmacro terminal-supported-p (&rest body)
-  "Run BODY code if in terminal mode, else returns nil."
-  (declare (indent 0))
-  `(graphic-supported-if nil ,@body))
-
-
 
 
 

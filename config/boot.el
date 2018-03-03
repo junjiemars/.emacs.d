@@ -25,6 +25,20 @@
 
 ;; Theme and Font
 
+(defmacro theme-supported-p (&rest body)
+  (declare (indent 1))
+  `(graphic-supported-p
+     (version-supported-when
+         < 23
+       ,@body)))
+
+
+(defmacro font-supported-p (&rest body)
+  (declare (indent 1))
+  `(graphic-supported-p
+     ,@body))
+
+
 (font-supported-p
     
     (defmacro font-exists-p (font)

@@ -19,21 +19,31 @@
       (when f (compile-and-load-file* vdir f c)))))
 
 
+(defmacro graphic-supported-if (then &rest else)
+  "If in graphic mode, do THEN, else do ELSE...
+
+Returns the value of THEN or the value of the last of the ELSE’s.
+THEN must be one expression, but ELSE... can be zero or more expressions.
+If in terminal mode, and there are no ELSE’s, the value is nil. "
+  (declare (indent 1))
+  (if (display-graphic-p)
+      `,then
+    `(progn% ,@else)))
+
+
+(defmacro graphic-supported-p (&rest body)
+  "Run BODY code if in graphic mode, else returns nil."
+  (declare (indent 0))
+  `(graphic-supported-if (progn% ,@body)))
+
+
+(defmacro terminal-supported-p (&rest body)
+  "Run BODY code if in terminal mode, else returns nil."
+  (declare (indent 0))
+  `(graphic-supported-if nil ,@body))
+
+
 
-
-
-(defmacro theme-supported-p (&rest body)
-  (declare (indent 1))
-  `(graphic-supported-p
-     (version-supported-when
-         < 23
-       ,@body)))
-
-
-(defmacro font-supported-p (&rest body)
-  (declare (indent 1))
-  `(graphic-supported-p
-     ,@body))
 
 
 (defsubst self-def-files! ()
