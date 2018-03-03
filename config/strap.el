@@ -11,7 +11,7 @@
 
 
 
-;; axiom
+;; platform and graphic checking macro
 
 (defmacro graphic-supported-if (then &rest else)
   "If in graphic mode, do THEN, else do ELSE...
@@ -92,6 +92,40 @@ If (eq `system-type' OS) yields nil, and there are no ELSE’s, the value is nil
           (unless (file-exists-p dst)
             (copy-file src dst t)))))
     (caar fs)))
+
+
+(defmacro self-symbol (name)
+  `(intern (format "self-%s-%s" system-type ,name)))
+
+
+(defmacro def-self-path-ref (&rest path)
+  "Define the PATH references for all specs in `self-path.el'."
+  (declare (indent 0))
+  `(defvar ,(self-symbol 'path) (list ,@path)))
+
+
+(defmacro def-self-env-spec (&rest spec)
+  "Define default Emacs env SPEC of current platform on current `emacs-version'."
+  (declare (indent 0))
+  `(defvar ,(self-symbol 'env-spec) (list ,@spec)))
+
+
+(defmacro def-self-package-spec (&rest spec)
+  "Define self package SPEC list."
+  (declare (indent 0))
+  (package-supported-p 
+    `(defvar ,(self-symbol 'package-spec) (list ,@spec))))
+
+
+(defmacro self-safe-call (fn)
+  `(when (fboundp ',(self-symbol fn))
+     (,(self-symbol fn))))
+
+
+(defmacro self-safe-call* (var &rest body)
+  (when (boundp (self-symbol var))
+    `(let ((*val* (symbol-value (self-symbol ,var))))
+       (when *val* ,@body))))
 
 
 

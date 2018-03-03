@@ -204,47 +204,6 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil."
 
 
 
-(defmacro self-symbol (name)
-  `(intern (format "self-%s-%s" system-type ,name)))
-
-
-(defmacro def-self-path-ref (&rest path)
-  "Define the PATH references for all specs in `self-path.el'."
-  (declare (indent 0))
-  (let ((_path_ (self-symbol 'path)))
-    `(defvar ,_path_ (list ,@path))))
-
-
-(defmacro def-self-env-spec (&rest spec)
-  "Define default Emacs env SPEC of current platform on current `emacs-version'."
-  (declare (indent 0))
-  (let ((_spec_ (self-symbol 'env-spec)))
-    `(defvar ,_spec_ (list ,@spec))))
-
-
-(defmacro def-self-package-spec (&rest spec)
-  "Define self package SPEC list."
-  (declare (indent 0))
-  (package-supported-p 
-    (let ((_spec_ (self-symbol 'package-spec)))
-      `(defvar ,_spec_ (list ,@spec)))))
-
-
-(defmacro self-safe-call (fn)
-  (let ((_fn_ (self-symbol fn)))
-    `(when (fboundp ',_fn_)
-       (,_fn_))))
-
-
-(defmacro self-safe-call* (var &rest body)
-  (let ((_var_ (self-symbol var)))
-    (when (boundp _var_)
-      `(let ((*val* (symbol-value ',_var_)))
-         (when *val* ,@body)))))
-
-
-
-
 ;; Load strap
 (compile-and-load-file*
  v-dir
