@@ -131,18 +131,18 @@ function definition in Emacs25-."
 
 (version-supported-if
     <= 24.4
-    (defalias 'split-string>< 'split-string)
-  (defmacro split-string>< (string &optional separators omit-nulls trim)
+    (defalias 'split-string% 'split-string)
+  (defun split-string% (string &optional separators omit-nulls trim)
     "Split STRING into substrings bounded by matches for SEPARATORS, 
 like `split-string' Emacs 24.4+"
-    `(if ,trim
-         (delete ""
-                 (mapcar (lambda (s)
-                           (if (and (stringp ,trim) (> (length ,trim) 0))
-                               (string-trim>< s ,trim ,trim)
-                             (string-trim>< s)))
-                         (split-string ,string ,separators ,omit-nulls)))
-       (split-string ,string ,separators ,omit-nulls))))
+    (if trim
+        (delete ""
+                (mapcar (lambda (s)
+                          (if (and (stringp trim) (> (length trim) 0))
+                              (string-trim>< s trim trim)
+                            (string-trim>< s)))
+                        (split-string string separators omit-nulls)))
+      (split-string string separators omit-nulls))))
 
 
 (version-supported-when > 25
@@ -162,30 +162,30 @@ like `split-string' Emacs 24.4+"
 
 ;; File functions
 
-(defmacro save-sexp-to-file (sexp file)
-  "Save SEXP to the FILE. 
+(defun save-sexp-to-file (sexp file)
+  "Save SEXP to FILE. 
 
-Returns FILE when successed otherwise nil."
-  `(progn
-     (when (and (save-excursion
-                  (let ((sexp-buffer (find-file-noselect ,file)))
-                    (set-buffer sexp-buffer)
-                    (erase-buffer)
-                    (print ,sexp sexp-buffer)
-                    (save-buffer)
-                    (kill-buffer sexp-buffer)))
-                (file-exists-p ,file))
-       ,file)))
+Returns the name of FILE when successed otherwise nil."
+  (progn
+    (when (and (save-excursion
+                 (let ((sexp-buffer (find-file-noselect file)))
+                   (set-buffer sexp-buffer)
+                   (erase-buffer)
+                   (print sexp sexp-buffer)
+                   (save-buffer)
+                   (kill-buffer sexp-buffer)))
+               (file-exists-p file))
+      file)))
 
 
-(defmacro save-str-to-file (str file)
+(defun save-str-to-file (str file)
   "Save STR to FILE. 
 
-Returns FILE when successed otherwise nil."
-  `(progn
-     (with-temp-file ,file (insert ,str))
-     (when (file-exists-p ,file)
-       ,file)))
+Returns the name of FILE when successed otherwise nil."
+  (progn
+    (with-temp-file file (insert str))
+    (when (file-exists-p file)
+      file)))
 
 
 
