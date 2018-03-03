@@ -192,27 +192,6 @@ If in terminal mode, and there are no ELSE’s, the value is nil. "
 
 
 
-(defmacro string-trim> (s &optional rr)
-  "Remove whitespaces or the matching of RR at the end of S."
-  (let ((r (make-symbol "-regexp:0-")))
-    `(let ((,r (if ,rr (concat ,rr "\\'")
-                 "[ \t\n\r]+\\'" )))
-       (if (string-match ,r ,s)
-           (replace-match "" t t ,s)
-         ,s))))
-
-
-(defmacro bin-path (b)
-  "Return path of B binary in env."
-  (platform-supported-if windows-nt
-      (let ((_b_ (concat "where " `,b)))
-        `(string-trim> (shell-command-to-string ,_b_)))
-    (let ((_b_ (concat "type -P " `,b)))
-      `(string-trim> (shell-command-to-string ,_b_)))))
-
-
-
-
 (defmacro safe-call (fn &rest args)
   "Call FN with ARGS if FN has already been bound."
   (declare (indent 1))

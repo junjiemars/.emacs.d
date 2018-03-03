@@ -53,8 +53,38 @@
 
 
 
+;;
+
+
+(defvar *gensym-counter* 0)
+
+(safe-fn-unless gensym
+  ;; feature Emacs version will add `gensym' into the core
+  ;; but now using cl-gensym indeed
+  (defun gensym (&optional prefix)
+    "Generate a new uninterned symbol.
+The name is made by appending a number to PREFIX, default \"G\"."
+    (let ((pfix (if (stringp prefix) prefix "G"))
+          (num (if (integerp prefix) prefix
+                 (prog1 *gensym-counter*
+                   (setq *gensym-counter* (1+ *gensym-counter*))))))
+      (make-symbol (format "%s%d" pfix num)))))
+
+
+
+
 
 ;; Strings
+
+(defmacro string-trim> (s &optional rr)
+  "Remove whitespaces or the matching of RR at the end of S."
+  (let ((r (gensym)))
+    `(let ((,r (if ,rr (concat ,rr "\\'")
+                 "[ \t\n\r]+\\'" )))
+       (if (string-match ,r ,s)
+           (replace-match "" t t ,s)
+         ,s))))
+
 
 (defmacro string-trim< (s &optional lr)
   "Remove leading whitespace or the matching of LR from S."
@@ -278,12 +308,16 @@ then set `eww' to default browser."
 
 (defmacro bin-exists-p (b)
   "Return t if B binary exists in env."
-  (let ((bin (if (symbolp b) (symbol-value b) b)))
-    (platform-supported-if windows-nt
-        (let ((cmd (concat "where " bin " >nul 2>&1")))
-          `(zerop (shell-command ,cmd)))
-      (let ((cmd (concat "hash " bin " &>/dev/null")))
-        `(zerop (shell-command ,cmd))))))
+  `(platform-supported-if windows-nt
+       (zerop (shell-command (concat "where " ,b " >nul 2>&1")))
+     (zerop (shell-command (concat "hash " ,b " &>/dev/null")))))
+
+
+(defmacro bin-path (b)
+  "Return path of B binary in env."
+  `(platform-supported-if windows-nt
+       (string-trim> (shell-command-to-string (concat "where " ,b)))
+     (string-trim> (shell-command-to-string (concat "type -P " ,b)))))
 
 
 (platform-supported-when windows-nt
