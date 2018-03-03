@@ -61,7 +61,7 @@
 (font-supported-p
     
     ;; Load default font
-    (self-safe-call*
+    (self-safe-call
      "env-spec"
      (when (self-spec->* :font :allowed)
        (self-default-font! (self-spec->* :font :name)))))
@@ -80,7 +80,7 @@
 (font-supported-p
     
     ;; Load cjk font
-    (self-safe-call*
+    (self-safe-call
      "env-spec"
      (when (self-spec->* :cjk-font :allowed)
        (self-cjk-font! (self-spec->* :cjk-font :name)
@@ -107,7 +107,7 @@ else if theme NAME non-existing then load default `theme/tomorrow-night-eighties
 ;; Load theme
 (theme-supported-p
     
-    (self-safe-call*
+    (self-safe-call
      "env-spec"
      (when (self-spec->* :theme :allowed)
        (self-load-theme! (self-spec->* :theme :name)

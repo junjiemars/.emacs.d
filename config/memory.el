@@ -21,7 +21,7 @@ at compile time."
 
 
 (defun save-env-spec ()
-  (self-safe-call*
+  (self-safe-call
    "env-spec"
    (let ((f (env-spec->% :source)))
      (when (save-sexp-to-file
@@ -76,7 +76,7 @@ at compile time."
       (version-supported-when > 25
         (setq-default desktop-restore-forces-onscreen nil))))
 
-  (self-safe-call*
+  (self-safe-call
    "env-spec"
    (when (and (self-spec->* :desktop :allowed)
               (file-exists-p (v-home* ".desktop/")))
@@ -99,7 +99,7 @@ at compile time."
 
 ;; Save desktop
 (defun self-desktop-save! ()
-  (self-safe-call*
+  (self-safe-call
    "env-spec"
    
    (when (self-spec->* :desktop :allowed)

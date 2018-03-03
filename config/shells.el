@@ -48,7 +48,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
   `(plist-put *default-shell-env* ,k ,v))
 
 (defmacro self-spec->*shell (&rest keys)
-  `(self-safe-call*
+  `(self-safe-call
     "env-spec"
     (self-spec->* :shell ,@keys)))
 

@@ -117,12 +117,7 @@ If (eq `system-type' OS) yields nil, and there are no ELSE’s, the value is nil
     `(defvar ,(self-symbol 'package-spec) (list ,@spec))))
 
 
-(defmacro self-safe-call (fn)
-  `(when (fboundp ',(self-symbol fn))
-     (,(self-symbol fn))))
-
-
-(defmacro self-safe-call* (var &rest body)
+(defmacro self-safe-call (var &rest body)
   (when (boundp (self-symbol var))
     `(let ((*val* (symbol-value (self-symbol ,var))))
        (when *val* ,@body))))

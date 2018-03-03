@@ -10,7 +10,7 @@
 
 (defun eshell-mode! ()
   (eval-when-compile (require 'em-term))
-  (self-safe-call*
+  (self-safe-call
    "env-spec"
    (when (self-spec->* :eshell :allowed)
      (dolist (x (self-spec->* :eshell :visual-commands))
