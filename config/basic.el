@@ -166,16 +166,15 @@ like `split-string' Emacs 24.4+"
   "Save SEXP to FILE. 
 
 Returns the name of FILE when successed otherwise nil."
-  (progn
-    (when (and (save-excursion
-                 (let ((sexp-buffer (find-file-noselect file)))
-                   (set-buffer sexp-buffer)
-                   (erase-buffer)
-                   (print sexp sexp-buffer)
-                   (save-buffer)
-                   (kill-buffer sexp-buffer)))
-               (file-exists-p file))
-      file)))
+  (when (and (save-excursion
+               (let ((sexp-buffer (find-file-noselect file)))
+                 (set-buffer sexp-buffer)
+                 (erase-buffer)
+                 (print sexp sexp-buffer)
+                 (save-buffer)
+                 (kill-buffer sexp-buffer)))
+             (file-exists-p file))
+    file))
 
 
 (defun save-str-to-file (str file)
