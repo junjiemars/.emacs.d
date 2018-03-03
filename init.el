@@ -188,17 +188,8 @@ If in terminal mode, and there are no ELSE’s, the value is nil. "
   (declare (indent 0))
   `(graphic-supported-if nil ,@body))
 
+
 
-
-
-(defmacro bin-exists-p (b)
-  "Returns t if B binary exists in env."
-  (platform-supported-if windows-nt
-      (let ((_b_ (concat "where " `,b " >nul 2>&1")))
-        `(zerop (shell-command ,_b_)))
-    (let ((_b_ (concat "hash " `,b " &>/dev/null")))
-      `(zerop (shell-command ,_b_)))))
-
 
 
 (defmacro string-trim> (s &optional rr)

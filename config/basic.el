@@ -276,6 +276,16 @@ then set `eww' to default browser."
 
 ;; Platform related functions
 
+(defmacro bin-exists-p (b)
+  "Return t if B binary exists in env."
+  (let ((bin (if (symbolp b) (symbol-value b) b)))
+    (platform-supported-if windows-nt
+        (let ((cmd (concat "where " bin " >nul 2>&1")))
+          `(zerop (shell-command ,cmd)))
+      (let ((cmd (concat "hash " bin " &>/dev/null")))
+        `(zerop (shell-command ,cmd))))))
+
+
 (platform-supported-when windows-nt
   (defmacro windows-nt-posix-path (p)
     "Returns the posix path from P which can be recognized on`system-type'."
