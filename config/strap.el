@@ -136,8 +136,8 @@ If (eq `system-type' OS) yields nil, and there are no ELSE’s, the value is nil
 
 
 (defmacro self-def-path-ref-> (k)
-  `(when (boundp (self-symbol 'path))
-     (plist-get (symbol-value (self-symbol 'path)) ,k)))
+  (when (boundp (self-symbol 'path))
+    `(plist-get (symbol-value `,(self-symbol 'path)) ,k)))
 
 
 (defmacro self-spec-> (seq &rest keys)
