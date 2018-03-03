@@ -9,15 +9,9 @@
 (version-supported-when > 24.1
   (put 'lexical-binding 'safe-local-variable (lambda (x) t)))
 
+
 
-(defun compile! (vdir &rest files)
-  "Compile and load the elisp FILES in VDIR."
-  (declare (indent 1))
-  (dolist (file files)
-    (let ((f (if (atom file) file (car file)))
-          (c (if (atom file) nil (cdr file))))
-      (when f (compile-and-load-file* vdir f c)))))
-
+;; axiom
 
 (defmacro graphic-supported-if (then &rest else)
   "If in graphic mode, do THEN, else do ELSE...
@@ -43,7 +37,40 @@ If in terminal mode, and there are no ELSE’s, the value is nil. "
   `(graphic-supported-if nil ,@body))
 
 
+(defmacro platform-supported-if (os then &rest else)
+  "If (eq system-type OS) yields non-nil, do THEN, else do ELSE...
+
+Returns the value of THEN or the value of the last of the ELSE’s.
+THEN must be one expression, but ELSE... can be zero or more expressions.
+If (eq `system-type' OS) yields nil, and there are no ELSE’s, the value is nil. "
+  (declare (indent 2))
+  (if (eq system-type os)
+      `,then
+    `(progn% ,@else)))
+
+
+(defmacro platform-supported-when (os &rest body)
+  "Run BODY code if on specified OS platform, else return nil."
+  (declare (indent 1))
+  `(platform-supported-if ,os (progn% ,@body)))
+
+
+(defmacro platform-supported-unless (os &rest body)
+  "Run BODY code unless on specified OS platform, else return nil."
+  (declare (indent 1))
+  `(platform-supported-if ,os nil ,@body))
+
+
 
+
+
+(defun compile! (vdir &rest files)
+  "Compile and load the elisp FILES in VDIR."
+  (declare (indent 1))
+  (dolist (file files)
+    (let ((f (if (atom file) file (car file)))
+          (c (if (atom file) nil (cdr file))))
+      (when f (compile-and-load-file* vdir f c)))))
 
 
 (defsubst self-def-files! ()

@@ -3,8 +3,6 @@
 ;;;;
 
 
-
-
 (defmacro comment (&rest body)
   "Ignores body, yields nil."
   nil)
@@ -91,8 +89,6 @@ If ONLY-COMPILE is t then do not load FILE."
        (message "#Clean compiled file: %s" f)
        (delete-file (concat d f)))))
 
-
-
 
 
 
@@ -101,30 +97,6 @@ If ONLY-COMPILE is t then do not load FILE."
 
 Else return BODY sexp."
   (if (cdr body) `(progn ,@body) (car body)))
-
-
-(defmacro platform-supported-if (os then &rest else)
-  "If (eq system-type OS) yields non-nil, do THEN, else do ELSE...
-
-Returns the value of THEN or the value of the last of the ELSE’s.
-THEN must be one expression, but ELSE... can be zero or more expressions.
-If (eq `system-type' OS) yields nil, and there are no ELSE’s, the value is nil. "
-  (declare (indent 2))
-  (if (eq system-type os)
-      `,then
-    `(progn% ,@else)))
-
-
-(defmacro platform-supported-when (os &rest body)
-  "Run BODY code if on specified OS platform, else return nil."
-  (declare (indent 1))
-  `(platform-supported-if ,os (progn% ,@body)))
-
-
-(defmacro platform-supported-unless (os &rest body)
-  "Run BODY code unless on specified OS platform, else return nil."
-  (declare (indent 1))
-  `(platform-supported-if ,os nil ,@body))
 
 
 (defmacro version-supported* (cond version)
@@ -163,6 +135,12 @@ When (COND VERSION `emacs-version') yields non-nil, eval BODY forms
 sequentially and return value of last one, or nil if there are none."
   (declare (indent 2))
   `(version-supported-if ,cond ,version (progn% ,@body)))
+
+
+(defmacro package-supported-p (&rest body)
+  "Run BODY code if current `emacs-version' supports package."
+  (declare (indent 0))
+  `(version-supported-when <= 24.1 ,@body))
 
 
 
@@ -224,12 +202,6 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil."
      (setq ,x ,val)))
 
 
-
-
-(defmacro package-supported-p (&rest body)
-  "Run BODY code if current `emacs-version' supports package."
-  (declare (indent 0))
-  `(version-supported-when <= 24.1 ,@body))
 
 
 (defmacro self-symbol (name)
