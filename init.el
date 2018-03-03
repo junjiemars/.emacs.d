@@ -96,11 +96,11 @@ If ONLY-COMPILE is t then do not load FILE."
 
 
 
-(defmacro progn% (&rest exps)
-  "Returns an `progn'ed expression where EXPS has more than one expressions.
+(defmacro progn% (&rest body)
+  "Return an `progn'ed form if BODY has more than one sexp.
 
-Else returns the only one EXPR."
-  (if (cdr exps) `(progn ,@exps) (car exps)))
+Else return BODY sexp."
+  (if (cdr body) `(progn ,@body) (car body)))
 
 
 (defmacro platform-supported-if (os then &rest else)
