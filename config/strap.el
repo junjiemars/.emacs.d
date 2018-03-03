@@ -5,7 +5,7 @@
 
 
 
-;; Let `lexical-binding' var safe under Emacs24.1
+;; Let `lexical-binding' var safe under Emacs24.1-
 (version-supported-when > 24.1
   (put 'lexical-binding 'safe-local-variable (lambda (x) t)))
 

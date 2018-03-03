@@ -449,9 +449,8 @@ then set `eww' to default browser."
 
 ;; shell scripts
 (defun set-sh-mode! ()
-  (let ((w tab-width))
-    (defvar sh-basic-offset)
-    (defvar sh-indentation)
-    (setq sh-basic-offset w)
-    (setq sh-indentation w)))
+  (defvar sh-basic-offset)
+  (defvar sh-indentation)
+  (setq sh-basic-offset tab-width
+        sh-indentation tab-width))
 
