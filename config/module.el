@@ -48,17 +48,17 @@
 
 
 (defmacro install-package! (packages &optional dry)
-  "Install missing packages, returns alist of installed packages"
+  "Install missing packages, return alist of installed packages"
   `(let ((not-installed-packages
           (delete t (mapcar #'(lambda (p)
                                 (if (package-installed-p p) t p))
                             ,packages))))
      (when not-installed-packages
        (unless ,dry
-         (when (not *repostory-initialized*)
+         (unless *repostory-initialized*
            (initialize-package-repository!)
            (setq *repostory-initialized* t)))
-       (message "#Installing the missing %d ,packages: %s"
+       (message "#Installing missing %d packages: %s"
                 (length not-installed-packages)
                 not-installed-packages)
        
@@ -73,12 +73,11 @@
 
 
 (defmacro parse-package-spec (dir spec)
-  "Parse SPEC, install packages and setup."
+  "Parse SPEC, install and setup packages in DIR."
   `(dolist (s ,spec)
      (when (consp s)
-       (let ((p (self-spec-> s :cond))
-             (m (self-spec-> s :packages)))
-         (when (and p (consp m))
+       (let ((m (self-spec-> s :packages)))
+         (when (and (consp m) (self-spec-> s :cond))
            (install-package! (delete nil m))
            (apply #'compile!
                   ,dir
