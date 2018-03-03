@@ -309,7 +309,7 @@ then set `eww' to default browser."
 
 
 (defmacro bin-path (b)
-  "Return path of B binary in env."
+  "Return the path of B binary in env."
   `(platform-supported-if windows-nt
        (string-trim> (shell-command-to-string (concat "where " ,b)))
      (string-trim> (shell-command-to-string (concat "type -P " ,b)))))
