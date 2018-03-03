@@ -109,6 +109,16 @@
   ;;apropos-do-all t
   (safe-setq apropos-do-all t)
 
+  ;; on Drawin: ls does not support --dired;
+  ;; see `dired-use-ls-dired' for more defails
+  (platform-supported-when
+      darwin
+
+    (with-eval-after-load 'dired
+     (setq-default ls-lisp-use-insert-directory-program nil)
+     (require 'ls-lisp)))
+
+
   ;; Makes killing/yanking interact with the clipboard
 
   ;; Save clipboard strings into kill ring before replacing them.

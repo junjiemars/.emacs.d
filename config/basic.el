@@ -396,14 +396,6 @@ then set `eww' to default browser."
      (setq-default inferior-lisp-program ,lisp)))
 
 
-;; on Drawin: ls does not support --dired;
-;; see `dired-use-ls-dired' for more defails
-(platform-supported-when
-    darwin
-  (setq-default ls-lisp-use-insert-directory-program nil)
-  (require 'ls-lisp))
-
-
 ;; linum mode
 (defmacro linum-mode-supported-p (body)
   "When `emacs-version' supports linum mode then do BODY."
