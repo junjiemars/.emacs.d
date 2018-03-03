@@ -194,15 +194,16 @@ If in terminal mode, and there are no ELSE’s, the value is nil. "
 
 (defmacro string-trim> (s &optional rr)
   "Remove whitespaces or the matching of RR at the end of S."
-  `(let ((r (if ,rr (concat ,rr "\\'")
-              "[ \t\n\r]+\\'" )))
-     (if (string-match r ,s)
-         (replace-match "" t t ,s)
-       ,s)))
+  (let ((r (make-symbol "-regexp-")))
+    `(let ((,r (if ,rr (concat ,rr "\\'")
+                 "[ \t\n\r]+\\'" )))
+       (if (string-match ,r ,s)
+           (replace-match "" t t ,s)
+         ,s))))
 
 
 (defmacro bin-path (b)
-  "Returns the path of B binary in env."
+  "Return path of B binary in env."
   (platform-supported-if windows-nt
       (let ((_b_ (concat "where " `,b)))
         `(string-trim> (shell-command-to-string ,_b_)))
