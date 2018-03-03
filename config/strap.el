@@ -9,6 +9,10 @@
 (version-supported-when > 24.1
   (put 'lexical-binding 'safe-local-variable (lambda (x) t)))
 
+;; preferred coding system
+(prefer-coding-system 'utf-8)
+
+
 
 
 ;; platform and graphic checking macro

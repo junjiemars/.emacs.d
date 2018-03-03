@@ -4,11 +4,6 @@
 ;;;;
 
 
-
-;; preferred coding system
-(prefer-coding-system 'utf-8)
-
-
 ;; versioned dirs: .*
 
 (setq-default recentf-save-file (v-home! ".recentf/" "recentf"))
