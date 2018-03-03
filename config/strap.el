@@ -135,9 +135,9 @@ If (eq `system-type' OS) yields nil, and there are no ELSE’s, the value is nil
  self-def-where)
 
 
-(defmacro self-def-path-ref-> (k)
-  (when (boundp (self-symbol 'path))
-    `(plist-get (symbol-value `,(self-symbol 'path)) ,k)))
+(defun self-def-path-ref-> (k)
+  (when (boundp (eval-when-compile (self-symbol 'path)))
+    (plist-get (symbol-value (eval-when-compile (self-symbol 'path))) k)))
 
 
 (defmacro self-spec-> (seq &rest keys)
@@ -205,5 +205,5 @@ If (eq `system-type' OS) yields nil, and there are no ELSE’s, the value is nil
 
 ;; Self do epilogue ...
 (compile!
- v-dir
- (self-def-path-ref-> :epilogue))
+    v-dir
+  (self-def-path-ref-> :epilogue))
