@@ -70,15 +70,17 @@
   "Compile FILE and save the compiled one in VDIR then load it.
 
 If ONLY-COMPILE is t then do not load FILE."
-  `(if (and (stringp ,file) (file-exists-p ,file))
-       (let ((*c* (v-path! ,file ,vdir "elc")))
-         (when (or (not (file-exists-p *c*))
-                   (file-newer-than-file-p ,file *c*))
-           (let ((*s* (v-path! ,file ,vdir)))
-             (copy-file ,file *s* t)
-             (byte-compile-file *s*)))
+  (let ((c (make-symbol "-compiled-"))
+        (s (make-symbol "-source-")))
+    `(when (and (stringp ,file) (file-exists-p ,file))
+       (let ((,c (v-path! ,file ,vdir "elc")))
+         (when (or (not (file-exists-p ,c))
+                   (file-newer-than-file-p ,file ,c))
+           (let ((,s (v-path! ,file ,vdir)))
+             (copy-file ,file ,s t)
+             (byte-compile-file ,s)))
          (or ,only-compile
-             (load *c*)))))
+             (load ,c))))))
 
 
 (defmacro clean-compiled-files ()
