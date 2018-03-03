@@ -93,7 +93,7 @@
       (savehist-mode)
     (savehist-mode t))
 
-  (default-browser-eww)
+  (set-default-browser!)
 
   ;; ielm basic
   (add-hook 'ielm-mode-hook #'eldoc-mode)

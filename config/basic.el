@@ -375,12 +375,12 @@ see `http://www.emacswiki.org/emacs/ElDoc'"))
 
 
 ;; default web browser: eww
-(defmacro default-browser-eww ()
+(defun set-default-browser! ()
   "If `browser-url-default-browser' has not been touched, 
 then set `eww' to default browser."
   (when (eq browse-url-browser-function
             'browse-url-default-browser)
-    `(safe-fn-when eww-browse-url
+    (safe-fn-when eww-browse-url
        (setq-default url-configuration-directory (v-home! ".url/"))
        (setq browse-url-browser-function 'eww-browse-url))))
 
