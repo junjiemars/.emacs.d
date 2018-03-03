@@ -70,8 +70,8 @@
   "Compile FILE and save the compiled one in VDIR then load it.
 
 If ONLY-COMPILE is t then do not load FILE."
-  (let ((c (make-symbol "-compiled-"))
-        (s (make-symbol "-source-")))
+  (let ((c (make-symbol "-compiled:0-"))
+        (s (make-symbol "-source:0-")))
     `(when (and (stringp ,file) (file-exists-p ,file))
        (let ((,c (v-path! ,file ,vdir "elc")))
          (when (or (not (file-exists-p ,c))
@@ -194,7 +194,7 @@ If in terminal mode, and there are no ELSE’s, the value is nil. "
 
 (defmacro string-trim> (s &optional rr)
   "Remove whitespaces or the matching of RR at the end of S."
-  (let ((r (make-symbol "-regexp-")))
+  (let ((r (make-symbol "-regexp:0-")))
     `(let ((,r (if ,rr (concat ,rr "\\'")
                  "[ \t\n\r]+\\'" )))
        (if (string-match ,r ,s)
