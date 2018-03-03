@@ -23,7 +23,7 @@
 
 
 (defmacro emacs-home* (&rest subdirs)
-  "Returns the path of SUBDIRS under `emacs-home'."
+  "Return path of SUBDIRS under `emacs-home'."
   (declare (indent 0))
   `(concat ,emacs-home ,@subdirs))
 
@@ -35,7 +35,7 @@
 
 
 (defmacro v-home* (subdir &optional file)
-  "Returns the versioned path of SUBDIR/FILE under `emacs-home'."
+  "Return versioned path of SUBDIR/FILE under `emacs-home'."
   `(concat ,emacs-home ,subdir ,v-dir "/" ,file))
 
 
