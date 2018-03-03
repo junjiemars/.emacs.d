@@ -381,19 +381,8 @@ then set `eww' to default browser."
   (when (eq browse-url-browser-function
             'browse-url-default-browser)
     (safe-fn-when eww-browse-url
-       (setq-default url-configuration-directory (v-home! ".url/"))
-       (setq browse-url-browser-function 'eww-browse-url))))
-
-
-(defmacro safe-setq-inferior-lisp-program (lisp &optional force)
-  "Safe set inferior-lisp-program var, it must be set before slime start."
-  `(if (boundp 'inferior-lisp-program)
-       (if ,force
-           (setq inferior-lisp-program ,lisp)
-         (when (or (not (string= ,lisp inferior-lisp-program))
-                   (string= "lisp" inferior-lisp-program))
-           (setq inferior-lisp-program ,lisp)))
-     (setq-default inferior-lisp-program ,lisp)))
+      (setq-default url-configuration-directory (v-home! ".url/"))
+      (setq browse-url-browser-function 'eww-browse-url))))
 
 
 ;; linum mode
