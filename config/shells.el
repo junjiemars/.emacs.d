@@ -33,18 +33,18 @@ via KEYS at compile time."
         :shell-file-name nil
         :exec-path nil
         :env-vars nil)
-  "default path environments, 
-get via (path-env-> k) and put via (path-env<- k v) ")
+  "Default shell environments, 
+get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
 
 (defmacro shell-env-> (&optional k)
-  "extract the value from `*default-shell-env*' via k."
+  "Extract the value from `*default-shell-env*' via K."
   `(if ,k
        (plist-get *default-shell-env* ,k)
      *default-shell-env*))
 
 (defmacro path-env<- (k v)
-  "change the value of `*default-shell-env* via k and v."
+  "Put K and V into `*default-shell-env*'."
   `(plist-put *default-shell-env* ,k ,v))
 
 (defmacro self-spec->*shell (&rest keys)
@@ -53,7 +53,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
     (self-spec->* :shell ,@keys)))
 
 (defmacro echo-var (var &optional echo-format)
-  "echo a $var."
+  "Return the value of $VAR via echo."
   `(shell-command-to-string
     (format (if ,echo-format ,echo-format
               (platform-supported-if windows-nt
