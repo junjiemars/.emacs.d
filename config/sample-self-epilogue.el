@@ -1,7 +1,7 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
 ;; sample-self-epilogue.el: specify the epilogue of yourself
-;;   define self-epilogue, it will be run the last end
+;;   should be run on the end of Emacs init 
 ;;
 ;;;;
 
@@ -16,15 +16,8 @@
 ;; (require 'pythons)
 
 
-(comment
- (when (require 'tags)
-   (version-supported-if
-       <= 25.2
-       (setq source-directory "/opt/open/emacs-25/")
-     (setq source-directory "/opt/open/emacs-22/"))))
-
-
 (with-eval-after-load 'org
+  ;; define key bindings after `org-mode' had been loaded
   (global-set-key (kbd "C-c o a") 'org-agenda)
   (global-set-key (kbd "C-c o c") 'org-capture))
 
@@ -33,6 +26,19 @@
 (comment (setq-default compilation-scroll-output t))
 
 (comment
+ ;; using etags to view Emacs's source code: C and Elisp
+ ;; support any platform
+ (when (require 'tags)
+   (version-supported-if
+       <= 25.2
+       (setq source-directory "/opt/open/emacs-25/")
+     (setq source-directory "/opt/open/emacs-22/"))))
+
+(comment
+ ;; if current Emacs session support `semantic-mode'
+ ;; using semantic to view and editing any supported code
+ ;; correctly and more faster
+ ;; `system-cc-include' support any platform
  (safe-fn-when semantic-mode
    (add-hook
     'after-init-hook
@@ -48,15 +54,18 @@
         (semantic-add-system-include x 'c-mode))
       (comment)
       (setq-default semanticdb-project-roots
-                    '("/opt/apps/c")))
+                    `("/opt/apps/c" ,source-directory)))
     t)))
 
+
 (comment
+ ;; receive mail
  (require 'rmail)
  (setq rmail-primary-inbox-list '("<protocal://user:passwd@host>"))
  (setq-default rmail-remote-password-required t))
 
 (comment
+ ;; send mail
  (require 'sendmail)
  (setq send-mail-function 'smtpmail-send-it)
  (setq smtpmail-smtp-server "<smtp-server>")
