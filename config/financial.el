@@ -7,60 +7,39 @@
 
 
 (defmacro /. (dividend &rest divisors)
-  "Return first float-point DIVIDEND divided by all the remaining DIVISORS.
-
-\(fn DIVIDEND DIVISORS...\)"
+  "Return first float-point DIVIDEND divided by all the remaining DIVISORS."
   (declare (indent 1))
   `(/ (+ ,dividend 0.0) ,@divisors))
 
 
-(defmacro rate. (R &optional periods)
-  "Return the rate of R on the spedified periods.
-
-\(fn RATE &optional PERIODS\)"
-  (let ((rt (make-symbol "rt")))
-    `(let ((,rt (if ,periods ,periods 1)))
-       (/. ,R ,rt))))
+(defmacro rate. (rate &optional periods)
+  "Return the periodic rate of RATE in the spedified periods."
+  `(/. ,rate (if ,periods ,periods 1)))
 
 
-(defun interest (P R T &optional periods)
-  "Return the earned simple interest.
-
-\(fn PRINCIPAL RATE TIMES &optional PERIODS\)"
-  (let ((R1 (rate. R periods)))
-    (* P R1 T)))
+(defun interest (principal rate times &optional periods)
+  "Return the earned simple interest."
+  (* principal (rate. rate periods) times))
 
 
-(defun future-value (P R T &optional periods)
-  "Return the future value using simple interest.
-
-\(fn PRINCIPAL RATE TIMES &optional PERIODS\)"
-  (let ((R1 (rate. R periods)))
-    (* P (+ 1 (* R1 T)))))
+(defun future-value (principal rate times &optional periods)
+  "Return the future value using simple interest."
+  (* principal (+ 1 (* (rate. rate  periods) times))))
 
 
-(defun future-value+ (P R T &optional periods)
-  "Return the future value using compound interest.
-
-\(fn PRINCIPAL RATE TIMES &optional PERIODS\)"
-  (let ((R1 (rate. R periods)))
-    (* P (expt (+ 1 R1) T))))
+(defun future-value+ (principal rate times &optional periods)
+  "Return the future value using compound interest."
+  (* principal (expt (+ 1 (rate. rate periods)) times)))
 
 
-(defun interest+ (P R T &optional periods)
-  "Return the earned compound interest.
-
-\(fn PRINCIPAL RATE TIMES &optional PERIODS\)"
-  (let ((R1 (rate. R periods)))
-    (- (future-value+ P R1 T) P)))
+(defun interest+ (principal rate times &optional periods)
+  "Return the earned compound INTEREST."
+  (- (future-value+ principal (rate. rate periods) times) principal))
 
 
-(defun present-value (F R T &optional periods)
-  "Return the present value using simple interest. 
-
-\(fn FUTURE-VALUE RATE TIMES &optional PERIODS\)"
-  (let ((R1 (rate. R periods)))
-    (/. F (+ 1 (* R1 T)))))
+(defun present-value (futrue rate times &optional periods)
+  "Return the present value using simple interest."
+  (/. future (+ 1 (* (rate. R periods) times))))
 
 
 (defun present-value+ (F R T &optional periods)
