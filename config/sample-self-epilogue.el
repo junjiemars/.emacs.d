@@ -47,14 +47,16 @@
       (declare-function semantic-reset-system-include "semantic")
       (declare-function semantic-add-system-include "semantic")
       (declare-function global-semantic-idle-summary-mode "semantic")
+      (declare-function semantic-ia-fast-jump "semantic")
       (semantic-reset-system-include 'c-mode)
       (global-semantic-idle-summary-mode)
       (eval-when-compile (require 'cc))
       (dolist (x (system-cc-include t))
         (semantic-add-system-include x 'c-mode))
-      (comment)
-      (setq-default semanticdb-project-roots
-                    `("/opt/apps/c" ,source-directory)))
+      (global-set-key (kbd "C-c , f") #'semantic-ia-fast-jump)
+      (comment
+       (setq-default semanticdb-project-roots
+                     `("/opt/apps/c" ,source-directory))))
     t)))
 
 
