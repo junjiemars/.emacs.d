@@ -33,54 +33,41 @@
 
 
 (defun interest+ (principal rate times &optional periods)
-  "Return the earned compound INTEREST."
+  "Return the earned compound interest."
   (- (future-value+ principal (rate. rate periods) times) principal))
 
 
-(defun present-value (futrue rate times &optional periods)
+(defun present-value (future rate times &optional periods)
   "Return the present value using simple interest."
-  (/. future (+ 1 (* (rate. R periods) times))))
+  (/. future (+ 1 (* (rate. rate periods) times))))
 
 
-(defun present-value+ (F R T &optional periods)
-  "Return the present value using compound interest.
-
-\(fn FUTURE-VALUE RATE TIMES &optional PERIODS\)"
-  (let ((R1 (rate. R periods)))
-    (/. F (expt (+ 1 R1) T))))
+(defun present-value+ (future rate times &optional periods)
+  "Return the present value using compound interest."
+  (/. future (expt (+ 1 (rate. rate periods)) times)))
 
 
-(defun times (F P R &optional periods)
-  "Return the times using simple interest.
-
-\(fn FUTURE-VALUE PRINCIPAL RATE &optional PERIODS\)"
-  (let ((R1 (rate. R periods)))
-    (/. (- (/. F P) 1) R1)))
+(defun times (future principal rate &optional periods)
+  "Return the times using simple interest."
+  (/. (- (/. future principal) 1) (rate. rate periods)))
 
 
-(defun times+ (F P R &optional periods)
-  "Return the times using compound interest.
-
-\(fn FUTURE-VALUE PRINCIPAL RATE &optional PERIODS\)"
-  (let ((R1 (rate. R periods)))
-    (/. (log (/. F P)) (log (+ 1 R1)))))
+(defun times+ (future principal rate &optional periods)
+  "Return the times using compound interest."
+  (/. (log (/. future principal))
+    (log (+ 1 (rate. rate periods)))))
 
 
-(defun rate (F P T &optional periods)
-  "Return the simple interest rate.
-
-\(fn FUTURE-VALUE PRINCIPAL TIMES &optional PERIODS\)"
-  (let ((R (/. (- (/. F P) 1) T))
-        (rt (if periods periods 1)))
-    (* R rt)))
+(defun rate (future principal times &optional periods)
+  "Return the simple interest rate."
+  (* (/. (- (/. future principal) 1) times)
+     (if periods periods 1)))
 
 
-(defun rate+ (F P T &optional periods)
-  "Return the compound interest rate.
+(defun rate+ (future principal times &optional periods)
+  "Return the compound interest rate."
+  (* (- (expt (/. future principal) (/. 1 times)) 1)
+     (if periods periods 1)))
 
-\(fn FUTURE-VALUE PRINCIPAL TIMES &optional PERIODS\)"
-  (let ((R  (- (expt (/. F P) (/. 1 T)) 1))
-        (rt (if periods periods 1)))
-    (* R rt)))
 
 (provide 'financial)
