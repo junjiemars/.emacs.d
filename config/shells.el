@@ -106,7 +106,7 @@ get via (path-env-> k) and put via (path-env<- k v) ")
      (if (file-exists-p (shell-env-spec->% :compiled-file))
          (load (shell-env-spec->% :compiled-file))
        (path-env<- :path (getenv (shell-env-spec->% :path-var))))
-     (add-hook 'kill-emacs-hook #'save-shell-env!)))
+     (add-hook 'kill-emacs-hook #'save-shell-env! t)))
 
 
 (defmacro copy-env-vars! (env vars)

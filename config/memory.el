@@ -20,7 +20,7 @@ at compile time."
     `(self-spec->% ,spec ,@keys)))
 
 
-(defun save-env-spec ()
+(defun save-env-spec! ()
   (self-safe-call
    "env-spec"
    (let ((f (env-spec->% :source)))
@@ -28,7 +28,7 @@ at compile time."
             `(setq self-previous-env-spec ',*val*) f)
        (byte-compile-file f)))))
 
-(add-hook 'kill-emacs-hook #'save-env-spec)
+(add-hook 'kill-emacs-hook #'save-env-spec! t)
 
 
 (defmacro load-env-spec ()
@@ -123,4 +123,4 @@ at compile time."
        (desktop-save (v-home! ".desktop/") t)))))
 
 
-(add-hook 'kill-emacs-hook #'self-desktop-save!)
+(add-hook 'kill-emacs-hook #'self-desktop-save! t)
