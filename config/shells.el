@@ -67,7 +67,7 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
 
 (defmacro paths->var (path sep)
-  "convert a list of path to $path like var that separated by sep."
+  "Convert a list of PATH to $PATH like var that separated by SEP."
   `(let (p)
      (dolist (x ,path p)
        (setq p (concat p (when p ,sep) x)))))
