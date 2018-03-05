@@ -20,12 +20,14 @@
 ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Backup-Files.html
 (setq backup-directory-alist `(("." . ,(v-home! ".backup/"))))
 
+;; eww bookmarks
+(version-supported-when
+    <= 24.4
+  (setq eww-bookmarks-directory (v-home! ".bookmarks/")))
+
 ;; Bookmark: file in which to save bookmarks
 (eval-when-compile (require 'bookmark))
 (setq bookmark-default-file (v-home! ".bookmarks/" "emacs.bmk"))
-
-;; Bookmarks
-(setq-default eww-bookmarks-directory (v-home! ".bookmarks/"))
 
 ;; Eshell
 (eval-when-compile (require 'eshell))
