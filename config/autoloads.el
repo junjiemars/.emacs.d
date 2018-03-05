@@ -74,7 +74,7 @@
 (defun set-flavor-mode! ()
   
   ;; Changes all yes/no questions to y/n type
-  (fset 'yes-or-no-p 'y-or-n-p)
+  (defalias 'yes-or-no-p 'y-or-n-p)
 
   ;; Highlights matching parenthesis
   (show-paren-mode 1)
@@ -115,8 +115,8 @@
       darwin
 
     (with-eval-after-load 'dired
-     (setq-default ls-lisp-use-insert-directory-program nil)
-     (require 'ls-lisp)))
+      (setq-default ls-lisp-use-insert-directory-program nil)
+      (require 'ls-lisp)))
 
 
   ;; Makes killing/yanking interact with the clipboard

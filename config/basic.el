@@ -321,11 +321,13 @@ call it: ssh -vnNTD32000 <user>@<host>"
 ;; Computations
 
 
-(safe-fn-when number-sequence (fset 'range 'number-sequence))
+(safe-fn-when number-sequence
+  (defalias 'range 'number-sequence))
 
 
 ;; use `pp' `pp-eval-expression' or `pp-eval-last-sexp'
-(safe-fn-when cl-prettyexpand (fset 'pprint 'cl-prettyprint))
+(safe-fn-when cl-prettyexpand
+  (defalias 'pprint 'cl-prettyprint))
 
 
 (defun take (n seq)
