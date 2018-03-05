@@ -24,7 +24,8 @@
 (version-supported-when
     <= 24.4
   (eval-when-compile (require 'eww))
-  (setq eww-bookmarks-directory (v-home! ".bookmarks/")))
+  (safe-fn-when eww-bookmarks-directory
+    (setq eww-bookmarks-directory (v-home! ".bookmarks/"))))
 
 ;; Bookmark: file in which to save bookmarks
 (eval-when-compile (require 'bookmark))
