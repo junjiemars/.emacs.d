@@ -27,6 +27,10 @@
 ;; Eshell
 (setq-default eshell-directory-name (v-home! ".eshell/"))
 
+;; Games
+(eval-when-compile (require 'gamegrid))
+(setq gamegrid-user-score-file-directory (v-home! ".games/"))
+
 ;; Ido saved
 (setq-default ido-save-directory-list-file (v-home! ".ido/" "ido.last"))
 
