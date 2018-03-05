@@ -25,7 +25,8 @@
 (setq-default bookmark-default-file (v-home! ".bookmarks/" "emacs.bmk"))
 
 ;; Eshell
-(setq-default eshell-directory-name (v-home! ".eshell/"))
+(eval-when-compile (require 'eshell))
+(setq eshell-directory-name (v-home! ".eshell/"))
 
 ;; Games: A directory for game scores
 (eval-when-compile (require 'gamegrid))
