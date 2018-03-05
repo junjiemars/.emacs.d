@@ -98,7 +98,7 @@
   ;; ielm basic
   (add-hook 'ielm-mode-hook #'eldoc-mode)
 
-  ;; auto-save
+  ;; disable auto-save mode
   (setq auto-save-default nil)
 
   ;; emacs lisp basic 

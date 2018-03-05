@@ -10,14 +10,15 @@
 (add-to-list 'load-path (v-home* "config/") t #'string=)
 (add-to-list 'load-path (v-home* "private/") t #'string=)
 
+
+;; Auto-save
+(setq auto-save-list-file-prefix (v-home! ".auto-save/" "saves-"))
+
 ;; Recentf
 (setq-default recentf-save-file (v-home! ".recentf/" "recentf"))
 
 ;; History
 (setq-default savehist-file (v-home! ".minibuffer/" "history"))
-
-;; Auto-save
-(setq auto-save-list-file-prefix (v-home! ".auto-save/" "saves-"))
 
 ;; Eshell
 (setq-default eshell-directory-name (v-home! ".eshell/"))
