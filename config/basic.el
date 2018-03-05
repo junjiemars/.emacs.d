@@ -47,8 +47,9 @@
 (eval-when-compile (require 'image-dired))
 (setq image-dired-dir (v-home! ".image-dired/"))
 
-;; History of minibuffer
-(setq-default savehist-file (v-home! ".minibuffer/" "history"))
+;; Savehist: save minibuffer history
+(eval-when-compile (require 'savehist))
+(setq savehist-file (v-home! ".minibuffer/" "history"))
 
 ;; Recentf
 (setq-default recentf-save-file (v-home! ".recentf/" "recentf"))
