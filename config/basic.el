@@ -38,8 +38,9 @@
 (eval-when-compile (require 'gamegrid))
 (setq gamegrid-user-score-file-directory (v-home! ".games/"))
 
-;; Ido saved
-(setq-default ido-save-directory-list-file (v-home! ".ido/" "ido.last"))
+;; Ido saved state between invocations
+(eval-when-compile (require 'ido))
+(setq ido-save-directory-list-file (v-home! ".ido/" "ido.last"))
 
 ;; Image dired: where thumbnail images are stored.
 (eval-when-compile (require 'image-dired))
