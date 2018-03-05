@@ -51,8 +51,9 @@
 (eval-when-compile (require 'savehist))
 (setq savehist-file (v-home! ".minibuffer/" "history"))
 
-;; Recentf
-(setq-default recentf-save-file (v-home! ".recentf/" "recentf"))
+;; Recentf: save the recent list into
+(eval-when-compile (require 'recentf))
+(setq recentf-save-file (v-home! ".recentf/" "recentf"))
 
 ;; Rmail
 (setq rmail-file-name (v-home! ".mail/" "RMAIL"))
