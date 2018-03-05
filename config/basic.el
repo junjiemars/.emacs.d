@@ -70,12 +70,13 @@
 
 ;; Semantic
 (version-supported-when <= 23
-  (setq-default semanticdb-default-save-directory
-                (v-home! ".semanticdb/")))
+  (eval-when-compile (require 'semantic/db-file))
+  (setq semanticdb-default-save-directory (v-home! ".semanticdb/")))
 
 ;; Tramp
 (version-supported-when <= 23
-  (setq-default tramp-persistency-file-name (v-home! ".tramp/" "tramp")))
+  (eval-when-compile (require 'tramp-cache))
+  (setq tramp-persistency-file-name (v-home! ".tramp/" "tramp")))
 
 
 
