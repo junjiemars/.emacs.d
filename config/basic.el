@@ -23,6 +23,7 @@
 ;; eww bookmarks
 (version-supported-when
     <= 24.4
+  (eval-when-compile (require 'eww))
   (setq eww-bookmarks-directory (v-home! ".bookmarks/")))
 
 ;; Bookmark: file in which to save bookmarks
