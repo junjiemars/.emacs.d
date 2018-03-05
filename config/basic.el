@@ -4,63 +4,60 @@
 ;;;;
 
 
-;; versioned dirs: .*
 
-;; load-path
+;; load-path versioned dirs
 (add-to-list 'load-path (v-home* "config/") t #'string=)
 (add-to-list 'load-path (v-home* "private/") t #'string=)
 
 
+;; Versioned dirs: .*
+
 ;; Auto-save
 (setq auto-save-list-file-prefix (v-home! ".auto-save/" "saves-"))
-
-;; Recentf
-(setq-default recentf-save-file (v-home! ".recentf/" "recentf"))
-
-;; History
-(setq-default savehist-file (v-home! ".minibuffer/" "history"))
-
-;; Eshell
-(setq-default eshell-directory-name (v-home! ".eshell/"))
-
-;; Server
-(setq-default server-auth-dir (v-home! ".server/"))
-
-;; Image dired
-(setq-default image-dired-dir (v-home! ".image-dired/"))
-
-;; Semantic
-(version-supported-when <= 23
-  (setq-default tramp-persistency-file-name (v-home! ".tramp/" "tramp")))
-
-;; Tramp
-(version-supported-when <= 23
-  (setq-default semanticdb-default-save-directory
-                (v-home! ".semanticdb/")))
-(setq-default ido-save-directory-list-file (v-home! ".ido/" "ido.last"))
-;; Rmail file
-(setq rmail-file-name (v-home! ".mail/" "RMAIL"))
-
-
-;; When you visit a file, point goes to the last place where it
-;; was when you previously visited the same file.
-;; http://www.emacswiki.org/emacs/SavePlace
-(progn
-  (setq-default save-place t)
-  (setq-default save-place-file (v-home! ".places/" "places")))
-
 
 ;; Emacs can automatically create backup files. This tells Emacs to
 ;; put all backups in ~/.emacs.d/backups. More info:
 ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Backup-Files.html
 (setq backup-directory-alist `(("." . ,(v-home! ".backup/"))))
 
-
 ;; Bookmarks
 (setq-default eww-bookmarks-directory (v-home! ".bookmarks/"))
 (setq-default bookmark-default-file (v-home! ".bookmarks/" "emacs.bmk"))
 
+;; Eshell
+(setq-default eshell-directory-name (v-home! ".eshell/"))
 
+;; Ido saved
+(setq-default ido-save-directory-list-file (v-home! ".ido/" "ido.last"))
+
+;; Image dired
+(setq-default image-dired-dir (v-home! ".image-dired/"))
+
+;; History of minibuffer
+(setq-default savehist-file (v-home! ".minibuffer/" "history"))
+
+;; Recentf
+(setq-default recentf-save-file (v-home! ".recentf/" "recentf"))
+
+;; Rmail
+(setq rmail-file-name (v-home! ".mail/" "RMAIL"))
+
+;; When you visit a file, point goes to the last place where it
+;; was when you previously visited the same file.
+;; http://www.emacswiki.org/emacs/SavePlace
+(setq-default save-place-file (v-home! ".places/" "places"))
+
+;; Server
+(setq-default server-auth-dir (v-home! ".server/"))
+
+;; Semantic
+(version-supported-when <= 23
+  (setq-default semanticdb-default-save-directory
+                (v-home! ".semanticdb/")))
+
+;; Tramp
+(version-supported-when <= 23
+  (setq-default tramp-persistency-file-name (v-home! ".tramp/" "tramp")))
 
 
 

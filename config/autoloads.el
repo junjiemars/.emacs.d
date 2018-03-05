@@ -101,6 +101,9 @@
   ;; disable auto-save mode
   (setq auto-save-default nil)
 
+  ;; enable save-place
+  (setq-default save-place t)
+  
   ;; emacs lisp basic 
   (add-hook 'emacs-lisp-mode-hook #'set-emacs-lisp-mode!)
 
@@ -113,7 +116,6 @@
   ;; see `dired-use-ls-dired' for more defails
   (platform-supported-when
       darwin
-
     (with-eval-after-load 'dired
       (setq-default ls-lisp-use-insert-directory-program nil)
       (require 'ls-lisp)))
