@@ -38,7 +38,7 @@ RENEW create tags file when t"
                    file-filter
                    dir-filter
                    (lambda (f)
-                     (eshell-command
+                     (shell-command-to-string
                       (format "etags -o %s -l auto -a %s ; echo %s"
                               tags-file f f))))
       (when (file-exists-p tags-file)
