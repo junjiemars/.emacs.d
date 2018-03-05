@@ -65,7 +65,8 @@
 (setq save-place-file (v-home! ".places/" "places"))
 
 ;; Server
-(setq-default server-auth-dir (v-home! ".server/"))
+(eval-when-compile (require 'server))
+(setq server-auth-dir (v-home! ".server/"))
 
 ;; Semantic
 (version-supported-when <= 23
