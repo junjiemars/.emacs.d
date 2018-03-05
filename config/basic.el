@@ -20,15 +20,18 @@
 ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Backup-Files.html
 (setq backup-directory-alist `(("." . ,(v-home! ".backup/"))))
 
+;; Bookmark: file in which to save bookmarks
+(eval-when-compile (require 'bookmark))
+(setq bookmark-default-file (v-home! ".bookmarks/" "emacs.bmk"))
+
 ;; Bookmarks
 (setq-default eww-bookmarks-directory (v-home! ".bookmarks/"))
-(setq-default bookmark-default-file (v-home! ".bookmarks/" "emacs.bmk"))
 
 ;; Eshell
 (eval-when-compile (require 'eshell))
 (setq eshell-directory-name (v-home! ".eshell/"))
 
-;; Games: A directory for game scores
+;; Games: a directory for game scores
 (eval-when-compile (require 'gamegrid))
 (setq gamegrid-user-score-file-directory (v-home! ".games/"))
 
