@@ -41,8 +41,9 @@
 ;; Ido saved
 (setq-default ido-save-directory-list-file (v-home! ".ido/" "ido.last"))
 
-;; Image dired
-(setq-default image-dired-dir (v-home! ".image-dired/"))
+;; Image dired: where thumbnail images are stored.
+(eval-when-compile (require 'image-dired))
+(setq image-dired-dir (v-home! ".image-dired/"))
 
 ;; History of minibuffer
 (setq-default savehist-file (v-home! ".minibuffer/" "history"))
