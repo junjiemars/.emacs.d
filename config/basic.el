@@ -27,7 +27,7 @@
 ;; Eshell
 (setq-default eshell-directory-name (v-home! ".eshell/"))
 
-;; Games
+;; Games: A directory for game scores
 (eval-when-compile (require 'gamegrid))
 (setq gamegrid-user-score-file-directory (v-home! ".games/"))
 
@@ -217,6 +217,7 @@ otherwise default to keep the directories of current `emacs-version'."
                     `,(emacs-home* ".bookmarks/")
                     `,(emacs-home* ".desktop/")
                     `,(emacs-home* ".eshell/")
+                    `,(emacs-home* ".games/")
                     `,(emacs-home* ".ido/")
                     `,(emacs-home* ".image-dired/")
                     `,(emacs-home* ".minibuffer/")
