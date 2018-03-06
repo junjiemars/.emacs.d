@@ -166,8 +166,7 @@
   (setq% electric-indent-mode nil electric)
 
   ;; enable column number mode
-  (eval-when-compile (require 'simple))
-  (setq column-number-mode t)
+  (setq% column-number-mode t simple)
 
   ;; default tab-width
   (setq tab-width 2)
@@ -180,7 +179,6 @@
   (put 'upcase-region 'disabled nil)
 
   (add-hook 'sh-mode-hook #'set-sh-mode!)
-
 
   (package-installed-p% 'paredit
     ;; basic lisp mode 
@@ -199,7 +197,7 @@
       ;; enable paredit in minbuffer on windows/darwin platform
       (add-hook 'eval-expression-minibuffer-setup-hook
                 #'enable-paredit-mode t)))
-   ;; end of package: paredit
+ ;; end of package: paredit
 
   ;; Terminal
   (terminal-supported-p
@@ -207,7 +205,7 @@
      ;; line number format on Terminal
      (setq% linum-format "%2d " linum)))
 
-   ;; end of Terminal
+ ;; end of Terminal
 
   )
 

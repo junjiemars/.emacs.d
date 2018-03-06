@@ -31,7 +31,7 @@
                               (platform-supported-if darwin
                                   "DYLD_LIBRARY_PATH"
                                 "LD_LIBRARY_PATH")))
-               :interactive-shell nil
+               :interactive-shell (platform-supported-unless darwin t nil)
                :exec-path t
                :bin-path (comment `,(bin-path "bash"))
                :allowed nil)
