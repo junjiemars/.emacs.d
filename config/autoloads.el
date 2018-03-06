@@ -161,8 +161,9 @@
   ;; don't use hard tabs
   (setq indent-tabs-mode nil)
 
-  ;; disable electric indent mode 
-  (safe-setq electric-indent-mode nil)
+  ;; disable electric indent mode
+	(eval-when-compile (require 'electric))
+  (setq electric-indent-mode nil)
 
   ;; enable column number mode
   (safe-setq column-number-mode t)
