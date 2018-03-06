@@ -43,7 +43,8 @@
   (global-set-key (kbd "C-M-%") 'query-replace-regexp)
 
   ;; toggle comment key strike
-  (global-set-key (kbd "C-c ;") 'toggle-comment)
+  (linum-mode-supported-p
+   (global-set-key (kbd "C-c ;") 'linum-mode))
 
   ;; bing dict
   (safe-fn-when bing-dict-brief

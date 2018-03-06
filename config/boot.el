@@ -119,9 +119,10 @@ else if theme NAME non-existing then load default `theme/tomorrow-night-eighties
 
 ;; Terminal style
 (terminal-supported-p
-  
-  ;; line number format on Terminal
-  (safe-setq linum-format "%2d ")
+
+  (linum-mode-supported-p
+   ;; line number format on Terminal
+   (setq% linum-format "%2d " linum))
   ;;above version 23 transient-mark-mode is enabled by default
   (version-supported-when > 23 (transient-mark-mode t))
   (set-face-background 'region "white")
@@ -133,10 +134,10 @@ else if theme NAME non-existing then load default `theme/tomorrow-night-eighties
 
 ;; full path in title bar
 (graphic-supported-p
-  (safe-setq frame-title-format "%b (%f)"))
+  (setq% frame-title-format "%b (%f)"))
 
 ;; Ignore ring bell
-(safe-setq ring-bell-function 'ignore)
+(setq% ring-bell-function 'ignore)
 
 
 

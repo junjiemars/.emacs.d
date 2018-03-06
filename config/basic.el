@@ -28,37 +28,26 @@
     (setq eww-bookmarks-directory (v-home! ".bookmarks/"))))
 
 ;; Bookmark: file in which to save bookmarks
-;; (eval-when-compile (require 'bookmark))
-;; (setq bookmark-default-file (v-home! ".bookmarks/" "emacs.bmk"))
-
 (setq% bookmark-default-file
        (v-home! ".bookmarks/" "emacs.bmk") bookmark)
 
 ;; Eshell
-(eval-when-compile (require 'eshell))
-(setq eshell-directory-name (v-home! ".eshell/"))
-
-;; (setq% eshell-directory-name (v-home! ".eshell/") eshell)
+(setq% eshell-directory-name (v-home! ".eshell/") eshell)
 
 ;; Games: a directory for game scores
-(eval-when-compile (require 'gamegrid))
-(setq gamegrid-user-score-file-directory (v-home! ".games/"))
+(setq% gamegrid-user-score-file-directory (v-home! ".games/") gamegrid)
 
 ;; Ido saved state between invocations
-(eval-when-compile (require 'ido))
-(setq ido-save-directory-list-file (v-home! ".ido/" "ido.last"))
+(setq% ido-save-directory-list-file (v-home! ".ido/" "ido.last") ido)
 
 ;; Image dired: where thumbnail images are stored.
-(eval-when-compile (require 'image-dired))
-(setq image-dired-dir (v-home! ".image-dired/"))
+(setq% image-dired-dir (v-home! ".image-dired/") image-dired)
 
 ;; Savehist: save minibuffer history
-(eval-when-compile (require 'savehist))
-(setq savehist-file (v-home! ".minibuffer/" "history"))
+(setq% savehist-file (v-home! ".minibuffer/" "history") savehist)
 
 ;; Recentf: save the recent list into
-(eval-when-compile (require 'recentf))
-(setq recentf-save-file (v-home! ".recentf/" "recentf"))
+(setq% recentf-save-file (v-home! ".recentf/" "recentf") recentf)
 
 ;; Rmail
 (setq rmail-file-name (v-home! ".mail/" "RMAIL"))
@@ -66,22 +55,20 @@
 ;; When you visit a file, point goes to the last place where it
 ;; was when you previously visited the same file.
 ;; http://www.emacswiki.org/emacs/SavePlace
-(eval-when-compile (require 'saveplace))
-(setq save-place-file (v-home! ".places/" "places"))
+(setq% save-place-file (v-home! ".places/" "places") saveplace)
 
 ;; Server
-(eval-when-compile (require 'server))
-(setq server-auth-dir (v-home! ".server/"))
+(setq% server-auth-dir (v-home! ".server/") server)
 
 ;; Semantic
 (version-supported-when <= 23
-  (eval-when-compile (require 'semantic/db-file))
-  (setq semanticdb-default-save-directory (v-home! ".semanticdb/")))
+  (setq% semanticdb-default-save-directory
+	 (v-home! ".semanticdb/" semantic/db-file)))
 
 ;; Tramp
 (version-supported-when <= 23
-  (eval-when-compile (require 'tramp-cache))
-  (setq tramp-persistency-file-name (v-home! ".tramp/" "tramp")))
+  (setq% tramp-persistency-file-name
+	 (v-home! ".tramp/" "tramp") tramp-cache))
 
 
 
@@ -414,18 +401,6 @@ then set `eww' to default browser."
 (defmacro linum-mode-supported-p (body)
   "When `emacs-version' supports linum mode then do BODY."
   `(version-supported-when <= 23.1 ,body))
-
-
-;; Toggle linum mode 
-(linum-mode-supported-p
- (defun toggle-linum-mode ()
-   "Toggle linum-mode."
-   (interactive)
-   (defvar linum-mode)
-   (if (or (not (boundp 'linum-mode))
-           (null linum-mode))
-       (linum-mode t)
-     (linum-mode -1))))
 
 
 ;; comments
