@@ -23,9 +23,7 @@
 ;; eww bookmarks
 (version-supported-when
     <= 24.4
-  (eval-when-compile (require 'eww))
-  (safe-fn-when eww-bookmarks-directory
-    (setq eww-bookmarks-directory (v-home! ".bookmarks/"))))
+  (setq% eww-bookmarks-directory (v-home! ".bookmarks/") eww))
 
 ;; Bookmark: file in which to save bookmarks
 (setq% bookmark-default-file
@@ -69,6 +67,9 @@
 (version-supported-when <= 23
   (setq% tramp-persistency-file-name
 	 (v-home! ".tramp/" "tramp") tramp-cache))
+
+;; Url
+(setq% url-configuration-directory (v-home! ".url/") url)
 
 
 
@@ -387,21 +388,28 @@ Unify this name `eldoc-mode' in Emacs 24.0-,
 see `http://www.emacswiki.org/emacs/ElDoc'"))
 
 
+(defmacro eww-mode-supported-p (&rest body)
+  "When `emacs-version' supports `eww-mode' then to BODY."
+  (declare (indent 0))
+  `(version-supported-when <= 24.4 ,@body))
+
+
 ;; default web browser: eww
-(defun set-default-browser! ()
-  "If `browser-url-default-browser' has not been touched, 
+(eww-mode-supported-p
+  (defun set-default-browser! ()
+    "If `browser-url-default-browser' has not been touched, 
 then set `eww' to default browser."
-  (when (eq browse-url-browser-function
-            'browse-url-default-browser)
-    (safe-fn-when eww-browse-url
-      (setq-default url-configuration-directory (v-home! ".url/"))
-      (setq browse-url-browser-function 'eww-browse-url))))
+    (when (eq browse-url-browser-function
+	      'browse-url-default-browser)
+      (when-fn% eww-browse-url eww
+	(setq browse-url-browser-function 'eww-browse-url)))))
 
 
 ;; linum mode
-(defmacro linum-mode-supported-p (body)
-  "When `emacs-version' supports linum mode then do BODY."
-  `(version-supported-when <= 23.1 ,body))
+(defmacro linum-mode-supported-p (&rest body)
+  "When `emacs-version' supports `linum-mode' then do BODY."
+  (declare (indent 0))
+  `(version-supported-when <= 23.1 ,@body))
 
 
 ;; comments
