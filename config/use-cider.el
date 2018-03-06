@@ -46,5 +46,6 @@
 (setq% cider-repl-wrap-history t cider)
 
 
+(declare-function org-bookmark-jump-unhide "org")
 
 (provide 'use-cider)
