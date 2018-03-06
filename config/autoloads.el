@@ -159,7 +159,7 @@
   (safe-setq create-lockfiles nil)
 
   ;; don't use hard tabs
-  (setq-default indent-tabs-mode nil)
+  (setq indent-tabs-mode nil)
 
   ;; disable electric indent mode 
   (safe-setq electric-indent-mode nil)
