@@ -28,12 +28,17 @@
     (setq eww-bookmarks-directory (v-home! ".bookmarks/"))))
 
 ;; Bookmark: file in which to save bookmarks
-(eval-when-compile (require 'bookmark))
-(setq bookmark-default-file (v-home! ".bookmarks/" "emacs.bmk"))
+;; (eval-when-compile (require 'bookmark))
+;; (setq bookmark-default-file (v-home! ".bookmarks/" "emacs.bmk"))
+
+(setq% bookmark-default-file
+       (v-home! ".bookmarks/" "emacs.bmk") bookmark)
 
 ;; Eshell
 (eval-when-compile (require 'eshell))
 (setq eshell-directory-name (v-home! ".eshell/"))
+
+;; (setq% eshell-directory-name (v-home! ".eshell/") eshell)
 
 ;; Games: a directory for game scores
 (eval-when-compile (require 'gamegrid))

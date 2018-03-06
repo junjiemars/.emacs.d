@@ -80,6 +80,14 @@ The name is made by appending a number to PREFIX, default \"G\"."
       (make-symbol (format "%s%d" pfix num)))))
 
 
+(defmacro setq% (x val &optional feature)
+  "Set X when variable X is bound.
+If X requires the FEATURE load it on compile-time."
+  (when (or (and feature (require feature))
+	    (boundp x))
+    `(setq ,x ,val)))
+
+
 
 
 
