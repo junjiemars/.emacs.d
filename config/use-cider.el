@@ -30,20 +30,20 @@
 
 
 ;; Go right to the REPL buffer when it's finished connecting
-(safe-setq cider-repl-pop-to-buffer-on-connect t)
+(setq% cider-repl-pop-to-buffer-on-connect t cider)
 
 
 ;; When there's a cider error, show its buffer and switch to it
-(safe-setq cider-show-error-buffer t)
-(safe-setq cider-auto-select-error-buffer t)
+(setq% cider-show-error-buffer t cider)
+(setq% cider-auto-select-error-buffer t cider)
 
 
 ;; Where to store the cider history.
-(safe-setq cider-repl-history-file (v-home! ".cider-history/"))
+(setq% cider-repl-history-file (v-home! ".cider-history/") cider)
 
 
 ;; Wrap when navigating history.
-(safe-setq cider-repl-wrap-history t)
+(setq% cider-repl-wrap-history t cider)
 
 
 
