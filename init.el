@@ -146,13 +146,6 @@ sequentially and return value of last one, or nil if there are none."
 
 
 
-(defmacro safe-var-when! (x &rest body)
-  "Do BODY when X is bound."
-  (declare (indent 1))
-  (when (boundp x)
-    `(progn% ,@body)))
-
-
 (defmacro safe-setq* (x val)
   "Set X when variable X is bound."
   `(when (boundp (quote ,x))
