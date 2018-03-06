@@ -37,10 +37,10 @@
 
 (defmacro figwheel-after-load-cider ()
   "Enable Figwheel: cider-jack-in-clojurescript"
-  `(safe-setq* cider-cljs-lein-repl
-               "(do (require 'figwheel-sidecar.repl-api)
+  `(setq% cider-cljs-lein-repl
+	  "(do (require 'figwheel-sidecar.repl-api)
                  (figwheel-sidecar.repl-api/start-figwheel!)
-                 (figwheel-sidecar.repl-api/cljs-repl))"))
+                 (figwheel-sidecar.repl-api/cljs-repl))" cider))
 
 
 (eval-after-load 'cider
