@@ -39,7 +39,7 @@
  ;; using semantic to view and editing any supported code
  ;; correctly and more faster
  ;; `system-cc-include' support any platform
- (safe-fn-when semantic-mode
+ (when-fn% semantic-mode nil
    (add-hook
     'after-init-hook
     (lambda ()
@@ -52,11 +52,11 @@
       (global-semantic-idle-summary-mode)
       (eval-when-compile (require 'cc))
       (dolist (x (system-cc-include t))
-        (semantic-add-system-include x 'c-mode))
+	(semantic-add-system-include x 'c-mode))
       (global-set-key (kbd "C-c , f") #'semantic-ia-fast-jump)
       (comment
        (setq-default semanticdb-project-roots
-                     `("/opt/apps/c" ,source-directory))))
+		     `("/opt/apps/c" ,source-directory))))
     t)))
 
 

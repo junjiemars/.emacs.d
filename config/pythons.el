@@ -28,8 +28,8 @@
 (provide 'pythons)
 
 ;; (defun unload-python-on-exit ()
-;;   (safe-fn-when* 'elpy-disable (elpy-disable))
-;;   (safe-fn-when* 'pyvenv-deactivate (pyvenv-deactivate)))
+;;   (safe-fn-|when* 'elpy-disable (elpy-disable))
+;;   (safe-fn-|when* 'pyvenv-deactivate (pyvenv-deactivate)))
 
 
 ;; (defadvice pyvenv-activate (after pyvenv-activate-after compile)
