@@ -65,21 +65,6 @@ If (eq `system-type' OS) yields nil, and there are no ELSE’s, the value is nil
   `(platform-supported-if ,os nil ,@body))
 
 
-(defvar *gensym-counter* 0)
-
-(safe-fn-unless gensym
-  ;; feature Emacs version will add `gensym' into the core
-  ;; but now using cl-gensym indeed
-  (defun gensym (&optional prefix)
-    "Generate a new uninterned symbol.
-The name is made by appending a number to PREFIX, default \"G\"."
-    (let ((pfix (if (stringp prefix) prefix "G"))
-          (num (if (integerp prefix) prefix
-                 (prog1 *gensym-counter*
-                   (setq *gensym-counter* (1+ *gensym-counter*))))))
-      (make-symbol (format "%s%d" pfix num)))))
-
-
 (defmacro setq% (x val &optional feature)
   "Set X when variable X is bound.
 If X requires the FEATURE load it on compile-time."
@@ -111,6 +96,20 @@ If FN requires FEATURE load it on compile-time."
   (declare (indent 2) (debug t))
   `(if-fn% ,fn ,feature nil ,@body))
 
+
+(defvar *gensym-counter* 0)
+
+(unless-fn% gensym nil
+	;; feature Emacs version will add `gensym' into the core
+	;; but now using cl-gensym indeed
+	(defun gensym (&optional prefix)
+	  "Generate a new uninterned symbol.
+The name is made by appending a number to PREFIX, default \"G\"."
+	  (let ((pfix (if (stringp prefix) prefix "G"))
+		(num (if (integerp prefix) prefix
+		       (prog1 *gensym-counter*
+			 (setq *gensym-counter* (1+ *gensym-counter*))))))
+	    (make-symbol (format "%s%d" pfix num)))))
 
 
 
