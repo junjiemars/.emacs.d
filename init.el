@@ -190,12 +190,6 @@ If FN is not bounded yields nil, and there are no ELSE’s, the value is nil."
     `(progn% ,@body)))
 
 
-(defmacro safe-setq (x val)
-  "Set X when variable X is bound."
-  (when (boundp x)
-    `(setq ,x ,val)))
-
-
 (defmacro safe-setq* (x val)
   "Set X when variable X is bound."
   `(when (boundp (quote ,x))
