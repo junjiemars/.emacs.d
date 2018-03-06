@@ -4,24 +4,21 @@
 ;;
 
 
-
-(eval-when-compile (require 'magit))
-
-(safe-fn-when magit-status
+(when-fn%  magit-status magit
   (global-set-key (kbd "C-c g s") 'magit-status))
-(safe-fn-when magit-pull
+(when-fn% magit-pull magit
   (global-set-key (kbd "C-c g p") 'magit-pull))
-(safe-fn-when magit-push
+(when-fn% magit-push magit
   (global-set-key (kbd "C-c g P") 'magit-push))
-(safe-fn-when magit-log
+(when-fn% magit-log magit
   (global-set-key (kbd "C-c g l") 'magit-log))
-(safe-fn-when magit-log-buffer-file
+(when-fn% magit-log-buffer-file magit
   (global-set-key (kbd "C-c g b") 'magit-log-buffer-file))
-(safe-fn-when magit-checkout
+(when-fn% magit-checkout magit
   (global-set-key (kbd "C-c g c") 'magit-checkout))
-(safe-fn-when magit-merge
+(when-fn% magit-merge magit
   (global-set-key (kbd "C-c g m") 'magit-merge))
-(safe-fn-when magit-fetch
+(when-fn% magit-fetch magit
   (global-set-key (kbd "C-c g f") 'magit-fetch))
 
 
