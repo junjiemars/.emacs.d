@@ -26,7 +26,7 @@
     (global-set-key (kbd "C-c b") 'find-file-at-point))
 
   (linum-mode-supported-p
-   (global-set-key (kbd "C-c l") 'toggle-linum-mode))
+   (global-set-key (kbd "C-c l") 'linum-mode))
 
   ;; Shows a list of buffers
   (global-set-key (kbd "C-x C-b") #'ibuffer)
@@ -43,8 +43,7 @@
   (global-set-key (kbd "C-M-%") 'query-replace-regexp)
 
   ;; toggle comment key strike
-  (linum-mode-supported-p
-   (global-set-key (kbd "C-c ;") 'linum-mode))
+  (global-set-key (kbd "C-c ;") 'toggle-comment)
 
   ;; bing dict
   (safe-fn-when bing-dict-brief
