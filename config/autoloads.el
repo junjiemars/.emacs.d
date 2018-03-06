@@ -11,7 +11,7 @@
 
 (defmacro package-installed-p% (package &rest body)
   "Run BODY if the PACKAGE had been installed in compile-time."
-  (declare (indent 1))
+  (declare (indent 1) (debug t))
   (package-supported-p
     (require 'package)
     (when (package-installed-p (quote package))
@@ -22,11 +22,11 @@
 (defun set-global-key! ()
   
   ;; open file or url at point
-  (safe-fn-when find-file-at-point
+  (when-fn% find-file-at-point ffap
     (global-set-key (kbd "C-c b") 'find-file-at-point))
 
   (linum-mode-supported-p
-   (global-set-key (kbd "C-c l") 'linum-mode))
+    (global-set-key (kbd "C-c l") 'linum-mode))
 
   ;; Shows a list of buffers
   (global-set-key (kbd "C-x C-b") #'ibuffer)
@@ -46,8 +46,9 @@
   (global-set-key (kbd "C-c ;") 'toggle-comment)
 
   ;; bing dict
-  (safe-fn-when bing-dict-brief
-    (global-set-key (kbd "C-c d") 'bing-dict-brief))
+  (package-installed-p% 'bing-dict 
+    (when-fn% bing-dict-brief bing-dict
+      (global-set-key (kbd "C-c d") 'bing-dict-brief)))
 
   ;; `C-x r g' and `C-x r i' are all bound to insert-register
   ;; but `C-x r g' can do thing by one hand
