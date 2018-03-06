@@ -22,8 +22,8 @@
   (global-set-key (kbd "C-c o c") 'org-capture))
 
 
-(comment (safe-setq enable-local-variables :all))
-(comment (setq-default compilation-scroll-output t))
+(comment (setq% enable-local-variables :all files))
+(comment (setq% compilation-scroll-output t compile))
 
 (comment
  ;; using etags to view Emacs's source code: C and Elisp

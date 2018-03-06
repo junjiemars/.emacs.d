@@ -135,16 +135,16 @@
   (version-supported-if
       <= 25
       (progn
-        (safe-setq select-enable-clipboard t)
-        (safe-setq select-enable-primary t))
-    (safe-setq x-select-enable-clipboard t)
-    (safe-setq x-select-enable-primary t))
+        (setq% select-enable-clipboard t select)
+        (setq% select-enable-primary t select))
+    (setq% x-select-enable-clipboard t select)
+    (setq% x-select-enable-primary t select))
 
   ;; Save before kill
-  (safe-setq save-interprogram-paste-before-kill t)
+  (setq% save-interprogram-paste-before-kill t simple)
 
   ;; Mouse yank commands yank at point instead of at click.
-  (safe-setq mouse-yank-at-point t)
+  (setq% mouse-yank-at-point t mouse)
 
   ;; Lisp-friendly hippie expand
   (setq hippie-expand-try-functions-list
@@ -156,7 +156,7 @@
 
 
   ;; no need for ~ files when editing
-  (safe-setq create-lockfiles nil)
+  (setq% create-lockfiles nil)
 
   ;; don't use hard tabs
   (setq indent-tabs-mode nil)
