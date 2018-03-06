@@ -146,13 +146,6 @@ sequentially and return value of last one, or nil if there are none."
 
 
 
-(defmacro safe-call (fn &rest args)
-  "Call FN with ARGS if FN has already been bound."
-  (declare (indent 1))
-  (if (fboundp fn)
-      `(,fn ,@args)))
-
-
 (defmacro safe-var-when! (x &rest body)
   "Do BODY when X is bound."
   (declare (indent 1))
