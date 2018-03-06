@@ -88,6 +88,31 @@ If X requires the FEATURE load it on compile-time."
     `(setq ,x ,val)))
 
 
+(defmacro if-fn% (fn feature then &rest else)
+  "If FN is bounded yields non-nil, do THEN, else do ELSE...
+If FN requires the FEATURE load it on compile-time."
+  (declare (indent 3) (debug t))
+  (when feature (require feature))
+  (if (fboundp fn)
+      `,then
+    `(progn% ,@else)))
+
+
+(defmacro when-fn% (fn feature &rest body)
+  "Do BODY when FN is bound.
+If FN requires FEATURE load it on compile-time."
+  (declare (indent 2) (debug t))
+  `(if-fn% ,fn (progn% ,@body) ,feature))
+
+
+(defmacro unless-fn% (fn feature &rest body)
+  "Do BODY unless FN is bound.
+If FN requires FEATURE load it on compile-time."
+  (declare (indent 2) (debug t))
+  `(if-fn% ,fn nil ,feature ,@body))
+
+
+
 
 
 
