@@ -57,16 +57,15 @@ at compile time."
 (theme-supported-p
     
     (defmacro switch-theme! (previous current)
-      `(safe-fn-when self-load-theme!
-         (let ((p->c (theme-changed-p ,previous ,current)))
-           (when (consp p->c)
-             (if (and (car p->c) (not (cdr p->c)))
-                 (progn
-                   (self-load-theme! (self-spec-> ,previous :name)
-                                     (self-spec-> ,previous :path))
-                   (disable-theme (self-spec-> ,previous :name)))
-               (enable-theme (self-spec-> ,current :name)))
-             (setq-default desktop-restore-frames t))))))
+      `(let ((p->c (theme-changed-p ,previous ,current)))
+	 (when (consp p->c)
+	   (if (and (car p->c) (not (cdr p->c)))
+	       (progn
+		 (self-load-theme! (self-spec-> ,previous :name)
+				   (self-spec-> ,previous :path))
+		 (disable-theme (self-spec-> ,previous :name)))
+	     (enable-theme (self-spec-> ,current :name)))
+	   (setq-default desktop-restore-frames t)))))
 
 
 ;; Read desktop
