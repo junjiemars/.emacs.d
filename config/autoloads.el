@@ -166,7 +166,8 @@
   (setq electric-indent-mode nil)
 
   ;; enable column number mode
-  (safe-setq column-number-mode t)
+	(eval-when-compile (require 'simple))
+  (setq column-number-mode t)
 
   ;; default tab-width
   (setq-default tab-width 2)
