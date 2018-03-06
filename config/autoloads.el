@@ -163,8 +163,7 @@
   (setq indent-tabs-mode nil)
 
   ;; disable electric indent mode
-  (eval-when-compile (require 'electric))
-  (setq electric-indent-mode nil)
+  (setq% electric-indent-mode nil electric)
 
   ;; enable column number mode
   (eval-when-compile (require 'simple))
