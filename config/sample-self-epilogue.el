@@ -54,9 +54,9 @@
       (dolist (x (system-cc-include t))
 	(semantic-add-system-include x 'c-mode))
       (global-set-key (kbd "C-c , f") #'semantic-ia-fast-jump)
-      (comment
-       (setq-default semanticdb-project-roots
-		     `("/opt/apps/c" ,source-directory))))
+      (comment)
+      (setq-default semanticdb-project-roots
+		    `("/opt/apps/c" ,source-directory)))
     t)))
 
 
