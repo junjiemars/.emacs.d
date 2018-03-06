@@ -126,7 +126,7 @@ else if theme NAME non-existing then load default `theme/tomorrow-night-eighties
 
 
 ;; No cursor blinking, it's distracting
-(safe-call blink-cursor-mode 0)
+(when-fn% blink-cursor-mode nil (blink-cursor-mode 0))
 
 ;; full path in title bar
 (graphic-supported-p

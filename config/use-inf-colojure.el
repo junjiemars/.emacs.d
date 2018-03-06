@@ -8,10 +8,10 @@
 ;; these help me out with the way I usually develop web apps
 (defun cider-start-http-server ()
   (interactive)
-  (safe-call cider-load-current-buffer)
+  (when-fn% cider-load-current-buffer cider (cider-load-current-buffer))
   (when-fn% cider-current-ns cider
     (let ((ns (cider-current-ns)))
-      (safe-call cider-repl-set-ns ns)
+      (when-fn% cider-repl-set-ns cider (cider-repl-set-ns ns))
       (when-fn% cider-interactive-eval cider
 	(cider-interactive-eval
 	 (format "(println '(def server (%s/start))) (println 'server)"
@@ -23,11 +23,13 @@
 
 (defun cider-refresh ()
   (interactive)
-  (safe-call cider-interactive-eval (format "(user/reset)")))
+  (when-fn% cider-interactive-eval cider
+    (cider-interactive-eval (format "(user/reset)"))))
+
 
 (defun cider-user-ns ()
   (interactive)
-  (safe-call cider-repl-set-ns "user"))
+  (when-fn% cider-repl-set-ns cider (cider-repl-set-ns "user")))
 
 
 ;;;;
