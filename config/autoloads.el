@@ -162,11 +162,11 @@
   (setq indent-tabs-mode nil)
 
   ;; disable electric indent mode
-	(eval-when-compile (require 'electric))
+  (eval-when-compile (require 'electric))
   (setq electric-indent-mode nil)
 
   ;; enable column number mode
-	(eval-when-compile (require 'simple))
+  (eval-when-compile (require 'simple))
   (setq column-number-mode t)
 
   ;; default tab-width
@@ -199,7 +199,16 @@
       ;; enable paredit in minbuffer on windows/darwin platform
       (add-hook 'eval-expression-minibuffer-setup-hook
                 #'enable-paredit-mode t)))
-  
+   ;; end of package: paredit
+
+  ;; Terminal
+  (terminal-supported-p
+    (linum-mode-supported-p
+     ;; line number format on Terminal
+     (setq% linum-format "%2d " linum)))
+
+   ;; end of Terminal
+
   )
 
 

@@ -119,10 +119,6 @@ else if theme NAME non-existing then load default `theme/tomorrow-night-eighties
 
 ;; Terminal style
 (terminal-supported-p
-
-  (linum-mode-supported-p
-   ;; line number format on Terminal
-   (setq% linum-format "%2d " linum))
   ;;above version 23 transient-mark-mode is enabled by default
   (version-supported-when > 23 (transient-mark-mode t))
   (set-face-background 'region "white")
