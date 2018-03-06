@@ -153,36 +153,6 @@ sequentially and return value of last one, or nil if there are none."
       `(,fn ,@args)))
 
 
-(defmacro safe-fn-if (fn then &rest else)
-  "If FN is bounded yields non-nil, do THEN, else do ELSE...
-
-Returns the value of THEN or the value of the last of the ELSE’s.
-THEN must be one expression, but ELSE... can be zero or more expressions.
-If FN is not bounded yields nil, and there are no ELSE’s, the value is nil."
-  (declare (indent 2))
-  (if (fboundp fn)
-      `,then
-    `(progn% ,@else)))
-
-
-(defmacro safe-fn-when (fn &rest body)
-  "Do BODY when FN is bound."
-  (declare (indent 1))
-  `(safe-fn-if ,fn (progn% ,@body)))
-
-
-(defmacro safe-fn-unless (fn &rest body)
-  "Do BODY unless FN is bound."
-  (declare (indent 1))
-  `(safe-fn-if ,fn nil ,@body))
-
-
-(defmacro safe-fn-when* (fn &rest body)
-  "Do BODY when FN is local bound."
-  (declare (indent 1))
-  `(when (fboundp ,fn) ,@body))
-
-
 (defmacro safe-var-when! (x &rest body)
   "Do BODY when X is bound."
   (declare (indent 1))
