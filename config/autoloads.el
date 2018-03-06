@@ -113,8 +113,8 @@
 
   ;; Shows all options when running apropos. For more info,
   ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html
-  ;;apropos-do-all t
-  (safe-setq apropos-do-all t)
+  ;;enable apropos-do-all, but slower
+  (setq% apropos-do-all t apropos)
 
   ;; on Drawin: ls does not support --dired;
   ;; see `dired-use-ls-dired' for more defails
