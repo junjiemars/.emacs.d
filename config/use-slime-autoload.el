@@ -15,7 +15,7 @@
 
 (defun use-slime-repl-mode! ()
   "Hook into `slime-repl-mode-hook'"
-  (safe-fn-when slime-selector 
+  (when-fn% slime-selector slime
     (global-set-key (kbd "C-c s s") 'slime-selector)))
 
 
