@@ -102,14 +102,14 @@ If FN requires the FEATURE load it on compile-time."
   "Do BODY when FN is bound.
 If FN requires FEATURE load it on compile-time."
   (declare (indent 2) (debug t))
-  `(if-fn% ,fn (progn% ,@body) ,feature))
+  `(if-fn% ,fn ,feature (progn% ,@body)))
 
 
 (defmacro unless-fn% (fn feature &rest body)
   "Do BODY unless FN is bound.
 If FN requires FEATURE load it on compile-time."
   (declare (indent 2) (debug t))
-  `(if-fn% ,fn nil ,feature ,@body))
+  `(if-fn% ,fn ,feature nil ,@body))
 
 
 
