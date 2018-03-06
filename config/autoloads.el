@@ -121,8 +121,7 @@
   (platform-supported-when
       darwin
     (with-eval-after-load 'dired
-      (setq-default ls-lisp-use-insert-directory-program nil)
-      (require 'ls-lisp)))
+      (setq ls-lisp-use-insert-directory-program nil)))
 
 
   ;; Makes killing/yanking interact with the clipboard
