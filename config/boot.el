@@ -6,13 +6,13 @@
 
 
 ;; Disable menu bar
-(safe-call menu-bar-mode -1)
+(when-fn%  menu-bar-mode nil (menu-bar-mode -1))
 
 ;; Disable tool bar
-(graphic-supported-p (safe-call tool-bar-mode -1))
+(graphic-supported-p (when-fn% tool-bar-mode nil (tool-bar-mode -1)))
 
 ;; Disable scroll bar
-(safe-call scroll-bar-mode -1)
+(when-fn% scroll-bar-mode nil (scroll-bar-mode -1))
 
 ;; Go straight to scratch buffer on startup
 (version-supported-when
