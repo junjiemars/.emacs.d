@@ -63,7 +63,7 @@
 ;; Semantic
 (version-supported-when <= 23
   (setq% semanticdb-default-save-directory
-	 (v-home! ".semanticdb/" semantic/db-file)))
+	 (v-home! ".semanticdb/") semantic/db-file))
 
 ;; Tramp
 (version-supported-when <= 23

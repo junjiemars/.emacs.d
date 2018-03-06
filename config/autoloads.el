@@ -121,7 +121,7 @@
   (platform-supported-when
       darwin
     (with-eval-after-load 'dired
-      (setq ls-lisp-use-insert-directory-program nil)))
+      (setq% ls-lisp-use-insert-directory-program nil)))
 
 
   ;; Makes killing/yanking interact with the clipboard
@@ -197,7 +197,7 @@
       ;; enable paredit in minbuffer on windows/darwin platform
       (add-hook 'eval-expression-minibuffer-setup-hook
                 #'enable-paredit-mode t)))
- ;; end of package: paredit
+   ;; end of package: paredit
 
   ;; Terminal
   (terminal-supported-p
@@ -205,7 +205,7 @@
      ;; line number format on Terminal
      (setq% linum-format "%2d " linum)))
 
- ;; end of Terminal
+   ;; end of Terminal
 
   )
 
