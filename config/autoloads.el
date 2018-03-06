@@ -133,11 +133,12 @@
   ;; I'm actually not sure what this does but it's recommended?
   ;; http://emacswiki.org/emacs/CopyAndPaste
   (version-supported-if
-      <= 25
-      (progn
-        (setq% select-enable-clipboard t select)
-        (setq% select-enable-primary t select))
-    (setq% x-select-enable-clipboard t select)
+      <= 24.1
+      (setq% select-enable-clipboard t)
+    (setq% x-select-enable-clipboard t))
+  (version-supported-if
+      <= 25.1
+      (setq% select-enable-primary t select)
     (setq% x-select-enable-primary t select))
 
   ;; Save before kill
