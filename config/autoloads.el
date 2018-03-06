@@ -102,7 +102,11 @@
   (setq auto-save-default nil)
 
   ;; enable save-place
-  (setq-default save-place t)
+  (version-supported-if
+      <= 25.1
+      (save-place-mode t)
+    (setq save-place t))
+
   
   ;; emacs lisp basic 
   (add-hook 'emacs-lisp-mode-hook #'set-emacs-lisp-mode!)
