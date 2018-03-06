@@ -146,14 +146,6 @@ sequentially and return value of last one, or nil if there are none."
 
 
 
-(defmacro safe-setq* (x val)
-  "Set X when variable X is bound."
-  `(when (boundp (quote ,x))
-     (setq ,x ,val)))
-
-
-
-
 ;; Load strap
 (compile-and-load-file*
  v-dir
