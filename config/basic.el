@@ -335,8 +335,10 @@ call it: ssh -vnNTD32000 <user>@<host>"
 
 
 ;; use `pp' `pp-eval-expression' or `pp-eval-last-sexp'
-(safe-fn-when cl-prettyexpand
-  (defalias 'pprint 'cl-prettyprint))
+(if-fn% cl-prettyprint cl
+	(defalias 'pprint 'cl-prettyprint)
+  (when-fn% cl-prettyexpand cl
+    (defalias 'pprint 'cl-prettyexpand)))
 
 
 (defun take (n seq)
