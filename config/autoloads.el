@@ -9,16 +9,6 @@
   "Returns a list of system include directories.")
 
 
-(defmacro package-installed-p% (package &rest body)
-  "Run BODY if the PACKAGE had been installed in compile-time."
-  (declare (indent 1) (debug t))
-  (package-supported-p
-    (require 'package)
-    (when (package-installed-p (quote package))
-      `(progn% ,package ,@body))))
-
-
-
 (defun set-global-key! ()
   
   ;; open file or url at point
@@ -45,11 +35,6 @@
   ;; toggle comment key strike
   (global-set-key (kbd "C-c ;") 'toggle-comment)
 
-  ;; bing dict
-  (package-installed-p% 'bing-dict 
-    (when-fn% bing-dict-brief bing-dict
-      (global-set-key (kbd "C-c d") 'bing-dict-brief)))
-
   ;; `C-x r g' and `C-x r i' are all bound to insert-register
   ;; but `C-x r g' can do thing by one hand
   (global-set-key (kbd "C-x r g") 'string-insert-rectangle)
@@ -58,7 +43,12 @@
   ;; http://www.emacswiki.org/emacs/HippieExpand
   (global-set-key (kbd "M-/") 'hippie-expand)
 
-  (package-installed-p% 'paredit
+  (package-supported-p
+
+    ;; `bing-dict'
+    (global-set-key (kbd "C-c d") 'bing-dict-brief)
+
+    ;; `paredit'
     ;; On Windows C-) is not work
     ;; fix inconsistent `C-)' `C-c )' behavior:#9
     (global-set-key (kbd "C-c )") 'paredit-forward-slurp-sexp)
@@ -182,30 +172,30 @@
 
   (add-hook 'sh-mode-hook #'set-sh-mode!)
 
-  (package-installed-p% 'paredit
+  (package-supported-p
     ;; basic lisp mode 
     (dolist (hook '(emacs-lisp-mode-hook
-                    ielm-mode-hook
-                    scheme-mode-hook
-                    lisp-mode-hook
-                    lisp-interaction-mode-hook))
+		    ielm-mode-hook
+		    scheme-mode-hook
+		    lisp-mode-hook
+		    lisp-interaction-mode-hook))
       (add-hook hook #'set-lisp-basic-mode!))
 
     ;; enable paredit in minibuffer on gnu/linux platform
     (platform-supported-if
-        gnu/linux
-        (add-hook 'minibuffer-setup-hook
-                  #'enable-paredit-mode t)
+	gnu/linux
+	(add-hook 'minibuffer-setup-hook
+		  #'enable-paredit-mode t)
       ;; enable paredit in minbuffer on windows/darwin platform
       (add-hook 'eval-expression-minibuffer-setup-hook
-                #'enable-paredit-mode t)))
+		#'enable-paredit-mode t)))
    ;; end of package: paredit
 
   ;; Terminal
   (terminal-supported-p
     (linum-mode-supported-p
-     ;; line number format on Terminal
-     (setq% linum-format "%2d " linum)))
+      ;; line number format on Terminal
+      (setq% linum-format "%2d " linum)))
 
    ;; end of Terminal
 
