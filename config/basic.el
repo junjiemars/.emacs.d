@@ -331,8 +331,7 @@ call it: ssh -vnNTD32000 <user>@<host>"
 ;; Computations
 
 
-(safe-fn-when number-sequence
-  (defalias 'range 'number-sequence))
+(defalias 'range 'number-sequence)
 
 
 ;; use `pp' `pp-eval-expression' or `pp-eval-last-sexp'
