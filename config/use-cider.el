@@ -46,6 +46,11 @@
 (setq% cider-repl-wrap-history t cider)
 
 
-(declare-function org-bookmark-jump-unhide "org")
+
+;; If there are no Java env, but try to load `use-cider'
+;; will trigger a comile-warning
+;; (declare-function org-bookmark-jump-unhide "org")
+;; check :shell settings in `def-self-env-spec'
+
 
 (provide 'use-cider)
