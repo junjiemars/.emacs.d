@@ -381,14 +381,6 @@ for which (PRED item) returns t."
 
 ;; falvour mode functions
 
-(version-supported-when >= 24.0
-  (defalias 'eldoc-mode 'turn-on-eldoc-mode
-    "After Emacs 24.0 `turn-on-eldoc-mode' is obsoleted, use `eldoc-mode' indeed.
-
-Unify this name `eldoc-mode' in Emacs 24.0-, 
-see `http://www.emacswiki.org/emacs/ElDoc'"))
-
-
 (defmacro eww-mode-supported-p (&rest body)
   "When `emacs-version' supports `eww-mode' then to BODY."
   (declare (indent 0))
