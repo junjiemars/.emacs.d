@@ -195,8 +195,8 @@ The name is made by appending a number to PREFIX, default \"G\"."
 (defmacro self-spec-> (seq &rest keys)
   (declare (indent 1))
   (let ((x seq))
-    (dolist (k keys x)
-      (setq x (list 'plist-get x k)))))
+    (dolist (_k_ keys x)
+      (setq x (list 'plist-get x _k_)))))
 
 
 (defmacro self-spec->% (seq &rest keys)
