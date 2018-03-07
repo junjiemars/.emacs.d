@@ -55,8 +55,8 @@
 	(semantic-add-system-include x 'c-mode))
       (global-set-key (kbd "C-c , f") #'semantic-ia-fast-jump)
       (comment)
-      (setq-default semanticdb-project-roots
-		    `("/opt/apps/c" ,source-directory)))
+      (setq% semanticdb-project-roots
+	     `("/opt/apps/c" ,source-directory) semantic))
     t)))
 
 
@@ -64,7 +64,7 @@
  ;; receive mail
  (require 'rmail)
  (setq rmail-primary-inbox-list '("<protocal://user:passwd@host>"))
- (setq-default rmail-remote-password-required t))
+ (setq% rmail-remote-password-required t rmail))
 
 (comment
  ;; send mail
