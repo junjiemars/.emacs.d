@@ -35,7 +35,7 @@
                :exec-path t
                :bin-path (platform-supported-if windows-nt
 			     `,(bin-path "bash")
-			   "bin/bash")
+			   "/bin/bash")
                :allowed nil)
   
   :desktop (list :files-not-to-save
