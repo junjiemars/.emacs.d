@@ -68,7 +68,7 @@ If (eq `system-type' OS) yields nil, and there are no ELSE’s, the value is nil
 (defmacro setq% (x val &optional feature)
   "Set X when variable X is bound.
 If X requires the FEATURE load it on compile-time."
-  (declare (debug t))
+  (declare (comment (debug t)))
   (when feature (require feature))
   (when (boundp x)
     `(setq ,x ,val)))
@@ -77,7 +77,7 @@ If X requires the FEATURE load it on compile-time."
 (defmacro if-fn% (fn feature then &rest else)
   "If FN is bounded yields non-nil, do THEN, else do ELSE...
 If FN requires the FEATURE load it on compile-time."
-  (declare (indent 3) (debug t))
+  (declare (indent 3) (comment (debug t)))
   (when feature (require feature))
   (if (fboundp fn)
       `,then
@@ -87,14 +87,14 @@ If FN requires the FEATURE load it on compile-time."
 (defmacro when-fn% (fn feature &rest body)
   "Do BODY when FN is bound.
 If FN requires FEATURE load it on compile-time."
-  (declare (indent 2) (debug t))
+  (declare (indent 2) (comment (debug t)))
   `(if-fn% ,fn ,feature (progn% ,@body)))
 
 
 (defmacro unless-fn% (fn feature &rest body)
   "Do BODY unless FN is bound.
 If FN requires FEATURE load it on compile-time."
-  (declare (indent 2) (debug t))
+  (declare (indent 2) (comment (debug t)))
   `(if-fn% ,fn ,feature nil ,@body))
 
 

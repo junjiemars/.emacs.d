@@ -39,7 +39,7 @@
                :allowed nil)
   
   :desktop (list :files-not-to-save
-                 ".*\.t?gz\\|\.desktop\\|~$\\|\\/ssh[: ]"
+                 ".*\.t?gz\\|\.desktop\\|~$\\|\\/ssh[: ]\\|\.elc$"
                  :buffers-not-to-save "^TAGS\\|\\.log"
                  :modes-not-to-save
                  '(dired-mode fundamental-mode rmail-mode)
