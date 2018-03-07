@@ -274,7 +274,7 @@ otherwise default to keep the directories of current `emacs-version'."
   "Return the path of B binary in env."
   `(platform-supported-if windows-nt
        (string-trim> (shell-command-to-string (concat "where " ,b)))
-     (string-trim> (shell-command-to-string (concat "type -P " ,b)))))
+     (string-trim> (shell-command-to-string (concat "command -v " ,b)))))
 
 
 (platform-supported-when windows-nt
