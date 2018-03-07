@@ -84,12 +84,12 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
   (path-env<- :path (echo-var (shell-env-spec->% :path-var)))
   (path-env<- :shell-file-name nil)
   (path-env<- :exec-path (dolist
-                             (_p_ (var->paths (shell-env-> :path)) exec-path)
-                           (add-to-list 'exec-path _p_ t #'string=)))
+                             (p (var->paths (shell-env-> :path)) exec-path)
+                           (add-to-list 'exec-path p t #'string=)))
   (path-env<- :env-vars (let ((vars (self-spec->*shell :env-vars))
                               (x nil))
-                          (dolist (_v_ vars x)
-                            (push (cons _v_ (echo-var _v_)) x))))
+                          (dolist (v vars x)
+                            (push (cons v (echo-var v)) x))))
   (when (save-sexp-to-file
          (list 'setq '*default-shell-env*
                (list 'list
