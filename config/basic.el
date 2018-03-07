@@ -301,13 +301,12 @@ otherwise default to keep the directories of current `emacs-version'."
   "Switch on `url-gateway-method' to socks, you can start a ssh proxy before 
 call it: ssh -vnNTD32000 <user>@<host>"
   (version-supported-when < 22
-    (eval-when-compile (require 'url))
-    (setq-default url-gateway-method 'socks)
+    (setq% url-gateway-method 'socks url)
     (setq-default socks-server
-                  (list "Default server"
-                        (if server server "127.0.0.1")
-                        (if port port 32000)
-                        (if version version 5)))))
+		  (list "Default server"
+			(if server server "127.0.0.1")
+			(if port port 32000)
+			(if version version 5)))))
 
 
 ;; Load socks settings
@@ -322,9 +321,8 @@ call it: ssh -vnNTD32000 <user>@<host>"
 (defun stop-socks! (&optional method)
   "Switch off url-gateway to native."
   (version-supported-when < 22
-    (eval-when-compile (require 'url))
-    (setq-default url-gateway-method
-                  (if method method 'native))))
+    (setq% url-gateway-method
+	   (if method method 'native) url)))
 
 
 
