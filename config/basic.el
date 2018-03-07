@@ -264,8 +264,9 @@ otherwise default to keep the directories of current `emacs-version'."
 
 (defmacro bin-exists-p (b)
   "Return t if B binary exists in env."
+  (declare (debug t))
   `(platform-supported-if windows-nt
-       (zerop (shell-command (concat "where " ,b " >nul 2>&1")))
+       (zerop (shell-command (concat "where /Q " ,b)))
      (zerop (shell-command (concat "hash " ,b " &>/dev/null")))))
 
 
