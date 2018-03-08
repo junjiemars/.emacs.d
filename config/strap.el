@@ -199,6 +199,11 @@ The name is made by appending a number to PREFIX, default \"G\"."
       (setq x (list 'plist-get x k)))))
 
 
+(defmacro self-spec<- (k v seq &rest keys)
+  (declare (indent 3) (debug t))
+  `(plist-put (self-spec-> ,seq ,@keys) ,k ,v))
+
+
 (defmacro self-spec->% (seq &rest keys)
   (declare (indent 1) (debug t))
   `(eval-when-compile (self-spec-> ,seq ,@keys)))
@@ -215,7 +220,6 @@ The name is made by appending a number to PREFIX, default \"G\"."
     `(self-spec-> ,(self-symbol 'env-spec) ,@keys)))
 
 
-
 (compile!
     v-dir
   (self-def-path-ref-> :env-spec))
@@ -225,6 +229,12 @@ The name is made by appending a number to PREFIX, default \"G\"."
 
 
 ;; :sys env-spec
+;; (when (and (self-spec->*env-spec :sys :allowed)
+;; 	   (numberp
+;; 	    (self-spec->*env-spec :sys :gc-cons-percentags :on-start)))
+;;   (setq gc-cons-percentage
+;; 	(self-spec->*env-spec :sys :gc-cons-percentags :on-start))
+;;   (message "!!!on-start:%s" gc-cons-percentage))
 
 
 ;; Load ui, shell, basic env:
@@ -269,3 +279,4 @@ The name is made by appending a number to PREFIX, default \"G\"."
 (compile!
     v-dir
   (self-def-path-ref-> :epilogue))
+
