@@ -7,8 +7,7 @@
 
 (version-supported-when <= 24.1
   (eval-when-compile
-    (require 'python)
-    (require 'shells (v-home% "config/" "shells.elc"))))
+    (require 'python)))
 
 
 (version-supported-when <= 24.1
