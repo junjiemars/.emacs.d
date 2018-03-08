@@ -9,7 +9,7 @@
 ;; Read/Save desktop
 
 
-(defvar self-previous-env-spec nil)
+(defvar *self-previous-env-spec* nil)
 
 
 (defmacro env-spec->% (&rest keys)
@@ -26,7 +26,7 @@ at compile time."
    "env-spec"
    (let ((f (env-spec->% :source)))
      (when (save-sexp-to-file
-            `(setq self-previous-env-spec ',*val*) f)
+            `(setq *self-previous-env-spec* ',*val*) f)
        (byte-compile-file f)))))
 
 (add-hook 'kill-emacs-hook #'save-env-spec! t)
@@ -82,7 +82,7 @@ at compile time."
               (file-exists-p (v-home* ".desktop/")))
      (theme-supported-p
          (when (consp (theme-changed-p
-                       (self-spec-> self-previous-env-spec :theme)
+                       (self-spec-> *self-previous-env-spec* :theme)
                        (self-spec->* :theme)))
            (setq% desktop-restore-frames nil desktop)))
      (setq% desktop-restore-eager
@@ -114,7 +114,7 @@ at compile time."
 	      (append '(tags-table-mode) m) desktop))
 
      (theme-supported-p
-         (switch-theme! (self-spec-> self-previous-env-spec :theme)
+         (switch-theme! (self-spec-> *self-previous-env-spec* :theme)
                         (self-spec->* :theme)))
 
      (version-supported-if
