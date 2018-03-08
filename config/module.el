@@ -102,9 +102,6 @@
 
 
 ;; Load self packages spec
-(self-safe-call
- "package-spec"
- (when (self-spec->*)
-   (parse-package-spec v-dir (self-spec->*))))
+(parse-package-spec v-dir (self-spec->*package-spec))
 
 
