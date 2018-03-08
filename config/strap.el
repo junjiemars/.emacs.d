@@ -168,13 +168,6 @@ The name is made by appending a number to PREFIX, default \"G\"."
   (package-supported-p 
     `(defvar ,(self-symbol 'package-spec) (list ,@spec))))
 
-
-(defmacro self-safe-call (var &rest body)
-  (when (boundp (self-symbol var))
-    `(let ((*val* (symbol-value (self-symbol ,var))))
-       (when *val* ,@body))))
-
-
 
 
 

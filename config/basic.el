@@ -6,8 +6,8 @@
 
 
 ;; load-path versioned dirs
-(add-to-list 'load-path (v-home* "config/") t #'string=)
-(add-to-list 'load-path (v-home* "private/") t #'string=)
+(add-to-list 'load-path (v-home* "config/") nil #'string=)
+(add-to-list 'load-path (v-home* "private/") nil #q'string=)
 
 
 ;; Versioned dirs: .*
