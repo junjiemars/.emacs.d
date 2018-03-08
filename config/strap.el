@@ -193,14 +193,14 @@ The name is made by appending a number to PREFIX, default \"G\"."
 
 
 (defmacro self-spec-> (seq &rest keys)
-  (declare (indent 1))
+  (declare (indent 1) (debug t))
   (let ((x seq))
     (dolist (k keys x)
       (setq x (list 'plist-get x k)))))
 
 
 (defmacro self-spec->% (seq &rest keys)
-  (declare (indent 1))
+  (declare (indent 1) (debug t))
   `(eval-when-compile (self-spec-> ,seq ,@keys)))
 
 
@@ -209,12 +209,22 @@ The name is made by appending a number to PREFIX, default \"G\"."
   `(self-spec-> *val* ,@keys))
 
 
+(defmacro self-spec->*env-spec (&rest keys)
+  (declare (indent 0) (debug t))
+  (when (boundp (self-symbol 'env-spec))
+    `(self-spec-> ,(self-symbol 'env-spec) ,@keys)))
+
+
+
 (compile!
     v-dir
   (self-def-path-ref-> :env-spec))
 
 
  ;; end of Load self env
+
+
+;; :sys env-spec
 
 
 ;; Load ui, shell, basic env:
