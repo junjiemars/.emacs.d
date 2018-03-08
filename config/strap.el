@@ -209,15 +209,11 @@ The name is made by appending a number to PREFIX, default \"G\"."
   `(eval-when-compile (self-spec-> ,seq ,@keys)))
 
 
-(defmacro self-spec->* (&rest keys)
-  (declare (indent 0))
-  `(self-spec-> *val* ,@keys))
-
-
 (defmacro self-spec->*env-spec (&rest keys)
   (declare (indent 0) (debug t))
   (when (boundp (self-symbol 'env-spec))
     `(self-spec-> ,(self-symbol 'env-spec) ,@keys)))
+
 
 (defmacro self-spec->*package-spec (&rest keys)
   (declare (indent 0) (debug t))

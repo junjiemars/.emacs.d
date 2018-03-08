@@ -46,18 +46,13 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
   "Put K and V into `*default-shell-env*'."
   `(plist-put *default-shell-env* ,k ,v))
 
-(defmacro self-spec->*shell (&rest keys)
-  `(self-safe-call
-    "env-spec"
-    (self-spec->* :shell ,@keys)))
-
 (defmacro echo-var (var &optional echo-format)
   "Return the value of $VAR via echo."
   `(shell-command-to-string
     (format (if ,echo-format ,echo-format
               (platform-supported-if windows-nt
                   (shells-spec->% :echo-format)
-                (if (self-spec->*shell :interactive-shell)
+                (if (self-spec->*env-spec :shell :interactive-shell)
                     (alist-get :interactive-shell
                                (shells-spec->% :echo-format))
                   (alist-get :login-shell
@@ -85,7 +80,7 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
   (path-env<- :exec-path (dolist
                              (p (var->paths (shell-env-> :path)) exec-path)
                            (add-to-list 'exec-path p t #'string=)))
-  (path-env<- :env-vars (let ((vars (self-spec->*shell :env-vars))
+  (path-env<- :env-vars (let ((vars (self-spec->*env-spec :shell :env-vars))
                               (x nil))
                           (dolist (v vars x)
                             (push (cons v (echo-var v)) x))))
@@ -125,18 +120,18 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 ;; Darwin/Linux shell 
 (platform-supported-unless windows-nt
   
-  (when (self-spec->*shell :allowed)
+  (when (self-spec->*env-spec :shell :allowed)
     (read-shell-env!)
     
-    (when (self-spec->*shell :bin-path)
+    (when (self-spec->*env-spec :shell :bin-path)
       (setenv (shells-spec->% :shell-var)
-              (self-spec->*shell :bin-path)))
+              (self-spec->*env-spec :shell :bin-path)))
     
-    (when (self-spec->*shell :exec-path)
+    (when (self-spec->*env-spec :shell :exec-path)
       (copy-exec-path-var!))
     
     (copy-env-vars! (shell-env-> :env-vars)
-                    (self-spec->*shell :env-vars))))
+                    (self-spec->*env-spec :shell :env-vars))))
 
 
 
