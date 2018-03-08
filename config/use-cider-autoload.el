@@ -18,4 +18,4 @@
 
 
 (autoload 'use-cider-repl-mode!
-  (v-home* "config/" "use-cider.elc"))
+  (v-home% "config/" "use-cider.elc"))

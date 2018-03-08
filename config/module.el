@@ -7,7 +7,7 @@
 
 
 ;; define package user dir
-(setq% package-user-dir (v-home* "elpa/") package)
+(setq% package-user-dir (v-home% "elpa/") package)
 
 
 (defvar *repostory-initialized* nil
@@ -41,7 +41,7 @@
 
 (version-supported-when
     <= 25.1
-  (setq custom-file (v-home* "config/" ".selected-packages.el")))
+  (setq custom-file (v-home% "config/" ".selected-packages.el")))
 
 (package-initialize)
 

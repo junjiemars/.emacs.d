@@ -15,8 +15,8 @@
 (defmacro memory-spec->% (&rest keys)
   "Extract value from a list of spec via KEYS at compile time."
   `(self-spec->%
-       (list :source ,(concat (v-home* "config/") ".env-spec.el")
-	     :compiled ,(concat (v-home* "config/") ".env-spec.elc"))
+       (list :source ,(concat (v-home% "config/") ".env-spec.el")
+	     :compiled ,(concat (v-home% "config/") ".env-spec.elc"))
      ,@keys))
 
 
@@ -74,7 +74,7 @@
         (setq% desktop-restore-forces-onscreen nil desktop))))
 
   (when (and (self-spec->*env-spec :desktop :allowed)
-	     (file-exists-p (v-home* ".desktop/")))
+	     (file-exists-p (v-home% ".desktop/")))
     (theme-supported-p
 	(when (consp (theme-changed-p
 		      (self-spec-> *self-previous-env-spec* :theme)
@@ -82,7 +82,7 @@
 	  (setq% desktop-restore-frames nil desktop)))
     (setq% desktop-restore-eager
 	   (self-spec->*env-spec :desktop :restore-eager) desktop)
-    (desktop-read (v-home* ".desktop/"))))
+    (desktop-read (v-home% ".desktop/"))))
 
 
 (add-hook 'after-init-hook #'self-desktop-read! t)

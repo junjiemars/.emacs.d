@@ -8,10 +8,10 @@
   "Extract value from the list of spec via KEYS at compile time."
   `(self-spec->% (list
 		  :source-file
-		  ,(concat (v-home* "config/") ".shell-env.el")
+		  ,(concat (v-home% "config/") ".shell-env.el")
 		  
 		  :compiled-file
-		  ,(concat (v-home* "config/") ".shell-env.elc")
+		  ,(concat (v-home% "config/") ".shell-env.elc")
 		  
 		  :shell-path ,(bin-path "bash")
 		  :shell-var "SHELL"

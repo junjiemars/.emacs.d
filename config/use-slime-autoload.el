@@ -20,6 +20,6 @@
 
 
 ;; (autoload 'use-slime-repl-mode!
-;;   (v-home* "config/" "use-slime.elc"))
+;;   (v-home% "config/" "use-slime.elc"))
 
 
