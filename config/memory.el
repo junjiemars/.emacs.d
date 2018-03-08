@@ -12,9 +12,8 @@
 (defvar *self-previous-env-spec* nil)
 
 
-(defmacro env-spec->% (&rest keys)
-  "Extract a value from the `list' of virtualized `env-spec' via KESY 
-at compile time."
+(defmacro memory-spec->% (&rest keys)
+  "Extract value from a list of spec via KEYS at compile time."
   `(self-spec->%
        (list :source ,(concat (v-home* "config/") ".env-spec.el")
 	     :compiled ,(concat (v-home* "config/") ".env-spec.elc"))
@@ -25,15 +24,15 @@ at compile time."
   (when (save-sexp-to-file
 	 `(setq *self-previous-env-spec*
 		',(self-spec->*env-spec))
-	 (env-spec->% :source))
-    (byte-compile-file (env-spec->% :source))))
+	 (memory-spec->% :source))
+    (byte-compile-file (memory-spec->% :source))))
 
 (add-hook 'kill-emacs-hook #'save-env-spec! t)
 
 
 (defmacro load-env-spec ()
-  `(when (file-exists-p (env-spec->% :compiled))
-     (load (env-spec->% :compiled))))
+  `(when (file-exists-p (memory-spec->% :compiled))
+     (load (memory-spec->% :compiled))))
 
 (load-env-spec)
 
