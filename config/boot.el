@@ -61,10 +61,8 @@
 (font-supported-p
     
     ;; Load default font
-    (self-safe-call
-     "env-spec"
-     (when (self-spec->* :font :allowed)
-       (self-default-font! (self-spec->* :font :name)))))
+    (when (self-spec->*env-spec :font :allowed)
+      (self-default-font! (self-spec->*env-spec :font :name))))
 
 (font-supported-p
 
@@ -80,11 +78,9 @@
 (font-supported-p
     
     ;; Load cjk font
-    (self-safe-call
-     "env-spec"
-     (when (self-spec->* :cjk-font :allowed)
-       (self-cjk-font! (self-spec->* :cjk-font :name)
-                       (self-spec->* :cjk-font :size)))))
+    (when (self-spec->*env-spec :cjk-font :allowed)
+      (self-cjk-font! (self-spec->*env-spec :cjk-font :name)
+		      (self-spec->*env-spec :cjk-font :size))))
 
 ;; End of font-supported-p
 
@@ -106,12 +102,10 @@ else if theme NAME non-existing then load default `theme/tomorrow-night-eighties
 
 ;; Load theme
 (theme-supported-p
-    
-    (self-safe-call
-     "env-spec"
-     (when (self-spec->* :theme :allowed)
-       (self-load-theme! (self-spec->* :theme :name)
-                         (self-spec->* :theme :path)))))
+
+    (when (self-spec->*env-spec :theme :allowed)
+      (self-load-theme! (self-spec->*env-spec :theme :name)
+			(self-spec->*env-spec :theme :path))))
 
 
  ;; end of theme-supported-p

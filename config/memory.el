@@ -15,9 +15,10 @@
 (defmacro env-spec->% (&rest keys)
   "Extract a value from the `list' of virtualized `env-spec' via KESY 
 at compile time."
-  (let ((spec `(list :source ,(concat (v-home* "config/") ".env-spec.el")
-                     :compiled ,(concat (v-home* "config/") ".env-spec.elc"))))
-    `(self-spec->% ,spec ,@keys)))
+  `(self-spec->%
+       (list :source ,(concat (v-home* "config/") ".env-spec.el")
+	     :compiled ,(concat (v-home* "config/") ".env-spec.elc"))
+     ,@keys))
 
 
 (defun save-env-spec! ()

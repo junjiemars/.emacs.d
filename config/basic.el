@@ -314,12 +314,6 @@ call it: ssh -vnNTD32000 <user>@<host>"
   (start-socks! (self-spec->*env-spec :socks :port)
 		(self-spec->*env-spec :socks :server)
 		(self-spec->*env-spec :socks :version)))
-;; (self-safe-call
-;;  "env-spec"
-;;  (when (self-spec->* :socks :allowed)
-;;    (start-socks! (self-spec->* :socks :port)
-;;                  (self-spec->* :socks :server)
-;;                  (self-spec->* :socks :version))))
 
 
 (defun stop-socks! (&optional method)
