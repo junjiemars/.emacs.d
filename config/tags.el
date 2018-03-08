@@ -4,20 +4,20 @@
 ;;
 
 
-(defmacro v-tags->% (&rest key)
-  "Returns the name of versionized tags file via KEY.
+(defmacro tags-spec->% (&rest key)
+  "Extract value from the list of spec via KEYS at compile time.
 
-\(v-tags->% :emacs-home\)
-\(v-tags->% :emacs-source\)
-\(v-tags->% :emacs-os-include\)"
-  (let ((name `(list
-                :emacs-home
-                ,(expand-file-name (v-home* ".tags/home/" "TAGS"))
-                :emacs-source
-                ,(expand-file-name (v-home* ".tags/source/" "TAGS"))
-                :os-include
-                ,(expand-file-name (v-home* ".tags/os/" "TAGS")))))
-    `(self-spec->% ,name ,@key)))
+\(tags-spec->% :emacs-home\)
+\(tags-spec->% :emacs-source\)
+\(tags-spec->% :emacs-os-include\)"
+  `(self-spec->% (list
+		  :emacs-home
+		  ,(expand-file-name (v-home* ".tags/home/" "TAGS"))
+		  :emacs-source
+		  ,(expand-file-name (v-home* ".tags/source/" "TAGS"))
+		  :os-include
+		  ,(expand-file-name (v-home* ".tags/os/" "TAGS")))
+     ,@key))
 
 
 (defun make-tags (home tags-file file-filter dir-filter &optional renew)
@@ -60,7 +60,7 @@ RENEW create tags file when t"
   "Make TAGS-FILE for Emacs' C and Lisp source code in SRC-ROOT.
 
 \(make-emacs-source-tags
-   \(`v-tags->%' :emacs-home\)
+   \(`tags-spec->%' :emacs-home\)
    `source-directory' t\)"
   (let ((lisp-ff (lambda (f _) (string-match "\\\.el$" f)))
         (c-ff (lambda (f _) (string-match "\\\.[ch]$" f)))
@@ -85,9 +85,9 @@ RENEW create tags file when t"
   "Make tags for system INCLUDES.
 
 INCLUDES should be set with `system-cc-include'."
-  (make-c-tags (car includes) (v-tags->% :os-include) renew)
+  (make-c-tags (car includes) (tags-spec->% :os-include) renew)
   (dolist (p (cdr includes))
-    (make-c-tags p (v-tags->% :os-include))))
+    (make-c-tags p (tags-spec->% :os-include))))
 
 
 (provide 'tags)
