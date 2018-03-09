@@ -13,8 +13,8 @@
 		  :compiled-file
 		  ,(concat (v-home% "config/") ".shell-env.elc")
 		  
-		  :shell-path ,(bin-path "bash")
 		  :shell-var "SHELL"
+		  
 		  :path-var "PATH"
 		  
 		  :echo-format
@@ -114,29 +114,9 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
      (when (shell-env-> :exec-path)
        (setq exec-path (shell-env-> :exec-path)))))
 
-
 
 
-;; Darwin/Linux shell 
-(platform-supported-unless windows-nt
-  
-  (when (self-spec->*env-spec :shell :allowed)
-    (read-shell-env!)
-    
-    (when (self-spec->*env-spec :shell :bin-path)
-      (setenv (shells-spec->% :shell-var)
-              (self-spec->*env-spec :shell :bin-path)))
-    
-    (when (self-spec->*env-spec :shell :exec-path)
-      (copy-exec-path-var!))
-    
-    (copy-env-vars! (shell-env-> :env-vars)
-                    (self-spec->*env-spec :shell :env-vars))))
-
-
-
-
-;; Windows shell
+;; Windows ansi-term
 (platform-supported-when windows-nt
   
   (defadvice ansi-term (before ansi-term-before compile)
@@ -146,26 +126,44 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
       (set-window-buffer (selected-window) b))))
 
 
-;; set shell on Windows  
-(platform-supported-when windows-nt
-  
-  (when (file-exists-p (shells-spec->% :shell-path))
-    (read-shell-env!)
-    
-    ;; keep `shell-file-name' between `ansi-term' and `shell'
-    (path-env<- :shell-file-name shell-file-name)
-    
-    (defadvice shell (before shell-before compile)
-      (setenv (shells-spec->% :shell-var) (shells-spec->% :shell-path))
-      (setenv (shells-spec->% :path-var)
-              (windows-nt-unix-path (shell-env-> :path)))
-      (setq shell-file-name (getenv (shells-spec->% :shell-var))))
+
 
-    (defadvice shell (after shell-after compile)
-      (setenv (shells-spec->% :shell-var) (shell-env-> :shell-file-name))
-      (setenv (shells-spec->% :path-var)
-              (shell-env-> :path) path-separator)
-      (setq shell-file-name (shell-env-> :shell-file-name)))))
+
+(when (self-spec->*env-spec :shell :allowed)
+  (platform-supported-if windows-nt
+
+      ;; shell on Windows-NT 
+      (when (file-exists-p (self-spec->*env-spec :shell :bin-path))
+	(read-shell-env!)
+	
+	;; keep `shell-file-name' between `ansi-term' and `shell'
+	(path-env<- :shell-file-name shell-file-name)
+	
+	(defadvice shell (before shell-before compile)
+	  (setenv (shells-spec->% :shell-var)
+		  (self-spec->*env-spec :shell :bin-path))
+	  (setenv (shells-spec->% :path-var)
+		  (windows-nt-unix-path (shell-env-> :path)))
+	  (setq shell-file-name (getenv (shells-spec->% :shell-var))))
+
+	(defadvice shell (after shell-after compile)
+	  (setenv (shells-spec->% :shell-var)
+		  (shell-env-> :shell-file-name))
+	  (setenv (shells-spec->% :path-var)
+		  (shell-env-> :path) path-separator)
+	  (setq shell-file-name (shell-env-> :shell-file-name))))
+
+    ;; shell on Darwin/Linux
+    (read-shell-env!)
+    (when (self-spec->*env-spec :shell :bin-path)
+      (setenv (shells-spec->% :shell-var)
+	      (self-spec->*env-spec :shell :bin-path)))
+    
+    (when (self-spec->*env-spec :shell :exec-path)
+      (copy-exec-path-var!))
+    
+    (copy-env-vars! (shell-env-> :env-vars)
+		    (self-spec->*env-spec :shell :env-vars))))
 
 
 (provide 'shells)

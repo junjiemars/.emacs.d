@@ -186,30 +186,30 @@ The name is made by appending a number to PREFIX, default \"G\"."
 
 
 (defmacro self-spec-> (seq &rest keys)
-  (declare (indent 1) (debug t))
+  (declare (indent 1))
   (let ((x seq))
     (dolist (k keys x)
       (setq x (list 'plist-get x k)))))
 
 
 (defmacro self-spec<- (k v seq &rest keys)
-  (declare (indent 3) (debug t))
+  (declare (indent 3))
   `(plist-put (self-spec-> ,seq ,@keys) ,k ,v))
 
 
 (defmacro self-spec->% (seq &rest keys)
-  (declare (indent 1) (debug t))
+  (declare (indent 1))
   `(eval-when-compile (self-spec-> ,seq ,@keys)))
 
 
 (defmacro self-spec->*env-spec (&rest keys)
-  (declare (indent 0) (debug t))
+  (declare (indent 0))
   (when (boundp (self-symbol 'env-spec))
     `(self-spec-> ,(self-symbol 'env-spec) ,@keys)))
 
 
 (defmacro self-spec->*package-spec (&rest keys)
-  (declare (indent 0) (debug t))
+  (declare (indent 0))
   (when (boundp (self-symbol 'package-spec))
     `(self-spec-> ,(self-symbol 'package-spec) ,@keys)))
 
