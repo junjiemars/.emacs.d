@@ -161,7 +161,7 @@
   (setq% column-number-mode t simple)
 
   ;; default tab-width
-  (setq tab-width 2)
+  (setq-default tab-width 2)
 
   ;; Greek letters C-x 8 <RET> greek small letter lambda
   ;; (global-set-key (kbd "C-c l") "λ")
