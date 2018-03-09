@@ -180,9 +180,10 @@ The name is made by appending a number to PREFIX, default \"G\"."
  self-def-where)
 
 
-(defun self-def-path-ref-> (k)
+(defsubst self-def-path-ref-> (&optional key)
   (when (boundp (eval-when-compile (self-symbol 'path)))
-    (plist-get (symbol-value (eval-when-compile (self-symbol 'path))) k)))
+    (let ((ref (symbol-value (eval-when-compile (self-symbol 'path)))))
+      (if key (plist-get ref key) ref))))
 
 
 (defmacro self-spec-> (seq &rest keys)
