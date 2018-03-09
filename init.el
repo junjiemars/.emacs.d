@@ -91,7 +91,7 @@ If ONLY-COMPILE is t then do not load FILE."
   "Clean all compiled files."
   `(dolist (d (list ,(v-home* "config/")
                     ,(v-home* "private/")))
-     (dolist (f (directory-files d nil "\\.elc$"))
+     (dolist (f (directory-files d nil "\\.elc?$"))
        (message "#Clean compiled file: %s" f)
        (delete-file (concat d f)))))
 
