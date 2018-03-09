@@ -223,15 +223,6 @@ The name is made by appending a number to PREFIX, default \"G\"."
  ;; end of Load self env
 
 
-;; :sys env-spec
-;; (when (and (self-spec->*env-spec :sys :allowed)
-;; 	   (numberp
-;; 	    (self-spec->*env-spec :sys :gc-cons-percentags :on-start)))
-;;   (setq gc-cons-percentage
-;; 	(self-spec->*env-spec :sys :gc-cons-percentags :on-start))
-;;   (message "!!!on-start:%s" gc-cons-percentage))
-
-
 ;; Load ui, shell, basic env:
 (compile!
     v-dir

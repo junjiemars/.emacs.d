@@ -199,21 +199,7 @@
 
    ;; end of Terminal
 
-
-  ;; :sys env-spec
-  (comment
-   (when (and (self-spec->*env-spec :sys :allowed)
-	      (numberp
-	       (self-spec->*env-spec :sys :gc-cons-percentags :on-run))
-	      (numberp
-	       (self-spec->*env-spec :sys :gc-cons-percentags :on-start)))
-     (setq gc-cons-percentage
-	   (self-spec->*env-spec :sys :gc-cons-percentags :on-run))
-     (message "!!! before gc:%s" gc-cons-percentage)
-     (garbage-collect)
-     (message "!!! after init:%s" gc-cons-percentage)))
   
-
   )
 
 
