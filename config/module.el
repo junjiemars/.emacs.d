@@ -48,7 +48,7 @@
 
 
 (defmacro install-package! (packages &optional dry)
-  "Install missing packages, return alist of installed packages"
+  "Install missing packages, return alist of installed packages."
   `(let ((not-installed-packages
           (delete t (mapcar #'(lambda (p)
                                 (if (package-installed-p p) t p))
@@ -58,18 +58,13 @@
          (unless *repostory-initialized*
            (initialize-package-repository!)
            (setq *repostory-initialized* t)))
-       (message "#Installing missing %d packages: %s"
-                (length not-installed-packages)
-                not-installed-packages)
-       
        (mapc (lambda (i)
                (unless ,dry
                  (version-supported-if
                      <= 25.0
                      (package-install i t)
                    (package-install i))))
-             not-installed-packages)
-       not-installed-packages)))
+             not-installed-packages))))
 
 
 (defmacro parse-package-spec (dir spec)
