@@ -70,10 +70,10 @@
       "Set CJK font's NAME and SIZE in graphic mode."
       `(when (font-exists-p ,name)
          (when-fn% set-fontset-font nil
-	   (dolist (c '(han kana cjk-misc))
-	     (set-fontset-font (frame-parameter nil 'font)
-			       c (font-spec :family ,name
-					    :size ,size)))))))
+					 (dolist (c '(han kana cjk-misc))
+						 (set-fontset-font (frame-parameter nil 'font)
+															 c (font-spec :family ,name
+																						:size ,size)))))))
 
 (font-supported-p
     
@@ -87,10 +87,9 @@
 (theme-supported-p
     
     (defmacro self-load-theme! (name &optional dir)
-      "Load theme from theme DIR by theme NAME.
+      "`load-theme' in DIR by NAME.
 
-If theme DIR is nil then load the named built-in theme, 
-else if theme NAME non-existing then load default `theme/tomorrow-night-eighties'."
+If theme DIR is nil then load the built-in theme by NAME."
       `(progn
          (when (and ,dir (file-exists-p ,dir))
            (add-to-list 'custom-theme-load-path ,dir)
@@ -105,7 +104,7 @@ else if theme NAME non-existing then load default `theme/tomorrow-night-eighties
 
     (when (self-spec->*env-spec :theme :allowed)
       (self-load-theme! (self-spec->*env-spec :theme :name)
-			(self-spec->*env-spec :theme :path))))
+												(self-spec->*env-spec :theme :path))))
 
 
  ;; end of theme-supported-p
