@@ -107,22 +107,37 @@ If FN requires FEATURE load it on compile-time."
 	  "Generate a new uninterned symbol.
 The name is made by appending a number to PREFIX, default \"G\"."
 	  (let ((pfix (if (stringp prefix) prefix "G"))
-		(num (if (integerp prefix) prefix
-		       (prog1 *gensym-counter*
-			 (setq *gensym-counter* (1+ *gensym-counter*))))))
+					(num (if (integerp prefix) prefix
+								 (prog1 *gensym-counter*
+									 (setq *gensym-counter* (1+ *gensym-counter*))))))
 	    (make-symbol (format "%s%d" pfix num)))))
 
 
 
 
 
-(defun compile! (vdir &rest files)
-  "Compile and load the elisp FILES in VDIR."
+(defmacro compile-unit (file &optional only-compile)
+	"Make an unit of compilation."
+	`(cons ,file ,only-compile))
+
+(defmacro compile-unit->file (unit)
+	"Return the FILE part of `compile-unit'."
+	`(car ,unit))
+
+(defmacro compile-unit->only-compile (unit)
+	"Return the ONLY-COMPILE indicator of `compile-unit'."
+	`(cdr ,unit))
+
+
+(defun compile! (vdir &rest units)
+  "Compile and load the elisp UNITS in VDIR."
   (declare (indent 1))
-  (dolist (file files)
-    (let ((f (if (atom file) file (car file)))
-          (c (if (atom file) nil (cdr file))))
-      (when f (compile-and-load-file* vdir f c)))))
+  (dolist (unit units)
+		(when unit
+			(compile-and-load-file*
+			 vdir
+			 (compile-unit->file unit)
+			 (compile-unit->only-compile unit)))))
 
 
 (defsubst self-def-files! ()
@@ -176,8 +191,8 @@ The name is made by appending a number to PREFIX, default \"G\"."
 
 ;; Load self where
 (compile!
- v-dir
- self-def-where)
+		v-dir
+	(compile-unit self-def-where))
 
 
 (defsubst self-def-path-ref-> (&optional key)
@@ -217,7 +232,7 @@ The name is made by appending a number to PREFIX, default \"G\"."
 
 (compile!
     v-dir
-  (self-def-path-ref-> :env-spec))
+  (compile-unit (self-def-path-ref-> :env-spec)))
 
 
  ;; end of Load self env
@@ -226,15 +241,15 @@ The name is made by appending a number to PREFIX, default \"G\"."
 ;; Load ui, shell, basic env:
 (compile!
     v-dir
-  `,(emacs-home* "config/boot.el")
-  `,(emacs-home* "config/basic.el")
-  `,(emacs-home* "config/shells.el"))
+  (compile-unit (emacs-home* "config/boot.el"))
+  (compile-unit (emacs-home* "config/basic.el"))
+  (compile-unit (emacs-home* "config/shells.el")))
 
 
 ;; Self do prologue ...
 (compile!
  v-dir
- (self-def-path-ref-> :prologue))
+ (compile-unit (self-def-path-ref-> :prologue)))
 
 
 (package-supported-p
@@ -243,26 +258,27 @@ The name is made by appending a number to PREFIX, default \"G\"."
   ;; Load basic and self modules
   (compile!
       v-dir
-    (self-def-path-ref-> :package-spec)
-    `,(emacs-home* "config/module.el")))
+    (compile-unit (self-def-path-ref-> :package-spec))
+    (compile-unit (emacs-home* "config/module.el"))))
 
 
 ;; Load package independent modules
 (compile!
     v-dir
-  ;; `,(cons (emacs-home* "config/debugger.el") t)
-  `,(emacs-home* "config/eshells.el")
-  `,(cons (emacs-home* "config/financial.el") t)
-  `,(cons (emacs-home* "config/pythons.el") t)
-  `,(cons (emacs-home* "config/tags.el") t)
-  `,(cons (emacs-home* "config/cc.el") t)
-  `,(emacs-home* "config/autoloads.el")
+  ;; (compile-unit (emacs-home* "config/gud-lldb-patch.el") t)
+  (compile-unit (emacs-home* "config/eshells.el"))
+  (compile-unit (emacs-home* "config/financial.el") t)
+  (compile-unit (emacs-home* "config/pythons.el") t)
+  (compile-unit (emacs-home* "config/tags.el") t)
+  (compile-unit (emacs-home* "config/cc.el") t)
+  (compile-unit (emacs-home* "config/autoloads.el"))
   ;; --batch mode: disable desktop read/save
-  `,(unless noninteractive (emacs-home* "config/memory.el")))
+  `,(unless noninteractive 
+      (compile-unit (emacs-home* "config/memory.el"))))
 
 
 ;; Self do epilogue ...
 (compile!
     v-dir
-  (self-def-path-ref-> :epilogue))
+  (compile-unit (self-def-path-ref-> :epilogue)))
 
