@@ -134,36 +134,36 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
       ;; shell on Windows-NT 
       (when (file-exists-p (self-spec->*env-spec :shell :bin-path))
-	(read-shell-env!)
-	
-	;; keep `shell-file-name' between `ansi-term' and `shell'
-	(path-env<- :shell-file-name shell-file-name)
-	
-	(defadvice shell (before shell-before compile)
-	  (setenv (shells-spec->% :shell-var)
-		  (self-spec->*env-spec :shell :bin-path))
-	  (setenv (shells-spec->% :path-var)
-		  (windows-nt-unix-path (shell-env-> :path)))
-	  (setq shell-file-name (getenv (shells-spec->% :shell-var))))
+				(read-shell-env!)
+				
+				;; keep `shell-file-name' between `ansi-term' and `shell'
+				(path-env<- :shell-file-name shell-file-name)
+				
+				(defadvice shell (before shell-before compile)
+					(setenv (shells-spec->% :shell-var)
+									(self-spec->*env-spec :shell :bin-path))
+					(setenv (shells-spec->% :path-var)
+									(windows-nt-unix-path (shell-env-> :path)))
+					(setq shell-file-name (getenv (shells-spec->% :shell-var))))
 
-	(defadvice shell (after shell-after compile)
-	  (setenv (shells-spec->% :shell-var)
-		  (shell-env-> :shell-file-name))
-	  (setenv (shells-spec->% :path-var)
-		  (shell-env-> :path) path-separator)
-	  (setq shell-file-name (shell-env-> :shell-file-name))))
+				(defadvice shell (after shell-after compile)
+					(setenv (shells-spec->% :shell-var)
+									(shell-env-> :shell-file-name))
+					(setenv (shells-spec->% :path-var)
+									(shell-env-> :path) path-separator)
+					(setq shell-file-name (shell-env-> :shell-file-name))))
 
     ;; shell on Darwin/Linux
     (read-shell-env!)
     (when (self-spec->*env-spec :shell :bin-path)
       (setenv (shells-spec->% :shell-var)
-	      (self-spec->*env-spec :shell :bin-path)))
+							(self-spec->*env-spec :shell :bin-path)))
     
     (when (self-spec->*env-spec :shell :exec-path)
       (copy-exec-path-var!))
     
     (copy-env-vars! (shell-env-> :env-vars)
-		    (self-spec->*env-spec :shell :env-vars))))
+										(self-spec->*env-spec :shell :env-vars))))
 
 
 (provide 'shells)
