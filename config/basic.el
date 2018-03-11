@@ -407,42 +407,20 @@ then set `eww' to default browser."
   (interactive)
   (let (begin end)
     (if-fn% region-active-p nil
-	    (if (region-active-p)
-		(setq begin (region-beginning)
-		      end (region-end))
-	      (setq begin (line-beginning-position)
-		    end (line-end-position)))
+						(if (region-active-p)
+								(setq begin (region-beginning)
+											end (region-end))
+							(setq begin (line-beginning-position)
+										end (line-end-position)))
       (if mark-active
-	  (setq begin (region-beginning)
-		end (region-end))
-	(setq begin (line-beginning-position)
-	      end (line-end-position))))
+					(setq begin (region-beginning)
+								end (region-end))
+				(setq begin (line-beginning-position)
+							end (line-end-position))))
     (comment-or-uncomment-region begin end)
     (if-fn% next-logical-line nil
-	    (next-logical-line)
+						(next-logical-line)
       (next-line))))
-
-
-;; emacs lisp mode
-(defun set-emacs-lisp-mode! ()
-  "Elisp basic settings."
-  (eldoc-mode)
-  (version-supported-if
-      <= 24.4
-      (local-set-key (kbd "TAB") #'completion-at-point)
-    (local-set-key (kbd "TAB") #'lisp-complete-symbol))
-  (cond
-   ((string= "*scratch*" (buffer-name))
-    (local-set-key (kbd "RET")
-                   (lambda ()
-                     (interactive)
-                     (eval-print-last-sexp)
-                     (newline)))
-    (version-supported-when > 24
-      (local-set-key (kbd "C-j")
-                     (lambda ()
-                       (interactive)
-                       (newline-and-indent)))))))
 
 
 ;; shell scripts

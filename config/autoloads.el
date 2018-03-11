@@ -166,13 +166,10 @@
   (add-hook 'sh-mode-hook #'set-sh-mode!)
 
   (package-supported-p
-    ;; basic lisp mode 
-    (dolist (hook '(emacs-lisp-mode-hook
-										ielm-mode-hook
-										scheme-mode-hook
-										lisp-mode-hook
-										lisp-interaction-mode-hook))
-      (add-hook hook #'set-lisp-basic-mode!))
+    ;; basic lisp mode
+		(add-hook 'scheme-mode-hook #'set-lisp-basic-mode!)
+		(add-hook 'lisp-mode-hook #'set-lisp-basic-mode!)
+		(add-hook 'emacs-lisp-mode-hook #'set-emacs-lisp-mode!)
 
     ;; enable paredit in minibuffer on gnu/linux platform
     (platform-supported-if
@@ -188,7 +185,7 @@
   (add-hook 'ielm-mode-hook #'eldoc-mode)
 
   ;; emacs lisp basic 
-  (add-hook 'emacs-lisp-mode-hook #'set-emacs-lisp-mode!)
+  ;; (add-hook 'emacs-lisp-mode-hook #'set-emacs-lisp-mode!)
 
   ;; Terminal
   (terminal-supported-p
