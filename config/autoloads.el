@@ -175,20 +175,20 @@
   (package-supported-p
     ;; basic lisp mode 
     (dolist (hook '(emacs-lisp-mode-hook
-		    ielm-mode-hook
-		    scheme-mode-hook
-		    lisp-mode-hook
-		    lisp-interaction-mode-hook))
+										ielm-mode-hook
+										scheme-mode-hook
+										lisp-mode-hook
+										lisp-interaction-mode-hook))
       (add-hook hook #'set-lisp-basic-mode!))
 
     ;; enable paredit in minibuffer on gnu/linux platform
     (platform-supported-if
-	gnu/linux
-	(add-hook 'minibuffer-setup-hook
-		  #'enable-paredit-mode t)
+				gnu/linux
+				(add-hook 'minibuffer-setup-hook
+									#'enable-paredit-mode t)
       ;; enable paredit in minbuffer on windows/darwin platform
       (add-hook 'eval-expression-minibuffer-setup-hook
-		#'enable-paredit-mode t)))
+								#'enable-paredit-mode t)))
    ;; end of package: paredit
 
   ;; Terminal
