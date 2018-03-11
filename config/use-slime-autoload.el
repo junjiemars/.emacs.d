@@ -11,6 +11,9 @@
   (add-hook 'slime-repl-mode-hook #'use-slime-repl-mode!)
   (slime-setup '(slime-fancy slime-asdf)))
 
+(defadvice slime (after slime-after compile)
+  (add-hook 'slime-repl-mode-hook #'use-slime-repl-mode!))
+
 
 (defun use-slime-repl-mode! ()
   "Hook into `slime-repl-mode-hook'"
