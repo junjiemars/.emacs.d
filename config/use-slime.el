@@ -20,19 +20,22 @@
        (setq% inferior-lisp-program ,lisp slime))))
 
 
-(defsubst common-lisp-implementations ()
-  "Returns a list of common-lisp implementations. 
+(defmacro common-lisp-implementations ()
+	"Return a list of common-lisp implementations."
+	`(remove nil
+					 (list (when (bin-exists-p "sbcl")
+									 (set-inferior-lisp-program "sbcl" t)
+									 (list 'sbcl (list (common-lisp-path "sbcl"))))
+								 (when (bin-exists-p "abcl")
+									 (list 'abcl (list (common-lisp-path "abcl"))))
+								 (when (bin-exists-p "ecl")
+									 (list 'ecl (list (common-lisp-path "ecl")))))))
 
-use `M-- M-x slime', \\{slime-repl-mode-map}"
-  (remove nil
-          (list (when (bin-exists-p "sbcl")
-                  (set-inferior-lisp-program "sbcl" t)
-                  (list 'sbcl (list (common-lisp-path "sbcl"))))
-                (when (bin-exists-p "abcl")
-                  (list 'abcl (list (common-lisp-path "abcl"))))
-                (when (bin-exists-p "ecl")
-                  (list 'ecl (list (common-lisp-path "ecl")))))))
 
+(defun set-slime-lisp-implementations! ()
+	"Set `slime-lisp-implementations' with `common-lisp-implementations'."
+	(setq% slime-lisp-implementations
+				 (common-lisp-implementations) slime))
 
 
 (provide 'use-slime)

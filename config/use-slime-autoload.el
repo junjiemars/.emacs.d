@@ -4,12 +4,11 @@
 ;;;;
 
 
-
 (defadvice slime (before slime-before compile)
-  ;; (eval-when-compile (require 'use-slime))
-  (setq% slime-lisp-implementations
-	 (common-lisp-implementations) use-slime)
-  (add-hook 'splime-repl-mode-hook #'use-slime-repl-mode!)
+	;; "use `M-- M-x slime', \\{slime-repl-mode-map}"
+	(require 'use-slime (v-home% "config/" "use-slime.elc"))
+	(set-slime-lisp-implementations!)
+  (add-hook 'slime-repl-mode-hook #'use-slime-repl-mode!)
   (slime-setup '(slime-fancy slime-asdf)))
 
 
@@ -18,8 +17,5 @@
   (when-fn% slime-selector slime
     (global-set-key (kbd "C-c s s") 'slime-selector)))
 
-
-;; (autoload 'use-slime-repl-mode!
-;;   (v-home% "config/" "use-slime.elc"))
 
 
