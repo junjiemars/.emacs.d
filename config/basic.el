@@ -389,9 +389,9 @@ for which (PRED item) returns t."
     "If `browser-url-default-browser' has not been touched, 
 then set `eww' to default browser."
     (when (eq browse-url-browser-function
-	      'browse-url-default-browser)
+							'browse-url-default-browser)
       (when-fn% eww-browse-url eww
-	(setq browse-url-browser-function 'eww-browse-url)))))
+				(setq browse-url-browser-function 'eww-browse-url)))))
 
 
 ;; linum mode
@@ -403,7 +403,7 @@ then set `eww' to default browser."
 
 ;; comments
 (defun toggle-comment ()
-  "Comment or uncomment current line"
+  "Comment or uncomment current line or region."
   (interactive)
   (let (begin end)
     (if-fn% region-active-p nil
