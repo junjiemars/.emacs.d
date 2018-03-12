@@ -77,13 +77,15 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 (defun save-shell-env! ()
   (path-env<- :path (echo-var (shells-spec->% :path-var)))
   (path-env<- :shell-file-name nil)
-  (path-env<- :exec-path (dolist
-                             (p (var->paths (shell-env-> :path)) exec-path)
-                           (add-to-list 'exec-path p t #'string=)))
-  (path-env<- :env-vars (let ((vars (self-spec->*env-spec :shell :env-vars))
-                              (x nil))
-                          (dolist (v vars x)
-                            (push (cons v (echo-var v)) x))))
+  (path-env<- :exec-path
+							(dolist
+									(p (var->paths (shell-env-> :path)) exec-path)
+								(add-to-list 'exec-path p t #'string=)))
+  (path-env<- :env-vars
+							(let ((vars (self-spec->*env-spec :shell :env-vars))
+										(x nil))
+								(dolist (v vars x)
+									(push (cons v (echo-var v)) x))))
   (when (save-sexp-to-file
          (list 'setq '*default-shell-env*
                (list 'list
