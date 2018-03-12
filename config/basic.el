@@ -306,7 +306,8 @@ see `bin-path%'"
 
 (platform-supported-when windows-nt
   (defmacro windows-nt-unix-path (p)
-    "Return the unix path from P which can be recognized by shell on `system-type'"
+    "Return the unix path from P which can be recognized 
+by shell on `system-type'"
     `(replace-regexp-in-string
       ";" ":"
       (replace-regexp-in-string "\\([a-zA-Z]\\):/" "/\\1/"
