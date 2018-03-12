@@ -263,29 +263,50 @@ otherwise default to keep the directories of current `emacs-version'."
 ;; Platform related functions
 
 (defmacro bin-exists-p (b)
-  "Return t if B binary exists in env."
-  ;; (declare (debug t))
-  `(platform-supported-if windows-nt
-       (zerop (shell-command (concat "where /Q " ,b)))
-     (zerop (shell-command (concat "command -v " ,b)))))
+	"Return t if B binary exists in env."
+	;; (declare (debug t))
+	(platform-supported-if windows-nt
+			`(zerop (shell-command (concat "where /Q " ,b)))
+		`(zerop (shell-command (concat "command -v " ,b)))))
 
 
 (defmacro bin-path (b)
-  "Return the path of B binary in env."
-  `(platform-supported-if windows-nt
-       (string-trim> (shell-command-to-string (concat "where " ,b)))
-     (string-trim> (shell-command-to-string (concat "command -v " ,b)))))
+	"Return the path of B binary in env."
+	(let ((cmd (platform-supported-if windows-nt
+								 `(car (split-string%
+												(string-trim>
+												 (shell-command-to-string
+													(concat "where " ,b " 2>nul"))) "\n"))
+							 `(string-trim>
+								 (shell-command-to-string (concat "command -v " ,b))))))
+		`(let ((path ,cmd))
+			 (if (= 0 (length path)) nil path))))
+
+
+(defmacro bin-exists-p% (b)
+	"Return t if B binary exists in env at compile-time.
+see `bin-exists-p'"
+	(let ((exists (bin-exists-p b)))
+		`,exists))
+
+
+(defmacro bin-path% (b)
+	"Return the path of B binary in env at compile-time.
+see `bin-path%'"
+	(let ((path (bin-path b)))
+		`,path))
+
 
 
 (platform-supported-when windows-nt
   (defmacro windows-nt-posix-path (p)
-    "Returns the posix path from P which can be recognized on`system-type'."
+    "Return the posix path from P which can be recognized on`system-type'."
     `(replace-regexp-in-string "\\\\" "/" ,p)))
 
 
 (platform-supported-when windows-nt
   (defmacro windows-nt-unix-path (p)
-    "Returns the unix path from P which can be recognized by shell on `system-type'"
+    "Return the unix path from P which can be recognized by shell on `system-type'"
     `(replace-regexp-in-string
       ";" ":"
       (replace-regexp-in-string "\\([a-zA-Z]\\):/" "/\\1/"
