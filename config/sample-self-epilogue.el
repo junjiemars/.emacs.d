@@ -40,24 +40,21 @@
  ;; correctly and more faster
  ;; `system-cc-include' support any platform
  (when-fn% semantic-mode nil
-   (add-hook
-    'after-init-hook
-    (lambda ()
-      (semantic-mode t)
-      (declare-function semantic-reset-system-include "semantic")
-      (declare-function semantic-add-system-include "semantic")
-      (declare-function global-semantic-idle-summary-mode "semantic")
-      (declare-function semantic-ia-fast-jump "semantic")
-      (semantic-reset-system-include 'c-mode)
-      (global-semantic-idle-summary-mode)
-      (eval-when-compile (require 'cc))
-      (dolist (x (system-cc-include t))
-	(semantic-add-system-include x 'c-mode))
-      (global-set-key (kbd "C-c , f") #'semantic-ia-fast-jump)
-      (comment)
-      (setq% semanticdb-project-roots
-	     `("/opt/apps/c" ,source-directory) semantic))
-    t)))
+	 (add-hook
+		'after-init-hook
+		(lambda ()
+			(semantic-mode t)
+			(eval-when-compile (require 'semantic))
+			(eval-when-compile (require 'cc))
+			(semantic-reset-system-include 'c-mode)
+			(global-semantic-idle-summary-mode)
+			(dolist (x (system-cc-include t))
+				(semantic-add-system-include x 'c-mode))
+			(global-set-key (kbd "C-c , f") #'semantic-ia-fast-jump)
+			(comment)
+			(setq% semanticdb-project-roots
+						 `("/opt/apps/c" ,source-directory) semantic))
+		t)))
 
 
 (comment
