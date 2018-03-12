@@ -438,10 +438,10 @@ then set `eww' to default browser."
 								end (region-end))
 				(setq begin (line-beginning-position)
 							end (line-end-position))))
-    (comment-or-uncomment-region begin end)
-    (if-fn% next-logical-line nil
+		(comment-or-uncomment-region begin end)
+		(if-fn% next-logical-line nil
 						(next-logical-line)
-      (next-line))))
+			(next-line))))
 
 
 ;; shell scripts
