@@ -44,7 +44,9 @@
 		'after-init-hook
 		(lambda ()
 			(semantic-mode t)
-			(eval-when-compile (require 'semantic))
+			(declare-function semantic-reset-system-include "semantic")
+			(declare-function semantic-add-system-include "semantic")
+			(declare-function global-semantic-idle-summary-mode "semantic")
 			(eval-when-compile (require 'cc))
 			(semantic-reset-system-include 'c-mode)
 			(global-semantic-idle-summary-mode)
