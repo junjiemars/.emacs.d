@@ -55,7 +55,7 @@
 			(global-set-key (kbd "C-c , f") #'semantic-ia-fast-jump)
 			(comment)
 			(setq% semanticdb-project-roots
-						 `("/opt/apps/c" ,source-directory) semantic))
+						 `("/opt/apps/c" ,source-directory) semantic/db))
 		t)))
 
 
