@@ -33,7 +33,9 @@
                                 "LD_LIBRARY_PATH")))
                :interactive-shell (platform-supported-unless darwin t nil)
                :exec-path t
-               :bin-path "/bin/bash"
+               :bin-path (platform-supported-if windows-nt
+														 "C:/Program Files/Git/usr/bin/bash.exe"
+													 "/bin/bash")
                :allowed nil)
   
   :desktop (list :files-not-to-save
