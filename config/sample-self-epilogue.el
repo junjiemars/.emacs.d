@@ -23,7 +23,6 @@
 
 
 (comment (setq% enable-local-variables :all files))
-(comment (setq% compilation-scroll-output t compile))
 
 (comment
  ;; using etags to view Emacs's source code: C and Elisp
@@ -34,29 +33,28 @@
        (setq source-directory "/opt/open/emacs-25/")
      (setq source-directory "/opt/open/emacs-22/"))))
 
+
 (comment
  ;; if current Emacs session support `semantic-mode'
  ;; using semantic to view and editing any supported code
  ;; correctly and more faster
  ;; `system-cc-include' support any platform
- (when-fn% semantic-mode nil
-	 (add-hook
-		'after-init-hook
-		(lambda ()
-			(semantic-mode t)
-			(declare-function semantic-reset-system-include "semantic")
-			(declare-function semantic-add-system-include "semantic")
-			(declare-function global-semantic-idle-summary-mode "semantic")
-			(eval-when-compile (require 'cc))
-			(semantic-reset-system-include 'c-mode)
-			(global-semantic-idle-summary-mode)
-			(dolist (x (system-cc-include t))
-				(semantic-add-system-include x 'c-mode))
-			(global-set-key (kbd "C-c , f") #'semantic-ia-fast-jump)
-			(comment)
-			(setq% semanticdb-project-roots
-						 `("/opt/apps/c" ,source-directory) semantic/db))
-		t)))
+ (add-hook
+	'after-init-hook
+	(lambda ()
+		(setq% compilation-scroll-output t compile)
+		(require 'cc)
+		(when-fn% use-cc cc
+			(use-cc '("/opt/apps/c/out/"
+								"/opt/apps/c/out/inc/"
+								"/opt/apps/c/src/hi/"
+								"/opt/apps/c/src/ds/"
+								"/opt/apps/c/src/library/"
+								"/opt/apps/c/src/lang/"
+								"/opt/apps/c/src/memory"
+								"/opt/apps/c/src/x86/")
+							`("/opt/apps/c/"
+								,source-directory)))) t))
 
 
 (comment
