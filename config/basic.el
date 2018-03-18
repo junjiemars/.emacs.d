@@ -450,3 +450,9 @@ then set `eww' to default browser."
   (setq% sh-basic-offset tab-width sh-script)
   (setq% sh-indentation tab-width sh-script))
 
+
+;; semantic
+(defmacro semantic-mode-supported-p (&rest body)
+	(declare (indent 0))
+	`(version-supported-when <= 23.1 ,@body))
+
