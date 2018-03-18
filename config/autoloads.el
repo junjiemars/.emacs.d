@@ -197,3 +197,10 @@
 (add-hook 'after-init-hook #'set-flavor-mode! t)
 (add-hook 'after-init-hook #'set-global-key! t)
 
+(autoload 'system-cc-include
+	(v-home% "config/" "cc.elc")
+	"Returns a list of system include directories.")
+
+(autoload 'use-cc
+	(v-home% "config/" "cc.elc")
+	"Use `semantic-mode' in`c-mode'")

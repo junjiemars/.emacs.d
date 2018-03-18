@@ -78,7 +78,7 @@ If X requires the FEATURE load it on compile-time."
   "If FN is bounded yields non-nil, do THEN, else do ELSE...
 If FN requires the FEATURE load it on compile-time."
   (declare (indent 3))
-  (when feature (require feature))
+  (when feature (require feature nil t))
   (if (fboundp fn)
       `,then
     `(progn% ,@else)))

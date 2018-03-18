@@ -454,5 +454,6 @@ then set `eww' to default browser."
 ;; semantic
 (defmacro semantic-mode-supported-p (&rest body)
 	(declare (indent 0))
-	`(version-supported-when <= 23.1 ,@body))
+	`(when-fn% semantic-mode semantic
+		 ,@body))
 

@@ -99,7 +99,7 @@ otherwise check cc include on the fly."
 
 
 (semantic-mode-supported-p
-	
+
 	(defun use-cc (&optional project-includes project-roots)
 		"Use `semantic-mode' in`c-mode'.
 
@@ -110,13 +110,11 @@ check it by `semantic-dependency-system-include-path'.'
 PROJECT-ROOTS specify C project root directories
 via `semanticdb-project-roots'."
 		;; (ignore project-roots)
-		(semantic-mode t)
 		(semantic-reset-system-include 'c-mode)
-		(dolist (x (system-cc-include t))
+		(dolist (x (append (system-cc-include t)
+											 project-includes))
 			(semantic-add-system-include x 'c-mode))
-		(dolist (i project-includes)
-			(semantic-add-system-include i 'c-mode))
-		(setq% semanticdb-project-roots project-roots semantic)
+		(setq% semanticdb-project-roots project-roots semantic/db)
 		(global-semantic-idle-summary-mode)
 		(global-set-key (kbd "C-c , f") #'semantic-ia-fast-jump)))
 

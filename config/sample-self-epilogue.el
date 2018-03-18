@@ -40,17 +40,12 @@
  ;; correctly and more faster
  ;; `system-cc-include' support any platform
  (semantic-mode-supported-p
-	 (require 'cc)
-	 (use-cc '("/opt/apps/c/out/"
-						 "/opt/apps/c/out/inc/"
-						 "/opt/apps/c/src/hi/"
-						 "/opt/apps/c/src/ds/"
-						 "/opt/apps/c/src/library/"
-						 "/opt/apps/c/src/lang/"
-						 "/opt/apps/c/src/memory"
-						 "/opt/apps/c/src/x86/")
-					 `("/opt/apps/c/"
-						 ,source-directory))))
+	 (add-hook 'semantic-mode-hook
+						 #'(lambda ()
+								 (use-cc '("/opt/apps/c/out/"
+													 "/opt/apps/c/src/hi/")
+												 `("/opt/apps/c/"
+													 ,source-directory))))))
 
 
 (comment
