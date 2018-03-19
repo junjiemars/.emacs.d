@@ -115,8 +115,10 @@ via `semanticdb-project-roots'."
 											 project-includes))
 			(semantic-add-system-include x 'c-mode))
 		(setq% semanticdb-project-roots project-roots semantic/db)
-		(global-semantic-idle-summary-mode)
-		(global-set-key (kbd "C-c , f") #'semantic-ia-fast-jump)))
+		(when-fn% global-semantic-idle-summary-mode semantic
+			(global-semantic-idle-summary-mode))
+		(when-fn% semantic-ia-fast-jump semantic
+			(global-set-key (kbd "C-c , f") #'semantic-ia-fast-jump))))
 
 
 (provide 'cc)

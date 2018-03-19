@@ -45,7 +45,7 @@
 								 (use-cc '("/opt/apps/c/out/"
 													 "/opt/apps/c/src/hi/")
 												 `("/opt/apps/c/"
-													 ,source-directory))))))
+													 ,source-directory))) t)))
 
 
 (comment
