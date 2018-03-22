@@ -100,7 +100,7 @@ otherwise check cc include on the fly."
 
 (semantic-mode-supported-p
 
-	(defun use-cc (&optional project-includes project-roots)
+	(defun use-cc (&optional project-includes project-roots preprocessors)
 		"Use `semantic-mode' in`c-mode'.
 
 PROJECT-INCLUDES specify C include directories
@@ -108,8 +108,10 @@ via `semantic-add-system-include',
 check it by `semantic-dependency-system-include-path'.'
 
 PROJECT-ROOTS specify C project root directories
-via `semanticdb-project-roots'."
-		;; (ignore project-roots)
+via `semanticdb-_project-roots'.
+
+PREPROCESSORS specify C preprocessors
+via `semantic-lex-c-preprocessor-symbol-map'"
 		(semantic-reset-system-include 'c-mode)
 		(dolist (x (append (system-cc-include t)
 											 project-includes))
@@ -118,7 +120,9 @@ via `semanticdb-project-roots'."
 		(when-fn% global-semantic-idle-summary-mode semantic
 			(global-semantic-idle-summary-mode))
 		(when-fn% semantic-ia-fast-jump semantic
-			(global-set-key (kbd "C-c , f") #'semantic-ia-fast-jump))))
+			(global-set-key (kbd "C-c , f") #'semantic-ia-fast-jump))
+		(setq% semantic-lex-c-preprocessor-symbol-map
+					 preprocessors semantic/bovine/c)))
 
 
 (provide 'cc)
