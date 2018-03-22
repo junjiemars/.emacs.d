@@ -70,13 +70,12 @@
 (defmacro parse-package-spec (dir spec)
   "Parse SPEC, install and setup packages in DIR."
   `(dolist (s ,spec)
-     (when (consp s)
-       (let ((m (self-spec-> s :packages)))
-         (when (and (consp m) (self-spec-> s :cond))
-           (install-package! (delete nil m))
-           (apply #'compile!
-                  ,dir
-                  (delete nil (self-spec-> s :compile))))))))
+     (when (and (consp s) (self-spec-> s :cond))
+			 (when (consp (self-spec-> s :packages))
+				 (install-package! (delete nil (self-spec-> s :packages))))
+			 (apply #'compile!
+							,dir
+							(delete nil (self-spec-> s :compile))))))
 
 
 (defvar basic-package-spec
