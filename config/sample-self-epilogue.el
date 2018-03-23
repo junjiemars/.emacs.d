@@ -42,8 +42,9 @@
  (semantic-mode-supported-p
 	 (add-hook 'semantic-mode-hook
 						 #'(lambda ()
-								 (use-cc '("/opt/apps/c/out/"
-													 "/opt/apps/c/src/hi/")
+								 (use-cc `("/opt/apps/c/out/"
+													 "/opt/apps/c/src/hi/"
+													 ,source-directory)
 												 `("/opt/apps/c/"
 													 ,source-directory))) t)))
 
