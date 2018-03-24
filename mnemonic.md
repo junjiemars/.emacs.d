@@ -167,7 +167,7 @@ such as *x@localhost* or *localhost* if the user *x* is a sudoer.
 ## LaTex Requirements
 
 on Darwin
-* ImageMagic
+* ImageMagick
 * texlive-basic
 * texlive-fonts-recommended
 * texlive-latex-extra
