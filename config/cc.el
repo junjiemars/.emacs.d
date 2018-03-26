@@ -121,6 +121,8 @@ via `semantic-lex-c-preprocessor-symbol-map'"
 			(global-semantic-idle-summary-mode))
 		(when-fn% semantic-ia-fast-jump semantic
 			(global-set-key (kbd "C-c , f") #'semantic-ia-fast-jump))
+		(when-fn% semantic-ia-complete-symbol semantic
+			(global-set-key (kbd "C-c , TAB") #'semantic-ia-complete-symbol))
 		(setq% semantic-lex-c-preprocessor-symbol-map
 					 preprocessors semantic/bovine/c)))
 
