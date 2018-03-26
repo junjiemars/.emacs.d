@@ -46,7 +46,8 @@
 													 "/opt/apps/c/src/hi/"
 													 ,source-directory)
 												 `("/opt/apps/c/"
-													 ,source-directory))) t)))
+													 ,source-directory))
+								 (setq% compilation-scroll-output t compile)) t)))
 
 
 (comment
