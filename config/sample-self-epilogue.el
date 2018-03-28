@@ -42,11 +42,29 @@
  (semantic-mode-supported-p
 	 (add-hook 'semantic-mode-hook
 						 #'(lambda ()
-								 (use-cc `("/opt/apps/c/out/"
-													 "/opt/apps/c/src/hi/"
-													 ,source-directory)
-												 `("/opt/apps/c/"
-													 ,source-directory))
+								 (platform-supported-if windows-nt
+										 (use-cc `("e:/apps/c/out/"
+															 "e:/apps/c/src/hi/"
+															 "e:/apps/c/src/lang/"
+															 "e:/apps/c/src/io/"
+															 "e:/apps/c/src/posix/"
+															 "d:/opt/open/ecl/"
+															 "d:/opt/open/ecl/build/"
+															 "d:/opt/open/gambit/"
+															 ,source-directory)
+														 `("e:/apps/c/"
+															 ,source-directory))
+									 (use-cc `("/opt/apps/c/out/"
+														 "/opt/apps/c/src/hi/"
+														 "/opt/apps/c/src/lang/"
+														 "/opt/apps/c/src/io/"
+														 "/opt/apps/c/src/posix/"
+														 "/opt/opt/open/ecl/"
+														 "/opt/open/ecl/build/"
+														 "/opt/open/gambit/"
+														 ,source-directory)
+													 `("/opt/apps/c/"
+														 ,source-directory)))
 								 (setq% compilation-scroll-output t compile)) t)))
 
 

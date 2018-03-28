@@ -111,7 +111,9 @@ PROJECT-ROOTS specify C project root directories
 via `semanticdb-_project-roots'.
 
 PREPROCESSORS specify C preprocessors
-via `semantic-lex-c-preprocessor-symbol-map'"
+via `semantic-lex-c-preprocessor-symbol-map'
+
+Use `semantic-c-describe-environment' to describe the current C environment."
 		(semantic-reset-system-include 'c-mode)
 		(dolist (x (append (system-cc-include t)
 											 project-includes))
