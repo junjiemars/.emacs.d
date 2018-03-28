@@ -65,8 +65,10 @@
 
 ;; Tramp
 (version-supported-when <= 23
+	(version-supported-when > 24
+		(eval-when-compile (require 'tramp)))
   (setq% tramp-persistency-file-name
-				 (v-home! ".tramp/" "tramp") tramp-cache))
+			(v-home! ".tramp/" "tramp") tramp-cache))
 
 ;; Url
 (setq% url-configuration-directory (v-home! ".url/") url)
