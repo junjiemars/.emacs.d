@@ -104,7 +104,7 @@ emacs-home
 ```
 
 
-Use ```(emacs-home* "private/self-path.el")``` file to locate where your spec.
+Locate your sepc via ```(emacs-home* "private/self-path.el")```.
 
 ```lisp
 (def-self-path-ref
@@ -116,6 +116,18 @@ Use ```(emacs-home* "private/self-path.el")``` file to locate where your spec.
 
 
 ### Theme
+
+Easy to switch, and try a new one.
+
+The theme's spec locate in ```(emacs-home* "private/self-env-spec.el")```
+
+```lisp
+(def-self-env-spec
+  :theme (list :name 'atom-one-dark
+               :path (emacs-home* "theme/")
+               :allowed t))
+```
+
 
 * associate ```private/self-env-spec.el``` with ```private/self-path.el```
 ```lisp
