@@ -150,6 +150,28 @@ The default font's spec locate in ```(emacs-home* "private/self-env-spec.el")```
 
 ### Shell
 
+Any ```Shell```, copy environment variables, and on any platforms.
+
+Don't tell me [exec-path-from-shell](https://github.com/purcell/exec-path-from-shell), that is a poor implementation: slow, unstable.
+
+The shell spec locate in ```(emacs-home* "private/self-env-spec.el")```
+
+```lisp
+(def-self-env-spec
+  :shell (list :env-vars `("JAVA_HOME"
+                           "PYTHONPATH"
+                           ,(platform-supported-unless windows-nt
+                              (platform-supported-if darwin
+                                  "DYLD_LIBRARY_PATH"
+                                "LD_LIBRARY_PATH")))
+               :interactive-shell (platform-supported-unless darwin t nil)
+               :exec-path t
+               :bin-path "/bin/bash"
+               :allowed t))
+```
+
+
+
 ### Package management
 
 * associate ```private/self-package-spec.el``` with ```private/self-path.el```
@@ -176,10 +198,19 @@ The default font's spec locate in ```(emacs-home* "private/self-env-spec.el")```
 this _package-spec_ used to support _Python_ programming, 
 [default package spec](config/sample-self-package-spec.el)
 
-### Common Lisp programming
 
-### Clojure programming
+### Programming
 
-### Python programming
+#### Elisp
+
+#### C
+
+#### Common Lisp
+
+#### Scheme
+
+#### Clojure programming
+
+#### Python programming
 
 
