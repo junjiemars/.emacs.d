@@ -117,7 +117,7 @@ Locate your sepc via ```(emacs-home* "private/self-path.el")```.
 
 ### Theme
 
-Easy to switch, and try a new one.
+Easy to switch themes, or try a new one.
 
 The theme's spec locate in ```(emacs-home* "private/self-env-spec.el")```
 
@@ -128,41 +128,25 @@ The theme's spec locate in ```(emacs-home* "private/self-env-spec.el")```
                :allowed t))
 ```
 
-[theme screenshot](https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/atom-theme.png)
-
 
 ### Font and Language
 
+Easy to swtich fonts and [CJK](https://en.wikipedia.org/wiki/CJK_characters) characters, or try a new one. The default encoding is [UTF-8](https://en.wikipedia.org/wiki/UTF-8). 
 
+The default font's spec locate in ```(emacs-home* "private/self-env-spec.el")```
 
-* associate ```private/self-env-spec.el``` with ```private/self-path.el```
-```lisp
-(setq self-def-paths
-      (list
-       ;; ...
-       :env-spec (emacs-home* "private/self-env-spec.el")
-       ;; ...
-       ))
-```
-
-* ```private/self-env-spec.el``` looks like:
 ```lisp
 (def-self-env-spec
-  :theme (list :name 'atom-one-dark
-               :path (emacs-home* "theme/")
-               :allowed t)
-  ;; ...
-)
-
-;; :name => theme's name
-;; :path => where theme file located, if nil then load the built-in theme
-;; :allowed => t to load
+  :font (list :name (platform-supported-if darwin
+                        "Monaco-14"
+                      (platform-supported-if windows-nt
+                          "Consolas-13"
+                        "DejaVu Sans Mono-12")) 
+              :allowed t))
 
 ```
 
-* restart Emacs
 
-### CJK on Windows or Linux
 
 ### Shell
 
