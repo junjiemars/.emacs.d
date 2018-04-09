@@ -4,10 +4,10 @@
 ;;;
 
 
-
-;; Run in the order: env-spec -> prelogue -> package-spec -> epilogue
-;; You can point to your Gited Emacs' configuration files.
+;; Run order: env-spec -> prelogue -> package-spec -> epilogue
+;; You can point to your Gited Emacs' configuration repo.
 ;; There samples `self-*.el' in `(emacs-home* "private/")' directory.
+
 
 (def-self-path-ref
   :env-spec (emacs-home* "private/self-env-spec.el")

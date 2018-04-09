@@ -5,7 +5,7 @@ I'm a nerd with Emacs, it's awesome if I can [Learn Emacs in less then Ten Years
 
 After falling in love with [Lisp](https://en.wikipedia.org/wiki/Lisp_(programming_language)), I know it's the time to make Emacs being a part of my body and mind, not just open a file, navigating, editing, and save it. The Level One of mine start from [this is a Clojure-friendly emacs config](https://github.com/flyingmachine/emacs-for-clojure), and [A reasonable Emacs config](https://github.com/purcell/emacs.d). But, those ones neither can suit for my daily use on different machines.
 
-The adaptive Emacs which I need is more stable, more smaller, more faster and more flexible which can be run on anywhere where Emacs can run. So, I decide to build a new one.
+The adaptive Emacs which I need is more stable, more smaller, more faster and more flexible which can be run on anywhere where Emacs run. So, I decide to build a new one.
 
 
 * [Features](#features)
@@ -13,36 +13,38 @@ The adaptive Emacs which I need is more stable, more smaller, more faster and mo
 * [Where](#where)
 * [What](#what)
 * [Install](#install)
-* [Cook](#cook)
+* [Cooking](#cooking)
 * [Mnemonic](mnemonic.md)
 
 Now, let's start from the Level Two. And one more thing: teach youself some little Elisp (M-x info).
 
-## Features
-* __Carefully designed package manager__: just load what's your need, so it is very stable, and fast, the loading time less than 1s on most machines.
+## Highlights
+* __Carefully designed__: just load what's your need.
 * __Adaptive__: Can run on any OS, GUI or Terminal, from most recent Emacs's versions to ancient ones, and one Emacs's configuration suit for all coexisting Emacs on the same machine.
-* __Consistent__: Whereever you can play with Emacs always behaves in the same way.
+* __Consistent__: Whereever and whenever you can play with Emacs always behaves in the same way.
 * __Awesome style__: See it yourself.
+* __stable__
+* supper __faster__
 
 
 ## Requirements
-* Emacs installation, version 22.1.1+ is ok, but version 24+ is more suitable;
-* Any keyboard, not mouse;
+* Emacs 22.1.1+
+* Any keyboard
 
 
 ## Where
-* Linux, whatever GUI or Terminal;
-* OSX, whatever GUI or Terminal;
-* Windows, whatever GUI or Terminal;
+* Linux, whatever GUI or Terminal
+* OSX, whatever GUI or Terminal
+* Windows, whatever GUI or Terminal
+* One machine run multiple Emacs instances in same time
 
 
 ## What
 * You are the master of your Emacs, ...
-* Smart navigating, find, grep, ...
+* Navigating, finding, grepping in the same way whereever, ...
 * Org Mode that's your new life, ...
-* Lisp programming, Common Lisp, Scheme, sexy Clojure/Clojurescript, ...
+* Reliable programming expirence, C, Lisp and Python, ...
 * Bash on Windows, ...
-* Emacs can do ...
 
 
 ## Install
@@ -63,47 +65,54 @@ $ HAS_EMACS=1 bash <(curl https://raw.githubusercontent.com/junjiemars/kit/maste
 ```
 
 
-* First run: start Emacs then exit it, take a while if your Emacs version 24+;
-* Non-First run: start Emacs then run ```(clean-compiled-files)```, then exit;
+* First run: start Emacs then exit it, take a while if your Emacs 24.0+.
+* Non-First run: start Emacs then run ```(clean-compiled-files)```, then exit.
 
-Now, start Emacs again, it will works perfectly, but if you want to more control and more features, such as themes, packages, and fonts etc., see next section: [cook](#cook)
+Now, start Emacs again, it will works perfectly, but if you want to more control and more features, such as themes, packages, and fonts etc., see next section: [cooking](#cooking)
 
 
-## Cook
+## Cooking
 
 Suppose your Emacs HOME at ```~/.emacs.d``` and annotated it as ```emacs-home``` .
 
 Your private configuration directory at ```emacs-home/private/``` 
-and I abbreviate it as ```private/```. All things you can rename, 
-move, delete, and except the ```private/self-path.el``` file.
+and I abbreviate it as ```(emacs-home* "private/")```. All things under it you can rename, move, delete.
+
+A magic function ```(clean-compiled-files)```, all Elisp files be compiled,
+so if meet some trouble, run it and reopen the Emacs.
 
 
-After you pull the last version from ```https://github.com/junjiemars/.emacs.d.git```, 
-in your ```emacs-home/private``` dirctory, there are default configuration files:
+Directory orgnization:
+```
+emacs-home
+├── LICENSE
+├── README.md
+├── appetizer.md
+├── config (comment "all stuff here")
+├── elpa (comment "installed packages")
+├── init.el (comment "Emacs init file")
+├── mnemonic.md
+├── private (comment "your configuration can put here")
+│   ├── self-env-spec.el
+│   ├── self-epilogue.el
+│   ├── self-package-spec.el
+│   ├── self-path.el
+│   ├── self-prologue.el
+├── story.md
+└── theme (comment "themes directory")
 
-
-* content of ```private/self-path.el```
-```lisp
-(setq self-def-paths
-      (list
-       :env-spec (emacs-home* "private/self-env-spec.el")
-       :prologue nil 
-       :package-spec nil
-       :epilogue nil))
 ```
 
-* ```:env-spec``` specify the _basic environement_ specification file;
-* ```:prologue``` specify the _prologue_ file;
-* ```:package-spec``` specify the _package definition_ specificiation file;
-* ```:epilogue``` specify the _epilogue_ file;
 
+Use ```(emacs-home* "private/self-path.el")``` file to locate where your spec.
 
-
-### Using your private Emacs's configuration anywhere
-
-Host ```private/``` in [GitLab](https://gitlab.com), [GitHub](https://github.com), 
-or your private _versioning server_, then in anywhere you can pull it down 
-into any platform, it will works well: keep the same styles and the same behaviors.
+```lisp
+(def-self-path-ref
+  :env-spec (emacs-home* "private/self-env-spec.el")
+  :prologue (comment (emacs-home* "private/self-prologue.el"))
+  :package-spec (comment (emacs-home* "private/self-package-spec.el"))
+  :epilogue (comment (emacs-home* "private/self-epilogue.el")))
+```
 
 
 ### Theme
