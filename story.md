@@ -128,6 +128,12 @@ The theme's spec locate in ```(emacs-home* "private/self-env-spec.el")```
                :allowed t))
 ```
 
+[theme screenshot](https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/atom-theme.png)
+
+
+### Font and Language
+
+
 
 * associate ```private/self-env-spec.el``` with ```private/self-path.el```
 ```lisp
