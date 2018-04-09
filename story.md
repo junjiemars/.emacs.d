@@ -152,7 +152,7 @@ The default font's spec locate in ```(emacs-home* "private/self-env-spec.el")```
 
 Any ```Shell```, copy environment variables, and on any platforms.
 
-Don't tell me [exec-path-from-shell](https://github.com/purcell/exec-path-from-shell), that is a poor implementation: slow, unstable.
+Don't tell me [exec-path-from-shell](https://github.com/purcell/exec-path-from-shell), that is a poor implementation: unstable and slow.
 
 The shell spec locate in ```(emacs-home* "private/self-env-spec.el")```
 
@@ -172,31 +172,57 @@ The shell spec locate in ```(emacs-home* "private/self-env-spec.el")```
 
 
 
-### Package management
+### Package
 
-* associate ```private/self-package-spec.el``` with ```private/self-path.el```
-```lisp
-(setq self-def-paths
-      (list
-       ;; ...
-       :package-spec (emacs-home* "private/self-package-spec.el")
-       ;; ...
-       )
-)
-```
+Don't tell me [use-package](https://github.com/jwiegley/use-package), it's
+trying to redefine Emacs. Here you can find more simpler and faster way to 
+implement almost functions like ```use-pacakge```.
 
-* ```private/self-package-spec.el``` looks like:
+The default package spec locate in ```(emacs-home* "private/self-package-spec.el")```
+
 ```lisp
 (def-self-package-spec
   (list
-   :cond (lambda ()
-           (and (version-supported-p <= 24.0)
-                (bin-exists-p "virtualenv")))
-   :packages '(elpy)
-   :compile `(,(emacs-home* "config/setup-python.el"))))
+   :cond (bin-exists-p% "latex")
+   :packages '(auctex cdlatex))
+  (list
+   :cond (and (version-supported-p <= 24.4)
+              (bin-exists-p% "java"))
+   :packages '(cider
+               clojure-mode
+               clojure-mode-extra-font-locking)
+   :compile `(,(compile-unit (emacs-home* "config/use-cider.el") t)
+              ,(compile-unit (emacs-home* "config/use-cider-autoload.el"))))
+  (list
+   :cond (and (version-supported-p <= 24.4)
+              `,(bin-exists-p% "docker"))
+   :packages '(dockerfile-mode
+               docker-tramp))
+  (list
+   :cond (and (bin-exists-p% "erlc")
+              (bin-exists-p% "lfe"))
+   :packages '(lfe-mode)
+   :compile `(,(compile-unit (emacs-home* "config/use-lfe-autoload.el"))))
+  (list
+   :cond (and (version-supported-p <= 24.4)
+              (bin-exists-p% "git"))
+   :packages '(magit)
+   :compile `(,(compile-unit (emacs-home* "config/use-magit-autoload.el"))))
+  (list
+   :cond (and (version-supported-p <= 23.2)
+              (or (bin-exists-p% "racket")
+                  (bin-exists-p% "chicken")))
+   :packages '(geiser))
+  (list
+   :cond (or (bin-exists-p% "sbcl"))
+   :packages '(slime)
+   :compile `(,(compile-unit (emacs-home* "config/use-slime.el") t)
+              ,(compile-unit (emacs-home* "config/use-slime-autoload.el"))))
+	(list
+	 :cond t
+	 :compile `(,(compile-unit (emacs-home* "private/x.el")))))
 ```
-this _package-spec_ used to support _Python_ programming, 
-[default package spec](config/sample-self-package-spec.el)
+
 
 
 ### Programming
