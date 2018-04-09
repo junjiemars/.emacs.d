@@ -129,7 +129,7 @@ The theme's spec locate in ```(emacs-home* "private/self-env-spec.el")```
 ```
 
 
-### Font and Language
+### Font
 
 Easy to swtich fonts and [CJK](https://en.wikipedia.org/wiki/CJK_characters) characters, or try a new one. The default encoding is [UTF-8](https://en.wikipedia.org/wiki/UTF-8). 
 
