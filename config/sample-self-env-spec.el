@@ -55,4 +55,6 @@
   :socks (list :port 32000
                :server "127.0.0.1"
                :version 5
-               :allowed nil))
+               :allowed nil)
+	
+	:package (list :allowed t))
