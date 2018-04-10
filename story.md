@@ -115,6 +115,15 @@ Locate your sepc via ```(emacs-home* "private/self-path.el")```.
 ```
 
 
+* [Theme](#theme)
+* [Font](#font)
+* [Shell](#shell)
+* [Desktop](#desktop)
+* [Socks](#socks)
+* [Package](#package)
+
+
+
 ### Theme
 
 Easy to switch themes, or try a new one.
@@ -171,6 +180,37 @@ The shell spec locate in ```(emacs-home* "private/self-env-spec.el")```
 ```
 
 
+### Desktop
+
+The desktop spec locate in ```(emacs-home* "private/self-env-spec.el")```
+
+
+```lisp
+(def-self-env-spec
+  :desktop (list :files-not-to-save
+                 ".*\.t?gz\\|\.desktop\\|~$\\|\\/ssh[: ]\\|\.elc$"
+                 :buffers-not-to-save "^TAGS\\|\\.log"
+                 :modes-not-to-save
+                 '(dired-mode fundamental-mode rmail-mode)
+                 :restore-eager 8
+                 :allowed t))
+```
+
+### Socks
+
+Using socks proxy when installing packages or browsing web pages.
+
+The socks spec locate in ```(emacs-home* "private/self-env-spec.el")```
+
+```lisp
+(def-self-env-spec
+  :socks (list :port 32000
+               :server "127.0.0.1"
+               :version 5
+               :allowed nil))
+
+```
+
 
 ### Package
 
@@ -183,11 +223,11 @@ The default package spec locate in ```(emacs-home* "private/self-package-spec.el
 ```lisp
 (def-self-package-spec
   (list
-   :cond (bin-exists-p% "latex")
+   :cond `,(bin-exists-p% "latex")
    :packages '(auctex cdlatex))
   (list
    :cond (and (version-supported-p <= 24.4)
-              (bin-exists-p% "java"))
+              `,(bin-exists-p% "java"))
    :packages '(cider
                clojure-mode
                clojure-mode-extra-font-locking)
@@ -199,28 +239,29 @@ The default package spec locate in ```(emacs-home* "private/self-package-spec.el
    :packages '(dockerfile-mode
                docker-tramp))
   (list
-   :cond (and (bin-exists-p% "erlc")
-              (bin-exists-p% "lfe"))
+   :cond `,(bin-exists-p% "erlc")
+   :packages '(erlang))
+  (list
+   :cond (and `,(bin-exists-p% "erlc")
+              `,(bin-exists-p% "lfe"))
    :packages '(lfe-mode)
    :compile `(,(compile-unit (emacs-home* "config/use-lfe-autoload.el"))))
   (list
    :cond (and (version-supported-p <= 24.4)
-              (bin-exists-p% "git"))
+              `,(bin-exists-p% "git"))
    :packages '(magit)
    :compile `(,(compile-unit (emacs-home* "config/use-magit-autoload.el"))))
   (list
    :cond (and (version-supported-p <= 23.2)
-              (or (bin-exists-p% "racket")
-                  (bin-exists-p% "chicken")))
+              (or `,(bin-exists-p% "racket")
+                  `,(bin-exists-p% "chicken")))
    :packages '(geiser))
   (list
-   :cond (or (bin-exists-p% "sbcl"))
+   :cond (or `,(bin-exists-p% "sbcl"))
    :packages '(slime)
    :compile `(,(compile-unit (emacs-home* "config/use-slime.el") t)
-              ,(compile-unit (emacs-home* "config/use-slime-autoload.el"))))
-	(list
-	 :cond t
-	 :compile `(,(compile-unit (emacs-home* "private/x.el")))))
+              ,(compile-unit (emacs-home* "config/use-slime-autoload.el")))))
+
 ```
 
 
