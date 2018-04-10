@@ -16,6 +16,8 @@ Take your time to have a taste, some features may be you never see it in other
 places. One more thing, it's best to remind you: take care, it's super fast.
 
 
+
+
 Story
 =======
 
@@ -32,7 +34,7 @@ The adaptive Emacs which I need is more stable, more smaller, more faster and mo
 * [What](#what)
 * [Install](#install)
 * [Cooking](#cooking)
-* [Mnemonic](mnemonic.md)
+
 
 Now, let's start from the Level Two. And one more thing: teach youself some little Elisp (M-x info).
 
@@ -315,6 +317,3 @@ The default package spec locate in ```(emacs-home* "private/self-package-spec.el
 
 
 [mnemonic](mnemonic.md) | [screenshot](appetizer.md)
-
-
-
