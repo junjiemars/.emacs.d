@@ -118,6 +118,7 @@ Locate your sepc via ```(emacs-home* "private/self-path.el")```.
 * [Theme](#theme)
 * [Font](#font)
 * [Shell](#shell)
+* [Eshell](#eshell)
 * [Desktop](#desktop)
 * [Socks](#socks)
 * [Package](#package)
@@ -180,6 +181,22 @@ The shell spec locate in ```(emacs-home* "private/self-env-spec.el")```
 ```
 
 
+### Eshell
+
+
+The eshell spec locate in ```(emacs-home* "private/self-env-spec.el")```
+
+
+```lisp
+(def-self-env-spec
+  :eshell (list :visual-commands '("mtr")
+                :destroy-buffer-when-process-dies t
+                :visual-subcommands '(("git" "log"))
+                :visual-options nil
+                :allowed t))
+```
+
+
 ### Desktop
 
 The desktop spec locate in ```(emacs-home* "private/self-env-spec.el")```
@@ -210,6 +227,7 @@ The socks spec locate in ```(emacs-home* "private/self-env-spec.el")```
                :allowed nil))
 
 ```
+
 
 
 ### Package
