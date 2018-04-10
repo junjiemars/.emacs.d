@@ -53,7 +53,7 @@
 				 (if (package-installed-p p)
 						 (when (and ,remove-unused (not (self-spec-> s :cond)))
 							 (let ((d (alist-get p package-alist)))
-								 (when (car d)
+								 (when d
 									 (version-supported-if
 											 <= 25.0
 											 (package-delete (car d) t t)
