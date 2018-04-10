@@ -161,19 +161,20 @@
   (add-hook 'sh-mode-hook #'set-sh-mode!)
 
   (package-spec-:allowed-p
+
 		;; basic lisp mode
-		(add-hook 'scheme-mode-hook #'set-lisp-basic-mode!)
-		(add-hook 'lisp-mode-hook #'set-lisp-basic-mode!)
-		(add-hook 'emacs-lisp-mode-hook #'set-emacs-lisp-mode!)
+		(add-hook 'scheme-mode-hook 'set-lisp-basic-mode!)
+		(add-hook 'lisp-mode-hook 'set-lisp-basic-mode!)
+		(add-hook 'emacs-lisp-mode-hook 'set-emacs-lisp-mode!)
 
 		;; enable paredit in minibuffer on gnu/linux platform
 		(platform-supported-if
 				gnu/linux
 				(add-hook 'minibuffer-setup-hook
-									#'enable-paredit-mode t)
+									'enable-paredit-mode t)
 			;; enable paredit in minbuffer on windows/darwin platform
 			(add-hook 'eval-expression-minibuffer-setup-hook
-								#'enable-paredit-mode t)))
+								'enable-paredit-mode t)))
    ;; end of package: paredit
 
 	;; ielm basic
