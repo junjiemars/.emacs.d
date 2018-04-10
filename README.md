@@ -16,8 +16,6 @@ Take your time to have a taste, some features may be you never see it in other
 places. One more thing, it's best to remind you: take care, it's super fast.
 
 
-
-
 Story
 =======
 
@@ -43,7 +41,7 @@ Now, let's start from the Level Two. And one more thing: teach youself some litt
 * __Adaptive__: Can run on any OS, GUI or Terminal, from most recent Emacs's versions to ancient ones, and one Emacs's configuration suit for all coexisting Emacs on the same machine.
 * __Consistent__: Whereever and whenever you can play with Emacs always behaves in the same way.
 * __Awesome style__: See it yourself.
-* __stable__
+* __Stable__
 * supper __faster__
 
 
