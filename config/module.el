@@ -10,7 +10,7 @@
 (setq% package-user-dir (v-home% "elpa/") package)
 
 
-(defvar *repostory-initialized* nil
+(defvar *repository-initialized* nil
   "Indicate `initialize-package-repository!' whether has been called.")
 
 
@@ -45,37 +45,25 @@
 
 (package-initialize)
 
-
-
-(defmacro install-package! (packages &optional dry)
-  "Install missing packages, return alist of installed packages."
-  `(let ((not-installed-packages
-          (delete t (mapcar #'(lambda (p)
-                                (if (package-installed-p p) t p))
-                            ,packages))))
-     (when not-installed-packages
-       (unless ,dry
-         (unless *repostory-initialized*
-           (initialize-package-repository!)
-           (setq *repostory-initialized* t)))
-       (mapc (lambda (i)
-               (unless ,dry
-                 (version-supported-if
-                     <= 25.0
-                     (package-install i t)
-                   (package-install i))))
-             not-installed-packages))))
-
-
-(defmacro parse-package-spec (dir spec)
-  "Parse SPEC, install and setup packages in DIR."
+(defmacro parse-package-spec! (dir spec)
+  "Parse SPEC, install, remove and setup packages in DIR."
   `(dolist (s ,spec)
-     (when (and (consp s) (self-spec-> s :cond))
-			 (when (consp (self-spec-> s :packages))
-				 (install-package! (delete nil (self-spec-> s :packages))))
-			 (apply #'compile!
-							,dir
-							(delete nil (self-spec-> s :compile))))))
+		 (when (consp s)
+			 (dolist (p (self-spec-> s :packages))
+				 (if (package-installed-p p)
+						 nil
+					 (when (self-spec-> s :cond)
+						 (unless *repository-initialized*
+							 (initialize-package-repository!)
+							 (setq *repository-initialized* t))
+						 (version-supported-if
+								 <= 25.0
+								 (package-install p t)
+							 (package-install p)))))
+			 (when (self-spec-> s :cond)
+				 (apply #'compile!
+								,dir
+								(delete nil (self-spec-> s :compile)))))))
 
 
 (defvar basic-package-spec
@@ -93,10 +81,7 @@
 
 (package-spec-:allowed-p
 	;; Load basic package spec
-	(parse-package-spec v-dir basic-package-spec)
+	(parse-package-spec! v-dir basic-package-spec)
 	;; Load self packages spec
-	(parse-package-spec v-dir (self-spec->*package-spec)))
-
-
-
+	(parse-package-spec! v-dir (self-spec->*package-spec)))
 
