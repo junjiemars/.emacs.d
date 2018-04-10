@@ -57,7 +57,15 @@
 									 (version-supported-if
 											 <= 25.0
 											 (package-delete d t t)
-										 (package-delete d)))))
+										 (version-supported-if
+												 <= 24.0
+												 (package-delete d)
+											 (package-delete
+												d
+												(mapconcat #'identity
+																	 (mapcar (lambda (x)
+																						 (format "%s" (aref d 0))))
+																	 ".")))))))
 					 (when (self-spec-> s :cond)
 						 (unless *repository-initialized*
 							 (initialize-package-repository!)
