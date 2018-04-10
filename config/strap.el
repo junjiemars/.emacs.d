@@ -183,6 +183,7 @@ The name is made by appending a number to PREFIX, default \"G\"."
   (package-supported-p 
     `(defvar ,(self-symbol 'package-spec) (list ,@spec))))
 
+
 
 
 
@@ -228,6 +229,18 @@ The name is made by appending a number to PREFIX, default \"G\"."
   (declare (indent 0))
   (when (boundp (self-symbol 'package-spec))
     `(self-spec-> ,(self-symbol 'package-spec) ,@keys)))
+
+
+(defmacro def-self-package-spec-p (named &optional switch)
+	"Define `defmacro' of the SWITCH of NAMED self package spec."
+	(let ((n (intern (format "package-spec-%s-p" named))))
+		`(if ,switch
+				 (defmacro ,n (&rest body)
+					 (declare (indent 0))
+					 `(package-supported-p ,@body))
+			 (defmacro ,n (&rest body)
+				 (declare (indent 0))
+				 `(comment ,body)))))
 
 
 (compile!
