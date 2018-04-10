@@ -57,4 +57,5 @@
                :version 5
                :allowed nil)
 	
-	:package (list :allowed t))
+	:package (list :remove-unused nil
+								 :allowed t))

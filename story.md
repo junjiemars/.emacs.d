@@ -236,6 +236,18 @@ Don't tell me [use-package](https://github.com/jwiegley/use-package), it's
 trying to redefine Emacs. Here you can find more simpler and faster way to 
 implement almost functions like ```use-pacakge```.
 
+There are two types of packages: __basic__(just like Emacs' builtin) 
+and __user defined__. To disable __user defined__ package 
+in ```(def-self-path-ref)```, disable both __basic__ and __user defined__
+packages can be done in ```(def-self-env-spec)```. 
+
+```lisp
+(def-self-env-spec
+  :package (list :remove-unused nil
+	             :allowed t))
+```
+
+
 The default package spec locate in ```(emacs-home* "private/self-package-spec.el")```
 
 ```lisp

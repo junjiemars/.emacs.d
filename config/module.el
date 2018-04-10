@@ -45,13 +45,19 @@
 
 (package-initialize)
 
-(defmacro parse-package-spec! (dir spec)
+(defmacro parse-package-spec! (dir spec &optional remove-unused)
   "Parse SPEC, install, remove and setup packages in DIR."
   `(dolist (s ,spec)
 		 (when (consp s)
 			 (dolist (p (self-spec-> s :packages))
 				 (if (package-installed-p p)
-						 nil
+						 (when (and ,remove-unused (not (self-spec-> s :cond)))
+							 (let ((d (car (alist-get p package-alist))))
+								 (when d
+									 (version-supported-if
+											 <= 25.0
+											 (package-delete d t t)
+										 (package-delete d)))))
 					 (when (self-spec-> s :cond)
 						 (unless *repository-initialized*
 							 (initialize-package-repository!)
@@ -81,7 +87,9 @@
 
 (package-spec-:allowed-p
 	;; Load basic package spec
-	(parse-package-spec! v-dir basic-package-spec)
+	(parse-package-spec! v-dir basic-package-spec
+											 (self-spec->*env-spec :package :remove-unused))
 	;; Load self packages spec
-	(parse-package-spec! v-dir (self-spec->*package-spec)))
+	(parse-package-spec! v-dir (self-spec->*package-spec)
+											 (self-spec->*env-spec :package :remove-unused)))
 
