@@ -177,7 +177,10 @@
 								'enable-paredit-mode t)))
    ;; end of package: paredit
 
-	;; ielm basic
+	;; emacs-lisp: enable `eldoc-mode'
+	(add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
+	
+	;; ielm: enable `eldoc-mode'
   (add-hook 'ielm-mode-hook #'eldoc-mode)
 
   ;; emacs lisp basic 

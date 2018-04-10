@@ -6,7 +6,6 @@
 
 (defun set-emacs-lisp-mode! ()
   "Set `emacs-lisp-mode'."
-  (eldoc-mode)
 	(cond ((or (string= "*scratch*" (buffer-name))
 						 (string= "*ielm*" (buffer-name))))
 				(t (enable-paredit-mode)
