@@ -64,7 +64,7 @@
 												d
 												(mapconcat #'identity
 																	 (mapcar (lambda (x)
-																						 (format "%s" (aref d 0))))
+																						 (format "%s" x)) (aref d 0))
 																	 ".")))))))
 					 (when (self-spec-> s :cond)
 						 (unless *repository-initialized*
