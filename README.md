@@ -42,7 +42,7 @@ Now, let's start from the Level Two. And one more thing: teach youself some litt
 * __Consistent__: Whereever and whenever you can play with Emacs always behaves in the same way.
 * __Awesome style__: See it yourself.
 * __Stable__
-* supper __faster__
+* Supper __faster__
 
 
 ## Requirements
@@ -116,7 +116,6 @@ emacs-home
 │   ├── self-package-spec.el
 │   ├── self-path.el
 │   ├── self-prologue.el
-├── story.md
 └── theme (comment "themes directory")
 
 ```
@@ -262,7 +261,7 @@ packages can be done in ```(def-self-env-spec)```.
 ```lisp
 (def-self-env-spec
   :package (list :remove-unused nil
-	             :allowed t))
+	  :allowed t))
 ```
 
 
