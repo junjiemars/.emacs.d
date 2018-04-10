@@ -61,7 +61,7 @@
 												 <= 24.4
 												 (package-delete (car d))
 											 (package-delete
-												p
+												(format "%s" p)
 												(mapconcat #'identity
 																	 (mapcar (lambda (x)
 																						 (format "%s" x)) (aref d 0))
