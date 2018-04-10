@@ -58,7 +58,7 @@
 											 <= 25.0
 											 (package-delete d t t)
 										 (version-supported-if
-												 <= 24.0
+												 <= 24.4
 												 (package-delete d)
 											 (package-delete
 												d
