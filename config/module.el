@@ -91,16 +91,12 @@
 
 
 
-(if (self-spec->*env-spec :package :allowed)
-		(progn%
-		 ;; Load basic package spec
-		 (parse-package-spec v-dir basic-package-spec)
-		 ;; Load self packages spec
-		 (parse-package-spec v-dir (self-spec->*package-spec))
-
-		 (def-self-package-spec-p :allowed t))
+(package-spec-:allowed-p
+	;; Load basic package spec
+	(parse-package-spec v-dir basic-package-spec)
+	;; Load self packages spec
+	(parse-package-spec v-dir (self-spec->*package-spec)))
 
 
-	(def-self-package-spec-p :allowed))
 
 

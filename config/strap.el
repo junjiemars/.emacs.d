@@ -231,16 +231,11 @@ The name is made by appending a number to PREFIX, default \"G\"."
     `(self-spec-> ,(self-symbol 'package-spec) ,@keys)))
 
 
-(defmacro def-self-package-spec-p (named &optional switch)
-	"Define `defmacro' of the SWITCH of NAMED self package spec."
-	(let ((n (intern (format "package-spec-%s-p" named))))
-		`(if ,switch
-				 (defmacro ,n (&rest body)
-					 (declare (indent 0))
-					 `(package-supported-p ,@body))
-			 (defmacro ,n (&rest body)
-				 (declare (indent 0))
-				 `(comment ,body)))))
+(defmacro package-spec-:allowed-p (&rest body)
+	(declare (indent 0))
+	`(package-supported-p
+		 (when (self-spec->*env-spec :package :allowed)
+			 ,@body)))
 
 
 (compile!
@@ -261,8 +256,8 @@ The name is made by appending a number to PREFIX, default \"G\"."
 
 ;; Self do prologue ...
 (compile!
- v-dir
- (compile-unit (self-def-path-ref-> :prologue)))
+		v-dir
+	(compile-unit (self-def-path-ref-> :prologue)))
 
 
 (package-supported-p

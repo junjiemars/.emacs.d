@@ -38,21 +38,21 @@
   ;; http://www.emacswiki.org/emacs/HippieExpand
   (global-set-key (kbd "M-/") 'hippie-expand)
 
-  (package-supported-p
+  (package-spec-:allowed-p
 
-    ;; `bing-dict'
-    (global-set-key (kbd "C-c d") 'bing-dict-brief)
+		;; `bing-dict'
+		(global-set-key (kbd "C-c d") 'bing-dict-brief)
 
-    ;; `paredit'
-    ;; On Windows C-) is not work
-    ;; fix inconsistent `C-)' `C-c )' behavior:#9
-    (global-set-key (kbd "C-c )") 'paredit-forward-slurp-sexp)
+		;; `paredit'
+		;; On Windows C-) is not work
+		;; fix inconsistent `C-)' `C-c )' behavior:#9
+		(global-set-key (kbd "C-c )") 'paredit-forward-slurp-sexp)
 
-    ;; On Terminal mode, Ctrl+Shift combination can't send to Emacs
-    (terminal-supported-p
-      (global-set-key (kbd "C-c (") 'paredit-backward-slurp-sexp)
-      (global-set-key (kbd "C-c }") 'paredit-forward-barf-sexp)
-      (global-set-key (kbd "C-c {") 'paredit-backward-barf-sexp)))
+		;; On Terminal mode, Ctrl+Shift combination can't send to Emacs
+		(terminal-supported-p
+			(global-set-key (kbd "C-c (") 'paredit-backward-slurp-sexp)
+			(global-set-key (kbd "C-c }") 'paredit-forward-barf-sexp)
+			(global-set-key (kbd "C-c {") 'paredit-backward-barf-sexp)))
 
   )
 
@@ -160,19 +160,19 @@
 
   (add-hook 'sh-mode-hook #'set-sh-mode!)
 
-  (package-supported-p
-    ;; basic lisp mode
+  (package-spec-:allowed-p
+		;; basic lisp mode
 		(add-hook 'scheme-mode-hook #'set-lisp-basic-mode!)
 		(add-hook 'lisp-mode-hook #'set-lisp-basic-mode!)
 		(add-hook 'emacs-lisp-mode-hook #'set-emacs-lisp-mode!)
 
-    ;; enable paredit in minibuffer on gnu/linux platform
-    (platform-supported-if
+		;; enable paredit in minibuffer on gnu/linux platform
+		(platform-supported-if
 				gnu/linux
 				(add-hook 'minibuffer-setup-hook
 									#'enable-paredit-mode t)
-      ;; enable paredit in minbuffer on windows/darwin platform
-      (add-hook 'eval-expression-minibuffer-setup-hook
+			;; enable paredit in minbuffer on windows/darwin platform
+			(add-hook 'eval-expression-minibuffer-setup-hook
 								#'enable-paredit-mode t)))
    ;; end of package: paredit
 
