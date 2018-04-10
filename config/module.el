@@ -52,16 +52,16 @@
 			 (dolist (p (self-spec-> s :packages))
 				 (if (package-installed-p p)
 						 (when (and ,remove-unused (not (self-spec-> s :cond)))
-							 (let ((d (car (alist-get p package-alist))))
-								 (when d
+							 (let ((d (alist-get p package-alist)))
+								 (when (car d)
 									 (version-supported-if
 											 <= 25.0
-											 (package-delete d t t)
+											 (package-delete (car d) t t)
 										 (version-supported-if
 												 <= 24.4
-												 (package-delete d)
+												 (package-delete (car d))
 											 (package-delete
-												d
+												p
 												(mapconcat #'identity
 																	 (mapcar (lambda (x)
 																						 (format "%s" x)) (aref d 0))
