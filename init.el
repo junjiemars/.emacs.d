@@ -52,7 +52,7 @@
     `,_vfile_))
 
 
-(defmacro base-file-name (file)
+(defmacro file-name-base* (file)
   "Return base name of FILE with no directory, no extension."
   `(file-name-sans-extension (file-name-nondirectory ,file)))
 
@@ -63,7 +63,7 @@
      (let ((v (concat (file-name-directory ,file) ,dir "/")))
        (unless (file-exists-p v) (make-directory v t))
        (concat v (if (and ,extension (file-name-extension ,file))
-                     (concat (base-file-name ,file) "." ,extension)
+                     (concat (file-name-base* ,file) "." ,extension)
                    (file-name-nondirectory ,file))))))
 
 
