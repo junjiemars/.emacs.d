@@ -254,7 +254,7 @@ trying to redefine Emacs. Here you can find more simpler and faster way to
 implement almost functions like ```use-pacakge```.
 
 There are two types of packages: __basic__(just like Emacs' builtin) 
-and __user defined__. To disable __user defined__ package 
+and __user defined__. To disable __user defined__ packages 
 in ```(def-self-path-ref)```, disable both __basic__ and __user defined__
 packages can be done in ```(def-self-env-spec)```. 
 
@@ -264,6 +264,10 @@ packages can be done in ```(def-self-env-spec)```.
 	  :allowed t))
 ```
 
+
+* ```:cond```: decide whether to install ```:packages``` or compile ```:compile```
+* ```:packages```: a list of package names or tar file names
+* ```:compile```: a list of files that should be compiled only or be loaded after be compiled
 
 The default package spec locate in ```(emacs-home* "private/self-package-spec.el")```
 
