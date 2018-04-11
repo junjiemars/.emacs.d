@@ -36,8 +36,9 @@
 (defsubst check-package-name (package)
 	(cond ((symbolp package) (cons package nil))
 				((and (stringp package) (file-exists-p package))
-				 (match-string* "\\(.*\\)-[.0-9]+\\'"
-												(file-name-base* package) 0))
+				 (cons (match-string* "\\(.*\\)-[.0-9]+\\'"
+															(file-name-base* package) 0)
+							 package))
 				(t nil)))
 
 
