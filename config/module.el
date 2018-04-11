@@ -36,9 +36,8 @@
 (defsubst check-package-name (package)
 	(cond ((symbolp package) (cons package nil))
 				((and (stringp package) (file-exists-p package))
-				 (let ((tar (file-name-base* package)))
-					 (when (string-match "\\(.*\\)-\\([.0-9]+\\)\\'" tar)
-						 (cons (intern (match-string 1 tar)) package))))
+				 (match-string* "\\(.*\\)-[.0-9]+\\'"
+												(file-name-base* package) 0))
 				(t nil)))
 
 
