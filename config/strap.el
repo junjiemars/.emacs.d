@@ -98,7 +98,8 @@ If FN requires FEATURE load it on compile-time."
   `(if-fn% ,fn ,feature nil ,@body))
 
 
-(defvar *gensym-counter* 0)
+(unless-fn% gensym nil
+	(defvar *gensym-counter* 0))
 
 (unless-fn% gensym nil
 	;; feature Emacs version will add `gensym' into the core
