@@ -26,11 +26,14 @@
   (version-supported-when
       <= 25.1
     (setq% package-archive-priorities
-	   (list '("melpa-stable" . 10)
-		 '("melpa" . 5)
-		 '("gnu" . 0)) package))
+					 (list '("melpa-stable" . 10)
+								 '("melpa" . 5)
+								 '("gnu" . 0)) package))
 
   (package-refresh-contents))
+
+
+
 
 
 
@@ -45,39 +48,39 @@
 
 (package-initialize)
 
-(defmacro parse-package-spec! (dir spec &optional remove-unused)
-  "Parse SPEC, install, remove and setup packages in DIR."
-  `(dolist (s ,spec)
-		 (when (consp s)
-			 (dolist (p (self-spec-> s :packages))
-				 (if (package-installed-p p)
-						 (when (and ,remove-unused (not (self-spec-> s :cond)))
-							 (let ((d (alist-get p package-alist)))
-								 (when d
-									 (version-supported-if
-											 <= 25.0
-											 (package-delete (car d) t t)
-										 (version-supported-if
-												 <= 24.4
-												 (package-delete (car d))
-											 (package-delete
-												(format "%s" p)
-												(mapconcat #'identity
-																	 (mapcar (lambda (x)
-																						 (format "%s" x)) (aref d 0))
-																	 ".")))))))
-					 (when (self-spec-> s :cond)
-						 (unless *repository-initialized*
-							 (initialize-package-repository!)
-							 (setq *repository-initialized* t))
-						 (version-supported-if
-								 <= 25.0
-								 (package-install p t)
-							 (package-install p)))))
-			 (when (self-spec-> s :cond)
-				 (apply #'compile!
-								,dir
-								(delete nil (self-spec-> s :compile)))))))
+(defsubst parse-package-spec! (dir spec &optional remove-unused)
+	"Parse SPEC, install, remove and setup packages in DIR."
+	(dolist (s spec)
+		(when (consp s)
+			(dolist (p (self-spec-> s :packages))
+				(if (package-installed-p p)
+						(when (and remove-unused (not (self-spec-> s :cond)))
+							(let ((d (alist-get p package-alist)))
+								(when d
+									(version-supported-if
+											<= 25.0
+											(package-delete (car d) t t)
+										(version-supported-if
+												<= 24.4
+												(package-delete (car d))
+											(package-delete
+											 (format "%s" p)
+											 (mapconcat #'identity
+																	(mapcar (lambda (x)
+																						(format "%s" x)) (aref d 0))
+																	".")))))))
+					(when (self-spec-> s :cond)
+						(unless *repository-initialized*
+							(initialize-package-repository!)
+							(setq *repository-initialized* t))
+						(version-supported-if
+								<= 25.0
+								(package-install p t)
+							(package-install p)))))
+			(when (self-spec-> s :cond)
+				(apply #'compile!
+							 dir
+							 (delete nil (self-spec-> s :compile)))))))
 
 
 (defvar basic-package-spec
