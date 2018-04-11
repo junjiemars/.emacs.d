@@ -37,7 +37,7 @@
 	(cond ((symbolp package) (cons package nil))
 				((and (stringp package) (file-exists-p package))
 				 (cons (intern (match-string* "\\(.*\\)-[.0-9]+\\'"
-																			(file-name-base* package) 0))
+																			(file-name-base* package) 1))
 							 package))
 				(t nil)))
 
