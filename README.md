@@ -1,4 +1,4 @@
-Emacs is a Part of You
+More Reasonable Emacs
 =======
 
 [![build status](https://api.travis-ci.org/junjiemars/.emacs.d.svg?branch=master)](https://api.travis-ci.org/junjiemars/.emacs.d)
