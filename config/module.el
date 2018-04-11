@@ -33,6 +33,39 @@
   (package-refresh-contents))
 
 
+(defsubst check-package-name (package)
+	(cond ((symbolp package) (cons package nil))
+				((and (stringp package) (file-exists-p package))
+				 (let ((tar (file-name-base package)))
+					 (when (string-match "\\(.*\\)-\\([.0-9]+\\)\\'" tar)
+						 (cons (intern (match-string 1 tar)) package))))
+				(t nil)))
+
+
+(defsubst delete-package! (package description)
+	(version-supported-if
+			<= 25.0
+			(progn%
+			 package
+			 (package-delete (car description) t t))
+		(version-supported-if
+				<= 24.4
+				(package-delete (car description))
+			(package-delete
+			 (symbol-name package)
+			 (mapconcat #'identity
+									(mapcar (lambda (x)
+														(symbol-name x)) (aref description 0))
+									".")))))
+
+
+(defsubst install-package! (package &optional tar)
+	(if tar
+			(package-install-file package)
+		(version-supported-if
+				<= 25.0
+				(package-install package t)
+			(package-install package))))
 
 
 
@@ -53,30 +86,19 @@
 	(dolist (s spec)
 		(when (consp s)
 			(dolist (p (self-spec-> s :packages))
-				(if (package-installed-p p)
-						(when (and remove-unused (not (self-spec-> s :cond)))
-							(let ((d (alist-get p package-alist)))
-								(when d
-									(version-supported-if
-											<= 25.0
-											(package-delete (car d) t t)
-										(version-supported-if
-												<= 24.4
-												(package-delete (car d))
-											(package-delete
-											 (format "%s" p)
-											 (mapconcat #'identity
-																	(mapcar (lambda (x)
-																						(format "%s" x)) (aref d 0))
-																	".")))))))
-					(when (self-spec-> s :cond)
-						(unless *repository-initialized*
-							(initialize-package-repository!)
-							(setq *repository-initialized* t))
-						(version-supported-if
-								<= 25.0
-								(package-install p t)
-							(package-install p)))))
+				(let ((n (check-package-name p)))
+					(when (consp n)
+						(if (package-installed-p (car n))
+								(when (and remove-unused (not (self-spec-> s :cond)))
+									(let ((d (alist-get (car n) package-alist)))
+										(when d (delete-package! (car n) d))))
+							(when (self-spec-> s :cond)
+								(if (cdr n)
+										(install-package! (cdr n) t)
+									(unless *repository-initialized*
+										(initialize-package-repository!)
+										(setq *repository-initialized* t))
+									(install-package! (car n))))))))
 			(when (self-spec-> s :cond)
 				(apply #'compile!
 							 dir
