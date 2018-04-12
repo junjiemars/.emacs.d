@@ -69,9 +69,7 @@ If (eq `system-type' OS) yields nil, and there are no ELSE’s, the value is nil
   "Set X when variable X is bound.
 If X requires the FEATURE load it on compile-time."
   ;; (declare (debug t))
-  (when feature (condition-case nil
-										(require feature)
-									(error nil)))
+  (when feature (require feature nil t))
 	(when (boundp x)
 		`(setq ,x ,val)))
 
