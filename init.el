@@ -58,7 +58,7 @@
 
 
 (defmacro v-path! (file dir &optional extension)
-  "Return versioned DIR base on existing FILE's directory and return it."
+  "Return the path of existing FILE's directory + DIR/FILEbasename.EXTENSION."
   `(when (and ,dir (file-exists-p ,file))
      (let ((v (concat (file-name-directory ,file) ,dir "/")))
        (unless (file-exists-p v) (make-directory v t))
