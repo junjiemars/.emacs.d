@@ -58,4 +58,4 @@
                :allowed nil)
 	
 	:package (list :remove-unused nil
-								 :allowed t))
+								 :allowed nil))

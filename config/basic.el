@@ -364,15 +364,16 @@ call it: ssh -vnNTD32000 <user>@<host>"
 
 ;; Computations
 
-
-(defalias 'range 'number-sequence)
+(defalias 'range #'number-sequence)
 
 
 ;; use `pp' `pp-eval-expression' or `pp-eval-last-sexp'
 (if-fn% cl-prettyprint cl
-	(defalias 'pprint 'cl-prettyprint)
+	;;;###autoload
+	(defalias 'pprint #'cl-prettyprint)
   (when-fn% cl-prettyexpand cl
-    (defalias 'pprint 'cl-prettyexpand)))
+		;;;###autoload
+    (defalias 'pprint #'cl-prettyexpand)))
 
 
 (defun take (n seq)
