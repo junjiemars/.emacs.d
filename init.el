@@ -33,12 +33,12 @@
 
 
 (defmacro v-home* (subdir &optional file)
-  "Return versioned path of SUBDIR/FILE under `emacs-home'."
+  "Return versioned path of SUBDIR/`v-dir'/FILE under `emacs-home'."
   `(concat ,emacs-home ,subdir ,v-dir "/" ,file))
 
 
 (defmacro v-home% (subdir &optional file)
-  "Return versioned path of SUBDIR/FILE under `emacs-home' at compile-time."
+  "Return versioned path of SUBDIR/`v-dir'/FILE under `emacs-home' at compile-time."
   (let ((_vfile_ (v-home* subdir file)))
     `,_vfile_))
 
