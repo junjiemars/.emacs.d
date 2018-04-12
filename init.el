@@ -71,9 +71,7 @@
 
 
 (defmacro compile-and-load-file* (vdir file &optional only-compile)
-  "Compile FILE and save the compiled one in VDIR then load it.
-
-If ONLY-COMPILE is t then do not load FILE."
+  "Compile FILE and save the compiled one in VDIR then load it if ONLY-COMPILE is nil."
   (let ((c (make-symbol "-compiled:0-"))
         (s (make-symbol "-source:0-")))
     `(when (and (stringp ,file) (file-exists-p ,file))
