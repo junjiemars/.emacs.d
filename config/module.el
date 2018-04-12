@@ -55,7 +55,7 @@
 			 (symbol-name package)
 			 (mapconcat #'identity
 									(mapcar (lambda (x)
-														(format "%s" x)) (aref description 0))
+														(number-to-string x)) (aref description 0))
 									".")))))
 
 
