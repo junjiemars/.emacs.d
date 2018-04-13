@@ -39,7 +39,7 @@
 ### On Darwin GUI
 
 <img title="shell" alt="shell"
-    width="80%"
+    width="70%"
     align="middle"
 	src="https://raw.github.com/junjiemars/images/master/.emacs.d/c-programming-on-darwin-gui.png" />
 
@@ -47,7 +47,7 @@
 ### On Darwin Terminal
 
 <img title="shell" alt="shell"
-    width="80%"
+    width="70%"
     align="middle"
 	src="https://raw.github.com/junjiemars/images/master/.emacs.d/c-programming-on-darwin-term.png" />
 
@@ -55,7 +55,7 @@
 ### On Docker Container
 
 <img title="shell" alt="shell"
-    width="80%"
+    width="70%"
     align="middle"
 	src="https://raw.github.com/junjiemars/images/master/.emacs.d/c-programming-on-docker-term.png" />
 
