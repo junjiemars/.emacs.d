@@ -114,6 +114,11 @@ The name is made by appending a number to PREFIX, default \"G\"."
 	    (make-symbol (format "%s%d" pfix num)))))
 
 
+(defmacro ignore* (&rest vars)
+	"Return nil and ignore all the usage of VARS."
+	`(progn% ,@vars nil))
+
+
 
 
 

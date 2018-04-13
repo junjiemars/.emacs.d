@@ -42,15 +42,17 @@
 				(t nil)))
 
 
-(defsubst delete-package! (package description)
+(defsubst delete-package! (description &optional package)
 	(version-supported-if
 			<= 25.0
-			(progn%
-			 package
-			 (package-delete (car description) t t))
+			(progn
+				(ignore* package)
+				(package-delete (car description) t t))
 		(version-supported-if
 				<= 24.4
-				(package-delete (car description))
+				(progn%
+				 (ignore* package)
+				 (package-delete (car description)))
 			(package-delete
 			 (symbol-name package)
 			 (mapconcat #'identity
@@ -91,7 +93,7 @@
 						(if (package-installed-p (car n))
 								(when (and remove-unused (not (self-spec-> s :cond)))
 									(let ((d (alist-get (car n) package-alist)))
-										(when d (delete-package! (car n) d))))
+										(when d (delete-package! d (car n)))))
 							(when (self-spec-> s :cond)
 								(if (cdr n)
 										(install-package! (cdr n) t)
