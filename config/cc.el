@@ -70,7 +70,7 @@
 
 
 (defvar system-cc-include nil
-  "The system include paths used by the C language.
+  "The system include paths used by C compiler.
 
 This should be set with `system-cc-include'")
 
