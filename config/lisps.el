@@ -29,4 +29,11 @@
   (rainbow-delimiters-mode))
 
 
+(platform-supported-when
+		gnu/linux
+	(defun enable-paredit-mode-in-minibuffer ()
+		(when (eq 'eval-expression this-command)
+			(enable-paredit-mode))))
+
+
 (provide 'lisps)

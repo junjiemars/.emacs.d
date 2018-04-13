@@ -168,7 +168,12 @@
 		(add-hook 'emacs-lisp-mode-hook 'set-emacs-lisp-mode!)
 
 		;; enable paredit in minibuffer
-		(add-hook 'eval-expression-minibuffer-setup-hook 'enable-paredit-mode t))
+		(platform-supported-if
+				gnu/linux
+				(add-hook 'minibuffer-setup-hook
+									'enable-paredit-mode-in-minibuffer t))
+		(add-hook 'eval-expression-minibuffer-setup-hook
+							'enable-paredit-mode t))
 	
    ;; end of package: paredit
 
