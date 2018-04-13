@@ -147,7 +147,7 @@
 
   ;; enable column number mode
   (setq% column-number-mode t simple)
-
+	
   ;; default tab-width
   (setq-default tab-width 2)
 
@@ -167,14 +167,9 @@
 		(add-hook 'lisp-mode-hook 'set-lisp-basic-mode!)
 		(add-hook 'emacs-lisp-mode-hook 'set-emacs-lisp-mode!)
 
-		;; enable paredit in minibuffer on gnu/linux platform
-		(platform-supported-if
-				gnu/linux
-				(add-hook 'minibuffer-setup-hook
-									'enable-paredit-mode t)
-			;; enable paredit in minbuffer on windows/darwin platform
-			(add-hook 'eval-expression-minibuffer-setup-hook
-								'enable-paredit-mode t)))
+		;; enable paredit in minibuffer
+		(add-hook 'eval-expression-minibuffer-setup-hook 'enable-paredit-mode t))
+	
    ;; end of package: paredit
 
 	;; emacs-lisp: enable `eldoc-mode'
