@@ -116,7 +116,8 @@ The name is made by appending a number to PREFIX, default \"G\"."
 
 
 (defmacro ignore* (&rest vars)
-	"Return nil, list VARS when in lexical context."
+	"Return nil, list VARS at compile time if in lexical context."
+	(declare (indent 0))
 	(lexical-supported-when
 	 (when lexical-binding
 		 `(progn% ,@vars nil))))
