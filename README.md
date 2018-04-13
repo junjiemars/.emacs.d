@@ -6,10 +6,12 @@ More Reasonable Emacs
 
 It's works on Emacs version 22.1.1+ , and on any platform that Emacs supported, and multiple Emacs instances with different version or different mode can run on the same machine at the same time.
 
-
+* clone Nore Reasonable Emacs from github
 ```sh
 git clone --depth=1 https://github.com/junjiemars/.emacs.d.git
 ```
+* open Emacs, after Emacs compile all elisp files, then reopen Emacs
+* want more functionalities see [Story](#story)
 
 
 Take your time to have a taste, some features may be you never see it in other 
