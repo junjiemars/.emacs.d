@@ -147,6 +147,23 @@ sequentially and return value of last one, or nil if there are none."
   `(version-supported-when <= 24.1 ,@body))
 
 
+(defmacro lexical-supported-if (then &rest else)
+  "If in lexical context then do BODY, otherwise do ELSE..."
+	`(version-supported-if
+			 <= 24.1
+			 ,then
+		 (progn% ,@else)))
+
+(defmacro lexical-supported-when (&rest body)
+	"Do BODY when in lexical context, else return nil."
+	`(lexical-supported-if (progn% ,@body)))
+
+(defmacro lexical-supported-unless (&rest body)
+	"Do BODY unless in lexical context."
+	`(lexical-supported-if nil ,@body))
+
+
+
 
 
 
