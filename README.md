@@ -34,6 +34,7 @@ The adaptive Emacs which I need is more stable, more smaller, more faster and mo
 * [What](#what)
 * [Install](#install)
 * [Cooking](#cooking)
+* [Mnemonic](mnemonic.md)
 
 
 Now, let's start from the Level Two. And one more thing: teach youself some little Elisp (M-x info).
@@ -42,7 +43,7 @@ Now, let's start from the Level Two. And one more thing: teach youself some litt
 * __Carefully designed__: just load what's your need.
 * __Adaptive__: Can run on any OS, GUI or Terminal, from most recent Emacs's versions to ancient ones, and one Emacs's configuration suit for all coexisting Emacs on the same machine.
 * __Consistent__: Whereever and whenever you can play with Emacs always behaves in the same way.
-* __Awesome style__: See it yourself.
+* __Awesome style__: [screenshot](screenshot.md)
 * __Stable__
 * Supper __faster__
 
@@ -319,4 +320,4 @@ The default package spec locate in ```(emacs-home* "private/self-package-spec.el
 
 
 
-[mnemonic](mnemonic.md) | [screenshot](appetizer.md)
+[mnemonic](mnemonic.md) | [screenshot](screenshot.md)

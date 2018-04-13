@@ -26,7 +26,7 @@
 	src="https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/cjk.png" />
 
 
-## Shell
+## Shell (_bash_ and _ansi-term_ coexisting on Windows)
 
 <img title="shell" alt="shell"
     width="80%"
