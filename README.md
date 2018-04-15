@@ -108,7 +108,6 @@ Directory orgnization:
 emacs-home
 ├── LICENSE
 ├── README.md
-├── appetizer.md
 ├── config (comment "all stuff here")
 ├── elpa (comment "installed packages")
 ├── init.el (comment "Emacs init file")
@@ -119,6 +118,7 @@ emacs-home
 │   ├── self-package-spec.el
 │   ├── self-path.el
 │   ├── self-prologue.el
+├── screenshot.md
 └── theme (comment "themes directory")
 
 ```
