@@ -190,19 +190,14 @@ on Windows:
 #### Insert Region
 ```txt
 aaaa 9
-aaaa 8
-aaaa 7
-aaaa 9
-aaaa 4
-aaaa 2
-aaaa 8
+aaaa 6
 aaaa 1
-aaaa 9
 aaaa 1
+aaaa 0
 ```
 insert multiple lines with _prefix + random number_, ```C-u C-[-:```
 ```lisp
-(dotimes (x 10)
+(dotimes (x 5)
 	(insert-string (format "aaaa %s\n" (random 10))))
 ```
 
