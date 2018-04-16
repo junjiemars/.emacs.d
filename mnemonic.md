@@ -14,6 +14,8 @@
 * [Shell](#shell)
 * [Remote](#remote)
 * [LaTex Requirements](#latex-requirements)
+* [Tips](#tips)
+  * [Editing Tips](#editing-tips)
 
 ## Emacs Documents
 It's **self-documenting** and great, keep reading it frequently.
@@ -180,3 +182,17 @@ on Ubuntu:
 on Windows:
 * ImageMagick
 * MiKTex
+
+## Tips
+
+### Editing Tips
+
+#### Sort Region
+```txt
+aaaa bbb
+aaaa ddd
+aaaa zzz
+aaaa xxx
+aaaa uuu
+```
+sort by 2nd field: ```C u 2 M-x sort-fields```, ```reverse-region```
