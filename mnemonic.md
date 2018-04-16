@@ -200,8 +200,11 @@ aaaa 1
 aaaa 9
 aaaa 1
 ```
-insert multiple lines with _prefix + random number_,
-```C-u C-[-: (dotimes (x 10) (insert-string (format "aaaa %s\n" (random 10))))```
+insert multiple lines with _prefix + random number_, ```C-u C-[-:```
+```lisp
+(dotimes (x 10)
+	(insert-string (format "aaaa %s\n" (random 10))))
+```
 
 
 #### Sort Region
