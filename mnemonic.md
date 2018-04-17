@@ -53,9 +53,9 @@ they look like
 ## Interaction
 * \*scratch\* buffer
 * via Elisp: ```M-:```
-* via Shell Command: ```M-!```, see *Info>Emacs>Shell*
+* via Shell command: ```M-!```, insert shell output: ```C-u M-!```, see *Info>Emacs>Shell*
 * in Dired mode: ```!```, do shell command
-* insert shell output: ```C-u M-!```
+* region as input to Shell command: ```M-|```, insert from shell output: ```C-u M-|```
 * browse-url: ```C-c b```
 * filename of current buffer: ```(buffer-file-name (current-buffer)```
 
