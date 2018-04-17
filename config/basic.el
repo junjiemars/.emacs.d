@@ -276,20 +276,6 @@ otherwise default to keep the directories of current `emacs-version'."
 
 ;; Platform related functions
 
-(defmacro bin-exists-p (b)
-	"Return t if B binary exists in env."
-	;; (declare (debug t))
-	(platform-supported-if windows-nt
-			`(zerop (shell-command (concat "where /Q " ,b)))
-		`(zerop (shell-command (concat "command -v " ,b)))))
-
-
-(defmacro bin-exists-p% (b)
-	"Return t if B binary exists in env at compile-time.
-see `bin-exists-p'"
-	(let ((exists (bin-exists-p b)))
-		`,exists))
-
 
 (defmacro executable-find% (command)
 	"Search for COMMAND in `exec-path' and return the absolute file name at compile-time.
