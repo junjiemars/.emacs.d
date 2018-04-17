@@ -136,14 +136,12 @@ The name is made by appending a number to PREFIX, default \"G\"."
 		`(feature-if% ,feature ,filename
 									(defmacro ,name (&rest body)
 										,doc
-										`(progn%
-											(declare (indent 0))
-											,@body))
+										(declare (indent 0))
+										`(progn% ,@body))
 									(defmacro ,name (&rest body)
 										,doc
-										`(progn%
-											(declare (indent 0))
-											(comment ,@body))))))
+										(declare (indent 0))
+										`(comment ,@body)))))
 
 (defmacro def-function-supported-p (fn &optional feature)
 	"Define FN supported-p macro."
