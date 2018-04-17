@@ -119,8 +119,45 @@ The name is made by appending a number to PREFIX, default \"G\"."
 	"Return nil, list VARS at compile time if in lexical context."
 	(declare (indent 0))
 	(lexical-supported-when
-	 (when lexical-binding
-		 `(progn% ,@vars nil))))
+		(when lexical-binding
+			`(progn% ,@vars nil))))
+
+
+(defmacro feature-if% (feature filename then &rest else)
+	"If FEATURE supports do THEN, otherwise do ELSE... at compile-time."
+	(if (require feature filename t)
+			`,then
+		`(progn% ,@else)))
+
+(defmacro def-feature-supported-p (feature &optional filename)
+	"Define FEATURE supported-p macro."
+	(let ((name (intern (format "feature-%s-supported-p" feature)))
+				(doc (format "If has `%s' feauture then do BODY." feature)))
+		`(feature-if% ,feature ,filename
+									(defmacro ,name (&rest body)
+										,doc
+										`(progn%
+											(declare (indent 0))
+											,@body))
+									(defmacro ,name (&rest body)
+										,doc
+										`(progn%
+											(declare (indent 0))
+											(comment ,@body))))))
+
+(defmacro def-fn-supported-p (fn &optional feature)
+	"Define FN supported-p macro."
+	(let ((name (intern (format "function-%s-supported-p" fn)))
+				(doc (format "If has `%s' fn then do BODY." fn)))
+		`(if-fn% ,fn ,feature
+						 (defmacro ,name (&rest body)
+							 ,doc
+							 (declare (indent 0))
+							 `(progn% ,@body))
+			 (defmacro ,name (&rest body)
+				 ,doc
+				 (declare (indent 0))
+				 `(comment ,body)))))
 
 
 
