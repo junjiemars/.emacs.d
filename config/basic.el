@@ -284,19 +284,6 @@ otherwise default to keep the directories of current `emacs-version'."
 		`(zerop (shell-command (concat "command -v " ,b)))))
 
 
-(defmacro bin-path (b)
-	"Return the path of B binary in env."
-	(let ((cmd (platform-supported-if windows-nt
-								 `(car (split-string%
-												(string-trim>
-												 (shell-command-to-string
-													(concat "where " ,b " 2>nul"))) "\n"))
-							 `(string-trim>
-								 (shell-command-to-string (concat "command -v " ,b))))))
-		`(let ((path ,cmd))
-			 (if (= 0 (length path)) nil path))))
-
-
 (defmacro bin-exists-p% (b)
 	"Return t if B binary exists in env at compile-time.
 see `bin-exists-p'"
@@ -304,10 +291,12 @@ see `bin-exists-p'"
 		`,exists))
 
 
-(defmacro bin-path% (b)
-	"Return the path of B binary in env at compile-time.
-see `bin-path%'"
-	(let ((path (bin-path b)))
+(defmacro executable-find% (command)
+	"Search for COMMAND in `exec-path' and return the absolute file name at compile-time.
+Return nil if COMMAND is not found anywhere in `exec-path'.
+
+See `executable-find%'."
+	(let ((path (executable-find command)))
 		`,path))
 
 
