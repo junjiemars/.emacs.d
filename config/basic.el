@@ -224,6 +224,15 @@ and if DF dir-filter return t then iterate into deeper DIR.
                      (funcall fn a))))))))
 
 
+(defmacro executable-find% (command)
+	"Search for COMMAND in `exec-path' and return the absolute file name at compile-time.
+Return nil if COMMAND is not found anywhere in `exec-path'.
+
+See `executable-find%'."
+	(let ((path (executable-find command)))
+		`,path))
+
+
 
 
 
@@ -275,17 +284,6 @@ otherwise default to keep the directories of current `emacs-version'."
 
 
 ;; Platform related functions
-
-
-(defmacro executable-find% (command)
-	"Search for COMMAND in `exec-path' and return the absolute file name at compile-time.
-Return nil if COMMAND is not found anywhere in `exec-path'.
-
-See `executable-find%'."
-	(let ((path (executable-find command)))
-		`,path))
-
-
 
 (platform-supported-when windows-nt
   (defmacro windows-nt-posix-path (p)
