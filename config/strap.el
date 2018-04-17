@@ -145,7 +145,7 @@ The name is made by appending a number to PREFIX, default \"G\"."
 											(declare (indent 0))
 											(comment ,@body))))))
 
-(defmacro def-fn-supported-p (fn &optional feature)
+(defmacro def-function-supported-p (fn &optional feature)
 	"Define FN supported-p macro."
 	(let ((name (intern (format "function-%s-supported-p" fn)))
 				(doc (format "If has `%s' fn then do BODY." fn)))
