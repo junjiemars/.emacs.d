@@ -387,23 +387,6 @@ for which (PRED item) returns t."
 
 ;; falvour mode functions
 
-(defmacro eww-mode-supported-p (&rest body)
-  "When `emacs-version' supports `eww-mode' then to BODY."
-  (declare (indent 0))
-  `(version-supported-when <= 24.4 ,@body))
-
-
-;; default web browser: eww
-(eww-mode-supported-p
-  (defun set-default-browser! ()
-    "If `browser-url-default-browser' has not been touched, 
-then set `eww' to default browser."
-    (when (eq browse-url-browser-function
-							'browse-url-default-browser)
-      (when-fn% eww-browse-url eww
-				(setq browse-url-browser-function 'eww-browse-url)))))
-
-
 ;; comments
 (defun toggle-comment ()
   "Comment or uncomment current line or region."
@@ -433,7 +416,27 @@ then set `eww' to default browser."
 
 
 ;; linum mode
-(def-feature-supported-p linum)
+(def-feature-supported-p linum nil
+	"If `linum' feature supported then do BODY.
+
+Requires Emacs-23.1+")
+
 
 ;; semantic
 (def-feature-supported-p semantic)
+
+
+;; default web browser: eww
+(def-feature-supported-p eww nil
+	"If `eww' feature supported then do BODY.
+
+Requires: Emacs-24.4+")
+
+(feature-eww-supported-p
+	(defun set-default-browser! ()
+		"If `browser-url-default-browser' has not been touched, 
+then set `eww' to default browser."
+		(when (eq browse-url-browser-function
+							'browse-url-default-browser)
+			(when-fn% eww-browse-url eww
+				(setq browse-url-browser-function 'eww-browse-url)))))

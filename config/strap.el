@@ -129,31 +129,31 @@ The name is made by appending a number to PREFIX, default \"G\"."
 			`,then
 		`(progn% ,@else)))
 
-(defmacro def-feature-supported-p (feature &optional filename)
+(defmacro def-feature-supported-p (feature &optional filename docstring)
 	"Define FEATURE supported-p macro."
 	(let ((name (intern (format "feature-%s-supported-p" feature)))
-				(doc (format "If has `%s' feauture then do BODY." feature)))
+				(ds1 (format "If has `%s' feauture then do BODY." feature)))
 		`(feature-if% ,feature ,filename
 									(defmacro ,name (&rest body)
-										,doc
+										,(or docstring ds1)
 										(declare (indent 0))
 										`(progn% ,@body))
 									(defmacro ,name (&rest body)
-										,doc
+										,(or docstring ds1)
 										(declare (indent 0))
 										`(comment ,@body)))))
 
-(defmacro def-function-supported-p (fn &optional feature)
+(defmacro def-function-supported-p (fn &optional feature docstring)
 	"Define FN supported-p macro."
 	(let ((name (intern (format "function-%s-supported-p" fn)))
-				(doc (format "If has `%s' fn then do BODY." fn)))
+				(ds1 (format "If has `%s' fn then do BODY." fn)))
 		`(if-fn% ,fn ,feature
 						 (defmacro ,name (&rest body)
-							 ,doc
+							 ,(or docstring ds1)
 							 (declare (indent 0))
 							 `(progn% ,@body))
 			 (defmacro ,name (&rest body)
-				 ,doc
+				 ,(or docstring ds1)
 				 (declare (indent 0))
 				 `(comment ,body)))))
 

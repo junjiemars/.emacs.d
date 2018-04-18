@@ -79,8 +79,8 @@
       (savehist-mode)
     (savehist-mode t))
 
-  (eww-mode-supported-p
-    (set-default-browser!))
+  (feature-eww-supported-p
+	 (set-default-browser!))
 
   ;; disable auto-save mode
   (setq auto-save-default nil)
