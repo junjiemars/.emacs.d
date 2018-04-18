@@ -404,13 +404,6 @@ then set `eww' to default browser."
 				(setq browse-url-browser-function 'eww-browse-url)))))
 
 
-;; linum mode
-(defmacro linum-mode-supported-p (&rest body)
-  "When `emacs-version' supports `linum-mode' then do BODY."
-  (declare (indent 0))
-  `(version-supported-when <= 23.1 ,@body))
-
-
 ;; comments
 (defun toggle-comment ()
   "Comment or uncomment current line or region."
@@ -438,6 +431,9 @@ then set `eww' to default browser."
   (setq% sh-basic-offset tab-width sh-script)
   (setq% sh-indentation tab-width sh-script))
 
+
+;; linum mode
+(def-feature-supported-p linum)
 
 ;; semantic
 (def-feature-supported-p semantic)

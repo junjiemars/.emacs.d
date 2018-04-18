@@ -10,8 +10,8 @@
   (when-fn% find-file-at-point ffap
     (global-set-key (kbd "C-c b") 'find-file-at-point))
 
-  (linum-mode-supported-p
-    (global-set-key (kbd "C-c l") 'linum-mode))
+  (feature-linum-supported-p
+	 (global-set-key (kbd "C-c l") 'linum-mode))
 
   ;; Shows a list of buffers
   (global-set-key (kbd "C-x C-b") #'ibuffer)
@@ -188,9 +188,9 @@
 
   ;; Terminal
   (terminal-supported-p
-    (linum-mode-supported-p
-      ;; line number format on Terminal
-      (setq% linum-format "%2d " linum)))
+    (feature-linum-supported-p
+			;; line number format on Terminal
+			(setq% linum-format "%2d " linum)))
 
    ;; end of Terminal
 
