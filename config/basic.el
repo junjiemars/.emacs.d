@@ -142,7 +142,7 @@ means to remove KEY from ALIST if the new value is `eql' to DEFAULT.
 
 If KEY is not found in ALIST, returns DEFAULT. There're no `alist-get' 
 function definition in Emacs25-."
-      (ignore remove) ;;Silence byte-compiler.
+      (ignore* remove) ;;silence byte-compiler.
       `(let ((x (assq ,key ,alist)))
          (if x (cdr x) ,default))))
 
