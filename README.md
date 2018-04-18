@@ -134,6 +134,11 @@ Locate your sepc via ```(emacs-home* "private/self-path.el")```.
   :epilogue (comment (emacs-home* "private/self-epilogue.el")))
 ```
 
+Check Emacs configurations:
+* ```system-configuration-options```
+* ```system-configuration-features```
+* ```features```
+
 
 * [Theme](#theme)
 * [Font](#font)
