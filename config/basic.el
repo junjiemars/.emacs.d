@@ -79,29 +79,26 @@
 
 ;; Strings
 
-(defmacro string-trim> (s &optional rr)
-  "Remove whitespaces or the matching of RR at the end of S."
-  (let ((r (gensym)))
-    `(let ((,r (if ,rr (concat ,rr "\\'")
-                 "[ \t\n\r]+\\'" )))
-       (if (string-match ,r ,s)
-           (replace-match "" t t ,s)
-         ,s))))
+(defsubst string-trim> (s &optional rr)
+	"Remove whitespaces or the matching of RR at the end of S."
+	(let ((r (if rr (concat rr "\\'") "[ \t\n\r]+\\'" )))
+		(if (string-match r s)
+				(replace-match "" t t s)
+			s)))
 
 
-(defmacro string-trim< (s &optional lr)
-  "Remove leading whitespace or the matching of LR from S."
-  (let ((r (gensym)))
-    `(let ((,r (if ,lr (concat "\\`" ,lr) "\\`[ \t\n\r]+")))
-       (if (string-match ,r ,s)
-           (replace-match "" t t ,s)
-         ,s))))
+(defsubst string-trim< (s &optional lr)
+	"Remove leading whitespace or the matching of LR from S."
+	(let ((r (if lr (concat "\\`" lr) "\\`[ \t\n\r]+")))
+		(if (string-match r s)
+				(replace-match "" t t s)
+			s)))
 
 
-(defmacro string-trim>< (s &optional rr lr)
-  "Remove leading and trailing whitespace or the matching of LR/RR from S."
-  `(let ((s1 (string-trim> ,s ,rr)))
-     (string-trim< s1 ,lr)))
+(defsubst string-trim>< (s &optional rr lr)
+	"Remove leading and trailing whitespace or the matching of LR/RR from S."
+	(let ((s1 (string-trim> s rr)))
+		(string-trim< s1 lr)))
 
 
 (defmacro match-string* (regexp string num &optional start)
