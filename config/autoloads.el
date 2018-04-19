@@ -162,7 +162,11 @@
 		(add-hook 'sh-mode-hook #'set-sh-mode!))
   
 	(with-eval-after-load 'compile
-		(add-hook 'compilation-filter-hook #'colorize-compilation-buffer!))
+		(add-hook 'compilation-filter-hook #'colorize-compilation-buffer!)
+		(unless (lookup-key compilation-mode-map (kbd "g"))
+			(define-key compilation-mode-map (kbd "g") #'recompile))
+		(setq% compilation-scroll-output t compile))
+
 
 	(platform-supported-if <= 25.0
 		(with-eval-after-load 'elisp-mode
