@@ -126,8 +126,9 @@ See `string-match' and `match-string'."
 FILE is normally a feature name, but it can also be a file name,
 in case that file does not provide any feature.  See ‘eval-after-load’
 for more details about the different forms of FILE and their semantics."
-    `(eval-after-load ,file
-       '(progn% ,@body))))
+		`(eval-after-load ,file
+			 `(funcall ,(lambda ()
+										(progn% ,@body))))))
 
 
 (version-supported-if
