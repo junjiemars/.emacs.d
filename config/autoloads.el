@@ -164,8 +164,12 @@
 	(with-eval-after-load 'compile
 		(add-hook 'compilation-filter-hook #'colorize-compilation-buffer!))
 
-	(with-eval-after-load 'elisp-mode
-		(add-hook 'emacs-lisp-mode-hook #'eldoc-mode))
+	(platform-supported-if <= 25.0
+		(with-eval-after-load 'elisp-mode
+			(add-hook 'emacs-lisp-mode-hook #'eldoc-mode))
+		(with-eval-after-load 'lisp-mode
+			(add-hook 'emacs-lisp-mode-hook #'eldoc-mode)))
+	
 
 	(with-eval-after-load 'ielm
 		(add-hook 'ielm-mode-hook #'eldoc-mode))
