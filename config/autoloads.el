@@ -158,38 +158,41 @@
   (put 'downcase-region 'disabled nil)
   (put 'upcase-region 'disabled nil)
 
-  (add-hook 'sh-mode-hook #'set-sh-mode!)
+	(with-eval-after-load 'sh-script
+		(add-hook 'sh-mode-hook #'set-sh-mode!))
+  
+	(with-eval-after-load 'compile
+		(add-hook 'compilation-filter-hook #'colorize-compilation-buffer!))
 
-	;; compilation
-	(add-hook 'compilation-filter-hook #'colorize-compilation-buffer!)
+	(with-eval-after-load 'elisp-mode
+		(add-hook 'emacs-lisp-mode-hook #'eldoc-mode))
+
+	(with-eval-after-load 'ielm
+		(add-hook 'ielm-mode-hook #'eldoc-mode))
+
 	
-
   (package-spec-:allowed-p
 
-		;; basic lisp mode
-		(add-hook 'scheme-mode-hook 'set-lisp-basic-mode!)
-		(add-hook 'lisp-mode-hook 'set-lisp-basic-mode!)
-		(add-hook 'emacs-lisp-mode-hook 'set-emacs-lisp-mode!)
+		(with-eval-after-load 'lisp-mode
+			(add-hook 'lisp-mode-hook #'set-lisp-basic-mode!))
 
-		;; enable paredit in minibuffer
-		(platform-supported-if
-				gnu/linux
-				(add-hook 'minibuffer-setup-hook
-									'enable-paredit-mode-in-minibuffer t))
-		(add-hook 'eval-expression-minibuffer-setup-hook
-							'enable-paredit-mode t))
+		(with-eval-after-load 'elisp-mode
+			(add-hook 'emacs-lisp-mode-hook #'set-emacs-lisp-mode!))
+
+		(with-eval-after-load 'scheme
+			(add-hook 'scheme-mode-hook #'set-lisp-basic-mode!))
+
+		(with-eval-after-load 'paredit
+			;; enable paredit in minibuffer
+			(platform-supported-if
+					gnu/linux
+					(add-hook 'minibuffer-setup-hook
+										#'enable-paredit-mode-in-minibuffer t)
+				(add-hook 'eval-expression-minibuffer-setup-hook
+									#'enable-paredit-mode t))))
 	
    ;; end of package: paredit
-
-	;; emacs-lisp: enable `eldoc-mode'
-	(add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
 	
-	;; ielm: enable `eldoc-mode'
-  (add-hook 'ielm-mode-hook #'eldoc-mode)
-
-  ;; emacs lisp basic 
-  ;; (add-hook 'emacs-lisp-mode-hook #'set-emacs-lisp-mode!)
-
   ;; Terminal
   (terminal-supported-p
     (feature-linum-supported-p
