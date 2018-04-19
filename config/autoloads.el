@@ -80,7 +80,7 @@
     (savehist-mode t))
 
   (feature-eww-supported-p
-	 (set-default-browser!))
+		(set-default-browser!))
 
   ;; disable auto-save mode
   (setq auto-save-default nil)
@@ -159,6 +159,10 @@
   (put 'upcase-region 'disabled nil)
 
   (add-hook 'sh-mode-hook #'set-sh-mode!)
+
+	;; compilation
+	(add-hook 'compilation-filter-hook #'colorize-compilation-buffer!)
+	
 
   (package-spec-:allowed-p
 

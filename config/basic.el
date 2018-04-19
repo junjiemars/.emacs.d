@@ -437,3 +437,12 @@ then set `eww' to default browser."
 							'browse-url-default-browser)
 			(when-fn% eww-browse-url eww
 				(setq browse-url-browser-function 'eww-browse-url)))))
+
+
+;; compilation
+(defun colorize-compilation-buffer! ()
+	(when (eq major-mode 'compilation-mode)
+		(when-fn% ansi-color-apply-on-region ansi-color
+			(let ((buffer-read-only nil))
+				(ansi-color-apply-on-region (point-min) (point-max))))))
+
