@@ -445,5 +445,9 @@ then set `eww' to default browser."
 		(when-fn% ansi-color-apply-on-region ansi-color
 			(let ((buffer-read-only nil))
 				(require 'ansi-color)
-				(ansi-color-apply-on-region (point-min) (point-max))))))
+				(ansi-color-apply-on-region
+				 (if-var% compilation-filter-start compile
+									compilation-filter-start
+					 (point-min))
+				 (point-max))))))
 

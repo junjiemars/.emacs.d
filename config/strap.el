@@ -84,19 +84,33 @@ If FN requires the FEATURE load it on compile-time."
       `,then
     `(progn% ,@else)))
 
-
 (defmacro when-fn% (fn feature &rest body)
   "Do BODY when FN is bound.
 If FN requires FEATURE load it on compile-time."
   (declare (indent 2))
   `(if-fn% ,fn ,feature (progn% ,@body)))
 
-
 (defmacro unless-fn% (fn feature &rest body)
   "Do BODY unless FN is bound.
 If FN requires FEATURE load it on compile-time."
   (declare (indent 2))
   `(if-fn% ,fn ,feature nil ,@body))
+
+
+(defmacro if-var% (var feature then &rest else)
+	"If VAR is bounded yields non-nil, do THEN, else do ELSE...
+If VAR requires the FEATURE load it on compile-time."
+	(declare (indent 3))
+	(when feature (require feature nil t))
+	(if (boundp var)
+			`,then
+		`(progn% ,@else)))
+
+(defmacro when-var% (var feature &rest body)
+	"Do BODY when VAR is bound.
+If VAR requires FEATURE load it on compile-time."
+	'	(declare (indent 2))
+		`(if-var% ,var ,feature (progn% ,@body)))
 
 
 (unless-fn% gensym nil
