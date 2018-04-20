@@ -119,9 +119,9 @@ See `string-match' and `match-string'."
 ;; Compatiable functions
 
 
-(version-supported-when > 24.4
-  (defmacro with-eval-after-load (file &rest body)
-    "Execute BODY after FILE is loaded.
+(unless-fn% with-eval-after-load nil
+	(defmacro with-eval-after-load (file &rest body)
+		"Execute BODY after FILE is loaded.
 
 FILE is normally a feature name, but it can also be a file name,
 in case that file does not provide any feature.  See ‘eval-after-load’
