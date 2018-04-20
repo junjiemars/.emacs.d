@@ -65,8 +65,7 @@
 															"/opt/open/gambit/"
 															,source-directory)
 														`("/opt/apps/c/"
-															,source-directory)))
-									(setq% compilation-scroll-output t compile)) t))))
+															,source-directory)))) t))))
 
 
 (comment
