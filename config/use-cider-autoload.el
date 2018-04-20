@@ -12,10 +12,9 @@
   (aggressive-indent-mode))
 
 
-(defadvice cider-jack-in (before cider-jack-in-before compile)
-  ;; minor modes for cider
-  (add-hook 'cider-repl-mode-hook #'use-cider-repl-mode!))
-
-
 (autoload 'use-cider-repl-mode!
   (v-home% "config/" "use-cider.elc"))
+
+
+(with-eval-after-load 'cider
+	(add-hook 'cider-repl-mode-hook #'use-cider-repl-mode!))
