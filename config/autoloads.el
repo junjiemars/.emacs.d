@@ -11,7 +11,7 @@
     (global-set-key (kbd "C-c b") 'find-file-at-point))
 
   (feature-linum-supported-p
-	 (global-set-key (kbd "C-c l") 'linum-mode))
+		(global-set-key (kbd "C-c l") 'linum-mode))
 
   ;; Shows a list of buffers
   (global-set-key (kbd "C-x C-b") #'ibuffer)
@@ -56,6 +56,7 @@
 
   )
 
+
 
 (defun set-flavor-mode! ()
   
@@ -212,6 +213,8 @@
   
   )
 
+
+
 
 (add-hook 'after-init-hook #'set-flavor-mode! t)
 (add-hook 'after-init-hook #'set-global-key! t)
