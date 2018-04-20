@@ -8,7 +8,7 @@ It's works on Emacs version 22.1.1+ , and on any platform that Emacs supported, 
 
 * clone More Reasonable Emacs from github
 ```sh
-git clone --depth=1 https://github.com/junjiemars/.emacs.d.git
+git clone --depth=1 https://github.com/junjiemars/.emacs.d.git ~/.emacs.d
 ```
 * open Emacs, after Emacs compile all elisp files, then reopen Emacs
 * want more functionalities see [Cooking](#cooking) section
@@ -71,8 +71,7 @@ Now, let's start from the Level Two. And one more thing: teach youself some litt
 ## Install
 Just one thing you need to do, clone it (just <400KB) to your HOME directory:
 ```sh
-$ cd
-$ git clone --depth=1 https://github.com/junjiemars/.emacs.d.git
+$ git clone --depth=1 https://github.com/junjiemars/.emacs.d.git ~/.emacs.d
 ```
 
 
