@@ -101,7 +101,7 @@
 		(string-trim< s1 lr)))
 
 
-(defmacro match-string* (regexp string num &optional start)
+(defsubst match-string* (regexp string num &optional start)
 	"Return string of text match for REGEXP in STRING.
 
 Return nil if NUMth pair didn’t match, or there were less than NUM pairs.
@@ -109,8 +109,8 @@ NUM specifies which parenthesized expression in the REGEXP.
 If START is non-nil, start search at that index in STRING.
 
 See `string-match' and `match-string'."
-	`(when (and ,string (string-match ,regexp ,string ,start))
-		 (substring ,string (match-beginning ,num) (match-end ,num))))
+	(when (and string (string-match regexp string start))
+		(substring string (match-beginning num) (match-end num))))
 
 
 
