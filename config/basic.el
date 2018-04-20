@@ -147,8 +147,9 @@ function definition in Emacs25-."
 			 (if x (cdr x) ,default))))
 
 
-(if-fn% split-string nil 
-				(defalias 'split-string% 'split-string)
+(version-supported-if
+		<= 24.4
+		(defalias 'split-string% 'split-string)
 	(defun split-string% (string &optional separators omit-nulls trim)
 		"Split STRING into substrings bounded by matches for SEPARATORS, 
 like `split-string' Emacs 24.4+"
