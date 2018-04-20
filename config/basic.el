@@ -131,10 +131,9 @@ for more details about the different forms of FILE and their semantics."
 										(progn% ,@body))))))
 
 
-(version-supported-if
-    > 25.0
-    (defmacro alist-get (key alist &optional default remove)
-      "Return the value associated with KEY in ALIST, using `assq'.
+(unless-fn% alist-get nil 
+	(defmacro alist-get (key alist &optional default remove)
+		"Return the value associated with KEY in ALIST, using `assq'.
 If KEY is not found in ALIST, return DEFAULT.
 
 This is a generalized variable suitable for use with `setf'.
@@ -143,37 +142,36 @@ means to remove KEY from ALIST if the new value is `eql' to DEFAULT.
 
 If KEY is not found in ALIST, returns DEFAULT. There're no `alist-get' 
 function definition in Emacs25-."
-      (ignore* remove) ;;silence byte-compiler.
-      `(let ((x (assq ,key ,alist)))
-         (if x (cdr x) ,default))))
+		(ignore* remove) ;;silence byte-compiler.
+		`(let ((x (assq ,key ,alist)))
+			 (if x (cdr x) ,default))))
 
 
-(version-supported-if
-    <= 24.4
-    (defalias 'split-string% 'split-string)
-  (defun split-string% (string &optional separators omit-nulls trim)
-    "Split STRING into substrings bounded by matches for SEPARATORS, 
+(if-fn% split-string nil 
+				(defalias 'split-string% 'split-string)
+	(defun split-string% (string &optional separators omit-nulls trim)
+		"Split STRING into substrings bounded by matches for SEPARATORS, 
 like `split-string' Emacs 24.4+"
-    (if trim
-        (delete ""
-                (mapcar (lambda (s)
-                          (if (and (stringp trim) (> (length trim) 0))
-                              (string-trim>< s trim trim)
-                            (string-trim>< s)))
-                        (split-string string separators omit-nulls)))
-      (split-string string separators omit-nulls))))
+		(if trim
+				(delete ""
+								(mapcar (lambda (s)
+													(if (and (stringp trim) (> (length trim) 0))
+															(string-trim>< s trim trim)
+														(string-trim>< s)))
+												(split-string string separators omit-nulls)))
+			(split-string string separators omit-nulls))))
 
 
-(version-supported-when > 25
-  (defsubst directory-name-p (name)
-    "Returns t if NAME ends with a directory separator character."
-    (let ((len (length name))
-          (lastc ?.))
-      (if (> len 0)
-          (setq lastc (aref name (1- len))))
-      (or (= lastc ?/)
-          (and (memq system-type '(windows-nt ms-dos))
-               (= lastc ?\\))))))
+(unless-fn% directory-name-p nil
+	(defsubst directory-name-p (name)
+		"Returns t if NAME ends with a directory separator character."
+		(let ((len (length name))
+					(lastc ?.))
+			(if (> len 0)
+					(setq lastc (aref name (1- len))))
+			(or (= lastc ?/)
+					(and (memq system-type '(windows-nt ms-dos))
+							 (= lastc ?\\))))))
 
 
 
