@@ -166,6 +166,8 @@
 		(add-hook 'compilation-filter-hook #'colorize-compilation-buffer!)
 		(unless (lookup-key compilation-mode-map (kbd "g"))
 			(define-key compilation-mode-map (kbd "g") #'recompile))
+		(unless (lookup-key compilation-mode-map (kbd "q"))
+			(define-key compilation-mode-map (kbd "q") #'quit-window))
 		(setq% compilation-scroll-output t compile))
 
 
