@@ -28,6 +28,7 @@
 			 (when ecl (list 'ecl (list ecl)))))))
 
 
+;;;###autoload
 (defun set-slime-lisp-implementations! ()
 	"Set `slime-lisp-implementations' with `common-lisp-implementations'."
 	(setq% slime-lisp-implementations
