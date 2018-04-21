@@ -1,7 +1,11 @@
 ;;;;
 ;; More reasonable Emacs on MacOS, Windows and Linux
+;;
+;; https://github.com/junjiemars/.emacs.d
 ;;;;
 
+
+;; basic macro
 
 (defmacro comment (&rest body)
   "Ignores body, yields nil."
@@ -67,8 +71,10 @@
                    (file-name-nondirectory ,file))))))
 
 
-
+ ;; end of basic macro
 
+
+;; compile macro
 
 (defmacro compile-and-load-file* (vdir file &optional only-compile)
   "Compile FILE and save the compiled one in VDIR then load it if ONLY-COMPILE is nil."
@@ -93,7 +99,8 @@
        (message "#Clean compiled file: %s" f)
        (delete-file (concat d f)))))
 
-
+
+ ;; end of compile macro
 
 
 (defmacro progn% (&rest body)
@@ -103,34 +110,38 @@ Else return BODY sexp."
   (if (cdr body) `(progn ,@body) (car body)))
 
 
+;; version-support macro
+
 (defmacro version-supported* (cond version)
-  "Return t if (COND VERSION EMACS-VERSION) yields non-nil, else nil.
+	"Return t if (COND VERSION `emacs-version') yields non-nil, else nil.
 
 COND should be quoted, such as (version-supported* '<= 24)"
-  `(funcall ,cond
-            (truncate (* 10 ,version))
-            (+ (* 10 emacs-major-version) emacs-minor-version)))
-
+	`(let ((ver (cond ((stringp ,version) ,version)
+										((numberp ,version) (number-to-string ,version))
+										(t (format "%s" ,version)))))
+		 (cond ((eq '< ,cond) (version< ver emacs-version))
+					 ((eq '<= ,cond) (version<= ver emacs-version))
+					 ((eq '> ,cond) (not (version<= ver emacs-version)))
+					 ((eq '>= ,cond) (not (version< ver emacs-version)))
+					 (t nil))))
 
 (defmacro version-supported-p (cond version)
-  "Returns t if (COND VERSION `emacs-version') yields non-nil, else nil.
+  "Return t if (COND VERSION `emacs-version') yields non-nil, else nil.
 
 It resemble `version-supported*' but it has constant runtime."
   (let ((x (version-supported* `,cond `,version)))
     x))
 
-
 (defmacro version-supported-if (cond version then &rest else)
   "If (COND VERSION `emacs-version') yields non-nil, do THEN, else do ELSE...
 
-Returns the value of THEN or the value of the last of the ELSE’s.
+Return the value of THEN or the value of the last of the ELSE’s.
 THEN must be one expression, but ELSE... can be zero or more expressions.
 If (COND VERSION EMACS-VERSION) yields nil, and there are no ELSE’s, the value is nil. "
   (declare (indent 3))
   (if (version-supported* `,cond `,version)
       `,then
     `(progn% ,@else)))
-
 
 (defmacro version-supported-when (cond version &rest body)
   "If (COND VERSION `emacs-version') yields non-nil, do BODY, else return nil.
@@ -141,11 +152,20 @@ sequentially and return value of last one, or nil if there are none."
   `(version-supported-if ,cond ,version (progn% ,@body)))
 
 
+ ;; end of version-supported macro
+
+
+;; package-supported macro
+
 (defmacro package-supported-p (&rest body)
   "Run BODY code if current `emacs-version' supports package."
   (declare (indent 0))
   `(version-supported-when <= 24.1 ,@body))
 
+ ;; end of package-supported macro
+
+
+;; lexical-supported macro
 
 (defmacro lexical-supported-if (then &rest else)
   "If support lexical binding then do BODY, otherwise do ELSE..."
@@ -166,8 +186,7 @@ sequentially and return value of last one, or nil if there are none."
 	`(lexical-supported-if nil ,@body))
 
 
-
-
+ ;; end of lexical-supported macro
 
 
 ;; Load strap
