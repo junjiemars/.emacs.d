@@ -359,7 +359,7 @@ The name is made by appending a number to PREFIX, default \"G\"."
   (compile-unit (emacs-home* "config/use-python.el") t)
   (compile-unit (emacs-home* "config/use-tags.el") t)
   (compile-unit (emacs-home* "config/cc.el") t)
-  (compile-unit (emacs-home* "config/autoloads.el"))
+  (compile-unit (emacs-home* "config/autoload.el"))
   ;; --batch mode: disable desktop read/save
   `,(unless noninteractive 
       (compile-unit (emacs-home* "config/memory.el"))))
