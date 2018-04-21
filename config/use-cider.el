@@ -1,6 +1,9 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
-;; use-cider
+;; More reasonable Emacs on MacOS, Windows and Linux
+;; https://github.com/junjiemars/.emacs.d
+;;;;
+;; use-cider.el
 ;;;;
 
 
@@ -51,5 +54,6 @@
 ;; will trigger a comile-warning
 ;; check :shell settings in `def-self-env-spec'
 (declare-function org-bookmark-jump-unhide "org")
+
 
 (provide 'use-cider)
