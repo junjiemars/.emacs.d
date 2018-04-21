@@ -41,11 +41,13 @@ RENEW create tags file when t"
                    file-filter
                    dir-filter
                    (lambda (f)
+										 (message "make-tags: %s ..." f)
                      (shell-command-to-string
                       (format "etags -o %s -l auto -a %s ; echo %s"
                               tags-file f f))))
       (when (file-exists-p tags-file)
-        (add-to-list 'tags-table-list tags-dir t #'string=)))))
+        (add-to-list 'tags-table-list tags-dir t #'string=)
+				tags-file))))
 
 
 (defun make-emacs-home-tags (tags-file &optional renew)
@@ -97,10 +99,10 @@ INCLUDES should be set with `system-cc-include'."
 	"Mount existing TAGS-FILE."
 	(let ((tags (if (consp tags-files) tags-files (list tags-files)))
 				(mounted nil))
-		(dolist (x tags mounted)
+		(dolist (x tags (nreverse mounted))
 			(when (file-exists-p x)
 				(add-to-list 'tags-table-list x t #'string=)
-				(add-to-list 'mounted x t #'string=)))))
+				(setq mounted (cons x mounted))))))
 
 
 (provide 'use-tags)
