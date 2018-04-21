@@ -1,6 +1,9 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
-;; use-lfe (Lisp Flavoured Erlang)
+;; More reasonable Emacs on MacOS, Windows and Linux
+;; https://github.com/junjiemars/.emacs.d
+;;;;
+;; use-lfe-autoload.el (Lisp Flavoured Erlang)
 ;;;;
 
 

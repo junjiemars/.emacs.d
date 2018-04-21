@@ -1,4 +1,7 @@
 ;;;; -*- lexical-binding:t -*-
+;;;;
+;; More reasonable Emacs on MacOS, Windows and Linux
+;; https://github.com/junjiemars/.emacs.d
 ;;;
 ;;  self-path.el: locate at `(emacs-home* "private/" "self-path.el")' 
 ;;;
