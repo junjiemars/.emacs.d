@@ -1,5 +1,8 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
+;; More reasonable Emacs on MacOS, Windows and Linux
+;; https://github.com/junjiemars/.emacs.d
+;;;;
 ;; sample-self-epilogue.el: specify the epilogue of yourself
 ;;   should be run on the end of Emacs init 
 ;;
@@ -27,7 +30,7 @@
 (comment
  ;; using etags to view Emacs's source code: C and Elisp
  ;; support any platform
- (when (require 'tags)
+ (when (require 'use-tags)
    (version-supported-if
        <= 25.2
        (setq source-directory "/opt/open/emacs-25/")
@@ -43,28 +46,31 @@
 	 (add-hook 'semantic-mode-hook
 						 #'(lambda ()
 								 (platform-supported-if windows-nt
-										 (use-cc `("e:/apps/c/out/"
-															 "e:/apps/c/src/hi/"
-															 "e:/apps/c/src/lang/"
-															 "e:/apps/c/src/io/"
-															 "e:/apps/c/src/posix/"
-															 "d:/opt/open/ecl/"
+										 (use-cc `("d:/opt/open/ecl/"
 															 "d:/opt/open/ecl/build/"
 															 "d:/opt/open/gambit/"
+															 "e:/apps/c/out/"
+															 "e:/apps/c/src/hi/"
+															 "e:/apps/c/src/io/"
+															 "e:/apps/c/src/lang/"
+															 "e:/apps/c/src/memory/"
+															 "e:/apps/c/src/posix/"
 															 ,source-directory)
 														 `("e:/apps/c/"
 															 ,source-directory))
 									 (use-cc `("/opt/apps/c/out/"
 														 "/opt/apps/c/src/hi/"
-														 "/opt/apps/c/src/lang/"
 														 "/opt/apps/c/src/io/"
+														 "/opt/apps/c/src/lang/"
+														 "/opt/apps/c/src/memory/"
 														 "/opt/apps/c/src/posix/"
-														 "/opt/opt/open/ecl/"
 														 "/opt/open/ecl/build/"
 														 "/opt/open/gambit/"
+														 "/opt/opt/open/ecl/"
 														 ,source-directory)
 													 `("/opt/apps/c/"
-														 ,source-directory)))) t)))
+														 ,source-directory))))
+						 t)))
 
 
 (comment
