@@ -95,10 +95,12 @@ INCLUDES should be set with `system-cc-include'."
 
 (defun mount-tags (tags-files)
 	"Mount existing TAGS-FILE."
-	(let ((tags (if (consp tags-files) tags-files (list tags-files))))
-		(dolist (x tags)
+	(let ((tags (if (consp tags-files) tags-files (list tags-files)))
+				(mounted nil))
+		(dolist (x tags mounted)
 			(when (file-exists-p x)
-				(add-to-list 'tags-table-list x t #'string)))))
+				(add-to-list 'tags-table-list x t #'string=)
+				(add-to-list 'mounted x t #'string=)))))
 
 
 (provide 'use-tags)
