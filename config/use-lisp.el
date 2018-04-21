@@ -1,6 +1,9 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
-;; lisp
+;; More reasonable Emacs on MacOS, Windows and Linux
+;; https://github.com/junjiemars/.emacs.d
+;;;;
+;; use-lisp.el
 ;;;;
 
 
@@ -36,4 +39,4 @@
 			(enable-paredit-mode))))
 
 
-(provide 'lisps)
+(provide 'use-lisp)

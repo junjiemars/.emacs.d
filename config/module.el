@@ -120,7 +120,7 @@
                      paredit
                      rainbow-delimiters
                      ,(version-supported-when <= 24.1 'yaml-mode))
-         :compile `(,(compile-unit (emacs-home* "config/lisps.el"))))))
+         :compile `(,(compile-unit (emacs-home* "config/use-lisp.el"))))))
 
 
 
