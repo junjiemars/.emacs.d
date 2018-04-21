@@ -429,9 +429,7 @@ for which (PRED item) returns t."
 
 ;; linum mode
 (def-feature-supported-p linum nil
-	"If `linum' feature supported then do BODY.
-
-Requires Emacs-23.1+")
+	"If `linum' feature supported then do BODY, requires Emacs-23.1+")
 
 
 ;; semantic
@@ -440,11 +438,10 @@ Requires Emacs-23.1+")
 
 ;; default web browser: eww
 (def-feature-supported-p eww nil
-	"If `eww' feature supported then do BODY.
-
-Requires: Emacs-24.4+")
+	"If `eww' feature supported then do BODY, requires Emacs-24.4+")
 
 (feature-eww-supported-p
+	
 	(defun set-default-browser! ()
 		"If `browser-url-default-browser' has not been touched, 
 then set `eww' to default browser."
@@ -456,13 +453,13 @@ then set `eww' to default browser."
 
 ;; compilation
 (defun colorize-compilation-buffer! ()
+	"Colorize *compilation* buffer."
 	(when (eq major-mode 'compilation-mode)
 		(when-fn% ansi-color-apply-on-region ansi-color
 			(let ((buffer-read-only nil))
 				(require 'ansi-color)
 				(ansi-color-apply-on-region
 				 (if-var% compilation-filter-start compile
-									compilation-filter-start
-					 (point-min))
+									compilation-filter-start (point-min))
 				 (point-max))))))
 
