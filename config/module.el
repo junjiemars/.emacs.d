@@ -1,6 +1,6 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
-;; Moduel Management 
+;; Module Management 
 ;;;;
 
 
@@ -21,14 +21,16 @@
                  '("melpa-stable" . "https://stable.melpa.org/packages/"))
            (version-supported-when
                <= 25.1
-             (list '("melpa" . "https://melpa.org/packages/")))) package)
+             (list '("melpa" . "https://melpa.org/packages/"))))
+	 package)
 
   (version-supported-when
       <= 25.1
     (setq% package-archive-priorities
 					 (list '("melpa-stable" . 10)
 								 '("melpa" . 5)
-								 '("gnu" . 0)) package))
+								 '("gnu" . 0))
+					 package))
 
   (package-refresh-contents))
 
@@ -57,7 +59,8 @@
 			 (symbol-name package)
 			 (mapconcat #'identity
 									(mapcar (lambda (x)
-														(number-to-string x)) (aref description 0))
+														(number-to-string x))
+													(aref description 0))
 									".")))))
 
 
