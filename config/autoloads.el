@@ -164,13 +164,13 @@
   
 	(with-eval-after-load 'compile
 		(add-hook 'compilation-filter-hook #'colorize-compilation-buffer!)
-		(define-key% compilation-mode-map (kbd "g") #'recompile compile)
-		(define-key% compilation-mode-map (kbd "q") #'quit-window compile)
+		(define-key* compilation-mode-map (kbd "g") #'recompile compile)
+		(define-key* compilation-mode-map (kbd "q") #'quit-window compile)
 		(setq% compilation-scroll-output t compile))
 
 	(with-eval-after-load 'grep
-		(define-key% grep-mode-map (kbd "g") #'recompile grep)
-		(define-key% grep-mode-map (kbd "q") #'quit-window grep))
+		(define-key* grep-mode-map (kbd "g") #'recompile grep)
+		(define-key* grep-mode-map (kbd "q") #'quit-window grep))
 
 	
 	(platform-supported-if <= 25.0
