@@ -411,7 +411,7 @@ for which (PRED item) returns t."
 ;; keymap
 
 (defmacro define-key* (keymap key def feature &optional accept-default)
-	"`define-key' as DEF if KEY does not existing in KEYMAP that provided in FEATURE.
+	"`define-key' as DEF if KEY does not existing in the KEYMAP of FEATURE.
 "
 	`(when-var% ,keymap ,feature
 							(unless (lookup-key ,keymap ,key ,accept-default)
