@@ -42,7 +42,8 @@
           "@echo off\n"
           "cd /d \"" (file-name-directory vcvarsall) "\"\n"
           "call vcvarsall.bat " arch "\n"
-          "echo \"%INCLUDE%\"\n") where)))))
+          "echo \"%INCLUDE%\"\n")
+				 where)))))
 
 
 (platform-supported-if
