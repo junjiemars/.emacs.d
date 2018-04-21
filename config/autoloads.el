@@ -164,13 +164,15 @@
   
 	(with-eval-after-load 'compile
 		(add-hook 'compilation-filter-hook #'colorize-compilation-buffer!)
-		(unless (lookup-key compilation-mode-map (kbd "g"))
-			(define-key compilation-mode-map (kbd "g") #'recompile))
-		(unless (lookup-key compilation-mode-map (kbd "q"))
-			(define-key compilation-mode-map (kbd "q") #'quit-window))
+		(define-key% compilation-mode-map (kbd "g") #'recompile compile)
+		(define-key% compilation-mode-map (kbd "q") #'quit-window compile)
 		(setq% compilation-scroll-output t compile))
 
+	(with-eval-after-load 'grep
+		(define-key% grep-mode-map (kbd "g") #'recompile grep)
+		(define-key% grep-mode-map (kbd "q") #'quit-window grep))
 
+	
 	(platform-supported-if <= 25.0
 		(with-eval-after-load 'elisp-mode
 			(add-hook 'emacs-lisp-mode-hook #'eldoc-mode))
