@@ -10,7 +10,7 @@
 (add-to-list 'load-path (v-home% "private/") nil #'string=)
 
 
-;; Versioned dirs: .*
+;; versioned dirs: .*
 
 ;; Auto-save
 (setq auto-save-list-file-prefix (v-home! ".auto-save/" "saves-"))
@@ -74,10 +74,10 @@
 (setq% url-configuration-directory (v-home! ".url/") url)
 
 
-
+ ;; versioned dirs
 
 
-;; Strings
+;; strings
 
 (defsubst string-trim> (s &optional rr)
 	"Remove whitespaces or the matching of RR at the end of S."
@@ -113,11 +113,10 @@ See `string-match' and `match-string'."
 		(substring string (match-beginning num) (match-end num))))
 
 
-
+ ;; end of strings
 
 
-;; Compatiable functions
-
+;; compatible functions
 
 (unless-fn% with-eval-after-load nil
 	(defmacro with-eval-after-load (file &rest body)
@@ -175,10 +174,10 @@ like `split-string' Emacs 24.4+"
 							 (= lastc ?\\))))))
 
 
-
+ ;; end of compatible functions
 
 
-;; File functions
+;; file functions
 
 (defun save-sexp-to-file (sexp file)
   "Save SEXP to FILE. 
@@ -230,7 +229,7 @@ See `executable-find%'."
 		`,path))
 
 
-
+ ;; end of file functions
 
 
 ;; Clean Emacs' user files
@@ -280,7 +279,7 @@ otherwise default to keep the directories of current `emacs-version'."
 
 
 
-;; Platform related functions
+;; platform related functions
 
 (platform-supported-when windows-nt
   (defmacro windows-nt-posix-path (p)
@@ -298,7 +297,7 @@ by shell on `system-type'"
                                 (windows-nt-posix-path ,p)))))
 
 
-
+ ;; end of platform related functions
 
 
 ;; Socks
@@ -309,10 +308,10 @@ call it: ssh -vnNTD32000 <user>@<host>"
   (version-supported-when < 22
     (setq% url-gateway-method 'socks url)
     (setq-default socks-server
-		  (list "Default server"
-			(if server server "127.0.0.1")
-			(if port port 32000)
-			(if version version 5)))))
+									(list "Default server"
+												(if server server "127.0.0.1")
+												(if port port 32000)
+												(if version version 5)))))
 
 
 ;; Load socks settings
@@ -380,7 +379,8 @@ for which (PRED item) returns t."
     (nreverse s1)))
 
 
-
+ ;; end of Computations
+
 
 ;; falvour mode functions
 
