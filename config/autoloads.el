@@ -4,14 +4,16 @@
 ;;;;
 
 
+;; set-global-key!
+
 (defun set-global-key! ()
   
   ;; open file or url at point
   (when-fn% find-file-at-point ffap
-    (global-set-key (kbd "C-c b") 'find-file-at-point))
+    (global-set-key (kbd "C-c b") #'find-file-at-point))
 
   (feature-linum-supported-p
-		(global-set-key (kbd "C-c l") 'linum-mode))
+		(global-set-key (kbd "C-c l") #'linum-mode))
 
   ;; Shows a list of buffers
   (global-set-key (kbd "C-x C-b") #'ibuffer)
@@ -56,7 +58,9 @@
 
   )
 
-
+ ;; end of set-global-key!
+
+;; set-flavor-mode!
 
 (defun set-flavor-mode! ()
   
@@ -217,8 +221,8 @@
   
   )
 
+ ;; end of set-flavor-mode!
 
-
 
 ;; after-init
 (add-hook 'after-init-hook #'set-flavor-mode! t)
@@ -227,7 +231,7 @@
 ;; autoload declarations
 (autoload 'system-cc-include
 	(v-home% "config/" "cc.elc")
-	"Returns a list of system include directories.")
+	"Return a list of system include directories.")
 
 (autoload 'use-cc
 	(v-home% "config/" "cc.elc")
