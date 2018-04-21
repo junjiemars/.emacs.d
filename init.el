@@ -110,7 +110,7 @@ Else return BODY sexp."
   (if (cdr body) `(progn ,@body) (car body)))
 
 
-;; version-support macro
+;; version-supported macro
 
 (defmacro version-supported* (cond version)
 	"Return t if (COND VERSION `emacs-version') yields non-nil, else nil.

@@ -16,7 +16,7 @@
 
 
 
-;; platform and graphic checking macro
+;; graphic-supported macro
 
 (defmacro graphic-supported-if (then &rest else)
   "If in graphic mode, do THEN, else do ELSE...
@@ -41,6 +41,10 @@ If in terminal mode, and there are no ELSE’s, the value is nil. "
   (declare (indent 0))
   `(graphic-supported-if nil ,@body))
 
+ ;; end of graphic-supported macro
+
+
+;; platform-supported macro
 
 (defmacro platform-supported-if (os then &rest else)
   "If (eq system-type OS) yields non-nil, do THEN, else do ELSE...
@@ -53,17 +57,17 @@ If (eq `system-type' OS) yields nil, and there are no ELSE’s, the value is nil
       `,then
     `(progn% ,@else)))
 
-
 (defmacro platform-supported-when (os &rest body)
   "Run BODY code if on specified OS platform, else return nil."
   (declare (indent 1))
   `(platform-supported-if ,os (progn% ,@body)))
 
-
 (defmacro platform-supported-unless (os &rest body)
   "Run BODY code unless on specified OS platform, else return nil."
   (declare (indent 1))
   `(platform-supported-if ,os nil ,@body))
+
+ ;; end of platform-supported macro
 
 
 (defmacro setq% (x val &optional feature)
@@ -74,6 +78,7 @@ If X requires the FEATURE load it on compile-time."
 	(when (boundp x)
 		`(setq ,x ,val)))
 
+;; fn compile-time checking macro
 
 (defmacro if-fn% (fn feature then &rest else)
   "If FN is bounded yields non-nil, do THEN, else do ELSE...
@@ -96,6 +101,11 @@ If FN requires FEATURE load it on compile-time."
   (declare (indent 2))
   `(if-fn% ,fn ,feature nil ,@body))
 
+ ;; end of compile-time checking macro
+
+
+;; var compile-time checking macro
+
 
 (defmacro if-var% (var feature then &rest else)
 	"If VAR is bounded yields non-nil, do THEN, else do ELSE...
@@ -112,6 +122,9 @@ If VAR requires FEATURE load it on compile-time."
 	'	(declare (indent 2))
 		`(if-var% ,var ,feature (progn% ,@body)))
 
+ ;; end of var compile-time checking macro
+
+;; byte-compiler macro
 
 (unless-fn% gensym nil
 	(defvar *gensym-counter* 0))
@@ -171,9 +184,10 @@ The name is made by appending a number to PREFIX, default \"G\"."
 				 (declare (indent 0))
 				 `(comment ,body)))))
 
+ ;; end of byte-compiler macro
 
-
 
+;; compile macro
 
 (defmacro compile-unit (file &optional only-compile)
 	"Make an unit of compilation."
@@ -187,7 +201,6 @@ The name is made by appending a number to PREFIX, default \"G\"."
 	"Return the ONLY-COMPILE indicator of `compile-unit'."
 	`(cdr ,unit))
 
-
 (defun compile! (vdir &rest units)
   "Compile and load the elisp UNITS in VDIR."
   (declare (indent 1))
@@ -198,6 +211,10 @@ The name is made by appending a number to PREFIX, default \"G\"."
 			 (compile-unit->file unit)
 			 (compile-unit->only-compile unit)))))
 
+ ;; end of compile macro
+
+
+;; self-def macro
 
 (defsubst self-def-files! ()
   "Returns the path of `(emacs-home* \"private/\" \"self-path.el\")' and make self-*.el files."
@@ -243,13 +260,14 @@ The name is made by appending a number to PREFIX, default \"G\"."
     `(defvar ,(self-symbol 'package-spec) (list ,@spec))))
 
 
-
-
-
 (defvar self-def-where (self-def-files!)
   "Where's the path of self-path.el")
 
-;; Load self where
+ ;; end of self-def macro
+
+
+;; self-spec macro
+
 (compile!
 		v-dir
 	(compile-unit self-def-where))
@@ -301,11 +319,11 @@ The name is made by appending a number to PREFIX, default \"G\"."
     v-dir
   (compile-unit (self-def-path-ref-> :env-spec)))
 
-
- ;; end of Load self env
+ ;; end of self-spec macro
 
 
 ;; Load ui, shell, basic env:
+
 (compile!
     v-dir
   (compile-unit (emacs-home* "config/boot.el"))
