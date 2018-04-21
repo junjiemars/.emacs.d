@@ -93,4 +93,12 @@ INCLUDES should be set with `system-cc-include'."
     (make-c-tags p (tags-spec->% :os-include))))
 
 
+(defun mount-tags (tags-files)
+	"Mount existing TAGS-FILE."
+	(let ((tags (if (consp tags-files) tags-files (list tags-files))))
+		(dolist (x tags)
+			(when (file-exists-p x)
+				(add-to-list 'tags-table-list x t #'string)))))
+
+
 (provide 'use-tags)
