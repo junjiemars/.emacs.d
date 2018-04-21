@@ -1,29 +1,29 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
-;; shells
+;; use-shell
 ;;;;
 
 
 (defmacro shells-spec->% (&rest keys)
   "Extract value from the list of spec via KEYS at compile time."
   `(self-spec->% (list
-		  :source-file
-		  ,(concat (v-home% "config/") ".shell-env.el")
-		  
-		  :compiled-file
-		  ,(concat (v-home% "config/") ".shell-env.elc")
-		  
-		  :shell-var "SHELL"
-		  
-		  :path-var "PATH"
-		  
-		  :echo-format
-		  ,(platform-supported-if windows-nt
-		       "echo %%%s%% 2>/nul"
-		     `'((:interactive-shell
-			 . "$SHELL -l -i -c 'echo -n $%s' 2>/dev/null")
-			(:login-shell
-			 . "$SHELL -l -c 'echo -n $%s' 2>/dev/null"))))
+									:source-file
+									,(concat (v-home% "config/") ".shell-env.el")
+									
+									:compiled-file
+									,(concat (v-home% "config/") ".shell-env.elc")
+									
+									:shell-var "SHELL"
+									
+									:path-var "PATH"
+									
+									:echo-format
+									,(platform-supported-if windows-nt
+											 "echo %%%s%% 2>/nul"
+										 `'((:interactive-shell
+												 . "$SHELL -l -i -c 'echo -n $%s' 2>/dev/null")
+												(:login-shell
+												 . "$SHELL -l -c 'echo -n $%s' 2>/dev/null"))))
      ,@keys))
 
 
@@ -168,4 +168,4 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 										(self-spec->*env-spec :shell :env-vars))))
 
 
-(provide 'shells)
+(provide 'use-shell)

@@ -1,6 +1,6 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
-;; eshells
+;; use-eshell
 ;;;;
 
 
@@ -27,4 +27,4 @@
 	(eshell-mode!))
 
 
-(provide 'eshells)
+(provide 'use-eshell)
