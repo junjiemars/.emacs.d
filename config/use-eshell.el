@@ -1,6 +1,9 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
-;; use-eshell
+;; More reasonable Emacs on MacOS, Windows and Linux
+;; https://github.com/junjiemars/.emacs.d
+;;;;
+;; use-eshell.el
 ;;;;
 
 
@@ -26,5 +29,3 @@
 (with-eval-after-load 'eshell
 	(eshell-mode!))
 
-
-(provide 'use-eshell)

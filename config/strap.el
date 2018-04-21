@@ -1,13 +1,16 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
-;; strap
+;; More reasonable Emacs on MacOS, Windows and Linux
+;; https://github.com/junjiemars/.emacs.d
+;;;;
+;; strap.el
 ;;;;
 
 
 
 ;; Let `lexical-binding' var safe under Emacs24.1-
 (lexical-supported-unless
- (put 'lexical-binding 'safe-local-variable (lambda (x) t)))
+	(put 'lexical-binding 'safe-local-variable (lambda (x) t)))
 
 
 ;; preferred coding system
@@ -353,8 +356,8 @@ The name is made by appending a number to PREFIX, default \"G\"."
   ;; (compile-unit (emacs-home* "config/lldb.el") t)
   (compile-unit (emacs-home* "config/use-eshell.el"))
   (compile-unit (emacs-home* "config/financial.el") t)
-  (compile-unit (emacs-home* "config/pythons.el") t)
-  (compile-unit (emacs-home* "config/tags.el") t)
+  (compile-unit (emacs-home* "config/use-python.el") t)
+  (compile-unit (emacs-home* "config/use-tags.el") t)
   (compile-unit (emacs-home* "config/cc.el") t)
   (compile-unit (emacs-home* "config/autoloads.el"))
   ;; --batch mode: disable desktop read/save

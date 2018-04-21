@@ -1,7 +1,10 @@
 ;;;; -*- lexical-binding:t -*-
-;;
-;; TAGS defintion and make
-;;
+;;;;
+;; More reasonable Emacs on MacOS, Windows and Linux
+;; https://github.com/junjiemars/.emacs.d
+;;;;
+;; use-tags.el
+;;;;
 
 
 (defmacro tags-spec->% (&rest key)
@@ -11,12 +14,12 @@
 \(tags-spec->% :emacs-source\)
 \(tags-spec->% :emacs-os-include\)"
   `(self-spec->% (list
-		  :emacs-home
-		  ,(expand-file-name (v-home% ".tags/home/" "TAGS"))
-		  :emacs-source
-		  ,(expand-file-name (v-home% ".tags/source/" "TAGS"))
-		  :os-include
-		  ,(expand-file-name (v-home% ".tags/os/" "TAGS")))
+									:emacs-home
+									,(expand-file-name (v-home% ".tags/home/" "TAGS"))
+									:emacs-source
+									,(expand-file-name (v-home% ".tags/source/" "TAGS"))
+									:os-include
+									,(expand-file-name (v-home% ".tags/os/" "TAGS")))
      ,@key))
 
 
@@ -90,4 +93,4 @@ INCLUDES should be set with `system-cc-include'."
     (make-c-tags p (tags-spec->% :os-include))))
 
 
-(provide 'tags)
+(provide 'use-tags)

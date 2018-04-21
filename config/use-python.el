@@ -1,6 +1,9 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
-;; pythons
+;; More reasonable Emacs on MacOS, Windows and Linux
+;; https://github.com/junjiemars/.emacs.d
+;;;;
+;; use-python.el
 ;;;;
 
 
@@ -23,8 +26,6 @@
           (setq python-shell-virtualenv-root vdir)
         (setq python-shell-virtualenv-path vdir)))))
 
-
-(provide 'pythons)
 
 ;; (defun unload-python-on-exit ()
 ;;   (safe-fn-|when* 'elpy-disable (elpy-disable))
@@ -50,3 +51,4 @@
 ;; (add-hook 'kill-emacs-hook #'unload-python-on-exit)
 
 
+(provide 'pythons)

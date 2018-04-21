@@ -1,9 +1,10 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
-;; financial calculations
+;; More reasonable Emacs on MacOS, Windows and Linux
+;; https://github.com/junjiemars/.emacs.d
 ;;;;
-
-
+;; financial.el
+;;;;
 
 
 (defmacro /. (dividend &rest divisors)

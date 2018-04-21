@@ -1,9 +1,10 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
-;; Module Management 
+;; More reasonable Emacs on MacOS, Windows and Linux
+;; https://github.com/junjiemars/.emacs.d
 ;;;;
-
-
+;; module.el
+;;;;
 
 
 ;; define package user dir

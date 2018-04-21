@@ -1,6 +1,9 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
-;; cc
+;; More reasonable Emacs on MacOS, Windows and Linux
+;; https://github.com/junjiemars/.emacs.d
+;;;;
+;; cc.el
 ;;;;
 
 

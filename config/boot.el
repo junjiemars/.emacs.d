@@ -1,6 +1,9 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
-;; boot
+;; More reasonable Emacs on MacOS, Windows and Linux
+;; https://github.com/junjiemars/.emacs.d
+;;;;
+;; boot.el
 ;;;;
 
 
@@ -127,7 +130,4 @@ If theme DIR is nil then load the built-in theme by NAME."
 
 ;; Ignore ring bell
 (setq% ring-bell-function 'ignore)
-
-
-
 

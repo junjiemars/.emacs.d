@@ -1,6 +1,9 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
-;; use-shell
+;; More reasonable Emacs on MacOS, Windows and Linux
+;; https://github.com/junjiemars/.emacs.d
+;;;;
+;; use-shell.el
 ;;;;
 
 
@@ -167,5 +170,3 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
     (copy-env-vars! (shell-env-> :env-vars)
 										(self-spec->*env-spec :shell :env-vars))))
 
-
-(provide 'use-shell)
