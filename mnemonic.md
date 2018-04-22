@@ -35,19 +35,19 @@ It's **self-documenting** and great, keep reading it frequently.
 * Keybinding briefly: <kbd>C-h c</kbd>, which command for given keystroke
 * Message: <kbd>C-h e</kbd> see the logging of echo area message
 * Man: <kbd>M-x man</kbd> view UNIX manual page
-* Woman: <kbd>M-x woman``` view UNIX manual page without ```man</kbd> program
+* Woman: <kbd>M-x woman</kbd> view UNIX manual page without ```man``` program
 * Coding system: <kbd>C-h C</kbd> describe coding system
 * Colors: <kbd>M-x list-colors-display</kbd> display names of defined colors and show what
 they look like
 
 
 ## Motion
-* goto line: ```M-g g```
-* goto nth char: ```M-g c```
-* jump between buffers: ```C-x C-@```, jumps to the global mark acrross buffers
-* jump in buffer: ```C-u C-@```
-* jump to definition: ```M-.```
-* pop back to where ```M-.``` was last invoked: ```M-,```, on Terminal is ```M-*```
+* goto line: <kbd>M-g g</kbd>
+* goto nth char: <kbd>M-g c</kbd>
+* jump between buffers: <kbd>C-x C-@</kbd>, jumps to the global mark acrross buffers
+* jump in buffer: <kbd>C-u C-@</kbd>
+* jump to definition: <kbd>M-.</kbd>
+* pop back to where <kbd>M-.</kbd> was last invoked: <kbd>M-,</kbd>, on Terminal is <kbd>M-*</kbd>
 
 
 ## Interaction
