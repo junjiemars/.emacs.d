@@ -149,6 +149,8 @@ Check Emacs configurations:
 * ```features```
 
 
+### Topic
+
 * [Theme](#theme)
 * [Font](#font)
 * [Shell](#shell)
@@ -336,7 +338,7 @@ The default package spec locate in ```(emacs-home* "private/self-package-spec.el
 
 ## Troubleshooting
 
-* <kbd>M:(clean-compiled-files)</kbd>, then exit and reopen Emacs.
+* <kbd>M: (clean-compiled-files)</kbd>, then exit and reopen Emacs.
 * check ```*Compilation-Log*``` buffer.
 
 
