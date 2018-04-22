@@ -127,11 +127,11 @@ it can not accross sessions.
 ## Bookmarks
 Unlike registers, bookmarks have long names, and they persist automatically from one Emacs session to the next.
 
-* set bookmark: ```C-x r m```
-* set named bookmark: ```C-x r m BOOKMARK```
-* jump to bookmark: ```C-x r b BOOKMARK```
-* list all bookmarks: ```C-x r l```
-* save bookmark to file: ```M-x bookmark-save```
+* set bookmark: <kbd>C-x r m</kbd>
+* set named bookmark: <kbd>C-x r m BOOKMARK</kbd>
+* jump to bookmark: <kbd>C-x r b BOOKMARK</kbd>
+* list all bookmarks: <kbd>C-x r l</kbd>
+* save bookmark to file: <kbd>M-x bookmark-save</kbd>
 
 
 ## Region and Rectangle
