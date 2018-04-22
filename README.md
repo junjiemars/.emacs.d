@@ -40,6 +40,7 @@ The More Reasonable Emacs strives to be fast, stable and hacker friendly, which 
 Now, let's start from the Level Two. And one more thing: teach youself some little Elisp (M-x info).
 
 ## Highlights
+
 * __Carefully designed__: just load what's your need.
 * __Adaptive__: Can run on any OS, GUI or Terminal, from most recent Emacs's versions to ancient ones, and one Emacs's configuration suit for all coexisting Emacs on the same machine.
 * __Consistent__: Whereever and whenever you can play with Emacs always behaves in the same way.
@@ -49,18 +50,23 @@ Now, let's start from the Level Two. And one more thing: teach youself some litt
 
 
 ## Requirements
+
 * Emacs 22.1.1+
 * Any keyboard
 
 
 ## Where
+
 * Linux, whatever GUI or Terminal
-* OSX, whatever GUI or Terminal
+* Darwin, whatever GUI or Terminal
 * Windows, whatever GUI or Terminal
-* One machine run multiple Emacs instances in same time
+* Non-Internet
+* Docker container
+* One machine run multiple Emacs instances or modes in same time
 
 
 ## What
+
 * You are the master of your Emacs, ...
 * Navigating, finding, grepping in the same way whereever, ...
 * Org Mode that's your new life, ...
