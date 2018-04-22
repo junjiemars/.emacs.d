@@ -24,7 +24,7 @@ I'm a nerd with Emacs, it's awesome if I can [Learn Emacs in less then Ten Years
 
 After falling in love with [Lisp](https://en.wikipedia.org/wiki/Lisp_(programming_language)), I know it's the time to make Emacs being a part of my body and mind, not just open a file, navigating, editing, and save it. The Level One of mine start from [this is a Clojure-friendly emacs config](https://github.com/flyingmachine/emacs-for-clojure), and [A reasonable Emacs config](https://github.com/purcell/emacs.d). But, those ones neither can suit for my daily use on different machines.
 
-The adaptive Emacs which I need is more stable, more smaller, more faster and more flexible which can be run on anywhere where Emacs run. So, I decide to build a new one.
+The More Reasonable Emacs strives to be fast, stable and hacker friendly, which can be run on anywhere where Emacs run.
 
 
 * [Features](#features)
@@ -33,6 +33,7 @@ The adaptive Emacs which I need is more stable, more smaller, more faster and mo
 * [What](#what)
 * [Install](#install)
 * [Cooking](#cooking)
+* [Troubleshooting](#troubleshooting)
 * [Mnemonic](mnemonic.md)
 
 
@@ -68,10 +69,17 @@ Now, let's start from the Level Two. And one more thing: teach youself some litt
 
 
 ## Install
-Just one thing you need to do, clone it (just <400KB) to your HOME directory:
+
+Just one thing you need to do, clone it (just <500KB) to your HOME directory:
 ```sh
 $ git clone --depth=1 https://github.com/junjiemars/.emacs.d.git ~/.emacs.d
 ```
+
+First run More Reasonable Emacs, it should automatically do:
+* byte compile elisp source files.
+* install packages, if you enabled it and you have a Emacs-24.0+.
+
+After first run More Reasonable Emacs, exit and then reopen Emacs.
 
 
 On Windows, if you'd [Git-Bash](https://git-scm.com/downloads) installed but no Emacs, you are lucky, a one line code will do it all for you and more: fix some Emacs' issue for you, and you don't need run ```git clone ...```,
@@ -84,10 +92,7 @@ $ HAS_EMACS=1 bash <(curl https://raw.githubusercontent.com/junjiemars/kit/maste
 ```
 
 
-* First run: start Emacs then exit it, take a while if your Emacs 24.0+.
-* Non-First run: start Emacs then run ```(clean-compiled-files)```, then exit.
-
-Now, start Emacs again, it will works perfectly, but if you want to more control and more features, such as themes, packages, and fonts etc., see next section: [cooking](#cooking)
+Now, it will works perfectly, but if you want to more control and more features, such as themes, packages, and fonts etc., see next section: [cooking](#cooking)
 
 
 ## Cooking
@@ -257,7 +262,7 @@ The socks spec locate in ```(emacs-home* "private/self-env-spec.el")```
 
 Don't tell me [use-package](https://github.com/jwiegley/use-package), it's
 trying to redefine Emacs. Here you can find more simpler and faster way to 
-implement almost functions like ```use-pacakge```.
+implement almost functions like ```use-pacakge``` does.
 
 There are two types of packages: __basic__(just like Emacs' builtin) 
 and __user defined__. To disable __user defined__ packages 
@@ -321,6 +326,11 @@ The default package spec locate in ```(emacs-home* "private/self-package-spec.el
 
 ```
 
+
+## Troubleshooting
+
+* <kbd>M:(clean-compiled-files)</kbd>, then exit and reopen Emacs.
+* check ```*Compilation-Log*``` buffer.
 
 
 [mnemonic](mnemonic.md) | [screenshot](screenshot.md)
