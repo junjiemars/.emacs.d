@@ -55,7 +55,7 @@ they look like
 * via Elisp: <kbd>M-:</kbd>
 * via Shell command: <kbd>M-!</kbd>, insert shell output: <kbd>C-u M-!</kbd>, see *Info>Emacs>Shell*
 * in Dired mode: <kbd>!</kbd>, do shell command
-* region as input to Shell command: <kbd>M-|<kbd>, insert from shell output: <kbd>C-u M-|</kbd>
+* region as input to Shell command: <kbd>M-|</kbd>, insert from shell output: <kbd>C-u M-|</kbd>
 * browse-url: <kbd>C-c b</kbd>
 * filename of current buffer: ```(buffer-file-name (current-buffer)```
 
