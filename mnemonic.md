@@ -52,11 +52,11 @@ they look like
 
 ## Interaction
 * \*scratch\* buffer
-* via Elisp: ```M-:```
-* via Shell command: ```M-!```, insert shell output: ```C-u M-!```, see *Info>Emacs>Shell*
-* in Dired mode: ```!```, do shell command
-* region as input to Shell command: ```M-|```, insert from shell output: ```C-u M-|```
-* browse-url: ```C-c b```
+* via Elisp: <kbd>M-:</kbd>
+* via Shell command: <kbd>M-!</kbd>, insert shell output: <kbd>C-u M-!</kbd>, see *Info>Emacs>Shell*
+* in Dired mode: <kbd>!</kbd>, do shell command
+* region as input to Shell command: <kbd>M-|<kbd>, insert from shell output: <kbd>C-u M-|</kbd>
+* browse-url: <kbd>C-c b</kbd>
 * filename of current buffer: ```(buffer-file-name (current-buffer)```
 
 
