@@ -207,20 +207,34 @@ Returns the name of FILE when successed otherwise nil."
       file)))
 
 
-(defun dir-iterate (dir ff df fn)
+(defun dir-iterate (dir ff df fn dn)
   "Iterating DIR, if FF file-fitler return t then call FN, 
-and if DF dir-filter return t then iterate into deeper DIR.
+and if DF dir-filter return t then call DN and then iterate into deeper DIR.
 
    (defun FILE-FILTER (file-name absolute-name))
-   (defun DIR-FILTER (dir-name absolute-name))"
+   (defun DIR-FILTER (dir-name absolute-name))
+   (defun FILE-FUNCTION (absolute-name))
+   (defun DIR-FUNCTION (absolute-name))
+
+Examples:
+1. iterate DIR and output every absolute-name to *Message* buffer:
+  (dir-iterate DIR (lambda (f a) t) (lambda (d a) t) (message \"%s\" a) nil)
+
+2. iterate DIR with level=1 and output every absolute-name to *Message* buffer:
+  (dir-iterate DIR (lambda (f a) t) nil (message \"%s\" a))
+
+3. iterate DIR and output every subdir's absolute-name to *Message* buffer:
+  (dir-iterate DIR nil (lambda (d a) t) nil (message \"%s\" a))
+"
   (dolist (f (file-name-all-completions "" dir))
     (unless (member f '("./" "../"))
       (let ((a (expand-file-name f dir)))
         (if (directory-name-p f)
-            (when (and df (funcall df f a)
-                       (dir-iterate a ff df fn)))
-          (when (and ff (funcall ff f a)
-                     (funcall fn a))))))))
+            (when (and df (funcall df f a))
+							(and dn (funcall dn a))
+							(dir-iterate a ff df fn dn))
+          (when (and ff (funcall ff f a))
+						(and fn (funcall fn a))))))))
 
 
 (defmacro executable-find% (command)
