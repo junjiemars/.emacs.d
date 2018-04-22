@@ -146,24 +146,24 @@ Unlike registers, bookmarks have long names, and they persist automatically from
 
 
 ## Keyboard Macro
-* start recording macro: ```C-x (```
-* stop recording macro: ```C-x )```
-* playback macro: ```C-x e```
-* apply macro to region lines: ```C-x C-k r```
+* start recording macro: <kbd>C-x (</kbd>
+* stop recording macro: <kbd>C-x )</kbd>
+* playback macro: <kbd>C-x e</kbd>
+* apply macro to region lines: <kbd>C-x C-k r</kbd>
 
 
 ## Shell
-* EShell: ```M-x eshell```
-* Shell: ```M-x shell```
-* Ansi-Term: ```M-x ansi-term```
+* EShell: <kbd>M-x eshell</kbd>
+* Shell: <kbd>M-x shell</kbd>
+* Ansi-Term: <kbd>M-x ansi-term</kbd>
 
 
 ## Remote
 It's the duty of [TRAMP](https://www.gnu.org/software/tramp/)
-* non-sudo: ```C-x C-f /ssh:<remote-id>:/path/to/file RET```, *<remote-id>* such as *x@y.z* or *xyz* in .ssh/config entries.
-* sudo: ```C-x C-f /ssh:<remote-id>|sudo:<remote-host>:/path/to/file```, *<remote-host>*
+* non-sudo: <kbd>C-x C-f /ssh:<remote-id>:/path/to/file RET</kbd>, *<remote-id>* such as *x@y.z* or *xyz* in .ssh/config entries.
+* sudo: <kbd>C-x C-f /ssh:<remote-id>|sudo:<remote-host>:/path/to/file</kbd>, *<remote-host>*
 such as *x@localhost* or *localhost* if the user *x* is a sudoer.
-* eshell remote: ```cd /ssh:<user>@<remote>:<dir>```
+* eshell remote: <kbd>cd /ssh:<user>@<remote>:<dir></kbd>
 
 
 ## LaTex Requirements
@@ -195,7 +195,7 @@ aaaa 1
 aaaa 1
 aaaa 0
 ```
-insert multiple lines with _prefix + random number_, ```C-u C-[-:```
+insert multiple lines with _prefix + random number_, <kbd>C-u C-[-:</kbd>
 ```lisp
 (dotimes (x 5)
 	(insert-string (format "aaaa %s\n" (random 10))))
@@ -210,4 +210,4 @@ aaaa zzz
 aaaa xxx
 aaaa uuu
 ```
-sort by 2nd field: ```C-u 2 M-x sort-fields```, ```reverse-region```
+sort by 2nd field: <kbd>C-u 2 M-x sort-fields</kbd>, ```reverse-region```
