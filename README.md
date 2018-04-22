@@ -14,8 +14,7 @@ git clone --depth=1 https://github.com/junjiemars/.emacs.d.git ~/.emacs.d
 * want more functionalities see [Cooking](#cooking) section
 
 
-Take your time to have a taste, some features may be you never see it in other 
-places. One more thing, it's best to remind you: take care, it's super fast.
+One more thing, it's best to remind you: take care, it's super fast.
 
 
 Story
