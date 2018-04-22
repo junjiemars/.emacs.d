@@ -30,7 +30,7 @@
 (comment
  ;; using etags to view Emacs's source code: C and Elisp
  ;; support any platform
- (when (require 'use-tags)
+ (when (require 'tags)
    (version-supported-if
        <= 25.2
        (setq source-directory "/opt/open/emacs-25/")

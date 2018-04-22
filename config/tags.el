@@ -3,7 +3,7 @@
 ;; More reasonable Emacs on MacOS, Windows and Linux
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; use-tags.el
+;; tags.el
 ;;;;
 
 
@@ -105,4 +105,4 @@ INCLUDES should be set with `system-cc-include'."
 				(setq mounted (cons x mounted))))))
 
 
-(provide 'use-tags)
+(provide 'tags)

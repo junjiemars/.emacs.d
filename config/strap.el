@@ -331,7 +331,7 @@ The name is made by appending a number to PREFIX, default \"G\"."
     v-dir
   (compile-unit (emacs-home* "config/boot.el"))
   (compile-unit (emacs-home* "config/basic.el"))
-  (compile-unit (emacs-home* "config/use-shell.el")))
+  (compile-unit (emacs-home* "config/shells.el")))
 
 
 ;; Self do prologue ...
@@ -354,10 +354,10 @@ The name is made by appending a number to PREFIX, default \"G\"."
 (compile!
     v-dir
   ;; (compile-unit (emacs-home* "config/lldb.el") t)
-  (compile-unit (emacs-home* "config/use-eshell.el"))
+  (compile-unit (emacs-home* "config/eshells.el"))
   (compile-unit (emacs-home* "config/financial.el") t)
   (compile-unit (emacs-home* "config/use-python.el") t)
-  (compile-unit (emacs-home* "config/use-tags.el") t)
+  (compile-unit (emacs-home* "config/tags.el") t)
   (compile-unit (emacs-home* "config/cc.el") t)
   (compile-unit (emacs-home* "config/autoload.el"))
   ;; --batch mode: disable desktop read/save
