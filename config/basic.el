@@ -444,7 +444,7 @@ for which (PRED item) returns t."
 								(define-key ,keymap ,key ,def))))
 
 
-
+ ;; end of keymap
 
 
 ;; shell scripts
