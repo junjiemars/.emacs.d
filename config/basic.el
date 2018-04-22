@@ -216,6 +216,9 @@ and if DF dir-filter return t then call DN and then iterate into deeper DIR.
    (defun FILE-FUNCTION (absolute-name))
    (defun DIR-FUNCTION (absolute-name))
 
+Notes:
+Should jump over dummy symbol-links that point to self or parent directory.
+
 Examples:
 1. iterate DIR and output every absolute-name to *Message* buffer:
   (dir-iterate DIR (lambda (f a) t) (lambda (d a) t) (message \"%s\" a) nil)
@@ -230,7 +233,13 @@ Examples:
     (unless (member f '("./" "../"))
       (let ((a (expand-file-name f dir)))
         (if (directory-name-p f)
-            (when (and df (funcall df f a))
+            (when (and df
+											 (let ((ln (file-symlink-p (directory-file-name a))))
+												 (if (not ln) t
+													 (not (or (string= "." ln)
+																		(and (>= (length a) (length ln))
+																				 (string= ln (substring a 0 (length ln))))))))
+											 (funcall df f a))
 							(and dn (funcall dn a))
 							(dir-iterate a ff df fn dn))
           (when (and ff (funcall ff f a))
