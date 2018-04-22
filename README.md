@@ -108,7 +108,7 @@ Suppose your Emacs HOME at ```~/.emacs.d``` and annotated it as ```emacs-home```
 Your private configuration directory at ```emacs-home/private/``` 
 and I abbreviate it as ```(emacs-home* "private/")```. All things under it you can rename, move, delete.
 
-A magic function ```(clean-compiled-files)```, all Elisp files be compiled,
+A magic function ```(clean-compiled-files)```, all Elisp files should be compiled,
 so if meet some trouble, run it and reopen the Emacs.
 
 
@@ -196,7 +196,8 @@ The default font's spec locate in ```(emacs-home* "private/self-env-spec.el")```
 
 Any ```Shell```, copy environment variables, and on any platforms.
 
-Don't tell me [exec-path-from-shell](https://github.com/purcell/exec-path-from-shell), that is a poor implementation: unstable and slow.
+[exec-path-from-shell](https://github.com/purcell/exec-path-from-shell) has a poor implementation for the same functionalities, it is unstable and slow. But here, We had a builtin one, and more stable and more faster.
+
 
 The shell spec locate in ```(emacs-home* "private/self-env-spec.el")```
 
