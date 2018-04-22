@@ -44,7 +44,8 @@ RENEW create tags file when t"
 										 (message "make-tags: %s ..." f)
                      (shell-command-to-string
                       (format "etags -o %s -l auto -a %s ; echo %s"
-                              tags-file f f))))
+                              tags-file f f)))
+									 nil)
       (when (file-exists-p tags-file)
         (add-to-list 'tags-table-list tags-dir t #'string=)
 				tags-file))))
@@ -76,23 +77,25 @@ RENEW create tags file when t"
       (make-tags (concat src-root "lisp/") tags-file lisp-ff df))))
 
 
-(defun make-c-tags (home tags-file &optional renew)
+(defun make-c-tags (home tags-file &optional dir-filter renew)
   "Make TAGS-FILE for C source code in HOME."
   (let ((c-ff (lambda (f _) (string-match "\\\.[ch]$" f)))
-        (df (lambda (d _) (not
-                           (string-match
-                            "^\\\.git/$\\|^out/$\\|^objs/$\\|^c\\\+\\\+/$"
-                            d)))))
+        (df (or dir-filter
+								(lambda (d _)
+									(not
+									 (string-match
+										"^\\\.git/$\\|^out/$\\|^objs/$\\|^c\\\+\\\+/$"
+										d))))))
     (make-tags home tags-file c-ff df renew)))
 
 
-(defun make-system-c-tags (includes &optional renew)
+(defun make-system-c-tags (includes &optional dir-filter renew)
   "Make tags for system INCLUDES.
 
 INCLUDES should be set with `system-cc-include'."
-  (make-c-tags (car includes) (tags-spec->% :os-include) renew)
+  (make-c-tags (car includes) (tags-spec->% :os-include) dir-filter renew)
   (dolist (p (cdr includes))
-    (make-c-tags p (tags-spec->% :os-include))))
+    (make-c-tags p (tags-spec->% :os-include) dir-filter)))
 
 
 (defun mount-tags (tags-files)
