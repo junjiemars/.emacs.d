@@ -7,6 +7,7 @@
 ;;;;
 
 
+;; basic ui
 
 ;; Disable menu bar
 (when-fn%  menu-bar-mode nil (menu-bar-mode -1))
@@ -17,13 +18,13 @@
 ;; Disable scroll bar
 (when-fn% scroll-bar-mode nil (scroll-bar-mode -1))
 
-;; Go straight to scratch buffer on startup
-(version-supported-when
-    <= 24
-  (setq inhibit-splash-screen t))
+;; Go straight to scratch buffer on startup when graphic supported
+(graphic-supported-if
+		(setq% inhibit-splash-screen t)
+	(setq% inhibit-splash-screen nil))
 
 
-
+ ;; end of basic ui
 
 
 ;; Theme and Font
