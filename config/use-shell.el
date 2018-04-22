@@ -67,7 +67,8 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
   "Convert a list of PATH to $PATH like var that separated by SEP."
   `(string-trim>
     (apply #'concat
-           (mapcar #'(lambda (s) (concat s ,sep)) ,path)) ,sep))
+           (mapcar #'(lambda (s) (concat s ,sep)) ,path))
+		,sep))
 
 (defmacro var->paths (var)
   "Refine VAR like $PATH to list by `path-separator'."
