@@ -103,14 +103,14 @@ they look like
 
 
 ## Window
-* other window: ```C-x o```
-* dired other window: ```C-x 4 d```
-* find file in other window: ```C-x 4 C-f```, or ```C-x 4 f```
-* display buffer: ```C-x 4 C-o```, display the buffer in another window
-* find tag other window: ```C-x 4 .```
-* kill buffer and window: ```C-x 4 0```, just like ```C-x 0``` except kill the buffer
-* switch to buffer other window: ```C-x 4 b```
-* clone indirect buffer other window: ```C-x 4 c```, clone the buffer in another window
+* other window: <kbd>C-x o</kbd>
+* dired other window: <kbd>C-x 4 d</kbd>
+* find file in other window: <kbd>C-x 4 C-f</kbd>, or <kbd>C-x 4 f</kbd>
+* display buffer: <kbd>C-x 4 C-o</kbd>, display the buffer in another window
+* find tag other window: <kbd>C-x 4 .</kbd>
+* kill buffer and window: <kbd>C-x 4 0</kbd>, just like <kbd>C-x 0</kbd> except kill the buffer
+* switch to buffer other window: <kbd>C-x 4 b</kbd>
+* clone indirect buffer other window: <kbd>C-x 4 c</kbd>, clone the buffer in another window
 
 
 ## Register
