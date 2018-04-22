@@ -21,23 +21,23 @@
 It's **self-documenting** and great, keep reading it frequently.
 
 * Tutorial: <kbd>C-h-t</kbd>
-* Help for Help: ```C-h C-h```
-* Emacs manual: ```C-h r```
-* Apropos command: ```C-h a```
-* Info: ```C-h i```
-* Info of mode: ```C-h i d m <x>``` *<x>* is the mode
-* Mode: ```C-h-m``` see all the key bindings and documentation of current buffer
-* Where is command: ```C-h w``` which keystrokes binding to a given command
-* Function: ```C-h-f``` display documentation of the given function
-* Variable: ```C-h-v``` display documentation of the given variable
-* Keybinding: ```C-h-k``` display documentation of the function invoked by the given keystrokes
-* Prefix keybindings: ```<prefix> C-h``` see all key bindings for given prefix keystrokes
-* Keybinding briefly: ```C-h c```, which command for given keystroke
-* Message: ```C-h e``` see the logging of echo area message
-* Man: ```M-x man``` view UNIX manual page
-* Woman: ```M-x woman``` view UNIX manual page without ```man``` program
-* Coding system: ```C-h C``` describe coding system
-* Colors: ```M-x list-colors-display``` display names of defined colors and show what
+* Help for Help: <kbd>C-h C-h</kbd>
+* Emacs manual: <kbd>C-h r</kbd>
+* Apropos command: <kbd>C-h a</kbd>
+* Info: <kbd>C-h i</kbd>
+* Info of mode: <kbd>C-h i d m <x></kbd> *<x>* is the mode
+* Mode: <kbd>C-h-m</kbd> see all the key bindings and documentation of current buffer
+* Where is command: <kbd>C-h w</kbd> which keystrokes binding to a given command
+* Function: <kbd>C-h-f</kbd> display documentation of the given function
+* Variable: <kbd>C-h-v</kbd> display documentation of the given variable
+* Keybinding: <kbd>C-h-k</kbd> display documentation of the function invoked by the given keystrokes
+* Prefix keybindings: <kbd><prefix> C-h</kbd> see all key bindings for given prefix keystrokes
+* Keybinding briefly: <kbd>C-h c</kbd>, which command for given keystroke
+* Message: <kbd>C-h e</kbd> see the logging of echo area message
+* Man: <kbd>M-x man</kbd> view UNIX manual page
+* Woman: <kbd>M-x woman``` view UNIX manual page without ```man</kbd> program
+* Coding system: <kbd>C-h C</kbd> describe coding system
+* Colors: <kbd>M-x list-colors-display</kbd> display names of defined colors and show what
 they look like
 
 
