@@ -20,7 +20,7 @@
 ## Emacs Documents
 It's **self-documenting** and great, keep reading it frequently.
 
-* Tutorial: ```C-h-t```
+* Tutorial: <kbd>C-h-t</kbd>
 * Help for Help: ```C-h C-h```
 * Emacs manual: ```C-h r```
 * Apropos command: ```C-h a```
