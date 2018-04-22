@@ -61,22 +61,22 @@ they look like
 
 
 ## Editing
-* write file: ```C-x C-w``` same as save as
-* kill whole line: ```C-S-DEL```
-* kill all spaces at point: ```M-\```
-* kill all spaces except one at point: ```M-SPC```
-* delete indentation to join line to previous line: ```M-^```
-* dynamic abbreviation: ```M-/```
-* query replace: ```M-%```
-* what cursor position: ```C-x =```
-* upcase region: ```C-x C-u```
-* downcase region: ```C-x C-l```
-* transpose characters: ```C-t```
-* transpose words: ```M-t```
-* insert parentheses: ```M-(```, wrap selection in parentheses
-* toggle read-only mode: ```C-x C-q```
-* toggle input method: ```C-\```, switch to __TeX__ ```C-x-RET C-\```
-* quoted insert: ```C-q```, such as page break ```C-q C-l```, use ```C-x [``` or ```C-x ]``` to backward or forward
+* write file: <kbd>C-x C-w</kbd> same as save as
+* kill whole line: <KBD>C-S-DEL</KBD>
+* kill all spaces at point: <kbd>M-\</kbd>
+* kill all spaces except one at point: <KBD>M-SPC</KBD>
+* delete indentation to join line to previous line: <kbd>M-^</kbd>
+* dynamic abbreviation: <kbd>M-/</kbd>
+* query replace: <kbd>M-%</kbd>
+* what cursor position: <kbd>C-x =</kbd>
+* upcase region: <kbd>C-x C-u</kbd>
+* downcase region: <kbd>C-x C-l</kbd>
+* transpose characters: <kbd>C-t</kbd>
+* transpose words: <kbd>M-t</kbd>
+* insert parentheses: <kbd>M-(</kbd>, wrap selection in parentheses
+* toggle read-only mode: <kbd>C-x C-q</kbd>
+* toggle input method: <kbd>C-\</kbd>, switch to __TeX__ <kbd>C-x-RET C-\</kbd>
+* quoted insert: <kbd>C-q</kbd>, such as page break <kbd>C-q C-l</kbd>, use <kbd>C-x [</kbd> or <kbd>C-x ]</kbd> to backward or forward
 
 
 ## Basic sexp commands
