@@ -91,15 +91,15 @@ they look like
 
 
 ## Frame
-* find file other frame: ```C-x 5 C-f```, or ```C-x 5 f```
-* display buffer other frame: ```C-x 5 C-o```, or ```C-x 5 b```
-* find tag other frame: ```C-x 5 .```
-* delete frame: ```C-x 5 0```
-* delete other frames: ```C-x 5 1```
-* make frame command: ```C-x 5 2```
-* dired to other frame: ```C-x 5 d```
-* other frame: ```C-x 5 o```
-* find file read only other frame: ```C-x 5 r```
+* find file other frame: <kbd>C-x 5 C-f</kbd>, or <kbd>C-x 5 f</kbd>
+* display buffer other frame: <kbd>C-x 5 C-o</kbd>, or <kbd>C-x 5 b</kbd>
+* find tag other frame: <kbd>C-x 5 .</kbd>
+* delete frame: <kbd>C-x 5 0</kbd>
+* delete other frames: <kbd>C-x 5 1</kbd>
+* make frame command: <kbd>C-x 5 2</kbd>
+* dired to other frame: <kbd>C-x 5 d</kbd>
+* other frame: <kbd>C-x 5 o</kbd>
+* find file read only other frame: <kbd>C-x 5 r</kbd>
 
 
 ## Window
