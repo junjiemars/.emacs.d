@@ -344,6 +344,7 @@ The default package spec locate in ```(emacs-home* "private/self-package-spec.el
 
 * <kbd>M: (clean-compiled-files)</kbd>, then exit and reopen Emacs.
 * check ```*Compilation-Log*``` buffer.
+* disable the items in ```(emacs-home* "private/self-path.el")```.
 
 
 [mnemonic](mnemonic.md) | [screenshot](screenshot.md)
