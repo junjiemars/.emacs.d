@@ -216,13 +216,12 @@
 	
    ;; end of package: paredit
 	
-  ;; Terminal
-  (terminal-supported-p
-    (feature-linum-supported-p
-			;; line number format on Terminal
+  ;; linum
+	(feature-linum-supported-p
+		(with-eval-after-load 'linum
 			(setq% linum-format "%2d " linum)))
 
-   ;; end of Terminal
+   ;; end of linum
 
   
   )
