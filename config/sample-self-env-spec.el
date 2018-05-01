@@ -14,6 +14,9 @@
 
 (def-self-env-spec
   :theme (list :name 'atom-one-dark
+							 ;;'dracula
+							 ;;'intellij
+							 ;;'atom-one-dark
                :path (emacs-home* "theme/")
                :allowed t)
 
