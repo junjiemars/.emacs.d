@@ -180,7 +180,8 @@
 		(define-key* grep-mode-map (kbd "q") #'quit-window grep))
 
 	(with-eval-after-load 'lisp-mode
-		(safe-local-variable* 'Syntax))
+		(safe-local-variable* 'Syntax)
+		(safe-local-variable* 'Base))
 
 	(platform-supported-if <= 25.0
 		(with-eval-after-load 'elisp-mode
