@@ -13,7 +13,7 @@
 (add-to-list 'load-path (v-home% "private/") nil #'string=)
 
 
-;; versioned dirs: .*
+;; Versioned Dirs: .*
 
 ;; Auto-save
 (setq auto-save-list-file-prefix (v-home! ".auto-save/" "saves-"))
@@ -77,10 +77,10 @@
 (setq% url-configuration-directory (v-home! ".url/") url)
 
 
- ;; versioned dirs
+ ;; Versioned Dirs
 
 
-;; strings
+;; Strings
 
 (defsubst string-trim> (s &optional rr)
 	"Remove whitespaces or the matching of RR at the end of S."
@@ -116,10 +116,10 @@ See `string-match' and `match-string'."
 		(substring string (match-beginning num) (match-end num))))
 
 
- ;; end of strings
+ ;; end of Strings
 
 
-;; compatible functions
+;; Compatible Functions
 
 (unless-fn% with-eval-after-load nil
 	(defmacro with-eval-after-load (file &rest body)
@@ -177,10 +177,10 @@ like `split-string' Emacs 24.4+"
 							 (= lastc ?\\))))))
 
 
- ;; end of compatible functions
+ ;; end of Compatible Functions
 
 
-;; file functions
+;; File Functions
 
 (defun save-sexp-to-file (sexp file)
   "Save SEXP to FILE. 
@@ -255,7 +255,7 @@ See `executable-find%'."
 		`,path))
 
 
- ;; end of file functions
+ ;; end of File Functions
 
 
 ;; Clean Emacs' user files
@@ -305,7 +305,7 @@ otherwise default to keep the directories of current `emacs-version'."
 
 
 
-;; platform related functions
+;; Platform Related Functions
 
 (platform-supported-when windows-nt
   (defmacro windows-nt-posix-path (p)
@@ -323,7 +323,7 @@ by shell on `system-type'"
                                 (windows-nt-posix-path ,p)))))
 
 
- ;; end of platform related functions
+ ;; end of Platform Related Functions
 
 
 ;; Socks
@@ -408,7 +408,7 @@ for which (PRED item) returns t."
  ;; end of Computations
 
 
-;; falvour mode functions
+;; Falvour Mode Functions
 
 ;; comments
 (defun toggle-comment ()
@@ -445,6 +445,12 @@ for which (PRED item) returns t."
 
 
  ;; end of keymap
+
+
+(defmacro safe-local-variable* (var)
+	"Safe local VAR in -*- line, see `enable-local-variables'"
+	`(put ,var 'safe-local-variable
+				(lambda (x) (ignore* x) t)))
 
 
 ;; shell scripts

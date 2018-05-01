@@ -179,7 +179,9 @@
 		(define-key* grep-mode-map (kbd "g") #'recompile grep)
 		(define-key* grep-mode-map (kbd "q") #'quit-window grep))
 
-	
+	(with-eval-after-load 'lisp-mode
+		(safe-local-variable* 'Syntax))
+
 	(platform-supported-if <= 25.0
 		(with-eval-after-load 'elisp-mode
 			(add-hook 'emacs-lisp-mode-hook #'eldoc-mode))
