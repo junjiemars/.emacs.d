@@ -7,12 +7,6 @@
 ;;;;
 
 
-(defun set-ielm-mode! ()
-	"Set `ielm-mode'."
-	(when-fn% disable-paredit-mode paredit
-		(disable-paredit-mode)))
-
-
 (defun set-lisp-basic-mode! ()
 	"Set Lisp basic minor modes."
 	(cond ((or (string= "*scratch*" (buffer-name))
