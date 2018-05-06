@@ -212,7 +212,7 @@
 						(add-hook 'minibuffer-setup-hook
 											#'enable-paredit-mode-in-minibuffer t)
 					(add-hook 'eval-expression-minibuffer-setup-hook
-										#'enable-paredit-mode t)))))
+										#'enable-paredit-mode-in-minibuffer t)))))
 	
    ;; end of package: paredit
 	
