@@ -20,12 +20,12 @@
 				 (rainbow-delimiters-mode))))
 
 
-(platform-supported-if
-		gnu/linux
-	(defun enable-paredit-mode-in-minibuffer ()
-		(when (eq 'eval-expression this-command)
-			(enable-paredit-mode)))
-	(defalias 'enable-paredit-mode-in-minibuffer #'enable-paredit-mode))
+(defun enable-paredit-mode-in-minibuffer! ()
+	(platform-supported-if
+			gnu/linux
+			(when (eq 'eval-expression this-command)
+				(enable-paredit-mode))
+		(enable-paredit-mode)))
 
 
 (provide 'on-lisp)

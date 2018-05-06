@@ -205,14 +205,12 @@
 			(with-eval-after-load 'scheme
 				(add-hook 'scheme-mode-hook #'set-lisp-basic-mode!))
 
-			(with-eval-after-load 'paredit
-				;; enable paredit in minibuffer
-				(platform-supported-if
-						gnu/linux
-						(add-hook 'minibuffer-setup-hook
-											#'enable-paredit-mode-in-minibuffer t)
-					(add-hook 'eval-expression-minibuffer-setup-hook
-										#'enable-paredit-mode-in-minibuffer t)))))
+			(platform-supported-if
+					gnu/linux
+					(add-hook 'minibuffer-setup-hook
+										#'enable-paredit-mode-in-minibuffer! t)
+				(add-hook 'eval-expression-minibuffer-setup-hook
+									#'enable-paredit-mode-in-minibuffer! t))))
 	
    ;; end of package: paredit
 	
