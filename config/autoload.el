@@ -205,9 +205,6 @@
 			(with-eval-after-load 'scheme
 				(add-hook 'scheme-mode-hook #'set-lisp-basic-mode!))
 
-			(with-eval-after-load 'elisp-mode
-				(add-hook 'emacs-lisp-mode-hook #'set-emacs-lisp-mode!))
-
 			(with-eval-after-load 'paredit
 				;; enable paredit in minibuffer
 				(platform-supported-if
