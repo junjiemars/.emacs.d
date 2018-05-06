@@ -48,7 +48,7 @@
                  ".*\.t?gz\\|\.desktop\\|~$\\|\\/ssh[: ]\\|\.elc$"
                  :buffers-not-to-save "^TAGS\\|\\.log"
                  :modes-not-to-save
-                 '(dired-mode fundamental-mode rmail-mode)
+                 '(dired-mode fundamental-mode eww-mode rmail-mode)
                  :restore-eager 8
                  :allowed nil)
   
