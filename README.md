@@ -271,7 +271,7 @@ The socks spec locate in ```(emacs-home* "private/self-env-spec.el")```
 
 Don't tell me [use-package](https://github.com/jwiegley/use-package), it's
 trying to redefine Emacs. Here you can find more simpler and faster way to 
-implement almost functions like ```use-pacakge``` does.
+implement almost functionalities that ```use-pacakge``` does.
 
 There are two types of packages: __basic__(just like Emacs' builtin) 
 and __user defined__. To disable __user defined__ packages 

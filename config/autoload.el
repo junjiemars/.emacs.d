@@ -197,23 +197,26 @@
 	
   (package-spec-:allowed-p
 
-		(with-eval-after-load 'lisp-mode
-			(add-hook 'lisp-mode-hook #'set-lisp-basic-mode!))
+		(when-fn% set-lisp-basic-mode! nil
+			(with-eval-after-load 'lisp-mode
+				(add-hook 'lisp-mode-hook #'set-lisp-basic-mode!))
+			(with-eval-after-load 'scheme
+				(add-hook 'scheme-mode-hook #'set-lisp-basic-mode!)))
 
-		(with-eval-after-load 'elisp-mode
-			(add-hook 'emacs-lisp-mode-hook #'set-emacs-lisp-mode!))
-
-		(with-eval-after-load 'scheme
-			(add-hook 'scheme-mode-hook #'set-lisp-basic-mode!))
+		(when-fn% set-emacs-lisp-mode! nil
+			(with-eval-after-load 'elisp-mode
+				(add-hook 'emacs-lisp-mode-hook #'set-emacs-lisp-mode!)))
 
 		(with-eval-after-load 'paredit
 			;; enable paredit in minibuffer
 			(platform-supported-if
 					gnu/linux
-					(add-hook 'minibuffer-setup-hook
-										#'enable-paredit-mode-in-minibuffer t)
-				(add-hook 'eval-expression-minibuffer-setup-hook
-									#'enable-paredit-mode t))))
+					(with-fn% enable-paredit-mode-in-minibuffer nil
+										(add-hook 'minibuffer-setup-hook
+															#'enable-paredit-mode-in-minibuffer t))
+				(when-fn% enable-paredit-mode nil
+					(add-hook 'eval-expression-minibuffer-setup-hook
+										#'enable-paredit-mode t)))))
 	
    ;; end of package: paredit
 	
