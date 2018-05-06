@@ -8,4 +8,4 @@
 
 
 (def-feature-supported-p paredit nil
-	"If `paredit' feature supported then do BODY, requires Emacs-24.0+")
+	"If `paredit' feature supported then do BODY.")
