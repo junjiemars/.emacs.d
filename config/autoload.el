@@ -184,9 +184,10 @@
 		(safe-local-variable* 'Base)
 		(safe-local-variable* 'Package))
 
-	(platform-supported-if <= 25.0
-		(with-eval-after-load 'elisp-mode
-			(add-hook 'emacs-lisp-mode-hook #'eldoc-mode))
+	(version-supported-if
+			<= 25.0
+			(with-eval-after-load 'elisp-mode
+				(add-hook 'emacs-lisp-mode-hook #'eldoc-mode))
 		(with-eval-after-load 'lisp-mode
 			(add-hook 'emacs-lisp-mode-hook #'eldoc-mode)))
 	
