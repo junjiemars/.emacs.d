@@ -347,14 +347,14 @@ The name is made by appending a number to PREFIX, default \"G\"."
   (compile!
       v-dir
     (compile-unit (self-def-path-ref-> :package-spec))
-    (compile-unit (emacs-home* "config/module.el"))
-		(compile-unit (emacs-home* "config/use-module.el"))))
+    (compile-unit (emacs-home* "config/module.el"))))
 
 
 ;; Load package independent modules
 (compile!
     v-dir
   ;; (compile-unit (emacs-home* "config/lldb.el") t)
+	(compile-unit (emacs-home* "config/use-module.el"))
   (compile-unit (emacs-home* "config/eshells.el"))
   (compile-unit (emacs-home* "config/financial.el") t)
   (compile-unit (emacs-home* "config/use-python.el") t)
