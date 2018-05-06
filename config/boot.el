@@ -111,22 +111,3 @@ If theme DIR is nil then load the built-in theme by NAME."
 
  ;; end of theme-supported-p
 
-
-;; Terminal style
-(terminal-supported-p
-  ;;above version 23 transient-mark-mode is enabled by default
-  (version-supported-when > 23 (transient-mark-mode t))
-  (set-face-background 'region "white")
-  (set-face-foreground 'region "black"))
-
-
-;; No cursor blinking, it's distracting
-(when-fn% blink-cursor-mode nil (blink-cursor-mode 0))
-
-;; full path in title bar
-(graphic-supported-p
-  (setq% frame-title-format "%b (%f)"))
-
-;; Ignore ring bell
-(setq% ring-bell-function 'ignore)
-
