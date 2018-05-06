@@ -94,13 +94,11 @@
 			"`load-theme' in DIR by NAME.
 
 If theme DIR is nil then load the built-in theme by NAME."
-			(progn
-				(when (and dir (file-exists-p dir))
-					(add-to-list 'custom-theme-load-path dir)
-					(add-to-list 'load-path dir nil #'string=))
-				(version-supported-if >= 24.1
-															(load-theme name)
-					(load-theme name t)))))
+			(when (and dir (file-exists-p dir))
+				(add-to-list 'custom-theme-load-path dir nil #'string=))
+			(version-supported-if >= 24.1
+														(load-theme name)
+				(load-theme name t))))
 
 
 ;; Load theme
