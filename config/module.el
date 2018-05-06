@@ -48,9 +48,9 @@
 (defsubst delete-package! (description &optional package)
 	(version-supported-if
 			<= 25.0
-			(progn
-				(ignore* package)
-				(package-delete (car description) t t))
+			(progn%
+			 (ignore* package)
+			 (package-delete (car description) t t))
 		(version-supported-if
 				<= 24.4
 				(progn%
