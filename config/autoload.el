@@ -190,17 +190,16 @@
 				(add-hook 'emacs-lisp-mode-hook #'eldoc-mode))
 		(with-eval-after-load 'lisp-mode
 			(add-hook 'emacs-lisp-mode-hook #'eldoc-mode)))
-	
 
 	(with-eval-after-load 'ielm
 		(add-hook 'ielm-mode-hook #'eldoc-mode))
-
 
 	(feature-paredit-supported-p
 		(package-spec-:allowed-p
 
 			(with-eval-after-load 'lisp-mode
-				(add-hook 'lisp-mode-hook #'set-lisp-basic-mode!))
+				(add-hook 'lisp-mode-hook #'set-lisp-basic-mode!)
+				(add-hook 'emacs-lisp-mode-hook #'set-lisp-basic-mode!))
 			
 			(with-eval-after-load 'scheme
 				(add-hook 'scheme-mode-hook #'set-lisp-basic-mode!))
