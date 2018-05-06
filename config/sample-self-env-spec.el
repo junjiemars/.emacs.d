@@ -27,8 +27,12 @@
                         "DejaVu Sans Mono-12")) 
               :allowed nil)
 
-  :cjk-font (list :name "Microsoft Yahei"
-                  :size 13
+  :cjk-font (list :name (platform-supported-if darwin
+														"Hei"
+													(platform-supported-if windows-nt
+															"Microsoft Yahei"
+														"DejaVu Sans Mono-12"))
+                  :size 12
                   :allowed nil)
   
   :shell (list :env-vars `("JAVA_HOME"

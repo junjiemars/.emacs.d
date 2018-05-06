@@ -45,22 +45,22 @@
 
 (font-supported-p
     
-    (defmacro font-exists-p (font)
-      "Return t if FONT exists."
-      `(when (find-font (font-spec :name ,font))
-         t)))
+    (defsubst font-exists-p (font)
+			"Return t if FONT exists."
+			(when (find-font (font-spec :name font))
+				t)))
 
 (font-supported-p
     
-    (defmacro self-default-font! (font)
-      "Set default FONT in graphic mode."
-      `(when (font-exists-p ,font)
-         (add-to-list 'default-frame-alist (cons 'font ,font))
-         (set-face-attribute 'default t :font ,font)
-         (set-face-attribute 'default nil :font ,font)
-         (version-supported-if <= 24.0
-                               (set-frame-font ,font nil t)
-           (set-frame-font ,font)))))
+    (defsubst self-default-font! (font)
+			"Set default FONT in graphic mode."
+			(when (font-exists-p font)
+				(add-to-list 'default-frame-alist (cons 'font font))
+				(set-face-attribute 'default t :font font)
+				(set-face-attribute 'default nil :font font)
+				(version-supported-if <= 24.0
+															(set-frame-font font nil t)
+					(set-frame-font font)))))
 
 (font-supported-p
     
@@ -70,14 +70,14 @@
 
 (font-supported-p
 
-    (defmacro self-cjk-font! (name size)
-      "Set CJK font's NAME and SIZE in graphic mode."
-      `(when (font-exists-p ,name)
-         (when-fn% set-fontset-font nil
-					 (dolist (c '(han kana cjk-misc))
-						 (set-fontset-font (frame-parameter nil 'font)
-															 c (font-spec :family ,name
-																						:size ,size)))))))
+    (defsubst self-cjk-font! (name size)
+			"Set CJK font's NAME and SIZE in graphic mode."
+			(when (font-exists-p name)
+				(when-fn% set-fontset-font nil
+					(dolist (c '(han kana cjk-misc))
+						(set-fontset-font (frame-parameter nil 'font)
+															c (font-spec :family name
+																					 :size size)))))))
 
 (font-supported-p
     
@@ -90,17 +90,17 @@
 
 (theme-supported-p
     
-    (defmacro self-load-theme! (name &optional dir)
-      "`load-theme' in DIR by NAME.
+    (defsubst self-load-theme! (name &optional dir)
+			"`load-theme' in DIR by NAME.
 
 If theme DIR is nil then load the built-in theme by NAME."
-      `(progn
-         (when (and ,dir (file-exists-p ,dir))
-           (add-to-list 'custom-theme-load-path ,dir)
-           (add-to-list 'load-path ,dir nil #'string=))
-         (version-supported-if >= 24.1
-                               (load-theme ,name)
-           (load-theme ,name t)))))
+			(progn
+				(when (and dir (file-exists-p dir))
+					(add-to-list 'custom-theme-load-path dir)
+					(add-to-list 'load-path dir nil #'string=))
+				(version-supported-if >= 24.1
+															(load-theme name)
+					(load-theme name t)))))
 
 
 ;; Load theme
