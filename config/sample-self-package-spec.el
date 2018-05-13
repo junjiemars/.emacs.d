@@ -51,7 +51,7 @@
   (list
    :cond (or (executable-find% "sbcl"))
    :packages '(slime)
-   :compile `(,(compile-unit (emacs-home* "config/use-slime.el"))
+   :compile `(,(compile-unit (emacs-home* "config/use-slime.el") t)
               ,(compile-unit (emacs-home* "config/use-slime-autoload.el"))))
   )
 

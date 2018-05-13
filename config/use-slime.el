@@ -4,35 +4,33 @@
 ;;;;
 
 
-(defmacro set-inferior-lisp-program (lisp &optional force)
-  "Safe set inferior-lisp-program var, it must be set before slime start."
-  `(if ,force
-       (setq% inferior-lisp-program ,lisp slime)
-     (when (or (not (string= ,lisp inferior-lisp-program))
-							 (string= "lisp" inferior-lisp-program))
-       (setq% inferior-lisp-program ,lisp slime))))
+(defmacro common-lisp-implementations (&rest lispspec)
+	"LISPSPEC:
+'sbcl
+'\(ecl :init slime-init-comman\)
+'\(acl \(\"acl7\" \"-quiet\"\)
+			:coding-system emacs-mule\)"
+	`(let ((lisps nil))
+		 (dolist (x (list ,@lispspec) lisps)
+			 (let ((lisp (if (consp x) (car x) x)))
+				 (when (executable-find (symbol-name lisp))
+					 (if (consp x)
+							 (if (consp (cadr x))
+									 (push x lisps)
+								 (push (list lisp
+														 (append
+															(list (executable-find (symbol-name lisp)))
+															(cdr x)))
+											 lisps))
+						 (push (list lisp
+												 (list (executable-find (symbol-name lisp))))
+									 lisps)))))))
 
-
-(defmacro common-lisp-implementations ()
-	"Return a list of existing common-lisp implementations."
-	`(remove
-		nil
-		(list
-		 (let ((sbcl (executable-find "sbcl")))
-			 (when sbcl
-				 (set-inferior-lisp-program "sbcl" t)
-				 (list 'sbcl (list sbcl))))
-		 (let ((abcl (executable-find "abcl")))
-			 (when abcl (list 'abcl (list abcl))))
-		 (let ((ecl (executable-find "ecl")))
-			 (when ecl (list 'ecl (list ecl)))))))
-
-
-;;;###autoload
 (defun set-slime-lisp-implementations! ()
-	"Set `slime-lisp-implementations' with `common-lisp-implementations'."
+	"More easy way to set `slime-lisp-implementations'."
 	(setq% slime-lisp-implementations
-				 (common-lisp-implementations) slime))
+				 (common-lisp-implementations 'acl 'ccl 'clasp 'ecl 'sbcl)
+				 slime))
 
 
 (provide 'use-slime)
