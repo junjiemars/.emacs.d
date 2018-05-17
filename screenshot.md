@@ -19,7 +19,7 @@
 
 * [Dracula theme](https://github.com/dracula/emacs)
 
-<img title="atom theme" alt="atom theme"
+<img title="Dracula theme" alt="Dracula theme"
     width="60%"
     align="middle"
 	src="https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/dracula-theme.png" />
