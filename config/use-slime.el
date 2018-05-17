@@ -10,6 +10,7 @@
 '\(ecl :init slime-init-comman\)
 '\(acl \(\"acl7\" \"-quiet\"\)
 			:coding-system emacs-mule\)"
+	(declare (indent 0))
 	`(let ((lisps nil))
 		 (dolist (x (list ,@lispspec) lisps)
 			 (let ((lisp (if (consp x) (car x) x)))
