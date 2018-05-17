@@ -18,6 +18,7 @@
 							 ;;'intellij
 							 ;;'atom-one-dark
                :path (emacs-home* "theme/")
+							 :compile nil
                :allowed t)
 
   :font (list :name (platform-supported-if darwin

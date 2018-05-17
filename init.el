@@ -76,8 +76,11 @@
 
 ;; compile macro
 
-(defmacro compile-and-load-file* (vdir file &optional only-compile)
-  "Compile FILE and save the compiled one in VDIR then load it if ONLY-COMPILE is nil."
+(defmacro compile-and-load-file* (vdir file
+																			 &optional only-compile delete-booster)
+  "Compile FILE and save the compiled one in VDIR then load it if ONLY-COMPILE is nil.
+
+If DELETE-BOOSTER is non nil then delete booster source FILE after compiled."
   (let ((c (make-symbol "-compiled:0-"))
         (s (make-symbol "-source:0-")))
     `(when (and (stringp ,file) (file-exists-p ,file))
@@ -86,7 +89,8 @@
                    (file-newer-than-file-p ,file ,c))
            (let ((,s (v-path! ,file ,vdir)))
              (copy-file ,file ,s t)
-             (byte-compile-file ,s)))
+             (when (and (byte-compile-file ,s) ,delete-booster)
+							 (delete-file ,s))))
          (or ,only-compile
              (load ,c))))))
 
@@ -94,7 +98,8 @@
 (defmacro clean-compiled-files ()
   "Clean all compiled files."
   `(dolist (d (list ,(v-home* "config/")
-                    ,(v-home* "private/")))
+                    ,(v-home* "private/")
+										,(v-home* "theme/")))
      (dolist (f (directory-files d nil "\\.elc?$"))
        (message "#Clean compiled file: %s" f)
        (delete-file (concat d f)))))

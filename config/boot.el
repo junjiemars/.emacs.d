@@ -105,8 +105,17 @@ If theme DIR is nil then load the built-in theme by NAME."
 (theme-supported-p
 
     (when (self-spec->*env-spec :theme :allowed)
-      (self-load-theme! (self-spec->*env-spec :theme :name)
-												(self-spec->*env-spec :theme :path))))
+			(if (self-spec->*env-spec :theme :compile)
+					(let ((p (format "%s%s-theme.el"
+													 (self-spec->*env-spec :theme :path)
+													 (self-spec->*env-spec :theme :name))))
+						(when (compile-and-load-file* v-dir p t t)
+							(self-load-theme! (self-spec->*env-spec :theme :name)
+																(format "%s%s/"
+																				(self-spec->*env-spec :theme :path)
+																				v-dir))))
+				(self-load-theme! (self-spec->*env-spec :theme :name)
+													(self-spec->*env-spec :theme :path)))))
 
 
  ;; end of theme-supported-p

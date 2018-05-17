@@ -427,6 +427,6 @@ Current modes, and their faces, impacted by this variable:
 (provide-theme 'atom-one-dark)
 
 ;; Local Variables:
-;; no-byte-compile: t
+;; no-byte-compile: nil
 ;; End:
 ;;; atom-one-dark-theme.el ends here

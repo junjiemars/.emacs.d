@@ -425,7 +425,7 @@
 (provide-theme 'dracula)
 
 ;; Local Variables:
-;; no-byte-compile: t
+;; no-byte-compile: nil
 ;; End:
 
 ;;; dracula-theme.el ends here
