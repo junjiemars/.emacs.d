@@ -60,5 +60,17 @@
 	src="https://raw.github.com/junjiemars/images/master/.emacs.d/c-programming-on-docker-term.png" />
 
 
+## Lisp Programming
+
+### Slime
+
+* in Windows 10 Terminal
+
+<img title="slime-in-windows-terminal" alt="slime-in-windows-terminal"
+    width="70%"
+    align="middle"
+	src="https://raw.github.com/junjiemars/images/master/.emacs.d/slime-in-Windows-terminal.png" />
+
+
 
 
