@@ -52,7 +52,7 @@ Now, let's start from the Level Two. And one more thing: teach youself some litt
 ## Requirements
 
 * Emacs 22.1.1+
-* Any keyboard
+* Keyboard+
 
 
 ## Where
@@ -60,9 +60,10 @@ Now, let's start from the Level Two. And one more thing: teach youself some litt
 * Linux, whatever GUI or Terminal
 * Darwin, whatever GUI or Terminal
 * Windows, whatever GUI or Terminal
-* Non-Internet
+* Raspberry Pi, Terminal
+* No Network
 * Docker container
-* One machine run multiple Emacs instances or modes in same time
+* One machine run multiple Emacs instances with multiple versions in same time
 
 
 ## What
@@ -70,7 +71,7 @@ Now, let's start from the Level Two. And one more thing: teach youself some litt
 * You are the master of your Emacs, ...
 * Navigating, finding, grepping in the same way whereever, ...
 * Org Mode that's your new life, ...
-* Reliable programming expirence, C, Lisp and Python, ...
+* Reliable programming experiments, C, Lisp, ...
 * Bash on Windows, ...
 
 
