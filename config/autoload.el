@@ -37,10 +37,6 @@
   ;; but `C-x r g' can do thing by one hand
   (global-set-key (kbd "C-x r g") 'string-insert-rectangle)
 
-  ;; Key binding to use "hippie expand" for text autocompletion
-  ;; http://www.emacswiki.org/emacs/HippieExpand
-  (global-set-key (kbd "M-/") 'hippie-expand)
-
 
 	(feature-bing-dict-supported-p
 		(package-spec-:allowed-p
@@ -73,6 +69,7 @@
 		(compile-unit (emacs-home* "config/on-compile-autoload.el"))
 		(compile-unit (emacs-home* "config/on-dired-autoload.el"))
 		(compile-unit (emacs-home* "config/on-edit-autoload.el"))
+		(compile-unit (emacs-home* "config/on-hippie-autoload.el"))
 		(compile-unit (emacs-home* "config/on-lisp-autoload.el"))
 		(feature-linum-supported-p
 			(compile-unit (emacs-home* "config/on-linum-autoload.el")))

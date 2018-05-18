@@ -85,14 +85,6 @@
 ;; Mouse yank commands yank at point instead of at click.
 (setq% mouse-yank-at-point t mouse)
 
-;; Lisp-friendly hippie expand
-(setq hippie-expand-try-functions-list
-			'(try-expand-dabbrev
-				try-expand-dabbrev-all-buffers
-				try-expand-dabbrev-from-kill
-				try-complete-lisp-symbol-partially
-				try-complete-lisp-symbol))
-
 
 ;; no need for ~ files when editing
 (setq% create-lockfiles nil)
