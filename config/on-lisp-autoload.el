@@ -12,6 +12,7 @@
 	(safe-local-variable* 'Base)
 	(safe-local-variable* 'Package))
 
+
 (version-supported-if
 		<= 25.0
 		(with-eval-after-load 'elisp-mode
@@ -19,8 +20,10 @@
 	(with-eval-after-load 'lisp-mode
 		(add-hook 'emacs-lisp-mode-hook #'eldoc-mode)))
 
+
 (with-eval-after-load 'ielm
 	(add-hook 'ielm-mode-hook #'eldoc-mode))
+
 
 (feature-paredit-supported-p
 	(package-spec-:allowed-p
@@ -38,3 +41,5 @@
 									#'enable-paredit-mode-in-minibuffer! t)
 			(add-hook 'eval-expression-minibuffer-setup-hook
 								#'enable-paredit-mode-in-minibuffer! t))))
+
+ ;; end of package: paredit
