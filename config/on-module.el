@@ -7,5 +7,9 @@
 ;;;;
 
 
+
 (def-feature-supported-p paredit nil
 	"If `paredit' feature supported then do BODY.")
+
+
+(def-feature-supported-p bing-dict nil)

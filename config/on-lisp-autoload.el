@@ -40,6 +40,18 @@
 				(add-hook 'minibuffer-setup-hook
 									#'enable-paredit-mode-in-minibuffer! t)
 			(add-hook 'eval-expression-minibuffer-setup-hook
-								#'enable-paredit-mode-in-minibuffer! t))))
+								#'enable-paredit-mode-in-minibuffer! t))
+
+		
+		;; `paredit' keymap
+		;; On Windows C-) is not work
+		;; fix inconsistent `C-)' `C-c )' behavior:#9
+		(global-set-key (kbd "C-c )") 'paredit-forward-slurp-sexp)
+
+		;; On Terminal mode, Ctrl+Shift combination can't send to Emacs
+		(terminal-supported-p
+			(global-set-key (kbd "C-c (") 'paredit-backward-slurp-sexp)
+			(global-set-key (kbd "C-c }") 'paredit-forward-barf-sexp)
+			(global-set-key (kbd "C-c {") 'paredit-backward-barf-sexp))))
 
  ;; end of package: paredit
