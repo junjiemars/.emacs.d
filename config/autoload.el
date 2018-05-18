@@ -186,47 +186,15 @@
 	(with-eval-after-load 'sh-script
 		(add-hook 'sh-mode-hook #'set-sh-mode!))
   
-	(with-eval-after-load 'compile
-		(add-hook 'compilation-filter-hook #'colorize-compilation-buffer!)
-		(define-key* compilation-mode-map (kbd "g") #'recompile compile)
-		(define-key* compilation-mode-map (kbd "q") #'quit-window compile)
-		(setq% compilation-scroll-output t compile))
+	
 
 	(with-eval-after-load 'grep
 		(define-key* grep-mode-map (kbd "g") #'recompile grep)
 		(define-key* grep-mode-map (kbd "q") #'quit-window grep))
 
-	(with-eval-after-load 'lisp-mode
-		(safe-local-variable* 'Syntax)
-		(safe-local-variable* 'Base)
-		(safe-local-variable* 'Package))
-
-	(version-supported-if
-			<= 25.0
-			(with-eval-after-load 'elisp-mode
-				(add-hook 'emacs-lisp-mode-hook #'eldoc-mode))
-		(with-eval-after-load 'lisp-mode
-			(add-hook 'emacs-lisp-mode-hook #'eldoc-mode)))
-
-	(with-eval-after-load 'ielm
-		(add-hook 'ielm-mode-hook #'eldoc-mode))
-
-	(feature-paredit-supported-p
-		(package-spec-:allowed-p
-
-			(with-eval-after-load 'lisp-mode
-				(add-hook 'lisp-mode-hook #'set-lisp-basic-mode!)
-				(add-hook 'emacs-lisp-mode-hook #'set-lisp-basic-mode!))
-			
-			(with-eval-after-load 'scheme
-				(add-hook 'scheme-mode-hook #'set-lisp-basic-mode!))
-
-			(platform-supported-if
-					gnu/linux
-					(add-hook 'minibuffer-setup-hook
-										#'enable-paredit-mode-in-minibuffer! t)
-				(add-hook 'eval-expression-minibuffer-setup-hook
-									#'enable-paredit-mode-in-minibuffer! t))))
+	(compile! v-dir
+		(compile-unit (emacs-home* "config/on-compile-autoload.el"))
+		(compile-unit (emacs-home* "config/on-lisp-autoload.el")))
 	
    ;; end of package: paredit
 	
