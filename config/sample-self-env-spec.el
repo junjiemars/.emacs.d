@@ -13,10 +13,7 @@
 
 
 (def-self-env-spec
-  :theme (list :name 'atom-one-dark
-							 ;;'dracula
-							 ;;'intellij
-							 ;;'atom-one-dark
+  :theme (list :name 'dracula
                :path (emacs-home* "theme/")
 							 :compile nil
                :allowed t)

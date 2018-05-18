@@ -10,12 +10,6 @@
     align="middle"
 	src="https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/default-theme.png" />
 
-* [Atom one dark theme](https://github.com/jonathanchu/atom-one-dark-theme)
-
-<img title="Atom one dark theme" alt="Atom one dark theme"
-    width="60%"
-    align="middle"
-	src="https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/atom-theme.png" />
 
 * [Dracula theme](https://github.com/dracula/emacs)
 
