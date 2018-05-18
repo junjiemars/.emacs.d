@@ -61,13 +61,13 @@
   `(file-name-sans-extension (file-name-nondirectory ,file)))
 
 
-(defmacro v-path! (file dir &optional extension)
-  "Return the path of existing FILE's directory + DIR/FILEbasename.EXTENSION."
-  `(when (and ,dir (file-exists-p ,file))
-     (let ((v (concat (file-name-directory ,file) ,dir "/")))
+(defmacro v-path! (file vdir &optional extension)
+  "Make and return the path of FILEdirectory/VDIR/FILEbasename.EXTENSION."
+  `(when (and ,vdir (file-exists-p ,file))
+     (let ((v (concat (file-name-directory ,file) ,vdir "/")))
        (unless (file-exists-p v) (make-directory v t))
-       (concat v (if (and ,extension (file-name-extension ,file))
-                     (concat (file-name-base* ,file) "." ,extension)
+       (concat v (if ,extension
+										 (concat (file-name-base* ,file) "." ,extension)
                    (file-name-nondirectory ,file))))))
 
 
@@ -76,8 +76,7 @@
 
 ;; compile macro
 
-(defmacro compile-and-load-file* (vdir file
-																			 &optional only-compile delete-booster)
+(defmacro compile-and-load-file* (vdir file &optional only-compile delete-booster)
   "Compile FILE and save the compiled one in VDIR then load it if ONLY-COMPILE is nil.
 
 If DELETE-BOOSTER is non nil then delete booster source FILE after compiled."
