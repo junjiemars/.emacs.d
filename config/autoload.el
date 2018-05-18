@@ -38,12 +38,16 @@
   (global-set-key (kbd "C-x r g") 'string-insert-rectangle)
 
 
+	(with-eval-after-load 'grep
+		(define-key* grep-mode-map (kbd "g") #'recompile grep)
+		(define-key* grep-mode-map (kbd "q") #'quit-window grep))
+
+	
 	(feature-bing-dict-supported-p
 		(package-spec-:allowed-p
 
 			;; `bing-dict'
 			(global-set-key (kbd "C-c d") 'bing-dict-brief)))
-
 	
   )
 
@@ -72,16 +76,11 @@
 		(compile-unit (emacs-home* "config/on-hippie-autoload.el"))
 		(compile-unit (emacs-home* "config/on-lisp-autoload.el"))
 		(feature-linum-supported-p
-			(compile-unit (emacs-home* "config/on-linum-autoload.el")))
-		)
+			(compile-unit (emacs-home* "config/on-linum-autoload.el"))))
 
 	
 	(with-eval-after-load 'sh-script
 		(add-hook 'sh-mode-hook #'set-sh-mode!))
-
-	(with-eval-after-load 'grep
-		(define-key* grep-mode-map (kbd "g") #'recompile grep)
-		(define-key* grep-mode-map (kbd "q") #'quit-window grep))
 
 
   )
@@ -89,15 +88,18 @@
  ;; end of set-flavor-mode!
 
 
+;; set-self-epilogue!
+(defun set-self-epilogue! ()
+	(compile!
+			v-dir
+		(compile-unit (self-def-path-ref-> :epilogue))))
+
+ ;; end of set-self-epilogue!
+
+
+
 ;; after-init
 (add-hook 'after-init-hook #'set-flavor-mode! t)
 (add-hook 'after-init-hook #'set-global-key! t)
+(add-hook 'after-init-hook #'set-self-epilogue! t)
 
-;; autoload declarations
-(autoload 'system-cc-include
-	(v-home% "config/" "cc.elc")
-	"Return a list of system include directories.")
-
-(autoload 'use-cc
-	(v-home% "config/" "cc.elc")
-	"Use `semantic-mode' in`c-mode'")

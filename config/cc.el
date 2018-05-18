@@ -78,7 +78,8 @@
 
 This should be set with `system-cc-include'")
 
-(defun system-cc-include (cached)
+;;;###autoload
+(defun system-cc-include (&optional cached)
   "Returns a list of system include directories. 
 
 Load `system-cc-include' from file when CACHED is t, 
@@ -104,8 +105,9 @@ otherwise check cc include on the fly."
 
 (feature-semantic-supported-p
 
- (defun use-cc (&optional project-includes project-roots preprocessors)
-	 "Use `semantic-mode' in`c-mode'.
+	;;;###autoload
+	(defun use-cc (&optional project-includes project-roots preprocessors)
+		"Use `semantic-mode' in`c-mode'.
 
 PROJECT-INCLUDES specify C include directories
 via `semantic-add-system-include',
@@ -118,19 +120,19 @@ PREPROCESSORS specify C preprocessors
 via `semantic-lex-c-preprocessor-symbol-map'
 
 Use `semantic-c-describe-environment' to describe the current C environment."
-	 (semantic-reset-system-include 'c-mode)
-	 (dolist (x (append (system-cc-include t)
-											project-includes))
-		 (semantic-add-system-include x 'c-mode))
-	 (setq% semanticdb-project-roots project-roots semantic/db)
-	 (when-fn% global-semantic-idle-summary-mode semantic
-		 (global-semantic-idle-summary-mode))
-	 (when-fn% semantic-ia-fast-jump semantic
-		 (global-set-key (kbd "C-c , f") #'semantic-ia-fast-jump))
-	 (when-fn% semantic-ia-complete-symbol semantic
-		 (global-set-key (kbd "C-c , TAB") #'semantic-ia-complete-symbol))
-	 (setq% semantic-lex-c-preprocessor-symbol-map
-					preprocessors semantic/bovine/c)))
+		(semantic-reset-system-include 'c-mode)
+		(dolist (x (append (system-cc-include t)
+											 project-includes))
+			(semantic-add-system-include x 'c-mode))
+		(setq% semanticdb-project-roots project-roots semantic/db)
+		(when-fn% global-semantic-idle-summary-mode semantic
+			(global-semantic-idle-summary-mode))
+		(when-fn% semantic-ia-fast-jump semantic
+			(global-set-key (kbd "C-c , f") #'semantic-ia-fast-jump))
+		(when-fn% semantic-ia-complete-symbol semantic
+			(global-set-key (kbd "C-c , TAB") #'semantic-ia-complete-symbol))
+		(setq% semantic-lex-c-preprocessor-symbol-map
+					 preprocessors semantic/bovine/c)))
 
 
 (provide 'cc)
