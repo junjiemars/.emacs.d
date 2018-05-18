@@ -121,13 +121,6 @@
   ;;enable apropos-do-all, but slower
   (setq% apropos-do-all t apropos)
 
-  ;; on Drawin: ls does not support --dired;
-  ;; see `dired-use-ls-dired' for more defails
-  (platform-supported-when
-      darwin
-    (with-eval-after-load 'dired
-      (setq% ls-lisp-use-insert-directory-program nil)))
-
 
   ;; Makes killing/yanking interact with the clipboard
 
@@ -185,7 +178,6 @@
 
 	(with-eval-after-load 'sh-script
 		(add-hook 'sh-mode-hook #'set-sh-mode!))
-  
 	
 
 	(with-eval-after-load 'grep
@@ -194,6 +186,7 @@
 
 	(compile! v-dir
 		(compile-unit (emacs-home* "config/on-compile-autoload.el"))
+		(compile-unit (emacs-home* "config/on-dired-autoload.el"))
 		(compile-unit (emacs-home* "config/on-lisp-autoload.el")))
 	
    ;; end of package: paredit
