@@ -15,7 +15,7 @@
 (def-self-env-spec
   :theme (list :name 'dracula
                :path (emacs-home* "theme/")
-							 :compile nil
+							 :compile nil ;; expert option
                :allowed t)
 
   :font (list :name (platform-supported-if darwin

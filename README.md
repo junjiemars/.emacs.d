@@ -172,6 +172,7 @@ The theme's spec locate in ```(emacs-home* "private/self-env-spec.el")```
 (def-self-env-spec
   :theme (list :name 'atom-one-dark
                :path (emacs-home* "theme/")
+			   :compile nil ;; expert option
                :allowed t))
 ```
 

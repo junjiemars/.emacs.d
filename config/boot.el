@@ -95,7 +95,8 @@
 
 If theme DIR is nil then load the built-in theme by NAME."
 			(when (and dir (file-exists-p dir))
-				(add-to-list 'custom-theme-load-path dir nil #'string=))
+				;; (add-to-list 'custom-theme-load-path dir nil #'string=)
+				(setq custom-theme-directory dir))
 			(version-supported-if >= 24.1
 														(load-theme name)
 				(load-theme name t))))
@@ -105,17 +106,23 @@ If theme DIR is nil then load the built-in theme by NAME."
 (theme-supported-p
 
     (when (self-spec->*env-spec :theme :allowed)
-			(if (self-spec->*env-spec :theme :compile)
-					(let ((p (format "%s%s-theme.el"
-													 (self-spec->*env-spec :theme :path)
-													 (self-spec->*env-spec :theme :name))))
-						(when (compile-and-load-file* v-dir p t t)
-							(self-load-theme! (self-spec->*env-spec :theme :name)
-																(format "%s%s/"
-																				(self-spec->*env-spec :theme :path)
-																				v-dir))))
-				(self-load-theme! (self-spec->*env-spec :theme :name)
-													(self-spec->*env-spec :theme :path)))))
+			(cond ((and (self-spec->*env-spec :theme :compile)
+									(self-spec->*env-spec :theme :name)
+									(self-spec->*env-spec :theme :path))
+						 (when (compile-and-load-file*
+										v-dir
+										(concat (self-spec->*env-spec :theme :path)
+														(symbol-name
+														 (self-spec->*env-spec :theme :name))
+														"-theme.el")
+										t t)
+							 (self-load-theme! (self-spec->*env-spec :theme :name)
+																 (concat
+																	(self-spec->*env-spec :theme :path)
+																	v-dir "/"))))
+						((self-spec->*env-spec :theme :name)
+						 (self-load-theme! (self-spec->*env-spec :theme :name)
+															 (self-spec->*env-spec :theme :path))))))
 
 
  ;; end of theme-supported-p
