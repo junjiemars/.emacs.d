@@ -166,7 +166,7 @@ Check Emacs configurations:
 * [Desktop](#desktop)
 * [Socks](#socks)
 * [Package](#package)
-
+* [Indent](#indent)
 
 
 ### Theme
