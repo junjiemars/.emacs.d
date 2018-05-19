@@ -7,9 +7,10 @@
 ;;;
 
 
-;; Run order: env-spec -> prelogue -> package-spec -> epilogue
+;; Run order: :env-spec -> :prelogue -> :package-spec -> :epilogue
 ;; You can point to your Gited Emacs' configuration repo.
-;; There samples `self-*.el' in `(emacs-home* "private/")' directory.
+;; Default samples `self-*.el' in `(emacs-home* "private/")' directory.
+;; :epilogue run in `after-init-hook'
 
 
 (def-self-path-ref
