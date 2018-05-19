@@ -27,7 +27,7 @@
 <img title="Monaco Font" alt="Monaco Font"
     width="60%"
     align="middle"
-	src="https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/monaco.png" />
+	src="https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/monaco-font.png" />
 
 
 * [CJK](https://en.wikipedia.org/wiki/List_of_CJK_fonts)
