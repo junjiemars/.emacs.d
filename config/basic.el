@@ -238,7 +238,9 @@ Examples:
 												 (if (not ln) t
 													 (not (or (string= "." ln)
 																		(and (>= (length a) (length ln))
-																				 (string= ln (substring a 0 (length ln))))))))
+																				 (string=
+																					ln
+																					(substring a 0 (length ln))))))))
 											 (funcall df f a))
 							(and dn (funcall dn a))
 							(dir-iterate a ff df fn dn))
