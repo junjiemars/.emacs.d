@@ -67,58 +67,58 @@
 (font-supported-p
 
     (defsubst self-cjk-font! (name size)
-			"Set CJK font's NAME and SIZE in graphic mode."
-			(when (font-exists-p name)
-				(when-fn% set-fontset-font nil
-					(dolist (c '(han kana cjk-misc))
-						(set-fontset-font (frame-parameter nil 'font)
-															c (font-spec :family name
-																					 :size size)))))))
+	  "Set CJK font's NAME and SIZE in graphic mode."
+	  (when (font-exists-p name)
+		(when-fn% set-fontset-font nil
+		  (dolist (c '(han kana cjk-misc))
+			(set-fontset-font (frame-parameter nil 'font)
+							  c (font-spec :family name
+										   :size size)))))))
 
 (font-supported-p
     
     ;; Load cjk font
     (when (self-spec->*env-spec :cjk-font :allowed)
       (self-cjk-font! (self-spec->*env-spec :cjk-font :name)
-		      (self-spec->*env-spec :cjk-font :size))))
+					  (self-spec->*env-spec :cjk-font :size))))
 
 ;; End of font-supported-p
 
 (theme-supported-p
     
     (defsubst self-load-theme! (name &optional dir)
-			"`load-theme' in DIR by NAME.
+	  "`load-theme' in DIR by NAME.
 
 If theme DIR is nil then load the built-in theme by NAME."
-			(when (and dir (file-exists-p dir))
-				;; (add-to-list 'custom-theme-load-path dir nil #'string=)
-				(setq custom-theme-directory dir))
-			(version-supported-if >= 24.1
-														(load-theme name)
-				(load-theme name t))))
+	  (when (and dir (file-exists-p dir))
+		;; (add-to-list 'custom-theme-load-path dir nil #'string=)
+		(setq custom-theme-directory dir))
+	  (version-supported-if >= 24.1
+							(load-theme name)
+		(load-theme name t))))
 
 
 ;; Load theme
 (theme-supported-p
 
     (when (self-spec->*env-spec :theme :allowed)
-			(cond ((and (self-spec->*env-spec :theme :compile)
-									(self-spec->*env-spec :theme :name)
-									(self-spec->*env-spec :theme :path))
-						 (when (compile-and-load-file*
-										v-dir
-										(concat (self-spec->*env-spec :theme :path)
-														(symbol-name
-														 (self-spec->*env-spec :theme :name))
-														"-theme.el")
-										t t)
-							 (self-load-theme! (self-spec->*env-spec :theme :name)
-																 (concat
-																	(self-spec->*env-spec :theme :path)
-																	v-dir "/"))))
-						((self-spec->*env-spec :theme :name)
-						 (self-load-theme! (self-spec->*env-spec :theme :name)
-															 (self-spec->*env-spec :theme :path))))))
+	  (cond ((and (self-spec->*env-spec :theme :compile)
+				  (self-spec->*env-spec :theme :name)
+				  (self-spec->*env-spec :theme :path))
+			 (when (compile-and-load-file*
+					v-dir
+					(concat (self-spec->*env-spec :theme :path)
+							(symbol-name
+							 (self-spec->*env-spec :theme :name))
+							"-theme.el")
+					t t)
+			   (self-load-theme! (self-spec->*env-spec :theme :name)
+								 (concat
+								  (self-spec->*env-spec :theme :path)
+								  v-dir "/"))))
+			((self-spec->*env-spec :theme :name)
+			 (self-load-theme! (self-spec->*env-spec :theme :name)
+							   (self-spec->*env-spec :theme :path))))))
 
 
  ;; end of theme-supported-p

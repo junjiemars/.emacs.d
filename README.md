@@ -290,7 +290,21 @@ packages can be done in ```(def-self-env-spec)```.
 ```lisp
 (def-self-env-spec
   :package (list :remove-unused nil
-	  :allowed t))
+                 :allowed nil)
+	  
+```
+
+
+
+### Indent
+
+Avoiding a war.
+
+```lisp
+(def-self-env-spec
+  :indent (list :tab-with 2
+				:allowed t)
+
 ```
 
 

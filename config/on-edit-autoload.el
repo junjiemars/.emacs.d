@@ -101,3 +101,23 @@
 
 ;; enable column number mode
 (setq% column-number-mode t simple)
+
+
+;; indent
+(when (self-spec->*env-spec :indent :allowed)
+  
+  ;; don't use hard tabs
+  ;; (setq indent-tabs-mode
+	;; 			(self-spec->*env-spec :indent :indent-tabs-mode))
+
+  ;; ;; disable electric indent mode
+  ;; (setq% electric-indent-mode
+	;; 			 (self-spec->*env-spec :indent :electric-indent-mode)
+	;; 			 electric)
+  
+  ;; default tab-width
+  (setq-default tab-width
+								(self-spec->*env-spec :indent :tab-with))
+	)
+
+ ;; end of indent

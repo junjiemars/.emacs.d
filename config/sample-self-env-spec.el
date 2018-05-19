@@ -64,6 +64,11 @@
                :server "127.0.0.1"
                :version 5
                :allowed nil)
-	
-	:package (list :remove-unused nil
-								 :allowed nil))
+  
+  :package (list :remove-unused nil
+								 :allowed nil)
+
+  :indent (list :tab-with 2
+								:allowed t)
+  
+  )
