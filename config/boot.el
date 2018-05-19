@@ -56,11 +56,7 @@
 			"Set default FONT in graphic mode."
 			(when (font-exists-p font)
 				(add-to-list 'default-frame-alist (cons 'font font))
-				(set-face-attribute 'default t :font font)
-				(set-face-attribute 'default nil :font font)
-				(version-supported-if <= 24.0
-															(set-frame-font font nil t)
-					(set-frame-font font)))))
+				(set-face-attribute 'default nil :font font))))
 
 (font-supported-p
     
