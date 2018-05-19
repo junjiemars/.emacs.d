@@ -45,30 +45,32 @@
 	 (add-hook 'semantic-mode-hook
 						 #'(lambda ()
 								 (platform-supported-if windows-nt
-										 (use-cc `("d:/opt/open/ecl/"
-															 "d:/opt/open/ecl/build/"
-															 "d:/opt/open/gambit/"
-															 "e:/apps/c/out/"
-															 "e:/apps/c/src/hi/"
-															 "e:/apps/c/src/io/"
-															 "e:/apps/c/src/lang/"
-															 "e:/apps/c/src/memory/"
-															 "e:/apps/c/src/posix/"
-															 ,source-directory)
-														 `("e:/apps/c/"
-															 ,source-directory))
-									 (use-cc `("/opt/apps/c/out/"
-														 "/opt/apps/c/src/hi/"
-														 "/opt/apps/c/src/io/"
-														 "/opt/apps/c/src/lang/"
-														 "/opt/apps/c/src/memory/"
-														 "/opt/apps/c/src/posix/"
-														 "/opt/open/ecl/build/"
-														 "/opt/open/gambit/"
-														 "/opt/opt/open/ecl/"
-														 ,source-directory)
-													 `("/opt/apps/c/"
-														 ,source-directory))))
+										 (set-semantic-cc-env!
+											`("d:/opt/open/ecl/"
+												"d:/opt/open/ecl/build/"
+												"d:/opt/open/gambit/"
+												"e:/apps/c/out/"
+												"e:/apps/c/src/hi/"
+												"e:/apps/c/src/io/"
+												"e:/apps/c/src/lang/"
+												"e:/apps/c/src/memory/"
+												"e:/apps/c/src/posix/"
+												,source-directory)
+											`("e:/apps/c/"
+												,source-directory))
+									 (set-semantic-cc-env!
+										`("/opt/apps/c/out/"
+											"/opt/apps/c/src/hi/"
+											"/opt/apps/c/src/io/"
+											"/opt/apps/c/src/lang/"
+											"/opt/apps/c/src/memory/"
+											"/opt/apps/c/src/posix/"
+											"/opt/open/ecl/build/"
+											"/opt/open/gambit/"
+											"/opt/opt/open/ecl/"
+											,source-directory)
+										`("/opt/apps/c/"
+											,source-directory))))
 						 t)))
 
 

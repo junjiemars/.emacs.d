@@ -76,13 +76,23 @@
 		(compile-unit (emacs-home* "config/on-hippie-autoload.el"))
 		(compile-unit (emacs-home* "config/on-lisp-autoload.el"))
 		(feature-linum-supported-p
-			(compile-unit (emacs-home* "config/on-linum-autoload.el"))))
+			(compile-unit (emacs-home* "config/on-linum-autoload.el")))
+		(feature-semantic-supported-p
+			(compile-unit (emacs-home* "config/on-semantic-autoload.el"))))
 
 	
 	(with-eval-after-load 'sh-script
 		(add-hook 'sh-mode-hook #'set-sh-mode!))
 
 
+	(autoload 'system-cc-include
+		(v-home% "config/" "cc.elc")
+		"Return a list of system include directories.")
+
+	(autoload 'set-semantic-cc-env!
+		(v-home% "config/" "on-semantic-autoload.elc"))
+
+	
   )
 
  ;; end of set-flavor-mode!
