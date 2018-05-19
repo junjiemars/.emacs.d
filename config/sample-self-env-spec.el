@@ -68,7 +68,7 @@
   :package (list :remove-unused nil
 								 :allowed nil)
 
-  :indent (list :tab-with 4
-								:allowed nil)
+  :indent (list :tab-with 2
+								:allowed t)
   
   )
