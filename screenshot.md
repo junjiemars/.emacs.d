@@ -25,7 +25,7 @@
 * [Monaco](https://github.com/cstrap/monaco-font)
 
 <img title="Monaco Font" alt="Monaco Font"
-    width="70%"
+    width="60%"
     align="middle"
 	src="https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/monaco-font.png" />
 
