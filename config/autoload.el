@@ -70,15 +70,22 @@
 
 
 	(compile! v-dir
+		(compile-unit (emacs-home* "config/cc.el") t)
+		(compile-unit (emacs-home* "config/financial.el") t)
+		(compile-unit (emacs-home* "config/tags.el") t)
+		
 		(compile-unit (emacs-home* "config/on-compile-autoload.el"))
 		(compile-unit (emacs-home* "config/on-dired-autoload.el"))
 		(compile-unit (emacs-home* "config/on-edit-autoload.el"))
 		(compile-unit (emacs-home* "config/on-hippie-autoload.el"))
 		(compile-unit (emacs-home* "config/on-lisp-autoload.el"))
+		
 		(feature-linum-supported-p
 			(compile-unit (emacs-home* "config/on-linum-autoload.el")))
 		(feature-semantic-supported-p
-			(compile-unit (emacs-home* "config/on-semantic-autoload.el"))))
+			(compile-unit (emacs-home* "config/on-semantic-autoload.el")))
+
+		(compile-unit (emacs-home* "config/use-python.el") t))
 
 	
 	(with-eval-after-load 'sh-script

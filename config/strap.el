@@ -356,10 +356,6 @@ The name is made by appending a number to PREFIX, default \"G\"."
   ;; (compile-unit (emacs-home* "config/lldb.el") t)
 	(compile-unit (emacs-home* "config/on-module.el"))
   (compile-unit (emacs-home* "config/eshells.el"))
-  (compile-unit (emacs-home* "config/financial.el") t)
-  (compile-unit (emacs-home* "config/use-python.el") t)
-  (compile-unit (emacs-home* "config/tags.el") t)
-  (compile-unit (emacs-home* "config/cc.el") t)
   (compile-unit (emacs-home* "config/autoload.el"))
   ;; --batch mode: disable desktop read/save
   `,(unless noninteractive 
