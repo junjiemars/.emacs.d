@@ -72,7 +72,7 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
 (defmacro var->paths (var)
   "Refine VAR like $PATH to list by `path-separator'."
-  `(split-string% ,var path-separator t "[ ]+\n"))
+  `(split-string* ,var path-separator t "[ ]+\n"))
 
 
 

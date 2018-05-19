@@ -56,7 +56,7 @@
         (when cc-env-bat
           (var->paths
            (car (nreverse 
-                 (split-string%
+                 (split-string*
                   (shell-command-to-string cc-env-bat)
                   "\n" t "\"")))))))
 
@@ -67,7 +67,7 @@
      (drop-while
       (lambda (p)
         (string-match "#include <...> search starts here:" p))
-      (split-string%
+      (split-string*
        (shell-command-to-string
         "echo '' | cc -v -E 2>&1 >/dev/null -")
        "\n" t "[ \t\n]")))))

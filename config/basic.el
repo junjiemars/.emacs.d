@@ -151,8 +151,8 @@ function definition in Emacs25-."
 
 (version-supported-if
 		<= 24.4
-		(defalias 'split-string% 'split-string)
-	(defun split-string% (string &optional separators omit-nulls trim)
+		(defalias 'split-string* 'split-string)
+	(defun split-string* (string &optional separators omit-nulls trim)
 		"Split STRING into substrings bounded by matches for SEPARATORS, 
 like `split-string' Emacs 24.4+"
 		(if trim
