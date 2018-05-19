@@ -295,19 +295,6 @@ packages can be done in ```(def-self-env-spec)```.
 ```
 
 
-
-### Indent
-
-Avoiding a war.
-
-```lisp
-(def-self-env-spec
-  :indent (list :tab-with 2
-				:allowed t)
-
-```
-
-
 * ```:cond```: decide whether to install ```:packages``` or compile ```:compile```
 * ```:packages```: a list of package names or tar file names
 * ```:compile```: a list of files that should be compiled only or be loaded after be compiled
@@ -360,6 +347,18 @@ The default package spec locate in ```(emacs-home* "private/self-package-spec.el
    :packages '(slime)
    :compile `(,(compile-unit (emacs-home* "config/use-slime.el"))
               ,(compile-unit (emacs-home* "config/use-slime-autoload.el")))))
+```
+
+
+### Indent
+
+Avoiding a war.
+
+```lisp
+(def-self-env-spec
+  :indent (list :tab-with 2
+				:allowed t)
+
 ```
 
 
