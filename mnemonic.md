@@ -11,6 +11,7 @@
 * [Bookmarks](#bookmarks)
 * [Region and Rectangle](#region-and-rectangle)
 * [Keyboard Macro](#keyboard-macro)
+* [Dired](#Dired)
 * [Shell](#shell)
 * [Remote](#remote)
 * [LaTex Requirements](#latex-requirements)
@@ -152,6 +153,8 @@ Unlike registers, bookmarks have long names, and they persist automatically from
 * playback macro: <kbd>C-x e</kbd>
 * apply macro to region lines: <kbd>C-x C-k r</kbd>
 
+## Dired
+* dired hide details: <kbd>(</kbd>
 
 ## Shell
 * EShell: <kbd>M-x eshell</kbd>
