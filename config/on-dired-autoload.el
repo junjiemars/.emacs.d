@@ -9,7 +9,8 @@
 
 ;; on Drawin: ls does not support --dired;
 ;; see `dired-use-ls-dired' for more defails
-(platform-supported-when
-		darwin
-	(with-eval-after-load 'dired
-		(setq% ls-lisp-use-insert-directory-program nil)))
+
+(with-eval-after-load 'dired
+	(platform-supported-when
+			darwin
+		(setq% dired-use-ls-dired nil dired)))
