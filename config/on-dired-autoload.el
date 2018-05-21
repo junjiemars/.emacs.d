@@ -13,4 +13,15 @@
 (with-eval-after-load 'dired
 	(platform-supported-when
 			darwin
-		(setq% dired-use-ls-dired nil dired)))
+		(setq% dired-use-ls-dired nil dired))
+
+	(platform-supported-when
+			windows-nt
+		(when-var%
+		 dired-compress-files-alist dired-aux
+		 (unless (executable-find "zip")
+			 (let ((zip (assoc "\\.zip\\'" dired-compress-files-alist)))
+				 (when (and zip (executable-find "minizip"))
+					 (setq dired-compress-files-alist
+								 (append (remove zip dired-compress-files-alist)
+												 '(("\\zip\\'" . "minizip %o -9 %i"))))))))))
