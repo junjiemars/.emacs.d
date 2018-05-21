@@ -20,8 +20,10 @@
 		(when-var%
 		 dired-compress-files-alist dired-aux
 		 (unless (executable-find% "zip")
+			 (require 'dired-aux)
 			 (let ((zip (assoc "\\.zip\\'" dired-compress-files-alist)))
-				 (when (and zip (executable-find% "minizip"))
+				 (when (and zip (string-match-p "^zip" (cdr zip))
+										(executable-find% "minizip"))
 					 (setq dired-compress-files-alist
 								 (append (remove zip dired-compress-files-alist)
-												 '(("\\zip\\'" . "minizip %o -9 %i"))))))))))
+												 '(("\\.zip\\'" . "minizip %o -9 %i"))))))))))
