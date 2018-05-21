@@ -154,7 +154,8 @@ Unlike registers, bookmarks have long names, and they persist automatically from
 * apply macro to region lines: <kbd>C-x C-k r</kbd>
 
 ## Dired
-* dired hide details: <kbd>(</kbd>
+* hide details: <kbd>(</kbd>
+* change marks: <kbd>* c </kbd>
 
 ## Shell
 * EShell: <kbd>M-x eshell</kbd>
