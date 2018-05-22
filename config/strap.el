@@ -74,7 +74,7 @@ If (eq `system-type' OS) yields nil, and there are no ELSE’s, the value is nil
 
 
 (defmacro setq% (x val &optional feature)
-  "Set X when variable X is bound.
+  "Set X to the value of its VAL when variable X is bound.
 If X requires the FEATURE load it on compile-time."
   ;; (declare (debug t))
   (when feature (require feature nil t))
