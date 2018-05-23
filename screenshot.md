@@ -95,3 +95,4 @@ _bash_ and _ansi-term_ coexisting on Windows
 
 
 
+[mnemonic](mnemonic.md) | [readme](README.md)
