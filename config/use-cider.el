@@ -55,10 +55,9 @@
 			(add-hook 'cider-repl-mode-hook #'set-cider-repl-mode!))))
 
 
-;; If there are no Java env, but try to load `use-cider'
-;; will trigger a comile-warning
-;; check :shell settings in `def-self-env-spec'
-;; (declare-function org-bookmark-jump-unhide "org")
+;; It's a bug in cider/clojure
+(when-fn% org-bookmark-jump-unhide org
+	(declare-function org-bookmark-jump-unhide "org"))
 
 
 (provide 'use-cider)
