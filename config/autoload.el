@@ -45,11 +45,9 @@
 		(define-key* grep-mode-map (kbd "q") #'quit-window grep))
 
 	
-	(feature-bing-dict-supported-p
-		(package-spec-:allowed-p
-
-			;; `bing-dict'
-			(global-set-key (kbd "C-c d") #'bing-dict-brief)))
+	(feature-allowed-p bing-dict
+		;; `bing-dict'
+		(global-set-key (kbd "C-c d") #'bing-dict-brief))
 	
   )
 

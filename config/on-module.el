@@ -13,3 +13,13 @@
 
 
 (def-feature-supported-p bing-dict nil)
+
+
+(defmacro feature-allowed-p (feature &rest body)
+	"Run BODY when FEATURE supported and allowed."
+	(declare (indent 1))
+	(let ((supported (intern (format "feature-%s-supported-p" feature))))
+		(when (fboundp supported)
+			`(,supported
+				(package-spec-:allowed-p
+					,@body)))))
