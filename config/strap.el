@@ -354,7 +354,6 @@ The name is made by appending a number to PREFIX, default \"G\"."
 (compile!
     v-dir
   ;; (compile-unit (emacs-home* "config/lldb.el") t)
-	(compile-unit (emacs-home* "config/on-module.el"))
   (compile-unit (emacs-home* "config/eshells.el"))
   (compile-unit (emacs-home* "config/autoload.el"))
   ;; --batch mode: disable desktop read/save
