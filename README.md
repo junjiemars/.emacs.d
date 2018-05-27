@@ -356,8 +356,9 @@ Avoiding a war.
 
 ```lisp
 (def-self-env-spec
-  :indent (list :tab-with 2
-                :allowed t)
+  :edit (list :tab-with 2
+              :auto-save-default nil
+              :allowed t)
 
 ```
 

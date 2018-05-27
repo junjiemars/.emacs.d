@@ -47,9 +47,6 @@
 (feature-eww-supported-p
 	(set-default-browser!))
 
-;; disable auto-save mode
-(setq auto-save-default nil)
-
 ;; enable save-place
 (version-supported-if
 		<= 25.1
@@ -103,21 +100,22 @@
 (setq% column-number-mode t simple)
 
 
-;; indent
-(when (self-spec->*env-spec :indent :allowed)
-  
+;; :edit
+(when (self-spec->*env-spec :edit :allowed)
   ;; don't use hard tabs
   ;; (setq indent-tabs-mode
-	;; 			(self-spec->*env-spec :indent :indent-tabs-mode))
+  ;; 			(self-spec->*env-spec :indent :indent-tabs-mode))
 
   ;; ;; disable electric indent mode
   ;; (setq% electric-indent-mode
-	;; 			 (self-spec->*env-spec :indent :electric-indent-mode)
-	;; 			 electric)
+  ;; 			 (self-spec->*env-spec :indent :electric-indent-mode)
+  ;; 			 electric)
   
   ;; default tab-width
-  (setq-default tab-width
-								(self-spec->*env-spec :indent :tab-with))
-	)
+  (setq-default tab-width (self-spec->*env-spec :edit :tab-with))
+
+  (setq auto-save-default (self-spec->*env-spec :edit :auto-save-default))
+  
+  )
 
  ;; end of indent

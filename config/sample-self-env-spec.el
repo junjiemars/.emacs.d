@@ -68,7 +68,8 @@
   :package (list :remove-unused nil
 								 :allowed nil)
 
-  :indent (list :tab-with 2
-								:allowed t)
+  :edit (list :tab-with 2
+							:auto-save-default nil
+							:allowed t)
   
   )
