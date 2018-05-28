@@ -247,7 +247,7 @@ The name is made by appending a number to PREFIX, default \"G\"."
 (defmacro def-self-path-ref (&rest path)
   "Define the PATH references for all specs in `self-path.el'.
 
-If there are no self-path.el under private/ directory, 
+If there are no self-path.el under (emacs-home* \"private/\") directory, 
 More Reasonable Emacs should create a default one:
 
 (def-self-path-ref
@@ -266,9 +266,18 @@ No matter the declaration order, the executing order is:
 
 
 (defmacro def-self-env-spec (&rest spec)
-  "Define default Emacs env SPEC of current platform on current `emacs-version'."
+  "Define default Emacs env SPEC.
+
+If there are no self-path.el under (emacs-home* \"private/\") directory, 
+More Reasonable Emacs should create a default (emacs-home* \"private/self-env-spec.el\").
+
+Involves: :theme, :font, :cjk-font, :shell, :eshell, :socks, :package, :edit
+
+Take effect after restart Emacs.
+"
   (declare (indent 0))
-  `(defvar ,(self-symbol 'env-spec) (list ,@spec)))
+  `(defvar ,(self-symbol 'env-spec) (list ,@spec)
+		 "Define the environment specs."))
 
 
 (defmacro def-self-package-spec (&rest spec)
