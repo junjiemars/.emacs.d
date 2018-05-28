@@ -245,9 +245,24 @@ The name is made by appending a number to PREFIX, default \"G\"."
 
 
 (defmacro def-self-path-ref (&rest path)
-  "Define the PATH references for all specs in `self-path.el'."
+  "Define the PATH references for all specs in `self-path.el'.
+
+If there are no self-path.el under private/ directory, 
+More Reasonable Emacs should create a default one:
+
+(def-self-path-ref
+  :env-spec (emacs-home* \"private/self-env-spec.el\")
+  :prologue (emacs-home* \"private/self-prologue.el\")
+  :package-spec (emacs-home* \"private/self-package-spec.el\")
+  :epilogue (emacs-home* \"private/self-epilogue.el\"))
+
+No matter the declaration order, the executing order is:
+:env-spec -> :prologue -> :package-spec -> :epilogue
+"
   (declare (indent 0))
-  `(defvar ,(self-symbol 'path) (list ,@path)))
+  `(defvar ,(self-symbol 'path) (list ,@path)
+		 "Define the path references which point to 
+:env-spec, :prologue, :package-spec and :epilogue in order."))
 
 
 (defmacro def-self-env-spec (&rest spec)
