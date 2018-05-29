@@ -169,6 +169,7 @@ It's the duty of [TRAMP](https://www.gnu.org/software/tramp/)
 * sudo: <kbd>C-x C-f /ssh:<remote-id>|sudo:<remote-host>:/path/to/file</kbd>, *<remote-host>*
 such as *x@localhost* or *localhost* if the user *x* is a sudoer.
 * eshell remote: <kbd>cd /ssh:<user>@<remote>:<dir></kbd>
+* on Windows use ```~/.ssh/config```: use ```/sshx:``` instead, such as <kbd>/sshx:<remote-id>:/path/to/file</kbd>
 
 
 ## LaTex Requirements
