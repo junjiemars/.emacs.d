@@ -9,6 +9,9 @@
 
 
 (def-self-package-spec
+	(list
+	 :cond t
+	 :packages '(markdown-mode))
   (list
    :cond (executable-find% "latex")
    :packages '(auctex cdlatex))

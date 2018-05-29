@@ -117,7 +117,6 @@
          :cond t
          :packages `(aggressive-indent
                      bing-dict
-                     markdown-mode
                      paredit
                      rainbow-delimiters
                      ,(version-supported-when <= 24.1 'yaml-mode))
