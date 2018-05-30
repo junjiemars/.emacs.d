@@ -184,6 +184,8 @@ on Darwin
 * texlive-plain-generic
 
 on Ubuntu:
+* texlive
+* texlive-latex-extra
 
 on Windows:
 * ImageMagick
