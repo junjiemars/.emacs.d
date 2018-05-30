@@ -32,9 +32,6 @@
   (global-set-key (kbd "M-%") #'query-replace-regexp)
   (global-set-key (kbd "C-M-%") #'query-replace)
 
-  ;; toggle comment key strike1
-  (global-set-key (kbd "C-c ;") #'toggle-comment)
-
   ;; `C-x r g' and `C-x r i' are all bound to insert-register
   ;; let `C-x r g' do `string-insert-rectangle'
   (global-set-key (kbd "C-x r g") #'string-insert-rectangle)

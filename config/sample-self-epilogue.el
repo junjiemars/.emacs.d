@@ -19,6 +19,10 @@
 ;; (require 'pythons)
 
 
+;; eww as default browser
+(toggle-default-browser! t)
+
+
 (with-eval-after-load 'org
   ;; define key bindings after `org-mode' had been loaded
   (global-set-key (kbd "C-c o a") 'org-agenda)

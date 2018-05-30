@@ -97,6 +97,31 @@
 (setq% column-number-mode t simple)
 
 
+;; comments
+(defun toggle-comment ()
+  "Toggle comment on current line or region."
+  (interactive)
+  (let (begin end)
+    (if-fn% region-active-p nil
+						(if (region-active-p)
+								(setq begin (region-beginning)
+											end (region-end))
+							(setq begin (line-beginning-position)
+										end (line-end-position)))
+      (if mark-active
+					(setq begin (region-beginning)
+								end (region-end))
+				(setq begin (line-beginning-position)
+							end (line-end-position))))
+		(comment-or-uncomment-region begin end)
+		(if-fn% next-logical-line nil
+						(next-logical-line)
+			(next-line))))
+
+;; toggle comment key strike1
+(global-set-key (kbd "C-c ;") #'toggle-comment)
+
+
 ;; :edit
 (when (self-spec->*env-spec :edit :allowed)
   ;; don't use hard tabs
