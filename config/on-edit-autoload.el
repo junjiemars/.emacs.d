@@ -44,9 +44,6 @@
 		(savehist-mode)
 	(savehist-mode t))
 
-(feature-eww-supported-p
-	(set-default-browser!))
-
 ;; enable save-place
 (version-supported-if
 		<= 25.1

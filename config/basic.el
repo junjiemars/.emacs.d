@@ -474,16 +474,6 @@ for which (PRED item) returns t."
 (def-feature-supported-p eww nil
 	"If `eww' feature supported then do BODY, requires Emacs-24.4+")
 
-(feature-eww-supported-p
-	
-	(defun set-default-browser! ()
-		"If `browser-url-default-browser' has not been touched, 
-then set `eww' to default browser."
-		(when (eq browse-url-browser-function
-							'browse-url-default-browser)
-			(when-fn% eww-browse-url eww
-				(setq browse-url-browser-function 'eww-browse-url)))))
-
 
 ;; compilation
 (defun colorize-compilation-buffer! ()
