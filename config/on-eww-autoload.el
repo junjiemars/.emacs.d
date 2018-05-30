@@ -31,7 +31,7 @@ positive, otherwise not.
 
 (feature-eww-supported-p
 	(defun set-eww-mode! ()
-		(toggle-truncate-lines t)))
+		(toggle-truncate-lines nil)))
 
 
 (feature-eww-supported-p
