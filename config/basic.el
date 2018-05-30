@@ -353,7 +353,19 @@ call it: ssh -vnNTD32000 <user>@<host>"
   "Switch off url-gateway to native."
   (version-supported-when < 22
     (setq% url-gateway-method
-	   (if method method 'native) url)))
+					 (if method method 'native) url)))
+
+;; (version-supported-when < 22
+
+;; 	(defun toggle-socks! (&optional arg)
+;; 		"Toggle `url-gatewary-method' to socks or native.
+;; With prefix argument ARG, `url-gatewary-method' via socks if ARG is 
+;; positive, otherwise via native."
+;; 		(interactive "P")
+;; 		(setq url-gateway-method
+;; 					(if (null arg)
+;; 							(if (eq url-gateway-method 'native)
+;; 									)))))
 
 
 
