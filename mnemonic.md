@@ -76,7 +76,9 @@ they look like
 * transpose words: <kbd>M-t</kbd>
 * insert parentheses: <kbd>M-(</kbd>, wrap selection in parentheses
 * toggle read-only mode: <kbd>C-x C-q</kbd>
-* toggle input method: <kbd>C-\</kbd>, switch to __TeX__ <kbd>C-x-RET C-\</kbd>
+* toggle input method: <kbd>C-\</kbd>
+* switch input method: <kbd>C-x RET C-\</kbd>
+* describe current input method: <kbd>C-h I</kbd>
 * insert char: <kbd>C-x 8 RET</kbd> GREEK SMALL LETTER LAMBDA
 * quoted insert: <kbd>C-q</kbd>, such as page break <kbd>C-q C-l</kbd>, use <kbd>C-x [</kbd> or <kbd>C-x ]</kbd> to backward or forward
 
