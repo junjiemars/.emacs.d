@@ -34,10 +34,11 @@
 (comment
  ;; using etags to view Emacs's source code: C and Elisp
  ;; support any platform
- (version-supported-if
-		 <= 25.2
-		 (setq source-directory "/opt/open/emacs-25/")
-	 (setq source-directory "/opt/open/emacs-22/")))
+ (setq source-directory
+			 (let ((srcdir (format "/opt/open/emacs-%s/"
+														 emacs-major-version)))
+				 (when (file-exists-p srcdir)
+					 srcdir))))
 
 
 (comment
