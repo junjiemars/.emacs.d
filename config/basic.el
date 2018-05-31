@@ -353,6 +353,7 @@ positive, otherwise via native."
 													 (self-spec->*env-spec :socks :server)
 													 (self-spec->*env-spec :socks :port)
 													 (self-spec->*env-spec :socks :version))))))
+			(require 'url)
 			(if (null arg)
 					(if (eq url-gateway-method 'native)
 							(setq-default
