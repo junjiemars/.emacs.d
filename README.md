@@ -274,6 +274,7 @@ The socks spec locate in ```(emacs-home* "private/self-env-spec.el")```
 
 ```
 
+When ```:allowed t```, ```url-gateway-method``` should be switch to ```'socks```. After Emacs initialization, you can ```toggle-socks!``` and no matter ```:allowed``` is ```t``` or ```nil```.
 
 
 ### Package

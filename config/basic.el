@@ -330,69 +330,49 @@ by shell on `system-type'"
 
 ;; Socks
 
-;; (defun start-socks! (&optional port server version)
-;;   "Switch on `url-gateway-method' to socks, you can start a ssh proxy before 
-;; call it: ssh -vnNTD32000 <user>@<host>"
-;;   (version-supported-when < 22
-;;     (setq% url-gateway-method 'socks url)
-;;     (setq-default socks-server
-;; 									(list "Default server"
-;; 												(if server server "127.0.0.1")
-;; 												(if port port 32000)
-;; 												(if version version 5)))))
+(defmacro feature-socks-supported-p (&rest body)
+	"If socks feature supported then do BODY."
+	(declare (indent 0))
+	`(version-supported-when < 22
+		 (when-var% url-gateway-method url
+								,@body)))
 
+(feature-socks-supported-p
 
-;; ;; Load socks settings
-;; (when (self-spec->*env-spec :socks :allowed)
-;;   (start-socks! (self-spec->*env-spec :socks :port)
-;; 		(self-spec->*env-spec :socks :server)
-;; 		(self-spec->*env-spec :socks :version)))
-
-
-;; (defun stop-socks! (&optional method)
-;;   "Switch off url-gateway to native."
-;;   (version-supported-when < 22
-;;     (setq% url-gateway-method
-;; 					 (if method method 'native) url)))
-
-(version-supported-when < 22
-	(when-var%
-	 url-gateway-method url
-
-	 (defun toggle-socks! (&optional arg)
-		 "Toggle `url-gatewary-method' to socks or native.
+	(defun toggle-socks! (&optional arg)
+		"Toggle `url-gatewary-method' to socks or native.
 With prefix argument ARG, `url-gatewary-method' via socks if ARG is 
 positive, otherwise via native."
-		 (interactive "P")
-		 (setq url-gateway-method
-					 (if (null arg)
+		(interactive "P")
+		(let ((native `((:url-gateway-method . native)
+										(:socks-server . nil)))
+					(socks `((:url-gateway-method . socks)
+									 (:socks-server
+										. 
+										,(list "Default server"
+													 (self-spec->*env-spec :socks :server)
+													 (self-spec->*env-spec :socks :port)
+													 (self-spec->*env-spec :socks :version))))))
+			(if (null arg)
+					(if (eq url-gateway-method 'native)
+							(setq-default
+							 url-gateway-method (alist-get :url-gateway-method socks)
+							 socks-server (alist-get :socks-server socks))
+						(setq-default
+						 url-gateway-method (alist-get :url-gateway-method native)
+						 socks-server (alist-get :socks-server native)))
+				(setq-default
+				 url-gateway-method (alist-get :url-gateway-method socks)
+				 socks-server (alist-get :socks-server socks)))
+			(message "socks%s as url gateway %s"
+							 (or (when (eq url-gateway-method 'socks)
+										 (cdr (alist-get :socks-server socks)))
+									 "")
 							 (if (eq url-gateway-method 'native)
-									 (when (self-spec->*env-spec :socks :allowed)
-										 (setq-default
-											url-gateway-method 'socks
-											socks-server (list
-																		"Default server"
-																		(self-spec->*env-spec :socks :server)
-																		(self-spec->*env-spec :socks :port)
-																		(self-spec->*env-spec :socks :version))))
-								 (setq-default url-gateway-method 'native
-															 socks-server nil))
-						 (when (self-spec->*env-spec :socks :allowed)
-							 (setq-default
-								url-gateway-method 'socks
-								socks-server (list
-															"Default server"
-															(self-spec->*env-spec :socks :server)
-															(self-spec->*env-spec :socks :port)
-															(self-spec->*env-spec :socks :version))))))
-		 (message "socks as url gateway %s"
-							(if (eq url-gateway-method 'native)
-									"disabled"
-								"enabled")))))
+									 "disabled" "enabled")))))
 
-(version-supported-when < 22
-	(when (and (self-spec->*env-spec :socks :allowed)
-						 (self-spec->*env-spec :socks :on-init))
+(feature-socks-supported-p
+	(when (self-spec->*env-spec :socks :allowed)
 		(toggle-socks! t)))
 
 
