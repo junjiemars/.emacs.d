@@ -20,7 +20,7 @@
 
 
 ;; eww as default browser
-(toggle-default-browser! t)
+(toggle-browser! t)
 
 
 (with-eval-after-load 'org

@@ -9,7 +9,7 @@
 
 (feature-eww-supported-p
 	
-	(defun toggle-default-browser! (&optional arg)
+	(defun toggle-browser! (&optional arg)
 		"Toggle default browser to `eww' or not.
 With prefix argument ARG, `eww' as default browser if ARG is 
 positive, otherwise not.
