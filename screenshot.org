@@ -19,8 +19,8 @@
 	 [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/default-theme.png]]
 
 
-** [[https://github.com/dracula/emacs][Dracula theme
-]]
+** [[https://github.com/dracula/emacs][Dracula theme]]
+
    #+attr_html: :width 60%
 	 [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/dracula-theme.png]]
 
@@ -29,14 +29,14 @@
    :CUSTOM_ID: fonts
    :END:
 
--  [[https://github.com/cstrap/monaco-font][Monaco]]
+**  [[https://github.com/cstrap/monaco-font][Monaco]]
 
-@@html:<img title="Monaco Font" alt="Monaco Font"
+@@html:<img@@ title="Monaco Font" alt="Monaco Font"
     width="60%"
     align="middle"
-    src="https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/monaco-font.png" />@@
+    src="[[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/monaco-font.png]]"@@ html:/>@@
 
--  [[https://en.wikipedia.org/wiki/List_of_CJK_fonts][CJK]]
+**  [[https://en.wikipedia.org/wiki/List_of_CJK_fonts][CJK]]
 
 @@html:<img title="CJK Fonts" alt="CJK Fonts"
     width="60%"
