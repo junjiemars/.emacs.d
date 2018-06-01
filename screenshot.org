@@ -11,22 +11,19 @@
    :CUSTOM_ID: theme
    :END:
 
--  Default theme
+** Default theme
+
+	 Simple, clean, and fast.
 	 
-	 #+attr_html: :width 60
+	 #+attr_html: :width 60%
 	 [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/default-theme.png]]
 
-@@html:<img@@ title="Default Theme" alt="Default Theme"
-    width="60%"
-    align="middle"
-    src="[[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/default-theme.png]]" @@html:/>@@
 
--  [[https://github.com/dracula/emacs][Dracula theme]]
+** [[https://github.com/dracula/emacs][Dracula theme
+]]
+   #+attr_html: :width 60%
+	 [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/dracula-theme.png]]
 
-@@html:<img title="Dracula theme" alt="Dracula theme"
-    width="60%"
-    align="middle"
-    src="[[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/dracula-theme.png]]" />@@
 * Fonts
    :PROPERTIES:
    :CUSTOM_ID: fonts
