@@ -41,3 +41,5 @@ image-dired/
 eww-bookmarks
 .sx/
 history
+**/*.pdf
+**/*.tex

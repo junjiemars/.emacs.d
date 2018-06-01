@@ -1,0 +1,444 @@
+#+TITLE: More Reasonable Emacs
+#+AUTHOR: Junjie Mars
+#+STARTUP: content
+
+* Getting start
+  :PROPERTIES:
+  :CUSTOM_ID: getting-start
+  :END:
+
+[[https://api.travis-ci.org/junjiemars/.emacs.d][[[https://api.travis-ci.org/junjiemars/.emacs.d.svg?branch=master]]]]
+
+It's works on Emacs version 22.1.1+ , and on any platform that Emacs
+supported, and multiple Emacs instances with different version or
+different mode can run on the same machine at the same time.
+
+-  clone More Reasonable Emacs from github
+
+   #+BEGIN_SRC sh
+       git clone --depth=1 https://github.com/junjiemars/.emacs.d.git ~/.emacs.d
+   #+END_SRC
+
+-  open Emacs, after Emacs compile all elisp files, then reopen Emacs
+-  want more functionalities see [[#cooking][Cooking]] section
+
+One more thing, it's best to remind you: take care, it's super fast.
+
+
+* Story
+  :PROPERTIES:
+  :CUSTOM_ID: story
+  :END:
+
+I'm a nerd with Emacs, it's awesome if I can
+[[http://edward.oconnor.cx/2009/07/learn-emacs-in-ten-years][Learn Emacs
+in less then Ten Years]]. So, I decided to start from Level One not the
+Level Zero after read Emacs' tutorial (C-h t). Emacs is the most
+powerful editor on the world there is no *one of*, it's programmable,
+elegant and *self-documenting*, so you can start from Level Zero if you
+had time may be less than 10 years to read and try Emacs.
+
+After falling in love with
+[[https://en.wikipedia.org/wiki/Lisp_(programming_language)][Lisp]], I
+know it's the time to make Emacs being a part of my body and mind, not
+just open a file, navigating, editing, and save it. The Level One of
+mine start from
+[[https://github.com/flyingmachine/emacs-for-clojure][this is a
+Clojure-friendly emacs config]], and
+[[https://github.com/purcell/emacs.d][A reasonable Emacs config]]. But,
+those ones neither can suit for my daily use on different machines.
+
+The More Reasonable Emacs strives to be fast, stable and hacker
+friendly, which can be run on anywhere where Emacs run.
+
+- [[#highlights][Highlights]]
+- [[#requirements][Requirements]]
+- [[#where][Where]]
+- [[#what][What]]
+- [[#install][Install]]
+- [[#cooking][Cooking]]
+- [[#troubleshooting][Troubleshooting]]
+- [[file:mnemonic.md][Mnemonic]]
+- [[file:screenshot.md][Screenshot]]
+
+
+Now, let's start from the Level Two. And one more thing: teach youself
+some little Elisp (M-x info).
+
+** Highlights
+   :PROPERTIES:
+   :CUSTOM_ID: highlights
+   :END:
+
+-  *Carefully designed*: just load what's your need.
+-  *Adaptive*: Can run on any OS, GUI or Terminal, from most recent
+   Emacs's versions to ancient ones, and one Emacs's configuration suit
+   for all coexisting Emacs on the same machine.
+-  *Consistent*: Whereever and whenever you can play with Emacs always
+   behaves in the same way.
+-  *Awesome style*: [[file:screenshot.md][screenshot]]
+-  *Stable*
+-  Supper *faster*
+
+** Requirements
+   :PROPERTIES:
+   :CUSTOM_ID: requirements
+   :END:
+
+-  Emacs 22.1.1+
+-  Keyboard+
+
+** Where
+   :PROPERTIES:
+   :CUSTOM_ID: where
+   :END:
+
+-  Linux, whatever GUI or Terminal
+-  Darwin, whatever GUI or Terminal
+-  Windows, whatever GUI or Terminal
+-  Raspberry Pi, Terminal
+-  No Network
+-  Docker container
+-  One machine run multiple Emacs instances with multiple versions in
+   same time
+
+** What
+   :PROPERTIES:
+   :CUSTOM_ID: what
+   :END:
+
+-  You are the master of your Emacs, ...
+-  Navigating, finding, grepping in the same way whereever, ...
+-  Org Mode that's your new life, ...
+-  Reliable programming experiments, C, Lisp, ...
+-  Bash on Windows, ...
+
+** Install
+   :PROPERTIES:
+   :CUSTOM_ID: install
+   :END:
+
+Just one thing you need to do, clone it (just <500KB) to your HOME
+directory:
+
+#+BEGIN_SRC sh
+    $ git clone --depth=1 https://github.com/junjiemars/.emacs.d.git ~/.emacs.d
+#+END_SRC
+
+First run More Reasonable Emacs, it should automatically do: * byte
+compile elisp source files. * install packages, if you enabled it and
+you have a Emacs-24.0+.
+
+After first run More Reasonable Emacs, exit and then reopen Emacs.
+
+On Windows, if you'd [[https://git-scm.com/downloads][Git-Bash]]
+installed but no Emacs, you are lucky, a one line code will do it all
+for you and more: fix some Emacs' issue for you, and you don't need run
+=git clone ...=,
+
+instead,
+
+#+BEGIN_SRC sh
+    $ HAS_EMACS=1 bash <(curl https://raw.githubusercontent.com/junjiemars/kit/master/win/install-win-kits.sh)
+#+END_SRC
+
+Now, it will works perfectly, but if you want to more control and more
+features, such as themes, packages, and fonts etc., see next section:
+[[#cooking][cooking]]
+
+** Cooking
+   :PROPERTIES:
+   :CUSTOM_ID: cooking
+   :END:
+
+Suppose your Emacs HOME at =~/.emacs.d= and annotated it as =emacs-home=
+.
+
+Your private configuration directory at =emacs-home/private/= and I
+abbreviate it as =(emacs-home* "private/")=. All things under it you can
+rename, move, delete.
+
+A magic function =(clean-compiled-files)=, all Elisp files should be
+compiled, so if meet some trouble, run it and reopen the Emacs.
+
+Directory orgnization:
+
+#+BEGIN_EXAMPLE
+    emacs-home
+    ├── LICENSE
+    ├── README.md
+    ├── config (comment "all stuff here")
+    ├── elpa (comment "installed packages")
+    ├── init.el (comment "Emacs init file")
+    ├── mnemonic.md
+    ├── private (comment "your configuration can put here")
+    │   ├── self-env-spec.el
+    │   ├── self-epilogue.el
+    │   ├── self-package-spec.el
+    │   ├── self-path.el
+    │   ├── self-prologue.el
+    ├── screenshot.md
+    └── theme (comment "themes directory")
+#+END_EXAMPLE
+
+Locate your sepc via =(emacs-home* "private/self-path.el")=.
+
+#+BEGIN_SRC lisp
+    ;; Run order: :env-spec -> :prelogue -> :package-spec -> :epilogue
+    ;; You can point to your Gited Emacs' configuration repo.
+    ;; Default samples `self-*.el' in `(emacs-home* "private/")' directory.
+    ;; :epilogue run in `after-init-hook'
+
+
+    (def-self-path-ref
+      :env-spec (emacs-home* "private/self-env-spec.el")
+      :prologue (comment (emacs-home* "private/self-prologue.el"))
+      :package-spec (comment (emacs-home* "private/self-package-spec.el"))
+      :epilogue (comment (emacs-home* "private/self-epilogue.el")))
+      
+#+END_SRC
+
+Check Emacs configurations: * =system-configuration-options= *
+=system-configuration-features= * =features=
+
+*** Topic
+    :PROPERTIES:
+    :CUSTOM_ID: topic
+    :END:
+
+-  [[#theme][Theme]]
+-  [[#font][Font]]
+-  [[#shell][Shell]]
+-  [[#eshell][Eshell]]
+-  [[#desktop][Desktop]]
+-  [[#socks][Socks]]
+-  [[#package][Package]]
+-  [[#indent][Indent]]
+
+*** Theme
+    :PROPERTIES:
+    :CUSTOM_ID: theme
+    :END:
+
+Easy to switch themes, or try a new one.
+
+The theme's spec locate in =(emacs-home* "private/self-env-spec.el")=
+
+#+BEGIN_SRC lisp
+    (def-self-env-spec
+      :theme (list :name 'atom-one-dark
+                   :path (emacs-home* "theme/")
+                   :compile nil ;; expert option
+                   :allowed t))
+#+END_SRC
+
+Compiled theme more smooth and more faster if you had already confirmed
+the theme is secure.
+
+*** Font
+    :PROPERTIES:
+    :CUSTOM_ID: font
+    :END:
+
+Easy to swtich fonts and
+[[https://en.wikipedia.org/wiki/CJK_characters][CJK]] characters, or try
+a new one. The default encoding is
+[[https://en.wikipedia.org/wiki/UTF-8][UTF-8]].
+
+The default font's spec locate in
+=(emacs-home* "private/self-env-spec.el")=
+
+#+BEGIN_SRC lisp
+    (def-self-env-spec
+      :font (list :name (platform-supported-if darwin
+                            "Monaco-14"
+                          (platform-supported-if windows-nt
+                              "Consolas-13"
+                            "DejaVu Sans Mono-12")) 
+                  :allowed t))
+#+END_SRC
+
+*** Shell
+    :PROPERTIES:
+    :CUSTOM_ID: shell
+    :END:
+
+Any =Shell=, copy environment variables, and on any platforms.
+
+[[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]]
+has a poor implementation for the same functionalities, it is unstable
+and slow. But here, We had a builtin one, and more stable and more
+faster.
+
+The shell spec locate in =(emacs-home* "private/self-env-spec.el")=
+
+#+BEGIN_SRC lisp
+    (def-self-env-spec
+      :shell (list :env-vars `("JAVA_HOME"
+                               "PYTHONPATH"
+                               ,(platform-supported-unless windows-nt
+                                  (platform-supported-if darwin
+                                      "DYLD_LIBRARY_PATH"
+                                    "LD_LIBRARY_PATH")))
+                   :interactive-shell (platform-supported-unless darwin t nil)
+                   :exec-path t
+                   :bin-path "/bin/bash"
+                   :allowed t))
+#+END_SRC
+
+*** Eshell
+    :PROPERTIES:
+    :CUSTOM_ID: eshell
+    :END:
+
+The eshell spec locate in =(emacs-home* "private/self-env-spec.el")=
+
+#+BEGIN_SRC lisp
+    (def-self-env-spec
+      :eshell (list :visual-commands '("mtr")
+                    :destroy-buffer-when-process-dies t
+                    :visual-subcommands '(("git" "log"))
+                    :visual-options nil
+                    :allowed t))
+#+END_SRC
+
+*** Desktop
+    :PROPERTIES:
+    :CUSTOM_ID: desktop
+    :END:
+
+The desktop spec locate in =(emacs-home* "private/self-env-spec.el")=
+
+#+BEGIN_SRC lisp
+    (def-self-env-spec
+      :desktop (list :files-not-to-save
+                     ".*\.t?gz\\|\.desktop\\|~$\\|\\/ssh[: ]\\|\.elc$"
+                     :buffers-not-to-save "^TAGS\\|\\.log"
+                     :modes-not-to-save
+                     '(dired-mode fundamental-mode rmail-mode)
+                     :restore-eager 8
+                     :allowed t))
+#+END_SRC
+
+*** Socks
+    :PROPERTIES:
+    :CUSTOM_ID: socks
+    :END:
+
+Using socks proxy when installing packages or browsing web pages.
+
+The socks spec locate in =(emacs-home* "private/self-env-spec.el")=
+
+#+BEGIN_SRC lisp
+    (def-self-env-spec
+      :socks (list :port 32000
+                   :server "127.0.0.1"
+                   :version 5
+                   :allowed nil))
+#+END_SRC
+
+If =:allowed t=, =url-gateway-method= should be switch to ='socks= when
+Emacs initializing. After Emacs initialization, you can =toggle-socks!=
+and no matter =:allowed= is =t= or =nil=.
+
+*** Package
+    :PROPERTIES:
+    :CUSTOM_ID: package
+    :END:
+
+Don't tell me [[https://github.com/jwiegley/use-package][use-package]],
+it's trying to redefine Emacs. Here you can find more simpler and faster
+way to implement almost functionalities that =use-pacakge= does.
+
+There are two types of packages: *basic*(just like Emacs' builtin) and
+*user defined*. To disable *user defined* packages in
+=(def-self-path-ref)=, disable both *basic* and *user defined* packages
+can be done in =(def-self-env-spec)=.
+
+#+BEGIN_SRC lisp
+    (def-self-env-spec
+      :package (list :remove-unused nil
+                     :allowed nil)
+          
+#+END_SRC
+
+-  =:cond=: decide whether to install =:packages= or compile =:compile=
+-  =:packages=: a list of package names or tar file names
+-  =:compile=: a list of files that should be compiled only or be loaded
+   after be compiled
+
+The default package spec locate in
+=(emacs-home* "private/self-package-spec.el")=
+
+#+BEGIN_SRC lisp
+    (def-self-package-spec
+      (list
+       :cond (executable-find% "latex")
+       :packages '(auctex cdlatex))
+      (list
+       :cond (and (version-supported-p <= 24.4)
+                  (executable-find% "java"))
+       :packages '(cider
+                   clojure-mode
+                   clojure-mode-extra-font-locking)
+       :compile `(,(compile-unit (emacs-home* "config/use-cider.el") t)
+                  ,(compile-unit (emacs-home* "config/use-cider-autoload.el"))))
+      (list
+       :cond (and (version-supported-p <= 24.4)
+                  (executable-find% "docker"))
+       :packages '(dockerfile-mode
+                   docker-tramp))
+      (list
+       :cond (executable-find% "erlc")
+       :packages '(erlang))
+      (list
+       :cond (and (executable-find% "erlc")
+                  (executable-find% "lfe"))
+       :packages '(lfe-mode)
+       :compile `(,(compile-unit (emacs-home* "config/use-lfe-autoload.el"))))
+      (list
+       :cond (and (terminal-supported-p t)
+                  (platform-supported-unless darwin t)
+                  (version-supported-p <= 25.1))
+       :packages '(ereader))
+      (list
+       :cond (and (version-supported-p <= 24.4)
+                  (executable-find% "git"))
+       :packages '(magit)
+       :compile `(,(compile-unit (emacs-home* "config/use-magit-autoload.el"))))
+      (list
+       :cond (and (version-supported-p <= 23.2)
+                  (or (executable-find% "racket")
+                      (executable-find% "chicken")))
+       :packages '(geiser))
+      (list
+       :cond (or (executable-find% "sbcl"))
+       :packages '(slime)
+       :compile `(,(compile-unit (emacs-home* "config/use-slime.el"))
+                  ,(compile-unit (emacs-home* "config/use-slime-autoload.el")))))
+#+END_SRC
+
+*** Indent
+    :PROPERTIES:
+    :CUSTOM_ID: indent
+    :END:
+
+Avoiding a war.
+
+#+BEGIN_SRC lisp
+    (def-self-env-spec
+      :edit (list :tab-with 2
+                  :auto-save-default nil
+                  :allowed t)
+#+END_SRC
+
+** Troubleshooting
+   :PROPERTIES:
+   :CUSTOM_ID: troubleshooting
+   :END:
+
+-  @@html:<kbd>@@M: (clean-compiled-files)@@html:</kbd>@@, then exit and
+   reopen Emacs.
+-  check =*Compilation-Log*= buffer.
+-  disable the items in =(emacs-home* "private/self-path.el")=.
+
