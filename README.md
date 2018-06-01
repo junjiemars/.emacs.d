@@ -183,6 +183,8 @@ The theme's spec locate in ```(emacs-home* "private/self-env-spec.el")```
                :allowed t))
 ```
 
+Compiled theme more smooth and more faster if you had already confirmed the theme is secure.
+
 
 ### Font
 
