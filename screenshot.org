@@ -13,10 +13,10 @@
 
 -  Default theme
 
-@@html:<img title="Default Theme" alt="Default Theme"
+@@html:<img@@ title="Default Theme" alt="Default Theme"
     width="60%"
     align="middle"
-    src="https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/default-theme.png" html:/>@@
+    src="https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/default-theme.png" @@html:/>@@
 
 -  [[https://github.com/dracula/emacs][Dracula theme]]
 
