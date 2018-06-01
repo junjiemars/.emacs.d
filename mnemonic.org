@@ -251,17 +251,16 @@ automatically from one Emacs session to the next.
 
 It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]]
 
-- non-sudo: @@html:<kbd>@@C-x C-f /ssh:user@remote:/path/to/file@@html:</kbd>@@ or @@html:<kbd>@@C-x C-f /ssh:user:/path/to/file@@html:</kbd>@@,
-such as =user@remote= or =user= in .ssh/config entries.
+- non-sudo: @@html:<kbd>@@C-x C-f /ssh:user@host:/path/to/file@@html:</kbd>@@,
+such as =user@host= or =user= in .ssh/config entries.
 
-- sudo: @@html:<kbd>@@C-x C-f /ssh:user|sudo:remote:/path/to/file@@html:</kbd>@@,
-	such as =user@localhost= or =localhost= if the =user= is a sudoer.
+- sudo: @@html:<kbd>@@C-x C-f /ssh:user|sudo:localhost:/path/to/file@@html:</kbd>@@,
+	such as =user@localhost=, here =localhost= means remote host.
 
-- eshell remote: @@html:<kbd>@@cd /ssh:<user>@<remote>:<dir>@@html:</kbd>@@
+- eshell remote: @@html:<kbd>@@cd /ssh:user@host:/path/to/file@@html:</kbd>@@
 
 - on Windows use =~/.ssh/config=: use =/sshx:= instead,
-such as
-@@html:<kbd>@@/sshx:@@html:<remote-id>@@:/path/to/file@@html:</kbd>@@
+such as  @@html:<kbd>@@/sshx:user@host:/path/to/file@@html:</kbd>@@
 
 * LaTex Requirements
    :PROPERTIES:
