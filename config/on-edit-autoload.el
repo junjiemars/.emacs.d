@@ -25,7 +25,7 @@
 
 
 ;; Changes all yes/no questions to y/n type
-(defalias 'yes-or-no-p 'y-or-n-p)
+;; (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; Highlights matching parenthesis
 (show-paren-mode 1)
