@@ -7,7 +7,8 @@
   :CUSTOM_ID: getting-start
   :END:
 
-[[https://api.travis-ci.org/junjiemars/.emacs.d][[[https://api.travis-ci.org/junjiemars/.emacs.d.svg?branch=master]]]]
+	[[https://api.travis-ci.org/junjiemars/.emacs.d][https://api.travis-ci.org/junjiemars/.emacs.d.svg?branch=master]]
+	
 
 It's works on Emacs version 22.1.1+ , and on any platform that Emacs
 supported, and multiple Emacs instances with different version or
