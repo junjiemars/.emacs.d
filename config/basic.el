@@ -16,7 +16,7 @@
 ;; Versioned Dirs: .*
 
 ;; Auto-save
-(setq auto-save-list-file-prefix (v-home! ".auto-save/" "saves-"))
+(setq auto-save-list-file-prefix (v-home! ".save/" "auto-"))
 
 ;; Emacs can automatically create backup files. This tells Emacs to
 ;; put all backups in ~/.emacs.d/backups. More info:
@@ -267,7 +267,7 @@ See `executable-find%'."
 
 Clean all when ALL is t,
 otherwise default to keep the directories of current `emacs-version'."
-  (let ((dirs (list `,(emacs-home* ".auto-save/")
+  (let ((dirs (list `,(emacs-home* ".save/")
                     `,(emacs-home* ".backup/")
                     `,(emacs-home* ".bookmarks/")
                     `,(emacs-home* ".desktop/")
@@ -453,7 +453,9 @@ for which (PRED item) returns t."
 ;; shell scripts
 (defun set-sh-mode! ()
   (setq% sh-basic-offset tab-width sh-script)
-  (setq% sh-indentation tab-width sh-script))
+	;; obsolete variable as of 26.1
+  ;; (setq% sh-indentation tab-width sh-script)
+	)
 
 
 ;; linum mode
