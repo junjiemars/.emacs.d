@@ -64,7 +64,7 @@
 ;; Semantic
 (version-supported-when <= 23
   (setq% semanticdb-default-save-directory
-	 (v-home! ".semanticdb/") semantic/db-file))
+				 (v-home! ".semantic/db/") semantic/db-file))
 
 ;; Tramp
 (version-supported-when <= 23
@@ -278,7 +278,7 @@ otherwise default to keep the directories of current `emacs-version'."
                     `,(emacs-home* ".minibuffer/")
                     `,(emacs-home* ".places/")
                     `,(emacs-home* ".recentf/")
-                    `,(emacs-home* ".semanticdb/")
+                    `,(emacs-home* ".semantic/")
                     `,(emacs-home* ".server/")
                     `,(emacs-home* ".tags/")
                     `,(emacs-home* ".tramp/")
