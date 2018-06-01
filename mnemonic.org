@@ -329,5 +329,3 @@ C-[-:@@html:</kbd>@@
 
 sort by 2nd field: @@html:<kbd>@@C-u 2 M-x sort-fields@@html:</kbd>@@,
 =reverse-region=
-
-[[file:screenshot.md][screenshot]] | [[file:README.md][readme]]
