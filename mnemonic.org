@@ -251,9 +251,9 @@ automatically from one Emacs session to the next.
 
 It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]]
 
-- non-sudo: @@html:<kbd>@@C-x C-f /ssh:x@<remote-id>:/path/to/file@@html:</kbd>@@
-or @@html:<kbd>@@C-x C-f /ssh:x:/path/to/file@@html:</kbd>@@,
-such as =(x@y.z)= or =(x)= in .ssh/config entries.
+- non-sudo: @@html:<kbd>@@C-x C-f /ssh:user@remote:/path/to/file@@html:</kbd>@@
+or @@html:<kbd>@@C-x C-f /ssh:user:/path/to/file@@html:</kbd>@@,
+such as =x@y.z= or =x= in .ssh/config entries.
 
 - sudo: @@html:<kbd>@@C-x C-f
 /ssh:@@html:<remote-id>@@|sudo:@@html:<remote-host>@@:/path/to/file@@html:</kbd>@@,
