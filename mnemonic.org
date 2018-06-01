@@ -126,13 +126,13 @@ It's *self-documenting* and great, keep reading it frequently.
    :CUSTOM_ID: basic-sexp-commands
    :END:
 
--  =forward-sexp=: @@html:<kbd>@@C-M-f@@html:</kbd>@@ =C-M-f=
--  =backward-sexp=: =C-M-b=
--  =kill-sexp=: =C-M-k=, delete forward one sexp
--  =transpose-sexp=: =C-M-t=
--  =backward-up-list=: =C-M-u=, move up out of an sexp
--  =down-list=: =C-M-d=, move down into a nested sexp
--  =backward-list=: =C-M-p=, match parentheses backward
+-  =forward-sexp=: @@html:<kbd>@@C-M-f@@html:</kbd>@@
+-  =backward-sexp=: @@html:<kbd>@@C-M-b@@html:</kbd>@@
+-  =kill-sexp=: @@html:<kbd>@@C-M-k@@html:</kbd>@@, delete forward one sexp
+-  =transpose-sexp=: @@html:<kbd>@@C-M-t@@html:</kbd>@@
+-  =backward-up-list=: @@html:<kbd>@@C-M-u@@html:</kbd>@@, move up out of an sexp
+-  =down-list=: @@html:<kbd>@@C-M-d@@html:</kbd>@@, move down into a nested sexp
+-  =backward-list=: @@html:<kbd>@@C-M-p@@html:</kbd>@@, match parentheses backward
 -  =pp-eval-last-sexp=: pretty print
 
 * Frame
