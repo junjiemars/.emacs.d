@@ -126,7 +126,7 @@ It's *self-documenting* and great, keep reading it frequently.
    :CUSTOM_ID: basic-sexp-commands
    :END:
 
--  =forward-sexp=: =C-M-f=
+-  =forward-sexp=: @@html:<kbd>@@C-M-f@@html:</kbd>@@ =C-M-f=
 -  =backward-sexp=: =C-M-b=
 -  =kill-sexp=: =C-M-k=, delete forward one sexp
 -  =transpose-sexp=: =C-M-t=
