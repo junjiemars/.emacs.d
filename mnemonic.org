@@ -251,14 +251,11 @@ automatically from one Emacs session to the next.
 
 It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]]
 
-- non-sudo: @@html:<kbd>@@C-x C-f /ssh:user@remote:/path/to/file@@html:</kbd>@@
-or @@html:<kbd>@@C-x C-f /ssh:user:/path/to/file@@html:</kbd>@@,
-such as =x@y.z= or =x= in .ssh/config entries.
+- non-sudo: @@html:<kbd>@@C-x C-f /ssh:user@remote:/path/to/file@@html:</kbd>@@ or @@html:<kbd>@@C-x C-f /ssh:user:/path/to/file@@html:</kbd>@@,
+such as =user@remote= or =user= in .ssh/config entries.
 
-- sudo: @@html:<kbd>@@C-x C-f
-/ssh:@@html:<remote-id>@@|sudo:@@html:<remote-host>@@:/path/to/file@@html:</kbd>@@,
-/@@html:<remote-host>@@/ such as /x@localhost/ or /localhost/ if the
-user /x/ is a sudoer.
+- sudo: @@html:<kbd>@@C-x C-f /ssh:user|sudo:remote:/path/to/file@@html:</kbd>@@,
+	such as =user@localhost= or =localhost= if the =user= is a sudoer.
 
 - eshell remote: @@html:<kbd>@@cd /ssh:<user>@<remote>:<dir>@@html:</kbd>@@
 
