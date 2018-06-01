@@ -1,0 +1,107 @@
+#+TITLE: More Reasonable Emacs
+#+AUTHOR: Junjie Mars
+#+STARTUP: content
+
+- [[file:mnemonic.md][mnemonic]]
+- [[file:README.org][readme]]
+
+
+* Theme
+   :PROPERTIES:
+   :CUSTOM_ID: theme
+   :END:
+
+-  Default theme
+
+@@html:<img title="Default Theme" alt="Default Theme"
+    width="60%"
+    align="middle"
+    src="https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/default-theme.png" />@@
+
+-  [[https://github.com/dracula/emacs][Dracula theme]]
+
+@@html:<img title="Dracula theme" alt="Dracula theme"
+    width="60%"
+    align="middle"
+    src="https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/dracula-theme.png" />@@
+
+* Fonts
+   :PROPERTIES:
+   :CUSTOM_ID: fonts
+   :END:
+
+-  [[https://github.com/cstrap/monaco-font][Monaco]]
+
+@@html:<img title="Monaco Font" alt="Monaco Font"
+    width="60%"
+    align="middle"
+    src="https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/monaco-font.png" />@@
+
+-  [[https://en.wikipedia.org/wiki/List_of_CJK_fonts][CJK]]
+
+@@html:<img title="CJK Fonts" alt="CJK Fonts"
+    width="60%"
+    align="middle"
+    src="https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/cjk.png" />@@
+
+* Shell
+   :PROPERTIES:
+   :CUSTOM_ID: shell
+   :END:
+
+-  Windows
+
+/bash/ and /ansi-term/ coexisting on Windows
+
+@@html:<img title="shell in Windows" alt="shell in Windows"
+    width="80%"
+    align="middle"
+    src="https://raw.github.com/junjiemars/images/master/.emacs.d/shell-in-windows.png" />@@
+
+-  Darwin
+
+-  Linux
+
+-  Raspberry
+
+* C Programming
+   :PROPERTIES:
+   :CUSTOM_ID: c-programming
+   :END:
+
+-  Darwin
+
+@@html:<img title="C Programming in Darwin GUI" alt="C Programming in Darwin GUI"
+    width="70%"
+    align="middle"
+    src="https://raw.github.com/junjiemars/images/master/.emacs.d/c-programming-on-darwin-gui.png" />@@
+
+@@html:<img title="C Programming in Darwin Terminal" alt="C Programming in Darwin Terminal"
+    width="70%"
+    align="middle"
+    src="https://raw.github.com/junjiemars/images/master/.emacs.d/c-programming-on-darwin-term.png" />@@
+
+-  Docker Container
+
+@@html:<img title="C Programming in Dock Container" alt="C Programming in Dock Container"
+    width="70%"
+    align="middle"
+    src="https://raw.github.com/junjiemars/images/master/.emacs.d/c-programming-on-docker-term.png" />@@
+
+* Lisp Programming
+   :PROPERTIES:
+   :CUSTOM_ID: lisp-programming
+   :END:
+
+** Slime
+    :PROPERTIES:
+    :CUSTOM_ID: slime
+    :END:
+
+-  Windows 10 Terminal
+
+@@html:<img title="Slime in Windows Terminal" alt="Slime in Windows Terminal"
+    width="70%"
+    align="middle"
+    src="https://raw.github.com/junjiemars/images/master/.emacs.d/slime-in-Windows-terminal.png" />@@
+

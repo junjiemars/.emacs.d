@@ -60,7 +60,7 @@ friendly, which can be run on anywhere where Emacs run.
 - [[#cooking][Cooking]]
 - [[#troubleshooting][Troubleshooting]]
 - [[file:mnemonic.md][Mnemonic]]
-- [[file:screenshot.md][Screenshot]]
+- [[file:screenshot.org][Screenshot]]
 
 
 Now, let's start from the Level Two. And one more thing: teach youself
@@ -71,7 +71,7 @@ some little Elisp (M-x info).
    :CUSTOM_ID: highlights
    :END:
 
--  *Carefully designed*: just load what's your need.
+-  *Carefully designed*: just load what's your want.
 -  *Adaptive*: Can run on any OS, GUI or Terminal, from most recent
    Emacs's versions to ancient ones, and one Emacs's configuration suit
    for all coexisting Emacs on the same machine.
