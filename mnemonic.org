@@ -1,0 +1,329 @@
+#+TITLE: More Reasonable Emacs
+#+AUTHOR: Junjie Mars
+#+STARTUP: content
+
+
+-  [[#emacs-documents][Emacs Documents]]
+-  [[#motion][Motion]]
+-  [[#interaction][Interaction]]
+-  [[#editing][Editing]]
+-  [[#basic-sexp-commands][Basic sexp commands]]
+-  [[#frame][Frame]]
+-  [[#window][Window]]
+-  [[#register][Register]]
+-  [[#bookmarks][Bookmarks]]
+-  [[#region-and-rectangle][Region and Rectangle]]
+-  [[#keyboard-macro][Keyboard Macro]]
+-  [[#Dired][Dired]]
+-  [[#shell][Shell]]
+-  [[#remote][Remote]]
+-  [[#latex-requirements][LaTex Requirements]]
+-  [[#tips][Tips]]
+-  [[#editing-tips][Editing Tips]]
+
+* Emacs Documents
+   :PROPERTIES:
+   :CUSTOM_ID: emacs-documents
+   :END:
+
+It's *self-documenting* and great, keep reading it frequently.
+
+-  Tutorial: @@html:<kbd>@@C-h-t@@html:</kbd>@@
+-  Help for Help: @@html:<kbd>@@C-h C-h@@html:</kbd>@@
+-  Emacs manual: @@html:<kbd>@@C-h r@@html:</kbd>@@
+-  Apropos command: @@html:<kbd>@@C-h a@@html:</kbd>@@
+-  Info: @@html:<kbd>@@C-h i@@html:</kbd>@@
+-  Info of mode: @@html:<kbd>@@C-h i d m @@html:<x>@@@@html:</kbd>@@
+   /@@html:<x>@@/ is the mode
+-  Mode: @@html:<kbd>@@C-h-m@@html:</kbd>@@ see all the key bindings and
+   documentation of current buffer
+-  Where is command: @@html:<kbd>@@C-h w@@html:</kbd>@@ which keystrokes
+   binding to a given command
+-  Function: @@html:<kbd>@@C-h-f@@html:</kbd>@@ display documentation of
+   the given function
+-  Variable: @@html:<kbd>@@C-h-v@@html:</kbd>@@ display documentation of
+   the given variable
+-  Keybinding: @@html:<kbd>@@C-h-k@@html:</kbd>@@ display documentation
+   of the function invoked by the given keystrokes
+-  Prefix keybindings: @@html:<kbd>@@@@html:<prefix>@@
+   C-h@@html:</kbd>@@ see all key bindings for given prefix keystrokes
+-  Keybinding briefly: @@html:<kbd>@@C-h c@@html:</kbd>@@, which command
+   for given keystroke
+-  Message: @@html:<kbd>@@C-h e@@html:</kbd>@@ see the logging of echo
+   area message
+-  Man: @@html:<kbd>@@M-x man@@html:</kbd>@@ view UNIX manual page
+-  Woman: @@html:<kbd>@@M-x woman@@html:</kbd>@@ view UNIX manual page
+   without =man= program
+-  Coding system: @@html:<kbd>@@C-h C@@html:</kbd>@@ describe coding
+   system
+-  Colors: @@html:<kbd>@@M-x list-colors-display@@html:</kbd>@@ display
+   names of defined colors and show what they look like
+
+* Motion
+   :PROPERTIES:
+   :CUSTOM_ID: motion
+   :END:
+
+-  goto line: @@html:<kbd>@@M-g g@@html:</kbd>@@
+-  goto nth char: @@html:<kbd>@@M-g c@@html:</kbd>@@
+-  jump between buffers: @@html:<kbd>@@C-x C-@@@html:</kbd>@@, jumps to
+   the global mark acrross buffers
+-  jump in buffer: @@html:<kbd>@@C-u C-@@@html:</kbd>@@
+-  jump to definition: @@html:<kbd>@@M-.@@html:</kbd>@@
+-  pop back to where @@html:<kbd>@@M-.@@html:</kbd>@@ was last invoked:
+   @@html:<kbd>@@M-,@@html:</kbd>@@, on Terminal is
+   @@html:<kbd>@@M-*@@html:</kbd>@@
+
+* Interaction
+   :PROPERTIES:
+   :CUSTOM_ID: interaction
+   :END:
+
+-  *scratch* buffer
+-  via Elisp: @@html:<kbd>@@M-:@@html:</kbd>@@
+-  via Shell command: @@html:<kbd>@@M-!@@html:</kbd>@@, insert shell
+   output: @@html:<kbd>@@C-u M-!@@html:</kbd>@@, see /Info>Emacs>Shell/
+-  in Dired mode: @@html:<kbd>@@!@@html:</kbd>@@, do shell command
+-  region as input to Shell command: @@html:<kbd>@@M-|@@html:</kbd>@@,
+   insert from shell output: @@html:<kbd>@@C-u M-|@@html:</kbd>@@
+-  browse-url: @@html:<kbd>@@C-c b@@html:</kbd>@@
+-  filename of current buffer: =(buffer-file-name (current-buffer)=
+
+* Editing
+   :PROPERTIES:
+   :CUSTOM_ID: editing
+   :END:
+
+-  write file: @@html:<kbd>@@C-x C-w@@html:</kbd>@@ same as save as
+-  kill whole line: @@html:<KBD>@@C-S-DEL@@html:</KBD>@@
+-  kill all spaces at point: @@html:<kbd>@@M-</kbd>
+-  kill all spaces except one at point:
+   @@html:<KBD>@@M-SPC@@html:</KBD>@@
+-  delete indentation to join line to previous line:
+   @@html:<kbd>@@M-\^@@html:</kbd>@@
+-  dynamic abbreviation: @@html:<kbd>@@M-/@@html:</kbd>@@
+-  query replace: @@html:<kbd>@@M-%@@html:</kbd>@@
+-  what cursor position: @@html:<kbd>@@C-x =@@html:</kbd>@@
+-  upcase region: @@html:<kbd>@@C-x C-u@@html:</kbd>@@
+-  downcase region: @@html:<kbd>@@C-x C-l@@html:</kbd>@@
+-  transpose characters: @@html:<kbd>@@C-t@@html:</kbd>@@
+-  transpose words: @@html:<kbd>@@M-t@@html:</kbd>@@
+-  insert parentheses: @@html:<kbd>@@M-(@@html:</kbd>@@, wrap selection
+   in parentheses
+-  toggle read-only mode: @@html:<kbd>@@C-x C-q@@html:</kbd>@@
+-  toggle input method: @@html:<kbd>@@C-</kbd>
+-  switch input method: @@html:<kbd>@@C-x RET C-</kbd>
+-  describe current input method: @@html:<kbd>@@C-h I@@html:</kbd>@@
+-  insert char: @@html:<kbd>@@C-x 8 RET@@html:</kbd>@@ GREEK SMALL
+   LETTER LAMBDA
+-  quoted insert: @@html:<kbd>@@C-q@@html:</kbd>@@, such as page break
+   @@html:<kbd>@@C-q C-l@@html:</kbd>@@, use @@html:<kbd>@@C-x
+   [@@html:</kbd>@@ or @@html:<kbd>@@C-x ]@@html:</kbd>@@ to backward or
+   forward
+
+* Basic sexp commands
+   :PROPERTIES:
+   :CUSTOM_ID: basic-sexp-commands
+   :END:
+
+-  =forward-sexp=: =C-M-f=
+-  =backward-sexp=: =C-M-b=
+-  =kill-sexp=: =C-M-k=, delete forward one sexp
+-  =transpose-sexp=: =C-M-t=
+-  =backward-up-list=: =C-M-u=, move up out of an sexp
+-  =down-list=: =C-M-d=, move down into a nested sexp
+-  =backward-list=: =C-M-p=, match parentheses backward
+-  =pp-eval-last-sexp=: pretty print
+
+* Frame
+   :PROPERTIES:
+   :CUSTOM_ID: frame
+   :END:
+
+-  find file other frame: @@html:<kbd>@@C-x 5 C-f@@html:</kbd>@@, or
+   @@html:<kbd>@@C-x 5 f@@html:</kbd>@@
+-  display buffer other frame: @@html:<kbd>@@C-x 5 C-o@@html:</kbd>@@,
+   or @@html:<kbd>@@C-x 5 b@@html:</kbd>@@
+-  find tag other frame: @@html:<kbd>@@C-x 5 .@@html:</kbd>@@
+-  delete frame: @@html:<kbd>@@C-x 5 0@@html:</kbd>@@
+-  delete other frames: @@html:<kbd>@@C-x 5 1@@html:</kbd>@@
+-  make frame command: @@html:<kbd>@@C-x 5 2@@html:</kbd>@@
+-  dired to other frame: @@html:<kbd>@@C-x 5 d@@html:</kbd>@@
+-  other frame: @@html:<kbd>@@C-x 5 o@@html:</kbd>@@
+-  find file read only other frame: @@html:<kbd>@@C-x 5 r@@html:</kbd>@@
+
+* Window
+   :PROPERTIES:
+   :CUSTOM_ID: window
+   :END:
+
+-  other window: @@html:<kbd>@@C-x o@@html:</kbd>@@
+-  dired other window: @@html:<kbd>@@C-x 4 d@@html:</kbd>@@
+-  find file in other window: @@html:<kbd>@@C-x 4 C-f@@html:</kbd>@@, or
+   @@html:<kbd>@@C-x 4 f@@html:</kbd>@@
+-  display buffer: @@html:<kbd>@@C-x 4 C-o@@html:</kbd>@@, display the
+   buffer in another window
+-  find tag other window: @@html:<kbd>@@C-x 4 .@@html:</kbd>@@
+-  kill buffer and window: @@html:<kbd>@@C-x 4 0@@html:</kbd>@@, just
+   like @@html:<kbd>@@C-x 0@@html:</kbd>@@ except kill the buffer
+-  switch to buffer other window: @@html:<kbd>@@C-x 4 b@@html:</kbd>@@
+-  clone indirect buffer other window: @@html:<kbd>@@C-x 4
+   c@@html:</kbd>@@, clone the buffer in another window
+
+* Register
+   :PROPERTIES:
+   :CUSTOM_ID: register
+   :END:
+
+-  window configuration to register: @@html:<kbd>@@C-x r w
+   @@html:<REG>@@@@html:</kbd>@@, @@html:<REG>@@ is single character, it
+   can not accross sessions.
+-  frame configuration to register: @@html:<kbd>@@C-x r f
+   @@html:<REG>@@@@html:</kbd>@@
+-  point to register: @@html:<kbd>@@C-x r @@html:<SPC>@@
+   @@html:<REG>@@@@html:</kbd>@@
+-  jump to register: @@html:<kbd>@@C-x r j @@html:<REG>@@@@html:</kbd>@@
+-  copy to register: @@html:<kbd>@@C-x r s @@html:<REG>@@@@html:</kbd>@@
+-  insert register: @@html:<kbd>@@C-x r i @@html:<REG>@@@@html:</kbd>@@
+-  view register
+
+* Bookmarks
+   :PROPERTIES:
+   :CUSTOM_ID: bookmarks
+   :END:
+
+Unlike registers, bookmarks have long names, and they persist
+automatically from one Emacs session to the next.
+
+-  set bookmark: @@html:<kbd>@@C-x r m@@html:</kbd>@@
+-  set named bookmark: @@html:<kbd>@@C-x r m BOOKMARK@@html:</kbd>@@
+-  jump to bookmark: @@html:<kbd>@@C-x r b BOOKMARK@@html:</kbd>@@
+-  list all bookmarks: @@html:<kbd>@@C-x r l@@html:</kbd>@@
+-  save bookmark to file: @@html:<kbd>@@M-x bookmark-save@@html:</kbd>@@
+
+* Region and Rectangle
+   :PROPERTIES:
+   :CUSTOM_ID: region-and-rectangle
+   :END:
+
+-  kill rectangle: @@html:<kbd>@@C-x r k@@html:</kbd>@@
+-  delete rectangle: @@html:<kbd>@@C-x r d@@html:</kbd>@@
+-  yank rectangle: @@html:<kbd>@@C-x r y@@html:</kbd>@@
+-  open rectangle: @@html:<kbd>@@C-x r o@@html:</kbd>@@, insert blank
+   space to fill the space of the region-rectangle
+-  clear rectangle: @@html:<kbd>@@C-x r c@@html:</kbd>@@
+-  string rectangle: @@html:<kbd>@@C-x r t@@html:</kbd>@@, replace
+   rectangle contents with STRING on each line
+-  string insert rectangle: @@html:<kbd>@@C-x r g@@html:</kbd>@@
+-  @@html:<kbd>@@M-x delete-whitespace-rectangle@@html:</kbd>@@
+
+* Keyboard Macro
+   :PROPERTIES:
+   :CUSTOM_ID: keyboard-macro
+   :END:
+
+-  start recording macro: @@html:<kbd>@@C-x (@@html:</kbd>@@
+-  stop recording macro: @@html:<kbd>@@C-x )@@html:</kbd>@@
+-  playback macro: @@html:<kbd>@@C-x e@@html:</kbd>@@
+-  apply macro to region lines: @@html:<kbd>@@C-x C-k r@@html:</kbd>@@
+
+* Dired
+   :PROPERTIES:
+   :CUSTOM_ID: dired
+   :END:
+
+-  hide details: @@html:<kbd>@@(@@html:</kbd>@@
+-  change marks: @@html:<kbd>@@* c @@html:</kbd>@@
+
+* Shell
+   :PROPERTIES:
+   :CUSTOM_ID: shell
+   :END:
+
+-  EShell: @@html:<kbd>@@M-x eshell@@html:</kbd>@@
+-  Shell: @@html:<kbd>@@M-x shell@@html:</kbd>@@
+-  Ansi-Term: @@html:<kbd>@@M-x ansi-term@@html:</kbd>@@
+
+* Remote
+   :PROPERTIES:
+   :CUSTOM_ID: remote
+   :END:
+
+It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]] *
+non-sudo: @@html:<kbd>@@C-x C-f /ssh:@@html:<remote-id>@@:/path/to/file
+RET@@html:</kbd>@@, /@@html:<remote-id>@@/ such as /x@y.z/ or /xyz/ in
+.ssh/config entries. * sudo: @@html:<kbd>@@C-x C-f
+/ssh:@@html:<remote-id>@@|sudo:@@html:<remote-host>@@:/path/to/file@@html:</kbd>@@,
+/@@html:<remote-host>@@/ such as /x@localhost/ or /localhost/ if the
+user /x/ is a sudoer. * eshell remote: @@html:<kbd>@@cd
+/ssh:@@html:<user>@@@@@html:<remote>@@:
+
+#+BEGIN_HTML
+  <dir>
+#+END_HTML
+
+@@html:</kbd>@@ * on Windows use =~/.ssh/config=: use =/sshx:= instead,
+such as
+@@html:<kbd>@@/sshx:@@html:<remote-id>@@:/path/to/file@@html:</kbd>@@
+
+* LaTex Requirements
+   :PROPERTIES:
+   :CUSTOM_ID: latex-requirements
+   :END:
+
+on Darwin * ImageMagick * texlive-basic * texlive-fonts-recommended *
+texlive-latex-extra * texlive-latex-recommended * texlive-pictures *
+texlive-plain-generic
+
+on Ubuntu: * texlive * texlive-latex-extra
+
+on Windows: * ImageMagick * MiKTex
+
+* Tips
+   :PROPERTIES:
+   :CUSTOM_ID: tips
+   :END:
+
+*** Editing Tips
+    :PROPERTIES:
+    :CUSTOM_ID: editing-tips
+    :END:
+
+**** Insert Region
+     :PROPERTIES:
+     :CUSTOM_ID: insert-region
+     :END:
+
+#+BEGIN_EXAMPLE
+    aaaa 9
+    aaaa 6
+    aaaa 1
+    aaaa 1
+    aaaa 0
+#+END_EXAMPLE
+
+insert multiple lines with /prefix + random number/, @@html:<kbd>@@C-u
+C-[-:@@html:</kbd>@@
+
+#+BEGIN_SRC lisp
+    (dotimes (x 5)
+        (insert-string (format "aaaa %s\n" (random 10))))
+#+END_SRC
+
+**** Sort Region
+     :PROPERTIES:
+     :CUSTOM_ID: sort-region
+     :END:
+
+#+BEGIN_EXAMPLE
+    aaaa bbb
+    aaaa ddd
+    aaaa zzz
+    aaaa xxx
+    aaaa uuu
+#+END_EXAMPLE
+
+sort by 2nd field: @@html:<kbd>@@C-u 2 M-x sort-fields@@html:</kbd>@@,
+=reverse-region=
+
+[[file:screenshot.md][screenshot]] | [[file:README.md][readme]]

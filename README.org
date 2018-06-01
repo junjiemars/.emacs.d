@@ -59,7 +59,7 @@ friendly, which can be run on anywhere where Emacs run.
 - [[#install][Install]]
 - [[#cooking][Cooking]]
 - [[#troubleshooting][Troubleshooting]]
-- [[file:mnemonic.md][Mnemonic]]
+- [[file:mnemonic.org][Mnemonic]]
 - [[file:screenshot.org][Screenshot]]
 
 
