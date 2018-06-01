@@ -251,29 +251,35 @@ automatically from one Emacs session to the next.
 
 It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]]
 
-- non-sudo: @@html:<kbd>@@C-x C-f /ssh:user@host:/path/to/file@@html:</kbd>@@,
-such as =user@host= or =user= in .ssh/config entries.
+- non-sudo: @@html:<kbd>@@C-x C-f /ssh:user@host:/path/to/file@@html:</kbd>@@, such as =user@host= or =user= in .ssh/config entries.
 
-- sudo: @@html:<kbd>@@C-x C-f /ssh:user|sudo:localhost:/path/to/file@@html:</kbd>@@,
-	such as =user@localhost=, here =localhost= means remote host.
+- sudo: @@html:<kbd>@@C-x C-f /ssh:user|sudo:localhost:/path/to/file@@html:</kbd>@@, such as =user@localhost=, here =localhost= means remote host.
 
 - eshell remote: @@html:<kbd>@@cd /ssh:user@host:/path/to/file@@html:</kbd>@@
 
-- on Windows use =~/.ssh/config=: use =/sshx:= instead,
-such as  @@html:<kbd>@@/sshx:user@host:/path/to/file@@html:</kbd>@@
+- on Windows use =~/.ssh/config=: use =/sshx:= instead, such as  @@html:<kbd>@@/sshx:user@host:/path/to/file@@html:</kbd>@@
 
 * LaTex Requirements
    :PROPERTIES:
    :CUSTOM_ID: latex-requirements
    :END:
 
-on Darwin * ImageMagick * texlive-basic * texlive-fonts-recommended *
-texlive-latex-extra * texlive-latex-recommended * texlive-pictures *
-texlive-plain-generic
+** On Darwin
+	 - ImageMagick 
+	 - texlive-basic
+	 - texlive-fonts-recommended
+	 - texlive-latex-extra 
+	 - texlive-latex-recommended
+	 - texlive-pictures
+	 - texlive-plain-generic
 
-on Ubuntu: * texlive * texlive-latex-extra
+** On Ubuntu:
+   - texlive
+	 - texlive-latex-extra
 
-on Windows: * ImageMagick * MiKTex
+** On Windows:
+	 - ImageMagick
+	 - MiKTex
 
 * Tips
    :PROPERTIES:
