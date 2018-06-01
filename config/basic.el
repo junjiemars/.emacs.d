@@ -42,7 +42,7 @@
 (setq% ido-save-directory-list-file (v-home! ".ido/" "ido.last") ido)
 
 ;; Image dired: where thumbnail images are stored.
-(setq% image-dired-dir (v-home! ".image-dired/") image-dired)
+(setq% image-dired-dir (v-home! ".dired/image/") image-dired)
 
 ;; Savehist: save minibuffer history
 (setq% savehist-file (v-home! ".minibuffer/" "history") savehist)
@@ -274,7 +274,7 @@ otherwise default to keep the directories of current `emacs-version'."
                     `,(emacs-home* ".eshell/")
                     `,(emacs-home* ".games/")
                     `,(emacs-home* ".ido/")
-                    `,(emacs-home* ".image-dired/")
+                    `,(emacs-home* ".dired/")
                     `,(emacs-home* ".minibuffer/")
                     `,(emacs-home* ".places/")
                     `,(emacs-home* ".recentf/")
