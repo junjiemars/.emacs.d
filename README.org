@@ -1,6 +1,6 @@
 #+TITLE: More Reasonable Emacs
 #+AUTHOR: Junjie Mars
-#+STARTUP: content
+#+STARTUP: overview
 
 * Getting start
   :PROPERTIES:

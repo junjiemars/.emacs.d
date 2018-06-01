@@ -1,9 +1,9 @@
 #+TITLE: More Reasonable Emacs
 #+AUTHOR: Junjie Mars
-#+STARTUP: content
+#+STARTUP: overview
 
-- [[file:mnemonic.md][mnemonic]]
-- [[file:README.org][readme]]
+- [[file:mnemonic.md][Mnemonic]]
+- [[file:README.org][Readme]]
 
 
 * Theme
@@ -16,7 +16,7 @@
 @@html:<img title="Default Theme" alt="Default Theme"
     width="60%"
     align="middle"
-    src="https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/default-theme.png" />@@
+    src="https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/default-theme.png" html:/>@@
 
 -  [[https://github.com/dracula/emacs][Dracula theme]]
 
@@ -24,7 +24,6 @@
     width="60%"
     align="middle"
     src="https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/dracula-theme.png" />@@
-
 * Fonts
    :PROPERTIES:
    :CUSTOM_ID: fonts
