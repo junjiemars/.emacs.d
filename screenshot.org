@@ -13,7 +13,7 @@
 
 -  Default theme
 	 
-	 #+attr_html: :width 100px
+	 #+attr_html: :width 60
 	 [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/default-theme.png]]
 
 @@html:<img@@ title="Default Theme" alt="Default Theme"
