@@ -14,14 +14,15 @@
 - [[#bookmarks][Bookmarks]]
 - [[#region-and-rectangle][Region and Rectangle]]
 - [[#keyboard-macro][Keyboard Macro]]
-- [[#Dired][Dired]]
+- [[#dired][Dired]]
 - [[#shell][Shell]]
 - [[#remote][Remote]]
 - [[#latex-requirements][LaTex Requirements]]
 - [[#tips][Tips]]
 - [[#editing-tips][Editing Tips]]
-- [[#screenshot.org][Screenshot]]
-- [[#readme.org][Readme]]
+- [[file:screenshot.org][Screenshot]]
+- [[file:README.org][Readme]]
+
 
 * Emacs Documents
    :PROPERTIES:
