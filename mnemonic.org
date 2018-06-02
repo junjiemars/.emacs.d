@@ -267,21 +267,21 @@ It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]]
    :END:
 
 ** On Darwin
-	 - ImageMagick 
-	 - texlive-basic
-	 - texlive-fonts-recommended
-	 - texlive-latex-extra 
-	 - texlive-latex-recommended
-	 - texlive-pictures
-	 - texlive-plain-generic
+- ImageMagick 
+- texlive-basic
+- texlive-fonts-recommended
+- texlive-latex-extra 
+- texlive-latex-recommended
+- texlive-pictures
+- texlive-plain-generic
 
 ** On Ubuntu:
-   - texlive
-	 - texlive-latex-extra
+- texlive
+- texlive-latex-extra
 
 ** On Windows:
-	 - ImageMagick
-	 - MiKTex
+- ImageMagick
+- MiKTex
 
 * Tips
    :PROPERTIES:
