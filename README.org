@@ -25,7 +25,6 @@ different mode can run on the same machine at the same time.
 
 One more thing, it's best to remind you: take care, it's super fast.
 
-
 * Story
   :PROPERTIES:
   :CUSTOM_ID: story

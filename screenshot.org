@@ -2,7 +2,7 @@
 #+AUTHOR: Junjie Mars
 #+STARTUP: overview
 
-- [[file:mnemonic.md][Mnemonic]]
+- [[file:mnemonic.org][Mnemonic]]
 - [[file:README.org][Readme]]
 
 
