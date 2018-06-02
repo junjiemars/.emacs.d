@@ -77,7 +77,6 @@
 	 #+attr_html: :width 60%
 	 [[https://raw.github.com/junjiemars/images/master/.emacs.d/c-programming-on-docker-term.png]]
 
-
 * Lisp Programming
    :PROPERTIES:
    :CUSTOM_ID: lisp-programming
