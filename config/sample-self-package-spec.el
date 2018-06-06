@@ -11,7 +11,7 @@
 (def-self-package-spec
 	(list
 	 :cond t
-	 :packages '(markdown-mode))
+	 :packages '(markdown-mode htmlize))
   (list
    :cond (executable-find% "latex")
    :packages '(auctex cdlatex))
