@@ -103,7 +103,7 @@ It's *self-documenting* and great, keep reading it frequently.
 -  kill all spaces except one at point:
    @@html:<KBD>@@M-SPC@@html:</KBD>@@
 -  delete indentation to join line to previous line:
-   @@html:<kbd>@@M-\^@@html:</kbd>@@
+   @@html:<kbd>@@M-^@@html:</kbd>@@
 -  dynamic abbreviation: @@html:<kbd>@@M-/@@html:</kbd>@@
 -  query replace: @@html:<kbd>@@M-%@@html:</kbd>@@
 -  what cursor position: @@html:<kbd>@@C-x =@@html:</kbd>@@
