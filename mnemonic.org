@@ -114,8 +114,8 @@ It's *self-documenting* and great, keep reading it frequently.
 -  insert parentheses: @@html:<kbd>@@M-(@@html:</kbd>@@, wrap selection
    in parentheses
 -  toggle read-only mode: @@html:<kbd>@@C-x C-q@@html:</kbd>@@
--  toggle input method: @@html:<kbd>@@C-\\</kbd>
--  set input method: @@html:<kbd>@@C-x RET C-\\</kbd>
+-  toggle input method: @@html:<kbd>@@C-\@@html:</kbd>@@
+-  set input method: @@html:<kbd>@@C-x RET C-\@@html:</kbd>@@
 -  describe current input method: @@html:<kbd>@@C-h I@@html:</kbd>@@
 -  insert char: @@html:<kbd>@@C-x 8 RET@@html:</kbd>@@ GREEK SMALL
    LETTER LAMBDA
