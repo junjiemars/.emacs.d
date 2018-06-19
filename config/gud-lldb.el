@@ -161,6 +161,6 @@ and source-file directory for your debugger."
   (run-hooks 'lldb-mode-hook))
 
 
-(provide 'lldb)
+(provide 'gud-lldb)
 
 

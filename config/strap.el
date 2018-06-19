@@ -377,7 +377,7 @@ Take effect after restart Emacs.
 ;; Load package independent modules
 (compile!
     v-dir
-  ;; (compile-unit (emacs-home* "config/lldb.el") t)
+  ;; (compile-unit (emacs-home* "config/gud-lldb.el") t)
   (compile-unit (emacs-home* "config/eshells.el"))
   (compile-unit (emacs-home* "config/autoload.el"))
   ;; --batch mode: disable desktop read/save
