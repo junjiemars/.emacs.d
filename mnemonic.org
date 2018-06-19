@@ -268,7 +268,7 @@ It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]]
    :END:
 
 ** On Darwin
-- ImageMagick 
+- [[https://www.imagemagick.org/][ImageMagick]] 
 - texlive-basic
 - texlive-fonts-recommended
 - texlive-latex-extra 
@@ -276,12 +276,15 @@ It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]]
 - texlive-pictures
 - texlive-plain-generic
 
-** On Ubuntu:
-- texlive
-- texlive-latex-extra
+** On Ubuntu
+- [[https://www.imagemagick.org/][ImageMagick]]
+- [[https://www.tug.org/texlive/][texlive]]
+- texlive-latex-extra: additional packages.
+- texlive-lang-cjk: supporting a combination of Chinese, Japanese, Korean, including
+ macros, fonts, documentation.
 
-** On Windows:
-- ImageMagick
+** On Windows
+- [[https://www.imagemagick.org/][ImageMagick]]
 - MiKTex
 
 * Tips
