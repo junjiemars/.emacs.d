@@ -95,36 +95,6 @@
 ;; If the little GUD source line marker '>' is hard to follow, add the
 ;; following to your .emacs:
 
-;; ;;-------------------------------------------------------------
-;; ;; Add color to the current GUD line
-;; ;;
-(defvar gud-overlay
-  (let* ((ov (make-overlay (point-min) (point-min))))
-    (overlay-put ov 'face 'secondary-selection)
-    ov)
-  "Overlay variable for GUD highlighting.")
-
-(defadvice gud-display-line (after my-gud-highlight act)
-  "Highlight current line."
-  (let* ((ov gud-overlay)
-         (bf (gud-find-file true-file)))
-		(if bf
-				(save-excursion
-					(set-buffer bf)
-					(move-overlay ov (line-beginning-position) (line-end-position) (current-buffer))))))
-
-(defun gud-kill-buffer ()
-  (if (eq major-mode 'gud-mode)
-      (delete-overlay gud-overlay)))
-
-(add-hook 'kill-buffer-hook 'gud-kill-buffer)
-;; ;;-------------------------------------------------------------
-
-;; Have fun,
-;; -Stephan
-
-;;; Code:
-
 (eval-when-compile (require 'cl))
 
 (require 'gud)
@@ -145,7 +115,31 @@ containing the executable being debugged."
   :group 'gud)
 
 (defvar gud-cdb-options-hook nil
-  "the default options to use when starting a coh cdb instance")
+  "The default options to use when starting a cdb instance")
+
+(defvar gud-cdb-overlay
+  (let ((ov (make-overlay (point-min) (point-min))))
+    (overlay-put ov 'face 'secondary-selection)
+    ov)
+  "Overlay variable for GUD highlighting.")
+
+(defadvice gud-display-line (after my-gud-highlight act)
+  "Highlight current line."
+  (let ((ov gud-cdb-overlay)
+        (bf (gud-find-file true-file)))
+		(if bf
+				(save-excursion
+					(set-buffer bf)
+					(move-overlay ov
+												(line-beginning-position) (line-end-position)
+												(current-buffer))))))
+
+(defun gud-cdb-kill-buffer ()
+	"Delete *gud-cdb-<buffer>*."
+  (if (eq major-mode 'gud-mode)
+      (delete-overlay gud-cdb-overlay)))
+
+(add-hook 'kill-buffer-hook #'gud-cdb-kill-buffer)
 
 
 (defun gud-cdb-massage-args (file args)
@@ -377,12 +371,10 @@ cdb [options]:
 (defun gud-cdb-find-file (f)
   (save-excursion
     (let ((realf (gud-cdb-file-name f)))
-	  (if (file-exists-p (or realf f))
-		  (if realf
-			  (find-file-noselect realf t)
-			(find-file-noselect f 'nowarn)
-			)
-        ))))
+			(if (file-exists-p (or realf f))
+					(if realf
+							(find-file-noselect realf t)
+						(find-file-noselect f 'nowarn))))))
 
 (defun gud-kd-find-file (f)
   (save-excursion
