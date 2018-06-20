@@ -8,7 +8,9 @@
 ;; frames a little better. also added helper functions. see
 ;; 'cdbDebugChoice' at bottom for example.
 ;; Version: 1.5 (October 19, 2008) : parse fixes for latest debug tools.
-
+;; Version: 1.6 (June 26, 2018) : improved in More Reasonable Emacs. see
+;; https://github.com/junjiemars/.emacs.d
+;;
 ;; This file is NOT part of GNU Emacs but the same permissions apply.
 ;; This is free software (needed for emacswiki upload.pl)
 ;;
@@ -36,13 +38,14 @@
 ;;
 ;; To install this package:
 ;;
-;;    - Download and install the latest version of the `Debugging Tools
-;;      for Windows' from http://www.microsoft.com/ddk/debugging/.  Add it
-;;      to your PATH environment.
+;;    - Download and install the latest version of the `Windows SDK'
+;;      from https://developer.microsoft.com/en-US/windows/downloads/windows-10-sdk
+;;      Add cdb to your PATH environment.
 ;;
-;;    - Put the following into your .emacs file:
+;;    - Put the following into your ~/.emacs.d/self-epilogue.el file:
 ;;
-;;      (load "cdb-gud")
+;;      (platform-supported-when windows-nt
+;; 	      (compile! v-dir (compile-unit (emacs-home* "config/gud-cdb.el") t)))
 ;;
 ;;    - You can customize `gud-cdb-directories' to help GUD find your source
 ;;      files.
@@ -95,32 +98,34 @@
 ;; ;;-------------------------------------------------------------
 ;; ;; Add color to the current GUD line
 ;; ;;
- (defvar gud-overlay
-   (let* ((ov (make-overlay (point-min) (point-min))))
-     (overlay-put ov 'face 'secondary-selection)
-     ov)
-   "Overlay variable for GUD highlighting.")
+(defvar gud-overlay
+  (let* ((ov (make-overlay (point-min) (point-min))))
+    (overlay-put ov 'face 'secondary-selection)
+    ov)
+  "Overlay variable for GUD highlighting.")
 
- (defadvice gud-display-line (after my-gud-highlight act)
-   "Highlight current line."
-   (let* ((ov gud-overlay)
-          (bf (gud-find-file true-file)))
-	 (if bf
-		 (save-excursion
-		   (set-buffer bf)
-		   (move-overlay ov (line-beginning-position) (line-end-position) (current-buffer))))))
+(defadvice gud-display-line (after my-gud-highlight act)
+  "Highlight current line."
+  (let* ((ov gud-overlay)
+         (bf (gud-find-file true-file)))
+		(if bf
+				(save-excursion
+					(set-buffer bf)
+					(move-overlay ov (line-beginning-position) (line-end-position) (current-buffer))))))
 
- (defun gud-kill-buffer ()
-   (if (eq major-mode 'gud-mode)
-        (delete-overlay gud-overlay)))
+(defun gud-kill-buffer ()
+  (if (eq major-mode 'gud-mode)
+      (delete-overlay gud-overlay)))
 
- (add-hook 'kill-buffer-hook 'gud-kill-buffer)
+(add-hook 'kill-buffer-hook 'gud-kill-buffer)
 ;; ;;-------------------------------------------------------------
 
 ;; Have fun,
 ;; -Stephan
-    
+
 ;;; Code:
+
+(eval-when-compile (require 'cl))
 
 (require 'gud)
 
@@ -142,9 +147,10 @@ containing the executable being debugged."
 (defvar gud-cdb-options-hook nil
   "the default options to use when starting a coh cdb instance")
 
+
 (defun gud-cdb-massage-args (file args)
-  (setq tmp (append (loop for i in gud-cdb-options-hook append (funcall i)) (cons "-c" (cons "l+*;l-s" (cons "-lines" args)))))
- tmp)
+	(append (loop for i in gud-cdb-options-hook append (funcall i))
+					(cons "-c" (cons "l+*;l-s" (cons "-lines" args)))))
 
 (defmacro make-gud-cdb-massage-args-remote (remote_addr)
   (append '(lambda (file args) (cons file args))
@@ -470,8 +476,10 @@ The directory containing FILE becomes the initial working directory
 and source-file directory for your debugger."
   (interactive (list (gud-query-cmdline 'cdb)))
 
-  (gud-common-init command-line 'gud-cdb-massage-args
-                   'gud-cdb-marker-filter 'gud-cdb-find-file)
+  (gud-common-init command-line
+									 'gud-cdb-massage-args
+                   'gud-cdb-marker-filter
+									 'gud-cdb-find-file)
 
   (set (make-local-variable 'gud-minor-mode) 'cdb)
 
