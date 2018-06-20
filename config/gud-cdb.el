@@ -149,13 +149,20 @@ containing the executable being debugged."
 
 
 (defun gud-cdb-massage-args (file args)
-	(append (loop for i in gud-cdb-options-hook append (funcall i))
-					(cons "-c" (cons "l+*;l-s" (cons "-lines" args)))))
+	"As the 2nd argument:message-args of `gud-common-init'.
+
+cdb [options]:
+  -c \"<command>\" executes the given debugger command at the first debugger
+  -lines requests that line number information be used if present"
+	(let ((options nil))
+		(dolist (o gud-cdb-options-hook options)
+			(append options (funcall o)))
+		(append options '("-c" "l+*;l-s" "-lines") args)))
 
 (defmacro make-gud-cdb-massage-args-remote (remote_addr)
   (append '(lambda (file args) (cons file args))
-		  (list (list 'cons "-remote" remote_addr) 
-				(cons '(cons "-c" (cons "l+*;l-s" (cons "-lines" args))) nil))))
+					(list (list 'cons "-remote" remote_addr) 
+								(cons '(cons "-c" (cons "l+*;l-s" (cons "-lines" args))) nil))))
 
 (defun gud-cdb-file-name (f)
   "Transform a relative file name to an absolute file name, for cdb."
