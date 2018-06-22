@@ -95,8 +95,7 @@ definition has been executed.")
 	"As the 2nd argument:message-args of `gud-common-init'.
 
 lldb [options]:
-  -c \"<command>\" executes the given debugger command at the first debugger
-  -lines requests that line number information be used if present"
+"
 	(let ((options nil))
 		(dolist (o gud-lldb-options-hook options)
 			(append options (funcall o)))
@@ -109,8 +108,10 @@ The directory containing FILE becomes the initial working directory
 and source-file directory for your debugger."
   (interactive (list (gud-query-cmdline 'lldb)))
 
-  (gud-common-init command-line 'gud-lldb-massage-args 'gud-lldb-marker-filter)
-  (set (make-local-variable 'gud-minor-mode) 'lldb)
+  (gud-common-init command-line
+									 'gud-lldb-massage-args
+									 'gud-lldb-marker-filter)
+  (setq (make-local-variable 'gud-minor-mode) 'lldb)
   (setq lldb-oneshot-break-defined nil)
 
   (gud-def gud-listb "breakpoint list"
