@@ -1,5 +1,11 @@
-;;; cdb-gud.el --- Grand Unified Debugger mode for running CDB
-
+;;;; -*- lexical-binding:t -*-
+;;;;
+;; gud-cdb.el: Grand Unified Debugger mode for running CDB
+;;;;
+;; improved from
+;; https://raw.githubusercontent.com/4DA/kd-gud/master/cdb-gud.el
+;;;;
+;;
 ;; Author: Stephan Doll <stephan_doll at dantz.com>
 ;; Maintainer: Aaron Brady <abrady0 at yahoo dot com> :
 ;; Version: 1.0 (January 30, 2002)

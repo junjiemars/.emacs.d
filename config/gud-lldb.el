@@ -1,7 +1,9 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
 ;; lldb.el
-;; origin from https://opensource.apple.com/source/lldb/lldb-69/utils/emacs/gud.el.auto.html
+;;;;
+;; improved from
+;; https://opensource.apple.com/source/lldb/lldb-69/utils/emacs/gud.el.auto.html
 ;;;;
 
 
@@ -63,7 +65,6 @@
 ;; has been exec'ed.
 (defvar lldb-oneshot-break-defined nil)
 
-;;;###autoload
 (defun lldb (command-line)
   "Run lldb on program FILE in buffer *gud-FILE*.
 The directory containing FILE becomes the initial working directory
