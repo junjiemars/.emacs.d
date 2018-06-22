@@ -158,7 +158,7 @@ and source-file directory for your debugger."
   (gud-def gud-stop-subjob "process kill"
 					 "s" "Stop the program.")
 
-  (setq comint-prompt-regexp  "\\(^\\|\n\\)\\*")
+  (setq comint-prompt-regexp  "^\\(lldb\\)[ \t]*")
   (setq paragraph-start comint-prompt-regexp)
   (run-hooks 'lldb-mode-hook))
 
