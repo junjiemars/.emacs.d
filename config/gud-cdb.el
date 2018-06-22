@@ -120,8 +120,10 @@ containing the executable being debugged."
                          directory))
   :group 'gud)
 
-(defvar gud-cdb-options-hook nil
-  "The default options to use when starting a cdb instance")
+(defcustom gud-cdb-options-hook nil
+	"Hook run by `cdb'."
+	:type 'hook
+	:group 'gud)
 
 (defvar gud-cdb-overlay
   (let ((ov (make-overlay (point-min) (point-min))))

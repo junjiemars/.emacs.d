@@ -12,8 +12,9 @@
 ;; ======================================================================
 ;; lldb functions
 
-;; History of argument lists passed to lldb.
-(defvar gud-lldb-history nil)
+
+(defvar gud-lldb-history nil
+	"History of argument lists passed to lldb.")
 
 ;; Keeps track of breakpoint created.  In the following case, the id is "1".
 ;; It is used to implement temporary breakpoint.
