@@ -22,6 +22,18 @@
 	:type 'hook
 	:group 'gud)
 
+(defcustom gud-lldb-directories nil
+  "*A list of directories that lldb should search for source code.
+If nil, only source files in the program directory
+will be known to lldb.
+
+The file names should be absolute, or relative to the directory
+containing the executable being debugged."
+  :type '(choice (const :tag "Current Directory" nil)
+                 (repeat :value ("")
+                         directory))
+  :group 'gud)
+
 ;; Keeps track of breakpoint created.  In the following case, the id is "1".
 ;; It is used to implement temporary breakpoint.
 ;; (lldb) b main.c:39
@@ -102,6 +114,30 @@ lldb [options]:
 		(append options args)))
 
 
+(defun lldb-file-name (f)
+  "Transform a relative file name to an absolute file name, for lldb."
+  (let ((result nil))
+    (if (file-exists-p f)
+        (setq result (expand-file-name f))
+      (let ((directories gud-lldb-directories))
+        (while directories
+          (let ((path (concat (car directories) "/" f)))
+            (if (file-exists-p path)
+                (setq result (expand-file-name path)
+                      directories nil)))
+          (setq directories (cdr directories)))))
+    result))
+
+
+(defun gud-lldb-find-file (f)
+	(save-excursion
+    (let ((realf (lldb-file-name f)))
+			(if (file-exists-p (or realf f))
+					(if realf
+							(find-file-noselect realf t)
+						(find-file-noselect f 'nowarn))))))
+
+
 (defun lldb (command-line)
   "Run lldb on program FILE in buffer *gud-FILE*.
 The directory containing FILE becomes the initial working directory
@@ -109,8 +145,9 @@ and source-file directory for your debugger."
   (interactive (list (gud-query-cmdline 'lldb)))
 
   (gud-common-init command-line
-									 'gud-lldb-massage-args
-									 'gud-lldb-marker-filter)
+									 #'gud-lldb-massage-args
+									 #'gud-lldb-marker-filter
+									 #'gud-lldb-find-file)
   (setq (make-local-variable 'gud-minor-mode) 'lldb)
   (setq lldb-oneshot-break-defined nil)
 
