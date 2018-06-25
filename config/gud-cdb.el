@@ -66,40 +66,45 @@
 ;;      (global-set-key [f10]   'gud-next)
 ;;      (global-set-key [f11]   'gud-finish)
 ;;
-
+;;
 ;;; Here is a simple tutorial:
-
+;;
 ;; In Emacs, run
-
+;;
 ;;    	M-x cdb
 ;;     "Run cdb (like this):" cdb <name of your exe>
-
+;;
 ;; This will open a new Emacs buffer "*gud-xxx*".  In it you will get a
 ;; CDB command prompt '0:000> '.  (CDB commands are documented in the
 ;; 'Debugging tools for Windows' online help).  To get to the begin of
 ;; your code, type:
-
+;;
 ;;      'g main' <Enter> (or 'g WinMain' if you have a GUI application).
-
+;;
 ;; CDB will load the application and break at your main() function.
 ;; Emacs should open another window with your main() source file and show
 ;; a little '>' were the debugger stopped.  You now can set more
 ;; breakpoints in your sources, single-step, etc.  To use the common VC++
-
+;;
 ;; You can also issue additional commands from the CDB command prompt --
 ;; e.g.:
-
+;;
 ;;     - 'dv'  Displays local variables
-
+;;
 ;;     - 'dt' or '??' shows the content of a single variable.
-
+;;
 ;; To get the current stack trace, either use the 'k' command or execute
 ;; "M-x speedbar".  The later will display the calling stack in a
 ;; additional Emacs frame and you can use the mouse to switch between
 ;; stack frames.
+;;;;
+;; Refine Targets:
+;; 1. Start or attach a process.
+;; 2. Commands autocompletion and history.
+;; 3. Frame, register buffers.
+;;;;
 
-;; If the little GUD source line marker '>' is hard to follow, add the
-;; following to your .emacs:
+
 
 (eval-when-compile (require 'cl))
 
@@ -124,30 +129,6 @@ containing the executable being debugged."
 	"Hook run by `cdb'."
 	:type 'hook
 	:group 'gud)
-
-(defvar gud-cdb-overlay
-  (let ((ov (make-overlay (point-min) (point-min))))
-    (overlay-put ov 'face 'secondary-selection)
-    ov)
-  "Overlay variable for GUD highlighting.")
-
-(defadvice gud-display-line (after my-gud-highlight act)
-  "Highlight current line."
-  (let ((ov gud-cdb-overlay)
-        (bf (gud-find-file true-file)))
-		(if bf
-				(save-excursion
-					(set-buffer bf)
-					(move-overlay ov
-												(line-beginning-position) (line-end-position)
-												(current-buffer))))))
-
-(defun gud-cdb-kill-buffer ()
-	"Delete *gud-cdb-<buffer>*."
-  (if (eq major-mode 'gud-mode)
-      (delete-overlay gud-cdb-overlay)))
-
-(add-hook 'kill-buffer-hook #'gud-cdb-kill-buffer)
 
 
 (defun gud-cdb-massage-args (file args)
