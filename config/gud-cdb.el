@@ -130,17 +130,20 @@ containing the executable being debugged."
 	:type 'hook
 	:group 'gud)
 
-
-(defun gud-cdb-massage-args (file args)
-	"As the 2nd argument:message-args of `gud-common-init'.
+(defun gud-cdb-options-list-source ()
+	"List source options.
 
 cdb [options]:
-  -c \"<command>\" executes the given debugger command at the first debugger
-  -lines requests that line number information be used if present"
+  -c \"<command>\" executes the given debugger command at the first debugger.
+  -lines requests that line number information be used if present.
+"
+	(list "-c" "l+*;l-s" "-lines"))
+
+(defun gud-cdb-massage-args (file args)
+	"As the 2nd argument:message-args of `gud-common-init'."
 	(let ((options nil))
-		(dolist (o gud-cdb-options-hook options)
-			(append options (funcall o)))
-		(append options '("-c" "l+*;l-s" "-lines") args)))
+		(append (dolist (o gud-cdb-options-hook options)
+							(setq options (append options (funcall o)))) args)))
 
 (defmacro make-gud-cdb-massage-args-remote (remote_addr)
   (append '(lambda (file args) (cons file args))
