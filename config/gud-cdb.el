@@ -141,9 +141,8 @@ cdb [options]:
 
 (defun gud-cdb-massage-args (file args)
 	"As the 2nd argument:message-args of `gud-common-init'."
-	(let ((options nil))
-		(append (dolist (o gud-cdb-options-hook options)
-							(setq options (append options (funcall o)))) args)))
+	(append (loop for o in gud-cdb-options-hook
+								append(funcall o)) args))
 
 (defmacro make-gud-cdb-massage-args-remote (remote_addr)
   (append '(lambda (file args) (cons file args))
