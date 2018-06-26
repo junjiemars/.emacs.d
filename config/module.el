@@ -120,8 +120,7 @@
                      paredit
                      rainbow-delimiters
                      ,(version-supported-when <= 24.1 'yaml-mode))
-         :compile `(,(compile-unit (emacs-home* "config/on-module.el"))))))
-
+         :compile ())))
 
 
 (package-spec-:allowed-p
