@@ -66,40 +66,45 @@
 ;;      (global-set-key [f10]   'gud-next)
 ;;      (global-set-key [f11]   'gud-finish)
 ;;
-
+;;
 ;;; Here is a simple tutorial:
-
+;;
 ;; In Emacs, run
-
+;;
 ;;    	M-x cdb
 ;;     "Run cdb (like this):" cdb <name of your exe>
-
+;;
 ;; This will open a new Emacs buffer "*gud-xxx*".  In it you will get a
 ;; CDB command prompt '0:000> '.  (CDB commands are documented in the
 ;; 'Debugging tools for Windows' online help).  To get to the begin of
 ;; your code, type:
-
+;;
 ;;      'g main' <Enter> (or 'g WinMain' if you have a GUI application).
-
+;;
 ;; CDB will load the application and break at your main() function.
 ;; Emacs should open another window with your main() source file and show
 ;; a little '>' were the debugger stopped.  You now can set more
 ;; breakpoints in your sources, single-step, etc.  To use the common VC++
-
+;;
 ;; You can also issue additional commands from the CDB command prompt --
 ;; e.g.:
-
+;;
 ;;     - 'dv'  Displays local variables
-
+;;
 ;;     - 'dt' or '??' shows the content of a single variable.
-
+;;
 ;; To get the current stack trace, either use the 'k' command or execute
 ;; "M-x speedbar".  The later will display the calling stack in a
 ;; additional Emacs frame and you can use the mouse to switch between
 ;; stack frames.
+;;;;
+;; Refine Targets:
+;; 1. Start or attach a process.
+;; 2. Commands autocompletion and history.
+;; 3. Frame, register buffers.
+;;;;
 
-;; If the little GUD source line marker '>' is hard to follow, add the
-;; following to your .emacs:
+
 
 (eval-when-compile (require 'cl))
 
@@ -125,60 +130,32 @@ containing the executable being debugged."
 	:type 'hook
 	:group 'gud)
 
-(defvar gud-cdb-overlay
-  (let ((ov (make-overlay (point-min) (point-min))))
-    (overlay-put ov 'face 'secondary-selection)
-    ov)
-  "Overlay variable for GUD highlighting.")
-
-(defadvice gud-display-line (after my-gud-highlight act)
-  "Highlight current line."
-  (let ((ov gud-cdb-overlay)
-        (bf (gud-find-file true-file)))
-		(if bf
-				(save-excursion
-					(set-buffer bf)
-					(move-overlay ov
-												(line-beginning-position) (line-end-position)
-												(current-buffer))))))
-
-(defun gud-cdb-kill-buffer ()
-	"Delete *gud-cdb-<buffer>*."
-  (if (eq major-mode 'gud-mode)
-      (delete-overlay gud-cdb-overlay)))
-
-(add-hook 'kill-buffer-hook #'gud-cdb-kill-buffer)
-
-
-(defun gud-cdb-massage-args (file args)
-	"As the 2nd argument:message-args of `gud-common-init'.
+(defun gud-cdb-options-list-source ()
+	"List source options.
 
 cdb [options]:
-  -c \"<command>\" executes the given debugger command at the first debugger
-  -lines requests that line number information be used if present"
-	(let ((options nil))
-		(dolist (o gud-cdb-options-hook options)
-			(append options (funcall o)))
-		(append options '("-c" "l+*;l-s" "-lines") args)))
+  -c \"<command>\" executes the given debugger command at the first debugger.
+  -lines requests that line number information be used if present.
+"
+	(list "-c" "l+*;l-s" "-lines"))
+
+(defun gud-cdb-massage-args (file args)
+	"As the 2nd argument:message-args of `gud-common-init'."
+	(append (loop for o in gud-cdb-options-hook
+								append(funcall o)) args))
 
 (defmacro make-gud-cdb-massage-args-remote (remote_addr)
   (append '(lambda (file args) (cons file args))
 					(list (list 'cons "-remote" remote_addr) 
 								(cons '(cons "-c" (cons "l+*;l-s" (cons "-lines" args))) nil))))
 
-(defun gud-cdb-file-name (f)
-  "Transform a relative file name to an absolute file name, for cdb."
-  (let ((result nil))
-    (if (file-exists-p f)
-        (setq result (expand-file-name f))
-      (let ((directories gud-cdb-directories))
-        (while directories
-          (let ((path (concat (car directories) "/" f)))
-            (if (file-exists-p path)
-                (setq result (expand-file-name path)
-                      directories nil)))
-          (setq directories (cdr directories)))))
-    result))
+(defun gud-cdb-file-name (filename)
+  "Transform a relative FILENAME to an absolute filename."
+	(or (let ((f (expand-file-name filename)))
+				(when (file-exists-p f) f))
+			(loop for d in gud-cdb-directories
+						do (let ((p (concat d "/" filename)))
+								 (when (file-exists-p p) (return p))))))
 
 (defvar gud-marker-acc "")
 (make-variable-buffer-local 'gud-marker-acc)
@@ -376,10 +353,10 @@ cdb [options]:
 	  (setq gud-last-frame (cons fname linenum)))))
   string)
 
-(defun gud-cdb-find-file (f)
+(defun gud-cdb-find-file (file)
   (save-excursion
-    (let ((realf (gud-cdb-file-name f)))
-			(if (file-exists-p (or realf f))
+    (let ((realf (gud-cdb-file-name file)))
+			(if (file-exists-p (or realf file))
 					(if realf
 							(find-file-noselect realf t)
 						(find-file-noselect f 'nowarn))))))
@@ -484,9 +461,9 @@ and source-file directory for your debugger."
   (interactive (list (gud-query-cmdline 'cdb)))
 
   (gud-common-init command-line
-									 'gud-cdb-massage-args
-                   'gud-cdb-marker-filter
-									 'gud-cdb-find-file)
+									 #'gud-cdb-massage-args
+                   #'gud-cdb-marker-filter
+									 #'gud-cdb-find-file)
 
   (set (make-local-variable 'gud-minor-mode) 'cdb)
 

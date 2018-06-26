@@ -41,10 +41,10 @@
 		(define-key* grep-mode-map (kbd "g") #'recompile grep)
 		(define-key* grep-mode-map (kbd "q") #'quit-window grep))
 
-	
-	(feature-allowed-p bing-dict
-		;; `bing-dict'
-		(global-set-key (kbd "C-c d") #'bing-dict-brief))
+	(package-supported-p	
+		(feature-allowed-p bing-dict
+			;; `bing-dict'
+			(global-set-key (kbd "C-c d") #'bing-dict-brief)))
 	
   )
 
