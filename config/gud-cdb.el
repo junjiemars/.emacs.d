@@ -141,28 +141,21 @@ cdb [options]:
 
 (defun gud-cdb-massage-args (file args)
 	"As the 2nd argument:message-args of `gud-common-init'."
-	(let ((options nil))
-		(append (dolist (o gud-cdb-options-hook options)
-							(setq options (append options (funcall o)))) args)))
+	(append (loop for o in gud-cdb-options-hook
+								append(funcall o)) args))
 
 (defmacro make-gud-cdb-massage-args-remote (remote_addr)
   (append '(lambda (file args) (cons file args))
 					(list (list 'cons "-remote" remote_addr) 
 								(cons '(cons "-c" (cons "l+*;l-s" (cons "-lines" args))) nil))))
 
-(defun gud-cdb-file-name (f)
-  "Transform a relative file name to an absolute file name, for cdb."
-  (let ((result nil))
-    (if (file-exists-p f)
-        (setq result (expand-file-name f))
-      (let ((directories gud-cdb-directories))
-        (while directories
-          (let ((path (concat (car directories) "/" f)))
-            (if (file-exists-p path)
-                (setq result (expand-file-name path)
-                      directories nil)))
-          (setq directories (cdr directories)))))
-    result))
+(defun gud-cdb-file-name (filename)
+  "Transform a relative FILENAME to an absolute filename."
+	(or (let ((f (expand-file-name filename)))
+				(when (file-exists-p f) f))
+			(loop for d in gud-cdb-directories
+						do (let ((p (concat d "/" filename)))
+								 (when (file-exists-p p) (return p))))))
 
 (defvar gud-marker-acc "")
 (make-variable-buffer-local 'gud-marker-acc)
@@ -360,10 +353,10 @@ cdb [options]:
 	  (setq gud-last-frame (cons fname linenum)))))
   string)
 
-(defun gud-cdb-find-file (f)
+(defun gud-cdb-find-file (file)
   (save-excursion
-    (let ((realf (gud-cdb-file-name f)))
-			(if (file-exists-p (or realf f))
+    (let ((realf (gud-cdb-file-name file)))
+			(if (file-exists-p (or realf file))
 					(if realf
 							(find-file-noselect realf t)
 						(find-file-noselect f 'nowarn))))))
@@ -468,9 +461,9 @@ and source-file directory for your debugger."
   (interactive (list (gud-query-cmdline 'cdb)))
 
   (gud-common-init command-line
-									 'gud-cdb-massage-args
-                   'gud-cdb-marker-filter
-									 'gud-cdb-find-file)
+									 #'gud-cdb-massage-args
+                   #'gud-cdb-marker-filter
+									 #'gud-cdb-find-file)
 
   (set (make-local-variable 'gud-minor-mode) 'cdb)
 
