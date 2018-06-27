@@ -7,20 +7,31 @@
 ;;;;
 
 
+;;;;
+;; require
+;;;;
+
+(eval-when-compile (require 'cl))
 
 (require 'gud)
-;; ======================================================================
-;; lldb functions
+
+
+
+;;;;
+;;	variables																			;
+;;;;
 
 
 (defcustom gud-lldb-history nil
 	"History of argument lists passed to lldb."
 	:group 'gud)
 
-(defcustom gud-lldb-options-hook nil
+
+(defcustom gud-lldb-init-hook nil
 	"Hook run by `lldb'."
 	:type 'hook
 	:group 'gud)
+
 
 (defcustom gud-lldb-directories nil
   "*A list of directories that lldb should search for source code.
@@ -44,6 +55,10 @@ containing the executable being debugged."
 (defvar lldb-oneshot-break-defined nil
 	"Keeps track of whether the Python lldb_oneshot_break function 
 definition has been executed.")
+
+
+
+
 
 (defun lldb-extract-breakpoint-id (string)
   ;; Search for "Breakpoint created: \\([^:\n]*\\):" pattern.
@@ -103,15 +118,15 @@ definition has been executed.")
 					(setq lldb-oneshot-break-defined t)))
 		(gud-call "breakpoint command add -p %b -o 'lldb_oneshot_break(frame, bp_loc)'")))
 
+
 (defun gud-lldb-massage-args (file args)
 	"As the 2nd argument:message-args of `gud-common-init'.
 
-lldb [options]:
+`gud' callback it when first run `lldb'.
 "
-	(let ((options nil))
-		(dolist (o gud-lldb-options-hook options)
-			(append options (funcall o)))
-		(append options args)))
+	(ignore* file)
+	(append (loop for o in gud-lldb-init-hook
+								when (functionp o) append (funcall o)) args))
 
 
 (defun lldb-file-name (f)
@@ -140,6 +155,7 @@ lldb [options]:
 
 (defun lldb (command-line)
   "Run lldb on program FILE in buffer *gud-FILE*.
+
 The directory containing FILE becomes the initial working directory
 and source-file directory for your debugger."
   (interactive (list (gud-query-cmdline 'lldb)))
