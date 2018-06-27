@@ -175,7 +175,10 @@ via: `M-x cdb -c \"l+*;l-s\" -lines <debuggee>'.
 	(list "-c" "l+*;l-s" "-lines"))
 
 (defun gud-cdb-massage-args (file args)
-	"As the 2nd argument:message-args of `gud-common-init'."
+	"As the 2nd argument:message-args of `gud-common-init'.
+
+`gud' callback it once a time when run `cdb'.
+"
 	(ignore* file)
 	(append (loop for o in gud-cdb-init-hook
 								append (funcall o)) args))
