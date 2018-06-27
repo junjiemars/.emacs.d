@@ -373,13 +373,15 @@ via: `M-x cdb -c \"l+*;l-s\" -lines <debuggee>'.
 					(find-file-noselect f t)
 				(fin-file-noselect filename 'nowarn)))))
 
-;; sending .frame command after each cmd to get line source info
 
-(defun cdb-simple-send (proc string)
-  (comint-send-string proc (concat string "\n")) ;; this first: error writing to buf otherwisesd
-  (if (string-match "^[ \t]*[Qq][ \t]*" string)
-      (kill-buffer gud-comint-buffer)
-		))
+(defun gud-cdb-simple-send (process string)
+	"Send input STRING plus a newline to PROCESS.
+
+See `comint-input-sender' and `comint-simple-send'"
+	(let ((send (if comint-input-sender-no-newline
+									string
+								(concat string "\n"))))
+		(comint-send-string process send)))
 
 
 (defun cdb (command-line)
@@ -404,7 +406,7 @@ and source-file directory for your debugger."
   (gud-def gud-print  "?? %e "        "\C-p" "Evaluate C expression at point.")
 
   (setq comint-prompt-regexp "^[0-9a-f]:[0-9a-f][0-9a-f][0-9a-f]> ")
-  (setq comint-input-sender 'cdb-simple-send)
+  (setq comint-input-sender #'gud-cdb-simple-send)
   (setq paragraph-start comint-prompt-regexp)
 
   (run-hooks 'cdb-mode-hook))
