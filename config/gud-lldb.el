@@ -45,12 +45,13 @@ containing the executable being debugged."
                          directory))
   :group 'gud)
 
-;; Keeps track of breakpoint created.  In the following case, the id is "1".
-;; It is used to implement temporary breakpoint.
-;; (lldb) b main.c:39
-;; breakpoint set --file 'main.c' --line 39
-;; Breakpoint created: 1: file ='main.c', line = 39, locations = 1
-(defvar gud-breakpoint-id nil)
+
+(defvar lldb-breakpoint-id nil
+	"Keeps track of breakpoint.
+
+(lldb) b main
+(lldb) Breakpoint 1: where = hi`main + 22 at hi.c:17, address = 0x0000000100000ea6 ")
+
 
 (defvar lldb-oneshot-break-defined nil
 	"Keeps track of whether the Python lldb_oneshot_break function 
@@ -60,13 +61,21 @@ definition has been executed.")
 
 
 
+;;;;
+;; lldb-*
+;;;;
+
+
 (defun lldb-extract-breakpoint-id (string)
-  ;; Search for "Breakpoint created: \\([^:\n]*\\):" pattern.
-	;;(message "gud-marker-acc string is: |%s|" string)
-  (if (string-match "Breakpoint created: \\([^:\n]*\\):" string)
-      (progn
-        (setq gud-breakpoint-id (match-string 1 string))
-        (message "breakpoint id: %s" gud-breakpoint-id))))
+	"Extract breakpoint id, see `lldb-breakpoint-id'."
+  (when (string-match "Breakpoint \\([0-9.]*\\):" string)
+		(setq lldb-breakpoint-id (match-string 1 string))))
+
+
+;;;;
+;; gud-lldb-*
+;;;;
+
 
 (defun gud-lldb-marker-filter (string)
   (setq gud-marker-acc
@@ -164,11 +173,10 @@ and source-file directory for your debugger."
 									 #'gud-lldb-massage-args
 									 #'gud-lldb-marker-filter
 									 #'gud-lldb-find-file)
-  (setq (make-local-variable 'gud-minor-mode) 'lldb)
+  (set (make-local-variable 'gud-minor-mode) 'lldb)
   (setq lldb-oneshot-break-defined nil)
 
-  (gud-def gud-listb "breakpoint list"
-					 "l" "List all breakpoints.")
+  (gud-def gud-listb "breakpoint list" "l" "List all breakpoints.")
   (gud-def gud-bt "thread backtrace"
 					 "b" "Show stack for the current thread.")
   (gud-def gud-bt-all "thread backtrace all"
