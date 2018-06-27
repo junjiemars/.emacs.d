@@ -130,18 +130,21 @@ containing the executable being debugged."
 	:type 'hook
 	:group 'gud)
 
-(defun gud-cdb-options-list-source ()
+(defun gud-cdb-init-list-source ()
 	"List source options.
 
 cdb [options]:
   -c \"<command>\" executes the given debugger command at the first debugger.
   -lines requests that line number information be used if present.
+
+This function is an example for `gud-cdb-init-hook', we can do the same
+via: `M-x cdb -c \"l+*;l-s\" -lines <debuggee>'.
 "
 	(list "-c" "l+*;l-s" "-lines"))
 
 (defun gud-cdb-massage-args (file args)
 	"As the 2nd argument:message-args of `gud-common-init'."
-	(append (loop for o in gud-cdb-options-hook
+	(append (loop for o in gud-cdb-init-hook
 								append(funcall o)) args))
 
 (defmacro make-gud-cdb-massage-args-remote (remote_addr)
