@@ -360,7 +360,10 @@ via: `M-x cdb -c \"l+*;l-s\" -lines <debuggee>'.
 
 
 (defun gud-cdb-find-file (filename)
-	"As the optional argument:find-file of `gud-common-init'."
+	"As the optional argument:find-file of `gud-common-init'.
+
+`gud' callback it just when `gud-cdb-init-list-source' had been called first.
+"
   (save-excursion
     (let ((f (cdb-file-name filename)))
 			(if f
