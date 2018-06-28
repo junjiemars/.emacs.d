@@ -140,6 +140,13 @@ containing the executable being debugged."
 	:type 'hook
 	:group 'gud)
 
+
+;; buffer local variables
+
+(make-variable-buffer-local 'gud-marker-acc)
+(make-variable-buffer-local 'gud-output-acc)
+
+
 ;;;;
 ;; cdb-*
 ;;;;
@@ -177,19 +184,13 @@ via: `M-x cdb -c \"l+*;l-s\" -lines <debuggee>'.
 (defun gud-cdb-massage-args (file args)
 	"As the 2nd argument:message-args of `gud-common-init'.
 
-`gud' callback it once a time when run `cdb'.
+`gud' callback it once when run `cdb'.
 "
 	(ignore* file)
 	(append (loop for o in gud-cdb-init-hook
 								append (funcall o)) args))
 
 
-(defvar gud-marker-acc "")
-(make-variable-buffer-local 'gud-marker-acc)
-
-(defvar gud-output-acc "" 
-  "accumulates all input between input markers 0:000>")
-(make-variable-buffer-local 'gud-output-acc)
 
 ;; paths are hard-coded, it may be useful to remap
 ;; a path to another, e.g. the visual studio std library
