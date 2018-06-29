@@ -34,7 +34,7 @@
 
 
 (defcustom gud-lldb-directories nil
-  "*A list of directories that lldb should search for source code.
+  "A list of directories that lldb should search for source code.
 If nil, only source files in the program directory
 will be known to lldb.
 
@@ -108,6 +108,15 @@ something else.
 
 
 (defun gud-lldb-marker-filter (string)
+	"As the 3rd argument: marker-filter of `gud-common-init'.
+
+The job of the marker-filter method is to detect file/line markers in
+strings and set the global gud-last-frame to indicate what display
+action (if any) should be triggered by the marker.  Note that only
+whatever the method *returns* is displayed in the buffer; thus, you
+can filter the debugger's output, interpreting some and passing on
+the rest.
+"
 	(setq gud-marker-acc (if gud-marker-acc
 													 (concat gud-marker-acc string)
 												 string))
@@ -115,14 +124,12 @@ something else.
 	(cond ((string-match "^[ \t]*frame #[0-9]+:.* at \\([^:]+\\):\\([0-9]+\\)"
 											 string)
 				 ;; (lldb) r
-				 ;; Process 1294 launched: '/opt/apps/c/out/bin/hi' (x86_64)
-				 ;; Process 1294 stopped
+				 ;; Process 2353 launched: '/opt/lab/c/spot/out/bin/spot' (x86_64)
+				 ;; Process 2353 stopped
 				 ;; * thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
-				 ;;   frame #0: 0x0000000100000ea6 hi`main(argc=1, argv=0x00007ffeefbffa40) at hi.c:17
+				 ;;   frame #0: 0x0000000100000f66 spot`main(argc=1, argv=0x00007ffeefbffa58) at spot.c:13
 				 (setq gud-last-frame (cons (match-string 1 string)
-																		(string-to-number (match-string 2 string)))))
-				
-				)
+																		(string-to-number (match-string 2 string))))))
 	string)
 
 (defun gud-lldb-tbreak ()
