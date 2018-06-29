@@ -406,7 +406,7 @@ and source-file directory for your debugger."
   (gud-def gud-finish "g @$ra "       "\C-f" "Finish executing current function.")
   (gud-def gud-print  "?? %e "        "\C-p" "Evaluate C expression at point.")
 
-  (setq comint-prompt-regexp "^[0-9a-f]:[0-9a-f][0-9a-f][0-9a-f]> ")
+  (setq comint-prompt-regexp "^[0-9]:[0-9][0-9][0-9]> ")
   (setq comint-input-sender #'gud-cdb-simple-send)
   (setq paragraph-start comint-prompt-regexp)
 
