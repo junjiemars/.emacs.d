@@ -185,6 +185,9 @@ cdb [options]:
 
 This function is an example for `gud-cdb-init-hook', we can do the same
 via: `M-x cdb -c \"l+*;l-s\" -lines <debuggee>'.
+
+-lines option must be included, display line number.
+l-s means do not display source code in `cdb' command line.
 "
 	(list "-c" "l+*;l-s" "-lines"))
 
