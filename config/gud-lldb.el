@@ -1,6 +1,6 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
-;; lldb.el
+;; gud-lldb.el
 ;;;;
 ;; improved from
 ;; https://opensource.apple.com/source/lldb/lldb-69/utils/emacs/gud.el.auto.html
@@ -66,10 +66,24 @@ definition has been executed.")
 ;;;;
 
 
+(defun lldb-file-name (filename)
+  "Transform a relative FILENAME to an absolute one.
+
+Return absolute filename when FILENAME existing or it's existing 
+in `gud-lldb-directories'.
+"
+	(or (let ((f (expand-file-name filename)))
+				(when (file-exists-p f) f))
+			(loop for d in gud-lldb-directories
+						do (let ((p (concat d "/" filename)))
+								 (when (file-exists-p p) (return p))))))
+
 (defun lldb-extract-breakpoint-id (string)
 	"Extract breakpoint id, see `lldb-breakpoint-id'."
   (when (string-match "Breakpoint \\([0-9.]*\\):" string)
 		(setq lldb-breakpoint-id (match-string 1 string))))
+
+
 
 
 ;;;;
@@ -77,31 +91,38 @@ definition has been executed.")
 ;;;;
 
 
+(defun gud-lldb-find-file (filename)
+	"As the optional argument: find-file of `gud-common-init'.
+
+`gud' callback it just when `gud-lldb-init-list-source' had been called first.
+
+The job of the find-file method is to visit and return the buffer indicated
+by the car of gud-tag-frame.  This may be a file name, a tag name, or
+something else.
+"
+  (save-excursion
+    (let ((f (lldb-file-name filename)))
+			(if f
+					(find-file-noselect f t)
+				(find-file-noselect filename 'nowarn)))))
+
+
 (defun gud-lldb-marker-filter (string)
-  (setq gud-marker-acc
-				(if gud-marker-acc (concat gud-marker-acc string) string))
-  (lldb-extract-breakpoint-id gud-marker-acc)
-  (let ((start))
-		;; Process all complete markers in this chunk
-		(while 
-				;; (lldb) r
-				;; Process 1294 launched: '/opt/apps/c/out/bin/hi' (x86_64)
-				;; Process 1294 stopped
-				;; * thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
-				;; frame #0: 0x0000000100000ea6 hi`main(argc=1, argv=0x00007ffeefbffa40) at hi.c:17
-				(string-match "^frame #[0-9]* .* at \\([^:\n]*\\):\\([0-9]*\\)\n"
-											gud-marker-acc start)
-																				;(message "gud-marker-acc matches our pattern....")
-			(setq gud-last-frame (cons (match-string 1 gud-marker-acc)
-																 (string-to-number (match-string 2 gud-marker-acc)))
-						start (match-end 0)))
-
-		;; Search for the last incomplete line in this chunk
-		(while (string-match "\n" gud-marker-acc start)
-			(setq start (match-end 0)))
-
-		;; If we have an incomplete line, store it in gud-marker-acc.
-		(setq gud-marker-acc (substring gud-marker-acc (or start 0))))
+	(setq gud-marker-acc (if gud-marker-acc
+													 (concat gud-marker-acc string)
+												 string))
+	;; (lldb-extract-breakpoint-id gud-marker-acc)
+	(cond ((string-match "^[ \t]*frame #[0-9]+:.* at \\([^:]+\\):\\([0-9]+\\)"
+											 string)
+				 ;; (lldb) r
+				 ;; Process 1294 launched: '/opt/apps/c/out/bin/hi' (x86_64)
+				 ;; Process 1294 stopped
+				 ;; * thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
+				 ;;   frame #0: 0x0000000100000ea6 hi`main(argc=1, argv=0x00007ffeefbffa40) at hi.c:17
+				 (setq gud-last-frame (cons (match-string 1 string)
+																		(string-to-number (match-string 2 string)))))
+				
+				)
 	string)
 
 (defun gud-lldb-tbreak ()
@@ -132,30 +153,6 @@ definition has been executed.")
 	(ignore* file)
 	(append (loop for o in gud-lldb-init-hook
 								when (functionp o) append (funcall o)) args))
-
-
-(defun lldb-file-name (f)
-  "Transform a relative file name to an absolute file name, for lldb."
-  (let ((result nil))
-    (if (file-exists-p f)
-        (setq result (expand-file-name f))
-      (let ((directories gud-lldb-directories))
-        (while directories
-          (let ((path (concat (car directories) "/" f)))
-            (if (file-exists-p path)
-                (setq result (expand-file-name path)
-                      directories nil)))
-          (setq directories (cdr directories)))))
-    result))
-
-
-(defun gud-lldb-find-file (f)
-	(save-excursion
-    (let ((realf (lldb-file-name f)))
-			(if (file-exists-p (or realf f))
-					(if realf
-							(find-file-noselect realf t)
-						(find-file-noselect f 'nowarn))))))
 
 
 (defun lldb (command-line)
