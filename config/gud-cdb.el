@@ -192,9 +192,12 @@ l-s means do not display source code in `cdb' command line.
 	(list "-c" "l+*;l-s" "-lines"))
 
 (defun gud-cdb-massage-args (file args)
-	"As the 2nd argument:message-args of `gud-common-init'.
+	"As the 2nd argument: message-args of `gud-common-init'.
 
 `gud' callback it once when run `cdb'.
+
+The job of the massage-args method is to modify the given list of
+debugger arguments before running the debugger.
 "
 	(ignore* file)
 	(append (loop for o in gud-cdb-init-hook
@@ -202,6 +205,15 @@ l-s means do not display source code in `cdb' command line.
 
 
 (defun gud-cdb-marker-filter (string)
+	"As the 3rd argument: marker-filter of `gud-common-init'.
+
+The job of the marker-filter method is to detect file/line markers in
+strings and set the global gud-last-frame to indicate what display
+action (if any) should be triggered by the marker.  Note that only
+whatever the method *returns* is displayed in the buffer; thus, you
+can filter the debugger's output, interpreting some and passing on
+the rest.
+"
 	(setq gud-marker-acc (concat gud-marker-acc string))
 	(cond ((string-match "^\\(.*\\)(\\([0-9]+\\))\n" string)
 				 ;; Breakpoint 0 hit
@@ -209,20 +221,19 @@ l-s means do not display source code in `cdb' command line.
 				 ;; c!main:
 				 ;; 00007ff7`5a036580 4889542410      mov     qword ptr [rsp+10h],rdx ss:000000c5`9b0ff788=0000000000000000
 				 (setq gud-last-frame (cons (match-string 1 string)
-																		(string-to-number (match-string 2 string))))
-				 
-				 (string-match "\\[\\(.*\\) @ \\([0-9+]\\)\\]" (concat gud-marker-acc string))
-				 (setq gud-last-frame (cons (match-string 1 string)
-																		(string-to-number (match-string 2 string))))
-
-				 ))
+																		(string-to-number (match-string 2 string)))))
+				)
 	string)
 
 
 (defun gud-cdb-find-file (filename)
-	"As the optional argument:find-file of `gud-common-init'.
+	"As the optional argument: find-file of `gud-common-init'.
 
 `gud' callback it just when `gud-cdb-init-list-source' had been called first.
+
+The job of the find-file method is to visit and return the buffer indicated
+by the car of gud-tag-frame.  This may be a file name, a tag name, or
+something else.
 "
   (save-excursion
     (let ((f (cdb-file-name filename)))
