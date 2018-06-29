@@ -100,10 +100,17 @@
 ;;;;
 ;; Refine Targets:
 ;; 1. Start or attach a process.
-;; 2. Commands autocompletion and history.
-;; 3. Frame, register buffers.
+;; 2. Source code debugging.
+;; 3. Commands autocompletion and history.
+;; 4. Frame, register buffers.
 ;;;;
-
+;;;;
+;; Sample C code:
+;; generated via Nore (https://github.com/junjiemars/nore)
+;; %userprofile%/.cc-env.bat && bash ./configure --new
+;; %userprofile%/.cc-env.bat && make -k -C e:/lab/c clean test
+;; 
+;;;;
 
 ;;;;
 ;; require
@@ -191,187 +198,22 @@ via: `M-x cdb -c \"l+*;l-s\" -lines <debuggee>'.
 								append (funcall o)) args))
 
 
-
-;; paths are hard-coded, it may be useful to remap
-;; a path to another, e.g. the visual studio std library
-;; is apparently compiled in f:/RTM/..., but I have it 
-;; installed under program files.
-(defvar gud-cdb-remap-fname-hooks nil
-  "Hook to be run by gud-cdb-remap-fname when a source file is looked up")
-
-(defun gud-cdb-remap-fname (fname)
-  (cond
-   ((not fname) nil)
-   ;;   ((file-exists-p fname) fname)
-   (t ;; try to look the file up
-    (let (;;(file-name-directory fname)
-          ;;(file-name-nondirectory fname)
-          (full-filename (expand-file-name fname))
-          )
-			(or 
-			 (loop for i in gud-cdb-remap-fname-hooks
-						 if (and (setq full-filename (funcall i fname)) (file-exists-p full-filename)) return full-filename)
-			 fname) 
-			)
-		)
-   )
-  )
-
 (defun gud-cdb-marker-filter (string)
 	(setq gud-marker-acc (concat gud-marker-acc string))
 	(cond ((string-match "^\\(.*\\)(\\([0-9]+\\))\n" string)
-				 ;; e:\apps\c\src\cpu\cache_line_size\line.c(23)
+				 ;; Breakpoint 0 hit
+				 ;; e:\lab\c\src\c.c(9)
+				 ;; c!main:
+				 ;; 00007ff7`5a036580 4889542410      mov     qword ptr [rsp+10h],rdx ss:000000c5`9b0ff788=0000000000000000
 				 (setq gud-last-frame (cons (match-string 1 string)
 																		(string-to-number (match-string 2 string))))
+				 
 				 (string-match "\\[\\(.*\\) @ \\([0-9+]\\)\\]" (concat gud-marker-acc string))
 				 (setq gud-last-frame (cons (match-string 1 string)
-																		(string-to-number (match-string 2 string))))))
+																		(string-to-number (match-string 2 string))))
+
+				 ))
 	string)
-
-;; ab: where output is handled, parsed, and turned into source file
-;; gud-display-line : the 'find-file' of gud, calls gud-display-line which calls display-buffer
-(defun gud-cdb-marker-filter1 (string)
-  (setq gud-marker-acc (concat gud-marker-acc string))
-  (let* ((output "")
-				 (input-cursor-found)
-				 (lines)
-				 (find-stack-marker
-					(lambda (stack-lines)
-						(if (string-match 
-								 (concat 
-									"^[0-9a-zA-Z]*" ;; optional frame number
-									" *[0-9a-zA-Z`]+" ;; instruction pointer
-									" [0-9a-zA-Z`]+ " ;; return address
-									".+!.+\\"	;; module!function
-									;;"+0x[0-9a-zA-Z]+" ;; offset (optional, ab: removing)
-									" \\[\\(.*\\) @ \\([0-9]+\\)\\]" ;; file @ line
-									) stack-lines)
-								(let
-										((fname)
-										 (linenum))
-									(setq fname (substring stack-lines (match-beginning 1) (match-end 1)))
-									(setq linenum (string-to-number (substring stack-lines (match-beginning 2) (match-end 2))))
-									(setq fname (gud-cdb-remap-fname fname))
-									(if (and fname (file-exists-p fname))
-											(cons fname linenum)
-										(funcall find-stack-marker (substring stack-lines (match-end 0))))))))
-				 (set-from-stack-marker (lambda (stack-lines)
-																	(setq gud-last-frame (or 
-																												(funcall find-stack-marker stack-lines)
-																												gud-last-frame))))
-         (set-gud-last-frame (lambda (fname line)
-                               "change new mark for buffer if file found"
-                               (let ((fn (gud-cdb-remap-fname fname)))
-                                 (if fn
-                                     (setq gud-last-frame (cons fn line)))))))
-
-		;;    (message "in")
-
-		;; *********************************************************************************
-		;; output capture  
-		;; *********************************************************************************
-
-		;; accum latest
-		(setq lines (split-string string "\n"))
-		(loop for line in lines
-					until (setq input-cursor-found (string-match "^[0-9]:[0-9][0-9][0-9]\\(:.*\\)?>" line))
-					do
-					(setq gud-output-acc (concat gud-output-acc line "\n")))
-		;; ab: match frame markers.
-		;; example:
-		;;"0b 0012f8ac 00516f22 Auctionserver!XactLogLine_FromStr+0xd9 [c:\\src\\xactlog.c @ 372]
-																				;	(debug)
-		(if input-cursor-found 
-				(cond
-         ;;; info about a particular line, e.g. from a step
-         ((string-match "^\\([a-zA-Z]:.*\\)(\\([0-9]+\\))" gud-output-acc)
-          (funcall set-gud-last-frame (match-string 1 gud-output-acc) (string-to-number (match-string 2 gud-output-acc))))
-         ;;; default, scrape for a stack trace
-         (t (funcall set-from-stack-marker gud-output-acc))))
-		
-		;; 		 (string-match 
-		;; 		 (concat 
-		;; 		  "^[0-9a-zA-Z]*" ;; optional frame number
-		;; 		  " *[0-9a-zA-Z]+";; instruction pointer
-		;; 		  " [0-9a-zA-Z]+ ";; return address
-		;; 		  ".+!.+\\"		  ;; module!function
-		;; 		  ;;"+0x[0-9a-zA-Z]+" ;; offset (optional, ab: removing)
-		;; 		  " \\[\\(.*\\) @ \\([0-9]+\\)\\]" ;; file @ line
-		;; 		  ) gud-output-acc))
-		;; 		(let
-		;; 			((fname (match-string 1 gud-output-acc))
-		;; 			 (linenum (string-to-number (match-string 2 gud-output-acc))))
-		;; 		  (if (file-exists-p fname)
-		;; 			  (setq gud-last-frame (cons fname linenum)))))
-
-		;; clear the accumulator
-		(if input-cursor-found
-				(setq gud-output-acc ""))
-
-		;; Process all the complete markers in this chunk.  This regex might catch
-		;;     ;; too much, but that is the debugger's fault ...
-
-		;; 	;; ab: .frame n parsing. only 1 line of output.
-		;; 	(if (string-match "^[0-9a-f]+ .*\n.*>" string) 
-		;; 		(funcall set-from-stack-marker string))
-		
-		;; 	;; ab: add 'k' stack parsing
-		;; 	(if (string-match "^ChildEBP.*RetAddr[ ]*\n" string)
-		;; 		(progn
-		;; 		  (funcall set-from-stack-marker (substring string (match-end 0)))))
-		
-		;;     (while (string-match "^\\([-A-Za-z_\.:\\]*\\)(\\([0-9]*\\))\n" gud-marker-acc)
-
-		;;    (message "before-munch")
-    ;; too munch, but that is the debugger's fault ...
-    (while (string-match 
-						"^\\([-A-Za-z0-9_\.:\\]*\\)(\\([0-9]*\\))\n" 
-						gud-marker-acc)
-      (setq
-
-       ;; Extract the frame position from the marker.
-			 ;;        gud-last-frame
-			 ;;        (cons (substring gud-marker-acc (match-beginning 1) (match-end 1))
-			 ;;              (string-to-number (substring gud-marker-acc
-			 ;;                                        (match-beginning 2)
-			 ;;                                        (match-end 2))))
-
-       ;; Append any text before the marker to the output we're going
-       ;; to return - we don't include the marker in this text.
-       output (concat output
-                      (substring gud-marker-acc 0 (match-beginning 0)))
-
-       ;; Set the accumulator to the remaining text.
-       gud-marker-acc (substring gud-marker-acc (match-end 0))))
-
-    ;; Does the remaining text look like it might end with the
-    ;; beginning of another marker?  If it does, then keep it in
-    ;; gud-marker-acc until we receive the rest of it.  Since we
-    ;; know the full marker regexp above failed, it's pretty simple to
-    ;; test for marker starts.
-    (if (string-match "\032.*\\'" gud-marker-acc)
-        (progn
-					;; Everything before the potential marker start can be output.
-          (setq output (concat output (substring gud-marker-acc
-                                                 0 (match-beginning 0))))
-
-          ;; Everything after, we save, to combine with later input.
-          (setq gud-marker-acc
-                (substring gud-marker-acc (match-beginning 0))))
-      (setq output (concat output gud-marker-acc)
-            gud-marker-acc ""))
-		;;     (message "last frame: %s" gud-last-frame)
-		;;     (message "marker-acc: %s" gud-marker-acc)
-		;;     (message "output: %i" (length output))
-		;;     (message "%s" output)
-		;;     (setq output "Breakpoint 0 hit
-		;; GameClient!SwitchToGameplayState:
-		;; 015a74e0 55              push    ebp
-		;; 0:000> 
-		;; ")
-		;;     (setq gud-last-frame '("c:\\src\\crossroads\\gameclientlib\\gclloading.c" . 58))
-    ;;(sleep-for 5)
-    output))
 
 
 (defun gud-cdb-find-file (filename)
