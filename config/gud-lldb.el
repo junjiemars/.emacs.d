@@ -81,31 +81,27 @@ definition has been executed.")
   (setq gud-marker-acc
 				(if gud-marker-acc (concat gud-marker-acc string) string))
   (lldb-extract-breakpoint-id gud-marker-acc)
-  (let (start)
-    ;; Process all complete markers in this chunk
-    (while (or
-            ;; (lldb) r
-            ;; Process 15408 launched: '/Volumes/data/lldb/svn/trunk/test/conditional_break/a.out' (x86_64)
-            ;; (lldb) Process 15408 stopped
-            ;; * thread #1: tid = 0x2e03, 0x0000000100000de8 a.out`c + 7 at main.c:39, stop reason = breakpoint 1.1, queue = com.apple.main-thread
-            (string-match " at \\([^:\n]*\\):\\([0-9]*\\), stop reason = .*\n"
-                          gud-marker-acc start)
-            ;; (lldb) frame select -r 1
-            ;; frame #1: 0x0000000100000e09 a.out`main + 25 at main.c:44
-            (string-match "^frame.* at \\([^:\n]*\\):\\([0-9]*\\)\n"
-													gud-marker-acc start))
+  (let ((start))
+		;; Process all complete markers in this chunk
+		(while 
+				;; (lldb) r
+				;; Process 1294 launched: '/opt/apps/c/out/bin/hi' (x86_64)
+				;; Process 1294 stopped
+				;; * thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
+				;; frame #0: 0x0000000100000ea6 hi`main(argc=1, argv=0x00007ffeefbffa40) at hi.c:17
+				(string-match "^frame #[0-9]* .* at \\([^:\n]*\\):\\([0-9]*\\)\n"
+											gud-marker-acc start)
 																				;(message "gud-marker-acc matches our pattern....")
-      (setq gud-last-frame
-            (cons (match-string 1 gud-marker-acc)
-                  (string-to-number (match-string 2 gud-marker-acc)))
-            start (match-end 0)))
+			(setq gud-last-frame (cons (match-string 1 gud-marker-acc)
+																 (string-to-number (match-string 2 gud-marker-acc)))
+						start (match-end 0)))
 
-    ;; Search for the last incomplete line in this chunk
-    (while (string-match "\n" gud-marker-acc start)
-      (setq start (match-end 0)))
+		;; Search for the last incomplete line in this chunk
+		(while (string-match "\n" gud-marker-acc start)
+			(setq start (match-end 0)))
 
-    ;; If we have an incomplete line, store it in gud-marker-acc.
-    (setq gud-marker-acc (substring gud-marker-acc (or start 0))))
+		;; If we have an incomplete line, store it in gud-marker-acc.
+		(setq gud-marker-acc (substring gud-marker-acc (or start 0))))
 	string)
 
 (defun gud-lldb-tbreak ()
