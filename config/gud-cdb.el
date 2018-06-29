@@ -141,9 +141,9 @@ containing the executable being debugged."
 	:group 'gud)
 
 
-;; buffer local variables
+;; ;; buffer local variables
 
-(make-variable-buffer-local 'gud-marker-acc)
+;; (make-variable-buffer-local 'gud-marker-acc)
 (make-variable-buffer-local 'gud-output-acc)
 
 
@@ -208,18 +208,29 @@ via: `M-x cdb -c \"l+*;l-s\" -lines <debuggee>'.
           ;;(file-name-nondirectory fname)
           (full-filename (expand-file-name fname))
           )
-	  (or 
-	   (loop for i in gud-cdb-remap-fname-hooks
-			 if (and (setq full-filename (funcall i fname)) (file-exists-p full-filename)) return full-filename)
-	   fname) 
-	  )
-	)
+			(or 
+			 (loop for i in gud-cdb-remap-fname-hooks
+						 if (and (setq full-filename (funcall i fname)) (file-exists-p full-filename)) return full-filename)
+			 fname) 
+			)
+		)
    )
   )
 
+(defun gud-cdb-marker-filter (string)
+	(setq gud-marker-acc (concat gud-marker-acc string))
+	(cond ((string-match "^\\(.*\\)(\\([0-9]+\\))\n" string)
+				 ;; e:\apps\c\src\cpu\cache_line_size\line.c(23)
+				 (setq gud-last-frame (cons (match-string 1 string)
+																		(string-to-number (match-string 2 string))))
+				 (string-match "\\[\\(.*\\) @ \\([0-9+]\\)\\]" (concat gud-marker-acc string))
+				 (setq gud-last-frame (cons (match-string 1 string)
+																		(string-to-number (match-string 2 string))))))
+	string)
+
 ;; ab: where output is handled, parsed, and turned into source file
 ;; gud-display-line : the 'find-file' of gud, calls gud-display-line which calls display-buffer
-(defun gud-cdb-marker-filter (string)
+(defun gud-cdb-marker-filter1 (string)
   (setq gud-marker-acc (concat gud-marker-acc string))
   (let* ((output "")
 				 (input-cursor-found)
@@ -372,7 +383,7 @@ via: `M-x cdb -c \"l+*;l-s\" -lines <debuggee>'.
     (let ((f (cdb-file-name filename)))
 			(if f
 					(find-file-noselect f t)
-				(fin-file-noselect filename 'nowarn)))))
+				(find-file-noselect filename 'nowarn)))))
 
 
 (defun gud-cdb-simple-send (process string)
