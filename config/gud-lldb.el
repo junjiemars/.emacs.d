@@ -172,49 +172,17 @@ and source-file directory for your debugger."
 									 #'gud-lldb-massage-args
 									 #'gud-lldb-marker-filter
 									 #'gud-lldb-find-file)
-  (set (make-local-variable 'gud-minor-mode) 'lldb)
-  (setq lldb-oneshot-break-defined nil)
-
-  ;; (gud-def gud-listb "breakpoint list" "l" "List all breakpoints.")
-  ;; (gud-def gud-bt "thread backtrace"
-	;; 				 "b" "Show stack for the current thread.")
-  ;; (gud-def gud-bt-all "thread backtrace all"
-	;; 				 "B" "Show stacks for all the threads.")
-  ;; (gud-def gud-break "breakpoint set -f %f -l %l"
-	;; 				 "\C-b" "Set breakpoint at current line.")
-  ;; (gud-def gud-tbreak (gud-lldb-tbreak)
-	;; 				 "\C-t" "Set temporary breakpoint at current line.")
-  ;; (gud-def gud-remove "breakpoint clear -f %f -l %l"
-	;; 				 "\C-d" "Remove breakpoint at current line")
-  ;; (gud-def gud-step "thread step-in"
-	;; 				 "\C-s" "Step one source line with display.")
-	;; (gud-def gud-stepi "thread step-inst"
-	;; 				 "\C-i" "Step one instruction with display.")
 	
-  ;; (gud-def gud-next "thread step-over"
-	;; 				 "\C-n" "Step one line (skip functions).")
-  ;; (gud-def gud-nexti "thread step-inst-over"
-	;; 				 nil    "Step one instruction (skip functions).")
-  ;; (gud-def gud-cont "process continue"
-	;; 				 "\C-r" "Continue with display.")
-  ;; (gud-def gud-finish "thread step-out"
-	;; 				 "\C-f" "Finish executing current function.")
-  ;; (gud-def gud-up
-  ;;          (progn (gud-call "frame select -r 1")
-  ;;                 (sit-for 1))
-	;; 				 "<" "Up 1 stack frame.")
-  ;; (gud-def gud-down
-  ;;          (progn (gud-call "frame select -r -1")
-  ;;                 (sit-for 1))
-	;; 				 ">" "Down 1 stack frame.")
-  ;; (gud-def gud-print "expression -- %e"
-	;; 				 "\C-p" "Evaluate C expression at point.")
-  ;; (gud-def gud-pstar "expression -- *%e"
-	;; 				 nil "Evaluate C dereferenced pointer expression at point.")
-  ;; (gud-def gud-run "run"
-	;; 				 "r" "Run the program.")
-  ;; (gud-def gud-stop-subjob "process kill"
-	;; 				 "s" "Stop the program.")
+  (set (make-local-variable 'gud-minor-mode) 'lldb)
+  ;; (setq lldb-oneshot-break-defined nil)
+
+	(gud-def gud-break "breakpoint set -f %f -l %l" "\C-b" "Set breakpoint at current line.")
+  (gud-def gud-step "thread step-in"              "\C-s" "Step one source line with display.")
+  (gud-def gud-next "thread step-over"            "\C-n" "Step one line (skip functions).")
+	(gud-def gud-cont "process continue"            "\C-r" "Continue with display.")
+  (gud-def gud-finish "thread step-out"           "\C-f" "Finish executing current function.")
+	(gud-def gud-print "expression -- %e"           "\C-p" "Evaluate C expression at point.")
+
   (setq comint-prompt-regexp  "^(lldb)[ \t]*")
   (setq paragraph-start comint-prompt-regexp)
   (run-hooks 'lldb-mode-hook))
