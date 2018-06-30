@@ -22,9 +22,8 @@
 ;;;;
 
 
-(defcustom gud-lldb-history nil
-	"History of argument lists passed to lldb."
-	:group 'gud)
+(defvar gud-lldb-history nil
+	"History of argument lists passed to lldb.")
 
 
 (defcustom gud-lldb-init-hook nil

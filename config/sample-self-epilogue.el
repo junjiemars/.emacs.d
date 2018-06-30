@@ -91,3 +91,13 @@
  (setq send-mail-function 'smtpmail-send-it)
  (setq smtpmail-smtp-server "<smtp-server>")
  (setq smtpmail-smtp-server 587))
+
+;; lldb
+(platform-supported-when darwin
+	(compile! v-dir (compile-unit (emacs-home* "config/gud-lldb.el")))
+	(setq gud-lldb-directories '("/opt/lab/c/src/")))
+
+;; cdb
+(platform-supported-when windows-nt
+	(compile! v-dir (compile-unit (emacs-home* "config/gud-cdb.el"))))
+
