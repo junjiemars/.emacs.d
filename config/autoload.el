@@ -64,6 +64,15 @@
     (compile-unit (emacs-home* "config/on-edit-autoload.el"))
     (compile-unit (emacs-home* "config/on-hippie-autoload.el"))
     (compile-unit (emacs-home* "config/on-lisp-autoload.el"))
+		
+		(platform-supported-if windows-nt
+				(compile-unit (emacs-home* "config/gud-cdb.el") t)
+			
+			(platform-supported-if darwin
+					(compile-unit (emacs-home* "config/gud-lldb.el") t)
+				
+				(when (executable-find% "lldb")
+					(compile-unit (emacs-home* "config/gud-lldb.el") t))))
 
 		(feature-eww-supported-p
 			(compile-unit (emacs-home* "config/on-eww-autoload.el")))

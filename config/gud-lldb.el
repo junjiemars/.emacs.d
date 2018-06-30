@@ -176,12 +176,12 @@ and source-file directory for your debugger."
   (set (make-local-variable 'gud-minor-mode) 'lldb)
   ;; (setq lldb-oneshot-break-defined nil)
 
-	(gud-def gud-break "breakpoint set -f %f -l %l" "\C-b" "Set breakpoint at current line.")
-  (gud-def gud-step "thread step-in"              "\C-s" "Step one source line with display.")
-  (gud-def gud-next "thread step-over"            "\C-n" "Step one line (skip functions).")
-	(gud-def gud-cont "process continue"            "\C-r" "Continue with display.")
-  (gud-def gud-finish "thread step-out"           "\C-f" "Finish executing current function.")
-	(gud-def gud-print "expression -- %e"           "\C-p" "Evaluate C expression at point.")
+	(gud-def gud-break    "breakpoint set -f %f -l %l" "\C-b"    "Set breakpoint at current line.")
+  (gud-def gud-step     "thread step-in"              "\C-s"   "Step one source line with display.")
+  (gud-def gud-next     "thread step-over"            "\C-n"   "Step one line (skip functions).")
+	(gud-def gud-cont     "process continue"            "\C-r"   "Continue with display.")
+  (gud-def gud-finish   "thread step-out"             "\C-f"   "Finish executing current function.")
+	(gud-def gud-print    "expression -- %e"            "\C-p"   "Evaluate C expression at point.")
 
   (setq comint-prompt-regexp  "^(lldb)[ \t]*")
   (setq paragraph-start comint-prompt-regexp)
