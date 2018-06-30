@@ -5,6 +5,14 @@
 ;; improved from
 ;; https://opensource.apple.com/source/lldb/lldb-69/utils/emacs/gud.el.auto.html
 ;;;;
+;;
+;; Refine Targets:
+;; 1. Start or attach a process.
+;; 2. Source code debugging.
+;; 3. Commands autocompletion and history.
+;; 4. Frame, register buffers.
+;; 5. Scripting, see http://lldb.llvm.org/scripting.html
+
 
 
 ;;;;
@@ -43,18 +51,6 @@ containing the executable being debugged."
                  (repeat :value ("")
                          directory))
   :group 'gud)
-
-
-(defvar lldb-breakpoint-id nil
-	"Keeps track of breakpoint.
-
-(lldb) b main
-(lldb) Breakpoint 1: where = hi`main + 22 at hi.c:17, address = 0x0000000100000ea6 ")
-
-
-(defvar lldb-oneshot-break-defined nil
-	"Keeps track of whether the Python lldb_oneshot_break function 
-definition has been executed.")
 
 
 
@@ -131,30 +127,14 @@ the rest.
 																		(string-to-number (match-string 2 string))))))
 	string)
 
-(defun gud-lldb-tbreak ()
-	(progn
-		(gud-call "breakpoint set -f %f -l %l")
-		(sit-for 1)
-		(if (not lldb-oneshot-break-defined)
-				(progn
-					;; The "\\n"'s are required to escape the newline chars
-					;; passed to the lldb process.
-					(gud-call
-					 (concat "script exec \"def lldb_oneshot_break(frame, bp_loc):\\n"
-									 "    target=frame.GetThread().GetProcess().GetTarget()\\n"
-									 "    bp=bp_loc.GetBreakpoint()\\n"
-									 "    print 'Deleting oneshot breakpoint:', bp\\n"
-									 "    target.BreakpointDelete(bp.GetID())\""))
-					(sit-for 1)
-					;; Set the flag since Python knows about the function def now.
-					(setq lldb-oneshot-break-defined t)))
-		(gud-call "breakpoint command add -p %b -o 'lldb_oneshot_break(frame, bp_loc)'")))
-
 
 (defun gud-lldb-massage-args (file args)
 	"As the 2nd argument:message-args of `gud-common-init'.
 
 `gud' callback it when first run `lldb'.
+
+The job of the massage-args method is to modify the given list of
+debugger arguments before running the debugger.
 "
 	(ignore* file)
 	(append (loop for o in gud-lldb-init-hook
@@ -174,7 +154,6 @@ and source-file directory for your debugger."
 									 #'gud-lldb-find-file)
 	
   (set (make-local-variable 'gud-minor-mode) 'lldb)
-  ;; (setq lldb-oneshot-break-defined nil)
 
 	(gud-def gud-break    "breakpoint set -f %f -l %l" "\C-b"    "Set breakpoint at current line.")
   (gud-def gud-step     "thread step-in"              "\C-s"   "Step one source line with display.")
