@@ -73,10 +73,6 @@ in `gud-lldb-directories'.
 						do (let ((p (concat d "/" filename)))
 								 (when (file-exists-p p) (return p))))))
 
-(defun lldb-extract-breakpoint-id (string)
-	"Extract breakpoint id, see `lldb-breakpoint-id'."
-  (when (string-match "Breakpoint \\([0-9.]*\\):" string)
-		(setq lldb-breakpoint-id (match-string 1 string))))
 
 
 
