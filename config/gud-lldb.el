@@ -12,7 +12,15 @@
 ;; 3. Commands autocompletion and history.
 ;; 4. Frame, register buffers.
 ;; 5. Scripting, see http://lldb.llvm.org/scripting.html
-
+;;
+;;;;
+;;
+;; Sample C code:
+;; generated via Nore (https://github.com/junjiemars/nore)
+;; %userprofile%/.cc-env.bat && bash ./configure --new
+;; %userprofile%/.cc-env.bat && make -k -C e:/lab/c clean test
+;; 
+;;;;
 
 
 ;;;;
@@ -85,8 +93,6 @@ in `gud-lldb-directories'.
 (defun gud-lldb-find-file (filename)
 	"As the optional argument: find-file of `gud-common-init'.
 
-`gud' callback it just when `gud-lldb-init-list-source' had been called first.
-
 The job of the find-file method is to visit and return the buffer indicated
 by the car of gud-tag-frame.  This may be a file name, a tag name, or
 something else.
@@ -111,7 +117,7 @@ the rest.
 	(setq gud-marker-acc (if gud-marker-acc
 													 (concat gud-marker-acc string)
 												 string))
-	;; (lldb-extract-breakpoint-id gud-marker-acc)
+
 	(cond ((string-match "^[ \t]*frame #[0-9]+:.* at \\([^:]+\\):\\([0-9]+\\)"
 											 string)
 				 ;; (lldb) r
@@ -127,7 +133,7 @@ the rest.
 (defun gud-lldb-massage-args (file args)
 	"As the 2nd argument:message-args of `gud-common-init'.
 
-`gud' callback it when first run `lldb'.
+`gud' callback it once when first run `lldb'.
 
 The job of the massage-args method is to modify the given list of
 debugger arguments before running the debugger.
