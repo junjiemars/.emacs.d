@@ -47,7 +47,7 @@
 			 (require 'gud-cdb))
 	 (when (executable-find% "lldb")
 		 (require 'gud-lldb)
-		 (setq% gud-lldb-directories '("/opt/lab/c/src/")))))
+		 (setq% gud-lldb-directories '("/opt/lab/c/src/") gud-lldb))))
 
 (comment
  ;; if current Emacs session support `semantic-mode'

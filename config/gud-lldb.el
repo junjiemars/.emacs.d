@@ -124,7 +124,7 @@ the rest.
 				 ;; Process 2353 launched: '/opt/lab/c/spot/out/bin/spot' (x86_64)
 				 ;; Process 2353 stopped
 				 ;; * thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
-				 ;;   frame #0: 0x0000000100000f66 spot`main(argc=1, argv=0x00007ffeefbffa58) at spot.c:13
+				 ;;   frame #0: 0x0000000100000f66 spot`main(argc=1, argv=0x00007ffeefbffa58) at c.c:13
 				 (setq gud-last-frame (cons (match-string 1 string)
 																		(string-to-number (match-string 2 string))))))
 	string)
