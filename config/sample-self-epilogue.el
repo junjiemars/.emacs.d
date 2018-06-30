@@ -95,7 +95,8 @@
 ;; lldb
 (platform-supported-when darwin
 	(compile! v-dir (compile-unit (emacs-home* "config/gud-lldb.el")))
-	(setq gud-lldb-directories '("/opt/lab/c/src/")))
+	(with-eval-after-load 'gud-lldb
+		(setq gud-lldb-directories '("/opt/lab/c/src/"))))
 
 ;; cdb
 (platform-supported-when windows-nt
