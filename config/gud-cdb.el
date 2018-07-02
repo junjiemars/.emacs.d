@@ -280,199 +280,199 @@ and source-file directory for your debugger."
   (run-hooks 'cdb-mode-hook))
 
 
-(defun gud-cdb-goto-stackframe (text token indent)
-  "Goto the stackframe described by TEXT, TOKEN, and INDENT."
-  (speedbar-with-attached-buffer
-   (gud-display-line (nth 2 token) (string-to-number (nth 3 token)))
-   (gud-basic-call (concat ".frame " (nth 1 token)))))
+;; (defun gud-cdb-goto-stackframe (text token indent)
+;;   "Goto the stackframe described by TEXT, TOKEN, and INDENT."
+;;   (speedbar-with-attached-buffer
+;;    (gud-display-line (nth 2 token) (string-to-number (nth 3 token)))
+;;    (gud-basic-call (concat ".frame " (nth 1 token)))))
 
-(defvar gud-cdb-complete-in-progress)
+;; (defvar gud-cdb-complete-in-progress)
 
-(defvar gud-cdb-fetched-stack-frame nil
-  "Stack frames we are fetching from CDB.")
+;; (defvar gud-cdb-fetched-stack-frame nil
+;;   "Stack frames we are fetching from CDB.")
 
-(defvar gud-cdb-fetched-stack-frame-list nil
-  "List of stack frames we are fetching from CDB.")
+;; (defvar gud-cdb-fetched-stack-frame-list nil
+;;   "List of stack frames we are fetching from CDB.")
 
-(defun gud-cdb-get-stackframe (buffer)
-  "Extract the current stack frame out of the GUD CDB BUFFER."
-  (let ((newlst nil)
-        (gud-cdb-fetched-stack-frame-list nil))
-    (gud-cdb-run-command-fetch-lines "kn " buffer)
-    (if (and (car gud-cdb-fetched-stack-frame-list)
-             (string-match "No stack" (car gud-cdb-fetched-stack-frame-list)))
-        ;; Go into some other mode???
-        nil
-      (while gud-cdb-fetched-stack-frame-list
-        (let ((e (car gud-cdb-fetched-stack-frame-list))
-              (name nil) (num nil))
-          (if (not (string-match "^\\([0-9a-f]+\\) [0-9a-f]* [0-9a-f]* \\([[a-zA-Z_0-9:$~!+]*\\).*$" e))
-              nil
-            (setq num (match-string 1 e)
-                  name (match-string 2 e))
-            (setq newlst
-                  (cons
-                   (if (string-match
-                        "\\([-0-9a-zA-Z\\_.:]+\\) @ \\([0-9]+\\)" e)
-                       (list name num (match-string 1 e)
-                             (match-string 2 e))
-                     (list name num))
-                   newlst))))
-        (setq gud-cdb-fetched-stack-frame-list
-              (cdr gud-cdb-fetched-stack-frame-list)))
-      (nreverse newlst))))
-
-
-(defun gud-cdb-run-command-fetch-lines (command buffer)
-  "Run COMMAND, and return when `gud-cdb-fetched-stack-frame-list' is full.
-BUFFER is the GUD buffer in which to run the command."
-  (save-excursion
-    (set-buffer buffer)
-    (if (save-excursion
-          (goto-char (point-max))
-          (forward-line 0)
-          (not (looking-at comint-prompt-regexp)))
-        nil
-			;; Much of this copied from CDB complete, but I'm grabbing the stack
-      ;; frame instead.
-      (let ((gud-marker-filter 'gud-cdb-speedbar-stack-filter))
-        ;; Issue the command to CDB.
-        (gud-basic-call command)
-        (setq gud-cdb-complete-in-progress t)
-        ;; Slurp the output.
-        (while gud-cdb-complete-in-progress
-          (accept-process-output (get-buffer-process gud-comint-buffer) 15))
-        (setq gud-cdb-fetched-stack-frame nil
-              gud-cdb-fetched-stack-frame-list
-              (nreverse gud-cdb-fetched-stack-frame-list))))))
+;; (defun gud-cdb-get-stackframe (buffer)
+;;   "Extract the current stack frame out of the GUD CDB BUFFER."
+;;   (let ((newlst nil)
+;;         (gud-cdb-fetched-stack-frame-list nil))
+;;     (gud-cdb-run-command-fetch-lines "kn " buffer)
+;;     (if (and (car gud-cdb-fetched-stack-frame-list)
+;;              (string-match "No stack" (car gud-cdb-fetched-stack-frame-list)))
+;;         ;; Go into some other mode???
+;;         nil
+;;       (while gud-cdb-fetched-stack-frame-list
+;;         (let ((e (car gud-cdb-fetched-stack-frame-list))
+;;               (name nil) (num nil))
+;;           (if (not (string-match "^\\([0-9a-f]+\\) [0-9a-f]* [0-9a-f]* \\([[a-zA-Z_0-9:$~!+]*\\).*$" e))
+;;               nil
+;;             (setq num (match-string 1 e)
+;;                   name (match-string 2 e))
+;;             (setq newlst
+;;                   (cons
+;;                    (if (string-match
+;;                         "\\([-0-9a-zA-Z\\_.:]+\\) @ \\([0-9]+\\)" e)
+;;                        (list name num (match-string 1 e)
+;;                              (match-string 2 e))
+;;                      (list name num))
+;;                    newlst))))
+;;         (setq gud-cdb-fetched-stack-frame-list
+;;               (cdr gud-cdb-fetched-stack-frame-list)))
+;;       (nreverse newlst))))
 
 
-;; *********************************************************************************
-;; cdb helpers  
-;; *********************************************************************************
+;; (defun gud-cdb-run-command-fetch-lines (command buffer)
+;;   "Run COMMAND, and return when `gud-cdb-fetched-stack-frame-list' is full.
+;; BUFFER is the GUD buffer in which to run the command."
+;;   (save-excursion
+;;     (set-buffer buffer)
+;;     (if (save-excursion
+;;           (goto-char (point-max))
+;;           (forward-line 0)
+;;           (not (looking-at comint-prompt-regexp)))
+;;         nil
+;; 			;; Much of this copied from CDB complete, but I'm grabbing the stack
+;;       ;; frame instead.
+;;       (let ((gud-marker-filter 'gud-cdb-speedbar-stack-filter))
+;;         ;; Issue the command to CDB.
+;;         (gud-basic-call command)
+;;         (setq gud-cdb-complete-in-progress t)
+;;         ;; Slurp the output.
+;;         (while gud-cdb-complete-in-progress
+;;           (accept-process-output (get-buffer-process gud-comint-buffer) 15))
+;;         (setq gud-cdb-fetched-stack-frame nil
+;;               gud-cdb-fetched-stack-frame-list
+;;               (nreverse gud-cdb-fetched-stack-frame-list))))))
 
-(defun cdb-pidFromExe (&optional exe-name-regexp predicate)
-  (interactive)
-  (cdr (cdb-promptPidAndExe exe-name-regexp predicate)))
 
-(defun cdb-promptPidAndExe (&optional exe-name-regexp predicate)
-  (interactive)
-  (let
-	  ((tlist)
-	   (exe)
-	   (exes))
-	(setq tlist (shell-command-to-string "tlist"))
-	(setq exes
-		  (loop for n from 0 for i in (reverse (split-string tlist "\n"))
-				collect 
-				(progn
-				  (if (string-match "\\(^[ 0-9]+ \\)\\(.*\\)" i)
-					  (cons (match-string 2 i) (match-string 1 i))))))
-	(if exe-name-regexp 
-		(setq exe (loop for i in exes if (string-match exe-name-regexp (car i)) return (car i)))
-		(setq exe (completing-read "in: " ;; prompt 
-							   exes ;; table
-							   predicate ;; predicat (setq predicate (lambda (c) (string-match "mapserver.exe" (car c))))
-							   nil ;; require match
-							   nil ;; initial input
-							   nil ;; hist
-							   nil ;; def
-							   nil ;; inherit input method
-							   )))
-	(cons exe (string-to-number (cdr (assoc exe exes))))))
+;; ;; *********************************************************************************
+;; ;; cdb helpers  
+;; ;; *********************************************************************************
 
-(defun cdbAttach (exe-pid)
-  (interactive (funcall (lambda () (list (cdb-pidFromExe)))))
-	(if exe-pid
-		(progn
-		  (gud-call (format ".attach 0n%i; " exe-pid)))))
+;; (defun cdb-pidFromExe (&optional exe-name-regexp predicate)
+;;   (interactive)
+;;   (cdr (cdb-promptPidAndExe exe-name-regexp predicate)))
 
-(defun cdbDebugChoice (&optional predicate)
-  "if you want to debug a program running on windows, call this function and it will give you the list of running processes and
-   allow you to attach to one of them."
-  (interactive)
-  (let* ((exepidpair)
-		 (pid))
-	(setq exepidpair (cdb-promptPidAndExe nil predicate))
-	(setq pid (cdr exepidpair))
-	(cdb (format "cdb -p %i" pid))
-	(rename-buffer (format "*gud-%s*" (car (string-split "\\s-+" (car exepidpair) 1))) t)))
+;; (defun cdb-promptPidAndExe (&optional exe-name-regexp predicate)
+;;   (interactive)
+;;   (let
+;; 	  ((tlist)
+;; 	   (exe)
+;; 	   (exes))
+;; 	(setq tlist (shell-command-to-string "tlist"))
+;; 	(setq exes
+;; 		  (loop for n from 0 for i in (reverse (split-string tlist "\n"))
+;; 				collect 
+;; 				(progn
+;; 				  (if (string-match "\\(^[ 0-9]+ \\)\\(.*\\)" i)
+;; 					  (cons (match-string 2 i) (match-string 1 i))))))
+;; 	(if exe-name-regexp 
+;; 		(setq exe (loop for i in exes if (string-match exe-name-regexp (car i)) return (car i)))
+;; 		(setq exe (completing-read "in: " ;; prompt 
+;; 							   exes ;; table
+;; 							   predicate ;; predicat (setq predicate (lambda (c) (string-match "mapserver.exe" (car c))))
+;; 							   nil ;; require match
+;; 							   nil ;; initial input
+;; 							   nil ;; hist
+;; 							   nil ;; def
+;; 							   nil ;; inherit input method
+;; 							   )))
+;; 	(cons exe (string-to-number (cdr (assoc exe exes))))))
 
-(defun cdbSetIP ()
-  "set instruction pointer to current point. if you are in source code and want to change the current line to mark"
-  (interactive)
-  (gud-call (format "r eip = %s" (cdbLineNoKill))))
-(defalias 'eip 'cdbSetIP)
+;; (defun cdbAttach (exe-pid)
+;;   (interactive (funcall (lambda () (list (cdb-pidFromExe)))))
+;; 	(if exe-pid
+;; 		(progn
+;; 		  (gud-call (format ".attach 0n%i; " exe-pid)))))
 
-(defun cdbLineNoKill ()
-  "get current line in cdb format"
-  (concat "`" (buffer-file-name) ":" (number-to-string (count-lines (point-min) (1+ (point)))) "`"))
+;; (defun cdbDebugChoice (&optional predicate)
+;;   "if you want to debug a program running on windows, call this function and it will give you the list of running processes and
+;;    allow you to attach to one of them."
+;;   (interactive)
+;;   (let* ((exepidpair)
+;; 		 (pid))
+;; 	(setq exepidpair (cdb-promptPidAndExe nil predicate))
+;; 	(setq pid (cdr exepidpair))
+;; 	(cdb (format "cdb -p %i" pid))
+;; 	(rename-buffer (format "*gud-%s*" (car (string-split "\\s-+" (car exepidpair) 1))) t)))
 
-(defun cdbLine ()
-  "kill current line in cdb format"
-  (interactive)
-  (message (kill-new (cdbLineNoKill))))
-(defalias 'xl 'cdbLine)
+;; (defun cdbSetIP ()
+;;   "set instruction pointer to current point. if you are in source code and want to change the current line to mark"
+;;   (interactive)
+;;   (gud-call (format "r eip = %s" (cdbLineNoKill))))
+;; (defalias 'eip 'cdbSetIP)
 
-;; ----------------------------------------
-;; auto-complete support
+;; (defun cdbLineNoKill ()
+;;   "get current line in cdb format"
+;;   (concat "`" (buffer-file-name) ":" (number-to-string (count-lines (point-min) (1+ (point)))) "`"))
 
-(defvar cdb-ac-match-limit t
-  "limit for the number of matches to be collected in the cdb buffer or the src buffer for the current frame")
+;; (defun cdbLine ()
+;;   "kill current line in cdb format"
+;;   (interactive)
+;;   (message (kill-new (cdbLineNoKill))))
+;; (defalias 'xl 'cdbLine)
 
-(defun cdb-ac-candidate-words-in-buffer (prefix)
-  "cdb wants the words from the buffer for the current frame. the `ac-candidate-words-in-buffer' doesn't support this, but this version takes explicit params to do this"
-  (let ((i 0)
-        candidate
-        candidates
-        (regexp (concat "\\_<" (regexp-quote prefix) "\\(\\sw\\|\\s_\\)+\\_>")))
-    (save-excursion
-	  (goto-char 0)
-      ;; Search forward
-      (while (and (or (eq cdb-ac-match-limit t)
-                      (< i limit))
-                  (re-search-forward regexp nil t))
-        (setq candidate (match-string-no-properties 0))
-        (unless (member candidate candidates)
-          (push candidate candidates)
-          (incf i)))
-      (nreverse candidates))))
+;; ;; ----------------------------------------
+;; ;; auto-complete support
 
-(defun cdb-ac-candidates ()
-  "list of potentially matching auto-complete words"
-;;  (debug)
-  (cond
-   ((looking-back "\\(0x\\)[0-9]+") nil)
-   (t
-	(append
-	 (setq foo (ac-candidate-words-in-buffer))
-	 (if (and gud-last-last-frame (car gud-last-last-frame) (find-buffer-visiting (car gud-last-last-frame)))
-		 (with-current-buffer (find-buffer-visiting (car gud-last-last-frame))
-		   (cdb-ac-candidate-words-in-buffer ac-prefix)
-		   )
-	   )
-	 ))
-   )
-  )
+;; (defvar cdb-ac-match-limit t
+;;   "limit for the number of matches to be collected in the cdb buffer or the src buffer for the current frame")
 
-(defvar cdb-ac-sources 
-  '((candidates . cdb-ac-candidates) 
-	(requires . 3)))
+;; (defun cdb-ac-candidate-words-in-buffer (prefix)
+;;   "cdb wants the words from the buffer for the current frame. the `ac-candidate-words-in-buffer' doesn't support this, but this version takes explicit params to do this"
+;;   (let ((i 0)
+;;         candidate
+;;         candidates
+;;         (regexp (concat "\\_<" (regexp-quote prefix) "\\(\\sw\\|\\s_\\)+\\_>")))
+;;     (save-excursion
+;; 	  (goto-char 0)
+;;       ;; Search forward
+;;       (while (and (or (eq cdb-ac-match-limit t)
+;;                       (< i limit))
+;;                   (re-search-forward regexp nil t))
+;;         (setq candidate (match-string-no-properties 0))
+;;         (unless (member candidate candidates)
+;;           (push candidate candidates)
+;;           (incf i)))
+;;       (nreverse candidates))))
 
-(defun cdb-ac-mode-init ()
-  (interactive)
-  "set up the auto complete variables for cdb"
-  (auto-complete-mode t)
-;;  (ac-define-dictionary-source
-;;   ac-source-cdb-keywords
-;;   ("g" "k" "kn" "p")) ;; not really necessary with the 3 character requirement
-  (setq ac-sources '(cdb-ac-sources
-					 ;; ac-source-cdb-keywords
-					 )))
+;; (defun cdb-ac-candidates ()
+;;   "list of potentially matching auto-complete words"
+;; ;;  (debug)
+;;   (cond
+;;    ((looking-back "\\(0x\\)[0-9]+") nil)
+;;    (t
+;; 	(append
+;; 	 (setq foo (ac-candidate-words-in-buffer))
+;; 	 (if (and gud-last-last-frame (car gud-last-last-frame) (find-buffer-visiting (car gud-last-last-frame)))
+;; 		 (with-current-buffer (find-buffer-visiting (car gud-last-last-frame))
+;; 		   (cdb-ac-candidate-words-in-buffer ac-prefix)
+;; 		   )
+;; 	   )
+;; 	 ))
+;;    )
+;;   )
 
-(if (require 'auto-complete nil t)
-		(add-hook 'cdb-mode-hook 'cdb-ac-mode-init))
+;; (defvar cdb-ac-sources 
+;;   '((candidates . cdb-ac-candidates) 
+;; 	(requires . 3)))
 
-;;; cdb-gud.el ends here
+;; (defun cdb-ac-mode-init ()
+;;   (interactive)
+;;   "set up the auto complete variables for cdb"
+;;   (auto-complete-mode t)
+;; ;;  (ac-define-dictionary-source
+;; ;;   ac-source-cdb-keywords
+;; ;;   ("g" "k" "kn" "p")) ;; not really necessary with the 3 character requirement
+;;   (setq ac-sources '(cdb-ac-sources
+;; 					 ;; ac-source-cdb-keywords
+;; 					 )))
+
+;; (if (require 'auto-complete nil t)
+;; 		(add-hook 'cdb-mode-hook 'cdb-ac-mode-init))
+
+;; ;;; cdb-gud.el ends here
 
 (provide 'gud-cdb)
