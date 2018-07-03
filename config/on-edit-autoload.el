@@ -126,10 +126,14 @@
   ;; There are no builtin `grep' in Windows, GNU's `grep' may be use
 	;; the POSIX path in Windows which cannot be recognized by Emacs.
 	;; When such case occurred, we try to translate POSIX path to Windows path.
-  (defadvice compilation-find-file (before compilation-find-file-before compile)
-		(when (string-match "^/\\([a-zA-Z]\\)/" filename)
-			(setq filename (replace-match
-											(concat (match-string 1 filename) ":/") t t filename)))))
+	(defadvice compilation-find-file (before compilation-find-file-before preactivate)
+		(ad-set-arg
+		 1 ;; filename argument
+		 (let ((filename (ad-get-arg 1)))
+			 (if (string-match "^/\\([a-zA-Z]\\)/" filename)
+					 (replace-match
+						(concat (match-string 1 filename) ":/") t t filename)
+				 (ad-get-arg 1))))))
 
 
 ;; :edit
