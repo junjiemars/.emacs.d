@@ -277,7 +277,7 @@ and source-file directory for your debugger."
   (setq comint-input-sender #'gud-cdb-simple-send)
   (setq paragraph-start comint-prompt-regexp)
 
-  (run-hooks 'cdb-mode-hook))
+  (run-hooks 'gud-cdb-mode-hook))
 
 
 ;; (defun gud-cdb-goto-stackframe (text token indent)
