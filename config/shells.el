@@ -125,7 +125,7 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 ;; Windows ansi-term
 (platform-supported-when windows-nt
   
-  (defadvice ansi-term (before ansi-term-before compile)
+  (defadvice ansi-term (before ansi-term-before preactivate)
     (let* ((n "*ansi-term*")
            (b (get-buffer-create n)))
       (apply 'make-comint-in-buffer n b "cmd" nil nil)
@@ -145,14 +145,14 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 				;; keep `shell-file-name' between `ansi-term' and `shell'
 				(path-env<- :shell-file-name shell-file-name)
 				
-				(defadvice shell (before shell-before compile)
+				(defadvice shell (before shell-before preactivate)
 					(setenv (shells-spec->% :shell-var)
 									(self-spec->*env-spec :shell :bin-path))
 					(setenv (shells-spec->% :path-var)
 									(windows-nt-unix-path (shell-env-> :path)))
 					(setq shell-file-name (getenv (shells-spec->% :shell-var))))
 
-				(defadvice shell (after shell-after compile)
+				(defadvice shell (after shell-after preactivate)
 					(setenv (shells-spec->% :shell-var)
 									(shell-env-> :shell-file-name))
 					(setenv (shells-spec->% :path-var)
