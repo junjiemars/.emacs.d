@@ -274,6 +274,7 @@ and source-file directory for your debugger."
   (gud-def gud-print  "?? %e "        "\C-p" "Evaluate C expression at point.")
 
   (setq comint-prompt-regexp "^[0-9]:[0-9][0-9][0-9]> ")
+	(setq comint-prompt-read-only t)
   (setq comint-input-sender #'gud-cdb-simple-send)
   (setq paragraph-start comint-prompt-regexp)
 
