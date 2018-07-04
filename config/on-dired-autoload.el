@@ -28,4 +28,9 @@
 															(executable-find% "minizip"))
 										 (setq dired-compress-files-alist
 													 (append (remove zip dired-compress-files-alist)
-																	 '(("\\.zip\\'" . "minizip %o -9 %i"))))))))))
+																	 '(("\\.zip\\'" . "minizip %o -9 %i"))))))))
+
+		(when (executable-find% "ls")
+			;; on Windows: `dired-mode' does not display executable flag in file mode
+			;; when GNU's ls program already in PATH.
+			(setq% ls-lisp-use-insert-directory-program t ls-lisp))))
