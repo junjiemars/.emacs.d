@@ -7,16 +7,18 @@
 ;;;;
 
 
-;; on Drawin: ls does not support --dired;
-;; see `dired-use-ls-dired' for more defails
-
 (with-eval-after-load 'dired
+	
 	(platform-supported-when
 			darwin
+		;; on Drawin: ls does not support --dired option
+		;; see `dired-use-ls-dired' for more defails
 		(setq% dired-use-ls-dired nil dired))
 
 	(platform-supported-when
 			windows-nt
+		;; on Windows: there are no builtin zip program
+		;; so try to use minzip in Emacs dep for Windows.
 		(when-var%
 		 dired-compress-files-alist dired-aux
 		 (unless (executable-find% "zip")
