@@ -10,11 +10,10 @@
 	[[https://api.travis-ci.org/junjiemars/.emacs.d][https://api.travis-ci.org/junjiemars/.emacs.d.svg?branch=master]]
 	
 
-It's works on Emacs version 22.1.1+ , provides more reasonable
-style to organize Elisp code. You can run it on any platform that Emacs
-supported with any mode: GUI or Terminal, even you can run multiple 
-Emacs instances with different version on the same machine 
-and at the same time.
+It's works on Emacs version 22.1.1+ , provides more reasonable style: 
+how to organize Elisp code more better. You can run it on any platform 
+that Emacs supported with any mode: GUI or Terminal, even you can run multiple 
+Emacs instances with different version on the same machine and at the same time.
 
 -  clone More Reasonable Emacs from github
 
