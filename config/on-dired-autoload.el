@@ -19,13 +19,13 @@
 			windows-nt
 		;; on Windows: there are no builtin zip program
 		;; so try to use minzip in Emacs dep for Windows.
-		(when-var%
-		 dired-compress-files-alist dired-aux
-		 (unless (executable-find% "zip")
-			 (require 'dired-aux)
-			 (let ((zip (assoc "\\.zip\\'" dired-compress-files-alist)))
-				 (when (and zip (string-match-p "^zip" (cdr zip))
-										(executable-find% "minizip"))
-					 (setq dired-compress-files-alist
-								 (append (remove zip dired-compress-files-alist)
-												 '(("\\.zip\\'" . "minizip %o -9 %i"))))))))))
+		;; see `dired-do-compress-to'.
+		(when-var% dired-compress-files-alist dired-aux
+							 (unless (executable-find% "zip")
+								 (require 'dired-aux)
+								 (let ((zip (assoc "\\.zip\\'" dired-compress-files-alist)))
+									 (when (and zip (string-match-p "^zip" (cdr zip))
+															(executable-find% "minizip"))
+										 (setq dired-compress-files-alist
+													 (append (remove zip dired-compress-files-alist)
+																	 '(("\\.zip\\'" . "minizip %o -9 %i"))))))))))
