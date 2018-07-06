@@ -122,15 +122,38 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
 
 
-;; Windows ansi-term
+
+;; Windows ansi-term and shell
+
 (platform-supported-when windows-nt
   
-  (defadvice ansi-term (before ansi-term-before preactivate)
+  (defadvice ansi-term (before ansi-term-before compile)
     (let* ((n "*ansi-term*")
            (b (get-buffer-create n)))
       (apply 'make-comint-in-buffer n b "cmd" nil nil)
       (set-window-buffer (selected-window) b))))
 
+(platform-supported-when windows-nt
+
+	(defadvice shell (before shell-before compile)
+		(setenv (shells-spec->% :shell-var)
+						(self-spec->*env-spec :shell :bin-path))
+		(setenv (shells-spec->% :path-var)
+						(windows-nt-unix-path (shell-env-> :path)))
+		(setq shell-file-name (getenv (shells-spec->% :shell-var)))))
+
+(platform-supported-when windows-nt
+	
+	(defadvice shell (after shell-after compile)
+		(setenv (shells-spec->% :shell-var)
+						(shell-env-> :shell-file-name))
+		(setenv (shells-spec->% :path-var)
+						(shell-env-> :path) path-separator)
+		(setq shell-file-name (shell-env-> :shell-file-name))))
+
+
+(platform-supported-when windows-nt
+	(with-eval-after-load 'term (ad-activate #'ansi-term t)))
 
 
 
@@ -144,20 +167,7 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 				
 				;; keep `shell-file-name' between `ansi-term' and `shell'
 				(path-env<- :shell-file-name shell-file-name)
-				
-				(defadvice shell (before shell-before preactivate)
-					(setenv (shells-spec->% :shell-var)
-									(self-spec->*env-spec :shell :bin-path))
-					(setenv (shells-spec->% :path-var)
-									(windows-nt-unix-path (shell-env-> :path)))
-					(setq shell-file-name (getenv (shells-spec->% :shell-var))))
-
-				(defadvice shell (after shell-after preactivate)
-					(setenv (shells-spec->% :shell-var)
-									(shell-env-> :shell-file-name))
-					(setenv (shells-spec->% :path-var)
-									(shell-env-> :path) path-separator)
-					(setq shell-file-name (shell-env-> :shell-file-name))))
+				(with-eval-after-load 'shell (ad-activate #'shell t)))
 
     ;; shell on Darwin/Linux
     (read-shell-env!)
