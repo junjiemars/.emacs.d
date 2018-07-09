@@ -20,7 +20,7 @@
 
 
 ;; eww as default browser
-(toggle-browser! t)
+(feature-eww-supported-p (toggle-browser! t))
 
 
 (with-eval-after-load 'org
