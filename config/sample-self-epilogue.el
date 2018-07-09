@@ -44,7 +44,10 @@
  ;; debugger: cdb, lldb
  (platform-supported-if windows-nt
 		 (when (executable-find% "cdb")
-			 (require 'gud-cdb))
+			 (require 'gud-cdb)
+			 (when-fn% gud-cdb-init-list-source gud-cdb
+				 (when-var% gud-cdb-init-hook gud-cdb
+										(add-hook 'gud-cdb-init-hook #'gud-cdb-init-list-source))))
 	 (when (executable-find% "lldb")
 		 (require 'gud-lldb)
 		 (setq% gud-lldb-directories '("/opt/lab/c/src/") gud-lldb))))
