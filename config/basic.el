@@ -273,7 +273,7 @@ Return the one matching PREFERE or first one, if has multiple COMMANDs found and
 										 (when (string-match (concat ,prefer ,command) x)
 											 (throw 'prefer
 															(platform-supported-if windows-nt
-																	(concat "\"" x "\"")
+																	(shell-quote-argument x)
 																x))))
 									 (car paths))
 							 (car paths))
