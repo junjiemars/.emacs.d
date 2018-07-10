@@ -259,11 +259,13 @@ See `executable-find'."
 
 
 (defmacro executable-find* (command &optional prefer)
-	"Search for command in %PATH% or $PATH and return the absolute file name 
+	"Search for COMMAND in %PATH% or $PATH and return the absolute file name 
 at compile-time.
 
-Return the one matching PREFERE or first one, if has multiple COMMANDs found 
-and PREFER pattern been specified."
+Return nil if no COMMAND found.
+Return absolute file name if COMMAND had been found.
+Return the matched one, if multiple COMMANDs had been found and PREFER pattern specified.
+"
 	(let ((ss (shell-command-to-string
 						 (platform-supported-if windows-nt
 								 (concat "where " command)
