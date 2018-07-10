@@ -249,17 +249,21 @@ Examples:
 
 
 (defmacro executable-find% (command)
-	"Search for COMMAND in `exec-path' and return the absolute file name at compile-time.
-Return nil if COMMAND is not found anywhere in `exec-path'.
+	"Search for COMMAND in `exec-path' and return the absolute file name 
+at compile-time.
 
+Return nil if COMMAND is not found anywhere in `exec-path'.
 See `executable-find'."
 	(let ((path (executable-find command)))
 		`,path))
 
-(defmacro executable-find* (command &optional prefer)
-	"Search for command in %PATH% or $PATH and return the absolute file name at compile-time.
 
-Return the one matching PREFERE or first one, if has multiple COMMANDs found and PREFER pattern been specified."
+(defmacro executable-find* (command &optional prefer)
+	"Search for command in %PATH% or $PATH and return the absolute file name 
+at compile-time.
+
+Return the one matching PREFERE or first one, if has multiple COMMANDs found 
+and PREFER pattern been specified."
 	(let ((ss (shell-command-to-string
 						 (platform-supported-if windows-nt
 								 (concat "where " command)
