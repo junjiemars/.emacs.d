@@ -10,8 +10,9 @@
 
 
 (platform-supported-when windows-nt
-	;; use `find-dired' on Windows
+
 	(with-eval-after-load 'grep
+		;; using `find-dired' on Windows
 		(let ((find (executable-find* "find" "\\\\usr\\\\bin\\\\")))
 			(when find
-				(setq find-program find)))))
+				(setq% find-program find grep)))))
