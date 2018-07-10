@@ -264,7 +264,7 @@ at compile-time.
 
 Return nil if no COMMAND found.
 Return absolute file name if COMMAND had been found.
-Return the matched one, if multiple COMMANDs had been found and PREFER pattern specified.
+Return the first matched one, if multiple COMMANDs had been found and PREFER pattern specified.
 "
 	(let ((ss (shell-command-to-string
 						 (platform-supported-if windows-nt
