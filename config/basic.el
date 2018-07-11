@@ -257,24 +257,25 @@ at compile-time when PREFER is non nil.
 
 Return nil if no COMMAND found.
 Return the first matched one, if multiple COMMANDs had been found
- and `funcall' PREFER returns t.
+and `funcall' PREFER returns t.
 "
 	(if prefer
 			(let ((ss (shell-command-to-string
 								 (platform-supported-if windows-nt
 										 (concat "where " command)
 									 (concat "command -v " command)))))
-				`(when ,ss
-					 (let ((paths (split-string* ,ss "\n" t)))
-						 (if (consp paths)
-								 (if (and ,prefer (functionp ,prefer))
-										 (catch 'prefer
-											 (dolist (x paths)
-												 (when (funcall ,prefer (shell-quote-argument x))
-													 (throw 'prefer (shell-quote-argument x))))
-											 (car paths))
-									 (car paths))
-							 paths))))
+				(when ss
+					(let ((path (split-string* ss "\n" t)))
+						(if (consp path)
+								(if (functionp prefer)
+										(let ((p (catch 'prefer
+															 (dolist (x path)
+																 (when (funcall prefer (shell-quote-argument x))
+																	 (throw 'prefer (shell-quote-argument x))))
+															 `,(car path))))
+											`,p)
+									`,(car path))
+							`,path))))
 		(let ((path (executable-find command)))
 			(ignore* prefer)
 			`,path)))
