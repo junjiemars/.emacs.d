@@ -264,7 +264,8 @@ at compile-time.
 
 Return nil if no COMMAND found.
 Return absolute file name if COMMAND had been found.
-Return the first matched one, if multiple COMMANDs had been found and PREFER pattern specified.
+Return the first matched one, if multiple COMMANDs had been found 
+and `funcall' PREFER returns t.
 "
 	(let ((ss (shell-command-to-string
 						 (platform-supported-if windows-nt
@@ -273,14 +274,11 @@ Return the first matched one, if multiple COMMANDs had been found and PREFER pat
 		`(when ,ss
 			 (let ((paths (split-string* ,ss "\n" t)))
 				 (if (consp paths)
-						 (if ,prefer
+						 (if (and ,prefer (functionp ,prefer))
 								 (catch 'prefer
 									 (dolist (x paths)
-										 (when (string-match (concat ,prefer ,command) x)
-											 (throw 'prefer
-															(platform-supported-if windows-nt
-																	(shell-quote-argument x)
-																x))))
+										 (when (funcall ,prefer (shell-quote-argument x))
+											 (throw 'prefer (shell-quote-argument x))))
 									 (car paths))
 							 (car paths))
 					 paths)))))
