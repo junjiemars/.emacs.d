@@ -291,19 +291,18 @@ and `funcall' PREFER returns t.
 									 (concat "command -v " command)))))
 				(when ss
 					(let* ((path (split-string* ss "\n" t))
-								 (p (if (consp path)
-												(if (functionp prefer)
-														(catch 'prefer
-															(dolist (x path)
-																(when (funcall prefer
-																							 (shell-quote-argument
-																								(platform-supported-if windows-nt
-																										(windows-nt-posix-path x)
-																									x)))
-																	(throw 'prefer x)))
-															(car path))
-													(car path))
-											path)))
+								 (p (cond ((and (consp path) (functionp prefer))
+													 (catch 'prefer
+														 (dolist (x path)
+															 (when (funcall prefer
+																							(shell-quote-argument
+																							 (platform-supported-if windows-nt
+																									 (windows-nt-posix-path x)
+																								 x)))
+																 (throw 'prefer x)))
+														 (car path)))
+													((consp path) (car path))
+													(t path))))
 						`,(shell-quote-argument (platform-supported-if windows-nt
 																				(windows-nt-posix-path p)
 																			p)))))
