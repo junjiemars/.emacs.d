@@ -248,40 +248,36 @@ Examples:
 						(and fn (funcall fn a))))))))
 
 
-(defmacro executable-find% (command)
+(defmacro executable-find% (command &optional prefer)
 	"Search for COMMAND in `exec-path' and return the absolute file name 
-at compile-time.
+at compile-time when PREFER is nil, same as `executable-find'.
 
-Return nil if COMMAND is not found anywhere in `exec-path'.
-See `executable-find'."
-	(let ((path (executable-find command)))
-		`,path))
-
-
-(defmacro executable-find* (command &optional prefer)
-	"Search for COMMAND in %PATH% or $PATH and return the absolute file name 
-at compile-time.
+Search for COMMAND in %PATH% or $PATH and return the absolute file name 
+at compile-time when PREFER is non nil.
 
 Return nil if no COMMAND found.
-Return absolute file name if COMMAND had been found.
-Return the first matched one, if multiple COMMANDs had been found 
-and `funcall' PREFER returns t.
+Return the first matched one, if multiple COMMANDs had been found
+ and `funcall' PREFER returns t.
 "
-	(let ((ss (shell-command-to-string
-						 (platform-supported-if windows-nt
-								 (concat "where " command)
-							 (concat "command -v " command)))))
-		`(when ,ss
-			 (let ((paths (split-string* ,ss "\n" t)))
-				 (if (consp paths)
-						 (if (and ,prefer (functionp ,prefer))
-								 (catch 'prefer
-									 (dolist (x paths)
-										 (when (funcall ,prefer (shell-quote-argument x))
-											 (throw 'prefer (shell-quote-argument x))))
+	(if prefer
+			(let ((ss (shell-command-to-string
+								 (platform-supported-if windows-nt
+										 (concat "where " command)
+									 (concat "command -v " command)))))
+				`(when ,ss
+					 (let ((paths (split-string* ,ss "\n" t)))
+						 (if (consp paths)
+								 (if (and ,prefer (functionp ,prefer))
+										 (catch 'prefer
+											 (dolist (x paths)
+												 (when (funcall ,prefer (shell-quote-argument x))
+													 (throw 'prefer (shell-quote-argument x))))
+											 (car paths))
 									 (car paths))
-							 (car paths))
-					 paths)))))
+							 paths))))
+		(let ((path (executable-find command)))
+			(ignore* prefer)
+			`,path)))
 
 
  ;; end of File Functions

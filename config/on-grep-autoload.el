@@ -13,7 +13,7 @@
 
 	(with-eval-after-load 'grep
 		;; prefer GNU find on Windows, such for `find-dired' or `find-name-dired'.
-		(let ((find (executable-find*
+		(let ((find (executable-find%
 								 "find"
 								 (lambda (bin)
 									 (string-match "^find (GNU findutils)"
