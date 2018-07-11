@@ -30,7 +30,12 @@
 													 (append (remove zip dired-compress-files-alist)
 																	 '(("\\.zip\\'" . "minizip %o -9 %i"))))))))
 
-		(when (executable-find% "ls")
+		(when (executable-find%
+					 "ls"
+					 (lambda (ls)
+						 (string-match "^ls (GNU coreutils)"
+													 (shell-command-to-string
+														(concat ls " --version")))))
+			;; prefer GNU's ls on Windows
 			;; on Windows: `dired-mode' does not display executable flag in file mode
-			;; when GNU's ls program already in PATH.
 			(setq% ls-lisp-use-insert-directory-program t ls-lisp))))
