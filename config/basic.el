@@ -84,19 +84,22 @@
 
 (platform-supported-when windows-nt
 	
-  (defmacro windows-nt-posix-path (p)
-    "Return the posix path from P which can be recognized on`system-type'."
-    `(replace-regexp-in-string "\\\\" "/" ,p)))
+  (defmacro windows-nt-posix-path (path)
+    "Return posix path from Windows PATH which can be recognized on`system-type'."
+    `(let ((p (replace-regexp-in-string "\\\\" "/" ,path)))
+			 (if (string-match "^\\([A-Z]:/\\)" p)
+					 (replace-match (downcase (match-string 1 p)) t t p)
+				 p))))
 
 
 (platform-supported-when windows-nt
-  (defmacro windows-nt-unix-path (p)
-    "Return the unix path from P which can be recognized 
-by shell on `system-type'"
+	
+  (defmacro windows-nt-unix-path (path)
+    "Return unix paths from PATH which can be recognized on `system-type'."
     `(replace-regexp-in-string
       ";" ":"
-      (replace-regexp-in-string "\\([a-zA-Z]\\):/" "/\\1/"
-                                (windows-nt-posix-path ,p)))))
+      (replace-regexp-in-string "^\\([a-zA-Z]\\):/" "/\\1/"
+                                (windows-nt-posix-path ,path)))))
 
 
  ;; end of Platform Related Functions
