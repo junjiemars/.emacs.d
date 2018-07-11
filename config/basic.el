@@ -80,6 +80,28 @@
  ;; Versioned Dirs
 
 
+;; Platform Related Functions
+
+(platform-supported-when windows-nt
+	
+  (defmacro windows-nt-posix-path (p)
+    "Return the posix path from P which can be recognized on`system-type'."
+    `(replace-regexp-in-string "\\\\" "/" ,p)))
+
+
+(platform-supported-when windows-nt
+  (defmacro windows-nt-unix-path (p)
+    "Return the unix path from P which can be recognized 
+by shell on `system-type'"
+    `(replace-regexp-in-string
+      ";" ":"
+      (replace-regexp-in-string "\\([a-zA-Z]\\):/" "/\\1/"
+                                (windows-nt-posix-path ,p)))))
+
+
+ ;; end of Platform Related Functions
+
+
 ;; Strings
 
 (defsubst string-trim> (s &optional rr)
@@ -271,7 +293,11 @@ and `funcall' PREFER returns t.
 										(let ((p (catch 'prefer
 															 (dolist (x path)
 																 (when (funcall prefer (shell-quote-argument x))
-																	 (throw 'prefer (shell-quote-argument x))))
+																	 (throw 'prefer
+																					(shell-quote-argument
+																					 (platform-supported-if windows-nt
+																							 (windows-nt-posix-path x)
+																						 x)))))
 															 `,(car path))))
 											`,p)
 									`,(car path))
@@ -330,26 +356,6 @@ otherwise default to keep the directories of current `emacs-version'."
 
 
 
-
-;; Platform Related Functions
-
-(platform-supported-when windows-nt
-  (defmacro windows-nt-posix-path (p)
-    "Return the posix path from P which can be recognized on`system-type'."
-    `(replace-regexp-in-string "\\\\" "/" ,p)))
-
-
-(platform-supported-when windows-nt
-  (defmacro windows-nt-unix-path (p)
-    "Return the unix path from P which can be recognized 
-by shell on `system-type'"
-    `(replace-regexp-in-string
-      ";" ":"
-      (replace-regexp-in-string "\\([a-zA-Z]\\):/" "/\\1/"
-                                (windows-nt-posix-path ,p)))))
-
-
- ;; end of Platform Related Functions
 
 
 ;; Socks
