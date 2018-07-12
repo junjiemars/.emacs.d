@@ -183,7 +183,7 @@ Directory orgnization:
 
 Locate your sepc via =(emacs-home* "private/self-path.el")=.
 
-#+BEGIN_SRC lisp
+#+BEGIN_SRC emacs-lisp
     ;; Run order: :env-spec -> :prelogue -> :package-spec -> :epilogue
     ;; You can point to your Gited Emacs' configuration repo.
     ;; Default samples `self-*.el' in `(emacs-home* "private/")' directory.
@@ -221,7 +221,7 @@ Easy to switch themes, or try a new one.
 
 The theme's spec locate in =(emacs-home* "private/self-env-spec.el")=
 
-#+BEGIN_SRC lisp
+#+BEGIN_SRC emacs-lisp
     (def-self-env-spec
       :theme (list :name 'atom-one-dark
                    :path (emacs-home* "theme/")
@@ -245,7 +245,7 @@ a new one. The default encoding is
 The default font's spec locate in
 =(emacs-home* "private/self-env-spec.el")=
 
-#+BEGIN_SRC lisp
+#+BEGIN_SRC emacs-lisp
     (def-self-env-spec
       :font (list :name (platform-supported-if darwin
                             "Monaco-14"
@@ -269,7 +269,7 @@ faster.
 
 The shell spec locate in =(emacs-home* "private/self-env-spec.el")=
 
-#+BEGIN_SRC lisp
+#+BEGIN_SRC emacs-lisp
     (def-self-env-spec
       :shell (list :env-vars `("JAVA_HOME"
                                "PYTHONPATH"
@@ -290,7 +290,7 @@ The shell spec locate in =(emacs-home* "private/self-env-spec.el")=
 
 The eshell spec locate in =(emacs-home* "private/self-env-spec.el")=
 
-#+BEGIN_SRC lisp
+#+BEGIN_SRC emacs-lisp
     (def-self-env-spec
       :eshell (list :visual-commands '("mtr")
                     :destroy-buffer-when-process-dies t
@@ -306,7 +306,7 @@ The eshell spec locate in =(emacs-home* "private/self-env-spec.el")=
 
 The desktop spec locate in =(emacs-home* "private/self-env-spec.el")=
 
-#+BEGIN_SRC lisp
+#+BEGIN_SRC emacs-lisp
     (def-self-env-spec
       :desktop (list :files-not-to-save
                      ".*\.t?gz\\|\.desktop\\|~$\\|\\/ssh[: ]\\|\.elc$"
@@ -326,7 +326,7 @@ Using socks proxy when installing packages or browsing web pages.
 
 The socks spec locate in =(emacs-home* "private/self-env-spec.el")=
 
-#+BEGIN_SRC lisp
+#+BEGIN_SRC emacs-lisp
     (def-self-env-spec
       :socks (list :port 32000
                    :server "127.0.0.1"
@@ -352,7 +352,7 @@ There are two types of packages: *basic*(just like Emacs' builtin) and
 =(def-self-path-ref)=, disable both *basic* and *user defined* packages
 can be done in =(def-self-env-spec)=.
 
-#+BEGIN_SRC lisp
+#+BEGIN_SRC emacs-lisp
     (def-self-env-spec
       :package (list :remove-unused nil
                      :allowed nil)
@@ -367,7 +367,7 @@ can be done in =(def-self-env-spec)=.
 The default package spec locate in
 =(emacs-home* "private/self-package-spec.el")=
 
-#+BEGIN_SRC lisp
+#+BEGIN_SRC emacs-lisp
     (def-self-package-spec
       (list
        :cond (executable-find% "latex")
@@ -422,7 +422,7 @@ The default package spec locate in
 
 Avoiding a war.
 
-#+BEGIN_SRC lisp
+#+BEGIN_SRC emacs-lisp
     (def-self-env-spec
       :edit (list :tab-with 2
                   :auto-save-default nil
