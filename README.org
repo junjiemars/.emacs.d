@@ -436,12 +436,11 @@ Avoiding a war.
    :CUSTOM_ID: troubleshooting
    :END:
 
-- Check Emacs configurations:
-	- =system-configuration-options=
-  - =system-configuration-features=
-	- =features=
--  @@html:<kbd>@@M: (clean-compiled-files)@@html:</kbd>@@, then exit and
-   reopen Emacs.
--  check =*Compilation-Log*= buffer.
--  disable the items in =(emacs-home* "private/self-path.el")=.
+1. Check Emacs configurations:
+	- @@html:<kbd>@@M: system-configuration-options@@html:</kbd>@@
+  - @@html:<kbd>@@M: system-configuration-features@@html:</kbd>@@
+	- @@html:<kbd>@@M: features@@html:</kbd>@@
+2.  @@html:<kbd>@@M: (clean-compiled-files)@@html:</kbd>@@, then exit and reopen Emacs.
+3.  Check =*Compilation-Log*= buffer, then do #2.
+4.  Disable the items in src_emacs-lisp[:exports code]{(emacs-home* "private/self-path.el")}, then do #2.
 
