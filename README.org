@@ -57,8 +57,7 @@ friendly, which can be run on anywhere where Emacs run.
 - [[#where][Where]]
 - [[#what][What]]
 - [[#install][Install]]
-- [[#cooking][Cooking]]
-- [[#troubleshooting][Troubleshooting]]
+- [[#organization][Organization]]
 - [[file:mnemonic.org][Mnemonic]]
 - [[file:screenshot.org][Screenshot]]
 
@@ -147,9 +146,9 @@ Now, it will works perfectly, but if you want to more control and more
 features, such as themes, packages, and fonts etc., see next section:
 [[#cooking][cooking]]
 
-** Cooking
+** Organization
    :PROPERTIES:
-   :CUSTOM_ID: cooking
+   :CUSTOM_ID: organization
    :END:
 
 Suppose your Emacs HOME at =~/.emacs.d= and annotated it as =emacs-home=
@@ -199,13 +198,10 @@ Locate your sepc via =(emacs-home* "private/self-path.el")=.
       
 #+END_SRC
 
-Check Emacs configurations: * =system-configuration-options= *
-=system-configuration-features= * =features=
-
-*** Topic
-    :PROPERTIES:
-    :CUSTOM_ID: topic
-    :END:
+* Cooking
+   :PROPERTIES:
+   :CUSTOM_ID: cooking
+   :END:
 
 -  [[#theme][Theme]]
 -  [[#font][Font]]
@@ -216,7 +212,7 @@ Check Emacs configurations: * =system-configuration-options= *
 -  [[#package][Package]]
 -  [[#indent][Indent]]
 
-*** Theme
+** Theme
     :PROPERTIES:
     :CUSTOM_ID: theme
     :END:
@@ -236,7 +232,7 @@ The theme's spec locate in =(emacs-home* "private/self-env-spec.el")=
 Compiled theme more smooth and more faster if you had already confirmed
 the theme is secure.
 
-*** Font
+** Font
     :PROPERTIES:
     :CUSTOM_ID: font
     :END:
@@ -259,7 +255,7 @@ The default font's spec locate in
                   :allowed t))
 #+END_SRC
 
-*** Shell
+** Shell
     :PROPERTIES:
     :CUSTOM_ID: shell
     :END:
@@ -287,7 +283,7 @@ The shell spec locate in =(emacs-home* "private/self-env-spec.el")=
                    :allowed t))
 #+END_SRC
 
-*** Eshell
+** Eshell
     :PROPERTIES:
     :CUSTOM_ID: eshell
     :END:
@@ -303,7 +299,7 @@ The eshell spec locate in =(emacs-home* "private/self-env-spec.el")=
                     :allowed t))
 #+END_SRC
 
-*** Desktop
+** Desktop
     :PROPERTIES:
     :CUSTOM_ID: desktop
     :END:
@@ -321,7 +317,7 @@ The desktop spec locate in =(emacs-home* "private/self-env-spec.el")=
                      :allowed t))
 #+END_SRC
 
-*** Socks
+** Socks
     :PROPERTIES:
     :CUSTOM_ID: socks
     :END:
@@ -342,7 +338,7 @@ If =:allowed t=, =url-gateway-method= should be switch to ='socks= when
 Emacs initializing. After Emacs initialization, you can =toggle-socks!=
 and no matter =:allowed= is =t= or =nil=.
 
-*** Package
+** Package
     :PROPERTIES:
     :CUSTOM_ID: package
     :END:
@@ -419,7 +415,7 @@ The default package spec locate in
                   ,(compile-unit (emacs-home* "config/use-slime-autoload.el")))))
 #+END_SRC
 
-*** Indent
+** Indent
     :PROPERTIES:
     :CUSTOM_ID: indent
     :END:
@@ -433,11 +429,17 @@ Avoiding a war.
                   :allowed t)
 #+END_SRC
 
-** Troubleshooting
+
+
+* Troubleshooting
    :PROPERTIES:
    :CUSTOM_ID: troubleshooting
    :END:
 
+- Check Emacs configurations:
+	- =system-configuration-options=
+  - =system-configuration-features=
+	- =features=
 -  @@html:<kbd>@@M: (clean-compiled-files)@@html:</kbd>@@, then exit and
    reopen Emacs.
 -  check =*Compilation-Log*= buffer.
