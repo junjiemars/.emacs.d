@@ -442,5 +442,5 @@ Avoiding a war.
 	- @@html:<kbd>@@M: features@@html:</kbd>@@
 2.  @@html:<kbd>@@M: (clean-compiled-files)@@html:</kbd>@@, then exit and reopen Emacs.
 3.  Check =*Compilation-Log*= buffer, then do #2.
-4.  Disable the items in src_emacs-lisp[:exports code]{(emacs-home* "private/self-path.el")}, then do #2.
+4.  Disable the problematic items in =(emacs-home* "private/self-path.el")=, then do #2.
 
