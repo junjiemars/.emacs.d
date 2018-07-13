@@ -222,6 +222,15 @@ the rest.
 				 ;; 00007ff7`5a036580 4889542410      mov     qword ptr [rsp+10h],rdx ss:000000c5`9b0ff788=0000000000000000
 				 (setq gud-last-frame (cons (match-string 1 string)
 																		(string-to-number (match-string 2 string)))))
+
+				((string-match "ntdll!NtTerminateProcess\\+0x[0-9a-z]+:" string)
+				 ;; ModLoad: 00007ffe`9d340000 00007ffe`9d351000   C:\WINDOWS\System32\kernel.appcore.dll
+				 ;; ModLoad: 00007ffe`9ecc0000 00007ffe`9ed5d000   C:\WINDOWS\System32\msvcrt.dll
+				 ;; ModLoad: 00007ffe`9f140000 00007ffe`9f25f000   C:\WINDOWS\System32\RPCRT4.dll
+				 ;; ntdll!NtTerminateProcess+0x14:
+				 ;; 00007ffe`a10005f4 c3              ret
+				 (setq gud-last-last-frame nil)
+				 (setq gud-overlay-arrow-position nil))
 				)
 	string)
 
