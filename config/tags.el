@@ -10,9 +10,11 @@
 (defmacro tags-spec->% (&rest key)
   "Extract value from the list of spec via KEYS at compile time.
 
+Examples:
 \(tags-spec->% :emacs-home\)
 \(tags-spec->% :emacs-source\)
-\(tags-spec->% :emacs-os-include\)"
+\(tags-spec->% :os-include\)
+"
   `(self-spec->% (list
 									:emacs-home
 									,(expand-file-name (v-home% ".tags/home/" "TAGS"))
