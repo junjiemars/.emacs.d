@@ -223,7 +223,8 @@ the rest.
 				 (setq gud-last-frame (cons (match-string 1 string)
 																		(string-to-number (match-string 2 string)))))
 
-				((string-match "ntdll!NtTerminateProcess\\+0x[0-9a-z]+:" string)
+				((or (string-match "quit:" string)
+						 (string-match "ntdll!NtTerminateProcess\\+0x[0-9a-z]+:" string))
 				 ;; ModLoad: 00007ffe`9d340000 00007ffe`9d351000   C:\WINDOWS\System32\kernel.appcore.dll
 				 ;; ModLoad: 00007ffe`9ecc0000 00007ffe`9ed5d000   C:\WINDOWS\System32\msvcrt.dll
 				 ;; ModLoad: 00007ffe`9f140000 00007ffe`9f25f000   C:\WINDOWS\System32\RPCRT4.dll
