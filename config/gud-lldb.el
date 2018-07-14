@@ -143,7 +143,7 @@ the rest.
 													 (concat gud-marker-acc string)
 												 string))
 
-	(cond ((string-match "^[ \t]*frame #[0-9]+:.* at \\([^:]+\\):\\([0-9]+\\)"
+	(cond ((string-match "[ \t]*at \\([^:]+\\):\\([0-9]+\\)"
 											 string)
 				 ;; (lldb) r
 				 ;; Process 2353 launched: '/opt/lab/c/spot/out/bin/spot' (x86_64)
@@ -192,7 +192,8 @@ and source-file directory for your debugger."
 	(setq comint-prompt-regexp  "^(lldb)[ \t]*")
 	(setq paragraph-start comint-prompt-regexp)
 	(run-hooks 'lldb-mode-hook)
-	(lldb-frame-format t))
+	;; (lldb-frame-format t)
+	)
 
 
 
