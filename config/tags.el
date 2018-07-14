@@ -25,6 +25,22 @@ Examples:
      ,@key))
 
 
+(defcustom tag-program
+	(let ((etags (executable-find%
+								"etags"
+								(lambda (bin)
+									(string-match "etags (GNU Emacs [.0-9]+)"
+																(shell-command-to-string
+																 (concat bin " --version")))))))
+		(if etags
+				"etags -o %s -l auto -a %s ; echo %s"
+			nil))
+	"The default tag program.
+This is used by commands like `make-tags' and others."
+	:type 'string
+	:group 'tags)
+
+
 (defun make-tags (home tags-file file-filter dir-filter &optional renew)
   "Make tags.
 
@@ -45,8 +61,7 @@ RENEW create tags file when t"
                    (lambda (f)
 										 (message "make-tags: %s ..." f)
                      (shell-command-to-string
-                      (format "etags -o %s -l auto -a %s ; echo %s"
-                              tags-file f f)))
+                      (format tag-program tags-file f f)))
 									 nil)
       (when (file-exists-p tags-file)
         (add-to-list 'tags-table-list tags-dir t #'string=)
