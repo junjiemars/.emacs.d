@@ -280,7 +280,7 @@ at compile-time when PREFER is nil, same as `executable-find'.
 Search for COMMAND in %PATH% or $PATH and return the absolute file name 
 at compile-time when PREFER is non nil.
 
-Return nil if no COMMAND found.
+Return nil if no COMMAND found or no PREFER command found.
 Return the first matched one, if multiple COMMANDs had been found
 and `funcall' PREFER returns t.
 "
@@ -300,12 +300,12 @@ and `funcall' PREFER returns t.
 																									 (windows-nt-posix-path x)
 																								 x)))
 																 (throw 'prefer x)))
-														 (car path)))
+														 nil))
 													((consp path) (car path))
 													(t path))))
-						`,(shell-quote-argument (platform-supported-if windows-nt
-																				(windows-nt-posix-path p)
-																			p)))))
+						`,(when p (shell-quote-argument (platform-supported-if windows-nt
+																								(windows-nt-posix-path p)
+																							p))))))
 		(let ((path (executable-find command)))
 			(ignore* prefer)
 			`,path)))
