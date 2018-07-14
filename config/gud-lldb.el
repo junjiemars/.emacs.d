@@ -61,12 +61,21 @@ containing the executable being debugged."
   :group 'gud)
 
 
+(defcustom gud-lldb-default-frame-format
+	"frame #${frame.index}: ${frame.pc}{ ${module.file.basename}{`${function.name-with-args}{${frame.no-debug}${function.pc-offset}}}}{ at ${line.file.fullpath}:${line.number}}{${function.is-optimized} [opt]}\\n"
+	"The default frame format string to use when displaying 
+stack frame information for threads."
+	:type 'string
+	:group 'gud)
+
+
 
 
 
 ;;;;
 ;; lldb-*
 ;;;;
+
 
 
 (defun lldb-file-name (filename)
@@ -82,12 +91,28 @@ in `gud-lldb-directories'.
 								 (when (file-exists-p p) (return p))))))
 
 
+(defun lldb-frame-format (&optional frame-format)
+	"Return frame-format settings of current lldb process.
+
+Set frame-fromat settings with `gud-lldb-default-frame-format' when FRAME-FORMAT it t,
+or FRAME-FORMAT argument.
+"
+	(cond ((stringp frame-format)
+				 (gud-call (concat "settings set frame-format " frame-format)))
+				
+				((eq t frame-format)
+				 (gud-call (concat "settings set frame-format " gud-lldb-default-frame-format)))
+				
+				(t (gud-call "settings show frame-format"))))
+
+
 
 
 
 ;;;;
 ;; gud-lldb-*
 ;;;;
+
 
 
 (defun gud-lldb-find-file (filename)
@@ -97,8 +122,8 @@ The job of the find-file method is to visit and return the buffer indicated
 by the car of gud-tag-frame.  This may be a file name, a tag name, or
 something else.
 "
-  (save-excursion
-    (let ((f (lldb-file-name filename)))
+	(save-excursion
+		(let ((f (lldb-file-name filename)))
 			(if f
 					(find-file-noselect f t)
 				(find-file-noselect filename 'nowarn)))))
@@ -144,29 +169,30 @@ debugger arguments before running the debugger.
 
 
 (defun lldb (command-line)
-  "Run lldb on program FILE in buffer *gud-FILE*.
+	"Run lldb on program FILE in buffer *gud-FILE*.
 
 The directory containing FILE becomes the initial working directory
 and source-file directory for your debugger."
-  (interactive (list (gud-query-cmdline 'lldb)))
+	(interactive (list (gud-query-cmdline 'lldb)))
 
-  (gud-common-init command-line
+	(gud-common-init command-line
 									 #'gud-lldb-massage-args
 									 #'gud-lldb-marker-filter
 									 #'gud-lldb-find-file)
 	
-  (set (make-local-variable 'gud-minor-mode) 'lldb)
+	(set (make-local-variable 'gud-minor-mode) 'lldb)
 
 	(gud-def gud-break    "breakpoint set -f %f -l %l" "\C-b"    "Set breakpoint at current line.")
-  (gud-def gud-step     "thread step-in"              "\C-s"   "Step one source line with display.")
-  (gud-def gud-next     "thread step-over"            "\C-n"   "Step one line (skip functions).")
+	(gud-def gud-step     "thread step-in"              "\C-s"   "Step one source line with display.")
+	(gud-def gud-next     "thread step-over"            "\C-n"   "Step one line (skip functions).")
 	(gud-def gud-cont     "process continue"            "\C-r"   "Continue with display.")
-  (gud-def gud-finish   "thread step-out"             "\C-f"   "Finish executing current function.")
+	(gud-def gud-finish   "thread step-out"             "\C-f"   "Finish executing current function.")
 	(gud-def gud-print    "expression -- %e"            "\C-p"   "Evaluate C expression at point.")
 
-  (setq comint-prompt-regexp  "^(lldb)[ \t]*")
-  (setq paragraph-start comint-prompt-regexp)
-  (run-hooks 'lldb-mode-hook))
+	(setq comint-prompt-regexp  "^(lldb)[ \t]*")
+	(setq paragraph-start comint-prompt-regexp)
+	(run-hooks 'lldb-mode-hook)
+	(lldb-frame-format t))
 
 
 
