@@ -192,8 +192,7 @@ and source-file directory for your debugger."
 	(setq comint-prompt-regexp  "^(lldb)[ \t]*")
 	(setq paragraph-start comint-prompt-regexp)
 	(run-hooks 'lldb-mode-hook)
-	;; (lldb-frame-format t)
-	)
+	(lldb-frame-format t))
 
 
 
