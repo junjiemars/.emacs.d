@@ -25,18 +25,35 @@ Examples:
      ,@key))
 
 
-(defcustom tag-program
-	(let ((etags (executable-find%
-								"etags"
-								(lambda (bin)
-									(string-match "etags (GNU Emacs [.0-9]+)"
-																(shell-command-to-string
-																 (concat bin " --version")))))))
-		(if etags
-				"etags -o %s -l auto -a %s ; echo %s"
-			nil))
-	"The default tag program.
-This is used by commands like `make-tags' and others."
+(defcustom tags-program
+	(let ((e-ctags (executable-find%
+									"ctags"
+									(lambda (bin)
+										(string-match "Exuberant Ctags [.0-9]+"
+																	(shell-command-to-string
+																	 (concat bin " --version")))))))
+		(if e-ctags
+				(format "%s %s " e-ctags "-e -o %s -a %s ; echo %s")
+			(let ((etags (executable-find%
+										"etags"
+										(lambda (bin)
+											(string-match "etags (GNU Emacs [.0-9]+)"
+																		(shell-command-to-string
+																		 (concat bin " --version")))))))
+				(if etags
+						(format "%s %s" etags "-o %s -l auto -a %s ; echo %s")
+					(let ((ctags (executable-find% "ctags" t)))
+						(when ctags (format "%s %s " ctags "-e -o %s -a %s ; echo %s")))))))
+	"The default tags program.
+This is used by commands like `make-tags' and others.
+
+The default is \"ctags -e -o %s -a %s ; echo %s\", 
+first %s: explicit name of file for tag table; overrides default TAGS or tags.
+second %s: append to existing tag file.
+third %s: echo source file name in *Messages* buffer.
+
+Prefer Exuberant Ctags than etags and than ctags.
+"
 	:type 'string
 	:group 'tags)
 
@@ -61,7 +78,7 @@ RENEW create tags file when t"
                    (lambda (f)
 										 (message "make-tags: %s ..." f)
                      (shell-command-to-string
-                      (format tag-program tags-file f f)))
+                      (format tags-program tags-file f f)))
 									 nil)
       (when (file-exists-p tags-file)
         (add-to-list 'tags-table-list tags-dir t #'string=)
