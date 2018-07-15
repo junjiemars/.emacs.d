@@ -26,36 +26,29 @@ Examples:
 
 
 (defcustom tags-program
-	(let ((e-ctags (executable-find%
-									"ctags"
-									(lambda (bin)
-										(string-match "Exuberant Ctags [.0-9]+"
-																	(shell-command-to-string
-																	 (concat bin " --version")))))))
-		(if e-ctags
-				(format "%s %s " e-ctags "-e -o %s -a %s ; echo %s")
-			(let ((etags (executable-find%
-										"etags"
-										(lambda (bin)
-											(string-match "etags (GNU Emacs [.0-9]+)"
-																		(shell-command-to-string
-																		 (concat bin " --version")))))))
-				(if etags
-						(format "%s %s" etags "-o %s -l auto -a %s ; echo %s")
-					(let ((ctags (executable-find% "ctags" t)))
-						(when ctags (format "%s %s " ctags "-e -o %s -a %s ; echo %s")))))))
+	"etags -o %s -l auto -a %s ; echo %s"
 	"The default tags program.
 This is used by commands like `make-tags' and others.
 
-The default is \"ctags -e -o %s -a %s ; echo %s\", 
+The default is \"etags -e -o %s -a %s ; echo %s\", 
 first %s: explicit name of file for tag table; overrides default TAGS or tags.
 second %s: append to existing tag file.
 third %s: echo source file name in *Messages* buffer.
 
-Prefer Exuberant Ctags than etags and than ctags.
+\"ctags -e -o %s -a %s ; echo %s\" if using Exuberant Ctags.
 "
 	:type 'string
 	:group 'tags)
+
+
+(defun mount-tags (&rest tags-file)
+	"Mount existing TAGS-FILE."
+	(declare (indent 0))
+	(let ((mounted nil))
+		(dolist (x tags-file (nreverse mounted))
+			(when (file-exists-p x)
+				(add-to-list 'tags-table-list x t #'string=)
+				(setq mounted (cons x mounted))))))
 
 
 (defun make-tags (home tags-file file-filter dir-filter &optional renew)
@@ -66,23 +59,27 @@ TAGS-FILE where the tags file to save,
 FILE-FILTER file filter function,
 DIR-FILTER directory filter function,
 RENEW create tags file when t"
-  (when (file-exists-p home)
-    (let ((tags-dir (file-name-directory tags-file)))
-      (if (file-exists-p tags-file)
-          (when renew (delete-file tags-file))
-        (when (not (file-exists-p tags-dir))
-          (make-directory tags-dir t)))
-      (dir-iterate home
-                   file-filter
-                   dir-filter
-                   (lambda (f)
-										 (message "make-tags: %s ..." f)
-                     (shell-command-to-string
-                      (format tags-program tags-file f f)))
-									 nil)
-      (when (file-exists-p tags-file)
-        (add-to-list 'tags-table-list tags-dir t #'string=)
-				tags-file))))
+	(unless tags-program
+		(signal 'void-variable (list 'tags-program tags-program)))
+	(if (not renew)
+			(mount-tags tags-file)
+		(when (file-exists-p home)
+			(let ((tags-dir (file-name-directory tags-file)))
+				(if (file-exists-p tags-file)
+						(when renew (delete-file tags-file))
+					(when (not (file-exists-p tags-dir))
+						(make-directory tags-dir t)))
+				(dir-iterate home
+										 file-filter
+										 dir-filter
+										 (lambda (f)
+											 (message "make-tags: %s ..." f)
+											 (shell-command-to-string
+												(format tags-program tags-file f f)))
+										 nil)
+				(when (file-exists-p tags-file)
+					(add-to-list 'tags-table-list tags-dir t #'string=)
+					tags-file)))))
 
 
 (defun make-emacs-home-tags (tags-file &optional renew)
@@ -132,14 +129,7 @@ INCLUDES should be set with `system-cc-include'."
     (make-c-tags p (tags-spec->% :os-include) dir-filter)))
 
 
-(defun mount-tags (tags-files)
-	"Mount existing TAGS-FILE."
-	(let ((tags (if (consp tags-files) tags-files (list tags-files)))
-				(mounted nil))
-		(dolist (x tags (nreverse mounted))
-			(when (file-exists-p x)
-				(add-to-list 'tags-table-list x t #'string=)
-				(setq mounted (cons x mounted))))))
+
 
 
 (provide 'tags)
