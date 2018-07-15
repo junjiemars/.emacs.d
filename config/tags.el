@@ -124,11 +124,10 @@ RENEW create tags file when t"
   "Make tags for system INCLUDES.
 
 INCLUDES should be set with `system-cc-include'."
-  (make-c-tags (car includes) (tags-spec->% :os-include) dir-filter renew)
-  (dolist (p (cdr includes))
-    (make-c-tags p (tags-spec->% :os-include) dir-filter)))
-
-
+	(let ((tag-file (tags-spec->% :os-include)))
+		(make-c-tags (car includes) tag-file dir-filter renew)
+		(dolist (p (cdr includes) tag-file)
+			(make-c-tags p tag-file dir-filter))))
 
 
 
