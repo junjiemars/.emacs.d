@@ -158,8 +158,8 @@ Your private configuration directory at =emacs-home/private/= and I
 abbreviate it as =(emacs-home* "private/")=. All things under it you can
 rename, move, delete.
 
-A magic function =(clean-compiled-files)=, all Elisp files should be
-compiled, so if meet some trouble, run it and reopen the Emacs.
+All Elisp files should be compiled, if you meet some trouble, a magic 
+function =(clean-compiled-files)= should help, run it and reopen the Emacs.
 
 Directory orgnization:
 
@@ -181,7 +181,7 @@ Directory orgnization:
     └── theme (comment "themes directory")
 #+END_EXAMPLE
 
-Locate your sepc via =(emacs-home* "private/self-path.el")=.
+Locate your spec via =(emacs-home* "private/self-path.el")=.
 
 #+BEGIN_SRC emacs-lisp
     ;; Run order: :env-spec -> :prelogue -> :package-spec -> :epilogue
