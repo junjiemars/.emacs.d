@@ -78,7 +78,7 @@ RENEW create tags file when t"
 												(format tags-program tags-file f f)))
 										 nil)
 				(when (file-exists-p tags-file)
-					(add-to-list 'tags-table-list tags-dir t #'string=)
+					(add-to-list 'tags-table-list tags-file t #'string=)
 					tags-file)))))
 
 
