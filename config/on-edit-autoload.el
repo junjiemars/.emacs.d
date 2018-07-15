@@ -122,7 +122,8 @@
 (global-set-key (kbd "C-c ;") #'toggle-comment)
 
 ;; auto org-mode
-(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+(version-supported-when >= 23
+	(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode)))
 
 
 ;; :edit
