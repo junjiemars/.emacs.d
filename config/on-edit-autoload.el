@@ -121,6 +121,9 @@
 ;; toggle comment key strike1
 (global-set-key (kbd "C-c ;") #'toggle-comment)
 
+;; auto org-mode
+(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+
 
 ;; :edit
 (when (self-spec->*env-spec :edit :allowed)
