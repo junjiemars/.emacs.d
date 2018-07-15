@@ -348,8 +348,8 @@ Don't tell me [[https://github.com/jwiegley/use-package][use-package]],
 it's trying to redefine Emacs. Here you can find more simpler and faster
 way to implement almost functionalities that =use-pacakge= does.
 
-There are two types of packages: *basic*(just like Emacs' builtin) and
-*user defined*. To disable *user defined* packages in
+There are two types of packages: =basic=(just like Emacs' builtin) and
+=user defined=. To disable =user defined= packages in
 =(def-self-path-ref)=, disable both *basic* and *user defined* packages
 can be done in =(def-self-env-spec)=.
 
