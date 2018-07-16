@@ -109,7 +109,9 @@ stack frame information for threads.
 
 (defun lldb-settings-no-code-display ()
 	(gud-call (lldb-settings "set" "stop-disassembly-display" "never"))
+	(sit-for 0)
 	(gud-call (lldb-settings "set" "stop-line-count-before" "0"))
+	(sit-for 0)
 	(gud-call (lldb-settings "set" "stop-line-count-after" "0"))
 	(sit-for 1))
 
