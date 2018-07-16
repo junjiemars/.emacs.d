@@ -39,11 +39,9 @@
                               (platform-supported-if darwin
                                   "DYLD_LIBRARY_PATH"
                                 "LD_LIBRARY_PATH")))
-               :interactive-shell (platform-supported-unless darwin t nil)
+               :interactive-shell (platform-supported-if darwin t nil)
                :exec-path t
-               :bin-path (platform-supported-if windows-nt
-														 "C:/Program Files/Git/usr/bin/bash.exe"
-													 "/bin/bash")
+               :bin-path (eval-when-compile (executable-find "bash"))
                :allowed nil)
   
   :desktop (list :files-not-to-save
