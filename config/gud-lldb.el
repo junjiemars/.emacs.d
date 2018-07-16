@@ -42,8 +42,14 @@
 	"History of argument lists passed to lldb.")
 
 
+(defcustom gud-lldb-command-line-hook nil
+	"Hook run by `lldb' on command line."
+	:type 'hook
+	:group 'gud)
+
+
 (defcustom gud-lldb-init-hook nil
-	"Hook run by `lldb'."
+	"Hook run by `lldb' process."
 	:type 'hook
 	:group 'gud)
 
@@ -59,14 +65,6 @@ containing the executable being debugged."
                  (repeat :value ("")
                          directory))
   :group 'gud)
-
-
-(defcustom gud-lldb-default-frame-format
-	"frame #${frame.index}: ${frame.pc}{ ${module.file.basename}{`${function.name-with-args}{${frame.no-debug}${function.pc-offset}}}}{ at ${line.file.fullpath}:${line.number}}{${function.is-optimized} [opt]}\\n"
-	"The default frame format string to use when displaying 
-stack frame information for threads."
-	:type 'string
-	:group 'gud)
 
 
 
@@ -91,19 +89,29 @@ in `gud-lldb-directories'.
 								 (when (file-exists-p p) (return p))))))
 
 
-(defun lldb-frame-format (&optional frame-format)
+(defmacro lldb-settings (subcommand &rest args)
+	""
+	(declare (indent 1))
+	`(mapconcat #'identity (list "settings" ,subcommand ,@args) " "))
+
+
+(defun lldb-settings-frame-format ()
 	"Return frame-format settings of current lldb process.
 
-Set frame-fromat settings with `gud-lldb-default-frame-format' when FRAME-FORMAT it t,
-or FRAME-FORMAT argument.
+The default frame format string to use when displaying 
+stack frame information for threads.
 "
-	(cond ((stringp frame-format)
-				 (gud-call (concat "settings set frame-format " frame-format)))
-				
-				((eq t frame-format)
-				 (gud-call (concat "settings set frame-format " gud-lldb-default-frame-format)))
-				
-				(t (gud-call "settings show frame-format"))))
+	(gud-call (lldb-settings
+								"set" "frame-format"
+								"frame #${frame.index}: ${frame.pc}{ ${module.file.basename}{`${function.name-with-args}{${frame.no-debug}${function.pc-offset}}}}{ at ${line.file.fullpath}:${line.number}}{${function.is-optimized} [opt]}\\n"))
+	(sit-for 1))
+
+
+(defun lldb-settings-no-code-display ()
+	(gud-call (lldb-settings "set" "stop-disassembly-display" "never"))
+	(gud-call (lldb-settings "set" "stop-line-count-before" "0"))
+	(gud-call (lldb-settings "set" "stop-line-count-after" "0"))
+	(sit-for 1))
 
 
 
@@ -129,6 +137,19 @@ something else.
 				(find-file-noselect filename 'nowarn)))))
 
 
+(defun gud-lldb-massage-args (file args)
+	"As the 2nd argument:message-args of `gud-common-init'.
+
+`gud' callback it once when first run `lldb'.
+
+The job of the massage-args method is to modify the given list of
+debugger arguments before running the debugger.
+"
+	(ignore* file)
+	(append (loop for x in gud-lldb-command-line-hook
+								when (functionp x) append (funcall x)) args))
+
+
 (defun gud-lldb-marker-filter (string)
 	"As the 3rd argument: marker-filter of `gud-common-init'.
 
@@ -151,7 +172,7 @@ the rest.
 				 ;;   frame #0: 0x0000000100000f66 spot`main(argc=1, argv=0x00007ffeefbffa58) at c.c:13
 				 (setq gud-last-frame (cons (match-string 1 string)
 																		(string-to-number (match-string 2 string)))))
-
+				
 				((string-match "Process [0-9]+ exited with status = .*" string)
 				 ;; Process 13155 exited with status = 0 (0x00000000)						 
 				 (setq gud-last-last-frame nil)
@@ -159,18 +180,9 @@ the rest.
 	string)
 
 
-(defun gud-lldb-massage-args (file args)
-	"As the 2nd argument:message-args of `gud-common-init'.
-
-`gud' callback it once when first run `lldb'.
-
-The job of the massage-args method is to modify the given list of
-debugger arguments before running the debugger.
-"
-	(ignore* file)
-	(append (loop for o in gud-lldb-init-hook
-								when (functionp o) append (funcall o)) args))
-
+;; set default `gud-lldb-init-hook'
+(add-hook 'gud-lldb-init-hook #'lldb-settings-no-code-display t)
+(add-hook 'gud-lldb-init-hook #'lldb-settings-frame-format t)
 
 (defun lldb (command-line)
 	"Run lldb on program FILE in buffer *gud-FILE*.
@@ -196,7 +208,8 @@ and source-file directory for your debugger."
 	(setq comint-prompt-regexp  "^(lldb)[ \t]*")
 	(setq paragraph-start comint-prompt-regexp)
 	(run-hooks 'lldb-mode-hook)
-	(lldb-frame-format t))
+	(loop for x in gud-lldb-init-hook
+				when (functionp x) do (funcall x))) 
 
 
 
