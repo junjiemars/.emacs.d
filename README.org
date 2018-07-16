@@ -1,4 +1,3 @@
-;; -*- mode: org-mode -*-
 #+TITLE: More Reasonable Emacs
 #+AUTHOR: Junjie Mars
 #+STARTUP: overview
