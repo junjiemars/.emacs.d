@@ -32,7 +32,7 @@ Examples:
 																				(shell-command-to-string
 																				 (concat bin " --version")))))
 			"etags -o %s -l auto -a %s ; echo %s"
-		(if (executable-find% "ctags"
+		(if (executable-find% "etags"
 													(lambda (bin)
 														(string-match "Exuberant Ctags [.0-9]+"
 																					(shell-command-to-string
