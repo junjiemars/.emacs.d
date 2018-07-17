@@ -26,11 +26,22 @@ Examples:
 
 
 (defcustom tags-program
-	"etags -o %s -l auto -a %s ; echo %s"
+	(if (executable-find% "etags"
+												(lambda (bin)
+													(string-match "etags (GNU Emacs [.0-9]+)"
+																				(shell-command-to-string
+																				 (concat bin " --version")))))
+			"etags -o %s -l auto -a %s ; echo %s"
+		(if (executable-find% "ctags"
+													(lambda (bin)
+														(string-match "Exuberant Ctags [.0-9]+"
+																					(shell-command-to-string
+																					 (concat bin " --version")))))
+				"etags -e -o %s -a %s ; echo %s"))
 	"The default tags program.
 This is used by commands like `make-tags' and others.
 
-The default is \"etags -e -o %s -a %s ; echo %s\", 
+The default is \"etags -o %s -l auto -a %s ; echo %s\", 
 first %s: explicit name of file for tag table; overrides default TAGS or tags.
 second %s: append to existing tag file.
 third %s: echo source file name in *Messages* buffer.
