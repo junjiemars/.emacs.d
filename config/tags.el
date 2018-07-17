@@ -73,9 +73,11 @@ RENEW create tags file when t"
 										 file-filter
 										 dir-filter
 										 (lambda (f)
-											 (message "make-tags: %s ..." f)
-											 (shell-command-to-string
-												(format tags-program tags-file f f)))
+											 (message "make-tags: %s ... %s"
+																f
+																(if (zerop (shell-command
+																						(format tags-program tags-file f f)))
+																		"ok" "failed")))
 										 nil)
 				(when (file-exists-p tags-file)
 					(add-to-list 'tags-table-list tags-file t #'string=)
