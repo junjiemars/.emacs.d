@@ -47,6 +47,9 @@ second %s: append to existing tag file.
 third %s: echo source file name in *Messages* buffer.
 
 \"ctags -e -o %s -a %s ; echo %s\" if using Exuberant Ctags.
+
+`tags-table-list' will persitent between sessions 
+when `desktop-globals-to-save' include it.s
 "
 	:type 'string
 	:group 'tags)
