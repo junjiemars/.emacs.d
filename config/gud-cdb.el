@@ -142,8 +142,13 @@ containing the executable being debugged."
                          directory))
   :group 'gud)
 
+(defcustom gud-cdb-command-line-hook nil
+	"Hook run by `cdb' on command line."
+	:type 'hook
+	:group 'gud)
+
 (defcustom gud-cdb-init-hook nil
-	"Hook run by `cdb'."
+	"Hook run by `lldb' process."
 	:type 'hook
 	:group 'gud)
 
@@ -158,6 +163,23 @@ containing the executable being debugged."
 ;; cdb-*
 ;;;;
 
+
+(defun cdb-command-line-list-source ()
+	"List source options.
+
+cdb [options]:
+  -c \"<command>\" executes the given debugger command at the first debugger.
+  -lines requests that line number information be used if present.
+
+This function is an example for `gud-cdb-command-line-hook', we can do the same
+via: `M-x cdb -c \"l+*;l-s\" -lines <debuggee>'.
+
+-lines option must be included, display line number.
+l-s means do not display source code in `cdb' command line.
+"
+	(list "-c" "l+*;l-s" "-lines"))
+
+
 (defun cdb-file-name (filename)
   "Transform a relative FILENAME to an absolute one.
 
@@ -170,26 +192,17 @@ in `gud-cdb-directories'.
 						do (let ((p (concat d "/" filename)))
 								 (when (file-exists-p p) (return p))))))
 
+
 
 
 ;;;;
 ;; gud-cdb-*
 ;;;;
 
-(defun gud-cdb-init-list-source ()
-	"List source options.
 
-cdb [options]:
-  -c \"<command>\" executes the given debugger command at the first debugger.
-  -lines requests that line number information be used if present.
+;; set default `gud-cdb-command-line-hook'
+(add-hook 'gud-cdb-command-line-hook #'cdb-command-line-list-source)
 
-This function is an example for `gud-cdb-init-hook', we can do the same
-via: `M-x cdb -c \"l+*;l-s\" -lines <debuggee>'.
-
--lines option must be included, display line number.
-l-s means do not display source code in `cdb' command line.
-"
-	(list "-c" "l+*;l-s" "-lines"))
 
 (defun gud-cdb-massage-args (file args)
 	"As the 2nd argument: message-args of `gud-common-init'.
@@ -200,7 +213,7 @@ The job of the massage-args method is to modify the given list of
 debugger arguments before running the debugger.
 "
 	(ignore* file)
-	(append (loop for o in gud-cdb-init-hook
+	(append (loop for o in gud-cdb-command-line-hook
 								append (funcall o)) args))
 
 
@@ -239,7 +252,7 @@ the rest.
 (defun gud-cdb-find-file (filename)
 	"As the optional argument: find-file of `gud-common-init'.
 
-`gud' callback it just when `gud-cdb-init-list-source' had been called first.
+`gud' callback it just when `gud-cdb-command-line-list-source' had been called first.
 
 The job of the find-file method is to visit and return the buffer indicated
 by the car of gud-tag-frame.  This may be a file name, a tag name, or
@@ -286,8 +299,9 @@ and source-file directory for your debugger."
   (setq comint-prompt-regexp "^[0-9]:[0-9][0-9][0-9]> ")
   (setq comint-input-sender #'gud-cdb-simple-send)
   (setq paragraph-start comint-prompt-regexp)
-
-  (run-hooks 'gud-cdb-mode-hook))
+  (run-hooks 'gud-cdb-mode-hook)
+	(loop for x in gud-cdb-init-hook
+				when (functionp x) do (funcall x)))
 
 
 ;; (defun gud-cdb-goto-stackframe (text token indent)
