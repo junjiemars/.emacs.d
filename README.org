@@ -223,7 +223,7 @@ The theme's spec locate in =(emacs-home* "private/self-env-spec.el")=
 
 #+BEGIN_SRC emacs-lisp
     (def-self-env-spec
-      :theme (list :name 'atom-one-dark
+      :theme (list :name 'dracula
                    :path (emacs-home* "theme/")
                    :compile nil ;; expert option
                    :allowed t))
@@ -231,6 +231,19 @@ The theme's spec locate in =(emacs-home* "private/self-env-spec.el")=
 
 Compiled theme more smooth and more faster if you had already confirmed
 the theme is secure.
+
+
+Using Emacs's builtin themes(@@html:<kbd>@@M x customize-themes@@html:</kbd>@@) :
+
+#+BEGIN_SRC emacs-lisp
+    (def-self-env-spec
+      :theme (list :name 'tango-dark ;; buildin theme
+                   :path nil
+                   :compile nil
+                   :allowed t))
+#+END_SRC
+
+
 
 ** Font
     :PROPERTIES:
