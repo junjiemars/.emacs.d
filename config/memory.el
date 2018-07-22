@@ -108,6 +108,11 @@
 
     (version-supported-if >= 23
 													(desktop-save (v-home! ".desktop/"))
+			(version-supported-when <= 26
+				(platform-supported-when darwin
+					(dolist (x '((ns-transparent-titlebar . unbound)
+											 (ns-appearance . unbound)))
+						(add-to-list 'frameset-filter-alist x))))
       (desktop-save (v-home! ".desktop/") t))))
 
 
