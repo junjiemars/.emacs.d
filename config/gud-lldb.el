@@ -104,16 +104,18 @@ stack frame information for threads.
 	(gud-call (lldb-settings
 								"set" "frame-format"
 								"frame #${frame.index}: ${frame.pc}{ ${module.file.basename}{`${function.name-with-args}{${frame.no-debug}${function.pc-offset}}}}{ at ${line.file.fullpath}:${line.number}}{${function.is-optimized} [opt]}\\n"))
-	(sit-for 1))
+	;; (sit-for 1)
+	)
 
 
 (defun lldb-settings-no-code-display ()
 	(gud-call (lldb-settings "set" "stop-disassembly-display" "never"))
-	(sit-for 0)
+	;; (sit-for 1)
 	(gud-call (lldb-settings "set" "stop-line-count-before" "0"))
-	(sit-for 0)
+	;; (sit-for 1)
 	(gud-call (lldb-settings "set" "stop-line-count-after" "0"))
-	(sit-for 1))
+	;; (sit-for 1)
+	)
 
 
 
@@ -192,7 +194,7 @@ the rest.
 The directory containing FILE becomes the initial working directory
 and source-file directory for your debugger."
 	(interactive (list (gud-query-cmdline 'lldb)))
-
+	
 	(gud-common-init command-line
 									 #'gud-lldb-massage-args
 									 #'gud-lldb-marker-filter
@@ -209,9 +211,10 @@ and source-file directory for your debugger."
 
 	(setq comint-prompt-regexp  "^(lldb)[ \t]*")
 	(setq paragraph-start comint-prompt-regexp)
-	(run-hooks 'lldb-mode-hook)
-	(loop for x in gud-lldb-init-hook
-				when (functionp x) do (funcall x))) 
+	(loop for x in gud-lldb-init-hook when (functionp x) do (funcall x))
+	(setq gud-running nil)
+	(setq gud-filter-pending-text nil)
+	(run-hooks 'lldb-mode-hook))
 
 
 
