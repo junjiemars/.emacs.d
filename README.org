@@ -373,9 +373,9 @@ can be done in =(def-self-env-spec)=.
           
 #+END_SRC
 
--  =:cond=: decide whether to install =:packages= or compile =:compile=
--  =:packages=: a list of package names or tar file names
--  =:compile=: a list of files that should be compiled only or be loaded
+-  =:cond= decide whether to install =:packages= or compile =:compile=
+-  =:packages= a list of package names or tar file names
+-  =:compile= a list of files that should be compiled only or be loaded
    after be compiled
 
 The default package spec locate in
