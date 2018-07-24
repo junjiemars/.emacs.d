@@ -8,12 +8,13 @@
 
 
 
-(def-feature-supported-p aggressive-indent nil
-  "If `aggressive-indent' feature supported then do BODY.")
+(def-feature-supported-p aggressive-indent nil)
 
 
-(def-feature-supported-p paredit nil
-  "If `paredit' feature supported then do BODY.")
+(def-feature-supported-p paredit nil)
+
+
+(def-feature-supported-p rainbow-delimiters nil)
 
 
 (def-feature-supported-p bing-dict nil)
