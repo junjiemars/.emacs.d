@@ -67,7 +67,7 @@
      (let ((v (concat (file-name-directory ,file) ,vdir "/")))
        (unless (file-exists-p v) (make-directory v t))
        (concat v (if ,extension
-										 (concat (file-name-base* ,file) "." ,extension)
+		     (concat (file-name-base* ,file) "." ,extension)
                    (file-name-nondirectory ,file))))))
 
 
@@ -89,7 +89,7 @@ If DELETE-BOOSTER is non nil then delete booster source FILE after compiled."
            (let ((,s (v-path! ,file ,vdir)))
              (copy-file ,file ,s t)
              (when (and (byte-compile-file ,s) ,delete-booster)
-							 (delete-file ,s))))
+	       (delete-file ,s))))
          (or ,only-compile
              (load ,c))))))
 
@@ -98,11 +98,11 @@ If DELETE-BOOSTER is non nil then delete booster source FILE after compiled."
   "Clean all compiled files."
   `(dolist (d (list ,(v-home* "config/")
                     ,(v-home* "private/")
-										,(v-home* "theme/")))
+		    ,(v-home* "theme/")))
      (dolist (f (when (file-exists-p d)
-									(directory-files d nil "\\.elc?$")))
-			 (message "#Clean compiled file: %s" f)
-			 (delete-file (concat d f)))))
+		  (directory-files d nil "\\.elc?$")))
+       (message "#Clean compiled file: %s" f)
+       (delete-file (concat d f)))))
 
 
  ;; end of compile macro
@@ -118,17 +118,17 @@ Else return BODY sexp."
 ;; version-supported macro
 
 (defmacro version-supported* (cond version)
-	"Return t if (COND VERSION `emacs-version') yields non-nil, else nil.
+  "Return t if (COND VERSION `emacs-version') yields non-nil, else nil.
 
 COND should be quoted, such as (version-supported* '<= 24)"
-	`(let ((ver (cond ((stringp ,version) ,version)
-										((numberp ,version) (number-to-string ,version))
-										(t (format "%s" ,version)))))
-		 (cond ((eq '< ,cond) (version< ver emacs-version))
-					 ((eq '<= ,cond) (version<= ver emacs-version))
-					 ((eq '> ,cond) (not (version<= ver emacs-version)))
-					 ((eq '>= ,cond) (not (version< ver emacs-version)))
-					 (t nil))))
+  `(let ((ver (cond ((stringp ,version) ,version)
+		    ((numberp ,version) (number-to-string ,version))
+		    (t (format "%s" ,version)))))
+     (cond ((eq '< ,cond) (version< ver emacs-version))
+	   ((eq '<= ,cond) (version<= ver emacs-version))
+	   ((eq '> ,cond) (not (version<= ver emacs-version)))
+	   ((eq '>= ,cond) (not (version< ver emacs-version)))
+	   (t nil))))
 
 (defmacro version-supported-p (cond version)
   "Return t if (COND VERSION `emacs-version') yields non-nil, else nil.
@@ -174,21 +174,21 @@ sequentially and return value of last one, or nil if there are none."
 
 (defmacro lexical-supported-if (then &rest else)
   "If support lexical binding then do BODY, otherwise do ELSE..."
-	(declare (indent 1))
-	`(version-supported-if
-			 <= 24.1
-			 ,then
-		 (progn% ,@else)))
+  (declare (indent 1))
+  `(version-supported-if
+       <= 24.1
+       ,then
+     (progn% ,@else)))
 
 (defmacro lexical-supported-when (&rest body)
-	"Do BODY when lexical binding, else return nil."
-	(declare (indent 0))
-	`(lexical-supported-if (progn% ,@body)))
+  "Do BODY when lexical binding, else return nil."
+  (declare (indent 0))
+  `(lexical-supported-if (progn% ,@body)))
 
 (defmacro lexical-supported-unless (&rest body)
-	"Do BODY unless support lexical binding."
-	(declare (indent 0))
-	`(lexical-supported-if nil ,@body))
+  "Do BODY unless support lexical binding."
+  (declare (indent 0))
+  `(lexical-supported-if nil ,@body))
 
 
  ;; end of lexical-supported macro
