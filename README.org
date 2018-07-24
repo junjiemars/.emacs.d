@@ -348,7 +348,7 @@ The socks spec locate in =(emacs-home* "private/self-env-spec.el")=
                    :allowed nil))
 #+END_SRC
 
-If =:allowed t=, =url-gateway-method= should be switch to ='socks= when
+If =:allowed t=, =url-gateway-method= should be switch to =socks= when
 Emacs initializing. After Emacs initialization, you can =toggle-socks!=
 and no matter =:allowed= is =t= or =nil=.
 
