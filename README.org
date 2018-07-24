@@ -211,6 +211,7 @@ Locate your spec via =(emacs-home* "private/self-path.el")=.
 -  [[#socks][Socks]]
 -  [[#package][Package]]
 -  [[#indent][Indent]]
+-  [[#file][File]]
 
 ** Theme
     :PROPERTIES:
@@ -441,6 +442,35 @@ Avoiding a war.
                   :auto-save-default nil
                   :allowed t)
 #+END_SRC
+
+** File
+    :PROPERTIES:
+    :CUSTOM_ID: file
+    :END:
+
+Using =dired= as a File Manager is awesome, but there are no 
+GNU's =ls= program (/--dired/ option) on Windows and Darwin.
+
+*** ls Program
+
+[[file:config/on-dired-autoload.el][on-dired-autoload.el]]
+
+For Windows, you can install GNU's ls via [[https://git-scm.com/downloads][Git-Bash]]. 
+
+For Darwin, let =dired= don't do stupid things.
+
+[[https://github.com/junjiemars/images/blob/master/.emacs.d/ido-dired-windows-gnu-ls.png][{screenshot:ido-dired}]]
+
+
+*** find Program
+
+[[file:config/on-grep-autoload.el][on-grep-autoload.el]]
+
+If GNU's =find= has already in =PATH= so use it on Windows, and let Windows stupid =find= program gone.
+
+Now, on Windows you can use =find-dired= or =find-name-dired=.
+
+[[https://github.com/junjiemars/images/blob/master/.emacs.d/find-name-dired-windows.png][{screenshot:find-name-dired}]]
 
 * Troubleshooting
    :PROPERTIES:
