@@ -459,7 +459,7 @@ For Windows, you can install GNU's ls via [[https://git-scm.com/downloads][Git-B
 
 For Darwin, let =dired= don't do stupid things.
 
-[[https://github.com/junjiemars/images/blob/master/.emacs.d/ido-dired-windows-gnu-ls.png][{screenshot:ido-dired}]]
+[[https://github.com/junjiemars/images/blob/master/.emacs.d/ido-dired-windows-gnu-ls.png][{screenshot: ido-dired}]]
 
 
 *** find Program
@@ -470,7 +470,7 @@ If GNU's =find= has already in =PATH= so use it on Windows, and let Windows stup
 
 Now, on Windows you can use =find-dired= or =find-name-dired=.
 
-[[https://github.com/junjiemars/images/blob/master/.emacs.d/find-name-dired-windows.png][{screenshot:find-name-dired}]]
+[[https://github.com/junjiemars/images/blob/master/.emacs.d/find-name-dired-windows.png][{screenshot: find-name-dired}]]
 
 * Troubleshooting
    :PROPERTIES:
