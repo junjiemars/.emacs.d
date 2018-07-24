@@ -61,26 +61,26 @@
     
     (compile-unit (emacs-home* "config/on-compile-autoload.el"))
     (compile-unit (emacs-home* "config/on-dired-autoload.el"))
-		(compile-unit (emacs-home* "config/on-grep-autoload.el"))
+    (compile-unit (emacs-home* "config/on-grep-autoload.el"))
     (compile-unit (emacs-home* "config/on-edit-autoload.el"))
     (compile-unit (emacs-home* "config/on-hippie-autoload.el"))
     (compile-unit (emacs-home* "config/on-lisp-autoload.el"))
-		
-		(platform-supported-if windows-nt
-				(compile-unit (emacs-home* "config/gud-cdb.el") t)
-			
-			(platform-supported-if darwin
-					(compile-unit (emacs-home* "config/gud-lldb.el") t)
-				
-				(when (executable-find% "lldb")
-					(compile-unit (emacs-home* "config/gud-lldb.el") t))))
+    
+    (platform-supported-if windows-nt
+	(compile-unit (emacs-home* "config/gud-cdb.el") t)
+      
+      (platform-supported-if darwin
+	  (compile-unit (emacs-home* "config/gud-lldb.el") t)
+	
+	(when (executable-find% "lldb")
+	  (compile-unit (emacs-home* "config/gud-lldb.el") t))))
 
-		(feature-eww-supported-p
-			(compile-unit (emacs-home* "config/on-eww-autoload.el")))
-		
+    (feature-eww-supported-p
+      (compile-unit (emacs-home* "config/on-eww-autoload.el")))
+    
     (feature-linum-supported-p
       (compile-unit (emacs-home* "config/on-linum-autoload.el")))
-		
+    
     (feature-semantic-supported-p
       (compile-unit (emacs-home* "config/on-semantic-autoload.el")))
 
@@ -106,9 +106,9 @@
 
 ;; set-self-epilogue!
 (defun set-self-epilogue! ()
-	(compile!
-			v-dir
-		(compile-unit (self-def-path-ref-> :epilogue))))
+  (compile!
+      v-dir
+    (compile-unit (self-def-path-ref-> :epilogue))))
 
  ;; end of set-self-epilogue!
 

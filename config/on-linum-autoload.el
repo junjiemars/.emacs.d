@@ -10,11 +10,11 @@
 
 ;; linum
 (feature-linum-supported-p
-	
-	(with-eval-after-load 'linum
-		(setq% linum-format "%2d " linum))
+  
+  (with-eval-after-load 'linum
+    (setq% linum-format "%2d " linum))
 
-	(feature-linum-supported-p
-		(global-set-key (kbd "C-c l") #'linum-mode)))
+  (feature-linum-supported-p
+    (global-set-key (kbd "C-c l") #'linum-mode)))
 
 

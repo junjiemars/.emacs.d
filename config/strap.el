@@ -10,7 +10,7 @@
 
 ;; Let `lexical-binding' var safe under Emacs24.1-
 (lexical-supported-unless
-	(put 'lexical-binding 'safe-local-variable (lambda (x) t)))
+  (put 'lexical-binding 'safe-local-variable (lambda (x) t)))
 
 
 ;; preferred coding system
@@ -111,13 +111,13 @@ If FN requires FEATURE load it on compile-time."
 
 
 (defmacro if-var% (var feature then &rest else)
-	"If VAR is bounded yields non-nil, do THEN, else do ELSE...
+  "If VAR is bounded yields non-nil, do THEN, else do ELSE...
 If VAR requires the FEATURE load it on compile-time."
-	(declare (indent 3))
-	(when feature (require feature nil t))
-	(if (boundp var)
-			`,then
-		`(progn% ,@else)))
+  (declare (indent 3))
+  (when feature (require feature nil t))
+  (if (boundp var)
+      `,then
+    `(progn% ,@else)))
 
 (defmacro when-var% (var feature &rest body)
 	"Do BODY when VAR is bound.
@@ -133,59 +133,59 @@ If VAR requires FEATURE load it on compile-time."
 	(defvar *gensym-counter* 0))
 
 (unless-fn% gensym nil
-	;; feature Emacs version will add `gensym' into the core
-	;; but now using cl-gensym indeed
-	(defun gensym (&optional prefix)
-	  "Generate a new uninterned symbol.
+  ;; feature Emacs version will add `gensym' into the core
+  ;; but now using cl-gensym indeed
+  (defun gensym (&optional prefix)
+    "Generate a new uninterned symbol.
 The name is made by appending a number to PREFIX, default \"G\"."
-	  (let ((pfix (if (stringp prefix) prefix "G"))
-					(num (if (integerp prefix) prefix
-								 (prog1 *gensym-counter*
-									 (setq *gensym-counter* (1+ *gensym-counter*))))))
-	    (make-symbol (format "%s%d" pfix num)))))
+    (let ((pfix (if (stringp prefix) prefix "G"))
+	  (num (if (integerp prefix) prefix
+		 (prog1 *gensym-counter*
+		   (setq *gensym-counter* (1+ *gensym-counter*))))))
+      (make-symbol (format "%s%d" pfix num)))))
 
 
 (defmacro ignore* (&rest vars)
-	"Return nil, list VARS at compile time if in lexical context."
-	(declare (indent 0))
-	(lexical-supported-when
-		(when lexical-binding
-			`(progn% ,@vars nil))))
+  "Return nil, list VARS at compile time if in lexical context."
+  (declare (indent 0))
+  (lexical-supported-when
+    (when lexical-binding
+      `(progn% ,@vars nil))))
 
 
 (defmacro feature-if% (feature filename then &rest else)
-	"If FEATURE supports do THEN, otherwise do ELSE... at compile-time."
-	(if (require feature filename t)
-			`,then
-		`(progn% ,@else)))
+  "If FEATURE supports do THEN, otherwise do ELSE... at compile-time."
+  (if (require feature filename t)
+      `,then
+    `(progn% ,@else)))
 
 (defmacro def-feature-supported-p (feature &optional filename docstring)
-	"Define FEATURE supported-p macro."
-	(let ((name (intern (format "feature-%s-supported-p" feature)))
-				(ds1 (format "If has `%s' feauture then do BODY." feature)))
-		`(feature-if% ,feature ,filename
-									(defmacro ,name (&rest body)
-										,(or docstring ds1)
-										(declare (indent 0))
-										`(progn% ,@body))
-									(defmacro ,name (&rest body)
-										,(or docstring ds1)
-										(declare (indent 0))
-										`(comment ,@body)))))
+  "Define FEATURE supported-p macro."
+  (let ((name (intern (format "feature-%s-supported-p" feature)))
+	(ds1 (format "If has `%s' feauture then do BODY." feature)))
+    `(feature-if% ,feature ,filename
+		  (defmacro ,name (&rest body)
+		    ,(or docstring ds1)
+		    (declare (indent 0))
+		    `(progn% ,@body))
+		  (defmacro ,name (&rest body)
+		    ,(or docstring ds1)
+		    (declare (indent 0))
+		    `(comment ,@body)))))
 
 (defmacro def-function-supported-p (fn &optional feature docstring)
-	"Define FN supported-p macro."
-	(let ((name (intern (format "function-%s-supported-p" fn)))
-				(ds1 (format "If has `%s' fn then do BODY." fn)))
-		`(if-fn% ,fn ,feature
-						 (defmacro ,name (&rest body)
-							 ,(or docstring ds1)
-							 (declare (indent 0))
-							 `(progn% ,@body))
-			 (defmacro ,name (&rest body)
-				 ,(or docstring ds1)
-				 (declare (indent 0))
-				 `(comment ,body)))))
+  "Define FN supported-p macro."
+  (let ((name (intern (format "function-%s-supported-p" fn)))
+	(ds1 (format "If has `%s' fn then do BODY." fn)))
+    `(if-fn% ,fn ,feature
+	     (defmacro ,name (&rest body)
+	       ,(or docstring ds1)
+	       (declare (indent 0))
+	       `(progn% ,@body))
+       (defmacro ,name (&rest body)
+	 ,(or docstring ds1)
+	 (declare (indent 0))
+	 `(comment ,body)))))
 
  ;; end of byte-compiler macro
 
@@ -193,26 +193,26 @@ The name is made by appending a number to PREFIX, default \"G\"."
 ;; compile macro
 
 (defmacro compile-unit (file &optional only-compile)
-	"Make an unit of compilation."
-	`(cons ,file ,only-compile))
+  "Make an unit of compilation."
+  `(cons ,file ,only-compile))
 
 (defmacro compile-unit->file (unit)
-	"Return the FILE part of `compile-unit'."
-	`(car ,unit))
+  "Return the FILE part of `compile-unit'."
+  `(car ,unit))
 
 (defmacro compile-unit->only-compile (unit)
-	"Return the ONLY-COMPILE indicator of `compile-unit'."
-	`(cdr ,unit))
+  "Return the ONLY-COMPILE indicator of `compile-unit'."
+  `(cdr ,unit))
 
 (defun compile! (vdir &rest units)
   "Compile and load the elisp UNITS in VDIR."
   (declare (indent 1))
   (dolist (unit units)
-		(when unit
-			(compile-and-load-file*
-			 vdir
-			 (compile-unit->file unit)
-			 (compile-unit->only-compile unit)))))
+    (when unit
+      (compile-and-load-file*
+       vdir
+       (compile-unit->file unit)
+       (compile-unit->only-compile unit)))))
 
  ;; end of compile macro
 
@@ -296,8 +296,8 @@ Take effect after restart Emacs.
 ;; self-spec macro
 
 (compile!
-		v-dir
-	(compile-unit self-def-where))
+    v-dir
+  (compile-unit self-def-where))
 
 
 (defsubst self-def-path-ref-> (&optional key)
@@ -360,8 +360,8 @@ Take effect after restart Emacs.
 
 ;; Self do prologue ...
 (compile!
-		v-dir
-	(compile-unit (self-def-path-ref-> :prologue)))
+    v-dir
+  (compile-unit (self-def-path-ref-> :prologue)))
 
 
 (package-supported-p

@@ -20,8 +20,8 @@
 
 (defun save-env-spec! ()
   (when (save-sexp-to-file
-				 `(setq *self-previous-env-spec* ',(self-spec->*env-spec))
-				 (memory-spec->% :source))
+	 `(setq *self-previous-env-spec* ',(self-spec->*env-spec))
+	 (memory-spec->% :source))
     (byte-compile-file (memory-spec->% :source))))
 
 (add-hook 'kill-emacs-hook #'save-env-spec! t)
@@ -100,19 +100,19 @@
     
     (let ((m (self-spec->*env-spec :desktop :modes-not-to-save)))
       (setq% desktop-modes-not-to-save
-						 (append '(tags-table-mode) m) desktop))
+	     (append '(tags-table-mode) m) desktop))
 
     (theme-supported-p
-				(switch-theme! (self-spec-> *self-previous-env-spec* :theme)
-											 (self-spec->*env-spec :theme)))
+	(switch-theme! (self-spec-> *self-previous-env-spec* :theme)
+		       (self-spec->*env-spec :theme)))
 
     (version-supported-if >= 23
-													(desktop-save (v-home! ".desktop/"))
-			(version-supported-when <= 26
-				(platform-supported-when darwin
-					(dolist (x '((ns-transparent-titlebar . unbound)
-											 (ns-appearance . unbound)))
-						(add-to-list 'frameset-filter-alist x))))
+			  (desktop-save (v-home! ".desktop/"))
+      (version-supported-when <= 26
+	(platform-supported-when darwin
+	  (dolist (x '((ns-transparent-titlebar . unbound)
+		       (ns-appearance . unbound)))
+	    (add-to-list 'frameset-filter-alist x))))
       (desktop-save (v-home! ".desktop/") t))))
 
 

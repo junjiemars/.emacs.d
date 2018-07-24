@@ -8,17 +8,17 @@
 
 
 (terminal-supported-p
-	;;above version 23 transient-mark-mode is enabled by default
-	(version-supported-when > 23 (transient-mark-mode t))
-	(set-face-background 'region "white")
-	(set-face-foreground 'region "black"))
+  ;;above version 23 transient-mark-mode is enabled by default
+  (version-supported-when > 23 (transient-mark-mode t))
+  (set-face-background 'region "white")
+  (set-face-foreground 'region "black"))
 
 ;; No cursor blinking, it's distracting
 (when-fn% blink-cursor-mode nil (blink-cursor-mode 0))
 
 ;; full path in title bar
 (graphic-supported-p
-	(setq% frame-title-format "%b (%f)"))
+  (setq% frame-title-format "%b (%f)"))
 
 ;; Ignore ring bell
 (setq% ring-bell-function 'ignore)
@@ -40,15 +40,15 @@
 
 ;; enable save minibuffer history
 (version-supported-if
-		<= 24
-		(savehist-mode)
-	(savehist-mode t))
+    <= 24
+    (savehist-mode)
+  (savehist-mode t))
 
 ;; enable save-place
 (version-supported-if
-		<= 25.1
-		(save-place-mode t)
-	(setq% save-place t saveplace))
+    <= 25.1
+    (save-place-mode t)
+  (setq% save-place t saveplace))
 
 ;; Shows all options when running apropos. For more info,
 ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html
@@ -65,13 +65,13 @@
 ;; I'm actually not sure what this does but it's recommended?
 ;; http://emacswiki.org/emacs/CopyAndPaste
 (version-supported-if
-		<= 24.1
-		(setq% select-enable-clipboard t)
-	(setq% x-select-enable-clipboard t))
+    <= 24.1
+    (setq% select-enable-clipboard t)
+  (setq% x-select-enable-clipboard t))
 (version-supported-if
-		<= 25.1
-		(setq% select-enable-primary t select)
-	(setq% x-select-enable-primary t select))
+    <= 25.1
+    (setq% select-enable-primary t select)
+  (setq% x-select-enable-primary t select))
 
 ;; Save before kill
 (setq% save-interprogram-paste-before-kill t simple)
@@ -103,27 +103,27 @@
   (interactive)
   (let (begin end)
     (if-fn% region-active-p nil
-						(if (region-active-p)
-								(setq begin (region-beginning)
-											end (region-end))
-							(setq begin (line-beginning-position)
-										end (line-end-position)))
+	    (if (region-active-p)
+		(setq begin (region-beginning)
+		      end (region-end))
+	      (setq begin (line-beginning-position)
+		    end (line-end-position)))
       (if mark-active
-					(setq begin (region-beginning)
-								end (region-end))
-				(setq begin (line-beginning-position)
-							end (line-end-position))))
-		(comment-or-uncomment-region begin end)
-		(if-fn% next-logical-line nil
-						(next-logical-line)
-			(next-line))))
+	  (setq begin (region-beginning)
+		end (region-end))
+	(setq begin (line-beginning-position)
+	      end (line-end-position))))
+    (comment-or-uncomment-region begin end)
+    (if-fn% next-logical-line nil
+	    (next-logical-line)
+      (next-line))))
 
 ;; toggle comment key strike1
 (global-set-key (kbd "C-c ;") #'toggle-comment)
 
 ;; auto org-mode
 (version-supported-when >= 23
-	(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode)))
+  (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode)))
 
 
 ;; :edit

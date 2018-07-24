@@ -143,14 +143,14 @@ containing the executable being debugged."
   :group 'gud)
 
 (defcustom gud-cdb-command-line-hook nil
-	"Hook run by `cdb' on command line."
-	:type 'hook
-	:group 'gud)
+  "Hook run by `cdb' on command line."
+  :type 'hook
+  :group 'gud)
 
 (defcustom gud-cdb-init-hook nil
-	"Hook run by `lldb' process."
-	:type 'hook
-	:group 'gud)
+  "Hook run by `lldb' process."
+  :type 'hook
+  :group 'gud)
 
 
 ;; ;; buffer local variables
@@ -165,7 +165,7 @@ containing the executable being debugged."
 
 
 (defun cdb-command-line-list-source ()
-	"List source options.
+  "List source options.
 
 cdb [options]:
   -c \"<command>\" executes the given debugger command at the first debugger.
@@ -177,7 +177,7 @@ via: `M-x cdb -c \"l+*;l-s\" -lines <debuggee>'.
 -lines option must be included, display line number.
 l-s means do not display source code in `cdb' command line.
 "
-	(list "-c" "l+*;l-s" "-lines"))
+  (list "-c" "l+*;l-s" "-lines"))
 
 
 (defun cdb-file-name (filename)
@@ -186,11 +186,11 @@ l-s means do not display source code in `cdb' command line.
 Return absolute filename when FILENAME existing or it's existing 
 in `gud-cdb-directories'.
 "
-	(or (let ((f (expand-file-name filename)))
-				(when (file-exists-p f) f))
-			(loop for d in gud-cdb-directories
-						do (let ((p (concat d "/" filename)))
-								 (when (file-exists-p p) (return p))))))
+  (or (let ((f (expand-file-name filename)))
+	(when (file-exists-p f) f))
+      (loop for d in gud-cdb-directories
+	    do (let ((p (concat d "/" filename)))
+		 (when (file-exists-p p) (return p))))))
 
 
 
@@ -205,20 +205,20 @@ in `gud-cdb-directories'.
 
 
 (defun gud-cdb-massage-args (file args)
-	"As the 2nd argument: message-args of `gud-common-init'.
+  "As the 2nd argument: message-args of `gud-common-init'.
 
 `gud' callback it once when run `cdb'.
 
 The job of the massage-args method is to modify the given list of
 debugger arguments before running the debugger.
 "
-	(ignore* file)
-	(append (loop for o in gud-cdb-command-line-hook
-								append (funcall o)) args))
+  (ignore* file)
+  (append (loop for o in gud-cdb-command-line-hook
+		append (funcall o)) args))
 
 
 (defun gud-cdb-marker-filter (string)
-	"As the 3rd argument: marker-filter of `gud-common-init'.
+  "As the 3rd argument: marker-filter of `gud-common-init'.
 
 The job of the marker-filter method is to detect file/line markers in
 strings and set the global gud-last-frame to indicate what display
@@ -227,30 +227,30 @@ whatever the method *returns* is displayed in the buffer; thus, you
 can filter the debugger's output, interpreting some and passing on
 the rest.
 "
-	(setq gud-marker-acc (concat gud-marker-acc string))
-	(cond ((string-match "^\\(.*\\)(\\([0-9]+\\))\n" string)
-				 ;; Breakpoint 0 hit
-				 ;; e:\lab\c\src\c.c(9)
-				 ;; c!main:
-				 ;; 00007ff7`5a036580 4889542410      mov     qword ptr [rsp+10h],rdx ss:000000c5`9b0ff788=0000000000000000
-				 (setq gud-last-frame (cons (match-string 1 string)
-																		(string-to-number (match-string 2 string)))))
+  (setq gud-marker-acc (concat gud-marker-acc string))
+  (cond ((string-match "^\\(.*\\)(\\([0-9]+\\))\n" string)
+	 ;; Breakpoint 0 hit
+	 ;; e:\lab\c\src\c.c(9)
+	 ;; c!main:
+	 ;; 00007ff7`5a036580 4889542410      mov     qword ptr [rsp+10h],rdx ss:000000c5`9b0ff788=0000000000000000
+	 (setq gud-last-frame (cons (match-string 1 string)
+				    (string-to-number (match-string 2 string)))))
 
-				((or (string-match "quit:" string)
-						 (string-match "ntdll!NtTerminateProcess\\+0x[0-9a-z]+:" string))
-				 ;; ModLoad: 00007ffe`9d340000 00007ffe`9d351000   C:\WINDOWS\System32\kernel.appcore.dll
-				 ;; ModLoad: 00007ffe`9ecc0000 00007ffe`9ed5d000   C:\WINDOWS\System32\msvcrt.dll
-				 ;; ModLoad: 00007ffe`9f140000 00007ffe`9f25f000   C:\WINDOWS\System32\RPCRT4.dll
-				 ;; ntdll!NtTerminateProcess+0x14:
-				 ;; 00007ffe`a10005f4 c3              ret
-				 (setq gud-last-last-frame nil)
-				 (setq gud-overlay-arrow-position nil))
-				)
-	string)
+	((or (string-match "quit:" string)
+	     (string-match "ntdll!NtTerminateProcess\\+0x[0-9a-z]+:" string))
+	 ;; ModLoad: 00007ffe`9d340000 00007ffe`9d351000   C:\WINDOWS\System32\kernel.appcore.dll
+	 ;; ModLoad: 00007ffe`9ecc0000 00007ffe`9ed5d000   C:\WINDOWS\System32\msvcrt.dll
+	 ;; ModLoad: 00007ffe`9f140000 00007ffe`9f25f000   C:\WINDOWS\System32\RPCRT4.dll
+	 ;; ntdll!NtTerminateProcess+0x14:
+	 ;; 00007ffe`a10005f4 c3              ret
+	 (setq gud-last-last-frame nil)
+	 (setq gud-overlay-arrow-position nil))
+	)
+  string)
 
 
 (defun gud-cdb-find-file (filename)
-	"As the optional argument: find-file of `gud-common-init'.
+  "As the optional argument: find-file of `gud-common-init'.
 
 `gud' callback it just when `gud-cdb-command-line-list-source' had been called first.
 
@@ -260,19 +260,19 @@ something else.
 "
   (save-excursion
     (let ((f (cdb-file-name filename)))
-			(if f
-					(find-file-noselect f t)
-				(find-file-noselect filename 'nowarn)))))
+      (if f
+	  (find-file-noselect f t)
+	(find-file-noselect filename 'nowarn)))))
 
 
 (defun gud-cdb-simple-send (process string)
-	"Send input STRING plus a newline to PROCESS.
+  "Send input STRING plus a newline to PROCESS.
 
 See `comint-input-sender' and `comint-simple-send'"
-	(let ((send (if comint-input-sender-no-newline
-									string
-								(concat string "\n"))))
-		(comint-send-string process send)))
+  (let ((send (if comint-input-sender-no-newline
+		  string
+		(concat string "\n"))))
+    (comint-send-string process send)))
 
 
 (defun cdb (command-line)
@@ -282,9 +282,9 @@ and source-file directory for your debugger."
   (interactive (list (gud-query-cmdline 'cdb)))
 
   (gud-common-init command-line
-									 #'gud-cdb-massage-args
+		   #'gud-cdb-massage-args
                    #'gud-cdb-marker-filter
-									 #'gud-cdb-find-file)
+		   #'gud-cdb-find-file)
 
   (set (make-local-variable 'gud-minor-mode) 'cdb)
 
@@ -300,8 +300,8 @@ and source-file directory for your debugger."
   (setq comint-input-sender #'gud-cdb-simple-send)
   (setq paragraph-start comint-prompt-regexp)
   (run-hooks 'gud-cdb-mode-hook)
-	(loop for x in gud-cdb-init-hook
-				when (functionp x) do (funcall x)))
+  (loop for x in gud-cdb-init-hook
+	when (functionp x) do (funcall x)))
 
 
 ;; (defun gud-cdb-goto-stackframe (text token indent)

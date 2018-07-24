@@ -10,23 +10,23 @@
 (defmacro shells-spec->% (&rest keys)
   "Extract value from the list of spec via KEYS at compile time."
   `(self-spec->% (list
-									:source-file
-									,(concat (v-home% "config/") ".shell-env.el")
-									
-									:compiled-file
-									,(concat (v-home% "config/") ".shell-env.elc")
-									
-									:shell-var "SHELL"
-									
-									:path-var "PATH"
-									
-									:echo-format
-									,(platform-supported-if windows-nt
-											 "echo %%%s%% 2>/nul"
-										 `'((:interactive-shell
-												 . "$SHELL -l -i -c 'echo -n $%s' 2>/dev/null")
-												(:login-shell
-												 . "$SHELL -l -c 'echo -n $%s' 2>/dev/null"))))
+		  :source-file
+		  ,(concat (v-home% "config/") ".shell-env.el")
+		  
+		  :compiled-file
+		  ,(concat (v-home% "config/") ".shell-env.elc")
+		  
+		  :shell-var "SHELL"
+		  
+		  :path-var "PATH"
+		  
+		  :echo-format
+		  ,(platform-supported-if windows-nt
+		       "echo %%%s%% 2>/nul"
+		     `'((:interactive-shell
+			 . "$SHELL -l -i -c 'echo -n $%s' 2>/dev/null")
+			(:login-shell
+			 . "$SHELL -l -c 'echo -n $%s' 2>/dev/null"))))
      ,@keys))
 
 
@@ -82,14 +82,14 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
   (path-env<- :path (echo-var (shells-spec->% :path-var)))
   (path-env<- :shell-file-name nil)
   (path-env<- :exec-path
-							(dolist
-									(p (var->paths (shell-env-> :path)) exec-path)
-								(add-to-list 'exec-path p t #'string=)))
+	      (dolist
+		  (p (var->paths (shell-env-> :path)) exec-path)
+		(add-to-list 'exec-path p t #'string=)))
   (path-env<- :env-vars
-							(let ((vars (self-spec->*env-spec :shell :env-vars))
-										(x nil))
-								(dolist (v vars x)
-									(push (cons v (echo-var v)) x))))
+	      (let ((vars (self-spec->*env-spec :shell :env-vars))
+		    (x nil))
+		(dolist (v vars x)
+		  (push (cons v (echo-var v)) x))))
   (when (save-sexp-to-file
          (list 'setq '*default-shell-env*
                (list 'list
@@ -135,25 +135,25 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
 (platform-supported-when windows-nt
 
-	(defadvice shell (before shell-before compile)
-		(setenv (shells-spec->% :shell-var)
-						(self-spec->*env-spec :shell :bin-path))
-		(setenv (shells-spec->% :path-var)
-						(windows-nt-unix-path (shell-env-> :path)))
-		(setq shell-file-name (getenv (shells-spec->% :shell-var)))))
+  (defadvice shell (before shell-before compile)
+    (setenv (shells-spec->% :shell-var)
+	    (self-spec->*env-spec :shell :bin-path))
+    (setenv (shells-spec->% :path-var)
+	    (windows-nt-unix-path (shell-env-> :path)))
+    (setq shell-file-name (getenv (shells-spec->% :shell-var)))))
 
 (platform-supported-when windows-nt
-	
-	(defadvice shell (after shell-after compile)
-		(setenv (shells-spec->% :shell-var)
-						(shell-env-> :shell-file-name))
-		(setenv (shells-spec->% :path-var)
-						(shell-env-> :path) path-separator)
-		(setq shell-file-name (shell-env-> :shell-file-name))))
+  
+  (defadvice shell (after shell-after compile)
+    (setenv (shells-spec->% :shell-var)
+	    (shell-env-> :shell-file-name))
+    (setenv (shells-spec->% :path-var)
+	    (shell-env-> :path) path-separator)
+    (setq shell-file-name (shell-env-> :shell-file-name))))
 
 
 (platform-supported-when windows-nt
-	(with-eval-after-load 'term (ad-activate #'ansi-term t)))
+  (with-eval-after-load 'term (ad-activate #'ansi-term t)))
 
 
 
@@ -163,21 +163,21 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
       ;; shell on Windows-NT 
       (when (file-exists-p (self-spec->*env-spec :shell :bin-path))
-				(read-shell-env!)
-				
-				;; keep `shell-file-name' between `ansi-term' and `shell'
-				(path-env<- :shell-file-name shell-file-name)
-				(with-eval-after-load 'shell (ad-activate #'shell t)))
+	(read-shell-env!)
+	
+	;; keep `shell-file-name' between `ansi-term' and `shell'
+	(path-env<- :shell-file-name shell-file-name)
+	(with-eval-after-load 'shell (ad-activate #'shell t)))
 
     ;; shell on Darwin/Linux
     (read-shell-env!)
     (when (self-spec->*env-spec :shell :bin-path)
       (setenv (shells-spec->% :shell-var)
-							(self-spec->*env-spec :shell :bin-path)))
+	      (self-spec->*env-spec :shell :bin-path)))
     
     (when (self-spec->*env-spec :shell :exec-path)
       (copy-exec-path-var!))
     
     (copy-env-vars! (shell-env-> :env-vars)
-										(self-spec->*env-spec :shell :env-vars))))
+		    (self-spec->*env-spec :shell :env-vars))))
 
