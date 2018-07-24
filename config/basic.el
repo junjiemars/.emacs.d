@@ -64,14 +64,14 @@
 ;; Semantic
 (version-supported-when <= 23
   (setq% semanticdb-default-save-directory
-				 (v-home! ".semantic/db/") semantic/db-file))
+	 (v-home! ".semantic/db/") semantic/db-file))
 
 ;; Tramp
 (version-supported-when <= 23
-	(version-supported-when > 24
-		(eval-when-compile (require 'tramp)))
+  (version-supported-when > 24
+    (eval-when-compile (require 'tramp)))
   (setq% tramp-persistency-file-name
-			(v-home! ".tramp/" "tramp") tramp-cache))
+	 (v-home! ".tramp/" "tramp") tramp-cache))
 
 ;; Url
 (setq% url-configuration-directory (v-home! ".url/") url)
@@ -83,13 +83,13 @@
 ;; Platform Related Functions
 
 (platform-supported-when windows-nt
-	
+  
   (defmacro windows-nt-posix-path (path)
     "Return posix path from Windows PATH which can be recognized on`system-type'."
     `(let ((p (replace-regexp-in-string "\\\\" "/" ,path)))
-			 (if (string-match "^\\([A-Z]:/\\)" p)
-					 (replace-match (downcase (match-string 1 p)) t t p)
-				 p))))
+       (if (string-match "^\\([A-Z]:/\\)" p)
+	   (replace-match (downcase (match-string 1 p)) t t p)
+	 p))))
 
 
 (platform-supported-when windows-nt
@@ -108,37 +108,37 @@
 ;; Strings
 
 (defsubst string-trim> (s &optional rr)
-	"Remove whitespaces or the matching of RR at the end of S."
-	(let ((r (if rr (concat rr "\\'") "[ \t\n\r]+\\'" )))
-		(if (string-match r s)
-				(replace-match "" t t s)
-			s)))
+  "Remove whitespaces or the matching of RR at the end of S."
+  (let ((r (if rr (concat rr "\\'") "[ \t\n\r]+\\'" )))
+    (if (string-match r s)
+	(replace-match "" t t s)
+      s)))
 
 
 (defsubst string-trim< (s &optional lr)
-	"Remove leading whitespace or the matching of LR from S."
-	(let ((r (if lr (concat "\\`" lr) "\\`[ \t\n\r]+")))
-		(if (string-match r s)
-				(replace-match "" t t s)
-			s)))
+  "Remove leading whitespace or the matching of LR from S."
+  (let ((r (if lr (concat "\\`" lr) "\\`[ \t\n\r]+")))
+    (if (string-match r s)
+	(replace-match "" t t s)
+      s)))
 
 
 (defsubst string-trim>< (s &optional rr lr)
-	"Remove leading and trailing whitespace or the matching of LR/RR from S."
-	(let ((s1 (string-trim> s rr)))
-		(string-trim< s1 lr)))
+  "Remove leading and trailing whitespace or the matching of LR/RR from S."
+  (let ((s1 (string-trim> s rr)))
+    (string-trim< s1 lr)))
 
 
 (defsubst match-string* (regexp string num &optional start)
-	"Return string of text match for REGEXP in STRING.
+  "Return string of text match for REGEXP in STRING.
 
 Return nil if NUMth pair didn’t match, or there were less than NUM pairs.
 NUM specifies which parenthesized expression in the REGEXP.
 If START is non-nil, start search at that index in STRING.
 
 See `string-match' and `match-string'."
-	(when (and string (string-match regexp string start))
-		(substring string (match-beginning num) (match-end num))))
+  (when (and string (string-match regexp string start))
+    (substring string (match-beginning num) (match-end num))))
 
 
  ;; end of Strings
@@ -147,20 +147,20 @@ See `string-match' and `match-string'."
 ;; Compatible Functions
 
 (unless-fn% with-eval-after-load nil
-	(defmacro with-eval-after-load (file &rest body)
-		"Execute BODY after FILE is loaded.
+  (defmacro with-eval-after-load (file &rest body)
+    "Execute BODY after FILE is loaded.
 
 FILE is normally a feature name, but it can also be a file name,
 in case that file does not provide any feature.  See ‘eval-after-load’
 for more details about the different forms of FILE and their semantics."
-		`(eval-after-load ,file
-			 `(funcall ,(lambda ()
-										(progn% ,@body))))))
+    `(eval-after-load ,file
+       `(funcall ,(lambda ()
+		    (progn% ,@body))))))
 
 
 (unless-fn% alist-get nil 
-	(defmacro alist-get (key alist &optional default remove)
-		"Return the value associated with KEY in ALIST, using `assq'.
+  (defmacro alist-get (key alist &optional default remove)
+    "Return the value associated with KEY in ALIST, using `assq'.
 If KEY is not found in ALIST, return DEFAULT.
 
 This is a generalized variable suitable for use with `setf'.
@@ -169,37 +169,37 @@ means to remove KEY from ALIST if the new value is `eql' to DEFAULT.
 
 If KEY is not found in ALIST, returns DEFAULT. There're no `alist-get' 
 function definition in Emacs25-."
-		(ignore* remove) ;;silence byte-compiler.
-		`(let ((x (assq ,key ,alist)))
-			 (if x (cdr x) ,default))))
+    (ignore* remove) ;;silence byte-compiler.
+    `(let ((x (assq ,key ,alist)))
+       (if x (cdr x) ,default))))
 
 
 (version-supported-if
-		<= 24.4
-		(defalias 'split-string* 'split-string)
-	(defun split-string* (string &optional separators omit-nulls trim)
-		"Split STRING into substrings bounded by matches for SEPARATORS, 
+    <= 24.4
+    (defalias 'split-string* 'split-string)
+  (defun split-string* (string &optional separators omit-nulls trim)
+    "Split STRING into substrings bounded by matches for SEPARATORS, 
 like `split-string' Emacs 24.4+"
-		(if trim
-				(delete ""
-								(mapcar (lambda (s)
-													(if (and (stringp trim) (> (length trim) 0))
-															(string-trim>< s trim trim)
-														(string-trim>< s)))
-												(split-string string separators omit-nulls)))
-			(split-string string separators omit-nulls))))
+    (if trim
+	(delete ""
+		(mapcar (lambda (s)
+			  (if (and (stringp trim) (> (length trim) 0))
+			      (string-trim>< s trim trim)
+			    (string-trim>< s)))
+			(split-string string separators omit-nulls)))
+      (split-string string separators omit-nulls))))
 
 
 (unless-fn% directory-name-p nil
-	(defsubst directory-name-p (name)
-		"Returns t if NAME ends with a directory separator character."
-		(let ((len (length name))
-					(lastc ?.))
-			(if (> len 0)
-					(setq lastc (aref name (1- len))))
-			(or (= lastc ?/)
-					(and (memq system-type '(windows-nt ms-dos))
-							 (= lastc ?\\))))))
+  (defsubst directory-name-p (name)
+    "Returns t if NAME ends with a directory separator character."
+    (let ((len (length name))
+	  (lastc ?.))
+      (if (> len 0)
+	  (setq lastc (aref name (1- len))))
+      (or (= lastc ?/)
+	  (and (memq system-type '(windows-nt ms-dos))
+	       (= lastc ?\\))))))
 
 
  ;; end of Compatible Functions
@@ -258,23 +258,22 @@ Examples:
     (unless (member f '("./" "../"))
       (let ((a (expand-file-name f dir)))
         (if (directory-name-p f)
-            (when (and df
-											 (let ((ln (file-symlink-p (directory-file-name a))))
-												 (if (not ln) t
-													 (not (or (string= "." ln)
-																		(and (>= (length a) (length ln))
-																				 (string=
-																					ln
-																					(substring a 0 (length ln))))))))
-											 (funcall df f a))
-							(and dn (funcall dn a))
-							(dir-iterate a ff df fn dn))
+            (when (and df (let ((ln (file-symlink-p (directory-file-name a))))
+			    (if (not ln) t
+			      (not (or (string= "." ln)
+				       (and (>= (length a) (length ln))
+					    (string=
+					     ln
+					     (substring a 0 (length ln))))))))
+		       (funcall df f a))
+	      (and dn (funcall dn a))
+	      (dir-iterate a ff df fn dn))
           (when (and ff (funcall ff f a))
-						(and fn (funcall fn a))))))))
+	    (and fn (funcall fn a))))))))
 
 
 (defmacro executable-find% (command &optional prefer)
-	"Search for COMMAND in `exec-path' and return the absolute file name 
+  "Search for COMMAND in `exec-path' and return the absolute file name 
 at compile-time when PREFER is nil, same as `executable-find'.
 
 Search for COMMAND in %PATH% or $PATH and return the absolute file name 
@@ -284,31 +283,31 @@ Return nil if no COMMAND found or no PREFER command found.
 Return the first matched one, if multiple COMMANDs had been found
 and `funcall' PREFER returns t.
 "
-	(if prefer
-			(let ((ss (shell-command-to-string
-								 (platform-supported-if windows-nt
-										 (concat "where " command)
-									 (concat "command -v " command)))))
-				(when ss
-					(let* ((path (split-string* ss "\n" t))
-								 (p (cond ((and (consp path) (functionp prefer))
-													 (catch 'prefer
-														 (dolist (x path)
-															 (when (funcall prefer
-																							(shell-quote-argument
-																							 (platform-supported-if windows-nt
-																									 (windows-nt-posix-path x)
-																								 x)))
-																 (throw 'prefer x)))
-														 nil))
-													((consp path) (car path))
-													(t path))))
-						`,(when p (shell-quote-argument (platform-supported-if windows-nt
-																								(windows-nt-posix-path p)
-																							p))))))
-		(let ((path (executable-find command)))
-			(ignore* prefer)
-			`,path)))
+  (if prefer
+      (let ((ss (shell-command-to-string
+		 (platform-supported-if windows-nt
+		     (concat "where " command)
+		   (concat "command -v " command)))))
+	(when ss
+	  (let* ((path (split-string* ss "\n" t))
+		 (p (cond ((and (consp path) (functionp prefer))
+			   (catch 'prefer
+			     (dolist (x path)
+			       (when (funcall prefer
+					      (shell-quote-argument
+					       (platform-supported-if windows-nt
+						   (windows-nt-posix-path x)
+						 x)))
+				 (throw 'prefer x)))
+			     nil))
+			  ((consp path) (car path))
+			  (t path))))
+	    `,(when p (shell-quote-argument (platform-supported-if windows-nt
+						(windows-nt-posix-path p)
+					      p))))))
+    (let ((path (executable-find command)))
+      (ignore* prefer)
+      `,path)))
 
 
  ;; end of File Functions
@@ -365,46 +364,46 @@ otherwise default to keep the directories of current `emacs-version'."
 ;; Socks
 
 (defmacro feature-socks-supported-p (&rest body)
-	"If socks feature supported then do BODY."
-	(declare (indent 0))
-	`(version-supported-when < 22
-		 (when-var% url-gateway-method url
-								,@body)))
+  "If socks feature supported then do BODY."
+  (declare (indent 0))
+  `(version-supported-when < 22
+     (when-var% url-gateway-method url
+		,@body)))
 
 (feature-socks-supported-p
 
-	(defun toggle-socks! (&optional arg)
-		"Toggle `url-gatewary-method' to socks or native.
+  (defun toggle-socks! (&optional arg)
+    "Toggle `url-gatewary-method' to socks or native.
 With prefix argument ARG, `url-gatewary-method' via socks if ARG is 
 positive, otherwise via native."
-		(interactive "P")
-		(let ((native `((:url-gateway-method . native)
-										(:socks-server . nil)))
-					(socks `((:url-gateway-method . socks)
-									 (:socks-server
-										. 
-										,(list "Default server"
-													 (self-spec->*env-spec :socks :server)
-													 (self-spec->*env-spec :socks :port)
-													 (self-spec->*env-spec :socks :version))))))
-			(require 'url)
-			(if (null arg)
-					(if (eq url-gateway-method 'native)
-							(setq-default
-							 url-gateway-method (alist-get :url-gateway-method socks)
-							 socks-server (alist-get :socks-server socks))
-						(setq-default
-						 url-gateway-method (alist-get :url-gateway-method native)
-						 socks-server (alist-get :socks-server native)))
-				(setq-default
-				 url-gateway-method (alist-get :url-gateway-method socks)
-				 socks-server (alist-get :socks-server socks)))
-			(message "socks%s as url gateway %s"
-							 (or (when (eq url-gateway-method 'socks)
-										 (cdr (alist-get :socks-server socks)))
-									 "")
-							 (if (eq url-gateway-method 'native)
-									 "disabled" "enabled")))))
+    (interactive "P")
+    (let ((native `((:url-gateway-method . native)
+		    (:socks-server . nil)))
+	  (socks `((:url-gateway-method . socks)
+		   (:socks-server
+		    . 
+		    ,(list "Default server"
+			   (self-spec->*env-spec :socks :server)
+			   (self-spec->*env-spec :socks :port)
+			   (self-spec->*env-spec :socks :version))))))
+      (require 'url)
+      (if (null arg)
+	  (if (eq url-gateway-method 'native)
+	      (setq-default
+	       url-gateway-method (alist-get :url-gateway-method socks)
+	       socks-server (alist-get :socks-server socks))
+	    (setq-default
+	     url-gateway-method (alist-get :url-gateway-method native)
+	     socks-server (alist-get :socks-server native)))
+	(setq-default
+	 url-gateway-method (alist-get :url-gateway-method socks)
+	 socks-server (alist-get :socks-server socks)))
+      (message "socks%s as url gateway %s"
+	       (or (when (eq url-gateway-method 'socks)
+		     (cdr (alist-get :socks-server socks)))
+		   "")
+	       (if (eq url-gateway-method 'native)
+		   "disabled" "enabled")))))
 
 (feature-socks-supported-p
 	(when (self-spec->*env-spec :socks :allowed)
@@ -468,33 +467,33 @@ for which (PRED item) returns t."
 ;; keymap
 
 (defmacro define-key* (keymap key def feature &optional accept-default)
-	"`define-key' as DEF if KEY does not existing in the KEYMAP of FEATURE.
+  "`define-key' as DEF if KEY does not existing in the KEYMAP of FEATURE.
 "
-	`(when-var% ,keymap ,feature
-							(unless (lookup-key ,keymap ,key ,accept-default)
-								(define-key ,keymap ,key ,def))))
+  `(when-var% ,keymap ,feature
+	      (unless (lookup-key ,keymap ,key ,accept-default)
+		(define-key ,keymap ,key ,def))))
 
 
  ;; end of keymap
 
 
 (defmacro safe-local-variable* (var)
-	"Safe local VAR in -*- line, see `enable-local-variables'"
-	`(put ,var 'safe-local-variable
-				(lambda (x) (ignore* x) t)))
+  "Safe local VAR in -*- line, see `enable-local-variables'"
+  `(put ,var 'safe-local-variable
+	(lambda (x) (ignore* x) t)))
 
 
 ;; shell scripts
 (defun set-sh-mode! ()
   (setq% sh-basic-offset tab-width sh-script)
-	;; obsolete variable as of 26.1
+  ;; obsolete variable as of 26.1
   ;; (setq% sh-indentation tab-width sh-script)
-	)
+  )
 
 
 ;; linum mode
 (def-feature-supported-p linum nil
-	"If `linum' feature supported then do BODY, requires Emacs-23.1+")
+  "If `linum' feature supported then do BODY, requires Emacs-23.1+")
 
 
 ;; semantic
@@ -503,18 +502,18 @@ for which (PRED item) returns t."
 
 ;; default web browser: eww
 (def-feature-supported-p eww nil
-	"If `eww' feature supported then do BODY, requires Emacs-24.4+")
+  "If `eww' feature supported then do BODY, requires Emacs-24.4+")
 
 
 ;; compilation
 (defun colorize-compilation-buffer! ()
-	"Colorize *compilation* buffer."
-	(when (eq major-mode 'compilation-mode)
-		(when-fn% ansi-color-apply-on-region ansi-color
-			(let ((buffer-read-only nil))
-				(require 'ansi-color)
-				(ansi-color-apply-on-region
-				 (if-var% compilation-filter-start compile
-									compilation-filter-start (point-min))
-				 (point-max))))))
+  "Colorize *compilation* buffer."
+  (when (eq major-mode 'compilation-mode)
+    (when-fn% ansi-color-apply-on-region ansi-color
+      (let ((buffer-read-only nil))
+	(require 'ansi-color)
+	(ansi-color-apply-on-region
+	 (if-var% compilation-filter-start compile
+		  compilation-filter-start (point-min))
+	 (point-max))))))
 
