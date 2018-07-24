@@ -206,8 +206,7 @@ Locate your spec via =(emacs-home* "private/self-path.el")=.
 -  [[#theme][Theme]]
 -  [[#font][Font]]
 -  [[#shell][Shell]]
--  [[#eshell][Eshell]]
--  [[#desktop][Desktop]]
+-  [[#session][Session]]
 -  [[#socks][Socks]]
 -  [[#package][Package]]
 -  [[#indent][Indent]]
@@ -274,7 +273,9 @@ The default font's spec locate in
     :CUSTOM_ID: shell
     :END:
 
-Any =Shell=, copy environment variables, and on any platforms.
+*** shell
+
+Suppport any *Shell*, copy environment variables, and on any platforms.
 
 [[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]]
 has a poor implementation for the same functionalities, it is unstable
@@ -293,11 +294,11 @@ The shell spec locate in =(emacs-home* "private/self-env-spec.el")=
                                     "LD_LIBRARY_PATH")))
                    :interactive-shell (platform-supported-unless darwin t nil)
                    :exec-path t
-                   :bin-path "/bin/bash"
+                   :bin-path (eval-when-compile (executable-find "bash"))
                    :allowed t))
 #+END_SRC
 
-** Eshell
+*** eshell
     :PROPERTIES:
     :CUSTOM_ID: eshell
     :END:
@@ -313,9 +314,9 @@ The eshell spec locate in =(emacs-home* "private/self-env-spec.el")=
                     :allowed t))
 #+END_SRC
 
-** Desktop
+** Session
     :PROPERTIES:
-    :CUSTOM_ID: desktop
+    :CUSTOM_ID: session
     :END:
 
 The desktop spec locate in =(emacs-home* "private/self-env-spec.el")=
