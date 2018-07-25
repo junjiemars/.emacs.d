@@ -285,26 +285,26 @@ and `funcall' PREFER returns t.
 "
   (if prefer
       (let ((ss (shell-command-to-string
-		 (platform-supported-if windows-nt
-		     (concat "where " command)
-		   (concat "command -v " command)))))
-	(when ss
-	  (let* ((path (split-string* ss "\n" t))
-		 (p (cond ((and (consp path) (functionp prefer))
-			   (catch 'prefer
-			     (dolist (x path)
-			       (when (funcall prefer
-					      (shell-quote-argument
-					       (platform-supported-if windows-nt
-						   (windows-nt-posix-path x)
-						 x)))
-				 (throw 'prefer x)))
-			     nil))
-			  ((consp path) (car path))
-			  (t path))))
-	    `,(when p (shell-quote-argument (platform-supported-if windows-nt
-						(windows-nt-posix-path p)
-					      p))))))
+								 (platform-supported-if windows-nt
+										 (concat "where " command)
+									 (concat "command -v " command)))))
+				(when ss
+					(let* ((path (split-string* ss "\n" t))
+								 (p (cond ((and (consp path) (functionp prefer))
+													 (catch 'prefer
+														 (dolist (x path)
+															 (when (funcall prefer
+																							(shell-quote-argument
+																							 (platform-supported-if windows-nt
+																									 (windows-nt-posix-path x)
+																								 x)))
+																 (throw 'prefer x)))
+														 nil))
+													((consp path) (car path))
+													(t path))))
+						`,(when p (shell-quote-argument (platform-supported-if windows-nt
+																								(windows-nt-posix-path p)
+																							p))))))
     (let ((path (executable-find command)))
       (ignore* prefer)
       `,path)))
