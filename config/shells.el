@@ -56,10 +56,10 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
               (platform-supported-if windows-nt
                   (shells-spec->% :echo-format)
                 (if (self-spec->*env-spec :shell :interactive-shell)
-                    (alist-get :interactive-shell
-                               (shells-spec->% :echo-format))
-                  (alist-get :login-shell
-                             (shells-spec->% :echo-format)))))
+                    (alist-get* :interactive-shell
+																(shells-spec->% :echo-format))
+                  (alist-get* :login-shell
+															(shells-spec->% :echo-format)))))
             ,var)))
 
 

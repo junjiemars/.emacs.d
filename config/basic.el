@@ -173,9 +173,24 @@ Equality is defined by TESTFN if non-nil or by `equal' if nil."
 					 (assoc* ,key ,list :test ,testfn))))))
 
 
-(unless-fn% alist-get nil 
-  (defmacro alist-get (key alist &optional default remove)
-    "Return the value associated with KEY in ALIST, using `assq'.
+(if-fn% alist-get nil
+				(version-supported-if
+						<= 26
+						(defalias 'alist-get* 'alist-get)
+					(defmacro alist-get* (key alist &optional default remove testfn)
+						"Return the value associated with KEY in ALIST, using `assq'.
+If KEY is not found in ALIST, return DEFAULT.
+
+This is a generalized variable suitable for use with `setf'.
+When using it to set a value, optional argument REMOVE non-nil
+means to remove KEY from ALIST if the new value is `eql' to DEFAULT.
+
+If KEY is not found in ALIST, returns DEFAULT. There're no `alist-get' 
+function with TESTFN argument definition in Emacs26-."
+						(ignore* testfn)
+						`(alist-get ,key ,alist ,default ,remove)))
+	(defmacro alist-get* (key alist &optional default remove)
+		"Return the value associated with KEY in ALIST, using `assq'.
 If KEY is not found in ALIST, return DEFAULT.
 
 This is a generalized variable suitable for use with `setf'.
@@ -184,9 +199,9 @@ means to remove KEY from ALIST if the new value is `eql' to DEFAULT.
 
 If KEY is not found in ALIST, returns DEFAULT. There're no `alist-get' 
 function definition in Emacs25-."
-    (ignore* remove) ;;silence byte-compiler.
-    `(let ((x (assq ,key ,alist)))
-       (if x (cdr x) ,default))))
+		(ignore* remove) ;;silence byte-compiler.
+		`(let ((x (assq ,key ,alist)))
+			 (if x (cdr x) ,default))))
 
 
 (version-supported-if
@@ -196,12 +211,12 @@ function definition in Emacs25-."
     "Split STRING into substrings bounded by matches for SEPARATORS, 
 like `split-string' Emacs 24.4+"
     (if trim
-	(delete ""
-		(mapcar (lambda (s)
-			  (if (and (stringp trim) (> (length trim) 0))
-			      (string-trim>< s trim trim)
-			    (string-trim>< s)))
-			(split-string string separators omit-nulls)))
+				(delete ""
+								(mapcar (lambda (s)
+													(if (and (stringp trim) (> (length trim) 0))
+															(string-trim>< s trim trim)
+														(string-trim>< s)))
+												(split-string string separators omit-nulls)))
       (split-string string separators omit-nulls))))
 
 
@@ -394,32 +409,32 @@ With prefix argument ARG, `url-gatewary-method' via socks if ARG is
 positive, otherwise via native."
     (interactive "P")
     (let ((native `((:url-gateway-method . native)
-		    (:socks-server . nil)))
-	  (socks `((:url-gateway-method . socks)
-		   (:socks-server
-		    . 
-		    ,(list "Default server"
-			   (self-spec->*env-spec :socks :server)
-			   (self-spec->*env-spec :socks :port)
-			   (self-spec->*env-spec :socks :version))))))
+										(:socks-server . nil)))
+					(socks `((:url-gateway-method . socks)
+									 (:socks-server
+										. 
+										,(list "Default server"
+													 (self-spec->*env-spec :socks :server)
+													 (self-spec->*env-spec :socks :port)
+													 (self-spec->*env-spec :socks :version))))))
       (require 'url)
       (if (null arg)
-	  (if (eq url-gateway-method 'native)
-	      (setq-default
-	       url-gateway-method (alist-get :url-gateway-method socks)
-	       socks-server (alist-get :socks-server socks))
-	    (setq-default
-	     url-gateway-method (alist-get :url-gateway-method native)
-	     socks-server (alist-get :socks-server native)))
-	(setq-default
-	 url-gateway-method (alist-get :url-gateway-method socks)
-	 socks-server (alist-get :socks-server socks)))
+					(if (eq url-gateway-method 'native)
+							(setq-default
+							 url-gateway-method (alist-get* :url-gateway-method socks)
+							 socks-server (alist-get* :socks-server socks))
+						(setq-default
+						 url-gateway-method (alist-get* :url-gateway-method native)
+						 socks-server (alist-get* :socks-server native)))
+				(setq-default
+				 url-gateway-method (alist-get* :url-gateway-method socks)
+				 socks-server (alist-get* :socks-server socks)))
       (message "socks%s as url gateway %s"
-	       (or (when (eq url-gateway-method 'socks)
-		     (cdr (alist-get :socks-server socks)))
-		   "")
-	       (if (eq url-gateway-method 'native)
-		   "disabled" "enabled")))))
+							 (or (when (eq url-gateway-method 'socks)
+										 (cdr (alist-get* :socks-server socks)))
+									 "")
+							 (if (eq url-gateway-method 'native)
+									 "disabled" "enabled")))))
 
 (feature-socks-supported-p
 	(when (self-spec->*env-spec :socks :allowed)

@@ -92,24 +92,24 @@
   (dolist (s spec)
     (when (consp s)
       (dolist (p (self-spec-> s :packages))
-	(let ((ns (check-package-name p)))
-	  (when (consp ns)
-	    (let ((n (car ns)) (tar (cdr ns)))
-	      (if (package-installed-p n)
-		  (when (and remove-unused (not (self-spec-> s :cond)))
-		    (let ((d (alist-get n package-alist)))
-		      (when d (delete-package! d n))))
-		(when (self-spec-> s :cond)
-		  (if tar
-		      (install-package! tar t)
-		    (unless *repository-initialized*
-		      (initialize-package-repository!)
-		      (setq *repository-initialized* t))
-		    (install-package! n))))))))
+				(let ((ns (check-package-name p)))
+					(when (consp ns)
+						(let ((n (car ns)) (tar (cdr ns)))
+							(if (package-installed-p n)
+									(when (and remove-unused (not (self-spec-> s :cond)))
+										(let ((d (alist-get* n package-alist)))
+											(when d (delete-package! d n))))
+								(when (self-spec-> s :cond)
+									(if tar
+											(install-package! tar t)
+										(unless *repository-initialized*
+											(initialize-package-repository!)
+											(setq *repository-initialized* t))
+										(install-package! n))))))))
       (when (self-spec-> s :cond)
-	(apply #'compile!
-	       dir
-	       (delete nil (self-spec-> s :compile)))))))
+				(apply #'compile!
+							 dir
+							 (delete nil (self-spec-> s :compile)))))))
 
 
 (defvar basic-package-spec
