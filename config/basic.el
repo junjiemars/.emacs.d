@@ -185,8 +185,9 @@ This is a generalized variable suitable for use with `setf'.
 When using it to set a value, optional argument REMOVE non-nil
 means to remove KEY from ALIST if the new value is `eql' to DEFAULT.
 
-If KEY is not found in ALIST, returns DEFAULT. There're no `alist-get' 
-function with TESTFN argument definition in Emacs26-."
+If KEY is not found in ALIST, returns DEFAULT. 
+
+There're no `alist-get' function with TESTFN argument definition in Emacs26-."
 						(ignore* testfn)
 						`(alist-get ,key ,alist ,default ,remove)))
 	(defmacro alist-get* (key alist &optional default remove testfn)
@@ -197,11 +198,14 @@ This is a generalized variable suitable for use with `setf'.
 When using it to set a value, optional argument REMOVE non-nil
 means to remove KEY from ALIST if the new value is `eql' to DEFAULT.
 
-If KEY is not found in ALIST, returns DEFAULT. There're no `alist-get' 
-function definition in Emacs25-."
+If KEY is not found in ALIST, returns DEFAULT. 
+
+There're no `alist-get' function definition in Emacs25-."
 		(ignore* remove testfn) ;;silence byte-compiler.
-		`(let ((x (assq ,key ,alist)))
-			 (if x (cdr x) ,default))))
+		`(let ((x (assoc** ,key ,alist ,testfn)))
+			 (if (consp x)
+					 (cdr x)
+				 ,default))))
 
 
 (version-supported-if
