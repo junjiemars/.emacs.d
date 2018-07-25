@@ -168,8 +168,8 @@ The value is actually the first element of LIST whose car equals KEY.
 Equality is defined by TESTFN if non-nil or by `equal' if nil."
 		(if-fn% cl-assoc cl-lib
 						`(cl-assoc ,key ,list :test ,testfn)
-			(with-no-warnings
-				`(assoc* ,key ,list :test ,testfn)))))
+			`(with-no-warnings
+				 (assoc* ,key ,list :test ,testfn)))))
 
 
 (unless-fn% alist-get nil 
