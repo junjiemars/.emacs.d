@@ -17,7 +17,7 @@
 							 (executable-find% "unzip"))
 			(when-var%
 			 dired-compress-file-suffixes dired-aux
-			 (unless (assoc "\\.zip\\'" dired-compress-file-suffixes #'string=)
+			 (unless (assoc** "\\.zip\\'" dired-compress-file-suffixes #'string=)
 				 (add-to-list 'dired-compress-file-suffixes
 											'("\\.zip\\'" ".zip" "unzip"))))))
 
@@ -36,12 +36,10 @@
 		 dired-compress-files-alist dired-aux
 		 (unless (executable-find% "zip")
 			 (require 'dired-aux)
-			 (let ((zip (assoc "\\.zip\\'" dired-compress-files-alist #'string=)))
+			 (let ((zip (assoc** "\\.zip\\'" dired-compress-files-alist #'string=)))
 				 (when (and zip (string-match-p "^zip" (cdr zip))
 										(executable-find% "minizip"))
-					 (setq dired-compress-files-alist
-								 (append (remove zip dired-compress-files-alist)
-												 '(("\\.zip\\'" . "minizip %o -9 %i"))))))))
+					 (setcdr zip "minizip %o -9 %i")))))
 
     (when (executable-find%
 					 "ls"

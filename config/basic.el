@@ -155,7 +155,19 @@ in case that file does not provide any feature.  See ‘eval-after-load’
 for more details about the different forms of FILE and their semantics."
     `(eval-after-load ,file
        `(funcall ,(lambda ()
-		    (progn% ,@body))))))
+										(progn% ,@body))))))
+
+
+(version-supported-if
+		<= 26.1
+		(defalias 'assoc** 'assoc)
+	(defmacro  assoc** (key list &optional testfn)
+		"Return non-nil if KEY is equal to the car of an element of LIST.
+
+The value is actually the first element of LIST whose car equals KEY.
+Equality is defined by TESTFN if non-nil or by `equal' if nil."
+		(eval-when-compile (require 'cl))
+		`(assoc* ,key ,list :test ,testfn)))
 
 
 (unless-fn% alist-get nil 
@@ -194,12 +206,13 @@ like `split-string' Emacs 24.4+"
   (defsubst directory-name-p (name)
     "Returns t if NAME ends with a directory separator character."
     (let ((len (length name))
-	  (lastc ?.))
+					(lastc ?.))
       (if (> len 0)
-	  (setq lastc (aref name (1- len))))
+					(setq lastc (aref name (1- len))))
       (or (= lastc ?/)
-	  (and (memq system-type '(windows-nt ms-dos))
-	       (= lastc ?\\))))))
+					(and (memq system-type '(windows-nt ms-dos))
+							 (= lastc ?\\))))))
+
 
 
  ;; end of Compatible Functions
