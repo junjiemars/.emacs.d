@@ -170,6 +170,7 @@ Equality is defined by TESTFN if non-nil or by `equal' if nil."
 						`(cl-assoc ,key ,list :test ,testfn)
 			(when-fn% assoc* cl
 				`(with-no-warnings
+					 (require 'cl)
 					 (assoc* ,key ,list :test ,testfn))))))
 
 
