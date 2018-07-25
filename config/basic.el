@@ -161,13 +161,13 @@ for more details about the different forms of FILE and their semantics."
 (version-supported-if
 		<= 26.1
 		(defalias 'assoc** 'assoc)
-	(defmacro  assoc** (key list &optional testfn)
+	(defun  assoc** (key list &optional testfn)
 		"Return non-nil if KEY is equal to the car of an element of LIST.
 
 The value is actually the first element of LIST whose car equals KEY.
 Equality is defined by TESTFN if non-nil or by `equal' if nil."
 		(eval-when-compile (require 'cl))
-		`(assoc* ,key ,list :test ,testfn)))
+		(assoc* key list :test testfn)))
 
 
 (unless-fn% alist-get nil 
