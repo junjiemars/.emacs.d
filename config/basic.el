@@ -189,7 +189,7 @@ If KEY is not found in ALIST, returns DEFAULT. There're no `alist-get'
 function with TESTFN argument definition in Emacs26-."
 						(ignore* testfn)
 						`(alist-get ,key ,alist ,default ,remove)))
-	(defmacro alist-get* (key alist &optional default remove)
+	(defmacro alist-get* (key alist &optional default remove testfn)
 		"Return the value associated with KEY in ALIST, using `assq'.
 If KEY is not found in ALIST, return DEFAULT.
 
@@ -199,7 +199,7 @@ means to remove KEY from ALIST if the new value is `eql' to DEFAULT.
 
 If KEY is not found in ALIST, returns DEFAULT. There're no `alist-get' 
 function definition in Emacs25-."
-		(ignore* remove) ;;silence byte-compiler.
+		(ignore* remove testfn) ;;silence byte-compiler.
 		`(let ((x (assq ,key ,alist)))
 			 (if x (cdr x) ,default))))
 
