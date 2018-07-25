@@ -7,7 +7,8 @@
 ;;;;
 
 
-(with-eval-after-load 'dired
+
+(with-eval-after-load 'dired-aux
 
 	(unless-fn% dired-do-compress-to dired-aux
 		;; on ancent Emacs, `dired' can't recognize .zip archive.
@@ -21,13 +22,7 @@
 				 (add-to-list 'dired-compress-file-suffixes
 											'("\\.zip\\'" ".zip" "unzip"))))))
 
-  (platform-supported-when
-      darwin
-    ;; on Drawin: ls does not support --dired option
-    ;; see `dired-use-ls-dired' for more defails
-    (setq% dired-use-ls-dired nil dired))
-
-  (platform-supported-when
+	(platform-supported-when
       windows-nt
     ;; on Windows: there are no builtin zip program
     ;; so try to use minzip in Emacs dep for Windows.
@@ -50,3 +45,12 @@
       ;; prefer GNU's ls on Windows
       ;; on Windows: `dired-mode' does not display executable flag in file mode
       (setq% ls-lisp-use-insert-directory-program t ls-lisp))))
+
+
+(with-eval-after-load 'dired
+
+  (platform-supported-when
+      darwin
+    ;; on Drawin: ls does not support --dired option
+    ;; see `dired-use-ls-dired' for more defails
+    (setq% dired-use-ls-dired nil dired)))
