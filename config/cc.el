@@ -58,16 +58,15 @@
 								 (split-string* (cdr cmd) "\n" t "\"")))))))
 
   (defun check-cc-include ()
-    (take-while
-     (lambda (p)
-       (string-match "End of search list." p))
-     (drop-while
-      (lambda (p)
-        (string-match "#include <...> search starts here:" p))
-      (split-string*
-       (shell-command-to-string
-        "echo '' | cc -v -E 2>&1 >/dev/null -")
-       "\n" t "[ \t\n]")))))
+		(let ((cmd (shell-command* "echo '' | cc -v -E 2>&1 >/dev/null -")))
+			(when (zerop (car cmd))
+				(take-while
+				 (lambda (p)
+					 (string-match "End of search list." p))
+				 (drop-while
+					(lambda (p)
+						(string-match "#include <...> search starts here:" p))
+					(split-string* (cdr cmd) "\n" t "[ \t\n]")))))))
 
 
 (defvar system-cc-include nil
