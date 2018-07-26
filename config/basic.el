@@ -296,17 +296,30 @@ Examples:
       (let ((a (expand-file-name f dir)))
         (if (directory-name-p f)
             (when (and df (let ((ln (file-symlink-p (directory-file-name a))))
-			    (if (not ln) t
-			      (not (or (string= "." ln)
-				       (and (>= (length a) (length ln))
-					    (string=
-					     ln
-					     (substring a 0 (length ln))))))))
-		       (funcall df f a))
-	      (and dn (funcall dn a))
-	      (dir-iterate a ff df fn dn))
+														(if (not ln) t
+															(not (or (string= "." ln)
+																			 (and (>= (length a) (length ln))
+																						(string=
+																						 ln
+																						 (substring a 0 (length ln))))))))
+											 (funcall df f a))
+							(and dn (funcall dn a))
+							(dir-iterate a ff df fn dn))
           (when (and ff (funcall ff f a))
-	    (and fn (funcall fn a))))))))
+						(and fn (funcall fn a))))))))
+
+
+(defmacro shell-command* (command &rest args)
+	"Return a cons cell (code . output) after execute COMMAND in inferior shell.
+
+See `shell-command' and `shell-command-to-string'."
+	(declare (indent 1))
+	`(with-temp-buffer
+		 (cons (call-process shell-file-name nil (current-buffer) nil
+												 shell-command-switch
+												 (mapconcat #'identity
+																		(cons ,command (list ,@args)) " "))
+					 (buffer-string))))
 
 
 (defmacro executable-find% (command &optional prefer)
@@ -321,12 +334,10 @@ Return the first matched one, if multiple COMMANDs had been found
 and `funcall' PREFER returns t.
 "
   (if prefer
-      (let ((cmd (with-temp-buffer
-									 (cons (shell-command (platform-supported-if windows-nt
-																						(concat "where " command)
-																					(concat "command -v " command))
-																				(current-buffer))
-												 (buffer-string)))))
+      (let ((cmd (shell-command* (platform-supported-if windows-nt
+																		 "where"
+																	 "command -v")
+									 command)))
 				(when (zerop (car cmd))
 					(let* ((ss (cdr cmd))
 								 (path (split-string* ss "\n" t))
