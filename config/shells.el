@@ -24,9 +24,9 @@
 		  ,(platform-supported-if windows-nt
 		       "echo %%%s%% 2>/nul"
 		     `'((:interactive-shell
-			 . "$SHELL -l -i -c 'echo -n $%s' 2>/dev/null")
-			(:login-shell
-			 . "$SHELL -l -c 'echo -n $%s' 2>/dev/null"))))
+						 . "$SHELL -l -i -c 'echo -n $%s' 2>/dev/null")
+						(:login-shell
+						 . "$SHELL -l -c 'echo -n $%s' 2>/dev/null"))))
      ,@keys))
 
 
@@ -51,16 +51,18 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
 (defmacro echo-var (var &optional echo-format)
   "Return the value of $VAR via echo."
-  `(shell-command-to-string
-    (format (if ,echo-format ,echo-format
-              (platform-supported-if windows-nt
-                  (shells-spec->% :echo-format)
-                (if (self-spec->*env-spec :shell :interactive-shell)
-                    (alist-get* :interactive-shell
-																(shells-spec->% :echo-format))
-                  (alist-get* :login-shell
-															(shells-spec->% :echo-format)))))
-            ,var)))
+  `(let ((cmd (shell-command*
+									(format (if ,echo-format ,echo-format
+														(platform-supported-if windows-nt
+																(shells-spec->% :echo-format)
+															(if (self-spec->*env-spec :shell :interactive-shell)
+																	(alist-get* :interactive-shell
+																							(shells-spec->% :echo-format))
+																(alist-get* :login-shell
+																						(shells-spec->% :echo-format)))))
+													,var))))
+		 (when (zerop (car cmd))
+			 (cdr cmd))))
 
 
 (defmacro paths->var (path sep)
