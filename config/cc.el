@@ -49,16 +49,15 @@
 				 where)))))
 
 
-(platform-supported-if
-    windows-nt
+(platform-supported-if windows-nt
+		
     (defun check-cc-include ()
-      (let ((cc-env-bat (make-cc-env-bat)))
-        (when cc-env-bat
-          (var->paths
-           (car (nreverse 
-                 (split-string*
-                  (shell-command-to-string cc-env-bat)
-                  "\n" t "\"")))))))
+      (let* ((cc-env-bat (make-cc-env-bat))
+						 (cmd (and cc-env-bat (shell-command* cc-env-bat))))
+        (when (zerop (car cmd))
+					(var->paths
+					 (car (nreverse 
+								 (split-string* (cdr cmd) "\n" t "\"")))))))
 
   (defun check-cc-include ()
     (take-while
