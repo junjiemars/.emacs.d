@@ -16,28 +16,28 @@ Examples:
 \(tags-spec->% :os-include\)
 "
   `(self-spec->% (list
-		  :emacs-home
-		  ,(expand-file-name (v-home% ".tags/home/" "TAGS"))
-		  :emacs-source
-		  ,(expand-file-name (v-home% ".tags/source/" "TAGS"))
-		  :os-include
-		  ,(expand-file-name (v-home% ".tags/os/" "TAGS")))
+									:emacs-home
+									,(expand-file-name (v-home% ".tags/home/" "TAGS"))
+									:emacs-source
+									,(expand-file-name (v-home% ".tags/source/" "TAGS"))
+									:os-include
+									,(expand-file-name (v-home% ".tags/os/" "TAGS")))
      ,@key))
 
 
 (defcustom tags-program
   (if (executable-find% "etags"
-			(lambda (bin)
-			  (string-match "etags (GNU Emacs [.0-9]+)"
-					(shell-command-to-string
-					 (concat bin " --version")))))
+												(lambda (bin)
+													(string-match "etags (GNU Emacs [.0-9]+)"
+																				(shell-command-to-string
+																				 (concat bin " --version")))))
       "etags -o %s -l auto -a %s ; echo %s"
     (if (executable-find% "etags"
-			  (lambda (bin)
-			    (string-match "Exuberant Ctags [.0-9]+"
-					  (shell-command-to-string
-					   (concat bin " --version")))))
-	"etags -e -o %s -a %s ; echo %s"))
+													(lambda (bin)
+														(string-match "Exuberant Ctags [.0-9]+"
+																					(shell-command-to-string
+																					 (concat bin " --version")))))
+				"etags -e -o %s -a %s ; echo %s"))
   "The default tags program.
 This is used by commands like `make-tags' and others.
 

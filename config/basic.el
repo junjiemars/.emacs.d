@@ -321,12 +321,15 @@ Return the first matched one, if multiple COMMANDs had been found
 and `funcall' PREFER returns t.
 "
   (if prefer
-      (let ((ss (shell-command-to-string
-								 (platform-supported-if windows-nt
-										 (concat "where " command)
-									 (concat "command -v " command)))))
-				(when ss
-					(let* ((path (split-string* ss "\n" t))
+      (let ((cmd (with-temp-buffer
+									 (cons (shell-command (platform-supported-if windows-nt
+																						(concat "where " command)
+																					(concat "command -v " command))
+																				(current-buffer))
+												 (buffer-string)))))
+				(when (zerop (car cmd))
+					(let* ((ss (cdr cmd))
+								 (path (split-string* ss "\n" t))
 								 (p (cond ((and (consp path) (functionp prefer))
 													 (catch 'prefer
 														 (dolist (x path)
@@ -344,7 +347,7 @@ and `funcall' PREFER returns t.
 																							p))))))
     (let ((path (executable-find command)))
       (ignore* prefer)
-      `,path)))
+      `,(shell-quote-argument path))))
 
 
  ;; end of File Functions
