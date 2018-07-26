@@ -211,6 +211,7 @@ Locate your spec via =(emacs-home* "private/self-path.el")=.
 -  [[#package][Package]]
 -  [[#indent][Indent]]
 -  [[#file][File]]
+-  [[#tags][Tags]]
 
 ** Theme
     :PROPERTIES:
@@ -474,6 +475,18 @@ Now, on Windows you can use =find-dired= or =find-name-dired=.
 [[https://github.com/junjiemars/images/blob/master/.emacs.d/find-name-dired-windows.png][{screenshot: find-name-dired}]]
 
 *** zip Program
+
+** Tags
+    :PROPERTIES:
+    :CUSTOM_ID: tags
+    :END:
+
+Same behavior from Emacs22+
+- Jump to tags: @@html:<kbd>@@M.@@html:</kbd>@@
+- Jump back from tags: @@html:<kbd>@@M,@@html:</kbd>@@
+
+*** etags
+
 
 * Troubleshooting
    :PROPERTIES:

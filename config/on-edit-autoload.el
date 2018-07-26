@@ -140,8 +140,18 @@
   ;; default tab-width
   (setq-default tab-width (self-spec->*env-spec :edit :tab-with))
 
-  (setq auto-save-default (self-spec->*env-spec :edit :auto-save-default))
-  
-  )
+  (setq auto-save-default (self-spec->*env-spec :edit :auto-save-default)))
+
+
+;; find-tag and pop-tag-mark
+;; same as Emacs22+
+(unless-fn% xref-find-definitions xref
+	(when-fn% pop-tag-mark etags
+		(when (and (eq 'find-tag (key-binding (kbd "M-.")))
+							 (eq 'tags-loop-continue (key-binding (kbd "M-,"))))
+			(with-eval-after-load 'etags
+				(global-set-key (kbd "M-,") #'pop-tag-mark)
+				(global-set-key (kbd "M-*") #'tags-loop-continue)))))
+
 
  ;; end of indent
