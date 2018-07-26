@@ -14,14 +14,13 @@
 					 (vswhere (concat
 										 pfroot
 										 " (x86)/Microsoft Visual Studio/Installer/vswhere.exe")))
-			(or (and (file-exists-p vswhere)
-							 (let* ((cmd (shell-command* (shell-quote-argument vswhere)
-														 "-nologo -latest -property installationPath"))
-											(vsroot (and (zerop (car cmd))
-																	 (concat
-																		(string-trim> (cdr cmd))
-																		"/VC/Auxiliary/Build/vcvarsall.bat"))))
-								 (when (file-exists-p vsroot) vsroot)))
+			(or (let* ((cmd (shell-command* (shell-quote-argument vswhere)
+												"-nologo -latest -property installationPath"))
+								 (vsroot (and (zerop (car cmd))
+															(concat
+															 (string-trim> (cdr cmd))
+															 "/VC/Auxiliary/Build/vcvarsall.bat"))))
+						(when (file-exists-p vsroot) vsroot))
 					(let* ((mvs (car (directory-files
 														(concat pfroot
 																		" (x86)/Microsoft Visual Studio")
@@ -52,8 +51,7 @@
 (platform-supported-if windows-nt
 		
     (defun check-cc-include ()
-      (let* ((cc-env-bat (make-cc-env-bat))
-						 (cmd (and cc-env-bat (shell-command* cc-env-bat))))
+      (let ((cmd (shell-command* (make-cc-env-bat))))
         (when (zerop (car cmd))
 					(var->paths
 					 (car (nreverse 
