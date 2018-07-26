@@ -77,27 +77,25 @@ DIR-FILTER directory filter function,
 RENEW create tags file when t"
   (unless tags-program
     (signal 'void-variable (list 'tags-program tags-program)))
-  (if (not renew)
-      (mount-tags tags-file)
-    (when (file-exists-p home)
-      (let ((tags-dir (file-name-directory tags-file)))
-	(if (file-exists-p tags-file)
-	    (when renew (delete-file tags-file))
-	  (when (not (file-exists-p tags-dir))
-	    (make-directory tags-dir t)))
-	(dir-iterate home
-		     file-filter
-		     dir-filter
-		     (lambda (f)
-		       (message "make-tags: %s ... %s"
-				f
-				(if (zerop (shell-command
-					    (format tags-program tags-file f f)))
-				    "ok" "failed")))
-		     nil)
-	(when (file-exists-p tags-file)
-	  (add-to-list 'tags-table-list tags-file t #'string=)
-	  tags-file)))))
+	(when (file-exists-p home)
+		(let ((tags-dir (file-name-directory tags-file)))
+			(if (file-exists-p tags-file)
+					(when renew (delete-file tags-file))
+				(when (not (file-exists-p tags-dir))
+					(make-directory tags-dir t)))
+			(dir-iterate home
+									 file-filter
+									 dir-filter
+									 (lambda (f)
+										 (message "make-tags: %s ... %s"
+															f
+															(if (zerop (shell-command
+																					(format tags-program tags-file f f)))
+																	"ok" "failed")))
+									 nil)
+			(when (file-exists-p tags-file)
+				(add-to-list 'tags-table-list tags-file t #'string=)
+				tags-file))))
 
 
 (defun make-emacs-home-tags (tags-file &optional renew)
