@@ -16,7 +16,8 @@
     (let ((find (executable-find%
 								 "find"
 								 (lambda (bin)
-									 (string-match "^find (GNU findutils)"
-																 (shell-command-to-string
-																	(concat bin " --version")))))))
+									 (let ((ver (shell-command* bin "--version")))
+										 (when (zerop (car ver))
+											 (string-match "^find (GNU findutils)"
+																		 (cdr ver))))))))
       (when find (setq% find-program (shell-quote-argument find) grep)))))

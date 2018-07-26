@@ -39,9 +39,10 @@
     (when (executable-find%
 					 "ls"
 					 (lambda (ls)
-						 (string-match "^ls (GNU coreutils)"
-													 (shell-command-to-string
-														(concat ls " --version")))))
+						 (let ((ver (shell-command* ls "--version")))
+							 (when (zerop (car ver))
+								 (string-match "^ls (GNU coreutils)"
+															 (cdr ver))))))
       ;; prefer GNU's ls on Windows
       ;; on Windows: `dired-mode' does not display executable flag in file mode
       (setq% ls-lisp-use-insert-directory-program t ls-lisp))))

@@ -28,15 +28,17 @@ Examples:
 (defcustom tags-program
   (if (executable-find% "etags"
 												(lambda (bin)
-													(string-match "etags (GNU Emacs [.0-9]+)"
-																				(shell-command-to-string
-																				 (concat bin " --version")))))
+													(let ((ver (shell-command* bin "--version")))
+														(when (zerop (car ver))
+															(string-match "etags (GNU Emacs [.0-9]+)"
+																						(cdr ver))))))
       "etags -o %s -l auto -a %s ; echo %s"
     (if (executable-find% "etags"
 													(lambda (bin)
-														(string-match "Exuberant Ctags [.0-9]+"
-																					(shell-command-to-string
-																					 (concat bin " --version")))))
+														(let ((ver (shell-command* bin "--version")))
+															(when (zerop (car ver))
+																(string-match "Exuberant Ctags [.0-9]+"
+																							(cdr ver))))))
 				"etags -e -o %s -a %s ; echo %s"))
   "The default tags program.
 This is used by commands like `make-tags' and others.
