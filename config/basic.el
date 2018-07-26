@@ -342,12 +342,12 @@ and `funcall' PREFER returns t.
 														 nil))
 													((consp path) (car path))
 													(t path))))
-						`,(when p (shell-quote-argument (platform-supported-if windows-nt
-																								(windows-nt-posix-path p)
-																							p))))))
+						`,(when p (platform-supported-if windows-nt
+													(windows-nt-posix-path p)
+												p)))))
     (let ((path (executable-find command)))
       (ignore* prefer)
-      `,(shell-quote-argument path))))
+      `,path)))
 
 
  ;; end of File Functions
