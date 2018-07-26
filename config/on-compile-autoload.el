@@ -16,9 +16,9 @@
      1 ;; filename argument
      (let ((filename (ad-get-arg 1)))
        (if (string-match "^/\\([a-zA-Z]\\)/" filename)
-	   (replace-match
-	    (concat (match-string 1 filename) ":/") t t filename)
-	 (ad-get-arg 1))))))
+					 (replace-match
+						(concat (match-string 1 filename) ":/") t t filename)
+				 (ad-get-arg 1))))))
 
 
 (with-eval-after-load 'compile

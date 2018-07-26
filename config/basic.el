@@ -88,8 +88,8 @@
     "Return posix path from Windows PATH which can be recognized on`system-type'."
     `(let ((p (replace-regexp-in-string "\\\\" "/" ,path)))
        (if (string-match "^\\([A-Z]:/\\)" p)
-	   (replace-match (downcase (match-string 1 p)) t t p)
-	 p))))
+					 (replace-match (downcase (match-string 1 p)) t t p)
+				 p))))
 
 
 (platform-supported-when windows-nt
@@ -111,7 +111,7 @@
   "Remove whitespaces or the matching of RR at the end of S."
   (let ((r (if rr (concat rr "\\'") "[ \t\n\r]+\\'" )))
     (if (string-match r s)
-	(replace-match "" t t s)
+				(replace-match "" t t s)
       s)))
 
 
@@ -119,7 +119,7 @@
   "Remove leading whitespace or the matching of LR from S."
   (let ((r (if lr (concat "\\`" lr) "\\`[ \t\n\r]+")))
     (if (string-match r s)
-	(replace-match "" t t s)
+				(replace-match "" t t s)
       s)))
 
 

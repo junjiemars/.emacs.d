@@ -130,11 +130,11 @@ RENEW create tags file when t"
   "Make TAGS-FILE for C source code in HOME."
   (let ((c-ff (lambda (f _) (string-match "\\\.[ch]$" f)))
         (df (or dir-filter
-		(lambda (d _)
-		  (not
-		   (string-match
-		    "^\\\.git/$\\|^out/$\\|^objs/$\\|^c\\\+\\\+/$"
-		    d))))))
+								(lambda (d _)
+									(not
+									 (string-match
+										"^\\\.git/$\\|^out/$\\|^objs/$\\|^c\\\+\\\+/$"
+										d))))))
     (make-tags home tags-file c-ff df renew)))
 
 
