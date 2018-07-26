@@ -19,4 +19,4 @@
 									 (string-match "^find (GNU findutils)"
 																 (shell-command-to-string
 																	(concat bin " --version")))))))
-      (when find (setq% find-program find grep)))))
+      (when find (setq% find-program (shell-quote-argument find) grep)))))
