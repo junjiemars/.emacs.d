@@ -139,9 +139,9 @@ If VAR requires FEATURE load it on compile-time."
     "Generate a new uninterned symbol.
 The name is made by appending a number to PREFIX, default \"G\"."
     (let ((pfix (if (stringp prefix) prefix "G"))
-	  (num (if (integerp prefix) prefix
-		 (prog1 *gensym-counter*
-		   (setq *gensym-counter* (1+ *gensym-counter*))))))
+					(num (if (integerp prefix) prefix
+								 (prog1 *gensym-counter*
+									 (setq *gensym-counter* (1+ *gensym-counter*))))))
       (make-symbol (format "%s%d" pfix num)))))
 
 
