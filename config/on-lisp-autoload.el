@@ -36,11 +36,6 @@
 	     ;; structured editing of s-expression data
 	     (enable-paredit-mode))
 
-	   (feature-allowed-p aggressive-indent
-	     ;; enable automatically adjust the identation of code
-	     (setq% aggressive-indent-dont-electric-modes t aggressive-indent)
-	     (aggressive-indent-mode))
-
 	   (feature-allowed-p rainbow-delimiters
 	     ;; hilighting parentheses,brackets,and braces in minor mode
 	     (rainbow-delimiters-mode))))))

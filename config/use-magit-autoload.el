@@ -31,7 +31,7 @@
 
 
 (with-eval-after-load 'magit
-	(use-magit!))
+  (use-magit!))
 
 
 (when-fn% magit-status magit

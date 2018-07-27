@@ -14,7 +14,8 @@
     (enable-paredit-mode)
     (subword-mode)
     (rainbow-delimiters-mode)
-    (aggressive-indent-mode)))
+    ;; (aggressive-indent-mode)
+    ))
 
 (feature-paredit-supported-p
   
@@ -23,7 +24,8 @@
     (eldoc-mode)
     (enable-paredit-mode)
     (rainbow-delimiters-mode)
-    (aggressive-indent-mode)))
+    ;; (aggressive-indent-mode)
+    ))
 
 
 (defun use-clojure-mode ()

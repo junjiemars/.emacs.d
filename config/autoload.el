@@ -15,12 +15,12 @@
   (when-fn% find-file-at-point ffap
     (global-set-key (kbd "C-c b") #'find-file-at-point))
 
-	
+  
   ;; Shows a list of buffers
   (global-set-key (kbd "C-x C-b") #'ibuffer)
 
-	;; regexp search and replace should be first:
-	;;
+  ;; regexp search and replace should be first:
+  ;;
   ;; interactive search key bindings.
   ;; by default, C-s runs isearch-forward, so this swaps the bindings.
   (global-set-key (kbd "C-s") #'isearch-forward-regexp)
@@ -37,15 +37,15 @@
   (global-set-key (kbd "C-x r g") #'string-insert-rectangle)
 
 
-	(with-eval-after-load 'grep
-		(define-key* grep-mode-map (kbd "g") #'recompile grep)
-		(define-key* grep-mode-map (kbd "q") #'quit-window grep))
+  (with-eval-after-load 'grep
+    (define-key* grep-mode-map (kbd "g") #'recompile grep)
+    (define-key* grep-mode-map (kbd "q") #'quit-window grep))
 
-	(package-supported-p	
-		(feature-allowed-p bing-dict
-			;; `bing-dict'
-			(global-set-key (kbd "C-c d") #'bing-dict-brief)))
-	
+  (package-supported-p	
+    (feature-allowed-p bing-dict
+      ;; `bing-dict'
+      (global-set-key (kbd "C-c d") #'bing-dict-brief)))
+  
   )
 
  ;; end of set-global-key!
@@ -67,13 +67,13 @@
     (compile-unit (emacs-home* "config/on-lisp-autoload.el"))
     
     (platform-supported-if windows-nt
-				(compile-unit (emacs-home* "config/gud-cdb.el") t)
+	(compile-unit (emacs-home* "config/gud-cdb.el") t)
       
       (platform-supported-if darwin
-					(compile-unit (emacs-home* "config/gud-lldb.el") t)
-				
-				(when (executable-find% "lldb")
-					(compile-unit (emacs-home* "config/gud-lldb.el") t))))
+	  (compile-unit (emacs-home* "config/gud-lldb.el") t)
+	
+	(when (executable-find% "lldb")
+	  (compile-unit (emacs-home* "config/gud-lldb.el") t))))
 
     (feature-eww-supported-p
       (compile-unit (emacs-home* "config/on-eww-autoload.el")))
