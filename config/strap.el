@@ -162,30 +162,48 @@ The name is made by appending a number to PREFIX, default \"G\"."
 (defmacro def-feature-supported-p (feature &optional filename docstring)
   "Define FEATURE supported-p macro."
   (let ((name (intern (format "feature-%s-supported-p" feature)))
-	(ds1 (format "If has `%s' feauture then do BODY." feature)))
+				(ds1 (format "If has `%s' feauture then do BODY." feature)))
     `(feature-if% ,feature ,filename
-		  (defmacro ,name (&rest body)
-		    ,(or docstring ds1)
-		    (declare (indent 0))
-		    `(progn% ,@body))
-		  (defmacro ,name (&rest body)
-		    ,(or docstring ds1)
-		    (declare (indent 0))
-		    `(comment ,@body)))))
+									(defmacro ,name (&rest body)
+										,(or docstring ds1)
+										(declare (indent 0))
+										`(progn% ,@body))
+									(defmacro ,name (&rest body)
+										,(or docstring ds1)
+										(declare (indent 0))
+										`(comment ,@body)))))
 
 (defmacro def-function-supported-p (fn &optional feature docstring)
   "Define FN supported-p macro."
   (let ((name (intern (format "function-%s-supported-p" fn)))
-	(ds1 (format "If has `%s' fn then do BODY." fn)))
+				(ds1 (format "If has `%s' fn then do BODY." fn)))
     `(if-fn% ,fn ,feature
-	     (defmacro ,name (&rest body)
-	       ,(or docstring ds1)
-	       (declare (indent 0))
-	       `(progn% ,@body))
+						 (defmacro ,name (&rest body)
+							 ,(or docstring ds1)
+							 (declare (indent 0))
+							 `(progn% ,@body))
        (defmacro ,name (&rest body)
-	 ,(or docstring ds1)
-	 (declare (indent 0))
-	 `(comment ,body)))))
+				 ,(or docstring ds1)
+				 (declare (indent 0))
+				 `(comment ,body)))))
+
+
+(defmacro def-function-threading (fn &optional join)
+	"Define FN threading macro."
+	(if-fn% make-thread nil
+					(let ((name (symbol-name fn))
+								(name1 (intern (format "function-threading-%s"
+																			 (symbol-name fn))))
+								(ds1 (format "Threading `%s'." fn)))
+						`(defun ,name1 ()
+							 ,ds1
+							 (let ((thread (make-thread (function ,fn) ,name)))
+								 (if ,join
+										 (thread-join thread)
+									 thread))))
+		(ignore* join)
+		`(function ,fn)))
+
 
  ;; end of byte-compiler macro
 
