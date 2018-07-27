@@ -8,28 +8,28 @@
 
 
 (platform-supported-when windows-nt
-	
-	(defun check-vcvarsall-bat ()
-		(let* ((pfroot (windows-nt-posix-path (getenv "PROGRAMFILES")))
-					 (vswhere (concat
-										 pfroot
-										 " (x86)/Microsoft Visual Studio/Installer/vswhere.exe")))
-			(or (let* ((cmd (shell-command* (shell-quote-argument vswhere)
-												"-nologo -latest -property installationPath"))
-								 (vsroot (and (zerop (car cmd))
-															(concat
-															 (string-trim> (cdr cmd))
-															 "/VC/Auxiliary/Build/vcvarsall.bat"))))
-						(when (file-exists-p vsroot) vsroot))
-					(let* ((mvs (car (directory-files
-														(concat pfroot
-																		" (x86)/Microsoft Visual Studio")
-														t "[0-9]+" #'string-greaterp)))
-								 (vsroot (concat
-													mvs
-													"/BuildTools/VC/Auxiliary/Build/vcvarsall.bat")))
-						(when (file-exists-p vsroot)
-							(windows-nt-posix-path vsroot)))))))
+  
+  (defun check-vcvarsall-bat ()
+    (let* ((pfroot (windows-nt-posix-path (getenv "PROGRAMFILES")))
+	   (vswhere (concat
+		     pfroot
+		     " (x86)/Microsoft Visual Studio/Installer/vswhere.exe")))
+      (or (let* ((cmd (shell-command* (shell-quote-argument vswhere)
+			"-nologo -latest -property installationPath"))
+		 (vsroot (and (zerop (car cmd))
+			      (concat
+			       (string-trim> (cdr cmd))
+			       "/VC/Auxiliary/Build/vcvarsall.bat"))))
+	    (when (file-exists-p vsroot) vsroot))
+	  (let* ((mvs (car (directory-files
+			    (concat pfroot
+				    " (x86)/Microsoft Visual Studio")
+			    t "[0-9]+" #'string-greaterp)))
+		 (vsroot (concat
+			  mvs
+			  "/BuildTools/VC/Auxiliary/Build/vcvarsall.bat")))
+	    (when (file-exists-p vsroot)
+	      (windows-nt-posix-path vsroot)))))))
 
 
 (platform-supported-when windows-nt
@@ -45,28 +45,28 @@
           "cd /d \"" (file-name-directory vcvarsall) "\"\n"
           "call vcvarsall.bat " arch "\n"
           "echo \"%INCLUDE%\"\n")
-				 where)))))
+	 where)))))
 
 
 (platform-supported-if windows-nt
-		
+    
     (defun check-cc-include ()
       (let ((cmd (shell-command* (make-cc-env-bat))))
         (when (zerop (car cmd))
-					(var->paths
-					 (car (nreverse 
-								 (split-string* (cdr cmd) "\n" t "\"")))))))
+	  (var->paths
+	   (car (nreverse 
+		 (split-string* (cdr cmd) "\n" t "\"")))))))
 
   (defun check-cc-include ()
-		(let ((cmd (shell-command* "echo '' | cc -v -E 2>&1 >/dev/null -")))
-			(when (zerop (car cmd))
-				(take-while
-				 (lambda (p)
-					 (string-match "End of search list." p))
-				 (drop-while
-					(lambda (p)
-						(string-match "#include <...> search starts here:" p))
-					(split-string* (cdr cmd) "\n" t "[ \t\n]")))))))
+    (let ((cmd (shell-command* "echo '' | cc -v -E 2>&1 >/dev/null -")))
+      (when (zerop (car cmd))
+	(take-while
+	 (lambda (p)
+	   (string-match "End of search list." p))
+	 (drop-while
+	  (lambda (p)
+	    (string-match "#include <...> search starts here:" p))
+	  (split-string* (cdr cmd) "\n" t "[ \t\n]")))))))
 
 
 (defvar system-cc-include nil
