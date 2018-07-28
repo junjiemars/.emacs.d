@@ -12,11 +12,14 @@
   ;; enable automatically adjust the identation of code
 
 	(with-eval-after-load 'aggressive-indent
+
+		(when-var% aggressive-indent-excluded-modes aggressive-indent
+							 (add-to-list 'aggressive-indent-excluded-modes 'org-mode))
 		
 		(when-fn% global-aggressive-indent-mode aggressive-indent
 			(global-aggressive-indent-mode t))
-		
-		(when-var% aggressive-indent-excluded-modes aggressive-indent
-							 (add-to-list 'aggressive-indent-excluded-modes 'org-mode)))
+
+
+		) ;; end of `with-eval-after-load'
 	
-	)
+	) ;; end of `feature-allowed-p'
