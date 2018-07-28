@@ -487,7 +487,6 @@ Same behavior from Emacs22+
 
 *** etags
 
-
 * Troubleshooting
    :PROPERTIES:
    :CUSTOM_ID: troubleshooting

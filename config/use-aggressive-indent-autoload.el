@@ -11,7 +11,12 @@
 (feature-allowed-p aggressive-indent
   ;; enable automatically adjust the identation of code
 
-	(when-fn% global-aggressive-indent-mode
+	(with-eval-after-load 'aggressive-indent
+		
+		(when-fn% global-aggressive-indent-mode aggressive-indent
 			(global-aggressive-indent-mode t))
-
+		
+		(when-var% aggressive-indent-excluded-modes aggressive-indent
+							 (add-to-list 'aggressive-indent-excluded-modes 'org-mode)))
+	
 	)
