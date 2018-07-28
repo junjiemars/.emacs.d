@@ -108,9 +108,9 @@ If DELETE-BOOSTER is non nil then delete booster source FILE after compiled."
   "Clean all compiled files."
   `(dolist (d (list ,(v-home* "config/")
                     ,(v-home* "private/")
-		    ,(v-home* "theme/")))
+										,(v-home* "theme/")))
      (dolist (f (when (file-exists-p d)
-		  (directory-files d nil "\\.elc?$")))
+									(directory-files d nil "\\.elc?$")))
        (message "#Clean compiled file: %s" f)
        (delete-file (concat d f)))))
 
