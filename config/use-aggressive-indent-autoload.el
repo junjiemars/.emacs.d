@@ -10,6 +10,8 @@
 
 (feature-allowed-p aggressive-indent
   ;; enable automatically adjust the identation of code
-  (global-aggressive-indent-mode 1)
-  ;; (setq% aggressive-indent-dont-electric-modes t aggressive-indent)
-  )
+
+	(when-fn% global-aggressive-indent-mode
+			(global-aggressive-indent-mode t))
+
+	)
