@@ -222,6 +222,34 @@ The name is made by appending a number to PREFIX, default \"G\"."
   "Return the ONLY-COMPILE indicator of `compile-unit'."
   `(cdr ,unit))
 
+(defmacro compile-lock-owner ()
+	"Return the pid of the Emacs process that owns the `+compile-lock-name+' file.
+
+Return nil if no desktop file found or no Emacs process is using it.
+DIRNAME omitted or nil means use `desktop-dirname'"
+	`(when (file-exists-p +compile-lock-name+)
+		 (let ((owner nil))
+			 (ignore-errors
+				 (with-temp-buffer
+					 (insert-file-contents-literally +compile-lock-name+)
+					 (goto-char (point-min))
+					 (setq owner (read (current-buffer)))
+					 (integerp owner)))
+			 owner)))
+
+(defmacro compile-lock-p (&optional owned)
+	"Return t if the `+compile-lock-name+' existing and be OWNED by current Emacs process."
+	`(let ((pid (compile-lock-owner)))
+		 (if ,owned
+				 (eql (emacs-pid) pid)
+			 (integerp pid))))
+
+(defun compile-release-lock ()
+	"Remove the `+compile-lock-name+' file."
+	(when (file-exists-p +compile-lock-name+)
+		(delete-file +compile-lock-name+)))
+
+
 (defun compile! (vdir &rest units)
   "Compile and load the elisp UNITS in VDIR."
   (declare (indent 1))
@@ -420,6 +448,5 @@ Take effect after restart Emacs.
       (compile-unit (emacs-home* "config/memory.el"))))
 
 
-;; Self do epilogue ... into autoload.el
-
-
+;; release compile-lock when Emacs exiting
+(add-to-list 'kill-emacs-hook #'compile-release-lock)

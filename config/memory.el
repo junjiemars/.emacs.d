@@ -65,6 +65,7 @@
 
 ;; Read desktop
 (defun self-desktop-read! ()
+	
   (terminal-supported-p
     (version-supported-when <= 24.4
       (version-supported-when > 25
@@ -82,9 +83,12 @@
     (desktop-read (v-home% ".desktop/"))))
 
 
-;; FIXME: Emacs hang: on Darwin, after `clean-compiled-files' and reopen Emacs
-;; (add-hook 'after-init-hook (def-function-threading self-desktop-read!) t)
-(add-hook 'after-init-hook #'self-desktop-read! t)
+;; read saved session
+(add-hook 'after-init-hook
+					(if (compile-lock-p)
+							#'self-desktop-read!
+						(def-function-threading self-desktop-read!))
+					t)
 
 
  ;; end of Read desktop

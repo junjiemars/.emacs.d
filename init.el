@@ -31,8 +31,7 @@
 
 
 (defvar v-dir
-  (concat (if (display-graphic-p) "g_" "t_")
-          emacs-version)
+  (concat (if (display-graphic-p) "g_" "t_") emacs-version)
   "Versioned dir based on [g]rahpic/[t]erminal mode and Emacs's version")
 
 
@@ -67,7 +66,7 @@
      (let ((v (concat (file-name-directory ,file) ,vdir "/")))
        (unless (file-exists-p v) (make-directory v t))
        (concat v (if ,extension
-		     (concat (file-name-base* ,file) "." ,extension)
+										 (concat (file-name-base* ,file) "." ,extension)
                    (file-name-nondirectory ,file))))))
 
 
@@ -75,6 +74,16 @@
 
 
 ;; compile macro
+
+
+(defconst +compile-lock-name+ (v-home% "config/" ".compile.lock")
+	"Compile lock file be claimed when compiling process occurred.")
+
+(defmacro compile-claim-lock ()
+	"Record this Emacs pid in `+compile-lock-name+' file."
+	`(unless (file-exists-p +compile-lock-name+)
+		 (write-region (number-to-string (emacs-pid)) nil +compile-lock-name+)))
+
 
 (defmacro compile-and-load-file* (vdir file &optional only-compile delete-booster)
   "Compile FILE and save the compiled one in VDIR then load it if ONLY-COMPILE is nil.
@@ -88,8 +97,9 @@ If DELETE-BOOSTER is non nil then delete booster source FILE after compiled."
                    (file-newer-than-file-p ,file ,c))
            (let ((,s (v-path! ,file ,vdir)))
              (copy-file ,file ,s t)
-             (when (and (byte-compile-file ,s) ,delete-booster)
-	       (delete-file ,s))))
+             (when (byte-compile-file ,s)
+							 (compile-claim-lock)
+							 (when ,delete-booster (delete-file ,s)))))
          (or ,only-compile
              (load ,c))))))
 

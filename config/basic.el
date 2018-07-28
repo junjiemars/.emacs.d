@@ -419,7 +419,7 @@ otherwise default to keep the directories of current `emacs-version'."
   (declare (indent 0))
   `(version-supported-when < 22
      (when-var% url-gateway-method url
-		,@body)))
+								,@body)))
 
 (feature-socks-supported-p
 
