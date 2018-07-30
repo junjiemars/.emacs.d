@@ -233,9 +233,8 @@ DIRNAME omitted or nil means use `desktop-dirname'"
 				 (with-temp-buffer
 					 (insert-file-contents-literally +compile-lock-name+)
 					 (goto-char (point-min))
-					 (setq owner (read (current-buffer)))
-					 (integerp owner)))
-			 owner)))
+					 (setq owner (read (current-buffer)))))
+			 (when (integerp owner) owner))))
 
 (defmacro compile-lock-p (&optional owned)
 	"Return t if the `+compile-lock-name+' existing and be OWNED by current Emacs process."
