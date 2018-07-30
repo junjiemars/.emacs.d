@@ -120,8 +120,7 @@
                      paredit
                      rainbow-delimiters
                      ,(version-supported-when <= 24.1 'yaml-mode))
-         :compile `(,(compile-unit (emacs-home* "config/on-module.el"))
-		    ,(compile-unit (emacs-home* "config/use-aggressive-indent-autoload.el"))))))
+         :compile `(,(compile-unit (emacs-home* "config/on-module.el"))))))
 
 
 (package-spec-:allowed-p

@@ -3,22 +3,18 @@
 ;; More reasonable Emacs on MacOS, Windows and Linux
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; use-aggressive-indent-autoload.el
+;; on-indent-autoload.el
 ;;;;
-
 
 
 (feature-allowed-p aggressive-indent
   ;; enable automatically adjust the identation of code
+	;; https://github.com/Malabarba/aggressive-indent-mode
 
 	(with-eval-after-load 'aggressive-indent
 
-		(when-var% aggressive-indent-excluded-modes aggressive-indent
-							 (add-to-list 'aggressive-indent-excluded-modes 'org-mode))
-		
-		(when-fn% global-aggressive-indent-mode aggressive-indent
-			(global-aggressive-indent-mode t))
-
+		;; disable `electric-indent-mode'
+		(setq% aggressive-indent-dont-electric-modes t aggressive-indent)
 
 		) ;; end of `with-eval-after-load'
 	

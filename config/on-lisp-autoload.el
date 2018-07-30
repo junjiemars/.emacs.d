@@ -30,15 +30,19 @@
   (defun set-lisp-basic-mode! ()
     "Set Lisp basic minor modes."
     (cond ((or (string= "*scratch*" (buffer-name))
-	       (string= "*ielm*" (buffer-name))))
-	  (t
-	   (feature-allowed-p paredit
-	     ;; structured editing of s-expression data
-	     (enable-paredit-mode))
+							 (string= "*ielm*" (buffer-name))))
+					(t
+					 (feature-allowed-p paredit
+						 ;; structured editing of s-expression data
+						 (enable-paredit-mode))
 
-	   (feature-allowed-p rainbow-delimiters
-	     ;; hilighting parentheses,brackets,and braces in minor mode
-	     (rainbow-delimiters-mode))))))
+					 (feature-allowed-p rainbow-delimiters
+						 ;; hilighting parentheses,brackets,and braces in minor mode
+						 (rainbow-delimiters-mode))
+
+					 (feature-allowed-p aggressive-indent
+						 ;; aggressive indent
+						 (aggressive-indent-mode))))))
 
 
 (package-supported-p
@@ -46,10 +50,10 @@
     
     (defun enable-paredit-mode-in-minibuffer! ()
       (platform-supported-if
-	  gnu/linux
-	  (when (eq 'eval-expression this-command)
-	    (enable-paredit-mode))
-	(enable-paredit-mode)))))
+					gnu/linux
+					(when (eq 'eval-expression this-command)
+						(enable-paredit-mode))
+				(enable-paredit-mode)))))
 
 
 (package-supported-p
@@ -63,11 +67,11 @@
 
   (feature-allowed-p paredit
     (platform-supported-if
-	gnu/linux
-	(add-hook 'minibuffer-setup-hook
-		  #'enable-paredit-mode-in-minibuffer! t)
+				gnu/linux
+				(add-hook 'minibuffer-setup-hook
+									#'enable-paredit-mode-in-minibuffer! t)
       (add-hook 'eval-expression-minibuffer-setup-hook
-		#'enable-paredit-mode-in-minibuffer! t)))
+								#'enable-paredit-mode-in-minibuffer! t)))
 
   
   ;; `paredit' keymap

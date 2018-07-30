@@ -65,6 +65,7 @@
     (compile-unit (emacs-home* "config/on-edit-autoload.el"))
     (compile-unit (emacs-home* "config/on-hippie-autoload.el"))
     (compile-unit (emacs-home* "config/on-lisp-autoload.el"))
+		(compile-unit (emacs-home* "config/on-indent-autoload.el"))
     
     (platform-supported-if windows-nt
 				(compile-unit (emacs-home* "config/gud-cdb.el") t)
