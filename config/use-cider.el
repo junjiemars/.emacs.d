@@ -7,31 +7,24 @@
 ;;;;
 
 
-(feature-paredit-supported-p
-  
-  (defun set-clojure-mode! ()
-    "Hook into `clojure-mode-hook'"
-    (enable-paredit-mode)
-    (subword-mode)
-    (rainbow-delimiters-mode)
-    ;; (aggressive-indent-mode)
-    ))
+(defun set-clojure-mode! ()
+  "Hook into `clojure-mode-hook'"
+  (subword-mode)
+	(feature-allowed-p paredit (enable-paredit-mode))
+	(feature-allowed-p rainbow-delimiters (rainbow-delimiters-mode))
+	(feature-allowed-p aggressive-indent (aggressive-indent-mode)))
 
-(feature-paredit-supported-p
-  
-  (defun set-cider-repl-mode! ()
-    "Hook into `cider-repl-mode-hook'"
-    (eldoc-mode)
-    (enable-paredit-mode)
-    (rainbow-delimiters-mode)
-    ;; (aggressive-indent-mode)
-    ))
+
+(defun set-cider-repl-mode! ()
+  "Hook into `cider-repl-mode-hook'"
+  (eldoc-mode)
+	(feature-allowed-p paredit (enable-paredit-mode))
+	(feature-allowed-p rainbow-delimiters (rainbow-delimiters-mode))
+	(feature-allowed-p aggressive-indent (aggressive-indent-mode)))
 
 
 (defun use-clojure-mode ()
-  (feature-paredit-supported-p
-    (package-spec-:allowed-p
-      (add-hook 'clojure-mode-hook #'set-clojure-mode!))))
+	(add-hook 'clojure-mode-hook #'set-clojure-mode!))
 
 
 (defun use-cider-repl ()
@@ -41,7 +34,7 @@
   
   ;; Where to store the cider history.
   (setq% cider-repl-history-file
-	 (v-home! ".cider/" "repl-history") cider-repl)
+				 (v-home! ".cider/" "repl-history") cider-repl)
   ;; Wrap when navigating history.
   (setq% cider-repl-wrap-history t cider)
   
@@ -52,9 +45,7 @@
   (setq% cider-show-error-buffer t cider)
   (setq% cider-auto-select-error-buffer t cider)
   
-  (feature-paredit-supported-p
-    (package-spec-:allowed-p
-      (add-hook 'cider-repl-mode-hook #'set-cider-repl-mode!))))
+  (add-hook 'cider-repl-mode-hook #'set-cider-repl-mode!))
 
 
 ;; It's a bug in cider/clojure
