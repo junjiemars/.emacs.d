@@ -244,8 +244,6 @@ Using Emacs's builtin themes(@@html:<kbd>@@M x customize-themes@@html:</kbd>@@) 
                    :allowed t))
 #+END_SRC
 
-
-
 ** Font
     :PROPERTIES:
     :CUSTOM_ID: font
@@ -455,37 +453,30 @@ GNU's =ls= program (/--dired/ option) on Windows and Darwin.
 
 *** ls Program
 
-[[file:config/on-dired-autoload.el][on-dired-autoload.el]]
-
 For Windows, you can install GNU's ls via [[https://git-scm.com/downloads][Git-Bash]]. 
 
 For Darwin, let =dired= don't do stupid things.
 
-[[https://github.com/junjiemars/images/blob/master/.emacs.d/ido-dired-windows-gnu-ls.png][{screenshot: ido-dired}]]
-
+[[https://github.com/junjiemars/images/blob/master/.emacs.d/ido-dired-windows-gnu-ls.png][screenshot: ido-dired]]
 
 *** find Program
-
-[[file:config/on-grep-autoload.el][on-grep-autoload.el]]
 
 If GNU's =find= has already in =PATH= so use it on Windows, and let Windows stupid =find= program gone.
 
 Now, on Windows you can use =find-dired= or =find-name-dired=.
 
-[[https://github.com/junjiemars/images/blob/master/.emacs.d/find-name-dired-windows.png][{screenshot: find-name-dired}]]
+[[https://github.com/junjiemars/images/blob/master/.emacs.d/find-name-dired-windows.png][screenshot: find-name-dired]]
 
 *** zip Program
 
-** Tags
-    :PROPERTIES:
-    :CUSTOM_ID: tags
-    :END:
+On Windows, there are no builtin =zip/unzip= program, but Emacs has a builtin =minizip= so We can 
+zip, unzip or view the content a zip archive.
 
-Same behavior from Emacs22+
-- Jump to tags: @@html:<kbd>@@M.@@html:</kbd>@@
-- Jump back from tags: @@html:<kbd>@@M,@@html:</kbd>@@
+[[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-do-compress-to-on-windows.png][screenshot: dired-do-compress-to]]
 
-*** etags
+For some ancient Emacs such as below version 24, @@html:<kbd>@@! zip x.zip ?@@html:</kbd>@@ to zip.
+
+[[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-compress-file-suffixes-version-24lt.png][screenshot: dired-compress-file-suffixes]]
 
 * Troubleshooting
    :PROPERTIES:
