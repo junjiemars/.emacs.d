@@ -74,7 +74,8 @@ HOME where the source files locate,
 TAGS-FILE where the tags file to save,
 FILE-FILTER file filter function,
 DIR-FILTER directory filter function,
-RENEW create tags file when t"
+RENEW overwrite the existing tags file when t else create it.
+"
   (unless tags-program
     (signal 'void-variable (list 'tags-program tags-program)))
 	(when (file-exists-p home)
@@ -99,7 +100,11 @@ RENEW create tags file when t"
 
 
 (defun make-emacs-home-tags (tags-file &optional renew)
-  "Make TAGS-FILE for Emacs' home directory."
+  "Make TAGS-FILE for Emacs' home directory.
+
+Example:
+\(make-emacs-home-tags \(tags-spec->% :emacs-home\) t\)
+"
   (let ((lisp-ff (lambda (f _) (string-match "\\\.el$" f)))
         (home-df
          (lambda (d _)
@@ -112,9 +117,12 @@ RENEW create tags file when t"
 (defun make-emacs-source-tags (tags-file src-root &optional renew)
   "Make TAGS-FILE for Emacs' C and Lisp source code in SRC-ROOT.
 
+Example:
 \(make-emacs-source-tags
    \(`tags-spec->%' :emacs-home\)
-   `source-directory' t\)"
+   `source-directory'
+    t\)
+"
   (let ((lisp-ff (lambda (f _) (string-match "\\\.el$" f)))
         (c-ff (lambda (f _) (string-match "\\\.[ch]$" f)))
         (df (lambda (_ __) t)))
@@ -139,7 +147,13 @@ RENEW create tags file when t"
 (defun make-system-c-tags (includes &optional dir-filter renew)
   "Make tags for system INCLUDES.
 
-INCLUDES should be set with `system-cc-include'."
+INCLUDES should be the system C include directories list,
+DIR-FILTER directory filter function,
+RENEW overwrite the existing tags file when t else create it.
+
+Example:
+\(make-system-c-tags \(`system-cc-include' t\) nil t\)
+"
   (let ((tag-file (tags-spec->% :os-include)))
     (make-c-tags (car includes) tag-file dir-filter renew)
     (dolist (p (cdr includes) tag-file)
