@@ -211,7 +211,6 @@ Locate your spec via =(emacs-home* "private/self-path.el")=.
 -  [[#package][Package]]
 -  [[#indent][Indent]]
 -  [[#file][File]]
--  [[#tags][Tags]]
 
 ** Theme
     :PROPERTIES:
@@ -461,9 +460,9 @@ For Darwin, let =dired= don't do stupid things.
 
 *** find Program
 
-If GNU's =find= has already in =PATH= so use it on Windows, and let Windows stupid =find= program gone.
+If GNU's =find= has already in =PATH= so use it on Windows, and let Windows stupid =find= program go away.
 
-Now, on Windows you can use =find-dired= or =find-name-dired=.
+Now, on Windows you can use @@html:<kbd>@@M-x find-dired@@html:</kbd>@@ or @@html:<kbd>@@M-x find-name-dired@@html:</kbd>@@
 
 [[https://github.com/junjiemars/images/blob/master/.emacs.d/find-name-dired-windows.png][screenshot: find-name-dired]]
 
