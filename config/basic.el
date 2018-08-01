@@ -368,10 +368,15 @@ and `funcall' PREFER returns t.
 
 
 (defsubst env-path+ (path)
-	"Add PATH to %PATH% on Windows and $PATH on *UNX."
+	"Add PATH to %PATH% on Windows and $PATH on *UNX.
+
+Return $PATH string if successed, otherwise return nil."
 	(when (and path (stringp path))
-		(let ((p (string-trim> (getenv "PATH") path-separator)))
-			(setenv "PATH" (concat p path-separator path)))))
+		(let ((p (getenv "PATH")))
+			(unless (string-match path p)
+				(setenv "PATH" (concat
+												(string-trim> p path-separator)
+												path-separator path))))))
 
 
  ;; end of File Functions
