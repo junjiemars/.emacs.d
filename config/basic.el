@@ -12,6 +12,10 @@
 (add-to-list 'load-path (v-home% "config/") nil #'string=)
 (add-to-list 'load-path (v-home% "private/") nil #'string=)
 
+(defconst +emacs-exec-home+ (v-home! ".exec/")
+	"Exec path under versioned `+emacs-home+' directory which be added into PATH env.")
+
+
 
 ;; Versioned Dirs: .*
 
@@ -365,7 +369,7 @@ and `funcall' PREFER returns t.
 
 (defsubst env-path+ (path)
 	"Add PATH to %PATH% on Windows and $PATH on *UNX."
-	(when path
+	(when (and path (stringp path))
 		(let ((p (string-trim> (getenv "PATH") path-separator)))
 			(setenv "PATH" (concat p path-separator path)))))
 
@@ -579,5 +583,4 @@ for which (PRED item) returns t."
 				 (point-max))))))
 
 
-;; add versioned "config/" to $PATH
-(env-path+ (v-home! ".exec/"))
+

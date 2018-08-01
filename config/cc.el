@@ -37,7 +37,7 @@
 								 "cd /d \"" (file-name-directory vcvarsall) "\"\n"
 								 "call vcvarsall.bat " (downcase (getenv "PROCESSOR_ARCHITECTURE")) "\n"
 								 "echo \"%INCLUDE%\"\n")
-				 (expand-file-name (v-home% ".exec/" ".cc-env.bat")))))))
+				 (expand-file-name (concat +emacs-exec-home+ "cc-env.bat")))))))
 
 
 (defun check-cc-include ()
