@@ -17,17 +17,17 @@
   "The start time at loading init.el")
 
 
-(defvar emacs-home
-  (if (boundp 'user-emacs-directory)
-      user-emacs-directory
-    "~/.emacs.d/")
-  "The user's emacs home directory")
+(defconst +emacs-home+
+	(expand-file-name (if (boundp 'user-emacs-directory)
+												user-emacs-directory
+											"~/.emacs.d/"))
+	"The user's emacs home directory")
 
 
 (defmacro emacs-home* (&rest subdirs)
-  "Return path of SUBDIRS under `emacs-home'."
+  "Return path of SUBDIRS under `+emacs-home+'."
   (declare (indent 0))
-  `(concat ,emacs-home ,@subdirs))
+  `(concat ,+emacs-home+ ,@subdirs))
 
 
 (defvar v-dir
@@ -36,18 +36,18 @@
 
 
 (defmacro v-home* (subdir &optional file)
-  "Return versioned path of SUBDIR/`v-dir'/FILE under `emacs-home'."
-  `(concat ,emacs-home ,subdir ,v-dir "/" ,file))
+  "Return versioned path of SUBDIR/`v-dir'/FILE under `+emacs-home+'."
+  `(concat ,+emacs-home+ ,subdir ,v-dir "/" ,file))
 
 
 (defmacro v-home% (subdir &optional file)
-  "Return versioned path of SUBDIR/`v-dir'/FILE under `emacs-home' at compile-time."
+  "Return versioned path of SUBDIR/`v-dir'/FILE under `+emacs-home+' at compile-time."
   (let ((_vfile_ (v-home* subdir file)))
     `,_vfile_))
 
 
 (defmacro v-home! (subdir &optional file)
-  "Make versioned SUBDIR/`v-dir/' directory under `emacs-home' and return the versioned path of SUBDIR/`v-dir'/file."
+  "Make versioned SUBDIR/`v-dir/' directory under `+emacs-home+' and return the versioned path of SUBDIR/`v-dir'/file."
   (let ((_vdir_ (v-home* subdir))
         (_vfile_ (v-home* subdir file)))
     (unless (file-exists-p _vdir_)

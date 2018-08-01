@@ -8,7 +8,7 @@
 
 
 
-;; load-path versioned dirs
+;; `load-path' versioned dirs
 (add-to-list 'load-path (v-home% "config/") nil #'string=)
 (add-to-list 'load-path (v-home% "private/") nil #'string=)
 
@@ -363,6 +363,13 @@ and `funcall' PREFER returns t.
       `,path)))
 
 
+(defsubst env-path+ (path)
+	"Add PATH to %PATH% on Windows and $PATH on *UNX."
+	(when path
+		(let ((p (string-trim> (getenv "PATH") path-separator)))
+			(setenv "PATH" (concat p path-separator path)))))
+
+
  ;; end of File Functions
 
 
@@ -564,9 +571,12 @@ for which (PRED item) returns t."
   (when (eq major-mode 'compilation-mode)
     (when-fn% ansi-color-apply-on-region ansi-color
       (let ((buffer-read-only nil))
-	(require 'ansi-color)
-	(ansi-color-apply-on-region
-	 (if-var% compilation-filter-start compile
-		  compilation-filter-start (point-min))
-	 (point-max))))))
+				(require 'ansi-color)
+				(ansi-color-apply-on-region
+				 (if-var% compilation-filter-start compile
+									compilation-filter-start (point-min))
+				 (point-max))))))
 
+
+;; add versioned "config/" to $PATH
+(env-path+ (v-home* "config/"))
