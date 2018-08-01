@@ -40,25 +40,27 @@
 				 (expand-file-name (v-home% "config/" ".cc-env.bat")))))))
 
 
-(platform-supported-if windows-nt
-    
-    (defun check-cc-include ()
-      (let ((cmd (shell-command* (make-cc-env-bat))))
-        (when (zerop (car cmd))
-	  (var->paths
-	   (car (nreverse 
-		 (split-string* (cdr cmd) "\n" t "\"")))))))
 
-  (defun check-cc-include ()
-    (let ((cmd (shell-command* "echo '' | cc -v -E 2>&1 >/dev/null -")))
-      (when (zerop (car cmd))
-	(take-while
-	 (lambda (p)
-	   (string-match "End of search list." p))
-	 (drop-while
-	  (lambda (p)
-	    (string-match "#include <...> search starts here:" p))
-	  (split-string* (cdr cmd) "\n" t "[ \t\n]")))))))
+
+(defun check-cc-include ()
+	"Return cc include paths list."
+	(platform-supported-if windows-nt
+			;; Windows: msvc
+			(let ((cmd (shell-command* (make-cc-env-bat))))
+				(when (zerop (car cmd))
+					(var->paths
+					 (car (nreverse 
+								 (split-string* (cdr cmd) "\n" t "\""))))))
+		;; Darwin/Linux: clang or gcc
+		(let ((cmd (shell-command* "echo '' | cc -v -E 2>&1 >/dev/null -")))
+			(when (zerop (car cmd))
+				(take-while
+				 (lambda (p)
+					 (string-match "End of search list." p))
+				 (drop-while
+					(lambda (p)
+						(string-match "#include <...> search starts here:" p))
+					(split-string* (cdr cmd) "\n" t "[ \t\n]")))))))
 
 
 (defvar system-cc-include nil
@@ -77,18 +79,16 @@ otherwise check cc include on the fly."
         (progn
           (load (concat c "c"))
           system-cc-include)
-      (let ((paths
-             (platform-supported-if windows-nt
-                 (check-cc-include)
-               (platform-supported-if darwin
-                   (mapcar (lambda (x)
-                             (string-trim> x " (framework directory)"))
-                           (check-cc-include))
-                 (check-cc-include)))))
+      (let ((paths (platform-supported-if darwin
+											 (mapcar (lambda (x)
+																 (string-trim> x " (framework directory)"))
+															 (check-cc-include))
+										 (check-cc-include))))
         (when (save-sexp-to-file
                `(setq system-cc-include ',paths) c)
           (byte-compile-file c))
         (setq system-cc-include paths)))))
 
+
 
 (provide 'cc)
