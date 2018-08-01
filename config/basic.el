@@ -385,6 +385,7 @@ otherwise default to keep the directories of current `emacs-version'."
                     `,(emacs-home* ".bookmarks/")
                     `,(emacs-home* ".desktop/")
                     `,(emacs-home* ".eshell/")
+										`,(emacs-home* ".exec/")
                     `,(emacs-home* ".games/")
                     `,(emacs-home* ".ido/")
                     `,(emacs-home* ".dired/")
@@ -579,4 +580,4 @@ for which (PRED item) returns t."
 
 
 ;; add versioned "config/" to $PATH
-(env-path+ (v-home* "config/"))
+(env-path+ (v-home! ".exec/"))
