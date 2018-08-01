@@ -29,17 +29,15 @@
 (platform-supported-when windows-nt
   
   (defun make-cc-env-bat ()
-    (let ((vcvarsall (check-vcvarsall-bat))
-          (arch (downcase (getenv "PROCESSOR_ARCHITECTURE")))
-          (where (expand-file-name (v-home% "config/" ".cc-env.bat"))))
+		"Make .cc-env.bat in `exec-path'."
+    (let ((vcvarsall (check-vcvarsall-bat)))
       (when vcvarsall
         (save-str-to-file 
-         (concat
-          "@echo off\n"
-          "cd /d \"" (file-name-directory vcvarsall) "\"\n"
-          "call vcvarsall.bat " arch "\n"
-          "echo \"%INCLUDE%\"\n")
-				 where)))))
+         (concat "@echo off\n"
+								 "cd /d \"" (file-name-directory vcvarsall) "\"\n"
+								 "call vcvarsall.bat " (downcase (getenv "PROCESSOR_ARCHITECTURE")) "\n"
+								 "echo \"%INCLUDE%\"\n")
+				 (expand-file-name (v-home% "config/" ".cc-env.bat")))))))
 
 
 (platform-supported-if windows-nt
