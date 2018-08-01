@@ -10,26 +10,20 @@
 (platform-supported-when windows-nt
   
   (defun check-vcvarsall-bat ()
+		"Return the path of vcvarsall.bat if which exists."
     (let* ((pfroot (windows-nt-posix-path (getenv "PROGRAMFILES")))
-	   (vswhere (concat
-		     pfroot
-		     " (x86)/Microsoft Visual Studio/Installer/vswhere.exe")))
-      (or (let* ((cmd (shell-command* (shell-quote-argument vswhere)
-			"-nologo -latest -property installationPath"))
-		 (vsroot (and (zerop (car cmd))
-			      (concat
-			       (string-trim> (cdr cmd))
-			       "/VC/Auxiliary/Build/vcvarsall.bat"))))
-	    (when (file-exists-p vsroot) vsroot))
-	  (let* ((mvs (car (directory-files
-			    (concat pfroot
-				    " (x86)/Microsoft Visual Studio")
-			    t "[0-9]+" #'string-greaterp)))
-		 (vsroot (concat
-			  mvs
-			  "/BuildTools/VC/Auxiliary/Build/vcvarsall.bat")))
-	    (when (file-exists-p vsroot)
-	      (windows-nt-posix-path vsroot)))))))
+					 (vsroot (concat pfroot " (x86)/Microsoft Visual Studio/"))
+					 (vswhere (concat vsroot "Installer/vswhere.exe")))
+			(windows-nt-posix-path
+			 (or (let* ((cmd (shell-command* (shell-quote-argument vswhere)
+												 "-nologo -latest -property installationPath"))
+									(bat (and (zerop (car cmd))
+														(concat (string-trim> (cdr cmd))
+																		"/VC/Auxiliary/Build/vcvarsall.bat"))))
+						 (when (file-exists-p bat) bat))
+					 (let* ((ver (car (directory-files vsroot t "[0-9]+" #'string-greaterp)))
+									(bat (concat ver "/BuildTools/VC/Auxiliary/Build/vcvarsall.bat")))
+						 (when (file-exists-p bat) bat)))))))
 
 
 (platform-supported-when windows-nt
@@ -45,7 +39,7 @@
           "cd /d \"" (file-name-directory vcvarsall) "\"\n"
           "call vcvarsall.bat " arch "\n"
           "echo \"%INCLUDE%\"\n")
-	 where)))))
+				 where)))))
 
 
 (platform-supported-if windows-nt
