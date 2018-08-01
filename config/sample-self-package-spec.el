@@ -14,7 +14,7 @@
    :packages '(markdown-mode htmlize))
   (list
    :cond (executable-find% "latex")
-   :packages '(auctex org-tree-slide))
+   :packages '(org-tree-slide))
   (list
    :cond (and (version-supported-p <= 24.4)
               (executable-find% "java"))
