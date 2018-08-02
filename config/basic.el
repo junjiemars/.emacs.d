@@ -177,12 +177,13 @@ Equality is defined by TESTFN if non-nil or by `equal' if nil."
 						`(cl-assoc ,key ,list :test ,testfn)
 			(when-fn% assoc* cl
 				`(with-no-warnings
-					 (require 'cl)
-					 (assoc* ,key ,list :test ,testfn))))))
+					 (progn
+						 (require 'cl)
+						 (assoc* ,key ,list :test ,testfn)))))))
 
 
 (version-supported-if
-		<= 26
+		<= 26.1
 		(defalias 'alist-get* 'alist-get)
 	(defmacro alist-get* (key alist &optional default remove testfn)
 		"Return the value associated with KEY in ALIST.
