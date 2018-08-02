@@ -174,7 +174,9 @@ The value is actually the first element of LIST whose car equals KEY.
 Equality is defined by TESTFN if non-nil or by `equal' if nil."
 		(if-fn% cl-assoc cl-lib
 						;; cl-assoc autoload
-						`(cl-assoc ,key ,list :test ,testfn)
+						`(progn
+							 (require 'cl-lib)
+							 (cl-assoc ,key ,list :test ,testfn))
 			(when-fn% assoc* cl
 				`(with-no-warnings
 					 (require 'cl)

@@ -76,13 +76,7 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
   "Refine VAR like $PATH to list by `path-separator'."
   `(split-string* ,var path-separator t "[ ]+\n"))
 
-
 
-
-
-;; add versioned `+emacs-exec-home+' to $PATH
-(env-path+ +emacs-exec-home+)
-
 
 (defun save-shell-env! ()
   (path-env<- :path (echo-var (shells-spec->% :path-var)))
@@ -163,27 +157,29 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
 
 
+;; add versioned `+emacs-exec-home+' to $PATH
+(env-path+ +emacs-exec-home+)
 
 (when (self-spec->*env-spec :shell :allowed)
   (platform-supported-if windows-nt
 
       ;; shell on Windows-NT 
       (when (file-exists-p (self-spec->*env-spec :shell :bin-path))
-	(read-shell-env!)
-	
-	;; keep `shell-file-name' between `ansi-term' and `shell'
-	(path-env<- :shell-file-name shell-file-name)
-	(with-eval-after-load 'shell (ad-activate #'shell t)))
+				(read-shell-env!)
+				
+				;; keep `shell-file-name' between `ansi-term' and `shell'
+				(path-env<- :shell-file-name shell-file-name)
+				(with-eval-after-load 'shell (ad-activate #'shell t)))
 
     ;; shell on Darwin/Linux
     (read-shell-env!)
     (when (self-spec->*env-spec :shell :bin-path)
       (setenv (shells-spec->% :shell-var)
-	      (self-spec->*env-spec :shell :bin-path)))
+							(self-spec->*env-spec :shell :bin-path)))
     
     (when (self-spec->*env-spec :shell :exec-path)
       (copy-exec-path-var!))
     
     (copy-env-vars! (shell-env-> :env-vars)
-		    (self-spec->*env-spec :shell :env-vars))))
+										(self-spec->*env-spec :shell :env-vars))))
 
