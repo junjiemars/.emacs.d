@@ -45,7 +45,7 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
        (plist-get *default-shell-env* ,k)
      *default-shell-env*))
 
-(defmacro path-env<- (k v)
+(defmacro shell-env<- (k v)
   "Put K and V into `*default-shell-env*'."
   `(plist-put *default-shell-env* ,k ,v))
 
@@ -79,17 +79,17 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
 
 (defun save-shell-env! ()
-  (path-env<- :path (echo-var (shells-spec->% :path-var)))
-  (path-env<- :shell-file-name nil)
-  (path-env<- :exec-path
-							(dolist
-									(p (var->paths (shell-env-> :path)) exec-path)
-								(add-to-list 'exec-path p t #'string=)))
-  (path-env<- :env-vars
-							(let ((vars (self-spec->*env-spec :shell :env-vars))
-										(x nil))
-								(dolist (v vars x)
-									(push (cons v (echo-var v)) x))))
+  (shell-env<- :path (echo-var (shells-spec->% :path-var)))
+  (shell-env<- :shell-file-name nil)
+  (shell-env<- :exec-path
+							 (dolist
+									 (p (var->paths (shell-env-> :path)) exec-path)
+								 (add-to-list 'exec-path p t #'string=)))
+  (shell-env<- :env-vars
+							 (let ((vars (self-spec->*env-spec :shell :env-vars))
+										 (x nil))
+								 (dolist (v vars x)
+									 (push (cons v (echo-var v)) x))))
   (when (save-sexp-to-file
          (list 'setq '*default-shell-env*
                (list 'list
@@ -105,7 +105,7 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
   `(progn
      (if (file-exists-p (shells-spec->% :compiled-file))
          (load (shells-spec->% :compiled-file))
-       (path-env<- :path (getenv (shells-spec->% :path-var))))
+       (shell-env<- :path (getenv (shells-spec->% :path-var))))
      (add-hook 'kill-emacs-hook #'save-shell-env! t)))
 
 
@@ -168,7 +168,7 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 				(read-shell-env!)
 				
 				;; keep `shell-file-name' between `ansi-term' and `shell'
-				(path-env<- :shell-file-name shell-file-name)
+				(shell-env<- :shell-file-name shell-file-name)
 				(with-eval-after-load 'shell (ad-activate #'shell t)))
 
     ;; shell on Darwin/Linux
