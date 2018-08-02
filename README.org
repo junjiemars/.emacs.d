@@ -273,12 +273,10 @@ The default font's spec locate in
 
 *** shell
 
-Suppport any *Shell*, copy environment variables, and on any platforms.
+Suppport any =SHELL=, coping environment variables into Emacs environment.
 
-[[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]]
-has a poor implementation for the same functionalities, it is unstable
-and slow. But here, We had a builtin one, and more stable and more
-faster.
+[[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]] has a poor implementation for the same functionalities,
+it is unstable and slow. But here, We had a better one.
 
 The shell spec locate in =(emacs-home* "private/self-env-spec.el")=
 
