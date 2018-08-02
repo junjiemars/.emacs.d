@@ -176,11 +176,11 @@ Equality is defined by TESTFN if non-nil or by `equal' if nil."
 						;; cl-assoc autoload
 						`(progn
 							 (require 'cl-lib)
-							 (cl-assoc ,key ,list :test ,testfn))
+							 (cl-assoc ,key ,list :test (or ,testfn #'equal)))
 			(when-fn% assoc* cl
 				`(with-no-warnings
 					 (require 'cl)
-					 (assoc* ,key ,list :test ,testfn))))))
+					 (assoc* ,key ,list :test (or ,testfn #'equal)))))))
 
 
 (version-supported-if
@@ -188,12 +188,9 @@ Equality is defined by TESTFN if non-nil or by `equal' if nil."
 		(defalias 'alist-get* 'alist-get)
 	(defmacro alist-get* (key alist &optional default remove testfn)
 		"Return the value associated with KEY in ALIST.
-If KEY is not found in ALIST, return DEFAULT.
-Use TESTFN to lookup in the alist if non-nil.
 
-This is a generalized variable suitable for use with `setf'.
-When using it to set a value, optional argument REMOVE non-nil
-means to remove KEY from ALIST if the new value is `eql' to DEFAULT."
+If KEY is not found in ALIST, return DEFAULT.
+Use TESTFN to lookup in the alist if non-nil, otherwise `equal'."
 		(ignore* remove) ;;silence byte-compiler.
 		`(let ((x (assoc** ,key ,alist ,testfn)))
 			 (if (consp x)
