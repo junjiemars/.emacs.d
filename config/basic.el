@@ -177,9 +177,8 @@ Equality is defined by TESTFN if non-nil or by `equal' if nil."
 						`(cl-assoc ,key ,list :test ,testfn)
 			(when-fn% assoc* cl
 				`(with-no-warnings
-					 (progn
-						 (require 'cl)
-						 (assoc* ,key ,list :test ,testfn)))))))
+					 (require 'cl)
+					 (assoc* ,key ,list :test ,testfn))))))
 
 
 (version-supported-if
