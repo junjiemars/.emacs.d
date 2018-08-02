@@ -168,7 +168,7 @@ for more details about the different forms of FILE and their semantics."
 		<= 26.1
 		(defalias 'assoc** 'assoc)
 	(defmacro  assoc** (key list &optional testfn)
-		"Return non-nil if KEY is equal to the car of an element of LIST.
+		"Return non-nil if KEY is equal to the `car' of an element of LIST.
 
 The value is actually the first element of LIST whose car equals KEY.
 Equality is defined by TESTFN if non-nil or by `equal' if nil."
@@ -181,35 +181,18 @@ Equality is defined by TESTFN if non-nil or by `equal' if nil."
 					 (assoc* ,key ,list :test ,testfn))))))
 
 
-(if-fn% alist-get nil
-				(version-supported-if
-						<= 26
-						(defalias 'alist-get* 'alist-get)
-					(defmacro alist-get* (key alist &optional default remove testfn)
-						"Return the value associated with KEY in ALIST, using `assq'.
-If KEY is not found in ALIST, return DEFAULT.
-
-This is a generalized variable suitable for use with `setf'.
-When using it to set a value, optional argument REMOVE non-nil
-means to remove KEY from ALIST if the new value is `eql' to DEFAULT.
-
-If KEY is not found in ALIST, returns DEFAULT. 
-
-There're no `alist-get' function with TESTFN argument definition in Emacs26-."
-						(ignore* testfn)
-						`(alist-get ,key ,alist ,default ,remove)))
+(version-supported-if
+		<= 26
+		(defalias 'alist-get* 'alist-get)
 	(defmacro alist-get* (key alist &optional default remove testfn)
-		"Return the value associated with KEY in ALIST, using `assq'.
+		"Return the value associated with KEY in ALIST.
 If KEY is not found in ALIST, return DEFAULT.
+Use TESTFN to lookup in the alist if non-nil.
 
 This is a generalized variable suitable for use with `setf'.
 When using it to set a value, optional argument REMOVE non-nil
-means to remove KEY from ALIST if the new value is `eql' to DEFAULT.
-
-If KEY is not found in ALIST, returns DEFAULT. 
-
-There're no `alist-get' function definition in Emacs25-."
-		(ignore* remove testfn) ;;silence byte-compiler.
+means to remove KEY from ALIST if the new value is `eql' to DEFAULT."
+		(ignore* remove) ;;silence byte-compiler.
 		`(let ((x (assoc** ,key ,alist ,testfn)))
 			 (if (consp x)
 					 (cdr x)
