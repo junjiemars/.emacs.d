@@ -115,18 +115,20 @@
 
 (defsubst string-trim> (s &optional rr)
   "Remove whitespaces or the matching of RR at the end of S."
-  (let ((r (if rr (concat rr "\\'") "[ \t\n\r]+\\'" )))
-    (if (string-match r s)
-				(replace-match "" t t s)
-      s)))
+	(when (stringp s)
+		(let ((r (if rr (concat rr "\\'") "[ \t\n\r]+\\'" )))
+			(if (string-match r s)
+					(replace-match "" t t s)
+				s))))
 
 
 (defsubst string-trim< (s &optional lr)
   "Remove leading whitespace or the matching of LR from S."
-  (let ((r (if lr (concat "\\`" lr) "\\`[ \t\n\r]+")))
-    (if (string-match r s)
-				(replace-match "" t t s)
-      s)))
+	(when (stringp s)
+		(let ((r (if lr (concat "\\`" lr) "\\`[ \t\n\r]+")))
+			(if (string-match r s)
+					(replace-match "" t t s)
+				s))))
 
 
 (defsubst string-trim>< (s &optional rr lr)

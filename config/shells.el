@@ -49,46 +49,47 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
   "Put K and V into `*default-shell-env*'."
   `(plist-put *default-shell-env* ,k ,v))
 
-(defmacro echo-var (var &optional echo-format)
+(defmacro echo-var (var shell options)
   "Return the value of $VAR via echo."
-  `(let ((cmd (shell-command*
-									(format (if ,echo-format ,echo-format
-														(platform-supported-if windows-nt
-																(shells-spec->% :echo-format)
-															(if (self-spec->*env-spec :shell :interactive-shell)
-																	(alist-get* :interactive-shell
-																							(shells-spec->% :echo-format))
-																(alist-get* :login-shell
-																						(shells-spec->% :echo-format)))))
-													,var))))
-		 (when (zerop (car cmd))
-			 (cdr cmd))))
+  `(when (and (stringp ,var) (stringp ,shell))
+		 (let ((cmd (shell-command* (shell-quote-argument ,shell)
+									(and (consp ,options)
+											 (mapconcat #'identity ,options " "))
+									(format "-c 'echo $%s'" ,var))))
+			 (when (zerop (car cmd))
+				 (string-trim> (cdr cmd))))))
 
 
 (defmacro paths->var (path sep)
   "Convert a list of PATH to $PATH like var that separated by SEP."
   `(string-trim>
-    (apply #'concat
-           (mapcar #'(lambda (s) (concat s ,sep)) ,path))
+		(apply #'concat
+					 (mapcar #'(lambda (s) (concat s ,sep)) ,path))
 		,sep))
 
 (defmacro var->paths (var)
   "Refine VAR like $PATH to list by `path-separator'."
-  `(split-string* ,var path-separator t "[ ]+\n"))
+  `(when (stringp ,var)
+		 (split-string* ,var path-separator t "[ ]+\n")))
 
 
 
 (defun save-shell-env! ()
-  (shell-env<- :path (echo-var (shells-spec->% :path-var)))
+  (shell-env<- :path (echo-var (shells-spec->% :path-var)
+															 (self-spec->*env-spec :shell :bin-path)
+															 (self-spec->*env-spec :shell :interactive-shell)))
   (shell-env<- :shell-file-name nil)
   (shell-env<- :exec-path
 							 (dolist (p (var->paths (shell-env-> :path)) exec-path)
-								 (when p (add-to-list 'exec-path p t #'string=))))
+								 (when (stringp p) (add-to-list 'exec-path p t #'string=))))
   (shell-env<- :env-vars
 							 (let ((vars (self-spec->*env-spec :shell :env-vars))
 										 (x nil))
 								 (dolist (v vars x)
-									 (when v (push (cons v (echo-var v)) x)))))
+									 (let ((v1 (echo-var v
+																			 (self-spec->*env-spec :shell :bin-path)
+																			 (self-spec->*env-spec :shell :interactive-shell))))
+										 (when v1 (push (cons v v1) x))))))
   (when (save-sexp-to-file
          (list 'setq '*default-shell-env*
                (list 'list
