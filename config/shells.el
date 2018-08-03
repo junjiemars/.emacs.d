@@ -110,12 +110,14 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
 (defmacro copy-env-vars! (env vars)
   `(dolist (v ,vars)
-     (setenv v (cdr (assoc-string v ,env)))))
+		 (when v (let ((v1 (alist-get* v ,env nil nil #'string=)))
+							 (when v1 (setenv v v1))))))
 
 
 (defmacro copy-exec-path-var! ()
   `(progn
-     (setenv (shells-spec->% :path-var) (shell-env-> :path))
+		 (when (shell-env-> :path)
+			 (setenv (shells-spec->% :path-var) (shell-env-> :path)))
      (when (shell-env-> :exec-path)
        (setq exec-path (shell-env-> :exec-path)))))
 
