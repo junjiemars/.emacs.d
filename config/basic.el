@@ -190,7 +190,7 @@ Equality is defined by TESTFN if non-nil or by `equal' if nil."
 		"Return the value associated with KEY in ALIST.
 
 If KEY is not found in ALIST, return DEFAULT.
-Use TESTFN to lookup in the alist if non-nil, otherwise `equal'."
+Use TESTFN to lookup in the alist if non-nil, otherwise use `equal'."
 		(ignore* remove) ;;silence byte-compiler.
 		`(let ((x (assoc** ,key ,alist ,testfn)))
 			 (if (consp x)
