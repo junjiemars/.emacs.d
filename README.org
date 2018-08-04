@@ -386,12 +386,9 @@ The default package spec locate in
 
 #+BEGIN_SRC emacs-lisp
     (def-self-package-spec
-		  (list
-			 :cond t
-			 :packages '(markdown-mode htmlize org-tree-slide))
-			(list
-			 :cond (executable-find% "latex")
-			 :packages '(auctex cdlatex))
+      (list
+       :cond t
+       :packages '(markdown-mode htmlize org-tree-slide))
       (list
        :cond (executable-find% "latex")
        :packages '(auctex cdlatex))
