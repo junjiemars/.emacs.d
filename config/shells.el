@@ -19,15 +19,7 @@
 						 
 						 :shell-var "SHELL"
 						 
-						 :path-var "PATH"
-						 
-						 :echo-format
-						 ,(platform-supported-if windows-nt
-									"echo %%%s%% 2>/nul"
-								`'((:interactive-shell
-										. "$SHELL -l -i -c 'echo -n $%s' 2>/dev/null")
-									 (:login-shell
-										. "$SHELL -l -c 'echo -n $%s' 2>/dev/null"))))
+						 :path-var "PATH")
      ,@keys))
 
 
