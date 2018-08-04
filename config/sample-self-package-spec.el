@@ -11,10 +11,10 @@
 (def-self-package-spec
   (list
    :cond t
-   :packages '(markdown-mode htmlize))
+   :packages '(markdown-mode htmlize org-tree-slide))
   (list
    :cond (executable-find% "latex")
-   :packages '(org-tree-slide))
+   :packages '(auctex cdlatex))
   (list
    :cond (and (version-supported-p <= 24.4)
               (executable-find% "java"))

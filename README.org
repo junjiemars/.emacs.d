@@ -287,7 +287,7 @@ The shell spec locate in =(emacs-home* "private/self-env-spec.el")=
                               (platform-supported-if darwin
                                   "DYLD_LIBRARY_PATH"
                                 "LD_LIBRARY_PATH")))
-							 :options '("--login")
+               :options '("--login")
                :exec-path t
                :shell-file-name (eval-when-compile (executable-find "bash"))
                :allowed nil)
@@ -386,6 +386,12 @@ The default package spec locate in
 
 #+BEGIN_SRC emacs-lisp
     (def-self-package-spec
+		  (list
+			 :cond t
+			 :packages '(markdown-mode htmlize org-tree-slide))
+			(list
+			 :cond (executable-find% "latex")
+			 :packages '(auctex cdlatex))
       (list
        :cond (executable-find% "latex")
        :packages '(auctex cdlatex))
