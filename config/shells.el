@@ -165,7 +165,7 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
   (platform-supported-if windows-nt
 
       ;; shell on Windows-NT 
-      (when (file-exists-p (shells-spec->* :shell-file-name))
+      (when (shells-spec->* :shell-file-name)
 				(read-shell-env!)
 				
 				;; keep `shell-file-name' between `ansi-term' and `shell'
