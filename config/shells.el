@@ -9,6 +9,7 @@
 
 (defmacro shells-spec->% (&rest keys)
   "Extract value from the list of spec via KEYS at compile time."
+	(declare (indent 0))
   `(self-spec->%
 			 (list :source-file
 						 ,(concat (v-home% "config/") ".shell-env.el")
@@ -28,6 +29,12 @@
 									 (:login-shell
 										. "$SHELL -l -c 'echo -n $%s' 2>/dev/null"))))
      ,@keys))
+
+
+(defmacro shells-spec->* (&rest keys)
+	"Extract value from the list of :shell spec via KEYS at runtime."
+	(declare (indent 0))
+	 `(self-spec->*env-spec :shell ,@keys))
 
 
 (defvar *default-shell-env*
@@ -76,19 +83,19 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
 (defun save-shell-env! ()
   (shell-env<- :path (echo-var (shells-spec->% :path-var)
-															 (self-spec->*env-spec :shell :bin-path)
-															 (self-spec->*env-spec :shell :interactive-shell)))
+															 (shells-spec->* :bin-path)
+															 (shells-spec->* :interactive-shell)))
   (shell-env<- :shell-file-name nil)
   (shell-env<- :exec-path
 							 (dolist (p (var->paths (shell-env-> :path)) exec-path)
 								 (when (stringp p) (add-to-list 'exec-path p t #'string=))))
   (shell-env<- :env-vars
-							 (let ((vars (self-spec->*env-spec :shell :env-vars))
+							 (let ((vars (shells-spec->* :env-vars))
 										 (x nil))
 								 (dolist (v vars x)
 									 (let ((v1 (echo-var v
-																			 (self-spec->*env-spec :shell :bin-path)
-																			 (self-spec->*env-spec :shell :interactive-shell))))
+																			 (shells-spec->* :bin-path)
+																			 (shells-spec->* :interactive-shell))))
 										 (when v1 (push (cons v v1) x))))))
   (when (save-sexp-to-file
          (list 'setq '*default-shell-env*
@@ -139,7 +146,7 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
   (defadvice shell (before shell-before compile)
     (setenv (shells-spec->% :shell-var)
-	    (self-spec->*env-spec :shell :bin-path))
+	    (shells-spec->* :bin-path))
     (setenv (shells-spec->% :path-var)
 	    (windows-nt-unix-path (shell-env-> :path)))
     (setq shell-file-name (getenv (shells-spec->% :shell-var)))))
@@ -162,11 +169,11 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 ;; add versioned `+emacs-exec-home+' to $PATH
 (env-path+ +emacs-exec-home+)
 
-(when (self-spec->*env-spec :shell :allowed)
+(when (shells-spec->* :allowed)
   (platform-supported-if windows-nt
 
       ;; shell on Windows-NT 
-      (when (file-exists-p (self-spec->*env-spec :shell :bin-path))
+      (when (file-exists-p (shells-spec->* :bin-path))
 				(read-shell-env!)
 				
 				;; keep `shell-file-name' between `ansi-term' and `shell'
@@ -175,13 +182,13 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
     ;; shell on Darwin/Linux
     (read-shell-env!)
-    (when (self-spec->*env-spec :shell :bin-path)
+    (when (shells-spec->* :bin-path)
       (setenv (shells-spec->% :shell-var)
-							(self-spec->*env-spec :shell :bin-path)))
+							(shells-spec->* :bin-path)))
     
-    (when (self-spec->*env-spec :shell :exec-path)
+    (when (shells-spec->* :exec-path)
       (copy-exec-path-var!))
     
     (copy-env-vars! (shell-env-> :env-vars)
-										(self-spec->*env-spec :shell :env-vars))))
+										(shells-spec->* :env-vars))))
 
