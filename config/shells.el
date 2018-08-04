@@ -75,8 +75,8 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
 (defun save-shell-env! ()
   (shell-env<- :path (echo-var (shells-spec->% :path-var)
-															 (shells-spec->* :bin-path)
-															 (shells-spec->* :interactive-shell)))
+															 (shells-spec->* :shell-file-name)
+															 (shells-spec->* :options)))
   (shell-env<- :shell-file-name nil)
   (shell-env<- :exec-path
 							 (dolist (p (var->paths (shell-env-> :path)) exec-path)
@@ -86,8 +86,8 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 										 (x nil))
 								 (dolist (v vars x)
 									 (let ((v1 (echo-var v
-																			 (shells-spec->* :bin-path)
-																			 (shells-spec->* :interactive-shell))))
+																			 (shells-spec->* :shell-file-name)
+																			 (shells-spec->* :options))))
 										 (when v1 (push (cons v v1) x))))))
   (when (save-sexp-to-file
          (list 'setq '*default-shell-env*
@@ -138,7 +138,7 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
   (defadvice shell (before shell-before compile)
     (setenv (shells-spec->% :shell-var)
-	    (shells-spec->* :bin-path))
+	    (shells-spec->* :shell-file-name))
     (setenv (shells-spec->% :path-var)
 	    (windows-nt-unix-path (shell-env-> :path)))
     (setq shell-file-name (getenv (shells-spec->% :shell-var)))))
@@ -165,7 +165,7 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
   (platform-supported-if windows-nt
 
       ;; shell on Windows-NT 
-      (when (file-exists-p (shells-spec->* :bin-path))
+      (when (file-exists-p (shells-spec->* :shell-file-name))
 				(read-shell-env!)
 				
 				;; keep `shell-file-name' between `ansi-term' and `shell'
@@ -174,9 +174,9 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
     ;; shell on Darwin/Linux
     (read-shell-env!)
-    (when (shells-spec->* :bin-path)
+    (when (shells-spec->* :shell-file-name)
       (setenv (shells-spec->% :shell-var)
-							(shells-spec->* :bin-path)))
+							(shells-spec->* :shell-file-name)))
     
     (when (shells-spec->* :exec-path)
       (copy-exec-path-var!))

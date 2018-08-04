@@ -39,9 +39,9 @@
                               (platform-supported-if darwin
                                   "DYLD_LIBRARY_PATH"
                                 "LD_LIBRARY_PATH")))
-               :interactive-shell (platform-supported-if darwin t nil)
+							 :options '("--login")
                :exec-path t
-               :bin-path (eval-when-compile (executable-find "bash"))
+               :shell-file-name (eval-when-compile (executable-find "bash"))
                :allowed nil)
   
   :desktop (list :files-not-to-save

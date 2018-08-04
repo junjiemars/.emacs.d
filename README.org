@@ -281,18 +281,24 @@ it is unstable and slow. But here, We had a better one.
 The shell spec locate in =(emacs-home* "private/self-env-spec.el")=
 
 #+BEGIN_SRC emacs-lisp
-    (def-self-env-spec
-      :shell (list :env-vars `("JAVA_HOME"
-                               "PYTHONPATH"
-                               ,(platform-supported-unless windows-nt
-                                  (platform-supported-if darwin
-                                      "DYLD_LIBRARY_PATH"
-                                    "LD_LIBRARY_PATH")))
-                   :interactive-shell (platform-supported-unless darwin t nil)
-                   :exec-path t
-                   :bin-path (eval-when-compile (executable-find "bash"))
-                   :allowed t))
+  :shell (list :env-vars `("JAVA_HOME"
+                           "PYTHONPATH"
+                           ,(platform-supported-unless windows-nt
+                              (platform-supported-if darwin
+                                  "DYLD_LIBRARY_PATH"
+                                "LD_LIBRARY_PATH")))
+							 :options '("--login")
+               :exec-path t
+               :shell-file-name (eval-when-compile (executable-find "bash"))
+               :allowed nil)
+
 #+END_SRC
+
+- =:env-vars= copy what environment variables from shell to Emacs
+- =:options= a list of shell's options
+- =:exec-path= copy =$PATH= or =%PATH%= to =exec-path=
+- =:shell-file-name= where the shell located
+- =:allowed= =t= allowed, =nil= disabled
 
 *** eshell
     :PROPERTIES:
@@ -358,8 +364,8 @@ Don't tell me [[https://github.com/jwiegley/use-package][use-package]],
 it's trying to redefine Emacs. Here you can find more simpler and faster
 way to implement almost functionalities that =use-pacakge= does.
 
-There are two types of packages: *basic* (just like Emacs' builtin) and
-*user defined*. To disable *user defined* packages in
+There are two types of packages: *basic* (just like Emacs' builtin)
+and *user defined*. To disable *user defined* packages in
 =(def-self-path-ref)=, disable both *basic* and *user defined* packages
 can be done in =(def-self-env-spec)=.
 
