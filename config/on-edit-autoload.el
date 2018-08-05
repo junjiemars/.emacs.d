@@ -131,7 +131,7 @@
   ;; 			 electric)
   
   ;; default tab-width
-  (setq-default tab-width (self-spec->*env-spec :edit :tab-with))
+  (setq-default tab-width (self-spec->*env-spec :edit :tab-width))
 
   (setq auto-save-default (self-spec->*env-spec :edit :auto-save-default)))
 

@@ -66,7 +66,7 @@
   :package (list :remove-unused nil
 								 :allowed nil)
 
-  :edit (list :tab-with 2
+  :edit (list :tab-width 2
 							:auto-save-default nil
 							:allowed t)
   

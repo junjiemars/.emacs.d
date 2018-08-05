@@ -344,6 +344,12 @@ The desktop spec locate in =(emacs-home* "private/self-env-spec.el")=
                      :allowed t))
 #+END_SRC
 
+- =:files-not-to-save= @@html:<kbd>@@C-h-v desktop-files-not-to-save@@html:</kbd>@@
+- =:buffers-not-to-save= @@html:<kbd>@@C-h-v desktop-buffers-not-to-save@@html:</kbd>@@
+- =:modes-not-to-save= @@html:<kbd>@@C-h-v desktop-modes-not-to-save@@html:</kbd>@@
+- =:restore-eager= @@html:<kbd>@@C-h-v desktop-restore-eager@@html:</kbd>@@
+- =:allowed= =t= enabled, =nil= disabled
+
 ** Socks
     :PROPERTIES:
     :CUSTOM_ID: socks
@@ -360,6 +366,11 @@ The socks spec locate in =(emacs-home* "private/self-env-spec.el")=
                    :version 5
                    :allowed nil))
 #+END_SRC
+
+- =:port= the port of socks proxy server
+- =:server= the address of socks proxy server
+- =:version= socks version
+- =:allowed= =t= enabled, =nil= disabled
 
 If =:allowed t=, =url-gateway-method= should be switch to =socks= when
 Emacs initializing. After Emacs initialization, you can =toggle-socks!=
@@ -454,10 +465,14 @@ Avoiding a war.
 
 #+BEGIN_SRC emacs-lisp
     (def-self-env-spec
-      :edit (list :tab-with 2
+      :edit (list :tab-width 2
                   :auto-save-default nil
                   :allowed t)
 #+END_SRC
+
+- =:tab-width= default @@html:<kbd>@@C-h-v tab-width@html:</kbd>@@
+- =:auto-save-default= @@html:<kbd>@@C-h-v auto-save-default@@html:</kbd>@@
+- =:allowed= =t= enabled, =nil= disabled
 
 ** File
     :PROPERTIES:
