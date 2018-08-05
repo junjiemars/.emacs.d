@@ -434,30 +434,32 @@ positive, otherwise via native."
     (let ((native `((:url-gateway-method . native)
 										(:socks-server . nil)))
 					(socks `((:url-gateway-method . socks)
-									 (:socks-server
-										. 
-										,(list "Default server"
-													 (self-spec->*env-spec :socks :server)
-													 (self-spec->*env-spec :socks :port)
-													 (self-spec->*env-spec :socks :version))))))
+									 (:socks-server . ,(list "Default server"
+																					 (self-spec->*env-spec :socks :server)
+																					 (self-spec->*env-spec :socks :port)
+																					 (self-spec->*env-spec :socks :version))))))
       (require 'url)
       (if (null arg)
 					(if (eq url-gateway-method 'native)
-							(setq-default
-							 url-gateway-method (alist-get* :url-gateway-method socks)
-							 socks-server (alist-get* :socks-server socks))
-						(setq-default
-						 url-gateway-method (alist-get* :url-gateway-method native)
-						 socks-server (alist-get* :socks-server native)))
-				(setq-default
-				 url-gateway-method (alist-get* :url-gateway-method socks)
-				 socks-server (alist-get* :socks-server socks)))
+							(setq-default url-gateway-method
+														(alist-get* :url-gateway-method socks nil nil #'eq)
+														socks-server
+														(alist-get* :socks-server socks nil nil #'eq))
+						(setq-default url-gateway-method
+													(alist-get* :url-gateway-method native nil nil #'eq)
+													socks-server
+													(alist-get* :socks-server native nil nil #'eq)))
+				(setq-default url-gateway-method
+											(alist-get* :url-gateway-method socks nil nil #'eq)
+											socks-server
+											(alist-get* :socks-server socks nil nil #'eq)))
       (message "socks%s as url gateway %s"
 							 (or (when (eq url-gateway-method 'socks)
-										 (cdr (alist-get* :socks-server socks)))
+										 (cdr (alist-get* :socks-server socks nil nil #'eq)))
 									 "")
 							 (if (eq url-gateway-method 'native)
-									 "disabled" "enabled")))))
+									 "disabled"
+								 "enabled")))))
 
 (feature-socks-supported-p
 	(when (self-spec->*env-spec :socks :allowed)
