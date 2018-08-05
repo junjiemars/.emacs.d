@@ -229,8 +229,10 @@ The theme's spec locate in =(emacs-home* "private/self-env-spec.el")=
                    :allowed t))
 #+END_SRC
 
-Compiled theme more smooth and more faster if you had already confirmed
-the theme is secure.
+- =:path= where 3rd theme located
+- =:compile= =t= compile theme, compiled theme more smooth and more faster
+	if you had already confirmed the theme is secure.
+- =:allowed= =t= enabled, =nil= disabled
 
 
 Using Emacs's builtin themes(@@html:<kbd>@@M x customize-themes@@html:</kbd>@@) :
@@ -254,7 +256,7 @@ a new one. The default encoding is
 [[https://en.wikipedia.org/wiki/UTF-8][UTF-8]].
 
 The default font's spec locate in
-=(emacs-home* "private/self-env-spec.el")=
+=(emacs-home* "private/self-env-spec.el")= and for GUI mode only.
 
 #+BEGIN_SRC emacs-lisp
     (def-self-env-spec
@@ -265,6 +267,9 @@ The default font's spec locate in
                             "DejaVu Sans Mono-12")) 
                   :allowed t))
 #+END_SRC
+
+- =:name= font name
+- =:allowed= =t= enabled, =nil= disabled
 
 ** Shell
     :PROPERTIES:
@@ -315,6 +320,11 @@ The eshell spec locate in =(emacs-home* "private/self-env-spec.el")=
                     :visual-options nil
                     :allowed t))
 #+END_SRC
+
+- =:visual-commands= @@html:<kbd>@@C-h-v eshell-visual-commands@@html:</kbd>@@
+- =:destroy-buffer-when-process-dies= @@html:<kbd>@@C-h-v eshell-destroy-buffer-when-process-dies@@html:</kbd>@@
+- =:visual-subcommands= @@html:<kbd>@@C-h-v eshell-visual-subcommands@@html:</kbd>@@
+- =:visual-options= @@html:<kbd>@@C-h-v eshell-visual-options@@html:</kbd>@@
 
 ** Session
     :PROPERTIES:
