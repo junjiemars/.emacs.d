@@ -470,7 +470,7 @@ Avoiding a war.
                   :allowed t)
 #+END_SRC
 
-- =:tab-width= default @@html:<kbd>@@C-h-v tab-width@html:</kbd>@@
+- =:tab-width= default @@html:<kbd>@@C-h-v tab-width@@html:</kbd>@@
 - =:auto-save-default= @@html:<kbd>@@C-h-v auto-save-default@@html:</kbd>@@
 - =:allowed= =t= enabled, =nil= disabled
 
