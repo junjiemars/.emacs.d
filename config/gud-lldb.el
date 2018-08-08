@@ -151,7 +151,7 @@ debugger arguments before running the debugger.
 "
   (ignore* file)
   (append (loop for x in gud-lldb-command-line-hook
-		when (functionp x) append (funcall x)) args))
+								when (functionp x) append (funcall x)) args))
 
 
 (defun gud-lldb-marker-filter (string)
@@ -165,22 +165,22 @@ can filter the debugger's output, interpreting some and passing on
 the rest.
 "
   (setq gud-marker-acc (if gud-marker-acc
-			   (concat gud-marker-acc string)
-			 string))
+													 (concat gud-marker-acc string)
+												 string))
 
   (cond ((string-match "[ \t]*at \\([^:]+\\):\\([0-9]+\\)" string)
-	 ;; (lldb) r
-	 ;; Process 2353 launched: '/opt/lab/c/spot/out/bin/spot' (x86_64)
-	 ;; Process 2353 stopped
-	 ;; * thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
-	 ;;   frame #0: 0x0000000100000f66 spot`main(argc=1, argv=0x00007ffeefbffa58) at c.c:13
-	 (setq gud-last-frame (cons (match-string 1 string)
-				    (string-to-number (match-string 2 string)))))
+				 ;; (lldb) r
+				 ;; Process 2353 launched: '/opt/lab/c/spot/out/bin/spot' (x86_64)
+				 ;; Process 2353 stopped
+				 ;; * thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
+				 ;;   frame #0: 0x0000000100000f66 spot`main(argc=1, argv=0x00007ffeefbffa58) at c.c:13
+				 (setq gud-last-frame (cons (match-string 1 string)
+																		(string-to-number (match-string 2 string)))))
 	
-	((string-match "Process [0-9]+ exited with status = .*" string)
-	 ;; Process 13155 exited with status = 0 (0x00000000)						 
-	 (setq gud-last-last-frame nil)
-	 (setq gud-overlay-arrow-position nil)))
+				((string-match "Process [0-9]+ exited with status = .*" string)
+				 ;; Process 13155 exited with status = 0 (0x00000000)						 
+				 (setq gud-last-last-frame nil)
+				 (setq gud-overlay-arrow-position nil)))
   string)
 
 
@@ -196,9 +196,9 @@ and source-file directory for your debugger."
   (interactive (list (gud-query-cmdline 'lldb)))
   
   (gud-common-init command-line
-		   #'gud-lldb-massage-args
-		   #'gud-lldb-marker-filter
-		   #'gud-lldb-find-file)
+									 #'gud-lldb-massage-args
+									 #'gud-lldb-marker-filter
+									 #'gud-lldb-find-file)
   
   (set (make-local-variable 'gud-minor-mode) 'lldb)
 
