@@ -137,8 +137,8 @@ something else.
   (save-excursion
     (let ((f (lldb-file-name filename)))
       (if f
-	  (find-file-noselect f t)
-	(find-file-noselect filename 'nowarn)))))
+					(find-file-noselect f t)
+				(find-file-noselect filename 'nowarn)))))
 
 
 (defun gud-lldb-massage-args (file args)
