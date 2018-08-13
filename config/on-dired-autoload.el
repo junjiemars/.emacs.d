@@ -34,6 +34,22 @@
 																'("\\.zip\\'" ".zip" "unzip")))))))
 
 
+(platform-supported-when windows-nt
+
+  (with-eval-after-load 'dired
+		;; prefer GNU find on Windows, such for `find-dired' or `find-name-dired'.
+		(let ((find (executable-find%
+								 "find"
+								 (lambda (bin)
+									 (let ((ver (shell-command* bin "--version")))
+										 (when (zerop (car ver))
+											 (string-match "^find (GNU findutils)"
+																		 (cdr ver))))))))
+			(when find (setq% find-program (shell-quote-argument find) grep)))))
+
+ ;; end of `dired' setting
+
+
 (platform-supported-unless gnu/linux
 
 	(with-eval-after-load 'ido
@@ -62,3 +78,4 @@
 (ido-mode t)
 
 
+ ;; end of `ido-dired' setting

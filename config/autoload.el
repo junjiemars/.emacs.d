@@ -61,7 +61,6 @@
     
     (compile-unit (emacs-home* "config/on-compile-autoload.el"))
     (compile-unit (emacs-home* "config/on-dired-autoload.el"))
-    (compile-unit (emacs-home* "config/on-grep-autoload.el"))
     (compile-unit (emacs-home* "config/on-edit-autoload.el"))
     (compile-unit (emacs-home* "config/on-hippie-autoload.el"))
     (compile-unit (emacs-home* "config/on-lisp-autoload.el"))
