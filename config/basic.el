@@ -351,16 +351,20 @@ and `funcall' PREFER returns t.
       `,path)))
 
 
-(defsubst env-path+ (path)
-	"Add PATH to %PATH% on Windows and $PATH on *UNX.
-
-Return $PATH string if successed, otherwise return nil."
-	(when (and path (stringp path))
-		(let ((p (getenv "PATH")))
-			(unless (string-match path p)
-				(setenv "PATH" (concat
-												(string-trim> p path-separator)
-												path-separator path))))))
+(defsubst path+ (path append &rest paths)
+	"Append a list of PATHS to PATH when APPEND is t, otherwise insert before the head of PATH."
+	(declare (indent 2))
+	(let* ((trim (lambda (x)
+								 (string-trim>< x path-separator path-separator)))
+				 (s (cond ((null path) (mapconcat trim paths path-separator))
+									((null paths) path)
+									(t (let ((p (mapconcat trim paths path-separator)))
+											 (if append
+													 (concat (funcall trim path)
+																	 path-separator p)
+												 (concat p path-separator
+																 (funcall trim path))))))))
+		(if (string= "" s) nil s)))
 
 
  ;; end of File Functions

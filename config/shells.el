@@ -158,8 +158,9 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
 
 
-;; add versioned `+emacs-exec-home+' to $PATH
-(env-path+ +emacs-exec-home+)
+;; append versioned `+emacs-exec-home+' to $PATH
+(setenv "PATH" (path+ (getenv "PATH") t +emacs-exec-home+))
+
 
 (when (shells-spec->* :allowed)
   (platform-supported-if windows-nt
