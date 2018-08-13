@@ -54,7 +54,7 @@
 
 (defun set-flavor-mode! ()
 
-  (compile! v-dir
+  (compile! +v-dir+
     (compile-unit (emacs-home* "config/cc.el") t)
     (compile-unit (emacs-home* "config/financial.el") t)
     (compile-unit (emacs-home* "config/tags.el") t)
@@ -108,7 +108,7 @@
 ;; set-self-epilogue!
 (defun set-self-epilogue! ()
   (compile!
-      v-dir
+      +v-dir+
     (compile-unit (self-def-path-ref-> :epilogue))))
 
  ;; end of set-self-epilogue!

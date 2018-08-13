@@ -30,24 +30,24 @@
   `(concat ,+emacs-home+ ,@subdirs))
 
 
-(defvar v-dir
-  (concat (if (display-graphic-p) "g_" "t_") emacs-version)
-  "Versioned dir based on [g]rahpic/[t]erminal mode and Emacs's version")
+(defconst +v-dir+
+	(concat (if (display-graphic-p) "g_" "t_") emacs-version)
+	"Versioned dir based on [g]rahpic/[t]erminal mode and Emacs's version")
 
 
 (defmacro v-home* (subdir &optional file)
-  "Return versioned path of SUBDIR/`v-dir'/FILE under `+emacs-home+'."
-  `(concat ,+emacs-home+ ,subdir ,v-dir "/" ,file))
+  "Return versioned path of SUBDIR/`+v-dir+'/FILE under `+emacs-home+'."
+  `(concat ,+emacs-home+ ,subdir ,+v-dir+ "/" ,file))
 
 
 (defmacro v-home% (subdir &optional file)
-  "Return versioned path of SUBDIR/`v-dir'/FILE under `+emacs-home+' at compile-time."
+  "Return versioned path of SUBDIR/`+v-dir+'/FILE under `+emacs-home+' at compile-time."
   (let ((_vfile_ (v-home* subdir file)))
     `,_vfile_))
 
 
 (defmacro v-home! (subdir &optional file)
-  "Make versioned SUBDIR/`v-dir/' directory under `+emacs-home+' and return the versioned path of SUBDIR/`v-dir'/file."
+  "Make versioned SUBDIR/`+v-dir+/' directory under `+emacs-home+' and return the versioned path of SUBDIR/`+v-dir+'/file."
   (let ((_vdir_ (v-home* subdir))
         (_vfile_ (v-home* subdir file)))
     (unless (file-exists-p _vdir_)
@@ -206,7 +206,7 @@ sequentially and return value of last one, or nil if there are none."
 
 ;; Load strap
 (compile-and-load-file*
- v-dir
+ +v-dir+
  (emacs-home* "config/strap.el"))
 
 

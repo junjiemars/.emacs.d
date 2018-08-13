@@ -125,9 +125,9 @@
 
 (package-spec-:allowed-p
   ;; Load basic package spec
-  (parse-package-spec! v-dir basic-package-spec
-		       (self-spec->*env-spec :package :remove-unused))
+  (parse-package-spec! +v-dir+ basic-package-spec
+											 (self-spec->*env-spec :package :remove-unused))
   ;; Load self packages spec
-  (parse-package-spec! v-dir (self-spec->*package-spec)
-		       (self-spec->*env-spec :package :remove-unused)))
+  (parse-package-spec! +v-dir+ (self-spec->*package-spec)
+											 (self-spec->*env-spec :package :remove-unused)))
 

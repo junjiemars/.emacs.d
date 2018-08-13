@@ -357,7 +357,7 @@ Take effect after restart Emacs.
 ;; self-spec macro
 
 (compile!
-    v-dir
+    +v-dir+
   (compile-unit self-def-where))
 
 
@@ -404,7 +404,7 @@ Take effect after restart Emacs.
 
 
 (compile!
-    v-dir
+    +v-dir+
   (compile-unit (self-def-path-ref-> :env-spec)))
 
  ;; end of self-spec macro
@@ -413,7 +413,7 @@ Take effect after restart Emacs.
 ;; Load ui, shell, basic env:
 
 (compile!
-    v-dir
+    +v-dir+
   (compile-unit (emacs-home* "config/boot.el"))
   (compile-unit (emacs-home* "config/basic.el"))
   (compile-unit (emacs-home* "config/shells.el")))
@@ -421,7 +421,7 @@ Take effect after restart Emacs.
 
 ;; Self do prologue ...
 (compile!
-    v-dir
+    +v-dir+
   (compile-unit (self-def-path-ref-> :prologue)))
 
 
@@ -430,14 +430,14 @@ Take effect after restart Emacs.
 
   ;; Load basic and self modules
   (compile!
-      v-dir
+      +v-dir+
     (compile-unit (self-def-path-ref-> :package-spec))
     (compile-unit (emacs-home* "config/module.el"))))
 
 
 ;; Load package independent modules
 (compile!
-    v-dir
+    +v-dir+
   (compile-unit (emacs-home* "config/on-module.el"))
   (compile-unit (emacs-home* "config/eshells.el"))
   (compile-unit (emacs-home* "config/autoload.el"))
