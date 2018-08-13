@@ -30,10 +30,8 @@
 
 
 (defvar *default-shell-env*
-  (list :path nil
-        :shell-file-name nil
-        :exec-path nil
-        :env-vars nil)
+  (list :exec-path nil
+				:env-vars nil)
   "Default shell environments, 
 get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
@@ -74,10 +72,6 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
 
 (defun save-shell-env! ()
-  (shell-env<- :path (echo-var (shells-spec->% :path-var)
-															 (shells-spec->* :shell-file-name)
-															 (shells-spec->* :options)))
-  (shell-env<- :shell-file-name nil)
   (shell-env<- :exec-path
 							 (dolist (p (var->paths (shell-env-> :path)) exec-path)
 								 (when (stringp p) (add-to-list 'exec-path p t #'string=))))
@@ -92,8 +86,6 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
   (when (save-sexp-to-file
          (list 'setq '*default-shell-env*
                (list 'list
-                     ':path (shell-env-> :path)
-                     ':shell-file-name nil
                      ':exec-path (list 'quote (shell-env-> :exec-path))
                      ':env-vars (list 'quote (shell-env-> :env-vars))))
          (shells-spec->% :source-file))
@@ -102,9 +94,8 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
 (defmacro read-shell-env! ()
   `(progn
-     (if (file-exists-p (shells-spec->% :compiled-file))
-         (load (shells-spec->% :compiled-file))
-       (shell-env<- :path (getenv (shells-spec->% :path-var))))
+     (when (file-exists-p (shells-spec->% :compiled-file))
+			 (load (shells-spec->% :compiled-file)))
      (add-hook 'kill-emacs-hook #'save-shell-env! t)))
 
 
@@ -114,12 +105,8 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 							 (when v1 (setenv v v1))))))
 
 
-(defmacro copy-exec-path-var! ()
-  `(progn
-		 (when (shell-env-> :path)
-			 (setenv (shells-spec->% :path-var) (shell-env-> :path)))
-     (when (shell-env-> :exec-path)
-       (setq exec-path (shell-env-> :exec-path)))))
+(defmacro copy-exec-path-var! (path)
+  `(when ,path (setq exec-path ,path)))
 
 
 
@@ -134,54 +121,34 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
       (apply 'make-comint-in-buffer n b "cmd" nil nil)
       (set-window-buffer (selected-window) b))))
 
-(platform-supported-when windows-nt
-
-  (defadvice shell (before shell-before compile)
-    (setenv (shells-spec->% :shell-var)
-	    (shells-spec->* :shell-file-name))
-    (setenv (shells-spec->% :path-var)
-	    (windows-nt-unix-path (shell-env-> :path)))
-    (setq shell-file-name (getenv (shells-spec->% :shell-var)))))
-
-(platform-supported-when windows-nt
-  
-  (defadvice shell (after shell-after compile)
-    (setenv (shells-spec->% :shell-var)
-	    (shell-env-> :shell-file-name))
-    (setenv (shells-spec->% :path-var)
-	    (shell-env-> :path) path-separator)
-    (setq shell-file-name (shell-env-> :shell-file-name))))
-
 
 (platform-supported-when windows-nt
   (with-eval-after-load 'term (ad-activate #'ansi-term t)))
 
 
 
+
+(when (shells-spec->* :allowed)
+
+	(platform-supported-if windows-nt
+			(when (shells-spec->* :shell-file-name)
+				(read-shell-env!))
+		(read-shell-env!))
+	
+  (when (shells-spec->* :shell-file-name)
+    (setenv (shells-spec->% :shell-var)
+						(shells-spec->* :shell-file-name)))
+  
+  (when (shells-spec->* :exec-path)
+    (copy-exec-path-var! (shell-env-> :exec-path)))
+
+  (when (shells-spec->* :env-vars)
+		(copy-env-vars! (shell-env-> :env-vars)
+										(shells-spec->* :env-vars))))
+
+
 ;; append versioned `+emacs-exec-home+' to $PATH
 (setenv "PATH" (path+ (getenv "PATH") t +emacs-exec-home+))
 
 
-(when (shells-spec->* :allowed)
-  (platform-supported-if windows-nt
-
-      ;; shell on Windows-NT 
-      (when (shells-spec->* :shell-file-name)
-				(read-shell-env!)
-				
-				;; keep `shell-file-name' between `ansi-term' and `shell'
-				(shell-env<- :shell-file-name shell-file-name)
-				(with-eval-after-load 'shell (ad-activate #'shell t)))
-
-    ;; shell on Darwin/Linux
-    (read-shell-env!)
-    (when (shells-spec->* :shell-file-name)
-      (setenv (shells-spec->% :shell-var)
-							(shells-spec->* :shell-file-name)))
-    
-    (when (shells-spec->* :exec-path)
-      (copy-exec-path-var!))
-    
-    (copy-env-vars! (shell-env-> :env-vars)
-										(shells-spec->* :env-vars))))
-
+ ;; end of shells.el
