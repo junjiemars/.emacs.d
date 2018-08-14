@@ -153,6 +153,10 @@ containing the executable being debugged."
   :group 'gud)
 
 
+(defconst +cdb-prompt-regexp+ "^[0-9]:[0-9][0-9][0-9]> "
+	"Regexp pattern of `cdb' prompt.")
+
+
 ;; ;; buffer local variables
 
 ;; (make-variable-buffer-local 'gud-marker-acc)
@@ -282,9 +286,9 @@ and source-file directory for your debugger."
   (interactive (list (gud-query-cmdline 'cdb)))
 
   (gud-common-init command-line
-		   #'gud-cdb-massage-args
+									 #'gud-cdb-massage-args
                    #'gud-cdb-marker-filter
-		   #'gud-cdb-find-file)
+									 #'gud-cdb-find-file)
 
   (set (make-local-variable 'gud-minor-mode) 'cdb)
 
@@ -296,12 +300,12 @@ and source-file directory for your debugger."
   (gud-def gud-finish "g @$ra "       "\C-f" "Finish executing current function.")
   (gud-def gud-print  "?? %e "        "\C-p" "Evaluate C expression at point.")
 
-  (setq comint-prompt-regexp "^[0-9]:[0-9][0-9][0-9]> ")
+  (setq comint-prompt-regexp +cdb-prompt-regexp+)
   (setq comint-input-sender #'gud-cdb-simple-send)
   (setq paragraph-start comint-prompt-regexp)
   (run-hooks 'gud-cdb-mode-hook)
   (loop for x in gud-cdb-init-hook
-	when (functionp x) do (funcall x)))
+				when (functionp x) do (funcall x)))
 
 
 ;; (defun gud-cdb-goto-stackframe (text token indent)
