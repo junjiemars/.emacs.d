@@ -116,10 +116,8 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 (platform-supported-when windows-nt
   
   (defadvice ansi-term (before ansi-term-before compile)
-    (let* ((n "*ansi-term*")
-           (b (get-buffer-create n)))
-      (apply 'make-comint-in-buffer n b "cmd" nil nil)
-      (set-window-buffer (selected-window) b))))
+    (set-window-buffer (selected-window)
+											 (make-comint-in-buffer "ansi-term" nil "cmd"))))
 
 
 (platform-supported-when windows-nt
