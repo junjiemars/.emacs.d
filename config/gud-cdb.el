@@ -157,6 +157,13 @@ containing the executable being debugged."
 	"Regexp pattern of `cdb' prompt.")
 
 
+;; (defconst +cdb-command-alist+
+;; 	'(("bm" ())
+;; 		("bp" ())
+;; 		("bu" ()))
+;; 	"A list of `cdb' commands.")
+
+
 ;; ;; buffer local variables
 
 ;; (make-variable-buffer-local 'gud-marker-acc)
@@ -191,10 +198,26 @@ Return absolute filename when FILENAME existing or it's existing
 in `gud-cdb-directories'.
 "
   (or (let ((f (expand-file-name filename)))
-	(when (file-exists-p f) f))
+				(when (file-exists-p f) f))
       (loop for d in gud-cdb-directories
-	    do (let ((p (concat d "/" filename)))
-		 (when (file-exists-p p) (return p))))))
+						do (let ((p (concat d "/" filename)))
+								 (when (file-exists-p p) (return p))))))
+
+
+;; (defun cdb-completions (context command)
+;;   "Completion table for `cdb' commands.
+;; COMMAND is the prefix for which we seek completion.
+;; CONTEXT is the text before COMMAND on the line."
+;;   (let* ((complete-list
+;; 					(gud-gdb-run-command-fetch-lines (concat "complete " context command)
+;; 																					 (current-buffer)
+;; 																					 ;; From string-match above.
+;; 																					 (length context))))
+;;     ;; Protect against old versions of GDB.
+;;     (and complete-list
+;; 				 (string-match "^Undefined command: \"complete\"" (car complete-list))
+;; 				 (error "This version of GDB doesn't support the `complete' command"))
+;;     (gud-gdb-completions-1 complete-list)))
 
 
 
@@ -293,7 +316,7 @@ and source-file directory for your debugger."
   (set (make-local-variable 'gud-minor-mode) 'cdb)
 
   (gud-def gud-break  "bu `%d%f:%l` " "\C-b" "Set breakpoint at current line.")
-  (gud-def gud-tbreak "g `%d%f:%l` "  "\C-t" "Set temporary breakpoint at current line.")
+  (gud-def gud-tbreak "bu /1 `%d%f:%l` "  "\C-t" "Set temporary breakpoint at current line.")
   (gud-def gud-step   "t "            "\C-s" "Step one source line with display.")
   (gud-def gud-next   "p "            "\C-n" "Step one line (skip functions).")
   (gud-def gud-cont   "g "            "\C-r" "Continue with display.")
