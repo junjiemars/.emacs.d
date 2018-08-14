@@ -309,7 +309,8 @@ See `shell-command' and `shell-command-to-string'."
 												 shell-command-switch
 												 (mapconcat #'identity
 																		(cons ,command (list ,@args)) " "))
-					 (buffer-string))))
+					 (let ((s (buffer-string)))
+						 (if (string= "\n" s) nil s)))))
 
 
 (defmacro executable-find% (command &optional prefer)
