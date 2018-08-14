@@ -302,7 +302,7 @@ The shell spec locate in =(emacs-home* "private/self-env-spec.el")=
 - =:env-vars= copy what environment variables from shell to Emacs
 - =:options= a list of shell's options
 - =:exec-path= copy =$PATH= or =%PATH%= to =exec-path=
-- =:shell-file-name= where the shell located
+- =:shell-file-name= where the shell program located, it should be specified when =:env-vars= is non nil
 - =:allowed= =t= allowed, =nil= disabled
 
 *** eshell

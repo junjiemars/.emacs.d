@@ -49,9 +49,9 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 (defmacro echo-var (var shell options)
   "Return the value of $VAR via echo."
   `(when (and (stringp ,var) (stringp ,shell))
-		 (let ((cmd (shell-command* (shell-quote-argument ,shell)
-									(and (consp ,options)
-											 (mapconcat #'identity ,options " "))
+		 (let ((cmd (shell-command* (shell-quote-argument (or ,shell
+																													(getenv "SHELL")))
+									(mapconcat #'identity ,options " ")
 									(format "-c 'echo $%s'" ,var))))
 			 (when (zerop (car cmd))
 				 (string-trim> (cdr cmd))))))
@@ -130,10 +130,7 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
 (when (shells-spec->* :allowed)
 
-	(platform-supported-if windows-nt
-			(when (shells-spec->* :shell-file-name)
-				(read-shell-env!))
-		(read-shell-env!))
+	(read-shell-env!)
 	
   (when (shells-spec->* :shell-file-name)
     (setenv (shells-spec->% :shell-var)
