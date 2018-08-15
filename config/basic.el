@@ -541,15 +541,7 @@ for which (PRED item) returns t."
 (defmacro safe-local-variable* (var)
   "Safe local VAR in -*- line, see `enable-local-variables'"
   `(put ,var 'safe-local-variable
-	(lambda (x) (ignore* x) t)))
-
-
-;; shell scripts
-(defun set-sh-mode! ()
-  (setq% sh-basic-offset tab-width sh-script)
-  ;; obsolete variable as of 26.1
-  ;; (setq% sh-indentation tab-width sh-script)
-  )
+				(lambda (x) (ignore* x) t)))
 
 
 ;; linum mode

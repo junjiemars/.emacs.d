@@ -87,10 +87,6 @@
     (compile-unit (emacs-home* "config/use-python.el") t))
 
   
-  (with-eval-after-load 'sh-script
-    (add-hook 'sh-mode-hook #'set-sh-mode!))
-
-
   (autoload 'system-cc-include
     (v-home% "config/" "cc.elc")
     "Return a list of system include directories.")
