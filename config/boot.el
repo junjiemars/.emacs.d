@@ -87,36 +87,47 @@
 (theme-supported-p
     
     (defsubst self-load-theme! (name &optional dir)
-      "`load-theme' in DIR by NAME.
+      "`load-theme' by NAME.
 
-If theme DIR is nil then load the built-in theme by NAME."
+If DIR is nil then load the built-in `customize-themes' by NAME."
       (when (and dir (file-exists-p dir))
-				;; (add-to-list 'custom-theme-load-path dir nil #'string=)
 				(setq custom-theme-directory dir))
       (version-supported-if >= 24.1
 														(load-theme name)
 				(load-theme name t))))
 
 
+(theme-supported-p
+
+		(defmacro theme-spec->* (&rest keys)
+			"Extract value from the list of :theme spec via KEYS at runtime."
+			(declare (indent 0))
+			`(self-spec->*env-spec :theme ,@keys)))
+
+
 ;; Load theme
 (theme-supported-p
 
-    (when (self-spec->*env-spec :theme :allowed)
-      (cond ((and (self-spec->*env-spec :theme :compile)
-									(self-spec->*env-spec :theme :name)
-									(self-spec->*env-spec :theme :path))
-						 (when (compile!
-										 (compile-unit
-											(concat (self-spec->*env-spec :theme :path)
-															(symbol-name (self-spec->*env-spec :theme :name))
-															"-theme.el")
-											t nil t))
-							 (self-load-theme! (self-spec->*env-spec :theme :name)
-																 (concat (self-spec->*env-spec :theme :path)
-																				 +v-dir+ "/"))))
-						((self-spec->*env-spec :theme :name)
-						 (self-load-theme! (self-spec->*env-spec :theme :name)
-															 (self-spec->*env-spec :theme :path))))))
+    (when (theme-spec->* :allowed)
+      (cond ((and (theme-spec->* :name)
+									(theme-spec->* :path))
+						 ;; load theme from :path
+						 (if (theme-spec->* :compile)
+								 (when (compile!
+												 (compile-unit
+													(concat (theme-spec->* :path)
+																	(symbol-name (theme-spec->* :name))
+																	"-theme.el")
+													t nil t))
+									 (self-load-theme! (theme-spec->* :name)
+																		 (concat (theme-spec->* :path)
+																						 +v-dir+ "/")))
+							 (self-load-theme! (theme-spec->* :name)
+																 (theme-spec->* :path))))
+
+						;; load builtin theme
+						((theme-spec->* :name)
+						 (self-load-theme! (theme-spec->* :name))))))
 
 
  ;; end of theme-supported-p

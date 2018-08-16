@@ -224,12 +224,12 @@ The theme's spec locate in =(emacs-home* "private/self-env-spec.el")=
 #+BEGIN_SRC emacs-lisp
     (def-self-env-spec
       :theme (list :name 'dracula
-                   :path (emacs-home* "theme/")
+                   :custom-theme-directory (emacs-home* "theme/")
                    :compile nil ;; expert option
                    :allowed t))
 #+END_SRC
 
-- =:path= where 3rd theme located
+- =:custom-theme-directory= where custom theme files located
 - =:compile= =t= compile theme, compiled theme more smooth and more faster
 	if you had already confirmed the theme is secure.
 - =:allowed= =t= enabled, =nil= disabled
