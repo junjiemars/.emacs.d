@@ -67,8 +67,10 @@
 
 
 (defmacro path! (file)
-  "Make and return the path of the FILE."
-  `(when (stringp ,file)
+  "Make and return the path of the FILE.
+
+The FILE should be posix path, see `path-separator'."
+  `(when (and (stringp ,file) (> (length ,file) 0))
 		 (let ((d (if (= ?/ (aref ,file (1- (length ,file))))
 									,file
 								(file-name-directory ,file))))
