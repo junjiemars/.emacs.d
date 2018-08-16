@@ -54,37 +54,37 @@
 
 (defun set-flavor-mode! ()
 
-  (compile! +v-dir+
-    (compile-unit (emacs-home* "config/cc.el") t)
-    (compile-unit (emacs-home* "config/financial.el") t)
-    (compile-unit (emacs-home* "config/tags.el") t)
-    
-    (compile-unit (emacs-home* "config/on-compile-autoload.el"))
-    (compile-unit (emacs-home* "config/on-dired-autoload.el"))
-    (compile-unit (emacs-home* "config/on-edit-autoload.el"))
-    (compile-unit (emacs-home* "config/on-hippie-autoload.el"))
-    (compile-unit (emacs-home* "config/on-lisp-autoload.el"))
+  (compile!
+		(compile-unit (emacs-home* "config/cc.el") t)
+		(compile-unit (emacs-home* "config/financial.el") t)
+		(compile-unit (emacs-home* "config/tags.el") t)
+		
+		(compile-unit (emacs-home* "config/on-compile-autoload.el"))
+		(compile-unit (emacs-home* "config/on-dired-autoload.el"))
+		(compile-unit (emacs-home* "config/on-edit-autoload.el"))
+		(compile-unit (emacs-home* "config/on-hippie-autoload.el"))
+		(compile-unit (emacs-home* "config/on-lisp-autoload.el"))
 		(compile-unit (emacs-home* "config/on-indent-autoload.el"))
-    
-    (platform-supported-if windows-nt
+		
+		(platform-supported-if windows-nt
 				(compile-unit (emacs-home* "config/gud-cdb.el") t)
-      
-      (platform-supported-if darwin
+			
+			(platform-supported-if darwin
 					(compile-unit (emacs-home* "config/gud-lldb.el") t)
 				
 				(when (executable-find% "lldb")
 					(compile-unit (emacs-home* "config/gud-lldb.el") t))))
 
-    (feature-eww-supported-p
-      (compile-unit (emacs-home* "config/on-eww-autoload.el")))
-    
-    (feature-linum-supported-p
-      (compile-unit (emacs-home* "config/on-linum-autoload.el")))
-    
-    (feature-semantic-supported-p
-      (compile-unit (emacs-home* "config/on-semantic-autoload.el")))
+		(feature-eww-supported-p
+			(compile-unit (emacs-home* "config/on-eww-autoload.el")))
+		
+		(feature-linum-supported-p
+			(compile-unit (emacs-home* "config/on-linum-autoload.el")))
+		
+		(feature-semantic-supported-p
+			(compile-unit (emacs-home* "config/on-semantic-autoload.el")))
 
-    (compile-unit (emacs-home* "config/use-python.el") t))
+		(compile-unit (emacs-home* "config/use-python.el") t))
 
   
   (autoload 'system-cc-include
@@ -102,9 +102,7 @@
 
 ;; set-self-epilogue!
 (defun set-self-epilogue! ()
-  (compile!
-      +v-dir+
-    (compile-unit (self-def-path-ref-> :epilogue))))
+  (compile! (compile-unit (self-def-path-ref-> :epilogue))))
 
  ;; end of set-self-epilogue!
 

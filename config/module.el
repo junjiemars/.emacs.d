@@ -87,8 +87,8 @@
 
 (package-initialize)
 
-(defsubst parse-package-spec! (dir spec &optional remove-unused)
-  "Parse SPEC, install, remove and setup packages in DIR."
+(defsubst parse-package-spec! (spec &optional remove-unused)
+  "Parse SPEC, install, remove and setup packages."
   (dolist (s spec)
     (when (consp s)
       (dolist (p (self-spec-> s :packages))
@@ -107,9 +107,7 @@
 											(setq *repository-initialized* t))
 										(install-package! n))))))))
       (when (self-spec-> s :cond)
-				(apply #'compile!
-							 dir
-							 (delete nil (self-spec-> s :compile)))))))
+				(apply #'compile! (delete nil (self-spec-> s :compile)))))))
 
 
 (defvar basic-package-spec
@@ -125,9 +123,9 @@
 
 (package-spec-:allowed-p
   ;; Load basic package spec
-  (parse-package-spec! +v-dir+ basic-package-spec
+  (parse-package-spec! basic-package-spec
 											 (self-spec->*env-spec :package :remove-unused))
   ;; Load self packages spec
-  (parse-package-spec! +v-dir+ (self-spec->*package-spec)
+  (parse-package-spec! (self-spec->*package-spec)
 											 (self-spec->*env-spec :package :remove-unused)))
 

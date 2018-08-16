@@ -59,15 +59,22 @@
   "Return base name of FILE with no directory, no extension."
   `(file-name-sans-extension (file-name-nondirectory ,file)))
 
+(defmacro file-name-new-extension* (file extension)
+	"Return FILE name with new EXTENSION."
+	`(concat (file-name-directory ,file)
+					 (file-name-base* ,file)
+					 ,extension))
 
-(defmacro v-path! (file vdir &optional extension)
-  "Make and return the path of FILEdirectory/VDIR/FILEbasename.EXTENSION."
-  `(when (and ,vdir (file-exists-p ,file))
-     (let ((v (concat (file-name-directory ,file) ,vdir "/")))
-       (unless (file-exists-p v) (make-directory v t))
-       (concat v (if ,extension
-										 (concat (file-name-base* ,file) "." ,extension)
-                   (file-name-nondirectory ,file))))))
+
+(defmacro path! (file)
+  "Make and return the path of the FILE."
+  `(when ,file
+     (let ((d (if (directory-name-p ,file)
+									,file
+								(file-name-directory ,file))))
+       (unless (file-exists-p d)
+				 (make-directory d t))
+       ,file)))
 
 
  ;; end of basic macro
@@ -77,31 +84,30 @@
 
 
 (defconst +compile-lock-name+ (v-home% "config/" ".compile.lock")
-	"Compile lock file be claimed when compiling process occurred.")
+  "Compile lock file be claimed when compiling process occurred.")
 
 (defmacro compile-claim-lock ()
-	"Record this Emacs pid in `+compile-lock-name+' file."
-	`(unless (file-exists-p +compile-lock-name+)
-		 (write-region (number-to-string (emacs-pid)) nil +compile-lock-name+)))
+  "Record this Emacs pid in `+compile-lock-name+' file."
+  `(unless (file-exists-p +compile-lock-name+)
+     (write-region (number-to-string (emacs-pid)) nil +compile-lock-name+)))
 
 
-(defmacro compile-and-load-file* (vdir file &optional only-compile delete-booster)
+(defmacro compile-and-load-file* (file compiled &optional only-compile delete-booster)
   "Compile FILE and save the compiled one in VDIR then load it if ONLY-COMPILE is nil.
 
 If DELETE-BOOSTER is non nil then delete booster source FILE after compiled."
-  (let ((c (make-symbol "-compiled:0-"))
-        (s (make-symbol "-source:0-")))
+  (let ((s (make-symbol "-source:0-")))
     `(when (and (stringp ,file) (file-exists-p ,file))
-       (let ((,c (v-path! ,file ,vdir "elc")))
-         (when (or (not (file-exists-p ,c))
-                   (file-newer-than-file-p ,file ,c))
-           (let ((,s (v-path! ,file ,vdir)))
-             (copy-file ,file ,s t)
-             (when (byte-compile-file ,s)
-							 (compile-claim-lock)
-							 (when ,delete-booster (delete-file ,s)))))
-         (or ,only-compile
-             (load ,c))))))
+       (when (or (not (file-exists-p ,compiled))
+                 (file-newer-than-file-p ,file ,compiled))
+         (let ((,s (file-name-new-extension* (path! ,compiled) ".el")))
+           (copy-file ,file ,s t)
+           (when (byte-compile-file ,s)
+						 (compile-claim-lock)
+						 (when ,delete-booster (delete-file ,s)))))
+			 (when (file-exists-p ,compiled)
+				 (cond (,only-compile t)
+							 (t (load ,compiled)))))))
 
 
 (defmacro clean-compiled-files ()
@@ -206,8 +212,8 @@ sequentially and return value of last one, or nil if there are none."
 
 ;; Load strap
 (compile-and-load-file*
- +v-dir+
- (emacs-home* "config/strap.el"))
+ (emacs-home* "config/strap.el")
+ (v-home* "config/" "strap.elc"))
 
 
 (package-supported-p

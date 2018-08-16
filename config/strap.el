@@ -210,17 +210,30 @@ The name is made by appending a number to PREFIX, default \"G\"."
 
 ;; compile macro
 
-(defmacro compile-unit (file &optional only-compile)
+(defmacro compile-unit (file &optional only-compile compiled-file delete-booster)
   "Make an unit of compilation."
-  `(cons ,file ,only-compile))
+	`(list :source ,file
+				 :compiled (or ,compiled-file
+											 (concat (file-name-directory ,file) +v-dir+ "/"
+															 (file-name-base* ,file) ".elc"))
+				 :only-compile ,only-compile
+				 :delete-booster ,delete-booster))
 
 (defmacro compile-unit->file (unit)
-  "Return the FILE part of `compile-unit'."
-  `(car ,unit))
+  "Return the :source part of `compile-unit'."
+	`(plist-get ,unit :source))
+
+(defmacro compile-unit->compiled (unit)
+	"Return the :compiled part of `compile-unit'."
+	`(plist-get ,unit :compiled))
 
 (defmacro compile-unit->only-compile (unit)
-  "Return the ONLY-COMPILE indicator of `compile-unit'."
-  `(cdr ,unit))
+  "Return the :only-compile indicator of `compile-unit'."
+	`(plist-get ,unit :only-compile))
+
+(defmacro compile-unit->delete-booster (unit)
+  "Return the :delete-booster indicator of `compile-unit'."
+	`(plist-get ,unit :delete-booster))
 
 (defmacro compile-lock-owner ()
 	"Return the pid of the Emacs process that owns the `+compile-lock-name+' file.
@@ -248,15 +261,17 @@ DIRNAME omitted or nil means use `desktop-dirname'"
 		(delete-file +compile-lock-name+)))
 
 
-(defun compile! (vdir &rest units)
-  "Compile and load the elisp UNITS in VDIR."
-  (declare (indent 1))
-  (dolist (unit units)
-    (when unit
-      (compile-and-load-file*
-       vdir
-       (compile-unit->file unit)
-       (compile-unit->only-compile unit)))))
+(defun compile! (&rest units)
+  "Compile and load the elisp UNITS."
+  (declare (indent 0))
+	(let ((r t))
+		(dolist (unit units r)
+			(when unit
+				(setq r (and r (compile-and-load-file*
+												(compile-unit->file unit)
+												(compile-unit->compiled unit)
+												(compile-unit->only-compile unit)
+												(compile-unit->delete-booster unit))))))))
 
  ;; end of compile macro
 
@@ -356,9 +371,7 @@ Take effect after restart Emacs.
 
 ;; self-spec macro
 
-(compile!
-    +v-dir+
-  (compile-unit self-def-where))
+(compile! (compile-unit self-def-where))
 
 
 (defsubst self-def-path-ref-> (&optional key)
@@ -403,47 +416,37 @@ Take effect after restart Emacs.
 			 ,@body)))
 
 
-(compile!
-    +v-dir+
-  (compile-unit (self-def-path-ref-> :env-spec)))
+(compile! (compile-unit (self-def-path-ref-> :env-spec)))
 
  ;; end of self-spec macro
 
 
 ;; Load ui, shell, basic env:
 
-(compile!
-    +v-dir+
-  (compile-unit (emacs-home* "config/boot.el"))
-  (compile-unit (emacs-home* "config/basic.el"))
-  (compile-unit (emacs-home* "config/shells.el")))
+(compile! (compile-unit (emacs-home* "config/boot.el"))
+					(compile-unit (emacs-home* "config/basic.el"))
+					(compile-unit (emacs-home* "config/shells.el")))
 
 
 ;; Self do prologue ...
-(compile!
-    +v-dir+
-  (compile-unit (self-def-path-ref-> :prologue)))
+(compile! (compile-unit (self-def-path-ref-> :prologue)))
 
 
 (package-supported-p
   ;; (package-initialize)
 
   ;; Load basic and self modules
-  (compile!
-      +v-dir+
-    (compile-unit (self-def-path-ref-> :package-spec))
-    (compile-unit (emacs-home* "config/module.el"))))
+  (compile! (compile-unit (self-def-path-ref-> :package-spec))
+						(compile-unit (emacs-home* "config/module.el"))))
 
 
 ;; Load package independent modules
-(compile!
-    +v-dir+
-  (compile-unit (emacs-home* "config/on-module.el"))
-  (compile-unit (emacs-home* "config/eshells.el"))
-  (compile-unit (emacs-home* "config/autoload.el"))
-  ;; --batch mode: disable desktop read/save
-  `,(unless noninteractive 
-      (compile-unit (emacs-home* "config/memory.el"))))
+(compile! (compile-unit (emacs-home* "config/on-module.el"))
+					(compile-unit (emacs-home* "config/eshells.el"))
+					(compile-unit (emacs-home* "config/autoload.el"))
+					;; --batch mode: disable desktop read/save
+					`,(unless noninteractive 
+							(compile-unit (emacs-home* "config/memory.el"))))
 
 
 ;; release compile-lock when Emacs exiting
