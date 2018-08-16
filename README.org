@@ -240,7 +240,7 @@ Using Emacs's builtin themes(@@html:<kbd>@@M x customize-themes@@html:</kbd>@@) 
 #+BEGIN_SRC emacs-lisp
     (def-self-env-spec
       :theme (list :name 'tango-dark ;; buildin theme
-                   :path nil
+                   :custom-theme-directory nil
                    :compile nil
                    :allowed t))
 #+END_SRC
@@ -507,7 +507,7 @@ zip, unzip or view the content a zip archive.
 
 For some ancient Emacs such as below version 24, @@html:<kbd>@@! zip x.zip ?@@html:</kbd>@@ to zip.
 
-[[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-compress-file-suffixes-version-24lt.png][screenshot: dired-compress-file-suffixes]]
+[[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-compress-file-suffixes-version-24lt.png]			[screenshot: dired-compress-file-suffixes]]
 
 * Troubleshooting
    :PROPERTIES:
