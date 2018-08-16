@@ -1,2 +1,0 @@
-# set shell prompt ~/.emacs_bash 
-export PS1='\u@\h:\w \$ '
