@@ -14,7 +14,7 @@
 
 (def-self-env-spec
   :theme (list :name 'dracula
-               :path (emacs-home* "theme/")
+               :custom-theme-directory (emacs-home* "theme/")
 							 :compile nil ;; expert option
                :allowed t)
 

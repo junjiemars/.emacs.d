@@ -97,37 +97,29 @@ If DIR is nil then load the built-in `customize-themes' by NAME."
 				(load-theme name t))))
 
 
-(theme-supported-p
-
-		(defmacro theme-spec->* (&rest keys)
-			"Extract value from the list of :theme spec via KEYS at runtime."
-			(declare (indent 0))
-			`(self-spec->*env-spec :theme ,@keys)))
-
-
 ;; Load theme
 (theme-supported-p
 
-    (when (theme-spec->* :allowed)
-      (cond ((and (theme-spec->* :name)
-									(theme-spec->* :path))
-						 ;; load theme from :path
-						 (if (theme-spec->* :compile)
+    (when (self-spec->*env-spec :theme :allowed)
+      (cond ((and (self-spec->*env-spec :theme :name)
+									(self-spec->*env-spec :theme :custom-theme-directory))
+						 ;; load theme from :custom-theme-directory
+						 (if (self-spec->*env-spec :theme :compile)
 								 (when (compile!
 												 (compile-unit
-													(concat (theme-spec->* :path)
-																	(symbol-name (theme-spec->* :name))
+													(concat (self-spec->*env-spec :theme :custom-theme-directory)
+																	(symbol-name (self-spec->*env-spec :theme :name))
 																	"-theme.el")
 													t nil t))
-									 (self-load-theme! (theme-spec->* :name)
-																		 (concat (theme-spec->* :path)
+									 (self-load-theme! (self-spec->*env-spec :theme :name)
+																		 (concat (self-spec->*env-spec :theme :custom-theme-directory)
 																						 +v-dir+ "/")))
-							 (self-load-theme! (theme-spec->* :name)
-																 (theme-spec->* :path))))
+							 (self-load-theme! (self-spec->*env-spec :theme :name)
+																 (self-spec->*env-spec :theme :custom-theme-directory))))
 
 						;; load builtin theme
-						((theme-spec->* :name)
-						 (self-load-theme! (theme-spec->* :name))))))
+						((self-spec->*env-spec :theme :name)
+						 (self-load-theme! (self-spec->*env-spec :theme :name))))))
 
 
  ;; end of theme-supported-p

@@ -1,6 +1,9 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
-;; memory
+;; More reasonable Emacs on MacOS, Windows and Linux
+;; https://github.com/junjiemars/.emacs.d
+;;;;
+;; memory.el
 ;;;;
 
 
@@ -45,22 +48,22 @@
                (self-spec-> ,current :allowed)))
         ((or (not (eq (self-spec-> ,previous :name)
                       (self-spec-> ,current :name)))
-             (not (string= (self-spec-> ,previous :path)
-                           (self-spec-> ,current :path))))
+             (not (string= (self-spec-> ,previous :custom-theme-directory)
+                           (self-spec-> ,current :custom-theme-directory))))
          (cons nil t)))))
 
 (theme-supported-p
     
     (defmacro switch-theme! (previous current)
       `(let ((p->c (theme-changed-p ,previous ,current)))
-	 (when (consp p->c)
-	   (if (and (car p->c) (not (cdr p->c)))
-	       (progn
-		 (self-load-theme! (self-spec-> ,previous :name)
-				   (self-spec-> ,previous :path))
-		 (disable-theme (self-spec-> ,previous :name)))
-	     (enable-theme (self-spec-> ,current :name)))
-	   (setq% desktop-restore-frames t desktop)))))
+				 (when (consp p->c)
+					 (if (and (car p->c) (not (cdr p->c)))
+							 (progn
+								 (self-load-theme! (self-spec-> ,previous :name)
+																	 (self-spec-> ,previous :custom-theme-directory))
+								 (disable-theme (self-spec-> ,previous :name)))
+						 (enable-theme (self-spec-> ,current :name)))
+					 (setq% desktop-restore-frames t desktop)))))
 
 
 ;; Read desktop
