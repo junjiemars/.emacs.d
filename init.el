@@ -68,13 +68,13 @@
 
 (defmacro path! (file)
   "Make and return the path of the FILE."
-  `(when ,file
-     (let ((d (if (directory-name-p ,file)
+  `(when (stringp ,file)
+		 (let ((d (if (= ?/ (aref ,file (1- (length ,file))))
 									,file
 								(file-name-directory ,file))))
-       (unless (file-exists-p d)
+			 (unless (file-exists-p d)
 				 (make-directory d t))
-       ,file)))
+			 ,file)))
 
 
  ;; end of basic macro
