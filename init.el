@@ -93,9 +93,11 @@
 
 
 (defmacro compile-and-load-file* (file compiled &optional only-compile delete-booster)
-  "Compile FILE and save the compiled one in VDIR then load it if ONLY-COMPILE is nil.
+  "Compile FILE.
 
-If DELETE-BOOSTER is non nil then delete booster source FILE after compiled."
+If ONLY_COMPILE is t then compile the FILE, otherwise compile FILE to COMPILED one and load it.
+If DELETE-BOOSTER is t then delete booster source FILE after compiled.
+If DELETE-BOOSTER is t, remove the booster after the FILE had been compiled."
   (let ((s (make-symbol "-source:0-")))
     `(when (and (stringp ,file) (file-exists-p ,file))
        (when (or (not (file-exists-p ,compiled))
