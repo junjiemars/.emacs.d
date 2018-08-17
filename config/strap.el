@@ -162,16 +162,16 @@ The name is made by appending a number to PREFIX, default \"G\"."
 (defmacro def-feature-supported-p (feature &optional filename docstring)
   "Define FEATURE supported-p macro."
   (let ((name (intern (format "feature-%s-supported-p" feature)))
-				(ds1 (format "If has `%s' feauture then do BODY." feature)))
+	(ds1 (format "If has `%s' feauture then do BODY." feature)))
     `(feature-if% ,feature ,filename
-									(defmacro ,name (&rest body)
-										,(or docstring ds1)
-										(declare (indent 0))
-										`(progn% ,@body))
-									(defmacro ,name (&rest body)
-										,(or docstring ds1)
-										(declare (indent 0))
-										`(comment ,@body)))))
+		  (defmacro ,name (&rest body)
+		    ,(or docstring ds1)
+		    (declare (indent 0))
+		    `(progn% ,@body))
+		  (defmacro ,name (&rest body)
+		    ,(or docstring ds1)
+		    (declare (indent 0))
+		    `(comment ,@body)))))
 
 (defmacro def-function-supported-p (fn &optional feature docstring)
   "Define FN supported-p macro."

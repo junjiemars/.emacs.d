@@ -28,12 +28,3 @@
   (should (string-match "\.emacs\.d/config/$" (emacs-home* "config/")))
   (should (string-match "\.emacs\.d/x/y/z/$" (emacs-home* "x/" "y/" "z/"))))
 
-(ert-deftest %init:v-home*|% ()
-	(should (and v-dir (> (length v-dir) 0)))
-	(let ((a (format "%s%s/%s" (emacs-home* "private/") v-dir "x.el")))
-		(should (string= (v-home* "private/" "x.el") a))
-		(should (string= (v-home% "private/" "x.el") a))))
-
-
-
-

@@ -142,7 +142,7 @@ If DELETE-BOOSTER is t, remove booster file after compile FILE."
   "Clean all compiled files."
   `(dolist (d (list ,(v-home* "config/")
                     ,(v-home* "private/")
-										r										,(v-home* "theme/")
+										,(v-home* "theme/")
 										+emacs-exec-home+))
      (dolist (f (when (file-exists-p d)
 									(directory-files d nil "\\.elc?\\'")))
@@ -241,7 +241,7 @@ sequentially and return value of last one, or nil if there are none."
 
 ;; Load strap
 (compile-and-load-file* (emacs-home* "config/strap.el")
-												nil ;; compile and load 
+												nil
 												(v-home* "config/" "strap.elc"))
 
 
