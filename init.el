@@ -3,6 +3,8 @@
 ;;
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
+;; init.el
+;;;;
 
 
 ;; basic macro
@@ -47,7 +49,9 @@
 
 
 (defmacro v-home! (subdir &optional file)
-  "Make versioned SUBDIR/`+v-dir+/' directory under `+emacs-home+' and return the versioned path of SUBDIR/`+v-dir+'/file."
+  "Make versioned SUBDIR/`+v-dir+'/ directory under `+emacs-home+'.
+
+Return the versioned path of SUBDIR/`+v-dir+'/FILE."
   (let ((_vdir_ (v-home* subdir))
         (_vfile_ (v-home* subdir file)))
     (unless (file-exists-p _vdir_)
