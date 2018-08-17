@@ -26,6 +26,10 @@
 	"The user's emacs home directory")
 
 
+
+
+;; file macro
+
 (defmacro emacs-home* (&rest subdirs)
   "Return path of SUBDIRS under `+emacs-home+'."
   (declare (indent 0))
@@ -43,6 +47,26 @@
 					 ,extension))
 
 
+(unless (fboundp 'directory-name-p)
+	(defmacro directory-name-p (name)
+		"Returns t if NAME ends with a directory separator character."
+		`(let ((len (length ,name)))
+			 (and (> len 0) (= ?/ (aref ,name (1- len)))))))
+
+
+(defmacro path! (file)
+  "Make and return the path of the FILE.
+
+The FILE should be posix path, see `path-separator'."
+  `(when (stringp ,file) (> (length ,file) 0)
+		 (let ((d (if (directory-name-p ,file)
+									,file
+								(file-name-directory ,file))))
+			 (unless (file-exists-p d)
+				 (make-directory d t))
+			 ,file)))
+
+
 (defconst +v-dir+
 	(concat (if (display-graphic-p) "g_" "t_") emacs-version)
 	"Versioned dir based on [g]rahpic/[t]erminal mode and Emacs's version")
@@ -50,7 +74,9 @@
 
 (defmacro v-path* (file &optional extension)
 	"Return versioned FILE with new EXTENSION."
-	`(concat (file-name-directory ,file)
+	`(concat (if (directory-name-p ,file)
+							 ,file
+							 (file-name-directory ,file))
 					 +v-dir+ "/"
 					 (if (stringp ,extension)
 							 (file-name-new-extension* (file-name-nondirectory ,file)
@@ -80,22 +106,7 @@ Return the versioned path of SUBDIR/`+v-dir+'/FILE."
     `,_vfile_))
 
 
-
-
-(defmacro path! (file)
-  "Make and return the path of the FILE.
-
-The FILE should be posix path, see `path-separator'."
-  `(when (and (stringp ,file) (> (length ,file) 0))
-		 (let ((d (if (= ?/ (aref ,file (1- (length ,file))))
-									,file
-								(file-name-directory ,file))))
-			 (unless (file-exists-p d)
-				 (make-directory d t))
-			 ,file)))
-
-
- ;; end of basic macro
+ ;; end of file macro
 
 
 ;; compile macro
@@ -167,13 +178,13 @@ Else return BODY sexp."
 
 COND should be quoted, such as (version-supported* '<= 24)"
   `(let ((ver (cond ((stringp ,version) ,version)
-		    ((numberp ,version) (number-to-string ,version))
-		    (t (format "%s" ,version)))))
+										((numberp ,version) (number-to-string ,version))
+										(t (format "%s" ,version)))))
      (cond ((eq '< ,cond) (version< ver emacs-version))
-	   ((eq '<= ,cond) (version<= ver emacs-version))
-	   ((eq '> ,cond) (not (version<= ver emacs-version)))
-	   ((eq '>= ,cond) (not (version< ver emacs-version)))
-	   (t nil))))
+					 ((eq '<= ,cond) (version<= ver emacs-version))
+					 ((eq '> ,cond) (not (version<= ver emacs-version)))
+					 ((eq '>= ,cond) (not (version< ver emacs-version)))
+					 (t nil))))
 
 (defmacro version-supported-p (cond version)
   "Return t if (COND VERSION `emacs-version') yields non-nil, else nil.

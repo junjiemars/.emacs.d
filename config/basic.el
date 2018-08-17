@@ -214,16 +214,7 @@ like `split-string' Emacs 24.4+"
       (split-string string separators omit-nulls))))
 
 
-(unless-fn% directory-name-p nil
-  (defsubst directory-name-p (name)
-    "Returns t if NAME ends with a directory separator character."
-    (let ((len (length name))
-					(lastc ?.))
-      (if (> len 0)
-					(setq lastc (aref name (1- len))))
-      (or (= lastc ?/)
-					(and (memq system-type '(windows-nt ms-dos))
-							 (= lastc ?\\))))))
+
 
 
 
