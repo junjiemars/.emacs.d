@@ -88,8 +88,11 @@ The FILE should be posix path, see `path-separator'."
 
 ;; compile macro
 
+(defconst +emacs-exec-home+ (v-home! ".exec/")
+	"Exec path under versioned `+emacs-home+' directory which be added into PATH env.")
 
-(defconst +compile-lock-name+ (v-home% "config/" ".compile.lock")
+
+(defconst +compile-lock-name+ (concat +emacs-exec-home+ ".compile.lock")
   "Compile lock file be claimed when compiling process occurred.")
 
 (defmacro compile-claim-lock ()
@@ -122,9 +125,10 @@ If DELETE-BOOSTER is t, remove the booster after the FILE had been compiled."
   "Clean all compiled files."
   `(dolist (d (list ,(v-home* "config/")
                     ,(v-home* "private/")
-										,(v-home* "theme/")))
+										,(v-home* "theme/")
+										+emacs-exec-home+))
      (dolist (f (when (file-exists-p d)
-									(directory-files d nil "\\.elc?$")))
+									(directory-files d nil "\\.elc?\\'")))
        (message "#Clean compiled file: %s" f)
        (delete-file (concat d f)))))
 

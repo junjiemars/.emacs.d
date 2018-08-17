@@ -12,10 +12,10 @@
 	(declare (indent 0))
   `(self-spec->%
 			 (list :source-file
-						 ,(concat (v-home% "config/") ".shell-env.el")
+						 ,(concat +emacs-exec-home+ ".shell-env.el")
 						 
 						 :compiled-file
-						 ,(concat (v-home% "config/") ".shell-env.elc")
+						 ,(concat +emacs-exec-home+ ".shell-env.elc")
 						 
 						 :shell-var "SHELL"
 						 

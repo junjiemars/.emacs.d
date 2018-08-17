@@ -12,8 +12,6 @@
 (add-to-list 'load-path (v-home% "config/") nil #'string=)
 (add-to-list 'load-path (v-home% "private/") nil #'string=)
 
-(defconst +emacs-exec-home+ (v-home! ".exec/")
-	"Exec path under versioned `+emacs-home+' directory which be added into PATH env.")
 
 
 
