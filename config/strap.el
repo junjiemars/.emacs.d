@@ -214,7 +214,7 @@ The name is made by appending a number to PREFIX, default \"G\"."
   "Make an unit of compilation."
 	`(list :source ,file
 				 :compiled (or ,compiled-file
-											 (v-path* ,file ".elc"))
+											 (when ,file (v-path* ,file ".elc")))
 				 :only-compile ,only-compile
 				 :delete-booster ,delete-booster))
 
