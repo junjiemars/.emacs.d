@@ -50,15 +50,15 @@
 (unless (fboundp 'directory-name-p)
 	(defmacro directory-name-p (name)
 		"Returns t if NAME ends with a directory separator character."
-		`(let ((len (length ,name)))
-			 (and (> len 0) (= ?/ (aref ,name (1- len)))))))
+		`(let ((_len_ (length ,name)))
+			 (and (> _len_ 0) (= ?/ (aref ,name (1- _len_)))))))
 
 
 (defmacro path! (file)
   "Make and return the path of the FILE.
 
 The FILE should be posix path, see `path-separator'."
-  `(when (stringp ,file) (> (length ,file) 0)
+  `(when (stringp ,file)
 		 (let ((d (if (directory-name-p ,file)
 									,file
 								(file-name-directory ,file))))
