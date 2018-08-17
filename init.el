@@ -32,9 +32,30 @@
   `(concat ,+emacs-home+ ,@subdirs))
 
 
+(defmacro file-name-base* (file)
+  "Return base name of FILE with no directory, no extension."
+  `(file-name-sans-extension (file-name-nondirectory ,file)))
+
+(defmacro file-name-new-extension* (file extension)
+	"Return FILE name with new EXTENSION."
+	`(concat (file-name-directory ,file)
+					 (file-name-base* ,file)
+					 ,extension))
+
+
 (defconst +v-dir+
 	(concat (if (display-graphic-p) "g_" "t_") emacs-version)
 	"Versioned dir based on [g]rahpic/[t]erminal mode and Emacs's version")
+
+
+(defmacro v-path* (file &optional extension)
+	"Return versioned FILE with new EXTENSION."
+	`(concat (file-name-directory ,file)
+					 +v-dir+ "/"
+					 (if (stringp ,extension)
+							 (file-name-new-extension* (file-name-nondirectory ,file)
+																				 ,extension)
+						 (file-name-nondirectory ,file))))
 
 
 (defmacro v-home* (subdir &optional file)
@@ -59,15 +80,6 @@ Return the versioned path of SUBDIR/`+v-dir+'/FILE."
     `,_vfile_))
 
 
-(defmacro file-name-base* (file)
-  "Return base name of FILE with no directory, no extension."
-  `(file-name-sans-extension (file-name-nondirectory ,file)))
-
-(defmacro file-name-new-extension* (file extension)
-	"Return FILE name with new EXTENSION."
-	`(concat (file-name-directory ,file)
-					 (file-name-base* ,file)
-					 ,extension))
 
 
 (defmacro path! (file)
@@ -101,31 +113,36 @@ The FILE should be posix path, see `path-separator'."
      (write-region (number-to-string (emacs-pid)) nil +compile-lock-name+)))
 
 
-(defmacro compile-and-load-file* (file compiled &optional only-compile delete-booster)
+(defmacro compile-and-load-file* (file &optional only-compile compiled delete-booster)
   "Compile FILE.
 
-If ONLY_COMPILE is t then compile the FILE, otherwise compile FILE to COMPILED one and load it.
-If DELETE-BOOSTER is t then delete booster source FILE after compiled.
-If DELETE-BOOSTER is t, remove the booster after the FILE had been compiled."
-  (let ((s (make-symbol "-source:0-")))
+If ONLY-COMPILE is t, does not load COMPILED file after compile FILE.
+If DELETE-BOOSTER is t, remove booster file after compile FILE."
+  (let ((c (make-symbol "-compile:0-"))
+				(s (make-symbol "-source:0-")))
     `(when (and (stringp ,file) (file-exists-p ,file))
-       (when (or (not (file-exists-p ,compiled))
-                 (file-newer-than-file-p ,file ,compiled))
-         (let ((,s (file-name-new-extension* (path! ,compiled) ".el")))
-           (copy-file ,file ,s t)
-           (when (byte-compile-file ,s)
+			 (let* ((,c (or ,compiled
+											(file-name-new-extension* ,file ".elc")))
+							(,s (if (string= (file-name-directory ,file)
+															 (file-name-directory ,c))
+											,file
+										(file-name-new-extension* ,c ".el"))))
+				 (when (or (not (file-exists-p ,c))
+									 (file-newer-than-file-p ,file ,c))
+					 (unless (string= ,file ,s) (copy-file ,file (path! ,s) t))
+					 (when (byte-compile-file ,s)
 						 (compile-claim-lock)
-						 (when ,delete-booster (delete-file ,s)))))
-			 (when (file-exists-p ,compiled)
-				 (cond (,only-compile t)
-							 (t (load ,compiled)))))))
+						 (when ,delete-booster (delete-file ,s))))
+				 (when (file-exists-p ,c)
+					 (cond (,only-compile t)
+								 (t (load ,c))))))))
 
 
 (defmacro clean-compiled-files ()
   "Clean all compiled files."
   `(dolist (d (list ,(v-home* "config/")
                     ,(v-home* "private/")
-										,(v-home* "theme/")
+										r										,(v-home* "theme/")
 										+emacs-exec-home+))
      (dolist (f (when (file-exists-p d)
 									(directory-files d nil "\\.elc?\\'")))
@@ -223,9 +240,9 @@ sequentially and return value of last one, or nil if there are none."
 
 
 ;; Load strap
-(compile-and-load-file*
- (emacs-home* "config/strap.el")
- (v-home* "config/" "strap.elc"))
+(compile-and-load-file* (emacs-home* "config/strap.el")
+												nil ;; compile and load 
+												(v-home* "config/" "strap.elc"))
 
 
 (package-supported-p

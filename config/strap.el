@@ -214,8 +214,7 @@ The name is made by appending a number to PREFIX, default \"G\"."
   "Make an unit of compilation."
 	`(list :source ,file
 				 :compiled (or ,compiled-file
-											 (concat (file-name-directory ,file) +v-dir+ "/"
-															 (file-name-base* ,file) ".elc"))
+											 (v-path* ,file ".elc"))
 				 :only-compile ,only-compile
 				 :delete-booster ,delete-booster))
 
@@ -269,8 +268,8 @@ DIRNAME omitted or nil means use `desktop-dirname'"
 			(when unit
 				(setq r (and r (compile-and-load-file*
 												(compile-unit->file unit)
-												(compile-unit->compiled unit)
 												(compile-unit->only-compile unit)
+												(compile-unit->compiled unit)
 												(compile-unit->delete-booster unit))))))))
 
  ;; end of compile macro
