@@ -39,7 +39,7 @@
                               (platform-supported-if darwin
                                   "DYLD_LIBRARY_PATH"
                                 "LD_LIBRARY_PATH")))
-							 :options '("--login")
+							 :options '("--login") ;; '("-i" "2>/dev/null")
                :exec-path t
                :shell-file-name (eval-when-compile (executable-find "bash"))
                :allowed nil)
