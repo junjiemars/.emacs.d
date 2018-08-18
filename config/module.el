@@ -69,8 +69,8 @@
   (if tar
       (package-install-file package)
     (version-supported-if
-	<= 25.0
-	(package-install package t)
+				<= 25.0
+				(package-install package t)
       (package-install package))))
 
 
