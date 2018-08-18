@@ -218,6 +218,16 @@ The name is made by appending a number to PREFIX, default \"G\"."
 				 :only-compile ,only-compile
 				 :delete-booster ,delete-booster))
 
+(defmacro compile-unit% (file &optional only-compile compiled-file delete-booster)
+  "Make an unit of compilation at compile time."
+	(let* ((-source1- (eval file))
+				 (-compiled1- (eval (or compiled-file
+																(when -source1- (v-path* -source1- ".elc"))))))
+		`(list :source ,-source1-
+					 :compiled ,-compiled1-
+					 :only-compile ,only-compile
+					 :delete-booster ,delete-booster)))
+
 (defmacro compile-unit->file (unit)
   "Return the :source part of `compile-unit'."
 	`(plist-get ,unit :source))
@@ -422,9 +432,9 @@ Take effect after restart Emacs.
 
 ;; Load ui, shell, basic env:
 
-(compile! (compile-unit (emacs-home* "config/boot.el"))
-					(compile-unit (emacs-home* "config/basic.el"))
-					(compile-unit (emacs-home* "config/shells.el")))
+(compile! (compile-unit% (emacs-home* "config/boot.el"))
+					(compile-unit% (emacs-home* "config/basic.el"))
+					(compile-unit% (emacs-home* "config/shells.el")))
 
 
 ;; Self do prologue ...
@@ -436,16 +446,16 @@ Take effect after restart Emacs.
 
   ;; Load basic and self modules
   (compile! (compile-unit (self-def-path-ref-> :package-spec))
-						(compile-unit (emacs-home* "config/module.el"))))
+						(compile-unit% (emacs-home* "config/module.el"))))
 
 
 ;; Load package independent modules
-(compile! (compile-unit (emacs-home* "config/on-module.el"))
-					(compile-unit (emacs-home* "config/eshells.el"))
-					(compile-unit (emacs-home* "config/autoload.el"))
+(compile! (compile-unit% (emacs-home* "config/on-module.el"))
+					(compile-unit% (emacs-home* "config/eshells.el"))
+					(compile-unit% (emacs-home* "config/autoload.el"))
 					;; --batch mode: disable desktop read/save
 					`,(unless noninteractive 
-							(compile-unit (emacs-home* "config/memory.el"))))
+							(compile-unit% (emacs-home* "config/memory.el"))))
 
 
 ;; release compile-lock when Emacs exiting
