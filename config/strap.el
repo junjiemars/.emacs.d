@@ -221,7 +221,7 @@ The name is made by appending a number to PREFIX, default \"G\"."
 (defmacro compile-unit% (file &optional only-compile compiled-file delete-booster)
   "Make an unit of compilation at compile time."
 	(let* ((-source1- (eval file))
-				 (-compiled1- (or compiled-file
+				 (-compiled1- (or (eval compiled-file)
 													(when -source1- (v-path* -source1- ".elc")))))
 		`(list :source ,-source1-
 					 :compiled ,-compiled1-
