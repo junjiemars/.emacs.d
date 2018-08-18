@@ -50,20 +50,20 @@
 (unless (fboundp 'directory-name-p)
 	(defmacro directory-name-p (name)
 		"Returns t if NAME ends with a directory separator character."
-		`(let ((_len_ (length ,name)))
-			 (and (> _len_ 0) (= ?/ (aref ,name (1- _len_)))))))
+		`(let ((len (length ,name)))
+			 (and (> len 0) (= ?/ (aref ,name (1- len)))))))
 
 
 (defmacro path! (file)
   "Make and return the path of the FILE.
 
 The FILE should be posix path, see `path-separator'."
-  `(when (stringp ,file)
-		 (let ((d (if (directory-name-p ,file)
-									,file
-								(file-name-directory ,file))))
-			 (unless (file-exists-p d)
-				 (make-directory d t))
+	(let ((d (make-symbol "-dir:0-")))
+		`(let ((,d (if (directory-name-p ,file)
+									 ,file
+								 (file-name-directory ,file))))
+			 (unless (file-exists-p ,d)
+				 (make-directory ,d t))
 			 ,file)))
 
 
@@ -76,9 +76,9 @@ The FILE should be posix path, see `path-separator'."
 	"Return versioned FILE with new EXTENSION."
 	`(concat (if (directory-name-p ,file)
 							 ,file
-							 (file-name-directory ,file))
+						 (file-name-directory ,file))
 					 +v-dir+ "/"
-					 (if (stringp ,extension)
+					 (if ,extension
 							 (file-name-new-extension* (file-name-nondirectory ,file)
 																				 ,extension)
 						 (file-name-nondirectory ,file))))
