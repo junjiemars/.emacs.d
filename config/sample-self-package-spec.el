@@ -21,8 +21,8 @@
    :packages '(cider
                clojure-mode
                clojure-mode-extra-font-locking)
-   :compile `(,(compile-unit (emacs-home* "config/use-cider.el") t)
-              ,(compile-unit (emacs-home* "config/use-cider-autoload.el"))))
+   :compile `(,(compile-unit% (emacs-home* "config/use-cider.el") t)
+              ,(compile-unit% (emacs-home* "config/use-cider-autoload.el"))))
   (list
    :cond (and (version-supported-p <= 24.4)
               (executable-find% "docker"))
@@ -35,7 +35,7 @@
    :cond (and (executable-find% "erlc")
               (executable-find% "lfe"))
    :packages '(lfe-mode)
-   :compile `(,(compile-unit (emacs-home* "config/use-lfe-autoload.el"))))
+   :compile `(,(compile-unit% (emacs-home* "config/use-lfe-autoload.el"))))
   (list
    :cond (and (terminal-supported-p t)
               (platform-supported-unless darwin t)
@@ -45,7 +45,7 @@
    :cond (and (version-supported-p <= 24.4)
               (executable-find% "git"))
    :packages '(magit)
-   :compile `(,(compile-unit (emacs-home* "config/use-magit-autoload.el"))))
+   :compile `(,(compile-unit% (emacs-home* "config/use-magit-autoload.el"))))
   (list
    :cond (and (version-supported-p <= 23.2)
               (or (executable-find% "racket")
@@ -54,8 +54,8 @@
   (list
    :cond (or (executable-find% "sbcl"))
    :packages '(slime)
-   :compile `(,(compile-unit (emacs-home* "config/use-slime.el") t)
-              ,(compile-unit (emacs-home* "config/use-slime-autoload.el"))))
+   :compile `(,(compile-unit% (emacs-home* "config/use-slime.el") t)
+              ,(compile-unit% (emacs-home* "config/use-slime-autoload.el"))))
   )
 
 

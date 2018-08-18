@@ -101,7 +101,7 @@
 
 ;; set-self-epilogue!
 (defun set-self-epilogue! ()
-  (compile! (compile-unit (self-def-path-ref-> :epilogue))))
+  (compile! (compile-unit* (self-def-path-ref-> :epilogue))))
 
  ;; end of set-self-epilogue!
 

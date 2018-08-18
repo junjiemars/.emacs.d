@@ -210,7 +210,7 @@ The name is made by appending a number to PREFIX, default \"G\"."
 
 ;; compile macro
 
-(defmacro compile-unit (file &optional only-compile compiled-file delete-booster)
+(defmacro compile-unit* (file &optional only-compile compiled-file delete-booster)
   "Make an unit of compilation."
 	`(list :source ,file
 				 :compiled (or ,compiled-file
@@ -380,7 +380,7 @@ Take effect after restart Emacs.
 
 ;; self-spec macro
 
-(compile! (compile-unit self-def-where))
+(compile! (compile-unit* self-def-where))
 
 
 (defsubst self-def-path-ref-> (&optional key)
@@ -425,7 +425,7 @@ Take effect after restart Emacs.
 			 ,@body)))
 
 
-(compile! (compile-unit (self-def-path-ref-> :env-spec)))
+(compile! (compile-unit* (self-def-path-ref-> :env-spec)))
 
  ;; end of self-spec macro
 
@@ -438,14 +438,14 @@ Take effect after restart Emacs.
 
 
 ;; Self do prologue ...
-(compile! (compile-unit (self-def-path-ref-> :prologue)))
+(compile! (compile-unit* (self-def-path-ref-> :prologue)))
 
 
 (package-supported-p
   ;; (package-initialize)
 
   ;; Load basic and self modules
-  (compile! (compile-unit (self-def-path-ref-> :package-spec))
+  (compile! (compile-unit* (self-def-path-ref-> :package-spec))
 						(compile-unit% (emacs-home* "config/module.el"))))
 
 

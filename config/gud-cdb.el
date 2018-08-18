@@ -51,7 +51,7 @@
 ;;    - Put the following into your ~/.emacs.d/self-epilogue.el file:
 ;;
 ;;      (platform-supported-when windows-nt
-;; 	      (compile! +v-dir+ (compile-unit (emacs-home* "config/gud-cdb.el") t)))
+;; 	      (compile! +v-dir+ (compile-unit% (emacs-home* "config/gud-cdb.el") t)))
 ;;
 ;;    - You can customize `gud-cdb-directories' to help GUD find your source
 ;;      files.

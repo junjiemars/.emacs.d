@@ -106,7 +106,7 @@ If DIR is nil then load the built-in `customize-themes' by NAME."
 						 ;; load theme from :custom-theme-directory
 						 (if (self-spec->*env-spec :theme :compile)
 								 (when (compile!
-												 (compile-unit
+												 (compile-unit*
 													(concat (self-spec->*env-spec :theme :custom-theme-directory)
 																	(symbol-name (self-spec->*env-spec :theme :name))
 																	"-theme.el")
