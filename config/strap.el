@@ -293,23 +293,6 @@ DIRNAME omitted or nil means use `desktop-dirname'"
  ;; end of compile macro
 
 
-;; utils macro
-
-(defmacro make-directory-unless (dir &rest body)
-	"Create the DIR directory If DIR does not exists and then do BODY.
-
-See `make-directory'. "
-	(declare (indent 1))
-	`(let ((d ,dir))
-		 (unless (file-exists-p d)
-			 (make-directory d t)
-			 ,@body)
-		 d))
-
-
- ;; end of utils macro
-
-
 ;; self-def macro
 
 (defsubst self-def-files! ()

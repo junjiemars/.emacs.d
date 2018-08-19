@@ -117,7 +117,7 @@
 											 (self-spec->*env-spec :theme)))
 
     (version-supported-if >= 23
-													(desktop-save (make-directory-unless (v-home! ".desktop/")))
+													(desktop-save (path! (v-home! ".desktop/")))
       (version-supported-when <= 26
 				(platform-supported-when darwin
 					;; Title bar text color broken #55
@@ -125,7 +125,7 @@
 					(dolist (x '((ns-transparent-titlebar . unbound)
 											 (ns-appearance . unbound)))
 						(add-to-list 'frameset-filter-alist x))))
-      (desktop-save (make-directory-unless (v-home% ".desktop/")) t))))
+      (desktop-save (path! (v-home% ".desktop/")) t))))
 
 
 (add-hook 'kill-emacs-hook #'self-desktop-save! t)
