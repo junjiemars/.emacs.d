@@ -34,7 +34,7 @@
   
   ;; Where to store the cider history.
   (setq% cider-repl-history-file
-				 (v-home! ".cider/" "repl-history") cider-repl)
+				 (v-home! ".cider/repl-history") cider-repl)
   ;; Wrap when navigating history.
   (setq% cider-repl-wrap-history t cider)
   

@@ -17,11 +17,11 @@ Examples:
 "
   `(self-spec->% (list
 									:emacs-home
-									,(expand-file-name (v-home% ".tags/home/" "TAGS"))
+									,(expand-file-name (v-home% ".tags/home/TAGS"))
 									:emacs-source
-									,(expand-file-name (v-home% ".tags/source/" "TAGS"))
+									,(expand-file-name (v-home% ".tags/source/TAGS"))
 									:os-include
-									,(expand-file-name (v-home% ".tags/os/" "TAGS")))
+									,(expand-file-name (v-home% ".tags/os/TAGS")))
      ,@key))
 
 

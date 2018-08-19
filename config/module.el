@@ -83,7 +83,7 @@
 
 (version-supported-when
     <= 25.1
-  (setq custom-file (v-home% "config/" ".selected-packages.el")))
+  (setq custom-file (v-home% "config/.selected-packages.el")))
 
 (package-initialize)
 

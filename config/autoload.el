@@ -87,11 +87,11 @@
 
   
   (autoload 'system-cc-include
-    (v-home% "config/" "cc.elc")
+    (v-home% "config/cc.elc")
     "Return a list of system include directories.")
 
   (autoload 'set-semantic-cc-env!
-    (v-home% "config/" "on-semantic-autoload.elc"))
+    (v-home% "config/on-semantic-autoload.elc"))
 
   
   )

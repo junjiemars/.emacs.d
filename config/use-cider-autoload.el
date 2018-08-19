@@ -15,10 +15,10 @@
 
 
 (autoload 'use-clojure-mode
-  (v-home% "config/" "use-cider.elc"))
+  (v-home% "config/use-cider.elc"))
 
 (autoload 'use-cider-repl
-  (v-home% "config/" "use-cider.elc"))
+  (v-home% "config/use-cider.elc"))
 
 
 (with-eval-after-load 'clojure-mode

@@ -67,6 +67,12 @@ The FILE should be posix path, see `path-separator'."
 			 ,file)))
 
 
+ ;; end basic file macro
+
+
+;; versioned file macro
+
+
 (defconst +v-dir+
 	(concat (if (display-graphic-p) "g_" "t_") emacs-version)
 	"Versioned dir based on [g]rahpic/[t]erminal mode and Emacs's version")
@@ -84,29 +90,24 @@ The FILE should be posix path, see `path-separator'."
 						 (file-name-nondirectory ,file))))
 
 
-(defmacro v-home* (subdir &optional file)
-  "Return versioned path of SUBDIR/`+v-dir+'/FILE under `+emacs-home+'."
-  `(concat ,+emacs-home+ ,subdir ,+v-dir+ "/" ,file))
+(defmacro v-home* (file)
+  "Return versioned path of `+emacs-home+'/`+v-dir+'/FILE."
+	`(v-path* (emacs-home* ,file)))
 
 
-(defmacro v-home% (subdir &optional file)
-  "Return versioned path of SUBDIR/`+v-dir+'/FILE under `+emacs-home+' at compile-time."
-  (let ((_vfile_ (v-home* subdir file)))
-    `,_vfile_))
+(defmacro v-home% (file)
+  "Return versioned path of `+emacs-home+'/`+v-dir+'/FILE at compile-time."
+  (let ((_vfile%_ (v-home* file)))
+    `,_vfile%_))
 
 
-(defmacro v-home! (subdir &optional file)
-  "Make versioned SUBDIR/`+v-dir+'/ directory under `+emacs-home+'.
-
-Return the versioned path of SUBDIR/`+v-dir+'/FILE."
-  (let ((_vdir_ (v-home* subdir))
-        (_vfile_ (v-home* subdir file)))
-    (unless (file-exists-p _vdir_)
-      (make-directory _vdir_ t))
-    `,_vfile_))
+(defmacro v-home! (file)
+  "Make versioned `+emacs-home+'/`+v-dir+'/FILE at compile-time."
+  (let ((_vfile!_ (v-home* (path! file))))
+    `,_vfile!_))
 
 
- ;; end of file macro
+ ;; end of versioned file macro
 
 
 ;; compile macro
@@ -255,7 +256,7 @@ sequentially and return value of last one, or nil if there are none."
 (compile-and-load-file* (emacs-home* "config/strap.el")
 												nil ;; only-compile
 												nil ;; delete-booster
-												(v-home* "config/" "strap.elc"))
+												(v-home* "config/strap.elc"))
 
 
 (package-supported-p
