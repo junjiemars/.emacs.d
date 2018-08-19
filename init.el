@@ -135,19 +135,19 @@ DIR where the compiled file located."
   (let ((c (make-symbol "-compile:0-"))
 				(s (make-symbol "-source:0-")))
     `(when (and (stringp ,file) (file-exists-p ,file))
-			 (let* ((,c (if ,dir
-											(file-name-new-extension*
-											 (concat ,dir (file-name-nondirectory ,file)) ".elc")
-										(file-name-new-extension* ,file ".elc")))
-							(,s (if ,dir
-											(concat ,dir (file-name-nondirectory ,file))
-										,file)))
+			 (let ((,c (if ,dir
+										 (file-name-new-extension*
+											(concat ,dir (file-name-nondirectory ,file)) ".elc")
+									 (file-name-new-extension* ,file ".elc"))))
 				 (when (or (not (file-exists-p ,c))
 									 (file-newer-than-file-p ,file ,c))
-					 (unless (string= ,file ,s) (copy-file ,file (path! ,s) t))
-					 (when (byte-compile-file ,s)
-						 (compile-claim-lock)
-						 (when ,delete-booster (delete-file ,s))))
+					 (let ((,s (if ,dir
+												 (concat ,dir (file-name-nondirectory ,file))
+											 ,file)))
+						 (unless (string= ,file ,s) (copy-file ,file (path! ,s) t))
+						 (when (byte-compile-file ,s)
+							 (compile-claim-lock)
+							 (when ,delete-booster (delete-file ,s)))))
 				 (when (file-exists-p ,c)
 					 (cond (,only-compile t)
 								 (t (load ,c))))))))
