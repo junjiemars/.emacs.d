@@ -40,6 +40,7 @@
   "Return base name of FILE with no directory, no extension."
   `(file-name-sans-extension (file-name-nondirectory ,file)))
 
+
 (defmacro file-name-new-extension* (file extension)
 	"Return FILE name with new EXTENSION."
 	`(concat (file-name-directory ,file)
@@ -125,21 +126,22 @@ The FILE should be posix path, see `path-separator'."
      (write-region (number-to-string (emacs-pid)) nil +compile-lock-name+)))
 
 
-(defmacro compile-and-load-file* (file &optional only-compile delete-booster compiled booster)
+(defmacro compile-and-load-file* (file &optional only-compile delete-booster dir)
   "Compile FILE.
 
 If ONLY-COMPILE is t, does not load COMPILED file after compile FILE.
-If DELETE-BOOSTER is t, remove booster file after compile FILE."
+If DELETE-BOOSTER is t, remove booster file after compile FILE.
+DIR where the compiled file located."
   (let ((c (make-symbol "-compile:0-"))
 				(s (make-symbol "-source:0-")))
     `(when (and (stringp ,file) (file-exists-p ,file))
-			 (let* ((,c (or ,compiled
-											(file-name-new-extension* ,file ".elc")))
-							(,s (or ,booster
-											(if (string= (file-name-directory ,file)
-																	 (file-name-directory ,c))
-													,file
-												(file-name-new-extension* ,c ".el")))))
+			 (let* ((,c (if ,dir
+											(file-name-new-extension*
+											 (concat ,dir (file-name-nondirectory ,file)) ".elc")
+										(file-name-new-extension* ,file ".elc")))
+							(,s (if ,dir
+											(concat ,dir (file-name-nondirectory ,file))
+										,file)))
 				 (when (or (not (file-exists-p ,c))
 									 (file-newer-than-file-p ,file ,c))
 					 (unless (string= ,file ,s) (copy-file ,file (path! ,s) t))
@@ -256,7 +258,7 @@ sequentially and return value of last one, or nil if there are none."
 (compile-and-load-file* (emacs-home* "config/strap.el")
 												nil ;; only-compile
 												nil ;; delete-booster
-												(v-home* "config/strap.elc"))
+												(v-home* "config/"))
 
 
 (package-supported-p

@@ -110,7 +110,7 @@ If DIR is nil then load the built-in `customize-themes' by NAME."
 													(concat (self-spec->*env-spec :theme :custom-theme-directory)
 																	(symbol-name (self-spec->*env-spec :theme :name))
 																	"-theme.el")
-													t nil t))
+													t t))
 									 (self-load-theme! (self-spec->*env-spec :theme :name)
 																		 (concat (self-spec->*env-spec :theme :custom-theme-directory)
 																						 +v-dir+ "/")))

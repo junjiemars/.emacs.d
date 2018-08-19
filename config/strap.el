@@ -210,24 +210,19 @@ The name is made by appending a number to PREFIX, default \"G\"."
 
 ;; compile macro
 
-(defmacro compile-unit* (file &optional only-compile compiled-file delete-booster)
+(defmacro compile-unit* (file &optional only-compile delete-booster)
   "Make an unit of compilation."
 	`(list :source ,file
-				 :compiled (or ,compiled-file
-											 (when ,file (v-path* ,file ".elc")))
-				 :booster nil
+				 :dir (v-path* (file-name-directory ,file))
 				 :only-compile ,only-compile
 				 :delete-booster ,delete-booster))
 
-(defmacro compile-unit% (file &optional only-compile compiled-file delete-booster)
+(defmacro compile-unit% (file &optional only-compile delete-booster)
   "Make an unit of compilation at compile time."
 	(let* ((-source1- (eval file))
-				 (-compiled1- (or (eval compiled-file)
-													(when -source1- (v-path* -source1- ".elc"))))
-				 (-booster1- (file-name-new-extension* -compiled1- ".el")))
+				 (-dir1- (eval (v-path* (file-name-directory -source1-)))))
 		`(list :source ,-source1-
-					 :compiled ,-compiled1-
-					 :booster ,-booster1-
+					 :dir ,-dir1-
 					 :only-compile ,only-compile
 					 :delete-booster ,delete-booster)))
 
@@ -235,13 +230,9 @@ The name is made by appending a number to PREFIX, default \"G\"."
   "Return the :source part of `compile-unit'."
 	`(plist-get ,unit :source))
 
-(defmacro compile-unit->compiled (unit)
-	"Return the :compiled part of `compile-unit'."
-	`(plist-get ,unit :compiled))
-
-(defmacro compile-unit->booster (unit)
-	"Return the :booster part of `compile-unit'."
-	`(plist-get ,unit :booster))
+(defmacro compile-unit->dir (unit)
+	"Return the :dir part of `compile-unit'."
+	`(plist-get ,unit :dir))
 
 (defmacro compile-unit->only-compile (unit)
   "Return the :only-compile indicator of `compile-unit'."
@@ -287,8 +278,8 @@ DIRNAME omitted or nil means use `desktop-dirname'"
 												(compile-unit->file unit)
 												(compile-unit->only-compile unit)
 												(compile-unit->delete-booster unit)
-												(compile-unit->compiled unit)
-												(compile-unit->booster unit))))))))
+												(compile-unit->dir unit))))))))
+
 
  ;; end of compile macro
 
