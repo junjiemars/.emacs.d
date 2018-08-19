@@ -215,6 +215,7 @@ The name is made by appending a number to PREFIX, default \"G\"."
 	`(list :source ,file
 				 :compiled (or ,compiled-file
 											 (when ,file (v-path* ,file ".elc")))
+				 :booster nil
 				 :only-compile ,only-compile
 				 :delete-booster ,delete-booster))
 
@@ -222,9 +223,11 @@ The name is made by appending a number to PREFIX, default \"G\"."
   "Make an unit of compilation at compile time."
 	(let* ((-source1- (eval file))
 				 (-compiled1- (or (eval compiled-file)
-													(when -source1- (v-path* -source1- ".elc")))))
+													(when -source1- (v-path* -source1- ".elc"))))
+				 (-booster1- (file-name-new-extension* -compiled1- ".el")))
 		`(list :source ,-source1-
 					 :compiled ,-compiled1-
+					 :booster ,-booster1-
 					 :only-compile ,only-compile
 					 :delete-booster ,delete-booster)))
 
@@ -235,6 +238,10 @@ The name is made by appending a number to PREFIX, default \"G\"."
 (defmacro compile-unit->compiled (unit)
 	"Return the :compiled part of `compile-unit'."
 	`(plist-get ,unit :compiled))
+
+(defmacro compile-unit->booster (unit)
+	"Return the :booster part of `compile-unit'."
+	`(plist-get ,unit :booster))
 
 (defmacro compile-unit->only-compile (unit)
   "Return the :only-compile indicator of `compile-unit'."
@@ -279,8 +286,9 @@ DIRNAME omitted or nil means use `desktop-dirname'"
 				(setq r (and r (compile-and-load-file*
 												(compile-unit->file unit)
 												(compile-unit->only-compile unit)
+												(compile-unit->delete-booster unit)
 												(compile-unit->compiled unit)
-												(compile-unit->delete-booster unit))))))))
+												(compile-unit->booster unit))))))))
 
  ;; end of compile macro
 

@@ -124,7 +124,7 @@ Return the versioned path of SUBDIR/`+v-dir+'/FILE."
      (write-region (number-to-string (emacs-pid)) nil +compile-lock-name+)))
 
 
-(defmacro compile-and-load-file* (file &optional only-compile compiled delete-booster)
+(defmacro compile-and-load-file* (file &optional only-compile delete-booster compiled booster)
   "Compile FILE.
 
 If ONLY-COMPILE is t, does not load COMPILED file after compile FILE.
@@ -134,10 +134,11 @@ If DELETE-BOOSTER is t, remove booster file after compile FILE."
     `(when (and (stringp ,file) (file-exists-p ,file))
 			 (let* ((,c (or ,compiled
 											(file-name-new-extension* ,file ".elc")))
-							(,s (if (string= (file-name-directory ,file)
-															 (file-name-directory ,c))
-											,file
-										(file-name-new-extension* ,c ".el"))))
+							(,s (or ,booster
+											(if (string= (file-name-directory ,file)
+																	 (file-name-directory ,c))
+													,file
+												(file-name-new-extension* ,c ".el")))))
 				 (when (or (not (file-exists-p ,c))
 									 (file-newer-than-file-p ,file ,c))
 					 (unless (string= ,file ,s) (copy-file ,file (path! ,s) t))
@@ -252,7 +253,8 @@ sequentially and return value of last one, or nil if there are none."
 
 ;; Load strap
 (compile-and-load-file* (emacs-home* "config/strap.el")
-												nil
+												nil ;; only-compile
+												nil ;; delete-booster
 												(v-home* "config/" "strap.elc"))
 
 
