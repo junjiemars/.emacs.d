@@ -521,7 +521,7 @@ for which (PRED item) returns t."
 "
   `(when-var% ,keymap ,feature
 	      (unless (lookup-key ,keymap ,key ,accept-default)
-		(define-key ,keymap ,key ,def))))
+					(define-key ,keymap ,key ,def))))
 
 
  ;; end of keymap
