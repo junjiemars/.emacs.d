@@ -55,7 +55,7 @@
 ;; Rmail
 (setq rmail-file-name (v-home! ".mail/RMAIL"))
 
-;; Network
+;; Nsm: Network Security Manager
 (setq% nsm-settings-file (v-home! ".nsm/security.data") nsm)
 
 ;; When you visit a file, point goes to the last place where it
