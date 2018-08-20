@@ -380,6 +380,7 @@ otherwise default to keep the directories of current `emacs-version'."
                     `,(emacs-home* ".ido/")
                     `,(emacs-home* ".dired/")
                     `,(emacs-home* ".minibuffer/")
+										`,(emacs-home* ".network/")
                     `,(emacs-home* ".places/")
                     `,(emacs-home* ".recentf/")
                     `,(emacs-home* ".semantic/")
