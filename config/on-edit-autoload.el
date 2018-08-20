@@ -148,3 +148,8 @@
 
 
  ;; end of indent
+
+(version-supported-when > 24.4
+	;; fix no quit key to hide *Messages* buffer
+	(with-current-buffer (get-buffer "*Messages*")
+		(local-set-key (kbd "q") #'quit-window)))
