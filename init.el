@@ -117,15 +117,6 @@ The FILE should be posix path, see `path-separator'."
 	"Exec path under versioned `+emacs-home+' directory which be added into PATH env.")
 
 
-(defconst +compile-lock-name+ (concat +emacs-exec-home+ ".compile.lock")
-  "Compile lock file be claimed when compiling process occurred.")
-
-(defmacro compile-claim-lock ()
-  "Record this Emacs pid in `+compile-lock-name+' file."
-  `(unless (file-exists-p +compile-lock-name+)
-     (write-region (number-to-string (emacs-pid)) nil +compile-lock-name+)))
-
-
 (defmacro compile-and-load-file* (file &optional only-compile delete-booster dir)
   "Compile FILE.
 
@@ -146,7 +137,6 @@ DIR where the compiled file located."
 											 ,file)))
 						 (unless (string= ,file ,s) (copy-file ,file (path! ,s) t))
 						 (when (byte-compile-file ,s)
-							 (compile-claim-lock)
 							 (when ,delete-booster (delete-file ,s)))))
 				 (when (file-exists-p ,c)
 					 (cond (,only-compile t)

@@ -242,30 +242,6 @@ The name is made by appending a number to PREFIX, default \"G\"."
   "Return the :delete-booster indicator of `compile-unit'."
 	`(plist-get ,unit :delete-booster))
 
-(defmacro compile-lock-owner ()
-	"Return the pid of the Emacs process that owns the `+compile-lock-name+' file.
-
-Return nil if no desktop file found or no Emacs process is using it.
-DIRNAME omitted or nil means use `desktop-dirname'"
-	`(when (file-exists-p +compile-lock-name+)
-		 (let ((owner nil))
-			 (ignore-errors
-				 (with-temp-buffer
-					 (insert-file-contents-literally +compile-lock-name+)
-					 (goto-char (point-min))
-					 (setq owner (read (current-buffer)))))
-			 (and (integerp owner) owner))))
-
-(defmacro compile-lock-p (&optional owned)
-	"Return t if the `+compile-lock-name+' existing and be OWNED by current Emacs process."
-	`(cond (,owned (let ((owner (compile-lock-owner)))
-									 (and owner (eql (emacs-pid) owner))))
-				 (t (file-exists-p +compile-lock-name+))))
-
-(defun compile-release-lock ()
-	"Remove the `+compile-lock-name+' file."
-	(when (file-exists-p +compile-lock-name+)
-		(delete-file +compile-lock-name+)))
 
 
 (defun compile! (&rest units)
@@ -440,5 +416,4 @@ Take effect after restart Emacs.
 							(compile-unit% (emacs-home* "config/memory.el"))))
 
 
-;; release compile-lock when Emacs exiting
-(add-to-list 'kill-emacs-hook #'compile-release-lock)
+ ;; end of file
