@@ -104,7 +104,7 @@ The FILE should be posix path, see `path-separator'."
 
 (defmacro v-home! (file)
   "Make versioned `+emacs-home+'/`+v-dir+'/FILE at compile-time."
-  (let ((_vfile!_ (v-home* (path! file))))
+  (let ((_vfile!_ (path! (v-home* file))))
     `,_vfile!_))
 
 
