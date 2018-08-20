@@ -16,7 +16,7 @@
    :cond (executable-find% "latex")
    :packages '(auctex cdlatex))
   (list
-   :cond (and (version-supported-p <= 24.4)
+   :cond (and (version-supported-p <= 25.1)
               (executable-find% "java"))
    :packages '(cider
                clojure-mode
