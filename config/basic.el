@@ -55,6 +55,9 @@
 ;; Rmail
 (setq rmail-file-name (v-home! ".mail/RMAIL"))
 
+;; Network
+(setq% nsm-settings-file (v-home! ".network/security.data") nsm)
+
 ;; When you visit a file, point goes to the last place where it
 ;; was when you previously visited the same file.
 ;; http://www.emacswiki.org/emacs/SavePlace
