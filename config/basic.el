@@ -56,7 +56,7 @@
 (setq rmail-file-name (v-home! ".mail/RMAIL"))
 
 ;; Network
-(setq% nsm-settings-file (v-home! ".network/security.data") nsm)
+(setq% nsm-settings-file (v-home! ".nsm/security.data") nsm)
 
 ;; When you visit a file, point goes to the last place where it
 ;; was when you previously visited the same file.
@@ -380,7 +380,7 @@ otherwise default to keep the directories of current `emacs-version'."
                     `,(emacs-home* ".ido/")
                     `,(emacs-home* ".dired/")
                     `,(emacs-home* ".minibuffer/")
-										`,(emacs-home* ".network/")
+										`,(emacs-home* ".nsm/")
                     `,(emacs-home* ".places/")
                     `,(emacs-home* ".recentf/")
                     `,(emacs-home* ".semantic/")
