@@ -92,7 +92,7 @@
  ;; end of package: paredit
 
 
-(unless-fn% completion-at-point minibuffer
+(version-supported-when > 24 
 	;; fix: no TAB completion on ancient Emacs M:
 	(defun define-eval-or-execute-key ()
 		(cond ((eq 'eval-expression this-command)
@@ -102,4 +102,4 @@
 
 	(add-hook 'minibuffer-setup-hook
 						#'define-eval-or-execute-key t))
-									
+
