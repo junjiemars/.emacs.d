@@ -516,12 +516,11 @@ for which (PRED item) returns t."
 
 ;; keymap
 
-(defmacro define-key* (keymap key def feature &optional accept-default)
-  "`define-key' as DEF if KEY does not existing in the KEYMAP of FEATURE.
-"
+(defmacro define-key* (keymap key def feature &optional old-def accept-default)
+  "In KEYMAP of FEATURE, define key sequence KEY as DEF when DEF `eq' OLD-DEF."
   `(when-var% ,keymap ,feature
-	      (unless (lookup-key ,keymap ,key ,accept-default)
-					(define-key ,keymap ,key ,def))))
+							(when (eq ,old-def (lookup-key ,keymap ,key ,accept-default))
+								(define-key ,keymap ,key ,def))))
 
 
  ;; end of keymap
