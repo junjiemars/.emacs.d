@@ -32,8 +32,7 @@
 (defmacro theme-supported-p (&rest body)
   (declare (indent 1))
   `(graphic-supported-p
-     (version-supported-when
-         < 23
+     (version-supported-when < 23
        ,@body)))
 
 
@@ -48,15 +47,15 @@
     (defsubst font-exists-p (font)
       "Return t if FONT exists."
       (when (find-font (font-spec :name font))
-	t)))
+				t)))
 
 (font-supported-p
     
     (defsubst self-default-font! (font)
       "Set default FONT in graphic mode."
       (when (font-exists-p font)
-	(add-to-list 'default-frame-alist (cons 'font font))
-	(set-face-attribute 'default nil :font font))))
+				(add-to-list 'default-frame-alist (cons 'font font))
+				(set-face-attribute 'default nil :font font))))
 
 (font-supported-p
     
@@ -69,11 +68,11 @@
     (defsubst self-cjk-font! (name size)
       "Set CJK font's NAME and SIZE in graphic mode."
       (when (font-exists-p name)
-	(when-fn% set-fontset-font nil
-	  (dolist (c '(han kana cjk-misc))
-	    (set-fontset-font (frame-parameter nil 'font)
-			      c (font-spec :family name
-					   :size size)))))))
+				(when-fn% set-fontset-font nil
+					(dolist (c '(han kana cjk-misc))
+						(set-fontset-font (frame-parameter nil 'font)
+															c (font-spec :family name
+																					 :size size)))))))
 
 (font-supported-p
     
@@ -106,11 +105,11 @@ If DIR is nil then load the built-in `customize-themes' by NAME."
 						 ;; load theme from :custom-theme-directory
 						 (if (self-spec->*env-spec :theme :compile)
 								 (when (compile!
-												 (compile-unit*
-													(concat (self-spec->*env-spec :theme :custom-theme-directory)
-																	(symbol-name (self-spec->*env-spec :theme :name))
-																	"-theme.el")
-													t t))
+												 (compile-unit* (concat
+																				 (self-spec->*env-spec :theme :custom-theme-directory)
+																				 (symbol-name (self-spec->*env-spec :theme :name))
+																				 "-theme.el")
+																				t t))
 									 (self-load-theme! (self-spec->*env-spec :theme :name)
 																		 (concat (self-spec->*env-spec :theme :custom-theme-directory)
 																						 +v-dir+ "/")))
