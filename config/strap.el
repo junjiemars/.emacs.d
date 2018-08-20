@@ -213,14 +213,15 @@ The name is made by appending a number to PREFIX, default \"G\"."
 (defmacro compile-unit* (file &optional only-compile delete-booster)
   "Make an unit of compilation."
 	`(list :source ,file
-				 :dir (v-path* (file-name-directory ,file))
+				 :dir (when ,file (v-path* (file-name-directory ,file)))
 				 :only-compile ,only-compile
 				 :delete-booster ,delete-booster))
 
 (defmacro compile-unit% (file &optional only-compile delete-booster)
   "Make an unit of compilation at compile time."
 	(let* ((-source1- (eval file))
-				 (-dir1- (eval (v-path* (file-name-directory -source1-)))))
+				 (-dir1- (when -source1-
+									 (eval (v-path* (file-name-directory -source1-))))))
 		`(list :source ,-source1-
 					 :dir ,-dir1-
 					 :only-compile ,only-compile
