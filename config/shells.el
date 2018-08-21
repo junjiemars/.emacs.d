@@ -57,12 +57,11 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 				 (string-trim> (cdr cmd))))))
 
 
-(defmacro paths->var (path sep)
+(defmacro paths->var (path)
   "Convert a list of PATH to $PATH like var that separated by SEP."
-  `(string-trim>
-		(apply #'concat
-					 (mapcar #'(lambda (s) (concat s ,sep)) ,path))
-		,sep))
+  `(string-trim> (apply #'concat
+												(mapcar #'(lambda (s) (concat s path-separator)) ,path))
+								 path-separator))
 
 (defmacro var->paths (var)
   "Refine VAR like $PATH to list by `path-separator'."
@@ -123,6 +122,23 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 (platform-supported-when windows-nt
   (with-eval-after-load 'term (ad-activate #'ansi-term t)))
 
+
+(platform-supported-when windows-nt
+
+	(defsubst windows-nt-env-path+ (dir &optional append)
+		"APPEND or insert DIR into %PATH%."
+		(let ((env (var->paths (getenv (shells-spec->% :path-var)))))
+			(when (or (and (null append) (not (string= dir (first env))))
+								(and append (not (string= dir (last env)))))
+				(eval-when-compile (require 'cl))
+				(let ((path (with-no-warnings
+											(require 'cl)
+											(remove* dir env :test #'string=))))
+					(setenv (shells-spec->% :path-var)
+									(paths->var (if append
+																	(append path dir)
+																(cons dir path)))))))))
+
 
 
 
@@ -143,7 +159,8 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
 
 ;; append versioned `+emacs-exec-home+' to $PATH
-(setenv "PATH" (path+ (getenv "PATH") t +emacs-exec-home+))
+(setenv (shells-spec->% :path-var)
+				(path+ (getenv (shells-spec->% :path-var)) t +emacs-exec-home+))
 
 
  ;; end of shells.el

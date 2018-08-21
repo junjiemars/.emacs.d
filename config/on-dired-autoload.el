@@ -8,6 +8,7 @@
 
 
 (if-fn% dired-do-compress-to dired-aux
+
 				(platform-supported-when windows-nt
 					;; on Windows: there are no builtin zip program
 					;; so try to use minzip in Emacs dep for Windows.
@@ -21,6 +22,7 @@
 													 (when (and zip (string-match-p "^zip" (cdr zip))
 																			(executable-find% "minizip"))
 														 (setcdr zip "minizip %o -9 %i")))))))
+
 	(when-var% dired-compress-file-suffixes dired-aux
 						 ;; on ancent Emacs, `dired' can't recognize .zip archive.
 						 ;; [Z] key should be recognize .zip extension and uncompress a .zip archive.
@@ -45,7 +47,8 @@
 										 (when (zerop (car ver))
 											 (string-match "^find (GNU findutils)"
 																		 (cdr ver))))))))
-			(when find (setq% find-program (shell-quote-argument find) grep)))))
+			(when find
+				(windows-nt-env-path+ (file-name-directory find))))))
 
  ;; end of `dired' setting
 

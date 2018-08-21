@@ -492,7 +492,8 @@ For Darwin, let =dired= don't do stupid things.
 
 *** find Program
 
-If GNU's =find= has already in =PATH= so use it on Windows, and let Windows stupid =find= program go away.
+On Windows, if GNU's =find= has already in your disk, and let Windows stupid =find= or =findstr= program go away.
+Don't =setq= =find-program= on Windows, because =dired= can not differ =local= and =remote=.
 
 Now, on Windows you can use @@html:<kbd>@@M-x find-dired@@html:</kbd>@@ or @@html:<kbd>@@M-x find-name-dired@@html:</kbd>@@
 
