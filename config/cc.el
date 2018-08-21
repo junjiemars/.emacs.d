@@ -29,7 +29,7 @@
 (platform-supported-when windows-nt
   
   (defun make-cc-env-bat ()
-		"Make .cc-env.bat in `exec-path'."
+		"Make cc-env.bat in `exec-path'."
     (let ((vcvarsall (check-vcvarsall-bat))
 					(arch (downcase (getenv "PROCESSOR_ARCHITECTURE"))))
       (when vcvarsall

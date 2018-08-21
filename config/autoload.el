@@ -90,9 +90,13 @@
     (v-home% "config/cc.elc")
     "Return a list of system include directories.")
 
+	(platform-supported-when windows-nt
+		(autoload 'make-cc-env-bat
+			(v-home% "config/cc.elc")
+			"Make cc-env.bat in `exec-path'."))
+	
   (autoload 'set-semantic-cc-env!
     (v-home% "config/on-semantic-autoload.elc"))
-
   
   )
 
