@@ -126,7 +126,7 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 (platform-supported-when windows-nt
 
 	(defsubst windows-nt-env-path+ (dir &optional append)
-		"APPEND or insert DIR into %PATH%."
+		"APPEND or push DIR to %PATH%."
 		(let ((env (var->paths (getenv (shells-spec->% :path-var)))))
 			(when (or (and (null append) (not (string= dir (first env))))
 								(and append (not (string= dir (last env)))))
