@@ -67,7 +67,8 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
 (defun save-shell-env! ()
   (shell-env<- :exec-path
-							 (dolist (p (var->paths (shell-env-> :path)) exec-path)
+							 (dolist (p (append (var->paths (getenv (shells-spec->% :PATH)))
+																	(list (v-home% ".exec/"))) exec-path)
 								 (when (stringp p) (add-to-list 'exec-path p t #'string=))))
   (shell-env<- :env-vars
 							 (let ((vars (shells-spec->* :env-vars))
@@ -99,7 +100,7 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 							 (when v1 (setenv v v1))))))
 
 
-(defmacro copy-exec-path-var! (path)
+(defmacro copy-exec-path! (path)
   `(when ,path (setq exec-path ,path)))
 
 
@@ -137,30 +138,33 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
  ;; end of Windows ansi-term/shell
 
 
-(when (shells-spec->* :allowed)
+(if (shells-spec->* :allowed)
+		(progn
+			(read-shell-env!)
+			
+			(when (shells-spec->* :shell-file-name)
+				(setenv (shells-spec->% :SHELL)
+								(shells-spec->* :shell-file-name)))
+			
+			(when (shells-spec->* :exec-path)
+				(copy-exec-path! (shell-env-> :exec-path)))
 
-	(read-shell-env!)
-	
-  (when (shells-spec->* :shell-file-name)
-    (setenv (shells-spec->% :SHELL)
-						(shells-spec->* :shell-file-name)))
-  
-  (when (shells-spec->* :exec-path)
-    (copy-exec-path-var! (shell-env-> :exec-path)))
-
-  (when (shells-spec->* :env-vars)
-		(copy-env-vars! (shell-env-> :env-vars)
-										(shells-spec->* :env-vars))))
-
- ;; end of :allowed
+			(when (shells-spec->* :env-vars)
+				(copy-env-vars! (shell-env-> :env-vars)
+												(shells-spec->* :env-vars))))
+	;; disallowed: append .exec/ to `exec-path'
+	(add-to-list 'exec-path (v-home% ".exec/") t #'string=))
 
 
-;; append .exec/ to $PATH or %PATH%
-(setenv (shells-spec->% :PATH)
-				(path+ (getenv (shells-spec->% :PATH)) t (v-home% ".exec")))
 
-;; append .exec/ to `exec-path'
-(add-to-list 'exec-path (v-home% ".exec/") t #'string=)
+;; (platform-supported-when windows-nt
+;; 	(windows-nt-env-path+ (v-home% ".exec/"))
+;; 	;; append .exec/ to $PATH or %PATH%
+;; 	;; (setenv (shells-spec->% :PATH)
+;; 	;; 				(path+ (getenv (shells-spec->% :PATH)) t (v-home% ".exec")))
+
+;; 	)
+
 
 
 (platform-supported-when windows-nt
