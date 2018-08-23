@@ -41,7 +41,7 @@
 								 "set CC=cl" "\n"
 								 "set AS=ml" (if (string-match "[_a-zA-Z]*64" arch) "64" "") "\n"
 								 "echo \"%INCLUDE%\"\n")
-				 (expand-file-name (concat +emacs-exec-home+ "cc-env.bat")))))))
+				 (concat +emacs-exec-home+ "cc-env.bat"))))))
 
 
 (defun check-cc-include ()

@@ -16,12 +16,9 @@ Examples:
 \(tags-spec->% :os-include\)
 "
   `(self-spec->% (list
-									:emacs-home
-									,(expand-file-name (v-home% ".tags/home/TAGS"))
-									:emacs-source
-									,(expand-file-name (v-home% ".tags/source/TAGS"))
-									:os-include
-									,(expand-file-name (v-home% ".tags/os/TAGS")))
+									:emacs-home ,(v-home% ".tags/home/TAGS")
+									:emacs-source ,(v-home% ".tags/source/TAGS")
+									:os-include ,(v-home% ".tags/os/TAGS"))
      ,@key))
 
 
