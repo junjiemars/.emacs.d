@@ -138,6 +138,8 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
  ;; end of Windows ansi-term/shell
 
 
+;; allowed/disallowed `shells-spec->*'
+
 (if (shells-spec->* :allowed)
 		(progn
 			(read-shell-env!)
@@ -156,15 +158,12 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 	(add-to-list 'exec-path (v-home% ".exec/") t #'string=))
 
 
+;; add .exec/ to %PATH%
+(platform-supported-when windows-nt
+	(windows-nt-env-path+ (v-home% ".exec/")))
 
-;; (platform-supported-when windows-nt
-;; 	(windows-nt-env-path+ (v-home% ".exec/"))
-;; 	;; append .exec/ to $PATH or %PATH%
-;; 	;; (setenv (shells-spec->% :PATH)
-;; 	;; 				(path+ (getenv (shells-spec->% :PATH)) t (v-home% ".exec")))
 
-;; 	)
-
+ ;; allowed/disallowed `shells-spec->*'
 
 
 (platform-supported-when windows-nt
