@@ -113,9 +113,6 @@ The FILE should be posix path, see `path-separator'."
 
 ;; compile macro
 
-(defconst +emacs-exec-home+ (v-home! ".exec/")
-	"Exec path under versioned `+emacs-home+' directory which be added into PATH env.")
-
 
 (defmacro compile-and-load-file* (file &optional only-compile delete-booster dir)
   "Compile FILE.
@@ -148,7 +145,7 @@ DIR where the compiled file located."
   `(dolist (d (list ,(v-home* "config/")
                     ,(v-home* "private/")
 										,(v-home* "theme/")
-										+emacs-exec-home+))
+										,(v-home* ".exec/")))
      (dolist (f (when (file-exists-p d)
 									(directory-files d nil "\\.elc?\\'")))
        (message "#Clean compiled file: %s" f)

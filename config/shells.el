@@ -11,14 +11,9 @@
   "Extract value from the list of spec via KEYS at compile time."
 	(declare (indent 0))
   `(self-spec->%
-			 (list :source-file
-						 ,(concat +emacs-exec-home+ ".shell-env.el")
-						 
-						 :compiled-file
-						 ,(concat +emacs-exec-home+ ".shell-env.elc")
-						 
+			 (list :source-file ,(v-home! ".exec/.shell-env.el")
+						 :compiled-file ,(v-home! ".exec/.shell-env.elc")
 						 :shell-var "SHELL"
-						 
 						 :path-var "PATH")
      ,@keys))
 
@@ -160,12 +155,12 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
  ;; end of :allowed
 
 
-;; append `+emacs-exec-home+' to $PATH or %PATH%
+;; append .exec/ to $PATH or %PATH%
 (setenv (shells-spec->% :path-var)
-				(path+ (getenv (shells-spec->% :path-var)) t +emacs-exec-home+))
+				(path+ (getenv (shells-spec->% :path-var)) t (v-home% ".exec")))
 
-;; append `+emacs-exec-home+' to `exec-path'
-(add-to-list 'exec-path +emacs-exec-home+ t #'string=)
+;; append .exec/ to `exec-path'
+(add-to-list 'exec-path (v-home% ".exec/") t #'string=)
 
 
 (platform-supported-when windows-nt
@@ -244,7 +239,7 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 														"  )\n"
 														")\n"
 														"\n:end\n"))))
-		 (concat +emacs-exec-home+ "zip.bat"))))
+		 (v-home% ".exec/zip.bat"))))
 
 
  ;; end of shells.el
