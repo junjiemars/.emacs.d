@@ -68,7 +68,8 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 (defun save-shell-env! ()
   (shell-env<- :exec-path
 							 (dolist (p (append (var->paths (getenv (shells-spec->% :PATH)))
-																	(list (v-home% ".exec/"))) exec-path)
+																	(platform-supported-unless windows-nt
+																		(list (v-home% ".exec/")))) exec-path)
 								 (when (stringp p) (add-to-list 'exec-path p t #'string=))))
   (shell-env<- :env-vars
 							 (let ((vars (shells-spec->* :env-vars))
