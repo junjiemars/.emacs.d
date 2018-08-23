@@ -13,8 +13,8 @@
   `(self-spec->%
 			 (list :source-file ,(v-home! ".exec/.shell-env.el")
 						 :compiled-file ,(v-home! ".exec/.shell-env.elc")
-						 :shell-var "SHELL"
-						 :path-var "PATH")
+						 :SHELL "SHELL"
+						 :PATH "PATH")
      ,@keys))
 
 
@@ -122,14 +122,14 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
 	(defsubst windows-nt-env-path+ (dir &optional append)
 		"APPEND or push DIR to %PATH%."
-		(let ((env (var->paths (getenv (shells-spec->% :path-var)))))
+		(let ((env (var->paths (getenv (shells-spec->% :PATH)))))
 			(when (or (and (null append) (not (string= dir (first env))))
 								(and append (not (string= dir (last env)))))
 				(eval-when-compile (require 'cl))
 				(let ((path (with-no-warnings
 											(require 'cl)
 											(remove* dir env :test #'string=))))
-					(setenv (shells-spec->% :path-var)
+					(setenv (shells-spec->% :PATH)
 									(paths->var (if append
 																	(append path dir)
 																(cons dir path)))))))))
@@ -142,7 +142,7 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 	(read-shell-env!)
 	
   (when (shells-spec->* :shell-file-name)
-    (setenv (shells-spec->% :shell-var)
+    (setenv (shells-spec->% :SHELL)
 						(shells-spec->* :shell-file-name)))
   
   (when (shells-spec->* :exec-path)
@@ -156,8 +156,8 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
 
 ;; append .exec/ to $PATH or %PATH%
-(setenv (shells-spec->% :path-var)
-				(path+ (getenv (shells-spec->% :path-var)) t (v-home% ".exec")))
+(setenv (shells-spec->% :PATH)
+				(path+ (getenv (shells-spec->% :PATH)) t (v-home% ".exec")))
 
 ;; append .exec/ to `exec-path'
 (add-to-list 'exec-path (v-home% ".exec/") t #'string=)
