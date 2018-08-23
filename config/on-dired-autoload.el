@@ -16,12 +16,8 @@
 					(when-var% dired-compress-files-alist dired-aux
 										 (with-eval-after-load 'dired-aux
 											 (unless (executable-find% "zip")
-												 ;; `format-spec' may not autoload
-												 (require 'format-spec)
-												 (let ((zip (assoc** "\\.zip\\'" dired-compress-files-alist #'string=)))
-													 (when (and zip (string-match-p "^zip" (cdr zip))
-																			(executable-find% "minizip"))
-														 (setcdr zip "minizip %o -9 %i")))))))
+												 (when (executable-find% "minizip")
+													 (make-zip-bat "minizip"))))))
 
 	(when-var% dired-compress-file-suffixes dired-aux
 						 ;; on ancent Emacs, `dired' can't recognize .zip archive.
