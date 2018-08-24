@@ -493,7 +493,7 @@ For Darwin, let =dired= don't do stupid things.
 *** find Program
 
 On Windows, if GNU's =find= has already in your disk, and let Windows stupid =find= or =findstr= program go away.
-Don't =setq= =find-program= on Windows, because =dired= can not differ =local= and =remote=.
+Don't =setq= =find-program= on Windows, because =dired= can not differ the cases between local and remote.
 
 Now, on Windows you can use @@html:<kbd>@@M-x find-dired@@html:</kbd>@@ or @@html:<kbd>@@M-x find-name-dired@@html:</kbd>@@
 
@@ -502,7 +502,7 @@ Now, on Windows you can use @@html:<kbd>@@M-x find-dired@@html:</kbd>@@ or @@htm
 *** zip Program
 
 On Windows, there are no builtin =zip/unzip= program, but Emacs has a builtin =minizip= so We can 
-zip, unzip or view the content a zip archive.
+zip, unzip, export =org= to =odt= document or view the content a zip archive.
 
 [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-do-compress-to-on-windows.png][screenshot: dired-do-compress-to]]
 
