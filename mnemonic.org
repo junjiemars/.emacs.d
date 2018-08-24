@@ -106,7 +106,7 @@ It's *self-documenting* and great, keep reading it frequently.
 -  downcase region: @@html:<kbd>@@C-x C-l@@html:</kbd>@@
 -  transpose characters: @@html:<kbd>@@C-t@@html:</kbd>@@
 -  transpose words: @@html:<kbd>@@M-t@@html:</kbd>@@
--  insert parentheses: @@html:<kbd>@@M-@@html:&lpar;@@@@html:</kbd>@@, wrap selection in parentheses
+-  insert parentheses: @@html:<kbd>@@M-(@@html:</kbd>@@, wrap selection in parentheses
 -  toggle read-only mode: @@html:<kbd>@@C-x C-q@@html:</kbd>@@
 -  toggle input method: @@html:<kbd>@@C-\@@html:</kbd>@@
 -  set input method: @@html:<kbd>@@C-x RET C-\@@html:</kbd>@@
