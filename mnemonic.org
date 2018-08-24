@@ -310,7 +310,7 @@ It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]]
     aaaa 0
 #+END_EXAMPLE
 
-insert multiple lines with /prefix + random number/, @@html:<kbd>@@C-u C-[-:@@html:</kbd>@@
+Insert multiple lines with /prefix + random-number/: @@html:<kbd>@@C-u C-[-:@@html:</kbd>@@
 
 #+BEGIN_SRC lisp
     (dotimes (x 5)
@@ -330,4 +330,27 @@ insert multiple lines with /prefix + random number/, @@html:<kbd>@@C-u C-[-:@@ht
     aaaa uuu
 #+END_EXAMPLE
 
-sort by 2nd field: @@html:<kbd>@@C-u 2 M-x sort-fields@@html:</kbd>@@, =reverse-region=
+Sort by 2nd field: @@html:<kbd>@@C-u 2 M-x sort-fields@@html:</kbd>@@
+
+**** Reverse Region
+
+#+BEGIN_EXAMPLE
+    aaaa 9
+    aaaa 6
+    aaaa 1
+    aaaa 1
+    aaaa 0
+#+END_EXAMPLE
+
+Select the above region, then @@html:<kbd>@@M-x reverse-region@@html:</kbd>@@
+
+#+BEGIN_EXAMPLE
+    aaaa 0
+    aaaa 1
+    aaaa 1
+    aaaa 6
+    aaaa 9
+#+END_EXAMPLE
+
+
+
