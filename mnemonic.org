@@ -72,9 +72,7 @@ It's *self-documenting* and great, keep reading it frequently.
    the global mark acrross buffers
 -  jump in buffer: @@html:<kbd>@@C-u C-@@@html:</kbd>@@
 -  jump to definition: @@html:<kbd>@@M-.@@html:</kbd>@@
--  pop back to where @@html:<kbd>@@M-.@@html:</kbd>@@ was last invoked:
-   @@html:<kbd>@@M-,@@html:</kbd>@@, on Terminal is
-   @@html:<kbd>@@M-*@@html:</kbd>@@
+-  pop back to where @@html:<kbd>@@M-.@@html:</kbd>@@ jump to: @@html:<kbd>@@M-,@@html:</kbd>@@
 
 * Interaction
    :PROPERTIES:
