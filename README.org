@@ -388,7 +388,7 @@ can be done in =(def-self-env-spec)=.
 #+BEGIN_SRC emacs-lisp
     (def-self-env-spec
       :package (list :remove-unused nil
-                     :allowed nil)
+                     :allowed nil))
           
 #+END_SRC
 
@@ -462,7 +462,7 @@ Avoiding a war.
     (def-self-env-spec
       :edit (list :tab-width 2
                   :auto-save-default nil
-                  :allowed t)
+                  :allowed t))
 #+END_SRC
 
 - =:tab-width= default @@html:<kbd>@@C-h-v tab-width@@html:</kbd>@@

@@ -117,9 +117,8 @@ It's *self-documenting* and great, keep reading it frequently.
 -  insert char: @@html:<kbd>@@C-x 8 RET@@html:</kbd>@@ GREEK SMALL
    LETTER LAMBDA
 -  quoted insert: @@html:<kbd>@@C-q@@html:</kbd>@@, such as page break
-   @@html:<kbd>@@C-q C-l@@html:</kbd>@@, use @@html:<kbd>@@C-x
-   [@@html:</kbd>@@ or @@html:<kbd>@@C-x ]@@html:</kbd>@@ to backward or
-   forward
+   @@html:<kbd>@@C-q C-l@@html:</kbd>@@, use @@html:<kbd>@@C-x [@@html:</kbd>@@ to backward or @@html:<kbd>@@C-x ]@@html:</kbd>@@ to forward
+-  check unmatched parentheses: @@html:<kbd>@@M-x check-parens@@html:</kbd>@@
 
 * Basic sexp commands
    :PROPERTIES:
