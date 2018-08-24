@@ -97,10 +97,8 @@ It's *self-documenting* and great, keep reading it frequently.
 -  write file: @@html:<kbd>@@C-x C-w@@html:</kbd>@@ same as save as
 -  kill whole line: @@html:<KBD>@@C-S-DEL@@html:</KBD>@@
 -  kill all spaces at point: @@html:<kbd>@@M-\@@html:</kbd>@@
--  kill all spaces except one at point:
-   @@html:<KBD>@@M-SPC@@html:</KBD>@@
--  delete indentation to join line to previous line:
-   @@html:<kbd>@@M-^@@html:</kbd>@@
+-  kill all spaces except one at point: @@html:<KBD>@@M-SPC@@html:</KBD>@@
+-  delete indentation to join line to previous line: @@html:<kbd>@@M-^@@html:</kbd>@@
 -  dynamic abbreviation: @@html:<kbd>@@M-/@@html:</kbd>@@
 -  query replace: @@html:<kbd>@@M-%@@html:</kbd>@@
 -  what cursor position: @@html:<kbd>@@C-x =@@html:</kbd>@@
@@ -108,14 +106,12 @@ It's *self-documenting* and great, keep reading it frequently.
 -  downcase region: @@html:<kbd>@@C-x C-l@@html:</kbd>@@
 -  transpose characters: @@html:<kbd>@@C-t@@html:</kbd>@@
 -  transpose words: @@html:<kbd>@@M-t@@html:</kbd>@@
--  insert parentheses: @@html:<kbd>@@M-(@@html:</kbd>@@, wrap selection
-   in parentheses
+-  insert parentheses: @@html:<kbd>@@M-@@html:&lpar;@@@@html:</kbd>@@, wrap selection in parentheses
 -  toggle read-only mode: @@html:<kbd>@@C-x C-q@@html:</kbd>@@
 -  toggle input method: @@html:<kbd>@@C-\@@html:</kbd>@@
 -  set input method: @@html:<kbd>@@C-x RET C-\@@html:</kbd>@@
 -  describe current input method: @@html:<kbd>@@C-h I@@html:</kbd>@@
--  insert char: @@html:<kbd>@@C-x 8 RET@@html:</kbd>@@ GREEK SMALL
-   LETTER LAMBDA
+-  insert char: @@html:<kbd>@@C-x 8 RET@@html:</kbd>@@ GREEK SMALL LETTER LAMBDA
 -  quoted insert: @@html:<kbd>@@C-q@@html:</kbd>@@, such as page break
    @@html:<kbd>@@C-q C-l@@html:</kbd>@@, use @@html:<kbd>@@C-x [@@html:</kbd>@@ to backward or @@html:<kbd>@@C-x ]@@html:</kbd>@@ to forward
 -  check unmatched parentheses: @@html:<kbd>@@M-x check-parens@@html:</kbd>@@
@@ -231,7 +227,7 @@ automatically from one Emacs session to the next.
    :CUSTOM_ID: dired
    :END:
 
--  hide details: @@html:<kbd>@@(@@html:</kbd>@@
+-  hide details: @@html:<kbd>@@@@html:&lpr;@@@@html:</kbd>@@
 -  change marks: @@html:<kbd>@@* c @@html:</kbd>@@
 
 * Shell
@@ -311,11 +307,11 @@ aaaa 92 3
 aaaa 86 6
 #+END_EXAMPLE
 
-Insert 5 lines with /prefix(aaaa) random-number[0-100) random-number[0-10)/: @@html:<kbd>@@C-[ :@@html:</kbd>@@
+Insert 5 lines with /prefix(aaaa) random-number[0-100) random-number[0-10)/: @@html:<kbd>@@C-@@html:&lspb;@@ :@@html:</kbd>@@
 
 #+BEGIN_SRC lisp
     (dotimes (x 5)
-        (insert (format "aaaa %2s %s\n" (random 100) (random 10)))
+        (insert (format "aaaa %2s %s\n" (random 100) (random 10))))
 #+END_SRC
 
 **** Sort Region
