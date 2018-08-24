@@ -164,7 +164,7 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 	(windows-nt-env-path+ (v-home% ".exec/")))
 
 
- ;; allowed/disallowed `shells-spec->*'
+ ;; end of allowed/disallowed `shells-spec->*'
 
 
 (platform-supported-when windows-nt
@@ -246,12 +246,5 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 															"\n:end\n"))))
 			 (v-home% ".exec/zip.bat")))))
 
-(platform-supported-when windows-nt
-	;; on Windows: there are no builtin zip program
-	;; so try to use minzip in Emacs dep for Windows.
-	;; zip.bat works with `dired-do-compress-to' and `org-odt-export-to-odt'.
-	(unless (executable-find% "zip")
-		(when (executable-find% "minizip")
-			(make-zip-bat "minizip"))))
 
  ;; end of shells.el
