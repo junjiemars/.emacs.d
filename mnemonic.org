@@ -87,7 +87,7 @@ It's *self-documenting* and great, keep reading it frequently.
 -  region as input to Shell command: @@html:<kbd>@@M-|@@html:</kbd>@@,
    insert from shell output: @@html:<kbd>@@C-u M-|@@html:</kbd>@@
 -  browse-url: @@html:<kbd>@@C-c b@@html:</kbd>@@
--  filename of current buffer: =(buffer-file-name (current-buffer)=
+-  filename of current buffer: =(buffer-file-name (current-buffer))=
 
 * Editing
    :PROPERTIES:
