@@ -7,7 +7,12 @@
 ;;;;
 
 
-(unless-fn% dired-do-compress-to dired-aux
+(if-fn% dired-do-compress-to dired-aux
+				(when-var% dired-compress-files-alist dired-aux
+									 (platform-supported-when darwin
+										 (with-eval-after-load 'dired-aux
+											 ;; `format-spec' may not autoload
+											 (require 'format-spec))))
 	(when-var% dired-compress-file-suffixes dired-aux
 						 ;; on ancent Emacs, `dired' can't recognize .zip archive.
 						 ;; [Z] key should be recognize .zip extension and uncompress a .zip archive.
