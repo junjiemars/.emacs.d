@@ -192,14 +192,14 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 															"if \"%1\"==\"-9\" set _LEVEL=%1 & shift & goto :getopt\n"
 															"if \"%1\"==\"-mX0\" set _LEVEL=-0 & shift & goto :getopt\n"
 															"\n"
-															"REM ignore options\n\n"
+															"REM ignore options\n"
 															(let ((options nil))
 																(dolist (x (append '("-r" "--filesync" "-rmTq") ignore) options)
 																	(setq options
 																				(concat options
 																								(format "if \"%%1\"==\"%s\" shift & goto :getopt\n" x)))))
 															"\n"
-															"REM minizip recursive call\n\n"
+															"REM extract zip and argv\n"
 															"if not \"%1\"==\"\" (\n"
 															"  if \"%_ZIP%\"==\"\" (\n"
 															"    if \"%_ARGV%\"==\"\" (\n"
@@ -211,7 +211,8 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 															"  shift\n"
 															"  goto :getopt\n"
 															")\n"
-															"\n"										 
+															"\n"
+															"REM minizip recursive call\n\n"
 															"call :loop %_ARGV%\n"
 															"goto :end\n"
 															"\n:zip\n"
