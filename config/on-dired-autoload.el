@@ -7,18 +7,7 @@
 ;;;;
 
 
-(if-fn% dired-do-compress-to dired-aux
-
-				(platform-supported-when windows-nt
-					;; on Windows: there are no builtin zip program
-					;; so try to use minzip in Emacs dep for Windows.
-					;; see `dired-do-compress-to'.
-					(when-var% dired-compress-files-alist dired-aux
-										 (with-eval-after-load 'dired-aux
-											 (unless (executable-find% "zip")
-												 (when (executable-find% "minizip")
-													 (make-zip-bat "minizip"))))))
-
+(unless-fn% dired-do-compress-to dired-aux
 	(when-var% dired-compress-file-suffixes dired-aux
 						 ;; on ancent Emacs, `dired' can't recognize .zip archive.
 						 ;; [Z] key should be recognize .zip extension and uncompress a .zip archive.

@@ -195,17 +195,15 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 															"if \"%1\"==\"-7\" set _LEVEL=%1 & shift & goto :getopt\n"
 															"if \"%1\"==\"-8\" set _LEVEL=%1 & shift & goto :getopt\n"
 															"if \"%1\"==\"-9\" set _LEVEL=%1 & shift & goto :getopt\n"
-															"if \"%1\"==\"-mX0\" set _LEVEL=-0 & shift & goto :getopt\n")))
-							 (cond ((string= "minizip" zip)
-											(concat "\n"
+															"if \"%1\"==\"-mX0\" set _LEVEL=-0 & shift & goto :getopt\n"
+															"\n"
 															"REM ignore options\n\n"
 															(let ((options nil))
 																(dolist (x (append '("-r" "--filesync" "-rmTq") ignore) options)
 																	(setq options
 																				(concat options
-																								(format "if \"%%1\"==\"%s\" shift & goto :getopt\n" x))))))))
-							 (cond ((string= "minizip" zip)
-											(concat "\n"
+																								(format "if \"%%1\"==\"%s\" shift & goto :getopt\n" x)))))
+															"\n"
 															"REM minizip recursive call\n\n"
 															"if not \"%1\"==\"\" (\n"
 															"  if \"%_ZIP%\"==\"\" (\n"
@@ -248,5 +246,12 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 															"\n:end\n"))))
 			 (v-home% ".exec/zip.bat")))))
 
+(platform-supported-when windows-nt
+	;; on Windows: there are no builtin zip program
+	;; so try to use minzip in Emacs dep for Windows.
+	;; zip.bat works with `dired-do-compress-to' and `org-odt-export-to-odt'.
+	(unless (executable-find% "zip")
+		(when (executable-find% "minizip")
+			(make-zip-bat "minizip"))))
 
  ;; end of shells.el
