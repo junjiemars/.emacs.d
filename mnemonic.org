@@ -79,7 +79,7 @@ It's *self-documenting* and great, keep reading it frequently.
    :CUSTOM_ID: interaction
    :END:
 
--  *scratch* buffer
+-  =*scratch*= buffer
 -  via Elisp: @@html:<kbd>@@M-:@@html:</kbd>@@
 -  via Shell command: @@html:<kbd>@@M-!@@html:</kbd>@@, insert shell
    output: @@html:<kbd>@@C-u M-!@@html:</kbd>@@, see /Info>Emacs>Shell/
