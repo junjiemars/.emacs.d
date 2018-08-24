@@ -508,7 +508,8 @@ zip, unzip or view the content a zip archive.
 
 For some ancient Emacs such as below version 24, @@html:<kbd>@@! zip x.zip ?@@html:</kbd>@@ to zip.
 
-[[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-compress-file-suffixes-version-24lt.png]			[screenshot: dired-compress-file-suffixes]]
+[[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-compress-file-suffixes-version-24lt.png][screenshot: dired-compress-file-suffixes]]
+
 
 * Troubleshooting
    :PROPERTIES:
