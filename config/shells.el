@@ -122,7 +122,7 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
 (platform-supported-when windows-nt
 
-	(defsubst windows-nt-env-path+ (dir &optional append)
+	(defun windows-nt-env-path+ (dir &optional append)
 		"APPEND or push DIR to %PATH%."
 		(let ((env (var->paths (getenv (shells-spec->% :PATH)))))
 			(when (or (and (null append) (not (string= dir (first env))))
@@ -157,11 +157,6 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 												(shells-spec->* :env-vars))))
 	;; disallowed: append .exec/ to `exec-path'
 	(add-to-list 'exec-path (v-home% ".exec/") t #'string=))
-
-
-;; add .exec/ to %PATH%
-(platform-supported-when windows-nt
-	(windows-nt-env-path+ (v-home% ".exec/")))
 
 
  ;; end of allowed/disallowed `shells-spec->*'

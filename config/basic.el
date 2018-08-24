@@ -344,7 +344,7 @@ and `funcall' PREFER returns t.
       `,path)))
 
 
-(defsubst path+ (path append &rest paths)
+(defun path+ (path append &rest paths)
 	"Append a list of PATHS to PATH when APPEND is t, otherwise insert before the head of PATH."
 	(declare (indent 2))
 	(let* ((trim (lambda (x)
