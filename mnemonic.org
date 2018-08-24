@@ -227,7 +227,7 @@ automatically from one Emacs session to the next.
    :CUSTOM_ID: dired
    :END:
 
--  hide details: @@html:<kbd>@@@@html:&lpr;@@@@html:</kbd>@@
+-  hide details: @@html:<kbd>@@(@@html:</kbd>@@
 -  change marks: @@html:<kbd>@@* c @@html:</kbd>@@
 
 * Shell
