@@ -36,8 +36,7 @@ It's *self-documenting* and great, keep reading it frequently.
 -  Emacs manual: @@html:<kbd>@@C-h r@@html:</kbd>@@
 -  Apropos command: @@html:<kbd>@@C-h a@@html:</kbd>@@
 -  Info: @@html:<kbd>@@C-h i@@html:</kbd>@@
--  Info of mode: @@html:<kbd>@@C-h i d m @@html:<x>@@@@html:</kbd>@@
-   /@@html:<x>@@/ is the mode
+-  Info of mode: @@html:<kbd>@@C-h i d m @@html:</kbd>@@
 -  Mode: @@html:<kbd>@@C-h-m@@html:</kbd>@@ see all the key bindings and
    documentation of current buffer
 -  Where is command: @@html:<kbd>@@C-h w@@html:</kbd>@@ which keystrokes
