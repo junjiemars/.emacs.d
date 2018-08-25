@@ -152,4 +152,5 @@
 (version-supported-when > 24.4
 	;; fix no quit key to hide *Messages* buffer
 	(with-current-buffer (get-buffer "*Messages*")
+		(toggle-read-only t)
 		(local-set-key (kbd "q") #'quit-window)))
