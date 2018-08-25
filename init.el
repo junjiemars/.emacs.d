@@ -217,30 +217,6 @@ sequentially and return value of last one, or nil if there are none."
  ;; end of package-supported macro
 
 
-;; lexical-supported macro
-
-(defmacro lexical-supported-if (then &rest else)
-  "If support lexical binding then do BODY, otherwise do ELSE..."
-  (declare (indent 1))
-  `(version-supported-if
-       <= 24.1
-       ,then
-     (progn% ,@else)))
-
-(defmacro lexical-supported-when (&rest body)
-  "Do BODY when lexical binding, else return nil."
-  (declare (indent 0))
-  `(lexical-supported-if (progn% ,@body)))
-
-(defmacro lexical-supported-unless (&rest body)
-  "Do BODY unless support lexical binding."
-  (declare (indent 0))
-  `(lexical-supported-if nil ,@body))
-
-
- ;; end of lexical-supported macro
-
-
 ;; Load strap
 (compile-and-load-file* (emacs-home* "config/strap.el")
 												nil ;; only-compile
