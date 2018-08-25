@@ -60,6 +60,7 @@ It's *self-documenting* and great, keep reading it frequently.
    system
 -  Colors: @@html:<kbd>@@M-x list-colors-display@@html:</kbd>@@ display
    names of defined colors and show what they look like
+-	 Keystrokes: @@html:<kbd>@@C-h l@@html:</kbd>@@ display last 100 input keystrokes
 
 * Motion
    :PROPERTIES:
