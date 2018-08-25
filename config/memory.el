@@ -116,15 +116,16 @@
 				(switch-theme! (self-spec-> *self-previous-env-spec* :theme)
 											 (self-spec->*env-spec :theme)))
 
+		(version-supported-when <= 26
+			(platform-supported-when darwin
+				;; fix: title bar text color broken #55
+				;; https://github.com/d12frosted/homebrew-emacs-plus/issues/55#issuecomment-408317248
+				(dolist (x '((ns-transparent-titlebar . unbound)
+										 (ns-appearance . unbound)))
+					(add-to-list 'frameset-filter-alist x))))
+		
     (version-supported-if >= 23
-													(desktop-save (path! (v-home! ".desktop/")))
-      (version-supported-when <= 26
-				(platform-supported-when darwin
-					;; Title bar text color broken #55
-					;; https://github.com/d12frosted/homebrew-emacs-plus/issues/55#issuecomment-408317248
-					(dolist (x '((ns-transparent-titlebar . unbound)
-											 (ns-appearance . unbound)))
-						(add-to-list 'frameset-filter-alist x))))
+													(desktop-save (path! (v-home% ".desktop/")))
       (desktop-save (path! (v-home% ".desktop/")) t))))
 
 
