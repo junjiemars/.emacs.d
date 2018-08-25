@@ -35,5 +35,5 @@ positive, otherwise not.
 
 (feature-eww-supported-p
   (with-eval-after-load 'eww
-												(add-hook 'eww-mode-hook #'set-eww-mode!)))
+		(add-hook 'eww-mode-hook #'set-eww-mode!)))
 
