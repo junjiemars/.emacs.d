@@ -70,6 +70,19 @@ If in terminal mode, and there are no ELSE’s, the value is nil. "
  ;; end of graphic-supported macro
 
 
+;; version-supported macro
+
+(defmacro version-supported-p (cond version)
+  "Return t if (COND VERSION `emacs-version') yields non-nil, else nil.
+
+It resemble `version-supported*' but be expanded at compile time."
+  (let ((x (version-supported* `,cond `,version)))
+    x))
+
+
+ ;; end of version-supported macro
+
+
 ;; platform-supported macro
 
 (defmacro platform-supported-if (os then &rest else)

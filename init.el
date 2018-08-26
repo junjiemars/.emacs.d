@@ -177,13 +177,6 @@ COND should be quoted, such as (version-supported* '<= 24)"
 					 ((eq '>= ,cond) (not (version< ver emacs-version)))
 					 (t nil))))
 
-(defmacro version-supported-p (cond version)
-  "Return t if (COND VERSION `emacs-version') yields non-nil, else nil.
-
-It resemble `version-supported*' but be expanded at compile time."
-  (let ((x (version-supported* `,cond `,version)))
-    x))
-
 (defmacro version-supported-if (cond version then &rest else)
   "If (COND VERSION `emacs-version') yields non-nil, do THEN, else do ELSE...
 
