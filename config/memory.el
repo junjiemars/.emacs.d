@@ -126,7 +126,7 @@
 		
     (version-supported-if >= 23
 													(desktop-save (v-home! ".desktop/"))
-      (desktop-save (v-home! ".desktop/")) t)))
+      (desktop-save (v-home! ".desktop/") t))))
 
 
 (add-hook 'kill-emacs-hook #'self-desktop-save! t)
