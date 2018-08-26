@@ -125,8 +125,8 @@
 					(add-to-list 'frameset-filter-alist x))))
 		
     (version-supported-if >= 23
-													(desktop-save (path! (v-home% ".desktop/")))
-      (desktop-save (path! (v-home% ".desktop/")) t))))
+													(desktop-save (v-home! ".desktop/"))
+      (desktop-save (v-home! ".desktop/")) t)))
 
 
 (add-hook 'kill-emacs-hook #'self-desktop-save! t)
