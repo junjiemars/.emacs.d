@@ -150,7 +150,11 @@
  ;; end of indent
 
 (version-supported-when > 24.4
-	;; fix no quit key to hide *Messages* buffer
+	;; fix: no quit key to hide *Messages* buffer
 	(with-current-buffer (get-buffer "*Messages*")
 		(toggle-read-only t)
 		(local-set-key (kbd "q") #'quit-window)))
+
+(version-supported-when > 23.4
+	;; improved: goto-char without keybinding
+	(define-global-key* (kbd "M-g c") #'goto-char))

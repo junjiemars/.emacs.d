@@ -527,6 +527,12 @@ for which (PRED item) returns t."
 								(define-key ,keymap ,key ,def))))
 
 
+(defmacro define-global-key* (key def &optional old-def accept-default)
+	"In `current-global-map', define key sequence KEY as DEF when DEF `eq' OLD-DEF."
+	`(when (eq ,old-def (lookup-key (current-global-map) ,key ,accept-default))
+		 (define-key (current-global-map) ,key ,def)))
+
+
  ;; end of keymap
 
 
