@@ -54,7 +54,6 @@ friendly, which can be run on anywhere where Emacs run.
 - [[#install][Install]]
 - [[#organization][Organization]]
 - [[file:mnemonic.org][Mnemonic]]
-- [[file:screenshot.org][Screenshot]]
 
 
 Now, let's start from the Level Two. And one more thing: teach youself
@@ -71,7 +70,7 @@ some little Elisp (M-x info).
    for all coexisting Emacs on the same machine.
 -  *Consistent*: Whereever and whenever you can play with Emacs always
    behaves in the same way.
--  *Awesome style*: [[file:screenshot.md][screenshot]]
+-  *Awesome style*: [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-windows.png][Windows]]
 -  *Stable*
 -  Supper *faster*
 
@@ -245,13 +244,9 @@ Using Emacs's builtin themes(@@html:<kbd>@@M x customize-themes@@html:</kbd>@@) 
     :CUSTOM_ID: font
     :END:
 
-Easy to swtich fonts and
-[[https://en.wikipedia.org/wiki/CJK_characters][CJK]] characters, or try
-a new one. The default encoding is
-[[https://en.wikipedia.org/wiki/UTF-8][UTF-8]].
+Easy to swtich fonts and [[https://en.wikipedia.org/wiki/CJK_characters][CJK]] characters, or try a new one. The default encoding is [[https://en.wikipedia.org/wiki/UTF-8][UTF-8]].
 
-The default font's spec locate in
-=(emacs-home* "private/self-env-spec.el")= and for GUI mode only.
+The default font's spec locate in =(emacs-home* "private/self-env-spec.el")= and for GUI mode only.
 
 #+BEGIN_SRC emacs-lisp
     (def-self-env-spec
