@@ -116,7 +116,7 @@ Just one thing you need to do, clone it (just <500KB) to your HOME
 directory:
 
 #+BEGIN_SRC sh
-    $ git clone --depth=1 https://github.com/junjiemars/.emacs.d.git ~/.emacs.d
+    git clone --depth=1 https://github.com/junjiemars/.emacs.d.git ~/.emacs.d
 #+END_SRC
 
 First run More Reasonable Emacs, it should automatically do: * byte
@@ -133,7 +133,7 @@ for you and more: fix some Emacs' issue for you, and you don't need run
 instead,
 
 #+BEGIN_SRC sh
-    $ HAS_EMACS=1 bash <(curl https://raw.githubusercontent.com/junjiemars/kit/master/win/install-win-kits.sh)
+    HAS_EMACS=1 bash <(curl https://raw.githubusercontent.com/junjiemars/kit/master/win/install-win-kits.sh)
 #+END_SRC
 
 Now, it will works perfectly, but if you want to more control and more
