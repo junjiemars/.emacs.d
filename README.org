@@ -230,7 +230,7 @@ The theme's spec locate in =(emacs-home* "private/self-env-spec.el")=
 - =:allowed= =t= enabled, =nil= disabled
 
 
-Using Emacs's builtin themes(@@html:<kbd>@@M x customize-themes@@html:</kbd>@@) :
+Using Emacs's builtin themes /tango-dark/ @@html:<kbd>@@M x customize-themes@@html:</kbd>@@ [[https://github.com/junjiemars/images/blob/master/.emacs.d/tango-dark-theme-on-windows.PNG][screenshot: tango-dark]]:
 
 #+BEGIN_SRC emacs-lisp
     (def-self-env-spec
