@@ -286,12 +286,12 @@ It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]]
    :CUSTOM_ID: tips
    :END:
 	 
-*** Editing Tips
+** Editing Tips
     :PROPERTIES:
     :CUSTOM_ID: editing-tips
     :END:
 
-**** Insert Region
+*** Insert Region
      :PROPERTIES:
      :CUSTOM_ID: insert-region
      :END:
@@ -316,7 +316,7 @@ Insert 5 lines with /prefix(aaaa) random-number[0-100) random-number[0-10)/: @@h
         (insert (format "aaaa %2s %s\n" (random 100) (random 10))))
 #+END_SRC
 
-**** Sort Region
+*** Sort Region
      :PROPERTIES:
      :CUSTOM_ID: sort-region
      :END:
@@ -339,7 +339,7 @@ aaaa 8 3
 aaaa 8 0
 #+END_EXAMPLE
 
-**** Reverse Region
+*** Reverse Region
 
 #+BEGIN_EXAMPLE
 aaaa 9
