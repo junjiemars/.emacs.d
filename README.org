@@ -504,9 +504,7 @@ we can zip files and directories with =minizip=, even export =org= to =odt= [[ht
 - view content of zip archive: [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-view-file-on-windows.png][screenshot: dired-view-file]]
 - export =org= to =odt=: [[https://github.com/junjiemars/images/blob/master/.emacs.d/org-odt-export-to-odt-on-windows.png][screenshot: org-odt-export-to-odt]]
 
-For some ancient Emacs24-, @@html:<kbd>@@! zip x.zip ?@@html:</kbd>@@ to zip.
-
-[[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-compress-file-suffixes-version-24lt.png][screenshot: dired-compress-file-suffixes]]
+For some ancient Emacs24-, @@html:<kbd>@@! zip x.zip ?@@html:</kbd>@@ to zip, [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-compress-file-suffixes-version-24lt.png][screenshot: dired-compress-file-suffixes]]
 
 * Troubleshooting
    :PROPERTIES:
