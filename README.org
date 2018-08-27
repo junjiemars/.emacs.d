@@ -223,6 +223,7 @@ The theme's spec locate in =(emacs-home* "private/self-env-spec.el")=
                    :allowed t))
 #+END_SRC
 
+- =:name= name of theme, does not need /-theme.el/ suffix
 - =:custom-theme-directory= where custom theme files located
 - =:compile= =t= compile theme, compiled theme more smooth and more faster
 	if you had already confirmed the theme is secure.
