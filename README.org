@@ -219,7 +219,7 @@ The theme's spec locate in =(emacs-home* "private/self-env-spec.el")=
     (def-self-env-spec
       :theme (list :name 'dracula
                    :custom-theme-directory (emacs-home* "theme/")
-                   :compile nil ;; expert option
+                   :compile t
                    :allowed t))
 #+END_SRC
 
