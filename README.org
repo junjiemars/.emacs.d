@@ -482,16 +482,18 @@ Avoiding a war.
     :CUSTOM_ID: file
     :END:
 
-Using =dired= as a File Manager is awesome, but there are no 
-GNU's =ls= program (/--dired/ option) on Windows and Darwin.
+Using =dired= as a File Manager is awesome, same experiences on Windows, Darwin and Linux.
+
 
 *** ls Program
 
-For Windows, you can install GNU's ls via [[https://git-scm.com/downloads][Git-Bash]]. 
+For Windows, there are no builtin =ls= program, but you can install GNU's =ls= via [[https://git-scm.com/downloads][Git-Bash]]. 
 
 For Darwin, let =dired= don't do stupid things.
 
-[[https://github.com/junjiemars/images/blob/master/.emacs.d/ido-dired-windows-gnu-ls.png][screenshot: ido-dired]]
+
+screenshots:
+- [[https://github.com/junjiemars/images/blob/master/.emacs.d/ido-dired-windows-gnu-ls.png][ido-dired]]
 
 *** find Program
 
