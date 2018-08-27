@@ -273,7 +273,7 @@ The default font's spec locate in =(emacs-home* "private/self-env-spec.el")= and
 screenshots:
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/cjk-font-on-darwin.png][CJK font]]
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/monaco-font-on-darwin.png][Monaco font]]
-- Consolas font
+- [[https://github.com/junjiemars/images/blob/master/.emacs.d/consolas-font-on-windows.png][Consolas font]]
 
 
 ** Shell
