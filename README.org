@@ -68,7 +68,7 @@ some little Elisp (M-x info).
 -  *Adaptive*: Can run on any OS, GUI or Terminal, from most recent
    Emacs's versions to ancient ones, and one Emacs's configuration suit
    for all coexisting Emacs on the same machine.
--  *Consistent*: Whereever and whenever you can play with Emacs always
+-  *Consistent*: Wherever and whenever you can play with Emacs always
    behaves in the same way.
 -  *Awesome style*: [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-windows.png][Windows]]
 -  *Stable*
