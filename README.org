@@ -259,8 +259,10 @@ The default font's spec locate in =(emacs-home* "private/self-env-spec.el")= and
                   :allowed t))
 #+END_SRC
 
-- =:name= font name
+- =:name= string of font name and font size
 - =:allowed= =t= enabled, =nil= disabled
+
+[[https://github.com/junjiemars/images/blob/master/.emacs.d/cjk-on-darwin.png][screenshot: CJK]]
 
 ** Shell
     :PROPERTIES:
