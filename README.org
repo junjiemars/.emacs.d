@@ -70,7 +70,7 @@ some little Elisp (M-x info).
    for all coexisting Emacs on the same machine.
 -  *Consistent*: Wherever and whenever you can play with Emacs always
    behaves in the same way.
--  *Awesome style*: [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-windows.png][Windows]]
+-  *Awesome style*: [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-windows.png][Windows]], [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-darwin.png][Darwin]]
 -  *Stable*
 -  Supper *faster*
 
