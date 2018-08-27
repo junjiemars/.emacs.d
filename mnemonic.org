@@ -20,7 +20,6 @@
 - [[#latex-requirements][LaTex Requirements]]
 - [[#tips][Tips]]
 - [[#editing-tips][Editing Tips]]
-- [[file:screenshot.org][Screenshot]]
 - [[file:README.org][Readme]]
 
 
