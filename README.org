@@ -230,7 +230,7 @@ The theme's spec locate in =(emacs-home* "private/self-env-spec.el")=
 - =:allowed= =t= enabled, =nil= disabled
 
 
-Using Emacs's builtin themes /tango-dark/ @@html:<kbd>@@M x customize-themes@@html:</kbd>@@ [[https://github.com/junjiemars/images/blob/master/.emacs.d/tango-dark-theme-on-windows.PNG][screenshot: tango-dark]]:
+Using Emacs's builtin themes /tango-dark/ :
 
 #+BEGIN_SRC emacs-lisp
     (def-self-env-spec
@@ -239,6 +239,13 @@ Using Emacs's builtin themes /tango-dark/ @@html:<kbd>@@M x customize-themes@@ht
                    :compile nil
                    :allowed t))
 #+END_SRC
+
+
+screenshots:
+- [[https://github.com/junjiemars/images/blob/master/.emacs.d/default-theme-on-windows.png][default theme]]
+- [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-windows.png][dracula theme]]
+- [[https://github.com/junjiemars/images/blob/master/.emacs.d/tango-dark-theme-on-windows.png][tango-dark theme]]
+
 
 ** Font
     :PROPERTIES:
@@ -262,7 +269,8 @@ The default font's spec locate in =(emacs-home* "private/self-env-spec.el")= and
 - =:name= string of font name and font size
 - =:allowed= =t= enabled, =nil= disabled
 
-Screenshots:
+
+screenshots:
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/cjk-font-on-darwin.png][CJK font]]
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/monaco-font-on-darwin.png][Monaco font]]
 - Consolas font
