@@ -246,7 +246,6 @@ screenshots:
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-windows.png][dracula theme]]
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/tango-dark-theme-on-windows.png][tango-dark theme]]
 
-
 ** Font
     :PROPERTIES:
     :CUSTOM_ID: font
@@ -274,7 +273,6 @@ screenshots:
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/cjk-font-on-darwin.png][CJK font]]
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/monaco-font-on-darwin.png][Monaco font]]
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/consolas-font-on-windows.png][Consolas font]]
-
 
 ** Shell
     :PROPERTIES:
