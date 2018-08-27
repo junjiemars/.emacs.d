@@ -496,12 +496,15 @@ Now, on Windows you can use @@html:<kbd>@@M-x find-dired@@html:</kbd>@@ or @@htm
 
 *** zip Program
 
-On Windows, there are no builtin =zip/unzip= program, but Emacs has a builtin =minizip= so We can 
-zip, unzip, export =org= to =odt= document or view the content a zip archive.
+On Windows, there are no builtin =zip/unzip= program, but Emacs ship with =minizip= program.
+Although =minizip= does support /recursive/ function, but do some tricks with =minizip=,
+we can zip files and directories with =minizip=, even export =org= to =odt= [[https://en.wikipedia.org/wiki/OpenDocument][OpenDocument]].
 
-[[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-do-compress-to-on-windows.png][screenshot: dired-do-compress-to]]
+- recursive zip files and directories: [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-do-compress-to-on-windows.png][screenshot: dired-do-compress-to]]
+- view content of zip archive: [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-view-file-on-windows.png][screenshot: dired-view-file]]
+- export =org= to =odt=: [[https://github.com/junjiemars/images/blob/master/.emacs.d/org-odt-export-to-odt-on-windows.png][screenshot: org-odt-export-to-odt]]
 
-For some ancient Emacs such as below version 24, @@html:<kbd>@@! zip x.zip ?@@html:</kbd>@@ to zip.
+For some ancient Emacs24-, @@html:<kbd>@@! zip x.zip ?@@html:</kbd>@@ to zip.
 
 [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-compress-file-suffixes-version-24lt.png][screenshot: dired-compress-file-suffixes]]
 
