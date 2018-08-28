@@ -37,14 +37,18 @@
   (global-set-key (kbd "C-x r g") #'string-insert-rectangle)
 
 
-  (with-eval-after-load 'grep
-    (define-key* grep-mode-map (kbd "g") #'recompile grep)
-    (define-key* grep-mode-map (kbd "q") #'quit-window grep))
+	(with-eval-after-load 'grep
+		;; define `recompile' and `quit-window' key binding
+		(unless-key% grep-mode-map (kbd "g") #'recompile
+			(define-key grep-mode-map (kbd "g") #'recompile))
+		(unless-key% grep-mode-map (kbd "q") #'quit-window
+			(define-key grep-mode-map (kbd "q") #'quit-window)))
 
+	
   (package-supported-p	
     (feature-allowed-p bing-dict
-      ;; `bing-dict'
-      (global-set-key (kbd "C-c d") #'bing-dict-brief)))
+      ;; define `bing-dict' key binding
+			(define-key (current-global-map) (kbd "C-c d") #'bing-dict-brief)))
   
   )
 

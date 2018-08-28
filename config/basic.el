@@ -536,27 +536,17 @@ for which (PRED item) returns t."
 (defmacro if-key* (keymap key def then &rest else)
   "If KEY is defined in KEYMAP do THEN, else do ELSE..."
 	(declare (indent 4))
-	`(let ((val (lookup-key ,keymap ,key)))
-		 (message "val=%s of %s|def=%s of %s" val (type-of val) ,def (type-of ,def))
-		 (if (eq ,def val)
-				 ,then
-			 (progn% ,@else))))
-
-
-(defmacro if-key% (keymap key def then &rest else)
-  "If KEY is defined in KEYMAP do THEN, else do ELSE... at compile time."
-	(declare (indent 4))
-	(if-key* (eval keymap) (eval key) (eval def)
-					 `,then
-		`(progn% ,@else)))
+	`(if (eq ,def (lookup-key ,keymap ,key))
+			 ,then
+		 (progn% ,@else)))
 
 
 (defmacro unless-key% (keymap key def &rest body)
   "If KEY is defined in KEYMAP do BODY at compile time."
 	(declare (indent 3))
-	`(if-key% ,keymap ,key ,def
-						nil
-		 (progn% ,@body)))
+	(if-key* (eval keymap) (eval  key) (eval def)
+					 nil
+		`(progn% ,@body)))
 
 
  ;; end of key macro
