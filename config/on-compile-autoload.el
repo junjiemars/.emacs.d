@@ -28,7 +28,9 @@
     (ad-activate #'compilation-find-file t))
   
   (add-hook 'compilation-filter-hook #'colorize-compilation-buffer!)
-  (define-key* compilation-mode-map (kbd "g") #'recompile compile)
-  (define-key* compilation-mode-map (kbd "q") #'quit-window compile)
+	(when-var% compilation-mode-map compile
+						 ;; define `recompile' and `quit-window' key bindings
+						 (define-key% compilation-mode-map (kbd "g") #'recompile)
+						 (define-key% compilation-mode-map (kbd "q") #'quit-window))
   (setq% compilation-scroll-output t compile))
 
