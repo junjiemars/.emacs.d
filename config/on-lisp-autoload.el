@@ -68,22 +68,23 @@
   (feature-allowed-p paredit
 
     (platform-supported-if
+				;; enable `paredit' in `minibuffer'
 				gnu/linux
 				(add-hook 'minibuffer-setup-hook
 									#'enable-paredit-mode-in-minibuffer! t)
       (add-hook 'eval-expression-minibuffer-setup-hook
 								#'enable-paredit-mode-in-minibuffer! t))
 
-		
-		;; define `paredit' keymap
-		;; On Windows C-) is not work
-		;; fix inconsistent `C-)' `C-c )' behavior:#9
-		;; On Terminal mode, Ctrl+Shift combination can't send to Emacs
-
-		(define-key% (current-global-map) (kbd "C-c )") #'paredit-forward-slurp-sexp)
-		(define-key% (current-global-map) (kbd "C-c (") #'paredit-backward-slurp-sexp)
-		(define-key% (current-global-map) (kbd "C-c }") #'paredit-forward-barf-sexp)
-		(define-key% (current-global-map) (kbd "C-c {") #'paredit-backward-barf-sexp)))
+		(with-eval-after-load 'paredit		
+			;; define `paredit' keymap
+			;; On Windows C-) is not work
+			;; fix inconsistent `C-)' `C-c )' behavior:#9
+			;; On Terminal mode, Ctrl+Shift combination can't send to Emacs
+			(when-var% paredit-mode-map paredit
+								 (define-key% paredit-mode-map (kbd "C-c )") #'paredit-forward-slurp-sexp)
+								 (define-key% paredit-mode-map (kbd "C-c (") #'paredit-backward-slurp-sexp)
+								 (define-key% paredit-mode-map (kbd "C-c }") #'paredit-forward-barf-sexp)
+								 (define-key% paredit-mode-map (kbd "C-c {") #'paredit-backward-barf-sexp)))))
 
 
  ;; end of package: paredit
