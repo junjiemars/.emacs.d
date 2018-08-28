@@ -112,7 +112,7 @@
       (next-line))))
 
 ;; toggle comment key strike1
-(global-set-key (kbd "C-c ;") #'toggle-comment)
+(define-key (current-global-map) (kbd "C-c ;") #'toggle-comment)
 
 ;; auto org-mode
 (version-supported-when >= 23
@@ -140,11 +140,10 @@
 ;; same as Emacs22+
 (unless-fn% xref-find-definitions xref
 	(when-fn% pop-tag-mark etags
-		(when (and (eq 'find-tag (key-binding (kbd "M-.")))
-							 (eq 'tags-loop-continue (key-binding (kbd "M-,"))))
-			(with-eval-after-load 'etags
-				(global-set-key (kbd "M-,") #'pop-tag-mark)
-				(global-set-key (kbd "M-*") #'tags-loop-continue)))))
+		(with-eval-after-load 'etags
+			;; define keys for `pop-tag-mark' and `tags-loop-continue'
+			(define-key% (current-global-map) (kbd "M-,") #'pop-tag-mark)
+			(define-key% (current-global-map) (kbd "M-*") #'tags-loop-continue))))
 
 
  ;; end of indent
