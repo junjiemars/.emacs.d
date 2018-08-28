@@ -25,16 +25,22 @@ via `semantic-lex-c-preprocessor-symbol-map'
 
 Use `semantic-c-describe-environment' to describe the current C environment."
     (semantic-reset-system-include 'c-mode)
+
     (dolist (x (append (when-fn% system-cc-include cc
-			 (system-cc-include t))
-		       project-includes))
+												 (system-cc-include t))
+											 project-includes))
       (semantic-add-system-include x 'c-mode))
+
     (setq% semanticdb-project-roots project-roots semantic/db)
+
     (when-fn% global-semantic-idle-summary-mode semantic
       (global-semantic-idle-summary-mode))
+
     (when-fn% semantic-ia-fast-jump semantic
-      (global-set-key (kbd "C-c , f") #'semantic-ia-fast-jump))
+      (define-key semantic-mode-map (kbd "C-c , f") #'semantic-ia-fast-jump))
+
     (when-fn% semantic-ia-complete-symbol semantic
-      (global-set-key (kbd "C-c , TAB") #'semantic-ia-complete-symbol))
+      (define-key semantic-mode-map (kbd "C-c , TAB") #'semantic-ia-complete-symbol))
+
     (setq% semantic-lex-c-preprocessor-symbol-map
-	   preprocessors semantic/bovine/c)))
+					 preprocessors semantic/bovine/c)))
