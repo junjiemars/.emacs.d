@@ -15,6 +15,6 @@
     (setq% linum-format "%2d " linum))
 
   (feature-linum-supported-p
-    (global-set-key (kbd "C-c l") #'linum-mode)))
+    (define-key (current-global-map) (kbd "C-c l") #'linum-mode)))
 
 
