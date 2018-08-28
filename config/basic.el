@@ -518,7 +518,7 @@ for which (PRED item) returns t."
  ;; end of Computations
 
 
-;; keymap
+;; define key macro
 
 (defmacro define-key* (keymap key def feature &optional old-def accept-default)
   "In KEYMAP of FEATURE, define key sequence KEY as DEF when DEF `eq' OLD-DEF."
@@ -530,10 +530,36 @@ for which (PRED item) returns t."
 (defmacro define-global-key* (key def &optional old-def accept-default)
   "In `current-global-map', define key sequence KEY as DEF when DEF `eq' OLD-DEF."
   (when (eq old-def (lookup-key (current-global-map) (eval key) accept-default))
-     `(define-key (current-global-map) ,key ,def)))
+    `(define-key (current-global-map) ,key ,def)))
 
 
- ;; end of keymap
+(defmacro if-key* (keymap key def then &rest else)
+  "If KEY is defined in KEYMAP do THEN, else do ELSE..."
+	(declare (indent 4))
+	`(let ((val (lookup-key ,keymap ,key)))
+		 (message "val=%s of %s|def=%s of %s" val (type-of val) ,def (type-of ,def))
+		 (if (eq ,def val)
+				 ,then
+			 (progn% ,@else))))
+
+
+(defmacro if-key% (keymap key def then &rest else)
+  "If KEY is defined in KEYMAP do THEN, else do ELSE... at compile time."
+	(declare (indent 4))
+	(if-key* (eval keymap) (eval key) (eval def)
+					 `,then
+		`(progn% ,@else)))
+
+
+(defmacro unless-key% (keymap key def &rest body)
+  "If KEY is defined in KEYMAP do BODY at compile time."
+	(declare (indent 3))
+	`(if-key% ,keymap ,key ,def
+						nil
+		 (progn% ,@body)))
+
+
+ ;; end of key macro
 
 
 (defmacro safe-local-variable* (var)
