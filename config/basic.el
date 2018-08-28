@@ -529,18 +529,11 @@ for which (PRED item) returns t."
 		 (progn% ,@else)))
 
 
-(defmacro unless-key% (keymap key def &rest body)
-  "If KEY is defined in KEYMAP do BODY at compile time."
-	(declare (indent 3))
-	(if-key* (eval keymap) (eval  key) (eval def)
-					 nil
-		`(progn% ,@body)))
-
-
 (defmacro define-key% (keymap key def)
 	"Define KEY as DEF in KEYMAP when the KEY binding of DEF is not exists."
-	`(unless-key% ,keymap ,key ,def
-		 (define-key ,keymap ,key ,def)))
+	(if-key* (eval keymap) (eval key) (eval def)
+					 nil
+		`(define-key ,keymap ,key ,def)))
 
 
  ;; end of key macro
