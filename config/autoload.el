@@ -38,11 +38,12 @@
 
 
 	(with-eval-after-load 'grep
-		;; define `recompile' and `quit-window' key binding
-		(unless-key% grep-mode-map (kbd "g") #'recompile
-			(define-key grep-mode-map (kbd "g") #'recompile))
-		(unless-key% grep-mode-map (kbd "q") #'quit-window
-			(define-key grep-mode-map (kbd "q") #'quit-window)))
+		(when-var% grep-mode-map grep
+							 ;; define `recompile' and `quit-window' key binding
+							 (unless-key% grep-mode-map (kbd "g") #'recompile
+								 (define-key grep-mode-map (kbd "g") #'recompile))
+							 (unless-key% grep-mode-map (kbd "q") #'quit-window
+								 (define-key grep-mode-map (kbd "q") #'quit-window))))
 
 	
   (package-supported-p	
