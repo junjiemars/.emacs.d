@@ -31,18 +31,17 @@
     "Set Lisp basic minor modes."
     (cond ((or (string= "*scratch*" (buffer-name))
 							 (string= "*ielm*" (buffer-name))))
-					(t
-					 (feature-allowed-p paredit
-						 ;; structured editing of s-expression data
-						 (enable-paredit-mode))
+					(t (feature-allowed-p paredit
+							 ;; structured editing of s-expression data
+							 (enable-paredit-mode))
 
-					 (feature-allowed-p rainbow-delimiters
-						 ;; hilighting parentheses,brackets,and braces in minor mode
-						 (rainbow-delimiters-mode))
+						 (feature-allowed-p rainbow-delimiters
+							 ;; hilighting parentheses,brackets,and braces in minor mode
+							 (rainbow-delimiters-mode))
 
-					 (feature-allowed-p aggressive-indent
-						 ;; aggressive indent
-						 (aggressive-indent-mode))))))
+						 (feature-allowed-p aggressive-indent
+							 ;; aggressive indent
+							 (aggressive-indent-mode))))))
 
 
 (package-supported-p
@@ -65,29 +64,27 @@
   (with-eval-after-load 'scheme
     (add-hook 'scheme-mode-hook #'set-lisp-basic-mode!))
 
+	
   (feature-allowed-p paredit
+
     (platform-supported-if
 				gnu/linux
 				(add-hook 'minibuffer-setup-hook
 									#'enable-paredit-mode-in-minibuffer! t)
       (add-hook 'eval-expression-minibuffer-setup-hook
-								#'enable-paredit-mode-in-minibuffer! t)))
+								#'enable-paredit-mode-in-minibuffer! t))
 
-  
-  ;; `paredit' keymap
-  ;; On Windows C-) is not work
-  ;; fix inconsistent `C-)' `C-c )' behavior:#9
-  
-  
-  (global-set-key (kbd "C-c )") 'paredit-forward-slurp-sexp)
+		
+		;; define `paredit' keymap
+		;; On Windows C-) is not work
+		;; fix inconsistent `C-)' `C-c )' behavior:#9
+		;; On Terminal mode, Ctrl+Shift combination can't send to Emacs
 
-  ;; On Terminal mode, Ctrl+Shift combination can't send to Emacs
-  
-  
-  (terminal-supported-p
-    (global-set-key (kbd "C-c (") 'paredit-backward-slurp-sexp)
-    (global-set-key (kbd "C-c }") 'paredit-forward-barf-sexp)
-    (global-set-key (kbd "C-c {") 'paredit-backward-barf-sexp)))
+		(define-key% (current-global-map) (kbd "C-c )") #'paredit-forward-slurp-sexp)
+		(define-key% (current-global-map) (kbd "C-c (") #'paredit-backward-slurp-sexp)
+		(define-key% (current-global-map) (kbd "C-c }") #'paredit-forward-barf-sexp)
+		(define-key% (current-global-map) (kbd "C-c {") #'paredit-backward-barf-sexp)))
+
 
  ;; end of package: paredit
 
