@@ -69,14 +69,14 @@
 ;; Semantic
 (version-supported-when <= 23
   (setq% semanticdb-default-save-directory
-				 (v-home! ".semantic/db/") semantic/db-file))
+         (v-home! ".semantic/db/") semantic/db-file))
 
 ;; Tramp
 (version-supported-when <= 23
   (version-supported-when > 24
     (eval-when-compile (require 'tramp)))
   (setq% tramp-persistency-file-name
-				 (v-home! ".tramp/tramp") tramp-cache))
+         (v-home! ".tramp/tramp") tramp-cache))
 
 ;; Url
 (setq% url-configuration-directory (v-home! ".url/") url)
@@ -92,21 +92,21 @@
   (defmacro windows-nt-posix-path (path)
     "Return posix path from Windows PATH which can be recognized on`system-type'."
     `(when ,path
-			 (let ((p (replace-regexp-in-string "\\\\" "/" ,path)))
-				 (if (string-match "^\\([A-Z]:/\\)" p)
-						 (replace-match (downcase (match-string 1 p)) t t p)
-					 p)))))
+       (let ((p (replace-regexp-in-string "\\\\" "/" ,path)))
+         (if (string-match "^\\([A-Z]:/\\)" p)
+             (replace-match (downcase (match-string 1 p)) t t p)
+           p)))))
 
 
 (platform-supported-when windows-nt
-	
+  
   (defmacro windows-nt-unix-path (path)
     "Return unix paths from PATH which can be recognized on `system-type'."
     `(when ,path
-			 (replace-regexp-in-string
-				";" ":"
-				(replace-regexp-in-string "^\\([a-zA-Z]\\):/" "/\\1/"
-																	(windows-nt-posix-path ,path))))))
+       (replace-regexp-in-string
+        ";" ":"
+        (replace-regexp-in-string "^\\([a-zA-Z]\\):/" "/\\1/"
+                                  (windows-nt-posix-path ,path))))))
 
 
  ;; end of Platform Related Functions
@@ -116,20 +116,20 @@
 
 (defsubst string-trim> (s &optional rr)
   "Remove whitespaces or the matching of RR at the end of S."
-	(when (stringp s)
-		(let ((r (if rr (concat rr "\\'") "[ \t\n\r]+\\'" )))
-			(if (string-match r s)
-					(replace-match "" t t s)
-				s))))
+  (when (stringp s)
+    (let ((r (if rr (concat rr "\\'") "[ \t\n\r]+\\'" )))
+      (if (string-match r s)
+          (replace-match "" t t s)
+        s))))
 
 
 (defsubst string-trim< (s &optional lr)
   "Remove leading whitespace or the matching of LR from S."
-	(when (stringp s)
-		(let ((r (if lr (concat "\\`" lr) "\\`[ \t\n\r]+")))
-			(if (string-match r s)
-					(replace-match "" t t s)
-				s))))
+  (when (stringp s)
+    (let ((r (if lr (concat "\\`" lr) "\\`[ \t\n\r]+")))
+      (if (string-match r s)
+          (replace-match "" t t s)
+        s))))
 
 
 (defsubst string-trim>< (s &optional rr lr)
@@ -164,41 +164,41 @@ in case that file does not provide any feature.  See ‘eval-after-load’
 for more details about the different forms of FILE and their semantics."
     `(eval-after-load ,file
        `(funcall ,(lambda ()
-										(progn% ,@body))))))
+                    (progn% ,@body))))))
 
 
 (version-supported-if
-		<= 26.1
-		(defalias 'assoc** 'assoc)
-	(defmacro  assoc** (key list &optional testfn)
-		"Return non-nil if KEY is equal to the `car' of an element of LIST.
+    <= 26.1
+    (defalias 'assoc** 'assoc)
+  (defmacro  assoc** (key list &optional testfn)
+    "Return non-nil if KEY is equal to the `car' of an element of LIST.
 
 The value is actually the first element of LIST whose car equals KEY.
 Equality is defined by TESTFN if non-nil or by `equal' if nil."
-		(if-fn% cl-assoc cl-lib
-						;; cl-assoc autoload
-						`(progn
-							 (require 'cl-lib)
-							 (cl-assoc ,key ,list :test (or ,testfn #'equal)))
-			(when-fn% assoc* cl
-				`(with-no-warnings
-					 (require 'cl)
-					 (assoc* ,key ,list :test (or ,testfn #'equal)))))))
+    (if-fn% cl-assoc cl-lib
+            ;; cl-assoc autoload
+            `(progn
+               (require 'cl-lib)
+               (cl-assoc ,key ,list :test (or ,testfn #'equal)))
+      (when-fn% assoc* cl
+        `(with-no-warnings
+           (require 'cl)
+           (assoc* ,key ,list :test (or ,testfn #'equal)))))))
 
 
 (version-supported-if
-		<= 26.1
-		(defalias 'alist-get* 'alist-get)
-	(defmacro alist-get* (key alist &optional default remove testfn)
-		"Return the value associated with KEY in ALIST.
+    <= 26.1
+    (defalias 'alist-get* 'alist-get)
+  (defmacro alist-get* (key alist &optional default remove testfn)
+    "Return the value associated with KEY in ALIST.
 
 If KEY is not found in ALIST, return DEFAULT.
 Use TESTFN to lookup in the alist if non-nil, otherwise use `equal'."
-		(ignore* remove) ;;silence byte-compiler.
-		`(let ((x (assoc** ,key ,alist ,testfn)))
-			 (if (consp x)
-					 (cdr x)
-				 ,default))))
+    (ignore* remove) ;;silence byte-compiler.
+    `(let ((x (assoc** ,key ,alist ,testfn)))
+       (if (consp x)
+           (cdr x)
+         ,default))))
 
 
 (version-supported-if
@@ -208,12 +208,12 @@ Use TESTFN to lookup in the alist if non-nil, otherwise use `equal'."
     "Split STRING into substrings bounded by matches for SEPARATORS, 
 like `split-string' Emacs 24.4+"
     (if trim
-				(delete ""
-								(mapcar (lambda (s)
-													(if (and (stringp trim) (> (length trim) 0))
-															(string-trim>< s trim trim)
-														(string-trim>< s)))
-												(split-string string separators omit-nulls)))
+        (delete ""
+                (mapcar (lambda (s)
+                          (if (and (stringp trim) (> (length trim) 0))
+                              (string-trim>< s trim trim)
+                            (string-trim>< s)))
+                        (split-string string separators omit-nulls)))
       (split-string string separators omit-nulls))))
 
 
@@ -278,31 +278,31 @@ Examples:
       (let ((a (expand-file-name f dir)))
         (if (directory-name-p f)
             (when (and df (let ((ln (file-symlink-p (directory-file-name a))))
-														(if (not ln) t
-															(not (or (string= "." ln)
-																			 (and (>= (length a) (length ln))
-																						(string=
-																						 ln
-																						 (substring a 0 (length ln))))))))
-											 (funcall df f a))
-							(and dn (funcall dn a))
-							(dir-iterate a ff df fn dn))
+                            (if (not ln) t
+                              (not (or (string= "." ln)
+                                       (and (>= (length a) (length ln))
+                                            (string=
+                                             ln
+                                             (substring a 0 (length ln))))))))
+                       (funcall df f a))
+              (and dn (funcall dn a))
+              (dir-iterate a ff df fn dn))
           (when (and ff (funcall ff f a))
-						(and fn (funcall fn a))))))))
+            (and fn (funcall fn a))))))))
 
 
 (defmacro shell-command* (command &rest args)
-	"Return a cons cell (code . output) after execute COMMAND in inferior shell.
+  "Return a cons cell (code . output) after execute COMMAND in inferior shell.
 
 See `shell-command' and `shell-command-to-string'."
-	(declare (indent 1))
-	`(with-temp-buffer
-		 (cons (call-process shell-file-name nil (current-buffer) nil
-												 shell-command-switch
-												 (mapconcat #'identity
-																		(cons ,command (list ,@args)) " "))
-					 (let ((s (buffer-string)))
-						 (if (string= "\n" s) nil s)))))
+  (declare (indent 1))
+  `(with-temp-buffer
+     (cons (call-process shell-file-name nil (current-buffer) nil
+                         shell-command-switch
+                         (mapconcat #'identity
+                                    (cons ,command (list ,@args)) " "))
+           (let ((s (buffer-string)))
+             (if (string= "\n" s) nil s)))))
 
 
 (defmacro executable-find% (command &optional prefer)
@@ -318,46 +318,46 @@ and `funcall' PREFER returns t.
 "
   (if prefer
       (let ((cmd (shell-command* (platform-supported-if windows-nt
-																		 "where"
-																	 "command -v")
-									 command)))
-				(when (zerop (car cmd))
-					(let* ((ss (cdr cmd))
-								 (path (split-string* ss "\n" t))
-								 (p (cond ((and (consp path) (functionp prefer))
-													 (catch 'prefer
-														 (dolist (x path)
-															 (when (funcall prefer
-																							(shell-quote-argument
-																							 (platform-supported-if windows-nt
-																									 (windows-nt-posix-path x)
-																								 x)))
-																 (throw 'prefer x)))
-														 nil))
-													((consp path) (car path))
-													(t path))))
-						`,(when p (platform-supported-if windows-nt
-													(windows-nt-posix-path p)
-												p)))))
+                                     "where"
+                                   "command -v")
+                   command)))
+        (when (zerop (car cmd))
+          (let* ((ss (cdr cmd))
+                 (path (split-string* ss "\n" t))
+                 (p (cond ((and (consp path) (functionp prefer))
+                           (catch 'prefer
+                             (dolist (x path)
+                               (when (funcall prefer
+                                              (shell-quote-argument
+                                               (platform-supported-if windows-nt
+                                                   (windows-nt-posix-path x)
+                                                 x)))
+                                 (throw 'prefer x)))
+                             nil))
+                          ((consp path) (car path))
+                          (t path))))
+            `,(when p (platform-supported-if windows-nt
+                          (windows-nt-posix-path p)
+                        p)))))
     (let ((path (executable-find command)))
       (ignore* prefer)
       `,path)))
 
 
 (defun path+ (path append &rest paths)
-	"Append a list of PATHS to PATH when APPEND is t, otherwise insert before the head of PATH."
-	(declare (indent 2))
-	(let* ((trim (lambda (x)
-								 (string-trim>< x path-separator path-separator)))
-				 (s (cond ((null path) (mapconcat trim paths path-separator))
-									((null paths) path)
-									(t (let ((p (mapconcat trim paths path-separator)))
-											 (if append
-													 (concat (funcall trim path)
-																	 path-separator p)
-												 (concat p path-separator
-																 (funcall trim path))))))))
-		(if (string= "" s) nil s)))
+  "Append a list of PATHS to PATH when APPEND is t, otherwise insert before the head of PATH."
+  (declare (indent 2))
+  (let* ((trim (lambda (x)
+                 (string-trim>< x path-separator path-separator)))
+         (s (cond ((null path) (mapconcat trim paths path-separator))
+                  ((null paths) path)
+                  (t (let ((p (mapconcat trim paths path-separator)))
+                       (if append
+                           (concat (funcall trim path)
+                                   path-separator p)
+                         (concat p path-separator
+                                 (funcall trim path))))))))
+    (if (string= "" s) nil s)))
 
 
  ;; end of File Functions
@@ -375,12 +375,12 @@ otherwise default to keep the directories of current `emacs-version'."
                     `,(emacs-home* ".bookmarks/")
                     `,(emacs-home* ".desktop/")
                     `,(emacs-home* ".eshell/")
-										`,(emacs-home* ".exec/")
+                    `,(emacs-home* ".exec/")
                     `,(emacs-home* ".games/")
                     `,(emacs-home* ".ido/")
                     `,(emacs-home* ".dired/")
                     `,(emacs-home* ".minibuffer/")
-										`,(emacs-home* ".nsm/")
+                    `,(emacs-home* ".nsm/")
                     `,(emacs-home* ".places/")
                     `,(emacs-home* ".recentf/")
                     `,(emacs-home* ".semantic/")
@@ -420,7 +420,7 @@ otherwise default to keep the directories of current `emacs-version'."
   (declare (indent 0))
   `(version-supported-when < 22
      (when-var% url-gateway-method url
-								,@body)))
+                ,@body)))
 
 (feature-socks-supported-p
 
@@ -430,38 +430,38 @@ With prefix argument ARG, `url-gatewary-method' via socks if ARG is
 positive, otherwise via native."
     (interactive "P")
     (let ((native `((:url-gateway-method . native)
-										(:socks-server . nil)))
-					(socks `((:url-gateway-method . socks)
-									 (:socks-server . ,(list "Default server"
-																					 (self-spec->*env-spec :socks :server)
-																					 (self-spec->*env-spec :socks :port)
-																					 (self-spec->*env-spec :socks :version))))))
+                    (:socks-server . nil)))
+          (socks `((:url-gateway-method . socks)
+                   (:socks-server . ,(list "Default server"
+                                           (self-spec->*env-spec :socks :server)
+                                           (self-spec->*env-spec :socks :port)
+                                           (self-spec->*env-spec :socks :version))))))
       (require 'url)
       (if (null arg)
-					(if (eq url-gateway-method 'native)
-							(setq-default url-gateway-method
-														(alist-get* :url-gateway-method socks nil nil #'eq)
-														socks-server
-														(alist-get* :socks-server socks nil nil #'eq))
-						(setq-default url-gateway-method
-													(alist-get* :url-gateway-method native nil nil #'eq)
-													socks-server
-													(alist-get* :socks-server native nil nil #'eq)))
-				(setq-default url-gateway-method
-											(alist-get* :url-gateway-method socks nil nil #'eq)
-											socks-server
-											(alist-get* :socks-server socks nil nil #'eq)))
+          (if (eq url-gateway-method 'native)
+              (setq-default url-gateway-method
+                            (alist-get* :url-gateway-method socks nil nil #'eq)
+                            socks-server
+                            (alist-get* :socks-server socks nil nil #'eq))
+            (setq-default url-gateway-method
+                          (alist-get* :url-gateway-method native nil nil #'eq)
+                          socks-server
+                          (alist-get* :socks-server native nil nil #'eq)))
+        (setq-default url-gateway-method
+                      (alist-get* :url-gateway-method socks nil nil #'eq)
+                      socks-server
+                      (alist-get* :socks-server socks nil nil #'eq)))
       (message "socks%s as url gateway %s"
-							 (or (when (eq url-gateway-method 'socks)
-										 (cdr (alist-get* :socks-server socks nil nil #'eq)))
-									 "")
-							 (if (eq url-gateway-method 'native)
-									 "disabled"
-								 "enabled")))))
+               (or (when (eq url-gateway-method 'socks)
+                     (cdr (alist-get* :socks-server socks nil nil #'eq)))
+                   "")
+               (if (eq url-gateway-method 'native)
+                   "disabled"
+                 "enabled")))))
 
 (feature-socks-supported-p
-	(when (self-spec->*env-spec :socks :allowed)
-		(toggle-socks! t)))
+  (when (self-spec->*env-spec :socks :allowed)
+    (toggle-socks! t)))
 
 
 
@@ -474,10 +474,10 @@ positive, otherwise via native."
 
 ;; use `pp' `pp-eval-expression' or `pp-eval-last-sexp'
 (if-fn% cl-prettyprint cl
-	;;;###autoload
-	(defalias 'pprint #'cl-prettyprint)
+  ;;;###autoload
+  (defalias 'pprint #'cl-prettyprint)
   (when-fn% cl-prettyexpand cl
-		;;;###autoload
+    ;;;###autoload
     (defalias 'pprint #'cl-prettyexpand)))
 
 
@@ -523,14 +523,14 @@ for which (PRED item) returns t."
 (defmacro define-key* (keymap key def feature &optional old-def accept-default)
   "In KEYMAP of FEATURE, define key sequence KEY as DEF when DEF `eq' OLD-DEF."
   `(when-var% ,keymap ,feature
-							(when (eq ,old-def (lookup-key ,keymap ,key ,accept-default))
-								(define-key ,keymap ,key ,def))))
+              (when (eq ,old-def (lookup-key ,keymap ,key ,accept-default))
+                (define-key ,keymap ,key ,def))))
 
 
 (defmacro define-global-key* (key def &optional old-def accept-default)
-	"In `current-global-map', define key sequence KEY as DEF when DEF `eq' OLD-DEF."
-	(when (eq old-def (lookup-key (current-global-map) (eval key) accept-default))
-		 `(define-key (current-global-map) ,key ,def)))
+  "In `current-global-map', define key sequence KEY as DEF when DEF `eq' OLD-DEF."
+  (when (eq old-def (lookup-key (current-global-map) (eval key) accept-default))
+     `(define-key (current-global-map) ,key ,def)))
 
 
  ;; end of keymap
@@ -539,7 +539,7 @@ for which (PRED item) returns t."
 (defmacro safe-local-variable* (var)
   "Safe local VAR in -*- line, see `enable-local-variables'"
   `(put ,var 'safe-local-variable
-				(lambda (x) (ignore* x) t)))
+        (lambda (x) (ignore* x) t)))
 
 
 ;; linum mode
@@ -562,11 +562,11 @@ for which (PRED item) returns t."
   (when (eq major-mode 'compilation-mode)
     (when-fn% ansi-color-apply-on-region ansi-color
       (let ((buffer-read-only nil))
-				(require 'ansi-color)
-				(ansi-color-apply-on-region
-				 (if-var% compilation-filter-start compile
-									compilation-filter-start (point-min))
-				 (point-max))))))
+        (require 'ansi-color)
+        (ansi-color-apply-on-region
+         (if-var% compilation-filter-start compile
+                  compilation-filter-start (point-min))
+         (point-max))))))
 
 
 
