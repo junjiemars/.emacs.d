@@ -13,28 +13,28 @@
   
   ;; open file or url at point
   (when-fn% find-file-at-point ffap
-    (global-set-key (kbd "C-c b") #'find-file-at-point))
+    (define-key (current-global-map) (kbd "C-c b") #'find-file-at-point))
 
   
   ;; Shows a list of buffers
-  (global-set-key (kbd "C-x C-b") #'ibuffer)
+  (define-key (current-global-map) (kbd "C-x C-b") #'ibuffer)
 
   ;; regexp search and replace should be first:
   ;;
   ;; interactive search key bindings.
   ;; by default, C-s runs isearch-forward, so this swaps the bindings.
-  (global-set-key (kbd "C-s") #'isearch-forward-regexp)
-  (global-set-key (kbd "C-r") #'isearch-backward-regexp)
-  (global-set-key (kbd "C-M-s") #'isearch-forward)
-  (global-set-key (kbd "C-M-r") #'isearch-backward)
+  (define-key (current-global-map) (kbd "C-s") #'isearch-forward-regexp)
+  (define-key (current-global-map) (kbd "C-r") #'isearch-backward-regexp)
+  (define-key (current-global-map) (kbd "C-M-s") #'isearch-forward)
+  (define-key (current-global-map) (kbd "C-M-r") #'isearch-backward)
 
   ;; Interactive query replace key bindings.
-  (global-set-key (kbd "M-%") #'query-replace-regexp)
-  (global-set-key (kbd "C-M-%") #'query-replace)
+  (define-key (current-global-map) (kbd "M-%") #'query-replace-regexp)
+  (define-key (current-global-map) (kbd "C-M-%") #'query-replace)
 
   ;; `C-x r g' and `C-x r i' are all bound to insert-register
   ;; let `C-x r g' do `string-insert-rectangle'
-  (global-set-key (kbd "C-x r g") #'string-insert-rectangle)
+  (define-key (current-global-map) (kbd "C-x r g") #'string-insert-rectangle)
 
 
 	(with-eval-after-load 'grep
