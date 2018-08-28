@@ -217,10 +217,6 @@ like `split-string' Emacs 24.4+"
       (split-string string separators omit-nulls))))
 
 
-
-
-
-
  ;; end of Compatible Functions
 
 
