@@ -26,7 +26,7 @@
 	"The user's emacs home directory")
 
 
- ;; end of basic macrob
+ ;; end of basic macro
 
 ;; file macro
 
