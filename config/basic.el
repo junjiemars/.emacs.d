@@ -549,6 +549,12 @@ for which (PRED item) returns t."
 		`(progn% ,@body)))
 
 
+(defmacro define-key% (keymap key def)
+	"Define KEY as DEF in KEYMAP when the KEY binding of DEF is not exists."
+	`(unless-key% ,keymap ,key ,def
+		 (define-key ,keymap ,key ,def)))
+
+
  ;; end of key macro
 
 
