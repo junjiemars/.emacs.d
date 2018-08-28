@@ -14,20 +14,29 @@
       ;; GitHub issue: https://github.com/magit/magit/issues/3345
       (setq% magit-git-executable "git" magit)))
   
+	;;
+	;; define keys for `magit'
+	;; 
   (when-fn% magit-pull magit
-    (global-set-key (kbd "C-c g p") 'magit-pull))
+		(define-key (current-global-map) (kbd "C-c g p") #'magit-pull))
+	
   (when-fn% magit-push magit
-    (global-set-key (kbd "C-c g P") 'magit-push))
+		(define-key (current-global-map) (kbd "C-c g P") #'magit-push))
+	
   (when-fn% magit-log magit
-    (global-set-key (kbd "C-c g l") 'magit-log))
+		(define-key (current-global-map) (kbd "C-c g l") #'magit-log))
+
   (when-fn% magit-log-buffer-file magit
-    (global-set-key (kbd "C-c g b") 'magit-log-buffer-file))
+		(define-key (current-global-map) (kbd "C-c g b") #'magit-log-buffer-file))
+
   (when-fn% magit-checkout magit
-    (global-set-key (kbd "C-c g c") 'magit-checkout))
+		(define-key (current-global-map) (kbd "C-c g c") #'magit-checkout))
+
   (when-fn% magit-merge magit
-    (global-set-key (kbd "C-c g m") 'magit-merge))
+    (define-key (current-global-map) (kbd "C-c g m") #'magit-merge))
+	
   (when-fn% magit-fetch magit
-    (global-set-key (kbd "C-c g f") 'magit-fetch)))
+    (define-key (current-global-map) (kbd "C-c g f") #'magit-fetch)))
 
 
 (with-eval-after-load 'magit
@@ -35,4 +44,4 @@
 
 
 (when-fn% magit-status magit
-  (global-set-key (kbd "C-c g s") #'magit-status))
+  (define-key (current-global-map) (kbd "C-c g s") #'magit-status))
