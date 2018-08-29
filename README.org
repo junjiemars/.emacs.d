@@ -502,7 +502,9 @@ Don't =setq= =find-program= on Windows, because =dired= can not differ the cases
 
 Now, on Windows you can use @@html:<kbd>@@M-x find-dired@@html:</kbd>@@ or @@html:<kbd>@@M-x find-name-dired@@html:</kbd>@@
 
-[[https://github.com/junjiemars/images/blob/master/.emacs.d/find-name-dired-windows.png][screenshot: find-name-dired]]
+screenshots:
+- [[https://github.com/junjiemars/images/blob/master/.emacs.d/find-name-dired-on-windows.png][find-name-dired]]
+- [[https://github.com/junjiemars/images/blob/master/.emacs.d/find-name-dired-tramp-on-windows.png][find-name-dired via tramp]]
 
 *** zip Program
 
