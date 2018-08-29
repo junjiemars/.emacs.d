@@ -277,7 +277,7 @@ Introduce rules of naming /files/ and /functions/
 **** Functions
 
 - *v-* prefix: functions or macros for versioned directories, such as =(v-home*)=
-- *** suffix: extensions of Emacs' builtin function or macro, such as =(alist-get*)=
+- /*/ suffix: extensions of Emacs' builtin function or macro, such as =(alist-get*)=
 - *%* suffix: macro be expanded at compile time, such as =(v-home%)=
 - *!* suffix: function or macro may change environment state, such as =(v-home!)=
 
