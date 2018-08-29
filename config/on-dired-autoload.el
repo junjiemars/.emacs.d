@@ -47,19 +47,24 @@
 
 	(with-eval-after-load 'ido
 		;; see `ido-dired'
-		(if (executable-find% "ls"
-													(lambda (ls)
-														(let ((ver (shell-command* ls "--version")))
-															(when (zerop (car ver))
-																(string-match "^ls (GNU coreutils)"
-																							(cdr ver))))))
-				;; prefer GNU's ls on Windows or Darwin
-				;; on Windows: `dired-mode' does not display executable flag in file mode
-				;; see `dired-use-ls-dired' for more defails
-				(setq% ls-lisp-use-insert-directory-program t ls-lisp)
-			(platform-supported-when darwin
-				;; on Drawin: ls does not support --dired option
-				(setq% dired-use-ls-dired nil dired)))))
+		(let ((ls (executable-find% "ls"
+																(lambda (ls)
+																	(let ((ver (shell-command* ls "--version")))
+																		(when (zerop (car ver))
+																			(string-match "^ls (GNU coreutils)"
+																										(cdr ver))))))))
+			(if ls
+					;; prefer GNU's ls on Windows or Darwin
+					;; on Windows: `dired-mode' does not display executable flag in file mode
+					;; see `dired-use-ls-dired' for more defails
+					(progn
+						;; error at `find-file-noselect' on Windows:
+						;; Reading directory: "ls --dired -al -- d:/abc/文档/" exited with status 2
+						;; (setq% insert-directory-program ls files)
+						(setq% ls-lisp-use-insert-directory-program t ls-lisp))
+				(platform-supported-when darwin
+					;; on Drawin: ls does not support --dired option
+					(setq% dired-use-ls-dired nil dired))))))
 
 
 ;; ido-mode allows you to more easily navigate choices. For example,
