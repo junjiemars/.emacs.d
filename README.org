@@ -218,11 +218,68 @@ Directories with =.= prefix are for the module that need store configuration or 
 
 *** Naming
 
-Introduce rules of naming /file/ and /function/ 
+Introduce rules of naming /files/ and /functions/ 
 
-**** File
+**** Files
 
-**** Function
+- core: single word and simple name
+#+BEGIN_EXAMPLE
+    (emacs-home* "config/")
+    ├── autoload.el
+    ├── basic.el
+    ├── boot.el
+    ├── memory.el
+    ├── module.el
+    ├── shells.el
+    └── strap.el
+#+END_EXAMPLE
+- extension for Emacs builtin packages: =<package-name>s=
+#+BEGIN_EXAMPLE
+    (emacs-home* "config/")
+    ├── eshells.el
+    └── tags.el
+#+END_EXAMPLE
+- autoload extension for Emacs builtin packages: =on-<package-name>-autoload.el=
+#+BEGIN_EXAMPLE
+    (emacs-home* "config/")
+    ├── on-compile-autoload.el
+    ├── on-dired-autoload.el
+    ├── on-edit-autoload.el
+    ├── on-eww-autoload.el
+    ├── on-hippie-autoload.el
+    ├── on-indent-autoload.el
+    ├── on-linum-autoload.el
+    ├── on-lisp-autoload.el
+    └── on-semantic-autoload.el
+#+END_EXAMPLE
+- extension for non Emacs builtin packages: =use-<package-name>-autoload.el=
+#+BEGIN_EXAMPLE
+    (emacs-home* "config/")
+    ├── use-cider-autoload.el
+    ├── use-cider.el
+    ├── use-inf-clojure.el
+    ├── use-lfe-autoload.el
+    ├── use-magit-autoload.el
+    ├── use-python.el
+    ├── use-slime-autoload.el
+    └── use-slime.el
+#+END_EXAMPLE
+- samples: =samples-self-*.el=
+#+BEGIN_EXAMPLE
+    (emacs-home* "config/")
+    ├── sample-self-env-spec.el
+    ├── sample-self-epilogue.el
+    ├── sample-self-package-spec.el
+    ├── sample-self-path.el
+    └── sample-self-prologue.el
+#+END_EXAMPLE
+
+**** Functions
+
+- */v-/* prefix: functions or macros for versioned directories, such as =(v-home*)=
+- */*/* suffix: extensions of Emacs' builtin function or macro, such as =(alist-get*)=
+- */%/* suffix: macro be expanded at compile time, such as =(v-home%)=
+- */!/* suffix: function or macro may change environment state, such as =(v-home!)=
 
 * Cooking
    :PROPERTIES:
