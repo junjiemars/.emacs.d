@@ -145,19 +145,18 @@ features, such as themes, packages, and fonts etc., see next section:
    :CUSTOM_ID: organization
    :END:
 
-Suppose your Emacs HOME at =~/.emacs.d= and annotated it as =emacs-home=.
+Annotated your Emacs HOME as =(emacs-home*)=.
 
-Your private configuration directory at =emacs-home/private/= and I
-abbreviate it as =(emacs-home* "private/")=. All things under it you can
-rename, move, delete.
+Your private configuration directory at =(emacs-home* "private/")=. 
+All things under it you can rename, move, delete.
 
 All Elisp files should be compiled, if you meet some trouble, a magic 
 function =(clean-compiled-files)= should help, run it and reopen the Emacs.
 
-Directory orgnization:
+*** Directory
 
 #+BEGIN_EXAMPLE
-    emacs-home
+    (emacs-home*)
     ├── LICENSE
     ├── README.md
     ├── config (comment "all stuff here")
@@ -189,6 +188,41 @@ Locate your spec via =(emacs-home* "private/self-path.el")=.
       :epilogue (comment (emacs-home* "private/self-epilogue.el")))
       
 #+END_SRC
+
+Directories with =.= prefix are for the module that need store configuration or cached files.
+
+#+BEGIN_EXAMPLE
+    (emacs-home*)
+    ├── .backup
+    ├── .bookmarks
+    ├── .desktop
+    ├── .dired
+    ├── .eshell
+    ├── .exec (comment "executable")
+    ├── .games
+    ├── .ido
+    ├── .image-dired
+    ├── .mail
+    ├── .minibuffer
+    ├── .places
+    ├── .recentf
+    ├── .save
+    ├── .semantic
+    ├── .semanticdb
+    ├── .server
+    ├── .tags
+    ├── .tramp
+    └── .url
+
+#+END_EXAMPLE
+
+*** Naming
+
+Introduce rules of naming /file/ and /function/ 
+
+**** File
+
+**** Function
 
 * Cooking
    :PROPERTIES:
