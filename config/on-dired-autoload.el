@@ -58,7 +58,7 @@
 					;; on Windows: `dired-mode' does not display executable flag in file mode
 					;; see `dired-use-ls-dired' for more defails
 					(progn
-						;; error at `find-file-noselect' on Windows:
+						;; error at `dired-internal-noselect' on Windows:
 						;; Reading directory: "ls --dired -al -- d:/abc/文档/" exited with status 2
 						;; (setq% insert-directory-program ls files)
 						(setq% ls-lisp-use-insert-directory-program t ls-lisp))
