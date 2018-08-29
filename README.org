@@ -145,8 +145,7 @@ features, such as themes, packages, and fonts etc., see next section:
    :CUSTOM_ID: organization
    :END:
 
-Suppose your Emacs HOME at =~/.emacs.d= and annotated it as =emacs-home=
-.
+Suppose your Emacs HOME at =~/.emacs.d= and annotated it as =emacs-home=.
 
 Your private configuration directory at =emacs-home/private/= and I
 abbreviate it as =(emacs-home* "private/")=. All things under it you can
@@ -171,7 +170,6 @@ Directory orgnization:
     │   ├── self-package-spec.el
     │   ├── self-path.el
     │   ├── self-prologue.el
-    ├── screenshot.md
     └── theme (comment "themes directory")
 #+END_EXAMPLE
 
@@ -219,7 +217,7 @@ The theme's spec locate in =(emacs-home* "private/self-env-spec.el")=
     (def-self-env-spec
       :theme (list :name 'dracula
                    :custom-theme-directory (emacs-home* "theme/")
-                   :compile t
+                   :compile nil
                    :allowed t))
 #+END_SRC
 
