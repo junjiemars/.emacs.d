@@ -59,8 +59,7 @@
 					;; see `dired-use-ls-dired' for more defails
 					(progn
 						;; error at `dired-internal-noselect' on Windows:
-						;; Reading directory: "ls --dired -al -- d:/abc/文档/" exited with status 2
-						;; (setq% insert-directory-program ls files)
+						;; Reading directory: "ls --dired -al -- d:/abc/中文/" exited with status 2
 						(setq% ls-lisp-use-insert-directory-program t ls-lisp))
 				(platform-supported-when darwin
 					;; on Drawin: ls does not support --dired option
