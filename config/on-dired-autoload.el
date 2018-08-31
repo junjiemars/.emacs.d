@@ -60,6 +60,8 @@
 					(progn
 						;; error at `dired-internal-noselect' on Windows:
 						;; Reading directory: "ls --dired -al -- d:/abc/中文/" exited with status 2
+						;; https://lists.gnu.org/archive/html/emacs-devel/2016-01/msg00406.html
+						;; (setq file-name-coding-system locale-coding-system)
 						(setq% ls-lisp-use-insert-directory-program t ls-lisp))
 				(platform-supported-when darwin
 					;; on Drawin: ls does not support --dired option
