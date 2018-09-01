@@ -12,13 +12,10 @@
   ;; the POSIX path in Windows which cannot be recognized by Emacs.
   ;; When such case occurred, we try to translate POSIX path to Windows path.
   (defadvice compilation-find-file (before compilation-find-file-before compile)
-    (ad-set-arg
-     1 ;; filename argument
-     (let ((filename (ad-get-arg 1)))
-       (if (string-match "^/\\([a-zA-Z]\\)/" filename)
-					 (replace-match
-						(concat (match-string 1 filename) ":/") t t filename)
-				 (ad-get-arg 1))))))
+    (when (string-match "^/\\([a-zA-Z]\\)/" (ad-get-arg 1))
+			(ad-set-arg 1 ;; filename argument
+									(replace-match (concat (match-string 1 filename) ":/")
+																 t t (ad-get-arg 1))))))
 
 
 (with-eval-after-load 'compile
