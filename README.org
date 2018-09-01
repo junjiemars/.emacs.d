@@ -600,6 +600,7 @@ screenshots:
 On Windows, there are no builtin =zip/unzip= program, but Emacs ship with =minizip= program.
 Although =minizip= without /recursive/ functionalities, but do some tricks with =minizip=,
 we can zip files and directories with =minizip=, even export =org= to =odt= [[https://en.wikipedia.org/wiki/OpenDocument][OpenDocument]].
+And more [[https://www.7-zip.org/download.html][7-Zip standalone command version also be supported]].
 
 For some ancient Emacs24-, @@html:<kbd>@@! zip x.zip ?@@html:</kbd>@@ to zip.
 

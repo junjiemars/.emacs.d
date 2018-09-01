@@ -186,6 +186,7 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 														 ((string= "7za" zip)
 															(concat
 															 "if \"%1\"==\"-mX0\" set _OPT=%_OPT:-mX0=-mx0% & shift & goto :getopt\n"
+															 "if \"%1\"==\"-0\" set _OPT=%_OPT:-0=-mx0% & shift & goto :getopt\n"
 															 "if \"%1\"==\"-9\" set _OPT=%_OPT:-9=-mx9% & shift & goto :getopt\n")))
 											 "\n"
 											 "REM ignore options\n"
@@ -213,8 +214,11 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 											 "  goto :getopt\n"
 											 ")\n\n")
 							 (cond ((string= "7za" zip)
-											(concat "REM 7za call\n\n"
-															"7za a %_OPT% -tzip -x%_ZIP% %_ZIP% %_ARGV%\n"))
+											(concat "REM 7za call\n"
+															"7za a %_OPT% -tzip -- %_ZIP% %_ARGV%\n"
+															"if exist %_ZIP% (\n"
+															"  7za d %_OPT% -tzip -- %_ZIP% %_ZIP%\n"
+															")\n"))
 										 ((string= "minizip" zip)
 											(concat "REM minizip recursive call\n\n"
 															"call :loop %_ARGV%\n"
