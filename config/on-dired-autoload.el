@@ -45,6 +45,15 @@
 
 (platform-supported-unless gnu/linux
 
+	(platform-supported-when windows-nt
+
+		(defadvice insert-directory (before insert-directory-before compile)
+			"Try to encode multibyte directory name with locale-coding-system."
+			(when (multibyte-string-p (ad-get-arg 0))
+				(ad-set-arg 0 (encode-coding-string (ad-get-arg 0)
+																						locale-coding-system)))))
+
+
 	(with-eval-after-load 'ido
 		;; see `ido-dired'
 		(let ((ls (executable-find% "ls"
@@ -57,12 +66,16 @@
 					;; prefer GNU's ls on Windows or Darwin
 					;; on Windows: `dired-mode' does not display executable flag in file mode
 					;; see `dired-use-ls-dired' for more defails
-					(progn
-						;; error at `dired-internal-noselect' on Windows:
-						;; Reading directory: "ls --dired -al -- d:/abc/中文/" exited with status 2
-						;; https://lists.gnu.org/archive/html/emacs-devel/2016-01/msg00406.html
-						;; (setq file-name-coding-system locale-coding-system)
-						(setq% ls-lisp-use-insert-directory-program t ls-lisp))
+					(progn%
+					 ;; error at `dired-internal-noselect' on Windows:
+					 ;; Reading directory: "ls --dired -al -- d:/abc/中文/" exited with status 2
+					 ;; https://lists.gnu.org/archive/html/emacs-devel/2016-01/msg00406.html
+					 ;; (setq file-name-coding-system locale-coding-system)
+					 (setq% ls-lisp-use-insert-directory-program t ls-lisp)
+					 (platform-supported-when windows-nt
+						 (unless (eq default-file-name-coding-system locale-coding-system)
+							 (ad-activate #'insert-directory t))))
+
 				(platform-supported-when darwin
 					;; on Drawin: ls does not support --dired option
 					(setq% dired-use-ls-dired nil dired))))))
