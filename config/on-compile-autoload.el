@@ -8,9 +8,9 @@
 
 
 (platform-supported-when windows-nt
-  ;; There are no builtin `grep' in Windows, GNU's `grep' may be use
-  ;; the POSIX path in Windows which cannot be recognized by Emacs.
-  ;; When such case occurred, we try to translate POSIX path to Windows path.
+  ;; There are no builtin `grep' in Windows, GNU's `grep' may use
+  ;; the UNIX path in Windows which cannot be recognized by Emacs.
+  ;; When such case occurred, we try to translate UNIX path to POSIX path.
   (defadvice compilation-find-file (before compilation-find-file-before compile)
     (when (string-match "^/\\([a-zA-Z]\\)/" (ad-get-arg 1))
 			(ad-set-arg 1 ;; filename argument

@@ -48,7 +48,9 @@
 	(platform-supported-when windows-nt
 
 		(defadvice insert-directory (before insert-directory-before compile)
-			"Try to encode multibyte directory name with locale-coding-system."
+			"`dired-find-file' should failed when using GNU's ls program on Windows.
+We try to encode multibyte directory name with `locale-coding-system' 
+when the multibyte directory name encoded with non `locale-coding-system'."
 			(when (multibyte-string-p (ad-get-arg 0))
 				(ad-set-arg 0 (encode-coding-string (ad-get-arg 0)
 																						locale-coding-system)))))
