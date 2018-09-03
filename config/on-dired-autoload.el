@@ -45,7 +45,6 @@
 (platform-supported-unless gnu/linux
 
 	(platform-supported-when windows-nt
-
 		(defadvice insert-directory (before insert-directory-before compile)
 			"`dired-find-file' should failed when using GNU's ls program on Windows.
 We try to encode multibyte directory name with `locale-coding-system' 
