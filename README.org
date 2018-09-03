@@ -330,7 +330,7 @@ Using Emacs's builtin themes /tango-dark/ :
 #+END_SRC
 
 
-screenshots:
+/screenshots/:
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/default-theme-on-windows.png][default theme]]
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-windows.png][dracula theme]]
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/tango-dark-theme-on-windows.png][tango-dark theme]]
@@ -358,7 +358,7 @@ The default font's spec locate in =(emacs-home* "private/self-env-spec.el")= and
 - =:allowed= =t= enabled, =nil= disabled
 
 
-screenshots:
+/screenshots/:
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/cjk-font-on-darwin.png][CJK font]]
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/monaco-font-on-darwin.png][Monaco font]]
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/consolas-font-on-windows.png][Consolas font]]
@@ -581,7 +581,7 @@ For Windows, there are no built-in =ls= program, but you can install GNU's =ls= 
 For Darwin, let =dired= don't do stupid things.
 
 
-screenshots:
+/screenshots/:
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/ido-dired-windows-gnu-ls.png][ido-dired]]
 
 *** find Program
@@ -591,7 +591,7 @@ Don't =setq= =find-program= on Windows, because =dired= can not differ the cases
 
 Now, on Windows you can use @@html:<kbd>@@M-x find-dired@@html:</kbd>@@ or @@html:<kbd>@@M-x find-name-dired@@html:</kbd>@@
 
-screenshots:
+/screenshots/:
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/find-name-dired-on-windows.png][find-name-dired]]
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/find-name-dired-tramp-on-windows.png][find-name-dired via tramp]]
 
@@ -605,7 +605,7 @@ And more [[https://www.7-zip.org/download.html][7-Zip standalone command version
 For some ancient Emacs24-, @@html:<kbd>@@! zip x.zip ?@@html:</kbd>@@ to zip.
 
 
-screenshots:
+/screenshots/:
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-do-compress-to-on-windows.png][dired-do-compress-to]]
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-view-file-on-windows.png][dired-view-file]]
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/org-odt-export-to-odt-on-windows.png][org-odt-export-to-odt]]
