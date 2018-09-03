@@ -576,7 +576,7 @@ Using =dired= as a File Manager is awesome, same experiences on Windows, Darwin 
 
 *** ls Program
 
-For Windows, there are no builtin =ls= program, but you can install GNU's =ls= via [[https://git-scm.com/downloads][Git-Bash]]. 
+For Windows, there are no built-in =ls= program, but you can install GNU's =ls= via [[https://git-scm.com/downloads][Git-Bash]]. 
 
 For Darwin, let =dired= don't do stupid things.
 
