@@ -165,7 +165,7 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 (platform-supported-when windows-nt
 	
 	(defun make-zip-bat (zip &rest ignore)
-		"Make ZIP.bat in `exec-path."
+		"Make ZIP.bat in `exec-path' for minizip or 7za."
 		(declare (indent 1))
 		(when (stringp zip)
 			(save-str-to-file
