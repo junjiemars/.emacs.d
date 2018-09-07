@@ -111,9 +111,9 @@
 		;; zip.bat works with `dired-do-compress-to' and `org-odt-export-to-odt'.
 		(eval-when-compile
 			(unless (executable-find% "zip")
-				;; prefer minizip which ship with Emacs deps
-				(cond ((executable-find% "minizip") (make-zip-bat "minizip"))
-							((executable-find% "7za") (make-zip-bat "7za"))))))
+				;; zip external program
+				(cond ((executable-find% "7za") (make-zip-bat "7za"))
+							((executable-find% "minizip") (make-zip-bat "minizip"))))))
 
   )
 
