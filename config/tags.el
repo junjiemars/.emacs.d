@@ -87,8 +87,11 @@ RENEW overwrite the existing tags file when t else create it.
 									 (lambda (f)
 										 (message "make-tags: %s ... %s"
 															f
-															(if (zerop (shell-command
-																					(format tags-program tags-file f f)))
+															(if (zerop
+																	 (car (shell-command*
+																						(format tags-program tags-file
+																										(shell-quote-argument f)
+																										(shell-quote-argument f)))))
 																	"ok" "failed")))
 									 nil)
 			(when (file-exists-p tags-file)
