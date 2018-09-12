@@ -18,7 +18,7 @@ Examples:
   `(self-spec->% (list
 									:emacs-home ,(v-home% ".tags/home/TAGS")
 									:emacs-source ,(v-home% ".tags/source/TAGS")
-									:os-include ,(v-home% ".tags/os/TAGS"))
+									:os-include ,(emacs-home* ".tags/os/TAGS"))
      ,@key))
 
 
