@@ -54,9 +54,10 @@
 			;; Windows: msvc
 			(let ((cmd (shell-command* (make-cc-env-bat))))
 				(when (zerop (car cmd))
-					(var->paths
-					 (car (nreverse 
-								 (split-string* (cdr cmd) "\n" t "\""))))))
+					(mapcar (lambda (x) (windows-nt-posix-path x))
+									(var->paths
+									 (car (nreverse 
+												 (split-string* (cdr cmd) "\n" t "\"")))))))
 		;; Darwin/Linux: clang or gcc
 		(let ((cmd (shell-command* "echo '' | cc -v -E 2>&1 >/dev/null -")))
 			(when (zerop (car cmd))
