@@ -478,9 +478,9 @@ Don't tell me [[https://github.com/jwiegley/use-package][use-package]],
 it's trying to redefine Emacs. Here you can find more simpler and faster
 way to implement almost functionalities that =use-pacakge= does.
 
-There are two types of packages: *basic* (just like Emacs' builtin)
-and *user defined*. To disable *user defined* packages in
-=(def-self-path-ref)=, disable both *basic* and *user defined* packages
+There are two types of packages: /basic/ (just like Emacs' builtin)
+and /user defined/. To disable /user defined/ packages in
+=(def-self-path-ref)=, disable both /basic/ and /user defined/ packages
 can be done in =(def-self-env-spec)=.
 
 #+BEGIN_SRC emacs-lisp
@@ -490,13 +490,8 @@ can be done in =(def-self-env-spec)=.
           
 #+END_SRC
 
--  =:cond= decide whether to install =:packages= or compile =:compile=
--  =:packages= a list of package names or tar file names
--  =:compile= a list of files that should be compiled only or be loaded
-   after be compiled
 
-The default package spec locate in
-=(emacs-home* "private/self-package-spec.el")=
+The /user defined/ package spec default locate in =(emacs-home* "private/self-package-spec.el")=
 
 #+BEGIN_SRC emacs-lisp
     (def-self-package-spec
@@ -548,6 +543,15 @@ The default package spec locate in
        :compile `(,(compile-unit% (emacs-home* "config/use-slime.el"))
                   ,(compile-unit% (emacs-home* "config/use-slime-autoload.el")))))
 #+END_SRC
+
+- =:cond= decide whether to install =:packages= or compile =:compile=
+- =:packages= a list of package names or tar file names
+- =:compile= when installed packages, a list of files that should be compiled only or be loaded after be compiled
+
+You can use any =Elisp= functions after aboved keywords.
+- =version-supported-p= macro checking the version of current Emacs at compile time
+- =executable-find%= macro checking the exising of the /executable/ at compile time
+- =compile-unit%= macro specify the compiling file to compile or compile then load
 
 ** Indent
     :PROPERTIES:
