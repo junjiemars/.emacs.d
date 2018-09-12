@@ -111,17 +111,18 @@ If (eq `system-type' OS) yields nil, and there are no ELSE’s, the value is nil
 
 (defmacro setq% (x val &optional feature)
   "Set X to the value of its VAL when variable X is bound.
-If X requires the FEATURE load it on compile-time."
+If X requires the FEATURE, load it on compile-time."
   ;; (declare (debug t))
   (when feature (require feature nil t))
 	(when (boundp x)
 		`(setq ,x ,val)))
 
+
 ;; fn compile-time checking macro
 
 (defmacro if-fn% (fn feature then &rest else)
   "If FN is bounded yields non-nil, do THEN, else do ELSE...
-If FN requires the FEATURE load it on compile-time."
+If FN requires the FEATURE, load it on compile-time."
   (declare (indent 3))
   (when feature (require feature nil t))
   (if (fboundp fn)
@@ -130,25 +131,25 @@ If FN requires the FEATURE load it on compile-time."
 
 (defmacro when-fn% (fn feature &rest body)
   "Do BODY when FN is bound.
-If FN requires FEATURE load it on compile-time."
+If FN requires the FEATURE, load it on compile-time."
   (declare (indent 2))
   `(if-fn% ,fn ,feature (progn% ,@body)))
 
 (defmacro unless-fn% (fn feature &rest body)
   "Do BODY unless FN is bound.
-If FN requires FEATURE load it on compile-time."
+If FN requires the FEATURE, load it on compile-time."
   (declare (indent 2))
   `(if-fn% ,fn ,feature nil ,@body))
 
- ;; end of compile-time checking macro
+
+ ;; end of fn compile-time checking macro
 
 
 ;; var compile-time checking macro
 
-
 (defmacro if-var% (var feature then &rest else)
   "If VAR is bounded yields non-nil, do THEN, else do ELSE...
-If VAR requires the FEATURE load it on compile-time."
+If VAR requires the FEATURE, load it on compile-time."
   (declare (indent 3))
   (when feature (require feature nil t))
   (if (boundp var)
@@ -157,11 +158,13 @@ If VAR requires the FEATURE load it on compile-time."
 
 (defmacro when-var% (var feature &rest body)
 	"Do BODY when VAR is bound.
-If VAR requires FEATURE load it on compile-time."
-	'	(declare (indent 2))
-		`(if-var% ,var ,feature (progn% ,@body)))
+If VAR requires the FEATURE, load it on compile-time."
+	(declare (indent 2))
+	`(if-var% ,var ,feature (progn% ,@body)))
+
 
  ;; end of var compile-time checking macro
+
 
 ;; byte-compiler macro
 
