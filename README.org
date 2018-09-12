@@ -286,14 +286,15 @@ Introduce rules of naming /files/ and /functions/
    :CUSTOM_ID: cooking
    :END:
 
--  [[#theme][Theme]]
--  [[#font][Font]]
--  [[#shell][Shell]]
--  [[#session][Session]]
--  [[#socks][Socks]]
--  [[#package][Package]]
--  [[#indent][Indent]]
--  [[#file][File]]
+- [[#theme][Theme]]
+- [[#font][Font]]
+- [[#shell][Shell]]
+- [[#session][Session]]
+- [[#socks][Socks]]
+- [[#package][Package]]
+- [[#indent][Indent]]
+- [[#file][File]]
+- [[#tags][Tags]]
 
 ** Theme
     :PROPERTIES:
@@ -610,6 +611,18 @@ For some ancient Emacs24-, @@html:<kbd>@@! zip x.zip ?@@html:</kbd>@@ to zip.
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-view-file-on-windows.png][dired-view-file]]
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/org-odt-export-to-odt-on-windows.png][org-odt-export-to-odt]]
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-compress-file-suffixes-version-24lt.png][dired-compress-file-suffixes]]
+
+** Tags
+	 :PROPERTIES:
+	 :CUSTOM_ID: tags
+	 :END:
+
+Prefer =etags= program, because it works well on varied platforms. 
+In =(emacs-home* "config/tags.el")=, there are some handy functions to create the tags for
+=Elisp= or =C= source code, such as =make-emacs-source-tags=, =make-system-c-tags=, 
+and =mount-tags=.
+
+More Reasonable Emacs also supports [[http://ctags.sourceforge.net/][Exuberant Ctags]].
 
 * Troubleshooting
    :PROPERTIES:
