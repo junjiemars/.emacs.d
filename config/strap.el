@@ -193,7 +193,7 @@ The name is made by appending a number to PREFIX, default \"G\"."
 
 
 (defmacro feature-if% (feature filename then &rest else)
-  "If FEATURE supports do THEN, otherwise do ELSE... at compile-time."
+  "If FEATURE existing do THEN, otherwise do ELSE... at compile-time."
   (if (require feature filename t)
       `,then
     `(progn% ,@else)))
