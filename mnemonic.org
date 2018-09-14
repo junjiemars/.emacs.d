@@ -172,17 +172,15 @@ It's *self-documenting* and great, keep reading it frequently.
    :CUSTOM_ID: register
    :END:
 
--  window configuration to register: @@html:<kbd>@@C-x r w
-   @@html:<REG>@@@@html:</kbd>@@, @@html:<REG>@@ is single character, it
-   can not accross sessions.
--  frame configuration to register: @@html:<kbd>@@C-x r f
-   @@html:<REG>@@@@html:</kbd>@@
--  point to register: @@html:<kbd>@@C-x r @@html:<SPC>@@
-   @@html:<REG>@@@@html:</kbd>@@
--  jump to register: @@html:<kbd>@@C-x r j @@html:<REG>@@@@html:</kbd>@@
--  copy to register: @@html:<kbd>@@C-x r s @@html:<REG>@@@@html:</kbd>@@
--  insert register: @@html:<kbd>@@C-x r i @@html:<REG>@@@@html:</kbd>@@
--  view register
+The content of Register cannot accross sessions.
+
+- store /window/ configuration to register: @@html:<kbd>@@C-x r w <REG>@@html:</kbd>@@
+- store /frame/ configuration to register: @@html:<kbd>@@C-x r f <REG>@@html:</kbd>@@
+- store /point/ to register: @@html:<kbd>@@C-x r @ <REG>@@html:</kbd>@@
+- /jump to/ register: @@html:<kbd>@@C-x r j <REG>@@html:</kbd>@@
+- /store to/ register: @@html:<kbd>@@C-x r s <REG>@@html:</kbd>@@
+- /insert from/ register: @@html:<kbd>@@C-x r i <REG>@@html:</kbd>@@
+- /view/ the content of register: @@html:<kbd>@@M-x view-register <REG>@@html:</kbd>@@
 
 * Bookmarks
    :PROPERTIES:
