@@ -621,12 +621,37 @@ For some ancient Emacs24-, @@html:<kbd>@@! zip x.zip ?@@html:</kbd>@@ to zip.
 	 :CUSTOM_ID: tags
 	 :END:
 
-Prefer =etags= program, because it works well on varied platforms. 
-In =(emacs-home* "config/tags.el")=, there are some handy functions to create the tags for
-=Elisp= or =C= source code, such as =make-emacs-source-tags=, =make-system-c-tags=, 
-and =mount-tags=.
+Prefer =etags= program, because it works well on varied platforms.  In
+=(emacs-home* "config/tags.el")=, there are some handy functions to
+create the tags for =Elisp= or =C= source code, such as
+=make-emacs-source-tags=, =make-system-c-tags=, and =mount-tags=.
 
 More Reasonable Emacs also supports [[http://ctags.sourceforge.net/][Exuberant Ctags]].
+
+* Programming
+	:PROPERTIES:
+	:CUSTOM_ID: programming
+	:END:
+	
+** Elisp programming
+	 :PROPERTIES:
+	 :CUSTOM_ID: programming_elisp_programming
+	 :END:
+
+** C programming
+	 :PROPERTIES:
+	 :CUSTOM_ID: programming_c_programming
+	 :END:
+
+** Common Lisp programming
+	 :PROPERTIES:
+	 :CUSTOM_ID: programming_common_lisp_programming
+	 :END:
+
+** Scheme programming
+	 :PROPERTIES:
+	 :CUSTOM_ID: programming_scheme_programming
+	 :END:
 
 * Troubleshooting
    :PROPERTIES:
