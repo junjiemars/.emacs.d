@@ -114,8 +114,8 @@ If (eq `system-type' OS) yields nil, and there are no ELSE’s, the value is nil
 If X requires the FEATURE, load it on compile-time."
   ;; (declare (debug t))
   (when feature (require feature nil t))
-	(when (boundp x)
-		`(setq ,x ,val)))
+  (when (boundp x)
+    `(setq ,x ,val)))
 
 
 ;; fn compile-time checking macro
@@ -157,10 +157,10 @@ If VAR requires the FEATURE, load it on compile-time."
     `(progn% ,@else)))
 
 (defmacro when-var% (var feature &rest body)
-	"Do BODY when VAR is bound.
+  "Do BODY when VAR is bound.
 If VAR requires the FEATURE, load it on compile-time."
-	(declare (indent 2))
-	`(if-var% ,var ,feature (progn% ,@body)))
+  (declare (indent 2))
+  `(if-var% ,var ,feature (progn% ,@body)))
 
 
  ;; end of var compile-time checking macro
@@ -169,7 +169,7 @@ If VAR requires the FEATURE, load it on compile-time."
 ;; byte-compiler macro
 
 (unless-fn% gensym nil
-	(defvar *gensym-counter* 0))
+  (defvar *gensym-counter* 0))
 
 (unless-fn% gensym nil
   ;; feature Emacs version will add `gensym' into the core
@@ -178,9 +178,9 @@ If VAR requires the FEATURE, load it on compile-time."
     "Generate a new uninterned symbol.
 The name is made by appending a number to PREFIX, default \"G\"."
     (let ((pfix (if (stringp prefix) prefix "G"))
-					(num (if (integerp prefix) prefix
-								 (prog1 *gensym-counter*
-									 (setq *gensym-counter* (1+ *gensym-counter*))))))
+          (num (if (integerp prefix) prefix
+                 (prog1 *gensym-counter*
+                   (setq *gensym-counter* (1+ *gensym-counter*))))))
       (make-symbol (format "%s%d" pfix num)))))
 
 
@@ -201,47 +201,47 @@ The name is made by appending a number to PREFIX, default \"G\"."
 (defmacro def-feature-supported-p (feature &optional filename docstring)
   "Define FEATURE supported-p macro."
   (let ((name (intern (format "feature-%s-supported-p" feature)))
-	(ds1 (format "If has `%s' feauture then do BODY." feature)))
+  (ds1 (format "If has `%s' feauture then do BODY." feature)))
     `(feature-if% ,feature ,filename
-		  (defmacro ,name (&rest body)
-		    ,(or docstring ds1)
-		    (declare (indent 0))
-		    `(progn% ,@body))
-		  (defmacro ,name (&rest body)
-		    ,(or docstring ds1)
-		    (declare (indent 0))
-		    `(comment ,@body)))))
+      (defmacro ,name (&rest body)
+        ,(or docstring ds1)
+        (declare (indent 0))
+        `(progn% ,@body))
+      (defmacro ,name (&rest body)
+        ,(or docstring ds1)
+        (declare (indent 0))
+        `(comment ,@body)))))
 
 (defmacro def-function-supported-p (fn &optional feature docstring)
   "Define FN supported-p macro."
   (let ((name (intern (format "function-%s-supported-p" fn)))
-				(ds1 (format "If has `%s' fn then do BODY." fn)))
+        (ds1 (format "If has `%s' fn then do BODY." fn)))
     `(if-fn% ,fn ,feature
-						 (defmacro ,name (&rest body)
-							 ,(or docstring ds1)
-							 (declare (indent 0))
-							 `(progn% ,@body))
+             (defmacro ,name (&rest body)
+               ,(or docstring ds1)
+               (declare (indent 0))
+               `(progn% ,@body))
        (defmacro ,name (&rest body)
-				 ,(or docstring ds1)
-				 (declare (indent 0))
-				 `(comment ,body)))))
+         ,(or docstring ds1)
+         (declare (indent 0))
+         `(comment ,body)))))
 
 
 (defmacro def-function-threading (fn &optional join)
-	"Define FN threading macro."
-	(if-fn% make-thread nil
-					(let ((name (symbol-name fn))
-								(name1 (intern (format "function-threading-%s"
-																			 (symbol-name fn))))
-								(ds1 (format "Threading `%s'." fn)))
-						`(defun ,name1 ()
-							 ,ds1
-							 (let ((thread (make-thread (function ,fn) ,name)))
-								 (if ,join
-										 (thread-join thread)
-									 thread))))
-		(ignore* join)
-		`(function ,fn)))
+  "Define FN threading macro."
+  (if-fn% make-thread nil
+          (let ((name (symbol-name fn))
+                (name1 (intern (format "function-threading-%s"
+                                       (symbol-name fn))))
+                (ds1 (format "Threading `%s'." fn)))
+            `(defun ,name1 ()
+               ,ds1
+               (let ((thread (make-thread (function ,fn) ,name)))
+                 (if ,join
+                     (thread-join thread)
+                   thread))))
+    (ignore* join)
+    `(function ,fn)))
 
 
  ;; end of byte-compiler macro
@@ -251,50 +251,50 @@ The name is made by appending a number to PREFIX, default \"G\"."
 
 (defmacro compile-unit* (file &optional only-compile delete-booster)
   "Make an unit of compilation."
-	`(list :source ,file
-				 :dir (when ,file (v-path* (file-name-directory ,file)))
-				 :only-compile ,only-compile
-				 :delete-booster ,delete-booster))
+  `(list :source ,file
+         :dir (when ,file (v-path* (file-name-directory ,file)))
+         :only-compile ,only-compile
+         :delete-booster ,delete-booster))
 
 (defmacro compile-unit% (file &optional only-compile delete-booster)
   "Make an unit of compilation at compile time."
-	(let* ((-source1- (eval file))
-				 (-dir1- (when -source1-
-									 (eval (v-path* (file-name-directory -source1-))))))
-		`(list :source ,-source1-
-					 :dir ,-dir1-
-					 :only-compile ,only-compile
-					 :delete-booster ,delete-booster)))
+  (let* ((-source1- (eval file))
+         (-dir1- (when -source1-
+                   (eval (v-path* (file-name-directory -source1-))))))
+    `(list :source ,-source1-
+           :dir ,-dir1-
+           :only-compile ,only-compile
+           :delete-booster ,delete-booster)))
 
 (defmacro compile-unit->file (unit)
   "Return the :source part of `compile-unit'."
-	`(plist-get ,unit :source))
+  `(plist-get ,unit :source))
 
 (defmacro compile-unit->dir (unit)
-	"Return the :dir part of `compile-unit'."
-	`(plist-get ,unit :dir))
+  "Return the :dir part of `compile-unit'."
+  `(plist-get ,unit :dir))
 
 (defmacro compile-unit->only-compile (unit)
   "Return the :only-compile indicator of `compile-unit'."
-	`(plist-get ,unit :only-compile))
+  `(plist-get ,unit :only-compile))
 
 (defmacro compile-unit->delete-booster (unit)
   "Return the :delete-booster indicator of `compile-unit'."
-	`(plist-get ,unit :delete-booster))
+  `(plist-get ,unit :delete-booster))
 
 
 
 (defun compile! (&rest units)
   "Compile and load the elisp UNITS."
   (declare (indent 0))
-	(let ((r t))
-		(dolist (unit units r)
-			(when unit
-				(setq r (and r (compile-and-load-file*
-												(compile-unit->file unit)
-												(compile-unit->only-compile unit)
-												(compile-unit->delete-booster unit)
-												(compile-unit->dir unit))))))))
+  (let ((r t))
+    (dolist (unit units r)
+      (when unit
+        (setq r (and r (compile-and-load-file*
+                        (compile-unit->file unit)
+                        (compile-unit->only-compile unit)
+                        (compile-unit->delete-booster unit)
+                        (compile-unit->dir unit))))))))
 
 
  ;; end of compile macro
@@ -344,7 +344,7 @@ No matter the declaration order, the executing order is:
 "
   (declare (indent 0))
   `(defvar ,(self-symbol 'path) (list ,@path)
-		 "Define the path references which point to 
+     "Define the path references which point to 
 :env-spec, :prologue, :package-spec and :epilogue in order."))
 
 
@@ -360,7 +360,7 @@ Take effect after restart Emacs.
 "
   (declare (indent 0))
   `(defvar ,(self-symbol 'env-spec) (list ,@spec)
-		 "Define the environment specs."))
+     "Define the environment specs."))
 
 
 (defmacro def-self-package-spec (&rest spec)
@@ -417,10 +417,10 @@ Take effect after restart Emacs.
 
 
 (defmacro package-spec-:allowed-p (&rest body)
-	(declare (indent 0))
-	`(package-supported-p
-		 (when (self-spec->*env-spec :package :allowed)
-			 ,@body)))
+  (declare (indent 0))
+  `(package-supported-p
+     (when (self-spec->*env-spec :package :allowed)
+       ,@body)))
 
 
 (compile! (compile-unit* (self-def-path-ref-> :env-spec)))
@@ -431,8 +431,8 @@ Take effect after restart Emacs.
 ;; Load ui, shell, basic env:
 
 (compile! (compile-unit% (emacs-home* "config/boot.el"))
-					(compile-unit% (emacs-home* "config/basic.el"))
-					(compile-unit% (emacs-home* "config/shells.el")))
+          (compile-unit% (emacs-home* "config/basic.el"))
+          (compile-unit% (emacs-home* "config/shells.el")))
 
 
 ;; Self do prologue ...
@@ -444,16 +444,16 @@ Take effect after restart Emacs.
 
   ;; Load basic and self modules
   (compile! (compile-unit* (self-def-path-ref-> :package-spec))
-						(compile-unit% (emacs-home* "config/module.el"))))
+            (compile-unit% (emacs-home* "config/module.el"))))
 
 
 ;; Load package independent modules
 (compile! (compile-unit% (emacs-home* "config/on-module.el"))
-					(compile-unit% (emacs-home* "config/eshells.el"))
-					(compile-unit% (emacs-home* "config/autoload.el"))
-					;; --batch mode: disable desktop read/save
-					`,(unless noninteractive 
-							(compile-unit% (emacs-home* "config/memory.el"))))
+          (compile-unit% (emacs-home* "config/eshells.el"))
+          (compile-unit% (emacs-home* "config/autoload.el"))
+          ;; --batch mode: disable desktop read/save
+          `,(unless noninteractive 
+              (compile-unit% (emacs-home* "config/memory.el"))))
 
 
  ;; end of file
