@@ -15,7 +15,7 @@
 (def-self-env-spec
   :theme (list :name 'dracula
                :custom-theme-directory (emacs-home* "theme/")
-							 :compile nil ;; expert option
+               :compile nil ;; expert option
                :allowed t)
 
   :font (list :name (platform-supported-if darwin
@@ -26,10 +26,10 @@
               :allowed nil)
 
   :cjk-font (list :name (platform-supported-if darwin
-														"Hei"
-													(platform-supported-if windows-nt
-															"Microsoft Yahei"
-														"DejaVu Sans Mono-12"))
+                            "Hei"
+                          (platform-supported-if windows-nt
+                              "Microsoft Yahei"
+                            "DejaVu Sans Mono-12"))
                   :size 12
                   :allowed nil)
   
@@ -39,7 +39,7 @@
                               (platform-supported-if darwin
                                   "DYLD_LIBRARY_PATH"
                                 "LD_LIBRARY_PATH")))
-							 :options '("--login") ;; '("-i" "2>/dev/null")
+               :options '("--login") ;; '("-i" "2>/dev/null")
                :exec-path t
                :shell-file-name (eval-when-compile (executable-find "bash"))
                :allowed nil)
@@ -64,10 +64,10 @@
                :allowed nil)
   
   :package (list :remove-unused nil
-								 :allowed nil)
+                 :allowed nil)
 
   :edit (list :tab-width 2
-							:auto-save-default nil
-							:allowed t)
+              :auto-save-default nil
+              :allowed t)
   
   )
