@@ -20,10 +20,10 @@
 
 
 (defconst +emacs-home+
-	(expand-file-name (if (boundp 'user-emacs-directory)
-												user-emacs-directory
-											"~/.emacs.d/"))
-	"The user's emacs home directory")
+  (expand-file-name (if (boundp 'user-emacs-directory)
+                        user-emacs-directory
+                      "~/.emacs.d/"))
+  "The user's emacs home directory")
 
 
  ;; end of basic macro
@@ -42,30 +42,30 @@
 
 
 (defmacro file-name-new-extension* (file extension)
-	"Return FILE name with new EXTENSION."
-	`(concat (file-name-directory ,file)
-					 (file-name-base* ,file)
-					 ,extension))
+  "Return FILE name with new EXTENSION."
+  `(concat (file-name-directory ,file)
+           (file-name-base* ,file)
+           ,extension))
 
 
 (unless (fboundp 'directory-name-p)
-	(defmacro directory-name-p (name)
-		"Returns t if NAME ends with a directory separator character."
-		`(let ((len (length ,name)))
-			 (and (> len 0) (= ?/ (aref ,name (1- len)))))))
+  (defmacro directory-name-p (name)
+    "Returns t if NAME ends with a directory separator character."
+    `(let ((len (length ,name)))
+       (and (> len 0) (= ?/ (aref ,name (1- len)))))))
 
 
 (defmacro path! (file)
   "Make and return the path of the FILE.
 
 The FILE should be posix path, see `path-separator'."
-	(let ((d (make-symbol "-dir:0-")))
-		`(let ((,d (if (directory-name-p ,file)
-									 ,file
-								 (file-name-directory ,file))))
-			 (unless (file-exists-p ,d)
-				 (make-directory ,d t))
-			 ,file)))
+  (let ((d (make-symbol "-dir:0-")))
+    `(let ((,d (if (directory-name-p ,file)
+                   ,file
+                 (file-name-directory ,file))))
+       (unless (file-exists-p ,d)
+         (make-directory ,d t))
+       ,file)))
 
 
  ;; end basic file macro
@@ -75,25 +75,25 @@ The FILE should be posix path, see `path-separator'."
 
 
 (defconst +v-dir+
-	(concat (if (display-graphic-p) "g_" "t_") emacs-version)
-	"Versioned dir based on [g]rahpic/[t]erminal mode and Emacs's version")
+  (concat (if (display-graphic-p) "g_" "t_") emacs-version)
+  "Versioned dir based on [g]rahpic/[t]erminal mode and Emacs's version")
 
 
 (defmacro v-path* (file &optional extension)
-	"Return versioned FILE with new EXTENSION."
-	`(concat (if (directory-name-p ,file)
-							 ,file
-						 (file-name-directory ,file))
-					 +v-dir+ "/"
-					 (if ,extension
-							 (file-name-new-extension* (file-name-nondirectory ,file)
-																				 ,extension)
-						 (file-name-nondirectory ,file))))
+  "Return versioned FILE with new EXTENSION."
+  `(concat (if (directory-name-p ,file)
+               ,file
+             (file-name-directory ,file))
+           +v-dir+ "/"
+           (if ,extension
+               (file-name-new-extension* (file-name-nondirectory ,file)
+                                         ,extension)
+             (file-name-nondirectory ,file))))
 
 
 (defmacro v-home* (file)
   "Return versioned path of `+emacs-home+'/`+v-dir+'/FILE."
-	`(v-path* (emacs-home* ,file)))
+  `(v-path* (emacs-home* ,file)))
 
 
 (defmacro v-home% (file)
@@ -121,33 +121,33 @@ If ONLY-COMPILE is t, does not load COMPILED file after compile FILE.
 If DELETE-BOOSTER is t, remove booster file after compile FILE.
 DIR where the compiled file located."
   (let ((c (make-symbol "-compile:0-"))
-				(s (make-symbol "-source:0-")))
+        (s (make-symbol "-source:0-")))
     `(when (and (stringp ,file) (file-exists-p ,file))
-			 (let ((,c (if ,dir
-										 (file-name-new-extension*
-											(concat ,dir (file-name-nondirectory ,file)) ".elc")
-									 (file-name-new-extension* ,file ".elc"))))
-				 (when (or (not (file-exists-p ,c))
-									 (file-newer-than-file-p ,file ,c))
-					 (let ((,s (if ,dir
-												 (concat ,dir (file-name-nondirectory ,file))
-											 ,file)))
-						 (unless (string= ,file ,s) (copy-file ,file (path! ,s) t))
-						 (when (byte-compile-file ,s)
-							 (when ,delete-booster (delete-file ,s)))))
-				 (when (file-exists-p ,c)
-					 (cond (,only-compile t)
-								 (t (load ,c))))))))
+       (let ((,c (if ,dir
+                     (file-name-new-extension*
+                      (concat ,dir (file-name-nondirectory ,file)) ".elc")
+                   (file-name-new-extension* ,file ".elc"))))
+         (when (or (not (file-exists-p ,c))
+                   (file-newer-than-file-p ,file ,c))
+           (let ((,s (if ,dir
+                         (concat ,dir (file-name-nondirectory ,file))
+                       ,file)))
+             (unless (string= ,file ,s) (copy-file ,file (path! ,s) t))
+             (when (byte-compile-file ,s)
+               (when ,delete-booster (delete-file ,s)))))
+         (when (file-exists-p ,c)
+           (cond (,only-compile t)
+                 (t (load ,c))))))))
 
 
 (defmacro clean-compiled-files ()
   "Clean all compiled files."
   `(dolist (d (list ,(v-home* "config/")
                     ,(v-home* "private/")
-										,(v-home* "theme/")
-										,(v-home* ".exec/")))
+                    ,(v-home* "theme/")
+                    ,(v-home* ".exec/")))
      (dolist (f (when (file-exists-p d)
-									(directory-files d nil "\\.elc?\\'")))
+                  (directory-files d nil "\\.elc?\\'")))
        (message "#Clean compiled file: %s" f)
        (delete-file (concat d f)))))
 
@@ -169,13 +169,13 @@ Else return BODY sexp."
 
 COND should be quoted, such as (version-supported* '<= 24)"
   `(let ((ver (cond ((stringp ,version) ,version)
-										((numberp ,version) (number-to-string ,version))
-										(t (format "%s" ,version)))))
+                    ((numberp ,version) (number-to-string ,version))
+                    (t (format "%s" ,version)))))
      (cond ((eq '< ,cond) (version< ver emacs-version))
-					 ((eq '<= ,cond) (version<= ver emacs-version))
-					 ((eq '> ,cond) (not (version<= ver emacs-version)))
-					 ((eq '>= ,cond) (not (version< ver emacs-version)))
-					 (t nil))))
+           ((eq '<= ,cond) (version<= ver emacs-version))
+           ((eq '> ,cond) (not (version<= ver emacs-version)))
+           ((eq '>= ,cond) (not (version< ver emacs-version)))
+           (t nil))))
 
 (defmacro version-supported-if (cond version then &rest else)
   "If (COND VERSION `emacs-version') yields non-nil, do THEN, else do ELSE...
@@ -212,9 +212,9 @@ sequentially and return value of last one, or nil if there are none."
 
 ;; Load strap
 (compile-and-load-file* (emacs-home* "config/strap.el")
-												nil ;; only-compile
-												nil ;; delete-booster
-												(v-home* "config/"))
+                        nil ;; only-compile
+                        nil ;; delete-booster
+                        (v-home* "config/"))
 
 
 (package-supported-p
