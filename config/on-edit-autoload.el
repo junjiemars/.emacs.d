@@ -96,19 +96,19 @@
   (interactive)
   (let (begin end)
     (if-fn% region-active-p nil
-						(if (region-active-p)
-								(setq begin (region-beginning)
-											end (region-end))
-							(setq begin (line-beginning-position)
-										end (line-end-position)))
+            (if (region-active-p)
+                (setq begin (region-beginning)
+                      end (region-end))
+              (setq begin (line-beginning-position)
+                    end (line-end-position)))
       (if mark-active
-					(setq begin (region-beginning)
-								end (region-end))
-				(setq begin (line-beginning-position)
-							end (line-end-position))))
+          (setq begin (region-beginning)
+                end (region-end))
+        (setq begin (line-beginning-position)
+              end (line-end-position))))
     (comment-or-uncomment-region begin end)
     (if-fn% next-logical-line nil
-						(next-logical-line)
+            (next-logical-line)
       (next-line))))
 
 ;; toggle comment key strike1
@@ -123,12 +123,12 @@
 (when (self-spec->*env-spec :edit :allowed)
   ;; don't use hard tabs
   ;; (setq indent-tabs-mode
-  ;; 			(self-spec->*env-spec :indent :indent-tabs-mode))
+  ;;        (self-spec->*env-spec :indent :indent-tabs-mode))
 
   ;; ;; disable electric indent mode
   ;; (setq% electric-indent-mode
-  ;; 			 (self-spec->*env-spec :indent :electric-indent-mode)
-  ;; 			 electric)
+  ;;         (self-spec->*env-spec :indent :electric-indent-mode)
+  ;;         electric)
   
   ;; default tab-width
   (setq-default tab-width (self-spec->*env-spec :edit :tab-width))
@@ -139,11 +139,11 @@
 ;; find-tag and pop-tag-mark
 ;; same as Emacs22+
 (unless-fn% xref-find-definitions xref
-	(when-fn% pop-tag-mark etags
-		(with-eval-after-load 'etags
-			;; define keys for `pop-tag-mark' and `tags-loop-continue'
-			(define-key% (current-global-map) (kbd "M-,") #'pop-tag-mark)
-			(define-key% (current-global-map) (kbd "M-*") #'tags-loop-continue))))
+  (when-fn% pop-tag-mark etags
+    (with-eval-after-load 'etags
+      ;; define keys for `pop-tag-mark' and `tags-loop-continue'
+      (define-key% (current-global-map) (kbd "M-,") #'pop-tag-mark)
+      (define-key% (current-global-map) (kbd "M-*") #'tags-loop-continue))))
 
 
  ;; end of indent
