@@ -47,15 +47,15 @@
     (defsubst font-exists-p (font)
       "Return t if FONT exists."
       (when (find-font (font-spec :name font))
-				t)))
+        t)))
 
 (font-supported-p
     
     (defsubst self-default-font! (font)
       "Set default FONT in graphic mode."
       (when (font-exists-p font)
-				(add-to-list 'default-frame-alist (cons 'font font))
-				(set-face-attribute 'default nil :font font))))
+        (add-to-list 'default-frame-alist (cons 'font font))
+        (set-face-attribute 'default nil :font font))))
 
 (font-supported-p
     
@@ -68,18 +68,18 @@
     (defsubst self-cjk-font! (name size)
       "Set CJK font's NAME and SIZE in graphic mode."
       (when (font-exists-p name)
-				(when-fn% set-fontset-font nil
-					(dolist (c '(han kana cjk-misc))
-						(set-fontset-font (frame-parameter nil 'font)
-															c (font-spec :family name
-																					 :size size)))))))
+        (when-fn% set-fontset-font nil
+          (dolist (c '(han kana cjk-misc))
+            (set-fontset-font (frame-parameter nil 'font)
+                              c (font-spec :family name
+                                           :size size)))))))
 
 (font-supported-p
     
     ;; Load cjk font
     (when (self-spec->*env-spec :cjk-font :allowed)
       (self-cjk-font! (self-spec->*env-spec :cjk-font :name)
-		      (self-spec->*env-spec :cjk-font :size))))
+          (self-spec->*env-spec :cjk-font :size))))
 
 ;; End of font-supported-p
 
@@ -90,10 +90,10 @@
 
 If DIR is nil then load the built-in `customize-themes' by NAME."
       (when (and dir (file-exists-p dir))
-				(setq custom-theme-directory dir))
+        (setq custom-theme-directory dir))
       (version-supported-if >= 24.1
-														(load-theme name)
-				(load-theme name t))))
+                            (load-theme name)
+        (load-theme name t))))
 
 
 ;; Load theme
@@ -101,24 +101,24 @@ If DIR is nil then load the built-in `customize-themes' by NAME."
 
     (when (self-spec->*env-spec :theme :allowed)
       (cond ((and (self-spec->*env-spec :theme :name)
-									(self-spec->*env-spec :theme :custom-theme-directory))
-						 ;; load theme from :custom-theme-directory
-						 (if (self-spec->*env-spec :theme :compile)
-								 (when (compile!
-												 (compile-unit* (concat
-																				 (self-spec->*env-spec :theme :custom-theme-directory)
-																				 (symbol-name (self-spec->*env-spec :theme :name))
-																				 "-theme.el")
-																				t t))
-									 (self-load-theme! (self-spec->*env-spec :theme :name)
-																		 (concat (self-spec->*env-spec :theme :custom-theme-directory)
-																						 +v-dir+ "/")))
-							 (self-load-theme! (self-spec->*env-spec :theme :name)
-																 (self-spec->*env-spec :theme :custom-theme-directory))))
+                  (self-spec->*env-spec :theme :custom-theme-directory))
+             ;; load theme from :custom-theme-directory
+             (if (self-spec->*env-spec :theme :compile)
+                 (when (compile!
+                         (compile-unit* (concat
+                                         (self-spec->*env-spec :theme :custom-theme-directory)
+                                         (symbol-name (self-spec->*env-spec :theme :name))
+                                         "-theme.el")
+                                        t t))
+                   (self-load-theme! (self-spec->*env-spec :theme :name)
+                                     (concat (self-spec->*env-spec :theme :custom-theme-directory)
+                                             +v-dir+ "/")))
+               (self-load-theme! (self-spec->*env-spec :theme :name)
+                                 (self-spec->*env-spec :theme :custom-theme-directory))))
 
-						;; load builtin theme
-						((self-spec->*env-spec :theme :name)
-						 (self-load-theme! (self-spec->*env-spec :theme :name))))))
+            ;; load builtin theme
+            ((self-spec->*env-spec :theme :name)
+             (self-load-theme! (self-spec->*env-spec :theme :name))))))
 
 
  ;; end of theme-supported-p
