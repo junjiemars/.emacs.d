@@ -27,8 +27,8 @@ Use `semantic-c-describe-environment' to describe the current C environment."
     (semantic-reset-system-include 'c-mode)
 
     (dolist (x (append (when-fn% system-cc-include cc
-												 (system-cc-include t))
-											 project-includes))
+                         (system-cc-include t))
+                       project-includes))
       (semantic-add-system-include x 'c-mode))
 
     (setq% semanticdb-project-roots project-roots semantic/db)
@@ -43,4 +43,4 @@ Use `semantic-c-describe-environment' to describe the current C environment."
       (define-key semantic-mode-map (kbd "C-c , TAB") #'semantic-ia-complete-symbol))
 
     (setq% semantic-lex-c-preprocessor-symbol-map
-					 preprocessors semantic/bovine/c)))
+           preprocessors semantic/bovine/c)))
