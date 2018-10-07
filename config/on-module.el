@@ -26,5 +26,5 @@
   (let ((supported (intern (format "feature-%s-supported-p" feature))))
     (when (fboundp supported)
       `(,supported
-				(package-spec-:allowed-p
-					,@body)))))
+        (package-spec-:allowed-p
+          ,@body)))))

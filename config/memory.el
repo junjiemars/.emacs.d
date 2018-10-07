@@ -17,14 +17,14 @@
   "Extract value from a list of spec via KEYS at compile time."
   `(self-spec->%
        (list :source ,(v-home! ".exec/.env-spec.el")
-						 :compiled ,(v-home! ".exec/.env-spec.elc"))
+             :compiled ,(v-home! ".exec/.env-spec.elc"))
      ,@keys))
 
 
 (defun save-env-spec! ()
   (when (save-sexp-to-file
-	 `(setq *self-previous-env-spec* ',(self-spec->*env-spec))
-	 (memory-spec->% :source))
+   `(setq *self-previous-env-spec* ',(self-spec->*env-spec))
+   (memory-spec->% :source))
     (byte-compile-file (memory-spec->% :source))))
 
 (add-hook 'kill-emacs-hook #'save-env-spec! t)
@@ -56,43 +56,43 @@
     
     (defmacro switch-theme! (previous current)
       `(let ((p->c (theme-changed-p ,previous ,current)))
-				 (when (consp p->c)
-					 (if (and (car p->c) (not (cdr p->c)))
-							 (progn
-								 (self-load-theme! (self-spec-> ,previous :name)
-																	 (self-spec-> ,previous :custom-theme-directory))
-								 (disable-theme (self-spec-> ,previous :name)))
-						 (enable-theme (self-spec-> ,current :name)))
-					 (setq% desktop-restore-frames t desktop)))))
+         (when (consp p->c)
+           (if (and (car p->c) (not (cdr p->c)))
+               (progn
+                 (self-load-theme! (self-spec-> ,previous :name)
+                                   (self-spec-> ,previous :custom-theme-directory))
+                 (disable-theme (self-spec-> ,previous :name)))
+             (enable-theme (self-spec-> ,current :name)))
+           (setq% desktop-restore-frames t desktop)))))
 
 
 ;; Read desktop
 (defun self-desktop-read! ()
-	
+  
   (terminal-supported-p
     (version-supported-when <= 24.4
       (version-supported-when > 25
         (setq% desktop-restore-forces-onscreen nil desktop))))
 
   (when (and (self-spec->*env-spec :desktop :allowed)
-						 (file-exists-p (v-home% ".desktop/")))
+             (file-exists-p (v-home% ".desktop/")))
     (theme-supported-p
-				(when (consp (theme-changed-p
-											(self-spec-> *self-previous-env-spec* :theme)
-											(self-spec->*env-spec :theme)))
-					(setq% desktop-restore-frames nil desktop)))
+        (when (consp (theme-changed-p
+                      (self-spec-> *self-previous-env-spec* :theme)
+                      (self-spec->*env-spec :theme)))
+          (setq% desktop-restore-frames nil desktop)))
     (setq% desktop-restore-eager
-					 (self-spec->*env-spec :desktop :restore-eager) desktop)
+           (self-spec->*env-spec :desktop :restore-eager) desktop)
     (desktop-read (v-home% ".desktop/"))))
 
 
 ;; read saved session
 (add-hook 'after-init-hook
-					(platform-supported-if darwin
-							;; it's a bug on Darwin, may be hang when restore deskopt in concurrency.
-							#'self-desktop-read!
-						(def-function-threading self-desktop-read!))
-					t)
+          (platform-supported-if darwin
+              ;; it's a bug on Darwin, may be hang when restore deskopt in concurrency.
+              #'self-desktop-read!
+            (def-function-threading self-desktop-read!))
+          t)
 
 
  ;; end of Read desktop
@@ -110,22 +110,22 @@
     
     (let ((m (self-spec->*env-spec :desktop :modes-not-to-save)))
       (setq% desktop-modes-not-to-save
-						 (append '(tags-table-mode) m) desktop))
+             (append '(tags-table-mode) m) desktop))
 
     (theme-supported-p
-				(switch-theme! (self-spec-> *self-previous-env-spec* :theme)
-											 (self-spec->*env-spec :theme)))
+        (switch-theme! (self-spec-> *self-previous-env-spec* :theme)
+                       (self-spec->*env-spec :theme)))
 
-		(version-supported-when <= 26
-			(platform-supported-when darwin
-				;; fix: title bar text color broken #55
-				;; https://github.com/d12frosted/homebrew-emacs-plus/issues/55#issuecomment-408317248
-				(dolist (x '((ns-transparent-titlebar . unbound)
-										 (ns-appearance . unbound)))
-					(add-to-list 'frameset-filter-alist x))))
-		
+    (version-supported-when <= 26
+      (platform-supported-when darwin
+        ;; fix: title bar text color broken #55
+        ;; https://github.com/d12frosted/homebrew-emacs-plus/issues/55#issuecomment-408317248
+        (dolist (x '((ns-transparent-titlebar . unbound)
+                     (ns-appearance . unbound)))
+          (add-to-list 'frameset-filter-alist x))))
+    
     (version-supported-if >= 23
-													(desktop-save (v-home! ".desktop/"))
+                          (desktop-save (v-home! ".desktop/"))
       (desktop-save (v-home! ".desktop/") t))))
 
 
