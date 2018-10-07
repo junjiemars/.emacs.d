@@ -51,7 +51,7 @@
 ;;    - Put the following into your ~/.emacs.d/self-epilogue.el file:
 ;;
 ;;      (platform-supported-when windows-nt
-;; 	      (compile! +v-dir+ (compile-unit% (emacs-home* "config/gud-cdb.el") t)))
+;;          (compile! +v-dir+ (compile-unit% (emacs-home* "config/gud-cdb.el") t)))
 ;;
 ;;    - You can customize `gud-cdb-directories' to help GUD find your source
 ;;      files.
@@ -71,7 +71,7 @@
 ;;
 ;; In Emacs, run
 ;;
-;;    	M-x cdb
+;;      M-x cdb
 ;;     "Run cdb (like this):" cdb <name of your exe>
 ;;
 ;; This will open a new Emacs buffer "*gud-xxx*".  In it you will get a
@@ -128,7 +128,7 @@
 
 
 (defvar gud-cdb-history nil
-	"History of argument lists passed to cdb.")
+  "History of argument lists passed to cdb.")
 
 (defcustom gud-cdb-directories nil
   "*A list of directories that cdb should search for source code.
@@ -154,14 +154,14 @@ containing the executable being debugged."
 
 
 (defconst +cdb-prompt-regexp+ "^[0-9]:[0-9][0-9][0-9]> "
-	"Regexp pattern of `cdb' prompt.")
+  "Regexp pattern of `cdb' prompt.")
 
 
 ;; (defconst +cdb-command-alist+
-;; 	'(("bm" ())
-;; 		("bp" ())
-;; 		("bu" ()))
-;; 	"A list of `cdb' commands.")
+;;    '(("bm" ())
+;;      ("bp" ())
+;;      ("bu" ()))
+;;    "A list of `cdb' commands.")
 
 
 ;; ;; buffer local variables
@@ -198,10 +198,10 @@ Return absolute filename when FILENAME existing or it's existing
 in `gud-cdb-directories'.
 "
   (or (let ((f (expand-file-name filename)))
-				(when (file-exists-p f) f))
+        (when (file-exists-p f) f))
       (loop for d in gud-cdb-directories
-						do (let ((p (concat d "/" filename)))
-								 (when (file-exists-p p) (return p))))))
+            do (let ((p (concat d "/" filename)))
+                 (when (file-exists-p p) (return p))))))
 
 
 ;; (defun cdb-completions (context command)
@@ -209,14 +209,14 @@ in `gud-cdb-directories'.
 ;; COMMAND is the prefix for which we seek completion.
 ;; CONTEXT is the text before COMMAND on the line."
 ;;   (let* ((complete-list
-;; 					(gud-gdb-run-command-fetch-lines (concat "complete " context command)
-;; 																					 (current-buffer)
-;; 																					 ;; From string-match above.
-;; 																					 (length context))))
+;;            (gud-gdb-run-command-fetch-lines (concat "complete " context command)
+;;                                             (current-buffer)
+;;                                             ;; From string-match above.
+;;                                             (length context))))
 ;;     ;; Protect against old versions of GDB.
 ;;     (and complete-list
-;; 				 (string-match "^Undefined command: \"complete\"" (car complete-list))
-;; 				 (error "This version of GDB doesn't support the `complete' command"))
+;;           (string-match "^Undefined command: \"complete\"" (car complete-list))
+;;           (error "This version of GDB doesn't support the `complete' command"))
 ;;     (gud-gdb-completions-1 complete-list)))
 
 
@@ -241,7 +241,7 @@ debugger arguments before running the debugger.
 "
   (ignore* file)
   (append (loop for o in gud-cdb-command-line-hook
-		append (funcall o)) args))
+    append (funcall o)) args))
 
 
 (defun gud-cdb-marker-filter (string)
@@ -256,23 +256,23 @@ the rest.
 "
   (setq gud-marker-acc (concat gud-marker-acc string))
   (cond ((string-match "^\\(.*\\)(\\([0-9]+\\))\n" string)
-	 ;; Breakpoint 0 hit
-	 ;; e:\lab\c\src\c.c(9)
-	 ;; c!main:
-	 ;; 00007ff7`5a036580 4889542410      mov     qword ptr [rsp+10h],rdx ss:000000c5`9b0ff788=0000000000000000
-	 (setq gud-last-frame (cons (match-string 1 string)
-				    (string-to-number (match-string 2 string)))))
+   ;; Breakpoint 0 hit
+   ;; e:\lab\c\src\c.c(9)
+   ;; c!main:
+   ;; 00007ff7`5a036580 4889542410      mov     qword ptr [rsp+10h],rdx ss:000000c5`9b0ff788=0000000000000000
+   (setq gud-last-frame (cons (match-string 1 string)
+            (string-to-number (match-string 2 string)))))
 
-	((or (string-match "quit:" string)
-	     (string-match "ntdll!NtTerminateProcess\\+0x[0-9a-z]+:" string))
-	 ;; ModLoad: 00007ffe`9d340000 00007ffe`9d351000   C:\WINDOWS\System32\kernel.appcore.dll
-	 ;; ModLoad: 00007ffe`9ecc0000 00007ffe`9ed5d000   C:\WINDOWS\System32\msvcrt.dll
-	 ;; ModLoad: 00007ffe`9f140000 00007ffe`9f25f000   C:\WINDOWS\System32\RPCRT4.dll
-	 ;; ntdll!NtTerminateProcess+0x14:
-	 ;; 00007ffe`a10005f4 c3              ret
-	 (setq gud-last-last-frame nil)
-	 (setq gud-overlay-arrow-position nil))
-	)
+  ((or (string-match "quit:" string)
+       (string-match "ntdll!NtTerminateProcess\\+0x[0-9a-z]+:" string))
+   ;; ModLoad: 00007ffe`9d340000 00007ffe`9d351000   C:\WINDOWS\System32\kernel.appcore.dll
+   ;; ModLoad: 00007ffe`9ecc0000 00007ffe`9ed5d000   C:\WINDOWS\System32\msvcrt.dll
+   ;; ModLoad: 00007ffe`9f140000 00007ffe`9f25f000   C:\WINDOWS\System32\RPCRT4.dll
+   ;; ntdll!NtTerminateProcess+0x14:
+   ;; 00007ffe`a10005f4 c3              ret
+   (setq gud-last-last-frame nil)
+   (setq gud-overlay-arrow-position nil))
+  )
   string)
 
 
@@ -288,8 +288,8 @@ something else.
   (save-excursion
     (let ((f (cdb-file-name filename)))
       (if f
-	  (find-file-noselect f t)
-	(find-file-noselect filename 'nowarn)))))
+    (find-file-noselect f t)
+  (find-file-noselect filename 'nowarn)))))
 
 
 (defun gud-cdb-simple-send (process string)
@@ -297,8 +297,8 @@ something else.
 
 See `comint-input-sender' and `comint-simple-send'"
   (let ((send (if comint-input-sender-no-newline
-		  string
-		(concat string "\n"))))
+      string
+    (concat string "\n"))))
     (comint-send-string process send)))
 
 
@@ -309,9 +309,9 @@ and source-file directory for your debugger."
   (interactive (list (gud-query-cmdline 'cdb)))
 
   (gud-common-init command-line
-									 #'gud-cdb-massage-args
+                   #'gud-cdb-massage-args
                    #'gud-cdb-marker-filter
-									 #'gud-cdb-find-file)
+                   #'gud-cdb-find-file)
 
   (set (make-local-variable 'gud-minor-mode) 'cdb)
 
@@ -321,7 +321,7 @@ and source-file directory for your debugger."
   (gud-def gud-next   "p "                "\C-n" "Step one line (skip functions).")
   (gud-def gud-cont   "g "                "\C-r" "Continue with display.")
   (gud-def gud-finish "g @$ra "           "\C-f" "Finish executing current function.")
-	(gud-def gud-jump   "g `%d%f:%l` "      "\C-j" "Set execution address to current line.")
+  (gud-def gud-jump   "g `%d%f:%l` "      "\C-j" "Set execution address to current line.")
   (gud-def gud-print  "?? %e "            "\C-p" "Evaluate C expression at point.")
 
   (setq comint-prompt-regexp +cdb-prompt-regexp+)
@@ -329,7 +329,7 @@ and source-file directory for your debugger."
   (setq paragraph-start comint-prompt-regexp)
   (run-hooks 'gud-cdb-mode-hook)
   (loop for x in gud-cdb-init-hook
-				when (functionp x) do (funcall x)))
+        when (functionp x) do (funcall x)))
 
 
 ;; (defun gud-cdb-goto-stackframe (text token indent)
@@ -385,7 +385,7 @@ and source-file directory for your debugger."
 ;;           (forward-line 0)
 ;;           (not (looking-at comint-prompt-regexp)))
 ;;         nil
-;; 			;; Much of this copied from CDB complete, but I'm grabbing the stack
+;;        ;; Much of this copied from CDB complete, but I'm grabbing the stack
 ;;       ;; frame instead.
 ;;       (let ((gud-marker-filter 'gud-cdb-speedbar-stack-filter))
 ;;         ;; Issue the command to CDB.
@@ -410,45 +410,45 @@ and source-file directory for your debugger."
 ;; (defun cdb-promptPidAndExe (&optional exe-name-regexp predicate)
 ;;   (interactive)
 ;;   (let
-;; 	  ((tlist)
-;; 	   (exe)
-;; 	   (exes))
-;; 	(setq tlist (shell-command-to-string "tlist"))
-;; 	(setq exes
-;; 		  (loop for n from 0 for i in (reverse (split-string tlist "\n"))
-;; 				collect 
-;; 				(progn
-;; 				  (if (string-match "\\(^[ 0-9]+ \\)\\(.*\\)" i)
-;; 					  (cons (match-string 2 i) (match-string 1 i))))))
-;; 	(if exe-name-regexp 
-;; 		(setq exe (loop for i in exes if (string-match exe-name-regexp (car i)) return (car i)))
-;; 		(setq exe (completing-read "in: " ;; prompt 
-;; 							   exes ;; table
-;; 							   predicate ;; predicat (setq predicate (lambda (c) (string-match "mapserver.exe" (car c))))
-;; 							   nil ;; require match
-;; 							   nil ;; initial input
-;; 							   nil ;; hist
-;; 							   nil ;; def
-;; 							   nil ;; inherit input method
-;; 							   )))
-;; 	(cons exe (string-to-number (cdr (assoc exe exes))))))
+;;      ((tlist)
+;;       (exe)
+;;       (exes))
+;;    (setq tlist (shell-command-to-string "tlist"))
+;;    (setq exes
+;;        (loop for n from 0 for i in (reverse (split-string tlist "\n"))
+;;          collect 
+;;          (progn
+;;            (if (string-match "\\(^[ 0-9]+ \\)\\(.*\\)" i)
+;;              (cons (match-string 2 i) (match-string 1 i))))))
+;;    (if exe-name-regexp 
+;;      (setq exe (loop for i in exes if (string-match exe-name-regexp (car i)) return (car i)))
+;;      (setq exe (completing-read "in: " ;; prompt 
+;;                   exes ;; table
+;;                   predicate ;; predicat (setq predicate (lambda (c) (string-match "mapserver.exe" (car c))))
+;;                   nil ;; require match
+;;                   nil ;; initial input
+;;                   nil ;; hist
+;;                   nil ;; def
+;;                   nil ;; inherit input method
+;;                   )))
+;;    (cons exe (string-to-number (cdr (assoc exe exes))))))
 
 ;; (defun cdbAttach (exe-pid)
 ;;   (interactive (funcall (lambda () (list (cdb-pidFromExe)))))
-;; 	(if exe-pid
-;; 		(progn
-;; 		  (gud-call (format ".attach 0n%i; " exe-pid)))))
+;;    (if exe-pid
+;;      (progn
+;;        (gud-call (format ".attach 0n%i; " exe-pid)))))
 
 ;; (defun cdbDebugChoice (&optional predicate)
 ;;   "if you want to debug a program running on windows, call this function and it will give you the list of running processes and
 ;;    allow you to attach to one of them."
 ;;   (interactive)
 ;;   (let* ((exepidpair)
-;; 		 (pid))
-;; 	(setq exepidpair (cdb-promptPidAndExe nil predicate))
-;; 	(setq pid (cdr exepidpair))
-;; 	(cdb (format "cdb -p %i" pid))
-;; 	(rename-buffer (format "*gud-%s*" (car (string-split "\\s-+" (car exepidpair) 1))) t)))
+;;       (pid))
+;;    (setq exepidpair (cdb-promptPidAndExe nil predicate))
+;;    (setq pid (cdr exepidpair))
+;;    (cdb (format "cdb -p %i" pid))
+;;    (rename-buffer (format "*gud-%s*" (car (string-split "\\s-+" (car exepidpair) 1))) t)))
 
 ;; (defun cdbSetIP ()
 ;;   "set instruction pointer to current point. if you are in source code and want to change the current line to mark"
@@ -479,7 +479,7 @@ and source-file directory for your debugger."
 ;;         candidates
 ;;         (regexp (concat "\\_<" (regexp-quote prefix) "\\(\\sw\\|\\s_\\)+\\_>")))
 ;;     (save-excursion
-;; 	  (goto-char 0)
+;;      (goto-char 0)
 ;;       ;; Search forward
 ;;       (while (and (or (eq cdb-ac-match-limit t)
 ;;                       (< i limit))
@@ -496,20 +496,20 @@ and source-file directory for your debugger."
 ;;   (cond
 ;;    ((looking-back "\\(0x\\)[0-9]+") nil)
 ;;    (t
-;; 	(append
-;; 	 (setq foo (ac-candidate-words-in-buffer))
-;; 	 (if (and gud-last-last-frame (car gud-last-last-frame) (find-buffer-visiting (car gud-last-last-frame)))
-;; 		 (with-current-buffer (find-buffer-visiting (car gud-last-last-frame))
-;; 		   (cdb-ac-candidate-words-in-buffer ac-prefix)
-;; 		   )
-;; 	   )
-;; 	 ))
+;;    (append
+;;     (setq foo (ac-candidate-words-in-buffer))
+;;     (if (and gud-last-last-frame (car gud-last-last-frame) (find-buffer-visiting (car gud-last-last-frame)))
+;;       (with-current-buffer (find-buffer-visiting (car gud-last-last-frame))
+;;         (cdb-ac-candidate-words-in-buffer ac-prefix)
+;;         )
+;;       )
+;;     ))
 ;;    )
 ;;   )
 
 ;; (defvar cdb-ac-sources 
 ;;   '((candidates . cdb-ac-candidates) 
-;; 	(requires . 3)))
+;;    (requires . 3)))
 
 ;; (defun cdb-ac-mode-init ()
 ;;   (interactive)
@@ -519,11 +519,11 @@ and source-file directory for your debugger."
 ;; ;;   ac-source-cdb-keywords
 ;; ;;   ("g" "k" "kn" "p")) ;; not really necessary with the 3 character requirement
 ;;   (setq ac-sources '(cdb-ac-sources
-;; 					 ;; ac-source-cdb-keywords
-;; 					 )))
+;;             ;; ac-source-cdb-keywords
+;;             )))
 
 ;; (if (require 'auto-complete nil t)
-;; 		(add-hook 'cdb-mode-hook 'cdb-ac-mode-init))
+;;      (add-hook 'cdb-mode-hook 'cdb-ac-mode-init))
 
 ;; ;;; cdb-gud.el ends here
 
