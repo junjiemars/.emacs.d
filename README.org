@@ -650,7 +650,7 @@ to zip.
 	 :CUSTOM_ID: tags
 	 :END:
 
-Prefer =etags= program, because it works well on varied platforms.  In
+Prefer =etags= program, because it works well on varied platforms. In
 =(emacs-home* "config/tags.el")=, there are some handy functions to
 create the tags for =Elisp= or =C= source code, such as
 =make-emacs-source-tags=, =make-system-c-tags=, and =mount-tags=.
