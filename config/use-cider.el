@@ -10,21 +10,21 @@
 (defun set-clojure-mode! ()
   "Hook into `clojure-mode-hook'"
   (subword-mode)
-	(feature-allowed-p paredit (enable-paredit-mode))
-	(feature-allowed-p rainbow-delimiters (rainbow-delimiters-mode))
-	(feature-allowed-p aggressive-indent (aggressive-indent-mode)))
+  (feature-allowed-p paredit (enable-paredit-mode))
+  (feature-allowed-p rainbow-delimiters (rainbow-delimiters-mode))
+  (feature-allowed-p aggressive-indent (aggressive-indent-mode)))
 
 
 (defun set-cider-repl-mode! ()
   "Hook into `cider-repl-mode-hook'"
   (eldoc-mode)
-	(feature-allowed-p paredit (enable-paredit-mode))
-	(feature-allowed-p rainbow-delimiters (rainbow-delimiters-mode))
-	(feature-allowed-p aggressive-indent (aggressive-indent-mode)))
+  (feature-allowed-p paredit (enable-paredit-mode))
+  (feature-allowed-p rainbow-delimiters (rainbow-delimiters-mode))
+  (feature-allowed-p aggressive-indent (aggressive-indent-mode)))
 
 
 (defun use-clojure-mode ()
-	(add-hook 'clojure-mode-hook #'set-clojure-mode!))
+  (add-hook 'clojure-mode-hook #'set-clojure-mode!))
 
 
 (defun use-cider-repl ()
@@ -34,7 +34,7 @@
   
   ;; Where to store the cider history.
   (setq% cider-repl-history-file
-				 (v-home! ".cider/repl-history") cider-repl)
+         (v-home! ".cider/repl-history") cider-repl)
   ;; Wrap when navigating history.
   (setq% cider-repl-wrap-history t cider)
   
