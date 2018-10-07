@@ -16,12 +16,12 @@
     (let ((ns (cider-current-ns)))
       (when-fn% cider-repl-set-ns cider (cider-repl-set-ns ns))
       (when-fn% cider-interactive-eval cider
-	(cider-interactive-eval
-	 (format "(println '(def server (%s/start))) (println 'server)"
-		 ns))
-	(cider-interactive-eval
-	 (format "(def server (%s/start)) (println server)"
-		 ns))))))
+        (cider-interactive-eval
+         (format "(println '(def server (%s/start))) (println 'server)"
+                 ns))
+        (cider-interactive-eval
+         (format "(def server (%s/start)) (println server)"
+                 ns))))))
 
 
 (defun cider-refresh ()
@@ -43,7 +43,7 @@
 (defmacro figwheel-after-load-cider ()
   "Enable Figwheel: cider-jack-in-clojurescript"
   `(setq% cider-cljs-lein-repl
-	  "(do (require 'figwheel-sidecar.repl-api)
+          "(do (require 'figwheel-sidecar.repl-api)
                  (figwheel-sidecar.repl-api/start-figwheel!)
                  (figwheel-sidecar.repl-api/cljs-repl))" cider))
 
