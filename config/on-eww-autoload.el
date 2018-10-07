@@ -15,17 +15,17 @@ With prefix argument ARG, `eww' as default browser if ARG is
 positive, otherwise not.
 `browser-url-browser-function' keeps current browser function."
     (interactive "P")
-		(eval-when-compile (require 'browse-url))
+    (eval-when-compile (require 'browse-url))
     (setq browse-url-browser-function
-					(if (null arg)
-							(if (eq browse-url-browser-function 'browse-url-default-browser)
-									#'eww-browse-url
-								#'browse-url-default-browser)
-						#'eww-browse-url))
+          (if (null arg)
+              (if (eq browse-url-browser-function 'browse-url-default-browser)
+                  #'eww-browse-url
+                #'browse-url-default-browser)
+            #'eww-browse-url))
     (message "eww as default browser %s"
-						 (if (eq browse-url-browser-function 'browse-url-default-browser)
-								 "disabled"
-							 "enabled"))))
+             (if (eq browse-url-browser-function 'browse-url-default-browser)
+                 "disabled"
+               "enabled"))))
 
 
 (feature-eww-supported-p
@@ -35,5 +35,5 @@ positive, otherwise not.
 
 (feature-eww-supported-p
   (with-eval-after-load 'eww
-		(add-hook 'eww-mode-hook #'set-eww-mode!)))
+    (add-hook 'eww-mode-hook #'set-eww-mode!)))
 
