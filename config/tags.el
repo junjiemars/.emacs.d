@@ -16,27 +16,27 @@ Examples:
 \(tags-spec->% :os-include\)
 "
   `(self-spec->% (list
-									:emacs-home ,(v-home% ".tags/home/TAGS")
-									:emacs-source ,(v-home% ".tags/source/TAGS")
-									:os-include ,(emacs-home* ".tags/os/TAGS"))
+                  :emacs-home ,(v-home% ".tags/home/TAGS")
+                  :emacs-source ,(v-home% ".tags/source/TAGS")
+                  :os-include ,(emacs-home* ".tags/os/TAGS"))
      ,@key))
 
 
 (defcustom tags-program
   (if (executable-find% "etags"
-												(lambda (bin)
-													(let ((ver (shell-command* bin "--version")))
-														(when (zerop (car ver))
-															(string-match "etags (GNU Emacs [.0-9]+)"
-																						(cdr ver))))))
+                        (lambda (bin)
+                          (let ((ver (shell-command* bin "--version")))
+                            (when (zerop (car ver))
+                              (string-match "etags (GNU Emacs [.0-9]+)"
+                                            (cdr ver))))))
       "etags -o %s -l auto -a %s ; echo %s"
     (if (executable-find% "etags"
-													(lambda (bin)
-														(let ((ver (shell-command* bin "--version")))
-															(when (zerop (car ver))
-																(string-match "Exuberant Ctags [.0-9]+"
-																							(cdr ver))))))
-				"etags -e -o %s -a %s ; echo %s"))
+                          (lambda (bin)
+                            (let ((ver (shell-command* bin "--version")))
+                              (when (zerop (car ver))
+                                (string-match "Exuberant Ctags [.0-9]+"
+                                              (cdr ver))))))
+        "etags -e -o %s -a %s ; echo %s"))
   "The default tags program.
 This is used by commands like `make-tags' and others.
 
@@ -60,8 +60,8 @@ when `desktop-globals-to-save' include it.
   (let ((mounted nil))
     (dolist (x tags-file (nreverse mounted))
       (when (file-exists-p x)
-	(add-to-list 'tags-table-list x t #'string=)
-	(setq mounted (cons x mounted))))))
+  (add-to-list 'tags-table-list x t #'string=)
+  (setq mounted (cons x mounted))))))
 
 
 (defun make-tags (home tags-file file-filter dir-filter &optional renew)
@@ -75,28 +75,28 @@ RENEW overwrite the existing tags file when t else create it.
 "
   (unless tags-program
     (signal 'void-variable (list 'tags-program tags-program)))
-	(when (file-exists-p home)
-		(let ((tags-dir (file-name-directory tags-file)))
-			(if (file-exists-p tags-file)
-					(when renew (delete-file tags-file))
-				(when (not (file-exists-p tags-dir))
-					(make-directory tags-dir t)))
-			(dir-iterate home
-									 file-filter
-									 dir-filter
-									 (lambda (f)
-										 (message "make-tags: %s ... %s"
-															f
-															(if (zerop
-																	 (car (shell-command*
-																						(format tags-program tags-file
-																										(shell-quote-argument f)
-																										(shell-quote-argument f)))))
-																	"ok" "failed")))
-									 nil)
-			(when (file-exists-p tags-file)
-				(add-to-list 'tags-table-list tags-file t #'string=)
-				tags-file))))
+  (when (file-exists-p home)
+    (let ((tags-dir (file-name-directory tags-file)))
+      (if (file-exists-p tags-file)
+          (when renew (delete-file tags-file))
+        (when (not (file-exists-p tags-dir))
+          (make-directory tags-dir t)))
+      (dir-iterate home
+                   file-filter
+                   dir-filter
+                   (lambda (f)
+                     (message "make-tags: %s ... %s"
+                              f
+                              (if (zerop
+                                   (car (shell-command*
+                                            (format tags-program tags-file
+                                                    (shell-quote-argument f)
+                                                    (shell-quote-argument f)))))
+                                  "ok" "failed")))
+                   nil)
+      (when (file-exists-p tags-file)
+        (add-to-list 'tags-table-list tags-file t #'string=)
+        tags-file))))
 
 
 (defun make-emacs-home-tags (tags-file &optional renew)
@@ -136,11 +136,11 @@ Example:
   "Make TAGS-FILE for C source code in HOME."
   (let ((c-ff (lambda (f _) (string-match "\\\.[ch]$" f)))
         (df (or dir-filter
-								(lambda (d _)
-									(not
-									 (string-match
-										"^\\\.git/$\\|^out/$\\|^objs/$\\|^c\\\+\\\+/$"
-										d))))))
+                (lambda (d _)
+                  (not
+                   (string-match
+                    "^\\\.git/$\\|^out/$\\|^objs/$\\|^c\\\+\\\+/$"
+                    d))))))
     (make-tags home tags-file c-ff df renew)))
 
 
