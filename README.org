@@ -27,6 +27,9 @@ git clone --depth=1 https://github.com/junjiemars/.emacs.d.git ~/.emacs.d
 
 One more thing, it's best to remind you: take care, it's super fast.
 
+#+OPTIONS: toc:nil
+#+TOC: headlines 2
+
 
 - [[#story][Story]]
 - [[#cooking][Cooking]]
@@ -292,6 +295,8 @@ Introduce rules of naming /files/ and /functions/
    :PROPERTIES:
    :CUSTOM_ID: cooking
    :END:
+
+#+TOC: headlines 1 local
 
 - [[#theme][Theme]]
 - [[#font][Font]]
