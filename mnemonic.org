@@ -1,4 +1,4 @@
-#+TITLE: More Reasonable Emacs
+#+TITLE: The Mnemonic of More Reasonable Emacs
 #+AUTHOR: Junjie Mars
 #+STARTUP: overview
 #+OPTIONS: toc:nil
@@ -22,7 +22,6 @@
 - [[#latex-requirements][LaTex Requirements]]
 - [[#tips][Tips]]
 - [[file:README.org][Readme]]
-
 
 * Emacs Documents
    :PROPERTIES:
