@@ -1,6 +1,7 @@
 #+TITLE: More Reasonable Emacs
 #+AUTHOR: Junjie Mars
 #+STARTUP: overview
+#+OPTIONS: toc:2
 
 * Quick start
   :PROPERTIES:
@@ -16,25 +17,22 @@ that Emacs been supported with any mode: GUI or Terminal, even you can
 run multiple Emacs instances with different version on the same
 machine and at the same time.
 
--  clone More Reasonable Emacs from github
+- clone More Reasonable Emacs from github
 
 #+BEGIN_SRC sh
 git clone --depth=1 https://github.com/junjiemars/.emacs.d.git ~/.emacs.d
 #+END_SRC
 
--  open Emacs, after Emacs compile all elisp files, then reopen Emacs
--  want more functionalities see [[#cooking][Cooking]] section
+- open Emacs, after Emacs compile all elisp files, then reopen Emacs
+- want more functionalities see [[#cooking][Cooking]] section
 
 One more thing, it's best to remind you: take care, it's super fast.
-
-#+OPTIONS: toc:nil
-#+TOC: headlines 2
-
 
 - [[#story][Story]]
 - [[#cooking][Cooking]]
 - [[#programming][Programming]]
 - [[#troubleshoting][Troubleshoting]]
+- [[file:mnemonic.org][Mnemonic]]
 
 * Story
   :PROPERTIES:
@@ -63,7 +61,6 @@ friendly, which can be run on anywhere where Emacs runs.
 - [[#what][What]]
 - [[#install][Install]]
 - [[#organization][Organization]]
-- [[file:mnemonic.org][Mnemonic]]
 
 
 Now, let's start from the Level Two. And one more thing: teach
@@ -295,8 +292,6 @@ Introduce rules of naming /files/ and /functions/
    :PROPERTIES:
    :CUSTOM_ID: cooking
    :END:
-
-#+TOC: headlines 1 local
 
 - [[#theme][Theme]]
 - [[#font][Font]]
