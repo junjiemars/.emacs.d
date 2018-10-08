@@ -71,15 +71,14 @@ yourself some little Elisp (M-x info).
    :CUSTOM_ID: highlights
    :END:
 
-- *Carefully designed*: just load what's your want.
+- *Carefully designed*: robust, fast and just load what's your want.
 - *Adaptive*: can run on any OS, GUI or Terminal, from most recent
   Emacs's versions to ancient ones, and one Emacs's configuration suit
   for all coexisting Emacs on the same machine.
 - *Consistent*: wherever and whenever you can play with Emacs always
   behaves in the same way.
 - *Awesome style*: [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-windows.png][Windows]], [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-darwin.png][Darwin]], and [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-linux.png][Linux]]
-- *Stable*
-- Supper *faster*
+
 
 ** Requirements
    :PROPERTIES:
