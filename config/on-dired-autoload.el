@@ -77,7 +77,7 @@ when the multibyte directory name encoded with non `locale-coding-system'."
                (ad-activate #'insert-directory t))))
 
         (platform-supported-when darwin
-          ;; on Drawin: ls does not support --dired option
+          ;; on Drawin: the builtin ls does not support --dired option
           (setq% dired-use-ls-dired nil dired))))))
 
 
