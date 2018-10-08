@@ -1,7 +1,9 @@
 #+TITLE: More Reasonable Emacs
 #+AUTHOR: Junjie Mars
 #+STARTUP: overview
+#+OPTIONS: toc:nil
 
+* Table of Content
 
 - [[#emacs-documents][Emacs Documents]]
 - [[#motion][Motion]]
