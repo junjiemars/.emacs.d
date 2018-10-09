@@ -65,15 +65,15 @@ when the multibyte directory name encoded with non `locale-coding-system'."
                                                     (cdr ver))))))))
       (if ls
           (progn%
-					 ;; prefer GNU's ls (--dired option) on Windows or Darwin
-					 ;; on Windows: `dired-mode' does not display executable flag in file mode
-					 ;; see `dired-use-ls-dired' for more defails
+           ;; prefer GNU's ls (--dired option) on Windows or Darwin
+           ;; on Windows: `dired-mode' does not display executable flag in file mode
+           ;; see `dired-use-ls-dired' for more defails
            (setq% ls-lisp-use-insert-directory-program t ls-lisp)
            (platform-supported-when windows-nt
-						 ;; error at `dired-internal-noselect' on Windows:
-						 ;; Reading directory: "ls --dired -al -- d:/abc/中文/" exited with status 2
-						 ;; https://lists.gnu.org/archive/html/emacs-devel/2016-01/msg00406.html
-						 ;; (setq file-name-coding-system locale-coding-system)
+             ;; error at `dired-internal-noselect' on Windows:
+             ;; Reading directory: "ls --dired -al -- d:/abc/中文/" exited with status 2
+             ;; https://lists.gnu.org/archive/html/emacs-devel/2016-01/msg00406.html
+             ;; (setq file-name-coding-system locale-coding-system)
              (unless (eq default-file-name-coding-system locale-coding-system)
                (ad-activate #'insert-directory t))))
         (platform-supported-when darwin
