@@ -160,7 +160,7 @@
 (define-key% (current-global-map) (kbd "M-g c") #'goto-char)
 
 
-;; define `recenter-top-bottom' for Emacs23.2-∑
+;; define `recenter-top-bottom' for Emacs23.2-
 (unless-fn% recenter-top-bottom nil
 
 	(defvar recenter-last-op nil
