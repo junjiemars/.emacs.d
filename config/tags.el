@@ -23,29 +23,35 @@ Examples:
 
 
 (defcustom tags-program
-  (if (executable-find% "etags"
-                        (lambda (bin)
-                          (let ((ver (shell-command* bin "--version")))
-                            (when (zerop (car ver))
-                              (string-match "etags (GNU Emacs [.0-9]+)"
-                                            (cdr ver))))))
-      "etags -o %s -l auto -a %s ; echo %s"
-    (if (executable-find% "etags"
-                          (lambda (bin)
-                            (let ((ver (shell-command* bin "--version")))
-                              (when (zerop (car ver))
-                                (string-match "Exuberant Ctags [.0-9]+"
-                                              (cdr ver))))))
-        "etags -e -o %s -a %s ; echo %s"))
+  (cond ((executable-find% "ctags"
+                           (lambda (bin)
+                             (let ((ver (shell-command* bin "--version")))
+                               (when (zerop (car ver))
+                                 (string-match "Exuberant Ctags [.0-9]+"
+                                               (cdr ver))))))
+         "ctags -e -o %s -a %s ; echo %s")
+        ((executable-find% "etags"
+                           (lambda (bin)
+                             (let ((ver (shell-command* bin "--version")))
+                               (when (zerop (car ver))
+                                 (string-match "Exuberant Ctags [.0-9]+"
+                                               (cdr ver))))))
+         ;; on Linux/Darwin ctags may be has the synonym: etags
+         "etags -e -o %s -a %s ; echo %s")
+        ((executable-find% "etags"
+                           (lambda (bin)
+                             (let ((ver (shell-command* bin "--version")))
+                               (when (zerop (car ver))
+                                 (string-match "etags (GNU Emacs [.0-9]+)"
+                                               (cdr ver))))))
+         "etags -o %s -l auto -a %s ; echo %s"))
   "The default tags program.
 This is used by commands like `make-tags' and others.
 
-The default is \"etags -o %s -l auto -a %s ; echo %s\", 
+The default is \"ctags -e -o %s -a %s ; echo %s\", 
 first %s: explicit name of file for tag table; overrides default TAGS or tags.
 second %s: append to existing tag file.
 third %s: echo source file name in *Messages* buffer.
-
-\"ctags -e -o %s -a %s ; echo %s\" if using Exuberant Ctags.
 
 `tags-table-list' should be persitent between sessions 
 when `desktop-globals-to-save' include it.
