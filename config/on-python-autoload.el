@@ -14,7 +14,9 @@
 
 
 (version-supported-when <= 24.1
+
   (defun python-virtualenv-activate (&optional vdir)
+		"Activate virtualenv at VDIR."
     (interactive "Dvirtualenv activate at ")
     (let ((vdir (or vdir default-directory)))
       (setq python-shell-process-environment
@@ -49,6 +51,3 @@
 
 
 ;; (add-hook 'kill-emacs-hook #'unload-python-on-exit)
-
-
-(provide 'pythons)

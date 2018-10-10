@@ -67,6 +67,7 @@
     (compile-unit% (emacs-home* "config/on-hippie-autoload.el"))
     (compile-unit% (emacs-home* "config/on-lisp-autoload.el"))
     (compile-unit% (emacs-home* "config/on-indent-autoload.el"))
+		(compile-unit% (emacs-home* "config/on-python-autoload.el"))
     
     (platform-supported-if windows-nt
         (compile-unit% (emacs-home* "config/gud-cdb.el") t)
@@ -84,9 +85,7 @@
       (compile-unit% (emacs-home* "config/on-linum-autoload.el")))
     
     (feature-semantic-supported-p
-      (compile-unit% (emacs-home* "config/on-semantic-autoload.el")))
-
-    (compile-unit% (emacs-home* "config/use-python.el") t))
+      (compile-unit% (emacs-home* "config/on-semantic-autoload.el"))))
 
   
   (autoload 'system-cc-include
