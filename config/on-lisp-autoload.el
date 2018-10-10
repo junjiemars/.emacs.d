@@ -111,8 +111,3 @@
   (add-hook 'ielm-mode-hook #'eldoc-mode))
 
 
-;; (package-supported-p
-;;   (feature-allowed-p geiser
-
-;;     (with-eval-after-load 'geiser-repl
-;;       (set-basic-lisp-mode!))))
