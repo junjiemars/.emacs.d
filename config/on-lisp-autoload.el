@@ -13,6 +13,10 @@
   (safe-local-variable* 'Package))
 
 
+(defun set-basic-lisp-mode! ()
+  (setq indent-tabs-mode nil))
+
+
 (version-supported-if
     <= 25.0
     (with-eval-after-load 'elisp-mode
@@ -21,13 +25,9 @@
     (add-hook 'emacs-lisp-mode-hook #'eldoc-mode)))
 
 
-(with-eval-after-load 'ielm
-  (add-hook 'ielm-mode-hook #'eldoc-mode))
-
-
 (package-supported-p
   
-  (defun set-lisp-basic-mode! ()
+  (defun set-featured-lisp-mode! ()
     "Set Lisp basic minor modes."
     (cond ((or (string= "*scratch*" (buffer-name))
                (string= "*ielm*" (buffer-name))))
@@ -38,9 +38,6 @@
              (feature-allowed-p rainbow-delimiters
                ;; hilighting parentheses,brackets,and braces in minor mode
                (rainbow-delimiters-mode))
-
-             ;; disable tab indent
-						 (setq% indent-tabs-mode nil)
 
              (feature-allowed-p aggressive-indent
                ;; aggressive indent
@@ -58,16 +55,21 @@
         (enable-paredit-mode)))))
 
 
+(with-eval-after-load 'lisp-mode
+  (add-hook 'lisp-mode-hook #'set-basic-lisp-mode!)
+  (add-hook 'emacs-lisp-mode-hook #'set-basic-lisp-mode!)
+  (package-supported-p
+    (add-hook 'lisp-mode-hook #'set-featured-lisp-mode!)
+    (add-hook 'emacs-lisp-mode-hook #'set-featured-lisp-mode!)))
+
+
+(with-eval-after-load 'scheme
+  (add-hook 'scheme-mode-hook #'set-basic-lisp-mode!)    
+  (package-supported-p
+    (add-hook 'scheme-mode-hook #'set-featured-lisp-mode!)))
+
+
 (package-supported-p
-
-  (with-eval-after-load 'lisp-mode
-    (add-hook 'lisp-mode-hook #'set-lisp-basic-mode!)
-    (add-hook 'emacs-lisp-mode-hook #'set-lisp-basic-mode!))
-
-  (with-eval-after-load 'scheme
-    (add-hook 'scheme-mode-hook #'set-lisp-basic-mode!))
-
-  
   (feature-allowed-p paredit
 
     (platform-supported-if
@@ -84,13 +86,13 @@
       ;; fix inconsistent `C-)' `C-c )' behavior:#9
       ;; On Terminal mode, Ctrl+Shift combination can't send to Emacs
       (when-var% paredit-mode-map paredit
-                 (define-key% paredit-mode-map (kbd "C-c )") #'paredit-forward-slurp-sexp)
-                 (define-key% paredit-mode-map (kbd "C-c (") #'paredit-backward-slurp-sexp)
-                 (define-key% paredit-mode-map (kbd "C-c }") #'paredit-forward-barf-sexp)
-                 (define-key% paredit-mode-map (kbd "C-c {") #'paredit-backward-barf-sexp)))))
+        (define-key% paredit-mode-map (kbd "C-c )") #'paredit-forward-slurp-sexp)
+        (define-key% paredit-mode-map (kbd "C-c (") #'paredit-backward-slurp-sexp)
+        (define-key% paredit-mode-map (kbd "C-c }") #'paredit-forward-barf-sexp)
+        (define-key% paredit-mode-map (kbd "C-c {") #'paredit-backward-barf-sexp)))))
 
 
- ;; end of package: paredit
+ ;; end of feature: paredit
 
 
 (version-supported-when > 24 
@@ -103,3 +105,14 @@
 
   (add-hook 'minibuffer-setup-hook #'define-eval-or-execute-key t))
 
+
+(with-eval-after-load 'ielm
+  (add-hook 'ielm-mode-hook #'set-basic-lisp-mode!)
+  (add-hook 'ielm-mode-hook #'eldoc-mode))
+
+
+;; (package-supported-p
+;;   (feature-allowed-p geiser
+
+;;     (with-eval-after-load 'geiser-repl
+;;       (set-basic-lisp-mode!))))

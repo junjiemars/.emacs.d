@@ -121,18 +121,9 @@
 
 ;; :edit
 (when (self-spec->*env-spec :edit :allowed)
-  ;; don't use hard tabs
-  ;; (setq indent-tabs-mode
-  ;;        (self-spec->*env-spec :indent :indent-tabs-mode))
-
-  ;; ;; disable electric indent mode
-  ;; (setq% electric-indent-mode
-  ;;         (self-spec->*env-spec :indent :electric-indent-mode)
-  ;;         electric)
-  
   ;; default tab-width
   (setq-default tab-width (self-spec->*env-spec :edit :tab-width))
-
+  ;; default auto-save-default
   (setq auto-save-default (self-spec->*env-spec :edit :auto-save-default)))
 
 
@@ -222,6 +213,6 @@ A prefix argument is handled like `recenter':
               ((floatp recenter-last-op)
                (recenter (round (* recenter-last-op (window-height))))))))))
 
-(define-key (current-global-map) (kbd "C-l") #'recenter-top-bottom))
+  (define-key (current-global-map) (kbd "C-l") #'recenter-top-bottom))
 
  ;; end of recenter-top-bottom

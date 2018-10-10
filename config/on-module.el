@@ -20,6 +20,9 @@
 (def-feature-supported-p bing-dict nil)
 
 
+(def-feature-supported-p geiser nil)
+
+
 (defmacro feature-allowed-p (feature &rest body)
   "Run BODY when FEATURE supported and allowed."
   (declare (indent 1))
