@@ -39,6 +39,9 @@
                ;; hilighting parentheses,brackets,and braces in minor mode
                (rainbow-delimiters-mode))
 
+             ;; disable tab indent
+						 (setq% indent-tabs-mode nil)
+
              (feature-allowed-p aggressive-indent
                ;; aggressive indent
                (aggressive-indent-mode))))))
