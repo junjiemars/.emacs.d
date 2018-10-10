@@ -35,6 +35,8 @@
   
   :shell (list :env-vars `("JAVA_HOME"
                            "PYTHONPATH"
+                           "RACKET_HOME"
+                           "PATH"
                            ,(platform-supported-unless windows-nt
                               (platform-supported-if darwin
                                   "DYLD_LIBRARY_PATH"
