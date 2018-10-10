@@ -45,6 +45,7 @@
 (platform-supported-unless gnu/linux
 
   (platform-supported-when windows-nt
+
     (defadvice insert-directory (before insert-directory-before compile)
       "`dired-find-file' should failed when using GNU's ls program on Windows.
 We try to encode multibyte directory name with `locale-coding-system' 
@@ -63,19 +64,18 @@ when the multibyte directory name encoded with non `locale-coding-system'."
                                       (string-match "^ls (GNU coreutils)"
                                                     (cdr ver))))))))
       (if ls
-          ;; prefer GNU's ls on Windows or Darwin
-          ;; on Windows: `dired-mode' does not display executable flag in file mode
-          ;; see `dired-use-ls-dired' for more defails
           (progn%
-           ;; error at `dired-internal-noselect' on Windows:
-           ;; Reading directory: "ls --dired -al -- d:/abc/中文/" exited with status 2
-           ;; https://lists.gnu.org/archive/html/emacs-devel/2016-01/msg00406.html
-           ;; (setq file-name-coding-system locale-coding-system)
+           ;; prefer GNU's ls (--dired option) on Windows or Darwin
+           ;; on Windows: `dired-mode' does not display executable flag in file mode
+           ;; see `dired-use-ls-dired' for more defails
            (setq% ls-lisp-use-insert-directory-program t ls-lisp)
            (platform-supported-when windows-nt
+             ;; error at `dired-internal-noselect' on Windows:
+             ;; Reading directory: "ls --dired -al -- d:/abc/中文/" exited with status 2
+             ;; https://lists.gnu.org/archive/html/emacs-devel/2016-01/msg00406.html
+             ;; (setq file-name-coding-system locale-coding-system)
              (unless (eq default-file-name-coding-system locale-coding-system)
                (ad-activate #'insert-directory t))))
-
         (platform-supported-when darwin
           ;; on Drawin: the builtin ls does not support --dired option
           (setq% dired-use-ls-dired nil dired))))))
