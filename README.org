@@ -125,11 +125,13 @@ directory:
 git clone --depth=1 https://github.com/junjiemars/.emacs.d.git ~/.emacs.d
 #+END_SRC
 
-First run More Reasonable Emacs, it should automatically do: * byte
-compile elisp source files. * install packages, if you enabled it and
-you have a Emacs-24.0+.
+First run More Reasonable Emacs, it should automatically do: 
+- byte compile elisp source files. 
+- install packages, if you allow it.
 
-After first run More Reasonable Emacs, exit and then reopen Emacs.
+
+After first run More Reasonable Emacs, exit and then /reopen/ Emacs.
+
 
 On Windows, if you'd [[https://git-scm.com/downloads][Git-Bash]] installed but no Emacs, you are lucky, a
 one line code will do it all for you and more: fix some Emacs' issue
