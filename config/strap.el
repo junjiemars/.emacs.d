@@ -258,9 +258,9 @@ The name is made by appending a number to PREFIX, default \"G\"."
 
 (defmacro compile-unit% (file &optional only-compile delete-booster)
   "Make an unit of compilation at compile time."
-  (let* ((-source1- (eval file))
+  (let* ((-source1- (funcall `(lambda () ,file)))
          (-dir1- (when -source1-
-                   (eval (v-path* (file-name-directory -source1-))))))
+                   (funcall `(lambda () (v-path* (file-name-directory ,-source1-)))))))
     `(list :source ,-source1-
            :dir ,-dir1-
            :only-compile ,only-compile

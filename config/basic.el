@@ -541,8 +541,11 @@ for which (PRED item) returns t."
 
 (defmacro define-key% (keymap key def)
 	"Define KEY as DEF in KEYMAP when the KEY binding of DEF is not exists."
-	(if-key* (eval keymap) (eval key) (eval def)
-					 nil
+	(if-key*
+      (funcall `(lambda () ,keymap))
+      (funcall `(lambda () ,key))
+      (funcall `(lambda () ,def))
+			nil
 		`(define-key ,keymap ,key ,def)))
 
 
