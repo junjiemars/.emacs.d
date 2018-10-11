@@ -218,6 +218,19 @@ like `split-string' Emacs 24.4+"
       (split-string string separators omit-nulls))))
 
 
+(lexical-supported-if
+    (defalias 'defcustom* 'defcustom)
+  (defmacro defcustom* (symbol standard doc &rest args)
+    "Declare SYMBOL as a customizable variable with the STANDARD value.
+STANDARD should be byte compiled always, see `defcustom'."
+    (declare (doc-string 3) (debug (name body)))
+    `(custom-declare-variable
+      ',symbol
+      ,(funcall `(lambda () ,standard))
+      ,doc
+      ,@args)))
+
+
  ;; end of Compatible Functions
 
 

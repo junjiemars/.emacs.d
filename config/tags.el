@@ -22,7 +22,7 @@ Examples:
      ,@key))
 
 
-(defvar *tags-program*
+(defcustom* tags-program
   (cond ((executable-find% "ctags"
                            (lambda (bin)
                              (let ((ver (shell-command* bin "--version")))
@@ -54,7 +54,9 @@ second %s: append to existing tag file.
 third %s: echo source file name in *Messages* buffer.
 
 `tags-table-list' should be persitent between sessions 
-when `desktop-globals-to-save' include it.")
+when `desktop-globals-to-save' include it."
+  :type 'string
+  :group 'tags)
 
 
 (defun mount-tags (&rest tags-file)
@@ -76,8 +78,8 @@ FILE-FILTER file filter function,
 DIR-FILTER directory filter function,
 RENEW overwrite the existing tags file when t else create it.
 "
-  (unless *tags-program*
-    (signal 'void-variable (list '*tags-program* *tags-program*)))
+  (unless tags-program
+    (signal 'void-variable (list 'tags-program tags-program)))
   (when (file-exists-p home)
     (let ((tags-dir (file-name-directory tags-file)))
       (if (file-exists-p tags-file)
@@ -92,7 +94,7 @@ RENEW overwrite the existing tags file when t else create it.
                               f
                               (if (zerop
                                    (car (shell-command*
-                                            (format *tags-program* tags-file
+                                            (format tags-program tags-file
                                                     (shell-quote-argument f)
                                                     (shell-quote-argument f)))))
                                   "ok" "failed")))
