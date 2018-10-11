@@ -161,7 +161,7 @@
 Possible values: `top', `middle', `bottom', integer or float numbers.
 It can also be nil, which means the first value in `recenter-positions'.")
 
-  (defcustom recenter-positions '(middle top bottom)
+  (defvar recenter-positions '(middle top bottom)
     "Cycling order for `recenter-top-bottom'.
 A list of elements with possible values `top', `middle', `bottom',
 integer or float numbers that define the cycling order for
@@ -172,15 +172,8 @@ window top and bottom.  Middle redraws the frame and centers point
 vertically within the window.  Integer number moves current line to
 the specified absolute window-line.  Float number between 0.0 and 1.0
 means the percentage of the screen space from the top.  The default
-cycling order is middle -> top -> bottom."
-    :type '(repeat (choice
-                    (const :tag "Top" top)
-                    (const :tag "Middle" middle)
-                    (const :tag "Bottom" bottom)
-                    (integer :tag "Line number")
-                    (float :tag "Percentage")))
-    :version "23.2"
-    :group 'windows)
+cycling order is middle -> top -> bottom.")
+
 
   (defun recenter-top-bottom (&optional arg)
     "Move current buffer line to the specified window line.
