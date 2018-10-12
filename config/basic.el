@@ -224,11 +224,12 @@ like `split-string' Emacs 24.4+"
     "Declare SYMBOL as a customizable variable with the STANDARD value.
 STANDARD should be byte compiled always, see `defcustom'."
     (declare (doc-string 3) (debug (name body)))
-    `(custom-declare-variable
-      ',symbol
-      ,(funcall `(lambda () ,standard))
-      ,doc
-      ,@args)))
+    (let ((-standard- (funcall `(lambda () ,standard))))
+      `(custom-declare-variable
+        ',symbol
+        ,-standard-
+        ,doc
+        ,@args))))
 
 
  ;; end of Compatible Functions
