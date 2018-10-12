@@ -227,7 +227,7 @@ STANDARD should be byte compiled always, see `defcustom'."
     (let ((-standard- (funcall `(lambda () ,standard))))
       `(custom-declare-variable
         ',symbol
-        ,-standard-
+        ',-standard-
         ,doc
         ,@args))))
 
