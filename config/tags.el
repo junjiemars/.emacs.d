@@ -22,7 +22,7 @@ Examples:
      ,@key))
 
 
-(defcustom* tags-program
+(defcustom% tags-program
   (cond ((executable-find% "ctags"
                            (lambda (bin)
                              (let ((ver (shell-command* bin "--version")))
