@@ -42,19 +42,19 @@
   "History of argument lists passed to lldb.")
 
 
-(defcustom gud-lldb-command-line-hook nil
+(defcustom% gud-lldb-command-line-hook nil
   "Hook run by `lldb' on command line."
   :type 'hook
   :group 'gud)
 
 
-(defcustom gud-lldb-init-hook nil
+(defcustom% gud-lldb-init-hook nil
   "Hook run by `lldb' process."
   :type 'hook
   :group 'gud)
 
 
-(defcustom gud-lldb-directories nil
+(defcustom% gud-lldb-directories nil
   "A list of directories that lldb should search for source code.
 If nil, only source files in the program directory
 will be known to lldb.

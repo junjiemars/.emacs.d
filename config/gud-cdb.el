@@ -130,7 +130,7 @@
 (defvar gud-cdb-history nil
   "History of argument lists passed to cdb.")
 
-(defcustom gud-cdb-directories nil
+(defcustom% gud-cdb-directories nil
   "*A list of directories that cdb should search for source code.
 If nil, only source files in the program directory
 will be known to cdb.
@@ -142,12 +142,12 @@ containing the executable being debugged."
                          directory))
   :group 'gud)
 
-(defcustom gud-cdb-command-line-hook nil
+(defcustom% gud-cdb-command-line-hook nil
   "Hook run by `cdb' on command line."
   :type 'hook
   :group 'gud)
 
-(defcustom gud-cdb-init-hook nil
+(defcustom% gud-cdb-init-hook nil
   "Hook run by `lldb' process."
   :type 'hook
   :group 'gud)
