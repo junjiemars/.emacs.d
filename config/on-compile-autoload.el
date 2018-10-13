@@ -31,3 +31,9 @@
     (define-key% compilation-mode-map (kbd "q") #'quit-window))
   (setq% compilation-scroll-output t compile))
 
+
+  (with-eval-after-load 'grep
+    (when-var% grep-mode-map grep
+      ;; define `recompile' and `quit-window' key binding for `grep'
+      (define-key% grep-mode-map (kbd "g") #'recompile)
+      (define-key% grep-mode-map (kbd "q") #'quit-window)))

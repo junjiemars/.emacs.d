@@ -36,14 +36,6 @@
   ;; let `C-x r g' do `string-insert-rectangle'
   (define-key (current-global-map) (kbd "C-x r g") #'string-insert-rectangle)
 
-
-  (with-eval-after-load 'grep
-    (when-var% grep-mode-map grep
-      ;; define `recompile' and `quit-window' key binding for `grep'
-      (define-key% grep-mode-map (kbd "g") #'recompile)
-      (define-key% grep-mode-map (kbd "q") #'quit-window)))
-
-
   (package-supported-p  
     (feature-allowed-p bing-dict
       ;; define `bing-dict' key binding
