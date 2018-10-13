@@ -7,7 +7,7 @@
 ;;;;
 
 
-;; define `recenter-top-bottom' for Emacs23.2-
+;; Define `recenter-top-bottom' for Emacs23.2-
 (unless-fn% recenter-top-bottom nil
 
   (defvar recenter-last-op nil
@@ -38,27 +38,25 @@ A prefix argument is handled like `recenter':
  With numeric prefix ARG, move current line to window-line ARG.
  With plain `C-u', move current line to window center."
     (interactive "P")
-    (cond
-     (arg (recenter arg)); Always respect ARG.
-     (t
-      (setq recenter-last-op
-            (if (eq this-command last-command)
-                (car (or (cdr (member recenter-last-op recenter-positions))
-                         recenter-positions))
-              (car recenter-positions)))
-      (let ((this-scroll-margin
-             (min (max 0 scroll-margin)
-                  (truncate (/ (window-body-height) 4.0)))))
-        (cond ((eq recenter-last-op 'middle)
-               (recenter))
-              ((eq recenter-last-op 'top)
-               (recenter this-scroll-margin))
-              ((eq recenter-last-op 'bottom)
-               (recenter (- -1 this-scroll-margin)))
-              ((integerp recenter-last-op)
-               (recenter recenter-last-op))
-              ((floatp recenter-last-op)
-               (recenter (round (* recenter-last-op (window-height))))))))))
+    (cond (arg (recenter arg))
+          (t (setq recenter-last-op
+                   (if (eq this-command last-command)
+                       (car (or (cdr (member recenter-last-op recenter-positions))
+                                recenter-positions))
+                     (car recenter-positions)))
+             (let ((this-scroll-margin
+                    (min (max 0 scroll-margin)
+                         (truncate (/ (window-body-height) 4.0)))))
+               (cond ((eq recenter-last-op 'middle)
+                      (recenter))
+                     ((eq recenter-last-op 'top)
+                      (recenter this-scroll-margin))
+                     ((eq recenter-last-op 'bottom)
+                      (recenter (- -1 this-scroll-margin)))
+                     ((integerp recenter-last-op)
+                      (recenter recenter-last-op))
+                     ((floatp recenter-last-op)
+                      (recenter (round (* recenter-last-op (window-height))))))))))
 
   (define-key (current-global-map) (kbd "C-l") #'recenter-top-bottom))
 
@@ -67,7 +65,7 @@ A prefix argument is handled like `recenter':
 
 (version-supported-when > 24.0
   ;; `View-quit' has different behaviors between Emacs24.0- and Emacs24.0+
-  (defadvice View-quit (after View-quit-after compile)
+  (defadvice View-quit (after view-quit-after compile)
     (quit-window))
 
   (with-eval-after-load 'view
