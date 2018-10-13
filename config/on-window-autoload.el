@@ -64,3 +64,11 @@ A prefix argument is handled like `recenter':
 
  ;; end of recenter-top-bottom
 
+
+(version-supported-when > 24.0
+  ;; Between Emacs24.0- and Emacs24.0+, `View-quit' has different behavors
+  (defadvice View-quit (after View-quit-after compile)
+    (quit-window))
+
+  (with-eval-after-load 'view
+    (ad-activate #'View-quit t)))
