@@ -209,3 +209,4 @@ A prefix argument is handled like `recenter':
   (define-key (current-global-map) (kbd "C-l") #'recenter-top-bottom))
 
  ;; end of recenter-top-bottom
+

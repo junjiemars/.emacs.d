@@ -39,11 +39,11 @@
 
   (with-eval-after-load 'grep
     (when-var% grep-mode-map grep
-               ;; define `recompile' and `quit-window' key binding
-               (define-key% grep-mode-map (kbd "g") #'recompile)
-               (define-key% grep-mode-map (kbd "q") #'quit-window)))
+      ;; define `recompile' and `quit-window' key binding for `grep'
+      (define-key% grep-mode-map (kbd "g") #'recompile)
+      (define-key% grep-mode-map (kbd "q") #'quit-window)))
 
-  
+
   (package-supported-p  
     (feature-allowed-p bing-dict
       ;; define `bing-dict' key binding
