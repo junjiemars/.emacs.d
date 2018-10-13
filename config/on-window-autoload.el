@@ -66,7 +66,7 @@ A prefix argument is handled like `recenter':
 
 
 (version-supported-when > 24.0
-  ;; Between Emacs24.0- and Emacs24.0+, `View-quit' has different behavors
+  ;; `View-quit' has different behaviors between Emacs24.0- and Emacs24.0+
   (defadvice View-quit (after View-quit-after compile)
     (quit-window))
 
