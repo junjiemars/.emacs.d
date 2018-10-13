@@ -60,6 +60,7 @@
     (compile-unit% (emacs-home* "config/on-lisp-autoload.el"))
     (compile-unit% (emacs-home* "config/on-indent-autoload.el"))
 		(compile-unit% (emacs-home* "config/on-python-autoload.el"))
+    (compile-unit% (emacs-home* "config/on-window-autoload.el"))
     
     (platform-supported-if windows-nt
         (compile-unit% (emacs-home* "config/gud-cdb.el") t)
