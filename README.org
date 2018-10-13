@@ -43,7 +43,7 @@ I'm a nerd with Emacs, it's awesome if I can [[http://edward.oconnor.cx/2009/07/
 Ten Years]].  So, I decided to start from Level One not the Level Zero
 after read Emacs' tutorial (C-h t). Emacs is the most powerful editor
 on the world there is no *one of*, it's programmable, elegant and
-*self-documenting*, so you can start from Level Zero if you had time
+/self-documenting/, so you can start from Level Zero if you had time
 may be less than 10 years to read and try Emacs.
 
 After falling in love with [[https://en.wikipedia.org/wiki/Lisp_(programming_language)][Lisp]], I know it's the time to make Emacs
