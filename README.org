@@ -689,7 +689,8 @@ machine.
 /screenshots/:
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/c-programming-editing-on-darwin-gui.png][editing on Darwin]]
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/c-programming-compile-on-windows.png][compile via msvc]]
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/c-programming-debugging-via-lldb-on-darwin.png][debugging via lldb]]
+- [[https://github.com/junjiemars/images/blob/master/.emacs.d/c-programming-debugging-via-lldb-on-darwin.png][debugging via lldb on Darwin]]
+- [[https://github.com/junjiemars/images/blob/master/.emacs.d/c-programming-debugging-via-lldb-on-linux.png][debugging via lldb on Ubuntu]]	
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/c-programming-debugging-via-cdb-on-windows.png][debugging via cdb]]
 
 ** Common Lisp programming
