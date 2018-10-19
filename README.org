@@ -724,6 +724,7 @@ machine.
 - [[#motion][Motion]]
 - [[#interaction][Interaction]]
 - [[#editing][Editing]]
+- [[#coding][Coding]]
 - [[#basic-sexp-commands][Basic sexp commands]]
 - [[#frame][Frame]]
 - [[#window][Window]]
@@ -833,6 +834,14 @@ It's *self-documenting* and great, keep reading it frequently.
 - tab to space: @@html:<kbd>@@M-x untabify@@html:</kbd>@@
 - space to tab: @@html:<kbd>@@M-x tabify@@html:</kbd>@@
 - fill paragraph: @@html:<kbd>@@M q@@html:</kbd>@@
+
+** Coding
+	 :PROPERTIES:
+	 :CUSTOM_ID: coding
+	 :END:
+
+- check current buffer coding system: @@html:<kbd>@@M-: buffer-file-coding-system@@html:</kbd>@@
+- revert current buffer's coding system: @@html:<kbd>@@M-x C-x RET r@@html:</kbd>@@
 
 ** Basic sexp commands
    :PROPERTIES:
