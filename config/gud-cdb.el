@@ -241,55 +241,55 @@ debugger arguments before running the debugger.
 "
   (ignore* file)
   (append (loop for o in gud-cdb-command-line-hook
-    append (funcall o)) args))
+                append (funcall o)) args))
 
 
 (defun gud-cdb-marker-filter (string)
   "As the 3rd argument: marker-filter of `gud-common-init'.
 
-The job of the marker-filter method is to detect file/line markers in
-strings and set the global gud-last-frame to indicate what display
-action (if any) should be triggered by the marker.  Note that only
-whatever the method *returns* is displayed in the buffer; thus, you
-can filter the debugger's output, interpreting some and passing on
-the rest.
+The job of the marker-filter method is to detect file/line
+markers in strings and set the global gud-last-frame to indicate
+what display action (if any) should be triggered by the marker.
+Note that only whatever the method *returns* is displayed in the
+buffer; thus, you can filter the debugger's output, interpreting
+some and passing on the rest.
 "
   (setq gud-marker-acc (concat gud-marker-acc string))
   (cond ((string-match "^\\(.*\\)(\\([0-9]+\\))\n" string)
-   ;; Breakpoint 0 hit
-   ;; e:\lab\c\src\c.c(9)
-   ;; c!main:
-   ;; 00007ff7`5a036580 4889542410      mov     qword ptr [rsp+10h],rdx ss:000000c5`9b0ff788=0000000000000000
-   (setq gud-last-frame (cons (match-string 1 string)
-            (string-to-number (match-string 2 string)))))
+         ;; Breakpoint 0 hit
+         ;; e:\lab\c\src\c.c(9)
+         ;; c!main:
+         ;; 00007ff7`5a036580 4889542410      mov     qword ptr [rsp+10h],rdx ss:000000c5`9b0ff788=0000000000000000
+         (setq gud-last-frame (cons (match-string 1 string)
+                                    (string-to-number (match-string 2 string)))))
 
-  ((or (string-match "quit:" string)
-       (string-match "ntdll!NtTerminateProcess\\+0x[0-9a-z]+:" string))
-   ;; ModLoad: 00007ffe`9d340000 00007ffe`9d351000   C:\WINDOWS\System32\kernel.appcore.dll
-   ;; ModLoad: 00007ffe`9ecc0000 00007ffe`9ed5d000   C:\WINDOWS\System32\msvcrt.dll
-   ;; ModLoad: 00007ffe`9f140000 00007ffe`9f25f000   C:\WINDOWS\System32\RPCRT4.dll
-   ;; ntdll!NtTerminateProcess+0x14:
-   ;; 00007ffe`a10005f4 c3              ret
-   (setq gud-last-last-frame nil)
-   (setq gud-overlay-arrow-position nil))
-  )
+        ((or (string-match "quit:" string)
+             (string-match "ntdll!NtTerminateProcess\\+0x[0-9a-z]+:" string))
+         ;; ModLoad: 00007ffe`9d340000 00007ffe`9d351000   C:\WINDOWS\System32\kernel.appcore.dll
+         ;; ModLoad: 00007ffe`9ecc0000 00007ffe`9ed5d000   C:\WINDOWS\System32\msvcrt.dll
+         ;; ModLoad: 00007ffe`9f140000 00007ffe`9f25f000   C:\WINDOWS\System32\RPCRT4.dll
+         ;; ntdll!NtTerminateProcess+0x14:
+         ;; 00007ffe`a10005f4 c3              ret
+         (setq gud-last-last-frame nil)
+         (setq gud-overlay-arrow-position nil))
+        )
   string)
 
 
 (defun gud-cdb-find-file (filename)
   "As the optional argument: find-file of `gud-common-init'.
 
-`gud' callback it just when `gud-cdb-command-line-list-source' had been called first.
+`gud' callback it just when `gud-cdb-command-line-list-source'
+had been called first.
 
-The job of the find-file method is to visit and return the buffer indicated
-by the car of gud-tag-frame.  This may be a file name, a tag name, or
-something else.
-"
+The job of the find-file method is to visit and return the buffer
+indicated by the car of gud-tag-frame.  This may be a file name,
+a tag name, or something else."
   (save-excursion
     (let ((f (cdb-file-name filename)))
       (if f
-    (find-file-noselect f t)
-  (find-file-noselect filename 'nowarn)))))
+          (find-file-noselect f t)
+        (find-file-noselect filename 'nowarn)))))
 
 
 (defun gud-cdb-simple-send (process string)
@@ -297,15 +297,16 @@ something else.
 
 See `comint-input-sender' and `comint-simple-send'"
   (let ((send (if comint-input-sender-no-newline
-      string
-    (concat string "\n"))))
+                  string
+                (concat string "\n"))))
     (comint-send-string process send)))
 
 
 (defun cdb (command-line)
   "Run cdb on program FILE in buffer *gud-FILE*.
-The directory containing FILE becomes the initial working directory
-and source-file directory for your debugger."
+
+The directory containing FILE becomes the initial working
+directory and source-file directory for your debugger."
   (interactive (list (gud-query-cmdline 'cdb)))
 
   (gud-common-init command-line
