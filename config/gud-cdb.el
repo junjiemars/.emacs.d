@@ -328,8 +328,12 @@ directory and source-file directory for your debugger."
   (setq comint-prompt-regexp +cdb-prompt-regexp+)
   (setq comint-prompt-read-only t)
 
+  ;; M-{ and M-} 
+  (setq (make-local-variable 'paragraph-separate) "\\'")
+  (setq (make-local-variable 'paragraph-start) +cdb-prompt-regexp+)
+
   (setq comint-input-sender #'gud-cdb-simple-send)
-  (setq paragraph-start comint-prompt-regexp)
+
   (run-hooks 'gud-cdb-mode-hook)
   (loop for x in gud-cdb-init-hook
         when (functionp x) do (funcall x)))
