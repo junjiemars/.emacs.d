@@ -153,7 +153,7 @@ containing the executable being debugged."
   :group 'gud)
 
 
-(defconst +cdb-prompt-regexp+ "^[0-9]:[0-9][0-9][0-9]> "
+(defconst +cdb-prompt-regexp+ "^\\(?:[0-9]:[0-9][0-9][0-9]> *\\)"
   "Regexp pattern of `cdb' prompt.")
 
 
@@ -326,6 +326,8 @@ directory and source-file directory for your debugger."
   (gud-def gud-print  "?? %e "            "\C-p" "Evaluate C expression at point.")
 
   (setq comint-prompt-regexp +cdb-prompt-regexp+)
+  (setq comint-prompt-read-only t)
+
   (setq comint-input-sender #'gud-cdb-simple-send)
   (setq paragraph-start comint-prompt-regexp)
   (run-hooks 'gud-cdb-mode-hook)
