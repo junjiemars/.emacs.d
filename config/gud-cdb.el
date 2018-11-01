@@ -292,16 +292,6 @@ a tag name, or something else."
         (find-file-noselect filename 'nowarn)))))
 
 
-(defun gud-cdb-simple-send (process string)
-  "Send input STRING plus a newline to PROCESS.
-
-See `comint-input-sender' and `comint-simple-send'"
-  (let ((send (if comint-input-sender-no-newline
-                  string
-                (concat string "\n"))))
-    (comint-send-string process send)))
-
-
 (defun cdb (command-line)
   "Run cdb on program FILE in buffer *gud-FILE*.
 
@@ -331,8 +321,6 @@ directory and source-file directory for your debugger."
   ;; M-{ and M-} 
   (setq (make-local-variable 'paragraph-separate) "\\'")
   (setq (make-local-variable 'paragraph-start) +cdb-prompt-regexp+)
-
-  (setq comint-input-sender #'gud-cdb-simple-send)
 
   (run-hooks 'gud-cdb-mode-hook)
   (loop for x in gud-cdb-init-hook
