@@ -161,13 +161,12 @@ debugger arguments before running the debugger.
 (defun gud-lldb-marker-filter (string)
   "As the 3rd argument: marker-filter of `gud-common-init'.
 
-The job of the marker-filter method is to detect file/line markers in
-strings and set the global gud-last-frame to indicate what display
-action (if any) should be triggered by the marker.  Note that only
-whatever the method *returns* is displayed in the buffer; thus, you
-can filter the debugger's output, interpreting some and passing on
-the rest.
-"
+The job of the marker-filter method is to detect file/line
+markers in strings and set the global gud-last-frame to indicate
+what display action (if any) should be triggered by the marker.
+Note that only whatever the method *returns* is displayed in the
+buffer; thus, you can filter the debugger's output, interpreting
+some and passing on the rest."
   (setq gud-marker-acc (if gud-marker-acc
                            (concat gud-marker-acc string)
                          string))
@@ -192,11 +191,12 @@ the rest.
 (add-hook 'gud-lldb-init-hook #'lldb-settings-no-code-display t)
 (add-hook 'gud-lldb-init-hook #'lldb-settings-frame-format t)
 
+
 (defun lldb (command-line)
   "Run lldb on program FILE in buffer *gud-FILE*.
 
-The directory containing FILE becomes the initial working directory
-and source-file directory for your debugger."
+The directory containing FILE becomes the initial working
+directory and source-file directory for your debugger."
   (interactive (list (gud-query-cmdline 'lldb)))
   
   (gud-common-init command-line
@@ -206,7 +206,7 @@ and source-file directory for your debugger."
   
   (set (make-local-variable 'gud-minor-mode) 'lldb)
 
-  (gud-def gud-break    "breakpoint set -f %f -l %l" "\C-b"    "Set breakpoint at current line.")
+  (gud-def gud-break    "breakpoint set -f %f -l %l"  "\C-b"   "Set breakpoint at current line.")
   (gud-def gud-step     "thread step-in"              "\C-s"   "Step one source line with display.")
   (gud-def gud-next     "thread step-over"            "\C-n"   "Step one line (skip functions).")
   (gud-def gud-cont     "process continue"            "\C-r"   "Continue with display.")
