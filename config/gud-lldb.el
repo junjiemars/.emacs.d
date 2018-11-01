@@ -167,11 +167,8 @@ what display action (if any) should be triggered by the marker.
 Note that only whatever the method *returns* is displayed in the
 buffer; thus, you can filter the debugger's output, interpreting
 some and passing on the rest."
-  (setq gud-marker-acc (if gud-marker-acc
-                           (concat gud-marker-acc string)
-                         string))
-
-  (cond ((string-match "[ \t]*at \\([^:]+\\):\\([0-9]+\\)" string)
+  (cond ((string-match "[ \t]*frame.*at \\([^:]+\\):\\([0-9]+\\)" string)
+         ;; frame format: `lldb-settings-frame-format'
          ;; (lldb) r
          ;; Process 2353 launched: '/opt/lab/c/spot/out/bin/spot' (x86_64)
          ;; Process 2353 stopped
@@ -179,7 +176,7 @@ some and passing on the rest."
          ;;   frame #0: 0x0000000100000f66 spot`main(argc=1, argv=0x00007ffeefbffa58) at c.c:13
          (setq gud-last-frame (cons (match-string 1 string)
                                     (string-to-number (match-string 2 string)))))
-				
+        
         ((string-match "Process [0-9]+ exited with status = .*" string)
          ;; Process 13155 exited with status = 0 (0x00000000)              
          (setq gud-last-last-frame nil)
