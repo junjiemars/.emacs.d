@@ -54,6 +54,10 @@
   :group 'gud)
 
 
+(defconst +lldb-prompt-regexp+ "^\\(?:(lldb) *\\)"
+  "Regexp pattern of `cdb' prompt.")
+
+
 (defcustom% gud-lldb-directories nil
   "A list of directories that lldb should search for source code.
 If nil, only source files in the program directory
@@ -209,8 +213,13 @@ and source-file directory for your debugger."
   (gud-def gud-finish   "thread step-out"             "\C-f"   "Finish executing current function.")
   (gud-def gud-print    "expression -- %e"            "\C-p"   "Evaluate C expression at point.")
 
-  (setq comint-prompt-regexp  "^(lldb)[ \t]*")
-  (setq paragraph-start comint-prompt-regexp)
+  (setq comint-prompt-regexp  +lldb-prompt-regexp+)
+  (setq comint-prompt-read-only t)
+
+  ;; M-{ and M-} 
+  (setq (make-local-variable 'paragraph-separate) "\\'")
+  (setq (make-local-variable 'paragraph-start) +lldb-prompt-regexp+)
+
   (loop for x in gud-lldb-init-hook when (functionp x) do (funcall x))
   (setq gud-running nil)
   (setq gud-filter-pending-text nil)
