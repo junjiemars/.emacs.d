@@ -213,9 +213,9 @@ directory and source-file directory for your debugger."
   (setq comint-prompt-regexp  +lldb-prompt-regexp+)
   (setq comint-prompt-read-only t)
 
-  ;; M-{ and M-} 
-  (setq (make-local-variable 'paragraph-separate) "\\'")
-  (setq (make-local-variable 'paragraph-start) +lldb-prompt-regexp+)
+  ;; M-{ and M-}
+  (set (make-local-variable 'paragraph-separate) "\\'")
+  (set (make-local-variable 'paragraph-start) +lldb-prompt-regexp+)
 
   (loop for x in gud-lldb-init-hook when (functionp x) do (funcall x))
   (setq gud-running nil)
