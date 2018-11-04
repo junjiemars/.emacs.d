@@ -201,8 +201,8 @@ directory and source-file directory for your debugger."
   (gud-def gud-finish   "thread step-out"             "\C-f"   "Finish executing current function.")
   (gud-def gud-print    "expression -- %e"            "\C-p"   "Evaluate C expression at point.")
 
-  (setq comint-prompt-regexp  +lldb-prompt-regexp+)
-  (setq comint-prompt-read-only t)
+  (set (make-local-variable 'comint-prompt-regexp) +lldb-prompt-regexp+)
+  (set (make-local-variable 'comint-prompt-read-only) t)
 
   ;; M-{ and M-}
   (set (make-local-variable 'paragraph-separate) "\\'")
