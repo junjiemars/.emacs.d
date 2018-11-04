@@ -17,8 +17,8 @@
 ;;
 ;; Sample C code:
 ;; generated via Nore (https://github.com/junjiemars/nore)
-;; %userprofile%/.cc-env.bat && bash ./configure --new
-;; %userprofile%/.cc-env.bat && make -k -C e:/lab/c clean test
+;; ./configure --new
+;; make clean test
 ;; 
 ;;;;
 
@@ -87,14 +87,14 @@ Return absolute filename when FILENAME existing or it's existing
 in `gud-lldb-directories'.
 "
   (or (let ((f (expand-file-name filename)))
-  (when (file-exists-p f) f))
+        (when (file-exists-p f) f))
       (loop for d in gud-lldb-directories
-      do (let ((p (concat d "/" filename)))
-     (when (file-exists-p p) (return p))))))
+            do (let ((p (concat d "/" filename)))
+                 (when (file-exists-p p) (return p))))))
 
 
 (defmacro lldb-settings (subcommand &rest args)
-  ""
+  "lldb's settings macro."
   (declare (indent 1))
   `(mapconcat #'identity (list "settings" ,subcommand ,@args) " "))
 
@@ -103,23 +103,16 @@ in `gud-lldb-directories'.
   "Return frame-format settings of current lldb process.
 
 The default frame format string to use when displaying 
-stack frame information for threads.
-"
+stack frame information for threads. "
   (gud-call (lldb-settings
        "set" "frame-format"
-       "frame #${frame.index}: ${frame.pc}{ ${module.file.basename}{`${function.name-with-args}{${frame.no-debug}${function.pc-offset}}}}{ at ${line.file.fullpath}:${line.number}}{${function.is-optimized} [opt]}\\n"))
-  ;; (sit-for 1)
-  )
+       "frame #${frame.index}: ${frame.pc}{ ${module.file.basename}{`${function.name-with-args}{${frame.no-debug}${function.pc-offset}}}}{ at ${line.file.fullpath}:${line.number}}{${function.is-optimized} [opt]}\\n")))
 
 
 (defun lldb-settings-no-code-display ()
   (gud-call (lldb-settings "set" "stop-disassembly-display" "never"))
-  ;; (sit-for 1)
   (gud-call (lldb-settings "set" "stop-line-count-before" "0"))
-  ;; (sit-for 1)
-  (gud-call (lldb-settings "set" "stop-line-count-after" "0"))
-  ;; (sit-for 1)
-  )
+  (gud-call (lldb-settings "set" "stop-line-count-after" "0")))
 
 
 
@@ -134,10 +127,9 @@ stack frame information for threads.
 (defun gud-lldb-find-file (filename)
   "As the optional argument: find-file of `gud-common-init'.
 
-The job of the find-file method is to visit and return the buffer indicated
-by the car of gud-tag-frame.  This may be a file name, a tag name, or
-something else.
-"
+The job of the find-file method is to visit and return the buffer
+indicated by the car of gud-tag-frame.  This may be a file name,
+a tag name, or something else."
   (save-excursion
     (let ((f (lldb-file-name filename)))
       (if f
@@ -151,8 +143,7 @@ something else.
 `gud' callback it once when first run `lldb'.
 
 The job of the massage-args method is to modify the given list of
-debugger arguments before running the debugger.
-"
+debugger arguments before running the debugger."
   (ignore* file)
   (append (loop for x in gud-lldb-command-line-hook
                 when (functionp x) append (funcall x)) args))
