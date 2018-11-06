@@ -12,10 +12,10 @@
 	
 
 It's works on Emacs version 22.1.1+ , provides more reasonable style:
-how to organize Elisp code perfectly. You can run it on any platform
-that Emacs been supported with any mode: GUI or Terminal, even you can
-run multiple Emacs instances with different version on the same
-machine and at the same time.
+how to organize Elisp code perfectly. You can run it on any
+environment Emacs itself runs on: GUI or Terminal, even you can run
+multiple Emacs instances with different version on the same machine
+and at the same time.
 
 - clone More Reasonable Emacs from github
 
