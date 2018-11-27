@@ -52,7 +52,19 @@ We try to encode multibyte directory name with `locale-coding-system'
 when the multibyte directory name encoded with non `locale-coding-system'."
       (when (multibyte-string-p (ad-get-arg 0))
         (ad-set-arg 0 (encode-coding-string (ad-get-arg 0)
-                                            locale-coding-system)))))
+                                            locale-coding-system))))
+
+    (defadvice dired-shell-stuff-it (before dired-shell-stuff-before compile)
+      "`dired-do-shell-command' or `dired-do-async-shell-command'
+should failed when open the files which had not been encoded with
+`locale-coding-system'."
+      (ad-set-arg 1 (let ((files nil))
+                      (dolist (x (ad-get-arg 1) files)
+                        (if (multibyte-string-p x)
+                            (add-to-list 'files
+                                         (encode-coding-string x locale-coding-system)
+                                         t #'string=)
+                          (add-to-list 'files x t #'string=)))))))
 
 
   (with-eval-after-load 'ido
@@ -75,7 +87,8 @@ when the multibyte directory name encoded with non `locale-coding-system'."
              ;; https://lists.gnu.org/archive/html/emacs-devel/2016-01/msg00406.html
              ;; (setq file-name-coding-system locale-coding-system)
              (unless (eq default-file-name-coding-system locale-coding-system)
-               (ad-activate #'insert-directory t))))
+               (ad-activate #'insert-directory t)
+               (ad-activate #'dired-shell-stuff-it t))))
         (platform-supported-when darwin
           ;; on Drawin: the builtin ls does not support --dired option
           (setq% dired-use-ls-dired nil dired))))))
