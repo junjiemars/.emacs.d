@@ -9,20 +9,20 @@
 
 (if-fn% dired-do-compress-to dired-aux
         (when-var% dired-compress-files-alist dired-aux
-                   (with-eval-after-load 'dired-aux
-                     ;; `format-spec' may not autoload
-                     (require 'format-spec)))
+          (with-eval-after-load 'dired-aux
+            ;; `format-spec' may not autoload
+            (require 'format-spec)))
   (when-var% dired-compress-file-suffixes dired-aux
-             ;; on ancent Emacs, `dired' can't recognize .zip archive.
-             ;; [Z] key should be recognize .zip extension and uncompress a .zip archive.
-             ;; [! zip x.zip ?] compress marked files to x.zip
-             ;; see `dired-compress-file-suffixes'.
-             (with-eval-after-load 'dired-aux
-               (when (and (executable-find% "zip")
-                          (executable-find% "unzip"))
-                 (unless (assoc** "\\.zip\\'" dired-compress-file-suffixes #'string=)
-                   (add-to-list 'dired-compress-file-suffixes
-                                '("\\.zip\\'" ".zip" "unzip")))))))
+    ;; on ancent Emacs, `dired' can't recognize .zip archive.
+    ;; [Z] key should be recognize .zip extension and uncompress a .zip archive.
+    ;; [! zip x.zip ?] compress marked files to x.zip
+    ;; see `dired-compress-file-suffixes'.
+    (with-eval-after-load 'dired-aux
+      (when (and (executable-find% "zip")
+                 (executable-find% "unzip"))
+        (unless (assoc** "\\.zip\\'" dired-compress-file-suffixes #'string=)
+          (add-to-list 'dired-compress-file-suffixes
+                       '("\\.zip\\'" ".zip" "unzip")))))))
 
 
 (platform-supported-when windows-nt
@@ -61,9 +61,7 @@ should failed when open the files which had not been encoded with
       (ad-set-arg 1 (let ((files nil))
                       (dolist (x (ad-get-arg 1) files)
                         (if (multibyte-string-p x)
-                            (add-to-list 'files
-                                         (encode-coding-string x locale-coding-system)
-                                         t #'string=)
+                            (add-to-list 'files (encode-coding-string x locale-coding-system) t #'string=)
                           (add-to-list 'files x t #'string=)))))))
 
 
