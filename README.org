@@ -648,6 +648,16 @@ to zip.
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/org-odt-export-to-odt-on-windows.png][org-odt-export-to-odt]]
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-compress-file-suffixes-version-24lt.png][dired-compress-file-suffixes]]
 
+*** Encoding issues 
+
+On Windows, there are some encoding issues when
+~default-file-name-coding-system~ not equal ~locale-coding-system~.
+- display non-unicode encoding directory name or file name
+- insert non unicode encoding directory
+- compress the files that encoded with ~locale-coding-system~
+
+The good news is all those issues had gone in this kit.
+
 ** Tags
 	 :PROPERTIES:
 	 :CUSTOM_ID: tags
