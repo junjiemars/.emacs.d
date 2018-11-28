@@ -655,6 +655,7 @@ On Windows, there are some encoding issues when
 - display non-unicode encoding directory name or file name
 - insert non unicode encoding directory
 - compress the files that encoded with ~locale-coding-system~
+- ~dired-do-shell-command~ or ~dired-do-async-shell-command~
 
 The good news is all those issues had gone in this kit.
 
