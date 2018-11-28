@@ -68,7 +68,7 @@ when the multibyte directory name encoded with non `locale-coding-system'."
                           (add-to-list 'files x t #'string=))))))
 
     (defadvice dired-shell-command (before dired-shell-command-before compile)
-      "`dired-do-compress-to` should failed when
+      "`dired-do-compress-to' should failed when
 `default-directory' or `dired-get-marked-files' does not encoded
 with `locale-coding-system'."
       (when (multibyte-string-p (ad-get-arg 0))
