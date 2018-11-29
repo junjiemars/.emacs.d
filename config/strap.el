@@ -309,10 +309,10 @@ The name is made by appending a number to PREFIX, default \"G\"."
       `,then
     `(progn% ,@else)))
 
-(defmacro when-coding-system% (a b &rest body)
-  "Do BODY when coding systems A and B are equal."
+(defmacro unless-coding-system% (a b &rest body)
+  "Do BODY unless coding systems A and B are equal."
   (declare (indent 2))
-  `(if-coding-system% ,a ,b (progn% ,@body)))
+  `(if-coding-system% ,a ,b nil ,@body))
 
 
  ;; end of coding-system macro
