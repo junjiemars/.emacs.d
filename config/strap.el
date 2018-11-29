@@ -201,16 +201,16 @@ The name is made by appending a number to PREFIX, default \"G\"."
 (defmacro def-feature-supported-p (feature &optional filename docstring)
   "Define FEATURE supported-p macro."
   (let ((name (intern (format "feature-%s-supported-p" feature)))
-  (ds1 (format "If has `%s' feauture then do BODY." feature)))
+        (ds1 (format "If has `%s' feauture then do BODY." feature)))
     `(feature-if% ,feature ,filename
-      (defmacro ,name (&rest body)
-        ,(or docstring ds1)
-        (declare (indent 0))
-        `(progn% ,@body))
-      (defmacro ,name (&rest body)
-        ,(or docstring ds1)
-        (declare (indent 0))
-        `(comment ,@body)))))
+                  (defmacro ,name (&rest body)
+                    ,(or docstring ds1)
+                    (declare (indent 0))
+                    `(progn% ,@body))
+                  (defmacro ,name (&rest body)
+                    ,(or docstring ds1)
+                    (declare (indent 0))
+                    `(comment ,@body)))))
 
 (defmacro def-function-supported-p (fn &optional feature docstring)
   "Define FN supported-p macro."
@@ -298,6 +298,18 @@ The name is made by appending a number to PREFIX, default \"G\"."
 
 
  ;; end of compile macro
+
+
+;; coding-system macro
+
+(defmacro coding-system-if% (a b then &rest else)
+  "Do THEN if coding systems A and B are equal, otherwise do ELSE... at compile-time."
+  (declare (indent 3))
+  (if (eq a b)
+      `,then
+    `(progn% ,@else)))
+
+ ;; end of coding-system macro
 
 
 ;; self-def macro
