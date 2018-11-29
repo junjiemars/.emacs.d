@@ -67,7 +67,15 @@
                                           x
                                           locale-coding-system)
                                          t #'string=)
-                          (add-to-list 'files x t #'string=))))))))
+                          (add-to-list 'files x t #'string=))))))
+
+    (defadvice dired-shell-command (before dired-shell-command-before compile)
+      "`dired-do-compress-to' should failed when
+       `default-directory' or `dired-get-marked-files' does not
+       encoded with `locale-coding-system'."
+      (when (multibyte-string-p (ad-get-arg 0))
+        (ad-set-arg 0 (encode-coding-string (ad-get-arg 0)
+                                            locale-coding-system))))))
 
 
 (platform-supported-unless gnu/linux
@@ -82,7 +90,8 @@
       ;; (setq file-name-coding-system locale-coding-system)
       (unless-coding-system%  default-file-name-coding-system locale-coding-system
         (ad-activate #'insert-directory t)
-        (ad-activate #'dired-shell-stuff-it t)))
+        (ad-activate #'dired-shell-stuff-it t)
+        (ad-activate #'dired-shell-command t)))
 
     (let ((ls (executable-find% "ls"
                                 (lambda (ls)
