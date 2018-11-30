@@ -652,10 +652,10 @@ to zip.
 
 On Windows, there are some encoding issues when
 ~default-file-name-coding-system~ not equal ~locale-coding-system~.
-- display non-unicode encoding directory name or file name
-- insert non unicode encoding directory
-- compress the files that encoded with ~locale-coding-system~
-- ~dired-do-shell-command~ or ~dired-do-async-shell-command~
+- display non-unicode encoded directory name or file name;
+- insert non-unicode encoded directory;
+- compress the files with with ~locale-coding-system~ filenames;
+- ~dired-do-shell-command~ or ~dired-do-async-shell-command~;
 
 The good news is all those issues had gone in this kit.
 
