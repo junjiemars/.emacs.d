@@ -7,24 +7,6 @@
 ;;;;
 
 
-(if-fn% dired-do-compress-to dired-aux
-        (when-var% dired-compress-files-alist dired-aux
-          (with-eval-after-load 'dired-aux
-            ;; `format-spec' may not autoload
-            (require 'format-spec)))
-  (when-var% dired-compress-file-suffixes dired-aux
-    ;; on ancent Emacs, `dired' can't recognize .zip archive.
-    ;; [Z] key should be recognize .zip extension and uncompress a .zip archive.
-    ;; [! zip x.zip ?] compress marked files to x.zip
-    ;; see `dired-compress-file-suffixes'.
-    (with-eval-after-load 'dired-aux
-      (when (and (executable-find% "zip")
-                 (executable-find% "unzip"))
-        (unless (assoc** "\\.zip\\'" dired-compress-file-suffixes #'string=)
-          (add-to-list 'dired-compress-file-suffixes
-                       '("\\.zip\\'" ".zip" "unzip")))))))
-
-
 (platform-supported-when windows-nt
 
   (with-eval-after-load 'dired
@@ -82,17 +64,6 @@
 
   (with-eval-after-load 'ido
     ;; see `ido-dired'
-
-    (platform-supported-when windows-nt
-      ;; error at `dired-internal-noselect' on Windows:
-      ;; Reading directory: "ls --dired -al -- d:/abc/中文/" exited with status 2
-      ;; https://lists.gnu.org/archive/html/emacs-devel/2016-01/msg00406.html
-      ;; (setq file-name-coding-system locale-coding-system)
-      (unless-coding-system=  default-file-name-coding-system locale-coding-system
-        (ad-activate #'insert-directory t)
-        (ad-activate #'dired-shell-stuff-it t)
-        (ad-activate #'dired-shell-command t)))
-
     (let ((ls (executable-find% "ls"
                                 (lambda (ls)
                                   (let ((ver (shell-command* ls "--version")))
@@ -104,10 +75,45 @@
            ;; prefer GNU's ls (--dired option) on Windows or Darwin
            ;; on Windows: `dired-mode' does not display executable flag in file mode
            ;; see `dired-use-ls-dired' for more defails
-           (setq% ls-lisp-use-insert-directory-program t ls-lisp))
+           (setq% ls-lisp-use-insert-directory-program t ls-lisp)
+           (platform-supported-when windows-nt
+             (unless-coding-system= default-file-name-coding-system locale-coding-system
+               (ad-activate #'insert-directory t))))
         (platform-supported-when darwin
           ;; on Drawin: the builtin ls does not support --dired option
           (setq% dired-use-ls-dired nil dired))))))
+
+
+
+(with-eval-after-load 'dired-aux
+
+  (if-fn% dired-do-compress-to dired-aux
+          (when-var% dired-compress-files-alist dired-aux
+            ;; `format-spec' may not autoload
+            (require 'format-spec))
+    (when-var% dired-compress-file-suffixes dired-aux
+      ;; on ancent Emacs, `dired' can't recognize .zip archive.
+      ;; [Z] key should be recognize .zip extension and uncompress a .zip archive.
+      ;; [! zip x.zip ?] compress marked files to x.zip
+      ;; see `dired-compress-file-suffixes'.
+      (when (and (executable-find% "zip")
+                 (executable-find% "unzip"))
+        (unless (assoc** "\\.zip\\'" dired-compress-file-suffixes #'string=)
+          (add-to-list 'dired-compress-file-suffixes
+                       '("\\.zip\\'" ".zip" "unzip"))))))
+
+  (platform-supported-when windows-nt
+    ;; error at `dired-internal-noselect' on Windows:
+    ;; Reading directory: "ls --dired -al -- d:/abc/中文/" exited with status 2
+    ;; https://lists.gnu.org/archive/html/emacs-devel/2016-01/msg00406.html
+    ;; (setq file-name-coding-system locale-coding-system)
+    (unless-coding-system=  default-file-name-coding-system locale-coding-system
+      (ad-activate #'dired-shell-stuff-it t)
+      (ad-activate #'dired-shell-command t))))
+
+
+
+
 
 
 ;; ido-mode allows you to more easily navigate choices. For example,
