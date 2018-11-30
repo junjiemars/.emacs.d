@@ -302,17 +302,17 @@ The name is made by appending a number to PREFIX, default \"G\"."
 
 ;; coding-system macro
 
-(defmacro if-coding-system% (a b then &rest else)
-  "Do THEN if coding systems A and B are equal, otherwise do ELSE... at compile-time."
+(defmacro if-coding-system= (c1 c2 then &rest else)
+  "Do THEN if coding systems C1 and C2 are equal, otherwise do ELSE... at compile-time."
   (declare (indent 3))
-  (if (eq a b)
+  (if (eq c1 c2)
       `,then
     `(progn% ,@else)))
 
-(defmacro unless-coding-system% (a b &rest body)
-  "Do BODY unless coding systems A and B are equal."
+(defmacro unless-coding-system= (c1 c2 &rest body)
+  "Do BODY unless coding systems C1 and C2 are equal."
   (declare (indent 2))
-  `(if-coding-system% ,a ,b nil ,@body))
+  `(if-coding-system= ,c1 ,c2 nil ,@body))
 
 
  ;; end of coding-system macro
