@@ -97,8 +97,8 @@
       ;; key should recognize .zip extension and uncompress a .zip
       ;; archive.  [! zip x.zip ?] compress marked files to x.zip，
       ;; see `dired-compress-file-suffixes'.
-      (when (and (executable-find% "zip")
-                 (executable-find% "unzip"))
+      (when% (and (executable-find% "zip")
+                  (executable-find% "unzip"))
         (unless (assoc** "\\.zip\\'" dired-compress-file-suffixes #'string=)
           (add-to-list 'dired-compress-file-suffixes
                        '("\\.zip\\'" ".zip" "unzip"))))))
