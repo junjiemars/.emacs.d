@@ -10,7 +10,7 @@
 ;; lexical-supported macro
 
 (defmacro lexical-supported-if (then &rest else)
-  "If current Emacs supports lexical binding then do BODY, otherwise do ELSE..."
+  "If current Emacs supports lexical binding then do THEN, otherwise do ELSE..."
   (declare (indent 1))
   `(version-supported-if
        <= 24.1
