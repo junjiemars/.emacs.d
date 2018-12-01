@@ -575,8 +575,8 @@ for which (PRED item) returns t."
 ;; compilation
 (defun colorize-compilation-buffer! ()
   "Colorize *compilation* buffer."
-  (when (eq major-mode 'compilation-mode)
-    (when-fn% ansi-color-apply-on-region ansi-color
+  (when-fn% ansi-color-apply-on-region ansi-color
+    (when (eq major-mode 'compilation-mode)
       (let ((buffer-read-only nil))
         (require 'ansi-color)
         (ansi-color-apply-on-region
@@ -585,4 +585,4 @@ for which (PRED item) returns t."
          (point-max))))))
 
 
-
+ ;; end of basic.el
