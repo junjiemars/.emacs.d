@@ -26,7 +26,7 @@
 
 (platform-supported-when windows-nt
 
-  (unless-coding-system= default-file-name-coding-system locale-coding-system
+  (unless% (eq default-file-name-coding-system locale-coding-system)
 
     (defadvice insert-directory (before insert-directory-before compile)
       "`dired-find-file' should failed when using GNU's ls program on Windows.
@@ -78,7 +78,7 @@
            ;; for more defails
            (setq% ls-lisp-use-insert-directory-program t ls-lisp)
            (platform-supported-when windows-nt
-             (unless-coding-system= default-file-name-coding-system locale-coding-system
+             (unless% (eq default-file-name-coding-system locale-coding-system)
                (ad-activate #'insert-directory t))))
         (platform-supported-when darwin
           ;; on Drawin: the builtin ls does not support --dired option
@@ -108,7 +108,7 @@
     ;; Reading directory: "ls --dired -al -- d:/abc/中文/" exited with status 2
     ;; https://lists.gnu.org/archive/html/emacs-devel/2016-01/msg00406.html
     ;; (setq file-name-coding-system locale-coding-system)
-    (unless-coding-system= default-file-name-coding-system locale-coding-system
+    (unless% (eq default-file-name-coding-system locale-coding-system)
       (ad-activate #'dired-shell-stuff-it t)
       (ad-activate #'dired-shell-command t))))
 

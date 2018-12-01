@@ -163,17 +163,20 @@ DIR where the compiled file located."
 Else return BODY sexp."
   (if (cdr body) `(progn ,@body) (car body)))
 
+
 (defmacro if% (cond then &rest else)
   "If COND yields non-nil, do THEN, else do ELSE..."
   (declare (indent 2))
-  (if cond
+  (if (funcall `(lambda () ,cond))
       `,then
     `(progn% ,@else)))
+
 
 (defmacro when% (cond &rest body)
   "If COND yields non-nil, do BODY, else return nil."
   (declare (indent 1))
   `(if% ,cond (progn% ,@body)))
+
 
 (defmacro unless% (cond &rest body)
   "If COND yields nil, do BODY, else return nil."
