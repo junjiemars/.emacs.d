@@ -8,7 +8,7 @@
 
 
 ;; Define `recenter-top-bottom' for Emacs23.2-
-(unless-fn% recenter-top-bottom nil
+(unless-fn% 'recenter-top-bottom nil
 
   (defvar recenter-last-op nil
     "Indicates the last recenter operation performed.

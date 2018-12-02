@@ -88,7 +88,7 @@
 
 (with-eval-after-load 'dired-aux
 
-  (if-fn% dired-do-compress-to dired-aux
+  (if-fn% 'dired-do-compress-to 'dired-aux
           (when-var% dired-compress-files-alist dired-aux
             ;; `format-spec' may not autoload
             (require 'format-spec))

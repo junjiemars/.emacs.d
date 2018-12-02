@@ -49,7 +49,7 @@
 
 
 ;; It's a bug in cider/clojure
-(when-fn% org-bookmark-jump-unhide org
+(when-fn% 'org-bookmark-jump-unhide 'org
   (declare-function org-bookmark-jump-unhide "org"))
 
 

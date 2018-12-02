@@ -12,7 +12,7 @@
 (defun set-global-key! ()
   
   ;; open file or url at point
-  (when-fn% find-file-at-point ffap
+  (when-fn% 'find-file-at-point 'ffap
     (define-key (current-global-map) (kbd "C-c b") #'find-file-at-point))
 
   

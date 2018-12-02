@@ -156,7 +156,7 @@ See `string-match' and `match-string'."
 
 ;; Compatible Functions
 
-(unless-fn% with-eval-after-load nil
+(unless-fn% 'with-eval-after-load nil
   (defmacro with-eval-after-load (file &rest body)
     "Execute BODY after FILE is loaded.
 
@@ -175,12 +175,12 @@ for more details about the different forms of FILE and their semantics."
 
 The value is actually the first element of LIST whose car equals KEY.
 Equality is defined by TESTFN if non-nil or by `equal' if nil."
-    (if-fn% cl-assoc cl-lib
+    (if-fn% 'cl-assoc 'cl-lib
             ;; cl-assoc autoload
             `(progn
                (require 'cl-lib)
                (cl-assoc ,key ,list :test (or ,testfn #'equal)))
-      (when-fn% assoc* cl
+      (when-fn% 'assoc* 'cl
         `(with-no-warnings
            (require 'cl)
            (assoc* ,key ,list :test (or ,testfn #'equal)))))))
@@ -483,10 +483,10 @@ positive, otherwise via native."
 
 
 ;; use `pp' `pp-eval-expression' or `pp-eval-last-sexp'
-(if-fn% cl-prettyprint cl
+(if-fn% 'cl-prettyprint 'cl
   ;;;###autoload
-  (defalias 'pprint #'cl-prettyprint)
-  (when-fn% cl-prettyexpand cl
+        (defalias 'pprint #'cl-prettyprint)
+  (when-fn% 'cl-prettyexpand 'cl
     ;;;###autoload
     (defalias 'pprint #'cl-prettyexpand)))
 
@@ -575,7 +575,7 @@ for which (PRED item) returns t."
 ;; compilation
 (defun colorize-compilation-buffer! ()
   "Colorize *compilation* buffer."
-  (when-fn% ansi-color-apply-on-region ansi-color
+  (when-fn% 'ansi-color-apply-on-region 'ansi-color
     (when (eq major-mode 'compilation-mode)
       (let ((buffer-read-only nil))
         (require 'ansi-color)

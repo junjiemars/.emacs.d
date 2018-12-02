@@ -17,25 +17,25 @@
   ;;
   ;; define keys for `magit'
   ;; 
-  (when-fn% magit-pull magit
+  (when-fn% 'magit-pull 'magit
     (define-key (current-global-map) (kbd "C-c g p") #'magit-pull))
   
-  (when-fn% magit-push magit
+  (when-fn% 'magit-push 'magit
     (define-key (current-global-map) (kbd "C-c g P") #'magit-push))
   
-  (when-fn% magit-log magit
+  (when-fn% 'magit-log 'magit
     (define-key (current-global-map) (kbd "C-c g l") #'magit-log))
 
-  (when-fn% magit-log-buffer-file magit
+  (when-fn% 'magit-log-buffer-file 'magit
     (define-key (current-global-map) (kbd "C-c g b") #'magit-log-buffer-file))
 
-  (when-fn% magit-checkout magit
+  (when-fn% 'magit-checkout 'magit
     (define-key (current-global-map) (kbd "C-c g c") #'magit-checkout))
 
-  (when-fn% magit-merge magit
+  (when-fn% 'magit-merge 'magit
     (define-key (current-global-map) (kbd "C-c g m") #'magit-merge))
   
-  (when-fn% magit-fetch magit
+  (when-fn% 'magit-fetch 'magit
     (define-key (current-global-map) (kbd "C-c g f") #'magit-fetch)))
 
 
@@ -43,5 +43,5 @@
   (use-magit!))
 
 
-(when-fn% magit-status magit
+(when-fn% 'magit-status 'magit
   (define-key (current-global-map) (kbd "C-c g s") #'magit-status))

@@ -124,16 +124,18 @@ If X requires the FEATURE, load it on compile-time."
   "If FN is bounded yields non-nil, do THEN, else do ELSE...
 If FN requires the FEATURE, load it on compile-time."
   (declare (indent 3))
-  (when feature (require feature nil t))
-  (if (fboundp fn)
-      `,then
-    `(progn% ,@else)))
+  `(when% ,feature (require ,feature nil t))
+  `(if% (fboundp ,fn)
+       ,then
+     (progn% ,@else)))
+
 
 (defmacro when-fn% (fn feature &rest body)
   "Do BODY when FN is bound.
 If FN requires the FEATURE, load it on compile-time."
   (declare (indent 2))
   `(if-fn% ,fn ,feature (progn% ,@body)))
+
 
 (defmacro unless-fn% (fn feature &rest body)
   "Do BODY unless FN is bound.
@@ -168,10 +170,10 @@ If VAR requires the FEATURE, load it on compile-time."
 
 ;; byte-compiler macro
 
-(unless-fn% gensym nil
+(unless-fn% 'gensym nil
   (defvar *gensym-counter* 0))
 
-(unless-fn% gensym nil
+(unless-fn% 'gensym nil
   ;; feature Emacs version will add `gensym' into the core
   ;; but now using cl-gensym indeed
   (defun gensym (&optional prefix)
@@ -206,7 +208,7 @@ The name is made by appending a number to PREFIX, default \"G\"."
 
 (defmacro def-function-threading (fn &optional join)
   "Define FN threading macro."
-  (if-fn% make-thread nil
+  (if-fn% 'make-thread nil
           (let ((name (symbol-name fn))
                 (name1 (intern (format "function-threading-%s"
                                        (symbol-name fn))))

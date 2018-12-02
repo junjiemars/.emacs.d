@@ -10,13 +10,13 @@
 ;; basic ui
 
 ;; Disable menu bar
-(when-fn%  menu-bar-mode nil (menu-bar-mode -1))
+(when-fn%  'menu-bar-mode nil (menu-bar-mode -1))
 
 ;; Disable tool bar
-(graphic-supported-p (when-fn% tool-bar-mode nil (tool-bar-mode -1)))
+(graphic-supported-p (when-fn% 'tool-bar-mode nil (tool-bar-mode -1)))
 
 ;; Disable scroll bar
-(when-fn% scroll-bar-mode nil (scroll-bar-mode -1))
+(when-fn% 'scroll-bar-mode nil (scroll-bar-mode -1))
 
 ;; Go straight to scratch buffer on startup when graphic supported
 (graphic-supported-if
@@ -68,7 +68,7 @@
     (defsubst self-cjk-font! (name size)
       "Set CJK font's NAME and SIZE in graphic mode."
       (when (font-exists-p name)
-        (when-fn% set-fontset-font nil
+        (when-fn% 'set-fontset-font nil
           (dolist (c '(han kana cjk-misc))
             (set-fontset-font (frame-parameter nil 'font)
                               c (font-spec :family name

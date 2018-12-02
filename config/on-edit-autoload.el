@@ -14,7 +14,7 @@
   (set-face-foreground 'region "black"))
 
 ;; No cursor blinking, it's distracting
-(when-fn% blink-cursor-mode nil (blink-cursor-mode 0))
+(when-fn% 'blink-cursor-mode nil (blink-cursor-mode 0))
 
 ;; full path in title bar
 (graphic-supported-p
@@ -95,7 +95,7 @@
   "Toggle comment on current line or region."
   (interactive)
   (let (begin end)
-    (if-fn% region-active-p nil
+    (if-fn% 'region-active-p nil
             (if (region-active-p)
                 (setq begin (region-beginning)
                       end (region-end))
@@ -107,7 +107,7 @@
         (setq begin (line-beginning-position)
               end (line-end-position))))
     (comment-or-uncomment-region begin end)
-    (if-fn% next-logical-line nil
+    (if-fn% 'next-logical-line nil
             (next-logical-line)
       (next-line))))
 
@@ -129,8 +129,8 @@
 
 ;; find-tag and pop-tag-mark
 ;; same as Emacs22+
-(unless-fn% xref-find-definitions xref
-  (when-fn% pop-tag-mark etags
+(unless-fn% 'xref-find-definitions 'xref
+  (when-fn% 'pop-tag-mark 'etags
     (with-eval-after-load 'etags
       ;; define keys for `pop-tag-mark' and `tags-loop-continue'
       (define-key% (current-global-map) (kbd "M-,") #'pop-tag-mark)
@@ -143,7 +143,7 @@
 (version-supported-when > 24.4
   ;; fix: no quit key to hide *Messages* buffer
   (with-current-buffer (get-buffer "*Messages*")
-    (if-fn% read-only-mode nil
+    (if-fn% 'read-only-mode nil
             (read-only-mode 1)
       (toggle-read-only t))
     (local-set-key (kbd "q") #'quit-window)))
