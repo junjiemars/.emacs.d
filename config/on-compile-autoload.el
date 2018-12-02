@@ -7,7 +7,7 @@
 ;;;;
 
 
-(platform-supported-when windows-nt
+(platform-supported-when 'windows-nt
   ;; There are no builtin `grep' in Windows, GNU's `grep' may use
   ;; the UNIX path in Windows which cannot be recognized by Emacs.
   ;; When such case occurred, we try to translate UNIX path to POSIX path.
@@ -20,7 +20,7 @@
 
 (with-eval-after-load 'compile
   
-  (platform-supported-when windows-nt
+  (platform-supported-when 'windows-nt
     ;; compile and activate `compilation-find-file' advice on Windows
     (ad-activate #'compilation-find-file t))
   

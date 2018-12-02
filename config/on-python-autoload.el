@@ -40,7 +40,7 @@
 ;;          (shell-command
 ;;           (concat "pip install " p
 ;;                   (platform-supported-if
-;;                       windows-nt " >/nul"
+;;                       'windows-nt " >/nul"
 ;;                     " >/dev/null"))))
 ;;         (message "#Install elpy required packages[%s]...done" p)
 ;;       (message "#Missing some packages[%s] that elpy required" p))))

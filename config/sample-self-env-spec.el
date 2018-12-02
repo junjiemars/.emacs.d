@@ -18,16 +18,16 @@
                :compile nil ;; expert option
                :allowed t)
 
-  :font (list :name (platform-supported-if darwin
+  :font (list :name (platform-supported-if 'darwin
                         "Monaco-13"
-                      (platform-supported-if windows-nt
+                      (platform-supported-if 'windows-nt
                           "Consolas-13"
                         "DejaVu Sans Mono-12")) 
               :allowed nil)
 
-  :cjk-font (list :name (platform-supported-if darwin
+  :cjk-font (list :name (platform-supported-if 'darwin
                             "Hei"
-                          (platform-supported-if windows-nt
+                          (platform-supported-if 'windows-nt
                               "Microsoft Yahei"
                             "DejaVu Sans Mono-12"))
                   :size 12
@@ -37,8 +37,8 @@
                            "PYTHONPATH"
                            "RACKET_HOME"
                            "PATH"
-                           ,(platform-supported-unless windows-nt
-                              (platform-supported-if darwin
+                           ,(platform-supported-unless 'windows-nt
+                              (platform-supported-if 'darwin
                                   "DYLD_LIBRARY_PATH"
                                 "LD_LIBRARY_PATH")))
                :options '("--login") ;; '("-i" "2>/dev/null")

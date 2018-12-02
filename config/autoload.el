@@ -62,10 +62,10 @@
 		(compile-unit% (emacs-home* "config/on-python-autoload.el"))
     (compile-unit% (emacs-home* "config/on-window-autoload.el"))
     
-    (platform-supported-if windows-nt
+    (platform-supported-if 'windows-nt
         (compile-unit% (emacs-home* "config/gud-cdb.el") t)
       
-      (platform-supported-if darwin
+      (platform-supported-if 'darwin
           (compile-unit% (emacs-home* "config/gud-lldb.el") t)
         
         (when (executable-find% "lldb")
@@ -85,7 +85,7 @@
     (v-home% "config/cc.elc")
     "Return a list of system include directories.")
 
-  (platform-supported-when windows-nt
+  (platform-supported-when 'windows-nt
     (autoload 'make-cc-env-bat
       (v-home% "config/cc.elc")
       "Make cc-env.bat in `exec-path'."))
@@ -93,11 +93,11 @@
   (autoload 'set-semantic-cc-env!
     (v-home% "config/on-semantic-autoload.elc"))
 
-  (platform-supported-when windows-nt
+  (platform-supported-when 'windows-nt
     ;; add .exec/ to %PATH%
     (windows-nt-env-path+ (v-home% ".exec/")))
 
-  (platform-supported-when windows-nt
+  (platform-supported-when 'windows-nt
     ;; on Windows: there are no builtin zip program
     ;; so try to use minzip in Emacs dep for Windows.
     ;; zip.bat works with `dired-do-compress-to' and `org-odt-export-to-odt'.

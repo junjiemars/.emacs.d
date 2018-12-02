@@ -92,9 +92,9 @@ Returns the value of THEN or the value of the last of the ELSE’s.
 THEN must be one expression, but ELSE... can be zero or more expressions.
 If (eq `system-type' OS) yields nil, and there are no ELSE’s, the value is nil. "
   (declare (indent 2))
-  (if (eq system-type os)
-      `,then
-    `(progn% ,@else)))
+  `(if% (eq system-type ,os)
+       ,then
+     (progn% ,@else)))
 
 (defmacro platform-supported-when (os &rest body)
   "Run BODY code if on specified OS platform, else return nil."

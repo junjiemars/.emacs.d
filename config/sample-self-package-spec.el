@@ -38,7 +38,7 @@
    :compile `(,(compile-unit% (emacs-home* "config/use-lfe-autoload.el"))))
   (list
    :cond (and (terminal-supported-p t)
-              (platform-supported-unless darwin t)
+              (platform-supported-unless 'darwin t)
               (version-supported-p <= 25.1))
    :packages '(ereader))
   (list

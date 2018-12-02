@@ -7,7 +7,7 @@
 ;;;;
 
 
-(platform-supported-when windows-nt
+(platform-supported-when 'windows-nt
   
   (defun check-vcvarsall-bat ()
     "Return the path of vcvarsall.bat if which exists."
@@ -26,7 +26,7 @@
              (when (file-exists-p bat) bat)))))))
 
 
-(platform-supported-when windows-nt
+(platform-supported-when 'windows-nt
   
   (defun make-cc-env-bat ()
     "Make cc-env.bat in `exec-path'."
@@ -50,7 +50,7 @@
 
 (defun check-cc-include ()
   "Return cc include paths list."
-  (platform-supported-if windows-nt
+  (platform-supported-if 'windows-nt
       ;; Windows: msvc
       (let ((cmd (shell-command* (make-cc-env-bat))))
         (when (zerop (car cmd))
@@ -86,7 +86,7 @@ otherwise check cc include on the fly."
         (progn
           (load (concat c "c"))
           system-cc-include)
-      (let ((paths (platform-supported-if darwin
+      (let ((paths (platform-supported-if 'darwin
                        (mapcar (lambda (x)
                                  (string-trim> x " (framework directory)"))
                                (check-cc-include))

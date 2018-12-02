@@ -68,7 +68,7 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 (defun save-shell-env! ()
   (shell-env<- :exec-path
                (dolist (p (append (var->paths (getenv (shells-spec->% :PATH)))
-                                  (platform-supported-unless windows-nt
+                                  (platform-supported-unless 'windows-nt
                                     (list (v-home% ".exec/")))) exec-path)
                  (when (stringp p) (add-to-list 'exec-path p t #'string=))))
   (shell-env<- :env-vars
@@ -109,18 +109,18 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
 ;; Windows ansi-term/shell
 
-(platform-supported-when windows-nt
+(platform-supported-when 'windows-nt
   
   (defadvice ansi-term (before ansi-term-before compile)
     (set-window-buffer (selected-window)
                        (make-comint-in-buffer "ansi-term" nil "cmd"))))
 
 
-(platform-supported-when windows-nt
+(platform-supported-when 'windows-nt
   (with-eval-after-load 'term (ad-activate #'ansi-term t)))
 
 
-(platform-supported-when windows-nt
+(platform-supported-when 'windows-nt
 
   (defun windows-nt-env-path+ (dir &optional append)
     "APPEND or push DIR to %PATH%."
@@ -162,7 +162,7 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
  ;; end of allowed/disallowed `shells-spec->*'
 
 
-(platform-supported-when windows-nt
+(platform-supported-when 'windows-nt
   
   (defun make-zip-bat (zip &rest ignore)
     "Make ZIP.bat in `exec-path' for minizip or 7za."

@@ -87,7 +87,7 @@
 
 ;; Platform Related Functions
 
-(platform-supported-when windows-nt
+(platform-supported-when 'windows-nt
   
   (defmacro windows-nt-posix-path (path)
     "Return posix path from Windows PATH which can be recognized on`system-type'."
@@ -99,7 +99,7 @@
 					,path)))))
 
 
-(platform-supported-when windows-nt
+(platform-supported-when 'windows-nt
   
   (defmacro windows-nt-unix-path (path)
     "Return unix paths from PATH which can be recognized on `system-type'."
@@ -327,7 +327,7 @@ Return the first matched one, if multiple COMMANDs had been found
 and `funcall' PREFER returns t.
 "
   (if prefer
-      (let ((cmd (shell-command* (platform-supported-if windows-nt
+      (let ((cmd (shell-command* (platform-supported-if 'windows-nt
                                      "where"
                                    "command -v")
                    command)))
@@ -339,14 +339,14 @@ and `funcall' PREFER returns t.
                              (dolist (x path)
                                (when (funcall prefer
                                               (shell-quote-argument
-                                               (platform-supported-if windows-nt
+                                               (platform-supported-if 'windows-nt
                                                    (windows-nt-posix-path x)
                                                  x)))
                                  (throw 'prefer x)))
                              nil))
                           ((consp path) (car path))
                           (t path))))
-            `,(when p (platform-supported-if windows-nt
+            `,(when p (platform-supported-if 'windows-nt
                           (windows-nt-posix-path p)
                         p)))))
     (let ((path (executable-find command)))
@@ -405,7 +405,7 @@ otherwise default to keep the directories of current `emacs-version'."
                     (not (string-match
                           (concat "^[gt]_" emacs-version) f)))
             (message "#Clean saved user file: %s" (concat d f))
-            (platform-supported-if windows-nt
+            (platform-supported-if 'windows-nt
                 (shell-command (concat "rmdir /Q /S " (concat d f)))
               (shell-command (concat "rm -r " (concat d f))))))))))
 

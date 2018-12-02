@@ -42,7 +42,7 @@
 
 (comment
  ;; debugger: cdb, lldb
- (platform-supported-if windows-nt
+ (platform-supported-if 'windows-nt
      (when (executable-find% "cdb")
        (require 'gud-cdb))
    (when (executable-find% "lldb")
@@ -57,7 +57,7 @@
  (feature-semantic-supported-p
    (add-hook 'semantic-mode-hook
 						 #'(lambda ()
-								 (platform-supported-if windows-nt
+								 (platform-supported-if 'windows-nt
 										 (set-semantic-cc-env!
 											`("d:/opt/open/ecl/"
 												"d:/opt/open/ecl/build/"

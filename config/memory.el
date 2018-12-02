@@ -88,7 +88,7 @@
 
 ;; read saved session
 (add-hook 'after-init-hook
-          (platform-supported-if darwin
+          (platform-supported-if 'darwin
               ;; it's a bug on Darwin, may be hang when restore deskopt in concurrency.
               #'self-desktop-read!
             (def-function-threading self-desktop-read!))
@@ -117,7 +117,7 @@
                        (self-spec->*env-spec :theme)))
 
     (version-supported-when <= 26
-      (platform-supported-when darwin
+      (platform-supported-when 'darwin
         ;; fix: title bar text color broken #55
         ;; https://github.com/d12frosted/homebrew-emacs-plus/issues/55#issuecomment-408317248
         (dolist (x '((ns-transparent-titlebar . unbound)

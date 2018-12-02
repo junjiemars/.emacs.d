@@ -358,9 +358,9 @@ by default and for GUI mode only.
 
 #+BEGIN_SRC emacs-lisp
 (def-self-env-spec
-  :font (list :name (platform-supported-if darwin
+  :font (list :name (platform-supported-if 'darwin
                         "Monaco-14"
-                      (platform-supported-if windows-nt
+                      (platform-supported-if 'windows-nt
                           "Consolas-13"
                         "DejaVu Sans Mono-12")) 
               :allowed t))
@@ -397,8 +397,8 @@ default
                          "PYTHONPATH"
                          "RACKET_HOME"
                          "PATH"
-                         ,(platform-supported-unless windows-nt
-                            (platform-supported-if darwin
+                         ,(platform-supported-unless 'windows-nt
+                            (platform-supported-if 'darwin
                                 "DYLD_LIBRARY_PATH"
                               "LD_LIBRARY_PATH")))
              :options '("--login") ;; '("-i" "2>/dev/null")
@@ -544,7 +544,7 @@ The /user defined/ package spec default locate in =(emacs-home*
    :compile `(,(compile-unit% (emacs-home* "config/use-lfe-autoload.el"))))
   (list
    :cond (and (terminal-supported-p t)
-              (platform-supported-unless darwin t)
+              (platform-supported-unless 'darwin t)
               (version-supported-p <= 25.1))
    :packages '(ereader))
   (list
