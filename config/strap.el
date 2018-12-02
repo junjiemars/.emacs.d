@@ -192,39 +192,16 @@ The name is made by appending a number to PREFIX, default \"G\"."
       `(progn% ,@vars nil))))
 
 
-(defmacro feature-if% (feature filename then &rest else)
-  "If FEATURE existing do THEN, otherwise do ELSE... at compile-time."
-  (if (require feature filename t)
-      `,then
-    `(progn% ,@else)))
-
 (defmacro def-feature-supported-p (feature &optional filename docstring)
   "Define FEATURE supported-p macro."
   (let ((name (intern (format "feature-%s-supported-p" feature)))
         (ds1 (format "If has `%s' feauture then do BODY." feature)))
-    `(feature-if% ,feature ,filename
-                  (defmacro ,name (&rest body)
-                    ,(or docstring ds1)
-                    (declare (indent 0))
-                    `(progn% ,@body))
-                  (defmacro ,name (&rest body)
-                    ,(or docstring ds1)
-                    (declare (indent 0))
-                    `(comment ,@body)))))
-
-(defmacro def-function-supported-p (fn &optional feature docstring)
-  "Define FN supported-p macro."
-  (let ((name (intern (format "function-%s-supported-p" fn)))
-        (ds1 (format "If has `%s' fn then do BODY." fn)))
-    `(if-fn% ,fn ,feature
-             (defmacro ,name (&rest body)
-               ,(or docstring ds1)
-               (declare (indent 0))
-               `(progn% ,@body))
-       (defmacro ,name (&rest body)
-         ,(or docstring ds1)
-         (declare (indent 0))
-         `(comment ,body)))))
+    `(defmacro ,name (&rest body)
+       ,(or docstring ds1)
+       (declare (indent 0))
+       (if% (require ',feature ,filename t)
+           `(progn% ,@body)
+         `(comment ,@body)))))
 
 
 (defmacro def-function-threading (fn &optional join)
