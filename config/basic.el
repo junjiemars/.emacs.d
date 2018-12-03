@@ -28,58 +28,58 @@
 ;; eww bookmarks
 (version-supported-when
     <= 24.4
-  (setq% eww-bookmarks-directory (v-home! ".bookmarks/") eww))
+  (setq% eww-bookmarks-directory (v-home! ".bookmarks/") 'eww))
 
 ;; Bookmark: file in which to save bookmarks
 (setq% bookmark-default-file
-       (v-home! ".bookmarks/emacs.bmk") bookmark)
+       (v-home! ".bookmarks/emacs.bmk") 'bookmark)
 
 ;; Eshell
-(setq% eshell-directory-name (v-home! ".eshell/") eshell)
+(setq% eshell-directory-name (v-home! ".eshell/") 'eshell)
 
 ;; Games: a directory for game scores
-(setq% gamegrid-user-score-file-directory (v-home! ".games/") gamegrid)
+(setq% gamegrid-user-score-file-directory (v-home! ".games/") 'gamegrid)
 
 ;; Ido saved state between invocations
-(setq% ido-save-directory-list-file (v-home! ".ido/ido.last") ido)
+(setq% ido-save-directory-list-file (v-home! ".ido/ido.last") 'ido)
 
 ;; Image dired: where thumbnail images are stored.
-(setq% image-dired-dir (v-home! ".dired/image/") image-dired)
+(setq% image-dired-dir (v-home! ".dired/image/") 'image-dired)
 
 ;; Savehist: save minibuffer history
-(setq% savehist-file (v-home! ".minibuffer/history") savehist)
+(setq% savehist-file (v-home! ".minibuffer/history") 'savehist)
 
 ;; Recentf: save the recent list into
-(setq% recentf-save-file (v-home! ".recentf/recentf") recentf)
+(setq% recentf-save-file (v-home! ".recentf/recentf") 'recentf)
 
 ;; Rmail
 (setq rmail-file-name (v-home! ".mail/RMAIL"))
 
 ;; Nsm: Network Security Manager
-(setq% nsm-settings-file (v-home! ".nsm/security.data") nsm)
+(setq% nsm-settings-file (v-home! ".nsm/security.data") 'nsm)
 
 ;; When you visit a file, point goes to the last place where it
 ;; was when you previously visited the same file.
 ;; http://www.emacswiki.org/emacs/SavePlace
-(setq% save-place-file (v-home! ".places/places") saveplace)
+(setq% save-place-file (v-home! ".places/places") 'saveplace)
 
 ;; Server
-(setq% server-auth-dir (v-home! ".server/") server)
+(setq% server-auth-dir (v-home! ".server/") 'server)
 
 ;; Semantic
 (version-supported-when <= 23
   (setq% semanticdb-default-save-directory
-         (v-home! ".semantic/db/") semantic/db-file))
+         (v-home! ".semantic/db/") 'semantic/db-file))
 
 ;; Tramp
 (version-supported-when <= 23
   (version-supported-when > 24
     (eval-when-compile (require 'tramp)))
   (setq% tramp-persistency-file-name
-         (v-home! ".tramp/tramp") tramp-cache))
+         (v-home! ".tramp/tramp") 'tramp-cache))
 
 ;; Url
-(setq% url-configuration-directory (v-home! ".url/") url)
+(setq% url-configuration-directory (v-home! ".url/") 'url)
 
 
  ;; Versioned Dirs

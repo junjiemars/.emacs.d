@@ -12,7 +12,7 @@
       ;; On Windows try to open remote git repo via sshx
       ;; will trigger `magit' error: No such file or directory.
       ;; GitHub issue: https://github.com/magit/magit/issues/3345
-      (setq% magit-git-executable "git" magit)))
+      (setq% magit-git-executable "git" 'magit)))
   
   ;;
   ;; define keys for `magit'

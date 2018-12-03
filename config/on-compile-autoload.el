@@ -29,7 +29,7 @@
     ;; define `recompile' and `quit-window' key bindings
     (define-key% compilation-mode-map (kbd "g") #'recompile)
     (define-key% compilation-mode-map (kbd "q") #'quit-window))
-  (setq% compilation-scroll-output t compile))
+  (setq% compilation-scroll-output t 'compile))
 
 
 (with-eval-after-load 'grep

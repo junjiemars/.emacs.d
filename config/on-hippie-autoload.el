@@ -19,7 +19,7 @@
            try-expand-dabbrev-from-kill
            try-complete-lisp-symbol-partially
            try-complete-lisp-symbol)
-         hippie-exp))
+         'hippie-exp))
 
 
 ;; Key binding to use "hippie expand" for text autocompletion

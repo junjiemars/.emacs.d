@@ -14,7 +14,7 @@
   (with-eval-after-load 'aggressive-indent
 
     ;; disable `electric-indent-mode'
-    (setq% aggressive-indent-dont-electric-modes t aggressive-indent)
+    (setq% aggressive-indent-dont-electric-modes t 'aggressive-indent)
 
     ) ;; end of `with-eval-after-load'
   
@@ -23,5 +23,5 @@
 
 (when (self-spec->*env-spec :edit :allowed)
   (with-eval-after-load 'sh-script
-    (setq% sh-basic-offset (self-spec->*env-spec :edit :tab-width) sh-script)))
+    (setq% sh-basic-offset (self-spec->*env-spec :edit :tab-width) 'sh-script)))
 

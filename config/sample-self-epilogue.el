@@ -29,7 +29,7 @@
   (global-set-key (kbd "C-c o c") 'org-capture))
 
 
-(comment (setq% enable-local-variables :all files))
+(comment (setq% enable-local-variables :all 'files))
 
 (comment
  ;; using etags to view Emacs's source code: C and Elisp
@@ -47,7 +47,7 @@
        (require 'gud-cdb))
    (when (executable-find% "lldb")
      (require 'gud-lldb)
-     (comment (setq% gud-lldb-directories '("/opt/lab/c/src/") gud-lldb)))))
+     (comment (setq% gud-lldb-directories '("/opt/lab/c/src/") 'gud-lldb)))))
 
 (comment
  ;; if current Emacs session support `semantic-mode'
@@ -91,7 +91,7 @@
  ;; receive mail
  (require 'rmail)
  (setq rmail-primary-inbox-list '("<protocal://user:passwd@host>"))
- (setq% rmail-remote-password-required t rmail))
+ (setq% rmail-remote-password-required t 'rmail))
 
 (comment
  ;; send mail

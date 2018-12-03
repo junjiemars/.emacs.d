@@ -31,7 +31,7 @@
   "More easy way to set `slime-lisp-implementations'."
   (setq% slime-lisp-implementations
          (common-lisp-implementations 'acl 'ccl 'clasp 'ecl 'sbcl)
-         slime))
+         'slime))
 
 
 (provide 'use-slime)

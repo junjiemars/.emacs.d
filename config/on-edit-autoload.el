@@ -41,12 +41,12 @@
 (version-supported-if
     <= 25.1
     (save-place-mode t)
-  (setq% save-place t saveplace))
+  (setq% save-place t 'saveplace))
 
 ;; Shows all options when running apropos. For more info,
 ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html
 ;;enable apropos-do-all, but slower
-(setq% apropos-do-all t apropos)
+(setq% apropos-do-all t 'apropos)
 
 
 ;; Makes killing/yanking interact with the clipboard
@@ -63,14 +63,14 @@
   (setq% x-select-enable-clipboard t))
 (version-supported-if
     <= 25.1
-    (setq% select-enable-primary t select)
-  (setq% x-select-enable-primary t select))
+    (setq% select-enable-primary t 'select)
+  (setq% x-select-enable-primary t 'select))
 
 ;; Save before kill
-(setq% save-interprogram-paste-before-kill t simple)
+(setq% save-interprogram-paste-before-kill t 'simple)
 
 ;; Mouse yank commands yank at point instead of at click.
-(setq% mouse-yank-at-point t mouse)
+(setq% mouse-yank-at-point t 'mouse)
 
 
 ;; no need for ~ files when editing
@@ -87,7 +87,7 @@
 
 
 ;; enable column number mode
-(setq% column-number-mode t simple)
+(setq% column-number-mode t 'simple)
 
 
 ;; comments

@@ -8,7 +8,7 @@
 
 
 ;; define package user dir
-(setq% package-user-dir (v-home% "elpa/") package)
+(setq% package-user-dir (v-home% "elpa/") 'package)
 
 
 (defvar *repository-initialized* nil
@@ -23,15 +23,15 @@
            (version-supported-when
                <= 25.1
              (list '("melpa" . "https://melpa.org/packages/"))))
-   package)
+   'package)
 
   (version-supported-when
       <= 25.1
     (setq% package-archive-priorities
-     (list '("melpa-stable" . 10)
-     '("melpa" . 5)
-     '("gnu" . 0))
-     package))
+           (list '("melpa-stable" . 10)
+                 '("melpa" . 5)
+                 '("gnu" . 0))
+           'package))
 
   (package-refresh-contents))
 

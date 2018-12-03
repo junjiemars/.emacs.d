@@ -76,13 +76,13 @@
            ;; Darwin. on Windows: `dired-mode' does not display
            ;; executable flag in file mode，see `dired-use-ls-dired'
            ;; for more defails
-           (setq% ls-lisp-use-insert-directory-program t ls-lisp)
+           (setq% ls-lisp-use-insert-directory-program t 'ls-lisp)
            (platform-supported-when 'windows-nt
              (unless% (eq default-file-name-coding-system locale-coding-system)
                (ad-activate #'insert-directory t))))
         (platform-supported-when 'darwin
           ;; on Drawin: the builtin ls does not support --dired option
-          (setq% dired-use-ls-dired nil dired))))))
+          (setq% dired-use-ls-dired nil 'dired))))))
 
 
 

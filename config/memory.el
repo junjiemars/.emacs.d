@@ -63,7 +63,7 @@
                                    (self-spec-> ,previous :custom-theme-directory))
                  (disable-theme (self-spec-> ,previous :name)))
              (enable-theme (self-spec-> ,current :name)))
-           (setq% desktop-restore-frames t desktop)))))
+           (setq% desktop-restore-frames t 'desktop)))))
 
 
 ;; Read desktop
@@ -72,7 +72,7 @@
   (terminal-supported-p
     (version-supported-when <= 24.4
       (version-supported-when > 25
-        (setq% desktop-restore-forces-onscreen nil desktop))))
+        (setq% desktop-restore-forces-onscreen nil 'desktop))))
 
   (when (and (self-spec->*env-spec :desktop :allowed)
              (file-exists-p (v-home% ".desktop/")))
@@ -80,9 +80,9 @@
         (when (consp (theme-changed-p
                       (self-spec-> *self-previous-env-spec* :theme)
                       (self-spec->*env-spec :theme)))
-          (setq% desktop-restore-frames nil desktop)))
+          (setq% desktop-restore-frames nil 'desktop)))
     (setq% desktop-restore-eager
-           (self-spec->*env-spec :desktop :restore-eager) desktop)
+           (self-spec->*env-spec :desktop :restore-eager) 'desktop)
     (desktop-read (v-home% ".desktop/"))))
 
 
@@ -103,14 +103,14 @@
 (defun self-desktop-save! ()
   (when (self-spec->*env-spec :desktop :allowed)
     (let ((f (self-spec->*env-spec :desktop :files-not-to-save)))
-      (when f (setq% desktop-files-not-to-save f desktop)))
+      (when f (setq% desktop-files-not-to-save f 'desktop)))
     
     (let ((b (self-spec->*env-spec :desktop :buffers-not-to-save)))
-      (when b (setq% desktop-buffers-not-to-save b desktop)))
+      (when b (setq% desktop-buffers-not-to-save b 'desktop)))
     
     (let ((m (self-spec->*env-spec :desktop :modes-not-to-save)))
       (setq% desktop-modes-not-to-save
-             (append '(tags-table-mode) m) desktop))
+             (append '(tags-table-mode) m) 'desktop))
 
     (theme-supported-p
         (switch-theme! (self-spec-> *self-previous-env-spec* :theme)

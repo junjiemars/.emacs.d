@@ -8,7 +8,7 @@
 
 
 (version-supported-when > 23
-  (setq% eshell-save-history-on-exit t em-hist))
+  (setq% eshell-save-history-on-exit t 'em-hist))
 
 
 (defun eshell-mode! ()
