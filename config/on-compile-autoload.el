@@ -25,15 +25,15 @@
     (ad-activate #'compilation-find-file t))
   
   (add-hook 'compilation-filter-hook #'colorize-compilation-buffer!)
-  (when-var% compilation-mode-map compile
+  (when-var% compilation-mode-map 'compile
     ;; define `recompile' and `quit-window' key bindings
     (define-key% compilation-mode-map (kbd "g") #'recompile)
     (define-key% compilation-mode-map (kbd "q") #'quit-window))
   (setq% compilation-scroll-output t compile))
 
 
-  (with-eval-after-load 'grep
-    (when-var% grep-mode-map grep
-      ;; define `recompile' and `quit-window' key binding for `grep'
-      (define-key% grep-mode-map (kbd "g") #'recompile)
-      (define-key% grep-mode-map (kbd "q") #'quit-window)))
+(with-eval-after-load 'grep
+  (when-var% grep-mode-map 'grep
+    ;; define `recompile' and `quit-window' key binding for `grep'
+    (define-key% grep-mode-map (kbd "g") #'recompile)
+    (define-key% grep-mode-map (kbd "q") #'quit-window)))

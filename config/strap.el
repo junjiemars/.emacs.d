@@ -153,10 +153,10 @@ If FN requires the FEATURE, load it on compile-time."
   "If VAR is bounded yields non-nil, do THEN, else do ELSE...
 If VAR requires the FEATURE, load it on compile-time."
   (declare (indent 3))
-  (when feature (require feature nil t))
-  (if (boundp var)
-      `,then
-    `(progn% ,@else)))
+  `(if% (or (and ,feature (require ,feature nil t))
+            (boundp var))
+       ,then
+     (progn% ,@else)))
 
 (defmacro when-var% (var feature &rest body)
   "Do BODY when VAR is bound.

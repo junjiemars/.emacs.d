@@ -84,7 +84,7 @@
       ;; On Windows C-) is not work
       ;; fix inconsistent `C-)' `C-c )' behavior:#9
       ;; On Terminal mode, Ctrl+Shift combination can't send to Emacs
-      (when-var% paredit-mode-map paredit
+      (when-var% paredit-mode-map 'paredit
         (define-key% paredit-mode-map (kbd "C-c )") #'paredit-forward-slurp-sexp)
         (define-key% paredit-mode-map (kbd "C-c (") #'paredit-backward-slurp-sexp)
         (define-key% paredit-mode-map (kbd "C-c }") #'paredit-forward-barf-sexp)

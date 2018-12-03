@@ -429,8 +429,8 @@ otherwise default to keep the directories of current `emacs-version'."
   "If socks feature supported then do BODY."
   (declare (indent 0))
   `(version-supported-when < 22
-     (when-var% url-gateway-method url
-                ,@body)))
+     (when-var% url-gateway-method 'url
+       ,@body)))
 
 (feature-socks-supported-p
 
@@ -580,7 +580,7 @@ for which (PRED item) returns t."
       (let ((buffer-read-only nil))
         (require 'ansi-color)
         (ansi-color-apply-on-region
-         (if-var% compilation-filter-start compile
+         (if-var% compilation-filter-start 'compile
                   compilation-filter-start (point-min))
          (point-max))))))
 
