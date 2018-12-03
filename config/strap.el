@@ -153,8 +153,8 @@ If FN requires the FEATURE, load it on compile-time."
   "If VAR is bounded yields non-nil, do THEN, else do ELSE...
 If VAR requires the FEATURE, load it on compile-time."
   (declare (indent 3))
-  `(if% (or (and ,feature (require ,feature nil t))
-            (boundp var))
+  `(if% (or (and ,feature (require ,feature nil t) (boundp ',var))
+            (boundp ',var))
        ,then
      (progn% ,@else)))
 
