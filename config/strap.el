@@ -190,8 +190,8 @@ The name is made by appending a number to PREFIX, default \"G\"."
   "Return nil, list VARS at compile time if in lexical context."
   (declare (indent 0))
   (lexical-supported-when
-    (when lexical-binding
-      `(progn% ,@vars nil))))
+    `(when% lexical-binding
+       (progn% ,@vars nil))))
 
 
 (defmacro def-feature-supported-p (feature &optional filename docstring)
