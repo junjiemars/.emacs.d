@@ -659,10 +659,10 @@ On Windows, there are some encoding issues when
 
 The good news is all those issues had gone in this kit.
 
-*** compress
+*** compress and uncompress
 
-On Windows, there are critical bugs in =dired-aux.el=, We can not
-using =Z= key compress or uncompress file to or from =.gz=.
+On Windows, there are logical bugs in =dired-aux.el=, We can not using
+=Z= key compress or uncompress file to or from =.gz= or =.7z=.
 
 The good news: if =gunzip= or =7za= installed we can do it now.
 
@@ -677,7 +677,6 @@ create the tags for =Elisp= or =C= source code, such as
 =make-emacs-source-tags=, =make-system-c-tags=, and =mount-tags=.
 
 More Reasonable Emacs also supports [[http://ctags.sourceforge.net/][Exuberant Ctags]].
-
 * Programming
 	:PROPERTIES:
 	:CUSTOM_ID: programming

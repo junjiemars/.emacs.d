@@ -91,16 +91,22 @@
   (if-fn% 'dired-do-compress-to 'dired-aux
           (when-var% dired-compress-files-alist 'dired-aux
             ;; `format-spec' may not autoload
-            (require 'format-spec))
-    (when-var% dired-compress-file-suffixes 'dired-aux
-      ;; on ancent Emacs, `dired' can't recognize .zip archive. 
-      ;; [! zip x.zip ?] compress marked files to x.zip，
-      ;; see `dired-compress-file-suffixes'.
-      (when% (and (executable-find% "zip")
-                  (executable-find% "unzip"))
-        (unless (assoc** "\\.zip\\'" dired-compress-file-suffixes #'string=)
-          (add-to-list 'dired-compress-file-suffixes
-                       '("\\.zip\\'" ".zip" "unzip"))))))
+            (require 'format-spec)
+
+            ;; compress .7z file via [c] key
+            (when% (and (executable-find% "7za")
+                        (not (assoc** "\\.7z\\'" dired-compress-files-alist)))
+              (push (cons "\\.7z\\'" "7za a -t7z %o %i")
+                    dired-compress-files-alist)))
+
+    ;; on ancent Emacs, `dired' can't recognize .zip archive. 
+    ;; [! zip x.zip ?] compress marked files to x.zip，
+    ;; see `dired-compress-file-suffixes'.
+    (when% (and (executable-find% "zip")
+                (executable-find% "unzip"))
+      (unless (assoc** "\\.zip\\'" dired-compress-file-suffixes #'string=)
+        (add-to-list 'dired-compress-file-suffixes
+                     '("\\.zip\\'" ".zip" "unzip")))))
 
   (platform-supported-when 'windows-nt
     ;; error at `dired-internal-noselect' on Windows:
@@ -120,7 +126,14 @@
                     dired-compress-file-suffixes))
       (unless% (executable-find% "gunzip")
         (setcdr (assoc** "\\.gz\\'" dired-compress-file-suffixes #'string=)
-                (list "" "7za x -aoa %i"))))))
+                '("" "7za x -aoa %i"))))
+
+    ;; support compress/uncompress .7z file via [Z] key
+    (when% (executable-find% "7za")
+      (if% (assoc** "\\.7z\\'" dired-compress-file-suffixes)
+          (setcdr (assoc** "\\.7z\\'" dired-compress-file-suffixes)
+                  '("" "7za x -aoa -o%o %i"))
+        (put (list "\\.7z\\'" "" "7za x -aoa -o%o %i"))))))
 
 
 ;; ido-mode allows you to more easily navigate choices. For example,
