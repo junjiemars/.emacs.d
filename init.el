@@ -182,44 +182,38 @@ Else return BODY sexp."
   "If COND yields nil, do BODY, else return nil."
   (declare (indent 1))
   `(if% ,cond nil ,@body))
-  
+
 
  ;; end of compile-time macro
 
 
 ;; version-supported macro
 
-(defmacro version-supported* (cond version)
-  "Return t if (COND VERSION `emacs-version') yields non-nil, else nil.
-
-COND should be quoted, such as (version-supported* '<= 24)"
-  `(let ((ver (cond ((stringp ,version) ,version)
-                    ((numberp ,version) (number-to-string ,version))
-                    (t (format "%s" ,version)))))
-     (cond ((eq '< ,cond) (version< ver emacs-version))
-           ((eq '<= ,cond) (version<= ver emacs-version))
-           ((eq '> ,cond) (not (version<= ver emacs-version)))
-           ((eq '>= ,cond) (not (version< ver emacs-version)))
-           (t nil))))
-
-(defmacro version-supported-if (cond version then &rest else)
-  "If (COND VERSION `emacs-version') yields non-nil, do THEN, else do ELSE...
+(defmacro version-supported-if (cmp version then &rest else)
+  "If (CMP VERSION `emacs-version') yields non-nil, do THEN, else do ELSE...
 
 Return the value of THEN or the value of the last of the ELSE’s.
 THEN must be one expression, but ELSE... can be zero or more expressions.
 If (COND VERSION EMACS-VERSION) yields nil, and there are no ELSE’s, the value is nil. "
   (declare (indent 3))
-  (if (version-supported* `,cond `,version)
-      `,then
-    `(progn% ,@else)))
+  (let ((ver (cond ((numberp version) (number-to-string version))
+                   ((stringp version) version)
+                   (t (format "%s" ,version)))))
+    `(if% (cond ((eq '< ',cmp) (version< ,ver emacs-version))
+                ((eq '<= ',cmp) (version<= ,ver emacs-version))
+                ((eq '> ',cmp) (not (version<= ,ver emacs-version)))
+                ((eq '>= ',cmp) (not (version< ,ver emacs-version)))
+                (t nil))
+         ,then
+       (progn% ,@else))))
 
-(defmacro version-supported-when (cond version &rest body)
-  "If (COND VERSION `emacs-version') yields non-nil, do BODY, else return nil.
+(defmacro version-supported-when (cmp version &rest body)
+  "If (CMP VERSION `emacs-version') yields non-nil, do BODY, else return nil.
 
-When (COND VERSION `emacs-version') yields non-nil, eval BODY forms 
+When (CMP VERSION `emacs-version') yields non-nil, eval BODY forms 
 sequentially and return value of last one, or nil if there are none."
   (declare (indent 2))
-  `(version-supported-if ,cond ,version (progn% ,@body)))
+  `(version-supported-if ,cmp ,version (progn% ,@body)))
 
 
  ;; end of version-supported macro
