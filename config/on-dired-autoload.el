@@ -120,7 +120,7 @@
                     dired-compress-file-suffixes))
       (unless% (executable-find% "gunzip")
         (setcdr (assoc** "\\.gz\\'" dired-compress-file-suffixes #'string=)
-                "7za x")))))
+                (list "" "7za x -aoa %i"))))))
 
 
 ;; ido-mode allows you to more easily navigate choices. For example,
