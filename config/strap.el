@@ -219,7 +219,7 @@ The name is made by appending a number to PREFIX, default \"G\"."
                        (thread-join thread)
                      thread))))
      (ignore* join)
-     `(function ,fn)))
+     (function ,fn)))
 
 
  ;; end of byte-compiler macro
