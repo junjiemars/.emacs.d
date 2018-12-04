@@ -208,19 +208,19 @@ The name is made by appending a number to PREFIX, default \"G\"."
 
 (defmacro def-function-threading (fn &optional join)
   "Define FN threading macro."
-  (if-fn% 'make-thread nil
-          (let ((name (symbol-name fn))
-                (name1 (intern (format "function-threading-%s"
-                                       (symbol-name fn))))
-                (ds1 (format "Threading `%s'." fn)))
-            `(defun ,name1 ()
-               ,ds1
-               (let ((thread (make-thread (function ,fn) ,name)))
-                 (if ,join
-                     (thread-join thread)
-                   thread))))
-    (ignore* join)
-    `(function ,fn)))
+  `(if-fn% 'make-thread nil
+           ,(let ((name (symbol-name fn))
+                  (name1 (intern (format "function-threading-%s"
+                                         (symbol-name fn))))
+                  (ds1 (format "Threading `%s'." fn)))
+              `(defun ,name1 ()
+                 ,ds1
+                 (let ((thread (make-thread (function ,fn) ,name)))
+                   (if% ,join
+                       (thread-join thread)
+                     thread))))
+     (ignore* join)
+     `(function ,fn)))
 
 
  ;; end of byte-compiler macro
