@@ -95,7 +95,7 @@
 
             ;; compress .7z file via [c] key
             (when% (and (executable-find% "7za")
-                        (not (assoc** "\\.7z\\'" dired-compress-files-alist)))
+                        (not (assoc** "\\.7z\\'" dired-compress-files-alist #'string=)))
               (push (cons "\\.7z\\'" "7za a -t7z %o %i")
                     dired-compress-files-alist)))
 
@@ -118,11 +118,11 @@
       (ad-activate #'dired-shell-command t))
 
     ;; [Z] to compress or uncompress .gz file
-    (when% (and (assoc** ":" dired-compress-file-suffixes)
+    (when% (and (assoc** ":" dired-compress-file-suffixes #'string=)
                 (or (executable-find% "gunzip")
                     (executable-find% "7za")))
       (setq dired-compress-file-suffixes
-            (remove (assoc** ":" dired-compress-file-suffixes)
+            (remove (assoc** ":" dired-compress-file-suffixes #'string=)
                     dired-compress-file-suffixes))
       (unless% (executable-find% "gunzip")
         (setcdr (assoc** "\\.gz\\'" dired-compress-file-suffixes #'string=)
@@ -130,8 +130,8 @@
 
     ;; support compress/uncompress .7z file via [Z] key
     (when% (executable-find% "7za")
-      (if% (assoc** "\\.7z\\'" dired-compress-file-suffixes)
-          (setcdr (assoc** "\\.7z\\'" dired-compress-file-suffixes)
+      (if% (assoc** "\\.7z\\'" dired-compress-file-suffixes #'string=)
+          (setcdr (assoc** "\\.7z\\'" dired-compress-file-suffixes #'string=)
                   '("" "7za x -aoa -o%o %i"))
         (put (list "\\.7z\\'" "" "7za x -aoa -o%o %i"))))))
 
