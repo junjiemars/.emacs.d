@@ -93,9 +93,8 @@
             ;; `format-spec' may not autoload
             (require 'format-spec))
     (when-var% dired-compress-file-suffixes 'dired-aux
-      ;; on ancent Emacs, `dired' can't recognize .zip archive.  [Z]
-      ;; key should recognize .zip extension and uncompress a .zip
-      ;; archive.  [! zip x.zip ?] compress marked files to x.zip，
+      ;; on ancent Emacs, `dired' can't recognize .zip archive. 
+      ;; [! zip x.zip ?] compress marked files to x.zip，
       ;; see `dired-compress-file-suffixes'.
       (when% (and (executable-find% "zip")
                   (executable-find% "unzip"))
@@ -110,7 +109,18 @@
     ;; (setq file-name-coding-system locale-coding-system)
     (unless% (eq default-file-name-coding-system locale-coding-system)
       (ad-activate #'dired-shell-stuff-it t)
-      (ad-activate #'dired-shell-command t))))
+      (ad-activate #'dired-shell-command t))
+
+    ;; [Z] to compress or uncompress .gz file
+    (when% (and (assoc** ":" dired-compress-file-suffixes)
+                (or (executable-find% "gunzip")
+                    (executable-find% "7za")))
+      (setq dired-compress-file-suffixes
+            (remove (assoc** ":" dired-compress-file-suffixes)
+                    dired-compress-file-suffixes))
+      (unless% (executable-find% "gunzip")
+        (setcdr (assoc** "\\.gz\\'" dired-compress-file-suffixes #'string=)
+                "7za x")))))
 
 
 ;; ido-mode allows you to more easily navigate choices. For example,
