@@ -60,16 +60,16 @@
     (compile-unit% (emacs-home* "config/on-lisp-autoload.el"))
     (compile-unit% (emacs-home* "config/on-indent-autoload.el"))
 		(compile-unit% (emacs-home* "config/on-python-autoload.el"))
+    (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))
     (compile-unit% (emacs-home* "config/on-window-autoload.el"))
     
-    (platform-supported-if 'windows-nt
-        (compile-unit% (emacs-home* "config/gud-cdb.el") t)
-      
-      (platform-supported-if 'darwin
-          (compile-unit% (emacs-home* "config/gud-lldb.el") t)
-        
-        (when (executable-find% "lldb")
-          (compile-unit% (emacs-home* "config/gud-lldb.el") t))))
+    (platform-supported-when 'windows-nt
+      (compile-unit% (emacs-home* "config/gud-cdb.el") t))
+
+    (platform-supported-if 'darwin
+        (compile-unit% (emacs-home* "config/gud-lldb.el") t)
+      (when (executable-find% "lldb")
+        (compile-unit% (emacs-home* "config/gud-lldb.el") t)))
 
     (feature-eww-supported-p
       (compile-unit% (emacs-home* "config/on-eww-autoload.el")))
