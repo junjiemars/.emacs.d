@@ -7,10 +7,10 @@
 ;;;;
 
 
-(with-eval-after-load 'tramp
-
-  (setq% tramp-default-method (platform-supported-if 'windows-nt
-                                  "sshx" "ssh") 'tramp))
+;; (with-eval-after-load 'tramp
+;;   ;; sshx makes tramp try to avoid any non-standard shell
+;;   ;; configuration on the remote host.
+;;   )
 
 
  ;; end of file
