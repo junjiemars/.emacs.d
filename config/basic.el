@@ -529,23 +529,10 @@ for which (PRED item) returns t."
 
 ;; define key macro
 
-
-(defmacro if-key* (keymap key def then &rest else)
-  "If KEY is defined in KEYMAP do THEN, else do ELSE..."
-	(declare (indent 4))
-	`(if (eq ,def (lookup-key ,keymap ,key))
-			 ,then
-		 (progn% ,@else)))
-
-
 (defmacro define-key% (keymap key def)
 	"Define KEY as DEF in KEYMAP when the KEY binding of DEF is not exists."
-	(if-key*
-      (funcall `(lambda () ,keymap))
-      (funcall `(lambda () ,key))
-      (funcall `(lambda () ,def))
-			nil
-		`(define-key ,keymap ,key ,def)))
+	`(unless% (eq ,def (lookup-key ,keymap ,key))
+		 (define-key ,keymap ,key ,def)))
 
 
  ;; end of key macro
