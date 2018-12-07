@@ -64,7 +64,8 @@
     (compile-unit% (emacs-home* "config/on-window-autoload.el"))
     
     (platform-supported-when 'windows-nt
-      (compile-unit% (emacs-home* "config/gud-cdb.el") t))
+      (compile-unit% (emacs-home* "config/gud-cdb.el")
+                     (unless% (executable-find% "cdb") t)))
 
     (platform-supported-if 'darwin
         (compile-unit% (emacs-home* "config/gud-lldb.el") t)

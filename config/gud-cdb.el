@@ -48,22 +48,14 @@
 ;;      from https://developer.microsoft.com/en-US/windows/downloads/windows-10-sdk
 ;;      Add cdb to your PATH environment.
 ;;
-;;    - Put the following into your ~/.emacs.d/self-epilogue.el file:
-;;
-;;      (platform-supported-when 'windows-nt
-;;          (compile! +v-dir+ (compile-unit% (emacs-home* "config/gud-cdb.el") t)))
-;;
-;;    - You can customize `gud-cdb-directories' to help GUD find your source
-;;      files.
-;;
 ;;    - If you want key bindings similar to MS' GUI debuggers, add the
 ;;      following:
 ;;
-;;      (global-set-key [f5]    'gud-cont)
+;;      (global-set-key [f9]    'gud-break)
 ;;      (global-set-key [f7]    'gud-tbreak)
 ;;      (global-set-key [f8]    'gud-step)
-;;      (global-set-key [f9]    'gud-break)
 ;;      (global-set-key [f10]   'gud-next)
+;;      (global-set-key [f5]    'gud-cont)
 ;;      (global-set-key [f11]   'gud-finish)
 ;;
 ;;
@@ -71,8 +63,8 @@
 ;;
 ;; In Emacs, run
 ;;
-;;      M-x cdb
-;;     "Run cdb (like this):" cdb <name of your exe>
+;;     M-: (require 'gud-cdb)
+;;     M-x cdb <name of your exe>
 ;;
 ;; This will open a new Emacs buffer "*gud-xxx*".  In it you will get a
 ;; CDB command prompt '0:000> '.  (CDB commands are documented in the
@@ -89,14 +81,12 @@
 ;; You can also issue additional commands from the CDB command prompt --
 ;; e.g.:
 ;;
+;;     - '?'   Displays cdb's help
+;;
 ;;     - 'dv'  Displays local variables
 ;;
 ;;     - 'dt' or '??' shows the content of a single variable.
 ;;
-;; To get the current stack trace, either use the 'k' command or execute
-;; "M-x speedbar".  The later will display the calling stack in a
-;; additional Emacs frame and you can use the mouse to switch between
-;; stack frames.
 ;;;;
 ;; Refine Targets:
 ;; 1. Start or attach a process.
@@ -254,7 +244,7 @@ Note that only whatever the method *returns* is displayed in the
 buffer; thus, you can filter the debugger's output, interpreting
 some and passing on the rest.
 "
-  (setq gud-marker-acc (concat gud-marker-acc string))
+  ;; (setq gud-marker-acc (concat gud-marker-acc string))
   (cond ((string-match "^\\(.*\\)(\\([0-9]+\\))\n" string)
          ;; Breakpoint 0 hit
          ;; e:\lab\c\src\c.c(9)
@@ -269,7 +259,7 @@ some and passing on the rest.
          ;; ModLoad: 00007ffe`9ecc0000 00007ffe`9ed5d000   C:\WINDOWS\System32\msvcrt.dll
          ;; ModLoad: 00007ffe`9f140000 00007ffe`9f25f000   C:\WINDOWS\System32\RPCRT4.dll
          ;; ntdll!NtTerminateProcess+0x14:
-         ;; 00007ffe`a10005f4 c3              ret
+         ;; 00007ffe`a10005f4 c3              reto
          (setq gud-last-last-frame nil)
          (setq gud-overlay-arrow-position nil))
         )
