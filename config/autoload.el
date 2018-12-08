@@ -67,10 +67,8 @@
       (compile-unit% (emacs-home* "config/gud-cdb.el")
                      (unless% (executable-find% "cdb") t)))
 
-    (platform-supported-if 'darwin
-        (compile-unit% (emacs-home* "config/gud-lldb.el") t)
-      (when (executable-find% "lldb")
-        (compile-unit% (emacs-home* "config/gud-lldb.el") t)))
+    (compile-unit% (emacs-home* "config/gud-lldb.el")
+                   (unless% (executable-find% "lldb") t))
 
     (feature-eww-supported-p
       (compile-unit% (emacs-home* "config/on-eww-autoload.el")))

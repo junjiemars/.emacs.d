@@ -41,15 +41,6 @@
      srcdir))))
 
 (comment
- ;; debugger: cdb, lldb
- (platform-supported-if 'windows-nt
-     (when (executable-find% "cdb")
-       (require 'gud-cdb))
-   (when (executable-find% "lldb")
-     (require 'gud-lldb)
-     (comment (setq% gud-lldb-directories '("/opt/lab/c/src/") 'gud-lldb)))))
-
-(comment
  ;; if current Emacs session support `semantic-mode'
  ;; using semantic to view and editing any supported code
  ;; correctly and more faster
