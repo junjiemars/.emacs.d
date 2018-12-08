@@ -9,18 +9,10 @@
 
 
 (def-feature-supported-p aggressive-indent nil)
-
-
-(def-feature-supported-p paredit nil)
-
-
-(def-feature-supported-p rainbow-delimiters nil)
-
-
 (def-feature-supported-p bing-dict nil)
-
-
 (def-feature-supported-p geiser nil)
+(def-feature-supported-p paredit nil)
+(def-feature-supported-p rainbow-delimiters nil)
 
 
 (defmacro feature-allowed-p (feature &rest body)
