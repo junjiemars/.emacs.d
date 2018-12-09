@@ -218,7 +218,7 @@ The name is made by appending a number to PREFIX, default \"G\"."
                    (if% ,join
                        (thread-join thread)
                      thread))))
-     (ignore* join)
+     (ignore* ,join)
      (function ,fn)))
 
 
