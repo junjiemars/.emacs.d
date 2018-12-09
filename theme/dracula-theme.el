@@ -417,7 +417,7 @@
                (icicle-candidate-part :foreground ,var)
                (icicle-annotation :foreground ,fg4))))
 
-	       (require 'cl-macs)
+  (eval-when-compile (require 'cl-macs))
   (apply #'custom-theme-set-faces
          'dracula
          (let ((color-names (mapcar #'car colors))
