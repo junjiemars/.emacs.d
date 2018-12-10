@@ -54,7 +54,7 @@
   :group 'gud)
 
 
-(defconst +lldb-prompt-regexp+ "^\\(lldb\\) *"
+(defconst +lldb-prompt-regexp+ "^\\(?:(lldb) *\\)"
   "Regexp pattern of `lldb' prompt.")
 
 
