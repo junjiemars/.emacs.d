@@ -81,7 +81,7 @@ This should be set with `system-cc-include'")
 
 Load `system-cc-include' from file when CACHED is t, 
 otherwise check cc include on the fly."
-  (let ((c (v-home% "config/.cc-inc.el")))
+  (let ((c (v-home% ".exec/.cc-inc.el")))
     (if (and cached (file-exists-p (concat c "c")))
         (progn
           (load (concat c "c"))
