@@ -147,11 +147,17 @@ containing the executable being debugged."
   "Regexp pattern of `cdb' prompt.")
 
 
-;; (defconst +cdb-command-alist+
-;;    '(("bm" ())
-;;      ("bp" ())
-;;      ("bu" ()))
-;;    "A list of `cdb' commands.")
+(defvar *cdb-symbol-alist*
+  (list "lm" "lmD" "lmv"
+        "bl" "bu" "bp"
+        "$ea" "$ea2" "$exp"
+        "$ip" "$exentry" "$ra" "$retreg" "$csp"
+        "$proc" "$thread" "$tpid" "$tid"
+        "$peb" "$teb"
+        "$frame"
+        "$ptrsize" "$pagesize"
+        "$argreg")
+  "A list of `cdb' symbol.")
 
 
 ;; ;; buffer local variables
@@ -194,20 +200,14 @@ in `gud-cdb-directories'.
                  (when (file-exists-p p) (return p))))))
 
 
-;; (defun cdb-completions (context command)
-;;   "Completion table for `cdb' commands.
-;; COMMAND is the prefix for which we seek completion.
-;; CONTEXT is the text before COMMAND on the line."
-;;   (let* ((complete-list
-;;            (gud-gdb-run-command-fetch-lines (concat "complete " context command)
-;;                                             (current-buffer)
-;;                                             ;; From string-match above.
-;;                                             (length context))))
-;;     ;; Protect against old versions of GDB.
-;;     (and complete-list
-;;           (string-match "^Undefined command: \"complete\"" (car complete-list))
-;;           (error "This version of GDB doesn't support the `complete' command"))
-;;     (gud-gdb-completions-1 complete-list)))
+(defun cdb-completion-at-point ()
+  "Return the data to complete the `cdb' command before point."
+  (interactive)
+  (let* ((x (bounds-of-thing-at-point 'symbol))
+         (start (car x))
+         (end (cdr x)))
+    (list start end *cdb-symbol-alist* . nil)))
+
 
 
 
@@ -282,6 +282,9 @@ a tag name, or something else."
         (find-file-noselect filename 'nowarn)))))
 
 
+
+
+
 (defun cdb (command-line)
   "Run cdb on program FILE in buffer *gud-FILE*.
 
@@ -314,7 +317,10 @@ directory and source-file directory for your debugger."
 
   (run-hooks 'gud-cdb-mode-hook)
   (loop for x in gud-cdb-init-hook
-        when (functionp x) do (funcall x)))
+        when (functionp x) do (funcall x))
+
+  (add-hook 'comint-dynamic-complete-functions
+            #'cdb-completion-at-point nil 'local))
 
 
 ;; (defun gud-cdb-goto-stackframe (text token indent)
