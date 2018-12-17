@@ -203,6 +203,8 @@ directory and source-file directory for your debugger."
 
   (set (make-local-variable 'comint-prompt-regexp) +lldb-prompt-regexp+)
   (set (make-local-variable 'comint-prompt-read-only) t)
+  (unless (member 'ansi-color-process-output comint-output-filter-functions)
+    (add-to-list 'comint-output-filter-functions #'ansi-color-process-output))
 
   ;; M-{ and M-}
   (set (make-local-variable 'paragraph-separate) "\\'")
