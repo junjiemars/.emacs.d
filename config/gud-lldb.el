@@ -180,7 +180,8 @@ some and passing on the rest."
 (add-hook 'gud-lldb-init-hook #'lldb-settings-frame-format t)
 
 
-(defun lldb (command-line)
+
+(defun gud-lldb (command-line)
   "Run lldb on program FILE in buffer *gud-FILE*.
 
 The directory containing FILE becomes the initial working
