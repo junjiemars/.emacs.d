@@ -181,7 +181,7 @@ some and passing on the rest."
 
 
 
-(defun gud-lldb (command-line)
+(defun lldb (command-line)
   "Run lldb on program FILE in buffer *gud-FILE*.
 
 The directory containing FILE becomes the initial working
