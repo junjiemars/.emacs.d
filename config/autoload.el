@@ -62,13 +62,6 @@
 		(compile-unit% (emacs-home* "config/on-python-autoload.el"))
     (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))
     (compile-unit% (emacs-home* "config/on-window-autoload.el"))
-    
-    (platform-supported-when 'windows-nt
-      (compile-unit% (emacs-home* "config/gud-cdb.el")
-                     (unless% (executable-find% "cdb") t)))
-
-    (compile-unit% (emacs-home* "config/gud-lldb.el")
-                   (unless% (executable-find% "lldb") t))
 
     (feature-eww-supported-p
       (compile-unit% (emacs-home* "config/on-eww-autoload.el")))
@@ -77,9 +70,19 @@
       (compile-unit% (emacs-home* "config/on-linum-autoload.el")))
     
     (feature-semantic-supported-p
-      (compile-unit% (emacs-home* "config/on-semantic-autoload.el"))))
+      (compile-unit% (emacs-home* "config/on-semantic-autoload.el")))
 
-  
+    (platform-supported-if 'windows-nt
+      (when% (executable-find% "cdb")
+        (compile-unit% (emacs-home* "config/gud-cdb.el") t))
+      (when% (executable-find% "lldb")
+        (compile-unit% (emacs-home* "config/gud-lldb.el") t))))
+
+
+  (platform-supported-when 'windows-nt
+    ;; add .exec/ to %PATH%
+    (windows-nt-env-path+ (v-home% ".exec/")))
+
   (autoload 'system-cc-include
     (v-home% "config/cc.elc")
     "Return a list of system include directories.")
@@ -92,9 +95,14 @@
   (autoload 'set-semantic-cc-env!
     (v-home% "config/on-semantic-autoload.elc"))
 
-  (platform-supported-when 'windows-nt
-    ;; add .exec/ to %PATH%
-    (windows-nt-env-path+ (v-home% ".exec/")))
+  (platform-supported-if 'windows-nt
+      (when% (executable-find% "cdb")
+        (autoload 'cdb (v-home% "config/gud-cdb.elc")
+          "Run lldb on program FILE in buffer *gud-FILE*." t))
+    (when% (executable-find% "lldb")
+      (autoload 'lldb (v-home% "config/gud-lldb.elc")
+        "Run cdb on program FILE in buffer *gud-FILE*." t)))
+
 
   (platform-supported-when 'windows-nt
     ;; on Windows: there are no builtin zip program
