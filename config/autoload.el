@@ -13,7 +13,7 @@
   
   ;; open file or url at point
   (when-fn% 'find-file-at-point 'ffap
-    (define-key (current-global-map) (kbd "C-c b") #'find-file-at-point))
+    (define-key (current-global-map) (kbd "C-c f b") #'find-file-at-point))
 
   
   ;; Shows a list of buffers
