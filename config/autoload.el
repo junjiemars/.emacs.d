@@ -52,7 +52,7 @@
   (compile!
     (compile-unit% (emacs-home* "config/financial.el") t)
     (compile-unit% (emacs-home* "config/tags.el") t)
-    (compile-unit% (emacs-home* "config/cc.el"))
+    (compile-unit% (emacs-home* "config/on-cc-autoload.el"))
     (compile-unit% (emacs-home* "config/on-compile-autoload.el"))
     (compile-unit% (emacs-home* "config/on-dired-autoload.el"))
     (compile-unit% (emacs-home* "config/on-edit-autoload.el"))
@@ -83,15 +83,6 @@
     ;; add .exec/ to %PATH%
     (windows-nt-env-path+ (v-home% ".exec/")))
 
-;;   (autoload 'system-cc-include
-;;     (v-home% "config/cc.elc")
-;;     "Return a list of system include directories.")
-
-;;   (platform-supported-when 'windows-nt
-;;     (autoload 'make-cc-env-bat
-;;       (v-home% "config/cc.elc")
-;;       "Make cc-env.bat in `exec-path'."))
-  
   (autoload 'set-semantic-cc-env!
     (v-home% "config/on-semantic-autoload.elc"))
 
