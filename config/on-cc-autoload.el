@@ -102,7 +102,7 @@ otherwise check cc include on the fly."
 (with-eval-after-load 'cc-mode
   ;; find c include file
   (setq% cc-search-directories
-           (append (list ".") (system-cc-include t))
+         (append (list ".") (system-cc-include t))
          'find-file)
 
   (when-var% c-mode-map 'cc-mode
