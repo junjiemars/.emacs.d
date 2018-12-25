@@ -149,7 +149,8 @@
     (local-set-key (kbd "q") #'quit-window)))
 
 
-(when% (require 'uniquify nil t)
-  "`uniquify' may not be autoloaded on ancient Emacs."
-  (require 'uniquify)
-  (setq uniquify-buffer-name-style 'post-forward-angle-brackets))
+(version-supported-when > 24 
+  (when% (require 'uniquify nil t)
+    "`uniquify' may not be autoloaded on ancient Emacs."
+    (require 'uniquify)
+    (setq uniquify-buffer-name-style 'post-forward-angle-brackets)))
