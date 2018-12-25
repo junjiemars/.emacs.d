@@ -150,5 +150,6 @@
 
 
 (when% (require 'uniquify nil t)
+  "`uniquify' may not be autoloaded on ancient Emacs."
   (require 'uniquify)
   (setq uniquify-buffer-name-style 'post-forward-angle-brackets))
