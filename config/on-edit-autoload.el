@@ -149,3 +149,6 @@
     (local-set-key (kbd "q") #'quit-window)))
 
 
+(when% (require 'uniquify nil t)
+  (require 'uniquify)
+  (setq uniquify-buffer-name-style 'post-forward-angle-brackets))
