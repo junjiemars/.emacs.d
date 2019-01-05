@@ -150,7 +150,10 @@
 
 
 (version-supported-when > 24 
-  (when% (require 'uniquify nil t)
+  (when% (let ((x byte-compile-warnings))
+           (setq byte-compile-warnings nil)
+           (prog1 (require 'uniquify nil t)
+             (setq byte-compile-warnings x)))
     "`uniquify' may not be autoloaded on ancient Emacs."
     (require 'uniquify)
     (setq uniquify-buffer-name-style 'post-forward-angle-brackets)))
