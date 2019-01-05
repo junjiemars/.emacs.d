@@ -106,8 +106,12 @@ otherwise check cc include on the fly."
          'find-file)
 
   (when-var% c-mode-map 'cc-mode
+    ;; keymap: find c include file
     (when-fn% 'ff-find-other-file 'find-file
-      (define-key% c-mode-map (kbd "C-c f i") #'ff-find-other-file))))
+      (define-key% c-mode-map (kbd "C-c f i") #'ff-find-other-file))
+    ;; keymap: indent line or region
+    (when-fn% 'c-indent-line-or-region 'cc-cmds
+      (define-key% c-mode-map (kbd "TAB") #'c-indent-line-or-region))))
 
 
 ;; end of on-cc-autoload.el
