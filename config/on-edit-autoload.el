@@ -149,11 +149,14 @@
     (local-set-key (kbd "q") #'quit-window)))
 
 
-(version-supported-when > 24 
+(version-supported-when > 24
+  ;; fix: `uniquify' may not be autoloaded on ancient Emacs.
   (when% (let ((x byte-compile-warnings))
            (setq byte-compile-warnings nil)
            (prog1 (require 'uniquify nil t)
              (setq byte-compile-warnings x)))
-    "`uniquify' may not be autoloaded on ancient Emacs."
     (require 'uniquify)
     (setq uniquify-buffer-name-style 'post-forward-angle-brackets)))
+
+
+;; end of file
