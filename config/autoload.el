@@ -40,7 +40,15 @@
     (feature-allowed-p bing-dict
       ;; define `bing-dict' key binding
       (define-key (current-global-map) (kbd "C-c d") #'bing-dict-brief)))
-  
+
+  (when-fn% 'electric-newline-and-maybe-indent 'electric
+    ;; Default behaviour of RET
+    ;; https://lists.gnu.org/archive/html/emacs-devel/2013-10/msg00490.html
+    ;; electric-indent-mode: abolition of `newline' function is not the	Right Thing
+    ;; https://lists.gnu.org/archive/html/emacs-devel/2013-10/msg00407.html
+    (define-key% global-map (kbd "RET") #'electric-newline-and-maybe-indent)
+    (define-key% global-map (kbd "C-j") #'newline))
+
   )
 
  ;; end of set-global-key!
