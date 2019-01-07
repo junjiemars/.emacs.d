@@ -23,3 +23,14 @@
       `(,supported
         (package-spec-:allowed-p
           ,@body)))))
+
+
+
+(feature-allowed-p aggressive-indent
+  ;; enable automatically adjust the identation of code
+  ;; https://github.com/Malabarba/aggressive-indent-mode
+
+  (with-eval-after-load 'aggressive-indent
+
+    ;; disable `electric-indent-mode'
+    (setq% aggressive-indent-dont-electric-modes t 'aggressive-indent)))

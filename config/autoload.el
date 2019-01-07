@@ -58,8 +58,8 @@
     (compile-unit% (emacs-home* "config/on-edit-autoload.el"))
     (compile-unit% (emacs-home* "config/on-hippie-autoload.el"))
     (compile-unit% (emacs-home* "config/on-lisp-autoload.el"))
-    (compile-unit% (emacs-home* "config/on-indent-autoload.el"))
 		(compile-unit% (emacs-home* "config/on-python-autoload.el"))
+    (compile-unit% (emacs-home* "config/on-sh-autoload.el"))
     (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))
     (compile-unit% (emacs-home* "config/on-window-autoload.el"))
 
@@ -73,8 +73,8 @@
       (compile-unit% (emacs-home* "config/on-semantic-autoload.el")))
 
     (platform-supported-if 'windows-nt
-      (when% (executable-find% "cdb")
-        (compile-unit% (emacs-home* "config/gud-cdb.el") t))
+        (when% (executable-find% "cdb")
+          (compile-unit% (emacs-home* "config/gud-cdb.el") t))
       (when% (executable-find% "lldb")
         (compile-unit% (emacs-home* "config/gud-lldb.el") t))))
 
