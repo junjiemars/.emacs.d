@@ -788,6 +788,7 @@ machine.
 - [[#latex-requirements][LaTex Requirements]]
 - [[#tips][Tips]]
 - [[file:README.org][Readme]]
+- [[https://www.emacswiki.org/emacs/EmacsNewbieKeyReference][Newbie Key Reference]]
 
 ** Emacs Documents
    :PROPERTIES:
