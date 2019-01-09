@@ -687,21 +687,27 @@ More Reasonable Emacs also supports [[http://ctags.sourceforge.net/][Exuberant C
 
 Obey the defaults of Emacs' keymap.
 
-*** global keys
+*** Global keys
+
+Global, and for all Emacs' version.
 
 - @@html:<kbd>@@M-/@@html:</kbd>@@ =hippie-expand=
 - @@html:<kbd>@@C-c ;@@html:</kbd>@@ =toggle-comment=
 
-*** compatible keys
+*** Compatible keys
 
+Compatibled for ancient Emacs versions.
+		
 - @@html:<kbd>@@M-,@@html:</kbd>@@ =pop-tag-mark=
 - @@html:<kbd>@@M-*@@html:</kbd>@@ =tags-loop-continue=
 - @@html:<kbd>@@C-l@@html:</kbd>@@ =recenter-top-bottom=
 - @@html:<kbd>@@C-c l@@html:</kbd>@@ =linum-mode=
-
-*** featured keys
-
 - @html:<kbd>@@M-#@@html:</kbd>@@ =xref-find-references=
+
+*** Featured keys
+
+Featured, and depends on non Emacs' builtin packages.
+
 
 * Programming
 	:PROPERTIES:
