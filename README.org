@@ -303,6 +303,8 @@ Introduce rules of naming /files/ and /functions/
 - [[#indent][Indent]]
 - [[#file][File]]
 - [[#tags][Tags]]
+- [[#keys][Keys]]
+
 
 ** Theme
     :PROPERTIES:
@@ -687,11 +689,11 @@ Obey the defaults of Emacs' keymap.
 
 *** global
 
-- @@html:<kbd>M-/@@</kbd>@@: =hippie-expand=
-- @@html:<kbd>C-c l@@</kbd>@@: =linum-mode=
-- @@html:<kbd>C-c ;@@</kbd>@@: =toggle-comment=
-- @@html:<kbd>M-,@@</kbd>@@: =pop-tag-mark=
-- @@html:<kbd>M-*@@</kbd>@@: =tags-loop-continue=
+- @@html:<kbd>@@M-/@@html:</kbd>@@: =hippie-expand=
+- @@html:<kbd>@@C-c l@@html:</kbd>@@: =linum-mode=
+- @@html:<kbd>@@C-c ;@@html:</kbd>@@: =toggle-comment=
+- @@html:<kbd>@@M-,@@html:</kbd>@@: =pop-tag-mark=
+- @@html:<kbd>@@M-*@@html:</kbd>@@: =tags-loop-continue=
 
 *** compatible
 
