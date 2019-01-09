@@ -677,6 +677,27 @@ create the tags for =Elisp= or =C= source code, such as
 =make-emacs-source-tags=, =make-system-c-tags=, and =mount-tags=.
 
 More Reasonable Emacs also supports [[http://ctags.sourceforge.net/][Exuberant Ctags]].
+
+** Keys
+	 :PROPERTIES:
+	 :CUSTOM_ID: keys
+	 :END:
+
+Obey the defaults of Emacs' keymap.
+
+*** global
+
+- @@html:<kbd>M-/@@</kbd>@@: =hippie-expand=
+- @@html:<kbd>C-c l@@</kbd>@@: =linum-mode=
+- @@html:<kbd>C-c ;@@</kbd>@@: =toggle-comment=
+- @@html:<kbd>M-,@@</kbd>@@: =pop-tag-mark=
+- @@html:<kbd>M-*@@</kbd>@@: =tags-loop-continue=
+
+*** compatible
+
+*** featured
+
+
 * Programming
 	:PROPERTIES:
 	:CUSTOM_ID: programming
