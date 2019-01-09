@@ -701,7 +701,7 @@ Obey the defaults of Emacs' keymap.
 
 *** featured keys
 
-
+- @html:<kbd>@@M-#@@html:</kbd>@@ =xref-find-references=
 
 * Programming
 	:PROPERTIES:

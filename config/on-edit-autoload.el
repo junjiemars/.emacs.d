@@ -137,7 +137,9 @@
       (define-key% (current-global-map) (kbd "M-*") #'tags-loop-continue))))
 
 
- ;; end of indent
+(when-fn% 'xref-find-references 'xref
+  ;; find references to the identifier at point.
+  (define-key% (current-global-map) (kbd "M-#") #'xref-find-references))
 
 
 (version-supported-when > 24.4
