@@ -7,6 +7,10 @@
 ;;;;
 
 
+(defconst +more-reasonable-emacs+
+  "https://github.com/junjiemars/.emacs.d"
+  "More Reasonable Emacs git repo")
+
 ;; lexical-supported macro
 
 (defmacro lexical-supported-if (then &rest else)
