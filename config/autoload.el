@@ -87,7 +87,9 @@
         (compile-unit% (emacs-home* "config/gud-lldb.el") t)))
 
     (platform-supported-when 'windows-nt
-      (when% (or (executable-find% "mutool"))
+      (when% (or (executable-find% "gswin64c")
+                 (executable-find% "gswin32c")
+                 (executable-find% "mutool"))
         (compile-unit% (emacs-home* "config/on-docview-autoload.el")))))
 
 
