@@ -123,8 +123,8 @@
 
 (package-spec-:allowed-p
   ;; Load basic package spec
-  (parse-package-spec! basic-package-spec
-                       (self-spec->*env-spec :package :remove-unused))
+  (parse-package-spec! basic-package-spec)
+
   ;; Load self packages spec
   (parse-package-spec! (self-spec->*package-spec)
                        (self-spec->*env-spec :package :remove-unused)))
