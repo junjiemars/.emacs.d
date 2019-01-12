@@ -165,5 +165,18 @@ Example:
       (make-c-tags p tag-file dir-filter))))
 
 
+(defun make-dir-tags (dir &optional renew)
+  "Make tags for specified DIR."
+  (interactive "D make tags in ")
+  (when (file-exists-p dir)
+    (let ((tags-file (concat dir ".tags")))
+      (make-tags dir
+                 tags-file
+                 (lambda (f _)
+                   (not (string-match "\\\.tags$" f)))
+                 (lambda (d _)
+                   (not (string-match "^\\\.git/$\\|^out/$\\|^build/$" d)))
+                 t))))
+  
 
 (provide 'tags)
