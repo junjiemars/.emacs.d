@@ -75,8 +75,7 @@ when `desktop-globals-to-save' include it."
     (with-no-warnings
       (require 'cl)
       (setq tags-table-list
-            (remove-if (lambda (x) (string= x tags-file))
-                       tags-table-list)))))
+            (remove* tags-file tags-table-list :test #'string=)))))
 
 
 (defun make-tags (home tags-file file-filter dir-filter &optional renew)
