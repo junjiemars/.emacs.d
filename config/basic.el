@@ -200,6 +200,12 @@ Use TESTFN to lookup in the alist if non-nil, otherwise use `equal'."
          ,default))))
 
 
+;; Unifiy `cl-remove' and `remove*'
+(if-fn% 'cl-remove 'cl-lib
+        (defalias 'remove** 'cl-remove)
+  (when-fn% 'remove* 'cl (defalias 'remove** 'remove*)))
+
+
 (version-supported-if
     <= 24.4
     (defalias 'split-string* 'split-string)

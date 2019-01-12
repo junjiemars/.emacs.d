@@ -72,10 +72,8 @@ when `desktop-globals-to-save' include it."
 (defun unmount-tags (tags-file)
   "Unmount TAGS-FILE from `tags-table-list'."
   (when tags-file
-    (with-no-warnings
-      (require 'cl)
-      (setq tags-table-list
-            (remove* tags-file tags-table-list :test #'string=)))))
+    (setq tags-table-list
+          (remove** tags-file tags-table-list :test #'string=))))
 
 
 (defun make-tags (home tags-file file-filter dir-filter &optional renew)

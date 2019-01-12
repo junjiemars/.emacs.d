@@ -128,9 +128,7 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
       (when (or (and (null append) (not (string= dir (first env))))
                 (and append (not (string= dir (last env)))))
         (eval-when-compile (require 'cl))
-        (let ((path (with-no-warnings
-                      (require 'cl)
-                      (remove* dir env :test #'string=))))
+        (let ((path (remove** dir env :test #'string=)))
           (setenv (shells-spec->% :PATH)
                   (paths->var (if append
                                   (append path dir)
