@@ -888,6 +888,9 @@ It's *self-documenting* and great, keep reading it frequently.
 	@@html:<kbd>@@C-x u@@html:</kbd>@@
 - cancel: @@html:<kbd>@@C-]@@html:</kbd>@@, or
 	 @@html:<kbd>M-x top-level@@html:</kbd>@@
+- justify paragraph: @@html:<kbd>@@M-q@@html:</kbd>@@
+- open new line before current: @@html:<kbd>@@C-o@@html:</kbd>@@
+- remove all but one empty line: @@html:<kbd>@@C-x C-o@@html:</kbd>@@
 
 ** Coding
 	 :PROPERTIES:
