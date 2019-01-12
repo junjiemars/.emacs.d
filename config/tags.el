@@ -11,9 +11,9 @@
   "Extract value from the list of spec via KEYS at compile time.
 
 Examples:
-(tags-spec->% :emacs-home)
-(tags-spec->% :emacs-source)
-(tags-spec->% :os-include)
+\(tags-spec->% :emacs-home\)
+\(tags-spec->% :emacs-source\)
+\(tags-spec->% :os-include\)
 "
   `(self-spec->% (list
                   :emacs-home ,(v-home% ".tags/home/TAGS")
