@@ -65,8 +65,8 @@ when `desktop-globals-to-save' include it."
   (let ((mounted nil))
     (dolist (x tags-file (nreverse mounted))
       (when (file-exists-p x)
-  (add-to-list 'tags-table-list x t #'string=)
-  (setq mounted (cons x mounted))))))
+        (add-to-list 'tags-table-list x t #'string=)
+        (setq mounted (cons x mounted))))))
 
 
 (defun make-tags (home tags-file file-filter dir-filter &optional renew)
@@ -166,18 +166,19 @@ Example:
 
 
 (defun make-dir-tags (dir &optional renew)
-  "Make tags for specified DIR."
+  "Make and mount tags for specified DIR."
   (interactive "D make tags in ")
   (when (file-exists-p dir)
     (let* ((home (path+ dir))
            (tags-file (concat home ".tags")))
-      (make-tags home
-                 tags-file
-                 (lambda (f _)
-                   (not (string-match "\\\.tags$" f)))
-                 (lambda (d _)
-                   (not (string-match "^\\\.git/$\\|^out/$\\|^build/$" d)))
-                 t))))
+      (when (make-tags home
+                       tags-file
+                       (lambda (f _)
+                         (not (string-match "\\\.tags$" f)))
+                       (lambda (d _)
+                         (not (string-match "^\\\.git/$\\|^out/$\\|^build/$" d)))
+                       renew)
+        (mount-tags tags-file)))))
   
 
 (provide 'tags)
