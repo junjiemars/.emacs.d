@@ -884,6 +884,8 @@ It's *self-documenting* and great, keep reading it frequently.
 - tab to space: @@html:<kbd>@@M-x untabify@@html:</kbd>@@
 - space to tab: @@html:<kbd>@@M-x tabify@@html:</kbd>@@
 - fill paragraph: @@html:<kbd>@@M q@@html:</kbd>@@
+- redo after undo: @@html:<kbd>@@C-g@@html:</kbd>@@ and then
+	@@html:<kbd>@@C-x u@@html:</kbd>@@
 
 ** Coding
 	 :PROPERTIES:
