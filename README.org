@@ -959,6 +959,9 @@ It's *self-documenting* and great, keep reading it frequently.
 - switch to buffer other window: @@html:<kbd>@@C-x 4 b@@html:</kbd>@@
 - clone indirect buffer other window:
 	@@html:<kbd>@@C-x 4 c@@html:</kbd>@@, clone the buffer in another window
+- recenter the screen at cursor: @@html:<kbd>@@C-l@@html:</kbd>@@
+- center the screen at the top: @@html:<kbd>@@C-u 0 C-l@@html:</kbd>@@
+- recenter the screen at the bottom: @@html:<kbd>@@C-u - C-l@@html:</kbd>@@
 
 ** Register
    :PROPERTIES:
