@@ -353,20 +353,16 @@ and `funcall' PREFER returns t.
       `,path)))
 
 
-(defun path+ (path append &rest paths)
-  "Append a list of PATHS to PATH when APPEND is t, otherwise insert before the head of PATH."
-  (declare (indent 2))
-  (let* ((trim (lambda (x)
-                 (string-trim>< x path-separator path-separator)))
-         (s (cond ((null path) (mapconcat trim paths path-separator))
-                  ((null paths) path)
-                  (t (let ((p (mapconcat trim paths path-separator)))
-                       (if append
-                           (concat (funcall trim path)
-                                   path-separator p)
-                         (concat p path-separator
-                                 (funcall trim path))))))))
-    (if (string= "" s) nil s)))
+(defun path+ (root &rest path)
+  "Append a list of PATH to ROOT."
+  (declare (indent 1))
+  (let* ((trim (lambda (x) (string-trim>< x "/" "/")))
+         (tail (lambda (x) (concat (string-trim> x "/") "/")))
+         (s (cond ((null root) (mapconcat trim path "/"))
+                  ((null path) root)
+                  (t (concat (funcall tail root)
+                             (mapconcat trim path "/"))))))
+    (if (string= "" s) nil (funcall tail s))))
 
 
  ;; end of File Functions
