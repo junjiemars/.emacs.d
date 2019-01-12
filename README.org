@@ -891,6 +891,8 @@ It's *self-documenting* and great, keep reading it frequently.
 - justify paragraph: @@html:<kbd>@@M-q@@html:</kbd>@@
 - open new line before current: @@html:<kbd>@@C-o@@html:</kbd>@@
 - remove all but one empty line: @@html:<kbd>@@C-x C-o@@html:</kbd>@@
+- delete entire line: @@html:<kbd>@@C-S-DEL@@html:</kbd>@@
+- delete to end of sentence: @@html:<kbd>@@M-k@@html:</kbd>@@
 
 ** Coding
 	 :PROPERTIES:
