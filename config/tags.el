@@ -68,12 +68,15 @@ when `desktop-globals-to-save' include it."
         (add-to-list 'tags-table-list x t #'string=)
         (setq mounted (cons x mounted))))))
 
+
 (defun unmount-tags (tags-file)
   "Unmount TAGS-FILE from `tags-table-list'."
   (when tags-file
-    (setq tags-table-list
-          (remove-if (lambda (x) (string= x tags-file))
-                     tags-table-list))))
+    (with-no-warnings
+      (require 'cl)
+      (setq tags-table-list
+            (remove-if (lambda (x) (string= x tags-file))
+                       tags-table-list)))))
 
 
 (defun make-tags (home tags-file file-filter dir-filter &optional renew)
