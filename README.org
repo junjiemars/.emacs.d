@@ -708,7 +708,6 @@ Compatibled for ancient Emacs versions.
 
 Featured, and depends on non Emacs' builtin packages.
 
-
 * Programming
 	:PROPERTIES:
 	:CUSTOM_ID: programming
