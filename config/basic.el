@@ -329,7 +329,7 @@ and `funcall' PREFER returns t.
       (let ((cmd (shell-command* (platform-supported-if 'windows-nt
                                      "where"
                                    "command -v")
-                   command)))
+                   (funcall `(lambda () ,command)))))
         (when (zerop (car cmd))
           (let* ((ss (cdr cmd))
                  (path (split-string* ss "\n" t))
@@ -348,7 +348,7 @@ and `funcall' PREFER returns t.
             `,(when p (platform-supported-if 'windows-nt
                           (windows-nt-posix-path p)
                         p)))))
-    (let ((path (executable-find command)))
+    (let ((path (executable-find (funcall `(lambda () ,command)))))
       (ignore* prefer)
       `,path)))
 
