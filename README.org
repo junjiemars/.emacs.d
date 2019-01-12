@@ -997,16 +997,19 @@ automatically from one Emacs session to the next.
    :CUSTOM_ID: region-and-rectangle
    :END:
 
--  kill rectangle: @@html:<kbd>@@C-x r k@@html:</kbd>@@
--  delete rectangle: @@html:<kbd>@@C-x r d@@html:</kbd>@@
--  yank rectangle: @@html:<kbd>@@C-x r y@@html:</kbd>@@
--  open rectangle: @@html:<kbd>@@C-x r o@@html:</kbd>@@, insert blank
-   space to fill the space of the region-rectangle
--  clear rectangle: @@html:<kbd>@@C-x r c@@html:</kbd>@@
--  string rectangle: @@html:<kbd>@@C-x r t@@html:</kbd>@@, replace
-   rectangle contents with STRING on each line
--  string insert rectangle: @@html:<kbd>@@C-x r g@@html:</kbd>@@
--  @@html:<kbd>@@M-x delete-whitespace-rectangle@@html:</kbd>@@
+- kill rectangle: @@html:<kbd>@@C-x r k@@html:</kbd>@@
+- delete rectangle: @@html:<kbd>@@C-x r d@@html:</kbd>@@
+- yank rectangle: @@html:<kbd>@@C-x r y@@html:</kbd>@@
+- open rectangle: @@html:<kbd>@@C-x r o@@html:</kbd>@@, insert blank
+  space to fill the space of the region-rectangle
+- clear rectangle: @@html:<kbd>@@C-x r c@@html:</kbd>@@
+- string rectangle: @@html:<kbd>@@C-x r t@@html:</kbd>@@, replace
+  rectangle contents with STRING on each line
+- string insert rectangle: @@html:<kbd>@@C-x r g@@html:</kbd>@@
+- @@html:<kbd>@@M-x delete-whitespace-rectangle@@html:</kbd>@@
+- select entire buffer: @@html:<kbd>@@C-x h@@html:</kbd>@@
+- select page: @@html:<kbd>@@C-x C-p@@html:</kbd>@@
+- exchange cursor position and mark: @@html:<kbd>@@C-x C-x@@html:</kbd>@@ 
 
 ** Keyboard Macro
    :PROPERTIES:
