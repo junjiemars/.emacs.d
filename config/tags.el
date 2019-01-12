@@ -169,8 +169,9 @@ Example:
   "Make tags for specified DIR."
   (interactive "D make tags in ")
   (when (file-exists-p dir)
-    (let ((tags-file (concat dir ".tags")))
-      (make-tags dir
+    (let* ((home (path+ dir))
+           (tags-file (concat home ".tags")))
+      (make-tags home
                  tags-file
                  (lambda (f _)
                    (not (string-match "\\\.tags$" f)))
