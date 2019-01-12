@@ -46,7 +46,7 @@ Examples:
                                                (cdr ver))))))
          "etags -o %s -l auto -a %s ; echo %s"))
   "The default tags program.
-This is used by commands like `make-tags' and others.
+This is used by commands like `make-tags'.
 
 The default is \"ctags -e -o %s -a %s ; echo %s\", 
 first %s: explicit name of file for tag table; overrides default TAGS or tags.
