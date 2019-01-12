@@ -11,9 +11,9 @@
   "Extract value from the list of spec via KEYS at compile time.
 
 Examples:
-(tags-spec->% :emacs-home)
-(tags-spec->% :emacs-source)
-(tags-spec->% :os-include)
+ (tags-spec->% :emacs-home)
+ (tags-spec->% :emacs-source)
+ (tags-spec->% :os-include)
 "
   `(self-spec->% (list
                   :emacs-home ,(v-home% ".tags/home/TAGS")
@@ -60,13 +60,23 @@ when `desktop-globals-to-save' include it."
 
 
 (defun mount-tags (&rest tags-file)
-  "Mount existing TAGS-FILE."
+  "Mount existing TAGS-FILE into `tags-table-list'."
   (declare (indent 0))
   (let ((mounted nil))
     (dolist (x tags-file (nreverse mounted))
       (when (file-exists-p x)
-  (add-to-list 'tags-table-list x t #'string=)
-  (setq mounted (cons x mounted))))))
+        (add-to-list 'tags-table-list x t #'string=)
+        (setq mounted (cons x mounted))))))
+
+
+(defun unmount-tags (tags-file)
+  "Unmount TAGS-FILE from `tags-table-list'."
+  (when tags-file
+    (with-no-warnings
+      (require 'cl)
+      (setq tags-table-list
+            (remove-if (lambda (x) (string= x tags-file))
+                       tags-table-list)))))
 
 
 (defun make-tags (home tags-file file-filter dir-filter &optional renew)
@@ -108,7 +118,7 @@ RENEW overwrite the existing tags file when t else create it.
   "Make TAGS-FILE for Emacs' home directory.
 
 Example:
-\(make-emacs-home-tags \(tags-spec->% :emacs-home\) t\)
+ (make-emacs-home-tags (tags-spec->% :emacs-home) t)
 "
   (let ((lisp-ff (lambda (f _) (string-match "\\\.el$" f)))
         (home-df
@@ -123,10 +133,10 @@ Example:
   "Make TAGS-FILE for Emacs' C and Lisp source code in SRC-ROOT.
 
 Example:
-\(make-emacs-source-tags
-   \(`tags-spec->%' :emacs-home\)
+ (make-emacs-source-tags
+   (`tags-spec->%' :emacs-home)
    `source-directory'
-    t\)
+    t)
 "
   (let ((lisp-ff (lambda (f _) (string-match "\\\.el$" f)))
         (c-ff (lambda (f _) (string-match "\\\.[ch]$" f)))
@@ -157,7 +167,7 @@ DIR-FILTER directory filter function,
 RENEW overwrite the existing tags file when t else create it.
 
 Example:
-\(make-system-c-tags \(`system-cc-include' t\) nil t\)
+ (make-system-c-tags (`system-cc-include' t) nil t)
 "
   (let ((tag-file (tags-spec->% :os-include)))
     (make-c-tags (car includes) tag-file dir-filter renew)
@@ -165,5 +175,20 @@ Example:
       (make-c-tags p tag-file dir-filter))))
 
 
+(defun make-dir-tags (dir &optional renew)
+  "Make and mount tags for specified DIR."
+  (interactive "D make tags in ")
+  (when (file-exists-p dir)
+    (let* ((home (path+ (expand-file-name dir)))
+           (tags-file (concat home ".tags")))
+      (when (make-tags home
+                       tags-file
+                       (lambda (f _)
+                         (not (string-match "\\\.tags$" f)))
+                       (lambda (d _)
+                         (not (string-match "^\\\.git/$\\|^out/$\\|^build/$" d)))
+                       renew)
+        (mount-tags tags-file)))))
+  
 
 (provide 'tags)
