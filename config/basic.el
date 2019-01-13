@@ -490,13 +490,6 @@ positive, otherwise via native."
 (defalias 'range #'number-sequence)
 
 
-;; use `pp' `pp-eval-expression' or `pp-eval-last-sexp'
-(if-fn% 'cl-prettyprint 'cl-lib
-        (defalias 'pprint #'cl-prettyprint)
-  (when-fn% 'cl-prettyexpand 'cl
-    (defalias 'pprint #'cl-prettyexpand)))
-
-
 (defun take (n seq)
   "Returns a sequence of the first N items in SEQ.
 
