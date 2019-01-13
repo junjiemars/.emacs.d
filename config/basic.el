@@ -371,7 +371,7 @@ and `funcall' PREFER returns t.
     (if (string= "" s) nil (funcall tail s))))
 
 
- ;; end of File Functions
+ ;; end of File functions
 
 
 ;; Clean Emacs' user files
@@ -420,8 +420,15 @@ otherwise default to keep the directories of current `emacs-version'."
     (kill-emacs 0)))
 
 
-
+ ;; end of Emacs manipulation
 
+
+(defconst +platform-arch+
+  (platform-supported-if 'windows-nt
+               (getenv "PROCESSOR_ARCHITECTURE")
+             (let ((m (shell-command* "uname -m")))
+               (when (zerop (car m)) (string-trim> (cdr m) "\n"))))
+  "Platform architecture")
 
 
 ;; Socks
@@ -475,7 +482,7 @@ positive, otherwise via native."
     (toggle-socks! t)))
 
 
-
+ ;; end of Socks functions
 
 
 ;; Computations
