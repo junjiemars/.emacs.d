@@ -123,7 +123,7 @@ Example:
            (not
             (string-match
              "^\\\..*/$\\|^theme/$\\|^g_.*/$\\|^t_.*/$\\|^private/$" d)))))
-    (make-tags (emacs-home) tags-file lisp-ff home-df renew)))
+    (make-tags (emacs-home*) tags-file lisp-ff home-df renew)))
 
 
 (defun make-emacs-source-tags (tags-file src-root &optional renew)

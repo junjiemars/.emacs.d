@@ -19,13 +19,6 @@
   "The start time at loading init.el")
 
 
-(defmacro emacs-home ()
-  "The user's emacs home directory"
-  (expand-file-name (if (boundp 'user-emacs-directory)
-                        user-emacs-directory
-                      "~/.emacs.d/")))
-
-
  ;; end of basic macro
 
 ;; file macro
@@ -33,7 +26,9 @@
 (defmacro emacs-home* (&rest subdirs)
   "Return path of SUBDIRS under `emacs-home'."
   (declare (indent 0))
-  `(concat ,(emacs-home) ,@subdirs))
+  `(concat ,(expand-file-name (if (boundp 'user-emacs-directory)
+                        user-emacs-directory
+                      "~/.emacs.d/")) ,@subdirs))
 
 
 (defmacro file-name-base* (file)
