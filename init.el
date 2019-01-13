@@ -69,17 +69,12 @@ The FILE should be posix path, see `path-separator'."
 ;; versioned file macro
 
 
-(defconst +v-dir+
-  (concat (if (display-graphic-p) "g_" "t_") emacs-version)
-  "Versioned dir based on [g]rahpic/[t]erminal mode and Emacs's version")
-
-
 (defmacro v-path* (file &optional extension)
   "Return versioned FILE with new EXTENSION."
   `(concat (if (directory-name-p ,file)
                ,file
              (file-name-directory ,file))
-           +v-dir+ "/"
+           ,(concat (if (display-graphic-p) "g_" "t_") emacs-version) "/"
            (if ,extension
                (file-name-new-extension* (file-name-nondirectory ,file)
                                          ,extension)
