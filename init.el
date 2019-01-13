@@ -19,11 +19,11 @@
   "The start time at loading init.el")
 
 
-(defconst +emacs-home+
+(defmacro emacs-home ()
+  "The user's emacs home directory"
   (expand-file-name (if (boundp 'user-emacs-directory)
                         user-emacs-directory
-                      "~/.emacs.d/"))
-  "The user's emacs home directory")
+                      "~/.emacs.d/")))
 
 
  ;; end of basic macro
@@ -31,9 +31,9 @@
 ;; file macro
 
 (defmacro emacs-home* (&rest subdirs)
-  "Return path of SUBDIRS under `+emacs-home+'."
+  "Return path of SUBDIRS under `emacs-home'."
   (declare (indent 0))
-  `(concat ,+emacs-home+ ,@subdirs))
+  `(concat ,(emacs-home) ,@subdirs))
 
 
 (defmacro file-name-base* (file)
@@ -92,18 +92,18 @@ The FILE should be posix path, see `path-separator'."
 
 
 (defmacro v-home* (file)
-  "Return versioned path of `+emacs-home+'/`+v-dir+'/FILE."
+  "Return versioned path of `emacs-home'/`+v-dir+'/FILE."
   `(v-path* (emacs-home* ,file)))
 
 
 (defmacro v-home% (file)
-  "Return versioned path of `+emacs-home+'/`+v-dir+'/FILE at compile-time."
+  "Return versioned path of `emacs-home'/`+v-dir+'/FILE at compile-time."
   (let ((_vfile%_ (v-home* file)))
     `,_vfile%_))
 
 
 (defmacro v-home! (file)
-  "Make versioned `+emacs-home+'/`+v-dir+'/FILE at compile-time."
+  "Make versioned `emacs-home'/`+v-dir+'/FILE at compile-time."
   (let ((_vfile!_ (path! (v-home* file))))
     `,_vfile!_))
 
