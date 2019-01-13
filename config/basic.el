@@ -423,12 +423,12 @@ otherwise default to keep the directories of current `emacs-version'."
  ;; end of Emacs manipulation
 
 
-(defconst +platform-arch+
+(defmacro platform-arch ()
+  "Platform architecture"
   (platform-supported-if 'windows-nt
                (getenv "PROCESSOR_ARCHITECTURE")
              (let ((m (shell-command* "uname -m")))
-               (when (zerop (car m)) (string-trim> (cdr m) "\n"))))
-  "Platform architecture")
+               (when (zerop (car m)) (string-trim> (cdr m) "\n")))))
 
 
 ;; Socks
