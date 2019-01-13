@@ -7,9 +7,9 @@
 ;;;;
 
 
-(defconst +more-reasonable-emacs+
-  "https://github.com/junjiemars/.emacs.d"
-  "More Reasonable Emacs git repo")
+(defmacro more-reasonable-emacs ()
+  "More Reasonable Emacs git repo"
+  "https://github.com/junjiemars/.emacs.d")
 
 ;; lexical-supported macro
 
