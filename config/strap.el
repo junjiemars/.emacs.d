@@ -315,11 +315,11 @@ The name is made by appending a number to PREFIX, default \"G\"."
 If there are no self-path.el under (emacs-home* \"private/\") directory, 
 More Reasonable Emacs should create a default one:
 
-(def-self-path-ref
-  :env-spec (emacs-home* \"private/self-env-spec.el\")
-  :prologue (emacs-home* \"private/self-prologue.el\")
-  :package-spec (emacs-home* \"private/self-package-spec.el\")
-  :epilogue (emacs-home* \"private/self-epilogue.el\"))
+ (def-self-path-ref
+   :env-spec (emacs-home* \"private/self-env-spec.el\")
+   :prologue (emacs-home* \"private/self-prologue.el\")
+   :package-spec (emacs-home* \"private/self-package-spec.el\")
+   :epilogue (emacs-home* \"private/self-epilogue.el\"))
 
 No matter the declaration order, the executing order is:
 :env-spec -> :prologue -> :package-spec -> :epilogue
