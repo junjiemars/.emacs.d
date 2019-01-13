@@ -491,11 +491,9 @@ positive, otherwise via native."
 
 
 ;; use `pp' `pp-eval-expression' or `pp-eval-last-sexp'
-(if-fn% 'cl-prettyprint 'cl
-  ;;;###autoload
+(if-fn% 'cl-prettyprint 'cl-lib
         (defalias 'pprint #'cl-prettyprint)
   (when-fn% 'cl-prettyexpand 'cl
-    ;;;###autoload
     (defalias 'pprint #'cl-prettyexpand)))
 
 
