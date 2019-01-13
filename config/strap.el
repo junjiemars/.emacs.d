@@ -37,7 +37,7 @@
 
 ;; Let `lexical-binding' var safe under Emacs24.1-
 (lexical-supported-unless
-  (put 'lexical-binding 'safe-local-variable (lambda (x) t)))
+  (put 'lexical-binding 'safe-local-variable (lambda (_) t)))
 
 
 ;; Preferred coding system
