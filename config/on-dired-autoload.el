@@ -99,7 +99,7 @@
               (push (cons "\\.7z\\'" "7za a -t7z %o %i")
                     dired-compress-files-alist)))
 
-    ;; on ancent Emacs, `dired' can't recognize .zip archive. 
+    ;; on ancient Emacs, `dired' can't recognize .zip archive. 
     ;; [! zip x.zip ?] compress marked files to x.zip，
     ;; see `dired-compress-file-suffixes'.
     (when% (and (executable-find% "zip")
