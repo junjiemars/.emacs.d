@@ -13,8 +13,8 @@
     (with-eval-after-load 'doc-view
       (setq% doc-view-ghostscript-program
              (or (executable-find% (format "gswin%dc" (cdr (platform-arch))))
-                 (or (executable-find% "gswin32c")
-                     (executable-find% "gswin64c")))
+                 (executable-find% "gswin32c")
+                 (executable-find% "gswin64c"))
              'doc-view))
 
   (when% (executable-find% "mutool")
