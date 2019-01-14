@@ -424,11 +424,14 @@ otherwise default to keep the directories of current `emacs-version'."
 
 
 (defmacro platform-arch ()
-  "Platform architecture"
-  (platform-supported-if 'windows-nt
-               (getenv "PROCESSOR_ARCHITECTURE")
-             (let ((m (shell-command* "uname -m")))
-               (when (zerop (car m)) (string-trim> (cdr m) "\n")))))
+  "Return the platform architecture with (arch-str . num) cons cell."
+  (let ((arch (platform-supported-if 'windows-nt
+                  (getenv "PROCESSOR_ARCHITECTURE")
+                (let ((m (shell-command* "uname -m")))
+                  (when (zerop (car m)) (string-trim> (cdr m) "\n"))))))
+    (when arch (if (string-match "[xX]86_64\\|[aA][mM][dD]64" arch)
+                   `(cons ,arch 64)
+                 `(cons ,arch 32)))))
 
 
 ;; Socks
