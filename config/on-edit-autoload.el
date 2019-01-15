@@ -137,11 +137,6 @@
       (define-key% (current-global-map) (kbd "M-*") #'tags-loop-continue))))
 
 
-(when-fn% 'xref-find-references 'xref
-  ;; find references to the identifier at point.
-  (define-key% (current-global-map) (kbd "M-#") #'xref-find-references))
-
-
 (version-supported-when > 24.4
   ;; fix: no quit key to hide *Messages* buffer
   (with-current-buffer (get-buffer "*Messages*")
