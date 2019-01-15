@@ -86,11 +86,11 @@
       (with-eval-after-load 'paredit    
         ;; define `paredit' keymap
         ;; On Windows C-) is not work
-        ;; fix inconsistent `C-)' `C-c )' behavior:#9
+        ;; fix inconsistent `C-)' and `C-c )' behavior:#9
         ;; On Terminal mode, Ctrl+Shift combination can't send to Emacs
         (define-key% paredit-mode-map (kbd "C-c {") #'paredit-backward-barf-sexp)
         (when-fn% 'xref-find-references 'xref
-          ;; default `paredit-convolute-sexp' keybinding [M-?] conflicts with
+          ;; default `paredit-convolute-sexp' keybinding `M-?' conflicts with
           ;; `xref-find-references'
           (define-key% paredit-mode-map (kbd "M-?") #'xref-find-references)
           (define-key% paredit-mode-map (kbd "C-c ?") #'paredit-convolute-sexp))
