@@ -191,7 +191,6 @@
           (when-var% dired-compress-files-alist 'dired-aux
             ;; `format-spec' may not autoload
             (require 'format-spec)
-
             ;; compress .7z file via [c] key
             (when% (and (executable-find% "7za")
                         (not (assoc** "\\.7z\\'" dired-compress-files-alist #'string=)))
@@ -227,7 +226,7 @@
         (setcdr (assoc** "\\.gz\\'" dired-compress-file-suffixes #'string=)
                 '("" "7za x -aoa %i"))))
 
-    ;; support compress/uncompress .7z file via [Z] key
+    ;; [c] compress or uncompress .7z file
     (when% (executable-find% "7za")
       (if% (assoc** "\\.7z\\'" dired-compress-file-suffixes #'string=)
           (setcdr (assoc** "\\.7z\\'" dired-compress-file-suffixes #'string=)
@@ -244,4 +243,4 @@
 (ido-mode t)
 
 
- ;; end of `ido-dired' setting
+ ;; end of file
