@@ -108,17 +108,6 @@
       (autoload 'lldb (v-home% "config/gud-lldb.elc")
         "Run cdb on program FILE in buffer *gud-FILE*." t)))
 
-
-  (platform-supported-when 'windows-nt
-    ;; on Windows: there are no builtin zip program
-    ;; so try to use minzip in Emacs dep for Windows.
-    ;; zip.bat works with `dired-do-compress-to' and `org-odt-export-to-odt'.
-    (eval-when-compile
-      (unless (executable-find% "zip")
-        ;; zip external program
-        (cond ((executable-find% "7za") (make-zip-bat "7za"))
-              ((executable-find% "minizip") (make-zip-bat "minizip"))))))
-
   )
 
  ;; end of set-flavor-mode!
