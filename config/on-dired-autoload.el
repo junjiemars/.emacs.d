@@ -160,8 +160,8 @@
                                             locale-coding-system))))
 
     (defadvice archive-summarize-files (before archive-summarize-files-before compile)
-      "`archive-summarize-files' may not display file name in right
-    coding system."
+      "`archive-summarize-files' may not display file name in
+       right coding system."
       (let ((arg0 (ad-get-arg 0))
             (files nil))
         (when (consp arg0)
@@ -256,6 +256,7 @@
 
     (with-eval-after-load 'arc-mode
       (ad-activate #'archive-summarize-files t))))
+
 
 ;; ido-mode allows you to more easily navigate choices. For example,
 ;; when you want to switch buffers, ido presents you with a list
