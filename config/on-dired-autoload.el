@@ -140,8 +140,9 @@
       "`dired-do-shell-command' or `dired-do-async-shell-command'
        should failed when open the files which does not been
        encoded with `locale-coding-system'."
-      (ad-set-arg 1 (let ((files nil))
-                      (dolist (x (ad-get-arg 1) files)
+      (ad-set-arg 1 (let ((arg1 (ad-get-arg 1))
+                          (files nil))
+                      (dolist (x arg1 files)
                         (if (multibyte-string-p x)
                             (add-to-list 'files
                                          (encode-coding-string
@@ -156,7 +157,23 @@
        encoded with `locale-coding-system'."
       (when (multibyte-string-p (ad-get-arg 0))
         (ad-set-arg 0 (encode-coding-string (ad-get-arg 0)
-                                            locale-coding-system))))))
+                                            locale-coding-system))))
+
+    (defadvice archive-summarize-files (before archive-summarize-files-before compile)
+      "`archive-summarize-files' may not display file name in right
+    coding system."
+      (let ((arg0 (ad-get-arg 0))
+            (files nil))
+        (when (consp arg0)
+          (ad-set-arg
+           0
+           (dolist (x arg0 files)
+             (aset x
+                   0
+                   (decode-coding-string
+                    (aref x 0)
+                    locale-coding-system))
+             (add-to-list 'files x t #'eq))))))))
 
 
 (platform-supported-unless 'gnu/linux
@@ -233,6 +250,12 @@
                   '("" "7za x -aoa -o%o %i"))
         (put (list "\\.7z\\'" "" "7za x -aoa -o%o %i"))))))
 
+
+(platform-supported-when 'windows-nt
+  (unless% (eq default-file-name-coding-system locale-coding-system)
+
+    (with-eval-after-load 'arc-mode
+      (ad-activate #'archive-summarize-files t))))
 
 ;; ido-mode allows you to more easily navigate choices. For example,
 ;; when you want to switch buffers, ido presents you with a list
