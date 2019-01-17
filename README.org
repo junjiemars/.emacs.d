@@ -640,6 +640,10 @@ and directories with =minizip=, even export =org= to =odt=
 [[https://en.wikipedia.org/wiki/OpenDocument][OpenDocument]]. And more [[https://www.7-zip.org/download.html][7-Zip standalone command version also be
 supported]].
 
+On Windows, there are logical bugs in =dired-aux.el=, We can not using
+=Z= key compress or uncompress file to or from =.gz= or =.7z=. The
+good news: if =gunzip= or =7za= installed we can do it now.
+
 You can using @@html:<kbd>c@@html:</kbd>@@ in =dired mode= compress to
 =*.gz=, =*.7z= or =*.zip=. For some ancient Emacs24-, @@html:<kbd>@@!
 zip x.zip ?@@html:</kbd>@@ to zip.
@@ -647,16 +651,6 @@ zip x.zip ?@@html:</kbd>@@ to zip.
 It's headache when =default-file-name-coding-system= not equal with
 =locale-coding-system= specifically on Windows. Even view archived
 file in =arc-mode=, will display wrong encoded file names.
-
-
-/screenshots/:
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-do-compress-to-zip-on-windows.png][dired-do-compress-to: zip]]
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-do-compress-to-7z-on-windows.png][dired-do-compress-to: 7z]]
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-view-file-on-windows.png][dired-view-file]]
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/org-odt-export-to-odt-on-windows.png][org-odt-export-to-odt]]
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-compress-file-suffixes-version-24lt.png][dired-compress-file-suffixes]]
-
-*** encoding issues 
 
 On Windows, there are some encoding issues when
 ~default-file-name-coding-system~ not equal ~locale-coding-system~.
@@ -667,12 +661,15 @@ On Windows, there are some encoding issues when
 
 The good news is all those issues had gone in this kit.
 
-*** compress and uncompress
 
-On Windows, there are logical bugs in =dired-aux.el=, We can not using
-=Z= key compress or uncompress file to or from =.gz= or =.7z=.
+/screenshots/:
+- [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-do-compress-to-zip-on-windows.png][dired-do-compress-to: zip]]
+- [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-do-compress-to-7z-on-windows.png][dired-do-compress-to: 7z]]
+- [[https://github.com/junjiemars/images/blob/master/.emacs.d/archive-summarize-files-zip-on-windows.png][archive-summarize-files: zip]]
+- [[https://github.com/junjiemars/images/blob/master/.emacs.d/archive-summarize-files-7z-on-windows.png][archive-summarize-files: 7z]]
+- [[https://github.com/junjiemars/images/blob/master/.emacs.d/org-odt-export-to-odt-on-windows.png][org-odt-export-to-odt]]
+- [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-compress-file-suffixes-version-24lt.png][dired-compress-file-suffixes]]
 
-The good news: if =gunzip= or =7za= installed we can do it now.
 
 ** Tags
 	 :PROPERTIES:
