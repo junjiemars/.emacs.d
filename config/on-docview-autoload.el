@@ -43,10 +43,10 @@
          (v-home% ".exec/pdfinfo.bat")))
 
 
-      (unless% (executable-find% "mudraw")
+      (unless (executable-find% "mudraw")
         (make-mudraw-bat (executable-find% "mutool")))
 
-      (unless% (executable-find% "pdfinfo")
+      (unless (executable-find% "pdfinfo")
         (make-pdfinfo-bat (executable-find% "mutool"))))
 
 
