@@ -157,23 +157,7 @@
        encoded with `locale-coding-system'."
       (when (multibyte-string-p (ad-get-arg 0))
         (ad-set-arg 0 (encode-coding-string (ad-get-arg 0)
-                                            locale-coding-system))))
-
-    (defadvice archive-summarize-files (before archive-summarize-files-before compile)
-      "`archive-summarize-files' may not display file name in
-       right coding system."
-      (let ((arg0 (ad-get-arg 0))
-            (files nil))
-        (when (consp arg0)
-          (ad-set-arg
-           0
-           (dolist (x arg0 files)
-             (aset x
-                   0
-                   (decode-coding-string
-                    (aref x 0)
-                    locale-coding-system))
-             (add-to-list 'files x t #'eq))))))))
+                                            locale-coding-system))))))
 
 
 (platform-supported-unless 'gnu/linux
@@ -253,6 +237,23 @@
 
 (platform-supported-when 'windows-nt
   (unless% (eq default-file-name-coding-system locale-coding-system)
+
+    (defadvice archive-summarize-files (before archive-summarize-files-before compile)
+      "`archive-summarize-files' may not display file name in
+       right coding system."
+      (let ((arg0 (ad-get-arg 0))
+            (files nil))
+        (when (consp arg0)
+          (ad-set-arg
+           0
+           (dolist (x arg0 files)
+             (aset x
+                   0
+                   (decode-coding-string
+                    (aref x 0)
+                    locale-coding-system))
+             (add-to-list 'files x t #'eq))))))
+
 
     (with-eval-after-load 'arc-mode
       (ad-activate #'archive-summarize-files t))))
