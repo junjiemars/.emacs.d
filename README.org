@@ -631,7 +631,7 @@ or @@html:<kbd>@@M-x find-name-dired@@html:</kbd>@@
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/find-name-dired-on-windows.png][find-name-dired]]
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/find-name-dired-tramp-on-windows.png][find-name-dired via tramp]]
 
-*** zip Program
+*** compress Program
 
 On Windows, there are no builtin =zip/unzip= program, but Emacs ship
 with =minizip= program.  Although =minizip= without /recursive/
@@ -640,12 +640,18 @@ and directories with =minizip=, even export =org= to =odt=
 [[https://en.wikipedia.org/wiki/OpenDocument][OpenDocument]]. And more [[https://www.7-zip.org/download.html][7-Zip standalone command version also be
 supported]].
 
-For some ancient Emacs24-, @@html:<kbd>@@! zip x.zip ?@@html:</kbd>@@
-to zip.
+You can using @@html:<kbd>c@@html:</kbd>@@ in =dired mode= compress to
+=*.gz=, =*.7z= or =*.zip=. For some ancient Emacs24-, @@html:<kbd>@@!
+zip x.zip ?@@html:</kbd>@@ to zip.
+
+It's headache when =default-file-name-coding-system= not equal with
+=locale-coding-system= specifically on Windows. Even view archived
+file in =arc-mode=, will display wrong encoded file names.
 
 
 /screenshots/:
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-do-compress-to-on-windows.png][dired-do-compress-to]]
+- [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-do-compress-to-zip-on-windows.png][dired-do-compress-to: zip]]
+- [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-do-compress-to-7z-on-windows.png][dired-do-compress-to: 7z]]
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-view-file-on-windows.png][dired-view-file]]
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/org-odt-export-to-odt-on-windows.png][org-odt-export-to-odt]]
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-compress-file-suffixes-version-24lt.png][dired-compress-file-suffixes]]
