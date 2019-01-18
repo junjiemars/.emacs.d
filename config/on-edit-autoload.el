@@ -139,11 +139,15 @@
 
 (version-supported-when > 24.4
   ;; fix: no quit key to hide *Messages* buffer
+  ;; [DEL] for `scroll-down'
+  ;; [SPC] for `scroll-up'
   (with-current-buffer (get-buffer "*Messages*")
     (if-fn% 'read-only-mode nil
             (read-only-mode 1)
       (toggle-read-only t))
-    (local-set-key (kbd "q") #'quit-window)))
+    (local-set-key (kbd "q") #'quit-window)
+    (local-set-key (kbd "DEL") #'scroll-down)
+    (local-set-key (kbd "SPC") #'scroll-up)))
 
 
 (version-supported-when > 24
