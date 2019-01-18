@@ -155,9 +155,9 @@
       "`dired-do-compress-to' should failed when
        `default-directory' or `dired-get-marked-files' does not
        encoded with `locale-coding-system'."
-      (when (multibyte-string-p (ad-get-arg 0))
-        (ad-set-arg 0 (encode-coding-string (ad-get-arg 0)
-                                            locale-coding-system))))
+      (let ((arg0 (ad-get-arg 0)))
+        (when (multibyte-string-p arg0)
+          (ad-set-arg 0 (encode-coding-string arg0 locale-coding-system)))))
 
     (defadvice dired-compress-file (before dired-compress-file-before compile)
       "`dired-compress-file' should failed when FILE arg does not
