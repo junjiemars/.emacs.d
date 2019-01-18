@@ -157,7 +157,16 @@
        encoded with `locale-coding-system'."
       (when (multibyte-string-p (ad-get-arg 0))
         (ad-set-arg 0 (encode-coding-string (ad-get-arg 0)
-                                            locale-coding-system))))))
+                                            locale-coding-system))))
+
+    (defadvice dired-compress-file (before dired-compress-file-before compile)
+      "`dired-compress-file' should failed when FILE arg does not
+       encoded with `locale-coding-string'."
+      (let ((arg0 (ad-get-arg 0)))
+        (when (multibyte-string-p arg0)
+          (ad-set-arg 0 (encode-coding-string arg0 locale-coding-system)))))
+
+    ))
 
 
 (platform-supported-unless 'gnu/linux
@@ -217,15 +226,18 @@
       (ad-activate #'dired-shell-command t))
 
     ;; [Z] to compress or uncompress .gz file
-    (when% (and (assoc** ":" dired-compress-file-suffixes #'string=)
-                (or (executable-find% "gunzip")
-                    (executable-find% "7za")))
-      (setq dired-compress-file-suffixes
-            (remove (assoc** ":" dired-compress-file-suffixes #'string=)
-                    dired-compress-file-suffixes))
-      (unless% (executable-find% "gunzip")
-        (setcdr (assoc** "\\.gz\\'" dired-compress-file-suffixes #'string=)
-                '("" "7za x -aoa %i"))))
+    (when% (or (executable-find% "gzip")
+               (executable-find% "7za"))
+      (when% (assoc** ":" dired-compress-file-suffixes #'string=)
+        (setq dired-compress-file-suffixes
+              (remove (assoc** ":" dired-compress-file-suffixes #'string=)
+                      dired-compress-file-suffixes))
+        (unless% (executable-find% "gzip")
+          (setcdr (assoc** "\\.gz\\'" dired-compress-file-suffixes #'string=)
+                  '("" "7za x -aoa %i"))))
+
+      (when-fn% 'dired-compress-file 'dired-aux
+        (ad-activate #'dired-compress-file t)))
 
     ;; [c] compress or uncompress .7z file
     (when% (executable-find% "7za")
