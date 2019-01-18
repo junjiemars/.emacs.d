@@ -339,18 +339,19 @@ and `funcall' PREFER returns t.
         (when (zerop (car cmd))
           (let* ((ss (cdr cmd))
                  (path (split-string* ss "\n" t))
-                 (p (cond ((and (consp path) (functionp prefer))
-                           (catch 'prefer
-                             (dolist (x path)
-                               (when (funcall prefer
-                                              (shell-quote-argument
-                                               (platform-supported-if 'windows-nt
-                                                   (windows-nt-posix-path x)
-                                                 x)))
-                                 (throw 'prefer x)))
-                             nil))
-                          ((consp path) (car path))
-                          (t path))))
+                 (p (cond
+                     ((and (consp path) (functionp prefer))
+                      (catch 'prefer
+                        (dolist (x path)
+                          (when (funcall prefer
+                                         (shell-quote-argument
+                                          (platform-supported-if 'windows-nt
+                                              (windows-nt-posix-path x)
+                                            x)))
+                            (throw 'prefer x)))
+                        nil))
+                     ((consp path) (car path))
+                     (t path))))
             `,(when p (platform-supported-if 'windows-nt
                           (windows-nt-posix-path p)
                         p)))))
