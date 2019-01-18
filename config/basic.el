@@ -434,58 +434,6 @@ otherwise default to keep the directories of current `emacs-version'."
                  `(cons ,arch 32)))))
 
 
-;; Socks
-
-(defmacro feature-socks-supported-p (&rest body)
-  "If socks feature supported then do BODY."
-  (declare (indent 0))
-  `(version-supported-when < 22
-     (when-var% url-gateway-method 'url
-       ,@body)))
-
-(feature-socks-supported-p
-
-  (defun toggle-socks! (&optional arg)
-    "Toggle `url-gatewary-method' to socks or native.
-With prefix argument ARG, `url-gatewary-method' via socks if ARG is 
-positive, otherwise via native."
-    (interactive "P")
-    (let ((native `((:url-gateway-method . native)
-                    (:socks-server . nil)))
-          (socks `((:url-gateway-method . socks)
-                   (:socks-server . ,(list "Default server"
-                                           (self-spec->*env-spec :socks :server)
-                                           (self-spec->*env-spec :socks :port)
-                                           (self-spec->*env-spec :socks :version))))))
-      (require 'url)
-      (if (null arg)
-          (if (eq url-gateway-method 'native)
-              (setq-default url-gateway-method
-                            (alist-get* :url-gateway-method socks nil nil #'eq)
-                            socks-server
-                            (alist-get* :socks-server socks nil nil #'eq))
-            (setq-default url-gateway-method
-                          (alist-get* :url-gateway-method native nil nil #'eq)
-                          socks-server
-                          (alist-get* :socks-server native nil nil #'eq)))
-        (setq-default url-gateway-method
-                      (alist-get* :url-gateway-method socks nil nil #'eq)
-                      socks-server
-                      (alist-get* :socks-server socks nil nil #'eq)))
-      (message "socks%s as url gateway %s"
-               (or (when (eq url-gateway-method 'socks)
-                     (cdr (alist-get* :socks-server socks nil nil #'eq)))
-                   "")
-               (if (eq url-gateway-method 'native)
-                   "disabled"
-                 "enabled")))))
-
-(feature-socks-supported-p
-  (when (self-spec->*env-spec :socks :allowed)
-    (toggle-socks! t)))
-
-
- ;; end of Socks functions
 
 
 ;; Computations
@@ -572,6 +520,56 @@ for which (PRED item) returns t."
          (if-var% compilation-filter-start 'compile
                   compilation-filter-start (point-min))
          (point-max))))))
+
+
+;; Socks
+
+(defmacro feature-socks-supported-p (&rest body)
+  "If socks feature supported then do BODY."
+  (declare (indent 0))
+  `(version-supported-when < 22
+     (when-var% url-gateway-method 'url-vars
+       (when-var% socks-server 'socks
+         ,@body))))
+
+(feature-socks-supported-p
+
+  (defun toggle-socks! (&optional arg)
+    "Toggle `url-gatewary-method' to socks or native.
+With prefix argument ARG, `url-gatewary-method' via socks if ARG is 
+positive, otherwise via native."
+    (interactive "P")
+    (let ((native (lambda ()
+                    (setq% url-gateway-method 'native 'url-vars)
+                    (setq% socks-server (list "Default server"
+                                              nil
+                                              (self-spec->*env-spec :socks :port)
+                                              (self-spec->*env-spec :socks :version))
+                           'socks)))
+          (socks (lambda ()
+                   (setq% url-gateway-method 'socks 'url-vars)
+                   (setq% socks-server (list "Default server"
+                                             (self-spec->*env-spec :socks :server)
+                                             (self-spec->*env-spec :socks :port)
+                                             (self-spec->*env-spec :socks :version))
+                          'socks))))
+      ;; (require 'url)
+      (if (null arg)
+          (if (eq url-gateway-method 'native) (funcall socks) (funcall native))
+	      (funcall socks))
+      (message "socks%s as url gateway %s"
+               (list (self-spec->*env-spec :socks :server)
+                     (self-spec->*env-spec :socks :port)
+                     (self-spec->*env-spec :socks :version))
+               (if (eq url-gateway-method 'native)
+                   "disabled"
+		             "enabled")))))
+
+(feature-socks-supported-p
+  (when (self-spec->*env-spec :socks :allowed)
+    (toggle-socks! t)))
+
+ ;; end of Socks functions
 
 
  ;; end of basic.el
