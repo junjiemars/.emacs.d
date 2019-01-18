@@ -541,17 +541,19 @@ positive, otherwise via native."
     (interactive "P")
     (let ((native (lambda ()
                     (setq% url-gateway-method 'native 'url-vars)
-                    (setq% socks-server (list "Default server"
-                                              nil
-                                              (self-spec->*env-spec :socks :port)
-                                              (self-spec->*env-spec :socks :version))
+                    (setq% socks-server
+                           (list "Default server"
+                                 nil
+                                 (self-spec->*env-spec :socks :port)
+                                 (self-spec->*env-spec :socks :version))
                            'socks)))
           (socks (lambda ()
                    (setq% url-gateway-method 'socks 'url-vars)
-                   (setq% socks-server (list "Default server"
-                                             (self-spec->*env-spec :socks :server)
-                                             (self-spec->*env-spec :socks :port)
-                                             (self-spec->*env-spec :socks :version))
+                   (setq% socks-server
+                          (list "Default server"
+                                (self-spec->*env-spec :socks :server)
+                                (self-spec->*env-spec :socks :port)
+                                (self-spec->*env-spec :socks :version))
                           'socks))))
       ;; (require 'url)
       (if (null arg)
