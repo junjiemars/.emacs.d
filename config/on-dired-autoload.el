@@ -164,9 +164,7 @@
        encoded with `locale-coding-string'."
       (let ((arg0 (ad-get-arg 0)))
         (when (multibyte-string-p arg0)
-          (ad-set-arg 0 (encode-coding-string arg0 locale-coding-system)))))
-
-    ))
+          (ad-set-arg 0 (encode-coding-string arg0 locale-coding-system)))))))
 
 
 (platform-supported-unless 'gnu/linux
