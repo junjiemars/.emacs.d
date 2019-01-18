@@ -232,7 +232,8 @@
         (setq dired-compress-file-suffixes
               (remove (assoc** ":" dired-compress-file-suffixes #'string=)
                       dired-compress-file-suffixes))
-        (unless% (executable-find% "gzip")
+        (when% (and (not (executable-find% "gunzip"))
+                    (executable-find% "7za"))
           (setcdr (assoc** "\\.gz\\'" dired-compress-file-suffixes #'string=)
                   '("" "7za x -aoa %i"))))
 
