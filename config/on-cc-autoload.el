@@ -100,6 +100,18 @@ otherwise check cc include on the fly."
 
 
 
+(defadvice ff-find-other-file (after ff-find-other-file-after compile)
+  "Toggle `system-cc-include' readonly `c-mode' buffer to `view-mode'."
+  (when (and (eq 'c-mode (buffer-local-value 'major-mode (current-buffer)))
+             (not (file-writable-p (buffer-file-name (current-buffer)))))
+    (when (member (string-trim> (file-name-directory
+                                 (substring-no-properties
+                                  (buffer-file-name (current-buffer)))) "/")
+                  (system-cc-include t))
+      (with-current-buffer (current-buffer)
+        (view-mode t)))))
+
+
 (with-eval-after-load 'cc-mode
   ;; find c include file
   (setq% cc-search-directories
@@ -109,7 +121,8 @@ otherwise check cc include on the fly."
   (when-var% c-mode-map 'cc-mode
     ;; keymap: find c include file
     (when-fn% 'ff-find-other-file 'find-file
-      (define-key% c-mode-map (kbd "C-c f i") #'ff-find-other-file))
+      (define-key% c-mode-map (kbd "C-c f i") #'ff-find-other-file)
+      (ad-activate #'ff-find-other-file t))
     ;; keymap: indent line or region
     (when-fn% 'c-indent-line-or-region 'cc-cmds
       (define-key% c-mode-map (kbd "TAB") #'c-indent-line-or-region))))
