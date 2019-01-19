@@ -41,4 +41,9 @@
   (should (string-match "[gt]_[.0-9]+" (v-path* "a/x.el")))
   (should (string-match "[gt]_[.0-9]+.*\\.z\\'" (v-path* "a/x.el" ".z"))))
 
+(ert-deftest %init:v-home* ()
+  (should (string-match "[gt]_[.0-9]+.*x\\.el\\'" (v-home* "x.el"))))
+
+
+
 ;; end of file
