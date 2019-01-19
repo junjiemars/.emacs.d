@@ -37,6 +37,8 @@
   (let ((p (concat temporary-file-directory "x/")))
     (should (and (path! p) (file-exists-p p)))))
 
-
+(ert-deftest %init:v-path* ()
+  (should (string-match "[gt]_[.0-9]+" (v-path* "a/x.el")))
+  (should (string-match "[gt]_[.0-9]+.*\\.z\\'" (v-path* "a/x.el" ".z"))))
 
 ;; end of file
