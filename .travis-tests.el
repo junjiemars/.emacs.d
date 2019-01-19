@@ -34,8 +34,8 @@
   (should-not (directory-name-p "a")))
 
 (ert-deftest %init:path! ()
-  (should (and (path! (concat temporary-file-directory "x/"))
-               (file-exists-p (concat temporary-file-directory "x/")))))
+  (let ((p (concat temporary-file-directory "x/")))
+    (should (and (path! p) (file-exists-p p)))))
 
 
 
