@@ -23,3 +23,12 @@
   (should (string-match "\.emacs\.d/config/$" (emacs-home* "config/")))
   (should (string-match "\.emacs\.d/x/y/z/$" (emacs-home* "x/" "y/" "z/"))))
 
+(ert-deftest %init:file-name-base* ()
+  (should (string= "x" (file-name-base* "/a/b/c/x.z"))))
+
+(ert-deftest %init:file-name-new-extension* ()
+  (should (string= "/a/x.z" (file-name-new-extension* "/a/x.el" ".z"))))
+
+
+
+;; end of file
