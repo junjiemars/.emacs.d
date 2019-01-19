@@ -105,9 +105,11 @@
   ;; fix: no TAB completion on ancient Emacs
   (defun define-eval-or-execute-key ()
     (cond ((eq 'eval-expression this-command)
-           (define-key (current-local-map) (kbd "TAB") #'lisp-complete-symbol))
+           (define-key (current-local-map) (kbd "TAB")
+             #'lisp-complete-symbol))
           ((eq 'execute-extended-command this-command)
-           (define-key (current-local-map) (kbd "TAB") #'minibuffer-complete))))
+           (define-key (current-local-map) (kbd "TAB")
+             #'minibuffer-complete))))
 
   (add-hook 'minibuffer-setup-hook #'define-eval-or-execute-key t))
 
