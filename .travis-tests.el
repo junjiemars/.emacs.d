@@ -29,6 +29,9 @@
 (ert-deftest %init:file-name-new-extension* ()
   (should (string= "/a/x.z" (file-name-new-extension* "/a/x.el" ".z"))))
 
+(ert-deftest %init:directory-name-p ()
+  (should (directory-name-p "a/"))
+  (should-not (directory-name-p "a")))
 
 
 ;; end of file
