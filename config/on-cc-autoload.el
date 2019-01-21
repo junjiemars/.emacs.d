@@ -102,8 +102,7 @@ otherwise check cc include on the fly."
 
 (defadvice ff-find-other-file (after ff-find-other-file-after compile)
   "Toggle `system-cc-include' readonly `c-mode' buffer to `view-mode'."
-  (when (and (eq 'c-mode (buffer-local-value 'major-mode (current-buffer)))
-             (not (file-writable-p (buffer-file-name (current-buffer)))))
+  (when (eq 'c-mode (buffer-local-value 'major-mode (current-buffer)))
     (when (member (string-trim> (file-name-directory
                                  (substring-no-properties
                                   (buffer-file-name (current-buffer)))) "/")
