@@ -161,7 +161,7 @@
 
 
 ;; use `pp' `pp-eval-expression' or `pp-eval-last-sexp'
-(if-fn% 'cl-prettyprint 'cl-lib
+(if-fn% 'cl-prettyprint 'cl-extra
         (defalias 'pprint #'cl-prettyprint)
   (when-fn% 'cl-prettyexpand 'cl
     (defalias 'pprint #'cl-prettyexpand)))
