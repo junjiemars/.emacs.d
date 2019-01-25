@@ -1035,9 +1035,10 @@ automatically from one Emacs session to the next.
    :CUSTOM_ID: shell
    :END:
 
--  EShell: @@html:<kbd>@@M-x eshell@@html:</kbd>@@
--  Shell: @@html:<kbd>@@M-x shell@@html:</kbd>@@
--  Ansi-Term: @@html:<kbd>@@M-x ansi-term@@html:</kbd>@@
+- EShell: @@html:<kbd>@@M-x eshell@@html:</kbd>@@
+- Shell: @@html:<kbd>@@M-x shell@@html:</kbd>@@
+- Ansi-Term: @@html:<kbd>@@M-x ansi-term@@html:</kbd>@@
+- kill process in =ansi-term=: @@html:<kbd>@@C-x C-c@@html:</kbd>@@
 
 ** Remote
    :PROPERTIES:
