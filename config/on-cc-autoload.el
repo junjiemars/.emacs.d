@@ -106,16 +106,21 @@ otherwise check cc include on the fly."
           (member-ignore-case d (system-cc-include t))
         (member d (system-cc-include t))))))
 
+
+(defun view-system-cc-include (buffer)
+  "View BUFFER in `view-mode' when the filename of BUFFER in `system-cc-include'."
+  (when (and (bufferp buffer)
+             (eq 'c-mode (buffer-local-value 'major-mode buffer)))
+    (when (system-cc-include-p (substring-no-properties (buffer-file-name buffer)))
+      (with-current-buffer buffer (view-mode t)))))
+
+
 
 
 
 (defadvice ff-find-other-file (after ff-find-other-file-after compile)
-  "Toggle `system-cc-include' readonly `c-mode' buffer to `view-mode'."
-  (when (and (eq 'c-mode (buffer-local-value 'major-mode (current-buffer)))
-             (system-cc-include-p (substring-no-properties
-                                   (buffer-file-name (current-buffer)))))
-    (with-current-buffer (current-buffer)
-      (view-mode t))))
+  "View the other-file in `view-mode' when `system-cc-include-p' is t."
+  (view-system-cc-include (current-buffer)))
 
 
 (with-eval-after-load 'cc-mode

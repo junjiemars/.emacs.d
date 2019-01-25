@@ -44,3 +44,11 @@ Use `semantic-c-describe-environment' to describe the current C environment."
 
     (setq% semantic-lex-c-preprocessor-symbol-map
            preprocessors 'semantic/bovine/c)))
+
+
+;; (defadvice semantic-decoration-include-visit (after semantic-decoration-include-visit-after compile)
+;;   ""
+;;   (let* ((ret ad-return-value)
+;;          (file (buffer-file-name ret)))
+;;     (when (system-cc-include-p file)
+;;       (with-current-buffer ret (view-mode t)))))
