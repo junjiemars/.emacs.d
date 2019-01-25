@@ -9,7 +9,6 @@
 
 (feature-semantic-supported-p
 
-  
   (defun set-semantic-cc-env! (&optional project-includes project-roots preprocessors)
     "Use `semantic-mode' in`c-mode'.
 
@@ -26,8 +25,7 @@ via `semantic-lex-c-preprocessor-symbol-map'
 Use `semantic-c-describe-environment' to describe the current C environment."
     (semantic-reset-system-include 'c-mode)
 
-    (dolist (x (append (when-fn% 'system-cc-include 'cc
-                         (system-cc-include t))
+    (dolist (x (append (when-fn% 'system-cc-include nil (system-cc-include t))
                        project-includes))
       (semantic-add-system-include x 'c-mode))
 
@@ -46,9 +44,19 @@ Use `semantic-c-describe-environment' to describe the current C environment."
            preprocessors 'semantic/bovine/c)))
 
 
-;; (defadvice semantic-decoration-include-visit (after semantic-decoration-include-visit-after compile)
-;;   ""
-;;   (let* ((ret ad-return-value)
-;;          (file (buffer-file-name ret)))
-;;     (when (system-cc-include-p file)
-;;       (with-current-buffer ret (view-mode t)))))
+(feature-semantic-supported-p
+  (when-fn% 'view-system-cc-include nil
+    
+    (defadvice semantic-decoration-include-visit (after semantic-decoration-include-visit-after compile)
+      "Visit the include file in `view-mode."
+      (view-system-cc-include ad-return-value))))
+
+
+(feature-semantic-supported-p
+  (when-fn% 'view-system-cc-include nil
+    
+    (with-eval-after-load 'semantic/decorate/include
+      (ad-activate #'semantic-decoration-include-visit t))))
+
+
+;; end of file
