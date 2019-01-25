@@ -97,20 +97,25 @@ otherwise check cc include on the fly."
           (byte-compile-file c))
         (setq system-cc-include paths)))))
 
+
+(defun system-cc-include-p (file)
+  "Return t if FILE in `system-cc-include', otherwise nil."
+  (when (and file (stringp file))
+    (let ((d (string-trim> (file-name-directory file) "/")))
+      (platform-supported-if 'windows-nt
+          (member-ignore-case d (system-cc-include t))
+        (member d (system-cc-include t))))))
+
 
 
 
 (defadvice ff-find-other-file (after ff-find-other-file-after compile)
   "Toggle `system-cc-include' readonly `c-mode' buffer to `view-mode'."
-  (when (eq 'c-mode (buffer-local-value 'major-mode (current-buffer)))
-    (let ((d (string-trim> (file-name-directory
-                            (substring-no-properties
-                             (buffer-file-name (current-buffer)))) "/")))
-      (when (platform-supported-if 'windows-nt
-                (member-ignore-case d (system-cc-include t))
-              (member d (system-cc-include t)))
-        (with-current-buffer (current-buffer)
-          (view-mode t))))))
+  (when (and (eq 'c-mode (buffer-local-value 'major-mode (current-buffer)))
+             (system-cc-include-p (substring-no-properties
+                                   (buffer-file-name (current-buffer)))))
+    (with-current-buffer (current-buffer)
+      (view-mode t))))
 
 
 (with-eval-after-load 'cc-mode
