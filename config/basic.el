@@ -206,10 +206,10 @@ Use TESTFN to lookup in the alist if non-nil, otherwise use `equal'."
   (when-fn% 'remove* 'cl (defalias 'remove** 'remove*)))
 
 
-;; Unify `member*' and `cl-member'
+;; Unify `cl-member' and `member*'
 (if-fn% 'member* 'cl
         (defalias 'member** 'member*)
-  (when-fn% 'cl-member 'cl-seq
+  (when-fn% 'cl-member 'cl-lib
     (defalias 'member** 'cl-member)))
 
 
