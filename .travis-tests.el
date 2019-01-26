@@ -54,6 +54,18 @@
   (should (equal '(aa) (alist-get* 'a '((a aa)))))
   (should (equal '(aa) (alist-get* "a" '(("a" aa)) nil nil #'string=))))
 
+(ert-deftest %basic:remove** ()
+  (should (eq nil (remove** nil nil)))
+  (should (eq nil (remove** 'a nil)))
+  (should (equal '(a) (remove** 'b '(a b))))
+  (should (equal '("a") (remove** "b" '("a" "b") :test #'string=))))
+
+(ert-deftest %basic:member** ()
+  (should (eq nil (member** nil nil)))
+  (should (eq nil (member** 'a nil)))
+  (should (equal '(a) (member** 'a '(b a))))
+  (should (equal '("a") (member** "a" '("b" "a") :test #'string=))))
+
 (ert-deftest %basic:split-string* ()
   (should (equal '("a" "b" "c") (split-string* "a,b,,cXX" "," t "XX"))))
 
