@@ -66,4 +66,8 @@
   (should (string= "abc" (string-trim>< " \n abc \n ")))
   (should (string= "abc" (string-trim>< "ZZabcXX" "XX" "ZZ"))))
 
+(ert-deftest %basic:match-string* ()
+  (should (eq nil (match-string* nil nil 0)))
+  (should (string= (match-string* "xx\\(abc\\)xx" "xxxabcxx" 1))))
+
 ;; end of file
