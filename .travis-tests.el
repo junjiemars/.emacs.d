@@ -56,5 +56,9 @@
   (should (string= "abc" (string-trim> "abc \n  ")))
   (should (string= "abc" (string-trim> "abcXX" "XX"))))
 
+(ert-deftest %basic:string-trim< ()
+  (should (eq nil (string-trim< nil "X")))
+  (should (string= "abc" (string-trim< "  \n abc")))
+  (should (string= "abc" (string-trim< "XXabc" "XX"))))
 
 ;; end of file
