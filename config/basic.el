@@ -207,10 +207,14 @@ Use TESTFN to lookup in the alist if non-nil, otherwise use `equal'."
 
 
 ;; Unify `cl-member' and `member*'
-(if-fn% 'member* 'cl
-        (defalias 'member** 'member*)
-  (when-fn% 'cl-member 'cl-lib
-    (defalias 'member** 'cl-member)))
+(defmacro member** (item list &rest keys)
+  "Find the first occurrence of ITEM in LIST.
+Return the sublist of LIST whose car is ITEM.
+\nKeywords supported:  :test :test-not :key
+\n(fn ITEM LIST [KEYWORD VALUE]...)"
+  (version-supported-if >= 24
+                        `(member* ,item ,list ,@keys)
+    `(cl-member ,item ,list ,@keys)))
 
 
 (version-supported-if
