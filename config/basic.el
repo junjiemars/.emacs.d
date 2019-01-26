@@ -207,10 +207,15 @@ This is a non-destructive function; it makes a copy of SEQ if necessary
 to avoid corrupting the original SEQ.
 \nKeywords supported:  :test :test-not :key :count :start :end :from-end
 \n(fn ITEM SEQ [KEYWORD VALUE]...)"
-  (version-supported-if >= 24
-                        `(remove* ,item ,seq ,@keys)
-    `(cl-remove ,item ,seq ,@keys)))
-
+  (if-fn% 'cl-remove 'cl-lib
+          `(progn
+             (require 'cl-lib)
+             (cl-remove ,item ,seq ,@keys))
+    (when-fn% 'remove* 'cl
+      `(with-no-warnings
+         (require 'cl)
+         (remove* ,item ,seq ,@keys)))))
+          
 
 ;; Unify `cl-member' and `member*'
 (defmacro member** (item list &rest keys)
