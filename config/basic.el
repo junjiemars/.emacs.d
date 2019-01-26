@@ -212,7 +212,7 @@ to avoid corrupting the original SEQ.
              (require 'cl-lib)
              (cl-remove ,item ,seq ,@keys))
     (when-fn% 'remove* 'cl
-      `(with-no-warnings
+      `(progn
          (require 'cl)
          (remove* ,item ,seq ,@keys)))))
           
