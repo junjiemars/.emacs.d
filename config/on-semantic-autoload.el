@@ -47,7 +47,8 @@ Use `semantic-c-describe-environment' to describe the current C environment."
 (feature-semantic-supported-p
   (when-fn% 'view-system-cc-include nil
     
-    (defadvice semantic-decoration-include-visit (after semantic-decoration-include-visit-after compile)
+    (defadvice semantic-decoration-include-visit
+        (after semantic-decoration-include-visit-after compile)
       "Visit the include file in `view-mode."
       (view-system-cc-include ad-return-value))))
 

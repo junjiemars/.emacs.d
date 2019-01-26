@@ -113,9 +113,9 @@ otherwise check cc include on the fly."
 (defun view-system-cc-include (buffer)
   "View BUFFER in `view-mode' when the filename of BUFFER in `system-cc-include'."
   (when (and (bufferp buffer)
-             (eq 'c-mode (buffer-local-value 'major-mode buffer)))
-    (when (system-cc-include-p (substring-no-properties (buffer-file-name buffer)))
-      (with-current-buffer buffer (view-mode t)))))
+             (eq 'c-mode (buffer-local-value 'major-mode buffer))
+             (system-cc-include-p (substring-no-properties (buffer-file-name buffer))))
+    (with-current-buffer buffer (view-mode t))))
 
 
 
