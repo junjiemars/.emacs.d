@@ -229,20 +229,20 @@ Return the sublist of LIST whose car is ITEM.
     `(cl-member ,item ,list ,@keys)))
 
 
-(version-supported-if
-    <= 24.4
-    (defalias 'split-string* 'split-string)
-  (defun split-string* (string &optional separators omit-nulls trim)
-    "Split STRING into substrings bounded by matches for SEPARATORS, 
+(defmacro split-string* (string &optional separators omit-nulls trim)
+  "Split STRING into substrings bounded by matches for SEPARATORS, 
 like `split-string' Emacs 24.4+"
-    (if trim
-        (delete ""
-                (mapcar (lambda (s)
-                          (if (and (stringp trim) (> (length trim) 0))
-                              (string-trim>< s trim trim)
-                            (string-trim>< s)))
-                        (split-string string separators omit-nulls)))
-      (split-string string separators omit-nulls))))
+  (version-supported-if
+      <= 24.4
+      `(split-string ,string ,separators ,omit-nulls ,trim)
+    `(if ,trim
+         (delete ""
+                 (mapcar (lambda (s)
+                           (if (and (stringp ,trim) (> (length ,trim) 0))
+                               (string-trim>< s ,trim ,trim)
+                             (string-trim>< s)))
+                         (split-string ,string ,separators ,omit-nulls)))
+       (split-string ,string ,separators ,omit-nulls))))
 
 
 (defmacro defcustom% (symbol standard doc &rest args)

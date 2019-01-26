@@ -48,4 +48,8 @@
   (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
   (should (equal '("a" a) (assoc** "a" '(("b" b) ("a" a)) #'string=))))
 
+(ert-deftest %basic:split-string* ()
+  (should (equal '("a" "b" "c") (split-string* "a,b,,cXX" "," t "XX"))))
+
+
 ;; end of file
