@@ -48,6 +48,12 @@
   (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
   (should (equal '("a" a) (assoc** "a" '(("b" b) ("a" a)) #'string=))))
 
+(ert-deftest %basic:alist-get* ()
+  (should (eq nil (alist-get* nil nil)))
+  (should (eq nil (alist-get* 'a nil)))
+  (should (equal '(aa) (alist-get* 'a '((a aa)))))
+  (should (equal '(aa) (alist-get* "a" '(("a" aa)) nil nil #'string=))))
+
 (ert-deftest %basic:split-string* ()
   (should (equal '("a" "b" "c") (split-string* "a,b,,cXX" "," t "XX"))))
 
@@ -68,6 +74,6 @@
 
 (ert-deftest %basic:match-string* ()
   (should (eq nil (match-string* nil nil 0)))
-  (should (string= (match-string* "xx\\(abc\\)xx" "xxxabcxx" 1))))
+  (should (string= "abc" (match-string* "xx\\(abc\\)xx" "xxxabcxx" 1))))
 
 ;; end of file
