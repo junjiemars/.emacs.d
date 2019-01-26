@@ -41,7 +41,7 @@ A prefix argument is handled like `recenter':
     (cond (arg (recenter arg))
           (t (setq recenter-last-op
                    (if (eq this-command last-command)
-                       (car (or (cdr (member recenter-last-op recenter-positions))
+                       (car (or (cdr (memq recenter-last-op recenter-positions))
                                 recenter-positions))
                      (car recenter-positions)))
              (let ((this-scroll-margin
