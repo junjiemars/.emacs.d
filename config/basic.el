@@ -185,14 +185,14 @@ Equality is defined by TESTFN if non-nil or by `equal' if nil."
            (assoc* ,key ,list :test (or ,testfn #'equal)))))))
 
 
-(version-supported-if
-    <= 26.1
-    (defalias 'alist-get* 'alist-get)
-  (defmacro alist-get* (key alist &optional default remove testfn)
-    "Return the value associated with KEY in ALIST.
+(defmacro alist-get* (key alist &optional default remove testfn)
+  "Return the value associated with KEY in ALIST.
 
 If KEY is not found in ALIST, return DEFAULT.
 Use TESTFN to lookup in the alist if non-nil, otherwise use `equal'."
+  (version-supported-if
+      <= 26.1
+      `(alist-get ,key ,alist ,default ,remove ,testfn)
     (ignore* remove) ;;silence byte-compiler.
     `(let ((x (assoc** ,key ,alist ,testfn)))
        (if (consp x)
