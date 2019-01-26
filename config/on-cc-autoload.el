@@ -89,7 +89,8 @@ otherwise check cc include on the fly."
           system-cc-include)
       (let ((paths (platform-supported-if 'darwin
                        (mapcar (lambda (x)
-                                 (string-trim> x " (framework directory)"))
+                                 (file-truename
+                                  (string-trim> x " (framework directory)")))
                                (check-cc-include))
                      (check-cc-include))))
         (when (save-sexp-to-file
