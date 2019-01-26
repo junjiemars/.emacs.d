@@ -306,7 +306,7 @@ Examples:
   (dir-iterate DIR nil (lambda (d a) t) nil (message \"%s\" a))
 "
   (dolist (f (file-name-all-completions "" dir))
-    (unless (memql f '("./" "../"))
+    (unless (member** f '("./" "../") :test #'string=)
       (let ((a (expand-file-name f dir)))
         (if (directory-name-p f)
             (when (and df (let ((ln (file-symlink-p (directory-file-name a))))
