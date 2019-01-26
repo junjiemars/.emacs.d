@@ -201,9 +201,15 @@ Use TESTFN to lookup in the alist if non-nil, otherwise use `equal'."
 
 
 ;; Unifiy `cl-remove' and `remove*'
-(if-fn% 'cl-remove 'cl-lib
-        (defalias 'remove** 'cl-remove)
-  (when-fn% 'remove* 'cl (defalias 'remove** 'remove*)))
+(defmacro remove** (item seq &rest keys)
+  "Remove all occurrences of ITEM in SEQ.
+This is a non-destructive function; it makes a copy of SEQ if necessary
+to avoid corrupting the original SEQ.
+\nKeywords supported:  :test :test-not :key :count :start :end :from-end
+\n(fn ITEM SEQ [KEYWORD VALUE]...)"
+  (version-supported-if >= 24
+                        `(remove* ,item ,seq ,@keys)
+    `(cl-remove ,item ,seq ,@keys)))
 
 
 ;; Unify `cl-member' and `member*'
