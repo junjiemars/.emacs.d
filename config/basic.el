@@ -223,8 +223,9 @@ to avoid corrupting the original SEQ.
 Return the sublist of LIST whose car is ITEM.
 \nKeywords supported:  :test :test-not :key
 \n(fn ITEM LIST [KEYWORD VALUE]...)"
-  (version-supported-if >= 24
-                        `(member* ,item ,list ,@keys)
+  (version-supported-if
+      > 24
+      `(member* ,item ,list ,@keys)
     `(cl-member ,item ,list ,@keys)))
 
 
