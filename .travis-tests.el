@@ -51,5 +51,10 @@
 (ert-deftest %basic:split-string* ()
   (should (equal '("a" "b" "c") (split-string* "a,b,,cXX" "," t "XX"))))
 
+(ert-deftest %basic:string-trim> ()
+  (should (eq nil (string-trim> nil "X")))
+  (should (string= "abc" (string-trim> "abc \n  ")))
+  (should (string= "abc" (string-trim> "abcXX" "XX"))))
+
 
 ;; end of file

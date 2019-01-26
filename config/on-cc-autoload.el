@@ -115,7 +115,7 @@ otherwise check cc include on the fly."
   (when (and (bufferp buffer)
              (eq 'c-mode (buffer-local-value 'major-mode buffer))
              (system-cc-include-p (substring-no-properties (buffer-file-name buffer))))
-    (with-current-buffer buffer (view-mode t))))
+    (with-current-buffer buffer (view-mode 1))))
 
 
 
