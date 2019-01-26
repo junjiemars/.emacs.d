@@ -117,15 +117,18 @@
                      bing-dict
                      paredit
                      rainbow-delimiters
-                     ,(version-supported-when <= 24.1 'yaml-mode))
-         :compile `(,(compile-unit% (emacs-home* "config/on-module.el"))))))
+                     ,(version-supported-when <= 24.1 'yaml-mode)))))
 
 
 (package-spec-:allowed-p
   ;; Load basic package spec
-  (parse-package-spec! basic-package-spec)
+  (parse-package-spec! basic-package-spec))
 
+
+(compile! (compile-unit% (emacs-home* "config/on-module.el")))
+
+
+(package-spec-:allowed-p
   ;; Load self packages spec
   (parse-package-spec! (self-spec->*package-spec)
                        (self-spec->*env-spec :package :remove-unused)))
-
