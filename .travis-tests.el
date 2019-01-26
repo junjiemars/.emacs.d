@@ -44,7 +44,8 @@
 (ert-deftest %init:v-home* ()
   (should (string-match "[gt]_[.0-9]+.*x\\.el\\'" (v-home* "x.el"))))
 
-(ert-deftest %basic:-assoc** ()
-  (should (equal '(a "a") (assoc** 'a '((b "b") (a "a"))))))
+(ert-deftest %basic:assoc** ()
+  (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
+  (should (equal '("a" a) (assoc** "a" '(("b" b) ("a" a)) #'string=))))
 
 ;; end of file
