@@ -103,11 +103,13 @@ otherwise check cc include on the fly."
   "Return t if FILE in `system-cc-include', otherwise nil."
   (when (and file (stringp file))
     (let ((d (string-trim> (file-name-directory file) "/")))
-      (platform-supported-if 'windows-nt
-          (member-ignore-case d (system-cc-include t))
-        (member d (system-cc-include t))))))
+      (member** d (system-cc-include t)
+                :test (lambda (a b)
+                        (let ((case-fold-search (platform-supported-when
+                                                    'windows-nt t)))
+                          (string-match b a)))))))
 
-
+    
 (defun view-system-cc-include (buffer)
   "View BUFFER in `view-mode' when the filename of BUFFER in `system-cc-include'."
   (when (and (bufferp buffer)
