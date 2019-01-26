@@ -166,14 +166,14 @@ for more details about the different forms of FILE and their semantics."
        `(funcall ,(lambda () ,@body)))))
 
 
-(version-supported-if
-    <= 26.1
-    (defalias 'assoc** 'assoc)
-  (defmacro  assoc** (key list &optional testfn)
-    "Return non-nil if KEY is equal to the `car' of an element of LIST.
+(defmacro assoc** (key list &optional testfn)
+  "Return non-nil if KEY is equal to the `car' of an element of LIST.
 
 The value is actually the first element of LIST whose car equals KEY.
 Equality is defined by TESTFN if non-nil or by `equal' if nil."
+  (version-supported-if
+      <= 26.1
+      `(assoc ,key ,list ,testfn)
     (if-fn% 'cl-assoc 'cl-lib
             ;; cl-assoc autoload
             `(progn
