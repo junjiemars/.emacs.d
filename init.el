@@ -180,7 +180,7 @@ Else return BODY sexp."
 ;; version-supported macro
 
 (defmacro version-supported-if (cmp version then &rest else)
-  "If (CMP VERSION `emacs-version') yields non-nil, do THEN, else do ELSE...
+  "If \(CMP VERSION `emacs-version'\) yields non-nil, do THEN, else do ELSE...
 
 Return the value of THEN or the value of the last of the ELSE’s.
 THEN must be one expression, but ELSE... can be zero or more expressions.
@@ -198,9 +198,7 @@ If (COND VERSION EMACS-VERSION) yields nil, and there are no ELSE’s, the value
        (progn% ,@else))))
 
 (defmacro version-supported-when (cmp version &rest body)
-  "If (CMP VERSION `emacs-version') yields non-nil, do BODY, else return nil.
-
-When (CMP VERSION `emacs-version') yields non-nil, eval BODY forms 
+  " When \(CMP VERSION `emacs-version'\) yields non-nil, eval BODY forms 
 sequentially and return value of last one, or nil if there are none."
   (declare (indent 2))
   `(version-supported-if ,cmp ,version (progn% ,@body)))

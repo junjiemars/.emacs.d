@@ -91,6 +91,15 @@
                                  (* 3 4)
                                  (* 5 6))))))
 
+(ert-deftest %init:version-supported-when ()
+  (should (version-supported-when < 0 t))
+  (should (eq nil (version-supported-when < 1000 (+ 1 2))))
+  (should (equal '(progn (+ 1 2) (* 3 4))
+                 (macroexpand '(version-supported-when
+                                   < 0
+                                 (+ 1 2)
+                                 (* 3 4))))))
+
 (ert-deftest %basic:assoc** ()
   (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
   (should (equal '("a" a) (assoc** "a" '(("b" b) ("a" a)) #'string=))))
