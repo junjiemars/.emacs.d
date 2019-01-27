@@ -126,6 +126,10 @@
                         (macroexpand '(terminal-supported-p
                                         (+ 1 2) (* 3 4))))))))
 
+(ert-deftest %strap:version-supported-p ()
+  (should (version-supported-p < 0))
+  (should (not (version-supported-p < 1000))))
+
 (ert-deftest %basic:assoc** ()
   (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
   (should (equal '("a" a) (assoc** "a" '(("b" b) ("a" a)) #'string=))))

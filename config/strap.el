@@ -77,7 +77,7 @@ If in terminal mode, and there are no ELSE’s, the value is nil. "
 ;; version-supported macro
 
 (defmacro version-supported-p (cmp version)
-  "Return t if (CMP VERSION `emacs-version') yields non-nil, else nil.
+  "Return t if \(CMP VERSION `emacs-version'\) yields non-nil, else nil.
 
 It resemble `version-supported-if' but be expanded at compile time."
   `(version-supported-when ,cmp ,version t))
