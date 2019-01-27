@@ -141,6 +141,13 @@
          (should (and (platform-supported-when 'windows-nt t)
                       (not (platform-supported-unless 'windows-nt t)))))))
 
+(ert-deftest %strap:setq% ()
+  "uncompleted..."
+  (let ((zz nil))
+    (unless (boundp 'zz)
+      (should (eq nil (setq% zz 'xx)))
+      (should (eq nil (setq% zz nil))))))
+
 (ert-deftest %basic:assoc** ()
   (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
   (should (equal '("a" a) (assoc** "a" '(("b" b) ("a" a)) #'string=))))
