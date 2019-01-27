@@ -79,6 +79,18 @@
   (should (equal '(progn (+ 1 2) (* 3 4))
                  (macroexpand '(unless% nil (+ 1 2) (* 3 4))))))
 
+(ert-deftest %init:version-supported-if ()
+  (should (version-supported-if < 0 t))
+  (should (version-supported-if < "0" t))
+  (should (version-supported-if < '0 t))
+  (should (= 12 (version-supported-if < 1000 (+ 1 2) (* 3 4))))
+  (should (equal '(progn (* 3 4) (* 5 6))
+                 (macroexpand '(version-supported-if
+                                   < 1000
+                                   (+ 1 2)
+                                 (* 3 4)
+                                 (* 5 6))))))
+
 (ert-deftest %basic:assoc** ()
   (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
   (should (equal '("a" a) (assoc** "a" '(("b" b) ("a" a)) #'string=))))

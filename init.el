@@ -188,7 +188,7 @@ If (COND VERSION EMACS-VERSION) yields nil, and there are no ELSE’s, the value
   (declare (indent 3))
   (let ((ver (cond ((numberp version) (number-to-string version))
                    ((stringp version) version)
-                   (t (format "%s" ,version)))))
+                   (t (format "%s" (funcall `(lambda () ,version)))))))
     `(if% (cond ((eq '< ',cmp) (version< ,ver emacs-version))
                 ((eq '<= ',cmp) (version<= ,ver emacs-version))
                 ((eq '> ',cmp) (not (version<= ,ver emacs-version)))
