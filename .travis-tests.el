@@ -165,6 +165,11 @@
   (should (string-match "^g[0-9]+" (format "%s" (gensym))))
   (should (string-match "^X[0-9]+" (format "%s" (gensym "X")))))
 
+(ert-deftest %strap:ignore* ()
+  (lexical-supported-if
+      (should (eq nil (macroexpand '(ignore* a b))))
+    (should (eq nil (macroexpand '(ignore* a b))))))
+
 (ert-deftest %basic:assoc** ()
   (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
   (should (equal '("a" a) (assoc** "a" '(("b" b) ("a" a)) #'string=))))
