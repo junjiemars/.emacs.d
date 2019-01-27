@@ -82,18 +82,18 @@ The FILE should be posix path, see `path-separator'."
 
 
 (defmacro v-home* (file)
-  "Return versioned path of `emacs-home'/`+v-dir+'/FILE."
+  "Return versioned path of `emacs-home'/`v-path*'/FILE."
   `(v-path* (emacs-home* ,file)))
 
 
 (defmacro v-home% (file)
-  "Return versioned path of `emacs-home'/`+v-dir+'/FILE at compile-time."
+  "Return versioned path of `emacs-home'/`v-path*'/FILE at compile-time."
   (let ((_vfile%_ (v-home* file)))
     `,_vfile%_))
 
 
 (defmacro v-home! (file)
-  "Make versioned `emacs-home'/`+v-dir+'/FILE at compile-time."
+  "Make versioned `emacs-home'/`v-path*'/FILE at compile-time."
   (let ((_vfile!_ (path! (v-home* file))))
     `,_vfile!_))
 

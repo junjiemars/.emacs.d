@@ -42,7 +42,14 @@
   (should (string-match "[gt]_[.0-9]+.*\\.z\\'" (v-path* "a/x.el" ".z"))))
 
 (ert-deftest %init:v-home* ()
+  (should (directory-name-p (v-home* nil)))
+  (should (string-match "[gt]_[.0-9]+" (v-home* nil)))
   (should (string-match "[gt]_[.0-9]+.*x\\.el\\'" (v-home* "x.el"))))
+
+(ert-deftest %init:v-home% ()
+  (should (directory-name-p (v-home% nil)))
+  (should (string-match "[gt]_[.0-9]+" (v-home% nil)))
+  (should (string-match "[gt]_[.0-9]+.*x\\.el\\'" (v-home% "x.el"))))
 
 (ert-deftest %basic:assoc** ()
   (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
