@@ -147,8 +147,14 @@
     (should (eq nil (setq% zzz 'xx)))
     (should (eq nil (setq% zzz nil)))))
 
-;; (ert-deftest %strap:if/when/unless-fn% ()
-;;   (should ))
+(ert-deftest %strap:if/when/unless-fn% ()
+  (should (and (if-fn% 'should 'ert t)
+               (when-fn% 'should 'ert t)
+               (not (unless-fn% 'should 'ert t))))
+  (should (equal '(progn (+ 1 2) (* 3 4))
+                 (macroexpand '(when-fn% 'should 'ert (+ 1 2) (* 3 4)))))
+  (should (equal '(progn (+ 1 2) (* 3 4))
+                 (macroexpand '(unless-fn% 'shouldxxx 'ert (+ 1 2) (* 3 4 ))))))
 
 (ert-deftest %basic:assoc** ()
   (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
