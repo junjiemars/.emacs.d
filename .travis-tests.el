@@ -61,7 +61,9 @@
 (ert-deftest %init:if% ()
   (should (= 3 (if% t (+ 1 2))))
   (should (= 12 (if% nil (+ 1 2) (* 3 4))))
-  (should (equal '(+ 1 2) (macroexpand '(if% t (+ 1 2) (* 3 4))))))
+  (should (equal '(+ 1 2) (macroexpand '(if% t (+ 1 2) (* 3 4)))))
+  (should (equal '(progn (* 3 4) (* 5 6))
+                 (macroexpand '(if% nil (+ 1 2) (* 3 4) (* 5 6))))))
 
 (ert-deftest %basic:assoc** ()
   (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
