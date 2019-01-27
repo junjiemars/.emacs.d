@@ -100,6 +100,19 @@
                                  (+ 1 2)
                                  (* 3 4))))))
 
+(ert-deftest %strap:lexical-supported-if/when/unless ()
+  (if (lexical-supported-if t nil)
+      (should (and (lexical-supported-when t)
+                   (not (lexical-supported-unless t))
+                   (equal '(progn (+ 1 2) (* 3 4))
+                          (macroexpand '(lexical-supported-when
+                                          (+ 1 2) (* 3 4))))))
+    (should (and (not (lexical-supported-when t))
+                 (lexical-supported-unless t)
+                 (equal '(progn (+ 1 2) (* 3 4))
+                        (macroexpand '(lexical-supported-unless
+                                        (+ 1 2) (* 3 4))))))))
+
 (ert-deftest %basic:assoc** ()
   (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
   (should (equal '("a" a) (assoc** "a" '(("b" b) ("a" a)) #'string=))))
