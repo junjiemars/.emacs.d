@@ -113,6 +113,19 @@
                         (macroexpand '(lexical-supported-unless
                                         (+ 1 2) (* 3 4))))))))
 
+(ert-deftest %strap:graphic/terminal-supported-p ()
+  (if (graphic-supported-if t nil)
+      (should (and (graphic-supported-p t)
+                   (not (terminal-supported-p t))
+                   (equal '(progn (+ 1 2) (* 3 4))
+                          (macroexpand '(graphic-supported-p
+                                          (+ 1 2) (* 3 4))))))
+    (should (and (not (graphic-supported-p t))
+                 (terminal-supported-p t)
+                 (equal '(progn (+ 1 2) (* 3 4))
+                        (macroexpand '(terminal-supported-p
+                                        (+ 1 2) (* 3 4))))))))
+
 (ert-deftest %basic:assoc** ()
   (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
   (should (equal '("a" a) (assoc** "a" '(("b" b) ("a" a)) #'string=))))
