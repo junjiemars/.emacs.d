@@ -161,8 +161,9 @@
                (when-var% ert-batch-backtrace-right-margin 'ert t)
                (not (when-var% ert-batch-backtrace-right-marginxxx 'ert t)))))
 
-;; (ert-deftest %strap:gensym ()
-;;   ())
+(ert-deftest %strap:gensym ()
+  (should (string-match "^g[0-9]+" (format "%s" (gensym))))
+  (should (string-match "^X[0-9]+" (format "%s" (gensym "X")))))
 
 (ert-deftest %basic:assoc** ()
   (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
