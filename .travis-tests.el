@@ -130,6 +130,17 @@
   (should (version-supported-p < 0))
   (should (not (version-supported-p < 1000))))
 
+(ert-deftest %strap:platform-supported-if/when/unless ()
+  (cond ((platform-supported-if 'darwin t)
+         (should (and (platform-supported-when 'darwin t)
+                      (not (platform-supported-unless 'darwin t)))))
+        ((platform-supported-if 'gnu/linux t)
+         (should (and (platform-supported-when 'gnu/linux t)
+                      (not (platform-supported-unless 'gnu/linux t)))))
+        ((platform-supported-if 'windows-nt t)
+         (should (and (platform-supported-when 'windows-nt t)
+                      (not (platform-supported-unless 'windows-nt t)))))))
+
 (ert-deftest %basic:assoc** ()
   (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
   (should (equal '("a" a) (assoc** "a" '(("b" b) ("a" a)) #'string=))))

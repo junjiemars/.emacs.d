@@ -89,7 +89,7 @@ It resemble `version-supported-if' but be expanded at compile time."
 ;; platform-supported macro
 
 (defmacro platform-supported-if (os then &rest else)
-  "If (eq system-type OS) yields non-nil, do THEN, else do ELSE...
+  "If \(eq system-type OS\) yields non-nil, do THEN, else do ELSE...
 
 Returns the value of THEN or the value of the last of the ELSE’s.
 THEN must be one expression, but ELSE... can be zero or more expressions.
