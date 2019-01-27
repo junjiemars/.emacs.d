@@ -181,8 +181,8 @@ If VAR requires the FEATURE, load it on compile-time."
   ;; but now using cl-gensym indeed
   (defun gensym (&optional prefix)
     "Generate a new uninterned symbol.
-The name is made by appending a number to PREFIX, default \"G\"."
-    (let ((pfix (if (stringp prefix) prefix "G"))
+The name is made by appending a number to PREFIX, default \"g\"."
+    (let ((pfix (if (stringp prefix) prefix "g"))
           (num (if (integerp prefix) prefix
                  (prog1 *gensym-counter*
                    (setq *gensym-counter* (1+ *gensym-counter*))))))
