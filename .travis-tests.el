@@ -143,10 +143,12 @@
 
 (ert-deftest %strap:setq% ()
   "uncompleted..."
-  (let ((zz nil))
-    (unless (boundp 'zz)
-      (should (eq nil (setq% zz 'xx)))
-      (should (eq nil (setq% zz nil))))))
+  (when% t
+    (should (eq nil (setq% zzz 'xx)))
+    (should (eq nil (setq% zzz nil)))))
+
+;; (ert-deftest %strap:if/when/unless-fn% ()
+;;   (should ))
 
 (ert-deftest %basic:assoc** ()
   (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
