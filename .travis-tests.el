@@ -65,6 +65,13 @@
   (should (equal '(progn (* 3 4) (* 5 6))
                  (macroexpand '(if% nil (+ 1 2) (* 3 4) (* 5 6))))))
 
+(ert-deftest %init:when% ()
+  (should (eq nil (when% t)))
+  (should (eq nil (when% nil)))
+  (should (= 3 (when% t (+ 1 2))))
+  (should (equal '(progn (+ 1 2) (* 3 4))
+                 (macroexpand '(when% t (+ 1 2) (* 3 4))))))
+
 (ert-deftest %basic:assoc** ()
   (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
   (should (equal '("a" a) (assoc** "a" '(("b" b) ("a" a)) #'string=))))
