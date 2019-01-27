@@ -53,6 +53,11 @@
   (should (string-match "[gt]_[.0-9]+" (v-home% nil)))
   (should (string-match "[gt]_[.0-9]+.*x\\.el\\'" (v-home% "x.el"))))
 
+(ert-deftest %init:progn% ()
+  (should (eq nil (progn%)))
+  (should (equal '(+ 1 2) (macroexpand '(progn% (+ 1 2)))))
+  (should (equal '(progn (+ 1 2) (* 3 4)) (macroexpand '(progn% (+ 1 2) (* 3 4))))))
+
 (ert-deftest %basic:assoc** ()
   (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
   (should (equal '("a" a) (assoc** "a" '(("b" b) ("a" a)) #'string=))))
