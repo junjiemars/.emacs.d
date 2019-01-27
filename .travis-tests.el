@@ -156,6 +156,11 @@
   (should (equal '(progn (+ 1 2) (* 3 4))
                  (macroexpand '(unless-fn% 'shouldxxx 'ert (+ 1 2) (* 3 4))))))
 
+(ert-deftest %strap:if/when-var% ()
+  (should (and (if-var% ert-batch-backtrace-right-margin 'ert t)
+               (when-var% ert-batch-backtrace-right-margin 'ert t)
+               (not (when-var% ert-batch-backtrace-right-marginxxx 'ert t)))))
+
 (ert-deftest %basic:assoc** ()
   (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
   (should (equal '("a" a) (assoc** "a" '(("b" b) ("a" a)) #'string=))))
