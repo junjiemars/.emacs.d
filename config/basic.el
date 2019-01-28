@@ -207,9 +207,7 @@ to avoid corrupting the original SEQ.
 \nKeywords supported:  :test :test-not :key :count :start :end :from-end
 \n(fn ITEM SEQ [KEYWORD VALUE]...)"
   (if-fn% 'cl-remove 'cl-lib
-          `(progn
-             (require 'cl-lib)
-             (cl-remove ,item ,seq ,@keys))
+          `(cl-remove ,item ,seq ,@keys)
     (when-fn% 'remove* 'cl
       `(with-no-warnings (remove* ,item ,seq ,@keys)))))
           
