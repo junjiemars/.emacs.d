@@ -175,9 +175,8 @@ Equality is defined by TESTFN if non-nil or by `equal' if nil."
       <= 26.1
       `(assoc ,key ,list ,testfn)
     (if-fn% 'cl-assoc 'cl-lib
-            `(progn
-               (require 'cl-lib)
-               (cl-assoc ,key ,list :test (or ,testfn #'equal)))
+            ;; `cl-assoc' autoloaded
+            `(cl-assoc ,key ,list :test (or ,testfn #'equal))
       (when-fn% 'assoc* 'cl
         `(with-no-warnings
            (require 'cl)
@@ -207,7 +206,7 @@ to avoid corrupting the original SEQ.
 \nKeywords supported:  :test :test-not :key :count :start :end :from-end
 \n(fn ITEM SEQ [KEYWORD VALUE]...)"
   (if-fn% 'cl-remove 'cl-lib
-          ;; cl-remove autoloaded
+          ;; `cl-remove' autoloaded
           `(cl-remove ,item ,seq ,@keys)
     (when-fn% 'remove* 'cl
       `(with-no-warnings
@@ -227,7 +226,7 @@ Return the sublist of LIST whose car is ITEM.
       `(with-no-warnings
          (require 'cl)
          (member* ,item ,list ,@keys))
-    ;; cl-member autoloaded
+    ;; `cl-member' autoloaded
     `(cl-member ,item ,list ,@keys)))
 
 
