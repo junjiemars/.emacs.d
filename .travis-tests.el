@@ -214,4 +214,13 @@
   (should (eq nil (match-string* nil nil 0)))
   (should (string= "abc" (match-string* "xx\\(abc\\)xx" "xxxabcxx" 1))))
 
+(ert-deftest %basic:save-sexp-to-file ()
+  (when% t
+    (let ((f (emacs-home* "private/xxx.el")))
+      (should (and (save-sexp-to-file '(defvar xxx t) f)
+                   (file-exists-p f)
+                   (and (load f t) xxx)))
+      (delete-file f)
+      (should (not (file-exists-p f))))))
+
 ;; end of file
