@@ -211,9 +211,7 @@ to avoid corrupting the original SEQ.
              (require 'cl-lib)
              (cl-remove ,item ,seq ,@keys))
     (when-fn% 'remove* 'cl
-      `(with-no-warnings
-         (require 'cl)
-         (remove* ,item ,seq ,@keys)))))
+      `(with-no-warnings (remove* ,item ,seq ,@keys)))))
           
 
 ;; Unify `cl-member' and `member*'
@@ -224,7 +222,7 @@ Return the sublist of LIST whose car is ITEM.
 \n(fn ITEM LIST [KEYWORD VALUE]...)"
   (version-supported-if
       > 24
-      `(member* ,item ,list ,@keys)
+      `(with-no-warnings (member* ,item ,list ,@keys))
     `(cl-member ,item ,list ,@keys)))
 
 
