@@ -207,9 +207,13 @@ to avoid corrupting the original SEQ.
 \nKeywords supported:  :test :test-not :key :count :start :end :from-end
 \n(fn ITEM SEQ [KEYWORD VALUE]...)"
   (if-fn% 'cl-remove 'cl-lib
+          ;; cl-remove autoloaded
           `(cl-remove ,item ,seq ,@keys)
     (when-fn% 'remove* 'cl
-      `(with-no-warnings (remove* ,item ,seq ,@keys)))))
+      `(with-no-warnings
+         (progn
+           (require 'cl)
+           (remove* ,item ,seq ,@keys))))))
           
 
 ;; Unify `cl-member' and `member*'
@@ -220,7 +224,10 @@ Return the sublist of LIST whose car is ITEM.
 \n(fn ITEM LIST [KEYWORD VALUE]...)"
   (version-supported-if
       > 24
-      `(with-no-warnings (member* ,item ,list ,@keys))
+      `(with-no-warnings
+         (require 'cl)
+         (member* ,item ,list ,@keys))
+    ;; cl-member autoloaded
     `(cl-member ,item ,list ,@keys)))
 
 
