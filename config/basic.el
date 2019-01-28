@@ -290,6 +290,14 @@ Returns the name of FILE when successed otherwise nil."
       file)))
 
 
+(defun read-str-from-file (file)
+  "Read string from FILE."
+  (when (and (stringp file) (file-exists-p file))
+    (with-temp-buffer
+      (insert-file-contents file)
+      (buffer-string))))
+
+
 (defun dir-iterate (dir ff df fn dn)
   "Iterating DIR, if FF file-fitler return t then call FN, 
 and if DF dir-filter return t then call DN and then iterate into deeper DIR.

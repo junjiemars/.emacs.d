@@ -223,5 +223,12 @@
       (delete-file f)
       (should (not (file-exists-p f))))))
 
+(ert-deftest %basic:save/read-str-to/from-file ()
+  (let ((f (emacs-home* "private/xxx.el")))
+    (should (and (save-str-to-file "abc" f)
+                 (string= "abc" (read-str-from-file f))))
+    (delete-file f)
+    (should (not (file-exists-p f)))))
+
 
 ;; end of file

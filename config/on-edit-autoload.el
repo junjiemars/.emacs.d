@@ -166,12 +166,7 @@
 (autoload 'cl-prettyprint "cl-extra")
 
 
-(defun read-str-from-file (file)
-  "Read string from FILE."
-  (when (and (stringp file) (file-exists-p file))
-    (with-temp-buffer
-      (insert-file-contents file)
-      (buffer-string))))
+
 
 
 ;; end of file
