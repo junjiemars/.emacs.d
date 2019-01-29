@@ -230,5 +230,11 @@
     (delete-file f)
     (should (not (file-exists-p f)))))
 
+(ert-deftest %basic:take ()
+  (should (eq nil (take 3 nil)))
+  (should (equal '(1 2 3) (take 3 (range 1 10 1))))
+  (should (= 3 (length (take 3 (range 1 10 1)))))
+  (should (= 10 (length (take 100 (range 1 10 1))))))
+
 
 ;; end of file
