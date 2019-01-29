@@ -239,10 +239,21 @@
 (ert-deftest %basic:drop-while ()
   (should (eq nil (drop-while nil nil)))
   (should (eq nil (drop-while (lambda (x) (= x 1)) nil)))
-  (eq nil (drop-while (lambda (x) (< x 1)) (range 1 10 1)))
+  (should (eq nil (drop-while (lambda (x) (< x 1))
+                              (range 1 10 1))))
   (should (equal '(2 3) (drop-while (lambda (x) (= x 1))
                                     (range 1 3 1))))
   (should (= 7 (length (drop-while (lambda (x) (>= x 3))
+                                   (range 1 10 1))))))
+
+(ert-deftest %basic:take-while ()
+  (should (eq nil (take-while nil nil)))
+  (should (eq nil (take-while (lambda (x) (= x 1)) nil)))
+  (should (eq nil (take-while (lambda (x) (>= x 1))
+                              (range 1 10 1))))
+  (should (equal '(1 2) (take-while (lambda (x) (> x 2))
+                                    (range 1 3 1))))
+  (should (= 2 (length (take-while (lambda (x) (>= x 3))
                                    (range 1 10 1))))))
 
 

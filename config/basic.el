@@ -497,8 +497,8 @@ for which (PRED item) returns t."
 
 
 (defun take-while (pred seq)
-  "Returns a sequence of successive items from SEQ before the item 
-for which (PRED item) returns t."
+  "Returns a sequence of successive items from SEQ before the
+item for which (PRED item) returns t."
   (let ((s seq) (w nil) (s1 nil))
     (while (and (not w) (car s))
       (if (funcall pred (car s))
