@@ -236,5 +236,14 @@
   (should (= 3 (length (take 3 (range 1 10 1)))))
   (should (= 10 (length (take 100 (range 1 10 1))))))
 
+(ert-deftest %basic:drop-while ()
+  (should (eq nil (drop-while nil nil)))
+  (should (eq nil (drop-while (lambda (x) (= x 1)) nil)))
+  (eq nil (drop-while (lambda (x) (< x 1)) (range 1 10 1)))
+  (should (equal '(2 3) (drop-while (lambda (x) (= x 1))
+                                    (range 1 3 1))))
+  (should (= 7 (length (drop-while (lambda (x) (>= x 3))
+                                   (range 1 10 1))))))
+
 
 ;; end of file
