@@ -142,4 +142,11 @@ otherwise check cc include on the fly."
       (define-key% c-mode-map (kbd "TAB") #'c-indent-line-or-region))))
 
 
+(with-eval-after-load 'cmacexp
+  ;; [C-c C-e] `c-macro-expand' in `cc-mode'
+  (setq% c-macro-prompt-flag t 'cmacexp)
+  (platform-supported-when 'darwin
+    (when% (executable-find% "cc")
+      (setq% c-macro-preprocessor "cc -E -o - -" 'cmacexp))))
+
 ;; end of on-cc-autoload.el
