@@ -142,11 +142,29 @@ otherwise check cc include on the fly."
       (define-key% c-mode-map (kbd "TAB") #'c-indent-line-or-region))))
 
 
+(platform-supported-when 'windows-nt
+  ;; [C-c C-e] macro expand for msvc
+  (defadvice c-macro-expand (before c-macro-expand-before compile)
+    "cl.exe cannot retrieve stdin."
+    (setq% c-macro-preprocessor (concat "cc-env.bat && cl -E "
+                                        (buffer-file-name (current-buffer)))
+           'cmacexp)))
+
+
 (with-eval-after-load 'cmacexp
+
   ;; [C-c C-e] `c-macro-expand' in `cc-mode'
   (setq% c-macro-prompt-flag t 'cmacexp)
+
   (platform-supported-when 'darwin
     (when% (executable-find% "cc")
-      (setq% c-macro-preprocessor "cc -E -o - -" 'cmacexp))))
+      (setq% c-macro-preprocessor "cc -E -o - -" 'cmacexp)))
+
+  (platform-supported-when 'windows-nt
+    (when% (or (executable-find% "cc-env.bat")
+               (make-cc-env-bat))
+      (ad-activate #'c-macro-expand t))))
+
 
 ;; end of on-cc-autoload.el
+
