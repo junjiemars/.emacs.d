@@ -798,49 +798,49 @@ machine.
 
 It's *self-documenting* and great, keep reading it frequently.
 
--  Tutorial: @@html:<kbd>@@C-h-t@@html:</kbd>@@
--  Help for Help: @@html:<kbd>@@C-h C-h@@html:</kbd>@@
--  Emacs manual: @@html:<kbd>@@C-h r@@html:</kbd>@@
--  Apropos command: @@html:<kbd>@@C-h a@@html:</kbd>@@
--  Info: @@html:<kbd>@@C-h i@@html:</kbd>@@
--  Info of mode: @@html:<kbd>@@C-h i d m @@html:</kbd>@@
--  Mode: @@html:<kbd>@@C-h-m@@html:</kbd>@@ see all the key bindings and
-   documentation of current buffer
--  Where is command: @@html:<kbd>@@C-h w@@html:</kbd>@@ which keystrokes
-   binding to a given command
--  Function: @@html:<kbd>@@C-h-f@@html:</kbd>@@ display documentation of
-   the given function
--  Variable: @@html:<kbd>@@C-h-v@@html:</kbd>@@ display documentation of
-   the given variable
--  Keybinding: @@html:<kbd>@@C-h-k@@html:</kbd>@@ display documentation
-   of the function invoked by the given keystrokes
--  Prefix keybindings: @@html:<kbd>@@@@html:<prefix>@@
-   C-h@@html:</kbd>@@ see all key bindings for given prefix keystrokes
--  Keybinding briefly: @@html:<kbd>@@C-h c@@html:</kbd>@@, which command
-   for given keystroke
--  Message: @@html:<kbd>@@C-h e@@html:</kbd>@@ see the logging of echo
-   area message
--  Man: @@html:<kbd>@@M-x man@@html:</kbd>@@ view UNIX manual page
--  Woman: @@html:<kbd>@@M-x woman@@html:</kbd>@@ view UNIX manual page
-   without =man= program
--  Coding system: @@html:<kbd>@@C-h C@@html:</kbd>@@ describe coding
-   system
--  Colors: @@html:<kbd>@@M-x list-colors-display@@html:</kbd>@@ display
-   names of defined colors and show what they look like
--	 Keystrokes: @@html:<kbd>@@C-h l@@html:</kbd>@@ display last 100 input keystrokes
+- Tutorial: @@html:<kbd>@@C-h-t@@html:</kbd>@@
+- Help for Help: @@html:<kbd>@@C-h C-h@@html:</kbd>@@
+- Emacs manual: @@html:<kbd>@@C-h r@@html:</kbd>@@
+- Apropos command: @@html:<kbd>@@C-h a@@html:</kbd>@@
+- Info: @@html:<kbd>@@C-h i@@html:</kbd>@@
+- Info of mode: @@html:<kbd>@@C-h i d m @@html:</kbd>@@
+- Mode: @@html:<kbd>@@C-h-m@@html:</kbd>@@ see all the key bindings and
+  documentation of current buffer
+- Where is command: @@html:<kbd>@@C-h w@@html:</kbd>@@ which keystrokes
+  binding to a given command
+- Function: @@html:<kbd>@@C-h-f@@html:</kbd>@@ display documentation of
+  the given function
+- Variable: @@html:<kbd>@@C-h-v@@html:</kbd>@@ display documentation of
+  the given variable
+- Keybinding: @@html:<kbd>@@C-h-k@@html:</kbd>@@ display documentation
+  of the function invoked by the given keystrokes
+- Prefix keybindings: @@html:<kbd>@@@@html:<prefix>@@
+  C-h@@html:</kbd>@@ see all key bindings for given prefix keystrokes
+- Keybinding briefly: @@html:<kbd>@@C-h c@@html:</kbd>@@, which command
+  for given keystroke
+- Message: @@html:<kbd>@@C-h e@@html:</kbd>@@ see the logging of echo
+  area message
+- Man: @@html:<kbd>@@M-x man@@html:</kbd>@@ view UNIX manual page
+- Woman: @@html:<kbd>@@M-x woman@@html:</kbd>@@ view UNIX manual page
+  without =man= program
+- Coding system: @@html:<kbd>@@C-h C@@html:</kbd>@@ describe coding
+  system
+- Colors: @@html:<kbd>@@M-x list-colors-display@@html:</kbd>@@ display
+  names of defined colors and show what they look like
+- Keystrokes: @@html:<kbd>@@C-h l@@html:</kbd>@@ display last 100 input keystrokes
 
 ** Motion
    :PROPERTIES:
    :CUSTOM_ID: motion
    :END:
 
--  goto line: @@html:<kbd>@@M-g g@@html:</kbd>@@
--  goto nth char: @@html:<kbd>@@M-g c@@html:</kbd>@@
--  jump between buffers: @@html:<kbd>@@C-x C-@@@html:</kbd>@@, jumps to
-   the global mark acrross buffers
--  jump in buffer: @@html:<kbd>@@C-u C-@@@html:</kbd>@@
--  jump to definition: @@html:<kbd>@@M-.@@html:</kbd>@@
--  pop back to where @@html:<kbd>@@M-.@@html:</kbd>@@ jump to: @@html:<kbd>@@M-,@@html:</kbd>@@
+- goto line: @@html:<kbd>@@M-g g@@html:</kbd>@@
+- goto nth char: @@html:<kbd>@@M-g c@@html:</kbd>@@
+- jump between buffers: @@html:<kbd>@@C-x C-@@@html:</kbd>@@, jumps to
+  the global mark acrross buffers
+- jump in buffer: @@html:<kbd>@@C-u C-@@@html:</kbd>@@
+- jump to definition: @@html:<kbd>@@M-.@@html:</kbd>@@
+- pop back to where @@html:<kbd>@@M-,@@html:</kbd>@@
 
 ** Interaction
    :PROPERTIES:
@@ -978,7 +978,6 @@ The content of Register cannot accross sessions.
 - /store/ region into register: @@html:<kbd>@@C-x r s <REG>@@html:</kbd>@@
 - /insert from/ register: @@html:<kbd>@@C-x r i <REG>@@html:</kbd>@@
 - /view/ the content of register: @@html:<kbd>@@M-x view-register <REG>@@html:</kbd>@@
-
 ** Bookmarks
    :PROPERTIES:
    :CUSTOM_ID: bookmarks
