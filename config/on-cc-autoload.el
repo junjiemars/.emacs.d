@@ -145,7 +145,7 @@ otherwise check cc include on the fly."
 (platform-supported-when 'windows-nt
   ;; [C-c C-e] macro expand for msvc
   (defadvice c-macro-expand (before c-macro-expand-before compile)
-    "cl.exe cannot retrieve stdin."
+    "cl.exe cannot retrieve from stdin."
     (setq% c-macro-preprocessor (concat "cc-env.bat && cl -E "
                                         (buffer-file-name (current-buffer)))
            'cmacexp)))
