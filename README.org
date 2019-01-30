@@ -903,8 +903,10 @@ It's *self-documenting* and great, keep reading it frequently.
 	 :CUSTOM_ID: coding
 	 :END:
 
-- check current buffer coding system: @@html:<kbd>@@M-: buffer-file-coding-system@@html:</kbd>@@
-- revert current buffer's coding system: @@html:<kbd>@@M-x C-x RET r@@html:</kbd>@@
+- check current buffer coding system: @@html:<kbd>@@M-:
+  buffer-file-coding-system@@html:</kbd>@@
+- revert current buffer's coding system: @@html:<kbd>@@M-x C-x RET
+  r@@html:</kbd>@@
 
 ** Basic sexp commands
    :PROPERTIES:
