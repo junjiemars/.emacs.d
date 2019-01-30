@@ -1056,6 +1056,16 @@ It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]]
 
 - on Windows use =~/.ssh/config=: use =/sshx:= instead, such as  @@html:<kbd>@@/sshx:user@host:/path/to/file@@html:</kbd>@@
 
+*** Clipboard
+		:PROPERTIES:
+		:CUSTOM_ID: clipboard
+		:END:
+
+On Darwin
+- copy to clipboard: select region then @@html:<kbd>@@M-|
+  pbcopy@@html:</kbd>@@
+- paste to Emacs: @@html:<kbd>@@C-u M-| pbpaste@@html:</kbd>@@
+	
 ** LaTex Requirements
    :PROPERTIES:
    :CUSTOM_ID: latex-requirements
