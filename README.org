@@ -296,7 +296,7 @@ Introduce rules of naming /files/ and /functions/
 
 - [[#theme][Theme]]
 - [[#font][Font]]
-- [[#shell][Shell]]
+- [[#cooking-shell][Shell]]
 - [[#session][Session]]
 - [[#socks][Socks]]
 - [[#package][Package]]
@@ -379,7 +379,7 @@ by default and for GUI mode only.
 
 ** Shell
     :PROPERTIES:
-    :CUSTOM_ID: shell
+    :CUSTOM_ID: cooking-shell
     :END:
 
 *** shell
@@ -785,7 +785,7 @@ machine.
 - [[#region-and-rectangle][Region and Rectangle]]
 - [[#keyboard-macro][Keyboard Macro]]
 - [[#dired][Dired]]
-- [[#shell][Shell]]
+- [[#mnemonic-shell][Shell]]
 - [[#remote][Remote]]
 - [[#latex-requirements][LaTex Requirements]]
 - [[#tips][Tips]]
@@ -1032,7 +1032,7 @@ automatically from one Emacs session to the next.
 
 ** Shell
    :PROPERTIES:
-   :CUSTOM_ID: shell
+   :CUSTOM_ID: mnemonic-shell
    :END:
 
 - EShell: @@html:<kbd>@@M-x eshell@@html:</kbd>@@
