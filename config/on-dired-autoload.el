@@ -204,9 +204,13 @@
             ;; `format-spec' may not autoload
             (require 'format-spec)
             ;; compress .7z file via [c] key
-            (when% (and (executable-find% "7za")
+            (when% (and (or (executable-find% "7z")
+                            (executable-find% "7za"))
                         (not (assoc** "\\.7z\\'" dired-compress-files-alist #'string=)))
-              (push (cons "\\.7z\\'" "7za a -t7z %o %i")
+              (push (cons "\\.7z\\'" (concat (if (executable-find% "7z")
+                                                 "7z"
+                                               "7za")
+                                             " a -t7z %o %i"))
                     dired-compress-files-alist)))
 
     ;; on ancient Emacs, `dired' can't recognize .zip archive. 
@@ -229,25 +233,34 @@
 
     ;; [Z] to compress or uncompress .gz file
     (when% (or (executable-find% "gzip")
+               (executable-find% "7z")
                (executable-find% "7za"))
       (when% (assoc** ":" dired-compress-file-suffixes #'string=)
         (setq dired-compress-file-suffixes
               (remove (assoc** ":" dired-compress-file-suffixes #'string=)
                       dired-compress-file-suffixes))
         (when% (and (not (executable-find% "gunzip"))
-                    (executable-find% "7za"))
+                    (or (executable-find% "7z")
+                        (executable-find% "7za")))
           (setcdr (assoc** "\\.gz\\'" dired-compress-file-suffixes #'string=)
-                  '("" "7za x -aoa %i"))))
+                  `("" ,(concat (if (executable-find% "7z")
+                                    "7z" "7za")
+                                " x -aoa %i")))))
 
       (when-fn% 'dired-compress-file 'dired-aux
         (ad-activate #'dired-compress-file t)))
 
     ;; [c] compress or uncompress .7z file
-    (when% (executable-find% "7za")
+    (when% (or (executable-find% "7z")
+               (executable-find% "7za"))
       (if% (assoc** "\\.7z\\'" dired-compress-file-suffixes #'string=)
           (setcdr (assoc** "\\.7z\\'" dired-compress-file-suffixes #'string=)
-                  '("" "7za x -aoa -o%o %i"))
-        (put (list "\\.7z\\'" "" "7za x -aoa -o%o %i"))))))
+                  `("" ,(concat (if (executable-find% "7z")
+                                    "7z" "7za")
+                                " x -aoa -o%o %i")))
+        (put (list "\\.7z\\'" "" (concat (if (executable-find% "7z")
+                                             "7z" "7za")
+                                         " x -aoa -o%o %i")))))))
 
 
 (platform-supported-when 'windows-nt
