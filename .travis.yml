@@ -9,4 +9,5 @@ env:
   - SHELL=bash
 
 script:
-  - ./.travis-tests.sh
+  - emacs --batch --load=init.el --eval='(clean-compiled-files)'
+  - emacs --batch --load=init.el
