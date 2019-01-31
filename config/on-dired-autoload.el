@@ -220,10 +220,9 @@
                 (executable-find% "unzip"))
       (unless (assoc** "\\.zip\\'" dired-compress-file-suffixes #'string=)
         (add-to-list 'dired-compress-file-suffixes
-                     '("\\.zip\\'" ".zip" "unzip")))))
+                     '("\\.zip\\'" ".zip" "unzip"))))
 
-  ;; [c] compress or uncompress .7z file
-  (when-var% dired-compress-file-suffixes 'dired-aux
+    ;; [c] compress or uncompress .7z file
     (when% (or (executable-find% "7z")
                (executable-find% "7za"))
       (let ((7z (concat (if (executable-find% "7z")
@@ -233,6 +232,7 @@
             (setcdr (assoc** "\\.7z\\'" dired-compress-file-suffixes #'string=)
                     (list "" 7z))
           (push (list "\\.7z\\'" "" 7z) dired-compress-file-suffixes)))))
+  
 
   (platform-supported-when 'windows-nt
     ;; error at `dired-internal-noselect' on Windows:
