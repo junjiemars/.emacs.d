@@ -8,8 +8,5 @@ matrix:
 env:
   - SHELL=bash
 
-git:
-  depth 1
-
 script:
   - ./.travis-tests.sh
