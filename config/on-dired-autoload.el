@@ -232,7 +232,7 @@
         (if% (assoc** "\\.7z\\'" dired-compress-file-suffixes #'string=)
             (setcdr (assoc** "\\.7z\\'" dired-compress-file-suffixes #'string=)
                     (list "" 7z))
-          (put (list "\\.7z\\'" "" 7z))))))
+          (put (list "\\.7z\\'" "" 7z) dired-compress-file-suffixes)))))
 
   (platform-supported-when 'windows-nt
     ;; error at `dired-internal-noselect' on Windows:
