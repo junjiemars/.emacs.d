@@ -14,7 +14,7 @@
   (eval-when-compile
     
     (defun make-zip-bat (zip &rest ignore)
-      "Make ZIP.bat in `exec-path' for minizip or 7za."
+      "Make ZIP.bat in `exec-path' for minizip or 7z[a]."
       (declare (indent 1))
       (when (stringp zip)
         (save-str-to-file
@@ -33,7 +33,7 @@
                  ":getopt\n"
                  (cond ((string= "minizip" zip)
                         "if \"%1\"==\"-mX0\" set _OPT=%_OPT:-mX0=-0% & shift & goto :getopt\n")
-                       ((string= "7za" zip)
+                       ((string-match "7za?" zip)
                         (concat
                          "if \"%1\"==\"-mX0\" set _OPT=%_OPT:-mX0=-mx0% & shift & goto :getopt\n"
                          "if \"%1\"==\"-0\" set _OPT=%_OPT:-0=-mx0% & shift & goto :getopt\n"
@@ -43,7 +43,7 @@
                  (let ((options nil))
                    (dolist (x (cond ((string= "minizip" zip)
                                      (append '("-r" "--filesync" "-rmTq") ignore))
-                                    ((string= "7za" zip)
+                                    ((string-match "7za?" zip)
                                      (append '("-r" "--filesync" "-rmTq"))))
                               options)
                      (setq options
@@ -63,12 +63,14 @@
                  "  shift\n"
                  "  goto :getopt\n"
                  ")\n\n"
-                 (cond ((string= "7za" zip)
-                        (concat "REM 7za call\n"
-                                "7za a %_OPT% -tzip -- %_ZIP% %_ARGV%\n"
-                                "if exist %_ZIP% (\n"
-                                "  7za d %_OPT% -tzip -- %_ZIP% %_ZIP%\n"
-                                ")\n"))
+                 (cond ((string-match "7za?" zip)
+                        (let ((7z (match-string* "7za?" zip 0)))
+                          (format (concat "REM %s call\n"
+                                          "%s a %%_OPT%% -tzip -- %%_ZIP%% %%_ARGV%%\n"
+                                          "if exist %%_ZIP%% (\n"
+                                          "  %s d %%_OPT%% -tzip -- %%_ZIP%% %%_ZIP%%\n"
+                                          ")\n")
+                                  7z 7z 7z)))
                        ((string= "minizip" zip)
                         (concat "REM minizip recursive call\n\n"
                                 "call :loop %_ARGV%\n"
@@ -102,7 +104,9 @@
 
     (unless (executable-find% "zip")
       ;; zip external program
-      (cond ((executable-find% "7za") (make-zip-bat "7za"))
+      ;; prefer 7z, because 7za less archive formats supported
+      (cond ((executable-find% "7z") (make-zip-bat "7z"))
+            ((executable-find% "7za") (make-zip-bat "7za"))
             ((executable-find% "minizip") (make-zip-bat "minizip"))))))
 
 
