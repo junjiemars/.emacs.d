@@ -1,12 +1,15 @@
-language: generic
-dist: trusty
-sudo: false
-addons:
-  apt:
-    packages:
-      - emacs
-script: >
-  emacs --batch
-  -l .emacs.d/init.el
-  -l .emacs.d/.travis-tests.el
-  -f ert-run-tests-batch-and-exit
+language: bash
+
+matrix:
+  include:
+    - os: linux
+    - os: osx
+
+env:
+  - SHELL=bash
+
+git:
+  depth 1
+
+script:
+  - ./.travis-tests.sh
