@@ -222,6 +222,18 @@
         (add-to-list 'dired-compress-file-suffixes
                      '("\\.zip\\'" ".zip" "unzip")))))
 
+  ;; [c] compress or uncompress .7z file
+  (when-var% dired-compress-file-suffixes 'dired-aux
+    (when% (or (executable-find% "7z")
+               (executable-find% "7za"))
+      (let ((7z (concat (if (executable-find% "7z")
+                            "7z" "7za")
+                        " x -t7z -aoa -o%o %i")))
+        (if% (assoc** "\\.7z\\'" dired-compress-file-suffixes #'string=)
+            (setcdr (assoc** "\\.7z\\'" dired-compress-file-suffixes #'string=)
+                    (list "" 7z))
+          (put (list "\\.7z\\'" "" 7z))))))
+
   (platform-supported-when 'windows-nt
     ;; error at `dired-internal-noselect' on Windows:
     ;; Reading directory: "ls --dired -al -- d:/abc/中文/" exited with status 2
@@ -243,24 +255,12 @@
                     (or (executable-find% "7z")
                         (executable-find% "7za")))
           (setcdr (assoc** "\\.gz\\'" dired-compress-file-suffixes #'string=)
-                  `("" ,(concat (if (executable-find% "7z")
-                                    "7z" "7za")
-                                " x -aoa %i")))))
+                  (list "" (concat (if (executable-find% "7z")
+                                       "7z" "7za")
+                                   " x -tgz -aoa %i")))))
 
       (when-fn% 'dired-compress-file 'dired-aux
-        (ad-activate #'dired-compress-file t)))
-
-    ;; [c] compress or uncompress .7z file
-    (when% (or (executable-find% "7z")
-               (executable-find% "7za"))
-      (if% (assoc** "\\.7z\\'" dired-compress-file-suffixes #'string=)
-          (setcdr (assoc** "\\.7z\\'" dired-compress-file-suffixes #'string=)
-                  `("" ,(concat (if (executable-find% "7z")
-                                    "7z" "7za")
-                                " x -aoa -o%o %i")))
-        (put (list "\\.7z\\'" "" (concat (if (executable-find% "7z")
-                                             "7z" "7za")
-                                         " x -aoa -o%o %i")))))))
+        (ad-activate #'dired-compress-file t)))))
 
 
 (platform-supported-when 'windows-nt
