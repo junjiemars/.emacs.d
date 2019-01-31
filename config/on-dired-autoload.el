@@ -199,6 +199,7 @@
 
 (with-eval-after-load 'dired-aux
 
+  ;; [c] `dired-do-compress-to'
   (if-fn% 'dired-do-compress-to 'dired-aux
           (when-var% dired-compress-files-alist 'dired-aux
             ;; `format-spec' may not autoload
@@ -222,7 +223,7 @@
         (add-to-list 'dired-compress-file-suffixes
                      '("\\.zip\\'" ".zip" "unzip"))))
 
-    ;; [c] compress or uncompress .7z file
+    ;; [c] compress .7z file
     (when% (or (executable-find% "7z")
                (executable-find% "7za"))
       (let ((7z (concat (if (executable-find% "7z")
