@@ -705,7 +705,7 @@ Compatibled for ancient Emacs versions.
 - @@html:<kbd>@@M-*@@html:</kbd>@@ =tags-loop-continue=
 - @@html:<kbd>@@C-l@@html:</kbd>@@ =recenter-top-bottom=
 - @@html:<kbd>@@C-c l@@html:</kbd>@@ =linum-mode=
-- @@html:<kbd>@@M-#@@html:</kbd>@@ =xref-find-references=
+- @@ html:<kbd>@@M-#@@html:</kbd>@@ =xref-find-references=
 
 *** Featured keys
 
