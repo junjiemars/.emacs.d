@@ -670,7 +670,6 @@ The good news is all those issues had gone in this kit.
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/org-odt-export-to-odt-on-windows.png][org-odt-export-to-odt]]
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-compress-file-suffixes-version-24lt.png][dired-compress-file-suffixes]]
 
-
 ** Tags
 	 :PROPERTIES:
 	 :CUSTOM_ID: tags

@@ -276,13 +276,12 @@
           (ad-set-arg
            0
            (dolist (x arg0 files)
-             (aset x
-                   0
-                   (decode-coding-string
-                    (aref x 0)
-                    locale-coding-system))
-             (add-to-list 'files x t #'eq))))))
-
+             (let ((decode (substring-no-properties (decode-coding-string
+                                                     (aref x 0)
+                                                     locale-coding-system))))
+               (aset x 0 decode)
+               (aset x 2 (length decode))
+               (add-to-list 'files x t #'eq)))))))
 
     (with-eval-after-load 'arc-mode
       (ad-activate #'archive-summarize-files t))))
