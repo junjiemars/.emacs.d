@@ -502,7 +502,7 @@ that =use-pacakge= does.
 
 There are two types of packages: /basic/ (just like Emacs' builtin)
 and /user defined/. To disable /user defined/ packages in
-=(def-self-path-ref)=, disable both /basic/ and /user defined/
+=(def-self-path-ref)=, to disable both /basic/ and /user defined/
 packages can be done in =(def-self-env-spec)=.
 
 #+BEGIN_SRC emacs-lisp

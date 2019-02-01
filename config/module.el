@@ -124,7 +124,7 @@
   ;; Load basic package spec
   (parse-package-spec! basic-package-spec))
 
-
+;; whatever `package-supported-p' or `package-spec-:allowed-p'
 (compile! (compile-unit% (emacs-home* "config/on-module.el")))
 
 

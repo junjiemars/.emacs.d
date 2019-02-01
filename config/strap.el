@@ -425,8 +425,8 @@ Take effect after restart Emacs.
   ;; (package-initialize)
 
   ;; Load basic and self modules
-  (compile! (compile-unit* (self-def-path-ref-> :package-spec))
-            (compile-unit% (emacs-home* "config/module.el"))))
+  (compile! (compile-unit* (self-def-path-ref-> :package-spec)))
+  (compile! (compile-unit% (emacs-home* "config/module.el"))))
 
 
 ;; Load package independent modules
