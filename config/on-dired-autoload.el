@@ -235,33 +235,36 @@
             (push (cons "\\.7z\\'" 7za?) dired-compress-files-alist))))))
   
 
+  ;; error at `dired-internal-noselect' on Windows:
+  ;; Reading directory: "ls --dired -al -- d:/abc/中文/" exited with status 2
+  ;; https://lists.gnu.org/archive/html/emacs-devel/2016-01/msg00406.html
+  ;; (setq file-name-coding-system locale-coding-system)
   (platform-supported-when 'windows-nt
-    ;; error at `dired-internal-noselect' on Windows:
-    ;; Reading directory: "ls --dired -al -- d:/abc/中文/" exited with status 2
-    ;; https://lists.gnu.org/archive/html/emacs-devel/2016-01/msg00406.html
-    ;; (setq file-name-coding-system locale-coding-system)
     (unless% (eq default-file-name-coding-system locale-coding-system)
       (ad-activate #'dired-shell-stuff-it t)
       (ad-activate #'dired-shell-command t))
 
     ;; [Z] to compress or uncompress .gz file
-    (when% (or (executable-find% "gzip")
-               (executable-find% "7z")
-               (executable-find% "7za"))
-      (when% (assoc** ":" dired-compress-file-suffixes #'string=)
-        (setq dired-compress-file-suffixes
-              (remove (assoc** ":" dired-compress-file-suffixes #'string=)
-                      dired-compress-file-suffixes))
+    (when-var% dired-compress-file-suffixes 'dired-aux
+      (when% (or (executable-find% "gzip")
+                 (executable-find% "7z")
+                 (executable-find% "7za"))
+        (when% (assoc** ":" dired-compress-file-suffixes #'string=)
+          (setq dired-compress-file-suffixes
+                (remove (assoc** ":" dired-compress-file-suffixes #'string=)
+                        dired-compress-file-suffixes)))
         (when% (and (not (executable-find% "gunzip"))
                     (or (executable-find% "7z")
                         (executable-find% "7za")))
-          (setcdr (assoc** "\\.gz\\'" dired-compress-file-suffixes #'string=)
-                  (list "" (concat (if (executable-find% "7z")
-                                       "7z" "7za")
-                                   " x -tgz -aoa %i")))))
+          (let ((7za? (concat (if (executable-find% "7z") "7z" "7za")
+                              " x -tgz -aoa %i")))
+            (if% (assoc** "\\.gz\\'" dired-compress-file-suffixes #'string=)
+                (setcdr (assoc** "\\.gz\\'" dired-compress-file-suffixes #'string=)
+                        (list "" 7za?))
+              (push (cons "\\.gz\\'" 7za?) dired-compress-file-suffixes))))
 
-      (when-fn% 'dired-compress-file 'dired-aux
-        (ad-activate #'dired-compress-file t)))))
+        (when-fn% 'dired-compress-file 'dired-aux
+          (ad-activate #'dired-compress-file t))))))
 
 
 (unless% (eq default-file-name-coding-system locale-coding-system)
