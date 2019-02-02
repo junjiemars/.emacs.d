@@ -102,7 +102,7 @@
 
 
 (version-supported-when > 24 
-  ;; fix: no TAB completion on ancient Emacs
+  ;; fix: no TAB completion in minibuffer on ancient Emacs.
   (defun define-eval-or-execute-key ()
     (cond ((eq 'eval-expression this-command)
            (define-key (current-local-map) (kbd "TAB")
