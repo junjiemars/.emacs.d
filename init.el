@@ -231,10 +231,9 @@ sequentially and return value of last one, or nil if there are none."
 
 ;; After loaded ...
 
-(let ((elapsed
-       (float-time
-        (time-subtract (current-time) loading-start-time))))
-  (message "#Loading init.el ... done (%.3fs)" elapsed))
+
+(message "#Loading init.el ... done (%.3fs)"
+         (float-time (time-subtract (current-time) loading-start-time)))
 
 
 
