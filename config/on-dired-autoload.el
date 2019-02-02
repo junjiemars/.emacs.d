@@ -217,11 +217,10 @@
     ;; on ancient Emacs, `dired' can't recognize .zip archive. 
     ;; [! zip x.zip ?] compress marked files to x.zip，
     ;; see `dired-compress-file-suffixes'.
-    (when% (and (executable-find% "zip")
+    (when% (and (not (assoc** "\\.zip\\'" dired-compress-file-suffixes #'string=))
+                (executable-find% "zip")
                 (executable-find% "unzip"))
-      (unless (assoc** "\\.zip\\'" dired-compress-file-suffixes #'string=)
-        (add-to-list 'dired-compress-file-suffixes
-                     '("\\.zip\\'" ".zip" "unzip"))))
+        (push '("\\.zip\\'" ".zip" "unzip") dired-compress-file-suffixes))
 
     ;; [c] compress .7z file
     (when% (or (executable-find% "7z")
