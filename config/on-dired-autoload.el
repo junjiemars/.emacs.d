@@ -196,42 +196,43 @@
           (setq% dired-use-ls-dired nil 'dired))))))
 
 
-
 (with-eval-after-load 'dired-aux
 
-  ;; [c] `dired-do-compress-to'
-  (if-fn% 'dired-do-compress-to 'dired-aux
-          (when-var% dired-compress-files-alist 'dired-aux
-            ;; `format-spec' may not autoload
-            (require 'format-spec)
-            ;; compress .7z file via [c] key
-            (when% (and (or (executable-find% "7z")
-                            (executable-find% "7za"))
-                        (not (assoc** "\\.7z\\'" dired-compress-files-alist #'string=)))
-              (push (cons "\\.7z\\'" (concat (if (executable-find% "7z")
-                                                 "7z"
-                                               "7za")
-                                             " a -t7z %o %i"))
-                    dired-compress-files-alist)))
-
-    ;; on ancient Emacs, `dired' can't recognize .zip archive. 
-    ;; [! zip x.zip ?] compress marked files to x.zip，
-    ;; see `dired-compress-file-suffixes'.
+  ;; on ancient Emacs, `dired' can't recognize .zip archive. 
+  ;; [! zip x.zip ?] compress marked files to x.zip，
+  ;; see `dired-compress-file-suffixes'.
+  (when-var% dired-compress-files-suffixes 'dired-aux
     (when% (and (not (assoc** "\\.zip\\'" dired-compress-file-suffixes #'string=))
                 (executable-find% "zip")
                 (executable-find% "unzip"))
-        (push '("\\.zip\\'" ".zip" "unzip") dired-compress-file-suffixes))
+      (push '("\\.zip\\'" ".zip" "unzip") dired-compress-file-suffixes)))
+  
 
-    ;; [c] compress .7z file
+  ;; [c] uncompress .7z file
+  (when-var% dired-compress-file-suffixes 'dired-aux
     (when% (or (executable-find% "7z")
                (executable-find% "7za"))
-      (let ((7z (concat (if (executable-find% "7z")
-                            "7z" "7za")
-                        " x -t7z -aoa -o%o %i")))
+      (let ((7za? (concat (if (executable-find% "7z") "7z" "7za")
+                          " x -t7z -aoa -o%o %i")))
         (if% (assoc** "\\.7z\\'" dired-compress-file-suffixes #'string=)
             (setcdr (assoc** "\\.7z\\'" dired-compress-file-suffixes #'string=)
-                    (list "" 7z))
-          (push (list "\\.7z\\'" "" 7z) dired-compress-file-suffixes)))))
+                    (list "" 7za?))
+          (push (list "\\.7z\\'" "" 7za?) dired-compress-file-suffixes)))))
+  
+  
+  ;; [c] compress .7z file
+  (when-fn% 'dired-do-compress-to 'dired-aux
+    (when-var% dired-compress-files-alist 'dired-aux
+      (when% (or (executable-find% "7z")
+                 (executable-find% "7za"))
+        (let ((7za? (concat (if (executable-find% "7z") "7z" "7za")
+                            " a -t7z %o %i")))
+          ;; `format-spec' may not autoload
+          (require 'format-spec)
+          (if% (assoc** "\\.7z\\'" dired-compress-files-alist #'string=)
+              (setcdr (assoc** "\\.7z\\'" dired-compress-files-alist #'string=)
+                      7za?)
+            (push (cons "\\.7z\\'" 7za?) dired-compress-files-alist))))))
   
 
   (platform-supported-when 'windows-nt
