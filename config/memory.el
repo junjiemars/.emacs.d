@@ -89,7 +89,8 @@
 ;; read saved session
 (add-hook 'after-init-hook
           (platform-supported-if 'darwin
-              ;; it's a bug on Darwin, may be hang when restore deskopt in concurrency.
+              ;; it's a bug on Darwin, may be hang when restore
+              ;; deskopt in concurrency.
               #'self-desktop-read!
             (def-function-threading self-desktop-read!))
           t)
