@@ -21,8 +21,12 @@
                             (concat (string-trim> (cdr cmd))
                                     "/VC/Auxiliary/Build/vcvarsall.bat"))))
              (when (file-exists-p bat) bat))
-           (let* ((ver (car (directory-files vsroot t "[0-9]+" #'string-greaterp)))
-                  (bat (concat ver "/BuildTools/VC/Auxiliary/Build/vcvarsall.bat")))
+           (let* ((ver (car (directory-files
+                             vsroot
+                             t "[0-9]+" #'string-greaterp)))
+                  (bat (concat
+                        ver
+                        "/BuildTools/VC/Auxiliary/Build/vcvarsall.bat")))
              (when (file-exists-p bat) bat)))))))
 
 
@@ -42,7 +46,8 @@
                  "\n"
                  "call vcvarsall.bat " arch "\n"
                  "set CC=cl" "\n"
-                 "set AS=ml" (if (string-match "[_a-zA-Z]*64" arch) "64" "") "\n"
+                 "set AS=ml" (if (string-match "[_a-zA-Z]*64" arch) "64" "")
+                 "\n"
                  "\n"
                  "popd\n"
                  "echo \"%INCLUDE%\"\n")
@@ -111,10 +116,12 @@ otherwise check cc include on the fly."
 
     
 (defun view-system-cc-include (buffer)
-  "View BUFFER in `view-mode' when the filename of BUFFER in `system-cc-include'."
+  "View BUFFER in `view-mode' when the filename of BUFFER in
+`system-cc-include'."
   (when (and (bufferp buffer)
              (eq 'c-mode (buffer-local-value 'major-mode buffer))
-             (system-cc-include-p (substring-no-properties (buffer-file-name buffer))))
+             (system-cc-include-p (substring-no-properties
+                                   (buffer-file-name buffer))))
     (with-current-buffer buffer (view-mode 1))))
 
 
