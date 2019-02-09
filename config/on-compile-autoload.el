@@ -33,7 +33,6 @@
 
 
 (with-eval-after-load 'grep
-  (setq% grep-highlight-matches t 'grep)
   (when-var% grep-mode-map 'grep
     ;; define `recompile' and `quit-window' key binding for `grep'
     (define-key% grep-mode-map (kbd "g") #'recompile)
