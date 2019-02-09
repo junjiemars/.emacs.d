@@ -254,7 +254,7 @@ If VAR requires the FEATURE, load it on compile-time."
 Evaluate BODY with VAR bound to each car from LIST, in turn.
 Then evaluate RESULT to get return value, default nil.
 
-\(fn (VAR LIST [RESULT]) BODY...)"
+ (dolist* (VAR LIST [RESULT]) BODY...)"
   (declare (indent 1) (debug ((symbolp form &optional form) body)))
   (unless (consp spec)
     (signal 'wrong-type-argument (list 'consp spec)))
@@ -384,7 +384,7 @@ Take effect after restart Emacs.
 (defmacro self-spec-> (seq &rest keys)
   (declare (indent 1))
   (let ((x seq))
-    (dolist (k keys x)
+    (dolist* (k keys x)
       (setq x (list 'plist-get x k)))))
 
 

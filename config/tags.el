@@ -63,7 +63,7 @@ when `desktop-globals-to-save' include it."
   "Mount existing TAGS-FILE into `tags-table-list'."
   (declare (indent 0))
   (let ((mounted nil))
-    (dolist (x tags-file (nreverse mounted))
+    (dolist* (x tags-file (nreverse mounted))
       (when (file-exists-p x)
         (add-to-list 'tags-table-list x t #'string=)
         (setq mounted (cons x mounted))))))
@@ -168,7 +168,7 @@ Example:
 "
   (let ((tag-file (tags-spec->% :os-include)))
     (make-c-tags (car includes) tag-file dir-filter renew)
-    (dolist (p (cdr includes) tag-file)
+    (dolist* (p (cdr includes) tag-file)
       (make-c-tags p tag-file dir-filter))))
 
 
