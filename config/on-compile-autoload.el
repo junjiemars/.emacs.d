@@ -33,7 +33,15 @@
 
 
 (with-eval-after-load 'grep
+
+  ;; define `recompile' and `quit-window' key binding for `grep'
   (when-var% grep-mode-map 'grep
-    ;; define `recompile' and `quit-window' key binding for `grep'
     (define-key% grep-mode-map (kbd "g") #'recompile)
-    (define-key% grep-mode-map (kbd "q") #'quit-window)))
+    (define-key% grep-mode-map (kbd "q") #'quit-window))
+
+  ;; `grep-highlight-matches' may not works
+  (when% (zerop (car (shell-command* "echo 'a'|grep --color=always 'a'")))
+    (setenv "GREP_OPTIONS"
+            (if% (stringp (getenv "GREP_OPTIONS"))
+                (concat (getenv "GREP_OPTIONS") " --color=always")
+              " --color=always"))))
