@@ -173,21 +173,6 @@ If VAR requires the FEATURE, load it on compile-time."
 
 ;; byte-compiler macro
 
-(unless-fn% 'gensym nil
-  (defvar *gensym-counter* 0))
-
-(unless-fn% 'gensym nil
-  ;; feature Emacs version will add `gensym' into the core
-  ;; but now using cl-gensym indeed
-  (defun gensym (&optional prefix)
-    "Generate a new uninterned symbol.
-The name is made by appending a number to PREFIX, default \"g\"."
-    (let ((pfix (if (stringp prefix) prefix "g"))
-          (num (if (integerp prefix) prefix
-                 (prog1 *gensym-counter*
-                   (setq *gensym-counter* (1+ *gensym-counter*))))))
-      (make-symbol (format "%s%d" pfix num)))))
-
 
 (defmacro ignore* (&rest vars)
   "Return nil, list VARS at compile time if in lexical context."
@@ -264,13 +249,40 @@ The name is made by appending a number to PREFIX, default \"g\"."
   "Return the :delete-booster indicator of `compile-unit'."
   `(plist-get ,unit :delete-booster))
 
+(defmacro dolist* (spec &rest body)
+  "Loop over a list.
+Evaluate BODY with VAR bound to each car from LIST, in turn.
+Then evaluate RESULT to get return value, default nil.
+
+\(fn (VAR LIST [RESULT]) BODY...)"
+  (declare (indent 1) (debug ((symbolp form &optional form) body)))
+  (unless (consp spec)
+    (signal 'wrong-type-argument (list 'consp spec)))
+  (unless (and (<= 2 (length spec)) (<= (length spec) 3))
+    (signal 'wrong-number-of-arguments (list '(2 . 3) (length spec))))
+  (let ((temp (gensym*)))
+    `(lexical-supported-if
+         (let ((,temp ,(nth 1 spec)))
+           (while ,temp
+             (let ((,(car spec) (car ,temp)))
+               ,@body
+               (setq ,temp (cdr ,temp))))
+           ,@(cdr (cdr spec)))
+       (let ((,temp ,(nth 1 spec))
+             ,(car spec))
+         (while ,temp
+           (setq ,(car spec) (car ,temp))
+           ,@body
+           (setq ,temp (cdr ,temp)))
+         ,@(if (cdr (cdr spec))
+               `((setq ,(car spec) nil) ,@(cdr (cdr spec))))))))
 
 
 (defun compile! (&rest units)
   "Compile and load the elisp UNITS."
   (declare (indent 0))
   (let ((r t))
-    (dolist (unit units r)
+    (dolist* (unit units r)
       (when unit
         (setq r (and r (compile-and-load-file*
                         (compile-unit->file unit)

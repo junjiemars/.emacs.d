@@ -13,6 +13,18 @@
   "Ignores body, yields nil."
   nil)
 
+(defvar *gensym-counter* 0
+  "The counter of `gensym*'.")
+
+(defun gensym* (&optional prefix)
+  "Generate a new uninterned symbol.
+The name is made by appending a number to PREFIX, default \"g\"."
+  (let ((pfix (if (stringp prefix) prefix "g"))
+        (num (if (integerp prefix) prefix
+               (prog1 *gensym-counter*
+                 (setq *gensym-counter* (1+ *gensym-counter*))))))
+    (make-symbol (format "%s%d" pfix num))))
+
 
 (defvar loading-start-time
   (current-time)
@@ -54,7 +66,7 @@
   "Make and return the path of the FILE.
 
 The FILE should be posix path, see `path-separator'."
-  (let ((d (make-symbol "-dir:0-")))
+  (let ((d (gensym*)))
     `(let ((,d (if (directory-name-p ,file)
                    ,file
                  (file-name-directory ,file))))
@@ -110,8 +122,8 @@ The FILE should be posix path, see `path-separator'."
 If ONLY-COMPILE is t, does not load COMPILED file after compile FILE.
 If DELETE-BOOSTER is t, remove booster file after compile FILE.
 DIR where the compiled file located."
-  (let ((c (make-symbol "-compile:0-"))
-        (s (make-symbol "-source:0-")))
+  (let ((c (gensym*))
+        (s (gensym*)))
     `(when (and (stringp ,file) (file-exists-p ,file))
        (let ((,c (if ,dir
                      (file-name-new-extension*
