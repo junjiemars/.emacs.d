@@ -18,6 +18,10 @@
   (should-not (comment (+ 1 2 3)))
   (should-not (comment (progn (+ 1) (* 2 3)))))
 
+(ert-deftest %init:gensym* ()
+  (should (string-match "^g[0-9]+" (format "%s" (gensym*))))
+  (should (string-match "^X[0-9]+" (format "%s" (gensym* "X")))))
+
 (ert-deftest %init:emacs-home* ()
   (should (string-match "\.emacs\.d/$" (emacs-home*)))
   (should (string-match "\.emacs\.d/config/$" (emacs-home* "config/")))
@@ -160,10 +164,6 @@
   (should (and (if-var% ert-batch-backtrace-right-margin 'ert t)
                (when-var% ert-batch-backtrace-right-margin 'ert t)
                (not (when-var% ert-batch-backtrace-right-marginxxx 'ert t)))))
-
-(ert-deftest %strap:gensym ()
-  (should (string-match "^g[0-9]+" (format "%s" (gensym))))
-  (should (string-match "^X[0-9]+" (format "%s" (gensym "X")))))
 
 (ert-deftest %strap:ignore* ()
   (lexical-supported-if
