@@ -59,6 +59,7 @@
 
   (compile!
     (compile-unit% (emacs-home* "config/financial.el") t)
+    (compile-unit% (emacs-home* "config/jump.el") t)
     (compile-unit% (emacs-home* "config/tags.el") t)
     (compile-unit% (emacs-home* "config/on-cc-autoload.el"))
     (compile-unit% (emacs-home* "config/on-compile-autoload.el"))
