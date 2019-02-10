@@ -114,8 +114,13 @@
   (add-hook 'minibuffer-setup-hook #'define-eval-or-execute-key t))
 
 
+(defun set-ielm-mode! ()
+  (lexical-supported-when
+    (setq lexical-binding t)))
+
 (with-eval-after-load 'ielm
-  (add-hook 'ielm-mode-hook #'set-basic-lisp-mode!)
-  (add-hook 'ielm-mode-hook #'eldoc-mode))
+  (add-hook 'ielm-mode-hook #'set-basic-lisp-mode! t)
+  (add-hook 'ielm-mode-hook #'eldoc-mode t)
+  (add-hook 'ielm-mode-hook #'set-ielm-mode!))
 
 
