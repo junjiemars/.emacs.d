@@ -223,14 +223,14 @@ Then evaluate RESULT to get return value, default nil.
   (unless (and (<= 2 (length spec)) (<= (length spec) 3))
     (signal 'wrong-number-of-arguments (list '(2 . 3) (length spec))))
   (let ((lst (gensym*)))
-    `(if% (and (boundp 'lexical-binding) lexical-binding)
-         (let ((,lst ,(nth 1 spec)))
+    (if (and (boundp 'lexical-binding) lexical-binding)
+        `(let ((,lst ,(nth 1 spec)))
            (while ,lst
              (let ((,(car spec) (car ,lst)))
                ,@body
                (setq ,lst (cdr ,lst))))
            ,@(cdr (cdr spec)))
-       (let ((,lst ,(nth 1 spec))
+      `(let ((,lst ,(nth 1 spec))
              ,(car spec))
          (while ,lst
            (setq ,(car spec) (car ,lst))
