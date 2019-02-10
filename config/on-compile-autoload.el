@@ -18,6 +18,18 @@
                                  t t (ad-get-arg 1))))))
 
 
+(defun colorize-compilation-buffer! ()
+  "Colorize *compilation* buffer."
+  (when-fn% 'ansi-color-apply-on-region 'ansi-color
+    (when (eq major-mode 'compilation-mode)
+      (let ((buffer-read-only nil))
+        (require 'ansi-color)
+        (ansi-color-apply-on-region
+         (if-var% compilation-filter-start 'compile
+                  compilation-filter-start (point-min))
+         (point-max))))))
+
+
 (with-eval-after-load 'compile
   
   (platform-supported-when 'windows-nt

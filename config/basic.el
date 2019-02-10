@@ -542,19 +542,6 @@ item for which (PRED item) returns t."
   "If `eww' feature supported then do BODY, requires Emacs-24.4+")
 
 
-;; compilation
-(defun colorize-compilation-buffer! ()
-  "Colorize *compilation* buffer."
-  (when-fn% 'ansi-color-apply-on-region 'ansi-color
-    (when (eq major-mode 'compilation-mode)
-      (let ((buffer-read-only nil))
-        (require 'ansi-color)
-        (ansi-color-apply-on-region
-         (if-var% compilation-filter-start 'compile
-                  compilation-filter-start (point-min))
-         (point-max))))))
-
-
 ;; Socks
 
 (defmacro feature-socks-supported-p (&rest body)
