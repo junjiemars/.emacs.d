@@ -25,7 +25,7 @@ via `semantic-lex-c-preprocessor-symbol-map'
 Use `semantic-c-describe-environment' to describe the current C environment."
     (semantic-reset-system-include 'c-mode)
 
-    (dolist (x (append (when-fn% 'system-cc-include nil (system-cc-include t))
+    (dolist* (x (append (when-fn% 'system-cc-include nil (system-cc-include t))
                        project-includes))
       (semantic-add-system-include x 'c-mode))
 

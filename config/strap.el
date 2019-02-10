@@ -311,7 +311,7 @@ Then evaluate RESULT to get return value, default nil.
                      (emacs-home* "config/sample-self-epilogue.el")))))
     (unless (file-exists-p (caar fs))
       (make-directory `,(emacs-home* "private/") t)
-      (dolist (f fs)
+      (dolist* (f fs)
         (let ((dst (car f)) (src (cdr f)))
           (unless (file-exists-p dst)
             (copy-file src dst t)))))

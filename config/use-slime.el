@@ -12,7 +12,7 @@
       :coding-system emacs-mule\)"
   (declare (indent 0))
   `(let ((lisps nil))
-     (dolist (x (list ,@lispspec) lisps)
+     (dolist* (x (list ,@lispspec) lisps)
        (let ((lisp (if (consp x) (car x) x)))
          (when (executable-find (symbol-name lisp))
            (if (consp x)

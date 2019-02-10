@@ -320,7 +320,7 @@ Examples:
 3. iterate DIR and output every subdir's absolute-name to *Message* buffer:
   (dir-iterate DIR nil (lambda (d a) t) nil (message \"%s\" a))
 "
-  (dolist (f (file-name-all-completions "" dir))
+  (dolist* (f (file-name-all-completions "" dir))
     (unless (member** f '("./" "../") :test #'string=)
       (let ((a (expand-file-name f dir)))
         (if (directory-name-p f)
@@ -374,7 +374,7 @@ and `funcall' PREFER returns t.
                  (p (cond
                      ((and (consp path) (functionp prefer))
                       (catch 'prefer
-                        (dolist (x path)
+                        (dolist* (x path)
                           (when (funcall prefer
                                          (shell-quote-argument
                                           (platform-supported-if 'windows-nt
@@ -432,9 +432,9 @@ otherwise default to keep the directories of current `emacs-version'."
                     `,(emacs-home* ".tags/")
                     `,(emacs-home* ".tramp/")
                     `,(emacs-home* ".url/"))))
-    (dolist (d dirs)
+    (dolist* (d dirs)
       (when (file-exists-p d)
-        (dolist (f (directory-files d nil "^[gt]_.*$"))
+        (dolist* (f (directory-files d nil "^[gt]_.*$"))
           (when (or all
                     (not (string-match
                           (concat "^[gt]_" emacs-version) f)))

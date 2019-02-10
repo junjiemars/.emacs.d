@@ -96,7 +96,7 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
 
 (defmacro copy-env-vars! (env vars)
-  `(dolist (v ,vars)
+  `(dolist* (v ,vars)
      (when v (let ((v1 (alist-get* v ,env nil nil #'string=)))
                (when v1 (setenv v v1))))))
 

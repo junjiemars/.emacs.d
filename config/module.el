@@ -89,9 +89,9 @@
 
 (defsubst parse-package-spec! (spec &optional remove-unused)
   "Parse SPEC, install, remove and setup packages."
-  (dolist (s spec)
+  (dolist* (s spec)
     (when (consp s)
-      (dolist (p (self-spec-> s :packages))
+      (dolist* (p (self-spec-> s :packages))
         (let ((ns (check-package-name p)))
           (when (consp ns)
             (let ((n (car ns)) (tar (cdr ns)))

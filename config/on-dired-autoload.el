@@ -41,7 +41,7 @@
                  "\n"
                  "REM ignore options\n"
                  (let ((options nil))
-                   (dolist (x (cond ((string= "minizip" zip)
+                   (dolist* (x (cond ((string= "minizip" zip)
                                      (append '("-r" "--filesync" "-rmTq") ignore))
                                     ((string-match "7za?" zip)
                                      (append '("-r" "--filesync" "-rmTq"))))
@@ -146,7 +146,7 @@
        encoded with `locale-coding-system'."
       (ad-set-arg 1 (let ((arg1 (ad-get-arg 1))
                           (files nil))
-                      (dolist (x arg1 files)
+                      (dolist* (x arg1 files)
                         (if (multibyte-string-p x)
                             (add-to-list 'files
                                          (encode-coding-string
@@ -277,7 +277,7 @@
       (when (consp arg0)
         (ad-set-arg
          0
-         (dolist (x arg0 files)
+         (dolist* (x arg0 files)
            (when (and (arrayp x) (= 3 (length x)))
              (let ((decode (substring-no-properties (decode-coding-string
                                                      (aref x 0)
