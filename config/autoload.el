@@ -14,19 +14,9 @@
   ;; open file or url at point
   (when-fn% 'find-file-at-point 'ffap
     (define-key (current-global-map) (kbd "C-c f b") #'find-file-at-point))
-
   
   ;; Shows a list of buffers
   (define-key (current-global-map) (kbd "C-x C-b") #'ibuffer)
-
-  ;; regexp search and replace should be first:
-  ;;
-  ;; interactive search key bindings.
-  ;; by default, C-s runs isearch-forward, so this swaps the bindings.
-  (define-key (current-global-map) (kbd "C-s") #'isearch-forward-regexp)
-  (define-key (current-global-map) (kbd "C-r") #'isearch-backward-regexp)
-  (define-key (current-global-map) (kbd "C-M-s") #'isearch-forward)
-  (define-key (current-global-map) (kbd "C-M-r") #'isearch-backward)
 
   ;; Interactive query replace key bindings.
   (define-key (current-global-map) (kbd "M-%") #'query-replace-regexp)
@@ -66,6 +56,7 @@
     (compile-unit% (emacs-home* "config/on-dired-autoload.el"))
     (compile-unit% (emacs-home* "config/on-edit-autoload.el"))
     (compile-unit% (emacs-home* "config/on-hippie-autoload.el"))
+    (compile-unit% (emacs-home* "config/on-isearch-autoload.el"))
     (compile-unit% (emacs-home* "config/on-lisp-autoload.el"))
 		(compile-unit% (emacs-home* "config/on-python-autoload.el"))
     (compile-unit% (emacs-home* "config/on-sh-autoload.el"))
