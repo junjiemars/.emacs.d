@@ -211,6 +211,35 @@ If VAR requires the FEATURE, load it on compile-time."
      (function ,fn)))
 
 
+(defmacro dolist* (spec &rest body)
+  "Loop over a list.
+Evaluate BODY with VAR bound to each car from LIST, in turn.
+Then evaluate RESULT to get return value, default nil.
+
+ (dolist* (VAR LIST [RESULT]) BODY...)"
+  (declare (indent 1) (debug ((symbolp form &optional form) body)))
+  (unless (consp spec)
+    (signal 'wrong-type-argument (list 'consp spec)))
+  (unless (and (<= 2 (length spec)) (<= (length spec) 3))
+    (signal 'wrong-number-of-arguments (list '(2 . 3) (length spec))))
+  (let ((lst (gensym*)))
+    `(lexical-supported-if
+         (let ((,lst ,(nth 1 spec)))
+           (while ,lst
+             (let ((,(car spec) (car ,lst)))
+               ,@body
+               (setq ,lst (cdr ,lst))))
+           ,@(cdr (cdr spec)))
+       (let ((,lst ,(nth 1 spec))
+             ,(car spec))
+         (while ,lst
+           (setq ,(car spec) (car ,lst))
+           ,@body
+           (setq ,lst (cdr ,lst)))
+         ,@(if (cdr (cdr spec))
+               `((setq ,(car spec) nil) ,@(cdr (cdr spec))))))))
+
+
  ;; end of byte-compiler macro
 
 
@@ -248,34 +277,6 @@ If VAR requires the FEATURE, load it on compile-time."
 (defmacro compile-unit->delete-booster (unit)
   "Return the :delete-booster indicator of `compile-unit'."
   `(plist-get ,unit :delete-booster))
-
-(defmacro dolist* (spec &rest body)
-  "Loop over a list.
-Evaluate BODY with VAR bound to each car from LIST, in turn.
-Then evaluate RESULT to get return value, default nil.
-
- (dolist* (VAR LIST [RESULT]) BODY...)"
-  (declare (indent 1) (debug ((symbolp form &optional form) body)))
-  (unless (consp spec)
-    (signal 'wrong-type-argument (list 'consp spec)))
-  (unless (and (<= 2 (length spec)) (<= (length spec) 3))
-    (signal 'wrong-number-of-arguments (list '(2 . 3) (length spec))))
-  (let ((temp (gensym*)))
-    `(lexical-supported-if
-         (let ((,temp ,(nth 1 spec)))
-           (while ,temp
-             (let ((,(car spec) (car ,temp)))
-               ,@body
-               (setq ,temp (cdr ,temp))))
-           ,@(cdr (cdr spec)))
-       (let ((,temp ,(nth 1 spec))
-             ,(car spec))
-         (while ,temp
-           (setq ,(car spec) (car ,temp))
-           ,@body
-           (setq ,temp (cdr ,temp)))
-         ,@(if (cdr (cdr spec))
-               `((setq ,(car spec) nil) ,@(cdr (cdr spec))))))))
 
 
 (defun compile! (&rest units)
