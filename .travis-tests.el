@@ -170,6 +170,12 @@
       (should (eq nil (macroexpand '(ignore* a b))))
     (should (eq nil (macroexpand '(ignore* a b))))))
 
+(ert-deftest %strap:dolist* ()
+  (let ((lst nil))
+    (should (equal '(a nil b c)
+                   (dolist* (x '(a nil b c) (nreverse lst))
+                     (push x lst))))))
+
 (ert-deftest %basic:assoc** ()
   (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
   (should (equal '("a" a) (assoc** "a" '(("b" b) ("a" a)) #'string=))))
