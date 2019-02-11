@@ -11,13 +11,16 @@
 
 
 
-(defun find-symbol-at-point ()
+(defun find-position-at-point ()
   "Find symbol at point."
-  (if (region-active-p)
-      (buffer-substring-no-properties (region-beginning)
-                                      (region-end))
-    (let ((symbol (thing-at-point 'symbol)))
-      (when symbol (substring-no-properties symbol)))))
+  (list :symbol (let ((symbol (thing-at-point 'symbol)))
+                  (when symbol (substring-no-properties symbol)))
+        :line (list :begin (line-beginning-position)
+                    :end (line-end-position)
+                    :text (buffer-substring-no-properties
+                           (line-beginning-position)
+                           (line-end-position)))))
+      
 
 
 (provide 'go)
