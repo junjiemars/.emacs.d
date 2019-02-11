@@ -16,9 +16,8 @@
   (if (region-active-p)
       (buffer-substring-no-properties (region-beginning)
                                       (region-end))
-    (version-supported-if <= 24.4
-                          (thing-at-point 'symbol t)
-      (thing-at-point 'symbol))))
+    (let ((symbol (thing-at-point 'symbol)))
+      (when symbol (substring-no-properties symbol)))))
 
 
 (provide 'go)
