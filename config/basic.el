@@ -341,7 +341,12 @@ Examples:
 (defmacro shell-command* (command &rest args)
   "Return a cons cell (code . output) after execute COMMAND in inferior shell.
 
-See `shell-command' and `shell-command-to-string'."
+See `shell-command' and `shell-command-to-string' for details.
+
+If you want to set the environment temporarily that
+shell-command* run in:
+ (let ((process-environment (cons \"GREP_OPTIONS=' --color=always'\" process-environment)))
+   (shell-command* \"echo 'a' | grep 'a'\")) "
   (declare (indent 1))
   `(with-temp-buffer
      (cons (call-process shell-file-name nil (current-buffer) nil
