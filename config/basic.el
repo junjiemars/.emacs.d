@@ -260,6 +260,18 @@ STANDARD always be computed at runtime whatever the current
       ,@args)))
 
 
+(defmacro region-active-if% (then &rest else)
+  "If `region-active-p' or `mark-active' is t do THEN, otherwise do ELSE..."
+  (declare (indent 1))
+  `(if-fn% 'region-active-p nil
+           (if (region-active-p)
+               ,then
+             (progn% ,@else))
+     (if mark-active
+         ,then
+       (progn% ,@else))))
+
+
  ;; end of Compatible Functions
 
 
