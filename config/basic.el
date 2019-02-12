@@ -260,7 +260,7 @@ STANDARD always be computed at runtime whatever the current
       ,@args)))
 
 
-(defmacro region-active-if% (then &rest else)
+(defmacro region-active-if (then &rest else)
   "If `region-active-p' or `mark-active' is t do THEN, otherwise do ELSE..."
   (declare (indent 1))
   `(if-fn% 'region-active-p nil
