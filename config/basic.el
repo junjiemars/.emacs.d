@@ -351,13 +351,12 @@ Examples:
 
 
 (defun dir-iterate1 (dir ff df fn dn)
-  "Iterating DIR, if FF file-fitler return t then call FN, 
-and if DF dir-filter return t then call DN and then iterate into deeper DIR.
+  "Iterate DIR.
 
-   (defun FILE-FILTER (file-name absolute-name))
-   (defun DIR-FILTER (dir-name absolute-name))
-   (defun FILE-FUNCTION (absolute-name))
-   (defun DIR-FUNCTION (absolute-name))
+FF specify file-filter (lambda (file-name absolute-name)...), if FF return t then call FN.
+DF specify dir-filter (lambda (dir-name absolute-name)...), if DF return t then call DN.
+FN specify file-function (lambda (absolute-name)...), return (absolute-name . 'stop).
+DN specify dir-function (lambda (aboslute-name)...), return (absolute-name . 'down or 'up or 'stop).
 
 Notes:
 Should jump over dummy symbol-links that point to self or parent directory.
@@ -373,24 +372,38 @@ Examples:
   (dir-iterate DIR nil (lambda (d a) t) nil (message \"%s\" a))
 "
   (let ((iter (lambda (dir ff df fn dn)
-                (dolist* (f (file-name-all-completions "" dir))
-                  (unless (member** f '("./" "../") :test #'string=)
-                    (let ((a (expand-file-name f dir)))
-                      (if (directory-name-p a)
-                          (when (and df (let ((ln (file-symlink-p (directory-file-name a))))
-                                          (if (not ln) t
-                                            (not (or (string= "." ln)
-                                                     (and (>= (length a) (length ln))
-                                                          (string=
-                                                           ln
-                                                           (substring a 0 (length ln))))))))
-                                     (funcall df f a))
-                            (when (and dn (funcall dn a)) a))
-                        (when (and ff (funcall ff f a))
-                          (when (and fn (funcall fn a)) a))))))))
-        (d (funcall iter dir ff df fn dn))))
-  (while (directory-name-p d)
-    (funcall iter d ff df fn dn)))
+                (cl-block out-iter
+                  (dolist* (f (file-name-all-completions "" dir))
+                    (unless (member** f '("./" "../") :test #'string=)
+                      (let ((a (expand-file-name f dir)))
+                        (if (directory-name-p a)
+                            (when (and df (let ((ln (file-symlink-p (directory-file-name a))))
+                                            (if (not ln) t
+                                              (not (or (string= "." ln)
+                                                       (and (>= (length a) (length ln))
+                                                            (string=
+                                                             ln
+                                                             (substring a 0 (length ln))))))))
+                                       (funcall df f a))
+                              (and dn (let ((rdn (funcall dn a)))
+                                        (if (and (consp rdn) (eq 'stop (car rdn)))
+                                            (cl-return-from out-iter rdn)
+                                          rdn))))
+                          (when (and ff (funcall ff f a))
+                            (and fn (let ((rfn (funcall fn a)))
+                                      (if (and (consp rfn) (eq 'stop (car rfn)))
+                                          (cl-return-from out-iter rfn)
+                                        rfn)))))))))))
+        (file nil))
+    (setq file (funcall iter dir ff df fn dn))
+    (if (consp file)
+        (cond ((eq 'stop (car file)) (cdr file))
+              ((eq 'down (car file)) (while (directory-name-p (cdr file))
+                                       (funcall iter (cdr file ff df fn dn))))
+              ((eq 'up (car file)) (funcall iter (file-name-directory
+                                                  (directory-file-name (cdr file)))
+                                            ff df fn dn)))
+      file)))
 
 
 (defmacro shell-command* (command &rest args)
