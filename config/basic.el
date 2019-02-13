@@ -230,6 +230,34 @@ Return the sublist of LIST whose car is ITEM.
     `(cl-member ,item ,list ,@keys)))
 
 
+(defmacro block* (name &rest body)
+  "Define a lexically-scoped block named NAME.
+NAME may be any symbol.  Code inside the BODY forms can call `cl-return-from'
+to jump prematurely out of the block.  This differs from `catch' and `throw'
+in two respects:  First, the NAME is an unevaluated symbol rather than a
+quoted symbol or other form; and second, NAME is lexically rather than
+dynamically scoped:  Only references to it within BODY will work.  These
+references may appear inside macro expansions, but not inside functions
+called from BODY."
+  (if-fn% 'cl-block 'cl
+          `(cl-block ,name ,@body)
+    `(with-no-warnings
+       (require 'cl)
+       (block ,name ,@body))))
+
+(defmacro return-from* (name &optional result)
+  "Return from the block named NAME.
+This jumps out to the innermost enclosing `(cl-block NAME ...)' form,
+returning RESULT from that form (or nil if RESULT is omitted).
+This is compatible with Common Lisp, but note that `defun' and
+`defmacro' do not create implicit blocks as they do in Common Lisp."
+  (if-fn% 'cl-return-from* 'cl
+          `(cl-return-from ,name ,result)
+    `(with-no-warnings
+       (require 'cl)
+       (return-from ,name ,result))))
+
+
 (defmacro split-string* (string &optional separators omit-nulls trim)
   "Split STRING into substrings bounded by matches for SEPARATORS, 
 like `split-string' Emacs 24.4+"
@@ -385,12 +413,12 @@ Examples:
                                                              ln
                                                              (substring a 0 (length ln))))))))
                                        (funcall df f a))
-                              (and dn (let ((rdn (funcall dn a)))
+                              (and dn (let ((rdn (funcall dn f a)))
                                         (if (and (consp rdn) (eq 'stop (car rdn)))
                                             (cl-return-from out-iter rdn)
                                           rdn))))
                           (when (and ff (funcall ff f a))
-                            (and fn (let ((rfn (funcall fn a)))
+                            (and fn (let ((rfn (funcall fn f a)))
                                       (if (and (consp rfn) (eq 'stop (car rfn)))
                                           (cl-return-from out-iter rfn)
                                         rfn)))))))))))
