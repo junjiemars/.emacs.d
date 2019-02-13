@@ -383,8 +383,8 @@ Examples:
 
 FF specify file-filter (lambda (file-name absolute-name)...), if FF return t then call FN.
 DF specify dir-filter (lambda (dir-name absolute-name)...), if DF return t then call DN.
-FN specify file-function (lambda (absolute-name)...), return (absolute-name . 'stop).
-DN specify dir-function (lambda (aboslute-name)...), return (absolute-name . 'down or 'up or 'stop).
+FN specify file-function (lambda (file-name absolute-name)...), return ('stop . absolute-name).
+DN specify dir-function (lambda (dir-name aboslute-name)...), return ('[down up stop] absolute-name).
 
 Notes:
 Should jump over dummy symbol-links that point to self or parent directory.
@@ -400,28 +400,28 @@ Examples:
   (dir-iterate DIR nil (lambda (d a) t) nil (message \"%s\" a))
 "
   (let ((iter (lambda (dir ff df fn dn)
-                (cl-block out-iter
-                  (dolist* (f (file-name-all-completions "" dir))
-                    (unless (member** f '("./" "../") :test #'string=)
-                      (let ((a (expand-file-name f dir)))
-                        (if (directory-name-p a)
-                            (when (and df (let ((ln (file-symlink-p (directory-file-name a))))
-                                            (if (not ln) t
-                                              (not (or (string= "." ln)
-                                                       (and (>= (length a) (length ln))
-                                                            (string=
-                                                             ln
-                                                             (substring a 0 (length ln))))))))
-                                       (funcall df f a))
-                              (and dn (let ((rdn (funcall dn f a)))
-                                        (if (and (consp rdn) (eq 'stop (car rdn)))
-                                            (cl-return-from out-iter rdn)
-                                          rdn))))
-                          (when (and ff (funcall ff f a))
-                            (and fn (let ((rfn (funcall fn f a)))
-                                      (if (and (consp rfn) (eq 'stop (car rfn)))
-                                          (cl-return-from out-iter rfn)
-                                        rfn)))))))))))
+                (block* out-iter
+                        (dolist* (f (file-name-all-completions "" dir))
+                          (unless (member** f '("./" "../") :test #'string=)
+                            (let ((a (expand-file-name f dir)))
+                              (if (directory-name-p a)
+                                  (when (and df (let ((ln (file-symlink-p (directory-file-name a))))
+                                                  (if (not ln) t
+                                                    (not (or (string= "." ln)
+                                                             (and (>= (length a) (length ln))
+                                                                  (string=
+                                                                   ln
+                                                                   (substring a 0 (length ln))))))))
+                                             (funcall df f a))
+                                    (and dn (let ((rdn (funcall dn f a)))
+                                              (if (and (consp rdn) (eq 'stop (car rdn)))
+                                                  (return-from* out-iter rdn)
+                                                rdn))))
+                                (when (and ff (funcall ff f a))
+                                  (and fn (let ((rfn (funcall fn f a)))
+                                            (if (and (consp rfn) (eq 'stop (car rfn)))
+                                                (return-from* out-iter rfn)
+                                              rfn)))))))))))
         (file nil))
     (setq file (funcall iter dir ff df fn dn))
     (if (consp file)
