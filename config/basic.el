@@ -350,6 +350,49 @@ Examples:
             (and fn (funcall fn a))))))))
 
 
+(defun dir-iterate1 (dir ff df fn dn)
+  "Iterating DIR, if FF file-fitler return t then call FN, 
+and if DF dir-filter return t then call DN and then iterate into deeper DIR.
+
+   (defun FILE-FILTER (file-name absolute-name))
+   (defun DIR-FILTER (dir-name absolute-name))
+   (defun FILE-FUNCTION (absolute-name))
+   (defun DIR-FUNCTION (absolute-name))
+
+Notes:
+Should jump over dummy symbol-links that point to self or parent directory.
+
+Examples:
+1. iterate DIR and output every absolute-name to *Message* buffer:
+  (dir-iterate DIR (lambda (f a) t) (lambda (d a) t) (message \"%s\" a) nil)
+
+2. iterate DIR with level=1 and output every absolute-name to *Message* buffer:
+  (dir-iterate DIR (lambda (f a) t) nil (message \"%s\" a))
+
+3. iterate DIR and output every subdir's absolute-name to *Message* buffer:
+  (dir-iterate DIR nil (lambda (d a) t) nil (message \"%s\" a))
+"
+  (let ((iter (lambda (dir ff df fn dn)
+                (dolist* (f (file-name-all-completions "" dir))
+                  (unless (member** f '("./" "../") :test #'string=)
+                    (let ((a (expand-file-name f dir)))
+                      (if (directory-name-p a)
+                          (when (and df (let ((ln (file-symlink-p (directory-file-name a))))
+                                          (if (not ln) t
+                                            (not (or (string= "." ln)
+                                                     (and (>= (length a) (length ln))
+                                                          (string=
+                                                           ln
+                                                           (substring a 0 (length ln))))))))
+                                     (funcall df f a))
+                            (when (and dn (funcall dn a)) a))
+                        (when (and ff (funcall ff f a))
+                          (when (and fn (funcall fn a)) a))))))))
+        (d (funcall iter dir ff df fn dn))))
+  (while (directory-name-p d)
+    (funcall iter d ff df fn dn)))
+
+
 (defmacro shell-command* (command &rest args)
   "Return a cons cell (code . output) after execute COMMAND in inferior shell.
 
