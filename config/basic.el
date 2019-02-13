@@ -427,7 +427,7 @@ Examples:
     (if (consp file)
         (cond ((eq 'stop (car file)) (cdr file))
               ((eq 'down (car file)) (while (directory-name-p (cdr file))
-                                       (funcall iter (cdr file ff df fn dn))))
+                                       (funcall iter (cdr file) ff df fn dn)))
               ((eq 'up (car file)) (funcall iter (file-name-directory
                                                   (directory-file-name (cdr file)))
                                             ff df fn dn)))
