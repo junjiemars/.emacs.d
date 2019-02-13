@@ -400,38 +400,35 @@ Examples:
   (dir-iterate DIR nil (lambda (d a) t) nil (message \"%s\" a))
 "
   (let ((iter (lambda (dir ff df fn dn)
-                (block* out-iter
-                        (dolist* (f (file-name-all-completions "" dir))
-                          (unless (member** f '("./" "../") :test #'string=)
-                            (let ((a (expand-file-name f dir)))
-                              (if (directory-name-p a)
-                                  (when (and df (let ((ln (file-symlink-p (directory-file-name a))))
-                                                  (if (not ln) t
-                                                    (not (or (string= "." ln)
-                                                             (and (>= (length a) (length ln))
-                                                                  (string=
-                                                                   ln
-                                                                   (substring a 0 (length ln))))))))
-                                             (funcall df f a))
-                                    (and dn (let ((rdn (funcall dn f a)))
-                                              (if (and (consp rdn) (eq 'stop (car rdn)))
-                                                  (return-from* out-iter rdn)
-                                                rdn))))
-                                (when (and ff (funcall ff f a))
-                                  (and fn (let ((rfn (funcall fn f a)))
-                                            (if (and (consp rfn) (eq 'stop (car rfn)))
-                                                (return-from* out-iter rfn)
-                                              rfn)))))))))))
-        (file nil))
-    (setq file (funcall iter dir ff df fn dn))
-    (if (consp file)
-        (cond ((eq 'stop (car file)) (cdr file))
-              ((eq 'down (car file)) (while (directory-name-p (cdr file))
-                                       (funcall iter (cdr file) ff df fn dn)))
-              ((eq 'up (car file)) (funcall iter (file-name-directory
-                                                  (directory-file-name (cdr file)))
-                                            ff df fn dn)))
-      file)))
+                (dolist* (f (file-name-all-completions "" dir))
+                  (unless (member** f '("./" "../") :test #'string=)
+                    (let ((a (expand-file-name f dir)))
+                      (if (directory-name-p a)
+                          (when (and df (let ((ln (file-symlink-p (directory-file-name a))))
+                                          (if (not ln) t
+                                            (not (or (string= "." ln)
+                                                     (and (>= (length a) (length ln))
+                                                          (string=
+                                                           ln
+                                                           (substring a 0 (length ln))))))))
+                                     (funcall df f a))
+                            (and dn (let ((rdn (funcall dn f a)))
+                                      (if (and (consp rdn) (eq 'stop (car rdn)))
+                                          (return-from* out-iter rdn)
+                                        rdn))))
+                        (when (and ff (funcall ff f a))
+                          (and fn (let ((rfn (funcall fn f a)))
+                                    (if (and (consp rfn) (eq 'stop (car rfn)))
+                                        (return-from* out-iter rfn)
+                                      rfn)))))))))))
+    (let ((file (funcall iter dir ff df fn dn)))
+      (block* out-iter
+              (while (and (consp file)
+                          (or (eq 'down (car file))
+                              (eq 'up (car file))))
+                (setq file (funcall (cdr file) ff df fn dn))))
+      (when (and (consp file) (eq 'stop (car file)))
+        (cdr file)))))
 
 
 (defmacro shell-command* (command &rest args)
