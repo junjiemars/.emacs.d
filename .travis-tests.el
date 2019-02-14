@@ -262,5 +262,37 @@
   (should (= 2 (length (take-while (lambda (x) (>= x 3))
                                    (range 1 10 1))))))
 
+(ert-deftest %basic:dir-iterate ()
+  (should (string-match
+           "init\\.el\\'"
+           (block* out-iter
+                   (dir-iterate (emacs-home*)
+                                (lambda (f _)
+                                  (string= "init.el" f))
+                                nil
+                                (lambda (a)
+                                  (return-from* out-iter a))
+                                nil))))
+  (should (string-match
+           "/config/"
+           (block* out-iter
+                   (dir-iterate (emacs-home*)
+                                nil
+                                (lambda (f _)
+                                  (string= "config/" f))
+                                nil
+                                (lambda (a)
+                                  (return-from* out-iter a))))))
+  (let ((matched nil))
+    (dir-iterate (emacs-home*)
+                 (lambda (f _)
+                   (string-match "init\\.el\\'\\|basic\\.el\\'" f))
+                 (lambda (d _)
+                   (not (string-match "\\.git\\'\\|[gt]_.*/\\'" d)))
+                 (lambda (f)
+                   (push f matched))
+                 nil)
+    (should (= 2 (length matched)))))
+
 
 ;; end of file

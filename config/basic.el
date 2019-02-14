@@ -339,82 +339,33 @@ Returns the name of FILE when successed otherwise nil."
 
 
 (defun dir-iterate (dir ff df fn dn)
-  "Iterating DIR, if FF file-fitler return t then call FN, 
-and if DF dir-filter return t then call DN and then iterate into deeper DIR.
-
-   (defun FILE-FILTER (file-name absolute-name))
-   (defun DIR-FILTER (dir-name absolute-name))
-   (defun FILE-FUNCTION (absolute-name))
-   (defun DIR-FUNCTION (absolute-name))
-
-Notes:
-Should jump over dummy symbol-links that point to self or parent directory.
-
-Examples:
-1. iterate DIR and output every absolute-name to *Message* buffer:
-  (dir-iterate DIR (lambda (f a) t) (lambda (d a) t) (message \"%s\" a) nil)
-
-2. iterate DIR with level=1 and output every absolute-name to *Message* buffer:
-  (dir-iterate DIR (lambda (f a) t) nil (message \"%s\" a))
-
-3. iterate DIR and output every subdir's absolute-name to *Message* buffer:
-  (dir-iterate DIR nil (lambda (d a) t) nil (message \"%s\" a))
-"
-  (dolist* (f (file-name-all-completions "" dir))
-    (unless (member** f '("./" "../") :test #'string=)
-      (let ((a (expand-file-name f dir)))
-        (if (directory-name-p f)
-            (when (and df (let ((ln (file-symlink-p (directory-file-name a))))
-                            (if (not ln) t
-                              (not (or (string= "." ln)
-                                       (and (>= (length a) (length ln))
-                                            (string=
-                                             ln
-                                             (substring a 0 (length ln))))))))
-                       (funcall df f a))
-              (and dn (funcall dn a))
-              (dir-iterate a ff df fn dn))
-          (when (and ff (funcall ff f a))
-            (and fn (funcall fn a))))))))
-
-
-(defun dir-iterate1 (dir ff df fn dn)
   "Iterate DIR.
 
-FF specify file-filter (lambda (file-name absolute-name)...), if FF return t then call FN.
-DF specify dir-filter (lambda (dir-name absolute-name)...), if DF return t then call DN.
-FN specify file-function (lambda (file-name absolute-name)...), return ('stop . absolute-name).
-DN specify dir-function (lambda (dir-name aboslute-name)...), return ('[down up stop] absolute-name).
+FF specify file-filter (lambda (file-name absolute-name)...), if FF return non nil then call FN.
+DF specify dir-filter (lambda (dir-name absolute-name)...), if DF return non nil then call DN.
+FN specify file-function (lambda (absolute-name)...), process filted files.
+DN specify dir-function (lambda (aboslute-name)...), process filted directories.
 
 Notes:
-Should jump over dummy symbol-links that point to self or parent directory.
-
-Examples:
-1. iterate DIR and output every absolute-name to *Message* buffer:
-  (dir-iterate DIR (lambda (f a) t) (lambda (d a) t) (message \"%s\" a) nil)
-
-2. iterate DIR with level=1 and output every absolute-name to *Message* buffer:
-  (dir-iterate DIR (lambda (f a) t) nil (message \"%s\" a))
-
-3. iterate DIR and output every subdir's absolute-name to *Message* buffer:
-  (dir-iterate DIR nil (lambda (d a) t) nil (message \"%s\" a))
-"
-  (dolist* (f (file-name-all-completions "" dir))
-    (unless (member** f '("./" "../") :test #'string=)
-      (let ((a (expand-file-name f dir)))
-        (if (directory-name-p f)
-            (when (and df (let ((ln (file-symlink-p (directory-file-name a))))
-                            (if (not ln) t
-                              (not (or (string= "." ln)
-                                       (and (>= (length a) (length ln))
-                                            (string=
-                                             ln
-                                             (substring a 0 (length ln))))))))
-                       (funcall df f a))
-              (and dn (funcall dn f a))
-              (dir-iterate1 a ff df fn dn))
-          (when (and ff (funcall ff f a))
-            (and fn (funcall fn f a))))))))
+Should jump over dummy symbol-links that point to self or parent directory."
+  (let ((files (file-name-all-completions "" dir)))
+	  (while files
+      (let ((f (car files)))
+			  (unless (member** f '("./" "../") :test #'string=)
+				  (let ((a (expand-file-name f dir)))
+					  (if (directory-name-p f)
+							  (when (and df (let ((ln (file-symlink-p (directory-file-name a))))
+												        (if (not ln)
+                                    t
+													        (not (or (string= "." ln)
+														               (and (>= (length a) (length ln))
+															                  (string= ln (substring a 0 (length ln))))))))
+											     (funcall df f a))
+								  (and dn (funcall dn a))
+								  (dir-iterate a ff df fn dn))
+						  (when (and ff (funcall ff f a))
+							  (and fn (funcall fn a))))))
+			  (setq files (cdr files))))))
 
 
 (defmacro shell-command* (command &rest args)
