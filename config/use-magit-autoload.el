@@ -17,29 +17,35 @@
   ;;
   ;; define keys for `magit'
   ;; 
-  (define-key% (current-global-map) (kbd "C-c g p") (if-fn% 'magit-pull-branch 'magit
-                                                            #'magit-pull-branch
-                                                      #'magit-pull))
+  (define-key% (current-global-map) (kbd "C-c g p")
+    (if-fn% 'magit-pull-branch 'magit
+            #'magit-pull-branch
+      #'magit-pull))
   
-  (define-key% (current-global-map) (kbd "C-c g P") (if-fn% 'magit-push-other 'magit
-                                                            'magit-push-other
-                                                      #'magit-push))
+  (define-key% (current-global-map) (kbd "C-c g P")
+    (if-fn% 'magit-push-other 'magit
+            'magit-push-other
+      #'magit-push))
   
-  (define-key% (current-global-map) (kbd "C-c g l") (if-fn% #'magit-log-other 'magit
-                                                            #'magit-log-other
-                                                      #'magit-log))
+  (define-key% (current-global-map) (kbd "C-c g l")
+    (if-fn% #'magit-log-other 'magit
+            #'magit-log-other
+      #'magit-log))
 
-  (define-key% (current-global-map) (kbd "C-c g b") #'magit-log-buffer-file)
+  (define-key% (current-global-map) (kbd "C-c g b")
+    #'magit-log-buffer-file)
 
   (define-key% (current-global-map) (kbd "C-c g c") #'magit-checkout)
 
-  (define-key% (current-global-map) (kbd "C-c g m") (if-fn% #'magit-merge-plain 'magit
-                                                            #'magit-merge-plain
-                                                      #'magit-merge))
+  (define-key% (current-global-map) (kbd "C-c g m")
+    (if-fn% #'magit-merge-plain 'magit
+            #'magit-merge-plain
+      #'magit-merge))
   
-  (define-key% (current-global-map) (kbd "C-c g f") (if-fn% #'magit-fetch-other 'magit
-                                                            #'magit-fetch-other
-                                                      #'magit-fetch)))
+  (define-key% (current-global-map) (kbd "C-c g f")
+    (if-fn% #'magit-fetch-other 'magit
+            #'magit-fetch-other
+      #'magit-fetch)))
 
 
 (with-eval-after-load 'magit
@@ -47,4 +53,5 @@
 
 
 (when-fn% 'magit-status 'magit
-  (define-key (current-global-map) (kbd "C-c g s") #'magit-status))
+  (define-key (current-global-map) (kbd "C-c g s")
+    #'magit-status))
