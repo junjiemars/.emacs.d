@@ -355,11 +355,10 @@ Should jump over dummy symbol-links that point to self or parent directory."
 				  (let ((a (expand-file-name f dir)))
 					  (if (directory-name-p f)
 							  (when (and df (let ((ln (file-symlink-p (directory-file-name a))))
-												        (if (not ln)
-                                    t
-													        (not (or (string= "." ln)
-														               (and (>= (length a) (length ln))
-															                  (string= ln (substring a 0 (length ln))))))))
+													      (not (or ln
+                                         (string= "." ln)
+														             (and (>= (length a) (length ln))
+															                (string= ln (substring a 0 (length ln)))))))
 											     (funcall df f a))
 								  (and dn (funcall dn a))
 								  (dir-iterate a ff df fn dn))
