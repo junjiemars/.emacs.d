@@ -400,8 +400,8 @@ the function needs to examine, starting with DIR."
                              (or (string= "./" x)
                                  (string= "../" x)))
                            (file-name-all-completions "" dir))))
-    (while files
-      (setq files (funcall prefer files)))))
+    (while (or (stringp files) (consp files))
+      (setq files (funcall prefer dir files)))))
 
 
 (defmacro shell-command* (command &rest args)
