@@ -307,5 +307,19 @@
                  nil)
     (should (= 2 (length matched)))))
 
+(ert-deftest %basic:dir-backtrack ()
+  (should (block* out (dir-backtrack (emacs-home* "config/")
+                                     (lambda (d fs)
+                                       (if (string-match "\\.emacs\\.d/\\'" d)
+                                           (return-from* out t)
+                                         (file-name-directory
+                                          (directory-file-name d)))))))
+  (should (block* out (dir-backtrack (emacs-home* "config/basic.el")
+                                     (lambda (d fs)
+                                       (dolist* (x fs)
+                                         (when (string= "init.el" x)
+                                           (return-from* out t)))
+                                       (file-name-directory
+                                        (directory-file-name d)))))))
 
 ;; end of file

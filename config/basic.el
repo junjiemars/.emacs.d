@@ -384,26 +384,21 @@ Should jump over dummy symbol-links that point to self or parent directory."
 (defun dir-backtrack (dir prefer)
   "Backtrack DIR.
 
-Starting at DIR, look up directory hierarchy for directory containing NAME.
-DIR can be a file or a directory.  If it's a file, its directory will
-serve as the starting point for searching the hierarchy of directories.
-Stop at the first parent directory containing a file NAME,
-and return the directory.  Return nil if not found.
-Instead of a string, NAME can also be a predicate taking one argument
-\(a directory) and returning a non-nil value if that directory is the one for
-which we're looking.  The predicate will be called with every file/directory
-the function needs to examine, starting with DIR."
-  ;; Represent /home/luser/foo as ~/foo so that we don't try to look for
-  ;; `name' in /home or in /.
-  (setq dir (expand-file-name (if (directory-name-p dir)
-                                  dir
-                                (file-name-directory dir))))
-  (let ((files (remove-if* (lambda (x)
-                             (or (string= "./" x)
-                                 (string= "../" x)))
-                           (file-name-all-completions "" dir))))
-    (while (or (stringp files) (consp files))
-      (setq files (funcall prefer dir files)))))
+Starting at DIR, backtrack directory hierarchy for prefered
+directory or file.
+
+PREFER (lambda (dir files)...)."
+  (let ((d (expand-file-name (if (directory-name-p dir)
+                                 dir
+                               (file-name-directory dir)))))
+    (while (and (stringp d)
+                (directory-name-p d)
+                (not (string= "/" d)))
+      (setq d (funcall prefer d
+                       (remove-if* (lambda (x)
+                                     (or (string= "./" x)
+                                         (string= "../" x)))
+                           (file-name-all-completions "" d)))))))
 
 
 (defmacro shell-command* (command &rest args)
