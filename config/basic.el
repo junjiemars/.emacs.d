@@ -379,56 +379,29 @@ Should jump over dummy symbol-links that point to self or parent directory."
 			  (setq files (cdr files))))))
 
 
-;; (defun dir-backtrack (dir prefer)
-;;   "Backtrack DIR.
+(defun dir-backtrack (dir prefer)
+  "Backtrack DIR.
 
-;; Starting at DIR, look up directory hierarchy for directory containing NAME.
-;; DIR can be a file or a directory.  If it's a file, its directory will
-;; serve as the starting point for searching the hierarchy of directories.
-;; Stop at the first parent directory containing a file NAME,
-;; and return the directory.  Return nil if not found.
-;; Instead of a string, NAME can also be a predicate taking one argument
-;; \(a directory) and returning a non-nil value if that directory is the one for
-;; which we're looking.  The predicate will be called with every file/directory
-;; the function needs to examine, starting with DIR."
-;;   ;; Represent /home/luser/foo as ~/foo so that we don't try to look for
-;;   ;; `name' in /home or in /.
-;;   (setq dir (expand-file-name (if (directory-name-p dir)
-;;                                   dir
-;;                                 (file-name-directory dir))))
-;;   (let ((files (file-name-all-completions "" dir)))
-;;     (while files
-;;       (let ((f (car files)))
-;;         (unless (member** f '("./" "../") :test #'string=)
-;;           (unless (funcall prefer f)
-;;             )
-;; 				  (let ((a (expand-file-name f dir)))
-;; 					  (if (directory-name-p f)
-;; 							  (when (and df (let ((ln (file-symlink-p (directory-file-name a))))
-;; 													      (not (or ln
-;;                                          (string= "." ln)
-;; 														             (and (>= (length a) (length ln))
-;; 															                (string= ln (substring a 0 (length ln)))))))
-;; 											     (funcall df f a))
-;; 								  (and dn (funcall dn a))
-;; 								  (dir-iterate a ff df fn dn))
-;; 						  (when (and ff (funcall ff f a))
-;; 							  (and fn (funcall fn a))))))
-;;         )))
-;;   (setq file (abbreviate-file-name (expand-file-name file)))
-;;   (let ((root nil)
-;;         try)
-;;     (while (not (or root
-;;                     (null file)
-;;                     (string-match locate-dominating-stop-dir-regexp file)))
-;;       (setq try (if (stringp name)
-;;                     (file-exists-p (expand-file-name name file))
-;;                   (funcall name file)))
-;;       (cond (try (setq root file))
-;;             ((equal file (setq file (file-name-directory
-;;                                      (directory-file-name file))))
-;;              (setq file nil))))
-;;     (if root (file-name-as-directory root))))
+Starting at DIR, look up directory hierarchy for directory containing NAME.
+DIR can be a file or a directory.  If it's a file, its directory will
+serve as the starting point for searching the hierarchy of directories.
+Stop at the first parent directory containing a file NAME,
+and return the directory.  Return nil if not found.
+Instead of a string, NAME can also be a predicate taking one argument
+\(a directory) and returning a non-nil value if that directory is the one for
+which we're looking.  The predicate will be called with every file/directory
+the function needs to examine, starting with DIR."
+  ;; Represent /home/luser/foo as ~/foo so that we don't try to look for
+  ;; `name' in /home or in /.
+  (setq dir (expand-file-name (if (directory-name-p dir)
+                                  dir
+                                (file-name-directory dir))))
+  (let ((files (remove-if* (lambda (x)
+                             (or (string= "./" x)
+                                 (string= "../" x)))
+                           (file-name-all-completions "" dir))))
+    (while files
+      (setq files (funcall prefer files)))))
 
 
 (defmacro shell-command* (command &rest args)
