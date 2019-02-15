@@ -162,6 +162,7 @@ See `string-match' and `match-string'."
 FILE is normally a feature name, but it can also be a file name,
 in case that file does not provide any feature.  See ‘eval-after-load’
 for more details about the different forms of FILE and their semantics."
+    (declare (indent 1))
     `(eval-after-load ,file
        `(funcall ,(lambda () ,@body)))))
 
@@ -218,13 +219,14 @@ to avoid corrupting the original SEQ.
   "Remove all items satisfying PREDICATE in SEQ.
 This is a non-destructive function; it makes a copy of SEQ if necessary
 to avoid corrupting the original SEQ."
+	(declare (indent 2))
   (if-fn% 'cl-remove-if 'cl-lib
           `(cl-remove-if ,predicate ,seq ,@keys)
     (when-fn% 'remove-if 'cl
       `(with-no-warnings
          (progn
            (require 'cl)
-           (remove-if ,predicate ,seq ,@key))))))
+           (remove-if ,predicate ,seq ,@keys))))))
 
 
 ;; Unify `cl-member' and `member*'
