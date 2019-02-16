@@ -191,35 +191,6 @@ Return the sublist of LIST whose car is ITEM.
     `(cl-member ,item ,list ,@keys)))
 
 
-(defmacro block* (name &rest body)
-  "Define a lexically-scoped block named NAME.
-NAME may be any symbol.  Code inside the BODY forms can call `cl-return-from'
-to jump prematurely out of the block.  This differs from `catch' and `throw'
-in two respects:  First, the NAME is an unevaluated symbol rather than a
-quoted symbol or other form; and second, NAME is lexically rather than
-dynamically scoped:  Only references to it within BODY will work.  These
-references may appear inside macro expansions, but not inside functions
-called from BODY."
-  (if-fn% 'cl-block 'cl
-          `(cl-block ,name ,@body)
-    `(with-no-warnings
-       (require 'cl)
-       (block ,name ,@body))))
-
-(defmacro return-from* (name &optional result)
-  "Return from the block named NAME.
-This jumps out to the innermost enclosing `(cl-block NAME ...)' form,
-returning RESULT from that form (or nil if RESULT is omitted).
-This is compatible with Common Lisp, but note that `defun' and
-`defmacro' do not create implicit blocks as they do in Common Lisp."
-  (if-fn% 'cl-return-from* 'cl
-          `(cl-return-from ,name ,result)
-    (when-fn% 'return-from 'cl
-      `(with-no-warnings
-         (require 'cl)
-         (return-from ,name ,result)))))
-
-
 (defmacro every* (pred &rest seq)
   "Return t if PRED is t of every element of SEQ."
   (declare (indent 1))
