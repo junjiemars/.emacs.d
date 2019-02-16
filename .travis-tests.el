@@ -323,14 +323,23 @@
                                      (lambda (d fs)
                                        (if (string-match "\\.emacs\\.d/\\'" d)
                                            (return-from* out t)
-                                         (file-name-directory
-                                          (directory-file-name d)))))))
+                                         (path- d))))))
   (should (block* out (dir-backtrack (emacs-home* "config/basic.el")
                                      (lambda (d fs)
                                        (dolist* (x fs)
                                          (when (string= "init.el" x)
                                            (return-from* out t)))
-                                       (file-name-directory
-                                        (directory-file-name d)))))))
+                                       (path- d)))))
+  (should
+   (equal '("init.el" ".git/")
+          (let ((prefered nil))
+            (block* out (dir-backtrack (emacs-home* "config/basic.el")
+                                       (lambda (d fs)
+                                         (dolist* (x fs)
+                                           (when (or (string= "init.el" x)
+                                                     (string= ".git/" x))
+                                             (push x prefered)))
+                                         (path- d))))
+            prefered))))
 
 ;; end of file
