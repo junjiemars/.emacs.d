@@ -301,24 +301,24 @@
 (ert-deftest %basic:dir-iterate ()
   (should (string-match
            "init\\.el\\'"
-           (block* out-iter
-                   (dir-iterate (emacs-home*)
-                                (lambda (f _)
-                                  (string= "init.el" f))
-                                nil
-                                (lambda (a)
-                                  (return-from* out-iter a))
-                                nil))))
+           (catch 'out
+             (dir-iterate (emacs-home*)
+                          (lambda (f _)
+                            (string= "init.el" f))
+                          nil
+                          (lambda (a)
+                            (throw 'out a))
+                          nil))))
   (should (string-match
            "/config/"
-           (block* out-iter
-                   (dir-iterate (emacs-home*)
-                                nil
-                                (lambda (f _)
-                                  (string= "config/" f))
-                                nil
-                                (lambda (a)
-                                  (return-from* out-iter a))))))
+           (catch 'out
+             (dir-iterate (emacs-home*)
+                          nil
+                          (lambda (f _)
+                            (string= "config/" f))
+                          nil
+                          (lambda (a)
+                            (throw 'out a))))))
   (let ((matched nil))
     (dir-iterate (emacs-home*)
                  (lambda (f _)
@@ -331,27 +331,29 @@
     (should (= 2 (length matched)))))
 
 (ert-deftest %basic:dir-backtrack ()
-  (should (block* out (dir-backtrack (emacs-home* "config/")
-                                     (lambda (d fs)
-                                       (if (string-match "\\.emacs\\.d/\\'" d)
-                                           (return-from* out t)
-                                         (path- d))))))
-  (should (block* out (dir-backtrack (emacs-home* "config/basic.el")
-                                     (lambda (d fs)
-                                       (dolist* (x fs)
-                                         (when (string= "init.el" x)
-                                           (return-from* out t)))
-                                       (path- d)))))
+  (should (catch 'out
+            (dir-backtrack (emacs-home* "config/")
+                           (lambda (d fs)
+                             (if (string-match "\\.emacs\\.d/\\'" d)
+                                 (throw 'out t)
+                               (path- d))))))
+  (should (catch 'out
+            (dir-backtrack (emacs-home* "config/basic.el")
+                           (lambda (d fs)
+                             (dolist* (x fs)
+                               (when (string= "init.el" x)
+                                 (throw 'out t)))
+                             (path- d)))))
   (should
    (equal '("init.el" ".git/")
           (let ((prefered nil))
-            (block* out (dir-backtrack (emacs-home* "config/basic.el")
-                                       (lambda (d fs)
-                                         (dolist* (x fs)
-                                           (when (or (string= "init.el" x)
-                                                     (string= ".git/" x))
-                                             (push x prefered)))
-                                         (path- d))))
+            (dir-backtrack (emacs-home* "config/basic.el")
+                           (lambda (d fs)
+                             (dolist* (x fs)
+                               (when (or (string= "init.el" x)
+                                         (string= ".git/" x))
+                                 (push x prefered)))
+                             (path- d)))
             prefered))))
 
 ;; end of file
