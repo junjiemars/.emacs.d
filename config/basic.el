@@ -364,6 +364,13 @@ Returns the name of FILE when successed otherwise nil."
         (file-name-directory (directory-file-name ,file))))
 
 
+(defmacro file-symlink-p* (file)
+  "Return the link target as a string if FILE is the name of a symbolic link."
+  `(file-symlink-p (if (directory-name-p ,file)
+                       (directory-file-name ,file)
+                     ,file)))
+
+
 (defun dir-iterate (dir ff df fn dn)
   "Iterate DIR.
 
@@ -393,11 +400,15 @@ Should jump over dummy symbol-links that point to self or parent directory."
 			  (setq files (cdr files))))))
 
 
+(defun file-symlink= (file)
+  "")
+
+
 (defun dir-backtrack (dir prefer)
   "Backtrack DIR.
 
 Starting at DIR, backtrack directory hierarchy for prefered
-directory or file.
+directory or file. Ignore symbol links.
 
 PREFER (lambda (dir files)...)."
   (let ((d (expand-file-name (if (directory-name-p dir)
@@ -407,13 +418,15 @@ PREFER (lambda (dir files)...)."
                 (directory-name-p d)
                 (not (string= "/" d)))
       (setq d (funcall prefer d
-                       (remove-if* (lambda (x)
-                                     (or (string= "./" x)
-                                         (string= "../" x)))
+                       (remove-if*
+                           (lambda (x)
+                             (or (string= "./" x)
+                                 (string= "../" x)
+                                 (file-symlink-p (directory-file-name x))))
                            (file-name-all-completions "" d)))))))
 
 
-(defmacro shell-command* (command &rest args)
+(defmacro sphell-command* (command &rest args)
   "Return a cons cell (code . output) after execute COMMAND in inferior shell.
 
 See `shell-command' and `shell-command-to-string' for details.
