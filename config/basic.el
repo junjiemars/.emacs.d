@@ -352,6 +352,24 @@ Returns the name of FILE when successed otherwise nil."
       (buffer-string))))
 
 
+(defun path+ (root &rest path)
+  "Append a list of PATH to ROOT."
+  (declare (indent 1))
+  (let* ((trim (lambda (x) (string-trim>< x "/" "/")))
+         (tail (lambda (x) (concat (string-trim> x "/") "/")))
+         (s (cond ((null root) (mapconcat trim path "/"))
+                  ((null path) root)
+                  (t (concat (funcall tail root)
+                             (mapconcat trim path "/"))))))
+    (if (string= "" s) nil (funcall tail s))))
+
+
+(defmacro path- (file)
+  "Return the parent path of FILE."
+  `(and (stringp ,file)
+        (file-name-directory (directory-file-name ,file))))
+
+
 (defun dir-iterate (dir ff df fn dn)
   "Iterate DIR.
 
@@ -458,24 +476,6 @@ and `funcall' PREFER returns t.
     (let ((path (executable-find (funcall `(lambda () ,command)))))
       (ignore* prefer)
       `,path)))
-
-
-(defun path+ (root &rest path)
-  "Append a list of PATH to ROOT."
-  (declare (indent 1))
-  (let* ((trim (lambda (x) (string-trim>< x "/" "/")))
-         (tail (lambda (x) (concat (string-trim> x "/") "/")))
-         (s (cond ((null root) (mapconcat trim path "/"))
-                  ((null path) root)
-                  (t (concat (funcall tail root)
-                             (mapconcat trim path "/"))))))
-    (if (string= "" s) nil (funcall tail s))))
-
-
-(defmacro path- (file)
-  "Return the parent path of FILE."
-  `(and (stringp ,file)
-        (file-name-directory (directory-file-name ,file))))
 
 
  ;; end of File functions

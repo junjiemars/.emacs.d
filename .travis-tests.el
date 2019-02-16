@@ -275,6 +275,12 @@
   (should (= 2 (length (take-while (lambda (x) (>= x 3))
                                    (range 1 10 1))))))
 
+(ert-deftest %basic:path+ ()
+  (should-not (path+ nil))
+  (should (string= "a/" (path+ "a")))
+  (should (string= "a/b/c/" (path+ "a/" "b/" "c/")))
+  (should (string= "a/b/c/" (path+ "a/" "b" "c"))))
+
 (ert-deftest %basic:path- ()
   (should-not (path- nil))
   (should (string= "a/b/" (path- "a/b/c")))
