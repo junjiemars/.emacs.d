@@ -400,15 +400,11 @@ Should jump over dummy symbol-links that point to self or parent directory."
 			  (setq files (cdr files))))))
 
 
-(defun file-symlink= (file)
-  "")
-
-
 (defun dir-backtrack (dir prefer)
   "Backtrack DIR.
 
 Starting at DIR, backtrack directory hierarchy for prefered
-directory or file. Ignore symbol links.
+directory or file. Ignore the symbol links of directory..
 
 PREFER (lambda (dir files)...)."
   (let ((d (expand-file-name (if (directory-name-p dir)
@@ -422,7 +418,9 @@ PREFER (lambda (dir files)...)."
                            (lambda (x)
                              (or (string= "./" x)
                                  (string= "../" x)
-                                 (file-symlink-p (directory-file-name x))))
+                                 (let ((dx (concat d x)))
+                                   (and (directory-name-p dx)
+                                        (file-symlink-p* dx)))))
                            (file-name-all-completions "" d)))))))
 
 
