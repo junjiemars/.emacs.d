@@ -214,9 +214,10 @@ This is compatible with Common Lisp, but note that `defun' and
 `defmacro' do not create implicit blocks as they do in Common Lisp."
   (if-fn% 'cl-return-from* 'cl
           `(cl-return-from ,name ,result)
-    `(with-no-warnings
-       (require 'cl)
-       (return-from ,name ,result))))
+    (when-fn% 'return-from 'cl
+      `(with-no-warnings
+         (require 'cl)
+         (return-from ,name ,result)))))
 
 
 (defmacro every* (pred &rest seq)
@@ -224,9 +225,10 @@ This is compatible with Common Lisp, but note that `defun' and
   (declare (indent 1))
   (if-fn% 'cl-every 'cl-lib
           `(cl-every ,pred (list ,@seq))
-    `(with-no-warnings
-       (require 'cl)
-       (every ,pred (list ,@seq)))))
+    (when-fn% 'every 'cl
+      `(with-no-warnings
+         (require 'cl)
+         (every ,pred (list ,@seq))))))
 
 
  ;; end of Compatible Macro
