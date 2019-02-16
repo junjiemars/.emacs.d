@@ -112,60 +112,7 @@
  ;; end of Platform Related Functions
 
 
-;; Strings
-
-(defsubst string-trim> (s &optional rr)
-  "Remove whitespaces or the matching of RR at the end of S."
-  (when (stringp s)
-    (let ((r (if rr (concat rr "\\'") "[ \t\n\r]+\\'" )))
-      (if (string-match r s)
-          (replace-match "" t t s)
-        s))))
-
-
-(defsubst string-trim< (s &optional lr)
-  "Remove leading whitespace or the matching of LR from S."
-  (when (stringp s)
-    (let ((r (if lr (concat "\\`" lr) "\\`[ \t\n\r]+")))
-      (if (string-match r s)
-          (replace-match "" t t s)
-        s))))
-
-
-(defsubst string-trim>< (s &optional rr lr)
-  "Remove leading and trailing whitespace or the matching of LR/RR from S."
-  (let ((s1 (string-trim> s rr)))
-    (string-trim< s1 lr)))
-
-
-(defsubst match-string* (regexp string num &optional start)
-  "Return string of text match for REGEXP in STRING.
-
-Return nil if NUMth pair didn’t match, or there were less than NUM pairs.
-NUM specifies which parenthesized expression in the REGEXP.
-If START is non-nil, start search at that index in STRING.
-
-See `string-match' and `match-string'."
-  (when (and string (string-match regexp string start))
-    (substring string (match-beginning num) (match-end num))))
-
-
- ;; end of Strings
-
-
-;; Compatible Functions
-
-(unless-fn% 'with-eval-after-load nil
-  (defmacro with-eval-after-load (file &rest body)
-    "Execute BODY after FILE is loaded.
-
-FILE is normally a feature name, but it can also be a file name,
-in case that file does not provide any feature.  See ‘eval-after-load’
-for more details about the different forms of FILE and their semantics."
-    (declare (indent 1))
-    `(eval-after-load ,file
-       `(funcall ,(lambda () ,@body)))))
-
+;; Compatible Macro
 
 (defmacro assoc** (key list &optional testfn)
   "Return non-nil if KEY is equal to the `car' of an element of LIST.
@@ -272,6 +219,57 @@ This is compatible with Common Lisp, but note that `defun' and
        (return-from ,name ,result))))
 
 
+(defmacro every* (pred &rest seq)
+  "Return t if PRED is t of every element of SEQ."
+  (declare (indent 1))
+  (if-fn% 'cl-every 'cl-lib
+          `(cl-every ,pred (list ,@seq))
+    `(with-no-warnings
+       (require 'cl)
+       (every ,pred (list ,@seq)))))
+
+
+ ;; end of Compatible Macro
+
+
+;; Strings
+
+(defsubst string-trim> (s &optional rr)
+  "Remove whitespaces or the matching of RR at the end of S."
+  (when (stringp s)
+    (let ((r (if rr (concat rr "\\'") "[ \t\n\r]+\\'" )))
+      (if (string-match r s)
+          (replace-match "" t t s)
+        s))))
+
+
+(defsubst string-trim< (s &optional lr)
+  "Remove leading whitespace or the matching of LR from S."
+  (when (stringp s)
+    (let ((r (if lr (concat "\\`" lr) "\\`[ \t\n\r]+")))
+      (if (string-match r s)
+          (replace-match "" t t s)
+        s))))
+
+
+(defsubst string-trim>< (s &optional rr lr)
+  "Remove leading and trailing whitespace or the matching of LR/RR from S."
+  (let ((s1 (string-trim> s rr)))
+    (string-trim< s1 lr)))
+
+
+(defsubst match-string* (regexp string num &optional start)
+  "Return string of text match for REGEXP in STRING.
+
+Return nil if NUMth pair didn’t match, or there were less than NUM pairs.
+NUM specifies which parenthesized expression in the REGEXP.
+If START is non-nil, start search at that index in STRING.
+
+See `string-match' and `match-string'."
+  (when (and string (string-match regexp string start))
+    (substring string (match-beginning num) (match-end num))))
+
+
 (defmacro split-string* (string &optional separators omit-nulls trim)
   "Split STRING into substrings bounded by matches for SEPARATORS, 
 like `split-string' Emacs 24.4+"
@@ -286,6 +284,29 @@ like `split-string' Emacs 24.4+"
                              (string-trim>< s)))
                          (split-string ,string ,separators ,omit-nulls)))
        (split-string ,string ,separators ,omit-nulls))))
+
+
+(defmacro string=* (s1 s2 &rest ss)
+  "Return t if S1, S2 and SS have identical contents."
+  (declare (indent 2))
+  `(and (string= ,s1 ,s2)
+        (every* (lambda (x) (string= ,s2 x)) ,@ss)))
+
+ ;; end of Strings
+
+
+;; Compatible Functions
+
+(unless-fn% 'with-eval-after-load nil
+  (defmacro with-eval-after-load (file &rest body)
+    "Execute BODY after FILE is loaded.
+
+FILE is normally a feature name, but it can also be a file name,
+in case that file does not provide any feature.  See ‘eval-after-load’
+for more details about the different forms of FILE and their semantics."
+    (declare (indent 1))
+    `(eval-after-load ,file
+       `(funcall ,(lambda () ,@body)))))
 
 
 (defmacro defcustom% (symbol standard doc &rest args)

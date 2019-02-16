@@ -211,6 +211,13 @@
   (should (equal '(a) (member** 'a '(b a))))
   (should (equal '("a") (member** "a" '("b" "a") :test #'string=))))
 
+(ert-deftest %basic:every* ()
+  (should (every* nil))
+  (should (every* #'stringp))
+  (should-not (every* #'stringp nil))
+  (should (every* #'stringp "" "a" "b"))
+  (should-not (every* #'stringp "" "a" nil "b")))
+
 (ert-deftest %basic:split-string* ()
   (should (equal '("a" "b" "c") (split-string* "a,b,,cXX" "," t "XX"))))
 
@@ -232,6 +239,11 @@
 (ert-deftest %basic:match-string* ()
   (should (eq nil (match-string* nil nil 0)))
   (should (string= "abc" (match-string* "xx\\(abc\\)xx" "xxxabcxx" 1))))
+
+(ert-deftest %basic:string=* ()
+  (should (string=* "a" "a"))
+  (should (string=* "a" "a" "a"))
+  (should-not (string=* "a" "a" "a" "b")))
 
 (ert-deftest %basic:save-sexp-to-file ()
   (when% t
