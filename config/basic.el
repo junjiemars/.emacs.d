@@ -472,6 +472,12 @@ and `funcall' PREFER returns t.
     (if (string= "" s) nil (funcall tail s))))
 
 
+(defmacro path- (file)
+  "Return the parent path of FILE."
+  `(and (stringp ,file)
+        (file-name-directory (directory-file-name ,file))))
+
+
  ;; end of File functions
 
 
