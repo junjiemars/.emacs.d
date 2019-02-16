@@ -400,11 +400,11 @@ Should jump over dummy symbol-links that point to self or parent directory."
 			  (setq files (cdr files))))))
 
 
-(defun dir-backtrack (dir prefer)
-  "Backtrack DIR.
+(defun iterate-dir (dir prefer)
+  "Iterate DIR.
 
-Starting at DIR, backtrack directory hierarchy for prefered
-directory or file. Ignore the symbol links of directory..
+Starting at DIR, look up or look down directory hierarchy for prefered
+directory or file. Ignores the symbol links of directory..
 
 PREFER (lambda (dir files)...)."
   (let ((d (expand-file-name (if (directory-name-p dir)
@@ -424,7 +424,7 @@ PREFER (lambda (dir files)...)."
                            (file-name-all-completions "" d)))))))
 
 
-(defmacro sphell-command* (command &rest args)
+(defmacro shell-command* (command &rest args)
   "Return a cons cell (code . output) after execute COMMAND in inferior shell.
 
 See `shell-command' and `shell-command-to-string' for details.
