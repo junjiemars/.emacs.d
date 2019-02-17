@@ -22,7 +22,7 @@
                            (line-end-position)))))
 
 (defun find-project-root (file)
-  "Return a alist of possible root via look up directories of FILE."
+  "Return alist of possible root via look up directories of FILE."
   (let ((found nil))
     (catch 'out
       (dir-backtrack
