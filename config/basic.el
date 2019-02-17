@@ -374,24 +374,36 @@ Returns the name of FILE when successed otherwise nil."
 (defun dir-iterate (dir ff df fn dn)
   "Iterate DIR.
 
-FF specify file-filter (lambda (file-name absolute-name)...), if FF return non nil then call FN.
-DF specify dir-filter (lambda (dir-name absolute-name)...), if DF return non nil then call DN.
-FN specify file-function (lambda (absolute-name)...), process filted files.
-DN specify dir-function (lambda (aboslute-name)...), process filted directories.
+Starting at DIR, look down directory hierarchy for maching FF or
+DF. Ignores the symbol links of pointing itself or up directory.
 
-Notes:
-Should jump over dummy symbol-links that point to self or parent directory."
+FF specify file-filter (lambda (file-name absolute-name)...), if
+FF return non nil then call FN.
+
+DF specify dir-filter (lambda (dir-name absolute-name)...), if DF
+return non nil then call DN.
+
+FN specify file-function (lambda (absolute-name)...), process
+filted files.
+
+DN specify dir-function (lambda (aboslute-name)...), process
+filted directories."
   (let ((files (file-name-all-completions "" dir)))
 	  (while files
       (let ((f (car files)))
 			  (unless (member** f '("./" "../") :test #'string=)
 				  (let ((a (expand-file-name f dir)))
 					  (if (directory-name-p f)
-							  (when (and df (let ((ln (file-symlink-p (directory-file-name a))))
-													      (not (or ln
-                                         (string= "." ln)
-														             (and (>= (length a) (length ln))
-															                (string= ln (substring a 0 (length ln)))))))
+							  (when (and (let ((ln (file-symlink-p* a)))
+                             (if ln
+													       (not (or
+                                       (string-match "\\.\\'\\|\\.\\.\\'" ln)
+														           (and (>= (length a) (length ln))
+															              (string=
+                                             ln
+                                             (substring a 0 (length ln))))))
+                               t))
+                           df
 											     (funcall df f a))
 								  (and dn (funcall dn a))
 								  (dir-iterate a ff df fn dn))
