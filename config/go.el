@@ -47,15 +47,20 @@
         (let ((found (alist-get* x seq nil nil #'eq)))
           (when found (throw 'out (car found))))))))
 
-;; (defun go-to-definition ()
-;;   ""
-;;   (let ((s (find-position-at-point))
-;;         (r (prefer-project-root
-;;             (find-project-root (buffer-file-name (current-buffer))))))
-;;     (compilation-start (format "grep  -nH --null -e'%s' -r %s"
-;;                                (plist-get s :symbol)
-;;                                (directory-file-name r))
-;; 		                   'grep-mode)))
+(defun go-to-definition ()
+  "Go to the definition of the symbol at point."
+  (interactive)
+  (let ((s (find-position-at-point))
+        (r (prefer-project-root
+            (find-project-root (buffer-file-name (current-buffer))))))
+    (compilation-start (format "grep --color=always -nH -e'%s' -r %s"
+                               (plist-get s :symbol)
+                               (directory-file-name r)
+                               ;; (mapconcat #'identity
+                               ;;            (system-cc-include t) " ")
+                               )
+		                   'grep-mode
+                       )))
 
 (provide 'go)
 
