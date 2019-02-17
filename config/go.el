@@ -20,8 +20,21 @@
                     :text (buffer-substring-no-properties
                            (line-beginning-position)
                            (line-end-position)))))
-      
 
+(defun find-project-root (file)
+  "Look up the directories of FILE."
+  (let ((found nil))
+    (catch 'out
+      (dir-backtrack (file-name-directory file)
+                     (lambda (d fs)
+                       (dolist* (f fs)
+                         (cond ((string-match "[mM]akefile\\'" f)
+                                (push (concat d f) found))
+                               ((string-match "/\\.git/\\'\\|/\\.svn/\\'"
+                                              (concat d f))
+                                (throw 'out
+                                       (push (concat d f) found))))))))
+    found))
 
 (provide 'go)
 
