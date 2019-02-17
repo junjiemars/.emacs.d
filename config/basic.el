@@ -358,10 +358,10 @@ Returns the name of FILE when successed otherwise nil."
     (if (string= "" s) nil (funcall tail s))))
 
 
-(defmacro path- (file)
+(defun path- (file)
   "Return the parent path of FILE."
-  `(and (stringp ,file)
-        (file-name-directory (directory-file-name ,file))))
+  (and (stringp file)
+       (file-name-directory (directory-file-name file))))
 
 
 (defmacro file-symlink-p* (file)
