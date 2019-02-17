@@ -11,7 +11,7 @@
   (setq% eshell-save-history-on-exit t 'em-hist))
 
 
-(defun eshell-mode! ()
+(defun set-eshell-mode! ()
   (eval-when-compile (require 'em-term))
   (require 'em-term)
   (when (self-spec->*env-spec :eshell :allowed)
@@ -27,5 +27,7 @@
 
 
 (with-eval-after-load 'eshell
-  (eshell-mode!))
+  (set-eshell-mode!))
 
+
+;; end of file
