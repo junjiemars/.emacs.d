@@ -30,23 +30,32 @@
        (lambda (d fs)
          (dolist* (f fs)
            (cond ((string= "Makefile" f)
-                  (push (list 'makefile (concat d f)) found))
+                  (push (list :makefile (concat d f)) found))
                  ((string= ".git/" f)
-                  (throw 'out (push (list 'git (concat d f)) found)))
+                  (throw 'out (push (list :git (concat d f)) found)))
                  ((string= ".svn/" f)
-                  (throw 'out (push (list 'svn (concat d f)) found))))))))
+                  (throw 'out (push (list :svn (concat d f)) found))))))))
     (if (consp found)
         found
-      (push (list 'pwd (file-name-directory file)) found))))
+      (push (list :pwd (file-name-directory file)) found))))
 
 (defun prefer-project-root (seq &optional prefer)
   "Prefer what as project root."
-  (let ((prefer (or prefer '(git svn makefile pwd))))
+  (let ((prefer (or prefer '(:git :svn :makefile :pwd))))
     (catch 'out
       (dolist* (x prefer)
         (let ((found (alist-get* x seq nil nil #'eq)))
           (when found (throw 'out (car found))))))))
 
+;; (defun go-to-definition ()
+;;   ""
+;;   (let ((s (find-position-at-point))
+;;         (r (prefer-project-root
+;;             (find-project-root (buffer-file-name (current-buffer))))))
+;;     (compilation-start (format "grep  -nH --null -e'%s' -r %s"
+;;                                (plist-get s :symbol)
+;;                                (directory-file-name r))
+;; 		                   'grep-mode)))
 
 (provide 'go)
 
