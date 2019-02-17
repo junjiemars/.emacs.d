@@ -400,11 +400,11 @@ Should jump over dummy symbol-links that point to self or parent directory."
 			  (setq files (cdr files))))))
 
 
-(defun iterate-dir (dir prefer)
-  "Iterate DIR.
+(defun dir-backtrack (dir prefer)
+  "Backtrack DIR.
 
-Starting at DIR, look up or look down directory hierarchy for prefered
-directory or file. Ignores the symbol links of directory..
+Starting at DIR, look up directory hierarchy for prefered
+directory or file. Ignores the symbol links of directory.
 
 PREFER (lambda (dir files)...)."
   (let ((d (expand-file-name (if (directory-name-p dir)
@@ -413,15 +413,16 @@ PREFER (lambda (dir files)...)."
     (while (and (stringp d)
                 (directory-name-p d)
                 (not (string= "/" d)))
-      (setq d (funcall prefer d
-                       (remove-if*
-                           (lambda (x)
-                             (or (string= "./" x)
-                                 (string= "../" x)
-                                 (let ((dx (concat d x)))
-                                   (and (directory-name-p dx)
-                                        (file-symlink-p* dx)))))
-                           (file-name-all-completions "" d)))))))
+      (and prefer (funcall prefer d
+                           (remove-if*
+                               (lambda (x)
+                                 (or (string= "./" x)
+                                     (string= "../" x)
+                                     (let ((dx (concat d x)))
+                                       (and (directory-name-p dx)
+                                            (file-symlink-p* dx)))))
+                               (file-name-all-completions "" d))))
+      (setq d (path- d)))))
 
 
 (defmacro shell-command* (command &rest args)
