@@ -388,27 +388,30 @@ filted files.
 
 DN specify dir-function (lambda (aboslute-name)...), process
 filted directories."
-  (let ((files (file-name-all-completions "" dir)))
+  (let ((files (remove-if*
+                   (lambda (x)
+                     (or (string= "./" x)
+                         (string= "../" x)))
+                   (file-name-all-completions "" dir))))
 	  (while files
       (let ((f (car files)))
-			  (unless (member** f '("./" "../") :test #'string=)
-				  (let ((a (expand-file-name f dir)))
-					  (if (directory-name-p f)
-							  (when (and (let ((ln (file-symlink-p* a)))
-                             (if ln
-													       (not (or
-                                       (string-match "\\.\\'\\|\\.\\.\\'" ln)
-														           (and (>= (length a) (length ln))
-															              (string=
-                                             ln
-                                             (substring a 0 (length ln))))))
-                               t))
-                           df
-											     (funcall df f a))
-								  (and dn (funcall dn a))
-								  (dir-iterate a ff df fn dn))
-						  (when (and ff (funcall ff f a))
-							  (and fn (funcall fn a))))))
+				(let ((a (expand-file-name f dir)))
+					(if (directory-name-p f)
+							(when (and (let ((ln (file-symlink-p* a)))
+                           (if ln
+													     (not (or
+                                     (string-match "\\.\\'\\|\\.\\.\\'" ln)
+														         (and (>= (length a) (length ln))
+															            (string=
+                                           ln
+                                           (substring a 0 (length ln))))))
+                             t))
+                         df
+											   (funcall df f a))
+								(and dn (funcall dn a))
+								(dir-iterate a ff df fn dn))
+						(when (and ff (funcall ff f a))
+							(and fn (funcall fn a)))))
 			  (setq files (cdr files))))))
 
 
