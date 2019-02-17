@@ -34,14 +34,15 @@
                  ((string= ".git/" f)
                   (throw 'out (push (list 'git (concat d f)) found)))
                  ((string= ".svn/" f)
-                  (throw 'out (push (list 'svn (concat d f)) found))))))))))
+                  (throw 'out (push (list 'svn (concat d f)) found))))))))
+    found))
 
 (defun prefer-project-root (seq &optional prefer)
   "Prefer what as project root."
-  (let ((prefer (or prefer '("git" "svn"))))
+  (let ((prefer (or prefer '(git svn makefile))))
     (catch 'out
       (dolist* (x prefer)
-        (let ((found (alist-get* x seq nil nil #'string=)))
+        (let ((found (alist-get* x seq nil nil #'eq)))
           (when found (throw 'out (car found))))))))
 
 
