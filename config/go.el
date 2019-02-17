@@ -22,7 +22,7 @@
                            (line-end-position)))))
 
 (defun find-project-root (file)
-  "Look up the directories of FILE."
+  "Return a list of possible root via look up directories of FILE."
   (let ((found nil))
     (catch 'out
       (dir-backtrack (file-name-directory file)
@@ -33,8 +33,7 @@
                                ((string-match "/\\.git/\\'\\|/\\.svn/\\'"
                                               (concat d f))
                                 (throw 'out
-                                       (push (concat d f) found))))))))
-    found))
+                                       (push (concat d f) found))))))))))
 
 (provide 'go)
 
