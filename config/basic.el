@@ -378,10 +378,10 @@ Starting at DIR, look down directory hierarchy for maching FF or
 DF. Ignores the symbol links of pointing itself or up directory.
 
 FF specify file-filter (lambda (file-name absolute-name)...), if
-FF return non nil then call FN.
+FF return non-nil then call FN.
 
 DF specify dir-filter (lambda (dir-name absolute-name)...), if DF
-return non nil then call DN.
+return non-nil then call DN.
 
 FN specify file-function (lambda (absolute-name)...), process
 filted files.
