@@ -743,6 +743,22 @@ machine.
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/c-programming-debugging-via-lldb-on-linux.png][debugging via lldb on Ubuntu]]	
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/c-programming-debugging-via-cdb-on-windows.png][debugging via cdb]]
 
+*** Find C system include
+		:PROPERTIES:
+		:CUSTOM_ID: find-c-system-include
+		:END:
+
+=system-cc-include= function used to find system include files for
+gcc, clang and msvc.
+
+*** C macro expand
+		:PROPERTIES:
+		:CUSTOM_ID: c-macro-expand
+		:END:
+
+=c-macro-expand=: @@html:<kbd>@@C-c C-e@@html:</kbd>@@ for gcc, clang
+and msvc.
+
 ** Common Lisp programming
 	 :PROPERTIES:
 	 :CUSTOM_ID: programming_common_lisp_programming

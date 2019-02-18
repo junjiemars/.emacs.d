@@ -53,7 +53,7 @@
   (let ((s (find-position-at-point))
         (r (prefer-project-root
             (find-project-root (buffer-file-name (current-buffer))))))
-    (compilation-start (format "grep --color=always -nH -e'%s' -r %s"
+    (compilation-start (format "grep --color=always -nH --null -e'%s' -r %s"
                                (plist-get s :symbol)
                                (directory-file-name r)
                                ;; (mapconcat #'identity
