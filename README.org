@@ -663,7 +663,7 @@ The good news is all those issues had gone in this kit.
 
 For =.rar= archive, emacs really sucks. 
 - on Emacs 23.3.1, using =unrar-free= in =archive-rar-summarize=
-  function, but on Emacs 26.1, using =lsar=, and those all had been
+  function, but on Emacs 26.1 using =lsar=, and those all had been
   hard coded in =arc-mode.el=.
 - =7z l= output is not compatible with =lsar= and =unrar=.
 
