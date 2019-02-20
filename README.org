@@ -759,6 +759,13 @@ gcc, clang and msvc.
 =c-macro-expand=: @@html:<kbd>@@C-c C-e@@html:</kbd>@@ for gcc, clang
 and msvc.
 
+On Windows, the msvc's compiler =cl= cannot retrieve input from stdin,
+so =c-macro-expansion= function sucks. But if there are GNU's =xargs=,
+we can resolve this problem.
+
+/screenshots/:
+- [[https://github.com/junjiemars/images/blob/master/.emacs.d/c-programming-macro-expansion-on-windows.png][macro expansion for msvc]]
+
 ** Common Lisp programming
 	 :PROPERTIES:
 	 :CUSTOM_ID: programming_common_lisp_programming
