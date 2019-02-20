@@ -151,11 +151,19 @@ otherwise check cc include on the fly."
 
 (platform-supported-when 'windows-nt
   ;; [C-c C-e] macro expand for msvc
-  (defadvice c-macro-expand (before c-macro-expand-before compile)
-    "cl.exe cannot retrieve from stdin."
-    (setq% c-macro-preprocessor (concat "cc-env.bat && cl -E "
-                                        (buffer-file-name (current-buffer)))
-           'cmacexp)))
+  (when% (and (executable-find% "xargs")
+              (or (executable-find% "cc-env.bat")
+                  (make-cc-env-bat)))
+
+    (defadvice c-macro-expand (around c-macro-expand-around compile)
+      "cl.exe cannot retrieve from stdin."
+      (let* ((tmp (make-temp-file
+		               (expand-file-name "cc-" temporary-file-directory)))
+             (c-macro-preprocessor
+              (format "xargs -0 > %s && cc-env.bat && cl -E %s"
+                      tmp tmp)))
+        (unwind-protect ad-do-it
+          (delete-file tmp))))))
 
 
 (with-eval-after-load 'cmacexp
@@ -168,8 +176,9 @@ otherwise check cc include on the fly."
       (setq% c-macro-preprocessor "cc -E -o - -" 'cmacexp)))
 
   (platform-supported-when 'windows-nt
-    (when% (or (executable-find% "cc-env.bat")
-               (make-cc-env-bat))
+    (when% (and (executable-find% "xargs")
+                (or (executable-find% "cc-env.bat")
+                    (make-cc-env-bat)))
       (ad-activate #'c-macro-expand t))))
 
 
