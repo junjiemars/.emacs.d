@@ -156,13 +156,11 @@ otherwise check cc include on the fly."
               (executable-find%
                "xargs"
                (lambda (xargs)
-                 (let ((x (shell-command* "echo"
-                            (shell-quote-argument "xxx")
-                            "&& echo."
-                            (shell-quote-argument "zzz")
+                 (let ((x (shell-command* "echo xxx"
+                            "&& echo.zzz"
                             "|xargs -0")))
                    (and (zerop (car x))
-                        (string-match "^ \"zzz\"" (cdr x)))))))
+                        (string-match "^zzz" (cdr x)))))))
 
     (defadvice c-macro-expand (around c-macro-expand-around compile)
       "cl.exe cannot retrieve from stdin."
