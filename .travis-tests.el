@@ -342,16 +342,16 @@
                              (dolist* (x fs)
                                (when (string= "init.el" x)
                                  (throw 'out t)))))))
-  (should
-   (equal '("init.el" ".git/")
-          (let ((prefered nil))
-            (dir-backtrack (emacs-home* "config/basic.el")
-                           (lambda (d fs)
-                             (dolist* (x fs)
-                               (when (or (string= "init.el" x)
-                                         (string= ".git/" x))
-                                 (push x prefered)))))
-            prefered))))
+  (should (equal
+           '("init.el" ".git/")
+           (let ((prefered nil))
+             (dir-backtrack (emacs-home* "config/basic.el")
+                            (lambda (d fs)
+                              (dolist* (x fs)
+                                (when (or (string= "init.el" x)
+                                          (string= ".git/" x))
+                                  (push x prefered)))))
+             prefered))))
 
 (ert-deftest %basic:executable-find% ()
   (platform-supported-if 'windows-nt
