@@ -151,9 +151,18 @@ otherwise check cc include on the fly."
 
 (platform-supported-when 'windows-nt
   ;; [C-c C-e] macro expand for msvc
-  (when% (and (executable-find% "xargs")
-              (or (executable-find% "cc-env.bat")
-                  (make-cc-env-bat)))
+  (when% (and (or (executable-find% "cc-env.bat")
+                  (make-cc-env-bat))
+              (executable-find%
+               "xargs"
+               (lambda (xargs)
+                 (let ((x (shell-command* "echo"
+                            (shell-quote-argument "xxx")
+                            "&& echo."
+                            (shell-quote-argument "zzz")
+                            "|xargs -0")))
+                   (and (zerop (car x))
+                        (string-match "^ \"zzz\"" (cdr x)))))))
 
     (defadvice c-macro-expand (around c-macro-expand-around compile)
       "cl.exe cannot retrieve from stdin."
@@ -185,9 +194,7 @@ otherwise check cc include on the fly."
       (setq% c-macro-preprocessor "cc -E -o - -" 'cmacexp)))
 
   (platform-supported-when 'windows-nt
-    (when% (and (executable-find% "xargs")
-                (or (executable-find% "cc-env.bat")
-                    (make-cc-env-bat)))
+    (when% (ad-get-advice-info #'c-macro-expand)
       (ad-activate #'c-macro-expand t))))
 
 
