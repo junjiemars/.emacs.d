@@ -171,8 +171,17 @@ otherwise check cc include on the fly."
   ;; [C-c C-e] `c-macro-expand' in `cc-mode'
   (setq% c-macro-prompt-flag t 'cmacexp)
 
-  (platform-supported-when 'darwin
-    (when% (executable-find% "cc")
+  (platform-supported-unless 'windows-nt
+    (when% (executable-find%
+            "cc"
+            (lambda (cc)
+              (let ((x (shell-command* "echo -e"
+                         (shell-quote-argument
+                          "#define _unused_(x) ((void)(x))\n_unused_(a);")
+                         "|cc -E -")))
+                (and (zerop (car x))
+                     (string-match "((void)(a));" (cdr x))
+                     (cdr x)))))
       (setq% c-macro-preprocessor "cc -E -o - -" 'cmacexp)))
 
   (platform-supported-when 'windows-nt
