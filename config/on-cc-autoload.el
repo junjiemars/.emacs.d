@@ -183,8 +183,7 @@ otherwise check cc include on the fly."
             "cc"
             (lambda (cc)
               (let ((x (shell-command* "echo -e"
-                         (shell-quote-argument
-                          "#define _unused_(x) ((void)(x))\n_unused_(a);")
+                         "\"#define _unused_(x) ((void)(x))\n_unused_(a);\""
                          "|cc -E -")))
                 (and (zerop (car x))
                      (string-match "((void)(a));" (cdr x))))))
