@@ -187,8 +187,7 @@ otherwise check cc include on the fly."
                           "#define _unused_(x) ((void)(x))\n_unused_(a);")
                          "|cc -E -")))
                 (and (zerop (car x))
-                     (string-match "((void)(a));" (cdr x))
-                     (cdr x)))))
+                     (string-match "((void)(a));" (cdr x))))))
       (setq% c-macro-preprocessor "cc -E -o - -" 'cmacexp)))
 
   (platform-supported-when 'windows-nt
