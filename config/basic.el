@@ -425,7 +425,7 @@ PREFER (lambda (dir files)...)."
   (let ((d (expand-file-name (if (directory-name-p dir)
                                  dir
                                (file-name-directory dir))))
-        (stop "\\(/\\|[a-zA-Z]:/\\)\\'"))
+        (stop "\\(^/\\|[a-zA-Z]:/\\)\\'"))
     (while (and (stringp d)
                 (directory-name-p d)
                 (not (string-match stop d)))
