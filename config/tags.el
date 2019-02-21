@@ -26,24 +26,24 @@ Examples:
   (cond ((executable-find% "ctags"
                            (lambda (bin)
                              (let ((ver (shell-command* bin "--version")))
-                               (when (zerop (car ver))
-                                 (string-match "Exuberant Ctags [.0-9]+"
-                                               (cdr ver))))))
+                               (and (zerop (car ver))
+                                    (string-match "Exuberant Ctags [.0-9]+"
+                                                  (cdr ver))))))
          "ctags -e -o %s -a %s ; echo %s")
         ((executable-find% "etags"
                            (lambda (bin)
                              (let ((ver (shell-command* bin "--version")))
-                               (when (zerop (car ver))
-                                 (string-match "Exuberant Ctags [.0-9]+"
-                                               (cdr ver))))))
+                               (and (zerop (car ver))
+                                    (string-match "Exuberant Ctags [.0-9]+"
+                                                  (cdr ver))))))
          ;; on Linux/Darwin ctags may be has the synonym: etags
          "etags -e -o %s -a %s ; echo %s")
         ((executable-find% "etags"
                            (lambda (bin)
                              (let ((ver (shell-command* bin "--version")))
-                               (when (zerop (car ver))
-                                 (string-match "etags (GNU Emacs [.0-9]+)"
-                                               (cdr ver))))))
+                               (and (zerop (car ver))
+                                    (string-match "etags (GNU Emacs [.0-9]+)"
+                                                  (cdr ver))))))
          "etags -o %s -l auto -a %s ; echo %s"))
   "The default tags program.
 This is used by commands like `make-tags'.
