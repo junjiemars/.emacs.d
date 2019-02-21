@@ -353,4 +353,14 @@
                                  (push x prefered)))))
             prefered))))
 
+(ert-deftest %basic:executable-find% ()
+  (platform-supported-if 'windows-nt
+      (should (executable-find% "dir"))
+    (should (executable-find% "ls"))
+    (should (executable-find% "ls"
+                              (lambda (ls)
+                                (let ((x (shell-command* "sh"
+                                           "--version")))
+                                  (car x)))))))
+
 ;; end of file
