@@ -118,9 +118,9 @@
                  "find"
                  (lambda (bin)
                    (let ((ver (shell-command* bin "--version")))
-                     (when (zerop (car ver))
-                       (string-match "^find (GNU findutils)"
-                                     (cdr ver))))))))
+                     (and (zerop (car ver))
+                          (string-match "^find (GNU findutils)"
+                                        (cdr ver))))))))
       (when find
         (windows-nt-env-path+ (file-name-directory find))))))
 
@@ -175,12 +175,13 @@
 
   (with-eval-after-load 'ido
     ;; see `ido-dired'
-    (let ((ls (executable-find% "ls"
-                                (lambda (ls)
-                                  (let ((ver (shell-command* ls "--version")))
-                                    (when (zerop (car ver))
-                                      (string-match "^ls (GNU coreutils)"
-                                                    (cdr ver))))))))
+    (let ((ls (executable-find%
+               "ls"
+               (lambda (ls)
+                 (let ((ver (shell-command* ls "--version")))
+                   (and (zerop (car ver))
+                        (string-match "^ls (GNU coreutils)"
+                                      (cdr ver))))))))
       (if ls
           (progn%
            ;; prefer GNU's ls (--dired option) on Windows or
