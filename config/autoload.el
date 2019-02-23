@@ -104,6 +104,14 @@
       (autoload 'lldb (v-home% "config/gud-lldb.elc")
         "Run cdb on program FILE in buffer *gud-FILE*." t)))
 
+  ;; abbreviated `eshell' prompt
+  (version-supported-when > 23
+    (when% (and (require 'em-prompt) (require 'em-dirs))
+      (setq eshell-prompt-function
+            #'(lambda ()
+                (concat (abbreviate-file-name (eshell/pwd))
+                        (if (= (user-uid) 0) " # " " $ "))))))
+
   )
 
  ;; end of set-flavor-mode!
