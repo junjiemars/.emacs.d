@@ -701,7 +701,7 @@ Global for all Emacs' version.
 
 - @@html:<kbd>@@M-/@@html:</kbd>@@ =hippie-expand=
 - @@html:<kbd>@@C-c ;@@html:</kbd>@@ =toggle-comment=
-- @@html:<kbd>@@C-c f b@@html:</kbd>@@ =find-file-at-point=
+- @@html:<kbd>@@C-c f f@@html:</kbd>@@ =find-file-at-point=
 - @@html:<kbd>@@C-c r b@@html:</kbd>@@ =revert-buffer=
 
 *** Compatible keys

@@ -13,7 +13,7 @@
   
   ;; Open file or url at point
   (when-fn% 'find-file-at-point 'ffap
-    (define-key (current-global-map) (kbd "C-c f b") #'find-file-at-point))
+    (define-key (current-global-map) (kbd "C-c f f") #'find-file-at-point))
   
   ;; Shows a list of buffers
   (define-key (current-global-map) (kbd "C-x C-b") #'ibuffer)
@@ -37,7 +37,8 @@
   (when-fn% 'electric-newline-and-maybe-indent 'electric
     ;; Default behaviour of RET
     ;; https://lists.gnu.org/archive/html/emacs-devel/2013-10/msg00490.html
-    ;; electric-indent-mode: abolition of `newline' function is not the	Right Thing
+    ;; electric-indent-mode: abolition of `newline' function is not
+    ;; the Right Thing
     ;; https://lists.gnu.org/archive/html/emacs-devel/2013-10/msg00407.html
     (define-key% global-map (kbd "RET") #'electric-newline-and-maybe-indent)
     (define-key% global-map (kbd "C-j") #'newline))
