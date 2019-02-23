@@ -697,10 +697,12 @@ Obey the defaults of Emacs' keymap.
 
 *** Global keys
 
-Global, and for all Emacs' version.
+Global for all Emacs' version.
 
 - @@html:<kbd>@@M-/@@html:</kbd>@@ =hippie-expand=
 - @@html:<kbd>@@C-c ;@@html:</kbd>@@ =toggle-comment=
+- @@html:<kbd>@@C-c f b@@html:</kbd>@@ =find-file-at-point=
+- @@html:<kbd>@@C-c r b@@html:</kbd>@@ =revert-buffer=
 
 *** Compatible keys
 

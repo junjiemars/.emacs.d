@@ -11,7 +11,7 @@
 
 (defun set-global-key! ()
   
-  ;; open file or url at point
+  ;; Open file or url at point
   (when-fn% 'find-file-at-point 'ffap
     (define-key (current-global-map) (kbd "C-c f b") #'find-file-at-point))
   
@@ -25,6 +25,9 @@
   ;; `C-x r g' and `C-x r i' are all bound to insert-register
   ;; let `C-x r g' do `string-insert-rectangle'
   (define-key (current-global-map) (kbd "C-x r g") #'string-insert-rectangle)
+
+  ;; Revert buffer
+  (define-key (current-global-map) (kbd "C-c r b") #'revert-buffer)
 
   (package-supported-p  
     (feature-allowed-p bing-dict
