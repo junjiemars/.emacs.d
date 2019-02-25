@@ -193,7 +193,7 @@
 
 (define-key (current-global-map) (kbd "C-c m s") #'mark-symbol@)
 (define-key (current-global-map) (kbd "C-c m f") #'mark-filename@)
-(define-key (current-global-map) (kbd "C-c m l") #'mark-filename@)
+(define-key (current-global-map) (kbd "C-c m l") #'mark-line@)
 
 
 ;; end of file
