@@ -157,13 +157,24 @@
 
 
 ;; abbreviated `eshell' prompt
-  (version-supported-when > 23
-    (when% (and (require 'em-prompt) (require 'em-dirs))
-      (setq eshell-prompt-function
-            #'(lambda ()
-                (concat (abbreviate-file-name (eshell/pwd))
-                        (if (= (user-uid) 0) " # " " $ "))))))
+(version-supported-when > 23
+  (when% (and (require 'em-prompt) (require 'em-dirs))
+    (setq eshell-prompt-function
+          #'(lambda ()
+              (concat (abbreviate-file-name (eshell/pwd))
+                      (if (= (user-uid) 0) " # " " $ "))))))
 
 
+(defun mark-symbol@ ()
+  "Mark symbol at point"
+  (interactive)
+  (let ((bounds (bounds-of-thing-at-point 'symbol)))
+    (when (car bounds)
+      (goto-char (car bounds))
+      (set-mark (point))
+      (forward-symbol 1)
+      (mark))))
+
+(define-key (current-global-map) (kbd "C-c m s") #'mark-symbol@)
 
 ;; end of file
