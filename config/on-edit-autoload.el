@@ -189,7 +189,10 @@
 (defun mark-line@ ()
   "Mark line at point."
   (interactive)
-  (mark-thing@ 'line))
+  (back-to-indentation)
+  (set-mark (point))
+  (end-of-line)
+  (mark))
 
 (define-key (current-global-map) (kbd "C-c m s") #'mark-symbol@)
 (define-key (current-global-map) (kbd "C-c m f") #'mark-filename@)
