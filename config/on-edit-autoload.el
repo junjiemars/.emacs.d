@@ -165,16 +165,35 @@
                       (if (= (user-uid) 0) " # " " $ "))))))
 
 
+;; Mark thing at point
+
+(defmacro mark-thing@ (thing)
+  "Mark THING at point."
+  `(let ((bounds (bounds-of-thing-at-point ,thing)))
+     (when bounds
+       (goto-char (car bounds))
+       (set-mark (point))
+       (goto-char (cdr bounds))
+       (mark))))
+
 (defun mark-symbol@ ()
-  "Mark symbol at point"
+  "Mark symbol at point."
   (interactive)
-  (let ((bounds (bounds-of-thing-at-point 'symbol)))
-    (when (car bounds)
-      (goto-char (car bounds))
-      (set-mark (point))
-      (forward-symbol 1)
-      (mark))))
+  (mark-thing@ 'symbol))
+
+(defun mark-filename@ ()
+  "Mark filename at point."
+  (interactive)
+  (mark-thing@ 'filename))
+
+(defun mark-line@ ()
+  "Mark line at point."
+  (interactive)
+  (mark-thing@ 'line))
 
 (define-key (current-global-map) (kbd "C-c m s") #'mark-symbol@)
+(define-key (current-global-map) (kbd "C-c m f") #'mark-filename@)
+(define-key (current-global-map) (kbd "C-c m l") #'mark-filename@)
+
 
 ;; end of file
