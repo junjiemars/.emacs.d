@@ -229,8 +229,8 @@ More accurate than `mark-sexp'."
       (mark-thing@ (goto-char (car bounds))
                    (goto-char (cdr bounds))))))
 
-(unless% (and (get 'defun 'beginning-of-defun)
-              (get 'defun 'end-of-defun))
+(unless% (or (get 'defun 'beginning-of-defun)
+             (get 'defun 'end-of-defun))
   ;; fix wrong behavior (bounds-of-thing-at-point 'defun) on ancient
   ;; Emacs.
     (put 'defun 'beginning-op 'beginning-of-defun)
