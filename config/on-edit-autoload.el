@@ -223,7 +223,7 @@ More accurate than `mark-defun'."
 (define-key (current-global-map) (kbd "C-c m f") #'mark-filename@)
 (define-key (current-global-map) (kbd "C-c m l") #'mark-line@)
 (define-key (current-global-map) (kbd "C-c m a") #'mark-list@)
-(define-key (current-global-map) (kbd "C-c m d") #'mark-function@)
+(define-key (current-global-map) (kbd "C-c m d") #'mark-defun@)
 
 
 ;; end of file

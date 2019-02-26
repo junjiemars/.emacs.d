@@ -696,8 +696,8 @@ marked part.
 - @@html:<kbd>@@C-c m s@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-symbol.png][mark symbol at point]]
 - @@html:<kbd>@@C-c m f@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-filename.png][mark filename at point]]
 - @@html:<kbd>@@C-c m l@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-line.png][mark line at point]]
-- @@html:<kbd>@@C-c e l@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-list.png][mark list at point]]
-- @@html:<kbd>@@C-c e l@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-defun.png][mark defun at point]]
+- @@html:<kbd>@@C-c m a@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-list.png][mark list at point]]
+- @@html:<kbd>@@C-c m d@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-defun.png][mark defun at point]]
 
 *** Tags
 	 :PROPERTIES:
