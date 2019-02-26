@@ -200,10 +200,21 @@ If ARG is non-nil should mark the whole line."
                  (back-to-indentation))
                (end-of-line)))
 
-(defun mark-email@ ()
-  "Mark number at point."
+
+(defun mark-list@ ()
+  "Mark list at point.
+More accurate than `mark-sexp'."
   (interactive)
-  (let ((bounds (bounds-of-thing-at-point 'email)))
+  (let ((bounds (bounds-of-thing-at-point 'list)))
+    (when bounds
+      (mark-thing@ (goto-char (car bounds))
+                   (goto-char (cdr bounds))))))
+
+(defun mark-defun@ ()
+  "Mark function at point.
+More accurate than `mark-defun'."
+  (interactive)
+  (let ((bounds (bounds-of-thing-at-point 'defun)))
     (when bounds
       (mark-thing@ (goto-char (car bounds))
                    (goto-char (cdr bounds))))))
@@ -211,7 +222,8 @@ If ARG is non-nil should mark the whole line."
 (define-key (current-global-map) (kbd "C-c m s") #'mark-symbol@)
 (define-key (current-global-map) (kbd "C-c m f") #'mark-filename@)
 (define-key (current-global-map) (kbd "C-c m l") #'mark-line@)
-(define-key (current-global-map) (kbd "C-c m e") #'mark-email@)
+(define-key (current-global-map) (kbd "C-c m a") #'mark-list@)
+(define-key (current-global-map) (kbd "C-c m d") #'mark-function@)
 
 
 ;; end of file
