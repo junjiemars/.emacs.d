@@ -676,9 +676,25 @@ For =.rar= archive, emacs really sucks.
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/org-odt-export-to-odt-on-windows.png][org-odt-export-to-odt]]
 - [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-compress-file-suffixes-version-24lt.png][dired-compress-file-suffixes]]
 
-** Tags
+
+** Edit
 	 :PROPERTIES:
-	 :CUSTOM_ID: tags
+	 :CUSTOM_ID: edit
+	 :END:
+
+
+*** Mark
+	 :PROPERTIES:
+	 :CUSTOM_ID: edit-mark
+	 :END:
+	 
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-symbol.png][mark symbol at point]]: =mark-symbol@=
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-filename.png][mark filename at point]]: =mark-filename@=
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-line.png][mark line at point]]: =mark-line@=
+
+*** Tags
+	 :PROPERTIES:
+	 :CUSTOM_ID: edit-tags
 	 :END:
 
 Prefer =etags= program, because it works well on varied platforms. In
