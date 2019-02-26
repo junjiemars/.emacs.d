@@ -229,15 +229,22 @@ More accurate than `mark-sexp'."
       (mark-thing@ (goto-char (car bounds))
                    (goto-char (cdr bounds))))))
 
+(unless% (and (get 'defun 'beginning-of-defun)
+              (get 'defun 'end-of-defun))
+  ;; fix wrong behavior (bounds-of-thing-at-point 'defun) on ancient
+  ;; Emacs.
+    (put 'defun 'beginning-op 'beginning-of-defun)
+    (put 'defun 'end-op       'end-of-defun)
+    (put 'defun 'forward-op   'end-of-defun))
+
 (defun mark-defun@ ()
   "Mark function at point.
 More accurate than `mark-defun'."
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'defun)))
-    (if bounds
-        (mark-thing@ (goto-char (car bounds))
-                     (goto-char (cdr bounds)))
-      (call-interactively #'mark-defun))))
+    (when bounds
+      (mark-thing@ (goto-char (car bounds))
+                     (goto-char (cdr bounds))))))
 
 (define-key (current-global-map) (kbd "C-c m s") #'mark-symbol@)
 (define-key (current-global-map) (kbd "C-c m f") #'mark-filename@)
