@@ -200,9 +200,18 @@ If ARG is non-nil should mark the whole line."
                  (back-to-indentation))
                (end-of-line)))
 
+(defun mark-email@ ()
+  "Mark number at point."
+  (interactive)
+  (let ((bounds (bounds-of-thing-at-point 'email)))
+    (when bounds
+      (mark-thing@ (goto-char (car bounds))
+                   (goto-char (cdr bounds))))))
+
 (define-key (current-global-map) (kbd "C-c m s") #'mark-symbol@)
 (define-key (current-global-map) (kbd "C-c m f") #'mark-filename@)
 (define-key (current-global-map) (kbd "C-c m l") #'mark-line@)
+(define-key (current-global-map) (kbd "C-c m e") #'mark-email@)
 
 
 ;; end of file
