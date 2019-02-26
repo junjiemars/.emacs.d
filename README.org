@@ -343,9 +343,9 @@ Using Emacs's builtin themes /tango-dark/ :
 
 
 /screenshots/:
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/default-theme-on-windows.png][default theme]]
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-windows.png][dracula theme]]
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/tango-dark-theme-on-windows.png][tango-dark theme]]
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/default-theme-on-windows.png][default theme]]
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/dracula-theme-on-windows.png][dracula theme]]
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/tango-dark-theme-on-windows.png][tango-dark theme]]
 
 ** Font
     :PROPERTIES:
@@ -373,9 +373,9 @@ by default and for GUI mode only.
 
 
 /screenshots/:
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/cjk-font-on-darwin.png][CJK font]]
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/monaco-font-on-darwin.png][Monaco font]]
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/consolas-font-on-windows.png][Consolas font]]
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/cjk-font-on-darwin.png][CJK font]]
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/monaco-font-on-darwin.png][Monaco font]]
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/consolas-font-on-windows.png][Consolas font]]
 
 ** Shell
     :PROPERTIES:
@@ -615,7 +615,7 @@ For Darwin, let =dired= don't do stupid things.
 
 
 /screenshots/:
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/ido-dired-windows-gnu-ls.png][ido-dired]]
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/ido-dired-windows-gnu-ls.png][ido-dired]]
 
 *** find Program
 
@@ -628,8 +628,8 @@ Now, on Windows you can use @@html:<kbd>@@M-x find-dired@@html:</kbd>@@
 or @@html:<kbd>@@M-x find-name-dired@@html:</kbd>@@
 
 /screenshots/:
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/find-name-dired-on-windows.png][find-name-dired]]
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/find-name-dired-tramp-on-windows.png][find-name-dired via tramp]]
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/find-name-dired-on-windows.png][find-name-dired]]
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/find-name-dired-tramp-on-windows.png][find-name-dired via tramp]]
 
 *** compress Program
 
@@ -669,13 +669,12 @@ For =.rar= archive, emacs really sucks.
 
 
 /screenshots/:
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-do-compress-to-zip-on-windows.png][dired-do-compress-to: zip]]
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-do-compress-to-7z-on-windows.png][dired-do-compress-to: 7z]]
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/archive-summarize-files-zip-on-windows.png][archive-summarize-files: zip]]
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/archive-summarize-files-7z-on-windows.png][archive-summarize-files: 7z]]
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/org-odt-export-to-odt-on-windows.png][org-odt-export-to-odt]]
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/dired-compress-file-suffixes-version-24lt.png][dired-compress-file-suffixes]]
-
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/dired-do-compress-to-zip-on-windows.png][dired-do-compress-to: zip]]
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/dired-do-compress-to-7z-on-windows.png][dired-do-compress-to: 7z]]
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/archive-summarize-files-zip-on-windows.png][archive-summarize-files: zip]]
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/archive-summarize-files-7z-on-windows.png][archive-summarize-files: 7z]]
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/org-odt-export-to-odt-on-windows.png][org-odt-export-to-odt]]
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/dired-compress-file-suffixes-version-24lt.png][dired-compress-file-suffixes]]
 
 ** Edit
 	 :PROPERTIES:
