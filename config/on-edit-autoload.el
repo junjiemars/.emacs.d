@@ -167,32 +167,35 @@
 
 ;; Mark thing at point
 
-(defmacro mark-thing@ (thing)
+(defmacro mark-thing@ (begin end)
   "Mark THING at point."
-  `(let ((bounds (bounds-of-thing-at-point ,thing)))
-     (when bounds
-       (goto-char (car bounds))
-       (set-mark (point))
-       (goto-char (cdr bounds))
-       (mark))))
+  `(progn
+     ,begin
+     (set-mark (point))
+     ,end
+     (mark)))
 
 (defun mark-symbol@ ()
   "Mark symbol at point."
   (interactive)
-  (mark-thing@ 'symbol))
+  (let ((bounds (bounds-of-thing-at-point 'symbol)))
+    (when bounds
+      (mark-thing@ (goto-char (car bounds))
+                   (goto-char (cdr bounds))))))
 
 (defun mark-filename@ ()
   "Mark filename at point."
   (interactive)
-  (mark-thing@ 'filename))
+  (let ((bounds (bounds-of-thing-at-point 'filename)))
+    (when bounds
+      (mark-thing@ (goto-char (car bounds))
+                   (goto-char (cdr bounds))))))
 
 (defun mark-line@ ()
   "Mark line at point."
   (interactive)
-  (back-to-indentation)
-  (set-mark (point))
-  (end-of-line)
-  (mark))
+  (mark-thing@ (back-to-indentation)
+               (end-of-line)))
 
 (define-key (current-global-map) (kbd "C-c m s") #'mark-symbol@)
 (define-key (current-global-map) (kbd "C-c m f") #'mark-filename@)
