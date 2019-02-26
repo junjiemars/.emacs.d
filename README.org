@@ -302,7 +302,7 @@ Introduce rules of naming /files/ and /functions/
 - [[#package][Package]]
 - [[#indent][Indent]]
 - [[#file][File]]
-- [[#tags][Tags]]
+- [[#edit][Edit]]
 - [[#keys][Keys]]
 
 
@@ -688,9 +688,9 @@ For =.rar= archive, emacs really sucks.
 	 :CUSTOM_ID: edit-mark
 	 :END:
 	 
-- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-symbol.png][mark symbol at point]]: =mark-symbol@=
-- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-filename.png][mark filename at point]]: =mark-filename@=
-- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-line.png][mark line at point]]: =mark-line@=
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-symbol.png][mark symbol at point]]: @@html:<kbd>@@C-c m s@@html:</kbd>@@  =mark-symbol@=
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-filename.png][mark filename at point]]: @@html:<kbd>@@C-c m f@@html:</kbd>@@ =mark-filename@=
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-line.png][mark line at point]]: @@html:<kbd>@@C-c m l@@html:</kbd>@@ =mark-line@=
 
 *** Tags
 	 :PROPERTIES:
