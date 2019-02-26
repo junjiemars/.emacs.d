@@ -688,9 +688,13 @@ For =.rar= archive, emacs really sucks.
 	 :CUSTOM_ID: edit-mark
 	 :END:
 	 
-- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-symbol.png][mark symbol at point]]: @@html:<kbd>@@C-c m s@@html:</kbd>@@  =mark-symbol@=
-- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-filename.png][mark filename at point]]: @@html:<kbd>@@C-c m f@@html:</kbd>@@ =mark-filename@=
-- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-line.png][mark line at point]]: @@html:<kbd>@@C-c m l@@html:</kbd>@@ =mark-line@=
+Provides the abilities to mark /symbol/, /filename/ and /line/ in
+current buffer then you can @@html:<kbd>@@M-w@@html:</kbd>@@ the
+marked part.
+
+- @@html:<kbd>@@C-c m s@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-symbol.png][mark symbol at point]]
+- @@html:<kbd>@@C-c m f@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-filename.png][mark filename at point]]
+- @@html:<kbd>@@C-c m l@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-line.png][mark line at point]]
 
 *** Tags
 	 :PROPERTIES:
