@@ -191,10 +191,13 @@
       (mark-thing@ (goto-char (car bounds))
                    (goto-char (cdr bounds))))))
 
-(defun mark-line@ ()
-  "Mark line at point."
-  (interactive)
-  (mark-thing@ (back-to-indentation)
+(defun mark-line@ (&optional arg)
+  "Mark line at point.
+If ARG is non-nil should mark the whole line."
+  (interactive "P")
+  (mark-thing@ (if arg
+                   (beginning-of-line)
+                 (back-to-indentation))
                (end-of-line)))
 
 (define-key (current-global-map) (kbd "C-c m s") #'mark-symbol@)
