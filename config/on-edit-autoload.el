@@ -215,9 +215,10 @@ More accurate than `mark-sexp'."
 More accurate than `mark-defun'."
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'defun)))
-    (when bounds
-      (mark-thing@ (goto-char (car bounds))
-                   (goto-char (cdr bounds))))))
+    (if bounds
+        (mark-thing@ (goto-char (car bounds))
+                     (goto-char (cdr bounds)))
+      (call-interactively #'mark-defun))))
 
 (define-key (current-global-map) (kbd "C-c m s") #'mark-symbol@)
 (define-key (current-global-map) (kbd "C-c m f") #'mark-filename@)
