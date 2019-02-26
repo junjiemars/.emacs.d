@@ -767,11 +767,11 @@ C programing with Emacs should be awesome if [[https://github.com/junjiemars/nor
 machine.
 
 /screenshots/:
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/c-programming-editing-on-darwin-gui.png][editing on Darwin]]
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/c-programming-compile-on-windows.png][compile via msvc]]
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/c-programming-debugging-via-lldb-on-darwin.png][debugging via lldb on Darwin]]
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/c-programming-debugging-via-lldb-on-linux.png][debugging via lldb on Ubuntu]]	
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/c-programming-debugging-via-cdb-on-windows.png][debugging via cdb]]
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-editing-on-darwin-gui.png][editing on Darwin]]
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-compile-on-windows.png][compile via msvc]]
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-darwin.png][debugging via lldb on Darwin]]
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-linux.png][debugging via lldb on Ubuntu]]	
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-cdb-on-windows.png][debugging via cdb]]
 
 *** Find C system include
 		:PROPERTIES:
@@ -794,7 +794,7 @@ so =c-macro-expansion= function sucks. But if there are GNU's =xargs=,
 we can resolve this problem.
 
 /screenshots/:
-- [[https://github.com/junjiemars/images/blob/master/.emacs.d/c-programming-macro-expansion-on-windows.png][macro expansion for msvc]]
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-macro-expansion-on-windows.png][macro expansion for msvc]]
 
 ** Common Lisp programming
 	 :PROPERTIES:
