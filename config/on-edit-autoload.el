@@ -290,6 +290,8 @@ More accurate than `mark-defun'."
 
   (when% (executable-find% "xsel")
     (platform-supported-when 'gnu/linux
+      (defun-x-select-text* "xsel" "--clipboard" "--input")
+      (defun-x-selection-value* "xsel" "--clipboard" "--output")
       (enable-x-select-clipboard!))))
 
 
