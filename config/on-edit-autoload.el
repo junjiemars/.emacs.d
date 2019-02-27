@@ -200,6 +200,24 @@ If ARG is non-nil should mark the whole line."
                  (back-to-indentation))
                (end-of-line)))
 
+(defun mark-list@ ()
+  "Mark list at point.
+More accurate than `mark-sexp'."
+  (interactive)
+  (let ((bounds (bounds-of-thing-at-point 'list)))
+    (when bounds
+      (mark-thing@ (goto-char (car bounds))
+                   (goto-char (cdr bounds))))))
+
+(defun mark-defun@ ()
+  "Mark function at point.
+More accurate than `mark-defun'."
+  (interactive)
+  (let ((bounds (bounds-of-thing-at-point 'defun)))
+    (when bounds
+      (mark-thing@ (goto-char (car bounds))
+                   (goto-char (cdr bounds))))))
+
 (unless-fn% 'thing-at-point-bounds-of-list-at-point 'thingatpt
   ;; fix the wrong behavior of (bounds-of-thing-at-point 'list) on
   ;; ancient Emacs.
@@ -220,31 +238,14 @@ If ARG is non-nil should mark the whole line."
   (put 'list 'bounds-of-thing-at-point
        'thing-at-point-bounds-of-list-at-point))
 
-(defun mark-list@ ()
-  "Mark list at point.
-More accurate than `mark-sexp'."
-  (interactive)
-  (let ((bounds (bounds-of-thing-at-point 'list)))
-    (when bounds
-      (mark-thing@ (goto-char (car bounds))
-                   (goto-char (cdr bounds))))))
-
 (unless% (or (get 'defun 'beginning-of-defun)
              (get 'defun 'end-of-defun))
   ;; fix wrong behavior (bounds-of-thing-at-point 'defun) on ancient
   ;; Emacs.
-    (put 'defun 'beginning-op 'beginning-of-defun)
-    (put 'defun 'end-op       'end-of-defun)
-    (put 'defun 'forward-op   'end-of-defun))
+  (put 'defun 'beginning-op 'beginning-of-defun)
+  (put 'defun 'end-op       'end-of-defun)
+  (put 'defun 'forward-op   'end-of-defun))
 
-(defun mark-defun@ ()
-  "Mark function at point.
-More accurate than `mark-defun'."
-  (interactive)
-  (let ((bounds (bounds-of-thing-at-point 'defun)))
-    (when bounds
-      (mark-thing@ (goto-char (car bounds))
-                     (goto-char (cdr bounds))))))
 
 (define-key (current-global-map) (kbd "C-c m s") #'mark-symbol@)
 (define-key (current-global-map) (kbd "C-c m f") #'mark-filename@)
