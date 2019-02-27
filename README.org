@@ -1125,6 +1125,11 @@ On Darwin
 - copy to clipboard: select region then @@html:<kbd>@@M-|
   pbcopy@@html:</kbd>@@
 - paste to Emacs: @@html:<kbd>@@C-u M-| pbpaste@@html:</kbd>@@
+
+On Linux
+- copy to clipboard: select region then @@html:<kbd>@@M-| xsel
+  -i@@html:</kbd>@@
+- paste to Emacs: @@html:<kbd>@@Cu M-| xsel -o@@html:</kbd>@@
 	
 ** LaTex Requirements
    :PROPERTIES:
