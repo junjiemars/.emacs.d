@@ -257,39 +257,40 @@ More accurate than `mark-defun'."
 ;; system clipboard
 (terminal-supported-p
   (platform-supported-unless 'windows-nt
-    
-    (defmacro defun-x-select-text* (bin &rest args)
-      "Define `x-select-text*'"
-      `(defun x-select-text* (text &optional _unused_)
-         "Copy TEXT to system clipboard."
-         (with-temp-buffer
-           (insert text)
-           (call-process-region (point-min) (point-max)
-                                ,bin
-                                nil 0 nil
-                                ,@args))))
+    (eval-when-compile
+      
+      (defmacro defun-x-select-text* (bin &rest args)
+        "Define `x-select-text*'"
+        `(defun x-select-text* (text &optional _unused_)
+           "Copy TEXT to system clipboard."
+           (with-temp-buffer
+             (insert text)
+             (call-process-region (point-min) (point-max)
+                                  ,bin
+                                  nil 0 nil
+                                  ,@args))))
 
-    (defmacro defun-x-selection-value* (bin &rest args)
-      "Define x-selection-value*'"
-      `(defun x-selection-value* ()
-         "Paste from system clipboard."
-         (let ((out (shell-command* ,bin ,@args)))
-           (when (zerop (car out))
-             (cdr out)))))
+      (defmacro defun-x-selection-value* (bin &rest args)
+        "Define x-selection-value*'"
+        `(defun x-selection-value* ()
+           "Paste from system clipboard."
+           (let ((out (shell-command* ,bin ,@args)))
+             (when (zerop (car out))
+               (cdr out)))))
 
-    (defmacro enable-x-select-clipboard! ()
-      "Enable `x-select-clipboard'"
-      `(progn
-         (setq interprogram-cut-function #'x-select-text*)
-         (setq interprogram-paste-function #'x-selection-value*))))
+      (defmacro enable-x-select-clipboard! ()
+        "Enable `x-select-clipboard'"
+        `(progn
+           (setq interprogram-cut-function #'x-select-text*)
+           (setq interprogram-paste-function #'x-selection-value*)))))
   
   (platform-supported-when 'darwin
     (defun-x-select-text* "pbcopy")
     (defun-x-selection-value* "pbpaste")
     (enable-x-select-clipboard!))
 
-  (when% (executable-find% "xsel")
-    (platform-supported-when 'gnu/linux
+  (platform-supported-when 'gnu/linux
+    (when% (executable-find% "xsel")
       (defun-x-select-text* "xsel" "--clipboard" "--input")
       (defun-x-selection-value* "xsel" "--clipboard" "--output")
       (enable-x-select-clipboard!))))
