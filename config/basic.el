@@ -123,8 +123,10 @@ Equality is defined by TESTFN if non-nil or by `equal' if nil."
       <= 26.1
       `(assoc ,key ,list ,testfn)
     (if-fn% 'cl-assoc 'cl-lib
-            ;; `cl-assoc' autoloaded
-            `(cl-assoc ,key ,list :test (or ,testfn #'equal))
+            ;; `cl-assoc' autoloaded, but may not autoload
+            `(progn
+               (require 'cl-lib)
+               (cl-assoc ,key ,list :test (or ,testfn #'equal)))
       (when-fn% 'assoc* 'cl
         `(with-no-warnings
            (require 'cl)
