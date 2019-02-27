@@ -253,4 +253,27 @@ More accurate than `mark-defun'."
 (define-key (current-global-map) (kbd "C-c m d") #'mark-defun@)
 
 
+;; system clipboard
+(terminal-supported-p
+
+  (platform-supported-when 'gnu/linux
+    (when% (executable-find% "xsel")
+
+      (defun x-select-text* (text)
+        "Copy TEXT to system clipboard."
+        (with-temp-buffer
+          (insert text)
+          (call-process-region (point-min) (point-max)
+                               "xsel"
+                               nil 0 nil
+                               "--clipboard" "--input")))
+      (setq% interprogram-cut-function #'x-select-text*)
+
+      (defun x-selection-value* ()
+        "Paste from system clipboard."
+        (let ((out (shell-command* "xsel" "--clipboard" "--output")))
+          (when (zerop (car out))
+            (cdr out))))
+      (setq% interprogram-paste-function #'x-selection-value*))))
+
 ;; end of file
