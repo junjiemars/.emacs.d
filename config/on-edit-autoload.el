@@ -259,7 +259,7 @@ More accurate than `mark-defun'."
   (platform-supported-when 'gnu/linux
     (when% (executable-find% "xsel")
 
-      (defun x-select-text* (text)
+      (defun x-select-text* (text &optional unused)
         "Copy TEXT to system clipboard."
         (with-temp-buffer
           (insert text)
