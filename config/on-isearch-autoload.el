@@ -6,6 +6,12 @@
 ;; on-isearch-autoload.el
 ;;;;
 
+
+(terminal-supported-p
+  (set-face-background 'isearch-fail "white")
+  (set-face-foreground 'isearch-fail "black"))
+
+
 ;; regexp search and replace should be first:
 ;; interactive search key bindings.
 ;; by default, [C-s] runs `isearch-forward', so this swaps the bindings.
