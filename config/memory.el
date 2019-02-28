@@ -92,7 +92,7 @@
               ;; it's a bug on Darwin, may be hang when restore
               ;; deskopt in concurrency.
               #'self-desktop-read!
-            (def-function-threading self-desktop-read!))
+            (defun-function-threading self-desktop-read!))
           t)
 
 

@@ -194,7 +194,7 @@ If VAR requires the FEATURE, load it on compile-time."
          `(comment ,@body)))))
 
 
-(defmacro def-function-threading (fn &optional join)
+(defmacro defun-function-threading (fn &optional join)
   "Define FN threading macro."
   `(if-fn% 'make-thread nil
            ,(let ((name (symbol-name fn))
