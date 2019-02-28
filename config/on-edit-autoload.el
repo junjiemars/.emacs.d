@@ -270,7 +270,7 @@ More accurate than `mark-defun'."
                                   ,@args))))
 
       (defmacro defun-x-selection-value* (bin &rest args)
-        "Define x-selection-value*'"
+        "Define `x-selection-value*'"
         `(defun x-selection-value* ()
            "Paste from system clipboard."
            (let ((out (shell-command* ,bin ,@args)))
