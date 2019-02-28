@@ -718,6 +718,18 @@ create the tags for =Elisp= or =C= source code, such as
 
 More Reasonable Emacs also supports [[http://ctags.sourceforge.net/][Exuberant Ctags]].
 
+*** Clipboard
+	 :PROPERTIES:
+	 :CUSTOM_ID: edit-clipboard
+	 :END:
+
+In terminal, Emacs can not /copy to/ or /paste from/ system clipboard
+when on Darwin or Linux. For such cases, we need external programs to
+help us do the job. Now, More Reasonable Emacs integrates this
+functionalities, so we can use natrual keys (such as
+@@html:<kbd>@@C-w@@html:</kbd>@@, @@html:<kbd>@@C-y@@html:</kbd>@@) to
+/copy to/ or /paste from/ system clipboard.
+
 ** Keys
 	 :PROPERTIES:
 	 :CUSTOM_ID: keys
@@ -1115,21 +1127,6 @@ It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]]
 - eshell remote: @@html:<kbd>@@cd /ssh:user@host:/path/to/file@@html:</kbd>@@
 
 - on Windows use =~/.ssh/config=: use =/sshx:= instead, such as  @@html:<kbd>@@/sshx:user@host:/path/to/file@@html:</kbd>@@
-
-*** Clipboard
-		:PROPERTIES:
-		:CUSTOM_ID: clipboard
-		:END:
-
-On Darwin
-- copy to clipboard: select region then @@html:<kbd>@@M-|
-  pbcopy@@html:</kbd>@@
-- paste from clipboard: @@html:<kbd>@@C-u M-| pbpaste@@html:</kbd>@@
-
-On Linux
-- copy to clipboard: select region then @@html:<kbd>@@M-| xsel
-  -i@@html:</kbd>@@
-- paste from clipboard: @@html:<kbd>@@Cu M-| xsel -o@@html:</kbd>@@
 	
 ** LaTex Requirements
    :PROPERTIES:

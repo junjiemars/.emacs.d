@@ -49,23 +49,6 @@
 (setq% apropos-do-all t 'apropos)
 
 
-;; Makes killing/yanking interact with the clipboard
-
-;; Save clipboard strings into kill ring before replacing them.
-;; When one selects something in another program to paste it into Emacs,
-;; but kills something in Emacs before actually pasting it,
-;; this selection is gone unless this variable is non-nil
-;; I'm actually not sure what this does but it's recommended?
-;; http://emacswiki.org/emacs/CopyAndPaste
-(version-supported-if
-    <= 24.1
-    (setq% select-enable-clipboard t)
-  (setq% x-select-enable-clipboard t))
-(version-supported-if
-    <= 25.1
-    (setq% select-enable-primary t 'select)
-  (setq% x-select-enable-primary t 'select))
-
 ;; Save before kill
 (setq% save-interprogram-paste-before-kill t 'simple)
 
@@ -254,7 +237,23 @@ More accurate than `mark-defun'."
 (define-key (current-global-map) (kbd "C-c m d") #'mark-defun@)
 
 
-;; system clipboard
+;; Makes killing/yanking interact with the clipboard
+
+;; Save clipboard strings into kill ring before replacing them.
+;; When one selects something in another program to paste it into Emacs,
+;; but kills something in Emacs before actually pasting it,
+;; this selection is gone unless this variable is non-nil
+;; I'm actually not sure what this does but it's recommended?
+;; http://emacswiki.org/emacs/CopyAndPaste
+(version-supported-if
+    <= 24.1
+    (setq% select-enable-clipboard t)
+  (setq% x-select-enable-clipboard t))
+(version-supported-if
+    <= 25.1
+    (setq% select-enable-primary t 'select)
+  (setq% x-select-enable-primary t 'select))
+
 (terminal-supported-p
   (platform-supported-unless 'windows-nt
     (eval-when-compile
