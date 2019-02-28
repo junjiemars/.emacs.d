@@ -730,6 +730,25 @@ functionalities, so we can use natrual keys (such as
 @@html:<kbd>@@C-w@@html:</kbd>@@, @@html:<kbd>@@C-y@@html:</kbd>@@) to
 /copy to/ or /paste from/ system clipboard.
 
+*** iSearch
+	 :PROPERTIES:
+	 :CUSTOM_ID: edit-isearch
+	 :END:
+
+There are no uniformed [[https://www.emacswiki.org/emacs/IncrementalSearch][isearch]] functionalites among in
+=isearch-forward=, =isearch-forward-regexp= and
+=isearch-forward-symbol-at-point=. =isearch-backward= and
+=isearch-backward-regexp= has the same situation. Now, in More
+Reasonable Emacs those functionalites uniformed to two functions:
+=isearch-forward*= and =isearch-backward*=.
+
+- @@html:<kbd>@@C-s@@html:</kbd>@@: do incremental search the symbol
+  at point by default. If there are no symbol at point do incremental
+  search regexp. If @@html:<kbd>@@C-u C-s@@html:</kbd>@@ do
+  incremental search regexp.
+- @@html:<kbd>@@C-r@@html:</kbd>@@: do incremental search symbol or
+  regexp liked the above.
+		
 ** Keys
 	 :PROPERTIES:
 	 :CUSTOM_ID: keys
@@ -754,11 +773,17 @@ Compatibled for ancient Emacs versions.
 - @@html:<kbd>@@M-*@@html:</kbd>@@ =tags-loop-continue=
 - @@html:<kbd>@@C-l@@html:</kbd>@@ =recenter-top-bottom=
 - @@html:<kbd>@@C-c l@@html:</kbd>@@ =linum-mode=
-- @@ html:<kbd>@@M-#@@html:</kbd>@@ =xref-find-references=
+- @@html:<kbd>@@M-#@@html:</kbd>@@ =xref-find-references=
 
 *** Featured keys
 
-Featured, and depends on non Emacs' builtin packages.
+- @@html:<kbd>@@C-c m s@@html:</kbd>@@: =mark-symbol@=
+- @@html:<kbd>@@C-c m l@@html:</kbd>@@: =mark-line@=
+- @@html:<kbd>@@C-c m f@@html:</kbd>@@: =mark-filename@=
+- @@html:<kbd>@@C-c m d@@html:</kbd>@@: =mark-defun@=
+
+- @@html:<kbd>@@C-s@@html:</kbd>@@: =isearch-forward*=
+- @@html:<kbd>@@C-r@@html:</kbd>@@: =isearch-backward*=
 
 * Programming
 	:PROPERTIES:
