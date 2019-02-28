@@ -8,8 +8,9 @@
 
 
 (terminal-supported-p
-  (set-face-background 'isearch-fail "white")
-  (set-face-foreground 'isearch-fail "black"))
+  (when% (facep 'isearch-fail)
+    (set-face-background 'isearch-fail "white")
+    (set-face-foreground 'isearch-fail "black")))
 
 (eval-when-compile
 
