@@ -11,13 +11,30 @@
   (set-face-background 'isearch-fail "white")
   (set-face-foreground 'isearch-fail "black"))
 
+(eval-when-compile
 
-;; regexp search and replace should be first:
-;; interactive search key bindings.
-;; by default, [C-s] runs `isearch-forward', so this swaps the bindings.
-;; [C-M-s] or [C-u C-s] do `isearch-forward'
-(define-key (current-global-map) (kbd "C-s") #'isearch-forward-regexp)
-(define-key (current-global-map) (kbd "C-r") #'isearch-backward-regexp)
+  (defmacro defun-isearch-forward-or-backward (direction)
+    "Define `isearch-forward*' or `isearch-backward*'"
+    (let ((fn (intern (format "isearch-%s*" (symbol-name direction))))
+          (dn (intern (format "isearch-%s" (symbol-name direction)))))
+      `(defun ,fn ()
+         ,(format "Do incremental regexp or symbol search %s."
+                  `,(symbol-name direction))
+         (interactive)
+         (let* ((ss (thing-at-point 'symbol))
+                (s (and (stringp ss) (substring-no-properties ss))))
+           (if (and s (< 1 (length s)))
+               (progn
+                 (,dn nil 1)
+                 (isearch-yank-string s))
+             (,dn t 1)))))))
+
+
+(defun-isearch-forward-or-backward forward)
+(defun-isearch-forward-or-backward backward)
+
+(define-key (current-global-map) (kbd "C-s") #'isearch-forward*)
+(define-key (current-global-map) (kbd "C-r") #'isearch-backward*)
 
 
 ;; end of file
