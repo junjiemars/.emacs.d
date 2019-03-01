@@ -84,7 +84,7 @@
           (next-logical-line)
     (next-line)))
 
-;; toggle comment key strike1
+;; toggle comment key strike
 (define-key (current-global-map) (kbd "C-c ;") #'toggle-comment)
 
 ;; auto org-mode
@@ -310,15 +310,15 @@ More accurate than `mark-defun'."
          ,(format "Do incremental regexp or symbol search %s."
                   `,(symbol-name direction))
          (interactive "P")
-         (cond ((not arg)
-                (let* ((ss (thing-at-point 'symbol))
-                       (s (and (stringp ss) (substring-no-properties ss))))
-                  (if (and s (< 1 (length s)))
-                      (progn
-                        (,dn nil 1)
-                        (isearch-yank-string s))
-                    (,dn t 1))))
-               (t (,dn t 1)))))))
+         (if (not arg)
+             (let* ((ss (thing-at-point 'symbol))
+                    (s (and (stringp ss) (substring-no-properties ss))))
+               (if (and s (< 1 (length s)))
+                   (progn
+                     (,dn nil 1)
+                     (isearch-yank-string s))
+                 (,dn t 1)))
+           (,dn t 1))))))
 
 
 (defun-isearch-forward-or-backward forward)
