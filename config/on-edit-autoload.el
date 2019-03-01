@@ -163,8 +163,12 @@
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'symbol)))
     (when bounds
-      (mark-thing@ (goto-char (car bounds))
-                   (goto-char (cdr bounds))))))
+      (let ((tbl (syntax-table)))
+        (with-syntax-table tbl
+          (unless (char-equal ?_ (char-syntax ?@))
+            (modify-syntax-entry ?@ "_" tbl))
+          (mark-thing@ (goto-char (car bounds))
+                       (goto-char (cdr bounds))))))))
 
 (defun mark-filename@ ()
   "Mark filename at point."
@@ -228,11 +232,6 @@ More accurate than `mark-defun'."
   (put 'defun 'beginning-op 'beginning-of-defun)
   (put 'defun 'end-op       'end-of-defun)
   (put 'defun 'forward-op   'end-of-defun))
-
-(unless% (char-equal ?_ (char-syntax ?@))
-  ;; `forward-symbol' will has different behavior on ancient Emacs.
-  ;; such as to mark email address.
-  (modify-syntax-entry ?@ "_"))
 
 
 (define-key (current-global-map) (kbd "C-c m s") #'mark-symbol@)
