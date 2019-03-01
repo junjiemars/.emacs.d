@@ -229,6 +229,11 @@ More accurate than `mark-defun'."
   (put 'defun 'end-op       'end-of-defun)
   (put 'defun 'forward-op   'end-of-defun))
 
+(unless% (char-equal ?_ (char-syntax ?@))
+  ;; `forward-symbol' will has different behavior on ancient Emacs.
+  ;; such as to mark email address.
+  (modify-syntax-entry ?@ "_"))
+
 
 (define-key (current-global-map) (kbd "C-c m s") #'mark-symbol@)
 (define-key (current-global-map) (kbd "C-c m f") #'mark-filename@)
