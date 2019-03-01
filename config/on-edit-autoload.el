@@ -300,11 +300,6 @@ More accurate than `mark-defun'."
 ;; isearch
 
 
-(terminal-supported-p
-  (when% (facep 'isearch-fail)
-    (set-face-background 'isearch-fail "white")
-    (set-face-foreground 'isearch-fail "black")))
-
 (eval-when-compile
 
   (defmacro defun-isearch-forward-or-backward (direction)
