@@ -152,7 +152,7 @@
 
 (eval-when-compile
   
-  (defmacro mark-thing@ (begin end)
+  (defmacro _mark-thing@ (begin end)
     "Mark THING at point."
     `(progn
        ,begin
@@ -165,25 +165,25 @@
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'symbol)))
     (when bounds
-      (mark-thing@ (goto-char (car bounds))
-                   (goto-char (cdr bounds))))))
+      (_mark-thing@ (goto-char (car bounds))
+                    (goto-char (cdr bounds))))))
 
 (defun mark-filename@ ()
   "Mark filename at point."
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'filename)))
     (when bounds
-      (mark-thing@ (goto-char (car bounds))
-                   (goto-char (cdr bounds))))))
+      (_mark-thing@ (goto-char (car bounds))
+                    (goto-char (cdr bounds))))))
 
 (defun mark-line@ (&optional arg)
   "Mark line at point.
 If ARG is non-nil should mark the whole line."
   (interactive "P")
-  (mark-thing@ (if arg
-                   (beginning-of-line)
-                 (back-to-indentation))
-               (end-of-line)))
+  (_mark-thing@ (if arg
+                    (beginning-of-line)
+                  (back-to-indentation))
+                (end-of-line)))
 
 (defun mark-list@ ()
   "Mark list at point.
@@ -191,8 +191,8 @@ More accurate than `mark-sexp'."
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'list)))
     (when bounds
-      (mark-thing@ (goto-char (car bounds))
-                   (goto-char (cdr bounds))))))
+      (_mark-thing@ (goto-char (car bounds))
+                    (goto-char (cdr bounds))))))
 
 (defun mark-defun@ ()
   "Mark function at point.
@@ -200,8 +200,8 @@ More accurate than `mark-defun'."
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'defun)))
     (when bounds
-      (mark-thing@ (goto-char (car bounds))
-                   (goto-char (cdr bounds))))))
+      (_mark-thing@ (goto-char (car bounds))
+                    (goto-char (cdr bounds))))))
 
 (unless-fn% 'thing-at-point-bounds-of-list-at-point 'thingatpt
   ;; fix the wrong behavior of (bounds-of-thing-at-point 'list) on
@@ -260,7 +260,7 @@ More accurate than `mark-defun'."
   (platform-supported-unless 'windows-nt
     (eval-when-compile
       
-      (defmacro defun-x-select-text* (bin &rest args)
+      (defmacro _defun-x-select-text* (bin &rest args)
         "Define `x-select-text*'"
         `(defun x-select-text* (text &optional _unused_)
            "Copy TEXT to system clipboard."
@@ -271,7 +271,7 @@ More accurate than `mark-defun'."
                                   nil 0 nil
                                   ,@args))))
 
-      (defmacro defun-x-selection-value* (bin &rest args)
+      (defmacro _defun-x-selection-value* (bin &rest args)
         "Define `x-selection-value*'"
         `(defun x-selection-value* ()
            "Paste from system clipboard."
@@ -279,22 +279,22 @@ More accurate than `mark-defun'."
              (when (zerop (car out))
                (cdr out)))))
 
-      (defmacro enable-x-select-clipboard! ()
+      (defmacro _enable-x-select-clipboard! ()
         "Enable `x-select-clipboard'"
         `(progn
            (setq interprogram-cut-function #'x-select-text*)
            (setq interprogram-paste-function #'x-selection-value*)))))
   
   (platform-supported-when 'darwin
-    (defun-x-select-text* "pbcopy")
-    (defun-x-selection-value* "pbpaste")
-    (enable-x-select-clipboard!))
+    (_defun-x-select-text* "pbcopy")
+    (_defun-x-selection-value* "pbpaste")
+    (_enable-x-select-clipboard!))
 
   (platform-supported-when 'gnu/linux
     (when% (executable-find% "xsel")
-      (defun-x-select-text* "xsel" "--clipboard" "--input")
-      (defun-x-selection-value* "xsel" "--clipboard" "--output")
-      (enable-x-select-clipboard!))))
+      (_defun-x-select-text* "xsel" "--clipboard" "--input")
+      (_defun-x-selection-value* "xsel" "--clipboard" "--output")
+      (_enable-x-select-clipboard!))))
 
  ;; end of mark thing at point
 
@@ -304,7 +304,7 @@ More accurate than `mark-defun'."
 
 (eval-when-compile
 
-  (defmacro defun-isearch-forward-or-backward (direction)
+  (defmacro _defun-isearch-forward-or-backward (direction)
     "Define `isearch-forward*' or `isearch-backward*'"
     (let ((fn (intern (format "isearch-%s*" (symbol-name direction))))
           (dn (intern (format "isearch-%s" (symbol-name direction)))))
@@ -323,8 +323,8 @@ More accurate than `mark-defun'."
            (,dn t 1))))))
 
 
-(defun-isearch-forward-or-backward forward)
-(defun-isearch-forward-or-backward backward)
+(_defun-isearch-forward-or-backward forward)
+(_defun-isearch-forward-or-backward backward)
 
 (define-key (current-global-map) (kbd "C-s") #'isearch-forward*)
 (define-key (current-global-map) (kbd "C-r") #'isearch-backward*)
