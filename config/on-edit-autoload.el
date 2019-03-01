@@ -150,13 +150,15 @@
 
 ;; Mark thing at point
 
-(defmacro mark-thing@ (begin end)
-  "Mark THING at point."
-  `(progn
-     ,begin
-     (set-mark (point))
-     ,end
-     (mark)))
+(eval-when-compile
+  
+  (defmacro mark-thing@ (begin end)
+    "Mark THING at point."
+    `(progn
+       ,begin
+       (set-mark (point))
+       ,end
+       (mark))))
 
 (defun mark-symbol@ ()
   "Mark symbol at point."
