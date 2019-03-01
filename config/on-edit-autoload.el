@@ -163,12 +163,8 @@
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'symbol)))
     (when bounds
-      (let ((tbl (syntax-table)))
-        (with-syntax-table tbl
-          (unless (char-equal ?_ (char-syntax ?@))
-            (modify-syntax-entry ?@ "_" tbl))
-          (mark-thing@ (goto-char (car bounds))
-                       (goto-char (cdr bounds))))))))
+      (mark-thing@ (goto-char (car bounds))
+                   (goto-char (cdr bounds))))))
 
 (defun mark-filename@ ()
   "Mark filename at point."
