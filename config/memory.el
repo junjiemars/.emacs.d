@@ -91,8 +91,9 @@
           (platform-supported-if 'darwin
               ;; it's a bug on Darwin, may be hang when restore
               ;; deskopt in concurrency.
-              #'self-desktop-read!
-            (defun-function-threading self-desktop-read!))
+              (graphic-supported-if
+                  #'self-desktop-read!
+                (_defun-function-threading self-desktop-read!)))
           t)
 
 
@@ -122,7 +123,7 @@
         ;; fix: title bar text color broken #55
         ;; https://github.com/d12frosted/homebrew-emacs-plus/issues/55#issuecomment-408317248
         (dolist* (x '((ns-transparent-titlebar . unbound)
-                     (ns-appearance . unbound)))
+                      (ns-appearance . unbound)))
           (add-to-list 'frameset-filter-alist x))))
     
     (version-supported-if >= 23

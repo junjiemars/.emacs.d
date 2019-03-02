@@ -194,21 +194,23 @@ If VAR requires the FEATURE, load it on compile-time."
          `(comment ,@body)))))
 
 
-(defmacro defun-function-threading (fn &optional join)
-  "Define FN threading macro."
-  `(if-fn% 'make-thread nil
-           ,(let ((name (symbol-name fn))
-                  (name1 (intern (format "function-threading-%s"
-                                         (symbol-name fn))))
-                  (ds1 (format "Threading `%s'." fn)))
-              `(defun ,name1 ()
-                 ,ds1
-                 (let ((thread (make-thread (function ,fn) ,name)))
-                   (if% ,join
-                       (thread-join thread)
-                     thread))))
-     (ignore* ,join)
-     (function ,fn)))
+(eval-when-compile
+  
+  (defmacro _defun-function-threading (fn &optional join)
+    "Define FN threading macro."
+    `(if-fn% 'make-thread nil
+             ,(let ((name (symbol-name fn))
+                    (name1 (intern (format "^%s"
+                                           (symbol-name fn))))
+                    (ds1 (format "Threading `%s'." fn)))
+                `(defun ,name1 ()
+                   ,ds1
+                   (let ((thread (make-thread (function ,fn) ,name)))
+                     (if% ,join
+                         (thread-join thread)
+                       thread))))
+       (ignore* ,join)
+       (function ,fn))))
 
 
 (defmacro dolist* (spec &rest body)
