@@ -52,6 +52,9 @@
                  :modes-not-to-save
                  '(dired-mode fundamental-mode eww-mode rmail-mode)
                  :restore-eager 8
+                 :restore-via-threading* (platform-supported-if 'darwin
+                                             (terminal-supported-p t)
+                                           t)
                  :allowed nil)
   
   :eshell (list :visual-commands '("mtr")

@@ -462,6 +462,9 @@ by default.
                      :modes-not-to-save
                      '(dired-mode fundamental-mode rmail-mode)
                      :restore-eager 8
+										 :restore-via-threading* (platform-supported-if 'darwin
+                                             (terminal-supported-p t)
+                                           t)
                      :allowed t))
 #+END_SRC
 
@@ -469,6 +472,7 @@ by default.
 - =:buffers-not-to-save= @@html:<kbd>@@C-h-v desktop-buffers-not-to-save@@html:</kbd>@@
 - =:modes-not-to-save= @@html:<kbd>@@C-h-v desktop-modes-not-to-save@@html:</kbd>@@
 - =:restore-eager= @@html:<kbd>@@C-h-v desktop-restore-eager@@html:</kbd>@@
+- =:restore-via-threading*=: restore via a new thread
 - =:allowed= =t= enabled, =nil= disabled
 
 ** Socks
