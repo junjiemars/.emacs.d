@@ -67,18 +67,21 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
 (defun save-shell-env! ()
   (shell-env<- :exec-path
-               (dolist* (p (append (var->paths (getenv (shells-spec->% :PATH)))
-                                   (platform-supported-unless 'windows-nt
-                                     (list (v-home% ".exec/")))) exec-path)
-                 (when (stringp p) (add-to-list 'exec-path p t #'string=))))
+               (mapc (lambda (p)
+                       (when (stringp p)
+                         (add-to-list 'exec-path p t #'string=)))
+                     (append (var->paths (getenv (shells-spec->% :PATH)))
+                             (platform-supported-unless 'windows-nt
+                               (list (v-home% ".exec/"))))))
   (shell-env<- :env-vars
-               (let ((vars (shells-spec->* :env-vars))
-                     (x nil))
-                 (dolist* (v vars x)
-                   (let ((v1 (echo-var v
-                                       (shells-spec->* :shell-file-name)
-                                       (shells-spec->* :options))))
-                     (when v1 (push (cons v v1) x))))))
+               (let ((vars nil))
+                 (mapc (lambda (v)
+                         (let ((v1 (echo-var v
+                                             (shells-spec->* :shell-file-name)
+                                             (shells-spec->* :options))))
+                           (when v1 (push (cons v v1) vars))))
+                       (shells-spec->* :env-vars))
+                 vars))
   (when (save-sexp-to-file
          (list 'setq '*default-shell-env*
                (list 'list
@@ -96,9 +99,10 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
 
 
 (defmacro copy-env-vars! (env vars)
-  `(dolist* (v ,vars)
-     (when v (let ((v1 (alist-get* v ,env nil nil #'string=)))
-               (when v1 (setenv v v1))))))
+  `(mapc (lambda (v)
+           (when v (let ((v1 (alist-get* v ,env nil nil #'string=)))
+                     (when v1 (setenv v v1)))))
+         ,vars))
 
 
 (defmacro copy-exec-path! (path)
