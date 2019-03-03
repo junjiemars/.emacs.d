@@ -7,8 +7,8 @@
 ;;;;
 
 
-(defmacro common-impl-implementations (&rest implspec)
-  "IMPLSPEC:
+(defmacro common-lisp-implementations (&rest lispspec)
+  "LISPSPEC such as:
 'sbcl
 '(ecl :init slime-init-command)
 '(acl (\"acl7\" \"-quiet\")
@@ -17,7 +17,7 @@
   `(let ((lisps nil))
      (dolist* (x (list ,@lispspec) lisps)
        (let* ((lisp (if (consp x) (car x) x))
-              (bin (executable-find% (symbol-name lisp))))
+              (bin (executable-find (symbol-name lisp))))
          (when bin
            (if (consp x)
                (if (consp (cadr x))
