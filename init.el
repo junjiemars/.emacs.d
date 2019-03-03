@@ -244,7 +244,7 @@ sequentially and return value of last one, or nil if there are none."
 ;; After loaded ...
 
 
-(message "#Loading init.el ... done (%.3fs)"
+(message "#Loading init.el ... done (%.5fs)"
          (float-time (time-subtract (current-time) loading-start-time)))
 
 
