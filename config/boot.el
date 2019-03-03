@@ -69,10 +69,11 @@
       "Set CJK font's NAME and SIZE in graphic mode."
       (when (font-exists-p name)
         (when-fn% 'set-fontset-font nil
-          (dolist* (c '(han kana cjk-misc))
-            (set-fontset-font (frame-parameter nil 'font)
-                              c (font-spec :family name
-                                           :size size)))))))
+          (mapc (lambda (c)
+                  (set-fontset-font (frame-parameter nil 'font)
+                                    c (font-spec :family name
+                                                 :size size)))
+                '(han kana cjk-misc))))))
 
 (font-supported-p
     
