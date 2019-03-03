@@ -1,8 +1,10 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
-;; use-slime-autoload
+;; More reasonable Emacs on MacOS, Windows and Linux
+;; https://github.com/junjiemars/.emacs.d
 ;;;;
-
+;; use-slime-autoload.el
+;;;;
 
 
 (with-eval-after-load 'slime
@@ -17,3 +19,5 @@
   (when-fn% 'slime-selector 'slime
     (define-key (current-global-map) (kbd "C-c s s") #'slime-selector)))
 
+
+;; end of file
