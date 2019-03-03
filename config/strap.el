@@ -283,13 +283,15 @@ Then evaluate RESULT to get return value, default nil.
   "Compile and load the elisp UNITS."
   (declare (indent 0))
   (let ((r t))
-    (dolist* (unit units r)
-      (when unit
-        (setq r (and r (compile-and-load-file*
-                        (compile-unit->file unit)
-                        (compile-unit->only-compile unit)
-                        (compile-unit->delete-booster unit)
-                        (compile-unit->dir unit))))))))
+    (mapc (lambda (unit)
+            (when unit
+              (setq r (and r (compile-and-load-file*
+                              (compile-unit->file unit)
+                              (compile-unit->only-compile unit)
+                              (compile-unit->delete-booster unit)
+                              (compile-unit->dir unit))))))
+          units)
+    r))
 
 
  ;; end of compile macro
@@ -311,10 +313,11 @@ Then evaluate RESULT to get return value, default nil.
                      (emacs-home* "config/sample-self-epilogue.el")))))
     (unless (file-exists-p (caar fs))
       (make-directory `,(emacs-home* "private/") t)
-      (dolist* (f fs)
-        (let ((dst (car f)) (src (cdr f)))
-          (unless (file-exists-p dst)
-            (copy-file src dst t)))))
+      (mapc (lambda (f)
+              (let ((dst (car f)) (src (cdr f)))
+                (unless (file-exists-p dst)
+                  (copy-file src dst t))))
+            fs))
     (caar fs)))
 
 
@@ -384,9 +387,11 @@ Take effect after restart Emacs.
 
 (defmacro self-spec-> (seq &rest keys)
   (declare (indent 1))
-  (let ((x seq))
-    (dolist* (k keys x)
-      (setq x (list 'plist-get x k)))))
+  (let ((r seq))
+    (mapc (lambda (k)
+            (setq r (list 'plist-get r k)))
+          keys)
+    r))
 
 
 (defmacro self-spec<- (k v seq &rest keys)
