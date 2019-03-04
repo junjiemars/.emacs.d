@@ -760,7 +760,7 @@ forward or backward.
 
 - @@html:<kbd>@@C-s@@html:</kbd>@@ do incremental search region or
   symbol at point by default. If there are no activated region or
-  symbol at point do incremental regexp search. If @@html:<kbd>@@C-u
+  symbol at point do incremental search. If @@html:<kbd>@@C-u
   C-s@@html:</kbd>@@ do incremental regexp search.
 - @@html:<kbd>@@C-r@@html:</kbd>@@ do incremental search region,
   symbol or regexp.

@@ -332,7 +332,7 @@ More accurate than `mark-defun'."
                    (progn
                      (,dn nil 1)
                      (isearch-yank-string s))
-                 (,dn t 1)))
+                 (,dn nil 1)))
            (,dn t 1))))))
 
 
