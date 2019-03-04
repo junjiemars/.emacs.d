@@ -157,8 +157,7 @@
     `(progn
        ,begin
        (set-mark (point))
-       ,end
-       (mark))))
+       ,end)))
 
 (defun mark-symbol@ ()
   "Mark symbol at point."
@@ -172,6 +171,14 @@
   "Mark filename at point."
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'filename)))
+    (when bounds
+      (_mark-thing@ (goto-char (car bounds))
+                    (goto-char (cdr bounds))))))
+
+(defun mark-word@ ()
+  "Mark filename at point."
+  (interactive)
+  (let ((bounds (bounds-of-thing-at-point 'word)))
     (when bounds
       (_mark-thing@ (goto-char (car bounds))
                     (goto-char (cdr bounds))))))
@@ -234,6 +241,7 @@ More accurate than `mark-defun'."
 
 (define-key (current-global-map) (kbd "C-c m s") #'mark-symbol@)
 (define-key (current-global-map) (kbd "C-c m f") #'mark-filename@)
+(define-key (current-global-map) (kbd "C-c m w") #'mark-word@)
 (define-key (current-global-map) (kbd "C-c m l") #'mark-line@)
 (define-key (current-global-map) (kbd "C-c m a") #'mark-list@)
 (define-key (current-global-map) (kbd "C-c m d") #'mark-defun@)
