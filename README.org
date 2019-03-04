@@ -462,9 +462,9 @@ by default.
                      :modes-not-to-save
                      '(dired-mode fundamental-mode rmail-mode)
                      :restore-eager 8
-										 :restore-via-threading* (platform-supported-if 'darwin
-                                             (terminal-supported-p t)
-                                           t)
+                     :restore-via-threading* (platform-supported-if 'darwin
+                                               (terminal-supported-p t)
+                                               t)
                      :allowed t))
 #+END_SRC
 
