@@ -744,16 +744,26 @@ functionalities, so we can use natrual keys (such as
 There are no uniformed [[https://www.emacswiki.org/emacs/IncrementalSearch][isearch]] functionalites among in
 =isearch-forward=, =isearch-forward-regexp= and
 =isearch-forward-symbol-at-point=. =isearch-backward= and
-=isearch-backward-regexp= has the same situation. Now, in More
+=isearch-backward-regexp= has the same situfation. Now, in More
 Reasonable Emacs those functionalites uniformed to two functions:
 =isearch-forward*= and =isearch-backward*=.
 
-- @@html:<kbd>@@C-s@@html:</kbd>@@: do incremental search the symbol
-  at point by default. If there are no symbol at point do incremental
-  search regexp. If @@html:<kbd>@@C-u C-s@@html:</kbd>@@ do
-  incremental search regexp.
-- @@html:<kbd>@@C-r@@html:</kbd>@@: do incremental search symbol or
-  regexp liked the above.
+In More Reasonable Emacs, we can search the text of activated region,
+the symbol at point or regexp. By default,
+@@html:<kbd>@@C-s@@html:</kbd>@@ and @@html:<kbd>@@C-r@@html:</kbd>@@
+will search current symbol at point forward or backward just like
+/vi/'s @@html:<kbd>@@*@@html:</kbd>@@ and
+@@html:<kbd>@@#@@html:</kbd>@@ does. If there are a activated region
+then @@html:<kbd>@@C-s@@html:</kbd>@@ and
+@@html:<kbd>@@C-r@@html:</kbd>@@ will search the activated region
+forward or backward.
+
+- @@html:<kbd>@@C-s@@html:</kbd>@@ do incremental search region or
+  symbol at point by default. If there are no activated region or
+  symbol at point do incremental regexp search. If @@html:<kbd>@@C-u
+  C-s@@html:</kbd>@@ do incremental regexp search.
+- @@html:<kbd>@@C-r@@html:</kbd>@@ do incremental search region,
+  symbol or regexp.
 		
 ** Keys
 	 :PROPERTIES:
