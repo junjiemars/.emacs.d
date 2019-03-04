@@ -188,8 +188,8 @@
 If ARG is non-nil should mark the whole line."
   (interactive "P")
   (_mark-thing@ (if arg
-                    (beginning-of-line)
-                  (back-to-indentation))
+                    (back-to-indentation)
+                  (beginning-of-line))
                 (end-of-line)))
 
 (defun mark-list@ ()
