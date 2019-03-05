@@ -225,6 +225,11 @@ in `gud-cdb-directories'.
           . (':annotation-function #'cdb-annotate-completion))))
 
 
+(defun cdb-set-syntax-table! ()
+  "Specify special character."
+  (modify-syntax-entry ?` "_" (syntax-table)))
+
+
 
 
 ;;;;
@@ -329,6 +334,8 @@ directory and source-file directory for your debugger."
   (setq (make-local-variable 'paragraph-separate) "\\'")
   (setq (make-local-variable 'paragraph-start) +cdb-prompt-regexp+)
 
+  (cdb-set-syntax-table!)
+  
   (run-hooks 'gud-cdb-mode-hook)
   (loop for x in gud-cdb-init-hook
         when (functionp x) do (funcall x))
