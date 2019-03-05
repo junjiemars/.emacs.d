@@ -105,7 +105,7 @@
     `(when (stringp ,path)
 			 (replace-regexp-in-string
 				";" ":"
-				(replace-regexp-in-string "^\\([a-zA-Z]\\):/" "/\\1/"
+				(replace-regexp-in-string "\\([a-zA-Z]\\):/" "/\\1/"
 																	(windows-nt-posix-path ,path))))))
 
 
