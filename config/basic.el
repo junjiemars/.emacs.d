@@ -108,16 +108,6 @@
 				(replace-regexp-in-string "^\\([a-zA-Z]\\):/" "/\\1/"
 																	(windows-nt-posix-path ,path))))))
 
-(platform-supported-when 'windows-nt
-
-  (defmacro windows-nt-native-path (path)
-    "Return windows path from posix or unix path."
-    `(when (stringp ,path)
-       (replace-regexp-in-string
-        "/" "\\\\"
-        (replace-regexp-in-string "^/?\\([a-zA-Z]\\)/" "\\1:/"
-																  (windows-nt-posix-path ,path))))))
-
 
  ;; end of Platform Related Functions
 
