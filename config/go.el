@@ -45,7 +45,8 @@
     (catch 'out
       (dolist* (x prefer)
         (let ((found (alist-get* x seq nil nil #'eq)))
-          (when found (throw 'out (car found))))))))
+          (when found
+            (throw 'out (file-name-directory (car found)))))))))
 
 (defun go-to-definition ()
   "Go to the definition of the symbol at point."
@@ -53,7 +54,7 @@
   (let ((s (find-position-at-point))
         (r (prefer-project-root
             (find-project-root (buffer-file-name (current-buffer))))))
-    (compilation-start (format "grep --color=always -nH --null -e'%s' -r %s"
+    (compilation-start (format "grep --color=always -I -nH --null -e'%s' -r %s"
                                (plist-get s :symbol)
                                (directory-file-name r)
                                ;; (mapconcat #'identity
