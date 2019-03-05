@@ -98,17 +98,6 @@
 					,path)))))
 
 
-(platform-supported-when 'windows-nt
-  
-  (defmacro windows-nt-unix-path (path)
-    "Return unix paths from PATH which can be recognized on `system-type'."
-    `(when (stringp ,path)
-			 (replace-regexp-in-string
-				";" ":"
-				(replace-regexp-in-string "\\([a-zA-Z]\\):/" "/\\1/"
-																	(windows-nt-posix-path ,path))))))
-
-
  ;; end of Platform Related Functions
 
 

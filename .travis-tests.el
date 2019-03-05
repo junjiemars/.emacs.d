@@ -370,14 +370,6 @@
     (should (string= "c:/a/b/c.c"
                      (windows-nt-posix-path "c:\\a\\b\\c.c")))
     (should (string= "c:/a/B/c.c"
-                     (windows-nt-posix-path "C:\\a\\B\\c.c"))))
-
-  (ert-deftest %basic:windows-unix-path ()
-    (should (string= "/c/a/b/c.c"
-                     (windows-nt-unix-path "c:\\a\\b\\c.c")))
-    (should (string= "/c/a/b/c.c"
-                     (windows-nt-unix-path "C:\\a\\b\\c.c")))
-    (should (string= "/c/a:/c/b:/c/c"
-                     (windows-nt-unix-path "c:\\a;c:\\b;c:\\c")))))
+                     (windows-nt-posix-path "C:\\a\\B\\c.c")))))
 
 ;; end of file
