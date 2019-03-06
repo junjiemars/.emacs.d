@@ -91,11 +91,11 @@
   (defmacro windows-nt-posix-path (path)
     "Return posix path from Windows PATH which can be recognized on`system-type'."
     `(when (stringp ,path)
-			 (replace-regexp-in-string
-				"\\\\" "/"
-				(if (string-match "^\\([A-Z]:\\)" ,path)
-						(replace-match (downcase (match-string 1 ,path)) t t ,path)
-					,path)))))
+			 (if (string-match "^\\([A-Z]:\\)" ,path)
+           (replace-regexp-in-string
+				    "\\\\" "/"
+				    (replace-match (downcase (match-string 1 ,path)) t t ,path))
+				 ,path))))
 
 
  ;; end of Platform Related Functions

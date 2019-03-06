@@ -369,6 +369,8 @@
   (ert-deftest %basic:windows-posix-path ()
     (should (eq nil (windows-nt-posix-path nil)))
     (should (string= "c:/a/b/c.c"
+                     (windows-nt-posix-path "c:/a/b/c.c")))
+    (should (string= "c:/a/b/c.c"
                      (windows-nt-posix-path "c:\\a\\b\\c.c")))
     (should (string= "c:/a/B/c.c"
                      (windows-nt-posix-path "C:\\a\\B\\c.c")))))
