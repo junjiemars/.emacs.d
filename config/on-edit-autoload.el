@@ -312,6 +312,16 @@ More accurate than `mark-defun'."
 
 (eval-when-compile
 
+  (defmacro _symbol@ ()
+    "Return the symbol at point."
+    `(let ((ss (region-active-if
+                   (prog1
+                       (buffer-substring (region-beginning)
+                                         (region-end))
+                     (setq mark-active nil))
+                 (thing-at-point 'symbol))))
+       (and (stringp ss) (substring-no-properties ss))))
+  
   (defmacro _defun-isearch-forward-or-backward (direction)
     "Define `isearch-forward*' or `isearch-backward*'"
     (let ((fn (intern (format "isearch-%s*" (symbol-name direction))))
@@ -322,15 +332,8 @@ More accurate than `mark-defun'."
          (interactive "P")
          (,dn nil 1)
          (when (not arg)
-           (let* ((ss (region-active-if
-                          (prog1
-                              (buffer-substring (region-beginning)
-                                                (region-end))
-                            (setq mark-active nil))
-                        (thing-at-point 'symbol)))
-                  (s (and (stringp ss) (substring-no-properties ss))))
-             (when (and s (< 1 (length s)))
-               (isearch-yank-string s))))))))
+           (let ((s (_symbol@)))
+             (when s (isearch-yank-string s))))))))
 
 
 (_defun-isearch-forward-or-backward forward)
@@ -368,28 +371,24 @@ More accurate than `mark-defun'."
 
 (defun find-web@ (engine)
   "Find web via search ENGINE."
-  (interactive "sfind-web@ via bing|duck|google|so: ")
-  (let* ((w (cadr
-             (assoc** (or (let ((s (string-trim>< engine)))
-                            (and (not (string= "" s)) s))
-                          "bing")
-                      '(("bing"
-                         "https://www.bing.com/search?q=%s")
-                        ("duck"
-                         "https://duckduckgo.com/search?q=%s")
-                        ("google"
-                         "https://www.google.com/search?q=%s")
-                        ("so"
-                         "https://stackoverflow.com/search?q=%s"))
-                      #'string=)))
-         (qq (region-active-if
-                 (prog1
-                     (buffer-substring (region-beginning)
-                                       (region-end))
-                   (setq mark-active nil))
-               (thing-at-point 'symbol)))
-         (q (and (stringp qq) (substring-no-properties qq))))
-    (browse-url (format w q))))
+  (interactive "sfind-web@bing|duck|google|so: ")
+  (let ((q (_symbol@)))
+    (when q
+      (browse-url
+       (format (cadr
+                (assoc** (or (let ((s (string-trim>< engine)))
+                               (and (not (string= "" s)) s))
+                             "bing")
+                         '(("bing"
+                            "https://www.bing.com/search?q=%s")
+                           ("duck"
+                            "https://duckduckgo.com/search?q=%s")
+                           ("google"
+                            "https://www.google.com/search?q=%s")
+                           ("so"
+                            "https://stackoverflow.com/search?q=%s"))
+                         #'string=))
+               q)))))
 
 (define-key (current-global-map) (kbd "C-c f w") #'find-web@)
 
