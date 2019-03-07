@@ -366,5 +366,32 @@ More accurate than `mark-defun'."
 
  ;; end of hippie
 
+(defun find-web@ (engine)
+  "Find web via search ENGINE."
+  (interactive "sfind-web@ via bing|duck|google|so: ")
+  (let* ((w (cadr
+             (assoc** (or (let ((s (string-trim>< engine)))
+                            (and (not (string= "" s)) s))
+                          "bing")
+                      '(("bing"
+                         "https://www.bing.com/search?q=%s")
+                        ("duck"
+                         "https://duckduckgo.com/search?q=%s")
+                        ("google"
+                         "https://www.google.com/search?q=%s")
+                        ("so"
+                         "https://stackoverflow.com/search?q=%s"))
+                      #'string=)))
+         (qq (region-active-if
+                 (prog1
+                     (buffer-substring (region-beginning)
+                                       (region-end))
+                   (setq mark-active nil))
+               (thing-at-point 'symbol)))
+         (q (and (stringp qq) (substring-no-properties qq))))
+    (browse-url (format w q))))
+
+(define-key (current-global-map) (kbd "C-c f w") #'find-web@)
+
 
 ;; end of file
