@@ -317,23 +317,20 @@ More accurate than `mark-defun'."
     (let ((fn (intern (format "isearch-%s*" (symbol-name direction))))
           (dn (intern (format "isearch-%s" (symbol-name direction)))))
       `(defun ,fn (&optional arg)
-         ,(format "Do incremental region, symbol or regexp search %s."
+         ,(format "Do incremental region or symbol search %s."
                   `,(symbol-name direction))
          (interactive "P")
-         (if (not arg)
-             (let* ((ss (region-active-if
-                            (prog1
-                                (buffer-substring (region-beginning)
-                                                  (region-end))
-                              (setq mark-active nil))
-                          (thing-at-point 'symbol)))
-                    (s (and (stringp ss) (substring-no-properties ss))))
-               (if (and s (< 1 (length s)))
-                   (progn
-                     (,dn nil 1)
-                     (isearch-yank-string s))
-                 (,dn nil 1)))
-           (,dn t 1))))))
+         (,dn nil 1)
+         (when (not arg)
+           (let* ((ss (region-active-if
+                          (prog1
+                              (buffer-substring (region-beginning)
+                                                (region-end))
+                            (setq mark-active nil))
+                        (thing-at-point 'symbol)))
+                  (s (and (stringp ss) (substring-no-properties ss))))
+             (when (and s (< 1 (length s)))
+               (isearch-yank-string s))))))))
 
 
 (_defun-isearch-forward-or-backward forward)
