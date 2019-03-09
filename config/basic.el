@@ -256,6 +256,12 @@ like `split-string' Emacs 24.4+"
   `(and (string= ,s1 ,s2)
         (every* (lambda (x) (string= ,s2 x)) ,@ss)))
 
+(defmacro char=* (c1 c2 &rest cc)
+  "Return t if C1, C2 and CC are identical character."
+  (declare (indent 2))
+  `(and (char-equal ,c1 ,c2)
+        (every* (lambda (x) (char-equal ,c2 x)) ,@cc)))
+
  ;; end of Strings
 
 

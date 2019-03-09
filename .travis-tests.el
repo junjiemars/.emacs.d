@@ -245,6 +245,11 @@
   (should (string=* "a" "a" "a"))
   (should-not (string=* "a" "a" "a" "b")))
 
+(ert-deftest %basic:char=* ()
+  (should (char=* ?a ?a))
+  (should (char=* ?a ?a ?a))
+  (should-not (char=* ?a ?a ?a ?b)))
+
 (ert-deftest %basic:save-sexp-to-file ()
   (when% t
     (let ((f (emacs-home* "private/xxx.el")))
