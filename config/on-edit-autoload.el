@@ -392,5 +392,45 @@ More accurate than `mark-defun'."
 
 (define-key (current-global-map) (kbd "C-c f w") #'find-web@)
 
+ ;; end of `find-web@'
+
+;; open-*-line
+
+(defvar *open-line-indent* t
+  "Control indent or not of `open-next-line' and `open-previous-line'.
+See also: https://www.emacswiki.org/emacs/OpenNextLine")
+
+(defun open-next-line (n)
+  "Move to the next line and then open N lines, like vi's o command.
+See also `open-line' and `*open-line-indent*'."
+  (interactive "p")
+  (end-of-line)
+  (open-line n)
+  (forward-line 1)
+  (when *open-line-indent*
+    (indent-according-to-mode)))
+
+(defun open-previous-line (n)
+  "Open N lines above the current one, like vi's O command.
+See also `open-line', `split-line' and `*open-line-indent*'."
+  (interactive "p")
+  (beginning-of-line)
+  (open-line n)
+  (when *open-line-indent*
+    (indent-according-to-mode)))
+
+(defun toggle-open-line-indent! (arg)
+  "Toggle whether indent or not when `open-line'."
+  (interactive "p")
+  (setq *open-line-indent* (if arg t nil))
+  (define-key (current-global-map) (kbd "C-o")
+    (if arg #'open-next-line #'open-line))
+  (define-key (current-global-map) (kbd "C-M-o")
+    (if arg #'open-previous-line #'split-line)))
+
+(toggle-open-line-indent! t)
+
+ ;; end of `*open-line-indent*'
+
 
 ;; end of file
