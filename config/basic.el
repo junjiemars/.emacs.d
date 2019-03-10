@@ -620,24 +620,22 @@ item for which (PRED item) returns t."
   `(put ,var 'safe-local-variable
         (lambda (x) (ignore* x) t)))
 
-(eval-when-compile
+;; linum mode, requires Emacs-23.1+
+(_defmacro-feature-supported-p linum)
 
-  ;; linum mode, requires Emacs-23.1+
-  (_defmacro-feature-supported-p linum)
+;; semantic, require Emacs-24.4+
+(_defmacro-feature-supported-p semantic)
 
-  ;; semantic, require Emacs-24.4+
-  (_defmacro-feature-supported-p semantic)
+;; default web browser: eww, requires Emacs-24.4+
+(_defmacro-feature-supported-p eww)
 
-  ;; default web browser: eww, requires Emacs-24.4+
-  (_defmacro-feature-supported-p eww)
-
-  ;; socks
-  (_defmacro-feature-supported-p
-   socks
-   (and (require 'url-vars nil t)
-        (require 'socks nil t)
-        (boundp 'url-gateway-method)
-        (boundp 'socks-server))))
+;; socks
+(_defmacro-feature-supported-p
+ socks
+ (and (require 'url-vars nil t)
+      (require 'socks nil t)
+      (boundp 'url-gateway-method)
+      (boundp 'socks-server)))
 
 
 (feature-socks-supported-p

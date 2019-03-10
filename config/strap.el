@@ -181,8 +181,9 @@ If VAR requires the FEATURE, load it on compile-time."
     `(when% lexical-binding
        (progn% ,@vars nil))))
 
-(eval-when-compile
 
+(eval-when-compile
+  
   (defmacro _defmacro-feature-supported-p (feature &optional test docstring)
     "Define FEATURE-supported-p macro."
     (let ((name (intern (format "feature-%s-supported-p" feature)))
@@ -192,9 +193,7 @@ If VAR requires the FEATURE, load it on compile-time."
 	       (declare (indent 0))
 	       (if% (or ,test (require ',feature nil t))
 	           `(progn% ,@body)
-	         `(comment ,@body))))))
-
-(eval-when-compile
+	         `(comment ,@body)))))
   
   (defmacro _defun-threading-^fn (fn &optional join)
     "Define FN threading macro."

@@ -6,11 +6,11 @@
 ;; on-module.el
 ;;;;
 
-(eval-when-compile
-  (_defmacro-feature-supported-p aggressive-indent)
-  (_defmacro-feature-supported-p bing-dict)
-  (_defmacro-feature-supported-p paredit)
-  (_defmacro-feature-supported-p rainbow-delimiters))
+
+(_defmacro-feature-supported-p aggressive-indent)
+(_defmacro-feature-supported-p bing-dict)
+(_defmacro-feature-supported-p paredit)
+(_defmacro-feature-supported-p rainbow-delimiters)
 
 
 (defmacro feature-allowed-p (feature &rest body)
