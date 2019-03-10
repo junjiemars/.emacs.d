@@ -59,7 +59,8 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
                  path-separator))
 
 (defmacro var->paths (var)
-  "Refine VAR like $PATH to list by `path-separator'."
+  "Refine VAR like $PATH to list by `path-separator'.
+See also: `parse-colon-path'."
   `(when (stringp ,var)
      (split-string* ,var path-separator t "[ ]+\n")))
 
