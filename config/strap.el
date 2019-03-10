@@ -183,17 +183,17 @@ If VAR requires the FEATURE, load it on compile-time."
 
 (eval-when-compile
 
-  (defmacro _defmacro-feature-supported-p (feature
-                                           &optional filename docstring)
+  (defmacro _defmacro-feature-supported-p (feature &optional test docstring)
     "Define FEATURE-supported-p macro."
     (let ((name (intern (format "feature-%s-supported-p" feature)))
           (ds1 (format "If has `%s' feauture then do BODY." feature)))
-      `(defmacro ,name (&rest body)
-         ,(or docstring ds1)
-         (declare (indent 0))
-         (if% (require ',feature ,filename t)
-             `(progn% ,@body)
-           `(comment ,@body))))))
+      `(eval-when-compile
+         (defmacro ,name (&rest body)
+           ,(or docstring ds1)
+           (declare (indent 0))
+           (if% (or ,test (require ',feature nil t))
+               `(progn% ,@body)
+             `(comment ,@body)))))))
 
 (eval-when-compile
   

@@ -7,11 +7,10 @@
 ;;;;
 
 
-
-(_defmacro-feature-supported-p aggressive-indent nil)
-(_defmacro-feature-supported-p bing-dict nil)
-(_defmacro-feature-supported-p paredit nil)
-(_defmacro-feature-supported-p rainbow-delimiters nil)
+(_defmacro-feature-supported-p aggressive-indent)
+(_defmacro-feature-supported-p bing-dict)
+(_defmacro-feature-supported-p paredit)
+(_defmacro-feature-supported-p rainbow-delimiters)
 
 
 (defmacro feature-allowed-p (feature &rest body)
