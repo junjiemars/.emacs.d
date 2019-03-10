@@ -36,3 +36,4 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
   (with-eval-after-load 'eww
     (add-hook 'eww-mode-hook #'set-eww-mode!)))
 
+;; end of file

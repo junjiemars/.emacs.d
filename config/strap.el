@@ -181,17 +181,19 @@ If VAR requires the FEATURE, load it on compile-time."
     `(when% lexical-binding
        (progn% ,@vars nil))))
 
+(eval-when-compile
 
-(defmacro def-feature-supported-p (feature &optional filename docstring)
-  "Define FEATURE supported-p macro."
-  (let ((name (intern (format "feature-%s-supported-p" feature)))
-        (ds1 (format "If has `%s' feauture then do BODY." feature)))
-    `(defmacro ,name (&rest body)
-       ,(or docstring ds1)
-       (declare (indent 0))
-       (if% (require ',feature ,filename t)
-           `(progn% ,@body)
-         `(comment ,@body)))))
+  (defmacro _defmacro-feature-supported-p (feature
+                                           &optional filename docstring)
+    "Define FEATURE-supported-p macro."
+    (let ((name (intern (format "feature-%s-supported-p" feature)))
+          (ds1 (format "If has `%s' feauture then do BODY." feature)))
+      `(defmacro ,name (&rest body)
+         ,(or docstring ds1)
+         (declare (indent 0))
+         (if% (require ',feature ,filename t)
+             `(progn% ,@body)
+           `(comment ,@body))))))
 
 (eval-when-compile
   
@@ -257,7 +259,9 @@ Then evaluate RESULT to get return value, default nil.
   "Make an unit of compilation at compile time."
   (let* ((-source1- (funcall `(lambda () ,file)))
          (-dir1- (when -source1-
-                   (funcall `(lambda () (v-path* (file-name-directory ,-source1-)))))))
+                   (funcall
+                    `(lambda ()
+                       (v-path* (file-name-directory ,-source1-)))))))
     `(list :source ,-source1-
            :dir ,-dir1-
            :only-compile ,only-compile

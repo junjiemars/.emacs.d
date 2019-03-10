@@ -622,17 +622,19 @@ item for which (PRED item) returns t."
 
 
 ;; linum mode
-(def-feature-supported-p linum nil
-  "If `linum' feature supported then do BODY, requires Emacs-23.1+")
+(_defmacro-feature-supported-p
+ linum nil
+ "If `linum' feature supported then do BODY, requires Emacs-23.1+")
 
 
 ;; semantic
-(def-feature-supported-p semantic)
+(_defmacro-feature-supported-p semantic)
 
 
 ;; default web browser: eww
-(def-feature-supported-p eww nil
-  "If `eww' feature supported then do BODY, requires Emacs-24.4+")
+(_defmacro-feature-supported-p
+ eww nil
+ "If `eww' feature supported then do BODY, requires Emacs-24.4+")
 
 
 ;; Socks
