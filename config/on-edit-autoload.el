@@ -419,13 +419,12 @@ See also `open-line' and `split-line'."
   "Toggle whether indent or not when `open-line'.
 With prefix argument ARG, indent as default when ARG is non-nil."
   (interactive "P")
-  (let ((indent? (if arg
-                     (cons #'open-next-line #'open-previous-line)
-                   (if (eq 'open-line
-                           (lookup-key
-                            (current-global-map) (kbd "C-o")))
-                       (cons #'open-next-line #'open-previous-line)
-                     (cons #'open-line #'split-line)))))
+  (let ((indent? (cond ((or arg
+                            (eq 'open-line
+                                (lookup-key
+                                 (current-global-map) (kbd "C-o"))))
+                        (cons #'open-next-line #'open-previous-line))
+                       (t (cons #'open-line #'split-line)))))
     (define-key (current-global-map) (kbd "C-o") (car indent?))
     (define-key (current-global-map) (kbd "C-M-o") (cdr indent?))
     (message "indent open-line %s"
