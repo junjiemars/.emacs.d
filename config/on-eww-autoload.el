@@ -11,9 +11,8 @@
   
   (defun toggle-browser! (&optional arg)
     "Toggle default browser to `eww' or not.
-With prefix argument ARG, `eww' as default browser if ARG is 
-positive, otherwise not.
-`browser-url-browser-function' keeps current browser function."
+With prefix argument ARG, `eww' as default browser if ARG is
+non-nil, otherwise not.  See also: `browser-url-browser-function'."
     (interactive "P")
     (eval-when-compile (require 'browse-url))
     (setq browse-url-browser-function
