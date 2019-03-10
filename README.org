@@ -806,7 +806,8 @@ Global for all Emacs' version.
 
 *** Compatible keys
 
-Compatibled for ancient Emacs versions.
+Compatibled for ancient Emacs versions, compatible keys may not
+avaiabled on ancient Emacs.
 		
 - @@html:<kbd>@@M-,@@html:</kbd>@@ =pop-tag-mark=
 - @@html:<kbd>@@M-*@@html:</kbd>@@ =tags-loop-continue=
@@ -816,7 +817,8 @@ Compatibled for ancient Emacs versions.
 
 *** Featured keys
 
-The features provided by 3rd packages.
+The features provided by 3rd packages, featured keys may not avaiabled
+on ancient Emacs.
 
 - @@html:<kbd>@@C-c v s@@html:</kbd>@@ =magit-status=
 
