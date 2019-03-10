@@ -595,7 +595,8 @@ You can use any =Elisp= functions after aboved keywords.
     :CUSTOM_ID: indent
     :END:
 
-Avoiding a war.
+Avoiding a war. If /whitespace/ causes some trouble, you can swith to
+@@html:<kbd>@@M-x whitespace-mode@@html:</kbd>@@ to find out.
 
 #+BEGIN_SRC emacs-lisp
 (def-self-env-spec
@@ -765,7 +766,12 @@ forward or backward.
   symbol at point.
 - @@html:<kbd>@@C-u C-s@@html:</kbd>@@ or @@html:<kbd>@@C-u
   C-r@@html:</kbd>@@ do raw incremental search forward or backward.
-		
+
+*** Open line
+	 :PROPERTIES:
+	 :CUSTOM_ID: edit-open-line
+	 :END:
+	
 ** Keys
 	 :PROPERTIES:
 	 :CUSTOM_ID: keys
