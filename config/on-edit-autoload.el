@@ -416,7 +416,7 @@ See also `open-line' and `split-line'."
   (indent-according-to-mode))
 
 (defun toggle-open-line-indent! (&optional arg)
-  "Toggle whether indent or not when `open-line'.
+  "Toggle whether indent or not when `open-line' or `split-line'.
 With prefix argument ARG, indent as default when ARG is non-nil."
   (interactive "P")
   (let ((indent? (cond ((or arg
