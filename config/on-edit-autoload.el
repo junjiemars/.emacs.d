@@ -434,7 +434,7 @@ With prefix argument ARG, indent as default when ARG is non-nil."
 
 (toggle-open-line-indent! t)
 
- ;; end of `*open-line-indent*'
+ ;; end of open-*-line
 
 
 ;; end of file
