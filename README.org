@@ -872,7 +872,7 @@ gcc, clang and msvc.
 and msvc.
 
 On Windows, the msvc's compiler =cl= does not support retrieve input
-from stdin, so =c-macro-expansion= function sucks. But if there are
+from /stdin/, so =c-macro-expansion= function sucks. But if there are
 GNU's =xargs=, we can resolve this problem.
 
 /screenshots/:
