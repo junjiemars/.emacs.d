@@ -771,7 +771,15 @@ forward or backward.
 	 :PROPERTIES:
 	 :CUSTOM_ID: edit-open-line
 	 :END:
-	
+
+Emulates /vi/'s *o* and *O* command in Emacs, the built-in one
+=open-line= or =split-line= do not indent accordingly the current
+line. See [[https://www.emacswiki.org/emacs/OpenNextLine][Open Next Line]].
+
+- @@html:<kbd>@@C-o@@html:</kbd>@@ =open-next-line=
+- @@html:<kbd>@@C-M-o@@html:</kbd>@@ =open-previous-line=
+- @@html:<kbd>@@M-x toggle-open-line-indent!@@html:</kbd>@@
+
 ** Keys
 	 :PROPERTIES:
 	 :CUSTOM_ID: keys
@@ -787,6 +795,14 @@ Global for all Emacs' version.
 - @@html:<kbd>@@C-c ;@@html:</kbd>@@ =toggle-comment=
 - @@html:<kbd>@@C-c f f@@html:</kbd>@@ =find-file-at-point=
 - @@html:<kbd>@@C-c r b@@html:</kbd>@@ =revert-buffer=
+- @@html:<kbd>@@C-o@@html:</kbd>@@ =open-next-line=
+- @@html:<kbd>@@C-M-o@@html:</kbd>@@ =open-previous-line=	
+- @@html:<kbd>@@C-c m s@@html:</kbd>@@: =mark-symbol@=
+- @@html:<kbd>@@C-c m l@@html:</kbd>@@: =mark-line@=
+- @@html:<kbd>@@C-c m f@@html:</kbd>@@: =mark-filename@=
+- @@html:<kbd>@@C-c m d@@html:</kbd>@@: =mark-defun@=
+- @@html:<kbd>@@C-s@@html:</kbd>@@: =isearch-forward*=
+- @@html:<kbd>@@C-r@@html:</kbd>@@: =isearch-backward*=
 
 *** Compatible keys
 
@@ -800,13 +816,9 @@ Compatibled for ancient Emacs versions.
 
 *** Featured keys
 
-- @@html:<kbd>@@C-c m s@@html:</kbd>@@: =mark-symbol@=
-- @@html:<kbd>@@C-c m l@@html:</kbd>@@: =mark-line@=
-- @@html:<kbd>@@C-c m f@@html:</kbd>@@: =mark-filename@=
-- @@html:<kbd>@@C-c m d@@html:</kbd>@@: =mark-defun@=
+The features provided by 3rd packages.
 
-- @@html:<kbd>@@C-s@@html:</kbd>@@: =isearch-forward*=
-- @@html:<kbd>@@C-r@@html:</kbd>@@: =isearch-backward*=
+- @@html:<kbd>@@C-c v s@@html:</kbd>@@ =magit-status=
 
 * Programming
 	:PROPERTIES:
