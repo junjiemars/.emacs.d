@@ -82,7 +82,7 @@
    (region-active-if (region-end) (line-end-position)))
   (if-fn% 'next-logical-line nil
           (next-logical-line)
-    (next-line)))
+    (forward-line)))
 
 ;; toggle comment key strike
 (define-key (current-global-map) (kbd "C-c ;") #'toggle-comment)
