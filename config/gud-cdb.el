@@ -137,6 +137,11 @@ containing the executable being debugged."
   :type 'hook
   :group 'gud)
 
+(defcustom% gud-cdb-mode-hook nil
+  "Mode hook run by `cdb' before `gud-cdb-init-hook'."
+  :type 'hook
+  :group 'gud)
+
 (defcustom% gud-cdb-init-hook nil
   "Hook run by `lldb' process."
   :type 'hook
@@ -240,6 +245,9 @@ in `gud-cdb-directories'.
 ;; set default `gud-cdb-command-line-hook'
 (add-hook 'gud-cdb-command-line-hook #'cdb-command-line-list-source)
 
+;; set default `gud-cdb-mode-hook'
+(add-hook 'gud-cdb-mode-hook #'cdb-set-syntax-table!)
+
 
 (defun gud-cdb-massage-args (file args)
   "As the 2nd argument: message-args of `gud-common-init'.
@@ -334,9 +342,8 @@ directory and source-file directory for your debugger."
   (setq (make-local-variable 'paragraph-separate) "\\'")
   (setq (make-local-variable 'paragraph-start) +cdb-prompt-regexp+)
 
-  (cdb-set-syntax-table!)
-  
   (run-hooks 'gud-cdb-mode-hook)
+  
   (loop for x in gud-cdb-init-hook
         when (functionp x) do (funcall x))
 
