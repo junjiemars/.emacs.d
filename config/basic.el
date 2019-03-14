@@ -91,11 +91,11 @@
   (defmacro windows-nt-posix-path (path)
     "Return posix path from Windows PATH which can be recognized on`system-type'."
     `(when (stringp ,path)
-			 (if (string-match "^\\([A-Z]:\\)" ,path)
+       (if (string-match "^\\([A-Z]:\\)" ,path)
            (replace-regexp-in-string
-				    "\\\\" "/"
-				    (replace-match (downcase (match-string 1 ,path)) t t ,path))
-				 ,path))))
+            "\\\\" "/"
+            (replace-match (downcase (match-string 1 ,path)) t t ,path))
+         ,path))))
 
 
  ;; end of Platform Related Functions
@@ -157,7 +157,7 @@ to avoid corrupting the original SEQ.
   "Remove all items satisfying PREDICATE in SEQ.
 This is a non-destructive function; it makes a copy of SEQ if necessary
 to avoid corrupting the original SEQ."
-	(declare (indent 2))
+  (declare (indent 2))
   (if-fn% 'cl-remove-if 'cl-lib
           `(cl-remove-if ,predicate ,seq ,@keys)
     (when-fn% 'remove-if 'cl
@@ -390,26 +390,26 @@ filted directories."
                      (or (string= "./" x)
                          (string= "../" x)))
                    (file-name-all-completions "" dir))))
-	  (while files
+    (while files
       (let ((f (car files)))
-				(let ((a (expand-file-name f dir)))
-					(if (directory-name-p f)
-							(when (and (let ((ln (file-symlink-p* a)))
+        (let ((a (expand-file-name f dir)))
+          (if (directory-name-p f)
+              (when (and (let ((ln (file-symlink-p* a)))
                            (if ln
-													     (not (or
+                               (not (or
                                      (string-match "\\.\\'\\|\\.\\.\\'" ln)
-														         (and (>= (length a) (length ln))
-															            (string=
+                                     (and (>= (length a) (length ln))
+                                          (string=
                                            ln
                                            (substring a 0 (length ln))))))
                              t))
                          df
-											   (funcall df f a))
-								(and dn (funcall dn a))
-								(dir-iterate a ff df fn dn))
-						(when (and ff (funcall ff f a))
-							(and fn (funcall fn a)))))
-			  (setq files (cdr files))))))
+                         (funcall df f a))
+                (and dn (funcall dn a))
+                (dir-iterate a ff df fn dn))
+            (when (and ff (funcall ff f a))
+              (and fn (funcall fn a)))))
+        (setq files (cdr files))))))
 
 
 (defun dir-backtrack (dir prefer)
@@ -607,12 +607,12 @@ item for which (PRED item) returns t."
 ;; define key macro
 
 (defmacro define-key% (keymap key def)
-	"Define KEY as DEF in KEYMAP when the KEY binding of DEF is not exists."
-	`(unless% (eq ,def (lookup-key ,keymap ,key))
-		 (define-key ,keymap ,key ,def)))
+  "Define KEY as DEF in KEYMAP when the KEY binding of DEF is not exists."
+  `(unless% (eq ,def (lookup-key ,keymap ,key))
+     (define-key ,keymap ,key ,def)))
 
 
- ;; end of key macro
+ ;; End of key macro
 
 
 (defmacro safe-local-variable* (var)
@@ -664,14 +664,14 @@ positive, otherwise via native."
       ;; (require 'url)
       (if (null arg)
           (if (eq url-gateway-method 'native) (funcall socks) (funcall native))
-	      (funcall socks))
+        (funcall socks))
       (message "socks%s as url gateway %s"
                (list (self-spec->*env-spec :socks :server)
                      (self-spec->*env-spec :socks :port)
                      (self-spec->*env-spec :socks :version))
                (if (eq url-gateway-method 'native)
                    "disabled"
-		             "enabled")))))
+                 "enabled")))))
 
 (feature-socks-supported-p
   (when (self-spec->*env-spec :socks :allowed)
