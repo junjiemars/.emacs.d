@@ -232,7 +232,8 @@ in `gud-cdb-directories'.
 
 (defun cdb-set-syntax-table! ()
   "Specify special character."
-  (modify-syntax-entry ?` "_" (syntax-table)))
+  (modify-syntax-entry ?` "_" (syntax-table))
+  (modify-syntax-entry ?! "_" (syntax-table)))
 
 
 
