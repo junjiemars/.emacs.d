@@ -444,7 +444,7 @@ With prefix argument ARG, indent as default when ARG is non-nil."
      'help-function-def 'help-function
      `(lambda (fn file)
         (funcall ,help-fn fn file)
-        ,(view-mode t)))))
+        (view-mode t)))))
 
 
 ;; end of file
