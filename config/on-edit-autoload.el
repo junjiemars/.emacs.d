@@ -437,4 +437,14 @@ With prefix argument ARG, indent as default when ARG is non-nil."
  ;; end of open-*-line
 
 
+;; open emacs source in `view-mode'
+(with-eval-after-load 'help-mode
+  (let ((help-fn (button-type-get 'help-function-def 'help-function)))
+    (button-type-put
+     'help-function-def 'help-function
+     `(lambda (fn file)
+        (funcall ,help-fn fn file)
+        ,(view-mode t)))))
+
+
 ;; end of file
