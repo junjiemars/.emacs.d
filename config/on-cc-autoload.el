@@ -53,6 +53,9 @@
                  "echo \"%INCLUDE%\"\n")
          (v-home% ".exec/cc-env.bat"))))))
 
+(defmacro norm-rid (remote)
+  ""
+  `(concat (car ,remote) "_" (cadr ,remote)))
 
 (defun check-cc-include ()
   "Return cc include paths list."
