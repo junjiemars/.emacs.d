@@ -131,12 +131,11 @@ otherwise check cc include on the fly."
 (defadvice ff-find-other-file (before ff-find-other-file-before compile)
   "Set `cc-search-directories' based on local or remote."
   (let* ((file (buffer-file-name (current-buffer)))
-         (rid (file-remote-p file))
-         (pwd (file-name-directory file)))
+         (rid (file-remote-p file)))
     (setq% cc-search-directories
-           (mapcar #'(lambda (x)
-                       (concat rid x))
-                   (append (list (path- pwd))
+           (append (list (path- (path- file)))
+                   (mapcar #'(lambda (x)
+                               (concat rid x))
                            (system-cc-include t rid))))))
 
 (defadvice ff-find-other-file (after ff-find-other-file-after compile)
