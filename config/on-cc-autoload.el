@@ -82,11 +82,12 @@
 This should be set with `system-cc-include'")
 
 
-(defun system-cc-include (&optional cached)
+(defun system-cc-include (&optional cached remote)
   "Returns a list of system include directories. 
 
 Load `system-cc-include' from file when CACHED is t, 
 otherwise check cc include on the fly."
+  (ignore* remote)
   (let ((c (v-home% ".exec/.cc-inc.el")))
     (if (and cached (file-exists-p (concat c "c")))
         (progn
@@ -127,6 +128,16 @@ otherwise check cc include on the fly."
 
 
 
+(defadvice ff-find-other-file (before ff-find-other-file-before compile)
+  "Set `cc-search-directories' based on local or remote."
+  (let* ((file (buffer-file-name (current-buffer)))
+         (rid (file-remote-p file))
+         (pwd (file-name-directory file)))
+    (setq% cc-search-directories
+           (mapcar #'(lambda (x)
+                       (concat rid x))
+                   (append (list (path- pwd))
+                           (system-cc-include t rid))))))
 
 (defadvice ff-find-other-file (after ff-find-other-file-after compile)
   "View the other-file in `view-mode' when `system-cc-include-p' is t."
@@ -135,9 +146,10 @@ otherwise check cc include on the fly."
 
 (with-eval-after-load 'cc-mode
   ;; find c include file
-  (setq% cc-search-directories
-         (append (list ".") (system-cc-include t))
-         'find-file)
+  (comment
+   (setq% cc-search-directories
+          (append (list ".") (system-cc-include t))
+          'find-file))
 
   (when-var% c-mode-map 'cc-mode
     ;; keymap: find c include file
