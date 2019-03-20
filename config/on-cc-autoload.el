@@ -68,15 +68,21 @@
                    (car (nreverse 
                          (split-string* (cdr cmd) "\n" t "\"")))))))
     ;; Darwin/Linux: clang or gcc
-    (let ((cmd (shell-command* "echo '' | cc -v -E 2>&1 >/dev/null -")))
-      (when (zerop (car cmd))
-        (take-while
-         (lambda (p)
-           (string-match "End of search list." p))
-         (drop-while
-          (lambda (p)
-            (string-match "#include <...> search starts here:" p))
-          (split-string* (cdr cmd) "\n" t "[ \t\n]")))))))
+    (let* ((cmd (shell-command* "echo '' | cc -v -E 2>&1 >/dev/null -"))
+           (inc (when (zerop (car cmd))
+                  (take-while
+                   (lambda (p)
+                     (string-match "End of search list." p))
+                   (drop-while
+                    (lambda (p)
+                      (string-match "#include <...> search starts here:" p))
+                    (split-string* (cdr cmd) "\n" t "[ \t\n]"))))))
+      (platform-supported-if 'darwin
+          (mapcar (lambda (x)
+                    (file-truename
+                     (string-trim> x " (framework directory)")))
+                  inc)
+        inc))))
 
 
 (defvar system-cc-include nil
@@ -96,16 +102,11 @@ otherwise check cc include on the fly."
         (progn
           (load (concat c "c"))
           system-cc-include)
-      (let ((paths (platform-supported-if 'darwin
-                       (mapcar (lambda (x)
-                                 (file-truename
-                                  (string-trim> x " (framework directory)")))
-                               (check-cc-include))
-                     (check-cc-include))))
+      (let ((inc (check-cc-include)))
         (when (save-sexp-to-file
-               `(setq system-cc-include ',paths) c)
+               `(setq system-cc-include ',inc) c)
           (byte-compile-file c))
-        (setq system-cc-include paths)))))
+        (setq system-cc-include inc)))))
 
 
 (defun system-cc-include-p (file)
