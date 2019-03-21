@@ -872,7 +872,7 @@ editing C code in Emacs (=ff-find-other-file=).
 		:END:
 
 =c-macro-expand=: @@html:<kbd>@@C-c C-e@@html:</kbd>@@ for gcc, clang
-and msvc.
+and msvc on local or remote.
 
 On Windows, the msvc's compiler =cl= does not support retrieve input
 from /stdin/, so =c-macro-expansion= function sucks. But if there are
