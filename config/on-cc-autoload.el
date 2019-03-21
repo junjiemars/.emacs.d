@@ -60,6 +60,13 @@ This should be set with `system-cc-include'")
          (v-home% ".exec/cc-env.bat"))))))
 
 
+(defmacro norm-file-remote-p (file)
+  "Return an identification when FILE specifies a location on a remote system.
+
+On ancient Emacs, `file-remote-p' will return a vector."
+  `(match-string* "^\\(/sshx?:[_-a-zA-Z0-9]+@?[_-a-zA-Z0-9]+:\\)"
+                  ,file 1))
+
 (defmacro norm-rid (remote)
   "Norm the REMOTE to '(method user [host]) form."
   `(split-string* ,remote "[:@]" t "/"))
@@ -146,7 +153,7 @@ include directories. The REMOTE argument from `file-remote-p'."
   "Return t if FILE in `system-cc-include', otherwise nil."
   (when (stringp file)
     (member** (string-trim> (file-name-directory file) "/")
-              (system-cc-include t (file-remote-p file))
+              (system-cc-include t (norm-file-remote-p file))
               :test (lambda (a b)
                       (let ((case-fold-search (platform-supported-when
                                                   'windows-nt t)))
@@ -170,7 +177,7 @@ include directories. The REMOTE argument from `file-remote-p'."
   (let ((file (buffer-file-name (current-buffer))))
     (setq% cc-search-directories
            (append (list (path- (path- file)))
-                   (system-cc-include t (file-remote-p file))))))
+                   (system-cc-include t (norm-file-remote-p file))))))
 
 (defadvice ff-find-other-file (after ff-find-other-file-after compile)
   "View the other-file in `view-mode' when `system-cc-include-p' is t."
@@ -178,7 +185,7 @@ include directories. The REMOTE argument from `file-remote-p'."
 
 (defadvice c-macro-expand (around c-macro-expand-around compile)
   "cl.exe cannot retrieve from stdin."
-  (let ((remote (file-remote-p (buffer-file-name (current-buffer)))))
+  (let ((remote (norm-file-remote-p (buffer-file-name (current-buffer)))))
     (if remote
         ;; remote: Unix-like
         (when% (executable-find% "ssh")
