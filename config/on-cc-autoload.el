@@ -123,7 +123,7 @@ include directories. The REMOTE argument from `file-remote-p'."
   (let* ((rid (when remote
                 (mapconcat #'identity (norm-rid remote) "-")))
          (c (if remote
-                (v-home* (concat ".exec/.cc-inc-" rid".el"))
+                (v-home* (concat ".exec/.cc-inc-" rid ".el"))
               (v-home% ".exec/.cc-inc.el")))
          (cc (concat c "c"))
          (var (if remote
@@ -187,7 +187,7 @@ include directories. The REMOTE argument from `file-remote-p'."
                          " \'cc -E -o - -\'")
                  'cmacexp)
           ad-do-it)
-      ;; local
+      ;; local: msvc, clang, gcc
       (platform-supported-if 'windows-nt
           ;; [C-c C-e] macro expand for msvc
           (when% (and (or (executable-find% "cc-env.bat")
@@ -222,6 +222,7 @@ include directories. The REMOTE argument from `file-remote-p'."
 
 
 (with-eval-after-load 'cc-mode
+
   ;; find c include file
   (when-var% c-mode-map 'cc-mode
     ;; keymap: find c include file
@@ -234,6 +235,7 @@ include directories. The REMOTE argument from `file-remote-p'."
 
 
 (with-eval-after-load 'cmacexp
+
   ;; [C-c C-e] `c-macro-expand' in `cc-mode'
   (setq% c-macro-prompt-flag t 'cmacexp)
   (ad-activate #'c-macro-expand t))
