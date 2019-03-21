@@ -176,10 +176,6 @@ include directories. The REMOTE argument from `file-remote-p'."
   "View the other-file in `view-mode' when `system-cc-include-p' is t."
   (view-system-cc-include (current-buffer)))
 
-
-
-
-
 (defadvice c-macro-expand (around c-macro-expand-around compile)
   "cl.exe cannot retrieve from stdin."
   (let ((remote (file-remote-p (buffer-file-name (current-buffer)))))
