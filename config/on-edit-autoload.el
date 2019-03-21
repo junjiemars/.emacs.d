@@ -447,4 +447,11 @@ With prefix argument ARG, indent as default when ARG is non-nil."
         (view-mode t)))))
 
 
+;; tramp
+(with-eval-after-load 'tramp
+  (when% (executable-find% "ssh")
+    ;; ssh faster than scp on ancient Emacs?
+    (setq% tramp-default-method "ssh")))
+
+
 ;; end of file
