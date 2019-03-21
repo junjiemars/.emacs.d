@@ -53,11 +53,13 @@
                  "echo \"%INCLUDE%\"\n")
          (v-home% ".exec/cc-env.bat"))))))
 
-(defmacro norm-rid (remote)
-  ""
-  `(concat (car ,remote) "_" (cadr ,remote)))
+(defsubst norm-rid (remote)
+  "Norm the REMOTE to method-user-host form."
+  (mapconcat #'identity
+             (split-string* remote "[:@]" t "/")
+             "-"))
 
-(defun check-cc-include ()
+(defun check-cc-include (&optional remote)
   "Return cc include paths list."
   (platform-supported-if 'windows-nt
       ;; Windows: msvc
@@ -96,17 +98,21 @@ This should be set with `system-cc-include'")
 
 Load `system-cc-include' from file when CACHED is t, 
 otherwise check cc include on the fly."
-  (ignore* remote)
-  (let ((c (v-home% ".exec/.cc-inc.el")))
-    (if (and cached (file-exists-p (concat c "c")))
-        (progn
-          (load (concat c "c"))
-          system-cc-include)
-      (let ((inc (check-cc-include)))
-        (when (save-sexp-to-file
-               `(setq system-cc-include ',inc) c)
-          (byte-compile-file c))
-        (setq system-cc-include inc)))))
+  (let* ((rid (if remote (norm-rid remote)))
+         (c (if remote
+                (v-home* (concat ".exec/.cc-inc-" rid".el"))
+              (v-home% ".exec/.cc-inc.el")))
+         (cc (concat c "c"))
+         (var (if remote
+                  (intern (concat "system-cc-include@" rid))
+                'system-cc-include)))
+    (if (and cached (file-exists-p cc))
+        (load cc)
+      (let ((inc (check-cc-include remote)))
+        (set var inc)
+        (when (save-sexp-to-file `(set ',var ',inc) c)
+          (byte-compile-file c))))
+    (symbol-value var)))
 
 
 (defun system-cc-include-p (file)
