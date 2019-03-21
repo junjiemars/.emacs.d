@@ -64,14 +64,19 @@ This should be set with `system-cc-include'")
   "Norm the REMOTE to '(method user host) form."
   `(split-string* ,remote "[:@]" t "/"))
 
+(defmacro rid-user@host (remote)
+  "Make a user@host form from REMOTE."
+  `(let ((rid (norm-rid ,remote)))
+     (concat (cadr rid) (when (caddr rid)
+                          (concat "@" (caddr rid))))))
+
 
 (defun check-cc-include (&optional remote)
   "Return cc include paths list."
   (let ((cmd (if remote
-                 (let ((rid (norm-rid remote)))
-                   (shell-command* "ssh"
-                     (concat (concat (cadr rid) "@" (caddr rid))
-                             " \"echo '' | cc -v -E 2>&1 >/dev/null -\"")))
+                 (shell-command* "ssh"
+                   (concat (rid-user@host remote)
+                           " \"echo '' | cc -v -E 2>&1 >/dev/null -\""))
                (platform-supported-if 'windows-nt
                    ;; Windows: msmvc
                    (shell-command* (make-cc-env-bat))
@@ -110,7 +115,10 @@ This should be set with `system-cc-include'")
   "Returns a list of system include directories. 
 
 Load `system-cc-include' from file when CACHED is t, 
-otherwise check cc include on the fly."
+otherwise check cc include on the fly.
+
+If REMOTE had been specified, return remote system include
+directories. The REMOTE argument from `file-remote-p'."
   (let* ((rid (when remote
                 (mapconcat #'identity (norm-rid remote) "-")))
          (c (if remote
@@ -135,13 +143,13 @@ otherwise check cc include on the fly."
 
 (defun system-cc-include-p (file)
   "Return t if FILE in `system-cc-include', otherwise nil."
-  (when (and file (stringp file))
-    (let ((d (string-trim> (file-name-directory file) "/")))
-      (member** d (system-cc-include t)
-                :test (lambda (a b)
-                        (let ((case-fold-search (platform-supported-when
-                                                    'windows-nt t)))
-                          (string-match b a)))))))
+  (when (stringp file)
+    (member** (string-trim> (file-name-directory file) "/")
+              (system-cc-include t (file-remote-p file))
+              :test (lambda (a b)
+                      (let ((case-fold-search (platform-supported-when
+                                                  'windows-nt t)))
+                        (string-match b a))))))
 
     
 (defun view-system-cc-include (buffer)
@@ -171,11 +179,6 @@ otherwise check cc include on the fly."
 
 (with-eval-after-load 'cc-mode
   ;; find c include file
-  (comment
-   (setq% cc-search-directories
-          (append (list ".") (system-cc-include t))
-          'find-file))
-
   (when-var% c-mode-map 'cc-mode
     ;; keymap: find c include file
     (when-fn% 'ff-find-other-file 'find-file
