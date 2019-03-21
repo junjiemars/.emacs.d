@@ -176,7 +176,7 @@ include directories. The REMOTE argument from `file-remote-p'."
   "Set `cc-search-directories' based on local or remote."
   (let ((file (buffer-file-name (current-buffer))))
     (setq% cc-search-directories
-           (append (list (path- (path- file)))
+           (append (list (string-trim> (file-name-directory file) "/"))
                    (system-cc-include t (norm-file-remote-p file))))))
 
 (defadvice ff-find-other-file (after ff-find-other-file-after compile)
