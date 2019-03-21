@@ -189,49 +189,62 @@ include directories. The REMOTE argument from `file-remote-p'."
       (define-key% c-mode-map (kbd "TAB") #'c-indent-line-or-region))))
 
 
-(platform-supported-when 'windows-nt
-  ;; [C-c C-e] macro expand for msvc
-  (when% (and (or (executable-find% "cc-env.bat")
-                  (make-cc-env-bat))
-              (executable-find%
-               "xargs"
-               (lambda (xargs)
-                 (let ((x (shell-command* "echo xxx"
-                            "&& echo.zzz"
-                            "|xargs -0")))
-                   (and (zerop (car x))
-                        (string-match "^zzz" (cdr x)))))))
+(defadvice c-macro-expand (before c-macro-expand-before compile)
+  "Do `c-macro-expand' locally or remotely."
+  (let (remote (file-remote-p (buffer-file-name (current-buffer))))
+    (if remote
+        ;; remote: Unix-like
+        (when% (executable-find% "ssh")
+          (setq% c-macro-preprocessor
+                 (concat "ssh " (rid-user@host remote)
+                         " \"cc -E -o - -\"")
+                 'cmacexp))
+      (platform-supported-unless 'windows-nt
+        ;; Darwin/Linux: clang or gcc
+        (when% (executable-find%
+                "cc"
+                (lambda (cc)
+                  (let ((x (shell-command* "echo -e"
+                             "\"#define _unused_(x) ((void)(x))\n_unused_(a);\""
+                             "|cc -E -")))
+                    (and (zerop (car x))
+                         (string-match "((void)(a));" (cdr x))))))
+          (setq% c-macro-preprocessor "cc -E -o - -" 'cmacexp))))))
 
-    (defadvice c-macro-expand (around c-macro-expand-around compile)
-      "cl.exe cannot retrieve from stdin."
-      (let* ((tmp (make-temp-file
-		               (expand-file-name "cc-" temporary-file-directory)))
-             (c-macro-preprocessor
-              (format "xargs -0 > %s && cc-env.bat && cl -E %s"
-                      tmp tmp)))
-        (unwind-protect ad-do-it
-          (delete-file tmp))))))
+
+(defadvice c-macro-expand (around c-macro-expand-around compile)
+  "cl.exe cannot retrieve from stdin."
+  (if (file-remote-p (buffer-file-name (current-buffer)))
+      ;; remote: Unix-like
+      ad-do-it
+    (platform-supported-if 'windows-nt
+        ;; [C-c C-e] macro expand for msvc
+        (when% (and (or (executable-find% "cc-env.bat")
+                        (make-cc-env-bat))
+                    (executable-find%
+                     "xargs"
+                     (lambda (xargs)
+                       (let ((x (shell-command* "echo xxx"
+                                  "&& echo.zzz"
+                                  "|xargs -0")))
+                         (and (zerop (car x))
+                              (string-match "^zzz" (cdr x)))))))
+          (let* ((tmp (make-temp-file
+		                   (expand-file-name "cc-" temporary-file-directory)))
+                 (c-macro-preprocessor
+                  (format "xargs -0 > %s && cc-env.bat && cl -E %s"
+                          tmp tmp)))
+            (unwind-protect ad-do-it
+              (delete-file tmp))))
+      ;; Darwin/Linux
+      ad-do-it)))
 
 
 (with-eval-after-load 'cmacexp
 
   ;; [C-c C-e] `c-macro-expand' in `cc-mode'
   (setq% c-macro-prompt-flag t 'cmacexp)
-
-  (platform-supported-unless 'windows-nt
-    (when% (executable-find%
-            "cc"
-            (lambda (cc)
-              (let ((x (shell-command* "echo -e"
-                         "\"#define _unused_(x) ((void)(x))\n_unused_(a);\""
-                         "|cc -E -")))
-                (and (zerop (car x))
-                     (string-match "((void)(a));" (cdr x))))))
-      (setq% c-macro-preprocessor "cc -E -o - -" 'cmacexp)))
-
-  (platform-supported-when 'windows-nt
-    (when% (ad-get-advice-info #'c-macro-expand)
-      (ad-activate #'c-macro-expand t))))
+  (ad-activate #'c-macro-expand t))
 
 
 ;; end of on-cc-autoload.el
