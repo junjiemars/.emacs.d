@@ -7,6 +7,25 @@
 ;;;;
 
 
+(defvar system-cc-include nil
+  "The system include paths used by C compiler.
+
+This should be set with `system-cc-include'")
+
+
+(defvar check-cc-include-sh
+  (eval-when-compile
+    (let ((sh (v-home% ".exec/.cc-inc.sh")))
+      (unless (file-exists-p sh)
+        (save-str-to-file
+         (concat "#!/bin/bash\n"
+                 "echo '' | cc -v -E 2>&1 >/dev/null -")
+         sh)
+        (when (zerop (car (shell-command* "chmod" "u+x" sh)))
+          sh))))
+  "The script used to check cc include.")
+
+
 (platform-supported-when 'windows-nt
   
   (defun check-vcvarsall-bat ()
@@ -53,44 +72,51 @@
                  "echo \"%INCLUDE%\"\n")
          (v-home% ".exec/cc-env.bat"))))))
 
-(defsubst norm-rid (remote)
-  "Norm the REMOTE to method-user-host form."
-  (mapconcat #'identity
-             (split-string* remote "[:@]" t "/")
-             "-"))
+
+(defmacro norm-rid (remote)
+  "Norm the REMOTE to '(method user host) form."
+  `(split-string* ,remote "[:@]" t "/"))
+
 
 (defun check-cc-include (&optional remote)
   "Return cc include paths list."
-  (platform-supported-if 'windows-nt
-      ;; Windows: msvc
-      (let ((cmd (shell-command* (make-cc-env-bat))))
-        (when (zerop (car cmd))
-          (mapcar (lambda (x) (windows-nt-posix-path x))
-                  (var->paths
-                   (car (nreverse 
-                         (split-string* (cdr cmd) "\n" t "\"")))))))
-    ;; Darwin/Linux: clang or gcc
-    (let* ((cmd (shell-command* "echo '' | cc -v -E 2>&1 >/dev/null -"))
-           (inc (when (zerop (car cmd))
-                  (take-while
-                   (lambda (p)
-                     (string-match "End of search list." p))
-                   (drop-while
-                    (lambda (p)
-                      (string-match "#include <...> search starts here:" p))
-                    (split-string* (cdr cmd) "\n" t "[ \t\n]"))))))
-      (platform-supported-if 'darwin
-          (mapcar (lambda (x)
-                    (file-truename
-                     (string-trim> x " (framework directory)")))
-                  inc)
-        inc))))
-
-
-(defvar system-cc-include nil
-  "The system include paths used by C compiler.
-
-This should be set with `system-cc-include'")
+  (let ((cmd (if remote
+                 (let ((rid (norm-rid remote)))
+                   (shell-command* "ssh"
+                     (concat (concat (cadr rid) "@" (caddr rid))
+                             " \"echo '' | cc -v -E 2>&1 >/dev/null -\"")))
+               (platform-supported-if 'windows-nt
+                   ;; Windows: msmvc
+                   (shell-command* (make-cc-env-bat))
+                 ;; Darwin/Linux: clang or gcc
+                 (shell-command* "echo '' | cc -v -E 2>&1 >/dev/null -"))))
+        (unix (lambda (preprocessed)
+                (take-while
+                 (lambda (p)
+                   (string-match "End of search list." p))
+                 (drop-while
+                  (lambda (p)
+                    (string-match "#include <...> search starts here:" p))
+                  (split-string* preprocessed "\n" t "[ \t\n]"))))))
+    (when (zerop (car cmd))
+      (if remote
+          ;; Unix-like
+          (when (zerop (car cmd))
+            (funcall unix (cdr cmd)))
+        (platform-supported-if 'windows-nt
+            ;; Windows: msvc
+            (mapcar (lambda (x) (windows-nt-posix-path x))
+                    (var->paths
+                     (car (nreverse 
+                           (split-string* (cdr cmd) "\n" t "\"")))))
+          ;; Darwin/Linux: clang or gcc
+          (let ((inc (funcall unix (cdr cmd))))
+            (platform-supported-if 'darwin
+                (mapcar (lambda (x)
+                          (file-truename
+                           (string-trim> x " (framework directory)")))
+                        inc)
+              inc)))))))
 
 
 (defun system-cc-include (&optional cached remote)
@@ -98,7 +124,8 @@ This should be set with `system-cc-include'")
 
 Load `system-cc-include' from file when CACHED is t, 
 otherwise check cc include on the fly."
-  (let* ((rid (if remote (norm-rid remote)))
+  (let* ((rid (when remote
+                (mapconcat #'identity (norm-rid remote) "-")))
          (c (if remote
                 (v-home* (concat ".exec/.cc-inc-" rid".el"))
               (v-home% ".exec/.cc-inc.el")))
