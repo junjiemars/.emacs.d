@@ -13,19 +13,6 @@
 This should be set with `system-cc-include'")
 
 
-(defvar check-cc-include-sh
-  (eval-when-compile
-    (let ((sh (v-home% ".exec/.cc-inc.sh")))
-      (unless (file-exists-p sh)
-        (save-str-to-file
-         (concat "#!/bin/bash\n"
-                 "echo '' | cc -v -E 2>&1 >/dev/null -")
-         sh)
-        (when (zerop (car (shell-command* "chmod" "u+x" sh)))
-          sh))))
-  "The script used to check cc include.")
-
-
 (platform-supported-when 'windows-nt
   
   (defun check-vcvarsall-bat ()
@@ -90,19 +77,19 @@ This should be set with `system-cc-include'")
                    (shell-command* (make-cc-env-bat))
                  ;; Darwin/Linux: clang or gcc
                  (shell-command* "echo '' | cc -v -E 2>&1 >/dev/null -"))))
-        (unix (lambda (preprocessed)
-                (take-while
-                 (lambda (p)
-                   (string-match "End of search list." p))
-                 (drop-while
-                  (lambda (p)
-                    (string-match "#include <...> search starts here:" p))
-                  (split-string* preprocessed "\n" t "[ \t\n]"))))))
+        (parser (lambda (preprocessed)
+                  (take-while
+                   (lambda (p)
+                     (string-match "End of search list." p))
+                   (drop-while
+                    (lambda (p)
+                      (string-match "#include <...> search starts here:" p))
+                    (split-string* preprocessed "\n" t "[ \t\n]"))))))
     (when (zerop (car cmd))
       (if remote
           ;; Unix-like
           (when (zerop (car cmd))
-            (funcall unix (cdr cmd)))
+            (funcall parser (cdr cmd)))
         (platform-supported-if 'windows-nt
             ;; Windows: msvc
             (mapcar (lambda (x) (windows-nt-posix-path x))
@@ -110,7 +97,7 @@ This should be set with `system-cc-include'")
                      (car (nreverse 
                            (split-string* (cdr cmd) "\n" t "\"")))))
           ;; Darwin/Linux: clang or gcc
-          (let ((inc (funcall unix (cdr cmd))))
+          (let ((inc (funcall parser (cdr cmd))))
             (platform-supported-if 'darwin
                 (mapcar (lambda (x)
                           (file-truename
@@ -135,7 +122,11 @@ otherwise check cc include on the fly."
                 'system-cc-include)))
     (if (and cached (file-exists-p cc))
         (load cc)
-      (let ((inc (check-cc-include remote)))
+      (let ((inc (if remote
+                     (mapcar (lambda (x)
+                               (concat remote x))
+                             (check-cc-include remote))
+                   (check-cc-include))))
         (set var inc)
         (when (save-sexp-to-file `(set ',var ',inc) c)
           (byte-compile-file c))))
@@ -171,9 +162,7 @@ otherwise check cc include on the fly."
          (rid (file-remote-p file)))
     (setq% cc-search-directories
            (append (list (path- (path- file)))
-                   (mapcar #'(lambda (x)
-                               (concat rid x))
-                           (system-cc-include t rid))))))
+                   (system-cc-include t rid)))))
 
 (defadvice ff-find-other-file (after ff-find-other-file-after compile)
   "View the other-file in `view-mode' when `system-cc-include-p' is t."
