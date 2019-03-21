@@ -61,7 +61,7 @@ This should be set with `system-cc-include'")
 
 
 (defmacro norm-rid (remote)
-  "Norm the REMOTE to '(method user host) form."
+  "Norm the REMOTE to '(method user [host]) form."
   `(split-string* ,remote "[:@]" t "/"))
 
 (defmacro rid-user@host (remote)
@@ -74,9 +74,10 @@ This should be set with `system-cc-include'")
 (defun check-cc-include (&optional remote)
   "Return cc include paths list."
   (let ((cmd (if remote
-                 (shell-command* "ssh"
-                   (concat (rid-user@host remote)
-                           " \"echo '' | cc -v -E 2>&1 >/dev/null -\""))
+                 (when% (executable-find% "ssh")
+                   (shell-command* "ssh"
+                     (concat (rid-user@host remote)
+                             " \"echo '' | cc -v -E 2>&1 >/dev/null -\"")))
                (platform-supported-if 'windows-nt
                    ;; Windows: msmvc
                    (shell-command* (make-cc-env-bat))
@@ -117,8 +118,8 @@ This should be set with `system-cc-include'")
 Load `system-cc-include' from file when CACHED is t, 
 otherwise check cc include on the fly.
 
-If REMOTE had been specified, return remote system include
-directories. The REMOTE argument from `file-remote-p'."
+If specify REMOTE argument then return a list of remote system
+include directories. The REMOTE argument from `file-remote-p'."
   (let* ((rid (when remote
                 (mapconcat #'identity (norm-rid remote) "-")))
          (c (if remote
@@ -166,11 +167,10 @@ directories. The REMOTE argument from `file-remote-p'."
 
 (defadvice ff-find-other-file (before ff-find-other-file-before compile)
   "Set `cc-search-directories' based on local or remote."
-  (let* ((file (buffer-file-name (current-buffer)))
-         (rid (file-remote-p file)))
+  (let ((file (buffer-file-name (current-buffer))))
     (setq% cc-search-directories
            (append (list (path- (path- file)))
-                   (system-cc-include t rid)))))
+                   (system-cc-include t (file-remote-p file))))))
 
 (defadvice ff-find-other-file (after ff-find-other-file-after compile)
   "View the other-file in `view-mode' when `system-cc-include-p' is t."

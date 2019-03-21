@@ -860,8 +860,11 @@ machine.
 		:CUSTOM_ID: find-c-system-include
 		:END:
 
-=system-cc-include= function used to find system include files for
-gcc, clang and msvc.
+=system-cc-include= function used to find system include files locally
+or remotely for gcc, clang and msvc.
+
+Now, it is easy to open a C include locally or remotely when you
+editing C code in Emacs (=ff-find-other-file=).
 
 *** C macro expand
 		:PROPERTIES:
