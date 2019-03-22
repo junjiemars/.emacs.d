@@ -106,9 +106,8 @@
   (if-fn% #'completion-at-point 'minibuffer
           (define-key% minibuffer-local-map
             (kbd "TAB") #'completion-at-point)
-    (when-fn% #'lisp-complete-symbol nil
-      (define-key% minibuffer-local-map
-        (kbd "TAB") #'lisp-complete-symbol))))
+    (define-key% minibuffer-local-map
+      (kbd "TAB") #'lisp-complete-symbol)))
 
 (add-hook 'minibuffer-setup-hook #'minibuffer-tab-completion! t)
 
