@@ -164,7 +164,9 @@ include directories. The REMOTE argument from `file-remote-p'."
   "View BUFFER in `view-mode' when the filename of BUFFER in
 `system-cc-include'."
   (when (and (bufferp buffer)
-             (eq 'c-mode (buffer-local-value 'major-mode buffer))
+             (let ((m (buffer-local-value 'major-mode buffer)))
+               (or (eq 'c-mode m)
+                   (eq 'c++-mode m)))
              (system-cc-include-p (substring-no-properties
                                    (buffer-file-name buffer))))
     (with-current-buffer buffer (view-mode 1))))
