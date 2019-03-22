@@ -79,23 +79,27 @@
       (add-hook 'eval-expression-minibuffer-setup-hook
                 #'enable-paredit-mode-in-minibuffer! t))
 
-
     (with-eval-after-load 'paredit
       (when-var% paredit-mode-map 'paredit
         ;; define `paredit' keymap
         ;; On Windows C-) is not work
         ;; fix inconsistent `C-)' and `C-c )' behavior:#9
         ;; On Terminal mode, Ctrl+Shift combination can't send to Emacs
-        (define-key% paredit-mode-map (kbd "C-c )") #'paredit-forward-slurp-sexp)
-        (define-key% paredit-mode-map (kbd "C-c (") #'paredit-backward-slurp-sexp)
-        (define-key% paredit-mode-map (kbd "C-c }") #'paredit-forward-barf-sexp)
-
-        (define-key% paredit-mode-map (kbd "C-c {") #'paredit-backward-barf-sexp)
-        (define-key% paredit-mode-map (kbd "C-c ?") #'paredit-convolute-sexp)
+        (define-key% paredit-mode-map
+          (kbd "C-c )") #'paredit-forward-slurp-sexp)
+        (define-key% paredit-mode-map
+          (kbd "C-c (") #'paredit-backward-slurp-sexp)
+        (define-key% paredit-mode-map
+          (kbd "C-c }") #'paredit-forward-barf-sexp)
+        (define-key% paredit-mode-map
+          (kbd "C-c {") #'paredit-backward-barf-sexp)
+        (define-key% paredit-mode-map
+          (kbd "C-c ?") #'paredit-convolute-sexp)
         (when-fn% 'xref-find-references 'xref
           ;; default `paredit-convolute-sexp' keybinding `M-?' conflicts with
           ;; `xref-find-references'
-          (define-key paredit-mode-map (kbd "M-?") #'xref-find-references))))))
+          (define-key paredit-mode-map
+            (kbd "M-?") #'xref-find-references))))))
 
 
  ;; end of feature: paredit
