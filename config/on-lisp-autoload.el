@@ -102,7 +102,7 @@
 
 
 ;; fix: no TAB completion in minibuffer on ancient Emacs.
-(defun define-eval-or-execute-key ()
+(defun minibuffer-tab-completion! ()
   (if-fn% #'completion-at-point 'minibuffer
           (define-key% minibuffer-local-map
             (kbd "TAB") #'completion-at-point)
@@ -110,7 +110,7 @@
       (define-key% minibuffer-local-map
         (kbd "TAB") #'lisp-complete-symbol))))
 
-(add-hook 'minibuffer-setup-hook #'define-eval-or-execute-key t)
+(add-hook 'minibuffer-setup-hook #'minibuffer-tab-completion! t)
 
 
 (defun set-ielm-mode! ()
