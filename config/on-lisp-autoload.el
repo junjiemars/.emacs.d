@@ -101,17 +101,16 @@
  ;; end of feature: paredit
 
 
-(version-supported-when > 24 
-  ;; fix: no TAB completion in minibuffer on ancient Emacs.
-  (defun define-eval-or-execute-key ()
-    (cond ((eq 'eval-expression this-command)
-           (define-key (current-local-map) (kbd "TAB")
-             #'lisp-complete-symbol))
-          ((eq 'execute-extended-command this-command)
-           (define-key (current-local-map) (kbd "TAB")
-             #'minibuffer-complete))))
+;; fix: no TAB completion in minibuffer on ancient Emacs.
+(defun define-eval-or-execute-key ()
+  (if-fn% #'completion-at-point 'minibuffer
+          (define-key% minibuffer-local-map
+            (kbd "TAB") #'completion-at-point)
+    (when-fn% #'lisp-complete-symbol nil
+      (define-key% minibuffer-local-map
+        (kbd "TAB") #'lisp-complete-symbol))))
 
-  (add-hook 'minibuffer-setup-hook #'define-eval-or-execute-key t))
+(add-hook 'minibuffer-setup-hook #'define-eval-or-execute-key t)
 
 
 (defun set-ielm-mode! ()
