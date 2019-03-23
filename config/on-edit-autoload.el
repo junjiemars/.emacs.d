@@ -395,7 +395,7 @@ More accurate than `mark-defun'."
  ;; end of `find-web@'
 
 ;; open-*-line fn
-;; control indent or not of `open-next-line' and `open-previous-line'.
+;; control indent or not: `open-next-line' and `open-previous-line'.
 ;; see also: https://www.emacswiki.org/emacs/OpenNextLine
 
 (defun open-next-line (n)
