@@ -160,7 +160,7 @@
        ,end)))
 
 (defun mark-symbol@ ()
-  "Mark symbol at point."
+  "Mark the symbol at point."
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'symbol)))
     (when bounds
@@ -168,7 +168,7 @@
                     (goto-char (cdr bounds))))))
 
 (defun mark-filename@ ()
-  "Mark filename at point."
+  "Mark the filename at point."
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'filename)))
     (when bounds
@@ -176,7 +176,7 @@
                     (goto-char (cdr bounds))))))
 
 (defun mark-word@ ()
-  "Mark filename at point."
+  "Mark the word at point."
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'word)))
     (when bounds
@@ -184,7 +184,7 @@
                     (goto-char (cdr bounds))))))
 
 (defun mark-line@ (&optional arg)
-  "Mark line at point.
+  "Mark the line at point.
 If ARG is non-nil should mark the whole line."
   (interactive "P")
   (_mark-thing@ (if arg
@@ -193,7 +193,7 @@ If ARG is non-nil should mark the whole line."
                 (end-of-line)))
 
 (defun mark-list@ ()
-  "Mark list at point.
+  "Mark the list at point.
 More accurate than `mark-sexp'."
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'list)))
@@ -202,13 +202,13 @@ More accurate than `mark-sexp'."
                     (goto-char (cdr bounds))))))
 
 (defun mark-defun@ ()
-  "Mark function at point.
+  "Mark the function at point.
 More accurate than `mark-defun'."
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'defun)))
     (when bounds
-      (_mark-thing@ (goto-char (car bounds))
-                    (goto-char (cdr bounds))))))
+      (_mark-thing@ (goto-char (cdr bounds))
+                    (goto-char (car bounds))))))
 
 (unless-fn% 'thing-at-point-bounds-of-list-at-point 'thingatpt
   ;; fix the wrong behavior of (bounds-of-thing-at-point 'list) on
