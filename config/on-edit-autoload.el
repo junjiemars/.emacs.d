@@ -454,4 +454,11 @@ With prefix argument ARG, indent as default when ARG is non-nil."
     (setq% tramp-default-method "ssh")))
 
 
+(defun echo-buffer-file-name ()
+  "Echo the file name of current buffer."
+  (interactive)
+  (message "%s" (buffer-file-name (current-buffer))))
+
+(define-key (current-global-map) (kbd "C-c f n") #'echo-buffer-file-name)
+
 ;; end of file
