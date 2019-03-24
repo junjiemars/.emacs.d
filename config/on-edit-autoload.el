@@ -372,23 +372,20 @@ More accurate than `mark-defun'."
 (defun find-web@ (engine)
   "Find web via search ENGINE."
   (interactive "sfind-web@ bing|duck|google|so: ")
-  (let ((q (_symbol@)))
-    (when q
-      (browse-url
-       (concat (cadr
-                (assoc** (or (let ((s (string-trim>< engine)))
-                               (and (not (string= "" s)) s))
-                             "bing")
-                         '(("bing"
-                            "https://www.bing.com/search?q=")
-                           ("duck"
-                            "https://duckduckgo.com/search?q=")
-                           ("google"
-                            "https://www.google.com/search?q=")
-                           ("so"
-                            "https://stackoverflow.com/search?q="))
-                         #'string=))
-               q)))))
+  (let* ((w (cdr (assoc** (string-trim>< engine)
+                          '(("bing"
+                             "https://www.bing.com/" . "search?q=")
+                            ("duck"
+                             "https://duckduckgo.com/" . "search?q=")
+                            ("google"
+                             "https://www.google.com/" . "search?q=")
+                            ("so"
+                             "https://stackoverflow.com/" . "search?q="))
+                          #'string=)))
+         (w1 (if w w (cons engine ""))))
+    (browse-url (concat (car w1)
+                        (let ((s (_symbol@)))
+                          (when s (concat (cdr w1) s)))))))
 
 (define-key (current-global-map) (kbd "C-c w") #'find-web@)
 
