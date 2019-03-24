@@ -975,8 +975,10 @@ It's *self-documenting* and great, keep reading it frequently.
   the given variable
 - Keybinding: @@html:<kbd>@@C-h-k@@html:</kbd>@@ display documentation
   of the function invoked by the given keystrokes
-- Prefix keybindings: @@html:<kbd>@@@@html:&ltprefix&gt@@
-  C-h@@html:</kbd>@@ see all key bindings for given prefix keystrokes
+- Prefix keybindings: press prefix keys such as
+  @@html:<kbd>@@C-c@@html:</kbd>@@ then
+  @@html:<kbd>@@C-h@@html:</kbd>@@ to see all key bindings for given
+  prefix keystrokes
 - Keybinding briefly: @@html:<kbd>@@C-h c@@html:</kbd>@@, which command
   for given keystroke
 - Message: @@html:<kbd>@@C-h e@@html:</kbd>@@ see the logging of echo
