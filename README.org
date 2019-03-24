@@ -834,50 +834,68 @@ on ancient Emacs.
 	 :CUSTOM_ID: c-programming
 	 :END:
 
-Prefer Emacs buitin [[https://www.gnu.org/software/emacs/manual/html_mono/ccmode.html][CC mode]] and [[https://www.gnu.org/software/emacs/manual/html_node/semantic/Semantic-mode.html][Semantic mode]] for /editing/ C code. [[https://github.com/junjiemars/.emacs.d/][More
-Reasonable Emacs]] has builtin support for [[https://www.gnu.org/software/emacs/manual/html_node/semantic/Semantic-mode.html][Semantic mode]] to find correct
-system include paths.
-
-Using @@html:<kbd>@@M-x compile@@html:</kbd>@@ to /make/.
-
-[[https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/][cdb]] and [[https://lldb.llvm.org/][lldb]] debuggers had been perfect integrated with Emacs.
-
-
-C programing with Emacs should be awesome if [[https://github.com/junjiemars/nore][Nore]] already on your
-machine.
+Now, we are in the cycle of editing, compiling, debugging.
 
 /screenshots/:
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-editing-on-darwin-gui.png][editing on Darwin]]
-- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-compile-on-windows.png][compile via msvc]]
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-darwin.png][debugging via lldb on Darwin]]
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-linux.png][debugging via lldb on Ubuntu]]	
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-cdb-on-windows.png][debugging via cdb]]
 
-*** Find C system include
+*** Editing
 		:PROPERTIES:
-		:CUSTOM_ID: find-c-system-include
+		:CUSTOM_ID: c-programming-editing
 		:END:
 
-=system-cc-include= function used to find system include files locally
-or remotely for gcc, clang and msvc.
+**** View C system include
+		 :PROPERTIES:
+		 :CUSTOM_ID: c-programming-view-c-system-include
+		 :END:
 
-Now, it is easy to open a C include locally or remotely when you
-editing C code in Emacs (=ff-find-other-file=).
+Like /vi/'s @@html:<kbd>@@gf@@html:</kbd>@@ command, you can using
+@@html:<kbd>@@C-c f i@@html:</kbd>@@ to open C system include file on
+local or remote in =view-mode= and supports /gcc/, /clang/, and
+/msvc/.
 
-*** C macro expand
-		:PROPERTIES:
-		:CUSTOM_ID: c-macro-expand
-		:END:
+**** Macro expand
+		 :PROPERTIES:
+		 :CUSTOM_ID: c-programming-macro-expand
+		 :END:
 
-=c-macro-expand=: @@html:<kbd>@@C-c C-e@@html:</kbd>@@ for gcc, clang
-and msvc on local or remote.
-
-On Windows, the msvc's compiler =cl= does not support retrieve input
-from /stdin/, so =c-macro-expansion= function sucks. But if there are
-GNU's =xargs=, we can resolve this problem.
+Mark the code that include a macro call then @@html:<kbd>@@C-c
+C-e@@html:</kbd>@@, you should see the expansion of the macro in
+=*Macroexpansion*=, whatever you are using /gcc/, /clang/ and /msvc/,
+locally or remotely.
 
 /screenshots/:
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-macro-expansion-on-windows.png][macro expansion for msvc]]
+
+*** Compiling
+		:PROPERTIES:
+		:CUSTOM_ID: c-programming-compiling
+		:END:
+
+Using @@html:<kbd>@@M-x compile@@html:</kbd>@@ to /build/ or /test/.
+
+For /msvc/ there are need tricks to works with Emacs, More Resonable
+Emacs will generate a /msvc/'s host environment =cc-env.bat= for you
+that make life easy and if [[https://github.com/junjiemars/nore][Nore]] already on your machine, now life is
+perfect.
+
+/screenshots/:
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-compile-on-windows.png][compile via msvc]]
+
+*** Debugging
+		:PROPERTIES:
+		:CUSTOM_ID: c-programming-debugging
+		:END:
+
+[[https://www.gnu.org/software/gdb/][gdb]], [[https://lldb.llvm.org/][lldb]] and [[https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/][cdb]] had been perfect integrated within this kit.
+
+/screenshots/:
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-darwin.png][debugging via lldb on Darwin]]
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-linux.png][debugging via lldb on Ubuntu]]	
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-cdb-on-windows.png][debugging via cdb]]
 
 ** Common Lisp programming
 	 :PROPERTIES:
@@ -887,7 +905,7 @@ GNU's =xargs=, we can resolve this problem.
 	 :PROPERTIES:
 	 :CUSTOM_ID: programming_scheme_programming
 	 :END:
-
+* Customizing
 * Troubleshoting
    :PROPERTIES:
    :CUSTOM_ID: troubleshoting
