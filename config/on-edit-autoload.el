@@ -372,7 +372,10 @@ More accurate than `mark-defun'."
 (defun find-web@ (engine)
   "Find web via search ENGINE."
   (interactive "sfind-web@ bing|duck|google|so: ")
-  (let* ((w (cdr (assoc** (string-trim>< engine)
+  (let* ((w (cdr (assoc** (let ((x (string-trim>< engine)))
+                            (if (string= "" x)
+                                "bing"
+                              x))
                           '(("bing"
                              "https://www.bing.com/" . "search?q=")
                             ("duck"
@@ -464,5 +467,6 @@ If ARG is non-nil then copy the file name to kill ring."
 
 (define-key (current-global-map) (kbd "C-c n") #'echo-buffer-file-name)
 
+ ;; end of `echo-buffer-file-name'
 
 ;; end of file
