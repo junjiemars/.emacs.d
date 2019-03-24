@@ -390,7 +390,7 @@ More accurate than `mark-defun'."
                          #'string=))
                q)))))
 
-(define-key (current-global-map) (kbd "C-c f w") #'find-web@)
+(define-key (current-global-map) (kbd "C-c w") #'find-web@)
 
  ;; end of `find-web@'
 
@@ -465,7 +465,7 @@ If ARG is non-nil then copy the file name to kill ring."
     (when (and arg n)
       (kill-new n))))
 
-(define-key (current-global-map) (kbd "C-c f n") #'echo-buffer-file-name)
+(define-key (current-global-map) (kbd "C-c n") #'echo-buffer-file-name)
 
 
 ;; end of file
