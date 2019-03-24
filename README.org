@@ -79,7 +79,6 @@ yourself some little Elisp (M-x info).
   behaves in the same way.
 - *Awesome style*: [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-windows.png][Windows]], [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-darwin.png][Darwin]], and [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-linux.png][Linux]]
 
-
 ** Requirements
    :PROPERTIES:
    :CUSTOM_ID: requirements
@@ -111,14 +110,13 @@ yourself some little Elisp (M-x info).
 - Navigating, finding, grepping in the same way wherever, ...
 - Org Mode that's your new life, ...
 - Reliable programming experiments, C, Lisp, ...
-- Bash on Windows, ...
 
 ** Install
    :PROPERTIES:
    :CUSTOM_ID: install
    :END:
 
-Just one thing you need to do, clone it (just <500KB) to your HOME
+Just one thing you need to do, clone it (just <500KB) to your =HOME=
 directory:
 
 #+BEGIN_SRC sh
@@ -309,7 +307,7 @@ Introduce rules of naming /files/ and /functions/
 - [[#package][Package]]
 - [[#indent][Indent]]
 - [[#file][File]]
-- [[#edit][Edit]]
+- [[#editing][Editing]]
 - [[#keys][Keys]]
 
 
@@ -580,7 +578,7 @@ The /user defined/ package spec default locate in =(emacs-home*
 - =:cond= decide whether to install =:packages= or compile =:compile=
 - =:packages= a list of package names or tar file names
 - =:compile= when installed packages, a list of files that should be
-  compiled only or be loaded after be compiled
+  compiled only or be loaded after been compiled
 
 You can use any =Elisp= functions after aboved keywords.
 - =version-supported-p= macro checking the version of current Emacs at
@@ -688,9 +686,9 @@ For =.rar= archive, emacs really sucks.
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/org-odt-export-to-odt-on-windows.png][org-odt-export-to-odt]]
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/dired-compress-file-suffixes-version-24lt.png][dired-compress-file-suffixes]]
 
-** Edit
+** Editing
 	 :PROPERTIES:
-	 :CUSTOM_ID: edit
+	 :CUSTOM_ID: editing
 	 :END:
 
 
@@ -734,7 +732,7 @@ More Reasonable Emacs also supports [[http://ctags.sourceforge.net/][Exuberant C
 In terminal, Emacs can not /copy to/ or /paste from/ system clipboard
 when on Darwin or Linux. For such cases, we need external programs to
 help us do the job. Now, More Reasonable Emacs integrates this
-functionalities, so we can use natrual keys (such as
+functionalities, so we can use natural keys (such as
 @@html:<kbd>@@C-w@@html:</kbd>@@, @@html:<kbd>@@C-y@@html:</kbd>@@) to
 /copy to/ or /paste from/ system clipboard.
 
@@ -749,7 +747,7 @@ There are no uniformed [[https://www.emacswiki.org/emacs/IncrementalSearch][isea
 unified to two functions: =isearch-forward*= and =isearch-backward*=.
 
 In More Reasonable Emacs, we can search the text of activated
-*region*, the *symbol* at point forward or backward. By default,
+ *region*, the *symbol* at point forward or backward. By default,
 @@html:<kbd>@@C-s@@html:</kbd>@@ and @@html:<kbd>@@C-r@@html:</kbd>@@
 will search current symbol at point forward or backward just like
 /vi/'s @@html:<kbd>@@*@@html:</kbd>@@ and
