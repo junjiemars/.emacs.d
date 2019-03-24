@@ -908,14 +908,6 @@ perfect.
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-linux.png][debugging via lldb on Ubuntu]]	
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-cdb-on-windows.png][debugging via cdb]]
 
-** Common Lisp programming
-	 :PROPERTIES:
-	 :CUSTOM_ID: programming_common_lisp_programming
-	 :END:
-** Scheme programming
-	 :PROPERTIES:
-	 :CUSTOM_ID: programming_scheme_programming
-	 :END:
 * Customizing
 * Troubleshoting
    :PROPERTIES:
