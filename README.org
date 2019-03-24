@@ -914,14 +914,19 @@ perfect.
    :CUSTOM_ID: troubleshoting
    :END:
 
-1. Check Emacs configurations: 
+1. @@html:<kbd>@@M: (clean-compiled-files)@@html:</kbd>@@ then exit
+   and reopen Emacs.
+2. Check Emacs configurations: 
   - @@html:<kbd>@@M: system-configuration-options@@html:</kbd>@@
   - @@html:<kbd>@@M: system-configuration-features@@html:</kbd>@@
   - @@html:<kbd>@@M: features@@html:</kbd>@@
 	- @@html:<kbd>@@M: load-history@@html:</kbd>@@
-2.  @@html:<kbd>@@M: (clean-compiled-files)@@html:</kbd>@@ then exit and reopen Emacs.
-3.  Check =*Compilation-Log*= buffer, then do #2.
-4.  Disable the problematic item in =(emacs-home* "private/self-path.el")=, then do #2.
+	then do #1
+3. Check =*Compilation-Log*= buffer, then do #1
+4. Disable the problematic item in =(emacs-home*
+   "private/self-env-spec.el")=, then do #1
+5. Disable the problematic item in =(emacs-home*
+   "private/self-path.el")=, then do #1
 
 * Mnemonic
 	:PROPERTIES:
