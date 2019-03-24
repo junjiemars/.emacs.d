@@ -825,10 +825,21 @@ on ancient Emacs.
 	:CUSTOM_ID: programming
 	:END:
 	
-** Elisp programming
+** Lisp programming
 	 :PROPERTIES:
-	 :CUSTOM_ID: programming_elisp_programming
+	 :CUSTOM_ID: lisp-programming
 	 :END:
+
+Lisp programming in Emacs already good enough, if [[https://www.emacswiki.org/emacs/ParEdit][ParEdit]] and
+[[https://github.com/Malabarba/aggressive-indent-mode][aggressive-indent-mode]] installed editing Lisp code more easy.
+
+[[https://github.com/slime/slime][slime]] is the best tool for Common Lisp programming. And for Scheme
+programming the [[http://www.nongnu.org/geiser/][Geiser]] the pretty good.
+
+*** Editing
+
+*** REPL
+
 ** C programming
 	 :PROPERTIES:
 	 :CUSTOM_ID: c-programming
