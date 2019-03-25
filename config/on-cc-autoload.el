@@ -205,7 +205,7 @@ include directories. The REMOTE argument from `file-remote-p'."
                        "xargs"
                        (lambda (xargs)
                          (let ((x (shell-command* "echo xxx"
-                                    "&& echo.zzz"
+                                    "&& echo zzz"
                                     "|xargs -0")))
                            (and (zerop (car x))
                                 (string-match "^zzz" (cdr x)))))))
