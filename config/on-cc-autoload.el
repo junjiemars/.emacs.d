@@ -7,12 +7,6 @@
 ;;;;
 
 
-(defvar system-cc-include nil
-  "The system include paths used by C compiler.
-
-This should be set with `system-cc-include'")
-
-
 ;; msvc host environment
 
 (platform-supported-when 'windows-nt
@@ -215,7 +209,7 @@ include directories. The REMOTE argument from `file-remote-p'."
     (with-current-buffer buffer (view-mode 1))))
 
 
- ;; system cc include
+ ;; end of system-cc-include
 
 
 (defadvice ff-find-other-file (before ff-find-other-file-before compile)
@@ -228,6 +222,7 @@ include directories. The REMOTE argument from `file-remote-p'."
 (defadvice ff-find-other-file (after ff-find-other-file-after compile)
   "View the other-file in `view-mode' when `system-cc-include-p' is t."
   (view-system-cc-include (current-buffer)))
+
 
 (defadvice c-macro-expand (around c-macro-expand-around compile)
   "cl.exe cannot retrieve from stdin."
@@ -279,10 +274,12 @@ include directories. The REMOTE argument from `file-remote-p'."
 
   ;; find c include file
   (when-var% c-mode-map 'cc-mode
+
     ;; keymap: find c include file
     (when-fn% 'ff-find-other-file 'find-file
       (define-key% c-mode-map (kbd "C-c f i") #'ff-find-other-file)
       (ad-activate #'ff-find-other-file t))
+
     ;; keymap: indent line or region
     (when-fn% 'c-indent-line-or-region 'cc-cmds
       (define-key% c-mode-map (kbd "TAB") #'c-indent-line-or-region))))
