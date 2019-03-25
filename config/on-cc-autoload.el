@@ -13,6 +13,8 @@
 This should be set with `system-cc-include'")
 
 
+;; msvc host environment
+
 (platform-supported-when 'windows-nt
   
   (defun check-vcvarsall-bat ()
@@ -58,6 +60,42 @@ This should be set with `system-cc-include'")
                  "popd\n"
                  "echo \"%INCLUDE%\"\n")
          (v-home% ".exec/cc-env.bat"))))))
+
+
+(platform-supported-when 'windows-nt
+
+  (defun make-xargs-bin ()
+    "Make a GNU's xargs alternation in `exec-path'."
+    (let* ((file (v-home% ".exec/xargs.c"))
+           (xargs (v-home* ".exec/xargs.exe"))
+           (cc (concat "cc-env.bat &&"
+                       " cl -nologo -W4 -DNDEBUG=1 -O2 -EHsc -utf-8"
+                       (concat  " " file) 
+                       " -Fe" xargs
+                       " -link -release")))
+      (when (save-str-to-file
+             (concat "#include <stdio.h>\n"
+                     "#define _unused_(x) ((void)(x))\n"
+                     "int main(int argc, char **argv) {\n"
+                     "  _unused_(argc);\n"
+                     "  _unused_(argv);\n"
+                     "  int ch;\n"
+                     "  while (EOF != (ch = fgetc(stdin))) {\n"
+                     "    fputc(ch, stdout);\n"
+                     "  }\n"
+                     "  if (ferror(stdin)) {\n"
+                     "    perror(\"read failed from stdin\");\n"
+                     "    return 1;\n"
+                     "  }\n"
+                     "  return 0;\n"
+                     "}\n")
+             file)
+        (let ((cmd (shell-command* cc)))
+          (when (zerop (car cmd))
+            xargs))))))
+
+
+ ;; msvc host environment
 
 
 (defmacro norm-file-remote-p (file)
@@ -119,6 +157,8 @@ On ancient Emacs, `file-remote-p' will return a vector."
               inc)))))))
 
 
+;; system cc include
+
 (defun system-cc-include (&optional cached remote)
   "Returns a list of system include directories. 
 
@@ -172,7 +212,8 @@ include directories. The REMOTE argument from `file-remote-p'."
     (with-current-buffer buffer (view-mode 1))))
 
 
-
+ ;; system cc include
+
 
 (defadvice ff-find-other-file (before ff-find-other-file-before compile)
   "Set `cc-search-directories' based on local or remote."
@@ -201,14 +242,15 @@ include directories. The REMOTE argument from `file-remote-p'."
           ;; [C-c C-e] macro expand for msvc
           (when% (and (or (executable-find% "cc-env.bat")
                           (make-cc-env-bat))
-                      (executable-find%
-                       "xargs"
-                       (lambda (xargs)
-                         (let ((x (shell-command* "echo xxx"
-                                    "&& echo zzz"
-                                    "|xargs -0")))
-                           (and (zerop (car x))
-                                (string-match "^zzz" (cdr x)))))))
+                      (or (executable-find%
+                           "xargs"
+                           (lambda (xargs)
+                             (let ((x (shell-command* "echo xxx"
+                                        "&& echo zzz"
+                                        "|xargs -0")))
+                               (and (zerop (car x))
+                                    (string-match "^zzz" (cdr x))))))
+                          (make-xargs-bin)))
             (let* ((tmp (make-temp-file
 		                     (expand-file-name "cc-" temporary-file-directory)))
                    (c-macro-preprocessor
