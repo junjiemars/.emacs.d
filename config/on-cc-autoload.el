@@ -66,12 +66,13 @@ This should be set with `system-cc-include'")
 
   (defun make-xargs-bin ()
     "Make a GNU's xargs alternation in `exec-path'."
-    (let* ((file (v-home% ".exec/xargs.c"))
-           (xargs (v-home* ".exec/xargs.exe"))
+    (let* ((c (v-home% ".exec/xargs.c"))
+           (exe (v-home% ".exec/xargs.exe"))
            (cc (concat "cc-env.bat &&"
                        " cl -nologo -W4 -DNDEBUG=1 -O2 -EHsc -utf-8"
-                       (concat  " " file) 
-                       " -Fe" xargs
+                       " " c
+                       " -Fo" (v-home% ".exec/")
+                       " -Fe" exe
                        " -link -release")))
       (when (save-str-to-file
              (concat "#include <stdio.h>\n"
@@ -89,10 +90,12 @@ This should be set with `system-cc-include'")
                      "  }\n"
                      "  return 0;\n"
                      "}\n")
-             file)
+             c)
         (let ((cmd (shell-command* cc)))
           (when (zerop (car cmd))
-            xargs))))))
+            (delete-file c)
+            (delete-file (v-home% ".exec/xargs.obj"))
+            exe))))))
 
 
  ;; msvc host environment
