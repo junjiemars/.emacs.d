@@ -273,7 +273,6 @@ include directories. The REMOTE argument from `file-remote-p'."
 
 (with-eval-after-load 'cc-mode
 
-  ;; find c include file
   (when-var% c-mode-map 'cc-mode
 
     ;; keymap: find c include file
