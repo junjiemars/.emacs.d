@@ -122,7 +122,8 @@ On ancient Emacs, `file-remote-p' will return a vector."
                              " \"echo '' | cc -v -E 2>&1 >/dev/null -\"")))
                (platform-supported-if 'windows-nt
                    ;; Windows: msmvc
-                   (shell-command* (make-cc-env-bat))
+                   (shell-command* (or (executable-find% "cc-env.bat")
+                                       (make-cc-env-bat)))
                  ;; Darwin/Linux: clang or gcc
                  (shell-command* "echo '' | cc -v -E 2>&1 >/dev/null -"))))
         (parser (lambda (preprocessed)
