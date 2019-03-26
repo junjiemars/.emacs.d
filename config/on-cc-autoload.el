@@ -137,8 +137,7 @@ On ancient Emacs, `file-remote-p' will return a vector."
     (when (zerop (car cmd))
       (if remote
           ;; Unix-like
-          (when (zerop (car cmd))
-            (funcall parser (cdr cmd)))
+          (funcall parser (cdr cmd))
         (platform-supported-if 'windows-nt
             ;; Windows: msvc
             (mapcar (lambda (x) (windows-nt-posix-path x))
