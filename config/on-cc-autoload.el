@@ -114,7 +114,7 @@ On ancient Emacs, `file-remote-p' will return a vector."
 
 
 (defun check-cc-include (&optional remote)
-  "Return cc include paths list."
+  "Return a list of system cc include path."
   (let ((cmd (if remote
                  (when% (executable-find% "ssh")
                    (shell-command* "ssh"
