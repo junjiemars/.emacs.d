@@ -150,6 +150,20 @@
 
 ;; Mark thing at point
 
+(defun thing-at-point-bounds-of-string-at-point ()
+  "Return the bounds of the double quoted string at point.
+ [Internal function used by `bounds-of-thing-at-point'.]"
+  (save-excursion
+    (let ((beg (nth 8 (syntax-ppss))))
+      (when beg
+        (goto-char beg)
+        (forward-sexp)
+        (cons (1+  beg) (1- (point)))))))
+
+(put 'string 'bounds-of-thing-at-point
+     'thing-at-point-bounds-of-string-at-point)
+
+
 (eval-when-compile
   
   (defmacro _mark-thing@ (begin end)
@@ -210,6 +224,14 @@ More accurate than `mark-defun'."
       (_mark-thing@ (goto-char (cdr bounds))
                     (goto-char (car bounds))))))
 
+(defun mark-string@ ()
+  ""
+  (interactive)
+  (let ((bounds (bounds-of-thing-at-point 'string)))
+    (when bounds
+      (_mark-thing@ (goto-char (car bounds))
+                    (goto-char (cdr bounds))))))
+
 (unless-fn% 'thing-at-point-bounds-of-list-at-point 'thingatpt
   ;; fix the wrong behavior of (bounds-of-thing-at-point 'list) on
   ;; ancient Emacs.
@@ -245,6 +267,7 @@ More accurate than `mark-defun'."
 (define-key (current-global-map) (kbd "C-c m l") #'mark-line@)
 (define-key (current-global-map) (kbd "C-c m a") #'mark-list@)
 (define-key (current-global-map) (kbd "C-c m d") #'mark-defun@)
+(define-key (current-global-map) (kbd "C-c m q") #'mark-string@)
 
 
 ;; Makes killing/yanking interact with the clipboard
