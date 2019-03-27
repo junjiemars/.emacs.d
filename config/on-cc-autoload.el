@@ -270,6 +270,22 @@ include directories. The REMOTE argument from `file-remote-p'."
         ad-do-it))))
 
 
+;; eldoc
+
+;; (defun c-eldoc-fn-arg ()
+;;   "See `eldoc-function-argstring'."
+;;   (substring-no-properties (thing-at-point 'symbol)))
+
+;; (defun c-eldoc-doc-fn ()
+;;   "See `eldoc-documentation-function'."
+;;   (let ((s (c-eldoc-fn-arg)))
+;;     (when (stringp s)
+;;       (cond ((string= "printf" s) "printf(fmt, ...)")
+;;             ((string= "_unused_" s) "#define _unused_(x) ((void)(x))")))))
+
+ ;; end of eldoc
+
+
 (with-eval-after-load 'cc-mode
 
   (when-var% c-mode-map 'cc-mode
