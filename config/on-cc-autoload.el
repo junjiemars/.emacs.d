@@ -272,13 +272,13 @@ include directories. The REMOTE argument from `file-remote-p'."
 
 ;; eldoc
 
-;; (defun c-eldoc-fn-arg ()
+;; (defun c-eldoc-fn-and-arg ()
 ;;   "See `eldoc-function-argstring'."
 ;;   (substring-no-properties (thing-at-point 'symbol)))
 
 ;; (defun c-eldoc-doc-fn ()
 ;;   "See `eldoc-documentation-function'."
-;;   (let ((s (c-eldoc-fn-arg)))
+;;   (let ((s (c-eldoc-fn-and-arg)))
 ;;     (when (stringp s)
 ;;       (cond ((string= "printf" s) "printf(fmt, ...)")
 ;;             ((string= "_unused_" s) "#define _unused_(x) ((void)(x))")))))
@@ -297,7 +297,14 @@ include directories. The REMOTE argument from `file-remote-p'."
 
     ;; keymap: indent line or region
     (when-fn% 'c-indent-line-or-region 'cc-cmds
-      (define-key% c-mode-map (kbd "TAB") #'c-indent-line-or-region))))
+      (define-key% c-mode-map (kbd "TAB") #'c-indent-line-or-region)))
+
+;;   ;; eldoc
+;;   (set (make-local-variable 'eldoc-documentation-function)
+;;        #'c-eldoc-doc-fn)
+;;   (turn-on-eldoc-mode)
+
+  )
 
 
 (with-eval-after-load 'cmacexp
