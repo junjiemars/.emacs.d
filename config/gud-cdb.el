@@ -341,8 +341,8 @@ directory and source-file directory for your debugger."
   (setq comint-prompt-read-only t)
 
   ;; M-{ and M-} 
-  (setq (make-local-variable 'paragraph-separate) "\\'")
-  (setq (make-local-variable 'paragraph-start) +cdb-prompt-regexp+)
+  (set (make-local-variable 'paragraph-separate) "\\'")
+  (set (make-local-variable 'paragraph-start) +cdb-prompt-regexp+)
 
   (run-hooks 'gud-cdb-mode-hook)
   
