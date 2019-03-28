@@ -157,7 +157,7 @@ On ancient Emacs, `file-remote-p' will return a vector."
 ;; system cc include
 
 (defun system-cc-include (&optional cached remote)
-  "Returns a list of system include directories. 
+  "Return a list of system include directories. 
 
 Load `system-cc-include' from file when CACHED is t, 
 otherwise check cc include on the fly.
@@ -272,16 +272,43 @@ include directories. The REMOTE argument from `file-remote-p'."
 
 ;; eldoc
 
-;; (defun c-eldoc-fn-and-arg ()
-;;   "See `eldoc-function-argstring'."
-;;   (substring-no-properties (thing-at-point 'symbol)))
+;; (define-hash-table-test 'cc-id= #'string= #'sxhash-equal)
 
-;; (defun c-eldoc-doc-fn ()
+;; (defun check-cc-identity (&optional remote)
+;;   "Return a hashtable of cc identities."
+;;   (ignore* remote)
+;;   (let ((tbl (make-hash-table :test 'cc-std-id=)))
+;;     (puthash "printf" "__inline int __cdecl printf(char const* const _Format, ...)" tbl)
+;;     (puthash "fflush" "int __cdecl fflush(FILE* _Stream);" tbl)
+;;     tbl))
+
+;; (defun system-cc-identity (&optional cached remote)
+;;   "Return a hashtable of cc identities."
+;;   (let* ((rid (when remote
+;;                 (mapconcat #'identity (norm-rid remote) "-")))
+;;          (c (if remote
+;;                 (v-home* (concat ".exec/.cc-id-" rid ".el"))
+;;               (v-home% ".exec/.cc-id.el")))
+;;          (cc (concat c "c"))
+;;          (var (if remote
+;;                   (intern (concat "cc-id@" rid))
+;;                 'system-cc-id)))
+;;     (if (and cached (file-exists-p cc))
+;;         (load cc)
+;;       (let ((tbl (check-cc-identity remote)))
+;;         (set var tbl)
+;;         (when (save-sexp-to-file `(set ',var ',tbl) c)
+;;           (byte-compile-file c))))
+;;     (symbol-value var)))
+
+
+;; (defun cc-eldoc-doc-fn ()
 ;;   "See `eldoc-documentation-function'."
-;;   (let ((s (c-eldoc-fn-and-arg)))
-;;     (when (stringp s)
-;;       (cond ((string= "printf" s) "printf(fmt, ...)")
-;;             ((string= "_unused_" s) "#define _unused_(x) ((void)(x))")))))
+;;   (let ((tbl (system-cc-identity t))
+;;         (sym (thing-at-point 'symbol)))
+;;     (when (and tbl (stringp sym))
+;;       (gethash (substring-no-properties sym) tbl))))
+
 
  ;; end of eldoc
 
@@ -299,10 +326,11 @@ include directories. The REMOTE argument from `file-remote-p'."
     (when-fn% 'c-indent-line-or-region 'cc-cmds
       (define-key% c-mode-map (kbd "TAB") #'c-indent-line-or-region)))
 
-;;   ;; eldoc
-;;   (set (make-local-variable 'eldoc-documentation-function)
-;;        #'c-eldoc-doc-fn)
-;;   (turn-on-eldoc-mode)
+  ;; eldoc
+  ;; (message "!!! load cc-mode")
+  ;; (set (make-local-variable 'eldoc-documentation-function)
+  ;;      #'cc-eldoc-doc-fn)
+  ;; (turn-on-eldoc-mode)
 
   )
 
