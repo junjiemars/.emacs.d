@@ -272,9 +272,7 @@ include directories. The REMOTE argument from `file-remote-p'."
 
 ;; eldoc
 
-(if-fn% #'sxhash-equal nil
-        (define-hash-table-test 'cc-id= #'string= #'sxhash-equal)
-  (define-hash-table-test 'cc-id= #'string= #'sxhash))
+(define-hash-table-test 'cc-id= #'string= #'sxhash)
 
 (defmacro save-hash-table-to-file (var table file)
   "Save the TABLE that referenced by VAR to FILE."
