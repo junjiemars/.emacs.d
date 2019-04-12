@@ -100,14 +100,22 @@
   (setq auto-save-default (self-spec->*env-spec :edit :auto-save-default)))
 
 
-;; find-tag and pop-tag-mark
-;; same as Emacs22+
+;; `find-tag'
 (unless-fn% 'xref-find-definitions 'xref
+  ;; pop-tag-mark same as Emacs22+
   (when-fn% 'pop-tag-mark 'etags
     (with-eval-after-load 'etags
       ;; define keys for `pop-tag-mark' and `tags-loop-continue'
       (define-key% (current-global-map) (kbd "M-,") #'pop-tag-mark)
-      (define-key% (current-global-map) (kbd "M-*") #'tags-loop-continue))))
+      (define-key% (current-global-map) (kbd "M-*") #'tags-loop-continue)))
+
+  ;; find-tag into `view-mode'
+  (defadvice find-tag (after find-tag-after compile)
+    (with-current-buffer (current-buffer)
+    (view-mode t)))
+  
+  (with-eval-after-load 'etags
+    (ad-activate #'find-tag t)))
 
 
 (version-supported-when > 24.4
