@@ -100,8 +100,18 @@
   (setq auto-save-default (self-spec->*env-spec :edit :auto-save-default)))
 
 
-;; `find-tag'
-(unless-fn% 'xref-find-definitions 'xref
+;; `find-tag' or `xref-find-definitions' into `view-mode'
+(if-fn% 'xref-find-definitions 'xref
+        (progn
+          ;; `xref-find-definitions' into `view-mode'
+          (defadvice xref-find-definitions
+              (after xref-find-definitions-after compile)
+            (with-current-buffer (current-buffer)
+              (view-mode 1)))
+          
+          (with-eval-after-load 'xref
+            (ad-activate #'xref-find-definitions t)))
+  
   ;; pop-tag-mark same as Emacs22+
   (when-fn% 'pop-tag-mark 'etags
     (with-eval-after-load 'etags
@@ -112,7 +122,7 @@
   ;; find-tag into `view-mode'
   (defadvice find-tag (after find-tag-after compile)
     (with-current-buffer (current-buffer)
-    (view-mode t)))
+      (view-mode 1)))
   
   (with-eval-after-load 'etags
     (ad-activate #'find-tag t)))
