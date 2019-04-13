@@ -516,7 +516,7 @@ If ARG is non-nil then copy the file name to kill ring."
   (defun insert-char* (character &optional count inherit)
     "Interactive `insert-char' for ancient Emacs."
     (interactive
-     (list (read-string "Insert character (Unicode name or hex): ")
+     (list (read-string "Insert character (Unicode number or hex): ")
            (prefix-numeric-value current-prefix-arg)
            t))
     (let ((c (cond ((string-match
