@@ -1061,6 +1061,7 @@ It's *self-documenting* and great, keep reading it frequently.
 - remove all but one empty line: @@html:<kbd>@@C-x C-o@@html:</kbd>@@
 - delete entire line: @@html:<kbd>@@C-S-DEL@@html:</kbd>@@
 - delete to end of sentence: @@html:<kbd>@@M-k@@html:</kbd>@@
+- insert char: @@html:<kbd>@@C-x 8 RET@@html:</kbd>@@
 
 ** Coding
 	 :PROPERTIES:
