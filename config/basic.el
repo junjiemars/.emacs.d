@@ -606,6 +606,18 @@ item for which (PRED item) returns t."
 
 ;; define key macro
 
+(defmacro if-key% (keymap key def then &rest else)
+  "If KEY had been defined to DEF in KEYMAP do then, otherwise do ELSE..."
+  (declare (indent 4))
+  `(if% (eq ,def (lookup-key ,keymap ,key))
+       ,then
+     ,@else))
+
+(defmacro unless-key% (keymap key def &rest body)
+  "Do BODY unless KEY had been defined to DEF in KEYMAP."
+  (declare (indent 3))
+  `(if-key% ,keymap ,key ,def nil ,@body))
+
 (defmacro define-key% (keymap key def)
   "Define KEY as DEF in KEYMAP when the KEY binding of DEF is not exists."
   `(unless% (eq ,def (lookup-key ,keymap ,key))
