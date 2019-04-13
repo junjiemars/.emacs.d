@@ -101,25 +101,30 @@ If DIR is nil then load the built-in `customize-themes' by NAME."
 (theme-supported-p
 
     (when (self-spec->*env-spec :theme :allowed)
-      (cond ((and (self-spec->*env-spec :theme :name)
-                  (self-spec->*env-spec :theme :custom-theme-directory))
-             ;; load theme from :custom-theme-directory
-             (if (self-spec->*env-spec :theme :compile)
-                 (when (compile!
-                         (compile-unit* (concat
-                                         (self-spec->*env-spec :theme :custom-theme-directory)
-                                         (symbol-name (self-spec->*env-spec :theme :name))
-                                         "-theme.el")
-                                        t t))
-                   (self-load-theme! (self-spec->*env-spec :theme :name)
-                                     (concat (self-spec->*env-spec :theme :custom-theme-directory)
-                                             (v-path* "/"))))
-               (self-load-theme! (self-spec->*env-spec :theme :name)
-                                 (self-spec->*env-spec :theme :custom-theme-directory))))
+      (cond
+       ((and (self-spec->*env-spec :theme :name)
+             (self-spec->*env-spec :theme :custom-theme-directory))
+        ;; load theme from :custom-theme-directory
+        (if (self-spec->*env-spec :theme :compile)
+            (when
+                (compile!
+                  (compile-unit*
+                   (concat
+                    (self-spec->*env-spec :theme :custom-theme-directory)
+                    (symbol-name (self-spec->*env-spec :theme :name))
+                    "-theme.el")
+                   t t))
+              (self-load-theme!
+               (self-spec->*env-spec :theme :name)
+               (concat (self-spec->*env-spec :theme :custom-theme-directory)
+                       (v-path* "/"))))
+          (self-load-theme!
+           (self-spec->*env-spec :theme :name)
+           (self-spec->*env-spec :theme :custom-theme-directory))))
 
-            ;; load builtin theme
-            ((self-spec->*env-spec :theme :name)
-             (self-load-theme! (self-spec->*env-spec :theme :name))))))
+       ;; load builtin theme
+       ((self-spec->*env-spec :theme :name)
+        (self-load-theme! (self-spec->*env-spec :theme :name))))))
 
 
  ;; end of theme-supported-p
