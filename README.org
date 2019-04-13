@@ -1034,7 +1034,6 @@ It's *self-documenting* and great, keep reading it frequently.
 - join next line: @@html:<kbd>@@C-u 1 M-^@@html:</kbd>@@
 - dynamic abbreviation: @@html:<kbd>@@M-/@@html:</kbd>@@
 - query replace: @@html:<kbd>@@M-%@@html:</kbd>@@
-- what cursor position: @@html:<kbd>@@C-x =@@html:</kbd>@@
 - upcase region: @@html:<kbd>@@C-x C-u@@html:</kbd>@@
 - downcase region: @@html:<kbd>@@C-x C-l@@html:</kbd>@@
 - transpose characters: @@html:<kbd>@@C-t@@html:</kbd>@@
@@ -1046,6 +1045,7 @@ It's *self-documenting* and great, keep reading it frequently.
 - set input method: @@html:<kbd>@@C-x RET C-\@@html:</kbd>@@
 - describe current input method: @@html:<kbd>@@C-h I@@html:</kbd>@@
 - insert char: @@html:<kbd>@@C-x 8 RET@@html:</kbd>@@ GREEK SMALL LETTER LAMBDA
+- what cursor position: @@html:<kbd>@@C-x =@@html:</kbd>@@	
 - describe char: @@html:<kbd>@@C-u C-x =@@html:</kbd>@@
 - quoted insert: @@html:<kbd>@@C-q@@html:</kbd>@@, such as page break
   @@html:<kbd>@@C-q C-l@@html:</kbd>@@, use @@html:<kbd>@@C-x [@@html:</kbd>@@ to backward or @@html:<kbd>@@C-x ]@@html:</kbd>@@ to forward
