@@ -620,9 +620,8 @@ item for which (PRED item) returns t."
 
 (defmacro define-key% (keymap key def)
   "Define KEY as DEF in KEYMAP when the KEY binding of DEF is not exists."
-  `(unless% (eq ,def (lookup-key ,keymap ,key))
+  `(unless-key% ,keymap ,key ,def
      (define-key ,keymap ,key ,def)))
-
 
  ;; End of key macro
 
