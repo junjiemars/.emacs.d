@@ -389,7 +389,9 @@
                             #'save-buffers-kill-terminal
                             "defined"
                      "undefined")))
-  (should (not (unless-key% (current-global-map) (kbd "C-x C-c")
-                            "undefined"))))
+  (should (string= "undefined"
+                   (unless-key% (current-global-map) (kbd "C-x C-c")
+                                #'save-buffers-kill-terminal-xxx
+                     "undefined"))))
 
 ;; end of file
