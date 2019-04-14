@@ -209,6 +209,16 @@ If VAR requires the FEATURE, load it on compile-time."
                          (thread-join thread)
                        thread))))
        (ignore* ,join)
+       (function ,fn)))
+
+  (defmacro _threading-call (fn &optional join name)
+    "Make FN as threading call."
+    `(if-fn% 'make-thread nil
+             (let ((thread (make-thread (function ,fn) ,name)))
+               (if% ,join
+                   (thread-join thread)
+                 thread))
+       (ignore* ,join ,name)
        (function ,fn))))
 
 
