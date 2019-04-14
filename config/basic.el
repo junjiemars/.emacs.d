@@ -458,15 +458,13 @@ shell-command* run in:
 
 
 (defmacro executable-find% (command &optional prefer)
-  "Search for COMMAND in `exec-path' and return the absolute file name 
-at compile-time when PREFER is nil, same as `executable-find'.
-
-Search for COMMAND in %PATH% or $PATH and return the absolute file name 
-at compile-time when PREFER is non nil.
+  "Search for COMMAND in %PATH% or $PATH and return the absolute
+file name at compile-time when PREFER is non-nil, otherwise same
+as `executable-find'.
 
 Return nil if no COMMAND found or no PREFER command found.
 Return the first matched one, if multiple COMMANDs had been found
-and `funcall' PREFER returns t.
+or the one that `funcall' PREFER returns t.
 "
   (if prefer
       (let ((cmd (shell-command* (platform-supported-if 'windows-nt
