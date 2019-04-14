@@ -352,10 +352,12 @@ No matter the declaration order, the executing order is:
 (defmacro def-self-env-spec (&rest spec)
   "Define default Emacs env SPEC.
 
-If there are no self-path.el under (emacs-home* \"private/\") directory, 
-More Reasonable Emacs should create a default (emacs-home* \"private/self-env-spec.el\").
+If there are no self-path.el under (emacs-home* \"private/\")
+directory, More Reasonable Emacs should create a
+default (emacs-home* \"private/self-env-spec.el\").
 
-Involves: :theme, :font, :cjk-font, :shell, :eshell, :socks, :package, :edit
+Involves: :theme, :font, :cjk-font, :shell, :eshell, :socks,
+:package, :edit
 
 Take effect after restart Emacs.
 "
