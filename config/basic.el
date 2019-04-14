@@ -614,7 +614,7 @@ item for which (PRED item) returns t."
      ,@else))
 
 (defmacro unless-key% (keymap key def &rest body)
-  "Do BODY unless KEY had been defined to DEF in KEYMAP."
+  "Unless KEY had been defined to DEF in KEYMAP do BODY."
   (declare (indent 3))
   `(if-key% ,keymap ,key ,def nil ,@body))
 
