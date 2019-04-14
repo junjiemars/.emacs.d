@@ -8,8 +8,9 @@
 
 
 (terminal-supported-p
-  ;;above version 23 transient-mark-mode is enabled by default
+  ;; above version 23 transient-mark-mode is enabled by default
   (version-supported-when > 23 (transient-mark-mode t))
+  ;; fix some terminal theme confused with background and foreground.
   (set-face-background 'region "white")
   (set-face-foreground 'region "black"))
 
@@ -60,9 +61,6 @@
 (setq% create-lockfiles nil)
 
 
-;; Greek letters C-x 8 <RET> greek small letter lambda
-;; (global-set-key (kbd "C-c l") "λ")
-
 
 ;; enable upcase/downcase region
 (put 'downcase-region 'disabled nil)
@@ -100,6 +98,8 @@
   (setq auto-save-default (self-spec->*env-spec :edit :auto-save-default)))
 
 
+;; go into `view-mode'
+
 ;; `find-tag' or `xref-find-definitions' into `view-mode'
 (if-fn% 'xref-find-definitions 'xref
         (progn
@@ -112,7 +112,7 @@
           (with-eval-after-load 'xref
             (ad-activate #'xref-find-definitions t)))
   
-  ;; pop-tag-mark same as Emacs22+
+  ;; pop-tag-mark same as Emacs22+ for ancient Emacs
   (when-fn% 'pop-tag-mark 'etags
     (with-eval-after-load 'etags
       ;; define keys for `pop-tag-mark' and `tags-loop-continue'
@@ -127,9 +127,20 @@
   (with-eval-after-load 'etags
     (ad-activate #'find-tag t)))
 
+;; open emacs source in `view-mode'
+(with-eval-after-load 'help-mode
+  (let ((help-fn (button-type-get 'help-function-def 'help-function)))
+    (button-type-put
+     'help-function-def 'help-function
+     `(lambda (fn file)
+        (funcall ,help-fn fn file)
+        (view-mode t)))))
+
+ ;; end of go into `view-mode'
+
 
 (version-supported-when > 24.4
-  ;; fix: no quit key to hide *Messages* buffer
+  ;; fix: no quit key to hide *Messages* buffer for ancient Emacs
   ;; [DEL] for `scroll-down'
   ;; [SPC] for `scroll-up'
   (with-current-buffer (get-buffer "*Messages*")
@@ -141,8 +152,8 @@
     (local-set-key (kbd "SPC") #'scroll-up)))
 
 
+;; fix: `uniquify' may not be autoloaded on ancient Emacs.
 (version-supported-when > 24
-  ;; fix: `uniquify' may not be autoloaded on ancient Emacs.
   (when% (let ((x byte-compile-warnings))
            (setq byte-compile-warnings nil)
            (prog1 (require 'uniquify nil t)
@@ -217,7 +228,8 @@
 
 (defun mark-line@ (&optional arg)
   "Mark the line at point.
-If ARG is non-nil should mark the whole line."
+
+If prefix arugment ARG is non-nil should mark the whole line."
   (interactive "P")
   (_mark-thing@ (if arg
                     (back-to-indentation)
@@ -226,6 +238,7 @@ If ARG is non-nil should mark the whole line."
 
 (defun mark-list@ ()
   "Mark the list at point.
+
 More accurate than `mark-sexp'."
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'list)))
@@ -235,6 +248,7 @@ More accurate than `mark-sexp'."
 
 (defun mark-defun@ ()
   "Mark the function at point.
+
 More accurate than `mark-defun'."
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'defun)))
@@ -243,7 +257,7 @@ More accurate than `mark-defun'."
                     (goto-char (car bounds))))))
 
 (defun mark-string@ ()
-  ""
+  "Make the string at point."
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'string)))
     (when bounds
@@ -255,7 +269,7 @@ More accurate than `mark-defun'."
   ;; ancient Emacs.
   (defun thing-at-point-bounds-of-list-at-point ()
     "Return the bounds of the list at point.
- [Internal function used by `bounds-of-thing-at-point'.]"
+  [Internal function used by `bounds-of-thing-at-point'.]"
     (save-excursion
       (let* ((st (parse-partial-sexp (point-min) (point)))
              (beg (or (and (eq 4 (car (syntax-after (point))))
@@ -287,15 +301,12 @@ More accurate than `mark-defun'."
 (define-key (current-global-map) (kbd "C-c m d") #'mark-defun@)
 (define-key (current-global-map) (kbd "C-c m q") #'mark-string@)
 
+ ;; end of Mark thing at point
+
 
 ;; Makes killing/yanking interact with the clipboard
+;; See also: http://emacswiki.org/emacs/CopyAndPaste
 
-;; Save clipboard strings into kill ring before replacing them.
-;; When one selects something in another program to paste it into Emacs,
-;; but kills something in Emacs before actually pasting it,
-;; this selection is gone unless this variable is non-nil
-;; I'm actually not sure what this does but it's recommended?
-;; http://emacswiki.org/emacs/CopyAndPaste
 (version-supported-if
     <= 24.1
     (setq% select-enable-clipboard t)
@@ -345,11 +356,11 @@ More accurate than `mark-defun'."
       (_defun-x-selection-value* "xsel" "--clipboard" "--output")
       (_enable-x-select-clipboard!))))
 
- ;; end of mark thing at point
+
+ ;; Makes killing/yanking interact with the clipboard
 
 
 ;; isearch
-
 
 (eval-when-compile
 
@@ -405,10 +416,12 @@ More accurate than `mark-defun'."
 
 
 ;; Key binding to use "hippie expand" for text autocompletion
-;; http://www.emacswiki.org/emacs/HippieExpand
+;; See also: http://www.emacswiki.org/emacs/HippieExpand
 (define-key (current-global-map) (kbd "M-/") #'hippie-expand)
 
  ;; end of hippie
+
+;; find web via search engine
 
 (defun find-web@ (engine)
   "Find web via search ENGINE."
@@ -434,6 +447,7 @@ More accurate than `mark-defun'."
 (define-key (current-global-map) (kbd "C-c w") #'find-web@)
 
  ;; end of `find-web@'
+
 
 ;; open-*-line fn
 ;; control indent or not: `open-next-line' and `open-previous-line'.
@@ -481,16 +495,6 @@ With prefix argument ARG, indent as default when ARG is non-nil."
  ;; end of open-*-line
 
 
-;; open emacs source in `view-mode'
-(with-eval-after-load 'help-mode
-  (let ((help-fn (button-type-get 'help-function-def 'help-function)))
-    (button-type-put
-     'help-function-def 'help-function
-     `(lambda (fn file)
-        (funcall ,help-fn fn file)
-        (view-mode t)))))
-
-
 ;; tramp
 (with-eval-after-load 'tramp
   (when% (executable-find% "ssh")
@@ -502,7 +506,7 @@ With prefix argument ARG, indent as default when ARG is non-nil."
   "Echo the file name of current buffer.
 
 If prefix argument ARG is positive then copy `buffer-file-name'
-to kill ring.  If prefix argument ARG is negative then copy the
+to kill ring. If prefix argument ARG is negative then copy the
 directory name of `buffer-file-name' to kill ring."
   (interactive "p")
   (let ((n (if (eq 'dired-mode major-mode)
@@ -517,6 +521,7 @@ directory name of `buffer-file-name' to kill ring."
  ;; end of `echo-buffer-file-name'
 
 
+;; Greek letters C-x 8 <RET> greek small letter lambda
 
 ;; bind `insert-char*' to [C-x 8 RET] for ancient Emacs
 (unless-key% (current-global-map) (kbd "C-x 8 RET") #'insert-char
@@ -539,6 +544,8 @@ directory name of `buffer-file-name' to kill ring."
       (insert-char c count)))
 
   (define-key (current-global-map) (kbd "C-x 8 RET") #'insert-char*))
+
+ ;; end of `insert-char*'
 
 
 ;; end of file
