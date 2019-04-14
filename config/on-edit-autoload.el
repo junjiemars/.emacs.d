@@ -511,6 +511,7 @@ If ARG is non-nil then copy the file name to kill ring."
  ;; end of `echo-buffer-file-name'
 
 
+
 ;; bind `insert-char*' to [C-x 8 RET] for ancient Emacs
 (unless-key% (current-global-map) (kbd "C-x 8 RET") #'insert-char
   (defun insert-char* (character &optional count inherit)
@@ -523,11 +524,14 @@ If ARG is non-nil then copy the file name to kill ring."
                      "\\`#[xX][0-9a-fA-F]+\\|#[oO][0-7]+\\'"
                      character)
                     (ignore-errors (read character)))
+                   ((string-match "\\?\\\\u[0-9a-fA-F]" character)
+                    (ignore-errors (read character)))
                    ((string-match "\\`[0-9a-fA-F]+\\'" character)
                     (ignore-errors (read (concat "?\\u" character)))))))
       (unless (char-valid-p c)
         (error "Invalid character"))
       (insert-char c count)))
+
   (define-key (current-global-map) (kbd "C-x 8 RET") #'insert-char*))
 
 
