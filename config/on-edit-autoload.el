@@ -441,6 +441,7 @@ More accurate than `mark-defun'."
 
 (defun open-next-line (n)
   "Move to the next line and then open N lines, like vi's o command.
+
 See also `open-line'."
   (interactive "*p")
   (end-of-line)
@@ -450,6 +451,7 @@ See also `open-line'."
 
 (defun open-previous-line (n)
   "Open N lines above the current one, like vi's O command.
+
 See also `open-line' and `split-line'."
   (interactive "*p")
   (beginning-of-line)
@@ -458,6 +460,7 @@ See also `open-line' and `split-line'."
 
 (defun toggle-open-line-indent! (&optional arg)
   "Toggle whether indent or not when `open-line' or `split-line'.
+
 With prefix argument ARG, indent as default when ARG is non-nil."
   (interactive "P")
   (let ((indent? (cond ((or arg
@@ -498,8 +501,9 @@ With prefix argument ARG, indent as default when ARG is non-nil."
 (defun echo-buffer-file-name (&optional arg)
   "Echo the file name of current buffer.
 
-If ARG is positive then copy the file name to kill ring.
-If ARG is negative then copy the directory name to kill ring."
+If prefix argument ARG is positive then copy `buffer-file-name'
+to kill ring.  If prefix argument ARG is negative then copy the
+directory name of `buffer-file-name' to kill ring."
   (interactive "p")
   (let ((n (if (eq 'dired-mode major-mode)
                default-directory

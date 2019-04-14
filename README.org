@@ -824,7 +824,14 @@ on ancient Emacs.
 	:PROPERTIES:
 	:CUSTOM_ID: programming
 	:END:
-	
+
+** Generic editing
+	 :PROPERTIES:
+	 :CUSTOM_ID: general-editing
+	 :END:
+
+Just introduces special More Resonable Emacs's editing features.
+
 ** Lisp programming
 	 :PROPERTIES:
 	 :CUSTOM_ID: lisp-programming
