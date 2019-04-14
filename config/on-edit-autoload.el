@@ -497,14 +497,16 @@ With prefix argument ARG, indent as default when ARG is non-nil."
 
 (defun echo-buffer-file-name (&optional arg)
   "Echo the file name of current buffer.
-If ARG is non-nil then copy the file name to kill ring."
-  (interactive "P")
+
+If ARG is positive then copy the file name to kill ring.
+If ARG is negative then copy the directory name to kill ring."
+  (interactive "p")
   (let ((n (if (eq 'dired-mode major-mode)
                default-directory
              (buffer-file-name))))
     (message "%s" n)
-    (when (and arg n)
-      (kill-new n))))
+    (when (and n arg)
+      (kill-new (if (> arg 0) n (file-name-directory n))))))
 
 (define-key (current-global-map) (kbd "C-c n") #'echo-buffer-file-name)
 
