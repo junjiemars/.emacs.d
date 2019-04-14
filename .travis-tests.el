@@ -383,4 +383,13 @@
     (should (string= "c:/a/B/c.c"
                      (windows-nt-posix-path "C:\\a\\B\\c.c")))))
 
+(ert-deftest %basic:if-key% ()
+  (should (string= "defined"
+                   (if-key% (current-global-map) (kbd "C-x C-c")
+                            #'save-buffers-kill-terminal
+                            "defined"
+                     "undefined")))
+  (should (not (unless-key% (current-global-map) (kbd "C-x C-c")
+                            "undefined"))))
+
 ;; end of file
