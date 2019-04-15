@@ -17,13 +17,18 @@
 ;; No cursor blinking, it's distracting
 (when-fn% 'blink-cursor-mode nil (blink-cursor-mode 0))
 
-;; full path in title bar
+;; Full path in title bar
 (graphic-supported-p
   (setq% frame-title-format "%b (%f)"))
 
 ;; Ignore ring bell
 (setq% ring-bell-function 'ignore)
 
+;; Meta key for Darwin
+(platform-supported-when 'darwin
+  (when-var% mac-option-modifier nil
+    (unless% (eq 'meta (plist-get mac-option-modifier :ordinary))
+      (plist-put mac-option-modifier :ordinary 'meta))))
 
 ;; Changes all yes/no questions to y/n type
 ;; (defalias 'yes-or-no-p 'y-or-n-p)
@@ -31,14 +36,13 @@
 ;; Highlights matching parenthesis
 (show-paren-mode 1)
 
-
-;; enable save minibuffer history
+;; Enable save minibuffer history
 (version-supported-if
     <= 24
     (savehist-mode)
   (savehist-mode t))
 
-;; enable save-place
+;; Enable save-place
 (version-supported-if
     <= 25.1
     (save-place-mode t)
