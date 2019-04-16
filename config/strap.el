@@ -33,7 +33,7 @@
 
 
 (defmacro let% (varlist &rest body)
-	"Lexical let."
+  "Like `let', but lexically scoped."
   (declare (indent 1))
 	`(lexical-supported-if
 			 (let ,varlist ,@body)
