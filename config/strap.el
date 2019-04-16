@@ -14,7 +14,8 @@
 ;; lexical-supported macro
 
 (defmacro lexical-supported-if (then &rest else)
-  "If current Emacs supports lexical binding then do THEN, otherwise do ELSE..."
+  "If current Emacs supports lexical binding then do THEN,
+otherwise do ELSE..."
   (declare (indent 1))
   `(version-supported-if
        <= 24.1
@@ -22,7 +23,8 @@
      (progn% ,@else)))
 
 (defmacro lexical-supported-when (&rest body)
-  "Do BODY when current Emacs supports lexical binding, else return nil."
+  "Do BODY when current Emacs supports lexical binding, else
+return nil."
   (declare (indent 0))
   `(lexical-supported-if (progn% ,@body)))
 
@@ -31,10 +33,9 @@
   (declare (indent 0))
   `(lexical-supported-if nil ,@body))
 
-
 (defmacro let% (varlist &rest body)
   "Like `let', but lexically scoped."
-  (declare (indent 1))
+  (declare (indent 1) (debug let))
 	`(lexical-supported-if
 			 (let ,varlist ,@body)
 		 (lexical-let ,varlist ,@body)))
