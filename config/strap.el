@@ -40,13 +40,12 @@ return nil."
 			 (let ,varlist ,@body)
 		 (lexical-let ,varlist ,@body)))
 
-
- ;; end of lexical-supported macro
-
-
 ;; Let `lexical-binding' var safe under Emacs24.1-
 (lexical-supported-unless
   (put 'lexical-binding 'safe-local-variable (lambda (_) t)))
+
+
+ ;; end of lexical-supported macro
 
 
 ;; Preferred coding system
