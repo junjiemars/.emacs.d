@@ -32,6 +32,14 @@
   `(lexical-supported-if nil ,@body))
 
 
+(defmacro let% (varlist &rest body)
+	"Lexical let."
+  (declare (indent 1))
+	`(lexical-supported-if
+			 (let ,varlist ,@body)
+		 (lexical-let ,varlist ,@body)))
+
+
  ;; end of lexical-supported macro
 
 
