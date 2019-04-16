@@ -136,9 +136,9 @@
   (let ((help-fn (button-type-get 'help-function-def 'help-function)))
     (button-type-put
      'help-function-def 'help-function
-     `(lambda (fn file)
-        (funcall ,help-fn fn file)
-        (view-mode t)))))
+     #'(lambda (fn &optional file type)
+         (funcall help-fn fn file type)
+         (view-mode 1)))))
 
  ;; end of go into `view-mode'
 
