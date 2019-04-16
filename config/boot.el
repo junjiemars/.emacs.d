@@ -7,7 +7,7 @@
 ;;;;
 
 
-;; basic ui
+;; basic UI
 
 ;; Disable menu bar
 (when-fn%  'menu-bar-mode nil (menu-bar-mode -1))
@@ -24,7 +24,7 @@
   (setq% inhibit-splash-screen nil))
 
 
- ;; end of basic ui
+ ;; end of basic UI
 
 
 ;; Theme and Font
@@ -59,10 +59,9 @@
          (set-face-attribute 'default nil :font ,font))))
 
 (font-supported-p
-    
-    ;; Load default font
-    (when (self-spec->*env-spec :font :allowed)
-      (self-default-font! (self-spec->*env-spec :font :name))))
+  ;; Load default font
+  (when (self-spec->*env-spec :font :allowed)
+    (self-default-font! (self-spec->*env-spec :font :name))))
 
 (font-supported-p
 
@@ -77,56 +76,58 @@
                  '(han kana cjk-misc))))))
 
 (font-supported-p
-    
-    ;; Load cjk font
-    (when (self-spec->*env-spec :cjk-font :allowed)
-      (self-cjk-font! (self-spec->*env-spec :cjk-font :name)
-          (self-spec->*env-spec :cjk-font :size))))
+  ;; Load cjk font
+  (when (self-spec->*env-spec :cjk-font :allowed)
+    (self-cjk-font! (self-spec->*env-spec :cjk-font :name)
+                    (self-spec->*env-spec :cjk-font :size))))
 
-;; End of font-supported-p
+ ;; end of font-supported-p
 
 (theme-supported-p
-    
-    (defsubst self-load-theme! (name &optional dir)
-      "`load-theme' by NAME.
 
+  (defmacro self-load-theme! (name &optional dir)
+    "`load-theme' by NAME.
 If DIR is nil then load the built-in `customize-themes' by NAME."
-      (when (and dir (file-exists-p dir))
-        (setq custom-theme-directory dir))
-      (version-supported-if >= 24.1
-                            (load-theme name)
-        (load-theme name t))))
+    `(progn
+       (when (and ,dir (file-exists-p ,dir))
+         (setq custom-theme-directory ,dir))
+       (version-supported-if >= 24.1
+                             (load-theme ,name)
+         (load-theme ,name t)))))
 
 
 ;; Load theme
 (theme-supported-p
 
-    (when (self-spec->*env-spec :theme :allowed)
-      (cond
-       ((and (self-spec->*env-spec :theme :name)
-             (self-spec->*env-spec :theme :custom-theme-directory))
-        ;; load theme from :custom-theme-directory
-        (if (self-spec->*env-spec :theme :compile)
-            (when
-                (compile!
-                  (compile-unit*
-                   (concat
-                    (self-spec->*env-spec :theme :custom-theme-directory)
-                    (symbol-name (self-spec->*env-spec :theme :name))
-                    "-theme.el")
-                   t t))
-              (self-load-theme!
-               (self-spec->*env-spec :theme :name)
-               (concat (self-spec->*env-spec :theme :custom-theme-directory)
-                       (v-path* "/"))))
-          (self-load-theme!
-           (self-spec->*env-spec :theme :name)
-           (self-spec->*env-spec :theme :custom-theme-directory))))
+  (when (self-spec->*env-spec :theme :allowed)
+    (cond
+     ((and (self-spec->*env-spec :theme :name)
+           (self-spec->*env-spec :theme :custom-theme-directory))
+      ;; load theme from :custom-theme-directory
+      (if (self-spec->*env-spec :theme :compile)
+          (when
+              (compile!
+                (compile-unit*
+                 (concat
+                  (self-spec->*env-spec :theme :custom-theme-directory)
+                  (symbol-name (self-spec->*env-spec :theme :name))
+                  "-theme.el")
+                 t t))
+            (self-load-theme!
+             (self-spec->*env-spec :theme :name)
+             (concat (self-spec->*env-spec :theme :custom-theme-directory)
+                     (v-path* "/"))))
+        (self-load-theme!
+         (self-spec->*env-spec :theme :name)
+         (self-spec->*env-spec :theme :custom-theme-directory))))
 
-       ;; load builtin theme
-       ((self-spec->*env-spec :theme :name)
-        (self-load-theme! (self-spec->*env-spec :theme :name))))))
+     ;; load builtin theme
+     ((self-spec->*env-spec :theme :name)
+      (self-load-theme! (self-spec->*env-spec :theme :name))))))
 
 
  ;; end of theme-supported-p
+
+
+;; end of file
 
