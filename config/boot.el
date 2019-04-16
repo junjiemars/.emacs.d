@@ -41,14 +41,15 @@
   `(graphic-supported-p
      ,@body))
 
+;; font supported
 
 (font-supported-p
 
-    (defmacro when-font% (font &rest body)
-      "If FONT exists then do BODY."
-      (declare (indent 1))
-      `(when% (find-font (font-spec :name ,font))
-         ,@body)))
+  (defmacro when-font% (font &rest body)
+    "If FONT exists then do BODY."
+    (declare (indent 1))
+    `(when% (find-font (font-spec :name ,font))
+       ,@body)))
 
 (font-supported-p
     
@@ -59,7 +60,7 @@
          (set-face-attribute 'default nil :font ,font))))
 
 (font-supported-p
-
+  
   ;; Load default font
   (when (self-spec->*env-spec :font :allowed)
     (self-default-font! (self-spec->*env-spec :font :name))))
@@ -84,6 +85,8 @@
                     (self-spec->*env-spec :cjk-font :size))))
 
  ;; end of font-supported-p
+
+;; theme supported
 
 (theme-supported-p
 
