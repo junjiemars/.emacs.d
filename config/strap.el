@@ -40,6 +40,13 @@ return nil."
 			 (let ,varlist ,@body)
 		 (lexical-let ,varlist ,@body)))
 
+(defmacro let*% (varlist &rest body)
+  "Like `let*', but lexically scoped."
+  (declare (indent 1) (debug let))
+	`(lexical-supported-if
+			 (let* ,varlist ,@body)
+		 (lexical-let* ,varlist ,@body)))
+
 ;; Let `lexical-binding' var safe under Emacs24.1-
 (lexical-supported-unless
   (put 'lexical-binding 'safe-local-variable (lambda (_) t)))
