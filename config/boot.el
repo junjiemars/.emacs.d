@@ -30,32 +30,33 @@
 ;; Theme and Font
 
 (defmacro theme-supported-p (&rest body)
-  (declare (indent 1))
+  (declare (indent 0))
   `(graphic-supported-p
      (version-supported-when < 23
        ,@body)))
 
 
 (defmacro font-supported-p (&rest body)
-  (declare (indent 1))
+  (declare (indent 0))
   `(graphic-supported-p
      ,@body))
 
 
 (font-supported-p
-    
-    (defsubst font-exists-p (font)
-      "Return t if FONT exists."
-      (when (find-font (font-spec :name font))
-        t)))
+
+    (defmacro when-font% (font &rest body)
+      "If FONT exists then do BODY."
+      (declare (indent 1))
+      `(when% (find-font (font-spec :name ,font))
+         ,@body)))
 
 (font-supported-p
     
-    (defsubst self-default-font! (font)
+    (defmacro self-default-font! (font)
       "Set default FONT in graphic mode."
-      (when (font-exists-p font)
-        (add-to-list 'default-frame-alist (cons 'font font))
-        (set-face-attribute 'default nil :font font))))
+      `(when-font% ,font
+         (add-to-list 'default-frame-alist (cons 'font ,font))
+         (set-face-attribute 'default nil :font ,font))))
 
 (font-supported-p
     
@@ -65,15 +66,15 @@
 
 (font-supported-p
 
-    (defsubst self-cjk-font! (name size)
+    (defmacro self-cjk-font! (name size)
       "Set CJK font's NAME and SIZE in graphic mode."
-      (when (font-exists-p name)
-        (when-fn% 'set-fontset-font nil
-          (mapc (lambda (c)
-                  (set-fontset-font (frame-parameter nil 'font)
-                                    c (font-spec :family name
-                                                 :size size)))
-                '(han kana cjk-misc))))))
+      `(when-font% ,name
+         (when-fn% 'set-fontset-font nil
+           (mapc (lambda (c)
+                   (set-fontset-font (frame-parameter nil 'font)
+                                     c (font-spec :family ,name
+                                                  :size ,size)))
+                 '(han kana cjk-misc))))))
 
 (font-supported-p
     
