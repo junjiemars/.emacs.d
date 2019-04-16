@@ -19,7 +19,7 @@
 
 (deftheme dracula "ready for compiled theme")
 
-(let% ((colors '(;; Assigment form: VARIABLE COLOR [TTY-COLOR]
+(let% ((colors '(;; assigment form: VARIABLE COLOR [TTY-COLOR]
                  (fg1          "#f8f8f2")
                  (fg2          "#e2e2dc")
                  (fg3          "#ccccc7")
