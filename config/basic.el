@@ -193,6 +193,10 @@ Return the sublist of LIST whose car is ITEM.
          (every ,pred (list ,@seq))))))
 
 
+(unless-fn% 'characterp nil
+  (defalias 'characterp #'char-valid-p))
+
+
  ;; end of Compatible Macro
 
 

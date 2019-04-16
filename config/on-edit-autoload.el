@@ -556,7 +556,7 @@ directory name of `buffer-file-name' to kill ring."
                     (ignore-errors (read character)))
                    ((string-match "\\`[0-9a-fA-F]+\\'" character)
                     (ignore-errors (read (concat "?\\u" character)))))))
-      (unless (char-valid-p c)
+      (unless (characterp c)
         (error "Invalid character"))
       (insert-char c count)))
 
