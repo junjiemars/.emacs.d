@@ -59,6 +59,7 @@
          (set-face-attribute 'default nil :font ,font))))
 
 (font-supported-p
+  
   ;; Load default font
   (when (self-spec->*env-spec :font :allowed)
     (self-default-font! (self-spec->*env-spec :font :name))))
@@ -76,6 +77,7 @@
                  '(han kana cjk-misc))))))
 
 (font-supported-p
+  
   ;; Load cjk font
   (when (self-spec->*env-spec :cjk-font :allowed)
     (self-cjk-font! (self-spec->*env-spec :cjk-font :name)
