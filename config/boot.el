@@ -59,25 +59,24 @@
          (set-face-attribute 'default nil :font ,font))))
 
 (font-supported-p
-  
   ;; Load default font
   (when (self-spec->*env-spec :font :allowed)
     (self-default-font! (self-spec->*env-spec :font :name))))
 
 (font-supported-p
 
-    (defmacro self-cjk-font! (name size)
-      "Set CJK font's NAME and SIZE in graphic mode."
-      `(when-font% ,name
-         (when-fn% 'set-fontset-font nil
-           (mapc (lambda (c)
-                   (set-fontset-font (frame-parameter nil 'font)
-                                     c (font-spec :family ,name
-                                                  :size ,size)))
-                 '(han kana cjk-misc))))))
+  (defmacro self-cjk-font! (name size)
+    "Set CJK font's NAME and SIZE in graphic mode."
+    `(when-font% ,name
+       (when-fn% 'set-fontset-font nil
+         (mapc (lambda (c)
+                 (set-fontset-font (frame-parameter nil 'font)
+                                   c (font-spec :family ,name
+                                                :size ,size)))
+               '(han kana cjk-misc))))))
 
 (font-supported-p
-  
+
   ;; Load cjk font
   (when (self-spec->*env-spec :cjk-font :allowed)
     (self-cjk-font! (self-spec->*env-spec :cjk-font :name)
