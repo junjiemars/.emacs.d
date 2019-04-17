@@ -11,6 +11,24 @@
   "More Reasonable Emacs git repo"
   "https://github.com/junjiemars/.emacs.d")
 
+
+(defmacro save-var (var val &rest body)
+  "Save VAR and assign VAL to VAR then do BODY, finally restore VAR.
+
+Executes BODY and returns its value if no error happens.
+If an error happens, raise the error."
+  (declare (indent 2))
+  (let ((old (gensym*)))
+    `(let ((,old ,var))
+       (setq ,var ,val)
+       (condition-case err
+           (prog1
+               ,@body
+             (setq ,var ,old))
+         (error (setq ,var ,old)
+                (signal (car err) (cdr err)))))))
+
+
 ;; lexical-supported macro
 
 (defmacro lexical-supported-if (then &rest else)
