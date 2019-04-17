@@ -14,7 +14,7 @@
 ;; lexical-supported macro
 
 (defmacro lexical-supported-if (then &rest else)
-  "If current Emacs supports lexical binding then do THEN,
+  "If current Emacs supports lexical binding do THEN,
 otherwise do ELSE..."
   (declare (indent 1))
   `(version-supported-if
@@ -23,13 +23,12 @@ otherwise do ELSE..."
      (progn% ,@else)))
 
 (defmacro lexical-supported-when (&rest body)
-  "Do BODY when current Emacs supports lexical binding, else
-return nil."
+  "When current Emacs supports lexical binding do BODY."
   (declare (indent 0))
   `(lexical-supported-if (progn% ,@body)))
 
 (defmacro lexical-supported-unless (&rest body)
-  "Do BODY unless current Emacs supports lexical binding."
+  "Unless current Emacs supports lexical binding do BODY."
   (declare (indent 0))
   `(lexical-supported-if nil ,@body))
 
