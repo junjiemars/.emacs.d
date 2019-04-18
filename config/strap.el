@@ -12,20 +12,6 @@
   "https://github.com/junjiemars/.emacs.d")
 
 
-(defmacro with-var (var &rest body)
-  "Execute BODY and restore VAR before return.
-
-Returns the value of BODY if no error happens."
-  (declare (indent 1))
-  (let ((old (gensym*)))
-    `(let ((,old ,var))
-       (prog1
-           (unwind-protect
-               (progn% ,@body)
-             (setq ,var ,old))
-         (setq ,var ,old)))))
-
-
 ;; lexical-supported macro
 
 (defmacro lexical-supported-if (then &rest else)
@@ -47,19 +33,18 @@ otherwise do ELSE..."
   (declare (indent 0))
   `(lexical-supported-if nil ,@body))
 
-(defmacro let% (varlist &rest body)
+(defmacro lexical-let% (varlist &rest body)
   "Like `let', but lexically scoped."
   (declare (indent 1) (debug let))
-	`(lexical-supported-if
-			 (let ,varlist ,@body)
+	`(when-fn% 'lexical-let 'cl
 		 (lexical-let ,varlist ,@body)))
 
-(defmacro let*% (varlist &rest body)
+(defmacro lexical-let*% (varlist &rest body)
   "Like `let*', but lexically scoped."
   (declare (indent 1) (debug let))
-	`(lexical-supported-if
-			 (let* ,varlist ,@body)
+	`(when-fn% 'lexical-let* 'cl
 		 (lexical-let* ,varlist ,@body)))
+
 
 ;; Let `lexical-binding' var safe under Emacs24.1-
 (lexical-supported-unless
@@ -197,6 +182,20 @@ If VAR requires the FEATURE, load it on compile-time."
   `(if-var% ,var ,feature (progn% ,@body)))
 
 
+(defmacro with-var (var &rest body)
+  "Execute BODY and restore VAR before return.
+
+Returns the value of BODY if no error happens."
+  (declare (indent 1))
+  (let ((old (gensym*)))
+    `(let ((,old ,var))
+       (prog1
+           (unwind-protect
+               (progn% ,@body)
+             (setq ,var ,old))
+         (setq ,var ,old)))))
+
+
  ;; end of var compile-time checking macro
 
 
@@ -263,7 +262,7 @@ Then evaluate RESULT to get return value, default nil.
   (unless (and (<= 2 (length spec)) (<= (length spec) 3))
     (signal 'wrong-number-of-arguments (list '(2 . 3) (length spec))))
   (let ((lst (gensym*)))
-    `(let% ((,lst ,(nth 1 spec)))
+    `(lexical-let% ((,lst ,(nth 1 spec)))
        (while ,lst
          (let ((,(car spec) (car ,lst)))
            ,@body

@@ -134,14 +134,14 @@
 ;; open emacs source in `view-mode'
 (with-eval-after-load 'help-mode
 
-  (let% ((help-fn (button-type-get 'help-function-def 'help-function)))
+  (lexical-let% ((help-fn (button-type-get 'help-function-def 'help-function)))
     (button-type-put
      'help-function-def 'help-function
      #'(lambda (fn &optional file type)
          (funcall help-fn fn file type)
          (view-mode 1))))
 
-  (let% ((help-fn (button-type-get 'help-variable-def 'help-function)))
+  (lexical-let% ((help-fn (button-type-get 'help-variable-def 'help-function)))
     (button-type-put
      'help-variable-def 'help-function
      #'(lambda (var &optional file)
