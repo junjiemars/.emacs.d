@@ -21,12 +21,11 @@ If an error happens, raise the error."
   (let ((old (gensym*)))
     `(let ((,old ,var))
        (setq ,var ,val)
-       (condition-case err
-           (prog1
-               ,@body
+       (prog1
+           (unwind-protect
+               (progn% ,@body)
              (setq ,var ,old))
-         (error (setq ,var ,old)
-                (signal (car err) (cdr err)))))))
+         (setq ,var ,old)))))
 
 
 ;; lexical-supported macro
