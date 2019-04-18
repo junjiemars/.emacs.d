@@ -137,8 +137,8 @@
   (lexical-let% ((help-fn (button-type-get 'help-function-def 'help-function)))
     (button-type-put
      'help-function-def 'help-function
-     #'(lambda (fn &optional file type)
-         (funcall help-fn fn file type)
+     #'(lambda (fn &optional file)
+         (funcall help-fn fn file)
          (view-mode 1))))
 
   (lexical-let% ((help-fn (button-type-get 'help-variable-def 'help-function)))
