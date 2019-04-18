@@ -142,16 +142,19 @@ DIR where the compiled file located."
                  (t (load ,c))))))))
 
 
-(defmacro clean-compiled-files ()
+(defun clean-compiled-files ()
   "Clean all compiled files."
-  `(dolist (d (list ,(v-home* "config/")
-                    ,(v-home* "private/")
-                    ,(v-home* "theme/")
-                    ,(v-home* ".exec/")))
-     (dolist (f (when (file-exists-p d)
-                  (directory-files d nil "\\.elc?\\'")))
-       (message "#Clean compiled file: %s" f)
-       (delete-file (concat d f)))))
+  (interactive)
+  (mapc (lambda (d)
+          (mapc (lambda (f)
+                  (message "#Clean compiled file: %s" f)
+                  (delete-file (concat d f)))
+                (when (file-exists-p d)
+                  (directory-files d nil "\\.elc?\\'"))))
+        (list (v-home* "config/")
+              (v-home* "private/")
+              (v-home* "theme/")
+              (v-home* ".exec/"))))
 
 
  ;; end of compile macro
