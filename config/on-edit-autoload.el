@@ -179,15 +179,6 @@
 (autoload 'cl-prettyprint "cl-extra")
 
 
-;; abbreviated `eshell' prompt
-(version-supported-when > 23
-  (when% (and (require 'em-prompt) (require 'em-dirs))
-    (setq eshell-prompt-function
-          #'(lambda ()
-              (concat (abbreviate-file-name (eshell/pwd))
-                      (if (= (user-uid) 0) " # " " $ "))))))
-
-
 ;; Mark thing at point
 
 (defun thing-at-point-bounds-of-string-at-point ()

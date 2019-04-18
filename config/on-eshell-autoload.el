@@ -7,11 +7,8 @@
 ;;;;
 
 
-(version-supported-when > 23
-  (setq% eshell-save-history-on-exit t 'em-hist))
-
-
 (defun set-eshell-mode! ()
+  "Set the basics of `eshell-mode'"
   (eval-when-compile (require 'em-term))
   (require 'em-term)
   (when (self-spec->*env-spec :eshell :allowed)
@@ -28,7 +25,17 @@
 
 
 (with-eval-after-load 'eshell
-  (set-eshell-mode!))
+  (set-eshell-mode!)
+
+  ;; abbreviated `eshell' prompt
+  (version-supported-when > 23
+    (setq% eshell-save-history-on-exit t 'em-hist)
+    (when% (and (require 'em-prompt)
+                (require 'em-dirs))
+      (setq eshell-prompt-function
+            #'(lambda ()
+                (concat (abbreviate-file-name (eshell/pwd))
+                        (if (= (user-uid) 0) " # " " $ ")))))))
 
 
-;; end of file
+ ;; end of file
