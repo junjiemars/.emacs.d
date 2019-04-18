@@ -12,15 +12,13 @@
   "https://github.com/junjiemars/.emacs.d")
 
 
-(defmacro save-var (var val &rest body)
-  "Save VAR and assign VAL to VAR then do BODY, finally restore VAR.
+(defmacro with-var (var &rest body)
+  "Execute BODY and restore VAR before return.
 
-Executes BODY and returns its value if no error happens.
-If an error happens, raise the error."
-  (declare (indent 2))
+Returns the value of BODY if no error happens."
+  (declare (indent 1))
   (let ((old (gensym*)))
     `(let ((,old ,var))
-       (setq ,var ,val)
        (prog1
            (unwind-protect
                (progn% ,@body)
