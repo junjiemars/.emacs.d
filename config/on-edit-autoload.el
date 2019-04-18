@@ -166,10 +166,9 @@
 
 ;; fix: `uniquify' may not be autoloaded on ancient Emacs.
 (version-supported-when > 24
-  (when% (let ((x byte-compile-warnings))
+  (when% (with-var byte-compile-warnings
            (setq byte-compile-warnings nil)
-           (prog1 (require 'uniquify nil t)
-             (setq byte-compile-warnings x)))
+           (require 'uniquify nil t))
     (require 'uniquify)
     (setq uniquify-buffer-name-style 'post-forward-angle-brackets)))
 
