@@ -1069,6 +1069,8 @@ It's *self-documenting* and great, keep reading it frequently.
 - delete entire line: @@html:<kbd>@@C-S-DEL@@html:</kbd>@@
 - delete to end of sentence: @@html:<kbd>@@M-k@@html:</kbd>@@
 - insert char: @@html:<kbd>@@C-x 8 RET@@html:</kbd>@@
+- count lines, words or characters of select region: @@html:<kbd>@@M-x
+  count-lines-region@@html:</kbd>@@
 
 ** Coding
 	 :PROPERTIES:
@@ -1258,7 +1260,7 @@ It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]]
    :CUSTOM_ID: tips
    :END:
 
-** Insert Region
+*** Insert Region
      :PROPERTIES:
      :CUSTOM_ID: insert-region
      :END:
@@ -1286,7 +1288,7 @@ random-number =[0-10)=, =eval-expression=
 (dotimes (x 5) (insert (format "aaaa %2s %s\n" (random 100) (random 10))))
 #+END_SRC
 
-** Sort Region
+*** Sort Region
    :PROPERTIES:
    :CUSTOM_ID: sort-region
    :END:
@@ -1309,7 +1311,7 @@ aaaa 8 3
 aaaa 8 0
 #+END_EXAMPLE
 
-** Reverse Region
+*** Reverse Region
 	 :PROPERTIES:
 	 :CUSTOM_ID: reverse-region
 	 :END:
