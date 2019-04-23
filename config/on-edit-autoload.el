@@ -555,4 +555,9 @@ directory name of `buffer-file-name' to kill ring."
  ;; end of `insert-char*'
 
 
+(unless-fn% 'count-words-region 'simple
+  (defalias 'count-words-region #'count-lines-region
+    "`count-lines-region' had been obsoleted since Emacs24.1+"))
+
+
 ;; end of file
