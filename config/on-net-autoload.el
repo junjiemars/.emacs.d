@@ -68,8 +68,15 @@
     (interactive (when current-prefix-arg
                    (list (read-from-minibuffer "Ping options: "))))
     (require 'net-utils)
-    (let ((ping-program-options (if arg (split-string* arg " " t)
-                                  ping-program-options)))
+    (let* ((ping-program-options (if arg (split-string* arg " " t)
+                                       ping-program-options))
+           (ipv6 (and (executable-find% "ping6")
+                      (member** "-6" ping-program-options :test #'string=)))
+           (ping-program-options (remove-if*
+                                     (lambda (x)
+                                       (when ipv6 (string= "-6" x)))
+                                     ping-program-options))
+           (ping-program (if ipv6 "ping6" ping-program)))
       (call-interactively #'ping t))))
 
 
