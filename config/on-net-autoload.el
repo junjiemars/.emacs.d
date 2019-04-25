@@ -5,6 +5,8 @@
 ;;;;
 ;; on-net-autoload.el
 ;;;;
+;; supports [C-u] prefix to set program options
+;;;;
 
 
 (when-fn% 'arp 'net-utils
