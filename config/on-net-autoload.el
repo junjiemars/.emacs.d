@@ -86,7 +86,15 @@
     (interactive (when current-prefix-arg
                    (list (read-from-minibuffer "Traceroute options: "))))
     (require 'net-utils)
-    (let ((traceroute-program-options (if arg (split-string* arg " " t)
-                                        traceroute-program-options)))
+    (let* ((traceroute-program-options (if arg (split-string* arg " " t)
+                                         traceroute-program-options))
+           (ipv6 (and (executable-find% "traceroute6")
+                      (member** "-6" traceroute-program-options
+                                :test #'string=)))
+           (traceroute-program-options (remove-if*
+                                           (lambda (x)
+                                             (when ipv6 (string= "-6" x)))
+                                           traceroute-program-options))
+           (traceroute-program (if ipv6 "traceroute6" traceroute-program)))
       (call-interactively #'traceroute t))))
 
