@@ -46,11 +46,22 @@
 
 (when-fn% 'netstat 'net-utils
   (defun *ping (&optional arg)
-    "Run `ping-program' ping host."
+    "Run `ping-program' for host."
     (interactive (when current-prefix-arg
                    (list (read-from-minibuffer "Ping options: "))))
     (require 'net-utils)
     (let ((ping-program-options (if arg (split-string* arg " " t)
                                   ping-program-options)))
       (call-interactively #'ping t))))
+
+
+(when-fn% 'traceroute 'net-utils
+  (defun *traceroute (&optional arg)
+    "Run `traceroute-program' for target."
+    (interactive (when current-prefix-arg
+                   (list (read-from-minibuffer "Traceroute options: "))))
+    (require 'net-utils)
+    (let ((traceroute-program-options (if arg (split-string* arg " " t)
+                                        traceroute-program-options)))
+      (call-interactively #'traceroute t))))
 
