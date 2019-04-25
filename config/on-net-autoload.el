@@ -18,6 +18,24 @@
       (arp))))
 
 
+
+(when% (executable-find% "dig")
+  (when-fn% 'run-dig 'net-utils
+    (if-var% dig-program-options 'net-utils
+             (defun *dig (&optional arg)
+               "Run `dig-program' for host."
+               (interactive (when current-prefix-arg
+                              (list (read-from-minibuffer "Dig options: "))))
+               (require 'net-utils)
+               (let ((dig-program-options (if arg (split-string* arg " " t)
+                                            dig-program-options))
+                     (current-prefix-arg (when (numberp current-prefix-arg)
+                                           current-prefix-arg)))
+                 
+                 (call-interactively #'run-dig t)))
+      (defalias '*dig #'run-dig))))
+
+
 (when-fn% 'ifconfig 'net-utils
   (defun *ifconfig (&optional arg)
     "Run `ifconfig-program' and display diagnostic output."
