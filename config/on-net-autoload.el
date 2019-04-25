@@ -20,7 +20,6 @@
       (arp))))
 
 
-
 (when% (executable-find% "dig")
   (when-fn% 'run-dig 'net-utils
     (if-var% dig-program-options 'net-utils
