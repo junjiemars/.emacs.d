@@ -7,6 +7,17 @@
 ;;;;
 
 
+(defun *arp (&optional arg)
+  "Run `arp-program' and display diagnostic output."
+  (interactive (when current-prefix-arg
+                 (list (read-from-minibuffer "Arp options: "))))
+  (when-fn% 'arp 'net-utils
+    (require 'net-utils)
+    (let ((arp-program-options (if arg (split-string* arg " " t)
+                                 arp-program-options)))
+      (arp))))
+
+
 (defun *ifconfig (&optional arg)
   "Run `ifconfig-program' and display diagnostic output."
   (interactive (when current-prefix-arg
