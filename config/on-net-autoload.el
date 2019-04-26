@@ -34,7 +34,9 @@
                                            current-prefix-arg)))
                  
                  (call-interactively #'run-dig t)))
-      (defalias '*dig #'run-dig))))
+      (defalias '*dig (if-fn% 'dig 'dig
+                              #'dig
+                        #'run-dig)))))
 
 
 (when-fn% 'ifconfig 'net-utils
