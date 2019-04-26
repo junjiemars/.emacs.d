@@ -451,7 +451,7 @@ More accurate than `mark-defun'."
                              (when s (concat (cdr w1) s))))))
      t)))
 
-(define-key (current-global-map) (kbd "C-c w") #'find-web@)
+(define-key (current-global-map) (kbd "C-c f w") #'find-web@)
 
  ;; end of `find-web@'
 

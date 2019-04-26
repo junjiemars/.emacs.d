@@ -56,7 +56,8 @@ A prefix argument is handled like `recenter':
                      ((integerp recenter-last-op)
                       (recenter recenter-last-op))
                      ((floatp recenter-last-op)
-                      (recenter (round (* recenter-last-op (window-height))))))))))
+                      (recenter (round (* recenter-last-op
+                                          (window-height))))))))))
 
   (define-key (current-global-map) (kbd "C-l") #'recenter-top-bottom))
 
@@ -64,7 +65,11 @@ A prefix argument is handled like `recenter':
 
 
 ;; window move key bindings
-(windmove-default-keybindings)
+;; (windmove-default-keybindings)
+(define-key% (current-global-map) (kbd "C-c w l") #'windmove-left)
+(define-key% (current-global-map) (kbd "C-c w r") #'windmove-right)
+(define-key% (current-global-map) (kbd "C-c w u") #'windmove-up)
+(define-key% (current-global-map) (kbd "C-c w d") #'windmove-down)
 
 
 (version-supported-when > 24.0
