@@ -21,6 +21,9 @@
 
 
 (when% (executable-find% "dig")
+  ;; on Windows there are no built-in dig program you can download
+  ;; BIND from http://www.isc.org/downloads/ then extract the zip into
+  ;; `exec-path'.
   (when-fn% 'run-dig 'net-utils
     (if-var% dig-program-options 'net-utils
              (defun *dig (&optional arg)
