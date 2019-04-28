@@ -175,6 +175,12 @@ If VAR requires the FEATURE, load it on compile-time."
   (declare (indent 2))
   `(if-var% ,var ,feature (progn% ,@body)))
 
+(defmacro unless-var% (var feature &rest body)
+  "Do BODY unless VAR is bound.
+If VAR requires the FEATURE, load it on compile-time."
+  (declare (indent 2))
+  `(if-var% ,var ,feature nil (progn% ,@body)))
+
 
 (defmacro with-var (var &rest body)
   "Execute BODY and restore VAR before return.

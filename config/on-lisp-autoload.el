@@ -106,10 +106,8 @@
 
 
 ;; fix: no TAB completion in minibuffer on ancient Emacs.
-(unless% (and (require 'minibuffer nil t)
-              (boundp 'completion-at-point-functions)
-              (memq 'elisp-completion-at-point
-                    completion-at-point-functions))
+(unless-var% completion-at-point-functions 'minibuffer
+  
   (defun minibuffer-tab-completion! ()
     "TAB as completion key in minibuffer."
     ;; `lisp-complete-symbol' is an obsolete since Emacs24.4
