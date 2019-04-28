@@ -270,11 +270,12 @@ Then evaluate RESULT to get return value, default nil.
 ;; Preferred coding system
 (prefer-coding-system 'utf-8)
 
-;; Preferred coding system for terminal mode
-(terminal-supported-p
-  (platform-supported-when 'windows-nt
-    ;; also need to adjust the font and code page.
-    (set-terminal-coding-system 'utf-8)))
+;; ;; Preferred coding system for terminal mode
+;; (terminal-supported-p
+;;   (platform-supported-when 'windows-nt
+;;     ;; also need to adjust the font and code page.
+;;     (set-terminal-coding-system 'utf-8)))
+;; (set-default-coding-systems 'utf-8)
 
 
 
