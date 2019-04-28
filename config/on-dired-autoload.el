@@ -268,27 +268,29 @@
           (ad-activate #'dired-compress-file t))))))
 
 
-(unless% (eq default-file-name-coding-system locale-coding-system)
+(when-fn% 'archive-summarize-files 'arc-mode
+  (unless% (eq default-file-name-coding-system locale-coding-system)
 
-  (defadvice archive-summarize-files (before archive-summarize-files-before compile)
-    "`archive-summarize-files' may not display file name in right
+    (defadvice archive-summarize-files
+        (before archive-summarize-files-before compile)
+      "`archive-summarize-files' may not display file name in right
        coding system."
-    (let ((arg0 (ad-get-arg 0))
-          (files nil))
-      (when (consp arg0)
-        (ad-set-arg
-         0
-         (dolist* (x arg0 files)
-           (when (and (arrayp x) (= 3 (length x)))
-             (let ((decode (substring-no-properties (decode-coding-string
-                                                     (aref x 0)
-                                                     locale-coding-system))))
-               (aset x 0 decode)
-               (aset x 2 (length decode))))
-           (add-to-list 'files x t #'eq))))))
+      (let ((arg0 (ad-get-arg 0))
+            (files nil))
+        (when (consp arg0)
+          (ad-set-arg
+           0
+           (dolist* (x arg0 files)
+             (when (and (arrayp x) (= 3 (length x)))
+               (let ((decode (substring-no-properties (decode-coding-string
+                                                       (aref x 0)
+                                                       locale-coding-system))))
+                 (aset x 0 decode)
+                 (aset x 2 (length decode))))
+             (add-to-list 'files x t #'eq))))))
 
-  (with-eval-after-load 'arc-mode
-    (ad-activate #'archive-summarize-files t)))
+    (with-eval-after-load 'arc-mode
+      (ad-activate #'archive-summarize-files t))))
 
 
 ;; ido-mode allows you to more easily navigate choices. For example,
