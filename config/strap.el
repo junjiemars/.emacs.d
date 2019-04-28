@@ -54,12 +54,6 @@ otherwise do ELSE..."
  ;; end of lexical-supported macro
 
 
-;; Preferred coding system
-(prefer-coding-system 'utf-8)
-
-
-
-
 ;; graphic-supported macro
 
 (defmacro graphic-supported-if (then &rest else)
@@ -271,6 +265,19 @@ Then evaluate RESULT to get return value, default nil.
 
 
  ;; end of byte-compiler macro
+
+
+;; Preferred coding system
+(prefer-coding-system 'utf-8)
+
+;; Preferred coding system for terminal mode
+(terminal-supported-p
+  (platform-supported-when 'windows-nt
+    ;; also need to adjust the font and code page.
+    (set-terminal-coding-system 'utf-8)))
+
+
+
 
 
 ;; compile macro
