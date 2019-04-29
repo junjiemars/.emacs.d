@@ -247,7 +247,7 @@ Returns the value of BODY if no error happens."
                    (thread-join thread)
                  thread))
        (ignore* ,join ,name)
-       (funcall ,fn))))
+       (funcall (lambda () ,fn)))))
 
 
 (defmacro dolist* (spec &rest body)
