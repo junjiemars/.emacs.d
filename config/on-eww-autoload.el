@@ -53,7 +53,7 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
                           '(("bing" "https://www.bing.com/"
                              . "search?q=")
                             ("duck" "https://duckduckgo.com/"
-                             . "search?q=")
+                             . "?q=")
                             ("google" "https://www.google.com/"
                              . "search?q=")
                             ("so" "https://stackoverflow.com/"
