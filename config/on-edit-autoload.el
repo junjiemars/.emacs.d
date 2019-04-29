@@ -443,13 +443,12 @@ More accurate than `mark-defun'."
                             ("wiki" "https://en.wikipedia.org/"
                              . "w/index.php?search="))
                           #'string=)))
-         (w1 (if w w (cons engine ""))))
-    (_threading-call
-     (lambda ()
-       (browse-url (concat (car w1)
-                           (let ((s (_symbol@)))
-                             (when s (concat (cdr w1) s))))))
-     t)))
+         (w1 (if w w (cons engine "")))
+         (url (concat (car w1)
+                      (let ((s (_symbol@)))
+                        (when s (concat (cdr w1) s))))))
+    (_threading-call (funcall browse-url-browser-function url)
+                     t)))
 
 (define-key (current-global-map) (kbd "C-c f w") #'find-web@)
 

@@ -242,12 +242,12 @@ Returns the value of BODY if no error happens."
   (defmacro _threading-call (fn &optional join name)
     "Make FN as threading call."
     `(if-fn% 'make-thread nil
-             (let ((thread (make-thread (function ,fn) ,name)))
+             (let ((thread (make-thread (lambda () ,fn) ,name)))
                (if% ,join
                    (thread-join thread)
                  thread))
        (ignore* ,join ,name)
-       (function ,fn))))
+       (funcall ,fn))))
 
 
 (defmacro dolist* (spec &rest body)
