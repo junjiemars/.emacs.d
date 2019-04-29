@@ -203,7 +203,8 @@
   ;; [! zip x.zip ?] compress marked files to x.zip，
   ;; see `dired-compress-file-suffixes'.
   (when-var% dired-compress-files-suffixes 'dired-aux
-    (when% (and (not (assoc** "\\.zip\\'" dired-compress-file-suffixes #'string=))
+    (when% (and (not (assoc** "\\.zip\\'"
+                              dired-compress-file-suffixes #'string=))
                 (executable-find% "zip")
                 (executable-find% "unzip"))
       (push '("\\.zip\\'" ".zip" "unzip") dired-compress-file-suffixes)))
@@ -260,7 +261,8 @@
           (let ((7za? (concat (if (executable-find% "7z") "7z" "7za")
                               " x -tgz -aoa %i")))
             (if% (assoc** "\\.gz\\'" dired-compress-file-suffixes #'string=)
-                (setcdr (assoc** "\\.gz\\'" dired-compress-file-suffixes #'string=)
+                (setcdr (assoc** "\\.gz\\'"
+                                 dired-compress-file-suffixes #'string=)
                         (list "" 7za?))
               (push (cons "\\.gz\\'" 7za?) dired-compress-file-suffixes))))
 
