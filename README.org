@@ -156,8 +156,8 @@ Your private configuration directory at =(emacs-home* "private/")=.
 All things under it you can rename, move, delete.
 
 All Elisp files should be compiled, if you meet some trouble, a magic
-function =(clean-compiled-files)= should help, run it and reopen the
-Emacs.
+interactive function =(clean-compiled-files)= should help, run it and
+reopen the Emacs.
 
 *** Directory
 
@@ -921,7 +921,7 @@ perfect.
    :CUSTOM_ID: troubleshoting
    :END:
 
-1. @@html:<kbd>@@M: (clean-compiled-files)@@html:</kbd>@@ then exit
+1. @@html:<kbd>@@M-x (clean-compiled-files)@@html:</kbd>@@ then exit
    and reopen Emacs.
 2. Check Emacs configurations: 
   - @@html:<kbd>@@M: system-configuration-options@@html:</kbd>@@
