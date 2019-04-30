@@ -303,7 +303,7 @@ Introduce rules of naming /files/ and /functions/
 - [[#font][Font]]
 - [[#cooking-shell][Shell]]
 - [[#session][Session]]
-- [[#socks][Socks]]
+- [[#network][Network]]
 - [[#package][Package]]
 - [[#indent][Indent]]
 - [[#file][File]]
@@ -473,10 +473,12 @@ by default.
 - =:restore-via-threading*=: restore via a new thread
 - =:allowed= =t= enabled, =nil= disabled
 
-** Socks
+** Network
     :PROPERTIES:
-    :CUSTOM_ID: socks
+    :CUSTOM_ID: network
     :END:
+
+*** Socks
 
 Using socks proxy when installing packages or browsing web pages.
 
@@ -499,6 +501,29 @@ default.
 If =:allowed t=, =url-gateway-method= should be switch to =socks= when
 Emacs initializing. After Emacs initialization, you can =toggle-socks!=
 and no matter =:allowed= is =t= or =nil=.
+
+*** Utils
+
+Emacs comes with a lots of wrappers(=net-utils.el=) around the common
+network utilities. Such as @@html:<kbd>@@M-x ping@@html:</kdb>@@ a
+host.  But =net-utils.el= has some inconveniences:
+- If you want to =ping= with options you must set
+=ping-program-options= customizable variable.
+- IPv6 supporting: on Unix-like OS there are individual program for
+  IPv6, such as =ping6=, but on Windows OS just one =ping= program and
+  with =-6= option.
+
+I'd refined common interative commands around =net-utils=, and named
+those commands with =*= prefix. Using @@html:<kbd>@@C-u M-x
+*<command>@@html:</kdb>@@ you can set the options for that <command>.
+
+The following interactive commands had been defined for Emacs22.1+
+whatever OS you using:
+- =*arp=
+- =*dig=
+- =*ifconfig=
+- =*ping=
+- =*traceroute=
 
 ** Package
     :PROPERTIES:
