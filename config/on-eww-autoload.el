@@ -51,7 +51,7 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
                                 "bing"
                               x))
                           '(("bing" "https://www.bing.com/"
-                             . "search?q=")
+                             . "search?ensearch=1&q=")
                             ("duck" "https://duckduckgo.com/"
                              . "?q=")
                             ("google" "https://www.google.com/"
