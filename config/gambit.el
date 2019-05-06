@@ -58,10 +58,13 @@
           (make-face face)
           (if (x-display-color-p)
               (set-face-background face gambit-highlight-color)
-              (progn
-                ;(make-face-bold face)
-                (set-face-underline-p face t))))
-        (error (setq face nil)))
+            (progn
+              ;;(make-face-bold face)
+              (version-supported-if
+                  <= 24.3
+                  (set-face-underline face t)
+                (set-face-underline-p face t)))))
+      (error (setq face nil)))
     face)
   "Face of overlay for highlighting Scheme expressions.")
 
