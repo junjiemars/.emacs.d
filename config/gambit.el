@@ -442,7 +442,7 @@
 
 (defun gambit-highlight-location (locat)
 
-  ; invariant: the current buffer is the Scheme buffer
+                                        ; invariant: the current buffer is the Scheme buffer
 
   (let ((name (car locat))
         (line (car (cdr locat)))
@@ -467,8 +467,7 @@
              (if buffer
                  (gambit-highlight-expression
                   buffer
-                  (save-excursion
-                    (set-buffer buffer)
+                  (with-current-buffer buffer
                     (goto-line line)
                     (forward-char (- column 1))
                     (point)))))))))
@@ -497,8 +496,8 @@ enlarge the window if it is too small."
          (initially-selected-window
           (selected-window)))
 
-                                        ; "location-windows" is the list of windows containing
-                                        ; the location buffer.
+    ;; "location-windows" is the list of windows containing
+    ;; the location buffer.
 
     (if (or (null location-windows)
             (and (eq location-buffer (get-buffer scheme-buffer))
@@ -529,10 +528,9 @@ enlarge the window if it is too small."
 
       (select-window (car (reverse location-windows))))
 
-                                        ; Highlight the expression in the location buffer.
+    ;; Highlight the expression in the location buffer.
 
-    (save-excursion
-      (set-buffer (window-buffer (selected-window)))
+    (with-current-buffer (window-buffer (selected-window))
       (goto-char pos)
       (if (not (pos-visible-in-window-p))
           (recenter (- (/ (window-height) 2) 1)))
