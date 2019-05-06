@@ -84,6 +84,46 @@
 
 ;;;----------------------------------------------------------------------------
 
+(defvar gambit-indent-regexp-alist
+  '(
+    ("^declare$"               . defun)
+    ("^##declare$"             . defun)
+    ("^##define"               . defun)
+    ("^macro-check"            . defun)
+    ("^macro-force-vars$"      . defun)
+    ("^macro-number-dispatch$" . defun)
+    ("^macro-gen"              . defun)
+    ("^macro-make-gen"         . defun)
+    ("^macro-make-code"        . defun)
+    ("^macro-reference-step!"  . defun)
+    ("^macro-call-step!"       . defun)
+    ("^macro-future-step!"     . defun)
+    ("^macro-delay-step!"      . defun)
+    ("^macro-lambda-step!"     . defun)
+    ("^macro-define-step!"     . defun)
+    ("^macro-set!-step!"       . defun)
+    ("^macro-reference-step!"  . defun)
+    ("^macro-constant-step!"   . defun)
+    ("^mk-degen"               . defun)
+    ("macro-force-elem"        . defun)
+    ("macro-check-elem"        . defun)
+    ))
+
+;;;----------------------------------------------------------------------------
+
+;; Buffer local variables of the Gambit inferior process(es).
+
+(defvar gambit-input-line-count nil
+  "Line number as seen by the Gambit process.")
+
+(defvar gambit-input-line-marker-alist nil
+  "Alist of line numbers of input blocks and markers.")
+
+(defvar gambit-last-output-marker nil
+  "Points to the last character output by the Gambit process.")
+
+;;;----------------------------------------------------------------------------
+
 (defun gambit-indent-function (indent-point state)
   (let ((normal-indent (current-column)))
     (goto-char (1+ (elt state 1)))
@@ -121,30 +161,7 @@
               (method
                (funcall method state indent-point normal-indent)))))))
 
-(defvar gambit-indent-regexp-alist
-  '(
-    ("^declare$"               . defun)
-    ("^##declare$"             . defun)
-    ("^##define"               . defun)
-    ("^macro-check"            . defun)
-    ("^macro-force-vars$"      . defun)
-    ("^macro-number-dispatch$" . defun)
-    ("^macro-gen"              . defun)
-    ("^macro-make-gen"         . defun)
-    ("^macro-make-code"        . defun)
-    ("^macro-reference-step!"  . defun)
-    ("^macro-call-step!"       . defun)
-    ("^macro-future-step!"     . defun)
-    ("^macro-delay-step!"      . defun)
-    ("^macro-lambda-step!"     . defun)
-    ("^macro-define-step!"     . defun)
-    ("^macro-set!-step!"       . defun)
-    ("^macro-reference-step!"  . defun)
-    ("^macro-constant-step!"   . defun)
-    ("^mk-degen"               . defun)
-    ("macro-force-elem"        . defun)
-    ("macro-check-elem"        . defun)
-    ))
+
 
 (defun gambit-indent-method (function)
   (let ((method nil)
@@ -156,8 +173,6 @@
             (setq method (cdr regexp)))
         (setq alist (cdr alist))))
     method))
-
-
 
 ;;;----------------------------------------------------------------------------
 
@@ -265,20 +280,6 @@
                                        (file-name-nondirectory file-name)))
   (scheme-send-string (concat "(compile-file \"" file-name "\"\)\n")))
 
-;;;----------------------------------------------------------------------------
-
-;; Buffer local variables of the Gambit inferior process(es).
-
-(defvar gambit-input-line-count nil
-  "Line number as seen by the Gambit process.")
-
-(defvar gambit-input-line-marker-alist nil
-  "Alist of line numbers of input blocks and markers.")
-
-(defvar gambit-last-output-marker nil
-  "Points to the last character output by the Gambit process.")
-
-;;;----------------------------------------------------------------------------
 
 ;; Utilities
 
