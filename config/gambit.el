@@ -111,6 +111,11 @@
 
 (defvar gambit-popups nil)
 
+(defvar gambit-location-regexp-alist
+  '(("\\(\\\"\\(\\\\\\\\\\|\\\\\"\\|[^\\\"\n]\\)+\\\"\\)@\\([0-9]+\\)\\.\\([0-9]+\\)[^0-9]" 1 3 4)
+    ("\\((console)\\)@\\([0-9]+\\)\\.\\([0-9]+\\)[^0-9]" 1 2 3)
+    ("\\((stdin)\\)@\\([0-9]+\\)\\.\\([0-9]+\\)[^0-9]" 1 2 3)))
+
 ;;;----------------------------------------------------------------------------
 
 ;; Buffer local variables of the Gambit inferior process(es).
@@ -424,11 +429,6 @@
               (setq location (list (read name) (read line) (read column)))))
         (setq alist (cdr alist))))
     location))
-
-(defvar gambit-location-regexp-alist
-  '(("\\(\\\"\\(\\\\\\\\\\|\\\\\"\\|[^\\\"\n]\\)+\\\"\\)@\\([0-9]+\\)\\.\\([0-9]+\\)[^0-9]" 1 3 4)
-    ("\\((console)\\)@\\([0-9]+\\)\\.\\([0-9]+\\)[^0-9]" 1 2 3)
-    ("\\((stdin)\\)@\\([0-9]+\\)\\.\\([0-9]+\\)[^0-9]" 1 2 3)))
 
 (defun gambit-closest-non-following (line alist)
   (let ((closest nil))
