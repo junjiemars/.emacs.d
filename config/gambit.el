@@ -475,10 +475,10 @@
 
 (defun gambit-highlight-expression (location-buffer pos)
 
-"Highlight the expression at a specific location in a buffer.
+  "Highlight the expression at a specific location in a buffer.
 
 The location buffer is the one that contains the location to
-highlight and "pos" points to the first character of the
+highlight and \"pos\" points to the first character of the
 expression in the buffer.  If the location buffer is not visible
 then we must display it in a window.  We also have to make sure
 the highlighted expression is visible, which may require the
@@ -497,8 +497,8 @@ enlarge the window if it is too small."
          (initially-selected-window
           (selected-window)))
 
-    ; "location-windows" is the list of windows containing
-    ; the location buffer.
+                                        ; "location-windows" is the list of windows containing
+                                        ; the location buffer.
 
     (if (or (null location-windows)
             (and (eq location-buffer (get-buffer scheme-buffer))
@@ -510,7 +510,7 @@ enlarge the window if it is too small."
                (window-to-split
                 (if (null scheme-windows)
                     initially-selected-window
-                    (car scheme-windows)))
+                  (car scheme-windows)))
                (height
                 (window-height window-to-split)))
           (select-window window-to-split)
@@ -527,9 +527,9 @@ enlarge the window if it is too small."
             (select-window bottom-window)
             (switch-to-buffer location-buffer)))
 
-        (select-window (car (reverse location-windows))))
+      (select-window (car (reverse location-windows))))
 
-    ; Highlight the expression in the location buffer.
+                                        ; Highlight the expression in the location buffer.
 
     (save-excursion
       (set-buffer (window-buffer (selected-window)))
@@ -541,7 +541,7 @@ enlarge the window if it is too small."
        pos
        (progn
          (condition-case nil
-           (forward-sexp) ; we assume this uses the same syntax as Gambit
+             (forward-sexp) ; we assume this uses the same syntax as Gambit
            (error ; if forward-sexp fails with this condition name
             (forward-char 1)))
          (point)))
