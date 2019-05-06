@@ -201,17 +201,17 @@
 ;; Unfortunately some versions of Xemacs don't have this package so
 ;; we explicitly define an interface to extents.
 
-(if (not (fboundp 'make-overlay))
-    (defun make-overlay (start end)
-      (make-extent start end)))
+(unless-fn% 'make-overlay 'overlay
+  (defun make-overlay (start end)
+    (make-extent start end)))
 
-(if (not (fboundp 'overlay-put))
-    (defun overlay-put (overlay prop val)
-      (set-extent-property overlay prop val)))
+(unless-fn% 'overlay-put 'overlay
+  (defun overlay-put (overlay prop val)
+    (set-extent-property overlay prop val)))
 
-(if (not (fboundp 'move-overlay))
-    (defun move-overlay (overlay start end buffer)
-      (set-extent-endpoints overlay start end buffer)))
+(unless-fn% 'move-overlay 'overlay
+  (defun move-overlay (overlay start end buffer)
+    (set-extent-endpoints overlay start end buffer)))
 
 ;;;----------------------------------------------------------------------------
 
