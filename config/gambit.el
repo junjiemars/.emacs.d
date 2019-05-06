@@ -468,7 +468,7 @@
                  (gambit-highlight-expression
                   buffer
                   (with-current-buffer buffer
-                    (goto-line line)
+                    (forward-line line)
                     (forward-char (- column 1))
                     (point)))))))))
 
