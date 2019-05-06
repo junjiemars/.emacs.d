@@ -23,7 +23,7 @@
 ;;
 ;; You can then start Gambit with "M-x run-scheme".
 ;;
-;; When Gambit signals an error, Emacs will intercept the location
+;; when Gambit signals an error, Emacs will intercept the location
 ;; information in the error message and automatically open a buffer
 ;; highlighting the error.
 ;;
@@ -128,6 +128,9 @@
 
 (defvar gambit-last-output-marker nil
   "Points to the last character output by the Gambit process.")
+
+(unless-var% calculate-lisp-indent-last-sexp nil
+  (defvar calculate-lisp-indent-last-sexp 0))
 
 ;;;----------------------------------------------------------------------------
 
