@@ -119,18 +119,7 @@
                (lisp-indent-specform method state
                                      indent-point normal-indent))
               (method
-                (funcall method state indent-point normal-indent)))))))
-
-(defun gambit-indent-method (function)
-  (let ((method nil)
-        (alist gambit-indent-regexp-alist))
-    (while (and (not method) (not (null alist)))
-      (let* ((regexp (car alist))
-             (x (string-match (car regexp) function)))
-        (if x
-            (setq method (cdr regexp)))
-        (setq alist (cdr alist))))
-    method))
+               (funcall method state indent-point normal-indent)))))))
 
 (defvar gambit-indent-regexp-alist
   '(
@@ -155,7 +144,20 @@
     ("^mk-degen"               . defun)
     ("macro-force-elem"        . defun)
     ("macro-check-elem"        . defun)
-   ))
+    ))
+
+(defun gambit-indent-method (function)
+  (let ((method nil)
+        (alist gambit-indent-regexp-alist))
+    (while (and (not method) (not (null alist)))
+      (let* ((regexp (car alist))
+             (x (string-match (car regexp) function)))
+        (if x
+            (setq method (cdr regexp)))
+        (setq alist (cdr alist))))
+    method))
+
+
 
 ;;;----------------------------------------------------------------------------
 
@@ -164,7 +166,7 @@
 (defun window-top-edge (window)
   (if (fboundp 'window-edges)
       (car (cdr (window-edges window)))
-      (car (cdr (window-pixel-edges window)))))
+    (car (cdr (window-pixel-edges window)))))
 
 ;; Xemacs calls its overlays "extents", so we have to use them to emulate
 ;; overlays on Xemacs.  Some versions of Xemacs have the portability package
