@@ -47,8 +47,7 @@
    :packages '(magit)
    :compile `(,(compile-unit% (emacs-home* "config/use-magit-autoload.el"))))
   (list
-   :cond (and nil ;; conflict with gambit.el
-              (version-supported-p <= 23.2)
+   :cond (and (version-supported-p <= 23.2)
               (or (executable-find% "racket")
                   (executable-find% "chicken")))
    :packages '(geiser))

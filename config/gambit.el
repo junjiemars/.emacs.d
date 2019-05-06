@@ -445,9 +445,7 @@
     closest))
 
 (defun gambit-highlight-location (locat)
-
-                                        ; invariant: the current buffer is the Scheme buffer
-
+  ;; invariant: the current buffer is the Scheme buffer
   (let ((name (car locat))
         (line (car (cdr locat)))
         (column (car (cdr (cdr locat)))))
@@ -477,7 +475,6 @@
                     (point)))))))))
 
 (defun gambit-highlight-expression (location-buffer pos)
-
   "Highlight the expression at a specific location in a buffer.
 
 The location buffer is the one that contains the location to
@@ -660,15 +657,29 @@ enlarge the window if it is too small."
             t
             t)) ; hook is buffer-local
 
-(defun gambit-mode ()
+(defun set-gambit-mode! ()
   (gambit-inferior-mode)
   (gambit-install-comment-syntax)
   (gambit-extend-mode-map scheme-mode-map))
 
 ;;(autoload 'gambit-inferior-mode "gambit" "Hook Gambit mode into cmuscheme.")
 ;;(autoload 'gambit-mode "gambit" "Hook Gambit mode into scheme.")
-(add-hook 'inferior-scheme-mode-hook (function gambit-inferior-mode))
-(add-hook 'scheme-mode-hook (function gambit-mode))
+;; (add-hook 'inferior-scheme-mode-hook (function gambit-inferior-mode))
+;; (add-hook 'scheme-mode-hook (function gambit-mode-hook))
+
+
+(define-derived-mode gambit-mode scheme-mode "Gambit"
+  "Major mode for editing Gambit scheme code.
+
+The hook `gambit-mode-common-hook' is run with no args at mode
+initialization, then `gambit-mode-hook'.
+
+Key bindings:`gambit-extend-mode-map'"
+  :after-hook (progn )
+  (add-hook 'inferior-scheme-mode-hook #'gambit-inferior-mode t)
+  (add-hook 'scheme-mode-hook #'set-gambit-mode! t)
+  (setq% scheme-program-name "gsi -:d-" 'scheme))
+
 
 (provide 'gambit)
 
