@@ -393,8 +393,7 @@
            (initially-selected-window
             (selected-window)))
       (if (not (null windows))
-          (save-excursion
-            (set-buffer buffer)
+          (with-current-buffer buffer
             (select-window (car windows))
             (goto-char output-marker)
             (if (not (pos-visible-in-window-p))
