@@ -109,6 +109,8 @@
     ("macro-check-elem"        . defun)
     ))
 
+(defvar gambit-popups nil)
+
 ;;;----------------------------------------------------------------------------
 
 ;; Buffer local variables of the Gambit inferior process(es).
@@ -357,7 +359,7 @@
         (t
          (gambit-gc-popups (cdr popups)))))
 
-(defvar gambit-popups nil)
+
 
 ;;;----------------------------------------------------------------------------
 
@@ -383,7 +385,7 @@
                         (point))))
                 (gambit-extract-location
                  (buffer-substring start end)))
-              nil)))
+            nil)))
     (gambit-make-read-only buffer output-marker)
     (set-marker gambit-last-output-marker (- output-marker 1))
     (let* ((windows
