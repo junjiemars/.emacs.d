@@ -1,4 +1,4 @@
-;;; -*- Mode:Emacs-Lisp -*-
+;;;; -*- lexical-binding:t -*-
 ;;; gambit.el --- Run Gambit in an [X]Emacs buffer
 
 ;; Copyright (c) 1997-2013 Marc Feeley & Michael Sperber
@@ -260,20 +260,19 @@
              (gambit-string-count-lines str)))))
 
 (defun gambit-make-read-only (buffer end)
-  ' ; disable read-only interaction, cause it doesn't work!
-  (progn
-    (put-text-property 1 end 'front-sticky '(read-only) buffer)
-    (put-text-property 1 end 'rear-nonsticky '(read-only) buffer)
-    (put-text-property 1 end 'read-only t buffer)))
+  "disable read-only interaction, cause it doesn't work!"
+  (put-text-property 1 end 'front-sticky '(read-only) buffer)
+  (put-text-property 1 end 'rear-nonsticky '(read-only) buffer)
+  (put-text-property 1 end 'read-only t buffer))
 
 ;;;----------------------------------------------------------------------------
 
 (defun gambit-load-file (file-name)
   "Load a Scheme file FILE-NAME into the inferior Scheme process."
   (interactive (comint-get-source "Load Scheme file: " scheme-prev-l/c-dir/file
-                                  scheme-source-modes t)) ; T because LOAD
-                                                          ; needs an exact name
-  (comint-check-source file-name) ; Check to see if buffer needs saved.
+                                  scheme-source-modes t)) ;; T because LOAD
+  ;; needs an exact name
+  (comint-check-source file-name) ;; Check to see if buffer needs saved.
   (setq scheme-prev-l/c-dir/file (cons (file-name-directory    file-name)
                                        (file-name-nondirectory file-name)))
   (scheme-send-string (concat "(load \"" file-name "\"\)\n")))
@@ -283,9 +282,9 @@
   (interactive (comint-get-source "Compile Scheme file: "
                                   scheme-prev-l/c-dir/file
                                   scheme-source-modes
-                                  nil)) ; NIL because COMPILE doesn't
-                                        ; need an exact name.
-  (comint-check-source file-name) ; Check to see if buffer needs saved.
+                                  nil)) ;; NIL because COMPILE doesn't
+  ;; need an exact name.
+  (comint-check-source file-name) ;; Check to see if buffer needs saved.
   (setq scheme-prev-l/c-dir/file (cons (file-name-directory    file-name)
                                        (file-name-nondirectory file-name)))
   (scheme-send-string (concat "(compile-file \"" file-name "\"\)\n")))
@@ -668,7 +667,7 @@ enlarge the window if it is too small."
 ;; (add-hook 'scheme-mode-hook (function gambit-mode-hook))
 
 
-(define-derived-mode gambit-mode scheme-mode "Gambit"
+(define-derived-mode gambit-mode scheme-mode "Scheme Gambit"
   "Major mode for editing Gambit scheme code.
 
 The hook `gambit-mode-common-hook' is run with no args at mode
