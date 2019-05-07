@@ -116,6 +116,8 @@
     ("\\((console)\\)@\\([0-9]+\\)\\.\\([0-9]+\\)[^0-9]" 1 2 3)
     ("\\((stdin)\\)@\\([0-9]+\\)\\.\\([0-9]+\\)[^0-9]" 1 2 3)))
 
+(defvar gambit-mode-map (make-sparse-keymap))
+
 ;;;----------------------------------------------------------------------------
 
 ;; Buffer local variables of the Gambit inferior process(es).
@@ -667,19 +669,41 @@ enlarge the window if it is too small."
 ;; (add-hook 'scheme-mode-hook (function gambit-mode-hook))
 
 
-(define-derived-mode gambit-mode scheme-mode "Scheme Gambit"
-  "Major mode for editing Gambit scheme code.
+(define-minor-mode gambit-mode
+  "Toggle Gambit's mode.
 
-The hook `gambit-mode-common-hook' is run with no args at mode
-initialization, then `gambit-mode-hook'.
+With no argument, this command toggles the mode.
+Non-null prefix argument turns on the mode.
+Null prefix argument turns off the mode.
 
-Key bindings:`gambit-extend-mode-map'"
-  :after-hook (progn )
+When Gambit mode is enabled, a host of nice utilities for
+interacting with the Gambit REPL is at your disposal.
+\\{gambit-mode-map}"
+  :init-value nil
+  :lighter (:eval " Gambit")
+  :group 'gambit-mode
+  :keymap gambit-mode-map
+  ;; (when geiser-mode (geiser-impl--set-buffer-implementation nil t))
+  ;; (setq geiser-autodoc-mode-string "/A")
+  ;; (setq geiser-smart-tab-mode-string "/T")
+  ;; (geiser-company--setup (and geiser-mode geiser-mode-company-p))
+  ;; (geiser-completion--setup geiser-mode)
+  ;; (when geiser-mode-autodoc-p
+  ;;   (geiser-autodoc-mode (if geiser-mode 1 -1)))
+  ;; (when geiser-mode-smart-tab-p
+  ;;   (geiser-smart-tab-mode (if geiser-mode 1 -1)))
+  ;; (geiser-syntax--add-kws)
+  ;; (when (and geiser-mode
+  ;;            geiser-mode-start-repl-p
+  ;;            (not (geiser-syntax--font-lock-buffer-p))
+  ;;            (not (geiser-repl--connection*)))
+  ;;   (save-window-excursion (run-geiser geiser-impl--implementation)))
+
   (add-hook 'inferior-scheme-mode-hook #'gambit-inferior-mode t)
   (add-hook 'scheme-mode-hook #'set-gambit-mode! t)
-  (setq% scheme-program-name "gsi -:d-" 'scheme))
+  (setq scheme-program-name "gsi -:d-"))
 
 
 (provide 'gambit)
 
-;;;----------------------------------------------------------------------------
+;; end of file
