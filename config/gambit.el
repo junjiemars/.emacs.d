@@ -39,6 +39,12 @@
 ;; "C-c _" can be used to delete the last popup window that was
 ;; created to highlight a Scheme expression.
 
+;;;;
+;; Redefined target:
+;; 1. a derived scheme mode, works on Windows, Darwin and Linux.
+;; 2. lexical scoped.
+;;;;
+
 ;;;----------------------------------------------------------------------------
 
 ;; User overridable parameters.
@@ -223,6 +229,14 @@
 ;; Redefine the function scheme-send-region from `cmuscheme' so
 ;; that we can keep track of all text sent to Gambit's stdin.
 
+(defun gambit-make-read-only (buffer end)
+  "disable read-only interaction, cause it doesn't work!"
+  (ignore* buffer end)
+  '(progn
+     (put-text-property 1 end 'front-sticky '(read-only) buffer)
+     (put-text-property 1 end 'rear-nonsticky '(read-only) buffer)
+     (put-text-property 1 end 'read-only t buffer)))
+
 (defun scheme-send-region (start end)
   "Send the current region to the inferior Scheme process."
   (interactive "r")
@@ -260,12 +274,6 @@
     (setq gambit-input-line-count
           (+ gambit-input-line-count
              (gambit-string-count-lines str)))))
-
-(defun gambit-make-read-only (buffer end)
-  "disable read-only interaction, cause it doesn't work!"
-  (put-text-property 1 end 'front-sticky '(read-only) buffer)
-  (put-text-property 1 end 'rear-nonsticky '(read-only) buffer)
-  (put-text-property 1 end 'read-only t buffer))
 
 ;;;----------------------------------------------------------------------------
 
