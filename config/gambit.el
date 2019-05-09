@@ -704,50 +704,53 @@
   :type 'hook
   :group 'gambit)
 
-(define-derived-mode inferior-scheme-gambit-mode comint-mode "REPL"
-  "Major mode for interacting with an inferior Scheme process.
+(define-derived-mode gambit-mode comint-mode "REPL"
+  "Major mode for interacting with a gambit process.
 
 The following commands are available:
 \\{inferior-scheme-mode-map}
 
-A Scheme process can be fired up with M-x run-scheme.
+A gambit process can be fired up with M-x `run-gambit'.
 
-Customization: Entry to this mode runs the hooks on `comint-mode-hook' and
-`inferior-scheme-mode-hook' (in that order).
+Customization: Entry to this mode runs the hooks on
+`comint-mode-hook' and `gambit-mode-hook' (in that order).
 
-You can send text to the inferior Scheme process from other buffers containing
-Scheme source.
-    `switch-to-scheme' switches the current buffer to the Scheme process buffer.
-    `scheme-send-definition' sends the current definition to the Scheme process.
-    `scheme-compile-definition' compiles the current definition.
-    `scheme-send-region' sends the current region to the Scheme process.
-    `scheme-compile-region' compiles the current region.
+You can send text to the gambib process from other buffers
+containing Scheme source.
+ `switch-to-scheme' switches the current buffer to the gambit process buffer.
+ `scheme-send-definition' sends the current definition to the gambit process.
+ `scheme-compile-definition' compiles the current definition.
+ `scheme-send-region' sends the current region to the gambit process.
+ `scheme-compile-region' compiles the current region.
 
-    `scheme-send-definition-and-go', `scheme-compile-definition-and-go',
-        `scheme-send-region-and-go', and `scheme-compile-region-and-go'
-        switch to the Scheme process buffer after sending their text.
-For information on running multiple processes in multiple buffers, see
-documentation for variable `scheme-buffer'.
+ `scheme-send-definition-and-go',
+ `scheme-compile-definition-and-go', 
+
+  `scheme-send-region-and-go', and `scheme-compile-region-and-go'
+     switch to the gambit process buffer after sending their text.
+     For information on running multiple processes in multiple
+     buffers, see documentation for variable `scheme-buffer'.
 
 Commands:
-Return after the end of the process' output sends the text from the
-    end of process to point.
-Return before the end of the process' output copies the sexp ending at point
-    to the end of the process' output, and sends it.
+Return after the end of the process' output sends the
+  text from the end of process to point.
+Return before the end of the process' output copies the sexp
+  ending at point to the end of the process' output, and sends
+  it.
 Delete converts tabs to spaces as it moves back.
-Tab indents for Scheme; with argument, shifts rest
-    of expression rigidly with the current line.
+Tab indents for Scheme; with argument, shifts rest of expression
+    rigidly with the current line.
+
 C-M-q does Tab on each line starting within following expression.
-Paragraphs are separated only by blank lines.  Semicolons start comments.
-If you accidentally suspend your process, use \\[comint-continue-subjob]
-to continue it."
-  ;; Customize in inferior-scheme-mode-hook
+Paragraphs are separated only by blank lines.  Semicolons start
+comments.  If you accidentally suspend your process, use
+\\[comint-continue-subjob] to continue it."
   (setq comint-prompt-regexp "^[^>\n]*>+ *")
   (setq comint-prompt-read-only t)
   (scheme-mode-variables)
   (setq mode-line-process '(":%s"))
-  (setq comint-input-filter (function scheme-input-filter))
-  (setq comint-get-old-input (function scheme-get-old-input)))
+  (setq comint-input-filter #'scheme-input-filter)
+  (setq comint-get-old-input #'scheme-get-old-input))
 
 
 (defun run-gambit (cmd)
@@ -767,7 +770,7 @@ Run the hook `gambit-mode-hook' after the `comint-mode-hook'."
                          (car cmdlist)
                          nil ;; no start file, gsi default ~/gambini
                          (cdr cmdlist)))
-	    (inferior-scheme-gambit-mode)))
+	    (gambit-mode)))
   (setq scheme-program-name cmd)
   (switch-to-buffer (setq scheme-buffer "*gambit*")))
 
