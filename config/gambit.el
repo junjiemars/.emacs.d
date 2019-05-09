@@ -765,7 +765,7 @@ Run the hook `gambit-mode-hook' after the `comint-mode-hook'."
 			                   (read-string "Run Scheme: " gambit-program-name)
 			                 gambit-program-name)))
   (when (not (comint-check-proc "*gambit*"))
-    (let ((cmdlist (split-string-and-unquote cmd)))
+    (let ((cmdlist (split-string* cmd "\\s-+" t)))
       (set-buffer (apply 'make-comint "gambit"
                          (car cmdlist)
                          nil ;; no start file, gsi default ~/gambini
