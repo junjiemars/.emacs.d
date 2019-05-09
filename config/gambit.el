@@ -766,7 +766,7 @@ Runs the hook `gambit-mode-hook' after the `comint-mode-hook'."
 	    (inferior-scheme-gambit-mode)))
   (setq scheme-program-name cmd)
   (setq scheme-buffer "*gambit*")
-  (pop-to-buffer-same-window "*gambit*"))
+  (switch-to-buffer "*gambit*"))
 
 
 (provide 'gambit)
