@@ -694,13 +694,17 @@
 (require 'cmuscheme)
 
 
-(defcustom gambit-program-name "gsi -:d-"
+(defcustom% gambit-program-name "gsi -:d-"
   "Program invoked by the `run-gambit' command."
   :type 'string
   :group 'gambit)
 
+(defcustom% gambit-mode-hook nil
+  "Hook for customizing `inferior-scheme-gambit-mode'."
+  :type 'hook
+  :group 'gambit)
 
-(define-derived-mode inferior-scheme-gambit-mode comint-mode "Inferior Scheme"
+(define-derived-mode inferior-scheme-gambit-mode comint-mode "REPL"
   "Major mode for interacting with an inferior Scheme process.
 
 The following commands are available:
@@ -753,7 +757,7 @@ If there is a process already running in `*scheme*', switch to
 that buffer.  With argument, allows you to edit the command
 line (default is value of `scheme-program-name').
 
-Runs the hook `gambit-mode-hook' after the `comint-mode-hook'."
+Run the hook `gambit-mode-hook' after the `comint-mode-hook'."
   (interactive (list (if current-prefix-arg
 			                   (read-string "Run Scheme: " gambit-program-name)
 			                 gambit-program-name)))
@@ -765,8 +769,7 @@ Runs the hook `gambit-mode-hook' after the `comint-mode-hook'."
                          (cdr cmdlist)))
 	    (inferior-scheme-gambit-mode)))
   (setq scheme-program-name cmd)
-  (setq scheme-buffer "*gambit*")
-  (switch-to-buffer "*gambit*"))
+  (switch-to-buffer (setq scheme-buffer "*gambit*")))
 
 
 (provide 'gambit)
