@@ -118,6 +118,18 @@ See variable `*gambit-buffer*'."
   (or (get-buffer-process *gambit-buffer*)
       (error "No current process.  See variable `*gambit-buffer*'")))
 
+(defun gambit-send-region (start end)
+  "Send the current region to the inferior Scheme process."
+  (interactive "r")
+  (comint-send-region (gambit-proc) start end)
+  (comint-send-string (gambit-proc) "\n"))
+
+(defun gambit-send-last-sexp ()
+  "Send the previous sexp to the Gambit process."
+  (interactive)
+  (gambit-send-region (save-excursion (backward-sexp) (point)) (point)))
+
+
 (defun gambit-load-file (file-name)
   "Load a Scheme file FILE-NAME into the inferior Scheme process."
   (interactive (comint-get-source
@@ -128,7 +140,7 @@ See variable `*gambit-buffer*'."
   ;; Check to see if buffer needs saved
   (comint-check-source file-name) 
   (setq scheme-prev-l/c-dir/file (cons (file-name-directory file-name)
-				       (file-name-nondirectory file-name)))
+				                               (file-name-nondirectory file-name)))
   (comint-send-string (gambit-proc)
                       (concat "(load \"" file-name "\"\)\n"))
   (pop-to-buffer *gambit-buffer*))
@@ -136,14 +148,14 @@ See variable `*gambit-buffer*'."
 (defvar gambit-mode-map
   (let ((m (make-sparse-keymap)))
     (define-key m "\M-\C-x" 'scheme-send-definition)
-    (define-key m "\C-x\C-e" 'scheme-send-last-sexp)
+    (define-key m "\C-x\C-e" #'gambit-send-last-sexp)
     (define-key m "\C-c\C-l" #'gambit-load-file)
     (define-key m "\C-c\C-k" 'scheme-compile-file)
     (scheme-mode-commands m)
     m))
 
 (define-key gambit-mode-map "\C-c\C-l" #'gambit-load-file)
-
+(define-key scheme-mode-map "\C-x\C-e" 'gambit-send-last-sexp)
 
 (provide 'gambit)
 
