@@ -768,7 +768,7 @@ Run the hook `gambit-mode-hook' after the `comint-mode-hook'."
     (let ((cmdlist (split-string* cmd "\\s-+" t)))
       (set-buffer (apply 'make-comint "gambit"
                          (car cmdlist)
-                         nil ;; no start file, gsi default ~/gambini
+                         nil ;; no start file, gsi default init: ~/gambini
                          (cdr cmdlist)))
 	    (gambit-mode)))
   (setq scheme-program-name cmd)
