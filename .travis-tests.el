@@ -392,9 +392,9 @@
                             "defined"
                      "undefined")))
   (should (string= "undefined"
-                   (unless-key% (current-global-map) (kbd "C-x C-c")
-                                (lambda (def)
-                                  (eq def #'save-buffers-kill-terminal-xxx))
-                     "undefined"))))
+                   (if-key% (current-global-map) (kbd "C-x C-c")
+                            (lambda (def)
+                              (not (eq def #'xxx)))
+                            "undefined"))))
 
 ;; end of file

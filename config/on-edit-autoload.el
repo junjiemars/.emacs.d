@@ -499,27 +499,29 @@ directory name of `buffer-file-name' to kill ring."
 ;; Greek letters C-x 8 <RET> greek small letter lambda
 
 ;; bind `insert-char*' to [C-x 8 RET] for ancient Emacs
-(unless-key% (current-global-map) (kbd "C-x 8 RET")
-             (lambda (def) (eq def #'insert-char))
-  (defun insert-char* (character &optional count inherit)
-    "Interactive `insert-char' for ancient Emacs."
-    (interactive
-     (list (read-string "Insert character (Unicode or hex number): ")
-           (prefix-numeric-value current-prefix-arg)
-           t))
-    (let ((c (cond ((string-match
-                     "\\`#[xX][0-9a-fA-F]+\\|#[oO][0-7]+\\'"
-                     character)
-                    (ignore-errors (read character)))
-                   ((string-match "\\?\\\\u[0-9a-fA-F]" character)
-                    (ignore-errors (read character)))
-                   ((string-match "\\`[0-9a-fA-F]+\\'" character)
-                    (ignore-errors (read (concat "?\\u" character)))))))
-      (unless (characterp c)
-        (error "Invalid character"))
-      (insert-char c count)))
+(if-key% (current-global-map)
+    (kbd "C-x 8 RET")
+    (lambda (def) (not (eq def #'insert-char)))
+    (progn
+      (defun insert-char* (character &optional count inherit)
+        "Interactive `insert-char' for ancient Emacs."
+        (interactive
+         (list (read-string "Insert character (Unicode or hex number): ")
+               (prefix-numeric-value current-prefix-arg)
+               t))
+        (let ((c (cond ((string-match
+                         "\\`#[xX][0-9a-fA-F]+\\|#[oO][0-7]+\\'"
+                         character)
+                        (ignore-errors (read character)))
+                       ((string-match "\\?\\\\u[0-9a-fA-F]" character)
+                        (ignore-errors (read character)))
+                       ((string-match "\\`[0-9a-fA-F]+\\'" character)
+                        (ignore-errors (read (concat "?\\u" character)))))))
+          (unless (characterp c)
+            (error "Invalid character"))
+          (insert-char c count)))
 
-  (define-key (current-global-map) (kbd "C-x 8 RET") #'insert-char*))
+      (define-key (current-global-map) (kbd "C-x 8 RET") #'insert-char*)))
 
  ;; end of `insert-char*'
 

@@ -615,17 +615,11 @@ item for which (PRED item) returns t."
        ,then
      ,@else))
 
-(defmacro unless-key% (keymap key test-def &rest body)
-  "Unless test-def for KEY in KEYMAP do BODY."
-  (declare (indent 3))
-  `(if-key% ,keymap ,key ,test-def nil ,@body))
-
-
 (defmacro define-key% (keymap key def)
   "Define KEY to DEF in KEYMAP when the KEY binding of DEF is not exists."
-  `(unless-key% ,keymap ,key
-                (lambda (d) (eq d ,def))
-     (define-key ,keymap ,key ,def)))
+  `(if-key% ,keymap ,key
+            (lambda (d) (not (eq d ,def)))
+            (define-key ,keymap ,key ,def)))
 
  ;; End of key macro
 
