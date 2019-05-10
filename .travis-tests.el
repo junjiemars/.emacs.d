@@ -387,12 +387,14 @@
 (ert-deftest %basic:if-key% ()
   (should (string= "defined"
                    (if-key% (current-global-map) (kbd "C-x C-c")
-                            #'save-buffers-kill-terminal
+                            (lambda (def)
+                              (eq def #'save-buffers-kill-terminal))
                             "defined"
                      "undefined")))
   (should (string= "undefined"
                    (unless-key% (current-global-map) (kbd "C-x C-c")
-                                #'save-buffers-kill-terminal-xxx
+                                (lambda (def)
+                                  (eq def #'save-buffers-kill-terminal-xxx))
                      "undefined"))))
 
 ;; end of file

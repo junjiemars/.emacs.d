@@ -499,7 +499,8 @@ directory name of `buffer-file-name' to kill ring."
 ;; Greek letters C-x 8 <RET> greek small letter lambda
 
 ;; bind `insert-char*' to [C-x 8 RET] for ancient Emacs
-(unless-key% (current-global-map) (kbd "C-x 8 RET") #'insert-char
+(unless-key% (current-global-map) (kbd "C-x 8 RET")
+             (lambda (def) (eq def #'insert-char))
   (defun insert-char* (character &optional count inherit)
     "Interactive `insert-char' for ancient Emacs."
     (interactive

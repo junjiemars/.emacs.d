@@ -14,6 +14,9 @@
 
 (require 'cmuscheme)
 
+(defgroup gambit nil
+  "Run a gambit process in a buffer."
+  :group 'scheme)
 
 (defcustom% gambit-program-name "gsi -:d-"
   "Program invoked by the `run-gambit' command."
