@@ -18,7 +18,7 @@
   "Run a gambit process in a buffer."
   :group 'scheme)
 
-(defcustom% gambit-program-name "gsi -:d-"
+(defcustom% gambit-program-name "gsc-script -:d1- -i"
   "Program invoked by the `run-gambit' command."
   :type 'string
   :group 'gambit)
@@ -132,6 +132,18 @@ See variable `*gambit-buffer*'."
   (interactive)
   (gambit-send-region (save-excursion (backward-sexp) (point)) (point)))
 
+(defun gambit-compile-file (file-name)
+  "Compile a Scheme file FILE-NAME in the Gambit process."
+  (interactive (comint-get-source
+                "Compile Scheme file: "
+                scheme-prev-l/c-dir/file
+                scheme-source-modes
+                nil)) 
+  (comint-check-source file-name)
+  (setq scheme-prev-l/c-dir/file (cons (file-name-directory file-name)
+                                       (file-name-nondirectory file-name)))
+  (comint-send-string (gambit-proc)
+                      (concat "(compile-file \"" file-name "\")\n")))
 
 (defun gambit-load-file (file-name)
   "Load a Scheme file FILE-NAME into the inferior Scheme process."
@@ -153,16 +165,13 @@ See variable `*gambit-buffer*'."
     (define-key m "\M-\C-x" 'scheme-send-definition)
     (define-key m "\C-x\C-e" #'gambit-send-last-sexp)
     (define-key m "\C-c\C-l" #'gambit-load-file)
-    (define-key m "\C-c\C-k" 'scheme-compile-file)
+    (define-key m "\C-c\C-k" #'gambit-compile-file)
     (scheme-mode-commands m)
     m))
 
-(define-key gambit-mode-map "\C-c\C-l" #'gambit-load-file)
-(define-key scheme-mode-map "\C-x\C-e" 'gambit-send-last-sexp)
-
 (make-variable-buffer-local
  (defvar gambit-mode-string nil
-   "Modeline indicator for gambit-mode"))
+   "Modeline indicator for `gambit-mode'."))
 
 (defun gambit-mode--lighter ()
   (or gambit-mode-string
