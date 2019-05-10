@@ -93,7 +93,7 @@
                                    (let ((x (shell-command* "gsc"
                                               "-e '(system-type)'")))
                                      (car x)))))
-      (compile-unit% (emacs-home* "config/gambit.el"))))
+      (compile-unit% (emacs-home* "config/gambit-mode.el"))))
 
   
   (platform-supported-when 'windows-nt

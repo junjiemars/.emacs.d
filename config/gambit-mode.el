@@ -3,7 +3,7 @@
 ;; More reasonable Emacs on MacOS, Windows and Linux
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; gambit.el --- Run Gambit in an Emacs buffer
+;; gambit-mode.el --- Run Gambit in an Emacs buffer
 ;;;;
 
 ;;;;
@@ -184,6 +184,6 @@ interacting with the Gambit REPL is at your disposal.
   :keymap gambit-mode-map)
 
 
-(provide 'gambit)
+(provide 'gambit-mode)
 
 ;; end of file
