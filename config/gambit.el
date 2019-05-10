@@ -31,7 +31,7 @@
 (defvar *gambit-buffer* nil
   "The current gambit process buffer.")
 
-(define-derived-mode gambit-mode comint-mode "Gambit"
+(define-derived-mode gambit-repl-mode comint-mode "Gambit"
   "Major mode for interacting with a gambit process.
 
 The following commands are available:
@@ -96,7 +96,7 @@ Run the hook `gambit-mode-hook' after the `comint-mode-hook'."
                          (car cmdlist)
                          nil ;; no start file, gsi default init: ~/gambini
                          (cdr cmdlist)))
-	    (gambit-mode)))
+	    (gambit-mode 1)))
   (setq gambit-program-name cmd)
   (setq *gambit-buffer* "*gambit*")
   (setq mode-line-process '(":%s"))
@@ -159,6 +159,30 @@ See variable `*gambit-buffer*'."
 
 (define-key gambit-mode-map "\C-c\C-l" #'gambit-load-file)
 (define-key scheme-mode-map "\C-x\C-e" 'gambit-send-last-sexp)
+
+(make-variable-buffer-local
+ (defvar gambit-mode-string nil
+   "Modeline indicator for gambit-mode"))
+
+(defun gambit-mode--lighter ()
+  (or gambit-mode-string
+      (format " %s" (or "Gambit" "G"))))
+
+(define-minor-mode gambit-mode
+  "Toggle Gambit's mode.
+
+With no argument, this command toggles the mode.
+Non-null prefix argument turns on the mode.
+Null prefix argument turns off the mode.
+
+When Gambit mode is enabled, a host of nice utilities for
+interacting with the Gambit REPL is at your disposal.
+\\{gambit-mode-map}"
+  :init-value nil
+  :lighter (:eval (gambit-mode--lighter))
+  :group 'gambit-mode
+  :keymap gambit-mode-map)
+
 
 (provide 'gambit)
 
