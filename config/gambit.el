@@ -61,7 +61,7 @@ Defaults to a regexp ignoring all inputs of 0, 1, or 2 letters."
   "Switch to the `*gambit-last-buffer*' from `*gambit-repl*'."
   (interactive)
   (when *gambit-last-buffer*
-    (switch-to-buffer *gambit-last-buffer*)))
+    (switch-to-buffer-other-window *gambit-last-buffer*)))
 
 (defvar gambit-repl-mode-map
   (let ((m (make-sparse-keymap)))
@@ -124,7 +124,7 @@ Run the hook `gambit-mode-hook' after the `comint-mode-hook'."
   (setq gambit-program cmd)
   (setq *gambit-repl* "*gambit*")
   (setq mode-line-process '(":%s"))
-  (switch-to-buffer "*gambit*"))
+  (switch-to-buffer-other-window "*gambit*"))
 
  ;; end of REPL
 
@@ -270,5 +270,6 @@ interacting with the Gambit REPL is at your disposal.
 
 
 (provide 'gambit-mode)
+
 
 ;; end of file
