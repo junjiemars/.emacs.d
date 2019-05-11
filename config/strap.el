@@ -221,33 +221,33 @@ Returns the value of BODY if no error happens."
            `(progn% ,@body)
          `(comment ,@body)))))
 
-(eval-when-compile
-  
-  (defmacro _defun-threading-^fn (fn &optional join)
-    "Define FN threading macro."
-    `(if-fn% 'make-thread nil
-             ,(let ((name (symbol-name fn))
-                    (name1 (intern (format "^%s"
-                                           (symbol-name fn))))
-                    (ds1 (format "Threading `%s'." fn)))
-                `(defun ,name1 ()
-                   ,ds1
-                   (let ((thread (make-thread (function ,fn) ,name)))
-                     (if% ,join
-                         (thread-join thread)
-                       thread))))
-       (ignore* ,join)
-       (function ,fn)))
 
-  (defmacro _threading-call (fn &optional join name)
-    "Make FN as threading call."
-    `(if-fn% 'make-thread nil
-             (let ((thread (make-thread (lambda () ,fn) ,name)))
-               (if% ,join
-                   (thread-join thread)
-                 thread))
-       (ignore* ,join ,name)
-       (funcall (lambda () ,fn)))))
+(defmacro defun-make-thread-^fn (fn &optional join)
+  "Define FN threading macro."
+  `(if-fn% 'make-thread nil
+           ,(let ((name (symbol-name fn))
+                  (name1 (intern (format "^%s"
+                                         (symbol-name fn))))
+                  (ds1 (format "Threading `%s'." fn)))
+              `(defun ,name1 ()
+                 ,ds1
+                 (let ((thread (make-thread (function ,fn) ,name)))
+                   (if% ,join
+                       (thread-join thread)
+                     thread))))
+     (ignore* ,join)
+     (function ,fn)))
+
+
+(defmacro make-thread* (fn &optional join name)
+  "Make FN as threading call."
+  `(if-fn% 'make-thread nil
+           (let ((thread (make-thread (lambda () ,fn) ,name)))
+             (if% ,join
+                 (thread-join thread)
+               thread))
+     (ignore* ,join ,name)
+     (funcall (lambda () ,fn))))
 
 
 (defmacro dolist* (spec &rest body)

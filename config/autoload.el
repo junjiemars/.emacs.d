@@ -128,4 +128,4 @@
 ;; after-init
 (add-hook 'after-init-hook #'set-flavor-mode! t)
 (add-hook 'after-init-hook #'set-global-key! t)
-(add-hook 'after-init-hook (_defun-threading-^fn set-self-epilogue!) t)
+(add-hook 'after-init-hook (defun-make-thread-^fn set-self-epilogue!) t)

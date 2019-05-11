@@ -345,7 +345,7 @@ include directories. The REMOTE argument from `file-remote-p'."
   (when (system-cc-identity t)
     (toggle-cc-eldoc-mode 1)))
 
-;; (add-hook 'c-mode-hook (_defun-threading-^fn system-cc-autoload) t)
+;; (add-hook 'c-mode-hook (defun-make-thread-^fn system-cc-autoload) t)
 
 
 (with-eval-after-load 'cc-mode

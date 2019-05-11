@@ -537,7 +537,7 @@ directory name of `buffer-file-name' to kill ring."
 ;; name, ido will narrow down the list of buffers to match the text
 ;; you've typed in
 ;; http://www.emacswiki.org/emacs/InteractivelyDoThings
-(_threading-call (ido-mode t))
+(make-thread* (ido-mode t))
 
 
 ;; end of file

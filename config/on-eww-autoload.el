@@ -67,7 +67,7 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
                         (when s (concat (cdr w1) s)))))
          (encoded (progn (require 'browse-url)
                          (browse-url-url-encode-chars url "[ '()]"))))
-    (_threading-call
+    (make-thread*
      (progn
        (message "find-web@: %s" encoded)
        (funcall browse-url-browser-function encoded))
