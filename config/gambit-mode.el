@@ -121,8 +121,20 @@ See variable `*gambit-buffer*'."
   (or (get-buffer-process *gambit-buffer*)
       (error "No current process.  See variable `*gambit-buffer*'")))
 
+(defun gambit-switch-to-repl (eob-p)
+  "Switch to the `*gambit-buffer*'.
+With argument, position cursor at end of buffer."
+  (interactive "P")
+  (if (or (and *gambit-buffer* (get-buffer *gambit-buffer*))
+          (gambit-start-repl-process))
+      (pop-to-buffer *gambit-buffer*)
+    (error "No current process buffer.  See variable `*gambit-buffer*'"))
+  (when eob-p
+    (push-mark)
+    (goto-char (point-max))))
+
 (defun gambit-compile-file (file-name)
-  "Compile a Scheme file FILE-NAME in the gambit process."
+  "Compile a Scheme file FILE-NAME in `*gambit-buffer*'."
   (interactive (comint-get-source
                 "Compile Scheme file: "
                 scheme-prev-l/c-dir/file
@@ -132,10 +144,11 @@ See variable `*gambit-buffer*'."
   (setq scheme-prev-l/c-dir/file (cons (file-name-directory file-name)
                                        (file-name-nondirectory file-name)))
   (comint-send-string (gambit-proc)
-                      (concat "(compile-file \"" file-name "\")\n")))
+                      (concat "(compile-file \"" file-name "\")\n"))
+  (gambit-switch-to-repl t))
 
 (defun gambit-load-file (file-name)
-  "Load a Scheme file FILE-NAME into the gambit process."
+  "Load a Scheme file FILE-NAME into `*gambit-buffer**'."
   (interactive (comint-get-source
                 "Load Scheme file: "
                 scheme-prev-l/c-dir/file
@@ -147,21 +160,22 @@ See variable `*gambit-buffer*'."
 				                               (file-name-nondirectory file-name)))
   (comint-send-string (gambit-proc)
                       (concat "(load \"" file-name "\"\)\n"))
-  (pop-to-buffer *gambit-buffer*))
+  (gambit-switch-to-repl t))
 
 (defun gambit-send-region (start end)
-  "Send the current region to the gambit process."
+  "Send the current region to `*gambit-buffer*'"
   (interactive "r")
   (comint-send-region (gambit-proc) start end)
-  (comint-send-string (gambit-proc) "\n"))
+  (comint-send-string (gambit-proc) "\n")
+  (gambit-switch-to-repl t))
 
 (defun gambit-send-last-sexp ()
-  "Send the previous sexp to the gambit process."
+  "Send the previous sexp to `*gambit-buffer*'."
   (interactive)
   (gambit-send-region (save-excursion (backward-sexp) (point)) (point)))
 
 (defun gambit-send-definition ()
-  "Send the current definition to the Gambit process."
+  "Send the current definition to `*gambit-buffer*'."
   (interactive)
   (save-excursion
     (end-of-defun)
