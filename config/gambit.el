@@ -17,6 +17,8 @@
 (require 'thingatpt)
 
 
+;; variable declarations
+
 (defgroup gambit nil
   "Run a gambit process in a buffer."
   :group 'scheme)
@@ -26,7 +28,7 @@
   :type 'string
   :group 'gambit)
 
-(defcustom% scheme-source-modes '(scheme-mode)
+(defcustom% scheme-source? '(scheme-mode)
   "Used to determine if a buffer contains Scheme source code.
 If it's loaded into a buffer that is in one of these major modes,
 it's considered a scheme source file by `scheme-load-file' and
@@ -41,8 +43,13 @@ Defaults to a regexp ignoring all inputs of 0, 1, or 2 letters."
   :type 'regexp
   :group 'gambit)
 
-(defvar *gambit-buffer* nil
+(defvar *gambit-repl* nil
   "The current gambit process buffer.")
+
+(defvar *gambit-last-buffer* nil
+  "The last gambit buffer.")
+
+ ;; end variable declarations
 
 
 (defun gambit-input-filter (str)
@@ -56,6 +63,16 @@ Defaults to a regexp ignoring all inputs of 0, 1, or 2 letters."
       (backward-sexp)
       (buffer-substring (point) end))))
 
+(defun gambit-switch-to-last-buffer ()
+  "Switch to the `*gambit-last-buffer*' from `*gambit-repl*'."
+  (interactive)
+  (when *gambit-last-buffer*
+    (switch-to-buffer *gambit-last-buffer*)))
+
+(defvar gambit-repl-mode-map
+  (let ((m (make-sparse-keymap)))
+    (define-key m "\C-c\C-a" #'gambit-switch-to-last-buffer)
+    m))
 
 (define-derived-mode gambit-repl-mode comint-mode "REPL"
   "Major mode for interacting with a gambit process.
@@ -93,9 +110,9 @@ If you accidentally suspend your process, use
 
 
 (defun run-gambit (cmd)
-  "Run an inferior Scheme process, input and output via buffer `*gambit*'.
+  "Run an inferior Scheme process, input and output via buffer *gambit*.
 
-If there is a process already running in `*scheme*', switch to
+If there is a process already running in *gambit*, switch to
 that buffer.  With argument, allows you to edit the command
 line (default is value of `scheme-program-name').
 
@@ -111,9 +128,11 @@ Run the hook `gambit-mode-hook' after the `comint-mode-hook'."
                          (cdr cmdlist)))
 	    (gambit-repl-mode)))
   (setq gambit-program-name cmd)
-  (setq *gambit-buffer* "*gambit*")
+  (setq *gambit-repl* "*gambit*")
   (setq mode-line-process '(":%s"))
   (switch-to-buffer "*gambit*"))
+
+ ;; end of REPL
 
 
 (defun gambit-start-repl-process ()
@@ -125,71 +144,73 @@ always ask the user for the command to run."
     (run-gambit (read-string "Run Gambit: " gambit-program-name))))
 
 (defun gambit-proc ()
-  "Return the current Scheme process, starting one if necessary.
-See variable `*gambit-buffer*'."
-  (unless (and *gambit-buffer*
-               (get-buffer *gambit-buffer*)
-               (comint-check-proc *gambit-buffer*))
+  "Return the `*gambit-repl*' process, starting one if necessary."
+  (unless (and *gambit-repl*
+               (get-buffer *gambit-repl*)
+               (comint-check-proc *gambit-repl*))
     (gambit-start-repl-process))
-  (or (get-buffer-process *gambit-buffer*)
-      (error "No current process.  See variable `*gambit-buffer*'")))
+  (or (get-buffer-process *gambit-repl*)
+      (error "No current process.  See variable `*gambit-repl*'")))
 
 (defun gambit-switch-to-repl (eob-p)
-  "Switch to the `*gambit-buffer*'.
+  "Switch to the `*gambit-repl*' buffer.
+
 With argument, position cursor at end of buffer."
   (interactive "P")
-  (if (or (and *gambit-buffer* (get-buffer *gambit-buffer*))
+  (if (or (and *gambit-repl* (get-buffer *gambit-repl*))
           (gambit-start-repl-process))
-      (pop-to-buffer *gambit-buffer*)
-    (error "No current process buffer.  See variable `*gambit-buffer*'"))
+      (pop-to-buffer *gambit-repl*)
+    (error "No current process buffer.  See variable `*gambit-repl*'"))
   (when eob-p
     (push-mark)
     (goto-char (point-max))))
 
-(defun gambit-compile-file (file-name)
-  "Compile a Scheme file FILE-NAME in `*gambit-buffer*'."
+(defun gambit-compile-file (file)
+  "Compile a Scheme FILE in `*gambit-repl*'."
   (interactive (comint-get-source
                 "Compile Scheme file: "
                 (let ((n (buffer-file-name)))
                   (cons (file-name-directory n)
                         (file-name-nondirectory n)))
-                scheme-source-modes
+                scheme-source?
                 nil)) 
-  (comint-check-source file-name)
+  (comint-check-source file)
   (comint-send-string (gambit-proc)
-                      (concat "(compile-file \"" file-name "\")\n"))
+                      (format "(compile-file \"%s\")\n" file))
+  (setq *gambit-last-buffer* (current-buffer))
   (gambit-switch-to-repl t))
 
-(defun gambit-load-file (file-name)
-  "Load a Scheme file FILE-NAME into `*gambit-buffer*'."
+(defun gambit-load-file (file)
+  "Load a Scheme FILE into `*gambit-repl*'."
   (interactive (comint-get-source
                 "Load Scheme file: "
                 ;;scheme-prev-l/c-dir/file
                 (let ((n (buffer-file-name)))
                   (cons (file-name-directory n)
                         (file-name-nondirectory n)))
-                scheme-source-modes t)) ;; t because `load'
+                scheme-source? t)) ;; t because `load'
   ;; needs an exact name
   ;; Check to see if buffer needs saved
-  (comint-check-source file-name) 
+  (comint-check-source file) 
   (comint-send-string (gambit-proc)
-                      (concat "(load \"" file-name "\"\)\n"))
+                      (format "(load \"%s\")\n" file))
+  (setq *gambit-last-buffer* (current-buffer))
   (gambit-switch-to-repl t))
 
 (defun gambit-send-region (start end)
-  "Send the current region to `*gambit-buffer*'"
+  "Send the current region to `*gambit-repl*'."
   (interactive "r")
   (comint-send-region (gambit-proc) start end)
   (comint-send-string (gambit-proc) "\n")
   (gambit-switch-to-repl t))
 
 (defun gambit-send-last-sexp ()
-  "Send the previous sexp to `*gambit-buffer*'."
+  "Send the previous sexp to `*gambit-repl*'."
   (interactive)
   (gambit-send-region (save-excursion (backward-sexp) (point)) (point)))
 
 (defun gambit-send-definition ()
-  "Send the current definition to `*gambit-buffer*'."
+  "Send the current definition to `*gambit-repl*'."
   (interactive)
   (save-excursion
     (end-of-defun)
