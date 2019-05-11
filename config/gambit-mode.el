@@ -14,6 +14,7 @@
 
 (require 'cmuscheme)
 
+
 (defgroup gambit nil
   "Run a gambit process in a buffer."
   :group 'scheme)
@@ -23,11 +24,6 @@
   :type 'string
   :group 'gambit)
 
-(defcustom% gambit-mode-hook nil
-  "Hook for customizing `inferior-scheme-gambit-mode'."
-  :type 'hook
-  :group 'gambit)
-
 (defvar *gambit-buffer* nil
   "The current gambit process buffer.")
 
@@ -35,28 +31,15 @@
   "Major mode for interacting with a gambit process.
 
 The following commands are available:
-\\{gambit-mode-map}
+\\{gambit-repl-mode-map}
 
 A gambit process can be fired up with M-x `run-gambit'.
 
-Customization: Entry to this mode runs the hooks on
-`comint-mode-hook' and `gambit-mode-hook' (in that order).
-
-You can send text to the gambib process from other buffers
-containing Scheme source.
- `switch-to-scheme' switches the current buffer to the gambit process buffer.
- `scheme-send-definition' sends the current definition to the gambit process.
- `scheme-compile-definition' compiles the current definition.
- `scheme-send-region' sends the current region to the gambit process.
- `scheme-compile-region' compiles the current region.
-
- `scheme-send-definition-and-go',
- `scheme-compile-definition-and-go', 
-
-  `scheme-send-region-and-go', and `scheme-compile-region-and-go'
-     switch to the gambit process buffer after sending their text.
-     For information on running multiple processes in multiple
-     buffers, see documentation for variable `scheme-buffer'.
+Customization: 
+Entry to this mode runs the hooks on `comint-mode-hook' and
+  `gambit-repl-mode-hook' (in that order).
+You can send text to the gambit process from other buffers
+  containing Scheme source.
 
 Commands:
 Return after the end of the process' output sends the
@@ -66,12 +49,12 @@ Return before the end of the process' output copies the sexp
   it.
 Delete converts tabs to spaces as it moves back.
 Tab indents for Scheme; with argument, shifts rest of expression
-    rigidly with the current line.
-
-C-M-q does Tab on each line starting within following expression.
-Paragraphs are separated only by blank lines.  Semicolons start
-comments.  If you accidentally suspend your process, use
-\\[comint-continue-subjob] to continue it."
+  rigidly with the current line.
+C-M-q does Tab on each line starting within following expression:
+  Paragraphs are separated only by blank lines.
+  Semicolons start comments.
+If you accidentally suspend your process, use
+  \\[comint-continue-subjob] to continue it."
   (setq comint-prompt-regexp "^[^>\n]*>+ *")
   (setq comint-prompt-read-only t)
   (scheme-mode-variables)
