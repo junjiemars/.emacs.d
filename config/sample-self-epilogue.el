@@ -20,7 +20,7 @@
 
 
 ;; eww as default browser
-(feature-eww-supported-p (toggle-browser! t))
+(if-feature-eww% (toggle-browser! t))
 
 
 (with-eval-after-load 'org
@@ -45,7 +45,7 @@
  ;; using semantic to view and editing any supported code
  ;; correctly and more faster
  ;; `system-cc-include' support any platform
- (feature-semantic-supported-p
+ (if-feature-semantic%
    (add-hook 'semantic-mode-hook
 						 #'(lambda ()
 								 (platform-supported-if 'windows-nt

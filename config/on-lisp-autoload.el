@@ -31,21 +31,21 @@
     "Set Lisp basic minor modes."
     (cond ((or (string= "*scratch*" (buffer-name))
                (string= "*ielm*" (buffer-name))))
-          (t (feature-allowed-p paredit
+          (t (if-feature-allowed% paredit
                ;; structured editing of s-expression data
                (enable-paredit-mode))
 
-             (feature-allowed-p rainbow-delimiters
+             (if-feature-allowed% rainbow-delimiters
                ;; hilighting parentheses,brackets,and braces in minor mode
                (rainbow-delimiters-mode))
 
-             (feature-allowed-p aggressive-indent
+             (if-feature-allowed% aggressive-indent
                ;; aggressive indent
                (aggressive-indent-mode))))))
 
 
 (package-supported-p
-  (feature-paredit-supported-p
+  (if-feature-paredit%
     
     (defun enable-paredit-mode-in-minibuffer! ()
       (platform-supported-if 'gnu/linux
@@ -69,7 +69,7 @@
 
 
 (package-supported-p
-  (feature-allowed-p paredit
+  (if-feature-allowed% paredit
 
     (platform-supported-if
         ;; enable `paredit' in `minibuffer'

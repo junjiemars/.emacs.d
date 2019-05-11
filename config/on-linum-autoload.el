@@ -9,12 +9,12 @@
 
 
 ;; linum
-(feature-linum-supported-p
+(if-feature-linum%
   
   (with-eval-after-load 'linum
     (setq% linum-format "%2d " 'linum))
 
-  (feature-linum-supported-p
+  (if-feature-linum%
     (define-key (current-global-map) (kbd "C-c l") #'linum-mode)))
 
 

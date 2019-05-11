@@ -10,7 +10,7 @@
 (eval-when-compile (require 'browse-url))
 
 
-(feature-eww-supported-p
+(if-feature-eww%
   
   (defun toggle-browser! (&optional arg)
     "Toggle default browser to `eww' or not.
@@ -29,13 +29,13 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
                "enabled"))))
 
 
-(feature-eww-supported-p
+(if-feature-eww%
 
   (defun set-eww-mode! ()
     (toggle-truncate-lines nil)))
 
 
-(feature-eww-supported-p
+(if-feature-eww%
 
   (with-eval-after-load 'eww
     (add-hook 'eww-mode-hook #'set-eww-mode!)))

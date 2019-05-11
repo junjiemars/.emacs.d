@@ -7,16 +7,16 @@
 ;;;;
 
 
-(_defmacro-feature-supported-p aggressive-indent)
-(_defmacro-feature-supported-p bing-dict)
-(_defmacro-feature-supported-p paredit)
-(_defmacro-feature-supported-p rainbow-delimiters)
+(defmacro-if-feature% aggressive-indent)
+(defmacro-if-feature% bing-dict)
+(defmacro-if-feature% paredit)
+(defmacro-if-feature% rainbow-delimiters)
 
 
-(defmacro feature-allowed-p (feature &rest body)
+(defmacro if-feature-allowed% (feature &rest body)
   "Run BODY when FEATURE supported and allowed."
   (declare (indent 1))
-  (let ((supported (intern (format "feature-%s-supported-p" feature))))
+  (let ((supported (intern (format "if-feature-%s%%" feature))))
     (when (fboundp supported)
       `(,supported
         (package-spec-:allowed-p

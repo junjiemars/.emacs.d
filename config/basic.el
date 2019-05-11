@@ -630,24 +630,23 @@ item for which (PRED item) returns t."
         (lambda (x) (ignore* x) t)))
 
 ;; linum mode, requires Emacs-23.1+
-(_defmacro-feature-supported-p linum)
+(defmacro-if-feature% linum)
 
 ;; semantic, require Emacs-24.4+
-(_defmacro-feature-supported-p semantic)
+(defmacro-if-feature% semantic)
 
 ;; default web browser: eww, requires Emacs-24.4+
-(_defmacro-feature-supported-p eww)
+(defmacro-if-feature% eww)
 
 ;; socks
-(_defmacro-feature-supported-p
- socks
- (and (require 'url-vars nil t)
-      (require 'socks nil t)
-      (boundp 'url-gateway-method)
-      (boundp 'socks-server)))
+(defmacro-if-feature% socks
+  (and (require 'url-vars nil t)
+       (require 'socks nil t)
+       (boundp 'url-gateway-method)
+       (boundp 'socks-server)))
 
 
-(feature-socks-supported-p
+(if-feature-socks%
   
   (defun toggle-socks! (&optional arg)
     "Toggle `url-gatewary-method' to socks or native.
@@ -682,7 +681,7 @@ positive, otherwise via native."
                    "disabled"
                  "enabled")))))
 
-(feature-socks-supported-p
+(if-feature-socks%
   (when (self-spec->*env-spec :socks :allowed)
     (toggle-socks! t)))
 

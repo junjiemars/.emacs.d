@@ -7,7 +7,7 @@
 ;;;;
 
 
-(feature-semantic-supported-p
+(if-feature-semantic%
 
   (defun set-semantic-cc-env! (&optional project-includes project-roots preprocessors)
     "Use `semantic-mode' in`c-mode'.
@@ -44,7 +44,7 @@ Use `semantic-c-describe-environment' to describe the current C environment."
            preprocessors 'semantic/bovine/c)))
 
 
-(feature-semantic-supported-p
+(if-feature-semantic%
   (when-fn% 'view-system-cc-include nil
     
     (defadvice semantic-decoration-include-visit
@@ -53,7 +53,7 @@ Use `semantic-c-describe-environment' to describe the current C environment."
       (view-system-cc-include ad-return-value))))
 
 
-(feature-semantic-supported-p
+(if-feature-semantic%
   (when-fn% 'view-system-cc-include nil
     
     (with-eval-after-load 'semantic/decorate/include

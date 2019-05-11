@@ -210,18 +210,18 @@ Returns the value of BODY if no error happens."
        (progn% ,@vars nil))))
 
 
+(defmacro defmacro-if-feature% (feature &optional test docstring)
+  "Define if-FEATURE% compile-time macro."
+  (let ((name (intern (format "if-feature-%s%%" feature)))
+        (ds1 (format "If has `%s' feauture then do BODY." feature)))
+    `(defmacro ,name (&rest body)
+       ,(or docstring ds1)
+       (declare (indent 0))
+       (if% (or ,test (require ',feature nil t))
+           `(progn% ,@body)
+         `(comment ,@body)))))
+
 (eval-when-compile
-  
-  (defmacro _defmacro-feature-supported-p (feature &optional test docstring)
-    "Define FEATURE-supported-p macro."
-    (let ((name (intern (format "feature-%s-supported-p" feature)))
-          (ds1 (format "If has `%s' feauture then do BODY." feature)))
-      `(defmacro ,name (&rest body)
-	       ,(or docstring ds1)
-	       (declare (indent 0))
-	       (if% (or ,test (require ',feature nil t))
-	           `(progn% ,@body)
-	         `(comment ,@body)))))
   
   (defmacro _defun-threading-^fn (fn &optional join)
     "Define FN threading macro."

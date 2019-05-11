@@ -30,7 +30,7 @@
   (define-key (current-global-map) (kbd "C-c r b") #'revert-buffer)
 
   (package-supported-p  
-    (feature-allowed-p bing-dict
+    (if-feature-allowed% bing-dict
       ;; define `bing-dict' key binding
       (define-key (current-global-map) (kbd "C-c d") #'bing-dict-brief)))
 
@@ -66,13 +66,13 @@
     (compile-unit% (emacs-home* "config/on-sh-autoload.el"))
     (compile-unit% (emacs-home* "config/on-window-autoload.el"))
 
-    (feature-eww-supported-p
+    (if-feature-eww%
       (compile-unit% (emacs-home* "config/on-eww-autoload.el")))
     
-    (feature-linum-supported-p
+    (if-feature-linum%
       (compile-unit% (emacs-home* "config/on-linum-autoload.el")))
     
-    (feature-semantic-supported-p
+    (if-feature-semantic%
       (compile-unit% (emacs-home* "config/on-semantic-autoload.el")))
 
     (platform-supported-if 'windows-nt
