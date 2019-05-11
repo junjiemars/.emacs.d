@@ -183,12 +183,35 @@ With argument, position cursor at end of buffer."
       (beginning-of-defun)
       (gambit-send-region (point) end))))
 
+(defun gambit-trace-procedure (proc &optional untrace)
+  "Trace procedure PROC in the inferior Scheme process.
+With a prefix argument switch off tracing of procedure PROC."
+  (interactive
+   (list (let ((current (symbol-at-point))
+               (action (if current-prefix-arg "Untrace" "Trace")))
+           (if current
+               (read-string (format "%s procedure [%s]: " action current)
+                            nil
+                            nil
+                            (symbol-name current))
+             (read-string (format "%s procedure: " action))))
+         current-prefix-arg))
+  (when (= (length proc) 0)
+    (error "Invalid procedure name"))
+  (comint-send-string (gambit-proc)
+                      (format "(%s %s)\n"
+                              (if untrace "untrace" "trace")
+                              proc))
+  (comint-send-string (gambit-proc) "\n")
+  (gambit-switch-to-repl t))
+
 (defvar gambit-mode-map
   (let ((m (make-sparse-keymap)))
     (define-key m "\M-\C-x" #'gambit-send-definition)
     (define-key m "\C-x\C-e" #'gambit-send-last-sexp)
     (define-key m "\C-c\C-l" #'gambit-load-file)
     (define-key m "\C-c\C-k" #'gambit-compile-file)
+    (define-key m "\C-c\C-t" #'gambit-trace-procedure)
     (scheme-mode-commands m)
     m))
 
