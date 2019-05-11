@@ -121,19 +121,8 @@ See variable `*gambit-buffer*'."
   (or (get-buffer-process *gambit-buffer*)
       (error "No current process.  See variable `*gambit-buffer*'")))
 
-(defun gambit-send-region (start end)
-  "Send the current region to the inferior Scheme process."
-  (interactive "r")
-  (comint-send-region (gambit-proc) start end)
-  (comint-send-string (gambit-proc) "\n"))
-
-(defun gambit-send-last-sexp ()
-  "Send the previous sexp to the Gambit process."
-  (interactive)
-  (gambit-send-region (save-excursion (backward-sexp) (point)) (point)))
-
 (defun gambit-compile-file (file-name)
-  "Compile a Scheme file FILE-NAME in the Gambit process."
+  "Compile a Scheme file FILE-NAME in the gambit process."
   (interactive (comint-get-source
                 "Compile Scheme file: "
                 scheme-prev-l/c-dir/file
@@ -146,7 +135,7 @@ See variable `*gambit-buffer*'."
                       (concat "(compile-file \"" file-name "\")\n")))
 
 (defun gambit-load-file (file-name)
-  "Load a Scheme file FILE-NAME into the inferior Scheme process."
+  "Load a Scheme file FILE-NAME into the gambit process."
   (interactive (comint-get-source
                 "Load Scheme file: "
                 scheme-prev-l/c-dir/file
@@ -160,9 +149,29 @@ See variable `*gambit-buffer*'."
                       (concat "(load \"" file-name "\"\)\n"))
   (pop-to-buffer *gambit-buffer*))
 
+(defun gambit-send-region (start end)
+  "Send the current region to the gambit process."
+  (interactive "r")
+  (comint-send-region (gambit-proc) start end)
+  (comint-send-string (gambit-proc) "\n"))
+
+(defun gambit-send-last-sexp ()
+  "Send the previous sexp to the gambit process."
+  (interactive)
+  (gambit-send-region (save-excursion (backward-sexp) (point)) (point)))
+
+(defun gambit-send-definition ()
+  "Send the current definition to the Gambit process."
+  (interactive)
+  (save-excursion
+    (end-of-defun)
+    (let ((end (point)))
+      (beginning-of-defun)
+      (gambit-send-region (point) end))))
+
 (defvar gambit-mode-map
   (let ((m (make-sparse-keymap)))
-    (define-key m "\M-\C-x" 'scheme-send-definition)
+    (define-key m "\M-\C-x" #'gambit-send-definition)
     (define-key m "\C-x\C-e" #'gambit-send-last-sexp)
     (define-key m "\C-c\C-l" #'gambit-load-file)
     (define-key m "\C-c\C-k" #'gambit-compile-file)
