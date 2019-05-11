@@ -146,16 +146,21 @@ always ask the user for the command to run."
   (or (get-buffer-process *gambit-repl*)
       (error "No current process.  See variable `*gambit-repl*'")))
 
-(defun gambit-switch-to-repl (eob-p)
+(defun gambit-switch-to-repl (&optional arg)
   "Switch to the `*gambit-repl*' buffer.
 
-With argument, position cursor at end of buffer."
+If ARG is non-nil then select the buffer and put the cursor at
+end of buffer, otherwise just popup the buffer."
   (interactive "P")
-  (if (or (and *gambit-repl* (get-buffer *gambit-repl*))
-          (gambit-start-repl-process))
-      (pop-to-buffer *gambit-repl*)
-    (error "No current process buffer.  See variable `*gambit-repl*'"))
-  (when eob-p
+  (unless (or (and *gambit-repl* (get-buffer *gambit-repl*))
+              (gambit-start-repl-process))
+    (error "No current process buffer. See variable `*gambit-repl*'"))
+  (if arg
+      (display-buffer *gambit-repl*
+                      (if-fn% 'display-buffer-pop-up-window nil
+                              #'display-buffer-pop-up-window
+                        t))
+    (pop-to-buffer *gambit-repl*)
     (push-mark)
     (goto-char (point-max))))
 
@@ -172,7 +177,7 @@ With argument, position cursor at end of buffer."
   (comint-send-string (gambit-proc)
                       (format "(compile-file \"%s\")\n" file))
   (setq *gambit-last-buffer* (current-buffer))
-  (gambit-switch-to-repl t))
+  (gambit-switch-to-repl))
 
 (defun gambit-load-file (file)
   "Load a Scheme FILE into `*gambit-repl*'."
@@ -189,7 +194,7 @@ With argument, position cursor at end of buffer."
   (comint-send-string (gambit-proc)
                       (format "(load \"%s\")\n" file))
   (setq *gambit-last-buffer* (current-buffer))
-  (gambit-switch-to-repl t))
+  (gambit-switch-to-repl))
 
 (defun gambit-send-region (start end)
   "Send the current region to `*gambit-repl*'."
