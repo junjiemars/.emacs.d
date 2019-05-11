@@ -6,12 +6,6 @@
 ;; gambit-mode.el --- Run Gambit in an Emacs buffer
 ;;;;
 
-;;;;
-;; Redefined target:
-;; 1. a derived scheme mode, works on Windows, Darwin and Linux.
-;; 2. lexical scoped.
-;;;;
-
 (require 'scheme)
 (require 'comint)
 (require 'thingatpt)
