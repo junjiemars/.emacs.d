@@ -85,17 +85,18 @@
       (when% (or (executable-find% "gswin64c")
                  (executable-find% "gswin32c")
                  (executable-find% "mutool"))
-        (compile-unit% (emacs-home* "config/on-docview-autoload.el"))))
+        (compile-unit% (emacs-home* "config/on-docview-autoload.el")))))
 
-    (when% (or (executable-find% "gsc-script")
-               (executable-find% "gsc"
-                                 (lambda (gsc)
-                                   (let ((x (shell-command* "gsc"
-                                              "-e '(system-type)'")))
-                                     (car x)))))
-      (compile-unit% (emacs-home* "config/gambit-mode.el"))))
+  (when% (or (executable-find% "gsc-script")
+             (executable-find% "gsc"
+                               (lambda (gsc)
+                                 (let ((x (shell-command* "gsc"
+                                            "-e '(system-type)'")))
+                                   (car x)))))
+    (compile!
+      (compile-unit% (emacs-home* "config/gambit.el") t)
+      (compile-unit% (emacs-home* "config/on-gambit-autoload.el"))))
 
-  
   (platform-supported-when 'windows-nt
     ;; add .exec/ to %PATH%
     (windows-nt-env-path+ (v-home% ".exec/")))

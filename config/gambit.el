@@ -12,7 +12,9 @@
 ;; 2. lexical scoped.
 ;;;;
 
-(require 'cmuscheme)
+(require 'scheme)
+(require 'comint)
+(require 'thingatpt)
 
 
 (defgroup gambit nil
@@ -24,8 +26,36 @@
   :type 'string
   :group 'gambit)
 
+(defcustom% scheme-source-modes '(scheme-mode)
+  "Used to determine if a buffer contains Scheme source code.
+If it's loaded into a buffer that is in one of these major modes,
+it's considered a scheme source file by `scheme-load-file' and
+`scheme-compile-file'.  Used by these commands to determine
+defaults."
+  :type '(repeat function)
+  :group 'gambit)
+
+(defcustom% gambit-input-filter-regexp "\\`\\s *\\S ?\\S ?\\s *\\'"
+  "Input matching this regexp are not saved on the history list.
+Defaults to a regexp ignoring all inputs of 0, 1, or 2 letters."
+  :type 'regexp
+  :group 'gambit)
+
 (defvar *gambit-buffer* nil
   "The current gambit process buffer.")
+
+
+(defun gambit-input-filter (str)
+  "Don't save anything matching `gambit-input-filter-regexp'."
+  (not (string-match gambit-input-filter-regexp str)))
+
+(defun gambit-get-old-input ()
+  "Snarf the sexp ending at point."
+  (save-excursion
+    (let ((end (point)))
+      (backward-sexp)
+      (buffer-substring (point) end))))
+
 
 (define-derived-mode gambit-repl-mode comint-mode "REPL"
   "Major mode for interacting with a gambit process.
@@ -58,8 +88,8 @@ If you accidentally suspend your process, use
   (setq comint-prompt-regexp "^[^>\n]*>+ *")
   (setq comint-prompt-read-only t)
   (scheme-mode-variables)
-  (setq comint-input-filter #'scheme-input-filter)
-  (setq comint-get-old-input #'scheme-get-old-input))
+  (setq comint-input-filter #'gambit-input-filter)
+  (setq comint-get-old-input #'gambit-get-old-input))
 
 
 (defun run-gambit (cmd)
@@ -120,27 +150,28 @@ With argument, position cursor at end of buffer."
   "Compile a Scheme file FILE-NAME in `*gambit-buffer*'."
   (interactive (comint-get-source
                 "Compile Scheme file: "
-                scheme-prev-l/c-dir/file
+                (let ((n (buffer-file-name)))
+                  (cons (file-name-directory n)
+                        (file-name-nondirectory n)))
                 scheme-source-modes
                 nil)) 
   (comint-check-source file-name)
-  (setq scheme-prev-l/c-dir/file (cons (file-name-directory file-name)
-                                       (file-name-nondirectory file-name)))
   (comint-send-string (gambit-proc)
                       (concat "(compile-file \"" file-name "\")\n"))
   (gambit-switch-to-repl t))
 
 (defun gambit-load-file (file-name)
-  "Load a Scheme file FILE-NAME into `*gambit-buffer**'."
+  "Load a Scheme file FILE-NAME into `*gambit-buffer*'."
   (interactive (comint-get-source
                 "Load Scheme file: "
-                scheme-prev-l/c-dir/file
+                ;;scheme-prev-l/c-dir/file
+                (let ((n (buffer-file-name)))
+                  (cons (file-name-directory n)
+                        (file-name-nondirectory n)))
                 scheme-source-modes t)) ;; t because `load'
   ;; needs an exact name
   ;; Check to see if buffer needs saved
   (comint-check-source file-name) 
-  (setq scheme-prev-l/c-dir/file (cons (file-name-directory file-name)
-				                               (file-name-nondirectory file-name)))
   (comint-send-string (gambit-proc)
                       (concat "(load \"" file-name "\"\)\n"))
   (gambit-switch-to-repl t))
@@ -167,7 +198,7 @@ With argument, position cursor at end of buffer."
       (gambit-send-region (point) end))))
 
 (defun gambit-trace-procedure (proc &optional untrace)
-  "Trace procedure PROC in the inferior Scheme process.
+  "Trace procedure PROC in the gambit process.
 With a prefix argument switch off tracing of procedure PROC."
   (interactive
    (list (let ((current (symbol-at-point))
@@ -195,6 +226,7 @@ With a prefix argument switch off tracing of procedure PROC."
     (define-key m "\C-c\C-l" #'gambit-load-file)
     (define-key m "\C-c\C-k" #'gambit-compile-file)
     (define-key m "\C-c\C-t" #'gambit-trace-procedure)
+    (define-key m "\C-c\C-z" #'gambit-switch-to-repl)
     (scheme-mode-commands m)
     m))
 
