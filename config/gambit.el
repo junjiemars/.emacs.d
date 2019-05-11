@@ -23,7 +23,7 @@
   "Run a gambit process in a buffer."
   :group 'scheme)
 
-(defcustom% gambit-program-name "gsc-script -:d1- -i"
+(defcustom% gambit-program "gsc-script -:d1- -i"
   "Program invoked by the `run-gambit' command."
   :type 'string
   :group 'gambit)
@@ -118,8 +118,8 @@ line (default is value of `scheme-program-name').
 
 Run the hook `gambit-mode-hook' after the `comint-mode-hook'."
   (interactive (list (if current-prefix-arg
-			                   (read-string "Run Gambit: " gambit-program-name)
-			                 gambit-program-name)))
+			                   (read-string "Run Gambit: " gambit-program)
+			                 gambit-program)))
   (when (not (comint-check-proc "*gambit*"))
     (let ((cmdlist (split-string* cmd "\\s-+" t)))
       (set-buffer (apply 'make-comint "gambit"
@@ -127,7 +127,7 @@ Run the hook `gambit-mode-hook' after the `comint-mode-hook'."
                          nil ;; no start file, gsi default init: ~/gambini
                          (cdr cmdlist)))
 	    (gambit-repl-mode)))
-  (setq gambit-program-name cmd)
+  (setq gambit-program cmd)
   (setq *gambit-repl* "*gambit*")
   (setq mode-line-process '(":%s"))
   (switch-to-buffer "*gambit*"))
@@ -141,7 +141,7 @@ Run the hook `gambit-mode-hook' after the `comint-mode-hook'."
 Return the process started. Since this command is run implicitly,
 always ask the user for the command to run."
   (save-window-excursion
-    (run-gambit (read-string "Run Gambit: " gambit-program-name))))
+    (run-gambit (read-string "Run Gambit: " gambit-program))))
 
 (defun gambit-proc ()
   "Return the `*gambit-repl*' process, starting one if necessary."
