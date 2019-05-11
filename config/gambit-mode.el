@@ -31,7 +31,7 @@
 (defvar *gambit-buffer* nil
   "The current gambit process buffer.")
 
-(define-derived-mode gambit-repl-mode comint-mode "Gambit"
+(define-derived-mode gambit-repl-mode comint-mode "REPL"
   "Major mode for interacting with a gambit process.
 
 The following commands are available:
@@ -96,7 +96,7 @@ Run the hook `gambit-mode-hook' after the `comint-mode-hook'."
                          (car cmdlist)
                          nil ;; no start file, gsi default init: ~/gambini
                          (cdr cmdlist)))
-	    (gambit-mode 1)))
+	    (gambit-repl-mode)))
   (setq gambit-program-name cmd)
   (setq *gambit-buffer* "*gambit*")
   (setq mode-line-process '(":%s"))
