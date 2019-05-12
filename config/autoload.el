@@ -29,7 +29,7 @@
   ;; Revert buffer
   (define-key (current-global-map) (kbd "C-c r b") #'revert-buffer)
 
-  (package-supported-p  
+  (when-package%
     (if-feature-allowed% bing-dict
       ;; define `bing-dict' key binding
       (define-key (current-global-map) (kbd "C-c d") #'bing-dict-brief)))

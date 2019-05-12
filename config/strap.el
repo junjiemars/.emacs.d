@@ -412,7 +412,7 @@ Take effect after restart Emacs.
 (defmacro def-self-package-spec (&rest spec)
   "Define self package SPEC list."
   (declare (indent 0))
-  (package-supported-p 
+  (when-package%
     `(defvar ,(self-symbol 'package-spec) (list ,@spec))))
 
 
@@ -466,7 +466,7 @@ Take effect after restart Emacs.
 
 (defmacro package-spec-:allowed-p (&rest body)
   (declare (indent 0))
-  `(package-supported-p
+  `(when-package%
      (when (self-spec->*env-spec :package :allowed)
        ,@body)))
 
@@ -487,7 +487,7 @@ Take effect after restart Emacs.
 (compile! (compile-unit* (self-def-path-ref-> :prologue)))
 
 
-(package-supported-p
+(when-package%
   ;; (package-initialize)
 
   ;; Load basic and self modules

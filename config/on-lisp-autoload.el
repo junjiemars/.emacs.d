@@ -25,7 +25,7 @@
     (add-hook 'emacs-lisp-mode-hook #'eldoc-mode)))
 
 
-(package-supported-p
+(when-package%
   
   (defun set-featured-lisp-mode! ()
     "Set Lisp basic minor modes."
@@ -44,7 +44,7 @@
                (aggressive-indent-mode))))))
 
 
-(package-supported-p
+(when-package%
   (if-feature-paredit%
     
     (defun enable-paredit-mode-in-minibuffer! ()
@@ -57,18 +57,18 @@
 (with-eval-after-load 'lisp-mode
   (add-hook 'lisp-mode-hook #'set-basic-lisp-mode!)
   (add-hook 'emacs-lisp-mode-hook #'set-basic-lisp-mode!)
-  (package-supported-p
+  (when-package%
     (add-hook 'lisp-mode-hook #'set-featured-lisp-mode!)
     (add-hook 'emacs-lisp-mode-hook #'set-featured-lisp-mode!)))
 
 
 (with-eval-after-load 'scheme
   (add-hook 'scheme-mode-hook #'set-basic-lisp-mode!)    
-  (package-supported-p
+  (when-package%
     (add-hook 'scheme-mode-hook #'set-featured-lisp-mode!)))
 
 
-(package-supported-p
+(when-package%
   (if-feature-allowed% paredit
 
     (platform-supported-if

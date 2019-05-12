@@ -223,14 +223,14 @@ sequentially and return value of last one, or nil if there are none."
  ;; end of version-supported macro
 
 
-;; package-supported macro
+;; *-package% macro
 
-(defmacro package-supported-p (&rest body)
+(defmacro when-package% (&rest body)
   "Run BODY code if current `emacs-version' supports package."
   (declare (indent 0))
   `(version-supported-when <= 24.1 ,@body))
 
- ;; end of package-supported macro
+ ;; end of *-package% macro
 
 
 ;; Load strap
@@ -240,7 +240,7 @@ sequentially and return value of last one, or nil if there are none."
                         (v-home* "config/"))
 
 
-(package-supported-p
+(when-package%
   (setq package-enable-at-startup nil)
   (comment (package-initialize)))
 
