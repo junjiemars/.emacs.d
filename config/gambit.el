@@ -37,7 +37,7 @@ Defaults to a regexp ignoring all inputs of 0, 1, or 2 letters."
   :type 'regexp
   :group 'gambit)
 
-(defvar *gambit-repl* nil
+(defvar *gambit-buffer* nil
   "The current gambit process buffer.")
 
 (defvar *gambit-last-buffer* nil
@@ -58,7 +58,7 @@ Defaults to a regexp ignoring all inputs of 0, 1, or 2 letters."
       (buffer-substring (point) end))))
 
 (defun gambit-switch-to-last-buffer ()
-  "Switch to the `*gambit-last-buffer*' from `*gambit-repl*'."
+  "Switch to the `*gambit-last-buffer*' from `*gambit-buffer*'."
   (interactive)
   (when *gambit-last-buffer*
     (switch-to-buffer-other-window *gambit-last-buffer*)))
@@ -122,7 +122,7 @@ Run the hook `gambit-mode-hook' after the `comint-mode-hook'."
                          (cdr cmdlist)))
 	    (gambit-repl-mode)))
   (setq gambit-program cmd)
-  (setq *gambit-repl* "*gambit*")
+  (setq *gambit-buffer* "*gambit*")
   (setq mode-line-process '(":%s"))
   (switch-to-buffer-other-window "*gambit*"))
 
@@ -138,34 +138,34 @@ always ask the user for the command to run."
     (run-gambit (read-string "Run Gambit: " gambit-program))))
 
 (defun gambit-proc ()
-  "Return the `*gambit-repl*' process, starting one if necessary."
-  (unless (and *gambit-repl*
-               (get-buffer *gambit-repl*)
-               (comint-check-proc *gambit-repl*))
+  "Return the `*gambit-buffer*' process, starting one if necessary."
+  (unless (and *gambit-buffer*
+               (get-buffer *gambit-buffer*)
+               (comint-check-proc *gambit-buffer*))
     (gambit-start-repl-process))
-  (or (get-buffer-process *gambit-repl*)
-      (error "No current process.  See variable `*gambit-repl*'")))
+  (or (get-buffer-process *gambit-buffer*)
+      (error "No current process.  See variable `*gambit-buffer*'")))
 
 (defun gambit-switch-to-repl (&optional arg)
-  "Switch to the `*gambit-repl*' buffer.
+  "Switch to the `*gambit-buffer*' buffer.
 
 If ARG is non-nil then select the buffer and put the cursor at
 end of buffer, otherwise just popup the buffer."
   (interactive "P")
-  (unless (or (and *gambit-repl* (get-buffer *gambit-repl*))
+  (unless (or (and *gambit-buffer* (get-buffer *gambit-buffer*))
               (gambit-start-repl-process))
-    (error "No current process buffer. See variable `*gambit-repl*'"))
+    (error "No current process buffer. See variable `*gambit-buffer*'"))
   (if arg
-      (display-buffer *gambit-repl*
+      (display-buffer *gambit-buffer*
                       (if-fn% 'display-buffer-pop-up-window nil
                               #'display-buffer-pop-up-window
                         t))
-    (pop-to-buffer *gambit-repl*)
+    (pop-to-buffer *gambit-buffer*)
     (push-mark)
     (goto-char (point-max))))
 
 (defun gambit-compile-file (file)
-  "Compile a Scheme FILE in `*gambit-repl*'."
+  "Compile a Scheme FILE in `*gambit-buffer*'."
   (interactive (comint-get-source
                 "Compile Scheme file: "
                 (let ((n (buffer-file-name)))
@@ -180,7 +180,7 @@ end of buffer, otherwise just popup the buffer."
   (gambit-switch-to-repl))
 
 (defun gambit-load-file (file)
-  "Load a Scheme FILE into `*gambit-repl*'."
+  "Load a Scheme FILE into `*gambit-buffer*'."
   (interactive (comint-get-source
                 "Load Scheme file: "
                 ;;scheme-prev-l/c-dir/file
@@ -197,19 +197,19 @@ end of buffer, otherwise just popup the buffer."
   (gambit-switch-to-repl))
 
 (defun gambit-send-region (start end)
-  "Send the current region to `*gambit-repl*'."
+  "Send the current region to `*gambit-buffer*'."
   (interactive "r")
   (comint-send-region (gambit-proc) start end)
   (comint-send-string (gambit-proc) "\n")
   (gambit-switch-to-repl t))
 
 (defun gambit-send-last-sexp ()
-  "Send the previous sexp to `*gambit-repl*'."
+  "Send the previous sexp to `*gambit-buffer*'."
   (interactive)
   (gambit-send-region (save-excursion (backward-sexp) (point)) (point)))
 
 (defun gambit-send-definition ()
-  "Send the current definition to `*gambit-repl*'."
+  "Send the current definition to `*gambit-buffer*'."
   (interactive)
   (save-excursion
     (end-of-defun)
