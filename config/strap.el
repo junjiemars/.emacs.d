@@ -74,7 +74,7 @@ If in terminal mode, and there are no ELSE’s, the value is nil. "
   `(if-graphic% (progn% ,@body)))
 
 
-(defmacro when-terminal% (&rest body)
+(defmacro unless-graphic% (&rest body)
   "Run BODY code if in terminal mode, else returns nil."
   (declare (indent 0))
   `(if-graphic% nil ,@body))
@@ -265,7 +265,7 @@ Then evaluate RESULT to get return value, default nil.
 (prefer-coding-system 'utf-8)
 
 ;; ;; Preferred coding system for terminal mode
-;; (when-terminal%
+;; (unless-graphic%
 ;;   (when-platform% 'windows-nt
 ;;     ;; also need to adjust the font and code page.
 ;;     (set-terminal-coding-system 'utf-8)))

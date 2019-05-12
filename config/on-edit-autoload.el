@@ -7,7 +7,7 @@
 ;;;;
 
 
-(when-terminal%
+(unless-graphic%
   ;; above version 23 transient-mark-mode is enabled by default
   (when-version% > 23 (transient-mark-mode t))
   ;; fix some terminal theme confused with background and foreground.
@@ -318,7 +318,7 @@ More accurate than `mark-defun'."
     (setq% select-enable-primary t 'select)
   (setq% x-select-enable-primary t 'select))
 
-(when-terminal%
+(unless-graphic%
   (unless-platform% 'windows-nt
     (eval-when-compile
       

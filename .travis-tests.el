@@ -117,17 +117,17 @@
                         (macroexpand '(lexical-supported-unless
                                         (+ 1 2) (* 3 4))))))))
 
-(ert-deftest %strap:graphic/terminal-supported-p ()
-  (if (graphic-supported-if t nil)
-      (should (and (graphic-supported-p t)
-                   (not (terminal-supported-p t))
+(ert-deftest %strap:if/when/unless-graphic% ()
+  (if (if-graphic% t nil)
+      (should (and (when-graphic% t)
+                   (not (unless-graphic% t))
                    (equal '(progn (+ 1 2) (* 3 4))
-                          (macroexpand '(graphic-supported-p
+                          (macroexpand '(when-graphic%
                                           (+ 1 2) (* 3 4))))))
-    (should (and (not (graphic-supported-p t))
-                 (terminal-supported-p t)
+    (should (and (not (when-graphic% t))
+                 (unless-graphic% t)
                  (equal '(progn (+ 1 2) (* 3 4))
-                        (macroexpand '(terminal-supported-p
+                        (macroexpand '(unless-graphic%
                                         (+ 1 2) (* 3 4))))))))
 
 (ert-deftest %strap:when-version% ()

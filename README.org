@@ -461,7 +461,7 @@ by default.
                      '(dired-mode fundamental-mode rmail-mode)
                      :restore-eager 8
                      :restore-via-threading* (if-platform% 'darwin
-                                               (when-terminal% t)
+                                               (unless-graphic% t)
                                                t)
                      :allowed t))
 #+END_SRC
@@ -587,7 +587,7 @@ The /user defined/ package spec default locate in =(emacs-home*
    :packages '(lfe-mode)
    :compile `(,(compile-unit% (emacs-home* "config/use-lfe-autoload.el"))))
   (list
-   :cond (and (when-terminal% t)
+   :cond (and (unless-graphic% t)
               (unless-platform% 'darwin t)
               (when-version% <= 25.1 t))
    :packages '(ereader))

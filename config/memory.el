@@ -70,7 +70,7 @@
 ;; Read desktop
 (defun self-desktop-read! ()
   
-  (when-terminal%
+  (unless-graphic%
     (when-version% <= 24.4
       (when-version% > 25
         (setq% desktop-restore-forces-onscreen nil 'desktop))))
