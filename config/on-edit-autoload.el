@@ -9,7 +9,7 @@
 
 (terminal-supported-p
   ;; above version 23 transient-mark-mode is enabled by default
-  (version-supported-when > 23 (transient-mark-mode t))
+  (when-version% > 23 (transient-mark-mode t))
   ;; fix some terminal theme confused with background and foreground.
   (set-face-background 'region "white")
   (set-face-foreground 'region "black"))
@@ -37,13 +37,13 @@
 (show-paren-mode 1)
 
 ;; Enable save minibuffer history
-(version-supported-if
+(if-version%
     <= 24
     (savehist-mode)
   (savehist-mode t))
 
 ;; Enable save-place
-(version-supported-if
+(if-version%
     <= 25.1
     (save-place-mode t)
   (setq% save-place t 'saveplace))
@@ -90,7 +90,7 @@
 (define-key (current-global-map) (kbd "C-c ;") #'toggle-comment)
 
 ;; auto org-mode
-(version-supported-when >= 23
+(when-version% >= 23
   (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode)))
 
 
@@ -151,7 +151,7 @@
  ;; end of go into `view-mode'
 
 
-(version-supported-when > 24.4
+(when-version% > 24.4
   ;; fix: no quit key to hide *Messages* buffer for ancient Emacs
   ;; [DEL] for `scroll-down'
   ;; [SPC] for `scroll-up'
@@ -165,7 +165,7 @@
 
 
 ;; fix: `uniquify' may not be autoloaded on ancient Emacs.
-(version-supported-when > 24
+(when-version% > 24
   (when% (with-var byte-compile-warnings
            (setq byte-compile-warnings nil)
            (require 'uniquify nil t))
@@ -309,11 +309,11 @@ More accurate than `mark-defun'."
 ;; Makes killing/yanking interact with the clipboard
 ;; See also: http://emacswiki.org/emacs/CopyAndPaste
 
-(version-supported-if
+(if-version%
     <= 24.1
     (setq% select-enable-clipboard t)
   (setq% x-select-enable-clipboard t))
-(version-supported-if
+(if-version%
     <= 25.1
     (setq% select-enable-primary t 'select)
   (setq% x-select-enable-primary t 'select))

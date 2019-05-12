@@ -83,23 +83,23 @@
   (should (equal '(progn (+ 1 2) (* 3 4))
                  (macroexpand '(unless% nil (+ 1 2) (* 3 4))))))
 
-(ert-deftest %init:version-supported-if ()
-  (should (version-supported-if < 0 t))
-  (should (version-supported-if < "0" t))
-  (should (version-supported-if < '0 t))
-  (should (= 12 (version-supported-if < 1000 (+ 1 2) (* 3 4))))
+(ert-deftest %init:if-version% ()
+  (should (if-version% < 0 t))
+  (should (if-version% < "0" t))
+  (should (if-version% < '0 t))
+  (should (= 12 (if-version% < 1000 (+ 1 2) (* 3 4))))
   (should (equal '(progn (* 3 4) (* 5 6))
-                 (macroexpand '(version-supported-if
+                 (macroexpand '(if-version%
                                    < 1000
                                    (+ 1 2)
                                  (* 3 4)
                                  (* 5 6))))))
 
-(ert-deftest %init:version-supported-when ()
-  (should (version-supported-when < 0 t))
-  (should (eq nil (version-supported-when < 1000 (+ 1 2))))
+(ert-deftest %init:when-version% ()
+  (should (when-version% < 0 t))
+  (should (eq nil (when-version% < 1000 (+ 1 2))))
   (should (equal '(progn (+ 1 2) (* 3 4))
-                 (macroexpand '(version-supported-when
+                 (macroexpand '(when-version%
                                    < 0
                                  (+ 1 2)
                                  (* 3 4))))))
@@ -130,9 +130,9 @@
                         (macroexpand '(terminal-supported-p
                                         (+ 1 2) (* 3 4))))))))
 
-(ert-deftest %strap:version-supported-p ()
-  (should (version-supported-p < 0))
-  (should (not (version-supported-p < 1000))))
+(ert-deftest %strap:when-version% ()
+  (should (when-version% < 0 t))
+  (should (not (when-version% < 1000 t))))
 
 (ert-deftest %strap:platform-supported-if/when/unless ()
   (cond ((platform-supported-if 'darwin t)

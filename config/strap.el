@@ -18,7 +18,7 @@
   "If current Emacs supports lexical binding do THEN,
 otherwise do ELSE..."
   (declare (indent 1))
-  `(version-supported-if
+  `(if-version%
        <= 24.1
        ,then
      (progn% ,@else)))
@@ -87,8 +87,8 @@ If in terminal mode, and there are no ELSE’s, the value is nil. "
 (defmacro version-supported-p (cmp version)
   "Return t if \(CMP VERSION `emacs-version'\) yields non-nil, else nil.
 
-It resemble `version-supported-if' but be expanded at compile time."
-  `(version-supported-when ,cmp ,version t))
+It resemble `if-version%' but be expanded at compile time."
+  `(when-version% ,cmp ,version t))
 
 
  ;; end of version-supported macro

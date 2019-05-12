@@ -566,7 +566,7 @@ The /user defined/ package spec default locate in =(emacs-home*
    :cond (executable-find% "latex")
    :packages '(auctex cdlatex))
   (list
-   :cond (and (version-supported-p <= 24.4)
+   :cond (and (when-version% <= 24.4)
               (executable-find% "java"))
    :packages '(cider
                clojure-mode
@@ -574,7 +574,7 @@ The /user defined/ package spec default locate in =(emacs-home*
    :compile `(,(compile-unit% (emacs-home* "config/use-cider.el") t)
               ,(compile-unit% (emacs-home* "config/use-cider-autoload.el"))))
   (list
-   :cond (and (version-supported-p <= 24.4)
+   :cond (and (when-version% <= 24.4)
               (executable-find% "docker"))
    :packages '(dockerfile-mode
                docker-tramp))
@@ -589,15 +589,15 @@ The /user defined/ package spec default locate in =(emacs-home*
   (list
    :cond (and (terminal-supported-p t)
               (platform-supported-unless 'darwin t)
-              (version-supported-p <= 25.1))
+              (when-version% <= 25.1))
    :packages '(ereader))
   (list
-   :cond (and (version-supported-p <= 24.4)
+   :cond (and (when-version% <= 24.4)
               (executable-find% "git"))
    :packages '(magit)
    :compile `(,(compile-unit% (emacs-home* "config/use-magit-autoload.el"))))
   (list
-   :cond (and (version-supported-p <= 23.2)
+   :cond (and (when-version% <= 23.2)
               (or (executable-find% "racket")
                   (executable-find% "chicken")))
    :packages '(geiser))
@@ -614,7 +614,7 @@ The /user defined/ package spec default locate in =(emacs-home*
   compiled only or be loaded after been compiled
 
 You can use any =Elisp= functions after aboved keywords.
-- =version-supported-p= macro checking the version of current Emacs at
+- =when-version%= macro checking the version of current Emacs at
   compile time
 - =executable-find%= macro checking the exising of the /executable/ at
   compile time

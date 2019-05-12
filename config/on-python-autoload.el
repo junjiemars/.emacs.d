@@ -13,7 +13,7 @@
     (define-key% python-mode-map (kbd "C-c C-p") #'run-python)))
 
 
-;; (version-supported-when <= 24.1
+;; (when-version% <= 24.1
 
 ;;   (defun python-virtualenv-activate (&optional vdir)
 ;; 		"Activate virtualenv at VDIR."
@@ -23,7 +23,7 @@
 ;;             (list
 ;;              (concat "PATH=" vdir path-separator (shell-env-> :path))
 ;;              (concat "VIRTUAL_ENV=" vdir)))
-;;       (version-supported-if
+;;       (if-version%
 ;;           <= 25.1
 ;;           (setq python-shell-virtualenv-root vdir)
 ;;         (setq python-shell-virtualenv-path vdir)))))

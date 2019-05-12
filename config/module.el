@@ -20,12 +20,12 @@
    package-archives
    (append (list '("gnu" . "https://elpa.gnu.org/packages/")
                  '("melpa-stable" . "https://stable.melpa.org/packages/"))
-           (version-supported-when
+           (when-version%
                <= 25.1
              (list '("melpa" . "https://melpa.org/packages/"))))
    'package)
 
-  (version-supported-when
+  (when-version%
       <= 25.1
     (setq% package-archive-priorities
            (list '("melpa-stable" . 10)
@@ -46,29 +46,29 @@
 
 
 (defsubst delete-package! (description &optional package)
-  (version-supported-if
+  (if-version%
       <= 25.0
       (progn%
        (ignore* package)
        (package-delete (car description) t t))
-    (version-supported-if
-  <= 24.4
-  (progn%
-   (ignore* package)
-   (package-delete (car description)))
+    (if-version%
+        <= 24.4
+        (progn%
+         (ignore* package)
+         (package-delete (car description)))
       (package-delete
        (symbol-name package)
        (mapconcat #'identity
-      (mapcar (lambda (x)
-          (number-to-string x))
-        (aref description 0))
-      ".")))))
+                  (mapcar (lambda (x)
+                            (number-to-string x))
+                          (aref description 0))
+                  ".")))))
 
 
 (defsubst install-package! (package &optional tar)
   (if tar
       (package-install-file package)
-    (version-supported-if
+    (if-version%
         <= 25.0
         (package-install package t)
       (package-install package))))
@@ -81,7 +81,7 @@
 (declare-function package-installed-p "package")
 (setq package-enable-at-startup nil)
 
-(version-supported-when
+(when-version%
     <= 25.1
   (setq custom-file (v-home% "config/.selected-packages.el")))
 
@@ -117,7 +117,7 @@
                      bing-dict
                      paredit
                      rainbow-delimiters
-                     ,(version-supported-when <= 24.1 'yaml-mode)))))
+                     ,(when-version% <= 24.1 'yaml-mode)))))
 
 
 (package-spec-:allowed-p

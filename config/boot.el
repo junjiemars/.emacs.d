@@ -32,7 +32,7 @@
 (defmacro theme-supported-p (&rest body)
   (declare (indent 0))
   `(graphic-supported-p
-     (version-supported-when < 23
+     (when-version% < 23
        ,@body)))
 
 
@@ -96,8 +96,8 @@ If DIR is nil then load the built-in `customize-themes' by NAME."
     `(progn
        (when (and ,dir (file-exists-p ,dir))
          (setq custom-theme-directory ,dir))
-       (version-supported-if >= 24.1
-                             (load-theme ,name)
+       (if-version% >= 24.1
+                    (load-theme ,name)
          (load-theme ,name t)))))
 
 

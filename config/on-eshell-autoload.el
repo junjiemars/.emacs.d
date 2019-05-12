@@ -29,7 +29,7 @@
   (self-eshell-mode!)
 
   ;; abbreviated `eshell' prompt
-  (version-supported-when > 23
+  (when-version% > 23
     (setq% eshell-save-history-on-exit t 'em-hist)
     (when% (and (require 'em-prompt)
                 (require 'em-dirs))

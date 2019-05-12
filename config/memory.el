@@ -71,17 +71,17 @@
 (defun self-desktop-read! ()
   
   (terminal-supported-p
-    (version-supported-when <= 24.4
-      (version-supported-when > 25
+    (when-version% <= 24.4
+      (when-version% > 25
         (setq% desktop-restore-forces-onscreen nil 'desktop))))
 
   (when (and (self-spec->*env-spec :desktop :allowed)
              (file-exists-p (v-home% ".desktop/")))
     (theme-supported-p
-        (when (consp (theme-changed-p
-                      (self-spec-> *self-previous-env-spec* :theme)
-                      (self-spec->*env-spec :theme)))
-          (setq% desktop-restore-frames nil 'desktop)))
+      (when (consp (theme-changed-p
+                    (self-spec-> *self-previous-env-spec* :theme)
+                    (self-spec->*env-spec :theme)))
+        (setq% desktop-restore-frames nil 'desktop)))
     (setq% desktop-restore-eager
            (self-spec->*env-spec :desktop :restore-eager) 'desktop)
     (desktop-read (v-home% ".desktop/"))))
@@ -113,10 +113,10 @@
              (append '(tags-table-mode) m) 'desktop))
 
     (theme-supported-p
-        (switch-theme! (self-spec-> *self-previous-env-spec* :theme)
-                       (self-spec->*env-spec :theme)))
+      (switch-theme! (self-spec-> *self-previous-env-spec* :theme)
+                     (self-spec->*env-spec :theme)))
 
-    (version-supported-when <= 26
+    (when-version% <= 26
       (platform-supported-when 'darwin
         ;; fix: title bar text color broken #55
         ;; https://github.com/d12frosted/homebrew-emacs-plus/issues/55#issuecomment-408317248
@@ -125,8 +125,8 @@
               '((ns-transparent-titlebar . unbound)
                 (ns-appearance . unbound)))))
     
-    (version-supported-if >= 23
-                          (desktop-save (v-home! ".desktop/"))
+    (if-version% >= 23
+                 (desktop-save (v-home! ".desktop/"))
       (desktop-save (v-home! ".desktop/") t))))
 
 

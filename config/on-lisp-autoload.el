@@ -17,7 +17,7 @@
   (setq indent-tabs-mode nil))
 
 
-(version-supported-if
+(if-version%
     <= 25.0
     (with-eval-after-load 'elisp-mode
       (add-hook 'emacs-lisp-mode-hook #'eldoc-mode))

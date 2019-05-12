@@ -16,7 +16,7 @@
    :cond (executable-find% "latex")
    :packages '(auctex cdlatex))
   (list
-   :cond (and (version-supported-p <= 25.1)
+   :cond (and (when-version% <= 25.1 t)
               (executable-find% "java"))
    :packages '(cider
                clojure-mode
@@ -24,7 +24,7 @@
    :compile `(,(compile-unit% (emacs-home* "config/use-cider.el") t)
               ,(compile-unit% (emacs-home* "config/use-cider-autoload.el"))))
   (list
-   :cond (and (version-supported-p <= 24.4)
+   :cond (and (when-version% <= 24.4 t)
               (executable-find% "docker"))
    :packages '(dockerfile-mode
                docker-tramp))
@@ -39,15 +39,15 @@
   (list
    :cond (and (terminal-supported-p t)
               (platform-supported-unless 'darwin t)
-              (version-supported-p <= 25.1))
+              (when-version% <= 25.1))
    :packages '(ereader))
   (list
-   :cond (and (version-supported-p <= 24.4)
+   :cond (and (when-version% <= 24.4 t)
               (executable-find% "git"))
    :packages '(magit)
    :compile `(,(compile-unit% (emacs-home* "config/use-magit-autoload.el"))))
   (list
-   :cond (and (version-supported-p <= 23.2)
+   :cond (and (when-version% <= 23.2 t)
               (or (executable-find% "racket")
                   (executable-find% "chicken")))
    :packages '(geiser))

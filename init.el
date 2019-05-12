@@ -193,9 +193,9 @@ Else return BODY sexp."
  ;; end of compile-time macro
 
 
-;; version-supported macro
+;; *-version% macro
 
-(defmacro version-supported-if (cmp version then &rest else)
+(defmacro if-version% (cmp version then &rest else)
   "If \(CMP VERSION `emacs-version'\) yields non-nil, do THEN, else do ELSE...
 
 Return the value of THEN or the value of the last of the ELSE’s.
@@ -213,14 +213,14 @@ If (COND VERSION EMACS-VERSION) yields nil, and there are no ELSE’s, the value
          ,then
        (progn% ,@else))))
 
-(defmacro version-supported-when (cmp version &rest body)
+(defmacro when-version% (cmp version &rest body)
   " When \(CMP VERSION `emacs-version'\) yields non-nil, eval BODY forms 
 sequentially and return value of last one, or nil if there are none."
   (declare (indent 2))
-  `(version-supported-if ,cmp ,version (progn% ,@body)))
+  `(if-version% ,cmp ,version (progn% ,@body)))
 
 
- ;; end of version-supported macro
+ ;; end of *-version% macro
 
 
 ;; *-package% macro
@@ -228,7 +228,7 @@ sequentially and return value of last one, or nil if there are none."
 (defmacro when-package% (&rest body)
   "Run BODY code if current `emacs-version' supports package."
   (declare (indent 0))
-  `(version-supported-when <= 24.1 ,@body))
+  `(when-version% <= 24.1 ,@body))
 
  ;; end of *-package% macro
 

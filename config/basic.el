@@ -26,7 +26,7 @@
 (setq backup-directory-alist `(("." . ,(v-home! ".backup/"))))
 
 ;; eww bookmarks
-(version-supported-when
+(when-version%
     <= 24.4
   (setq% eww-bookmarks-directory (v-home! ".bookmarks/") 'eww))
 
@@ -67,14 +67,14 @@
 (setq% server-auth-dir (v-home! ".server/") 'server)
 
 ;; Semantic
-(version-supported-when <= 23
+(when-version% <= 23
   (setq% semanticdb-default-save-directory
          (v-home! ".semantic/db/") 'semantic/db-file))
 
 ;; Tramp
-(version-supported-when <= 23
+(when-version% <= 23
   (setq% tramp-persistency-file-name (v-home! ".tramp/tramp")
-         (version-supported-if > 24 'tramp
+         (if-version% > 24 'tramp
            'tramp-cache)))
 
 ;; Url
@@ -108,7 +108,7 @@
 
 The value is actually the first element of LIST whose car equals KEY.
 Equality is defined by TESTFN if non-nil or by `equal' if nil."
-  (version-supported-if
+  (if-version%
       <= 26.1
       `(assoc ,key ,list ,testfn)
     (if-fn% 'cl-assoc 'cl-lib
@@ -127,7 +127,7 @@ Equality is defined by TESTFN if non-nil or by `equal' if nil."
 
 If KEY is not found in ALIST, return DEFAULT.
 Use TESTFN to lookup in the alist if non-nil, otherwise use `equal'."
-  (version-supported-if
+  (if-version%
       <= 26.1
       `(alist-get ,key ,alist ,default ,remove ,testfn)
     (ignore* remove) ;;silence byte-compiler.
@@ -173,7 +173,7 @@ to avoid corrupting the original SEQ."
 Return the sublist of LIST whose car is ITEM.
 \nKeywords supported:  :test :test-not :key
 \n(fn ITEM LIST [KEYWORD VALUE]...)"
-  (version-supported-if
+  (if-version%
       > 24
       `(with-no-warnings
          (require 'cl)
@@ -241,7 +241,7 @@ See `string-match' and `match-string'."
 (defmacro split-string* (string &optional separators omit-nulls trim)
   "Split STRING into substrings bounded by matches for SEPARATORS, 
 like `split-string' Emacs 24.4+"
-  (version-supported-if
+  (if-version%
       <= 24.4
       `(split-string ,string ,separators ,omit-nulls ,trim)
     `(if ,trim
