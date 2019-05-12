@@ -116,7 +116,8 @@ The FILE should be posix path, see `path-separator'."
 ;; compile macro
 
 
-(defmacro compile-and-load-file* (file &optional only-compile delete-booster dir)
+(defmacro compile-and-load-file*
+    (file &optional only-compile delete-booster dir)
   "Compile FILE.
 
 If ONLY-COMPILE is t, does not load COMPILED file after compile FILE.
