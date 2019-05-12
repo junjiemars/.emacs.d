@@ -192,13 +192,10 @@ end of buffer, otherwise just popup the buffer."
   "Load a Scheme FILE into `*gambit-buffer*'."
   (interactive (comint-get-source
                 "Load Scheme file: "
-                ;;scheme-prev-l/c-dir/file
                 (let ((n (buffer-file-name)))
                   (cons (file-name-directory n)
                         (file-name-nondirectory n)))
                 scheme-source? t)) ;; t because `load'
-  ;; needs an exact name
-  ;; Check to see if buffer needs saved
   (comint-check-source file) 
   (comint-send-string (gambit-proc)
                       (format "(load \"%s\")\n" file))
@@ -215,16 +212,17 @@ end of buffer, otherwise just popup the buffer."
 (defun gambit-send-last-sexp ()
   "Send the previous sexp to `*gambit-buffer*'."
   (interactive)
-  (gambit-send-region (save-excursion (backward-sexp) (point)) (point)))
+  (gambit-send-region (save-excursion (backward-sexp)
+                                      (point))
+                      (point)))
 
 (defun gambit-send-definition ()
   "Send the current definition to `*gambit-buffer*'."
   (interactive)
-  (save-excursion
-    (end-of-defun)
-    (let ((end (point)))
-      (beginning-of-defun)
-      (gambit-send-region (point) end))))
+  (gambit-send-region (save-excursion (beginning-of-defun)
+                                      (point))
+                      (save-excursion (end-of-defun)
+                                      (point))))
 
 (defun gambit-trace-procedure (proc &optional untrace)
   "Trace procedure PROC in the gambit process.
@@ -254,6 +252,7 @@ With a prefix argument switch off tracing of procedure PROC."
     (define-key m "\C-x\C-e" #'gambit-send-last-sexp)
     (define-key m "\C-c\C-l" #'gambit-load-file)
     (define-key m "\C-c\C-k" #'gambit-compile-file)
+    (define-key m "\C-c\C-r" #'gambit-send-region)
     (define-key m "\C-c\C-t" #'gambit-trace-procedure)
     (define-key m "\C-c\C-z" #'gambit-switch-to-repl)
     (scheme-mode-commands m)
