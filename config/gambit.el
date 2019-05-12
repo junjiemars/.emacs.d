@@ -113,35 +113,34 @@ If you accidentally suspend your process, use
   (setq comint-prompt-regexp "^[^>\n]*>+ *")
   (setq comint-prompt-read-only t)
   (scheme-mode-variables)
+  (setq mode-line-process '(":%s"))
   (setq comint-input-filter #'gambit-input-filter)
   (setq comint-get-old-input #'gambit-get-old-input))
 
 
-(defun run-gambit (cmd)
+(defun run-gambit (&optional command-line)
   "Run a gambit process, input and output via buffer *gambit*.
 
-If there is a process already running in *gambit*, switch to
-that buffer.  With argument, allows you to edit the command
-line (default is value of `gambit-program').
+If there is a process already running in *gambit*, switch to that
+buffer.  With argument COMMAND-LINE, allows you to edit the
+command line (default is value of `gambit-program').
 
 Run the hook `gambit-repl-mode-hook' after the `comint-mode-hook'."
   (interactive (list (if current-prefix-arg
 			                   (read-string "Run Gambit: " gambit-program)
 			                 gambit-program)))
-  (when (not (comint-check-proc "*gambit*"))
-    (let ((cmdlist (split-string* cmd "\\s-+" t)))
-      (set-buffer (apply 'make-comint "gambit"
-                         (car cmdlist)
-                         nil ;; no start file, gsi default init: ~/gambini
-                         (cdr cmdlist)))
-	    (gambit-repl-mode)))
-  (setq gambit-program cmd)
-  (setq *gambit-buffer* "*gambit*")
-  (setq mode-line-process '(":%s"))
-  (switch-to-buffer-other-window "*gambit*"))
-
- ;; end of REPL
-
+  (let ((cmdlist (split-string* command-line "\\s-+" t)))
+    (unless (comint-check-proc "*gambit*")
+      (apply #'make-comint-in-buffer "gambit"
+             (get-buffer-create "*gambit*")
+             (car cmdlist)
+             nil ;; no start file, gsi default init: ~/gambini
+             (cdr cmdlist)))
+    (setq gambit-program command-line)
+    (setq *gambit-buffer* "*gambit*")
+    (with-current-buffer *gambit-buffer*
+      (gambit-repl-mode))
+    (switch-to-buffer-other-window "*gambit*")))
 
 (defun gambit-start-repl-process ()
   "Start a gambit process.
@@ -177,6 +176,10 @@ end of buffer, otherwise just popup the buffer."
     (pop-to-buffer *gambit-buffer*)
     (push-mark)
     (goto-char (point-max))))
+
+
+ ;; end of REPL
+
 
 (defun gambit-compile-file (file)
   "Compile a Scheme FILE in `*gambit-buffer*'."
