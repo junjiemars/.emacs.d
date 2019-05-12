@@ -243,7 +243,6 @@ With a prefix argument switch off tracing of procedure PROC."
                       (format "(%s %s)\n"
                               (if untrace "untrace" "trace")
                               proc))
-  (comint-send-string (gambit-proc) "\n")
   (gambit-switch-to-repl t))
 
 (defvar gambit-mode-map
