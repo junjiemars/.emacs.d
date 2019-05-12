@@ -142,22 +142,17 @@ Run the hook `gambit-repl-mode-hook' after the `comint-mode-hook'."
       (gambit-repl-mode))
     (switch-to-buffer-other-window "*gambit*")))
 
-(defun gambit-start-repl-process ()
-  "Start a gambit process.
 
-Return the process started. Since this command is run implicitly,
-always ask the user for the command to run."
-  (save-window-excursion
-    (run-gambit (read-string "Run Gambit: " gambit-program))))
+ ;; end of REPL
+
 
 (defun gambit-proc ()
   "Return the `*gambit-buffer*' process, starting one if necessary."
-  (unless (and *gambit-buffer*
-               (get-buffer *gambit-buffer*)
-               (comint-check-proc *gambit-buffer*))
-    (gambit-start-repl-process))
+  (unless (comint-check-proc *gambit-buffer*)
+    (save-window-excursion
+      (run-gambit (read-string "Run Gambit: " gambit-program))))
   (or (get-buffer-process *gambit-buffer*)
-      (error "No current process.  See variable `*gambit-buffer*'")))
+      (error "No current process. See variable `*gambit-buffer*'")))
 
 (defun gambit-switch-to-repl (&optional arg)
   "Switch to the `*gambit-buffer*' buffer.
@@ -165,21 +160,18 @@ always ask the user for the command to run."
 If ARG is non-nil then select the buffer and put the cursor at
 end of buffer, otherwise just popup the buffer."
   (interactive "P")
-  (unless (or (and *gambit-buffer* (get-buffer *gambit-buffer*))
-              (gambit-start-repl-process))
-    (error "No current process buffer. See variable `*gambit-buffer*'"))
-  (if arg
-      (display-buffer *gambit-buffer*
-                      (if-fn% 'display-buffer-pop-up-window nil
-                              #'display-buffer-pop-up-window
-                        t))
-    (pop-to-buffer *gambit-buffer*)
-    (push-mark)
-    (goto-char (point-max))))
-
-
- ;; end of REPL
-
+  (if (gambit-proc)
+      (if arg
+          ;; display REPL but do not select it
+          (display-buffer *gambit-buffer*
+                          (if-fn% 'display-buffer-pop-up-window nil
+                                  #'display-buffer-pop-up-window
+                            t))
+        ;; switch to REPL and select it
+        (pop-to-buffer *gambit-buffer*)
+        (push-mark)
+        (goto-char (point-max)))
+    (error "No current process. See variable `*gambit-buffer*'")))
 
 (defun gambit-compile-file (file)
   "Compile a Scheme FILE in `*gambit-buffer*'."
