@@ -160,18 +160,18 @@ Run the hook `gambit-repl-mode-hook' after the `comint-mode-hook'."
 If ARG is non-nil then select the buffer and put the cursor at
 end of buffer, otherwise just popup the buffer."
   (interactive "P")
-  (if (gambit-proc)
-      (if arg
-          ;; display REPL but do not select it
-          (display-buffer *gambit-buffer*
-                          (if-fn% 'display-buffer-pop-up-window nil
-                                  #'display-buffer-pop-up-window
-                            t))
-        ;; switch to REPL and select it
-        (pop-to-buffer *gambit-buffer*)
-        (push-mark)
-        (goto-char (point-max)))
-    (error "No current process. See variable `*gambit-buffer*'")))
+  (unless (gambit-proc)
+    (error "No current process. See variable `*gambit-buffer*'"))
+  (if arg
+      ;; display REPL but do not select it
+      (display-buffer *gambit-buffer*
+                      (if-fn% 'display-buffer-pop-up-window nil
+                              #'display-buffer-pop-up-window
+                        t))
+    ;; switch to REPL and select it
+    (pop-to-buffer *gambit-buffer*)
+    (push-mark)
+    (goto-char (point-max))))
 
 (defun gambit-compile-file (file)
   "Compile a Scheme FILE in `*gambit-buffer*'."
