@@ -134,16 +134,16 @@
   (should (when-version% < 0 t))
   (should (not (when-version% < 1000 t))))
 
-(ert-deftest %strap:platform-supported-if/when/unless ()
-  (cond ((platform-supported-if 'darwin t)
-         (should (and (platform-supported-when 'darwin t)
-                      (not (platform-supported-unless 'darwin t)))))
-        ((platform-supported-if 'gnu/linux t)
-         (should (and (platform-supported-when 'gnu/linux t)
-                      (not (platform-supported-unless 'gnu/linux t)))))
-        ((platform-supported-if 'windows-nt t)
-         (should (and (platform-supported-when 'windows-nt t)
-                      (not (platform-supported-unless 'windows-nt t)))))))
+(ert-deftest %strap:if/when/unless-platform% ()
+  (cond ((if-platform% 'darwin t)
+         (should (and (when-platform% 'darwin t)
+                      (not (unless-platform% 'darwin t)))))
+        ((if-platform% 'gnu/linux t)
+         (should (and (when-platform% 'gnu/linux t)
+                      (not (unless-platform% 'gnu/linux t)))))
+        ((if-platform% 'windows-nt t)
+         (should (and (when-platform% 'windows-nt t)
+                      (not (unless-platform% 'windows-nt t)))))))
 
 (ert-deftest %strap:setq% ()
   "uncompleted..."
@@ -364,7 +364,7 @@
                      (setq count (1+ count))))))))
 
 (ert-deftest %basic:executable-find% ()
-  (platform-supported-if 'windows-nt
+  (if-platform% 'windows-nt
       (should (executable-find% "dir"))
     (should (executable-find% "ls"))
     (should (executable-find% (concat "l" "s")))
@@ -374,7 +374,7 @@
                                            "--version")))
                                   (car x)))))))
 
-(platform-supported-when 'windows-nt
+(when-platform% 'windows-nt
   (ert-deftest %basic:windows-posix-path ()
     (should (eq nil (windows-nt-posix-path nil)))
     (should (string= "c:/a/b/c.c"
