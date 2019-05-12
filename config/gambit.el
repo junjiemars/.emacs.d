@@ -17,7 +17,14 @@
   "Run a gambit process in a buffer."
   :group 'scheme)
 
-(defcustom% gambit-program "gsc-script -:d1- -i"
+(defcustom% gambit-program
+  (cond ((executable-find% "gsc-script"
+                           (lambda (gsc)
+                             (let ((x (shell-command* gsc
+                                        "-e '(+ 1 2 3)'")))
+                               (zerop (car x)))))
+         "gsc-script -:d1- -i")
+        (t "gsc -:d1- -i"))
   "Program invoked by the `run-gambit' command."
   :type 'string
   :group 'gambit)

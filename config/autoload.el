@@ -90,9 +90,9 @@
   (when% (or (executable-find% "gsc-script")
              (executable-find% "gsc"
                                (lambda (gsc)
-                                 (let ((x (shell-command* "gsc"
+                                 (let ((x (shell-command* gsc
                                             "-e '(system-type)'")))
-                                   (car x)))))
+                                   (zerop (car x))))))
     (compile!
       (compile-unit% (emacs-home* "config/gambit.el") t)
       (compile-unit% (emacs-home* "config/on-gambit-autoload.el"))))
