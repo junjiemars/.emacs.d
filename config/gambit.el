@@ -37,11 +37,18 @@ Defaults to a regexp ignoring all inputs of 0, 1, or 2 letters."
   :type 'regexp
   :group 'gambit)
 
+(defcustom% gambit-repl-mode-hook nil
+  "Hook run upon entry to `gambit-repl-mode'.
+This is run before the process is cranked up."
+  :type 'hook
+  :group 'gambit)
+
 (defvar *gambit-buffer* nil
   "The current gambit process buffer.")
 
 (defvar *gambit-last-buffer* nil
   "The last gambit buffer.")
+
 
  ;; end variable declarations
 
@@ -104,13 +111,13 @@ If you accidentally suspend your process, use
 
 
 (defun run-gambit (cmd)
-  "Run an inferior Scheme process, input and output via buffer *gambit*.
+  "Run a gambit process, input and output via buffer *gambit*.
 
 If there is a process already running in *gambit*, switch to
 that buffer.  With argument, allows you to edit the command
-line (default is value of `scheme-program-name').
+line (default is value of `gambit-program').
 
-Run the hook `gambit-mode-hook' after the `comint-mode-hook'."
+Run the hook `gambit-repl-mode-hook' after the `comint-mode-hook'."
   (interactive (list (if current-prefix-arg
 			                   (read-string "Run Gambit: " gambit-program)
 			                 gambit-program)))
@@ -130,7 +137,7 @@ Run the hook `gambit-mode-hook' after the `comint-mode-hook'."
 
 
 (defun gambit-start-repl-process ()
-  "Start an Gambit process.
+  "Start a gambit process.
 
 Return the process started. Since this command is run implicitly,
 always ask the user for the command to run."
