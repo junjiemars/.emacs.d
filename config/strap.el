@@ -12,9 +12,9 @@
   "https://github.com/junjiemars/.emacs.d")
 
 
-;; lexical-supported macro
+;; *-lexical macro
 
-(defmacro lexical-supported-if (then &rest else)
+(defmacro if-lexical% (then &rest else)
   "If current Emacs supports lexical binding do THEN,
 otherwise do ELSE..."
   (declare (indent 1))
@@ -23,15 +23,15 @@ otherwise do ELSE..."
        ,then
      (progn% ,@else)))
 
-(defmacro lexical-supported-when (&rest body)
+(defmacro when-lexical% (&rest body)
   "When current Emacs supports lexical binding do BODY."
   (declare (indent 0))
-  `(lexical-supported-if (progn% ,@body)))
+  `(if-lexical% (progn% ,@body)))
 
-(defmacro lexical-supported-unless (&rest body)
+(defmacro unless-lexical% (&rest body)
   "Unless current Emacs supports lexical binding do BODY."
   (declare (indent 0))
-  `(lexical-supported-if nil ,@body))
+  `(if-lexical% nil ,@body))
 
 (defmacro lexical-let% (varlist &rest body)
   "Like `let', but lexically scoped."
@@ -47,11 +47,11 @@ otherwise do ELSE..."
 
 
 ;; Let `lexical-binding' var safe under Emacs24.1-
-(lexical-supported-unless
+(unless-lexical%
   (put 'lexical-binding 'safe-local-variable (lambda (_) t)))
 
 
- ;; end of lexical-supported macro
+ ;; end of *-lexical% macro
 
 
 ;; *-graphic% macro
@@ -193,7 +193,7 @@ Returns the value of BODY if no error happens."
 (defmacro ignore* (&rest vars)
   "Return nil, list VARS at compile time if in lexical context."
   (declare (indent 0))
-  (lexical-supported-when
+  (when-lexical%
     `(when% lexical-binding
        (progn% ,@vars nil))))
 

@@ -123,7 +123,7 @@
 
 
 (defun set-ielm-mode! ()
-  (lexical-supported-when
+  (when-lexical%
     (setq lexical-binding t)))
 
 (with-eval-after-load 'ielm
