@@ -66,10 +66,9 @@ This is run before the process is cranked up."
 
 (defun gambit-get-old-input ()
   "Snarf the sexp ending at point."
-  (save-excursion
-    (let ((end (point)))
-      (backward-sexp)
-      (buffer-substring (point) end))))
+  (buffer-substring (save-excursion (backward-sexp)
+                                    (point))
+                    (point)))
 
 (defun gambit-switch-to-last-buffer ()
   "Switch to the `*gambit-last-buffer*' from `*gambit-buffer*'."
