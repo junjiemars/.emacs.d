@@ -82,9 +82,9 @@ If in terminal mode, and there are no ELSE’s, the value is nil. "
  ;; end of graphic-supported macro
 
 
-;; platform-supported macro
+;; *-platform% macro
 
-(defmacro platform-supported-if (os then &rest else)
+(defmacro if-platform% (os then &rest else)
   "If \(eq system-type OS\) yields non-nil, do THEN, else do ELSE...
 
 Returns the value of THEN or the value of the last of the ELSE’s.
@@ -95,17 +95,17 @@ If (eq `system-type' OS) yields nil, and there are no ELSE’s, the value is nil
        ,then
      (progn% ,@else)))
 
-(defmacro platform-supported-when (os &rest body)
+(defmacro when-platform% (os &rest body)
   "Run BODY code if on specified OS platform, else return nil."
   (declare (indent 1))
-  `(platform-supported-if ,os (progn% ,@body)))
+  `(if-platform% ,os (progn% ,@body)))
 
 (defmacro unless-platform% (os &rest body)
   "Run BODY code unless on specified OS platform, else return nil."
   (declare (indent 1))
-  `(platform-supported-if ,os nil ,@body))
+  `(if-platform% ,os nil ,@body))
 
- ;; end of platform-supported macro
+ ;; end of if-platform% macro
 
 
 (defmacro setq% (x val &optional feature)
@@ -266,7 +266,7 @@ Then evaluate RESULT to get return value, default nil.
 
 ;; ;; Preferred coding system for terminal mode
 ;; (terminal-supported-p
-;;   (platform-supported-when 'windows-nt
+;;   (when-platform% 'windows-nt
 ;;     ;; also need to adjust the font and code page.
 ;;     (set-terminal-coding-system 'utf-8)))
 ;; (set-default-coding-systems 'utf-8)

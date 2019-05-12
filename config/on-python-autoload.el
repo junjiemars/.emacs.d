@@ -39,7 +39,7 @@
 ;;     (if (zerop
 ;;          (shell-command
 ;;           (concat "pip install " p
-;;                   (platform-supported-if
+;;                   (if-platform%
 ;;                       'windows-nt " >/nul"
 ;;                     " >/dev/null"))))
 ;;         (message "#Install elpy required packages[%s]...done" p)

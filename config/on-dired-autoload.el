@@ -7,7 +7,7 @@
 ;;;;
 
 
-(platform-supported-when 'windows-nt
+(when-platform% 'windows-nt
   ;; on Windows: there are no builtin zip program
   ;; so try to use minzip in Emacs dep for Windows.
   ;; zip.bat works with `dired-do-compress-to' and `org-odt-export-to-odt'.
@@ -42,10 +42,10 @@
                  "REM ignore options\n"
                  (let ((options nil))
                    (dolist* (x (cond ((string= "minizip" zip)
-                                     (append '("-r" "--filesync" "-rmTq") ignore))
-                                    ((string-match "7za?" zip)
-                                     (append '("-r" "--filesync" "-rmTq"))))
-                              options)
+                                      (append '("-r" "--filesync" "-rmTq") ignore))
+                                     ((string-match "7za?" zip)
+                                      (append '("-r" "--filesync" "-rmTq"))))
+                               options)
                      (setq options
                            (concat options
                                    (format "if \"%%1\"==\"%s\" set _OPT=%%_OPT:%s=%% & shift & goto :getopt\n" x x)))))
@@ -110,7 +110,7 @@
             ((executable-find% "minizip") (make-zip-bat "minizip"))))))
 
 
-(platform-supported-when 'windows-nt
+(when-platform% 'windows-nt
 
   (with-eval-after-load 'dired
     ;; prefer GNU find on Windows, such for `find-dired' or `find-name-dired'.
@@ -127,7 +127,7 @@
  ;; end of `dired' setting
 
 
-(platform-supported-when 'windows-nt
+(when-platform% 'windows-nt
 
   (unless% (eq default-file-name-coding-system locale-coding-system)
 
@@ -189,10 +189,10 @@
            ;; executable flag in file mode，see `dired-use-ls-dired'
            ;; for more defails
            (setq% ls-lisp-use-insert-directory-program t 'ls-lisp)
-           (platform-supported-when 'windows-nt
+           (when-platform% 'windows-nt
              (unless% (eq default-file-name-coding-system locale-coding-system)
                (ad-activate #'insert-directory t))))
-        (platform-supported-when 'darwin
+        (when-platform% 'darwin
           ;; on Drawin: the builtin ls does not support --dired option
           (setq% dired-use-ls-dired nil 'dired))))))
 
@@ -241,7 +241,7 @@
   ;; Reading directory: "ls --dired -al -- d:/abc/中文/" exited with status 2
   ;; https://lists.gnu.org/archive/html/emacs-devel/2016-01/msg00406.html
   ;; (setq file-name-coding-system locale-coding-system)
-  (platform-supported-when 'windows-nt
+  (when-platform% 'windows-nt
     (unless% (eq default-file-name-coding-system locale-coding-system)
       (ad-activate #'dired-shell-stuff-it t)
       (ad-activate #'dired-shell-command t))

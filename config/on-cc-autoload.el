@@ -9,7 +9,7 @@
 
 ;; msvc host environment
 
-(platform-supported-when 'windows-nt
+(when-platform% 'windows-nt
   
   (defun check-vcvarsall-bat ()
     "Return the path of vcvarsall.bat if which exists."
@@ -32,7 +32,7 @@
              (when (file-exists-p bat) bat)))))))
 
 
-(platform-supported-when 'windows-nt
+(when-platform% 'windows-nt
   
   (defun make-cc-env-bat ()
     "Make cc-env.bat in `exec-path'."
@@ -56,7 +56,7 @@
          (v-home% ".exec/cc-env.bat"))))))
 
 
-(platform-supported-when 'windows-nt
+(when-platform% 'windows-nt
 
   (defun make-xargs-bin ()
     "Make a GNU's xargs alternation in `exec-path'."
@@ -120,7 +120,7 @@ On ancient Emacs, `file-remote-p' will return a vector."
                    (shell-command* "ssh"
                      (concat (rid-user@host remote)
                              " \"echo '' | cc -v -E 2>&1 >/dev/null -\"")))
-               (platform-supported-if 'windows-nt
+               (if-platform% 'windows-nt
                    ;; Windows: msmvc
                    (shell-command* (or (executable-find% "cc-env.bat")
                                        (make-cc-env-bat)))
@@ -138,7 +138,7 @@ On ancient Emacs, `file-remote-p' will return a vector."
       (if remote
           ;; Unix-like
           (funcall parser (cdr cmd))
-        (platform-supported-if 'windows-nt
+        (if-platform% 'windows-nt
             ;; Windows: msvc
             (mapcar (lambda (x) (windows-nt-posix-path x))
                     (var->paths
@@ -146,7 +146,7 @@ On ancient Emacs, `file-remote-p' will return a vector."
                            (split-string* (cdr cmd) "\n" t "\"")))))
           ;; Darwin/Linux: clang or gcc
           (let ((inc (funcall parser (cdr cmd))))
-            (platform-supported-if 'darwin
+            (if-platform% 'darwin
                 (mapcar (lambda (x)
                           (file-truename
                            (string-trim> x " (framework directory)")))
@@ -192,8 +192,8 @@ include directories. The REMOTE argument from `file-remote-p'."
     (member** (string-trim> (file-name-directory file) "/")
               (system-cc-include t (norm-file-remote-p file))
               :test (lambda (a b)
-                      (let ((case-fold-search (platform-supported-when
-                                                  'windows-nt t)))
+                      (let ((case-fold-search (when-platform%
+                                               'windows-nt t)))
                         (string-match b a))))))
 
     
@@ -236,7 +236,7 @@ include directories. The REMOTE argument from `file-remote-p'."
                  'cmacexp)
           ad-do-it)
       ;; local: msvc, clang, gcc
-      (platform-supported-if 'windows-nt
+      (if-platform% 'windows-nt
           ;; [C-c C-e] macro expand for msvc
           (when% (and (or (executable-find% "cc-env.bat")
                           (make-cc-env-bat))
@@ -257,7 +257,7 @@ include directories. The REMOTE argument from `file-remote-p'."
               (unwind-protect ad-do-it
                 (delete-file tmp))))
         ;; Darwin/Linux
-        (platform-supported-when 'darwin
+        (when-platform% 'darwin
           (when% (executable-find%
                   "cc"
                   (lambda (cc)

@@ -48,7 +48,7 @@
   (if-feature-paredit%
     
     (defun enable-paredit-mode-in-minibuffer! ()
-      (platform-supported-if 'gnu/linux
+      (if-platform% 'gnu/linux
           (when (eq 'eval-expression this-command)
             (enable-paredit-mode))
         (enable-paredit-mode)))))
@@ -71,7 +71,7 @@
 (when-package%
   (if-feature-allowed% paredit
 
-    (platform-supported-if
+    (if-platform%
         ;; enable `paredit' in `minibuffer'
         'gnu/linux
         (add-hook 'minibuffer-setup-hook

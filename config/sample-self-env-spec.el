@@ -18,16 +18,16 @@
                :compile nil ;; expert option
                :allowed t)
 
-  :font (list :name (platform-supported-if 'darwin
+  :font (list :name (if-platform% 'darwin
                         "Monaco-13"
-                      (platform-supported-if 'windows-nt
+                      (if-platform% 'windows-nt
                           "Consolas-13"
                         "DejaVu Sans Mono-12")) 
               :allowed nil)
 
-  :cjk-font (list :name (platform-supported-if 'darwin
+  :cjk-font (list :name (if-platform% 'darwin
                             "Hei"
-                          (platform-supported-if 'windows-nt
+                          (if-platform% 'windows-nt
                               "Microsoft Yahei"
                             "DejaVu Sans Mono-12"))
                   :size 12
@@ -38,7 +38,7 @@
                            "RACKET_HOME"
                            "PATH"
                            ,(unless-platform% 'windows-nt
-                              (platform-supported-if 'darwin
+                              (if-platform% 'darwin
                                   "DYLD_LIBRARY_PATH"
                                 "LD_LIBRARY_PATH")))
                :options '("-i" "2>/dev/null") ;; '("--login")
@@ -52,7 +52,7 @@
                  :modes-not-to-save
                  '(dired-mode fundamental-mode eww-mode rmail-mode)
                  :restore-eager 8
-                 :restore-via-threading* (platform-supported-if 'darwin
+                 :restore-via-threading* (if-platform% 'darwin
                                              (terminal-supported-p t)
                                            t)
                  :allowed nil)

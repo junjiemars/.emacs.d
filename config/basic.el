@@ -86,7 +86,7 @@
 
 ;; Platform Related Functions
 
-(platform-supported-when 'windows-nt
+(when-platform% 'windows-nt
   
   (defmacro windows-nt-posix-path (path)
     "Return posix path from Windows PATH which can be recognized on`system-type'."
@@ -471,7 +471,7 @@ Return the first matched one, if multiple COMMANDs had been found
 or the one that `funcall' PREFER returns t.
 "
   (if prefer
-      (let ((cmd (shell-command* (platform-supported-if 'windows-nt
+      (let ((cmd (shell-command* (if-platform% 'windows-nt
                                      "where"
                                    "command -v")
                    (funcall `(lambda () ,command)))))
@@ -484,14 +484,14 @@ or the one that `funcall' PREFER returns t.
                         (dolist* (x path)
                           (when (funcall prefer
                                          (shell-quote-argument
-                                          (platform-supported-if 'windows-nt
+                                          (if-platform% 'windows-nt
                                               (windows-nt-posix-path x)
                                             x)))
                             (throw 'prefer x)))
                         nil))
                      ((consp path) (car path))
                      (t path))))
-            `,(when p (platform-supported-if 'windows-nt
+            `,(when p (if-platform% 'windows-nt
                           (windows-nt-posix-path p)
                         p)))))
     (let ((path (executable-find (funcall `(lambda () ,command)))))
@@ -534,7 +534,7 @@ otherwise default to keep the directories of current `emacs-version'."
                     (not (string-match
                           (concat "^[gt]_" emacs-version) f)))
             (message "#Clean saved user file: %s" (concat d f))
-            (platform-supported-if 'windows-nt
+            (if-platform% 'windows-nt
                 (shell-command (concat "rmdir /Q /S " (concat d f)))
               (shell-command (concat "rm -r " (concat d f))))))))))
 
@@ -553,7 +553,7 @@ otherwise default to keep the directories of current `emacs-version'."
 
 (defmacro platform-arch ()
   "Return the platform architecture with (arch-str . num) cons cell."
-  (let ((arch (platform-supported-if 'windows-nt
+  (let ((arch (if-platform% 'windows-nt
                   (getenv "PROCESSOR_ARCHITECTURE")
                 (let ((m (shell-command* "uname -m")))
                   (when (zerop (car m)) (string-trim> (cdr m) "\n"))))))

@@ -114,18 +114,18 @@ See also: `parse-colon-path'."
 
 ;; Windows ansi-term/shell
 
-(platform-supported-when 'windows-nt
+(when-platform% 'windows-nt
   
   (defadvice ansi-term (before ansi-term-before compile)
     (set-window-buffer (selected-window)
                        (make-comint-in-buffer "ansi-term" nil "cmd"))))
 
 
-(platform-supported-when 'windows-nt
+(when-platform% 'windows-nt
   (with-eval-after-load 'term (ad-activate #'ansi-term t)))
 
 
-(platform-supported-when 'windows-nt
+(when-platform% 'windows-nt
 
   (defun windows-nt-env-path+ (dir &optional append)
     "APPEND or push DIR to %PATH%."

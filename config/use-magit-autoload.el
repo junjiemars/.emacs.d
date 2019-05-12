@@ -6,7 +6,7 @@
 
 (defun use-magit! ()
   
-  (platform-supported-when 'windows-nt
+  (when-platform% 'windows-nt
     
     (when (executable-find% "git" t)
       ;; On Windows try to open remote git repo via sshx

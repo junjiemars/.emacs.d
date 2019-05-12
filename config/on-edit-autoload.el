@@ -25,7 +25,7 @@
 (setq% ring-bell-function 'ignore)
 
 ;; Meta key for Darwin
-(platform-supported-when 'darwin
+(when-platform% 'darwin
   (when-var% mac-option-modifier nil
     (unless% (eq 'meta (plist-get mac-option-modifier :ordinary))
       (plist-put mac-option-modifier :ordinary 'meta))))
@@ -347,12 +347,12 @@ More accurate than `mark-defun'."
            (setq interprogram-cut-function #'x-select-text*)
            (setq interprogram-paste-function #'x-selection-value*)))))
   
-  (platform-supported-when 'darwin
+  (when-platform% 'darwin
     (_defun-x-select-text* "pbcopy")
     (_defun-x-selection-value* "pbpaste")
     (_enable-x-select-clipboard!))
 
-  (platform-supported-when 'gnu/linux
+  (when-platform% 'gnu/linux
     (when% (executable-find% "xsel")
       (_defun-x-select-text* "xsel" "--clipboard" "--input")
       (_defun-x-selection-value* "xsel" "--clipboard" "--output")

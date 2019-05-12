@@ -117,7 +117,7 @@
                      (self-spec->*env-spec :theme)))
 
     (when-version% <= 26
-      (platform-supported-when 'darwin
+      (when-platform% 'darwin
         ;; fix: title bar text color broken #55
         ;; https://github.com/d12frosted/homebrew-emacs-plus/issues/55#issuecomment-408317248
         (mapc (lambda (x)

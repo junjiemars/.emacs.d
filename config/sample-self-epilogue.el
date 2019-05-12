@@ -48,7 +48,7 @@
  (if-feature-semantic%
    (add-hook 'semantic-mode-hook
 						 #'(lambda ()
-								 (platform-supported-if 'windows-nt
+								 (if-platform% 'windows-nt
 										 (set-semantic-cc-env!
 											`("d:/opt/open/ecl/"
 												"d:/opt/open/ecl/build/"

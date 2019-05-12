@@ -365,9 +365,9 @@ by default and for GUI mode only.
 
 #+BEGIN_SRC emacs-lisp
 (def-self-env-spec
-  :font (list :name (platform-supported-if 'darwin
+  :font (list :name (if-platform% 'darwin
                         "Monaco-14"
-                      (platform-supported-if 'windows-nt
+                      (if-platform% 'windows-nt
                           "Consolas-13"
                         "DejaVu Sans Mono-12")) 
               :allowed t))
@@ -405,7 +405,7 @@ default
                          "RACKET_HOME"
                          "PATH"
                          ,(unless-platform% 'windows-nt
-                            (platform-supported-if 'darwin
+                            (if-platform% 'darwin
                                 "DYLD_LIBRARY_PATH"
                               "LD_LIBRARY_PATH")))
              :options '("--login") ;; '("-i" "2>/dev/null")
@@ -460,7 +460,7 @@ by default.
                      :modes-not-to-save
                      '(dired-mode fundamental-mode rmail-mode)
                      :restore-eager 8
-                     :restore-via-threading* (platform-supported-if 'darwin
+                     :restore-via-threading* (if-platform% 'darwin
                                                (terminal-supported-p t)
                                                t)
                      :allowed t))
