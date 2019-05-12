@@ -54,9 +54,9 @@ otherwise do ELSE..."
  ;; end of lexical-supported macro
 
 
-;; graphic-supported macro
+;; *-graphic% macro
 
-(defmacro graphic-supported-if (then &rest else)
+(defmacro if-graphic% (then &rest else)
   "If in graphic mode, do THEN, else do ELSE...
 
 Returns the value of THEN or the value of the last of the ELSE’s.
@@ -68,18 +68,18 @@ If in terminal mode, and there are no ELSE’s, the value is nil. "
     `(progn% ,@else)))
 
 
-(defmacro graphic-supported-p (&rest body)
+(defmacro when-graphic% (&rest body)
   "Run BODY code if in graphic mode, else returns nil."
   (declare (indent 0))
-  `(graphic-supported-if (progn% ,@body)))
+  `(if-graphic% (progn% ,@body)))
 
 
-(defmacro terminal-supported-p (&rest body)
+(defmacro when-terminal% (&rest body)
   "Run BODY code if in terminal mode, else returns nil."
   (declare (indent 0))
-  `(graphic-supported-if nil ,@body))
+  `(if-graphic% nil ,@body))
 
- ;; end of graphic-supported macro
+ ;; end of *-graphic% macro
 
 
 ;; *-platform% macro
@@ -265,7 +265,7 @@ Then evaluate RESULT to get return value, default nil.
 (prefer-coding-system 'utf-8)
 
 ;; ;; Preferred coding system for terminal mode
-;; (terminal-supported-p
+;; (when-terminal%
 ;;   (when-platform% 'windows-nt
 ;;     ;; also need to adjust the font and code page.
 ;;     (set-terminal-coding-system 'utf-8)))

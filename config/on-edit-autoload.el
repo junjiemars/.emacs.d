@@ -7,7 +7,7 @@
 ;;;;
 
 
-(terminal-supported-p
+(when-terminal%
   ;; above version 23 transient-mark-mode is enabled by default
   (when-version% > 23 (transient-mark-mode t))
   ;; fix some terminal theme confused with background and foreground.
@@ -18,7 +18,7 @@
 (when-fn% 'blink-cursor-mode nil (blink-cursor-mode 0))
 
 ;; Full path in title bar
-(graphic-supported-p
+(when-graphic%
   (setq% frame-title-format "%b (%f)"))
 
 ;; Ignore ring bell
@@ -318,7 +318,7 @@ More accurate than `mark-defun'."
     (setq% select-enable-primary t 'select)
   (setq% x-select-enable-primary t 'select))
 
-(terminal-supported-p
+(when-terminal%
   (unless-platform% 'windows-nt
     (eval-when-compile
       

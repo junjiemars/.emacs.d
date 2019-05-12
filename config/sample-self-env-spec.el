@@ -53,7 +53,7 @@
                  '(dired-mode fundamental-mode eww-mode rmail-mode)
                  :restore-eager 8
                  :restore-via-threading* (if-platform% 'darwin
-                                             (terminal-supported-p t)
+                                             (when-terminal% t)
                                            t)
                  :allowed nil)
   

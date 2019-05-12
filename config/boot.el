@@ -13,13 +13,13 @@
 (when-fn%  'menu-bar-mode nil (menu-bar-mode -1))
 
 ;; Disable tool bar
-(graphic-supported-p (when-fn% 'tool-bar-mode nil (tool-bar-mode -1)))
+(when-graphic% (when-fn% 'tool-bar-mode nil (tool-bar-mode -1)))
 
 ;; Disable scroll bar
 (when-fn% 'scroll-bar-mode nil (scroll-bar-mode -1))
 
 ;; Go straight to scratch buffer on startup when graphic supported
-(graphic-supported-if
+(if-graphic%
     (setq% inhibit-splash-screen t)
   (setq% inhibit-splash-screen nil))
 
@@ -31,14 +31,14 @@
 
 (defmacro theme-supported-p (&rest body)
   (declare (indent 0))
-  `(graphic-supported-p
+  `(when-graphic%
      (when-version% < 23
        ,@body)))
 
 
 (defmacro font-supported-p (&rest body)
   (declare (indent 0))
-  `(graphic-supported-p
+  `(when-graphic%
      ,@body))
 
 ;; font supported
