@@ -37,7 +37,7 @@
                            "PYTHONPATH"
                            "RACKET_HOME"
                            "PATH"
-                           ,(platform-supported-unless 'windows-nt
+                           ,(unless-platform% 'windows-nt
                               (platform-supported-if 'darwin
                                   "DYLD_LIBRARY_PATH"
                                 "LD_LIBRARY_PATH")))

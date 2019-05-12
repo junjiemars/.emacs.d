@@ -72,7 +72,7 @@ See also: `parse-colon-path'."
                        (when (stringp p)
                          (add-to-list 'exec-path p t #'string=)))
                      (append (var->paths (getenv (shells-spec->% :PATH)))
-                             (platform-supported-unless 'windows-nt
+                             (unless-platform% 'windows-nt
                                (list (v-home% ".exec/"))))))
   (shell-env<- :env-vars
                (let ((vars nil))

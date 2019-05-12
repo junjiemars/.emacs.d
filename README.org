@@ -404,7 +404,7 @@ default
                          "PYTHONPATH"
                          "RACKET_HOME"
                          "PATH"
-                         ,(platform-supported-unless 'windows-nt
+                         ,(unless-platform% 'windows-nt
                             (platform-supported-if 'darwin
                                 "DYLD_LIBRARY_PATH"
                               "LD_LIBRARY_PATH")))
@@ -566,7 +566,7 @@ The /user defined/ package spec default locate in =(emacs-home*
    :cond (executable-find% "latex")
    :packages '(auctex cdlatex))
   (list
-   :cond (and (when-version% <= 24.4)
+   :cond (and (when-version% <= 24.4 t)
               (executable-find% "java"))
    :packages '(cider
                clojure-mode
@@ -574,7 +574,7 @@ The /user defined/ package spec default locate in =(emacs-home*
    :compile `(,(compile-unit% (emacs-home* "config/use-cider.el") t)
               ,(compile-unit% (emacs-home* "config/use-cider-autoload.el"))))
   (list
-   :cond (and (when-version% <= 24.4)
+   :cond (and (when-version% <= 24.4 t)
               (executable-find% "docker"))
    :packages '(dockerfile-mode
                docker-tramp))
@@ -588,8 +588,8 @@ The /user defined/ package spec default locate in =(emacs-home*
    :compile `(,(compile-unit% (emacs-home* "config/use-lfe-autoload.el"))))
   (list
    :cond (and (terminal-supported-p t)
-              (platform-supported-unless 'darwin t)
-              (when-version% <= 25.1))
+              (unless-platform% 'darwin t)
+              (when-version% <= 25.1 t))
    :packages '(ereader))
   (list
    :cond (and (when-version% <= 24.4)
@@ -597,7 +597,7 @@ The /user defined/ package spec default locate in =(emacs-home*
    :packages '(magit)
    :compile `(,(compile-unit% (emacs-home* "config/use-magit-autoload.el"))))
   (list
-   :cond (and (when-version% <= 23.2)
+   :cond (and (when-version% <= 23.2 t)
               (or (executable-find% "racket")
                   (executable-find% "chicken")))
    :packages '(geiser))

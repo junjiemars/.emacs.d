@@ -171,7 +171,7 @@
           (ad-set-arg 0 (encode-coding-string arg0 locale-coding-system)))))))
 
 
-(platform-supported-unless 'gnu/linux
+(unless-platform% 'gnu/linux
 
   (with-eval-after-load 'ido
     ;; see `ido-dired'

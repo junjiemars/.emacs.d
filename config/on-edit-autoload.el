@@ -319,7 +319,7 @@ More accurate than `mark-defun'."
   (setq% x-select-enable-primary t 'select))
 
 (terminal-supported-p
-  (platform-supported-unless 'windows-nt
+  (unless-platform% 'windows-nt
     (eval-when-compile
       
       (defmacro _defun-x-select-text* (bin &rest args)
