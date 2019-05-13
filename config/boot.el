@@ -48,7 +48,7 @@
   (defmacro when-font-exist% (font &rest body)
     "If FONT exists then do BODY."
     (declare (indent 1))
-    `(when% (find-font (font-spec :name ,font))
+    `(when% (and ,font (find-font (font-spec :name ,font)))
        ,@body)))
 
 (if-font%
@@ -93,7 +93,7 @@
   (defmacro self-load-theme! (name &optional dir)
     "`load-theme' by NAME.
 If DIR is nil then load the built-in `customize-themes' by NAME."
-    `(progn
+    `(when ,name
        (when (and ,dir (file-exists-p ,dir))
          (setq custom-theme-directory ,dir))
        (if-version% >= 24.1
@@ -104,10 +104,10 @@ If DIR is nil then load the built-in `customize-themes' by NAME."
 ;; Load theme
 (if-theme%
 
-  (when (self-spec->*env-spec :theme :allowed)
+  (when (and (self-spec->*env-spec :theme :allowed)
+             (self-spec->*env-spec :theme :name))
     (cond
-     ((and (self-spec->*env-spec :theme :name)
-           (self-spec->*env-spec :theme :custom-theme-directory))
+     ((self-spec->*env-spec :theme :custom-theme-directory)
       ;; load theme from :custom-theme-directory
       (if (self-spec->*env-spec :theme :compile)
           (when
@@ -127,8 +127,7 @@ If DIR is nil then load the built-in `customize-themes' by NAME."
          (self-spec->*env-spec :theme :custom-theme-directory))))
 
      ;; load builtin theme
-     ((self-spec->*env-spec :theme :name)
-      (self-load-theme! (self-spec->*env-spec :theme :name))))))
+     (t (self-load-theme! (self-spec->*env-spec :theme :name))))))
 
 
  ;; end of if-theme%
