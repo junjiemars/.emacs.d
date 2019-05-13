@@ -29,21 +29,21 @@
 
 ;; Theme and Font
 
-(defmacro theme-supported-p (&rest body)
+(defmacro if-theme% (&rest body)
   (declare (indent 0))
   `(when-graphic%
      (when-version% < 23
        ,@body)))
 
 
-(defmacro font-supported-p (&rest body)
+(defmacro if-font% (&rest body)
   (declare (indent 0))
   `(when-graphic%
      ,@body))
 
 ;; font supported
 
-(font-supported-p
+(if-font%
 
   (defmacro when-font-exist% (font &rest body)
     "If FONT exists then do BODY."
@@ -51,21 +51,21 @@
     `(when% (find-font (font-spec :name ,font))
        ,@body)))
 
-(font-supported-p
-    
-    (defmacro self-default-font! (font)
-      "Set default FONT in graphic mode."
-      `(when-font-exist% ,font
-         (add-to-list 'default-frame-alist (cons 'font ,font))
-         (set-face-attribute 'default nil :font ,font))))
+(if-font%
+  
+  (defmacro self-default-font! (font)
+    "Set default FONT in graphic mode."
+    `(when-font-exist% ,font
+       (add-to-list 'default-frame-alist (cons 'font ,font))
+       (set-face-attribute 'default nil :font ,font))))
 
-(font-supported-p
+(if-font%
   
   ;; Load default font
   (when (self-spec->*env-spec :font :allowed)
     (self-default-font! (self-spec->*env-spec :font :name))))
 
-(font-supported-p
+(if-font%
 
   (defmacro self-cjk-font! (name size)
     "Set CJK font's NAME and SIZE in graphic mode."
@@ -77,18 +77,18 @@
                                                 :size ,size)))
                '(han kana cjk-misc))))))
 
-(font-supported-p
+(if-font%
 
   ;; Load cjk font
   (when (self-spec->*env-spec :cjk-font :allowed)
     (self-cjk-font! (self-spec->*env-spec :cjk-font :name)
                     (self-spec->*env-spec :cjk-font :size))))
 
- ;; end of font-supported-p
+ ;; end of if-font%
 
 ;; theme supported
 
-(theme-supported-p
+(if-theme%
 
   (defmacro self-load-theme! (name &optional dir)
     "`load-theme' by NAME.
@@ -102,7 +102,7 @@ If DIR is nil then load the built-in `customize-themes' by NAME."
 
 
 ;; Load theme
-(theme-supported-p
+(if-theme%
 
   (when (self-spec->*env-spec :theme :allowed)
     (cond
@@ -131,7 +131,7 @@ If DIR is nil then load the built-in `customize-themes' by NAME."
       (self-load-theme! (self-spec->*env-spec :theme :name))))))
 
 
- ;; end of theme-supported-p
+ ;; end of if-theme%
 
 
 ;; end of file
