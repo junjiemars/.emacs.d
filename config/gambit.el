@@ -163,6 +163,7 @@ end of buffer, otherwise just popup the buffer."
                (with-current-buffer (current-buffer)
                  (symbol-value 'gambit-mode)))
     (error "No current process. See variable `*gambit-buffer*'"))
+  (setq *gambit-last-buffer* (current-buffer))
   (if arg
       ;; display REPL but do not select it
       (display-buffer *gambit-buffer*
