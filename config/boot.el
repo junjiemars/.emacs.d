@@ -45,7 +45,7 @@
 
 (font-supported-p
 
-  (defmacro when-font% (font &rest body)
+  (defmacro when-font-exist% (font &rest body)
     "If FONT exists then do BODY."
     (declare (indent 1))
     `(when% (find-font (font-spec :name ,font))
@@ -55,7 +55,7 @@
     
     (defmacro self-default-font! (font)
       "Set default FONT in graphic mode."
-      `(when-font% ,font
+      `(when-font-exist% ,font
          (add-to-list 'default-frame-alist (cons 'font ,font))
          (set-face-attribute 'default nil :font ,font))))
 
@@ -69,7 +69,7 @@
 
   (defmacro self-cjk-font! (name size)
     "Set CJK font's NAME and SIZE in graphic mode."
-    `(when-font% ,name
+    `(when-font-exist% ,name
        (when-fn% 'set-fontset-font nil
          (mapc (lambda (c)
                  (set-fontset-font (frame-parameter nil 'font)
