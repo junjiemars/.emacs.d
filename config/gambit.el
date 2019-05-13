@@ -159,7 +159,9 @@ Run the hook `gambit-repl-mode-hook' after the `comint-mode-hook'."
 If ARG is non-nil then select the buffer and put the cursor at
 end of buffer, otherwise just popup the buffer."
   (interactive "P")
-  (unless (gambit-proc)
+  (unless (and (comint-check-proc *gambit-buffer*)
+               (with-current-buffer (current-buffer)
+                 (symbol-value 'gambit-mode)))
     (error "No current process. See variable `*gambit-buffer*'"))
   (if arg
       ;; display REPL but do not select it
