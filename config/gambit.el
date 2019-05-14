@@ -54,7 +54,7 @@ This is run before the process is cranked up."
   (lexical-let% ((b))
     (lambda (&optional n)
       (if n (setq b n) b)))
-  "The current gambit process buffer.")
+  "The current *gambit* process buffer.")
 
 (defvar gambit-switch-to-last-buffer
   (lexical-let% ((b))
