@@ -21,7 +21,7 @@
   (cond ((executable-find% "gsc-script"
                            (lambda (gsc)
                              (let ((x (shell-command* gsc
-                                        "-e '(+ 1 2 3)'")))
+                                        "-e \"(+ 1 2 3)\"")))
                                (zerop (car x)))))
          "gsc-script -:d1- -i")
         (t "gsc -:d1- -i"))

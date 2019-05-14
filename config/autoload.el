@@ -91,7 +91,7 @@
              (executable-find% "gsc"
                                (lambda (gsc)
                                  (let ((x (shell-command* gsc
-                                            "-e '(system-type)'")))
+                                            "-e \"(system-type)\"")))
                                    (zerop (car x))))))
     (compile!
       (compile-unit% (emacs-home* "config/gambit.el") t)
