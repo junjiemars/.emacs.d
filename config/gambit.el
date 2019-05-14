@@ -50,7 +50,7 @@ This is run before the process is cranked up."
   :type 'hook
   :group 'gambit)
 
-(defvar *gambit-buffer* nil
+(defvar gambit-buffer nil
   "The current gambit process buffer.")
 
 (defvar *gambit-last-buffer* nil
@@ -71,7 +71,7 @@ This is run before the process is cranked up."
                     (point)))
 
 (defun gambit-switch-to-last-buffer ()
-  "Switch to the `*gambit-last-buffer*' from `*gambit-buffer*'."
+  "Switch to the `*gambit-last-buffer*' from `gambit-buffer'."
   (interactive)
   (when *gambit-last-buffer*
     (switch-to-buffer-other-window *gambit-last-buffer*)))
@@ -136,8 +136,8 @@ Run the hook `gambit-repl-mode-hook' after the `comint-mode-hook'."
              nil ;; no start file, gsi default init: ~/gambini
              (cdr cmdlist)))
     (setq gambit-program command-line)
-    (setq *gambit-buffer* "*gambit*")
-    (with-current-buffer *gambit-buffer*
+    (setq gambit-buffer "*gambit*")
+    (with-current-buffer gambit-buffer
       (gambit-repl-mode))
     (switch-to-buffer-other-window "*gambit*")))
 
@@ -146,37 +146,38 @@ Run the hook `gambit-repl-mode-hook' after the `comint-mode-hook'."
 
 
 (defun gambit-proc ()
-  "Return the `*gambit-buffer*' process, starting one if necessary."
-  (unless (comint-check-proc *gambit-buffer*)
+  "Return the `gambit-buffer' process, starting one if necessary."
+  (unless (comint-check-proc gambit-buffer)
     (save-window-excursion
       (run-gambit (read-string "Run Gambit: " gambit-program))))
-  (or (get-buffer-process *gambit-buffer*)
-      (error "No current process. See variable `*gambit-buffer*'")))
+  (or (get-buffer-process gambit-buffer)
+      (error "No current process. See variable `gambit-buffer'")))
 
 (defun gambit-switch-to-repl (&optional arg)
-  "Switch to the `*gambit-buffer*' buffer.
+  "Switch to the `gambit-buffer' buffer.
 
 If ARG is non-nil then select the buffer and put the cursor at
 end of buffer, otherwise just popup the buffer."
   (interactive "P")
-  (unless (and (comint-check-proc *gambit-buffer*)
-               (with-current-buffer (current-buffer)
-                 (symbol-value 'gambit-mode)))
-    (error "No current process. See variable `*gambit-buffer*'"))
+  (unless (comint-check-proc gambit-buffer)
+    (error "No current process. See variable `gambit-buffer'"))
+  (unless (with-current-buffer (current-buffer)
+            (symbol-value 'gambit-mode))
+    (error "No current gambit-mode. See variable `gambit-mode'"))
   (setq *gambit-last-buffer* (current-buffer))
   (if arg
       ;; display REPL but do not select it
-      (display-buffer *gambit-buffer*
+      (display-buffer gambit-buffer
                       (if-fn% 'display-buffer-pop-up-window nil
                               #'display-buffer-pop-up-window
                         t))
     ;; switch to REPL and select it
-    (pop-to-buffer *gambit-buffer*)
+    (pop-to-buffer gambit-buffer)
     (push-mark)
     (goto-char (point-max))))
 
 (defun gambit-compile-file (file)
-  "Compile a Scheme FILE in `*gambit-buffer*'."
+  "Compile a Scheme FILE in `gambit-buffer'."
   (interactive (comint-get-source
                 "Compile Scheme file: "
                 (let ((n (buffer-file-name)))
@@ -191,7 +192,7 @@ end of buffer, otherwise just popup the buffer."
   (gambit-switch-to-repl))
 
 (defun gambit-load-file (file)
-  "Load a Scheme FILE into `*gambit-buffer*'."
+  "Load a Scheme FILE into `gambit-buffer'."
   (interactive (comint-get-source
                 "Load Scheme file: "
                 (let ((n (buffer-file-name)))
@@ -205,21 +206,21 @@ end of buffer, otherwise just popup the buffer."
   (gambit-switch-to-repl))
 
 (defun gambit-send-region (start end)
-  "Send the current region to `*gambit-buffer*'."
+  "Send the current region to `gambit-buffer'."
   (interactive "r")
   (comint-send-region (gambit-proc) start end)
   (comint-send-string (gambit-proc) "\n")
   (gambit-switch-to-repl t))
 
 (defun gambit-send-last-sexp ()
-  "Send the previous sexp to `*gambit-buffer*'."
+  "Send the previous sexp to `gambit-buffer'."
   (interactive)
   (gambit-send-region (save-excursion (backward-sexp)
                                       (point))
                       (point)))
 
 (defun gambit-send-definition ()
-  "Send the current definition to `*gambit-buffer*'."
+  "Send the current definition to `gambit-buffer'."
   (interactive)
   (gambit-send-region (save-excursion (beginning-of-defun)
                                       (point))
