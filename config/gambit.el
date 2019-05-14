@@ -53,8 +53,14 @@ This is run before the process is cranked up."
 (defvar gambit-buffer nil
   "The current gambit process buffer.")
 
-(defvar *gambit-last-buffer* nil
-  "The last gambit buffer.")
+(defvar gambit-switch-to-last-buffer
+  (lexical-let% ((b))
+    (lambda (&optional n)
+      (interactive)
+      (if n (setq b n)
+        (when b
+          (switch-to-buffer-other-window b)))))
+  "Switch to the last `gambit-mode' buffer from `gambit-buffer'.")
 
 
  ;; end variable declarations
@@ -70,15 +76,9 @@ This is run before the process is cranked up."
                                     (point))
                     (point)))
 
-(defun gambit-switch-to-last-buffer ()
-  "Switch to the `*gambit-last-buffer*' from `gambit-buffer'."
-  (interactive)
-  (when *gambit-last-buffer*
-    (switch-to-buffer-other-window *gambit-last-buffer*)))
-
 (defvar gambit-repl-mode-map
   (let ((m (make-sparse-keymap)))
-    (define-key m "\C-c\C-a" #'gambit-switch-to-last-buffer)
+    (define-key m "\C-c\C-a" (symbol-value 'gambit-switch-to-last-buffer))
     m))
 
 (define-derived-mode gambit-repl-mode comint-mode "REPL"
@@ -164,7 +164,7 @@ end of buffer, otherwise just popup the buffer."
   (unless (with-current-buffer (current-buffer)
             (symbol-value 'gambit-mode))
     (error "No current gambit-mode. See variable `gambit-mode'"))
-  (setq *gambit-last-buffer* (current-buffer))
+  (funcall gambit-switch-to-last-buffer (current-buffer))
   (if arg
       ;; display REPL but do not select it
       (display-buffer gambit-buffer
@@ -188,7 +188,7 @@ end of buffer, otherwise just popup the buffer."
   (comint-check-source file)
   (comint-send-string (gambit-proc)
                       (format "(compile-file \"%s\")\n" file))
-  (setq *gambit-last-buffer* (current-buffer))
+  (funcall gambit-switch-to-last-buffer (current-buffer))
   (gambit-switch-to-repl))
 
 (defun gambit-load-file (file)
@@ -202,7 +202,7 @@ end of buffer, otherwise just popup the buffer."
   (comint-check-source file) 
   (comint-send-string (gambit-proc)
                       (format "(load \"%s\")\n" file))
-  (setq *gambit-last-buffer* (current-buffer))
+  (funcall gambit-switch-to-last-buffer (current-buffer))
   (gambit-switch-to-repl))
 
 (defun gambit-send-region (start end)
