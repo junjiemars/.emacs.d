@@ -166,7 +166,7 @@
                (not (when-var% ert-batch-backtrace-right-marginxxx 'ert t)))))
 
 (ert-deftest %strap:ignore* ()
-  (lexical-supported-if
+  (if-lexical%
       (should (eq nil (macroexpand '(ignore* a b))))
     (should (eq nil (macroexpand '(ignore* a b))))))
 
