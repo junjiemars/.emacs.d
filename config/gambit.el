@@ -134,11 +134,12 @@ Run the hook `gambit-repl-mode-hook' after the `comint-mode-hook'."
         (buffer (if (comint-check-proc (funcall *gambit*))
                     (funcall *gambit*)
                   (get-buffer-create "*gambit*"))))
-    (apply #'make-comint-in-buffer "gambit"
-           buffer
-           (car cmdlist)
-           nil ;; no start file, gsi default init: ~/gambini
-           (cdr cmdlist))
+    (unless (comint-check-proc buffer)
+      (apply #'make-comint-in-buffer "*gambit*"
+             buffer
+             (car cmdlist)
+             nil ;; no start file, gsi default init: ~/gambini
+             (cdr cmdlist)))
     (switch-to-buffer-other-window buffer)
     (setq gambit-program command-line)
     (with-current-buffer buffer
