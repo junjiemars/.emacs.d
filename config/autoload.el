@@ -94,7 +94,6 @@
                                             "-e \"(system-type)\"")))
                                    (zerop (car x))))))
     (compile!
-      (compile-unit% (emacs-home* "config/gambit.el") t)
       (compile-unit% (emacs-home* "config/on-gambit-autoload.el"))))
 
   (when-platform% 'windows-nt
