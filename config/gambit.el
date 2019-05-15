@@ -130,18 +130,20 @@ Run the hook `gambit-repl-mode-hook' after the `comint-mode-hook'."
   (interactive (list (if current-prefix-arg
 			                   (read-string "Run Gambit: " gambit-program)
 			                 gambit-program)))
-  (let ((cmdlist (split-string* command-line "\\s-+" t)))
-    (unless (comint-check-proc (funcall *gambit*))
-      (apply #'make-comint-in-buffer "gambit"
-             (get-buffer-create "*gambit*")
-             (car cmdlist)
-             nil ;; no start file, gsi default init: ~/gambini
-             (cdr cmdlist)))
+  (let ((cmdlist (split-string* command-line "\\s-+" t))
+        (buffer (if (comint-check-proc (funcall *gambit*))
+                    (funcall *gambit*)
+                  (get-buffer-create "*gambit*"))))
+    (apply #'make-comint-in-buffer "gambit"
+           buffer
+           (car cmdlist)
+           nil ;; no start file, gsi default init: ~/gambini
+           (cdr cmdlist))
+    (switch-to-buffer-other-window buffer)
     (setq gambit-program command-line)
-    (with-current-buffer 
-        (funcall *gambit* (get-buffer "*gambit*"))
-      (gambit-repl-mode))
-    (switch-to-buffer-other-window (funcall *gambit*))))
+    (with-current-buffer buffer
+      (funcall *gambit* buffer)
+      (gambit-repl-mode))))
 
 
  ;; end of REPL
