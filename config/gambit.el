@@ -3,7 +3,7 @@
 ;; More reasonable Emacs on MacOS, Windows and Linux
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; gambit-mode.el --- Run Gambit in an Emacs buffer
+;; on-gambit-autoload.el --- Run Gambit in an Emacs buffer
 ;;;;
 
 (require 'scheme)
@@ -11,6 +11,15 @@
 
 ;; (require 'thingatpt)
 ;; `symbol-at-point' autoload fn
+
+
+(defmacro-if-feature% geiser)
+
+;; Disable `geiser-mode' for `schme-mode'
+(if-feature-geiser%
+ (when-var% geiser-mode-auto-p 'geiser-mode
+   (setq% geiser-mode-auto-p nil 'geiser-mode)))
+
 
 ;; variable declarations
 
@@ -51,17 +60,19 @@ This is run before the process is cranked up."
   :type 'hook
   :group 'gambit)
 
-(defvar gambit-buffer nil
-  "The current gambit process buffer.")
+(defvar *gambit*
+  (lexical-let% ((b))
+    (lambda (&optional n)
+      (if n (setq b n) b)))
+  "The current *gambit* process buffer.")
 
 (defvar gambit-switch-to-last-buffer
   (lexical-let% ((b))
     (lambda (&optional n)
       (interactive)
       (if n (setq b n)
-        (when b
-          (switch-to-buffer-other-window b)))))
-  "Switch to the last `gambit-mode' buffer from `gambit-buffer'.")
+        (when b (switch-to-buffer-other-window b)))))
+  "Switch to the last `gambit-mode' buffer from `*gambit*' buffer.")
 
 
  ;; end variable declarations
@@ -129,56 +140,59 @@ Run the hook `gambit-repl-mode-hook' after the `comint-mode-hook'."
   (interactive (list (if current-prefix-arg
 			                   (read-string "Run Gambit: " gambit-program)
 			                 gambit-program)))
-  (let ((cmdlist (split-string* command-line "\\s-+" t)))
-    (unless (comint-check-proc "*gambit*")
-      (apply #'make-comint-in-buffer "gambit"
-             (get-buffer-create "*gambit*")
+  (let ((cmdlist (split-string* command-line "\\s-+" t))
+        (buffer (if (comint-check-proc (funcall *gambit*))
+                    (funcall *gambit*)
+                  (get-buffer-create "*gambit*"))))
+    (unless (comint-check-proc buffer)
+      (apply #'make-comint-in-buffer "*gambit*"
+             buffer
              (car cmdlist)
              nil ;; no start file, gsi default init: ~/gambini
              (cdr cmdlist)))
+    (switch-to-buffer-other-window buffer)
     (setq gambit-program command-line)
-    (setq gambit-buffer "*gambit*")
-    (with-current-buffer gambit-buffer
-      (gambit-repl-mode))
-    (switch-to-buffer-other-window "*gambit*")))
+    (with-current-buffer buffer
+      (funcall *gambit* buffer)
+      (gambit-repl-mode))))
 
 
  ;; end of REPL
 
 
 (defun gambit-proc ()
-  "Return the `gambit-buffer' process, starting one if necessary."
-  (unless (comint-check-proc gambit-buffer)
+  "Return the `*gambit*' process, starting one if necessary."
+  (unless (comint-check-proc (funcall *gambit*))
     (save-window-excursion
       (run-gambit (read-string "Run Gambit: " gambit-program))))
-  (or (get-buffer-process gambit-buffer)
-      (error "No current process. See variable `gambit-buffer'")))
+  (or (get-buffer-process (funcall *gambit*))
+      (error "No current `*gambit*' process.")))
 
 (defun gambit-switch-to-repl (&optional arg)
-  "Switch to the `gambit-buffer' buffer.
+  "Switch to the `*gambit*' buffer.
 
 If ARG is non-nil then select the buffer and put the cursor at
 end of buffer, otherwise just popup the buffer."
   (interactive "P")
-  (unless (comint-check-proc gambit-buffer)
-    (error "No current process. See variable `gambit-buffer'"))
+  (unless (comint-check-proc (funcall *gambit*))
+    (error "No current `*gambit*' process."))
   (unless (with-current-buffer (current-buffer)
             (symbol-value 'gambit-mode))
-    (error "No current gambit-mode. See variable `gambit-mode'"))
+    (error "No current `gambit-mode'."))
   (funcall gambit-switch-to-last-buffer (current-buffer))
   (if arg
       ;; display REPL but do not select it
-      (display-buffer gambit-buffer
+      (display-buffer (funcall *gambit*)
                       (if-fn% 'display-buffer-pop-up-window nil
                               #'display-buffer-pop-up-window
                         t))
     ;; switch to REPL and select it
-    (pop-to-buffer gambit-buffer)
+    (pop-to-buffer (funcall *gambit*))
     (push-mark)
     (goto-char (point-max))))
 
 (defun gambit-compile-file (file)
-  "Compile a Scheme FILE in `gambit-buffer'."
+  "Compile a Scheme FILE in `*gambit*'."
   (interactive (comint-get-source
                 "Compile Scheme file: "
                 (let ((n (buffer-file-name)))
@@ -193,7 +207,7 @@ end of buffer, otherwise just popup the buffer."
   (gambit-switch-to-repl))
 
 (defun gambit-load-file (file)
-  "Load a Scheme FILE into `gambit-buffer'."
+  "Load a Scheme FILE into `*gambit*'."
   (interactive (comint-get-source
                 "Load Scheme file: "
                 (let ((n (buffer-file-name)))
@@ -207,21 +221,21 @@ end of buffer, otherwise just popup the buffer."
   (gambit-switch-to-repl))
 
 (defun gambit-send-region (start end)
-  "Send the current region to `gambit-buffer'."
+  "Send the current region to `*gambit*'."
   (interactive "r")
   (comint-send-region (gambit-proc) start end)
   (comint-send-string (gambit-proc) "\n")
   (gambit-switch-to-repl t))
 
 (defun gambit-send-last-sexp ()
-  "Send the previous sexp to `gambit-buffer'."
+  "Send the previous sexp to `*gambit*'."
   (interactive)
   (gambit-send-region (save-excursion (backward-sexp)
                                       (point))
                       (point)))
 
 (defun gambit-send-definition ()
-  "Send the current definition to `gambit-buffer'."
+  "Send the current definition to `*gambit*'."
   (interactive)
   (gambit-send-region (save-excursion (beginning-of-defun)
                                       (point))
@@ -285,7 +299,9 @@ interacting with the Gambit REPL is at your disposal.
   :keymap gambit-mode-map)
 
 
-(provide 'gambit-mode)
+
+
+(provide 'gambit)
 
 
 ;; end of file
