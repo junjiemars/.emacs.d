@@ -37,7 +37,7 @@
 (load-env-spec)
 
 
-(if-theme%
+(when-theme%
   
   (defmacro theme-changed-p (previous current)
     "Return (previous . current)"
@@ -52,7 +52,7 @@
                          (self-spec-> ,current :custom-theme-directory))))
        (cons nil t)))))
 
-(if-theme%
+(when-theme%
   
   (defmacro switch-theme! (previous current)
     `(let ((p->c (theme-changed-p ,previous ,current)))
@@ -77,7 +77,7 @@
 
   (when (and (self-spec->*env-spec :desktop :allowed)
              (file-exists-p (v-home% ".desktop/")))
-    (if-theme%
+    (when-theme%
       (when (consp (theme-changed-p
                     (self-spec-> *self-previous-env-spec* :theme)
                     (self-spec->*env-spec :theme)))
@@ -112,7 +112,7 @@
       (setq% desktop-modes-not-to-save
              (append '(tags-table-mode) m) 'desktop))
 
-    (if-theme%
+    (when-theme%
       (switch-theme! (self-spec-> *self-previous-env-spec* :theme)
                      (self-spec->*env-spec :theme)))
 

@@ -29,21 +29,21 @@
 
 ;; Theme and Font
 
-(defmacro if-theme% (&rest body)
+(defmacro when-theme% (&rest body)
   (declare (indent 0))
   `(when-graphic%
      (when-version% < 23
        ,@body)))
 
 
-(defmacro if-font% (&rest body)
+(defmacro when-font% (&rest body)
   (declare (indent 0))
   `(when-graphic%
      ,@body))
 
 ;; font supported
 
-(if-font%
+(when-font%
 
   (defmacro when-font-exist% (font &rest body)
     "If FONT exists then do BODY."
@@ -51,44 +51,44 @@
     `(when% (and ,font (find-font (font-spec :name ,font)))
        ,@body)))
 
-(if-font%
+(when-font%
   
   (defmacro self-default-font! (font)
     "Set default FONT in graphic mode."
     `(when-font-exist% ,font
-       (add-to-list 'default-frame-alist (cons 'font ,font))
-       (set-face-attribute 'default nil :font ,font))))
+                       (add-to-list 'default-frame-alist (cons 'font ,font))
+                       (set-face-attribute 'default nil :font ,font))))
 
-(if-font%
+(when-font%
   
   ;; Load default font
   (when (self-spec->*env-spec :font :allowed)
     (self-default-font! (self-spec->*env-spec :font :name))))
 
-(if-font%
+(when-font%
 
   (defmacro self-cjk-font! (name size)
     "Set CJK font's NAME and SIZE in graphic mode."
     `(when-font-exist% ,name
-       (when-fn% 'set-fontset-font nil
-         (mapc (lambda (c)
-                 (set-fontset-font (frame-parameter nil 'font)
-                                   c (font-spec :family ,name
-                                                :size ,size)))
-               '(han kana cjk-misc))))))
+                       (when-fn% 'set-fontset-font nil
+                         (mapc (lambda (c)
+                                 (set-fontset-font (frame-parameter nil 'font)
+                                                   c (font-spec :family ,name
+                                                                :size ,size)))
+                               '(han kana cjk-misc))))))
 
-(if-font%
+(when-font%
 
   ;; Load cjk font
   (when (self-spec->*env-spec :cjk-font :allowed)
     (self-cjk-font! (self-spec->*env-spec :cjk-font :name)
                     (self-spec->*env-spec :cjk-font :size))))
 
- ;; end of if-font%
+ ;; end of when-font%
 
 ;; theme supported
 
-(if-theme%
+(when-theme%
 
   (defmacro self-load-theme! (name &optional dir)
     "`load-theme' by NAME.
@@ -102,7 +102,7 @@ If DIR is nil then load the built-in `customize-themes' by NAME."
 
 
 ;; Load theme
-(if-theme%
+(when-theme%
 
   (when (and (self-spec->*env-spec :theme :allowed)
              (self-spec->*env-spec :theme :name))
@@ -130,7 +130,7 @@ If DIR is nil then load the built-in `customize-themes' by NAME."
      (t (self-load-theme! (self-spec->*env-spec :theme :name))))))
 
 
- ;; end of if-theme%
+ ;; end of when-theme%
 
 
 ;; end of file
