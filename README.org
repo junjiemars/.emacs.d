@@ -579,28 +579,34 @@ If =:allowed t=, =url-gateway-method= should be switch to =socks= when
 Emacs initializing. After Emacs initialization, you can =toggle-socks!=
 and no matter =:allowed= is =t= or =nil=.
 
-*** Utils
+*** Network Utils
 
+#+ATTR_HTML: :style text-align:left
 Emacs comes with a lots of wrappers(=net-utils.el=) around the common
 network utilities. Such as @@html:<kbd>@@M-x ping@@html:</kdb>@@ a
 host.  But =net-utils.el= has some inconveniences:
+
+#+REVEAL: split
 - If you want to =ping= with options you must set
 =ping-program-options= customizable variable.
 - IPv6 supporting: on Unix-like OS there are individual program for
   IPv6, such as =ping6=, but on Windows OS just one =ping= program and
   with =-6= option.
 
+#+ATTR_HTML: :style text-align:left
 I'd refined common interative commands around =net-utils=, and named
 those commands with =*= prefix. Using @@html:<kbd>@@C-u M-x
 *<command>@@html:</kdb>@@ you can set the options for that <command>.
 
+#+REVEAL: split
+#+ATTR_HTML: :style text-align:left
 The following interactive commands had been defined for Emacs22.1+
 whatever OS you using:
-- =*arp=
-- =*dig=
-- =*ifconfig=
-- =*ping=
-- =*traceroute=
+- @@html:<kbd>@@M-x *arp@@html:</kdb>@@
+- @@html:<kbd>@@M-x *dig@@html:</kbd>@@
+- @@html:<kbd>@@M-x *ifconfig@@html:</kbd>@@
+- @@html:<kbd>@@M-x *ping@@html:</kbd>@@
+- @@html:<kbd>@@M-x *traceroute@@html:</kbd>@@
 
 *** Browser
 
