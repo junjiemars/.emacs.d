@@ -373,6 +373,7 @@ Easy to switch themes, or try a new one.
 The theme's spec locate in =(emacs-home* "private/self-env-spec.el")=
 by default.
 
+#+REVEAL: split
 #+BEGIN_SRC emacs-lisp
 (def-self-env-spec
   :theme (list :name 'dracula
@@ -402,6 +403,7 @@ Using Emacs's builtin themes /tango-dark/ :
 
 #+ATTR_HTML: :style display:none
 /screenshots/:
+#+ATTR_HTML: :style display:none
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/default-theme-on-windows.png][default theme]]
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/dracula-theme-on-windows.png][dracula theme]]
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/tango-dark-theme-on-windows.png][tango-dark theme]]
@@ -411,12 +413,15 @@ Using Emacs's builtin themes /tango-dark/ :
     :CUSTOM_ID: font
     :END:
 
+#+ATTR_HTML: :style text-align:left
 Easy to swtich fonts and [[https://en.wikipedia.org/wiki/CJK_characters][CJK]] characters, or try a new one. The default
 encoding is [[https://en.wikipedia.org/wiki/UTF-8][UTF-8]].
 
+#+ATTR_HTML: :style text-align:left
 The font's spec locate in =(emacs-home* "private/self-env-spec.el")=
 by default and for GUI mode only.
 
+#+REVEAL: split
 #+BEGIN_SRC emacs-lisp
 (def-self-env-spec
   :font (list :name (if-platform% 'darwin
@@ -431,7 +436,9 @@ by default and for GUI mode only.
 - =:allowed= =t= enabled, =nil= disabled
 
 
+#+ATTR_HTML: :style display:none
 /screenshots/:
+#+ATTR_HTML: :style display:none
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/cjk-font-on-darwin.png][CJK font]]
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/monaco-font-on-darwin.png][Monaco font]]
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/consolas-font-on-windows.png][Consolas font]]
