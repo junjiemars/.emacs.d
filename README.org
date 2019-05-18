@@ -960,6 +960,7 @@ on ancient Emacs.
 	 :CUSTOM_ID: general-editing
 	 :END:
 
+#+ATTR_HTML: :style text-align:left
 Just introduces special More Resonable Emacs's editing features.
 
 ** Lisp programming
@@ -967,14 +968,18 @@ Just introduces special More Resonable Emacs's editing features.
 	 :CUSTOM_ID: lisp-programming
 	 :END:
 
+#+ATTR_HTML: :style text-align:left
 Lisp programming in Emacs already good enough, if [[https://www.emacswiki.org/emacs/ParEdit][ParEdit]] and
 [[https://github.com/Malabarba/aggressive-indent-mode][aggressive-indent-mode]] installed editing Lisp code more easy.
 
+#+ATTR_HTML: :style text-align:left
 [[https://github.com/slime/slime][slime]] is the best tool for Common Lisp programming. And for Scheme
 programming the [[http://www.nongnu.org/geiser/][Geiser]] the pretty good.
 
+#+REVEAL: split
 *** Editing
 
+#+REVEAL: split
 *** REPL
 
 ** C programming
@@ -982,9 +987,12 @@ programming the [[http://www.nongnu.org/geiser/][Geiser]] the pretty good.
 	 :CUSTOM_ID: c-programming
 	 :END:
 
+#+ATTR_HTML: :style text-align:left
 Now, we are in the cycle of editing, compiling, debugging.
 
+#+ATTR_HTML: :style display:none
 /screenshots/:
+#+ATTR_HTML: :style display:none
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-editing-on-darwin-gui.png][editing on Darwin]]
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-darwin.png][debugging via lldb on Darwin]]
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-linux.png][debugging via lldb on Ubuntu]]	
@@ -1000,6 +1008,7 @@ Now, we are in the cycle of editing, compiling, debugging.
 		 :CUSTOM_ID: c-programming-view-c-system-include
 		 :END:
 
+#+ATTR_HTML: :style text-align:left
 Like /vi/'s @@html:<kbd>@@gf@@html:</kbd>@@ command, you can using
 @@html:<kbd>@@C-c f i@@html:</kbd>@@ to open C system include file on
 local or remote in =view-mode= and supports /gcc/, /clang/, and
@@ -1010,12 +1019,15 @@ local or remote in =view-mode= and supports /gcc/, /clang/, and
 		 :CUSTOM_ID: c-programming-macro-expand
 		 :END:
 
+#+ATTR_HTML: :style text-align:left
 Mark the code that include a macro call then @@html:<kbd>@@C-c
 C-e@@html:</kbd>@@, you should see the expansion of the macro in
 =*Macroexpansion*=, whatever you are using /gcc/, /clang/ and /msvc/,
 locally or remotely.
 
+#+ATTR_HTML: :style display:none
 /screenshots/:
+#+ATTR_HTML: :style display:none
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-macro-expansion-on-windows.png][macro expansion for msvc]]
 
 *** Compiling
@@ -1023,14 +1035,18 @@ locally or remotely.
 		:CUSTOM_ID: c-programming-compiling
 		:END:
 
+#+ATTR_HTML: :style text-align:left
 Using @@html:<kbd>@@M-x compile@@html:</kbd>@@ to /build/ or /test/.
 
+#+ATTR_HTML: :style text-align:left
 For /msvc/ there are need tricks to works with Emacs, More Resonable
 Emacs will generate a /msvc/'s host environment =cc-env.bat= for you
 that make life easy and if [[https://github.com/junjiemars/nore][Nore]] already on your machine, now life is
 perfect.
 
+#+ATTR_HTML: :style display:none
 /screenshots/:
+#+ATTR_HTML: :style display:none
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-compile-on-windows.png][compile via msvc]]
 
 *** Debugging
@@ -1038,9 +1054,12 @@ perfect.
 		:CUSTOM_ID: c-programming-debugging
 		:END:
 
+#+ATTR_HTML: :style text-align:left
 [[https://www.gnu.org/software/gdb/][gdb]], [[https://lldb.llvm.org/][lldb]] and [[https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/][cdb]] had been perfect integrated within this kit.
 
+#+ATTR_HTML: :style display:none
 /screenshots/:
+#+ATTR_HTML: :style display:none
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-darwin.png][debugging via lldb on Darwin]]
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-linux.png][debugging via lldb on Ubuntu]]	
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-cdb-on-windows.png][debugging via cdb]]
