@@ -620,82 +620,59 @@ whatever OS you using:
     :CUSTOM_ID: package
     :END:
 
+#+ATTR_HTML: :style text-align:left
 Don't tell me [[https://github.com/jwiegley/use-package][use-package]], it's trying to redefine Emacs. Here you can
 find more simpler and faster way to implement almost functionalities
 that =use-pacakge= does.
 
+#+ATTR_HTML: :style text-align:left
 There are two types of packages: /basic/ (just like Emacs' builtin)
 and /user defined/. To disable /user defined/ packages in
 =(def-self-path-ref)=, to disable both /basic/ and /user defined/
 packages can be done in =(def-self-env-spec)=.
 
+#+REVEAL: split
 #+BEGIN_SRC emacs-lisp
 (def-self-env-spec
   :package (list :remove-unused nil
                  :allowed nil))
 #+END_SRC
 
-
+#+ATTR_HTML: :style text-align:left
 The /user defined/ package spec default locate in =(emacs-home*
 "private/self-package-spec.el")= by default.
 
+#+REVEAL: split
 #+BEGIN_SRC emacs-lisp
 (def-self-package-spec
   (list
    :cond t
-   :packages '(markdown-mode htmlize org-tree-slide))
+   :packages '(markdown-mode htmlize ox-reveal)
+   :compile `(,(compile-unit% (emacs-home* "config/use-org-autoload.el"))))
   (list
    :cond (executable-find% "latex")
    :packages '(auctex cdlatex))
-  (list
-   :cond (and (when-version% <= 24.4 t)
-              (executable-find% "java"))
-   :packages '(cider
-               clojure-mode
-               clojure-mode-extra-font-locking)
-   :compile `(,(compile-unit% (emacs-home* "config/use-cider.el") t)
-              ,(compile-unit% (emacs-home* "config/use-cider-autoload.el"))))
   (list
    :cond (and (when-version% <= 24.4 t)
               (executable-find% "docker"))
    :packages '(dockerfile-mode
                docker-tramp))
   (list
-   :cond (executable-find% "erlc")
-   :packages '(erlang))
-  (list
-   :cond (and (executable-find% "erlc")
-              (executable-find% "lfe"))
-   :packages '(lfe-mode)
-   :compile `(,(compile-unit% (emacs-home* "config/use-lfe-autoload.el"))))
-  (list
-   :cond (and (unless-graphic% t)
-              (unless-platform% 'darwin t)
-              (when-version% <= 25.1 t))
-   :packages '(ereader))
-  (list
-   :cond (and (when-version% <= 24.4)
-              (executable-find% "git"))
-   :packages '(magit)
-   :compile `(,(compile-unit% (emacs-home* "config/use-magit-autoload.el"))))
-  (list
-   :cond (and (when-version% <= 23.2 t)
-              (or (executable-find% "racket")
-                  (executable-find% "chicken")))
-   :packages '(geiser))
-  (list
    :cond (or (executable-find% "sbcl"))
    :packages '(slime)
-   :compile `(,(compile-unit% (emacs-home* "config/use-slime.el"))
+   :compile `(,(compile-unit% (emacs-home* "config/use-slime.el") t)
               ,(compile-unit% (emacs-home* "config/use-slime-autoload.el")))))
 #+END_SRC
 
+#+REVEAL: split
 - =:cond= decide whether to install =:packages= or compile =:compile=
 - =:packages= a list of package names or tar file names
 - =:compile= when installed packages, a list of files that should be
   compiled only or be loaded after been compiled
 
-You can use any =Elisp= functions after aboved keywords.
+#+REVEAL: split
+#+ATTR_HTML: :style text-align:left
+You can use any =Elisp= functions after the aboved keywords.
 - =when-version%= macro checking the version of current Emacs at
   compile time
 - =executable-find%= macro checking the exising of the /executable/ at
