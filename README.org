@@ -1225,8 +1225,8 @@ It's *self-documenting* and great, keep reading it frequently.
 - fill paragraph: @@html:<kbd>@@M q@@html:</kbd>@@
 - redo after undo: @@html:<kbd>@@C-g@@html:</kbd>@@ and then
 	@@html:<kbd>@@C-x u@@html:</kbd>@@
-- cancel: @@html:<kbd>@@C-]@@html:</kbd>@@, or
-	 @@html:<kbd>M-x top-level@@html:</kbd>@@
+- cancel: @@html:<kbd>@@C-]@@html:</kbd>@@, or @@html:<kbd>@@M-x
+  top-level@@html:</kbd>@@
 #+REVEAL: split
 - open new line before current: @@html:<kbd>@@C-o@@html:</kbd>@@
 - remove all but one empty line: @@html:<kbd>@@C-x C-o@@html:</kbd>@@
