@@ -58,12 +58,13 @@
     `(let ((p->c (theme-changed-p ,previous ,current)))
        (when (consp p->c)
          (if (and (car p->c) (not (cdr p->c)))
-             (progn
+             (when (self-spec-> ,previous :name)
                (self-load-theme!
                 (self-spec-> ,previous :name)
                 (self-spec-> ,previous :custom-theme-directory))
                (disable-theme (self-spec-> ,previous :name)))
-           (enable-theme (self-spec-> ,current :name)))
+           (when (self-spec-> ,current :name)
+             (enable-theme (self-spec-> ,current :name))))
          (setq% desktop-restore-frames t 'desktop)))))
 
 
