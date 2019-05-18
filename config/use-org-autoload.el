@@ -13,7 +13,8 @@
 
   ;; load `ox-reveal' if it had been installed.
   (if-feature-ox-reveal%
-    (require 'ox-reveal)))
+    (require 'ox-reveal)
+    (setq org-reveal-root (expand-file-name "~/.reveal.js/"))))
 
 
 

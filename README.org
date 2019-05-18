@@ -1,7 +1,13 @@
 #+TITLE: More Reasonable Emacs
 #+AUTHOR: Junjie Mars
 #+STARTUP: overview
-#+OPTIONS: toc:2
+#+OPTIONS: num:nil toc:nil
+#+REVEAL_HLEVEL: 2
+#+REVEAL_THEME: moon
+#+REVEAL_TRANS: cube
+#+REVEAL_MARGIN: 0.1
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.5
 
 * Quick start
   :PROPERTIES:
