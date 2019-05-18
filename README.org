@@ -611,7 +611,7 @@ whatever OS you using:
 *** Browser
 
 - Using @@html:<kbd>@@M-x toggle-browser!@@html:</kdb>@@ to switch
-external or internal browser.
+  external or internal browser.
 - Find symbol, word, whatever you like via web search engine:
   @@html:<kdb>@@c-c f w@@html:</kdb>@@
 
