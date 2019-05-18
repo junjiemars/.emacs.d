@@ -9,7 +9,7 @@
 #+REVEAL_MIN_SCALE: 0.2
 #+REVEAL_MAX_SCALE: 1.5
 #+REVEAL_SLIDE_NUMBER: h
-
+#+OPTIONS: org_reveal_center:nil
 
 * Quick start
   :PROPERTIES:
@@ -1384,15 +1384,20 @@ automatically from one Emacs session to the next.
    :CUSTOM_ID: remote
    :END:
 
-It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]]
+#+ATTR_HTML: :style text-align:left
+It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]].
 
-- non-sudo: @@html:<kbd>@@C-x C-f /ssh:user@host:/path/to/file@@html:</kbd>@@, such as =user@host= or =user= in .ssh/config entries.
-
-- sudo: @@html:<kbd>@@C-x C-f /ssh:user|sudo:localhost:/path/to/file@@html:</kbd>@@, such as =user@localhost=, here =localhost= means remote host.
-
-- eshell remote: @@html:<kbd>@@cd /ssh:user@host:/path/to/file@@html:</kbd>@@
-
-- on Windows use =~/.ssh/config=: use =/sshx:= instead, such as  @@html:<kbd>@@/sshx:user@host:/path/to/file@@html:</kbd>@@
+- non-sudo: @@html:<kbd>@@C-x C-f
+  /ssh:user@host:/path/to/file@@html:</kbd>@@, such as =user@host= or
+  =user= in .ssh/config entries.
+- sudo: @@html:<kbd>@@C-x C-f
+  /ssh:user|sudo:localhost:/path/to/file@@html:</kbd>@@, such as
+  =user@localhost=, here =localhost= means remote host.
+#+REVEAL: split
+- eshell remote: @@html:<kbd>@@cd
+  /ssh:user@host:/path/to/file@@html:</kbd>@@
+- on Windows use =~/.ssh/config=: use =/sshx:= instead, such as
+  @@html:<kbd>@@/sshx:user@host:/path/to/file@@html:</kbd>@@
 	
 ** LaTex Requirements
    :PROPERTIES:
