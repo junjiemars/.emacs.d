@@ -685,9 +685,11 @@ You can use any =Elisp= functions after the aboved keywords.
     :CUSTOM_ID: indent
     :END:
 
+#+ATTR_HTML: :style text-align:left
 Avoiding a war. If /whitespace/ causes some trouble, you can swith to
 @@html:<kbd>@@M-x whitespace-mode@@html:</kbd>@@ to find out.
 
+#+REVEAL: split
 #+BEGIN_SRC emacs-lisp
 (def-self-env-spec
   :edit (list :tab-width 2
