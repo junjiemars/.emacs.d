@@ -1089,6 +1089,7 @@ perfect.
 	:CUSTOM_ID: mnemonic
 	:END:
 
+#+ATTR_HTML: :style display:none
 - [[#emacs-documents][Emacs Documents]]
 - [[#motion][Motion]]
 - [[#interaction][Interaction]]
@@ -1113,6 +1114,7 @@ perfect.
    :CUSTOM_ID: emacs-documents
    :END:
 
+#+ATTR_HTML: :style text-align:left
 It's *self-documenting* and great, keep reading it frequently.
 
 - Tutorial: @@html:<kbd>@@C-h-t@@html:</kbd>@@
@@ -1125,28 +1127,34 @@ It's *self-documenting* and great, keep reading it frequently.
   documentation of current buffer
 - Where is command: @@html:<kbd>@@C-h w@@html:</kbd>@@ which keystrokes
   binding to a given command
+#+REVEAL: split
 - Function: @@html:<kbd>@@C-h-f@@html:</kbd>@@ display documentation of
   the given function
 - Variable: @@html:<kbd>@@C-h-v@@html:</kbd>@@ display documentation of
   the given variable
 - Keybinding: @@html:<kbd>@@C-h-k@@html:</kbd>@@ display documentation
   of the function invoked by the given keystrokes
+- Keybinding briefly: @@html:<kbd>@@C-h c@@html:</kbd>@@, which command
+  for given keystroke
+#+REVEAL: split
 - Prefix keybindings: press prefix keys such as
   @@html:<kbd>@@C-c@@html:</kbd>@@ then
   @@html:<kbd>@@C-h@@html:</kbd>@@ to see all key bindings for given
   prefix keystrokes
-- Keybinding briefly: @@html:<kbd>@@C-h c@@html:</kbd>@@, which command
-  for given keystroke
+#+REVEAL: split
 - Message: @@html:<kbd>@@C-h e@@html:</kbd>@@ see the logging of echo
   area message
 - Man: @@html:<kbd>@@M-x man@@html:</kbd>@@ view UNIX manual page
 - Woman: @@html:<kbd>@@M-x woman@@html:</kbd>@@ view UNIX manual page
   without =man= program
+#+REVEAL: split
 - Coding system: @@html:<kbd>@@C-h C@@html:</kbd>@@ describe coding
   system
 - Colors: @@html:<kbd>@@M-x list-colors-display@@html:</kbd>@@ display
   names of defined colors and show what they look like
-- Keystrokes: @@html:<kbd>@@C-h l@@html:</kbd>@@ display last 100 input keystrokes
+- Syntax: @@html:<kbd>@@C-h s@@html:</kbd>@@ describe syntax
+- Keystrokes: @@html:<kbd>@@C-h l@@html:</kbd>@@ display last 100
+  input keystrokes
 
 ** Motion
    :PROPERTIES:
@@ -1188,24 +1196,30 @@ It's *self-documenting* and great, keep reading it frequently.
 - delete indentation to join line to previous line:
 	@@html:<kbd>@@M-^@@html:</kbd>@@
 - join next line: @@html:<kbd>@@C-u 1 M-^@@html:</kbd>@@
+#+REVEAL: split
 - dynamic abbreviation: @@html:<kbd>@@M-/@@html:</kbd>@@
 - query replace: @@html:<kbd>@@M-%@@html:</kbd>@@
 - upcase region: @@html:<kbd>@@C-x C-u@@html:</kbd>@@
 - downcase region: @@html:<kbd>@@C-x C-l@@html:</kbd>@@
+#+REVEAL: split
 - transpose characters: @@html:<kbd>@@C-t@@html:</kbd>@@
 - transpose words: @@html:<kbd>@@M-t@@html:</kbd>@@
 - transpose lines: @@html:<kbd>@@C-x C-t@@html:</kbd>@@
-- insert parentheses: @@html:<kbd>@@M-(@@html:</kbd>@@, wrap selection in parentheses
+#+REVEAL: split
+- insert parentheses: @@html:<kbd>@@M-(@@html:</kbd>@@, wrap selection
+  in parentheses
 - toggle read-only mode: @@html:<kbd>@@C-x C-q@@html:</kbd>@@
 - toggle input method: @@html:<kbd>@@C-\@@html:</kbd>@@
 - set input method: @@html:<kbd>@@C-x RET C-\@@html:</kbd>@@
 - describe current input method: @@html:<kbd>@@C-h I@@html:</kbd>@@
+#+REVEAL: split
 - insert char: @@html:<kbd>@@C-x 8 RET@@html:</kbd>@@ GREEK SMALL LETTER LAMBDA
 - what cursor position: @@html:<kbd>@@C-x =@@html:</kbd>@@	
 - describe char: @@html:<kbd>@@C-u C-x =@@html:</kbd>@@
 - quoted insert: @@html:<kbd>@@C-q@@html:</kbd>@@, such as page break
   @@html:<kbd>@@C-q C-l@@html:</kbd>@@, use @@html:<kbd>@@C-x [@@html:</kbd>@@ to backward or @@html:<kbd>@@C-x ]@@html:</kbd>@@ to forward
 - check unmatched parentheses: @@html:<kbd>@@M-x check-parens@@html:</kbd>@@
+#+REVEAL: split
 - tab to space: @@html:<kbd>@@M-x untabify@@html:</kbd>@@
 - space to tab: @@html:<kbd>@@M-x tabify@@html:</kbd>@@
 - fill paragraph: @@html:<kbd>@@M q@@html:</kbd>@@
@@ -1213,6 +1227,7 @@ It's *self-documenting* and great, keep reading it frequently.
 	@@html:<kbd>@@C-x u@@html:</kbd>@@
 - cancel: @@html:<kbd>@@C-]@@html:</kbd>@@, or
 	 @@html:<kbd>M-x top-level@@html:</kbd>@@
+#+REVEAL: split
 - open new line before current: @@html:<kbd>@@C-o@@html:</kbd>@@
 - remove all but one empty line: @@html:<kbd>@@C-x C-o@@html:</kbd>@@
 - delete entire line: @@html:<kbd>@@C-S-DEL@@html:</kbd>@@
