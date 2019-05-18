@@ -21,7 +21,6 @@ A lonely fisherman afloat
 Is fishing snow in lonely boat
 #+end_verse
 
-
 * Quote
 
 #+begin_quote

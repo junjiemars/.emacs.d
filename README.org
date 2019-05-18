@@ -6,8 +6,10 @@
 #+REVEAL_THEME: moon
 #+REVEAL_TRANS: cube
 #+REVEAL_MARGIN: 0.1
-#+REVEAL_MIN_SCALE: 0.5
-#+REVEAL_MAX_SCALE: 2.5
+#+REVEAL_MIN_SCALE: 0.2
+#+REVEAL_MAX_SCALE: 1.5
+#+REVEAL_SLIDE_NUMBER: h
+
 
 * Quick start
   :PROPERTIES:
@@ -15,16 +17,16 @@
   :END:
 
 	[[https://api.travis-ci.org/junjiemars/.emacs.d][https://api.travis-ci.org/junjiemars/.emacs.d.svg?branch=master]]
-	
 
+#+ATTR_HTML: :style text-align:left
 It's works on Emacs version 22.1.1+ , provides more reasonable style:
 how to organize Elisp code perfectly. You can run it on any
 environment Emacs itself runs on: GUI or Terminal, even you can run
 multiple Emacs instances with different version on the same machine
 and at the same time.
 
+#+REVEAL: split
 - clone More Reasonable Emacs from github
-
 #+BEGIN_SRC sh
 git clone --depth=1 https://github.com/junjiemars/.emacs.d.git ~/.emacs.d
 #+END_SRC
@@ -32,8 +34,10 @@ git clone --depth=1 https://github.com/junjiemars/.emacs.d.git ~/.emacs.d
 - open Emacs, after Emacs compile all elisp files, then reopen Emacs
 - want more functionalities see [[#cooking][Cooking]] section
 
+#+ATTR_HTML: :style text-align:left
 One more thing, it's best to remind you: take care, it's super fast.
 
+#+ATTR_HTML: :style display:none
 - [[#story][Story]]
 - [[#cooking][Cooking]]
 - [[#programming][Programming]]
@@ -45,6 +49,7 @@ One more thing, it's best to remind you: take care, it's super fast.
   :CUSTOM_ID: story
   :END:
 
+#+ATTR_HTML: :style text-align:left
 I'm a nerd with Emacs, it's awesome if I can [[http://edward.oconnor.cx/2009/07/learn-emacs-in-ten-years][Learn Emacs in less then
 Ten Years]].  So, I decided to start from Level One not the Level Zero
 after read Emacs' tutorial (C-h t). Emacs is the most powerful editor
@@ -52,15 +57,20 @@ on the world there is no *one of*, it's programmable, elegant and
 /self-documenting/, so you can start from Level Zero if you had time
 may be less than 10 years to read and try Emacs.
 
+#+REVEAL: split
+#+ATTR_HTML: :style text-align:left
 After falling in love with [[https://en.wikipedia.org/wiki/Lisp_(programming_language)][Lisp]], I know it's the time to make Emacs
 being a part of my body and mind, not just open a file, navigating,
 editing, and save it. The Level One of mine start from [[https://github.com/flyingmachine/emacs-for-clojure][this is a
 Clojure-friendly emacs config]], and [[https://github.com/purcell/emacs.d][A reasonable Emacs config]]. But,
 those ones neither can suit for my daily use on different machines.
 
+#+REVEAL: split
+#+ATTR_HTML: :style text-align:left
 The More Reasonable Emacs strives to be fast, stable and hacker
 friendly, which can be run on anywhere where Emacs runs.
 
+#+ATTR_HTML: :style display:none
 - [[#highlights][Highlights]]
 - [[#requirements][Requirements]]
 - [[#where][Where]]
@@ -68,9 +78,11 @@ friendly, which can be run on anywhere where Emacs runs.
 - [[#install][Install]]
 - [[#organization][Organization]]
 
-
+#+REVEAL: split
+#+ATTR_HTML: :style text-align:left
 Now, let's start from the Level Two. And one more thing: teach
-yourself some little Elisp (M-x info).
+yourself some little Elisp (@@html:<kbd>@@M-x i d m
+Elisp@@html:</kbd>@@).
 
 ** Highlights
    :PROPERTIES:
@@ -122,6 +134,7 @@ yourself some little Elisp (M-x info).
    :CUSTOM_ID: install
    :END:
 
+#+ATTR_HTML: :style text-align:left
 Just one thing you need to do, clone it (just <500KB) to your =HOME=
 directory:
 
@@ -129,14 +142,17 @@ directory:
 git clone --depth=1 https://github.com/junjiemars/.emacs.d.git ~/.emacs.d
 #+END_SRC
 
+#+REVEAL: split
+#+ATTR_HTML: :style text-align:left
 First run More Reasonable Emacs, it should automatically do: 
 - byte compile elisp source files. 
 - install packages, if you allow it.
 
-
+#+ATTR_HTML: :style text-align:left
 After first run More Reasonable Emacs, exit and then /reopen/ Emacs.
 
-
+#+REVEAL: split
+#+ATTR_HTML: :style text-align:left
 On Windows, if you'd [[https://git-scm.com/downloads][Git-Bash]] installed but no Emacs, you are lucky, a
 one line code will do it all for you and more: fix some Emacs' issue
 for you, and you don't need run =git clone ...=,
@@ -147,6 +163,7 @@ instead,
 HAS_EMACS=1 bash <(curl https://raw.githubusercontent.com/junjiemars/kit/master/win/install-win-kits.sh)
 #+END_SRC
 
+#+ATTR_HTML: :style text-align:left
 Now, it will works perfectly, but if you want to more control and more
 features, such as themes, packages, and fonts etc., see next section:
 [[#cooking][cooking]]
@@ -156,11 +173,14 @@ features, such as themes, packages, and fonts etc., see next section:
    :CUSTOM_ID: organization
    :END:
 
+#+ATTR_HTML: :style text-align:left
 Annotated your Emacs HOME as =(emacs-home*)=.
 
+#+ATTR_HTML: :style text-align:left
 Your private configuration directory at =(emacs-home* "private/")=.
 All things under it you can rename, move, delete.
 
+#+ATTR_HTML: :style text-align:left
 All Elisp files should be compiled, if you meet some trouble, a magic
 interactive function =(clean-compiled-files)= should help, run it and
 reopen the Emacs.
@@ -184,6 +204,8 @@ reopen the Emacs.
     └── theme (comment "themes directory")
 #+END_EXAMPLE
 
+#+REVEAL: split
+#+ATTR_HTML: :style text-align:left
 Locate your spec via =(emacs-home* "private/self-path.el")=.
 
 #+BEGIN_SRC emacs-lisp
@@ -201,7 +223,10 @@ Locate your spec via =(emacs-home* "private/self-path.el")=.
       
 #+END_SRC
 
-Directories with =.= prefix are for the module that need store configuration or cached files.
+#+REVEAL: split
+#+ATTR_HTML: :style text-align:left
+Directories with =.= /prefix/ are for the modules that need store
+configuration or cached files.
 
 #+BEGIN_EXAMPLE
     (emacs-home*)
@@ -230,11 +255,13 @@ Directories with =.= prefix are for the module that need store configuration or 
 
 *** Naming
 
-Introduce rules of naming /files/ and /functions/ 
+#+REVAL: split
+#+ATTR_HTML: :style text-align:left
+Introduce rules of naming /files/ and /functions/.
 
-**** Files
+#+REVEAL: split
+**** Core Files Naming: single word and simple name.
 
-- core: single word and simple name
 #+BEGIN_EXAMPLE
     (emacs-home* "config/")
     ├── autoload.el
@@ -245,13 +272,21 @@ Introduce rules of naming /files/ and /functions/
     ├── shells.el
     └── strap.el
 #+END_EXAMPLE
-- extension for Emacs builtin packages: =<package-name>s=
+
+#+REVEAL: split
+**** Extension Naming
+
+#+REVEAL: split
+- /extension/ for Emacs builtin packages: =<package-name>s.el=
 #+BEGIN_EXAMPLE
     (emacs-home* "config/")
     ├── eshells.el
     └── tags.el
 #+END_EXAMPLE
-- autoload extension for Emacs builtin packages: =on-<package-name>-autoload.el=
+
+#+REVEAL: split
+- /autoload extension/ for Emacs builtin packages:
+  =on-<package-name>-autoload.el=
 #+BEGIN_EXAMPLE
     (emacs-home* "config/")
     ├── on-compile-autoload.el
@@ -264,7 +299,10 @@ Introduce rules of naming /files/ and /functions/
     ├── on-lisp-autoload.el
     └── on-semantic-autoload.el
 #+END_EXAMPLE
-- extension for non Emacs builtin packages: =use-<package-name>-autoload.el=
+
+#+REVEAL: split
+- /extension/ for /non/ Emacs builtin packages:
+  =use-<package-name>-autoload.el=
 #+BEGIN_EXAMPLE
     (emacs-home* "config/")
     ├── use-cider-autoload.el
@@ -276,7 +314,10 @@ Introduce rules of naming /files/ and /functions/
     ├── use-slime-autoload.el
     └── use-slime.el
 #+END_EXAMPLE
-- samples: =samples-self-*.el=
+
+#+REVEAL: split
+**** Sample Files Naming: =sample-self-*.el=
+
 #+BEGIN_EXAMPLE
     (emacs-home* "config/")
     ├── sample-self-env-spec.el
@@ -286,8 +327,10 @@ Introduce rules of naming /files/ and /functions/
     └── sample-self-prologue.el
 #+END_EXAMPLE
 
-**** Functions
+#+REVEAL: split
+**** Functions Naming
 
+#+REVEAL: split
 - *v-* prefix: functions or macros for versioned directories, such as
   =(v-home*)=
 - *_* prefix: functions or macros only existing in compile-time, such
@@ -305,6 +348,7 @@ Introduce rules of naming /files/ and /functions/
    :CUSTOM_ID: cooking
    :END:
 
+#+ATTR_HTML: :style display:none
 - [[#theme][Theme]]
 - [[#font][Font]]
 - [[#cooking-shell][Shell]]
@@ -322,8 +366,10 @@ Introduce rules of naming /files/ and /functions/
     :CUSTOM_ID: theme
     :END:
 
+#+ATTR_HTML: :style text-align:left
 Easy to switch themes, or try a new one.
 
+#+ATTR_HTML: :style text-align:left
 The theme's spec locate in =(emacs-home* "private/self-env-spec.el")=
 by default.
 
@@ -335,13 +381,15 @@ by default.
                :allowed t))
 #+END_SRC
 
+#+REVEAL: split
 - =:name= name of theme, does not need /-theme.el/ suffix
 - =:custom-theme-directory= where custom theme files located
 - =:compile= =t= compile theme, compiled theme more smooth and more faster
 	if you had already confirmed the theme is secure.
 - =:allowed= =t= enabled, =nil= disabled
 
-
+#+REVEAL: split
+#+ATTR_HTML: :style text-align:left
 Using Emacs's builtin themes /tango-dark/ :
 
 #+BEGIN_SRC emacs-lisp
@@ -352,7 +400,7 @@ Using Emacs's builtin themes /tango-dark/ :
                :allowed t))
 #+END_SRC
 
-
+#+ATTR_HTML: :style display:none
 /screenshots/:
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/default-theme-on-windows.png][default theme]]
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/dracula-theme-on-windows.png][dracula theme]]
