@@ -450,16 +450,20 @@ by default and for GUI mode only.
 
 *** shell
 
+#+ATTR_HTML: :style text-align:left
 Suppport any =SHELL=, copying environment variables into Emacs
 environment.
 
+#+ATTR_HTML: :style text-align:left
 [[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]] has a poor implementation for the same
 functionalities, it is unstable and slow. But here, We had a better
 one.
 
+#+ATTR_HTML: :style text-align:left
 The shell spec locate in =(emacs-home* "private/self-env-spec.el")= by
-default
+default.
 
+#+REVEAL: split
 #+BEGIN_SRC emacs-lisp
 :shell (list :env-vars `("JAVA_HOME"
                          "PYTHONPATH"
@@ -475,6 +479,7 @@ default
              :allowed nil)
 #+END_SRC
 
+#+REVEAL: split
 - =:env-vars= copy what environment variables from shell to Emacs
 - =:options= a list of shell's options
 - =:exec-path= copy =$PATH= or =%PATH%= to =exec-path=
