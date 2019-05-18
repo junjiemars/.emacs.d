@@ -552,11 +552,14 @@ by default.
 
 *** Socks
 
+#+ATTR_HTML: :style text-align:left
 Using socks proxy when installing packages or browsing web pages.
 
+#+ATTR_HTML: :style text-align:left
 The socks spec locate in =(emacs-home* "private/self-env-spec.el")= by
 default.
 
+#+REVEAL: split
 #+BEGIN_SRC emacs-lisp
 (def-self-env-spec
   :socks (list :port 32000
@@ -565,11 +568,13 @@ default.
                :allowed nil))
 #+END_SRC
 
+#+REVEAL: split
 - =:port= the port of socks proxy server
 - =:server= the address of socks proxy server
 - =:version= socks version
 - =:allowed= =t= enabled, =nil= disabled
 
+#+ATTR_HTML: :style text-align:left
 If =:allowed t=, =url-gateway-method= should be switch to =socks= when
 Emacs initializing. After Emacs initialization, you can =toggle-socks!=
 and no matter =:allowed= is =t= or =nil=.
