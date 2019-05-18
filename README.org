@@ -1442,7 +1442,7 @@ aaaa 92 3
 aaaa 86 6
 #+END_EXAMPLE
 
-#+ATTR_HTML: :style display:none
+#+ATTR_HTML: :style text-align:left
 Insert 5 lines with prefix =aaaa= random-number =[0-100)=
 random-number =[0-10)=, =eval-expression=
 @@html:<kbd>@@M-:@@html:</kbd>@@, then type the following code in
