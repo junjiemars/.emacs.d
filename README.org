@@ -810,11 +810,13 @@ For =.rar= archive, emacs really sucks.
 	 :PROPERTIES:
 	 :CUSTOM_ID: edit-mark
 	 :END:
-	 
+
+#+ATTR_HTML: :style text-align:left	 
 Provides the abilities to mark /symbol/, /filename/ and /line/ in
 current buffer then you can @@html:<kbd>@@M-w@@html:</kbd>@@ the
 marked part.
 
+#+ATTR_HTML: :style text-align:left
 Using =mark-list@= to mark Lisp /sexp/ or C /block/. And using
 =mark-defun@= to mark whole function definition. You can do those
 things for other major modes not only Elisp.
@@ -831,11 +833,13 @@ things for other major modes not only Elisp.
 	 :CUSTOM_ID: edit-tags
 	 :END:
 
+#+ATTR_HTML: :style text-align:left
 Prefer =etags= program, because it works well on varied platforms. In
 =(emacs-home* "config/tags.el")=, there are some handy functions to
 create the tags for =Elisp= or =C= source code, such as
 =make-emacs-source-tags=, =make-system-c-tags=, and =mount-tags=.
 
+#+ATTR_HTML: :style text-align:left
 More Reasonable Emacs also supports [[http://ctags.sourceforge.net/][Exuberant Ctags]].
 
 *** Clipboard
@@ -843,6 +847,7 @@ More Reasonable Emacs also supports [[http://ctags.sourceforge.net/][Exuberant C
 	 :CUSTOM_ID: edit-clipboard
 	 :END:
 
+#+ATTR_HTML: :style text-align:left
 In terminal, Emacs can not /copy to/ or /paste from/ system clipboard
 when on Darwin or Linux. For such cases, we need external programs to
 help us do the job. Now, More Reasonable Emacs integrates this
@@ -855,11 +860,14 @@ functionalities, so we can use natural keys (such as
 	 :CUSTOM_ID: edit-isearch
 	 :END:
 
+#+ATTR_HTML: :style text-align:left
 There are no uniformed [[https://www.emacswiki.org/emacs/IncrementalSearch][isearch]] functionalites among in
 =isearch-forward=, =isearch-forward-symbol-at-point= and
 =isearch-backward=. Now, in More Reasonable Emacs those functionalites
 unified to two functions: =isearch-forward*= and =isearch-backward*=.
 
+#+REVEAL: split
+#+ATTR_HTML: :style text-align:left
 In More Reasonable Emacs, we can search the text of activated
  *region*, the *symbol* at point forward or backward. By default,
 @@html:<kbd>@@C-s@@html:</kbd>@@ and @@html:<kbd>@@C-r@@html:</kbd>@@
@@ -870,6 +878,7 @@ then @@html:<kbd>@@C-s@@html:</kbd>@@ and
 @@html:<kbd>@@C-r@@html:</kbd>@@ will search the activated region
 forward or backward.
 
+#+REVEAL: split
 - @@html:<kbd>@@C-s@@html:</kbd>@@ do incremental search region or
   symbol at point by default. If there are no activated region or
   symbol at point do raw incremental search. If @@html:<kbd>@@C-u
@@ -884,10 +893,12 @@ forward or backward.
 	 :CUSTOM_ID: edit-open-line
 	 :END:
 
+#+ATTR_HTML: :style text-align:left
 Emulates /vi/'s *o* and *O* command in Emacs, the built-in one
 =open-line= or =split-line= do not indent accordingly the current
 line. See [[https://www.emacswiki.org/emacs/OpenNextLine][Open Next Line]].
 
+#+REVEAL: split
 - @@html:<kbd>@@C-o@@html:</kbd>@@ =open-next-line=
 - @@html:<kbd>@@C-M-o@@html:</kbd>@@ =open-previous-line=
 - @@html:<kbd>@@M-x toggle-open-line-indent!@@html:</kbd>@@
@@ -897,10 +908,12 @@ line. See [[https://www.emacswiki.org/emacs/OpenNextLine][Open Next Line]].
 	 :CUSTOM_ID: keys
 	 :END:
 
+#+ATTR_HTML: :style text-align:left
 Obey the defaults of Emacs' keymap.
 
 *** Global keys
 
+#+ATTR_HTML: :style text-align:left
 Global for all Emacs' version.
 
 - @@html:<kbd>@@M-/@@html:</kbd>@@ =hippie-expand=
@@ -913,11 +926,13 @@ Global for all Emacs' version.
 - @@html:<kbd>@@C-c m l@@html:</kbd>@@: =mark-line@=
 - @@html:<kbd>@@C-c m f@@html:</kbd>@@: =mark-filename@=
 - @@html:<kbd>@@C-c m d@@html:</kbd>@@: =mark-defun@=
+#+REVEAL: split
 - @@html:<kbd>@@C-s@@html:</kbd>@@: =isearch-forward*=
 - @@html:<kbd>@@C-r@@html:</kbd>@@: =isearch-backward*=
 
 *** Compatible keys
 
+#+ATTR_HTML: :style text-align:left
 Compatibled for ancient Emacs versions, compatible keys may not
 avaiabled on ancient Emacs.
 		
@@ -929,6 +944,7 @@ avaiabled on ancient Emacs.
 
 *** Featured keys
 
+#+ATTR_HTML: :style text-align:left
 The features provided by 3rd packages, featured keys may not avaiabled
 on ancient Emacs.
 
