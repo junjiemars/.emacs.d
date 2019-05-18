@@ -14,13 +14,10 @@
 
 
 ;; (require 'financial)
-;; (require 'shells)
-;; (require 'eshells)
-;; (require 'pythons)
-
+;; (require 'tags)
 
 ;; eww as default browser
-(if-feature-eww% (toggle-browser! t))
+(comment (if-feature-eww% (toggle-browser! t)))
 
 
 (with-eval-after-load 'org

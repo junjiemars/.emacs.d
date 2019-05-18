@@ -11,7 +11,7 @@
 (def-self-package-spec
   (list
    :cond t
-   :packages '(markdown-mode htmlize org-tree-slide))
+   :packages '(markdown-mode htmlize ox-reveal))
   (list
    :cond (executable-find% "latex")
    :packages '(auctex cdlatex))
