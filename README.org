@@ -706,37 +706,45 @@ Avoiding a war. If /whitespace/ causes some trouble, you can swith to
     :CUSTOM_ID: file
     :END:
 
+#+ATTR_HTML: :style text-align:left
 Using =dired= as a File Manager is awesome, same experiences on
 Windows, Darwin and Linux.
 
-
 *** ls Program
 
+#+ATTR_HTML: :style text-align:left
 For Windows, there are no built-in =ls= program, but you can install
 GNU's =ls= via [[https://git-scm.com/downloads][Git-Bash]].
 
+#+ATTR_HTML: :style text-align:left
 For Darwin, let =dired= don't do stupid things.
 
-
+#+ATTR_HTML: :style display:none
 /screenshots/:
+#+ATTR_HTML: :style display:none
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/ido-dired-windows-gnu-ls.png][ido-dired]]
 
 *** find Program
 
+#+ATTR_HTML: :style text-align:left
 On Windows, if GNU's =find= has already in your disk, and let Windows
 stupid =find= or =findstr= program go away.  Don't =setq=
 =find-program= on Windows, because =dired= can not differ the cases
 between local and remote.
 
+#+ATTR_HTML: :style text-align:left
 Now, on Windows you can use @@html:<kbd>@@M-x find-dired@@html:</kbd>@@
 or @@html:<kbd>@@M-x find-name-dired@@html:</kbd>@@
 
+#+ATTR_HTML: :style display:none
 /screenshots/:
+#+ATTR_HTML: :style display:none
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/find-name-dired-on-windows.png][find-name-dired]]
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/find-name-dired-tramp-on-windows.png][find-name-dired via tramp]]
 
 *** compress Program
 
+#+ATTR_HTML: :style text-align:left
 On Windows, there are no builtin =zip/unzip= program, but Emacs ship
 with =minizip= program.  Although =minizip= without /recursive/
 functionalities, but do some tricks with =minizip=, we can zip files
@@ -744,18 +752,25 @@ and directories with =minizip=, even export =org= to =odt=
 [[https://en.wikipedia.org/wiki/OpenDocument][OpenDocument]]. And more [[https://www.7-zip.org/download.html][7-Zip standalone command version also be
 supported]].
 
+#+REVEAL: split
+#+ATTR_HTML: :style text-align:left
 On Windows, there are logical bugs in =dired-aux.el=, We can not using
 =Z= key compress or uncompress file to or from =.gz= or =.7z=. The
 good news: if =gunzip= or =7za= installed we can do it now.
 
+#+ATTR_HTML: :style text-align:left
 You can using @@html:<kbd>c@@html:</kbd>@@ in =dired mode= compress to
 =*.gz=, =*.7z= or =*.zip=. For some ancient Emacs24-, @@html:<kbd>@@!
 zip x.zip ?@@html:</kbd>@@ to zip.
 
+#+REVEAL: split
+#+ATTR_HTML: :style text-align:left
 It's headache when =default-file-name-coding-system= not equal with
 =locale-coding-system= specifically on Windows. Even view archived
 file in =arc-mode=, will display wrong encoded file names.
 
+#+REVEAL: split
+#+ATTR_HTML: :style text-align:left
 On Windows, there are some encoding issues when
 ~default-file-name-coding-system~ not equal ~locale-coding-system~.
 - display non-unicode encoded directory name or file name;
@@ -763,8 +778,11 @@ On Windows, there are some encoding issues when
 - compress the files with with ~locale-coding-system~ filenames;
 - ~dired-do-shell-command~ or ~dired-do-async-shell-command~;
 
+#+REVEAL: split
+#+ATTR_HTML: :style text-align:left
 The good news is all those issues had gone in this kit.
 
+#+ATTR_HTML: :style text-align:left
 For =.rar= archive, emacs really sucks. 
 - on Emacs 23.3.1, using =unrar-free= in =archive-rar-summarize=
   function, but on Emacs 26.1 using =lsar=, and those all had been
@@ -772,7 +790,9 @@ For =.rar= archive, emacs really sucks.
 - =7z l= output is not compatible with =lsar= and =unrar=.
 
 
+#+ATTR_HTML: :style display:none
 /screenshots/:
+#+ATTR_HTML: :style display:none
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/dired-do-compress-to-zip-on-windows.png][dired-do-compress-to: zip]]
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/dired-do-compress-to-7z-on-windows.png][dired-do-compress-to: 7z]]
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/archive-summarize-files-zip-on-windows.png][archive-summarize-files: zip]]
