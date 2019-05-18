@@ -1125,8 +1125,6 @@ It's *self-documenting* and great, keep reading it frequently.
 - Info of mode: @@html:<kbd>@@C-h i d m @@html:</kbd>@@
 - Mode: @@html:<kbd>@@C-h-m@@html:</kbd>@@ see all the key bindings and
   documentation of current buffer
-- Where is command: @@html:<kbd>@@C-h w@@html:</kbd>@@ which keystrokes
-  binding to a given command
 #+REVEAL: split
 - Function: @@html:<kbd>@@C-h-f@@html:</kbd>@@ display documentation of
   the given function
@@ -1153,6 +1151,8 @@ It's *self-documenting* and great, keep reading it frequently.
 - Colors: @@html:<kbd>@@M-x list-colors-display@@html:</kbd>@@ display
   names of defined colors and show what they look like
 - Syntax: @@html:<kbd>@@C-h s@@html:</kbd>@@ describe syntax
+- Where is command: @@html:<kbd>@@C-h w@@html:</kbd>@@ which keystrokes
+  binding to a given command
 - Keystrokes: @@html:<kbd>@@C-h l@@html:</kbd>@@ display last 100
   input keystrokes
 
