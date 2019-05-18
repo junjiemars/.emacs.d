@@ -492,9 +492,11 @@ default.
     :CUSTOM_ID: eshell
     :END:
 
+#+ATTR_HTML: :style text-align:left
 The eshell spec locate in =(emacs-home* "private/self-env-spec.el")=
 by default.
 
+#+REVEAL: splitV
 #+BEGIN_SRC emacs-lisp
 (def-self-env-spec
   :eshell (list :visual-commands '("mtr")
@@ -504,6 +506,7 @@ by default.
                 :allowed t))
 #+END_SRC
 
+#+REVEAL: split
 - =:visual-commands= @@html:<kbd>@@C-h-v eshell-visual-commands@@html:</kbd>@@
 - =:destroy-buffer-when-process-dies= @@html:<kbd>@@C-h-v eshell-destroy-buffer-when-process-dies@@html:</kbd>@@
 - =:visual-subcommands= @@html:<kbd>@@C-h-v eshell-visual-subcommands@@html:</kbd>@@
@@ -515,9 +518,11 @@ by default.
     :CUSTOM_ID: session
     :END:
 
+#+ATTR_HTML: :style text-align:left
 The desktop spec locate in =(emacs-home* "private/self-env-spec.el")=
 by default.
 
+#+REVEAL: split
 #+BEGIN_SRC emacs-lisp
     (def-self-env-spec
       :desktop (list :files-not-to-save
@@ -532,6 +537,7 @@ by default.
                      :allowed t))
 #+END_SRC
 
+#+REVEAL: split
 - =:files-not-to-save= @@html:<kbd>@@C-h-v desktop-files-not-to-save@@html:</kbd>@@
 - =:buffers-not-to-save= @@html:<kbd>@@C-h-v desktop-buffers-not-to-save@@html:</kbd>@@
 - =:modes-not-to-save= @@html:<kbd>@@C-h-v desktop-modes-not-to-save@@html:</kbd>@@
@@ -597,7 +603,6 @@ whatever OS you using:
 external or internal browser.
 - Find symbol, word, whatever you like via web search engine:
   @@html:<kdb>@@c-c f w@@html:</kdb>@@
-
 
 ** Package
     :PROPERTIES:
