@@ -110,9 +110,14 @@
             ((executable-find% "minizip") (make-zip-bat "minizip"))))))
 
 
-(when-platform% 'windows-nt
+(defun dired-browse-file* ()
+  "In Dired, browse the file on this line. See `toggle-browser!'."
+  (interactive)
+  (browse-url (concat "file:///" (dired-get-file-for-visit))))
 
-  (with-eval-after-load 'dired
+
+(with-eval-after-load 'dired
+  (when-platform% 'windows-nt
     ;; prefer GNU find on Windows, such for `find-dired' or `find-name-dired'.
     (let ((find (executable-find%
                  "find"
@@ -122,7 +127,10 @@
                           (string-match "^find (GNU findutils)"
                                         (cdr ver))))))))
       (when find
-        (windows-nt-env-path+ (file-name-directory find))))))
+        (windows-nt-env-path+ (file-name-directory find)))))
+
+  (define-key dired-mode-map (kbd "b") #'dired-browse-file*))
+
 
  ;; end of `dired' setting
 
