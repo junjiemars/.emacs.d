@@ -9,6 +9,11 @@
 
 (defmacro-if-feature% ox-reveal)
 
+;; fix: Warning (bytecomp): `org-bookmark-jump-unhide' fn might not be
+;; defined at runtime.
+(when-fn% 'org-bookmark-jump-unhide 'org
+  (autoload 'org-bookmark-jump-unhide "org"))
+
 (with-eval-after-load 'org
 
   ;; load `ox-reveal' if it had been installed.
