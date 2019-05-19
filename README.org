@@ -26,6 +26,7 @@ multiple Emacs instances with different version on the same machine
 and at the same time.
 
 #+REVEAL: split
+
 - clone More Reasonable Emacs from github
 #+BEGIN_SRC sh
 git clone --depth=1 https://github.com/junjiemars/.emacs.d.git ~/.emacs.d
