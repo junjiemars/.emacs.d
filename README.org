@@ -3,13 +3,15 @@
 #+STARTUP: overview
 #+OPTIONS: num:nil toc:nil
 #+REVEAL_HLEVEL: 2
+#+REVEAL_SLIDE_NUMBER: h
 #+REVEAL_THEME: moon
+#+BEGIN_COMMENT
 #+REVEAL_TRANS: cube
 #+REVEAL_MARGIN: 0.1
 #+REVEAL_MIN_SCALE: 0.2
 #+REVEAL_MAX_SCALE: 1.5
-#+REVEAL_SLIDE_NUMBER: h
-#+OPTIONS: org_reveal_center:nil
+#+END_COMMENT
+
 
 * Quick start
   :PROPERTIES:
