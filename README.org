@@ -59,6 +59,7 @@ on the world there is no *one of*, it's programmable, elegant and
 may be less than 10 years to read and try Emacs.
 
 #+REVEAL: split
+
 #+ATTR_HTML: :style text-align:left
 After falling in love with [[https://en.wikipedia.org/wiki/Lisp_(programming_language)][Lisp]], I know it's the time to make Emacs
 being a part of my body and mind, not just open a file, navigating,
@@ -977,10 +978,8 @@ Lisp programming in Emacs already good enough, if [[https://www.emacswiki.org/em
 [[https://github.com/slime/slime][slime]] is the best tool for Common Lisp programming. And for Scheme
 programming the [[http://www.nongnu.org/geiser/][Geiser]] the pretty good.
 
-#+REVEAL: split
 *** Editing
 
-#+REVEAL: split
 *** REPL
 
 ** C programming
