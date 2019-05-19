@@ -12,7 +12,7 @@
   (list
    :cond t
    :packages '(markdown-mode htmlize ox-reveal)
-   :copmile `(,(compile-unit% (emacs-home* "config/use-org-autoload.el"))))
+   :compile `(,(compile-unit% (emacs-home* "config/use-org-autoload.el"))))
   (list
    :cond (executable-find% "latex")
    :packages '(auctex cdlatex))
