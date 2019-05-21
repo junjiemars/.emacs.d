@@ -965,7 +965,8 @@ on ancient Emacs.
 	 :END:
 
 #+ATTR_HTML: :style text-align:left
-Just introduces More Resonable Emacs special editing features.
+Just introduces More Resonable Emacs improved or extra editing
+features.
 
 ** Lisp programming
 	 :PROPERTIES:
