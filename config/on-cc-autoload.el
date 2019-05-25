@@ -272,34 +272,16 @@ include directories. The REMOTE argument from `file-remote-p'."
 
 ;; eldoc
 
-(define-hash-table-test 'cc-id= #'string= #'sxhash)
-
-(defmacro save-hash-table-to-file (var table file)
-  "Save the TABLE that referenced by VAR to FILE."
-  `(if% (let ((tbl (make-hash-table :test 'eql)))
-          (puthash 1 11 tbl)
-          (string-match "(1 11)" (prin1-to-string tbl)))
-       (save-sexp-to-file
-        `(set ',,var ,,table)
-        ,file)
-     (let ((lst nil))
-       (maphash (lambda (k v)
-                  (push (list k v) lst))
-                ,table)
-       (save-sexp-to-file
-        `(let ((tbl (make-hash-table :test 'cc-id=)))
-           (mapc (lambda (x)
-                   (puthash (car x) (cadr x) tbl))
-                 ',lst)
-           (set ',,var tbl))
-        ,file))))
-
 (defun check-cc-identity (&optional remote)
   "Return a hashtable of cc identities."
   (ignore* remote)
-  (let ((tbl (make-hash-table :test 'cc-id=)))
-    (puthash "printf" "__inline int __cdecl printf(char const* const _Format, ...)" tbl)
-    (puthash "fflush" "int __cdecl fflush(FILE* _Stream);" tbl)
+  (let ((tbl (make-hash-table :test 'string-hash=)))
+    (puthash "printf"
+             "__inline int __cdecl printf(char const* const _Format, ...)"
+             tbl)
+    (puthash "fflush"
+             "int __cdecl fflush(FILE* _Stream);"
+             tbl)
     tbl))
 
 (defun system-cc-identity (&optional cached remote)
@@ -317,7 +299,7 @@ include directories. The REMOTE argument from `file-remote-p'."
         (load cc)
       (let ((tbl (check-cc-identity remote)))
         (set var tbl)
-        (when (save-hash-table-to-file var tbl c)
+        (when (save-hash-table-to-file var tbl c 'string-hash=)
           (byte-compile-file c))))
     (symbol-value var)))
 
