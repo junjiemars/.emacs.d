@@ -95,30 +95,12 @@
  ;; msvc host environment
 
 
-(defmacro norm-file-remote-p (file)
-  "Return an identification when FILE specifies a location on a remote system.
-
-On ancient Emacs, `file-remote-p' will return a vector."
-  `(match-string* "^\\(/sshx?:[_-a-zA-Z0-9]+@?[_-a-zA-Z0-9]+:\\)"
-                  ,file 1))
-
-(defmacro norm-rid (remote)
-  "Norm the REMOTE to '(method user [host]) form."
-  `(split-string* ,remote "[:@]" t "/"))
-
-(defmacro rid-user@host (remote)
-  "Make a user@host form from REMOTE."
-  `(let ((rid (norm-rid ,remote)))
-     (concat (cadr rid) (when (caddr rid)
-                          (concat "@" (caddr rid))))))
-
-
 (defun check-cc-include (&optional remote)
   "Return a list of system cc include path."
   (let ((cmd (if remote
                  (when% (executable-find% "ssh")
                    (shell-command* "ssh"
-                     (concat (rid-user@host remote)
+                     (concat (remote-norm->user@host remote)
                              " \"echo '' | cc -v -E 2>&1 >/dev/null -\"")))
                (if-platform% 'windows-nt
                    ;; Windows: msmvc
@@ -165,7 +147,7 @@ otherwise check cc include on the fly.
 If specify REMOTE argument then return a list of remote system
 include directories. The REMOTE argument from `file-remote-p'."
   (let* ((rid (when remote
-                (mapconcat #'identity (norm-rid remote) "-")))
+                (mapconcat #'identity (remote-norm-id remote) "-")))
          (c (if remote
                 (v-home* (concat ".exec/.cc-inc-" rid ".el"))
               (v-home% ".exec/.cc-inc.el")))
@@ -190,10 +172,10 @@ include directories. The REMOTE argument from `file-remote-p'."
   "Return t if FILE in `system-cc-include', otherwise nil."
   (when (stringp file)
     (member** (string-trim> (file-name-directory file) "/")
-              (system-cc-include t (norm-file-remote-p file))
+              (system-cc-include t (remote-norm-file file))
               :test (lambda (a b)
                       (let ((case-fold-search (when-platform%
-                                               'windows-nt t)))
+                                                  'windows-nt t)))
                         (string-match b a))))))
 
     
@@ -217,7 +199,7 @@ include directories. The REMOTE argument from `file-remote-p'."
   (let ((file (buffer-file-name (current-buffer))))
     (setq% cc-search-directories
            (append (list (string-trim> (file-name-directory file) "/"))
-                   (system-cc-include t (norm-file-remote-p file))))))
+                   (system-cc-include t (remote-norm-file file))))))
 
 (defadvice ff-find-other-file (after ff-find-other-file-after compile)
   "View the other-file in `view-mode' when `system-cc-include-p' is t."
@@ -226,12 +208,12 @@ include directories. The REMOTE argument from `file-remote-p'."
 
 (defadvice c-macro-expand (around c-macro-expand-around compile)
   "cl.exe cannot retrieve from stdin."
-  (let ((remote (norm-file-remote-p (buffer-file-name (current-buffer)))))
+  (let ((remote (remote-norm-file (buffer-file-name (current-buffer)))))
     (if remote
         ;; remote: Unix-like
         (when% (executable-find% "ssh")
           (setq% c-macro-preprocessor
-                 (concat "ssh " (rid-user@host remote)
+                 (concat "ssh " (remote-norm->user@host remote)
                          " \'cc -E -o - -\'")
                  'cmacexp)
           ad-do-it)
@@ -287,7 +269,7 @@ include directories. The REMOTE argument from `file-remote-p'."
 (defun system-cc-identity (&optional cached remote)
   "Return a hashtable of cc identities."
   (let* ((rid (when remote
-                (mapconcat #'identity (norm-rid remote) "-")))
+                (mapconcat #'identity (remote-norm-id remote) "-")))
          (c (if remote
                 (v-home* (concat ".exec/.cc-id-" rid ".el"))
               (v-home% ".exec/.cc-id.el")))

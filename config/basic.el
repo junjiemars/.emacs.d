@@ -526,6 +526,26 @@ or the one that `funcall' PREFER returns t.
       `,path)))
 
 
+(defmacro remote-norm-file (file)
+  "Return an identification when FILE specifies a location on a remote system.
+
+On ancient Emacs, `file-remote-p' will return a vector."
+  `(match-string* "^\\(/sshx?:[_-a-zA-Z0-9]+@?[_-a-zA-Z0-9]+:\\)"
+                  ,file 1))
+
+(defmacro remote-norm-id (remote)
+  "Norm the REMOTE to '(method {user | id} [host]) form."
+  `(when (stringp ,remote)
+     (split-string* ,remote "[:@]" t "/")))
+
+(defmacro remote-norm->user@host (remote)
+  "Make a user@host form from REMOTE."
+  `(let ((rid (remote-norm-id ,remote)))
+     (when (not (null rid))
+       (concat (cadr rid) (when (caddr rid)
+                            (concat "@" (caddr rid)))))))
+
+
  ;; end of File functions
 
 

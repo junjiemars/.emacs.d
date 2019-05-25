@@ -281,6 +281,30 @@
     (should (or (delete-file f)
                 (not (file-exists-p f))))))
 
+(ert-deftest %basic:remote-norm-file/id ()
+  (should (and (null (remote-norm-file nil))
+               (null (remote-norm-file "/xxh:abc:/a/b/c"))
+               (string= "/sshx:pi:"
+                        (remote-norm-file "/sshx:pi:/a/b/c.d"))
+               (string= "/ssh:pi@circle:"
+                        (remote-norm-file "/ssh:pi@circle:/a/b/c.d"))))
+  (should (and (null (remote-norm-id nil))
+               (equal '("abc") (remote-norm-id "abc"))
+               (equal '("ssh" "pi" "circle")
+                      (remote-norm-id
+                       (remote-norm-file "/ssh:pi@circle:/a/b/c.d")))
+               (equal '("sshx" "pi")
+                      (remote-norm-id
+                       (remote-norm-file "/sshx:pi:/a/b/c.d")))))
+  (should (and (null (remote-norm->user@host nil))
+               (string= "pi@circle"
+                        (remote-norm->user@host
+                         "/ssh:pi@circle:/a/b/c.d"))
+               ;; TODO: improve
+               (string= "pi@a/b/c.d"
+                        (remote-norm->user@host
+                         "/ssh:pi:/a/b/c.d")))))
+
 (ert-deftest %basic:take ()
   (should (eq nil (take 3 nil)))
   (should (equal '(1 2 3) (take 3 (range 1 10 1))))
