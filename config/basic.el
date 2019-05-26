@@ -534,14 +534,14 @@ On ancient Emacs, `file-remote-p' will return a vector."
                   ,file 1))
 
 (defmacro remote-norm-id (remote)
-  "Norm the REMOTE to '(method {user | id} [host]) form."
+  "Norm the REMOTE to '(method {user | id} [host])' form."
   `(when (stringp ,remote)
      (split-string* ,remote "[:@]" t "/")))
 
 (defmacro remote-norm->user@host (remote)
-  "Make a user@host form from REMOTE."
+  "Norm the REMOTE to '{user | id}[@host]' form."
   `(let ((rid (remote-norm-id ,remote)))
-     (when (not (null rid))
+     (when (consp rid)
        (concat (cadr rid) (when (caddr rid)
                             (concat "@" (caddr rid)))))))
 

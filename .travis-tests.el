@@ -281,7 +281,7 @@
     (should (or (delete-file f)
                 (not (file-exists-p f))))))
 
-(ert-deftest %basic:remote-norm-file/id ()
+(ert-deftest %basic:remote-norm-file/id/>user@host ()
   (should (and (null (remote-norm-file nil))
                (null (remote-norm-file "/xxh:abc:/a/b/c"))
                (string= "/sshx:pi:"
@@ -290,20 +290,16 @@
                         (remote-norm-file "/ssh:pi@circle:/a/b/c.d"))))
   (should (and (null (remote-norm-id nil))
                (equal '("abc") (remote-norm-id "abc"))
+               (equal '("sshx" "pi") (remote-norm-id "/sshx:pi:"))
                (equal '("ssh" "pi" "circle")
-                      (remote-norm-id
-                       (remote-norm-file "/ssh:pi@circle:/a/b/c.d")))
+                      (remote-norm-id "/ssh:pi@circle:"))
                (equal '("sshx" "pi")
-                      (remote-norm-id
-                       (remote-norm-file "/sshx:pi:/a/b/c.d")))))
+                      (remote-norm-id "/sshx:pi:"))))
   (should (and (null (remote-norm->user@host nil))
                (string= "pi@circle"
-                        (remote-norm->user@host
-                         "/ssh:pi@circle:/a/b/c.d"))
-               ;; TODO: improve
-               (string= "pi@a/b/c.d"
-                        (remote-norm->user@host
-                         "/ssh:pi:/a/b/c.d")))))
+                        (remote-norm->user@host "/ssh:pi@circle:"))
+               (string= "pi"
+                        (remote-norm->user@host "/sshx:pi:")))))
 
 (ert-deftest %basic:take ()
   (should (eq nil (take 3 nil)))
