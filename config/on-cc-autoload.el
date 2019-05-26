@@ -178,10 +178,9 @@ include directories. The REMOTE argument from `file-remote-p'."
                                                   'windows-nt t)))
                         (string-match b a))))))
 
-    
-(defun view-system-cc-include (buffer)
-  "View BUFFER in `view-mode' when the filename of BUFFER in
-`system-cc-include'."
+
+(defun cc*-view-include (buffer)
+  "View cc's BUFFER in `view-mode'."
   (when (and (bufferp buffer)
              (let ((m (buffer-local-value 'major-mode buffer)))
                (or (eq 'c-mode m)
@@ -203,7 +202,7 @@ include directories. The REMOTE argument from `file-remote-p'."
 
 (defadvice ff-find-other-file (after ff-find-other-file-after compile)
   "View the other-file in `view-mode' when `system-cc-include-p' is t."
-  (view-system-cc-include (current-buffer)))
+  (cc*-view-include (current-buffer)))
 
 
 (defadvice c-macro-expand (around c-macro-expand-around compile)
