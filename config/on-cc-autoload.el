@@ -168,15 +168,27 @@ include directories. The REMOTE argument from `remote-norm-file'."
     (symbol-value var)))
 
 
-(defun cc*-system-include-p (file)
+(defvar cc*-extra-include nil
+  "List of extra include directories.")
+
+(defun cc*-extra-include (&rest dir)
+  "Append DIR to the `cc*-extra-include' list and return it."
+  (when (consp dir)
+    (setq cc*-extra-include
+          (append cc*-extra-include dir))))
+
+(defun cc*-include-p (file)
   "Return t if FILE in `cc*-system-include', otherwise nil."
   (when (stringp file)
-    (member** (string-trim> (file-name-directory file) "/")
-              (cc*-system-include t (remote-norm-file file))
-              :test (lambda (a b)
-                      (let ((case-fold-search (when-platform%
-                                                  'windows-nt t)))
-                        (string-match b a))))))
+    (let ((remote (remote-norm-file file)))
+      (member** (string-trim> (file-name-directory file) "/")
+                (if remote
+                    (cc*-system-include t remote)
+                  (append (cc*-system-include t) cc*-extra-include))
+                :test (lambda (a b)
+                        (let ((case-fold-search (when-platform%
+                                                    'windows-nt t)))
+                          (string-match b a)))))))
 
 
 (defun cc*-view-include (buffer)
@@ -188,8 +200,8 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
              (let ((m (buffer-local-value 'major-mode buffer)))
                (or (eq 'c-mode m)
                    (eq 'c++-mode m)))
-             (cc*-system-include-p (substring-no-properties
-                                    (buffer-file-name buffer))))
+             (cc*-include-p (substring-no-properties
+                             (buffer-file-name buffer))))
     (with-current-buffer buffer (view-mode 1))))
 
 
@@ -201,10 +213,11 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
   (let ((file (buffer-file-name (current-buffer))))
     (setq% cc-search-directories
            (append (list (string-trim> (file-name-directory file) "/"))
-                   (cc*-system-include t (remote-norm-file file))))))
+                   (cc*-system-include t (remote-norm-file file))
+                   cc*-extra-include))))
 
 (defadvice ff-find-other-file (after ff-find-other-file-after compile)
-  "View the other-file in `view-mode' when `cc*-system-include-p' is t."
+  "View the other-file in `view-mode' when `cc*-include-p' is t."
   (cc*-view-include (current-buffer)))
 
 
