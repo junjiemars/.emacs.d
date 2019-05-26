@@ -175,7 +175,10 @@ include directories. The REMOTE argument from `remote-norm-file'."
   "Append DIR to the `cc*-extra-include' list and return it."
   (when (consp dir)
     (setq cc*-extra-include
-          (append cc*-extra-include dir))))
+          (append cc*-extra-include
+                  (mapcar (lambda (x)
+                            (string-trim> x "/"))
+                          dir)))))
 
 (defun cc*-include-p (file)
   "Return t if FILE in `cc*-system-include', otherwise nil."
@@ -186,6 +189,7 @@ include directories. The REMOTE argument from `remote-norm-file'."
                     (cc*-system-include t remote)
                   (append (cc*-system-include t) cc*-extra-include))
                 :test (lambda (a b)
+                        (message "a=%s,b=%s" a b)
                         (let ((case-fold-search (when-platform%
                                                     'windows-nt t)))
                           (string-match b a)))))))
