@@ -136,16 +136,16 @@
               inc)))))))
 
 
-;; system cc include
+;; cc system include
 
-(defun system-cc-include (&optional cached remote)
+(defun cc*-system-include (&optional cached remote)
   "Return a list of system include directories. 
 
-Load `system-cc-include' from file when CACHED is t, 
+Load `cc*-system-include' from file when CACHED is t, 
 otherwise check cc include on the fly.
 
 If specify REMOTE argument then return a list of remote system
-include directories. The REMOTE argument from `file-remote-p'."
+include directories. The REMOTE argument from `remote-norm-file'."
   (let* ((rid (when remote
                 (mapconcat #'identity (remote-norm-id remote) "-")))
          (c (if remote
@@ -153,8 +153,8 @@ include directories. The REMOTE argument from `file-remote-p'."
               (v-home% ".exec/.cc-inc.el")))
          (cc (concat c "c"))
          (var (if remote
-                  (intern (concat "system-cc-include@" rid))
-                'system-cc-include)))
+                  (intern (concat "cc*-system-include@" rid))
+                'cc*-system-include)))
     (if (and cached (file-exists-p cc))
         (load cc)
       (let ((inc (if remote
@@ -168,11 +168,11 @@ include directories. The REMOTE argument from `file-remote-p'."
     (symbol-value var)))
 
 
-(defun system-cc-include-p (file)
-  "Return t if FILE in `system-cc-include', otherwise nil."
+(defun cc*-system-include-p (file)
+  "Return t if FILE in `cc*-system-include', otherwise nil."
   (when (stringp file)
     (member** (string-trim> (file-name-directory file) "/")
-              (system-cc-include t (remote-norm-file file))
+              (cc*-system-include t (remote-norm-file file))
               :test (lambda (a b)
                       (let ((case-fold-search (when-platform%
                                                   'windows-nt t)))
@@ -180,17 +180,20 @@ include directories. The REMOTE argument from `file-remote-p'."
 
 
 (defun cc*-view-include (buffer)
-  "View cc's BUFFER in `view-mode'."
+  "View cc's BUFFER in `view-mode'.
+
+When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
+`cc*-extra-include' is t then view it in `view-mode'."
   (when (and (bufferp buffer)
              (let ((m (buffer-local-value 'major-mode buffer)))
                (or (eq 'c-mode m)
                    (eq 'c++-mode m)))
-             (system-cc-include-p (substring-no-properties
-                                   (buffer-file-name buffer))))
+             (cc*-system-include-p (substring-no-properties
+                                    (buffer-file-name buffer))))
     (with-current-buffer buffer (view-mode 1))))
 
 
- ;; end of system-cc-include
+ ;; end of cc*-system-include
 
 
 (defadvice ff-find-other-file (before ff-find-other-file-before compile)
@@ -198,10 +201,10 @@ include directories. The REMOTE argument from `file-remote-p'."
   (let ((file (buffer-file-name (current-buffer))))
     (setq% cc-search-directories
            (append (list (string-trim> (file-name-directory file) "/"))
-                   (system-cc-include t (remote-norm-file file))))))
+                   (cc*-system-include t (remote-norm-file file))))))
 
 (defadvice ff-find-other-file (after ff-find-other-file-after compile)
-  "View the other-file in `view-mode' when `system-cc-include-p' is t."
+  "View the other-file in `view-mode' when `cc*-system-include-p' is t."
   (cc*-view-include (current-buffer)))
 
 
@@ -239,14 +242,15 @@ include directories. The REMOTE argument from `file-remote-p'."
                 (delete-file tmp))))
         ;; Darwin/Linux
         (when-platform% 'darwin
-          (when% (executable-find%
-                  "cc"
-                  (lambda (cc)
-                    (let ((x (shell-command* "echo -e"
-                               "\"#define _unused_(x) ((void)(x))\n_unused_(a);\""
-                               "|cc -E -")))
-                      (and (zerop (car x))
-                           (string-match "((void)(a));" (cdr x))))))
+          (when%
+              (executable-find%
+               "cc"
+               (lambda (cc)
+                 (let ((x (shell-command* "echo -e"
+                            "\"#define _unused_(x) ((void)(x))\n_unused_(a);\""
+                            "|cc -E -")))
+                   (and (zerop (car x))
+                        (string-match "((void)(a));" (cdr x))))))
             (setq% c-macro-preprocessor "cc -E -o - -" 'cmacexp)))
         ad-do-it))))
 
@@ -303,8 +307,8 @@ include directories. The REMOTE argument from `file-remote-p'."
      (eldoc-mode (if ,arg 1 nil))))
 
 (defun system-cc-autoload ()
-  "Autoload `system-cc-include', `system-cc-include' and `eldoc-mode'."
-  (system-cc-include t)
+  "Autoload `cc*-system-include', `cc*-system-include' and `eldoc-mode'."
+  (cc*-system-include t)
   (when (system-cc-identity t)
     (toggle-cc-eldoc-mode 1)))
 
