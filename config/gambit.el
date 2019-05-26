@@ -3,7 +3,7 @@
 ;; More reasonable Emacs on MacOS, Windows and Linux
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; on-gambit-autoload.el --- Run Gambit in an Emacs buffer
+;; gambit.el
 ;;;;
 
 (require 'scheme)
@@ -15,10 +15,10 @@
 
 (defmacro-if-feature% geiser)
 
-;; Disable `geiser-mode' for `schme-mode'
+;; Disable `geiser-mode' for `scheme-mode'
 (if-feature-geiser%
- (when-var% geiser-mode-auto-p 'geiser-mode
-   (setq% geiser-mode-auto-p nil 'geiser-mode)))
+  (when-var% geiser-mode-auto-p 'geiser-mode
+    (setq% geiser-mode-auto-p nil 'geiser-mode)))
 
 
 ;; variable declarations
@@ -123,10 +123,10 @@ If you accidentally suspend your process, use
   \\[comint-continue-subjob] to continue it."
   (setq comint-prompt-regexp "^[^>\n]*>+ *")
   (setq comint-prompt-read-only t)
-  (scheme-mode-variables)
   (setq mode-line-process '(":%s"))
   (setq comint-input-filter #'gambit-input-filter)
-  (setq comint-get-old-input #'gambit-get-old-input))
+  (setq comint-get-old-input #'gambit-get-old-input)
+  (scheme-mode-variables))
 
 
 (defun run-gambit (&optional command-line)
@@ -140,21 +140,19 @@ Run the hook `gambit-repl-mode-hook' after the `comint-mode-hook'."
   (interactive (list (if current-prefix-arg
 			                   (read-string "Run Gambit: " gambit-program)
 			                 gambit-program)))
-  (let ((cmdlist (split-string* command-line "\\s-+" t))
-        (buffer (if (comint-check-proc (funcall *gambit*))
-                    (funcall *gambit*)
-                  (get-buffer-create "*gambit*"))))
-    (unless (comint-check-proc buffer)
-      (apply #'make-comint-in-buffer "*gambit*"
-             buffer
-             (car cmdlist)
-             nil ;; no start file, gsi default init: ~/gambini
-             (cdr cmdlist)))
-    (switch-to-buffer-other-window buffer)
-    (setq gambit-program command-line)
-    (with-current-buffer buffer
-      (funcall *gambit* buffer)
-      (gambit-repl-mode))))
+  (let ((cmdlist (split-string* command-line "\\s-+" t)))
+    (unless (comint-check-proc (funcall *gambit*))
+      (with-current-buffer (get-buffer-create "*gambit*")
+        (make-comint-in-buffer
+         (buffer-name (current-buffer))
+         (current-buffer)
+         (car cmdlist)
+         nil ;; no start file, gsi default init: ~/gambini
+         (mapconcat #'identity (cdr cmdlist) " "))
+        (setq gambit-program command-line)
+        (funcall *gambit* (current-buffer))
+        (gambit-repl-mode)))
+    (switch-to-buffer-other-window "*gambit*")))
 
 
  ;; end of REPL
@@ -304,4 +302,4 @@ interacting with the Gambit REPL is at your disposal.
 (provide 'gambit)
 
 
-;; end of file
+;; end of gambit.el

@@ -75,18 +75,15 @@
     (if-feature-semantic%
       (compile-unit% (emacs-home* "config/on-semantic-autoload.el")))
 
-    (if-platform% 'windows-nt
-        (when% (executable-find% "cdb")
-          (compile-unit% (emacs-home* "config/gud-cdb.el") t))
-      (when% (executable-find% "lldb")
-        (compile-unit% (emacs-home* "config/gud-lldb.el") t)))
-
     (when-platform% 'windows-nt
       (when% (or (executable-find% "gswin64c")
                  (executable-find% "gswin32c")
                  (executable-find% "mutool"))
         (compile-unit% (emacs-home* "config/on-docview-autoload.el")))))
 
+  ;; end of compile!
+
+  ;; gambit
   (when% (or (executable-find% "gsc-script")
              (executable-find% "gsc"
                                (lambda (gsc)
@@ -96,18 +93,24 @@
     (compile!
       (compile-unit% (emacs-home* "config/gambit.el"))))
 
+  ;; add .exec/ to %PATH%
   (when-platform% 'windows-nt
-    ;; add .exec/ to %PATH%
     (windows-nt-env-path+ (v-home% ".exec/")))
 
+  ;; semantic
   (autoload 'set-semantic-cc-env!
     (v-home% "config/on-semantic-autoload.elc"))
 
+  ;; cdb or lldb
   (if-platform% 'windows-nt
       (when% (executable-find% "cdb")
+        (compile!
+          (compile-unit% (emacs-home* "config/gud-cdb.el") t))
         (autoload 'cdb (v-home% "config/gud-cdb.elc")
           "Run lldb on program FILE in buffer *gud-FILE*." t))
     (when% (executable-find% "lldb")
+      (compile!
+        (compile-unit% (emacs-home* "config/gud-lldb.el") t))
       (autoload 'lldb (v-home% "config/gud-lldb.elc")
         "Run cdb on program FILE in buffer *gud-FILE*." t)))
   
