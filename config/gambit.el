@@ -24,7 +24,7 @@
 
 (defgroup gambit nil
   "Run a gambit process in a buffer."
-  :group 'lisp)
+  :group 'scheme)
 
 (defcustom% gambit-program
   (cond ((executable-find% "gsc-script"
