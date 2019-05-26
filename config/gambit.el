@@ -6,7 +6,7 @@
 ;; gambit.el
 ;;;;
 
-(require 'scheme)
+;; (require 'scheme)
 (require 'comint)
 
 ;; (require 'thingatpt)
@@ -20,12 +20,11 @@
   (when-var% geiser-mode-auto-p 'geiser-mode
     (setq% geiser-mode-auto-p nil 'geiser-mode)))
 
-
 ;; variable declarations
 
 (defgroup gambit nil
   "Run a gambit process in a buffer."
-  :group 'scheme)
+  :group 'lisp)
 
 (defcustom% gambit-program
   (cond ((executable-find% "gsc-script"
@@ -126,7 +125,11 @@ If you accidentally suspend your process, use
   (setq mode-line-process '(":%s"))
   (setq comint-input-filter #'gambit-input-filter)
   (setq comint-get-old-input #'gambit-get-old-input)
-  (scheme-mode-variables))
+  (when% (with-var byte-compile-warnings
+           (setq byte-compile-warnings nil)
+           (require 'scheme nil t))
+    (require 'scheme)
+    (scheme-mode-variables)))
 
 
 (defun run-gambit (&optional command-line)

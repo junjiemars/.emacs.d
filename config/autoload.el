@@ -113,7 +113,12 @@
         (compile-unit% (emacs-home* "config/gud-lldb.el") t))
       (autoload 'lldb (v-home% "config/gud-lldb.elc")
         "Run cdb on program FILE in buffer *gud-FILE*." t)))
-  
+
+  ;; *scratch*
+  (when (get-buffer "*scratch*")
+    (with-current-buffer "*scratch*"
+      (lisp-interaction-mode)))
+
   )
 
  ;; end of set-flavor-mode!
@@ -131,3 +136,6 @@
 (add-hook 'after-init-hook #'set-flavor-mode! t)
 (add-hook 'after-init-hook #'set-global-key! t)
 (add-hook 'after-init-hook (defun-make-thread-^fn set-self-epilogue!) t)
+
+
+;; end of autoload.el
