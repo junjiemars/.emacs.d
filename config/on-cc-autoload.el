@@ -174,21 +174,20 @@ include directories. The REMOTE argument from `remote-norm-file'."
       (declare (indent 1))
       (let* ((c (v-home% ".exec/.cc-extra-inc.el"))
              (cc (concat c "c"))
-             (var 'cc*-extra-include))
+             (var 'cc*-extra-include)
+             (d1 (mapcar (lambda (x)
+                           (expand-file-name (string-trim> x "/")))
+                         dir)))
         (if cached
             (progn
               (when (and (null inc)
                          (file-exists-p cc)
                          (load cc))
                 (setq inc (symbol-value var)))
-              (setq inc (append inc
-                                (mapcar
-                                 (lambda (x)
-                                   (expand-file-name (string-trim> x "/")))
-                                 dir))))
+              (setq inc (append inc d1)))
 
           (prog1
-              (setq inc dir)
+              (setq inc d1)
             (set var nil)
             (when (save-sexp-to-file `(set ',var ',inc) c)
               (byte-compile-file c)))))))
