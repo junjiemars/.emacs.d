@@ -168,17 +168,18 @@ include directories. The REMOTE argument from `remote-norm-file'."
     (symbol-value var)))
 
 
-(defvar cc*-extra-include nil
-  "List of extra include directories.")
-
-(defun cc*-extra-include (&rest dir)
-  "Append DIR to the `cc*-extra-include' list and return it."
-  (when (consp dir)
-    (setq cc*-extra-include
-          (append cc*-extra-include
-                  (mapcar (lambda (x)
-                            (string-trim> x "/"))
-                          dir)))))
+(defalias 'cc*-extra-include
+  (lexical-let% ((inc nil))
+    (lambda (cached &rest dir)
+      (declare (indent 1))
+      (if cached
+          (setq inc (append inc
+                            (mapcar
+                             (lambda (x)
+                               (expand-file-name (string-trim> x "/")))
+                             dir)))
+        (setq inc nil) dir)))
+  "Return a list of extra include directories.")
 
 (defun cc*-include-p (file)
   "Return t if FILE in `cc*-system-include', otherwise nil."
@@ -187,11 +188,11 @@ include directories. The REMOTE argument from `remote-norm-file'."
       (member** (string-trim> (file-name-directory file) "/")
                 (if remote
                     (cc*-system-include t remote)
-                  (append (cc*-system-include t) cc*-extra-include))
+                  (append (cc*-system-include t)
+                          (cc*-extra-include t)))
                 :test (lambda (a b)
-                        (message "a=%s,b=%s" a b)
-                        (let ((case-fold-search (when-platform%
-                                                    'windows-nt t)))
+                        (let ((case-fold-search
+                               (when-platform% 'windows-nt t)))
                           (string-match b a)))))))
 
 
@@ -218,7 +219,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
     (setq% cc-search-directories
            (append (list (string-trim> (file-name-directory file) "/"))
                    (cc*-system-include t (remote-norm-file file))
-                   cc*-extra-include))))
+                   (cc*-extra-include t)))))
 
 (defadvice ff-find-other-file (after ff-find-other-file-after compile)
   "View the other-file in `view-mode' when `cc*-include-p' is t."
