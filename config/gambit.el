@@ -65,7 +65,7 @@ This is run before the process is cranked up."
       (if n (setq b n) b)))
   "The current *gambit* process buffer.")
 
-(defvar gambit-switch-to-last-buffer
+(defalias 'gambit-switch-to-last-buffer
   (lexical-let% ((b))
     (lambda (&optional n)
       (interactive)
@@ -89,7 +89,7 @@ This is run before the process is cranked up."
 
 (defvar gambit-repl-mode-map
   (let ((m (make-sparse-keymap)))
-    (define-key m "\C-c\C-a" (symbol-value 'gambit-switch-to-last-buffer))
+    (define-key m "\C-c\C-a" #'gambit-switch-to-last-buffer)
     m))
 
 (define-derived-mode gambit-repl-mode comint-mode "REPL"
@@ -180,7 +180,7 @@ end of buffer, otherwise just popup the buffer."
   (unless (with-current-buffer (current-buffer)
             (symbol-value 'gambit-mode))
     (error "No current `gambit-mode'."))
-  (funcall gambit-switch-to-last-buffer (current-buffer))
+  (gambit-switch-to-last-buffer (current-buffer))
   (if arg
       ;; display REPL but do not select it
       (display-buffer (funcall *gambit*)
@@ -204,7 +204,7 @@ end of buffer, otherwise just popup the buffer."
   (comint-check-source file)
   (comint-send-string (gambit-proc)
                       (format "(compile-file \"%s\")\n" file))
-  (funcall gambit-switch-to-last-buffer (current-buffer))
+  (gambit-switch-to-last-buffer (current-buffer))
   (gambit-switch-to-repl))
 
 (defun gambit-load-file (file)
@@ -218,7 +218,7 @@ end of buffer, otherwise just popup the buffer."
   (comint-check-source file) 
   (comint-send-string (gambit-proc)
                       (format "(load \"%s\")\n" file))
-  (funcall gambit-switch-to-last-buffer (current-buffer))
+  (gambit-switch-to-last-buffer (current-buffer))
   (gambit-switch-to-repl))
 
 (defun gambit-send-region (start end)
