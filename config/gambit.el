@@ -122,14 +122,14 @@ If you accidentally suspend your process, use
   \\[comint-continue-subjob] to continue it."
   (setq comint-prompt-regexp "^[^>\n]*>+ *")
   (setq comint-prompt-read-only t)
-  (setq mode-line-process '(":%s"))
   (setq comint-input-filter #'gambit-input-filter)
   (setq comint-get-old-input #'gambit-get-old-input)
   (when% (with-var byte-compile-warnings
            (setq byte-compile-warnings nil)
            (require 'scheme nil t))
     (require 'scheme)
-    (scheme-mode-variables)))
+    (scheme-mode-variables))
+  (setq mode-line-process '(":%s")))
 
 
 (defun run-gambit (&optional command-line)
