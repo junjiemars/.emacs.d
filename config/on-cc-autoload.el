@@ -95,7 +95,7 @@
  ;; msvc host environment
 
 
-(defun check-cc-include (&optional remote)
+(defun cc*-check-include (&optional remote)
   "Return a list of system cc include path."
   (let ((cmd (if remote
                  (when% (executable-find% "ssh")
@@ -160,8 +160,8 @@ include directories. The REMOTE argument from `remote-norm-file'."
       (let ((inc (if remote
                      (mapcar (lambda (x)
                                (concat remote x))
-                             (check-cc-include remote))
-                   (check-cc-include))))
+                             (cc*-check-include remote))
+                   (cc*-check-include))))
         (set var inc)
         (when (save-sexp-to-file `(set ',var ',inc) c)
           (byte-compile-file c))))
