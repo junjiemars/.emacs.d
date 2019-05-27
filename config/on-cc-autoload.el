@@ -274,7 +274,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
 
 ;; eldoc
 
-(defun check-cc-identity (&optional remote)
+(defun cc*-check-identity (&optional remote)
   "Return a hashtable of cc identities."
   (ignore* remote)
   (let ((tbl (make-hash-table :test 'string-hash=)))
@@ -286,7 +286,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
              tbl)
     tbl))
 
-(defun system-cc-identity (&optional cached remote)
+(defun cc*-system-identity (&optional cached remote)
   "Return a hashtable of cc identities."
   (let* ((rid (when remote
                 (mapconcat #'identity (remote-norm-id remote) "-")))
@@ -295,41 +295,44 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
               (v-home% ".exec/.cc-id.el")))
          (cc (concat c "c"))
          (var (if remote
-                  (intern (concat "system-cc-identity@" rid))
-                'system-cc-identity)))
+                  (intern (concat "cc*-system-identity@" rid))
+                'cc*-system-identity)))
     (if (and cached (file-exists-p cc))
         (load cc)
-      (let ((tbl (check-cc-identity remote)))
+      (let ((tbl (cc*-check-identity remote)))
         (set var tbl)
         (when (save-hash-table-to-file var tbl c 'string-hash=)
           (byte-compile-file c))))
     (symbol-value var)))
 
-(defun cc-eldoc-doc-fn ()
+
+(defun cc*-eldoc-doc-fn ()
   "See `eldoc-documentation-function'."
-  (let ((tbl (system-cc-identity t))
+  (let ((tbl (cc*-system-identity t))
         (sym (thing-at-point 'symbol)))
     (when (and tbl (stringp sym))
       (gethash (substring-no-properties sym) tbl))))
 
 
- ;; end of eldoc
-
-
-(defmacro toggle-cc-eldoc-mode (&optional arg)
+(defmacro toggle-cc*-eldoc-mode (&optional arg)
   "Toggle cc-eldoc-mode enabled or disabled."
   `(progn
      (set (make-local-variable 'eldoc-documentation-function)
-          (if ,arg #'cc-eldoc-doc-fn #'ignore))
+          (if ,arg #'cc*-eldoc-doc-fn #'ignore))
      (eldoc-mode (if ,arg 1 nil))))
 
-(defun system-cc-autoload ()
+
+(defun cc*-system-autoload ()
   "Autoload `cc*-system-include', `cc*-system-include' and `eldoc-mode'."
   (cc*-system-include t)
-  (when (system-cc-identity t)
-    (toggle-cc-eldoc-mode 1)))
+  (when (cc*-system-identity t)
+    (toggle-cc*-eldoc-mode 1)))
 
-;; (add-hook 'c-mode-hook (defun-make-thread-^fn system-cc-autoload) t)
+
+;; (add-hook 'c-mode-hook (defun-make-thread-^fn cc*-system-autoload) t)
+
+
+ ;; end of eldoc
 
 
 (with-eval-after-load 'cc-mode
