@@ -115,9 +115,10 @@
         ;; `lisp-complete-symbol' is an obsolete since Emacs24.4
         (define-key minibuffer-local-map (kbd "TAB")
           (if-fn% 'completion-at-point 'minibuffer
-                  #'completion-at-point
+                  (if-version% > 24
+                               #'lisp-complete-symbol
+                    #'completion-at-point)
             #'lisp-complete-symbol)))
-
       (add-hook 'minibuffer-setup-hook #'minibuffer-tab-completion! t)))
 
 
