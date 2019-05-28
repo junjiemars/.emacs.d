@@ -179,13 +179,11 @@ include directories. The REMOTE argument from `remote-norm-file'."
                            (expand-file-name (string-trim> x "/")))
                          dir)))
         (if cached
-            (progn
-              (when (and (null inc)
-                         (file-exists-p cc)
-                         (load cc))
-                (setq inc (symbol-value var)))
-              (setq inc (append inc d1)))
-
+            (if (and (null inc)
+                     (file-exists-p cc)
+                     (load cc))
+                (setq inc (symbol-value var))
+              inc)
           (prog1
               (setq inc d1)
             (set var nil)
