@@ -168,28 +168,26 @@ include directories. The REMOTE argument from `remote-norm-file'."
     (symbol-value var)))
 
 
-(defalias 'cc*-extra-include
-  (lexical-let% ((inc nil))
-    (lambda (cached &rest dir)
-      (declare (indent 1))
-      (let* ((c (v-home% ".exec/.cc-extra-inc.el"))
-             (cc (concat c "c"))
-             (var 'cc*-extra-include)
-             (d1 (mapcar (lambda (x)
-                           (expand-file-name (string-trim> x "/")))
-                         dir)))
-        (if cached
-            (if (and (null inc)
-                     (file-exists-p cc)
-                     (load cc))
-                (setq inc (symbol-value var))
-              inc)
-          (prog1
-              (setq inc d1)
-            (set var nil)
-            (when (save-sexp-to-file `(set ',var ',inc) c)
-              (byte-compile-file c)))))))
-  "Return a list of extra include directories.")
+(defun cc*-extra-include (cached &rest dir)
+  "Return a list of extra include directories."
+  (declare (indent 1))
+  (let* ((c (v-home% ".exec/.cc-extra-inc.el"))
+         (cc (concat c "c"))
+         (var 'cc*-extra-include)
+         (d1 (when (consp dir)
+               (mapcar (lambda (x)
+                         (expand-file-name (string-trim> x "/")))
+                       dir))))
+    (if cached
+        (when (or (boundp var)
+                  (and (file-exists-p cc)
+                       (load cc)))
+          (symbol-value var))
+      (prog1
+          (set var d1)
+        (when (save-sexp-to-file `(set ',var ',(symbol-value var)) c)
+          (byte-compile-file c))))))
+
 
 (defun cc*-include-p (file)
   "Return t if FILE in `cc*-system-include', otherwise nil."
