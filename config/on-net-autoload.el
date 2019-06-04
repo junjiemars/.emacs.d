@@ -9,6 +9,20 @@
 ;;;;
 
 
+(defmacro revert-buffer-with-coding-system* (fn buffer)
+  "Revert the BUFFER with `locale-coding-system' after FN had been called.
+
+Reversion only occurred when `default-file-name-coding-system'
+not equals `locale-coding-system'.
+See also: `revert-buffer-with-coding-system'."
+  `(progn
+     ,fn
+     (unless% (eq default-file-name-coding-system locale-coding-system)
+       (when ,buffer
+         (with-current-buffer ,buffer
+           (revert-buffer-with-coding-system locale-coding-system t))))))
+
+
 (when-fn% 'arp 'net-utils
   (defun *arp (&optional arg)
     "Run `arp-program' and display diagnostic output."
@@ -17,7 +31,7 @@
     (require 'net-utils)
     (let ((arp-program-options (if arg (split-string* arg " " t)
                                  arp-program-options)))
-      (arp))))
+      (revert-buffer-with-coding-system* (arp) "*arp*"))))
 
 
 (when% (executable-find% "dig")
@@ -51,10 +65,14 @@
     (if-var% ifconfig-program-options 'net-utils
              (let ((ifconfig-program-options (if arg (split-string* arg " " t)
                                                ifconfig-program-options)))
-               (ifconfig))
+               (revert-buffer-with-coding-system*
+                (ifconfig)
+                (concat "*" ifconfig-program  "*")))
       (let ((ipconfig-program-options (if arg (split-string* arg " " t)
                                         ipconfig-program-options)))
-        (ipconfig)))))
+        (revert-buffer-with-coding-system*
+         (ipconfig)
+         (concat "*" ipconfig-program "*"))))))
 
 
 (when-fn% 'netstat 'net-utils
@@ -65,7 +83,7 @@
     (require 'net-utils)
     (let ((netstat-program-options (if arg (split-string* arg " " t)
                                      netstat-program-options)))
-      (netstat))))
+      (revert-buffer-with-coding-system* (netstat) "*netstat*"))))
 
 
 (when-fn% 'netstat 'net-utils
@@ -94,7 +112,7 @@
     (require 'net-utils)
     (let ((route-program-options (if arg (split-string* arg " " t)
                                    route-program-options)))
-      (route))))
+      (revert-buffer-with-coding-system* (route) "*route*"))))
 
 
 (when-fn% 'traceroute 'net-utils
@@ -113,5 +131,11 @@
                                              (when ipv6 (string= "-6" x)))
                                            traceroute-program-options))
            (traceroute-program (if ipv6 "traceroute6" traceroute-program)))
-      (call-interactively #'traceroute t))))
+      (revert-buffer-with-coding-system*
+       (call-interactively #'traceroute t)
+       (with-no-warnings
+         (require 'cl)
+         (find "^Traceroute.*$" (buffer-list)
+               :test (lambda (re x)
+                       (string-match re (buffer-name x)))))))))
 
