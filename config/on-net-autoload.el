@@ -86,7 +86,7 @@ See also: `revert-buffer-with-coding-system'."
       (revert-buffer-with-coding-system* (netstat) "*netstat*"))))
 
 
-(when-fn% 'netstat 'net-utils
+(when-fn% 'ping 'net-utils
   (defun *ping (&optional arg)
     "Run `ping-program' for host."
     (interactive (when current-prefix-arg
