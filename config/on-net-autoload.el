@@ -13,8 +13,9 @@
   "Revert the BUFFER with `locale-coding-system' after FN had been called.
 
 Reversion only occurred when `default-file-name-coding-system'
-not equals `locale-coding-system'.
-See also: `revert-buffer-with-coding-system',`set-buffer-process-coding-system'."
+not equals `locale-coding-system'.  See also:
+`revert-buffer-with-coding-system' and
+`set-buffer-process-coding-system'."
   `(progn
      ,fn
      (unless% (eq default-file-name-coding-system locale-coding-system)
