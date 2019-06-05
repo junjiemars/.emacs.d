@@ -9,21 +9,6 @@
 ;;;;
 
 
-(defmacro revert-buffer-with-coding-system* (fn buffer)
-  "Revert the BUFFER with `locale-coding-system' after FN had been called.
-
-Reversion only occurred when `default-file-name-coding-system'
-not equals `locale-coding-system'.  See also:
-`revert-buffer-with-coding-system' and
-`set-buffer-process-coding-system'."
-  `(progn
-     ,fn
-     (unless% (eq default-file-name-coding-system locale-coding-system)
-       (when ,buffer
-         (with-current-buffer ,buffer
-           (revert-buffer-with-coding-system locale-coding-system t))))))
-
-
 (when-fn% 'arp 'net-utils
   (defun *arp (&optional arg)
     "Run `arp-program' and display diagnostic output."
@@ -32,7 +17,7 @@ not equals `locale-coding-system'.  See also:
     (require 'net-utils)
     (let ((arp-program-options (if arg (split-string* arg " " t)
                                  arp-program-options)))
-      (revert-buffer-with-coding-system* (arp) "*arp*"))))
+      (arp))))
 
 
 (when% (executable-find% "dig")
@@ -66,14 +51,10 @@ not equals `locale-coding-system'.  See also:
     (if-var% ifconfig-program-options 'net-utils
              (let ((ifconfig-program-options (if arg (split-string* arg " " t)
                                                ifconfig-program-options)))
-               (revert-buffer-with-coding-system*
-                (ifconfig)
-                (concat "*" ifconfig-program  "*")))
+               (ifconfig))
       (let ((ipconfig-program-options (if arg (split-string* arg " " t)
                                         ipconfig-program-options)))
-        (revert-buffer-with-coding-system*
-         (ipconfig)
-         (concat "*" ipconfig-program "*"))))))
+        (ipconfig)))))
 
 
 (when-fn% 'netstat 'net-utils
@@ -84,7 +65,7 @@ not equals `locale-coding-system'.  See also:
     (require 'net-utils)
     (let ((netstat-program-options (if arg (split-string* arg " " t)
                                      netstat-program-options)))
-      (revert-buffer-with-coding-system* (netstat) "*netstat*"))))
+      (netstat))))
 
 
 (when-fn% 'ping 'net-utils
@@ -113,7 +94,7 @@ not equals `locale-coding-system'.  See also:
     (require 'net-utils)
     (let ((route-program-options (if arg (split-string* arg " " t)
                                    route-program-options)))
-      (revert-buffer-with-coding-system* (route) "*route*"))))
+      (route))))
 
 
 (when-fn% 'traceroute 'net-utils
@@ -132,11 +113,15 @@ not equals `locale-coding-system'.  See also:
                                              (when ipv6 (string= "-6" x)))
                                            traceroute-program-options))
            (traceroute-program (if ipv6 "traceroute6" traceroute-program)))
-      (revert-buffer-with-coding-system*
-       (call-interactively #'traceroute t)
-       (with-no-warnings
-         (require 'cl)
-         (find "^Traceroute.*$" (buffer-list)
-               :test (lambda (re x)
-                       (string-match re (buffer-name x)))))))))
+      (call-interactively #'traceroute t))))
 
+
+(unless% (eq default-file-name-coding-system locale-coding-system)
+  (with-eval-after-load 'net-utils
+    (eval-when-compile (require 'net-utils))
+    (dolist* (x (list arp-program
+                      netstat-program
+                      route-program))
+      (add-to-list 'process-coding-system-alist
+                   (list x locale-coding-system)
+                   #'equal))))
