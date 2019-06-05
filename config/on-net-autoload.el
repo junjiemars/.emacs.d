@@ -118,12 +118,21 @@
 
 (unless% (eq default-file-name-coding-system locale-coding-system)
   (with-eval-after-load 'net-utils
-    ;; (eval-when-compile (require 'net-utils))
-    
     (add-to-list 'process-coding-system-alist
-                 (list (mapconcat #'identity (list arp-program
-                                                   netstat-program
-                                                   route-program)
-                                  "\\|")
-                       locale-coding-system)
-                 #'equal)))
+                 (eval-when-compile
+                   (require 'net-utils)
+                   (list (mapconcat (lambda (x)
+                                      (concat "^" x "$"))
+                                    (list arp-program
+                                          dig-program
+                                          ifconfig-program
+                                          netstat-program
+                                          (concat ping-program "[46]?")
+                                          route-program
+                                          (concat traceroute-program "[46]?"))
+                                    "\\|")
+                         locale-coding-system))
+                 (lambda (a b)
+                   (and (stringp (car a))
+                        (stringp (car b))
+                        (string= (car a) (car b)))))))
