@@ -14,7 +14,7 @@
 
 Reversion only occurred when `default-file-name-coding-system'
 not equals `locale-coding-system'.
-See also: `revert-buffer-with-coding-system'."
+See also: `revert-buffer-with-coding-system',`set-buffer-process-coding-system'."
   `(progn
      ,fn
      (unless% (eq default-file-name-coding-system locale-coding-system)
