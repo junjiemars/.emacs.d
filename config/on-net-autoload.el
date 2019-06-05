@@ -118,10 +118,12 @@
 
 (unless% (eq default-file-name-coding-system locale-coding-system)
   (with-eval-after-load 'net-utils
-    (eval-when-compile (require 'net-utils))
-    (dolist* (x (list arp-program
-                      netstat-program
-                      route-program))
-      (add-to-list 'process-coding-system-alist
-                   (list x locale-coding-system)
-                   #'equal))))
+    ;; (eval-when-compile (require 'net-utils))
+    
+    (add-to-list 'process-coding-system-alist
+                 (list (mapconcat #'identity (list arp-program
+                                                   netstat-program
+                                                   route-program)
+                                  "\\|")
+                       locale-coding-system)
+                 #'equal)))
