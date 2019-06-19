@@ -7,11 +7,15 @@
 ;;;;
 
 
-(defun docker-containers ()
+(defun tramp-parse-docker-containers (&optional ignored)
   "Return a list of running docker container."
+  (ignore* ignored)
   (let ((cmd (shell-command* "docker" "ps" "--format {{.Names}}")))
     (when (zerop (car cmd))
-      (split-string* (cdr cmd) "\n" t "\n"))))
+      (append '((nil nil))
+              (mapcar (lambda (x)
+                        (list nil x))
+                      (split-string* (cdr cmd) "\n" t "\n"))))))
 
 
 (when% (and (require 'tramp)
@@ -30,7 +34,10 @@
                    (tramp-remote-shell-args ("-i" "-c")))
                  nil
                  (lambda (a b)
-                   (string= (car a) (car b))))))
+                   (string= (car a) (car b))))
+    (tramp-set-completion-function
+     "docker"
+     '((tramp-parse-docker-containers "")))))
 
 
 ;; end of on-tramp-autoload.el
