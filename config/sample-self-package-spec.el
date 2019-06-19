@@ -27,8 +27,7 @@
   (list
    :cond (and (when-version% <= 24.4 t)
               (executable-find% "docker"))
-   :packages '(dockerfile-mode
-               docker-tramp))
+   :packages '(dockerfile-mode))
   (list
    :cond (executable-find% "erlc")
    :packages '(erlang))

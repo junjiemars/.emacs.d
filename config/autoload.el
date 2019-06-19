@@ -79,7 +79,10 @@
       (when% (or (executable-find% "gswin64c")
                  (executable-find% "gswin32c")
                  (executable-find% "mutool"))
-        (compile-unit% (emacs-home* "config/on-docview-autoload.el")))))
+        (compile-unit% (emacs-home* "config/on-docview-autoload.el"))))
+
+    (when% (executable-find% "docker")
+      (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))))
 
   ;; end of compile!
 
