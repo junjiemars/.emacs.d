@@ -23,7 +23,11 @@
           (let ((f (expand-file-name "~/.reveal.js/")))
             (if (file-exists-p f)
                 f
-              "https://cdn.jsdelivr.net/reveal.js/3.0.0/")))))
+              "https://cdn.jsdelivr.net/reveal.js/3.0.0/"))))
+
+  ;; disable _ sub-superscripts
+  (when-var% org-use-sub-superscripts 'org
+    (setq org-use-sub-superscripts nil)))
 
 
 
