@@ -133,7 +133,7 @@ Elisp@@html:</kbd>@@).
 - Org Mode that's your new life, ...
 - Reliable programming experiments, C, Lisp, ...
 - It's a no-cost extension and git friendly framework.
-	
+
 ** Install
    :PROPERTIES:
    :CUSTOM_ID: install
