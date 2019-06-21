@@ -429,14 +429,16 @@ by default and for GUI mode only.
 #+BEGIN_SRC emacs-lisp
 (def-self-env-spec
   :font (list :name (if-platform% 'darwin
-                        "Monaco-14"
+                        "Monaco"
                       (if-platform% 'windows-nt
-                          "Consolas-13"
-                        "DejaVu Sans Mono-12")) 
+                          "Consolas"
+                        "DejaVu Sans Mono"))
+							:size 13
               :allowed t))
 #+END_SRC
 
-- =:name= string of font name and font size
+- =:name= string of font name
+- =:size= integer of font size
 - =:allowed= =t= enabled, =nil= disabled
 
 

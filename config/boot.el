@@ -53,29 +53,34 @@
 
 (when-font%
   
-  (defmacro self-default-font! (font)
-    "Set default FONT in graphic mode."
-    `(when-font-exist% ,font
-                       (add-to-list 'default-frame-alist (cons 'font ,font))
-                       (set-face-attribute 'default nil :font ,font))))
+  (defmacro self-default-font! (name size)
+    "Set default font by NAME in graphic mode."
+    `(when-font-exist% ,name
+       (let ((font (if (and (numberp ,size)
+                            (> ,size 0))
+                       (format "%s-%s" ,name ,size)
+                     ,name)))
+         (add-to-list 'default-frame-alist (cons 'font font))
+         (set-face-attribute 'default nil :font font)))))
 
 (when-font%
   
   ;; Load default font
   (when (self-spec->*env-spec :font :allowed)
-    (self-default-font! (self-spec->*env-spec :font :name))))
+    (self-default-font! (self-spec->*env-spec :font :name)
+                        (self-spec->*env-spec :font :size))))
 
 (when-font%
 
   (defmacro self-cjk-font! (name size)
     "Set CJK font's NAME and SIZE in graphic mode."
     `(when-font-exist% ,name
-                       (when-fn% 'set-fontset-font nil
-                         (mapc (lambda (c)
-                                 (set-fontset-font (frame-parameter nil 'font)
-                                                   c (font-spec :family ,name
-                                                                :size ,size)))
-                               '(han kana cjk-misc))))))
+       (when-fn% 'set-fontset-font nil
+         (mapc (lambda (c)
+                 (set-fontset-font (frame-parameter nil 'font)
+                                   c (font-spec :family ,name
+                                                :size ,size)))
+               '(han kana cjk-misc))))))
 
 (when-font%
 

@@ -19,10 +19,11 @@
                :allowed t)
 
   :font (list :name (if-platform% 'darwin
-                        "Monaco-13"
+                        "Monaco"
                       (if-platform% 'windows-nt
-                          "Consolas-13"
-                        "DejaVu Sans Mono-12")) 
+                          "Consolas"
+                        "DejaVu Sans Mono"))
+              :size 13
               :allowed nil)
 
   :cjk-font (list :name (if-platform% 'darwin
