@@ -10,8 +10,7 @@
 (defun pp-xml (begin end &optional arg)
   "Pretty-pprint XML region.
 
-If ARG < 0 then remove redundant indent whitespaces,
-else pretty print the XML region."
+If ARG < 0 then minify the region, otherwise pretty print it."
   (interactive
    (list (region-beginning) (region-end)
          current-prefix-arg))
