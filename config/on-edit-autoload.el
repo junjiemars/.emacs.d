@@ -173,12 +173,6 @@
     (setq uniquify-buffer-name-style 'post-forward-angle-brackets)))
 
 
-(defmacro pprint (form)
-  "Insert a pretty-printed rendition of a Lisp FORM in current buffer."
-  `(cl-prettyprint ,form))
-(autoload 'cl-prettyprint "cl-extra")
-
-
 ;; Mark thing at point
 
 (defun thing-at-point-bounds-of-string-at-point ()

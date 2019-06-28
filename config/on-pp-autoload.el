@@ -7,6 +7,14 @@
 ;;;;
 
 
+;; elisp
+
+(defmacro pprint (form)
+  "Insert a pretty-printed rendition of a Lisp FORM in current buffer."
+  `(cl-prettyprint ,form))
+(autoload 'cl-prettyprint "cl-extra")
+
+
 ;; xml
 
 (defun pp-xml (begin end &optional arg)
