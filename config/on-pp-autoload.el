@@ -6,7 +6,9 @@
 ;; on-pp-autoload.el - pretty print
 ;;;;
 
+
 ;; xml
+
 (defun pp-xml (begin end &optional arg)
   "Pretty-pprint XML region.
 
@@ -24,7 +26,9 @@ If ARG < 0 then minify the region, otherwise pretty print it."
           (insert s)
           (push-mark (point))
           (setq mark-active t))
-      (nxml-mode)
+      (if-fn% 'nxml-mode 'nxml-mode
+        (nxml-mode)
+        (xml-mode))
       (goto-char begin)
       (while (search-forward-regexp ">[ \t]*<[^/]" end t)
         (backward-char 2) (insert "\n") (incf end))
@@ -34,10 +38,6 @@ If ARG < 0 then minify the region, otherwise pretty print it."
       (indent-region begin end nil)
       (normal-mode))))
 
-
-
-;; (when-fn% 'nxml-mode 'nxml-mode
-;;   )
 
 ;; (if-fn% 'sgml-pretty-print 'sgml-mode
 ;;         (defalias 'pp-xml #'sgml-pretty-print
