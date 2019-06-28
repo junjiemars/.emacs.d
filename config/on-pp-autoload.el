@@ -20,12 +20,10 @@ If ARG < 0 then minify the region, otherwise pretty print it."
     (if (and (numberp arg) (< arg 0))
         (let ((s (replace-regexp-in-string
                   ">[ \t\n]+<" "><"
-                  (buffer-substring-no-properties begin end))))
-          (delete-region begin end)
+                  (delete-and-extract-region begin end))))
           (goto-char begin)
           (insert s)
-          (set-mark (point))
-          (setq mark-active t))
+          (set-mark (point)))
       (xml-mode)
       (goto-char begin)
       (while (search-forward-regexp ">[ \t]*<[^/]" end t)
