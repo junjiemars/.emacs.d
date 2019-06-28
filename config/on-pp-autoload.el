@@ -26,9 +26,7 @@ If ARG < 0 then minify the region, otherwise pretty print it."
           (insert s)
           (push-mark (point))
           (setq mark-active t))
-      (if-fn% 'nxml-mode 'nxml-mode
-        (nxml-mode)
-        (xml-mode))
+      (xml-mode)
       (goto-char begin)
       (while (search-forward-regexp ">[ \t]*<[^/]" end t)
         (backward-char 2) (insert "\n") (incf end))
