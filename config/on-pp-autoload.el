@@ -24,7 +24,7 @@ If ARG < 0 then minify the region, otherwise pretty print it."
           (delete-region begin end)
           (goto-char begin)
           (insert s)
-          (push-mark (point))
+          (set-mark (point))
           (setq mark-active t))
       (xml-mode)
       (goto-char begin)
