@@ -21,8 +21,7 @@
   "Pretty-pprint XML region.
 
 If ARG < 0 then minify the region, otherwise pretty print it."
-  (interactive
-   (list (region-beginning) (region-end)
+  (interactive (list (region-beginning) (region-end)
          current-prefix-arg))
   (save-excursion
     (if (and (numberp arg) (< arg 0))
@@ -43,15 +42,20 @@ If ARG < 0 then minify the region, otherwise pretty print it."
       (normal-mode))))
 
 
-;; (if-fn% 'sgml-pretty-print 'sgml-mode
-;;         (defalias 'pp-xml #'sgml-pretty-print
-;;           "Pretty-print XML region.")
-;;   )
+;; json
 
+(defun pp-json (begin end &optional arg)
+  "Pretty-print Json region.
 
-(if-fn% 'json-pretty-print 'json
-        (defalias 'pp-json #'json-pretty-print
-          "Pretty-print Json region."))
+If ARG < 0 then minify the region, otherwise pretty print it."
+  (interactive (list (region-beginning) (region-end)
+         current-prefix-arg))
+  (if (and (numberp arg) (< arg 0))
+      (message "minify")
+    (if-fn% 'json-pretty-print 'json
+            (json-pretty-print begin end)
+      (message "pretty print"))))
+
 
 
 ;; end of on-pp-autoload.el
