@@ -54,7 +54,6 @@
   (compile!
     (compile-unit% (emacs-home* "config/financial.el") t)
     (compile-unit% (emacs-home* "config/go.el") t)
-    (compile-unit% (emacs-home* "config/pp.el"))
     (compile-unit% (emacs-home* "config/tags.el") t)
     (compile-unit% (emacs-home* "config/on-cc-autoload.el"))
     (compile-unit% (emacs-home* "config/on-compile-autoload.el"))
@@ -63,6 +62,7 @@
     (compile-unit% (emacs-home* "config/on-eshell-autoload.el"))
     (compile-unit% (emacs-home* "config/on-lisp-autoload.el"))
     (compile-unit% (emacs-home* "config/on-net-autoload.el"))
+    (compile-unit% (emacs-home* "config/on-pp-autoload.el"))
 		(compile-unit% (emacs-home* "config/on-python-autoload.el"))
     (compile-unit% (emacs-home* "config/on-sh-autoload.el"))
     (compile-unit% (emacs-home* "config/on-window-autoload.el"))
