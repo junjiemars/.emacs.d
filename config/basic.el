@@ -235,7 +235,8 @@ If START is non-nil, start search at that index in STRING.
 
 See `string-match' and `match-string'."
   (when (and (stringp string)
-             (string-match regexp string start))
+             (string-match regexp string start)
+             (match-beginning num))
     (substring string (match-beginning num) (match-end num))))
 
 

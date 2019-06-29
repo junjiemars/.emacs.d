@@ -242,7 +242,9 @@
 (ert-deftest %basic:match-string* ()
   (should (eq nil (match-string* nil nil 0)))
   (should (eq nil (match-string* nil 123 0)))
-  (should (string= "abc" (match-string* "xx\\(abc\\)xx" "xxxabcxx" 1))))
+  (should (string= "XXabcXX" (match-string* "XX\\(abc\\)XX" "XXabcXX" 0)))
+  (should (null (match-string* "XX\\(abc\\)XX" "XXabcXX" 2)))
+  (should (string= "abc" (match-string* "XX\\(abc\\)XX" "XXabcXX" 1))))
 
 (ert-deftest %basic:string=* ()
   (should (string=* "a" "a"))
