@@ -49,9 +49,13 @@ If ARG < 0 then minify the region, otherwise pretty print it."
 
 If ARG < 0 then minify the region, otherwise pretty print it."
   (interactive (list (region-beginning) (region-end)
-         current-prefix-arg))
+                     current-prefix-arg))
   (if (and (numberp arg) (< arg 0))
-      (message "minify")
+      ;; TODO: {"a":  "aa\" \naaa" }
+      (insert
+       (replace-regexp-in-string "\\(\"\\(?:[^\"\\]|.\\)*\"\\)\\|\s+"
+                                 ""
+                                 (delete-and-extract-region begin end)))
     (if-fn% 'json-pretty-print 'json
             (json-pretty-print begin end)
       (message "pretty print"))))
