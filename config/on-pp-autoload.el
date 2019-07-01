@@ -58,7 +58,7 @@ If ARG < 0 then minify the region, otherwise pretty print it."
                                  (delete-and-extract-region begin end)))
     (if-fn% 'json-pretty-print 'json
             (json-pretty-print begin end)
-      (message "pretty print"))))
+      (message "!pp-json had not been implemented"))))
 
 
 
