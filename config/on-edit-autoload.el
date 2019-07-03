@@ -358,17 +358,17 @@ More accurate than `mark-defun'."
 
 ;; isearch
 
-(eval-when-compile
+(defmacro symbol@ ()
+  "Return the symbol at point."
+  `(let ((ss (region-active-if
+                 (prog1
+                     (buffer-substring (region-beginning)
+                                       (region-end))
+                   (setq mark-active nil))
+               (thing-at-point 'symbol))))
+     (and (stringp ss) (substring-no-properties ss))))
 
-  (defmacro _symbol@ ()
-    "Return the symbol at point."
-    `(let ((ss (region-active-if
-                   (prog1
-                       (buffer-substring (region-beginning)
-                                         (region-end))
-                     (setq mark-active nil))
-                 (thing-at-point 'symbol))))
-       (and (stringp ss) (substring-no-properties ss))))
+(eval-when-compile
   
   (defmacro _defun-isearch-forward-or-backward (direction)
     "Define `isearch-forward*' or `isearch-backward*'"
@@ -380,7 +380,7 @@ More accurate than `mark-defun'."
          (interactive "P")
          (,dn nil 1)
          (when (not arg)
-           (let ((s (_symbol@)))
+           (let ((s (symbol@)))
              (when s (isearch-yank-string s))))))))
 
 

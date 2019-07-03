@@ -63,7 +63,7 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
                           #'string=)))
          (w1 (if w w (cons engine "")))
          (url (concat (car w1)
-                      (let ((s (_symbol@)))
+                      (let ((s (symbol@)))
                         (when s (concat (cdr w1) s)))))
          (encoded (progn (require 'browse-url)
                          (browse-url-url-encode-chars url "[ '()]"))))
