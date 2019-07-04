@@ -387,8 +387,7 @@ More accurate than `mark-defun'."
                   `,(symbol-name direction))
          (interactive "P")
          (,dn nil 1)
-         (funcall isearch-toggle-symbol@* arg)
-         (when (funcall isearch-toggle-symbol@*)
+         (when (funcall isearch-toggle-symbol@* arg)
            (let ((s (symbol@)))
              (when s (isearch-yank-string s))))))))
 
