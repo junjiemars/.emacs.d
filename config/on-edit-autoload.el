@@ -368,6 +368,14 @@ More accurate than `mark-defun'."
                (thing-at-point 'symbol))))
      (and (stringp ss) (substring-no-properties ss))))
 
+
+(defvar isearch-toggle-symbol@*
+  (lexical-let% ((toggle))
+    (lambda (&optional n)
+      (if n (setq toggle (not toggle)) toggle)))
+  "Toggle `symbol@' for `isearch-forward*' and `isearch-backward*'.")
+
+
 (eval-when-compile
   
   (defmacro _defun-isearch-forward-or-backward (direction)
@@ -379,7 +387,8 @@ More accurate than `mark-defun'."
                   `,(symbol-name direction))
          (interactive "P")
          (,dn nil 1)
-         (when (not arg)
+         (funcall isearch-toggle-symbol@* arg)
+         (when (funcall isearch-toggle-symbol@*)
            (let ((s (symbol@)))
              (when s (isearch-yank-string s))))))))
 
