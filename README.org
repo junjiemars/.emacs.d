@@ -1348,9 +1348,9 @@ automatically from one Emacs session to the next.
 -  list all bookmarks: @@html:<kbd>@@C-x r l@@html:</kbd>@@
 -  save bookmark to file: @@html:<kbd>@@M-x bookmark-save@@html:</kbd>@@
 
-** Region
+** Rectangle
    :PROPERTIES:
-   :CUSTOM_ID: region
+   :CUSTOM_ID: rectangle
    :END:
 
 - kill rectangle: @@html:<kbd>@@C-x r k@@html:</kbd>@@
