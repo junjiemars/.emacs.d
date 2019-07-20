@@ -1333,9 +1333,9 @@ It's *self-documenting* and great, keep reading it frequently.
 - /view/ the content of register: @@html:<kbd>@@M-x view-register
   <REG>@@html:</kbd>@@
 
-** Bookmarks
+** Bookmark
    :PROPERTIES:
-   :CUSTOM_ID: bookmarks
+   :CUSTOM_ID: bookmark
    :END:
 
 #+ATTR_HTML: :style text-align:left
@@ -1348,9 +1348,9 @@ automatically from one Emacs session to the next.
 -  list all bookmarks: @@html:<kbd>@@C-x r l@@html:</kbd>@@
 -  save bookmark to file: @@html:<kbd>@@M-x bookmark-save@@html:</kbd>@@
 
-** Region and Rectangle
+** Region
    :PROPERTIES:
-   :CUSTOM_ID: region-and-rectangle
+   :CUSTOM_ID: region
    :END:
 
 - kill rectangle: @@html:<kbd>@@C-x r k@@html:</kbd>@@
