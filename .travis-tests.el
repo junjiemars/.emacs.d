@@ -432,4 +432,25 @@
                               (not (eq def #'xxx)))
                             "undefined"))))
 
+(comment
+ (ert-deftest %module:install/delete-package!1 ()
+   (unless *repository-initialized*
+     (initialize-package-repository!)
+     (setq *repository-initialized* t))
+   (should (eq nil (delete-package!1 nil)))
+   (should (eq nil (install-package!1 nil)))
+   (let ((already (assq 'htmlize package-alist)))
+     (if already
+         (progn
+           (should (delete-package!1 'htmlize))
+           (should (install-package!1 'htmlize)))
+       (should (install-package!1 'htmlize)))
+     (should (delete-package!1 'htmlize))
+     (should (install-package!1 '(:name 'htmlize)))
+     (should (delete-package!1 'htmlize))
+     (should (install-package!1 '(:name 'htmlize :version 1.54)))
+     (should (delete-package!1 'htmlize))
+     (when already (should (install-package!1 'htmlize))))))
+
+
 ;; end of file

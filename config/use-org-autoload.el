@@ -11,8 +11,8 @@
 
 ;; fix: Warning (bytecomp): `org-bookmark-jump-unhide' fn might not be
 ;; defined at runtime.
-;; (when-fn% 'org-bookmark-jump-unhide 'org
-;;   (autoload 'org-bookmark-jump-unhide "org"))
+(when-fn% 'org-bookmark-jump-unhide 'org
+  (autoload 'org-bookmark-jump-unhide "org"))
 
 (with-eval-after-load 'org
 
