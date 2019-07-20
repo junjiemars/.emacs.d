@@ -22,9 +22,11 @@
   (define-key (current-global-map) (kbd "M-%") #'query-replace-regexp)
   (define-key (current-global-map) (kbd "C-M-%") #'query-replace)
 
+  ;; Register
   ;; `C-x r g' and `C-x r i' are all bound to insert-register
   ;; let `C-x r g' do `string-insert-rectangle'
   (define-key (current-global-map) (kbd "C-x r g") #'string-insert-rectangle)
+  (define-key% (current-global-map) (kbd "C-x r v") #'view-register)
 
   ;; Revert buffer
   (define-key (current-global-map) (kbd "C-c r b") #'revert-buffer)
@@ -40,8 +42,9 @@
     ;; electric-indent-mode: abolition of `newline' function is not
     ;; the Right Thing
     ;; https://lists.gnu.org/archive/html/emacs-devel/2013-10/msg00407.html
-    (define-key% global-map (kbd "RET") #'electric-newline-and-maybe-indent)
-    (define-key% global-map (kbd "C-j") #'newline))
+    (define-key% (current-global-map) (kbd "RET")
+      #'electric-newline-and-maybe-indent)
+    (define-key% (current-global-map) (kbd "C-j") #'newline))
 
   )
 
