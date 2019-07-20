@@ -195,7 +195,7 @@ reopen the Emacs.
 #+BEGIN_EXAMPLE
     (emacs-home*)
     ├── LICENSE
-    ├── README.md
+    ├── README.org
     ├── config (comment "all stuff here")
     ├── elpa (comment "installed packages")
     ├── init.el (comment "Emacs init file")
@@ -1105,8 +1105,8 @@ perfect.
 - [[#frame][Frame]]
 - [[#window][Window]]
 - [[#register][Register]]
-- [[#bookmarks][Bookmarks]]
-- [[#region-and-rectangle][Region and Rectangle]]
+- [[#bookmark][Bookmark]]
+- [[#rectangle][Rectangle]]
 - [[#keyboard-macro][Keyboard Macro]]
 - [[#dired][Dired]]
 - [[#mnemonic-shell][Shell]]

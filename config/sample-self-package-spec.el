@@ -11,7 +11,9 @@
 (def-self-package-spec
   (list
    :cond t
-   :packages '(markdown-mode htmlize ox-reveal)
+   :packages (list 'markdown-mode
+                   'htmlize
+                   (when-version% <= 25 'ox-reveal))
    :compile `(,(compile-unit% (emacs-home* "config/use-org-autoload.el"))))
   (list
    :cond (executable-find% "latex")
@@ -42,7 +44,7 @@
               (when-version% <= 25.1))
    :packages '(ereader))
   (list
-   :cond (and (when-version% <= 24.4 t)
+   :cond (and (when-version% <= 25.1 t)
               (executable-find% "git"))
    :packages '(magit)
    :compile `(,(compile-unit% (emacs-home* "config/use-magit-autoload.el"))))

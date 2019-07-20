@@ -3,7 +3,7 @@
 ;; More reasonable Emacs on MacOS, Windows and Linux
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; use-org-autoload.el (Lisp Flavoured Erlang)
+;; use-org-autoload.el
 ;;;;
 
 
@@ -11,8 +11,8 @@
 
 ;; fix: Warning (bytecomp): `org-bookmark-jump-unhide' fn might not be
 ;; defined at runtime.
-(when-fn% 'org-bookmark-jump-unhide 'org
-  (autoload 'org-bookmark-jump-unhide "org"))
+;; (when-fn% 'org-bookmark-jump-unhide 'org
+;;   (autoload 'org-bookmark-jump-unhide "org"))
 
 (with-eval-after-load 'org
 
@@ -31,4 +31,4 @@
 
 
 
-;; EOF
+;; end of use-org-autoload.el
