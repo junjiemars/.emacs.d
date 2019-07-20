@@ -1319,10 +1319,8 @@ It's *self-documenting* and great, keep reading it frequently.
    :END:
 
 #+ATTR_HTML: :style text-align:left
-The content of Register cannot accross sessions.
-
 - store /window/ configuration to register: @@html:<kbd>@@C-x r w
-  <REG>@@html:</kbd>@@
+  <REG>@@html:</kbd>@@, but the configuration cannot accross sessions.
 - store /frame/ configuration to register: @@html:<kbd>@@C-x r f
   <REG>@@html:</kbd>@@
 - store current location of point in register: @@html:<kbd>@@C-x r SPC
