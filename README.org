@@ -600,10 +600,10 @@ host.  But =net-utils.el= has some inconveniences:
   IPv6, such as =ping6=, but on Windows OS just one =ping= program and
   with =-6= option.
 
-#+ATTR_HTML: :style text-align:left
-I'd refined common interative commands around =net-utils=, and named
-those commands with =*= prefix. Using @@html:<kbd>@@C-u M-x
-*<command>@@html:</kdb>@@ you can set the options for that <command>.
+#+ATTR_HTML: :style text-align:left I'd refined common interative
+commands around =net-utils=, and named those commands with =*= prefix.
+Using @@html:<kbd>@@C-u M-x *<command>@@html:</kdb>@@ you can set the
+options for that <command>.
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
