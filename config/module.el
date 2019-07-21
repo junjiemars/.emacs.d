@@ -74,7 +74,7 @@
         (package-delete (cadr (assq package package-alist)) t nil)
       (if-version%
           <= 24.4
-          (package-delete (car (assq package package-alist)))
+          (package-delete (cadr (assq package package-alist)))
         (package-delete
          (symbol-name package)
          (mapconcat #'identity
