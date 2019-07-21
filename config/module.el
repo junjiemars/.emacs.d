@@ -80,7 +80,7 @@
          (mapconcat #'identity
                     (mapcar (lambda (x)
                               (number-to-string x))
-                            (aref (assq package package-alist) 0))
+                            (aref (cdr (assq package package-alist)) 0))
                     "."))))))
 
 
