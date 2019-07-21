@@ -64,23 +64,24 @@
                           (aref description 0))
                   ".")))))
 
+
 (defsubst delete-package!1 (package)
   "Delete PACKAGE."
   (when (and (not (null package))
              (symbolp package))
-    (let ((desc (assq package package-alist)))
-      (when desc
-        (if-version% <= 25.0
-                     (package-delete (cadr desc) t nil)
-          (if-version% <= 24.4
-                       (package-delete package)
-            (package-delete
-             (symbol-name package)
-             (mapconcat #'identity
-                        (mapcar (lambda (x)
-                                  (number-to-string x))
-                                (aref (car (assq package package-alist)) 0))
-                        "."))))))))
+    (if-version%
+        <= 25.0
+        (package-delete (cadr (assq package package-alist)) t nil)
+      (if-version%
+          <= 24.4
+          (package-delete (car (assq package package-alist)))
+        (package-delete
+         (symbol-name package)
+         (mapconcat #'identity
+                    (mapcar (lambda (x)
+                              (number-to-string x))
+                            (aref (assq package package-alist) 0))
+                    "."))))))
 
 
 (defsubst install-package! (package &optional tar)
@@ -90,28 +91,6 @@
         <= 25.0
         (package-install package t)
       (package-install package))))
-
-
-(defun install-package!1 (package)
-  "Install PACKAGE."
-  (when (and (not (null package))
-             (or (symbolp package)
-                 (plist-get :name package)))
-    (if-version% <= 25.0
-                 (package-install
-                  (if (symbolp package)
-                      package
-                    (package-desc-create
-                     :name (plist-get :name package)
-                     :version (plist-get :version package)))
-                  nil)
-      (if-version% <= 24.4
-                   (package-install package)
-        (package-install (if (symbolp package)
-                             (symbol-name package)
-                           (plist-get :name package)))))))
-
-
 
 
 ;; Package Initialize
@@ -147,20 +126,25 @@
       (when (self-spec-> s :cond)
         (apply #'compile! (delete nil (self-spec-> s :compile)))))))
 
+
 (defsubst parse-package-spec!1 (spec &optional remove-unused)
   "Parse SPEC, install, remove and setup packages."
   (dolist* (s spec)
     (when (consp s)
       (dolist* (p (self-spec-> s :packages))
-        (if (package-installed-p p)
-            (when (and remove-unused (not (self-spec-> s :cond)))
-              (delete-package!1 p))
-          (when (and (self-spec-> s :cond)
-                     (if *repository-initialized*
-                         t
-                       (initialize-package-repository!)
-                       (setq *repository-initialized* t)))
-            (install-package!1 p))))
+        (let ((ns (check-package-name p)))
+          (when (consp ns)
+            (let ((n (car ns)) (tar (cdr ns)))
+              (if (package-installed-p n)
+                  (when (and remove-unused (not (self-spec-> s :cond)))
+                    (delete-package!1 n))
+                (when (self-spec-> s :cond)
+                  (if tar
+                      (install-package! tar t)
+                    (unless *repository-initialized*
+                      (initialize-package-repository!)
+                      (setq *repository-initialized* t))
+                    (install-package! n))))))))
       (when (self-spec-> s :cond)
         (apply #'compile! (delete nil (self-spec-> s :compile)))))))
 
