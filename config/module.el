@@ -105,7 +105,7 @@
                       (delete-package! n))
                   (when (self-spec-> s :cond)
                     (install-package! (if tar tar n) tar))))
-            (message "!invalid packge-spec: %s" p))))
+            (message "!invalid package-spec: %s" p))))
       (when (self-spec-> s :cond)
         (apply #'compile! (delete nil (self-spec-> s :compile)))))))
 
