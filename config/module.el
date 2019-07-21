@@ -70,6 +70,9 @@
   "Install PACKAGE."
   (if tar
       (package-install-file package)
+    (unless *repository-initialized*
+      (initialize-package-repository!)
+      (setq *repository-initialized* t))
     (if-version%
         <= 25.0
         (package-install package t)
@@ -99,12 +102,7 @@
                   (when (and remove-unused (not (self-spec-> s :cond)))
                     (delete-package! n))
                 (when (self-spec-> s :cond)
-                  (if tar
-                      (install-package! tar t)
-                    (unless *repository-initialized*
-                      (initialize-package-repository!)
-                      (setq *repository-initialized* t))
-                    (install-package! n))))))))
+                  (install-package! (if tar tar n) tar)))))))
       (when (self-spec-> s :cond)
         (apply #'compile! (delete nil (self-spec-> s :compile)))))))
 
