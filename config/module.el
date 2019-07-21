@@ -38,7 +38,9 @@
 
 (defsubst check-package-name (package)
   "Check PACKAGE is a symbol or a tar file."
-  (cond ((symbolp package) (cons package nil))
+  (cond ((and (symbolp package)
+              (not (null package)))
+         (cons package nil))
         ((and (stringp package)
               (file-exists-p package))
          (cons (intern (match-string* "\\(.*\\)-[.0-9]+\\'"
@@ -96,13 +98,14 @@
     (when (consp s)
       (dolist* (p (self-spec-> s :packages))
         (let ((ns (check-package-name p)))
-          (when (consp ns)
-            (let ((n (car ns)) (tar (cdr ns)))
-              (if (package-installed-p n)
-                  (when (and remove-unused (not (self-spec-> s :cond)))
-                    (delete-package! n))
-                (when (self-spec-> s :cond)
-                  (install-package! (if tar tar n) tar)))))))
+          (if (consp ns)
+              (let ((n (car ns)) (tar (cdr ns)))
+                (if (package-installed-p n)
+                    (when (and remove-unused (not (self-spec-> s :cond)))
+                      (delete-package! n))
+                  (when (self-spec-> s :cond)
+                    (install-package! (if tar tar n) tar))))
+            (message "!invalid packge-spec: %s" p))))
       (when (self-spec-> s :cond)
         (apply #'compile! (delete nil (self-spec-> s :compile)))))))
 
