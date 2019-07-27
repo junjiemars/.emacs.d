@@ -101,6 +101,10 @@
 ;; %userprofile%/.cc-env.bat && make -k -C e:/lab/c clean test
 ;; 
 ;;;;
+;; Register/Unregister WinDbg
+;; /HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows NT/CurrentVersion/AeDebug
+;; set Auto to 1 (register) or 0 (unregister)
+;;;;
 
 ;;;;
 ;; require
