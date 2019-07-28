@@ -195,12 +195,24 @@ directory and source-file directory for your debugger."
   
   (set (make-local-variable 'gud-minor-mode) 'lldb)
 
-  (gud-def gud-break    "breakpoint set -f %f -l %l"  "\C-b"   "Set breakpoint at current line.")
-  (gud-def gud-step     "thread step-in"              "\C-s"   "Step one source line with display.")
-  (gud-def gud-next     "thread step-over"            "\C-n"   "Step one line (skip functions).")
-  (gud-def gud-cont     "process continue"            "\C-r"   "Continue with display.")
-  (gud-def gud-finish   "thread step-out"             "\C-f"   "Finish executing current function.")
-  (gud-def gud-print    "expression -- %e"            "\C-p"   "Evaluate C expression at point.")
+  (gud-def gud-break
+           "breakpoint set -f %f -l %l"
+           "\C-b"   "Set breakpoint at current line.")
+  (gud-def gud-step
+           "thread step-in"
+           "\C-s"   "Step one source line with display.")
+  (gud-def gud-next
+           "thread step-over"
+           "\C-n"   "Step one line (skip functions).")
+  (gud-def gud-cont
+           "process continue"
+           "\C-r"   "Continue with display.")
+  (gud-def gud-finish
+           "thread step-out"
+           "\C-f"   "Finish executing current function.")
+  (gud-def gud-print
+           "expression -- %e"
+           "\C-p"   "Evaluate C expression at point.")
 
   (set (make-local-variable 'comint-prompt-regexp) +lldb-prompt-regexp+)
   (set (make-local-variable 'comint-prompt-read-only) t)
