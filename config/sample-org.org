@@ -1,8 +1,8 @@
+#+title: More Reasonable Emacs: Sample of Org
+#+author: 南山竹
 #+startup: entitiespretty
 #+latex_compiler: xelatex
 #+latex_header: \usepackage[utf8x]{inputenc}
-#+title: Sample of Org
-#+author: 南山竹
 
 * Verse
 
