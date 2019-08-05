@@ -22,18 +22,24 @@
 
 (with-eval-after-load 'org
   ;; define key bindings after `org-mode' had been loaded
+  (global-set-key (kbd "C-c o l") 'org-store-link)
+  (global-set-key (kbd "C-c o a") 'org-agenda)
+  (global-set-key (kbd "C-c o c") 'org-capture)
+  (global-set-key (kbd "C-c o s") 'org-switchb)
+
   (global-set-key (kbd "C-c o a") 'org-agenda)
   (global-set-key (kbd "C-c o c") 'org-capture)
   ;; publish blog
-  (setq
-   org-publish-project-alist
-   '(("blog"
-      :base-directory "<your-blog-dir>"
-      :base-extension "org"
-      :publishing-directory "<public/blog/>"
-      :recursive t
-      :publishing-function org-html-publish-to-html)
-     ("website" :components ("blog")))))
+  (when-var% org-publish-project-alist 'org
+    (setq
+     org-publish-project-alist
+     '(("blog"
+        :base-directory "<your-blog-dir>"
+        :base-extension "org"
+        :publishing-directory "<public/blog/>"
+        :recursive t
+        :publishing-function org-html-publish-to-html)
+       ("website" :components ("blog"))))))
 
 
 (comment (setq% enable-local-variables :all 'files))
