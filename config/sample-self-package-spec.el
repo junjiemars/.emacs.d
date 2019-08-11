@@ -13,8 +13,7 @@
    :cond t
    :packages (list 'markdown-mode
                    'htmlize
-                   (when-version% <= 25 'ox-reveal))
-   :compile `(,(compile-unit% (emacs-home* "config/use-org-autoload.el"))))
+                   (when-version% <= 25 'ox-reveal)))
   (list
    :cond (executable-find% "latex")
    :packages '(auctex cdlatex))

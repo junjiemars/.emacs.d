@@ -3,9 +3,7 @@
 ;; use-magit-autoload.el
 ;;
 
-
-(defun use-magit! ()
-  
+(with-eval-after-load 'magit
   (when-platform% 'windows-nt
     
     (when (executable-find% "git" t)
@@ -46,10 +44,6 @@
     (if-fn% #'magit-fetch-other 'magit
             #'magit-fetch-other
       #'magit-fetch)))
-
-
-(with-eval-after-load 'magit
-  (use-magit!))
 
 
 (when-fn% 'magit-status 'magit

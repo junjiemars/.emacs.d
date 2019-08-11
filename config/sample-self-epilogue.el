@@ -22,13 +22,6 @@
 
 (with-eval-after-load 'org
   ;; define key bindings after `org-mode' had been loaded
-  (global-set-key (kbd "C-c o l") 'org-store-link)
-  (global-set-key (kbd "C-c o a") 'org-agenda)
-  (global-set-key (kbd "C-c o c") 'org-capture)
-  (global-set-key (kbd "C-c o s") 'org-switchb)
-
-  (global-set-key (kbd "C-c o a") 'org-agenda)
-  (global-set-key (kbd "C-c o c") 'org-capture)
   ;; publish blog
   (when-var% org-publish-project-alist 'org
     (setq
