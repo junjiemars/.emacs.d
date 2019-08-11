@@ -32,10 +32,8 @@
   (when-var% org-catch-invisible-edits 'org t)
 
   ;; define keys
-  (when-fn% 'org-store-link 'org
-    (define-key% (current-global-map) (kbd "C-c o l") #'org-store-link))
-  (when-fn% 'org-agenda 'org
-    (define-key% (current-global-map) (kbd "C-c o a") #'org-agenda))
+  (define-key% (current-global-map) (kbd "C-c o l") #'org-store-link)
+  (define-key% (current-global-map) (kbd "C-c o a") #'org-agenda)
   (when-fn% 'org-capture 'org
     (define-key% (current-global-map) (kbd "C-c o c") #'org-capture))
   (when-fn% 'org-switchb 'org
