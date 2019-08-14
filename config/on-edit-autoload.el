@@ -542,4 +542,18 @@ directory name of `buffer-file-name' to kill ring."
 (make-thread* (ido-mode t))
 
 
+(defun multi-occur-in-matching-major-mode (&optional mode)
+  "Show all lines matching REGEXP in buffers specified by `major-mode'."
+  (interactive
+   (list (read-from-minibuffer
+          "List lines in buffers whose major-mode match regexp: "
+          (symbol-name major-mode))))
+  (multi-occur (remove-if* (lambda (buffer)
+                             (with-current-buffer buffer
+                               (unless (string= mode (symbol-name major-mode))
+                                 buffer)))
+                   (buffer-list))
+               (car (occur-read-primary-args))))
+
+
 ;; end of file
