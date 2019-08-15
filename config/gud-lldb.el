@@ -115,6 +115,14 @@ stack frame information for threads. "
   (gud-call (lldb-settings "set" "stop-line-count-after" "0")))
 
 
+(defun lldb-toggle-breakpoint ()
+  "Enable/disable breakpoint at current line of breakpoints buffer."
+  (save-excursion
+    (beginning-of-line)
+    (if (get-text-property (point) 'gud-breakpoint)
+        "breakpoint clear -f %f -l %l"
+      "breakpoint set -f %f -l %l")))
+
 
 
 
@@ -196,7 +204,8 @@ directory and source-file directory for your debugger."
   (set (make-local-variable 'gud-minor-mode) 'lldb)
 
   (gud-def gud-break
-           "breakpoint set -f %f -l %l"
+           (gud-call (lldb-toggle-breakpoint))
+           ;; "breakpoint set -f %f -l %l"
            "\C-b"   "Set breakpoint at current line.")
   (gud-def gud-step
            "thread step-in"

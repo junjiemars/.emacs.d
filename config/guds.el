@@ -92,12 +92,14 @@ BUFFER nil or omitted means use the current buffer."
      (line-end-position offset))))
 
 
-(defun gud-put-breakpoint-icon (enabled bptno &optional line)
+(defun gud-put-breakpoint-icon (enabled &optional line)
   ""
-  (let ((posns (gud-line-positions (or line (line-number-at-pos))))
-        (source-window (get-buffer-window (current-buffer) 0)))
-    (gud-remove-breakpoint-icons (- (car posns) 1)
-                                 (+ (cdr posns) 1))
+  (let* ((posns (gud-line-positions (or line (line-number-at-pos))))
+         (source-window (get-buffer-window (current-buffer) 0))
+         (start (- (car posns) 1))
+         (end (+ (cdr posns) 1))
+         (putstring (if enabled "B" "b")))
+    (gud-remove-breakpoint-icons start end)
     (when (< left-margin-width 2)
       (save-current-buffer
         (setq left-margin-width 2)
@@ -105,11 +107,17 @@ BUFFER nil or omitted means use the current buffer."
           (set-window-margins source-window
                               left-margin-width
                               right-margin-width))))
-    (gud-put-string (propertize (if enabled "B" "b")
+    (gud-put-string (propertize putstring
                                 'face (if enabled
                                           'gud-breakpoint-enabled
                                         'gud-breakpoint-disabled))
-                    (+ start 1))))
+                    (+ start 1))
+    (put-text-property start end
+                       'gud-breakpoint
+                       (if enabled t nil))))
+
+
+
 
 
 
