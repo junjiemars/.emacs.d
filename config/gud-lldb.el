@@ -119,9 +119,14 @@ stack frame information for threads. "
   "Enable/disable breakpoint at current line of breakpoints buffer."
   (save-excursion
     (beginning-of-line)
-    (if (get-text-property (point) 'gud-breakpoint)
-        "breakpoint set -f %f -l %l"
-      "breakpoint clear -f %f -l %l")))
+    (let ((enabled (if-fn% 'gud-toggle-breakpoint-notation 'guds
+                           (progn (require 'guds)
+                                  (gud-toggle-breakpoint-notation))
+                     t)))
+      (if enabled
+          "breakpoint set -f %f -l %l"
+        "breakpoint clear -f %f -l %l"))))
+
 
 
 
@@ -204,12 +209,8 @@ directory and source-file directory for your debugger."
   (set (make-local-variable 'gud-minor-mode) 'lldb)
 
   (gud-def gud-break
-           (progn%
-            (when-fn% 'gud-toggle-breakpoint-notation 'guds
-              (require 'guds)
-              (gud-toggle-breakpoint-notation))
-            (gud-call (lldb-toggle-breakpoint)))
-           "\C-b"   " breakpoint at current line.")
+           (gud-call (lldb-toggle-breakpoint))
+           "\C-b"   "Set breakpoint at current line.")
   (gud-def gud-step
            "thread step-in"
            "\C-s"   "Step one source line with display.")
