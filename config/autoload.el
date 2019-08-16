@@ -118,6 +118,7 @@
           "Run lldb on program FILE in buffer *gud-FILE*." t))
     (when% (executable-find% "lldb")
       (compile!
+        (compile-unit% (emacs-home* "config/guds.el") t)
         (compile-unit% (emacs-home* "config/gud-lldb.el") t))
       (autoload 'lldb (v-home% "config/gud-lldb.elc")
         "Run cdb on program FILE in buffer *gud-FILE*." t)))

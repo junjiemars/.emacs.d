@@ -62,26 +62,13 @@ PUTSTRING."
 
 (defun gud-remove-strings (start end &optional buffer)
   "Remove strings between START and END in BUFFER.
-Remove only strings that were put in BUFFER with calls to `gdb-put-string'.
+Remove only strings that were put in BUFFER with calls to `gud-put-string'.
 BUFFER nil or omitted means use the current buffer."
   (unless buffer
     (setq buffer (current-buffer)))
   (dolist (overlay (overlays-in start end))
     (when (overlay-get overlay 'put-break)
       (delete-overlay overlay))))
-
-
-(defun gud-remove-breakpoint-icons (start end &optional remove-margin)
-  ""
-  (gud-remove-strings start end)
-  (if (display-images-p)
-      (remove-images start end))
-  (when remove-margin
-    (setq left-margin-width 0)
-    (let ((window (get-buffer-window (current-buffer) 0)))
-      (if window
-          (set-window-margins
-           window left-margin-width right-margin-width)))))
 
 
 (defun gud-line-positions (line)
@@ -92,29 +79,31 @@ BUFFER nil or omitted means use the current buffer."
      (line-end-position offset))))
 
 
-(defun gud-put-breakpoint-icon (enabled &optional line)
-  ""
-  (let* ((posns (gud-line-positions (or line (line-number-at-pos))))
+(defun gud-toggle-breakpoint-notation ()
+  "Toggle the notation of current breakpoint."
+  (let* ((posns (gud-line-positions (line-number-at-pos)))
          (source-window (get-buffer-window (current-buffer) 0))
          (start (- (car posns) 1))
          (end (+ (cdr posns) 1))
-         (putstring (if enabled "B" "b")))
-    (gud-remove-breakpoint-icons start end)
-    (when (< left-margin-width 2)
-      (save-current-buffer
-        (setq left-margin-width 2)
-        (when source-window
-          (set-window-margins source-window
-                              left-margin-width
-                              right-margin-width))))
-    (gud-put-string (propertize putstring
-                                'face (if enabled
-                                          'gud-breakpoint-enabled
-                                        'gud-breakpoint-disabled))
-                    (+ start 1))
+         (enabled (get-text-property (point) 'gud-breakpoint))
+         (putstring "B"))
+    (if enabled
+        (gud-remove-strings start end)
+      (when (< left-margin-width 2)
+        (save-current-buffer
+          (setq left-margin-width 2)
+          (when source-window
+            (set-window-margins source-window
+                                left-margin-width
+                                right-margin-width))))
+      (gud-put-string (propertize putstring
+                                  'face (if (not enabled)
+                                            'gud-breakpoint-enabled
+                                          'gud-breakpoint-disabled))
+                      (+ start 1)))
     (put-text-property start end
                        'gud-breakpoint
-                       (if enabled t nil))))
+                       (not enabled))))
 
 
 
