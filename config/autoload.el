@@ -113,6 +113,7 @@
   (if-platform% 'windows-nt
       (when% (executable-find% "cdb")
         (compile!
+          (compile-unit% (emacs-home* "config/guds.el") t)
           (compile-unit% (emacs-home* "config/gud-cdb.el") t))
         (autoload 'cdb (v-home% "config/gud-cdb.elc")
           "Run lldb on program FILE in buffer *gud-FILE*." t))
