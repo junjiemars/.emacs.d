@@ -209,7 +209,8 @@ directory and source-file directory for your debugger."
   (set (make-local-variable 'gud-minor-mode) 'lldb)
 
   (gud-def gud-break
-           (gud-call (lldb-toggle-breakpoint))
+           (progn (ignore* arg)
+                  (gud-call (lldb-toggle-breakpoint)))
            "\C-b"   "Set breakpoint at current line.")
   (gud-def gud-step
            "thread step-in"

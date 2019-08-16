@@ -27,18 +27,18 @@
   :group 'gud)
 
 
-(defface gud-breakpoint-disabled
-  '((((class color) (min-colors 88)) :foreground "grey70")
-    ;; Ensure that on low-color displays that we end up something visible.
-    (((class color) (min-colors 8) (background light))
-     :foreground "black")
-    (((class color) (min-colors 8) (background dark))
-     :foreground "white")
-    (((type tty) (class mono))
-     :inverse-video t)
-    (t :background "gray"))
-  "Face for disabled breakpoint icon in fringe."
-  :group 'gud)
+;; (defface gud-breakpoint-disabled
+;;   '((((class color) (min-colors 88)) :foreground "grey70")
+;;     ;; Ensure that on low-color displays that we end up something visible.
+;;     (((class color) (min-colors 8) (background light))
+;;      :foreground "black")
+;;     (((class color) (min-colors 8) (background dark))
+;;      :foreground "white")
+;;     (((type tty) (class mono))
+;;      :inverse-video t)
+;;     (t :background "gray"))
+;;   "Face for disabled breakpoint icon in fringe."
+;;   :group 'gud)
 
 
 
@@ -102,9 +102,7 @@ to `gud-put-string'."
                                   left-margin-width
                                   right-margin-width)))))
       (gud-put-string (propertize "B"
-                                  'face (if (not enabled)
-                                            'gud-breakpoint-enabled
-                                          'gud-breakpoint-disabled))
+                                  'face 'gud-breakpoint-enabled)
                       (car (gud-line-positions (line-number-at-pos)))))
     (not enabled)))
 

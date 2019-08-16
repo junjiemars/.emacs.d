@@ -332,14 +332,30 @@ directory and source-file directory for your debugger."
 
   (set (make-local-variable 'gud-minor-mode) 'cdb)
 
-  (gud-def gud-break  "bu `%d%f:%l` "     "\C-b" "Set breakpoint at current line.")
-  (gud-def gud-tbreak "bu /1 `%d%f:%l` "  "\C-t" "Set temporary breakpoint at current line.")
-  (gud-def gud-step   "t "                "\C-s" "Step one source line with display.")
-  (gud-def gud-next   "p "                "\C-n" "Step one line (skip functions).")
-  (gud-def gud-cont   "g "                "\C-r" "Continue with display.")
-  (gud-def gud-finish "g @$ra "           "\C-f" "Finish executing current function.")
-  (gud-def gud-jump   "g `%d%f:%l` "      "\C-j" "Set execution address to current line.")
-  (gud-def gud-print  "?? %e "            "\C-p" "Evaluate C expression at point.")
+  (gud-def gud-break
+           "bu `%d%f:%l` "
+           "\C-b" "Set breakpoint at current line.")
+  (gud-def gud-tbreak
+           "bu /1 `%d%f:%l` "
+           "\C-t" "Set temporary breakpoint at current line.")
+  (gud-def gud-step
+           "t "
+           "\C-s" "Step one source line with display.")
+  (gud-def gud-next
+           "p "
+           "\C-n" "Step one line (skip functions).")
+  (gud-def gud-cont
+           "g "
+           "\C-r" "Continue with display.")
+  (gud-def gud-finish
+           "g @$ra "
+           "\C-f" "Finish executing current function.")
+  (gud-def gud-jump
+           "g `%d%f:%l` "
+           "\C-j" "Set execution address to current line.")
+  (gud-def gud-print
+           "?? %e "
+           "\C-p" "Evaluate C expression at point.")
 
   (setq comint-prompt-regexp +cdb-prompt-regexp+)
   (setq comint-prompt-read-only t)
