@@ -293,11 +293,16 @@ buffer; thus, you can filter the debugger's output, interpreting
 some and passing on the rest.
 "
   ;; (setq gud-marker-acc (concat gud-marker-acc string))
-  (cond ((string-match "^\\(.*\\)(\\([0-9]+\\))\n" string)
-         ;; Breakpoint 0 hit
-         ;; e:\lab\c\src\c.c(9)
-         ;; c!main:
-         ;; 00007ff7`5a036580 4889542410      mov     qword ptr [rsp+10h],rdx ss:000000c5`9b0ff788=0000000000000000
+  (cond ((or
+          ;; g
+          ;; Breakpoint 0 hit
+          ;; e:\lab\c\src\c.c(9)
+          ;; c!main:
+          ;; 00007ff7`5a036580 4889542410      mov     qword ptr [rsp+10h],rdx ss:000000c5`9b0ff788=0000000000000000
+          (string-match "^\\(.*\\)(\\([0-9]+\\))\n" string)
+          ;; .frame
+          ;; 00 000000f0`f44ffea0 00007ff7`b6f173c7 algo_algo_!test_comp_str+0x1c [e:\lab\c\src\c.c @ 9]
+          (string-match "\\[\\(.*\\) @ \\([0-9]+\\)\\]$" string))
          (setq gud-last-frame (cons (match-string 1 string)
                                     (string-to-number (match-string 2 string)))))
 
@@ -310,8 +315,7 @@ some and passing on the rest.
          ;; 00007ffe`a10005f4 c3              reto
          (setq gud-last-last-frame nil)
          (gud-display-frame)
-         (setq gud-overlay-arrow-position nil))
-        )
+         (setq gud-overlay-arrow-position nil)))
   string)
 
 
