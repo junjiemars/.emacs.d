@@ -241,19 +241,19 @@ in `gud-cdb-directories'.
   (modify-syntax-entry ?. "_" (syntax-table)))
 
 
-(defun cdb-toggle-breakpoint ()
-  "Enable/disable breakpoint at current line of breakpoints buffer."
-  (save-excursion
-    (beginning-of-line)
-    (let ((enabled (if-fn% 'gud-toggle-breakpoint-notation 'guds
-                           (progn (require 'guds)
-                                  (gud-toggle-breakpoint-notation))
-                     t)))
-      (if enabled
-          "bu `%d%f:%l`"
-        ;; bc doesn't work now and `linum-mode' slow down breakpoing
-        ;; notataion
-        "bl"))))
+;; (defun cdb-toggle-breakpoint ()
+;;   "Enable/disable breakpoint at current line of breakpoints buffer."
+;;   (save-excursion
+;;     (beginning-of-line)
+;;     (let ((enabled (if-fn% 'gud-toggle-breakpoint-notation 'guds
+;;                            (progn (require 'guds)
+;;                                   (gud-toggle-breakpoint-notation))
+;;                      t)))
+;;       (if enabled
+;;           "bu `%d%f:%l`"
+;;         ;; bc doesn't work now and `linum-mode' slow down breakpoing
+;;         ;; notataion
+;;         "bl"))))
 
 
 
@@ -351,8 +351,9 @@ directory and source-file directory for your debugger."
   (set (make-local-variable 'gud-minor-mode) 'cdb)
 
   (gud-def gud-break
-           (progn (ignore* arg)
-                  (gud-call (cdb-toggle-breakpoint)))
+           "bu `%d%f:%l`"
+           ;; (progn (ignore* arg)
+           ;;        (gud-call (cdb-toggle-breakpoint)))
            "\C-b" "Set breakpoint at current line.")
   (gud-def gud-tbreak
            "bu /1 `%d%f:%l` "
