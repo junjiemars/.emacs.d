@@ -259,6 +259,17 @@
   (should (char=* ?a ?a ?a))
   (should-not (char=* ?a ?a ?a ?b)))
 
+(ert-deftest %basic:file-in-dirs-p ()
+  (should (null (file-in-dirs-p (emacs-home* "init.el") nil)))
+  (should (file-in-dirs-p (emacs-home* "init.el")
+            (list (emacs-home*))))
+  (should (file-in-dirs-p (emacs-home* "init.elx")
+            (list (emacs-home*))))
+  (should (file-in-dirs-p (emacs-home* "init.el")
+            (list (string-trim> (emacs-home*) "/"))))
+  (should (file-in-dirs-p (emacs-home* "init.el")
+            nil (emacs-home* "config/") (emacs-home*))))
+
 (ert-deftest %basic:save-sexp-to-file ()
   (let ((f (emacs-home* "private/x.el")))
     (should (and (save-sexp-to-file '(defvar test%basic-sstf1 t) f)

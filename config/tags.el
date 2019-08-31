@@ -61,6 +61,12 @@ when `desktop-globals-to-save' include it."
   :type 'string
   :group 'tags)
 
+(defcustom% tags-in-view-mode
+  `(list source-directory)
+  "The `current-buffer' should open in `view-mode'."
+  :type 'list
+  :group 'tags)
+
 
 (defun mount-tags (&rest tags-file)
   "Mount existing TAGS-FILE into `tags-table-list'."
@@ -184,11 +190,68 @@ Example:
       (when (make-tags home
                        tags-file
                        (lambda (f _)
-                         (not (string-match "\\\.tags$" f)))
+                         (not (string-match
+                               "\\\.tags$" f)))
                        (lambda (d _)
-                         (not (string-match "^\\\.git/$\\|^out/$\\|^build/$" d)))
+                         (not (string-match
+                               "^\\\.git/$\\|^out/$\\|^build/$" d)))
                        renew)
         (mount-tags tags-file)))))
+
+
+;; go into `view-mode'
+
+;; `find-tag' or `xref-find-definitions' into `view-mode'
+(if-fn% 'xref-find-definitions 'xref
+        (progn
+          ;; `xref-find-definitions' into `view-mode'
+          (defadvice xref-find-definitions
+              (after xref-find-definitions-after compile)
+            (with-current-buffer (current-buffer)
+              (when (file-in-dirs-p (substring-no-properties
+                                     (buffer-file-name (current-buffer)))
+                                    tags-in-view-mode)
+                (view-mode 1))))
+          
+          (with-eval-after-load 'xref
+            (ad-activate #'xref-find-definitions t)))
   
+  ;; pop-tag-mark same as Emacs22+ for ancient Emacs
+  (when-fn% 'pop-tag-mark 'etags
+    (with-eval-after-load 'etags
+      ;; define keys for `pop-tag-mark' and `tags-loop-continue'
+      (define-key% (current-global-map) (kbd "M-,") #'pop-tag-mark)
+      (define-key% (current-global-map) (kbd "M-*") #'tags-loop-continue)))
+
+  ;; find-tag into `view-mode'
+  (defadvice find-tag (after find-tag-after compile)
+    (with-current-buffer (current-buffer)
+      (when (file-in-dirs-p (substring-no-properties
+                             (buffer-file-name (current-buffer)))
+                            tags-in-view-mode)
+        (view-mode 1))))
+  
+  (with-eval-after-load 'etags
+    (ad-activate #'find-tag t)))
+
+;; open emacs source in `view-mode'
+(with-eval-after-load 'help-mode
+
+  (lexical-let% ((help-fn (button-type-get 'help-function-def 'help-function)))
+    (button-type-put
+     'help-function-def 'help-function
+     #'(lambda (fn &optional file)
+         (funcall help-fn fn file)
+         (view-mode 1))))
+
+  (lexical-let% ((help-fn (button-type-get 'help-variable-def 'help-function)))
+    (button-type-put
+     'help-variable-def 'help-function
+     #'(lambda (var &optional file)
+         (funcall help-fn var file)
+         (view-mode 1)))))
+
+ ;; end of go into `view-mode'
+
 
 (provide 'tags)

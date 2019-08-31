@@ -40,11 +40,13 @@
 (comment
  ;; using etags to view Emacs's source code: C and Elisp
  ;; support any platform
- (setq source-directory
-       (let ((srcdir (format "/opt/open/emacs-%s/"
-           emacs-major-version)))
-   (when (file-exists-p srcdir)
-     srcdir))))
+ (add-to-list 'tags-in-view-mode
+              (setq source-directory
+                    (let ((srcdir (format "/opt/open/emacs-%s/"
+                                          emacs-major-version)))
+                      (when (file-exists-p srcdir)
+                        srcdir)))
+              nil #'string=))
 
 (comment
  ;; if current Emacs session support `semantic-mode'

@@ -193,15 +193,11 @@ include directories. The REMOTE argument from `remote-norm-file'."
   "Return t if FILE in `cc*-system-include', otherwise nil."
   (when (stringp file)
     (let ((remote (remote-norm-file file)))
-      (member** (string-trim> (file-name-directory file) "/")
-                (if remote
-                    (cc*-system-include t remote)
-                  (append (cc*-system-include t)
-                          (cc*-extra-include t)))
-                :test (lambda (a b)
-                        (let ((case-fold-search
-                               (when-platform% 'windows-nt t)))
-                          (string-match b a)))))))
+      (file-in-dirs-p (file-name-directory file)
+                      (if remote
+                          (cc*-system-include t remote)
+                        (append (cc*-system-include t)
+                                (cc*-extra-include t)))))))
 
 
 (defun cc*-view-include (buffer)
