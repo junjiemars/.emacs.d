@@ -69,17 +69,19 @@ when `desktop-globals-to-save' include it."
   :group 'tags)
 
 
-(defun mount-tags (tags)
-  "Mount existing TAGS into `tags-table-list'."
-  (interactive "bmount tags from: ")
+(defun mount-tags (tags &optional arg)
+  "Mount existing TAGS into `tags-table-list'.
+With prefix ARG decide to append the end of `tags-table-list' or not."
+  (interactive "bmount tags from: \nP")
   (let ((file (if (and (stringp tags)
                        (string= tags (buffer-name (current-buffer))))
                   (substring-no-properties
                    (buffer-file-name (current-buffer)))
-                tags)))
+                tags))
+        (tail (when arg t)))
     (when (and (stringp tags)
                (file-exists-p tags))
-      (add-to-list 'tags-table-list file t #'string=))))
+      (add-to-list 'tags-table-list file tail #'string=))))
 
 
 (defun unmount-tags (tags)
