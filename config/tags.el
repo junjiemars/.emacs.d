@@ -68,21 +68,30 @@ when `desktop-globals-to-save' include it."
   :group 'tags)
 
 
-(defun mount-tags (&rest tags-file)
-  "Mount existing TAGS-FILE into `tags-table-list'."
-  (declare (indent 0))
-  (let ((mounted nil))
-    (dolist* (x tags-file (nreverse mounted))
-      (when (file-exists-p x)
-        (add-to-list 'tags-table-list x t #'string=)
-        (setq mounted (cons x mounted))))))
+(defun mount-tags (tags)
+  "Mount existing TAGS into `tags-table-list'."
+  (interactive "bmount tags from: ")
+  (let ((file (if (and (stringp tags)
+                       (string= tags (buffer-name (current-buffer))))
+                  (substring-no-properties
+                   (buffer-file-name (current-buffer)))
+                tags)))
+    (when (and (stringp tags)
+               (file-exists-p tags))
+      (add-to-list 'tags-table-list file t #'string=))))
 
 
-(defun unmount-tags (tags-file)
-  "Unmount TAGS-FILE from `tags-table-list'."
-  (when tags-file
-    (setq tags-table-list
-          (remove** tags-file tags-table-list :test #'string=))))
+(defun unmount-tags (tags)
+  "Unmount TAGS from `tags-table-list'."
+  (interactive "bunmount tags from: ")
+  (let ((file (if (and (stringp tags)
+                       (string= tags (buffer-name (current-buffer))))
+                  (substring-no-properties
+                   (buffer-file-name (current-buffer)))
+                tags)))
+    (when (stringp file)
+      (setq tags-table-list
+            (remove** file tags-table-list :test #'string=)))))
 
 
 (defun make-tags (home tags-file file-filter dir-filter &optional renew)
