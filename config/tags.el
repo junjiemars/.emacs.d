@@ -61,6 +61,7 @@ when `desktop-globals-to-save' include it."
   :type 'string
   :group 'tags)
 
+
 (defcustom% tags-in-view-mode
   `(list source-directory)
   "The `current-buffer' should open in `view-mode'."
@@ -192,7 +193,7 @@ Example:
 
 (defun make-dir-tags (dir &optional renew)
   "Make and mount tags for specified DIR."
-  (interactive "D make tags in ")
+  (interactive "Dmake tags in ")
   (when (file-exists-p dir)
     (let* ((home (path+ (expand-file-name dir)))
            (tags-file (concat home ".tags")))
