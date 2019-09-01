@@ -118,14 +118,15 @@ RENEW overwrite the existing tags file when t else create it.
                    file-filter
                    dir-filter
                    (lambda (f)
-                     (message "make-tags: %s ... %s"
-                              f
-                              (if (zerop
-                                   (car (shell-command*
-                                            (format tags-program tags-file
-                                                    (shell-quote-argument f)
-                                                    (shell-quote-argument f)))))
-                                  "ok" "failed")))
+                     (message
+                      "make-tags: %s ... %s"
+                      f
+                      (if (zerop
+                           (car (shell-command*
+                                    (format tags-program tags-file
+                                            (shell-quote-argument f)
+                                            (shell-quote-argument f)))))
+                          "ok" "failed")))
                    nil)
       (when (file-exists-p tags-file)
         (add-to-list 'tags-table-list tags-file t #'string=)
