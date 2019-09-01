@@ -63,7 +63,12 @@ when `desktop-globals-to-save' include it."
 
 
 (defcustom% tags-in-view-mode
-  `(list source-directory)
+  `(list source-directory
+         (when-var% package-user-dir 'package
+           package-user-dir)
+         (v-home* "config/")
+         (v-home* "private/")
+         (v-home* "theme/"))
   "The `current-buffer' should open in `view-mode'."
   :type 'list
   :group 'tags)
@@ -75,8 +80,7 @@ With prefix ARG decide to append the end of `tags-table-list' or not."
   (interactive "bmount tags from: \nP")
   (let ((file (if (and (stringp tags)
                        (string= tags (buffer-name (current-buffer))))
-                  (substring-no-properties
-                   (buffer-file-name (current-buffer)))
+                  (buffer-file-name* (current-buffer))
                 tags))
         (tail (when arg t)))
     (when (and (stringp tags)
@@ -89,8 +93,7 @@ With prefix ARG decide to append the end of `tags-table-list' or not."
   (interactive "bunmount tags from: ")
   (let ((file (if (and (stringp tags)
                        (string= tags (buffer-name (current-buffer))))
-                  (substring-no-properties
-                   (buffer-file-name (current-buffer)))
+                  (buffer-file-name* (current-buffer))
                 tags)))
     (when (stringp file)
       (setq tags-table-list
@@ -221,8 +224,7 @@ Example:
           (defadvice xref-find-definitions
               (after xref-find-definitions-after compile)
             (with-current-buffer (current-buffer)
-              (when (file-in-dirs-p (substring-no-properties
-                                     (buffer-file-name (current-buffer)))
+              (when (file-in-dirs-p (buffer-file-name* (current-buffer))
                                     tags-in-view-mode)
                 (view-mode 1))))
           
@@ -239,8 +241,7 @@ Example:
   ;; find-tag into `view-mode'
   (defadvice find-tag (after find-tag-after compile)
     (with-current-buffer (current-buffer)
-      (when (file-in-dirs-p (substring-no-properties
-                             (buffer-file-name (current-buffer)))
+      (when (file-in-dirs-p (buffer-file-name* (current-buffer))
                             tags-in-view-mode)
         (view-mode 1))))
   

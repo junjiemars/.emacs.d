@@ -259,16 +259,17 @@
   (should (char=* ?a ?a ?a))
   (should-not (char=* ?a ?a ?a ?b)))
 
+(ert-deftest %basic:buffer-file-name* ()
+  (should (null (buffer-file-name* (get-buffer "*scratch*")))))
+
 (ert-deftest %basic:file-in-dirs-p ()
   (should (null (file-in-dirs-p (emacs-home* "init.el") nil)))
   (should (file-in-dirs-p (emacs-home* "init.el")
-            (list (emacs-home*))))
+                          (list (emacs-home*))))
   (should (file-in-dirs-p (emacs-home* "init.elx")
-            (list (emacs-home*))))
+                          (list (emacs-home*))))
   (should (file-in-dirs-p (emacs-home* "init.el")
-            (list (string-trim> (emacs-home*) "/"))))
-  (should (file-in-dirs-p (emacs-home* "init.el")
-            nil (emacs-home* "config/") (emacs-home*))))
+                          (list (string-trim> (emacs-home*) "/")))))
 
 (ert-deftest %basic:save-sexp-to-file ()
   (let ((f (emacs-home* "private/x.el")))

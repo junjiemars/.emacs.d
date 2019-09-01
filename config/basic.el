@@ -401,6 +401,15 @@ See also`define-hash-table-test'."
                      ,file)))
 
 
+(defmacro buffer-file-name* (buffer)
+  "Return the name of BUFFER only if BUFFER assocate with a file."
+  (let ((b (gensym*)))
+    `(when (bufferp ,buffer)
+       (let ((,b (buffer-file-name ,buffer)))
+         (when (stringp ,b)
+           (substring-no-properties ,b))))))
+
+
 (defmacro file-in-dirs-p (file dirs)
   "Return t if FILE in DIRS, otherwise nil."
   `(member** (file-name-directory ,file)
