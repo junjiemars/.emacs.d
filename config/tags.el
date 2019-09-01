@@ -248,6 +248,7 @@ Example:
   (with-eval-after-load 'etags
     (ad-activate #'find-tag t)))
 
+
 ;; open emacs source in `view-mode'
 (with-eval-after-load 'help-mode
 

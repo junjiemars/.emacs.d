@@ -412,13 +412,15 @@ See also`define-hash-table-test'."
 
 (defmacro file-in-dirs-p (file dirs)
   "Return t if FILE in DIRS, otherwise nil."
-  `(member** (file-name-directory ,file)
-             ,dirs
-             :test (lambda (a b)
-                     (let ((case-fold-search
-                            (when-platform% 'windows-nt t)))
-                       (string-match (string-trim> b "/")
-                                     a)))))
+  `(when (and (stringp ,file)
+              (consp ,dirs))
+     (member** (file-name-directory ,file)
+               ,dirs
+               :test (lambda (a b)
+                       (let ((case-fold-search
+                              (when-platform% 'windows-nt t)))
+                         (string-match (string-trim> b "/")
+                                       a))))))
 
 
 (defun dir-iterate (dir ff df fn dn)
