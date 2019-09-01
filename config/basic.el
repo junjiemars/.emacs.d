@@ -419,8 +419,9 @@ See also`define-hash-table-test'."
                :test (lambda (a b)
                        (let ((case-fold-search
                               (when-platform% 'windows-nt t)))
-                         (string-match (string-trim> b "/")
-                                       a))))))
+                         (when (stringp b)
+                           (string-match (string-trim> b "/")
+                                         a)))))))
 
 
 (defun dir-iterate (dir ff df fn dn)
