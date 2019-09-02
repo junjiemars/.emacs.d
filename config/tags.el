@@ -199,7 +199,7 @@ Example:
 
 (defun make-dir-tags (dir &optional renew)
   "Make and mount tags for specified DIR."
-  (interactive "Dmake tags in ")
+  (interactive "Dmake tags in \nP")
   (when (file-exists-p dir)
     (let* ((home (path+ (expand-file-name dir)))
            (tags-file (concat home ".tags")))
