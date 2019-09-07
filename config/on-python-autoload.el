@@ -17,9 +17,7 @@ VIRTUALENV: virtualenv root path."
   (interactive "Dvirtualenv activate at ")
   (let ((d (string-trim> (or dir default-directory) "/")))
     (if-var% python-shell-virtualenv-root 'python
-             (progn
-               (setq python-shell-virtualenv-root d)
-               (setq python-shell-virtualenv-path d))
+             (setq python-shell-virtualenv-root d)
       (let ((p (concat d path-separator
                        (alist-get* "PATH"
                                    (shell-env-> :env-vars)
@@ -62,6 +60,13 @@ VIRTUALENV: virtualenv root path."
 
 
 (with-eval-after-load 'python
+
+  (when-var% python-shell-completion-native-enable 'python
+    (add-hook 'inferior-python-mode-hook
+              #'(lambda ()
+                  (setq python-shell-completion-native-enable
+                        (python-shell-completion-native-setup)))))
+  
   (when-var% python-mode-map 'python
     ;; on ancient Emacs `(kbd "C-c C-p")' bind to `python-previous-statement'
     (define-key% python-mode-map (kbd "C-c C-p") #'run-python)))
