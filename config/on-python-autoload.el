@@ -18,21 +18,23 @@ VIRTUALENV: virtualenv root path."
   (let ((d (string-trim> (or dir default-directory) "/")))
     (if-var% python-shell-virtualenv-root 'python
              (setq python-shell-virtualenv-root d)
-      (let ((p (concat d path-separator
-                       (alist-get* "PATH"
-                                   (shell-env-> :env-vars)
-                                   (getenv "PATH")
-                                   nil
-                                   #'string=))))
-        (if-var% python-shell-process-environment 'python
-                 (setq python-shell-process-environment
-                       (list
-                        (concat "PYTHONPATH=" p)
-                        (concat "PYTHONHOME=" d)
-                        (concat "VIRTUAL_ENV=" d)))
-          (setenv "PYTHONPATH" p)
-          (setenv "PYTHONHOME" d)
-          (setenv "VIRTUAL_ENV" d))))))
+      (if-var% python-shell-virtualenv-path 'python
+               (setq python-shell-virtualenv-path d)
+        (let ((p (concat d path-separator
+                         (alist-get* "PATH"
+                                     (shell-env-> :env-vars)
+                                     (getenv "PATH")
+                                     nil
+                                     #'string=))))
+          (if-var% python-shell-process-environment 'python
+                   (setq python-shell-process-environment
+                         (list
+                          (concat "PYTHONPATH=" p)
+                          (concat "PYTHONHOME=" d)
+                          (concat "VIRTUAL_ENV=" d)))
+            (setenv "PYTHONPATH" p)
+            (setenv "PYTHONHOME" d)
+            (setenv "VIRTUAL_ENV" d)))))))
 
 
 ;; (defun unload-python-on-exit ()
