@@ -80,7 +80,8 @@ See also: `parse-colon-path'."
                          (let ((v1 (echo-var v
                                              (shells-spec->* :shell-file-name)
                                              (shells-spec->* :options))))
-                           (when v1 (push (cons v v1) vars))))
+                           (when (stringp v1)
+                             (push (cons v v1) vars))))
                        (shells-spec->* :env-vars))
                  vars))
   (when (save-sexp-to-file

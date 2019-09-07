@@ -3,30 +3,31 @@
 ;; More reasonable Emacs on MacOS, Windows and Linux
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; use-python.el
+;; on-python-autoload.el
 ;;;;
 
 
-(with-eval-after-load 'python
-  (when-var% python-mode-map 'python
-    ;; on ancient Emacs `(kbd "C-c C-p")' bind to `python-previous-statement'
-    (define-key% python-mode-map (kbd "C-c C-p") #'run-python)))
-
-
-;; (when-version% <= 24.1
-
-;;   (defun python-virtualenv-activate (&optional vdir)
-;; 		"Activate virtualenv at VDIR."
-;;     (interactive "Dvirtualenv activate at ")
-;;     (let ((vdir (or vdir default-directory)))
-;;       (setq python-shell-process-environment
-;;             (list
-;;              (concat "PATH=" vdir path-separator (shell-env-> :path))
-;;              (concat "VIRTUAL_ENV=" vdir)))
-;;       (if-version%
-;;           <= 25.1
-;;           (setq python-shell-virtualenv-root vdir)
-;;         (setq python-shell-virtualenv-path vdir)))))
+(defun python-virtualenv-activate (&optional dir)
+  "Activate virtualenv at DIR."
+  (interactive "Dvirtualenv activate at ")
+  (let ((d (or dir default-directory)))
+    (if-var% python-shell-virtualenv-root 'python
+             (progn
+               (setq python-shell-virtualenv-root d)
+               (setq python-shell-virtualenv-path d))
+      (let ((path (concat d path-separator
+                          (alist-get* "PATH"
+                                      (shell-env-> :env-vars)
+                                      (getenv "PATH")
+                                      nil
+                                      #'string=))))
+        (if-var% python-shell-process-environment 'python
+                 (setq python-shell-process-environment
+                       (list
+                        (concat "PATH=" path) 
+                        (concat "VIRTUAL_ENV=" d)))
+          (setenv "PYTHONPATH" path)
+          (setenv "VIRTUAL_ENV" d))))))
 
 
 ;; (defun unload-python-on-exit ()
@@ -51,3 +52,9 @@
 
 
 ;; (add-hook 'kill-emacs-hook #'unload-python-on-exit)
+
+
+(with-eval-after-load 'python
+  (when-var% python-mode-map 'python
+    ;; on ancient Emacs `(kbd "C-c C-p")' bind to `python-previous-statement'
+    (define-key% python-mode-map (kbd "C-c C-p") #'run-python)))
