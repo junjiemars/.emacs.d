@@ -8,24 +8,33 @@
 
 
 (defun python-virtualenv-activate (&optional dir)
-  "Activate virtualenv at DIR."
+  "Activate virtualenv at DIR.
+
+PYTHONPATH: augment the default search path for module files. The
+            format is the same as the shell’s PATH.
+PYTHONHOME: change the location of the standard Python libraries.
+VIRTUALENV: virtualenv root path."
   (interactive "Dvirtualenv activate at ")
-  (let ((d (or dir default-directory)))
+  (let ((d (string-trim> (or dir default-directory) "/")))
     (if-var% python-shell-virtualenv-root 'python
              (progn
                (setq python-shell-virtualenv-root d)
                (setq python-shell-virtualenv-path d))
-      (let ((p (concat d "bin/python")))
-        (when (file-exists-p p)
-          (if-var% python-shell-process-environment 'python
-                   (setq python-shell-process-environment
-                         (list
-                          (concat "PYTHONPATH=" p)
-                          (concat "PYTHONHOME=" d)
-                          (concat "VIRTUAL_ENV=" d)))
-            (setenv "PYTHONPATH" p)
-            (setenv "PYTHONHOME" d)
-            (setenv "VIRTUAL_ENV" d)))))))
+      (let ((p (concat d path-separator
+                       (alist-get* "PATH"
+                                   (shell-env-> :env-vars)
+                                   (getenv "PATH")
+                                   nil
+                                   #'string=))))
+        (if-var% python-shell-process-environment 'python
+                 (setq python-shell-process-environment
+                       (list
+                        (concat "PYTHONPATH=" p)
+                        (concat "PYTHONHOME=" d)
+                        (concat "VIRTUAL_ENV=" d)))
+          (setenv "PYTHONPATH" p)
+          (setenv "PYTHONHOME" d)
+          (setenv "VIRTUAL_ENV" d))))))
 
 
 ;; (defun unload-python-on-exit ()
