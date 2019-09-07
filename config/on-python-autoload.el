@@ -70,3 +70,6 @@ VIRTUALENV: virtualenv root path."
   (when-var% python-mode-map 'python
     ;; on ancient Emacs `(kbd "C-c C-p")' bind to `python-previous-statement'
     (define-key% python-mode-map (kbd "C-c C-p") #'run-python)))
+
+
+;; end of on-python-autoload.el
