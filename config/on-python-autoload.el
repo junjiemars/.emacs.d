@@ -6,6 +6,12 @@
 ;; on-python-autoload.el
 ;;;;
 
+;;; Python help instructions
+;; help:    help(help)
+;; dir:     list of strings, dir(sys.prefix)
+;; inspect: inspect living objects, needs import
+;; dis:     disassembler
+;;;
 
 (defun python-virtualenv-activate (&optional dir)
   "Activate virtualenv at DIR.
