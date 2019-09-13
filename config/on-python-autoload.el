@@ -67,13 +67,21 @@ VIRTUALENV: virtualenv root path."
 ;; (add-hook 'kill-emacs-hook #'unload-python-on-exit)
 
 
+
 (with-eval-after-load 'python
 
   (when-var% python-shell-completion-native-enable 'python
-    (add-hook 'inferior-python-mode-hook
-              #'(lambda ()
-                  (setq python-shell-completion-native-enable
-                        (python-shell-completion-native-try)))))
+    (when% (executable-find% python-shell-interpreter)
+      (setq python-shell-completion-native-enable
+            (eval-when-compile
+              (require 'python)
+              (run-python)
+              (let ((p (get-buffer "*Python*")))
+                (when p
+                  (with-current-buffer p
+                    (prog1 (python-shell-completion-native-try)
+                      (let ((kill-buffer-query-functions nil))
+                        (kill-buffer p))))))))))
   
   (when-var% python-mode-map 'python
     ;; on ancient Emacs `(kbd "C-c C-p")' bind to `python-previous-statement'
