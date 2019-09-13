@@ -67,7 +67,7 @@ VIRTUALENV: virtualenv root path."
     (add-hook 'inferior-python-mode-hook
               #'(lambda ()
                   (setq python-shell-completion-native-enable
-                        (python-shell-completion-native-setup)))))
+                        (python-shell-completion-native-try)))))
   
   (when-var% python-mode-map 'python
     ;; on ancient Emacs `(kbd "C-c C-p")' bind to `python-previous-statement'
