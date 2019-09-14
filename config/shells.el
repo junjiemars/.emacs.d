@@ -28,7 +28,7 @@
   (list :exec-path nil
         :env-vars nil)
   "Default shell environments, 
-get via `(path-env-> k)' and put via `(path-env<- k v)'")
+get via `(shell-env-> k)' and put via `(shell-env<- k v)'")
 
 
 (defmacro shell-env-> (&optional k)
@@ -42,7 +42,9 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
   `(plist-put *default-shell-env* ,k ,v))
 
 (defmacro echo-var (var shell options)
-  "Return the value of $VAR via echo."
+  "Return the value of $VAR via echo.
+
+Different with `getenv', and let Emacs independent on host environment."
   `(when (and (stringp ,var) (stringp ,shell))
      (let ((cmd (shell-command* (shell-quote-argument (or ,shell
                                                           (getenv "SHELL")))
@@ -52,10 +54,15 @@ get via `(path-env-> k)' and put via `(path-env<- k v)'")
          (string-trim> (cdr cmd))))))
 
 
-(defmacro paths->var (path)
-  "Convert a list of PATH to $PATH like var that separated by SEP."
+(defmacro paths->var (path &optional predicate)
+  "Convert a list of PATH to $PATH like var that separated by `path-separator'."
   `(string-trim> (apply #'concat
-                        (mapcar #'(lambda (s) (concat s path-separator)) ,path))
+                        (mapcar #'(lambda (s)
+                                    (if (functionp ,predicate)
+                                        (when (funcall ,predicate s)
+                                          (concat s path-separator))
+                                      (concat s path-separator)))
+                                ,path))
                  path-separator))
 
 (defmacro var->paths (var)

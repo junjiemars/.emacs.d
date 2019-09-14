@@ -13,6 +13,9 @@
 
 (require 'ert)
 
+
+;;; init
+
 (ert-deftest %init:comment ()
   (should-not (comment))
   (should-not (comment (+ 1 2 3)))
@@ -104,6 +107,11 @@
                                  (+ 1 2)
                                  (* 3 4))))))
 
+ ;; end of init
+
+
+;;; strap
+
 (ert-deftest %strap:if/when/unless-lexical% ()
   (if (if-lexical% t nil)
       (should (and (when-lexical% t)
@@ -178,6 +186,12 @@
   (should (catch 'found
             (dolist* (x '(a b c))
               (when (eq 'b x) (throw 'found t))))))
+
+
+ ;; end of init
+
+
+;;; basic
 
 (ert-deftest %basic:assoc** ()
   (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
@@ -446,6 +460,28 @@
                             (lambda (def)
                               (not (eq def #'xxx)))
                             "undefined"))))
+
+ ;; end of basic
+
+
+;;; shells
+
+(ert-deftest %shells:shells-spec->% ()
+  (should (= 8 (length (shells-spec->%))))
+  (should (string= ".shell-env"
+                   (file-name-base* (shells-spec->% :source-file)))))
+
+(ert-deftest %shells:paths->var ()
+  (let ((path-separator ":"))
+    (should (string= "a:b:c" (paths->var '("a" "b" "c"))))
+    (should (string= "b" (paths->var '("a" "b" "c")
+                                     (lambda (x) (string= "b" x)))))
+    (should (string= "" (paths->var '("a" "b" "c")
+                                    (lambda (x) (file-exists-p x)))))))
+
+
+ ;; end of shells
+
 
 (comment
  (ert-deftest %module:install/delete-package!1 ()
