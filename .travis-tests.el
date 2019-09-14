@@ -471,6 +471,14 @@
   (should (string= ".shell-env"
                    (file-name-base* (shells-spec->% :source-file)))))
 
+(ert-deftest %shells:shell-env->/<- ()
+  (should (shell-env<- :xx "aa"))
+  (should (string= "aa" (shell-env-> :xx))))
+
+(ert-deftest %shells:var->paths ()
+  (should (null (var->paths 1)))
+  (should (var->paths (getenv "PATH"))))
+
 (ert-deftest %shells:paths->var ()
   (let ((path-separator ":"))
     (should (string= "a:b:c" (paths->var '("a" "b" "c"))))
