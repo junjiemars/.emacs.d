@@ -41,17 +41,6 @@ get via `(shell-env-> k)' and put via `(shell-env<- k v)'")
   "Put K and V into `*default-shell-env*'."
   `(plist-put *default-shell-env* ,k ,v))
 
-(defmacro echo-var (var shell options)
-  "Return the value of $VAR via echo.
-
-Different with `getenv', and let Emacs independent on host environment."
-  `(when (and (stringp ,var) (stringp ,shell))
-     (let ((cmd (shell-command* (shell-quote-argument (or ,shell
-                                                          (getenv "SHELL")))
-                  (mapconcat #'identity ,options " ")
-                  (format "-c 'echo $%s'" ,var))))
-       (when (zerop (car cmd))
-         (string-trim> (cdr cmd))))))
 
 
 (defmacro paths->var (path &optional predicate)
@@ -84,9 +73,7 @@ See also: `parse-colon-path'."
   (shell-env<- :env-vars
                (let ((vars nil))
                  (mapc (lambda (v)
-                         (let ((v1 (echo-var v
-                                             (shells-spec->* :shell-file-name)
-                                             (shells-spec->* :options))))
+                         (let ((v1 (getenv v)))
                            (when (stringp v1)
                              (push (cons v v1) vars))))
                        (shells-spec->* :env-vars))
