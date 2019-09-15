@@ -242,7 +242,18 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
                  'cmacexp)
           ad-do-it)
       ;; local: msvc, clang, gcc
-      (if-platform% 'windows-nt
+      (if% (executable-find%
+            "cc"
+            (lambda (cc)
+              (let ((x (shell-command* "echo -e"
+                         "\"#define _unused_(x) ((void)(x))\n_unused_(a);\""
+                         "|cc -E -")))
+                (and (zerop (car x))
+                     (string-match "((void)(a));" (cdr x))))))
+          (progn
+            (setq% c-macro-preprocessor "cc -E -o - -" 'cmacexp)
+            ad-do-it)
+        (when-platform% 'windows-nt
           ;; cl.exe cannot retrieve from stdin.
           (when% (and (or (executable-find% "cc-env.bat")
                           (make-cc-env-bat))
@@ -256,25 +267,12 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
                                     (string-match "^zzz" (cdr x))))))
                           (make-xargs-bin)))
             (let* ((tmp (make-temp-file
-		                     (expand-file-name "cc-" temporary-file-directory)))
+                         (expand-file-name "cc-" temporary-file-directory)))
                    (c-macro-preprocessor
                     (format "xargs -0 > %s && cc-env.bat && cl -E %s"
                             tmp tmp)))
               (unwind-protect ad-do-it
-                (delete-file tmp))))
-        ;; Darwin/Linux
-        (when-platform% 'darwin
-          (when%
-              (executable-find%
-               "cc"
-               (lambda (cc)
-                 (let ((x (shell-command* "echo -e"
-                            "\"#define _unused_(x) ((void)(x))\n_unused_(a);\""
-                            "|cc -E -")))
-                   (and (zerop (car x))
-                        (string-match "((void)(a));" (cdr x))))))
-            (setq% c-macro-preprocessor "cc -E -o - -" 'cmacexp)))
-        ad-do-it))))
+                (delete-file tmp)))))))))
 
 
 (defun cc*-dump-predefined-macros ()
@@ -384,7 +382,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
       (define-key% c-mode-map (kbd "TAB") #'c-indent-line-or-region))
 
     ;; keymap: dump predefined macros
-    (define-key% c-mode-map (kbd "C-c C-#") #'cc*-dump-predefined-macros)))
+    (define-key% c-mode-map (kbd "C-c C-3") #'cc*-dump-predefined-macros)))
 
 
 (with-eval-after-load 'cmacexp
