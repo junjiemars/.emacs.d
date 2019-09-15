@@ -300,6 +300,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
     (with-current-buffer (switch-to-buffer buf)
       (view-mode -1)
       (delete-region (point-min) (point-max))
+      (message "Invoking %s ..." dump)
       (if (or remote (executable-find% "cc"))
           (let ((x (shell-command* dump)))
             (if (zerop (car x))

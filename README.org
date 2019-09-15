@@ -1036,6 +1036,21 @@ locally or remotely.
 #+ATTR_HTML: :style display:none
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-macro-expansion-on-windows.png][macro expansion for msvc]]
 
+**** Dump predefined macros
+		 :PROPERTIES:
+		 :CUSTOM_ID: c-programming-dump-predefined-macros
+		 :END:
+
+#+ATTR_HTML: :style text-align:left
+Dump compiler predefined macros, @@html:<kbd>@@C-c #@@html:</kbd>@@,
+you should see the predefined macros in =*Predefined Macros*=,
+whatever you are using /gcc/ and /clang/ locally or remotely.
+
+#+ATTR_HTML: :style display:none
+/screenshots/:
+#+ATTR_HTML: :style display:none
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-predefined-macros.png][dump predefined macros for clang]]
+
 *** Compiling
 		:PROPERTIES:
 		:CUSTOM_ID: c-programming-compiling
