@@ -290,9 +290,8 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
   (let* ((remote (remote-norm-file (buffer-file-name (current-buffer))))
          (buf (concat "*Predefined Macros"
                       (if remote
-                          (concat "@" (remote-norm->user@host remote))
-                        "")
-                      "*"))
+                          (concat "@" (remote-norm->user@host remote) "*")
+                        "*")))
          (cmd "cc -dM -E -")
          (dump (if remote
                    (concat "ssh " (remote-norm->user@host remote)
