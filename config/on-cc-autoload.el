@@ -382,7 +382,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
       (define-key% c-mode-map (kbd "TAB") #'c-indent-line-or-region))
 
     ;; keymap: dump predefined macros
-    (define-key% c-mode-map (kbd "C-c C-3") #'cc*-dump-predefined-macros)))
+    (define-key% c-mode-map (kbd "C-c #") #'cc*-dump-predefined-macros)))
 
 
 (with-eval-after-load 'cmacexp
