@@ -1049,7 +1049,7 @@ whatever you are using /gcc/ and /clang/ locally or remotely.
 #+ATTR_HTML: :style display:none
 /screenshots/:
 #+ATTR_HTML: :style display:none
-- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-predefined-macros.png][dump predefined macros for clang]]
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-dump-predefined-macros.png][dump predefined macros for clang]]
 
 *** Compiling
 		:PROPERTIES:
