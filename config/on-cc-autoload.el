@@ -298,8 +298,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
               (insert (format "/*\n  %s\n\n*/"
                               (cdr x)))))
         (when-platform% 'windows-nt
-          (insert (format "/*\n  %s\n  %s\n*/"
-                          "msvc doesn't supports dump predefined macros, see:"
+          (insert (format "/*\n  %s\n*/"
                           "https://docs.microsoft.com/en-us/cpp/preprocessor/predefined-macros?view=vs-2019"))))
       (c-mode)
       (view-mode 1))))
