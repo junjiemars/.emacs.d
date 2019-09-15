@@ -73,9 +73,8 @@ See also: `parse-colon-path'."
   (shell-env<- :env-vars
                (let ((vars nil))
                  (mapc (lambda (v)
-                         (let ((v1 (getenv v)))
-                           (when (stringp v1)
-                             (push (cons v v1) vars))))
+                         (when (stringp v)
+                           (push (cons v (getenv v)) vars)))
                        (shells-spec->* :env-vars))
                  vars))
   (when (save-sexp-to-file
