@@ -274,7 +274,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
                                (and (zerop (car x))
                                     (string-match "^zzz" (cdr x))))))
                           (make-xargs-bin)))
-            (let* ((tmp (make-btemp-file
+            (let* ((tmp (make-temp-file
                          (expand-file-name "cc-" temporary-file-directory)))
                    (c-macro-buffer-name "*Macroexpansion*")
                    (c-macro-preprocessor
