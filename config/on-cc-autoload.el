@@ -236,6 +236,11 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
     (if remote
         ;; remote: Unix-like
         (when% (executable-find% "ssh")
+          (setq% c-macro-buffer-name
+                 (concat "*Macroexpansion@"
+                         (remote-norm->user@host remote)
+                         "*")
+                 'cmacexp)
           (setq% c-macro-preprocessor
                  (concat "ssh " (remote-norm->user@host remote)
                          " \'cc -E -o - -\'")
@@ -251,6 +256,9 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
                 (and (zerop (car x))
                      (string-match "((void)(a));" (cdr x))))))
           (progn
+            (setq% c-macro-buffer-name
+                   "*Macroexpansion*"
+                   'cmacexp)
             (setq% c-macro-preprocessor "cc -E -o - -" 'cmacexp)
             ad-do-it)
         (when-platform% 'windows-nt
@@ -266,8 +274,9 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
                                (and (zerop (car x))
                                     (string-match "^zzz" (cdr x))))))
                           (make-xargs-bin)))
-            (let* ((tmp (make-temp-file
+            (let* ((tmp (make-btemp-file
                          (expand-file-name "cc-" temporary-file-directory)))
+                   (c-macro-buffer-name "*Macroexpansion*")
                    (c-macro-preprocessor
                     (format "xargs -0 > %s && cc-env.bat && cl -E %s"
                             tmp tmp)))
