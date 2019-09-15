@@ -231,7 +231,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
 
 
 (defadvice c-macro-expand (around c-macro-expand-around compile)
-  "cl.exe cannot retrieve from stdin."
+  "Expand C macros in the region, using the C preprocessor."
   (let ((remote (remote-norm-file (buffer-file-name (current-buffer)))))
     (if remote
         ;; remote: Unix-like
@@ -243,7 +243,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
           ad-do-it)
       ;; local: msvc, clang, gcc
       (if-platform% 'windows-nt
-          ;; [C-c C-e] macro expand for msvc
+          ;; cl.exe cannot retrieve from stdin.
           (when% (and (or (executable-find% "cc-env.bat")
                           (make-cc-env-bat))
                       (or (executable-find%
@@ -275,6 +275,36 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
                         (string-match "((void)(a));" (cdr x))))))
             (setq% c-macro-preprocessor "cc -E -o - -" 'cmacexp)))
         ad-do-it))))
+
+
+(defun cc*-dump-predefined-macros ()
+  "Dump predefined macros."
+  (interactive)
+  (let* ((remote (remote-norm-file (buffer-file-name (current-buffer))))
+         (buf (concat "*Predefined Macros"
+                      (if remote
+                          (concat "@" (remote-norm->user@host remote))
+                        "")
+                      "*"))
+         (cmd "cc -dM -E -")
+         (dump (if remote
+                   (concat "ssh " (remote-norm->user@host remote)
+                           " \'" cmd "\'")
+                 cmd)))
+    (with-current-buffer (switch-to-buffer buf)
+      (delete-region (point-min) (point-max))
+      (if (executable-find% "cc")
+          (let ((x (shell-command* dump)))
+            (if (zerop (car x))
+                (insert (cdr x))
+              (insert (format "/*\n  %s\n\n*/"
+                              (cdr x)))))
+        (when-platform% 'windows-nt
+          (insert (format "/*\n  %s\n  %s\n*/"
+                          "msvc doesn't supports dump predefined macros, see:"
+                          "https://docs.microsoft.com/en-us/cpp/preprocessor/predefined-macros?view=vs-2019"))))
+      (c-mode)
+      (view-mode 1))))
 
 
 ;; eldoc
@@ -351,7 +381,10 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
 
     ;; keymap: indent line or region
     (when-fn% 'c-indent-line-or-region 'cc-cmds
-      (define-key% c-mode-map (kbd "TAB") #'c-indent-line-or-region))))
+      (define-key% c-mode-map (kbd "TAB") #'c-indent-line-or-region))
+
+    ;; keymap: dump predefined macros
+    (define-key% c-mode-map (kbd "C-c C-#") #'cc*-dump-predefined-macros)))
 
 
 (with-eval-after-load 'cmacexp
