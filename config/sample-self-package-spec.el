@@ -22,7 +22,8 @@
               (executable-find% "java"))
    :packages '(cider
                clojure-mode
-               clojure-mode-extra-font-locking)
+               clojure-mode-extra-font-locking
+               kotlin-mode)
    :compile `(,(compile-unit% (emacs-home* "config/use-cider.el") t)
               ,(compile-unit% (emacs-home* "config/use-cider-autoload.el"))))
   (list
