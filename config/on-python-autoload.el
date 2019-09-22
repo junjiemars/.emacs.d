@@ -23,8 +23,8 @@ VIRTUALENV: virtualenv root path.
 
 Outside a virtualenv, sys.real_prefix should not exist."
   (interactive "Dvirtualenv activate at ")
-  (let ((d (string-trim> (or (expand-file-name dir)
-                             default-directory)
+  (let ((d (string-trim> (expand-file-name (or dir
+                                               default-directory))
                          "/")))
     (if-var% python-shell-virtualenv-root 'python
              (setq python-shell-virtualenv-root d)
