@@ -244,17 +244,19 @@
 (ert-deftest %basic:string-trim> ()
   (should (eq nil (string-trim> nil "X")))
   (should (string= "abc" (string-trim> "abc \n  ")))
-  (should (string= "abc" (string-trim> "abcXX" "XX"))))
+  (should (string= "abc" (string-trim> "abcXX" "XX")))
+  (should (string= "abc" (string-trim> "abcXX" "X+"))))
 
 (ert-deftest %basic:string-trim< ()
   (should (eq nil (string-trim< nil "X")))
   (should (string= "abc" (string-trim< "  \n abc")))
-  (should (string= "abc" (string-trim< "XXabc" "XX"))))
+  (should (string= "abc" (string-trim< "XXabc" "XX")))
+  (should (string= "abc" (string-trim< "XXabc" "X+"))))
 
 (ert-deftest %basic:string-trim>< ()
   (should (eq nil (string-trim>< nil "X" "Z")))
   (should (string= "abc" (string-trim>< " \n abc \n ")))
-  (should (string= "abc" (string-trim>< "ZZabcXX" "XX" "ZZ"))))
+  (should (string= "abc" (string-trim>< "ZZabcXX" "X+" "Z+"))))
 
 (ert-deftest %basic:match-string* ()
   (should (eq nil (match-string* nil nil 0)))
