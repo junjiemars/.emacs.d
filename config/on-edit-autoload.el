@@ -511,7 +511,7 @@ directory name of `buffer-file-name' to kill ring."
 
 ;; Encode/Decode url, base64
 
-(defun url-encode* (&optional arg)
+(defun encode-url* (&optional arg)
   "Encode the current region into *encode-url-output* buffer.
 
 If ARG is non nil then decode the current region into
@@ -531,7 +531,7 @@ If ARG is non nil then decode the current region into
                              (url-hexify-string s nil)
                   (url-hexify-string s)))))))
 
-(defun base64-encode* (&optional arg)
+(defun encode-base64* (&optional arg)
   "Encode the current region with base64 into *encode-base64-output* buffer.
 
 If ARG is non nil then decode the current region into
