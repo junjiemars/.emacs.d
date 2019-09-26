@@ -511,45 +511,69 @@ directory name of `buffer-file-name' to kill ring."
 
 ;; Encode/Decode url, base64
 
-(defun encode-url* (&optional arg)
-  "Encode region into *encode-url-output* buffer.
+(eval-when-compile
 
-If ARG is non nil then decode the current region into
-*decode-url-output* buffer."
-  (interactive "P")
-  (let ((s (string-trim>< (region-active-if
-                              (buffer-substring (region-beginning)
-                                                (region-end))))))
-    (with-current-buffer
-        (switch-to-buffer-other-window
-         (if arg "*decode-url-output*"
-           "*encode-url-output*"))
-      (delete-region (point-min) (point-max))
-      (insert (if arg
-                  (decode-coding-string (url-unhex-string s) 'utf-8)
-                (if-version% < 23
-                             (url-hexify-string s nil)
-                  (url-hexify-string s)))))))
+  (defmacro _encode/decode-url* (encode? &optional coding-system)
+    "Encode/Decode region into *encode/decode-url-output* buffer."
+    (let ((s (gensym*)))
+      `(let ((,s (string-trim>< (region-active-if
+                                    (buffer-substring (region-beginning)
+                                                      (region-end))))))
+         (with-current-buffer
+             (switch-to-buffer-other-window
+              (if ,encode?
+                  "*encode-url-output*"
+                "*decode-url-output*"))
+           (delete-region (point-min) (point-max))
+           (insert (if ,encode?
+                       (if-version% < 23
+                                    (url-hexify-string ,s nil)
+                         (url-hexify-string ,s))
+                     (decode-coding-string (url-unhex-string ,s)
+                                           (or ,coding-system 'utf-8))))))))
 
-(defun encode-base64* (&optional arg)
-  "Encode region with base64 into *encode-base64-output* buffer.
+  (defmacro _encode-base64* (encode &optional coding-system)
+    "Encode region with base64 into *encode-base64-output* buffer."
+    (let ((s (gensym*))
+          (c (gensym*)))
+      `(let ((,s (string-trim>< (region-active-if
+                                    (buffer-substring (region-beginning)
+                                                      (region-end)))))
+             (,c (or ,coding-system 'utf-8)))
+         (with-current-buffer
+             (switch-to-buffer-other-window
+              (if ,encode
+                  "*encode-base64-output*"
+                "*decode-base64-output*"))
+           (delete-region (point-min) (point-max))
+           (insert (if ,encode
+                       (base64-encode-string
+                        (if (multibyte-string-p ,s)
+                            (encode-coding-string ,s ,c)
+                          ,s))
+                     (decode-coding-string
+                      (base64-decode-string ,s) ,c))))))))
 
-If ARG is non nil then decode the current region into
-*decode-base64-output* buffer."
-  (interactive "P")
-  (let ((s (string-trim>< (region-active-if
-                              (buffer-substring (region-beginning)
-                                                (region-end))))))
-    (with-current-buffer
-        (switch-to-buffer-other-window
-         (if arg "*decode-base64-output*"
-           "*encode-base64-output*"))
-      (delete-region (point-min) (point-max))
-      (insert (if arg
-                  (decode-coding-string (base64-decode-string s) 'utf-8)
-                (base64-encode-string (if (multibyte-string-p s)
-                                          (encode-coding-string s 'utf-8)
-                                        s)))))))
+(defun encode-url* ()
+  "Encode region into *encode-url-output* buffer."
+  (interactive)
+  (_encode/decode-url* t))
+
+(defun decode-url* (&optional coding-system)
+  "Decode region into *encode-url-output* buffer."
+  (interactive "zCoding system for decode (default utf-8): ")
+  (_encode/decode-url* nil coding-system))
+
+(defun encode-base64* (&optional coding-system)
+  "Encode region with base64 into *encode-base64-output* buffer."
+  (interactive "zCoding system for encode (default utf-8): ")
+  (_encode-base64* t coding-system))
+
+(defun decode-base64* (&optional coding-system)
+  "Decode region with base64 into *decode-base64-output* buffer."
+  (interactive "zCoding system for decode (default utf-8): ")
+  (_encode-base64* nil coding-system))
+
 
 
 
