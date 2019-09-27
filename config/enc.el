@@ -86,7 +86,7 @@
           (logand (string-to-number (nth 3 ,ss)) #xff))))))
 
 (defun encode-ip* ()
-  "Encode IP address region to int."
+  "Encode IP address in region to int."
   (interactive)
   (let ((s (string-trim>< (region-active-if
                               (buffer-substring (region-beginning)
@@ -95,12 +95,23 @@
       (message "%s" (format "%i (#o%o, #x%x)" n n n)))))
 
 
-(defun decode-ip (n)
+(defmacro decode-ip (n)
   "Decode IP address to string."
-  (concat (number-to-string (lsh (logand n #xff000000) -24)) "."
-          (number-to-string (lsh (logand n #x00ff0000) -16)) "."
-          (number-to-string (lsh (logand n #x0000ff00) -8)) "."
-          (number-to-string (logand n #xff))))
+  `(when (integerp ,n)
+     (format "%s.%s.%s.%s"
+             (lsh (logand ,n #xff000000) -24)
+             (lsh (logand ,n #x00ff0000) -16)
+             (lsh (logand ,n #x0000ff00) -8)
+             (logand ,n #xff))))
+
+(defun decode-ip* ()
+  "Decode IP address region to string."
+  (interactive)
+  (let ((s (string-trim>< (region-active-if
+                              (buffer-substring (region-beginning)
+                                                (region-end))))))
+    (message "%s" (decode-ip (string-to-number s)))))
+
 
 
 
