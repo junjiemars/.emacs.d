@@ -509,68 +509,5 @@ directory name of `buffer-file-name' to kill ring."
 
 
 
-;; Encode/Decode url, base64
-
-(eval-when-compile
-
-  (defmacro _encode/decode-url* (encode)
-    "Encode/Decode region into *encode/decode-url-output* buffer."
-    (let ((s (gensym*)))
-      `(let ((,s (string-trim>< (region-active-if
-                                    (buffer-substring (region-beginning)
-                                                      (region-end))))))
-         (with-current-buffer
-             (switch-to-buffer-other-window
-              (if ,encode
-                  "*encode-url-output*"
-                "*decode-url-output*"))
-           (delete-region (point-min) (point-max))
-           (insert (if ,encode
-                       (url-hexify-string ,s)
-                     (decode-coding-string (url-unhex-string ,s)
-                                           'utf-8)))))))
-
-  (defmacro _encode-base64* (encode)
-    "Encode region with base64 into *encode-base64-output* buffer."
-    (let ((s (gensym*)))
-      `(let ((,s (string-trim>< (region-active-if
-                                    (buffer-substring (region-beginning)
-                                                      (region-end))))))
-         (with-current-buffer
-             (switch-to-buffer-other-window
-              (if ,encode
-                  "*encode-base64-output*"
-                "*decode-base64-output*"))
-           (delete-region (point-min) (point-max))
-           (insert (if ,encode
-                       (base64-encode-string
-                        (if (multibyte-string-p ,s)
-                            (encode-coding-string ,s 'utf-8)
-                          ,s))
-                     (decode-coding-string
-                      (base64-decode-string ,s) 'utf-8))))))))
-
-(defun encode-url* ()
-  "Encode region into *encode-url-output* buffer."
-  (interactive)
-  (_encode/decode-url* t))
-
-(defun decode-url* ()
-  "Decode region into *encode-url-output* buffer."
-  (interactive)
-  (_encode/decode-url* nil))
-
-(defun encode-base64* ()
-  "Encode region with base64 into *encode-base64-output* buffer."
-  (interactive)
-  (_encode-base64* t))
-
-(defun decode-base64* ()
-  "Decode region with base64 into *decode-base64-output* buffer."
-  (interactive)
-  (_encode-base64* nil))
-
-
-
 
 ;; end of file
