@@ -128,9 +128,9 @@ If ARG is non nil then output to `+decode-output-buffer-name+'."
   (let* ((s (string-trim>< (region-active-if
                                (buffer-substring (region-beginning)
                                                  (region-end)))))
-         (out (decode-ip (cond ((string-match "^#[xX]" s)
+         (out (decode-ip (cond ((string-match "^[#0][xX]" s)
                                 (string-to-number (substring s 2) 16))
-                               ((string-match "^#[oO]" s)
+                               ((string-match "^[#0][oO]" s)
                                 (string-to-number (substring s 2) 8))
                                (t (string-to-number s))))))
     (message "%s" out)
