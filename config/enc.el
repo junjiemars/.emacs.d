@@ -7,6 +7,15 @@
 ;;;;
 
 
+(defconst +encode-output-buffer-name+
+  "*encode-output*"
+  "Encode output buffer name")
+
+(defconst +decode-output-buffer-name+
+  "*decode-output*"
+  "Decode output buffer name")
+
+
 ;; Encode/Decode url, base64
 
 (eval-when-compile
@@ -17,11 +26,10 @@
       `(let ((,s (string-trim>< (region-active-if
                                     (buffer-substring (region-beginning)
                                                       (region-end))))))
-         (with-current-buffer
-             (switch-to-buffer-other-window
-              (if ,encode
-                  "*encode-url-output*"
-                "*decode-url-output*"))
+         (with-current-buffer (switch-to-buffer-other-window
+                               (if ,encode
+                                   +encode-output-buffer-name+
+                                 +decode-output-buffer-name+))
            (delete-region (point-min) (point-max))
            (insert (if ,encode
                        (url-hexify-string ,s)
@@ -34,11 +42,10 @@
       `(let ((,s (string-trim>< (region-active-if
                                     (buffer-substring (region-beginning)
                                                       (region-end))))))
-         (with-current-buffer
-             (switch-to-buffer-other-window
-              (if ,encode
-                  "*encode-base64-output*"
-                "*decode-base64-output*"))
+         (with-current-buffer (switch-to-buffer-other-window
+                               (if ,encode
+                                   +encode-output-buffer-name+
+                                 +decode-output-buffer-name+))
            (delete-region (point-min) (point-max))
            (insert (if ,encode
                        (base64-encode-string
@@ -74,7 +81,7 @@
 ;; Encode/Decode IP address
 
 (defmacro encode-ip (s)
-  "Encode IP address to int."
+  "Encode IPv4 address to int."
   (let ((ss (gensym*)))
     `(let ((,ss (and (stringp ,s)
                      (split-string* ,s "\\." t))))
@@ -85,18 +92,27 @@
           (lsh (string-to-number (nth 2 ,ss)) 8)
           (logand (string-to-number (nth 3 ,ss)) #xff))))))
 
-(defun encode-ip* ()
-  "Encode IP address in region to int."
-  (interactive)
-  (let ((s (string-trim>< (region-active-if
-                              (buffer-substring (region-beginning)
-                                                (region-end))))))
-    (let ((n (encode-ip s)))
-      (message "%s" (format "%i (#o%o, #x%x)" n n n)))))
+(defun encode-ip* (&optional arg)
+  "Encode IPv4 address in region to int.
+
+If ARG is non nil then output to `+encode-output-buffer-name+'."
+  (interactive "P")
+  (let* ((s (string-trim>< (region-active-if
+                               (buffer-substring (region-beginning)
+                                                 (region-end)))))
+         (n (encode-ip s))
+         (out (and (integerp n)
+                   (format "%d (#o%o, #x%x)" n n n))))
+    (message "%s" out)
+    (when arg
+      (with-current-buffer (switch-to-buffer-other-window
+                            +encode-output-buffer-name+)
+        (delete-region (point-min) (point-max))
+        (insert out)))))
 
 
 (defmacro decode-ip (n)
-  "Decode IP address to string."
+  "Decode IPv4 address to string."
   `(when (integerp ,n)
      (format "%s.%s.%s.%s"
              (lsh (logand ,n #xff000000) -24)
@@ -104,13 +120,25 @@
              (lsh (logand ,n #x0000ff00) -8)
              (logand ,n #xff))))
 
-(defun decode-ip* ()
-  "Decode IP address region to string."
-  (interactive)
-  (let ((s (string-trim>< (region-active-if
-                              (buffer-substring (region-beginning)
-                                                (region-end))))))
-    (message "%s" (decode-ip (string-to-number s)))))
+(defun decode-ip* (&optional arg)
+  "Decode IPv4 address region to string.
+
+If ARG is non nil then output to `+decode-output-buffer-name+'."
+  (interactive "P")
+  (let* ((s (string-trim>< (region-active-if
+                               (buffer-substring (region-beginning)
+                                                 (region-end)))))
+         (out (decode-ip (cond ((string-match "^#[xX]" s)
+                                (string-to-number (substring s 2) 16))
+                               ((string-match "^#[oO]" s)
+                                (string-to-number (substring s 2) 8))
+                               (t (string-to-number s))))))
+    (message "%s" out)
+    (when arg
+      (with-current-buffer (switch-to-buffer-other-window
+                            +decode-output-buffer-name+)
+        (delete-region (point-min) (point-max))
+        (insert out)))))
 
 
 
