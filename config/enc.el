@@ -3,7 +3,7 @@
 ;; More reasonable Emacs on MacOS, Windows and Linux
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; on-encode-autoload.el
+;; enc.el
 ;;;;
 
 
@@ -69,15 +69,30 @@
   (_encode-base64* nil))
 
 
-(defun encode-ip (str)
+ ;; 
+
+;; Encode/Decode IP address
+
+(defmacro encode-ip (s)
   "Encode IP address to int."
-  (let ((ss (split-string* str "\\." t)))
-    (when (and (consp ss) (= 4 (length ss)))
-      (logior
-       (lsh (string-to-number (nth 0 ss)) 24)
-       (lsh (string-to-number (nth 1 ss)) 16)
-       (lsh (string-to-number (nth 2 ss)) 8)
-       (logand (string-to-number (nth 3 ss)) #xff)))))
+  (let ((ss (gensym*)))
+    `(let ((,ss (and (stringp ,s)
+                     (split-string* ,s "\\." t))))
+       (when (and (consp ,ss) (= 4 (length ,ss)))
+         (logior
+          (lsh (string-to-number (nth 0 ,ss)) 24)
+          (lsh (string-to-number (nth 1 ,ss)) 16)
+          (lsh (string-to-number (nth 2 ,ss)) 8)
+          (logand (string-to-number (nth 3 ,ss)) #xff))))))
+
+(defun encode-ip* ()
+  "Encode IP address region to int."
+  (interactive)
+  (let ((s (string-trim>< (region-active-if
+                              (buffer-substring (region-beginning)
+                                                (region-end))))))
+    (let ((n (encode-ip s)))
+      (message "%s" (format "%i (#o%o, #x%x)" n n n)))))
 
 
 (defun decode-ip (n)
