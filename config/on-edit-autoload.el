@@ -513,7 +513,7 @@ directory name of `buffer-file-name' to kill ring."
 
 (eval-when-compile
 
-  (defmacro _encode/decode-url* (encode? &optional coding-system)
+  (defmacro _encode/decode-url* (encode)
     "Encode/Decode region into *encode/decode-url-output* buffer."
     (let ((s (gensym*)))
       `(let ((,s (string-trim>< (region-active-if
@@ -521,25 +521,21 @@ directory name of `buffer-file-name' to kill ring."
                                                       (region-end))))))
          (with-current-buffer
              (switch-to-buffer-other-window
-              (if ,encode?
+              (if ,encode
                   "*encode-url-output*"
                 "*decode-url-output*"))
            (delete-region (point-min) (point-max))
-           (insert (if ,encode?
-                       (if-version% < 23
-                                    (url-hexify-string ,s nil)
-                         (url-hexify-string ,s))
+           (insert (if ,encode
+                       (url-hexify-string ,s)
                      (decode-coding-string (url-unhex-string ,s)
-                                           (or ,coding-system 'utf-8))))))))
+                                           'utf-8)))))))
 
-  (defmacro _encode-base64* (encode &optional coding-system)
+  (defmacro _encode-base64* (encode)
     "Encode region with base64 into *encode-base64-output* buffer."
-    (let ((s (gensym*))
-          (c (gensym*)))
+    (let ((s (gensym*)))
       `(let ((,s (string-trim>< (region-active-if
                                     (buffer-substring (region-beginning)
-                                                      (region-end)))))
-             (,c (or ,coding-system 'utf-8)))
+                                                      (region-end))))))
          (with-current-buffer
              (switch-to-buffer-other-window
               (if ,encode
@@ -549,30 +545,30 @@ directory name of `buffer-file-name' to kill ring."
            (insert (if ,encode
                        (base64-encode-string
                         (if (multibyte-string-p ,s)
-                            (encode-coding-string ,s ,c)
+                            (encode-coding-string ,s 'utf-8)
                           ,s))
                      (decode-coding-string
-                      (base64-decode-string ,s) ,c))))))))
+                      (base64-decode-string ,s) 'utf-8))))))))
 
 (defun encode-url* ()
   "Encode region into *encode-url-output* buffer."
   (interactive)
   (_encode/decode-url* t))
 
-(defun decode-url* (&optional coding-system)
+(defun decode-url* ()
   "Decode region into *encode-url-output* buffer."
-  (interactive "zCoding system for decode (default utf-8): ")
-  (_encode/decode-url* nil coding-system))
+  (interactive)
+  (_encode/decode-url* nil))
 
-(defun encode-base64* (&optional coding-system)
+(defun encode-base64* ()
   "Encode region with base64 into *encode-base64-output* buffer."
-  (interactive "zCoding system for encode (default utf-8): ")
-  (_encode-base64* t coding-system))
+  (interactive)
+  (_encode-base64* t))
 
-(defun decode-base64* (&optional coding-system)
+(defun decode-base64* ()
   "Decode region with base64 into *decode-base64-output* buffer."
-  (interactive "zCoding system for decode (default utf-8): ")
-  (_encode-base64* nil coding-system))
+  (interactive)
+  (_encode-base64* nil))
 
 
 
