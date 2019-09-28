@@ -56,22 +56,22 @@
                       (base64-decode-string ,s) 'utf-8))))))))
 
 (defun encode-url* ()
-  "Encode region into *encode-url-output* buffer."
+  "Encode region into `+encode-output-buffer-name+' buffer."
   (interactive)
   (_encode/decode-url* t))
 
 (defun decode-url* ()
-  "Decode region into *encode-url-output* buffer."
+  "Decode region into `+decode-output-buffer-name+' buffer."
   (interactive)
   (_encode/decode-url* nil))
 
 (defun encode-base64* ()
-  "Encode region with base64 into *encode-base64-output* buffer."
+  "Encode region with base64 into `+encode-output-buffer-name+' buffer."
   (interactive)
   (_encode-base64* t))
 
 (defun decode-base64* ()
-  "Decode region with base64 into *decode-base64-output* buffer."
+  "Decode region with base64 into `+encode-output-buffer-name+' buffer."
   (interactive)
   (_encode-base64* nil))
 
