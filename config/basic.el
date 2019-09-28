@@ -314,12 +314,10 @@ STANDARD always be computed at runtime whatever the current
   "Extract string from region."
   (region-active-if
       (if no-properties
-          (buffer-substring-no-properties
-           (region-beginning)
-           (region-end))
-        (buffer-substring-no-properties
-         (region-beginning)
-         (region-end)))))
+          (buffer-substring-no-properties (region-beginning)
+                                          (region-end))
+        (buffer-substring (region-beginning)
+                          (region-end)))))
 
 
  ;; end of Compatible Functions
