@@ -347,6 +347,8 @@ Introduce rules of naming /files/ and /functions/.
   =(v-home!)=
 - *@* suffix: position related functions or macros, such as
   =mark-symbol@=
+- *_..._* prefix and suffix: compile-time functions or macros, such as
+  =_mark_thing@_=
 
 * Cooking
    :PROPERTIES:

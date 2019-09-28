@@ -13,7 +13,7 @@
   ;; zip.bat works with `dired-do-compress-to' and `org-odt-export-to-odt'.
   (eval-when-compile
     
-    (defun make-zip-bat (zip &rest ignore)
+    (defun _make_zip_bat_ (zip &rest ignore)
       "Make ZIP.bat in `exec-path' for minizip or 7z[a]."
       (declare (indent 1))
       (when (stringp zip)
@@ -105,9 +105,9 @@
     (unless (executable-find% "zip")
       ;; zip external program
       ;; prefer 7z, because 7za less archive formats supported
-      (cond ((executable-find% "7z") (make-zip-bat "7z"))
-            ((executable-find% "7za") (make-zip-bat "7za"))
-            ((executable-find% "minizip") (make-zip-bat "minizip"))))))
+      (cond ((executable-find% "7z") (_make_zip_bat_ "7z"))
+            ((executable-find% "7za") (_make_zip_bat_ "7za"))
+            ((executable-find% "minizip") (_make_zip_bat_ "minizip"))))))
 
 
 (defun dired-browse-file* ()
