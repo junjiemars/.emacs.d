@@ -310,6 +310,17 @@ STANDARD always be computed at runtime whatever the current
          ,then
        (progn% ,@else))))
 
+(defmacro region-extract-str (&optional no-properties)
+  "Extract string from region."
+  (region-active-if
+      (if no-properties
+          (buffer-substring-no-properties
+           (region-beginning)
+           (region-end))
+        (buffer-substring-no-properties
+         (region-beginning)
+         (region-end)))))
+
 
  ;; end of Compatible Functions
 
@@ -759,6 +770,7 @@ positive, otherwise via native."
     (toggle-socks! t)))
 
  ;; end of Socks functions
+
 
 
  ;; end of basic.el
