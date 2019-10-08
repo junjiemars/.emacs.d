@@ -72,35 +72,52 @@
 
 ;; Encode/Decode IP address
 
-(defmacro encode-ip (s)
+(defmacro encode-ip (s &optional endian)
   "Encode IPv4 address to int."
   (let ((ss (gensym*)))
     `(let ((,ss (and (stringp ,s)
                      (split-string* ,s "\\." t))))
        (when (and (consp ,ss) (= 4 (length ,ss)))
-         (logior
-          (lsh (string-to-number (nth 0 ,ss)) 24)
-          (lsh (string-to-number (nth 1 ,ss)) 16)
-          (lsh (string-to-number (nth 2 ,ss)) 8)
-          (logand (string-to-number (nth 3 ,ss)) #xff))))))
+         (if ,endian
+             (logior
+              (lsh (string-to-number (nth 0 ,ss)) 24)
+              (lsh (string-to-number (nth 1 ,ss)) 16)
+              (lsh (string-to-number (nth 2 ,ss)) 8)
+              (logand (string-to-number (nth 3 ,ss)) #xff))
+           (logior
+            (logand (string-to-number (nth 0 ,ss)) #xff)
+            (lsh (string-to-number (nth 1 ,ss)) 8)
+            (lsh (string-to-number (nth 2 ,ss)) 16)
+            (lsh (string-to-number (nth 3 ,ss)) 24)))))))
 
 
-(defmacro decode-ip (n)
+(defmacro decode-ip (n &optional endian)
   "Decode IPv4 address to string."
   `(when (integerp ,n)
+     (if ,endian
+         (format "%s.%s.%s.%s"
+                 (lsh (logand ,n #xff000000) -24)
+                 (lsh (logand ,n #x00ff0000) -16)
+                 (lsh (logand ,n #x0000ff00) -8)
+                 (logand ,n #xff)))
      (format "%s.%s.%s.%s"
-             (lsh (logand ,n #xff000000) -24)
-             (lsh (logand ,n #x00ff0000) -16)
+             (logand ,n #xff)
              (lsh (logand ,n #x0000ff00) -8)
-             (logand ,n #xff))))
+             (lsh (logand ,n #x00ff0000) -16)
+             (lsh (logand ,n #xff000000) -24))))
 
 
-(defun encode-ip* (&optional arg)
+(defun encode-ip* (&optional arg endian)
   "Encode IPv4 address in region to int.
 
-If ARG is non nil then output to `+encode-output-buffer-name+'."
-  (interactive "P")
-  (let* ((n (encode-ip (string-trim>< (region-extract-str t))))
+If ARG is non nil then output to `+encode-output-buffer-name+'.
+If ENDIAN is t then decode in small endian."
+  (interactive (list (if current-prefix-arg t nil)
+                     (read-string "endian: " (if (= 108 (byteorder))
+                                                 "small"
+                                               "big"))))
+  (let* ((n (encode-ip (string-trim>< (region-extract-str t))
+                       (string= "small" endian)))
          (out (and (integerp n)
                    (format "%d (#o%o, #x%x)" n n n))))
     (if arg
@@ -109,17 +126,22 @@ If ARG is non nil then output to `+encode-output-buffer-name+'."
       (message "%s" out))))
 
 
-(defun decode-ip* (&optional arg)
+(defun decode-ip* (&optional arg endian)
   "Decode IPv4 address region to string.
 
-If ARG is non nil then output to `+decode-output-buffer-name+'."
-  (interactive "P")
+If ARG is non nil then output to `+decode-output-buffer-name+'.
+If ENDIAN is t then decode in small endian."
+  (interactive (list (if current-prefix-arg t nil)
+                     (read-string "endian: " (if (= 108 (byteorder))
+                                                 "small"
+                                               "big"))))
   (let* ((s (string-trim>< (region-extract-str t)))
          (out (decode-ip (cond ((string-match "^[#0][xX]" s)
                                 (string-to-number (substring s 2) 16))
                                ((string-match "^[#0][oO]" s)
                                 (string-to-number (substring s 2) 8))
-                               (t (string-to-number s))))))
+                               (t (string-to-number s)))
+                         (string= "small" endian))))
     (if arg
         (_enc_with_output_buffer_ +decode-output-buffer-name+
                                   (insert out))
