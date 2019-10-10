@@ -99,12 +99,12 @@
                  (lsh (logand ,n #xff000000) -24)
                  (lsh (logand ,n #x00ff0000) -16)
                  (lsh (logand ,n #x0000ff00) -8)
-                 (logand ,n #xff)))
-     (format "%s.%s.%s.%s"
-             (logand ,n #xff)
-             (lsh (logand ,n #x0000ff00) -8)
-             (lsh (logand ,n #x00ff0000) -16)
-             (lsh (logand ,n #xff000000) -24))))
+                 (logand ,n #xff))
+       (format "%s.%s.%s.%s"
+               (logand ,n #xff)
+               (lsh (logand ,n #x0000ff00) -8)
+               (lsh (logand ,n #x00ff0000) -16)
+               (lsh (logand ,n #xff000000) -24)))))
 
 
 (defun encode-ip* (&optional arg endian)
