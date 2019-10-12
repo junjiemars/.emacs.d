@@ -56,8 +56,7 @@
   (list
    :cond (or (executable-find% "sbcl"))
    :packages '(slime)
-   :compile `(,(compile-unit% (emacs-home* "config/use-slime.el") t)
-              ,(compile-unit% (emacs-home* "config/use-slime-autoload.el"))))
+   :compile `(,(compile-unit% (emacs-home* "config/use-slime-autoload.el"))))
   (list
    :cond (executable-find% "lua")
    :packages '(lua-mode)
