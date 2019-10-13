@@ -148,6 +148,35 @@ If ENDIAN is t then decode in small endian."
       (message "%s" out))))
 
 
+(defun encode-chinese-number (n &optional arg)
+  "Encode N to chinese number."
+  (interactive "P"))
+
+(defun decode-chinese-number (&optional arg)
+  "Decode S to decimal number."
+  (interactive "P")
+  (let ((out 0.0)
+        (n (mapcar** #'(lambda (x y)
+                         (list x (alist-get* y
+                                             '(("" . 0)
+                                               ("零" . 0) ("壹" . 1)
+                                               ("贰" . 2) ("叁" . 3)
+                                               ("肆" . 4) ("伍" . 5)
+                                               ("陆" . 6) ("柒" . 7)
+                                               ("捌" . 8) ("玖" . 9))
+                                             nil nil #'string=)))
+                     '(0.01 0.1 1 10 100 1000 10000 100000000 1000000000000)
+                     (nreverse (split-string* (string-trim><
+                                               (region-extract-str t))
+                                              "[分角元拾佰仟万亿兆]"
+                                              t
+                                              " ")))))
+    (dolist* (x n out)
+      (setq out (+ out (* (car x) (cadr x)))))
+    (if arg
+        (_enc_with_output_buffer_ +decode-output-buffer-name+
+                                  (insert (number-to-string out)))
+      (message "%s" out))))
 
 
 

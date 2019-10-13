@@ -203,6 +203,11 @@
   (should (equal '(aa) (alist-get* 'a '((a aa)))))
   (should (equal '(aa) (alist-get* "a" '(("a" aa)) nil nil #'string=))))
 
+(ert-deftest %basic:mapcar** ()
+  (should (equal '(a b c) (mapcar** #'identity '(a b c))))
+  (should (equal '((a 1) (b 2) (c 3))
+                 (mapcar** #'list '(a b c) '(1 2 3)))))
+
 (ert-deftest %basic:remove** ()
   (should (eq nil (remove** nil nil)))
   (should (eq nil (remove** 'a nil)))
@@ -239,7 +244,15 @@
   (should (equal '("a" "b" "c")
                  (split-string* "a,b,,cXX" "," t "XX")))
   (should (equal '("a" "b" "c")
-                 (split-string* "a,b@@cXX" "[,@]" t "XX"))))
+                 (split-string* "a,b@@cXX" "[,@]" t "XX")))
+  (should (equal '("a" "b" "c")
+                 (split-string* "a,b@@cXX" ",\\|@" t "XX")))
+  (should (equal '("a" "b")
+                 (split-string* "a,,b" "," t)))
+  (should (equal '("a" "" "b")
+                 (split-string* "a,,b" "," nil)))
+  (should (equal '("a" "b")
+                 (split-string* "a, b " "," t " "))))
 
 (ert-deftest %basic:string-trim> ()
   (should (eq nil (string-trim> nil "X")))

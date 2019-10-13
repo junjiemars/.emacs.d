@@ -137,7 +137,25 @@ Use TESTFN to lookup in the alist if non-nil, otherwise use `equal'."
          ,default))))
 
 
-;; Unifiy `cl-remove' and `remove*'
+;; Unify `cl-mapcar' and `mapcar*'
+(defmacro mapcar** (fn seq &rest seqs)
+  "Apply FUNCTION to each element of SEQ, and make a list of the results.
+If there are several SEQs, FUNCTION is called with that many arguments,
+and mapping stops as soon as the shortest list runs out.  With just one
+SEQ, this is like `mapcar'.  With several, it is like the Common Lisp
+`mapcar' function extended to arbitrary sequence types.
+\n(fn FUNCTION SEQ...)"
+  (if-fn% 'cl-mapcar 'cl-lib
+          ;; `cl-mapcar' autoloaded
+          `(cl-mapcar ,fn ,seq ,@seqs)
+    `(when-fn% 'mapcar* 'cl
+       (with-no-warnings
+         (progn
+           (require 'cl)
+           (mapcar* ,fn ,seq ,@seqs))))))
+
+
+;; Unify `cl-remove' and `remove*'
 (defmacro remove** (item seq &rest keys)
   "Remove all occurrences of ITEM in SEQ.
 This is a non-destructive function; it makes a copy of SEQ if necessary
