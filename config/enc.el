@@ -150,7 +150,8 @@ If ENDIAN is t then decode in small endian."
 
 (defun encode-chinese-number (n &optional arg)
   "Encode N to chinese number."
-  (interactive "P"))
+  (interactive "P")
+  (ignore* n arg))
 
 (defun decode-chinese-number (&optional arg)
   "Decode S to decimal number."
