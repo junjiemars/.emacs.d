@@ -158,7 +158,9 @@ If ENDIAN is t then decode in small endian."
                            ((string= "X" n) 10)
                            ((string= "V" n) 5)
                            ((string= "I" n) 1)))
-        ((< (roman->arabic (car n) 0) (roman->arabic (cadr n) 0))
+        ((let ((u1 (roman->arabic (car n) 0) )
+               (u2 (roman->arabic (cadr n) 0))))
+         (< u1 u2)
          (roman->arabic (cddr n)
                         (+ acc (- (roman->arabic (cadr n) 0)
                                   (roman->arabic (car n) 0)))))
@@ -173,9 +175,10 @@ If ENDIAN is t then decode in small endian."
     (message "%s" (roman->arabic n 0))))
 
 
-(defun chinese->arabic (n)
+(defun chinese->arabic (n acc)
   "Translate a chinese number N into arabic number."
-  (cond ((stringp n) (cond ((string= "兆" n) 1000000000000)
+  (cond ((null n) acc)
+        ((stringp n) (cond ((string= "兆" n) 1000000000000)
                            ((string= "亿" n) 100000000)
                            ((string= "万" n) 10000)
                            ((string= "仟" n) 1000)
@@ -191,19 +194,20 @@ If ENDIAN is t then decode in small endian."
                            ((string= "贰" n) 2)
                            ((string= "壹" n) 1)
                            ((string= "零" n) 0)))
-        ((null (cdr n)) (chinese->arabic (car n)))
-        ((and (< (chinese->arabic (car n)) 10)
-              (> (chinese->arabic (car n)) 0))
-         (+ (* (chinese->arabic (car n)) (chinese->arabic (cadr n)))
-            (chinese->arabic (cddr n))))
-        (t (+ (chinese->arabic (car n)) (chinese->arabic (cdr n))))))
+        ((let ((u (chinese->arabic (car n) 0)))
+           (and (<  u 10) (> u 0) (> (chinese->arabic (cadr n) 0) 0)))
+         (chinese->arabic (cddr n)
+                          (+ acc (* (chinese->arabic (car n) 0)
+                                    (chinese->arabic (cadr n) 0)))))
+        (t (chinese->arabic (cdr n)
+                            (+ acc (chinese->arabic (car n) 0))))))
 
 
 (defun decode-chinese-number ()
   "Decode chinese number to decimal number."
   (interactive)
   (let ((n (split-string* (region-extract-str t) "" t)))
-    (message "%s" (chinese->arabic n))))
+    (message "%s" (chinese->arabic n 0))))
 
 
 
