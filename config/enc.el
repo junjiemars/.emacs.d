@@ -148,35 +148,60 @@ If ENDIAN is t then decode in small endian."
       (message "%s" out))))
 
 
-(defun encode-chinese-number (n &optional arg)
-  "Encode N to chinese number."
-  (interactive "P"))
+(defun roman->arabic (ss n)
+  "Translate a roman number SS into arabic number N."
+  (cond ((stringp ss) (cond ((string= "M" ss) 1000)
+                            ((string= "D" ss) 500)
+                            ((string= "C" ss) 100)
+                            ((string= "L" ss) 50)
+                            ((string= "X" ss) 10)
+                            ((string= "V" ss) 5)
+                            ((string= "I" ss) 1)))
+        ((null (cdr ss)) (roman->arabic (car ss)))
+        ((< (roman->arabic (car ss)) (roman->arabic (cadr ss)))
+         (- (roman->arabic (cdr ss)) (roman->arabic (car ss))))
+        (t (+ (roman->arabic (car ss)) (roman->arabic (cdr ss))))))
 
-(defun decode-chinese-number (&optional arg)
-  "Decode S to decimal number."
-  (interactive "P")
-  (let ((out 0.0)
-        (n (mapcar** #'(lambda (x y)
-                         (list x (alist-get* y
-                                             '(("" . 0)
-                                               ("零" . 0) ("壹" . 1)
-                                               ("贰" . 2) ("叁" . 3)
-                                               ("肆" . 4) ("伍" . 5)
-                                               ("陆" . 6) ("柒" . 7)
-                                               ("捌" . 8) ("玖" . 9))
-                                             nil nil #'string=)))
-                     '(0.01 0.1 1 10 100 1000 10000 100000000 1000000000000)
-                     (nreverse (split-string* (string-trim><
-                                               (region-extract-str t))
-                                              "[分角元拾佰仟万亿兆]"
-                                              t
-                                              " ")))))
-    (dolist* (x n out)
-      (setq out (+ out (* (car x) (cadr x)))))
-    (if arg
-        (_enc_with_output_buffer_ +decode-output-buffer-name+
-                                  (insert (number-to-string out)))
-      (message "%s" out))))
+
+(defun decode-roman-number ()
+  "Decode roman number into decimal number."
+  (interactive)
+  (let ((n (split-string* (region-extract-str t) "" t)))
+    (message "%s" (roman->arabic n))))
+
+
+(defun chinese->arabic (n)
+  "Translate a chinese number N into arabic number."
+  (cond ((stringp n) (cond ((string= "兆" n) 1000000000000)
+                           ((string= "亿" n) 100000000)
+                           ((string= "万" n) 10000)
+                           ((string= "仟" n) 1000)
+                           ((string= "佰" n) 100)
+                           ((string= "拾" n) 10)
+                           ((string= "玖" n) 9)
+                           ((string= "捌" n) 8)
+                           ((string= "柒" n) 7)
+                           ((string= "陆" n) 6)
+                           ((string= "伍" n) 5)
+                           ((string= "肆" n) 4)
+                           ((string= "叁" n) 3)
+                           ((string= "贰" n) 2)
+                           ((string= "壹" n) 1)
+                           ((string= "零" n) 0)))
+        ((null (cdr n)) (chinese->arabic (car n)))
+        ((and (< (chinese->arabic (car n)) 10)
+              (> (chinese->arabic (car n)) 0))
+         (+ (* (chinese->arabic (car n)) (chinese->arabic (cadr n)))
+            (chinese->arabic (cddr n))))
+        (t (+ (chinese->arabic (car n)) (chinese->arabic (cdr n))))))
+
+
+(defun decode-chinese-number ()
+  "Decode chinese number to decimal number."
+  (interactive)
+  (let ((n (split-string* (region-extract-str t) "" t)))
+    (message "%s" (chinese->arabic n))))
+
 
 
 
