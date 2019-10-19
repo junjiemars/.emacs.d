@@ -148,26 +148,29 @@ If ENDIAN is t then decode in small endian."
       (message "%s" out))))
 
 
-(defun roman->arabic (ss n)
-  "Translate a roman number SS into arabic number N."
-  (cond ((stringp ss) (cond ((string= "M" ss) 1000)
-                            ((string= "D" ss) 500)
-                            ((string= "C" ss) 100)
-                            ((string= "L" ss) 50)
-                            ((string= "X" ss) 10)
-                            ((string= "V" ss) 5)
-                            ((string= "I" ss) 1)))
-        ((null (cdr ss)) (roman->arabic (car ss)))
-        ((< (roman->arabic (car ss)) (roman->arabic (cadr ss)))
-         (- (roman->arabic (cdr ss)) (roman->arabic (car ss))))
-        (t (+ (roman->arabic (car ss)) (roman->arabic (cdr ss))))))
+(defun roman->arabic (n acc)
+  "Translate a roman number N into arabic number."
+  (cond ((null n) acc)
+        ((stringp n) (cond ((string= "M" n) 1000)
+                           ((string= "D" n) 500)
+                           ((string= "C" n) 100)
+                           ((string= "L" n) 50)
+                           ((string= "X" n) 10)
+                           ((string= "V" n) 5)
+                           ((string= "I" n) 1)))
+        ((< (roman->arabic (car n) 0) (roman->arabic (cadr n) 0))
+         (roman->arabic (cddr n)
+                        (+ acc (- (roman->arabic (cadr n) 0)
+                                  (roman->arabic (car n) 0)))))
+        (t (roman->arabic (cdr n)
+                          (+ acc (roman->arabic (car n) 0))))))
 
 
 (defun decode-roman-number ()
   "Decode roman number into decimal number."
   (interactive)
   (let ((n (split-string* (region-extract-str t) "" t)))
-    (message "%s" (roman->arabic n))))
+    (message "%s" (roman->arabic n 0))))
 
 
 (defun chinese->arabic (n)
