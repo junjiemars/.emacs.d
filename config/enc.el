@@ -28,14 +28,14 @@
 ;; Encode/Decode URL
 
 (defun encode-url* ()
-  "Encode region into `+encode-output-buffer-name+' buffer."
+  "Encode region via URL encoded."
   (interactive)
   (let ((s (string-trim>< (region-extract-str t))))
     (_enc_with_output_buffer_ +encode-output-buffer-name+
                               (insert (url-hexify-string s)))))
 
 (defun decode-url* ()
-  "Decode region into `+decode-output-buffer-name+' buffer."
+  "Decode region via URL decoded."
   (interactive)
   (let ((s (string-trim>< (region-extract-str t))))
     (_enc_with_output_buffer_ +decode-output-buffer-name+
@@ -43,14 +43,15 @@
                                        (url-unhex-string s)
                                        'utf-8)))))
 
-
+
+ ;; end of URL
 
 
 ;; Encode/Decode base64
 
 
 (defun encode-base64* ()
-  "Encode region with base64 into `+encode-output-buffer-name+' buffer."
+  "Encode region via base64 encoded."
   (interactive)
   (let ((s (string-trim>< (region-extract-str t))))
     (_enc_with_output_buffer_ +encode-output-buffer-name+
@@ -60,7 +61,7 @@
                                          s))))))
 
 (defun decode-base64* ()
-  "Decode region with base64 into `+encode-output-buffer-name+' buffer."
+  "Decode region base64 decoded."
   (interactive)
   (let ((s (string-trim>< (region-extract-str t))))
     (_enc_with_output_buffer_ +decode-output-buffer-name+
@@ -68,7 +69,8 @@
                                        (base64-decode-string s) 'utf-8)))))
 
 
- ;; 
+ ;; end of base64
+
 
 ;; Encode/Decode IP address
 
@@ -147,6 +149,8 @@ If ENDIAN is t then decode in small endian."
                                   (insert out))
       (message "%s" out))))
 
+
+;; Roman/Chinese number to Arabic number
 
 (defun roman->arabic (n acc)
   "Translate a roman number N into arabic number."
@@ -234,6 +238,8 @@ If ENDIAN is t then decode in small endian."
       (message "%s" out))))
 
 
-
+ ;; end of Roman/Chinese number
+
+
 
 ;; end of file
