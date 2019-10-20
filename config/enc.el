@@ -168,11 +168,16 @@ If ENDIAN is t then decode in small endian."
                           (+ acc (roman->arabic (car n) 0))))))
 
 
-(defun decode-roman-number ()
+(defun decode-roman-number (&optional arg)
   "Decode roman number into decimal number."
-  (interactive)
-  (let ((n (split-string* (region-extract-str t) "" t)))
-    (message "%s" (roman->arabic n 0))))
+  (interactive "P")
+  (let* ((ss (split-string* (region-extract-str t) "" t))
+         (n (roman->arabic ss 0))
+         (out (format "%d (#o%o, #x%x)" n n n)))
+    (if arg
+        (_enc_with_output_buffer_ +decode-output-buffer-name+
+                                  (insert out))
+      (message "%s" out))))
 
 
 (defun chinese->arabic (n acc)
@@ -194,9 +199,10 @@ If ENDIAN is t then decode in small endian."
                            ((string= "贰" n) 2)
                            ((string= "壹" n) 1)
                            ((string= "零" n) 0)))
-        ((let ((u (chinese->arabic (car n) 0)))
-           (and (<  u 10) (> u 0)
-                (>= (chinese->arabic (cadr n) 0) 10)))
+        ((let ((u (chinese->arabic (car n) 0))
+               (u1 (chinese->arabic (cadr n) 0)))
+           (and (< u 10) (> u 0)
+                (< u1 10000) (>= u1 10)))
          (chinese->arabic (cddr n)
                           (+ acc (* (chinese->arabic (car n) 0)
                                     (chinese->arabic (cadr n) 0)))))
@@ -213,11 +219,16 @@ If ENDIAN is t then decode in small endian."
                             (+ acc (chinese->arabic (car n) 0))))))
 
 
-(defun decode-chinese-number ()
+(defun decode-chinese-number (&optional arg)
   "Decode chinese number to decimal number."
-  (interactive)
-  (let ((n (split-string* (region-extract-str t) "" t)))
-    (message "%s" (chinese->arabic n 0))))
+  (interactive "P")
+  (let* ((ss (split-string* (region-extract-str t) "" t))
+         (n (chinese->arabic ss 0))
+         (out (format "%d (#o%o, #x%x)" n n n)))
+    (if arg
+        (_enc_with_output_buffer_ +decode-output-buffer-name+
+                                  (insert out))
+      (message "%s" out))))
 
 
 

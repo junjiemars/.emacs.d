@@ -527,4 +527,31 @@
      (when already (should (install-package!1 'htmlize))))))
 
 
+;; enc
+
+(ert-deftest %enc:roman->arabic ()
+  (should (= 1990 (roman->arabic (split-string* "MCMXC" "" t) 0)))
+  (should (= 2008 (roman->arabic (split-string* "MMVIII" "" t) 0)))
+  (should (= 1666 (roman->arabic (split-string* "MDCLXVI" "" t) 0))))
+
+
+(ert-deftest %enc:chinese->arabic ()
+  (should (= 91234567
+             (chinese->arabic (split-string*
+                               "玖仟壹佰贰拾叁万肆仟伍佰陆拾柒" "" t)
+                              0)))
+  (should (= 3456678991234567
+             (chinese->arabic (split-string*
+                               "叁仟肆佰伍拾陆兆陆仟柒佰捌拾玖亿玖仟壹佰贰拾叁万肆仟伍佰陆拾柒"
+                               "" t)
+                              0)))
+  (should (= 3456000091230567
+             (chinese->arabic (split-string*
+                               "叁仟肆佰伍拾陆兆玖仟壹佰贰拾叁万伍佰陆拾柒"
+                               "" t)
+                              0))))
+
+
+ ;; end of enc
+
 ;; end of file
