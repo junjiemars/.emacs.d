@@ -386,8 +386,9 @@
   (should (string= "a/b/" (path- "a/b/c/"))))
 
 (ert-deftest &basic:path-depth ()
-  (should (= 0 (path-depth nil) (path-depth "")))
-  (should (= 1 (path-depth "/a") (path-depth "\\a" "\\\\")))
+  (should (= 0 (path-depth nil) (path-depth "") (path-depth "abc") ))
+  (should (= 1 (path-depth "/abc")))
+  (should (= 1 (path-depth "\\a" "\\\\")))
   (should (= 3 (path-depth "/a/b/c"))))
 
 (ert-deftest %basic:dir-iterate ()
