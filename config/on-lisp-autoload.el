@@ -100,12 +100,7 @@
           ;; default `paredit-convolute-sexp' keybinding `M-?' conflicts with
           ;; `xref-find-references'
           (define-key paredit-mode-map
-            (kbd "M-?") #'xref-find-references)))
-
-      ;; disable change DEL key binding in `view-mode'
-      (when-fn% 'View-scroll-page-backward 'view
-        (define-key% view-mode-map
-          (kbd "DEL") #'View-scroll-page-backward)))))
+            (kbd "M-?") #'xref-find-references))))))
 
 
  ;; end of feature: paredit
