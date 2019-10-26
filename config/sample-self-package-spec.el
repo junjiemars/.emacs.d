@@ -15,6 +15,11 @@
                    'htmlize
                    (when-version% <= 25 'ox-reveal)))
   (list
+   :cond (when-version% < 24.1 t)
+   :packages (list 'js2-mode
+                   'skewer-mode)
+   :compile `(,(compile-unit% (emacs-home* "config/use-js-autoload.el"))))
+  (list
    :cond (executable-find% "latex")
    :packages '(auctex cdlatex))
   (list
