@@ -18,26 +18,35 @@
                       (split-string* (cdr cmd) "\n" t "\n"))))))
 
 
-(when% (and (require 'tramp)
-            (not (find "docker" tramp-methods :key #'car :test #'string=)))
-  (with-eval-after-load 'tramp
-    (add-to-list 'tramp-methods
-                 '("docker"
-                   (tramp-login-program "docker")
-                   (tramp-login-args
-                    (nil
-                     ("exec" "-it")
-                     ("-u" "%u")
-                     ("%h")
-                     ("sh")))
-                   (tramp-remote-shell "/bin/sh")
-                   (tramp-remote-shell-args ("-i" "-c")))
-                 nil
-                 (lambda (a b)
-                   (string= (car a) (car b))))
-    (tramp-set-completion-function
-     "docker"
-     '((tramp-parse-docker-containers "")))))
+(with-eval-after-load 'tramp
+
+  (when% (executable-find% "ssh")
+    ;; ssh faster than scp on ancient Emacs?
+    (setq% tramp-default-method "ssh"))
+
+  ;; docker
+  ;; C-x C-f /docker:user@container:/path/to/file
+  ;; C-x d /docker:user@container:/path/
+  (when% (executable-find% "docker")
+    (when-var% tramp-methods 'tramp
+      (unless (alist-get* "docker" tramp-methods nil nil #'string=)
+        (add-to-list 'tramp-methods
+                     '("docker"
+                       (tramp-login-program "docker")
+                       (tramp-login-args
+                        (nil
+                         ("exec" "-it")
+                         ("-u" "%u")
+                         ("%h")
+                         ("sh")))
+                       (tramp-remote-shell "/bin/sh")
+                       (tramp-remote-shell-args ("-i" "-c")))
+                     nil
+                     (lambda (a b)
+                       (string= (car a) (car b))))
+        (tramp-set-completion-function
+         "docker"
+         '((tramp-parse-docker-containers "")))))))
 
 
 ;; end of on-tramp-autoload.el

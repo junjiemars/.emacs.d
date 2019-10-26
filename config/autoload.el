@@ -64,12 +64,14 @@
     (compile-unit% (emacs-home* "config/on-dired-autoload.el"))
     (compile-unit% (emacs-home* "config/on-edit-autoload.el"))
     (compile-unit% (emacs-home* "config/on-eshell-autoload.el"))
+    (compile-unit% (emacs-home* "config/on-hippie-autoload.el"))
     (compile-unit% (emacs-home* "config/on-lisp-autoload.el"))
     (compile-unit% (emacs-home* "config/on-net-autoload.el"))
     (compile-unit% (emacs-home* "config/on-org-autoload.el"))
     (compile-unit% (emacs-home* "config/on-pp-autoload.el"))
     (compile-unit% (emacs-home* "config/on-python-autoload.el"))
     (compile-unit% (emacs-home* "config/on-sh-autoload.el"))
+    (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))
     (compile-unit% (emacs-home* "config/on-window-autoload.el"))
 
     (if-feature-eww%
@@ -87,9 +89,7 @@
                  (executable-find% "mutool"))
         (compile-unit% (emacs-home* "config/on-docview-autoload.el"))))
 
-    (when% (executable-find% "docker")
-      (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))))
-
+    )
   ;; end of compile!
 
   ;; gambit
