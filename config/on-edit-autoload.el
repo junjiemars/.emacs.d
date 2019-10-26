@@ -95,13 +95,6 @@
   (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode)))
 
 
-;; `view-mode'
-(with-eval-after-load 'view
-  ;; disable change DEL key binding, such as `paredit-mode'
-  (when-var% view-mode-map 'view
-    (define-key% view-mode-map (kbd "DEL") #'View-scroll-page-backward)))
-
-
 ;; :edit
 (when (self-spec->*env-spec :edit :allowed)
   ;; default tab-width

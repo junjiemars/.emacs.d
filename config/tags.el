@@ -64,6 +64,7 @@ when `desktop-globals-to-save' include it."
 
 (defcustom% tags-in-view-mode
   `(list source-directory
+         (path- invocation-directory)
          (when-var% package-user-dir 'package
            package-user-dir)
          (v-home* "config/")
