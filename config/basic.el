@@ -422,6 +422,13 @@ See also`define-hash-table-test'."
        (file-name-directory (directory-file-name file))))
 
 
+(defun path-depth (path &optional separator)
+  "Return the depth of PATH."
+  (if (stringp path)
+      (length (split-string* path (or separator "/") t))
+    0))
+
+
 (defmacro file-symlink-p* (file)
   "Return the link target as a string if FILE is the name of a symbolic link."
   `(file-symlink-p (if (directory-name-p ,file)
