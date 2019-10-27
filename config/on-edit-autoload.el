@@ -464,7 +464,9 @@ directory name of `buffer-file-name' to kill ring."
 
 
 (defun multi-occur-in-matching-major-mode (&optional mode)
-  "Show all lines matching REGEXP in buffers specified by `major-mode'."
+  "Show all lines matching REGEXP in buffers specified by `major-mode'.
+
+See also: `multi-occur-in-matching-buffers'."
   (interactive
    (list (read-from-minibuffer
           "List lines in buffers whose major-mode match regexp: "
