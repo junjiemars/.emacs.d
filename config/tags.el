@@ -183,22 +183,6 @@ Example:
     (make-tags home tags-file c-ff df renew)))
 
 
-(defun make-system-c-tags (includes &optional dir-filter renew)
-  "Make tags for system INCLUDES.
-
-INCLUDES should be the system C include directories list,
-DIR-FILTER directory filter function,
-RENEW overwrite the existing tags file when t else create it.
-
-Example:
- (make-system-c-tags (`system-cc-include' t) nil t)
-"
-  (let ((tag-file (tags-spec->% :os-include)))
-    (make-c-tags (car includes) tag-file dir-filter renew)
-    (dolist* (p (cdr includes) tag-file)
-      (make-c-tags p tag-file dir-filter))))
-
-
 (defun make-dir-tags (dir &optional renew)
   "Make and mount tags for specified DIR."
   (interactive "Dmake tags in \nP")

@@ -314,6 +314,18 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
       (view-mode 1))))
 
 
+(when-fn% 'make-c-tags 'tags
+
+  (defun cc*-make-system-tags (&optional renew)
+    "Make system C tags."
+    (interactive "P")
+    (let ((includes (cc*-system-include (not renew)))
+          (tag-file (tags-spec->% :os-include)))
+      (make-c-tags (car includes) tag-file nil renew)
+      (dolist* (p (cdr includes) tag-file)
+        (make-c-tags p tag-file nil)))))
+
+
 ;; eldoc
 
 (defun cc*-check-identity (&optional remote)
@@ -391,7 +403,11 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
       (define-key% c-mode-map (kbd "TAB") #'c-indent-line-or-region))
 
     ;; keymap: dump predefined macros
-    (define-key% c-mode-map (kbd "C-c #") #'cc*-dump-predefined-macros)))
+    (define-key% c-mode-map (kbd "C-c #") #'cc*-dump-predefined-macros))
+
+  ;; load `tags'
+  (when-fn% 'make-c-tags 'tags
+    (require 'tags)))
 
 
 (with-eval-after-load 'cmacexp
