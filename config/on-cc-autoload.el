@@ -95,6 +95,38 @@
  ;; msvc host environment
 
 
+;; cc executable constants
+
+(defconst +cc*-compiler-bin+
+  (if-platform% 'windows-nt
+      (or (executable-find% "cc-env.bat")
+          (make-cc-env-bat))
+    (executable-find%
+     "cc"
+     (lambda (cc)
+       (let ((x (shell-command* (concat "echo '"
+                                        "int main(int argc, char **argv) {"
+                                        "  return 0; "
+                                        "}"
+                                        "' | cc -"))))
+         (zerop (car x))))))
+  "The path of C compiler executable.")
+
+
+(when-platform% 'windows-nt
+
+  (defconst +cc*-xargs-bin+ (or (executable-find%
+                                 "xargs"
+                                 (lambda (xargs)
+                                   (let ((x (shell-command* "echo xxx"
+                                              "&& echo zzz"
+                                              "|xargs -0")))
+                                     (and (zerop (car x))
+                                          (string-match "^zzz" (cdr x))))))
+                                (make-xargs-bin))
+    "The path of xargs executable."))
+
+
 (defun cc*-check-include (&optional remote)
   "Return a list of system cc include path."
   (let ((cmd (if remote
@@ -104,8 +136,7 @@
                              " \"echo '' | cc -v -E 2>&1 >/dev/null -\"")))
                (if-platform% 'windows-nt
                    ;; Windows: msmvc
-                   (shell-command* (or (executable-find% "cc-env.bat")
-                                       (make-cc-env-bat)))
+                   (shell-command* +cc*-compiler-bin+)
                  ;; Darwin/Linux: clang or gcc
                  (shell-command* "echo '' | cc -v -E 2>&1 >/dev/null -"))))
         (parser (lambda (preprocessed)
@@ -263,17 +294,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
             ad-do-it)
         (when-platform% 'windows-nt
           ;; cl.exe cannot retrieve from stdin.
-          (when% (and (or (executable-find% "cc-env.bat")
-                          (make-cc-env-bat))
-                      (or (executable-find%
-                           "xargs"
-                           (lambda (xargs)
-                             (let ((x (shell-command* "echo xxx"
-                                        "&& echo zzz"
-                                        "|xargs -0")))
-                               (and (zerop (car x))
-                                    (string-match "^zzz" (cdr x))))))
-                          (make-xargs-bin)))
+          (when% (and +cc*-compiler-bin+ +cc*-xargs-bin+)
             (let* ((tmp (make-temp-file
                          (expand-file-name "cc-" temporary-file-directory)))
                    (c-macro-buffer-name "*Macroexpansion*")
