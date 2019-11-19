@@ -314,7 +314,10 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
                       (if remote
                           (concat "@" (remote-norm->user@host remote) "*")
                         "*")))
-         (cmd (concat "cc " options " -dM -E -"))
+         (opts (if (> (length options) 0)
+                   (concat options " ")
+                 options))
+         (cmd (concat "cc " opts "-dM -E -"))
          (dump (if remote
                    (concat "ssh " (remote-norm->user@host remote)
                            " \'" cmd "\'")
@@ -329,9 +332,11 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
                 (insert (cdr x))
               (insert (format "/*\n  %s\n\n*/"
                               (cdr x)))))
-        (when-platform% 'windows-nt
-          (insert (format "/*\n  %s\n*/"
-                          "https://docs.microsoft.com/en-us/cpp/preprocessor/predefined-macros?view=vs-2019"))))
+        (insert (format "/*\n  %s\n*/"
+                        (concat
+                         "C compiler no found!"
+                         (when-platform% 'windows-nt
+                           "\nhttps://docs.microsoft.com/en-us/cpp/preprocessor/predefined-macros?view=vs-2019")))))
       (c-mode)
       (view-mode 1))))
 
