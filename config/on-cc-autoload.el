@@ -60,12 +60,12 @@
 
   (defun make-xargs-bin ()
     "Make a GNU's xargs alternation in `exec-path'."
-    (let* ((c (v-home% ".exec/xargs.c"))
+    (let* ((c (concat temporary-file-directory "xargs.c"))
            (exe (v-home% ".exec/xargs.exe"))
            (cc (concat "cc-env.bat &&"
                        " cl -nologo -W4 -DNDEBUG=1 -O2 -EHsc -utf-8"
                        " " c
-                       " -Fo" (v-home% ".exec/")
+                       " -Fo" temporary-file-directory
                        " -Fe" exe
                        " -link -release")))
       (when (save-str-to-file
@@ -87,8 +87,6 @@
              c)
         (let ((cmd (shell-command* cc)))
           (when (zerop (car cmd))
-            (delete-file c)
-            (delete-file (v-home% ".exec/xargs.obj"))
             exe))))))
 
 
