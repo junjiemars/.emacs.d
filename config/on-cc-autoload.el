@@ -315,7 +315,42 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
          (opts (if (> (length options) 0)
                    (concat options " ")
                  options))
-         (cmd (concat "cc " opts "-dM -E -"))
+         (cmd (if-platform% 'windows-nt
+                  (let* ((dm (concat temporary-file-directory "dm.c"))
+                         (exe (v-home% ".exec/dmacro.exe"))
+                         (cc (concat "cc-env.bat &&"
+                                     " cl -nologo -WX -W4 -DNDEBUG=1 -EHsc -utf-8"
+                                     " " opts
+                                     " " dm
+                                     " -Fo" temporary-file-directory
+                                     " -Fe" exe
+                                     " -link -release")))
+                    (save-str-to-file
+                     (concat "#include <stdio.h>\n"
+                             "#define _STR2_(x) #x\n"
+                             "#define _STR1_(x) _STR2_(x)\n"
+                             "#define _POUT_(x) \"#define \" #x \" \" _STR1_(x) \"\\n\"\n"
+                             "#define _unused_(x) ((void)(x))\n"
+                             "\n"
+                             "int main(int argc, char **argv) {\n"
+                             "  _unused_(argc);\n"
+                             "  _unused_(argv);\n"
+                             "\n"
+                             "#if defined(__STDC__)\n"
+                             "   printf(_POUT_(__STDC__));\n"
+                             "#endif\n"
+                             "#if defined(__STDC_HOSTED__)\n"
+                             "   printf(_POUT_(__STDC_HOSTED__));\n"
+                             "#endif\n"
+                             "#if defined(_WIN64)\n"
+                             "   printf(_POUT_(_WIN64));\n"
+                             "#endif\n"
+                             "}")
+                     dm)
+                    (let ((cmd (shell-command* cc)))
+                      (if (zerop (car cmd))
+                          "dmacro.exe")))
+                (concat "cc " opts "-dM -E -")))
          (dump (if remote
                    (concat "ssh " (remote-norm->user@host remote)
                            " \'" cmd "\'")
