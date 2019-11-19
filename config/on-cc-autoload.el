@@ -108,7 +108,8 @@
                                         "int main(int argc, char **argv) {"
                                         "  return 0; "
                                         "}"
-                                        "' | cc -"))))
+                                        "' | cc -o/tmp/a.out -xc - "
+                                        "&>/dev/null"))))
          (zerop (car x))))))
   "The path of C compiler executable.")
 
@@ -305,15 +306,15 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
                 (delete-file tmp)))))))))
 
 
-(defun cc*-dump-predefined-macros ()
+(defun cc*-dump-predefined-macros (&optional options)
   "Dump predefined macros."
-  (interactive)
+  (interactive "sInput C compiler's options: ")
   (let* ((remote (remote-norm-file (buffer-file-name (current-buffer))))
          (buf (concat "*Predefined Macros"
                       (if remote
                           (concat "@" (remote-norm->user@host remote) "*")
                         "*")))
-         (cmd "cc -dM -E -")
+         (cmd (concat "cc " options " -dM -E -"))
          (dump (if remote
                    (concat "ssh " (remote-norm->user@host remote)
                            " \'" cmd "\'")
@@ -322,7 +323,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
       (view-mode -1)
       (delete-region (point-min) (point-max))
       (message "Invoking %s ..." dump)
-      (if (or remote (executable-find% "cc"))
+      (if (or remote +cc*-compiler-bin+)
           (let ((x (shell-command* dump)))
             (if (zerop (car x))
                 (insert (cdr x))
