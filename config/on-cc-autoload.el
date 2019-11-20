@@ -315,6 +315,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
          (opts (if (> (length options) 0)
                    (concat options " ")
                  options))
+         (no-found "C compiler no found!")
          (cmd (if-platform% 'windows-nt
                   (let* ((dm (concat temporary-file-directory "dm.c"))
                          (exe (v-home% ".exec/dmacro.exe"))
@@ -349,7 +350,8 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
                      dm)
                     (let ((cmd (shell-command* cc)))
                       (if (zerop (car cmd))
-                          "dmacro.exe")))
+                          "dmacro.exe"
+                        no-found)))
                 (concat "cc " opts "-dM -E -")))
          (dump (if remote
                    (concat "ssh " (remote-norm->user@host remote)
@@ -367,7 +369,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
                               (cdr x)))))
         (insert (format "/*\n  %s\n*/"
                         (concat
-                         "C compiler no found!"
+                         no-found
                          (when-platform% 'windows-nt
                            "\nhttps://docs.microsoft.com/en-us/cpp/preprocessor/predefined-macros?view=vs-2019")))))
       (c-mode)
