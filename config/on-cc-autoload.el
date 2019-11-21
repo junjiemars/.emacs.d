@@ -358,8 +358,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
                  (if-platform% 'windows-nt
                      (or (and +cc*-compiler-bin+ (make-dmacro-bin opts))
                          "")
-                   cmd)))
-         (fmt "/*\n  %s\n\n*/"))
+                   cmd))))
     (with-current-buffer
         (switch-to-buffer
          (concat "*Predefined Macros"
@@ -369,14 +368,14 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
       (view-mode -1)
       (delete-region (point-min) (point-max))
       (message "Invoking %s ..." dump)
-      (if (or remote +cc*-compiler-bin+)
-          (let ((x (shell-command* dump)))
-            (if (zerop (car x))
-                (insert (if (> (length (cdr x)) 0)
+      (insert (if (or remote +cc*-compiler-bin+)
+                  (let ((x (shell-command* dump)))
+                    (if (zerop (car x))
+                        (if (> (length (cdr x)) 0)
                             (cdr x)
-                          (format fmt "C preprocessor no output!")))
-              (insert (format fmt (cdr x)))))
-        (insert (format fmt (concat "C compiler no found!"))))
+                          "/* C preprocessor no output! */")
+                      (cdr x)))
+                "/* C compiler no found! */"))
       (c-mode)
       (view-mode 1))))
 
