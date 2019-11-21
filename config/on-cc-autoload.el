@@ -126,6 +126,46 @@
     "The path of xargs executable."))
 
 
+(when-platform% 'windows-nt
+
+  (defun make-dmacro-bin (&optional options)
+    "Make dmacro.exe for printing predefined macros."
+    (let* ((dm (concat temporary-file-directory "dm.c"))
+           (exe (v-home% ".exec/dmacro.exe"))
+           (cc (concat "cc-env.bat &&"
+                       " cl -nologo -WX -W4 -DNDEBUG=1 -EHsc -utf-8"
+                       " " options
+                       " " dm
+                       " -Fo" temporary-file-directory
+                       " -Fe" exe
+                       " -link -release")))
+      (save-str-to-file
+       (concat "#include <stdio.h>\n"
+               "#define _STR2_(x) #x\n"
+               "#define _STR1_(x) _STR2_(x)\n"
+               "#define _POUT_(x) \"#define \" #x \" \" _STR1_(x) \"\\n\"\n"
+               "#define _unused_(x) ((void)(x))\n"
+               "\n"
+               "int main(int argc, char **argv) {\n"
+               "  _unused_(argc);\n"
+               "  _unused_(argv);\n"
+               "\n"
+               "#if defined(__STDC__)\n"
+               "   printf(_POUT_(__STDC__));\n"
+               "#endif\n"
+               "#if defined(__STDC_HOSTED__)\n"
+               "   printf(_POUT_(__STDC_HOSTED__));\n"
+               "#endif\n"
+               "#if defined(_WIN64)\n"
+               "   printf(_POUT_(_WIN64));\n"
+               "#endif\n"
+               "}")
+       dm)
+      (let ((cmd (shell-command* cc)))
+        (when (zerop (car cmd))
+          "dmacro.exe")))))
+
+
 (defun cc*-check-include (&optional remote)
   "Return a list of system cc include path."
   (let ((cmd (if remote
@@ -287,7 +327,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
                      (string-match "((void)(a));" (cdr x))))))
           (progn
             (setq% c-macro-buffer-name
-                   "*Macroexpansion*"
+                   "*Macroexpansion*" 
                    'cmacexp)
             (setq% c-macro-preprocessor "cc -E -o - -" 'cmacexp)
             ad-do-it)
@@ -308,68 +348,35 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
   "Dump predefined macros."
   (interactive "sInput C compiler's options: ")
   (let* ((remote (remote-norm-file (buffer-file-name (current-buffer))))
-         (buf (concat "*Predefined Macros"
-                      (if remote
-                          (concat "@" (remote-norm->user@host remote) "*")
-                        "*")))
          (opts (if (> (length options) 0)
                    (concat options " ")
                  options))
-         (cmd (if-platform% 'windows-nt
-                  (let* ((dm (concat temporary-file-directory "dm.c"))
-                         (exe (v-home% ".exec/dmacro.exe"))
-                         (cc (concat "cc-env.bat &&"
-                                     " cl -nologo -WX -W4 -DNDEBUG=1 -EHsc -utf-8"
-                                     " " opts
-                                     " " dm
-                                     " -Fo" temporary-file-directory
-                                     " -Fe" exe
-                                     " -link -release")))
-                    (save-str-to-file
-                     (concat "#include <stdio.h>\n"
-                             "#define _STR2_(x) #x\n"
-                             "#define _STR1_(x) _STR2_(x)\n"
-                             "#define _POUT_(x) \"#define \" #x \" \" _STR1_(x) \"\\n\"\n"
-                             "#define _unused_(x) ((void)(x))\n"
-                             "\n"
-                             "int main(int argc, char **argv) {\n"
-                             "  _unused_(argc);\n"
-                             "  _unused_(argv);\n"
-                             "\n"
-                             "#if defined(__STDC__)\n"
-                             "   printf(_POUT_(__STDC__));\n"
-                             "#endif\n"
-                             "#if defined(__STDC_HOSTED__)\n"
-                             "   printf(_POUT_(__STDC_HOSTED__));\n"
-                             "#endif\n"
-                             "#if defined(_WIN64)\n"
-                             "   printf(_POUT_(_WIN64));\n"
-                             "#endif\n"
-                             "}")
-                     dm)
-                    (let ((cmd (shell-command* cc)))
-                      (if (zerop (car cmd))
-                          "dmacro.exe")))
-                (concat "cc " opts "-dM -E -")))
+         (cmd  (concat "cc " opts "-dM -E -"))
          (dump (if remote
                    (concat "ssh " (remote-norm->user@host remote)
                            " \'" cmd "\'")
-                 cmd)))
-    (with-current-buffer (switch-to-buffer buf)
+                 (if-platform% 'windows-nt
+                     (or (and +cc*-compiler-bin+ (make-dmacro-bin opts))
+                         "")
+                   cmd)))
+         (fmt "/*\n  %s\n\n*/"))
+    (with-current-buffer
+        (switch-to-buffer
+         (concat "*Predefined Macros"
+                 (if remote
+                     (concat "@" (remote-norm->user@host remote) "*")
+                   "*")))
       (view-mode -1)
       (delete-region (point-min) (point-max))
       (message "Invoking %s ..." dump)
       (if (or remote +cc*-compiler-bin+)
           (let ((x (shell-command* dump)))
             (if (zerop (car x))
-                (insert (cdr x))
-              (insert (format "/*\n  %s\n\n*/"
-                              (cdr x)))))
-        (insert (format "/*\n  %s\n*/"
-                        (concat
-                         "C compiler no found!"
-                         (when-platform% 'windows-nt
-                           "\nhttps://docs.microsoft.com/en-us/cpp/preprocessor/predefined-macros?view=vs-2019")))))
+                (insert (if (> (length (cdr x)) 0)
+                            (cdr x)
+                          (format fmt "C preprocessor no output!")))
+              (insert (format fmt (cdr x)))))
+        (insert (format fmt (concat "C compiler no found!"))))
       (c-mode)
       (view-mode 1))))
 
