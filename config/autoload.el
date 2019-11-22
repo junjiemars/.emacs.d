@@ -89,9 +89,7 @@
     (when% (executable-find%
             "python"
             (lambda (python)
-              (let ((x (shell-command*
-                           (concat python
-                                   " -c\"print(eval('1+2'))\""))))
+              (let ((x (shell-command* "python -c'print(1+2)'")))
                 (and (zerop (car x))
                      (string= "3" (string-trim> (cdr x)))))))
       (compile-unit% (emacs-home* "config/on-python-autoload.el")))
