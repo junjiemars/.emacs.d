@@ -69,25 +69,35 @@
     (compile-unit% (emacs-home* "config/on-net-autoload.el"))
     (compile-unit% (emacs-home* "config/on-org-autoload.el"))
     (compile-unit% (emacs-home* "config/on-pp-autoload.el"))
-    (compile-unit% (emacs-home* "config/on-python-autoload.el"))
     (compile-unit% (emacs-home* "config/on-sh-autoload.el"))
     (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))
     (compile-unit% (emacs-home* "config/on-window-autoload.el"))
 
-    (if-feature-eww%
-      (compile-unit% (emacs-home* "config/on-eww-autoload.el")))
-    
-    (if-feature-linum%
-      (compile-unit% (emacs-home* "config/on-linum-autoload.el")))
-    
-    (if-feature-semantic%
-      (compile-unit% (emacs-home* "config/on-semantic-autoload.el")))
 
     (when-platform% 'windows-nt
       (when% (or (executable-find% "gswin64c")
                  (executable-find% "gswin32c")
                  (executable-find% "mutool"))
         (compile-unit% (emacs-home* "config/on-docview-autoload.el"))))
+
+    (if-feature-eww%
+      (compile-unit% (emacs-home* "config/on-eww-autoload.el")))
+    
+    (if-feature-linum%
+      (compile-unit% (emacs-home* "config/on-linum-autoload.el")))
+
+    (when% (executable-find%
+            "python"
+            (lambda (python)
+              (let ((x (shell-command*
+                           (concat python
+                                   " -c\"print(eval('1+2'))\""))))
+                (and (zerop (car x))
+                     (string= "3" (string-trim> (cdr x)))))))
+      (compile-unit% (emacs-home* "config/on-python-autoload.el")))
+    
+    (if-feature-semantic%
+      (compile-unit% (emacs-home* "config/on-semantic-autoload.el")))
 
     )
   ;; end of compile!
