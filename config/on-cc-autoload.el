@@ -140,42 +140,42 @@
 
 (when-platform% 'windows-nt
 
-  (defun make-dmacro-bin (&optional options)
-    "Make dmacro.exe for printing predefined macros."
-    (let* ((dm (concat temporary-file-directory "dm.c"))
-           (exe (v-home% ".exec/dmacro.exe"))
-           (cc (concat "cc-env.bat &&"
-                       " cl -nologo -WX -W4 -DNDEBUG=1 -EHsc -utf-8"
-                       " " options
-                       " " dm
-                       " -Fo" temporary-file-directory
-                       " -Fe" exe
-                       " -link -release")))
+  (defun make-cc-dmacro-bin (&optional options)
+    "Make cc-dmacro.exe for printing predefined macros."
+    (let* ((c (concat temporary-file-directory "cc-dmacro.c"))
+           (exe (v-home% ".exec/cc-dmacro.exe")))
       (save-str-to-file
        (concat "#include <stdio.h>\n"
                "#define _STR2_(x) #x\n"
                "#define _STR1_(x) _STR2_(x)\n"
                "#define _POUT_(x) \"#define \" #x \" \" _STR1_(x) \"\\n\"\n"
-               "#define _unused_(x) ((void)(x))\n"
-               "\n"
                "int main(int argc, char **argv) {\n"
-               "  _unused_(argc);\n"
-               "  _unused_(argv);\n"
-               "\n"
-               "#if defined(__STDC__)\n"
+               "#if defined(__STDC__)\n" ;; -Za specified
                "   printf(_POUT_(__STDC__));\n"
                "#endif\n"
-               "#if defined(__STDC_HOSTED__)\n"
+               "#if defined( __STDC_HOSTED__)\n"
                "   printf(_POUT_(__STDC_HOSTED__));\n"
+               "#endif\n"
+               "#if defined(__STDCPP_THREADS__)\n"
+               "   printf(_POUT_(__STDCPP_THREADS__));\n"
                "#endif\n"
                "#if defined(_WIN64)\n"
                "   printf(_POUT_(_WIN64));\n"
                "#endif\n"
+               "#if defined(__ATOM__)\n"
+               "  printf(_POUT_(__ATOM__));\n"
+               "#endif\n"
                "}")
-       dm)
-      (let ((cmd (shell-command* cc)))
+       c)
+      (let ((cmd (shell-command* +cc*-compiler-bin+
+                   (concat " && cl -nologo -DNDEBUG=1 -EHsc -utf-8"
+                           " " options
+                           " " c
+                           " -Fo" temporary-file-directory
+                           " -Fe" exe
+                           " -link -release"))))
         (when (zerop (car cmd))
-          "dmacro.exe")))))
+          (file-name-nondirectory exe))))))
 
 
 (defun cc*-check-include (&optional remote)
@@ -368,7 +368,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
                    (concat "ssh " (remote-norm->user@host remote)
                            " \'" cmd "\'")
                  (if-platform% 'windows-nt
-                     (or (and +cc*-compiler-bin+ (make-dmacro-bin opts))
+                     (or (and +cc*-compiler-bin+ (make-cc-dmacro-bin opts))
                          "")
                    cmd))))
     (with-current-buffer
