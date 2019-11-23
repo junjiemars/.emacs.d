@@ -60,27 +60,28 @@
 
 
 (defconst +cc*-compiler-bin+
-  (file-name-nondirectory
+  (file-name-nondirectory%
    (executable-find%
     (if-platform% 'windows-nt
-        (file-name-nondirectory (or (executable-find% "cc-env.bat")
-                                    (make-cc-env-bat)))
+        (or (let ((cc (executable-find% "cc-env.bat"))) 
+              (file-name-nondirectory cc)) 
+            (make-cc-env-bat))
       "cc")
     (lambda (cc)
-      (let ((src (concat temporary-file-directory "cc-bin.c")))
+      (let ((c (concat temporary-file-directory "cc-bin.c")))
         (save-str-to-file (concat
                            "int main(int argc, char **argv) {\n"
                            "  return 0;\n"
                            "}")
-                          src)
+                          c)
         (let ((x (shell-command* cc
                    (concat (if-platform% 'windows-nt
                                (concat
                                 " && cl -nologo"
-                                " " src
+                                " " c
                                 " -Fo" temporary-file-directory
                                 " -Fe")
-                             (concat src " -o"))
+                             (concat c " -o"))
                            (concat temporary-file-directory "cc-bin.out")))))
           (zerop (car x)))))))
   "The name of C compiler executable.")
@@ -117,21 +118,24 @@
              c)
         (let ((cmd (shell-command* cc)))
           (when (zerop (car cmd))
-            exe))))))
+            (file-name-nondirectory exe)))))))
 
 
 (when-platform% 'windows-nt
 
-  (defconst +cc*-xargs-bin+ (or (executable-find%
-                                 "xargs"
-                                 (lambda (xargs)
-                                   (let ((x (shell-command* "echo xxx"
-                                              "&& echo zzz"
-                                              "|xargs -0")))
-                                     (and (zerop (car x))
-                                          (string-match "^zzz" (cdr x))))))
-                                (make-xargs-bin))
-    "The path of xargs executable."))
+  (defconst +cc*-xargs-bin+
+    (file-name-nondirectory%
+     (or (executable-find%
+          "xargs"
+          (lambda (xargs)
+            (let ((x (shell-command* "echo xxx"
+                       "&& echo zzz"
+                       "|xargs -0")))
+              (and (zerop (car x))
+                   (string-match "^zzz" (cdr x))))))
+         (and +cc*-compiler-bin+
+              (make-xargs-bin))))
+    "The name of xargs executable."))
 
 
 (when-platform% 'windows-nt

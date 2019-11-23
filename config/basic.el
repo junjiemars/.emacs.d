@@ -462,6 +462,13 @@ See also`define-hash-table-test'."
                                          a)))))))
 
 
+(defmacro file-name-nondirectory% (filename)
+  "Return file name FILENAME sans its directory at compile-time."
+  (let* ((n (funcall `(lambda () ,filename)))
+         (name (when n (file-name-nondirectory n))))
+    `,name))
+
+
 (defun dir-iterate (dir ff df fn dn)
   "Iterate DIR.
 

@@ -300,6 +300,11 @@
   (should (file-in-dirs-p (emacs-home* "init.el")
                           (list (string-trim> (emacs-home*) "/")))))
 
+(ert-deftest %basic:file-name-nondirectory% ()
+  (should (string= "c.c" (file-name-nondirectory% "/a/b/c.c")))
+  (should (string= "c.c" (file-name-nondirectory%
+                          (concat "/a/b/" "c.c")))))
+
 (ert-deftest %basic:save-sexp-to-file ()
   (let ((f (emacs-home* "private/x.el")))
     (should (and (save-sexp-to-file '(defvar test%basic-sstf1 t) f)
