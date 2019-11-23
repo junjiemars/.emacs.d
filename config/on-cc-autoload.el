@@ -56,6 +56,36 @@
          (v-home% ".exec/cc-env.bat"))))))
 
 
+ ;; msvc host environment
+
+
+(defconst +cc*-compiler-bin+
+  (file-name-nondirectory
+   (executable-find%
+    (if-platform% 'windows-nt
+        (file-name-nondirectory (or (executable-find% "cc-env.bat")
+                                    (make-cc-env-bat)))
+      "cc")
+    (lambda (cc)
+      (let ((src (concat temporary-file-directory "cc-bin.c")))
+        (save-str-to-file (concat
+                           "int main(int argc, char **argv) {\n"
+                           "  return 0;\n"
+                           "}")
+                          src)
+        (let ((x (shell-command* cc
+                   (concat (if-platform% 'windows-nt
+                               (concat
+                                " && cl -nologo"
+                                " " src
+                                " -Fo" temporary-file-directory
+                                " -Fe")
+                             (concat src " -o"))
+                           (concat temporary-file-directory "cc-bin.out")))))
+          (zerop (car x)))))))
+  "The name of C compiler executable.")
+
+
 (when-platform% 'windows-nt
 
   (defun make-xargs-bin ()
@@ -88,40 +118,6 @@
         (let ((cmd (shell-command* cc)))
           (when (zerop (car cmd))
             exe))))))
-
-
- ;; msvc host environment
-
-
-;; cc executable constants
-
-(defconst +cc*-compiler-bin+
-
-  (file-name-nondirectory
-   (executable-find%
-    (if-platform% 'windows-nt
-        (or (executable-find% "cc-env.bat")
-            (make-cc-env-bat))
-      "cc")
-    (lambda (cc)
-      (let ((src (concat temporary-file-directory "cc-src.c"))
-            (bin (concat temporary-file-directory "cc-bin.out")))
-        (save-str-to-file (concat
-                           "int main(int argc, char **argv) {\n"
-                           "  return 0;\n"
-                           "}")
-                          src)
-        (let ((x (shell-command* cc
-                   (concat (if-platform% 'windows-nt
-                               (concat
-                                " && cl -nologo -EHsc -utf-8"
-                                " " src
-                                " -Fo" temporary-file-directory
-                                " -Fe" bin)
-                             (concat src
-                                     " -o" bin))))))
-          (zerop (car x)))))))
-  "The path of C compiler executable.")
 
 
 (when-platform% 'windows-nt
