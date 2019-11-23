@@ -159,21 +159,141 @@
                "#if defined(__STDCPP_THREADS__)\n"
                "   printf(_POUT_(__STDCPP_THREADS__));\n"
                "#endif\n"
+               "#if defined(_WIN32)\n"
+               "  printf(_POUT_(_WIN32));\n"
+               "#endif\n"
                "#if defined(_WIN64)\n"
                "   printf(_POUT_(_WIN64));\n"
+               "#endif\n"
+               "#if defined(_WINRT_DLL)\n"
+               "  printf(_POUT_(_WINRT_DLL));\n"
                "#endif\n"
                "#if defined(__ATOM__)\n"
                "  printf(_POUT_(__ATOM__));\n"
                "#endif\n"
+               "#if defined(__AVX__)\n"
+               "  printf(_POUT_(__AVX__));\n"
+               "#endif\n"
+               "#if defined(__AVX2__)\n"
+               "  printf(_POUT_(__AVX2__));\n"
+               "#endif\n"
+               "#if defined(__AVX512BW__)\n"
+               "  printf(_POUT_(__AVX512BW__));\n"
+               "#endif\n"
+               "#if defined(__AVX512CD__)\n"
+               "  printf(_POUT_(__AVX512CD__));\n"
+               "#endif\n"
+               "#if defined(__AVX512DQ__)\n"
+               "  printf(_POUT_(__AVX512DQ__));\n"
+               "#endif\n"
+               "#if defined(__AVX512F__)\n"
+               "  printf(_POUT_(__AVX512F__));\n"
+               "#endif\n"
+               "#if defined(__AVX512VL__)\n"
+               "  printf(_POUT_(__AVX512VL__));\n"
+               "#endif\n"
+               "#if defined(_CHAR_UNSIGNED)\n"
+               "  printf(_POUT_(_CHAR_UNSIGNED));\n" ;; -J specified
+               "#endif\n"
+               "#if defined(_CONTROL_FLOW_GUARD)\n"
+               "  printf(_POUT_(_CONTROL_FLOW_GUARD));\n"
+               "#endif\n"
+               "#if defined(__COUNTER__)\n"
+               "  printf(_POUT_(__COUNTER__));\n"
+               "#endif\n"
+               "#if defined(__cplusplus_winrt)\n"
+               "  printf(_POUT_(__cplusplus_winrt));\n"
+               "#endif\n"
+               "#if defined(_CPPUNWIND)\n"
+               "  printf(_POUT_(_CPPUNWIND));\n"
+               "#endif\n"
+               "#if defined(_DEBUG)\n"
+               "  printf(_POUT_(_DEBUG));\n"
+               "#endif\n"
+               "#if define(_DLL)\n"
+               "  printf(_POUT_(_DLL));\n"
+               "#endif\n"
+               "#if defined(_INTEGRAL_MAX_BITS)\n"
+               "  printf(_POUT_(_INTEGRAL_MAX_BITS));\n"
+               "#endif\n"
+               "#if defined(_ISO_VOLATILE )\n"
+               "  printf(_POUT_(_ISO_VOLATILE));\n"
+               "#endif\n"
+               "#if defined(_KERNEL_MODE)\n"
+               "  printf(_POUT_(_KERNEL_MODE));\n"
+               "#endif\n"
+               "#if defined(_M_AMD64)\n"
+               "  printf(_POUT_(_M_AMD64));\n"
+               "#endif\n"
+               "#if defined(_M_FP_EXCEPT)\n"
+               "  printf(_POUT_(_M_FP_EXCEPT));\n"
+               "#endif\n"
+               "#if defined(_M_FP_FAST)\n"
+               "  printf(_POUT_(_M_FP_FAST));\n"
+               "#endif\n"
+               "#if defined(_M_FP_PRECISE)\n"
+               "  printf(_POUT_(_M_FP_PRECISE));\n"
+               "#endif\n"
+               "#if defined(_M_FP_STRICT)\n"
+               "  printf(_POUT_(_M_FP_STRICT));\n"
+               "#endif\n"
+               "#if defined(_M_IX86)\n"
+               "  printf(_POUT_(_M_IX86));\n"
+               "#endif\n"
+               "#if defined(_M_IX86_FP)\n"
+               "  printf(_POUT_(_M_IX86_FP));\n"
+               "#endif\n"
+               "#if defined(_M_X64)\n"
+               "  printf(_POUT_(_M_X64));\n"
+               "#endif\n"
+               "#if defined(_MSC_BUILD)\n"
+               "  printf(_POUT_(_MSC_BUILD));\n"
+               "#endif\n"
+               "#if defined(_MSC_EXTENSIONS)\n"
+               "  printf(_POUT_(_MSC_EXTENSIONS));\n"
+               "#endif\n"
+               "#if defined(_MSC_FULL_VER)\n"
+               "  printf(_POUT_(_MSC_FULL_VER));\n"
+               "#endif\n"
+               "#if defined(_MSC_VER)\n"
+               "  printf(_POUT_(_MSC_VER));\n"
+               "#endif\n"
+               "#if defined(_MSVC_LANG)\n"
+               "  printf(_POUT_(_MSVC_LANG));\n"
+               "#endif\n"
+               "#if defined(__MSVC_RUNTIME_CHECKS)\n"
+               "  printf(_POUT_(__MSVC_RUNTIME_CHECKS));\n"
+               "#endif\n"
+               "#if defined(_MSVC_TRADITIONAL)\n"
+               "  printf(_POUT_(_MSVC_TRADITIONAL));\n"
+               "#endif\n"
+               "#if defined(_MT)\n"
+               "  printf(_POUT_(_MT));\n"
+               "#endif\n"
+               "#if defined(_NATIVE_WCHAR_T_DEFINED)\n"
+               "  printf(_POUT_(_NATIVE_WCHAR_T_DEFINED));\n"
+               "#endif\n"
+               "#if defined(_OPENMP)\n"
+               "  printf(_POUT_(_OPENMP));\n"
+               "#endif\n"
+               "#if defined(_PREFAST_)\n"
+               "  printf(_POUT_(_PREFAST_));\n"
+               "#endif\n"
+               "#if defined(_VC_NODEFAULTLIB)\n"
+               "  printf(_POUT_(_VC_NODEFAULTLIB));\n"
+               "#endif\n"
+               "#if defined(_WCHAR_T_DEFINED)\n"
+               "  printf(_POUT_(_WCHAR_T_DEFINED));\n"
+               "#endif\n"
+               ""
                "}")
        c)
       (let ((cmd (shell-command* +cc*-compiler-bin+
-                   (concat " && cl -nologo -DNDEBUG=1 -EHsc -utf-8"
+                   (concat " && cl -nologo"
                            " " options
                            " " c
                            " -Fo" temporary-file-directory
-                           " -Fe" exe
-                           " -link -release"))))
+                           " -Fe" exe))))
         (when (zerop (car cmd))
           (file-name-nondirectory exe))))))
 
@@ -368,8 +488,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
                    (concat "ssh " (remote-norm->user@host remote)
                            " \'" cmd "\'")
                  (if-platform% 'windows-nt
-                     (or (and +cc*-compiler-bin+ (make-cc-dmacro-bin opts))
-                         "")
+                     (and +cc*-compiler-bin+ (make-cc-dmacro-bin opts))
                    cmd))))
     (with-current-buffer
         (switch-to-buffer
@@ -379,15 +498,19 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
                    "*")))
       (view-mode -1)
       (delete-region (point-min) (point-max))
-      (message "Invoking %s ..." dump)
-      (insert (if (or remote +cc*-compiler-bin+)
-                  (let ((x (shell-command* dump)))
-                    (if (zerop (car x))
-                        (if (> (length (cdr x)) 0)
-                            (cdr x)
-                          "/* C preprocessor no output! */")
-                      (cdr x)))
-                "/* C compiler no found! */"))
+      (message "Invoking [%s] ..." dump)
+      (insert (cond ((or remote (and +cc*-compiler-bin+
+                                     dump))
+                     (let ((x (shell-command* dump)))
+                       (if (zerop (car x))
+                           (if (> (length (cdr x)) 0)
+                               (cdr x)
+                             "/* C preprocessor no output! */")
+                         (cdr x))))
+                    ((not (or remote +cc*-compiler-bin+))
+                     "/* C compiler no found! */")
+                    (t "/* C preprocessor output failed! */")))
+      (message "")
       (c-mode)
       (view-mode 1))))
 
