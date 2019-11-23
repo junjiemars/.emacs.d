@@ -93,8 +93,8 @@
     "Make a GNU's xargs alternation in `exec-path'."
     (let* ((c (concat temporary-file-directory "xargs.c"))
            (exe (v-home% ".exec/xargs.exe"))
-           (cc (concat "cc-env.bat &&"
-                       " cl -nologo -W4 -DNDEBUG=1 -O2 -EHsc -utf-8"
+           (cc (concat +cc*-compiler-bin+
+                       " && cl -nologo -DNDEBUG=1 -O2 -utf-8"
                        " " c
                        " -Fo" temporary-file-directory
                        " -Fe" exe
@@ -102,10 +102,7 @@
       (when (save-str-to-file
              (eval-when-compile
                (concat "#include <stdio.h>\n"
-                       "#define _unused_(x) ((void)(x))\n"
                        "int main(int argc, char **argv) {\n"
-                       "  _unused_(argc);\n"
-                       "  _unused_(argv);\n"
                        "  int ch;\n"
                        "  while (EOF != (ch = fgetc(stdin))) {\n"
                        "    fputc(ch, stdout);\n"
@@ -311,7 +308,9 @@
                    ;; Windows: msmvc
                    (shell-command* +cc*-compiler-bin+)
                  ;; Darwin/Linux: clang or gcc
-                 (shell-command* "echo '' | cc -v -E 2>&1 >/dev/null -"))))
+                 (shell-command* (concat "echo '' | "
+                                         +cc*-compiler-bin+
+                                         " -v -E 2>&1 >/dev/null -")))))
         (parser (lambda (preprocessed)
                   (take-while
                    (lambda (p)
@@ -451,31 +450,25 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
                  'cmacexp)
           ad-do-it)
       ;; local: msvc, clang, gcc
-      (if% (executable-find%
-            "cc"
-            (lambda (cc)
-              (let ((x (shell-command* "echo -e"
-                         "\"#define _unused_(x) ((void)(x))\n_unused_(a);\""
-                         "|cc -E -")))
-                (and (zerop (car x))
-                     (string-match "((void)(a));" (cdr x))))))
-          (progn
-            (setq% c-macro-buffer-name
-                   "*Macroexpansion*" 
-                   'cmacexp)
-            (setq% c-macro-preprocessor "cc -E -o - -" 'cmacexp)
-            ad-do-it)
-        (when-platform% 'windows-nt
+      (if-platform% 'windows-nt
           ;; cl.exe cannot retrieve from stdin.
           (when% (and +cc*-compiler-bin+ +cc*-xargs-bin+)
             (let* ((tmp (make-temp-file
                          (expand-file-name "cc-" temporary-file-directory)))
                    (c-macro-buffer-name "*Macroexpansion*")
                    (c-macro-preprocessor
-                    (format "xargs -0 > %s && cc-env.bat && cl -E %s"
-                            tmp tmp)))
+                    (format "%s -0 > %s && %s && cl -E %s"
+                            +cc*-xargs-bin+ tmp +cc*-compiler-bin+ tmp)))
               (unwind-protect ad-do-it
-                (delete-file tmp)))))))))
+                (delete-file tmp))))
+        (when% +cc*-compiler-bin+
+          (setq% c-macro-buffer-name
+                 "*Macroexpansion*" 
+                 'cmacexp)
+          (setq% c-macro-preprocessor
+                 (format "%s -E -o - -" +cc*-compiler-bin+)
+                 'cmacexp)
+          ad-do-it)))))
 
 
 (defun cc*-dump-predefined-macros (&optional options)
@@ -512,7 +505,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
                     ((not (or remote +cc*-compiler-bin+))
                      "/* C compiler no found! */")
                     (t "/* C preprocessor output failed! */")))
-      (message "")
+      (message "Invoking [%s] ...done" dump)
       (c-mode)
       (view-mode 1))))
 
