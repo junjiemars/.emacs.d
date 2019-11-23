@@ -96,19 +96,31 @@
 ;; cc executable constants
 
 (defconst +cc*-compiler-bin+
-  (if-platform% 'windows-nt
-      (or (executable-find% "cc-env.bat")
-          (make-cc-env-bat))
-    (executable-find%
-     "cc"
-     (lambda (cc)
-       (let ((x (shell-command* (concat "echo '"
-                                        "int main(int argc, char **argv) {"
-                                        "  return 0; "
-                                        "}"
-                                        "' | cc -o/tmp/a.out -xc - "
-                                        "&>/dev/null"))))
-         (zerop (car x))))))
+
+  (file-name-nondirectory
+   (executable-find%
+    (if-platform% 'windows-nt
+        (or (executable-find% "cc-env.bat")
+            (make-cc-env-bat))
+      "cc")
+    (lambda (cc)
+      (let ((src (concat temporary-file-directory "cc-src.c"))
+            (bin (concat temporary-file-directory "cc-bin.out")))
+        (save-str-to-file (concat
+                           "int main(int argc, char **argv) {\n"
+                           "  return 0;\n"
+                           "}")
+                          src)
+        (let ((x (shell-command* cc
+                   (concat (if-platform% 'windows-nt
+                               (concat
+                                " && cl -nologo -EHsc -utf-8"
+                                " " src
+                                " -Fo" temporary-file-directory
+                                " -Fe" bin)
+                             (concat src
+                                     " -o" bin))))))
+          (zerop (car x)))))))
   "The path of C compiler executable.")
 
 
