@@ -452,7 +452,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
       ;; local: msvc, clang, gcc
       (if-platform% 'windows-nt
           ;; cl.exe cannot retrieve from stdin.
-          (when% (and +cc*-compiler-bin+ +cc*-xargs-bin+)
+          (when (and +cc*-compiler-bin+ +cc*-xargs-bin+)
             (let* ((tmp (make-temp-file
                          (expand-file-name "cc-" temporary-file-directory)))
                    (c-macro-buffer-name "*Macroexpansion*")
@@ -461,7 +461,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
                             +cc*-xargs-bin+ tmp +cc*-compiler-bin+ tmp)))
               (unwind-protect ad-do-it
                 (delete-file tmp))))
-        (when% +cc*-compiler-bin+
+        (when +cc*-compiler-bin+
           (setq% c-macro-buffer-name
                  "*Macroexpansion*" 
                  'cmacexp)
