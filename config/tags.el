@@ -64,9 +64,9 @@ when `desktop-globals-to-save' include it."
 
 (defcustom% tags-in-view-mode
   `(list source-directory
-         (when% (>= (path-depth (expand-file-name
-                                 (path- invocation-directory)))
-                    2)
+         (when% (> (path-depth (expand-file-name
+                                (path- invocation-directory)))
+                   2)
            (path- invocation-directory))
          (when-var% package-user-dir 'package
            package-user-dir)

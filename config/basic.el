@@ -425,8 +425,9 @@ See also`define-hash-table-test'."
 (defun path-depth (path &optional separator)
   "Return the depth of PATH."
   (if (stringp path)
-      (let ((ss (split-string* path (or separator "/") t)))
-        (length ss))
+      (cond ((string= "" path) 0)
+            ((string= (or separator "/") path) 1)
+            (t (length (split-string* path (or separator "/") nil))))
     0))
 
 

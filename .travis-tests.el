@@ -392,12 +392,13 @@
 
 (ert-deftest &basic:path-depth ()
   (should (= 0 (path-depth nil)))
-  (should (= 0 (path-depth "/")))
-  (should (= 0 (path-depth "")))
+  (should (= 1 (path-depth "/")))
+  (should (= 1 (path-depth "")))
   (should (= 1 (path-depth "abc")))
-  (should (= 1 (path-depth "/abc")))
-  (should (= 1 (path-depth "\\a" "\\\\")))
-  (should (= 3 (path-depth "/a/b/c"))))
+  (should (= 2 (path-depth "/abc")))
+  (should (= 2 (path-depth "\\a" "\\\\")))
+  (should (= 3 (path-depth "/a/b")))
+  (should (= 4 (path-depth "/a/b/c"))))
 
 (ert-deftest %basic:dir-iterate ()
   (should (string-match
