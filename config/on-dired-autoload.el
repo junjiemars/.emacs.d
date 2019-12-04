@@ -181,28 +181,26 @@
 
 (unless-platform% 'gnu/linux
 
+  ;; see `ido-dired'
   (with-eval-after-load 'ido
-    ;; see `ido-dired'
-    (let ((ls (executable-find%
-               "ls"
-               (lambda (ls)
-                 (let ((ver (shell-command* ls "--version")))
-                   (and (zerop (car ver))
-                        (string-match "^ls (GNU coreutils)"
-                                      (cdr ver))))))))
-      (if ls
-          (progn%
-           ;; prefer GNU's ls (--dired option) on Windows or
-           ;; Darwin. on Windows: `dired-mode' does not display
-           ;; executable flag in file mode，see `dired-use-ls-dired'
-           ;; for more defails
-           (setq% ls-lisp-use-insert-directory-program t 'ls-lisp)
-           (when-platform% 'windows-nt
-             (unless% (eq default-file-name-coding-system locale-coding-system)
-               (ad-activate #'insert-directory t))))
-        (when-platform% 'darwin
-          ;; on Drawin: the builtin ls does not support --dired option
-          (setq% dired-use-ls-dired nil 'dired))))))
+
+    ;; prefer GNU's ls (--dired option) on Windows or
+    ;; Darwin. on Windows: `dired-mode' does not display
+    ;; executable flag in file mode，see `dired-use-ls-dired'
+    ;; for more defails
+    (when% (executable-find% "ls"
+                             (lambda (bin)
+                               (let ((home (shell-command* bin (emacs-home*))))
+                                 (zerop (car home)))))
+      (when% (executable-find% "ls"
+                               (lambda (bin)
+                                 (let ((dired (shell-command* bin "--dired")))
+                                   (zerop (car dired)))))
+        ;; on Drawin: the builtin ls does not support --dired option
+        (setq% dired-use-ls-dired nil 'dired))
+
+      ;; using `insert-directory-program'
+      (setq% ls-lisp-use-insert-directory-program t 'ls-lisp))))
 
 
 (with-eval-after-load 'dired-aux
