@@ -193,7 +193,7 @@
             (lambda (bin)
               (let ((home (shell-command* bin (emacs-home*))))
                 (zerop (car home)))))
-      
+
       ;; on Drawin: the builtin ls does not support --dired option
       (setq% dired-use-ls-dired
              (executable-find%
@@ -202,7 +202,7 @@
                 (let ((dired (shell-command* bin "--dired")))
                   (zerop (car dired)))))
              'dired)
-      
+
       ;; using `insert-directory-program'
       (setq% ls-lisp-use-insert-directory-program t 'ls-lisp))))
 
