@@ -188,17 +188,21 @@
     ;; Darwin. on Windows: `dired-mode' does not display
     ;; executable flag in file mode，see `dired-use-ls-dired'
     ;; for more defails
-    (when% (executable-find% "ls"
-                             (lambda (bin)
-                               (let ((home (shell-command* bin (emacs-home*))))
-                                 (zerop (car home)))))
-      (when% (executable-find% "ls"
-                               (lambda (bin)
-                                 (let ((dired (shell-command* bin "--dired")))
-                                   (zerop (car dired)))))
-        ;; on Drawin: the builtin ls does not support --dired option
-        (setq% dired-use-ls-dired nil 'dired))
-
+    (when% (executable-find%
+            "ls"
+            (lambda (bin)
+              (let ((home (shell-command* bin (emacs-home*))))
+                (zerop (car home)))))
+      
+      ;; on Drawin: the builtin ls does not support --dired option
+      (setq% dired-use-ls-dired
+             (executable-find%
+              "ls"
+              (lambda (bin)
+                (let ((dired (shell-command* bin "--dired")))
+                  (zerop (car dired)))))
+             'dired)
+      
       ;; using `insert-directory-program'
       (setq% ls-lisp-use-insert-directory-program t 'ls-lisp))))
 
