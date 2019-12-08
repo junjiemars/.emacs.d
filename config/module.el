@@ -120,6 +120,14 @@
                      ,(when-version% <= 24.1 'yaml-mode)))))
 
 
+(defmacro defun-on-module-autoload^ (module &rest body)
+  "Define FN threading macro."
+  (declare (indent 1))
+  (let ((name (intern (format "on-%s-autoload^" module))))
+    `(defun ,name ()
+       ,@body)))
+
+
 (package-spec-:allowed-p
   ;; Load basic package spec
   (parse-package-spec! basic-package-spec))

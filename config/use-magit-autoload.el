@@ -3,49 +3,54 @@
 ;; use-magit-autoload.el
 ;;
 
-(with-eval-after-load 'magit
-  (when-platform% 'windows-nt
+
+(defun-on-module-autoload^ magit
+  
+  (with-eval-after-load 'magit
+    (when-platform% 'windows-nt
+      
+      (when (executable-find% "git" t)
+        ;; On Windows try to open remote git repo via sshx
+        ;; will trigger `magit' error: No such file or directory.
+        ;; GitHub issue: https://github.com/magit/magit/issues/3345
+        (setq% magit-git-executable "git" 'magit)))
     
-    (when (executable-find% "git" t)
-      ;; On Windows try to open remote git repo via sshx
-      ;; will trigger `magit' error: No such file or directory.
-      ;; GitHub issue: https://github.com/magit/magit/issues/3345
-      (setq% magit-git-executable "git" 'magit)))
-  
-  ;;
-  ;; define keys for `magit'
-  ;; 
-  (define-key% (current-global-map) (kbd "C-c v p")
-    (if-fn% 'magit-pull-branch 'magit
-            #'magit-pull-branch
-      #'magit-pull))
-  
-  (define-key% (current-global-map) (kbd "C-c v P")
-    (if-fn% 'magit-push-other 'magit
-            'magit-push-other
-      #'magit-push))
-  
-  (define-key% (current-global-map) (kbd "C-c v l")
-    (if-fn% #'magit-log-other 'magit
-            #'magit-log-other
-      #'magit-log))
+    ;;
+    ;; define keys for `magit'
+    ;; 
+    (define-key% (current-global-map) (kbd "C-c v p")
+      (if-fn% 'magit-pull-branch 'magit
+              #'magit-pull-branch
+        #'magit-pull))
+    
+    (define-key% (current-global-map) (kbd "C-c v P")
+      (if-fn% 'magit-push-other 'magit
+              'magit-push-other
+        #'magit-push))
+    
+    (define-key% (current-global-map) (kbd "C-c v l")
+      (if-fn% #'magit-log-other 'magit
+              #'magit-log-other
+        #'magit-log))
 
-  (define-key% (current-global-map) (kbd "C-c v b")
-    #'magit-log-buffer-file)
+    (define-key% (current-global-map) (kbd "C-c v b")
+      #'magit-log-buffer-file)
 
-  (define-key% (current-global-map) (kbd "C-c v c") #'magit-checkout)
+    (define-key% (current-global-map) (kbd "C-c v c") #'magit-checkout)
 
-  (define-key% (current-global-map) (kbd "C-c v m")
-    (if-fn% #'magit-merge-plain 'magit
-            #'magit-merge-plain
-      #'magit-merge))
-  
-  (define-key% (current-global-map) (kbd "C-c v f")
-    (if-fn% #'magit-fetch-other 'magit
-            #'magit-fetch-other
-      #'magit-fetch)))
+    (define-key% (current-global-map) (kbd "C-c v m")
+      (if-fn% #'magit-merge-plain 'magit
+              #'magit-merge-plain
+        #'magit-merge))
+    
+    (define-key% (current-global-map) (kbd "C-c v f")
+      (if-fn% #'magit-fetch-other 'magit
+              #'magit-fetch-other
+        #'magit-fetch)))
+
+  (when-fn% 'magit-status 'magit
+    (define-key (current-global-map) (kbd "C-c v s")
+      #'magit-status)))
 
 
-(when-fn% 'magit-status 'magit
-  (define-key (current-global-map) (kbd "C-c v s")
-    #'magit-status))
+(add-hook 'after-init-hook #'on-magit-autoload^ t)
