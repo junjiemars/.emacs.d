@@ -210,11 +210,11 @@ Returns the value of BODY if no error happens."
          `(comment ,@body)))))
 
 
-(defmacro defun-make-thread-^fn (fn &optional join)
+(defmacro defun-on-fn-threading^ (fn &optional join)
   "Define FN threading macro."
   `(if-fn% 'make-thread nil
            ,(let ((name (symbol-name fn))
-                  (name1 (intern (format "^%s"
+                  (name1 (intern (format "on-%s-threading^"
                                          (symbol-name fn))))
                   (ds1 (format "Threading `%s'." fn)))
               `(defun ,name1 ()
@@ -225,6 +225,7 @@ Returns the value of BODY if no error happens."
                      thread))))
      (ignore* ,join)
      (function ,fn)))
+
 
 
 (defmacro make-thread* (fn &optional join name)

@@ -579,7 +579,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
     (toggle-cc*-eldoc-mode 1)))
 
 
-;; (add-hook 'c-mode-hook (defun-make-thread-^fn cc*-system-autoload) t)
+;; (add-hook 'c-mode-hook (defun-fn-threading^ cc*-system-autoload) t)
 
 
  ;; end of eldoc

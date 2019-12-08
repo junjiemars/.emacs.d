@@ -154,7 +154,7 @@
 ;; after-init
 (add-hook 'after-init-hook #'set-flavor-mode! t)
 (add-hook 'after-init-hook #'set-global-key! t)
-(add-hook 'after-init-hook (defun-make-thread-^fn set-self-epilogue!) t)
+(add-hook 'after-init-hook (defun-on-fn-threading^ set-self-epilogue!) t)
 
 
 ;; end of autoload.el
