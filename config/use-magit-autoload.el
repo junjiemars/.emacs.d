@@ -5,6 +5,7 @@
 
 
 (with-eval-after-load 'magit
+
   (when-platform% 'windows-nt
     
     (when (executable-find% "git" t)
@@ -46,11 +47,9 @@
             #'magit-fetch-other
       #'magit-fetch)))
 
-
-(defun-on-module-autoload^ magit
-  (when-fn% 'magit-status 'magit
-    (define-key (current-global-map) (kbd "C-c v s")
-      #'magit-status)))
+(when-fn% 'magit-status 'magit
+  (define-key (current-global-map) (kbd "C-c v s")
+    #'magit-status))
 
 
-(add-hook 'after-init-hook #'on-magit-autoload^ t)
+;; end of file

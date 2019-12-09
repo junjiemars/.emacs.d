@@ -92,6 +92,9 @@
 
 (package-initialize)
 
+(defvar *autoload-compile-units* nil
+  "Autloaded `compile-unit'.")
+
 (defsubst parse-package-spec! (spec &optional remove-unused)
   "Parse SPEC, install, remove and setup packages."
   (dolist* (s spec)
@@ -107,7 +110,10 @@
                     (install-package! (if tar tar n) tar))))
             (message "!invalid package-spec: %s" p))))
       (when (self-spec-> s :cond)
-        (apply #'compile! (delete nil (self-spec-> s :compile)))))))
+        ;; (apply #'compile! (delete nil (self-spec-> s :compile)))
+        (setq *autoload-compile-units*
+              (append *autoload-compile-units*
+                      (delete nil (self-spec-> s :compile))))))))
 
 
 (defvar basic-package-spec

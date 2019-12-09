@@ -150,11 +150,23 @@
  ;; end of set-self-epilogue!
 
 
+(defun autoload-compile-units! ()
+  (package-spec-:allowed-p
+    (apply #'compile! *autoload-compile-units*)))
+
 
 ;; after-init
 (add-hook 'after-init-hook #'set-flavor-mode! t)
 (add-hook 'after-init-hook #'set-global-key! t)
-(add-hook 'after-init-hook (defun-on-fn-threading^ set-self-epilogue!) t)
+
+
+(add-hook 'after-init-hook
+          (defun-on-fn-threading^ autoload-compile-units!)
+          t)
+
+(add-hook 'after-init-hook
+          (defun-on-fn-threading^ set-self-epilogue!)
+          t)
 
 
 ;; end of autoload.el

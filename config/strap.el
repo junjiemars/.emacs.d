@@ -227,7 +227,6 @@ Returns the value of BODY if no error happens."
      (function ,fn)))
 
 
-
 (defmacro make-thread* (fn &optional join name)
   "Make FN as threading call."
   `(if-fn% 'make-thread nil
