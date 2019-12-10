@@ -110,7 +110,6 @@
                     (install-package! (if tar tar n) tar))))
             (message "!invalid package-spec: %s" p))))
       (when (self-spec-> s :cond)
-        ;; (apply #'compile! (delete nil (self-spec-> s :compile)))
         (setq *autoload-compile-units*
               (append *autoload-compile-units*
                       (delete nil (self-spec-> s :compile))))))))
