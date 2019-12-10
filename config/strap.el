@@ -316,16 +316,13 @@ Then evaluate RESULT to get return value, default nil.
 (defun compile! (&rest units)
   "Compile and load the elisp UNITS."
   (declare (indent 0))
-  (let ((r t))
-    (mapc (lambda (unit)
-            (when unit
-              (setq r (and r (compile-and-load-file*
-                              (compile-unit->file unit)
-                              (compile-unit->only-compile unit)
-                              (compile-unit->delete-booster unit)
-                              (compile-unit->dir unit))))))
-          units)
-    r))
+  (mapc (lambda (unit) (when unit
+                         (compile-and-load-file*
+                          (compile-unit->file unit)
+                          (compile-unit->only-compile unit)
+                          (compile-unit->delete-booster unit)
+                          (compile-unit->dir unit))))
+        units))
 
 
  ;; end of compile macro
