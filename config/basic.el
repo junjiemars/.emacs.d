@@ -706,16 +706,6 @@ otherwise default to keep the directories of current `emacs-version'."
   `(put ,var 'safe-local-variable
         (lambda (x) (ignore* x) t)))
 
-;; linum mode, requires Emacs-23.1+
-(defmacro-if-feature% linum)
-
-;; semantic, require Emacs-24.4+
-(defmacro-if-feature% semantic)
-
-;; default web browser: eww, requires Emacs-24.4+
-(defmacro-if-feature% eww)
-
-
 
 
  ;; end of basic.el

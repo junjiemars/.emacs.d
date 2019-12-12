@@ -7,6 +7,18 @@
 ;;;;
 
 
+;; defined features
+
+;; linum mode, requires Emacs-23.1+
+(defmacro-if-feature% linum)
+
+;; semantic, require Emacs-24.4+
+(defmacro-if-feature% semantic)
+
+;; default web browser: eww, requires Emacs-24.4+
+(defmacro-if-feature% eww)
+
+
 ;; set-global-key!
 
 (defun set-global-key! ()
