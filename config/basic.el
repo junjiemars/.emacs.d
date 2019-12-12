@@ -679,10 +679,6 @@ otherwise default to keep the directories of current `emacs-version'."
                  `(cons ,arch 32)))))
 
 
-
-
-
-
 ;; define key macro
 
 (defmacro if-key% (keymap key test-def then &rest else)

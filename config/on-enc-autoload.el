@@ -3,7 +3,7 @@
 ;; More reasonable Emacs on MacOS, Windows and Linux
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; enc.el
+;; on-enc-autoload.el
 ;;;;
 
 
