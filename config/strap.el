@@ -198,14 +198,14 @@ Returns the value of BODY if no error happens."
        (progn% ,@vars nil))))
 
 
-(defmacro defmacro-if-feature% (feature &optional test docstring)
+(defmacro defmacro-if-feature% (feature &optional docstring)
   "Define if-FEATURE% compile-time macro."
   (let ((name (intern (format "if-feature-%s%%" feature)))
         (ds1 (format "If has `%s' feauture then do BODY." feature)))
     `(defmacro ,name (&rest body)
        ,(or docstring ds1)
        (declare (indent 0))
-       (if% (or ,test (require ',feature nil t))
+       (if% (require ',feature nil t)
            `(progn% ,@body)
          `(comment ,@body)))))
 
@@ -465,6 +465,7 @@ Take effect after restart Emacs.
 
 (compile! (compile-unit% (emacs-home* "config/boot.el"))
           (compile-unit% (emacs-home* "config/basic.el"))
+          (compile-unit% (emacs-home* "config/sockets.el"))
           (compile-unit% (emacs-home* "config/shells.el")))
 
 
