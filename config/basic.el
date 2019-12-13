@@ -669,14 +669,24 @@ otherwise default to keep the directories of current `emacs-version'."
 
 
 (defmacro platform-arch ()
-  "Return the platform architecture with (arch-str . num) cons cell."
-  (let ((arch (if-platform% 'windows-nt
-                  (getenv "PROCESSOR_ARCHITECTURE")
-                (let ((m (shell-command* "uname -m")))
-                  (when (zerop (car m)) (string-trim> (cdr m) "\n"))))))
-    (when arch (if (string-match "[xX]86_64\\|[aA][mM][dD]64" arch)
-                   `(cons ,arch 64)
-                 `(cons ,arch 32)))))
+  "Return platform architecture with (arch . bits) cons cell."
+  (let ((b64 "\\([xX]86_64\\|[aA][mM][dD]64\\)")
+        (b32 "\\(.*\\)-"))
+    (if (string-match b64 system-configuration)
+        `(cons ,(match-string* b64 system-configuration 1) 64)
+      (if-platform% 'windows-nt
+          (if (string-match b64 (get-env "PROCESSOR_ARCHITECTURE"))
+              `(cons ,(get-env "PROCESSOR_ARCHITECTURE") 64)
+            `(cons ,(get-env "PROCESSOR_ARCHITECTURE") 32))
+        (let ((m (shell-command* "uname -m")))
+          (if (and (zerop (car m))
+                   (string-match b64
+                                 (string-trim> (cdr m) "\n")))
+              `(cons ,(string-trim> (cdr m) "\n")
+                     64)
+            `(cons ,(string-trim> (cdr m) "\n")
+                   32)))))))
+
 
 
 ;; define key macro

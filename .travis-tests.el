@@ -274,9 +274,11 @@
 (ert-deftest %basic:match-string* ()
   (should (eq nil (match-string* nil nil 0)))
   (should (eq nil (match-string* nil 123 0)))
-  (should (string= "XXabcXX" (match-string* "XX\\(abc\\)XX" "XXabcXX" 0)))
+  (should (string= "XXabcXX"
+                   (match-string* "XX\\(abc\\)XX" "XXabcXX" 0)))
   (should (null (match-string* "XX\\(abc\\)XX" "XXabcXX" 2)))
-  (should (string= "abc" (match-string* "XX\\(abc\\)XX" "XXabcXX" 1))))
+  (should (string= "abc"
+                   (match-string* "XX\\(abc\\)XX" "XXabcXX" 1))))
 
 (ert-deftest %basic:string=* ()
   (should (string=* "a" "a"))
@@ -392,8 +394,8 @@
 
 (ert-deftest &basic:path-depth ()
   (should (= 0 (path-depth nil)))
+  (should (= 0 (path-depth "")))
   (should (= 1 (path-depth "/")))
-  (should (= 1 (path-depth "")))
   (should (= 1 (path-depth "abc")))
   (should (= 2 (path-depth "/abc")))
   (should (= 2 (path-depth "\\a" "\\\\")))
