@@ -204,13 +204,19 @@ More accurate than `mark-defun'."
       (_mark_thing@_ (goto-char (cdr bounds))
                      (goto-char (car bounds))))))
 
-(defun mark-string@ ()
-  "Make the string at point."
-  (interactive)
+(defun mark-string@ (&optional arg)
+  "Make unquoted string at point.
+
+If prefix ARG then make quoted string."
+  (interactive "P")
   (let ((bounds (bounds-of-thing-at-point 'string)))
     (when bounds
-      (_mark_thing@_ (goto-char (car bounds))
-                     (goto-char (cdr bounds))))))
+      (_mark_thing@_ (goto-char (if arg
+                                    (1- (car bounds))
+                                  (car bounds)))
+                     (goto-char (if arg
+                                    (+ (cdr bounds) 2)
+                                  (cdr bounds)))))))
 
 (unless-fn% 'thing-at-point-bounds-of-list-at-point 'thingatpt
   ;; fix the wrong behavior of (bounds-of-thing-at-point 'list) on
