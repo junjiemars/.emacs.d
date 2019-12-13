@@ -691,7 +691,9 @@ otherwise default to keep the directories of current `emacs-version'."
   "Return emacs architecture, 64bits or 32bits."
   (if (= most-positive-fixnum (1- (expt 2 61)))
       64
-    32))
+    (if (= most-positive-fixnum (1- (expt 2 29)))
+        32
+      0)))
 
 
 ;; define key macro
