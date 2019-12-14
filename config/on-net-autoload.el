@@ -136,3 +136,24 @@
                    (and (stringp (car a))
                         (stringp (car b))
                         (string= (car a) (car b)))))))
+
+
+(defun *ssh-port-forwarding (options)
+  "Run ssh for port forwarding.
+
+Local port forwarding: connect from localhost to another server.
+ssh -L <local-port>:<remote>:<remote-port> <ssh-server>
+
+Dynamic port forwarding: turn ssh client into a socks proxy server.
+ssh -vnNTD<local-port> <ssh-server>
+
+Remote port forwarding: connect from the remote ssh server to another server.
+ssh -R <remote-port>:localhost:<remote-port> <ssh-server>"
+  (interactive "sssh options: ")
+  (require 'net-utils)
+  (net-utils-run-simple (format "*SSH Port Forwarding: [%s]*"
+                                options)
+                        "ssh"
+                        (split-string* options " " t)))
+
+;; end of file
