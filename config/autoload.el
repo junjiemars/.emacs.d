@@ -170,7 +170,8 @@
 
 (defun autoload-compile-units! ()
   "Autoload `compile-unit'."
-  (apply #'compile! *autoload-compile-units*))
+  (package-spec-:allowed-p
+    (apply #'compile! *autoload-compile-units*)))
 
 (package-spec-:allowed-p
   (add-hook 'after-init-hook
