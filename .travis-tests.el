@@ -187,6 +187,12 @@
             (dolist* (x '(a b c))
               (when (eq 'b x) (throw 'found t))))))
 
+(ert-deftest %strap:defmacro-if-feature% ()
+  (defmacro-if-feature% ert "just for ert test.")
+  (defmacro-if-feature% ertxxx "just for negative ert test.")
+  (should (= 3 (if-feature-ert% (+ 1 2) (* 3 4))))
+  (should (= 12 (if-feature-ertxxx% (+ 1 2) (* 3 4)))))
+
 
  ;; end of init
 

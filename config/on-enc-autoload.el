@@ -187,7 +187,10 @@ If ENDIAN is t then decode in small endian."
 (defun chinese->arabic (n acc)
   "Translate a chinese number N into arabic number."
   (cond ((null n) acc)
-        ((stringp n) (cond ((string= "兆" n) 1000000000000.0)
+        ((stringp n) (cond ((string= "兆" n)
+                            (if (= 64 (emacs-arch))
+                                1000000000000
+                              1000000000000.0))
                            ((or (string= "亿" n)
                                 (string= "億" n))
                             100000000)
