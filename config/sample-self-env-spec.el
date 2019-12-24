@@ -70,6 +70,7 @@
                :allowed nil)
   
   :package (list :remove-unused nil
+                 :load-parallel nil
                  :allowed nil)
 
   :edit (list :tab-width 2

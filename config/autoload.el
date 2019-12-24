@@ -175,7 +175,9 @@
 
 (package-spec-:allowed-p
   (add-hook 'after-init-hook
-            (defun-on-fn-threading^ autoload-compile-units!)
+            (if (self-spec->*env-spec :package :load-parallel)
+                (defun-on-fn-threading^ autoload-compile-units!)
+              #'autoload-compile-units!)
             t))
 
 (add-hook 'after-init-hook
