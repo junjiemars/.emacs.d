@@ -188,9 +188,9 @@ If ENDIAN is t then decode in small endian."
   "Translate a chinese number N into arabic number."
   (cond ((null n) acc)
         ((stringp n) (cond ((string= "兆" n)
-                            (if% (= 64 (emacs-arch))
-                                1000000000000
-                              1000000000000.0))
+                            (if% (= 32 (emacs-arch))
+                                1000000000000.0
+                              1000000000000))
                            ((or (string= "亿" n)
                                 (string= "億" n))
                             100000000)
