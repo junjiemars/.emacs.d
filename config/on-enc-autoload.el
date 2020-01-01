@@ -58,7 +58,8 @@
                               (insert (base64-encode-string
                                        (if (multibyte-string-p s)
                                            (encode-coding-string s 'utf-8)
-                                         s))))))
+                                         s)
+                                       t)))))
 
 (defun decode-base64* ()
   "Decode region base64 decoded."
