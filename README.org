@@ -1259,6 +1259,7 @@ It's *self-documenting* and great, keep reading it frequently.
 - insert char: @@html:<kbd>@@C-x 8 RET@@html:</kbd>@@
 - count lines, words or characters of select region:
   @@html:<kbd>@@M-=@@html:</kbd>@@
+- count lines on current page: @@html:<kbd>@@C-x l@@html:</kbd>@@
 
 ** Coding
 	 :PROPERTIES:
