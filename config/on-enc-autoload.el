@@ -27,14 +27,14 @@
 
 ;; Encode/Decode URL
 
-(defun encode-url* ()
+(defun encode-url ()
   "Encode region via URL encoded."
   (interactive)
   (let ((s (string-trim>< (region-extract-str t))))
     (_enc_with_output_buffer_ +encode-output-buffer-name+
                               (insert (url-hexify-string s)))))
 
-(defun decode-url* ()
+(defun decode-url ()
   "Decode region via URL decoded."
   (interactive)
   (let ((s (string-trim>< (region-extract-str t))))
@@ -50,7 +50,7 @@
 ;; Encode/Decode base64
 
 
-(defun encode-base64* ()
+(defun encode-base64 ()
   "Encode region via base64 encoded."
   (interactive)
   (let ((s (string-trim>< (region-extract-str t))))
@@ -61,7 +61,7 @@
                                          s)
                                        t)))))
 
-(defun decode-base64* ()
+(defun decode-base64 ()
   "Decode region base64 decoded."
   (interactive)
   (let ((s (string-trim>< (region-extract-str t))))
