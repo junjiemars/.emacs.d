@@ -75,13 +75,13 @@
 
 ;; Encode/Decode IP address
 
-(defmacro encode-ip (s &optional endian)
+(defmacro ipv4->int (s &optional small-endian)
   "Encode IPv4 address to int."
   (let ((ss (gensym*)))
     `(let ((,ss (and (stringp ,s)
                      (split-string* ,s "\\." t))))
        (when (and (consp ,ss) (= 4 (length ,ss)))
-         (if ,endian
+         (if ,small-endian
              (logior
               (lsh (string-to-number (nth 0 ,ss)) 24)
               (lsh (string-to-number (nth 1 ,ss)) 16)
@@ -94,10 +94,10 @@
             (lsh (string-to-number (nth 3 ,ss)) 24)))))))
 
 
-(defmacro decode-ip (n &optional endian)
+(defmacro int->ipv4 (n &optional small-endian)
   "Decode IPv4 address to string."
   `(when (integerp ,n)
-     (if ,endian
+     (if ,small-endian
          (format "%s.%s.%s.%s"
                  (lsh (logand ,n #xff000000) -24)
                  (lsh (logand ,n #x00ff0000) -16)
@@ -110,7 +110,7 @@
                (lsh (logand ,n #xff000000) -24)))))
 
 
-(defun encode-ip* (&optional arg endian)
+(defun encode-ipv4 (&optional arg endian)
   "Encode IPv4 address in region to int.
 
 If ARG is non nil then output to `+encode-output-buffer-name+'.
@@ -119,7 +119,7 @@ If ENDIAN is t then decode in small endian."
                      (read-string "endian: " (if (= 108 (byteorder))
                                                  "small"
                                                "big"))))
-  (let* ((n (encode-ip (string-trim>< (region-extract-str t))
+  (let* ((n (ipv4->int (string-trim>< (region-extract-str t))
                        (string= "small" endian)))
          (out (and (integerp n)
                    (format "%d (#o%o, #x%x)" n n n))))
@@ -129,7 +129,7 @@ If ENDIAN is t then decode in small endian."
       (message "%s" out))))
 
 
-(defun decode-ip* (&optional arg endian)
+(defun decode-ipv4 (&optional arg endian)
   "Decode IPv4 address region to string.
 
 If ARG is non nil then output to `+decode-output-buffer-name+'.
@@ -139,7 +139,7 @@ If ENDIAN is t then decode in small endian."
                                                  "small"
                                                "big"))))
   (let* ((s (string-trim>< (region-extract-str t)))
-         (out (decode-ip (cond ((string-match "^[#0][xX]" s)
+         (out (int->ipv4 (cond ((string-match "^[#0][xX]" s)
                                 (string-to-number (substring s 2) 16))
                                ((string-match "^[#0][oO]" s)
                                 (string-to-number (substring s 2) 8))
