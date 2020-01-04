@@ -1241,7 +1241,12 @@ It's *self-documenting* and great, keep reading it frequently.
 - what cursor position: @@html:<kbd>@@C-x =@@html:</kbd>@@	
 - describe char: @@html:<kbd>@@C-u C-x =@@html:</kbd>@@
 - quoted insert: @@html:<kbd>@@C-q@@html:</kbd>@@, such as page break
-  @@html:<kbd>@@C-q C-l@@html:</kbd>@@, use @@html:<kbd>@@C-x [@@html:</kbd>@@ to backward or @@html:<kbd>@@C-x ]@@html:</kbd>@@ to forward
+  @@html:<kbd>@@C-q C-l@@html:</kbd>@@, use @@html:<kbd>@@C-x
+  [@@html:</kbd>@@ to backward or @@html:<kbd>@@C-x ]@@html:</kbd>@@
+  to forward,
+	@@html:<kbd>@@C-q C-I@@html:</kbd>@@ to insert horizontal tab,
+	@@html:<kbd>@@C-q C-J@@html:</kbd>@@ to insert line feed,
+	@@html:<kbd>@@C-q C-M@@html:</kbd>@@ to insert carriage return
 - check unmatched parentheses: @@html:<kbd>@@M-x check-parens@@html:</kbd>@@
 #+REVEAL: split
 - tab to space: @@html:<kbd>@@M-x untabify@@html:</kbd>@@
