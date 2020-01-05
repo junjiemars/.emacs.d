@@ -7,6 +7,11 @@
 ;;;;
 
 
+(defvar *loading-epoch*
+  (current-time)
+  "The epoch of loading init.el")
+
+
 ;; basic macro
 
 (defmacro comment (&rest body)
@@ -24,11 +29,6 @@ The name is made by appending a number to PREFIX, default \"g\"."
     (make-symbol (format "%s%d" (or prefix "g") num))))
 
 
-(defvar loading-start-time
-  (current-time)
-  "The start time at loading init.el")
-
-
  ;; end of basic macro
 
 ;; file macro
@@ -37,8 +37,9 @@ The name is made by appending a number to PREFIX, default \"g\"."
   "Return path of SUBDIRS under `emacs-home'."
   (declare (indent 0))
   `(concat ,(expand-file-name (if (boundp 'user-emacs-directory)
-                        user-emacs-directory
-                      "~/.emacs.d/")) ,@subdirs))
+                                  user-emacs-directory
+                                "~/.emacs.d/"))
+           ,@subdirs))
 
 
 (defmacro file-name-base* (file)
@@ -248,7 +249,7 @@ sequentially and return value of last one, or nil if there are none."
 
 
 (message "#Loading init.el ... done (%.5fs)"
-         (float-time (time-subtract (current-time) loading-start-time)))
+         (float-time (time-subtract (current-time) *loading-epoch*)))
 
 
 
