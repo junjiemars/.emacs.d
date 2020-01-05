@@ -19,11 +19,9 @@
 (defun gensym* (&optional prefix)
   "Generate a new uninterned symbol.
 The name is made by appending a number to PREFIX, default \"g\"."
-  (let ((pfix (if (stringp prefix) prefix "g"))
-        (num (if (integerp prefix) prefix
-               (prog1 *gensym-counter*
-                 (setq *gensym-counter* (1+ *gensym-counter*))))))
-    (make-symbol (format "%s%d" pfix num))))
+  (let ((num (prog1 *gensym-counter*
+               (setq *gensym-counter* (1+ *gensym-counter*)))))
+    (make-symbol (format "%s%d" (or prefix "g") num))))
 
 
 (defvar loading-start-time
