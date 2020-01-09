@@ -244,7 +244,8 @@
   (should (every* #'stringp))
   (should-not (every* #'stringp nil))
   (should (every* #'stringp "" "a" "b"))
-  (should-not (every* #'stringp "" "a" nil "b")))
+  (should-not (every* #'stringp "" "a" nil "b"))
+  (should (every* #'< '(1 2 3) '(4 5 6))))
 
 (ert-deftest %basic:split-string* ()
   (should (equal '("a" "b" "c")
