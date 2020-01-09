@@ -240,12 +240,13 @@
   (should (equal '("a") (member** "a" '("b" "a") :test #'string=))))
 
 (ert-deftest %basic:every* ()
-  (should (every* nil))
-  (should (every* #'stringp))
-  (should-not (every* #'stringp nil))
   (should (every* #'stringp "" "a" "b"))
-  (should-not (every* #'stringp "" "a" nil "b"))
   (should (every* #'< '(1 2 3) '(4 5 6))))
+
+(ert-deftest %basic:some* ()
+  (should (some* #'characterp "abc"))
+  (should (some* #'< '(1 2 3) '(1 2 4)))
+  (should-not (some* #'< '(1 2 3) '(1 2 3))))
 
 (ert-deftest %basic:split-string* ()
   (should (equal '("a" "b" "c")

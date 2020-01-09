@@ -201,14 +201,25 @@ Return the sublist of LIST whose car is ITEM.
 
 
 (defmacro every* (pred &rest seq)
-  "Return t if PRED is t of every element of SEQ."
+  "Return t if PRED is t of every element of SEQ or SEQs."
   (declare (indent 1))
   (if-fn% 'cl-every 'cl-lib
-          `(cl-every ,pred (list ,@seq))
+          `(cl-every ,pred ,@seq)
     (when-fn% 'every 'cl
       `(with-no-warnings
          (require 'cl)
-         (every ,pred (list ,@seq))))))
+         (every ,pred ,@seq)))))
+
+
+(defmacro some* (pred &rest seq)
+  "Return t if PRED is t of any element of SEQ or SEQs."
+  (declare (indent 1))
+  (if-fn% 'cl-some 'cl-lib
+          `(cl-some ,pred ,@seq)
+    (when-fn% 'some 'cl
+      `(with-no-warnings
+         (require 'cl)
+         (some ,pred ,@seq)))))
 
 
 (unless-fn% 'characterp nil
