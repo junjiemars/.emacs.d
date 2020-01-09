@@ -287,16 +287,6 @@
   (should (string= "abc"
                    (match-string* "XX\\(abc\\)XX" "XXabcXX" 1))))
 
-(ert-deftest %basic:string=* ()
-  (should (string=* "a" "a"))
-  (should (string=* "a" "a" "a"))
-  (should-not (string=* "a" "a" "a" "b")))
-
-(ert-deftest %basic:char=* ()
-  (should (char=* ?a ?a))
-  (should (char=* ?a ?a ?a))
-  (should-not (char=* ?a ?a ?a ?b)))
-
 (ert-deftest %basic:buffer-file-name* ()
   (should (null (buffer-file-name* (get-buffer "*scratch*")))))
 
