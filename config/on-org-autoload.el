@@ -19,10 +19,11 @@
   (if-feature-ox-reveal%
       (when-var% org-reveal-root 'ox-reveal
         (setq org-reveal-root
-              (let ((f (expand-file-name "~/.reveal.js/")))
-                (if (file-exists-p f)
-                    f
-                  "https://cdn.jsdelivr.net/reveal.js/3.0.0/")))))
+              (let ((root (expand-file-name "~/.reveal.js/")))
+                (if (file-exists-p root)
+                    root
+                  ;; "https://cdn.jsdelivr.net/reveal.js/3.8.0/"
+                  "https://pagecdn.io/lib/reveal/3.8.0/")))))
 
   ;; disable _ sub-superscripts
   (when-var% org-use-sub-superscripts 'org
