@@ -18,6 +18,7 @@
   ;; load `ox-reveal' if it had been installed.
   (if-feature-ox-reveal%
       (when-var% org-reveal-root 'ox-reveal
+        (require 'ox-reveal)
         (setq org-reveal-root
               (let ((root (expand-file-name "~/.reveal.js/")))
                 (if (file-exists-p root)
