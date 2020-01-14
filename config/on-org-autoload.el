@@ -17,13 +17,12 @@
 (with-eval-after-load 'org
   ;; load `ox-reveal' if it had been installed.
   (if-feature-ox-reveal%
-    (progn
-      (require 'ox-reveal)
-      (setq org-reveal-root
-            (let ((f (expand-file-name "~/.reveal.js/")))
-              (if (file-exists-p f)
-                  f
-                "https://cdn.jsdelivr.net/reveal.js/3.0.0/")))))
+      (when-var% org-reveal-root 'ox-reveal
+        (setq org-reveal-root
+              (let ((f (expand-file-name "~/.reveal.js/")))
+                (if (file-exists-p f)
+                    f
+                  "https://cdn.jsdelivr.net/reveal.js/3.0.0/")))))
 
   ;; disable _ sub-superscripts
   (when-var% org-use-sub-superscripts 'org
