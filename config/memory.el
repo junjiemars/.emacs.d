@@ -63,7 +63,8 @@
                 (self-spec-> ,previous :name)
                 (self-spec-> ,previous :custom-theme-directory))
                (disable-theme (self-spec-> ,previous :name)))
-           (when (self-spec-> ,current :name)
+           (when (and (self-spec-> ,current :name)
+                      (self-spec-> ,current :allowed))
              (enable-theme (self-spec-> ,current :name))))
          (setq% desktop-restore-frames t 'desktop)))))
 
