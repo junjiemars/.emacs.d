@@ -156,4 +156,18 @@ ssh -R <remote-port>:localhost:<remote-port> <ssh-server>"
                         "ssh"
                         (split-string* options " " t)))
 
+
+(when-platform% 'darwin
+
+  (defun launchctl (&optional arg)
+    "Run launchctl."
+    (interactive "slaunchctl options: ")
+    (require 'net-utils)
+    (net-utils-run-simple (format "*launchctl: [%s]*"
+                                  arg)
+                          "launchctl"
+                          (if arg (split-string* arg " " t)
+                            ""))))
+
+
 ;; end of file
