@@ -170,4 +170,17 @@ ssh -R <remote-port>:localhost:<remote-port> <ssh-server>"
                             ""))))
 
 
+(when-platform% 'gnu/linux
+
+  (defun systemctl (&optional arg)
+    "Run systemctl."
+    (interactive "ssystemctl options: ")
+    (require 'net-utils)
+    (net-utils-run-simple (format "*systemctl: [%s]*"
+                                  arg)
+                          "systemctl"
+                          (if arg (split-string* arg " " t)
+                            ""))))
+
+
 ;; end of file
