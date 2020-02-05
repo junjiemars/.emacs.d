@@ -151,8 +151,7 @@ Remote port forwarding: connect from the remote ssh server to another server.
 ssh -R <remote-port>:localhost:<remote-port> <ssh-server>"
   (interactive "sssh options: ")
   (require 'net-utils)
-  (net-utils-run-simple (format "*SSH Port Forwarding: [%s]*"
-                                options)
+  (net-utils-run-simple (format "*SSH Port Forwarding: [%s]*" options)
                         "ssh"
                         (split-string* options " " t)))
 
@@ -163,10 +162,10 @@ ssh -R <remote-port>:localhost:<remote-port> <ssh-server>"
     "Run launchctl."
     (interactive "slaunchctl options: ")
     (require 'net-utils)
-    (net-utils-run-simple (format "*launchctl: [%s]*"
-                                  arg)
+    (net-utils-run-simple (format "*Launchctl %s*" arg)
                           "launchctl"
-                          (if arg (split-string* arg " " t)
+                          (if arg
+                              (split-string* arg " " t)
                             ""))))
 
 
@@ -176,10 +175,10 @@ ssh -R <remote-port>:localhost:<remote-port> <ssh-server>"
     "Run systemctl."
     (interactive "ssystemctl options: ")
     (require 'net-utils)
-    (net-utils-run-simple (format "*systemctl: [%s]*"
-                                  arg)
+    (net-utils-run-simple (format "*Systemctl %s*" arg)
                           "systemctl"
-                          (if arg (split-string* arg " " t)
+                          (if arg
+                              (split-string* arg " " t)
                             ""))))
 
 
