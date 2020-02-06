@@ -59,7 +59,7 @@
                  :allowed nil)
   
   :eshell (list :visual-commands '("mtr")
-                :destroy-buffer-when-process-dies t
+                :destroy-buffer-when-process-dies nil
                 :visual-subcommands nil ;; '(("git" "log"))
                 :visual-options nil
                 :allowed nil)
