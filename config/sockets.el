@@ -24,7 +24,9 @@ positive, otherwise via native."
                                    nil
                                    (self-spec->*env-spec :socks :port)
                                    (self-spec->*env-spec :socks :version))
-                             'socks)))
+                             'socks)
+                      (when-version% <= 25
+                        (ad-activate #'url-http t))))
             (socks (lambda ()
                      (setq% url-gateway-method 'socks 'url-vars)
                      (setq% socks-server
@@ -32,10 +34,14 @@ positive, otherwise via native."
                                   (self-spec->*env-spec :socks :server)
                                   (self-spec->*env-spec :socks :port)
                                   (self-spec->*env-spec :socks :version))
-                            'socks))))
+                            'socks)
+                     (when-version% <= 25
+                       (ad-deactivate #'url-http)))))
         ;; (require 'url)
         (if (null arg)
-            (if (eq url-gateway-method 'native) (funcall socks) (funcall native))
+            (if (eq url-gateway-method 'native)
+                (funcall socks)
+              (funcall native))
           (funcall socks))
         (message "socks%s as url gateway %s"
                  (list (self-spec->*env-spec :socks :server)
@@ -48,20 +54,21 @@ positive, otherwise via native."
 
 (when-version% <= 25
 
-  (defadvice url-http (before url-http-before compile)
-    "Fix the `url-gateway-method' bug in `url-http'."
-    (ad-set-arg 4 (let ((gateway-method (ad-get-arg 4)))
-                    (cond ((null gateway-method) url-gateway-method)
-                          ((and (eq 'socks url-gateway-method)
-                                (not (eq gateway-method url-gateway-method)))
-                           url-gateway-method)
-                          (t gateway-method))))))
+  (when-fn% 'url-http 'url-http
+
+    (defadvice url-http (before url-http-before compile)
+      "Fix the `url-gateway-method' bug in `url-http'."
+      (ad-set-arg 4 (let ((gateway-method (ad-get-arg 4)))
+                      (cond ((null gateway-method) url-gateway-method)
+                            ((and (eq 'socks url-gateway-method)
+                                  (not (eq gateway-method url-gateway-method)))
+                             url-gateway-method)
+                            (t gateway-method)))))))
 
 
 (if-feature-socks%
     (when (self-spec->*env-spec :socks :allowed)
-      (when-version% <= 25
-        (ad-activate #'url-http t))
+
       (toggle-socks! t)))
 
 
