@@ -202,13 +202,15 @@ Example:
         (progn
           ;; `xref-find-definitions' into `view-mode'
           (defadvice xref-find-definitions
-              (after xref-find-definitions-after compile)
+              (after xref-find-definitions-after disable)
             (with-current-buffer (current-buffer)
               (when (file-in-dirs-p (buffer-file-name* (current-buffer))
                                     tags-in-view-mode)
                 (view-mode 1))))
           
           (with-eval-after-load 'xref
+            (ad-enable-advice #'xref-find-definitions 'after
+                              "xref-find-definitions-after")
             (ad-activate #'xref-find-definitions t)))
   
   ;; pop-tag-mark same as Emacs22+ for ancient Emacs
@@ -219,13 +221,14 @@ Example:
       (define-key% (current-global-map) (kbd "M-*") #'tags-loop-continue)))
 
   ;; find-tag into `view-mode'
-  (defadvice find-tag (after find-tag-after compile)
+  (defadvice find-tag (after find-tag-after disable)
     (with-current-buffer (current-buffer)
       (when (file-in-dirs-p (buffer-file-name* (current-buffer))
                             tags-in-view-mode)
         (view-mode 1))))
   
   (with-eval-after-load 'etags
+    (ad-enable-advice #'find-tag 'after "find-tag-after")
     (ad-activate #'find-tag t)))
 
 

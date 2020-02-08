@@ -420,7 +420,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
  ;; end of cc*-system-include
 
 
-(defadvice ff-find-other-file (before ff-find-other-file-before compile)
+(defadvice ff-find-other-file (before ff-find-other-file-before disable)
   "Set `cc-search-directories' based on local or remote."
   (let ((file (buffer-file-name (current-buffer))))
     (setq% cc-search-directories
@@ -428,12 +428,12 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
                    (cc*-system-include t (remote-norm-file file))
                    (cc*-extra-include t)))))
 
-(defadvice ff-find-other-file (after ff-find-other-file-after compile)
+(defadvice ff-find-other-file (after ff-find-other-file-after disable)
   "View the other-file in `view-mode' when `cc*-include-p' is t."
   (cc*-view-include (current-buffer)))
 
 
-(defadvice c-macro-expand (around c-macro-expand-around compile)
+(defadvice c-macro-expand (around c-macro-expand-around disable)
   "Expand C macros in the region, using the C preprocessor."
   (let ((remote (remote-norm-file (buffer-file-name (current-buffer)))))
     (if remote
@@ -592,6 +592,10 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
     ;; keymap: find c include file
     (when-fn% 'ff-find-other-file 'find-file
       (define-key% c-mode-map (kbd "C-c f i") #'ff-find-other-file)
+      (ad-enable-advice #'ff-find-other-file 'before
+                        "ff-find-other-file-before")
+      (ad-enable-advice #'ff-find-other-file 'after
+                        "ff-find-other-file-after")
       (ad-activate #'ff-find-other-file t))
 
     ;; keymap: indent line or region
@@ -610,6 +614,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
 
   ;; [C-c C-e] `c-macro-expand' in `cc-mode'
   (setq% c-macro-prompt-flag t 'cmacexp)
+  (ad-enable-advice #'c-macro-expand 'around "c-macro-expand-around")
   (ad-activate #'c-macro-expand t))
 
 

@@ -21,7 +21,7 @@
 (when-fn% 'slime-show-source-location 'slime
   (defadvice slime-show-source-location (after
                                          slime-show-source-location-after
-                                         compile)
+                                         disable)
     "Show the Common LisP's source location in `view-mode'."
     (with-current-buffer (current-buffer)
       (view-mode 1))))
@@ -38,6 +38,8 @@
     (define-key (current-global-map) (kbd "C-c s s") #'slime-selector))
 
   (when-fn% 'slime-show-source-location 'slime
+    (ad-enable-advice #'slime-show-source-location 'after
+                      "slime-show-source-location-after")
     (ad-activate #'slime-show-source-location t)))
 
 
