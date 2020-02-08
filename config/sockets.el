@@ -61,8 +61,7 @@ positive, otherwise via native."
                                    nil
                                    (self-spec->*env-spec :socks :port)
                                    (self-spec->*env-spec :socks :version))
-                             'socks)
-                      (url-http-ad-activate t)))
+                             'socks)))
             (socks (lambda ()
                      (setq% url-gateway-method 'socks 'url-vars)
                      (setq% socks-server
@@ -70,14 +69,14 @@ positive, otherwise via native."
                                   (self-spec->*env-spec :socks :server)
                                   (self-spec->*env-spec :socks :port)
                                   (self-spec->*env-spec :socks :version))
-                            'socks)
-                     (url-http-ad-activate nil))))
+                            'socks))))
         ;; (require 'url)
         (if (null arg)
             (if (eq url-gateway-method 'native)
                 (funcall socks)
               (funcall native))
           (funcall socks))
+        (url-http-ad-activate (eq 'socks url-gateway-method))
         (message "socks%s as url gateway %s"
                  (list (self-spec->*env-spec :socks :server)
                        (self-spec->*env-spec :socks :port)
@@ -88,12 +87,9 @@ positive, otherwise via native."
 
 
 
-
-
-
 (if-feature-socks%
-    (when (self-spec->*env-spec :socks :allowed)
 
+    (when (self-spec->*env-spec :socks :allowed)
       (toggle-socks! t)))
 
 
