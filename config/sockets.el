@@ -11,6 +11,24 @@
 
 
 (if-feature-socks%
+    (when-version% > 25
+
+      (defvar *url-gateway-method* nil
+        "Alias of `url-gateway-method' used to fix the bug in `url-http'.")))
+
+(if-feature-socks%
+
+    (defmacro url-http-ad-activate (activate)
+      "Activate or deactive `url-http'."
+      `(progn
+         (when-version% > 25
+           (setq *url-gateway-method* url-gateway-method))
+         (if ,activate
+             (ad-activate #'url-http t)
+           (ad-deactivate #'url-http)))))
+
+
+(if-feature-socks%
 
     (defun toggle-socks! (&optional arg)
       "Toggle `url-gatewary-method' to socks or native.
@@ -25,8 +43,7 @@ positive, otherwise via native."
                                    (self-spec->*env-spec :socks :port)
                                    (self-spec->*env-spec :socks :version))
                              'socks)
-                      (when-version% <= 25
-                        (ad-activate #'url-http t))))
+                      (url-http-ad-activate t)))
             (socks (lambda ()
                      (setq% url-gateway-method 'socks 'url-vars)
                      (setq% socks-server
@@ -35,8 +52,7 @@ positive, otherwise via native."
                                   (self-spec->*env-spec :socks :port)
                                   (self-spec->*env-spec :socks :version))
                             'socks)
-                     (when-version% <= 25
-                       (ad-deactivate #'url-http)))))
+                     (url-http-ad-activate nil))))
         ;; (require 'url)
         (if (null arg)
             (if (eq url-gateway-method 'native)
@@ -52,18 +68,29 @@ positive, otherwise via native."
                    "enabled")))))
 
 
-(when-version% <= 25
 
-  (when-fn% 'url-http 'url-http
+(if-feature-socks%
+    (when-fn% 'url-http 'url-http
+      (if-version%
+          <= 25
 
-    (defadvice url-http (before url-http-before compile)
-      "Fix the `url-gateway-method' bug in `url-http'."
-      (ad-set-arg 4 (let ((gateway-method (ad-get-arg 4)))
-                      (cond ((null gateway-method) url-gateway-method)
-                            ((and (eq 'socks url-gateway-method)
-                                  (not (eq gateway-method url-gateway-method)))
-                             url-gateway-method)
-                            (t gateway-method)))))))
+          (defadvice url-http (before url-http-before compile)
+            "Fix the `url-gateway-method' bug in `url-http'."
+            (ad-set-arg
+             4 ;; gateway-method
+             (let ((gateway-method (ad-get-arg 4)))
+               (cond ((null gateway-method) url-gateway-method)
+                     ((and (eq 'socks url-gateway-method)
+                           (not (eq gateway-method url-gateway-method)))
+                      url-gateway-method)
+                     (t gateway-method)))))
+
+        (defadvice url-http (around url-http-around compile)
+          "Fix the `url-gateway-method' bug in `url-https'."
+          (let ((url-gateway-method (if (eq *url-gateway-method* 'socks)
+                                        'socks
+                                      'tls)))
+            ad-do-it)))))
 
 
 (if-feature-socks%
