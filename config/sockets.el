@@ -33,7 +33,13 @@
     (when-version% > 25
 
       (defvar *url-gateway-method* nil
-        "Alias of `url-gateway-method' used to fix the bug in `url-http'.")))
+        "Alias of `url-gateway-method' used to fix bug in `url-http'.")))
+
+(if-feature-socks%
+
+    (defvar *open-network-stream* nil
+      "Alias of `open-network-stream' used to fix bug in `url-http'."))
+
 
 
 (if-feature-socks%
@@ -50,7 +56,11 @@ greate than 1, otherwise via native."
                                    nil
                                    (self-spec->*env-spec :socks :port)
                                    (self-spec->*env-spec :socks :version))
-                             'socks)))
+                             'socks)
+                      (when *open-network-stream*
+                        (setf (symbol-function 'open-network-stream)
+                              *open-network-stream*))
+                      ))
             (socks (lambda ()
                      (setq% url-gateway-method 'socks 'url-vars)
                      (setq% socks-server
@@ -58,9 +68,15 @@ greate than 1, otherwise via native."
                                   (self-spec->*env-spec :socks :server)
                                   (self-spec->*env-spec :socks :port)
                                   (self-spec->*env-spec :socks :version))
-                            'socks))))
+                            'socks)
+                     (setf (symbol-function 'open-network-stream)
+                           #'socks-open-network-stream))))
         ;; (require 'url)
-        (if (= 1 arg)
+        (require 'socks)
+        (unless *open-network-stream*
+          (setf (symbol-value '*open-network-stream*)
+                (symbol-function 'open-network-stream)))
+        (if (or (null arg) (= 1 arg))
             (funcall (if (eq url-gateway-method 'native) socks native))
           (funcall (if (> arg 1) socks native)))
         (let ((activated (eq 'socks url-gateway-method)))
@@ -76,7 +92,8 @@ greate than 1, otherwise via native."
                    (list (self-spec->*env-spec :socks :server)
                          (self-spec->*env-spec :socks :port)
                          (self-spec->*env-spec :socks :version))
-                   (if activated "enabled" "disabled"))))))
+                   (if activated "enabled" "disabled")))))
+  )
 
 
 
