@@ -40,6 +40,7 @@
     (defmacro url-http-ad-activate (activate)
       "Activate or deactive `url-http'."
       `(progn
+         (require 'url-http)
          (when-version% > 25
            (setq *url-gateway-method* url-gateway-method))
          (if ,activate
@@ -76,14 +77,13 @@ positive, otherwise via native."
                 (funcall socks)
               (funcall native))
           (funcall socks))
-        (url-http-ad-activate (eq 'socks url-gateway-method))
-        (message "socks%s as url gateway %s"
-                 (list (self-spec->*env-spec :socks :server)
-                       (self-spec->*env-spec :socks :port)
-                       (self-spec->*env-spec :socks :version))
-                 (if (eq url-gateway-method 'native)
-                     "disabled"
-                   "enabled")))))
+        (let ((activated (eq 'socks url-gateway-method)))
+          (url-http-ad-activate activated)
+          (message "socks%s as url gateway %s"
+                   (list (self-spec->*env-spec :socks :server)
+                         (self-spec->*env-spec :socks :port)
+                         (self-spec->*env-spec :socks :version))
+                   (if activated "enabled" "disabled"))))))
 
 
 
