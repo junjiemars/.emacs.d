@@ -15,14 +15,14 @@
       (if-version%
           <= 25
 
-          (defadvice url-http (around url-http-around activate compile)
+          (defadvice url-http (around url-http-around activate disable)
             "Fix the `url-gateway-method' bug in `url-http'."
             (if (eq 'socks url-gateway-method)
                 (let ((gateway-method url-gateway-method))
                   ad-do-it)
               ad-do-it))
 
-        (defadvice url-http (around url-http-around compile)
+        (defadvice url-http (around url-http-around disable)
           "Fix the `url-gateway-method' bug in `url-https'."
           (let ((url-gateway-method (if (eq *url-gateway-method* 'socks)
                                         'socks
@@ -66,10 +66,12 @@ greate than 1, otherwise via native."
         (let ((activated (eq 'socks url-gateway-method)))
           (when-version% > 25
             (setq *url-gateway-method* url-gateway-method))
-          (progn
-            (if activated
-                (ad-activate #'url-http t)
-              (ad-deactivate #'url-http)))
+          (if activated
+              (progn
+                (ad-enable-advice #'url-http 'around "url-http-around")
+                (ad-activate #'url-http t))
+            (ad-deactivate #'url-http)
+            (ad-disable-advice #'url-http 'around "url-http-around"))
           (message "socks%s as url gateway %s"
                    (list (self-spec->*env-spec :socks :server)
                          (self-spec->*env-spec :socks :port)
