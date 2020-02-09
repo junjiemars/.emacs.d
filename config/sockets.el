@@ -59,8 +59,7 @@ greate than 1, otherwise via native."
                              'socks)
                       (when *open-network-stream*
                         (setf (symbol-function 'open-network-stream)
-                              *open-network-stream*))
-                      ))
+                              *open-network-stream*))))
             (socks (lambda ()
                      (setq% url-gateway-method 'socks 'url-vars)
                      (setq% socks-server
@@ -92,8 +91,7 @@ greate than 1, otherwise via native."
                    (list (self-spec->*env-spec :socks :server)
                          (self-spec->*env-spec :socks :port)
                          (self-spec->*env-spec :socks :version))
-                   (if activated "enabled" "disabled")))))
-  )
+                   (if activated "enabled" "disabled"))))))
 
 
 
