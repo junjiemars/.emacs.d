@@ -11,23 +11,17 @@
 
 
 (if-feature-socks%
-    (when-fn% 'url-http 'url-http
-      (if-version%
-          <= 25
+    (when-fn% 'url-open-stream 'url-gw
 
-          (defadvice url-http (around url-http-around activate disable)
-            "Fix the `url-gateway-method' bug in `url-http'."
-            (if (eq 'socks url-gateway-method)
-                (let ((gateway-method url-gateway-method))
-                  ad-do-it)
-              ad-do-it))
-
-        (defadvice url-http (around url-http-around disable)
-          "Fix the `url-gateway-method' bug in `url-https'."
-          (let ((url-gateway-method (if (eq *url-gateway-method* 'socks)
-                                        'socks
-                                      'tls)))
-            ad-do-it)))))
+      (defadvice url-open-stream (around url-open-stream-around disable)
+        "Fix the `url-gateway-method' bug in `url-http'."
+        (if-version% <= 25
+                     (let ((gateway-method
+                            (if (eq 'socks url-gateway-method)
+                                'socks
+                              gateway-method)))
+                       ad-do-it)
+          ad-do-it))))
 
 (if-feature-socks%
     (when-version% > 25
@@ -83,10 +77,14 @@ greate than 1, otherwise via native."
             (setq *url-gateway-method* url-gateway-method))
           (if activated
               (progn
-                (ad-enable-advice #'url-http 'around "url-http-around")
-                (ad-activate #'url-http t))
-            (ad-deactivate #'url-http)
-            (ad-disable-advice #'url-http 'around "url-http-around"))
+                (ad-enable-advice #'url-open-stream
+                                  'around
+                                  "url-open-stream-around")
+                (ad-activate #'url-open-stream t))
+            (ad-deactivate #'url-open-stream)
+            (ad-disable-advice #'url-open-stream
+                               'around
+                               "url-open-stream-around"))
           (message "socks%s as url gateway %s"
                    (list (self-spec->*env-spec :socks :server)
                          (self-spec->*env-spec :socks :port)
