@@ -21,7 +21,8 @@
                                 'socks
                               gateway-method)))
                        ad-do-it)
-          ad-do-it))))
+          (let ((url-gateway-method *url-gateway-method*))
+            ad-do-it)))))
 
 (if-feature-socks%
     (when-version% > 25

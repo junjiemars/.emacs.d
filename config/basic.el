@@ -625,6 +625,7 @@ On ancient Emacs, `file-remote-p' will return a vector."
 
 Clean all when ALL is t,
 otherwise default to keep the directories of current `emacs-version'."
+  (interactive "P")
   (let ((dirs (list `,(emacs-home* ".save/")
                     `,(emacs-home* ".backup/")
                     `,(emacs-home* ".bookmarks/")
@@ -657,6 +658,7 @@ otherwise default to keep the directories of current `emacs-version'."
 
 (defun reset-emacs ()
   "Clean all compiled file and desktop, then restart Emacs."
+  (interactive)
   (progn
     (clean-saved-user-files t)
     (clean-compiled-files)
