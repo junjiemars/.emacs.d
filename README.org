@@ -877,26 +877,13 @@ unified to two functions: =isearch-forward*= and =isearch-backward*=.
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
-In More Reasonable Emacs, we can search the text of activated
- *region*, the *symbol* at point forward or backward. By default,
-@@html:<kbd>@@C-s@@html:</kbd>@@ and @@html:<kbd>@@C-r@@html:</kbd>@@
-will search current symbol at point forward or backward just like
-/vi/'s @@html:<kbd>@@*@@html:</kbd>@@ and
-@@html:<kbd>@@#@@html:</kbd>@@ does. If there are a activated region
-then @@html:<kbd>@@C-s@@html:</kbd>@@ and
-@@html:<kbd>@@C-r@@html:</kbd>@@ will search the activated region
-forward or backward.
-
-#+REVEAL: split
-- @@html:<kbd>@@C-s@@html:</kbd>@@ do incremental search region or
-  symbol at point by default. If there are no activated region or
-  symbol at point do raw incremental search. If @@html:<kbd>@@C-u
-  C-s@@html:</kbd>@@ do incremental regexp search.
-- @@html:<kbd>@@C-r@@html:</kbd>@@ do incremental search region or
-  symbol at point.
-- @@html:<kbd>@@C-u C-s@@html:</kbd>@@ or @@html:<kbd>@@C-u
-  C-r@@html:</kbd>@@ do raw incremental search forward or backward.
-
+In More Reasonable Emacs, by default, =isearch-forward*= and
+ =isearch-backward*= same with the built-in ones. Except we can search the
+ text of activated *region*, using @@html:<kbd>@@C-s@@html:</kbd>@@
+ and @@html:<kbd>@@C-r@@html:</kbd>@@ will search forward or backward
+ just like /vi/'s @@html:<kbd>@@*@@html:</kbd>@@ and
+ @@html:<kbd>@@#@@html:</kbd>@@ does when there is activated region.
+ 
 *** Open line
 	 :PROPERTIES:
 	 :CUSTOM_ID: edit-open-line

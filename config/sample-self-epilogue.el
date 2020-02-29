@@ -20,19 +20,20 @@
 (comment (if-feature-eww% (toggle-browser! t)))
 
 
-(with-eval-after-load 'org
-  ;; define key bindings after `org-mode' had been loaded
-  ;; publish blog
-  (when-var% org-publish-project-alist 'org
-    (setq
-     org-publish-project-alist
-     '(("blog"
-        :base-directory "<your-blog-dir>"
-        :base-extension "org"
-        :publishing-directory "<public/blog/>"
-        :recursive t
-        :publishing-function org-html-publish-to-html)
-       ("website" :components ("blog"))))))
+(comment
+ (with-eval-after-load 'org
+   ;; define key bindings after `org-mode' had been loaded
+   ;; publish blog
+   (when-var% org-publish-project-alist 'org
+     (setq
+      org-publish-project-alist
+      '(("blog"
+         :base-directory "<your-blog-dir>"
+         :base-extension "org"
+         :publishing-directory "<public/blog/>"
+         :recursive t
+         :publishing-function org-html-publish-to-html)
+        ("website" :components ("blog")))))))
 
 
 (comment (setq% enable-local-variables :all 'files))

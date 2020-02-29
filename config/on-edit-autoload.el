@@ -316,42 +316,21 @@ If prefix ARG then make quoted string."
 
 ;; isearch
 
-(defmacro symbol@ ()
-  "Return the symbol at point."
-  `(let ((ss (region-active-if
-                 (prog1
-                     (buffer-substring (region-beginning)
-                                       (region-end))
-                   (setq mark-active nil))
-               (thing-at-point 'symbol))))
-     (and (stringp ss) (substring-no-properties ss))))
+(defun isearch-forward* (&optional arg)
+  "Do incremental region or symbol search forward."
+  (interactive "P")
+  (isearch-forward arg 1)
+  (let ((ss (symbol@)))
+    (when (eq 'region (car ss))
+      (isearch-yank-string (cdr ss)))))
 
-
-(defvar isearch-toggle-symbol@*
-  (lexical-let% ((toggle))
-    (lambda (&optional n)
-      (if n (setq toggle (not toggle)) toggle)))
-  "Toggle `symbol@' for `isearch-forward*' and `isearch-backward*'.")
-
-
-(eval-when-compile
-  
-  (defmacro _defun_isearch_forward_or_backward_ (direction)
-    "Define `isearch-forward*' or `isearch-backward*'"
-    (let ((fn (intern (format "isearch-%s*" (symbol-name direction))))
-          (dn (intern (format "isearch-%s" (symbol-name direction)))))
-      `(defun ,fn (&optional arg)
-         ,(format "Do incremental region or symbol search %s."
-                  `,(symbol-name direction))
-         (interactive "P")
-         (,dn nil 1)
-         (when (funcall isearch-toggle-symbol@* arg)
-           (let ((s (symbol@)))
-             (when s (isearch-yank-string s))))))))
-
-
-(_defun_isearch_forward_or_backward_ forward)
-(_defun_isearch_forward_or_backward_ backward)
+(defun isearch-backward* (&optional arg)
+  "Do incremental region or symbol search backward."
+  (interactive "P")
+  (isearch-backward arg 1)
+  (let ((ss (symbol@)))
+    (when (eq 'region (car ss))
+      (isearch-yank-string (cdr ss)))))
 
 (define-key (current-global-map) (kbd "C-s") #'isearch-forward*)
 (define-key (current-global-map) (kbd "C-r") #'isearch-backward*)
