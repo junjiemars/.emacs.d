@@ -1008,6 +1008,8 @@ Now, we are in the cycle of editing, compiling, debugging.
 		:CUSTOM_ID: c-programming-editing
 		:END:
 
+Change C programming style using  @@html:<kbd>@@C-c .@@html:</kbd>@@.
+
 **** View C system include
 		 :PROPERTIES:
 		 :CUSTOM_ID: c-programming-view-c-system-include

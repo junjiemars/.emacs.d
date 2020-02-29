@@ -14,10 +14,13 @@
 
 (when (self-spec->*env-spec :edit :allowed)
   
-  (with-eval-after-load 'sh-script
-    (setq% sh-basic-offset (self-spec->*env-spec
-                             :edit :tab-width)
-           'sh-script))
+  ;; (with-eval-after-load 'sh-script
+  ;;   (setq% sh-basic-offset (self-spec->*env-spec :edit :tab-width)
+  ;;          'sh-script))
+
+  ;; (with-eval-after-load 'cc-mode
+  ;;   (setq% c-basic-offset (self-spec->*env-spec :edit :tab-width)
+  ;;          'cc-mode))
 
   (let ((modes (self-spec->*env-spec
                  :edit :disable-indent-tabs-mode)))
