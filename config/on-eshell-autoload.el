@@ -13,9 +13,10 @@
      (eval-when-compile (require 'em-term))
      (require 'em-term)
      (when (self-spec->*env-spec :eshell :allowed)
-       (mapc (lambda (x)
-               (add-to-list 'eshell-visual-commands x t #'string=))
-             (self-spec->*env-spec :eshell :visual-commands))
+       (let ((visuals (self-spec->*env-spec :eshell :visual-commands)))
+         (mapc (lambda (x)
+                 (add-to-list 'eshell-visual-commands x t #'string=))
+               visuals))
        (setq% eshell-destroy-buffer-when-process-dies
               (self-spec->*env-spec
                 :eshell :destroy-buffer-when-process-dies))
