@@ -78,11 +78,11 @@
     (compile-unit% (emacs-home* "config/on-enc-autoload.el"))
     (compile-unit% (emacs-home* "config/on-eshell-autoload.el"))
     (compile-unit% (emacs-home* "config/on-hippie-autoload.el"))
+    (compile-unit% (emacs-home* "config/on-indent-autoload.el"))
     (compile-unit% (emacs-home* "config/on-lisp-autoload.el"))
     (compile-unit% (emacs-home* "config/on-net-autoload.el"))
     (compile-unit% (emacs-home* "config/on-org-autoload.el"))
     (compile-unit% (emacs-home* "config/on-pp-autoload.el"))
-    (compile-unit% (emacs-home* "config/on-sh-autoload.el"))
     (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))
     (compile-unit% (emacs-home* "config/on-window-autoload.el"))
 
@@ -94,10 +94,10 @@
         (compile-unit% (emacs-home* "config/on-docview-autoload.el"))))
 
     (if-feature-eww%
-      (compile-unit% (emacs-home* "config/on-eww-autoload.el")))
+        (compile-unit% (emacs-home* "config/on-eww-autoload.el")))
     
     (if-feature-linum%
-      (compile-unit% (emacs-home* "config/on-linum-autoload.el")))
+        (compile-unit% (emacs-home* "config/on-linum-autoload.el")))
 
     (when% (executable-find%
             "python"
@@ -108,7 +108,7 @@
       (compile-unit% (emacs-home* "config/on-python-autoload.el")))
     
     (if-feature-semantic%
-      (compile-unit% (emacs-home* "config/on-semantic-autoload.el")))
+        (compile-unit% (emacs-home* "config/on-semantic-autoload.el")))
 
     )
   ;; end of compile!

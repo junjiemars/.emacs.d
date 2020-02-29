@@ -703,11 +703,16 @@ Avoiding a war. If /whitespace/ causes some trouble, you can swith to
 (def-self-env-spec
   :edit (list :tab-width 2
               :auto-save-default nil
+              :disable-indent-tabs-mode '(c-mode-common-hook
+                                          sh-mode-hook
+                                          emacs-lisp-mode-hook)
               :allowed t))
 #+END_SRC
 
 - =:tab-width= default @@html:<kbd>@@C-h-v tab-width@@html:</kbd>@@
 - =:auto-save-default= @@html:<kbd>@@C-h-v auto-save-default@@html:</kbd>@@
+- =:disable-indent-tabs-mode= disble =indent-tabs-mode= in specified
+  major modes
 - =:allowed= =t= enabled, =nil= disabled
 
 ** File

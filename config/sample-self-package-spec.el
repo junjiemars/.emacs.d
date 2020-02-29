@@ -67,7 +67,5 @@
    :packages '(lua-mode)
    :compile `(,(compile-unit% (emacs-home* "config/use-lua-autoload.el"))))
 
-  )
+  ) ;; end of `def-self-package-spec'
 
-
-;; EOF

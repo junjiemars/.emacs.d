@@ -13,10 +13,6 @@
   (safe-local-variable* 'Package))
 
 
-(defun set-basic-lisp-mode! ()
-  (setq indent-tabs-mode nil))
-
-
 (if-version%
     <= 25.0
     (with-eval-after-load 'elisp-mode
@@ -55,15 +51,12 @@
 
 
 (with-eval-after-load 'lisp-mode
-  (add-hook 'lisp-mode-hook #'set-basic-lisp-mode!)
-  (add-hook 'emacs-lisp-mode-hook #'set-basic-lisp-mode!)
   (when-package%
     (add-hook 'lisp-mode-hook #'set-featured-lisp-mode!)
     (add-hook 'emacs-lisp-mode-hook #'set-featured-lisp-mode!)))
 
 
 (with-eval-after-load 'scheme
-  (add-hook 'scheme-mode-hook #'set-basic-lisp-mode!)    
   (when-package%
     (add-hook 'scheme-mode-hook #'set-featured-lisp-mode!)))
 
@@ -128,7 +121,6 @@
     (setq lexical-binding t)))
 
 (with-eval-after-load 'ielm
-  (add-hook 'ielm-mode-hook #'set-basic-lisp-mode! t)
   (add-hook 'ielm-mode-hook #'eldoc-mode t)
   (add-hook 'ielm-mode-hook #'set-ielm-mode!))
 

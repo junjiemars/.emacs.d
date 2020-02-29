@@ -75,6 +75,9 @@
 
   :edit (list :tab-width 2
               :auto-save-default nil
+              :disable-indent-tabs-mode '(c-mode-common-hook
+                                          sh-mode-hook
+                                          emacs-lisp-mode-hook)
               :allowed t)
   
-  )
+  ) ;; end of `def-self-env-spec'
