@@ -878,11 +878,16 @@ unified to two functions: =isearch-forward*= and =isearch-backward*=.
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
 In More Reasonable Emacs, by default, =isearch-forward*= and
- =isearch-backward*= same with the built-in ones. Except we can search the
- text of activated *region*, using @@html:<kbd>@@C-s@@html:</kbd>@@
- and @@html:<kbd>@@C-r@@html:</kbd>@@ will search forward or backward
- just like /vi/'s @@html:<kbd>@@*@@html:</kbd>@@ and
- @@html:<kbd>@@#@@html:</kbd>@@ does when there is activated region.
+ =isearch-backward*= same with the built-in ones. Except we can search
+ the text of activated *region*, using
+ @@html:<kbd>@@C-s@@html:</kbd>@@ and @@html:<kbd>@@C-r@@html:</kbd>@@
+ will search forward or backward just like /vi/'s
+ @@html:<kbd>@@*@@html:</kbd>@@ and @@html:<kbd>@@#@@html:</kbd>@@
+ does when there is activated region. Select a region or make a symbol
+ using =mark-symbol@=, =mark-line@=, =mark-filename@= or =mark-defun@=
+ then @@html:<kbd>@@C-s@@html:</kbd>@@ or
+ @@html:<kbd>@@C-r@@html:</kbd>@@.
+ 
  
 *** Open line
 	 :PROPERTIES:
