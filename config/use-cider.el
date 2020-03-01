@@ -10,17 +10,17 @@
 (defun set-clojure-mode! ()
   "Hook into `clojure-mode-hook'"
   (subword-mode)
-  (if-feature-allowed% paredit (enable-paredit-mode))
-  (if-feature-allowed% rainbow-delimiters (rainbow-delimiters-mode))
-  (if-feature-allowed% aggressive-indent (aggressive-indent-mode)))
+  (when-feature-allowed% paredit (enable-paredit-mode))
+  (when-feature-allowed% rainbow-delimiters (rainbow-delimiters-mode))
+  (when-feature-allowed% aggressive-indent (aggressive-indent-mode)))
 
 
 (defun set-cider-repl-mode! ()
   "Hook into `cider-repl-mode-hook'"
   (eldoc-mode)
-  (if-feature-allowed% paredit (enable-paredit-mode))
-  (if-feature-allowed% rainbow-delimiters (rainbow-delimiters-mode))
-  (if-feature-allowed% aggressive-indent (aggressive-indent-mode)))
+  (when-feature-allowed% paredit (enable-paredit-mode))
+  (when-feature-allowed% rainbow-delimiters (rainbow-delimiters-mode))
+  (when-feature-allowed% aggressive-indent (aggressive-indent-mode)))
 
 
 (defun use-clojure-mode ()

@@ -13,8 +13,8 @@
 (defmacro-if-feature% rainbow-delimiters)
 
 
-(defmacro if-feature-allowed% (feature &rest body)
-  "Run BODY when FEATURE supported and allowed."
+(defmacro when-feature-allowed% (feature &rest body)
+  "Run BODY when FEATURE be supported and be allowed."
   (declare (indent 1))
   (let ((supported (intern (format "if-feature-%s%%" feature))))
     (when (fboundp supported)

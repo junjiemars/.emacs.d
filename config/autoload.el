@@ -44,7 +44,7 @@
   (define-key (current-global-map) (kbd "C-c r b") #'revert-buffer)
 
   (when-package%
-    (if-feature-allowed% bing-dict
+    (when-feature-allowed% bing-dict
       ;; define `bing-dict' key binding
       (define-key (current-global-map) (kbd "C-c d") #'bing-dict-brief)))
 
