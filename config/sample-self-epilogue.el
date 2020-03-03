@@ -100,3 +100,15 @@
  (setq smtpmail-smtp-server "<smtp-server>")
  (setq smtpmail-smtp-server 587))
 
+(comment
+ (setq% sql-connection-alist '((mysql-local
+                                (sql-product 'mysql)
+                                (sql-server "127.0.0.1")
+                                (sql-port 3306)
+                                (sql-database "sys")
+                                (sql-user "root")
+                                (sql-password "example")))
+        'sql))
+
+(comment
+ (setq% yas-snippet-dirs '("<where>") 'yasnippet))
