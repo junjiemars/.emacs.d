@@ -32,18 +32,11 @@ If ARG < 0 then minify the region, otherwise pretty print it."
           (insert s)
           (set-mark (point)))
       (with-current-buffer (current-buffer)
-        (let ((old-mode major-mode))
-          (xml-mode)
-          (goto-char begin)
-          (while (search-forward-regexp ">[ \t]*<[^/]" end t)
-            (backward-char 2) (insert "\n") (incf end))
-          (goto-char begin)
-          (while (search-forward-regexp "<.*?/.*?>[ \t]*<" end t)
-            (backward-char) (insert "\n") (incf end))
-          (indent-region begin end nil)
-          (if (eq 'fundamental-mode major-mode)
-              (normal-mode)
-            (funcall old-mode)))))))
+        (when-fn% 'sgml-pretty-print 'sgml-mode
+          (with-no-warnings
+            (progn
+              (require 'sgml-mode)
+              (sgml-pretty-print begin end))))))))
 
 (defalias 'pp-html #'pp-xml)
 
