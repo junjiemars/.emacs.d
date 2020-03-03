@@ -18,7 +18,8 @@
                    (or (executable-find% "kotlin")
                        'kotlin-mode)
                    'web-mode
-                   (when-version% <= 24.3 'skewer-mode)))
+                   (when-version% <= 24.3 'skewer-mode)
+                   (when-version% <= 24.3 'yasnippet)))
   (list
    :cond (when-version% < 24.1 t)
    :packages (list 'js2-mode
