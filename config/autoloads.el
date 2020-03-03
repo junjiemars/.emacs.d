@@ -9,9 +9,6 @@
 
 ;; defined features
 
-;; linum mode, requires Emacs-23.1+
-(defmacro-if-feature% linum)
-
 ;; semantic, require Emacs-24.4+
 (defmacro-if-feature% semantic)
 
@@ -58,9 +55,13 @@
       #'electric-newline-and-maybe-indent)
     (define-key% (current-global-map) (kbd "C-j") #'newline))
 
-  )
+  ;; linum
+  (when-fn% 'linum-mode 'linum
+    (define-key% (current-global-map) (kbd "C-c l") #'linum-mode))
 
- ;; end of set-global-key!
+  ) ;; end of set-global-key!
+
+
 
 ;; set-flavor-mode!
 
@@ -95,9 +96,6 @@
 
     (if-feature-eww%
         (compile-unit% (emacs-home* "config/on-eww-autoload.el")))
-    
-    (if-feature-linum%
-        (compile-unit% (emacs-home* "config/on-linum-autoload.el")))
 
     (when% (executable-find%
             "python"
@@ -110,8 +108,7 @@
     (if-feature-semantic%
         (compile-unit% (emacs-home* "config/on-semantic-autoload.el")))
 
-    )
-  ;; end of compile!
+    )  ;; end of compile!
 
   ;; gambit
   (when% (or (executable-find% "gsc-script")
