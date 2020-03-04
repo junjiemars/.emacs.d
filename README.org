@@ -954,7 +954,7 @@ avaiabled on ancient Emacs.
 The features provided by 3rd packages, featured keys may not avaiabled
 on ancient Emacs.
 
-- @@html:<kbd>@@C-c v s@@html:</kbd>@@ =magit-status=
+- @@html:<kbd>@@C-x v s@@html:</kbd>@@ =magit-status=
 
 * Programming
 	:PROPERTIES:
