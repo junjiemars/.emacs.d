@@ -59,7 +59,8 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
 (defun find-web@ (what &optional engine)
   "Find web via search ENGINE."
   (interactive
-   (list (read-string (format "Find (%s) via web: " (cdr (symbol@))))
+   (list (let ((w (cdr (symbol@))))
+           (read-string (format "Find web for: " w) w))
          (when current-prefix-arg
            (read-string (format "Choose (%s): "
                                 (mapconcat
