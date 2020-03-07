@@ -401,6 +401,8 @@ directory name of `buffer-file-name' to kill ring."
 
 (define-key (current-global-map) (kbd "C-c n") #'echo-buffer-file-name)
 
+(define-key (current-global-map) (kbd "C-c b n") #'echo-buffer-file-name)
+
  ;; end of `echo-buffer-file-name'
 
 

@@ -38,7 +38,11 @@
   (define-key% (current-global-map) (kbd "C-x r v") #'view-register)
 
   ;; Revert buffer
-  (define-key (current-global-map) (kbd "C-c r b") #'revert-buffer)
+  (define-key (current-global-map) (kbd "C-c b r") #'revert-buffer)
+  ;; Toggle linum mode
+  (when-fn% 'linum-mode 'linum
+    (define-key% (current-global-map) (kbd "C-c b l") #'linum-mode))
+
 
   (when-package%
     (when-feature-allowed% bing-dict
@@ -54,10 +58,6 @@
     (define-key% (current-global-map) (kbd "RET")
       #'electric-newline-and-maybe-indent)
     (define-key% (current-global-map) (kbd "C-j") #'newline))
-
-  ;; linum
-  (when-fn% 'linum-mode 'linum
-    (define-key% (current-global-map) (kbd "C-c l") #'linum-mode))
 
   ) ;; end of set-global-key!
 
