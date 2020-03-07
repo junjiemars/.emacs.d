@@ -1196,15 +1196,16 @@ It's *self-documenting* and great, keep reading it frequently.
    :CUSTOM_ID: interaction
    :END:
 
--  =*scratch*= buffer
--  via Elisp: @@html:<kbd>@@M-:@@html:</kbd>@@
--  via Shell command: @@html:<kbd>@@M-!@@html:</kbd>@@, insert shell
-   output: @@html:<kbd>@@C-u M-!@@html:</kbd>@@, see /Info>Emacs>Shell/
--  in Dired mode: @@html:<kbd>@@!@@html:</kbd>@@, do shell command
--  region as input to Shell command: @@html:<kbd>@@M-|@@html:</kbd>@@,
-   insert from shell output: @@html:<kbd>@@C-u M-|@@html:</kbd>@@
--  browse-url: @@html:<kbd>@@C-c b@@html:</kbd>@@
--  filename of current buffer: @@html:<kbd>@@C-c b n@@html:</kbd>@@
+- =*scratch*= buffer
+- via Elisp: @@html:<kbd>@@M-:@@html:</kbd>@@
+- via Shell command: @@html:<kbd>@@M-!@@html:</kbd>@@, insert shell
+  output: @@html:<kbd>@@C-u M-!@@html:</kbd>@@, see /Info>Emacs>Shell/
+- in Dired mode: @@html:<kbd>@@!@@html:</kbd>@@, do shell command
+- region as input to Shell command: @@html:<kbd>@@M-|@@html:</kbd>@@,
+  insert from shell output: @@html:<kbd>@@C-u M-|@@html:</kbd>@@
+- find file at point: @@html:<kbd>@@C-c f f@@html:</kbd>@@
+- browse-url: @@html:<kbd>@@C-c b@@html:</kbd>@@
+- filename of current buffer: @@html:<kbd>@@C-c b n@@html:</kbd>@@
 
 ** Editing
    :PROPERTIES:
