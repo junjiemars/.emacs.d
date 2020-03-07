@@ -37,41 +37,47 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
 
 (if-feature-eww%
 
-  (with-eval-after-load 'eww
-    (add-hook 'eww-mode-hook #'set-eww-mode!)))
+    (with-eval-after-load 'eww
+      (add-hook 'eww-mode-hook #'set-eww-mode!)))
 
 
 ;; find web via search engine
 
-(defun find-web@ (engine)
+(defvar *search-engines*
+  '(("bing" "https://www.bing.com/"
+     . "search?ensearch=1&q=")
+    ("duck" "https://duckduckgo.com/"
+     . "?q=")
+    ("google" "https://www.google.com/"
+     . "search?q=")
+    ("so" "https://stackoverflow.com/"
+     . "search?q=")
+    ("wiki" "https://en.wikipedia.org/"
+     . "w/index.php?search="))
+  "Search engines.")
+
+(defun find-web@ (what &optional engine)
   "Find web via search ENGINE."
-  (interactive "sfind-web@ bing|duck|google|so|wiki|: ")
-  (let* ((w (cdr (assoc** (let ((x (string-trim>< engine)))
-                            (if (string= "" x)
-                                "bing"
-                              x))
-                          '(("bing" "https://www.bing.com/"
-                             . "search?ensearch=1&q=")
-                            ("duck" "https://duckduckgo.com/"
-                             . "?q=")
-                            ("google" "https://www.google.com/"
-                             . "search?q=")
-                            ("so" "https://stackoverflow.com/"
-                             . "search?q=")
-                            ("wiki" "https://en.wikipedia.org/"
-                             . "w/index.php?search="))
-                          #'string=)))
-         (w1 (if w w (cons engine "")))
-         (url (concat (car w1)
-                      (let ((ss (symbol@)))
-                        (when ss (concat (cdr w1) (cdr ss))))))
+  (interactive
+   (list (read-string (format "Find (%s) via web: " (cdr (symbol@))))
+         (when current-prefix-arg
+           (read-string (format "Choose (%s): "
+                                (mapconcat
+                                 #'identity
+                                 (mapcar #'car *search-engines*)
+                                 "|"))))))
+  (let* ((e1 (if (or (null engine)
+                     (string= "" engine))
+                 "bing"
+               engine))
+         (e2 (cdr (assoc** e1 *search-engines* #'string=)))
+         (url (concat (car e2) (cdr e2) what))
          (encoded (progn (require 'browse-url)
                          (browse-url-url-encode-chars url "[ '()]"))))
     (make-thread*
-     (progn
-       (message "find-web@: %s" encoded)
-       (funcall browse-url-browser-function encoded))
+     (funcall browse-url-browser-function encoded)
      t)))
+
 
 (define-key (current-global-map) (kbd "C-c f w") #'find-web@)
 
