@@ -60,7 +60,7 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
   "Find web via search ENGINE."
   (interactive
    (list (let ((w (cdr (symbol@))))
-           (read-string (format "Find web for: " w) w))
+           (read-string "Find web for: " w))
          (when current-prefix-arg
            (read-string (format "Choose (%s): "
                                 (mapconcat
