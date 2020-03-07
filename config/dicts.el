@@ -14,16 +14,19 @@
 
 (defvar *dicts*
   '(("bing" (:url "http://www.bing.com/dict/search?mkt=zh-cn&q="
-                  :pronounce ""
+                  :us-pronounce
+                  "<div class=\"hd_prUS b_primtxt\">\\(.+\\)</div>"
                   :area (""))))
   "Dictionaries using by `lookup-dict'.")
 
 
 
-(defun on-lookup-dict (status keyword)
+(defun on-lookup-dict (status &rest args)
   "Callback when `lookup-dict'."
+  (declare (indent 1))
   (set-buffer-multibyte t)
   (write-region (point-min) (point-max) (emacs-home* "private/dict.txt"))
+  
   )
 
 
@@ -41,10 +44,13 @@
                      (string= "" dict))
                  "bing"
                dict))
-         (d2 (plist-get (cadr (assoc** d1 *dicts* #'string=)) :url)))
-    (url-retrieve (concat d2 (url-hexify-string word))
+         (d2 (cadr (assoc** d1 *dicts* #'string=)))
+         (url (plist-get d2 :url)))
+    (url-retrieve (concat url (url-hexify-string word))
                   #'on-lookup-dict
-                  `(,(decode-coding-string word 'utf-8))
+                  `(:word ,(decode-coding-string word 'utf-8)
+                          :dict ,d2
+                          :style nil)
                   t
                   t)))
 
