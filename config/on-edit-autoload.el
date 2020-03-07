@@ -392,9 +392,12 @@ If prefix argument ARG is non-nil then copy `buffer-file-name' to
 kill ring. If prefix argument ARG is nil then copy
 `file-name-nondirectory' of `buffer-file-name' to kill ring."
   (interactive "P")
-  (let* ((n (if (eq 'dired-mode major-mode)
-                (error "In dired, type \"w\" or \"C-u 0 w\" instead")
-              (buffer-file-name)))
+  (let* ((n (if (or (eq 'dired-mode major-mode)
+                    (eq 'ibuffer-mode major-mode))
+                (error "Type \"w\" or \"C-u 0 w\" instead, in %s"
+                       mode-name)
+              (let ((b (buffer-file-name)))
+                (if b b (error "Not a file buffer")))))
          (n1 (if arg
                  n
                (file-name-nondirectory n))))
