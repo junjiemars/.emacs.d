@@ -54,7 +54,7 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
      . "search?q=")
     ("wiki" "https://en.wikipedia.org/"
      . "w/index.php?search="))
-  "Search engines.")
+  "Search engines called by `find-web@'.")
 
 (defun find-web@ (what &optional engine)
   "Find web via search ENGINE."
