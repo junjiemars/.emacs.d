@@ -269,7 +269,7 @@ Introduce rules of naming /files/ and /functions/.
 
 #+BEGIN_EXAMPLE
     (emacs-home* "config/")
-    ├── autoload.el
+    ├── autoloads.el
     ├── basic.el
     ├── boot.el
     ├── memory.el
@@ -286,6 +286,7 @@ Introduce rules of naming /files/ and /functions/.
 #+BEGIN_EXAMPLE
     (emacs-home* "config/")
     ├── shells.el
+    ├── sockets.el
     └── tags.el
 #+END_EXAMPLE
 
