@@ -393,7 +393,7 @@ kill ring. If prefix argument ARG is nil then copy
 `file-name-nondirectory' of `buffer-file-name' to kill ring."
   (interactive "P")
   (let* ((n (if (eq 'dired-mode major-mode)
-                default-directory
+                (error "In dired, type \"w\" or \"C-u 0 w\" instead")
               (buffer-file-name)))
          (n1 (if arg
                  n
