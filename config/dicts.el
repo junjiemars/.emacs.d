@@ -9,20 +9,23 @@
 
 (eval-when-compile
   (require 'url)
-  (require 'url-util))
+  (require 'url-util)
+  (require 'xml))
 
 
 (defvar *dicts*
   '(("bing"
      ("url" . "https://cn.bing.com/dict/search?q=")
      ("meta" . ("<meta name=\"description\" content=\"必应词典为您提供.+的释义，"
+                "[^\"]+\""
                 .
-                "[^\"]+\"")))
+                nil)))
     ("cambridge"
      ("url" . "https://dictionary.cambridge.org/dictionary/english-chinese-simplified/")
-     ("meta" . ("<meta itemprop=\"headline\" content=\"+*translate: "
+     ("meta" . ("<meta itemprop=\"headline\" content=\".+translate: "
+                "[^L]+L"
                 .
-                "[^L]+L"))))
+                "xml"))))
   
   "Dictionaries using by `lookup-dict'.")
 
@@ -30,7 +33,7 @@
 (defun on-lookup-dict (status &rest args)
   "Callback when `lookup-dict'."
   (declare (indent 1))
-  (when (assoc** :error status #'eq)
+  (when (or (null status) (assoc** :error status #'eq))
     (message (propertize "Network error" 'face 'font-lock-comment-face)))
   (set-buffer-multibyte t)
   (write-region (point-min) (point-max)
@@ -43,12 +46,21 @@
       (goto-char (point-min))
       (let* ((re (cdr (assoc** x dict #'string=)))
              (b (re-search-forward (car re) nil t))
-             (e (when b (re-search-forward (cdr re) nil t))))
+             (e (when b (re-search-forward (cadr re) nil t)))
+             (d (cddr re)))
         (when (and b e (< b e))
-          (push (let ((html (cons x (buffer-substring-no-properties
-                                     b (1- e)))))
-                  ;; todo: translate html to text
-                  html)
+          (push (cons x (let ((html (buffer-substring-no-properties
+                                     b (1- e))))
+                          (cond ((string= "xml" d)
+                                 (with-temp-buffer
+                                   (save-excursion
+                                     (insert "<foo>" html "</foo>"))
+                                   (with-no-warnings
+                                     (require 'xml)
+                                     (string-trim>< (xml-parse-string)
+                                                    "</foo>"
+                                                    "<foo>"))))
+                                (t html))))
                 ss))))
     (message (propertize (if (and ss (> (length ss) 0))
                              (string-trim> (mapconcat #'identity
