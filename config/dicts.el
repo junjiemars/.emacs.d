@@ -14,15 +14,12 @@
 
 (defvar *dicts*
   '(("bing"
-     (url . "http://www.bing.com/dict/search?mkt=zh-cn&q=")
-     (pron-us . ("<div class=\"hd_prUS b_primtxt\">"
-                 .
-                 ".+[^<]"))
-     (pron-uk . ("<div class=\"hd_pr b_primtxt\">"
-                 .
-                 ".+[^<]"))))
+     (url . "https://cn.bing.com/dict/search?q=")
+     (meta . ("<meta name=\"description\" content=\"必应词典为您提供.*的释义，"
+              .
+              "[^\"]+\""))))
+  
   "Dictionaries using by `lookup-dict'.")
-
 
 
 (defun on-lookup-dict (status &rest args)
@@ -40,9 +37,19 @@
       (let* ((re (cdr (assoc** x dict #'eq)))
              (b (re-search-forward (car re) nil t))
              (e (when b (re-search-forward (cdr re) nil t))))
-        (when (and b (< b e))
-          (push (cons x (buffer-substring-no-properties b e))
-                ss))))))
+        (when (and b e (< b e))
+          (push (let ((html (cons x (buffer-substring-no-properties
+                                     b (1- e)))))
+                  ;; todo: translate html to text
+                  html)
+                ss))))
+    (message (propertize (if (and ss (> (length ss) 0))
+                             (mapconcat #'identity
+                                        (mapcar #'cdr ss)
+                                        "")
+                           "No result")
+                         'face
+                         'font-lock-comment-face))))
 
 
 (defun lookup-dict (what &optional dict)
