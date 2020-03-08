@@ -9,8 +9,7 @@
 
 (eval-when-compile
   (require 'url)
-  (require 'url-util)
-  (require 'xml))
+  (require 'url-util))
 
 
 (defvar *dicts*
@@ -25,7 +24,7 @@
      ("meta" . ("<meta itemprop=\"headline\" content=\".+translate: "
                 "[^L]+L"
                 .
-                "xml"))))
+                "&#16;"))))
   
   "Dictionaries using by `lookup-dict'.")
 
@@ -51,15 +50,17 @@
         (when (and b e (< b e))
           (push (cons x (let ((html (buffer-substring-no-properties
                                      b (1- e))))
-                          (cond ((string= "xml" d)
+                          (cond ((string= "&#16;" d)
                                  (with-temp-buffer
-                                   (save-excursion
-                                     (insert "<foo>" html "</foo>"))
-                                   (with-no-warnings
-                                     (require 'xml)
-                                     (string-trim>< (xml-parse-string)
-                                                    "</foo>"
-                                                    "<foo>"))))
+                                   (insert html)
+                                   (goto-char (point-min))
+                                   (while (search-forward-regexp
+                                           "&#\\([0-9]+\\);" nil t)
+                                     (replace-match (char-to-string
+                                                     (string-to-number
+                                                      (match-string 1)))))
+                                   (buffer-substring-no-properties
+                                    (point-min) (point-max))))
                                 (t html))))
                 ss))))
     (message (propertize (if (and ss (> (length ss) 0))
