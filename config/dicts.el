@@ -15,9 +15,14 @@
 (defvar *dicts*
   '(("bing"
      ("url" . "https://cn.bing.com/dict/search?q=")
-     ("meta" . ("<meta name=\"description\" content=\"必应词典为您提供.*的释义，"
+     ("meta" . ("<meta name=\"description\" content=\"必应词典为您提供.+的释义"
                 .
-                "[^\"]+\""))))
+                "[^\"]+\"")))
+    ("cambridge"
+     ("url" . "https://dictionary.cambridge.org/dictionary/english-chinese-simplified/")
+     ("meta" . ("<meta itemprop=\"headline\" content=\"+*translate: "
+                .
+                "[^L]+L"))))
   
   "Dictionaries using by `lookup-dict'.")
 
@@ -28,7 +33,8 @@
   (when (assoc** :error status #'eq)
     (message (propertize "Network error" 'face 'font-lock-comment-face)))
   (set-buffer-multibyte t)
-  ;; (write-region (point-min) (point-max) (emacs-home* "private/dict.txt"))
+  (write-region (point-min) (point-max)
+                (path! (emacs-home* ".dict/log")))
   (let ((dict (remove-if* (lambda (x) (eq 'url (car x)))
                   (cadr (assoc** 'dict args #'eq))))
         (style (cadr (assoc** 'style args #'eq)))
@@ -58,8 +64,10 @@
   (interactive
    (list (read-string "lookup dict for: " (cdr (symbol@)))
          (when current-prefix-arg
-           (let* ((n (mapconcat #'identity (mapcar #'car *dicts*) "|"))
-                  (d (read-string (format "Choose (%s): " n) n))
+           (let* ((ns (mapcar #'car *dicts*))
+                  (d (read-string (format "Choose (%s): "
+                                          (mapconcat #'identity ns "|"))
+                                  (car ns)))
                   (dd (cdr (assoc** d *dicts* #'string=)))
                   (s (mapcar #'car dd))
                   (sr (remove-if* (lambda (x) (string= "url" x)) s))

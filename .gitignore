@@ -1,6 +1,7 @@
 .smex-items
 *~$
 places
+.dict
 .recentf
 ido.last
 cider-history
