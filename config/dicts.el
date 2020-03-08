@@ -14,10 +14,10 @@
 
 (defvar *dicts*
   '(("bing"
-     (url . "https://cn.bing.com/dict/search?q=")
-     (meta . ("<meta name=\"description\" content=\"必应词典为您提供.*的释义，"
-              .
-              "[^\"]+\""))))
+     ("url" . "https://cn.bing.com/dict/search?q=")
+     ("meta" . ("<meta name=\"description\" content=\"必应词典为您提供.*的释义，"
+                .
+                "[^\"]+\""))))
   
   "Dictionaries using by `lookup-dict'.")
 
@@ -25,16 +25,17 @@
 (defun on-lookup-dict (status &rest args)
   "Callback when `lookup-dict'."
   (declare (indent 1))
+  (when (assoc** :error status #'eq)
+    (message (propertize "Network error" 'face 'font-lock-comment-face)))
   (set-buffer-multibyte t)
   ;; (write-region (point-min) (point-max) (emacs-home* "private/dict.txt"))
-  (let ((dict (remove-if* (lambda (x)
-                            (eq 'url (car x)))
-                  (cdadr (assoc** 'dict args #'eq))))
-        (style (cdr (assoc** 'style args #'eq)))
+  (let ((dict (remove-if* (lambda (x) (eq 'url (car x)))
+                  (cadr (assoc** 'dict args #'eq))))
+        (style (cadr (assoc** 'style args #'eq)))
         (ss nil))
     (dolist* (x style (nreverse ss))
       (goto-char (point-min))
-      (let* ((re (cdr (assoc** x dict #'eq)))
+      (let* ((re (cdr (assoc** x dict #'string=)))
              (b (re-search-forward (car re) nil t))
              (e (when b (re-search-forward (cdr re) nil t))))
         (when (and b e (< b e))
@@ -44,9 +45,9 @@
                   html)
                 ss))))
     (message (propertize (if (and ss (> (length ss) 0))
-                             (mapconcat #'identity
-                                        (mapcar #'cdr ss)
-                                        "")
+                             (string-trim> (mapconcat #'identity
+                                                      (mapcar #'cdr ss)
+                                                      "[ \n]"))
                            "No result")
                          'face
                          'font-lock-comment-face))))
@@ -57,42 +58,38 @@
   (interactive
    (list (read-string "lookup dict for: " (cdr (symbol@)))
          (when current-prefix-arg
-           (let* ((n (mapconcat #'identity
-                                (mapcar #'car *dicts*)
-                                "|"))
+           (let* ((n (mapconcat #'identity (mapcar #'car *dicts*) "|"))
                   (d (read-string (format "Choose (%s): " n) n))
-                  (dd (assoc** d *dicts* #'string=))
-                  (s (mapcar (lambda (x)
-                               (symbol-name (car x)))
-                             (cdr dd)))
-                  (sr (remove-if* (lambda (x)
-                                    (string= "url" x))
-                          s))
-                  (ss (read-string (format "Choose (all|%s): "
-                                           (mapconcat #'identity
-                                                      sr
-                                                      ",")))))
-             `((dict . ,dd)
-               (style . ,(if (string= "all" ss)
+                  (dd (cdr (assoc** d *dicts* #'string=)))
+                  (s (mapcar #'car dd))
+                  (sr (remove-if* (lambda (x) (string= "url" x)) s))
+                  (ss (read-string
+                       (format "Choose (all|%s): "
+                               (mapconcat #'identity sr ",")))))
+             `((dict . ,(list dd))
+               (style . ,(if (and (stringp ss)
+                                  (string= "all" ss))
                              sr
-                           ss)))))))
+                           `(,(remove-if* (lambda (x)
+                                            (string= "all" x))
+                                  (split-string* ss "," t "[ \n]*"))))))))))
   (let* ((d1 (if (null dict)
-                 `((dict ,(car *dicts*))
-                   (style ,(remove-if* (lambda (x)
-                                         (eq 'url x))
-                               (mapcar #'car
-                                       (cdr (car *dicts*))))))
+                 (list (cons 'dict (list (cdar *dicts*)))
+                       (cons 'style (list (remove-if* (lambda (x)
+                                                        (string= "url" x))
+                                              (mapcar #'car
+                                                      (cdar *dicts*))))))
                dict))
-         (url (cdr (assoc** 'url (cdadr (assoc** 'dict d1 #'eq)) #'eq))))
+         (url (cdr (assoc** "url" (cadr (assoc** 'dict d1 #'eq))
+                            #'string=))))
     (url-retrieve (concat url (url-hexify-string what))
                   #'on-lookup-dict
-                  `((what . ,(decode-coding-string what 'utf-8))
-                    (dict . ,(cdr (assoc** 'dict d1 #'eq)))
-                    (style . ,(cadr (assoc** 'style d1 #'eq))))
+                  d1
                   t
                   t)))
 
 
 (define-key (current-global-map) (kbd "C-c d") #'lookup-dict)
+
 
 ;; end of dicts.el

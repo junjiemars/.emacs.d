@@ -43,12 +43,6 @@
   (when-fn% 'linum-mode 'linum
     (define-key% (current-global-map) (kbd "C-c b l") #'linum-mode))
 
-
-  (when-package%
-    (when-feature-allowed% bing-dict
-      ;; define `bing-dict' key binding
-      (define-key (current-global-map) (kbd "C-c d") #'bing-dict-brief)))
-
   (when-fn% 'electric-newline-and-maybe-indent 'electric
     ;; Default behaviour of RET
     ;; https://lists.gnu.org/archive/html/emacs-devel/2013-10/msg00490.html
@@ -68,6 +62,7 @@
 (defun set-flavor-mode! ()
 
   (compile!
+    (compile-unit% (emacs-home* "config/dicts.el"))
     (compile-unit% (emacs-home* "config/financial.el") t)
     (compile-unit% (emacs-home* "config/fns.el"))
     (compile-unit% (emacs-home* "config/go.el") t)

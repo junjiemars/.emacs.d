@@ -8,7 +8,6 @@
 
 
 (defmacro-if-feature% aggressive-indent)
-(defmacro-if-feature% bing-dict)
 (defmacro-if-feature% paredit)
 (defmacro-if-feature% rainbow-delimiters)
 

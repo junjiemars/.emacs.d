@@ -119,7 +119,6 @@
   (list (list
          :cond t
          :packages `(aggressive-indent
-                     bing-dict
                      paredit
                      rainbow-delimiters
                      ,(when-version% <= 24.1 'yaml-mode)))))
