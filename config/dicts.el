@@ -16,13 +16,13 @@
   '(("bing"
      ("url" . "https://cn.bing.com/dict/search?q=")
      ("meta" . ("<meta name=\"description\" content=\"必应词典为您提供.+的释义，"
-                "[^\"]+\""
+                "/><"
                 .
                 nil)))
     ("cambridge"
      ("url" . "https://dictionary.cambridge.org/dictionary/english-chinese-simplified/")
      ("meta" . ("<meta itemprop=\"headline\" content=\".+translate: "
-                "[^L]+L"
+                "Learn"
                 .
                 "&#[0-9]+;"))))
   
@@ -42,7 +42,7 @@
     (message (propertize "Network error" 'face 'font-lock-comment-face)))
   (set-buffer-multibyte t)
   (write-region (point-min) (point-max)
-                (path! (emacs-home* ".dict/log")))
+                (path! (emacs-home* ".dict/lookup-dict.log")))
   (let ((dict (remove-if* (lambda (x) (eq 'url (car x)))
                   (cadr (assoc** 'dict args #'eq))))
         (style (cadr (assoc** 'style args #'eq)))
@@ -53,7 +53,8 @@
              (b (re-search-forward (car re) nil t))
              (e (and b (re-search-forward (cadr re) nil t)))
              (html (and b e (< b e)
-                        (buffer-substring-no-properties b (1- e))))
+                        (buffer-substring-no-properties
+                         b (- e (length (cadr re))))))
              (d (cddr re)))
         (when (and (not (null html)) (> (length html) 0))
           (push (cons x 
