@@ -24,7 +24,7 @@
      ("meta" . ("<meta itemprop=\"headline\" content=\".+translate: "
                 "[^L]+L"
                 .
-                "&#16;"))))
+                "&#[0-9]+;"))))
   
   "Dictionaries using by `lookup-dict'.")
 
@@ -56,7 +56,7 @@
         (when (and b e (< b e))
           (push (cons x (let ((html (buffer-substring-no-properties
                                      b (1- e))))
-                          (cond ((string= "&#16;" d)
+                          (cond ((string= "&#[0-9]+;" d)
                                  (with-temp-buffer
                                    (insert html)
                                    (goto-char (point-min))
