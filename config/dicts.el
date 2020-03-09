@@ -51,23 +51,24 @@
       (goto-char (point-min))
       (let* ((re (cdr (assoc** x dict #'string=)))
              (b (re-search-forward (car re) nil t))
-             (e (when b (re-search-forward (cadr re) nil t)))
+             (e (and b (re-search-forward (cadr re) nil t)))
+             (html (and b e (< b e)
+                        (buffer-substring-no-properties b (1- e))))
              (d (cddr re)))
-        (when (and b e (< b e))
-          (push (cons x (let ((html (buffer-substring-no-properties
-                                     b (1- e))))
-                          (cond ((string= "&#[0-9]+;" d)
-                                 (with-temp-buffer
-                                   (insert html)
-                                   (goto-char (point-min))
-                                   (while (search-forward-regexp
-                                           "&#\\([0-9]+\\);" nil t)
-                                     (replace-match (char-to-string
-                                                     (string-to-number
-                                                      (match-string 1)))))
-                                   (buffer-substring-no-properties
-                                    (point-min) (point-max))))
-                                (t html))))
+        (when (and (not (null html)) (> (length html) 0))
+          (push (cons x 
+                      (cond ((string= "&#[0-9]+;" d)
+                             (with-temp-buffer
+                               (insert html)
+                               (goto-char (point-min))
+                               (while (search-forward-regexp
+                                       "&#\\([0-9]+\\);" nil t)
+                                 (replace-match (char-to-string
+                                                 (string-to-number
+                                                  (match-string 1)))))
+                               (buffer-substring-no-properties
+                                (point-min) (point-max))))
+                            (t html)))
                 ss))))
     (message (propertize (if (and ss (> (length ss) 0))
                              (string-trim> (mapconcat #'identity
@@ -88,7 +89,7 @@
                                           (mapconcat #'identity ns "|"))
                                   (or (car *dict-name-history*)
                                       (car ns))
-                                  '*dict-history*))
+                                  '*dict-name-history*))
                   (dd (cdr (assoc** d *dicts* #'string=)))
                   (s (mapcar #'car dd))
                   (sr (remove-if* (lambda (x) (string= "url" x)) s))
