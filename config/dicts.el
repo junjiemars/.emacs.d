@@ -13,7 +13,7 @@
 
 
 (defvar *dicts*
-  '(("bing"
+  `(("bing"
      ("url" . "https://cn.bing.com/dict/search?q=")
      ("meta" . ("<meta name=\"description\" content=\"必应词典为您提供.+的释义，"
                 "/><"
@@ -24,7 +24,7 @@
      ("meta" . ("<meta itemprop=\"headline\" content=\".+translate: "
                 "Learn"
                 .
-                "&#[0-9]+;"))))
+                (,#'dict-fn-decode-char)))))
   
   "Dictionaries using by `lookup-dict'.")
 
@@ -33,6 +33,18 @@
 
 (defvar *dict-style-history* nil
   "Dictionary style choosing history list.")
+
+
+(defun dict-fn-decode-char (ss)
+  "Decode &#[0-9]+; to string."
+  (with-temp-buffer
+    (insert ss)
+    (goto-char (point-min))
+    (while (search-forward-regexp "&#\\([0-9]+\\);" nil t)
+      (replace-match (char-to-string
+                      (string-to-number (match-string 1)))))
+    (buffer-substring-no-properties
+     (point-min) (point-max))))
 
 
 (defun on-lookup-dict (status &rest args)
@@ -55,22 +67,14 @@
              (html (and b e (< b e)
                         (buffer-substring-no-properties
                          b (- e (length (cadr re))))))
-             (d (cddr re)))
+             (fns (cddr re))
+             (txt html))
         (when (and (not (null html)) (> (length html) 0))
-          (push (cons x 
-                      (cond ((string= "&#[0-9]+;" d)
-                             (with-temp-buffer
-                               (insert html)
-                               (goto-char (point-min))
-                               (while (search-forward-regexp
-                                       "&#\\([0-9]+\\);" nil t)
-                                 (replace-match (char-to-string
-                                                 (string-to-number
-                                                  (match-string 1)))))
-                               (buffer-substring-no-properties
-                                (point-min) (point-max))))
-                            (t html)))
-                ss))))
+          (dolist* (fn fns txt)
+            (setq txt (if (functionp fn)
+                          (funcall fn txt)
+                        txt)))
+          (push (cons x txt) ss))))
     (message (propertize (if (and ss (> (length ss) 0))
                              (string-trim> (mapconcat #'identity
                                                       (mapcar #'cdr ss)
