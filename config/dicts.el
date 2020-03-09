@@ -13,7 +13,7 @@
 
 
 (defvar *dicts*
-  `(("bing"
+  '(("bing"
      ("url" . "https://cn.bing.com/dict/search?q=")
      ("meta" . ("<meta name=\"description\" content=\"必应词典为您提供.+的释义，"
                 "/><"
@@ -21,10 +21,13 @@
                 nil)))
     ("cambridge"
      ("url" . "https://dictionary.cambridge.org/dictionary/english-chinese-simplified/")
+     ("pron-uk" . ("<span class=\"ipa dipa lpr-2 lpl-1\">"
+                   "</span>"))
      ("meta" . ("<meta itemprop=\"headline\" content=\".+translate: "
                 "Learn"
                 .
-                (,#'dict-fn-decode-char)))))
+                (dict-fn-decode-char
+                 dict-fn-decode-html-char)))))
   
   "Dictionaries using by `lookup-dict'.")
 
@@ -46,6 +49,37 @@
     (buffer-substring-no-properties
      (point-min) (point-max))))
 
+(defun dict-fn-decode-html-char (ss)
+  "Decode &#[a-z]+; to string."
+  (with-temp-buffer
+    (insert ss)
+    (let ((m '(("&nasp;" . " ")
+               ("&#lt;" . "<")
+               ("&#gt;" . ">")
+               ("&hellip;" .  "..."))))
+      (mapc (lambda (s)
+              (goto-char (point-min))
+              (while (search-forward (car s) nil t)
+                (replace-match (cdr s))))
+            m)
+      (buffer-substring-no-properties
+       (point-min) (point-max)))))
+
+(defun dict-fn-remove-html-tag (ss)
+  "Remove html tags."
+  (with-temp-buffer
+    (insert ss)
+    (let ((tags `( "<.*?>"
+                   "</[a-zA-Z]+>"
+                   "/>")))
+      (mapc (lambda (x)
+              (goto-char (point-min))
+              (while (search-forward-regexp x nil t)
+                (replace-match "" t t)))
+            tags)
+      (buffer-substring-no-properties
+       (point-min) (point-max)))))
+
 
 (defun on-lookup-dict (status &rest args)
   "Callback when `lookup-dict'."
@@ -54,34 +88,37 @@
     (message (propertize "Network error" 'face 'font-lock-comment-face)))
   (set-buffer-multibyte t)
   (write-region (point-min) (point-max)
-                (path! (emacs-home* ".dict/lookup-dict.log")))
-  (let ((dict (remove-if* (lambda (x) (eq 'url (car x)))
-                  (cadr (assoc** 'dict args #'eq))))
-        (style (cadr (assoc** 'style args #'eq)))
-        (ss nil))
-    (dolist* (x style (nreverse ss))
-      (goto-char (point-min))
-      (let* ((re (cdr (assoc** x dict #'string=)))
-             (b (re-search-forward (car re) nil t))
-             (e (and b (re-search-forward (cadr re) nil t)))
-             (html (and b e (< b e)
-                        (buffer-substring-no-properties
-                         b (- e (length (cadr re))))))
-             (fns (cddr re))
-             (txt html))
-        (when (and (not (null html)) (> (length html) 0))
-          (dolist* (fn fns txt)
-            (setq txt (if (functionp fn)
-                          (funcall fn txt)
-                        txt)))
-          (push (cons x txt) ss))))
-    (message (propertize (if (and ss (> (length ss) 0))
-                             (string-trim> (mapconcat #'identity
-                                                      (mapcar #'cdr ss)
-                                                      "[ \n]"))
-                           "No result")
-                         'face
-                         'font-lock-comment-face))))
+                (path! (emacs-home* ".dict/dict.log")))
+  (let* ((dict (remove-if* (lambda (x) (eq 'url (car x)))
+                   (cadr (assoc** 'dict args #'eq))))
+         (style (cadr (assoc** 'style args #'eq)))
+         (ss (mapcar
+              (lambda (x)
+                (goto-char (point-min))
+                (let* ((re (cdr (assoc** x dict #'string=)))
+                       (b (re-search-forward (car re) nil t))
+                       (e (and b (re-search-forward (cadr re) nil t)))
+                       (html (and b e (< b e)
+                                  (buffer-substring-no-properties
+                                   b (- e (length (cadr re))))))
+                       (fns (cddr re))
+                       (txt html))
+                  (when (and (not (null html)) (> (length html) 0))
+                    (dolist* (fn fns txt)
+                      (setq txt (if (functionp fn)
+                                    (funcall fn txt)
+                                  txt)))
+                    (cons x txt))))
+              style)))
+    (save-sexp-to-file ss (path! (emacs-home* ".dict/lookup.log")))
+    (message (propertize
+              (if (and ss (> (length ss) 0))
+                  (string-trim> (mapconcat #'identity
+                                           (mapcar #'cdr ss)
+                                           " "))
+                "No result")
+              'face
+              'font-lock-comment-face))))
 
 
 (defun lookup-dict (what &optional dict)
