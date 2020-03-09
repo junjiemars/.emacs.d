@@ -28,6 +28,12 @@
   
   "Dictionaries using by `lookup-dict'.")
 
+(defvar *dict-name-history* nil
+  "Dictionary choosing history list.")
+
+(defvar *dict-style-history* nil
+  "Dictionary style choosing history list.")
+
 
 (defun on-lookup-dict (status &rest args)
   "Callback when `lookup-dict'."
@@ -80,13 +86,18 @@
            (let* ((ns (mapcar #'car *dicts*))
                   (d (read-string (format "Choose (%s): "
                                           (mapconcat #'identity ns "|"))
-                                  (car ns)))
+                                  (or (car *dict-name-history*)
+                                      (car ns))
+                                  '*dict-history*))
                   (dd (cdr (assoc** d *dicts* #'string=)))
                   (s (mapcar #'car dd))
                   (sr (remove-if* (lambda (x) (string= "url" x)) s))
                   (ss (read-string
                        (format "Choose (all|%s): "
-                               (mapconcat #'identity sr ",")))))
+                               (mapconcat #'identity sr ","))
+                       (or (car *dict-style-history*)
+                           "all")
+                       '*dict-style-history*)))
              `((dict . ,(list dd))
                (style . ,(if (and (stringp ss)
                                   (string= "all" ss))
