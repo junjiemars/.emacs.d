@@ -101,7 +101,7 @@
              `((dict . ,(list dd))
                (style . ,(if (and (stringp ss)
                                   (string= "all" ss))
-                             sr
+                             `(, sr)
                            `(,(remove-if* (lambda (x)
                                             (string= "all" x))
                                   (split-string* ss "," t "[ \n]*"))))))))))
