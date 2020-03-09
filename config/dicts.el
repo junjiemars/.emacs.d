@@ -22,7 +22,9 @@
     ("cambridge"
      ("url" . "https://dictionary.cambridge.org/dictionary/english-chinese-simplified/")
      ("pron-uk" . ("<span class=\"ipa dipa lpr-2 lpl-1\">"
-                   "</span>"))
+                   "<"
+                   .
+                   nil))
      ("meta" . ("<meta itemprop=\"headline\" content=\".+translate: "
                 "Learn"
                 .
