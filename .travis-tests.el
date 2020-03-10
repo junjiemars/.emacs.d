@@ -491,6 +491,14 @@
                               (not (eq def #'xxx)))
                             "undefined"))))
 
+(ert-deftest %basic:region-active-if ()
+  (with-temp-buffer
+    (insert "a bb cc")
+    (should (= 12 (region-active-if (+ 1 2) (* 3 4))))
+    (set-mark (point-min))
+    (set-mark (point-max))
+    (should (= 3 (region-active-if (+ 1 2) (* 3 4))))))
+
  ;; end of basic
 
 
