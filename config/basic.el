@@ -723,17 +723,13 @@ otherwise default to keep the directories of current `emacs-version'."
 
 (defmacro symbol@ ()
   "Return the (cons 'region|nil symbol) at point."
-  `(let ((ss (region-active-if
-                 (prog1
-                     (cons 'region
-                           (buffer-substring (region-beginning)
-                                             (region-end)))
-                   (setq mark-active nil))
-               (cons nil ;; non-region
-                     (thing-at-point 'symbol)))))
-     (when (stringp (cdr ss))
-       (cons (car ss)
-             (substring-no-properties (cdr ss))))))
+  `(region-active-if
+       (let ((ss (buffer-substring-no-properties (region-beginning)
+                                                 (region-end))))
+         (setq mark-active nil)
+         (cons 'region ss))
+     (let ((ss (thing-at-point 'symbol)))
+       (and ss (cons nil (substring-no-properties ss))))))
 
 
 
