@@ -559,19 +559,9 @@
              (chinese->arabic (split-string*
                                "玖仟壹佰贰拾叁万肆仟伍佰陆拾零柒" "" t)
                               0)))
-  (should (= 3456678991234567
+  (should (= 678991234567
              (chinese->arabic (split-string*
-                               "叁仟肆佰伍拾陆兆陆仟柒佰捌拾玖亿玖仟壹佰贰拾叁万肆仟伍佰陆拾柒"
-                               "" t)
-                              0)))
-  (should (= 3456678991234567
-             (chinese->arabic (split-string*
-                               "叁仟肆佰伍拾陸兆陆仟柒佰捌拾玖億玖仟壹佰贰拾叁萬肆仟伍佰陸拾柒"
-                               "" t)
-                              0)))
-  (should (= 3456000091230567
-             (chinese->arabic (split-string*
-                               "叁仟肆佰伍拾陆兆玖仟壹佰贰拾叁万伍佰陆拾柒"
+                               "陆仟柒佰捌拾玖亿玖仟壹佰贰拾叁万肆仟伍佰陆拾柒"
                                "" t)
                               0))))
 
