@@ -159,11 +159,15 @@
                dict))
          (url (cdr (assoc** "url" (cadr (assoc** 'dict d1 #'eq))
                             #'string=))))
-    (url-retrieve (concat url (url-hexify-string what))
-                  #'on-lookup-dict
-                  d1
-                  t
-                  t)))
+    (if-version% <= 24
+                 (url-retrieve (concat url (url-hexify-string what))
+                               #'on-lookup-dict
+                               d1
+                               t
+                               t)
+      (url-retrieve (concat url (url-hexify-string what))
+                    #'on-lookup-dict
+                    d1))))
 
 
 (define-key (current-global-map) (kbd "C-c d") #'lookup-dict)
