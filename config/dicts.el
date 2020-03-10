@@ -124,7 +124,7 @@
 
 
 (defun lookup-dict (what &optional dict)
-  "Show the explanation of WORD from DICT in the echo area."
+  "Lookup WORD in DICT then show the result in the echo area."
   (interactive
    (list (read-string "lookup dict for: " (cdr (symbol@)))
          (when current-prefix-arg
