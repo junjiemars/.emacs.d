@@ -7,11 +7,6 @@
 ;;;;
 
 
-(eval-when-compile
-  (require 'url)
-  (require 'url-util))
-
-
 (defvar *dicts*
   '(("bing"
      ("url" . "https://cn.bing.com/dict/search?q=")
@@ -89,8 +84,9 @@
   (when (or (null status) (assoc** :error status #'eq))
     (message (propertize "Network error" 'face 'font-lock-comment-face)))
   (set-buffer-multibyte t)
-  (write-region (point-min) (point-max)
-                (path! (emacs-home* ".dict/dict.log")))
+  (comment
+   (write-region (point-min) (point-max)
+                 (path! (emacs-home* ".dict/dict.log"))))
   (let* ((dict (cadr (assoc** 'dict args #'eq)))
          (style (cadr (assoc** 'style args #'eq)))
          (ss (mapcar
@@ -111,7 +107,8 @@
                                   txt)))
                     (cons x txt))))
               style)))
-    (save-sexp-to-file ss (path! (emacs-home* ".dict/lookup.log")))
+    (comment
+     (save-sexp-to-file ss (path! (emacs-home* ".dict/lookup.log"))))
     (message (propertize
               (if (and ss (> (length ss) 0))
                   (string-trim> (mapconcat #'identity
@@ -157,15 +154,11 @@
                dict))
          (url (cdr (assoc** "url" (cadr (assoc** 'dict d1 #'eq))
                             #'string=))))
-    (if-version% <= 24
-                 (url-retrieve (concat url (url-hexify-string what))
-                               #'on-lookup-dict
-                               d1
-                               t
-                               t)
-      (url-retrieve (concat url (url-hexify-string what))
-                    #'on-lookup-dict
-                    d1))))
+    (url-retrieve* (concat url (url-hexify-string what))
+                   #'on-lookup-dict
+                   d1
+                   t
+                   t)))
 
 
 (define-key (current-global-map) (kbd "C-c d") #'lookup-dict)

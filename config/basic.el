@@ -615,7 +615,17 @@ On ancient Emacs, `file-remote-p' will return a vector."
                             (concat "@" (caddr rid)))))))
 
 
- ;; end of File functions
+(defmacro url-retrieve* (url callback &optional cbargs silent inhibit-cookies)
+  "Retrieve URL asynchronously and call CALLBACK with CBARGS when finished."
+  (when-fn% 'url-retrieve 'url
+    (if-version%
+        <= 24
+        `(url-retrieve ,url ,callback ,cbargs ,silent ,inhibit-cookies)
+      (ignore* silent inhibit-cookies)
+      `(url-retrieve ,url ,callback ,cbargs))))
+
+
+ ;; end of file functions
 
 
 ;; Clean Emacs' user files
