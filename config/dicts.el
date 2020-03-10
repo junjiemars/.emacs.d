@@ -84,15 +84,14 @@
 
 
 (defun on-lookup-dict (status &rest args)
-  "Callback when `lookup-dict'."
+  "Callback after `lookup-dict'."
   (declare (indent 1))
   (when (or (null status) (assoc** :error status #'eq))
     (message (propertize "Network error" 'face 'font-lock-comment-face)))
   (set-buffer-multibyte t)
   (write-region (point-min) (point-max)
                 (path! (emacs-home* ".dict/dict.log")))
-  (let* ((dict (remove-if* (lambda (x) (eq 'url (car x)))
-                   (cadr (assoc** 'dict args #'eq))))
+  (let* ((dict (cadr (assoc** 'dict args #'eq)))
          (style (cadr (assoc** 'style args #'eq)))
          (ss (mapcar
               (lambda (x)
@@ -135,8 +134,8 @@
                                       (car ns))
                                   '*dict-name-history*))
                   (dd (cdr (assoc** d *dicts* #'string=)))
-                  (s (mapcar #'car dd))
-                  (sr (remove-if* (lambda (x) (string= "url" x)) s))
+                  (sr (remove-if* (lambda (x) (string= "url" x))
+                          (mapcar #'car dd)))
                   (ss (read-string
                        (format "Choose (all|%s): "
                                (mapconcat #'identity sr ","))
@@ -145,11 +144,10 @@
                        '*dict-style-history*)))
              `((dict . ,(list dd))
                (style . ,(if (and (stringp ss)
-                                  (string= "all" ss))
+                                  (or (string= "all" ss)
+                                      (match-string* "\\(all\\)" ss 1)))
                              `(, sr)
-                           `(,(remove-if* (lambda (x)
-                                            (string= "all" x))
-                                  (split-string* ss "," t "[ \n]*"))))))))))
+                           `(,(split-string* ss "," t "[ \n]*")))))))))
   (let* ((d1 (if (null dict)
                  (list (cons 'dict (list (cdar *dicts*)))
                        (cons 'style (list (remove-if* (lambda (x)
