@@ -131,8 +131,7 @@
                                       (car ns))
                                   '*dict-name-history*))
                   (dd (cdr (assoc** d *dicts* #'string=)))
-                  (sr (remove-if* (lambda (x) (string= "url" x))
-                          (mapcar #'car dd)))
+                  (sr (remove** "url" (mapcar #'car dd) :test #'string=))
                   (ss (read-string
                        (format "Choose (all|%s): "
                                (mapconcat #'identity sr ","))
@@ -147,10 +146,10 @@
                            `(,(split-string* ss "," t "[ \n]*")))))))))
   (let* ((d1 (if (null dict)
                  (list (cons 'dict (list (cdar *dicts*)))
-                       (cons 'style (list (remove-if* (lambda (x)
-                                                        (string= "url" x))
-                                              (mapcar #'car
-                                                      (cdar *dicts*))))))
+                       (cons 'style (list (remove** "url"
+                                                    (mapcar #'car
+                                                            (cdar *dicts*))
+                                                    :test #'string=))))
                dict))
          (url (cdr (assoc** "url" (cadr (assoc** 'dict d1 #'eq))
                             #'string=))))

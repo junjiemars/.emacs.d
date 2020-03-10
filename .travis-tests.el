@@ -218,7 +218,13 @@
   (should (eq nil (remove** nil nil)))
   (should (eq nil (remove** 'a nil)))
   (should (equal '(a) (remove** 'b '(a b))))
-  (should (equal '("a") (remove** "b" '("a" "b") :test #'string=))))
+  (should (equal '("a")
+                 (remove** "b" '("a" "b") :test #'string=)))
+  (should (equal '((1 "a") (2 "b"))
+                 (remove** "b" '((1 "a") (2 "b") (2 "b") (2 "b"))
+                           :test #'string=
+                           :key #'cadr
+                           :count 2))))
 
 (ert-deftest %basic:remove-if* ()
   (should (eq nil (remove-if* nil nil)))

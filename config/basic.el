@@ -174,7 +174,8 @@ to avoid corrupting the original SEQ.
 (defmacro remove-if* (predicate seq &rest keys)
   "Remove all items satisfying PREDICATE in SEQ.
 This is a non-destructive function; it makes a copy of SEQ if necessary
-to avoid corrupting the original SEQ."
+to avoid corrupting the original SEQ.
+\nKeywords supported:  :key :count :start :end :from-end"
   (declare (indent 2))
   (if-fn% 'cl-remove-if 'cl-lib
           `(cl-remove-if ,predicate ,seq ,@keys)
