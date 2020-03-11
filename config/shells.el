@@ -95,7 +95,7 @@ See also: `parse-colon-path'."
 
 (defmacro copy-env-vars! (env vars)
   `(mapc (lambda (v)
-           (when v (let ((v1 (alist-get* v ,env nil nil #'string=)))
+           (when v (let ((v1 (cdr (assoc** v ,env #'string=))))
                      (when v1 (setenv v v1)))))
          ,vars))
 
