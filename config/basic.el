@@ -250,7 +250,7 @@ See `string-match' and `match-string'."
 
 (defmacro split-string* (string &optional separators omit-nulls trim)
   "Split STRING into substrings bounded by matches for SEPARATORS, 
-like `split-string' Emacs 24.4+"
+like `split-string' in Emacs 24.4+"
   (if-version%
       <= 24.4
       `(split-string ,string ,separators ,omit-nulls ,trim)
