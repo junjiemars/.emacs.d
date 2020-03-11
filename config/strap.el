@@ -464,6 +464,17 @@ Take effect after restart Emacs.
  ;; end of self-spec macro
 
 
+;; Load cl-lib/cl at compile-time and runtime
+(eval-when-compile
+  (if-version% <= 24.3
+               (require 'cl-lib)
+    (require 'cl)))
+
+(if-version% <= 24.3
+             (require 'cl-lib)
+  (require 'cl))
+
+
 ;; Load ui, shell, basic env:
 
 (compile! (compile-unit% (emacs-home* "config/boot.el"))

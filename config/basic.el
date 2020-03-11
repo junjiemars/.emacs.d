@@ -113,12 +113,9 @@ Equality is defined by TESTFN if non-nil or by `equal' if nil."
       `(assoc ,key ,list ,testfn)
     (if-fn% 'cl-assoc 'cl-lib
             ;; `cl-assoc' autoloaded, but may not autoload
-            `(progn
-               (require 'cl-lib)
-               (cl-assoc ,key ,list :test (or ,testfn #'equal)))
+            `(cl-assoc ,key ,list :test (or ,testfn #'equal))
       (when-fn% 'assoc* 'cl
         `(with-no-warnings
-           (require 'cl)
            (assoc* ,key ,list :test (or ,testfn #'equal)))))))
 
 
@@ -151,7 +148,6 @@ SEQ, this is like `mapcar'.  With several, it is like the Common Lisp
     `(when-fn% 'mapcar* 'cl
        (with-no-warnings
          (progn
-           (require 'cl)
            (mapcar* ,fn ,seq ,@seqs))))))
 
 
@@ -168,7 +164,6 @@ to avoid corrupting the original SEQ.
     (when-fn% 'remove* 'cl
       `(with-no-warnings
          (progn
-           (require 'cl)
            (remove* ,item ,seq ,@keys))))))
 
 (defmacro remove-if* (predicate seq &rest keys)
@@ -181,9 +176,7 @@ to avoid corrupting the original SEQ.
           `(cl-remove-if ,predicate ,seq ,@keys)
     (when-fn% 'remove-if 'cl
       `(with-no-warnings
-         (progn
-           (require 'cl)
-           (remove-if ,predicate ,seq ,@keys))))))
+         (remove-if ,predicate ,seq ,@keys)))))
 
 
 ;; Unify `cl-member' and `member*'
@@ -219,7 +212,6 @@ Return the sublist of LIST whose car is ITEM.
           `(cl-some ,pred ,@seq)
     (when-fn% 'some 'cl
       `(with-no-warnings
-         (require 'cl)
          (some ,pred ,@seq)))))
 
 
