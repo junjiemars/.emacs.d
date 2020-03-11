@@ -29,7 +29,7 @@
   ;; C-x d /docker:user@container:/path/
   (when% (executable-find% "docker")
     (when-var% tramp-methods 'tramp
-      (unless (alist-get* "docker" tramp-methods nil nil #'string=)
+      (unless (cdr (assoc** "docker" tramp-methods #'string=))
         (add-to-list 'tramp-methods
                      '("docker"
                        (tramp-login-program "docker")
