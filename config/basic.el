@@ -103,6 +103,10 @@
 
 ;; Compatible Macro
 
+(when-version% > 25
+  (when-version% <= 24
+    (autoload #'cl-assoc "cl-seq" "May not autoload")))
+
 (defmacro assoc** (key list &optional testfn)
   "Return non-nil if KEY is equal to the `car' of an element of LIST.
 
