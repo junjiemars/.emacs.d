@@ -472,7 +472,8 @@ Take effect after restart Emacs.
 
 (if-version% <= 24.3
              (require 'cl-lib)
-  (require 'cl))
+  (with-no-warnings
+    (require 'cl)))
 
 
 ;; Load ui, shell, basic env:

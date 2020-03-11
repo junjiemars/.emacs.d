@@ -115,8 +115,7 @@ Equality is defined by TESTFN if non-nil or by `equal' if nil."
             ;; `cl-assoc' autoloaded, but may not autoload
             `(cl-assoc ,key ,list :test (or ,testfn #'equal))
       (when-fn% 'assoc* 'cl
-        `(with-no-warnings
-           (assoc* ,key ,list :test (or ,testfn #'equal)))))))
+        `(assoc* ,key ,list :test (or ,testfn #'equal))))))
 
 
 (defmacro alist-get* (key alist &optional default remove testfn)
@@ -146,9 +145,7 @@ SEQ, this is like `mapcar'.  With several, it is like the Common Lisp
           ;; `cl-mapcar' autoloaded
           `(cl-mapcar ,fn ,seq ,@seqs)
     `(when-fn% 'mapcar* 'cl
-       (with-no-warnings
-         (progn
-           (mapcar* ,fn ,seq ,@seqs))))))
+       (mapcar* ,fn ,seq ,@seqs))))
 
 
 ;; Unify `cl-remove' and `remove*'
@@ -162,9 +159,7 @@ to avoid corrupting the original SEQ.
           ;; `cl-remove' autoloaded
           `(cl-remove ,item ,seq ,@keys)
     (when-fn% 'remove* 'cl
-      `(with-no-warnings
-         (progn
-           (remove* ,item ,seq ,@keys))))))
+      `(remove* ,item ,seq ,@keys))))
 
 (defmacro remove-if* (predicate seq &rest keys)
   "Remove all items satisfying PREDICATE in SEQ.
@@ -175,8 +170,7 @@ to avoid corrupting the original SEQ.
   (if-fn% 'cl-remove-if 'cl-lib
           `(cl-remove-if ,predicate ,seq ,@keys)
     (when-fn% 'remove-if 'cl
-      `(with-no-warnings
-         (remove-if ,predicate ,seq ,@keys)))))
+      `(remove-if ,predicate ,seq ,@keys))))
 
 
 ;; Unify `cl-member' and `member*'
