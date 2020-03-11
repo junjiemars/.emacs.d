@@ -123,21 +123,6 @@ Equality is defined by TESTFN if non-nil or by `equal' if nil."
     (autoload #'cl-assoc "cl-seq" "cl-assoc may not autoload")))
 
 
-(defmacro alist-get* (key alist &optional default remove testfn)
-  "Return the value associated with KEY in ALIST.
-
-If KEY is not found in ALIST, return DEFAULT.
-Use TESTFN to lookup in the alist if non-nil, otherwise use `equal'."
-  (if-version%
-      <= 26.1
-      `(alist-get ,key ,alist ,default ,remove ,testfn)
-    (ignore* remove) ;;silence byte-compiler.
-    `(let ((x (assoc** ,key ,alist ,testfn)))
-       (if (consp x)
-           (cdr x)
-         ,default))))
-
-
 ;; Unify `cl-mapcar' and `mapcar*'
 (defmacro mapcar** (fn seq &rest seqs)
   "Apply FUNCTION to each element of SEQ, and make a list of the results.

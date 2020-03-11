@@ -203,12 +203,6 @@
   (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
   (should (equal '("a" a) (assoc** "a" '(("b" b) ("a" a)) #'string=))))
 
-(ert-deftest %basic:alist-get* ()
-  (should (eq nil (alist-get* nil nil)))
-  (should (eq nil (alist-get* 'a nil)))
-  (should (equal '(aa) (alist-get* 'a '((a aa)))))
-  (should (equal '(aa) (alist-get* "a" '(("a" aa)) nil nil #'string=))))
-
 (ert-deftest %basic:mapcar** ()
   (should (equal '(a b c) (mapcar** #'identity '(a b c))))
   (should (equal '((a 1) (b 2) (c 3))

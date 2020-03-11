@@ -341,7 +341,7 @@ Introduce rules of naming /files/ and /functions/.
 - *_* prefix: functions or macros only existing in compile-time, such
   as =_mark-thing@=
 - /*/ or /**/ suffix: extensions of Emacs' builtin function or macro,
-  such as =(alist-get*)= and =assoc**=
+  such as =(every*)= and =assoc**=
 - *%* suffix: macro be expanded at compile time, such as =(v-home%)=
 - *!* suffix: function or macro may change environment state, such as
   =(v-home!)=
