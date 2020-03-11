@@ -461,12 +461,13 @@ See also: `multi-occur-in-matching-buffers'."
    (list (read-from-minibuffer
           "List lines in buffers whose major-mode match regexp: "
           (symbol-name major-mode))))
-  (multi-occur (remove-if* (lambda (buffer)
-                             (with-current-buffer buffer
-                               (unless (string= mode (symbol-name major-mode))
-                                 buffer)))
-                   (buffer-list))
-               (car (occur-read-primary-args))))
+  (multi-occur
+   (remove** nil (buffer-list)
+             :if (lambda (buffer)
+                   (with-current-buffer buffer
+                     (unless (string= mode (symbol-name major-mode))
+                       buffer))))
+   (car (occur-read-primary-args))))
 
 
 

@@ -164,18 +164,6 @@ to avoid corrupting the original SEQ.
       `(with-no-warnings
          (remove* ,item ,seq ,@keys)))))
 
-(defmacro remove-if* (predicate seq &rest keys)
-  "Remove all items satisfying PREDICATE in SEQ.
-This is a non-destructive function; it makes a copy of SEQ if necessary
-to avoid corrupting the original SEQ.
-\nKeywords supported:  :key :count :start :end :from-end"
-  (declare (indent 2))
-  (if-fn% 'cl-remove-if 'cl-lib
-          `(cl-remove-if ,predicate ,seq ,@keys)
-    (when-fn% 'remove-if 'cl
-      `(with-no-warnings
-         (remove-if ,predicate ,seq ,@keys)))))
-
 
 ;; Unify `cl-member' and `member*'
 (defmacro member** (item list &rest keys)
@@ -461,11 +449,10 @@ filted files.
 
 DN specify dir-function (lambda (aboslute-name)...), process
 filted directories."
-  (let ((files (remove-if*
-                   (lambda (x)
-                     (or (string= "./" x)
-                         (string= "../" x)))
-                   (file-name-all-completions "" dir))))
+  (let ((files (remove** nil (file-name-all-completions "" dir)
+                         :if (lambda (x)
+                               (or (string= "./" x)
+                                   (string= "../" x))))))
     (while files
       (let ((f (car files)))
         (let ((a (expand-file-name f dir)))
@@ -503,14 +490,14 @@ PREFER (lambda (dir files)...)."
                 (directory-name-p d)
                 (not (string-match stop d)))
       (and prefer (funcall prefer d
-                           (remove-if*
-                               (lambda (x)
-                                 (or (string= "./" x)
-                                     (string= "../" x)
-                                     (let ((dx (concat d x)))
-                                       (and (directory-name-p dx)
-                                            (file-symlink-p* dx)))))
-                               (file-name-all-completions "" d))))
+                           (remove**
+                            nil (file-name-all-completions "" d)
+                            :if (lambda (x)
+                                  (or (string= "./" x)
+                                      (string= "../" x)
+                                      (let ((dx (concat d x)))
+                                        (and (directory-name-p dx)
+                                             (file-symlink-p* dx))))))))
       (setq d (path- d)))))
 
 

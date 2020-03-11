@@ -224,20 +224,11 @@
                  (remove** "b" '((1 "a") (2 "b") (2 "b") (2 "b"))
                            :test #'string=
                            :key #'cadr
-                           :count 2))))
-
-(ert-deftest %basic:remove-if* ()
-  (should (eq nil (remove-if* nil nil)))
-  (should (equal '(a b c) (remove-if* nil '(a b c))))
-  (should (equal '(b c) (remove-if* (lambda (x)
-                                      (eq 'a x))
-                                    '(a b c))))
-  (should (equal '(c) (remove-if* (lambda (x)
-                                    (or (eq 'a x) (eq 'b x)))
-                                  '(a b c))))
-  (should (equal '("b" "c") (remove-if* (lambda (x)
-                                          (string= "a" x))
-                                        '("a" "b" "c")))))
+                           :count 2)))
+  (should (equal '((1 "a"))
+                 (remove** nil '((1 "a") (2 "b"))
+                           :if (lambda (x)
+                                 (string= "b" (cadr x)))))))
 
 (ert-deftest %basic:member** ()
   (should (eq nil (member** nil nil)))
