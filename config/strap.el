@@ -464,16 +464,15 @@ Take effect after restart Emacs.
  ;; end of self-spec macro
 
 
-;; Load cl-lib/cl at compile-time and runtime
+;; Load cl-lib/cl at compile-time
 (eval-when-compile
   (if-version% <= 24
                (require 'cl-lib)
     (require 'cl)))
 
-(if-version% <= 24
-             (require 'cl-lib)
-  (with-no-warnings
-    (require 'cl)))
+;; Load cl at runtime
+(when-version% > 24 (with-no-warnings
+                      (require 'cl)))
 
 
 ;; Load ui, shell, basic env:
