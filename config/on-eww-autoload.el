@@ -73,7 +73,7 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
                           '*search-engine-history*)))))
   (let* ((e1 (if (or (null engine)
                      (string= "" engine))
-                 "bing"
+                 (caar *search-engines*)
                engine))
          (e2 (cdr (assoc** e1 *search-engines* #'string=)))
          (url (concat (car e2) (cdr e2) what))
