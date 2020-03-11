@@ -54,18 +54,23 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
      . "search?q=")
     ("wiki" "https://en.wikipedia.org/"
      . "w/index.php?search="))
-  "Search engines using by `find-web@'.")
+  "Search engines using by `find-web'.")
 
-(defun find-web@ (what &optional engine)
+(defvar *search-engine-history* nil
+  "Searching history using by `find-web'.")
+
+
+(defun find-web (what &optional engine)
   "Find web via search ENGINE."
   (interactive
    (list (read-string "Find web for: " (cdr (symbol@)))
          (when current-prefix-arg
-           (read-string (format "Choose (%s): "
-                                (mapconcat
-                                 #'identity
-                                 (mapcar #'car *search-engines*)
-                                 "|"))))))
+           (let ((se (mapcar #'car *search-engines*)))
+             (read-string (format "Choose (%s): "
+                                  (mapconcat #'identity se "|"))
+                          (or (car *search-engine-history*)
+                              (car se))
+                          '*search-engine-history*)))))
   (let* ((e1 (if (or (null engine)
                      (string= "" engine))
                  "bing"
@@ -74,14 +79,13 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
          (url (concat (car e2) (cdr e2) what))
          (encoded (progn (require 'browse-url)
                          (browse-url-url-encode-chars url "[ '()]"))))
-    (make-thread*
-     (funcall browse-url-browser-function encoded)
-     t)))
+    (make-thread* (funcall browse-url-browser-function encoded)
+                  t)))
 
 
-(define-key (current-global-map) (kbd "C-c f w") #'find-web@)
+(define-key (current-global-map) (kbd "C-c f w") #'find-web)
 
- ;; end of `find-web@'
+ ;; end of `find-web'
 
 
 
