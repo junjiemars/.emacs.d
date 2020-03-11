@@ -31,11 +31,10 @@ Outside a virtualenv, sys.real_prefix should not exist."
       (if-var% python-shell-virtualenv-path 'python
                (setq python-shell-virtualenv-path d)
         (let ((p (concat d path-separator
-                         (alist-get* "PATH"
-                                     (shell-env-> :env-vars)
-                                     (getenv "PATH")
-                                     nil
-                                     #'string=))))
+                         (or (cdr (assoc** "PATH"
+                                           (shell-env-> :env-vars)
+                                           #'string=))
+                             (getenv "PATH")))))
           (if-var% python-shell-process-environment 'python
                    (setq python-shell-process-environment
                          (list

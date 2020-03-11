@@ -44,7 +44,7 @@
   (let ((prefer (or prefer '(:git :svn :makefile :pwd))))
     (catch 'out
       (dolist* (x prefer)
-        (let ((found (alist-get* x seq nil nil #'eq)))
+        (let ((found (cdr (assoc** x seq #'eq))))
           (when found
             (throw 'out (file-name-directory (car found)))))))))
 

@@ -221,7 +221,7 @@ in `gud-cdb-directories'.
 
 (defun cdb-annotate-completion (s)
   "Return annotated the completion S argument or nil."
-  (let ((a (alist-get* s *cdb-symbol-alist* nil nil #'string=)))
+  (let ((a (cdr (assoc** s *cdb-symbol-alist* #'string=))))
     (when a (concat "    ;; " a))))
 
 (defun cdb-completion-at-point ()
