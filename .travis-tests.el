@@ -43,8 +43,8 @@
 (ert-deftest %init:path! ()
   (let ((p (concat temporary-file-directory "x/")))
     (should (and (path! p) (file-exists-p p)))
-    (should (and (eq nil (delete-directory p))
-                 (eq nil (file-exists-p p))))))
+    (should (and (null (delete-directory p))
+                 (null (file-exists-p p))))))
 
 (ert-deftest %init:v-path* ()
   (should (string-match "[gt]_[.0-9]+" (v-path* "a/x.el")))
@@ -61,7 +61,7 @@
   (should (string-match "[gt]_[.0-9]+.*x\\.el\\'" (v-home% "x.el"))))
 
 (ert-deftest %init:progn% ()
-  (should (eq nil (progn%)))
+  (should-not (progn%))
   (should (equal '(+ 1 2) (macroexpand '(progn% (+ 1 2)))))
   (should (equal '(progn (+ 1 2) (* 3 4)) (macroexpand '(progn% (+ 1 2) (* 3 4))))))
 
@@ -73,15 +73,15 @@
                  (macroexpand '(if% nil (+ 1 2) (* 3 4) (* 5 6))))))
 
 (ert-deftest %init:when% ()
-  (should (eq nil (when% t)))
-  (should (eq nil (when% nil)))
+  (should-not (when% t))
+  (should-not (when% nil))
   (should (= 3 (when% t (+ 1 2))))
   (should (equal '(progn (+ 1 2) (* 3 4))
                  (macroexpand '(when% t (+ 1 2) (* 3 4))))))
 
 (ert-deftest %init:unless% ()
-  (should (eq nil (unless% t)))
-  (should (eq nil (unless% nil)))
+  (should-not (unless% t))
+  (should-not (unless% nil))
   (should (= 3 (unless% nil (+ 1 2))))
   (should (equal '(progn (+ 1 2) (* 3 4))
                  (macroexpand '(unless% nil (+ 1 2) (* 3 4))))))
@@ -100,7 +100,7 @@
 
 (ert-deftest %init:when-version% ()
   (should (when-version% < 0 t))
-  (should (eq nil (when-version% < 1000 (+ 1 2))))
+  (should-not (when-version% < 1000 (+ 1 2)))
   (should (equal '(progn (+ 1 2) (* 3 4))
                  (macroexpand '(when-version%
                                    < 0
@@ -156,8 +156,8 @@
 (ert-deftest %strap:setq% ()
   "uncompleted..."
   (when% t
-    (should (eq nil (setq% zzz 'xx)))
-    (should (eq nil (setq% zzz nil)))))
+    (should-not (setq% zzz 'xx))
+    (should-not (setq% zzz nil))))
 
 (ert-deftest %strap:if/when/unless-fn% ()
   (should (and (if-fn% 'should 'ert t)
@@ -175,8 +175,8 @@
 
 (ert-deftest %strap:ignore* ()
   (if-lexical%
-      (should (eq nil (macroexpand '(ignore* a b))))
-    (should (eq nil (macroexpand '(ignore* a b))))))
+      (should-not (macroexpand '(ignore* a b)))
+    (should-not (macroexpand '(ignore* a b)))))
 
 (ert-deftest %strap:dolist* ()
   (should (equal '(a nil b c)
@@ -209,8 +209,8 @@
                  (mapcar** #'list '(a b c) '(1 2 3)))))
 
 (ert-deftest %basic:remove** ()
-  (should (eq nil (remove** nil nil)))
-  (should (eq nil (remove** 'a nil)))
+  (should-not (remove** nil nil))
+  (should-not (remove** 'a nil))
   (should (equal '(a) (remove** 'b '(a b))))
   (should (equal '("a")
                  (remove** "b" '("a" "b") :test #'string=)))
@@ -225,8 +225,8 @@
                                  (string= "b" (cadr x)))))))
 
 (ert-deftest %basic:member** ()
-  (should (eq nil (member** nil nil)))
-  (should (eq nil (member** 'a nil)))
+  (should-not (member** nil nil))
+  (should-not (member** 'a nil))
   (should (equal '(a) (member** 'a '(b a))))
   (should (equal '("a") (member** "a" '("b" "a") :test #'string=))))
 
@@ -254,28 +254,28 @@
                  (split-string* "a, b " "," t " "))))
 
 (ert-deftest %basic:string-trim> ()
-  (should (eq nil (string-trim> nil "X")))
+  (should-not (string-trim> nil "X"))
   (should (string= "abc" (string-trim> "abc \n  ")))
   (should (string= "abc" (string-trim> "abcXX" "XX")))
   (should (string= "abc" (string-trim> "abcXX" "X+"))))
 
 (ert-deftest %basic:string-trim< ()
-  (should (eq nil (string-trim< nil "X")))
+  (should-not (string-trim< nil "X"))
   (should (string= "abc" (string-trim< "  \n abc")))
   (should (string= "abc" (string-trim< "XXabc" "XX")))
   (should (string= "abc" (string-trim< "XXabc" "X+"))))
 
 (ert-deftest %basic:string-trim>< ()
-  (should (eq nil (string-trim>< nil "X" "Z")))
+  (should-not (string-trim>< nil "X" "Z"))
   (should (string= "abc" (string-trim>< " \n abc \n ")))
   (should (string= "abc" (string-trim>< "ZZabcXX" "X+" "Z+"))))
 
 (ert-deftest %basic:match-string* ()
-  (should (eq nil (match-string* nil nil 0)))
-  (should (eq nil (match-string* nil 123 0)))
+  (should-not (match-string* nil nil 0))
+  (should-not (match-string* nil 123 0))
   (should (string= "XXabcXX"
                    (match-string* "XX\\(abc\\)XX" "XXabcXX" 0)))
-  (should (null (match-string* "XX\\(abc\\)XX" "XXabcXX" 2)))
+  (should-not (match-string* "XX\\(abc\\)XX" "XXabcXX" 2))
   (should (string= "abc"
                    (match-string* "XX\\(abc\\)XX" "XXabcXX" 1))))
 
@@ -283,7 +283,7 @@
   (should (null (buffer-file-name* (get-buffer "*scratch*")))))
 
 (ert-deftest %basic:file-in-dirs-p ()
-  (should (null (file-in-dirs-p (emacs-home* "init.el") nil)))
+  (should-not (file-in-dirs-p (emacs-home* "init.el") nil))
   (should (file-in-dirs-p (emacs-home* "init.el")
                           (list (emacs-home*))))
   (should (file-in-dirs-p (emacs-home* "init.elx")
@@ -345,26 +345,26 @@
                         (remote-norm->user@host "/sshx:pi:")))))
 
 (ert-deftest %basic:take ()
-  (should (eq nil (take 3 nil)))
+  (should-not (take 3 nil))
   (should (equal '(1 2 3) (take 3 (range 1 10 1))))
   (should (= 3 (length (take 3 (range 1 10 1)))))
   (should (= 10 (length (take 100 (range 1 10 1))))))
 
 (ert-deftest %basic:drop-while ()
-  (should (eq nil (drop-while nil nil)))
-  (should (eq nil (drop-while (lambda (x) (= x 1)) nil)))
-  (should (eq nil (drop-while (lambda (x) (< x 1))
-                              (range 1 10 1))))
+  (should-not (drop-while nil nil))
+  (should-not (drop-while (lambda (x) (= x 1)) nil))
+  (should-not (drop-while (lambda (x) (< x 1))
+                          (range 1 10 1)))
   (should (equal '(2 3) (drop-while (lambda (x) (= x 1))
                                     (range 1 3 1))))
   (should (= 7 (length (drop-while (lambda (x) (>= x 3))
                                    (range 1 10 1))))))
 
 (ert-deftest %basic:take-while ()
-  (should (eq nil (take-while nil nil)))
-  (should (eq nil (take-while (lambda (x) (= x 1)) nil)))
-  (should (eq nil (take-while (lambda (x) (>= x 1))
-                              (range 1 10 1))))
+  (should-not (take-while nil nil))
+  (should-not (take-while (lambda (x) (= x 1)) nil))
+  (should-not (take-while (lambda (x) (>= x 1))
+                          (range 1 10 1)))
   (should (equal '(1 2) (take-while (lambda (x) (> x 2))
                                     (range 1 3 1))))
   (should (= 2 (length (take-while (lambda (x) (>= x 3))
@@ -461,7 +461,7 @@
 
 (when-platform% 'windows-nt
   (ert-deftest %basic:windows-posix-path ()
-    (should (eq nil (windows-nt-posix-path nil)))
+    (should-not (windows-nt-posix-path nil))
     (should (string= "c:/a/b/c.c"
                      (windows-nt-posix-path "c:/a/b/c.c")))
     (should (string= "c:/a/b/c.c"
@@ -535,8 +535,8 @@
    (unless *repository-initialized*
      (initialize-package-repository!)
      (setq *repository-initialized* t))
-   (should (eq nil (delete-package!1 nil)))
-   (should (eq nil (install-package!1 nil)))
+   (should-not (delete-package!1 nil))
+   (should-not (install-package!1 nil))
    (let ((already (assq 'htmlize package-alist)))
      (if already
          (progn
