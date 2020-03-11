@@ -167,7 +167,7 @@ Return the sublist of LIST whose car is ITEM.
 
 
 (defmacro every* (pred &rest seq)
-  "Return t if PRED is t of every element of SEQ or SEQs."
+  "Return t if PRED is true of every element of SEQ or SEQs."
   (declare (indent 1))
   (if-fn% 'cl-every 'cl-lib
           `(cl-every ,pred ,@seq)
@@ -177,7 +177,7 @@ Return the sublist of LIST whose car is ITEM.
 
 
 (defmacro some* (pred &rest seq)
-  "Return t if PRED is t of any element of SEQ or SEQs."
+  "Return t if PRED is true of any element of SEQ or SEQs."
   (declare (indent 1))
   (if-fn% 'cl-some 'cl-lib
           `(cl-some ,pred ,@seq)

@@ -232,7 +232,8 @@
 
 (ert-deftest %basic:every* ()
   (should (every* #'stringp "" "a" "b"))
-  (should (every* #'< '(1 2 3) '(4 5 6))))
+  (should (every* #'< '(1 2 3) '(2 3 4)))
+  (should-not (every* #'< '(1 2 3) '(2 3 3))))
 
 (ert-deftest %basic:some* ()
   (should (some* #'characterp "abc"))
