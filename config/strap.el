@@ -466,11 +466,11 @@ Take effect after restart Emacs.
 
 ;; Load cl-lib/cl at compile-time and runtime
 (eval-when-compile
-  (if-version% <= 24.3
+  (if-version% <= 24
                (require 'cl-lib)
     (require 'cl)))
 
-(if-version% <= 24.3
+(if-version% <= 24
              (require 'cl-lib)
   (with-no-warnings
     (require 'cl)))

@@ -115,7 +115,8 @@ Equality is defined by TESTFN if non-nil or by `equal' if nil."
             ;; `cl-assoc' autoloaded, but may not autoload
             `(cl-assoc ,key ,list :test (or ,testfn #'equal))
       (when-fn% 'assoc* 'cl
-        `(assoc* ,key ,list :test (or ,testfn #'equal))))))
+        `(with-no-warnings
+           (assoc* ,key ,list :test (or ,testfn #'equal)))))))
 
 
 (defmacro alist-get* (key alist &optional default remove testfn)
@@ -145,7 +146,8 @@ SEQ, this is like `mapcar'.  With several, it is like the Common Lisp
           ;; `cl-mapcar' autoloaded
           `(cl-mapcar ,fn ,seq ,@seqs)
     `(when-fn% 'mapcar* 'cl
-       (mapcar* ,fn ,seq ,@seqs))))
+       (with-no-warnings
+         (mapcar* ,fn ,seq ,@seqs)))))
 
 
 ;; Unify `cl-remove' and `remove*'
@@ -159,7 +161,8 @@ to avoid corrupting the original SEQ.
           ;; `cl-remove' autoloaded
           `(cl-remove ,item ,seq ,@keys)
     (when-fn% 'remove* 'cl
-      `(remove* ,item ,seq ,@keys))))
+      `(with-no-warnings
+         (remove* ,item ,seq ,@keys)))))
 
 (defmacro remove-if* (predicate seq &rest keys)
   "Remove all items satisfying PREDICATE in SEQ.
@@ -170,7 +173,8 @@ to avoid corrupting the original SEQ.
   (if-fn% 'cl-remove-if 'cl-lib
           `(cl-remove-if ,predicate ,seq ,@keys)
     (when-fn% 'remove-if 'cl
-      `(remove-if ,predicate ,seq ,@keys))))
+      `(with-no-warnings
+         (remove-if ,predicate ,seq ,@keys)))))
 
 
 ;; Unify `cl-member' and `member*'
@@ -179,13 +183,10 @@ to avoid corrupting the original SEQ.
 Return the sublist of LIST whose car is ITEM.
 \nKeywords supported:  :test :test-not :key
 \n(fn ITEM LIST [KEYWORD VALUE]...)"
-  (if-version%
-      > 24
-      `(with-no-warnings
-         (require 'cl)
-         (member* ,item ,list ,@keys))
-    ;; `cl-member' autoloaded
-    `(cl-member ,item ,list ,@keys)))
+  (if-fn% 'cl-member 'cl-lib
+          `(cl-member ,item ,list ,@keys)
+    `(with-no-warnings
+       (member* ,item ,list ,@keys))))
 
 
 (defmacro every* (pred &rest seq)
@@ -195,7 +196,6 @@ Return the sublist of LIST whose car is ITEM.
           `(cl-every ,pred ,@seq)
     (when-fn% 'every 'cl
       `(with-no-warnings
-         (require 'cl)
          (every ,pred ,@seq)))))
 
 
