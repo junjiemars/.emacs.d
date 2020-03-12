@@ -622,7 +622,8 @@ whatever OS you using:
 - Using @@html:<kbd>@@M-x toggle-browser!@@html:</kdb>@@ to switch
   external or internal browser.
 - Find symbol, word, whatever you like via web search engine:
-  @@html:<kdb>@@c-c f w@@html:</kdb>@@
+  @@html:<kdb>@@C-c f w@@html:</kdb>@@
+- Lookup online dictionaries: @@html:<kbd>@@C-c f d@@html:</kbd>@@
 
 ** Package
     :PROPERTIES:

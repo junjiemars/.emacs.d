@@ -160,7 +160,7 @@
                    t)))
 
 
-(define-key (current-global-map) (kbd "C-c d") #'lookup-dict)
+(define-key (current-global-map) (kbd "C-c f d") #'lookup-dict)
 
 
 ;; end of dicts.el
