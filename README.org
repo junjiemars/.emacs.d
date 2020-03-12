@@ -1206,7 +1206,8 @@ It's *self-documenting* and great, keep reading it frequently.
 - region as input to Shell command: @@html:<kbd>@@M-|@@html:</kbd>@@,
   insert from shell output: @@html:<kbd>@@C-u M-|@@html:</kbd>@@
 - find file at point: @@html:<kbd>@@C-c f f@@html:</kbd>@@
-- find web at point: @@html:<kbd>@@C-c f w@@html:</kbd>@@
+- lookup web at point: @@html:<kbd>@@C-c f w@@html:</kbd>@@
+- lookup dict at point: @@html:<kbd>@@C-c f d@@html:</kbd>@@
 - filename of current buffer: @@html:<kbd>@@C-c b n@@html:</kbd>@@
 
 ** Editing

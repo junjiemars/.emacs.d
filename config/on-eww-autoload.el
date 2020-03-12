@@ -60,10 +60,10 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
   "Searching history using by `find-web'.")
 
 
-(defun find-web (what &optional engine)
-  "Find web via search ENGINE."
+(defun lookup-web (what &optional engine)
+  "Lookup web via search ENGINE."
   (interactive
-   (list (read-string "Find web for: " (cdr (symbol@)))
+   (list (read-string "lookup web for: " (cdr (symbol@)))
          (when current-prefix-arg
            (let ((se (mapcar #'car *search-engines*)))
              (read-string (format "Choose (%s): "
@@ -83,7 +83,7 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
                   t)))
 
 
-(define-key (current-global-map) (kbd "C-c f w") #'find-web)
+(define-key (current-global-map) (kbd "C-c f w") #'lookup-web)
 
  ;; end of `find-web'
 
