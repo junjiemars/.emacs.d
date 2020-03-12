@@ -49,8 +49,7 @@
     (while (search-forward-regexp "&#\\([0-9]+\\);" nil t)
       (replace-match (char-to-string
                       (string-to-number (match-string 1)))))
-    (buffer-substring-no-properties
-     (point-min) (point-max))))
+    (buffer-substring (point-min) (point-max))))
 
 (defun dict-fn-decode-html-char (ss)
   "Decode &#[a-z]+; to string."
@@ -65,8 +64,7 @@
               (while (search-forward (car s) nil t)
                 (replace-match (cdr s))))
             m)
-      (buffer-substring-no-properties
-       (point-min) (point-max)))))
+      (buffer-substring (point-min) (point-max)))))
 
 (defun dict-fn-remove-html-tag (ss)
   "Remove html tags."
@@ -80,8 +78,7 @@
               (while (search-forward-regexp x nil t)
                 (replace-match "" t t)))
             tags)
-      (buffer-substring-no-properties
-       (point-min) (point-max)))))
+      (buffer-substring (point-min) (point-max)))))
 
 
 (defun on-lookup-dict (status &rest args)
