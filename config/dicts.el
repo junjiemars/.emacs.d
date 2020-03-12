@@ -8,7 +8,7 @@
 
 
 (defvar *dicts*
-  '(("bing"
+  `(("bing"
      ("url" . "https://cn.bing.com/dict/search?q=")
      ("meta" . ("<meta name=\"description\" content=\"必应词典为您提供.+的释义，"
                 "/><"
@@ -19,7 +19,8 @@
      ("pron-uk" . ("<span class=\"ipa dipa lpr-2 lpl-1\">"
                    "<"
                    .
-                   nil))
+                   (,(lambda (x)
+                       (format "[%s]" x)))))
      ("meta" . ("<meta itemprop=\"headline\" content=\".+translate: "
                 "Learn"
                 .
