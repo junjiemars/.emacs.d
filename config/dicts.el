@@ -10,18 +10,23 @@
 (defvar *dicts*
   `(("bing"
      ("url" . "https://cn.bing.com/dict/search?q=")
-     ("meta" . ("<meta name=\"description\" content=\"必应词典为您提供.+的释义，"
+     ("meta" . (("<meta name=\"description\" content=\"必应词典为您提供.+的释义，")
                 "/><"
                 .
                 nil)))
     ("cambridge"
      ("url" . "https://dictionary.cambridge.org/dictionary/english-chinese-simplified/")
-     ("pron-uk" . ("<span class=\"ipa dipa lpr-2 lpl-1\">"
+     ("pron-us" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
                    "<"
                    .
                    (,(lambda (x)
-                       (format "[%s]" x)))))
-     ("meta" . ("<meta itemprop=\"headline\" content=\".+translate: "
+                       (format "us.[%s]" x)))))
+     ("pron-uk" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 1)
+                   "<"
+                   .
+                   (,(lambda (x)
+                       (format "uk.[%s]" x)))))
+     ("meta" . (("<meta itemprop=\"headline\" content=\".+translate: ")
                 "Learn"
                 .
                 (dict-fn-decode-char
@@ -94,7 +99,7 @@
               (lambda (x)
                 (goto-char (point-min))
                 (let* ((re (cdr (assoc** x dict #'string=)))
-                       (b (re-search-forward (car re) nil t))
+                       (b (re-search-forward (caar re) nil t (cdar re)))
                        (e (and b (re-search-forward (cadr re) nil t)))
                        (html (and b e (< b e)
                                   (buffer-substring-no-properties
