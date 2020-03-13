@@ -84,8 +84,11 @@
 (defun on-lookup-dict (status &rest args)
   "Callback after `lookup-dict'."
   (declare (indent 1))
-  (when (or (null status) (assoc** :error status #'eq))
-    (message (propertize "Network error" 'face 'font-lock-comment-face)))
+  (let ((err (plist-get :error status)))
+    (when err
+      (message (propertize "Network error" 'face 'font-lock-comment-face))
+      (kill-buffer)
+      (user-error "!%s in on-lookup-dict" err)))
   (set-buffer-multibyte t)
   (comment
    (write-region (point-min) (point-max)
