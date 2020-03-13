@@ -126,7 +126,6 @@ See also: `parse-colon-path'."
     (let ((env (var->paths (getenv (shells-spec->% :PATH)))))
       (when (or (and (null append) (not (string= dir (first env))))
                 (and append (not (string= dir (last env)))))
-        (eval-when-compile (require 'cl))
         (let ((path (remove** dir env :test #'string=)))
           (setenv (shells-spec->% :PATH)
                   (paths->var (if append

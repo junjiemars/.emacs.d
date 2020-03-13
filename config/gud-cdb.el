@@ -110,7 +110,7 @@
 ;; require
 ;;;;
 
-(eval-when-compile (require 'cl))
+;; (eval-when-compile (require 'cl))
 
 (require 'gud)
 
