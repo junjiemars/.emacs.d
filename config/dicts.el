@@ -14,7 +14,7 @@
                 "/><"
                 .
                 nil)))
-    ("cambridge"
+    ("camb/zh"
      ("url" . "https://dictionary.cambridge.org/dictionary/english-chinese-simplified/")
      ("pron-us" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
                    "<"
@@ -30,7 +30,23 @@
                 "Learn"
                 .
                 (dict-fn-decode-char
-                 dict-fn-decode-html-char)))))
+                 dict-fn-decode-html-char))))
+    ("camb/en"
+     ("url" . "https://dictionary.cambridge.org/dictionary/english/")
+     ("pron-us" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
+                   "<"
+                   .
+                   (,(lambda (x)
+                       (format "us.[%s]" x)))))
+     ("pron-uk" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 1)
+                   "<"
+                   .
+                   (,(lambda (x)
+                       (format "uk.[%s]" x)))))
+     ("meta" . (("<meta name=\"description\" content=\".*? definition: ")
+                "Learn"
+                .
+                (dict-fn-decode-html-char)))))
   
   "Dictionaries using by `lookup-dict'.")
 
@@ -86,7 +102,7 @@
   (declare (indent 1))
   (let ((err (plist-get :error status)))
     (when err
-      (message (propertize "Network error" 'face 'font-lock-comment-face))
+      (message (propertize "Network error" 'face 'font-lock-warning-face))
       (kill-buffer)
       (user-error "!%s in on-lookup-dict" err)))
   (set-buffer-multibyte t)
@@ -107,22 +123,20 @@
                        (fns (cddr re))
                        (txt html))
                   (when (and (not (null html)) (> (length html) 0))
-                    (dolist* (fn fns txt)
-                      (setq txt (if (functionp fn)
-                                    (funcall fn txt)
-                                  txt)))
-                    (cons x txt))))
+                    (cons x (dolist* (fn fns txt)
+                              (if (functionp fn)
+                                  (setq txt (funcall fn txt))
+                                txt))))))
               style)))
     (comment
      (save-sexp-to-file ss (path! (emacs-home* ".dict/lookup.log"))))
-    (message (propertize
-              (if (and ss (> (length ss) 0))
-                  (string-trim> (mapconcat #'identity
-                                           (mapcar #'cdr ss)
-                                           " "))
-                "No result")
-              'face
-              'font-lock-comment-face))))
+    (message (if (car ss)
+                 (propertize (string-trim> (mapconcat #'identity
+                                                      (mapcar #'cdr ss)
+                                                      " "))
+                             'face 'font-lock-comment-face)
+               (propertize "No match"
+                           'face 'font-lock-warning-face)))))
 
 
 (defun lookup-dict (what &optional dict)
@@ -150,13 +164,12 @@
                                       (match-string* "\\(all\\)" ss 1)))
                              `(, sr)
                            `(,(split-string* ss "," t "[ \n]*")))))))))
-  (let* ((d1 (if (null dict)
-                 (list (cons 'dict (list (cdar *dicts*)))
-                       (cons 'style (list (remove** "url"
-                                                    (mapcar #'car
-                                                            (cdar *dicts*))
-                                                    :test #'string=))))
-               dict))
+  (let* ((d1 (if dict dict
+               (list (cons 'dict (list (cdar *dicts*)))
+                     (cons 'style (list (remove** "url"
+                                                  (mapcar #'car
+                                                          (cdar *dicts*))
+                                                  :test #'string=))))))
          (url (cdr (assoc** "url" (cadr (assoc** 'dict d1 #'eq))
                             #'string=))))
     (url-retrieve* (concat url (url-hexify-string what))
