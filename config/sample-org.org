@@ -56,11 +56,11 @@ some text here monospace
 #+end_example
 
 * Table
-| col1    | col2   | col3    |
-|---------+--------+---------|
-| aaa     | bbb    | dddd    |
-| cjk中文 | 字体aa | 对齐aaa |
-|         |        |         |
+| col1   | col2 | col3   |
+|--------+------+--------|
+| aaaa   | bbbb | dddddd |
+| 中文aa | 字体 | 对齐齐 |
+|        |      |        |
 
 * Code
 
