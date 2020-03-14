@@ -30,8 +30,9 @@
                             "Hei"
                           (if-platform% 'windows-nt
                               "Microsoft Yahei"
-                            "DejaVu Sans Mono-12"))
+                            "DejaVu Sans Mono"))
                   :size 12
+                  :scaled nil
                   :allowed nil)
   
   :shell (list :env-vars `("JAVA_HOME"

@@ -75,17 +75,38 @@
     `(when-font-exist% ,name
        (when-fn% 'set-fontset-font nil
          (mapc (lambda (c)
-                 (set-fontset-font (frame-parameter nil 'font)
-                                   c (font-spec :family ,name
-                                                :size ,size)))
+                 (set-fontset-font t c (font-spec :family ,name
+                                                  :size ,size)))
                '(han kana cjk-misc))))))
+
+(when-font%
+
+  (defsubst char-pixel-width (s)
+    "Return the width in pixel of S."
+    (let ((glyphs (with-temp-buffer
+                    (insert s)
+                    (font-get-glyphs (font-at 0 nil s) 1 2))))
+      (when (and (vectorp glyphs)
+                 (> (length glyphs) 0)
+                 (> (length (aref glyphs 0)) 4))
+        (aref (aref glyphs 0) 4)))))
 
 (when-font%
 
   ;; Load cjk font
   (when (self-spec->*env-spec :cjk-font :allowed)
     (self-cjk-font! (self-spec->*env-spec :cjk-font :name)
-                    (self-spec->*env-spec :cjk-font :size))))
+                    (self-spec->*env-spec :cjk-font :size))
+    (when (self-spec->*env-spec :cjk-font :scaled)
+      (let ((width (char-pixel-width "a")))
+        (when (and width (> width 0))
+          (add-to-list
+           'face-font-rescale-alist
+           (cons (concat ".*"
+                         (self-spec->*env-spec :cjk-font :name)
+                         ".*")
+                 (/ (* width 2)
+                    (* (self-spec->*env-spec :cjk-font :size) 1.0)))))))))
 
  ;; end of when-font%
 

@@ -437,11 +437,20 @@ by default and for GUI mode only.
                           "Consolas"
                         "DejaVu Sans Mono"))
 							:size 13
-              :allowed t))
+              :allowed t)
+  :cjk-font (list :name (if-platform% 'darwin
+                            "Hei"
+                          (if-platform% 'windows-nt
+                              "Microsoft Yahei"
+                            "DejaVu Sans Mono"))
+                  :size 16
+                  :scaled t
+                  :allowed t))
 #+END_SRC
 
 - =:name= string of font name
 - =:size= integer of font size
+- =:scaled= =t= should scale CJK font, =nil= disabled
 - =:allowed= =t= enabled, =nil= disabled
 
 

@@ -15,19 +15,6 @@
   (autoload 'org-bookmark-jump-unhide "org"))
 
 
-(when-graphic% 
-  (defun char-pixel-width (s)
-    "Return the width in pixel of S."
-    (let ((glyphs (with-temp-buffer
-                    (insert s)
-                    (font-get-glyphs (font-at 0 nil s)
-                                     1 (goto-char 2)))))
-      (when (and (vectorp glyphs)
-                 (> (length glyphs) 0)
-                 (> (length (aref glyphs 0)) 4))
-        (aref (aref glyphs 0) 4)))))
-
-
 (with-eval-after-load 'org
   ;; load `ox-reveal' if it had been installed.
   (if-feature-ox-reveal%
