@@ -55,6 +55,13 @@ but not any simpler.
 some text here monospace
 #+end_example
 
+* Table
+| col1    | col2   | col3    |
+|---------+--------+---------|
+| aaa     | bbb    | dddd    |
+| cjk中文 | 字体aa | 对齐aaa |
+|         |        |         |
+
 * Code
 
 ** Elisp
