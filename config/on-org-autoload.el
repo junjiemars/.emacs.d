@@ -34,7 +34,7 @@
       (when-var% org-reveal-root 'ox-reveal
         (require 'ox-reveal)
         (setq org-reveal-root
-              (let ((root (expand-file-name "~/.reveal.js/")))
+              (let ((root (emacs-home* ".reveal.js/")))
                 (if (file-exists-p root)
                     root
                   ;; "https://cdn.jsdelivr.net/reveal.js/3.8.0/"

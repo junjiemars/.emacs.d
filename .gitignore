@@ -3,6 +3,7 @@
 places
 .dict
 .recentf
+.reveal.js
 ido.last
 cider-history
 projectile-bookmarks.eld
