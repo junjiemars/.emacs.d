@@ -1441,7 +1441,18 @@ It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]].
   /ssh:user@host:/path/to/file@@html:</kbd>@@
 - on Windows use =~/.ssh/config=: use =/sshx:= instead, such as
   @@html:<kbd>@@/sshx:user@host:/path/to/file@@html:</kbd>@@
-	
+
+** Face
+   :PROPERTIES:
+   :CUSTOM_ID: face
+   :END:
+
+#+ATTR_HTML: :style text-align:left
+*** Text scale
+- reset face height: @@html:<kbd>@@C-x C-0@@html:</kbd>@@
+- increase face height: @@html:<kbd>@@C-x C-=@@html:</kbd>@@
+- decrease face height: @@html:<kbd>@@C-x C--@@html:</kdd>@@
+
 ** LaTex Requirements
    :PROPERTIES:
    :CUSTOM_ID: latex-requirements
