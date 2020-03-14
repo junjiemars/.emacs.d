@@ -18,10 +18,8 @@
 ;; Disable scroll bar
 (when-fn% 'scroll-bar-mode nil (scroll-bar-mode -1))
 
-;; Go straight to scratch buffer on startup when graphic supported
-(if-graphic%
-    (setq% inhibit-splash-screen t)
-  (setq% inhibit-splash-screen nil))
+;; Go straight to scratch buffer on startup
+(setq% inhibit-splash-screen t)
 
 
  ;; end of basic UI
