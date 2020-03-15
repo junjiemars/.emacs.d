@@ -136,9 +136,6 @@
   ;; Load basic package spec
   (parse-package-spec! basic-package-spec))
 
-;; ;; whatever `when-package%' or `package-spec-:allowed-p'
-;; (compile! (compile-unit% (emacs-home* "config/on-module.el")))
-
 
 (package-spec-:allowed-p
   ;; Load self packages spec
