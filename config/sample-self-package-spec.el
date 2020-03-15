@@ -13,11 +13,9 @@
    :cond t
    :packages (list 'markdown-mode
                    'htmlize
-                   (when-version% <= 25 'ox-reveal)
-                   'x509-mode
-                   (or (executable-find% "kotlin")
-                       'kotlin-mode)
                    'web-mode
+                   'x509-mode
+                   (when-version% <= 25 'ox-reveal)
                    (when-version% <= 24.3 'skewer-mode)
                    (when-version% <= 24.3 'yasnippet)))
   (list
