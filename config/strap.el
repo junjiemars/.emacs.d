@@ -209,8 +209,8 @@ Returns the value of BODY if no error happens."
        (if% (require ',feature nil t)
            `(progn% (ignore* ,@body)
                     ,then)
-         `(progn (ignore* ,then)
-                 ,@body)))))
+         `(progn% (ignore* ,then)
+                  ,@body)))))
 
 
 (defmacro defun-on-fn-threading^ (fn &optional join)
