@@ -12,14 +12,14 @@
 (defmacro-if-feature% rainbow-delimiters)
 
 
-(defmacro when-feature-allowed% (feature &rest body)
-  "Run BODY when FEATURE be supported and be allowed."
+(defmacro when-feature-allowed% (if-feature &rest body)
+  "Run BODY when FEATURE be supported and be allowed.
+
+IF-FEATURE macro must be defined by `defmacro-if-feature%'."
   (declare (indent 1))
-  (let ((supported (intern (format "if-feature-%s%%" feature))))
-    (with-no-warnings
-      `(,supported
-        (package-spec-:allowed-p
-          ,@body)))))
+  `(,if-feature
+    (package-spec-:allowed-p
+      ,@body)))
 
 
 ;; end of on-module.el file

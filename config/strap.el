@@ -36,14 +36,14 @@ otherwise do ELSE..."
 (defmacro lexical-let% (varlist &rest body)
   "Like `let', but lexically scoped."
   (declare (indent 1) (debug let))
-	`(when-fn% 'lexical-let 'cl
-		 (lexical-let ,varlist ,@body)))
+  `(when-fn% 'lexical-let 'cl
+     (lexical-let ,varlist ,@body)))
 
 (defmacro lexical-let*% (varlist &rest body)
   "Like `let*', but lexically scoped."
   (declare (indent 1) (debug let))
-	`(when-fn% 'lexical-let* 'cl
-		 (lexical-let* ,varlist ,@body)))
+  `(when-fn% 'lexical-let* 'cl
+     (lexical-let* ,varlist ,@body)))
 
 
 ;; Let `lexical-binding' var safe under Emacs24.1-
@@ -207,9 +207,9 @@ Returns the value of BODY if no error happens."
        ,(or docstring ds1)
        (declare (indent 1))
        (if% (require ',feature nil t)
-           `(progn% (ignore* ,@body)
+           `(progn% (comment ,@body)
                     ,then)
-         `(progn% (ignore* ,then)
+         `(progn% (comment ,then)
                   ,@body)))))
 
 
