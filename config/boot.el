@@ -75,8 +75,13 @@
     `(when-font-exist% ,name
        (when-fn% 'set-fontset-font nil
          (mapc (lambda (c)
-                 (set-fontset-font nil c (font-spec :family ,name
-                                                    :size ,size)))
+                 (if-version%
+                     <= 23
+                     (set-fontset-font nil c (font-spec :family ,name
+                                                        :size ,size)
+                                       nil 'prepend)
+                   (set-fontset-font nil c (font-spec :family ,name
+                                                      :size ,size))))
                '(han kana cjk-misc))))))
 
 (when-font%
