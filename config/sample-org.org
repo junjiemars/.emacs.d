@@ -3,7 +3,7 @@
 #+startup: entitiespretty
 #+latex_compiler: xelatex
 #+latex_header: \usepackage[utf8x]{inputenc}
-
+#+STARTUP: align
 * Verse
 
 中国唐代诗人柳宗元的江雪
@@ -56,11 +56,11 @@ some text here monospace
 #+end_example
 
 * Table
-| col1   | col2 | col3   |
-|--------+------+--------|
-| aaaa   | bbbb | dddddd |
-| 中文aa | 字体 | 对齐齐 |
-|        |      |        |
+| col1 | col2 | col3   |
+|------+------+--------|
+| aa   | bb   | ccc    |
+| 中    | 字体   | 对齐齐    |
+|      |      |        |
 
 * Code
 
@@ -136,20 +136,20 @@ void send(char *to, char *from, int count) {
 *** Operators
 
 #+NAME: Operator
-| name     | character     | name      | character      | name       | character       |
-|----------+---------------+-----------+----------------+------------+-----------------|
-| cdot     | \(\cdot\)     | times     | \(\times\)     | ast        | \(\ast\)        |
-| div      | \(\div\)      | diamond   | \(\diamond\)   | pm         | \(\pm\)         |
-| mp       | \(\mp\)       | oplus     | \(\oplus\)     | ominus     | \(\ominus\)     |
-| otimes   | \(\otimes\)   | oslash    | \(\oslash\)    | odot       | \(\odot\)       |
-| bigcirc  | \(\bigcirc\)  | circ      | \(\circ\)      | bullet     | \(\bullet\)     |
-| asymp    | \(\asymp\)    | equiv     | \(\equiv\)     | subseteq   | \(\subseteq\)   |
-| supseteq | \(\supseteq\) | leq       | \(\leq\)       | geq        | \(\geq\)        |
-| preceq   | \(\preceq\)   | succeq    | \(\succeq\)    | sim        | \(\sim\)        |
-| approx   | \(\approx\)   | subset    | \(\subset\)    | supset     | \(\supset\)     |
-| ll       | \(\ll\)       | gg        | \(\gg\)        | prec       | \(\prec\)       |
-| succ     | \(\succ\)     | leftarrow | \(\leftarrow\) | rightarrow | \(\rightarrow\) |
-|          |               |           |                |            |                 |
+| name     | character     | name      | character | name       | character     |
+|----------+---------------+-----------+-----------+------------+---------------|
+| cdot     | \(\cdot\)         | times     | \(\times\)     | ast        | \(\ast\)         |
+| div      | \(\div\)         | diamond   | \(\diamond\)     | pm         | \(\pm\)         |
+| mp       | \(\mp\)       | oplus     | \(\oplus\)     | ominus     | \(\ominus\)   |
+| otimes   | \(\otimes\)         | oslash    | \(\oslash\)     | odot       | \(\odot\)         |
+| bigcirc  | \(\bigcirc\)  | circ      | \(\circ\)     | bullet     | \(\bullet\)         |
+| asymp    | \(\asymp\)         | equiv     | \(\equiv\)     | subseteq   | \(\subseteq\) |
+| supseteq | \(\supseteq\) | leq       | \(\leq\)     | geq        | \(\geq\)         |
+| preceq   | \(\preceq\)         | succeq    | \(\succeq\)     | sim        | \(\sim\)         |
+| approx   | \(\approx\)         | subset    | \(\subset\)     | supset     | \(\supset\)         |
+| ll       | \(\ll\)         | gg        | \(\gg\)     | prec       | \(\prec\)         |
+| succ     | \(\succ\)         | leftarrow | \(\leftarrow\)     | rightarrow | \(\rightarrow\)         |
+|          |               |           |           |            |               |
 
 ** Formula
 

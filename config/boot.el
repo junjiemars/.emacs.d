@@ -75,22 +75,22 @@
     `(when-font-exist% ,name
        (when-fn% 'set-fontset-font nil
          (mapc (lambda (c)
-                 (set-fontset-font t c (font-spec :family ,name
-                                                  :size ,size)))
+                 (set-fontset-font nil c (font-spec :family ,name
+                                                    :size ,size)))
                '(han kana cjk-misc))))))
 
 (when-font%
 
-  (defsubst char-width* (char)
-    "Return pixel width of CHAR."
-    (let* ((s (char-to-string char))
-           (glyphs (with-temp-buffer
-                     (insert s)
-                     (font-get-glyphs (font-at 0 nil s) 1 2))))
-      (when (and (vectorp glyphs)
-                 (> (length glyphs) 0)
-                 (> (length (aref glyphs 0)) 4))
-        (aref (aref glyphs 0) 4)))))
+  (defmacro char-width* (char)
+    "Return width in pixels of CHAR."
+    `(let* ((s (char-to-string ,char))
+            (glyphs (with-temp-buffer
+                      (insert s)
+                      (font-get-glyphs (font-at 0 nil s) 1 2))))
+       (when (and (vectorp glyphs)
+                  (> (length glyphs) 0)
+                  (> (length (aref glyphs 0)) 4))
+         (aref (aref glyphs 0) 4)))))
 
 (when-font%
 

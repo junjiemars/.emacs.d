@@ -27,7 +27,7 @@
               :allowed nil)
 
   :cjk-font (list :name (if-platform% 'darwin
-                            "Hei"
+                            "PingFang" ;; "Hei"
                           (if-platform% 'windows-nt
                               "Microsoft Yahei"
                             "DejaVu Sans Mono"))
