@@ -52,14 +52,12 @@
 (when-font%
   
   (defmacro self-default-font! (name size)
-    "Set default font by NAME in graphic mode."
+    "Set default font by NAME and SIZE in graphic mode."
     `(when-font-exist% ,name
-       (let ((font (if (and (numberp ,size)
-                            (> ,size 0))
-                       (format "%s-%s" ,name ,size)
-                     ,name)))
-         (add-to-list 'default-frame-alist (cons 'font font))
-         (set-face-attribute 'default nil :font font)))))
+       (when (and (numberp ,size) (> ,size 0))
+         (let ((font (format "%s-%s" ,name ,size)))
+           (add-to-list 'default-frame-alist (cons 'font font))
+           (set-face-attribute 'default nil :font font))))))
 
 (when-font%
   
@@ -87,7 +85,7 @@
 (when-font%
 
   (defmacro char-width* (char)
-    "Return width in pixels of CHAR."
+    "Return width in pixels of CHAR in graphic mode."
     `(let* ((s (char-to-string ,char))
             (glyphs (with-temp-buffer
                       (insert s)
