@@ -16,7 +16,7 @@
   "Run BODY when FEATURE be supported and be allowed."
   (declare (indent 1))
   (let ((supported (intern (format "if-feature-%s%%" feature))))
-    (when (fboundp supported)
+    (with-no-warnings
       `(,supported
         (package-spec-:allowed-p
           ,@body)))))
