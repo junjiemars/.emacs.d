@@ -55,9 +55,8 @@
     "Set default font by NAME and SIZE in graphic mode."
     `(when-font-exist% ,name
        (when (and (numberp ,size) (> ,size 0))
-         (let ((font (format "%s-%s" ,name ,size)))
-           (add-to-list 'default-frame-alist (cons 'font font))
-           (set-face-attribute 'default nil :font font))))))
+         (add-to-list 'default-frame-alist
+                      (cons 'font (format "%s-%s" ,name ,size)))))))
 
 (when-font%
   
