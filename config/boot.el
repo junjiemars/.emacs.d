@@ -71,19 +71,17 @@
 
   (defmacro self-cjk-font! (name size)
     "Set CJK font's NAME and SIZE in graphic mode."
-    `(when-font-exist% ,name
-       (when-fn% 'set-fontset-font nil
-         (mapc (lambda (c)
-                 (let ((ff (frame-parameter nil 'font)))
-                   (if-version%
-                       <= 23
-                       (set-fontset-font ff c
-                                         (font-spec :family ,name
-                                                    :size ,size)
-                                         ff 'prepend)
-                     (set-fontset-font ff c (font-spec :family ,name
-                                                       :size ,size)))))
-               '(han kana cjk-misc))))))
+    `(when-font-exist%
+      ,name
+      (when-fn% 'set-fontset-font nil
+        (let ((ff (frame-parameter nil 'font))
+              (fs (font-spec :family ,name :size ,size)))
+          (mapc (lambda (c)
+                  (if-version%
+                      <= 23
+                      (set-fontset-font ff c fs nil 'prepend)
+                    (set-fontset-font ff c fs)))
+                '(han kana cjk-misc)))))))
 
 (when-font%
 
@@ -92,7 +90,6 @@
     `(let* ((s (char-to-string ,char))
             (glyphs (with-temp-buffer
                       (insert s)
-                      (buffer-face-mode)
                       (font-get-glyphs (font-at 0 nil s) 1 2))))
        (when (and (vectorp glyphs)
                   (> (length glyphs) 0)

@@ -59,7 +59,7 @@ some text here monospace
 | col1 | col2 | col3   |
 |------+------+--------|
 | aa   | bb   | ccc    |
-| 中    | 字体   | 对齐齐    |
+| 中   | 字体 | 对齐齐 |
 |      |      |        |
 
 * Code
