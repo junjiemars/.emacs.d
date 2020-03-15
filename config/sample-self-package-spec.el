@@ -10,17 +10,14 @@
 
 (def-self-package-spec
   (list
-   :cond t
-   :packages (list 'markdown-mode
-                   'htmlize
-                   'web-mode
-                   'x509-mode
-                   (when-version% <= 25 'ox-reveal)
-                   (when-version% <= 24.3 'skewer-mode)
+   :cond nil
+   :packages (list 'x509-mode
+                   ;; (when-version% <= 25 'ox-reveal)
                    (when-version% <= 24.3 'yasnippet)))
   (list
-   :cond (when-version% < 24.1 t)
+   :cond nil ;; (when-version% < 24.1 t)
    :packages (list 'js2-mode
+                   'web-mode
                    'skewer-mode)
    :compile `(,(compile-unit% (emacs-home* "config/use-js-autoload.el"))))
   (list
