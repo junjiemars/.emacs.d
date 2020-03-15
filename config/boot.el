@@ -55,8 +55,10 @@
     "Set default font by NAME and SIZE in graphic mode."
     `(when-font-exist% ,name
        (when (and (numberp ,size) (> ,size 0))
-         (add-to-list 'default-frame-alist
-                      (cons 'font (format "%s-%s" ,name ,size)))))))
+         (let ((font (format "%s-%s" ,name ,size)))
+           (add-to-list 'default-frame-alist
+                        (cons 'font font))
+           (set-face-attribute 'default nil :font font))))))
 
 (when-font%
   
@@ -72,13 +74,15 @@
     `(when-font-exist% ,name
        (when-fn% 'set-fontset-font nil
          (mapc (lambda (c)
-                 (if-version%
-                     <= 23
-                     (set-fontset-font nil c (font-spec :family ,name
-                                                        :size ,size)
-                                       nil 'prepend)
-                   (set-fontset-font nil c (font-spec :family ,name
-                                                      :size ,size))))
+                 (let ((ff (frame-parameter nil 'font)))
+                   (if-version%
+                       <= 23
+                       (set-fontset-font ff c
+                                         (font-spec :family ,name
+                                                    :size ,size)
+                                         ff 'prepend)
+                     (set-fontset-font ff c (font-spec :family ,name
+                                                       :size ,size)))))
                '(han kana cjk-misc))))))
 
 (when-font%
@@ -88,6 +92,7 @@
     `(let* ((s (char-to-string ,char))
             (glyphs (with-temp-buffer
                       (insert s)
+                      (buffer-face-mode)
                       (font-get-glyphs (font-at 0 nil s) 1 2))))
        (when (and (vectorp glyphs)
                   (> (length glyphs) 0)
@@ -101,15 +106,15 @@
     (self-cjk-font! (self-spec->*env-spec :cjk-font :name)
                     (self-spec->*env-spec :cjk-font :size))
     (when (self-spec->*env-spec :cjk-font :scaled)
-      (let ((width (char-width* ?a)))
-        (when (and width (> width 0))
+      (let ((w1 (char-width* ?a))
+            (w2 (char-width* #x4e2d)))
+        (when (and w1 w2 (> w1 0) (> w2 0))
           (add-to-list
            'face-font-rescale-alist
            (cons (concat ".*"
                          (self-spec->*env-spec :cjk-font :name)
                          ".*")
-                 (/ (* width 2)
-                    (* (self-spec->*env-spec :cjk-font :size) 1.0)))))))))
+                 (/ (* w1 2) (+ w2 0.0)))))))))
 
  ;; end of when-font%
 
