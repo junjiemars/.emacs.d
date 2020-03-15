@@ -81,11 +81,12 @@
 
 (when-font%
 
-  (defsubst char-pixel-width (s)
-    "Return the width in pixel of S."
-    (let ((glyphs (with-temp-buffer
-                    (insert s)
-                    (font-get-glyphs (font-at 0 nil s) 1 2))))
+  (defsubst char-width* (char)
+    "Return pixel width of CHAR."
+    (let* ((s (char-to-string char))
+           (glyphs (with-temp-buffer
+                     (insert s)
+                     (font-get-glyphs (font-at 0 nil s) 1 2))))
       (when (and (vectorp glyphs)
                  (> (length glyphs) 0)
                  (> (length (aref glyphs 0)) 4))
@@ -98,7 +99,7 @@
     (self-cjk-font! (self-spec->*env-spec :cjk-font :name)
                     (self-spec->*env-spec :cjk-font :size))
     (when (self-spec->*env-spec :cjk-font :scaled)
-      (let ((width (char-pixel-width "a")))
+      (let ((width (char-width* ?a)))
         (when (and width (> width 0))
           (add-to-list
            'face-font-rescale-alist
