@@ -90,7 +90,7 @@
 
     (if-feature-eww%
         (compile-unit% (emacs-home* "config/on-eww-autoload.el")))
-    
+
     (when-platform% 'windows-nt
       (when% (or (executable-find% "gswin64c")
                  (executable-find% "gswin32c")
@@ -105,7 +105,7 @@
     (when% (executable-find% "lldb")
       (defmacro-if-feature% gud-lldb)
       (compile-unit% (emacs-home* "config/gud-lldb.el") t))
-    
+
     (when% (executable-find%
             "python"
             (lambda (python)
@@ -150,7 +150,7 @@
   (when (get-buffer "*scratch*")
     (with-current-buffer "*scratch*"
       (lisp-interaction-mode)))
-  
+
   )
 
  ;; end of set-flavor-mode!
