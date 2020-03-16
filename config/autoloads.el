@@ -109,7 +109,7 @@
         "Run cdb on program FILE in buffer *gud-FILE*." t)
       (compile-unit% (emacs-home* "config/gud-lldb.el") t))
 
-    (When% (executable-find%
+    (when% (executable-find%
             "python"
             (lambda (python)
               (let ((x (shell-command* "python -c'print(1+2)'")))
