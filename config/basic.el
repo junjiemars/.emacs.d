@@ -196,7 +196,7 @@ Return the sublist of LIST whose car is ITEM.
   (if-fn% 'user-error nil
           `(user-error , format ,@args)
     `(signal 'user-error
-             (list (apply #'format ,format ,args)))))
+             (list (apply #'format ,format ,@args)))))
 
 
  ;; end of Compatible Macro
