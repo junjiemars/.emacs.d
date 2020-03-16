@@ -102,7 +102,7 @@
   (when (self-spec->*env-spec :cjk-font :allowed)
     (self-cjk-font! (self-spec->*env-spec :cjk-font :name)
                     (self-spec->*env-spec :cjk-font :size))
-    (when (self-spec->*env-spec :cjk-font :scaled)
+    (when (self-spec->*env-spec :cjk-font :scale)
       (let ((w1 (char-width* ?a))
             (w2 (char-width* #x4e2d)))
         (when (and w1 w2 (> w1 0) (> w2 0))
@@ -111,7 +111,10 @@
            (cons (concat ".*"
                          (self-spec->*env-spec :cjk-font :name)
                          ".*")
-                 (/ (* w1 2) (+ w2 0.0)))))))))
+                 (/ (* w1 (let ((n (self-spec->*env-spec :cjk-font :scale)))
+                            (or (and (numberp n) n)
+                                1)))
+                    (+ w2 0.0)))))))))
 
  ;; end of when-font%
 

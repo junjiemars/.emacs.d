@@ -444,13 +444,13 @@ by default and for GUI mode only.
                               "Microsoft Yahei"
                             "DejaVu Sans Mono"))
                   :size 16
-                  :scaled t
+                  :scale t
                   :allowed t))
 #+END_SRC
 
 - =:name= string of font name
 - =:size= integer of font size
-- =:scaled= =t= should scale CJK font, =nil= disabled
+- =:scale= number of ratio for scale CJK font, =nil= disabled
 - =:allowed= =t= enabled, =nil= disabled
 
 
