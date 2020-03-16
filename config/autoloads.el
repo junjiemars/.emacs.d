@@ -82,16 +82,30 @@
     (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))
     (compile-unit% (emacs-home* "config/on-window-autoload.el"))
 
+    (when-font%
+      (compile-unit% (emacs-home* "config/on-font-autoload.el")))
 
+    (if-feature-semantic%
+        (compile-unit% (emacs-home* "config/on-semantic-autoload.el")))
+
+    (if-feature-eww%
+        (compile-unit% (emacs-home* "config/on-eww-autoload.el")))
+    
     (when-platform% 'windows-nt
       (when% (or (executable-find% "gswin64c")
                  (executable-find% "gswin32c")
                  (executable-find% "mutool"))
         (compile-unit% (emacs-home* "config/on-docview-autoload.el"))))
 
-    (if-feature-eww%
-        (compile-unit% (emacs-home* "config/on-eww-autoload.el")))
+    (when-platform% 'windows-nt
+      (when% (executable-find% "cdb")
+        (defmacro-if-feature% gud-cdb)
+        (compile-unit% (emacs-home* "config/gud-cdb.el") t)))
 
+    (when% (executable-find% "lldb")
+      (defmacro-if-feature% gud-lldb)
+      (compile-unit% (emacs-home* "config/gud-lldb.el") t))
+    
     (when% (executable-find%
             "python"
             (lambda (python)
@@ -99,50 +113,44 @@
                 (and (zerop (car x))
                      (string= "3" (string-trim> (cdr x)))))))
       (compile-unit% (emacs-home* "config/on-python-autoload.el")))
-    
-    (if-feature-semantic%
-        (compile-unit% (emacs-home* "config/on-semantic-autoload.el")))
+
+    (when% (or (executable-find% "gsc-script")
+               (executable-find% "gsc"
+                                 (lambda (gsc)
+                                   (let ((x (shell-command* gsc
+                                              "-e \"(system-type)\"")))
+                                     (zerop (car x))))))
+      (defmacro-if-feature% gambit)
+      (compile-unit% (emacs-home* "config/gambit.el") t))
 
     )  ;; end of compile!
-
-  ;; gambit
-  (when% (or (executable-find% "gsc-script")
-             (executable-find% "gsc"
-                               (lambda (gsc)
-                                 (let ((x (shell-command* gsc
-                                            "-e \"(system-type)\"")))
-                                   (zerop (car x))))))
-    (compile!
-      (compile-unit% (emacs-home* "config/gambit.el"))))
 
   ;; add .exec/ to %PATH%
   (when-platform% 'windows-nt
     (windows-nt-env-path+ (v-home% ".exec/")))
 
   ;; semantic
-  (autoload 'set-semantic-cc-env!
-    (v-home% "config/on-semantic-autoload.elc"))
+  (if-feature-semantic%
+      (autoload 'set-semantic-cc-env!
+        (v-home% "config/on-semantic-autoload.elc")))
 
-  ;; cdb or lldb
-  (if-platform% 'windows-nt
-      (when% (executable-find% "cdb")
-        (compile!
-          ;; (compile-unit% (emacs-home* "config/guds.el") t)
-          (compile-unit% (emacs-home* "config/gud-cdb.el") t))
-        (autoload 'cdb (v-home% "config/gud-cdb.elc")
-          "Run lldb on program FILE in buffer *gud-FILE*." t))
-    (when% (executable-find% "lldb")
-      (compile!
-        ;; (compile-unit% (emacs-home* "config/guds.el") t)
-        (compile-unit% (emacs-home* "config/gud-lldb.el") t))
+  (if-feature-gud-cdb%
+      (autoload 'cdb (v-home% "config/gud-cdb.elc")
+        "Run lldb on program FILE in buffer *gud-FILE*." t))
+
+  (if-feature-gud-cdb%
       (autoload 'lldb (v-home% "config/gud-lldb.elc")
-        "Run cdb on program FILE in buffer *gud-FILE*." t)))
-
+        "Run cdb on program FILE in buffer *gud-FILE*." t))
+  
+  (if-feature-gambit%
+      (autoload 'run-gambit (v-home% "config/gambit.elc")
+        "Run gambit in buffer *gambit*."))
+  
   ;; *scratch*
   (when (get-buffer "*scratch*")
     (with-current-buffer "*scratch*"
       (lisp-interaction-mode)))
-
+  
   )
 
  ;; end of set-flavor-mode!
