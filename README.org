@@ -438,21 +438,28 @@ by default and for GUI mode only.
                         "DejaVu Sans Mono"))
 							:size 13
               :allowed t)
-  :cjk-font (list :name (if-platform% 'darwin
-                            "Hei"
-                          (if-platform% 'windows-nt
-                              "Microsoft Yahei"
-                            "DejaVu Sans Mono"))
-                  :size 16
-                  :scale t
-                  :allowed t))
 #+END_SRC
 
 - =:name= string of font name
 - =:size= integer of font size
-- =:scale= number of ratio for scale CJK font, =nil= disabled
 - =:allowed= =t= enabled, =nil= disabled
 
+#+REVEAL: split
+#+BEGIN_SRC emacs-lisp
+(def-self-env-spec
+  :cjk-font (list :name (if-platform% 'darwin
+                            "PingFang"
+                          (if-platform% 'windows-nt
+                              "Microsoft Yahei"
+                            "DejaVu Sans Mono"))
+                  :size 16
+                  :scale 2
+                  :allowed t))
+#+END_SRC
+- =:name= string of font name
+- =:size= integer of font size
+- =:scale= number of scale ratio of CJK font, =nil= disabled
+- =:allowed= =t= enabled, =nil= disabled
 
 #+ATTR_HTML: :style display:none
 /screenshots/:
