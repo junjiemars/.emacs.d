@@ -104,7 +104,7 @@
     (when err
       (message (propertize "Network error" 'face 'font-lock-warning-face))
       (kill-buffer)
-      (user-error "!%s in on-lookup-dict" err)))
+      (user-error* "!%s in on-lookup-dict" err)))
   (set-buffer-multibyte t)
   (comment
    (write-region (point-min) (point-max)

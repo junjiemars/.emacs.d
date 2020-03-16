@@ -190,6 +190,15 @@ Return the sublist of LIST whose car is ITEM.
   (defalias 'characterp #'char-valid-p))
 
 
+(defmacro user-error* (format &rest args)
+  "Signal a pilot error."
+  (declare (indent 1))
+  (if-fn% 'user-error nil
+          `(user-error , format ,@args)
+    `(signal 'user-error
+             (list (apply #'format ,format ,args)))))
+
+
  ;; end of Compatible Macro
 
 
