@@ -234,7 +234,7 @@ sequentially and return value of last one, or nil if there are none."
 
 
 ;; Load strap
-(compile-and-load-file* (emacs-home* "config/strap.el")
+(compile-and-load-file* (emacs-home* "config/boot.el")
                         nil ;; only-compile
                         nil ;; delete-booster
                         (v-home* "config/"))
