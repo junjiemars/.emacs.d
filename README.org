@@ -272,10 +272,10 @@ Introduce rules of naming /files/ and /functions/.
     ├── autoloads.el
     ├── basic.el
     ├── boot.el
+    ├── graphic.el
     ├── memory.el
     ├── module.el
-    ├── shells.el
-    └── strap.el
+    └── shells.el
 #+END_EXAMPLE
 
 #+REVEAL: split
