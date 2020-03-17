@@ -394,10 +394,10 @@ kill ring. If prefix argument ARG is nil then copy
   (interactive "P")
   (let* ((n (if (or (eq 'dired-mode major-mode)
                     (eq 'ibuffer-mode major-mode))
-                (user-error "Type \"w\" or \"C-u 0 w\" instead, in %s"
-                            mode-name)
+                (user-error* "Type \"w\" or \"C-u 0 w\" instead, in %s"
+                  mode-name)
               (let ((b (buffer-file-name)))
-                (if b b (user-error "Not a file buffer")))))
+                (if b b (user-error* "Not a file buffer")))))
          (n1 (if arg
                  n
                (file-name-nondirectory n))))
