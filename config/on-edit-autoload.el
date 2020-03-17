@@ -365,7 +365,7 @@ See also `open-line' and `split-line'."
 (defun toggle-open-line-indent! (&optional arg)
   "Toggle whether indent or not when `open-line' or `split-line'.
 
-With prefix argument ARG, indent as default when ARG is non-nil."
+With prefix argument ARG, indent when ARG is non-nil."
   (interactive "P")
   (let ((indent? (cond ((or arg
                             (eq 'open-line
@@ -375,12 +375,10 @@ With prefix argument ARG, indent as default when ARG is non-nil."
                        (t (cons #'open-line #'split-line)))))
     (define-key (current-global-map) (kbd "C-o") (car indent?))
     (define-key (current-global-map) (kbd "C-M-o") (cdr indent?))
-    (message "indent open-line %s"
+    (message "open-line indent %s"
              (if (eq #'open-line (car indent?))
                  "disabled"
                "enabled"))))
-
-(toggle-open-line-indent! t)
 
  ;; end of open-*-line
 
