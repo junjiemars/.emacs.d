@@ -36,6 +36,7 @@ null
 server/
 TAGS
 config/.nrepl-history
+config/ltximg
 **/g_*/
 **/t_*/
 semanticdb/

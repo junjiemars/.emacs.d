@@ -4,6 +4,10 @@
 #+latex_compiler: xelatex
 #+latex_header: \usepackage[utf8x]{inputenc}
 
+* LaTex
+
+\(\LaTeX{}\) vs. \({\LaTeX}\)
+
 * Verse
 
 中国唐代诗人柳宗元的江雪
