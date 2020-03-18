@@ -11,7 +11,8 @@
 (def-self-package-spec
   (list
    :cond nil
-   :packages (list 'x509-mode
+   :packages (list 'vlf
+                   'x509-mode
                    ;; (when-version% <= 25 'ox-reveal)
                    (when-version% <= 24.3 'yasnippet)))
   (list
