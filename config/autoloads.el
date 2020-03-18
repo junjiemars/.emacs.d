@@ -115,7 +115,7 @@
               (let ((x (shell-command* "python -c'print(1+2)'")))
                 (and (zerop (car x))
                      (string= "3" (string-trim> (cdr x)))))))
-           (compile-unit% (emacs-home* "config/on-python-autoload.el")))
+      (compile-unit% (emacs-home* "config/on-python-autoload.el")))
 
     (when% (or (executable-find% "gsc-script")
                (executable-find% "gsc"
@@ -123,6 +123,8 @@
                                    (let ((x (shell-command* gsc
                                               "-e \"(system-type)\"")))
                                      (zerop (car x))))))
+      (autoload 'gambit-mode (v-home% "config/gambit.elc")
+        "Toggle Gambit's mode." t)
       (autoload 'run-gambit (v-home% "config/gambit.elc")
         "Run gambit in buffer *gambit*." t)
       (compile-unit% (emacs-home* "config/gambit.el") t))
