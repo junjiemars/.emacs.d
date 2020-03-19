@@ -8,22 +8,8 @@
 
 \(\LaTeX{}\) vs. \({\LaTeX}\)
 
-* Verse
-
-中国唐代诗人柳宗元的江雪
-#+begin_verse
-千山鸟飞绝，万径人踪灭。
-孤舟蓑笠翁，独钓寒江雪。
-  -- 柳宗元 《江雪》
-#+end_verse
-
-许渊冲先生英译的江雪(Fishing in Snow)
-#+begin_verse
-From hill to hill no bird in flight
-From path to path no man in sight
-A lonely fisherman afloat
-Is fishing snow in lonely boat
-#+end_verse
+Check builtin info /11.8 Embedded LaTeX/: @@html:<kbd>@@C-h i d m Org
+Mode@@html:</kbd>@@
 
 * Quote
 
@@ -59,12 +45,34 @@ but not any simpler.
 some text here monospace
 #+end_example
 
-* Table
-| col1 | col2 | col3   |
-|------+------+--------|
-| aa   | bb   | ccc    |
-| 中   | 字体 | 对齐齐 |
-|      |      |        |
+* Spreadsheet
+
+Row formula:
+| Student  | Maths | Physics | Mean |
+|----------+-------+---------+------|
+| Bertrand |    13 |      09 |   11 |
+| Henri    |    15 |      14 |      |
+| Arnold   |    17 |      13 |      |
+#+TBLFM: @2$4=vmean($2..$3)
+
+Column formula:
+| Student  | Maths | Physics | Mean |
+|----------+-------+---------+------|
+| Bertrand |    13 |      09 |   11 |
+| Henri    |    15 |      14 | 14.5 |
+| Arnold   |    17 |      13 |   15 |
+#+TBLFM: $4=vmean($2..$3)
+
+Row and Column formula:
+| Student  | Maths | Physics | Mean | Sum |
+|----------+-------+---------+------+-----|
+| Bertrand |    13 |      09 |   11 |  22 |
+| Henri    |    15 |      14 | 14.5 |  29 |
+| Arnold   |    17 |      13 |   15 |  30 |
+|----------+-------+---------+------+-----|
+| Means    |    15 |      12 | 13.5 |     |
+| Sum      |    45 |      36 |      |  81 |
+#+TBLFM: $2=vsum(@2$2..@4$2)::$3=vsum(@2$3..@4$3)::$4=vmean($2..$3)::$5=vsum($2..$3)::@5$2=vmean(@2$2..@4$2)::@5$3=vmean(@2$3..@4$3)
 
 * Code
 
@@ -165,3 +173,19 @@ If $a^2=b$ and \( b=2 \), then the solution must be
 either $$ a=+\sqrt{2} $$ or \[ a=-\sqrt{2} \].
 
 
+* Verse
+
+中国唐代诗人柳宗元的江雪
+#+begin_verse
+千山鸟飞绝，万径人踪灭。
+孤舟蓑笠翁，独钓寒江雪。
+  -- 柳宗元 《江雪》
+#+end_verse
+
+许渊冲先生英译的江雪(Fishing in Snow)
+#+begin_verse
+From hill to hill no bird in flight
+From path to path no man in sight
+A lonely fisherman afloat
+Is fishing snow in lonely boat
+#+end_verse
