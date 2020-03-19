@@ -2,7 +2,12 @@
 #+author: 南山竹
 #+startup: entitiespretty
 #+latex_compiler: xelatex
+#+latex_header: \usepackage{fontspec}
+#+latex_header: \usepackage{xunicode}
+#+latex_header: \usepackage{xltxtra}
+#+latex_header: \usepackage{xeCJK}
 #+latex_header: \usepackage[utf8x]{inputenc}
+
 
 * LaTex
 
@@ -172,7 +177,6 @@ R_{Alpha Centauri} = 1.28 x R_{sun}
 If $a^2=b$ and \( b=2 \), then the solution must be
 either $$ a=+\sqrt{2} $$ or \[ a=-\sqrt{2} \].
 
-
 * Verse
 
 中国唐代诗人柳宗元的江雪
@@ -189,3 +193,4 @@ From path to path no man in sight
 A lonely fisherman afloat
 Is fishing snow in lonely boat
 #+end_verse
+
