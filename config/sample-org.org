@@ -2,6 +2,7 @@
 #+author: 南山竹
 #+startup: entitiespretty
 #+latex_compiler: xelatex
+#+latex_header: \usepackage{listings}
 #+latex_header: \usepackage{fontspec}
 #+latex_header: \usepackage{xunicode}
 #+latex_header: \usepackage{xltxtra}
