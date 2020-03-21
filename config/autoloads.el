@@ -145,33 +145,19 @@
  ;; end of set-flavor-mode!
 
 
-;; set-self-epilogue!
-(defun set-self-epilogue! ()
-  (compile! (compile-unit* (self-def-path-ref-> :epilogue))))
-
- ;; end of set-self-epilogue!
-
-
 ;; after-init
-(add-hook 'after-init-hook #'set-flavor-mode! t)
-(add-hook 'after-init-hook #'set-global-key! t)
+(defun on-autoloads! ()
+  (make-thread* (progn%
+                 (set-flavor-mode!)
+                 (set-global-key!)
+                 (package-spec-:allowed-p
+                   (apply #'compile! *autoload-compile-units*))
+                 (compile! (compile-unit*
+                            (self-def-path-ref-> :epilogue)))
+                 (self-desktop-read!))
+                t "on-autoloads!"))
 
-
-(defun autoload-compile-units! ()
-  "Autoload `compile-unit'."
-  (package-spec-:allowed-p
-    (apply #'compile! *autoload-compile-units*)))
-
-(package-spec-:allowed-p
-  (add-hook 'after-init-hook
-            (if (self-spec->*env-spec :package :load-parallel)
-                (defun-on-fn-threading^ autoload-compile-units!)
-              #'autoload-compile-units!)
-            t))
-
-(add-hook 'after-init-hook
-          (defun-on-fn-threading^ set-self-epilogue!)
-          t)
+(add-hook 'after-init-hook #'on-autoloads! t)
 
 
 ;; end of autoloads.el

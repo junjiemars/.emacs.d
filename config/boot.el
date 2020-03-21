@@ -497,10 +497,10 @@ Take effect after restart Emacs.
 
 ;; Load package independent modules
 (compile! (compile-unit% (emacs-home* "config/on-module.el"))
-          (compile-unit% (emacs-home* "config/autoloads.el"))
           ;; --batch mode: disable desktop read/save
           `,(unless noninteractive 
-              (compile-unit% (emacs-home* "config/memory.el"))))
+              (compile-unit% (emacs-home* "config/memory.el")))
+          (compile-unit% (emacs-home* "config/autoloads.el")))
 
 
  ;; end of file

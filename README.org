@@ -556,9 +556,6 @@ by default.
                      :modes-not-to-save
                      '(dired-mode fundamental-mode rmail-mode)
                      :restore-eager 8
-                     :restore-via-threading* (if-platform% 'darwin
-                                               (unless-graphic% t)
-                                               t) ;; expert option
                      :allowed t))
 #+END_SRC
 
@@ -567,7 +564,6 @@ by default.
 - =:buffers-not-to-save= @@html:<kbd>@@C-h-v desktop-buffers-not-to-save@@html:</kbd>@@
 - =:modes-not-to-save= @@html:<kbd>@@C-h-v desktop-modes-not-to-save@@html:</kbd>@@
 - =:restore-eager= @@html:<kbd>@@C-h-v desktop-restore-eager@@html:</kbd>@@
-- =:restore-via-threading*=: restore via a new thread
 - =:allowed= =t= enabled, =nil= disabled
 
 ** Network
@@ -661,7 +657,6 @@ packages can be done in =(def-self-env-spec)=.
 #+BEGIN_SRC emacs-lisp
 (def-self-env-spec
   :package (list :remove-unused nil
-                 :load-parallel nil ;; expert option
                  :allowed nil))
 #+END_SRC
 

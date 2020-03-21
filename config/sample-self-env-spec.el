@@ -54,9 +54,6 @@
                  :modes-not-to-save
                  '(dired-mode fundamental-mode eww-mode rmail-mode)
                  :restore-eager 8
-                 :restore-via-threading* (if-platform% 'darwin
-                                             (unless-graphic% t)
-                                           t)
                  :allowed nil)
   
   :eshell (list :visual-commands '("mtr")
@@ -71,7 +68,6 @@
                :allowed nil)
   
   :package (list :remove-unused nil
-                 :load-parallel nil ;; expert option
                  :allowed nil)
 
   :edit (list :tab-width 2

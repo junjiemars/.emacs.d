@@ -90,11 +90,11 @@
 
 
 ;; read saved session
-(add-hook 'after-init-hook
-          (if (self-spec->*env-spec :desktop :restore-via-threading*)
-              (defun-on-fn-threading^ self-desktop-read!)
-            #'self-desktop-read!)
-          t)
+;; (add-hook 'after-init-hook
+;;           (if (self-spec->*env-spec :desktop :restore-via-threading*)
+;;               (defun-on-fn-threading^ self-desktop-read!)
+;;             #'self-desktop-read!)
+;;           t)
 
 
  ;; end of Read desktop
