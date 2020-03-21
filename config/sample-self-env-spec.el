@@ -71,7 +71,7 @@
                :allowed nil)
   
   :package (list :remove-unused nil
-                 :load-parallel nil
+                 :load-parallel nil ;; expert option
                  :allowed nil)
 
   :edit (list :tab-width 2
