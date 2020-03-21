@@ -558,7 +558,7 @@ by default.
                      :restore-eager 8
                      :restore-via-threading* (if-platform% 'darwin
                                                (unless-graphic% t)
-                                               t)
+                                               t) ;; expert option
                      :allowed t))
 #+END_SRC
 
@@ -661,6 +661,7 @@ packages can be done in =(def-self-env-spec)=.
 #+BEGIN_SRC emacs-lisp
 (def-self-env-spec
   :package (list :remove-unused nil
+                 :load-parallel nil ;; expert option
                  :allowed nil))
 #+END_SRC
 
