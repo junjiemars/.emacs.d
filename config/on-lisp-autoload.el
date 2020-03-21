@@ -26,16 +26,16 @@
   (cond ((or (string= "*scratch*" (buffer-name))
              (string= "*ielm*" (buffer-name))))
         (t (when-feature-allowed% if-feature-paredit%
-                 ;; structured editing of s-expression data
-                 (enable-paredit-mode))
+             ;; structured editing of s-expression data
+             (enable-paredit-mode))
 
            (when-feature-allowed% if-feature-rainbow-delimiters%
-               ;; hilighting parentheses,brackets,and braces in minor mode
-               (rainbow-delimiters-mode))
+             ;; hilighting parentheses,brackets,and braces in minor mode
+             (rainbow-delimiters-mode))
 
            (when-feature-allowed% if-feature-aggressive-indent%
-               ;; aggressive indent
-               (aggressive-indent-mode)))))
+             ;; aggressive indent
+             (aggressive-indent-mode)))))
 
 
 (if-feature-paredit%

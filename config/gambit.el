@@ -273,7 +273,7 @@ With a prefix argument switch off tracing of procedure PROC."
     (define-key m "\C-c\C-r" #'gambit-send-region)
     (define-key m "\C-c\C-t" #'gambit-trace-procedure)
     (define-key m "\C-c\C-z" #'gambit-switch-to-repl)
-    (scheme-mode-commands m)
+    ;; (scheme-mode-commands m)
     m))
 
 (make-variable-buffer-local
