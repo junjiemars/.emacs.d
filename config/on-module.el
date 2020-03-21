@@ -11,6 +11,8 @@
 (defmacro-if-feature% paredit)
 (defmacro-if-feature% rainbow-delimiters)
 
+(defmacro-if-feature% geiser)
+
 
 (defmacro when-feature-allowed% (if-feature &rest body)
   "Run BODY when FEATURE be supported and be allowed.
