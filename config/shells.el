@@ -110,13 +110,15 @@ See also: `parse-colon-path'."
 
 (when-platform% 'windows-nt
   
-  (defadvice ansi-term (before ansi-term-before compile)
+  (defadvice ansi-term (before ansi-term-before disable)
     (set-window-buffer (selected-window)
                        (make-comint-in-buffer "ansi-term" nil "cmd"))))
 
 
 (when-platform% 'windows-nt
-  (with-eval-after-load 'term (ad-activate #'ansi-term t)))
+  (with-eval-after-load 'term
+		(ad-enable-advice #'ansi-term 'before "ansi-term-before")
+		(ad-activate #'ansi-term t)))
 
 
 (when-platform% 'windows-nt

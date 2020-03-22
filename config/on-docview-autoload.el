@@ -53,12 +53,14 @@
     (when% (and (executable-find% "mudraw")
                 (executable-find% "pdfinfo"))
 
-      (defadvice doc-view-mode-p (after doc-view-mode-p-after compile)
+      (defadvice doc-view-mode-p (after doc-view-mode-p-after disable)
         "fix: the builtin `doc-view-mode-p' does not support mupdf."
         (when (eq 'pdf (ad-get-arg 0))
           (setq ad-return-value t)))
 
       (with-eval-after-load 'doc-view
+				(ad-enable-advice #'doc-view-mode-p 'after
+													"doc-view-mode-p-after")
         (ad-activate #'doc-view-mode-p t)))))
 
 

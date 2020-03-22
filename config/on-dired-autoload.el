@@ -171,7 +171,7 @@
         (when (multibyte-string-p arg0)
           (ad-set-arg 0 (encode-coding-string arg0 locale-coding-system)))))
 
-    (defadvice dired-compress-file (before dired-compress-file-before compile)
+    (defadvice dired-compress-file (before dired-compress-file-before disable)
       "`dired-compress-file' should failed when FILE arg does not
        encoded with `locale-coding-string'."
       (let ((arg0 (ad-get-arg 0)))
@@ -309,6 +309,8 @@
               (push (cons "\\.gz\\'" 7za?) dired-compress-file-suffixes))))
 
         (when-fn% 'dired-compress-file 'dired-aux
+          (ad-enable-advice #'dired-compress-file 'before
+                            "dired-compress-file-before")
           (ad-activate #'dired-compress-file t))))))
 
 

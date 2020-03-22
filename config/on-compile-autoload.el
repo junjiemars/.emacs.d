@@ -12,7 +12,7 @@
   ;; the UNIX path in Windows which cannot be recognized by Emacs.
   ;; When such case occurred, we try to translate UNIX path to POSIX path.
   (defadvice compilation-find-file
-      (before compilation-find-file-before compile)
+      (before compilation-find-file-before disable)
     (when (string-match "^/\\([a-zA-Z]\\)/" (ad-get-arg 1))
       (ad-set-arg 1 ;; filename argument
                   (replace-match (concat (match-string 1 (ad-get-arg 1)) ":/")
@@ -35,6 +35,8 @@
   
   (when-platform% 'windows-nt
     ;; compile and activate `compilation-find-file' advice on Windows
+		(ad-enable-advice #'compilation-find-file 'before
+											"compilation-find-file-before")
     (ad-activate #'compilation-find-file t))
   
   (add-hook 'compilation-filter-hook #'colorize-compilation-buffer!)
