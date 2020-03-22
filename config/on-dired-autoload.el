@@ -148,7 +148,7 @@
         (ad-set-arg 0 (encode-coding-string (ad-get-arg 0)
                                             locale-coding-system))))
 
-    (defadvice dired-shell-stuff-it (before dired-shell-stuff-before compile)
+    (defadvice dired-shell-stuff-it (before dired-shell-stuff-it-before disable)
       "`dired-do-shell-command' or `dired-do-async-shell-command'
        should failed when open the files which does not been
        encoded with `locale-coding-system'."
@@ -163,7 +163,7 @@
                                          t #'string=)
                           (add-to-list 'files x t #'string=))))))
 
-    (defadvice dired-shell-command (before dired-shell-command-before compile)
+    (defadvice dired-shell-command (before dired-shell-command-before disable)
       "`dired-do-compress-to' should failed when
        `default-directory' or `dired-get-marked-files' does not
        encoded with `locale-coding-system'."
@@ -183,7 +183,7 @@
   (unless% (eq default-file-name-coding-system locale-coding-system)
 
     (defadvice archive-summarize-files
-        (before archive-summarize-files-before compile)
+        (before archive-summarize-files-before disable)
       "`archive-summarize-files' may not display file name in right
        coding system."
       (let ((arg0 (ad-get-arg 0))
@@ -201,6 +201,8 @@
              (add-to-list 'files x t #'eq))))))
 
     (with-eval-after-load 'arc-mode
+      (ad-enable-advice #'archive-summarize-files 'before
+                        "archive-summarize-files-before")
       (ad-activate #'archive-summarize-files t))))
 
 
@@ -278,6 +280,10 @@
   ;; (setq file-name-coding-system locale-coding-system)
   (when-platform% 'windows-nt
     (unless% (eq default-file-name-coding-system locale-coding-system)
+      (ad-enable-advice #'dired-shell-stuff-it 'before
+                        "dired-shell-stuff-it-before")
+      (ad-enable-advice #'dired-shell-command 'before
+                        "dired-shell-command-before")
       (ad-activate #'dired-shell-stuff-it t)
       (ad-activate #'dired-shell-command t))
 
