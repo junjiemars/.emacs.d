@@ -1129,7 +1129,7 @@ perfect.
 - [[#motion][Motion]]
 - [[#interaction][Interaction]]
 - [[#editing][Editing]]
-- [[#coding][Coding]]
+- [[#coding-system][Coding system]]
 - [[#basic-sexp-commands][Basic sexp commands]]
 - [[#frame][Frame]]
 - [[#window][Window]]
@@ -1280,15 +1280,33 @@ It's *self-documenting* and great, keep reading it frequently.
   @@html:<kbd>@@M-=@@html:</kbd>@@
 - count lines on current page: @@html:<kbd>@@C-x l@@html:</kbd>@@
 
-** Coding
+** Coding system
 	 :PROPERTIES:
-	 :CUSTOM_ID: coding
+	 :CUSTOM_ID: coding-system
 	 :END:
 
+#+REVEAL: split
 - check current buffer coding system: @@html:<kbd>@@M-:
   buffer-file-coding-system@@html:</kbd>@@
-- revert current buffer's coding system: @@html:<kbd>@@M-x C-x RET
+- revert current buffer's coding system: @@html:<kbd>@@C-x RET
   r@@html:</kbd>@@
+- specify coding system for the current buffer: @@html:<kbd>@@C-x RET
+  f@@html:</kbd>@@
+#+REVEAL: split
+- specify coding system for terminal output: @@html:<kbd>@@C-x RET
+  t@@html:</kbd>@@
+- specify coding system for keyboard input: @@html:<kbd>@@C-x RET
+  k@@html:</kbd>@@
+- specify coding system for the immediately following command:
+  @@html:<kbd>@@C-x RET c@@html:</kbd>@@
+#+REVEAL: split
+- specify input and output coding systems for subprocess:
+  @@html:<kbd>@@C-x RET p@@html:</kbd>@@
+- specify coding system for transferring selections to and from other
+  programs through the window system: @@html:<kbd>@@C-x RET
+  x@@html:</kbd>@@
+- specify coding system for transferring one selection to or from the
+  window system: @@html:<kbd>@@C-x RET X@@html:</kbd>@@
 
 ** Basic sexp commands
    :PROPERTIES:
