@@ -213,32 +213,15 @@ Returns the value of BODY if no error happens."
                   ,@body)))))
 
 
-(defmacro defun-on-fn-threading^ (fn &optional join)
-  "Define FN threading macro."
+(defmacro make-thread* (sexp &optional join name)
+  "Make SEXP as threading call."
   `(if-fn% 'make-thread nil
-           ,(let ((name (symbol-name fn))
-                  (name1 (intern (format "on-%s-threading^"
-                                         (symbol-name fn))))
-                  (ds1 (format "Threading `%s'." fn)))
-              `(defun ,name1 ()
-                 ,ds1
-                 (let ((thread (make-thread (function ,fn) ,name)))
-                   (if% ,join
-                       (thread-join thread)
-                     thread))))
-     (ignore* ,join)
-     (function ,fn)))
-
-
-(defmacro make-thread* (fn &optional join name)
-  "Make FN as threading call."
-  `(if-fn% 'make-thread nil
-           (let ((thread (make-thread (lambda () ,fn) ,name)))
+           (let ((thread (make-thread (lambda () ,sexp) ,name)))
              (if% ,join
                  (thread-join thread)
                thread))
      (ignore* ,join ,name)
-     (funcall (lambda () ,fn))))
+     (funcall (lambda () ,sexp))))
 
 
 (defmacro dolist* (spec &rest body)
