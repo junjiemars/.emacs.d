@@ -133,8 +133,12 @@ SEQ, this is like `mapcar'.  With several, it is like the Common Lisp
 `mapcar' function extended to arbitrary sequence types.
 \n(fn FUNCTION SEQ...)"
   (if-fn% 'cl-mapcar 'cl-lib
-          ;; `cl-mapcar' autoloaded
-          `(cl-mapcar ,fn ,seq ,@seqs)
+          (if-version% <= 25
+                       `(cl-mapcar ,fn ,seq ,@seqs)
+            (declare-function cl-mapcar "cl-lib.elc"
+                              (fn x &rest rest)
+                              t)
+            `(cl-mapcar ,fn ,seq ,@seqs))
     `(when-fn% 'mapcar* 'cl
        (with-no-warnings
          (mapcar* ,fn ,seq ,@seqs)))))
