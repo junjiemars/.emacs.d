@@ -112,8 +112,13 @@ Equality is defined by TESTFN if non-nil or by `equal' if nil."
       <= 26.1
       `(assoc ,key ,list ,testfn)
     (if-fn% 'cl-assoc 'cl-lib
-            ;; `cl-assoc' autoloaded, but may not autoload
-            `(cl-assoc ,key ,list :test (or ,testfn #'equal))
+            (if-version%
+                <= 25
+                `(cl-assoc ,key ,list :test (or ,testfn #'equal))
+              (declare-function cl-assoc "cl-seq.elc"
+                                (item seq &rest keys)
+                                t)
+              `(cl-assoc ,key ,list :test (or ,testfn #'equal)))
       (when-fn% 'assoc* 'cl
         `(with-no-warnings
            (assoc* ,key ,list :test (or ,testfn #'equal)))))))
@@ -147,8 +152,12 @@ to avoid corrupting the original SEQ.
 \nKeywords supported:  :test :test-not :key :count :start :end :from-end
 \n(fn ITEM SEQ [KEYWORD VALUE]...)"
   (if-fn% 'cl-remove 'cl-lib
-          ;; `cl-remove' autoloaded
-          `(cl-remove ,item ,seq ,@keys)
+          (if-version% <= 25
+                       `(cl-remove ,item ,seq ,@keys)
+            (declare-function cl-remove "cl-seq.elc"
+                              (item seq &rest keys)
+                              t)
+            `(cl-remove ,item ,seq ,@keys))
     (when-fn% 'remove* 'cl
       `(with-no-warnings
          (remove* ,item ,seq ,@keys)))))
@@ -161,7 +170,11 @@ Return the sublist of LIST whose car is ITEM.
 \nKeywords supported:  :test :test-not :key
 \n(fn ITEM LIST [KEYWORD VALUE]...)"
   (if-fn% 'cl-member 'cl-lib
-          `(cl-member ,item ,list ,@keys)
+          (if-version% <= 25
+                       `(cl-member ,item ,list ,@keys)
+            (declare-function cl-member (item seq &rest keys)
+                              t)
+            `(cl-member ,item ,list ,@keys))
     `(with-no-warnings
        (member* ,item ,list ,@keys))))
 
