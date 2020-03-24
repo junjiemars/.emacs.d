@@ -198,7 +198,12 @@ Return the sublist of LIST whose car is ITEM.
   "Return t if PRED is true of any element of SEQ or SEQs."
   (declare (indent 1))
   (if-fn% 'cl-some 'cl-lib
-          `(cl-some ,pred ,@seq)
+          (if-version% <= 25
+                       `(cl-some ,pred ,@seq)
+            (declare-function cl-some "cl-extra.elc"
+                              (pred seq &rest rest)
+                              t)
+            `(cl-some ,pred ,@seq))
     (when-fn% 'some 'cl
       `(with-no-warnings
          (some ,pred ,@seq)))))
