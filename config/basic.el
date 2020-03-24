@@ -123,10 +123,6 @@ Equality is defined by TESTFN if non-nil or by `equal' if nil."
         `(with-no-warnings
            (assoc* ,key ,list :test (or ,testfn #'equal)))))))
 
-(when-version% > 25
-  (when-version% <= 24
-    (autoload #'cl-assoc "cl-seq" "cl-assoc may not autoload")))
-
 
 ;; Unify `cl-mapcar' and `mapcar*'
 (defmacro mapcar** (fn seq &rest seqs)
