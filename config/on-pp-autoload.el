@@ -43,21 +43,36 @@ If ARG < 0 then minify the region, otherwise pretty print it."
 
 ;; json
 
-(defun pp-json (begin end &optional arg)
-  "Pretty-print Json region.
+(defun pp-json (&optional arg)
+  "Pretty-print Json region or current buffer.
 
-If ARG < 0 then minify the region, otherwise pretty print it."
-  (interactive (list (region-beginning) (region-end)
-                     current-prefix-arg))
-  (if (and (numberp arg) (< arg 0))
-      ;; TODO: {"a":  "aa\" \naaa" }
-      (insert
-       (replace-regexp-in-string "\\(\"\\(?:[^\"\\]|.\\)*\"\\)\\|\s+"
-                                 ""
-                                 (delete-and-extract-region begin end)))
-    (if-fn% 'json-pretty-print 'json
-            (json-pretty-print begin end)
-      (message "!pp-json had not been implemented"))))
+Minify the region when ARG is non-nil, otherwise pretty print it."
+  (interactive "P")
+  (let ((begin (region-active-if (region-beginning) (point-min)))
+        (end (region-active-if (region-end) (point-max))))
+    (if arg
+        (make-thread*
+         (let ((ss (buffer-substring-no-properties begin end))
+               (s1 nil))
+           (with-temp-buffer
+             (insert ss)
+             (javascript-mode)
+             (goto-char (point-min))
+             (while (forward-whitespace 1)
+               (when (search-backward-regexp "\\(\s+\\)" nil t)
+                 (replace-match "")))
+             (goto-char (point-min))
+             (while (and (forward-line 1)
+                         (< (point) (point-max)))
+               (delete-char -1 t))
+             (setq s1 (buffer-substring-no-properties (point-min)
+                                                      (point-max))))
+           (delete-and-extract-region begin end)
+           (insert s1)))
+      (if-fn% 'json-pretty-print 'json
+              (make-thread* (json-pretty-print begin end))
+        (message (propertize "No implemented"
+                             'face 'font-lock-warning-face))))))
 
 
 
