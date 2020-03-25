@@ -456,7 +456,9 @@ Take effect after restart Emacs.
 ;; Load cl at runtime
 (if-version% <= 24
              (require 'cl-lib)
-  (require 'cl))
+  (with-var byte-compile-warnings
+    (setq byte-compile-warnings nil)
+    (require 'cl)))
 
 
 ;; Load ui, shell, basic env:
