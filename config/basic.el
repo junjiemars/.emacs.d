@@ -159,10 +159,7 @@ to avoid corrupting the original SEQ.
                               t)
             `(cl-remove ,item ,seq ,@keys))
     (when-fn% 'remove* 'cl
-      (if-version% <= 23
-                   `(remove* ,item ,seq ,@keys)
-        `(with-no-warnings
-           (remove* ,item ,seq ,@keys))))))
+      `(remove* ,item ,seq ,@keys))))
 
 
 ;; Unify `cl-member' and `member*'
