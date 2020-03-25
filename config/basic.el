@@ -158,8 +158,8 @@ to avoid corrupting the original SEQ.
                               (item seq &rest keys)
                               t)
             `(cl-remove ,item ,seq ,@keys))
-    (when-fn% 'remove* 'cl
-      `(remove* ,item ,seq ,@keys))))
+    `(with-no-warnings
+       (remove* ,item ,seq ,@keys))))
 
 
 ;; Unify `cl-member' and `member*'
