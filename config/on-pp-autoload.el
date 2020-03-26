@@ -43,37 +43,31 @@ If ARG < 0 then minify the region, otherwise pretty print it."
 
 ;; json
 
-(defun pp-json (&optional arg)
+(defun pp-json (&optional minify)
   "Pretty-print Json region or current buffer.
 
-Minify the region when ARG is non-nil, otherwise pretty print it."
+MINIFY the region when it's non-nil, otherwise pretty print it."
   (interactive "P")
   (let ((begin (region-active-if (region-beginning) (point-min)))
         (end (region-active-if (region-end) (point-max))))
-    (if arg
+    (if minify
         (make-thread*
-         (let ((ss (buffer-substring-no-properties begin end))
-               (s1 nil))
-           (with-temp-buffer
-             (insert ss)
-             (javascript-mode)
-             (goto-char (point-min))
-             (while (forward-whitespace 1)
-               (when (search-backward-regexp "\\(\s+\\)" nil t)
-                 (replace-match "")))
-             (goto-char (point-min))
-             (while (and (forward-line 1)
-                         (< (point) (point-max)))
-               (delete-char -1 t))
-             (setq s1 (buffer-substring-no-properties (point-min)
-                                                      (point-max))))
-           (delete-and-extract-region begin end)
-           (insert s1)))
+         (progn
+           (narrow-to-region begin end)
+           (goto-char (point-min))
+           (while (forward-whitespace 1)
+             (unless (bounds-of-thing-at-point 'string)
+               (let ((bw (bounds-of-thing-at-point 'whitespace)))
+                 (delete-whitespace-rectangle (car bw)
+                                              (cdr bw)))))
+           (goto-char (point-min))
+           (while (and (forward-line 1)
+                       (< (point) (point-max)))
+             (delete-char -1 t))))
       (if-fn% 'json-pretty-print 'json
               (make-thread* (json-pretty-print begin end))
         (message (propertize "No implemented"
                              'face 'font-lock-warning-face))))))
-
 
 
 ;; end of on-pp-autoload.el
