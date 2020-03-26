@@ -199,7 +199,6 @@ reopen the Emacs.
     ├── config (comment "all stuff here")
     ├── elpa (comment "installed packages")
     ├── init.el (comment "Emacs init file")
-    ├── mnemonic.md
     ├── private (comment "your configuration can put here")
     │   ├── self-env-spec.el
     │   ├── self-epilogue.el
