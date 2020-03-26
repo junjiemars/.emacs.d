@@ -12,6 +12,13 @@
   "https://github.com/junjiemars/.emacs.d")
 
 
+;; Load cl-lib/cl at compile-time
+(eval-when-compile
+  (if-version% <= 24
+               (require 'cl-lib)
+    (require 'cl)))
+
+
 ;; *-lexical macro
 
 (defmacro if-lexical% (then &rest else)
@@ -445,20 +452,6 @@ Take effect after restart Emacs.
 (compile! (compile-unit* (self-def-path-ref-> :env-spec)))
 
  ;; end of self-spec macro
-
-
-;; Load cl-lib/cl at compile-time
-(eval-when-compile
-  (if-version% <= 24
-               (require 'cl-lib)
-    (require 'cl)))
-
-;; Load cl at runtime
-(if-version% <= 24
-             (require 'cl-lib)
-  (with-var byte-compile-warnings
-    (setq byte-compile-warnings nil)
-    (require 'cl)))
 
 
 ;; Load ui, shell, basic env:
