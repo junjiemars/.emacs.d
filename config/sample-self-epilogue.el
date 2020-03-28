@@ -161,7 +161,10 @@
  
  ;; web-mode, http://web-mode.org
  (when-var% web-mode-hook 'web-mode
-   (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))))
+   (add-hook 'web-mode-hook
+             #'(lambda ()
+                 (add-to-list web-mode-comment-formats
+                              '("javascript" . "//"))))))
 
  ;; end of web
 

@@ -31,7 +31,7 @@
                                    "    ;;\n"
                                    "esac\n")))))
 (with-eval-after-load 'term
-  (define-key term-mode-map (kbd "C-c t p") #'term-unify-shell-prompt))
+  (define-key% term-mode-map (kbd "C-c t p") #'term-unify-shell-prompt))
 
 
 ;; end of file
