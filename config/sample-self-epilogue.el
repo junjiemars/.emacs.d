@@ -152,19 +152,23 @@
 ;;;; web
 
 (comment
- 
- ;; httpd
+ ;; httpd: M-x httpd-start
+ ;; skewer: M-x run-skewer
+
  (setq% httpd-root
         (path! (emacs-home* "private/httpd"))
         'simple-httpd)
  (setq% httpd-port 8080 'simple-httpd)
- 
+
  ;; web-mode, http://web-mode.org
  (when-var% web-mode-hook 'web-mode
    (add-hook 'web-mode-hook
              #'(lambda ()
-                 (add-to-list web-mode-comment-formats
-                              '("javascript" . "//"))))))
+                 (setq web-mode-comment-formats
+                       '(("java" . "/*")
+                         ("javascript" . "/*")
+                         ("php" . "/*")
+                         ("css" . "/*")))))))
 
  ;; end of web
 
