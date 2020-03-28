@@ -8,7 +8,7 @@
 
 
 (defun term-unify-shell-prompt ()
-  "Unify the shell prompt of `term'."
+  "Unify the shell prompt in `term'."
   (interactive)
   (let ((proc (get-buffer-process (current-buffer))))
     (unless proc
