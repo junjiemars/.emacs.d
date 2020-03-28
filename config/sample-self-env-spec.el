@@ -46,6 +46,8 @@
                :options '("-i" "2>/dev/null") ;; '("--login")
                :exec-path t
                :shell-file-name (eval-when-compile (executable-find "bash"))
+               :shell-prompt (list :zsh "%n@%m:%~ %# "
+                                   :bash "\\u@\\h:\\w\\$ ")
                :allowed nil)
   
   :desktop (list :files-not-to-save

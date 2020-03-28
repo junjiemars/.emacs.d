@@ -77,6 +77,7 @@
     (compile-unit% (emacs-home* "config/on-net-autoload.el"))
     (compile-unit% (emacs-home* "config/on-org-autoload.el"))
     (compile-unit% (emacs-home* "config/on-pp-autoload.el"))
+    (compile-unit% (emacs-home* "config/on-term-autoload.el"))
     (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))
     (compile-unit% (emacs-home* "config/on-window-autoload.el"))
 

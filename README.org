@@ -500,6 +500,8 @@ default.
              :options '("--login") ;; '("-i" "2>/dev/null")
              :exec-path t
              :shell-file-name (eval-when-compile (executable-find "bash"))
+             :shell-prompt (list :zsh "%n@%m:%~ %# "
+                                 :bash "\\u@\\h:\\w\\$ ")
              :allowed nil)
 #+END_SRC
 
@@ -509,6 +511,7 @@ default.
 - =:exec-path= copy =$PATH= or =%PATH%= to =exec-path=
 - =:shell-file-name= where the shell program located, it should be
   specified when =:env-vars= is non nil
+- =:shell-prompt= unify shell prompt in =term= mode
 - =:allowed= =t= allowed, =nil= disabled
 
 *** eshell
