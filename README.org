@@ -511,7 +511,8 @@ default.
 - =:exec-path= copy =$PATH= or =%PATH%= to =exec-path=
 - =:shell-file-name= where the shell program located, it should be
   specified when =:env-vars= is non nil
-- =:shell-prompt= unify shell prompt in =term= mode
+- =:prompt= unify shell prompt in =term= mode, via @@html:<kbd>@@C-c
+  j@@html:</kbd>@@ then @@html:<kbd>C-c t p@@html:</kbd>@@
 - =:allowed= =t= allowed, =nil= disabled
 
 *** eshell

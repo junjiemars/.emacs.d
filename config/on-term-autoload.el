@@ -14,10 +14,10 @@
     (unless proc
       (error "Current buffer has no process"))
     (let ((zsh (or (and (self-spec->*env-spec :shell :allowed)
-                        (self-spec->*env-spec :shell :shell-prompt :zsh))
+                        (self-spec->*env-spec :shell :prompt :zsh))
                    "%n@%m:%~ %# "))
           (oth (or (and (self-spec->*env-spec :shell :allowed)
-                        (self-spec->*env-spec :shell :shell-prompt :bash))
+                        (self-spec->*env-spec :shell :prompt :bash))
                    "\\u@\\h:\\w\\$ ")))
       (process-send-string proc
                            (concat "case \"`basename $SHELL`\" in\n"
