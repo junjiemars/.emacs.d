@@ -166,7 +166,7 @@
              #'(lambda ()
                  (setq web-mode-comment-formats
                        '(("java" . "/*")
-                         ("javascript" . "/*")
+                         ("javascript" . "//")
                          ("php" . "/*")
                          ("css" . "/*")))))))
 
