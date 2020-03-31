@@ -1289,8 +1289,8 @@ It's *self-documenting* and great, keep reading it frequently.
 	 :END:
 
 #+REVEAL: split
-- check current buffer coding system: @@html:<kbd>@@M-:
-  buffer-file-coding-system@@html:</kbd>@@
+- check current buffer coding system: @@html:<kbd>@@C-x RET
+  =@@html:</kbd>@@
 - revert current buffer's coding system: @@html:<kbd>@@C-x RET
   r@@html:</kbd>@@
 - specify coding system for the current buffer: @@html:<kbd>@@C-x RET

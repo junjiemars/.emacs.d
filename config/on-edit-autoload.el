@@ -437,6 +437,21 @@ kill ring. If prefix argument ARG is nil then copy
  ;; end of `insert-char*'
 
 
+(defun get-buffer-coding-system (&optional buffer)
+  "Return the coding system of current buffer or BUFFER."
+  (interactive)
+  (with-current-buffer (or buffer
+                           (current-buffer))
+    (message "%s" buffer-file-coding-system)
+    buffer-file-coding-system))
+
+(define-key% (current-global-map)
+  (kbd "C-x RET =")
+  #'get-buffer-coding-system)
+
+ ;; end of `current-buffer-coding-system'
+
+
 (unless-fn% 'count-words-region 'simple
   (defalias 'count-words-region #'count-lines-region
     "`count-lines-region' had been obsoleted since Emacs24.1+"))
