@@ -1436,6 +1436,9 @@ automatically from one Emacs session to the next.
 - stop recording macro: @@html:<kbd>@@C-x )@@html:</kbd>@@
 - playback macro: @@html:<kbd>@@C-x e@@html:</kbd>@@
 - apply macro to region lines: @@html:<kbd>@@C-x C-k r@@html:</kbd>@@
+- edit last marcro: @@html:<kbd>@@C-x C-k RET@@html:</kbd>@@
+- bind the most macro to a key: @@html:<kbd>@@C-x C-k b
+  [1-9A-Z]@@html:</kbd>@@
 
 ** Dired
    :PROPERTIES:
