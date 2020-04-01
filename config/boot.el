@@ -19,8 +19,11 @@
     (require 'cl)))
 
 (if-version% <= 24
-   (when-version% > 25 
-      (require 'cl-lib)))
+             (when-version% > 25 
+               (require 'cl-lib))
+  (with-no-warnings
+    (require 'cl)))
+
 
 ;; *-lexical macro
 
