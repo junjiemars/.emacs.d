@@ -221,6 +221,15 @@ Return the sublist of LIST whose car is ITEM.
              (list (apply #'format ,format ,@args)))))
 
 
+(defmacro called-interactively-p* (&optional kind)
+  "Return t if the containing function was called by
+`call-interactively'."
+  (if-fn% 'called-interactively-p nil
+          `(called-interactively-p ,kind)
+    (ignore* kind)
+    `(interactive-p)))
+
+
  ;; end of Compatible Macro
 
 

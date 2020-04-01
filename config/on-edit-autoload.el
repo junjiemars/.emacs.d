@@ -442,8 +442,9 @@ kill ring. If prefix argument ARG is nil then copy
   (interactive)
   (with-current-buffer (or buffer
                            (current-buffer))
-    (message "%s" buffer-file-coding-system)
-    buffer-file-coding-system))
+    (if (called-interactively-p*)
+        (message "%s" buffer-file-coding-system)
+      buffer-file-coding-system)))
 
 (define-key% (current-global-map)
   (kbd "C-x RET =")
