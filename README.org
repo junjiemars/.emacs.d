@@ -1432,10 +1432,10 @@ automatically from one Emacs session to the next.
    :CUSTOM_ID: keyboard-macro
    :END:
 
--  start recording macro: @@html:<kbd>@@C-x (@@html:</kbd>@@
--  stop recording macro: @@html:<kbd>@@C-x )@@html:</kbd>@@
--  playback macro: @@html:<kbd>@@C-x e@@html:</kbd>@@
--  apply macro to region lines: @@html:<kbd>@@C-x C-k r@@html:</kbd>@@
+- start recording macro: @@html:<kbd>@@C-x (@@html:</kbd>@@
+- stop recording macro: @@html:<kbd>@@C-x )@@html:</kbd>@@
+- playback macro: @@html:<kbd>@@C-x e@@html:</kbd>@@
+- apply macro to region lines: @@html:<kbd>@@C-x C-k r@@html:</kbd>@@
 
 ** Dired
    :PROPERTIES:
