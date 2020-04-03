@@ -42,15 +42,27 @@ get via `(shell-env-> k)' and put via `(shell-env<- k v)'")
   `(plist-put *default-shell-env* ,k ,v))
 
 
+(defmacro echo-var (var &optional options)
+  "Return the value of $VAR via echo."
+  `(when (stringp ,var)
+     (let ((cmd (shell-command*
+                    (shell-quote-argument (getenv "SHELL"))
+                  (mapconcat #'identity ,options " ")
+                  (format "-c 'echo $%s'" ,var))))
+       (when (zerop (car cmd))
+         (string-trim> (cdr cmd))))))
+
 
 (defmacro paths->var (path &optional predicate)
-  "Convert a list of PATH to $PATH like var that separated by `path-separator'."
+  "Convert a list of PATH to $PATH like var that separated by
+`path-separator'."
   `(string-trim> (apply #'concat
                         (mapcar #'(lambda (s)
-                                    (if (functionp ,predicate)
-                                        (when (funcall ,predicate s)
-                                          (concat s path-separator))
-                                      (concat s path-separator)))
+                                    (if (null ,predicate)
+                                        (concat s path-separator)
+                                      (when (and (functionp ,predicate)
+                                                 (funcall ,predicate s))
+                                        (concat s path-separator))))
                                 ,path))
                  path-separator))
 
@@ -63,24 +75,26 @@ See also: `parse-colon-path'."
 
 
 (defun save-shell-env! ()
-  (shell-env<- :exec-path
-               (mapc (lambda (p)
-                       (when (stringp p)
-                         (add-to-list 'exec-path p t #'string=)))
-                     (append (var->paths (getenv (shells-spec->% :PATH)))
-                             (unless-platform% 'windows-nt
-                               (list (v-home% ".exec/"))))))
-  (shell-env<- :env-vars
-               (let ((vars nil))
-                 (mapc (lambda (v)
-                         (when (stringp v)
-                           (let ((cmd (shell-command* "echo" (concat "$" v))))
-                             (when (zerop (car cmd))
-                               (let ((val (string-trim> (cdr cmd))))
-                                 (when (> (length val) 0)
-                                   (push (cons v val) vars)))))))
-                       (shells-spec->* :env-vars))
-                 vars))
+  (shell-env<-
+   :env-vars
+   (let ((vars nil))
+     (mapc (lambda (v)
+             (when (stringp v)
+               (let ((val (echo-var v (shells-spec->* :options))))
+                 (when (and val (> (length val) 0))
+                   (when (string= v (shells-spec->% :PATH))
+                     (shell-env<-
+                      :exec-path
+                      (mapc (lambda (p)
+                              (when (and (stringp p)
+                                         (file-exists-p p))
+                                (add-to-list 'exec-path p t #'string=)))
+                            (append (var->paths val)
+                                    (unless-platform% 'windows-nt
+                                      (list (v-home% ".exec/")))))))
+                   (push (cons v val) vars)))))
+           (shells-spec->* :env-vars))
+     vars))
   (when (save-sexp-to-file
          (list 'setq '*default-shell-env*
                (list 'list
@@ -143,22 +157,18 @@ See also: `parse-colon-path'."
 
 ;; allowed/disallowed `shells-spec->*'
 
-(if (shells-spec->* :allowed)
-    (progn
-      (read-shell-env!)
-      
-      (when (shells-spec->* :shell-file-name)
-        (setenv (shells-spec->% :SHELL)
-                (shells-spec->* :shell-file-name)))
-      
-      (when (shells-spec->* :exec-path)
-        (copy-exec-path! (shell-env-> :exec-path)))
-
-      (when (shells-spec->* :env-vars)
-        (copy-env-vars! (shell-env-> :env-vars)
-                        (shells-spec->* :env-vars))))
-  ;; disallowed: append .exec/ to `exec-path'
-  (add-to-list 'exec-path (v-home% ".exec/") t #'string=))
+(if (not (shells-spec->* :allowed))
+    ;; disallowed: append .exec/ to `exec-path'
+    (add-to-list 'exec-path (v-home% ".exec/") t #'string=)
+  (read-shell-env!)
+  (when (shells-spec->* :shell-file-name)
+    (setenv (shells-spec->% :SHELL)
+            (shells-spec->* :shell-file-name)))
+  (when (shells-spec->* :exec-path)
+    (copy-exec-path! (shell-env-> :exec-path)))
+  (when (shells-spec->* :env-vars)
+    (copy-env-vars! (shell-env-> :env-vars)
+                    (shells-spec->* :env-vars))))
 
 
  ;; end of allowed/disallowed `shells-spec->*'
