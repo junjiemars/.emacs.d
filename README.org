@@ -522,7 +522,8 @@ default.
 
 #+ATTR_HTML: :style text-align:left
 The eshell spec locate in =(emacs-home* "private/self-env-spec.el")=
-by default.
+by default. And shared the copied environment variables =:env-vars=
+with shell.
 
 #+REVEAL: splitV
 #+BEGIN_SRC emacs-lisp

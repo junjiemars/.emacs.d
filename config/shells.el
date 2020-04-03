@@ -74,7 +74,11 @@ See also: `parse-colon-path'."
                (let ((vars nil))
                  (mapc (lambda (v)
                          (when (stringp v)
-                           (push (cons v (getenv v)) vars)))
+                           (let ((cmd (shell-command* "echo" (concat "$" v))))
+                             (when (zerop (car cmd))
+                               (let ((val (string-trim> (cdr cmd))))
+                                 (when (> (length val) 0)
+                                   (push (cons v val) vars)))))))
                        (shells-spec->* :env-vars))
                  vars))
   (when (save-sexp-to-file
