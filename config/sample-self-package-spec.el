@@ -11,7 +11,8 @@
 (def-self-package-spec
   (list
    :cond nil
-   :packages (list 'restclient
+   :packages (list 'multiple-cursors
+                   'restclient
                    'vlf
                    'x509-mode
                    (when-version% <= 25 'ox-reveal)
