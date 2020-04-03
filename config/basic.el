@@ -634,7 +634,6 @@ otherwise default to keep the directories of current `emacs-version'."
                     `,(emacs-home* ".bookmarks/")
                     `,(emacs-home* ".desktop/")
                     `,(emacs-home* ".eshell/")
-                    `,(emacs-home* ".exec/")
                     `,(emacs-home* ".games/")
                     `,(emacs-home* ".ido/")
                     `,(emacs-home* ".dired/")
