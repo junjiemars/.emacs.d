@@ -475,7 +475,7 @@ by default and for GUI mode only.
 *** shell
 
 #+ATTR_HTML: :style text-align:left
-Suppport any =SHELL=, copying environment variables into Emacs
+Suppport any =SHELL=, copying or spinning environment variables into Emacs
 environment.
 
 #+ATTR_HTML: :style text-align:left

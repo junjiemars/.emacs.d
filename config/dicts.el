@@ -13,7 +13,15 @@
      ("meta" . (("<meta name=\"description\" content=\"必应词典为您提供.+的释义，")
                 "/><"
                 .
-                nil)))
+                nil))
+     ("sounds-like" . (("<div class=\"df_wb_a\">音近词</div>")
+                       "</div></div></div>"
+                       .
+                       (dict-fn-remove-html-tag)))
+     ("spelled-like" . (("<div class=\"df_wb_a\">形近词</div>")
+                        "</div></div></div>"
+                        .
+                        (dict-fn-remove-html-tag))))
     ("camb/zh"
      ("url" . "https://dictionary.cambridge.org/dictionary/english-chinese-simplified/")
      ("pron-us" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
@@ -49,6 +57,9 @@
                 (dict-fn-decode-html-char)))))
   
   "Dictionaries using by `lookup-dict'.")
+
+(defvar *dict-debug-log* nil
+  "Dictonary output log.")
 
 (defvar *dict-name-history* nil
   "Dictionary choosing history list.")
@@ -106,9 +117,9 @@
       (kill-buffer)
       (user-error* "!%s in on-lookup-dict" err)))
   (set-buffer-multibyte t)
-  (comment
-   (write-region (point-min) (point-max)
-                 (path! (emacs-home* ".dict/dict.log"))))
+  (when *dict-debug-log*
+    (write-region (point-min) (point-max)
+                  (path! (emacs-home* ".dict/dict.log"))))
   (let* ((dict (cadr (assoc** 'dict args #'eq)))
          (style (cadr (assoc** 'style args #'eq)))
          (ss (mapcar
@@ -122,14 +133,14 @@
                                    b (- e (length (cadr re))))))
                        (fns (cddr re))
                        (txt html))
-                  (when (and (not (null html)) (> (length html) 0))
-                    (cons x (dolist* (fn fns txt)
+                  (cons x (when (and (not (null html)) (> (length html) 0))
+                            (dolist* (fn fns txt)
                               (if (functionp fn)
                                   (setq txt (funcall fn txt))
                                 txt))))))
               style)))
-    (comment
-     (save-sexp-to-file ss (path! (emacs-home* ".dict/lookup.log"))))
+    (when *dict-debug-log*
+      (save-sexp-to-file ss (path! (emacs-home* ".dict/lookup.log"))))
     (message (if (car ss)
                  (propertize (string-trim> (mapconcat #'identity
                                                       (mapcar #'cdr ss)
