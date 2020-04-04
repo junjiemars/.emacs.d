@@ -35,14 +35,12 @@
                   :scaled nil
                   :allowed nil)
   
-  :shell (list :env-vars `("JAVA_HOME"
-                           "PYTHONPATH"
-                           "RACKET_HOME"
-                           "PATH"
+  :shell (list :env-vars `("PATH"
                            ,(unless-platform% 'windows-nt
                               (if-platform% 'darwin
                                   "DYLD_LIBRARY_PATH"
                                 "LD_LIBRARY_PATH")))
+               :spin-vars nil ;; `(("ZZZ" . "xxxyyy"))
                :options '("-i" "2>/dev/null") ;; '("--login")
                :exec-path t
                :shell-file-name (eval-when-compile (executable-find "bash"))

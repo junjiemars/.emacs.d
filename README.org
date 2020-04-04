@@ -489,15 +489,13 @@ default.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
-:shell (list :env-vars `("JAVA_HOME"
-                         "PYTHONPATH"
-                         "RACKET_HOME"
-                         "PATH"
+:shell (list :copy-vars `("PATH"
                          ,(unless-platform% 'windows-nt
                             (if-platform% 'darwin
                                 "DYLD_LIBRARY_PATH"
                               "LD_LIBRARY_PATH")))
-             :options '("--login") ;; '("-i" "2>/dev/null")
+             :spin-vars nil ;; `(("ZZZ" . "xxxyyy"))
+             :options '("-i" "2>/dev/null") ;; '("--login") ;;
              :exec-path t
              :shell-file-name (eval-when-compile (executable-find "bash"))
              :shell-prompt (list :zsh "%n@%m:%~ %# "
@@ -506,11 +504,13 @@ default.
 #+END_SRC
 
 #+REVEAL: split
-- =:env-vars= copy what environment variables from shell to Emacs
+- =:copy-vars= copy environment variables from shell to Emacs, affects
+  =eshell=, =shell= and =ansi-term=
+- =:spin-vars= spin customized variables, only affects =eshell=
 - =:options= a list of shell's options
 - =:exec-path= copy =$PATH= or =%PATH%= to =exec-path=
 - =:shell-file-name= where the shell program located, it should be
-  specified when =:env-vars= is non nil
+  specified when =:copy-vars= is non nil
 - =:prompt= unify shell prompt in =term= mode, via @@html:<kbd>@@C-c
   j@@html:</kbd>@@ then @@html:<kbd>C-c t p@@html:</kbd>@@
 - =:allowed= =t= allowed, =nil= disabled
@@ -522,7 +522,7 @@ default.
 
 #+ATTR_HTML: :style text-align:left
 The eshell spec locate in =(emacs-home* "private/self-env-spec.el")=
-by default. And shared the copied environment variables =:env-vars=
+by default. And shared the copied environment variables =:copy-vars=
 with shell.
 
 #+REVEAL: splitV

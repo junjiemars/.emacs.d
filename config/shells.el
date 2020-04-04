@@ -26,7 +26,7 @@
 
 (defvar *default-shell-env*
   (list :exec-path nil
-        :env-vars nil)
+        :copy-vars nil)
   "Default shell environments, 
 get via `(shell-env-> k)' and put via `(shell-env<- k v)'")
 
@@ -76,7 +76,7 @@ See also: `parse-colon-path'."
 
 (defun save-shell-env! ()
   (shell-env<-
-   :env-vars
+   :copy-vars
    (let ((vars nil))
      (mapc (lambda (v)
              (when (stringp v)
@@ -93,13 +93,13 @@ See also: `parse-colon-path'."
                                     (unless-platform% 'windows-nt
                                       (list (v-home% ".exec/")))))))
                    (push (cons v val) vars)))))
-           (shells-spec->* :env-vars))
+           (shells-spec->* :copy-vars))
      vars))
   (when (save-sexp-to-file
          (list 'setq '*default-shell-env*
                (list 'list
                      ':exec-path (list 'quote (shell-env-> :exec-path))
-                     ':env-vars (list 'quote (shell-env-> :env-vars))))
+                     ':copy-vars (list 'quote (shell-env-> :copy-vars))))
          (shells-spec->% :source-file))
     (byte-compile-file (shells-spec->% :source-file))))
 
@@ -115,6 +115,13 @@ See also: `parse-colon-path'."
   `(mapc (lambda (v)
            (when v (let ((v1 (cdr (assoc** v ,env #'string=))))
                      (when v1 (setenv v v1)))))
+         ,vars))
+
+(defmacro spin-env-vars! (vars)
+  `(mapc (lambda (v)
+           (when (and (stringp (car v))
+                      (stringp (cdr v)))
+             (setenv (car v) (cdr v))))
          ,vars))
 
 
@@ -166,9 +173,11 @@ See also: `parse-colon-path'."
             (shells-spec->* :shell-file-name)))
   (when (shells-spec->* :exec-path)
     (copy-exec-path! (shell-env-> :exec-path)))
-  (when (shells-spec->* :env-vars)
-    (copy-env-vars! (shell-env-> :env-vars)
-                    (shells-spec->* :env-vars))))
+  (when (shells-spec->* :copy-vars)
+    (copy-env-vars! (shell-env-> :copy-vars)
+                    (shells-spec->* :copy-vars)))
+  (when (shells-spec->* :spin-vars)
+    (spin-env-vars! (shells-spec->* :spin-vars))))
 
 
  ;; end of allowed/disallowed `shells-spec->*'
