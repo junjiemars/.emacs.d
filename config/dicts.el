@@ -23,7 +23,9 @@
                         .
                         (dict-fn-remove-html-tag))))
     ("camb/zh"
-     ("url" . "https://dictionary.cambridge.org/dictionary/english-chinese-simplified/")
+     ("url"
+      .
+      "https://dictionary.cambridge.org/dictionary/english-chinese-simplified/")
      ("pron-us" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
                    "<"
                    .
