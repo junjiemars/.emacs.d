@@ -1419,10 +1419,12 @@ automatically from one Emacs session to the next.
 - /open/ rectangle: @@html:<kbd>@@C-x r o@@html:</kbd>@@, insert blank
   /space/ to fill the space of the region-rectangle
 - /clear/ rectangle: @@html:<kbd>@@C-x r c@@html:</kbd>@@
+
 #+REVEAL: split
 - /replace/ rectangle: @@html:<kbd>@@C-x r t@@html:</kbd>@@
 - /string insert/ rectangle: @@html:<kbd>@@C-x r g@@html:</kbd>@@
 - /numbers insert/ rectangle: @@html:<kbd>@@C-x r N@@html:</kbd>@@
+
 #+REVAL: split
 - select entire buffer: @@html:<kbd>@@C-x h@@html:</kbd>@@
 - select page: @@html:<kbd>@@C-x C-p@@html:</kbd>@@
@@ -1433,12 +1435,12 @@ automatically from one Emacs session to the next.
    :CUSTOM_ID: keyboard-macro
    :END:
 
-- start recording macro: @@html:<kbd>@@C-x (@@html:</kbd>@@
-- stop recording macro: @@html:<kbd>@@C-x )@@html:</kbd>@@
-- playback macro: @@html:<kbd>@@C-x e@@html:</kbd>@@
-- apply macro to region lines: @@html:<kbd>@@C-x C-k r@@html:</kbd>@@
-- edit last marcro: @@html:<kbd>@@C-x C-k RET@@html:</kbd>@@
-- bind the most recent macro to a key: @@html:<kbd>@@C-x C-k b
+- /start/ recording macro: @@html:<kbd>@@C-x (@@html:</kbd>@@
+- /stop/ recording macro: @@html:<kbd>@@C-x )@@html:</kbd>@@
+- /playback/ macro: @@html:<kbd>@@C-x e@@html:</kbd>@@
+- apply macro to /region/: @@html:<kbd>@@C-x C-k r@@html:</kbd>@@
+- /edit/ last marcro: @@html:<kbd>@@C-x C-k RET@@html:</kbd>@@
+- /bind/ the most recent macro to a key: @@html:<kbd>@@C-x C-k b
   [1-9A-Z]@@html:</kbd>@@
 
 ** Dired
