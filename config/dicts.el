@@ -11,7 +11,7 @@
   `(("bing"
      ("url" . "https://cn.bing.com/dict/search?q=")
      ("meta" . (("<meta name=\"description\" content=\"必应词典为您提供.+的释义，")
-                "/><"
+                "\" /><"
                 .
                 nil))
      ("sounds-like" . (("<div class=\"df_wb_a\">音近词</div>")
