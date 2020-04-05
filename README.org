@@ -271,10 +271,17 @@ Introduce rules of naming /files/ and /functions/.
     ├── autoloads.el
     ├── basic.el
     ├── boot.el
+    ├── dicts.el
+    ├── financial.el
+    ├── fns.el
+    ├── gambit.el
+    ├── go.el
     ├── graphic.el
+    ├── gud-cdb.el
+    ├── gud-lldb.el
+    ├── guds.el
     ├── memory.el
-    ├── module.el
-    └── shells.el
+    └── module.el
 #+END_EXAMPLE
 
 #+REVEAL: split
@@ -294,14 +301,27 @@ Introduce rules of naming /files/ and /functions/.
   =on-<package-name>-autoload.el=
 #+BEGIN_EXAMPLE
     (emacs-home* "config/")
+    ├── on-cc-autoload.el
     ├── on-compile-autoload.el
     ├── on-dired-autoload.el
+    ├── on-docview-autoload.el
     ├── on-edit-autoload.el
+    ├── on-enc-autoload.el
+    ├── on-eshell-autoload.el
     ├── on-eww-autoload.el
+    ├── on-font-autoload.el
     ├── on-hippie-autoload.el
     ├── on-indent-autoload.el
     ├── on-lisp-autoload.el
-    └── on-semantic-autoload.el
+    ├── on-module.el
+    ├── on-net-autoload.el
+    ├── on-org-autoload.el
+    ├── on-pp-autoload.el
+    ├── on-python-autoload.el
+    ├── on-semantic-autoload.el
+    ├── on-term-autoload.el
+    ├── on-tramp-autoload.el
+    └── on-window-autoload.el
 #+END_EXAMPLE
 
 #+REVEAL: split
@@ -312,11 +332,10 @@ Introduce rules of naming /files/ and /functions/.
     ├── use-cider-autoload.el
     ├── use-cider.el
     ├── use-inf-clojure.el
-    ├── use-lfe-autoload.el
+    ├── use-js-autoload.el
+    ├── use-lua-autoload.el
     ├── use-magit-autoload.el
-    ├── use-python.el
-    ├── use-slime-autoload.el
-    └── use-slime.el
+    └── use-slime-autoload.el
 #+END_EXAMPLE
 
 #+REVEAL: split
