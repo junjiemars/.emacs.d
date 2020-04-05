@@ -484,6 +484,13 @@ See also: `multi-occur-in-matching-buffers'."
    (car (occur-read-primary-args))))
 
 
+;; Sorting
+(define-key (current-global-map) (kbd "C-c s f") #'sort-fields)
+(define-key (current-global-map) (kbd "C-c s l") #'sort-lines)
+(define-key (current-global-map) (kbd "C-c s r") #'reverse-region)
+
+ ;; end of Sorting
+
 
 
 
