@@ -1402,11 +1402,11 @@ It's *self-documenting* and great, keep reading it frequently.
 Unlike registers, bookmarks have long names, and they persist
 automatically from one Emacs session to the next.
 
--  set bookmark: @@html:<kbd>@@C-x r m@@html:</kbd>@@
--  set named bookmark: @@html:<kbd>@@C-x r m BOOKMARK@@html:</kbd>@@
--  jump to bookmark: @@html:<kbd>@@C-x r b BOOKMARK@@html:</kbd>@@
--  list all bookmarks: @@html:<kbd>@@C-x r l@@html:</kbd>@@
--  save bookmark to file: @@html:<kbd>@@M-x bookmark-save@@html:</kbd>@@
+- set bookmark: @@html:<kbd>@@C-x r m@@html:</kbd>@@
+- set named bookmark: @@html:<kbd>@@C-x r m BOOKMARK@@html:</kbd>@@
+- jump to bookmark: @@html:<kbd>@@C-x r b BOOKMARK@@html:</kbd>@@
+- list all bookmarks: @@html:<kbd>@@C-x r l@@html:</kbd>@@
+- save bookmark to file: @@html:<kbd>@@M-x bookmark-save@@html:</kbd>@@
 
 ** Rectangle
    :PROPERTIES:
