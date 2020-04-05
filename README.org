@@ -1215,16 +1215,23 @@ It's *self-documenting* and great, keep reading it frequently.
    :END:
 
 - =*scratch*= buffer
-- via Elisp: @@html:<kbd>@@M-:@@html:</kbd>@@
-- via Shell command: @@html:<kbd>@@M-!@@html:</kbd>@@, insert shell
-  output: @@html:<kbd>@@C-u M-!@@html:</kbd>@@, see /Info>Emacs>Shell/
+- eval /Elisp/: @@html:<kbd>@@C-[ :@@html:</kbd>@@
+- execute /Shell/ command: @@html:<kbd>@@C-[ !@@html:</kbd>@@
 - in Dired mode: @@html:<kbd>@@!@@html:</kbd>@@, do shell command
 - region as input to Shell command: @@html:<kbd>@@M-|@@html:</kbd>@@,
-  insert from shell output: @@html:<kbd>@@C-u M-|@@html:</kbd>@@
+
+#+REVAL: split
+- insert from shell output: @@html:<kbd>@@C-u C-[ !@@html:</kbd>@@
+- insert from elisp output: @@html:<kbd>@@C-u C-[ :@@html:</kbd>@@
+
+#+REVEAL: split
 - find file at point: @@html:<kbd>@@C-c f f@@html:</kbd>@@
-- lookup web at point: @@html:<kbd>@@C-c f w@@html:</kbd>@@
-- lookup dict at point: @@html:<kbd>@@C-c f d@@html:</kbd>@@
 - filename of current buffer: @@html:<kbd>@@C-c b n@@html:</kbd>@@
+
+#+REVAL: split
+- lookup /web/ at point: @@html:<kbd>@@C-c f w@@html:</kbd>@@
+- lookup /dict/ at point: @@html:<kbd>@@C-c f d@@html:</kbd>@@
+
 
 ** Editing
    :PROPERTIES:
