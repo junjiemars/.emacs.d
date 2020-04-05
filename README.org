@@ -1420,10 +1420,10 @@ automatically from one Emacs session to the next.
   space to fill the space of the region-rectangle
 - clear rectangle: @@html:<kbd>@@C-x r c@@html:</kbd>@@
 #+REVEAL: split
-- string rectangle: @@html:<kbd>@@C-x r t@@html:</kbd>@@, replace
-  rectangle contents with STRING on each line
-- string insert rectangle: @@html:<kbd>@@C-x r g@@html:</kbd>@@
-- @@html:<kbd>@@M-x delete-whitespace-rectangle@@html:</kbd>@@
+- replace rectangle: @@html:<kbd>@@C-x r t@@html:</kbd>@@
+- insert string: @@html:<kbd>@@C-x r g@@html:</kbd>@@
+- insert numbers: @@html:<kbd>@@C-x r N@@html:</kbd>@@
+#+REVAL: split
 - select entire buffer: @@html:<kbd>@@C-x h@@html:</kbd>@@
 - select page: @@html:<kbd>@@C-x C-p@@html:</kbd>@@
 - exchange cursor position and mark: @@html:<kbd>@@C-x C-x@@html:</kbd>@@ 
