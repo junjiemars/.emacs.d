@@ -1462,7 +1462,11 @@ automatically from one Emacs session to the next.
 - EShell: @@html:<kbd>@@M-x eshell@@html:</kbd>@@
 - Shell: @@html:<kbd>@@M-x shell@@html:</kbd>@@
 - Ansi-Term: @@html:<kbd>@@M-x ansi-term@@html:</kbd>@@
-- kill process in =ansi-term=: @@html:<kbd>@@C-x C-c@@html:</kbd>@@
+
+#+REVAL: split
+- interrupt process in =eshell=: @@html:<kbd>@@C-c C-c@@html:</kbd>@@
+- interrupt process in =shell=: @@html:<kbd>@@C-c C-c@@html:</kbd>@@
+- interrupt process in =ansi-term=: @@html:<kbd>@@C-x C-c@@html:</kbd>@@
 
 ** Remote
    :PROPERTIES:
