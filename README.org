@@ -1410,12 +1410,13 @@ It's *self-documenting* and great, keep reading it frequently.
   <REG>@@html:</kbd>@@, but the configuration cannot accross sessions.
 - store /frame/ configuration to register: @@html:<kbd>@@C-x r f
   <REG>@@html:</kbd>@@
-- store current location of point in register: @@html:<kbd>@@C-x r SPC
+- store /region/ into register: @@html:<kbd>@@C-x r s
   <REG>@@html:</kbd>@@
+- store current /point/ in register: @@html:<kbd>@@C-x r SPC
+  <REG>@@html:</kbd>@@
+
 #+REVEAL: split
-- /jump/ to register: @@html:<kbd>@@C-x r j <REG>@@html:</kbd>@@
-- /store/ region into register: @@html:<kbd>@@C-x r s
-  <REG>@@html:</kbd>@@
+- /jump to/ register: @@html:<kbd>@@C-x r j <REG>@@html:</kbd>@@
 - /insert from/ register: @@html:<kbd>@@C-x r i <REG>@@html:</kbd>@@
 - /view/ the content of register: @@html:<kbd>@@M-x view-register
   <REG>@@html:</kbd>@@
