@@ -61,7 +61,7 @@
 (setq% mouse-yank-at-point t 'mouse)
 
 
-;; no need for ~ files when editing
+;; no need for .# files when editing
 (setq% create-lockfiles nil)
 
 
@@ -76,8 +76,8 @@
 
 ;; `view-mode'
 (setq view-read-only t)
-(define-key (current-global-map) (kbd "C-x 4 v") #'view-file-other-window)
-(define-key (current-global-map) (kbd "C-x 5 v") #'view-file-other-frame)
+(define-key% (current-global-map) (kbd "C-x 4 v") #'view-file-other-window)
+(define-key% (current-global-map) (kbd "C-x 5 v") #'view-file-other-frame)
 
  ;; end of `view-mode'
 

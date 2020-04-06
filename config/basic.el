@@ -701,10 +701,11 @@ otherwise default to keep the directories of current `emacs-version'."
 
 ;; define key macro
 
-(defmacro if-key% (keymap key test-def then &rest else)
-  "If TEST-DEF for KEY in KEYMAP do then, otherwise do ELSE..."
+(defmacro if-key% (keymap key test then &rest else)
+  "If TEST function returns t for KEY in KEYMAP do then,
+otherwise do ELSE..."
   (declare (indent 4))
-  `(if% (funcall ,test-def (lookup-key ,keymap ,key))
+  `(if% (funcall ,test (lookup-key ,keymap ,key))
        ,then
      ,@else))
 
