@@ -343,42 +343,39 @@ If prefix ARG then make quoted string."
 ;; control indent or not: `open-next-line' and `open-previous-line'.
 ;; see also: https://www.emacswiki.org/emacs/OpenNextLine
 
-(defun open-next-line (n)
+(defun open-next-line (n &optional indent)
   "Move to the next line and then open N lines, like vi's o command.
 
 See also `open-line'."
-  (interactive "*p")
+  (interactive (list (prefix-numeric-value (or current-prefix-arg
+                                               "1"))
+                     (if current-prefix-arg
+                         (y-or-n-p "Indent: ")
+                       t)))
+  (barf-if-buffer-read-only)
   (end-of-line)
   (open-line n)
   (forward-line 1)
-  (indent-according-to-mode))
+  (when indent
+    (indent-according-to-mode)))
 
-(defun open-previous-line (n)
+(defun open-previous-line (n &optional indent)
   "Open N lines above the current one, like vi's O command.
 
 See also `open-line' and `split-line'."
-  (interactive "*p")
+  (interactive (list (prefix-numeric-value (or current-prefix-arg
+                                               "1"))
+                     (if current-prefix-arg
+                         (y-or-n-p "Indent: ")
+                       t)))
+  (barf-if-buffer-read-only)
   (beginning-of-line)
   (open-line n)
-  (indent-according-to-mode))
+  (when indent
+    (indent-according-to-mode)))
 
-(defun toggle-open-line-indent! (&optional arg)
-  "Toggle whether indent or not when `open-line' or `split-line'.
-
-With prefix argument ARG, indent when ARG is non-nil."
-  (interactive "P")
-  (let ((indent? (cond ((or arg
-                            (eq 'open-line
-                                (lookup-key
-                                 (current-global-map) (kbd "C-o"))))
-                        (cons #'open-next-line #'open-previous-line))
-                       (t (cons #'open-line #'split-line)))))
-    (define-key (current-global-map) (kbd "C-o") (car indent?))
-    (define-key (current-global-map) (kbd "C-M-o") (cdr indent?))
-    (message "open-line indent %s"
-             (if (eq #'open-line (car indent?))
-                 "disabled"
-               "enabled"))))
+(define-key (current-global-map) (kbd "C-o") #'open-next-line)
+(define-key (current-global-map) (kbd "C-M-o") #'open-previous-line)
 
  ;; end of open-*-line
 

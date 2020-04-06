@@ -22,9 +22,6 @@
 ;; eww as default browser
 (comment (if-feature-eww% (toggle-browser! t)))
 
-;; open-line indent
-(toggle-open-line-indent! t)
-
 
 
 

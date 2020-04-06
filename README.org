@@ -942,7 +942,6 @@ line. See [[https://www.emacswiki.org/emacs/OpenNextLine][Open Next Line]].
 #+REVEAL: split
 - @@html:<kbd>@@C-o@@html:</kbd>@@ =open-next-line=
 - @@html:<kbd>@@C-M-o@@html:</kbd>@@ =open-previous-line=
-- @@html:<kbd>@@M-x toggle-open-line-indent!@@html:</kbd>@@
 
 ** Keys
 	 :PROPERTIES:
