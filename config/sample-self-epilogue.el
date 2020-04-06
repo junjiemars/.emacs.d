@@ -137,16 +137,18 @@
 
  ;; end of sql
 
-
-;;;; snippet
+;;;;
+;; Snippet
+;;;;
 
 (comment
  (setq% yas-snippet-dirs '("<where>") 'yasnippet))
 
  ;; end of snippet
 
-
-;;;; web
+;;;;
+;; Web
+;;;;
 
 (comment
  ;; httpd: M-x httpd-start
@@ -159,15 +161,15 @@
 
  ;; web-mode, http://web-mode.org
  (when-var% web-mode-hook 'web-mode
+   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+   (add-to-list 'auto-mode-alist '("\\.vue\\'" . web-mode))
    (add-hook 'web-mode-hook
              #'(lambda ()
                  (setq web-mode-comment-formats
                        '(("java" . "/*")
                          ("javascript" . "//")
                          ("php" . "/*")
-                         ("css" . "/*")))
-                 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-                 (add-to-list 'auto-mode-alist '("\\.vue\\'" . web-mode))))))
+                         ("css" . "/*")))))))
 
  ;; end of web
 
