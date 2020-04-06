@@ -113,8 +113,10 @@ See also: `parse-colon-path'."
 
 (defmacro copy-env-vars! (env vars)
   `(mapc (lambda (v)
-           (when v (let ((v1 (cdr (assoc** v ,env #'string=))))
-                     (when v1 (setenv v v1)))))
+           (when (stringp v)
+             (let ((v1 (cdr (assoc** v ,env #'string=))))
+               (when (stringp v1)
+                 (setenv v v1)))))
          ,vars))
 
 (defmacro spin-env-vars! (vars)
@@ -173,11 +175,13 @@ See also: `parse-colon-path'."
             (shells-spec->* :shell-file-name)))
   (when (shells-spec->* :exec-path)
     (copy-exec-path! (shell-env-> :exec-path)))
-  (when (shells-spec->* :copy-vars)
-    (copy-env-vars! (shell-env-> :copy-vars)
-                    (shells-spec->* :copy-vars)))
-  (when (shells-spec->* :spin-vars)
-    (spin-env-vars! (shells-spec->* :spin-vars))))
+  (let ((copying (shells-spec->* :copy-vars)))
+    (when (consp copying)
+      (copy-env-vars! (shell-env-> :copy-vars)
+                      (shells-spec->* :copy-vars))))
+  (let ((spinning (shells-spec->* :spin-vars)))
+    (when (consp spinning)
+      (spin-env-vars! spinning))))
 
 
  ;; end of allowed/disallowed `shells-spec->*'

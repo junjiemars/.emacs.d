@@ -40,7 +40,7 @@
                               (if-platform% 'darwin
                                   "DYLD_LIBRARY_PATH"
                                 "LD_LIBRARY_PATH")))
-               :spin-vars nil ;; `(("ZZZ" . "xxxyyy"))
+               :spin-vars nil ;; `(("ZZZ" . "123"))
                :options '("-i" "2>/dev/null") ;; '("--login")
                :exec-path t
                :shell-file-name (eval-when-compile (executable-find "bash"))
