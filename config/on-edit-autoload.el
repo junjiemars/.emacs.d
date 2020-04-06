@@ -82,7 +82,7 @@
  ;; end of `view-mode'
 
 
-;; comments
+;; Comments
 (defun toggle-comment ()
   "Toggle comment on current line or region."
   (interactive)
@@ -94,12 +94,9 @@
     (forward-line)))
 
 ;; toggle comment key strike
-(define-key (current-global-map) (kbd "C-c ;") #'toggle-comment)
+(define-key% (current-global-map) (kbd "C-c ;") #'toggle-comment)
 
-
-;; auto `org-mode'
-(when-version% >= 23
-  (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode)))
+ ;; end of Comments
 
 
 ;; :edit

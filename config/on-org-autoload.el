@@ -9,6 +9,7 @@
 
 (defmacro-if-feature% ox-reveal)
 
+
 ;; fix: Warning (bytecomp): `org-bookmark-jump-unhide' fn might not be
 ;; defined at runtime.
 (when-fn% 'org-bookmark-jump-unhide 'org
@@ -41,6 +42,11 @@
     (define-key% (current-global-map) (kbd "C-c o c") #'org-capture))
   (when-fn% 'org-switchb 'org
     (define-key% (current-global-map) (kbd "C-c o s") #'org-switchb)))
+
+
+;; auto `org-mode'
+(when-version% >= 23
+  (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode)))
 
 
 ;; end of on-org-autoload.el
