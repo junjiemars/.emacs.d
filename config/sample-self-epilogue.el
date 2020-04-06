@@ -160,16 +160,18 @@
  (setq% httpd-port 8080 'simple-httpd)
 
  ;; web-mode, http://web-mode.org
- (when-var% web-mode-hook 'web-mode
-   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-   (add-to-list 'auto-mode-alist '("\\.vue\\'" . web-mode))
-   (add-hook 'web-mode-hook
-             #'(lambda ()
-                 (setq web-mode-comment-formats
-                       '(("java" . "/*")
-                         ("javascript" . "//")
-                         ("php" . "/*")
-                         ("css" . "/*")))))))
+ (defmacro-if-feature% web-mode)
+ (if-feature-web-mode%
+     (progn%
+      (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
+      (add-to-list 'auto-mode-alist '("\\.vue\\'" . web-mode))
+      (add-hook 'web-mode-hook
+                #'(lambda ()
+                    (setq web-mode-comment-formats
+                          '(("java" . "/*")
+                            ("javascript" . "//")
+                            ("php" . "/*")
+                            ("css" . "/*"))))))))
 
  ;; end of web
 
