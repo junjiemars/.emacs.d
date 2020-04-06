@@ -65,7 +65,6 @@
 (setq% create-lockfiles nil)
 
 
-
 ;; enable upcase/downcase region
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
@@ -73,6 +72,14 @@
 
 ;; enable column number mode
 (setq% column-number-mode t 'simple)
+
+
+;; `view-mode'
+(setq view-read-only t)
+(define-key (current-global-map) (kbd "C-x 4 v") #'view-file-other-window)
+(define-key (current-global-map) (kbd "C-x 5 v") #'view-file-other-frame)
+
+ ;; end of `view-mode'
 
 
 ;; comments
@@ -462,6 +469,10 @@ kill ring. If prefix argument ARG is nil then copy
 ;; you've typed in
 ;; http://www.emacswiki.org/emacs/InteractivelyDoThings
 (make-thread* (ido-mode t))
+(define-key (current-global-map) (kbd "C-x C-v") #'view-file)
+;; (define-key (current-global-map) (kbd "C-x C-F") #'ido-find-alternate-file)
+
+ ;; end of ido
 
 
 (defun multi-occur-in-matching-major-mode (&optional mode)
@@ -488,7 +499,6 @@ See also: `multi-occur-in-matching-buffers'."
 
  ;; end of Sorting
 
-
 
 
 ;; end of file
