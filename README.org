@@ -1250,6 +1250,8 @@ It's *self-documenting* and great, keep reading it frequently.
 - lookup /web/ at point: @@html:<kbd>@@C-c f w@@html:</kbd>@@
 - lookup /dict/ at point: @@html:<kbd>@@C-c f d@@html:</kbd>@@
 
+#+REVAL: split
+- display time: @@html:<kbd>@@M-x display-time-mode@@html:</kbd>@@
 
 ** Editing
    :PROPERTIES:
