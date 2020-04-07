@@ -75,6 +75,7 @@
               :disable-indent-tabs-mode '(c-mode-common-hook
                                           sh-mode-hook
                                           emacs-lisp-mode-hook)
+              :narrow-to-region nil
               :allowed t)
   
   ) ;; end of `def-self-env-spec'
