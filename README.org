@@ -742,6 +742,7 @@ Avoiding a war. If /whitespace/ causes some trouble, you can swith to
               :disable-indent-tabs-mode '(c-mode-common-hook
                                           sh-mode-hook
                                           emacs-lisp-mode-hook)
+              :narrow-to-region nil
               :allowed t))
 #+END_SRC
 
@@ -749,6 +750,7 @@ Avoiding a war. If /whitespace/ causes some trouble, you can swith to
 - =:auto-save-default= @@html:<kbd>@@C-h-v auto-save-default@@html:</kbd>@@
 - =:disable-indent-tabs-mode= disble =indent-tabs-mode= in specified
   major modes
+- =:narrow-to-region= =t= enabled, =nil= disabled
 - =:allowed= =t= enabled, =nil= disabled
 
 ** File

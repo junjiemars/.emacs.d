@@ -101,10 +101,13 @@
 
 ;; :edit
 (when (self-spec->*env-spec :edit :allowed)
-  ;; default tab-width
+  ;; default `tab-width'
   (setq-default tab-width (self-spec->*env-spec :edit :tab-width))
-  ;; default auto-save-default
-  (setq auto-save-default (self-spec->*env-spec :edit :auto-save-default)))
+  ;; default `auto-save-default'
+  (setq auto-save-default (self-spec->*env-spec :edit :auto-save-default))
+  ;; allow `narrow-to-region'
+  (put 'narrow-to-region 'disabled
+       (not (self-spec->*env-spec :edit :narrow-to-region))))
 
 
 (when-version% > 24.4
