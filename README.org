@@ -989,7 +989,7 @@ avaiabled on ancient Emacs.
 The features provided by 3rd packages, featured keys may not avaiabled
 on ancient Emacs.
 
-- @@html:<kbd>@@C-x v d@@html:</kbd>@@ =magit-status=
+- @@html:<kbd>@@C-x v M@@html:</kbd>@@ =magit-status=
 
 * Programming
 	:PROPERTIES:
@@ -1569,3 +1569,7 @@ It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]].
    :END:
 
 - =tail -f=: @@html:<kbd>@@M-x auto-revert-tail-mode@@html:</kbd>@@
+- toggle highlighting of the current line: @@html:<kbd>@@M-x
+  hl-line-mode@@html:</kbd>@@
+- /narrow/ region: @@html:<kbd>@@C-x n n@@html:</kdb>@@
+- /widen/ region: @@html:<kbd>@@C-x n w@@html:</kbd>@@
