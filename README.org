@@ -1165,6 +1165,7 @@ perfect.
 - [[#sort][Sort]]
 - [[#face][Face]]
 - [[#latex-requirements][LaTeX Requirements]]
+- [[#log][Log]]
 
 ** Emacs Documents
    :PROPERTIES:
@@ -1562,3 +1563,9 @@ It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]].
 - [[https://www.imagemagick.org/][ImageMagick]]
 - MiKTex
 
+** Log
+   :PROPERTIES:
+   :CUSTOM_ID: log
+   :END:
+
+- =tail -f=: @@html:<kbd>@@M-x auto-revert-tail-mode@@html:</kbd>@@
