@@ -23,12 +23,11 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
                     #'eww-browse-url
                   #'browse-url-default-browser)
               #'eww-browse-url))
-      (when (called-interactively-p*)
-        (message "eww as default browser %s"
-                 (if (eq browse-url-browser-function
-                         'browse-url-default-browser)
-                     "disabled"
-                   "enabled")))))
+      (message "eww as default browser %s"
+               (if (eq browse-url-browser-function
+                       'browse-url-default-browser)
+                   "disabled"
+                 "enabled"))))
 
 
 (if-feature-eww%
