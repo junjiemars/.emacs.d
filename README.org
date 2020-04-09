@@ -21,11 +21,11 @@
 	[[https://api.travis-ci.org/junjiemars/.emacs.d][https://api.travis-ci.org/junjiemars/.emacs.d.svg?branch=master]]
 
 #+ATTR_HTML: :style text-align:left
-It's works on Emacs version 22.1.1+ , provides more reasonable style:
-how to organize Elisp code perfectly. You can run it on any
-environment Emacs itself runs on: GUI or Terminal, even you can run
-multiple Emacs instances with different version on the same machine
-and at the same time.
+It's works on Emacs version 22.1.1+ , provides more reasonable styles:
+more organized code, more consistent, more cleaner and more
+faster. You can run it on any environment Emacs itself runs on: GUI or
+Terminal, even you can run multiple Emacs instances with different
+version on the same machine and at the same time.
 
 #+REVEAL: split
 
