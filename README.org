@@ -179,7 +179,7 @@ features, such as themes, packages, and fonts etc., see next section:
    :END:
 
 #+ATTR_HTML: :style text-align:left
-Annotated your Emacs HOME as =(emacs-home*)=.
+ Annotated your Emacs HOME as =(emacs-home*)=.
 
 #+ATTR_HTML: :style text-align:left
 Your private configuration directory at =(emacs-home* "private/")=.

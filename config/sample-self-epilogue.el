@@ -119,6 +119,7 @@
 
 ;;;; sql
 (comment
+
  (unless% (executable-find% "mysql")
    (setq% sql-mysql-program
           (if-platform% 'darwin
@@ -126,13 +127,25 @@
             "<where>")
           'sql))
  
- (setq% sql-connection-alist '((mysql-local
-                                (sql-product 'mysql)
-                                (sql-server "127.0.0.1")
-                                (sql-port 3306)
-                                (sql-database "sys")
-                                (sql-user "root")
-                                (sql-password "example")))
+ (setq% sql-connection-alist
+        '((mysql-local
+           (sql-product 'mysql)
+           (sql-server "127.0.0.1")
+           (sql-port 3306)
+           (sql-database "sys")
+           (sql-user "root")
+           (sql-password "example"))
+          (oracle-local
+           ;; 1. install sql*plus instant client
+           ;; 2. set environment variables: ORACLE_HOME, LD_LIBRARY_PATH
+           ;;    can be set via :spin-vars in self-env-spec.el
+           ;; 3. (sql-database "<HOST>/SID")
+           (sql-product 'oracle)
+           (sql-server "127.0.0.1")
+           (sql-port 1521)
+           (sql-database "127.0.0.1/XE")
+           (sql-user "system")
+           (sql-password "oracle")))
         'sql))
 
  ;; end of sql
