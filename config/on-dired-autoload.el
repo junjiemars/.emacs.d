@@ -134,6 +134,7 @@
 
  ;; end of `dired' setting
 
+;; detect-coding-string
 
 (when-platform% 'windows-nt
 

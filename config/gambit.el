@@ -13,10 +13,11 @@
 ;; `symbol-at-point' autoload fn
 
 
-;; Disable `geiser-mode' for `scheme-mode'
-(if-feature-geiser%
-    (when-var% geiser-mode-auto-p 'geiser-mode
-      (setq% geiser-mode-auto-p nil 'geiser-mode)))
+;; ;; Disable `geiser-mode' for `scheme-mode'
+;; (if-feature-geiser%
+;;     (when-var% geiser-mode-auto-p 'geiser-mode
+;;       (setq% geiser-mode-auto-p nil 'geiser-mode)))
+
 
 ;; variable declarations
 

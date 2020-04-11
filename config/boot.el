@@ -463,6 +463,7 @@ Take effect after restart Emacs.
 ;; Load ui, shell, basic env:
 
 (compile! (compile-unit% (emacs-home* "config/graphic.el"))
+          (compile-unit% (emacs-home* "config/fns.el"))
           (compile-unit% (emacs-home* "config/basic.el"))
           (compile-unit% (emacs-home* "config/sockets.el"))
           (compile-unit% (emacs-home* "config/shells.el")))

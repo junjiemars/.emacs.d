@@ -199,46 +199,6 @@
 
 ;;; basic
 
-(ert-deftest %basic:assoc** ()
-  (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
-  (should (equal '("a" a) (assoc** "a" '(("b" b) ("a" a)) #'string=))))
-
-(ert-deftest %basic:mapcar** ()
-  (should (equal '(a b c) (mapcar** #'identity '(a b c))))
-  (should (equal '((a 1) (b 2) (c 3))
-                 (mapcar** #'list '(a b c) '(1 2 3)))))
-
-(ert-deftest %basic:remove** ()
-  (should-not (remove** nil nil))
-  (should-not (remove** 'a nil))
-  (should (equal '(a) (remove** 'b '(a b))))
-  (should (equal '("a")
-                 (remove** "b" '("a" "b") :test #'string=)))
-  (should (equal '((1 "a") (2 "b"))
-                 (remove** "b" '((1 "a") (2 "b") (2 "b") (2 "b"))
-                           :test #'string=
-                           :key #'cadr
-                           :count 2)))
-  (should (equal '((1 "a"))
-                 (remove** nil '((1 "a") (2 "b"))
-                           :if (lambda (x)
-                                 (string= "b" (cadr x)))))))
-
-(ert-deftest %basic:member** ()
-  (should-not (member** nil nil))
-  (should-not (member** 'a nil))
-  (should (equal '(a) (member** 'a '(b a))))
-  (should (equal '("a") (member** "a" '("b" "a") :test #'string=))))
-
-(ert-deftest %basic:every* ()
-  (should (every* #'stringp "" "a" "b"))
-  (should (every* #'< '(1 2 3) '(2 3 4)))
-  (should-not (every* #'< '(1 2 3) '(2 3 3))))
-
-(ert-deftest %basic:some* ()
-  (should (some* #'characterp "abc"))
-  (should (some* #'< '(1 2 3) '(1 2 4)))
-  (should-not (some* #'< '(1 2 3) '(1 2 3))))
 
 (ert-deftest %basic:split-string* ()
   (should (equal '("a" "b" "c")
@@ -557,6 +517,12 @@
 ;; fns
 ;;;;
 
+(ert-deftest %fns:flatten ()
+  (should (equal '(nil) (flatten nil)))
+  (should (equal '(a) (flatten 'a)))
+  (should (equal '(a b) (flatten '(a (b)))))
+  (should (equal '(a b c) (flatten '(a (b (c)))))))
+
 (ert-deftest %fns:take ()
   (should-not (take 3 nil))
   (should (equal '(1 2 3) (take 3 (range 1 10 1))))
@@ -583,11 +549,47 @@
   (should (= 2 (length (take-while (lambda (x) (>= x 3))
                                    (range 1 10 1))))))
 
-(ert-deftest %fns:flatten ()
-  (should (equal '(nil) (flatten nil)))
-  (should (equal '(a) (flatten 'a)))
-  (should (equal '(a b) (flatten '(a (b)))))
-  (should (equal '(a b c) (flatten '(a (b (c)))))))
+(ert-deftest %fns:assoc** ()
+  (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
+  (should (equal '("a" a) (assoc** "a" '(("b" b) ("a" a)) #'string=))))
+
+(ert-deftest %fns:mapcar** ()
+  (should (equal '(a b c) (mapcar** #'identity '(a b c))))
+  (should (equal '((a 1) (b 2) (c 3))
+                 (mapcar** #'list '(a b c) '(1 2 3)))))
+
+(ert-deftest %fns:remove** ()
+  (should-not (remove** nil nil))
+  (should-not (remove** 'a nil))
+  (should (equal '(a) (remove** 'b '(a b))))
+  (should (equal '("a")
+                 (remove** "b" '("a" "b") :test #'string=)))
+  (should (equal '((1 "a") (2 "b"))
+                 (remove** "b" '((1 "a") (2 "b") (2 "b") (2 "b"))
+                           :test #'string=
+                           :key #'cadr
+                           :count 2)))
+  (should (equal '((1 "a"))
+                 (remove** nil '((1 "a") (2 "b"))
+                           :if (lambda (x)
+                                 (string= "b" (cadr x)))))))
+
+(ert-deftest %fns:member** ()
+  (should-not (member** nil nil))
+  (should-not (member** 'a nil))
+  (should (equal '(a) (member** 'a '(b a))))
+  (should (equal '("a") (member** "a" '("b" "a") :test #'string=))))
+
+(ert-deftest %fns:every* ()
+  (should (every* #'stringp "" "a" "b"))
+  (should (every* #'< '(1 2 3) '(2 3 4)))
+  (should-not (every* #'< '(1 2 3) '(2 3 3))))
+
+(ert-deftest %fns:some* ()
+  (should (some* #'characterp "abc"))
+  (should (some* #'< '(1 2 3) '(1 2 4)))
+  (should-not (some* #'< '(1 2 3) '(1 2 3))))
+
 
  ;; end of fns
 
