@@ -10,23 +10,42 @@
 
 (def-self-package-spec
   (list
-   :cond nil
-   :packages (list 'multiple-cursors
-                   'restclient
-                   'vlf
-                   'x509-mode
-                   (when-version% <= 25 'ox-reveal)
-                   (when-version% <= 24.3 'yasnippet)))
+   :cond t
+   :packages (list 'markdown-mode
+                   'multiple-cursors
+                   'vlf))
   (list
-   :cond nil ;; (when-version% < 24.1 t)
-   :packages (list 'js2-mode
-                   'web-mode
-                   'skewer-mode)
-   :compile `(,(compile-unit% (emacs-home* "config/use-js-autoload.el"))))
+   ;; org
+   :cond t
+   :packages (flatten (list
+                       (when% (executable-find% "latex")
+                         '(auctex
+                           cdlatex))
+                       (when-version% <= 25 'ox-reveal))))
   (list
-   :cond (executable-find% "latex")
-   :packages '(auctex cdlatex))
+   :cond (and (when-version% <= 24.4 t)
+              (executable-find% "git"))
+   :packages '(magit)
+   :compile `(,(compile-unit% (emacs-home* "config/use-magit-autoload.el"))))
   (list
+   ;; docker
+   :cond (and (when-version% <= 24.4 t)
+              (executable-find% "docker"))
+   :packages '(dockerfile-mode))
+  (list
+   ;; scheme
+   :cond (and (when-version% <= 23.2 t)
+              (or (executable-find% "racket")
+                  (executable-find% "chicken")))
+   :packages  '(geiser)
+   :compile `(,(compile-unit% (emacs-home* "config/use-geiser-autoload.el"))))
+  (list
+   ;; common lisp
+   :cond (executable-find% "sbcl")
+   :packages '(slime)
+   :compile `(,(compile-unit% (emacs-home* "config/use-slime-autoload.el"))))
+  (list
+   ;; java
    :cond (and (when-version% <= 25.1 t)
               (executable-find% "java"))
    :packages '(cider
@@ -34,42 +53,34 @@
                clojure-mode-extra-font-locking
                kotlin-mode)
    :compile `(,(compile-unit% (emacs-home* "config/use-cider.el") t)
-              ,(compile-unit% (emacs-home* "config/use-cider-autoload.el"))))
+              ,(compile-unit%
+                (emacs-home* "config/use-cider-autoload.el") t)))
   (list
-   :cond (and (when-version% <= 24.4 t)
-              (executable-find% "docker"))
-   :packages '(dockerfile-mode))
-  (list
+   ;; erlang
    :cond (executable-find% "erlc")
-   :packages '(erlang))
+   :packages (list 'erlang
+                   (when% (executable-find% "lfe")
+                     'lfe-mode))
+   :compile (list (when% (executable-find% "lfe")
+                    (compile-unit%
+                     (emacs-home* "config/use-lfe-autoload.el")))))
   (list
-   :cond (and (executable-find% "erlc")
-              (executable-find% "lfe"))
-   :packages '(lfe-mode)
-   :compile `(,(compile-unit% (emacs-home* "config/use-lfe-autoload.el"))))
-  (list
-   :cond (and (unless-graphic% t)
-              (unless-platform% 'darwin t)
-              (when-version% <= 25.1))
-   :packages '(ereader))
-  (list
-   :cond (and (when-version% <= 25.1 t)
-              (executable-find% "git"))
-   :packages '(magit)
-   :compile `(,(compile-unit% (emacs-home* "config/use-magit-autoload.el"))))
-  (list
-   :cond (and (when-version% <= 23.2 t)
-              (or (executable-find% "racket")
-                  (executable-find% "chicken")))
-   :packages '(geiser))
-  (list
-   :cond (or (executable-find% "sbcl"))
-   :packages '(slime)
-   :compile `(,(compile-unit% (emacs-home* "config/use-slime-autoload.el"))))
-  (list
+   ;; lua
    :cond (executable-find% "lua")
    :packages '(lua-mode)
    :compile `(,(compile-unit% (emacs-home* "config/use-lua-autoload.el"))))
+  (list
+   ;; web
+   :cond t
+   :packages (list 'htmlize
+                   'js2-mode
+                   'restclient
+                   (when-version% <= 24.3 'skewer-mode)
+                   'web-mode
+                   'x509-mode
+                   (when-version% <= 24.3 'yasnippet)))
 
-  ) ;; end of `def-self-package-spec'
+  ) ;; end of def-self-package-spec
 
+
+;; EOF
