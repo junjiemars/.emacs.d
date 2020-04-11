@@ -44,4 +44,11 @@ item for which (PRED item) returns t."
     (nreverse s1)))
 
 
+(defun flatten (seq)
+  "Flatten SEQ."
+  (cond ((atom seq) (list seq))
+        ((null (cdr seq)) (flatten (car seq)))
+        (t (append (flatten (car seq)) (flatten (cdr seq))))))
+
+
 ;; end of file

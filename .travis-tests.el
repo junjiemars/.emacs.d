@@ -345,32 +345,6 @@
                (string= "pi"
                         (remote-norm->user@host "/sshx:pi:")))))
 
-(ert-deftest %basic:take ()
-  (should-not (take 3 nil))
-  (should (equal '(1 2 3) (take 3 (range 1 10 1))))
-  (should (= 3 (length (take 3 (range 1 10 1)))))
-  (should (= 10 (length (take 100 (range 1 10 1))))))
-
-(ert-deftest %basic:drop-while ()
-  (should-not (drop-while nil nil))
-  (should-not (drop-while (lambda (x) (= x 1)) nil))
-  (should-not (drop-while (lambda (x) (< x 1))
-                          (range 1 10 1)))
-  (should (equal '(2 3) (drop-while (lambda (x) (= x 1))
-                                    (range 1 3 1))))
-  (should (= 7 (length (drop-while (lambda (x) (>= x 3))
-                                   (range 1 10 1))))))
-
-(ert-deftest %basic:take-while ()
-  (should-not (take-while nil nil))
-  (should-not (take-while (lambda (x) (= x 1)) nil))
-  (should-not (take-while (lambda (x) (>= x 1))
-                          (range 1 10 1)))
-  (should (equal '(1 2) (take-while (lambda (x) (> x 2))
-                                    (range 1 3 1))))
-  (should (= 2 (length (take-while (lambda (x) (>= x 3))
-                                   (range 1 10 1))))))
-
 (ert-deftest %basic:path+ ()
   (should-not (path+ nil))
   (should (string= "a/" (path+ "a")))
@@ -551,8 +525,9 @@
      (should (delete-package!1 'htmlize))
      (when already (should (install-package!1 'htmlize))))))
 
-
+;;;;
 ;; enc
+;;;;
 
 (ert-deftest %enc:roman->arabic ()
   (should (= 1990 (roman->arabic (split-string* "MCMXC" "" t) 0)))
@@ -577,5 +552,44 @@
 
 
  ;; end of enc
+
+;;;;
+;; fns
+;;;;
+
+(ert-deftest %fns:take ()
+  (should-not (take 3 nil))
+  (should (equal '(1 2 3) (take 3 (range 1 10 1))))
+  (should (= 3 (length (take 3 (range 1 10 1)))))
+  (should (= 10 (length (take 100 (range 1 10 1))))))
+
+(ert-deftest %fns:drop-while ()
+  (should-not (drop-while nil nil))
+  (should-not (drop-while (lambda (x) (= x 1)) nil))
+  (should-not (drop-while (lambda (x) (< x 1))
+                          (range 1 10 1)))
+  (should (equal '(2 3) (drop-while (lambda (x) (= x 1))
+                                    (range 1 3 1))))
+  (should (= 7 (length (drop-while (lambda (x) (>= x 3))
+                                   (range 1 10 1))))))
+
+(ert-deftest %fns:take-while ()
+  (should-not (take-while nil nil))
+  (should-not (take-while (lambda (x) (= x 1)) nil))
+  (should-not (take-while (lambda (x) (>= x 1))
+                          (range 1 10 1)))
+  (should (equal '(1 2) (take-while (lambda (x) (> x 2))
+                                    (range 1 3 1))))
+  (should (= 2 (length (take-while (lambda (x) (>= x 3))
+                                   (range 1 10 1))))))
+
+(ert-deftest %fns:flatten ()
+  (should (equal '(nil) (flatten nil)))
+  (should (equal '(a) (flatten 'a)))
+  (should (equal '(a b) (flatten '(a (b)))))
+  (should (equal '(a b c) (flatten '(a (b (c)))))))
+
+ ;; end of fns
+
 
 ;; end of file
