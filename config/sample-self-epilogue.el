@@ -155,6 +155,7 @@
 ;;;;
 
 (comment
+ ;; (setq yas-indent-line 'auto 'yasnippet)
  (setq% yas-snippet-dirs '("<where>") 'yasnippet))
 
  ;; end of snippet
