@@ -35,11 +35,11 @@
                   :scaled nil
                   :allowed nil)
   
-  :shell (list :env-vars `("PATH"
-                           ,(unless-platform% 'windows-nt
-                              (if-platform% 'darwin
-                                  "DYLD_LIBRARY_PATH"
-                                "LD_LIBRARY_PATH")))
+  :shell (list :copy-vars `("PATH"
+                            ,(unless-platform% 'windows-nt
+                               (if-platform% 'darwin
+                                   "DYLD_LIBRARY_PATH"
+                                 "LD_LIBRARY_PATH")))
                :spin-vars nil ;; `(("ZZZ" . "123"))
                :options '("-i" "2>/dev/null") ;; '("--login")
                :exec-path t
