@@ -1254,6 +1254,7 @@ It's *self-documenting* and great, keep reading it frequently.
 - lookup /dict/ at point: @@html:<kbd>@@C-c f d@@html:</kbd>@@
 
 #+REVAL: split
+- count words region: @@html:<kbd>@@M-=@@html:</kbd>@@
 - display time: @@html:<kbd>@@M-x display-time@@html:</kbd>@@
 
 ** Editing
