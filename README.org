@@ -1575,3 +1575,6 @@ It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]].
   hl-line-mode@@html:</kbd>@@
 - /narrow/ region: @@html:<kbd>@@C-x n n@@html:</kdb>@@
 - /widen/ region: @@html:<kbd>@@C-x n w@@html:</kbd>@@
+* Issues?
+
+If you have issues, just post it.
