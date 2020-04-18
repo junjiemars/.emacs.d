@@ -1181,11 +1181,14 @@ It's *self-documenting* and great, keep reading it frequently.
 - Help for Help: @@html:<kbd>@@C-h C-h@@html:</kbd>@@
 - Emacs manual: @@html:<kbd>@@C-h r@@html:</kbd>@@
 - Apropos command: @@html:<kbd>@@C-h a@@html:</kbd>@@
-- Info: @@html:<kbd>@@C-h i@@html:</kbd>@@
-- Index of topic: @@html:<kbd>@@C-h r i @@html:</kbd>@@
-- Info of mode: @@html:<kbd>@@C-h i d m @@html:</kbd>@@
 - Mode: @@html:<kbd>@@C-h-m@@html:</kbd>@@ see all the key bindings and
   documentation of current buffer
+#+REVEAL: split
+- Info: @@html:<kbd>@@C-h i@@html:</kbd>@@
+- Info /file/: @@html:<kbd>@@C-u C-h i <where>@@html:</kbd>@@
+- Index of /topic/: @@html:<kbd>@@C-h r i @@html:</kbd>@@
+- Info of /mode/: @@html:<kbd>@@C-h i m @@html:</kbd>@@
+
 #+REVEAL: split
 - Function: @@html:<kbd>@@C-h-f@@html:</kbd>@@ display documentation of
   the given function
