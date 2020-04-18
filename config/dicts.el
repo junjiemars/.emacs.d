@@ -7,7 +7,7 @@
 ;;;;
 
 
-(defvar *dicts*
+(defvar *dict-defs*
   `(("bing"
      ("url" . "https://cn.bing.com/dict/search?q=")
      ("meta" . (("<meta name=\"description\" content=\"必应词典为您提供.+的释义，")
@@ -26,16 +26,16 @@
      ("url"
       .
       "https://dictionary.cambridge.org/dictionary/english-chinese-simplified/")
-     ("pron-us" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
-                   "<"
-                   .
-                   (,(lambda (x)
-                       (format "us.[%s]" x)))))
      ("pron-uk" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 1)
                    "<"
                    .
                    (,(lambda (x)
-                       (format "uk.[%s]" x)))))
+                       (format "|%s|" x)))))
+     ("pron-us" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
+                   "<"
+                   .
+                   (,(lambda (x)
+                       (format "/%s/" x)))))
      ("meta" . (("<meta itemprop=\"headline\" content=\".+translate: ")
                 "Learn"
                 .
@@ -43,22 +43,42 @@
                  dict-fn-decode-html-char))))
     ("camb/en"
      ("url" . "https://dictionary.cambridge.org/dictionary/english/")
-     ("pron-us" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
-                   "<"
-                   .
-                   (,(lambda (x)
-                       (format "us.[%s]" x)))))
      ("pron-uk" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 1)
                    "<"
                    .
                    (,(lambda (x)
-                       (format "uk.[%s]" x)))))
+                       (format "|%s|" x)))))
+     ("pron-us" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
+                   "<"
+                   .
+                   (,(lambda (x)
+                       (format "/%s/" x)))))
      ("meta" . (("<meta name=\"description\" content=\".*? definition: ")
                 "Learn"
                 .
-                (dict-fn-decode-html-char)))))
+                (dict-fn-decode-html-char))))
+    ("longman"
+     ("url" . "https://www.ldoceonline.com/dictionary/")
+     ("pron-en" . (("<span class=\"PRON\">")
+                   "</span>"
+                   .
+                   (dict-fn-remove-html-tag
+                    ,(lambda (x)
+                       (format "|%s|" x)))))
+     ("meta" . (("<span class=\"DEF\">")
+                "</span>"
+                .
+                (dict-fn-remove-html-tag)))))
   
   "Dictionaries using by `lookup-dict'.")
+
+(defvar *dict-default*
+  (let ((dict (cdr (assoc** "longman" *dict-defs* #'string=))))
+    (list (cons 'dict (list dict))
+          (cons 'style (list (remove** "url"
+                                       (mapcar #'car dict)
+                                       :test #'string=)))))
+  "Dictionary default definition.")
 
 (defvar *dict-debug-log* nil
   "Dictonary output log.")
@@ -157,13 +177,13 @@
   (interactive
    (list (read-string "lookup dict for: " (cdr (symbol@ 'word)))
          (when current-prefix-arg
-           (let* ((ns (mapcar #'car *dicts*))
+           (let* ((ns (mapcar #'car *dict-defs*))
                   (d (read-string (format "Choose (%s): "
                                           (mapconcat #'identity ns "|"))
                                   (or (car *dict-name-history*)
                                       (car ns))
                                   '*dict-name-history*))
-                  (dd (cdr (assoc** d *dicts* #'string=)))
+                  (dd (cdr (assoc** d *dict-defs* #'string=)))
                   (sr (remove** "url" (mapcar #'car dd) :test #'string=))
                   (ss (read-string
                        (format "Choose (all|%s): "
@@ -177,12 +197,7 @@
                                       (match-string* "\\(all\\)" ss 1)))
                              `(, sr)
                            `(,(split-string* ss "," t "[ \n]*")))))))))
-  (let* ((d1 (if dict dict
-               (list (cons 'dict (list (cdar *dicts*)))
-                     (cons 'style (list (remove** "url"
-                                                  (mapcar #'car
-                                                          (cdar *dicts*))
-                                                  :test #'string=))))))
+  (let* ((d1 (if dict dict *dict-default*))
          (url (cdr (assoc** "url" (cadr (assoc** 'dict d1 #'eq))
                             #'string=))))
     (make-thread* (url-retrieve* (concat url (url-hexify-string what))
