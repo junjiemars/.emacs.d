@@ -385,7 +385,6 @@ Introduce rules of naming /files/ and /functions/.
 - [[#editing][Editing]]
 - [[#keys][Keys]]
 
-
 ** Theme
     :PROPERTIES:
     :CUSTOM_ID: theme
@@ -857,7 +856,6 @@ For =.rar= archive, emacs really sucks.
 	 :CUSTOM_ID: editing
 	 :END:
 
-
 *** Mark
 	 :PROPERTIES:
 	 :CUSTOM_ID: edit-mark
@@ -1130,7 +1128,24 @@ perfect.
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-linux.png][debugging via lldb on Ubuntu]]	
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-cdb-on-windows.png][debugging via cdb]]
 
-* Customizing
+* Improved
+	:PROPERTIES:
+	:CUSTOM_ID: improved
+	:END:
+
+** Dictionary
+	:PROPERTIES:
+	:CUSTOM_ID: improved-dictionary
+	:END:
+
+Lookup online dictionary @@html:<kbd>@@C-c f d@@html:</kdb>@@: bing,
+cambridge, longman, etc.
+
+** Dired
+	:PROPERTIES:
+	:CUSTOM_ID: improved-dired
+	:END:
+
 * Troubleshoting
    :PROPERTIES:
    :CUSTOM_ID: troubleshoting
