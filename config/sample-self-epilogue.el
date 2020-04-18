@@ -138,7 +138,7 @@
           (oracle-local
            ;; 1. install sql*plus instant client
            ;; 2. set environment variables: ORACLE_HOME, LD_LIBRARY_PATH
-           ;;    can be set via :spin-vars in self-env-spec.el
+           ;;    can be set via :spin-vars or :copy-vars in self-env-spec.el
            ;; 3. (sql-database "<HOST>/SID")
            (sql-product 'oracle)
            (sql-server "127.0.0.1")
