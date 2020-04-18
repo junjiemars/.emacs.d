@@ -116,6 +116,14 @@
   (browse-url (concat "file:///" (dired-get-file-for-visit))))
 
 
+(defun dired-echo-current-directory* (&optional localp)
+  "Echo the current directory in `dired-mode'."
+  (interactive)
+  (let ((d (dired-current-directory localp)))
+    (kill-new d)
+    (message "%s" d)))
+
+
 (with-eval-after-load 'dired
   (when-platform% 'windows-nt
     ;; prefer GNU find on Windows, such for `find-dired' or `find-name-dired'.
@@ -129,7 +137,8 @@
       (when find
         (windows-nt-env-path+ (file-name-directory find)))))
 
-  (define-key dired-mode-map (kbd "b") #'dired-browse-file*))
+  (define-key dired-mode-map (kbd "b") #'dired-browse-file*)
+  (define-key dired-mode-map (kbd "W") #'dired-echo-current-directory*))
 
 
  ;; end of `dired' setting

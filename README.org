@@ -952,6 +952,14 @@ line. See [[https://www.emacswiki.org/emacs/OpenNextLine][Open Next Line]].
 - @@html:<kbd>@@C-o@@html:</kbd>@@ =open-next-line=
 - @@html:<kbd>@@C-M-o@@html:</kbd>@@ =open-previous-line=
 
+*** Dired
+	 :PROPERTIES:
+	 :CUSTOM_ID: edit-dired
+	 :END:
+
+- browse file: @@html:<kbd>@@b@@html:</kbd>@@
+- echo current directory: @@html:<kbd>@@W@@html:</kbd>@@
+
 ** Keys
 	 :PROPERTIES:
 	 :CUSTOM_ID: keys
