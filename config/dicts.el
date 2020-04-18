@@ -26,12 +26,12 @@
      ("url"
       .
       "https://dictionary.cambridge.org/dictionary/english-chinese-simplified/")
-     ("pron-uk" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 1)
+     ("pron-us" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
                    "<"
                    .
                    (,(lambda (x)
                        (format "|%s|" x)))))
-     ("pron-us" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
+     ("pron-uk" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 1)
                    "<"
                    .
                    (,(lambda (x)
@@ -43,12 +43,12 @@
                  dict-fn-decode-html-char))))
     ("camb/en"
      ("url" . "https://dictionary.cambridge.org/dictionary/english/")
-     ("pron-uk" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 1)
+     ("pron-us" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
                    "<"
                    .
                    (,(lambda (x)
                        (format "|%s|" x)))))
-     ("pron-us" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
+     ("pron-uk" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 1)
                    "<"
                    .
                    (,(lambda (x)
@@ -59,12 +59,12 @@
                 (dict-fn-decode-html-char))))
     ("longman"
      ("url" . "https://www.ldoceonline.com/dictionary/")
-     ("pron-en" . (("<span class=\"PRON\">")
+     ("pron-uk" . (("<span class=\"PRON\">")
                    "</span>"
                    .
                    (dict-fn-remove-html-tag
                     ,(lambda (x)
-                       (format "|%s|" x)))))
+                       (format "/%s/" x)))))
      ("meta" . (("<span class=\"DEF\">")
                 "</span>"
                 .
@@ -73,7 +73,7 @@
   "Dictionaries using by `lookup-dict'.")
 
 (defvar *dict-default*
-  (let ((dict (cdr (assoc** "longman" *dict-defs* #'string=))))
+  (let ((dict (cdr (assoc** "bing" *dict-defs* #'string=))))
     (list (cons 'dict (list dict))
           (cons 'style (list (remove** "url"
                                        (mapcar #'car dict)
