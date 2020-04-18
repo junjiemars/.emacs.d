@@ -90,7 +90,7 @@ With prefix ARG decide to append the end of `tags-table-list' or not."
 
 (defun unmount-tags (tags)
   "Unmount TAGS from `tags-table-list'."
-  (interactive "funmount tags from: ")
+  (interactive "Funmount tags from: ")
   (setq tags-table-list
         (remove** (expand-file-name tags)
                   tags-table-list :test #'string=)))
