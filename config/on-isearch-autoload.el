@@ -8,7 +8,7 @@
 
 
 (defun isearch-forward* (&optional regexp-p)
-  "Do incremental region or symbol search forward."
+  "Do incremental search forward."
   (interactive "P")
   (isearch-forward regexp-p 1)
   (let ((ss (symbol@)))
@@ -16,7 +16,7 @@
       (isearch-yank-string (cdr ss)))))
 
 (defun isearch-backward* (&optional regexp-p)
-  "Do incremental region or symbol search backward."
+  "Do incremental search backward."
   (interactive "P")
   (isearch-backward regexp-p 1)
   (let ((ss (symbol@)))
