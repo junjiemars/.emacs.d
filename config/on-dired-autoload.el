@@ -124,6 +124,16 @@
     (message "%s" d)))
 
 
+(defun hexl-find-file* ()
+  "Edit the current file as hex dump format in `dired-mode'."
+  (interactive)
+  (hexl-find-file
+   (if-fn% 'dired-get-file-for-visit 'dired
+           (dired-get-file-for-visit)
+     (or (dired-get-filename nil t)
+         (error "No file on this line")))))
+
+
 (with-eval-after-load 'dired
   (when-platform% 'windows-nt
     ;; prefer GNU find on Windows, such for `find-dired' or `find-name-dired'.
@@ -138,7 +148,8 @@
         (windows-nt-env-path+ (file-name-directory find)))))
 
   (define-key dired-mode-map (kbd "b") #'dired-browse-file*)
-  (define-key dired-mode-map (kbd "W") #'dired-echo-current-directory*))
+  (define-key dired-mode-map (kbd "W") #'dired-echo-current-directory*)
+  (define-key dired-mode-map (kbd "f") #'hexl-find-file*))
 
 
  ;; end of `dired' setting

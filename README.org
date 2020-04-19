@@ -1517,6 +1517,7 @@ automatically from one Emacs session to the next.
 #+REVEAL: split
 - browse file: @@html:<kbd>@@b@@html:</kbd>@@
 - echo current directory: @@html:<kbd>@@W@@html:</kbd>@@
+- hex edit file: @html:<kbd>@@f@@html:</kbd>@@
 
 ** Shell
    :PROPERTIES:
