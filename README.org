@@ -927,14 +927,13 @@ unified to two functions: =isearch-forward*= and =isearch-backward*=.
 #+ATTR_HTML: :style text-align:left
 In More Reasonable Emacs, by default, =isearch-forward*= and
  =isearch-backward*= same with the built-in ones. Except we can search
- the text of activated *region*, using
- @@html:<kbd>@@C-s@@html:</kbd>@@ and @@html:<kbd>@@C-r@@html:</kbd>@@
- will search forward or backward just like /vi/'s
- @@html:<kbd>@@*@@html:</kbd>@@ and @@html:<kbd>@@#@@html:</kbd>@@
- does when there is activated region. Select a region or make a symbol
- using =mark-symbol@=, =mark-line@=, =mark-filename@= or =mark-defun@=
- then @@html:<kbd>@@C-s@@html:</kbd>@@ or
- @@html:<kbd>@@C-r@@html:</kbd>@@.
+ the text of activated *region*.  @@html:<kbd>@@C-s@@html:</kbd>@@ and
+ @@html:<kbd>@@C-r@@html:</kbd>@@ will search forward or backward just
+ like /vi/'s @@html:<kbd>@@*@@html:</kbd>@@ and
+ @@html:<kbd>@@#@@html:</kbd>@@ does when there is activated region.
+
+And more, searching =word=, =quoted string=, or =filename= forward or
+ backword.
  
 *** Open line
 	 :PROPERTIES:
@@ -977,6 +976,10 @@ Global for all Emacs' version.
 #+REVEAL: split
 - @@html:<kbd>@@C-s@@html:</kbd>@@: =isearch-forward*=
 - @@html:<kbd>@@C-r@@html:</kbd>@@: =isearch-backward*=
+- @@html:<kbd>@@M-s .@@html:</kbd>@@: =isearch-forward-symbol-at-point=
+- @@html:<kbd>@@M-s w@@html:</kbd>@@: =isearch-forward-word*=
+- @@html:<kbd>@@M-s q@@html:</kbd>@@: =isearch-forward-string*=
+- @@html:<kbd>@@M-s f@@html:</kbd>@@: =isearch-forward-filename*=
 
 *** Compatible keys
 
