@@ -60,36 +60,42 @@
 
 (when-feature-allowed% if-feature-paredit%
 
-      (if-platform%
-          ;; enable `paredit' in `minibuffer'
-          'gnu/linux
-          (add-hook 'minibuffer-setup-hook
-                    #'enable-paredit-mode-in-minibuffer! t)
-        (add-hook 'eval-expression-minibuffer-setup-hook
-                  #'enable-paredit-mode-in-minibuffer! t))
+  (if-platform%
+      ;; enable `paredit' in `minibuffer'
+      'gnu/linux
+      (add-hook 'minibuffer-setup-hook
+                #'enable-paredit-mode-in-minibuffer! t)
+    (add-hook 'eval-expression-minibuffer-setup-hook
+              #'enable-paredit-mode-in-minibuffer! t))
 
-      (with-eval-after-load 'paredit
+  (with-eval-after-load 'paredit
 
-        ;; define `paredit' keymap
-        ;; On Windows C-) is not work
-        ;; fix inconsistent `C-)' and `C-c )' behavior:#9
-        ;; On Terminal mode, Ctrl+Shift combination can't send to Emacs
-        (when-var% paredit-mode-map 'paredit
-          (define-key% paredit-mode-map
-            (kbd "C-c )") #'paredit-forward-slurp-sexp)
-          (define-key% paredit-mode-map
-            (kbd "C-c (") #'paredit-backward-slurp-sexp)
-          (define-key% paredit-mode-map
-            (kbd "C-c }") #'paredit-forward-barf-sexp)
-          (define-key% paredit-mode-map
-            (kbd "C-c {") #'paredit-backward-barf-sexp)
-          (define-key% paredit-mode-map
-            (kbd "C-c ?") #'paredit-convolute-sexp)
-          (when-fn% 'xref-find-references 'xref
-            ;; default `paredit-convolute-sexp' keybinding `M-?' conflicts with
-            ;; `xref-find-references'
-            (define-key paredit-mode-map
-              (kbd "M-?") #'xref-find-references)))))
+    ;; define `paredit' keymap
+    ;; On Windows C-) is not work
+    ;; fix inconsistent `C-)' and `C-c )' behavior:#9
+    ;; On Terminal mode, Ctrl+Shift combination can't send to Emacs
+    (when-var% paredit-mode-map 'paredit
+      (define-key% paredit-mode-map
+        (kbd "C-c )") #'paredit-forward-slurp-sexp)
+      (define-key% paredit-mode-map
+        (kbd "C-c (") #'paredit-backward-slurp-sexp)
+      (define-key% paredit-mode-map
+        (kbd "C-c }") #'paredit-forward-barf-sexp)
+      (define-key% paredit-mode-map
+        (kbd "C-c {") #'paredit-backward-barf-sexp)
+      (define-key% paredit-mode-map
+        (kbd "C-c ?") #'paredit-convolute-sexp)
+      ;; default `paredit-splice-sexp' keybinding `M-s' conflicts with
+      ;; `isearch' command prefix.
+      (define-key% paredit-mode-map
+        (kbd "M-s") nil)
+      (define-key% paredit-mode-map
+        (kbd "C-c -") #'paredit-splice-sexp)
+      (when-fn% 'xref-find-references 'xref
+        ;; default `paredit-convolute-sexp' keybinding `M-?' conflicts with
+        ;; `xref-find-references'
+        (define-key paredit-mode-map
+          (kbd "M-?") #'xref-find-references)))))
 
 
  ;; end of feature: paredit

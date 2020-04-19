@@ -321,31 +321,6 @@ If prefix ARG then make quoted string."
  ;; Makes killing/yanking interact with the clipboard
 
 
-;; isearch
-
-(defun isearch-forward* (&optional arg)
-  "Do incremental region or symbol search forward."
-  (interactive "P")
-  (isearch-forward arg 1)
-  (let ((ss (symbol@)))
-    (when (eq 'region (car ss))
-      (isearch-yank-string (cdr ss)))))
-
-(defun isearch-backward* (&optional arg)
-  "Do incremental region or symbol search backward."
-  (interactive "P")
-  (isearch-backward arg 1)
-  (let ((ss (symbol@)))
-    (when (eq 'region (car ss))
-      (isearch-yank-string (cdr ss)))))
-
-(define-key (current-global-map) (kbd "C-s") #'isearch-forward*)
-(define-key (current-global-map) (kbd "C-r") #'isearch-backward*)
-
-
- ;; end of isearch
-
-
 ;; open-*-line fn
 ;; control indent or not: `open-next-line' and `open-previous-line'.
 ;; see also: https://www.emacswiki.org/emacs/OpenNextLine
