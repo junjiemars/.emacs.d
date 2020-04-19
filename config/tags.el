@@ -179,7 +179,7 @@ Example:
 
 (defun make-dir-tags (dir &optional store renew)
   "Make and mount tags for specified DIR."
-  (interactive "Dmake tags for \nFstore tags \nP")
+  (interactive "Dmake tags for \nFstore tags in \nP")
   (when (file-exists-p dir)
     (let* ((home (path+ (expand-file-name dir)))
            (tags-file (or store
