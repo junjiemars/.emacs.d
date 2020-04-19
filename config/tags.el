@@ -30,7 +30,7 @@ Examples:
               (and (zerop (car ver))
                    (string-match "Exuberant Ctags [.0-9]+"
                                  (cdr ver))))))
-         "ctags -e -o %s -a %s ; echo %s")
+         "ctags -e %s -o %s -a %s")
         ((executable-find%
           "etags"
           (lambda (bin)
@@ -39,7 +39,7 @@ Examples:
                    (string-match "Exuberant Ctags [.0-9]+"
                                  (cdr ver))))))
          ;; on Linux/Darwin ctags may be has the synonym: etags
-         "etags -e -o %s -a %s ; echo %s")
+         "etags -e %s -o %s -a %s")
         ((executable-find%
           "etags"
           (lambda (bin)
@@ -47,14 +47,14 @@ Examples:
               (and (zerop (car ver))
                    (string-match "etags (GNU Emacs [.0-9]+)"
                                  (cdr ver))))))
-         "etags -o %s -l auto -a %s ; echo %s"))
+         "etags %s -o %s -l auto -a %s"))
   "The default tags program.
 This is used by commands like `make-tags'.
 
-The default is \"ctags -e -o %s -a %s ; echo %s\", 
-first %s: explicit name of file for tag table; overrides default TAGS or tags.
-second %s: append to existing tag file.
-third %s: echo source file name in *Messages* buffer.
+The default is \"ctags -e %s -o %s -a %s\", 
+first %s: ctags options
+second %s: explicit name of file for tag table; overrides default TAGS or tags.
+third %s: append to existing tag file.
 
 `tags-table-list' should be persitent between sessions 
 when `desktop-globals-to-save' include it."
@@ -96,58 +96,65 @@ With prefix arg decide to APPEND the end of `tags-table-list' or not."
                   tags-table-list :test #'string=)))
 
 
-(defun make-tags (home tags-file file-filter dir-filter &optional renew)
+(defun make-tags (home tags-file file-filter dir-filter
+                       &optional tags-option renew)
   "Make tags.
 
 HOME where the source files locate,
 TAGS-FILE where the tags file to save,
 FILE-FILTER file filter function,
 DIR-FILTER directory filter function,
+TAGS-OPTION `tags-program' extra options,
 RENEW overwrite the existing tags file when t else create it.
 "
   (unless tags-program
     (signal 'void-variable (list 'tags-program tags-program)))
   (when (file-exists-p home)
-    (let ((tags-dir (file-name-directory tags-file)))
-      (if (file-exists-p tags-file)
-          (when renew (delete-file tags-file))
-        (when (not (file-exists-p tags-dir))
-          (make-directory tags-dir t)))
+    (let* ((tf (expand-file-name tags-file))
+           (td (file-name-directory tf)))
+      (if (file-exists-p tf)
+          (when renew (delete-file tf))
+        (unless (file-exists-p td)
+          (make-directory td t)))
       (dir-iterate home
                    file-filter
                    dir-filter
                    (lambda (f)
-                     (message
-                      "make-tags: %s ... %s"
-                      f
-                      (if (zerop
-                           (car (shell-command*
-                                    (format tags-program tags-file
-                                            (shell-quote-argument f)
-                                            (shell-quote-argument f)))))
-                          "ok" "failed")))
-                   nil)
-      (when (file-exists-p tags-file)
-        (add-to-list 'tags-table-list tags-file t #'string=)
-        tags-file))))
+                     (let ((cmd (format tags-program
+                                        (or tags-option "")
+                                        tf
+                                        (shell-quote-argument f)
+                                        (shell-quote-argument f))))
+                       (message "%s %s... %s"
+                                (propertize "make-tags" 'face 'minibuffer-prompt)
+                                cmd
+                                (if (zerop (car (shell-command* cmd)))
+                                    "ok"
+                                  "failed"))))
+                   nil))))
 
 
-(defun make-emacs-home-tags (tags-file &optional renew)
+(defun make-emacs-home-tags (&optional tags-file option)
   "Make TAGS-FILE for Emacs' home directory.
 
 Example:
- (make-emacs-home-tags (tags-spec->% :emacs-home) t)
+ (make-emacs-home-tags (tags-spec->% :emacs-home))
 "
-  (let ((lisp-ff (lambda (f _) (string-match "\\\.el$" f)))
-        (home-df
-         (lambda (d _)
-           (not
-            (string-match
-             "^\\\..*/$\\|^theme/$\\|^g_.*/$\\|^t_.*/$\\|^private/$" d)))))
-    (make-tags (emacs-home*) tags-file lisp-ff home-df renew)))
+  (interactive)
+  (make-tags (emacs-home*)
+             (or tags-file
+                 (tags-spec->% :emacs-home))
+             (lambda (f _)
+               (string-match "\\\.el$" f))
+             (lambda (d _)
+               (not
+                (string-match
+                 "^\\\..*/$\\|^theme/$\\|^g_.*/$\\|^t_.*/$\\|^private/$" d)))
+             option
+             t))
 
 
-(defun make-emacs-source-tags (tags-file src-root &optional renew)
+(defun make-emacs-source-tags (&optional src-root tags-file)
   "Make TAGS-FILE for Emacs' C and Lisp source code in SRC-ROOT.
 
 Example:
@@ -156,44 +163,59 @@ Example:
    `source-directory'
     t)
 "
-  (let ((lisp-ff (lambda (f _) (string-match "\\\.el$" f)))
-        (c-ff (lambda (f _) (string-match "\\\.[ch]$" f)))
-        (df (lambda (_ __) t)))
-    (when (file-exists-p (concat src-root "src/"))
-      (make-tags (concat src-root "src/") tags-file c-ff df renew))
-    (when (file-exists-p (concat src-root "lisp/"))
-      (make-tags (concat src-root "lisp/") tags-file lisp-ff df))))
+  (interactive)
+  (let ((tf (or tags-file (tags-spec->% :emacs-home))))
+    ;; make c source tags
+    (make-tags (concat (or src-root
+                           source-directory)
+                       "src/")
+               tf
+               (lambda (f _) (string-match "\\\.[ch]$" f))
+               (lambda (_ __) t)
+               nil
+               t)
+    ;; make elisp source tags
+    (make-tags (concat (or src-root
+                           source-directory)
+                       "lisp/")
+               tf
+               (lambda (f _) (string-match "\\\.el$" f))
+               (lambda (_ __) t)
+               nil
+               t)))
 
 
-(defun make-c-tags (home tags-file &optional dir-filter renew)
+(defun make-c-tags (home tags-file &optional option renew dir-filter)
   "Make TAGS-FILE for C source code in HOME."
-  (let ((c-ff (lambda (f _) (string-match "\\\.[ch]$" f)))
-        (df (or dir-filter
-                (lambda (d _)
-                  (not
-                   (string-match
-                    "^\\\.git/$\\|^out/$\\|^objs/$\\|^c\\\+\\\+/$"
-                    d))))))
-    (make-tags home tags-file c-ff df renew)))
+  (make-tags home
+             tags-file
+             (lambda (f _) (string-match "\\\.[ch]$" f))
+             (or dir-filter
+                 (lambda (d _)
+                   (not
+                    (string-match
+                     "^\\\.git/$\\|^out/$\\|^objs/$\\|^c\\\+\\\+/$"
+                     d))))
+             option
+             renew))
 
 
-(defun make-dir-tags (dir &optional store renew)
+(defun make-dir-tags (dir store &optional option)
   "Make and mount tags for specified DIR."
-  (interactive "Dmake tags for \nFstore tags in \nP")
-  (when (file-exists-p dir)
-    (let* ((home (path+ (expand-file-name dir)))
-           (tags-file (or store
-                          (concat home ".tags"))))
-      (when (make-tags home
-                       tags-file
-                       (lambda (f _)
-                         (not (string-match
-                               "\\\.tags$" f)))
-                       (lambda (d _)
-                         (not (string-match
-                               "^\\\.git/$\\|^out/$\\|^build/$" d)))
-                       renew)
-        (mount-tags tags-file)))))
+  (interactive "Dmake tags for \nFstore tags in \nstags option ")
+  (let* ((home (path+ (expand-file-name dir)))
+         (tags-file (or store
+                        (concat home ".tags"))))
+    (when (make-tags home
+                     tags-file
+                     (lambda (f _)
+                       (not (string-match
+                             "\\\.tags$" f)))
+                     (lambda (d _)
+                       (not (string-match
+                             "^\\\.git/$\\|^out/$\\|^build/$" d)))
+                     option
+                     t))))
 
 
 ;; go into `view-mode'

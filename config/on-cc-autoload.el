@@ -510,16 +510,16 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
       (view-mode 1))))
 
 
-(when-fn% 'make-c-tags 'tags
+(when-fn% 'make-c-tags 'tags)
 
-  (defun cc*-make-system-tags (&optional renew)
-    "Make system C tags."
-    (interactive "P")
-    (let ((includes (cc*-system-include (not renew)))
-          (tag-file (tags-spec->% :os-include)))
-      (make-c-tags (car includes) tag-file nil renew)
-      (dolist* (p (cdr includes) tag-file)
-        (make-c-tags p tag-file nil)))))
+(defun cc*-make-system-tags (&optional option renew)
+  "Make system C tags."
+  (interactive "stags option \nP")
+  (let ((includes (cc*-system-include (not renew)))
+        (tag-file (tags-spec->% :os-include)))
+    (make-c-tags (car includes) tag-file option renew)
+    (dolist* (p (cdr includes) tag-file)
+      (make-c-tags p tag-file option))))
 
 
 ;; eldoc
