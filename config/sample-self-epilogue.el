@@ -13,6 +13,10 @@
 (message "#self epilogue ...")
 
 
+;; safe local variables
+(comment (safe-local-variable* 'indent-tabs))
+
+
 ;; (require 'financial)
 
 (comment (setq% enable-local-variables :all 'files))
