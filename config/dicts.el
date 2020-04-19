@@ -173,10 +173,10 @@
 (defun lookup-dict (what &optional dict)
   "Lookup WORD in DICT then show the result in the echo area."
   (interactive
-   (list (read-string "lookup dict for: " (cdr (symbol@ 'word)))
+   (list (read-string "lookup dict for " (cdr (symbol@ 'word)))
          (when current-prefix-arg
            (let* ((ns (mapcar #'car *dict-defs*))
-                  (d (read-string (format "Choose (%s): "
+                  (d (read-string (format "Choose (%s) "
                                           (mapconcat #'identity ns "|"))
                                   (or (car *dict-name-history*)
                                       (car ns))
@@ -184,7 +184,7 @@
                   (dd (cdr (assoc** d *dict-defs* #'string=)))
                   (sr (remove** "url" (mapcar #'car dd) :test #'string=))
                   (ss (read-string
-                       (format "Choose (all|%s): "
+                       (format "Choose (all|%s) "
                                (mapconcat #'identity sr ","))
                        (or (car *dict-style-history*)
                            "all")
