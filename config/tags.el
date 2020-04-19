@@ -78,13 +78,13 @@ when `desktop-globals-to-save' include it."
   :group 'tags)
 
 
-(defun mount-tags (tags &optional arg)
+(defun mount-tags (tags &optional append)
   "Mount existing TAGS into `tags-table-list'.
-With prefix ARG decide to append the end of `tags-table-list' or not."
+With prefix arg decide to APPEND the end of `tags-table-list' or not."
   (interactive "fmount tags from: \nP")
   (add-to-list 'tags-table-list
                (expand-file-name tags)
-               arg
+               append
                #'string=))
 
 
@@ -177,12 +177,13 @@ Example:
     (make-tags home tags-file c-ff df renew)))
 
 
-(defun make-dir-tags (dir &optional renew)
+(defun make-dir-tags (dir &optional store renew)
   "Make and mount tags for specified DIR."
-  (interactive "Dmake tags in \nP")
+  (interactive "Dmake tags for \nFstore tags \nP")
   (when (file-exists-p dir)
     (let* ((home (path+ (expand-file-name dir)))
-           (tags-file (concat home ".tags")))
+           (tags-file (or store
+                          (concat home ".tags"))))
       (when (make-tags home
                        tags-file
                        (lambda (f _)
