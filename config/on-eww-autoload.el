@@ -43,6 +43,7 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
 
 
 ;; find web via search engine
+;; eww also has a new `eww-search-words' supports searching via web.
 
 (defvar *search-engines*
   '(("bing" "https://www.bing.com/"
@@ -56,6 +57,10 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
     ("wiki" "https://en.wikipedia.org/"
      . "w/index.php?search="))
   "Search engines using by `find-web'.")
+
+
+(defvar *search-default*
+  (assoc** "bing" *search-engines* #'string=))
 
 (defvar *search-engine-history* nil
   "Searching history using by `find-web'.")
@@ -74,7 +79,7 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
                           '*search-engine-history*)))))
   (let* ((e1 (if (or (null engine)
                      (string= "" engine))
-                 (caar *search-engines*)
+                 (car *search-default*)
                engine))
          (e2 (cdr (assoc** e1 *search-engines* #'string=)))
          (url (concat (car e2) (cdr e2) what))
@@ -84,7 +89,7 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
                   t)))
 
 
-(define-key (current-global-map) (kbd "C-c f w") #'lookup-web)
+(define-key (current-global-map) (kbd "M-s u") #'lookup-web)
 
  ;; end of `find-web'
 

@@ -656,8 +656,8 @@ whatever OS you using:
 - Using @@html:<kbd>@@M-x toggle-browser!@@html:</kdb>@@ to switch
   external or internal browser.
 - Find symbol, word, whatever you like via web search engine:
-  @@html:<kdb>@@C-c f w@@html:</kdb>@@
-- Lookup online dictionaries: @@html:<kbd>@@C-c f d@@html:</kbd>@@
+  @@html:<kdb>@@M-s u@@html:</kdb>@@
+- Lookup online dictionaries: @@html:<kbd>@@M-s d@@html:</kbd>@@
 
 ** Package
     :PROPERTIES:
@@ -1278,8 +1278,8 @@ It's *self-documenting* and great, keep reading it frequently.
 - filename of current buffer: @@html:<kbd>@@C-c b n@@html:</kbd>@@
 
 #+REVAL: split
-- lookup /web/ at point: @@html:<kbd>@@C-c f w@@html:</kbd>@@
-- lookup /dict/ at point: @@html:<kbd>@@C-c f d@@html:</kbd>@@
+- lookup /web/ at point: @@html:<kbd>@@M-s u@@html:</kbd>@@
+- lookup /dict/ at point: @@html:<kbd>@@M-s d@@html:</kbd>@@
 
 #+REVAL: split
 - display time: @@html:<kbd>@@M-x display-time@@html:</kbd>@@
