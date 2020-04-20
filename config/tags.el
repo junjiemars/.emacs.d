@@ -126,7 +126,8 @@ RENEW overwrite the existing tags file when t else create it.
                                         (shell-quote-argument f)
                                         (shell-quote-argument f))))
                        (message "%s %s... %s"
-                                (propertize "make-tags" 'face 'minibuffer-prompt)
+                                (propertize "make-tags"
+                                            'face 'minibuffer-prompt)
                                 cmd
                                 (if (zerop (car (shell-command* cmd)))
                                     "ok"
