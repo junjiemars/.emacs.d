@@ -23,6 +23,17 @@
     (when (eq 'region (car ss))
       (isearch-yank-string (cdr ss)))))
 
+
+(defun isearch-forward-symbol* ()
+  "Do incremental symbol forward."
+  (interactive)
+  (if (mark-symbol@)
+      (isearch-forward*)
+    (message "%s: [No symbol at point]"
+             (propertize "Symbol I-search"
+                         'face 'minibuffer-prompt))))
+
+
 (defun isearch-forward-word* ()
   "Do incremental word forward."
   (interactive)
@@ -54,6 +65,8 @@
 (with-eval-after-load 'isearch
   (define-key% (current-global-map) (kbd "C-s") #'isearch-forward*)
   (define-key% (current-global-map) (kbd "C-r") #'isearch-backward*)
+  (define-key% (current-global-map)
+    (kbd "M-s .") #'isearch-forward-symbol*)
   (define-key% (current-global-map)
     (kbd "M-s w") #'isearch-forward-word*)
   (define-key% (current-global-map)
