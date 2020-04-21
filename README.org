@@ -976,7 +976,7 @@ Global for all Emacs' version.
 #+REVEAL: split
 - @@html:<kbd>@@C-s@@html:</kbd>@@: =isearch-forward*=
 - @@html:<kbd>@@C-r@@html:</kbd>@@: =isearch-backward*=
-- @@html:<kbd>@@M-s .@@html:</kbd>@@: =isearch-forward-symbol-at-point=
+- @@html:<kbd>@@M-s s@@html:</kbd>@@: =isearch-forward-symbol-at-point=
 - @@html:<kbd>@@M-s w@@html:</kbd>@@: =isearch-forward-word*=
 - @@html:<kbd>@@M-s q@@html:</kbd>@@: =isearch-forward-string*=
 - @@html:<kbd>@@M-s f@@html:</kbd>@@: =isearch-forward-filename*=
