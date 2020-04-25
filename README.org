@@ -1250,8 +1250,13 @@ It's *self-documenting* and great, keep reading it frequently.
    :CUSTOM_ID: motion
    :END:
 
+#+REVEAL: split
 - goto line: @@html:<kbd>@@M-g g@@html:</kbd>@@
 - goto nth char: @@html:<kbd>@@M-g c@@html:</kbd>@@
+- goto next error: @@html:<kbd>@@C-x `@@html:</kbd>@@
+- goto previous error: @@html:<kbd>@@M-g p@@html:</kbd>@@
+
+#+REVEAL: split
 - jump between buffers: @@html:<kbd>@@C-x C-SPC@@html:</kbd>@@, jumps to
   the global mark acrross buffers
 - jump in buffer: @@html:<kbd>@@C-u C-SPC@@html:</kbd>@@
@@ -1269,7 +1274,7 @@ It's *self-documenting* and great, keep reading it frequently.
 - in Dired mode: @@html:<kbd>@@!@@html:</kbd>@@, do shell command
 - region as input to Shell command: @@html:<kbd>@@M-|@@html:</kbd>@@,
 
-#+REVAL: split
+#+REEVAL: split
 - insert from shell output: @@html:<kbd>@@C-u C-[ !@@html:</kbd>@@
 - insert from elisp output: @@html:<kbd>@@C-u C-[ :@@html:</kbd>@@
 
@@ -1290,21 +1295,24 @@ It's *self-documenting* and great, keep reading it frequently.
    :END:
 
 - write file: @@html:<kbd>@@C-x C-w@@html:</kbd>@@ same as save as
-- kill whole line: @@html:<KBD>@@C-S-DEL@@html:</KBD>@@
+- kill whole line: @@html:<kbd>@@C-S-DEL@@html:</kbd>@@
 - kill all spaces at point: @@html:<kbd>@@M-\@@html:</kbd>@@
-- kill all spaces except one at point: @@html:<KBD>@@M-SPC@@html:</KBD>@@
+- kill all spaces except one at point: @@html:<kbd>@@M-SPC@@html:</kbd>@@
 - delete indentation to join line to previous line:
-	@@html:<kbd>@@M-^@@html:</kbd>@@
+  @@html:<kbd>@@M-^@@html:</kbd>@@
 - join next line: @@html:<kbd>@@C-u 1 M-^@@html:</kbd>@@
+
 #+REVEAL: split
 - dynamic abbreviation: @@html:<kbd>@@M-/@@html:</kbd>@@
 - query replace: @@html:<kbd>@@M-%@@html:</kbd>@@
 - upcase region: @@html:<kbd>@@C-x C-u@@html:</kbd>@@
 - downcase region: @@html:<kbd>@@C-x C-l@@html:</kbd>@@
+
 #+REVEAL: split
 - transpose characters: @@html:<kbd>@@C-t@@html:</kbd>@@
 - transpose words: @@html:<kbd>@@M-t@@html:</kbd>@@
 - transpose lines: @@html:<kbd>@@C-x C-t@@html:</kbd>@@
+
 #+REVEAL: split
 - insert parentheses: @@html:<kbd>@@M-(@@html:</kbd>@@, wrap selection
   in parentheses
@@ -1312,6 +1320,7 @@ It's *self-documenting* and great, keep reading it frequently.
 - toggle input method: @@html:<kbd>@@C-\@@html:</kbd>@@
 - set input method: @@html:<kbd>@@C-x RET C-\@@html:</kbd>@@
 - describe current input method: @@html:<kbd>@@C-h I@@html:</kbd>@@
+
 #+REVEAL: split
 - insert char: @@html:<kbd>@@C-x 8 RET@@html:</kbd>@@ GREEK SMALL LETTER LAMBDA
 - what cursor position: @@html:<kbd>@@C-x =@@html:</kbd>@@	
@@ -1324,6 +1333,7 @@ It's *self-documenting* and great, keep reading it frequently.
 	@@html:<kbd>@@C-q C-J@@html:</kbd>@@ to insert line feed,
 	@@html:<kbd>@@C-q C-M@@html:</kbd>@@ to insert carriage return
 - check unmatched parentheses: @@html:<kbd>@@M-x check-parens@@html:</kbd>@@
+
 #+REVEAL: split
 - tab to space: @@html:<kbd>@@M-x untabify@@html:</kbd>@@
 - space to tab: @@html:<kbd>@@M-x tabify@@html:</kbd>@@
@@ -1332,6 +1342,7 @@ It's *self-documenting* and great, keep reading it frequently.
 	@@html:<kbd>@@C-x u@@html:</kbd>@@
 - cancel: @@html:<kbd>@@C-]@@html:</kbd>@@, or @@html:<kbd>@@M-x
   top-level@@html:</kbd>@@
+
 #+REVEAL: split
 - open new line before current: @@html:<kbd>@@C-o@@html:</kbd>@@
 - remove all but one empty line: @@html:<kbd>@@C-x C-o@@html:</kbd>@@
