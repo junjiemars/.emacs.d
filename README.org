@@ -1534,6 +1534,13 @@ automatically from one Emacs session to the next.
 - echo current directory: @@html:<kbd>@@W@@html:</kbd>@@
 - hex edit file: @html:<kbd>@@f@@html:</kbd>@@
 
+** Regexp
+   :PROPERTIES:
+   :CUSTOM_ID: regexp
+   :END:
+
+- regexp builder: @@html:<kbd>@@M-x regexp-builder@@html:</kbd>@@
+
 ** Shell
    :PROPERTIES:
    :CUSTOM_ID: mnemonic-shell
