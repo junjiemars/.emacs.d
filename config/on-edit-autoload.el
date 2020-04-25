@@ -329,8 +329,10 @@ If prefix ARG then make quoted string."
   "Move to the next line and then open N lines, like vi's o command.
 
 See also `open-line'."
-  (interactive (list (prefix-numeric-value (or current-prefix-arg
-                                               "1"))
+  (interactive (list (prefix-numeric-value
+                      (if (consp current-prefix-arg)
+                          1
+                        current-prefix-arg))
                      (if current-prefix-arg
                          (y-or-n-p "Indent: ")
                        t)))
@@ -345,8 +347,10 @@ See also `open-line'."
   "Open N lines above the current one, like vi's O command.
 
 See also `open-line' and `split-line'."
-  (interactive (list (prefix-numeric-value (or current-prefix-arg
-                                               "1"))
+  (interactive (list (prefix-numeric-value
+                      (if (consp current-prefix-arg)
+                          1
+                        current-prefix-arg))
                      (if current-prefix-arg
                          (y-or-n-p "Indent: ")
                        t)))
