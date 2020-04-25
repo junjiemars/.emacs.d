@@ -1208,6 +1208,7 @@ It's *self-documenting* and great, keep reading it frequently.
 - Apropos command: @@html:<kbd>@@C-h a@@html:</kbd>@@
 - Mode: @@html:<kbd>@@C-h-m@@html:</kbd>@@ see all the key bindings and
   documentation of current buffer
+
 #+REVEAL: split
 - Info: @@html:<kbd>@@C-h i@@html:</kbd>@@
 - Info /file/: @@html:<kbd>@@C-u C-h i <where>@@html:</kbd>@@
@@ -1223,17 +1224,20 @@ It's *self-documenting* and great, keep reading it frequently.
   of the function invoked by the given keystrokes
 - Keybinding briefly: @@html:<kbd>@@C-h c@@html:</kbd>@@, which command
   for given keystroke
+
 #+REVEAL: split
 - Prefix keybindings: press prefix keys such as
   @@html:<kbd>@@C-c@@html:</kbd>@@ then
   @@html:<kbd>@@C-h@@html:</kbd>@@ to see all key bindings for given
   prefix keystrokes
+
 #+REVEAL: split
 - Message: @@html:<kbd>@@C-h e@@html:</kbd>@@ see the logging of echo
   area message
 - Man: @@html:<kbd>@@M-x man@@html:</kbd>@@ view UNIX manual page
 - Woman: @@html:<kbd>@@M-x woman@@html:</kbd>@@ view UNIX manual page
   without =man= program
+
 #+REVEAL: split
 - Coding system: @@html:<kbd>@@C-h C@@html:</kbd>@@ describe coding
   system
@@ -1577,6 +1581,9 @@ It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]].
    :PROPERTIES:
    :CUSTOM_ID: face
    :END:
+
+- describe the face at point: @@html:<kbd>@@M-x
+  describe-face@@html:</kbd>@@
 
 #+ATTR_HTML: :style text-align:left
 *** Text scale

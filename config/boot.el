@@ -186,7 +186,7 @@ If VAR requires the FEATURE, load it on compile-time."
 (defmacro with-var (var &rest body)
   "Execute BODY and restore VAR before return.
 
-Returns the value of BODY if no error happens."
+Return the value of BODY if no error happens."
   (declare (indent 1))
   (let ((old (gensym*)))
     `(let ((,old ,var))
