@@ -510,18 +510,18 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
       (view-mode 1))))
 
 
-(when-fn% 'make-c-tags 'tags)
+(when-fn% 'make-c-tags 'tags
 
-(defun cc*-make-system-tags (&optional option renew skip)
-  "Make system C tags."
-  (interactive "stags option \nFtags file ")
-  (let ((includes (cc*-system-include (not renew)))
-        (tag-file (tags-spec->% :os-include))
-        (opt (or (and option (> (length (string-trim>< option)) 0))
-                 "--c-kinds=+p")))
-    (make-c-tags (car includes) tag-file opt renew skip)
-    (dolist* (p (cdr includes) tag-file)
-      (make-c-tags p tag-file opt skip))))
+  (defun cc*-make-system-tags (&optional option renew skip)
+    "Make system C tags."
+    (interactive "stags option \nFtags file ")
+    (let ((includes (cc*-system-include (not renew)))
+          (tag-file (tags-spec->% :os-include))
+          (opt (or (and option (> (length (string-trim>< option)) 0))
+                   "--c-kinds=+p")))
+      (make-c-tags (car includes) tag-file opt renew skip)
+      (dolist* (p (cdr includes) tag-file)
+        (make-c-tags p tag-file opt nil skip)))))
 
 
 ;; eldoc
