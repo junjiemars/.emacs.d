@@ -116,23 +116,25 @@ RENEW overwrite the existing tags file when t else create it.
           (when renew (delete-file tf))
         (unless (file-exists-p td)
           (make-directory td t)))
-      (dir-iterate home
-                   file-filter
-                   dir-filter
-                   (lambda (f)
-                     (let ((cmd (format tags-program
-                                        (or tags-option "")
-                                        tf
-                                        (shell-quote-argument f)
-                                        (shell-quote-argument f))))
-                       (message "%s %s... %s"
-                                (propertize "make-tags"
-                                            'face 'minibuffer-prompt)
-                                cmd
-                                (if (zerop (car (shell-command* cmd)))
-                                    "ok"
-                                  "failed"))))
-                   nil))))
+      (let ((header (propertize "make-tags"
+                                'face 'minibuffer-prompt)))
+        (dir-iterate home
+                     file-filter
+                     dir-filter
+                     (lambda (f)
+                       (let ((cmd (format tags-program
+                                          (or tags-option "")
+                                          tf
+                                          (shell-quote-argument f)
+                                          (shell-quote-argument f))))
+                         (message "%s %s... %s" header cmd
+                                  (if (zerop (car (shell-command* cmd)))
+                                      "ok"
+                                    "failed"))))
+                     nil)
+        (message "%s for %s ... %s" header tf (if (file-exists-p tf)
+                                                  "done"
+                                                "failed"))))))
 
 
 (defun make-emacs-home-tags (&optional tags-file option)

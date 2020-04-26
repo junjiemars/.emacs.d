@@ -514,7 +514,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
 
 (defun cc*-make-system-tags (&optional option renew skip)
   "Make system C tags."
-  (interactive "stags option \nP\naskip ")
+  (interactive "stags option \nFtags file ")
   (let ((includes (cc*-system-include (not renew)))
         (tag-file (tags-spec->% :os-include))
         (opt (or (and option (> (length (string-trim>< option)) 0))
