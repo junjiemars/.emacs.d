@@ -8,7 +8,7 @@
 
 
 
-(when-fn% 'sql-oracle-list-all 'sql
+(when-fn% 'sql-oracle-restore-settings 'sql
 
   (defun sql-oracle-list-all* (sqlbuf outbuf enhanced _table-name)
     ;; Query from USER_OBJECTS or ALL_OBJECTS
@@ -46,7 +46,7 @@
       (sql-oracle-restore-settings sqlbuf settings))))
 
 
-(when-var% sql-product-alist 'sql
+(when-fn% 'sql-oracle-restore-settings 'sql
   
   (defun sql-oracle-list-code* (sqlbuf outbuf enhanced procedure)
     "List source code of PROCEDURE or function object"
@@ -64,7 +64,9 @@
       (sql-redirect sqlbuf
                     (concat "SET LINESIZE 80 PAGESIZE 50000 TRIMOUT ON"
                             " TAB OFF TIMING OFF FEEDBACK OFF"))
-      (sql-oracle-restore-settings sqlbuf settings)))
+      (sql-oracle-restore-settings sqlbuf settings))))
+
+(when-fn% 'sql-oracle-restore-settings 'sql
 
   (defun sql-list-code* (name &optional enhanced)
     "List the code of a database procedure named NAME. "
