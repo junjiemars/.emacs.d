@@ -71,7 +71,7 @@
    :compile `(,(compile-unit% (emacs-home* "config/use-lua-autoload.el"))))
   (list
    ;; web
-   :cond t
+   :cond nil
    :packages (list 'htmlize
                    'js2-mode
                    (when-version% <= 25 'restclient)
