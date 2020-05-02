@@ -7,6 +7,12 @@
 ;;;;
 
 
+(unless-fn% 'sql-oracle--list-object-name 'sql
+
+  (defun sql-oracle--list-object-name (obj-name)
+    (format "CASE WHEN REGEXP_LIKE (%s, q'/^[A-Z0-9_#$]+$/','c') THEN %s ELSE '\"'|| %s ||'\"' END "
+            obj-name obj-name obj-name)))
+
 
 (when-fn% 'sql-oracle-restore-settings 'sql
 
@@ -16,7 +22,8 @@
           (simple-sql
            (concat
             "SELECT INITCAP(x.object_type) AS SQL_EL_TYPE "
-            ", " (sql-oracle--list-object-name "x.object_name") " AS SQL_EL_NAME "
+            ", " (sql-oracle--list-object-name "x.object_name")
+            " AS SQL_EL_NAME "
             "FROM user_objects                    x "
             "WHERE x.object_type NOT LIKE '%% BODY' "
             "ORDER BY SQL_EL_TYPE, SQL_EL_NAME;"))
@@ -24,7 +31,8 @@
            (concat
             "SELECT INITCAP(x.object_type) AS SQL_EL_TYPE "
             ", "  (sql-oracle--list-object-name "x.owner")
-            " ||'.'|| "  (sql-oracle--list-object-name "x.object_name") " AS SQL_EL_NAME "
+            " ||'.'|| "  (sql-oracle--list-object-name "x.object_name")
+            " AS SQL_EL_NAME "
             "FROM all_objects x "
             "WHERE x.object_type NOT LIKE '%% BODY' "
             "AND x.owner <> 'SYS' "
