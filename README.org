@@ -1534,6 +1534,11 @@ automatically from one Emacs session to the next.
 - echo current directory: @@html:<kbd>@@W@@html:</kbd>@@
 - hex edit file: @html:<kbd>@@f@@html:</kbd>@@
 
+#+REVEAL: split
+- /find/ regexp recusive: @@html:<kbd>@@A@@html:</kbd>@@
+- /replace/ regexp recusive: @@html:<kbd>@@Q@@html:</kbd>@@
+- save all modified buffers: @@html:<kbd>@@C-u C-x C-s@@html:</kbd>@@
+
 ** Regexp
    :PROPERTIES:
    :CUSTOM_ID: regexp
