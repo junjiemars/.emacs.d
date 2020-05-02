@@ -24,39 +24,51 @@
       (isearch-yank-string (cdr ss)))))
 
 
-(defun isearch-forward-symbol* ()
+(defun isearch-forward-symbol* (&optional arg)
   "Do incremental symbol forward."
-  (interactive)
+  (interactive "P")
   (if (mark-symbol@)
-      (isearch-forward*)
+      (if arg
+          (isearch-backward*)
+        (isearch-forward*))
+    (comment arg)
     (message "%s: [No symbol at point]"
              (propertize "Symbol I-search"
                          'face 'minibuffer-prompt))))
 
 
-(defun isearch-forward-word* ()
+(defun isearch-forward-word* (&optional arg)
   "Do incremental word forward."
-  (interactive)
+  (interactive "P")
   (if (mark-word@)
-      (isearch-forward*)
+      (if arg
+          (isearch-backward*)
+        (isearch-forward*))
+    (comment arg)
     (message "%s: [No word at point]"
              (propertize "Word I-search"
                          'face 'minibuffer-prompt))))
 
-(defun isearch-forward-string* ()
+(defun isearch-forward-string* (&optional arg)
   "Do incremental string forward."
-  (interactive)
+  (interactive "P")
   (if (mark-string@)
-      (isearch-forward*)
+      (if arg
+          (isearch-backward*)
+        (isearch-forward*))
+    (comment arg)
     (message "%s: [No string at point]"
              (propertize "String I-search"
                          'face 'minibuffer-prompt))))
 
-(defun isearch-forward-filename* ()
+(defun isearch-forward-filename* (&optional arg)
   "Do incremental filename backward."
-  (interactive)
+  (interactive "P")
   (if (mark-filename@)
-      (isearch-forward*)
+      (if arg
+          (isearch-backward*)
+        (isearch-forward*))
+    (comment arg)
     (message "%s: [No filename at point]"
              (propertize "Filename I-search"
                          'face 'minibuffer-prompt))))
