@@ -74,7 +74,7 @@
    :cond t
    :packages (list 'htmlize
                    'js2-mode
-                   'restclient
+                   (when-version% <= 25 'restclient)
                    (when-version% <= 24.3 'skewer-mode)
                    'web-mode
                    'x509-mode
