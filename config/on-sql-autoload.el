@@ -91,15 +91,23 @@
 
 
 (with-eval-after-load 'sql
+
   (when-var% sql-product-alist 'sql
-    (when (plist-get (cdr (assoc** 'oracle sql-product-alist))
-                     :list-all)
+
+    ;; oralce: replace `:list-all'
+    (when-fn% 'sql-oracle-list-all* nil
+      (when (plist-get (cdr (assoc** 'oracle sql-product-alist))
+                       :list-all)
+        (plist-put (cdr (assoc** 'oracle sql-product-alist))
+                   :list-all
+                   #'sql-oracle-list-all*)))
+
+    ;; oracle: new `:list-code'
+    (when-fn% 'sql-oracle-list-code* nil
       (plist-put (cdr (assoc** 'oracle sql-product-alist))
-                 :list-all
-                 #'sql-oracle-list-all*))
-    (plist-put (cdr (assoc** 'oracle sql-product-alist))
-               :list-code
-               #'sql-oracle-list-code*)
+                 :list-code
+                 #'sql-oracle-list-code*))
+
     (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-code*)
     (define-key% sql-interactive-mode-map (kbd "C-c C-l c") #'sql-list-code*)))
 
