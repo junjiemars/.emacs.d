@@ -1421,23 +1421,35 @@ It's *self-documenting* and great, keep reading it frequently.
    :CUSTOM_ID: window
    :END:
 
-- write file: @@html:<kbd>@@C-x C-w@@html:</kbd>@@
-- save all buffers: @@html:<kbd>@@C-x s@@html:</kbd>@@
-- insert a file into buffer: @@html:<kbd>@@C-x i@@html:</kbd>@@
-- kill current buffer and open another file:
-	@@html:<kbd>@@C-x C-v@@html:</kbd>@@
+#+REVEAL: split
+- /find/ file: @@html:<kbd>@@C-x C-f@@html:</kbd>@@
+- /view/ file: @@html:<kbd>@@C-x C-v@@html:</kbd>@@
+- /write/ file: @@html:<kbd>@@C-x C-w@@html:</kbd>@@
+
+#+REVEAL: split
+- save /current/ buffer: @@html:<kbd>@@C-x s@@html:</kbd>@@
+- save all /modified/ buffers: @@html:<kbd>@@C-u C-x s@@html:</kbd>@@
+- save and /backup/ current buffer: @@html:<kbd>@@C-x C-s@@html:</kdb>@@
+
+#+REVEAL: split
+- insert /a file/ into buffer: @@html:<kbd>@@C-x i@@html:</kbd>@@
+- insert /shell output/ into buffer: @@html:<kbd>@@C-u C-[
+  !@@html:</kbd>@@
+
 #+REVEAL: split
 - kill a buffer: @@html:<kbd>@@C-x k@@html:</kbd>@@
 - other window: @@html:<kbd>@@C-x o@@html:</kbd>@@
 - dired other window: @@html:<kbd>@@C-x 4 d@@html:</kbd>@@
 - find file in other window: @@html:<kbd>@@C-x 4 C-f@@html:</kbd>@@, or
   @@html:<kbd>@@C-x 4 f@@html:</kbd>@@
+
 #+REVEAL: split
 - display buffer: @@html:<kbd>@@C-x 4 C-o@@html:</kbd>@@, display the
   buffer in another window
 - find tag other window: @@html:<kbd>@@C-x 4 .@@html:</kbd>@@
 - kill buffer and window: @@html:<kbd>@@C-x 4 0@@html:</kbd>@@, just
   like @@html:<kbd>@@C-x 0@@html:</kbd>@@ except kill the buffer
+
 #+REVEAL: split
 - switch to buffer other window: @@html:<kbd>@@C-x 4 b@@html:</kbd>@@
 - clone indirect buffer other window:
@@ -1537,7 +1549,6 @@ automatically from one Emacs session to the next.
 #+REVEAL: split
 - /find/ regexp recusive: @@html:<kbd>@@A@@html:</kbd>@@
 - /replace/ regexp recusive: @@html:<kbd>@@Q@@html:</kbd>@@
-- save all modified buffers: @@html:<kbd>@@C-u C-x C-s@@html:</kbd>@@
 
 ** Regexp
    :PROPERTIES:
