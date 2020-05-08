@@ -259,13 +259,13 @@ If ENDIAN is t then decode in small endian."
 
 
 (defun ascii-table (&optional octal)
-  "Display basic ASCII table (0 ~ 128)."
+  "Display basic ASCII table (0 ~ 127)."
   (interactive "P")
   (switch-to-buffer "*ASCII*")
   (setq buffer-read-only nil)
   (erase-buffer)
   (save-excursion
-    (insert (propertize (format "ASCII characters 0 ~ 128 (%s).\n\n"
+    (insert (propertize (format "ASCII characters 0 ~ 127 (%s).\n\n"
                                 (if octal "Oct Dec" "Hex Dec"))
                         'face 'font-lock-type-face))
     (insert (if octal
