@@ -51,6 +51,14 @@ item for which (PRED item) returns t."
     (nreverse s1)))
 
 
+;; Load cl-lib/cl at runtime
+(if-version% <= 24
+             (when-version% > 26
+               (require 'cl-lib))
+  (with-no-warnings
+    (require 'cl)))
+
+
 (defmacro assoc** (key list &optional testfn)
   "Return non-nil if KEY is equal to the `car' of an element of LIST.
 
@@ -59,12 +67,12 @@ Equality is defined by TESTFN if non-nil or by `equal' if nil."
   (if-version%
       <= 26.1
       `(assoc ,key ,list ,testfn)
-    (if-fn% 'cl-assoc 'cl-lib
-            (progn
-              (declare-function cl-assoc "cl-seq.elc"
-                                (item seq &rest keys)
-                                t)
-              `(cl-assoc ,key ,list :test (or ,testfn #'equal)))
+    (if-fn% 'cl-assoc 'cl-seq
+            (progn%
+             (declare-function cl-assoc "cl-seq.elc"
+                               (item seq &rest keys)
+                               t)
+             `(cl-assoc ,key ,list :test (or ,testfn #'equal)))
       (when-fn% 'assoc* 'cl
         `(with-no-warnings
            (assoc* ,key ,list :test (or ,testfn #'equal)))))))
