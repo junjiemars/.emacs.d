@@ -60,9 +60,7 @@ Equality is defined by TESTFN if non-nil or by `equal' if nil."
       <= 26.1
       `(assoc ,key ,list ,testfn)
     (if-fn% 'cl-assoc 'cl-lib
-            (if-version%
-                <= 25
-                `(cl-assoc ,key ,list :test (or ,testfn #'equal))
+            (progn
               (declare-function cl-assoc "cl-seq.elc"
                                 (item seq &rest keys)
                                 t)

@@ -19,8 +19,7 @@
     (require 'cl)))
 
 (if-version% <= 24
-             (when-version% > 25 
-               (require 'cl-lib))
+             (require 'cl-lib)
   (with-no-warnings
     (require 'cl)))
 
