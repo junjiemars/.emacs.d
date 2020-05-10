@@ -679,6 +679,7 @@ packages can be done in =(def-self-env-spec)=.
 #+BEGIN_SRC emacs-lisp
 (def-self-env-spec
   :package (list :remove-unused nil
+                 :package-check-signature 'allow-unsigned
                  :allowed nil))
 #+END_SRC
 

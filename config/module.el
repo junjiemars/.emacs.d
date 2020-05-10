@@ -16,6 +16,10 @@
 
 
 (defsubst initialize-package-repository! ()
+  (when (self-spec->*env-spec :package :allowed)
+    (setq% package-check-signature
+           (self-spec->*env-spec :package :package-check-signature)
+           'package))
   (setq%
    package-archives
    (append (list '("gnu" . "https://elpa.gnu.org/packages/")
@@ -85,9 +89,7 @@
 ;; (require 'package)
 (declare-function package-installed-p "package")
 (setq package-enable-at-startup nil)
-(when (self-spec->*env-spec :package :allowed)
-  (setq package-check-signature
-        (self-spec->*env-spec :package :package-check-signature)))
+
 
 (when-version%
     <= 25.1

@@ -65,6 +65,7 @@
                :allowed nil)
   
   :package (list :remove-unused nil
+                 :package-check-signature 'allow-unsigned
                  :allowed nil)
 
   :edit (list :tab-width 2
