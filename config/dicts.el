@@ -11,7 +11,9 @@
   `(("bing"
      ("url" . "https://cn.bing.com/dict/search?q=")
      ("meta" . (("<meta name=\"description\" content=\"必应词典为您提供.+的释义，")
-                "\" /><"))
+                "\" /><"
+                .
+                (dict-fn-norm-zh-punc)))
      ("sounds-like" . (("<div class=\"df_wb_a\">音近词</div>")
                        "</div></div></div>"
                        .
@@ -87,6 +89,20 @@
 (defvar *dict-style-history* nil
   "Dictionary style choosing history list.")
 
+
+(defun dict-fn-norm-zh-punc (ss)
+  "Replace zh's punctuations to en's."
+  (with-temp-buffer
+    (insert ss)
+    (let ((punc '(("，\s*" . ", ")
+                  ("；\s*" . "; ")
+                  ("：\s*" . ": "))))
+      (mapc (lambda (s)
+              (goto-char (point-min))
+              (while (search-forward-regexp (car s) nil t)
+                (replace-match (cdr s) t t)))
+            punc)
+      (buffer-substring (point-min) (point-max)))))
 
 (defun dict-fn-decode-char (ss)
   "Decode &#[0-9]+; to string."
