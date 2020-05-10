@@ -17,7 +17,7 @@
                     (with-temp-buffer
                       (insert ss)
                       (let ((s1 '(("美\\[\\(.+?\\)\\]" . "|%s|")
-                                  ("，?英\\[\\(.+?\\)\\]" . " /%s/"))))
+                                  ("，?英\\[\\(.+?\\)\\]，?" . " /%s/ "))))
                         (mapc
                          (lambda (s)
                            (goto-char (point-min))
