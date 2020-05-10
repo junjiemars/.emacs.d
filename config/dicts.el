@@ -13,7 +13,20 @@
      ("meta" . (("<meta name=\"description\" content=\"必应词典为您提供.+的释义，")
                 "\" /><"
                 .
-                (dict-fn-norm-zh-punc)))
+                (,(lambda (ss)
+                    (with-temp-buffer
+                      (insert ss)
+                      (let ((s1 '(("美\\[\\(.+?\\)\\]" . "|%s|")
+                                  ("，?英\\[\\(.+?\\)\\]" . " /%s/"))))
+                        (mapc
+                         (lambda (s)
+                           (goto-char (point-min))
+                           (while (search-forward-regexp (car s) nil t)
+                             (replace-match (format (cdr s)
+                                                    (match-string 1)))))
+                         s1)
+                        (buffer-substring (point-min) (point-max)))))
+                 dict-fn-norm-zh-punc)))
      ("sounds-like" . (("<div class=\"df_wb_a\">音近词</div>")
                        "</div></div></div>"
                        .
