@@ -162,7 +162,9 @@
   (declare (indent 1))
   (let ((err (plist-get :error status)))
     (when err
-      (message (propertize "Network error" 'face 'font-lock-warning-face))
+      (message "%s" (propertize "Network error"
+                                'face
+                                'font-lock-warning-face))
       (kill-buffer)
       (user-error* "!%s in on-lookup-dict" err)))
   (set-buffer-multibyte t)
@@ -190,13 +192,13 @@
               style)))
     (when *dict-debug-log*
       (save-sexp-to-file ss (path! (emacs-home* ".dict/lookup.log"))))
-    (message (if (car ss)
-                 (propertize (string-trim> (mapconcat #'identity
-                                                      (mapcar #'cdr ss)
-                                                      " "))
-                             'face 'font-lock-comment-face)
-               (propertize "No match"
-                           'face 'font-lock-warning-face)))))
+    (message "%s" (if (car ss)
+                      (propertize (string-trim> (mapconcat #'identity
+                                                           (mapcar #'cdr ss)
+                                                           " "))
+                                  'face 'font-lock-comment-face)
+                    (propertize "No match"
+                                'face 'font-lock-warning-face)))))
 
 
 (defun lookup-dict (what &optional dict)
