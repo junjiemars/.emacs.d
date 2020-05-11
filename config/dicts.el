@@ -53,7 +53,8 @@
                 "Learn"
                 .
                 (dict-fn-decode-char
-                 dict-fn-decode-html-char))))
+                 dict-fn-decode-html-char
+                 dict-fn-norm-zh-punc))))
     ("camb/en"
      ("url" . "https://dictionary.cambridge.org/dictionary/english/")
      ("pron-us" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
@@ -109,7 +110,9 @@
     (insert ss)
     (let ((punc '(("，\s*" . ", ")
                   ("；\s*" . "; ")
-                  ("：\s*" . ": "))))
+                  ("：\s*" . ": ")
+                  ("（" . "(")
+                  ("）" . ")"))))
       (mapc (lambda (s)
               (goto-char (point-min))
               (while (search-forward-regexp (car s) nil t)
