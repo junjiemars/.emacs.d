@@ -15,6 +15,45 @@
     (when (eq 'region (car ss))
       (isearch-yank-string (cdr ss)))))
 
+(defun isearch-forward*1 (&optional style backward)
+  "Do incremental search forward."
+  (interactive
+   (list (when current-prefix-arg
+           (read-key (format
+                      "Choose I-search style: %s "
+                      "(r)egexp (s)ymbol (w)ord (f)ile (q)uoted")))))
+  (let ((regexp-p (and style (char-equal ?r style))))
+    (if backward
+        (isearch-backward regexp-p 1)
+      (isearch-forward (and style (char-equal ?r style)) 1)))
+  (let ((ms (cond ((null style) nil)
+                  ((char-equal ?s style) (cons "symbol" (mark-symbol@)))
+                  ((char-equal ?w style) (cons "word" (mark-word@)))
+                  ((char-equal ?f style) (cons "file" (mark-filename@)))
+                  ((char-equal ?q style) (cons "quoted" (mark-string@)))
+                  (t nil))))
+    (when ms
+      (let ((ss (symbol@)))
+        (if (eq 'region (car ss))
+            (isearch-yank-string (cdr ss))
+          (message "%s: [No %s at point]"
+                   (propertize "I-search"
+                               'face 'minibuffer-prompt)
+                   (propertize (car ms)
+                               'face 'font-lock-warning-face)))))))
+
+
+(defun isearch-backward*1 (&optional style)
+  "Do incremental search backward."
+  (interactive
+   (list (when current-prefix-arg
+           (read-key (format
+                      "Choose I-search style: %s "
+                      "(r)egexp (s)ymbol (w)ord (f)ile (q)uoted")))))
+  (isearch-forward*1 style t)
+  )
+
+
 (defun isearch-backward* (&optional regexp-p)
   "Do incremental search backward."
   (interactive "P")
@@ -75,8 +114,8 @@
 
 
 (with-eval-after-load 'isearch
-  (define-key% (current-global-map) (kbd "C-s") #'isearch-forward*)
-  (define-key% (current-global-map) (kbd "C-r") #'isearch-backward*)
+  (define-key% (current-global-map) (kbd "C-s") #'isearch-forward*1)
+  (define-key% (current-global-map) (kbd "C-r") #'isearch-backward*1)
   (define-key% (current-global-map)
     (kbd "M-s s") #'isearch-forward-symbol*)
   (define-key% (current-global-map)
