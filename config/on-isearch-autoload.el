@@ -18,21 +18,22 @@
     (if backward
         (isearch-backward regexp-p 1)
       (isearch-forward (and style (char-equal ?r style)) 1)))
-  (let ((ms (cond ((null style) nil)
-                  ((char-equal ?s style) (cons "symbol" (mark-symbol@)))
-                  ((char-equal ?w style) (cons "word" (mark-word@)))
-                  ((char-equal ?f style) (cons "file" (mark-filename@)))
-                  ((char-equal ?q style) (cons "quoted" (mark-string@)))
-                  (t nil))))
-    (when ms
-      (let ((ss (symbol@)))
-        (if (eq 'region (car ss))
-            (isearch-yank-string (cdr ss))
-          (message "%s: [No %s at point]"
-                   (propertize "I-search"
-                               'face 'minibuffer-prompt)
-                   (propertize (car ms)
-                               'face 'font-lock-warning-face)))))))
+  (unless (null style)
+    (let ((ms (cond
+               ((char-equal ?s style) (cons "symbol" (mark-symbol@)))
+               ((char-equal ?w style) (cons "word" (mark-word@)))
+               ((char-equal ?f style) (cons "file" (mark-filename@)))
+               ((char-equal ?q style) (cons "quoted" (mark-string@)))
+               (t nil))))
+      (when ms
+        (let ((ss (symbol@)))
+          (if (eq 'region (car ss))
+              (isearch-yank-string (cdr ss))
+            (message "%s: [No %s at point]"
+                     (propertize "I-search"
+                                 'face 'minibuffer-prompt)
+                     (propertize (car ms)
+                                 'face 'font-lock-warning-face))))))))
 
 
 (defun isearch-backward* (&optional style)
