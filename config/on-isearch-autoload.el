@@ -11,13 +11,15 @@
   "Do incremental search forward."
   (interactive
    (list (when current-prefix-arg
-           (read-key (format
-                      "Choose I-search style: %s "
-                      "(r)egexp (s)ymbol (w)ord (f)ile (q)uoted")))))
-  (let ((regexp-p (and style (char-equal ?r style))))
+           (read-key
+            (format "%s: %s "
+                    (propertize "I-search" 'face 'minibuffer-prompt)
+                    "(r)egexp (s)ymbol (w)ord (f)ile (q)uoted")))))
+  (let ((regexp-p (and style (or (char-equal ?\r style)
+                                 (char-equal ?r style)))))
     (if backward
         (isearch-backward regexp-p 1)
-      (isearch-forward (and style (char-equal ?r style)) 1)))
+      (isearch-forward regexp-p 1)))
   (let ((ms (cond ((and style (char-equal ?s style))
                    (cons "symbol" (mark-symbol@)))
                   ((and style (char-equal ?w style))
@@ -41,9 +43,10 @@
   "Do incremental search backward."
   (interactive
    (list (when current-prefix-arg
-           (read-key (format
-                      "Choose I-search style: %s "
-                      "(r)egexp (s)ymbol (w)ord (f)ile (q)uoted")))))
+           (read-key
+            (format "%s: %s "
+                    (propertize "I-search" 'face 'minibuffer-prompt)
+                    "(r)egexp (s)ymbol (w)ord (f)ile (q)uoted")))))
   (isearch-forward* style t))
 
 
