@@ -931,7 +931,7 @@ In More Reasonable Emacs, by default, =isearch-forward*= and
  the text of activated *region*.  @@html:<kbd>@@C-s@@html:</kbd>@@ and
  @@html:<kbd>@@C-r@@html:</kbd>@@ will search forward or backward just
  like /vi/'s @@html:<kbd>@@*@@html:</kbd>@@ and
- @@html:<kbd>@@#@@html:</kbd>@@ does when there is activated region.
+ @@html:<kbd>@@C-u s@@html:</kbd>@@ does advanced searching.
 
 And more, searching =word=, =quoted string=, or =filename= forward or
  backword.
