@@ -89,7 +89,8 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
                   t)))
 
 
-(define-key (current-global-map) (kbd "M-s u") #'lookup-web)
+(define-key% (current-global-map) (kbd "M-s w") #'lookup-web)
+(define-key% (current-global-map) (kbd "C-c f w") #'lookup-web)
 
  ;; end of `find-web'
 

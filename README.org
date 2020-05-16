@@ -655,8 +655,8 @@ whatever OS you using:
 
 - Using @@html:<kbd>@@M-x toggle-browser!@@html:</kdb>@@ to switch
   external or internal browser.
-- Find symbol, word, whatever you like via web search engine:
-  @@html:<kdb>@@M-s u@@html:</kdb>@@
+- Lookup online for symbol, word, etc.,: @@html:<kdb>@@M-s
+  u@@html:</kdb>@@
 - Lookup online dictionaries: @@html:<kbd>@@M-s d@@html:</kbd>@@
 
 ** Package

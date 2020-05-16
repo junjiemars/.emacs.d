@@ -50,9 +50,25 @@
   (isearch-forward* style t))
 
 
+(defun isearch-forward-symbol* (&optional backward)
+  "Do incremental search forward symbol."
+  (interactive "P")
+  (isearch-forward* ?s backward))
+
+
+(defun isearch-forward-word* (&optional backward)
+  "Do incremental search forward word."
+  (interactive "P")
+  (isearch-forward* ?w backward))
+
+
 (with-eval-after-load 'isearch
   (define-key% (current-global-map) (kbd "C-s") #'isearch-forward*)
-  (define-key% (current-global-map) (kbd "C-r") #'isearch-backward*))
+  (define-key% (current-global-map) (kbd "C-r") #'isearch-backward*)
+  (define-key% (current-global-map)
+    (kbd "M-s .") #'isearch-forward-symbol*)
+  (define-key% (current-global-map)
+    (kbd "M-s _") #'isearch-forward-word*))
 
 
  ;; end of file
