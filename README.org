@@ -1288,7 +1288,7 @@ It's *self-documenting* and great, keep reading it frequently.
 - filename of current buffer: @@html:<kbd>@@C-c b n@@html:</kbd>@@
 
 #+REVAL: split
-- lookup /web/ at point: @@html:<kbd>@@M-s u@@html:</kbd>@@
+- lookup /web/ at point: @@html:<kbd>@@M-s w@@html:</kbd>@@
 - lookup /dict/ at point: @@html:<kbd>@@M-s d@@html:</kbd>@@
 
 #+REVAL: split
