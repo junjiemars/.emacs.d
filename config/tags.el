@@ -216,7 +216,7 @@ Example:
                              "\\\.tags$" f)))
                      (lambda (d _)
                        (not (string-match
-                             "^\\\.git/$\\|^out/$\\|^build/$" d)))
+                             "^\\\.[_ a-zA-Z]+/$\\|^out/$\\|^build/$" d)))
                      option
                      t))))
 
