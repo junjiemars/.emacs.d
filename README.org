@@ -454,7 +454,7 @@ by default and for GUI mode only.
                           "Consolas"
                         "DejaVu Sans Mono"))
 							:size 13
-              :allowed t)
+              :allowed t))
 #+END_SRC
 
 - =:name= string of font name
@@ -1274,14 +1274,14 @@ It's *self-documenting* and great, keep reading it frequently.
    :END:
 
 - =*scratch*= buffer
-- eval /Elisp/: @@html:<kbd>@@C-[ :@@html:</kbd>@@
-- execute /Shell/ command: @@html:<kbd>@@C-[ !@@html:</kbd>@@
+- eval /Elisp/: @@html:<kbd>@@M-:@@html:</kbd>@@
+- execute /Shell/ command: @@html:<kbd>@@M-!@@html:</kbd>@@
 - in Dired mode: @@html:<kbd>@@!@@html:</kbd>@@, do shell command
 - region as input to Shell command: @@html:<kbd>@@M-|@@html:</kbd>@@,
 
 #+REEVAL: split
-- insert from shell output: @@html:<kbd>@@C-u C-[ !@@html:</kbd>@@
-- insert from elisp output: @@html:<kbd>@@C-u C-[ :@@html:</kbd>@@
+- insert from shell output: @@html:<kbd>@@C-u M-!@@html:</kbd>@@
+- insert from elisp output: @@html:<kbd>@@C-u M-:@@html:</kbd>@@
 
 #+REVEAL: split
 - find file at point: @@html:<kbd>@@C-c f f@@html:</kbd>@@
@@ -1431,11 +1431,6 @@ It's *self-documenting* and great, keep reading it frequently.
 - save /current/ buffer: @@html:<kbd>@@C-x s@@html:</kbd>@@
 - save all /modified/ buffers: @@html:<kbd>@@C-u C-x s@@html:</kbd>@@
 - save and /backup/ current buffer: @@html:<kbd>@@C-x C-s@@html:</kdb>@@
-
-#+REVEAL: split
-- insert /a file/ into buffer: @@html:<kbd>@@C-x i@@html:</kbd>@@
-- insert /shell output/ into buffer: @@html:<kbd>@@C-u C-[
-  !@@html:</kbd>@@
 
 #+REVEAL: split
 - kill a buffer: @@html:<kbd>@@C-x k@@html:</kbd>@@
