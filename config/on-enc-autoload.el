@@ -323,16 +323,14 @@ If ENDIAN is t then decode in small endian."
                  934 "Phi (fie)"
                  935 "Chi (kie)"
                  936 "Psi (sigh)"
-                 937 "Omega (oh-may-gah)"))
-          (i 912))
-      (dolist* (x (remove-if (lambda (x)
-                               (= 930 x))
-                             (range 913 (+ 913 24))))
-        (insert (format
-                 " %4x %4d %4s  | %4x %4d %4s  |  %s\n"
-                 x x (text-char-description x)
-                 (+ 32 x) x (text-char-description x)
-                 (plist-get tbl x))))))
+                 937 "Omega (oh-may-gah)")))
+      (dolist* (s (remove** 930 (range 913 (+ 913 24)) :test #'=))
+        (let ((c (+ 32 s)))
+          (insert (format
+                   " %4x %4d %4s  | %4x %4d %4s  |  %s\n"
+                   s s (text-char-description s)
+                   c c (text-char-description c)
+                   (plist-get tbl s)))))))
   (view-mode t))
 
 
