@@ -269,17 +269,17 @@ If ENDIAN is t then decode in small endian."
                                 (if octal "Oct Dec" "Hex Dec"))
                         'face 'font-lock-type-face))
     (insert (if octal
-                (concat " Oct  Dec  Char|  Oct  Dec  Char|"
+                (concat "  Oct  Dec  Char|  Oct  Dec  Char|"
                         "  Oct  Dec  Char|  Oct  Dec  Char\n")
-              (concat " Hex  Dec  Char|  Hex  Dec  Char|"
+              (concat "  Hex  Dec  Char|  Hex  Dec  Char|"
                       "  Hex  Dec  Char|  Hex  Dec  Char\n")))
     (let ((i -1))
       (while (< i 31)
         (insert
          (format (if octal
-                     (concat "%4o %4d %4s | %4o %4d %4s |"
+                     (concat " %4o %4d %4s | %4o %4d %4s |"
                              " %4o %4d %4s | %4o %4d %4s\n")
-                   (concat "%4x %4d %4s | %4x %4d %4s |"
+                   (concat " %4x %4d %4s | %4x %4d %4s |"
                            " %4x %4d %4s | %4x %4d %4s\n"))
                  (setq i (+ 1  i)) i (single-key-description i)
                  (setq i (+ 32 i)) i (single-key-description i)
