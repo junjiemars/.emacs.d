@@ -289,4 +289,51 @@ If ENDIAN is t then decode in small endian."
   (view-mode t))
 
 
+(defun greek-alphabet ()
+  "Display Greek alphabet."
+  (interactive)
+  (switch-to-buffer "*GREEK*")
+  (setq buffer-read-only nil)
+  (erase-buffer)
+  (save-excursion
+    (insert (propertize "Greek characters (Hex Dec).\n\n"
+                        'face 'font-lock-type-face))
+    (insert "  Hex  Dec  Char |  Hex  Dec  Char |  Name\n")
+    (let ((tbl '(
+                 913 "Alpha (al-fah)"
+                 914 "Beta (bay-tah)"
+                 915 "Gamma (gam-ah)"
+                 916 "Delta (del-ta)"
+                 917 "Epsilon (ep-si-lon)"
+                 918 "Zeta (zay-tah"
+                 919 "Eta (ay-tah)"
+                 920 "Theta (thay-tah)"
+                 921 "Iota (eye-o-tah)"
+                 922 "Kappa (cap-pah)"
+                 923 "Lambda (lamb-dah)"
+                 924 "Mu (mew)"
+                 925 "Nu (new)"
+                 926 "Xi (zie)"
+                 927 "Omicron (om-e-cron)"
+                 928 "Pi (pie)"
+                 929 "Rho (roe)"
+                 931 "Sigma (sig-ma)"
+                 932 "Tau (taw)"
+                 933 "Upsilon (up-si-lon)"
+                 934 "Phi (fie)"
+                 935 "Chi (kie)"
+                 936 "Psi (sigh)"
+                 937 "Omega (oh-may-gah)"))
+          (i 912))
+      (dolist* (x (remove-if (lambda (x)
+                               (= 930 x))
+                             (range 913 (+ 913 24))))
+        (insert (format
+                 " %4x %4d %4s  | %4x %4d %4s  |  %s\n"
+                 x x (text-char-description x)
+                 (+ 32 x) x (text-char-description x)
+                 (plist-get tbl x))))))
+  (view-mode t))
+
+
 ;; end of file
