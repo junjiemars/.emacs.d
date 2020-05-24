@@ -200,45 +200,6 @@
 ;;; basic
 
 
-(ert-deftest %basic:split-string* ()
-  (should (equal '("a" "b" "c")
-                 (split-string* "a,b,,cXX" "," t "XX")))
-  (should (equal '("a" "b" "c")
-                 (split-string* "a,b@@cXX" "[,@]" t "XX")))
-  (should (equal '("a" "b" "c")
-                 (split-string* "a,b@@cXX" ",\\|@" t "XX")))
-  (should (equal '("a" "b")
-                 (split-string* "a,,b" "," t)))
-  (should (equal '("a" "" "b")
-                 (split-string* "a,,b" "," nil)))
-  (should (equal '("a" "b")
-                 (split-string* "a, b " "," t " "))))
-
-(ert-deftest %basic:string-trim> ()
-  (should-not (string-trim> nil "X"))
-  (should (string= "abc" (string-trim> "abc \n  ")))
-  (should (string= "abc" (string-trim> "abcXX" "XX")))
-  (should (string= "abc" (string-trim> "abcXX" "X+"))))
-
-(ert-deftest %basic:string-trim< ()
-  (should-not (string-trim< nil "X"))
-  (should (string= "abc" (string-trim< "  \n abc")))
-  (should (string= "abc" (string-trim< "XXabc" "XX")))
-  (should (string= "abc" (string-trim< "XXabc" "X+"))))
-
-(ert-deftest %basic:string-trim>< ()
-  (should-not (string-trim>< nil "X" "Z"))
-  (should (string= "abc" (string-trim>< " \n abc \n ")))
-  (should (string= "abc" (string-trim>< "ZZabcXX" "X+" "Z+"))))
-
-(ert-deftest %basic:match-string* ()
-  (should-not (match-string* nil nil 0))
-  (should-not (match-string* nil 123 0))
-  (should (string= "XXabcXX"
-                   (match-string* "XX\\(abc\\)XX" "XXabcXX" 0)))
-  (should-not (match-string* "XX\\(abc\\)XX" "XXabcXX" 2))
-  (should (string= "abc"
-                   (match-string* "XX\\(abc\\)XX" "XXabcXX" 1))))
 
 (ert-deftest %basic:buffer-file-name* ()
   (should (null (buffer-file-name* (get-buffer "*scratch*")))))
@@ -589,6 +550,46 @@
   (should (some* #'characterp "abc"))
   (should (some* #'< '(1 2 3) '(1 2 4)))
   (should-not (some* #'< '(1 2 3) '(1 2 3))))
+
+(ert-deftest %fns:split-string* ()
+  (should (equal '("a" "b" "c")
+                 (split-string* "a,b,,cXX" "," t "XX")))
+  (should (equal '("a" "b" "c")
+                 (split-string* "a,b@@cXX" "[,@]" t "XX")))
+  (should (equal '("a" "b" "c")
+                 (split-string* "a,b@@cXX" ",\\|@" t "XX")))
+  (should (equal '("a" "b")
+                 (split-string* "a,,b" "," t)))
+  (should (equal '("a" "" "b")
+                 (split-string* "a,,b" "," nil)))
+  (should (equal '("a" "b")
+                 (split-string* "a, b " "," t " "))))
+
+(ert-deftest %fns:string-trim> ()
+  (should-not (string-trim> nil "X"))
+  (should (string= "abc" (string-trim> "abc \n  ")))
+  (should (string= "abc" (string-trim> "abcXX" "XX")))
+  (should (string= "abc" (string-trim> "abcXX" "X+"))))
+
+(ert-deftest %basic:string-trim< ()
+  (should-not (string-trim< nil "X"))
+  (should (string= "abc" (string-trim< "  \n abc")))
+  (should (string= "abc" (string-trim< "XXabc" "XX")))
+  (should (string= "abc" (string-trim< "XXabc" "X+"))))
+
+(ert-deftest %fns:string-trim>< ()
+  (should-not (string-trim>< nil "X" "Z"))
+  (should (string= "abc" (string-trim>< " \n abc \n ")))
+  (should (string= "abc" (string-trim>< "ZZabcXX" "X+" "Z+"))))
+
+(ert-deftest %fns:match-string* ()
+  (should-not (match-string* nil nil 0))
+  (should-not (match-string* nil 123 0))
+  (should (string= "XXabcXX"
+                   (match-string* "XX\\(abc\\)XX" "XXabcXX" 0)))
+  (should-not (match-string* "XX\\(abc\\)XX" "XXabcXX" 2))
+  (should (string= "abc"
+                   (match-string* "XX\\(abc\\)XX" "XXabcXX" 1))))
 
 
  ;; end of fns

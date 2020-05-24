@@ -105,10 +105,6 @@
 ;; Compatible Macro
 ;;;;
 
-(unless-fn% 'characterp nil
-  (defalias 'characterp #'char-valid-p))
-
-
 (defmacro user-error* (format &rest args)
   "Signal a pilot error."
   (declare (indent 1))
@@ -128,65 +124,6 @@
 
 
  ;; end of Compatible Macro
-
-
-;; Strings
-
-(defsubst string-trim> (s &optional rr)
-  "Remove whitespaces or the matching of RR at the end of S."
-  (when (stringp s)
-    (let ((r (if rr (concat rr "\\'") "[ \t\n\r]+\\'" )))
-      (if (string-match r s)
-          (replace-match "" t t s)
-        s))))
-
-
-(defsubst string-trim< (s &optional lr)
-  "Remove leading whitespace or the matching of LR from S."
-  (when (stringp s)
-    (let ((r (if lr (concat "\\`" lr) "\\`[ \t\n\r]+")))
-      (if (string-match r s)
-          (replace-match "" t t s)
-        s))))
-
-
-(defsubst string-trim>< (s &optional rr lr)
-  "Remove leading and trailing whitespace or the matching of LR/RR from S."
-  (let ((s1 (string-trim> s rr)))
-    (string-trim< s1 lr)))
-
-
-(defsubst match-string* (regexp string num &optional start)
-  "Return string of text match for REGEXP in STRING.
-
-Return nil if NUMth pair didn’t match, or there were less than NUM pairs.
-NUM specifies which parenthesized expression in the REGEXP.
-If START is non-nil, start search at that index in STRING.
-
-See `string-match' and `match-string'."
-  (when (and (stringp string)
-             (string-match regexp string start)
-             (match-beginning num))
-    (substring string (match-beginning num) (match-end num))))
-
-
-(defmacro split-string* (string &optional separators omit-nulls trim)
-  "Split STRING into substrings bounded by matches for SEPARATORS, 
-like `split-string' in Emacs 24.4+"
-  (if-version%
-      <= 24.4
-      `(split-string ,string ,separators ,omit-nulls ,trim)
-    `(if ,trim
-         (delete ""
-                 (mapcar (lambda (s)
-                           (if (and (stringp ,trim) (> (length ,trim) 0))
-                               (string-trim>< s ,trim ,trim)
-                             (string-trim>< s)))
-                         (split-string ,string ,separators ,omit-nulls)))
-       (split-string ,string ,separators ,omit-nulls))))
-
-
- ;; end of Strings
 
 
 ;; Compatible Functions
