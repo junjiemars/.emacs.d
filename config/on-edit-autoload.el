@@ -481,8 +481,48 @@ See also: `multi-occur-in-matching-buffers'."
 
 ;;; kill symbol/word/line
 
+(defun kill-symbol-forward* (&optional arg)
+  "Kill symbol forward.
+
+With prefix argument ARG, do it ARG times forward if positive, or
+move backwards ARG times if negative."
+  (interactive "p")
+  (save-excursion
+    (let ((i 0)
+          (n (abs arg))
+          (d (if (>= arg 0)
+                 1
+               -1)))
+      (while (< i n)
+        (let ((b (bounds-of-thing-at-point 'symbol)))
+          (when b (kill-region (car b) (cdr b))))
+        (forward-symbol d)
+        (setq i (1+ i))))))
+
+(defun kill-word-forward* (&optional arg)
+  "Kill word forward.
+
+With prefix argument ARG, do it ARG times forward if positive, or
+move backwards ARG times if negative."
+  (interactive "p")
+  (save-excursion
+    (let ((i 0)
+          (n (abs arg))
+          (d (if (>= arg 0)
+                 1
+               -1)))
+      (while (< i n)
+        (let ((b (bounds-of-thing-at-point 'word)))
+          (when b (kill-region (car b) (cdr b))))
+        (forward-word d)
+        (setq i (1+ i))))))
+
+
+(define-key% (current-global-map) (kbd "C-c k s") #'kill-symbol-forward*)
+(define-key% (current-global-map) (kbd "C-c k w") #'kill-word-forward*)
 ;; `C-S-backspace' may not work in terminal
 (define-key% (current-global-map) (kbd "C-c k l") #'kill-whole-line)
+
 
 
 ;; end of file
