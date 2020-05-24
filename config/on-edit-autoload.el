@@ -490,9 +490,7 @@ move backwards ARG times if negative."
   (save-excursion
     (let ((i 0)
           (n (abs arg))
-          (d (if (>= arg 0)
-                 1
-               -1)))
+          (d (if (>= arg 0) 1 -1)))
       (while (< i n)
         (let ((b (bounds-of-thing-at-point 'symbol)))
           (when b (kill-region (car b) (cdr b))))
@@ -508,21 +506,19 @@ move backwards ARG times if negative."
   (save-excursion
     (let ((i 0)
           (n (abs arg))
-          (d (if (>= arg 0)
-                 1
-               -1)))
+          (d (if (>= arg 0) 1 -1)))
       (while (< i n)
         (let ((b (bounds-of-thing-at-point 'word)))
           (when b (kill-region (car b) (cdr b))))
         (forward-word d)
         (setq i (1+ i))))))
 
-
 (define-key% (current-global-map) (kbd "C-c k s") #'kill-symbol-forward*)
 (define-key% (current-global-map) (kbd "C-c k w") #'kill-word-forward*)
 ;; `C-S-backspace' may not work in terminal
 (define-key% (current-global-map) (kbd "C-c k l") #'kill-whole-line)
 
+ ;; end of kill symbol/word/line
 
 
 ;; end of file
