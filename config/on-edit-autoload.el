@@ -181,12 +181,12 @@
       (_mark_thing@_ (goto-char (car bounds))
                      (goto-char (cdr bounds))))))
 
-(defun mark-line@ (&optional arg)
+(defun mark-line@ (&optional indent)
   "Mark the line at point.
 
-If prefix arugment ARG is non-nil should mark the whole line."
+If prefix INDENT is non-nil mark the indent line."
   (interactive "P")
-  (_mark_thing@_ (if arg
+  (_mark_thing@_ (if indent
                      (back-to-indentation)
                    (beginning-of-line))
                  (end-of-line)))
@@ -478,6 +478,11 @@ See also: `multi-occur-in-matching-buffers'."
 
  ;; end of Sorting
 
+
+;;; kill symbol/word/line
+
+;; `C-S-backspace' may not work in terminal
+(define-key% (current-global-map) (kbd "C-c k l") #'kill-whole-line)
 
 
 ;; end of file
