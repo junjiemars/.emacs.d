@@ -481,8 +481,8 @@ See also: `multi-occur-in-matching-buffers'."
 
 ;;; kill word/symbol/line
 
-(defun kill-word* (&optional arg)
-  "Kill words.
+(defun kill-whole-word (&optional arg)
+  "Kill current word.
 
 With prefix argument ARG, do it ARG times forward if positive, or
 move backwards ARG times if negative."
@@ -500,8 +500,8 @@ move backwards ARG times if negative."
                    (point)))))
 
 
-(defun kill-symbol* (&optional arg)
-  "Kill symbols.
+(defun kill-whole-symbol (&optional arg)
+  "Kill current symbol.
 
 With prefix argument ARG, do it ARG times forward if positive, or
 move backwards ARG times if negative."
@@ -522,13 +522,12 @@ move backwards ARG times if negative."
                    (point)))))
 
 
-(define-key% (current-global-map) (kbd "C-c k w") #'kill-word*)
-(define-key% (current-global-map) (kbd "M-d") #'kill-word*)
+(define-key% (current-global-map) (kbd "C-c k w") #'kill-whole-word)
 
-(define-key% (current-global-map) (kbd "C-c k s") #'kill-symbol*)
-(define-key% (current-global-map) (kbd "C-<backspace>") #'kill-symbol*)
+(define-key% (current-global-map) (kbd "C-c k s") #'kill-whole-symbol)
+(define-key% (current-global-map) (kbd "C-<backspace>") #'kill-whole-symbol)
 (unless-graphic%
-  (define-key% (current-global-map) (kbd "C-<delete>") #'kill-symbol*))
+  (define-key% (current-global-map) (kbd "C-<delete>") #'kill-whole-symbol))
 
 ;; `C-S-backspace' may not work in terminal
 (define-key% (current-global-map) (kbd "C-c k l") #'kill-whole-line)
