@@ -95,7 +95,9 @@
         ;; default `paredit-convolute-sexp' keybinding `M-?' conflicts with
         ;; `xref-find-references'
         (define-key paredit-mode-map
-          (kbd "M-?") #'xref-find-references)))))
+          (kbd "M-?") #'xref-find-references))
+      (define-key% paredit-mode-map
+        (kbd "M-d") #'kill-word*))))
 
 
  ;; end of feature: paredit

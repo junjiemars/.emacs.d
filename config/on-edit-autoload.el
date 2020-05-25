@@ -479,17 +479,35 @@ See also: `multi-occur-in-matching-buffers'."
  ;; end of Sorting
 
 
-;;; kill symbol/word/line
+;;; kill word/symbol/line
 
-(defun kill-symbol-forward* (&optional arg)
-  "Kill symbol forward.
+(defun kill-word* (&optional arg)
+  "Kill words.
 
 With prefix argument ARG, do it ARG times forward if positive, or
 move backwards ARG times if negative."
   (interactive "p")
-  (save-excursion
-    (let ((b (bounds-of-thing-at-point 'symbol))
-          (beg nil))
+  (let ((b (bounds-of-thing-at-point 'word)))
+    (save-excursion
+      (unless b
+        (forward-word (if (>= arg 0) 1 -1))
+        (setq b (bounds-of-thing-at-point 'word))
+        (unless b
+          (user-error* "%s" "No word found"))))
+    (kill-region (goto-char (if (>= arg 0) (car b) (cdr b)))
+                 (progn
+                   (forward-word arg)
+                   (point)))))
+
+
+(defun kill-symbol* (&optional arg)
+  "Kill symbols.
+
+With prefix argument ARG, do it ARG times forward if positive, or
+move backwards ARG times if negative."
+  (interactive "p")
+  (let ((b (bounds-of-thing-at-point 'symbol)))
+    (save-excursion
       (unless b
         (forward-symbol (if (>= arg 0) 1 -1))
         (setq b (bounds-of-thing-at-point 'symbol))
@@ -497,48 +515,19 @@ move backwards ARG times if negative."
           (message "%s" (propertize "No symbol found"
                                     'face
                                     'font-lock-warning-face))
-          (user-error* "%s" "No symbol found error")))
-      (setq beg (goto-char (if (>= arg 0) (car b) (cdr b))))
-      (push-mark beg t)
-      (let ((i 0)
-            (n (abs arg))
-            (d (if (>= arg 0) 1 -1)))
-        (while (< i n)
-          (forward-symbol d)
-          (setq i (1+ i)))
-        (push-mark (point) t)
-        (kill-region beg (point))))))
+          (user-error* "%s" "No symbol found"))))
+    (kill-region (goto-char (if (>= arg 0) (car b) (cdr b)))
+                 (progn
+                   (forward-symbol arg)
+                   (point)))))
 
-(defun kill-word-forward* (&optional arg)
-  "Kill word forward.
 
-With prefix argument ARG, do it ARG times forward if positive, or
-move backwards ARG times if negative."
-  (interactive "p")
-  (save-excursion
-    (let ((b (bounds-of-thing-at-point 'word))
-          (beg nil))
-      (unless b
-        (forward-word (if (>= arg 0) 1 -1))
-        (setq b (bounds-of-thing-at-point 'word))
-        (unless b
-          (message "%s" (propertize "No word found"
-                                    'face
-                                    'font-lock-warning-face))
-          (user-error* "%s" "No word found error")))
-      (setq beg (goto-char (if (>= arg 0) (car b) (cdr b))))
-      (push-mark beg t)
-      (let ((i 0)
-            (n (abs arg))
-            (d (if (>= arg 0) 1 -1)))
-        (while (< i n)
-          (forward-word d)
-          (setq i (1+ i)))
-        (push-mark (point) t)
-        (kill-region beg (point))))))
+(define-key% (current-global-map) (kbd "C-c k w") #'kill-word*)
+(define-key% (current-global-map) (kbd "M-d") #'kill-word*)
 
-(define-key% (current-global-map) (kbd "C-c k s") #'kill-symbol-forward*)
-(define-key% (current-global-map) (kbd "C-c k w") #'kill-word-forward*)
+(define-key% (current-global-map) (kbd "C-c k s") #'kill-symbol*)
+(define-key% (current-global-map) (kbd "C-<backspace>") #'kill-symbol*)
+
 ;; `C-S-backspace' may not work in terminal
 (define-key% (current-global-map) (kbd "C-c k l") #'kill-whole-line)
 
