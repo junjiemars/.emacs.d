@@ -469,7 +469,11 @@ by default and for GUI mode only.
                             :scale nil
                             :scripts (greek)
                             :allowed nil)
-                    `(:name  "Microsoft YaHei"
+                    `(:name  ,(if-platform% 'darwin
+                                 "PingFang"
+                               (if-platform% 'windows-nt
+                                   "Microsoft YaHei")
+                               "Noto Sans")
                              :size 12
                              :scale nil
                              :scripts (han cjk-misc)

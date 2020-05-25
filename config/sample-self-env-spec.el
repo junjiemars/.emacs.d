@@ -31,11 +31,15 @@
                             :scale nil
                             :scripts (greek)
                             :allowed nil)
-                    `(:name  "Microsoft YaHei"
-                             :size 12
-                             :scale nil
-                             :scripts (han cjk-misc)
-                             :allowed nil))
+                    `(:name ,(if-platform% 'darwin
+                                 "PingFang"
+                               (if-platform% 'windows-nt
+                                   "Microsoft YaHei")
+                               "Noto Sans")
+                            :size 12
+                            :scale nil
+                            :scripts (han)
+                            :allowed nil))
   
   :shell (list :copy-vars `("PATH"
                             "LD_LIBRARY_PATH")
