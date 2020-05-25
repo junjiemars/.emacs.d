@@ -324,13 +324,14 @@ If ENDIAN is t then decode in small endian."
                  935 "Chi (kie)"
                  936 "Psi (sigh)"
                  937 "Omega (oh-may-gah)")))
-      (dolist* (s (remove** 930 (range 913 (+ 913 24)) :test #'=))
-        (let ((c (+ 32 s)))
-          (insert (format
-                   " %4x %4d %4s  | %4x %4d %4s  |  %s\n"
-                   s s (text-char-description s)
-                   c c (text-char-description c)
-                   (plist-get tbl s)))))))
+      (mapc (lambda (s)
+              (let ((c (+ 32 s)))
+                (insert (format
+                         " %4x %4d %4s  | %4x %4d %4s  |  %s\n"
+                         s s (text-char-description s)
+                         c c (text-char-description c)
+                         (plist-get tbl s)))))
+            (remove** 930 (range 913 (+ 913 24)) :test #'=))))
   (view-mode t))
 
 
