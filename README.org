@@ -438,8 +438,8 @@ Using Emacs's builtin themes /tango-dark/ :
     :END:
 
 #+ATTR_HTML: :style text-align:left
-Easy to swtich fonts and [[https://en.wikipedia.org/wiki/CJK_characters][CJK]] characters, or try a new one. The default
-encoding is [[https://en.wikipedia.org/wiki/UTF-8][UTF-8]].
+Easy to swtich fonts and glyph character such as [[https://en.wikipedia.org/wiki/CJK_characters][CJK]], or try a new
+one. The default encoding is [[https://en.wikipedia.org/wiki/UTF-8][UTF-8]].
 
 #+ATTR_HTML: :style text-align:left
 The font's spec locate in =(emacs-home* "private/self-env-spec.el")=
@@ -464,24 +464,25 @@ by default and for GUI mode only.
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
 (def-self-env-spec
-  :cjk-font (list :name (if-platform% 'darwin
-                            "PingFang"
-                          (if-platform% 'windows-nt
-                              "Microsoft Yahei"
-                            "DejaVu Sans Mono"))
-                  :size 16
-                  :scale 2
-                  :allowed t))
+  :glyph-font (list :name (if-platform% 'darwin
+                              "PingFang"
+                            (if-platform% 'windows-nt
+                                "Microsoft Yahei"
+														   "DejaVu Sans Mono"))
+                    :size 16
+                    :scale 2
+										:fontsets '(han kana cjk-misc)
+                    :allowed t))
 #+END_SRC
 - =:name= string of font name
 - =:size= integer of font size
-- =:scale= number of scale ratio of CJK font, =nil= disabled
+- =:scale= number of scale ratio of glyph font, =nil= disabled
 - =:allowed= =t= enabled, =nil= disabled
 
 #+ATTR_HTML: :style display:none
 /screenshots/:
 #+ATTR_HTML: :style display:none
-- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/cjk-font-on-darwin.png][CJK font]]
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/cjk-font-on-darwin.png][glyph font: CJK]]
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/monaco-font-on-darwin.png][Monaco font]]
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/consolas-font-on-windows.png][Consolas font]]
 

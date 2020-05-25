@@ -26,14 +26,15 @@
               :size 13
               :allowed nil)
 
-  :cjk-font (list :name (if-platform% 'darwin
-                            "PingFang" ;; "Hei"
-                          (if-platform% 'windows-nt
-                              "Microsoft Yahei"
-                            "DejaVu Sans Mono"))
-                  :size 12
-                  :scaled nil
-                  :allowed nil)
+  :glyph-font (list :name (if-platform% 'darwin
+                              "PingFang" ;; "Hei"
+                            (if-platform% 'windows-nt
+                                "Microsoft Yahei"
+                              "DejaVu Sans Mono"))
+                    :size 12
+                    :scaled nil ;; slow
+                    :fontsets '(han kana cjk-misc)
+                    :allowed nil)
   
   :shell (list :copy-vars `("PATH"
                             "LD_LIBRARY_PATH")

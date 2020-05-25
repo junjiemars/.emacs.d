@@ -7,8 +7,8 @@
 ;;;;
 
 
-(defmacro self-cjk-font! (name size)
-  "Set CJK font's NAME and SIZE in graphic mode."
+(defmacro self-glyph-font! (name size fontsets)
+  "Set glyph font's NAME and SIZE in graphic mode."
   `(when-font-exist%
        ,name
      (when-fn% 'set-fontset-font nil
@@ -18,7 +18,7 @@
                      <= 23
                      (set-fontset-font t c fs nil 'prepend)
                    (set-fontset-font t c fs)))
-               '(han kana cjk-misc))))))
+               ,fontsets)))))
 
 
 (defmacro char-width* (char)
@@ -33,20 +33,21 @@
        (aref (aref glyphs 0) 4))))
 
 
-;; Load cjk font
-(when (self-spec->*env-spec :cjk-font :allowed)
-  (self-cjk-font! (self-spec->*env-spec :cjk-font :name)
-                  (self-spec->*env-spec :cjk-font :size))
-  (when (self-spec->*env-spec :cjk-font :scale)
+;; Load glyph font
+(when (self-spec->*env-spec :glyph-font :allowed)
+  (self-glyph-font! (self-spec->*env-spec :glyph-font :name)
+                    (self-spec->*env-spec :glyph-font :size)
+                    (self-spec->*env-spec :glyph-font :fontsets))
+  (when (self-spec->*env-spec :glyph-font :scale)
     (let ((w1 (char-width* ?a))
           (w2 (char-width* #x4e2d)))
       (when (and w1 w2 (> w1 0) (> w2 0))
         (add-to-list
          'face-font-rescale-alist
          (cons (concat ".*"
-                       (self-spec->*env-spec :cjk-font :name)
+                       (self-spec->*env-spec :glyph-font :name)
                        ".*")
-               (/ (* w1 (let ((n (self-spec->*env-spec :cjk-font :scale)))
+               (/ (* w1 (let ((n (self-spec->*env-spec :glyph-font :scale)))
                           (or (and (numberp n) (> n 0) n)
                               1)))
                   (+ w2 0.0))))))))
