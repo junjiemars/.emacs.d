@@ -527,6 +527,8 @@ move backwards ARG times if negative."
 
 (define-key% (current-global-map) (kbd "C-c k s") #'kill-symbol*)
 (define-key% (current-global-map) (kbd "C-<backspace>") #'kill-symbol*)
+(unless-graphic%
+  (define-key% (current-global-map) (kbd "C-<delete>") #'kill-symbol*))
 
 ;; `C-S-backspace' may not work in terminal
 (define-key% (current-global-map) (kbd "C-c k l") #'kill-whole-line)
