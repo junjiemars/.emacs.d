@@ -472,7 +472,7 @@ by default and for GUI mode only.
                     `(:name  "Microsoft YaHei"
                              :size 12
                              :scale nil
-                             :scripts (han)
+                             :scripts (han cjk-misc)
                              :allowed nil))
 #+END_SRC
 - =:name= string of font name

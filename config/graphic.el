@@ -41,24 +41,24 @@
 
 ;; font supported
 
-(when-font%
+;; (when-font%
 
-  (defmacro when-font-exist% (font &rest body)
-    "If FONT exists then do BODY."
-    (declare (indent 1))
-    `(when% (and ,font (find-font (font-spec :name ,font)))
-       ,@body)))
+;;   (defmacro when-font-exist% (font &rest body)
+;;     "If FONT exists then do BODY."
+;;     (declare (indent 1))
+;;     `(when% (and ,font (find-font (font-spec :name ,font)))
+;;        ,@body)))
 
 (when-font%
   
   (defmacro self-default-font! (name size)
     "Set default font by NAME and SIZE in graphic mode."
-    `(when-font-exist% ,name
-       (when (and (numberp ,size) (> ,size 0))
-         (let ((font (format "%s-%s" ,name ,size)))
-           (add-to-list 'default-frame-alist
-                        (cons 'font font))
-           (set-face-attribute 'default nil :font font))))))
+    ;; `(when-font-exist% ,name)
+    `(when (and (numberp ,size) (> ,size 0))
+       (let ((font (format "%s-%s" ,name ,size)))
+         (add-to-list 'default-frame-alist
+                      (cons 'font font))
+         (set-face-attribute 'default nil :font font)))))
 
 (when-font%
   
