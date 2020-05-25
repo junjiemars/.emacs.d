@@ -23,19 +23,23 @@
                       (if-platform% 'windows-nt
                           "Consolas"
                         "DejaVu Sans Mono"))
-              :size 13
+              :size 17
               :allowed nil)
 
-  :glyph-font (list `(:name "DejaVu Sans Mono"
-                            :size 14
+  :glyph-font (list `(:name ,(if-platform% 'darwin
+                                 "Hack"
+                               (if-platform% 'gnu/linux
+                                   "DejaVu Sans Mono"
+                                 "Courier New"))
+                            :size 17
                             :scale nil
                             :scripts (greek)
                             :allowed nil)
                     `(:name ,(if-platform% 'darwin
                                  "PingFang"
-                               (if-platform% 'windows-nt
-                                   "Microsoft YaHei")
-                               "Noto Sans")
+                               (if-platform% 'gnu/linux
+                                   "Noto Sans"
+                                 "Microsoft YaHei"))
                             :size 12
                             :scale nil
                             :scripts (han)

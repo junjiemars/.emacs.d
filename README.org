@@ -464,20 +464,24 @@ by default and for GUI mode only.
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
 (def-self-env-spec
-  :glyph-font (list `(:name "DejaVu Sans Mono"
-                            :size 14
+  :glyph-font (list `(:name ,(if-platform% 'darwin
+                                 "Hack"
+                               (if-platform% 'gnu/linux
+                                   "DejaVu Sans Mono"
+                                 "Courier New"))
+                            :size 17
                             :scale nil
                             :scripts (greek)
                             :allowed nil)
-                    `(:name  ,(if-platform% 'darwin
+                    `(:name ,(if-platform% 'darwin
                                  "PingFang"
-                               (if-platform% 'windows-nt
-                                   "Microsoft YaHei")
-                               "Noto Sans")
-                             :size 12
-                             :scale nil
-                             :scripts (han cjk-misc)
-                             :allowed nil))
+                               (if-platform% 'gnu/linux
+                                   "Noto Sans"
+                                 "Microsoft YaHei"))
+                            :size 12
+                            :scale nil
+                            :scripts (han)
+                            :allowed nil)))
 #+END_SRC
 - =:name= string of font name
 - =:size= integer of font size
