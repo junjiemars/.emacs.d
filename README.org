@@ -1319,7 +1319,9 @@ It's *self-documenting* and great, keep reading it frequently.
 
 #+REVAL: split
 - kill /symbol/: @@html:<kbd>@@C-c k s@@html:</kbd>@@
-- kill /word/: @@html:<kbd>@@C-c k w@@html:</kbd>@@
+- kill /word/: @@html:<kbd>@@C-c k w@@html:</kbd>@@ or the builtin
+  one: @@html:<kbd>@@M-d@@html:</kbd>@@, the difference is the builtin
+  one does not kill the current word
 - kill /line/: @@html:<kbd>@@C-k@@html:</kbd>@@
 - kill /whole/ line: @@html:<kbd>@@C-S-DEL@@html:</kbd>@@ or
   @@html:<kbd>@@C-c k l@@html:</kbd>@@
