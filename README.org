@@ -1008,8 +1008,8 @@ avaiabled on ancient Emacs.
 *** Featured keys
 
 #+ATTR_HTML: :style text-align:left
-The features provided by 3rd packages, featured keys may not avaiabled
-on ancient Emacs.
+The features provided by non-Emacs's packages, featured keys may not
+avaiabled on ancient Emacs.
 
 - @@html:<kbd>@@C-x v M@@html:</kbd>@@ =magit-status=
 
