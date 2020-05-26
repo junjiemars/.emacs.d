@@ -1046,7 +1046,7 @@ avaiabled on ancient Emacs.
 	 :END:
 
 #+ATTR_HTML: :style text-align:left
-Just introduces More Resonable Emacs improved or extra editing
+Just introduce More Resonable Emacs improved or extra editing
 features.
 
 ** Lisp programming
@@ -1061,6 +1061,10 @@ Lisp programming in Emacs already good enough, if [[https://www.emacswiki.org/em
 #+ATTR_HTML: :style text-align:left
 [[https://github.com/slime/slime][slime]] is the best tool for Common Lisp programming. And for Scheme
 programming the [[http://www.nongnu.org/geiser/][Geiser]] the pretty good.
+
+#+ATTR_HTML: :style text-align:left
+The [[http://www.gambitscheme.org/wiki/index.php/Main_Page][Gambit]] Scheme system is a complete, portable, efficient and
+reliable implementation, if you like it you can =run-gambit=.
 
 *** Editing
 
@@ -1087,7 +1091,7 @@ Now, we are in the cycle of editing, compiling, debugging.
 		:CUSTOM_ID: c-programming-editing
 		:END:
 
-Change C programming style using  @@html:<kbd>@@C-c .@@html:</kbd>@@.
+Change C programming style using @@html:<kbd>@@C-c .@@html:</kbd>@@.
 
 **** View C system include
 		 :PROPERTIES:
@@ -1164,24 +1168,6 @@ perfect.
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-darwin.png][debugging via lldb on Darwin]]
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-linux.png][debugging via lldb on Ubuntu]]	
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-cdb-on-windows.png][debugging via cdb]]
-
-* Improved
-	:PROPERTIES:
-	:CUSTOM_ID: improved
-	:END:
-
-** Dictionary
-	:PROPERTIES:
-	:CUSTOM_ID: improved-dictionary
-	:END:
-
-Lookup online dictionary @@html:<kbd>@@C-c f d@@html:</kdb>@@: bing,
-cambridge, longman, etc.
-
-** Dired
-	:PROPERTIES:
-	:CUSTOM_ID: improved-dired
-	:END:
 
 * Troubleshoting
    :PROPERTIES:
