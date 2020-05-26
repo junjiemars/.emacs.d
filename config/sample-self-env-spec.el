@@ -28,18 +28,18 @@
 
   :glyph-font (list `(:name ,(if-platform% 'darwin
                                  "Hack"
-                               (if-platform% 'gnu/linux
-                                   "DejaVu Sans Mono"
-                                 "Courier New"))
+                               (if-platform% 'windows-nt
+                                   "Courier New"
+                                 "DejaVu Sans Mono"))
                             :size 17
                             :scale nil
                             :scripts (greek)
                             :allowed nil)
                     `(:name ,(if-platform% 'darwin
                                  "PingFang"
-                               (if-platform% 'gnu/linux
-                                   "Noto Sans"
-                                 "Microsoft YaHei"))
+                               (if-platform% 'windows-nt
+                                   "Microsoft YaHei"
+                                 "Noto Sans"))
                             :size 12
                             :scale nil
                             :scripts (han)

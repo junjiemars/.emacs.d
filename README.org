@@ -120,7 +120,7 @@ Elisp@@html:</kbd>@@).
 - Raspberry Pi, Terminal
 - No Network
 - Docker container
-- Run multiple Emacs instances with multiple versions in the same
+- Multiple Emacs instances with multiple versions in the same
   machine and at the same time
 
 ** What
@@ -213,7 +213,7 @@ reopen the Emacs.
 Locate your spec via =(emacs-home* "private/self-path.el")=.
 
 #+BEGIN_SRC emacs-lisp
-    ;; Run order: :env-spec -> :prelogue -> :package-spec -> :epilogue
+    ;; Run order: :env-spec -> :prologue -> :package-spec -> :epilogue
     ;; You can point to your Gited Emacs' configuration repo.
     ;; Default samples `self-*.el' in `(emacs-home* "private/")' directory.
     ;; :epilogue run in `after-init-hook'
@@ -261,7 +261,7 @@ configuration or cached files.
 
 #+REVAL: split
 #+ATTR_HTML: :style text-align:left
-Introduce rules of naming /files/ and /functions/.
+Introduce the rules of naming /files/ and /functions/.
 
 #+REVEAL: split
 **** Core Files Naming: single word and simple name.
@@ -312,6 +312,7 @@ Introduce rules of naming /files/ and /functions/.
     ├── on-font-autoload.el
     ├── on-hippie-autoload.el
     ├── on-indent-autoload.el
+    ├── on-isearch-autoload.el
     ├── on-lisp-autoload.el
     ├── on-module.el
     ├── on-net-autoload.el
@@ -331,11 +332,13 @@ Introduce rules of naming /files/ and /functions/.
     (emacs-home* "config/")
     ├── use-cider-autoload.el
     ├── use-cider.el
+    ├── use-geiser-autoload.el
     ├── use-inf-clojure.el
-    ├── use-js-autoload.el
+    ├── use-lfe-autoload.el
     ├── use-lua-autoload.el
     ├── use-magit-autoload.el
-    └── use-slime-autoload.el
+    ├── use-slime-autoload.el
+    └── use-web-autoload.el
 #+END_EXAMPLE
 
 #+REVEAL: split
@@ -351,22 +354,20 @@ Introduce rules of naming /files/ and /functions/.
 #+END_EXAMPLE
 
 #+REVEAL: split
-**** Functions Naming
+**** Functions Naming (χ denotes name)
 
 #+REVEAL: split
-- *v-* prefix: functions or macros for versioned directories, such as
-  =(v-home*)=
-- *_* prefix: functions or macros only existing in compile-time, such
-  as =_mark-thing@=
-- /*/ or /**/ suffix: extensions of Emacs' builtin function or macro,
-  such as =(every*)= and =assoc**=
-- *%* suffix: macro be expanded at compile time, such as =(v-home%)=
-- *!* suffix: function or macro may change environment state, such as
-  =(v-home!)=
-- *@* suffix: position related functions or macros, such as
-  =mark-symbol@=
-- *_..._* prefix and suffix: compile-time functions or macros, such as
-  =_mark_thing@_=
+- *v-χ* prefix: function or macro for versioned directory, such as
+  =v-home*=
+- *_χ_* prefix: function or macro only existing in compile-time,
+  such as =_mark-thing@_=
+- *χ​** or *χ*** suffix: extension of Emacs' builtin function or
+  macro, such as =every*= and =assoc**=
+- *χ%* suffix: macro be expanded at compile time, such as =v-home%=
+- *χ!* suffix: function or macro with side-effects, such as
+  =v-home!=
+- *χ@* suffix: position related functions or macros, such as
+  =mark-symbol@= and =mark-word@=
 
 * Cooking
    :PROPERTIES:
@@ -409,8 +410,8 @@ by default.
 #+REVEAL: split
 - =:name= name of theme, does not need /-theme.el/ suffix
 - =:custom-theme-directory= where custom theme files located
-- =:compile= =t= compile theme, compiled theme more smooth and more faster
-	if you had already confirmed the theme is secure.
+- =:compile= =t= compile theme, compiled theme more smooth and more
+  faster if you had already confirmed the theme is secure.
 - =:allowed= =t= enabled, =nil= disabled
 
 #+REVEAL: split
@@ -453,7 +454,7 @@ by default and for GUI mode only.
                       (if-platform% 'windows-nt
                           "Consolas"
                         "DejaVu Sans Mono"))
-							:size 13
+              :size 13
               :allowed t))
 #+END_SRC
 
@@ -466,18 +467,18 @@ by default and for GUI mode only.
 (def-self-env-spec
   :glyph-font (list `(:name ,(if-platform% 'darwin
                                  "Hack"
-                               (if-platform% 'gnu/linux
-                                   "DejaVu Sans Mono"
-                                 "Courier New"))
+                               (if-platform% 'windows-nt
+                                   "Courier New"
+                                 "DejaVu Sans Mono"))
                             :size 17
                             :scale nil
                             :scripts (greek)
                             :allowed nil)
                     `(:name ,(if-platform% 'darwin
                                  "PingFang"
-                               (if-platform% 'gnu/linux
-                                   "Noto Sans"
-                                 "Microsoft YaHei"))
+                               (if-platform% 'windows-nt
+                                   "Microsoft YaHei"
+                                 "Noto Sans"))
                             :size 12
                             :scale nil
                             :scripts (han)
@@ -504,8 +505,8 @@ by default and for GUI mode only.
 *** shell
 
 #+ATTR_HTML: :style text-align:left
-Suppport any =SHELL=, copying or spinning environment variables into Emacs
-environment.
+Suppport any =SHELL=, copying or spinning environment variables into
+Emacs environment.
 
 #+ATTR_HTML: :style text-align:left
 [[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]] has a poor implementation for the same
@@ -518,18 +519,16 @@ default.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
-:shell (list :copy-vars `("PATH"
-                         ,(unless-platform% 'windows-nt
-                            (if-platform% 'darwin
-                                "DYLD_LIBRARY_PATH"
-                              "LD_LIBRARY_PATH")))
-             :spin-vars nil ;; `(("ZZZ" . "xxxyyy"))
-             :options '("-i" "2>/dev/null") ;; '("--login") ;;
-             :exec-path t
-             :shell-file-name (eval-when-compile (executable-find "bash"))
-             :shell-prompt (list :zsh "%n@%m:%~ %# "
-                                 :bash "\\u@\\h:\\w\\$ ")
-             :allowed nil)
+(def-self-env-spec
+  :shell (list :copy-vars `("PATH"
+                            "LD_LIBRARY_PATH")
+               :spin-vars nil ;; `(("ZZZ" . "123"))
+               :options '("-i" "2>/dev/null") ;; '("--login")
+               :exec-path t
+               :shell-file-name (eval-when-compile (executable-find "bash"))
+               :prompt (list :zsh "%n@%m:%~ %# "
+                             :bash "\\u@\\h:\\w\\$ ")
+               :allowed nil))
 #+END_SRC
 
 #+REVEAL: split
