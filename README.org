@@ -581,14 +581,14 @@ by default.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
-    (def-self-env-spec
-      :desktop (list :files-not-to-save
-                     ".*\.t?gz\\|\.desktop\\|~$\\|\\/ssh[: ]\\|\.elc$"
-                     :buffers-not-to-save "^TAGS\\|\\.log"
-                     :modes-not-to-save
-                     '(dired-mode fundamental-mode rmail-mode)
-                     :restore-eager 8
-                     :allowed t))
+(def-self-env-spec
+  :desktop (list :files-not-to-save
+                 "\.t?gz$\\|\.zip$\\|\.desktop\\|~$\\|^/ssh[x]?:\\|\.elc$"
+                 :buffers-not-to-save "^TAGS\\|\\.log"
+                 :modes-not-to-save
+                 '(dired-mode fundamental-mode eww-mode rmail-mode)
+                 :restore-eager 8
+                 :allowed nil))
 #+END_SRC
 
 #+REVEAL: split
@@ -662,12 +662,15 @@ whatever OS you using:
 - @@html:<kbd>@@M-x *traceroute@@html:</kbd>@@
 
 *** Browser
+    :PROPERTIES:
+    :CUSTOM_ID: browser
+    :END:
 
-- Using @@html:<kbd>@@M-x toggle-browser!@@html:</kdb>@@ to switch
-  external or internal browser.
-- Lookup online for symbol, word, etc.,: @@html:<kdb>@@M-s
-  u@@html:</kdb>@@
-- Lookup online dictionaries: @@html:<kbd>@@M-s d@@html:</kbd>@@
+- toggle external or internal browser: @@html:<kbd>@@M-x
+  toggle-browser!@@html:</kdb>@@
+- lookup web for symbol, word, etc.,: @@html:<kdb>@@M-s
+  w@@html:</kdb>@@
+- lookup online dictionaries: @@html:<kbd>@@M-s d@@html:</kbd>@@
 
 ** Package
     :PROPERTIES:
@@ -702,21 +705,41 @@ The /user defined/ package spec default locate in =(emacs-home*
 (def-self-package-spec
   (list
    :cond t
-   :packages '(markdown-mode htmlize ox-reveal)
-   :compile `(,(compile-unit% (emacs-home* "config/use-org-autoload.el"))))
+   :packages '(vlf))
   (list
-   :cond (executable-find% "latex")
-   :packages '(auctex cdlatex))
+   ;; org
+   :cond t
+   :packages (flatten (list
+                       (when% (executable-find% "latex")
+                         '(auctex
+                           cdlatex))
+                       (when-version% <= 25 'ox-reveal))))
   (list
    :cond (and (when-version% <= 24.4 t)
-              (executable-find% "docker"))
-   :packages '(dockerfile-mode
-               docker-tramp))
+              (executable-find% "git"))
+   :packages '(magit)
+   :compile `(,(compile-unit% (emacs-home* "config/use-magit-autoload.el"))))
   (list
-   :cond (or (executable-find% "sbcl"))
+   ;; scheme
+   :cond (and (when-version% <= 23.2 t)
+              (or (executable-find% "racket")
+                  (executable-find% "chicken")))
+   :packages  '(geiser)
+   :compile `(,(compile-unit% (emacs-home* "config/use-geiser-autoload.el"))))
+  (list
+   ;; common lisp
+   :cond (executable-find% "sbcl")
    :packages '(slime)
-   :compile `(,(compile-unit% (emacs-home* "config/use-slime.el") t)
-              ,(compile-unit% (emacs-home* "config/use-slime-autoload.el")))))
+   :compile `(,(compile-unit% (emacs-home* "config/use-slime-autoload.el"))))
+  (list
+   ;; erlang
+   :cond (executable-find% "erlc")
+   :packages (list 'erlang
+                   (when% (executable-find% "lfe")
+                     'lfe-mode))
+   :compile (list (when% (executable-find% "lfe")
+                    (compile-unit%
+                     (emacs-home* "config/use-lfe-autoload.el"))))))
 #+END_SRC
 
 #+REVEAL: split
@@ -729,11 +752,11 @@ The /user defined/ package spec default locate in =(emacs-home*
 #+ATTR_HTML: :style text-align:left
 You can use any =Elisp= functions after the aboved keywords.
 - =when-version%= macro checking the version of current Emacs at
-  compile time
+  compile time.
 - =executable-find%= macro checking the exising of the /executable/ at
-  compile time
+  compile time.
 - =compile-unit%= macro specify the compiling file to compile or
-  compile then load
+  compile then load.
 
 ** Indent
     :PROPERTIES:
