@@ -18,8 +18,6 @@
   :CUSTOM_ID: quick-start
   :END:
 
-	[[https://api.travis-ci.org/junjiemars/.emacs.d][https://api.travis-ci.org/junjiemars/.emacs.d.svg?branch=master]]
-
 #+ATTR_HTML: :style text-align:left
 It's works on Emacs version 22.1.1+ , provides more reasonable styles:
 more organized code, more consistent, more cleaner and more
