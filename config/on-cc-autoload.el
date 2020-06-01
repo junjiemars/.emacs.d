@@ -420,17 +420,16 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
  ;; end of cc*-system-include
 
 
-(defadvice ff-find-other-file (before ff-find-other-file-before disable)
-  "Set `cc-search-directories' based on local or remote."
+(defun cc*-find-include-file (&optional in-other-window)
+  "Find C include file in `cc*-system-include' or specified directory. "
+  (interactive "P")
   (let ((file (buffer-file-name (current-buffer))))
     (setq% cc-search-directories
            (append (list (string-trim> (file-name-directory file) "/"))
                    (cc*-system-include t (remote-norm-file file))
-                   (cc*-extra-include t)))))
-
-(defadvice ff-find-other-file (after ff-find-other-file-after disable)
-  "View the other-file in `view-mode' when `cc*-include-p' is t."
-  (cc*-view-include (current-buffer)))
+                   (cc*-extra-include t))
+           'find-file)
+    (ff-find-other-file in-other-window nil)))
 
 
 (defadvice c-macro-expand (around c-macro-expand-around disable)
@@ -593,12 +592,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
 
     ;; keymap: find c include file
     (when-fn% 'ff-find-other-file 'find-file
-      (define-key% c-mode-map (kbd "C-c f i") #'ff-find-other-file)
-      (ad-enable-advice #'ff-find-other-file 'before
-                        "ff-find-other-file-before")
-      (ad-enable-advice #'ff-find-other-file 'after
-                        "ff-find-other-file-after")
-      (ad-activate #'ff-find-other-file t))
+      (define-key% c-mode-map (kbd "C-c f i") #'cc*-find-include-file))
 
     ;; keymap: indent line or region
     (when-fn% 'c-indent-line-or-region 'cc-cmds
