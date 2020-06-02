@@ -517,7 +517,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
 OPTION for `tags-program'.
 FILE where the tags file located, default is `(tags-spec->% :os-include)'.
 RENEW whether to renew the existing FILE.
-SKIP regexp to skip directories, default is `.*'."
+SKIP regexp to skip directories."
     ;; (interactive "stags option \nFtags file ")
     (interactive
      (list (read-string "tags option: " "--c-kinds=+p")
