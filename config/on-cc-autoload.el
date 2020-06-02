@@ -511,16 +511,26 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
 
 (when-fn% 'make-c-tags 'tags
 
-  (defun cc*-make-system-tags (&optional option renew skip)
-    "Make system C tags."
-    (interactive "stags option \nFtags file ")
+  (defun cc*-make-system-tags (&optional option file renew skip)
+    "Make system C tags.
+
+OPTION for `tags-program'.
+FILE where the tags file located, default is `(tags-spec->% :os-include)'.
+RENEW whether to renew the existing FILE.
+SKIP regexp to skip directories, default is `.*'."
+    ;; (interactive "stags option \nFtags file ")
+    (interactive
+     (list (read-string "tags option: " "--c-kinds=+p")
+           (read-string "tags file: " (tags-spec->% :os-include))
+           (y-or-n-p "renew: ")
+           (read-string "skip directories: "
+                        "Frameworks.*$\\|c\\+\\+.*$\\|php.*$\\|ruby.*$")))
     (let ((includes (cc*-system-include (not renew)))
-          (tag-file (tags-spec->% :os-include))
-          (opt (or (and option (> (length (string-trim>< option)) 0))
-                   "--c-kinds=+p")))
-      (make-c-tags (car includes) tag-file opt renew skip)
-      (dolist* (p (cdr includes) tag-file)
-        (make-c-tags p tag-file opt nil skip)))))
+          (filter (when skip (lambda (_ a)
+                               (not (string-match skip a))))))
+      (make-c-tags (car includes) file option renew filter)
+      (dolist* (p (cdr includes) file)
+        (make-c-tags p file option nil filter)))))
 
 
 ;; eldoc
