@@ -25,6 +25,9 @@
 ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Backup-Files.html
 (setq backup-directory-alist `(("." . ,(v-home! ".backup/"))))
 
+;; calc
+(setq% calc-settings-file (v-home! ".calc/calc.el") 'calc)
+
 ;; eww bookmarks
 (when-version%
     <= 24.4
