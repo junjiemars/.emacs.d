@@ -469,6 +469,7 @@ otherwise default to keep the directories of current `emacs-version'."
   (let ((dirs (list `,(emacs-home* ".save/")
                     `,(emacs-home* ".backup/")
                     `,(emacs-home* ".bookmarks/")
+                    `,(emacs-home* ".calc/")
                     `,(emacs-home* ".desktop/")
                     `,(emacs-home* ".eshell/")
                     `,(emacs-home* ".exec/")
