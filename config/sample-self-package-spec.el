@@ -11,7 +11,9 @@
 (def-self-package-spec
   (list
    :cond t
-   :packages (list 'markdown-mode
+   :packages (list (when% (executable-find% "gnuplot")
+                     'gnuplot-mode)
+                   'markdown-mode
                    'multiple-cursors
                    'vlf))
   (list
