@@ -120,8 +120,7 @@ TAGS-FILE where the tags file to save,
 FILE-FILTER file filter function,
 DIR-FILTER directory filter function,
 TAGS-OPTION `tags-program' extra options,
-RENEW overwrite the existing tags file when t else create it.
-"
+RENEW overwrite the existing tags file when t else create it."
   (unless tags-program
     (signal 'void-variable (list 'tags-program tags-program)))
   (when (file-exists-p home)
@@ -220,13 +219,12 @@ Example:
 
 (defun make-dir-tags (dir store &optional option renew)
   "Make and mount tags for specified DIR."
-  ;; (interactive "Dmake tags for \nFstore tags in \nstags option ")
   (interactive (list (read-directory-name "make tags for ")
                      (read-file-name "store tags in " nil nil nil ".tags")
                      (read-string "tags option: "
                                   (car *tags-option-history*)
                                   '*tags-option-history*)
-                     (y-or-n-p "renew? ")))
+                     (y-or-n-p "tags renew? ")))
   (let ((home (path+ (expand-file-name dir))))
     (when (make-tags home
                      store

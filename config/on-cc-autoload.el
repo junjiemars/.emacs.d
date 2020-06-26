@@ -516,18 +516,17 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
 
 OPTION for `tags-program'.
 FILE where the tags file located, default is `(tags-spec->% :os-include)'.
-RENEW whether to renew the existing FILE.
-SKIP regexp to skip directories."
-    ;; (interactive "stags option \nFtags file ")
+SKIP regexp to skip directories.
+RENEW whether to renew the existing FILE."
     (interactive
      (list (read-string "tags option: "
                         (car *tags-option-history*)
                         '*tags-option-history*)
            (read-string "tags file: " (tags-spec->% :os-include))
-           (read-string "skip directories: "
+           (read-string "tags skip: "
                         (car *tags-skip-history*)
                         '*tags-skip-history*)
-           (y-or-n-p "renew? ")))
+           (y-or-n-p "tags renew? ")))
     (let ((includes (cc*-system-include (not renew)))
           (filter (when (and skip (not (string= "" skip)))
                     (lambda (_ a)
