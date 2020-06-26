@@ -78,9 +78,19 @@ when `desktop-globals-to-save' include it."
   :group 'tags)
 
 
+(defvar *tags-option-history*
+  (list "--c-kinds=+p")
+  "Tags option history list.")
+
+(defvar *tags-skip-history*
+  (list "Frameworks.*$\\|c\\+\\+.*$\\|php.*$\\|ruby.*$")
+  "Tags option history list.")
+
+
 (defun mount-tags (tags &optional append)
   "Mount existing TAGS into `tags-table-list'.
-With prefix arg decide to APPEND the end of `tags-table-list' or not."
+
+When prefix arg is t then APPEND TAGS to the end of `tags-table-list'."
   (interactive "fmount tags from: \nP")
   (add-to-list 'tags-table-list
                (expand-file-name tags)
@@ -88,12 +98,17 @@ With prefix arg decide to APPEND the end of `tags-table-list' or not."
                #'string=))
 
 
-(defun unmount-tags (tags)
-  "Unmount TAGS from `tags-table-list'."
-  (interactive "Funmount tags from: ")
+(defun unmount-tags (&optional tags)
+  "Unmount TAGS from `tags-table-list'.
+
+When prefix arg is nil then unmount all tags from `tags-table-list'."
+  (interactive (list (when (not current-prefix-arg)
+                       (read-file-name "unmount tags from "))))
   (setq tags-table-list
-        (remove** (expand-file-name tags)
-                  tags-table-list :test #'string=)))
+        (if tags
+            (remove** (expand-file-name tags)
+                      tags-table-list :test #'string=)
+          nil)))
 
 
 (defun make-tags (home tags-file file-filter dir-filter
@@ -203,14 +218,18 @@ Example:
              renew))
 
 
-(defun make-dir-tags (dir store &optional option)
+(defun make-dir-tags (dir store &optional option renew)
   "Make and mount tags for specified DIR."
-  (interactive "Dmake tags for \nFstore tags in \nstags option ")
-  (let* ((home (path+ (expand-file-name dir)))
-         (tags-file (or store
-                        (concat home ".tags"))))
+  ;; (interactive "Dmake tags for \nFstore tags in \nstags option ")
+  (interactive (list (read-directory-name "make tags for ")
+                     (read-file-name "store tags in " nil nil nil ".tags")
+                     (read-string "tags option: "
+                                  (car *tags-option-history*)
+                                  '*tags-option-history*)
+                     (y-or-n-p "renew? ")))
+  (let ((home (path+ (expand-file-name dir))))
     (when (make-tags home
-                     tags-file
+                     store
                      (lambda (f _)
                        (not (string-match
                              "\\\.tags$" f)))
@@ -218,7 +237,7 @@ Example:
                        (not (string-match
                              "^\\\.[_ a-zA-Z]+/$\\|^out/$\\|^build/$" d)))
                      option
-                     t))))
+                     renew))))
 
 
 ;; go into `view-mode'

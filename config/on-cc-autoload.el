@@ -511,7 +511,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
 
 (when-fn% 'make-c-tags 'tags
 
-  (defun cc*-make-system-tags (&optional option file renew skip)
+  (defun cc*-make-system-tags (&optional option file skip renew)
     "Make system C tags.
 
 OPTION for `tags-program'.
@@ -520,14 +520,18 @@ RENEW whether to renew the existing FILE.
 SKIP regexp to skip directories."
     ;; (interactive "stags option \nFtags file ")
     (interactive
-     (list (read-string "tags option: " "--c-kinds=+p")
+     (list (read-string "tags option: "
+                        (car *tags-option-history*)
+                        '*tags-option-history*)
            (read-string "tags file: " (tags-spec->% :os-include))
-           (y-or-n-p "renew: ")
            (read-string "skip directories: "
-                        "Frameworks.*$\\|c\\+\\+.*$\\|php.*$\\|ruby.*$")))
+                        (car *tags-skip-history*)
+                        '*tags-skip-history*)
+           (y-or-n-p "renew? ")))
     (let ((includes (cc*-system-include (not renew)))
-          (filter (when skip (lambda (_ a)
-                               (not (string-match skip a))))))
+          (filter (when (and skip (not (string= "" skip)))
+                    (lambda (_ a)
+                      (not (string-match skip a))))))
       (make-c-tags (car includes) file option renew filter)
       (dolist* (p (cdr includes) file)
         (make-c-tags p file option nil filter)))))
