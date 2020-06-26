@@ -921,14 +921,19 @@ create the tags for =Elisp= or =C= source code, such as
 =make-emacs-source-tags=, =make-system-c-tags=, =mount-tags=, and
 =unmount-tags=.
 
+#+ATTR_HTML: :style text-align:left
+More Reasonable Emacs also supports [[http://ctags.sourceforge.net/][Exuberant Ctags]].
+
 #+REVEAL: split
 Using =mount-tags= to mount the specified tags file at first order of
 =tags-table-list=. Or @@html:<kbd>@@C-u mount-tags@@html:</kbd>@@ to
 mount tags file at the tail of =tags-table-list=.  The =unmount-tags=
 is the inverse of =mount-tags=.
 
-#+ATTR_HTML: :style text-align:left
-More Reasonable Emacs also supports [[http://ctags.sourceforge.net/][Exuberant Ctags]].
+#+REVEAL: split
+- =make-emacs-source-tags=: make tags for Emacs' C and Lisp source code.
+- =make-dir-tags=: make tags for specified directory.
+- =cc*-make-system-tags=: make system C tags.
 
 *** Clipboard
 	 :PROPERTIES:

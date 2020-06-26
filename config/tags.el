@@ -90,8 +90,8 @@ when `desktop-globals-to-save' include it."
 (defun mount-tags (tags &optional append)
   "Mount existing TAGS into `tags-table-list'.
 
-When prefix arg is t then APPEND TAGS to the end of `tags-table-list'."
-  (interactive "fmount tags from: \nP")
+With prefix argument APPEND TAGS to the tail of `tags-table-list'."
+  (interactive "fmount tags from \nP")
   (add-to-list 'tags-table-list
                (expand-file-name tags)
                append
@@ -101,7 +101,7 @@ When prefix arg is t then APPEND TAGS to the end of `tags-table-list'."
 (defun unmount-tags (&optional tags)
   "Unmount TAGS from `tags-table-list'.
 
-When prefix arg is nil then unmount all tags from `tags-table-list'."
+With prefix argument TAGS unmount all tags from `tags-table-list'."
   (interactive (list (when (not current-prefix-arg)
                        (read-file-name "unmount tags from "))))
   (setq tags-table-list
@@ -218,7 +218,7 @@ Example:
 
 
 (defun make-dir-tags (dir store &optional option renew)
-  "Make and mount tags for specified DIR."
+  "Make tags for specified DIR."
   (interactive (list (read-directory-name "make tags for ")
                      (read-file-name "store tags in " nil nil nil ".tags")
                      (read-string "tags option: "
