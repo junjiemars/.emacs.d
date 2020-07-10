@@ -900,7 +900,7 @@ marked part.
 #+ATTR_HTML: :style text-align:left
 Using =mark-list@= to mark Lisp /sexp/ or C /block/. And using
 =mark-defun@= to mark whole function definition. You can do those
-things for other major modes not only Elisp.
+things for other major programming modes not only Elisp.
 
 - @@html:<kbd>@@C-c m s@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-symbol.png][mark symbol at point]]
 - @@html:<kbd>@@C-c m f@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-filename.png][mark filename at point]]
