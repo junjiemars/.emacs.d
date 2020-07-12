@@ -173,10 +173,18 @@
       (_mark_thing@_ (goto-char (car bounds))
                      (goto-char (cdr bounds))))))
 
-(defun mark-word@ ()
-  "Mark the word at point."
-  (interactive)
-  (let ((bounds (bounds-of-thing-at-point 'word)))
+(defun mark-word@ (&optional arg)
+  "Mark the word at point.
+
+If prefix ARG is non nil, mark word away from point then forward
+or backword to word boundary."
+  (interactive "p")
+  (let ((bounds (if current-prefix-arg
+                    (cons (point)
+                          (progn
+                            (forward-word (if (>= arg 0) 1 -1))
+                            (point)))
+                  (bounds-of-thing-at-point 'word))))
     (when bounds
       (_mark_thing@_ (goto-char (car bounds))
                      (goto-char (cdr bounds))))))
@@ -256,7 +264,7 @@ If prefix ARG then make quoted string."
 
 (define-key (current-global-map) (kbd "C-c m s") #'mark-symbol@)
 (define-key (current-global-map) (kbd "C-c m f") #'mark-filename@)
-(define-key (current-global-map) (kbd "C-c m w") #'mark-word@)
+(define-key (current-global-map) (kbd "M-@") #'mark-word@)
 (define-key (current-global-map) (kbd "C-c m l") #'mark-line@)
 (define-key (current-global-map) (kbd "C-c m a") #'mark-list@)
 (define-key (current-global-map) (kbd "C-c m d") #'mark-defun@)

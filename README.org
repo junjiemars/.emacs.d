@@ -902,9 +902,14 @@ Using =mark-list@= to mark Lisp /sexp/ or C /block/. And using
 =mark-defun@= to mark whole function definition. You can do those
 things for other major programming modes not only Elisp.
 
+#+ATTR_HTML: :style text-align:left
+=mark-word@= default mark the whole word at point. If prefix arg is
+non nil, set mark away from point then forward or backword to word
+boundary, just like the builtin =mark-word= does.
+
 - @@html:<kbd>@@C-c m s@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-symbol.png][mark symbol at point]]
 - @@html:<kbd>@@C-c m f@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-filename.png][mark filename at point]]
-- @@html:<kbd>@@C-c m w@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-word.png][mark word at point]]
+- @@html:<kbd>@@M-@@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-word.png][mark word at point]]
 - @@html:<kbd>@@C-c m l@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-line.png][mark line at point]]
 - @@html:<kbd>@@C-c m a@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-list.png][mark list at point]]
 - @@html:<kbd>@@C-c m d@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-defun.png][mark defun at point]]
