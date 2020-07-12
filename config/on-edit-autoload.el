@@ -201,12 +201,20 @@ If prefix INDENT is non-nil mark the indent line."
                    (beginning-of-line))
                  (end-of-line)))
 
-(defun mark-list@ ()
-  "Mark the list at point.
+(defun mark-sexp@ (&optional arg)
+  "Mark the sexp at point.
 
-More accurate than `mark-sexp'."
-  (interactive)
-  (let ((bounds (bounds-of-thing-at-point 'list)))
+If prefix ARG is non nil, mark sexp away from point then forward
+or backword to sexps boundary."
+  (interactive "p")
+  (let ((bounds (if current-prefix-arg
+                    (cons (point)
+                          (progn
+                            (forward-sexp (if (consp current-prefix-arg)
+                                              1
+                                            arg))
+                            (point)))
+                  (bounds-of-thing-at-point 'list))))
     (when bounds
       (_mark_thing@_ (goto-char (car bounds))
                      (goto-char (cdr bounds))))))
@@ -267,10 +275,11 @@ If prefix ARG then make quoted string."
 (define-key (current-global-map) (kbd "C-c m s") #'mark-symbol@)
 (define-key (current-global-map) (kbd "C-c m f") #'mark-filename@)
 (define-key (current-global-map) (kbd "C-c m l") #'mark-line@)
-(define-key (current-global-map) (kbd "C-c m a") #'mark-list@)
 (define-key (current-global-map) (kbd "C-c m q") #'mark-string@)
-(define-key (current-global-map) (kbd "M-@") #'mark-word@)
-(define-key (current-global-map) (kbd "C-M-h") #'mark-defun@)
+(define-key% (current-global-map) (kbd "M-@") #'mark-word@)
+(define-key% (current-global-map) (kbd "C-M-@") #'mark-sexp@)
+(define-key% (current-global-map) (kbd "C-M-SPC") #'mark-sexp@)
+(define-key% (current-global-map) (kbd "C-M-h") #'mark-defun@)
 
  ;; end of Mark thing at point
 

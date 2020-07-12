@@ -898,9 +898,9 @@ current buffer then you can @@html:<kbd>@@M-w@@html:</kbd>@@ the
 marked part.
 
 #+ATTR_HTML: :style text-align:left
-Using =mark-list@= to mark Lisp /sexp/ or C /block/. And using
-=mark-defun@= to mark whole function definition. You can do those
-things for other major programming modes not only Elisp.
+Using =mark-sexp@= default mark whole Lisp /sexp/ or C /block/ at
+point. If prefix arg is non nil, set mark away from point then forward
+or backward to sexps boundary, just like the builtin =mark-sexp= does.
 
 #+ATTR_HTML: :style text-align:left
 =mark-word@= default mark the whole word at point. If prefix arg is
@@ -914,7 +914,7 @@ boundary, just like the builtin =mark-word= does.
 - @@html:<kbd>@@C-c m f@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-filename.png][mark filename at point]]
 - @@html:<kbd>@@M-@@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-word.png][mark word at point]]
 - @@html:<kbd>@@C-c m l@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-line.png][mark line at point]]
-- @@html:<kbd>@@C-c m a@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-list.png][mark list at point]]
+- @@html:<kbd>@@C-M-@@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-list.png][mark sexp at point]]
 - @@html:<kbd>@@C-M h@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-defun.png][mark defun at point]]
 
 *** Tags
