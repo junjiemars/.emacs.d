@@ -32,21 +32,17 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
 
 (if-feature-eww%
 
-  (defun set-eww-mode! ()
-    (toggle-truncate-lines nil)))
+    (defun set-eww-mode! ()
+      (toggle-truncate-lines nil)))
 
 
-(if-feature-eww%
-
-    (with-eval-after-load 'eww
-      (add-hook 'eww-mode-hook #'set-eww-mode!)))
 
 
 ;; find web via search engine
 ;; eww also has a new `eww-search-words' supports searching via web.
 
 (defvar *search-engines*
-  '(("bing" "https://www.bing.com/"
+  `(("bing" "https://www.bing.com/"
      . "search?ensearch=1&q=")
     ("duck" "https://duckduckgo.com/"
      . "?q=")
@@ -58,9 +54,6 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
      . "w/index.php?search="))
   "Search engines using by `find-web'.")
 
-
-(defvar *search-default*
-  (assoc** "bing" *search-engines* #'string=))
 
 (defvar *search-engine-history* nil
   "Searching history using by `find-web'.")
@@ -79,7 +72,7 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
                           '*search-engine-history*)))))
   (let* ((e1 (if (or (null engine)
                      (string= "" engine))
-                 (car *search-default*)
+                 (car *search-engines*)
                engine))
          (e2 (cdr (assoc** e1 *search-engines* #'string=)))
          (url (concat (car e2) (cdr e2) what))
@@ -89,8 +82,19 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
                   t)))
 
 
+(if-feature-eww%
+    (with-eval-after-load 'eww
+
+      (add-hook 'eww-mode-hook #'set-eww-mode!)
+      (when (car *search-engines*)
+        (setq% eww-search-prefix
+               (concat (cadar *search-engines*)
+                       (cddar *search-engines*))))))
+
+
 (define-key% (current-global-map) (kbd "M-s w") #'lookup-web)
 (define-key% (current-global-map) (kbd "C-c f w") #'lookup-web)
+
 
  ;; end of `find-web'
 
