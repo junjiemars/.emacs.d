@@ -907,12 +907,15 @@ things for other major programming modes not only Elisp.
 non nil, set mark away from point then forward or backword to word
 boundary, just like the builtin =mark-word= does.
 
+#+ATTR_HTML: :style text-align:left
+=mark-defun@= more stable in vary programming modes than `mark-defun'.
+
 - @@html:<kbd>@@C-c m s@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-symbol.png][mark symbol at point]]
 - @@html:<kbd>@@C-c m f@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-filename.png][mark filename at point]]
 - @@html:<kbd>@@M-@@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-word.png][mark word at point]]
 - @@html:<kbd>@@C-c m l@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-line.png][mark line at point]]
 - @@html:<kbd>@@C-c m a@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-list.png][mark list at point]]
-- @@html:<kbd>@@C-c m d@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-defun.png][mark defun at point]]
+- @@html:<kbd>@@C-M h@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-defun.png][mark defun at point]]
 
 *** Tags
 	 :PROPERTIES:
