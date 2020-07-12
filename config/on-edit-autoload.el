@@ -177,12 +177,14 @@
   "Mark the word at point.
 
 If prefix ARG is non nil, mark word away from point then forward
-or backword to word boundary."
+or backword to words boundary."
   (interactive "p")
   (let ((bounds (if current-prefix-arg
                     (cons (point)
                           (progn
-                            (forward-word (if (>= arg 0) 1 -1))
+                            (forward-word (if (consp current-prefix-arg)
+                                              1
+                                            arg))
                             (point)))
                   (bounds-of-thing-at-point 'word))))
     (when bounds
