@@ -267,7 +267,7 @@ If prefix ARG then make quoted string."
 (define-key (current-global-map) (kbd "C-c m l") #'mark-line@)
 (define-key (current-global-map) (kbd "C-c m a") #'mark-list@)
 (define-key (current-global-map) (kbd "C-c m q") #'mark-string@)
-(define-key (current-global-map) (kbd "M-@ w") #'mark-word@)
+(define-key (current-global-map) (kbd "M-@") #'mark-word@)
 (define-key (current-global-map) (kbd "C-M-h") #'mark-defun@)
 
  ;; end of Mark thing at point
