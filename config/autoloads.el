@@ -156,7 +156,8 @@
                    (apply #'compile! *autoload-compile-units*))
                  (compile! (compile-unit*
                             (self-def-path-ref-> :epilogue)))
-                 (self-desktop-read!))
+                 (when-fn% 'self-desktop-read! nil
+                   (self-desktop-read!)))
                 t "on-autoloads!"))
 
 (add-hook 'after-init-hook #'on-autoloads! t)
