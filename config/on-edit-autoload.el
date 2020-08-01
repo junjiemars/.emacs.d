@@ -14,15 +14,19 @@
   (set-face-background 'region "white")
   (set-face-foreground 'region "black"))
 
+
 ;; No cursor blinking, it's distracting
 (when-fn% 'blink-cursor-mode nil (blink-cursor-mode 0))
+
 
 ;; Full path in title bar
 (when-graphic%
   (setq% frame-title-format "%b (%f)"))
 
+
 ;; Ignore ring bell
 (setq% ring-bell-function 'ignore)
+
 
 ;; Meta key for Darwin
 (when-platform% 'darwin
@@ -30,11 +34,14 @@
     (unless% (eq 'meta (plist-get mac-option-modifier :ordinary))
       (plist-put mac-option-modifier :ordinary 'meta))))
 
+
 ;; Changes all yes/no questions to y/n type
 ;; (defalias 'yes-or-no-p 'y-or-n-p)
 
+
 ;; Highlights matching parenthesis
 (show-paren-mode 1)
+
 
 ;; Enable save minibuffer history
 (if-version%
@@ -42,11 +49,13 @@
     (savehist-mode)
   (savehist-mode t))
 
+
 ;; Enable save-place
 (if-version%
     <= 25.1
     (save-place-mode t)
   (setq% save-place t 'saveplace))
+
 
 ;; Shows all options when running apropos. For more info,
 ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html
@@ -70,18 +79,6 @@
 (put 'upcase-region 'disabled nil)
 
 
-;; enable column number mode
-(setq% column-number-mode t 'simple)
-
-
-;; `view-mode'
-(setq view-read-only t)
-(define-key% (current-global-map) (kbd "C-x 4 v") #'view-file-other-window)
-(define-key% (current-global-map) (kbd "C-x 5 v") #'view-file-other-frame)
-
- ;; end of `view-mode'
-
-
 ;; Comments
 (defun toggle-comment ()
   "Toggle comment on current line or region."
@@ -92,9 +89,6 @@
   (if-fn% 'next-logical-line nil
           (next-logical-line)
     (forward-line)))
-
-;; toggle comment key strike
-(define-key% (current-global-map) (kbd "C-c ;") #'toggle-comment)
 
  ;; end of Comments
 
@@ -272,14 +266,6 @@ If prefix ARG then make quoted string."
   (put 'defun 'forward-op   'end-of-defun))
 
 
-(define-key (current-global-map) (kbd "C-c m s") #'mark-symbol@)
-(define-key (current-global-map) (kbd "C-c m f") #'mark-filename@)
-(define-key (current-global-map) (kbd "C-c m l") #'mark-line@)
-(define-key (current-global-map) (kbd "C-c m q") #'mark-string@)
-(define-key% (current-global-map) (kbd "M-@") #'mark-word@)
-(define-key% (current-global-map) (kbd "C-M-@") #'mark-sexp@)
-(define-key% (current-global-map) (kbd "C-M-SPC") #'mark-sexp@)
-(define-key% (current-global-map) (kbd "C-M-h") #'mark-defun@)
 
  ;; end of Mark thing at point
 
@@ -379,8 +365,6 @@ See also `open-line' and `split-line'."
   (when indent
     (indent-according-to-mode)))
 
-(define-key (current-global-map) (kbd "C-o") #'open-next-line)
-(define-key (current-global-map) (kbd "C-M-o") #'open-previous-line)
 
  ;; end of open-*-line
 
@@ -404,7 +388,6 @@ kill ring. If prefix argument ARG is nil then copy
     (kill-new n1)
     (message "%s" n1)))
 
-(define-key (current-global-map) (kbd "C-c b n") #'echo-buffer-file-name)
 
  ;; end of `echo-buffer-file-name'
 
@@ -434,7 +417,7 @@ kill ring. If prefix argument ARG is nil then copy
             (error "Invalid character"))
           (insert-char c count)))
 
-      (define-key (current-global-map) (kbd "C-x 8 RET") #'insert-char*)))
+      (define-key% (current-global-map) (kbd "C-x 8 RET") #'insert-char*)))
 
  ;; end of `insert-char*'
 
@@ -448,9 +431,6 @@ kill ring. If prefix argument ARG is nil then copy
         (message "%s" buffer-file-coding-system)
       buffer-file-coding-system)))
 
-(define-key% (current-global-map)
-  (kbd "C-x RET =")
-  #'get-buffer-coding-system)
 
  ;; end of `current-buffer-coding-system'
 
@@ -460,13 +440,6 @@ kill ring. If prefix argument ARG is nil then copy
     "`count-lines-region' had been obsoleted since Emacs24.1+"))
 
 
-;; ido-mode allows you to more easily navigate choices. For example,
-;; when you want to switch buffers, ido presents you with a list
-;; of buffers in the the mini-buffer. As you start to type a buffer's
-;; name, ido will narrow down the list of buffers to match the text
-;; you've typed in
-;; http://www.emacswiki.org/emacs/InteractivelyDoThings
-(make-thread* (ido-mode t))
 (define-key (current-global-map) (kbd "C-x C-v") #'view-file)
 ;; (define-key (current-global-map) (kbd "C-x C-F") #'ido-find-alternate-file)
 
@@ -490,15 +463,10 @@ See also: `multi-occur-in-matching-buffers'."
    (car (occur-read-primary-args))))
 
 
-;; Sorting
-(define-key (current-global-map) (kbd "C-c s f") #'sort-fields)
-(define-key (current-global-map) (kbd "C-c s l") #'sort-lines)
-(define-key (current-global-map) (kbd "C-c s r") #'reverse-region)
-
  ;; end of Sorting
 
 
-;;; kill word/symbol/line
+;;; Kill word/symbol/line
 
 (defun kill-whole-word (&optional arg)
   "Kill current word.
@@ -540,13 +508,39 @@ move backwards ARG times if negative."
                    (forward-symbol arg)
                    (point)))))
 
+ ;; end of kill symbol/word/line
+
+
+;;;;
+;; Keys
+;;;;
+
+;; Buffer
+(define-key% (current-global-map) (kbd "C-c b n") #'echo-buffer-file-name)
+(define-key% (current-global-map) (kbd "C-x RET =") #'get-buffer-coding-system)
+
+;; Kill
+(define-key% (current-global-map) (kbd "C-o") #'open-next-line)
+(define-key% (current-global-map) (kbd "C-M-o") #'open-previous-line)
 
 (define-key% (current-global-map) (kbd "C-c k w") #'kill-whole-word)
 (define-key% (current-global-map) (kbd "C-c k s") #'kill-whole-symbol)
 ;; `C-S-backspace' may not work in terminal
 (define-key% (current-global-map) (kbd "C-c k l") #'kill-whole-line)
 
- ;; end of kill symbol/word/line
+;; Mark
+(define-key% (current-global-map) (kbd "C-c m s") #'mark-symbol@)
+(define-key% (current-global-map) (kbd "C-c m f") #'mark-filename@)
+(define-key% (current-global-map) (kbd "C-c m l") #'mark-line@)
+(define-key% (current-global-map) (kbd "C-c m q") #'mark-string@)
+(define-key% (current-global-map) (kbd "M-@") #'mark-word@)
+(define-key% (current-global-map) (kbd "C-M-@") #'mark-sexp@)
+(define-key% (current-global-map) (kbd "C-M-SPC") #'mark-sexp@)
+(define-key% (current-global-map) (kbd "C-M-h") #'mark-defun@)
 
+;; Comment
+(define-key% (current-global-map) (kbd "C-c ;") #'toggle-comment)
+
+
 
 ;; end of file

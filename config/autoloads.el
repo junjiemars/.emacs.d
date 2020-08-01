@@ -14,51 +14,8 @@
 (defmacro-if-feature% eww)
 
 
-;; set-global-key!
-
-(defun set-global-key! ()
-
-  ;; Open file or url at point
-  (when-fn% 'find-file-at-point 'ffap
-    (define-key (current-global-map) (kbd "C-c f f") #'find-file-at-point))
-
-  ;; Shows a list of buffers
-  (define-key (current-global-map) (kbd "C-x C-b") #'ibuffer)
-
-  ;; Interactive query replace key bindings.
-  (define-key (current-global-map) (kbd "M-%") #'query-replace-regexp)
-  (define-key (current-global-map) (kbd "C-M-%") #'query-replace)
-
-  ;; Register
-  ;; `C-x r g' and `C-x r i' are all bound to insert-register
-  ;; let `C-x r g' do `string-insert-rectangle'
-  (define-key (current-global-map) (kbd "C-x r g") #'string-insert-rectangle)
-  (define-key% (current-global-map) (kbd "C-x r v") #'view-register)
-
-  ;; Revert buffer
-  (define-key (current-global-map) (kbd "C-c b r") #'revert-buffer)
-  ;; Toggle linum mode
-  (when-fn% 'linum-mode 'linum
-    (define-key% (current-global-map) (kbd "C-c b l") #'linum-mode))
-
-  (when-fn% 'electric-newline-and-maybe-indent 'electric
-    ;; Default behaviour of RET
-    ;; https://lists.gnu.org/archive/html/emacs-devel/2013-10/msg00490.html
-    ;; electric-indent-mode: abolition of `newline' function is not
-    ;; the Right Thing
-    ;; https://lists.gnu.org/archive/html/emacs-devel/2013-10/msg00407.html
-    (define-key% (current-global-map) (kbd "RET")
-      #'electric-newline-and-maybe-indent)
-    (define-key% (current-global-map) (kbd "C-j") #'newline))
-
-  ) ;; end of set-global-key!
-
-
-
-;; set-flavor-mode!
-
 (defun set-flavor-mode! ()
-
+  "Set flavor modes."
   (compile!
     (compile-unit% (emacs-home* "config/dicts.el"))
     (compile-unit% (emacs-home* "config/financial.el") t)
@@ -142,23 +99,82 @@
     (with-current-buffer "*scratch*"
       (lisp-interaction-mode)))
 
+  ;; `view-mode'
+  (setq view-read-only t)
+
+  ;; enable column number mode
+  (setq% column-number-mode t 'simple)
+
+
   )
 
  ;; end of set-flavor-mode!
 
 
+(defun set-global-key! ()
+  "Set global keys."
+
+  ;; Open file or url at point
+  (when-fn% 'find-file-at-point 'ffap
+    (define-key% (current-global-map) (kbd "C-c f f") #'find-file-at-point))
+
+  ;; Shows a list of buffers
+  (define-key% (current-global-map) (kbd "C-x C-b") #'ibuffer)
+
+  ;; Interactive query replace key bindings.
+  (define-key% (current-global-map) (kbd "M-%") #'query-replace-regexp)
+  (define-key% (current-global-map) (kbd "C-M-%") #'query-replace)
+
+  ;; Register
+  ;; `C-x r g' and `C-x r i' are all bound to insert-register
+  ;; let `C-x r g' do `string-insert-rectangle'
+  (define-key% (current-global-map) (kbd "C-x r g") #'string-insert-rectangle)
+  (define-key% (current-global-map) (kbd "C-x r v") #'view-register)
+
+  ;; Buffer
+  (define-key% (current-global-map) (kbd "C-c b r") #'revert-buffer)
+  (when-fn% 'linum-mode 'linum
+    (define-key% (current-global-map) (kbd "C-c b l") #'linum-mode))
+
+  ;; Line
+  (when-fn% 'electric-newline-and-maybe-indent 'electric
+    ;; Default behaviour of RET
+    ;; https://lists.gnu.org/archive/html/emacs-devel/2013-10/msg00490.html
+    ;; electric-indent-mode: abolition of `newline' function is not
+    ;; the Right Thing
+    ;; https://lists.gnu.org/archive/html/emacs-devel/2013-10/msg00407.html
+    (define-key% (current-global-map) (kbd "RET")
+      #'electric-newline-and-maybe-indent)
+    (define-key% (current-global-map) (kbd "C-j") #'newline))
+
+  ;; Sorting
+  (define-key% (current-global-map) (kbd "C-c s f") #'sort-fields)
+  (define-key% (current-global-map) (kbd "C-c s l") #'sort-lines)
+  (define-key% (current-global-map) (kbd "C-c s r") #'reverse-region)
+
+  ;; View
+  (define-key% (current-global-map) (kbd "C-x 4 v") #'view-file-other-window)
+  (define-key% (current-global-map) (kbd "C-x 5 v") #'view-file-other-frame)
+  (define-key (current-global-map) (kbd "C-x C-v") #'view-file)
+
+
+  ) ;; end of set-global-key!
+
+
+
 ;; after-init
 (defun on-autoloads! ()
-  (make-thread* (progn%
-                 (set-flavor-mode!)
-                 (set-global-key!)
-                 (package-spec-:allowed-p
-                   (apply #'compile! *autoload-compile-units*))
-                 (compile! (compile-unit*
-                            (self-def-path-ref-> :epilogue)))
-                 (when-fn% 'self-desktop-read! nil
-                   (self-desktop-read!)))
-                t "on-autoloads!"))
+  (make-thread*
+   (progn% (set-flavor-mode!)
+           (set-global-key!)
+           (package-spec-:allowed-p
+             (apply #'compile! *autoload-compile-units*))
+           (compile! (compile-unit*
+                      (self-def-path-ref-> :epilogue)))
+           (when-fn% 'self-desktop-read! nil
+             (self-desktop-read!))
+           (ido-mode t))
+   t "on-autoloads!"))
 
 (add-hook 'after-init-hook #'on-autoloads! t)
 
