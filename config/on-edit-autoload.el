@@ -79,20 +79,6 @@
 (put 'upcase-region 'disabled nil)
 
 
-;; Comments
-(defun toggle-comment ()
-  "Toggle comment on current line or region."
-  (interactive)
-  (comment-or-uncomment-region
-   (region-active-if (region-beginning) (line-beginning-position))
-   (region-active-if (region-end) (line-end-position)))
-  (if-fn% 'next-logical-line nil
-          (next-logical-line)
-    (forward-line)))
-
- ;; end of Comments
-
-
 ;; :edit
 (when (self-spec->*env-spec :edit :allowed)
   ;; default `tab-width'
@@ -537,9 +523,6 @@ move backwards ARG times if negative."
 (define-key% (current-global-map) (kbd "C-M-@") #'mark-sexp@)
 (define-key% (current-global-map) (kbd "C-M-SPC") #'mark-sexp@)
 (define-key% (current-global-map) (kbd "C-M-h") #'mark-defun@)
-
-;; Comment
-(define-key% (current-global-map) (kbd "C-c ;") #'toggle-comment)
 
 
 
