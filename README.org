@@ -963,9 +963,10 @@ functionalities, so we can use natural keys (such as
 
 #+ATTR_HTML: :style text-align:left
 There are no uniformed [[https://www.emacswiki.org/emacs/IncrementalSearch][isearch]] functionalites among in
-=isearch-forward=, =isearch-forward-symbol-at-point= and
-=isearch-backward=. Now, in More Reasonable Emacs those functionalites
-unified to two functions: =isearch-forward*= and =isearch-backward*=.
+=isearch-forward=, =isearch-backward= and
+=isearch-forward-symbol-at-point=. Now, in More Reasonable Emacs those
+functionalites unified to two functions: =isearch-forward*= and
+=isearch-backward*=.
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
@@ -973,11 +974,8 @@ In More Reasonable Emacs, by default, =isearch-forward*= and
  =isearch-backward*= same with the built-in ones. Except we can search
  the text of activated *region*.  @@html:<kbd>@@C-s@@html:</kbd>@@ and
  @@html:<kbd>@@C-r@@html:</kbd>@@ will search forward or backward just
- like /vi/'s @@html:<kbd>@@*@@html:</kbd>@@ and
- @@html:<kbd>@@C-u s@@html:</kbd>@@ does advanced searching.
-
-And more, searching =word=, =quoted string=, or =filename= forward or
- backword.
+ like /vi/'s @@html:<kbd>@@*@@html:</kbd>@@ does. And more, searching
+ =word=, =quoted string=, or =filename= forward or backword.
  
 *** Open line
 	 :PROPERTIES:
@@ -1020,10 +1018,8 @@ Global for all Emacs' version.
 #+REVEAL: split
 - @@html:<kbd>@@C-s@@html:</kbd>@@: =isearch-forward*=
 - @@html:<kbd>@@C-r@@html:</kbd>@@: =isearch-backward*=
-- @@html:<kbd>@@M-s s@@html:</kbd>@@: =isearch-forward-symbol-at-point=
-- @@html:<kbd>@@M-s w@@html:</kbd>@@: =isearch-forward-word*=
-- @@html:<kbd>@@M-s q@@html:</kbd>@@: =isearch-forward-string*=
-- @@html:<kbd>@@M-s f@@html:</kbd>@@: =isearch-forward-filename*=
+- @@html:<kbd>@@M-s .@@html:</kbd>@@: =isearch-forward-symbol*=
+- @@html:<kbd>@@M-s _@@html:</kbd>@@: =isearch-forward-word*=
 
 *** Compatible keys
 
