@@ -143,7 +143,7 @@
 
 
 (eval-when-compile
-  
+
   (defmacro _mark_thing@_ (begin end)
     "Mark THING at point."
     `(progn
@@ -253,7 +253,7 @@ If prefix ARG then make quoted string."
           (goto-char beg)
           (forward-sexp)
           (cons beg (point))))))
-  
+
   (put 'list 'bounds-of-thing-at-point
        'thing-at-point-bounds-of-list-at-point))
 
@@ -285,7 +285,7 @@ If prefix ARG then make quoted string."
 (unless-graphic%
   (unless-platform% 'windows-nt
     (eval-when-compile
-      
+
       (defmacro _defun_x_select_text*_ (bin &rest args)
         "Define `x-select-text*'"
         `(defun x-select-text* (text &optional _unused_)
@@ -310,7 +310,7 @@ If prefix ARG then make quoted string."
         `(progn
            (setq interprogram-cut-function #'x-select-text*)
            (setq interprogram-paste-function #'x-selection-value*)))))
-  
+
   (when-platform% 'darwin
     (_defun_x_select_text*_ "pbcopy")
     (_defun_x_selection_value*_ "pbpaste")
