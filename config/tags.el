@@ -47,7 +47,7 @@ Examples:
               (and (zerop (car ver))
                    (string-match "etags (GNU Emacs [.0-9]+)"
                                  (cdr ver))))))
-         "etags %s -o %s -l auto -a %s"))
+         "etags %s -o %s -a %s"))
   "The default tags program.
 This is used by commands like `make-tags'.
 
@@ -79,7 +79,10 @@ when `desktop-globals-to-save' include it."
 
 
 (defvar *tags-option-history*
-  (list "--c-kinds=+p")
+  (let ((bin (string-trim> tags-program " +.*")))
+    (list (cond ((string= "etags" bin) "-l c")
+                ((string= "ctags" bin) "--c-kinds=+p")
+                (t ""))))
   "Tags option history list.")
 
 (defvar *tags-skip-history*
@@ -221,7 +224,9 @@ Example:
   "Make tags for specified DIR."
   (interactive (list (read-directory-name "make tags for ")
                      (read-file-name "store tags in " nil nil nil ".tags")
-                     (read-string "tags option: "
+                     (read-string (concat
+                                   (string-trim> tags-program " +.*")
+                                   " option: ")
                                   (car *tags-option-history*)
                                   '*tags-option-history*)
                      (y-or-n-p "tags renew? ")))

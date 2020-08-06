@@ -15,6 +15,7 @@
                      'gnuplot-mode)
                    'markdown-mode
                    'multiple-cursors
+                   (when-version% <= 24.3 'yasnippet)
                    'vlf))
   (list
    ;; org
@@ -79,8 +80,7 @@
                    (when-version% <= 25 'restclient)
                    (when-version% <= 24.3 'skewer-mode)
                    'web-mode
-                   'x509-mode
-                   (when-version% <= 24.3 'yasnippet)))
+                   'x509-mode))
 
   ) ;; end of def-self-package-spec
 
