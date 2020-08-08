@@ -86,7 +86,7 @@ when `desktop-globals-to-save' include it."
   "Tags option history list.")
 
 (defvar *tags-skip-history*
-  (list "Frameworks.*$\\|c\\+\\+.*$\\|php.*$\\|ruby.*$")
+  (list "Frameworks.*$\\|cpp.*$\\|c\\+\\+.*$\\|php.*$\\|ruby.*$")
   "Tags option history list.")
 
 
