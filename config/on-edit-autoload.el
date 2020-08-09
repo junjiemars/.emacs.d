@@ -497,6 +497,29 @@ move backwards ARG times if negative."
  ;; end of kill symbol/word/line
 
 
+;; Comment
+(defun toggle-comment (&optional n)
+  "Toggle comment on current line or region."
+  (interactive "p")
+  (comment-or-uncomment-region
+   (region-active-if (region-beginning)
+     (if (and n (< n 0))
+         (save-excursion
+           (forward-line (1+ n))
+           (line-beginning-position))
+       (line-beginning-position)))
+   (region-active-if (region-end)
+     (if (and n (> n 0))
+         (save-excursion
+           (forward-line (1- n))
+           (line-end-position))
+       (line-end-position))))
+  (forward-line n)
+  (beginning-of-line))
+
+
+
+
 ;;;;
 ;; Keys
 ;;;;
@@ -523,6 +546,10 @@ move backwards ARG times if negative."
 (define-key% (current-global-map) (kbd "C-M-@") #'mark-sexp@)
 (define-key% (current-global-map) (kbd "C-M-SPC") #'mark-sexp@)
 (define-key% (current-global-map) (kbd "C-M-h") #'mark-defun@)
+
+;; comment
+(define-key% (current-global-map) (kbd "C-x C-;") #'toggle-comment)
+
 
 
 
