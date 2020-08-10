@@ -1393,7 +1393,7 @@ It's *self-documenting* and great, keep reading it frequently.
 - count lines on current page: @@html:<kbd>@@C-x l@@html:</kbd>@@
 
 #+REVEAL: split
-- comment or uncomment the current line or region: @@html:<kbd>@@C-x
+- toggle comment the current line or region: @@html:<kbd>@@C-x
   C-;@@html:</kbd>@@
 - insert or realign comment on current line:
   @@html:<kbd>@@M-;@@html:</kbd>@@
