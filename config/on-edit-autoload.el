@@ -83,6 +83,8 @@
 (when (self-spec->*env-spec :edit :allowed)
   ;; default `tab-width'
   (setq-default tab-width (self-spec->*env-spec :edit :tab-width))
+  ;; `standard-indent'
+  (setq-default standard-indent (self-spec->*env-spec :edit :standard-indent))
   ;; default `auto-save-default'
   (setq auto-save-default (self-spec->*env-spec :edit :auto-save-default))
   ;; allow `narrow-to-region'

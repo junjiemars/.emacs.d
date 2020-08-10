@@ -79,6 +79,7 @@
                  :allowed nil)
 
   :edit (list :tab-width 2
+              :standard-indent 2
               :auto-save-default nil
               :disable-indent-tabs-mode '(c-mode-common-hook
                                           sh-mode-hook
