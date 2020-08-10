@@ -768,6 +768,7 @@ Avoiding a war. If /whitespace/ causes some trouble, you can swith to
 #+BEGIN_SRC emacs-lisp
 (def-self-env-spec
   :edit (list :tab-width 2
+              :standard-indent 2
               :auto-save-default nil
               :disable-indent-tabs-mode '(c-mode-common-hook
                                           sh-mode-hook
@@ -883,16 +884,16 @@ For =.rar= archive, emacs really sucks.
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/dired-compress-file-suffixes-version-24lt.png][dired-compress-file-suffixes]]
 
 ** Editing
-	 :PROPERTIES:
-	 :CUSTOM_ID: editing
-	 :END:
+   :PROPERTIES:
+   :CUSTOM_ID: editing
+   :END:
 
 *** Mark
-	 :PROPERTIES:
-	 :CUSTOM_ID: edit-mark
-	 :END:
+   :PROPERTIES:
+   :CUSTOM_ID: edit-mark
+   :END:
 
-#+ATTR_HTML: :style text-align:left	 
+#+ATTR_HTML: :style text-align:left    
 Provides the abilities to mark /symbol/, /filename/ and /line/ in
 current buffer then you can @@html:<kbd>@@M-w@@html:</kbd>@@ the
 marked part.
@@ -918,9 +919,9 @@ boundary, just like the builtin =mark-word= does.
 - @@html:<kbd>@@C-M h@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-defun.png][mark defun at point]]
 
 *** Tags
-	 :PROPERTIES:
-	 :CUSTOM_ID: edit-tags
-	 :END:
+   :PROPERTIES:
+   :CUSTOM_ID: edit-tags
+   :END:
 
 #+ATTR_HTML: :style text-align:left
 Prefer =etags= program, because it works well on varied platforms. In
@@ -944,9 +945,9 @@ is the inverse of =mount-tags=.
 - =cc*-make-system-tags=: make system C tags.
 
 *** Clipboard
-	 :PROPERTIES:
-	 :CUSTOM_ID: edit-clipboard
-	 :END:
+   :PROPERTIES:
+   :CUSTOM_ID: edit-clipboard
+   :END:
 
 #+ATTR_HTML: :style text-align:left
 In terminal, Emacs can not /copy to/ or /paste from/ system clipboard
@@ -957,9 +958,9 @@ functionalities, so we can use natural keys (such as
 /copy to/ or /paste from/ system clipboard.
 
 *** iSearch
-	 :PROPERTIES:
-	 :CUSTOM_ID: edit-isearch
-	 :END:
+   :PROPERTIES:
+   :CUSTOM_ID: edit-isearch
+   :END:
 
 #+ATTR_HTML: :style text-align:left
 There are no uniformed [[https://www.emacswiki.org/emacs/IncrementalSearch][isearch]] functionalites among in
@@ -978,9 +979,9 @@ In More Reasonable Emacs, by default, =isearch-forward*= and
  =word=, =quoted string=, or =filename= forward or backword.
  
 *** Open line
-	 :PROPERTIES:
-	 :CUSTOM_ID: edit-open-line
-	 :END:
+   :PROPERTIES:
+   :CUSTOM_ID: edit-open-line
+   :END:
 
 #+ATTR_HTML: :style text-align:left
 Emulates /vi/'s *o* and *O* command in Emacs, the built-in one
@@ -992,9 +993,9 @@ line. See [[https://www.emacswiki.org/emacs/OpenNextLine][Open Next Line]].
 - @@html:<kbd>@@C-M-o@@html:</kbd>@@ =open-previous-line=
 
 ** Keys
-	 :PROPERTIES:
-	 :CUSTOM_ID: keys
-	 :END:
+   :PROPERTIES:
+   :CUSTOM_ID: keys
+   :END:
 
 #+ATTR_HTML: :style text-align:left
 Obey the defaults of Emacs' keymap.
@@ -1009,7 +1010,7 @@ Global for all Emacs' version.
 - @@html:<kbd>@@C-c b r@@html:</kbd>@@ =revert-buffer=
 - @@html:<kbd>@@C-c b n@@html:</kbd>@@ =echo-buffer-file-name=
 - @@html:<kbd>@@C-o@@html:</kbd>@@ =open-next-line=
-- @@html:<kbd>@@C-M-o@@html:</kbd>@@ =open-previous-line=	
+- @@html:<kbd>@@C-M-o@@html:</kbd>@@ =open-previous-line=   
 - @@html:<kbd>@@C-c m s@@html:</kbd>@@: =mark-symbol@=
 - @@html:<kbd>@@C-c m l@@html:</kbd>@@: =mark-line@=
 - @@html:<kbd>@@C-c m f@@html:</kbd>@@: =mark-filename@=
@@ -1025,7 +1026,7 @@ Global for all Emacs' version.
 #+ATTR_HTML: :style text-align:left
 Compatibled for ancient Emacs versions, compatible keys may not
 avaiabled on ancient Emacs.
-		
+    
 - @@html:<kbd>@@M-,@@html:</kbd>@@ =pop-tag-mark=
 - @@html:<kbd>@@M-*@@html:</kbd>@@ =tags-loop-continue=
 - @@html:<kbd>@@C-l@@html:</kbd>@@ =recenter-top-bottom=
@@ -1041,23 +1042,23 @@ avaiabled on ancient Emacs.
 - @@html:<kbd>@@C-x v M@@html:</kbd>@@ =magit-status=
 
 * Programming
-	:PROPERTIES:
-	:CUSTOM_ID: programming
-	:END:
+  :PROPERTIES:
+  :CUSTOM_ID: programming
+  :END:
 
 ** Generic editing
-	 :PROPERTIES:
-	 :CUSTOM_ID: general-editing
-	 :END:
+   :PROPERTIES:
+   :CUSTOM_ID: general-editing
+   :END:
 
 #+ATTR_HTML: :style text-align:left
 Just introduce More Resonable Emacs improved or extra editing
 features.
 
 ** Lisp programming
-	 :PROPERTIES:
-	 :CUSTOM_ID: lisp-programming
-	 :END:
+   :PROPERTIES:
+   :CUSTOM_ID: lisp-programming
+   :END:
 
 #+ATTR_HTML: :style text-align:left
 Lisp programming in Emacs already good enough, if [[https://www.emacswiki.org/emacs/ParEdit][ParEdit]] and
@@ -1076,9 +1077,9 @@ reliable implementation, if you like it you can =run-gambit=.
 *** REPL
 
 ** C programming
-	 :PROPERTIES:
-	 :CUSTOM_ID: c-programming
-	 :END:
+   :PROPERTIES:
+   :CUSTOM_ID: c-programming
+   :END:
 
 #+ATTR_HTML: :style text-align:left
 Now, we are in the cycle of editing, compiling, debugging.
@@ -1088,20 +1089,20 @@ Now, we are in the cycle of editing, compiling, debugging.
 #+ATTR_HTML: :style display:none
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-editing-on-darwin-gui.png][editing on Darwin]]
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-darwin.png][debugging via lldb on Darwin]]
-- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-linux.png][debugging via lldb on Ubuntu]]	
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-linux.png][debugging via lldb on Ubuntu]]   
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-cdb-on-windows.png][debugging via cdb]]
 
 *** Editing
-		:PROPERTIES:
-		:CUSTOM_ID: c-programming-editing
-		:END:
+    :PROPERTIES:
+    :CUSTOM_ID: c-programming-editing
+    :END:
 
 Change C programming style using @@html:<kbd>@@C-c .@@html:</kbd>@@.
 
 **** View C system include
-		 :PROPERTIES:
-		 :CUSTOM_ID: c-programming-view-c-system-include
-		 :END:
+     :PROPERTIES:
+     :CUSTOM_ID: c-programming-view-c-system-include
+     :END:
 
 #+ATTR_HTML: :style text-align:left
 Like /vi/'s @@html:<kbd>@@gf@@html:</kbd>@@ command, you can using
@@ -1110,9 +1111,9 @@ local or remote in =view-mode= and supports /gcc/, /clang/, and
 /msvc/.
 
 **** Macro expand
-		 :PROPERTIES:
-		 :CUSTOM_ID: c-programming-macro-expand
-		 :END:
+     :PROPERTIES:
+     :CUSTOM_ID: c-programming-macro-expand
+     :END:
 
 #+ATTR_HTML: :style text-align:left
 Mark the code that include a macro call then @@html:<kbd>@@C-c
@@ -1126,9 +1127,9 @@ locally or remotely.
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-macro-expansion-on-windows.png][macro expansion for msvc]]
 
 **** Dump predefined macros
-		 :PROPERTIES:
-		 :CUSTOM_ID: c-programming-dump-predefined-macros
-		 :END:
+     :PROPERTIES:
+     :CUSTOM_ID: c-programming-dump-predefined-macros
+     :END:
 
 #+ATTR_HTML: :style text-align:left
 Dump compiler predefined macros, @@html:<kbd>@@C-c #@@html:</kbd>@@,
@@ -1141,9 +1142,9 @@ whatever you are using /gcc/ and /clang/ locally or remotely.
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-dump-predefined-macros.png][dump predefined macros for clang]]
 
 *** Compiling
-		:PROPERTIES:
-		:CUSTOM_ID: c-programming-compiling
-		:END:
+    :PROPERTIES:
+    :CUSTOM_ID: c-programming-compiling
+    :END:
 
 #+ATTR_HTML: :style text-align:left
 Using @@html:<kbd>@@M-x compile@@html:</kbd>@@ to /build/ or /test/.
@@ -1160,9 +1161,9 @@ perfect.
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-compile-on-windows.png][compile via msvc]]
 
 *** Debugging
-		:PROPERTIES:
-		:CUSTOM_ID: c-programming-debugging
-		:END:
+    :PROPERTIES:
+    :CUSTOM_ID: c-programming-debugging
+    :END:
 
 #+ATTR_HTML: :style text-align:left
 [[https://www.gnu.org/software/gdb/][gdb]], [[https://lldb.llvm.org/][lldb]] and [[https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/][cdb]] had been perfect integrated within this kit.
@@ -1171,7 +1172,7 @@ perfect.
 /screenshots/:
 #+ATTR_HTML: :style display:none
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-darwin.png][debugging via lldb on Darwin]]
-- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-linux.png][debugging via lldb on Ubuntu]]	
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-linux.png][debugging via lldb on Ubuntu]]   
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-cdb-on-windows.png][debugging via cdb]]
 
 * Troubleshoting
@@ -1185,8 +1186,8 @@ perfect.
   - @@html:<kbd>@@M: system-configuration-options@@html:</kbd>@@
   - @@html:<kbd>@@M: system-configuration-features@@html:</kbd>@@
   - @@html:<kbd>@@M: features@@html:</kbd>@@
-	- @@html:<kbd>@@M: load-history@@html:</kbd>@@
-	then do #1
+  - @@html:<kbd>@@M: load-history@@html:</kbd>@@
+  then do #1
 3. Check =*Compilation-Log*= buffer, then do #1
 4. Disable the problematic item in =(emacs-home*
    "private/self-env-spec.el")=, then do #1
@@ -1194,9 +1195,9 @@ perfect.
    "private/self-path.el")=, then do #1
 
 * Mnemonic
-	:PROPERTIES:
-	:CUSTOM_ID: mnemonic
-	:END:
+  :PROPERTIES:
+  :CUSTOM_ID: mnemonic
+  :END:
 
 #+ATTR_HTML: :style display:none
 - [[#emacs-documents][Emacs Documents]]
@@ -1361,15 +1362,15 @@ It's *self-documenting* and great, keep reading it frequently.
 
 #+REVEAL: split
 - insert char: @@html:<kbd>@@C-x 8 RET@@html:</kbd>@@ GREEK SMALL LETTER LAMBDA
-- what cursor position: @@html:<kbd>@@C-x =@@html:</kbd>@@	
+- what cursor position: @@html:<kbd>@@C-x =@@html:</kbd>@@  
 - describe char: @@html:<kbd>@@C-u C-x =@@html:</kbd>@@
 - quoted insert: @@html:<kbd>@@C-q@@html:</kbd>@@, such as page break
   @@html:<kbd>@@C-q C-l@@html:</kbd>@@, use @@html:<kbd>@@C-x
   [@@html:</kbd>@@ to backward or @@html:<kbd>@@C-x ]@@html:</kbd>@@
   to forward,
-	@@html:<kbd>@@C-q C-I@@html:</kbd>@@ to insert horizontal tab,
-	@@html:<kbd>@@C-q C-J@@html:</kbd>@@ to insert line feed,
-	@@html:<kbd>@@C-q C-M@@html:</kbd>@@ to insert carriage return
+  @@html:<kbd>@@C-q C-I@@html:</kbd>@@ to insert horizontal tab,
+  @@html:<kbd>@@C-q C-J@@html:</kbd>@@ to insert line feed,
+  @@html:<kbd>@@C-q C-M@@html:</kbd>@@ to insert carriage return
 - check unmatched parentheses: @@html:<kbd>@@M-x check-parens@@html:</kbd>@@
 
 #+REVEAL: split
@@ -1377,7 +1378,7 @@ It's *self-documenting* and great, keep reading it frequently.
 - space to tab: @@html:<kbd>@@M-x tabify@@html:</kbd>@@
 - fill paragraph: @@html:<kbd>@@M q@@html:</kbd>@@
 - redo after undo: @@html:<kbd>@@C-g@@html:</kbd>@@ and then
-	@@html:<kbd>@@C-x u@@html:</kbd>@@
+  @@html:<kbd>@@C-x u@@html:</kbd>@@
 - cancel: @@html:<kbd>@@C-]@@html:</kbd>@@, or @@html:<kbd>@@M-x
   top-level@@html:</kbd>@@
 
@@ -1400,9 +1401,9 @@ It's *self-documenting* and great, keep reading it frequently.
 - indent and continuing comment: @@html:<kbd>@@C-M-j@@html:</kbd>@@
 
 ** Coding system
-	 :PROPERTIES:
-	 :CUSTOM_ID: coding-system
-	 :END:
+   :PROPERTIES:
+   :CUSTOM_ID: coding-system
+   :END:
 
 #+REVEAL: split
 - check current buffer coding system: @@html:<kbd>@@C-x RET
@@ -1490,7 +1491,7 @@ It's *self-documenting* and great, keep reading it frequently.
 #+REVEAL: split
 - switch to buffer other window: @@html:<kbd>@@C-x 4 b@@html:</kbd>@@
 - clone indirect buffer other window:
-	@@html:<kbd>@@C-x 4 c@@html:</kbd>@@, clone the buffer in another window
+  @@html:<kbd>@@C-x 4 c@@html:</kbd>@@, clone the buffer in another window
 - recenter the screen at cursor: @@html:<kbd>@@C-l@@html:</kbd>@@
 - center the screen at the top: @@html:<kbd>@@C-u 0 C-l@@html:</kbd>@@
 - recenter the screen at the bottom: @@html:<kbd>@@C-u - C-l@@html:</kbd>@@
