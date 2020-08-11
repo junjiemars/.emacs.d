@@ -992,6 +992,18 @@ line. See [[https://www.emacswiki.org/emacs/OpenNextLine][Open Next Line]].
 - @@html:<kbd>@@C-o@@html:</kbd>@@ =open-next-line=
 - @@html:<kbd>@@C-M-o@@html:</kbd>@@ =open-previous-line=
 
+*** Comment
+   :PROPERTIES:
+   :CUSTOM_ID: edit-comment
+   :END:
+
+#+ATTR_HTML: :style text-align:left
+=comment-line= has stupid behaviors, that why =toggle-comment= had
+been made.
+
+#+REVEAL: split
+- @@html:<kbd>@@C-x C-;@@html:</kbd>@@ =toggle-comment=
+
 ** Keys
    :PROPERTIES:
    :CUSTOM_ID: keys
@@ -1393,7 +1405,7 @@ It's *self-documenting* and great, keep reading it frequently.
 - count lines on current page: @@html:<kbd>@@C-x l@@html:</kbd>@@
 
 #+REVEAL: split
-- toggle comment the current line or region: @@html:<kbd>@@C-x
+- comment the current line or region: @@html:<kbd>@@C-x
   C-;@@html:</kbd>@@
 - insert or realign comment on current line:
   @@html:<kbd>@@M-;@@html:</kbd>@@
