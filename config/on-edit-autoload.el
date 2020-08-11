@@ -504,21 +504,20 @@ move backwards ARG times if negative."
   "Toggle comment on current line or region."
   (interactive "p")
   (let ((begin (region-active-if (region-beginning)
-                 (if (< n 0)
+                 (if (and (< n 0))
                      (save-excursion
                        (forward-line (1+ n))
                        (line-beginning-position))
                    (line-beginning-position))))
         (end (region-active-if (region-end)
-               (if (> n 0)
+               (if (and (> n 0))
                    (save-excursion
                      (forward-line (1- n))
                      (line-end-position))
                  (line-end-position)))))
     (comment-or-uncomment-region begin end)
-    (forward-line (region-active-if
-                      (if (- (point) (region-beginning)) -1 1)
-                    n))
+    (region-active-unless
+      (forward-line n))
     (beginning-of-line)))
 
 
