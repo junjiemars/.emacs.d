@@ -1004,6 +1004,15 @@ been made.
 #+REVEAL: split
 - @@html:<kbd>@@C-x C-;@@html:</kbd>@@ =toggle-comment=
 
+*** Kill
+   :PROPERTIES:
+   :CUSTOM_ID: edit-kill
+   :END:
+
+#+ATTR_HTML: :style text-align:left
+=kill-whole-word= and =kill-whole-symbol= are frequently editing
+commands when programming.
+
 ** Keys
    :PROPERTIES:
    :CUSTOM_ID: keys

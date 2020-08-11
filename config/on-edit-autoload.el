@@ -458,44 +458,39 @@ See also: `multi-occur-in-matching-buffers'."
 
 ;;; Kill word/symbol/line
 
-(defun kill-whole-word (&optional arg)
+(defun kill-whole-word (&optional n)
   "Kill current word.
 
-With prefix argument ARG, do it ARG times forward if positive, or
-move backwards ARG times if negative."
+With prefix N, do it N times forward if positive, or move
+backwards N times if negative."
   (interactive "p")
   (let ((b (bounds-of-thing-at-point 'word)))
-    (save-excursion
-      (unless b
-        (forward-word (if (>= arg 0) 1 -1))
-        (setq b (bounds-of-thing-at-point 'word))
-        (unless b
-          (user-error* "%s" "No word found"))))
-    (kill-region (goto-char (if (>= arg 0) (car b) (cdr b)))
+    (unless b
+      (save-excursion
+        (forward-word (if (>= n 0) 1 -1)))
+      (setq b (bounds-of-thing-at-point 'word))
+      (unless b (user-error* "%s" "No word found")))
+    (kill-region (goto-char (if (>= n 0) (car b) (cdr b)))
                  (progn
-                   (forward-word arg)
+                   (forward-word n)
                    (point)))))
 
 
-(defun kill-whole-symbol (&optional arg)
+(defun kill-whole-symbol (&optional n)
   "Kill current symbol.
 
-With prefix argument ARG, do it ARG times forward if positive, or
-move backwards ARG times if negative."
+With prefix N, do it N times forward if positive, or move
+backwards N times if negative."
   (interactive "p")
   (let ((b (bounds-of-thing-at-point 'symbol)))
-    (save-excursion
-      (unless b
-        (forward-symbol (if (>= arg 0) 1 -1))
-        (setq b (bounds-of-thing-at-point 'symbol))
-        (unless b
-          (message "%s" (propertize "No symbol found"
-                                    'face
-                                    'font-lock-warning-face))
-          (user-error* "%s" "No symbol found"))))
-    (kill-region (goto-char (if (>= arg 0) (car b) (cdr b)))
+    (unless b
+      (save-excursion
+        (forward-symbol (if (>= n 0) 1 -1)))
+      (setq b (bounds-of-thing-at-point 'symbol))
+      (unless b (user-error* "%s" "No symbol found")))
+    (kill-region (goto-char (if (>= n 0) (car b) (cdr b)))
                  (progn
-                   (forward-symbol arg)
+                   (forward-symbol n)
                    (point)))))
 
  ;; end of kill symbol/word/line
