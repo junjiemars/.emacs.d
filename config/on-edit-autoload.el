@@ -516,8 +516,7 @@ move backwards ARG times if negative."
                      (line-end-position))
                  (line-end-position)))))
     (comment-or-uncomment-region begin end)
-    (region-active-unless
-      (forward-line n))
+    (region-active-unless (forward-line n))
     (beginning-of-line)))
 
 
