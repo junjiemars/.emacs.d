@@ -155,23 +155,24 @@
       (_mark_thing@_ (goto-char (car bounds))
                      (goto-char (cdr bounds))))))
 
-(defun mark-word@ (&optional arg)
+(defun mark-word@ (&optional n)
   "Mark the word at point.
 
-If prefix ARG is non nil, mark word away from point then forward
+If prefix N is non nil, mark word away from point then forward
 or backword to words boundary."
   (interactive "p")
   (let ((bounds (if current-prefix-arg
                     (cons (point)
-                          (progn
-                            (forward-word (if (consp current-prefix-arg)
-                                              1
-                                            arg))
+                          (save-excursion
+                            (forward-word
+                             (if (consp current-prefix-arg)
+                                 1
+                               n))
                             (point)))
                   (bounds-of-thing-at-point 'word))))
     (when bounds
-      (_mark_thing@_ (goto-char (car bounds))
-                     (goto-char (cdr bounds))))))
+      (_mark_thing@_  (goto-char (car bounds))
+                      (goto-char (cdr bounds))))))
 
 (defun mark-line@ (&optional indent)
   "Mark the line at point.
@@ -183,18 +184,19 @@ If prefix INDENT is non-nil mark the indent line."
                    (beginning-of-line))
                  (end-of-line)))
 
-(defun mark-sexp@ (&optional arg)
+(defun mark-sexp@ (&optional n)
   "Mark the sexp at point.
 
-If prefix ARG is non nil, mark sexp away from point then forward
+If prefix N is non nil, mark sexp away from point then forward
 or backword to sexps boundary."
   (interactive "p")
   (let ((bounds (if current-prefix-arg
                     (cons (point)
-                          (progn
-                            (forward-sexp (if (consp current-prefix-arg)
-                                              1
-                                            arg))
+                          (save-excursion
+                            (forward-sexp
+                             (if (consp current-prefix-arg)
+                                 1
+                               n))
                             (point)))
                   (bounds-of-thing-at-point 'list))))
     (when bounds
