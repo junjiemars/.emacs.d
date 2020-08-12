@@ -45,8 +45,7 @@
                             :scripts (han)
                             :allowed nil))
   
-  :shell (list :copy-vars `("PATH"
-                            "LD_LIBRARY_PATH")
+  :shell (list :copy-vars `("PATH")
                :spin-vars nil ;; `(("ZZZ" . "123"))
                :options '("-i" "2>/dev/null") ;; '("--login")
                :exec-path t
