@@ -335,5 +335,8 @@
           (ad-activate #'dired-compress-file t))))))
 
 
+;; autoload
+(autoload 'dired-get-file-for-visit "dired")
+(autoload 'dired-current-directory "dired")
 
  ;; end of file

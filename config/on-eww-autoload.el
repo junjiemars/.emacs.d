@@ -11,6 +11,12 @@
 
 
 (if-feature-eww%
+    (progn
+      (autoload 'browse-url-default-browser "browse-url")
+      (autoload 'browse-url-url-encode-chars "browse-ulr")))
+
+
+(if-feature-eww%
 
     (defun toggle-browser! (&optional arg)
       "Toggle default browser to `eww' or not.
@@ -19,7 +25,8 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
       (interactive "P")
       (setq browse-url-browser-function
             (if (null arg)
-                (if (eq browse-url-browser-function 'browse-url-default-browser)
+                (if (eq browse-url-browser-function
+                        'browse-url-default-browser)
                     #'eww-browse-url
                   #'browse-url-default-browser)
               #'eww-browse-url))
@@ -34,8 +41,6 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
 
     (defun set-eww-mode! ()
       (toggle-truncate-lines nil)))
-
-
 
 
 ;; find web via search engine
@@ -92,12 +97,9 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
                        (cddar *search-engines*))))))
 
 
+;; key
 (define-key% (current-global-map) (kbd "M-s w") #'lookup-web)
 (define-key% (current-global-map) (kbd "C-c f w") #'lookup-web)
-
-
- ;; end of `find-web'
-
 
 
 ;; end of file
