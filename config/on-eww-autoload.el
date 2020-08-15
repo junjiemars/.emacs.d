@@ -11,9 +11,9 @@
 
 
 (if-feature-eww%
-    (progn
-      (autoload 'browse-url-default-browser "browse-url")
-      (autoload 'browse-url-url-encode-chars "browse-ulr")))
+    (autoload 'browse-url-default-browser "browse-url"))
+(if-feature-eww%
+    (autoload 'browse-url-url-encode-chars "browse-ulr"))
 
 
 (if-feature-eww%
@@ -89,9 +89,8 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
 
 (if-feature-eww%
     (with-eval-after-load 'eww
-
       (add-hook 'eww-mode-hook #'set-eww-mode!)
-      (when (car *search-engines*)
+      (when (consp *search-engines*)
         (setq% eww-search-prefix
                (concat (cadar *search-engines*)
                        (cddar *search-engines*))))))
