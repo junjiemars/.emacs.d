@@ -1645,7 +1645,7 @@ It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]].
   /ssh:user|sudo:localhost:/path/to/file@@html:</kbd>@@, such as
   =user@localhost=, here =localhost= means remote host.
 - sudo /localhost/: @@html:<kbd>@@C-x C-f
-  /sudo:user@localhost:/path/to/file@@html:</kbd>@@
+  /sudo:/path/to/file@@html:</kbd>@@
 #+REVEAL: split
 - eshell remote: @@html:<kbd>@@cd
   /ssh:user@host:/path/to/file@@html:</kbd>@@
