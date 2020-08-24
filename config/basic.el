@@ -373,64 +373,6 @@ PREFER (lambda (dir files)...)."
       (setq d (path- d)))))
 
 
-(defmacro shell-command* (command &rest args)
-  "Return a cons cell (code . output) after execute COMMAND in inferior shell.
-
-See `shell-command' and `shell-command-to-string' for details.
-
-If you want to set the environment temporarily that
-shell-command* run in:
- (let ((process-environment (cons \"GREP_OPTIONS=' --color=always'\" 
-                                   process-environment)))
-   (shell-command* \"echo 'a' | grep 'a'\"))"
-  (declare (indent 1))
-  `(with-temp-buffer
-     (cons (call-process shell-file-name nil (current-buffer) nil
-                         shell-command-switch
-                         (mapconcat #'identity
-                                    (cons ,command (list ,@args)) " "))
-           (let ((s (buffer-string)))
-             (if (string= "\n" s) nil s)))))
-
-
-(defmacro executable-find% (command &optional prefer)
-  "Search for COMMAND in %PATH% or $PATH and return the absolute
-file name at compile-time when PREFER is non-nil, otherwise same
-as `executable-find'.
-
-Return nil if no COMMAND found or no PREFER command found.
-Return the first matched one, if multiple COMMANDs had been found
-or the one that `funcall' PREFER returns t.
-"
-  (if prefer
-      (let ((cmd (shell-command* (if-platform% 'windows-nt
-                                     "where"
-                                   "command -v")
-                   (funcall `(lambda () ,command)))))
-        (when (zerop (car cmd))
-          (let* ((ss (cdr cmd))
-                 (path (split-string* ss "\n" t))
-                 (p (cond
-                     ((and (consp path) (functionp prefer))
-                      (catch 'prefer
-                        (dolist* (x path)
-                          (when (funcall prefer
-                                         (shell-quote-argument
-                                          (if-platform% 'windows-nt
-                                              (windows-nt-posix-path x)
-                                            x)))
-                            (throw 'prefer x)))
-                        nil))
-                     ((consp path) (car path))
-                     (t path))))
-            `,(when p (if-platform% 'windows-nt
-                          (windows-nt-posix-path p)
-                        p)))))
-    (let ((path (executable-find (funcall `(lambda () ,command)))))
-      (ignore* prefer)
-      `,path)))
-
-
 (defmacro remote-norm-file (file)
   "Return an identification when FILE specifies a location on a remote system.
 

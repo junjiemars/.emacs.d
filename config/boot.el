@@ -251,6 +251,8 @@ Then evaluate RESULT to get return value, default nil.
        ,@(cdr (cdr spec)))))
 
 
+
+
  ;; end of byte-compiler macro
 
 
@@ -449,7 +451,8 @@ Take effect after restart Emacs.
        ,@body)))
 
 
-(compile! (compile-unit* (self-def-path-ref-> :env-spec)))
+(compile! (compile-unit% (emacs-home* "config/fns.el"))
+          (compile-unit* (self-def-path-ref-> :env-spec)))
 
  ;; end of self-spec macro
 
@@ -457,7 +460,6 @@ Take effect after restart Emacs.
 ;; Load ui, shell, basic env:
 
 (compile! (compile-unit% (emacs-home* "config/graphic.el"))
-          (compile-unit% (emacs-home* "config/fns.el"))
           (compile-unit% (emacs-home* "config/basic.el"))
           (compile-unit% (emacs-home* "config/sockets.el"))
           (compile-unit% (emacs-home* "config/shells.el")))
