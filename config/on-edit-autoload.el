@@ -547,7 +547,7 @@ backwards N times if negative."
 (define-key% (current-global-map) (kbd "C-M-h") #'mark-defun@)
 
 ;; comment
-(define-key% (current-global-map) (kbd "C-x C-;") #'toggle-comment)
+(define-key% (current-global-map) (kbd "C-x M-;") #'toggle-comment)
 
 
 
