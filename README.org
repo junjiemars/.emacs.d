@@ -1355,9 +1355,9 @@ It's *self-documenting* and great, keep reading it frequently.
 
 #+REVAL: split
 - kill word: @@html:<kbd>@@M-d@@html:</kbd>@@
-- kill /whole word/: @@html:<kbd>@@C-c k w@@html:</kbd>@@, include the
+- kill /whole word/: @@html:<kbd>@@C-x M-d@@html:</kbd>@@, include the
   word that current point located.
-- kill /whole symbol/: @@html:<kbd>@@C-c k s@@html:</kbd>@@, include
+- kill /whole symbol/: @@html:<kbd>@@C-x M-s@@html:</kbd>@@, include
   the symbol that current point located.
 - kill /line/: @@html:<kbd>@@C-k@@html:</kbd>@@
 - kill /whole/ line: @@html:<kbd>@@C-x M-<backspace>@@html:</kbd>@@

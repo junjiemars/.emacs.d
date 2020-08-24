@@ -464,16 +464,17 @@ See also: `multi-occur-in-matching-buffers'."
 With prefix N, do it N times forward if positive, or move
 backwards N times if negative."
   (interactive "p")
-  (let ((b (bounds-of-thing-at-point 'word)))
-    (unless b
-      (save-excursion
-        (forward-word (if (>= n 0) 1 -1)))
-      (setq b (bounds-of-thing-at-point 'word))
-      (unless b (user-error* "%s" "No word found")))
-    (kill-region (goto-char (if (>= n 0) (car b) (cdr b)))
-                 (progn
-                   (forward-word n)
-                   (point)))))
+  (kill-region (goto-char
+                (let ((b (bounds-of-thing-at-point 'word)))
+                  (unless b
+                    (save-excursion
+                      (forward-word (if (>= n 0) 1 -1)))
+                    (setq b (bounds-of-thing-at-point 'word))
+                    (unless b (user-error* "%s" "No word found")))
+                  (if (>= n 0) (car b) (cdr b))))
+               (progn
+                 (forward-word n)
+                 (point))))
 
 
 (defun kill-whole-symbol (&optional n)
@@ -482,16 +483,17 @@ backwards N times if negative."
 With prefix N, do it N times forward if positive, or move
 backwards N times if negative."
   (interactive "p")
-  (let ((b (bounds-of-thing-at-point 'symbol)))
-    (unless b
-      (save-excursion
-        (forward-symbol (if (>= n 0) 1 -1)))
-      (setq b (bounds-of-thing-at-point 'symbol))
-      (unless b (user-error* "%s" "No symbol found")))
-    (kill-region (goto-char (if (>= n 0) (car b) (cdr b)))
-                 (progn
-                   (forward-symbol n)
-                   (point)))))
+  (kill-region (goto-char
+                (let ((b (bounds-of-thing-at-point 'symbol)))
+                  (unless b
+                    (save-excursion
+                      (forward-symbol (if (>= n 0) 1 -1)))
+                    (setq b (bounds-of-thing-at-point 'symbol))
+                    (unless b (user-error* "%s" "No symbol found")))
+                  (if (>= n 0) (car b) (cdr b))))
+               (progn
+                 (forward-symbol n)
+                 (point))))
 
  ;; end of kill symbol/word/line
 
@@ -531,8 +533,8 @@ backwards N times if negative."
 (define-key% (current-global-map) (kbd "C-o") #'open-next-line)
 (define-key% (current-global-map) (kbd "C-M-o") #'open-previous-line)
 
-(define-key% (current-global-map) (kbd "C-c k w") #'kill-whole-word)
-(define-key% (current-global-map) (kbd "C-c k s") #'kill-whole-symbol)
+(define-key% (current-global-map) (kbd "C-x M-d") #'kill-whole-word)
+(define-key% (current-global-map) (kbd "C-x M-s") #'kill-whole-symbol)
 (define-key% (current-global-map) (kbd "C-x M-DEL") #'kill-whole-line)
 
 ;; Mark
