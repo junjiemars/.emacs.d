@@ -510,9 +510,9 @@ default.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
+
 (def-self-env-spec
-  :shell (list :copy-vars `("PATH"
-                            "LD_LIBRARY_PATH")
+  :shell (list :copy-vars `("PATH")
                :spin-vars nil ;; `(("ZZZ" . "123"))
                :options '("-i" "2>/dev/null") ;; '("--login")
                :exec-path t
@@ -531,7 +531,7 @@ default.
 - =:shell-file-name= where the shell program located, it should be
   specified when =:copy-vars= is non nil
 - =:prompt= unify shell prompt in =term= mode, via @@html:<kbd>@@C-c
-  j@@html:</kbd>@@ then @@html:<kbd>C-c t p@@html:</kbd>@@
+  C-j@@html:</kbd>@@ then @@html:<kbd>C-c t p@@html:</kbd>@@
 - =:allowed= =t= allowed, =nil= disabled
 
 *** eshell
