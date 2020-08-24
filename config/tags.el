@@ -300,4 +300,19 @@ Example:
  ;; end of go into `view-mode'
 
 
+(unless-fn% 'xref-find-references 'xref
+
+  (defun xref-find-references (what)
+    "Alias of `tags-apropos'."
+    (interactive
+     (list (read-string "Find references of: "
+                        (cdr (symbol@ 'symbol)))))
+    (tags-apropos what)))
+
+
+
+
 (provide 'tags)
+
+
+;; eof

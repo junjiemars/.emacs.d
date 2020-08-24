@@ -83,19 +83,18 @@
         (kbd "C-c }") #'paredit-forward-barf-sexp)
       (define-key% paredit-mode-map
         (kbd "C-c {") #'paredit-backward-barf-sexp)
+      ;; default `paredit-convolute-sexp' keybinding `M-?' conflicts with
+      ;; `xref-find-references'
       (define-key% paredit-mode-map
         (kbd "C-c ?") #'paredit-convolute-sexp)
+      (define-key% paredit-mode-map
+        (kbd "M-?") #'xref-find-references)
       ;; default `paredit-splice-sexp' keybinding `M-s' conflicts with
       ;; `isearch' command prefix.
       (define-key% paredit-mode-map
         (kbd "M-s") nil)
       (define-key% paredit-mode-map
-        (kbd "C-c -") #'paredit-splice-sexp)
-      (when-fn% 'xref-find-references 'xref
-        ;; default `paredit-convolute-sexp' keybinding `M-?' conflicts with
-        ;; `xref-find-references'
-        (define-key paredit-mode-map
-          (kbd "M-?") #'xref-find-references)))))
+        (kbd "C-c -") #'paredit-splice-sexp))))
 
 
  ;; end of feature: paredit
