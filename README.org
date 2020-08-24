@@ -671,7 +671,7 @@ whatever OS you using:
 #+ATTR_HTML: :style text-align:left
 Don't tell me [[https://github.com/jwiegley/use-package][use-package]], it's trying to redefine Emacs. Here you can
 find more simpler and faster way to implement almost functionalities
-that =use-pacakge= does.
+that =use-pacakge= does and more.
 
 #+ATTR_HTML: :style text-align:left
 There are two types of packages: /basic/ (just like Emacs' builtin)
@@ -686,6 +686,13 @@ packages can be done in =(def-self-env-spec)=.
                  :package-check-signature 'allow-unsigned
                  :allowed nil))
 #+END_SRC
+
+#+REVEAL: split
+- =:remove-unused= whether remove the unused packages that be defined
+  in =def-self-package-spec=
+- =:package-check-signature= =nil= does not check signature when
+  installing packages.
+- =:allowed= =t= enabled, =nil= disabled
 
 #+ATTR_HTML: :style text-align:left
 The /user defined/ package spec default locate in =(emacs-home*
