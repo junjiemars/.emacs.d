@@ -533,8 +533,7 @@ backwards N times if negative."
 
 (define-key% (current-global-map) (kbd "C-c k w") #'kill-whole-word)
 (define-key% (current-global-map) (kbd "C-c k s") #'kill-whole-symbol)
-;; `C-S-backspace' may not work in terminal
-(define-key% (current-global-map) (kbd "C-c k l") #'kill-whole-line)
+(define-key% (current-global-map) (kbd "C-x M-DEL") #'kill-whole-line)
 
 ;; Mark
 (define-key% (current-global-map) (kbd "C-c m s") #'mark-symbol@)

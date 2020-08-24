@@ -1360,8 +1360,7 @@ It's *self-documenting* and great, keep reading it frequently.
 - kill /whole symbol/: @@html:<kbd>@@C-c k s@@html:</kbd>@@, include
   the symbol that current point located.
 - kill /line/: @@html:<kbd>@@C-k@@html:</kbd>@@
-- kill /whole/ line: @@html:<kbd>@@C-S-<backspace>@@html:</kbd>@@ or
-  @@html:<kbd>@@C-c k l@@html:</kbd>@@
+- kill /whole/ line: @@html:<kbd>@@C-x M-<backspace>@@html:</kbd>@@
 
 #+REVEAL: split
 - dynamic abbreviation: @@html:<kbd>@@M-/@@html:</kbd>@@
