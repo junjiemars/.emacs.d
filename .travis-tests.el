@@ -344,17 +344,6 @@
                    (when (member** x std :test #'string=)
                      (setq count (1+ count))))))))
 
-(ert-deftest %basic:executable-find% ()
-  (if-platform% 'windows-nt
-      (should (executable-find% "dir"))
-    (should (executable-find% "ls"))
-    (should (executable-find% (concat "l" "s")))
-    (should (executable-find% "ls"
-                              (lambda (ls)
-                                (let ((x (shell-command* "sh"
-                                           "--version")))
-                                  (car x)))))))
-
 (when-platform% 'windows-nt
   (ert-deftest %basic:windows-posix-path ()
     (should-not (windows-nt-posix-path nil))
@@ -599,6 +588,16 @@
   (should (string= "abc"
                    (match-string* "XX\\(abc\\)XX" "XXabcXX" 1))))
 
+(ert-deftest %fns:executable-find% ()
+  (if-platform% 'windows-nt
+      (should (executable-find% "dir"))
+    (should (executable-find% "ls"))
+    (should (executable-find% (concat "l" "s")))
+    (should (executable-find% "ls"
+                              (lambda (ls)
+                                (let ((x (shell-command* "sh"
+                                           "--version")))
+                                  (car x)))))))
 
  ;; end of fns
 

@@ -516,7 +516,7 @@ default.
                :spin-vars nil ;; `(("ZZZ" . "123"))
                :options '("-i" "2>/dev/null") ;; '("--login")
                :exec-path t
-               :shell-file-name (eval-when-compile (executable-find "bash"))
+               :shell-file-name (executable-find% "bash")
                :prompt (list :zsh "%n@%m:%~ %# "
                              :bash "\\u@\\h:\\w\\$ ")
                :allowed nil))
