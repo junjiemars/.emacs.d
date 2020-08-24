@@ -171,7 +171,7 @@ features, such as themes, packages, and fonts etc., see next section:
    :END:
 
 #+ATTR_HTML: :style text-align:left
- Annotated your Emacs HOME as =(emacs-home*)=.
+Annotated your Emacs HOME as =(emacs-home*)=.
 
 #+ATTR_HTML: :style text-align:left
 Your private configuration directory at =(emacs-home* "private/")=.
@@ -205,18 +205,17 @@ reopen the Emacs.
 Locate your spec via =(emacs-home* "private/self-path.el")=.
 
 #+BEGIN_SRC emacs-lisp
-    ;; Run order: :env-spec -> :prologue -> :package-spec -> :epilogue
-    ;; You can point to your Gited Emacs' configuration repo.
-    ;; Default samples `self-*.el' in `(emacs-home* "private/")' directory.
-    ;; :epilogue run in `after-init-hook'
+;; Run order: :env-spec -> :prologue -> :package-spec -> :epilogue
+;; You can point to your Gited Emacs' configuration repo.
+;; Default samples `sample-self-*.el' in `(emacs-home* "config/")' directory.
+;; :epilogue run in `after-init-hook'
 
 
-    (def-self-path-ref
-      :env-spec (emacs-home* "private/self-env-spec.el")
-      :prologue (comment (emacs-home* "private/self-prologue.el"))
-      :package-spec (comment (emacs-home* "private/self-package-spec.el"))
-      :epilogue (comment (emacs-home* "private/self-epilogue.el")))
-      
+(def-self-path-ref
+  :env-spec (emacs-home* "private/self-env-spec.el")
+  :prologue (comment (emacs-home* "private/self-prologue.el"))
+  :package-spec (comment (emacs-home* "private/self-package-spec.el"))
+  :epilogue (comment (emacs-home* "private/self-epilogue.el")))
 #+END_SRC
 
 #+REVEAL: split
