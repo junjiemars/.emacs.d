@@ -9,4 +9,4 @@ env:
   - SHELL=bash
 
 script:
-  - ./.travis-tests.sh
+  - ./.test.sh

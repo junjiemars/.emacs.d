@@ -5,7 +5,7 @@ EMACS="${EMACS:-emacs}"
 
 # emacs --batch \
 # 			-l init.el \
-# 			-l .travis-tests.el \
+# 			-l .test.el \
 # 			-f ert-run-tests-batch-and-exit
 
 emacs --batch \
