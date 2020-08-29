@@ -496,25 +496,6 @@ backwards N times if negative."
                  (point))))
 
 
-(defun kill-line* (&optional n)
-  "Kill current line.
-
-With prefix N, do it N times forward if positive, or move
-backwards N times if negative."
-  (interactive "p")
-  (let ((pre (point)))
-    (kill-region pre
-                 (save-excursion
-                   (forward-line (if (> n 0) (- n 1) n))
-                   (if (>= n 0) (end-of-line) (beginning-of-line))
-                   (point)))
-    (if (>= n 0)
-        (progn
-          (indent-according-to-mode)    
-          (goto-char pre))
-      (back-to-indentation))))
-
-
  ;; end of kill symbol/word/line
 
 
