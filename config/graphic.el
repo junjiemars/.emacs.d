@@ -29,10 +29,11 @@
 
 (when-graphic%
   (when (self-spec->*env-spec :frame :allowed)
-    (when (self-spec->*env-spec :frame :fullscreen)
-      (add-to-list 'default-frame-alist
-                   (cons 'fullscreen
-                         (self-spec->*env-spec :frame :fullscreen))))))
+    (add-to-list 'default-frame-alist
+                 (cons 'fullscreen
+                       (self-spec->*env-spec :frame :fullscreen)))
+    (setq frame-resize-pixelwise
+          (self-spec->*env-spec :frame :frame-resize-pixelwise))))
 
  ;; end of Frame
 

@@ -19,6 +19,7 @@
                :allowed t)
 
   :frame (list :fullscreen 'fullheight
+               :frame-resize-pixelwise t
                :allowed t)
 
   :font (list :name (if-platform% 'darwin
