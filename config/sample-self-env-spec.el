@@ -4,7 +4,7 @@
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
 ;; sample-self-env-spec.el: specify the private environment specs
-;; 
+;;
 ;;;;
 
 
@@ -16,6 +16,9 @@
   :theme (list :name 'dracula
                :custom-theme-directory (emacs-home* "theme/")
                :compile nil ;; expert option
+               :allowed t)
+
+  :frame (list :fullscreen 'fullheight
                :allowed t)
 
   :font (list :name (if-platform% 'darwin

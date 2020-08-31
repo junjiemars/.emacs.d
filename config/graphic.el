@@ -25,6 +25,18 @@
  ;; end of basic UI
 
 
+;; Frame
+
+(when-graphic%
+  (when (self-spec->*env-spec :frame :allowed)
+    (when (self-spec->*env-spec :frame :fullscreen)
+      (add-to-list 'default-frame-alist
+                   (cons 'fullscreen
+                         (self-spec->*env-spec :frame :fullscreen))))))
+
+ ;; end of Frame
+
+
 ;; Theme and Font
 
 (defmacro when-theme% (&rest body)
