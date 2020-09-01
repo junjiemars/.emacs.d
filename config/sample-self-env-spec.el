@@ -18,9 +18,10 @@
                :compile nil ;; expert option
                :allowed t)
 
-  :frame (list :fullscreen 'fullheight
+  :frame (list :initial `((fullscreen . fullheight))
+               :default nil
                :frame-resize-pixelwise t
-               :allowed t)
+               :allowed nil)
 
   :font (list :name (if-platform% 'darwin
                         "Monaco"

@@ -29,9 +29,12 @@
 
 (when-graphic%
   (when (self-spec->*env-spec :frame :allowed)
-    (add-to-list 'default-frame-alist
-                 (cons 'fullscreen
-                       (self-spec->*env-spec :frame :fullscreen)))
+    (mapc (lambda (x)
+            (add-to-list 'initial-frame-alist x))
+          (self-spec->*env-spec :frame :initial))
+    (mapc (lambda (x)
+            (add-to-list 'default-frame-alist x))
+          (self-spec->*env-spec :frame :default))
     (setq frame-resize-pixelwise
           (self-spec->*env-spec :frame :frame-resize-pixelwise))))
 
