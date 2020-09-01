@@ -19,17 +19,13 @@
                :allowed t)
 
   :frame (list :initial `((fullscreen . fullheight))
-               :default nil
+               :default `((font . ,(if-platform% 'darwin
+                                       "Monaco-17"
+                                     (if-platform% 'windows-nt
+                                         "Consolas-13"
+                                       "DejaVu Sans Mono-14"))))
                :frame-resize-pixelwise t
                :allowed nil)
-
-  :font (list :name (if-platform% 'darwin
-                        "Monaco"
-                      (if-platform% 'windows-nt
-                          "Consolas"
-                        "DejaVu Sans Mono"))
-              :size 17
-              :allowed nil)
 
   :glyph-font (list `(:name ,(if-platform% 'darwin
                                  "Hack"

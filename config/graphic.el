@@ -7,7 +7,7 @@
 ;;;;
 
 
-;; basic UI
+;;; basic UI
 
 ;; Disable menu bar
 (when-fn%  'menu-bar-mode nil (menu-bar-mode -1))
@@ -25,23 +25,7 @@
  ;; end of basic UI
 
 
-;; Frame
-
-(when-graphic%
-  (when (self-spec->*env-spec :frame :allowed)
-    (mapc (lambda (x)
-            (add-to-list 'initial-frame-alist x))
-          (self-spec->*env-spec :frame :initial))
-    (mapc (lambda (x)
-            (add-to-list 'default-frame-alist x))
-          (self-spec->*env-spec :frame :default))
-    (setq frame-resize-pixelwise
-          (self-spec->*env-spec :frame :frame-resize-pixelwise))))
-
- ;; end of Frame
-
-
-;; Theme and Font
+;;; basic macro
 
 (defmacro when-theme% (&rest body)
   (declare (indent 0))
@@ -55,38 +39,28 @@
   `(when-graphic%
      ,@body))
 
-;; font supported
-
-;; (when-font%
-
-;;   (defmacro when-font-exist% (font &rest body)
-;;     "If FONT exists then do BODY."
-;;     (declare (indent 1))
-;;     `(when% (and ,font (find-font (font-spec :name ,font)))
-;;        ,@body)))
-
-(when-font%
-  
-  (defmacro self-default-font! (name size)
-    "Set default font by NAME and SIZE in graphic mode."
-    ;; `(when-font-exist% ,name)
-    `(when (and (numberp ,size) (> ,size 0))
-       (let ((font (format "%s-%s" ,name ,size)))
-         (add-to-list 'default-frame-alist
-                      (cons 'font font))
-         (set-face-attribute 'default nil :font font)))))
-
-(when-font%
-  
-  ;; Load default font
-  (when (self-spec->*env-spec :font :allowed)
-    (self-default-font! (self-spec->*env-spec :font :name)
-                        (self-spec->*env-spec :font :size))))
+ ;; end of when-* macro
 
 
- ;; end of when-font%
+;; Frame
 
-;; theme supported
+(when-graphic%
+  (when (self-spec->*env-spec :frame :allowed)
+    (mapc (lambda (x)
+            (add-to-list 'initial-frame-alist x))
+          (self-spec->*env-spec :frame :initial))
+    (mapc (lambda (x)
+            (add-to-list 'default-frame-alist x)
+            (when (eq 'font (car x))
+              (set-face-attribute 'default nil :font (cdr x))))
+          (self-spec->*env-spec :frame :default))
+    (setq frame-resize-pixelwise
+          (self-spec->*env-spec :frame :frame-resize-pixelwise))))
+
+ ;; end of Frame
+
+
+;; Theme
 
 (when-theme%
 
