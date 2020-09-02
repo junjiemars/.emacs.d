@@ -27,24 +27,24 @@
                :frame-resize-pixelwise t
                :allowed nil)
 
-  :glyph-font (list `(:name ,(if-platform% 'darwin
-                                 "Hack"
-                               (if-platform% 'windows-nt
-                                   "Courier New"
-                                 "DejaVu Sans Mono"))
-                            :size 17
-                            :scale nil
-                            :scripts (greek)
-                            :allowed nil)
-                    `(:name ,(if-platform% 'darwin
-                                 "PingFang"
-                               (if-platform% 'windows-nt
-                                   "Microsoft YaHei"
-                                 "Noto Sans"))
-                            :size 12
-                            :scale nil
-                            :scripts (han)
-                            :allowed nil))
+  :glyph (list `(:name ,(if-platform% 'darwin
+                            "Hack"
+                          (if-platform% 'windows-nt
+                              "Courier New"
+                            "DejaVu Sans Mono"))
+                       :size 17
+                       :scale nil
+                       :scripts (greek)
+                       :allowed nil)
+               `(:name ,(if-platform% 'darwin
+                            "PingFang"
+                          (if-platform% 'windows-nt
+                              "Microsoft YaHei"
+                            "Noto Sans"))
+                       :size 12
+                       :scale nil
+                       :scripts (han)
+                       :allowed nil))
   
   :shell (list :copy-vars `("PATH")
                :spin-vars nil ;; `(("ZZZ" . "123"))

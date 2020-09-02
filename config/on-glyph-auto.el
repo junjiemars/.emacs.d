@@ -49,7 +49,7 @@
                          (/ (* w1 (or (and (numberp scale) (> scale 0) scale)
                                       1))
                             (+ w2 0.0))))))))))
-      (self-spec->*env-spec :glyph-font))
+      (self-spec->*env-spec :glyph))
 
 
 

@@ -40,7 +40,7 @@
     (compile-unit% (emacs-home* "config/on-window-autoload.el"))
 
     (when-font%
-      (compile-unit% (emacs-home* "config/on-font-autoload.el")))
+      (compile-unit% (emacs-home* "config/on-glyph-autoload.el")))
 
     (if-feature-semantic%
         (progn
