@@ -112,10 +112,11 @@
 
  ;; end of init
 
+;;;;
+;; boot
+;;;;
 
-;;; strap
-
-(ert-deftest %strap:if/when/unless-lexical% ()
+(ert-deftest %boot:if/when/unless-lexical% ()
   (if (if-lexical% t nil)
       (should (and (when-lexical% t)
                    (not (unless-lexical% t))
@@ -128,7 +129,7 @@
                         (macroexpand '(unless-lexical%
                                         (+ 1 2) (* 3 4))))))))
 
-(ert-deftest %strap:if/when/unless-graphic% ()
+(ert-deftest %boot:if/when/unless-graphic% ()
   (if (if-graphic% t nil)
       (should (and (when-graphic% t)
                    (not (unless-graphic% t))
@@ -141,11 +142,11 @@
                         (macroexpand '(unless-graphic%
                                         (+ 1 2) (* 3 4))))))))
 
-(ert-deftest %strap:when-version% ()
+(ert-deftest %boot:when-version% ()
   (should (when-version% < 0 t))
   (should (not (when-version% < 1000 t))))
 
-(ert-deftest %strap:if/when/unless-platform% ()
+(ert-deftest %boot:if/when/unless-platform% ()
   (cond ((if-platform% 'darwin t)
          (should (and (when-platform% 'darwin t)
                       (not (unless-platform% 'darwin t)))))
@@ -156,13 +157,13 @@
          (should (and (when-platform% 'windows-nt t)
                       (not (unless-platform% 'windows-nt t)))))))
 
-(ert-deftest %strap:setq% ()
+(ert-deftest %boot:setq% ()
   "uncompleted..."
   (when% t
     (should-not (setq% zzz 'xx))
     (should-not (setq% zzz nil))))
 
-(ert-deftest %strap:if/when/unless-fn% ()
+(ert-deftest %boot:if/when/unless-fn% ()
   (should (and (if-fn% 'should 'ert t)
                (when-fn% 'should 'ert t)
                (not (unless-fn% 'should 'ert t))))
@@ -171,17 +172,17 @@
   (should (equal '(progn (+ 1 2) (* 3 4))
                  (macroexpand '(unless-fn% 'shouldxxx 'ert (+ 1 2) (* 3 4))))))
 
-(ert-deftest %strap:if/when-var% ()
+(ert-deftest %boot:if/when-var% ()
   (should (and (if-var% ert-batch-backtrace-right-margin 'ert t)
                (when-var% ert-batch-backtrace-right-margin 'ert t)
                (not (when-var% ert-batch-backtrace-right-marginxxx 'ert t)))))
 
-(ert-deftest %strap:ignore* ()
+(ert-deftest %boot:ignore* ()
   (if-lexical%
       (should-not (macroexpand '(ignore* a b)))
     (should-not (macroexpand '(ignore* a b)))))
 
-(ert-deftest %strap:dolist* ()
+(ert-deftest %boot:dolist* ()
   (should (equal '(a nil b c)
                  (let ((lst nil))
                    (dolist* (x '(a nil b c) (nreverse lst))
@@ -190,19 +191,18 @@
             (dolist* (x '(a b c))
               (when (eq 'b x) (throw 'found t))))))
 
-(ert-deftest %strap:defmacro-if-feature% ()
+(ert-deftest %boot:defmacro-if-feature% ()
   (defmacro-if-feature% ert "just for ert test.")
   (defmacro-if-feature% ertxxx "just for negative ert test.")
   (should (= 3 (if-feature-ert% (+ 1 2) (* 3 4))))
   (should (= 12 (if-feature-ertxxx% (+ 1 2) (* 3 4)))))
 
 
- ;; end of init
+ ;; end of boot
 
-
-;;; basic
-
-
+;;;;
+;; basic
+;;;;
 
 (ert-deftest %basic:buffer-file-name* ()
   (should (null (buffer-file-name* (get-buffer "*scratch*")))))
@@ -398,8 +398,9 @@
 
  ;; end of basic
 
-
-;;; shells
+;;;;
+;; shells
+;;;;
 
 (ert-deftest %shells:shells-spec->% ()
   (should (= 8 (length (shells-spec->%))))
@@ -550,6 +551,11 @@
   (should (some* #'characterp "abc"))
   (should (some* #'< '(1 2 3) '(1 2 4)))
   (should-not (some* #'< '(1 2 3) '(1 2 3))))
+
+(ert-deftest %fns:loop* ()
+  (should (string= "c" (loop* for x in (list "a" "b" "c" "d")
+                              do (when (string= "c" x)
+                                   (return x))))))
 
 (ert-deftest %fns:split-string* ()
   (should (equal '("a" "b" "c")

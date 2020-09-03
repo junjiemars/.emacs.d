@@ -194,68 +194,6 @@ Return the value of BODY if no error happens."
  ;; end of var compile-time checking macro
 
 
-;; byte-compiler macro
-
-
-(defmacro ignore* (&rest vars)
-  "Return nil, list VARS at compile time if in lexical context."
-  (declare (indent 0))
-  (when-lexical%
-    `(when% lexical-binding
-       (progn% ,@vars nil))))
-
-
-(defmacro defmacro-if-feature% (feature &optional docstring)
-  "Define if-FEATURE% compile-time macro."
-  (let ((name (intern (format "if-feature-%s%%" feature)))
-        (ds1 (format "If has `%s' feauture do THEN, otherwise do BODY."
-                     feature)))
-    `(defmacro ,name (then &rest body)
-       ,(or docstring ds1)
-       (declare (indent 1))
-       (if% (require ',feature nil t)
-           `(progn% (comment ,@body)
-                    ,then)
-         `(progn% (comment ,then)
-                  ,@body)))))
-
-
-(defmacro make-thread* (sexp &optional join name)
-  "Make SEXP as threading call."
-  `(if-fn% 'make-thread nil
-           (let ((thread (make-thread (lambda () ,sexp) ,name)))
-             (if% ,join
-                 (thread-join thread)
-               thread))
-     (ignore* ,join ,name)
-     (funcall (lambda () ,sexp))))
-
-
-(defmacro dolist* (spec &rest body)
-  "Loop over a list.
-Evaluate BODY with VAR bound to each car from LIST, in turn.
-Then evaluate RESULT to get return value, default nil.
-
- (dolist* (VAR LIST [RESULT]) BODY...)"
-  (declare (indent 1) (debug ((symbolp form &optional form) body)))
-  (unless (consp spec)
-    (signal 'wrong-type-argument (list 'consp spec)))
-  (unless (and (<= 2 (length spec)) (<= (length spec) 3))
-    (signal 'wrong-number-of-arguments (list '(2 . 3) (length spec))))
-  (let ((lst (gensym*)))
-    `(lexical-let% ((,lst ,(nth 1 spec)))
-       (while ,lst
-         (let ((,(car spec) (car ,lst)))
-           ,@body
-           (setq ,lst (cdr ,lst))))
-       ,@(cdr (cdr spec)))))
-
-
-
-
- ;; end of byte-compiler macro
-
-
 ;; Preferred coding system
 (prefer-coding-system 'utf-8)
 
