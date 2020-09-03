@@ -167,6 +167,14 @@ Return the sublist of LIST whose car is ITEM.
       `(with-no-warnings
          (some ,pred ,@seq)))))
 
+(defmacro loop* (&rest loop-args)
+  "The Common Lisp `loop' macro."
+  (if-fn% 'cl-loop 'cl-lib
+          `(cl-loop ,@loop-args)
+    (when-fn% 'loop 'cl
+      `(with-no-warnings
+         (loop ,@loop-args)))))
+
 
 ;; Strings
 

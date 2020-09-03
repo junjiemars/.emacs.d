@@ -88,9 +88,9 @@ in `gud-lldb-directories'.
 "
   (or (let ((f (expand-file-name filename)))
         (when (file-exists-p f) f))
-      (loop for d in gud-lldb-directories
-            do (let ((p (concat d "/" filename)))
-                 (when (file-exists-p p) (return p))))))
+      (loop* for d in gud-lldb-directories
+             do (let ((p (concat d "/" filename)))
+                  (when (file-exists-p p) (return p))))))
 
 
 (defmacro lldb-settings (subcommand &rest args)
@@ -158,8 +158,8 @@ a tag name, or something else."
 The job of the massage-args method is to modify the given list of
 debugger arguments before running the debugger."
   (ignore* file)
-  (append (loop for x in gud-lldb-command-line-hook
-                when (functionp x) append (funcall x)) args))
+  (append (loop* for x in gud-lldb-command-line-hook
+                 when (functionp x) append (funcall x)) args))
 
 
 (defun gud-lldb-marker-filter (string)
@@ -238,7 +238,7 @@ directory and source-file directory for your debugger."
   (set (make-local-variable 'paragraph-separate) "\\'")
   (set (make-local-variable 'paragraph-start) +lldb-prompt-regexp+)
 
-  (loop for x in gud-lldb-init-hook when (functionp x) do (funcall x))
+  (loop* for x in gud-lldb-init-hook when (functionp x) do (funcall x))
   (setq gud-running nil)
   (setq gud-filter-pending-text nil)
   (run-hooks 'lldb-mode-hook))
