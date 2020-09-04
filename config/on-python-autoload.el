@@ -49,18 +49,22 @@ Outside a virtualenv, sys.real_prefix should not exist."
 (with-eval-after-load 'python
 
   (when-var% python-shell-completion-native-enable 'python
-    (when% (executable-find% python-shell-interpreter)
-      (setq python-shell-completion-native-enable
-            (eval-when-compile
-              (require 'python)
-              (run-python)
-              (let ((p (get-buffer "*Python*")))
-                (when p
-                  (with-current-buffer p
-                    (prog1 (python-shell-completion-native-try)
-                      (let ((kill-buffer-query-functions nil))
-                        (kill-buffer p))))))))))
-  
+    (setq python-shell-completion-native-enable
+          (when-platform% 'gnu/linux t))
+    (comment
+     ;; `python-shell-completion-native-try' has bugs in Emacs 27+
+     (when% (executable-find% python-shell-interpreter)
+       (setq python-shell-completion-native-enable
+             (eval-when-compile
+               (require 'python)
+               (run-python)
+               (let ((p (get-buffer "*Python*")))
+                 (when p
+                   (with-current-buffer p
+                     (prog1 (python-shell-completion-native-try)
+                       (let ((kill-buffer-query-functions nil))
+                         (kill-buffer p)))))))))))
+
   (when-var% python-mode-map 'python
     ;; on ancient Emacs `(kbd "C-c C-p")' bind to `python-previous-statement'
     (define-key% python-mode-map (kbd "C-c C-p") #'run-python)))

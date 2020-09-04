@@ -40,19 +40,6 @@ otherwise do ELSE..."
   (declare (indent 0))
   `(if-lexical% nil ,@body))
 
-(defmacro lexical-let% (varlist &rest body)
-  "Like `let', but lexically scoped."
-  (declare (indent 1) (debug let))
-  `(when-fn% 'lexical-let 'cl
-     (lexical-let ,varlist ,@body)))
-
-(defmacro lexical-let*% (varlist &rest body)
-  "Like `let*', but lexically scoped."
-  (declare (indent 1) (debug let))
-  `(when-fn% 'lexical-let* 'cl
-     (lexical-let* ,varlist ,@body)))
-
-
 ;; Let `lexical-binding' var safe under Emacs24.1-
 (unless-lexical%
   (put 'lexical-binding 'safe-local-variable (lambda (_) t)))

@@ -69,6 +69,25 @@ item for which (PRED item) returns t."
     (require 'cl)))
 
 
+(defmacro lexical-let% (varlist &rest body)
+  "Like `let', but lexically scoped."
+  (declare (indent 1) (debug let))
+  `(if-lexical%
+       (let ((lexical-binding t))
+         (let ,varlist ,@body))
+     (when-fn% 'lexical-let 'cl
+       (lexical-let ,varlist ,@body))))
+
+(defmacro lexical-let*% (varlist &rest body)
+  "Like `let*', but lexically scoped."
+  (declare (indent 1) (debug let))
+  `(if-lexical%
+       `(let ((lexical-binding t))
+          (let ,varlist ,@body))
+     (when-fn% 'lexical-let* 'cl
+       (lexical-let* ,varlist ,@body))))
+
+
 (defmacro assoc** (key list &optional testfn)
   "Return non-nil if KEY is equal to the `car' of an element of LIST.
 
