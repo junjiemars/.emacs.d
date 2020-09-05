@@ -254,26 +254,19 @@ Return the value of BODY if no error happens."
 ;; self-def macro
 ;;;;
 
-(defsubst self-def-files! ()
-  "Returns the path of `(emacs-home* \"private/\" \"self-path.el\")' and make self-*.el files."
-  (let ((fs `(,(cons (emacs-home* "private/self-path.el")
-                     (emacs-home* "config/sample-self-path.el"))
-              ,(cons (emacs-home* "private/self-env-spec.el")
-                     (emacs-home* "config/sample-self-env-spec.el"))
-              ,(cons (emacs-home* "private/self-package-spec.el")
-                     (emacs-home* "config/sample-self-package-spec.el"))
-              ,(cons (emacs-home* "private/self-prologue.el")
-                     (emacs-home* "config/sample-self-prologue.el"))
-              ,(cons (emacs-home* "private/self-epilogue.el")
-                     (emacs-home* "config/sample-self-epilogue.el")))))
-    (unless (file-exists-p (caar fs))
-      (make-directory `,(emacs-home* "private/") t)
-      (mapc (lambda (f)
-              (let ((dst (car f)) (src (cdr f)))
-                (unless (file-exists-p dst)
-                  (copy-file src dst t))))
-            fs))
-    (caar fs)))
+
+(defconst +self-def-where+
+  `( ,(cons (emacs-home* "private/self-path.el")
+            (emacs-home* "config/sample-self-path.el"))
+     ,(cons (emacs-home* "private/self-env-spec.el")
+            (emacs-home* "config/sample-self-env-spec.el"))
+     ,(cons (emacs-home* "private/self-package-spec.el")
+            (emacs-home* "config/sample-self-package-spec.el"))
+     ,(cons (emacs-home* "private/self-prologue.el")
+            (emacs-home* "config/sample-self-prologue.el"))
+     ,(cons (emacs-home* "private/self-epilogue.el")
+            (emacs-home* "config/sample-self-epilogue.el")))
+  "Default a list of self-* files.")
 
 
 (defmacro self-symbol (name)
@@ -282,9 +275,6 @@ Return the value of BODY if no error happens."
 
 (defmacro def-self-path-ref (&rest path)
   "Define the PATH references for all specs in `self-path.el'.
-
-If there are no self-path.el under (emacs-home* \"private/\") directory, 
-More Reasonable Emacs should create a default one:
 
  (def-self-path-ref
    :env-spec (emacs-home* \"private/self-env-spec.el\")
@@ -302,31 +292,18 @@ No matter the declaration order, the executing order is:
 
 
 (defmacro def-self-env-spec (&rest spec)
-  "Define default Emacs env SPEC.
-
-If there are no self-path.el under (emacs-home* \"private/\")
-directory, More Reasonable Emacs should create a
-default (emacs-home* \"private/self-env-spec.el\").
-
-Involves: :theme, :font, :cjk-font, :shell, :eshell, :socks,
-:package, :edit
-
-Take effect after restart Emacs.
-"
+  "Define default Emacs env SPEC."
   (declare (indent 0))
   `(defvar ,(self-symbol 'env-spec) (list ,@spec)
      "Define the environment specs."))
 
 
 (defmacro def-self-package-spec (&rest spec)
-  "Define self package SPEC list."
+  "Define default package SPEC."
   (declare (indent 0))
   (when-package%
     `(defvar ,(self-symbol 'package-spec) (list ,@spec))))
 
-
-(defvar self-def-where (self-def-files!)
-  "Where's the path of self-path.el")
 
  ;; end of self-def macro
 
@@ -335,7 +312,18 @@ Take effect after restart Emacs.
 ;; self-spec macro
 ;;;;
 
-(compile! (compile-unit* self-def-where))
+
+;;; generate self-*.el files
+(unless (file-exists-p (caar +self-def-where+))
+  (make-directory (file-name-directory (caar +self-def-where+)))
+  (mapc (lambda (f)
+          (let ((dst (car f)) (src (cdr f)))
+            (unless (file-exists-p dst)
+              (copy-file src dst t))))
+        +self-def-where+))
+
+
+(compile! (compile-unit* (caar +self-def-where+)))
 
 
 (defsubst self-def-path-ref-> (&optional key)
