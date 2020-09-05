@@ -12,14 +12,15 @@
   "https://github.com/junjiemars/.emacs.d")
 
 
-;; Load cl-lib/cl at compile-time
+;;; Load cl-lib/cl at compile-time
 (eval-when-compile
   (if-version% <= 24
                (require 'cl-lib)
     (require 'cl)))
 
-
+;;;;
 ;; *-lexical macro
+;;;;
 
 (defmacro if-lexical% (then &rest else)
   "If current Emacs supports lexical binding do THEN,
@@ -40,15 +41,16 @@ otherwise do ELSE..."
   (declare (indent 0))
   `(if-lexical% nil ,@body))
 
-;; Let `lexical-binding' var safe under Emacs24.1-
+;;; Let `lexical-binding' var safe under Emacs24.1-
 (unless-lexical%
   (put 'lexical-binding 'safe-local-variable (lambda (_) t)))
 
 
  ;; end of *-lexical% macro
 
-
+;;;;
 ;; *-graphic% macro
+;;;;
 
 (defmacro if-graphic% (then &rest else)
   "If in graphic mode, do THEN, else do ELSE...
@@ -76,7 +78,9 @@ If in terminal mode, and there are no ELSE’s, the value is nil. "
  ;; end of *-graphic% macro
 
 
+;;;;
 ;; *-platform% macro
+;;;;
 
 (defmacro if-platform% (os then &rest else)
   "If \(eq system-type OS\) yields non-nil, do THEN, else do ELSE...
@@ -102,16 +106,9 @@ If (eq `system-type' OS) yields nil, and there are no ELSE’s, the value is nil
  ;; end of if-platform% macro
 
 
-(defmacro setq% (x val &optional feature)
-  "Set X to the value of its VAL when variable X is bound.
-If X requires the FEATURE, load it on compile-time."
-  ;; (declare (debug t))
-  `(when% (or (and ,feature (require ,feature nil t) (boundp ',x))
-              (boundp ',x))
-     (setq ,x ,val)))
-
-
+;;;;
 ;; fn compile-time checking macro
+;;;;
 
 (defmacro if-fn% (fn feature then &rest else)
   "If FN is bounded yields non-nil, do THEN, else do ELSE...
@@ -140,7 +137,17 @@ If FN requires the FEATURE, load it on compile-time."
  ;; end of fn compile-time checking macro
 
 
+;;;;
 ;; var compile-time checking macro
+;;;;
+
+(defmacro setq% (x val &optional feature)
+  "Set X to the value of its VAL when variable X is bound.
+If X requires the FEATURE, load it on compile-time."
+  ;; (declare (debug t))
+  `(when% (or (and ,feature (require ,feature nil t) (boundp ',x))
+              (boundp ',x))
+     (setq ,x ,val)))
 
 (defmacro if-var% (var feature then &rest else)
   "If VAR is bounded yields non-nil, do THEN, else do ELSE...
@@ -184,18 +191,12 @@ Return the value of BODY if no error happens."
 ;; Preferred coding system
 (prefer-coding-system 'utf-8)
 
-;; ;; Preferred coding system for terminal mode
-;; (unless-graphic%
-;;   (when-platform% 'windows-nt
-;;     ;; also need to adjust the font and code page.
-;;     (set-terminal-coding-system 'utf-8)))
-;; (set-default-coding-systems 'utf-8)
-
-
 
 
 
+;;;;
 ;; compile macro
+;;;;
 
 (defmacro compile-unit* (file &optional only-compile delete-booster)
   "Make an unit of compilation."
@@ -236,19 +237,22 @@ Return the value of BODY if no error happens."
 (defun compile! (&rest units)
   "Compile and load the elisp UNITS."
   (declare (indent 0))
-  (mapc (lambda (unit) (when unit
-                         (compile-and-load-file*
-                          (compile-unit->file unit)
-                          (compile-unit->only-compile unit)
-                          (compile-unit->delete-booster unit)
-                          (compile-unit->dir unit))))
+  (mapc (lambda (unit)
+          (when unit
+            (compile-and-load-file*
+             (compile-unit->file unit)
+             (compile-unit->only-compile unit)
+             (compile-unit->delete-booster unit)
+             (compile-unit->dir unit))))
         units))
 
 
  ;; end of compile macro
 
 
+;;;;
 ;; self-def macro
+;;;;
 
 (defsubst self-def-files! ()
   "Returns the path of `(emacs-home* \"private/\" \"self-path.el\")' and make self-*.el files."
@@ -327,7 +331,9 @@ Take effect after restart Emacs.
  ;; end of self-def macro
 
 
+;;;;
 ;; self-spec macro
+;;;;
 
 (compile! (compile-unit* self-def-where))
 
@@ -376,24 +382,22 @@ Take effect after restart Emacs.
        ,@body)))
 
 
+ ;; end of self-spec macro
+
+;;; <1>
 (compile! (compile-unit% (emacs-home* "config/fns.el"))
           (compile-unit* (self-def-path-ref-> :env-spec)))
 
- ;; end of self-spec macro
-
-
-;; Load ui, shell, basic env:
-
+;;; <2>
 (compile! (compile-unit% (emacs-home* "config/graphic.el"))
           (compile-unit% (emacs-home* "config/basic.el"))
           (compile-unit% (emacs-home* "config/sockets.el"))
           (compile-unit% (emacs-home* "config/shells.el")))
 
-
-;; Self do prologue ...
+;;; <3>
 (compile! (compile-unit* (self-def-path-ref-> :prologue)))
 
-
+;;; <4>
 (when-package%
   ;; (package-initialize)
 
@@ -401,8 +405,7 @@ Take effect after restart Emacs.
   (compile! (compile-unit* (self-def-path-ref-> :package-spec)))
   (compile! (compile-unit% (emacs-home* "config/module.el"))))
 
-
-;; Load package independent modules
+;;; <5>
 (compile! (compile-unit% (emacs-home* "config/on-module.el"))
           ;; --batch mode: disable desktop read/save
           `,(unless noninteractive 
