@@ -269,15 +269,15 @@ Return the value of BODY if no error happens."
   "Default a list of self-* files.")
 
 
-(defsubst self-def-files! (fs)
+(defsubst self-def-files! ()
   "Make default self-*.el files."
-  (unless (file-exists-p (caar fs))
+  (unless (file-exists-p (caar +self-def-where+))
     (make-directory (file-name-directory (caar fs)))
     (mapc (lambda (f)
             (let ((dst (car f)) (src (cdr f)))
               (unless (file-exists-p dst)
                 (copy-file src dst t))))
-          fs)))
+          +self-def-where+)))
 
 
 (defmacro self-symbol (name)
@@ -324,7 +324,7 @@ No matter the declaration order, the executing order is:
 ;;;;
 
 
-(self-def-files! +self-def-where+)
+(self-def-files!)
 
 (compile! (compile-unit* (caar +self-def-where+)))
 
