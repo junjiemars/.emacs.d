@@ -154,7 +154,8 @@ RENEW overwrite the existing tags file when t else create it."
                                                 "failed"))))))
 
 
-(defun make-c-tags (home tags-file &optional option file-filter dir-filter renew)
+(defun make-c-tags (home tags-file
+                         &optional option file-filter dir-filter renew)
   "Make TAGS-FILE for C source code in HOME."
   (make-tags home
              tags-file
@@ -170,12 +171,8 @@ RENEW overwrite the existing tags file when t else create it."
              renew))
 
 
-(defun make-lisp-tags (home
-                       tags-file
-                       &optional option
-                       file-filter
-                       dir-filter
-                       renew)
+(defun make-lisp-tags (home tags-file
+                            &optional option file-filter dir-filter renew)
   "Make TAGS-FILE for Lisp source code in HOME."
   (make-tags home
              tags-file
@@ -194,11 +191,7 @@ RENEW overwrite the existing tags file when t else create it."
 
 
 (defun make-emacs-home-tags (&optional option renew)
-  "Make tags for Emacs' home directory.
-
-Example:
- (make-emacs-home-tags (tags-spec->% :emacs-home))
-"
+  "Make tags for Emacs' home directory."
   (interactive (list (read-string (concat
                                    (string-trim> tags-program " +.*")
                                    " option: ")
@@ -212,18 +205,11 @@ Example:
                     (string-match "\\\.el$" f))
                   (lambda (d _)
                     (string-match "^config/$" d))
-                  t))
+                  renew))
 
 
 (defun make-emacs-source-tags (source &optional option renew)
-  "Make tags for Emacs' C and Lisp SOURCE code.
-
-Example:
- (make-emacs-source-tags
-   (tags-spec->% :emacs-source)
-   source-directory
-   t)
-"
+  "Make tags for Emacs' C and Lisp SOURCE code."
   (interactive (list (read-directory-name "make tags for " source-directory)
                      (read-string (concat
                                    (string-trim> tags-program " +.*")
@@ -231,13 +217,13 @@ Example:
                                   (car *tags-option-history*)
                                   '*tags-option-history*)
                      (y-or-n-p "tags renew? ")))
-  (make-c-tags (concat source-directory "src/")
+  (make-c-tags (concat source "src/")
                (tags-spec->% :emacs-source)
                option
                (lambda (f _) (string-match "\\\.[ch]$" f))
                (lambda (_ __) t)
                renew)
-  (make-lisp-tags (concat source-directory "lisp/")
+  (make-lisp-tags (concat source "lisp/")
                   (tags-spec->% :emacs-source)
                   option
                   (lambda (f _) (string-match "\\\.el$" f))
