@@ -80,8 +80,8 @@ when `desktop-globals-to-save' include it."
 
 (defvar *tags-option-history*
   (let ((bin (string-trim> tags-program " +.*")))
-    (cond ((string= "etags" bin) (list "-l c" "-l auto"))
-          ((string= "ctags" bin) (list "--c-kinds=+p"))
+    (cond ((string= "etags" bin) (list "-l c" "-l lisp" "-l auto"))
+          ((string= "ctags" bin) (list "--c-kinds=+p" "--lisp-kinds=+f"))
           (t "")))
   "Tags option history list.")
 
@@ -154,62 +154,12 @@ RENEW overwrite the existing tags file when t else create it."
                                                 "failed"))))))
 
 
-(defun make-emacs-home-tags (&optional tags-file option)
-  "Make TAGS-FILE for Emacs' home directory.
-
-Example:
- (make-emacs-home-tags (tags-spec->% :emacs-home))
-"
-  (interactive)
-  (make-tags (emacs-home*)
-             (or tags-file
-                 (tags-spec->% :emacs-home))
-             (lambda (f _)
-               (string-match "\\\.el$" f))
-             (lambda (d _)
-               (not
-                (string-match
-                 "^\\\..*/$\\|^theme/$\\|^g_.*/$\\|^t_.*/$\\|^private/$" d)))
-             option
-             t))
-
-
-(defun make-emacs-source-tags (&optional src-root tags-file)
-  "Make TAGS-FILE for Emacs' C and Lisp source code in SRC-ROOT.
-
-Example:
- (make-emacs-source-tags
-   (tags-spec->% :emacs-source)
-   source-directory
-   t)
-"
-  (interactive)
-  (let ((tf (or tags-file (tags-spec->% :emacs-source))))
-    ;; make c source tags
-    (make-tags (concat (or src-root
-                           source-directory)
-                       "src/")
-               tf
-               (lambda (f _) (string-match "\\\.[ch]$" f))
-               (lambda (_ __) t)
-               nil
-               t)
-    ;; make elisp source tags
-    (make-tags (concat (or src-root
-                           source-directory)
-                       "lisp/")
-               tf
-               (lambda (f _) (string-match "\\\.el$" f))
-               (lambda (_ __) t)
-               nil
-               t)))
-
-
-(defun make-c-tags (home tags-file &optional option renew dir-filter)
+(defun make-c-tags (home tags-file &optional option file-filter dir-filter renew)
   "Make TAGS-FILE for C source code in HOME."
   (make-tags home
              tags-file
-             (lambda (f _) (string-match "\\\.[ch]$" f))
+             (or file-filter
+                 (lambda (f _) (string-match "\\\.[ch]$" f)))
              (or dir-filter
                  (lambda (d _)
                    (not
@@ -218,6 +168,80 @@ Example:
                      d))))
              option
              renew))
+
+
+(defun make-lisp-tags (home
+                       tags-file
+                       &optional option
+                       file-filter
+                       dir-filter
+                       renew)
+  "Make TAGS-FILE for Lisp source code in HOME."
+  (make-tags home
+             tags-file
+             (or file-filter
+                 (lambda (f _)
+                   (string-match "\\\.el$\\|\\\.cl$\\|\\\.lis[p]?$"
+                                 f)))
+             (or dir-filter
+                 (lambda (d _)
+                   (not
+                    (string-match
+                     "^\\\.git/$\\|^\\\.svn/$\\|^out/$\\|^objs/$"
+                     d))))
+             option
+             renew))
+
+
+(defun make-emacs-home-tags (&optional option renew)
+  "Make tags for Emacs' home directory.
+
+Example:
+ (make-emacs-home-tags (tags-spec->% :emacs-home))
+"
+  (interactive (list (read-string (concat
+                                   (string-trim> tags-program " +.*")
+                                   " option: ")
+                                  (car *tags-option-history*)
+                                  '*tags-option-history*)
+                     (y-or-n-p "tags renew? ")))
+  (make-lisp-tags (emacs-home*)
+                  (tags-spec->% :emacs-home)
+                  option
+                  (lambda (f _)
+                    (string-match "\\\.el$" f))
+                  (lambda (d _)
+                    (string-match "^config/$" d))
+                  t))
+
+
+(defun make-emacs-source-tags (source &optional option renew)
+  "Make tags for Emacs' C and Lisp SOURCE code.
+
+Example:
+ (make-emacs-source-tags
+   (tags-spec->% :emacs-source)
+   source-directory
+   t)
+"
+  (interactive (list (read-directory-name "make tags for " source-directory)
+                     (read-string (concat
+                                   (string-trim> tags-program " +.*")
+                                   " option: ")
+                                  (car *tags-option-history*)
+                                  '*tags-option-history*)
+                     (y-or-n-p "tags renew? ")))
+  (make-c-tags (concat source-directory "src/")
+               (tags-spec->% :emacs-source)
+               option
+               (lambda (f _) (string-match "\\\.[ch]$" f))
+               (lambda (_ __) t)
+               renew)
+  (make-lisp-tags (concat source-directory "lisp/")
+                  (tags-spec->% :emacs-source)
+                  option
+                  (lambda (f _) (string-match "\\\.el$" f))
+                  (lambda (_ __) t)))
 
 
 (defun make-dir-tags (dir store &optional option renew)

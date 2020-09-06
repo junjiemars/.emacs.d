@@ -531,7 +531,7 @@ RENEW whether to renew the existing FILE."
           (filter (when (and skip (not (string= "" skip)))
                     (lambda (_ a)
                       (not (string-match skip a))))))
-      (make-c-tags (car includes) file option renew filter)
+      (make-c-tags (car includes) file option nil filter renew)
       (dolist* (p (cdr includes) file)
         (make-c-tags p file option nil filter)))))
 
