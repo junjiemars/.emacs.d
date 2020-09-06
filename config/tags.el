@@ -179,12 +179,12 @@ Example:
 
 Example:
  (make-emacs-source-tags
-   (`tags-spec->%' :emacs-home)
-   `source-directory'
-    t)
+   (tags-spec->% :emacs-source)
+   source-directory
+   t)
 "
   (interactive)
-  (let ((tf (or tags-file (tags-spec->% :emacs-home))))
+  (let ((tf (or tags-file (tags-spec->% :emacs-source))))
     ;; make c source tags
     (make-tags (concat (or src-root
                            source-directory)
