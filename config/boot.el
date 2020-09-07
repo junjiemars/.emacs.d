@@ -272,7 +272,7 @@ Return the value of BODY if no error happens."
 (defsubst self-def-files! ()
   "Make default self-*.el files."
   (unless (file-exists-p (caar +self-def-where+))
-    (make-directory (file-name-directory (caar fs)))
+    (make-directory (file-name-directory (caar +self-def-where+)))
     (mapc (lambda (f)
             (let ((dst (car f)) (src (cdr f)))
               (unless (file-exists-p dst)
