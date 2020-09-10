@@ -168,7 +168,6 @@
    (progn
      (when-package%
        ;; Load basic and self modules
-       ;; (compile! (compile-unit* (self-def-path-ref-> :package-spec)))
        (compile! (compile-unit% (emacs-home* "config/module.el"))
                  (compile-unit% (emacs-home* "config/on-module.el"))))
      (set-flavor-mode!)
