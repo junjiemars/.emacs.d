@@ -392,16 +392,18 @@ No matter the declaration order, the executing order is:
 (when-package%
   ;; (package-initialize)
 
+  (defvar *autoload-compile-units* nil
+    "Autloaded `compile-unit'.")
+
   ;; Load basic and self modules
-  (compile! (compile-unit* (self-def-path-ref-> :package-spec)))
-  (compile! (compile-unit% (emacs-home* "config/module.el"))))
+  (compile! (compile-unit* (self-def-path-ref-> :package-spec))))
 
 ;;; <5>
-(compile! (compile-unit% (emacs-home* "config/on-module.el"))
-          ;; --batch mode: disable desktop read/save
-          `,(unless noninteractive 
-              (compile-unit% (emacs-home* "config/memory.el")))
-          (compile-unit% (emacs-home* "config/autoloads.el")))
+(compile!
+  ;; --batch mode: disable desktop read/save
+  `,(unless noninteractive 
+      (compile-unit% (emacs-home* "config/memory.el")))
+  (compile-unit% (emacs-home* "config/autoloads.el")))
 
 
  ;; end of file

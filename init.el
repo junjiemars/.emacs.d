@@ -254,4 +254,3 @@ sequentially and return value of last one, or nil if there are none."
 
 
 ;; ^ End of init.el
-

@@ -96,9 +96,6 @@
 
 (package-initialize)
 
-(defvar *autoload-compile-units* nil
-  "Autloaded `compile-unit'.")
-
 (defsubst parse-package-spec! (spec &optional remove-unused)
   "Parse SPEC, install, remove and setup packages."
   (dolist* (s spec)

@@ -165,15 +165,21 @@
 ;; after-init
 (defun on-autoloads! ()
   (make-thread*
-   (progn% (set-flavor-mode!)
-           (set-global-key!)
-           (package-spec-:allowed-p
-             (apply #'compile! *autoload-compile-units*))
-           (compile! (compile-unit*
-                      (self-def-path-ref-> :epilogue)))
-           (when-fn% 'self-desktop-read! nil
-             (self-desktop-read!))
-           (ido-mode t))
+   (progn
+     (when-package%
+       ;; Load basic and self modules
+       ;; (compile! (compile-unit* (self-def-path-ref-> :package-spec)))
+       (compile! (compile-unit% (emacs-home* "config/module.el"))
+                 (compile-unit% (emacs-home* "config/on-module.el"))))
+     (set-flavor-mode!)
+     (set-global-key!)
+     (package-spec-:allowed-p
+       (apply #'compile! *autoload-compile-units*))
+     (compile! (compile-unit*
+                (self-def-path-ref-> :epilogue)))
+     (when-fn% 'self-desktop-read! nil
+       (self-desktop-read!))
+     (ido-mode t))
    t "on-autoloads!"))
 
 (add-hook 'after-init-hook #'on-autoloads! t)
