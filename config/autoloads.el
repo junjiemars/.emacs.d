@@ -166,6 +166,7 @@
 (defun on-autoloads! ()
   (make-thread*
    (progn
+     (compile! (compile-unit% (emacs-home* "config/sockets.el")))
      (when-package%
        (compile! (compile-unit% (emacs-home* "config/module.el"))))
      (compile! (compile-unit% (emacs-home* "config/on-module.el")))

@@ -382,7 +382,6 @@ No matter the declaration order, the executing order is:
 ;;; <2>
 (compile! (compile-unit% (emacs-home* "config/graphic.el"))
           (compile-unit% (emacs-home* "config/basic.el"))
-          (compile-unit% (emacs-home* "config/sockets.el"))
           (compile-unit% (emacs-home* "config/shells.el")))
 
 ;;; <3>
