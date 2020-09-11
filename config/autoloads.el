@@ -167,17 +167,13 @@
   (make-thread*
    (progn
      (when-package%
-       ;; Load basic and self modules
-       (compile! (compile-unit% (emacs-home* "config/module.el"))
-                 (compile-unit% (emacs-home* "config/on-module.el"))))
+       (compile! (compile-unit% (emacs-home* "config/module.el"))))
+     (compile! (compile-unit% (emacs-home* "config/on-module.el")))
+     (package-spec-:allowed-p (apply #'compile! *autoload-compile-units*))
      (set-flavor-mode!)
      (set-global-key!)
-     (package-spec-:allowed-p
-       (apply #'compile! *autoload-compile-units*))
-     (compile! (compile-unit*
-                (self-def-path-ref-> :epilogue)))
-     (when-fn% 'self-desktop-read! nil
-       (self-desktop-read!))
+     (compile! (compile-unit* (self-def-path-ref-> :epilogue)))
+     (when-fn% 'self-desktop-read! nil (self-desktop-read!))
      (ido-mode t))
    t "on-autoloads!"))
 
