@@ -93,7 +93,8 @@
 (when-platform% 'windows-nt
   
   (defmacro windows-nt-posix-path (path)
-    "Return posix path from Windows PATH which can be recognized on`system-type'."
+    "Return posix path from Windows PATH which can be recognized
+on`system-type'."
     `(when (stringp ,path)
        (if (string-match "^\\([A-Z]:\\)" ,path)
            (replace-regexp-in-string
