@@ -73,6 +73,9 @@ This is run before the process is cranked up."
   "Switch to the last `gambit-mode' buffer from `*gambit*' buffer.")
 
 
+(defvar *gambit-trace-history* nil
+  "Tracing history list.")
+
  ;; end variable declarations
 
 
@@ -243,20 +246,17 @@ end of buffer, otherwise just popup the buffer."
                                       (point))))
 
 (defun gambit-trace-procedure (proc &optional untrace)
-  "Trace procedure PROC in the gambit process.
-With a prefix argument switch off tracing of procedure PROC."
-  (interactive
-   (list (let ((current (symbol-at-point))
-               (action (if current-prefix-arg "Untrace" "Trace")))
-           (if current
-               (read-string (format "%s procedure [%s]: " action current)
-                            nil
-                            nil
-                            (symbol-name current))
-             (read-string (format "%s procedure: " action))))
-         current-prefix-arg))
-  (when (= (length proc) 0)
-    (error "Invalid procedure name"))
+  "Trace or untrace procedure PROC in `*gambit*' process.
+
+If PROC is nil then untrace or list all traced procedures
+determined by UNTRACE."
+  (interactive (list (read-string (format "%s procedure: "
+                                          (if current-prefix-arg
+                                              "Untrace"
+                                            "Trace"))
+                                  (symbol-name (symbol-at-point))
+                                  (car *gambit-trace-history*))
+                     current-prefix-arg))
   (comint-send-string (gambit-proc)
                       (format "(%s %s)\n"
                               (if untrace "untrace" "trace")
