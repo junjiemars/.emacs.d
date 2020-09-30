@@ -249,7 +249,7 @@ end of buffer, otherwise just popup the buffer."
   "Trace or untrace procedure PROC in `*gambit*' process.
 
 If PROC is nil then untrace or list all traced procedures
-determined by prefix UNTRACE argument."
+determined by the prefix UNTRACE argument."
   (interactive (list (read-string (format "%s procedure: "
                                           (if current-prefix-arg
                                               "Untrace"
