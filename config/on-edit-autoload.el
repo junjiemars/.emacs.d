@@ -214,9 +214,9 @@ More accurate than `mark-defun'."
                      (goto-char (car bounds))))))
 
 (defun mark-string@ (&optional arg)
-  "Make unquoted string at point.
+  "Mark unquoted string at point.
 
-If prefix ARG then make quoted string."
+If prefix ARG then mark quoted string."
   (interactive "P")
   (let ((bounds (bounds-of-thing-at-point 'string)))
     (when bounds
@@ -224,7 +224,7 @@ If prefix ARG then make quoted string."
                                     (1- (car bounds))
                                   (car bounds)))
                      (goto-char (if arg
-                                    (+ (cdr bounds) 2)
+                                    (+ (cdr bounds) 1)
                                   (cdr bounds)))))))
 
 (unless-fn% 'thing-at-point-bounds-of-list-at-point 'thingatpt
