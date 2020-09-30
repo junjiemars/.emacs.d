@@ -248,7 +248,7 @@ end of buffer, otherwise just popup the buffer."
 (defun gambit-trace-procedure (proc &optional untrace)
   "Trace or untrace procedure PROC in `*gambit*' process.
 
-If PROC is nil then untrace or list all traced procedures
+If prefix PROC is nil then untrace or list all traced procedures
 determined by UNTRACE."
   (interactive (list (read-string (format "%s procedure: "
                                           (if current-prefix-arg
