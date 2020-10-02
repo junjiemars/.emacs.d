@@ -1,0 +1,27 @@
+name: More Reasonable Emacs 
+
+on:
+  pull_request:
+    branches:
+      - cc
+  push:
+    branches:
+      - cc
+
+jobs:
+  Linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # checkout history and tags
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install emacs
+      - name: Test
+        run: |
+          ./test.sh
+
+# eof
