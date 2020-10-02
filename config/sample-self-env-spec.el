@@ -76,7 +76,7 @@
   
   :package (list :remove-unused nil
                  :package-check-signature 'allow-unsigned
-                 :allowed t)
+                 :allowed nil)
 
   :edit (list :tab-width 2
               :standard-indent 2
