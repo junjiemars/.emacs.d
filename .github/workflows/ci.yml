@@ -32,7 +32,7 @@ jobs:
           fetch-depth: 0 # checkout history and tags
       - name: Install Dependencies
         run: |
-          brew cask install emacs
+          brew install emacs
       - name: Test Nore
         run: |
           ./test.sh
