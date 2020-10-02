@@ -52,8 +52,7 @@ jobs:
       uses: msys2/setup-msys2@v2
       with:
         update: true
-        install: git make mingw-w64-x86_64-gcc emacs mingw-w64-x86_64
-
+        install: git emacs
     - name: Test
       run: |
         ./test.sh
