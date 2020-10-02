@@ -33,7 +33,7 @@ jobs:
       - name: Install Dependencies
         run: |
           brew install emacs
-      - name: Test Nore
+      - name: Test
         run: |
           _TEST_=basic ./test.sh
 
