@@ -1,4 +1,4 @@
-name: More Reasonable Emacs 
+name: More Reasonable Emacs
 
 on:
   pull_request:
