@@ -118,8 +118,7 @@
 (defvar basic-package-spec
   (list (list
          :cond t
-         :packages `(aggressive-indent
-                     paredit
+         :packages `(paredit
                      rainbow-delimiters
                      ,(when-version% <= 24.1 'yaml-mode)))))
 
