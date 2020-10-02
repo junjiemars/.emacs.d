@@ -179,7 +179,7 @@
    t "on-autoloads!"))
 
 
-;;; noninteractive autoload
+;;; autoload when interactive or not
 (if noninteractive
     (on-autoloads!)
   (add-hook 'after-init-hook #'on-autoloads! t))

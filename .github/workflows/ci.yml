@@ -37,5 +37,25 @@ jobs:
         run: |
           ./test.sh
 
+  Windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0 # checkout history and tags
+
+    - name: Install Dependencies
+      uses: msys2/setup-msys2@v2
+      with:
+        update: true
+        install: git make mingw-w64-x86_64-gcc emacs mingw-w64-x86_64
+
+    - name: Test
+      run: |
+        ./test.sh
 
 # eof
