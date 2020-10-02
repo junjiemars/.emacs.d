@@ -178,7 +178,11 @@
      (ido-mode t))
    t "on-autoloads!"))
 
-(add-hook 'after-init-hook #'on-autoloads! t)
+
+;;; noninteractive autoload
+(if noninteractive
+    (on-autoloads!)
+  (add-hook 'after-init-hook #'on-autoloads! t))
 
 
 ;; end of autoloads.el

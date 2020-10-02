@@ -7,8 +7,6 @@
 ;;;;
 
 
-;; Running Testing in Batch Mode:
-;; emacs --batch -l ert -l ~/.emacs.d/init.el -l ~/.emacs.d/.test.el -f ert-run-tests-batch-and-exit
 ;;
 ;; Running Test Interactively:
 ;; M-x ert RET t
