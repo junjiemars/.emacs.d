@@ -22,7 +22,7 @@ jobs:
           sudo apt-get install emacs
       - name: Test
         run: |
-          ./test.sh
+          _TEST_=basic ./test.sh
 
   MacOS:
     runs-on: macos-latest
@@ -35,7 +35,7 @@ jobs:
           brew install emacs
       - name: Test Nore
         run: |
-          ./test.sh
+          _TEST_=basic ./test.sh
 
   Windows:
     runs-on: windows-latest
@@ -55,6 +55,6 @@ jobs:
         install: git emacs
     - name: Test
       run: |
-        ./test.sh
+        _TEST_=basic ./test.sh
 
 # eof
