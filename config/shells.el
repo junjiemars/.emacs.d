@@ -83,15 +83,17 @@ See also: `parse-colon-path'."
                (let ((val (echo-var v (shells-spec->* :options))))
                  (when (and val (> (length val) 0))
                    (when (string= v (shells-spec->% :PATH))
-                     (shell-env<-
-                      :exec-path
-                      (mapc (lambda (p)
-                              (when (and (stringp p)
-                                         (file-exists-p p))
-                                (add-to-list 'exec-path p t #'string=)))
-                            (append (var->paths val)
-                                    (unless-platform% 'windows-nt
-                                      (list (v-home% ".exec/")))))))
+                     (let ((paths))
+                       (mapc (lambda (p)
+                               (when (and (stringp p)
+                                          (file-exists-p p))
+                                 (add-to-list 'exec-path p t #'string=)
+                                 (setq paths (cons p paths))))
+                             (var->paths val))
+                       (unless-platform% 'windows-nt
+                         (add-to-list 'exec-path (v-home% ".exec/") t))
+                       (shell-env<- :exec-path exec-path)
+                       (setq val (paths->var (reverse paths)))))
                    (push (cons v val) vars)))))
            (shells-spec->* :copy-vars))
      vars))
