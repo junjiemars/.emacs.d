@@ -90,8 +90,7 @@ See also: `parse-colon-path'."
                                  (add-to-list 'exec-path p t #'string=)
                                  (setq paths (cons p paths))))
                              (var->paths val))
-                       (unless-platform% 'windows-nt
-                         (add-to-list 'exec-path (v-home% ".exec/") t))
+                       (add-to-list 'exec-path (v-home% ".exec/") t)
                        (shell-env<- :exec-path exec-path)
                        (setq val (paths->var (reverse paths)))))
                    (push (cons v val) vars)))))
