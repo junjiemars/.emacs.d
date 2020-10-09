@@ -5,21 +5,34 @@
 ;;;;
 ;; use-geiser-autoload.el
 ;;;;
-
+;; chez
+;;; https://scheme.com
+;;; http://cisco.github.io/ChezScheme/csug9.5/csug.html
+;;;
+;; racket : https://racket-lang.org
+;;;
 
 (defmacro-if-feature% geiser)
 
 
-;; Disable `geiser-mode' for `scheme-mode'
+;; Disable auto `geiser-mode' for `scheme-mode'
 (when-var% geiser-mode-auto-p 'geiser-mode
   (setq% geiser-mode-auto-p nil 'geiser-mode))
 
 (setq% geiser-active-implementations
        (remove** nil 
-                 (list (executable-find% "racket")
-                       (executable-find% "chicken"))
+                 (list (and (executable-find% "scheme") 'chez)
+                       (and (executable-find% "racket") 'racket)
+                       ;; better one in `gambit'
+                       ;; (and (executable-find% "gambit") 'gambit)
+                       (and (executable-find% "guile") 'guile)
+                       (and (executable-find% "chicken" 'chicken)))
                  :test #'eq)
        'geiser-mode)
 
+(when-var% geiser-active-implementations 'geiser-mode
+  (setq% geiser-default-implementation
+         (car geiser-active-implementations) 'geiser-mode))
 
-;; end of file
+
+;; eof

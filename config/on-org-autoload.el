@@ -18,7 +18,7 @@
 
 (with-eval-after-load 'org
   ;; load `ox-reveal' if it had been installed.
-  (if-feature-ox-reveal%
+  (when-feature-allowed% if-feature-ox-reveal%
       (when-var% org-reveal-root 'ox-reveal
         (require 'ox-reveal)
         (setq org-reveal-root
