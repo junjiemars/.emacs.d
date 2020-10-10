@@ -39,7 +39,9 @@
    ;; scheme
    :cond (and (when-version% <= 23.2 t)
               (or (executable-find% "racket")
-                  (executable-find% "chicken")))
+                  (executable-find% "scheme")
+                  (executable-find% "chicken")
+                  (executable-find% "guile")))
    :packages  '(geiser)
    :compile `(,(compile-unit% (emacs-home* "config/use-geiser-autoload.el"))))
   (list
