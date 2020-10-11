@@ -18,15 +18,16 @@
 
 (with-eval-after-load 'org
   ;; load `ox-reveal' if it had been installed.
+  ;; `ox-reveal' raising "package cl is deprecated".
   (when-feature-allowed% if-feature-ox-reveal%
-      (when-var% org-reveal-root 'ox-reveal
-        (require 'ox-reveal)
-        (setq org-reveal-root
-              (let ((root (emacs-home* ".reveal.js/")))
-                (if (file-exists-p root)
-                    root
-                  ;; "https://cdn.jsdelivr.net/reveal.js/3.8.0/"
-                  "https://pagecdn.io/lib/reveal/3.8.0/")))))
+    (when-var% org-reveal-root 'ox-reveal
+      (require 'ox-reveal)
+      (setq org-reveal-root
+            (let ((root (emacs-home* ".reveal.js/")))
+              (if (file-exists-p root)
+                  root
+                ;; "https://cdn.jsdelivr.net/reveal.js/3.8.0/"
+                "https://pagecdn.io/lib/reveal/3.8.0/")))))
 
   ;; disable _ sub-superscripts
   (when-var% org-use-sub-superscripts 'org

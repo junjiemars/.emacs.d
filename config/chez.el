@@ -94,7 +94,7 @@ This is run before the process is cranked up."
                     (point)))
 
 
-(defun chez-repl-completion (x)
+(defun chez-repl-completion (_)
   (interactive "p")
   (message "!!%s" "unimplemented"))
 
