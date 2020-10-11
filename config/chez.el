@@ -188,11 +188,7 @@ Run the hook `chez-repl-mode-hook' after the `comint-mode-hook'."
 If ARG is non-nil then select the buffer and put the cursor at
 end of buffer, otherwise just popup the buffer."
   (interactive "P")
-  (unless (comint-check-proc (funcall *chez*))
-    (error "No current `*chez*' process."))
-  (unless (with-current-buffer (current-buffer)
-            (symbol-value 'chez-mode))
-    (error "No current `chez-mode'."))
+  (chez-proc)
   (chez-switch-to-last-buffer (current-buffer))
   (if arg
       ;; display REPL but do not select it
