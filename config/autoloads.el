@@ -101,10 +101,6 @@
 
     )  ;; end of compile!
 
-  ;; add .exec/ to %PATH%
-  (when-platform% 'windows-nt
-    (windows-nt-env-path+ (v-home% ".exec/")))
-
   ;; *scratch*
   (when (get-buffer "*scratch*")
     (with-current-buffer "*scratch*"
