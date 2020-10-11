@@ -72,6 +72,10 @@ This is run before the process is cranked up."
         (when b (switch-to-buffer-other-window b)))))
   "Switch to the last `chez-mode' buffer from `*chez*' buffer.")
 
+(defvar *chez-start-file*
+  (v-home% ".scheme/chez.ss")
+  "The *chez* process start file.")
+
 (defvar *chez-option-history* nil
   "Chez option history list.")
 
@@ -148,18 +152,19 @@ Run the hook `chez-repl-mode-hook' after the `comint-mode-hook'."
   (interactive
    (list (if current-prefix-arg
              (read-string "Run chez: "
-                          nil
                           (car *chez-option-history*)
+                          '*chez-option-history*
                           "--")
            "--")))
   (unless (comint-check-proc (funcall *chez*))
     (with-current-buffer (get-buffer-create "*chez*")
       (apply #'make-comint-in-buffer
-       (buffer-name (current-buffer))
-       (current-buffer)
-       chez-program
-       nil ;; no start file, gsi default init: ~/gambini
-       (split-string* command-line "\\s-+" t))
+             (buffer-name (current-buffer))
+             (current-buffer)
+             chez-program
+             (when (file-exists-p *chez-start-file*)
+               *chez-start-file*)
+             (split-string* command-line "\\s-+" t))
       (funcall *chez* (current-buffer))
       (chez-repl-mode)))
   (switch-to-buffer-other-window "*chez*"))
