@@ -76,12 +76,17 @@ This is run before the process is cranked up."
   (v-home% ".scheme/chez.ss")
   "The *chez* process start file.")
 
-(defvar *chez-option-history* nil
+(defvar *chez-option-history*
+  nil
   "Chez option history list.")
-
 
 (defvar *chez-trace-history* nil
   "Chez tracing history list.")
+
+(defvar chez-repl-mode-map
+  (let ((m (make-sparse-keymap)))
+    (define-key m "\C-c\C-a" #'chez-switch-to-last-buffer)
+    m))
 
  ;; end variable declarations
 
@@ -96,10 +101,6 @@ This is run before the process is cranked up."
                                     (point))
                     (point)))
 
-(defvar chez-repl-mode-map
-  (let ((m (make-sparse-keymap)))
-    (define-key m "\C-c\C-a" #'chez-switch-to-last-buffer)
-    m))
 
 (define-derived-mode chez-repl-mode comint-mode "REPL"
   "Major mode for interacting with a chez process.
@@ -177,7 +178,7 @@ Run the hook `chez-repl-mode-hook' after the `comint-mode-hook'."
   "Return the `*chez*' process, starting one if necessary."
   (unless (comint-check-proc (funcall *chez*))
     (save-window-excursion
-      (run-chez (read-string "Run chez: " chez-program))))
+      (run-chez (read-string "Run chez: " (car *chez-option-history*)))))
   (or (get-buffer-process (funcall *chez*))
       (error "No current `*chez*' process.")))
 
