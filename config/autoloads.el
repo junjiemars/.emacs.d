@@ -88,6 +88,17 @@
         "Run gambit in buffer *gambit*." t)
       (compile-unit% (emacs-home* "config/gambit.el") t))
 
+    (when% (executable-find% "scheme"
+                             (lambda (chez)
+                               (let ((x (shell-command* "echo"
+                                          "'(+ 1 2 3)'|" chez "-q")))
+                                 (zerop (car x)))))
+      (autoload 'chez-mode (v-home% "config/chez.elc")
+        "Toggle Chez's mode." t)
+      (autoload 'run-chez (v-home% "config/chez.elc")
+        "Run chez in buffer *chez*." t)
+      (compile-unit% (emacs-home* "config/chez.el") t))
+
     )  ;; end of compile!
 
   ;; add .exec/ to %PATH%
