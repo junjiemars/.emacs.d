@@ -1,4 +1,5 @@
 ;;;; -*- lexical-binding:t -*-
+
 ;;;;
 ;; More reasonable Emacs on MacOS, Windows and Linux
 ;; https://github.com/junjiemars/.emacs.d
@@ -79,10 +80,6 @@ This is run before the process is cranked up."
 (defvar *chez-trace-history* nil
   "Chez tracing history list.")
 
-(defvar chez-repl-mode-map
-  (let ((m (make-sparse-keymap)))
-    (define-key m "\C-c\C-a" #'chez-switch-to-last-buffer)
-    m))
 
  ;; end variable declarations
 
@@ -93,9 +90,20 @@ This is run before the process is cranked up."
 
 (defun chez-get-old-input ()
   "Snarf the sexp ending at point."
-  (buffer-substring (save-excursion (backward-sexp)
-                                    (point))
+  (buffer-substring (save-excursion (backward-sexp) (point))
                     (point)))
+
+
+(defun chez-repl-completion (x)
+  (interactive "p")
+  (message "!!%s" "unimplemented"))
+
+
+(defvar chez-repl-mode-map
+  (let ((m (make-sparse-keymap "chez")))
+    (define-key m "\C-c\C-b" #'chez-switch-to-last-buffer)
+    (define-key m (kbd "TAB") #'chez-repl-completion)
+    m))
 
 
 (define-derived-mode chez-repl-mode comint-mode "REPL"
