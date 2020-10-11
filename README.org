@@ -1130,8 +1130,9 @@ Change C programming style using @@html:<kbd>@@C-c .@@html:</kbd>@@.
 #+ATTR_HTML: :style text-align:left
 Like /vi/'s @@html:<kbd>@@gf@@html:</kbd>@@ command, you can using
 @@html:<kbd>@@C-c f i@@html:</kbd>@@ to open C system include file on
-local or remote in =view-mode= and supports /gcc/, /clang/, and
-/msvc/.
+local or remote in =view-mode= and via
+@@html:<kbd>@@M-,@@html:</kbd>@@ to go back. It supports /gcc/,
+/clang/, and /msvc/.
 
 **** Macro expand
      :PROPERTIES:
