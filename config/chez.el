@@ -6,12 +6,8 @@
 ;; chez.el
 ;;;;
 
-;; (require 'scheme)
+
 (require 'comint)
-
-;; (require 'thingatpt)
-;; `symbol-at-point' autoload fn
-
 
 ;; ;; Disable `geiser-mode' for `scheme-mode'
 ;; (if-feature-geiser%
@@ -58,7 +54,7 @@ This is run before the process is cranked up."
   :type 'hook
   :group 'chez)
 
-(defvar *chez*
+(defalias '*chez*
   (lexical-let% ((b))
     (lambda (&optional n)
       (if n (setq b n) b)))
@@ -157,7 +153,7 @@ Run the hook `chez-repl-mode-hook' after the `comint-mode-hook'."
                           '*chez-option-history*
                           "--")
            "--")))
-  (unless (comint-check-proc (funcall *chez*))
+  (unless (comint-check-proc (*chez*))
     (with-current-buffer (get-buffer-create "*chez*")
       (apply #'make-comint-in-buffer
              (buffer-name (current-buffer))
@@ -166,7 +162,7 @@ Run the hook `chez-repl-mode-hook' after the `comint-mode-hook'."
              (when (file-exists-p *chez-start-file*)
                *chez-start-file*)
              (split-string* command-line "\\s-+" t))
-      (funcall *chez* (current-buffer))
+      (*chez* (current-buffer))
       (chez-repl-mode)))
   (switch-to-buffer-other-window "*chez*"))
 
@@ -176,10 +172,10 @@ Run the hook `chez-repl-mode-hook' after the `comint-mode-hook'."
 
 (defun chez-proc ()
   "Return the `*chez*' process, starting one if necessary."
-  (unless (comint-check-proc (funcall *chez*))
+  (unless (comint-check-proc (*chez*))
     (save-window-excursion
       (run-chez (read-string "Run chez: " (car *chez-option-history*)))))
-  (or (get-buffer-process (funcall *chez*))
+  (or (get-buffer-process (*chez*))
       (error "No current `*chez*' process.")))
 
 (defun chez-switch-to-repl (&optional arg)
@@ -192,12 +188,12 @@ end of buffer, otherwise just popup the buffer."
   (chez-switch-to-last-buffer (current-buffer))
   (if arg
       ;; display REPL but do not select it
-      (display-buffer (funcall *chez*)
+      (display-buffer (*chez*)
                       (if-fn% 'display-buffer-pop-up-window nil
                               #'display-buffer-pop-up-window
                         t))
     ;; switch to REPL and select it
-    (pop-to-buffer (funcall *chez*))
+    (pop-to-buffer (*chez*))
     (push-mark)
     (goto-char (point-max))))
 
@@ -240,9 +236,8 @@ end of buffer, otherwise just popup the buffer."
 (defun chez-send-last-sexp ()
   "Send the previous sexp to `*chez*'."
   (interactive)
-  (chez-send-region (save-excursion (backward-sexp)
-                                      (point))
-                      (point)))
+  (chez-send-region (save-excursion (backward-sexp) (point))
+                    (point)))
 
 (defun chez-send-definition ()
   "Send the current definition to `*chez*'."
