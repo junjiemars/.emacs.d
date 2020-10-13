@@ -90,19 +90,54 @@ This is run before the process is cranked up."
 
 (defun chez-get-old-input ()
   "Snarf the sexp ending at point."
-  (buffer-substring (save-excursion (backward-sexp) (point))
+  (buffer-substring (save-excursion
+                      (backward-sexp)
+                      (point))
                     (point)))
 
+(defun chez-check-proc (proc)
+  "Signal an error if there are no `*chez*' process exists."
+  (unless (comint-check-proc proc)
+    (error "No `*chez*' process.")))
+
+(defun chez-input-complete-p (&optional start end)
+  "Return t if the region from START to END contains a complete sexp."
+  (save-excursion
+    (let ((lhs (or start (progn
+                           (comint-goto-process-mark)
+                           (point))))
+          (rhs (or end (point-max))))
+      (goto-char lhs)
+      (cond ((looking-at "\\s *['`#]?[(\"]")
+             (ignore-errors
+               (save-restriction
+                 (narrow-to-region lhs rhs)
+                 (loop* do (skip-chars-forward " \t\r\n)")
+                        until (eobp)
+                        do (forward-sexp))
+                 t)))
+            (t t)))))
 
 (defun chez-repl-completion (_)
   (interactive "p")
-  (message "!!%s" "unimplemented"))
+  (message "!!%s" "unimplemented")
+  (ignore-errors
+    (save-restriction
+      (self-insert-command 1 "\t"))))
+
+(defun chez-repl-return (&optional _)
+  "Newline or indent then newline the current input."
+  (interactive "P")
+  (chez-check-proc (*chez*))
+  (cond ((chez-input-complete-p) (comint-send-input))
+        (t (newline 1 t))))
 
 
 (defvar chez-repl-mode-map
   (let ((m (make-sparse-keymap "chez")))
+    (define-key m [return] #'chez-repl-return)
     (define-key m "\C-c\C-b" #'chez-switch-to-last-buffer)
-    (define-key m (kbd "TAB") #'chez-repl-completion)
+    ;; (define-key m (kbd "TAB") #'chez-repl-completion)
     m))
 
 
@@ -184,7 +219,7 @@ Run the hook `chez-repl-mode-hook' after the `comint-mode-hook'."
     (save-window-excursion
       (run-chez (read-string "Run chez: " (car *chez-option-history*)))))
   (or (get-buffer-process (*chez*))
-      (error "No current `*chez*' process.")))
+      (error "No `*chez*' process.")))
 
 (defun chez-switch-to-repl (&optional arg)
   "Switch to the `*chez*' buffer.
