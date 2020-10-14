@@ -126,7 +126,7 @@ This is run before the process is cranked up."
   (chez-check-proc (*chez*))
   (let ((bounds (bounds-of-thing-at-point 'symbol)))
     (when bounds
-      (let ((cmd (format "(_chez_:completions \"%s\")"
+      (let ((cmd (format "(_chez_:complete-symbol \"%s\")"
                          (buffer-substring-no-properties (car bounds)
                                                          (cdr bounds)))))
         (with-temp-buffer
@@ -221,7 +221,9 @@ Run the hook `chez-repl-mode-hook' after the `comint-mode-hook'."
              (split-string* command-line "\\s-+" t))
       (*chez* (current-buffer))
       (chez-repl-mode)
-      (add-hook 'completion-at-point-functions
+      (add-hook (if-var% completion-at-point-functions 'minibuffer
+                         'completion-at-point-functions
+                  'comint-dynamic-complete-functions)
                 #'chez-repl-completion nil 'local)))
   (switch-to-buffer-other-window "*chez*"))
 
