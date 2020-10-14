@@ -1,5 +1,5 @@
 (library (_chez_)
-  (export _chez_:completions)
+  (export _chez_:complete-symbol)
   (import (chezscheme))
 
 	(define string-prefix?
@@ -17,13 +17,15 @@
 			(lambda ()
 				(write x))))
 
-	(define (_chez_:completions prefix . rest)
+	(define (_chez_:complete-symbol prefix . rest)
 		rest
 		(sort string-ci<?
-					(filter (lambda (el)
-										(string-prefix? prefix el))
+					(filter (lambda (s)
+										(string-prefix? prefix s))
 									(map write-to-string
 											 (environment-symbols
 												(interaction-environment)))))))
+
+(import (_chez_))
 
 ;;; eof
