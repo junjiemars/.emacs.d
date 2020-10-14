@@ -70,8 +70,11 @@ This is run before the process is cranked up."
   "Switch to the last `chez-mode' buffer from `*chez*' buffer.")
 
 (defvar *chez-start-file*
-  (v-home% ".scheme/chez.ss")
-  "The *chez* process start file.")
+  (let ((n (v-home% ".exec/.chez.ss")))
+    (unless (file-exists-p (v-home% ".exec/.chez.ss"))
+      (copy-file `,(emacs-home* "config/_chez_.ss") n t))
+    n)
+  "The `*chez*' process start file.")
 
 (defvar *chez-option-history*
   nil
@@ -120,10 +123,7 @@ This is run before the process is cranked up."
 
 (defun chez-repl-completion (_)
   (interactive "p")
-  (message "!!%s" "unimplemented")
-  (ignore-errors
-    (save-restriction
-      (self-insert-command 1 "\t"))))
+  (completion-at-point))
 
 (defun chez-repl-return (&optional _)
   "Newline or indent then newline the current input."
@@ -202,11 +202,11 @@ Run the hook `chez-repl-mode-hook' after the `comint-mode-hook'."
              (buffer-name (current-buffer))
              (current-buffer)
              chez-program
-             (when (file-exists-p *chez-start-file*)
-               *chez-start-file*)
+             *chez-start-file*
              (split-string* command-line "\\s-+" t))
       (*chez* (current-buffer))
-      (chez-repl-mode)))
+      (chez-repl-mode)
+      (chez-import "_chez_")))
   (switch-to-buffer-other-window "*chez*"))
 
 
@@ -239,6 +239,12 @@ end of buffer, otherwise just popup the buffer."
     (pop-to-buffer (*chez*))
     (push-mark)
     (goto-char (point-max))))
+
+(defun chez-import (module)
+  "Import a Scheme MODULE in `*chez*'."
+  (comint-send-string
+   (chez-proc)
+   (format "(import (%s))\n" module)))
 
 (defun chez-compile-file (file)
   "Compile a Scheme FILE in `*chez*'."
