@@ -121,9 +121,25 @@ This is run before the process is cranked up."
                  t)))
             (t t)))))
 
-(defun chez-repl-completion (_)
-  (interactive "p")
-  (completion-at-point))
+(defun chez-repl-completion ()
+  (interactive)
+  (chez-check-proc (*chez*))
+  (let ((bounds (bounds-of-thing-at-point 'symbol)))
+    (when bounds
+      (let ((cmd (format "(_chez_:completions \"%s\")"
+                         (buffer-substring-no-properties (car bounds)
+                                                         (cdr bounds)))))
+        (with-temp-buffer
+          (comint-redirect-send-command-to-process cmd
+                                                   (current-buffer)
+                                                   (*chez*)
+                                                   nil)
+          (sleep-for 0.1)
+          (list (car bounds) (cdr bounds)
+                (car (read-from-string (buffer-substring-no-properties
+                                        (point-min)
+                                        (point-max))))
+                :exclusive 'no))))))
 
 (defun chez-repl-return (&optional _)
   "Newline or indent then newline the current input."
@@ -137,7 +153,6 @@ This is run before the process is cranked up."
   (let ((m (make-sparse-keymap "chez")))
     (define-key m [return] #'chez-repl-return)
     (define-key m "\C-c\C-b" #'chez-switch-to-last-buffer)
-    ;; (define-key m (kbd "TAB") #'chez-repl-completion)
     m))
 
 
@@ -206,7 +221,8 @@ Run the hook `chez-repl-mode-hook' after the `comint-mode-hook'."
              (split-string* command-line "\\s-+" t))
       (*chez* (current-buffer))
       (chez-repl-mode)
-      (chez-import "_chez_")))
+      (add-hook 'completion-at-point-functions
+                #'chez-repl-completion nil 'local)))
   (switch-to-buffer-other-window "*chez*"))
 
 
@@ -323,7 +339,6 @@ determined by the prefix UNTRACE argument."
     (define-key m "\C-c\C-r" #'chez-send-region)
     (define-key m "\C-c\C-t" #'chez-trace-procedure)
     (define-key m "\C-c\C-z" #'chez-switch-to-repl)
-    ;; (scheme-mode-commands m)
     m))
 
 (make-variable-buffer-local

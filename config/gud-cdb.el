@@ -389,7 +389,7 @@ directory and source-file directory for your debugger."
   (loop* for x in gud-cdb-init-hook
          when (functionp x) do (funcall x))
 
-  (add-hook 'comint-dynamic-complete-functions
+  (add-hook 'completion-at-point-functions
             #'cdb-completion-at-point nil 'local))
 
 
