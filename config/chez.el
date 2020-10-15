@@ -61,6 +61,19 @@ This is run before the process is cranked up."
       (if n (setq b n) b)))
   "The current *chez* process buffer.")
 
+
+(defalias '*chez-start-file*
+  (lexical-let%
+      ((b (let ((f (v-home% ".exec/.chez.ss")))
+            (unless (file-exists-p f)
+              (copy-file `,(emacs-home* "config/_chez_.ss") f t))
+            f)))
+    (lambda (&optional n)
+      (interactive)
+      (if n (setq b n) b)))
+  "The `*chez*' process start file.")
+
+
 (defalias 'chez-switch-to-last-buffer
   (lexical-let% ((b))
     (lambda (&optional n)
@@ -69,12 +82,6 @@ This is run before the process is cranked up."
         (when b (switch-to-buffer-other-window b)))))
   "Switch to the last `chez-mode' buffer from `*chez*' buffer.")
 
-(defvar *chez-start-file*
-  (let ((n (v-home% ".exec/.chez.ss")))
-    (unless (file-exists-p (v-home% ".exec/.chez.ss"))
-      (copy-file `,(emacs-home* "config/_chez_.ss") n t))
-    n)
-  "The `*chez*' process start file.")
 
 (defvar *chez-option-history*
   nil
@@ -134,7 +141,7 @@ This is run before the process is cranked up."
                                                    (current-buffer)
                                                    (*chez*)
                                                    nil)
-          (sleep-for 0.1)
+          (sleep-for 0 100)
           (list (car bounds) (cdr bounds)
                 (car (read-from-string (buffer-substring-no-properties
                                         (point-min)
@@ -217,7 +224,7 @@ Run the hook `chez-repl-mode-hook' after the `comint-mode-hook'."
              (buffer-name (current-buffer))
              (current-buffer)
              chez-program
-             *chez-start-file*
+             (*chez-start-file*)
              (split-string* command-line "\\s-+" t))
       (*chez* (current-buffer))
       (chez-repl-mode)
