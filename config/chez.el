@@ -105,10 +105,15 @@ This is run before the process is cranked up."
                       (point))
                     (point)))
 
-(defun chez-check-proc (proc)
-  "Signal an error if there are no `*chez*' process exists."
-  (unless (comint-check-proc proc)
-    (error "No `*chez*' process.")))
+
+(defun chez-check-proc (&optional spawn)
+  "Return the `*chez*' process or start one if necessary."
+  (when (and spawn
+             (not (eq 'run (car (comint-check-proc (*chez*))))))
+    (save-window-excursion
+      (run-chez (read-string "Run chez: " (car *chez-option-history*)))))
+  (or (get-buffer-process (*chez*))
+      (error "No `*chez*' process.")))
 
 (defun chez-input-complete-p (&optional start end)
   "Return t if the region from START to END contains a complete sexp."
@@ -130,14 +135,14 @@ This is run before the process is cranked up."
 
 (defun chez-repl-completion ()
   (interactive)
-  (chez-check-proc (*chez*))
+  (chez-check-proc)
   (let ((bounds (bounds-of-thing-at-point 'symbol)))
     (when bounds
       (let ((buf (get-buffer-create "*out|chez*"))
             (out)
             (cmd (format "(_chez_:complete-symbol \"%s\")"
-                   (buffer-substring-no-properties (car bounds)
-                                                   (cdr bounds))))
+                         (buffer-substring-no-properties (car bounds)
+                                                         (cdr bounds))))
             (proc (get-buffer-process (*chez*))))
         (with-current-buffer buf
           (erase-buffer)
@@ -154,7 +159,7 @@ This is run before the process is cranked up."
 (defun chez-repl-return (&optional _)
   "Newline or indent then newline the current input."
   (interactive "P")
-  (chez-check-proc (*chez*))
+  (chez-check-proc)
   (cond ((chez-input-complete-p) (comint-send-input))
         (t (newline 1 t))))
 
@@ -241,21 +246,13 @@ Run the hook `chez-repl-mode-hook' after the `comint-mode-hook'."
  ;; end of REPL
 
 
-(defun chez-proc ()
-  "Return the `*chez*' process, starting one if necessary."
-  (unless (comint-check-proc (*chez*))
-    (save-window-excursion
-      (run-chez (read-string "Run chez: " (car *chez-option-history*)))))
-  (or (get-buffer-process (*chez*))
-      (error "No `*chez*' process.")))
-
 (defun chez-switch-to-repl (&optional arg)
   "Switch to the `*chez*' buffer.
 
 If ARG is non-nil then select the buffer and put the cursor at
 end of buffer, otherwise just popup the buffer."
   (interactive "P")
-  (chez-proc)
+  (chez-check-proc t)
   (chez-switch-to-last-buffer (current-buffer))
   (if arg
       ;; display REPL but do not select it
@@ -268,11 +265,6 @@ end of buffer, otherwise just popup the buffer."
     (push-mark)
     (goto-char (point-max))))
 
-(defun chez-import (module)
-  "Import a Scheme MODULE in `*chez*'."
-  (comint-send-string
-   (chez-proc)
-   (format "(import (%s))\n" module)))
 
 (defun chez-compile-file (file)
   "Compile a Scheme FILE in `*chez*'."
@@ -284,7 +276,7 @@ end of buffer, otherwise just popup the buffer."
                 scheme-source?
                 nil)) 
   (comint-check-source file)
-  (comint-send-string (chez-proc)
+  (comint-send-string (chez-check-proc t)
                       (format "(compile-file \"%s\")\n" file))
   (chez-switch-to-last-buffer (current-buffer))
   (chez-switch-to-repl))
@@ -298,7 +290,7 @@ end of buffer, otherwise just popup the buffer."
                         (file-name-nondirectory n)))
                 scheme-source? t)) ;; t because `load'
   (comint-check-source file) 
-  (comint-send-string (chez-proc)
+  (comint-send-string (chez-check-proc t)
                       (format "(load \"%s\")\n" file))
   (chez-switch-to-last-buffer (current-buffer))
   (chez-switch-to-repl))
@@ -306,8 +298,8 @@ end of buffer, otherwise just popup the buffer."
 (defun chez-send-region (start end)
   "Send the current region to `*chez*'."
   (interactive "r")
-  (comint-send-region (chez-proc) start end)
-  (comint-send-string (chez-proc) "\n")
+  (comint-send-region (chez-check-proc t) start end)
+  (comint-send-string (chez-check-proc t) "\n")
   (chez-switch-to-repl t))
 
 (defun chez-send-last-sexp ()
@@ -336,7 +328,7 @@ determined by the prefix UNTRACE argument."
                                   (symbol-name (symbol-at-point))
                                   (car *chez-trace-history*))
                      current-prefix-arg))
-  (comint-send-string (chez-proc)
+  (comint-send-string (chez-check-proc t)
                       (format "(%s %s)\n"
                               (if untrace "untrace" "trace")
                               proc))
