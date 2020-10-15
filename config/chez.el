@@ -133,20 +133,23 @@ This is run before the process is cranked up."
   (chez-check-proc (*chez*))
   (let ((bounds (bounds-of-thing-at-point 'symbol)))
     (when bounds
-      (let ((cmd (format "(_chez_:complete-symbol \"%s\")"
-                         (buffer-substring-no-properties (car bounds)
-                                                         (cdr bounds)))))
-        (with-temp-buffer
-          (comint-redirect-send-command-to-process cmd
-                                                   (current-buffer)
-                                                   (*chez*)
-                                                   nil)
-          (sleep-for 0 100)
-          (list (car bounds) (cdr bounds)
-                (car (read-from-string (buffer-substring-no-properties
-                                        (point-min)
-                                        (point-max))))
-                :exclusive 'no))))))
+      (let ((buf (get-buffer-create "*chez>out*"))
+            (out)
+            (cmd (format "(_chez_:complete-symbol \"%s\")"
+                   (buffer-substring-no-properties (car bounds)
+                                                   (cdr bounds))))
+            (proc (get-buffer-process (*chez*))))
+        (with-current-buffer buf
+          (erase-buffer)
+          (comint-redirect-send-command-to-process cmd buf proc nil t)
+          (set-buffer (*chez*))
+          (while (and (null comint-redirect-completed)
+                      (accept-process-output proc))))
+        (with-current-buffer buf
+          (setq out (buffer-substring-no-properties (point-min) (point-max))))
+        (list (car bounds) (cdr bounds)
+              (car (read-from-string out))
+              :exclusive 'no)))))
 
 (defun chez-repl-return (&optional _)
   "Newline or indent then newline the current input."
