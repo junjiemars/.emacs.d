@@ -133,7 +133,7 @@ This is run before the process is cranked up."
   (chez-check-proc (*chez*))
   (let ((bounds (bounds-of-thing-at-point 'symbol)))
     (when bounds
-      (let ((buf (get-buffer-create "*chez>out*"))
+      (let ((buf (get-buffer-create "*out|chez*"))
             (out)
             (cmd (format "(_chez_:complete-symbol \"%s\")"
                    (buffer-substring-no-properties (car bounds)
@@ -144,7 +144,7 @@ This is run before the process is cranked up."
           (comint-redirect-send-command-to-process cmd buf proc nil t)
           (set-buffer (*chez*))
           (while (and (null comint-redirect-completed)
-                      (accept-process-output proc))))
+                      (accept-process-output proc 0.2))))
         (with-current-buffer buf
           (setq out (buffer-substring-no-properties (point-min) (point-max))))
         (list (car bounds) (cdr bounds)
