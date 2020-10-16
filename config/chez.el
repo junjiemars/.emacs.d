@@ -308,8 +308,7 @@ end of buffer, otherwise just popup the buffer."
 (defun chez-send-region (start end)
   "Send the current region to `*chez*'."
   (interactive "r")
-  (process-send-region (chez-check-proc t) start end)
-  (comint-send-string (chez-check-proc t) "\n")
+  (process-send-region (chez-check-proc) start end)
   (chez-switch-to-repl t))
 
 (defun chez-send-last-sexp ()
@@ -337,7 +336,7 @@ determined by the prefix UNTRACE argument."
                                   (symbol-name (symbol-at-point))
                                   (car *chez-trace-history*))
                      current-prefix-arg))
-  (comint-send-string (chez-check-proc t)
+  (comint-send-string (chez-check-proc)
                       (format "(%s %s)\n"
                               (if untrace "untrace" "trace")
                               proc))
