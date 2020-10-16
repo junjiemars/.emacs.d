@@ -82,22 +82,22 @@
                                    (let ((x (shell-command* gsc
                                               "-e \"(system-type)\"")))
                                      (zerop (car x))))))
+      (compile-unit% (emacs-home* "config/gambit.el") t)
       (autoload 'gambit-mode (v-home% "config/gambit.elc")
         "Toggle Gambit's mode." t)
       (autoload 'run-gambit (v-home% "config/gambit.elc")
-        "Run gambit in buffer *gambit*." t)
-      (compile-unit% (emacs-home* "config/gambit.el") t))
+        "Run gambit in buffer *gambit*." t))
 
     (when% (executable-find% "scheme"
                              (lambda (chez)
                                (let ((x (shell-command* "echo"
                                           "'(+ 1 2 3)'|" chez "-q")))
                                  (zerop (car x)))))
+      (compile-unit% (emacs-home* "config/chez.el") t)
       (autoload 'chez-mode (v-home% "config/chez.elc")
         "Toggle Chez's mode." t)
       (autoload 'run-chez (v-home% "config/chez.elc")
-        "Run chez in buffer *chez*." t)
-      (compile-unit% (emacs-home* "config/chez.el") t))
+        "Run chez in buffer *chez*." t))
 
     )  ;; end of compile!
 

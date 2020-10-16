@@ -15,16 +15,17 @@
 (defmacro-if-feature% geiser)
 
 
-;; Disable auto `geiser-mode' for `scheme-mode'
+;;; Disable auto `geiser-mode' for `scheme-mode'
 (when-var% geiser-mode-auto-p 'geiser-mode
   (setq% geiser-mode-auto-p nil 'geiser-mode))
 
+
+;;; builtin `chez-mode' and `gambit-mode' better than `geiser'
 (setq% geiser-active-implementations
        (remove** nil 
                  (list (and (executable-find% "scheme") 'chez)
                        (and (executable-find% "racket") 'racket)
-                       ;; better one in `gambit'
-                       ;; (and (executable-find% "gambit") 'gambit)
+                       (and (executable-find% "gambit") 'gambit)
                        (and (executable-find% "guile") 'guile)
                        (and (executable-find% "chicken" 'chicken)))
                  :test #'eq)
