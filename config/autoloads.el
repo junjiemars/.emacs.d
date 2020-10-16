@@ -14,8 +14,8 @@
 (defmacro-if-feature% eww)
 
 
-(defun set-flavor-mode! ()
-  "Set flavor modes."
+(defun load-autoloaded-modes! ()
+  "Load autoloaded modes."
   (compile!
     (compile-unit% (emacs-home* "config/dicts.el"))
     (compile-unit% (emacs-home* "config/financial.el") t)
@@ -37,8 +37,12 @@
     (compile-unit% (emacs-home* "config/on-sql-autoload.el"))
     (compile-unit% (emacs-home* "config/on-term-autoload.el"))
     (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))
-    (compile-unit% (emacs-home* "config/on-window-autoload.el"))
+    (compile-unit% (emacs-home* "config/on-window-autoload.el"))))
+ ;; end of `load-autoloaded-modes!'
 
+(defun load-conditional-modes! ()
+  "Load conditional modes."
+  (compile!
     (when-font%
       (compile-unit% (emacs-home* "config/on-glyph-autoload.el")))
 
@@ -101,7 +105,7 @@
         "Run chez in buffer *chez*." t)
       (compile-unit% (emacs-home* "config/chez.el") t))
 
-    )  ;; end of compile!
+    ) ;; end of compile!
 
   ;; *scratch*
   (when (get-buffer "*scratch*")
@@ -114,13 +118,10 @@
   ;; enable column number mode
   (setq% column-number-mode t 'simple)
 
+  ) ;; end of `load-conditional-modes!'
+
 
-  )
-
- ;; end of set-flavor-mode!
-
-
-(defun set-global-key! ()
+(defun set-global-keys! ()
   "Set global keys."
 
   ;; Open file or url at point
@@ -167,8 +168,7 @@
   (define-key (current-global-map) (kbd "C-x C-v") #'view-file)
 
 
-  ) ;; end of set-global-key!
-
+  ) ;; end of set-global-keys!
 
 
 ;; after-init
@@ -180,8 +180,9 @@
        (compile! (compile-unit% (emacs-home* "config/module.el"))))
      (compile! (compile-unit% (emacs-home* "config/on-module.el")))
      (package-spec-:allowed-p (apply #'compile! *autoload-compile-units*))
-     (set-flavor-mode!)
-     (set-global-key!)
+     (load-autoloaded-modes!)
+     (load-conditional-modes!)
+     (set-global-keys!)
      (compile! (compile-unit* (self-def-path-ref-> :epilogue)))
      (when-fn% 'self-desktop-read! nil (self-desktop-read!))
      (ido-mode t))
