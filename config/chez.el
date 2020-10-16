@@ -308,7 +308,7 @@ end of buffer, otherwise just popup the buffer."
 (defun chez-send-region (start end)
   "Send the current region to `*chez*'."
   (interactive "r")
-  (comint-send-region (chez-check-proc t) start end)
+  (process-send-region (chez-check-proc t) start end)
   (comint-send-string (chez-check-proc t) "\n")
   (chez-switch-to-repl t))
 
@@ -321,10 +321,9 @@ end of buffer, otherwise just popup the buffer."
 (defun chez-send-definition ()
   "Send the current definition to `*chez*'."
   (interactive)
-  (chez-send-region (save-excursion (beginning-of-defun)
-                                    (point))
-                    (save-excursion (end-of-defun)
-                                    (point))))
+  (let ((start (save-excursion (beginning-of-defun) (point)))
+        (end (save-excursion (end-of-defun) (point))))
+    (chez-send-region start end)))
 
 (defun chez-trace-procedure (proc &optional untrace)
   "Trace or untrace procedure PROC in `*chez*' process.
