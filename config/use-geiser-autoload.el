@@ -21,17 +21,16 @@
 
 
 ;;; builtin `chez-mode' and `gambit-mode' better than `geiser'
-(setq% geiser-active-implementations
-       (remove** nil 
-                 (list (and (executable-find% "scheme") 'chez)
-                       (and (executable-find% "racket") 'racket)
+(when-var% geiser-active-implementations 'geiser-mode
+  (setq% geiser-active-implementations
+       (remove** nil
+                 (list (and (executable-find% "racket") 'racket)
+                       (and (executable-find% "scheme") 'chez)
                        (and (executable-find% "gambit") 'gambit)
                        (and (executable-find% "guile") 'guile)
                        (and (executable-find% "chicken" 'chicken)))
                  :test #'eq)
        'geiser-mode)
-
-(when-var% geiser-active-implementations 'geiser-mode
   (setq% geiser-default-implementation
          (car geiser-active-implementations) 'geiser-mode))
 
