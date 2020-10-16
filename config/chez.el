@@ -115,18 +115,16 @@ This is run before the process is cranked up."
   (or (get-buffer-process (*chez*))
       (error "No `*chez*' process.")))
 
-(defun chez-input-complete-p (&optional start end)
-  "Return t if the region from START to END contains a complete sexp."
+(defun chez-input-complete-p ()
+  "Return t if the input string contains a complete sexp."
   (save-excursion
-    (let ((lhs (or start (progn
-                           (comint-goto-process-mark)
-                           (point))))
-          (rhs (or end (point-max))))
-      (goto-char lhs)
+    (let ((start (save-excursion (comint-goto-process-mark) (point)))
+          (end (point-max)))
+      (goto-char start)
       (cond ((looking-at "\\s *['`#]?[(\"]")
              (ignore-errors
                (save-restriction
-                 (narrow-to-region lhs rhs)
+                 (narrow-to-region start end)
                  (loop* do (skip-chars-forward " \t\r\n)")
                         until (eobp)
                         do (forward-sexp))
@@ -156,17 +154,29 @@ This is run before the process is cranked up."
               (car (read-from-string out))
               :exclusive 'no)))))
 
-(defun chez-repl-return (&optional _)
+(defun chez-repl-return ()
   "Newline or indent then newline the current input."
-  (interactive "P")
+  (interactive)
   (chez-check-proc)
   (cond ((chez-input-complete-p) (comint-send-input))
         (t (newline 1 t))))
+
+(defun chez-repl-closing-return ()
+  "Close all open lists and evaluate the current input."
+  (interactive)
+  (goto-char (point-max))
+  (save-restriction
+    (narrow-to-region (save-excursion (comint-goto-process-mark) (point))
+                      (point))
+    (while (ignore-errors (save-excursion (backward-up-list 1)) t)
+      (insert ")")))
+  (chez-repl-return))
 
 
 (defvar chez-repl-mode-map
   (let ((m (make-sparse-keymap "chez")))
     (define-key m [return] #'chez-repl-return)
+    (define-key m [(control return)] #'chez-repl-closing-return)
     (define-key m "\C-c\C-b" #'chez-switch-to-last-buffer)
     m))
 
