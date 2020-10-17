@@ -262,7 +262,7 @@ end of buffer, otherwise just popup the buffer."
                   (cons (file-name-directory n)
                         (file-name-nondirectory n)))
                 scheme-source? t)) ;; t because `load'
-  (comint-check-source file) 
+  (comint-check-source file)
   (comint-send-string (gambit-check-proc)
                       (format "(load \"%s\")\n" file))
   (gambit-switch-to-last-buffer (current-buffer))
@@ -272,23 +272,22 @@ end of buffer, otherwise just popup the buffer."
   "Send the current region to `*gambit*'."
   (interactive "r")
   (comint-send-region (gambit-check-proc) start end)
-  (comint-send-string (gambit-check-proc) "\n")
+  (comint-send-string (*gambit*) "\n")
   (gambit-switch-to-repl t))
 
 (defun gambit-send-last-sexp ()
   "Send the previous sexp to `*gambit*'."
   (interactive)
-  (gambit-send-region (save-excursion (backward-sexp)
-                                      (point))
-                      (point)))
+  (let ((bounds (bounds-of-thing-at-point 'sexp)))
+    (when bounds
+      (gambit-send-region (car bounds) (cdr bounds)))))
 
 (defun gambit-send-definition ()
   "Send the current definition to `*gambit*'."
   (interactive)
-  (gambit-send-region (save-excursion (beginning-of-defun)
-                                      (point))
-                      (save-excursion (end-of-defun)
-                                      (point))))
+  (let ((bounds (bounds-of-thing-at-point 'defun)))
+    (when bounds
+      (gambit-send-region (car bounds) (cdr bounds)))))
 
 (defun gambit-trace-procedure (proc &optional untrace)
   "Trace or untrace procedure PROC in `*gambit*' process.
