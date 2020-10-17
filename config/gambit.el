@@ -111,9 +111,21 @@ This is run before the process is cranked up."
   (or (get-buffer-process (*gambit*))
       (error "No `*gambit*' process.")))
 
+(defun gambit-repl-closing-return ()
+  "Close all open lists and evaluate the current input."
+  (interactive)
+  (goto-char (point-max))
+  (save-restriction
+    (narrow-to-region (save-excursion (comint-goto-process-mark) (point))
+                      (point))
+    (while (ignore-errors (save-excursion (backward-up-list 1)) t)
+      (insert ")")))
+  (gambit-repl-return))
+
 
 (defvar gambit-repl-mode-map
   (let ((m (make-sparse-keymap)))
+    (define-key m [(control return)] #'gambit-repl-closing-return)
     (define-key m "\C-c\C-b" #'gambit-switch-to-last-buffer)
     m))
 
