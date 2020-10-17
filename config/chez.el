@@ -357,8 +357,7 @@ determined by the prefix UNTRACE argument."
    "Modeline indicator for `chez-mode'."))
 
 (defun chez-mode--lighter ()
-  (or chez-mode-string
-      (format " %s" (or "Chez" "C"))))
+  (or chez-mode-string "Chez"))
 
 (define-minor-mode chez-mode
   "Toggle Chez's mode.

@@ -324,8 +324,7 @@ determined by the prefix UNTRACE argument."
    "Modeline indicator for `gambit-mode'."))
 
 (defun gambit-mode--lighter ()
-  (or gambit-mode-string
-      (format " %s" (or "Gambit" "G"))))
+  (or gambit-mode-string "Gambit"))
 
 (define-minor-mode gambit-mode
   "Toggle Gambit's mode.
