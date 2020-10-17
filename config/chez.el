@@ -209,7 +209,7 @@ C-M-q does Tab on each line starting within following expression:
   Semicolons start comments.
 If you accidentally suspend your process, use
   \\[comint-continue-subjob] to continue it."
-  (setq comint-prompt-regexp "^> *")
+  (setq comint-prompt-regexp "^[^>\n]*>+ *")
   (setq comint-prompt-read-only t)
   (setq comint-input-filter #'chez-input-filter)
   (setq comint-get-old-input #'chez-get-old-input)
