@@ -306,20 +306,22 @@ end of buffer, otherwise just popup the buffer."
   "Send the current region to `*chez*'."
   (interactive "r")
   (process-send-region (chez-check-proc) start end)
+  (comint-send-string (*chez*) "\n")
   (chez-switch-to-repl t))
 
 (defun chez-send-last-sexp ()
   "Send the previous sexp to `*chez*'."
   (interactive)
-  (chez-send-region (save-excursion (backward-sexp) (point))
-                    (point)))
+  (let ((bounds (bounds-of-thing-at-point 'sexp)))
+    (when bounds
+      (chez-send-region (car bounds) (cdr bounds)))))
 
 (defun chez-send-definition ()
   "Send the current definition to `*chez*'."
   (interactive)
-  (let ((start (save-excursion (beginning-of-defun) (point)))
-        (end (save-excursion (end-of-defun) (point))))
-    (chez-send-region start end)))
+  (let ((bounds (bounds-of-thing-at-point 'defun)))
+    (when bounds
+      (chez-send-region (car bounds) (cdr bounds)))))
 
 (defun chez-trace-procedure (proc &optional untrace)
   "Trace or untrace procedure PROC in `*chez*' process.
