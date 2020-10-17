@@ -10,6 +10,9 @@
 
 (require 'comint)
 
+;; (require 'scheme)
+;; (require 'thingatpt)
+
 ;; ;; Disable `geiser-mode' for `scheme-mode'
 ;; (if-feature-geiser%
 ;;     (when-var% geiser-mode-auto-p 'geiser-mode
@@ -29,7 +32,7 @@
                                         "'(+ 1 2 3)'|" chez "-q")))
                                (zerop (car x)))))
          "scheme")
-        (t nil))
+        (t "scheme"))
   "Program invoked by the `run-chez' command."
   :type 'string
   :group 'chez)
@@ -63,11 +66,11 @@ This is run before the process is cranked up."
 
 
 (defalias '*chez-start-file*
-  (lexical-let%
-      ((b (let ((f (v-home% ".exec/.chez.ss")))
-            (unless (file-exists-p f)
-              (copy-file `,(emacs-home* "config/_chez_.ss") f t))
-            f)))
+  (lexical-let% ((b (let ((f (v-home% ".exec/.chez.ss")))
+                      (unless (file-exists-p f)
+                        (copy-file `,(emacs-home* "config/_chez_.ss")
+                                   f t))
+                      f)))
     (lambda (&optional n)
       (interactive)
       (if n (setq b n) b)))
@@ -83,8 +86,7 @@ This is run before the process is cranked up."
   "Switch to the last `chez-mode' buffer from `*chez*' buffer.")
 
 
-(defvar *chez-option-history*
-  nil
+(defvar *chez-option-history* nil
   "Chez option history list.")
 
 (defvar *chez-trace-history* nil
@@ -110,8 +112,7 @@ This is run before the process is cranked up."
   "Return the `*chez*' process or start one if necessary."
   (when (and spawn
              (not (eq 'run (car (comint-check-proc (*chez*))))))
-    (save-window-excursion
-      (run-chez (read-string "Run chez: " (car *chez-option-history*)))))
+    (save-window-excursion (call-interactively #'run-chez)))
   (or (get-buffer-process (*chez*))
       (error "No `*chez*' process.")))
 
@@ -224,18 +225,14 @@ If you accidentally suspend your process, use
 (defun run-chez (&optional command-line)
   "Run a chez process, input and output via buffer *chez*.
 
-If there is a process already running in *chez*, switch to that
-buffer.  With prefix COMMAND-LINE, allows you to edit the command
-line (default is value of `chez-program').
+If there is a process already running in `*chez*', switch to that
+buffer. With prefix COMMAND-LINE, allows you to edit the command
+line.
 
 Run the hook `chez-repl-mode-hook' after the `comint-mode-hook'."
-  (interactive
-   (list (if current-prefix-arg
-             (read-string "Run chez: "
-                          (car *chez-option-history*)
-                          '*chez-option-history*
-                          "--")
-           "--")))
+  (interactive (list (read-string "Run chez: "
+                                  (car *chez-option-history*)
+                                  '*chez-option-history*)))
   (unless (comint-check-proc (*chez*))
     (with-current-buffer (get-buffer-create "*chez*")
       (apply #'make-comint-in-buffer

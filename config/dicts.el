@@ -232,11 +232,9 @@
   (let* ((d1 (if dict dict *dict-default*))
          (url (cdr (assoc** "url" (cadr (assoc** 'dict d1 #'eq))
                             #'string=))))
-    (make-thread* (url-retrieve* (concat url (url-hexify-string what))
-                                 #'on-lookup-dict
-                                 d1
-                                 t
-                                 t))))
+    (make-thread*
+     (url-retrieve*
+      (concat url (url-hexify-string what)) #'on-lookup-dict d1 t t))))
 
 
 (define-key% (current-global-map) (kbd "M-s d") #'lookup-dict)
