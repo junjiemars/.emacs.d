@@ -111,6 +111,29 @@ This is run before the process is cranked up."
   (or (get-buffer-process (*gambit*))
       (error "No `*gambit*' process.")))
 
+(defun gambit-input-complete-p ()
+  "Return t if the input string contains a complete sexp."
+  (save-excursion
+    (let ((start (save-excursion (comint-goto-process-mark) (point)))
+          (end (point-max)))
+      (goto-char start)
+      (cond ((looking-at "\\s *['`#]?[(\"]")
+             (ignore-errors
+               (save-restriction
+                 (narrow-to-region start end)
+                 (loop* do (skip-chars-forward " \t\r\n)")
+                        until (eobp)
+                        do (forward-sexp))
+                 t)))
+            (t t)))))
+
+(defun gambit-repl-return ()
+  "Newline or indent then newline the current input."
+  (interactive)
+  (gambit-check-proc)
+  (cond ((gambit-input-complete-p) (comint-send-input))
+        (t (newline 1 t))))
+
 (defun gambit-repl-closing-return ()
   "Close all open lists and evaluate the current input."
   (interactive)
@@ -125,6 +148,7 @@ This is run before the process is cranked up."
 
 (defvar gambit-repl-mode-map
   (let ((m (make-sparse-keymap)))
+    (define-key m [return] #'gambit-repl-return)
     (define-key m [(control return)] #'gambit-repl-closing-return)
     (define-key m "\C-c\C-b" #'gambit-switch-to-last-buffer)
     m))
