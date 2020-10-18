@@ -263,6 +263,7 @@ Introduce the rules of naming /files/ and /functions/.
     ├── autoloads.el
     ├── basic.el
     ├── boot.el
+    ├── chez.el
     ├── dicts.el
     ├── financial.el
     ├── fns.el
@@ -1094,6 +1095,10 @@ programming the [[http://www.nongnu.org/geiser/][Geiser]] the pretty good.
 #+ATTR_HTML: :style text-align:left
 The [[http://www.gambitscheme.org/wiki/index.php/Main_Page][Gambit]] Scheme system is a complete, portable, efficient and
 reliable implementation, if you like it you can =run-gambit=.
+
+#+ATTR_HTML: :style text-align:left
+The [[https://scheme.com][Chez]] Scheme system is a complete, portable, efficient and
+reliable implementation, if you like it you can =run-chez=.
 
 *** Editing
 
