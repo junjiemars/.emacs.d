@@ -174,10 +174,12 @@ This is run before the process is cranked up."
 
 (defvar chez-repl-mode-map
   (let ((m (make-sparse-keymap "chez")))
-    (define-key m "\C-m" #'chez-repl-return)
-    (define-key m [return] #'chez-repl-return)
-    (define-key m "\C-\M-m" #'chez-repl-closing-return)
-    (define-key m [(control return)] #'chez-repl-closing-return)
+    (if-graphic%
+        (progn
+          (define-key m [return] #'chez-repl-return)
+          (define-key m [(control return)] #'chez-repl-closing-return))
+      (define-key m "\C-m" #'chez-repl-return)
+      (define-key m "\C-\M-m" #'chez-repl-closing-return))
     (define-key m "\C-c\C-b" #'chez-switch-to-last-buffer)
     m))
 
