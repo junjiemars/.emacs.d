@@ -102,9 +102,7 @@ This is run before the process is cranked up."
 
 (defun chez-get-old-input ()
   "Snarf the sexp ending at point."
-  (buffer-substring (save-excursion
-                      (backward-sexp)
-                      (point))
+  (buffer-substring (save-excursion (backward-sexp) (point))
                     (point)))
 
 
@@ -247,22 +245,21 @@ Run the hook `chez-repl-mode-hook' after the `comint-mode-hook'."
                          'completion-at-point-functions
                   'comint-dynamic-complete-functions)
                 #'chez-repl-completion nil 'local)))
-  (switch-to-buffer-other-window "*chez*"))
+  (switch-to-buffer-other-window (*chez*)))
 
 
  ;; end of REPL
 
 
-(defun chez-switch-to-repl (&optional arg)
+(defun chez-switch-to-repl (&optional no-select)
   "Switch to the `*chez*' buffer.
 
-If ARG is non-nil then select the buffer and put the cursor at
+If NO-SELECT is nil then select the buffer and put the cursor at
 end of buffer, otherwise just popup the buffer."
   (interactive "P")
   (chez-check-proc t)
   (chez-switch-to-last-buffer (current-buffer))
-  (if arg
-      ;; display REPL but do not select it
+  (if no-select
       (display-buffer (*chez*)
                       (if-fn% 'display-buffer-pop-up-window nil
                               #'display-buffer-pop-up-window
