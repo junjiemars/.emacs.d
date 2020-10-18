@@ -149,7 +149,9 @@ This is run before the process is cranked up."
 
 (defvar gambit-repl-mode-map
   (let ((m (make-sparse-keymap)))
+    (define-key m "\C-m" #'gambit-repl-return)
     (define-key m [return] #'gambit-repl-return)
+    (define-key m "\C-\M-m" #'gambit-repl-closing-return)
     (define-key m [(control return)] #'gambit-repl-closing-return)
     (define-key m "\C-c\C-b" #'gambit-switch-to-last-buffer)
     m))
