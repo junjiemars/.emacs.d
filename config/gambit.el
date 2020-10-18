@@ -215,7 +215,7 @@ Run the hook `gambit-repl-mode-hook' after the `comint-mode-hook'."
              (split-string* command-line "\\s-+" t))
       (*gambit* (current-buffer))
       (gambit-repl-mode)))
-  (switch-to-buffer-other-window "*gambit*"))
+  (switch-to-buffer-other-window (*gambit*)))
 
 
  ;; end of REPL
