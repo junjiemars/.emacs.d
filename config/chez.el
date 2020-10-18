@@ -332,8 +332,11 @@ determined by the prefix UNTRACE argument."
                                           (if current-prefix-arg
                                               "Untrace"
                                             "Trace"))
-                                  (symbol-name (symbol-at-point))
-                                  (car *chez-trace-history*))
+                                  (if current-prefix-arg
+                                      (car *chez-trace-history*)
+                                    (when (symbol-at-point)
+                                      (symbol-name (symbol-at-point))))
+                                  '*chez-trace-history*)
                      current-prefix-arg))
   (comint-send-string (chez-check-proc)
                       (format "(%s %s)\n"

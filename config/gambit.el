@@ -301,8 +301,8 @@ determined by the prefix UNTRACE argument."
                                             "Trace"))
                                   (if current-prefix-arg
                                       (car *gambit-trace-history*)
-                                    (and (symbol-at-point)
-                                         (symbol-name (symbol-at-point))))
+                                    (when (symbol-at-point)
+                                      (symbol-name (symbol-at-point))))
                                   '*gambit-trace-history*)
                      current-prefix-arg))
   (comint-send-string (gambit-check-proc)
