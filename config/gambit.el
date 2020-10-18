@@ -68,7 +68,7 @@ This is run before the process is cranked up."
 (defalias '*gambit-start-file*
   (lexical-let% ((b (let ((f (v-home% ".exec/.gambit.ss")))
                       (unless (file-exists-p f)
-                        (copy-file `,(emacs-home* "config/_gambit_.ss")
+                        (copy-file (emacs-home* "config/_gambit_.ss")
                                    f t))
                       f)))
     (lambda (&optional n)
