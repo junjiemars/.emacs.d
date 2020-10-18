@@ -221,16 +221,15 @@ Run the hook `gambit-repl-mode-hook' after the `comint-mode-hook'."
  ;; end of REPL
 
 
-(defun gambit-switch-to-repl (&optional arg)
+(defun gambit-switch-to-repl (&optional no-select)
   "Switch to the `*gambit*' buffer.
 
-If ARG is non-nil then select the buffer and put the cursor at
+If NO-SELECT is nil then select the buffer and put the cursor at
 end of buffer, otherwise just popup the buffer."
   (interactive "P")
   (gambit-check-proc t)
   (gambit-switch-to-last-buffer (current-buffer))
-  (if arg
-      ;; display REPL but do not select it
+  (if no-select
       (display-buffer (*gambit*)
                       (if-fn% 'display-buffer-pop-up-window nil
                               #'display-buffer-pop-up-window
@@ -242,13 +241,12 @@ end of buffer, otherwise just popup the buffer."
 
 (defun gambit-compile-file (file)
   "Compile a Scheme FILE in `*gambit*'."
-  (interactive (comint-get-source
-                "Compile Scheme file: "
-                (let ((n (buffer-file-name)))
-                  (cons (file-name-directory n)
-                        (file-name-nondirectory n)))
-                scheme-source?
-                nil)) 
+  (interactive (comint-get-source "Compile Scheme file: "
+                                  (let ((n (buffer-file-name)))
+                                    (cons (file-name-directory n)
+                                          (file-name-nondirectory n)))
+                                  scheme-source?
+                                  nil))
   (comint-check-source file)
   (comint-send-string (gambit-check-proc)
                       (format "(compile-file \"%s\")\n" file))
