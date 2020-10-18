@@ -23,7 +23,7 @@
 (defgroup gambit nil
   "Run a gambit process in a buffer."
   :group 'scheme)
-;; gsc-script -:d1- -i
+
 (defcustom% gambit-program
   (cond ((executable-find% "gsc-script"
                            (lambda (gsc)
@@ -31,7 +31,7 @@
                                         "-e \"(+ 1 2 3)\"")))
                                (zerop (car x)))))
          "gsc-script")
-        (t "gsc"))
+        (t "gsc-script"))
   "Program invoked by the `run-gambit' command."
   :type 'string
   :group 'gambit)
@@ -47,12 +47,14 @@ defaults."
 
 (defcustom% gambit-input-filter-regexp "\\`\\s *\\S ?\\S ?\\s *\\'"
   "Input matching this regexp are not saved on the history list.
+
 Defaults to a regexp ignoring all inputs of 0, 1, or 2 letters."
   :type 'regexp
   :group 'gambit)
 
 (defcustom% gambit-repl-mode-hook nil
   "Hook run upon entry to `gambit-repl-mode'.
+
 This is run before the process is cranked up."
   :type 'hook
   :group 'gambit)
@@ -98,8 +100,7 @@ This is run before the process is cranked up."
 
 (defun gambit-get-old-input ()
   "Snarf the sexp ending at point."
-  (buffer-substring (save-excursion (backward-sexp)
-                                    (point))
+  (buffer-substring (save-excursion (backward-sexp) (point))
                     (point)))
 
 
@@ -298,8 +299,11 @@ determined by the prefix UNTRACE argument."
                                           (if current-prefix-arg
                                               "Untrace"
                                             "Trace"))
-                                  (symbol-name (symbol-at-point))
-                                  (car *gambit-trace-history*))
+                                  (if current-prefix-arg
+                                      (car *gambit-trace-history*)
+                                    (and (symbol-at-point)
+                                         (symbol-name (symbol-at-point))))
+                                  '*gambit-trace-history*)
                      current-prefix-arg))
   (comint-send-string (gambit-check-proc)
                       (format "(%s %s)\n"
