@@ -55,13 +55,13 @@
 
 
 (defconst +lldb-prompt-regexp+ "^\\(?:(lldb) *\\)"
-  "Regexp pattern of `lldb' prompt.")
+  "The regexp pattern of `lldb' prompt.")
 
 
 (defcustom% gud-lldb-directories nil
   "A list of directories that lldb should search for source code.
-If nil, only source files in the program directory
-will be known to lldb.
+If nil, only source files in the program directory will be known
+to lldb.
 
 The file names should be absolute, or relative to the directory
 containing the executable being debugged."
@@ -71,7 +71,7 @@ containing the executable being debugged."
   :group 'gud)
 
 
-
+ ;; end of variable declarations
 
 
 ;;;;
@@ -83,9 +83,8 @@ containing the executable being debugged."
 (defun lldb-file-name (filename)
   "Transform a relative FILENAME to an absolute one.
 
-Return absolute filename when FILENAME existing or it's existing 
-in `gud-lldb-directories'.
-"
+Return absolute filename when FILENAME existing or it's existing
+in `gud-lldb-directories'."
   (or (let ((f (expand-file-name filename)))
         (when (file-exists-p f) f))
       (loop* for d in gud-lldb-directories
@@ -159,7 +158,8 @@ The job of the massage-args method is to modify the given list of
 debugger arguments before running the debugger."
   (ignore* file)
   (append (loop* for x in gud-lldb-command-line-hook
-                 when (functionp x) append (funcall x)) args))
+                 when (functionp x) append (funcall x))
+          args))
 
 
 (defun gud-lldb-marker-filter (string)
@@ -195,10 +195,18 @@ some and passing on the rest."
 
 
 (defun lldb (command-line)
-  "Run lldb on program FILE in buffer *gud-FILE*.
+  "Run lldb passing it COMMAND-LINE as arguments.
 
-The directory containing FILE becomes the initial working
-directory and source-file directory for your debugger."
+If COMMAND-LINE names a program FILE to debug, lldb will run in a
+buffer named *gud-FILE*, and the directory containing FILE
+becomes the initial working directory and source-file directory
+for your debugger.
+
+If COMMAND-LINE requests that lldb attaches to a process PID,
+lldb will run in *gud-PID*, otherwise it will run in *lldb*; in
+these cases the initial working directory is the
+`default-directory' of the buffer in which this command was
+invoked."
   (interactive (list (gud-query-cmdline 'lldb)))
   
   (gud-common-init command-line
@@ -248,4 +256,4 @@ directory and source-file directory for your debugger."
 
 (provide 'gud-lldb)
 
-
+;;; end of file
