@@ -34,7 +34,7 @@
 
 
 ;;;;
-;;  variables                                       ;
+;;  variables
 ;;;;
 
 
@@ -54,10 +54,6 @@
   :group 'gud)
 
 
-(defconst +lldb-prompt-regexp+ "^\\(?:(lldb) *\\)"
-  "The regexp pattern of `lldb' prompt.")
-
-
 (defcustom% gud-lldb-directories nil
   "A list of directories that lldb should search for source code.
 If nil, only source files in the program directory will be known
@@ -71,6 +67,9 @@ containing the executable being debugged."
   :group 'gud)
 
 
+(defconst +gud-lldb-prompt-regexp+ "^\\(?:(lldb) *\\)"
+  "The regexp pattern of `lldb' prompt.")
+
  ;; end of variable declarations
 
 
@@ -79,12 +78,10 @@ containing the executable being debugged."
 ;;;;
 
 
-
 (defun lldb-file-name (filename)
   "Transform a relative FILENAME to an absolute one.
 
-Return absolute filename when FILENAME existing or it's existing
-in `gud-lldb-directories'."
+Return absolute filename when FILENAME exists, otherwise nil."
   (or (let ((f (expand-file-name filename)))
         (when (file-exists-p f) f))
       (loop* for d in gud-lldb-directories
@@ -93,22 +90,20 @@ in `gud-lldb-directories'."
 
 
 (defmacro lldb-settings (subcommand &rest args)
-  "lldb's settings macro."
+  "Macro to set lldb's settings."
   (declare (indent 1))
   `(mapconcat #'identity (list "settings" ,subcommand ,@args) " "))
 
 
 (defun lldb-settings-frame-format ()
-  "Return frame-format settings of current lldb process.
-
-The default frame format string to use when displaying 
-stack frame information for threads. "
+  "Set lldb's default frame-format."
   (gud-call (lldb-settings
        "set" "frame-format"
        "frame #${frame.index}: ${frame.pc}{ ${module.file.basename}{`${function.name-with-args}{${frame.no-debug}${function.pc-offset}}}}{ at ${line.file.fullpath}:${line.number}}{${function.is-optimized} [opt]}\\n")))
 
 
-(defun lldb-settings-no-code-display ()
+(defun lldb-settings-stop-display ()
+  "Set lldb's default stop display."
   (gud-call (lldb-settings "set" "stop-disassembly-display" "never"))
   (gud-call (lldb-settings "set" "stop-line-count-before" "0"))
   (gud-call (lldb-settings "set" "stop-line-count-after" "0")))
@@ -135,6 +130,12 @@ stack frame information for threads. "
 ;;;;
 
 
+
+;; gud-lldb defined, interact with `gud'
+;; `+gud-lldb-prompt-regexp+' -> `comint-prompt-regexp'
+;; `gud-lldb-massage-args'
+;; `gud-lldb-marker-filter'
+;; `gud-lldb-find-file'
 
 (defun gud-lldb-find-file (filename)
   "As the optional argument: find-file of `gud-common-init'.
@@ -189,7 +190,7 @@ some and passing on the rest."
 
 
 ;; set default `gud-lldb-init-hook'
-(add-hook 'gud-lldb-init-hook #'lldb-settings-no-code-display t)
+(add-hook 'gud-lldb-init-hook #'lldb-settings-stop-display t)
 (add-hook 'gud-lldb-init-hook #'lldb-settings-frame-format t)
 
 
@@ -237,14 +238,14 @@ invoked."
            "expression -- %e"
            "\C-p"   "Evaluate C expression at point.")
 
-  (set (make-local-variable 'comint-prompt-regexp) +lldb-prompt-regexp+)
+  (set (make-local-variable 'comint-prompt-regexp) +gud-lldb-prompt-regexp+)
   (set (make-local-variable 'comint-prompt-read-only) t)
   (unless (memq 'ansi-color-process-output comint-output-filter-functions)
     (add-to-list 'comint-output-filter-functions #'ansi-color-process-output))
 
   ;; M-{ and M-}
   (set (make-local-variable 'paragraph-separate) "\\'")
-  (set (make-local-variable 'paragraph-start) +lldb-prompt-regexp+)
+  (set (make-local-variable 'paragraph-start) +gud-lldb-prompt-regexp+)
 
   (loop* for x in gud-lldb-init-hook when (functionp x) do (funcall x))
   (setq gud-running nil)
