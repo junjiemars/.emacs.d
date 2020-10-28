@@ -7,15 +7,20 @@
 ;;;;
 
 
-(defun set-slime-lisp-implementations! ()
-  "More easy way to set `slime-lisp-implementations'."
-  (setq% slime-lisp-implementations
-         (let ((impls nil))
-           (dolist* (x '(acl ccl clasp ecl sbcl) impls)
-             (let* ((impl (if (consp x) (car x) x))
-                    (bin (executable-find (symbol-name impl))))
-               (when bin (push (list impl (list bin)) impls)))))
-         'slime))
+(defalias '*slime-lisp-implementations*
+  (lexical-let% ((ls (let ((ns))
+                       (mapc
+                        (lambda (x)
+                          (let ((bin (executable-find
+                                      (symbol-name x))))
+                            (when bin (push (list x (list bin)) ns))))
+                             '(acl ccl clasp ecl sbcl))
+                       ns)))
+    (lambda (&optional new)
+      (setq% slime-lisp-implementations
+             (if new (push new ls) ls)
+             'slime)))
+  "Parameterized set `slime-lisp-implementations'.")
 
 
 (when-fn% 'slime-show-source-location 'slime
@@ -29,7 +34,7 @@
 
 (with-eval-after-load 'slime
 
-  (set-slime-lisp-implementations!)
+  (*slime-lisp-implementations*)
 
   (when-fn% 'slime-setup 'slime
     (slime-setup '(slime-fancy slime-asdf)))
