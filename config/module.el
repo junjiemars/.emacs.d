@@ -11,8 +11,14 @@
 (setq% package-user-dir (v-home% "elpa/") 'package)
 
 
-(defvar *repository-initialized* nil
+(defalias '*repository-initialized*
+  (lexical-let% ((b))
+    (lambda (&optional n)
+      (if n (setq b n) b)))
   "Indicate `initialize-package-repository!' whether has been called.")
+
+;; (defvar *repository-initialized* nil
+;;   "Indicate `initialize-package-repository!' whether has been called.")
 
 
 (defsubst initialize-package-repository! ()
@@ -75,9 +81,9 @@
   "Install PACKAGE."
   (if tar
       (package-install-file package)
-    (unless *repository-initialized*
+    (unless (*repository-initialized*)
       (initialize-package-repository!)
-      (setq *repository-initialized* t))
+      (*repository-initialized* t))
     (if-version%
         <= 25.0
         (package-install package t)

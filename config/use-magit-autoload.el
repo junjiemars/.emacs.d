@@ -17,8 +17,7 @@
 
 (when-fn% 'magit-status 'magit
   ;; should take up the `vc-create-tag' key binding
-  (define-key (current-global-map) (kbd "C-x v M")
-    #'magit-status))
+  (define-key (current-global-map) (kbd "C-x v M") #'magit-status))
 
 
 ;; end of file
