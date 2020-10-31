@@ -17,7 +17,7 @@
 (defun load-autoloaded-modes! ()
   "Load autoloaded modes."
   (compile!
-    (compile-unit% (emacs-home* "config/dicts.el"))
+
     (compile-unit% (emacs-home* "config/financial.el") t)
     (compile-unit% (emacs-home* "config/go.el") t)
     (compile-unit% (emacs-home* "config/tags.el"))
@@ -43,35 +43,48 @@
 (defun load-conditional-modes! ()
   "Load conditional modes."
   (compile!
+    ;; Lookup dictionary
+    (progn
+      (autoload 'lookup-dict (v-home% "config/dicts.elc")
+        "Lookup WORD in DICT then show the result in the echo area." t)
+      (compile-unit% (emacs-home* "config/dicts.el") t))
+
+    ;; Glyph
     (when-font%
       (compile-unit% (emacs-home* "config/on-glyph-autoload.el")))
 
+    ;; `semantic-mode'
     (if-feature-semantic%
         (progn
           (autoload 'set-semantic-cc-env!
             (v-home% "config/on-semantic-autoload.elc"))
           (compile-unit% (emacs-home* "config/on-semantic-autoload.el"))))
 
+    ;; `eww-mode'
     (if-feature-eww%
         (compile-unit% (emacs-home* "config/on-eww-autoload.el")))
 
+    ;; `doc-view-mode'
     (when-platform% 'windows-nt
       (when% (or (executable-find% "gswin64c")
                  (executable-find% "gswin32c")
                  (executable-find% "mutool"))
         (compile-unit% (emacs-home* "config/on-docview-autoload.el"))))
 
+    ;; Debugger `gud-cdb'
     (when-platform% 'windows-nt
       (when% (executable-find% "cdb")
         (autoload 'cdb (v-home% "config/gud-cdb.elc")
           "Run lldb on program FILE in buffer *gud-FILE*." t)
         (compile-unit% (emacs-home* "config/gud-cdb.el") t)))
 
+    ;; Debugger `gud-lldb'
     (when% (executable-find% "lldb")
       (autoload 'lldb (v-home% "config/gud-lldb.elc")
         "Run cdb on program FILE in buffer *gud-FILE*." t)
       (compile-unit% (emacs-home* "config/gud-lldb.el") t))
 
+    ;; Python
     (when% (executable-find%
             "python"
             (lambda (python)
@@ -80,6 +93,7 @@
                      (string= "3" (string-trim> (cdr x)))))))
       (compile-unit% (emacs-home* "config/on-python-autoload.el")))
 
+    ;; Scheme `gambit-mode'
     (when% (or (executable-find% "gsc-script")
                (executable-find% "gsc"
                                  (lambda (gsc)
@@ -93,6 +107,7 @@
         "Run gambit in buffer *gambit*." t)
       (compile-unit% (emacs-home* "config/gambit.el") t))
 
+    ;; Scheme `chez-mode'
     (when% (executable-find% "scheme"
                              (lambda (chez)
                                (let ((x (shell-command* "echo"
@@ -123,6 +138,10 @@
 
 (defun set-global-keys! ()
   "Set global keys."
+
+  ;; Lookup dictionary
+  (define-key% (current-global-map) (kbd "M-s d") 'lookup-dict)
+  (define-key% (current-global-map) (kbd "C-c f d") 'lookup-dict)
 
   ;; Open file or url at point
   (when-fn% 'find-file-at-point 'ffap

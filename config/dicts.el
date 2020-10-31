@@ -237,7 +237,7 @@
       (concat url (url-hexify-string what)) #'on-lookup-dict d1 t t))))
 
 
-(define-key% (current-global-map) (kbd "M-s d") #'lookup-dict)
-(define-key% (current-global-map) (kbd "C-c f d") #'lookup-dict)
+
+(provide 'dict)
 
 ;; end of dicts.el
