@@ -20,19 +20,27 @@
   (setq% geiser-mode-auto-p nil 'geiser-mode))
 
 
-;;; builtin `chez-mode' and `gambit-mode' better than `geiser'
-(when-var% geiser-active-implementations 'geiser-mode
-  (setq% geiser-active-implementations
-       (remove** nil
-                 (list (and (executable-find% "racket") 'racket)
-                       (and (executable-find% "scheme") 'chez)
-                       (and (executable-find% "gambit") 'gambit)
-                       (and (executable-find% "guile") 'guile)
-                       (and (executable-find% "chicken" 'chicken)))
-                 :test #'eq)
-       'geiser-mode)
+(defalias '*geiser-lisp-implementations*
+  (lexical-let% ((ls (let ((ns))
+                       (mapc
+                        (lambda (x)
+                          (let ((bin (executable-find (symbol-name x))))
+                            (when bin (push x ns))))
+                        '(scheme chicken guile racket))
+                       ns)))
+    (lambda (&optional new)
+      (setq% geiser-active-implementations
+             (if new (push new ls) ls)
+             'geiser)))
+  "Parameterized set `geiser-active-implementations'.")
+
+
+(with-eval-after-load 'geiser
+  ;;; builtin `chez-mode' and `gambit-mode' better than `geiser'
+  (*geiser-lisp-implementations*)
   (setq% geiser-default-implementation
-         (car geiser-active-implementations) 'geiser-mode))
+         (car geiser-active-implementations)
+         'geiser-mode))
 
 
 ;; eof

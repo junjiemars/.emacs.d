@@ -11,8 +11,7 @@
   (lexical-let% ((ls (let ((ns))
                        (mapc
                         (lambda (x)
-                          (let ((bin (executable-find
-                                      (symbol-name x))))
+                          (let ((bin (executable-find (symbol-name x))))
                             (when bin (push (list x (list bin)) ns))))
                              '(acl ccl clasp ecl sbcl))
                        ns)))
@@ -38,7 +37,6 @@
 
   (when-fn% 'slime-setup 'slime
     (slime-setup '(slime-fancy slime-asdf)))
-
   (when-fn% 'slime-selector 'slime
     (define-key (current-global-map) (kbd "C-c s s") #'slime-selector))
 
