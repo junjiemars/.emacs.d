@@ -5,6 +5,12 @@
 ;;;;
 ;; gambit.el
 ;;;;
+;;; 1. start parameterized gambit process.
+;;; 2. switch/back to gambit REPL.
+;;; 3. send sexp/definition/region to gambit REPL.
+;;; 4. compile/load scheme file.
+;;; 5. indentation in REPL.
+;;; 6*. completion in REPL.
 
 
 (require 'comint)
