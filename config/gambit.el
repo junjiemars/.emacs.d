@@ -72,14 +72,14 @@ This is run before the process is cranked up."
   "The current *gambit* process buffer.")
 
 (defalias '*gambit-start-file*
-  (lexical-let% ((b (let ((f (v-home% ".exec/.gambit.ss")))
-                      (unless (file-exists-p f)
-                        (copy-file (emacs-home* "config/_gambit_.ss")
-                                   f t))
-                      f)))
+  (lexical-let% ((b (v-home% ".exec/.gambit.ss")))
     (lambda (&optional n)
       (interactive)
-      (if n (setq b n) b)))
+      (if n
+          (setq b n)
+        (unless (file-exists-p b)
+          (copy-file (emacs-home* "config/_gambit_.ss") b t))
+        b)))
   "The `*gambit*' process start file.")
 
 (defalias 'gambit-switch-to-last-buffer
