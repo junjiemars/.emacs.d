@@ -6,6 +6,12 @@
 ;;;;
 ;; chez.el
 ;;;;
+;;; 1. start parameterized chez process.
+;;; 2. switch/back to chez REPL.
+;;; 3. send sexp/definition/region to chez REPL.
+;;; 4. compile/load scheme file.
+;;; 5. indentation in REPL.
+;;; 6. completion in REPL and scheme source.
 
 
 (require 'comint)
@@ -181,7 +187,8 @@ This is run before the process is cranked up."
       (define-key m "\C-m" #'chez-repl-return)
       (define-key m "\C-\M-m" #'chez-repl-closing-return))
     (define-key m "\C-c\C-b" #'chez-switch-to-last-buffer)
-    m))
+    m)
+  "The keymap for `*chez*' REPL.")
 
 
 (define-derived-mode chez-repl-mode comint-mode "REPL"
@@ -194,24 +201,8 @@ A chez process can be fired up with M-x `run-chez'.
 
 Customization: 
 Entry to this mode runs the hooks on `comint-mode-hook' and
-  `chez-repl-mode-hook' (in that order).
-You can send text to the chez process from other buffers
-  containing Scheme source.
-
-Commands:
-Return after the end of the process' output sends the
-  text from the end of process to point.
-Return before the end of the process' output copies the sexp
-  ending at point to the end of the process' output, and sends
-  it.
-Delete converts tabs to spaces as it moves back.
-Tab indents for Scheme; with argument, shifts rest of expression
-  rigidly with the current line.
-C-M-q does Tab on each line starting within following expression:
-  Paragraphs are separated only by blank lines.
-  Semicolons start comments.
-If you accidentally suspend your process, use
-  \\[comint-continue-subjob] to continue it."
+  `chez-repl-mode-hook' (in that order)."
+  :group 'chez                          ; keyword args
   (setq comint-prompt-regexp "^[^>\n]*>+ *")
   (setq comint-prompt-read-only t)
   (setq comint-input-filter #'chez-input-filter)
@@ -376,7 +367,11 @@ interacting with the Chez REPL is at your disposal.
   :init-value nil
   :lighter (:eval (chez-mode--lighter))
   :group 'chez-mode
-  :keymap chez-mode-map)
+  :keymap chez-mode-map
+  (add-hook (if-var% completion-at-point-functions 'minibuffer
+                         'completion-at-point-functions
+                  'comint-dynamic-complete-functions)
+                #'chez-repl-completion nil 'local))
 
 
 
