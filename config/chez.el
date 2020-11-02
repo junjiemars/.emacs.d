@@ -136,7 +136,7 @@ This is run before the process is cranked up."
                  t)))
             (t t)))))
 
-(defun chez-repl-completion ()
+(defun chez-completion ()
   (interactive)
   (chez-check-proc)
   (let ((bounds (bounds-of-thing-at-point 'symbol)))
@@ -203,7 +203,7 @@ Customization:
 Entry to this mode runs the hooks on `comint-mode-hook' and
   `chez-repl-mode-hook' (in that order)."
   :group 'chez                          ; keyword args
-  (setq comint-prompt-regexp "^[^>\n]*>+ *")
+  (setq comint-prompt-regexp "^[^>\n-]*>+ *")
   (setq comint-prompt-read-only t)
   (setq comint-input-filter #'chez-input-filter)
   (setq comint-get-old-input #'chez-get-old-input)
@@ -239,7 +239,7 @@ Run the hook `chez-repl-mode-hook' after the `comint-mode-hook'."
       (add-hook (if-var% completion-at-point-functions 'minibuffer
                          'completion-at-point-functions
                   'comint-dynamic-complete-functions)
-                #'chez-repl-completion nil 'local)))
+                #'chez-completion nil 'local)))
   (switch-to-buffer-other-window (*chez*)))
 
 
@@ -371,7 +371,7 @@ interacting with the Chez REPL is at your disposal.
   (add-hook (if-var% completion-at-point-functions 'minibuffer
                          'completion-at-point-functions
                   'comint-dynamic-complete-functions)
-                #'chez-repl-completion nil 'local))
+                #'chez-completion nil 'local))
 
 
 
