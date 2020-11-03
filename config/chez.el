@@ -157,7 +157,7 @@ This is run before the process is cranked up."
           (setq out (buffer-substring-no-properties (point-min) (point-max))))
         (list (car bounds) (cdr bounds)
               (let ((s1 (car (read-from-string out))))
-                (if (symbolp s1) nil s1))
+                (when (consp s1) s1))
               :exclusive 'no)))))
 
 (defun chez-repl-return ()
