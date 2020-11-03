@@ -114,8 +114,8 @@ This is run before the process is cranked up."
 (defun chez-preoutput-filter (out)
   "Output start a newline when empty out or tracing."
   (cond ((and (>= (length out) 2)
-              (or (string= "> " (substring-no-properties out 0 2))
-                  (string= "|" (substring-no-properties out 0 1))))
+              (or (string= "> " (substring out 0 2))
+                  (string= "|" (substring out 0 1))))
          (concat "\n" out))
         (t out)))
 
