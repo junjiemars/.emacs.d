@@ -111,6 +111,13 @@ This is run before the process is cranked up."
   (buffer-substring (save-excursion (backward-sexp) (point))
                     (point)))
 
+(defun chez-preoutput-filter (out)
+  "Output start a newline when empty out or tracing."
+  (cond ((and (>= (length out) 2)
+              (or (string= "> " (substring-no-properties out 0 2))
+                  (string= "|" (substring-no-properties out 0 1))))
+         (concat "\n" out))
+        (t out)))
 
 (defun chez-check-proc (&optional spawn)
   "Return the `*chez*' process or start one if necessary."
@@ -208,6 +215,8 @@ Entry to this mode runs the hooks on `comint-mode-hook' and
   (setq comint-prompt-read-only t)
   (setq comint-input-filter #'chez-input-filter)
   (setq comint-get-old-input #'chez-get-old-input)
+  (add-hook 'comint-preoutput-filter-functions
+            #'chez-preoutput-filter nil 'local)
   (when% (with-var byte-compile-warnings
            (setq byte-compile-warnings nil)
            (require 'scheme nil t))
