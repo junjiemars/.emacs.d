@@ -108,8 +108,12 @@ This is run before the process is cranked up."
 
 (defun chez-get-old-input ()
   "Snarf the sexp ending at point."
-  (buffer-substring (save-excursion (backward-sexp) (point))
-                    (point)))
+  (let ((old (buffer-substring (save-excursion (backward-sexp) (point))
+                             (point))))
+    (cond ((and (>= (length old) 2)
+                (string= "> " (substring old 0 2)))
+           (substring old 2))
+          (t old))))
 
 (defun chez-preoutput-filter (out)
   "Output start a newline when empty out or tracing."
