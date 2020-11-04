@@ -11,8 +11,7 @@
   `(("bing"
      ("url" . "https://cn.bing.com/dict/search?q=")
      ("meta" . (("<meta name=\"description\" content=\"必应词典为您提供.+的释义，")
-                "\" /><"
-                .
+                "\" /><" .
                 (,(lambda (ss)
                     (with-temp-buffer
                       (insert ss)
@@ -32,34 +31,28 @@
                        .
                        (dict-fn-remove-html-tag)))
      ("spelled-like" . (("<div class=\"df_wb_a\">形近词</div>")
-                        "</div></div></div>"
-                        .
+                        "</div></div></div>" .
                         (dict-fn-remove-html-tag))))
     ("camb/zh"
-     ("url"
-      .
+     ("url" .
       "https://dictionary.cambridge.org/dictionary/english-chinese-simplified/")
      ("pron-us" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
-                   "<"
-                   .
+                   "<" .
                    (,(lambda (x)
                        (format "|%s|" x)))))
      ("pron-uk" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 1)
-                   "<"
-                   .
+                   "<" .
                    (,(lambda (x)
                        (format "/%s/" x)))))
      ("meta" . (("<meta itemprop=\"headline\" content=\".+translate: ")
-                "Learn"
-                .
+                "Learn" .
                 (dict-fn-decode-char
                  dict-fn-decode-html-char
                  dict-fn-norm-zh-punc))))
     ("camb/en"
      ("url" . "https://dictionary.cambridge.org/dictionary/english/")
      ("pron-us" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
-                   "<"
-                   .
+                   "<" .
                    (,(lambda (x)
                        (format "|%s|" x)))))
      ("pron-uk" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 1)
@@ -68,22 +61,18 @@
                    (,(lambda (x)
                        (format "/%s/" x)))))
      ("meta" . (("<meta name=\"description\" content=\".*? definition: ")
-                "Learn"
-                .
+                "Learn" .
                 (dict-fn-decode-html-char))))
     ("longman"
      ("url" . "https://www.ldoceonline.com/dictionary/")
      ("pron-uk" . (("<span class=\"PRON\">")
-                   "</span>"
-                   .
+                   "</span>" .
                    (dict-fn-remove-html-tag
                     ,(lambda (x)
                        (format "/%s/" x)))))
      ("meta" . (("<span class=\"DEF\">")
-                "</span>"
-                .
+                "</span>" .
                 (dict-fn-remove-html-tag)))))
-  
   "Dictionaries using by `lookup-dict'.")
 
 (defvar *dict-default*
