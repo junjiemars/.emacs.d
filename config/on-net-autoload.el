@@ -77,7 +77,8 @@
     (let* ((ping-program-options (if arg (split-string* arg " " t)
                                    ping-program-options))
            (ipv6 (and (executable-find% "ping6")
-                      (member** "-6" ping-program-options :test #'string=)))
+                      (member-if* (lambda (x) (string= x "-6"))
+                                  ping-program-options)))
            (ping-program-options
             (remove-if* (lambda (x)
                           (or (null x)
@@ -107,8 +108,8 @@
     (let* ((traceroute-program-options (if arg (split-string* arg " " t)
                                          traceroute-program-options))
            (ipv6 (and (executable-find% "traceroute6")
-                      (member** "-6" traceroute-program-options
-                                :test #'string=)))
+                      (member-if* (lambda (x) (string= x "-6"))
+                                  traceroute-program-options)))
            (traceroute-program-options
             (remove-if* (lambda (x)
                           (or (null x)

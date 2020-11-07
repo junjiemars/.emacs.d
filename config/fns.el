@@ -146,21 +146,19 @@ to avoid corrupting the original SEQ.
       (remove-if ,pred ,seq ,@keys))))
 
 
-
-;; Unify `cl-member' and `member*'
-(defmacro member** (item list &rest keys)
-  "Find the first occurrence of ITEM in LIST.
-Return the sublist of LIST whose car is ITEM.
-\nKeywords supported:  :test :test-not :key
-\n(fn ITEM LIST [KEYWORD VALUE]...)"
-  (if-fn% 'cl-member 'cl-lib
+(defmacro member-if* (pred list &rest keys)
+  "Find the first item satisfying PREDICATE in LIST.
+Return the sublist of LIST whose car matches.
+\nKeywords supported:  :key
+\n(fn PREDICATE LIST [KEYWORD VALUE]...)"
+  (if-fn% 'cl-member-if 'cl-lib
           (if-version% <= 25
-                       `(cl-member ,item ,list ,@keys)
-            (declare-function cl-member (item seq &rest keys)
+                       `(cl-member-if ,pred ,list ,@keys)
+            (declare-function cl-member-if (pred seq &rest keys)
                               t)
-            `(cl-member ,item ,list ,@keys))
+            `(cl-member-if ,pred ,list ,@keys))
     `(with-no-warnings
-       (member* ,item ,list ,@keys))))
+       (member-if ,pred ,list ,@keys))))
 
 
 (defmacro every* (pred &rest seq)
