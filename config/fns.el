@@ -129,22 +129,22 @@ SEQ, this is like `mapcar'.  With several, it is like the Common Lisp
          (mapcar* ,fn ,seq ,@seqs)))))
 
 
-;; Unify `cl-remove' and `remove*'
-(defmacro remove** (item seq &rest keys)
-  "Remove all occurrences of ITEM in SEQ.
+(defmacro remove-if* (pred seq &rest keys)
+  "Remove all items satisfying PREDICATE in SEQ.
 This is a non-destructive function; it makes a copy of SEQ if necessary
 to avoid corrupting the original SEQ.
-\nKeywords supported:  :test :test-not :key :count :start :end :from-end
-\n(fn ITEM SEQ [KEYWORD VALUE]...)"
-  (if-fn% 'cl-remove 'cl-lib
+\nKeywords supported:  :key :count :start :end :from-end
+\n(fn PREDICATE SEQ [KEYWORD VALUE]...)"  
+  (if-fn% 'cl-remove-if 'cl-lib
           (if-version% <= 25
-                       `(cl-remove ,item ,seq ,@keys)
-            (declare-function cl-remove "cl-seq.elc"
-                              (item seq &rest keys)
+                       `(cl-remove-if ,pred ,seq ,@keys)
+            (declare-function cl-remove-if "cl-seq.elc"
+                              (pred seq &rest keys)
                               t)
-            `(cl-remove ,item ,seq ,@keys))
-    `(with-no-warnings
-       (remove* ,item ,seq ,@keys))))
+            `(cl-remove-if ,pred ,seq ,@keys))
+    `(with-no-warnins
+      (remove-if ,pred ,seq ,@keys))))
+
 
 
 ;; Unify `cl-member' and `member*'

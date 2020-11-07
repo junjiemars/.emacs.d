@@ -86,9 +86,9 @@
   (let ((dict (cdr (assoc** (or dict (caar (*dict-defs*)))
                             (*dict-defs*) #'string=))))
     (list (cons 'dict (list dict))
-          (cons 'style (list (remove** "url"
-                                       (mapcar #'car dict)
-                                       :test #'string=))))))
+          (cons 'style (list (remove-if* (lambda (x)
+                                           (string= x "url"))
+                                         (mapcar #'car dict)))))))
 
 (defalias '*dict-debug-log*
   (lexical-let% ((b `(logging  nil
@@ -217,7 +217,8 @@
                                       (car ns))
                                   '*dict-name-history*))
                   (dd (cdr (assoc** d (*dict-defs*) #'string=)))
-                  (sr (remove** "url" (mapcar #'car dd) :test #'string=))
+                  (sr (remove-if* (lambda (x) (string= x "url"))
+                                  (mapcar #'car dd)))
                   (ss (read-string
                        (format "Choose (all|%s) "
                                (mapconcat #'identity sr ","))

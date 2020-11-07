@@ -444,11 +444,12 @@ See also: `multi-occur-in-matching-buffers'."
           "List lines in buffers whose major-mode match regexp: "
           (symbol-name major-mode))))
   (multi-occur
-   (remove** nil (buffer-list)
-             :if (lambda (buffer)
-                   (with-current-buffer buffer
-                     (unless (string= mode (symbol-name major-mode))
-                       buffer))))
+   (remove-if* (lambda (buffer)
+                 (or (null buffer)
+                     (with-current-buffer buffer
+                       (unless (string= mode (symbol-name major-mode))
+                         buffer))))
+               (buffer-list))
    (car (occur-read-primary-args))))
 
 

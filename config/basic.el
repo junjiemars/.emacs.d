@@ -322,10 +322,11 @@ filted files.
 
 DN specify dir-function (lambda (aboslute-name)...), process
 filted directories."
-  (let ((files (remove** nil (file-name-all-completions "" dir)
-                         :if (lambda (x)
-                               (or (string= "./" x)
-                                   (string= "../" x))))))
+  (let ((files (remove-if* (lambda (x)
+                             (or (null x)
+                                 (string= "./" x)
+                                 (string= "../" x)))
+                           (file-name-all-completions "" dir))))
     (while files
       (let ((f (car files)))
         (let ((a (expand-file-name f dir)))
@@ -363,14 +364,15 @@ PREFER (lambda (dir files)...)."
                 (directory-name-p d)
                 (not (string-match stop d)))
       (and prefer (funcall prefer d
-                           (remove**
-                            nil (file-name-all-completions "" d)
-                            :if (lambda (x)
-                                  (or (string= "./" x)
-                                      (string= "../" x)
-                                      (let ((dx (concat d x)))
-                                        (and (directory-name-p dx)
-                                             (file-symlink-p* dx))))))))
+                           (remove-if*
+                            (lambda (x)
+                              (or (null x)
+                                  (string= "./" x)
+                                  (string= "../" x)
+                                  (let ((dx (concat d x)))
+                                    (and (directory-name-p dx)
+                                         (file-symlink-p* dx)))))
+                            (file-name-all-completions "" d))))
       (setq d (path- d)))))
 
 

@@ -79,9 +79,10 @@
            (ipv6 (and (executable-find% "ping6")
                       (member** "-6" ping-program-options :test #'string=)))
            (ping-program-options
-            (remove** nil ping-program-options
-                      :if (lambda (x)
-                            (when ipv6 (string= "-6" x)))))
+            (remove-if* (lambda (x)
+                          (or (null x)
+                              (when ipv6 (string= "-6" x))))
+                        ping-program-options))
            (ping-program (if ipv6 "ping6" ping-program)))
       (call-interactively #'ping t))))
 
@@ -109,9 +110,10 @@
                       (member** "-6" traceroute-program-options
                                 :test #'string=)))
            (traceroute-program-options
-            (remove** nil traceroute-program-options
-                      :if (lambda (x)
-                            (when ipv6 (string= "-6" x)))))
+            (remove-if* (lambda (x)
+                          (or (null x)
+                              (when ipv6 (string= "-6" x))))
+                        traceroute-program-options))
            (traceroute-program (if ipv6 "traceroute6" traceroute-program)))
       (call-interactively #'traceroute t))))
 

@@ -108,10 +108,10 @@ With prefix argument TAGS unmount all tags from `tags-table-list'."
   (interactive (list (when (not current-prefix-arg)
                        (read-file-name "unmount tags from "))))
   (setq tags-table-list
-        (if tags
-            (remove** (expand-file-name tags)
-                      tags-table-list :test #'string=)
-          nil)))
+        (when tags
+          (let ((fn (expand-file-name tags)))
+            (remove-if* (lambda (x) (string= x fn))
+                        tags-table-list)))))
 
 
 (defun make-tags (home tags-file file-filter dir-filter

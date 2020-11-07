@@ -331,7 +331,8 @@ If ENDIAN is t then decode in small endian."
                          s s (text-char-description s)
                          c c (text-char-description c)
                          (plist-get tbl s)))))
-            (remove** 930 (range 913 (+ 913 24)) :test #'=))))
+            (remove-if* (lambda (x) (= x 930))
+                        (range 913 (+ 913 24))))))
   (view-mode t))
 
 
