@@ -550,16 +550,10 @@
   (should-not (some* #'< '(1 2 3) '(1 2 3))))
 
 (ert-deftest %fns:loop* ()
-  ;; (should (string= "c" (loop* for x in (list "a" "b" "c" "d")
-  ;;                             do (when (string= "c" x)
-  ;;                                  (return x)))))
-  ;; (should (= 1 (loop* with n = '(1 2 3)
-  ;;                     for x in n
-  ;;                     do (return x))))
-  ;; (should (equal '(1 9) (loop* for i from 1 to 3
-  ;;                              when (oddp i)
-  ;;                              collect (* i i))))
-  )
+  (should (equal '(1 2 3) (loop* for i from 1 to 3 collect i)))
+  (should (= 3 (loop* for x in '(a b c)
+                      count x)))
+  (should (= 5050 (loop* for i from 1 to 100 sum i))))
 
 (ert-deftest %fns:split-string* ()
   (should (equal '("a" "b" "c")
