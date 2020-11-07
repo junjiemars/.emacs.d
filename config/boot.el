@@ -171,20 +171,6 @@ If VAR requires the FEATURE, load it on compile-time."
   `(if-var% ,var ,feature nil (progn% ,@body)))
 
 
-(defmacro with-var (var &rest body)
-  "Execute BODY and restore VAR before return.
-
-Return the value of BODY if no error happens."
-  (declare (indent 1))
-  (let ((old (gensym*)))
-    `(let ((,old ,var))
-       (prog1
-           (unwind-protect
-               (progn% ,@body)
-             (setq ,var ,old))
-         (setq ,var ,old)))))
-
-
  ;; end of var compile-time checking macro
 
 

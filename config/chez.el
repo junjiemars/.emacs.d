@@ -221,8 +221,7 @@ Entry to this mode runs the hooks on `comint-mode-hook' and
   (setq comint-get-old-input #'chez-get-old-input)
   (add-hook 'comint-preoutput-filter-functions
             #'chez-preoutput-filter nil 'local)
-  (when% (with-var byte-compile-warnings
-           (setq byte-compile-warnings nil)
+  (when% (fluid-let (byte-compile-warnings nil)
            (require 'scheme nil t))
     (require 'scheme)
     (scheme-mode-variables))

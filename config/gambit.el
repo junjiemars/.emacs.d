@@ -196,8 +196,7 @@ If you accidentally suspend your process, use
   (setq comint-prompt-read-only t)
   (setq comint-input-filter #'gambit-input-filter)
   (setq comint-get-old-input #'gambit-get-old-input)
-  (when% (with-var byte-compile-warnings
-           (setq byte-compile-warnings nil)
+  (when% (fluid-let (byte-compile-warnings nil)
            (require 'scheme nil t))
     (require 'scheme)
     (scheme-mode-variables))

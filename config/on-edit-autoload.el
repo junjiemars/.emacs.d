@@ -107,8 +107,7 @@
 
 ;; fix: `uniquify' may not be autoloaded on ancient Emacs.
 (when-version% > 24
-  (when% (with-var byte-compile-warnings
-           (setq byte-compile-warnings nil)
+  (when% (fluid-let (byte-compile-warnings nil)
            (require 'uniquify nil t))
     (require 'uniquify)
     (setq uniquify-buffer-name-style 'post-forward-angle-brackets)))

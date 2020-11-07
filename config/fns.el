@@ -261,6 +261,22 @@ Then evaluate RESULT to get return value, default nil.
        ,@(cdr (cdr spec)))))
 
 
+(defmacro fluid-let (binding &rest body)
+  "Execute BODY and restore the BINDING after return."
+  (declare (indent 1))
+  (let ((old (gensym*))
+        (var (car binding))
+        (new (gensym*)))
+    `(let ((,old ,(car binding))
+           (,new ,(cadr binding)))
+       (prog1
+           (unwind-protect (progn
+                             (setq ,var ,new)
+                             ,@body)
+             (setq ,var ,old))
+         (setq ,var ,old)))))
+
+
  ;; end of byte-compiler macro
 
 ;;;;
