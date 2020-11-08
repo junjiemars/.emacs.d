@@ -214,7 +214,7 @@ This is run before the process is cranked up."
   "The keymap for `*chez*' REPL.")
 
 
-(defalias 'chez-syntax-indent
+(defun chez-syntax-indent ()
   "Chez scheme syntax indent."
   (put 'trace-lambda 'scheme-indent-function 2)
   (put 'trace-let 'scheme-indent-function 2))
