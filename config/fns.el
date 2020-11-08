@@ -130,7 +130,7 @@ SEQ, this is like `mapcar'.  With several, it is like the Common Lisp
 
 
 (defmacro remove-if* (pred seq &rest keys)
-  "Remove all items satisfying PREDICATE in SEQ.
+  "Remove all items satisfying PRED in SEQ.
 This is a non-destructive function; it makes a copy of SEQ if necessary
 to avoid corrupting the original SEQ.
 \nKeywords supported:  :key :count :start :end :from-end
@@ -147,7 +147,7 @@ to avoid corrupting the original SEQ.
 
 
 (defmacro member-if* (pred list &rest keys)
-  "Find the first item satisfying PREDICATE in LIST.
+  "Find the first item satisfying PRED in LIST.
 Return the sublist of LIST whose car matches.
 \nKeywords supported:  :key
 \n(fn PREDICATE LIST [KEYWORD VALUE]...)"
