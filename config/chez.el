@@ -7,6 +7,9 @@
 ;; chez.el
 ;;;;
 ;;; https://scheme.com
+;;; http://groups.csail.mit.edu/mac/ftpdir/scm/
+;;; https://schemers.org/Documents/Standards/R5RS/HTML/
+;;; https://www.emacswiki.org/emacs/r5rs.el
 ;;;
 ;;; 1. start parameterized chez process.
 ;;; 2. switch/back to chez REPL.
@@ -171,7 +174,7 @@ This is run before the process is cranked up."
           (comint-redirect-send-command-to-process cmd buf proc nil t)
           (set-buffer (*chez*))
           (while (and (null comint-redirect-completed)
-                      (accept-process-output proc 0.2))))
+                      (accept-process-output proc 0.7))))
         (with-current-buffer buf
           (setq out (buffer-substring-no-properties (point-min) (point-max))))
         (list (car bounds) (cdr bounds)
@@ -211,8 +214,8 @@ This is run before the process is cranked up."
   "The keymap for `*chez*' REPL.")
 
 
-(defun chez-indent-function ()
-  "Chez scheme indent function."
+(defalias 'chez-syntax-indent
+  "Chez scheme syntax indent."
   (put 'trace-lambda 'scheme-indent-function 2)
   (put 'trace-let 'scheme-indent-function 2))
 
@@ -399,7 +402,7 @@ interacting with the Chez REPL is at your disposal.
                      'completion-at-point-functions
               'comint-dynamic-complete-functions)
             #'chez-completion nil 'local)
-  (chez-indent-function))
+  (chez-syntax-indent))
 
 
 
