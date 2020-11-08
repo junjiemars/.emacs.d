@@ -206,6 +206,7 @@
   (should (null (buffer-file-name* (get-buffer "*scratch*")))))
 
 (ert-deftest %basic:file-in-dirs-p ()
+  (should-not (file-in-dirs-p nil nil))
   (should-not (file-in-dirs-p (emacs-home* "init.el") nil))
   (should-not (file-in-dirs-p (emacs-home* "init.el")
                               (list (emacs-home* "config/"))))

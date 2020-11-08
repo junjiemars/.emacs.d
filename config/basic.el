@@ -285,16 +285,16 @@ See also`define-hash-table-test'."
 
 
 (defmacro file-in-dirs-p (file dirs)
-  "Return t if FILE in DIRS, otherwise nil."
+  "Return t if the name of FILE matching DIRS, otherwise nil."
   `(when (and (stringp ,file)
               (consp ,dirs))
      (let ((fname (file-name-directory ,file)))
-       (member-if* (lambda (x)
-                     (let ((case-fold-search
-                            (when-platform% 'windows-nt t)))
-                       (when (stringp x)
-                         (string-match (string-trim> x "/") fname))))
-                   ,dirs))))
+       (some* (lambda (x)
+                (let ((case-fold-search (when-platform%
+                                            'windows-nt t)))
+                  (when (stringp x)
+                    (string-match (string-trim> x "/") fname))))
+         ,dirs))))
 
 
 (defmacro file-name-nondirectory% (filename)
