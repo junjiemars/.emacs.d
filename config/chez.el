@@ -14,7 +14,7 @@
 ;;; 4. compile/load scheme file.
 ;;; 5. indentation in REPL.
 ;;; 6. completion in REPL and scheme source.
-
+;;; 7. indentation for chez scheme.
 
 (require 'comint)
 
@@ -211,6 +211,12 @@ This is run before the process is cranked up."
   "The keymap for `*chez*' REPL.")
 
 
+(defun chez-indent-function ()
+  "Chez scheme indent function."
+  (put 'trace-lambda 'scheme-indent-function 2)
+  (put 'trace-let 'scheme-indent-function 2))
+
+
 (define-derived-mode chez-repl-mode comint-mode "REPL"
   "Major mode for interacting with a chez process.
 
@@ -390,9 +396,10 @@ interacting with the Chez REPL is at your disposal.
   :group 'chez-mode
   :keymap chez-mode-map
   (add-hook (if-var% completion-at-point-functions 'minibuffer
-                         'completion-at-point-functions
-                  'comint-dynamic-complete-functions)
-                #'chez-completion nil 'local))
+                     'completion-at-point-functions
+              'comint-dynamic-complete-functions)
+            #'chez-completion nil 'local)
+  (chez-indent-function))
 
 
 
