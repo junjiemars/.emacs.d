@@ -6,6 +6,8 @@
 ;;;;
 ;; chez.el
 ;;;;
+;;; https://scheme.com
+;;;
 ;;; 1. start parameterized chez process.
 ;;; 2. switch/back to chez REPL.
 ;;; 3. send sexp/definition/region to chez REPL.
