@@ -582,7 +582,8 @@
                               when (string= d "b")
                               return d)))
   (should (string= "b" (loop* for d in '("a" "b" "c")
-                              with d1 = (concat d "/" "1")
+                              with d1 = nil
+                              do (setq d1 (concat d "/" "1"))
                               when (string= d1 "b/1")
                               return d))))
 

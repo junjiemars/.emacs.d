@@ -85,8 +85,10 @@ Return absolute filename when FILENAME exists, otherwise nil."
   (or (let ((f (expand-file-name filename)))
         (when (file-exists-p f) f))
       (loop* for d in gud-lldb-directories
-             do (let ((p (concat d "/" filename)))
-                  (when (file-exists-p p) (return p))))))
+             with p = nil
+             do (setq p (concat d "/" filename))
+             when (file-exists-p p)
+             return p)))
 
 
 (defmacro lldb-settings (subcommand &rest args)
