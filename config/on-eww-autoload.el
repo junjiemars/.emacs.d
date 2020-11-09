@@ -92,8 +92,8 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
       (add-hook 'eww-mode-hook #'set-eww-mode!)
       (when (consp *search-engines*)
         (setq% eww-search-prefix
-               (concat (cadar *search-engines*)
-                       (cddar *search-engines*))))))
+               (concat (car (cdar *search-engines*))
+                       (cdr (cdar *search-engines*)))))))
 
 
 ;; key
