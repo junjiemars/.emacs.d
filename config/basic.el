@@ -391,8 +391,8 @@ On ancient Emacs, `file-remote-p' will return a vector."
   "Norm the REMOTE to '{user | id}[@host]' form."
   `(let ((rid (remote-norm-id ,remote)))
      (when (consp rid)
-       (concat (cadr rid) (when (caddr rid)
-                            (concat "@" (caddr rid)))))))
+       (concat (cadr rid) (when (car (cddr rid))
+                            (concat "@" (car (cddr rid))))))))
 
 
 (defmacro url-retrieve* (url callback &optional cbargs silent inhibit-cookies)
