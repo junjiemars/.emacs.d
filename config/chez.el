@@ -217,6 +217,7 @@ This is run before the process is cranked up."
 (defun chez-syntax-indent ()
   "Chez scheme syntax indent."
   (put 'library 'scheme-indent-function 2)
+  (put 'trace-do 'scheme-indent-function 1)
   (put 'trace-lambda 'scheme-indent-function 2)
   (put 'trace-let 'scheme-indent-function 2))
 
