@@ -267,12 +267,13 @@ Run the hook `chez-repl-mode-hook' after the `comint-mode-hook'."
              (*chez-start-file*)
              (split-string* command-line "\\s-+" t))
       (*chez* (current-buffer))
-      (chez-repl-mode)
+
       (add-hook (if-var% completion-at-point-functions 'minibuffer
                          'completion-at-point-functions
                   'comint-dynamic-complete-functions)
                 #'chez-completion nil 'local)))
-  (switch-to-buffer-other-window (*chez*)))
+  (with-current-buffer (switch-to-buffer-other-window (*chez*))
+    (chez-repl-mode)))
 
 
  ;; end of REPL
