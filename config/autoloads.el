@@ -100,12 +100,13 @@
                                    (let ((x (shell-command* gsc
                                               "-e \"(system-type)\"")))
                                      (zerop (car x))))))
-      (defalias 'run-gambit nil)
-      (autoload 'gambit-mode (v-home% "config/gambit.elc")
-        "Toggle Gambit's mode." t)
-      (autoload 'run-gambit (v-home% "config/gambit.elc")
-        "Run gambit in buffer *gambit*." t)
-      (compile-unit% (emacs-home* "config/gambit.el") t))
+      (prog1
+          (compile-unit% (emacs-home* "config/gambit.el") t)
+        (autoload 'gambit-mode (v-home% "config/gambit.elc")
+          "Toggle Gambit's mode." t)
+        (unintern "run-gambit" nil)
+        (autoload 'run-gambit (v-home% "config/gambit.elc")
+          "Toggle gambit process in buffer `*gambit*'." t)))
 
     ;; Scheme `chez-mode'
     (when% (executable-find% "scheme"
@@ -113,12 +114,13 @@
                                (let ((x (shell-command* "echo"
                                           "'(+ 1 2 3)'|" chez "-q")))
                                  (zerop (car x)))))
-      (defalias 'run-chez nil)
-      (autoload 'chez-mode (v-home% "config/chez.elc")
-        "Toggle Chez's mode." t)
-      (autoload 'run-chez (v-home% "config/chez.elc")
-        "Run chez in buffer *chez*." t)
-      (compile-unit% (emacs-home* "config/chez.el") t))
+      (prog1
+          (compile-unit% (emacs-home* "config/chez.el"))
+        (autoload 'chez-mode (v-home% "config/chez.elc")
+          "Toggle Chez's mode." t)
+        (unintern "run-chez" nil)
+        (autoload 'run-chez (v-home% "config/chez.elc")
+          "Toggle chez process in buffer `*chez*'.")))
 
     ) ;; end of compile!
 

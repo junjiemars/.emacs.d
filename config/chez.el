@@ -20,8 +20,7 @@
 ;;; 7. indentation for chez scheme.
 
 (require 'comint)
-
-;; (require 'scheme)
+(require 'scheme)
 ;; (require 'thingatpt)
 
 ;; ;; Disable `geiser-mode' for `scheme-mode'
@@ -241,10 +240,7 @@ Entry to this mode runs the hooks on `comint-mode-hook' and
   (setq comint-get-old-input #'chez-get-old-input)
   (add-hook 'comint-preoutput-filter-functions
             #'chez-preoutput-filter nil 'local)
-  (when% (fluid-let (byte-compile-warnings nil)
-           (require 'scheme nil t))
-    (require 'scheme)
-    (scheme-mode-variables))
+  (use-local-map chez-repl-mode-map)
   (setq mode-line-process '(":%s")))
 
 
@@ -268,13 +264,11 @@ Run the hook `chez-repl-mode-hook' after the `comint-mode-hook'."
              (*chez-start-file*)
              (split-string* command-line "\\s-+" t))
       (*chez* (current-buffer))
-
       (add-hook (if-var% completion-at-point-functions 'minibuffer
                          'completion-at-point-functions
                   'comint-dynamic-complete-functions)
                 #'chez-completion nil 'local)))
-  (with-current-buffer (switch-to-buffer-other-window (*chez*))
-    (chez-repl-mode)))
+  (switch-to-buffer-other-window (*chez*)))
 
 
  ;; end of REPL
