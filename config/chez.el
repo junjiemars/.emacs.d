@@ -240,6 +240,7 @@ Entry to this mode runs the hooks on `comint-mode-hook' and
   (setq comint-get-old-input #'chez-get-old-input)
   (add-hook 'comint-preoutput-filter-functions
             #'chez-preoutput-filter nil 'local)
+  (scheme-mode-variables)
   (use-local-map chez-repl-mode-map)
   (setq mode-line-process '(":%s")))
 
@@ -267,7 +268,8 @@ Run the hook `chez-repl-mode-hook' after the `comint-mode-hook'."
       (add-hook (if-var% completion-at-point-functions 'minibuffer
                          'completion-at-point-functions
                   'comint-dynamic-complete-functions)
-                #'chez-completion nil 'local)))
+                #'chez-completion nil 'local)
+      (chez-repl-mode)))
   (switch-to-buffer-other-window (*chez*)))
 
 
