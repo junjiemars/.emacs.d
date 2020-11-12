@@ -74,15 +74,17 @@
     ;; Debugger `gud-cdb'
     (when-platform% 'windows-nt
       (when% (executable-find% "cdb")
-        (autoload 'cdb (v-home% "config/gud-cdb.elc")
-          "Run lldb on program FILE in buffer *gud-FILE*." t)
-        (compile-unit% (emacs-home* "config/gud-cdb.el") t)))
+        (prog1
+            (compile-unit% (emacs-home* "config/gud-cdb.el") t)
+          (autoload 'cdb (v-home% "config/gud-cdb.elc")
+            "Run lldb on program FILE in buffer *gud-FILE*." t))))
 
     ;; Debugger `gud-lldb'
     (when% (executable-find% "lldb")
-      (autoload 'lldb (v-home% "config/gud-lldb.elc")
-        "Run cdb on program FILE in buffer *gud-FILE*." t)
-      (compile-unit% (emacs-home* "config/gud-lldb.el") t))
+      (prog1
+          (compile-unit% (emacs-home* "config/gud-lldb.el") t)
+        (autoload 'lldb (v-home% "config/gud-lldb.elc")
+          "Run cdb on program FILE in buffer *gud-FILE*." t)))
 
     ;; Python
     (when% (executable-find%
@@ -120,7 +122,7 @@
           "Toggle Chez's mode." t)
         (unintern "run-chez" nil)
         (autoload 'run-chez (v-home% "config/chez.elc")
-          "Toggle chez process in buffer `*chez*'.")))
+          "Toggle chez process in buffer `*chez*'." t)))
 
     ) ;; end of compile!
 
