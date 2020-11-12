@@ -173,7 +173,7 @@ This is run before the process is cranked up."
           (comint-redirect-send-command-to-process cmd buf proc nil t)
           (set-buffer (*chez*))
           (while (and (null comint-redirect-completed)
-                      (accept-process-output proc 0.7))))
+                      (accept-process-output proc 2))))
         (with-current-buffer buf
           (setq out (buffer-substring-no-properties (point-min) (point-max))))
         (list (car bounds) (cdr bounds)
