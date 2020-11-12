@@ -20,10 +20,6 @@
   (setq% geiser-mode-auto-p nil 'geiser-mode))
 
 
-;;; Disable auto geiser active
-(when-var% scheme-mode-hook 'scheme
-  (setq scheme-mode-hook nil))
-
 (defalias '*geiser-lisp-implementations*
   (lexical-let% ((ls (let ((ns))
                        (mapc

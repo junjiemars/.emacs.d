@@ -54,6 +54,10 @@
 
 
 (with-eval-after-load 'scheme
+  ;; disable auto active other scheme hooks
+  (when-var% scheme-mode-hook 'scheme
+    (setq scheme-mode-hook nil))
+  ;; featured
   (when-package%
     (add-hook 'scheme-mode-hook #'set-featured-lisp-mode!)))
 
