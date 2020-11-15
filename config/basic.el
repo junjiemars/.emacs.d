@@ -200,10 +200,9 @@ Returns the name of FILE when successed otherwise nil."
   "Save STR to FILE. 
 
 Returns the name of FILE when successed otherwise nil."
-  (progn
-    (with-temp-file file (insert str))
-    (when (file-exists-p file)
-      file)))
+  (with-temp-file file
+    (insert str)
+    file))
 
 
 (defun read-str-from-file (file)
