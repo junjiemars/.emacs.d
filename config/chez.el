@@ -91,7 +91,14 @@ This is run before the process is cranked up."
 													 (begin (hashtable-set! acc (car ls) '())
 																	acc))]
 											 [else (f (cdar ls) acc)]))])
-			(map symbol->string (vector->list xs)))))
+			(map symbol->string
+					 (if (> (vector-length xs) 50)
+							 (let v->l ([n 49] [ss '()])
+								 (if (= n 0)
+										 ss
+										 (v->l (- n 1) (cons (vector-ref xs n) ss))))
+							 (vector->list xs))))))
+
 (import (chez-emacs))
 ;;; eof
  " 
@@ -198,9 +205,10 @@ This is run before the process is cranked up."
         (with-current-buffer buf
           (setq out (buffer-substring-no-properties (point-min) (point-max))))
         (list (car bounds) (cdr bounds)
-              (let ((s1 (car (read-from-string
-                              (string-trim> out ">")))))
-                (when (consp s1) s1))
+              (let ((s1 (read-from-string out)))
+                (when (and (consp s1)
+                           (consp (car s1)))
+                  (car s1)))
               :exclusive 'no)))))
 
 (defun chez-repl-return ()
