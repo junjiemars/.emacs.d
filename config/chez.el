@@ -75,14 +75,35 @@ This is run before the process is cranked up."
   "The current *chez* process buffer.")
 
 
+(defconst +chez-emacs-library+
+  ";;; chez-emacs: from `(emacs-home* \"config/chez.el\")'
+(library (chez-emacs)
+		(export chez-emacs/apropos)
+  (import (chezscheme))
+
+	(define (chez-emacs/apropos what)
+		(let* ([lst (apropos-list what (interaction-environment))]
+					 [tbl (make-eq-hashtable)]
+					 [xs (let f ([ls lst] [acc tbl])
+								 (cond [(null? ls) (hashtable-keys acc)]
+											 [(symbol? (car ls))
+												(f (cdr ls)
+													 (begin (hashtable-set! acc (car ls) '())
+																	acc))]
+											 [else (f (cdar ls) acc)]))])
+			(map symbol->string (vector->list xs)))))
+(import (chez-emacs))
+;;; eof
+ " 
+  "The library of chez-emacs.")
+
 (defalias '*chez-start-file*
   (lexical-let% ((b (v-home% ".exec/.chez.ss")))
     (lambda (&optional n)
       (interactive)
-      (if n
-          (setq b n)
+      (if n (setq b n)
         (unless (file-exists-p b)
-          (copy-file (emacs-home* "config/_chez_.ss") b t))
+          (save-str-to-file +chez-emacs-library+ b))
         b)))
   "The `*chez*' process start file.")
 
@@ -164,7 +185,7 @@ This is run before the process is cranked up."
     (when bounds
       (let ((buf (get-buffer-create "*out|chez*"))
             (out)
-            (cmd (format "(_chez_:complete-symbol \"%s\")"
+            (cmd (format "(chez-emacs/apropos \"%s\")"
                          (buffer-substring-no-properties (car bounds)
                                                          (cdr bounds))))
             (proc (get-buffer-process (*chez*))))
@@ -177,7 +198,8 @@ This is run before the process is cranked up."
         (with-current-buffer buf
           (setq out (buffer-substring-no-properties (point-min) (point-max))))
         (list (car bounds) (cdr bounds)
-              (let ((s1 (car (read-from-string out))))
+              (let ((s1 (car (read-from-string
+                              (string-trim> out ">")))))
                 (when (consp s1) s1))
               :exclusive 'no)))))
 
