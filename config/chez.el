@@ -11,6 +11,7 @@
 ;;; https://schemers.org/Documents/Standards/R5RS/HTML/
 ;;; https://www.emacswiki.org/emacs/r5rs.el
 ;;;
+;;; fetures:
 ;;; 1. start parameterized chez process.
 ;;; 2. switch/back to chez REPL.
 ;;; 3. send sexp/definition/region to chez REPL.
@@ -18,6 +19,10 @@
 ;;; 5. indentation in REPL.
 ;;; 6. completion in REPL and scheme source.
 ;;; 7. indentation for chez scheme.
+;;;
+;;; bugs:
+;;; 1. in `chez-completion', 'string>=? should crash `read-from-string'.
+;;;
 
 (require 'comint)
 (require 'scheme)
@@ -103,6 +108,15 @@ This is run before the process is cranked up."
 ;;; eof
  " 
   "The library of chez-emacs.")
+
+
+
+(defalias '*chez-out*
+  (lexical-let% ((b "*out|chez*"))
+    (lambda (&optional n)
+      (if n (setq b n) b)))
+  "The output buffer of `chez-completion'.")
+
 
 (defalias '*chez-start-file*
   (lexical-let% ((b (v-home% ".exec/.chez.ss")))
@@ -190,25 +204,26 @@ This is run before the process is cranked up."
   (chez-check-proc)
   (let ((bounds (bounds-of-thing-at-point 'symbol)))
     (when bounds
-      (let ((buf (get-buffer-create "*out|chez*"))
-            (out)
-            (cmd (format "(chez-emacs/apropos \"%s\")"
+      (let ((cmd (format "(chez-emacs/apropos \"%s\")"
                          (buffer-substring-no-properties (car bounds)
                                                          (cdr bounds))))
             (proc (get-buffer-process (*chez*))))
-        (with-current-buffer buf
+        (with-current-buffer (*chez-out* (get-buffer-create (*chez-out*)))
           (erase-buffer)
-          (comint-redirect-send-command-to-process cmd buf proc nil t)
+          (comint-redirect-send-command-to-process cmd
+                                                   (*chez-out*)
+                                                   proc nil t)
           (set-buffer (*chez*))
           (while (and (null comint-redirect-completed)
                       (accept-process-output proc 2))))
-        (with-current-buffer buf
-          (setq out (buffer-substring-no-properties (point-min) (point-max))))
         (list (car bounds) (cdr bounds)
-              (let ((s1 (read-from-string out)))
-                (when (and (consp s1)
-                           (consp (car s1)))
-                  (car s1)))
+              (with-current-buffer (*chez-out*)
+                (let ((s1 (read-from-string
+                           (buffer-substring-no-properties
+                            (point-min) (point-max)))))
+                  (when (and (consp s1)
+                             (consp (car s1)))
+                    (car s1))))
               :exclusive 'no)))))
 
 (defun chez-repl-return ()
