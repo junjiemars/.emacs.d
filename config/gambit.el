@@ -77,29 +77,16 @@ This is run before the process is cranked up."
 
 (defconst +gambit-emacs-library+
   ";;; gambit-emacs: from `(emacs-home* \"config/gambit.el\")'
-(library (gambit-emacs)
-		(export gambit-emacs/apropos)
-  (import (gambitscheme))
-
-	(define (gambit-emacs/apropos what)
-		(let* ([lst (apropos-list what (interaction-environment))]
-					 [tbl (make-eq-hashtable)]
-					 [xs (let f ([ls lst] [acc tbl])
-								 (cond [(null? ls) (hashtable-keys acc)]
-											 [(symbol? (car ls))
-												(f (cdr ls)
-													 (begin (hashtable-set! acc (car ls) '())
-																	acc))]
-											 [else (f (cdar ls) acc)]))])
-			(map symbol->string
-					 (if (> (vector-length xs) 50)
-							 (let v->l ([n 49] [ss '()])
-								 (if (= n 0)
-										 ss
-										 (v->l (- n 1) (cons (vector-ref xs n) ss))))
-							 (vector->list xs))))))
-
-(import (gambit-emacs))
+(define (gambit-emacs/apropos what)
+	(let ([out (open-output-string)]
+				[split (lambda (ss sep)
+								 (call-with-input-string
+									ss
+									(lambda (p)
+										(read-all p (lambda (p)
+																	(read-line p sep))))))])
+		(apropos what out)
+		(split (get-output-string out) #\,)))
 ;;; eof
  " 
   "The library of gambit-emacs.")
