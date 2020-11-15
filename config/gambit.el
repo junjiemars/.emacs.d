@@ -5,13 +5,16 @@
 ;;;;
 ;; gambit.el
 ;;;;
+;;; features:
 ;;; 1. start parameterized gambit process.
 ;;; 2. switch/back to gambit REPL.
 ;;; 3. send sexp/definition/region to gambit REPL.
 ;;; 4. compile/load scheme file.
 ;;; 5. indentation in REPL.
-;;; 6*. completion in REPL.
-
+;;; 6*. migrate features from `(emacs-home* "config/chez.el")'.
+;;; 
+;;; bugs: 
+;;;
 
 (require 'comint)
 
@@ -71,14 +74,45 @@ This is run before the process is cranked up."
       (if n (setq b n) b)))
   "The current *gambit* process buffer.")
 
+
+(defconst +gambit-emacs-library+
+  ";;; gambit-emacs: from `(emacs-home* \"config/gambit.el\")'
+(library (gambit-emacs)
+		(export gambit-emacs/apropos)
+  (import (gambitscheme))
+
+	(define (gambit-emacs/apropos what)
+		(let* ([lst (apropos-list what (interaction-environment))]
+					 [tbl (make-eq-hashtable)]
+					 [xs (let f ([ls lst] [acc tbl])
+								 (cond [(null? ls) (hashtable-keys acc)]
+											 [(symbol? (car ls))
+												(f (cdr ls)
+													 (begin (hashtable-set! acc (car ls) '())
+																	acc))]
+											 [else (f (cdar ls) acc)]))])
+			(map symbol->string
+					 (if (> (vector-length xs) 50)
+							 (let v->l ([n 49] [ss '()])
+								 (if (= n 0)
+										 ss
+										 (v->l (- n 1) (cons (vector-ref xs n) ss))))
+							 (vector->list xs))))))
+
+(import (gambit-emacs))
+;;; eof
+ " 
+  "The library of gambit-emacs.")
+
+
+
 (defalias '*gambit-start-file*
   (lexical-let% ((b (v-home% ".exec/.gambit.ss")))
     (lambda (&optional n)
       (interactive)
-      (if n
-          (setq b n)
+      (if n (setq b n)
         (unless (file-exists-p b)
-          (copy-file (emacs-home* "config/_gambit_.ss") b t))
+          (save-str-to-file +gambit-emacs-library+ b))
         b)))
   "The `*gambit*' process start file.")
 
