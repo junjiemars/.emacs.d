@@ -11,7 +11,7 @@
 ;;; 3. send sexp/definition/region to gambit REPL.
 ;;; 4. compile/load scheme file.
 ;;; 5. indentation in REPL.
-;;; 6*. completion in REPL and scheme source.
+;;; 6. completion in REPL and scheme source.
 ;;; 7*. migrate features from `(emacs-home* "config/chez.el")'.
 ;;; 
 ;;; bugs: 
@@ -87,10 +87,16 @@ This is run before the process is cranked up."
 																		(read-line p sep))))))]
 				 [trim (lambda (ss)
 								 (letrec ([tr (lambda (ss ori idx)
-																(let ([a (substring ss 0 1)]
+																(let ([a (if (> (string-length ss) 0)
+																						 (substring ss 0 1)
+																						 \"\")]
 																			[l (string-length ss)]
-																			[ns \"namespace\"])
-																	(cond [(or (string=? a \" \")
+																			[ns \"namespace\"]
+																			[empty \"empty\"]
+																			[cs \"c#\"]
+																			[asm \"_asm#\"])
+																	(cond [(string=? \"\" a) a]
+																				[(or (string=? a \" \")
 																						 (string=? a \":\")
 																						 (string=? a \"\\n\")
 																						 (string=? a \"#\")
@@ -101,6 +107,21 @@ This is run before the process is cranked up."
 																												ns))
 																				 (tr (substring ss (string-length ns) (string-length ss))
 																						 ori (+ idx (string-length ns)))]
+																				[(and (>= l (string-length empty))
+																							(string=? (substring ss 0 (string-length empty))
+																												empty))
+																				 (tr (substring ss (string-length empty) (string-length ss))
+																						 ori (+ idx (string-length empty)))]
+                                        [(and (>= l (string-length cs))
+																							(string=? (substring ss 0 (string-length cs))
+																												cs))
+																				 (tr (substring ss (string-length cs) (string-length ss))
+																						 ori (+ idx (string-length cs)))]
+																				[(and (>= l (string-length asm))
+																							(string=? (substring ss 0 (string-length asm))
+																												asm))
+																				 (tr (substring ss (string-length asm) (string-length ss))
+																						 ori (+ idx (string-length asm)))]
 																				[else (substring ori idx (string-length ori))])))])
 									 (tr ss ss 0)))]
 				 [lst (let ([out (open-output-string)])
@@ -108,11 +129,18 @@ This is run before the process is cranked up."
 								(map (lambda (x)
 											 (when (not (string=? \"\" x))
 												 (trim x)))
-										 (split (get-output-string out) #\,)))]
-
+										 (split (get-output-string out) #\\,)))]
 				 [tbl (make-table 'test: string=?)])
 		(map (lambda (x)
-					 (when x (table-set! tbl x '())))
+					 (when (not (null? x))
+						 (map (lambda (y)
+										(unless (string=? \"\" y)
+											(table-set! tbl y '())))
+									(let f ([ss (split x #\\newline)] [acc '()])
+										(cond [(null? ss) acc]
+													[(null? (car ss)) (f (cdr ss) acc)]
+													[(string=? \"\" (car ss)) (f (cdr ss) acc)]
+													[else (f (cdr ss) (cons (trim (car ss)) acc))])))))
 				 lst)
 		(let ([out (map car (table->list tbl))])
 			(if (>= (length out) 50)
@@ -160,6 +188,7 @@ This is run before the process is cranked up."
 (defvar *gambit-trace-history* nil
   "Gambit tracing history list.")
 
+
  ;; end variable declarations
 
 
@@ -169,9 +198,26 @@ This is run before the process is cranked up."
 
 (defun gambit-get-old-input ()
   "Snarf the sexp ending at point."
-  (buffer-substring (save-excursion (backward-sexp) (point))
-                    (point)))
+  (let ((old (buffer-substring (save-excursion (backward-sexp) (point))
+                             (point))))
+    (cond ((and (>= (length old) 2)
+                (string= "> " (substring old 0 2)))
+           (substring old 2))
+          (t old))))
 
+(defun gambit-preoutput-filter (out)
+  "Output start a newline when empty out or tracing."
+  (cond ((string-match ".*\\(> \\)+\\{2,\\}$" out)
+         (replace-match "\n> " t t out))
+        ((and (>= (length out) 2)
+              (string= "|" (substring out 0 1))
+              (string= "" (gambit-get-old-input)) "\n")
+         (concat "\n" out))
+        ((and (>= (length out) 2)
+              (string= "> " (substring out 0 2))
+              (string= "" (gambit-get-old-input)) "\n")
+         (concat "\n" out))
+        (t out)))
 
 (defun gambit-check-proc (&optional spawn)
   "Return the `*gambit*' process or start one if necessary."
@@ -212,7 +258,7 @@ This is run before the process is cranked up."
           (erase-buffer)
           (comint-redirect-send-command-to-process cmd
                                                    (*gambit-out*)
-                                                   proc t t)
+                                                   proc nil t)
           (set-buffer (*gambit*))
           (while (and (null comint-redirect-completed)
                       (accept-process-output proc 2))))
@@ -221,9 +267,7 @@ This is run before the process is cranked up."
                 (let ((s1 (read-from-string
                            (buffer-substring-no-properties
                             (point-min) (point-max)))))
-                  (when (and (consp s1)
-                             (consp (car s1)))
-                    (car s1))))
+                  (when (consp s1) (car s1))))
               :exclusive 'no)))))
 
 
@@ -247,7 +291,7 @@ This is run before the process is cranked up."
 
 
 (defvar gambit-repl-mode-map
-  (let ((m (make-sparse-keymap)))
+  (let ((m (make-sparse-keymap "gambit")))
     (if-graphic%
         (progn
           (define-key m [return] #'gambit-repl-return)
@@ -255,7 +299,13 @@ This is run before the process is cranked up."
       (define-key m "\C-m" #'gambit-repl-return)
       (define-key m "\C-\M-m" #'gambit-repl-closing-return))
     (define-key m "\C-c\C-b" #'gambit-switch-to-last-buffer)
-    m))
+    m)
+  "The keymap for `*gambit*' REPL.")
+
+
+(defun gambit-syntax-indent ()
+  "Gambit scheme syntax indent.")
+
 
 (define-derived-mode gambit-repl-mode comint-mode "REPL"
   "Major mode for interacting with a gambit process.
@@ -267,32 +317,16 @@ A gambit process can be fired up with M-x `run-gambit'.
 
 Customization: 
 Entry to this mode runs the hooks on `comint-mode-hook' and
-  `gambit-repl-mode-hook' (in that order).
-You can send text to the gambit process from other buffers
-  containing Scheme source.
-
-Commands:
-Return after the end of the process' output sends the
-  text from the end of process to point.
-Return before the end of the process' output copies the sexp
-  ending at point to the end of the process' output, and sends
-  it.
-Delete converts tabs to spaces as it moves back.
-Tab indents for Scheme; with argument, shifts rest of expression
-  rigidly with the current line.
-C-M-q does Tab on each line starting within following expression:
-  Paragraphs are separated only by blank lines.
-  Semicolons start comments.
-If you accidentally suspend your process, use
-  \\[comint-continue-subjob] to continue it."
-  (setq comint-prompt-regexp "^[^>\n\"]*>+ *")
+  `gambit-repl-mode-hook' (in that order)."
+  :group 'gambit                          ; keyword args
+  (setq comint-prompt-regexp "^[^>\n-\"]*>+ *")
   (setq comint-prompt-read-only t)
   (setq comint-input-filter #'gambit-input-filter)
   (setq comint-get-old-input #'gambit-get-old-input)
-  (when% (fluid-let (byte-compile-warnings nil)
-           (require 'scheme nil t))
-    (require 'scheme)
-    (scheme-mode-variables))
+  (add-hook 'comint-preoutput-filter-functions
+            #'gambit-preoutput-filter nil 'local)
+  (scheme-mode-variables)
+  (use-local-map gambit-repl-mode-map)
   (setq mode-line-process '(":%s")))
 
 
@@ -431,8 +465,10 @@ determined by the prefix UNTRACE argument."
  (defvar gambit-mode-string nil
    "Modeline indicator for `gambit-mode'."))
 
+
 (defun gambit-mode--lighter ()
   (or gambit-mode-string " Gambit"))
+
 
 (define-minor-mode gambit-mode
   "Toggle Gambit's mode.
@@ -447,8 +483,12 @@ interacting with the Gambit REPL is at your disposal.
   :init-value nil
   :lighter (:eval (gambit-mode--lighter))
   :group 'gambit-mode
-  :keymap gambit-mode-map)
-
+  :keymap gambit-mode-map
+  (add-hook (if-var% completion-at-point-functions 'minibuffer
+                     'completion-at-point-functions
+              'comint-dynamic-complete-functions)
+            #'gambit-completion 0 'local)
+  (gambit-syntax-indent))
 
 
 

@@ -222,9 +222,7 @@ This is run before the process is cranked up."
                 (let ((s1 (read-from-string
                            (buffer-substring-no-properties
                             (point-min) (point-max)))))
-                  (when (and (consp s1)
-                             (consp (car s1)))
-                    (car s1))))
+                  (when (consp s1) (car s1))))
               :exclusive 'no)))))
 
 (defun chez-repl-return ()
