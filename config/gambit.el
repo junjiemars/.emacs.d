@@ -105,7 +105,7 @@ This is run before the process is cranked up."
 																						 (string=? a \"\\n\")
 																						 (string=? a \"#\")
 																						 (string=? a \"\\\"\"))
-																				 (tr (substring ss 1 (- l 1)) ori (+ idx 1))]
+																				 (tr (substring ss 1 l) ori (+ idx 1))]
 																				[(and (>= l (string-length ns))
 																							(string=? (substring ss 0 (string-length ns))
 																												ns))
