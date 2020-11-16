@@ -11,11 +11,13 @@
 ;;; 3. send sexp/definition/region to gambit REPL.
 ;;; 4. compile/load scheme file.
 ;;; 5. indentation in REPL.
-;;; 6. completion in REPL and scheme source.
+;;; 6*. completion in REPL and scheme source.
 ;;; 7*. migrate features from `(emacs-home* "config/chez.el")'.
 ;;; 
 ;;; bugs: 
 ;;;
+;;; 
+
 
 (require 'comint)
 
@@ -94,7 +96,9 @@ This is run before the process is cranked up."
 																			[ns \"namespace\"]
 																			[empty \"empty\"]
 																			[cs \"c#\"]
-																			[asm \"_asm#\"])
+																			[asm \"_asm#\"]
+                                      [syn \"syn#\"]
+                                      [x86 \"_x86#\"])
 																	(cond [(string=? \"\" a) a]
 																				[(or (string=? a \" \")
 																						 (string=? a \":\")
@@ -122,6 +126,16 @@ This is run before the process is cranked up."
 																												asm))
 																				 (tr (substring ss (string-length asm) (string-length ss))
 																						 ori (+ idx (string-length asm)))]
+                                        [(and (>= l (string-length syn))
+																							(string=? (substring ss 0 (string-length syn))
+																												syn))
+																				 (tr (substring ss (string-length syn) (string-length ss))
+																						 ori (+ idx (string-length syn)))]
+                                        [(and (>= l (string-length x86))
+																							(string=? (substring ss 0 (string-length x86))
+																												x86))
+																				 (tr (substring ss (string-length syn) (string-length ss))
+																						 ori (+ idx (string-length x86)))]
 																				[else (substring ori idx (string-length ori))])))])
 									 (tr ss ss 0)))]
 				 [lst (let ([out (open-output-string)])
@@ -261,7 +275,7 @@ This is run before the process is cranked up."
                                                    proc nil t)
           (set-buffer (*gambit*))
           (while (and (null comint-redirect-completed)
-                      (accept-process-output proc 2))))
+                      (accept-process-output proc 4))))
         (list (car bounds) (cdr bounds)
               (with-current-buffer (*gambit-out*)
                 (let ((s1 (read-from-string
