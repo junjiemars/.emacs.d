@@ -21,7 +21,7 @@
 ;;; 7. indentation for chez scheme.
 ;;;
 ;;; bugs:
-;;; 1. in `chez-completion', 'string>=? should crash `read-from-string'.
+;;; 
 ;;;
 
 (require 'comint)
@@ -114,7 +114,8 @@ This is run before the process is cranked up."
 (defalias '*chez-out*
   (lexical-let% ((b "*out|chez*"))
     (lambda (&optional n)
-      (if n (setq b n) b)))
+      (if n (setq b n)
+        (get-buffer-create b))))
   "The output buffer of `chez-completion'.")
 
 
@@ -208,7 +209,7 @@ This is run before the process is cranked up."
                          (buffer-substring-no-properties (car bounds)
                                                          (cdr bounds))))
             (proc (get-buffer-process (*chez*))))
-        (with-current-buffer (*chez-out* (get-buffer-create (*chez-out*)))
+        (with-current-buffer (*chez-out*)
           (erase-buffer)
           (comint-redirect-send-command-to-process cmd
                                                    (*chez-out*)
@@ -279,7 +280,7 @@ Customization:
 Entry to this mode runs the hooks on `comint-mode-hook' and
   `chez-repl-mode-hook' (in that order)."
   :group 'chez                          ; keyword args
-  (setq comint-prompt-regexp "^[^>\n-]*>+ *")
+  (setq comint-prompt-regexp "^[^>\n-\"]*>+ *")
   (setq comint-prompt-read-only t)
   (setq comint-input-filter #'chez-input-filter)
   (setq comint-get-old-input #'chez-get-old-input)
