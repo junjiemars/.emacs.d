@@ -11,7 +11,8 @@
 ;;; 3. send sexp/definition/region to gambit REPL.
 ;;; 4. compile/load scheme file.
 ;;; 5. indentation in REPL.
-;;; 6*. migrate features from `(emacs-home* "config/chez.el")'.
+;;; 6*. completion in REPL and scheme source.
+;;; 7*. migrate features from `(emacs-home* "config/chez.el")'.
 ;;; 
 ;;; bugs: 
 ;;;
@@ -78,19 +79,60 @@ This is run before the process is cranked up."
 (defconst +gambit-emacs-library+
   ";;; gambit-emacs: from `(emacs-home* \"config/gambit.el\")'
 (define (gambit-emacs/apropos what)
-	(let ([out (open-output-string)]
-				[split (lambda (ss sep)
-								 (call-with-input-string
-									ss
-									(lambda (p)
-										(read-all p (lambda (p)
-																	(read-line p sep))))))])
-		(apropos what out)
-		(split (get-output-string out) #\,)))
+	(let* ([split (lambda (ss sep)
+									(call-with-input-string
+											ss
+										(lambda (p)
+											(read-all p (lambda (p)
+																		(read-line p sep))))))]
+				 [trim (lambda (ss)
+								 (letrec ([tr (lambda (ss ori idx)
+																(let ([a (substring ss 0 1)]
+																			[l (string-length ss)]
+																			[ns \"namespace\"])
+																	(cond [(or (string=? a \" \")
+																						 (string=? a \":\")
+																						 (string=? a \"\\n\")
+																						 (string=? a \"#\")
+																						 (string=? a \"\\\"\"))
+																				 (tr (substring ss 1 (- l 1)) ori (+ idx 1))]
+																				[(and (>= l (string-length ns))
+																							(string=? (substring ss 0 (string-length ns))
+																												ns))
+																				 (tr (substring ss (string-length ns) (string-length ss))
+																						 ori (+ idx (string-length ns)))]
+																				[else (substring ori idx (string-length ori))])))])
+									 (tr ss ss 0)))]
+				 [lst (let ([out (open-output-string)])
+								(apropos what out)
+								(map (lambda (x)
+											 (when (not (string=? \"\" x))
+												 (trim x)))
+										 (split (get-output-string out) #\,)))]
+
+				 [tbl (make-table 'test: string=?)])
+		(map (lambda (x)
+					 (when x (table-set! tbl x '())))
+				 lst)
+		(let ([out (map car (table->list tbl))])
+			(if (>= (length out) 50)
+					(let f ([xs out] [n 50] [acc '()])
+						(if (= n 0)
+								acc
+								(f (cdr xs) (- n 1) (cons (car xs) acc))))
+					out))))
+
 ;;; eof
  " 
   "The library of gambit-emacs.")
 
+
+(defalias '*gambit-out*
+  (lexical-let% ((b "*out|gambit*"))
+    (lambda (&optional n)
+      (if n (setq b n)
+        (get-buffer-create b))))
+  "The output buffer of `gambit-completion'.")
 
 
 (defalias '*gambit-start-file*
@@ -155,6 +197,36 @@ This is run before the process is cranked up."
                  t)))
             (t t)))))
 
+
+(defun gambit-completion ()
+  "Return `*gambit*' completion list."
+  (interactive)
+  (gambit-check-proc)
+  (let ((bounds (bounds-of-thing-at-point 'symbol)))
+    (when bounds
+      (let ((cmd (format "(gambit-emacs/apropos \"%s\")"
+                         (buffer-substring-no-properties (car bounds)
+                                                         (cdr bounds))))
+            (proc (get-buffer-process (*gambit*))))
+        (with-current-buffer (*gambit-out*)
+          (erase-buffer)
+          (comint-redirect-send-command-to-process cmd
+                                                   (*gambit-out*)
+                                                   proc t t)
+          (set-buffer (*gambit*))
+          (while (and (null comint-redirect-completed)
+                      (accept-process-output proc 2))))
+        (list (car bounds) (cdr bounds)
+              (with-current-buffer (*gambit-out*)
+                (let ((s1 (read-from-string
+                           (buffer-substring-no-properties
+                            (point-min) (point-max)))))
+                  (when (and (consp s1)
+                             (consp (car s1)))
+                    (car s1))))
+              :exclusive 'no)))))
+
+
 (defun gambit-repl-return ()
   "Newline or indent then newline the current input."
   (interactive)
@@ -213,7 +285,7 @@ C-M-q does Tab on each line starting within following expression:
   Semicolons start comments.
 If you accidentally suspend your process, use
   \\[comint-continue-subjob] to continue it."
-  (setq comint-prompt-regexp "^[^>\n]*>+ *")
+  (setq comint-prompt-regexp "^[^>\n\"]*>+ *")
   (setq comint-prompt-read-only t)
   (setq comint-input-filter #'gambit-input-filter)
   (setq comint-get-old-input #'gambit-get-old-input)
@@ -227,9 +299,9 @@ If you accidentally suspend your process, use
 (defun run-gambit (&optional command-line)
   "Run a gambit process, input and output via buffer *gambit*.
 
-If there is a process already running in `*gambit*', switch to
-that buffer. With argument COMMAND-LINE, allows you to edit the
-command line.
+If there is a process already running in `*gambit*', switch to that
+buffer. With prefix COMMAND-LINE, allows you to edit the command
+line.
 
 Run the hook `gambit-repl-mode-hook' after the `comint-mode-hook'."
   (interactive (list (read-string "Run gambit: "
@@ -244,7 +316,11 @@ Run the hook `gambit-repl-mode-hook' after the `comint-mode-hook'."
              (*gambit-start-file*)
              (split-string* command-line "\\s-+" t))
       (*gambit* (current-buffer))
-      (gambit-repl-mode)))
+      (gambit-repl-mode)
+      (add-hook (if-var% completion-at-point-functions 'minibuffer
+                         'completion-at-point-functions
+                  'comint-dynamic-complete-functions)
+                #'gambit-completion 0 'local)))
   (switch-to-buffer-other-window (*gambit*)))
 
 
