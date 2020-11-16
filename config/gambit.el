@@ -11,17 +11,18 @@
 ;;; 3. send sexp/definition/region to gambit REPL.
 ;;; 4. compile/load scheme file.
 ;;; 5. indentation in REPL.
-;;; 6*. completion in REPL and scheme source.
+;;; 6. completion in REPL and scheme source.
 ;;; 7*. migrate features from `(emacs-home* "config/chez.el")'.
 ;;; 
 ;;; bugs: 
 ;;;
+;;; improve:
+;;; 1. enlarge comint redirect buffered size.
 ;;; 
 
 
 (require 'comint)
-
-;; (require 'scheme)
+(require 'scheme)
 ;; (require 'thingatpt)
 
 ;; ;; Disable `geiser-mode' for `scheme-mode'
@@ -157,8 +158,8 @@ This is run before the process is cranked up."
 													[else (f (cdr ss) (cons (trim (car ss)) acc))])))))
 				 lst)
 		(let ([out (map car (table->list tbl))])
-			(if (>= (length out) 50)
-					(let f ([xs out] [n 50] [acc '()])
+			(if (> (length out) 10)
+					(let f ([xs out] [n 10] [acc '()])
 						(if (= n 0)
 								acc
 								(f (cdr xs) (- n 1) (cons (car xs) acc))))
@@ -233,6 +234,7 @@ This is run before the process is cranked up."
          (concat "\n" out))
         (t out)))
 
+
 (defun gambit-check-proc (&optional spawn)
   "Return the `*gambit*' process or start one if necessary."
   (when (and spawn
@@ -275,13 +277,13 @@ This is run before the process is cranked up."
                                                    proc nil t)
           (set-buffer (*gambit*))
           (while (and (null comint-redirect-completed)
-                      (accept-process-output proc 4))))
+                      (accept-process-output proc))))
         (list (car bounds) (cdr bounds)
-              (with-current-buffer (*gambit-out*)
-                (let ((s1 (read-from-string
+              (let ((s1 (read-from-string
+                         (with-current-buffer (*gambit-out*)
                            (buffer-substring-no-properties
-                            (point-min) (point-max)))))
-                  (when (consp s1) (car s1))))
+                            (point-min) (point-max))))))
+                (when (consp s1) (car s1)))
               :exclusive 'no)))))
 
 

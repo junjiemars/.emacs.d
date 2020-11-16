@@ -116,13 +116,7 @@
                                (let ((x (shell-command* "echo"
                                           "'(+ 1 2 3)'|" chez "-q")))
                                  (zerop (car x)))))
-      (prog1
-          (compile-unit% (emacs-home* "config/chez.el"))
-        (autoload 'chez-mode (v-home% "config/chez.elc")
-          "Toggle Chez's mode." t)
-        (unintern "run-chez" nil)
-        (autoload 'run-chez (v-home% "config/chez.elc")
-          "Toggle chez process in buffer `*chez*'." t)))
+      (compile-unit% (emacs-home* "config/chez.el")))
 
     ) ;; end of compile!
 

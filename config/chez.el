@@ -97,8 +97,8 @@ This is run before the process is cranked up."
 																	acc))]
 											 [else (f (cdar ls) acc)]))])
 			(map symbol->string
-					 (if (> (vector-length xs) 50)
-							 (let v->l ([n 49] [ss '()])
+					 (if (> (vector-length xs) 10)
+							 (let v->l ([n 10] [ss '()])
 								 (if (= n 0)
 										 ss
 										 (v->l (- n 1) (cons (vector-ref xs n) ss))))
@@ -218,11 +218,11 @@ This is run before the process is cranked up."
           (while (and (null comint-redirect-completed)
                       (accept-process-output proc 2))))
         (list (car bounds) (cdr bounds)
-              (with-current-buffer (*chez-out*)
-                (let ((s1 (read-from-string
+              (let ((s1 (read-from-string
+                         (with-current-buffer (*chez-out*)
                            (buffer-substring-no-properties
-                            (point-min) (point-max)))))
-                  (when (consp s1) (car s1))))
+                            (point-min) (point-max))))))
+                (when (consp s1) (car s1)))
               :exclusive 'no)))))
 
 (defun chez-repl-return ()
