@@ -214,13 +214,15 @@ This is run before the process is cranked up."
                                                    proc nil t)
           (set-buffer (*chez*))
           (while (and (null comint-redirect-completed)
-                      (accept-process-output proc 2))))
+                      (accept-process-output proc 2)))
+          (setcar mode-line-process ""))
         (list (car bounds) (cdr bounds)
               (let ((s1 (read-from-string
                          (with-current-buffer (*chez-out*)
                            (buffer-substring-no-properties
                             (point-min) (point-max))))))
-                (when (consp s1) (car s1)))
+                (when (and (consp s1) (consp (car s1)))
+                  (car s1)))
               :exclusive 'no)))))
 
 (defun chez-repl-return ()
@@ -284,7 +286,7 @@ Entry to this mode runs the hooks on `comint-mode-hook' and
             #'chez-preoutput-filter nil 'local)
   (scheme-mode-variables)
   (use-local-map chez-repl-mode-map)
-  (setq mode-line-process '(":%s")))
+  (setq mode-line-process '("" ":%s")))
 
 
 (defun run-chez (&optional command-line)
