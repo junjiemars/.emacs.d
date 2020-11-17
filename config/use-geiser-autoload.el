@@ -14,6 +14,8 @@
 
 (defmacro-if-feature% geiser)
 
+;;; Disable auto active `geiser-mode'
+(fset 'geiser-mode--maybe-activate nil)
 
 ;;; Disable auto `geiser-mode' for `scheme-mode'
 (when-var% geiser-mode-auto-p 'geiser-mode

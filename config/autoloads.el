@@ -112,8 +112,8 @@
                                      (zerop (car x))))))
       (prog1
           (compile-unit% (emacs-home* "config/gambit.el") t)
-        (autoload* 'gambit-mode (v-home% "config/gambit.elc")
-                   "Toggle Gambit's mode." t)
+        (autoload 'gambit-mode (v-home% "config/gambit.elc")
+          "Toggle Gambit's mode." t)
         (autoload* 'run-gambit (v-home% "config/gambit.elc")
                    "Toggle gambit process in buffer `*gambit*'." t)))
 
@@ -125,8 +125,8 @@
                                  (zerop (car x)))))
       (prog1
           (compile-unit% (emacs-home* "config/chez.el") t)
-        (autoload* 'chez-mode (v-home% "config/chez.elc")
-                   "Toggle Chez's mode." t)
+        (autoload 'chez-mode (v-home% "config/chez.elc")
+          "Toggle Chez's mode." t)
         (autoload* 'run-chez (v-home% "config/chez.elc")
                    "Toggle chez process in buffer `*chez*'." t)))
 

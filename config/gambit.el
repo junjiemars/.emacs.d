@@ -49,15 +49,6 @@
   :type 'string
   :group 'gambit)
 
-(defcustom% scheme-source? '(scheme-mode)
-  "Used to determine if a buffer contains Scheme source code.
-If it's loaded into a buffer that is in one of these major modes,
-it's considered a scheme source file by `scheme-load-file' and
-`scheme-compile-file'.  Used by these commands to determine
-defaults."
-  :type '(repeat function)
-  :group 'gambit)
-
 (defcustom% gambit-input-filter-regexp "\\`\\s *\\S ?\\S ?\\s *\\'"
   "Input matching this regexp are not saved on the history list.
 
@@ -401,7 +392,7 @@ end of buffer, otherwise just popup the buffer."
                                   (let ((n (buffer-file-name)))
                                     (cons (file-name-directory n)
                                           (file-name-nondirectory n)))
-                                  scheme-source?
+                                  '(scheme-mode)
                                   nil))
   (comint-check-source file)
   (comint-send-string (gambit-check-proc)
@@ -416,7 +407,7 @@ end of buffer, otherwise just popup the buffer."
                 (let ((n (buffer-file-name)))
                   (cons (file-name-directory n)
                         (file-name-nondirectory n)))
-                scheme-source? t)) ;; t because `load'
+                '(scheme-mode) nil))
   (comint-check-source file)
   (comint-send-string (gambit-check-proc)
                       (format "(load \"%s\")\n" file))

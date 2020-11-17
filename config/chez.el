@@ -52,15 +52,6 @@
   :type 'string
   :group 'chez)
 
-(defcustom% scheme-source? '(scheme-mode)
-  "Used to determine if a buffer contains Scheme source code.
-If it's loaded into a buffer that is in one of these major modes,
-it's considered a scheme source file by `scheme-load-file' and
-`scheme-compile-file'.  Used by these commands to determine
-defaults."
-  :type '(repeat function)
-  :group 'chez)
-
 (defcustom% chez-input-filter-regexp "\\`\\s *\\S ?\\S ?\\s *\\'"
   "Input matching this regexp are not saved on the history list.
 Defaults to a regexp ignoring all inputs of 0, 1, or 2 letters."
@@ -301,14 +292,13 @@ Run the hook `chez-repl-mode-hook' after the `comint-mode-hook'."
                                   (car *chez-option-history*)
                                   '*chez-option-history*)))
   (unless (comint-check-proc (*chez*))
-    (with-current-buffer (get-buffer-create "*chez*")
+    (with-current-buffer (*chez* (get-buffer-create "*chez*"))
       (apply #'make-comint-in-buffer
              (buffer-name (current-buffer))
              (current-buffer)
              chez-program
              (*chez-start-file*)
              (split-string* command-line "\\s-+" t))
-      (*chez* (current-buffer))
       (chez-repl-mode)
       (add-hook (if-var% completion-at-point-functions 'minibuffer
                          'completion-at-point-functions
@@ -346,8 +336,7 @@ end of buffer, otherwise just popup the buffer."
                 (let ((n (buffer-file-name)))
                   (cons (file-name-directory n)
                         (file-name-nondirectory n)))
-                scheme-source?
-                nil)) 
+                '(scheme-mode) nil))
   (comint-check-source file)
   (comint-send-string (chez-check-proc t)
                       (format "(compile-file \"%s\")\n" file))
@@ -361,7 +350,7 @@ end of buffer, otherwise just popup the buffer."
                 (let ((n (buffer-file-name)))
                   (cons (file-name-directory n)
                         (file-name-nondirectory n)))
-                scheme-source? t)) ;; t because `load'
+                '(scheme-mode) nil))
   (comint-check-source file) 
   (comint-send-string (chez-check-proc t)
                       (format "(load \"%s\")\n" file))
