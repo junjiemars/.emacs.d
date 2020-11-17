@@ -587,6 +587,12 @@
                               when (string= d1 "b/1")
                               return d))))
 
+(ert-deftest %fns:fluid-let ()
+  (let ((x 123))
+    (fluid-let (x 456)
+      (should (= x 456)))
+    (should (= x 123))))
+
 (ert-deftest %fns:split-string* ()
   (should (equal '("a" "b" "c")
                  (split-string* "a,b,,cXX" "," t "XX")))
