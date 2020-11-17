@@ -14,9 +14,12 @@
 (defmacro-if-feature% eww)
 
 (defmacro autoload* (symbol file &optional docstring interactive type)
-  "Autoload SYMBOL, like `autoload' does but more stable."
-  `(fset ,symbol
-     `(autoload ,,file ,,docstring ,,interactive ,,type)))
+  "Force autoload SYMBOL, like `autoload' does."
+  `(progn
+     (fset ,symbol nil)
+     (setplist ,symbol nil)
+     (fset ,symbol
+           `(autoload ,,file ,,docstring ,,interactive ,,type))))
 
 
 (defun load-autoloaded-modes! ()
