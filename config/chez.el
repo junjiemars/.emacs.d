@@ -248,6 +248,11 @@ This is run before the process is cranked up."
   "The keymap for `*chez*' REPL.")
 
 
+(defun chez-syntax-table ()
+  "Specify special character in `syntax-table'."
+  (modify-syntax-entry ?| "_" (syntax-table)))
+
+
 (defun chez-syntax-indent ()
   "Chez scheme syntax indent."
   (put 'library 'scheme-indent-function 2)
@@ -277,6 +282,7 @@ Entry to this mode runs the hooks on `comint-mode-hook' and
             #'chez-preoutput-filter nil 'local)
   (scheme-mode-variables)
   (use-local-map chez-repl-mode-map)
+  (chez-syntax-table)
   (setq mode-line-process '("" ":%s")))
 
 

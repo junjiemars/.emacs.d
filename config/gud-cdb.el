@@ -237,7 +237,7 @@ in `gud-cdb-directories'.
 
 
 (defun cdb-set-syntax-table! ()
-  "Specify special character."
+  "Specify special character in `syntax-table'."
   (modify-syntax-entry ?` "_" (syntax-table))
   (modify-syntax-entry ?! "_" (syntax-table))
   (modify-syntax-entry ?. "_" (syntax-table)))
@@ -281,7 +281,8 @@ debugger arguments before running the debugger.
 "
   (ignore* file)
   (append (loop* for o in gud-cdb-command-line-hook
-                 append (funcall o)) args))
+                 append (funcall o))
+          args))
 
 
 (defun gud-cdb-marker-filter (string)
