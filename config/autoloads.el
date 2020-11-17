@@ -13,6 +13,11 @@
 ;; default web browser: eww, requires Emacs-24.4+
 (defmacro-if-feature% eww)
 
+(defmacro autoload* (symbol file &optional docstring interactive type)
+  "Autoload SYMBOL, like `autoload' does but more stable."
+  `(fset ,symbol
+     `(autoload ,,file ,,docstring ,,interactive ,,type)))
+
 
 (defun load-autoloaded-modes! ()
   "Load autoloaded modes."
@@ -104,11 +109,10 @@
                                      (zerop (car x))))))
       (prog1
           (compile-unit% (emacs-home* "config/gambit.el") t)
-        (autoload 'gambit-mode (v-home% "config/gambit.elc")
-          "Toggle Gambit's mode." t)
-        (unintern "run-gambit" nil)
-        (autoload 'run-gambit (v-home% "config/gambit.elc")
-          "Toggle gambit process in buffer `*gambit*'." t)))
+        (autoload* 'gambit-mode (v-home% "config/gambit.elc")
+                   "Toggle Gambit's mode." t)
+        (autoload* 'run-gambit (v-home% "config/gambit.elc")
+                   "Toggle gambit process in buffer `*gambit*'." t)))
 
     ;; Scheme `chez-mode'
     (when% (executable-find% "scheme"
@@ -116,7 +120,12 @@
                                (let ((x (shell-command* "echo"
                                           "'(+ 1 2 3)'|" chez "-q")))
                                  (zerop (car x)))))
-      (compile-unit% (emacs-home* "config/chez.el")))
+      (prog1
+          (compile-unit% (emacs-home* "config/chez.el") t)
+        (autoload* 'chez-mode (v-home% "config/chez.elc")
+                   "Toggle Chez's mode." t)
+        (autoload* 'run-chez (v-home% "config/chez.elc")
+                   "Toggle chez process in buffer `*chez*'." t)))
 
     ) ;; end of compile!
 
