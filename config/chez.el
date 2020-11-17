@@ -85,8 +85,7 @@ This is run before the process is cranked up."
 (library (chez-emacs)
 		(export chez-emacs/apropos)
   (import (chezscheme))
-
-	(define (chez-emacs/apropos what)
+	(define (chez-emacs/apropos what max)
 		(let* ([lst (apropos-list what (interaction-environment))]
 					 [tbl (make-eq-hashtable)]
 					 [xs (let f ([ls lst] [acc tbl])
@@ -97,13 +96,12 @@ This is run before the process is cranked up."
 																	acc))]
 											 [else (f (cdar ls) acc)]))])
 			(map symbol->string
-					 (if (> (vector-length xs) 10)
-							 (let v->l ([n 10] [ss '()])
+					 (if (> (vector-length xs) max)
+							 (let v->l ([n max] [ss '()])
 								 (if (= n 0)
 										 ss
 										 (v->l (- n 1) (cons (vector-ref xs n) ss))))
 							 (vector->list xs))))))
-
 (import (chez-emacs))
 ;;; eof
  " 
@@ -205,7 +203,7 @@ This is run before the process is cranked up."
   (chez-check-proc)
   (let ((bounds (bounds-of-thing-at-point 'symbol)))
     (when bounds
-      (let ((cmd (format "(chez-emacs/apropos \"%s\")"
+      (let ((cmd (format "(chez-emacs/apropos \"%s\" 10)"
                          (buffer-substring-no-properties (car bounds)
                                                          (cdr bounds))))
             (proc (get-buffer-process (*chez*))))
