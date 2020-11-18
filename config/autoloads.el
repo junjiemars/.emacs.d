@@ -145,7 +145,7 @@
       (when (*org-babel-schemes*)
         (autoload* 'org-babel-execute:scheme*
                    (v-home% "config/ob-schemes.elc")
-                   "Autoload `org-babel-execute:scheme*'.")
+                   "Autoload `org-babel-execute:scheme*'." t)
         (fset 'org-babel-execute:scheme 'org-babel-execute:scheme*)))
 
     ) ;; end of compile!
