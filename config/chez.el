@@ -67,7 +67,9 @@ This is run before the process is cranked up."
 (defalias '*chez*
   (lexical-let% ((b))
     (lambda (&optional n)
-      (if n (setq b n) b)))
+      (if n (setq b (get-buffer-create n))
+        (cond ((null b) (setq b (get-buffer-create "*chez*")))
+              (t b)))))
   "The current *chez* process buffer.")
 
 
@@ -298,7 +300,7 @@ Run the hook `chez-repl-mode-hook' after the `comint-mode-hook'."
                                   (car *chez-option-history*)
                                   '*chez-option-history*)))
   (unless (comint-check-proc (*chez*))
-    (with-current-buffer (*chez* (get-buffer-create "*chez*"))
+    (with-current-buffer (*chez*)
       (apply #'make-comint-in-buffer
              (buffer-name (current-buffer))
              (current-buffer)
