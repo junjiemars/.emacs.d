@@ -28,7 +28,7 @@
                         (lambda (x)
                           (let ((bin (executable-find (symbol-name x))))
                             (when bin (push x ns))))
-                        '(scheme chicken guile racket))
+                        '(chicken guile racket))
                        ns)))
     (lambda (&optional new)
       (setq% geiser-active-implementations

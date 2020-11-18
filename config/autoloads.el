@@ -7,11 +7,19 @@
 ;;;;
 
 
-;; semantic, require Emacs-24.4+
+;;; semantic, require Emacs-24.4+
 (defmacro-if-feature% semantic)
 
-;; default web browser: eww, requires Emacs-24.4+
+;;; default web browser: eww, requires Emacs-24.4+
 (defmacro-if-feature% eww)
+
+(defalias '*org-babel-schemes*
+  (lexical-let% ((i '()))
+    (lambda (&optional op key val)
+      (cond ((eq :get op) (plist-get i key))
+            ((eq :put op) (setq i (plist-put i key val)))
+            (t i))))
+  "The available Scheme's implementations for `ob'.")
 
 (defmacro autoload* (symbol file &optional docstring interactive type)
   "Force autoload SYMBOL, like `autoload' does."
@@ -104,14 +112,14 @@
       (compile-unit% (emacs-home* "config/on-python-autoload.el")))
 
     ;; Scheme `gambit-mode'
-    (when% (or (executable-find% "gsc-script")
-               (executable-find% "gsc"
-                                 (lambda (gsc)
-                                   (let ((x (shell-command* gsc
-                                              "-e \"(system-type)\"")))
-                                     (zerop (car x))))))
+    (when% (executable-find% "gsc-script"
+                        (lambda (gsc)
+                          (let ((x (shell-command* gsc
+                                     "-e \"(system-type)\"")))
+                            (zerop (car x)))))
       (prog1
           (compile-unit% (emacs-home* "config/gambit.el") t)
+        (*org-babel-schemes* :put 'gambit "gsc-script")
         (autoload 'gambit-mode (v-home% "config/gambit.elc")
           "Toggle Gambit's mode." t)
         (autoload* 'run-gambit (v-home% "config/gambit.elc")
@@ -125,10 +133,20 @@
                                  (zerop (car x)))))
       (prog1
           (compile-unit% (emacs-home* "config/chez.el") t)
+        (*org-babel-schemes* :put 'chez "scheme")
         (autoload 'chez-mode (v-home% "config/chez.elc")
           "Toggle Chez's mode." t)
         (autoload* 'run-chez (v-home% "config/chez.elc")
                    "Toggle chez process in buffer `*chez*'." t)))
+
+    ;; Org `ob' for Scheme
+    (prog1
+        (compile-unit% (emacs-home* "config/ob-schemes.el") t)
+      (when (*org-babel-schemes*)
+        (autoload* 'org-babel-execute:scheme*
+                   (v-home% "config/ob-schemes.elc")
+                   "Autoload `org-babel-execute:scheme*'.")
+        (fset 'org-babel-execute:scheme 'org-babel-execute:scheme*)))
 
     ) ;; end of compile!
 
