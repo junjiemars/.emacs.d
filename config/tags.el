@@ -131,8 +131,7 @@ RENEW overwrite the existing tags file when t else create it."
            (td (file-name-directory tf)))
       (if (file-exists-p tf)
           (when renew (delete-file tf))
-        (unless (file-exists-p td)
-          (make-directory td t)))
+        (path! td))
       (let ((header (propertize "make-tags"
                                 'face 'minibuffer-prompt)))
         (dir-iterate home

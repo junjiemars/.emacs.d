@@ -13,10 +13,10 @@
 
 
 (def-self-env-spec
-  :theme (list :name 'dracula
+  :theme (list :name nil ;; 'dracula
                :custom-theme-directory (emacs-home* "theme/")
                :compile nil ;; expert option
-               :allowed t)
+               :allowed nil)
 
   :frame (list :initial `((fullscreen . fullheight))
                :default `((font . ,(if-platform% 'darwin

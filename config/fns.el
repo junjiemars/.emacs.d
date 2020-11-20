@@ -10,10 +10,10 @@
 (defalias 'range #'number-sequence)
 
 (unless-fn% 'char= nil
-  (defalias 'char= #'char-equal))
+  (fset 'char= #'char-equal))
 
 (unless-fn% 'characterp nil
-  (defalias 'characterp #'char-valid-p))
+  (fset 'characterp #'char-valid-p))
 
 
 (defun flatten (seq)

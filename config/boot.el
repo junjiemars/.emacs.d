@@ -258,7 +258,7 @@ If VAR requires the FEATURE, load it on compile-time."
 (defsubst self-def-files! ()
   "Make default self-*.el files."
   (unless (file-exists-p (caar +self-def-where+))
-    (make-directory (file-name-directory (caar +self-def-where+)))
+    (path! (file-name-directory (caar +self-def-where+)))
     (mapc (lambda (f)
             (let ((dst (car f)) (src (cdr f)))
               (unless (file-exists-p dst)
