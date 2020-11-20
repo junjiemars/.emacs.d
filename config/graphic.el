@@ -45,17 +45,17 @@
 ;; Frame
 
 (when-graphic%
-  (when (self-spec->*env-spec :frame :allowed)
+  (when (*self-env-spec* :get :frame :allowed)
     (mapc (lambda (x)
             (add-to-list 'initial-frame-alist x))
-          (self-spec->*env-spec :frame :initial))
+          (*self-env-spec* :get :frame :initial))
     (mapc (lambda (x)
             (add-to-list 'default-frame-alist x)
             (when (eq 'font (car x))
               (set-face-attribute 'default nil :font (cdr x))))
-          (self-spec->*env-spec :frame :default))
+          (*self-env-spec* :get :frame :default))
     (setq frame-resize-pixelwise
-          (self-spec->*env-spec :frame :frame-resize-pixelwise))))
+          (*self-env-spec* :get :frame :frame-resize-pixelwise))))
 
  ;; end of Frame
 
@@ -78,31 +78,29 @@ If DIR is nil then load the built-in `customize-themes' by NAME."
 ;; Load theme
 (when-theme%
 
-  (when (and (self-spec->*env-spec :theme :allowed)
-             (self-spec->*env-spec :theme :name))
+  (when (and (*self-env-spec* :get :theme :allowed)
+             (*self-env-spec* :get :theme :name))
     (cond
-     ((self-spec->*env-spec :theme :custom-theme-directory)
+     ((*self-env-spec* :get :theme :custom-theme-directory)
       ;; load theme from :custom-theme-directory
-      (if (self-spec->*env-spec :theme :compile)
+      (if (*self-env-spec* :get :theme :compile)
           (progn
             (compile! (compile-unit*
                        (concat
-                        (self-spec->*env-spec :theme
-                                              :custom-theme-directory)
-                        (symbol-name (self-spec->*env-spec :theme
-                                                           :name))
+                        (*self-env-spec* :get :theme :custom-theme-directory)
+                        (symbol-name (*self-env-spec* :get :theme :name))
                         "-theme.el")
                        t t))
             (self-load-theme!
-             (self-spec->*env-spec :theme :name)
-             (concat (self-spec->*env-spec :theme :custom-theme-directory)
+             (*self-env-spec* :get :theme :name)
+             (concat (*self-env-spec* :get :theme :custom-theme-directory)
                      (v-path* "/"))))
         (self-load-theme!
-         (self-spec->*env-spec :theme :name)
-         (self-spec->*env-spec :theme :custom-theme-directory))))
+         (*self-env-spec* :get :theme :name)
+         (*self-env-spec* :get :theme :custom-theme-directory))))
 
      ;; load builtin theme
-     (t (self-load-theme! (self-spec->*env-spec :theme :name))))))
+     (t (self-load-theme! (*self-env-spec* :get :theme :name))))))
 
 
  ;; end of when-theme%

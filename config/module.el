@@ -23,7 +23,7 @@
 
 (defsubst initialize-package-repository! ()
   (setq% package-check-signature
-         (self-spec->*env-spec :package :package-check-signature)
+         (*self-env-spec* :get :package :package-check-signature)
          'package)
   (setq%
    package-archives
@@ -142,7 +142,7 @@
   (parse-package-spec! basic-package-spec)
   ;; Load self packages spec
   (parse-package-spec! (self-spec->*package-spec)
-                       (self-spec->*env-spec :package :remove-unused)))
+                       (*self-env-spec* :get :package :remove-unused)))
 
 
 ;;; eof

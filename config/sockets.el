@@ -49,8 +49,8 @@ greate than 1, otherwise via native."
                       (setq% socks-server
                              (list "Default server"
                                    nil
-                                   (self-spec->*env-spec :socks :port)
-                                   (self-spec->*env-spec :socks :version))
+                                   (*self-env-spec* :get :socks :port)
+                                   (*self-env-spec* :get :socks :version))
                              'socks)
                       (when *open-network-stream*
                         (setf (symbol-function 'open-network-stream)
@@ -59,9 +59,9 @@ greate than 1, otherwise via native."
                      (setq% url-gateway-method 'socks 'url-vars)
                      (setq% socks-server
                             (list "Default server"
-                                  (self-spec->*env-spec :socks :server)
-                                  (self-spec->*env-spec :socks :port)
-                                  (self-spec->*env-spec :socks :version))
+                                  (*self-env-spec* :get :socks :server)
+                                  (*self-env-spec* :get :socks :port)
+                                  (*self-env-spec* :get :socks :version))
                             'socks)
                      (setf (symbol-function 'open-network-stream)
                            #'socks-open-network-stream))))
@@ -88,16 +88,16 @@ greate than 1, otherwise via native."
                                'around
                                "url-open-stream-around"))
           (message "socks%s as url gateway %s"
-                   (list (self-spec->*env-spec :socks :server)
-                         (self-spec->*env-spec :socks :port)
-                         (self-spec->*env-spec :socks :version))
+                   (list (*self-env-spec* :get :socks :server)
+                         (*self-env-spec* :get :socks :port)
+                         (*self-env-spec* :get :socks :version))
                    (if activated "enabled" "disabled"))))))
 
 
 
 (if-feature-socks%
 
-    (when (self-spec->*env-spec :socks :allowed)
+    (when (*self-env-spec* :get :socks :allowed)
       (toggle-socks! 4)))
 
 

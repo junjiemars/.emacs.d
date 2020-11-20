@@ -45,6 +45,26 @@ otherwise do ELSE..."
 (unless-lexical%
   (put 'lexical-binding 'safe-local-variable (lambda (_) t)))
 
+(defmacro lexical-let% (varlist &rest body)
+  "Like `let', but lexically scoped."
+  (declare (indent 1) (debug let))
+  `(if-lexical%
+       (if-version% < 27
+                    (let ,varlist ,@body)
+         (let ((lexical-binding t))
+           (let ,varlist ,@body)))
+     (when-fn% 'lexical-let 'cl
+       (lexical-let ,varlist ,@body))))
+
+(defmacro lexical-let*% (varlist &rest body)
+  "Like `let*', but lexically scoped."
+  (declare (indent 1) (debug let))
+  `(if-lexical%
+       `(let ((lexical-binding t))
+          (let ,varlist ,@body))
+     (when-fn% 'lexical-let* 'cl
+       (lexical-let* ,varlist ,@body))))
+
 
  ;; end of *-lexical% macro
 
@@ -241,58 +261,62 @@ If VAR requires the FEATURE, load it on compile-time."
 ;;;;
 
 
-(defconst +self-def-where+
-  `( ,(cons (emacs-home* "private/self-path.el")
-            (emacs-home* "config/sample-self-path.el"))
-     ,(cons (emacs-home* "private/self-env-spec.el")
-            (emacs-home* "config/sample-self-env-spec.el"))
-     ,(cons (emacs-home* "private/self-package-spec.el")
-            (emacs-home* "config/sample-self-package-spec.el"))
-     ,(cons (emacs-home* "private/self-prologue.el")
-            (emacs-home* "config/sample-self-prologue.el"))
-     ,(cons (emacs-home* "private/self-epilogue.el")
-            (emacs-home* "config/sample-self-epilogue.el")))
-  "Default a list of self-* files.")
-
-
-(defsubst self-def-files! ()
-  "Make default self-*.el files."
-  (unless (file-exists-p (caar +self-def-where+))
-    (path! (file-name-directory (caar +self-def-where+)))
-    (mapc (lambda (f)
-            (let ((dst (car f)) (src (cdr f)))
-              (unless (file-exists-p dst)
-                (copy-file src dst t))))
-          +self-def-where+)))
-
-
 (defmacro self-symbol (name)
   `(intern (format "self-%s-%s" system-type ,name)))
 
 
-(defmacro def-self-path-ref (&rest path)
-  "Define the PATH references for all specs in `self-path.el'.
-
- (def-self-path-ref
-   :env-spec (emacs-home* \"private/self-env-spec.el\")
-   :prologue (emacs-home* \"private/self-prologue.el\")
-   :package-spec (emacs-home* \"private/self-package-spec.el\")
-   :epilogue (emacs-home* \"private/self-epilogue.el\"))
+(defalias '*self-paths*
+  (lexical-let%
+      ((ps (list
+            :path (emacs-home* "private/self-path.el")
+            :env-spec (emacs-home* "private/self-env-spec.el")
+            :prologue (emacs-home* "private/self-prologue.el")
+            :package-spec (emacs-home* "private/self-package-spec.el")
+            :epilogue (emacs-home* "private/self-epilogue.el")))
+       (ss (list
+            (cons :path (emacs-home* "config/sample-self-path.el"))
+            (cons :env-spec (emacs-home* "config/sample-self-env-spec.el"))
+            (cons :prologue (emacs-home* "config/sample-self-prologue.el"))
+            (cons :package-spec
+                  (emacs-home* "config/sample-self-package-spec.el"))
+            (cons :epilogue
+                  (emacs-home* "config/sample-self-epilogue.el")))))
+    (lambda (&optional op k v)
+      (cond ((eq :get op) (plist-get ps k))
+            ((eq :put op) (setq ps (plist-put ps k v)))
+            ((eq :dup op) (mapc
+                           (lambda (fs)
+                             (let ((dst (plist-get ps (car fs)))
+                                   (src (cdr fs)))
+                               (unless (file-exists-p dst)
+                                 (path! (file-name-directory dst))
+                                 (copy-file src dst t))))
+                           ss))
+            (t ps))))
+  "Define the PATH references for all specs in `(*self-paths* :get :path)'.
 
 No matter the declaration order, the executing order is:
-:env-spec -> :prologue -> :package-spec -> :epilogue
-"
-  (declare (indent 0))
-  `(defvar ,(self-symbol 'path) (list ,@path)
-     "Define the path references which point to 
-:env-spec, :prologue, :package-spec and :epilogue in order."))
+:env-spec -> :package-spec -> :epilogue")
 
 
-(defmacro def-self-env-spec (&rest spec)
-  "Define default Emacs env SPEC."
-  (declare (indent 0))
-  `(defvar ,(self-symbol 'env-spec) (list ,@spec)
-     "Define the environment specs."))
+(defalias '*self-env-spec*
+  (lexical-let% ((env (list :theme nil
+                            :frame nil
+                            :glyph nil
+                            :shell nil
+                            :desktop nil
+                            :eshell nil
+                            :socks nil
+                            :package nil
+                            :edit nil)))
+    (lambda (&optional op &rest keys)
+      (cond ((eq :get op) (let ((r env))
+                            (mapc (lambda (k)
+                                    (setq r (plist-get r k)))
+                                  keys)
+                            r))
+            ((eq :put op) (setq env (plist-put env (car keys) (cadr keys))))
+            (t env)))))
 
 
 (defmacro def-self-package-spec (&rest spec)
@@ -301,7 +325,6 @@ No matter the declaration order, the executing order is:
   (when-package%
     `(defvar ,(self-symbol 'package-spec) (list ,@spec))))
 
-
  ;; end of self-def macro
 
 
@@ -309,16 +332,10 @@ No matter the declaration order, the executing order is:
 ;; self-spec macro
 ;;;;
 
+(*self-paths* :dup)
 
-(self-def-files!)
-
-(compile! (compile-unit* (caar +self-def-where+)))
-
-
-(defsubst self-def-path-ref-> (&optional key)
-  (when (boundp (eval-when-compile (self-symbol 'path)))
-    (let ((ref (symbol-value (eval-when-compile (self-symbol 'path)))))
-      (if key (plist-get ref key) ref))))
+;; (when (*self-paths* :get :path)
+;;   (compile! (compile-unit* (*self-paths* :get :path))))
 
 
 (defmacro self-spec-> (seq &rest keys)
@@ -340,12 +357,6 @@ No matter the declaration order, the executing order is:
   `(eval-when-compile (self-spec-> ,seq ,@keys)))
 
 
-(defmacro self-spec->*env-spec (&rest keys)
-  (declare (indent 0))
-  (when (boundp (self-symbol 'env-spec))
-    `(self-spec-> ,(self-symbol 'env-spec) ,@keys)))
-
-
 (defmacro self-spec->*package-spec (&rest keys)
   (declare (indent 0))
   (when (boundp (self-symbol 'package-spec))
@@ -355,7 +366,7 @@ No matter the declaration order, the executing order is:
 (defmacro package-spec-:allowed-p (&rest body)
   (declare (indent 0))
   `(when-package%
-     (when (self-spec->*env-spec :package :allowed)
+     (when (*self-env-spec* :get :package :allowed)
        ,@body)))
 
 
@@ -363,17 +374,17 @@ No matter the declaration order, the executing order is:
 
 ;;; <1>
 (compile! (compile-unit% (emacs-home* "config/fns.el"))
-          (compile-unit* (self-def-path-ref-> :env-spec)))
-
-;;; <2>
-(compile! (compile-unit% (emacs-home* "config/graphic.el"))
+          (when (*self-paths* :get :env-spec)
+            (compile-unit* (*self-paths* :get :env-spec)))
+          (compile-unit% (emacs-home* "config/graphic.el"))
           (compile-unit% (emacs-home* "config/basic.el"))
           (compile-unit% (emacs-home* "config/shells.el")))
 
-;;; <3>
-(compile! (compile-unit* (self-def-path-ref-> :prologue)))
+;;; <2>
+(when (*self-paths* :get :prologue)
+  (compile! (compile-unit* (*self-paths* :get :prologue))))
 
-;;; <4>
+;;; <3>
 (when-package%
   ;; (package-initialize)
 
@@ -381,9 +392,10 @@ No matter the declaration order, the executing order is:
     "Autloaded `compile-unit'.")
 
   ;; Load basic and self modules
-  (compile! (compile-unit* (self-def-path-ref-> :package-spec))))
+  (when (*self-paths* :get :package-spec)
+    (compile! (compile-unit* (*self-paths* :get :package-spec)))))
 
-;;; <5>
+;;; <4>
 (compile!
   ;; --batch mode: disable desktop read/save
   `,(unless noninteractive 

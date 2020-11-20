@@ -23,8 +23,9 @@
 
 (defun save-env-spec! ()
   (when (save-sexp-to-file
-   `(setq *self-previous-env-spec* ',(self-spec->*env-spec))
-   (memory-spec->% :source))
+         (list 'setq '*self-previous-env-spec*
+               (list 'quote (*self-env-spec*)))
+         (memory-spec->% :source))
     (byte-compile-file (memory-spec->% :source))))
 
 (add-hook 'kill-emacs-hook #'save-env-spec! t)
@@ -77,15 +78,15 @@
       (when-version% > 25
         (setq% desktop-restore-forces-onscreen nil 'desktop))))
 
-  (when (and (self-spec->*env-spec :desktop :allowed)
+  (when (and (*self-env-spec* :get :desktop :allowed)
              (file-exists-p (v-home% ".desktop/")))
     (when-theme%
       (when (consp (theme-changed-p
                     (self-spec-> *self-previous-env-spec* :theme)
-                    (self-spec->*env-spec :theme)))
+                    (*self-env-spec* :get :theme)))
         (setq% desktop-restore-frames nil 'desktop)))
     (setq% desktop-restore-eager
-           (self-spec->*env-spec :desktop :restore-eager) 'desktop)
+           (*self-env-spec* :get :desktop :restore-eager) 'desktop)
     (desktop-read (v-home% ".desktop/"))))
 
 
@@ -96,20 +97,20 @@
 ;; Save desktop
 (defun self-desktop-save! ()
   "Save the desktop of the current Emacs instance."
-  (when (self-spec->*env-spec :desktop :allowed)
-    (let ((f (self-spec->*env-spec :desktop :files-not-to-save)))
+  (when (*self-env-spec* :get :desktop :allowed)
+    (let ((f (*self-env-spec* :get :desktop :files-not-to-save)))
       (when f (setq% desktop-files-not-to-save f 'desktop)))
 
-    (let ((b (self-spec->*env-spec :desktop :buffers-not-to-save)))
+    (let ((b (*self-env-spec* :get :desktop :buffers-not-to-save)))
       (when b (setq% desktop-buffers-not-to-save b 'desktop)))
 
-    (let ((m (self-spec->*env-spec :desktop :modes-not-to-save)))
+    (let ((m (*self-env-spec* :get :desktop :modes-not-to-save)))
       (setq% desktop-modes-not-to-save
              (append '(tags-table-mode) m) 'desktop))
 
     (when-theme%
       (switch-theme! (self-spec-> *self-previous-env-spec* :theme)
-                     (self-spec->*env-spec :theme)))
+                     (*self-env-spec* :get :theme)))
 
     (when-graphic%
       (when-version% <= 26

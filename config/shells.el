@@ -21,7 +21,7 @@
 (defmacro shells-spec->* (&rest keys)
   "Extract value from the list of :shell spec via KEYS at runtime."
   (declare (indent 0))
-   `(self-spec->*env-spec :shell ,@keys))
+   `(*self-env-spec* :get :shell ,@keys))
 
 
 (defvar *default-shell-env*

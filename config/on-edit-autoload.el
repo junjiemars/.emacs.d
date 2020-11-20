@@ -80,16 +80,16 @@
 
 
 ;; :edit
-(when (self-spec->*env-spec :edit :allowed)
+(when (*self-env-spec* :get :edit :allowed)
   ;; default `tab-width'
-  (setq-default tab-width (self-spec->*env-spec :edit :tab-width))
+  (setq-default tab-width (*self-env-spec* :get :edit :tab-width))
   ;; `standard-indent'
-  (setq-default standard-indent (self-spec->*env-spec :edit :standard-indent))
+  (setq-default standard-indent (*self-env-spec* :get :edit :standard-indent))
   ;; default `auto-save-default'
-  (setq auto-save-default (self-spec->*env-spec :edit :auto-save-default))
+  (setq auto-save-default (*self-env-spec* :get :edit :auto-save-default))
   ;; allow `narrow-to-region'
   (put 'narrow-to-region 'disabled
-       (not (self-spec->*env-spec :edit :narrow-to-region))))
+       (not (*self-env-spec* :get :edit :narrow-to-region))))
 
 
 (when-version% > 24.4

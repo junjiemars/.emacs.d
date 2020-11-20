@@ -13,8 +13,13 @@
 ;; :epilogue run in `after-init-hook'
 
 
-(def-self-path-ref
-  :env-spec (emacs-home* "private/self-env-spec.el")
-  :prologue (comment (emacs-home* "private/self-prologue.el"))
-  :package-spec (comment (emacs-home* "private/self-package-spec.el"))
-  :epilogue (comment (emacs-home* "private/self-epilogue.el")))
+(*self-paths* :put :env-spec
+              (emacs-home* "self-env-spec.el"))
+(*self-paths* :put :prologue
+              (comment (emacs-home* "private/self-prologue.el")))
+(*self-paths* :put :package-spec
+              (comment (emacs-home* "private/self-package-spec.el")))
+(*self-paths* :put  :epilogue
+              (comment (emacs-home* "private/self-epilogue.el")))
+
+;; eof

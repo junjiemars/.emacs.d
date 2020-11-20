@@ -13,9 +13,9 @@
 (if-feature-js2-mode%
     (with-eval-after-load 'js2-mode
 
-      (when (self-spec->*env-spec :edit :allowed)
+      (when (*self-env-spec* :get :edit :allowed)
         (setq js2-basic-offset
-              (self-spec->*env-spec :edit :tab-width)))))
+              (*self-env-spec* :get :edit :tab-width)))))
 
 
 

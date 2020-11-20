@@ -12,18 +12,18 @@
   `(progn
      (eval-when-compile (require 'em-term))
      (require 'em-term)
-     (when (self-spec->*env-spec :eshell :allowed)
-       (let ((visuals (self-spec->*env-spec :eshell :visual-commands)))
+     (when (*self-env-spec* :get :eshell :allowed)
+       (let ((visuals (*self-env-spec* :get :eshell :visual-commands)))
          (mapc (lambda (x)
                  (add-to-list 'eshell-visual-commands x t #'string=))
                visuals))
        (setq% eshell-destroy-buffer-when-process-dies
-              (self-spec->*env-spec
+              (*self-env-spec* :get
                 :eshell :destroy-buffer-when-process-dies))
        (setq% eshell-visual-subcommands
-              (self-spec->*env-spec :eshell :visual-subcommands))
+              (*self-env-spec* :get :eshell :visual-subcommands))
        (setq% eshell-visual-options
-              (self-spec->*env-spec :eshell :visual-options)))))
+              (*self-env-spec* :get :eshell :visual-options)))))
 
 
 (with-eval-after-load 'eshell
