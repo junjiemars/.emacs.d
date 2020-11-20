@@ -268,13 +268,11 @@ If VAR requires the FEATURE, load it on compile-time."
 (defalias '*self-paths*
   (lexical-let%
       ((ps (list
-            :path (emacs-home* "private/self-path.el")
             :env-spec (emacs-home* "private/self-env-spec.el")
             :prologue (emacs-home* "private/self-prologue.el")
             :package-spec (emacs-home* "private/self-package-spec.el")
             :epilogue (emacs-home* "private/self-epilogue.el")))
        (ss (list
-            (cons :path (emacs-home* "config/sample-self-path.el"))
             (cons :env-spec (emacs-home* "config/sample-self-env-spec.el"))
             (cons :prologue (emacs-home* "config/sample-self-prologue.el"))
             (cons :package-spec
@@ -310,11 +308,11 @@ No matter the declaration order, the executing order is:
                             :package nil
                             :edit nil)))
     (lambda (&optional op &rest keys)
-      (cond ((eq :get op) (let ((r env))
-                            (mapc (lambda (k)
-                                    (setq r (plist-get r k)))
-                                  keys)
-                            r))
+      (cond ((eq :get op) (let ((rs env) (ks keys))
+                            (while (not (null ks))
+                              (setq rs (plist-get rs (car ks))
+                                    ks (cdr ks)))
+                            rs))
             ((eq :put op) (setq env (plist-put env (car keys) (cadr keys))))
             (t env)))))
 
@@ -333,9 +331,6 @@ No matter the declaration order, the executing order is:
 ;;;;
 
 (*self-paths* :dup)
-
-;; (when (*self-paths* :get :path)
-;;   (compile! (compile-unit* (*self-paths* :get :path))))
 
 
 (defmacro self-spec-> (seq &rest keys)
