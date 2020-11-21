@@ -155,7 +155,7 @@ See also: `parse-colon-path'."
   (defun windows-nt-env-path+ (dir &optional append)
     "APPEND or push DIR to %PATH%."
     (let ((env (var->paths (getenv (shells-spec->% :PATH)))))
-      (when (or (and (null append) (not (string= dir (first env))))
+      (when (or (and (null append) (not (string= dir (car env))))
                 (and append (not (string= dir (last env)))))
         (let ((path (remove-if* (lambda (x) (string= x dir))
                                 env)))
