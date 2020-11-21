@@ -11,6 +11,7 @@
 #+REVEAL_MIN_SCALE: 0.2
 #+REVEAL_MAX_SCALE: 1.5
 #+END_COMMENT
+#+PROPERTY: header-args :exports code
 
 @@html:<img src="https://github.com/junjiemars/.emacs.d/workflows/More%20Reasonable%20Emacs/badge.svg" alt="Darwin, Linux and Windows"/>@@
 
@@ -153,7 +154,7 @@ After first run More Reasonable Emacs, exit and then /reopen/ Emacs.
 #+ATTR_HTML: :style text-align:left
 On Windows, if you'd [[https://git-scm.com/downloads][Git-Bash]] installed but no Emacs, you are lucky, a
 one line code will do it all for you and more: fix some Emacs' issue
-for you, and you don't need run =git clone ...=,
+for you, and you don't need run src_shell{git clone ...},
 
 instead,
 
@@ -172,16 +173,16 @@ features, such as themes, packages, and fonts etc., see next section:
    :END:
 
 #+ATTR_HTML: :style text-align:left
-Annotated your Emacs HOME as =(emacs-home*)=.
+Annotated your Emacs HOME as src_elisp{(emacs-home*)}.
 
 #+ATTR_HTML: :style text-align:left
-Your private configuration directory at =(emacs-home* "private/")=.
+Your private configuration directory at src_elisp{(emacs-home* "private/")}.
 All things under it you can rename, move, delete.
 
 #+ATTR_HTML: :style text-align:left
 All Elisp files should be compiled, if you meet some trouble, a magic
-interactive function =(clean-compiled-files)= should help, run it and
-reopen the Emacs.
+interactive function src_elisp{(clean-compiled-files)} should help,
+run it and reopen the Emacs.
 
 *** Directory
 
@@ -194,29 +195,25 @@ reopen the Emacs.
     ├── init.el (comment "Emacs init file")
     ├── private (comment "your configuration can put here")
     │   ├── self-env-spec.el
-    │   ├── self-epilogue.el
     │   ├── self-package-spec.el
-    │   ├── self-path.el
-    │   ├── self-prologue.el
+    │   ├── self-epilogue.el
     └── theme (comment "themes directory")
 #+END_EXAMPLE
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
-Locate your spec via =(emacs-home* "private/self-path.el")=.
+Locate your spec via src_elisp{(*self-paths*)}.
 
 #+BEGIN_SRC emacs-lisp
-;; Run order: :env-spec -> :prologue -> :package-spec -> :epilogue
+;; Run order: :env-spec -> :package-spec -> :epilogue
 ;; You can point to your Gited Emacs' configuration repo.
 ;; Default samples `sample-self-*.el' in `(emacs-home* "config/")' directory.
 ;; :epilogue run in `after-init-hook'
 
-
-(def-self-path-ref
-  :env-spec (emacs-home* "private/self-env-spec.el")
-  :prologue (comment (emacs-home* "private/self-prologue.el"))
-  :package-spec (comment (emacs-home* "private/self-package-spec.el"))
-  :epilogue (comment (emacs-home* "private/self-epilogue.el")))
+(*self-paths* :put :package-spec
+              (comment (emacs-home* "private/self-package-spec.el")))
+(*self-paths* :put  :epilogue
+              (comment (emacs-home* "private/self-epilogue.el")))
 #+END_SRC
 
 #+REVEAL: split
@@ -340,10 +337,8 @@ Introduce the rules of naming /files/ and /functions/.
 #+BEGIN_EXAMPLE
     (emacs-home* "config/")
     ├── sample-self-env-spec.el
-    ├── sample-self-epilogue.el
     ├── sample-self-package-spec.el
-    ├── sample-self-path.el
-    └── sample-self-prologue.el
+    └── sample-self-epilogue.el
 #+END_EXAMPLE
 
 #+REVEAL: split
@@ -369,7 +364,7 @@ Introduce the rules of naming /files/ and /functions/.
 
 #+ATTR_HTML: :style display:none
 - [[#theme][Theme]]
-- [[#font][Font]]
+- [[#frame][Frame]]
 - [[#cooking-shell][Shell]]
 - [[#session][Session]]
 - [[#network][Network]]
@@ -388,16 +383,17 @@ Introduce the rules of naming /files/ and /functions/.
 Easy to switch themes, or try a new one.
 
 #+ATTR_HTML: :style text-align:left
-The theme's spec locate in =(emacs-home* "private/self-env-spec.el")=
-by default.
+The theme's spec locate in src_elisp{(*self-paths* :get :env-spec)} by
+default.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
-(def-self-env-spec
-  :theme (list :name 'dracula
-               :custom-theme-directory (emacs-home* "theme/")
-               :compile nil
-               :allowed t))
+(*self-env-spec*
+ :put :theme
+ (list :name nil ;; 'dracula
+       :custom-theme-directory (emacs-home* "theme/")
+       :compile nil ;; expert option
+       :allowed nil))
 #+END_SRC
 
 #+REVEAL: split
@@ -412,11 +408,12 @@ by default.
 Using Emacs's builtin themes /tango-dark/ :
 
 #+BEGIN_SRC emacs-lisp
-(def-self-env-spec
-  :theme (list :name 'tango-dark ;; builtin theme
-               :custom-theme-directory nil
-               :compile nil
-               :allowed t))
+(*self-env-spec*
+ :put :theme
+ (list :name nil ;; 'dracula
+       :custom-theme-directory (emacs-home* "theme/")
+       :compile nil ;; expert option
+       :allowed nil))
 #+END_SRC
 
 #+ATTR_HTML: :style display:none
@@ -426,9 +423,9 @@ Using Emacs's builtin themes /tango-dark/ :
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/dracula-theme-on-windows.png][dracula theme]]
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/tango-dark-theme-on-windows.png][tango-dark theme]]
 
-** Font
+** Frame
     :PROPERTIES:
-    :CUSTOM_ID: font
+    :CUSTOM_ID: frame
     :END:
 
 #+ATTR_HTML: :style text-align:left
@@ -436,19 +433,21 @@ Easy to swtich fonts and glyph character such as [[https://en.wikipedia.org/wiki
 one. The default encoding is [[https://en.wikipedia.org/wiki/UTF-8][UTF-8]].
 
 #+ATTR_HTML: :style text-align:left
-The font's spec locate in =(emacs-home* "private/self-env-spec.el")=
-by default and for GUI mode only.
+The frame's spec locate in src_elisp{(*self-env-spec* :get :frame)} by
+default and for GUI mode only.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
-(def-self-env-spec
-  :font (list :name (if-platform% 'darwin
-                        "Monaco"
-                      (if-platform% 'windows-nt
-                          "Consolas"
-                        "DejaVu Sans Mono"))
-              :size 13
-              :allowed t))
+(*self-env-spec*
+ :put :frame
+ (list :initial `((fullscreen . fullheight))
+       :default `((font . ,(if-platform% 'darwin
+                               "Monaco-17"
+                             (if-platform% 'windows-nt
+                                 "Consolas-13"
+                               "DejaVu Sans Mono-14"))))
+       :frame-resize-pixelwise t
+       :allowed t))
 #+END_SRC
 
 - =:name= string of font name
@@ -457,25 +456,26 @@ by default and for GUI mode only.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
-(def-self-env-spec
-  :glyph-font (list `(:name ,(if-platform% 'darwin
-                                 "Hack"
-                               (if-platform% 'windows-nt
-                                   "Courier New"
-                                 "DejaVu Sans Mono"))
-                            :size 17
-                            :scale nil
-                            :scripts (greek)
-                            :allowed nil)
-                    `(:name ,(if-platform% 'darwin
-                                 "PingFang"
-                               (if-platform% 'windows-nt
-                                   "Microsoft YaHei"
-                                 "Noto Sans"))
-                            :size 12
-                            :scale nil
-                            :scripts (han)
-                            :allowed nil)))
+(*self-env-spec*
+ :put :glyph
+ `((:name ,(if-platform% 'darwin
+               "Hack"
+             (if-platform% 'windows-nt
+                 "Courier New"
+               "DejaVu Sans Mono"))
+          :size 17
+          :scale nil
+          :scripts (greek)
+          :allowed t)
+   (:name ,(if-platform% 'darwin
+               "PingFang"
+             (if-platform% 'windows-nt
+                 "Microsoft YaHei"
+               "Noto Sans"))
+          :size 12
+          :scale nil
+          :scripts (han)
+          :allowed nil)))
 #+END_SRC
 - =:name= string of font name
 - =:size= integer of font size
@@ -507,21 +507,21 @@ functionalities, it is unstable and slow. But here, We had a better
 one.
 
 #+ATTR_HTML: :style text-align:left
-The shell spec locate in =(emacs-home* "private/self-env-spec.el")= by
+The shell spec locate in src_elisp{(*self-env-spec* :get :shell)} by
 default.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
-
-(def-self-env-spec
-  :shell (list :copy-vars `("PATH")
-               :spin-vars nil ;; `(("ZZZ" . "123"))
-               :options '("-i" "2>/dev/null") ;; '("--login")
-               :exec-path t
-               :shell-file-name (executable-find% "bash")
-               :prompt (list :zsh "%n@%m:%~ %# "
-                             :bash "\\u@\\h:\\w\\$ ")
-               :allowed nil))
+(*self-env-spec*
+ :put :shell
+ (list :copy-vars `("PATH")
+       :spin-vars nil                        ;; `(("ZZZ" . "123"))
+       :options '("-i" "2>/dev/null")        ;; '("--login")
+       :exec-path t
+       :shell-file-name (executable-find% "bash")
+       :prompt (list :zsh "%n@%m:%~ %# "
+                     :bash "\\u@\\h:\\w\\$ ")
+       :allowed t))
 #+END_SRC
 
 #+REVEAL: split
@@ -542,18 +542,19 @@ default.
     :END:
 
 #+ATTR_HTML: :style text-align:left
-The eshell spec locate in =(emacs-home* "private/self-env-spec.el")=
-by default. And shared the copied environment variables =:copy-vars=
-with shell.
+The eshell spec locate in src_elisp{(*self-env-spec* :get :eshell)} by
+default. And shared the copied environment variables =:copy-vars= with
+shell.
 
 #+REVEAL: splitV
 #+BEGIN_SRC emacs-lisp
-(def-self-env-spec
-  :eshell (list :visual-commands '("mtr")
-                :destroy-buffer-when-process-dies t
-                :visual-subcommands '(("git" "log"))
-                :visual-options nil
-                :allowed t))
+(*self-env-spec*
+ :put :eshell
+ (list :visual-commands '("mtr")
+       :destroy-buffer-when-process-dies nil
+       :visual-subcommands nil ;; '(("git" "log"))
+       :visual-options nil
+       :allowed t))
 #+END_SRC
 
 #+REVEAL: split
@@ -569,19 +570,20 @@ with shell.
     :END:
 
 #+ATTR_HTML: :style text-align:left
-The desktop spec locate in =(emacs-home* "private/self-env-spec.el")=
+The desktop spec locate in src_elisp{(*self-env-spec* :get :desktop)}
 by default.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
-(def-self-env-spec
-  :desktop (list :files-not-to-save
-                 "\.t?gz$\\|\.zip$\\|\.desktop\\|~$\\|^/ssh[x]?:\\|\.elc$"
-                 :buffers-not-to-save "^TAGS\\|\\.log"
-                 :modes-not-to-save
-                 '(dired-mode fundamental-mode eww-mode rmail-mode)
-                 :restore-eager 8
-                 :allowed nil))
+(*self-env-spec*
+ :put :desktop
+ (list :files-not-to-save
+       "\.t?gz$\\|\.zip$\\|\.desktop\\|~$\\|^/sudo:\\|^/ssh[x]?:\\|\.elc$"
+       :buffers-not-to-save "^TAGS\\|\\.log"
+       :modes-not-to-save
+       '(dired-mode fundamental-mode eww-mode rmail-mode)
+       :restore-eager 8
+       :allowed t))
 #+END_SRC
 
 #+REVEAL: split
@@ -602,16 +604,17 @@ by default.
 Using socks proxy when installing packages or browsing web pages.
 
 #+ATTR_HTML: :style text-align:left
-The socks spec locate in =(emacs-home* "private/self-env-spec.el")= by
+The socks spec locate in src_elisp{(*self-env-spec* :get :socks)} by
 default.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
-(def-self-env-spec
-  :socks (list :port 32000
-               :server "127.0.0.1"
-               :version 5
-               :allowed nil))
+(*self-env-spec*
+ :put :socks
+ (list :port 32000
+       :server "127.0.0.1"
+       :version 5
+       :allowed nil))
 #+END_SRC
 
 #+REVEAL: split
@@ -675,18 +678,13 @@ Don't tell me [[https://github.com/jwiegley/use-package][use-package]], it's try
 find more simpler and faster way to implement almost functionalities
 that =use-pacakge= does and more.
 
-#+ATTR_HTML: :style text-align:left
-There are two types of packages: /basic/ (just like Emacs' builtin)
-and /user defined/. To disable /user defined/ packages in
-=(def-self-path-ref)=, to disable both /basic/ and /user defined/
-packages can be done in =(def-self-env-spec)=.
-
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
-(def-self-env-spec
-  :package (list :remove-unused nil
-                 :package-check-signature 'allow-unsigned
-                 :allowed nil))
+(*self-env-spec*
+ :put :package
+ (list :remove-unused nil
+       :package-check-signature 'allow-unsigned
+       :allowed t))
 #+END_SRC
 
 #+REVEAL: split
@@ -697,49 +695,106 @@ packages can be done in =(def-self-env-spec)=.
 - =:allowed= =t= enabled, =nil= disabled
 
 #+ATTR_HTML: :style text-align:left
-The /user defined/ package spec default locate in =(emacs-home*
-"private/self-package-spec.el")= by default.
+The /user defined/ package spec locate in
+src_elisp{(*self-packages*)}.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
-(def-self-package-spec
-  (list
-   :cond t
-   :packages '(vlf))
-  (list
-   ;; org
-   :cond t
-   :packages (flatten (list
-                       (when% (executable-find% "latex")
-                         '(auctex
-                           cdlatex))
-                       (when-version% <= 25 'ox-reveal))))
-  (list
-   :cond (and (when-version% <= 24.4 t)
-              (executable-find% "git"))
-   :packages '(magit)
-   :compile `(,(compile-unit% (emacs-home* "config/use-magit-autoload.el"))))
-  (list
-   ;; scheme
-   :cond (and (when-version% <= 23.2 t)
-              (or (executable-find% "racket")
-                  (executable-find% "chicken")))
-   :packages  '(geiser)
-   :compile `(,(compile-unit% (emacs-home* "config/use-geiser-autoload.el"))))
-  (list
-   ;; common lisp
-   :cond (executable-find% "sbcl")
-   :packages '(slime)
-   :compile `(,(compile-unit% (emacs-home* "config/use-slime-autoload.el"))))
-  (list
-   ;; erlang
-   :cond (executable-find% "erlc")
-   :packages (list 'erlang
-                   (when% (executable-find% "lfe")
-                     'lfe-mode))
-   :compile (list (when% (executable-find% "lfe")
-                    (compile-unit%
-                     (emacs-home* "config/use-lfe-autoload.el"))))))
+(*self-packages*
+ :put :doc
+ (list
+  :cond t
+  :packages (list (when% (executable-find% "gnuplot")
+                    'gnuplot-mode)
+                  'markdown-mode
+                  'multiple-cursors
+                  (when-version% <= 24.3 'yasnippet)
+                  'vlf)))
+
+(*self-packages*
+ :put :org
+ (list
+  :cond t
+  :packages (flatten (list
+                      (when% (executable-find% "latex")
+                        '(auctex
+                          cdlatex))
+                      (when-version% <= 25 'ox-reveal)))))
+
+(*self-packages*
+ :put :vcs
+ (list
+  :cond (and (when-version% <= 24.4 t)
+             (executable-find% "git"))
+  :packages '(magit)
+  :compile `(,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
+
+(*self-packages*
+ :put :docker
+ (list
+  :cond (and (when-version% <= 24.4 t)
+             (executable-find% "docker"))
+  :packages '(dockerfile-mode)))
+
+(*self-packages*
+ :put :scheme
+ (list
+  :cond (and (when-version% <= 23.2 t)
+             (or (executable-find% "racket")
+                 (executable-find% "scheme")
+                 (executable-find% "chicken")
+                 (executable-find% "guile")))
+  :packages  '(geiser)
+  :compile `(,(compile-unit% (emacs-home* "config/use-geiser-autoload.el")))))
+
+(*self-packages*
+ :put :common-lisp
+ (list
+  :cond (executable-find% "sbcl")
+  :packages '(slime)
+  :compile `(,(compile-unit% (emacs-home* "config/use-slime-autoload.el")))))
+
+(*self-packages*
+ :put :java
+ (list
+  :cond (and (when-version% <= 25.1 t)
+             (executable-find% "java"))
+  :packages '(cider
+              clojure-mode
+              clojure-mode-extra-font-locking
+              kotlin-mode)
+  :compile `(,(compile-unit% (emacs-home* "config/use-cider.el") t)
+             ,(compile-unit%
+               (emacs-home* "config/use-cider-autoload.el") t))))
+
+(*self-packages*
+ :put :erlang
+ (list
+  :cond (executable-find% "erlc")
+  :packages (list 'erlang
+                  (when% (executable-find% "lfe")
+                    'lfe-mode))
+  :compile (list (when% (executable-find% "lfe")
+                   (compile-unit%
+                    (emacs-home* "config/use-lfe-autoload.el"))))))
+
+(*self-packages*
+ :put :lua
+ (list
+  :cond (executable-find% "lua")
+  :packages '(lua-mode)
+  :compile `(,(compile-unit% (emacs-home* "config/use-lua-autoload.el")))))
+
+(*self-packages*
+ :put :web
+ (list
+  :cond nil
+  :packages (list 'htmlize
+                  'js2-mode
+                  (when-version% <= 25 'restclient)
+                  (when-version% <= 24.3 'skewer-mode)
+                  'web-mode
+                  'x509-mode)))
 #+END_SRC
 
 #+REVEAL: split
@@ -769,15 +824,16 @@ Avoiding a war. If /whitespace/ causes some trouble, you can swith to
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
-(def-self-env-spec
-  :edit (list :tab-width 2
-              :standard-indent 2
-              :auto-save-default nil
-              :disable-indent-tabs-mode '(c-mode-common-hook
-                                          sh-mode-hook
-                                          emacs-lisp-mode-hook)
-              :narrow-to-region nil
-              :allowed t))
+(*self-env-spec*
+ :put :edit
+ (list :tab-width 2
+       :standard-indent 2
+       :auto-save-default nil
+       :disable-indent-tabs-mode '(c-mode-common-hook
+                                   sh-mode-hook
+                                   emacs-lisp-mode-hook)
+       :narrow-to-region nil
+       :allowed t))
 #+END_SRC
 
 - =:tab-width= default @@html:<kbd>@@C-h-v tab-width@@html:</kbd>@@
