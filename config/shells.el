@@ -114,19 +114,17 @@ See also: `parse-colon-path'."
 
 
 (defmacro copy-env-vars! (env vars)
-  `(mapc (lambda (v)
-           (when (stringp v)
-             (let ((v1 (cdr (assoc** v ,env #'string=))))
-               (when (stringp v1)
-                 (setenv v v1)))))
-         ,vars))
+  `(dolist* (v ,vars)
+     (when (stringp v)
+       (let ((v1 (cdr (assoc** v ,env #'string=))))
+         (when (stringp v1)
+           (setenv v v1))))))
 
 (defmacro spin-env-vars! (vars)
-  `(mapc (lambda (v)
-           (when (and (stringp (car v))
-                      (stringp (cdr v)))
-             (setenv (car v) (cdr v))))
-         ,vars))
+  `(dolist* (v ,vars)
+     (when (and (stringp (car v))
+                (stringp (cdr v)))
+       (setenv (car v) (cdr v)))))
 
 
 (defmacro copy-exec-path! (path)
