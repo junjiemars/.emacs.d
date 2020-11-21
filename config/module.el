@@ -106,16 +106,16 @@
   "Parse SPEC, install, remove and setup packages."
   (dolist* (s spec)
     (let ((ss (cdr s)))
-      (when (and (consp ss) (self-spec-> ss :cond))
-        (dolist* (p (self-spec-> ss :packages))
+      (when (and (consp ss) (plist-get ss :cond))
+        (dolist* (p (plist-get ss :packages))
           (let ((ns (check-package-name p)))
             (when (consp ns)
               (let ((n (car ns)) (tar (cdr ns)))
                 (if (package-installed-p n)
-                    (when (and remove-unused (not (self-spec-> ss :cond)))
+                    (when (and remove-unused (not (plist-get ss :cond)))
                       (delete-package! n))
                   (install-package! (if tar tar n) tar))))))
-        (*package-compile-units* (self-spec-> ss :compile))))))
+        (*package-compile-units* (plist-get ss :compile))))))
 
 
 (defvar basic-package-spec
