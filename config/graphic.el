@@ -46,14 +46,12 @@
 
 (when-graphic%
   (when (*self-env-spec* :get :frame :allowed)
-    (mapc (lambda (x)
-            (add-to-list 'initial-frame-alist x))
-          (*self-env-spec* :get :frame :initial))
-    (mapc (lambda (x)
-            (add-to-list 'default-frame-alist x)
-            (when (eq 'font (car x))
-              (set-face-attribute 'default nil :font (cdr x))))
-          (*self-env-spec* :get :frame :default))
+    (dolist* (x (*self-env-spec* :get :frame :initial))
+      (add-to-list 'initial-frame-alist x))
+    (dolist* (x (*self-env-spec* :get :frame :default))
+      (add-to-list 'default-frame-alist x)
+      (when (eq 'font (car x))
+        (set-face-attribute 'default nil :font (cdr x))))
     (setq frame-resize-pixelwise
           (*self-env-spec* :get :frame :frame-resize-pixelwise))))
 

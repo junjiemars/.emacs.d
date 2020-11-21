@@ -282,14 +282,14 @@ If VAR requires the FEATURE, load it on compile-time."
     (lambda (&optional op k v)
       (cond ((eq :get op) (plist-get ps k))
             ((eq :put op) (setq ps (plist-put ps k v)))
-            ((eq :dup op) (mapc
-                           (lambda (fs)
-                             (let ((dst (plist-get ps (car fs)))
-                                   (src (cdr fs)))
-                               (unless (file-exists-p dst)
-                                 (path! (file-name-directory dst))
-                                 (copy-file src dst t))))
-                           ss))
+            ((eq :dup op) (let ((fs ss))
+                            (while (not (null fs))
+                              (let ((dst (plist-get ps (caar fs)))
+                                    (src (cdar fs)))
+                                (unless (file-exists-p dst)
+                                  (path! (file-name-directory dst))
+                                  (copy-file src dst t))
+                                (setq fs (cdr fs))))))
             (t ps))))
   "Define the PATH references.
 

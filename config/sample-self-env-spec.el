@@ -32,7 +32,7 @@
 ;;; frame
 (*self-env-spec*
  :put :frame
- (list :initial `((fullscreen . fullheight))
+ (list :initial nil ;; `((fullscreen . fullheight))
        :default `((font . ,(if-platform% 'darwin
                                "Monaco-17"
                              (if-platform% 'windows-nt
