@@ -114,11 +114,10 @@
                   ("：\s*" . ": ")
                   ("（" . "(")
                   ("）" . ")"))))
-      (mapc (lambda (s)
-              (goto-char (point-min))
-              (while (search-forward-regexp (car s) nil t)
-                (replace-match (cdr s))))
-            punc)
+      (dolist* (s punc)
+        (goto-char (point-min))
+        (while (search-forward-regexp (car s) nil t)
+          (replace-match (cdr s))))
       (buffer-substring (point-min) (point-max)))))
 
 (defun dict-fn-decode-char (ss)
@@ -139,11 +138,10 @@
                ("&#lt;" . "<")
                ("&#gt;" . ">")
                ("&hellip;" .  "..."))))
-      (mapc (lambda (s)
-              (goto-char (point-min))
-              (while (search-forward (car s) nil t)
-                (replace-match (cdr s))))
-            m)
+      (dolist* (s m)
+        (goto-char (point-min))
+        (while (search-forward (car s) nil t)
+          (replace-match (cdr s))))
       (buffer-substring (point-min) (point-max)))))
 
 (defun dict-fn-remove-html-tag (ss)
@@ -153,11 +151,10 @@
     (let ((tags `( "<.*?>"
                    "</[a-zA-Z]+>"
                    "/>")))
-      (mapc (lambda (x)
-              (goto-char (point-min))
-              (while (search-forward-regexp x nil t)
-                (replace-match "" t t)))
-            tags)
+      (dolist* (x tags)
+        (goto-char (point-min))
+        (while (search-forward-regexp x nil t)
+          (replace-match "" t t)))
       (buffer-substring (point-min) (point-max)))))
 
 
