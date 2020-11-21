@@ -12,6 +12,8 @@
 #+REVEAL_MAX_SCALE: 1.5
 #+END_COMMENT
 #+PROPERTY: header-args :exports code
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="style.css" />
+
 
 @@html:<img src="https://github.com/junjiemars/.emacs.d/workflows/More%20Reasonable%20Emacs/badge.svg" alt="Darwin, Linux and Windows"/>@@
 
