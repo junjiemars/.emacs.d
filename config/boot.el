@@ -257,14 +257,28 @@ If VAR requires the FEATURE, load it on compile-time."
 
  ;; end of compile macro
 
-
 ;;;;
-;; self-def macro
+;; self-spec macro
 ;;;;
 
 
-(defmacro self-symbol (name)
-  `(intern (format "self-%s-%s" system-type ,name)))
+(defmacro self-spec-> (seq &rest keys)
+  (declare (indent 1))
+  (let ((r seq) (ks keys))
+    (while (not (null ks))
+      (setq r (list 'plist-get r (car ks))
+            ks (cdr ks)))
+    r))
+
+
+(defmacro self-spec<- (k v seq &rest keys)
+  (declare (indent 3))
+  `(plist-put (self-spec-> ,seq ,@keys) ,k ,v))
+
+
+(defmacro self-spec->% (seq &rest keys)
+  (declare (indent 1))
+  `(eval-when-compile (self-spec-> ,seq ,@keys)))
 
 
 (defalias '*self-paths*
@@ -317,39 +331,8 @@ No matter the declaration order, the executing order is:
             (t env)))))
 
 
-(defmacro def-self-package-spec (&rest spec)
-  "Define default package SPEC."
-  (declare (indent 0))
-  (when-package%
-    `(defvar ,(self-symbol 'package-spec) (list ,@spec))))
-
- ;; end of self-def macro
-
-
-;;;;
-;; self-spec macro
-;;;;
-
+;;; Duplicate spec files
 (*self-paths* :dup)
-
-
-(defmacro self-spec-> (seq &rest keys)
-  (declare (indent 1))
-  (let ((r seq) (ks keys))
-    (while (not (null ks))
-      (setq r (list 'plist-get r (car ks))
-            ks (cdr ks)))
-    r))
-
-
-(defmacro self-spec<- (k v seq &rest keys)
-  (declare (indent 3))
-  `(plist-put (self-spec-> ,seq ,@keys) ,k ,v))
-
-
-(defmacro self-spec->% (seq &rest keys)
-  (declare (indent 1))
-  `(eval-when-compile (self-spec-> ,seq ,@keys)))
 
 
 (defmacro package-spec-:allowed-p (&rest body)
