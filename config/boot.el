@@ -352,12 +352,6 @@ No matter the declaration order, the executing order is:
   `(eval-when-compile (self-spec-> ,seq ,@keys)))
 
 
-(defmacro self-spec->*package-spec (&rest keys)
-  (declare (indent 0))
-  (when (boundp (self-symbol 'package-spec))
-    `(self-spec-> ,(self-symbol 'package-spec) ,@keys)))
-
-
 (defmacro package-spec-:allowed-p (&rest body)
   (declare (indent 0))
   `(when-package%
@@ -383,8 +377,23 @@ No matter the declaration order, the executing order is:
 (when-package%
   ;; (package-initialize)
 
-  (defvar *autoload-compile-units* nil
+  (defalias '*package-compile-units*
+    (lexical-let% ((us '()))
+      (lambda (&optional n)
+        (cond ((consp n) (let ((s n))
+                           (while (not (null s))
+                             (setq us (cons (car s) us)
+                                   s (cdr s)))
+                           us))
+              (t us))))
     "Autloaded `compile-unit'.")
+
+  (defalias '*self-packages*
+    (lexical-let% ((ps))
+      (lambda (&optional op k v)
+        (cond ((eq :get op) (list (assq k ps)))
+              ((eq :put op) (setq ps (cons (cons k v) ps)))
+              (t ps)))))
 
   ;; Load basic and self modules
   (when (*self-paths* :get :package-spec)

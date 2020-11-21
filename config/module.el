@@ -105,28 +105,24 @@
 (defsubst parse-package-spec! (spec &optional remove-unused)
   "Parse SPEC, install, remove and setup packages."
   (dolist* (s spec)
-    (when (consp s)
-      (dolist* (p (self-spec-> s :packages))
-        (let ((ns (check-package-name p)))
-          (when (consp ns)
-            (let ((n (car ns)) (tar (cdr ns)))
-              (if (package-installed-p n)
-                  (when (and remove-unused (not (self-spec-> s :cond)))
-                    (delete-package! n))
-                (when (self-spec-> s :cond)
-                  (install-package! (if tar tar n) tar)))))))
-      (when (self-spec-> s :cond)
-        (setq *autoload-compile-units*
-              (append *autoload-compile-units*
-                      (delete nil (self-spec-> s :compile))))))))
+    (let ((ss (cdr s)))
+      (when (and (consp ss) (self-spec-> ss :cond))
+        (dolist* (p (self-spec-> ss :packages))
+          (let ((ns (check-package-name p)))
+            (when (consp ns)
+              (let ((n (car ns)) (tar (cdr ns)))
+                (if (package-installed-p n)
+                    (when (and remove-unused (not (self-spec-> ss :cond)))
+                      (delete-package! n))
+                  (install-package! (if tar tar n) tar))))))
+        (*package-compile-units* (self-spec-> ss :compile))))))
 
 
 (defvar basic-package-spec
-  (list (list
-         :cond t
-         :packages `(paredit
-                     rainbow-delimiters
-                     ,(when-version% <= 24.1 'yaml-mode)))))
+  `(:basic
+    (:cond t :packages (paredit
+                        rainbow-delimiters
+                        ,(when-version% <= 24.1 'yaml-mode)))))
 
 
 (defmacro defun-on-module-autoload^ (module &rest body)
@@ -137,11 +133,15 @@
        ,@body)))
 
 
+(*self-packages*
+ :put :|basic|
+ `(:cond t :packages (paredit
+                      rainbow-delimiters
+                      ,(when-version% <= 24.1 'yaml-mode))))
+
 (package-spec-:allowed-p
-  ;; Load basic package spec
-  (parse-package-spec! basic-package-spec)
   ;; Load self packages spec
-  (parse-package-spec! (self-spec->*package-spec)
+  (parse-package-spec! (*self-packages*)
                        (*self-env-spec* :get :package :remove-unused)))
 
 
