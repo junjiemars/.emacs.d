@@ -9,12 +9,10 @@
 
 (defalias '*slime-lisp-implementations*
   (lexical-let% ((ls (let ((ns))
-                       (mapc
-                        (lambda (x)
-                          (let ((bin (executable-find (symbol-name x))))
-                            (when bin (push (list x (list bin)) ns))))
-                             '(acl ccl clasp ecl sbcl))
-                       ns)))
+                       (dolist* (x ns)
+                         (let ((bin (executable-find (symbol-name x))))
+                           (when bin (push (list x (list bin)) ns))))
+                       '(acl ccl clasp ecl sbcl))))
     (lambda (&optional new)
       (setq% slime-lisp-implementations
              (if new (push new ls) ls)

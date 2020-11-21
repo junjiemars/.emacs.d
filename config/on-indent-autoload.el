@@ -23,12 +23,11 @@
   ;;          'cc-mode))
 
   (let ((modes (*self-env-spec* :get
-                 :edit :disable-indent-tabs-mode)))
+                                :edit :disable-indent-tabs-mode)))
     (when (consp modes)
-      (mapc (lambda (x)
-              (add-hook x #'disable-indent-tabs-mode))
-            (*self-env-spec* :get :edit
-                                  :disable-indent-tabs-mode)))))
+      (dolist* (x (*self-env-spec* :get :edit
+                                   :disable-indent-tabs-mode))
+        (add-hook x #'disable-indent-tabs-mode)))))
 
 
 

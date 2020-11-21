@@ -14,12 +14,11 @@
      (require 'em-term)
      (when (*self-env-spec* :get :eshell :allowed)
        (let ((visuals (*self-env-spec* :get :eshell :visual-commands)))
-         (mapc (lambda (x)
-                 (add-to-list 'eshell-visual-commands x t #'string=))
-               visuals))
+         (dolist* (x visuals)
+           (add-to-list 'eshell-visual-commands x t #'string=)))
        (setq% eshell-destroy-buffer-when-process-dies
               (*self-env-spec* :get
-                :eshell :destroy-buffer-when-process-dies))
+                               :eshell :destroy-buffer-when-process-dies))
        (setq% eshell-visual-subcommands
               (*self-env-spec* :get :eshell :visual-subcommands))
        (setq% eshell-visual-options
