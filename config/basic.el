@@ -84,26 +84,8 @@
 (setq% url-configuration-directory (v-home! ".url/") 'url)
 
 
-
  ;; Versioned Dirs
 
-
-;; Platform Related Functions
-
-(when-platform% 'windows-nt
-  
-  (defmacro windows-nt-posix-path (path)
-    "Return posix path from Windows PATH which can be recognized
-on`system-type'."
-    `(when (stringp ,path)
-       (if (string-match "^\\([A-Z]:\\)" ,path)
-           (replace-regexp-in-string
-            "\\\\" "/"
-            (replace-match (downcase (match-string 1 ,path)) t t ,path))
-         ,path))))
-
-
- ;; end of Platform Related Functions
 
 ;;;;
 ;; Compatible Macro

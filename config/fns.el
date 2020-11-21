@@ -319,6 +319,23 @@ like `split-string' in Emacs 24.4+"
  ;; end of Strings
 
 
+;; Platform Related Functions
+
+(when-platform% 'windows-nt
+  
+  (defmacro windows-nt-posix-path (path)
+    "Return posix path from Windows PATH which can be recognized
+on`system-type'."
+    `(when (stringp ,path)
+       (if (string-match "^\\([A-Z]:\\)" ,path)
+           (replace-regexp-in-string
+            "\\\\" "/"
+            (replace-match (downcase (match-string 1 ,path)) t t ,path))
+         ,path))))
+
+
+
+
 (defmacro shell-command* (command &rest args)
   "Return a cons cell (code . output) after execute COMMAND in inferior shell.
 
@@ -376,6 +393,8 @@ or the one that `funcall' PREFER returns t.
       (ignore* prefer)
       `,path)))
 
+
+ ;; end of Platform Related Functions
 
 
 ;; end of file
