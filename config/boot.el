@@ -243,14 +243,16 @@ If VAR requires the FEATURE, load it on compile-time."
 (defun compile! (&rest units)
   "Compile and load the elisp UNITS."
   (declare (indent 0))
-  (mapc (lambda (unit)
-          (when unit
-            (compile-and-load-file*
-             (compile-unit->file unit)
-             (compile-unit->only-compile unit)
-             (compile-unit->delete-booster unit)
-             (compile-unit->dir unit))))
-        units))
+  (let ((us units))
+    (while (not (null us))
+      (let ((u (car us)))
+        (when u
+          (compile-and-load-file*
+           (compile-unit->file u)
+           (compile-unit->only-compile u)
+           (compile-unit->delete-booster u)
+           (compile-unit->dir u))))
+      (setq us (cdr us)))))
 
 
  ;; end of compile macro
