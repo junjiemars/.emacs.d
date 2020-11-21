@@ -220,26 +220,6 @@ Return the sublist of LIST whose car matches.
      (funcall (lambda () ,sexp))))
 
 
-(defmacro dolist* (spec &rest body)
-  "Loop over a list.
-Evaluate BODY with VAR bound to each car from LIST, in turn.
-Then evaluate RESULT to get return value, default nil.
-
- (dolist* (VAR LIST [RESULT]) BODY...)"
-  (declare (indent 1) (debug ((symbolp form &optional form) body)))
-  (unless (consp spec)
-    (signal 'wrong-type-argument (list 'consp spec)))
-  (unless (and (<= 2 (length spec)) (<= (length spec) 3))
-    (signal 'wrong-number-of-arguments (list '(2 . 3) (length spec))))
-  (let ((lst (gensym*)))
-    `(lexical-let% ((,lst ,(nth 1 spec)))
-       (while ,lst
-         (let ((,(car spec) (car ,lst)))
-           ,@body
-           (setq ,lst (cdr ,lst))))
-       ,@(cdr (cdr spec)))))
-
-
 (defmacro fluid-let (binding &rest body)
   "Execute BODY and restore the BINDING after return."
   (declare (indent 1))

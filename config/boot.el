@@ -194,10 +194,32 @@ If VAR requires the FEATURE, load it on compile-time."
  ;; end of var compile-time checking macro
 
 
-;; Preferred coding system
+;;; Preferred coding system
 (prefer-coding-system 'utf-8)
 
-
+;;; Preferred loop routine
+(defmacro dolist* (spec &rest body)
+  "Loop over a list.
+
+Evaluate BODY with VAR bound to each car from LIST, in turn.
+Then evaluate RESULT to get return value or nil.
+
+ (dolist* (VAR LIST [RESULT]) BODY...)"
+  (declare (indent 1) (debug ((symbolp form &optional form) body)))
+  (unless (consp spec)
+    (signal 'wrong-type-argument (list 'consp spec)))
+  (unless (and (<= 2 (length spec)) (<= (length spec) 3))
+    (signal 'wrong-number-of-arguments (list '(2 . 3) (length spec))))
+  (let ((lst (gensym*)))
+    `(lexical-let% ((,lst ,(nth 1 spec)))
+       (while ,lst
+         (let ((,(car spec) (car ,lst)))
+           ,@body
+           (setq ,lst (cdr ,lst))))
+       ,@(cdr (cdr spec)))))
+
+
+ ;; end of Preferred
 
 
 ;;;;
