@@ -44,24 +44,25 @@
 ;;; glyph
 (*self-env-spec*
  :put
- :glyph (list `(:name ,(if-platform% 'darwin
-                           "Hack"
-                         (if-platform% 'windows-nt
-                             "Courier New"
-                           "DejaVu Sans Mono"))
-                      :size 17
-                      :scale nil
-                      :scripts (greek)
-                      :allowed nil)
-              `(:name ,(if-platform% 'darwin
-                           "PingFang"
-                         (if-platform% 'windows-nt
-                             "Microsoft YaHei"
-                           "Noto Sans"))
-                      :size 12
-                      :scale nil
-                      :scripts (han)
-                      :allowed nil)))
+ :glyph `((:name ,(if-platform% 'darwin
+                      "Hack"
+                    (if-platform% 'windows-nt
+                        "Courier New"
+                      "DejaVu Sans Mono"))
+                 :size 17
+                 :scale nil
+                 :scripts (greek)
+                 :allowed t)
+          (:name ,(if-platform% 'darwin
+                      "PingFang"
+                    (if-platform% 'windows-nt
+                        "Microsoft YaHei"
+                      "Noto Sans"))
+                 :size 12
+                 :scale nil
+                 :scripts (han)
+                 :allowed nil)))
+
 
 ;;; shell
 (*self-env-spec*

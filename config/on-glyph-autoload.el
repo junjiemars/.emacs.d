@@ -32,26 +32,26 @@
 
 
 ;; Load glyph font
-(mapc (lambda (glyph)
-        (when (plist-get glyph :allowed)
-          (let ((name (plist-get glyph :name))
-                (size (plist-get glyph :size))
-                (scale (plist-get glyph :scale))
-                (scripts (plist-get glyph :scripts)))
-            (self-glyph-font! name size scripts)
-            (when scale
-              (let ((w1 (char-width* ?a))
-                    (w2 (char-width* #x4e2d)))
-                (when (and w1 w2 (> w1 0) (> w2 0))
-                  (add-to-list
-                   'face-font-rescale-alist
-                   (cons (concat ".*" name ".*")
-                         (/ (* w1 (or (and (numberp scale) (> scale 0) scale)
-                                      1))
-                            (+ w2 0.0))))))))))
-      (*self-env-spec* :get :glyph))
-
-
+(let ((gs (*self-env-spec* :get :glyph)))
+  (while (not (null gs))
+    (let ((g (car gs)))
+      (when (plist-get g :allowed)
+        (let ((name (plist-get g :name))
+              (size (plist-get g :size))
+              (scale (plist-get g :scale))
+              (scripts (plist-get g :scripts)))
+          (self-glyph-font! name size scripts)
+          (when scale
+            (let ((w1 (char-width* ?a))
+                  (w2 (char-width* #x4e2d)))
+              (when (and w1 w2 (> w1 0) (> w2 0))
+                (add-to-list
+                 'face-font-rescale-alist
+                 (cons (concat ".*" name ".*")
+                       (/ (* w1 (or (and (numberp scale) (> scale 0) scale)
+                                    1))
+                          (+ w2 0.0))))))))))
+    (setq gs (cdr gs))))
 
 
 ;; end of file
