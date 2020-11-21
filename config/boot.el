@@ -269,12 +269,10 @@ If VAR requires the FEATURE, load it on compile-time."
   (lexical-let%
       ((ps (list
             :env-spec (emacs-home* "private/self-env-spec.el")
-            :prologue (emacs-home* "private/self-prologue.el")
             :package-spec (emacs-home* "private/self-package-spec.el")
             :epilogue (emacs-home* "private/self-epilogue.el")))
        (ss (list
             (cons :env-spec (emacs-home* "config/sample-self-env-spec.el"))
-            (cons :prologue (emacs-home* "config/sample-self-prologue.el"))
             (cons :package-spec
                   (emacs-home* "config/sample-self-package-spec.el"))
             (cons :epilogue
@@ -291,7 +289,7 @@ If VAR requires the FEATURE, load it on compile-time."
                                  (copy-file src dst t))))
                            ss))
             (t ps))))
-  "Define the PATH references for all specs in `(*self-paths* :get :path)'.
+  "Define the PATH references.
 
 No matter the declaration order, the executing order is:
 :env-spec -> :package-spec -> :epilogue")
