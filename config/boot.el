@@ -333,10 +333,10 @@ No matter the declaration order, the executing order is:
 
 (defmacro self-spec-> (seq &rest keys)
   (declare (indent 1))
-  (let ((r seq))
-    (mapc (lambda (k)
-            (setq r (list 'plist-get r k)))
-          keys)
+  (let ((r seq) (ks keys))
+    (while (not (null ks))
+      (setq r (list 'plist-get r (car ks))
+            ks (cdr ks)))
     r))
 
 
