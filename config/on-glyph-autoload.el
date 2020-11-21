@@ -11,12 +11,11 @@
   "Set glyph font's NAME and SIZE in graphic mode."
   (when-fn% 'set-fontset-font nil
     (let ((fs (font-spec :family name :size size)))
-      (mapc (lambda (c)
-              (if-version%
-                  <= 23
-                  (set-fontset-font t c fs nil 'prepend)
-                (set-fontset-font t c fs)))
-            scripts))))
+      (dolist* (c scripts)
+        (if-version%
+            <= 23
+            (set-fontset-font t c fs nil 'prepend)
+          (set-fontset-font t c fs))))))
 
 
 (defsubst char-width* (char)
@@ -32,26 +31,23 @@
 
 
 ;; Load glyph font
-(let ((gs (*self-env-spec* :get :glyph)))
-  (while (not (null gs))
-    (let ((g (car gs)))
-      (when (plist-get g :allowed)
-        (let ((name (plist-get g :name))
-              (size (plist-get g :size))
-              (scale (plist-get g :scale))
-              (scripts (plist-get g :scripts)))
-          (self-glyph-font! name size scripts)
-          (when scale
-            (let ((w1 (char-width* ?a))
-                  (w2 (char-width* #x4e2d)))
-              (when (and w1 w2 (> w1 0) (> w2 0))
-                (add-to-list
-                 'face-font-rescale-alist
-                 (cons (concat ".*" name ".*")
-                       (/ (* w1 (or (and (numberp scale) (> scale 0) scale)
-                                    1))
-                          (+ w2 0.0))))))))))
-    (setq gs (cdr gs))))
+(dolist* (g (*self-env-spec* :get :glyph))
+  (when (plist-get g :allowed)
+    (let ((name (plist-get g :name))
+          (size (plist-get g :size))
+          (scale (plist-get g :scale))
+          (scripts (plist-get g :scripts)))
+      (self-glyph-font! name size scripts)
+      (when scale
+        (let ((w1 (char-width* ?a))
+              (w2 (char-width* #x4e2d)))
+          (when (and w1 w2 (> w1 0) (> w2 0))
+            (add-to-list
+             'face-font-rescale-alist
+             (cons (concat ".*" name ".*")
+                   (/ (* w1 (or (and (numberp scale) (> scale 0) scale)
+                                1))
+                      (+ w2 0.0))))))))))
 
 
 ;; end of file
