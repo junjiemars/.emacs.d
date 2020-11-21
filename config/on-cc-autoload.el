@@ -13,10 +13,10 @@
   
   (defun check-vcvarsall-bat ()
     "Return the path of vcvarsall.bat if which exists."
-    (let* ((pfroot (windows-nt-posix-path (getenv "PROGRAMFILES")))
+    (let* ((pfroot (posix-path (getenv "PROGRAMFILES")))
            (vsroot (concat pfroot " (x86)/Microsoft Visual Studio/"))
            (vswhere (concat vsroot "Installer/vswhere.exe")))
-      (windows-nt-posix-path
+      (posix-path
        (or (let* ((cmd (shell-command* (shell-quote-argument vswhere)
                          "-nologo -latest -property installationPath"))
                   (bat (and (zerop (car cmd))
@@ -325,7 +325,7 @@
           (funcall parser (cdr cmd))
         (if-platform% 'windows-nt
             ;; Windows: msvc
-            (mapcar (lambda (x) (windows-nt-posix-path x))
+            (mapcar (lambda (x) (posix-path x))
                     (var->paths
                      (car (nreverse 
                            (split-string* (cdr cmd) "\n" t "\"")))))

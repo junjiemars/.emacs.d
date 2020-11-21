@@ -321,19 +321,19 @@ like `split-string' in Emacs 24.4+"
 
 ;; Platform Related Functions
 
-(when-platform% 'windows-nt
-  
-  (defmacro windows-nt-posix-path (path)
-    "Return posix path from Windows PATH which can be recognized
-on`system-type'."
-    `(when (stringp ,path)
-       (if (string-match "^\\([A-Z]:\\)" ,path)
-           (replace-regexp-in-string
-            "\\\\" "/"
-            (replace-match (downcase (match-string 1 ,path)) t t ,path))
-         ,path))))
 
-
+(defmacro posix-path (path)
+  "Return posix path that determined by `system-type'."
+  `(if-platform% 'windows-nt
+       (when (stringp ,path)
+         (if (string-match "^\\([A-Z]:\\)" ,path)
+             (replace-regexp-in-string "\\\\"
+                                       "/"
+                                       (replace-match
+                                        (downcase (match-string 1 ,path))
+                                        t t ,path))
+           ,path))
+     ,path))
 
 
 (defmacro shell-command* (command &rest args)
@@ -379,16 +379,12 @@ or the one that `funcall' PREFER returns t.
                         (dolist* (x path)
                           (when (funcall prefer
                                          (shell-quote-argument
-                                          (if-platform% 'windows-nt
-                                              (windows-nt-posix-path x)
-                                            x)))
+                                          (posix-path x)))
                             (throw 'prefer x)))
                         nil))
                      ((consp path) (car path))
                      (t path))))
-            `,(when p (if-platform% 'windows-nt
-                          (windows-nt-posix-path p)
-                        p)))))
+            (posix-path p))))
     (let ((path (executable-find (funcall `(lambda () ,command)))))
       (ignore* prefer)
       `,path)))
