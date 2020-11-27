@@ -328,7 +328,7 @@
             (mapcar (lambda (x) (posix-path x))
                     (var->paths
                      (car (nreverse 
-                           (split-string* (cdr cmd) "\n" t "\"")))))
+                           (split-string* (cdr cmd) "\n" t "[ \"]*")))))
           ;; Darwin/Linux: clang or gcc
           (let ((inc (funcall parser (cdr cmd))))
             (if-platform% 'darwin
