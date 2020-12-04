@@ -1,25 +1,30 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
+;; More reasonable Emacs on MacOS, Windows and Linux
+;; https://github.com/junjiemars/.emacs.d
+;;;;
 ;; gud-lldb.el
 ;;;;
-;; improved from
-;; https://opensource.apple.com/source/lldb/lldb-69/utils/emacs/gud.el.auto.html
-;;;;
 ;;
-;; Refine Targets:
-;; 1. Start or attach a process.
-;; 2. Source code debugging.
-;; 3. Commands autocompletion and history.
-;; 4. Frame, register buffers.
-;; 5. Scripting, see http://lldb.llvm.org/scripting.html
+;; features:
+;; 1. start or attach to process.
+;; 2. source code debugging.
+;; 3* commands auto completion.
+;; 4* show breakpoints in buffer.
+;; 5* frame buffer and register buffer.
 ;;
 ;;;;
 ;;
-;; Sample C code:
+;; sample C code:
 ;; generated via Nore (https://github.com/junjiemars/nore)
 ;; ./configure --new
 ;; make clean test
-;; 
+;;
+;; scripting:
+;; http://lldb.llvm.org/scripting.html
+;;
+;; original from:
+;; https://opensource.apple.com/source/lldb/lldb-69/utils/emacs/gud.el.auto.html
 ;;;;
 
 
@@ -54,17 +59,10 @@
   :group 'gud)
 
 
-(defcustom% gud-lldb-directories nil
+(defvar gud-lldb-directories '(".")
   "A list of directories that lldb should search for source code.
 If nil, only source files in the program directory will be known
-to lldb.
-
-The file names should be absolute, or relative to the directory
-containing the executable being debugged."
-  :type '(choice (const :tag "Current Directory" nil)
-                 (repeat :value ("")
-                         directory))
-  :group 'gud)
+to lldb.")
 
 
 (defconst +gud-lldb-prompt-regexp+ "^\\(?:(lldb) *\\)"
@@ -92,7 +90,7 @@ Return absolute filename when FILENAME exists, otherwise nil."
 
 
 (defmacro lldb-settings (subcommand &rest args)
-  "Macro to set lldb's settings."
+  "Make lldb's setting statments."
   (declare (indent 1))
   `(mapconcat #'identity (list "settings" ,subcommand ,@args) " "))
 
@@ -124,7 +122,7 @@ Return absolute filename when FILENAME exists, otherwise nil."
 ;;         "breakpoint clear -f %f -l %l"))))
 
 
-
+ ;; end of lldb-*
 
 
 ;;;;
@@ -140,25 +138,19 @@ Return absolute filename when FILENAME exists, otherwise nil."
 ;; `gud-lldb-find-file'
 
 (defun gud-lldb-find-file (filename)
-  "As the optional argument: find-file of `gud-common-init'.
+  "Find the source file associated with FILENAME.
 
-The job of the find-file method is to visit and return the buffer
-indicated by the car of gud-tag-frame.  This may be a file name,
-a tag name, or something else."
+As the optional argument of `gud-common-init': find-file"
   (save-excursion
-    (let ((f (lldb-file-name filename)))
-      (if f
-          (find-file-noselect f t)
-        (find-file-noselect filename 'nowarn)))))
+    (or (let ((f (lldb-file-name filename)))
+          (when f (find-file-noselect f t)))
+        (find-file-noselect filename 'nowarn))))
 
 
 (defun gud-lldb-massage-args (file args)
-  "As the 2nd argument:message-args of `gud-common-init'.
+  "Run `gud-lldb-command-line-hook' before running debugger.
 
-`gud' callback it once when first run `lldb'.
-
-The job of the massage-args method is to modify the given list of
-debugger arguments before running the debugger."
+As the 2nd argument of `gud-common-init': message-args"
   (ignore* file)
   (append (loop* for x in gud-lldb-command-line-hook
                  when (functionp x) append (funcall x))
@@ -166,14 +158,9 @@ debugger arguments before running the debugger."
 
 
 (defun gud-lldb-marker-filter (string)
-  "As the 3rd argument: marker-filter of `gud-common-init'.
+  "Detect the file/line markers in STRING.
 
-The job of the marker-filter method is to detect file/line
-markers in strings and set the global gud-last-frame to indicate
-what display action (if any) should be triggered by the marker.
-Note that only whatever the method *returns* is displayed in the
-buffer; thus, you can filter the debugger's output, interpreting
-some and passing on the rest."
+As the 3rd argument of `gud-common-init': marker-filter"
   (cond ((string-match "[ \t]*frame.*at \\([^:]+\\):\\([0-9]+\\)" string)
          ;; frame format: `lldb-settings-frame-format'
          ;; (lldb) r
@@ -183,18 +170,17 @@ some and passing on the rest."
          ;;   frame #0: 0x0000000100000f66 spot`main(argc=1, argv=0x00007ffeefbffa58) at c.c:13
          (setq gud-last-frame (cons (match-string 1 string)
                                     (string-to-number (match-string 2 string)))))
-        
+
         ((string-match "Process [0-9]+ exited with status = .*" string)
-         ;; Process 13155 exited with status = 0 (0x00000000)              
+         ;; Process 13155 exited with status = 0 (0x00000000)
          (setq gud-last-last-frame nil)
          (setq gud-overlay-arrow-position nil)))
   string)
 
 
 ;; set default `gud-lldb-init-hook'
-(add-hook 'gud-lldb-init-hook #'lldb-settings-stop-display t)
-(add-hook 'gud-lldb-init-hook #'lldb-settings-frame-format t)
-
+(add-hook 'gud-lldb-init-hook #'lldb-settings-stop-display (emacs-arch))
+(add-hook 'gud-lldb-init-hook #'lldb-settings-frame-format (emacs-arch))
 
 
 (defun lldb (command-line)
