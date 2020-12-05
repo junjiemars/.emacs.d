@@ -104,7 +104,7 @@ Return absolute filename when FILENAME exists, otherwise nil."
 
 (defun lldb-settings-stop-display ()
   "Set lldb's default stop display."
-  (gud-call (lldb-settings "set" "stop-disassembly-display" "never"))
+  (gud-call (lldb-settings "set" "stop-disassembly-display" "no-debuginfo"))
   (gud-call (lldb-settings "set" "stop-line-count-before" "0"))
   (gud-call (lldb-settings "set" "stop-line-count-after" "0")))
 
