@@ -145,17 +145,21 @@ DIR where the compiled file located."
 (defun clean-compiled-files ()
   "Clean all compiled files."
   (interactive)
-  (mapc (lambda (d)
-          (mapc (lambda (f)
-                  (message "#Clean compiled file: %s" f)
-                  (delete-file (concat d f)))
-                (when (file-exists-p d)
-                  (directory-files d nil "\\.elc?\\'")))
-          (message "#Clean directory: %s" d))
-        (list (v-home* "config/")
-              (v-home* "private/")
-              (v-home* "theme/")
-              (v-home* ".exec/"))))
+  (let ((dirs (list (v-home* "config/")
+                    (v-home* "private/")
+                    (v-home* "theme/")
+                    (v-home* ".exec/"))))
+    (while dirs
+      (let* ((d (car dirs))
+             (fs (when (file-exists-p d)
+                   (directory-files d nil "\\.elc?\\'"))))
+        (message "#Clean directory: %s..." d)
+        (while fs
+          (let ((f (car fs)))
+            (delete-file (concat d f))
+            (message "#Clean compiled file: %s" f))
+          (setq fs (cdr fs))))
+      (setq dirs (cdr dirs)))))
 
 
  ;; end of compile macro

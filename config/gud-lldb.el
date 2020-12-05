@@ -20,8 +20,8 @@
 ;; ./configure --new
 ;; make clean test
 ;;
-;; scripting:
-;; http://lldb.llvm.org/scripting.html
+;; website:
+;; https://lldb.llvm.org
 ;;
 ;; original from:
 ;; https://opensource.apple.com/source/lldb/lldb-69/utils/emacs/gud.el.auto.html
@@ -168,8 +168,9 @@ As the 3rd argument of `gud-common-init': marker-filter"
          ;; Process 2353 stopped
          ;; * thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
          ;;   frame #0: 0x0000000100000f66 spot`main(argc=1, argv=0x00007ffeefbffa58) at c.c:13
-         (setq gud-last-frame (cons (match-string 1 string)
-                                    (string-to-number (match-string 2 string)))))
+         (setq gud-last-frame
+               (cons (match-string 1 string)
+                     (string-to-number (match-string 2 string)))))
 
         ((string-match "Process [0-9]+ exited with status = .*" string)
          ;; Process 13155 exited with status = 0 (0x00000000)
@@ -240,7 +241,7 @@ invoked."
   (setq gud-filter-pending-text nil)
   (run-hooks 'lldb-mode-hook))
 
-
+ ;; end of gud-lldb-*
 
 
 (provide 'gud-lldb)
