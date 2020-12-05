@@ -373,29 +373,38 @@
                             "undefined"))))
 
 (ert-deftest %basic:region-active-if ()
-  (with-temp-buffer
-    (insert "a bb")
-    (should (= 12 (region-active-if (+ 1 2) (* 3 4))))
-    (set-mark (point-min))
-    (set-mark (point-max))
-    (should (= 3 (region-active-if (+ 1 2) (* 3 4))))))
+  ;; interactive
+  (unless noninteractive
+    (with-temp-buffer
+      (insert "a bb")
+      (should (= 12 (region-active-if (+ 1 2) (* 3 4))))
+      (set-mark (point-min))
+      (set-mark (point-max))
+      (should (= 3 (region-active-if (+ 1 2) (* 3 4)))))))
+
+
 
 (ert-deftest %basic:region-active-unless ()
-  (with-temp-buffer
-    (insert "a bb")
-    (should (= 12 (region-active-unless (* 3 4))))
-    (set-mark (point-min))
-    (set-mark (point-max))
-    (should-not (region-active-unless (+ 1 2) (* 3 4)))))
+  ;; interactive
+  (unless noninteractive
+    (with-temp-buffer
+      (insert "a bb")
+      (should (= 12 (region-active-unless (* 3 4))))
+      (set-mark (point-min))
+      (set-mark (point-max))
+      (should-not (region-active-unless (+ 1 2) (* 3 4))))))
+
 
 (ert-deftest %basic:symbol@ ()
-  (with-temp-buffer
-    (insert "a bb")
-    (goto-char (point-min))
-    (should (null (car (symbol@))))
-    (set-mark (point-min))
-    (set-mark (point-max))
-    (should (string= "a bb" (cdr (symbol@))))))
+  ;; interactive
+  (unless noninteractive
+    (with-temp-buffer
+      (insert "a bb")
+      (goto-char (point-min))
+      (should (null (car (symbol@))))
+      (set-mark (point-min))
+      (set-mark (point-max))
+      (should (string= "a bb" (cdr (symbol@)))))))
 
 
  ;; end of basic

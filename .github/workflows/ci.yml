@@ -22,7 +22,8 @@ jobs:
           sudo apt-get install emacs
       - name: Test
         run: |
-          _TEST_=basic ./test.sh
+          _TEST_=bone ./test.sh
+          _TEST_=axiom ./test.sh
 
   MacOS:
     runs-on: macos-latest
@@ -35,7 +36,8 @@ jobs:
           brew install emacs
       - name: Test
         run: |
-          _TEST_=basic ./test.sh
+          _TEST_=bone ./test.sh
+          _TEST_=axiom ./test.sh
 
   Windows:
     runs-on: windows-latest
@@ -55,6 +57,7 @@ jobs:
         install: git emacs
     - name: Test
       run: |
-        _TEST_=basic ./test.sh
+        _TEST_=bone ./test.sh
+        _TEST_=axiom ./test.sh
 
 # eof
