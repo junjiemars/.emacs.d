@@ -11,6 +11,7 @@ echo_env() {
   echo "------------"
   echo "VERSION: $_ENV_VER_"
   echo "ERT: $_ENV_ERT_"
+  echo "PKG: $_ENV_PKG_"
   echo "TEST: $1"
   echo "------------"
 }
@@ -121,6 +122,7 @@ END
   (load (expand-file-name \"${_ROOT_}/init.el\"))               \
   (clean-compiled-files))                                       \
 "
+
   echo_env "package|compile"
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
@@ -129,7 +131,7 @@ END
   (load (expand-file-name \"${_ROOT_}/init.el\")))              \
 "
 
-  echo_env "package|boot"                                       \
+  echo_env "package|boot"
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
              --eval="                                           \
