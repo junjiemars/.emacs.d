@@ -15,50 +15,73 @@ echo_env() {
 }
 
 test_bone() {
-  echo_env "bone"
-  ${_EMACS_} --batch                                                \
-             --no-window-system                                     \
-             --eval="(let ((user-emacs-directory default-directory) \
-                           (init (expand-file-name \"init.el\")))   \
-                       (load init)                                  \
-                       (clean-compiled-files)                       \
-                       (load init))"
+  echo_env "bone|clean"
+  ${_EMACS_} --batch                                            \
+             --no-window-system                                 \
+             --eval="                                           \
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
+  (load (expand-file-name \"${_ROOT_}/init.el\"))               \
+  (clean-compiled-files))                                       \
+"
+
+  echo_env "bone|boot"
+  ${_EMACS_} --batch                                            \
+             --no-window-system                                 \
+             --eval="                                           \
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
+  (load (expand-file-name \"${_ROOT_}/init.el\")))              \
+"
 }
 
 test_debug() {
-  echo_env "debug"
-  ${_EMACS_} --debug-init                                           \
-             --eval="(let ((user-emacs-directory default-directory) \
-                           (init (expand-file-name \"init.el\")))   \
-                       (load init)                                  \
-                       (clean-compiled-files)                       \
-                       (load init))"
+  echo_env "debug|clean"
+  ${_EMACS_} --batch                                            \
+             --no-window-system                                 \
+             --eval="                                           \
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
+  (load (expand-file-name \"${_ROOT_}/init.el\"))               \
+  (clean-compiled-files))                                       \
+"
+
+  echo_env "debug|capture"
+  ${_EMACS_} --debug-init                                       \
+             --eval="                                           \
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
+  (setq debug-on-error t)                                       \
+  (load (expand-file-name \"${_ROOT_}/init.el\"))               \
+  (load (emacs-home* \"init.el\")))                             \
+"
 }
 
 test_axiom() {
   if [ "ert" = "$_ENV_ERT_" ]; then
     echo_env "axiom|clean"
-    ${_EMACS_} --batch                                                      \
-               --no-window-system                                           \
-               --eval="(let ((f (expand-file-name \"${_ROOT_}/init.el\")))  \
-                         (load f)                                           \
-                         (clean-compiled-files))"
+    ${_EMACS_} --batch                                          \
+               --no-window-system                               \
+               --eval="                                         \
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
+  (load (expand-file-name \"${_ROOT_}/init.el\"))               \
+  (clean-compiled-files))                                       \
+"
     echo_env "axiom|ert"
-    ${_EMACS_} --batch                                                      \
-               --no-window-system                                           \
-               --eval="(let ((f (expand-file-name \"${_ROOT_}/init.el\")))  \
-                         (load f)                                           \
-                         (load (emacs-home* \"test.el\"))                   \
-                         (ert-run-tests-batch-and-exit))"
+    ${_EMACS_} --batch                                          \
+               --no-window-system                               \
+               --eval="                                         \
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))  \
+  (load (expand-file-name \"${_ROOT_}/init.el\"))               \
+  (load (emacs-home* \"test.el\"))                              \
+  (ert-run-tests-batch-and-exit))                               \
+"
   else
     echo "#skipped axiom testing, ert no found"
   fi
 }
 
 # check env
-_ENV_VER_=`${_EMACS_} --batch --eval="(prin1 emacs-version)"`
-if [ ert = `${_EMACS_} --batch --eval="(prin1 (require 'ert nil t))"` ]; then
-  _ENV_ERT_="ert"
+_ENV_VER_="`$_EMACS_ --batch --eval='(prin1 emacs-version)'`"
+_ENV_ERT_="`$_EMACS_ --batch --eval='(prin1 (require (quote ert) nil t))'`"
+if [ "ert" != "$_ENV_ERT_" ]; then
+  _ENV_ERT_=
 fi
 
 case "${_TEST_}" in
@@ -67,5 +90,5 @@ case "${_TEST_}" in
   debug)    test_debug    ;;
 esac
 
-echo "_ROOT_=$_ROOT_"
+
 # eof
