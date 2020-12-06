@@ -107,6 +107,8 @@ test_package() {
   echo "#make ${_ROOT_}/private/self-env-spec.el ..."
   mkdir -p "${_ROOT_}/private"
   cat <<END > "${_ROOT_}/private/self-env-spec.el"
+(*self-paths* :put :package-spec nil)
+(*self-paths* :put :epilogue nil)
 (*self-env-spec*
  :put :package
  (list :remove-unused nil

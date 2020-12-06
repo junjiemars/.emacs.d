@@ -13,13 +13,6 @@
 ;; Default samples `sample-self-*.el' in `(emacs-home* "config/")' directory.
 ;; :epilogue run in `after-init-hook'
 
-(*self-paths* :put :package-spec
-              (comment (emacs-home* "private/self-package-spec.el")))
-(*self-paths* :put  :epilogue
-              (comment (emacs-home* "private/self-epilogue.el")))
-
-
-;; Environments:
 
 ;;; theme
 (*self-env-spec*
