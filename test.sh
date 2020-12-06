@@ -16,15 +16,17 @@ echo_env() {
 
 test_bone() {
   echo_env "bone"
-  ${_EMACS_} --batch                              \
-             --no-site-file                       \
+  ${_EMACS_} --batch                            \
+             --no-site-file                     \
+             --no-init-file                     \
              --load="${_ROOT_}/init.el"
 }
 
 test_debug() {
   echo_env "debug"
-  ${_EMACS_} --debug-init                         \
-             --no-site-file                       \
+  ${_EMACS_} --debug-init                       \
+             --no-site-file                     \
+             --no-init-file                     \
              --load="${_ROOT_}/init.el"
 }
 
