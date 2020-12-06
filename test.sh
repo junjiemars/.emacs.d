@@ -24,7 +24,15 @@ test_bone() {
   (clean-compiled-files))                                       \
 "
 
-  echo_env "bone|boot"
+  echo_env "bone|compile"
+  ${_EMACS_} --batch                                            \
+             --no-window-system                                 \
+             --eval="                                           \
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
+  (load (expand-file-name \"${_ROOT_}/init.el\")))              \
+"
+
+ echo_env "bone|boot"
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
              --eval="                                           \
@@ -63,7 +71,17 @@ test_axiom() {
   (load (expand-file-name \"${_ROOT_}/init.el\"))               \
   (clean-compiled-files))                                       \
 "
-    echo_env "axiom|ert"
+    echo_env "axiom|compile"
+    ${_EMACS_} --batch                                          \
+               --no-window-system                               \
+               --eval="                                         \
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))  \
+  (load (expand-file-name \"${_ROOT_}/init.el\"))               \
+  (load (emacs-home* \"test.el\"))                              \
+  (ert-run-tests-batch-and-exit))                               \
+"
+
+    echo_env "axiom|boot"
     ${_EMACS_} --batch                                          \
                --no-window-system                               \
                --eval="                                         \
