@@ -24,6 +24,7 @@ jobs:
         run: |
           _TEST_=bone ./test.sh
           _TEST_=axiom ./test.sh
+          _TEST_=package ./test.sh
 
   MacOS:
     runs-on: macos-latest

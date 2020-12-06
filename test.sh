@@ -63,71 +63,83 @@ test_debug() {
 }
 
 test_axiom() {
-  if [ "ert" = "$_ENV_ERT_" ]; then
-    echo_env "axiom|clean"
-    ${_EMACS_} --batch                                          \
-               --no-window-system                               \
-               --eval="                                         \
+  if [ "ert" != "$_ENV_ERT_" ]; then
+    echo "#skipped axiom testing, ert no found"
+    return 0
+  fi
+
+  echo_env "axiom|clean"
+  ${_EMACS_} --batch                                          \
+             --no-window-system                               \
+             --eval="                                         \
 (let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
   (load (expand-file-name \"${_ROOT_}/init.el\"))               \
   (clean-compiled-files))                                       \
 "
-    echo_env "axiom|compile"
-    ${_EMACS_} --batch                                          \
-               --no-window-system                               \
-               --eval="                                         \
+  echo_env "axiom|compile"
+  ${_EMACS_} --batch                                          \
+             --no-window-system                               \
+             --eval="                                         \
 (let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))  \
   (load (expand-file-name \"${_ROOT_}/init.el\"))               \
   (load (emacs-home* \"test.el\"))                              \
   (ert-run-tests-batch-and-exit))                               \
 "
 
-    echo_env "axiom|boot"
-    ${_EMACS_} --batch                                          \
-               --no-window-system                               \
-               --eval="                                         \
+  echo_env "axiom|boot"
+  ${_EMACS_} --batch                                          \
+             --no-window-system                               \
+             --eval="                                         \
 (let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))  \
   (load (expand-file-name \"${_ROOT_}/init.el\"))               \
   (load (emacs-home* \"test.el\"))                              \
   (ert-run-tests-batch-and-exit))                               \
 "
-  else
-    echo "#skipped axiom testing, ert no found"
-  fi
 }
 
 test_package() {
-  if [ "package" = "$_ENV_PKG_" ]; then
-    echo_env "package|clean"
-    ${_EMACS_} --batch                                          \
-               --no-window-system                               \
-               --eval="                                         \
+  if [ "package" != "$_ENV_PKG_" ]; then
+    echo "#skipped package testing, package no support"
+    return 0
+  fi
+
+  echo "#make ${_ROOT_}/private/self-env-spec.el ..."
+  mkdir -p "${_ROOT_}/private"
+  cat <<END > "${_ROOT_}/private/self-env-spec.el"
+(*self-env-spec*
+ :put :package
+ (list :remove-unused nil
+       :package-check-signature 'allow-unsigned
+       :allowed t))
+END
+ 
+  echo_env "package|clean"
+  ${_EMACS_} --batch                                          \
+             --no-window-system                               \
+             --eval="                                         \
 (let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
   (load (expand-file-name \"${_ROOT_}/init.el\"))               \
   (clean-compiled-files))                                       \
 "
-    echo_env "package|compile"
-    ${_EMACS_} --batch                                          \
-               --no-window-system                               \
-               --eval="                                         \
+  echo_env "package|compile"
+  ${_EMACS_} --batch                                          \
+             --no-window-system                               \
+             --eval="                                         \
 (let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))  \
   (load (expand-file-name \"${_ROOT_}/init.el\"))               \
   (load (emacs-home* \"test.el\"))                              \
   (ert-run-tests-batch-and-exit))                               \
 "
 
-    echo_env "package|boot"
-    ${_EMACS_} --batch                                          \
-               --no-window-system                               \
-               --eval="                                         \
+  echo_env "package|boot"
+  ${_EMACS_} --batch                                          \
+             --no-window-system                               \
+             --eval="                                         \
 (let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))  \
   (load (expand-file-name \"${_ROOT_}/init.el\"))               \
   (load (emacs-home* \"test.el\"))                              \
   (ert-run-tests-batch-and-exit))                               \
 "
-  else
-    echo "#skipped package testing, package no support"
-  fi
 }
 
 # check env
