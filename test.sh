@@ -31,18 +31,21 @@ test_debug() {
 test_axiom() {
   echo_env "axiom|clean"
   if [ "ert" = "$_ENV_ERT_" ]; then
-    ${_EMACS_} --no-init-file                   \
-               --chdir="${_ROOT_}"              \
-               --load="${_ROOT_}/init.el"       \
-               --eval="(clean-compiled-files)"
+    ${_EMACS_} --batch                            \
+               --no-window-system                 \
+               --eval="                           \
+(let ((user-emacs-directory default-directory)    \
+      (init-file (expand-file-name \"init.el\"))) \
+  (load-file init-file)                           \
+  (clean-compiled-files))                         \
+"
     echo_env "axiom|ert"
-    # ${_EMACS_} --batch                                  \
-    #            --no-site-file                           \
-    #            --no-init-file                           \
-    #            --load="${_ROOT_}/init.el"               \
-    #            --load="ert"                             \
-    #            --load="${_ROOT_}/test.el"               \
-    #            --eval="(ert-run-tests-batch-and-exit)"
+    ${_EMACS_} --batch                                  \
+               --no-window-system                       \
+               --load="${_ROOT_}/init.el"               \
+               --load="ert"                             \
+               --load="${_ROOT_}/test.el"               \
+               --eval="(ert-run-tests-batch-and-exit)"
   else
     echo "#skipped axiom testing, ert no found"
   fi
