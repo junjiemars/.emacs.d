@@ -252,7 +252,8 @@ sequentially and return value of last one, or nil if there are none."
 ;; After loaded ...
 
 
-(message "#Loading init.el ... done (%.5fs)"
+(message "#Loading %s ... done (%.5fs)"
+         (emacs-home* "init.el")
          (float-time (time-subtract (current-time) *loading-epoch*)))
 
 

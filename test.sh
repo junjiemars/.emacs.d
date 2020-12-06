@@ -36,16 +36,17 @@ test_axiom() {
     ${_EMACS_} --batch                          \
                --no-site-file                   \
                --no-init-file                   \
+               --chdir="${_ROOT_}"              \
                --load="${_ROOT_}/init.el"       \
                --eval="(clean-compiled-files)"
     echo_env "axiom|ert"
-    ${_EMACS_} --batch                                  \
-               --no-site-file                           \
-               --no-init-file                           \
-               --load="${_ROOT_}/init.el"               \
-               --load="ert"                             \
-               --load="${_ROOT_}/test.el"               \
-               --eval="(ert-run-tests-batch-and-exit)"
+    # ${_EMACS_} --batch                                  \
+    #            --no-site-file                           \
+    #            --no-init-file                           \
+    #            --load="${_ROOT_}/init.el"               \
+    #            --load="ert"                             \
+    #            --load="${_ROOT_}/test.el"               \
+    #            --eval="(ert-run-tests-batch-and-exit)"
   else
     echo "#skipped axiom testing, ert no found"
   fi
