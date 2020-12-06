@@ -122,23 +122,19 @@ END
   (clean-compiled-files))                                       \
 "
   echo_env "package|compile"
-  ${_EMACS_} --batch                                          \
-             --no-window-system                               \
-             --eval="                                         \
-(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))  \
-  (load (expand-file-name \"${_ROOT_}/init.el\"))               \
-  (load (emacs-home* \"test.el\"))                              \
-  (ert-run-tests-batch-and-exit))                               \
+  ${_EMACS_} --batch                                            \
+             --no-window-system                                 \
+             --eval="                                           \
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
+  (load (expand-file-name \"${_ROOT_}/init.el\")))              \
 "
 
-  echo_env "package|boot"
-  ${_EMACS_} --batch                                          \
-             --no-window-system                               \
-             --eval="                                         \
-(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))  \
-  (load (expand-file-name \"${_ROOT_}/init.el\"))               \
-  (load (emacs-home* \"test.el\"))                              \
-  (ert-run-tests-batch-and-exit))                               \
+  echo_env "package|boot"                                       \
+  ${_EMACS_} --batch                                            \
+             --no-window-system                                 \
+             --eval="                                           \
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
+  (load (expand-file-name \"${_ROOT_}/init.el\")))              \
 "
 }
 
