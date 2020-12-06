@@ -39,6 +39,7 @@ jobs:
         run: |
           _TEST_=bone ./test.sh
           _TEST_=axiom ./test.sh
+          _TEST_=package ./test.sh
 
   Windows:
     runs-on: windows-latest
@@ -60,5 +61,6 @@ jobs:
       run: |
         _TEST_=bone ./test.sh
         _TEST_=axiom ./test.sh
+        _TEST_=package ./test.sh
 
 # eof
