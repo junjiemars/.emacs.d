@@ -69,6 +69,13 @@ test_axiom() {
     return 0
   fi
 
+  echo "#make ${_ROOT_}/private/self-env-spec.el ..."
+  mkdir -p "${_ROOT_}/private"
+  cat <<END > "${_ROOT_}/private/self-env-spec.el"
+(*self-paths* :put :package-spec nil)
+(*self-paths* :put :epilogue nil)
+END
+
   echo_env "axiom|clean"
   ${_EMACS_} --batch                                          \
              --no-window-system                               \
