@@ -31,8 +31,14 @@ test_debug() {
 test_axiom() {
   echo_env "axiom"
   if [ "ert" = "$_ENV_ERT_" ]; then
+    ${_EMACS_} --batch                          \
+               --no-site-file                   \
+               --no-init-file                   \
+               --load="${_ROOT_}/init.el"       \
+               --eval="(clean-compiled-files)"
     ${_EMACS_} --batch                                  \
                --no-site-file                           \
+               --no-init-file                           \
                --load="${_ROOT_}/init.el"               \
                --load="ert"                             \
                --load="${_ROOT_}/test.el"               \
