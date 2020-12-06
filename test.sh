@@ -17,7 +17,6 @@ echo_env() {
 test_bone() {
   echo_env "bone"
   ${_EMACS_} --batch                            \
-             --no-site-file                     \
              --no-init-file                     \
              --load="${_ROOT_}/init.el"
 }
@@ -25,7 +24,6 @@ test_bone() {
 test_debug() {
   echo_env "debug"
   ${_EMACS_} --debug-init                       \
-             --no-site-file                     \
              --no-init-file                     \
              --load="${_ROOT_}/init.el"
 }
@@ -33,9 +31,7 @@ test_debug() {
 test_axiom() {
   echo_env "axiom|clean"
   if [ "ert" = "$_ENV_ERT_" ]; then
-    ${_EMACS_} --batch                          \
-               --no-site-file                   \
-               --no-init-file                   \
+    ${_EMACS_} --no-init-file                   \
                --chdir="${_ROOT_}"              \
                --load="${_ROOT_}/init.el"       \
                --eval="(clean-compiled-files)"
