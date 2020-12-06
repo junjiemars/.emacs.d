@@ -114,6 +114,6 @@
                                    sh-mode-hook
                                    emacs-lisp-mode-hook)
        :narrow-to-region t
-       :allowed t)) 
+       :allowed nil))
 
 ;;; eof
