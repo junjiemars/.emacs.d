@@ -40,12 +40,15 @@ test_axiom() {
   (clean-compiled-files))                         \
 "
     echo_env "axiom|ert"
-    ${_EMACS_} --batch                                  \
-               --no-window-system                       \
-               --load="${_ROOT_}/init.el"               \
-               --load="ert"                             \
-               --load="${_ROOT_}/test.el"               \
-               --eval="(ert-run-tests-batch-and-exit)"
+    ${_EMACS_} --batch                            \
+               --no-window-system                 \
+               --eval="                           \
+(let ((user-emacs-directory default-directory)    \
+      (init-file (expand-file-name \"init.el\"))) \
+  (load-file init-file)                           \
+  (load-file (emacs-home* \"test.el\"))           \
+  (ert-run-tests-batch-and-exit))                 \
+"
   else
     echo "#skipped axiom testing, ert no found"
   fi
