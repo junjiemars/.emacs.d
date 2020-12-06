@@ -197,6 +197,177 @@
 
  ;; end of boot
 
+
+;;;;
+;; fns
+;;;;
+
+(ert-deftest %fns:flatten ()
+  (should (equal '(nil) (flatten nil)))
+  (should (equal '(a) (flatten 'a)))
+  (should (equal '(a b) (flatten '(a (b)))))
+  (should (equal '(a b c) (flatten '(a (b (c)))))))
+
+(ert-deftest %fns:take ()
+  (should-not (take 3 nil))
+  (should (equal '(1 2 3) (take 3 (range 1 10 1))))
+  (should (= 3 (length (take 3 (range 1 10 1)))))
+  (should (= 10 (length (take 100 (range 1 10 1))))))
+
+(ert-deftest %fns:drop-while ()
+  (should-not (drop-while nil nil))
+  (should-not (drop-while (lambda (x) (= x 1)) nil))
+  (should-not (drop-while (lambda (x) (< x 1))
+                          (range 1 10 1)))
+  (should (equal '(2 3) (drop-while (lambda (x) (= x 1))
+                                    (range 1 3 1))))
+  (should (= 7 (length (drop-while (lambda (x) (>= x 3))
+                                   (range 1 10 1))))))
+
+(ert-deftest %fns:take-while ()
+  (should-not (take-while nil nil))
+  (should-not (take-while (lambda (x) (= x 1)) nil))
+  (should-not (take-while (lambda (x) (>= x 1))
+                          (range 1 10 1)))
+  (should (equal '(1 2) (take-while (lambda (x) (> x 2))
+                                    (range 1 3 1))))
+  (should (= 2 (length (take-while (lambda (x) (>= x 3))
+                                   (range 1 10 1))))))
+
+(ert-deftest %fns:assoc** ()
+  (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
+  (should (equal '("a" a) (assoc** "a" '(("b" b) ("a" a)) #'string=))))
+
+(ert-deftest %fns:mapcar** ()
+  (should (equal '(a b c) (mapcar** #'identity '(a b c))))
+  (should (equal '((a 1) (b 2) (c 3))
+                 (mapcar** #'list '(a b c) '(1 2 3)))))
+
+(ert-deftest %fns:remove-if* ()
+  (should-not (remove-if* nil nil))
+  (should-not (remove-if* (lambda (x) (eq x 'a)) nil))
+  (should (equal '(b c) (remove-if* (lambda (x) (eq x 'a)) '(a b c))))
+  (should (equal '("a") (remove-if* (lambda (x) (string= x "b"))
+                                    '("a" "b"))))
+  (should (equal '((1 "a"))
+                 (remove-if* (lambda (x) (string= x "b"))
+                             '((1 "a") (2 "b") (2 "b") (2 "b"))
+                             :key #'cadr)))
+  (should (equal '((1 "a") (2 "b"))
+                 (remove-if* (lambda (x) (string= x "b"))
+                             '((1 "a") (2 "b") (2 "b") (2 "b"))
+                             :key #'cadr :count 2)))
+  (should (equal '((1 "a"))
+                 (remove-if* (lambda (x) (string= x "b"))
+                             '((1 "a") (2 "b") (2 "b") (2 "b"))
+                             :key #'cadr :count 3)))
+  (should (equal '((1 "a") (2 "b"))
+                 (remove-if* (lambda (x) (string= x "c"))
+                             '((1 "a") (2 "b") (3 "c"))
+                             :key #'cadr :from-end t)))
+  (should (equal '((1 "a") (2 "b"))
+                 (remove-if* (lambda (x) (string= x "b"))
+                             '((1 "a") (2 "b") (2 "b") (2 "b"))
+                             :key #'cadr :start 2)))
+  (should (equal '((1 "a") (2 "b") (2 "b"))
+                 (remove-if* (lambda (x) (string= x "b"))
+                             '((1 "a") (2 "b") (2 "b") (2 "b"))
+                             :key #'cadr :end 2))))
+
+(ert-deftest %fns:member-if* ()
+  (should-not (member-if* nil nil))
+  (should-not (member-if* (lambda (x) (eq x 'a)) nil))
+  (should (equal '(a) (member-if* (lambda (x) (eq x 'a)) '(b a))))
+  (should (equal '("a") (member-if* (lambda (x) (string= x "a"))
+                                    '("b" "a"))))
+  (should (equal '((3 "c")) (member-if* (lambda (x) (string= x "c"))
+                                         '((1 "a") (2 "b") (3 "c"))
+                                         :key #'cadr))))
+
+(ert-deftest %fns:every* ()
+  (should (every* #'stringp "" "a" "b"))
+  (should (every* #'< '(1 2 3) '(2 3 4)))
+  (should-not (every* #'< '(1 2 3) '(2 3 3))))
+
+(ert-deftest %fns:some* ()
+  (should (some* #'characterp "abc"))
+  (should (some* #'< '(1 2 3) '(1 2 4)))
+  (should-not (some* #'< '(1 2 3) '(1 2 3))))
+
+(ert-deftest %fns:loop* ()
+  (should (equal '(1 2 3) (loop* for i from 1 to 3 collect i)))
+  (should (= 3 (loop* for x in '(a b c)
+                      count x)))
+  (should (= 5050 (loop* for i from 1 to 100 sum i)))
+  (should (string= "b" (loop* for d in '("a" "b" "c")
+                              when (string= d "b")
+                              return d)))
+  (should (string= "b" (loop* for d in '("a" "b" "c")
+                              with d1 = nil
+                              do (setq d1 (concat d "/" "1"))
+                              when (string= d1 "b/1")
+                              return d))))
+
+(ert-deftest %fns:fluid-let ()
+  (let ((x 123))
+    (fluid-let (x 456)
+      (should (= x 456)))
+    (should (= x 123))))
+
+(ert-deftest %fns:split-string* ()
+  (should (equal '("a" "b" "c")
+                 (split-string* "a,b,,cXX" "," t "XX")))
+  (should (equal '("a" "b" "c")
+                 (split-string* "a,b@@cXX" "[,@]" t "XX")))
+  (should (equal '("a" "b" "c")
+                 (split-string* "a,b@@cXX" ",\\|@" t "XX")))
+  (should (equal '("a" "b")
+                 (split-string* "a,,b" "," t)))
+  (should (equal '("a" "" "b")
+                 (split-string* "a,,b" "," nil)))
+  (should (equal '("a" "b")
+                 (split-string* "a, b " "," t " "))))
+
+(ert-deftest %fns:string-trim> ()
+  (should-not (string-trim> nil "X"))
+  (should (string= "abc" (string-trim> "abc \n  ")))
+  (should (string= "abc" (string-trim> "abcXX" "XX")))
+  (should (string= "abc" (string-trim> "abcXX" "X+"))))
+
+(ert-deftest %basic:string-trim< ()
+  (should-not (string-trim< nil "X"))
+  (should (string= "abc" (string-trim< "  \n abc")))
+  (should (string= "abc" (string-trim< "XXabc" "XX")))
+  (should (string= "abc" (string-trim< "XXabc" "X+"))))
+
+(ert-deftest %fns:string-trim>< ()
+  (should-not (string-trim>< nil "X" "Z"))
+  (should (string= "abc" (string-trim>< " \n abc \n ")))
+  (should (string= "abc" (string-trim>< "ZZabcXX" "X+" "Z+"))))
+
+(ert-deftest %fns:match-string* ()
+  (should-not (match-string* nil nil 0))
+  (should-not (match-string* nil 123 0))
+  (should (string= "XXabcXX"
+                   (match-string* "XX\\(abc\\)XX" "XXabcXX" 0)))
+  (should-not (match-string* "XX\\(abc\\)XX" "XXabcXX" 2))
+  (should (string= "abc"
+                   (match-string* "XX\\(abc\\)XX" "XXabcXX" 1))))
+
+(ert-deftest %fns:executable-find% ()
+  (if-platform% 'windows-nt
+      (should (executable-find% "dir"))
+    (should (executable-find% "ls"))
+    (should (executable-find% (concat "l" "s")))
+    (should (executable-find% "ls"
+                              (lambda (ls)
+                                (let ((x (shell-command* "sh"
+                                           "--version")))
+                                  (car x)))))))
+
+ ;; end of fns
+
+
 ;;;;
 ;; basic
 ;;;;
@@ -280,7 +451,7 @@
   (should (string= "a/b/" (path- "a/b/c")))
   (should (string= "a/b/" (path- "a/b/c/"))))
 
-(ert-deftest &basic:path-depth ()
+(ert-deftest %basic:path-depth ()
   (should (= 0 (path-depth nil)))
   (should (= 0 (path-depth "")))
   (should (= 1 (path-depth "/")))
@@ -485,174 +656,6 @@
 
  ;; end of enc
 
-;;;;
-;; fns
-;;;;
-
-(ert-deftest %fns:flatten ()
-  (should (equal '(nil) (flatten nil)))
-  (should (equal '(a) (flatten 'a)))
-  (should (equal '(a b) (flatten '(a (b)))))
-  (should (equal '(a b c) (flatten '(a (b (c)))))))
-
-(ert-deftest %fns:take ()
-  (should-not (take 3 nil))
-  (should (equal '(1 2 3) (take 3 (range 1 10 1))))
-  (should (= 3 (length (take 3 (range 1 10 1)))))
-  (should (= 10 (length (take 100 (range 1 10 1))))))
-
-(ert-deftest %fns:drop-while ()
-  (should-not (drop-while nil nil))
-  (should-not (drop-while (lambda (x) (= x 1)) nil))
-  (should-not (drop-while (lambda (x) (< x 1))
-                          (range 1 10 1)))
-  (should (equal '(2 3) (drop-while (lambda (x) (= x 1))
-                                    (range 1 3 1))))
-  (should (= 7 (length (drop-while (lambda (x) (>= x 3))
-                                   (range 1 10 1))))))
-
-(ert-deftest %fns:take-while ()
-  (should-not (take-while nil nil))
-  (should-not (take-while (lambda (x) (= x 1)) nil))
-  (should-not (take-while (lambda (x) (>= x 1))
-                          (range 1 10 1)))
-  (should (equal '(1 2) (take-while (lambda (x) (> x 2))
-                                    (range 1 3 1))))
-  (should (= 2 (length (take-while (lambda (x) (>= x 3))
-                                   (range 1 10 1))))))
-
-(ert-deftest %fns:assoc** ()
-  (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
-  (should (equal '("a" a) (assoc** "a" '(("b" b) ("a" a)) #'string=))))
-
-(ert-deftest %fns:mapcar** ()
-  (should (equal '(a b c) (mapcar** #'identity '(a b c))))
-  (should (equal '((a 1) (b 2) (c 3))
-                 (mapcar** #'list '(a b c) '(1 2 3)))))
-
-(ert-deftest %fns:remove-if* ()
-  (should-not (remove-if* nil nil))
-  (should-not (remove-if* (lambda (x) (eq x 'a)) nil))
-  (should (equal '(b c) (remove-if* (lambda (x) (eq x 'a)) '(a b c))))
-  (should (equal '("a") (remove-if* (lambda (x) (string= x "b"))
-                                    '("a" "b"))))
-  (should (equal '((1 "a"))
-                 (remove-if* (lambda (x) (string= x "b"))
-                             '((1 "a") (2 "b") (2 "b") (2 "b"))
-                             :key #'cadr)))
-  (should (equal '((1 "a") (2 "b"))
-                 (remove-if* (lambda (x) (string= x "b"))
-                             '((1 "a") (2 "b") (2 "b") (2 "b"))
-                             :key #'cadr :count 2)))
-  (should (equal '((1 "a"))
-                 (remove-if* (lambda (x) (string= x "b"))
-                             '((1 "a") (2 "b") (2 "b") (2 "b"))
-                             :key #'cadr :count 3)))
-  (should (equal '((1 "a") (2 "b"))
-                 (remove-if* (lambda (x) (string= x "c"))
-                             '((1 "a") (2 "b") (3 "c"))
-                             :key #'cadr :from-end t)))
-  (should (equal '((1 "a") (2 "b"))
-                 (remove-if* (lambda (x) (string= x "b"))
-                             '((1 "a") (2 "b") (2 "b") (2 "b"))
-                             :key #'cadr :start 2)))
-  (should (equal '((1 "a") (2 "b") (2 "b"))
-                 (remove-if* (lambda (x) (string= x "b"))
-                             '((1 "a") (2 "b") (2 "b") (2 "b"))
-                             :key #'cadr :end 2))))
-
-(ert-deftest %fns:member-if* ()
-  (should-not (member-if* nil nil))
-  (should-not (member-if* (lambda (x) (eq x 'a)) nil))
-  (should (equal '(a) (member-if* (lambda (x) (eq x 'a)) '(b a))))
-  (should (equal '("a") (member-if* (lambda (x) (string= x "a"))
-                                    '("b" "a"))))
-  (should (equal '((3 "c")) (member-if* (lambda (x) (string= x "c"))
-                                         '((1 "a") (2 "b") (3 "c"))
-                                         :key #'cadr))))
-
-(ert-deftest %fns:every* ()
-  (should (every* #'stringp "" "a" "b"))
-  (should (every* #'< '(1 2 3) '(2 3 4)))
-  (should-not (every* #'< '(1 2 3) '(2 3 3))))
-
-(ert-deftest %fns:some* ()
-  (should (some* #'characterp "abc"))
-  (should (some* #'< '(1 2 3) '(1 2 4)))
-  (should-not (some* #'< '(1 2 3) '(1 2 3))))
-
-(ert-deftest %fns:loop* ()
-  (should (equal '(1 2 3) (loop* for i from 1 to 3 collect i)))
-  (should (= 3 (loop* for x in '(a b c)
-                      count x)))
-  (should (= 5050 (loop* for i from 1 to 100 sum i)))
-  (should (string= "b" (loop* for d in '("a" "b" "c")
-                              when (string= d "b")
-                              return d)))
-  (should (string= "b" (loop* for d in '("a" "b" "c")
-                              with d1 = nil
-                              do (setq d1 (concat d "/" "1"))
-                              when (string= d1 "b/1")
-                              return d))))
-
-(ert-deftest %fns:fluid-let ()
-  (let ((x 123))
-    (fluid-let (x 456)
-      (should (= x 456)))
-    (should (= x 123))))
-
-(ert-deftest %fns:split-string* ()
-  (should (equal '("a" "b" "c")
-                 (split-string* "a,b,,cXX" "," t "XX")))
-  (should (equal '("a" "b" "c")
-                 (split-string* "a,b@@cXX" "[,@]" t "XX")))
-  (should (equal '("a" "b" "c")
-                 (split-string* "a,b@@cXX" ",\\|@" t "XX")))
-  (should (equal '("a" "b")
-                 (split-string* "a,,b" "," t)))
-  (should (equal '("a" "" "b")
-                 (split-string* "a,,b" "," nil)))
-  (should (equal '("a" "b")
-                 (split-string* "a, b " "," t " "))))
-
-(ert-deftest %fns:string-trim> ()
-  (should-not (string-trim> nil "X"))
-  (should (string= "abc" (string-trim> "abc \n  ")))
-  (should (string= "abc" (string-trim> "abcXX" "XX")))
-  (should (string= "abc" (string-trim> "abcXX" "X+"))))
-
-(ert-deftest %basic:string-trim< ()
-  (should-not (string-trim< nil "X"))
-  (should (string= "abc" (string-trim< "  \n abc")))
-  (should (string= "abc" (string-trim< "XXabc" "XX")))
-  (should (string= "abc" (string-trim< "XXabc" "X+"))))
-
-(ert-deftest %fns:string-trim>< ()
-  (should-not (string-trim>< nil "X" "Z"))
-  (should (string= "abc" (string-trim>< " \n abc \n ")))
-  (should (string= "abc" (string-trim>< "ZZabcXX" "X+" "Z+"))))
-
-(ert-deftest %fns:match-string* ()
-  (should-not (match-string* nil nil 0))
-  (should-not (match-string* nil 123 0))
-  (should (string= "XXabcXX"
-                   (match-string* "XX\\(abc\\)XX" "XXabcXX" 0)))
-  (should-not (match-string* "XX\\(abc\\)XX" "XXabcXX" 2))
-  (should (string= "abc"
-                   (match-string* "XX\\(abc\\)XX" "XXabcXX" 1))))
-
-(ert-deftest %fns:executable-find% ()
-  (if-platform% 'windows-nt
-      (should (executable-find% "dir"))
-    (should (executable-find% "ls"))
-    (should (executable-find% (concat "l" "s")))
-    (should (executable-find% "ls"
-                              (lambda (ls)
-                                (let ((x (shell-command* "sh"
-                                           "--version")))
-                                  (car x)))))))
-
- ;; end of fns
 
 
-;; end of file
+;; eof
