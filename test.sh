@@ -1,6 +1,6 @@
 #!/bin/sh
 
-_ROOT_="`cd $(dirname $0) && pwd`"
+_ROOT_="${_ROOT_:-`cd $(dirname $0) && pwd`}"
 _EMACS_="${EMACS:-emacs}"
 _TEST_="${_TEST_:-bone}"
 _ENV_VER_=
@@ -36,21 +36,19 @@ test_debug() {
 }
 
 test_axiom() {
-  echo_env "axiom|clean"
   if [ "ert" = "$_ENV_ERT_" ]; then
-    ${_EMACS_} --batch                                                \
-               --no-window-system                                     \
-               --eval="(let ((user-emacs-directory default-directory) \
-                             (init (expand-file-name \"init.el\")))   \
-                         (load init)                                  \
+    echo_env "axiom|clean"
+    ${_EMACS_} --batch                                                      \
+               --no-window-system                                           \
+               --eval="(let ((f (expand-file-name \"${_ROOT_}/init.el\")))  \
+                         (load f)                                           \
                          (clean-compiled-files))"
     echo_env "axiom|ert"
-    ${_EMACS_} --batch                                                \
-               --no-window-system                                     \
-               --eval="(let ((user-emacs-directory default-directory) \
-                             (init (expand-file-name \"init.el\")))   \
-                         (load init)                                  \
-                         (load (emacs-home* \"test.el\"))             \
+    ${_EMACS_} --batch                                                      \
+               --no-window-system                                           \
+               --eval="(let ((f (expand-file-name \"${_ROOT_}/init.el\")))  \
+                         (load f)                                           \
+                         (load (emacs-home* \"test.el\"))                   \
                          (ert-run-tests-batch-and-exit))"
   else
     echo "#skipped axiom testing, ert no found"
@@ -69,5 +67,5 @@ case "${_TEST_}" in
   debug)    test_debug    ;;
 esac
 
-
+echo "_ROOT_=$_ROOT_"
 # eof
