@@ -16,39 +16,42 @@ echo_env() {
 
 test_bone() {
   echo_env "bone"
-  ${_EMACS_} --batch                            \
-             --no-init-file                     \
-             --load="${_ROOT_}/init.el"
+  ${_EMACS_} --batch                                                \
+             --no-window-system                                     \
+             --eval="(let ((user-emacs-directory default-directory) \
+                           (init (expand-file-name \"init.el\")))   \
+                       (load init)                                  \
+                       (clean-compiled-files)                       \
+                       (load init))"
 }
 
 test_debug() {
   echo_env "debug"
-  ${_EMACS_} --debug-init                       \
-             --no-init-file                     \
-             --load="${_ROOT_}/init.el"
+  ${_EMACS_} --debug-init                                           \
+             --eval="(let ((user-emacs-directory default-directory) \
+                           (init (expand-file-name \"init.el\")))   \
+                       (load init)                                  \
+                       (clean-compiled-files)                       \
+                       (load init))"
 }
 
 test_axiom() {
   echo_env "axiom|clean"
   if [ "ert" = "$_ENV_ERT_" ]; then
-    ${_EMACS_} --batch                            \
-               --no-window-system                 \
-               --eval="                           \
-(let ((user-emacs-directory default-directory)    \
-      (init-file (expand-file-name \"init.el\"))) \
-  (load-file init-file)                           \
-  (clean-compiled-files))                         \
-"
+    ${_EMACS_} --batch                                                \
+               --no-window-system                                     \
+               --eval="(let ((user-emacs-directory default-directory) \
+                             (init (expand-file-name \"init.el\")))   \
+                         (load init)                                  \
+                         (clean-compiled-files))"
     echo_env "axiom|ert"
-    ${_EMACS_} --batch                            \
-               --no-window-system                 \
-               --eval="                           \
-(let ((user-emacs-directory default-directory)    \
-      (init-file (expand-file-name \"init.el\"))) \
-  (load-file init-file)                           \
-  (load-file (emacs-home* \"test.el\"))           \
-  (ert-run-tests-batch-and-exit))                 \
-"
+    ${_EMACS_} --batch                                                \
+               --no-window-system                                     \
+               --eval="(let ((user-emacs-directory default-directory) \
+                             (init (expand-file-name \"init.el\")))   \
+                         (load init)                                  \
+                         (load (emacs-home* \"test.el\"))             \
+                         (ert-run-tests-batch-and-exit))"
   else
     echo "#skipped axiom testing, ert no found"
   fi
