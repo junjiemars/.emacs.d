@@ -5,6 +5,7 @@ _EMACS_="${EMACS:-emacs}"
 _TEST_="${_TEST_:-bone}"
 _ENV_VER_=
 _ENV_ERT_=
+_ENV_PKG_=
 
 echo_env() {
   echo "------------"
@@ -44,7 +45,7 @@ test_bone() {
 test_debug() {
   echo_env "debug|clean"
   ${_EMACS_} --batch                                            \
-             --no-window-system                                 \
+             --no-win                                 \
              --eval="                                           \
 (let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
   (load (expand-file-name \"${_ROOT_}/init.el\"))               \
@@ -95,16 +96,50 @@ test_axiom() {
   fi
 }
 
+test_package() {
+  if [ "package" = "$_ENV_PKG_" ]; then
+    echo_env "package|clean"
+    ${_EMACS_} --batch                                          \
+               --no-window-system                               \
+               --eval="                                         \
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
+  (load (expand-file-name \"${_ROOT_}/init.el\"))               \
+  (clean-compiled-files))                                       \
+"
+    echo_env "package|compile"
+    ${_EMACS_} --batch                                          \
+               --no-window-system                               \
+               --eval="                                         \
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))  \
+  (load (expand-file-name \"${_ROOT_}/init.el\"))               \
+  (load (emacs-home* \"test.el\"))                              \
+  (ert-run-tests-batch-and-exit))                               \
+"
+
+    echo_env "package|boot"
+    ${_EMACS_} --batch                                          \
+               --no-window-system                               \
+               --eval="                                         \
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))  \
+  (load (expand-file-name \"${_ROOT_}/init.el\"))               \
+  (load (emacs-home* \"test.el\"))                              \
+  (ert-run-tests-batch-and-exit))                               \
+"
+  else
+    echo "#skipped package testing, package no support"
+  fi
+}
+
 # check env
 _ENV_VER_="`$_EMACS_ --batch --eval='(prin1 emacs-version)'`"
 _ENV_ERT_="`$_EMACS_ --batch --eval='(prin1 (require (quote ert) nil t))'`"
-if [ "ert" != "$_ENV_ERT_" ]; then
-  _ENV_ERT_=
-fi
+_ENV_PKG_="`$_EMACS_ --batch --eval='(prin1 (require (quote package) nil t))'`"
 
+# test
 case "${_TEST_}" in
   bone)     test_bone     ;;
   axiom)    test_axiom    ;;
+  package)  test_package  ;;
   debug)    test_debug    ;;
 esac
 

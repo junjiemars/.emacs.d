@@ -11,7 +11,7 @@
 (*self-packages*
  :put :doc
  (list
-  :cond t
+  :cond nil
   :packages (list (when% (executable-find% "gnuplot")
                     'gnuplot-mode)
                   'markdown-mode
@@ -22,7 +22,7 @@
 (*self-packages*
  :put :org
  (list
-  :cond t
+  :cond nil
   :packages (flatten (list
                       (when% (executable-find% "latex")
                         '(auctex
@@ -32,26 +32,26 @@
 (*self-packages*
  :put :vcs
  (list
-  :cond (and (when-version% <= 24.4 t)
-             (executable-find% "git"))
+  :cond (comment (and (when-version% <= 24.4 t)
+                      (executable-find% "git")))
   :packages '(magit)
   :compile `(,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
 
 (*self-packages*
  :put :docker
  (list
-  :cond (and (when-version% <= 24.4 t)
-             (executable-find% "docker"))
+  :cond (comment (and (when-version% <= 24.4 t)
+                      (executable-find% "docker")))
   :packages '(dockerfile-mode)))
 
 (*self-packages*
  :put :scheme
  (list
-  :cond (and (when-version% <= 23.2 t)
-             (or (executable-find% "racket")
-                 (executable-find% "scheme")
-                 (executable-find% "chicken")
-                 (executable-find% "guile")))
+  :cond (comment (and (when-version% <= 23.2 t)
+                      (or (executable-find% "racket")
+                          (executable-find% "scheme")
+                          (executable-find% "chicken")
+                          (executable-find% "guile"))))
   :packages  '(geiser)
   :compile `(,(compile-unit% (emacs-home* "config/use-geiser-autoload.el")))))
 
@@ -65,8 +65,8 @@
 (*self-packages*
  :put :java
  (list
-  :cond (and (when-version% <= 25.1 t)
-             (executable-find% "java"))
+  :cond (comment (and (when-version% <= 25.1 t)
+                      (executable-find% "java")))
   :packages '(cider
               clojure-mode
               clojure-mode-extra-font-locking
@@ -78,7 +78,7 @@
 (*self-packages*
  :put :erlang
  (list
-  :cond (executable-find% "erlc")
+  :cond (comment (executable-find% "erlc"))
   :packages (list 'erlang
                   (when% (executable-find% "lfe")
                     'lfe-mode))
@@ -89,7 +89,7 @@
 (*self-packages*
  :put :lua
  (list
-  :cond (executable-find% "lua")
+  :cond (comment (executable-find% "lua"))
   :packages '(lua-mode)
   :compile `(,(compile-unit% (emacs-home* "config/use-lua-autoload.el")))))
 
