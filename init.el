@@ -237,7 +237,7 @@ sequentially and return value of last one, or nil if there are none."
  ;; end of *-package% macro
 
 
-;; Load strap
+;; Boot
 (compile-and-load-file* (emacs-home* "config/boot.el")
                         nil ;; only-compile
                         nil ;; delete-booster

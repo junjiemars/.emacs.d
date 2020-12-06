@@ -12,8 +12,13 @@
 ;; M-x ert RET t
 
 
-(require 'ert)
+;;; clean for testing
+(when (string-equal "yes" (getenv "EMACS_RENEW"))
+  (clean-compiled-files)
+  (load (emacs-home* "init.el")))
 
+
+(require 'ert)
 
 ;;; init
 

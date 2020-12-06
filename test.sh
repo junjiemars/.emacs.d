@@ -34,8 +34,6 @@ test_axiom() {
     ${_EMACS_} --batch                                  \
                --no-site-file                           \
                --load="${_ROOT_}/init.el"               \
-               --eval="(clean-compiled-files)"          \
-               --load="${_ROOT_}/init.el"               \
                --load="ert"                             \
                --load="${_ROOT_}/test.el"               \
                --eval="(ert-run-tests-batch-and-exit)"

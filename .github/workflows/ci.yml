@@ -23,6 +23,7 @@ jobs:
       - name: Test
         run: |
           _TEST_=bone ./test.sh
+          _TEST_=axiom EMACS_RENEW=yes ./test.sh
 
   MacOS:
     runs-on: macos-latest
