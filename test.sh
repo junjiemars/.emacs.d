@@ -84,6 +84,7 @@ END
   (load (expand-file-name \"${_ROOT_}/init.el\"))               \
   (clean-compiled-files))                                       \
 "
+
   echo_env "axiom|compile"
   ${_EMACS_} --batch                                          \
              --no-window-system                               \
