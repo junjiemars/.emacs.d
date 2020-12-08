@@ -197,7 +197,7 @@ This is run before the process is cranked up."
   (chez-check-proc)
   (let ((bounds (bounds-of-thing-at-point 'symbol)))
     (when bounds
-      (let ((cmd (format "(chez-emacs/apropos \"%s\" 10)"
+      (let ((cmd (format "(chez-emacs/apropos \"%s\" 64)"
                          (buffer-substring-no-properties (car bounds)
                                                          (cdr bounds))))
             (proc (get-buffer-process (*chez*))))
@@ -207,8 +207,9 @@ This is run before the process is cranked up."
                                                    (*chez-out*)
                                                    proc nil t)
           (set-buffer (*chez*))
-          (while (and (null comint-redirect-completed)
-                      (accept-process-output proc 2)))
+          (while (or quit-flag (null comint-redirect-completed))
+            (accept-process-output proc 2))
+          (comint-redirect-cleanup)
           (setcar mode-line-process ""))
         (list (car bounds) (cdr bounds)
               (let ((s1 (read-from-string
