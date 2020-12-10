@@ -9,7 +9,7 @@
 
 (if% (or (executable-find% "gswin64c")
          (executable-find% "gswin32c"))
-    
+
     (with-eval-after-load 'doc-view
       (setq% doc-view-ghostscript-program
              (or (executable-find% (format "gswin%dc" (cdr (platform-arch))))
@@ -59,9 +59,9 @@
           (setq ad-return-value t)))
 
       (with-eval-after-load 'doc-view
-				(ad-enable-advice #'doc-view-mode-p 'after
-													"doc-view-mode-p-after")
+        (ad-enable-advice #'doc-view-mode-p 'after
+                          "doc-view-mode-p-after")
         (ad-activate #'doc-view-mode-p t)))))
 
 
-;; end of file
+;; eof
