@@ -519,6 +519,13 @@
                                      std)
                      (setq count (1+ count))))))))
 
+(ert-deftest %basic:platform-arch ()
+  (should (platform-arch))
+  (should (consp (platform-arch))))
+
+(ert-deftest %basic:emacs-arch ()
+  (should (> (emacs-arch) 0)))
+
 (when-platform% 'windows-nt
   (ert-deftest %basic:windows-posix-path ()
     (should-not (windows-nt-posix-path nil))

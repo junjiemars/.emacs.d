@@ -452,21 +452,15 @@ otherwise default to keep the directories of current `emacs-version'."
             `(cons ,(getenv "PROCESSOR_ARCHITECTURE") 32))
         (let ((m (shell-command* "uname -m")))
           (if (and (zerop (car m))
-                   (string-match b64
-                                 (string-trim> (cdr m) "\n")))
-              `(cons ,(string-trim> (cdr m) "\n")
-                     64)
-            `(cons ,(string-trim> (cdr m) "\n")
-                   32)))))))
+                   (string-match b64 (string-trim> (cdr m) "\n")))
+              `(cons ,(string-trim> (cdr m) "\n") 64)
+            `(cons ,(string-trim> (cdr m) "\n") 32)))))))
 
 
 (defmacro emacs-arch ()
   "Return emacs architecture, 64bits or 32bits."
-  (if (= most-positive-fixnum (1- (expt 2 61)))
-      64
-    (if (= most-positive-fixnum (1- (expt 2 29)))
-        32
-      0)))
+  (if (= most-positive-fixnum (1- (expt 2 61))) 64
+    (if (= most-positive-fixnum (1- (expt 2 29))) 32 0)))
 
 
 ;; define key macro
