@@ -1708,10 +1708,9 @@ It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]].
   /ssh:user@host:/path/to/file@@html:</kbd>@@, such as =user@host= or
   =user= in .ssh/config entries.
 - sudo /remote/: @@html:<kbd>@@C-x C-f
-  /ssh:user|sudo:localhost:/path/to/file@@html:</kbd>@@, such as
-  =user@localhost=, here =localhost= means remote host.
+  /ssh:user|sudo::/path/to/file@@html:</kbd>@@
 - sudo /localhost/: @@html:<kbd>@@C-x C-f
-  /sudo:/path/to/file@@html:</kbd>@@
+  /sudo::/path/to/file@@html:</kbd>@@
 #+REVEAL: split
 - eshell remote: @@html:<kbd>@@cd
   /ssh:user@host:/path/to/file@@html:</kbd>@@
