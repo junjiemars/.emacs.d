@@ -78,21 +78,31 @@ Row and Column formula:
 #+TBLFM: $2=vsum(@2$2..@4$2)::$3=vsum(@2$3..@4$3)::$4=vmean($2..$3)::$5=vsum($2..$3)::@5$2=vmean(@2$2..@4$2)::@5$3=vmean(@2$3..@4$3)
 
 * Code
+	:PROPERTIES:
+	:CUSTOM_ID: code
+	:END:
 
 ** Elisp
+	 :PROPERTIES:
+	 :CUSTOM_ID: elisp
+	 :END:
 
 #+BEGIN_SRC emacs-lisp
 (emacs-home*)
 #+END_SRC
 
 ** C
+	 :PROPERTIES:
+	 :CUSTOM_ID: c
+	 :END:
 
 #+BEGIN_SRC C :includes <stdio.h>
-	printf("%s!\n", "Hello, world");
+	int a = 1, b = 2;
+	printf("%i + %i = %i\n", a, b, a+b);
 #+END_SRC
 
 #+RESULTS:
-: Hello!
+: 1 + 2 = 3
 
 #+BEGIN_SRC C :includes <stdio.h> :main no :flags -O2
 	int

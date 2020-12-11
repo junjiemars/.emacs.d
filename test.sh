@@ -10,8 +10,7 @@ _ENV_PKG_=
 echo_env() {
   echo "------------"
   echo "VERSION: $_ENV_VER_"
-  echo "ERT: $_ENV_ERT_"
-  echo "PKG: $_ENV_PKG_"
+  echo "ENV: ${_ENV_ERT_:+$_ENV_ERT_,}${_ENV_PKG_:+$_ENV_PKG_}"
   echo "TEST: $1"
   echo "------------"
 }
