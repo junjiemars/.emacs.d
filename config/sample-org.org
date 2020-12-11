@@ -85,44 +85,87 @@ Row and Column formula:
 ** Elisp
 
 #+begin_src emacs-lisp
-(defmacro comment (&rest body)
-  "Ignores body, yields nil."
-  nil)
-
-(defun save-sexp-to-file (sexp file)
-  "Save SEXP to FILE. 
-
-Returns the name of FILE when successed otherwise nil."
-  (when (and (save-excursion
-               (let ((sexp-buffer (find-file-noselect file)))
-                 (set-buffer sexp-buffer)
-                 (erase-buffer)
-                 (print sexp sexp-buffer)
-                 (save-buffer)
-                 (kill-buffer sexp-buffer)))
-             (file-exists-p file))
-    file))
+(emacs-home*)
 #+end_src
+
+#+RESULTS:
+: /Users/junjie/.emacs.d/
 
 ** C
 
-#+begin_src c
+#+BEGIN_SRC C :includes <stdio.h>
+	printf("%s!\n", "Hello, world");
+#+END_SRC
 
-void send(char *to, char *from, int count) {
-	int n = (count + 7) / 8;  /* count > 0 assumed */
-	switch (count % 8) {
-	case 0:    do { *to++ = *from++; 
-	case 7:         *to++ = *from++;
-	case 6:         *to++ = *from++;
-	case 5:         *to++ = *from++;
-	case 4:         *to++ = *from++;
-	case 3:         *to++ = *from++;
-	case 2:         *to++ = *from++;
-	case 1:         *to++ = *from++;
-		         } while (--n > 0);
+#+RESULTS:
+: Hello!
+
+#+BEGIN_SRC C :includes <stdio.h> :main no :flags -O2
+	int
+	fibo(int n, int p, int acc)
+	{
+		if (0 == n)
+			{
+				return acc;
+			}
+		return fibo(n-1, acc, p+acc);
 	}
-}
-#+end_src
+
+	int main(void)
+	{
+		for (int i = 0; i < 10; i++)
+			{
+				int f = fibo(i, 0, 1);
+				printf("fibo(%01i) = %04i\n", i, f);
+			}
+		return 0;
+	}
+#+END_SRC
+
+#+RESULTS:
+| fibo(0) | = | 0001 |
+| fibo(1) | = | 0001 |
+| fibo(2) | = | 0002 |
+| fibo(3) | = | 0003 |
+| fibo(4) | = | 0005 |
+| fibo(5) | = | 0008 |
+| fibo(6) | = | 0013 |
+| fibo(7) | = | 0021 |
+| fibo(8) | = | 0034 |
+| fibo(9) | = | 0055 |
+
+#+BEGIN_SRC C :includes <stdio.h> :main no
+	void
+	send(char *to, char *from, int count) {
+		int n = (count + 7) / 8;  /* count > 0 assumed */
+		switch (count % 8) {
+		case 0:    do { *to++ = *from++; 
+		case 7:         *to++ = *from++;
+		case 6:         *to++ = *from++;
+		case 5:         *to++ = *from++;
+		case 4:         *to++ = *from++;
+		case 3:         *to++ = *from++;
+		case 2:         *to++ = *from++;
+		case 1:         *to++ = *from++;
+							 } while (--n > 0);
+		}
+	}
+
+	int
+	main(void)
+	{
+		char *from = "abcdefghijklmnopqrstuvwxyz";
+		char to[32] = {0};
+		send(to, from, 11);
+		printf("to = %s\n", to);
+  
+		return 0;
+	}
+             
+#+END_SRC
+
+#+RESULTS:
+: to = abcdefghijk
 
 * Math
 
