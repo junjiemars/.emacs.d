@@ -82,7 +82,7 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
          (e2 (cdr (assoc** e1 *search-engines* #'string=)))
          (url (concat (car e2) (cdr e2) what))
          (encoded (progn (require 'browse-url)
-                         (browse-url-url-encode-chars url "[ '()]"))))
+                         (browse-url-url-encode-chars url "[ '()!`]"))))
     (make-thread* (funcall browse-url-browser-function encoded)
                   t)))
 
