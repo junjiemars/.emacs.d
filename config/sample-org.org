@@ -10,31 +10,28 @@
 #+latex_header: \usepackage[utf8x]{inputenc}
 
 
-* LaTex
+* \(\LaTeX{}\)
 
-\(\LaTeX{}\) vs. \({\LaTeX}\)
-
-Check builtin info /11.8 Embedded LaTeX/: @@html:<kbd>@@C-h i d m Org
-Mode@@html:</kbd>@@
+Another way to notate \({\LaTeX}\).
 
 * Quote
 
-#+begin_quote
+#+BEGIN_QUOTE
 Everything should be made as simple as possible,
 but not any simpler. -- Albert Einstein
-#+end_quote
+#+END_QUOTE
 
-#+begin_quote
+#+BEGIN_QUOTE
 "I have a realistic grasp of my own strengths and weaknesses. My mind
 is my weapon. My brother has his sword, King Robert has his warhammer,
 and I have my mind … and a mind needs books as a sword needs a
 whetstone, if it is to keep its edge." -- George R. R. Martin. "A Game
 Of Thrones."
-#+end_quote
+#+END_QUOTE
 
 * Style
 
-** Bold, Italic, Verbatim and Strike
+** Bold, Italic, Verbatim and Strikethrough
 
 The quick /brown/ *fox* =jumps= +over+ the lazy *dog*.
 	 
@@ -84,12 +81,9 @@ Row and Column formula:
 
 ** Elisp
 
-#+begin_src emacs-lisp
+#+BEGIN_SRC emacs-lisp
 (emacs-home*)
-#+end_src
-
-#+RESULTS:
-: /Users/junjie/.emacs.d/
+#+END_SRC
 
 ** C
 
@@ -134,7 +128,7 @@ Row and Column formula:
 | fibo(8) | = | 0034 |
 | fibo(9) | = | 0055 |
 
-#+BEGIN_SRC C :includes <stdio.h> :main no
+#+BEGIN_SRC C :includes <stdio.h> :main no :var from = "abcdefghijklmnopqrstuvwxyz"
 	void
 	send(char *to, char *from, int count) {
 		int n = (count + 7) / 8;  /* count > 0 assumed */
@@ -154,14 +148,14 @@ Row and Column formula:
 	int
 	main(void)
 	{
-		char *from = "abcdefghijklmnopqrstuvwxyz";
+		/* char *from = "abcdefghijklmnopqrstuvwxyz"; */
 		char to[32] = {0};
 		send(to, from, 11);
 		printf("to = %s\n", to);
-  
+
 		return 0;
 	}
-             
+
 #+END_SRC
 
 #+RESULTS:
@@ -223,18 +217,18 @@ either $$ a=+\sqrt{2} $$ or \[ a=-\sqrt{2} \].
 
 * Verse
 
-中国唐代诗人柳宗元的江雪
-#+begin_verse
+#+BEGIN_VERSE
 千山鸟飞绝，万径人踪灭。
 孤舟蓑笠翁，独钓寒江雪。
   -- 柳宗元 《江雪》
-#+end_verse
+#+END_VERSE
 
-许渊冲先生英译的江雪(Fishing in Snow)
-#+begin_verse
-From hill to hill no bird in flight
-From path to path no man in sight
-A lonely fisherman afloat
-Is fishing snow in lonely boat
-#+end_verse
 
+#+BEGIN_VERSE
+The Tao that can be told of
+Is not the Absolute Tao;
+
+The Names that can be given
+Are not Absolute Names.
+  -- 老子
+#+END_VERSE
