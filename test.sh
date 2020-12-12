@@ -22,7 +22,11 @@ backup_env() {
 }
 
 restore_env() {
-  [ -f "${_ENV_SPE_}.b0" ] && mv "${_ENV_SPE_}.b0" "${_ENV_SPE_}"
+  if [ -f "${_ENV_SPE_}.b0" ]; then
+    mv "${_ENV_SPE_}.b0" "${_ENV_SPE_}"
+  else
+    return 0
+  fi
 }
 
 test_bone() {
