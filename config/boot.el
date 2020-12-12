@@ -303,10 +303,12 @@ Then evaluate RESULT to get return value or nil.
 (defalias '*self-paths*
   (lexical-let%
       ((ps (list
+            :prologue (emacs-home* "private/self-prologue.el")
             :env-spec (emacs-home* "private/self-env-spec.el")
             :package-spec (emacs-home* "private/self-package-spec.el")
             :epilogue (emacs-home* "private/self-epilogue.el")))
        (ss (list
+            (cons :prologue (emacs-home* "config/sample-self-prologue.el"))
             (cons :env-spec (emacs-home* "config/sample-self-env-spec.el"))
             (cons :package-spec
                   (emacs-home* "config/sample-self-package-spec.el"))
@@ -363,17 +365,13 @@ No matter the declaration order, the executing order is:
 
 ;;; <1>
 (compile! (compile-unit% (emacs-home* "config/fns.el"))
-          (when (*self-paths* :get :env-spec)
-            (compile-unit* (*self-paths* :get :env-spec)))
+          (compile-unit* (*self-paths* :get :prologue))
+          (compile-unit* (*self-paths* :get :env-spec))
           (compile-unit% (emacs-home* "config/graphic.el"))
           (compile-unit% (emacs-home* "config/basic.el"))
           (compile-unit% (emacs-home* "config/shells.el")))
 
 ;;; <2>
-(when (*self-paths* :get :prologue)
-  (compile! (compile-unit* (*self-paths* :get :prologue))))
-
-;;; <3>
 (when-package%
   ;; (package-initialize)
 
@@ -396,10 +394,9 @@ No matter the declaration order, the executing order is:
               (t ps)))))
 
   ;; Load basic and self modules
-  (when (*self-paths* :get :package-spec)
-    (compile! (compile-unit* (*self-paths* :get :package-spec)))))
+  (compile! (compile-unit* (*self-paths* :get :package-spec))))
 
-;;; <4>
+;;; <3>
 (compile!
   ;; --batch mode: disable desktop read/save
   `,(unless noninteractive 

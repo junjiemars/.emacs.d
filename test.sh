@@ -3,7 +3,7 @@
 _ROOT_="${_ROOT_:-`cd $(dirname $0) && pwd`}"
 _EMACS_="${EMACS:-emacs}"
 _TEST_="${_TEST_:-bone}"
-_ENV_SPE_="${_ROOT_}/private/self-env-spec.el"
+_ENV_SPE_="${_ROOT_}/private/self-prologue.el"
 _ENV_VER_=
 _ENV_ERT_=
 _ENV_PKG_=
@@ -79,6 +79,7 @@ test_axiom() {
   fi
 
   cat <<END > "$_ENV_SPE_"
+(*self-paths* :put :env-spec nil)
 (*self-paths* :put :package-spec nil)
 (*self-paths* :put :epilogue nil)
 END
@@ -171,6 +172,7 @@ case "${_TEST_}" in
   debug)    test_debug    ;;
 esac
 
+echo "## trace..."
 # restore env
 restore_env
 
