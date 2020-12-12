@@ -17,7 +17,7 @@ echo_env() {
 
 backup_env() {
   if [ -f "$_ENV_SPE_" ]; then
-    [ ! -f "${_ENV_SPE_}.b0" ] && mv "${_ENV_SPE_}" "${_ENV_SPE_}.b0"
+    [ ! -f "${_ENV_SPE_}.b0" ] && cp "${_ENV_SPE_}" "${_ENV_SPE_}.b0"
   else
     mkdir -p `dirname "$_ENV_SPE_"`
   fi
