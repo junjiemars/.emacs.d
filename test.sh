@@ -176,7 +176,6 @@ case "${_TEST_}" in
   debug)    test_debug    ;;
 esac
 
-echo "## trace..."
 # restore env
 restore_env
 
