@@ -11,7 +11,7 @@
 (*self-packages*
  :put :doc
  (list
-  :cond t
+  :cond nil
   :packages (list (when% (executable-find% "gnuplot")
                     'gnuplot-mode)
                   'markdown-mode
@@ -39,8 +39,8 @@
 (*self-packages*
  :put :docker
  (list
-  :cond (and (when-version% <= 24.4 t)
-             (executable-find% "docker"))
+  :cond (comment (and (when-version% <= 24.4 t)
+                      (executable-find% "docker")))
   :packages '(dockerfile-mode)))
 
 (*self-packages*
