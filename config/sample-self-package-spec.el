@@ -11,18 +11,17 @@
 (*self-packages*
  :put :doc
  (list
-  :cond nil
+  :cond t
   :packages (list (when% (executable-find% "gnuplot")
                     'gnuplot-mode)
                   'markdown-mode
-                  'multiple-cursors
                   (when-version% <= 24.3 'yasnippet)
                   'vlf)))
 
 (*self-packages*
  :put :org
  (list
-  :cond nil
+  :cond t
   :packages (flatten (list
                       (when% (executable-find% "latex")
                         '(auctex
@@ -32,33 +31,38 @@
 (*self-packages*
  :put :vcs
  (list
-  :cond (comment (and (when-version% <= 24.4 t)
-                      (executable-find% "git")))
+  :cond (and (when-version% <= 24.4 t)
+             (executable-find% "git"))
   :packages '(magit)
   :compile `(,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
 
 (*self-packages*
  :put :docker
  (list
-  :cond (comment (and (when-version% <= 24.4 t)
-                      (executable-find% "docker")))
+  :cond (and (when-version% <= 24.4 t)
+             (executable-find% "docker"))
   :packages '(dockerfile-mode)))
 
 (*self-packages*
  :put :scheme
  (list
-  :cond (comment (and (when-version% <= 23.2 t)
-                      (or (executable-find% "racket")
-                          (executable-find% "scheme")
-                          (executable-find% "chicken")
-                          (executable-find% "guile"))))
+  :cond (and (when-version% <= 23.2 t)
+             ;; More Reasonable Emacs has builtin supports for Chez
+             ;; scheme and gambitC scheme, and does not need to
+             ;; install the dumb geiser.
+             (or (executable-find% "racket")
+                 (executable-find% "scheme")
+                 (executable-find% "chicken")
+                 (executable-find% "guile")))
   :packages  '(geiser)
   :compile `(,(compile-unit% (emacs-home* "config/use-geiser-autoload.el")))))
 
 (*self-packages*
  :put :common-lisp
  (list
-  :cond (executable-find% "sbcl")
+  :cond (or (executable-find% "sbcl")
+            (executable-find% "ecl")
+            (executable-find% "acl"))
   :packages '(slime)
   :compile `(,(compile-unit% (emacs-home* "config/use-slime-autoload.el")))))
 
@@ -104,4 +108,4 @@
                   'web-mode
                   'x509-mode)))
 
-;; EOF
+;; eof

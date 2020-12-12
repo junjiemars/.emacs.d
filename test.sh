@@ -3,6 +3,7 @@
 _ROOT_="${_ROOT_:-`cd $(dirname $0) && pwd`}"
 _EMACS_="${EMACS:-emacs}"
 _TEST_="${_TEST_:-bone}"
+_ENV_SPE_="${_ROOT_}/private/self-env-spec.el"
 _ENV_VER_=
 _ENV_ERT_=
 _ENV_PKG_=
@@ -10,9 +11,20 @@ _ENV_PKG_=
 echo_env() {
   echo "------------"
   echo "VERSION: $_ENV_VER_"
-  echo "ENV: ${_ENV_ERT_:+$_ENV_ERT_,}${_ENV_PKG_:+$_ENV_PKG_}"
   echo "TEST: $1"
   echo "------------"
+}
+
+backup_env() {
+  if [ -f "$_ENV_SPE_" ]; then
+    [ ! -f "${_ENV_SPE_}.b0" ] && mv "${_ENV_SPE_}" "${_ENV_SPE_}.b0"
+  else
+    mkdir -p `dirname "$_ENV_SPE_"`
+  fi
+}
+
+restore_env() {
+  [ -f "${_ENV_SPE_}.b0" ] && mv "${_ENV_SPE_}.b0" "${_ENV_SPE_}"
 }
 
 test_bone() {
@@ -68,9 +80,7 @@ test_axiom() {
     return 0
   fi
 
-  echo "#make ${_ROOT_}/private/self-env-spec.el ..."
-  mkdir -p "${_ROOT_}/private"
-  cat <<END > "${_ROOT_}/private/self-env-spec.el"
+  cat <<END > "$_ENV_SPE_"
 (*self-paths* :put :package-spec nil)
 (*self-paths* :put :epilogue nil)
 END
@@ -111,9 +121,7 @@ test_package() {
     return 0
   fi
 
-  echo "#make ${_ROOT_}/private/self-env-spec.el ..."
-  mkdir -p "${_ROOT_}/private"
-  cat <<END > "${_ROOT_}/private/self-env-spec.el"
+  cat <<END > "$_ENV_SPE_"
 (*self-paths* :put :package-spec nil)
 (*self-paths* :put :epilogue nil)
 (*self-env-spec*
@@ -154,6 +162,9 @@ _ENV_VER_="`$_EMACS_ --batch --eval='(prin1 emacs-version)'`"
 _ENV_ERT_="`$_EMACS_ --batch --eval='(prin1 (require (quote ert) nil t))'`"
 _ENV_PKG_="`$_EMACS_ --batch --eval='(prin1 (require (quote package) nil t))'`"
 
+# backup env
+backup_env
+
 # test
 case "${_TEST_}" in
   bone)     test_bone     ;;
@@ -161,6 +172,9 @@ case "${_TEST_}" in
   package)  test_package  ;;
   debug)    test_debug    ;;
 esac
+
+# restore env
+restore_env
 
 
 # eof
