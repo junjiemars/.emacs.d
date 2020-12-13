@@ -323,15 +323,20 @@ See `shell-command' and `shell-command-to-string' for details.
 
 If you want to set the environment temporarily that
 shell-command* run in:
- (let ((process-environment (cons \"GREP_OPTIONS=' --color=always'\" 
+ (let ((process-environment (cons \"GREP_OPTIONS=--color=always\"
                                    process-environment)))
    (shell-command* \"echo 'a' | grep 'a'\"))"
   (declare (indent 1))
   `(with-temp-buffer
-     (cons (call-process shell-file-name nil (current-buffer) nil
-                         shell-command-switch
-                         (mapconcat #'identity
-                                    (cons ,command (list ,@args)) " "))
+     (cons (let ((x (call-process
+                     shell-file-name nil (current-buffer) nil
+                     shell-command-switch
+                     (mapconcat #'identity
+                                (cons ,command (list ,@args)) " "))))
+             (cond ((integerp x) x)
+                   ((string-match "^.*\\([0-9]+\\).*$" x)
+                    (match-string 1 x))
+                   (t -1)))
            (let ((s (buffer-string)))
              (if (string= "\n" s) nil s)))))
 
