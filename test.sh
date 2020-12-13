@@ -130,9 +130,9 @@ test_package() {
 END
  
   echo_env "package|clean"
-  ${_EMACS_} --batch                                          \
-             --no-window-system                               \
-             --eval="                                         \
+  ${_EMACS_} --batch                                            \
+             --no-window-system                                 \
+             --eval="                                           \
 (let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
   (load (expand-file-name \"${_ROOT_}/init.el\"))               \
   (clean-compiled-files))                                       \
