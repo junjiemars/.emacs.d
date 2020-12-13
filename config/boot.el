@@ -308,7 +308,7 @@ Then evaluate RESULT to get return value or nil.
             :package-spec (emacs-home* "private/self-package-spec.el")
             :epilogue (emacs-home* "private/self-epilogue.el")))
        (ss (list
-            (cons :prologue (emacs-home* "config/sample-self-prologue.el"))
+            ;; exclude :prologue
             (cons :env-spec (emacs-home* "config/sample-self-env-spec.el"))
             (cons :package-spec
                   (emacs-home* "config/sample-self-package-spec.el"))
@@ -363,15 +363,17 @@ No matter the declaration order, the executing order is:
 
  ;; end of self-spec macro
 
-;;; <1>
+;;; <1> prologue
 (compile! (compile-unit% (emacs-home* "config/fns.el"))
-          (compile-unit* (*self-paths* :get :prologue))
-          (compile-unit* (*self-paths* :get :env-spec))
+          (compile-unit* (*self-paths* :get :prologue)))
+
+;;; <2> env
+(compile! (compile-unit* (*self-paths* :get :env-spec))
           (compile-unit% (emacs-home* "config/graphic.el"))
           (compile-unit% (emacs-home* "config/basic.el"))
           (compile-unit% (emacs-home* "config/shells.el")))
 
-;;; <2>
+;;; <3> package
 (when-package%
   ;; (package-initialize)
 
@@ -396,10 +398,10 @@ No matter the declaration order, the executing order is:
   ;; Load basic and self modules
   (compile! (compile-unit* (*self-paths* :get :package-spec))))
 
-;;; <3>
+;;; <4> epilogue
 (compile!
   ;; --batch mode: disable desktop read/save
-  `,(unless noninteractive 
+  `,(unless noninteractive
       (compile-unit% (emacs-home* "config/memory.el")))
   (compile-unit% (emacs-home* "config/autoloads.el")))
 

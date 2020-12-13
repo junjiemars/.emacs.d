@@ -4,14 +4,13 @@
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
 ;; sample-self-prologue.el: specify the prologue of yourself
-;;   should be run on the end of Emacs init 
+;;   should be run before `(*self-paths* :get :env-spec)'
 ;;
 ;;;;
 
+(comment
+ (*self-paths* :put :env-spec nil)
+ (*self-paths* :put :package-spec nil)
+ (*self-paths* :put :epilogue nil))
 
-
-(message "#self prologue ...")
-
-
-
-;; end of file
+;; eof
