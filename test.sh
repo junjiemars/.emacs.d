@@ -3,6 +3,7 @@
 _ROOT_="${_ROOT_:-`cd $(dirname $0) && pwd`}"
 _EMACS_="${EMACS:-emacs}"
 _TEST_="${_TEST_:-bone}"
+_ENV_PRO_="${_ROOT_}/private/self-prologue.el"
 _ENV_VER_=
 _ENV_ERT_=
 _ENV_PKG_=
@@ -10,10 +11,16 @@ _ENV_PKG_=
 echo_env() {
   echo "------------"
   echo "VERSION: $_ENV_VER_"
-  echo "ERT: $_ENV_ERT_"
-  echo "PKG: $_ENV_PKG_"
   echo "TEST: $1"
   echo "------------"
+}
+
+restore_env() {
+  if [ -f "${_ENV_PRO_}" ]; then
+    rm "${_ENV_PRO_}"
+  else
+    return 0
+  fi
 }
 
 test_bone() {
@@ -46,7 +53,7 @@ test_bone() {
 test_debug() {
   echo_env "debug|clean"
   ${_EMACS_} --batch                                            \
-             --no-win                                 \
+             --no-win                                           \
              --eval="                                           \
 (let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
   (load (expand-file-name \"${_ROOT_}/init.el\"))               \
@@ -69,29 +76,36 @@ test_axiom() {
     return 0
   fi
 
+  cat <<END > "$_ENV_PRO_"
+(*self-paths* :put :env-spec nil)
+(*self-paths* :put :package-spec nil)
+(*self-paths* :put :epilogue nil)
+END
+
   echo_env "axiom|clean"
-  ${_EMACS_} --batch                                          \
-             --no-window-system                               \
-             --eval="                                         \
+  ${_EMACS_} --batch                                            \
+             --no-window-system                                 \
+             --eval="                                           \
 (let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
   (load (expand-file-name \"${_ROOT_}/init.el\"))               \
   (clean-compiled-files))                                       \
 "
+
   echo_env "axiom|compile"
-  ${_EMACS_} --batch                                          \
-             --no-window-system                               \
-             --eval="                                         \
-(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))  \
+  ${_EMACS_} --batch                                            \
+             --no-window-system                                 \
+             --eval="                                           \
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
   (load (expand-file-name \"${_ROOT_}/init.el\"))               \
   (load (emacs-home* \"test.el\"))                              \
   (ert-run-tests-batch-and-exit))                               \
 "
 
   echo_env "axiom|boot"
-  ${_EMACS_} --batch                                          \
-             --no-window-system                               \
-             --eval="                                         \
-(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))  \
+  ${_EMACS_} --batch                                            \
+             --no-window-system                                 \
+             --eval="                                           \
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
   (load (expand-file-name \"${_ROOT_}/init.el\"))               \
   (load (emacs-home* \"test.el\"))                              \
   (ert-run-tests-batch-and-exit))                               \
@@ -104,9 +118,10 @@ test_package() {
     return 0
   fi
 
-  echo "#make ${_ROOT_}/private/self-env-spec.el ..."
-  mkdir -p "${_ROOT_}/private"
-  cat <<END > "${_ROOT_}/private/self-env-spec.el"
+  cat <<END > "$_ENV_PRO_"
+(*self-paths* :put :package-spec nil)
+(*self-paths* :put :env-spec nil)
+(*self-paths* :put :epilogue nil)
 (*self-env-spec*
  :put :package
  (list :remove-unused nil
@@ -152,6 +167,9 @@ case "${_TEST_}" in
   package)  test_package  ;;
   debug)    test_debug    ;;
 esac
+
+# restore env
+restore_env
 
 
 # eof

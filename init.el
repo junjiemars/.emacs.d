@@ -153,11 +153,10 @@ DIR where the compiled file located."
       (let* ((d (car dirs))
              (fs (when (file-exists-p d)
                    (directory-files d nil "\\.elc?\\'"))))
-        (message "#Clean directory: %s..." d)
+        (message "#Clean compiled files: %s..." d)
         (while fs
           (let ((f (car fs)))
-            (delete-file (concat d f))
-            (message "#Clean compiled file: %s" f))
+            (delete-file (concat d f)))
           (setq fs (cdr fs))))
       (setq dirs (cdr dirs)))))
 

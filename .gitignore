@@ -11,6 +11,7 @@
 *.b0
 *.elc
 *.swp
+*.log
 *~
 *~$
 .dict
@@ -51,3 +52,4 @@ tutorial/
 url
 viper
 viperelpa/
+config/sample-org.*

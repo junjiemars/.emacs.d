@@ -10,31 +10,28 @@
 #+latex_header: \usepackage[utf8x]{inputenc}
 
 
-* LaTex
+* \(\LaTeX{}\)
 
-\(\LaTeX{}\) vs. \({\LaTeX}\)
-
-Check builtin info /11.8 Embedded LaTeX/: @@html:<kbd>@@C-h i d m Org
-Mode@@html:</kbd>@@
+Another way to notate \({\LaTeX}\).
 
 * Quote
 
-#+begin_quote
+#+BEGIN_QUOTE
 Everything should be made as simple as possible,
 but not any simpler. -- Albert Einstein
-#+end_quote
+#+END_QUOTE
 
-#+begin_quote
+#+BEGIN_QUOTE
 "I have a realistic grasp of my own strengths and weaknesses. My mind
 is my weapon. My brother has his sword, King Robert has his warhammer,
 and I have my mind … and a mind needs books as a sword needs a
 whetstone, if it is to keep its edge." -- George R. R. Martin. "A Game
 Of Thrones."
-#+end_quote
+#+END_QUOTE
 
 * Style
 
-** Bold, Italic, Verbatim and Strike
+** Bold, Italic, Verbatim and Strikethrough
 
 The quick /brown/ *fox* =jumps= +over+ the lazy *dog*.
 	 
@@ -81,48 +78,98 @@ Row and Column formula:
 #+TBLFM: $2=vsum(@2$2..@4$2)::$3=vsum(@2$3..@4$3)::$4=vmean($2..$3)::$5=vsum($2..$3)::@5$2=vmean(@2$2..@4$2)::@5$3=vmean(@2$3..@4$3)
 
 * Code
+	:PROPERTIES:
+	:CUSTOM_ID: code
+	:END:
 
 ** Elisp
+	 :PROPERTIES:
+	 :CUSTOM_ID: elisp
+	 :END:
 
-#+begin_src emacs-lisp
-(defmacro comment (&rest body)
-  "Ignores body, yields nil."
-  nil)
-
-(defun save-sexp-to-file (sexp file)
-  "Save SEXP to FILE. 
-
-Returns the name of FILE when successed otherwise nil."
-  (when (and (save-excursion
-               (let ((sexp-buffer (find-file-noselect file)))
-                 (set-buffer sexp-buffer)
-                 (erase-buffer)
-                 (print sexp sexp-buffer)
-                 (save-buffer)
-                 (kill-buffer sexp-buffer)))
-             (file-exists-p file))
-    file))
-#+end_src
+#+BEGIN_SRC emacs-lisp
+(emacs-home*)
+#+END_SRC
 
 ** C
+	 :PROPERTIES:
+	 :CUSTOM_ID: c
+	 :END:
 
-#+begin_src c
+#+BEGIN_SRC C :includes <stdio.h>
+	int a = 1, b = 2;
+	printf("%i + %i = %i\n", a, b, a+b);
+#+END_SRC
 
-void send(char *to, char *from, int count) {
-	int n = (count + 7) / 8;  /* count > 0 assumed */
-	switch (count % 8) {
-	case 0:    do { *to++ = *from++; 
-	case 7:         *to++ = *from++;
-	case 6:         *to++ = *from++;
-	case 5:         *to++ = *from++;
-	case 4:         *to++ = *from++;
-	case 3:         *to++ = *from++;
-	case 2:         *to++ = *from++;
-	case 1:         *to++ = *from++;
-		         } while (--n > 0);
+#+RESULTS:
+: 1 + 2 = 3
+
+#+BEGIN_SRC C :includes <stdio.h> :main no :flags -O2
+	int
+	fibo(int n, int p, int acc)
+	{
+		if (0 == n)
+			{
+				return acc;
+			}
+		return fibo(n-1, acc, p+acc);
 	}
-}
-#+end_src
+
+	int main(void)
+	{
+		for (int i = 0; i < 10; i++)
+			{
+				int f = fibo(i, 0, 1);
+				printf("fibo(%01i) = %04i\n", i, f);
+			}
+		return 0;
+	}
+#+END_SRC
+
+#+RESULTS:
+| fibo(0) | = | 0001 |
+| fibo(1) | = | 0001 |
+| fibo(2) | = | 0002 |
+| fibo(3) | = | 0003 |
+| fibo(4) | = | 0005 |
+| fibo(5) | = | 0008 |
+| fibo(6) | = | 0013 |
+| fibo(7) | = | 0021 |
+| fibo(8) | = | 0034 |
+| fibo(9) | = | 0055 |
+
+#+BEGIN_SRC C :includes <stdio.h> :main no :var from = "abcdefghijklmnopqrstuvwxyz"
+	void
+	send(char *to, char *from, int count) {
+		int n = (count + 7) / 8;  /* count > 0 assumed */
+		switch (count % 8) {
+		case 0:    do { *to++ = *from++; 
+		case 7:         *to++ = *from++;
+		case 6:         *to++ = *from++;
+		case 5:         *to++ = *from++;
+		case 4:         *to++ = *from++;
+		case 3:         *to++ = *from++;
+		case 2:         *to++ = *from++;
+		case 1:         *to++ = *from++;
+							 } while (--n > 0);
+		}
+	}
+
+	int
+	main(void)
+	{
+		/* char *from = "abcdefghijklmnopqrstuvwxyz"; */
+		char to[32] = {0};
+		send(to, from, 11);
+		printf("to = %s\n", to);
+
+		return 0;
+	}
+
+#+END_SRC
+
+#+RESULTS:
+: to = abcdefghijk
 
 * Math
 
@@ -180,18 +227,18 @@ either $$ a=+\sqrt{2} $$ or \[ a=-\sqrt{2} \].
 
 * Verse
 
-中国唐代诗人柳宗元的江雪
-#+begin_verse
+#+BEGIN_VERSE
 千山鸟飞绝，万径人踪灭。
 孤舟蓑笠翁，独钓寒江雪。
   -- 柳宗元 《江雪》
-#+end_verse
+#+END_VERSE
 
-许渊冲先生英译的江雪(Fishing in Snow)
-#+begin_verse
-From hill to hill no bird in flight
-From path to path no man in sight
-A lonely fisherman afloat
-Is fishing snow in lonely boat
-#+end_verse
 
+#+BEGIN_VERSE
+The Tao that can be told of
+Is not the Absolute Tao;
+
+The Names that can be given
+Are not Absolute Names.
+  -- 老子
+#+END_VERSE
