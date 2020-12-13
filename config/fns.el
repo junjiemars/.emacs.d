@@ -327,18 +327,21 @@ shell-command* run in:
                                    process-environment)))
    (shell-command* \"echo 'a' | grep 'a'\"))"
   (declare (indent 1))
-  `(with-temp-buffer
-     (cons (let ((x (call-process
-                     shell-file-name nil (current-buffer) nil
-                     shell-command-switch
-                     (mapconcat #'identity
-                                (cons ,command (list ,@args)) " "))))
-             (cond ((integerp x) x)
-                   ((string-match "^.*\\([0-9]+\\).*$" x)
-                    (match-string 1 x))
-                   (t -1)))
-           (let ((s (buffer-string)))
-             (if (string= "\n" s) nil s)))))
+  (let ((buf (gensym*)))
+    `(let ((,buf (generate-new-buffer " *temp*")))
+       (with-current-buffer ,buf
+         (cons (let ((x (call-process
+                         shell-file-name nil ,buf nil
+                         shell-command-switch
+                         (mapconcat #'identity
+                                    (cons ,command (list ,@args)) " "))))
+                 (cond ((integerp x) x)
+                       ((string-match "^.*\\([0-9]+\\).*$" x)
+                        (match-string 1 x))
+                       (t -1)))
+               (let ((s (buffer-string)))
+                 (and (buffer-name ,buf) (kill-buffer ,buf))
+                 (if (string= "\n" s) nil s)))))))
 
 
 (defmacro executable-find% (command &optional prefer)
