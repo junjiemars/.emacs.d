@@ -175,15 +175,15 @@ features, such as themes, packages, and fonts etc., see next section:
    :END:
 
 #+ATTR_HTML: :style text-align:left
-Annotated your Emacs HOME as src_elisp{(emacs-home*)}.
+Annotated your Emacs HOME as =(emacs-home*)=.
 
 #+ATTR_HTML: :style text-align:left
-Your private configuration directory at src_elisp{(emacs-home* "private/")}.
+Your private configuration directory at =(emacs-home* "private/")=.
 All things under it you can rename, move, delete.
 
 #+ATTR_HTML: :style text-align:left
 All Elisp files should be compiled, if you meet some trouble, a magic
-interactive function src_elisp{(clean-compiled-files)} should help,
+interactive function =(clean-compiled-files)= should help,
 run it and reopen the Emacs.
 
 *** Directory
@@ -204,7 +204,7 @@ run it and reopen the Emacs.
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
-Locate your spec via src_elisp{(*self-paths*)}.
+Locate your spec via =(*self-paths*)=.
 
 #+BEGIN_SRC emacs-lisp
 ;; Run order: :env-spec -> :package-spec -> :epilogue
@@ -385,8 +385,7 @@ Introduce the rules of naming /files/ and /functions/.
 Easy to switch themes, or try a new one.
 
 #+ATTR_HTML: :style text-align:left
-The theme's spec locate in src_elisp{(*self-paths* :get :env-spec)} by
-default.
+The theme's spec locate in =(*self-paths* :get :env-spec)= by default.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
@@ -435,7 +434,7 @@ Easy to swtich fonts and glyph character such as [[https://en.wikipedia.org/wiki
 one. The default encoding is [[https://en.wikipedia.org/wiki/UTF-8][UTF-8]].
 
 #+ATTR_HTML: :style text-align:left
-The frame's spec locate in src_elisp{(*self-env-spec* :get :frame)} by
+The frame's spec locate in =(*self-env-spec* :get :frame)= by
 default and for GUI mode only.
 
 #+REVEAL: split
@@ -509,7 +508,7 @@ functionalities, it is unstable and slow. But here, We had a better
 one.
 
 #+ATTR_HTML: :style text-align:left
-The shell spec locate in src_elisp{(*self-env-spec* :get :shell)} by
+The shell spec locate in =(*self-env-spec* :get :shell)= by
 default.
 
 #+REVEAL: split
@@ -544,7 +543,7 @@ default.
     :END:
 
 #+ATTR_HTML: :style text-align:left
-The eshell spec locate in src_elisp{(*self-env-spec* :get :eshell)} by
+The eshell spec locate in =(*self-env-spec* :get :eshell)= by
 default. And shared the copied environment variables =:copy-vars= with
 shell.
 
@@ -572,7 +571,7 @@ shell.
     :END:
 
 #+ATTR_HTML: :style text-align:left
-The desktop spec locate in src_elisp{(*self-env-spec* :get :desktop)}
+The desktop spec locate in =(*self-env-spec* :get :desktop)=
 by default.
 
 #+REVEAL: split
@@ -606,7 +605,7 @@ by default.
 Using socks proxy when installing packages or browsing web pages.
 
 #+ATTR_HTML: :style text-align:left
-The socks spec locate in src_elisp{(*self-env-spec* :get :socks)} by
+The socks spec locate in =(*self-env-spec* :get :socks)= by
 default.
 
 #+REVEAL: split
@@ -697,8 +696,7 @@ that =use-pacakge= does and more.
 - =:allowed= =t= enabled, =nil= disabled
 
 #+ATTR_HTML: :style text-align:left
-The /user defined/ package spec locate in
-src_elisp{(*self-packages*)}.
+The /user defined/ package spec locate in =(*self-packages*)=.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
