@@ -33,11 +33,12 @@
 
 (comment
  ;; using etags to view Emacs's source code: C and Elisp
- (setq source-directory
-       (let ((srcdir (format "/opt/open/emacs-%s/"
-                             emacs-major-version)))
-         (when (file-exists-p srcdir) srcdir))
-       find-function-C-source-directory (concat source-directory "src/")))
+ (let ((srcdir (format "/opt/open/emacs-%s/"
+                       emacs-major-version)))
+   (when (file-exists-p srcdir) srcdir
+         (setq source-directory srcdir)
+         (setq% find-function-C-source-directory
+                (concat source-directory "src/") 'find-func))))
 
  ;; end of tag
 
