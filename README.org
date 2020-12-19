@@ -516,14 +516,14 @@ default.
 (*self-env-spec*
  :put :shell
  (list :copy-vars `("PATH")
-       :spin-vars nil                        ;; `(("ZZZ" . "123"))
-       :options '("-i" "2>/dev/null")        ;; '("--login")
-       :exec-path t
-       :shell-file-name (or (executable-find% "zsh")
-                            (executable-find% "bash"))
-       :prompt (list :zsh "%n@%m:%~ %# "
-                     :bash "\\u@\\h:\\w\\$ ")
-       :allowed t))
+			 :spin-vars nil                        ;; `(("ZZZ" . "123"))
+			 :options '("-i" "2>/dev/null")        ;; '("--login")
+			 :exec-path t
+			 :shell-file-name (or (executable-find% "zsh")
+														(executable-find% "bash"))
+			 :prompt (list :zsh "%n@%m %1~ %# "
+										 :bash "\\u@\\h \\W \\$ ")
+			 :allowed nil))
 #+END_SRC
 
 #+REVEAL: split
@@ -535,7 +535,8 @@ default.
 - =:shell-file-name= where the shell program located, it should be
   specified when =:copy-vars= is non nil
 - =:prompt= unify shell prompt in =term= mode, via @@html:<kbd>@@C-c
-  C-j@@html:</kbd>@@ then @@html:<kbd>C-c t p@@html:</kbd>@@
+  C-j@@html:</kbd>@@ then @@html:<kbd>M-x
+  term-unify-shell-prompt@@html:</kbd>@@
 - =:allowed= =t= allowed, =nil= disabled
 
 *** eshell

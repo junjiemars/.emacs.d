@@ -12,28 +12,31 @@
   (interactive)
   (let ((proc (get-buffer-process (current-buffer))))
     (unless proc
-      (error "Current buffer has no process"))
-    (let ((zsh (or (and (*self-env-spec* :get :shell :allowed)
-                        (*self-env-spec* :get :shell :prompt :zsh))
-                   "%n@%m:%~ %# "))
-          (oth (or (and (*self-env-spec* :get :shell :allowed)
-                        (*self-env-spec* :get :shell :prompt :bash))
-                   "\\u@\\h:\\w\\$ ")))
-      (process-send-string proc
-                           (concat "case \"`basename $SHELL`\" in\n"
-                                   "  zsh)\n"
-                                   (format "    export PS1='%s'\n" zsh)
-                                   "export PROMPT_COMMAND=''\n"
-                                   "    ;;\n"
-                                   "  *)\n"
-                                   (format "    export PS1='%s'\n" oth)
-                                   "export PROMPT_COMMAND=''\n"
-                                   "    ;;\n"
-                                   "esac\n")))))
+      (user-error "Current buffer has no process"))
+    (process-send-string
+     proc
+     (format
+      "
+export INSIDE_EMACS=\"%s,term:\"%s
+case \"`basename $SHELL`\" in
+  zsh)
+    export PS1='%s'
+    export PROMPT_COMMAND=''
+    ;;
+  *)
+    export PS1='%s'
+    export PROMPT_COMMAND=''
+    ;;
+esac
+"
+      emacs-version term-protocol-version
+      (or (and (*self-env-spec* :get :shell :allowed)
+               (*self-env-spec* :get :shell :prompt :zsh))
+          "%n@%m %1~ %# ")
+      (or (and (*self-env-spec* :get :shell :allowed)
+               (*self-env-spec* :get :shell :prompt :bash))
+          "\\u@\\h \\W \\$ ")))))
 
 
-(with-eval-after-load 'term
-  (define-key% term-mode-map (kbd "C-c t p") #'term-unify-shell-prompt))
 
-
-;; end of file
+;; eof

@@ -66,8 +66,8 @@
        :exec-path t
        :shell-file-name (or (executable-find% "zsh")
                             (executable-find% "bash"))
-       :prompt (list :zsh "%n@%m:%~ %# "
-                     :bash "\\u@\\h:\\w\\$ ")
+       :prompt (list :zsh "%n@%m %1~ %# "
+                     :bash "\\u@\\h \\W \\$ ")
        :allowed nil))
 
 ;;; desktop
