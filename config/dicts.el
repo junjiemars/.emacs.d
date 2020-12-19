@@ -64,9 +64,11 @@
                            .
                            (,(lambda (x)
                                (format "/%s/" x)))))
-             ("meta" . (("<meta name=\"description\" content=\".*? definition: ")
-                        "Learn" .
-                        (dict-fn-decode-html-char))))
+             ("meta"
+              .
+              (("<meta name=\"description\" content=\".*? definition: ")
+               "Learn" .
+               (dict-fn-decode-html-char))))
             ("longman"
              ("url" . "https://www.ldoceonline.com/dictionary/")
              ("pron-uk" . (("<span class=\"PRON\">")
