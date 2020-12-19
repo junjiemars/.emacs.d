@@ -96,9 +96,14 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
                        (cdr (cdar *search-engines*)))))))
 
 
-;; key
+;;;;
+;; Keys
+;;;;
+
+;;; `eww-search-words' and `webjump' more leaner than `lookup-web'.
+
 (define-key% (current-global-map) (kbd "M-s w") #'lookup-web)
 (define-key% (current-global-map) (kbd "C-c f w") #'lookup-web)
+(define-key% (current-global-map) (kbd "M-s M-b") #'eww-list-bookmarks)
 
-
-;; end of file
+;; EOF

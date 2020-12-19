@@ -1101,7 +1101,9 @@ Global for all Emacs' version.
 - @@html:<kbd>@@C-s@@html:</kbd>@@: =isearch-forward*=
 - @@html:<kbd>@@C-r@@html:</kbd>@@: =isearch-backward*=
 - @@html:<kbd>@@M-s .@@html:</kbd>@@: =isearch-forward-symbol*=
-- @@html:<kbd>@@M-s _@@html:</kbd>@@: =isearch-forward-word*=
+- @@html:<kbd>@@M-s @@@html:</kbd>@@: =isearch-forward-word*=
+- @@html:<kbd>@@M-s f@@html:</kbd>@@: =isearch-forward-file*=
+- @@html:<kbd>@@M-s _@@html:</kbd>@@: =isearch-forward-quoted*=
 
 *** Compatible keys
 

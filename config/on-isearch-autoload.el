@@ -62,15 +62,28 @@
   (isearch-forward* ?w backward))
 
 
+(defun isearch-forward-file* (&optional backward)
+  "Do incremental search forward file."
+  (interactive "P")
+  (isearch-forward* ?f backward))
+
+
+(defun isearch-forward-quoted* (&optional backward)
+  "Do incremental search forward quoted."
+  (interactive "P")
+  (isearch-forward* ?q backward))
+
+
 ;;;;
 ;; Keys
 ;;;;
 
-;; (with-eval-after-load 'isearch)
 (define-key% (current-global-map) (kbd "C-s") #'isearch-forward*)
 (define-key% (current-global-map) (kbd "C-r") #'isearch-backward*)
 (define-key% (current-global-map) (kbd "M-s .") #'isearch-forward-symbol*)
-(define-key% (current-global-map) (kbd "M-s _") #'isearch-forward-word*)
+(define-key% (current-global-map) (kbd "M-s @") #'isearch-forward-word*)
+(define-key% (current-global-map) (kbd "M-s f") #'isearch-forward-file*)
+(define-key% (current-global-map) (kbd "M-s _") #'isearch-forward-quoted*)
 
 
- ;; end of file
+;; EOF
