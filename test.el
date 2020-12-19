@@ -526,6 +526,9 @@
 (ert-deftest %basic:emacs-arch ()
   (should (> (emacs-arch) 0)))
 
+(ert-deftest %basic:buffer-major-mode ()
+  (should (eq 'fundamental-mode (buffer-major-mode))))
+
 (when-platform% 'windows-nt
   (ert-deftest %basic:windows-posix-path ()
     (should-not (windows-nt-posix-path nil))

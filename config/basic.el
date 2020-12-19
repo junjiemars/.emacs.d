@@ -386,6 +386,14 @@ On ancient Emacs, `file-remote-p' will return a vector."
       `(url-retrieve ,url ,callback ,cbargs))))
 
 
+(defun buffer-major-mode (&optional buffer-or-name)
+  "Return `major-mode' associated with BUFFER-OR-NAME or current buffer."
+  (buffer-local-value 'major-mode
+                      (if buffer-or-name
+                          (get-buffer buffer-or-name)
+                        (current-buffer))))
+
+
  ;; end of file functions
 
 
