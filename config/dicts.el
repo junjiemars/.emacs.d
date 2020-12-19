@@ -10,73 +10,77 @@
 (defalias '*dict-defs*
   (lexical-let%
       ((b `(("bing"
-           ("url" . "https://cn.bing.com/dict/search?q=")
-           ("meta" . (("<meta name=\"description\" content=\"必应词典为您提供.+的释义，")
-                      "\" /><" .
-                      (,(lambda (ss)
-                          (with-temp-buffer
-                            (insert ss)
-                            (let ((s1 '(("美\\[\\(.+?\\)\\]" . "|%s|")
-                                        ("，?英\\[\\(.+?\\)\\]，?" . " /%s/ "))))
-                              (mapc
-                               (lambda (s)
-                                 (goto-char (point-min))
-                                 (while (search-forward-regexp (car s) nil t)
-                                   (replace-match (format (cdr s)
-                                                          (match-string 1)))))
-                               s1)
-                              (buffer-substring (point-min) (point-max)))))
-                       dict-fn-norm-zh-punc)))
-           ("sounds-like" . (("<div class=\"df_wb_a\">音近词</div>")
-                             "</div></div></div>"
-                             .
-                             (dict-fn-remove-html-tag)))
-           ("spelled-like" . (("<div class=\"df_wb_a\">形近词</div>")
-                              "</div></div></div>" .
-                              (dict-fn-remove-html-tag))))
-          ("camb/zh"
-           ("url" .
-            "https://dictionary.cambridge.org/dictionary/english-chinese-simplified/")
-           ("pron-us" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
-                         "<" .
-                         (,(lambda (x)
-                             (format "|%s|" x)))))
-           ("pron-uk" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 1)
-                         "<" .
-                         (,(lambda (x)
-                             (format "/%s/" x)))))
-           ("meta" . (("<meta itemprop=\"headline\" content=\".+translate: ")
-                      "Learn" .
-                      (dict-fn-decode-char
-                       dict-fn-decode-html-char
-                       dict-fn-norm-zh-punc))))
-          ("camb/en"
-           ("url" . "https://dictionary.cambridge.org/dictionary/english/")
-           ("pron-us" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
-                         "<" .
-                         (,(lambda (x)
-                             (format "|%s|" x)))))
-           ("pron-uk" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 1)
-                         "<"
-                         .
-                         (,(lambda (x)
-                             (format "/%s/" x)))))
-           ("meta" . (("<meta name=\"description\" content=\".*? definition: ")
-                      "Learn" .
-                      (dict-fn-decode-html-char))))
-          ("longman"
-           ("url" . "https://www.ldoceonline.com/dictionary/")
-           ("pron-uk" . (("<span class=\"PRON\">")
-                         "</span>" .
-                         (dict-fn-remove-html-tag
-                          ,(lambda (x)
-                             (format "/%s/" x)))))
-           ("meta" . (("<span class=\"DEF\">")
-                      "</span>" .
-                      (dict-fn-remove-html-tag)))))))
+             ("url" . "https://cn.bing.com/dict/search?q=")
+             ("meta"
+              .
+              (("<meta name=\"description\" content=\"必应词典为您提供.+的释义，")
+               "\" /><" .
+               (,(lambda (ss)
+                   (with-temp-buffer
+                     (insert ss)
+                     (let ((s1 '(("美\\[\\(.+?\\)\\]" . "|%s|")
+                                 ("，?英\\[\\(.+?\\)\\]，?" . " /%s/ "))))
+                       (mapc
+                        (lambda (s)
+                          (goto-char (point-min))
+                          (while (search-forward-regexp (car s) nil t)
+                            (replace-match (format (cdr s)
+                                                   (match-string 1)))))
+                        s1)
+                       (buffer-substring (point-min) (point-max)))))
+                dict-fn-norm-zh-punc)))
+             ("sounds-like" . (("<div class=\"df_wb_a\">音近词</div>")
+                               "</div></div></div>"
+                               .
+                               (dict-fn-remove-html-tag)))
+             ("spelled-like" . (("<div class=\"df_wb_a\">形近词</div>")
+                                "</div></div></div>" .
+                                (dict-fn-remove-html-tag))))
+            ("camb/zh"
+             ("url"
+              .
+              "https://dictionary.cambridge.org/dictionary/english-chinese-simplified/")
+             ("pron-us" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
+                           "<" .
+                           (,(lambda (x)
+                               (format "|%s|" x)))))
+             ("pron-uk" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 1)
+                           "<" .
+                           (,(lambda (x)
+                               (format "/%s/" x)))))
+             ("meta" . (("<meta itemprop=\"headline\" content=\".+translate: ")
+                        "Learn" .
+                        (dict-fn-decode-char
+                         dict-fn-decode-html-char
+                         dict-fn-norm-zh-punc))))
+            ("camb/en"
+             ("url" . "https://dictionary.cambridge.org/dictionary/english/")
+             ("pron-us" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
+                           "<" .
+                           (,(lambda (x)
+                               (format "|%s|" x)))))
+             ("pron-uk" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 1)
+                           "<"
+                           .
+                           (,(lambda (x)
+                               (format "/%s/" x)))))
+             ("meta" . (("<meta name=\"description\" content=\".*? definition: ")
+                        "Learn" .
+                        (dict-fn-decode-html-char))))
+            ("longman"
+             ("url" . "https://www.ldoceonline.com/dictionary/")
+             ("pron-uk" . (("<span class=\"PRON\">")
+                           "</span>" .
+                           (dict-fn-remove-html-tag
+                            ,(lambda (x)
+                               (format "/%s/" x)))))
+             ("meta" . (("<span class=\"DEF\">")
+                        "</span>" .
+                        (dict-fn-remove-html-tag)))))))
     (lambda (&optional n)
-      (if n (setcdr (assoc** (car n) b #'string=)
-                    (cdr n))
+      (if n (let ((x (assoc** (car n) b #'string=)))
+              (if x (setcdr x (cdr n))
+                (setq b (cons n b))))
         b)))
   "Dictionaries using by `lookup-dict'.")
 
