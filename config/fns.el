@@ -1,11 +1,11 @@
-;;;; -*- lexical-binding:t -*-
+;;; fns.el --- primitive functions -*- lexical-binding:t -*-
 ;;;;
 ;; More reasonable Emacs on MacOS, Windows and Linux
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; fns.el
-;;;;
-
+;;; Commentary:
+;;
+;;; Code:
 
 (defalias 'range #'number-sequence)
 
@@ -24,7 +24,7 @@
 
 
 (defun take (n seq)
-  "Returns a sequence of the first N items in SEQ.
+  "Return a sequence of the first N items in SEQ.
 
 Or all items if SEQ has fewer items than N."
   (let ((acc nil) (n1 n) (s1 seq))
@@ -35,8 +35,7 @@ Or all items if SEQ has fewer items than N."
 
 
 (defun drop-while (pred seq)
-  "Returns a sequence of successive items from SEQ after the item 
-for which (PRED item) returns t."
+  "Return a sequence of items from SEQ drop the one that PRED is t."
   (let ((s seq) (w nil))
     (while (and (not w) (car s))
       (if (funcall pred (car s))
@@ -46,8 +45,7 @@ for which (PRED item) returns t."
 
 
 (defun take-while (pred seq)
-  "Returns a sequence of successive items from SEQ before the
-item for which (PRED item) returns t."
+  "Return a sequence of items from SEQ just take PRED is t."
   (let ((s seq) (w nil) (s1 nil))
     (while (and (not w) (car s))
       (if (funcall pred (car s))
@@ -97,7 +95,7 @@ If there are several SEQs, FUNCTION is called with that many arguments,
 and mapping stops as soon as the shortest list runs out.  With just one
 SEQ, this is like `mapcar'.  With several, it is like the Common Lisp
 `mapcar' function extended to arbitrary sequence types.
-\n(fn FUNCTION SEQ...)"
+\n(FN FUNCTION SEQ...)"
   (if-fn% 'cl-mapcar 'cl-lib
           (if-version% <= 25
                        `(cl-mapcar ,fn ,seq ,@seqs)
@@ -115,7 +113,8 @@ SEQ, this is like `mapcar'.  With several, it is like the Common Lisp
 This is a non-destructive function; it makes a copy of SEQ if necessary
 to avoid corrupting the original SEQ.
 \nKeywords supported:  :key :count :start :end :from-end
-\n(fn PREDICATE SEQ [KEYWORD VALUE]...)"  
+\n(fn PREDICATE SEQ [KEYWORD VALUE]...)
+Optional argument KEYS :key :count :start :end :from-end."
   (if-fn% 'cl-remove-if 'cl-lib
           (if-version% <= 25
                        `(cl-remove-if ,pred ,seq ,@keys)
@@ -131,7 +130,8 @@ to avoid corrupting the original SEQ.
   "Find the first item satisfying PRED in LIST.
 Return the sublist of LIST whose car matches.
 \nKeywords supported:  :key
-\n(fn PREDICATE LIST [KEYWORD VALUE]...)"
+\n(fn PREDICATE LIST [KEYWORD VALUE]...)
+Optional argument KEYS :key."
   (if-fn% 'cl-member-if 'cl-lib
           (if-version% <= 25
                        `(cl-member-if ,pred ,list ,@keys)
@@ -172,7 +172,8 @@ Return the sublist of LIST whose car matches.
          (some ,pred ,@seq)))))
 
 (defmacro loop* (&rest loop-args)
-  "The Common Lisp `loop' macro."
+  "The Common Lisp `loop' macro.
+Optional argument LOOP-ARGS xxx."
   (if-fn% 'cl-loop 'cl-lib
           `(cl-loop ,@loop-args)
     (when-fn% 'loop 'cl
@@ -195,7 +196,10 @@ Return the sublist of LIST whose car matches.
 
 
 (defmacro defmacro-if-feature% (feature &optional docstring)
-  "Define if-FEATURE% compile-time macro."
+  "Define if-FEATURE% compile-time macro.
+
+Argument FEATURE that defining.
+Optional argument DOCSTRING about FEATURE."
   (let ((name (intern (format "if-feature-%s%%" feature)))
         (ds1 (format "If has `%s' feauture do THEN, otherwise do BODY."
                      feature)))
@@ -210,7 +214,7 @@ Return the sublist of LIST whose car matches.
 
 
 (defmacro make-thread* (sexp &optional join name)
-  "Make SEXP as threading call."
+  "Threading call SEXP with NAME or in JOIN mode."
   `(if-fn% 'make-thread nil
            (let ((thread (make-thread (lambda () ,sexp) ,name)))
              (if% ,join
@@ -243,7 +247,7 @@ Return the sublist of LIST whose car matches.
 ;;;;
 
 (defsubst string-trim> (s &optional rr)
-  "Remove whitespaces or the matching of RR at the end of S."
+  "Remove tailing whitespaces or matching of RR at the end of S."
   (when (stringp s)
     (let ((r (if rr (concat rr "\\'") "[ \t\n\r]+\\'" )))
       (if (string-match r s)
@@ -252,7 +256,7 @@ Return the sublist of LIST whose car matches.
 
 
 (defsubst string-trim< (s &optional lr)
-  "Remove leading whitespace or the matching of LR from S."
+  "Remove leading whitespaces or matching of LR from S."
   (when (stringp s)
     (let ((r (if lr (concat "\\`" lr) "\\`[ \t\n\r]+")))
       (if (string-match r s)
@@ -261,7 +265,7 @@ Return the sublist of LIST whose car matches.
 
 
 (defsubst string-trim>< (s &optional rr lr)
-  "Remove leading and trailing whitespace or the matching of LR/RR from S."
+  "Remove leading and trailing whitespaces or matching of LR/RR from S."
   (let ((s1 (string-trim> s rr)))
     (string-trim< s1 lr)))
 
@@ -281,8 +285,11 @@ See `string-match' and `match-string'."
 
 
 (defmacro split-string* (string &optional separators omit-nulls trim)
-  "Split STRING into substrings bounded by matches for SEPARATORS, 
-like `split-string' in Emacs 24.4+"
+  "Split STRING into substrings bounded by match for SEPARATORS.
+
+Like `split-string' in Emacs 24.4+
+Optional argument OMIT-NULLS omit null strings.
+Optional argument TRIM regexp used to trim."
   (if-version%
       <= 24.4
       `(split-string ,string ,separators ,omit-nulls ,trim)
@@ -303,7 +310,7 @@ like `split-string' in Emacs 24.4+"
 
 
 (defmacro posix-path (path)
-  "Return posix path that determined by `system-type'."
+  "Transpose PATH to posix that determined by `system-type'."
   `(if-platform% 'windows-nt
        (when (stringp ,path)
          (if (string-match "^\\([A-Z]:\\)" ,path)
@@ -322,10 +329,11 @@ like `split-string' in Emacs 24.4+"
 See `shell-command' and `shell-command-to-string' for details.
 
 If you want to set the environment temporarily that
-shell-command* run in:
+`shell-command*' run in:
  (let ((process-environment (cons \"GREP_OPTIONS=--color=always\"
                                    process-environment)))
-   (shell-command* \"echo 'a' | grep 'a'\"))"
+   (shell-command* \"echo 'a' | grep 'a'\"))
+Optional argument ARGS for COMMAND."
   (declare (indent 1))
   (let ((buf (gensym*)))
     `(let ((,buf (generate-new-buffer " *temp*")))
@@ -344,16 +352,13 @@ shell-command* run in:
                  (if (string= "\n" s) nil s)))))))
 
 
-(defmacro executable-find% (command &optional prefer)
-  "Search for COMMAND in %PATH% or $PATH and return the absolute
-file name at compile-time when PREFER is non-nil, otherwise same
-as `executable-find'.
+(defmacro executable-find% (command &optional check)
+  "Find and check COMMAND at compile time.
 
-Return nil if no COMMAND found or no PREFER command found.
-Return the first matched one, if multiple COMMANDs had been found
-or the one that `funcall' PREFER returns t.
-"
-  (if prefer
+Return nil if no COMMAND found or CHECK failed.
+Return the first match, if multiple COMMANDs had been found
+or the one that CHECK return t."
+  (if check
       (let ((cmd (shell-command* (if-platform% 'windows-nt
                                      "where"
                                    "command -v")
@@ -362,23 +367,25 @@ or the one that `funcall' PREFER returns t.
           (let* ((ss (cdr cmd))
                  (path (split-string* ss "\n" t))
                  (p (cond
-                     ((and (consp path) (functionp prefer))
-                      (catch 'prefer
+                     ((and (consp path) (functionp check))
+                      (catch 'check
                         (dolist* (x path)
-                          (when (funcall prefer
+                          (when (funcall check
                                          (shell-quote-argument
                                           (posix-path x)))
-                            (throw 'prefer x)))
+                            (throw 'check x)))
                         nil))
                      ((consp path) (car path))
                      (t path))))
             (posix-path p))))
     (let ((path (executable-find (funcall `(lambda () ,command)))))
-      (ignore* prefer)
+      (ignore* check)
       `,path)))
 
 
  ;; end of Platform Related Functions
 
 
-;; end of file
+(provide 'fns)
+
+;;; fns.el ends here

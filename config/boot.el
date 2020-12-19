@@ -3,14 +3,9 @@
 ;; More reasonable Emacs on MacOS, Windows and Linux
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; boot.el: compile and load elisp files
-;;;;
-;;;
-;;;
 ;;; Commentary:
 ;;; boot compiled elisp files and modules in order.
 ;;
-
 ;;; Code:
 
 (defmacro more-reasonable-emacs ()
