@@ -35,7 +35,7 @@ Or all items if SEQ has fewer items than N."
 
 
 (defun drop-while (pred seq)
-  "Return a sequence of items from SEQ drop the one that PRED is t."
+  "Return a sequence of items from SEQ drop that PRED is t."
   (let ((s seq) (w nil))
     (while (and (not w) (car s))
       (if (funcall pred (car s))
