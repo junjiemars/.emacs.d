@@ -46,22 +46,29 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
 ;; find web via search engine
 ;; eww also has a new `eww-search-words' supports searching via web.
 
-(defvar *search-engines*
-  `(("bing" "https://www.bing.com/"
-     . "search?ensearch=1&q=")
-    ("duck" "https://duckduckgo.com/"
-     . "?q=")
-    ("google" "https://www.google.com/"
-     . "search?q=")
-    ("so" "https://stackoverflow.com/"
-     . "search?q=")
-    ("wiki" "https://en.wikipedia.org/"
-     . "w/index.php?search="))
-  "Search engines using by `find-web'.")
+(defalias '*web-defs*
+  (lexical-let% ((b `(("bing" "https://www.bing.com/"
+                       . "search?ensearch=1&q=")
+                      ("duck" "https://duckduckgo.com/"
+                       . "?q=")
+                      ("google" "https://www.google.com/"
+                       . "search?q=")
+                      ("math" "https://mathworld.wolfram.com/"
+                       . "search?query=")
+                      ("so" "https://stackoverflow.com/"
+                       . "search?q=")
+                      ("wiki" "https://en.wikipedia.org/"
+                       . "w/index.php?search="))))
+    (lambda (&optional n)
+      (if n (let ((x (assoc** (car n) b #'string=)))
+              (if x (setcdr x (cdr n))
+                (setq b (cons n b))))
+        b)))
+  "Searching engines using by `lookup-web'.")
 
 
-(defvar *search-engine-history* nil
-  "Searching history using by `find-web'.")
+(defvar *lookup-web-history* nil
+  "Searching history using by `lookup-web'.")
 
 
 (defun lookup-web (what &optional engine)
@@ -69,31 +76,36 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
   (interactive
    (list (read-string "lookup web for " (cdr (symbol@)))
          (when current-prefix-arg
-           (let ((se (mapcar #'car *search-engines*)))
+           (let ((se (mapcar #'car (*web-defs*))))
              (read-string (format "Choose (%s) "
                                   (mapconcat #'identity se "|"))
-                          (or (car *search-engine-history*)
+                          (or (car *lookup-web-history*)
                               (car se))
-                          '*search-engine-history*)))))
-  (let* ((e1 (if (or (null engine)
-                     (string= "" engine))
-                 (caar *search-engines*)
-               engine))
-         (e2 (cdr (assoc** e1 *search-engines* #'string=)))
-         (url (concat (car e2) (cdr e2) what))
-         (encoded (progn (require 'browse-url)
-                         (browse-url-url-encode-chars url "[ '()!`\"]"))))
-    (make-thread* (funcall browse-url-browser-function encoded)
-                  t)))
+                          '*lookup-web-history*)))))
+  (let ((n (if (or (null engine)
+                   (string= "" engine))
+               (caar (*web-defs*))
+             engine)))
+    (let ((en (assoc** n (*web-defs*) #'string=)))
+      (unless en (user-error* "Engine no found in `%s'" n))
+      (make-thread*
+       (funcall browse-url-browser-function
+                (let ((en1 (cdr en)))
+                  (require 'browse-url)
+                  (browse-url-url-encode-chars (concat (car en1)
+                                                       (cdr en1)
+                                                       what)
+                                               "[ '()!`\"]")))
+       t))))
 
 
 (if-feature-eww%
     (with-eval-after-load 'eww
       (add-hook 'eww-mode-hook #'set-eww-mode!)
-      (when (consp *search-engines*)
+      (when (consp (*web-defs*))
         (setq% eww-search-prefix
-               (concat (car (cdar *search-engines*))
-                       (cdr (cdar *search-engines*)))))))
+               (concat (car (cdar (*web-defs*)))
+                       (cdr (cdar (*web-defs*))))))))
 
 
 ;;;;
