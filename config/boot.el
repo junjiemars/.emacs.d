@@ -1,14 +1,20 @@
-;;;; -*- lexical-binding:t -*-
+;;; boot.el --- boot -*- lexical-binding:t -*-
 ;;;;
 ;; More reasonable Emacs on MacOS, Windows and Linux
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
 ;; boot.el: compile and load elisp files
 ;;;;
+;;;
+;;;
+;;; Commentary:
+;;; boot compiled elisp files and modules in order.
+;;
 
+;;; Code:
 
 (defmacro more-reasonable-emacs ()
-  "More Reasonable Emacs git repo"
+  "More Reasonable Emacs git repo."
   "https://github.com/junjiemars/.emacs.d")
 
 
@@ -23,8 +29,7 @@
 ;;;;
 
 (defmacro if-lexical% (then &rest else)
-  "If current Emacs supports lexical binding do THEN,
-otherwise do ELSE..."
+  "If Emacs supports lexical binding do THEN, otherwise do ELSE..."
   (declare (indent 1))
   `(if-version%
        <= 24.1
@@ -32,12 +37,12 @@ otherwise do ELSE..."
      (progn% ,@else)))
 
 (defmacro when-lexical% (&rest body)
-  "When current Emacs supports lexical binding do BODY."
+  "When Emacs supports lexical binding do BODY."
   (declare (indent 0))
   `(if-lexical% (progn% ,@body)))
 
 (defmacro unless-lexical% (&rest body)
-  "Unless current Emacs supports lexical binding do BODY."
+  "Unless Emacs supports lexical binding do BODY."
   (declare (indent 0))
   `(if-lexical% nil ,@body))
 
@@ -46,7 +51,7 @@ otherwise do ELSE..."
   (put 'lexical-binding 'safe-local-variable (lambda (_) t)))
 
 (defmacro lexical-let% (varlist &rest body)
-  "Like `let', but lexically scoped."
+  "Lexically bind variables according to VARLIST in parallel then eval BODY."
   (declare (indent 1) (debug let))
   `(if-lexical%
        (if-version% < 27
@@ -57,7 +62,7 @@ otherwise do ELSE..."
        (lexical-let ,varlist ,@body))))
 
 (defmacro lexical-let*% (varlist &rest body)
-  "Like `let*', but lexically scoped."
+  "Lexically bind variables according to VARLIST sequentially then eval BODY."
   (declare (indent 1) (debug let))
   `(if-lexical%
        `(let ((lexical-binding t))
@@ -75,9 +80,7 @@ otherwise do ELSE..."
 (defmacro if-graphic% (then &rest else)
   "If in graphic mode, do THEN, else do ELSE...
 
-Returns the value of THEN or the value of the last of the ELSE’s.
-THEN must be one expression, but ELSE... can be zero or more expressions.
-If in terminal mode, and there are no ELSE’s, the value is nil. "
+Return the value of THEN or the value of the last of the ELSE’s."
   (declare (indent 1))
   (if (display-graphic-p)
       `,then
@@ -85,13 +88,13 @@ If in terminal mode, and there are no ELSE’s, the value is nil. "
 
 
 (defmacro when-graphic% (&rest body)
-  "Run BODY code if in graphic mode, else returns nil."
+  "When in graphic mode do BODY."
   (declare (indent 0))
   `(if-graphic% (progn% ,@body)))
 
 
 (defmacro unless-graphic% (&rest body)
-  "Run BODY code if in terminal mode, else returns nil."
+  "Unless in graphic mode do BODY."
   (declare (indent 0))
   `(if-graphic% nil ,@body))
 
@@ -103,23 +106,19 @@ If in terminal mode, and there are no ELSE’s, the value is nil. "
 ;;;;
 
 (defmacro if-platform% (os then &rest else)
-  "If \(eq system-type OS\) yields non-nil, do THEN, else do ELSE...
-
-Returns the value of THEN or the value of the last of the ELSE’s.
-THEN must be one expression, but ELSE... can be zero or more expressions.
-If (eq `system-type' OS) yields nil, and there are no ELSE’s, the value is nil. "
+  "If OS eq `system-type' yield non-nil, do THEN, else do ELSE..."
   (declare (indent 2))
   `(if% (eq system-type ,os)
        ,then
      (progn% ,@else)))
 
 (defmacro when-platform% (os &rest body)
-  "Run BODY code if on specified OS platform, else return nil."
+  "When OS eq `system-type' yield non-nil, do BODY."
   (declare (indent 1))
   `(if-platform% ,os (progn% ,@body)))
 
 (defmacro unless-platform% (os &rest body)
-  "Run BODY code unless on specified OS platform, else return nil."
+  "Unless OS eq `system-type' yield non-nil do BODY."
   (declare (indent 1))
   `(if-platform% ,os nil ,@body))
 
@@ -131,8 +130,9 @@ If (eq `system-type' OS) yields nil, and there are no ELSE’s, the value is nil
 ;;;;
 
 (defmacro if-fn% (fn feature then &rest else)
-  "If FN is bounded yields non-nil, do THEN, else do ELSE...
-If FN requires the FEATURE, load it on compile-time."
+  "If FN is bounded yield non-nil, do THEN, else do ELSE...
+
+Argument FEATURE that FN dependent on, be loaded at compile time."
   (declare (indent 3))
   `(if% (or (and ,feature (require ,feature nil t) (fboundp ,fn))
             (fboundp ,fn))
@@ -141,15 +141,17 @@ If FN requires the FEATURE, load it on compile-time."
 
 
 (defmacro when-fn% (fn feature &rest body)
-  "Do BODY when FN is bound.
-If FN requires the FEATURE, load it on compile-time."
+  "When FN is bounded yield non-nil, do BODY.
+
+Argument FEATURE that FN dependent on, be loaded at compile time."
   (declare (indent 2))
   `(if-fn% ,fn ,feature (progn% ,@body)))
 
 
 (defmacro unless-fn% (fn feature &rest body)
-  "Do BODY unless FN is bound.
-If FN requires the FEATURE, load it on compile-time."
+  "Unless FN is bounded yield non-nil, do BODY.
+
+Argument FEATURE that FN dependent on, be loaded at compile time."
   (declare (indent 2))
   `(if-fn% ,fn ,feature nil ,@body))
 
@@ -162,16 +164,18 @@ If FN requires the FEATURE, load it on compile-time."
 ;;;;
 
 (defmacro setq% (x val &optional feature)
-  "Set X to the value of its VAL when variable X is bound.
-If X requires the FEATURE, load it on compile-time."
+  "Set X to the value of VAL when X is bound.
+
+Argument FEATURE that X dependent on, load at compile time."
   ;; (declare (debug t))
   `(when% (or (and ,feature (require ,feature nil t) (boundp ',x))
               (boundp ',x))
      (setq ,x ,val)))
 
 (defmacro if-var% (var feature then &rest else)
-  "If VAR is bounded yields non-nil, do THEN, else do ELSE...
-If VAR requires the FEATURE, load it on compile-time."
+  "If VAR is bounded yield non-nil, do THEN, else do ELSE...
+
+Argument FEATURE that VAR dependent on, load at compile time."
   (declare (indent 3))
   `(if% (or (and ,feature (require ,feature nil t) (boundp ',var))
             (boundp ',var))
@@ -179,14 +183,16 @@ If VAR requires the FEATURE, load it on compile-time."
      (progn% ,@else)))
 
 (defmacro when-var% (var feature &rest body)
-  "Do BODY when VAR is bound.
-If VAR requires the FEATURE, load it on compile-time."
+  "When VAR is bounded yield non-nil, do BODY.
+
+Argument FEATURE that VAR dependent on, load at compile time."
   (declare (indent 2))
   `(if-var% ,var ,feature (progn% ,@body)))
 
 (defmacro unless-var% (var feature &rest body)
-  "Do BODY unless VAR is bound.
-If VAR requires the FEATURE, load it on compile-time."
+  "Unless VAR is bounded yield non-nil, do BODY.
+
+Argument FEATURE that VAR dependent on, load at compile time."
   (declare (indent 2))
   `(if-var% ,var ,feature nil (progn% ,@body)))
 
@@ -201,10 +207,9 @@ If VAR requires the FEATURE, load it on compile-time."
 (defmacro dolist* (spec &rest body)
   "Loop over a list.
 
-Evaluate BODY with VAR bound to each car from LIST, in turn.
-Then evaluate RESULT to get return value or nil.
-
- (dolist* (VAR LIST [RESULT]) BODY...)"
+Lexically `do-list'.
+Argument SPEC (VAR LIST [RESULT]).
+Optional argument BODY"
   (declare (indent 1) (debug ((symbolp form &optional form) body)))
   (unless (consp spec)
     (signal 'wrong-type-argument (list 'consp spec)))
@@ -227,14 +232,22 @@ Then evaluate RESULT to get return value or nil.
 ;;;;
 
 (defmacro compile-unit* (file &optional only-compile delete-booster)
-  "Make an unit of compilation."
+  "Make an compile unit.
+
+Argument FILE elisp source file.
+Optional argument ONLY-COMPILE only compile and do not autoload.
+Optional argument DELETE-BOOSTER delete booster file after FILE be compiled."
   `(list :source ,file
          :dir (when ,file (v-path* (file-name-directory ,file)))
          :only-compile ,only-compile
          :delete-booster ,delete-booster))
 
 (defmacro compile-unit% (file &optional only-compile delete-booster)
-  "Make an unit of compilation at compile time."
+  "Make an compile unit at compile time.
+
+Argument FILE elisp source file.
+Optional argument ONLY-COMPILE only compile and do not autoload.
+Optional argument DELETE-BOOSTER delete booster file after FILE be compiled."
   (let* ((-source1- (funcall `(lambda () ,file)))
          (-dir1- (when -source1-
                    (funcall
@@ -246,24 +259,24 @@ Then evaluate RESULT to get return value or nil.
            :delete-booster ,delete-booster)))
 
 (defmacro compile-unit->file (unit)
-  "Return the :source part of `compile-unit'."
+  "Return the :source part of UNIT."
   `(plist-get ,unit :source))
 
 (defmacro compile-unit->dir (unit)
-  "Return the :dir part of `compile-unit'."
+  "Return the :dir part of UNIT."
   `(plist-get ,unit :dir))
 
 (defmacro compile-unit->only-compile (unit)
-  "Return the :only-compile indicator of `compile-unit'."
+  "Return the :only-compile indicator of UNIT."
   `(plist-get ,unit :only-compile))
 
 (defmacro compile-unit->delete-booster (unit)
-  "Return the :delete-booster indicator of `compile-unit'."
+  "Return the :delete-booster indicator of UNIT."
   `(plist-get ,unit :delete-booster))
 
 
 (defun compile! (&rest units)
-  "Compile and load the elisp UNITS."
+  "Compile and load UNITS."
   (declare (indent 0))
   (dolist* (us units)
     (when us
@@ -282,6 +295,7 @@ Then evaluate RESULT to get return value or nil.
 
 
 (defmacro self-spec-> (seq &rest keys)
+  "Read spec from SEQ via KEYS."
   (declare (indent 1))
   (let ((r seq) (ks keys))
     (while (not (null ks))
@@ -291,11 +305,13 @@ Then evaluate RESULT to get return value or nil.
 
 
 (defmacro self-spec<- (k v seq &rest keys)
+  "Save the spec of K V to SEQ via KEYS."
   (declare (indent 3))
   `(plist-put (self-spec-> ,seq ,@keys) ,k ,v))
 
 
 (defmacro self-spec->% (seq &rest keys)
+  "Read spec from SEQ via KEYS at compile time."
   (declare (indent 1))
   `(eval-when-compile (self-spec-> ,seq ,@keys)))
 
@@ -355,6 +371,7 @@ No matter the declaration order, the executing order is:
 
 
 (defmacro package-spec-:allowed-p (&rest body)
+  "If installing package be allowed then do BODY."
   (declare (indent 0))
   `(when-package%
      (when (*self-env-spec* :get :package :allowed)
@@ -406,4 +423,8 @@ No matter the declaration order, the executing order is:
   (compile-unit% (emacs-home* "config/autoloads.el")))
 
 
- ;; end of file
+
+
+(provide 'boot)
+
+;;; boot.el ends here
