@@ -1,29 +1,31 @@
+;;; init.el --- init
 ;;;;
 ;; More reasonable Emacs on MacOS, Windows and Linux
 ;;
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; init.el
-;;;;
+;;; Commentary:
+;;; the epoch of More Reasonable Emacs.
+;;
+;;; Code:
 
 
 (defvar *loading-epoch*
   (current-time)
-  "The epoch of loading init.el")
+  "The epoch of loading init.el.")
 
 
 ;; basic macro
 
 (defmacro comment (&rest body)
-  "Ignores body, yields nil."
+  "Ignore BODY, yields nil."
   nil)
 
 (defvar *gensym-counter* 0
   "The counter of `gensym*'.")
 
 (defun gensym* (&optional prefix)
-  "Generate a new uninterned symbol.
-The name is made by appending a number to PREFIX, default \"g\"."
+  "Generate a new uninterned symbol, PREFIX default is \"g\"."
   (let ((num (prog1 *gensym-counter*
                (setq *gensym-counter* (1+ *gensym-counter*)))))
     (make-symbol (format "%s%d" (or prefix "g") num))))
@@ -43,7 +45,7 @@ The name is made by appending a number to PREFIX, default \"g\"."
 
 
 (defmacro file-name-base* (file)
-  "Return base name of FILE with no directory, no extension."
+  "Return base name of FILE without directory and extension."
   `(file-name-sans-extension (file-name-nondirectory ,file)))
 
 
@@ -56,7 +58,7 @@ The name is made by appending a number to PREFIX, default \"g\"."
 
 (unless (fboundp 'directory-name-p)
   (defmacro directory-name-p (name)
-    "Returns t if NAME ends with a directory separator character."
+    "Return t if NAME ends with a directory separator character."
     `(let ((len (length ,name)))
        (and (> len 0) (= ?/ (aref ,name (1- len)))))))
 
@@ -182,13 +184,13 @@ Else return BODY sexp."
 
 
 (defmacro when% (cond &rest body)
-  "If COND yields non-nil, do BODY, else return nil."
+  "When COND yields non-nil, do BODY."
   (declare (indent 1))
   `(if% ,cond (progn% ,@body)))
 
 
 (defmacro unless% (cond &rest body)
-  "If COND yields nil, do BODY, else return nil."
+  "Unless COND yields nil, do BODY."
   (declare (indent 1))
   `(if% ,cond nil ,@body))
 
@@ -199,11 +201,11 @@ Else return BODY sexp."
 ;; *-version% macro
 
 (defmacro if-version% (cmp version then &rest else)
-  "If \(CMP VERSION `emacs-version'\) yields non-nil, do THEN, else do ELSE...
+  "If VERSION CMP with variable `emacs-version' is t, do THEN, else do ELSE...
 
 Return the value of THEN or the value of the last of the ELSE’s.
 THEN must be one expression, but ELSE... can be zero or more expressions.
-If (COND VERSION EMACS-VERSION) yields nil, and there are no ELSE’s, the value is nil. "
+If (COND VERSION EMACS-VERSION) yield nil, and there are no ELSE’s, the value is nil."
   (declare (indent 3))
   (let ((ver (cond ((numberp version) (number-to-string version))
                    ((stringp version) version)
@@ -217,8 +219,7 @@ If (COND VERSION EMACS-VERSION) yields nil, and there are no ELSE’s, the value
        (progn% ,@else))))
 
 (defmacro when-version% (cmp version &rest body)
-  " When \(CMP VERSION `emacs-version'\) yields non-nil, eval BODY forms 
-sequentially and return value of last one, or nil if there are none."
+  "When VERSION CMP with variable `emacs-version' yield non-nil, do BODY."
   (declare (indent 2))
   `(if-version% ,cmp ,version (progn% ,@body)))
 
@@ -229,7 +230,7 @@ sequentially and return value of last one, or nil if there are none."
 ;; *-package% macro
 
 (defmacro when-package% (&rest body)
-  "Run BODY code if current `emacs-version' supports package."
+  "If Emacs support package, do BODY."
   (declare (indent 0))
   `(when-version% <= 24.1 ,@body))
 
@@ -256,5 +257,6 @@ sequentially and return value of last one, or nil if there are none."
          (float-time (time-subtract (current-time) *loading-epoch*)))
 
 
+(provide 'init)
 
-;; ^ End of init.el
+;;; init.el ends here
