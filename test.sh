@@ -53,7 +53,7 @@ test_bone() {
 test_debug() {
   echo_env "debug|clean"
   ${_EMACS_} --batch                                            \
-             --no-win                                           \
+             --no-window-system                                 \
              --eval="                                           \
 (let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
   (load (expand-file-name \"${_ROOT_}/init.el\"))               \
