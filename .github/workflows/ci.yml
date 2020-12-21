@@ -63,57 +63,18 @@ jobs:
         _TEST_=axiom ./test.sh
         _TEST_=package ./test.sh
 
-  Ubuntu-1604:
-    runs-on: ubuntu-16.04
+  Matrix:
+    runs-on: ${{ matrix.os }}
+    matrix:
+      os: [ubuntu-latest]
+      emacs_version:
+        - 24.5
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0 # checkout history and tags
-
-      - name: Install Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install emacs
-          sudo apt install aspell aspell-en
-          sudo apt install sbcl
       - name: Test
         run: |
           _TEST_=axiom ./test.sh
-          _TEST_=extra ./test.sh
-
-  MacOS-1100:
-    runs-on: macos-11.0
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0 # checkout history and tags
-      - name: Install Dependencies
-        run: |
-          port install emacs
-      - name: Test
-        run: |
-          _TEST_=axiom ./test.sh
-          _TEST_=extra ./test.sh
-
-  Windows-2019:
-    runs-on: windows-2019
-    defaults:
-      run:
-        shell: msys2 {0}
-
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0 # checkout history and tags
-
-    - name: Install Dependencies
-      uses: msys2/setup-msys2@v2
-      with:
-        update: true
-        install: git emacs
-    - name: Test
-      run: |
-        _TEST_=axiom ./test.sh
-        _TEST_=extra ./test.sh
 
 # eof
