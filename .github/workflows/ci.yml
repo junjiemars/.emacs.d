@@ -78,7 +78,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          version: ${{ matrix.emacs_version }}
           fetch-depth: 0 # checkout history and tags
       - name: Test
         run: |
