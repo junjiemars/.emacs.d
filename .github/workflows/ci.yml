@@ -89,10 +89,7 @@ jobs:
           fetch-depth: 0 # checkout history and tags
       - name: Install Dependencies
         run: |
-          brew install emacs
-          brew install aspell aspell-dict-en
-          brew install chezscheme
-          brew install sbcl
+          port install emacs
       - name: Test
         run: |
           _TEST_=axiom ./test.sh
