@@ -127,31 +127,8 @@ test_package() {
  (list :remove-unused nil
        :package-check-signature 'allow-unsigned
        :allowed t))
-
-(*self-packages*
- :put :scheme
- (list
-  :cond (and (when-version% <= 23.2 t)
-             ;; More Reasonable Emacs has builtin supports for Chez
-             ;; scheme and gambitC scheme, and does not need to
-             ;; install the dumb geiser.
-             (or (executable-find% "racket")
-                 (executable-find% "scheme")
-                 (executable-find% "chicken")
-                 (executable-find% "guile")))
-  :packages  '(geiser)
-  :compile `(,(compile-unit% (emacs-home* "config/use-geiser-autoload.el")))))
-
-(*self-packages*
- :put :common-lisp
- (list
-  :cond (or (executable-find% "sbcl")
-            (executable-find% "ecl")
-            (executable-find% "acl"))
-  :packages '(slime)
-  :compile `(,(compile-unit% (emacs-home* "config/use-slime-autoload.el")))))
 END
- 
+
   echo_env "package|clean"
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
@@ -178,6 +155,72 @@ END
 "
 }
 
+test_extra() {
+  if [ "package" != "$_ENV_PKG_" ]; then
+    echo "#skipped package testing, package no support"
+    return 0
+  fi
+
+  cat <<END > "$_ENV_PRO_"
+(*self-paths* :put :package-spec nil)
+(*self-paths* :put :env-spec nil)
+(*self-paths* :put :epilogue nil)
+(*self-env-spec*
+ :put :package
+ (list :remove-unused nil
+       :package-check-signature 'allow-unsigned
+       :allowed t))
+
+(*self-packages*
+ :put :scheme
+ (list
+  :cond (and (when-version% <= 23.2 t)
+             ;; More Reasonable Emacs has builtin supports for Chez
+             ;; scheme and gambitC scheme, and does not need to
+             ;; install the dumb geiser.
+             (or (executable-find% "racket")
+                 (executable-find% "scheme")
+                 (executable-find% "chicken")
+                 (executable-find% "guile")))
+  :packages  '(geiser)
+  :compile \`(,(compile-unit% (emacs-home* "config/use-geiser-autoload.el")))))
+
+(*self-packages*
+ :put :common-lisp
+ (list
+  :cond (or (executable-find% "sbcl")
+            (executable-find% "ecl")
+            (executable-find% "acl"))
+  :packages '(slime)
+  :compile \`(,(compile-unit% (emacs-home* "config/use-slime-autoload.el")))))
+END
+ 
+  echo_env "extra|clean"
+  ${_EMACS_} --batch                                            \
+             --no-window-system                                 \
+             --eval="                                           \
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
+  (load (expand-file-name \"${_ROOT_}/init.el\"))               \
+  (clean-compiled-files))                                       \
+"
+
+  echo_env "extra|compile"
+  ${_EMACS_} --batch                                            \
+             --no-window-system                                 \
+             --eval="                                           \
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
+  (load (expand-file-name \"${_ROOT_}/init.el\")))              \
+"
+
+  echo_env "extra|boot"
+  ${_EMACS_} --batch                                            \
+             --no-window-system                                 \
+             --eval="                                           \
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
+  (load (expand-file-name \"${_ROOT_}/init.el\")))              \
+"
+}
+
 # check env
 _ENV_VER_="`$_EMACS_ --batch --eval='(prin1 emacs-version)'`"
 _ENV_ERT_="`$_EMACS_ --batch --eval='(prin1 (require (quote ert) nil t))'`"
@@ -188,6 +231,7 @@ case "${_TEST_}" in
   bone)     test_bone     ;;
   axiom)    test_axiom    ;;
   package)  test_package  ;;
+  extra)    test_extra    ;;
   debug)    test_debug    ;;
 esac
 

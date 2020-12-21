@@ -63,7 +63,7 @@ jobs:
         _TEST_=axiom ./test.sh
         _TEST_=package ./test.sh
 
-  Linux:
+  Linux(extra):
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -74,8 +74,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install emacs aspell aspell-en chezscheme sbcl
-      - name: Extra Test
+      - name: Test
         run: |
-          _TEST_=package ./test.sh
+          _TEST_=extra ./test.sh
 
 # eof

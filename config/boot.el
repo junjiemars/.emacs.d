@@ -361,6 +361,14 @@ No matter the declaration order, the executing order is:
             (t env)))))
 
 
+(defalias '*self-packages*
+    (lexical-let% ((ps))
+      (lambda (&optional op k v)
+        (cond ((eq :get op) (list (assq k ps)))
+              ((eq :put op) (setq ps (cons (cons k v) ps)))
+              (t ps)))))
+
+
 ;;; Duplicate spec files
 (*self-paths* :dup)
 
@@ -372,8 +380,8 @@ No matter the declaration order, the executing order is:
      (when (*self-env-spec* :get :package :allowed)
        ,@body)))
 
-
  ;; end of self-spec macro
+
 
 ;;; <1> prologue
 (compile! (compile-unit% (emacs-home* "config/fns.el"))
@@ -400,12 +408,6 @@ No matter the declaration order, the executing order is:
               (t us))))
     "Autloaded `compile-unit'.")
 
-  (defalias '*self-packages*
-    (lexical-let% ((ps))
-      (lambda (&optional op k v)
-        (cond ((eq :get op) (list (assq k ps)))
-              ((eq :put op) (setq ps (cons (cons k v) ps)))
-              (t ps)))))
 
   ;; Load basic and self modules
   (compile! (compile-unit* (*self-paths* :get :package-spec))))
