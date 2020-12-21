@@ -73,9 +73,45 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install emacs aspell aspell-en chezscheme sbcl
+          sudo apt-get install emacs aspell aspell-en sbcl
       - name: Test
         run: |
           _TEST_=extra ./test.sh
+
+  MacOS-1100:
+    runs-on: macos-11.0
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # checkout history and tags
+      - name: Install Dependencies
+        run: |
+          brew install emacs
+          brew install aspell --with-lang-en
+          brew install chezscheme
+          brew install sbcl
+      - name: Test
+        run: |
+          _TEST_=extra ./test.sh
+
+  Windows-2019:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0 # checkout history and tags
+
+    - name: Install Dependencies
+      uses: msys2/setup-msys2@v2
+      with:
+        update: true
+        install: git emacs aspell aspell-en chezscheme sbcl
+    - name: Test
+      run: |
+        _TEST_=extra ./test.sh
 
 # eof
