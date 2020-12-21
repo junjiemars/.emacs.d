@@ -1,11 +1,14 @@
-;;;; -*- lexical-binding:t -*-
+;;; on-edit-autoload.el --- editing -*- lexical-binding:t -*-
 ;;;;
 ;; More reasonable Emacs on MacOS, Windows and Linux
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
 ;; on-edit-autoload.el
 ;;;;
+;;; Commentary:
+;;
 
+;;; Code:
 
 (unless-graphic%
   ;; above version 23 transient-mark-mode is enabled by default
@@ -117,7 +120,8 @@
 
 (defun thing-at-point-bounds-of-string-at-point ()
   "Return the bounds of the double quoted string at point.
- [Internal function used by `bounds-of-thing-at-point'.]"
+
+Internal function used by `bounds-of-thing-at-point'."
   (save-excursion
     (let ((beg (nth 8 (syntax-ppss))))
       (when beg
@@ -322,13 +326,14 @@ If prefix ARG then mark quoted string."
 (defun open-next-line (n &optional indent)
   "Move to the next line and then open N lines, like vi's o command.
 
+Optional argument INDENT whether to indent lines.
 See also `open-line'."
   (interactive (list (prefix-numeric-value
                       (if (consp current-prefix-arg)
                           1
                         current-prefix-arg))
                      (if current-prefix-arg
-                         (y-or-n-p "Indent: ")
+                         (y-or-n-p "Indent? ")
                        t)))
   (barf-if-buffer-read-only)
   (end-of-line)
@@ -340,13 +345,14 @@ See also `open-line'."
 (defun open-previous-line (n &optional indent)
   "Open N lines above the current one, like vi's O command.
 
+Optional argument INDENT whether to indent lines.
 See also `open-line' and `split-line'."
   (interactive (list (prefix-numeric-value
                       (if (consp current-prefix-arg)
                           1
                         current-prefix-arg))
                      (if current-prefix-arg
-                         (y-or-n-p "Indent: ")
+                         (y-or-n-p "Indent:? ")
                        t)))
   (barf-if-buffer-read-only)
   (beginning-of-line)
@@ -361,9 +367,9 @@ See also `open-line' and `split-line'."
 (defun echo-buffer-file-name (&optional arg)
   "Echo the file name of current buffer.
 
-If prefix argument ARG is non-nil then copy `buffer-file-name' to
-kill ring. If prefix argument ARG is nil then copy
-`file-name-nondirectory' of `buffer-file-name' to kill ring."
+If prefix argument ARG is non-nil then copy function `buffer-file-name' to
+kill ring.  If prefix argument ARG is nil then copy
+`file-name-nondirectory' of function `buffer-file-name' to kill ring."
   (interactive "P")
   (let* ((n (if (or (eq 'dired-mode major-mode)
                     (eq 'ibuffer-mode major-mode))
@@ -438,7 +444,8 @@ kill ring. If prefix argument ARG is nil then copy
 (defun multi-occur-in-matching-major-mode (&optional mode)
   "Show all lines matching REGEXP in buffers specified by `major-mode'.
 
-See also: `multi-occur-in-matching-buffers'."
+See also: `multi-occur-in-matching-buffers'.
+Optional argument MODE `major-mode'."
   (interactive
    (list (read-from-minibuffer
           "List lines in buffers whose major-mode match regexp: "
@@ -501,7 +508,7 @@ backwards N times if negative."
 
 ;; Comment
 (defun toggle-comment (&optional n)
-  "Toggle comment on current line or region."
+  "Toggle N lines' comment on current line or region."
   (interactive "p")
   (let ((begin (region-active-if (region-beginning)
                  (if (and (< n 0))
@@ -554,4 +561,6 @@ backwards N times if negative."
 
 
 
-;; end of file
+(provide 'on-edit-autoload)
+
+;;; on-edit-autoload.el ends here
