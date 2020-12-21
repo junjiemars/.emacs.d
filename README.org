@@ -1742,33 +1742,6 @@ It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]].
 - increase face height: @@html:<kbd>@@C-x C-=@@html:</kbd>@@
 - decrease face height: @@html:<kbd>@@C-x C--@@html:</kdd>@@
 
-** LaTeX Requirements
-   :PROPERTIES:
-   :CUSTOM_ID: latex-requirements
-   :END:
-
-*** On Darwin
-- [[https://www.imagemagick.org/][ImageMagick]] 
-- texlive-basic
-- texlive-fonts-recommended
-- texlive-latex-extra 
-- texlive-latex-recommended
-- texlive-pictures
-- texlive-plain-generic
-- texlive-lang-cjk
-
-*** On Ubuntu
-- [[https://www.imagemagick.org/][ImageMagick]]
-- [[https://www.tug.org/texlive/][texlive]]
-- texlive-latex-extra: additional packages.
-- texlive-lang-cjk: supporting a combination of Chinese, Japanese,
-  Korean, including macros, fonts, documentation.
-- texlive-xetex
-
-*** On Windows
-- [[https://www.imagemagick.org/][ImageMagick]]
-- MiKTex
-
 ** Log
    :PROPERTIES:
    :CUSTOM_ID: log
@@ -1779,6 +1752,46 @@ It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]].
   hl-line-mode@@html:</kbd>@@
 - /narrow/ region: @@html:<kbd>@@C-x n n@@html:</kdb>@@
 - /widen/ region: @@html:<kbd>@@C-x n w@@html:</kbd>@@
+** LaTeX
+   :PROPERTIES:
+   :CUSTOM_ID: latex
+   :END:
+
+*** Requirements
+**** On Darwin
+- [[https://www.imagemagick.org/][ImageMagick]] 
+- texlive-basic
+- texlive-fonts-recommended
+- texlive-latex-extra 
+- texlive-latex-recommended
+- texlive-pictures
+- texlive-plain-generic
+- texlive-lang-cjk
+
+**** On Ubuntu
+- [[https://www.imagemagick.org/][ImageMagick]]
+- [[https://www.tug.org/texlive/][texlive]]
+- texlive-latex-extra: additional packages.
+- texlive-lang-cjk: supporting a combination of Chinese, Japanese,
+  Korean, including macros, fonts, documentation.
+- texlive-xetex
+
+**** On Windows
+- [[https://www.imagemagick.org/][ImageMagick]]
+- MiKTex
+
+** Aspell
+	 :PROPERTIES:
+	 :CUSTOM_ID: aspell
+	 :END:
+
+*** Requirements
+
+**** On Darwin		
+
+- aspell
+- aspell-dict-en
+
 * Issues?
 
 If you have issues, just post it.
