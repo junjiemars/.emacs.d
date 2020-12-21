@@ -63,18 +63,19 @@ jobs:
         _TEST_=axiom ./test.sh
         _TEST_=package ./test.sh
 
-  Matrix:
+  OS-Matrix:
     runs-on: ${{ matrix.os }}
-    matrix:
-      os: [ubuntu-latest]
-      emacs_version:
-        - 24.5
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0 # checkout history and tags
-      - name: Test
-        run: |
-          _TEST_=axiom ./test.sh
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        emacs_version:
+          - 24.5
+      steps:
+        - uses: actions/checkout@v2
+          with:
+            fetch-depth: 0 # checkout history and tags
+        - name: Test
+          run: |
+            _TEST_=axiom ./test.sh
 
 # eof
