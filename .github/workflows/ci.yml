@@ -71,11 +71,12 @@ jobs:
         emacs_version:
           - 24.5
       steps:
-        - uses: actions/checkout@v2
-          with:
-            fetch-depth: 0 # checkout history and tags
-        - name: Test
-          run: |
-            _TEST_=axiom ./test.sh
+      - uses: actions/checkout@v2
+        with:
+          version: ${{ matrix.emacs_version }}
+          fetch-depth: 0 # checkout history and tags
+      - name: Test
+        run: |
+          _TEST_=axiom ./test.sh
 
 # eof
