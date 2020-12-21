@@ -63,13 +63,16 @@ jobs:
         _TEST_=axiom ./test.sh
         _TEST_=package ./test.sh
 
-  OS-Matrix:
+  Matrix-OS:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest ]
         emacs_version:
           - 24.5
+          - 25.3
+          - 26.3
+          - 27.1
     steps:
       - uses: actions/checkout@v2
         with:
