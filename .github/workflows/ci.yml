@@ -63,4 +63,19 @@ jobs:
         _TEST_=axiom ./test.sh
         _TEST_=package ./test.sh
 
+  Linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # checkout history and tags
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install emacs aspell aspell-en chezscheme sbcl
+      - name: Extra Test
+        run: |
+          _TEST_=package ./test.sh
+
 # eof
