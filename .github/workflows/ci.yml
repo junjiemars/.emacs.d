@@ -63,7 +63,7 @@ jobs:
         _TEST_=axiom ./test.sh
         _TEST_=package ./test.sh
 
-  Linux(extra):
+  Linux-Extra:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
