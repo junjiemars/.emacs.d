@@ -31,7 +31,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          fetch-depth: 0 # checkout history and tags
+          fetch-depth: 1 # without checkout history and tags
       - name: Install Dependencies
         run: |
           brew install emacs
@@ -50,7 +50,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        fetch-depth: 0 # checkout history and tags
+        fetch-depth: 1 # without checkout history and tags
 
     - name: Install Dependencies
       uses: msys2/setup-msys2@v2
