@@ -206,12 +206,20 @@ or backword to sexps boundary."
       (_mark_thing@_ (goto-char (car bounds))
                      (goto-char (cdr bounds))))))
 
-(defun mark-defun@ ()
-  "Mark the function at point.
+(defun mark-defun@ (&optional n)
+  "Mark function at point.
 
-More accurate than `mark-defun'."
-  (interactive)
-  (let ((bounds (bounds-of-thing-at-point 'defun)))
+If prefix N is non-nil, then forward or backward N functions."
+  (interactive "p")
+  (let ((bounds (if current-prefix-arg
+                    (cons (point)
+                          (save-excursion
+                            (forward-thing 'defun
+                             (if (consp current-prefix-arg)
+                                 1
+                               n))
+                            (point)))
+                  (bounds-of-thing-at-point 'defun))))
     (when bounds
       (_mark_thing@_ (goto-char (cdr bounds))
                      (goto-char (car bounds))))))
