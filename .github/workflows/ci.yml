@@ -9,21 +9,21 @@ on:
       - cc
 
 jobs:
-  Linux:
-    # runs-on: ubuntu-latest
-    # steps:
-    #   - uses: actions/checkout@v2
-    #     with:
-    #       fetch-depth: 1 # without checkout history and tags
-    #   - name: Install Dependencies
-    #     run: |
-    #       sudo apt-get update
-    #       sudo apt-get install emacs
-    #   - name: Test
-    #     run: |
-    #       _TEST_=bone ./test.sh
-    #       _TEST_=axiom ./test.sh
-    #       _TEST_=package ./test.sh
+  # Linux:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 1 # without checkout history and tags
+  #     - name: Install Dependencies
+  #       run: |
+  #         sudo apt-get update
+  #         sudo apt-get install emacs
+  #     - name: Test
+  #       run: |
+  #         _TEST_=bone ./test.sh
+  #         _TEST_=axiom ./test.sh
+  #         _TEST_=package ./test.sh
 
   # MacOS:
   #   runs-on: macos-latest
@@ -70,7 +70,7 @@ jobs:
         emacs:
           # - 22.3
           - 23.4
-          # - 24.5
+          - 24.5
           # - 25.3
           # - 26.3
           # - 27.1
