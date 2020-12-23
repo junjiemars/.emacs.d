@@ -82,7 +82,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt update
-          sudo apt install libc-dev
+          sudo apt install gcc-multilib
       - name: Build Emacs
         run: |
           git clone --depth=1 --branch=emacs-${{matrix.emacs}} https://github.com/emacs-mirror/emacs.git emacs-${{matrix.emacs}}
