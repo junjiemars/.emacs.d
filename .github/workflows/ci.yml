@@ -81,6 +81,10 @@ jobs:
           fetch-depth: 0 # checkout history and tags
       - name: Install Dependencies
         run: |
+          sudo apt update
+          sudo apt install libc-dev
+      - name: Build Emacs
+        run: |
           git clone --depth=1 --branch=emacs-${{matrix.emacs}} https://github.com/emacs-mirror/emacs.git emacs-${{matrix.emacs}}
           cd emacs-${{matrix.emacs}}
           ./configure
