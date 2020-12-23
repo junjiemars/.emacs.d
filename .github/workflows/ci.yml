@@ -66,14 +66,14 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-20.04 ]
+        os: [ ubuntu-18.04 ]
         emacs:
-          # - 22.3
-          # - 23.4
-          # - 24.5
-          # - 25.3
-          - 26.3
-          - 27.1
+          # - emacs-22.3
+          # - emacs-23.4
+          # - emacs-24.5
+          # - emacs-25.3
+          - emacs-26.3
+          - emacs-27.1
     steps:
       - uses: actions/checkout@v2
         with:
@@ -84,13 +84,13 @@ jobs:
       #     sudo apt install build-essential
       - name: Build Emacs
         run: |
-          git clone --depth=1 --branch=emacs-${{matrix.emacs}} https://github.com/emacs-mirror/emacs.git emacs-${{matrix.emacs}}
-          cd emacs-${{matrix.emacs}}
+          git clone --depth=1 --branch=${{matrix.emacs}} https://github.com/emacs-mirror/emacs.git ${{matrix.emacs}}
+          cd ${{matrix.emacs}}
           autoreconf -i
-          ./configure --without-all --with-x-toolkit=no
+          ./configure --program-suffix=-26.3 --without-all --with-x-toolkit=no
           sudo make install
       - name: Test
         run: |
-          _TEST_=axiom _EMACS_=emacs-${{matrix.emacs}} ./test.sh
+          _TEST_=axiom _EMACS_=${{matrix.emacs}} ./test.sh
 
 # eof
