@@ -87,7 +87,7 @@ jobs:
           git clone --depth=1 --branch=emacs-${{matrix.emacs}} https://github.com/emacs-mirror/emacs.git emacs-${{matrix.emacs}}
           cd emacs-${{matrix.emacs}}
           autoreconf -i
-          ./configure --without-all
+          ./configure --without-all --with-x-toolkit=no
           sudo make install
       - name: Test
         run: |
