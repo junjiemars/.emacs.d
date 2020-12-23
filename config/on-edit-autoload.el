@@ -211,15 +211,18 @@ or backword to sexps boundary."
 
 If prefix N is non-nil, then forward or backward N functions."
   (interactive "p")
-  (let ((bounds (if current-prefix-arg
-                    (cons (point)
-                          (save-excursion
-                            (forward-thing 'defun
-                             (if (consp current-prefix-arg)
-                                 1
-                               n))
-                            (point)))
-                  (bounds-of-thing-at-point 'defun))))
+  (let ((bounds (let ((n1 (if (not (consp current-prefix-arg)) n 1)))
+                  (cons (save-excursion
+                          (if (bounds-of-thing-at-point 'defun)
+                              (if (> n1 0)
+                                  (beginning-of-defun)
+                                (end-of-defun)))
+                          (point))
+                        (save-excursion
+                          (if (> n1 0)
+                              (end-of-defun n1)
+                            (beginning-of-defun (- n1)))
+                          (point))))))
     (when bounds
       (_mark_thing@_ (goto-char (cdr bounds))
                      (goto-char (car bounds))))))
