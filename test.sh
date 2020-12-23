@@ -15,6 +15,15 @@ echo_env() {
   echo "------------"
 }
 
+make_env() {
+  local d="`dirname $_ENV_PRO_`"
+  if [ -d "${_ENV_PRO_}" ]; then
+    return 0
+  else
+    mkdir -p "$d"
+  fi
+}
+
 restore_env() {
   if [ -f "${_ENV_PRO_}" ]; then
     rm "${_ENV_PRO_}"
@@ -225,6 +234,9 @@ END
 _ENV_VER_="`$_EMACS_ --batch --eval='(prin1 emacs-version)'`"
 _ENV_ERT_="`$_EMACS_ --batch --eval='(prin1 (require (quote ert) nil t))'`"
 _ENV_PKG_="`$_EMACS_ --batch --eval='(prin1 (require (quote package) nil t))'`"
+
+# make env
+make_env
 
 # test
 case "${_TEST_}" in

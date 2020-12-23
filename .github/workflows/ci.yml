@@ -79,9 +79,9 @@ jobs:
         with:
           fetch-depth: 1 # checkout history and tags
       - name: Install Dependencies
-        run: |
-          sudo apt update
-          sudo apt install build-essential
+        # run: |
+        #   sudo apt update
+        #   sudo apt install build-essential
       - name: Build Emacs
         run: |
           git clone --depth=1 --branch=emacs-${{matrix.emacs}} https://github.com/emacs-mirror/emacs.git emacs-${{matrix.emacs}}
