@@ -9,78 +9,83 @@ on:
       - cc
 
 jobs:
-  Linux:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1 # without checkout history and tags
-
-      - name: Install Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install emacs
-      - name: Test
-        run: |
-          _TEST_=bone ./test.sh
-          _TEST_=axiom ./test.sh
-          _TEST_=package ./test.sh
-
-  MacOS:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1 # without checkout history and tags
-      - name: Install Dependencies
-        run: |
-          brew install emacs
-      - name: Test
-        run: |
-          _TEST_=bone ./test.sh
-          _TEST_=axiom ./test.sh
-          _TEST_=package ./test.sh
-
-  Windows:
-    runs-on: windows-latest
-    defaults:
-      run:
-        shell: msys2 {0}
-
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 1 # without checkout history and tags
-
-    - name: Install Dependencies
-      uses: msys2/setup-msys2@v2
-      with:
-        update: true
-        install: git emacs
-    - name: Test
-      run: |
-        _TEST_=bone ./test.sh
-        _TEST_=axiom ./test.sh
-        _TEST_=package ./test.sh
-
-  # Matrix-OS:
-  #   runs-on: ${{ matrix.os }}
-  #   strategy:
-  #     matrix:
-  #       os: [ubuntu-latest, macos-latest ]
-  #       emacs_version:
-  #         - 22.3
-  #         - 23.4
-  #         - 24.5
-  #         - 25.3
-  #         - 26.3
-  #         - 27.1
+  # Linux:
+  #   runs-on: ubuntu-latest
   #   steps:
   #     - uses: actions/checkout@v2
   #       with:
-  #         fetch-depth: 0 # checkout history and tags
+  #         fetch-depth: 1 # without checkout history and tags
+
+  #     - name: Install Dependencies
+  #       run: |
+  #         sudo apt-get update
+  #         sudo apt-get install emacs
   #     - name: Test
   #       run: |
+  #         _TEST_=bone ./test.sh
   #         _TEST_=axiom ./test.sh
+  #         _TEST_=package ./test.sh
+
+  # MacOS:
+  #   runs-on: macos-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 1 # without checkout history and tags
+  #     - name: Install Dependencies
+  #       run: |
+  #         brew install emacs
+  #     - name: Test
+  #       run: |
+  #         _TEST_=bone ./test.sh
+  #         _TEST_=axiom ./test.sh
+  #         _TEST_=package ./test.sh
+
+  # Windows:
+  #   runs-on: windows-latest
+  #   defaults:
+  #     run:
+  #       shell: msys2 {0}
+
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #     with:
+  #       fetch-depth: 1 # without checkout history and tags
+
+  #   - name: Install Dependencies
+  #     uses: msys2/setup-msys2@v2
+  #     with:
+  #       update: true
+  #       install: git emacs
+  #   - name: Test
+  #     run: |
+  #       _TEST_=bone ./test.sh
+  #       _TEST_=axiom ./test.sh
+  #       _TEST_=package ./test.sh
+
+  Matrix-OS:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        emacs:
+          - 22.3
+          - 23.4
+          # - 24.5
+          # - 25.3
+          # - 26.3
+          # - 27.1
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # checkout history and tags
+      - name: Install Dependencies
+        run: |
+          git clone --depth=1 --branch=emacs-${{matrix.emacs}} https://github.com/emacs-mirror/emacs.git emacs-${{matrix.emacs}}
+          emacs-${{matrix.emacs}}/configure
+          sudo make -j4 -f emacs-${{matrix.emacs}}/Makefile install
+      - name: Test
+        run: |
+          _TEST_=axiom ./test.sh
 
 # eof
