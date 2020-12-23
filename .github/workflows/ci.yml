@@ -13,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubutu-16.04, ubuntu-18.04, ubuntu-latest ]
+        os: [ ubuntu-16.04, ubuntu-18.04, ubuntu-latest ]
     steps:
       - uses: actions/checkout@v2
         with:
