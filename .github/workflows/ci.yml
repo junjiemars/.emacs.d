@@ -82,7 +82,7 @@ jobs:
           cd ${{matrix.emacs}}
           autoreconf -i
           ./configure --program-transform-name=${{matrix.emacs}} --without-all --with-x-toolkit=no
-          sudo make install
+          sudo make -j4 install
       - name: Test
         run: |
           _TEST_=axiom _EMACS_=${{matrix.emacs}} ./test.sh
