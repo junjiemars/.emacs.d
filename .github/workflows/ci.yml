@@ -62,11 +62,11 @@ jobs:
   #       _TEST_=axiom ./test.sh
   #       _TEST_=package ./test.sh
 
-  Matrix-OS:
+  Matrix-Linux:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest ]
+        os: [ ubuntu-18.04 ]
         emacs:
           # - 22.3
           - 23.4
