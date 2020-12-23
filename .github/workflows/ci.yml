@@ -82,8 +82,9 @@ jobs:
       - name: Install Dependencies
         run: |
           git clone --depth=1 --branch=emacs-${{matrix.emacs}} https://github.com/emacs-mirror/emacs.git emacs-${{matrix.emacs}}
-          emacs-${{matrix.emacs}}/configure
-          sudo make -j4 -f emacs-${{matrix.emacs}}/Makefile install
+          cd emacs-${{matrix.emacs}}
+          ./configure
+          sudo make -j4 install
       - name: Test
         run: |
           _TEST_=axiom ./test.sh
