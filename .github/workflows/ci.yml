@@ -78,8 +78,8 @@ jobs:
       #     sudo apt install build-essential
       - name: Build Emacs
         run: |
-          git config gc.auto 0
-          git config advice.detachedHead false
+          git config --global gc.auto 0
+          git config --global advice.detachedHead false
           git clone --depth=1 --branch=${{matrix.emacs}} --no-tags https://github.com/emacs-mirror/emacs.git ${{matrix.emacs}}
           cd ${{matrix.emacs}}
           autoreconf -i
