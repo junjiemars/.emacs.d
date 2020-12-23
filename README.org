@@ -1430,7 +1430,6 @@ It's *self-documenting* and great, keep reading it frequently.
 - kill /whole/ line: @@html:<kbd>@@C-x M-<backspace>@@html:</kbd>@@
 
 #+REVEAL: split
-- dynamic abbreviation: @@html:<kbd>@@M-/@@html:</kbd>@@
 - query replace: @@html:<kbd>@@M-%@@html:</kbd>@@
 - upcase region: @@html:<kbd>@@C-x C-u@@html:</kbd>@@
 - downcase region: @@html:<kbd>@@C-x C-l@@html:</kbd>@@
@@ -1441,8 +1440,6 @@ It's *self-documenting* and great, keep reading it frequently.
 - transpose lines: @@html:<kbd>@@C-x C-t@@html:</kbd>@@
 
 #+REVEAL: split
-- insert parentheses: @@html:<kbd>@@M-(@@html:</kbd>@@, wrap selection
-  in parentheses
 - toggle read-only mode: @@html:<kbd>@@C-x C-q@@html:</kbd>@@
 - toggle input method: @@html:<kbd>@@C-\@@html:</kbd>@@
 - set input method: @@html:<kbd>@@C-x RET C-\@@html:</kbd>@@
@@ -1488,6 +1485,12 @@ It's *self-documenting* and great, keep reading it frequently.
   @@html:<kbd>@@M-;@@html:</kbd>@@
 - kill comment on current line: @@html:<kbd>@@C-u M-;@@html:</kbd>@@
 - indent and continuing comment: @@html:<kbd>@@C-M-j@@html:</kbd>@@
+
+#+REVEAL: split
+- dynamic abbreviation: @@html:<kbd>@@M-/@@html:</kbd>@@
+- flush lines: @@html:<kbd>@@M-x flush-lines@@html:</kbd>@@
+- insert parentheses: @@html:<kbd>@@M-(@@html:</kbd>@@, wrap selection
+  in parentheses
 
 ** Coding system
    :PROPERTIES:
