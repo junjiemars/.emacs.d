@@ -10,7 +10,7 @@ on:
 
 jobs:
   Linux:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ ubuntu-16.04, ubuntu-18.04, ubuntu-latest ]
