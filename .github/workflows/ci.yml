@@ -78,7 +78,9 @@ jobs:
       #     sudo apt install build-essential
       - name: Build Emacs
         run: |
-          git clone --depth=1 --branch=${{matrix.emacs}} https://github.com/emacs-mirror/emacs.git ${{matrix.emacs}}
+          git config --local gc.auto 0
+          git config config advice.detachedHead false
+          git clone --depth=1 --branch=${{matrix.emacs}} --no-tags https://github.com/emacs-mirror/emacs.git ${{matrix.emacs}}
           cd ${{matrix.emacs}}
           autoreconf -i
           ./configure --program-transform-name=${{matrix.emacs}} --without-all --with-x-toolkit=no
