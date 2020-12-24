@@ -15,28 +15,29 @@
             (format "%s: %s "
                     (propertize "I-search" 'face 'minibuffer-prompt)
                     "(r)egexp (s)ymbol (w)ord (f)ile (q)uoted")))))
-  (let ((regexp-p (and style (or (char= ?\r style)
-                                 (char= ?r style)))))
-    (if backward
-        (isearch-backward regexp-p 1)
-      (isearch-forward regexp-p 1)))
-  (let ((ms (cond ((and style (char= ?s style))
-                   (cons "symbol" (mark-symbol@)))
-                  ((and style (char= ?w style))
-                   (cons "word" (mark-word@)))
-                  ((and style (char= ?f style))
-                   (cons "file" (mark-filename@)))
-                  ((and style (char= ?q style))
-                   (cons "quoted" (mark-string@))))))
-    (let ((ss (symbol@)))
-      (if (eq 'region (car ss))
-          (isearch-yank-string (cdr ss))
-        (when ms
-          (message "%s: [No %s at point]"
-                   (propertize "I-search"
-                               'face 'minibuffer-prompt)
-                   (propertize (car ms)
-                               'face 'font-lock-warning-face)))))))
+  (let ((regexp-p (and style (or (char= ?\r style) (char= ?r style)))))
+    (if backward (isearch-backward regexp-p 1)
+      (isearch-forward regexp-p 1))
+    (let ((ms (cond ((and style (char= ?s style))
+                     (cons "symbol"
+                           (region-active-unless (mark-symbol@))))
+                    ((and style (char= ?w style))
+                     (cons "word"
+                           (region-active-unless (mark-word@))))
+                    ((and style (char= ?f style))
+                     (cons "file"
+                           (region-active-unless (mark-filename@))))
+                    ((and style (char= ?q style))
+                     (cons "quoted"
+                           (region-active-unless (mark-string@)))))))
+      (let ((ss (symbol@)))
+        (if (eq 'region (car ss))
+            (isearch-yank-string (cdr ss))
+          (when ms (message "%s: [No %s at point]"
+                     (propertize "I-search"
+                                 'face 'minibuffer-prompt)
+                     (propertize (car ms)
+                                 'face 'font-lock-warning-face))))))))
 
 
 (defun isearch-backward* (&optional style)
