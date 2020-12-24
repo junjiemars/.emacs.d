@@ -252,9 +252,10 @@ If prefix N is non-nil, then forward or backward N functions."
                                  (if (> n1 0)
                                      (beginning-of-defun)
                                    (end-of-defun)))
-                                ((string-match "^\\s-*$"
-                                               (substring-no-properties
-                                                (thing-at-point 'line)))
+                                ((string-match "^[ \t\v]*$"
+                                               (string-trim>
+                                                (substring-no-properties
+                                                 (thing-at-point 'line))))
                                  (if (> n1 0)
                                      (beginning-of-defun -1)
                                    (end-of-defun -1))))
