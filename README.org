@@ -961,13 +961,13 @@ marked part.
 
 #+ATTR_HTML: :style text-align:left
 Using =mark-sexp@= default mark whole Lisp /sexp/ or C /block/ at
-point. If prefix N is non nil, set mark away from point then forward
-or backward to sexps boundary, just like the builtin =mark-sexp= does.
+point. If prefix N is non nil, then forward or backward to sexps
+boundary, just like the builtin =mark-sexp= does.
 
 #+ATTR_HTML: :style text-align:left
-=mark-word@= default mark the whole word at point. If prefix arg is
-non nil, set mark away from point then forward or backword to word
-boundary, just like the builtin =mark-word= does.
+=mark-word@= default mark the whole word at point. If prefix N is non
+nil, then forward or backword to word boundary, just like the builtin
+=mark-word= does.
 
 #+ATTR_HTML: :style text-align:left
 =mark-defun@= more stable in vary programming modes than `mark-defun'.

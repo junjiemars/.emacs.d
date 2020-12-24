@@ -192,18 +192,30 @@
 (defun mark-word@ (&optional n)
   "Mark the word at point.
 
-If prefix N is non nil, mark word away from point then forward
-or backword to words boundary."
+If prefix N is non nil, then forward or backward N words."
   (interactive "p")
-  (let ((bounds (if current-prefix-arg
-                    (cons (point)
-                          (save-excursion
-                            (forward-word
-                             (if (consp current-prefix-arg)
-                                 1
-                               n))
-                            (point)))
-                  (bounds-of-thing-at-point 'word))))
+  (let ((bounds (let ((n1 (if (not (consp current-prefix-arg))
+                              (if (zerop n) 1 n)
+                            1)))
+                  (cons (save-excursion
+                          (cond ((bounds-of-thing-at-point 'word)
+                                 (cond ((> n1 0)
+                                        (forward-word)
+                                        (backward-word))
+                                       (t (backward-word)
+                                          (forward-word))))
+                                ((bounds-of-thing-at-point 'whitespace)
+                                 (cond ((> n1 0)
+                                        (forward-word)
+                                        (backward-word))
+                                       (t (backward-word)
+                                          (forward-word)))))
+                          (point))
+                        (save-excursion
+                          (if (> n1 0)
+                              (forward-word n1)
+                            (backward-word (abs n1)))
+                          (point))))))
     (when bounds
       (_mark_thing@_  (goto-char (car bounds))
                       (goto-char (cdr bounds))))))
