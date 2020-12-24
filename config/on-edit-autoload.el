@@ -170,6 +170,7 @@
        (set-mark (point))
        ,end)))
 
+
 (defun mark-symbol@ ()
   "Mark the symbol at point."
   (interactive)
@@ -178,6 +179,7 @@
       (_mark_thing@_ (goto-char (car bounds))
                      (goto-char (cdr bounds))))))
 
+
 (defun mark-filename@ ()
   "Mark the filename at point."
   (interactive)
@@ -185,6 +187,7 @@
     (when bounds
       (_mark_thing@_ (goto-char (car bounds))
                      (goto-char (cdr bounds))))))
+
 
 (defun mark-word@ (&optional n)
   "Mark the word at point.
@@ -205,6 +208,7 @@ or backword to words boundary."
       (_mark_thing@_  (goto-char (car bounds))
                       (goto-char (cdr bounds))))))
 
+
 (defun mark-line@ (&optional indent)
   "Mark the line at point.
 
@@ -214,6 +218,7 @@ If prefix INDENT is non-nil mark the indent line."
                      (back-to-indentation)
                    (beginning-of-line))
                  (end-of-line)))
+
 
 (defun mark-sexp@ (&optional n)
   "Mark sexp at point.
@@ -239,7 +244,9 @@ If prefix N is non nil, then forward or backward N sexps."
 
 If prefix N is non-nil, then forward or backward N functions."
   (interactive "p")
-  (let ((bounds (let ((n1 (if (not (consp current-prefix-arg)) n 1)))
+  (let ((bounds (let ((n1 (if (not (consp current-prefix-arg))
+                              (if (zerop n) 1 n)
+                            1)))
                   (cons (save-excursion
                           (cond ((bounds-of-thing-at-point 'defun)
                                  (if (> n1 0)
