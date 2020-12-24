@@ -171,10 +171,22 @@
        ,end)))
 
 
-(defun mark-symbol@ ()
-  "Mark symbol at point."
-  (interactive)
-  (let ((bounds (bounds-of-thing-at-point 'symbol)))
+(defun mark-symbol@ (&optional n)
+  "Mark symbol at point.
+
+If prefix N is non-nil, then select the Nth symbol."
+  (interactive "p")
+  (let ((bounds (let ((n1 (if (not (consp current-prefix-arg))
+                              (if (or (null n) (zerop n)) 1 n)
+                            1)))
+                  (cons (save-excursion
+                          (forward-symbol n1)
+                          (when (> n1 0) (forward-symbol -1))
+                          (point))
+                        (save-excursion
+                          (forward-symbol n1)
+                          (when (< n1 0) (forward-symbol 1))
+                          (point))))))
     (when bounds
       (_mark_thing@_ (goto-char (car bounds))
                      (goto-char (cdr bounds))))))
@@ -195,7 +207,7 @@
 If prefix N is non nil, then forward or backward N words."
   (interactive "p")
   (let ((bounds (let ((n1 (if (not (consp current-prefix-arg))
-                              (if (zerop n) 1 n)
+                              (if (or (null n) (zerop n)) 1 n)
                             1)))
                   (cons (save-excursion
                           (cond ((bounds-of-thing-at-point 'word)
@@ -238,7 +250,7 @@ If prefix INDENT is non-nil, then mark indent line."
 If prefix N is non nil, then forward or backward N sexps."
   (interactive "p")
   (let ((bounds (let ((n1 (if (not (consp current-prefix-arg))
-                              (if (zerop n) 1 n)
+                              (if (or (null n) (zerop n)) 1 n)
                             1)))
                   (cons (save-excursion
                           (cond ((bounds-of-thing-at-point 'sexp)
@@ -270,7 +282,7 @@ If prefix N is non nil, then forward or backward N sexps."
 If prefix N is non-nil, then forward or backward N functions."
   (interactive "p")
   (let ((bounds (let ((n1 (if (not (consp current-prefix-arg))
-                              (if (zerop n) 1 n)
+                              (if (or (null n) (zerop n)) 1 n)
                             1)))
                   (cons (save-excursion
                           (cond ((bounds-of-thing-at-point 'defun)
