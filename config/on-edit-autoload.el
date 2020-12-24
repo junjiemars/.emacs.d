@@ -206,6 +206,7 @@ or backword to sexps boundary."
       (_mark_thing@_ (goto-char (car bounds))
                      (goto-char (cdr bounds))))))
 
+
 (defun mark-defun@ (&optional n)
   "Mark function at point.
 
@@ -213,10 +214,16 @@ If prefix N is non-nil, then forward or backward N functions."
   (interactive "p")
   (let ((bounds (let ((n1 (if (not (consp current-prefix-arg)) n 1)))
                   (cons (save-excursion
-                          (if (bounds-of-thing-at-point 'defun)
-                              (if (> n1 0)
-                                  (beginning-of-defun)
-                                (end-of-defun)))
+                          (cond ((bounds-of-thing-at-point 'defun)
+                                 (if (> n1 0)
+                                     (beginning-of-defun)
+                                   (end-of-defun)))
+                                ((string-match "^\\s-*$"
+                                               (substring-no-properties
+                                                (thing-at-point 'line)))
+                                 (if (> n1 0)
+                                     (beginning-of-defun -1)
+                                   (end-of-defun -1))))
                           (point))
                         (save-excursion
                           (if (> n1 0)
@@ -226,6 +233,7 @@ If prefix N is non-nil, then forward or backward N functions."
     (when bounds
       (_mark_thing@_ (goto-char (cdr bounds))
                      (goto-char (car bounds))))))
+
 
 (defun mark-string@ (&optional arg)
   "Mark unquoted string at point.
