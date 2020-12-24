@@ -172,7 +172,7 @@
 
 
 (defun mark-symbol@ ()
-  "Mark the symbol at point."
+  "Mark symbol at point."
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'symbol)))
     (when bounds
@@ -181,7 +181,7 @@
 
 
 (defun mark-filename@ ()
-  "Mark the filename at point."
+  "Mark filename at point."
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'filename)))
     (when bounds
@@ -222,9 +222,9 @@ If prefix N is non nil, then forward or backward N words."
 
 
 (defun mark-line@ (&optional indent)
-  "Mark the line at point.
+  "Mark line at point.
 
-If prefix INDENT is non-nil mark the indent line."
+If prefix INDENT is non-nil, then mark indent line."
   (interactive "P")
   (_mark_thing@_ (if indent
                      (back-to-indentation)
