@@ -225,15 +225,28 @@ If prefix INDENT is non-nil mark the indent line."
 
 If prefix N is non nil, then forward or backward N sexps."
   (interactive "p")
-  (let ((bounds (if current-prefix-arg
-                    (cons (point)
-                          (save-excursion
-                            (forward-sexp
-                             (if (consp current-prefix-arg)
-                                 1
-                               n))
-                            (point)))
-                  (bounds-of-thing-at-point 'list))))
+  (let ((bounds (let ((n1 (if (not (consp current-prefix-arg))
+                              (if (zerop n) 1 n)
+                            1)))
+                  (cons (save-excursion
+                          (cond ((bounds-of-thing-at-point 'sexp)
+                                 (cond ((> n1 0)
+                                        (forward-sexp)
+                                        (backward-sexp))
+                                       (t (backward-sexp)
+                                          (forward-sexp))))
+                                ((bounds-of-thing-at-point 'whitespace)
+                                 (cond ((> n1 0)
+                                        (forward-sexp)
+                                        (backward-sexp))
+                                       (t (backward-sexp)
+                                          (forward-sexp)))))
+                          (point))
+                        (save-excursion
+                          (if (> n1 0)
+                              (forward-sexp n1)
+                            (backward-sexp (abs n1)))
+                          (point))))))
     (when bounds
       (_mark_thing@_ (goto-char (car bounds))
                      (goto-char (cdr bounds))))))

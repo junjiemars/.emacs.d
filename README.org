@@ -961,7 +961,7 @@ marked part.
 
 #+ATTR_HTML: :style text-align:left
 Using =mark-sexp@= default mark whole Lisp /sexp/ or C /block/ at
-point. If prefix arg is non nil, set mark away from point then forward
+point. If prefix N is non nil, set mark away from point then forward
 or backward to sexps boundary, just like the builtin =mark-sexp= does.
 
 #+ATTR_HTML: :style text-align:left
