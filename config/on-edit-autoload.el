@@ -121,7 +121,7 @@
 (defun thing-at-point-bounds-of-string-at-point ()
   "Return the bounds of the double quoted string at point.
 
-Internal function used by `bounds-of-thing-at-point'."
+[Internal function used by `bounds-of-thing-at-point'.]"
   (save-excursion
     (let ((beg (nth 8 (syntax-ppss))))
       (when beg
@@ -131,6 +131,34 @@ Internal function used by `bounds-of-thing-at-point'."
 
 (put 'string 'bounds-of-thing-at-point
      'thing-at-point-bounds-of-string-at-point)
+
+
+(unless-fn% 'thing-at-point-bounds-of-list-at-point 'thingatpt
+  ;; fix the wrong behavior of on ancient Emacs.
+  (defun thing-at-point-bounds-of-list-at-point ()
+    "Return the bounds of the list at point.
+  [Internal function used by `bounds-of-thing-at-point'.]"
+    (save-excursion
+      (let* ((st (parse-partial-sexp (point-min) (point)))
+             (beg (or (and (eq 4 (car (syntax-after (point))))
+                           (not (nth 8 st))
+                           (point))
+                      (nth 1 st))))
+        (when beg
+          (goto-char beg)
+          (forward-sexp)
+          (cons beg (point))))))
+
+  (put 'list 'bounds-of-thing-at-point
+       'thing-at-point-bounds-of-list-at-point))
+
+
+(unless% (or (get 'defun 'beginning-of-defun)
+             (get 'defun 'end-of-defun))
+  ;; fix wrong behavior on ancient Emacs.
+  (put 'defun 'beginning-op 'beginning-of-defun)
+  (put 'defun 'end-op       'end-of-defun)
+  (put 'defun 'forward-op   'end-of-defun))
 
 
 (eval-when-compile
@@ -188,10 +216,9 @@ If prefix INDENT is non-nil mark the indent line."
                  (end-of-line)))
 
 (defun mark-sexp@ (&optional n)
-  "Mark the sexp at point.
+  "Mark sexp at point.
 
-If prefix N is non nil, mark sexp away from point then forward
-or backword to sexps boundary."
+If prefix N is non nil, then forward or backward N sexps."
   (interactive "p")
   (let ((bounds (if current-prefix-arg
                     (cons (point)
@@ -235,49 +262,19 @@ If prefix N is non-nil, then forward or backward N functions."
                      (goto-char (car bounds))))))
 
 
-(defun mark-string@ (&optional arg)
+(defun mark-string@ (&optional quoted)
   "Mark unquoted string at point.
 
-If prefix ARG then mark quoted string."
+If prefix QUOTED is non-nil, then mark quoted string."
   (interactive "P")
   (let ((bounds (bounds-of-thing-at-point 'string)))
     (when bounds
-      (_mark_thing@_ (goto-char (if arg
+      (_mark_thing@_ (goto-char (if quoted
                                     (1- (car bounds))
                                   (car bounds)))
-                     (goto-char (if arg
+                     (goto-char (if quoted
                                     (+ (cdr bounds) 1)
                                   (cdr bounds)))))))
-
-(unless-fn% 'thing-at-point-bounds-of-list-at-point 'thingatpt
-  ;; fix the wrong behavior of (bounds-of-thing-at-point 'list) on
-  ;; ancient Emacs.
-  (defun thing-at-point-bounds-of-list-at-point ()
-    "Return the bounds of the list at point.
-  [Internal function used by `bounds-of-thing-at-point'.]"
-    (save-excursion
-      (let* ((st (parse-partial-sexp (point-min) (point)))
-             (beg (or (and (eq 4 (car (syntax-after (point))))
-                           (not (nth 8 st))
-                           (point))
-                      (nth 1 st))))
-        (when beg
-          (goto-char beg)
-          (forward-sexp)
-          (cons beg (point))))))
-
-  (put 'list 'bounds-of-thing-at-point
-       'thing-at-point-bounds-of-list-at-point))
-
-(unless% (or (get 'defun 'beginning-of-defun)
-             (get 'defun 'end-of-defun))
-  ;; fix wrong behavior (bounds-of-thing-at-point 'defun) on ancient
-  ;; Emacs.
-  (put 'defun 'beginning-op 'beginning-of-defun)
-  (put 'defun 'end-op       'end-of-defun)
-  (put 'defun 'forward-op   'end-of-defun))
-
-
 
  ;; end of Mark thing at point
 
