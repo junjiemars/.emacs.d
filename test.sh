@@ -1,7 +1,7 @@
 #!/bin/sh
 
 _ROOT_="${_ROOT_:-`cd $(dirname $0) && pwd`}"
-_EMACS_="${EMACS:-emacs}"
+_EMACS_="${_EMACS_:-emacs}"
 _TEST_="${_TEST_:-bone}"
 _ENV_PRO_="${_ROOT_}/private/self-prologue.el"
 _ENV_VER_=

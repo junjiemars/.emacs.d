@@ -83,6 +83,7 @@
 
 
 ;; :edit
+
 (when (*self-env-spec* :get :edit :allowed)
   ;; default `tab-width'
   (setq-default tab-width (*self-env-spec* :get :edit :tab-width))
@@ -115,29 +116,30 @@
     (require 'uniquify)
     (setq uniquify-buffer-name-style 'post-forward-angle-brackets)))
 
+ ;; end of :edit
+
 
 ;; Mark thing at point
 
-(defun thing-at-point-bounds-of-string-at-point ()
-  "Return the bounds of the double quoted string at point.
+(unless-fn% 'thing-at-point-bounds-of-string-at-point 'thingatpt
+  ;; fix wrong behavior on anicent Emacs.
+  (defun thing-at-point-bounds-of-string-at-point ()
+    "Return the bounds of the double quoted string at point."
+    (save-excursion
+      (let ((beg (nth 8 (syntax-ppss))))
+        (when beg
+          (goto-char beg)
+          (forward-sexp)
+          (cons (1+  beg) (1- (point)))))))
 
-[Internal function used by `bounds-of-thing-at-point'.]"
-  (save-excursion
-    (let ((beg (nth 8 (syntax-ppss))))
-      (when beg
-        (goto-char beg)
-        (forward-sexp)
-        (cons (1+  beg) (1- (point)))))))
-
-(put 'string 'bounds-of-thing-at-point
-     'thing-at-point-bounds-of-string-at-point)
+  (put 'string 'bounds-of-thing-at-point
+       'thing-at-point-bounds-of-string-at-point))
 
 
 (unless-fn% 'thing-at-point-bounds-of-list-at-point 'thingatpt
-  ;; fix the wrong behavior of on ancient Emacs.
+  ;; fix wrong behavior on ancient Emacs.
   (defun thing-at-point-bounds-of-list-at-point ()
-    "Return the bounds of the list at point.
-  [Internal function used by `bounds-of-thing-at-point'.]"
+    "Return the bounds of the list at point."
     (save-excursion
       (let* ((st (parse-partial-sexp (point-min) (point)))
              (beg (or (and (eq 4 (car (syntax-after (point))))
