@@ -1,39 +1,48 @@
-;;;; -*- lexical-binding:t -*-
+;;; on-isearch-autoload.el --- isearch -*- lexical-binding:t -*-
 ;;;;
 ;; More reasonable Emacs on MacOS, Windows and Linux
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; on-isearch-autoload.el
-;;;;
+;;; Commentary:
+;;;
+;;
 
+;;; Code:
 
 (defun isearch-forward* (&optional style backward)
-  "Do incremental search forward."
+  "Search incrementally forward or BACKWARD in STYLE."
   (interactive
    (list (when current-prefix-arg
            (read-key
-            (format "%s: %s "
-                    (propertize "I-search" 'face 'minibuffer-prompt)
-                    "(r)egexp (s)ymbol (w)ord (f)ile (q)uoted")))))
+            (let ((r (propertize "r" 'face 'minibuffer-prompt))
+                  (s (propertize "s" 'face 'minibuffer-prompt))
+                  (w (propertize "w" 'face 'minibuffer-prompt))
+                  (f (propertize "f" 'face 'minibuffer-prompt))
+                  (q (propertize "q" 'face 'minibuffer-prompt)))
+              (format "%s: (%s)egexp (%s)ymbol (%s)ord (%s)ile (%s)uoted "
+                      (propertize "I-search" 'face 'minibuffer-prompt)
+                      r s w f q))))))
   (let ((regexp-p (and style (or (char= ?\r style) (char= ?r style)))))
     (if backward (isearch-backward regexp-p 1)
       (isearch-forward regexp-p 1))
-    (let ((ms (cond ((and style (char= ?s style))
+    (let ((ms (cond ((null style) nil)
+                    ((char= ?s style)
                      (cons "symbol"
                            (region-active-unless (mark-symbol@))))
-                    ((and style (char= ?w style))
+                    ((char= ?w style)
                      (cons "word"
                            (region-active-unless (mark-word@))))
-                    ((and style (char= ?f style))
+                    ((char= ?f style)
                      (cons "file"
                            (region-active-unless (mark-filename@))))
-                    ((and style (char= ?q style))
+                    ((char= ?q style)
                      (cons "quoted"
                            (region-active-unless (mark-string@)))))))
       (let ((ss (symbol@)))
         (if (eq 'region (car ss))
             (isearch-yank-string (cdr ss))
-          (when ms (message "%s: [No %s at point]"
+          (when ms
+            (message "%s: [No %s at point]"
                      (propertize "I-search"
                                  'face 'minibuffer-prompt)
                      (propertize (car ms)
@@ -41,7 +50,7 @@
 
 
 (defun isearch-backward* (&optional style)
-  "Do incremental search backward."
+  "Search incrementally backward in STYLE."
   (interactive
    (list (when current-prefix-arg
            (read-key
@@ -52,25 +61,25 @@
 
 
 (defun isearch-forward-symbol* (&optional backward)
-  "Do incremental search forward symbol."
+  "Search symbol incrementally forward or BACKWARD."
   (interactive "P")
   (isearch-forward* ?s backward))
 
 
 (defun isearch-forward-word* (&optional backward)
-  "Do incremental search forward word."
+  "Search word incrementally forward or BACKWARD."
   (interactive "P")
   (isearch-forward* ?w backward))
 
 
 (defun isearch-forward-file* (&optional backward)
-  "Do incremental search forward file."
+  "Search filename incrementally forward or BACKWARD."
   (interactive "P")
   (isearch-forward* ?f backward))
 
 
 (defun isearch-forward-quoted* (&optional backward)
-  "Do incremental search forward quoted."
+  "Search quoted string incrementally search forward or BACKWARD."
   (interactive "P")
   (isearch-forward* ?q backward))
 
@@ -87,4 +96,6 @@
 (define-key% (current-global-map) (kbd "M-s _") #'isearch-forward-quoted*)
 
 
-;; EOF
+(provide 'on-isearch-autoload)
+
+;;; on-isearch-autoload.el ends here
