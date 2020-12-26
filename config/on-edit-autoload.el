@@ -249,30 +249,33 @@ If prefix INDENT is non-nil, then mark indent line."
 (defun mark-sexp@ (&optional n)
   "Mark sexp at point.
 
-If prefix N is non nil, then forward or backward N sexps."
+If prefix N is non nil, then forward or backward N sexps.
+Otherwise, select the whole list."
   (interactive "p")
-  (let ((bounds (let ((n1 (if (not (consp current-prefix-arg))
-                              (if (or (null n) (zerop n)) 1 n)
-                            1)))
-                  (cons (save-excursion
-                          (cond ((bounds-of-thing-at-point 'sexp)
-                                 (cond ((> n1 0)
-                                        (forward-sexp)
-                                        (backward-sexp))
-                                       (t (backward-sexp)
-                                          (forward-sexp))))
-                                ((bounds-of-thing-at-point 'whitespace)
-                                 (cond ((> n1 0)
-                                        (forward-sexp)
-                                        (backward-sexp))
-                                       (t (backward-sexp)
-                                          (forward-sexp)))))
-                          (point))
-                        (save-excursion
-                          (if (> n1 0)
-                              (forward-sexp n1)
-                            (backward-sexp (abs n1)))
-                          (point))))))
+  (let ((bounds (if current-prefix-arg
+                    (let ((n1 (if (not (consp current-prefix-arg))
+                                  (if (or (null n) (zerop n)) 1 n)
+                                1)))
+                      (cons (save-excursion
+                              (cond ((bounds-of-thing-at-point 'sexp)
+                                     (cond ((> n1 0)
+                                            (forward-sexp)
+                                            (backward-sexp))
+                                           (t (backward-sexp)
+                                              (forward-sexp))))
+                                    ((bounds-of-thing-at-point 'whitespace)
+                                     (cond ((> n1 0)
+                                            (forward-sexp)
+                                            (backward-sexp))
+                                           (t (backward-sexp)
+                                              (forward-sexp)))))
+                              (point))
+                            (save-excursion
+                              (if (> n1 0)
+                                  (forward-sexp n1)
+                                (backward-sexp (abs n1)))
+                              (point))))
+                  (bounds-of-thing-at-point 'list))))
     (when bounds
       (_mark_thing@_ (goto-char (car bounds))
                      (goto-char (cdr bounds))))))
