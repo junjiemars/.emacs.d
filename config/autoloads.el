@@ -206,8 +206,11 @@
 
   ;; Sorting
   (define-key% (current-global-map) (kbd "C-c s f") #'sort-fields)
+  (define-key% (current-global-map) (kbd "C-c s n") #'sort-numeric-fields)
+  (define-key% (current-global-map) (kbd "C-c s x") #'sort-regexp-fields)
   (define-key% (current-global-map) (kbd "C-c s l") #'sort-lines)
   (define-key% (current-global-map) (kbd "C-c s r") #'reverse-region)
+  (define-key% (current-global-map) (kbd "C-c s d") #'delete-duplicate-lines)
 
   ;; View
   (define-key% (current-global-map) (kbd "C-x 4 v") #'view-file-other-window)

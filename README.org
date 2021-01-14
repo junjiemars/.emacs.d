@@ -1728,8 +1728,11 @@ It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]].
    :END:
 
 - sort /fields/: @@html:<kbd>@@C-c s f@@html:</kbd>@@ by Nth field
+- sort /numeric/ fields: @@html:<kbd>@@C-c s n@@html:</kbd>@@ by Nth numeric field
 - sort /lines/: @@html:<kbd>@@C-c s l@@html:</kbd>@@
+- sort /regexp/ fields: @@html:<kbd>@@C-c s x@@html:</kbd>@@ by regexp field
 - /reverse/ region: @@html:<kbd>@@C-c s r@@html:</kbd>@@
+- delete /duplicated/ lines: @@html:<kbd>@@C-c s d@@html:</kbd>@@
 
 ** Face
    :PROPERTIES:
