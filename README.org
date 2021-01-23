@@ -1411,6 +1411,7 @@ It's *self-documenting* and great, keep reading it frequently.
 ** Editing
    :PROPERTIES:
    :CUSTOM_ID: editing
+	 :ID:       E1F40037-BA22-493E-97F5-AA937F58B019
    :END:
 
 - write file: @@html:<kbd>@@C-x C-w@@html:</kbd>@@ same as save as
@@ -1491,6 +1492,9 @@ It's *self-documenting* and great, keep reading it frequently.
 - flush lines: @@html:<kbd>@@M-x flush-lines@@html:</kbd>@@
 - insert parentheses: @@html:<kbd>@@M-(@@html:</kbd>@@, wrap selection
   in parentheses
+
+#+REVEAL: split
+- align region: @@html:<kbd>@@M-x align-entire@@html:</kbd>@@
 
 ** Coding system
    :PROPERTIES:
