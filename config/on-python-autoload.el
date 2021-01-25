@@ -21,7 +21,12 @@ PYTHONPATH: augment the default search path for module files. The
 PYTHONHOME: change the location of the standard Python libraries.
 VIRTUALENV: virtualenv root path.
 
-Outside a virtualenv, sys.real_prefix should not exist."
+After Python3.3+, we can use `python -m venv <dir>' to create a
+new virtual env at <dir>.
+
+Using `sys.prefix', `sys.base_prefix' or `sys.real_prefix' to
+determine whether inside a virtual env. Another way is using `pip
+-V'."
   (interactive "Dvirtualenv activate at ")
   (let ((d (string-trim> (expand-file-name (or dir
                                                default-directory))
