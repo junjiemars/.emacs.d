@@ -604,24 +604,26 @@ RENEW whether to renew the existing FILE."
 
 ;;; cc-styles
 
-(defvar cc-style-nginx
-  `("nginx"
-     (c-basic-offset . 4)
-     (c-comment-only-line-offset . 0)
-     (c-offsets-alist . ((statement-block-intro . +)
-			 (knr-argdecl-intro . +)
-			 (substatement-open . 0)
-			 (substatement-label . 0)
-			 (label . 0)
-			 (statement-cont . +)
-			 (inline-open . 0)
-			 (brace-list-intro . (first
-					      c-lineup-2nd-brace-entry-in-arglist
-					      c-lineup-class-decl-init-+ +))
-			 (inexpr-class . 0))))
-  "nginx style for `cc-styles'.
-https://nginx.org/en/docs/dev/development_guide.html#code_style")
+;; (defvar cc-style-nginx
+;;   `("nginx"
+;;      (c-basic-offset . 4)
+;;      (c-comment-only-line-offset . 0)
+;;      (c-offsets-alist . ((statement-block-intro . +)
+;; 			 (knr-argdecl-intro . +)
+;; 			 (substatement-open . 0)
+;; 			 (substatement-label . 0)
+;; 			 (label . 0)
+;; 			 (statement-cont . +)
+;; 			 (inline-open . 0)
+;; 			 (brace-list-intro . (first
+;; 					      c-lineup-2nd-brace-entry-in-arglist
+;; 					      c-lineup-class-decl-init-+ +))
+;; 			 (inexpr-class . 0))))
+;;   "nginx style for `cc-styles'.
+;; https://nginx.org/en/docs/dev/development_guide.html#code_style")
 
+
+ ;; end of `cc-styles'
 
 
 (with-eval-after-load 'cc-mode
@@ -644,7 +646,8 @@ https://nginx.org/en/docs/dev/development_guide.html#code_style")
     (require 'tags))
 
   ;; load styles
-  (c-add-style (car cc-style-nginx) (cdr cc-style-nginx)))
+  ;; (c-add-style (car cc-style-nginx) (cdr cc-style-nginx))
+  )
 
 
 (with-eval-after-load 'cmacexp
