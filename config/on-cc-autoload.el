@@ -616,9 +616,16 @@ RENEW whether to renew the existing FILE."
 	   (label . 0)
 	   (statement-cont . +)
 	   (inline-open . 0)
-	   (brace-list-intro first c-lineup-2nd-brace-entry-in-arglist c-lineup-class-decl-init-+ +)
+	   (brace-list-intro first
+                       c-lineup-2nd-brace-entry-in-arglist
+                       c-lineup-class-decl-init-+ +)
 	   (inexpr-class . 0)
-     (arglist-cont-nonempty . ,(lambda (_) (message "%s" "xxx") c-basic-offset))))
+     (arglist-cont-nonempty . ,(lambda (langem)
+                                 (let ((col (save-excursion
+                                              (goto-char (cdr langem))
+                                              (current-column))))
+                                   (cond ((= col 0) c-basic-offset)
+                                         (t #'c-lineup-arglist)))))))
   "nginx style for `cc-styles'.
 https://nginx.org/en/docs/dev/development_guide.html#code_style")
 
