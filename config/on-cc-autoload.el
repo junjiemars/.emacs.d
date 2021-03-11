@@ -608,6 +608,8 @@ RENEW whether to renew the existing FILE."
   `("nginx"
     (c-basic-offset . 4)
     (c-comment-only-line-offset . 0)
+    (c-backslash-max-column . 78)
+    (c-backslash-column . 77)
     (c-offsets-alist
 	   (statement-block-intro . +)
 	   (knr-argdecl-intro . +)
