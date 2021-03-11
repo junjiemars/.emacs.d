@@ -612,7 +612,6 @@ RENEW whether to renew the existing FILE."
     (c-backslash-column . 77)
     (c-offsets-alist
 	   (statement-block-intro . +)
-	   (knr-argdecl-intro . +)
 	   (substatement-open . 0)
 	   (substatement-label . 0)
 	   (label . 0)
@@ -621,7 +620,6 @@ RENEW whether to renew the existing FILE."
 	   (brace-list-intro first
                        c-lineup-2nd-brace-entry-in-arglist
                        c-lineup-class-decl-init-+ +)
-	   (inexpr-class . 0)
      (arglist-cont-nonempty . ,(lambda (langem)
                                  (let ((col (save-excursion
                                               (goto-char (cdr langem))
@@ -655,11 +653,7 @@ https://nginx.org/en/docs/dev/development_guide.html#code_style")
     (require 'tags))
 
   ;; load styles
-  (c-add-style (car cc-style-nginx) (cdr cc-style-nginx))
-  ;; `cc-style-nginx'
-  ;; (setq c-backslash-max-column 77
-  ;;       c-backslash-column 77)
-  )
+  (c-add-style (car cc-style-nginx) (cdr cc-style-nginx)))
 
 
 (with-eval-after-load 'cmacexp
