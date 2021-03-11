@@ -604,7 +604,7 @@ RENEW whether to renew the existing FILE."
 
 ;;; cc-styles
 
-(defvar cc-style-nginx
+(defvar cc*-style-nginx
   `("nginx"
     (c-basic-offset . 4)
     (c-comment-only-line-offset . 0)
@@ -624,10 +624,21 @@ RENEW whether to renew the existing FILE."
                                  (let ((col (save-excursion
                                               (goto-char (cdr langem))
                                               (current-column))))
-                                   (cond ((= col 0) c-basic-offset)
-                                         (t #'c-lineup-arglist)))))))
+                                   (cond ((= col 0) 'c-basic-offset)
+                                         (t 'c-lineup-arglist)))))))
   "nginx style for `cc-styles'.
 https://nginx.org/en/docs/dev/development_guide.html#code_style")
+
+
+;; (defun cc*-style-align-entire (beg end)
+;;   "Align the selected region as if it were one alignment section.
+
+;; BEG and END mark the extent of the region.
+;; See `align-entire'."
+;;   (interactive "r")
+;;   (eval-when-compile (require 'align))
+;;   (fluid-let (align-default-spacing 2)
+;;     (align-entire beg end)))
 
 
  ;; end of `cc-styles'
@@ -653,7 +664,7 @@ https://nginx.org/en/docs/dev/development_guide.html#code_style")
     (require 'tags))
 
   ;; load styles
-  (c-add-style (car cc-style-nginx) (cdr cc-style-nginx)))
+  (c-add-style (car cc*-style-nginx) (cdr cc*-style-nginx)))
 
 
 (with-eval-after-load 'cmacexp
