@@ -636,6 +636,7 @@ https://nginx.org/en/docs/dev/development_guide.html#code_style")
 BEG and END mark the extent of the region.
 See `align-entire'."
   (interactive "r")
+  (eval-when-compile (require 'align))
   (require 'align)
   (fluid-let (align-default-spacing 2)
     (align-entire beg end)))
