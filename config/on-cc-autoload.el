@@ -630,16 +630,17 @@ RENEW whether to renew the existing FILE."
 https://nginx.org/en/docs/dev/development_guide.html#code_style")
 
 
-(defun cc*-style-align-entire (beg end)
+(defun cc*-style-align-entire (begin end &optional n)
   "Align the selected region as if it were one alignment section.
 
-BEG and END mark the extent of the region.
+BEGIN and END mark the extent of the region.
+N specify the number of spaces when align, default is 2.
 See `align-entire'."
-  (interactive "rp")
+  (interactive "r\nP")
   (eval-when-compile (require 'align))
   (require 'align)
-  (fluid-let (align-default-spacing (or current-prefix-arg 2))
-    (align-entire beg end)))
+  (fluid-let (align-default-spacing (or n 2))
+    (align-entire begin end)))
 
 
  ;; end of `cc-styles'
