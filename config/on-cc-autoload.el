@@ -630,15 +630,15 @@ RENEW whether to renew the existing FILE."
 https://nginx.org/en/docs/dev/development_guide.html#code_style")
 
 
-;; (defun cc*-style-align-entire (beg end)
-;;   "Align the selected region as if it were one alignment section.
+(defun cc*-style-align-entire (beg end)
+  "Align the selected region as if it were one alignment section.
 
-;; BEG and END mark the extent of the region.
-;; See `align-entire'."
-;;   (interactive "r")
-;;   (eval-when-compile (require 'align))
-;;   (fluid-let (align-default-spacing 2)
-;;     (align-entire beg end)))
+BEG and END mark the extent of the region.
+See `align-entire'."
+  (interactive "r")
+  (require 'align)
+  (fluid-let (align-default-spacing 2)
+    (align-entire beg end)))
 
 
  ;; end of `cc-styles'
@@ -664,7 +664,10 @@ https://nginx.org/en/docs/dev/development_guide.html#code_style")
     (require 'tags))
 
   ;; load styles
-  (c-add-style (car cc*-style-nginx) (cdr cc*-style-nginx)))
+  (c-add-style (car cc*-style-nginx) (cdr cc*-style-nginx))
+
+  ;; keymap: align
+  (define-key% c-mode-map (kbd "C-c |") #'cc*-style-align-entire))
 
 
 (with-eval-after-load 'cmacexp
