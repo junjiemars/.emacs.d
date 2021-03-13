@@ -1760,8 +1760,12 @@ It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]].
 - =tail -f=: @@html:<kbd>@@M-x auto-revert-tail-mode@@html:</kbd>@@
 - toggle highlighting of the current line: @@html:<kbd>@@M-x
   hl-line-mode@@html:</kbd>@@
+- highlight all lines matching a regexp: @@html:<kbd>@@M-s h
+  l@@html:</kbd>@@, and @@html:<kbd>@@M-s h u@@html:</kbd>@@ to
+  unhighlight.
 - /narrow/ region: @@html:<kbd>@@C-x n n@@html:</kdb>@@
 - /widen/ region: @@html:<kbd>@@C-x n w@@html:</kbd>@@
+
 ** LaTeX
    :PROPERTIES:
    :CUSTOM_ID: latex
