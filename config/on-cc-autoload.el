@@ -646,6 +646,9 @@ See `align-entire'."
  ;; end of `cc-styles'
 
 
+;;; Default `c-mode-hook' involving useless `macrostep-c-mode-hook'.
+(setq% c-mode-hook nil 'cc-mode)
+
 (with-eval-after-load 'cc-mode
 
   (when-var% c-mode-map 'cc-mode
