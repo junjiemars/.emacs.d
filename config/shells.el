@@ -27,7 +27,7 @@
 (defvar *default-shell-env*
   (list :exec-path nil
         :copy-vars nil)
-  "Default shell environments, 
+  "Default shell environments,
 get via `(shell-env-> k)' and put via `(shell-env<- k v)'")
 
 
@@ -132,7 +132,7 @@ See also: `parse-colon-path'."
 ;; Windows ansi-term/shell
 
 (when-platform% 'windows-nt
-  
+
   (defadvice ansi-term (before ansi-term-before disable)
     (set-window-buffer (selected-window)
                        (make-comint-in-buffer "ansi-term" nil "cmd"))))
@@ -168,6 +168,8 @@ See also: `parse-colon-path'."
     (add-to-list 'exec-path (v-home% ".exec/") t #'string=)
   (read-shell-env!)
   (when (shells-spec->* :shell-file-name)
+    (setq explicit-shell-file-name
+          (shells-spec->* :shell-file-name))
     (setenv (shells-spec->% :SHELL)
             (shells-spec->* :shell-file-name)))
   (when (shells-spec->* :exec-path)

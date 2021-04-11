@@ -64,10 +64,10 @@
        :spin-vars nil                        ;; `(("ZZZ" . "123"))
        :options '("-i" "2>/dev/null")        ;; '("--login")
        :exec-path t
-       :shell-file-name (or (executable-find% "zsh")
-                            (executable-find% "bash"))
-       :prompt (list :zsh "%n@%m %1~ %# "
-                     :bash "\\u@\\h \\W \\$ ")
+       :shell-file-name (or (executable-find% "bash")
+                            (executable-find% "zsh"))
+       :prompt (list :bash "\\u@\\h \\W \\$ "
+                     :zsh "%n@%m %1~ %# ")
        :allowed nil))
 
 ;;; desktop
