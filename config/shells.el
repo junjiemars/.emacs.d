@@ -111,7 +111,7 @@ See also: `parse-colon-path'."
 
 (defmacro copy-env-vars! (env vars)
   `(dolist* (v ,vars)
-     (when (stringp v)
+     (when (and (stringp v) (not (string= v "")))
        (let ((v1 (cdr (assoc** v ,env #'string=))))
          (when (stringp v1)
            (setenv v v1))))))
