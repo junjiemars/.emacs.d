@@ -618,8 +618,13 @@ RENEW whether to renew the existing FILE."
 	   (statement-cont . +)
 	   (inline-open . 0)
 	   (brace-list-intro first
-                       c-lineup-2nd-brace-entry-in-arglist
-                       c-lineup-class-decl-init-+ +)
+                       ,(when-fn% 'c-lineup-2nd-brace-entry-in-arglist
+                            'cc-align
+                          #'c-lineup-2nd-brace-entry-in-arglist)
+                       ,(when-fn% 'c-lineup-class-decl-init-+
+                            'cc-align
+                          #'c-lineup-class-decl-init-+)
+                       +)
      (arglist-cont-nonempty . ,(lambda (langem)
                                  (let ((col (save-excursion
                                               (goto-char (cdr langem))
