@@ -168,7 +168,7 @@ See also: `parse-colon-path'."
     (add-to-list 'exec-path (v-home% ".exec/") t #'string=)
   (read-shell-env!)
   (let ((shell (shells-spec->* :shell-file-name)))
-    (when (file-exists-p shell)
+    (when shell
       (setq% explicit-shell-file-name shell 'shell)
       (setq shell-file-name shell)
       (setenv (shells-spec->% :SHELL) shell)))
