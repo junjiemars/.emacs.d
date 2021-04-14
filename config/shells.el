@@ -167,11 +167,11 @@ See also: `parse-colon-path'."
     ;; disallowed: append .exec/ to `exec-path'
     (add-to-list 'exec-path (v-home% ".exec/") t #'string=)
   (read-shell-env!)
-  (when (shells-spec->* :shell-file-name)
-    (setq explicit-shell-file-name
-          (shells-spec->* :shell-file-name))
-    (setenv (shells-spec->% :SHELL)
-            (shells-spec->* :shell-file-name)))
+  (let ((shell (shells-spec->* :shell-file-name)))
+    (when (file-exists-p shell)
+      (setq% explicit-shell-file-name shell 'shell)
+      (setq shell-file-name shell)
+      (setenv (shells-spec->% :SHELL) shell)))
   (when (shells-spec->* :exec-path)
     (copy-exec-path! (shell-env-> :exec-path)))
   (let ((copying (shells-spec->* :copy-vars)))
