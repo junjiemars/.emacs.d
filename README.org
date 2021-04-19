@@ -385,7 +385,8 @@ Introduce the rules of naming /files/ and /functions/.
 Easy to switch themes, or try a new one.
 
 #+ATTR_HTML: :style text-align:left
-The theme's spec locate in =(*self-paths* :get :env-spec)= by default.
+The theme's spec locate in =(*self-env-spec* :get :theme
+:custom-theme-directory)= by default.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
@@ -411,7 +412,7 @@ Using Emacs's builtin themes /tango-dark/ :
 #+BEGIN_SRC emacs-lisp
 (*self-env-spec*
  :put :theme
- (list :name nil ;; 'dracula
+ (list :name 'tango-dark ;; 'dracula
        :custom-theme-directory (emacs-home* "theme/")
        :compile nil ;; expert option
        :allowed nil))
@@ -434,8 +435,8 @@ Easy to swtich fonts and glyph character such as [[https://en.wikipedia.org/wiki
 one. The default encoding is [[https://en.wikipedia.org/wiki/UTF-8][UTF-8]].
 
 #+ATTR_HTML: :style text-align:left
-The frame's spec locate in =(*self-env-spec* :get :frame)= by
-default and for GUI mode only.
+The frame's spec locate in =(*self-env-spec* :get :frame)= by default
+and for GUI mode only.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
@@ -508,8 +509,7 @@ functionalities, it is unstable and slow. But here, We had a better
 one.
 
 #+ATTR_HTML: :style text-align:left
-The shell spec locate in =(*self-env-spec* :get :shell)= by
-default.
+The shell spec locate in =(*self-env-spec* :get :shell)= by default.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
@@ -527,13 +527,12 @@ default.
 #+END_SRC
 
 #+REVEAL: split
-- =:copy-vars= copy environment variables from shell to Emacs, affects
-  =eshell=, =shell= and =ansi-term=
+- =:copy-vars= copy environment variables from shell into Emacs, that
+  affects =eshell=, =shell= and =ansi-term=
 - =:spin-vars= spin customized variables, only affects =eshell=
 - =:options= a list of shell's options
 - =:exec-path= copy =$PATH= or =%PATH%= to =exec-path=
-- =:shell-file-name= where the shell program located, it should be
-  specified when =:copy-vars= is non nil
+- =:shell-file-name= where the shell program located
 - =:prompt= unify shell prompt in =term= mode, via @@html:<kbd>@@C-c
   C-j@@html:</kbd>@@ then @@html:<kbd>M-x
   term-unify-shell-prompt@@html:</kbd>@@
@@ -573,8 +572,8 @@ shell.
     :END:
 
 #+ATTR_HTML: :style text-align:left
-The desktop spec locate in =(*self-env-spec* :get :desktop)=
-by default.
+The desktop spec locate in =(*self-env-spec* :get :desktop)= by
+default.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
@@ -607,8 +606,7 @@ by default.
 Using socks proxy when installing packages or browsing web pages.
 
 #+ATTR_HTML: :style text-align:left
-The socks spec locate in =(*self-env-spec* :get :socks)= by
-default.
+The socks spec locate in =(*self-env-spec* :get :socks)= by default.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
@@ -636,11 +634,11 @@ and no matter =:allowed= is =t= or =nil=.
 #+ATTR_HTML: :style text-align:left
 Emacs comes with a lots of wrappers(=net-utils.el=) around the common
 network utilities. Such as @@html:<kbd>@@M-x ping@@html:</kdb>@@ a
-host.  But =net-utils.el= has some inconveniences:
+host. But =net-utils.el= has some inconveniences:
 
 #+REVEAL: split
 - If you want to =ping= with options you must set
-=ping-program-options= customizable variable.
+  =ping-program-options= customizable variable.
 - IPv6 supporting: on Unix-like OS there are individual program for
   IPv6, such as =ping6=, but on Windows OS just one =ping= program and
   with =-6= option.
@@ -924,7 +922,7 @@ On Windows, there are some encoding issues when
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
-The good news is all those issues had gone in this kit.
+The good news is the whole above issues had gone in this kit.
 
 #+ATTR_HTML: :style text-align:left
 For =.rar= archive, emacs really sucks. 
@@ -1306,8 +1304,8 @@ perfect.
 - [[#remote][Remote]]
 - [[#sort][Sort]]
 - [[#face][Face]]
-- [[#latex-requirements][LaTeX Requirements]]
 - [[#log][Log]]
+- [[#latex][LaTeX]]
 
 ** Emacs Documents
    :PROPERTIES:
