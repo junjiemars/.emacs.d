@@ -3,7 +3,7 @@
 ;; More reasonable Emacs on MacOS, Windows and Linux
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; on-enc-autoload.el
+;; on-trans-autoload.el
 ;;;;
 
 
@@ -25,33 +25,35 @@
        ,@body)))
 
 
-(defmacro region-extract-str (&optional buffer no-properties)
-  "Extract string or NO-PROPERTIES string from region or BUFFER."
+(defmacro region-extract-str (&optional buffer properties)
+  "Extract string from region or BUFFER with or without PROPERTIES.
+
+If no region actived, then extract from buffer when BUFFER is t."
   `(region-active-if
-       (if ,no-properties
-           (buffer-substring-no-properties (region-beginning) (region-end))
-         (buffer-substring (region-beginning) (region-end)))
+       (if ,properties
+         (buffer-substring (region-beginning) (region-end))
+           (buffer-substring-no-properties (region-beginning) (region-end)))
      (when ,buffer
        (with-current-buffer (current-buffer)
          (save-excursion
-           (if ,no-properties
-               (buffer-substring-no-properties (point-min) (point-max)))
-           (buffer-substring (point-min) (point-max)))))))
+           (if ,properties
+               (buffer-substring (point-min) (point-max))
+             (buffer-substring-no-properties (point-min) (point-max))))))))
 
 
-;; Encode/Decode URL
+;; Trans URL
 
 (defun encode-url ()
   "Encode region via URL encoded."
   (interactive)
-  (let ((s (string-trim>< (region-extract-str t t))))
+  (let ((s (string-trim>< (region-extract-str t))))
     (_enc_with_output_buffer_ +encode-output-buffer-name+
                               (insert (url-hexify-string s)))))
 
 (defun decode-url ()
   "Decode region via URL decoded."
   (interactive)
-  (let ((s (string-trim>< (region-extract-str t t))))
+  (let ((s (string-trim>< (region-extract-str t))))
     (_enc_with_output_buffer_ +decode-output-buffer-name+
                               (insert (decode-coding-string
                                        (url-unhex-string s)
@@ -67,7 +69,7 @@
 (defun encode-base64 ()
   "Encode region via base64 encoded."
   (interactive)
-  (let ((s (string-trim>< (region-extract-str t t))))
+  (let ((s (string-trim>< (region-extract-str t))))
     (_enc_with_output_buffer_ +encode-output-buffer-name+
                               (insert (base64-encode-string
                                        (if (multibyte-string-p s)
@@ -78,7 +80,7 @@
 (defun decode-base64 ()
   "Decode region base64 decoded."
   (interactive)
-  (let ((s (string-trim>< (region-extract-str t t))))
+  (let ((s (string-trim>< (region-extract-str t))))
     (_enc_with_output_buffer_ +decode-output-buffer-name+
                               (insert (decode-coding-string
                                        (base64-decode-string s) 'utf-8)))))
@@ -133,7 +135,7 @@ If ENDIAN is t then decode in small endian."
                      (read-string "endian: " (if (= 108 (byteorder))
                                                  "small"
                                                "big"))))
-  (let* ((n (ipv4->int (string-trim>< (region-extract-str t t))
+  (let* ((n (ipv4->int (string-trim>< (region-extract-str t))
                        (string= "small" endian)))
          (out (and (integerp n)
                    (format "%d (#o%o, #x%x)" n n n))))
@@ -152,7 +154,7 @@ If ENDIAN is t then decode in small endian."
                      (read-string "endian: " (if (= 108 (byteorder))
                                                  "small"
                                                "big"))))
-  (let* ((s (string-trim>< (region-extract-str t t)))
+  (let* ((s (string-trim>< (region-extract-str t)))
          (out (int->ipv4 (cond ((string-match "^[#0][xX]" s)
                                 (string-to-number (substring s 2) 16))
                                ((string-match "^[#0][oO]" s)
@@ -190,7 +192,7 @@ If ENDIAN is t then decode in small endian."
 (defun decode-roman-number (&optional arg)
   "Decode roman number into decimal number."
   (interactive "P")
-  (let* ((ss (split-string* (region-extract-str t t) "" t))
+  (let* ((ss (split-string* (region-extract-str t) "" t))
          (n (roman->arabic ss 0))
          (out (format "%d (#o%o, #x%x)" n n n)))
     (if arg
@@ -246,7 +248,7 @@ If ENDIAN is t then decode in small endian."
 (defun decode-chinese-number (&optional arg)
   "Decode chinese number to decimal number."
   (interactive "P")
-  (let* ((ss (split-string* (region-extract-str t t) "" t))
+  (let* ((ss (split-string* (region-extract-str t) "" t))
          (n (chinese->arabic ss 0))
          (out (format "%d (#o%o, #x%x)" n n n)))
     (if arg
@@ -336,4 +338,4 @@ If ENDIAN is t then decode in small endian."
   (view-mode t))
 
 
-;; end of file
+;; EOF

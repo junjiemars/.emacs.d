@@ -298,7 +298,7 @@ Introduce the rules of naming /files/ and /functions/.
     ├── on-dired-autoload.el
     ├── on-docview-autoload.el
     ├── on-edit-autoload.el
-    ├── on-enc-autoload.el
+    ├── on-trans-autoload.el
     ├── on-eshell-autoload.el
     ├── on-eww-autoload.el
     ├── on-font-autoload.el
