@@ -15,6 +15,10 @@
   "*decode-output*"
   "Decode output buffer name")
 
+(defvar *endian-history*
+  '("small" "big")
+  "Endian choosing history list.")
+
 
 (eval-when-compile
 
@@ -22,7 +26,12 @@
     (declare (indent 0))
     `(with-current-buffer (switch-to-buffer-other-window ,buffer)
        (delete-region (point-min) (point-max))
-       ,@body)))
+       ,@body))
+
+  (defmacro _endian_ ()
+    `(if (= 108 (byteorder))
+         "small"
+       "endian")))
 
 
 (defmacro region-extract-str (&optional buffer properties)
@@ -89,10 +98,10 @@ If no region actived, then extract from buffer when BUFFER is t."
  ;; end of base64
 
 
-;; Encode/Decode IP address
+;; Trans IP address
 
 (defmacro ipv4->int (s &optional small-endian)
-  "Encode IPv4 address to int."
+  "Translate IPv4 address to int from string."
   (let ((ss (gensym*)))
     `(let ((,ss (and (stringp ,s)
                      (split-string* ,s "\\." t))))
@@ -111,7 +120,7 @@ If no region actived, then extract from buffer when BUFFER is t."
 
 
 (defmacro int->ipv4 (n &optional small-endian)
-  "Decode IPv4 address to string."
+  "Translate IPv4 address to string from int."
   `(when (integerp ,n)
      (if ,small-endian
          (format "%s.%s.%s.%s"
@@ -126,34 +135,28 @@ If no region actived, then extract from buffer when BUFFER is t."
                (lsh (logand ,n #xff000000) -24)))))
 
 
-(defun encode-ipv4 (&optional arg endian)
-  "Encode IPv4 address in region to int.
+(defun encode-ipv4 (&optional buffer endian)
+  "Encode IPv4 address to int according to ENDIAN.
 
-If ARG is non nil then output to `+encode-output-buffer-name+'.
-If ENDIAN is t then decode in small endian."
+If BUFFER is non nil then output to `+encode-output-buffer-name+'."
   (interactive (list (if current-prefix-arg t nil)
-                     (read-string "endian: " (if (= 108 (byteorder))
-                                                 "small"
-                                               "big"))))
+                     (read-string "endian: " (_endian_) '*endian-history*)))
   (let* ((n (ipv4->int (string-trim>< (region-extract-str t))
                        (string= "small" endian)))
          (out (and (integerp n)
                    (format "%d (#o%o, #x%x)" n n n))))
-    (if arg
+    (if buffer
         (_enc_with_output_buffer_ +encode-output-buffer-name+
                                   (insert out))
       (message "%s" out))))
 
 
-(defun decode-ipv4 (&optional arg endian)
-  "Decode IPv4 address region to string.
+(defun decode-ipv4 (&optional buffer endian)
+  "Decode IPv4 address to string according to ENDIAN.
 
-If ARG is non nil then output to `+decode-output-buffer-name+'.
-If ENDIAN is t then decode in small endian."
+If BUFFER is non nil then output to `+decode-output-buffer-name+'."
   (interactive (list (if current-prefix-arg t nil)
-                     (read-string "endian: " (if (= 108 (byteorder))
-                                                 "small"
-                                               "big"))))
+                     (read-string "endian: " (_endian_) '*endian-history*)))
   (let* ((s (string-trim>< (region-extract-str t)))
          (out (int->ipv4 (cond ((string-match "^[#0][xX]" s)
                                 (string-to-number (substring s 2) 16))
@@ -161,7 +164,7 @@ If ENDIAN is t then decode in small endian."
                                 (string-to-number (substring s 2) 8))
                                (t (string-to-number s)))
                          (string= "small" endian))))
-    (if arg
+    (if buffer
         (_enc_with_output_buffer_ +decode-output-buffer-name+
                                   (insert out))
       (message "%s" out))))
