@@ -1326,7 +1326,6 @@ It's *self-documenting* and great, keep reading it frequently.
 - Info: @@html:<kbd>@@C-h i@@html:</kbd>@@
 - Info /file/: @@html:<kbd>@@C-u C-h i <where>@@html:</kbd>@@
 - Index of /topic/: @@html:<kbd>@@C-h r i @@html:</kbd>@@
-- Info of /mode/: @@html:<kbd>@@C-h i m @@html:</kbd>@@
 
 #+REVEAL: split
 - Function: @@html:<kbd>@@C-h f@@html:</kbd>@@ display documentation
