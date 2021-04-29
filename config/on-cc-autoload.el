@@ -457,7 +457,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
           (when (and +cc*-compiler-bin+ +cc*-xargs-bin+)
             (let* ((tmp (make-temp-file
                          (expand-file-name "cc-" temporary-file-directory)))
-                   (c-macro-buffer-name "*Macroexpansion*")
+                   (c-macro-buffer-name "*Macro Expanded*")
                    (c-macro-preprocessor
                     (format "%s -0 > %s && %s && cl -E %s"
                             +cc*-xargs-bin+ tmp +cc*-compiler-bin+ tmp)))
@@ -465,7 +465,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
                 (delete-file tmp))))
         (when +cc*-compiler-bin+
           (setq% c-macro-buffer-name
-                 "*Macroexpansion*"
+                 "*Macro Expanded*"
                  'cmacexp)
           (setq% c-macro-preprocessor
                  (format "%s -E -o - -" +cc*-compiler-bin+)
@@ -489,7 +489,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
                    cmd))))
     (with-current-buffer
         (switch-to-buffer
-         (concat "*Predefined Macros"
+         (concat "*Macro Predefined"
                  (if remote
                      (concat "@" (remote-norm->user@host remote) "*")
                    "*")))
