@@ -1151,10 +1151,12 @@ editing Lisp code more easy.
 
 #+ATTR_HTML: :style text-align:left
 For Scheme programming, there are builtin minor modes: =gambit-mode=
-and =chez-mode=. =gambit-mode= for [[http://www.gambitscheme.org/wiki/index.php/Main_Page][Gambit]] Scheme system and
-=chez-mode= for [[https://scheme.com][Chez]] Scheme system.
+for [[http://www.gambitscheme.org/wiki/index.php/Main_Page][Gambit]] Scheme system, and =chez-mode= for [[https://scheme.com][Chez]] Scheme system.
 
 *** REPL
+		:PROPERTIES:
+		:CUSTOM_ID: list-programming-repl
+		:END:
 
 - =*slime-repl*=: @@html:<kbd>@@M-x slime@@html:</kbd>@@
 - =*gambit*=: @@html:<kbd>@@M-x run-gambit@@html:</kbd>@@
