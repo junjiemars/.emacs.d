@@ -36,47 +36,42 @@ test_bone() {
   echo_env "bone|clean"
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
-             --eval="                                           \
-(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
-  (load (expand-file-name \"${_ROOT_}/init.el\"))               \
-  (clean-compiled-files))                                       \
-"
+             --eval="
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))
+  (load (expand-file-name \"${_ROOT_}/init.el\"))
+  (clean-compiled-files))"
 
   echo_env "bone|compile"
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
-             --eval="                                           \
-(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
-  (load (expand-file-name \"${_ROOT_}/init.el\")))              \
-"
+             --eval="
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))
+  (load (expand-file-name \"${_ROOT_}/init.el\")))"
 
  echo_env "bone|boot"
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
-             --eval="                                           \
-(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
-  (load (expand-file-name \"${_ROOT_}/init.el\")))              \
-"
+             --eval="
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))
+  (load (expand-file-name \"${_ROOT_}/init.el\")))"
 }
 
 test_debug() {
   echo_env "debug|clean"
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
-             --eval="                                           \
-(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
-  (load (expand-file-name \"${_ROOT_}/init.el\"))               \
-  (clean-compiled-files))                                       \
-"
+             --eval="
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))
+  (load (expand-file-name \"${_ROOT_}/init.el\"))
+  (clean-compiled-files))"
 
   echo_env "debug|capture"
   ${_EMACS_} --debug-init                                       \
-             --eval="                                           \
-(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
-  (setq debug-on-error t)                                       \
-  (load (expand-file-name \"${_ROOT_}/init.el\"))               \
-  (load (emacs-home* \"init.el\")))                             \
-"
+             --eval="
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))
+  (setq debug-on-error t)
+  (load (expand-file-name \"${_ROOT_}/init.el\"))
+  (load (emacs-home* \"init.el\")))"
 }
 
 test_axiom() {
@@ -94,31 +89,28 @@ END
   echo_env "axiom|clean"
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
-             --eval="                                           \
-(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
-  (load (expand-file-name \"${_ROOT_}/init.el\"))               \
-  (clean-compiled-files))                                       \
-"
+             --eval="
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))
+  (load (expand-file-name \"${_ROOT_}/init.el\"))
+  (clean-compiled-files))"
 
   echo_env "axiom|compile"
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
-             --eval="                                           \
-(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
-  (load (expand-file-name \"${_ROOT_}/init.el\"))               \
-  (load (emacs-home* \"test.el\"))                              \
-  (ert-run-tests-batch-and-exit))                               \
-"
+             --eval="
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))
+  (load (expand-file-name \"${_ROOT_}/init.el\"))
+  (load (emacs-home* \"test.el\"))
+  (ert-run-tests-batch-and-exit))"
 
   echo_env "axiom|boot"
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
-             --eval="                                           \
-(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
-  (load (expand-file-name \"${_ROOT_}/init.el\"))               \
-  (load (emacs-home* \"test.el\"))                              \
-  (ert-run-tests-batch-and-exit))                               \
-"
+             --eval="
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))
+  (load (expand-file-name \"${_ROOT_}/init.el\"))
+  (load (emacs-home* \"test.el\"))
+  (ert-run-tests-batch-and-exit))"
 }
 
 test_package() {
@@ -141,27 +133,24 @@ END
   echo_env "package|clean"
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
-             --eval="                                           \
-(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
-  (load (expand-file-name \"${_ROOT_}/init.el\"))               \
-  (clean-compiled-files))                                       \
-"
+             --eval="
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))
+  (load (expand-file-name \"${_ROOT_}/init.el\"))
+  (clean-compiled-files))"
 
   echo_env "package|compile"
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
-             --eval="                                           \
-(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
-  (load (expand-file-name \"${_ROOT_}/init.el\")))              \
-"
+             --eval="
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))
+  (load (expand-file-name \"${_ROOT_}/init.el\")))"
 
   echo_env "package|boot"
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
-             --eval="                                           \
-(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
-  (load (expand-file-name \"${_ROOT_}/init.el\")))              \
-"
+             --eval="
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))
+  (load (expand-file-name \"${_ROOT_}/init.el\")))"
 }
 
 test_extra() {
@@ -203,31 +192,28 @@ test_extra() {
   :packages '(slime)
   :compile \`(,(compile-unit% (emacs-home* "config/use-slime-autoload.el")))))
 END
- 
+
   echo_env "extra|clean"
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
-             --eval="                                           \
-(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
-  (load (expand-file-name \"${_ROOT_}/init.el\"))               \
-  (clean-compiled-files))                                       \
-"
+             --eval="
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))
+  (load (expand-file-name \"${_ROOT_}/init.el\"))
+  (clean-compiled-files))"
 
   echo_env "extra|compile"
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
-             --eval="                                           \
-(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
-  (load (expand-file-name \"${_ROOT_}/init.el\")))              \
-"
+             --eval="
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))
+  (load (expand-file-name \"${_ROOT_}/init.el\")))"
 
   echo_env "extra|boot"
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
-             --eval="                                           \
-(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\"))) \
-  (load (expand-file-name \"${_ROOT_}/init.el\")))              \
-"
+             --eval="
+(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))
+  (load (expand-file-name \"${_ROOT_}/init.el\")))"
 }
 
 # check env
