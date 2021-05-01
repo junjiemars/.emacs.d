@@ -1,6 +1,6 @@
 ;;; on-edit-autoload.el --- editing -*- lexical-binding:t -*-
 ;;;;
-;; More reasonable Emacs on MacOS, Windows and Linux
+;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
 ;; on-edit-autoload.el

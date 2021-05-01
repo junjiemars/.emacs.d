@@ -1,6 +1,6 @@
 ;;; fns.el --- primitive functions -*- lexical-binding:t -*-
 ;;;;
-;; More reasonable Emacs on MacOS, Windows and Linux
+;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
 ;;; Commentary:

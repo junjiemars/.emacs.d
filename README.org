@@ -1,4 +1,4 @@
-#+TITLE: More Reasonable Emacs
+#+TITLE: Nore Emacs
 #+AUTHOR: Junjie Mars
 #+STARTUP: overview
 #+OPTIONS: num:nil toc:nil
@@ -31,7 +31,7 @@ version on the same machine and at the same time.
 
 #+REVEAL: split
 
-- clone More Reasonable Emacs from github
+- clone Nore Emacs from github
 #+BEGIN_SRC sh
 git clone --depth=1 https://github.com/junjiemars/.emacs.d.git ~/.emacs.d
 #+END_SRC
@@ -62,14 +62,13 @@ it's programmable, elegant and /self-documenting/.
 #+ATTR_HTML: :style text-align:left
 After falling in love with [[https://en.wikipedia.org/wiki/Lisp_(programming_language)][Lisp]], I know it's the time to make Emacs
 being a part of my body and mind, not just open a file, navigating,
-editing, and save it. So, I build More Reasonable Emacs like Ecluid
-did for gemometry.
+editing, and save it. So, I build Nore Emacs like Ecluid did for
+gemometry.
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
-The More Reasonable Emacs strives to be fast, stable and hacker
-friendly, which can be run and with consistent behaviors on wherever
-Emacs runs.
+Nore Emacs strives to be fast, stable and hacker friendly, which can
+be run and with consistent behaviors on wherever Emacs runs.
 
 #+ATTR_HTML: :style display:none
 - [[#highlights][Highlights]]
@@ -145,12 +144,12 @@ git clone --depth=1 https://github.com/junjiemars/.emacs.d.git ~/.emacs.d
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
-First run More Reasonable Emacs, it should automatically do:
+First run Nore Emacs, it should automatically do:
 - byte compile elisp source files.
 - install packages, if you allow it.
 
 #+ATTR_HTML: :style text-align:left
-After first run More Reasonable Emacs, exit and then /reopen/ Emacs.
+After first run Nore Emacs, exit and then /reopen/ Emacs.
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
@@ -502,11 +501,6 @@ and for GUI mode only.
 #+ATTR_HTML: :style text-align:left
 Suppport any =SHELL=, copying or spinning environment variables into
 Emacs environment.
-
-#+ATTR_HTML: :style text-align:left
-[[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]] has a poor implementation for the same
-functionalities, it is unstable and slow. But here, We had a better
-one.
 
 #+ATTR_HTML: :style text-align:left
 The shell spec locate in =(*self-env-spec* :get :shell)= by default.
@@ -990,7 +984,7 @@ create the tags for =Elisp= or =C= source code, such as
 =unmount-tags=.
 
 #+ATTR_HTML: :style text-align:left
-More Reasonable Emacs also supports [[http://ctags.sourceforge.net/][Exuberant Ctags]].
+Nore Emacs also supports [[http://ctags.sourceforge.net/][Exuberant Ctags]].
 
 #+REVEAL: split
 Using =mount-tags= to mount the specified tags file at first order of
@@ -1011,7 +1005,7 @@ is the inverse of =mount-tags=.
 #+ATTR_HTML: :style text-align:left
 In terminal, Emacs can not /copy to/ or /paste from/ system clipboard
 when on Darwin or Linux. For such cases, we need external programs to
-help us do the job. Now, More Reasonable Emacs integrates this
+help us do the job. Now, Nore Emacs integrates this
 functionalities, so we can use natural keys (such as
 @@html:<kbd>@@C-w@@html:</kbd>@@, @@html:<kbd>@@C-y@@html:</kbd>@@) to
 /copy to/ or /paste from/ system clipboard.
@@ -1024,15 +1018,15 @@ functionalities, so we can use natural keys (such as
 #+ATTR_HTML: :style text-align:left
 There are no uniformed [[https://www.emacswiki.org/emacs/IncrementalSearch][isearch]] functionalites among in
 =isearch-forward=, =isearch-backward= and
-=isearch-forward-symbol-at-point=. Now, in More Reasonable Emacs those
+=isearch-forward-symbol-at-point=. Now, in Nore Emacs those
 functionalites unified to two functions: =isearch-forward*= and
 =isearch-backward*=.
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
-In More Reasonable Emacs, by default, =isearch-forward*= and
- =isearch-backward*= same with the built-in ones. Except we can search
- the text of activated *region*.  @@html:<kbd>@@C-s@@html:</kbd>@@ and
+In Nore Emacs, by default, =isearch-forward*= and =isearch-backward*=
+ same with the built-in ones. Except we can search the text of
+ activated *region*.  @@html:<kbd>@@C-s@@html:</kbd>@@ and
  @@html:<kbd>@@C-r@@html:</kbd>@@ will search forward or backward just
  like /vi/'s @@html:<kbd>@@*@@html:</kbd>@@ does. And more, searching
  =word=, =quoted string=, or =filename= forward or backword.

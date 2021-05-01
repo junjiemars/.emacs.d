@@ -1,6 +1,6 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
-;; More reasonable Emacs on MacOS, Windows and Linux
+;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
 ;; sample-self-package-spec.el: specify the package spec of yourself

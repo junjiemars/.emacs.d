@@ -1,6 +1,6 @@
 ;;;; -*- lexical-binding:t -*-
 ;;;;
-;; More reasonable Emacs on MacOS, Windows and Linux
+;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
 ;; sample-self-env-spec.el: specify the private environment specs
