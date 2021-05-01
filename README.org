@@ -56,7 +56,7 @@ One more thing, it's best to remind you: take care, it's super fast.
 
 #+ATTR_HTML: :style text-align:left
 Emacs is the most powerful editor on the world there is no *one of*,
-it's programmable, elegant and /self-documenting/. 
+it's programmable, elegant and /self-documenting/.
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
@@ -145,8 +145,8 @@ git clone --depth=1 https://github.com/junjiemars/.emacs.d.git ~/.emacs.d
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
-First run More Reasonable Emacs, it should automatically do: 
-- byte compile elisp source files. 
+First run More Reasonable Emacs, it should automatically do:
+- byte compile elisp source files.
 - install packages, if you allow it.
 
 #+ATTR_HTML: :style text-align:left
@@ -925,7 +925,7 @@ On Windows, there are some encoding issues when
 The good news is the whole above issues had gone in this kit.
 
 #+ATTR_HTML: :style text-align:left
-For =.rar= archive, emacs really sucks. 
+For =.rar= archive, emacs really sucks.
 - on Emacs 23.3.1, using =unrar-free= in =archive-rar-summarize=
   function, but on Emacs 26.1 using =lsar=, and those all had been
   hard coded in =arc-mode.el=.
@@ -952,7 +952,7 @@ For =.rar= archive, emacs really sucks.
    :CUSTOM_ID: edit-mark
    :END:
 
-#+ATTR_HTML: :style text-align:left    
+#+ATTR_HTML: :style text-align:left
 Provides the abilities to mark /symbol/, /filename/ and /line/ in
 current buffer then you can @@html:<kbd>@@M-w@@html:</kbd>@@ the
 marked part.
@@ -1036,7 +1036,7 @@ In More Reasonable Emacs, by default, =isearch-forward*= and
  @@html:<kbd>@@C-r@@html:</kbd>@@ will search forward or backward just
  like /vi/'s @@html:<kbd>@@*@@html:</kbd>@@ does. And more, searching
  =word=, =quoted string=, or =filename= forward or backword.
- 
+
 *** Open line
    :PROPERTIES:
    :CUSTOM_ID: edit-open-line
@@ -1090,7 +1090,7 @@ Global for all Emacs' version.
 - @@html:<kbd>@@C-c b r@@html:</kbd>@@ =revert-buffer=
 - @@html:<kbd>@@C-c b n@@html:</kbd>@@ =echo-buffer-file-name=
 - @@html:<kbd>@@C-o@@html:</kbd>@@ =open-next-line=
-- @@html:<kbd>@@C-M-o@@html:</kbd>@@ =open-previous-line=   
+- @@html:<kbd>@@C-M-o@@html:</kbd>@@ =open-previous-line=
 - @@html:<kbd>@@C-c m s@@html:</kbd>@@: =mark-symbol@=
 - @@html:<kbd>@@C-c m l@@html:</kbd>@@: =mark-line@=
 - @@html:<kbd>@@C-c m f@@html:</kbd>@@: =mark-filename@=
@@ -1108,7 +1108,7 @@ Global for all Emacs' version.
 #+ATTR_HTML: :style text-align:left
 Compatibled for ancient Emacs versions, compatible keys may not
 avaiabled on ancient Emacs.
-    
+
 - @@html:<kbd>@@M-,@@html:</kbd>@@ =pop-tag-mark=
 - @@html:<kbd>@@M-*@@html:</kbd>@@ =tags-loop-continue=
 - @@html:<kbd>@@C-l@@html:</kbd>@@ =recenter-top-bottom=
@@ -1143,24 +1143,22 @@ features.
    :END:
 
 #+ATTR_HTML: :style text-align:left
-Lisp programming in Emacs already good enough, if [[https://www.emacswiki.org/emacs/ParEdit][ParEdit]] and
-[[https://github.com/Malabarba/aggressive-indent-mode][aggressive-indent-mode]] installed editing Lisp code more easy.
+Lisp programming in Emacs already good enough, if [[https://www.emacswiki.org/emacs/ParEdit][ParEdit]] installed
+editing Lisp code more easy.
 
 #+ATTR_HTML: :style text-align:left
-[[https://github.com/slime/slime][slime]] is the best tool for Common Lisp programming. And for Scheme
-programming the [[http://www.nongnu.org/geiser/][Geiser]] the pretty good.
+[[https://github.com/slime/slime][slime]] is the best tool for Common Lisp programming.
 
 #+ATTR_HTML: :style text-align:left
-The [[http://www.gambitscheme.org/wiki/index.php/Main_Page][Gambit]] Scheme system is a complete, portable, efficient and
-reliable implementation, if you like it you can =run-gambit=.
-
-#+ATTR_HTML: :style text-align:left
-The [[https://scheme.com][Chez]] Scheme system is a complete, portable, efficient and
-reliable implementation, if you like it you can =run-chez=.
-
-*** Editing
+For Scheme programming, there are builtin minor modes: =gambit-mode=
+and =chez-mode=. =gambit-mode= for [[http://www.gambitscheme.org/wiki/index.php/Main_Page][Gambit]] Scheme system and
+=chez-mode= for [[https://scheme.com][Chez]] Scheme system.
 
 *** REPL
+
+- =*slime-repl*=: @@html:<kbd>@@M-x slime@@html:</kbd>@@
+- =*gambit*=: @@html:<kbd>@@M-x run-gambit@@html:</kbd>@@
+- =*chez*=: @@html:<kbd>@@M-x run-chez@@html:</kbd>@@
 
 ** C programming
    :PROPERTIES:
@@ -1175,7 +1173,7 @@ Now, we are in the cycle of editing, compiling, debugging.
 #+ATTR_HTML: :style display:none
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-editing-on-darwin-gui.png][editing on Darwin]]
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-darwin.png][debugging via lldb on Darwin]]
-- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-linux.png][debugging via lldb on Ubuntu]]   
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-linux.png][debugging via lldb on Ubuntu]]
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-cdb-on-windows.png][debugging via cdb]]
 
 *** Editing
@@ -1205,7 +1203,7 @@ local or remote in =view-mode= and via
 #+ATTR_HTML: :style text-align:left
 Mark the code that include a macro call then @@html:<kbd>@@C-c
 C-e@@html:</kbd>@@, you should see the expansion of the macro in
-=*Macroexpansion*=, whatever you are using /gcc/, /clang/ and /msvc/,
+=*Macro Expanded*=, whatever you are using /gcc/, /clang/ and /msvc/,
 locally or remotely.
 
 #+ATTR_HTML: :style display:none
@@ -1220,7 +1218,7 @@ locally or remotely.
 
 #+ATTR_HTML: :style text-align:left
 Dump compiler predefined macros, @@html:<kbd>@@C-c #@@html:</kbd>@@,
-you should see the predefined macros in =*Predefined Macros*=,
+you should see the predefined macros in =*Macros Predefined*=,
 whatever you are using /gcc/ and /clang/ locally or remotely.
 
 #+ATTR_HTML: :style display:none
@@ -1259,7 +1257,7 @@ perfect.
 /screenshots/:
 #+ATTR_HTML: :style display:none
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-darwin.png][debugging via lldb on Darwin]]
-- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-linux.png][debugging via lldb on Ubuntu]]   
+- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-linux.png][debugging via lldb on Ubuntu]]
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-cdb-on-windows.png][debugging via cdb]]
 
 * Troubleshoting
@@ -1269,7 +1267,7 @@ perfect.
 
 1. @@html:<kbd>@@M-x clean-compiled-files@@html:</kbd>@@ then exit
    and reopen Emacs.
-2. Check Emacs configurations: 
+2. Check Emacs configurations:
   - @@html:<kbd>@@M: system-configuration-options@@html:</kbd>@@
   - @@html:<kbd>@@M: system-configuration-features@@html:</kbd>@@
   - @@html:<kbd>@@M: features@@html:</kbd>@@
@@ -1445,7 +1443,7 @@ It's *self-documenting* and great, keep reading it frequently.
 
 #+REVEAL: split
 - insert char: @@html:<kbd>@@C-x 8 RET@@html:</kbd>@@ GREEK SMALL LETTER LAMBDA
-- what cursor position: @@html:<kbd>@@C-x =@@html:</kbd>@@  
+- what cursor position: @@html:<kbd>@@C-x =@@html:</kbd>@@
 - describe char: @@html:<kbd>@@C-u C-x =@@html:</kbd>@@
 - quoted insert: @@html:<kbd>@@C-q@@html:</kbd>@@, such as page break
   @@html:<kbd>@@C-q C-l@@html:</kbd>@@, use @@html:<kbd>@@C-x
@@ -1645,7 +1643,7 @@ automatically from one Emacs session to the next.
 #+REVAL: split
 - select entire buffer: @@html:<kbd>@@C-x h@@html:</kbd>@@
 - select page: @@html:<kbd>@@C-x C-p@@html:</kbd>@@
-- exchange cursor position and mark: @@html:<kbd>@@C-x C-x@@html:</kbd>@@ 
+- exchange cursor position and mark: @@html:<kbd>@@C-x C-x@@html:</kbd>@@
 
 ** Keyboard Macro
    :PROPERTIES:
@@ -1770,10 +1768,10 @@ It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]].
 
 *** Requirements
 **** On Darwin
-- [[https://www.imagemagick.org/][ImageMagick]] 
+- [[https://www.imagemagick.org/][ImageMagick]]
 - texlive-basic
 - texlive-fonts-recommended
-- texlive-latex-extra 
+- texlive-latex-extra
 - texlive-latex-recommended
 - texlive-pictures
 - texlive-plain-generic
@@ -1798,7 +1796,7 @@ It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]].
 
 *** Requirements
 
-**** On Darwin		
+**** On Darwin
 
 - aspell
 - aspell-dict-en
