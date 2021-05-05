@@ -688,4 +688,10 @@ See `align-entire'."
   (ad-activate #'c-macro-expand t))
 
 
+(with-eval-after-load 'man
+  
+  ;; fix cannot find include path on Darwin in `Man-mode'
+  (setq% Man-header-file-path (cc*-system-include t) 'man))
+
+
 ;; end of on-cc-autoload.el
