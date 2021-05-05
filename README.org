@@ -27,7 +27,7 @@ It's works on Emacs version 22.1.1+ , provides more reasonable styles:
 more organized code, more consistent, more cleaner and more
 faster. You can run it on any environment Emacs itself runs on: GUI or
 Terminal, even you can run multiple Emacs instances with different
-version on the same machine and at the same time.
+version on the same machine at the same time.
 
 #+REVEAL: split
 
@@ -62,13 +62,13 @@ it's programmable, elegant and /self-documenting/.
 #+ATTR_HTML: :style text-align:left
 After falling in love with [[https://en.wikipedia.org/wiki/Lisp_(programming_language)][Lisp]], I know it's the time to make Emacs
 being a part of my body and mind, not just open a file, navigating,
-editing, and save it. So, I build Nore Emacs like Ecluid did for
-gemometry.
+editing, and save it. So, I build Nore Emacs approach Ecluid did for
+geometry.
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
-Nore Emacs strives to be fast, stable and hacker friendly, which can
-be run and with consistent behaviors on wherever Emacs runs.
+Nore Emacs strives to be consitent, fast, stable and hacker friendly,
+which can be run and with consistent behaviors on wherever Emacs runs.
 
 #+ATTR_HTML: :style display:none
 - [[#highlights][Highlights]]
@@ -81,8 +81,7 @@ be run and with consistent behaviors on wherever Emacs runs.
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
 Now, let's start from the Level Two. And one more thing: teach
-yourself some little Elisp (@@html:<kbd>@@M-x i d m
-Elisp@@html:</kbd>@@).
+yourself some little Elisp (@@html:<kbd>@@M-x i m Elisp@@html:</kbd>@@).
 
 ** Highlights
    :PROPERTIES:
@@ -95,7 +94,7 @@ Elisp@@html:</kbd>@@).
   for all coexisting Emacs on the same machine.
 - *Consistent*: wherever and whenever you can play with Emacs always
   behaves in the same way.
-- *Awesome style*: [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-windows.png][Windows]], [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-darwin.png][Darwin]], and [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-linux.png][Linux]]
+- *Minimalism style*: [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-windows.png][Windows]], [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-darwin.png][Darwin]], and [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-linux.png][Linux]]
 
 ** Requirements
    :PROPERTIES:
@@ -126,7 +125,7 @@ Elisp@@html:</kbd>@@).
 - You are the master of your Emacs, ...
 - Navigating, finding, grepping in the same way wherever, ...
 - Org Mode that's your new life, ...
-- Reliable programming experiments, C, Lisp, ...
+- Amazing programming experiments, C, Lisp, ...
 - It's a no-cost extension and git friendly infrastructure.
 
 ** Install
@@ -1270,10 +1269,9 @@ perfect.
   - @@html:<kbd>@@M: load-history@@html:</kbd>@@
   then do #1
 3. Check =*Compilation-Log*= buffer, then do #1
-4. Disable the problematic item in =(emacs-home*
-   "private/self-env-spec.el")=, then do #1
-5. Disable the problematic item in =(emacs-home*
-   "private/self-path.el")=, then do #1
+4. Check =(*self-paths*)=, then do #1
+5. Disable the problematic item in =(*self-env-spec*)=, then do #1
+6. Disable the problematic item in =(*self-packages*)=, then do #1
 
 * Mnemonic
   :PROPERTIES:
