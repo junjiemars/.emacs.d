@@ -171,14 +171,15 @@ Optional argument KEYS :key."
       `(with-no-warnings
          (some ,pred ,@seq)))))
 
-(defmacro loop* (&rest loop-args)
+(defmacro loop* (&rest clause)
   "The Common Lisp `loop' macro.
-Optional argument LOOP-ARGS xxx."
+Optional argument CLAUSE such as for clause, iteration clause,
+accumulate clause and Miscellaneous clause."
   (if-fn% 'cl-loop 'cl-lib
-          `(cl-loop ,@loop-args)
+          `(cl-loop ,@clause)
     (when-fn% 'loop 'cl
       `(with-no-warnings
-         (loop ,@loop-args)))))
+         (loop ,@clause)))))
 
  ;; end of common lisp macro
 
