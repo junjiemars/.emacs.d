@@ -668,9 +668,8 @@ whatever OS you using:
     :END:
 
 #+ATTR_HTML: :style text-align:left
-Don't tell me [[https://github.com/jwiegley/use-package][use-package]], it's trying to redefine Emacs. Here you can
-find more simpler and faster way to implement almost functionalities
-that =use-pacakge= does and more.
+It's file-oriented, you can find more simpler and faster way to
+implement almost functionalities that =use-pacakge= does and more.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
