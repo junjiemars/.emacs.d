@@ -62,8 +62,8 @@ it's programmable, elegant and /self-documenting/.
 #+ATTR_HTML: :style text-align:left
 After falling in love with [[https://en.wikipedia.org/wiki/Lisp_(programming_language)][Lisp]], I know it's the time to make Emacs
 being a part of my body and mind, not just open a file, navigating,
-editing, and save it. So, I build Nore Emacs approach Ecluid did for
-geometry.
+editing, and save it. So, I build Nore Emacs approach Ecluid did in
+his geometry.
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
