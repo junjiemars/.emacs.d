@@ -37,14 +37,14 @@ git clone --depth=1 https://github.com/junjiemars/.emacs.d.git ~/.emacs.d
 #+END_SRC
 
 - open Emacs, after Emacs compile all elisp files, then reopen Emacs
-- want more functionalities see [[#cooking][Cooking]] section
+- want more functionalities see [[#recipe][Recipe]] section
 
 #+ATTR_HTML: :style text-align:left
 One more thing, it's best to remind you: take care, it's super fast.
 
 #+ATTR_HTML: :style display:none
 - [[#story][Story]]
-- [[#cooking][Cooking]]
+- [[#recipe][Recipe]]
 - [[#programming][Programming]]
 - [[#troubleshoting][Troubleshoting]]
 - [[#mnemonic][Mnemonic]]
@@ -165,7 +165,7 @@ HAS_EMACS=1 bash <(curl https://raw.githubusercontent.com/junjiemars/kit/master/
 #+ATTR_HTML: :style text-align:left
 Now, it will works perfectly, but if you want to more control and more
 features, such as themes, packages, and fonts etc., see next section:
-[[#cooking][cooking]]
+[[#recipe][recipe]]
 
 ** Organization
    :PROPERTIES:
@@ -357,15 +357,15 @@ Introduce the rules of naming /files/ and /functions/.
 - *χ@* suffix: position related functions or macros, such as
   =mark-symbol@= and =mark-word@=
 
-* Cooking
+* Recipe
    :PROPERTIES:
-   :CUSTOM_ID: cooking
+   :CUSTOM_ID: recipe
    :END:
 
 #+ATTR_HTML: :style display:none
 - [[#theme][Theme]]
 - [[#frame][Frame]]
-- [[#cooking-shell][Shell]]
+- [[#recipe-shell][Shell]]
 - [[#session][Session]]
 - [[#network][Network]]
 - [[#package][Package]]
@@ -492,7 +492,7 @@ and for GUI mode only.
 
 ** Shell
     :PROPERTIES:
-    :CUSTOM_ID: cooking-shell
+    :CUSTOM_ID: recipe-shell
     :END:
 
 *** shell
