@@ -24,8 +24,13 @@
                                          slime-show-source-location-after
                                          disable)
     "Show the Common LisP's source location in `view-mode'."
-    (with-current-buffer (current-buffer)
-      (view-mode 1))))
+    (when (or (not (buffer-file-name (current-buffer)))
+              (let ((src (getenv "SLIME_CLI_SRC")))
+                (and src (match-string* src
+                                        (buffer-file-name (current-buffer))
+                                        0))))
+      (with-current-buffer (current-buffer)
+        (view-mode 1)))))
 
 
 (with-eval-after-load 'slime
