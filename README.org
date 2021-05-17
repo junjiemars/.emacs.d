@@ -939,6 +939,13 @@ For =.rar= archive, emacs really sucks.
    :CUSTOM_ID: editing
    :END:
 
+*** Scratch
+		:PROPERTIES:
+		:CUSTOM_ID: edit-scratch
+		:END:
+
+New a *scratch* buffer or switch to the existing one.
+		
 *** Mark
    :PROPERTIES:
    :CUSTOM_ID: edit-mark

@@ -595,6 +595,21 @@ backwards N times if negative."
  ;; end of Comment
 
 
+(defun scratch ()
+  "New a *scratch* buffer or switch to the existing one."
+  (interactive)
+  (switch-to-buffer
+   (or (get-buffer "*scratch*")
+       (with-current-buffer (get-buffer-create "*scratch*")
+         (set-buffer-major-mode (current-buffer))
+         (when (zerop (buffer-size))
+           (insert (substitute-command-keys initial-scratch-message))
+           (set-buffer-modified-p nil))
+         (current-buffer)))))
+
+ ;; end of scratch
+
+
 ;;;;
 ;; Keys
 ;;;;
