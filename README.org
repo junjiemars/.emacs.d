@@ -509,14 +509,14 @@ The shell spec locate in =(*self-env-spec* :get :shell)= by default.
 (*self-env-spec*
  :put :shell
  (list :copy-vars `("PATH")
-			 :spin-vars nil                        ;; `(("ZZZ" . "123"))
-			 :options '("-i" "2>/dev/null")        ;; '("--login")
-			 :exec-path t
-			 :shell-file-name (or (executable-find% "zsh")
-														(executable-find% "bash"))
-			 :prompt (list :zsh "%n@%m %1~ %# "
-										 :bash "\\u@\\h \\W \\$ ")
-			 :allowed nil))
+       :spin-vars nil                        ;; `(("ZZZ" . "123"))
+       :options '("-i" "2>/dev/null")        ;; '("--login")
+       :exec-path t
+       :shell-file-name (or (executable-find% "zsh")
+                            (executable-find% "bash"))
+       :prompt (list :zsh "%n@%m %1~ %# "
+                     :bash "\\u@\\h \\W \\$ ")
+       :allowed nil))
 #+END_SRC
 
 #+REVEAL: split
@@ -940,9 +940,9 @@ For =.rar= archive, emacs really sucks.
    :END:
 
 *** Scratch
-		:PROPERTIES:
-		:CUSTOM_ID: edit-scratch
-		:END:
+    :PROPERTIES:
+    :CUSTOM_ID: edit-scratch
+    :END:
 
 New a *scratch* buffer or switch to the existing one.
 
@@ -1153,9 +1153,9 @@ For Scheme programming, there are builtin minor modes: =gambit-mode=
 for [[http://www.gambitscheme.org/wiki/index.php/Main_Page][Gambit]] Scheme system, and =chez-mode= for [[https://scheme.com][Chez]] Scheme system.
 
 *** REPL
-		:PROPERTIES:
-		:CUSTOM_ID: list-programming-repl
-		:END:
+    :PROPERTIES:
+    :CUSTOM_ID: list-programming-repl
+    :END:
 
 - =*slime-repl*=: @@html:<kbd>@@M-x slime@@html:</kbd>@@
 - =*gambit*=: @@html:<kbd>@@M-x run-gambit@@html:</kbd>@@
@@ -1409,7 +1409,6 @@ It's *self-documenting* and great, keep reading it frequently.
 ** Editing
    :PROPERTIES:
    :CUSTOM_ID: editing
-	 :ID:       E1F40037-BA22-493E-97F5-AA937F58B019
    :END:
 
 - write file: @@html:<kbd>@@C-x C-w@@html:</kbd>@@ same as save as
@@ -1793,9 +1792,9 @@ It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]].
 - MiKTex
 
 ** Aspell
-	 :PROPERTIES:
-	 :CUSTOM_ID: aspell
-	 :END:
+   :PROPERTIES:
+   :CUSTOM_ID: aspell
+   :END:
 
 *** Requirements
 
