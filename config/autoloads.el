@@ -102,6 +102,13 @@
         (autoload 'lldb (v-home% "config/gud-lldb.elc")
           "Run cdb on program FILE in buffer *gud-FILE*." t)))
 
+    ;; Node
+    (when% (file-exists-p "~/.nvm/nvm.sh")
+      (prog1
+          (compile-unit% (emacs-home* "config/node.el") t)
+        (autoload 'nvm (v-home% "config/node.elc")
+          "Load nvm.")))
+
     ;; Python
     (when% (executable-find%
             "python"
@@ -113,10 +120,10 @@
 
     ;; Scheme `gambit-mode'
     (when% (executable-find% "gsc-script"
-                        (lambda (gsc)
-                          (let ((x (shell-command* gsc
-                                     "-e \"(system-type)\"")))
-                            (zerop (car x)))))
+                             (lambda (gsc)
+                               (let ((x (shell-command* gsc
+                                          "-e \"(system-type)\"")))
+                                 (zerop (car x)))))
       (prog1
           (compile-unit% (emacs-home* "config/gambit.el") t)
         (*org-babel-schemes* :put 'gambit "gsc-script")
