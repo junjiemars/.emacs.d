@@ -106,8 +106,8 @@
     (when% (file-exists-p "~/.nvm/nvm.sh")
       (prog1
           (compile-unit% (emacs-home* "config/node.el") t)
-        (autoload 'nvm (v-home% "config/node.elc")
-          "Load nvm.")))
+        (autoload 'run-node (v-home% "config/node.elc")
+          "Run a node process, input and output via buffer *node*." t)))
 
     ;; Python
     (when% (executable-find%

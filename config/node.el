@@ -53,6 +53,53 @@
   "Program invoked by the `run-node' command.")
 
 
+(defalias '*node*
+  (lexical-let% ((b))
+    (lambda (&optional n)
+      (cond ((not (null n))
+             (setq b (get-buffer-create n)))
+            ((or (null b) (not (buffer-live-p b)))
+             (setq b (get-buffer-create "*node*")))
+            (t b))))
+  "The current *node* process buffer.")
+
+
+(defvar *node-option-history* nil
+  "Node option history list.")
+
+
+ ;; end variable declarations
+
+
+(defun run-node (&optional command-line)
+  "Run a node process, input and output via buffer *node*.
+
+If there is a process already running in `*node*', switch to that
+buffer. With prefix COMMAND-LINE, allows you to edit the command
+line.
+
+Run the hook `node-repl-mode-hook' after the `comint-mode-hook'."
+  (interactive (list (read-string "Run node: "
+                                  (car *node-option-history*)
+                                  '*node-option-history*)))
+  (unless (comint-check-proc (*node*))
+    (with-current-buffer (*node*)
+      (apply #'make-comint-in-buffer
+             (buffer-name (current-buffer))
+             (current-buffer)
+             (node-program)
+             nil                        ; no start file
+             (split-string* command-line "\\s-+" t))
+      (comment (node-repl-mode))
+      (comment
+       (add-hook (if-var% completion-at-point-functions 'minibuffer
+                          'completion-at-point-functions
+                   'comint-dynamic-complete-functions)
+                 #'node-completion 0 'local))))
+  (switch-to-buffer-other-window (*node*)))
+
+
+
 
 (provide 'node)
 
