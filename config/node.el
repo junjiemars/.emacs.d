@@ -32,7 +32,25 @@
   (let ((nvmsh (expand-file-name "~/.nvm/nvm.sh")))
     (if (file-exists-p nvmsh)
         (shell-command* "source" nvmsh "; nvm" command)
-      (user-error* "!%s no found" nvmsh))))
+      (cons 1 (format "%s no found" nvmsh)))))
+
+
+(defalias 'node-program
+  (lexical-let% ((b (cond ((zerop (car (nvm "which node")))
+                           (string-trim> (cdr (nvm "which node"))))
+                          ((executable-find%
+                            "node"
+                            (lambda (node)
+                              (let ((x (shell-command* "echo"
+                                         "'1+2+3'|" node "-")))
+                                (zerop (car x)))))
+                           "node")
+                          (t "node"))))
+    (lambda (&optional n)
+      (cond ((not (null n))
+             (setq b n))
+            (t b))))
+  "Program invoked by the `run-node' command.")
 
 
 
