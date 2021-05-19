@@ -36,19 +36,19 @@
 
 
 (defalias 'node-program
-  (lexical-let% ((b (cond ((zerop (car (nvm "which node")))
-                           (string-trim> (cdr (nvm "which node"))))
-                          ((executable-find%
-                            "node"
-                            (lambda (node)
-                              (let ((x (shell-command* "echo"
-                                         "'1+2+3'|" node "-")))
-                                (zerop (car x)))))
-                           "node")
-                          (t "node"))))
+  (lexical-let% ((b (let ((nvmout (nvm "which node")))
+                      (cond ((zerop (car nvmout))
+                             (string-trim> (cdr nvmout)))
+                            ((executable-find%
+                              "node"
+                              (lambda (node)
+                                (let ((x (shell-command* "echo"
+                                           "'1+2+3'|" node "-")))
+                                  (zerop (car x)))))
+                             "node")
+                            (t "node")))))
     (lambda (&optional n)
-      (cond ((not (null n))
-             (setq b n))
+      (cond ((not (null n)) (setq b n))
             (t b))))
   "Program invoked by the `run-node' command.")
 
