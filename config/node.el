@@ -157,7 +157,7 @@ function node_emacs_apropos(word, size) {
                            (string-trim><
                             (buffer-substring-no-properties
                              (point-min) (point-max))
-                            "^undefined.*\\|[ \t\n]*"
+                            "^undefined.*\\|[ \t\n]*\\'"
                             "[ \t\n]*node_emacs_apropos.*")))))
                 (when (and (consp s1) (consp (car s1)))
                   (car s1)))
