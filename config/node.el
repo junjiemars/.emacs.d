@@ -58,33 +58,32 @@
   "The current *node* process buffer.")
 
 
-;; function node_emacs_apropos(word) {
-;; 		repl.repl.complete(word, (err, data) => {
-;; 				if (err) {
-;; 						console.log("");
-;; 				} else {
-;; 						if (Array.isArray(data)) {
-;; 								const ss = data[0];
-;; 								const hh = data[1];
-;; 								console.log('(%s %s)', ss, hh);
-;; 						}
-;; 				}
-;; 		});
-;; }
-
-(defconst +node-emacs-library+
-  "console.log('start file');
+(defconst +node-emacs-module+
+  "//node-emacs: from `(emacs-home* \"config/node.el\")'
+function node_emacs_apropos(word) {
+		repl.repl.complete(word, (err, data) => {
+				if (err) {
+						console.log('');
+				} else {
+						if (Array.isArray(data)) {
+								const ss = data[0];
+								const hh = data[1];
+								console.log('(%s %s)', ss, hh);
+						}
+				}
+		});
+}
 " 
-  "The library of node-emacs.")
+  "The module of node-emacs.")
 
 
 (defalias '*node-start-file*
-  (lexical-let% ((b (v-home% ".exec/.node.ss")))
+  (lexical-let% ((b (v-home% ".exec/.node.js")))
     (lambda (&optional n)
       (interactive)
       (if n (setq b n)
         (unless (file-exists-p b)
-          (save-str-to-file +node-emacs-library+ b))
+          (save-str-to-file +node-emacs-module+ b))
         b)))
   "The `*node*' process start file.")
 
@@ -156,7 +155,7 @@ Run the hook `node-repl-mode-hook' after the `comint-mode-hook'."
              (buffer-name (current-buffer))
              (current-buffer)
              (node-program)
-             nil                        ; no start file
+             (*node-start-file*)
              (split-string* command-line "\\s-+" t))
       (node-repl-mode)
       (comment
