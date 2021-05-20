@@ -10,8 +10,9 @@
 ;;;
 ;;; fetures:
 ;;; 1. start parameterized node process.
-;;; 2. evaluate region, last-sexp, definition, current line.
-;;; 3. load javascript file.
+;;; 2. switch/back to node REPL.
+;;; 3. send sexp/definition/region to node REPL.
+;;; 4. completion in REPL and scheme source.
 ;;;
 ;;; bugs:
 ;;;
@@ -155,6 +156,13 @@ function node_emacs_apropos(word, size) {
                 (when (and (consp s1) (consp (car s1)))
                   (car s1)))
               :exclusive 'no)))))
+
+
+(defvar node-repl-mode-map
+  (let ((m (make-sparse-keymap "node")))
+    (define-key m "\C-c\C-b" #'node-switch-to-last-buffer)
+    m)
+  "The keymap for `*node*' REPL.")
 
 
 (define-derived-mode node-repl-mode comint-mode "REPL"
