@@ -14,7 +14,7 @@
 ;;; 3. load javascript file.
 ;;;
 ;;; bugs:
-;;; 
+;;;
 ;;;;;
 
 (require 'comint)
@@ -60,21 +60,33 @@
 
 (defconst +node-emacs-module+
   "//node-emacs: from `(emacs-home* \"config/node.el\")'
-function node_emacs_apropos(word) {
+function node_emacs_apropos(word, size) {
 		repl.repl.complete(word, (err, data) => {
 				if (err) {
 						console.log('');
 				} else {
 						if (Array.isArray(data)) {
 								const ss = data[0];
-								const hh = data[1];
-								console.log('(%s %s)', ss, hh);
+                let out = ['('];
+                for (let s1 of ss) {
+                    out.push('\"' + s1 + '\"');
+                }
+                out.push(')');
+								console.log(out.join(' '));
 						}
 				}
 		});
 }
-" 
+"
   "The module of node-emacs.")
+
+
+(defalias '*node-out*
+  (lexical-let% ((b "*out|node*"))
+    (lambda (&optional n)
+      (if n (setq b n)
+        (get-buffer-create b))))
+  "The output buffer of `node-completion'.")
 
 
 (defalias '*node-start-file*
@@ -113,6 +125,38 @@ function node_emacs_apropos(word) {
       (error "No `*node*' process.")))
 
 
+(defun node-completion ()
+  (interactive)
+  (node-check-proc)
+  (let ((bounds (bounds-of-thing-at-point 'symbol)))
+    (when bounds
+      (let ((cmd (format "node_emacs_apropos(\"%s\", 64)"
+                         (buffer-substring-no-properties (car bounds)
+                                                         (cdr bounds))))
+            (proc (get-buffer-process (*node*))))
+        (with-current-buffer (*node-out*)
+          (erase-buffer)
+          (comint-redirect-send-command-to-process cmd
+                                                   (*node-out*)
+                                                   proc nil t)
+          (set-buffer (*node*))
+          (while (or quit-flag (null comint-redirect-completed))
+            (accept-process-output proc 2))
+          (comint-redirect-cleanup)
+          (setcar mode-line-process ""))
+        (list (car bounds) (cdr bounds)
+              (let ((s1 (read-from-string
+                         (with-current-buffer (*node-out*)
+                           (string-trim><
+                            (buffer-substring-no-properties
+                             (point-min) (point-max))
+                            "^undefined.*\\|[ \t\n]*"
+                            "[ \t\n]*node_emacs_apropos.*")))))
+                (when (and (consp s1) (consp (car s1)))
+                  (car s1)))
+              :exclusive 'no)))))
+
+
 (define-derived-mode node-repl-mode comint-mode "REPL"
   "Major mode for interacting with a node process.
 
@@ -121,7 +165,7 @@ The following commands are available:
 
 A node process can be fired up with M-x `run-node'.
 
-Customization: 
+Customization:
 Entry to this mode runs the hooks on `comint-mode-hook' and
   `node-repl-mode-hook' (in that order)."
   :group 'node                          ; keyword args
@@ -158,11 +202,10 @@ Run the hook `node-repl-mode-hook' after the `comint-mode-hook'."
              (*node-start-file*)
              (split-string* command-line "\\s-+" t))
       (node-repl-mode)
-      (comment
-       (add-hook (if-var% completion-at-point-functions 'minibuffer
-                          'completion-at-point-functions
-                   'comint-dynamic-complete-functions)
-                 #'node-completion 0 'local))))
+      (add-hook (if-var% completion-at-point-functions 'minibuffer
+                         'completion-at-point-functions
+                  'comint-dynamic-complete-functions)
+                #'node-completion 0 'local)))
   (switch-to-buffer-other-window (*node*)))
 
 
@@ -210,7 +253,7 @@ end of buffer, otherwise just popup the buffer."
                   (cons (file-name-directory n)
                         (file-name-nondirectory n)))
                 '(js-mode) nil))
-  (comint-check-source file) 
+  (comint-check-source file)
   (comint-send-string (node-check-proc t)
                       (format "process.chdir('%s');\n.load %s\n"
                               (file-name-directory file)
@@ -285,10 +328,10 @@ interacting with the Node REPL is at your disposal.
   :lighter (:eval (node-mode--lighter))
   :group 'node-mode
   :keymap node-mode-map
-  (comment (add-hook (if-var% completion-at-point-functions 'minibuffer
-                              'completion-at-point-functions
-                       'comint-dynamic-complete-functions)
-                     #'node-completion 0 'local))
+  (add-hook (if-var% completion-at-point-functions 'minibuffer
+                     'completion-at-point-functions
+              'comint-dynamic-complete-functions)
+            #'node-completion 0 'local)
   (node-syntax-indent))
 
 
