@@ -106,6 +106,8 @@
     (when% (file-exists-p "~/.nvm/nvm.sh")
       (prog1
           (compile-unit% (emacs-home* "config/node.el") t)
+        (autoload 'node-mode (v-home% "config/node.elc")
+          "Toggle Node's mode." t)
         (autoload 'run-node (v-home% "config/node.elc")
           "Run a node process, input and output via buffer *node*." t)))
 
