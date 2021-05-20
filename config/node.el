@@ -112,7 +112,7 @@ Customization:
 Entry to this mode runs the hooks on `comint-mode-hook' and
   `node-repl-mode-hook' (in that order)."
   :group 'node                          ; keyword args
-  (setq comint-prompt-regexp "^[^>\n-\"]*>+ *")
+  (setq comint-prompt-regexp "^[^>\n-\"]*\\(debug\\)?>+ *")
   (setq comint-prompt-read-only t)
   (comment (setq comint-input-filter #'node-input-filter))
   (comment (setq comint-get-old-input #'node-get-old-input))
