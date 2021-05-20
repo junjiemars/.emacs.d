@@ -64,16 +64,14 @@
 function node_emacs_apropos(word, size) {
 		repl.repl.complete(word, (err, data) => {
 				if (err) {
-						console.log('');
+						console.log('()');
 				} else {
 						if (Array.isArray(data)) {
-								const ss = data[0];
-                let out = ['('];
-                for (let s1 of ss) {
+                let out = [];
+                for (let s1 of data[0]) {
                     out.push('\"' + s1 + '\"');
                 }
-                out.push(')');
-								console.log(out.join(' '));
+								console.log('(%s)', out.join(' '));
 						}
 				}
 		});
