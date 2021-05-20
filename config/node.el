@@ -189,7 +189,7 @@ end of buffer, otherwise just popup the buffer."
                 (let ((n (buffer-file-name)))
                   (cons (file-name-directory n)
                         (file-name-nondirectory n)))
-                '(scheme-mode) nil))
+                '(js-mode) nil))
   (comint-check-source file)
   (comint-send-string (node-check-proc t)
                       (format "console.info('\"%s\"')\n" file))
