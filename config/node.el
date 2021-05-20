@@ -10,7 +10,7 @@
 ;;;
 ;;; fetures:
 ;;; 1. start parameterized node process.
-;;; 2. evaluate region, last-sexp, definition.
+;;; 2. evaluate region, last-sexp, definition, current line.
 ;;; 3. load javascript file.
 ;;;
 ;;; bugs:
@@ -234,11 +234,19 @@ end of buffer, otherwise just popup the buffer."
     (when bounds
       (node-send-region (car bounds) (cdr bounds)))))
 
+(defun node-send-line ()
+  "Send the current line to `*node*'."
+  (interactive)
+  (let ((bounds (bounds-of-thing-at-point 'line)))
+    (when bounds
+      (node-send-region (car bounds) (cdr bounds)))))
+
 
 (defvar node-mode-map
   (let ((m (make-sparse-keymap)))
     (define-key m "\M-\C-x" #'node-send-definition)
     (define-key m "\C-x\C-e" #'node-send-last-sexp)
+    (define-key m "\C-x\C-j" #'node-send-line)
     (define-key m "\C-c\C-l" #'node-load-file)
     (define-key m "\C-c\C-k" #'node-compile-file)
     (define-key m "\C-c\C-r" #'node-send-region)
