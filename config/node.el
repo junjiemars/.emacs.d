@@ -58,6 +58,20 @@
   "The current *node* process buffer.")
 
 
+;; function node_emacs_apropos(word) {
+;; 		repl.repl.complete(word, (err, data) => {
+;; 				if (err) {
+;; 						console.log("");
+;; 				} else {
+;; 						if (Array.isArray(data)) {
+;; 								const ss = data[0];
+;; 								const hh = data[1];
+;; 								console.log('(%s %s)', ss, hh);
+;; 						}
+;; 				}
+;; 		});
+;; }
+
 (defconst +node-emacs-library+
   "console.log('start file');
 " 
