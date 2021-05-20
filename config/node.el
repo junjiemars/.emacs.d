@@ -129,7 +129,13 @@ function node_emacs_apropos(word, size) {
 (defun node-completion ()
   (interactive)
   (node-check-proc)
-  (let ((bounds (bounds-of-thing-at-point 'symbol)))
+  (let ((bounds (or (bounds-of-thing-at-point 'symbol)
+                    (when (char= ?. (char-before))
+                      (let ((curr (point)))
+                        (save-excursion
+                          (forward-char -1)
+                          (let ((fb (bounds-of-thing-at-point 'symbol)))
+                            (cons (car fb) curr))))))))
     (when bounds
       (let ((cmd (format "node_emacs_apropos(\"%s\", 64)"
                          (buffer-substring-no-properties (car bounds)
@@ -179,14 +185,7 @@ Entry to this mode runs the hooks on `comint-mode-hook' and
   :group 'node                          ; keyword args
   (setq comint-prompt-regexp "^[^>\n-\"]*\\(debug\\)?>+ *")
   (setq comint-prompt-read-only t)
-  (comment (setq comint-input-filter #'node-input-filter))
-  (comment (setq comint-get-old-input #'node-get-old-input))
-  (comment
-   (add-hook 'comint-preoutput-filter-functions
-             #'node-preoutput-filter nil 'local))
-  (comment (scheme-mode-variables))
   (use-local-map node-repl-mode-map)
-  (comment (node-syntax-table))
   (setq mode-line-process '("" ":%s")))
 
 
