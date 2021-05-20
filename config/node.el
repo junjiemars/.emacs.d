@@ -68,8 +68,8 @@ function node_emacs_apropos(word, size) {
 				} else {
 						if (Array.isArray(data)) {
                 let out = [];
-                for (let s1 of data[0]) {
-                    out.push('\"' + s1 + '\"');
+                for (let ss of data[0]) {
+                    out.push('\"' + ss + '\"');
                 }
 								console.log('(%s)', out.join(' '));
 						}
