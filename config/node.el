@@ -124,7 +124,7 @@ function node_emacs_apropos(word, size) {
       (error "No `*node*' process.")))
 
 
-(defun node-backward-exp ()
+(defun node-last-sexp ()
   (save-excursion
     (catch 'break
       (while (not (or (char= (char-before) ?\;)
@@ -166,13 +166,28 @@ function node_emacs_apropos(word, size) {
       (forward-char 1))
     (point)))
 
+(defun node-last-symbol ()
+  (save-excursion
+    (catch 'break
+      (while (not (or (char= (char-before) ?\;)
+                      (char= (char-before) ?\n)
+                      (eq (char-syntax (char-before)) ? )))
+        (cond ((or (char= (char-before) ?.)
+                   (char= (char-before) ?_))
+               (backward-char))
+              ((eq (char-syntax (char-before)) ?w)
+               (backward-word))
+              (t (throw 'break (point))))))
+    (point)))
+
+
 (defun node-completion ()
   (interactive)
   (node-check-proc)
-  (let ((bounds (cons (save-excursion (node-backward-exp))
+  (let ((bounds (cons (save-excursion (node-last-symbol))
                       (point))))
     (if (= (car bounds) (cdr bounds))
-        (list (car bounds) (cdr bounds) nil)
+        (list (car bounds) (cdr bounds) :exclusive 'no)
       (let ((cmd (format "node_emacs_apropos(\"%s\", 64)"
                          (buffer-substring-no-properties (car bounds)
                                                          (cdr bounds))))
@@ -315,7 +330,7 @@ end of buffer, otherwise just popup the buffer."
 (defun node-send-last-sexp ()
   "Send the previous sexp to `*node*'."
   (interactive)
-  (let ((bounds (let ((b (node-backward-exp)))
+  (let ((bounds (let ((b (node-last-sexp)))
                   (if (and b (< b (point)))
                       (cons b (point))
                     (bounds-of-thing-at-point 'sexp)))))
