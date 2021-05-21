@@ -143,6 +143,11 @@ function node_emacs_apropos(word, size) {
                (throw 'break (point)))
               ((eq (char-syntax (char-before)) ?w)
                (backward-sexp))
+              ((char= (char-before) ?=)
+               (save-excursion
+                 (backward-char)
+                 (when (not (char= (char-before) ?=))
+                   (throw 'break (point)))))
               ((eq (char-syntax (char-before)) ? )
                (forward-whitespace -1))
               ((char= (char-before) ?>)
