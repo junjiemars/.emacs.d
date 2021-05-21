@@ -124,17 +124,40 @@ function node_emacs_apropos(word, size) {
       (error "No `*node*' process.")))
 
 
+(defun node-backward-exp ()
+  (save-excursion
+    (catch 'break
+      (while (not (or (char= (char-before) ?\;)
+                      (char= (char-before) ?\n)))
+        (cond ((char= (char-before) ?\))
+               (backward-list))
+              ((eq (char-syntax (char-before)) ?w)
+               (backward-sexp))
+              ((eq (char-syntax (char-before)) ? )
+               (forward-whitespace -1))
+              ((char= (char-before) ?>)
+               (save-excursion
+                 (let ((cur (point))
+                       (pre (skip-chars-backward "^\n")))
+                   (when (and (< pre 0)
+                              (string-match
+                               "^>\ [> ]*"
+                               (buffer-substring-no-properties
+                                (+ pre cur) cur)))
+                     (throw 'break cur)))))
+              ((eq (char-syntax (char-before)) ?.)
+               (backward-char 1)))))
+    (while (eq (char-syntax (char-after)) ? )
+      (forward-char 1))
+    (point)))
+
 (defun node-completion ()
   (interactive)
   (node-check-proc)
-  (let ((bounds (or (bounds-of-thing-at-point 'symbol)
-                    (when (char= ?. (char-before))
-                      (let ((curr (point)))
-                        (save-excursion
-                          (forward-char -1)
-                          (let ((fb (bounds-of-thing-at-point 'symbol)))
-                            (cons (car fb) curr))))))))
-    (when bounds
+  (let ((bounds (cons (save-excursion (node-backward-exp))
+                      (point))))
+    (if (= (car bounds) (cdr bounds))
+        (list (car bounds) (cdr bounds) nil)
       (let ((cmd (format "node_emacs_apropos(\"%s\", 64)"
                          (buffer-substring-no-properties (car bounds)
                                                          (cdr bounds))))
@@ -181,7 +204,7 @@ Customization:
 Entry to this mode runs the hooks on `comint-mode-hook' and
   `node-repl-mode-hook' (in that order)."
   :group 'node                          ; keyword args
-  (setq comint-prompt-regexp "^[^>\n-\"]*\\(debug\\)?>+ *")
+  (setq comint-prompt-regexp "^[^>\n-\"]*>+ *")
   (setq comint-prompt-read-only t)
   (use-local-map node-repl-mode-map)
   (setq mode-line-process '("" ":%s")))
@@ -277,7 +300,10 @@ end of buffer, otherwise just popup the buffer."
 (defun node-send-last-sexp ()
   "Send the previous sexp to `*node*'."
   (interactive)
-  (let ((bounds (bounds-of-thing-at-point 'sexp)))
+  (let ((bounds (let ((b (node-backward-exp)))
+                  (if (and b (< b (point)))
+                      (cons b (point))
+                    (bounds-of-thing-at-point 'sexp)))))
     (when bounds
       (node-send-region (car bounds) (cdr bounds)))))
 
