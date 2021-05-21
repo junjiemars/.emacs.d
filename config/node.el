@@ -129,41 +129,52 @@ function node_emacs_apropos(word, size) {
     (catch 'break
       (while (not (or (char= (char-before) ?\;)
                       (char= (char-before) ?\n)))
-        (cond ((char= (char-before) ?\))
-               (backward-list)
-               (when (eq (char-syntax (char-before)) ?w)
-                 (backward-word))
-               (while (or (char= (char-before) ?~)
-                          (char= (char-before) ?!)
-                          (char= (char-before) ? )
-                          (char= (char-before) ?.))
-                 (backward-char))
-               (when (eq (char-syntax (char-before)) ?w)
-                 (backward-word))
-               (throw 'break (point)))
-              ((eq (char-syntax (char-before)) ?w)
-               (backward-sexp))
-              ((char= (char-before) ?=)
-               (save-excursion
-                 (backward-char)
-                 (when (not (char= (char-before) ?=))
-                   (throw 'break (point)))))
-              ((eq (char-syntax (char-before)) ? )
-               (forward-whitespace -1))
-              ((char= (char-before) ?>)
-               (save-excursion
-                 (let ((cur (point))
-                       (pre (skip-chars-backward "^\n")))
-                   (when (and (< pre 0)
-                              (string-match
-                               "^>\ [> ]*"
-                               (buffer-substring-no-properties
-                                (+ pre cur) cur)))
-                     (throw 'break cur)))))
-              ((eq (char-syntax (char-before)) ?.)
-               (backward-char 1)))))
+        (cond
+         ;; right parenthesis
+         ((char= (char-before) ?\))
+          (backward-list)
+          (when (eq (char-syntax (char-before)) ?w)
+            (backward-word))
+          (while (or (char= (char-before) ?~)
+                     (char= (char-before) ?!)
+                     (char= (char-before) ? )
+                     (char= (char-before) ?.))
+            (backward-char))
+          (when (eq (char-syntax (char-before)) ?w)
+            (backward-word))
+          (throw 'break (point)))
+         ;; word
+         ((eq (char-syntax (char-before)) ?w)
+          (backward-sexp))
+         ;; assignment
+         ((char= (char-before) ?=)
+          (save-excursion
+            (backward-char)
+            (when (not (char= (char-before) ?=))
+              (throw 'break (point)))))
+         ;; whitespace
+         ((eq (char-syntax (char-before)) ? )
+          (forward-whitespace -1))
+         ;; > or prompt
+         ((char= (char-before) ?>)
+          (save-excursion
+            (let ((cur (point))
+                  (pre (skip-chars-backward "^\n")))
+              (when (and (< pre 0)
+                         (string-match
+                          "^>\ [> ]*"
+                          (buffer-substring-no-properties
+                           (+ pre cur) cur)))
+                (throw 'break cur)))))
+         ;; comma
+         ((char= (char-before) ?,)
+          (throw 'break (point)))
+         ;; punctuation
+         ((eq (char-syntax (char-before)) ?.)
+          (backward-char))
+         (t (throw 'break (point))))))
     (while (eq (char-syntax (char-after)) ? )
-      (forward-char 1))
+      (forward-char))
     (point)))
 
 (defun node-last-symbol ()
@@ -351,6 +362,16 @@ end of buffer, otherwise just popup the buffer."
     (when bounds
       (node-send-region (car bounds) (cdr bounds)))))
 
+(defun node-inspect-object ()
+  "Inspect object."
+  (interactive)
+  (let ((bounds (let ((b (node-last-sexp)))
+                  (if (and b (< b (point)))
+                      (cons b (point))
+                    (bounds-of-thing-at-point 'sexp)))))
+    (when bounds
+      (node-send-region (car bounds) (cdr bounds)))))
+
 
 (defvar node-mode-map
   (let ((m (make-sparse-keymap)))
@@ -361,6 +382,7 @@ end of buffer, otherwise just popup the buffer."
     (define-key m "\C-c\C-k" #'node-compile-file)
     (define-key m "\C-c\C-r" #'node-send-region)
     (define-key m "\C-c\C-z" #'node-switch-to-repl)
+    (define-key m "\C-cI" #'node-inspect-object)
     m))
 
 
