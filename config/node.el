@@ -349,10 +349,12 @@ end of buffer, otherwise just popup the buffer."
 (defun node-send-last-sexp ()
   "Send the previous sexp to `*node*'."
   (interactive)
-  (let ((bounds (let ((b (node-last-sexp)))
-                  (if (and b (< b (point)))
-                      (cons b (point))
-                    (bounds-of-thing-at-point 'sexp)))))
+  (let ((bounds (region-active-if
+                    (cons (region-beginning) (region-end))
+                  (let ((b (node-last-sexp)))
+                    (if (and b (< b (point)))
+                        (cons b (point))
+                      (bounds-of-thing-at-point 'sexp))))))
     (when bounds
       (node-send-region (car bounds) (cdr bounds)))))
 
