@@ -11,7 +11,7 @@
 ;;; fetures:
 ;;; 1. start parameterized node process.
 ;;; 2. switch/back to node REPL.
-;;; 3. send exp/definition/region to node REPL.
+;;; 3. send sexp/definition/region to node REPL.
 ;;; 4. completion in REPL and scheme source.
 ;;;
 ;;; bugs:
@@ -155,17 +155,24 @@ function node_emacs_apropos(word, size) {
          ;; whitespace
          ((eq (char-syntax (char-before)) ? )
           (forward-whitespace -1))
-         ;; > or prompt
+         ;; > >> >>> or prompt
          ((char= (char-before) ?>)
-          (save-excursion
-            (let ((cur (point))
-                  (pre (skip-chars-backward "^\n")))
-              (when (and (< pre 0)
-                         (string-match
-                          "^>\ [> ]*"
-                          (buffer-substring-no-properties
-                           (+ pre cur) cur)))
-                (throw 'break cur)))))
+          (let ((cur (point)) (n 1))
+            (goto-char
+             (save-excursion
+               (backward-char)
+               (when (= (point) (point-at-bol))
+                 (throw 'break cur))
+               (while (char= (char-before) ?>)
+                 (backward-char)
+                 (setq n (1+ n)))
+               (if (>= n 2)
+                   (point)
+                 (while (eq (char-syntax (char-before)) ? )
+                   (backward-char))
+                 (cond ((char= (char-before) ?>)
+                        (throw 'break cur))
+                       (t (point))))))))
          ;; comma
          ((char= (char-before) ?,)
           (throw 'break (point)))
