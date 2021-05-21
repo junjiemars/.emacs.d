@@ -10,9 +10,10 @@
 ;;;
 ;;; fetures:
 ;;; 1. start parameterized node process.
-;;; 2. switch/back to node REPL.
-;;; 3. send sexp/definition/region to node REPL.
-;;; 4. completion in REPL and scheme source.
+;;; 2. nvm supports.
+;;; 3. switch/back to node REPL.
+;;; 4. send sexp/definition/region to node REPL.
+;;; 5. completion in REPL and javascript source.
 ;;;
 ;;; bugs:
 ;;;
