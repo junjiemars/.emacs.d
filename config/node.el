@@ -128,8 +128,7 @@ function node_emacs_apropos(word, size) {
   (save-excursion
     (catch 'break
       (while (not (or (char= (char-before) ?\;)
-                      (char= (char-before) ?\n)
-                      (eq (char-syntax (char-before)) ?.)))
+                      (char= (char-before) ?\n)))
         (cond ((char= (char-before) ?\))
                (backward-list)
                (when (eq (char-syntax (char-before)) ?w)
