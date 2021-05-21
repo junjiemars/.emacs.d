@@ -149,10 +149,15 @@ function node_emacs_apropos(word, size) {
           (backward-sexp))
          ;; assignment
          ((char= (char-before) ?=)
-          (save-excursion
-            (backward-char)
-            (when (not (char= (char-before) ?=))
-              (throw 'break (point)))))
+          (goto-char
+           (save-excursion
+             (backward-char)
+             (let ((cur (point)) (n 1))
+               (while (char= (char-before) ?=)
+                 (backward-char)
+                 (setq n (1+ n)))
+               (cond ((>= n 2) (point))
+                     (t (throw 'break cur)))))))
          ;; whitespace
          ((eq (char-syntax (char-before)) ? )
           (forward-whitespace -1))
