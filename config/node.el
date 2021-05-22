@@ -221,8 +221,9 @@
            ;; punctuation
            ((eq (char-syntax (char-before)) ?.)
             (when (and (>= ori (point))
-                       (string-match "[:space:]*"
-                                     (buffer-substring-no-properties ori (point))))
+                       (string-match
+                        "[:space:]*"
+                        (buffer-substring-no-properties ori (point))))
               (throw 'break ori))
             (backward-char))
            (t (throw 'break (point)))))))
