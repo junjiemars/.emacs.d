@@ -125,6 +125,7 @@
 
 
 (defun node-last-sexp ()
+  "Return the position of left side of the last expression."
   (save-excursion
     (catch 'break
       (while (not (or (char= (char-before) ?\;)
@@ -215,6 +216,7 @@
     (point)))
 
 (defun node-last-symbol ()
+  "Return the position of left side of the last symbol."
   (save-excursion
     (catch 'break
       (while (not (or (char= (char-before) ?\;)
