@@ -148,35 +148,43 @@
          ((eq (char-syntax (char-before)) ?w)
           (let ((cur (point))
                 (idx 0)
-                (v1 [?t ?e ?l])       ;let
-                (v2 [?t ?s ?n ?o ?c]) ;const
-                (v3 [?r ?a ?v]))      ;var
+                (l1 [?t ?e ?l])         ;let
+                (c1 [?t ?s ?n ?o ?c])   ;const
+                (a1 [?t ?i ?a ?w ?a])   ;await
+                (v1 [?r ?a ?v]))        ;var
             (cond ((char= (char-before) ?t)
                    (setq idx 1)
-                   (cond ((char= (char-before (- cur idx)) (aref v1 idx))
-                          (while (and (< idx (length v1))
+                   (cond ((char= (char-before (- cur idx)) (aref l1 idx))
+                          (while (and (< idx (length l1))
                                       (char= (char-before (- cur idx))
-                                             (aref v1 idx)))
+                                             (aref l1 idx)))
                             (setq idx (1+ idx)))
-                          (when (>= idx (length v1))
+                          (when (>= idx (length l1))
                             (throw 'break cur)))
-                         ((char= (char-before (- cur idx)) (aref v2 idx))
-                          (while (and (< idx (length v2))
+                         ((char= (char-before (- cur idx)) (aref c1 idx))
+                          (while (and (< idx (length c1))
                                       (char= (char-before (- cur idx))
-                                             (aref v2 idx)))
+                                             (aref c1 idx)))
                             (setq idx (1+ idx)))
-                          (when (>= idx (length v2))
+                          (when (>= idx (length c1))
+                            (throw 'break cur)))
+                         ((char= (char-before (- cur idx)) (aref a1 idx))
+                          (while (and (< idx (length a1))
+                                      (char= (char-before (- cur idx))
+                                             (aref a1 idx)))
+                            (setq idx (1+ idx)))
+                          (when (>= idx (length a1))
                             (throw 'break cur)))))
                   ((char= (char-before) ?r)
                    (setq idx 1)
-                   (while (and (< idx (length v3))
+                   (while (and (< idx (length v1))
                                (char= (char-before (- cur idx))
-                                      (aref v3 idx)))
+                                      (aref v1 idx)))
                      (setq idx (1+ idx)))
-                   (when (>= idx (length v3))
+                   (when (>= idx (length v1))
                      (throw 'break cur)))))
           (backward-sexp))
-         ;; assignment
+         ;; == === or assignment
          ((char= (char-before) ?=)
           (let ((cur (point))
                 (idx 1))
@@ -189,7 +197,7 @@
           (backward-char)
           (while (eq (char-syntax (char-before)) ? )
             (backward-char)))
-         ;; > >> >>> or prompt
+         ;; > >> >>> or REPL's prompt
          ((char= (char-before) ?>)
           (let ((cur (point))
                 (idx 1))
