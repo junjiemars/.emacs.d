@@ -220,7 +220,9 @@
             (throw 'break (point)))
            ;; punctuation
            ((eq (char-syntax (char-before)) ?.)
-            (when (= ori (point))
+            (when (and (>= ori (point))
+                       (string-match "[:space:]*"
+                                     (buffer-substring-no-properties ori (point))))
               (throw 'break ori))
             (backward-char))
            (t (throw 'break (point)))))))
