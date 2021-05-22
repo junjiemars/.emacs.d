@@ -103,7 +103,12 @@
           "Run cdb on program FILE in buffer *gud-FILE*." t)))
 
     ;; Node
-    (when% (file-exists-p "~/.nvm/nvm.sh")
+    (when% (or (file-exists-p "~/.nvm/nvm.sh")
+               (executable-find% "node"
+                                 (lambda (node)
+                                   (let ((x (shell-command* "echo"
+                                              "'1+2+3'|" node "-p")))
+                                     (zerop (car x))))))
       (prog1
           (compile-unit% (emacs-home* "config/node.el") t)
         (autoload 'node-mode (v-home% "config/node.elc")
