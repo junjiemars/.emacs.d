@@ -1,11 +1,11 @@
 ;;; init.el --- init
 ;;;;
-;; More reasonable Emacs on MacOS, Windows and Linux
+;; Nore Emacs
 ;;
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
 ;;; Commentary:
-;;; the epoch of More Reasonable Emacs.
+;;; the epoch of Nore Emacs.
 ;;
 ;;; Code:
 
