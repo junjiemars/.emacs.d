@@ -380,12 +380,30 @@ end of buffer, otherwise just popup the buffer."
 (defun node-inspect-object ()
   "Inspect object."
   (interactive)
-  (let ((bounds (let ((b (node-last-sexp)))
-                  (if (and b (< b (point)))
-                      (cons b (point))
-                    (bounds-of-thing-at-point 'sexp)))))
+  (let ((bounds (region-active-if
+                    (cons (region-beginning) (region-end))
+                  (let ((b (node-last-symbol))
+                        (s (bounds-of-thing-at-point 'symbol)))
+                    (cond ((and b s) (cons (if (<= b (car s))
+                                               b
+                                             (car s))
+                                           (if (>= (cdr s) (point))
+                                               (cdr s)
+                                             b)))
+                          (b (cons (if (<= b (point))
+                                       b
+                                     (point))
+                                   (point)))
+                          (s (cons (if (<= (car s) (point)) (car s) (point))
+                                   (point))))))))
     (when bounds
-      (node-send-region (car bounds) (cdr bounds)))))
+      (let ((lhs (car bounds))
+            (rhs (cdr bounds)))
+        (when (and (eq (char-syntax (char-before lhs)) ?\")
+                   (eq (char-syntax (char-after rhs)) ?\"))
+          (setq lhs (1- (car bounds))
+                rhs (1+ (cdr bounds))))
+        (node-send-region lhs rhs)))))
 
 
 (defvar node-mode-map
