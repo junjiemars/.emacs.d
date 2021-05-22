@@ -61,9 +61,8 @@
 
 
 (defconst +node-emacs-module+
-  "//node-emacs: from `(emacs-home* \"config/node.el\")'
-function node_emacs_apropos(word, size) {
-		repl.repl.complete(word, (err, data) => {
+  "function node_emacs_apropos(what, max) {
+		global.repl.repl.complete(what, (err, data) => {
 				if (err) {
 						console.log('()');
 				} else {
