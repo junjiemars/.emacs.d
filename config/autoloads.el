@@ -109,7 +109,7 @@
         (autoload 'node-mode (v-home% "config/node.elc")
           "Toggle Node's mode." t)
         (autoload 'run-node (v-home% "config/node.elc")
-          "Run a node process, input and output via buffer *node*." t)))
+          "Toggle node process in buffer `*node*'." t)))
 
     ;; Python
     (when% (executable-find%

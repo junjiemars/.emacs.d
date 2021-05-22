@@ -173,7 +173,7 @@ This is run before the process is cranked up."
   (when (and spawn
              (not (eq 'run (car (comint-check-proc (*chez*))))))
     (save-window-excursion (call-interactively #'run-chez)))
-  (or (chez-check-proc)
+  (or (get-buffer-process (*chez*))
       (error "No `*chez*' process.")))
 
 (defun chez-input-complete-p ()
