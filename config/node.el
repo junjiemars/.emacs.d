@@ -159,18 +159,18 @@ function node_emacs_apropos(what, max) {
               (while (eq (char-syntax (char-after (+ cur idx))) ?\ )
                 (setq idx (1+ idx)))
               (when (char= (char-after (+ cur idx)) ?\()
-                (backward-sexp)
+                (backward-word)
                 (throw 'break (point)))
               (setq idx 1)
               (while (eq (char-syntax (char-before (- cur idx))) ?w)
                 (setq idx (1+ idx)))
               (when (and (> idx 2)
                          (string-match
-                          "let\\|var\\|const\\|await"
+                          "await\\|const\\|let\\|var"
                           (buffer-substring-no-properties
                            (- cur idx) cur)))
                 (throw 'break cur))
-              (backward-sexp)))
+              (backward-word)))
            ;; == === or assignment
            ((char= (char-before) ?=)
             (let ((cur (point))
@@ -203,12 +203,18 @@ function node_emacs_apropos(what, max) {
             (throw 'break (point)))
            ;; punctuation
            ((eq (char-syntax (char-before)) ?.)
-            (when (and (> ori (point))
-                       (string-match
-                        "[[:space:]]+"
-                        (buffer-substring-no-properties (point) ori)))
-              (throw 'break ori))
-            (backward-char))
+            (let ((cur (point)))
+              (when (or (= ori cur)
+                        (and (< cur ori)
+                             (let ((idx 0))
+                               (while (and (< (+ cur idx) ori)
+                                           (eq (char-syntax
+                                                (char-after (+ cur idx)))
+                                               ?\ ))
+                                 (setq idx (1+ idx)))
+                               (= (+ cur idx) ori))))
+                (throw 'break ori))
+              (backward-char)))
            (t (throw 'break (point)))))))
     (while (eq (char-syntax (char-after)) ?\ )
       (forward-char))
