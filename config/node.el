@@ -171,6 +171,13 @@ function node_emacs_apropos(what, max) {
                            (- cur idx) cur)))
                 (throw 'break cur))
               (backward-word)))
+           ;; whitespace
+           ((eq (char-syntax (char-before)) ?\ )
+            (while (eq (char-syntax (char-before)) ?\ )
+              (backward-char)))
+           ;; comma
+           ((char= (char-before) ?,)
+            (throw 'break (point)))
            ;; == === or assignment
            ((char= (char-before) ?=)
             (let ((cur (point))
@@ -179,13 +186,6 @@ function node_emacs_apropos(what, max) {
                 (setq idx (1+ idx)))
               (cond ((>= idx 2) (backward-char idx))
                     (t (throw 'break cur)))))
-           ;; whitespace
-           ((eq (char-syntax (char-before)) ?\ )
-            (while (eq (char-syntax (char-before)) ?\ )
-              (backward-char)))
-           ;; comma
-           ((char= (char-before) ?,)
-            (throw 'break (point)))
            ;; punctuation
            ((eq (char-syntax (char-before)) ?.)
             (let ((cur (point)))
