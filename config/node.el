@@ -181,7 +181,8 @@ function node_emacs_apropos(what, max) {
                     (t (throw 'break cur)))))
            ;; whitespace
            ((eq (char-syntax (char-before)) ?\ )
-            (backward-char))
+            (while (eq (char-syntax (char-before)) ?\ )
+              (backward-char)))
            ;; > >> >>> or REPL's prompt
            ((char= (char-before) ?>)
             (let ((cur (point))
@@ -202,10 +203,10 @@ function node_emacs_apropos(what, max) {
             (throw 'break (point)))
            ;; punctuation
            ((eq (char-syntax (char-before)) ?.)
-            (when (and (>= ori (point))
+            (when (and (> ori (point))
                        (string-match
-                        "[:space:]*"
-                        (buffer-substring-no-properties ori (point))))
+                        "[[:space:]]+"
+                        (buffer-substring-no-properties (point) ori)))
               (throw 'break ori))
             (backward-char))
            (t (throw 'break (point)))))))
