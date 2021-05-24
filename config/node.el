@@ -180,6 +180,15 @@ function node_emacs_apropos(what, max) {
                     (point)))
               (throw 'break (point)))
             (backward-char))
+           ;; dot
+           ((char= (char-before) ?.)
+            (let ((cur (point))
+                  (idx 1))
+              (while (char= (char-before (- cur idx)) ?.)
+                (setq idx (1+ idx)))
+              (when (>= idx 3)
+                (throw 'break cur))
+              (backward-char)))
            ;; punctuation
            ((char= (char-syntax (char-before)) ?.)
             (let ((cur (point)))
