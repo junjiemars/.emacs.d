@@ -162,14 +162,16 @@ function node_emacs_apropos(what, max) {
            ;; comma
            ((char= (char-before) ?,)
             (throw 'break (point)))
-           ;; == === or assignment
+           ;; assignment
            ((char= (char-before) ?=)
             (let ((cur (point))
                   (idx 1))
-              (while (char= (char-before (- cur idx)) ?=)
+              (while (or (char= (char-before (- cur idx)) ?=)
+                         (char= (char-before (- cur idx)) ?!))
                 (setq idx (1+ idx)))
-              (cond ((>= idx 2) (backward-char idx))
-                    (t (throw 'break cur)))))
+              (if (< idx 2)
+                  (throw 'break cur)
+                (backward-char idx))))
            ;; > >> >>> or REPL's prompt
            ((char= (char-before) ?>)
             (when (string-match
