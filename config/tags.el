@@ -62,20 +62,23 @@ when `desktop-globals-to-save' include it."
   :group 'tags)
 
 
-(defcustom% tags-in-view-mode
-  `(list source-directory
-         (when% (> (path-depth (expand-file-name
-                                (path- invocation-directory)))
-                   2)
-           (path- invocation-directory))
-         (when-var% package-user-dir 'package
-           package-user-dir)
-         (v-home* "config/")
-         (v-home* "private/")
-         (v-home* "theme/"))
-  "The `current-buffer' should open in `view-mode'."
-  :type 'list
-  :group 'tags)
+(defalias 'tags-in-view-mode
+  (lexical-let% ((b (list
+                     (when% (> (path-depth (expand-file-name
+                                            (path- invocation-directory)))
+                               2)
+                       (path- invocation-directory))
+                     (when-var% package-user-dir 'package
+                       package-user-dir)
+                     (v-home* "config/")
+                     (v-home* "private/")
+                     (v-home* "theme/"))))
+    (lambda (&optional n style)
+      (cond ((null n) b)
+            ((eq n :clear) (setq b nil))
+            ((eq style :append) (setq b (append b n)))
+            (t (setq b (cons n b))))))
+  "Tag's buffer should open in `view-mode'.")
 
 
 (defvar *tags-option-history*
@@ -262,7 +265,7 @@ RENEW overwrite the existing tags file when t else create it."
               (after xref-find-definitions-after disable)
             (with-current-buffer (current-buffer)
               (when (file-in-dirs-p (buffer-file-name* (current-buffer))
-                                    tags-in-view-mode)
+                                    (tags-in-view-mode))
                 (view-mode 1))))
           
           (with-eval-after-load 'xref
@@ -281,7 +284,7 @@ RENEW overwrite the existing tags file when t else create it."
   (defadvice find-tag (after find-tag-after disable)
     (with-current-buffer (current-buffer)
       (when (file-in-dirs-p (buffer-file-name* (current-buffer))
-                            tags-in-view-mode)
+                            (tags-in-view-mode))
         (view-mode 1))))
   
   (with-eval-after-load 'etags

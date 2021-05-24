@@ -36,7 +36,7 @@
  (let ((srcdir (format "/opt/open/emacs-%s/"
                        emacs-major-version)))
    (when (file-exists-p srcdir) srcdir
-         (setq source-directory srcdir)
+         (tags-in-view-mode (setq source-directory srcdir))
          (setq% find-function-C-source-directory
                 (concat source-directory "src/") 'find-func))))
 
