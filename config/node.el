@@ -141,28 +141,13 @@ function node_emacs_apropos(what, max) {
           (cond
            ;; right parenthesis
            ((char= (char-before) ?\))
-            (backward-list)
-            (when (eq (char-syntax (char-before)) ?w)
-              (backward-word))
-            (while (or (char= (char-before) ?~)
-                       (char= (char-before) ?!)
-                       (char= (char-before) ?\ )
-                       (char= (char-before) ?.))
-              (backward-char))
-            (when (eq (char-syntax (char-before)) ?w)
-              (backward-word))
-            (throw 'break (point)))
+            (backward-list))
            ;; word
-           ((eq (char-syntax (char-before)) ?w)
+           ((char= (char-syntax (char-before)) ?w)
             (let ((cur (point))
                   (idx 0))
-              (while (eq (char-syntax (char-after (+ cur idx))) ?\ )
-                (setq idx (1+ idx)))
-              (when (char= (char-after (+ cur idx)) ?\()
-                (backward-word)
-                (throw 'break (point)))
               (setq idx 1)
-              (while (eq (char-syntax (char-before (- cur idx))) ?w)
+              (while (char= (char-syntax (char-before (- cur idx))) ?w)
                 (setq idx (1+ idx)))
               (when (and (> idx 2)
                          (string-match
@@ -172,8 +157,8 @@ function node_emacs_apropos(what, max) {
                 (throw 'break cur))
               (backward-word)))
            ;; whitespace
-           ((eq (char-syntax (char-before)) ?\ )
-            (while (eq (char-syntax (char-before)) ?\ )
+           ((char= (char-syntax (char-before)) ?\ )
+            (while (char= (char-syntax (char-before)) ?\ )
               (backward-char)))
            ;; comma
            ((char= (char-before) ?,)
@@ -186,38 +171,32 @@ function node_emacs_apropos(what, max) {
                 (setq idx (1+ idx)))
               (cond ((>= idx 2) (backward-char idx))
                     (t (throw 'break cur)))))
+           ;; > >> >>> or REPL's prompt
+           ((char= (char-before) ?>)
+            (when (string-match
+                   "^[> \t]+"
+                   (buffer-substring-no-properties
+                    (point-at-bol)
+                    (point)))
+              (throw 'break (point)))
+            (backward-char))
            ;; punctuation
-           ((eq (char-syntax (char-before)) ?.)
+           ((char= (char-syntax (char-before)) ?.)
             (let ((cur (point)))
               (when (or (= ori cur)
                         (and (< cur ori)
                              (let ((idx 0))
                                (while (and (< (+ cur idx) ori)
-                                           (eq (char-syntax
-                                                (char-after (+ cur idx)))
-                                               ?\ ))
+                                           (char= (char-syntax
+                                                   (char-after (+ cur idx)))
+                                                  ?\ ))
                                  (setq idx (1+ idx)))
                                (= (+ cur idx) ori))))
                 (throw 'break ori))
               (backward-char)))
-           ;; > >> >>> or REPL's prompt
-           ((char= (char-before) ?>)
-            (let ((cur (point))
-                  (idx 1))
-              (backward-char)
-              (when (= (point) (point-at-bol))
-                (throw 'break cur))
-              (while (char= (char-before) ?>)
-                (backward-char)
-                (setq idx (1+ idx)))
-              (when (< idx 2)
-                (while (eq (char-syntax (char-before)) ?\ )
-                  (backward-char))
-                (when (char= (char-before) ?>)
-                  (throw 'break cur)))))
            ;; default
            (t (throw 'break (point)))))))
-    (while (eq (char-syntax (char-after)) ?\ )
+    (while (char= (char-syntax (char-after)) ?\ )
       (forward-char))
     (point)))
 
