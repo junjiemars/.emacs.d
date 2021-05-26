@@ -1635,6 +1635,7 @@ automatically from one Emacs session to the next.
 - /yank/ rectangle: @@html:<kbd>@@C-x r y@@html:</kbd>@@
 - /open/ rectangle: @@html:<kbd>@@C-x r o@@html:</kbd>@@, insert blank
   /space/ to fill the space of the region-rectangle
+- /copy/ rectangle: @@html:<kbd>@@C-x r M-w@@html:</kbd>@@
 - /clear/ rectangle: @@html:<kbd>@@C-x r c@@html:</kbd>@@
 
 #+REVEAL: split
