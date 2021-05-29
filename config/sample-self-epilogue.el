@@ -63,6 +63,15 @@
  ;; end of org
 
 
+;;;; slime
+
+(comment
+ (defmacro-if-feature% slime)
+ (if-feature-slime% (*slime-source-locations* "<source-dir>")))
+
+ ;; end of slime
+
+
 ;;;; c/c++
 
 (comment
