@@ -9,7 +9,7 @@
 
 (defalias '*slime-lisp-implementations*
   (lexical-let% ((b (let ((ns))
-                      (dolist* (x '(sbcl ecl acl ccl clasp) ns)
+                      (dolist* (x '(sbcl ecl acl) ns)
                         (let ((bin (executable-find (symbol-name x))))
                           (when bin (push (list x (list bin)) ns)))))))
     (lambda (&optional n)
