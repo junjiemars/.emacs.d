@@ -8,15 +8,16 @@
 
 
 (defalias '*slime-lisp-implementations*
-  (lexical-let% ((ls (let ((ns))
-                       (dolist* (x '(sbcl ecl acl ccl clasp) ns)
-                         (let ((bin (executable-find (symbol-name x))))
-                           (when bin (push (list x (list bin)) ns)))))))
-    (lambda (&optional new)
+  (lexical-let% ((b (let ((ns))
+                      (dolist* (x '(sbcl ecl acl ccl clasp) ns)
+                        (let ((bin (executable-find (symbol-name x))))
+                          (when bin (push (list x (list bin)) ns)))))))
+    (lambda (&optional n)
+      "Return lisp implementations."
       (setq% slime-lisp-implementations
-             (if new (push new ls) ls)
+             (if n (push n b) b)
              'slime)))
-  "Parameterized set `slime-lisp-implementations'.")
+  "Parameterized `slime-lisp-implementations'.")
 
 
 (defalias '*slime-source-locations*
