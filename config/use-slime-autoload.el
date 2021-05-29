@@ -13,7 +13,6 @@
                         (let ((bin (executable-find (symbol-name x))))
                           (when bin (push (list x (list bin)) ns)))))))
     (lambda (&optional n)
-      "Return lisp implementations."
       (setq% slime-lisp-implementations
              (if n (push n b) b)
              'slime)))
@@ -23,7 +22,6 @@
 (defalias '*slime-source-locations*
   (lexical-let% ((b '()))
     (lambda (&optional n)
-      "Return source locations."
       (cond (n (setq b (cons n b)))
             (t b))))
   "Parameterized source locations for `slime'.")
