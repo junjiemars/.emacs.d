@@ -9,7 +9,7 @@
 ;; features:
 ;; 1. start or attach to process.
 ;; 2. source code debugging.
-;; 3 commands auto completion.
+;; 3. commands auto completion.
 ;; 4* show breakpoints in buffer.
 ;; 5* frame buffer and register buffer.
 ;;
