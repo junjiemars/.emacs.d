@@ -352,8 +352,8 @@ include directories. The REMOTE argument from `remote-norm-file'."
   (let* ((rid (when remote
                 (mapconcat #'identity (remote-norm-id remote) "-")))
          (c (if remote
-                (v-home* (concat ".exec/.cc-inc-" rid ".el"))
-              (v-home% ".exec/.cc-inc.el")))
+                (v-home* (concat ".exec/cc-inc-" rid ".el"))
+              (v-home% ".exec/cc-inc.el")))
          (cc (concat c "c"))
          (var (if remote
                   (intern (concat "cc*-system-include@" rid))
@@ -374,7 +374,7 @@ include directories. The REMOTE argument from `remote-norm-file'."
 (defun cc*-extra-include (cached &rest dir)
   "Return a list of extra include directories."
   (declare (indent 1))
-  (let* ((c (v-home% ".exec/.cc-extra-inc.el"))
+  (let* ((c (v-home% ".exec/cc-extra-inc.el"))
          (cc (concat c "c"))
          (var 'cc*-extra-include)
          (d1 (when (consp dir)
