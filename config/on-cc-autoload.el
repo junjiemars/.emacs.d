@@ -494,7 +494,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
                      (concat "@" (remote-norm->user@host remote) "*")
                    "*")))
       (view-mode -1)
-      (delete-region (point-min) (point-max))
+      (erase-buffer)
       (message "Invoking [%s] ..." dump)
       (insert (cond ((or remote (and +cc*-compiler-bin+
                                      dump))

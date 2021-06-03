@@ -96,7 +96,7 @@ function node_emacs_apropos(what, max) {
 
 
 (defalias '*node-start-file*
-  (lexical-let% ((b (v-home% ".exec/.node.js")))
+  (lexical-let% ((b (v-home% ".exec/node.js")))
     (lambda (&optional n)
       (interactive)
       (if n (setq b n)

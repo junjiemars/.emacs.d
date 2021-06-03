@@ -170,7 +170,7 @@ This is run before the process is cranked up."
 
 
 (defalias '*gambit-start-file*
-  (lexical-let% ((b (v-home% ".exec/.gambit.ss")))
+  (lexical-let% ((b (v-home% ".exec/gambit.ss")))
     (lambda (&optional n)
       (interactive)
       (if n (setq b n)
