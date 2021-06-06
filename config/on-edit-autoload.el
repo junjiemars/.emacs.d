@@ -619,26 +619,25 @@ backwards N times if negative."
   (let ((bounds (region-active-if
                     (cons (region-beginning) (region-end))
                   (cons (point) (point)))))
-    (when bounds
-      (let* ((open (let ((o (if (string= "<space>" open) " " open))
-                         (n (if current-prefix-arg current-prefix-arg 1)))
-                     (while (> n 1)
-                       (setq o (concat o o)
-                             n (1- n)))
-                     o))
-             (close (if (string= "<open>" close)
-                        open
-                      (let ((c close)
-                            (n (if current-prefix-arg current-prefix-arg 1)))
-                        (while (> n 1)
-                          (setq c (concat c c)
-                                n (1- n)))
-                        c))))
-        (with-current-buffer (current-buffer)
-          (goto-char (car bounds))
-          (insert open)
-          (goto-char (+ (cdr bounds) (length open)))
-          (insert close))))))
+    (let* ((open (let ((o (if (string= "<space>" open) " " open))
+                       (n (if current-prefix-arg current-prefix-arg 1)))
+                   (while (> n 1)
+                     (setq o (concat o o)
+                           n (1- n)))
+                   o))
+           (close (if (string= "<open>" close)
+                      open
+                    (let ((c close)
+                          (n (if current-prefix-arg current-prefix-arg 1)))
+                      (while (> n 1)
+                        (setq c (concat c c)
+                              n (1- n)))
+                      c))))
+      (with-current-buffer (current-buffer)
+        (goto-char (car bounds))
+        (insert open)
+        (goto-char (+ (cdr bounds) (length open)))
+        (insert close)))))
 
  ;; end of surround
 
