@@ -610,6 +610,52 @@ backwards N times if negative."
  ;; end of scratch
 
 
+(defun surround-region (&optional open close)
+  "Surround region with OPEN or CLOSE string."
+  (interactive (list (read-string "surround region with open: "
+                                  "<space>")
+                     (read-string "surround region with close: "
+                                  "<open>")))
+  (let ((bounds (region-active-if
+                    (cons (region-beginning) (region-end))
+                  (if (or (not (char= (char-syntax (char-before)) ?w))
+                          (not (char= (char-syntax (char-after)) ?w)))
+                      (let ((lhs (point))
+                            (rhs (point)))
+                        (save-excursion
+                          (while (not (char= (char-syntax (char-before)) ?w))
+                            (backward-char))
+                          (setq lhs (point)))
+                        (save-excursion
+                          (while (not (char= (char-syntax (char-after)) ?w))
+                            (forward-char))
+                          (setq rhs (point)))
+                        (cons lhs rhs))
+                    (cons (point) (point))))))
+    (when bounds
+      (let* ((open (let ((o (if (string= "<space>" open) " " open))
+                         (n (if current-prefix-arg current-prefix-arg 1)))
+                     (while (> n 1)
+                       (setq o (concat o o)
+                             n (1- n)))
+                     o))
+             (close (if (string= "<open>" close)
+                        open
+                      (let ((c close)
+                            (n (if current-prefix-arg current-prefix-arg 1)))
+                        (while (> n 1)
+                          (setq c (concat c c)
+                                n (1- n)))
+                        c))))
+        (with-current-buffer (current-buffer)
+          (goto-char (car bounds))
+          (insert open)
+          (goto-char (+ (cdr bounds) (length open)))
+          (insert close))))))
+
+ ;; end of surround
+
+
 ;;;;
 ;; Keys
 ;;;;
@@ -636,8 +682,11 @@ backwards N times if negative."
 (define-key% (current-global-map) (kbd "C-M-SPC") #'mark-sexp@)
 (define-key% (current-global-map) (kbd "C-M-h") #'mark-defun@)
 
-;; comment
+;; Comment
 (define-key% (current-global-map) (kbd "C-x M-;") #'toggle-comment)
+
+;;; Surround
+(define-key% (current-global-map) (kbd "C-x r [") #'surround-region)
 
 
 
