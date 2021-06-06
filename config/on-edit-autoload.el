@@ -618,20 +618,7 @@ backwards N times if negative."
                                   "<open>")))
   (let ((bounds (region-active-if
                     (cons (region-beginning) (region-end))
-                  (if (or (not (char= (char-syntax (char-before)) ?w))
-                          (not (char= (char-syntax (char-after)) ?w)))
-                      (let ((lhs (point))
-                            (rhs (point)))
-                        (save-excursion
-                          (while (not (char= (char-syntax (char-before)) ?w))
-                            (backward-char))
-                          (setq lhs (point)))
-                        (save-excursion
-                          (while (not (char= (char-syntax (char-after)) ?w))
-                            (forward-char))
-                          (setq rhs (point)))
-                        (cons lhs rhs))
-                    (cons (point) (point))))))
+                  (cons (point) (point)))))
     (when bounds
       (let* ((open (let ((o (if (string= "<space>" open) " " open))
                          (n (if current-prefix-arg current-prefix-arg 1)))
