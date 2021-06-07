@@ -615,7 +615,7 @@ backwards N times if negative."
 
 If prefix argument n > 0, then repeat n times.
 If prefix argument n = 0, then repeat 1 times.
-If prefix argument n < 0, then repeat n time with CLOSE in conversed direction."
+If prefix argument n < 0, then repeat n time with CLOSE in reversed."
   (interactive (list (read-string "surround region with open: "
                                   "<space>")
                      (read-string "surround region with close: "
