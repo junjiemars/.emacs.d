@@ -611,7 +611,11 @@ backwards N times if negative."
 
 
 (defun surround-region (&optional open close)
-  "Surround region with OPEN or CLOSE string."
+  "Surround region with OPEN or CLOSE string.
+
+If prefix argument n > 0, then repeat n times.
+If prefix argument n = 0, then repeat 1 times.
+If prefix argument n < 0, then repeat n time with CLOSE in conversed direction."
   (interactive (list (read-string "surround region with open: "
                                   "<space>")
                      (read-string "surround region with close: "
@@ -620,19 +624,27 @@ backwards N times if negative."
                     (cons (region-beginning) (region-end))
                   (cons (point) (point)))))
     (let* ((open (let ((o (if (string= "<space>" open) " " open))
-                       (n (if current-prefix-arg current-prefix-arg 1)))
+                       (n (if current-prefix-arg
+                              (abs current-prefix-arg)
+                            1)))
                    (while (> n 1)
                      (setq o (concat o o)
                            n (1- n)))
                    o))
-           (close (if (string= "<open>" close)
-                      open
-                    (let ((c close)
-                          (n (if current-prefix-arg current-prefix-arg 1)))
-                      (while (> n 1)
-                        (setq c (concat c c)
-                              n (1- n)))
-                      c))))
+           (close (let ((cc (if (string= "<open>" close)
+                                open
+                              (let ((c close)
+                                    (n (if current-prefix-arg
+                                           (abs current-prefix-arg)
+                                         1)))
+                                (while (> n 1)
+                                  (setq c (concat c c)
+                                        n (1- n)))
+                                c))))
+                    (if (and current-prefix-arg
+                             (< current-prefix-arg 0))
+                        (reverse cc)
+                      cc))))
       (with-current-buffer (current-buffer)
         (goto-char (car bounds))
         (insert open)
