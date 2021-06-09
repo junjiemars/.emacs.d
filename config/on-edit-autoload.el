@@ -610,30 +610,30 @@ backwards N times if negative."
  ;; end of scratch
 
 
-(defun surround-region (&optional open close)
-  "Surround region with OPEN or CLOSE string.
+(defun surround-region (&optional begin end)
+  "Surround region with BEGIN or END string.
 
-If prefix argument n > 0, then repeat n times.
-If prefix argument n = 0, then repeat 1 times.
-If prefix argument n < 0, then repeat n time with CLOSE in reversed."
-  (interactive (list (read-string "surround region with open: "
+If `current-prefix-arg' is nil or equals to 0, then repeat 1 times.
+If `current-prefix-arg' > 0, then repeat n times.
+If `current-prefix-arg' < 0, then repeat n time with END in reversed."
+  (interactive (list (read-string "surround region begin with: "
                                   "<space>")
-                     (read-string "surround region with close: "
-                                  "<open>")))
+                     (read-string "surround region end with: "
+                                  "<begin>")))
   (let ((bounds (region-active-if
                     (cons (region-beginning) (region-end))
                   (cons (point) (point)))))
     (let* ((n (if current-prefix-arg (abs current-prefix-arg) 1))
            (r (and current-prefix-arg (< current-prefix-arg 0)))
-           (open (let ((o (if (string= "<space>" open) " " open))
+           (begin (let ((o (if (string= "<space>" begin) " " begin))
                        (n1 n))
                    (while (> n1 1)
                      (setq o (concat o o)
                            n1 (1- n1)))
                    o))
-           (close (let ((cc (if (string= "<open>" close)
-                                open
-                              (let ((c close)
+           (end (let ((cc (if (string= "<begin>" end)
+                                begin
+                              (let ((c end)
                                     (n2 n))
                                 (while (> n2 1)
                                   (setq c (concat c c)
@@ -642,9 +642,9 @@ If prefix argument n < 0, then repeat n time with CLOSE in reversed."
                     (if r (reverse cc) cc))))
       (with-current-buffer (current-buffer)
         (goto-char (car bounds))
-        (insert open)
-        (goto-char (+ (cdr bounds) (length open)))
-        (insert close)))))
+        (insert begin)
+        (goto-char (+ (cdr bounds) (length begin)))
+        (insert end)))))
 
  ;; end of surround
 
