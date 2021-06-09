@@ -430,27 +430,29 @@ See also `open-line' and `split-line'."
  ;; end of open-*-line
 
 
-(defun echo-buffer-file-name (&optional arg)
-  "Echo the file name of current buffer.
+(defun echo-buffer-name (&optional arg)
+  "Echo the buffer name of current buffer.
 
-If prefix argument ARG is non-nil then copy function `buffer-file-name' to
-kill ring.  If prefix argument ARG is nil then copy
-`file-name-nondirectory' of function `buffer-file-name' to kill ring."
+If previous argument ARG is nil then copy the buffer name to 
+kill ring.
+
+If prefix argument ARG is non-nil then copy the qualified buffer
+name to kill ring."
   (interactive "P")
-  (let* ((n (if (or (eq 'dired-mode major-mode)
-                    (eq 'ibuffer-mode major-mode))
-                (user-error* "Type \"w\" or \"C-u 0 w\" instead, in %s"
-                  mode-name)
-              (let ((b (buffer-file-name)))
-                (if b b (user-error* "Not a file buffer")))))
-         (n1 (if arg
-                 n
-               (file-name-nondirectory n))))
-    (kill-new n1)
-    (message "%s" n1)))
+  (if (or (eq 'dired-mode major-mode)
+          (eq 'ibuffer-mode major-mode))
+      (user-error* "Type \"w\" or \"C-u 0 w\" instead, in %s"
+        mode-name)
+    (message "%s"
+             (kill-new 
+              (cond ((buffer-file-name)
+                     (if arg
+                         (buffer-file-name)
+                       (file-name-nondirectory (buffer-file-name))))
+                    (t (buffer-name)))))))
 
 
- ;; end of `echo-buffer-file-name'
+ ;; end of `echo-buffer-name'
 
 
 ;; Greek letters C-x 8 <RET> greek small letter lambda
@@ -654,7 +656,7 @@ If `current-prefix-arg' < 0, then repeat n time with END in reversed."
 ;;;;
 
 ;; Buffer
-(define-key% (current-global-map) (kbd "C-c b n") #'echo-buffer-file-name)
+(define-key% (current-global-map) (kbd "C-c b n") #'echo-buffer-name)
 (define-key% (current-global-map) (kbd "C-x RET =") #'get-buffer-coding-system)
 
 ;; Kill
