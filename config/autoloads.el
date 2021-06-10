@@ -46,6 +46,7 @@
     (compile-unit% (emacs-home* "config/on-hippie-autoload.el"))
     (compile-unit% (emacs-home* "config/on-indent-autoload.el"))
     (compile-unit% (emacs-home* "config/on-isearch-autoload.el"))
+    (compile-unit% (emacs-home* "config/on-js-autoload.el"))
     (compile-unit% (emacs-home* "config/on-lisp-autoload.el"))
     (compile-unit% (emacs-home* "config/on-net-autoload.el"))
     (compile-unit% (emacs-home* "config/on-org-autoload.el"))
