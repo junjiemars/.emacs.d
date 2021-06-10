@@ -446,9 +446,7 @@ name to kill ring."
     (message "%s"
              (kill-new 
               (cond ((buffer-file-name)
-                     (if arg
-                         (buffer-file-name)
-                       (file-name-nondirectory (buffer-file-name))))
+                     (if arg (buffer-file-name) (buffer-name)))
                     (t (buffer-name)))))))
 
 
