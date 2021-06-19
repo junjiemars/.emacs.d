@@ -287,8 +287,11 @@ Run the hook `jshell-repl-mode-hook' after the `comint-mode-hook'."
              (buffer-name (current-buffer))
              (current-buffer)
              (jshell-program)
-             (*jshell-start-file*)
-             (split-string* command-line "\\s-+" t))
+             nil
+             (append (list "--startup" "DEFAULT"
+                           "--startup" "PRINTING"
+                           "--startup" (*jshell-start-file*))
+                     (split-string* command-line "\\s-+" t)))
       (jshell-repl-mode)
       (add-hook (if-var% completion-at-point-functions 'minibuffer
                          'completion-at-point-functions
