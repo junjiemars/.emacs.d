@@ -9,10 +9,10 @@
 ;;; https://github.com/abicky/nodejs-repl.el/blob/develop/nodejs-repl.el
 ;;;
 ;;; fetures:
-;;; 1. start parameterized shell process.
+;;; 1. start parameterized jshell process.
 ;;; 2. switch/back to jshell REPL.
 ;;; 3. send sexp/definition/region to jshell REPL.
-;;; 4. completion in REPL and java source.
+;;; 4. TODO: completion in REPL and java source.
 ;;;
 ;;; bugs:
 ;;;
@@ -54,20 +54,19 @@
 
 (defconst +jshell-emacs-module+
   "
-function jshell_emacs_apropos(what, max) {
-    global.repl.repl.complete(what, (err, data) => {
-        if (err) {
-            console.log('()');
-        } else {
-            if (Array.isArray(data)) {
-                let out = [];
-                for (let ss of data[0]) {
-                    out.push('\"' + ss + '\"');
-                }
-                console.log('(%s)', out.join(' '));
-            }
-        }
-    });
+import java.io.*;
+import java.math.*;
+import java.net.*;
+import java.nio.file.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.function.*;
+import java.util.prefs.*;
+import java.util.regex.*;
+import java.util.stream.*;
+
+void jshell_emacs_apropos(String what, int max) {
+  System.out.println(what);
 }
 "
   "The module of jshell-emacs.")
@@ -82,7 +81,7 @@ function jshell_emacs_apropos(what, max) {
 
 
 (defalias '*jshell-start-file*
-  (lexical-let% ((b (v-home% ".exec/jshell.java")))
+  (lexical-let% ((b (v-home% ".exec/jshell.jsh")))
     (lambda (&optional n)
       (interactive)
       (if n (setq b n)
@@ -288,7 +287,7 @@ Run the hook `jshell-repl-mode-hook' after the `comint-mode-hook'."
              (buffer-name (current-buffer))
              (current-buffer)
              (jshell-program)
-             nil ;; (*jshell-start-file*)
+             (*jshell-start-file*)
              (split-string* command-line "\\s-+" t))
       (jshell-repl-mode)
       (add-hook (if-var% completion-at-point-functions 'minibuffer
