@@ -103,6 +103,18 @@
         (autoload 'lldb (v-home% "config/gud-lldb.elc")
           "Run cdb on program FILE in buffer *gud-FILE*." t)))
 
+    ;; Jshell
+    (when% (executable-find% "jshell"
+                             (lambda (jshell)
+                               (let ((x (shell-command* jshell "--version")))
+                                 (zerop (car x)))))
+      (prog1
+          (compile-unit% (emacs-home* "config/jshell.el") t)
+        (autoload 'jshell-mode (v-home% "config/jshell.elc")
+          "Toggle Jshell's mode." t)
+        (autoload 'run-jshell (v-home% "config/jshell.elc")
+          "Toggle jshell process in buffer `*jshell*'." t)))
+
     ;; Node
     (when% (or (file-exists-p "~/.nvm/nvm.sh")
                (executable-find% "node"
