@@ -110,7 +110,8 @@ void jshell_emacs_apropos(String what, int max) {
   (save-excursion
     (catch 'break
       (let ((ori (point)))
-        (while (not (or (char= (char-before) ?\;)
+        (while (not (or (= (point) (point-min))
+                        (char= (char-before) ?\;)
                         (char= (char-before) ?\n)))
           (cond
            ;; right parenthesis
@@ -120,11 +121,13 @@ void jshell_emacs_apropos(String what, int max) {
            ((char= (char-syntax (char-before)) ?w)
             (let ((cur (point))
                   (idx 1))
+              (when (<= (- cur idx) (point-min))
+                (throw 'break (point-min)))
               (while (char= (char-syntax (char-before (- cur idx))) ?w)
                 (setq idx (1+ idx)))
               (when (and (> idx 2)
                          (string-match
-                          "await\\|const\\|let\\|var"
+                          "var"
                           (buffer-substring-no-properties
                            (- cur idx) cur)))
                 (throw 'break cur))
@@ -140,13 +143,15 @@ void jshell_emacs_apropos(String what, int max) {
            ((char= (char-before) ?=)
             (let ((cur (point))
                   (idx 1))
+              (when (<= (- cur idx) (point-min))
+                (throw 'break (point-min)))
               (while (or (char= (char-before (- cur idx)) ?=)
                          (char= (char-before (- cur idx)) ?!))
                 (setq idx (1+ idx)))
               (if (< idx 2)
                   (throw 'break cur)
                 (backward-char idx))))
-           ;; > >> >>> or REPL's prompt
+           ;; > >> >>>
            ((char= (char-before) ?>)
             (when (string-match
                    "^[> \t]+"
@@ -159,6 +164,8 @@ void jshell_emacs_apropos(String what, int max) {
            ((char= (char-before) ?.)
             (let ((cur (point))
                   (idx 1))
+              (when (<= (- cur idx) (point-min))
+                (throw 'break (point-min)))
               (while (char= (char-before (- cur idx)) ?.)
                 (setq idx (1+ idx)))
               (when (>= idx 3)
