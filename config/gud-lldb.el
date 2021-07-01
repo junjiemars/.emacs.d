@@ -9,7 +9,7 @@
 ;; features:
 ;; 1. start or attach to process.
 ;; 2. source code debugging.
-;; 3. commands auto completion.
+;; 3. command auto completion.
 ;; 4* show breakpoints in buffer.
 ;; 5* frame buffer and register buffer.
 ;;
@@ -25,6 +25,9 @@
 ;;
 ;; original from:
 ;; https://opensource.apple.com/source/lldb/lldb-69/utils/emacs/gud.el.auto.html
+;;
+;; lldb builtin:
+;; apropos
 ;;;;
 
 
@@ -147,7 +150,7 @@ Return absolute filename when FILENAME exists, otherwise nil."
     (when proc
       (let* ((cmd (buffer-substring-no-properties start end))
              (script (lldb-script-apropos cmd))
-             (xs "^\\(script.*\\|[[:digit:]]+\\|\"\"\\|\\[None.*\\]\\)"))
+             (xs "^\\(script.*\\|[[:digit:]]+\\|\"\"\\|\\[.*\\]\\)"))
         (with-current-buffer (*lldb-out*) (erase-buffer))
         (comint-redirect-send-command-to-process script
                                                  (*lldb-out*)
