@@ -156,29 +156,26 @@ Return absolute filename when FILENAME exists, otherwise nil."
     (when proc
       (let* ((cmd (buffer-substring-no-properties start end))
              (script (lldb-script-apropos cmd)))
-        (unless (and (stringp cmd)
-                     (> (length cmd) 0)
-                     (char= ?- (aref cmd (1- (length cmd)))))
-          (with-current-buffer (*lldb-out*) (erase-buffer))
-          (comint-redirect-send-command-to-process script
-                                                   (*lldb-out*)
-                                                   proc nil t)
-          (unwind-protect
-              (while (or quit-flag (null comint-redirect-completed))
-                (accept-process-output nil 2))
-            (comint-redirect-cleanup))
-          (list end end
-                (let* ((xs "^\\(script.*\\|[[:digit:]]+\\|\"\"\\|\\[.*\\]\\)")
-                       (s1 (read-from-string
-                            (with-current-buffer (*lldb-out*)
-				                      (flush-lines xs (point-min) (point-max) nil)
-				                      (buffer-substring-no-properties
-                               (point-min) (point-max))))))
-                  (when (consp s1)
-                    (let ((ss (car s1)))
-                      (if (= 2 (length ss))
-                          (list (car ss))
-                        ss))))))))))
+        (with-current-buffer (*lldb-out*) (erase-buffer))
+        (comint-redirect-send-command-to-process script
+                                                 (*lldb-out*)
+                                                 proc nil t)
+        (unwind-protect
+            (while (or quit-flag (null comint-redirect-completed))
+              (accept-process-output nil 2))
+          (comint-redirect-cleanup))
+        (list end end
+              (let* ((xs "^\\(script.*\\|[[:digit:]]+\\|\"\"\\|\\[.*\\]\\)")
+                     (s1 (read-from-string
+                          (with-current-buffer (*lldb-out*)
+				                    (flush-lines xs (point-min) (point-max) nil)
+				                    (buffer-substring-no-properties
+                             (point-min) (point-max))))))
+                (when (consp s1)
+                  (let ((ss (car s1)))
+                    (if (= 2 (length ss))
+                        (list (car ss))
+                      ss)))))))))
 
 
 ;; (defun lldb-toggle-breakpoint ()
