@@ -144,7 +144,7 @@ Return absolute filename when FILENAME exists, otherwise nil."
                     pos
                     64)
             "print('(');"
-            "[print('\"%s\"' % (x)) for x in m];"
+            "[print('\"%s\"' % (x)) for x in m if m.GetSize() <= 128];"
             "print(')');m.Clear();")))
 
 
