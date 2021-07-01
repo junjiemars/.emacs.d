@@ -149,8 +149,7 @@ Return absolute filename when FILENAME exists, otherwise nil."
         (end (point)))
     (when proc
       (let* ((cmd (buffer-substring-no-properties start end))
-             (script (lldb-script-apropos cmd))
-             (xs "^\\(script.*\\|[[:digit:]]+\\|\"\"\\|\\[.*\\]\\)"))
+             (script (lldb-script-apropos cmd)))
         (with-current-buffer (*lldb-out*) (erase-buffer))
         (comint-redirect-send-command-to-process script
                                                  (*lldb-out*)
@@ -160,13 +159,12 @@ Return absolute filename when FILENAME exists, otherwise nil."
               (accept-process-output nil 2))
           (comint-redirect-cleanup))
         (list end end
-              (let ((s1 (read-from-string
-                         (with-current-buffer (*lldb-out*)
-				                   (flush-lines
-                            xs
-                            (point-min) (point-max) nil)
-				                   (buffer-substring-no-properties
-                            (point-min) (point-max))))))
+              (let* ((xs "^\\(script.*\\|[[:digit:]]+\\|\"\"\\|\\[.*\\]\\)")
+                     (s1 (read-from-string
+                          (with-current-buffer (*lldb-out*)
+				                    (flush-lines xs (point-min) (point-max) nil)
+				                    (buffer-substring-no-properties
+                             (point-min) (point-max))))))
                 (when (consp s1)
                   (let ((ss (car s1)))
                     (if (= 2 (length ss))
