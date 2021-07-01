@@ -132,7 +132,7 @@ Return absolute filename when FILENAME exists, otherwise nil."
           (format "d.HandleCompletion('%s',%d,%d,%d,m);"
                   ss
                   (if (string= "" ss) 0 (length ss))
-                  0
+                  (if (string= "" ss) 0 (length ss))
                   64)
           "print('(');"
           "[print('\"%s\"' % (x)) for x in m];"
@@ -146,7 +146,8 @@ Return absolute filename when FILENAME exists, otherwise nil."
         (end (point)))
     (when proc
       (let* ((cmd (buffer-substring-no-properties start end))
-             (script (lldb-script-apropos cmd)))
+             (script (lldb-script-apropos cmd))
+             (xs "^\\(script.*\\|[[:digit:]]+\\|\"\"\\|\\[None.*\\]\\)"))
         (with-current-buffer (*lldb-out*) (erase-buffer))
         (comint-redirect-send-command-to-process script
                                                  (*lldb-out*)
@@ -155,16 +156,19 @@ Return absolute filename when FILENAME exists, otherwise nil."
             (while (or quit-flag (null comint-redirect-completed))
               (accept-process-output nil 2))
           (comint-redirect-cleanup))
-        (list start end
+        (list end end
               (let ((s1 (read-from-string
                          (with-current-buffer (*lldb-out*)
 				                   (flush-lines
-                            "^\\(script.*\\|[[:digit:]]+\\|\"\"\\|\\[None.*\\]\\)"
+                            xs
                             (point-min) (point-max) nil)
-				                   (buffer-substring-no-properties (point-min) (point-max))))))
+				                   (buffer-substring-no-properties
+                            (point-min) (point-max))))))
                 (when (consp s1)
-                  (car s1)))
-              :exclusive 'no)))))
+                  (let ((ss (car s1)))
+                    (if (= 2 (length ss))
+                        (list (car ss))
+                      ss)))))))))
 
 
 ;; (defun lldb-toggle-breakpoint ()
