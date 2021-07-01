@@ -125,15 +125,30 @@ Return absolute filename when FILENAME exists, otherwise nil."
   (gud-call (lldb-settings "set" "stop-line-count-after" "0")))
 
 
+(defun lldb-script-apropos (ss)
+  ""
+  (concat "script "
+          "d=lldb.debugger.GetCommandInterpreter();m=lldb.SBStringList();"
+          (format "d.HandleCompletion('%s',%d,%d,%d,m);"
+                  ss
+                  (if (string= "" ss) 0 (length ss))
+                  0
+                  64)
+          "print('(');"
+          "[print('\"%s\"' % (x)) for x in m];"
+          "print(')');"))
+
+
 (defun lldb-completion ()
   (interactive)
   (let ((proc (get-buffer-process (*lldb*)))
         (start (save-excursion (comint-goto-process-mark) (point)))
         (end (point)))
     (when proc
-      (let ((cmd (buffer-substring-no-properties start end)))
+      (let* ((cmd (buffer-substring-no-properties start end))
+             (script (lldb-script-apropos cmd)))
         (with-current-buffer (*lldb-out*) (erase-buffer))
-        (comint-redirect-send-command-to-process cmd
+        (comint-redirect-send-command-to-process script
                                                  (*lldb-out*)
                                                  proc nil t)
         (unwind-protect
@@ -141,27 +156,15 @@ Return absolute filename when FILENAME exists, otherwise nil."
               (accept-process-output nil 2))
           (comint-redirect-cleanup))
         (list start end
-              (catch 'out
-                (let ((s1) (s2))
-                  (with-current-buffer (*lldb-out*)
-                    (goto-char (point-min))
-                    (while (< (point) (point-max))
-                      (let ((line (buffer-substring-no-properties
-                                   (line-beginning-position)
-                                   (line-end-position))))
-                        (cond ((string-match "^error:.*$" line) (throw 'out nil))
-                              ((string-match "^.*?\s+\\([_a-z]+\\)\s+--.*$" line)
-                               (push (match-string 1 line) s2))
-                              ((string-match "^Syntax:\s\\([_a-z]+\\)\s+.*$" line)
-                               (setq s1 (match-string 1 line)))
-                              (t nil))
-                        (forward-line 1))))
-                  (cond ((null s1) s2)
-                        ((string-match (format "^%s\s*.*$" cmd) s1)
-                         (list s1))
-                        (t (mapcar (lambda (x)
-                                     (format "%s\  %s" s1 x))
-                                   s2))))))))))
+              (let ((s1 (read-from-string
+                         (with-current-buffer (*lldb-out*)
+				                   (flush-lines
+                            "^\\(script.*\\|[[:digit:]]+\\|\"\"\\|\\[None.*\\]\\)"
+                            (point-min) (point-max) nil)
+				                   (buffer-substring-no-properties (point-min) (point-max))))))
+                (when (consp s1)
+                  (car s1)))
+              :exclusive 'no)))))
 
 
 ;; (defun lldb-toggle-breakpoint ()
