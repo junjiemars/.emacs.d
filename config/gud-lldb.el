@@ -128,18 +128,24 @@ Return absolute filename when FILENAME exists, otherwise nil."
   (gud-call (lldb-settings "set" "stop-line-count-after" "0")))
 
 
+(defun lldb-script-vars-init ()
+  "Initialize lldb's script vars."
+  (gud-call (concat "script "
+                    "d=lldb.debugger.GetCommandInterpreter();"
+                    "m=lldb.SBStringList();")))
+
 (defun lldb-script-apropos (ss)
-  ""
-  (concat "script "
-          "d=lldb.debugger.GetCommandInterpreter();m=lldb.SBStringList();"
-          (format "d.HandleCompletion('%s',%d,%d,%d,m);"
-                  ss
-                  (if (string= "" ss) 0 (length ss))
-                  (if (string= "" ss) 0 (length ss))
-                  64)
-          "print('(');"
-          "[print('\"%s\"' % (x)) for x in m];"
-          "print(')');"))
+  "Apropos via lldb's script."
+  (let ((pos (if (string= "" ss) 0 (length ss))))
+    (concat "script "
+            (format "d.HandleCompletion('%s',%d,%d,%d,m);"
+                    ss
+                    pos
+                    pos
+                    64)
+            "print('(');"
+            "[print('\"%s\"' % (x)) for x in m];"
+            "print(')');m.Clear();")))
 
 
 (defun lldb-completion ()
@@ -150,26 +156,29 @@ Return absolute filename when FILENAME exists, otherwise nil."
     (when proc
       (let* ((cmd (buffer-substring-no-properties start end))
              (script (lldb-script-apropos cmd)))
-        (with-current-buffer (*lldb-out*) (erase-buffer))
-        (comint-redirect-send-command-to-process script
-                                                 (*lldb-out*)
-                                                 proc nil t)
-        (unwind-protect
-            (while (or quit-flag (null comint-redirect-completed))
-              (accept-process-output nil 2))
-          (comint-redirect-cleanup))
-        (list end end
-              (let* ((xs "^\\(script.*\\|[[:digit:]]+\\|\"\"\\|\\[.*\\]\\)")
-                     (s1 (read-from-string
-                          (with-current-buffer (*lldb-out*)
-				                    (flush-lines xs (point-min) (point-max) nil)
-				                    (buffer-substring-no-properties
-                             (point-min) (point-max))))))
-                (when (consp s1)
-                  (let ((ss (car s1)))
-                    (if (= 2 (length ss))
-                        (list (car ss))
-                      ss)))))))))
+        (unless (and (stringp cmd)
+                     (> (length cmd) 0)
+                     (char= ?- (aref cmd (1- (length cmd)))))
+          (with-current-buffer (*lldb-out*) (erase-buffer))
+          (comint-redirect-send-command-to-process script
+                                                   (*lldb-out*)
+                                                   proc nil t)
+          (unwind-protect
+              (while (or quit-flag (null comint-redirect-completed))
+                (accept-process-output nil 2))
+            (comint-redirect-cleanup))
+          (list end end
+                (let* ((xs "^\\(script.*\\|[[:digit:]]+\\|\"\"\\|\\[.*\\]\\)")
+                       (s1 (read-from-string
+                            (with-current-buffer (*lldb-out*)
+				                      (flush-lines xs (point-min) (point-max) nil)
+				                      (buffer-substring-no-properties
+                               (point-min) (point-max))))))
+                  (when (consp s1)
+                    (let ((ss (car s1)))
+                      (if (= 2 (length ss))
+                          (list (car ss))
+                        ss))))))))))
 
 
 ;; (defun lldb-toggle-breakpoint ()
@@ -245,6 +254,7 @@ As the 3rd argument of `gud-common-init': marker-filter"
 ;; set default `gud-lldb-init-hook'
 (add-hook 'gud-lldb-init-hook #'lldb-settings-stop-display (emacs-arch))
 (add-hook 'gud-lldb-init-hook #'lldb-settings-frame-format (emacs-arch))
+(add-hook 'gud-lldb-init-hook #'lldb-script-vars-init (emacs-arch))
 
 
 (defun lldb (command-line)
