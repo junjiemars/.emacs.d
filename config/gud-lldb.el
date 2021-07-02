@@ -10,7 +10,7 @@
 ;; 1. start or attach to process.
 ;; 2. source code debugging.
 ;; 3. command auto completion.
-;; 4* show breakpoints in buffer.
+;; 4* show breakpoints on buffer in GUI/Terminal mode.
 ;; 5* frame buffer and register buffer.
 ;;
 ;;;;
