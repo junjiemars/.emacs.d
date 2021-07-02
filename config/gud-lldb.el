@@ -136,7 +136,11 @@ Return absolute filename when FILENAME exists, otherwise nil."
                     "_r_=lambda x:x if x < 128 else 128")))
 
 (defun lldb-script-apropos (ss)
-  "Apropos via lldb's script."
+  "Apropos via lldb's script.
+
+The `max_return_elements' argument in `HandleCompletion' should wrong.
+https://lldb.llvm.org/cpp_reference/SBCommandInterpreter_8cpp_source.html
+https://lldb.llvm.org/python_api/lldb.SBCommandInterpreter.html#lldb.SBCommandInterpreter.HandleCompletionWithDescriptions"
   (concat "script "
           "_m_.Clear();"
           (format "_d_.HandleCompletion('%s',%d,%d,%d,_m_);"
@@ -285,14 +289,14 @@ these cases the initial working directory is the
 `default-directory' of the buffer in which this command was
 invoked."
   (interactive (list (gud-query-cmdline 'lldb)))
-  
+
   (gud-common-init command-line
                    #'gud-lldb-massage-args
                    #'gud-lldb-marker-filter
                    #'gud-lldb-find-file)
 
   (*lldb* (get-buffer (format "*gud-%s*" gud-target-name)))
-  
+
   (set (make-local-variable 'gud-minor-mode) 'lldb)
 
   (gud-def gud-break
