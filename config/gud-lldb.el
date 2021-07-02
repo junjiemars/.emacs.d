@@ -182,7 +182,7 @@ Return absolute filename when FILENAME exists, otherwise nil."
                     (mapcar (lambda (z) (concat ls z))
                             (if (and (cadr ss)
                                      (string-match
-                                      (string-trim> (concat rs (car ss)))
+                                      (concat rs (string-trim> (car ss)))
                                       (cadr ss)))
                                 (cdr ss)
                               ss)))))
