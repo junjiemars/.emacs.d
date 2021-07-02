@@ -163,18 +163,30 @@ Return absolute filename when FILENAME exists, otherwise nil."
             (while (or quit-flag (null comint-redirect-completed))
               (accept-process-output nil 2))
           (comint-redirect-cleanup))
-        (list end end
-              (let* ((xs "^\\(script.*\\|[[:digit:]]+\\|\"\"\\|\\[.*\\]\\)")
+        (list start end
+              (let* ((xs "^\\(script.*\\|[[:digit:]]+\\|\"\s*\"\\|\\[.*\\]\\)")
                      (s1 (read-from-string
                           (with-current-buffer (*lldb-out*)
 				                    (flush-lines xs (point-min) (point-max) nil)
 				                    (buffer-substring-no-properties
                              (point-min) (point-max))))))
-                (when (consp s1)
-                  (let ((ss (car s1)))
-                    (if (= 2 (length ss))
-                        (list (car ss))
-                      ss)))))))))
+                (when (and (consp s1) (car s1))
+                  (let* ((ss (car s1))
+                         (w (let ((n (- end start)))
+                              (while (and (> n 0)
+                                          (not (char= (aref cmd (1- n)) ?\ )))
+                                (setq n (1- n)))
+                              (if (> n 0) n 0)))
+                         (ls (substring cmd 0 w))
+                         (rs (substring cmd w)))
+                    (mapcar (lambda (z) (concat ls z))
+                            (if (and (cadr ss)
+                                     (string-match
+                                      (string-trim> (concat rs (car ss)))
+                                      (cadr ss)))
+                                (cdr ss)
+                              ss)))))
+              :exclusive 'no)))))
 
 
 ;; (defun lldb-toggle-breakpoint ()
