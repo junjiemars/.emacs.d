@@ -131,21 +131,20 @@ Return absolute filename when FILENAME exists, otherwise nil."
 (defun lldb-script-vars-init ()
   "Initialize lldb's script vars."
   (gud-call (concat "script "
-                    "d=lldb.debugger.GetCommandInterpreter();"
-                    "m=lldb.SBStringList();")))
+                    "_d_=lldb.debugger.GetCommandInterpreter();"
+                    "_m_=lldb.SBStringList();")))
 
 (defun lldb-script-apropos (ss)
   "Apropos via lldb's script."
-  (let ((pos (if (string= "" ss) 0 (length ss))))
-    (concat "script "
-            (format "d.HandleCompletion('%s',%d,%d,%d,m);"
-                    ss
-                    pos
-                    pos
-                    64)
-            "print('(');"
-            "[print('\"%s\"' % (x)) for x in m if m.GetSize() <= 128];"
-            "print(')');m.Clear();")))
+  (concat "script "
+          (format "_d_.HandleCompletion('%s',%d,%d,%d,_m_);"
+                  ss
+                  (if (string= "" ss) 0 (length ss))
+                  (if (string= "" ss) 0 (length ss))
+                  64)
+          "print('(');"
+          "[print('\"%s\"' % (x)) if not isinstance(x,list) else None for x in _m_ if _m_.GetSize() <= 128];"
+          "print(')');_m_.Clear();"))
 
 
 (defun lldb-completion ()
