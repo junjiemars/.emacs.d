@@ -135,7 +135,7 @@ Return absolute filename when FILENAME exists, otherwise nil."
                     "_m_=lldb.SBStringList();"
                     "import random;"
                     "_r_=lambda x:[a for a in range(0,128)] if x<128"
-                    " else [b for b in range(0,64)] if x<256"
+                    " else [b for b in range(0,128)] if x<256"
                     " else [random.randrange(0,x) for c in range(32)];")))
 
 (defun lldb-script-apropos (ss)
@@ -150,7 +150,7 @@ https://lldb.llvm.org/python_api/lldb.SBCommandInterpreter.html#lldb.SBCommandIn
                   ss
                   (if (string= "" ss) 0 (length ss))
                   (if (string= "" ss) 0 (length ss))
-                  64)
+                  256)
           "print('(');"
           "["
           "print('\"%s\"' % (_m_.GetStringAtIndex(x)))"
