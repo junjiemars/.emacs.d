@@ -133,7 +133,9 @@ Return absolute filename when FILENAME exists, otherwise nil."
   (gud-call (concat "script "
                     "_d_=lldb.debugger.GetCommandInterpreter();"
                     "_m_=lldb.SBStringList();"
-                    "_r_=lambda x:x if x < 128 else 128")))
+                    "import random;"
+                    "_r_=lambda x:[r for r in range(0,128)] if x<128"
+                    " else [random.randrange(0,x) for b in range(32)];")))
 
 (defun lldb-script-apropos (ss)
   "Apropos via lldb's script.
@@ -151,7 +153,7 @@ https://lldb.llvm.org/python_api/lldb.SBCommandInterpreter.html#lldb.SBCommandIn
           "print('(');"
           "["
           "print('\"%s\"' % (_m_.GetStringAtIndex(x)))"
-          " for x in range(_r_(_m_.GetSize()))"
+          " for x in _r_(_m_.GetSize())"
           "];"
           "print(')');"
           "_m_.Clear();"))
