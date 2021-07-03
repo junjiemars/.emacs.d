@@ -134,8 +134,9 @@ Return absolute filename when FILENAME exists, otherwise nil."
                     "_d_=lldb.debugger.GetCommandInterpreter();"
                     "_m_=lldb.SBStringList();"
                     "import random;"
-                    "_r_=lambda x:[r for r in range(0,128)] if x<128"
-                    " else [random.randrange(0,x) for b in range(32)];")))
+                    "_r_=lambda x:[a for a in range(0,128)] if x<128"
+                    " else [b for b in range(0,64)] if x<256"
+                    " else [random.randrange(0,x) for c in range(32)];")))
 
 (defun lldb-script-apropos (ss)
   "Apropos via lldb's script.
@@ -176,7 +177,12 @@ https://lldb.llvm.org/python_api/lldb.SBCommandInterpreter.html#lldb.SBCommandIn
               (accept-process-output nil 2))
           (comint-redirect-cleanup))
         (list start end
-              (let* ((xs "^\\(script.*\\|[[:digit:]]+\\|\"\s*\"\\|\\[.*\\]\\)")
+              (let* ((xs (concat "^\\(script.*"
+                                 "\\|[[:digit:]]+"
+                                 "\\|\"\s*\""
+                                 "\\|\"None\""
+                                 "\\|\\[.*\\]"
+                                 "\\)"))
                      (s1 (read-from-string
                           (with-current-buffer (*lldb-out*)
 				                    (flush-lines xs (point-min) (point-max) nil)
