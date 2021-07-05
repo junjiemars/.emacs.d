@@ -128,6 +128,28 @@
   (switch-to-buffer (*sudoku*)))
 
 
+(defalias '*sudoku-board*
+  (lexical-let% ((b (cons 2 2)))
+    (lambda (&optional n)
+      (cond (n (setq b n))
+            (t b))))
+  "The `sudoku' current board.")
+
+
+(defun sudoku-board-move ())
+
+
+(defvar sudoku-mode-map
+  (let ((m (make-sparse-keymap)))
+    (define-key m "\C-p" nil)))
+
+(defun sudoku-mode ()
+  "Play `sudoku'."
+  (kill-all-local-variables)
+  (use-local-map sudoku-mode-map)
+  (setq buffer-read-only t)
+  (buffer-disable-undo))
+
 (defun sudoku (&optional level)
   "Play sudoku in LEVEL."
   (interactive
