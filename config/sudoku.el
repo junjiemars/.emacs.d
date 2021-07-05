@@ -105,18 +105,24 @@
 
 (defun sudoku-board-make (puzzle)
   "Make sudoku board with PUZZLE."
-
   (with-current-buffer (*sudoku*)
     (setq buffer-read-only nil)
     (erase-buffer)
     (goto-char 0)
     (let ((c "+---------+---------+---------+")
           (h "---")
-          (v "|")
+          (v "| %s  %s  %s | %s  %s  %s | %s  %s  %s |")
           (u "_")
           (row ))
       (insert (concat c "\n"))
-      (insert v)))
+      ()
+      (insert (apply #'format v
+                     (mapcar
+                      #'(lambda (x)
+                          (cond ((= x 0) "_")
+                                (t (number-to-string x))))
+                      (append (*sudoku-puzzle* :row 0) nil))))))
+
   (switch-to-buffer (*sudoku*)))
 
 
@@ -135,10 +141,10 @@
                             nil
                           '*sudoku-option-history*)))))
   (v-home! ".sudoku/")
-  (sudoku-board-make (if (file-exists-p level)
-                         (*sudoku-puzzle*)
-                       (sudoku-puzzle-make (intern level)))))
-
+  (if (file-exists-p level)
+      (sudoku-puzzel-load)
+    (*sudoku-puzzle* :set! (sudoku-puzzle-make (intern level))))
+  (sudoku-board-make (*sudoku-puzzle*)))
 
 
 ;;; eof
