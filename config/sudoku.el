@@ -109,18 +109,21 @@
     (setq buffer-read-only nil)
     (erase-buffer)
     (goto-char 0)
-    (let ((c "+---------+---------+---------+")
-          (h "---")
-          (v "| %s  %s  %s | %s  %s  %s | %s  %s  %s |")
+    (let ((s "+---------+---------+---------+\n")
+          (v "| %s  %s  %s | %s  %s  %s | %s  %s  %s |\n")
           (u "_")
-          (row ))
-      (insert (concat c "\n"))
-      (insert (apply #'format v
-                     (mapcar
-                      #'(lambda (x)
-                          (cond ((= x 0) "_")
-                                (t (number-to-string x))))
-                      (append (*sudoku-puzzle* :row 0) nil))))))
+          (row 0))
+      (while (< row 9)
+        (when (= 0 (% row 3))
+          (insert s))
+        (insert (apply #'format v
+                       (mapcar
+                        #'(lambda (x)
+                            (cond ((= x 0) u)
+                                  (t (number-to-string x))))
+                        (append (*sudoku-puzzle* :row row) nil))))
+        (setq row (1+ row)))
+      (insert s)))
 
   (switch-to-buffer (*sudoku*)))
 
