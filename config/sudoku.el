@@ -94,8 +94,8 @@
 
 (defun sudoku-puzzle-save ()
   "Save sudoku's puzzle to file."
-  (save-sexp-to-file `(*sudoku-puzzle*
-                       ,(*sudoku-puzzle* :puzzle))
+  (save-sexp-to-file `(*sudoku-puzzle* :set!
+                                       ,(*sudoku-puzzle*))
                      (*sudoku-puzzle* :file)))
 
 (defun sudoku-puzzle-load ()
@@ -115,7 +115,6 @@
           (u "_")
           (row ))
       (insert (concat c "\n"))
-      ()
       (insert (apply #'format v
                      (mapcar
                       #'(lambda (x)
@@ -142,7 +141,7 @@
                           '*sudoku-option-history*)))))
   (v-home! ".sudoku/")
   (if (file-exists-p level)
-      (sudoku-puzzel-load)
+      (sudoku-puzzle-load)
     (*sudoku-puzzle* :set! (sudoku-puzzle-make (intern level))))
   (sudoku-board-make (*sudoku-puzzle*)))
 
