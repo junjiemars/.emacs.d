@@ -19,7 +19,18 @@
   "Sudoku option history list.")
 
 
-(defalias '*sudoku-puzzle-current*
+(defalias '*sudoku*
+  (lexical-let% ((b))
+    (lambda (&optional n)
+      (cond ((not (null n))
+             (setq b (get-buffer-create n)))
+            ((or (null b) (not (buffer-live-p b)))
+             (setq b (get-buffer-create "*sudoku*")))
+            (t b))))
+  "The current *sudoku* process buffer.")
+
+
+(defalias '*sudoku-puzzle*
   (lexical-let% ((b (v-home% ".sudoku/puzzle.el"))
                  (v))
     (lambda (&optional k i1 i2 n)
@@ -52,38 +63,50 @@
 
 (defun sudoku-puzzle-make (level)
   "Make sudoku puzzle at LEVEL."
-  )
+  [0 7 0 2 1 8 4 0 6
+   0 0 0 5 0 4 0 0 0
+   2 0 0 0 0 0 0 9 5
+   4 0 8 6 5 0 3 0 7
+   0 0 7 0 0 0 6 0 0
+   6 0 1 0 8 7 2 0 9
+   7 6 0 0 0 0 0 0 4
+   0 0 0 4 0 6 0 0 0
+   1 0 5 8 2 9 0 6 0])
 
 
 (defun sudoku-puzzle-save ()
   "Save sudoku's puzzle to file."
-  (save-sexp-to-file `(*sudoku-puzzle-current*
-                       ,(*sudoku-puzzle-current* :puzzle))
-                     (*sudoku-puzzle-current* :file)))
+  (save-sexp-to-file `(*sudoku-puzzle*
+                       ,(*sudoku-puzzle* :puzzle))
+                     (*sudoku-puzzle* :file)))
 
 (defun sudoku-puzzle-load ()
   "Load sudoku's puzzle from file."
-  (load (*sudoku-puzzle-current* :file)))
+  (load (*sudoku-puzzle* :file)))
 
 
 (defun sudoku-board-make (puzzle)
   "Make sudoku board with PUZZLE."
-  )
-
-(defun sudoku-board-new (level)
-  "New sudoku at LEVEL."
-  (sudoku-board-make (sudoku-puzzle-make level)
-                     (sudoku-help-message)))
-
+  puzzle)
 
 
 (defun sudoku (&optional level)
   "Play sudoku in LEVEL."
-  (interactive (list (read-string "Sudoku level: "
-                                  (car *sudoku-option-history*)
-                                  '*sudoku-option-history*)))
+  (interactive (list (let ((exists (and (file-exists-p
+                                         (*sudoku-puzzle* :file))
+                                        (null current-prefix-arg))))
+                       (read-string (format "Sudoku %s: "
+                                            (if exists "load" "level"))
+                                    (if exists
+                                        (*sudoku-puzzle* :file)
+                                      (car *sudoku-option-history*))
+                                    (if exists
+                                        nil
+                                      '*sudoku-option-history*)))))
   (v-home! ".sudoku/")
-  (message "%s" (intern level)))
+  (sudoku-board-make (if (file-exists-p level)
+                         (*sudoku-puzzle*)
+                       (sudoku-puzzle-make (intern level)))))
 
 
 
