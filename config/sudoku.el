@@ -36,7 +36,7 @@
     (lambda (&optional k i1 i2 n)
       (cond ((eq :file k) b)
             ((eq :set! k) (setq v i1))
-            ((eq :row k) (let ((row (* i1 9)))
+            ((eq :row k) (let ((row (* (% i1 9) 9)))
                            (vector (aref v (+ row 0))
                                    (aref v (+ row 1))
                                    (aref v (+ row 2))
@@ -46,17 +46,35 @@
                                    (aref v (+ row 6))
                                    (aref v (+ row 7))
                                    (aref v (+ row 8)))))
-            ((eq :col k) (vector (aref v (+ (* 0 9) i1))
-                                 (aref v (+ (* 1 9) i1))
-                                 (aref v (+ (* 2 9) i1))
-                                 (aref v (+ (* 3 9) i1))
-                                 (aref v (+ (* 4 9) i1))
-                                 (aref v (+ (* 5 9) i1))
-                                 (aref v (+ (* 6 9) i1))
-                                 (aref v (+ (* 7 9) i1))
-                                 (aref v (+ (* 8 9) i1))))
-            ((eq :cell k) (aref v (+ (* i1 9) i2)))
-            ((eq :cell! k) (aset v (+ (* i1 9) i2) n))
+            ((eq :col k) (let ((col (% i1 9)))
+                           (vector (aref v (+ col (* 0 9)))
+                                   (aref v (+ col (* 1 9)))
+                                   (aref v (+ col (* 2 9)))
+                                   (aref v (+ col (* 3 9)))
+                                   (aref v (+ col (* 4 9)))
+                                   (aref v (+ col (* 5 9)))
+                                   (aref v (+ col (* 6 9)))
+                                   (aref v (+ col (* 7 9)))
+                                   (aref v (+ col (* 8 9))))))
+            ((eq :sqr k) (let ((row (* (* i1 3) 9))
+                               (col (% (* i2 3) 9)))
+                           (vector (aref v (+ row col (* 0 9) 0))
+                                   (aref v (+ row col (* 0 9) 1))
+                                   (aref v (+ row col (* 0 9) 2))
+                                   (aref v (+ row col (* 1 9) 0))
+                                   (aref v (+ row col (* 1 9) 1))
+                                   (aref v (+ row col (* 1 9) 2))
+                                   (aref v (+ row col (* 2 9) 0))
+                                   (aref v (+ row col (* 2 9) 1))
+                                   (aref v (+ row col (* 2 9) 2)))))
+            ((eq :cell k) (let ((row (* (% i1 9) 9))
+                                (col (% i2 9)))
+                            (aref v (+ row col))))
+            ((eq :cell! k) (let ((row (* (% i1 9) 9))
+                                 (col (% i2 9)))
+                             (if (numberp n)
+                                 (aset v (+ row col) n)
+                               (aref v (+ row col)))))
             (t v))))
   "The `sudoku' current puzzle.")
 
@@ -87,22 +105,35 @@
 
 (defun sudoku-board-make (puzzle)
   "Make sudoku board with PUZZLE."
-  puzzle)
+
+  (with-current-buffer (*sudoku*)
+    (setq buffer-read-only nil)
+    (erase-buffer)
+    (goto-char 0)
+    (let ((c "+---------+---------+---------+")
+          (h "---")
+          (v "|")
+          (u "_")
+          (row ))
+      (insert (concat c "\n"))
+      (insert v)))
+  (switch-to-buffer (*sudoku*)))
 
 
 (defun sudoku (&optional level)
   "Play sudoku in LEVEL."
-  (interactive (list (let ((exists (and (file-exists-p
-                                         (*sudoku-puzzle* :file))
-                                        (null current-prefix-arg))))
-                       (read-string (format "Sudoku %s: "
-                                            (if exists "load" "level"))
-                                    (if exists
-                                        (*sudoku-puzzle* :file)
-                                      (car *sudoku-option-history*))
-                                    (if exists
-                                        nil
-                                      '*sudoku-option-history*)))))
+  (interactive
+   (list (let ((exists (and (file-exists-p
+                             (*sudoku-puzzle* :file))
+                            (null current-prefix-arg))))
+           (read-string (format "Sudoku %s: "
+                                (if exists "load" "level"))
+                        (if exists
+                            (*sudoku-puzzle* :file)
+                          (car *sudoku-option-history*))
+                        (if exists
+                            nil
+                          '*sudoku-option-history*)))))
   (v-home! ".sudoku/")
   (sudoku-board-make (if (file-exists-p level)
                          (*sudoku-puzzle*)
