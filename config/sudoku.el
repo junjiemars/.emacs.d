@@ -24,8 +24,8 @@
                  (v))
     (lambda (&optional n)
       (cond ((eq :file n) b)
-            (n (setq v n))
-            (t v))))
+            ((eq :puzzle n) v)
+            (t (setq v n)))))
   "The `sudoku' current puzzle.")
 
 
@@ -34,16 +34,16 @@
   )
 
 
-(defun sudoku-puzzle-save (puzzle)
-  "Save sudoku PUZZLE to file."
-  (save-sexp-to-file `(*sudoku-puzzle-current* ,puzzle)
+(defun sudoku-puzzle-save ()
+  "Save sudoku's puzzle to file."
+  (save-sexp-to-file `(*sudoku-puzzle-current*
+                       ,(*sudoku-puzzle-current* :puzzle))
                      (*sudoku-puzzle-current* :file)))
 
-(defun sudoku-puzzel-load (&optional file)
-  "Load sudoku puzzle from FILE."
-  (let ((f (or file
-               (*sudoku-puzzle-current* :file))))
-    (load )))
+(defun sudoku-puzzle-load ()
+  "Load sudoku's puzzle from file."
+  (load (*sudoku-puzzle-current* :file)))
+
 
 (defun sudoku-board-make (puzzle)
   "Make sudoku board with PUZZLE."
