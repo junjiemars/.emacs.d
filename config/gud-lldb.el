@@ -84,7 +84,7 @@ to lldb.")
     (lambda (&optional n)
       (if n (setq b n)
         (get-buffer-create b))))
-  "The output buffer of `chez-completion'.")
+  "The output buffer of `lldb-completion'.")
 
 
  ;; end of variable declarations
@@ -149,7 +149,7 @@ https://github.com/llvm/llvm-project/blob/7a580f3c28cf47a7e489faa1fc1ab7b88d9a5d
                   ss
                   (if (string= "" ss) 0 (length ss))
                   (if (string= "" ss) 0 (length ss))
-                  256)
+                  -1)
           "print('(');"
           "["
           "print('\"%s\"' % (_m_.GetStringAtIndex(x)))"
