@@ -128,17 +128,15 @@
                               (when (not (= v 0))
                                 (setq v1 v)
                                 (next-line v)
-                                (while (not (plist-get
-                                             (text-properties-at (point))
-                                             :puzzle))
+                                (while (not (get-text-property (point)
+                                                               :puzzle))
                                   (next-line v)
                                   (setq v1 (+ v1 v))))
                               (when (not (= h 0))
                                 (setq h1 h)
                                 (forward-char h)
-                                (while (not (plist-get
-                                             (text-properties-at (point))
-                                             :puzzle))
+                                (while (not (get-text-property (point)
+                                                               :puzzle))
                                   (forward-char h)
                                   (setq h1 (+ h1 h))))
                               (setq p (cons (+ (car p) v1) (+ (cdr p) h1))))))
@@ -192,7 +190,8 @@
       (let ((s "+---------+---------+---------+\n")
             (v "| %s  %s  %s | %s  %s  %s | %s  %s  %s |\n")
             (u "_")
-            (row 0))
+            (row 0)
+            (idx 0))
         (while (< row 9)
           (when (= 0 (% row 3))
             (insert s))
@@ -202,9 +201,11 @@
                               (propertize
                                (cond ((= x 0) u)
                                      (t (number-to-string x)))
-                               :puzzle x))
+                               :puzzle (cons idx x)
+                               :zero (= x 0)))
                           (append (*sudoku-puzzle* :row row) nil))))
-          (setq row (1+ row)))
+          (setq row (1+ row)
+                idx (1+ idx)))
         (insert s))))
   (*sudoku-board* :cor! (cons 2 2) (cons 12 28))
   (*sudoku-board* :ori)
@@ -270,6 +271,11 @@
          (dia (plist-get cor :dia))
          (pos (plist-get cor :pos)))
     (*sudoku-board* :mov (cons (car dia) (cdr pos)))))
+
+
+(defun sudoku-board-cell-fill (num property)
+  "Fill board's cell with NUM and PROPERTY."
+  )
 
 
 (defun sudoku-quit ()
