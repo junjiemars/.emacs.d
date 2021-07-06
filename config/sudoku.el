@@ -104,13 +104,23 @@
 
 
 (defalias '*sudoku-board*
-  (lexical-let% ((o)
-                 (d)
-                 (p))
+  (lexical-let% ((o) (d) (p))
     (lambda (&optional k c1 c2)
-      (cond ((eq :right k) (let ((r (% c1 (cdr d))))
-                             ()))
-            ((eq :cor! k) (setq o c1 d c2 p c1))
+      (cond ((eq :right k) (when (< (cdr p) (cdr d))
+                             (with-current-buffer (*sudoku*)
+                               (let ((n 1))
+                                 (forward-char)
+                                 (while (not (plist-get
+                                              (text-properties-at (point))
+                                              :puzzle))
+                                   (forward-char)
+                                   (setq n (1+ n)))
+                                 (setq p (cons (car p) (+ (cdr p) n)))))))
+            ((eq :cor! k) (with-current-buffer (*sudoku*)
+                            (goto-char (point-min))
+                            (forward-line (1- (car c1)))
+                            (forward-char (cdr c1))
+                            (setq o c1 d c2 p c1)))
             ((eq :cor k) (list o d))
             (t p))))
   "The `sudoku' board.")
@@ -135,11 +145,11 @@
                             (propertize
                              (cond ((= x 0) u)
                                    (t (number-to-string x)))
-                             'puzzle x))
+                             :puzzle x))
                         (append (*sudoku-puzzle* :row row) nil))))
         (setq row (1+ row)))
       (insert s)))
-  (*sudoku-board* :o! (cons 2 2) (cons 12 28))
+  (*sudoku-board* :cor! (cons 2 2) (cons 12 28))
   (switch-to-buffer (*sudoku*)))
 
 
