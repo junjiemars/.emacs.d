@@ -243,7 +243,20 @@
   "Move to original point."
   (interactive)
   (let ((cor (*sudoku-board* :cor)))
-    (*sudoku-board* :mov cor)))
+    (*sudoku-board* :mov (car cor))))
+
+(defun sudoku-board-move-diagonal ()
+  "Move to diagonal point."
+  (interactive)
+  (let ((cor (*sudoku-board* :cor)))
+    (*sudoku-board* :mov (cadr cor))))
+
+(defun sudoku-board-move-leftmost ()
+  "Move to diagonal point."
+  (interactive)
+  (let ((cor (*sudoku-board* :cor)))
+    (*sudoku-board* :mov (cadr cor))))
+
 
 
 (defvar sudoku-mode-map
