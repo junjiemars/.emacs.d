@@ -31,7 +31,7 @@
 
 
 (defalias '*sudoku-puzzle*
-  (lexical-let% ((b (v-home% ".sudoku/puzzle.el"))
+  (lexical-let% ((b (v-home% ".games/sudoku/puzzle.el"))
                  (v))
     (lambda (&optional k i1 i2 n)
       (cond ((eq :file k) b)
@@ -336,7 +336,7 @@ The following commands are available:
                         (if exists
                             nil
                           '*sudoku-option-history*)))))
-  (v-home! ".sudoku/")
+  (v-home! ".games/sudoku/")
   (if (file-exists-p level)
       (sudoku-puzzle-load)
     (*sudoku-puzzle* :set! (sudoku-puzzle-make (intern level))))
