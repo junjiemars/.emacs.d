@@ -179,7 +179,7 @@
             ((eq :cor! k) (setq o c1 d c2 p c1))
             ((eq :cor k) (list o d))
             ((eq :pos k) p)
-            (t p))))
+            (t (list :ori o :dia d :pos p)))))
   "The `sudoku' board.")
 
 
@@ -207,97 +207,98 @@
           (setq row (1+ row)))
         (insert s))))
   (*sudoku-board* :cor! (cons 2 2) (cons 12 28))
-  (*sudoku-board* :dia)
+  (*sudoku-board* :ori)
   (switch-to-buffer (*sudoku*)))
 
 
 (defun sudoku-board-move-right ()
   "Move one step right."
   (interactive)
-  (let ((cor (*sudoku-board* :cor))
-        (pos (*sudoku-board* :pos)))
-    (*sudoku-board* :next (cons (car pos) (1+ (cdr pos))))))
+  (let ((pos (*sudoku-board* :pos)))
+    (*sudoku-board* :next (cons (car pos)
+                                (1+ (cdr pos))))))
 
 (defun sudoku-board-move-left ()
   "Move one step left."
   (interactive)
-  (let ((cor (*sudoku-board* :cor))
-        (pos (*sudoku-board* :pos)))
-    (*sudoku-board* :next (cons (car pos) (1- (cdr pos))))))
+  (let ((pos (*sudoku-board* :pos)))
+    (*sudoku-board* :next (cons (car pos)
+                                (1- (cdr pos))))))
 
 (defun sudoku-board-move-down ()
   "Move one step down."
   (interactive)
-  (let ((cor (*sudoku-board* :cor))
-        (pos (*sudoku-board* :pos)))
-    (*sudoku-board* :next (cons (1+ (car pos)) (cdr pos)))))
+  (let ((pos (*sudoku-board* :pos)))
+    (*sudoku-board* :next (cons (1+ (car pos))
+                                (cdr pos)))))
 
 (defun sudoku-board-move-up ()
   "Move one step up."
   (interactive)
-  (let ((cor (*sudoku-board* :cor))
-        (pos (*sudoku-board* :pos)))
-    (*sudoku-board* :next (cons (1- (car pos)) (cdr pos)))))
-
-(defun sudoku-board-move-original ()
-  "Move to original point."
-  (interactive)
-  (let ((cor (*sudoku-board* :cor)))
-    (*sudoku-board* :mov (car cor))))
-
-(defun sudoku-board-move-diagonal ()
-  "Move to diagonal point."
-  (interactive)
-  (let ((cor (*sudoku-board* :cor)))
-    (*sudoku-board* :mov (cadr cor))))
+  (let ((pos (*sudoku-board* :pos)))
+    (*sudoku-board* :next (cons (1- (car pos))
+                                (cdr pos)))))
 
 (defun sudoku-board-move-leftmost ()
-  "Move to diagonal point."
+  "Move to leftmost point."
   (interactive)
-  (let ((cor (*sudoku-board* :cor)))
-    (*sudoku-board* :mov (cadr cor))))
+  (let* ((cor (*sudoku-board*))
+         (ori (plist-get cor :ori))
+         (pos (plist-get cor :pos)))
+    (*sudoku-board* :mov (cons (car pos) (cdr ori)))))
+
+(defun sudoku-board-move-rightmost ()
+  "Move to rightmost point."
+  (interactive)
+  (let* ((cor (*sudoku-board*))
+         (dia (plist-get cor :dia))
+         (pos (plist-get cor :pos)))
+    (*sudoku-board* :mov (cons (car pos) (cdr dia)))))
+
+(defun sudoku-board-move-topmost ()
+  "Move to topmost point."
+  (interactive)
+  (let* ((cor (*sudoku-board*))
+         (ori (plist-get cor :ori))
+         (pos (plist-get cor :pos)))
+    (*sudoku-board* :mov (cons (car ori) (cdr pos)))))
+
+(defun sudoku-board-move-bottom ()
+  "Move to bottom point."
+  (interactive)
+  (let* ((cor (*sudoku-board*))
+         (dia (plist-get cor :dia))
+         (pos (plist-get cor :pos)))
+    (*sudoku-board* :mov (cons (car dia) (cdr pos)))))
+
 
 
 
 (defvar sudoku-mode-map
-  (let ((m (make-sparse-keymap))
-        (right #'(lambda () (interactive) (*sudoku-board* :right)))
-        (left #'(lambda () (interactive) (*sudoku-board* :left)))
-        (up #'(lambda () (interactive) (*sudoku-board* :up)))
-        (down #'(lambda () (interactive) (*sudoku-board* :down)))
-        (ha #'(lambda ()
-                (interactive)
-                (let ((cor (*sudoku-board* :cor))
-                      (pos (*sudoku-board*)))
-                  (*sudoku-board* :mov
-                                  (cons (car pos)
-                                        (cdar cor))))))
-        (he #'(lambda ()
-                (interactive)
-                (let ((cor (*sudoku-board* :cor))
-                      (pos (*sudoku-board*)))
-                  (*sudoku-board* :mov
-                                  (cons (car pos)
-                                        (cdadr cor)))))))
+  (let ((m (make-sparse-keymap)))
 
-    (define-key m [right] right)
-    (define-key m "\C-f" right)
-    (define-key m "l" right)
+    (define-key m [right] #'sudoku-board-move-right)
+    (define-key m "\C-f" #'sudoku-board-move-right)
+    (define-key m "l" #'sudoku-board-move-right)
+    (define-key m "d" #'sudoku-board-move-right)
 
-    (define-key m [left] left)
-    (define-key m "\C-b" left)
-    (define-key m "h" left)
+    (define-key m [left] #'sudoku-board-move-left)
+    (define-key m "\C-b" #'sudoku-board-move-left)
+    (define-key m "h" #'sudoku-board-move-left)
+    (define-key m "a" #'sudoku-board-move-left)
 
-    (define-key m [up] up)
-    (define-key m "\C-p" up)
-    (define-key m "k" up)
+    (define-key m [up] #'sudoku-board-move-up)
+    (define-key m "\C-p" #'sudoku-board-move-up)
+    (define-key m "k" #'sudoku-board-move-up)
+    (define-key m "w" #'sudoku-board-move-up)
 
-    (define-key m [down] down)
-    (define-key m "\C-n" down)
-    (define-key m "j" down)
+    (define-key m [down] #'sudoku-board-move-down)
+    (define-key m "\C-n" #'sudoku-board-move-down)
+    (define-key m "j" #'sudoku-board-move-down)
+    (define-key m "s" #'sudoku-board-move-down)
 
-    (define-key m "\C-a" ha)
-    (define-key m "\C-e" he)
+    (define-key m "\C-a" #'sudoku-board-move-leftmost)
+    (define-key m "\C-e" #'sudoku-board-move-rightmost)
     m)
   "The keymap of `sudoku-mode'.")
 
