@@ -272,10 +272,17 @@
     (*sudoku-board* :mov (cons (car dia) (cdr pos)))))
 
 
+(defun sudoku-quit ()
+  "Quit `sudoku'."
+  (interactive)
+  (sudoku-puzzle-save)
+  (kill-buffer (*sudoku*)))
 
 
 (defvar sudoku-mode-map
   (let ((m (make-sparse-keymap)))
+
+    (define-key m "q" #'sudoku-quit)
 
     (define-key m [right] #'sudoku-board-move-right)
     (define-key m "\C-f" #'sudoku-board-move-right)
