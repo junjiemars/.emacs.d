@@ -76,7 +76,7 @@
                                  (aset v (+ row col) n)
                                (aref v (+ row col)))))
             (t v))))
-  "The `sudoku' current puzzle.")
+  "The `sudoku' puzzle.")
 
 
 (defun sudoku-puzzle-make (level)
@@ -103,6 +103,19 @@
   (load (*sudoku-puzzle* :file)))
 
 
+(defalias '*sudoku-board*
+  (lexical-let% ((o)
+                 (d)
+                 (p))
+    (lambda (&optional k c1 c2)
+      (cond ((eq :right k) (let ((r (% c1 (cdr d))))
+                             ()))
+            ((eq :cor! k) (setq o c1 d c2 p c1))
+            ((eq :cor k) (list o d))
+            (t p))))
+  "The `sudoku' board.")
+
+
 (defun sudoku-board-make (puzzle)
   "Make sudoku board with PUZZLE."
   (with-current-buffer (*sudoku*)
@@ -119,21 +132,17 @@
         (insert (apply #'format v
                        (mapcar
                         #'(lambda (x)
-                            (cond ((= x 0) u)
-                                  (t (number-to-string x))))
+                            (propertize
+                             (cond ((= x 0) u)
+                                   (t (number-to-string x)))
+                             'puzzle x))
                         (append (*sudoku-puzzle* :row row) nil))))
         (setq row (1+ row)))
       (insert s)))
-
+  (*sudoku-board* :o! (cons 2 2) (cons 12 28))
   (switch-to-buffer (*sudoku*)))
 
 
-(defalias '*sudoku-board*
-  (lexical-let% ((b (cons 2 2)))
-    (lambda (&optional n)
-      (cond (n (setq b n))
-            (t b))))
-  "The `sudoku' current board.")
 
 
 (defun sudoku-board-move ())
