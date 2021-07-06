@@ -128,7 +128,7 @@
                                 (setq p (cons (car p) (- (cdr p) n)))))))
             ((eq :down k) (when (< (car p) (car d))
                             (with-current-buffer (*sudoku*)
-                              (let ((n 0))
+                              (let ((n 1))
                                 (next-line 1)
                                 (while (not (plist-get
                                              (text-properties-at (point))
@@ -146,6 +146,22 @@
                                 (previous-line 1)
                                 (setq n (1+ n)))
                               (setq p (cons (- (car p) n) (cdr p)))))))
+            ((eq :pos k) (when (and (>= (car c1) (car o))
+                                    (<= (car c1) (car d))
+                                    (>= (cdr c1) (cdr o))
+                                    (<= (cdr c1) (cdr d)))
+                           (with-current-buffer (*sudoku*)
+                             (let ((r 0)
+                                   (c 0))
+                               (goto-char (point-min))
+                               (while (> (- (car d) (car p)))
+                                 (next-line 1)
+                                 (setq r (1+ r)))
+                               (while (> (- (cdr d) (cdr p)))
+                                 (forward-char 1)
+                                 (setq c (1+ c)))
+                               (setq p (cons (+ r (car p))
+                                             (+ c (cdr p))))))))
             ((eq :pos! k) (with-current-buffer (*sudoku*)
                             (goto-char (point-min))
                             (forward-line (1- (car c1)))
@@ -160,46 +176,75 @@
 (defun sudoku-board-make (puzzle)
   "Make sudoku board with PUZZLE."
   (with-current-buffer (*sudoku*)
-    (setq buffer-read-only nil)
-    (erase-buffer)
-    (goto-char 0)
-    (let ((s "+---------+---------+---------+\n")
-          (v "| %s  %s  %s | %s  %s  %s | %s  %s  %s |\n")
-          (u "_")
-          (row 0))
-      (while (< row 9)
-        (when (= 0 (% row 3))
-          (insert s))
-        (insert (apply #'format v
-                       (mapcar
-                        #'(lambda (x)
-                            (propertize
-                             (cond ((= x 0) u)
-                                   (t (number-to-string x)))
-                             :puzzle x))
-                        (append (*sudoku-puzzle* :row row) nil))))
-        (setq row (1+ row)))
-      (insert s)))
+    (let ((buffer-read-only nil))
+      (erase-buffer)
+      (goto-char 0)
+      (let ((s "+---------+---------+---------+\n")
+            (v "| %s  %s  %s | %s  %s  %s | %s  %s  %s |\n")
+            (u "_")
+            (row 0))
+        (while (< row 9)
+          (when (= 0 (% row 3))
+            (insert s))
+          (insert (apply #'format v
+                         (mapcar
+                          #'(lambda (x)
+                              (propertize
+                               (cond ((= x 0) u)
+                                     (t (number-to-string x)))
+                               :puzzle x))
+                          (append (*sudoku-puzzle* :row row) nil))))
+          (setq row (1+ row)))
+        (insert s))))
   (*sudoku-board* :cor! (cons 2 2) (cons 12 28))
   (*sudoku-board* :pos! (cons 12 2))
   (switch-to-buffer (*sudoku*)))
 
 
-
-
-(defun sudoku-board-move ())
-
-
 (defvar sudoku-mode-map
-  (let ((m (make-sparse-keymap)))
-    (define-key m "\C-p" nil)))
+  (let ((m (make-sparse-keymap))
+        (right #'(lambda () (interactive) (*sudoku-board* :right)))
+        (left #'(lambda () (interactive) (*sudoku-board* :left)))
+        (up #'(lambda () (interactive) (*sudoku-board* :up)))
+        (down #'(lambda () (interactive) (*sudoku-board* :down))))
+
+    (define-key m [right] right)
+    (define-key m "\C-f" right)
+    (define-key m "l" right)
+
+    (define-key m [left] left)
+    (define-key m "\C-b" left)
+    (define-key m "h" left)
+    
+    (define-key m [up] up)
+    (define-key m "\C-p" up)
+    (define-key m "k" up)
+
+    (define-key m [down] down)
+    (define-key m "\C-n" down)
+    (define-key m "j" down)
+    m)
+  "The keymap of `sudoku-mode'.")
+
+
+(make-variable-buffer-local
+ (defvar sudoku-mode-string nil
+   "Modeline indicator for `sudoku-mode'."))
+
 
 (defun sudoku-mode ()
-  "Play `sudoku'."
+  "Toggle sudoku's mode'.
+
+The following commands are available:
+\\{sudoku-mode-map}"
+  :group 'sudoku-mode
+  (interactive)
   (kill-all-local-variables)
   (use-local-map sudoku-mode-map)
-  (setq buffer-read-only t)
-  (buffer-disable-undo))
+  (setq major-mode 'sudoku-mode
+        mode-name  "Sudoku")
+  (setq buffer-read-only t))
+
 
 (defun sudoku (&optional level)
   "Play sudoku in LEVEL."
@@ -219,8 +264,11 @@
   (if (file-exists-p level)
       (sudoku-puzzle-load)
     (*sudoku-puzzle* :set! (sudoku-puzzle-make (intern level))))
-  (sudoku-board-make (*sudoku-puzzle*)))
+  (sudoku-board-make (*sudoku-puzzle*))
+  (sudoku-mode))
 
+
+(provide 'sudoku)
 
 ;;; eof
 
