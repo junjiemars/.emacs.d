@@ -273,9 +273,30 @@
     (*sudoku-board* :mov (cons (car dia) (cdr pos)))))
 
 
-(defun sudoku-board-cell-fill (num property)
+(defun sudoku-board-cell-fill (char property)
   "Fill board's cell with NUM and PROPERTY."
+  (let ((buffer-read-only nil))
+    (with-current-buffer (*sudoku*)
+      (let ((tp (text-properties-at (point)))
+            (pos (point)))
+        (when (plist-get tp :zero)
+          (delete-char 1)
+          (cond ((or (char= ?0 char)
+                     (char= ?x char))
+                 (insert-char ?_ 1))
+                (t (insert-char char 1)))
+          (forward-char -1)
+          (set-text-properties 0 1 tp))))))
+
+
+(defun sudoku-board-cell-erase ()
+  "Erase at point"
   )
+
+(defun sudoku-board-cell-1 (&optional properties)
+  "Input 1 at point."
+  (interactive)
+  (sudoku-board-cell-fill ?1 properties))
 
 
 (defun sudoku-quit ()
@@ -312,6 +333,12 @@
 
     (define-key m "\C-a" #'sudoku-board-move-leftmost)
     (define-key m "\C-e" #'sudoku-board-move-rightmost)
+
+    (define-key m "0" #'sudoku-board-cell-erase)
+    (define-key m "x" #'sudoku-board-cell-erase)
+    (define-key m "\C-d" #'sudoku-board-cell-erase)
+
+    (define-key m "1" #'sudoku-board-cell-1)
     m)
   "The keymap of `sudoku-mode'.")
 
