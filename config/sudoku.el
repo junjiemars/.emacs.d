@@ -75,6 +75,8 @@
                              (if (numberp n)
                                  (aset v (+ row col) n)
                                (aref v (+ row col)))))
+            ((eq :idx! k) (let ((idx (% i1 (1- (* 9 9)))))
+                            (aset v idx i2)))
             (t v))))
   "The `sudoku' puzzle.")
 
@@ -290,9 +292,9 @@
           (put-text-property pos (1+ pos)
                              (car property)
                              (cdr property))
-          (put-text-property pos (1+ pos)
-                             :puzzle (cons (car (plist-get tp :puzzle))
-                                           num)))))))
+          (let ((cell (cons (car (plist-get tp :puzzle)) num)))
+            (put-text-property pos (1+ pos) :puzzle cell)
+            (*sudoku-puzzle* :idx! (car cell) (cdr cell))))))))
 
 
 (defun sudoku-board-cell-erase ()
@@ -353,6 +355,7 @@
   "Quit `sudoku'."
   (interactive)
   (sudoku-puzzle-save)
+  (basic-save-buffer )
   (kill-buffer (*sudoku*)))
 
 
@@ -405,9 +408,8 @@
   "The keymap of `sudoku-mode'.")
 
 
-(make-variable-buffer-local
- (defvar sudoku-mode-string nil
-   "Modeline indicator for `sudoku-mode'."))
+(defvar sudoku-mode-string nil
+   "Modeline indicator for `sudoku-mode'.")
 
 
 (defun sudoku-mode ()
@@ -419,6 +421,7 @@ The following commands are available:
   (interactive)
   (kill-all-local-variables)
   (use-local-map sudoku-mode-map)
+  (make-variable-buffer-local sudoku-mode-string)
   (setq major-mode 'sudoku-mode
         mode-name  "Sudoku")
   (setq buffer-read-only t))
