@@ -183,6 +183,7 @@
 
 (defun sudoku-board-make (puzzle)
   "Make sudoku board with PUZZLE."
+  (switch-to-buffer (*sudoku*))
   (with-current-buffer (*sudoku*)
     (let ((buffer-read-only nil))
       (erase-buffer)
@@ -208,8 +209,7 @@
                 idx (1+ idx)))
         (insert s))))
   (*sudoku-board* :cor! (cons 2 2) (cons 12 28))
-  (*sudoku-board* :ori)
-  (switch-to-buffer (*sudoku*)))
+  (*sudoku-board* :ori))
 
 
 (defun sudoku-board-move-right ()
@@ -273,30 +273,38 @@
     (*sudoku-board* :mov (cons (car dia) (cdr pos)))))
 
 
-(defun sudoku-board-cell-fill (char property)
+(defun sudoku-board-cell-fill (num property)
   "Fill board's cell with NUM and PROPERTY."
   (let ((buffer-read-only nil))
     (with-current-buffer (*sudoku*)
-      (let ((tp (text-properties-at (point)))
+      (let ((c (string-to-char (number-to-string num)))
+            (tp (text-properties-at (point)))
             (pos (point)))
         (when (plist-get tp :zero)
           (delete-char 1)
-          (cond ((or (char= ?0 char)
-                     (char= ?x char))
-                 (insert-char ?_ 1))
-                (t (insert-char char 1)))
+          (cond ((char= ?0 c) (insert-char ?_ 1))
+                (t (insert-char c 1)))
           (forward-char -1)
-          (set-text-properties 0 1 tp))))))
+          (set-text-properties pos (1+ pos) tp)
+          (put-text-property pos (1+ pos)
+                             (car property)
+                             (cdr property))
+          (put-text-property pos (1+ pos)
+                             :puzzle (cons (car (plist-get tp :puzzle))
+                                           num)))))))
 
 
 (defun sudoku-board-cell-erase ()
-  "Erase at point"
-  )
+  "Erase at point."
+  (interactive)
+  (sudoku-board-cell-fill 0 (cons 'face
+                                  (cons 'foreground-color "black"))))
 
-(defun sudoku-board-cell-1 (&optional properties)
+(defun sudoku-board-cell-1 (&optional color)
   "Input 1 at point."
   (interactive)
-  (sudoku-board-cell-fill ?1 properties))
+  (sudoku-board-cell-fill 1 (cons 'face
+                                  (cons 'foreground-color "green"))))
 
 
 (defun sudoku-quit ()
