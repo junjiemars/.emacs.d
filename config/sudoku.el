@@ -305,6 +305,49 @@
   (interactive)
   (sudoku-board-cell-fill 1 (cons 'face 'underline)))
 
+(defun sudoku-board-cell-2 (&optional color)
+  "Input 2 at point."
+  (interactive)
+  (sudoku-board-cell-fill 2 (cons 'face 'underline)))
+
+(defun sudoku-board-cell-3 (&optional color)
+  "Input 3 at point."
+  (interactive)
+  (sudoku-board-cell-fill 3 (cons 'face 'underline)))
+
+(defun sudoku-board-cell-4 (&optional color)
+  "Input 4 at point."
+  (interactive)
+  (sudoku-board-cell-fill 4 (cons 'face 'underline)))
+
+(defun sudoku-board-cell-5 (&optional color)
+  "Input 5 at point."
+  (interactive)
+  (sudoku-board-cell-fill 5 (cons 'face 'underline)))
+
+(defun sudoku-board-cell-6 (&optional color)
+  "Input 6 at point."
+  (interactive)
+  (sudoku-board-cell-fill 6 (cons 'face 'underline)))
+
+(defun sudoku-board-cell-7 (&optional color)
+  "Input 7 at point."
+  (interactive)
+  (sudoku-board-cell-fill 7 (cons 'face 'underline)))
+
+(defun sudoku-board-cell-8 (&optional color)
+  "Input 8 at point."
+  (interactive)
+  (sudoku-board-cell-fill 8 (cons 'face 'underline)))
+
+(defun sudoku-board-cell-9 (&optional color)
+  "Input 9 at point."
+  (interactive)
+  (sudoku-board-cell-fill 9 (cons 'face 'underline)))
+
+(defun sudoku-board-disabled-key ()
+  "Disabled key."
+  (interactive))
 
 (defun sudoku-quit ()
   "Quit `sudoku'."
@@ -346,6 +389,18 @@
     (define-key m "\C-d" #'sudoku-board-cell-erase)
 
     (define-key m "1" #'sudoku-board-cell-1)
+    (define-key m "2" #'sudoku-board-cell-2)
+    (define-key m "3" #'sudoku-board-cell-3)
+    (define-key m "4" #'sudoku-board-cell-4)
+    (define-key m "5" #'sudoku-board-cell-5)
+    (define-key m "6" #'sudoku-board-cell-6)
+    (define-key m "7" #'sudoku-board-cell-7)
+    (define-key m "8" #'sudoku-board-cell-8)
+    (define-key m "9" #'sudoku-board-cell-9)
+
+    (define-key m "\C-k" #'sudoku-board-disabled-key)
+    (define-key m "\C-xh" #'sudoku-board-disabled-key)
+
     m)
   "The keymap of `sudoku-mode'.")
 
