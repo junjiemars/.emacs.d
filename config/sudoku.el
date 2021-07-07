@@ -138,7 +138,7 @@
         (throw 'conflict (cons :col col))))))
 
 (defun sudoku-puzzle-sqr-validate (index)
-  "Validate sudoku's square puzzle by 1-dimentail INDEX."
+  "Validate sudoku's square puzzle by 1-dimentional INDEX."
   (catch 'conflict
     (let* ((sqr (*sudoku-puzzle* :sqr index))
            (s (cdr sqr)))
