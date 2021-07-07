@@ -298,14 +298,12 @@
 (defun sudoku-board-cell-erase ()
   "Erase at point."
   (interactive)
-  (sudoku-board-cell-fill 0 (cons 'face
-                                  (cons 'foreground-color "black"))))
+  (sudoku-board-cell-fill 0 (cons 'face nil)))
 
 (defun sudoku-board-cell-1 (&optional color)
   "Input 1 at point."
   (interactive)
-  (sudoku-board-cell-fill 1 (cons 'face
-                                  (cons 'foreground-color "green"))))
+  (sudoku-board-cell-fill 1 (cons 'face 'underline)))
 
 
 (defun sudoku-quit ()
