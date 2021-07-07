@@ -408,9 +408,6 @@
   "The keymap of `sudoku-mode'.")
 
 
-(defvar sudoku-mode-string nil
-   "Modeline indicator for `sudoku-mode'.")
-
 
 (defun sudoku-mode ()
   "Toggle sudoku's mode'.
@@ -421,7 +418,6 @@ The following commands are available:
   (interactive)
   (kill-all-local-variables)
   (use-local-map sudoku-mode-map)
-  (make-variable-buffer-local sudoku-mode-string)
   (setq major-mode 'sudoku-mode
         mode-name  "Sudoku")
   (setq buffer-read-only t))
