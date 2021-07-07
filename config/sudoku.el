@@ -105,6 +105,78 @@
   (load (*sudoku-puzzle* :file)))
 
 
+(defun sudoku-puzzle-row-validate (row)
+  "Validate sudokus' ROW puzzle."
+  (catch 'conflict
+    (let ((r (*sudoku-puzzle* :row row)))
+      (unless (= 45 (+ (aref r 0)
+                       (aref r 1)
+                       (aref r 2)
+                       (aref r 3)
+                       (aref r 4)
+                       (aref r 5)
+                       (aref r 6)
+                       (aref r 7)
+                       (aref r 8)))
+        (throw 'conflict (cons :row row))))))
+
+(defun sudoku-puzzle-col-validate (col)
+  "Validate sudoku's COL puzzle."
+  (catch 'conflict
+    (let ((c (*sudoku-puzzle* :col col)))
+      (unless (= 45 (+ (aref c 0)
+                       (aref c 1)
+                       (aref c 2)
+                       (aref c 3)
+                       (aref c 4)
+                       (aref c 5)
+                       (aref c 6)
+                       (aref c 7)
+                       (aref c 8)))
+        (throw 'conflict (cons :col col))))))
+
+(defun sudoku-puzzle-sqr-validate (sqr1 sqr2))
+
+(defun sudoku-puzzle-validate ()
+  "Validate sudoku's puzzle."
+  (catch 'conflict
+    (let ((n 0))
+      (while (< n 9)
+        (let ((row (*sudoku-puzzle* :row n)))
+          (unless (= 45 (+ (aref row 0)
+                           (aref row 1)
+                           (aref row 2)
+                           (aref row 3)
+                           (aref row 4)
+                           (aref row 5)
+                           (aref row 6)
+                           (aref row 7)
+                           (aref row 8)))
+            (throw 'conflict (cons :row n)))
+          (setq n (1+ n)))))
+    (let ((n 0))
+      (while (< n 9)
+        (let ((col (*sudoku-puzzle* :col n)))
+          (unless (= 45 (+ (aref col 0)
+                           (aref col 0)
+                           (aref col 0)
+                           (aref col 0)
+                           (aref col 0)
+                           (aref col 0)
+                           (aref col 0)
+                           (aref col 0)
+                           (aref col 0)))
+            (throw 'conflict (cons :col n)))
+          (setq n (1+ n)))))
+    (let ((r 0)
+          (c 0))
+      (while (and (< r 3) (< c 3))
+        (let ((sqr (*sudoku-puzzle* :sqr r c)))
+          (unless (= 45 (+ (aref sqr r c)))
+            (throw 'conflict (cons :sqr (cons r c))))
+          (setq r (1+ r)
+                c (1+ c)))))))
+
 (defalias '*sudoku-board*
   (lexical-let% ((o) (d) (p))
     (lambda (&optional k c1 c2)
@@ -355,7 +427,6 @@
   "Quit `sudoku'."
   (interactive)
   (sudoku-puzzle-save)
-  (basic-save-buffer )
   (kill-buffer (*sudoku*)))
 
 
@@ -409,6 +480,8 @@
 
 
 
+
+
 (defun sudoku-mode ()
   "Toggle sudoku's mode'.
 
@@ -416,11 +489,12 @@ The following commands are available:
 \\{sudoku-mode-map}"
   :group 'sudoku-mode
   (interactive)
-  (kill-all-local-variables)
-  (use-local-map sudoku-mode-map)
-  (setq major-mode 'sudoku-mode
-        mode-name  "Sudoku")
-  (setq buffer-read-only t))
+  (with-current-buffer (*sudoku*)
+    (kill-all-local-variables)
+    (use-local-map sudoku-mode-map)
+    (setq major-mode 'sudoku-mode
+          mode-name  "Sudoku")
+    (setq buffer-read-only t)))
 
 
 (defun sudoku (&optional level)
