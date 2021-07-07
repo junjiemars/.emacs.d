@@ -199,14 +199,15 @@
           (insert (apply #'format v
                          (mapcar
                           #'(lambda (x)
-                              (propertize
-                               (cond ((= x 0) u)
-                                     (t (number-to-string x)))
-                               :puzzle (cons idx x)
-                               :zero (= x 0)))
+                              (let ((ps (propertize
+                                         (cond ((= x 0) u)
+                                               (t (number-to-string x)))
+                                         :puzzle (cons idx x)
+                                         :zero (= x 0))))
+                                (setq idx (1+ idx))
+                                ps))
                           (append (*sudoku-puzzle* :row row) nil))))
-          (setq row (1+ row)
-                idx (1+ idx)))
+          (setq row (1+ row)))
         (insert s))))
   (*sudoku-board* :cor! (cons 2 2) (cons 12 28))
   (*sudoku-board* :ori))
