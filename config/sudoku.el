@@ -31,7 +31,7 @@
 
 
 (defalias '*sudoku-puzzle*
-  (lexical-let% ((b (v-home% ".games/sudoku/puzzle.el"))
+  (lexical-let% ((b (v-home% ".games/sudoku/puzzle"))
                  (v))
     (lambda (&optional k i1 i2 n)
       (cond ((eq :file k) b)
@@ -98,13 +98,14 @@
 
 (defun sudoku-puzzle-save ()
   "Save sudoku's puzzle to file."
-  (save-sexp-to-file `(*sudoku-puzzle* :set!
-                                       ,(*sudoku-puzzle*))
+  (save-sexp-to-file (*sudoku-puzzle*)
                      (*sudoku-puzzle* :file)))
 
 (defun sudoku-puzzle-load ()
   "Load sudoku's puzzle from file."
-  (load (*sudoku-puzzle* :file)))
+  (*sudoku-puzzle* :set! (car (read-from-string
+                               (read-str-from-file
+                                (*sudoku-puzzle* :file))))))
 
 
 (defun sudoku-puzzle-row-validate (row)
