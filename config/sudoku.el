@@ -108,10 +108,10 @@
                                 (*sudoku-puzzle* :file))))))
 
 
-(defun sudoku-puzzle-row-validate (row)
-  "Validate sudokus' ROW puzzle."
+(defun sudoku-puzzle-row-validate (index)
+  "Validate sudokus' row puzzle at INDEX."
   (catch 'conflict
-    (let ((r (*sudoku-puzzle* :row :1d row)))
+    (let ((r (*sudoku-puzzle* :row :1d index)))
       (unless (= 45 (+ (aref r 0)
                        (aref r 1)
                        (aref r 2)
@@ -121,12 +121,12 @@
                        (aref r 6)
                        (aref r 7)
                        (aref r 8)))
-        (throw 'conflict (cons :row row))))))
+        (throw 'conflict (cons :row index))))))
 
-(defun sudoku-puzzle-col-validate (col)
-  "Validate sudoku's COL puzzle."
+(defun sudoku-puzzle-col-validate (index)
+  "Validate sudoku's column puzzle at INDEX."
   (catch 'conflict
-    (let ((c (*sudoku-puzzle* :col :1d col)))
+    (let ((c (*sudoku-puzzle* :col :1d index)))
       (unless (= 45 (+ (aref c 0)
                        (aref c 1)
                        (aref c 2)
@@ -139,7 +139,7 @@
         (throw 'conflict (cons :col col))))))
 
 (defun sudoku-puzzle-sqr-validate (index)
-  "Validate sudoku's square puzzle by 1-dimentional INDEX."
+  "Validate sudoku's square puzzle at INDEX."
   (catch 'conflict
     (let* ((sqr (*sudoku-puzzle* :sqr :1d index))
            (s (cdr sqr)))
