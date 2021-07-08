@@ -433,8 +433,13 @@
     (define-key m "j" #'sudoku-board-move-down)
     (define-key m "s" #'sudoku-board-move-down)
 
+    (define-key m [home] #'sudoku-board-move-leftmost)
     (define-key m "\C-a" #'sudoku-board-move-leftmost)
+    (define-key m [end] #'sudoku-board-move-rightmost)
     (define-key m "\C-e" #'sudoku-board-move-rightmost)
+
+    (define-key m "\M-<" #'sudoku-board-move-topmost)
+    (define-key m "\M->" #'sudoku-board-move-bottom)
 
     (define-key m "0" #'sudoku-board-cell-erase)
     (define-key m "x" #'sudoku-board-cell-erase)
@@ -451,7 +456,7 @@
     (define-key m "9" #'sudoku-board-cell-9)
 
     (define-key m "\C-k" #'sudoku-board-disabled-key)
-    (define-key m "\C-xh" #'sudoku-board-disabled-key)
+    ;; (define-key m "\C-h" #'sudoku-board-disabled-key)
 
     m)
   "The keymap of `sudoku-mode'.")
