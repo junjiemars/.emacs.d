@@ -77,7 +77,7 @@
                                   (aref v (+ row col (* 2 9) 2))))))
             ((eq :cell k) (cond ((eq :1d d) (aref v i))
                                 (t (aref v (+ (* (% i 9) 9) j)))))
-            ((eq :cell! k) (cond ((eq :1d d) (aset v i))
+            ((eq :cell! k) (cond ((eq :1d d) (aset v i j))
                                  (t (aset v (+ (* (% i 9) 9) j) n))))
             (t v))))
   "The `sudoku' puzzle.")
