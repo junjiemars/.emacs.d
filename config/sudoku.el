@@ -173,21 +173,17 @@
     (lambda (&optional k i j)
       (cond ((or (eq :next k) (eq :next! k))
              (with-current-buffer (*sudoku*)
-               (let* ((c11 (cons (cond ((> (car i) (car d))
-                                        (car d))
-                                       ((< (car i) (car o))
-                                        (car o))
-                                       (t (car i)))
-                                 (cond ((> (cdr i) (cdr d))
-                                        (cdr d))
-                                       ((< (cdr i) (cdr o))
-                                        (cdr o))
-                                       (t (cdr i)))))
-                      (v (cond ((> (- (car p) (car c11)) 0) -1)
-                               ((< (- (car p) (car c11)) 0) 1)
+               (let* ((i1 (cond ((> i (car d)) (car d))
+                                ((< i (car o)) (car o))
+                                (t i)))
+                      (j1 (cond ((> j (cdr d)) (cdr d))
+                                ((< j (cdr o)) (cdr o))
+                                (t j)))
+                      (v (cond ((> (- (car p) i1) 0) -1)
+                               ((< (- (car p) i1) 0) 1)
                                (t 0)))
-                      (h (cond ((> (- (cdr p) (cdr c11)) 0) -1)
-                               ((< (- (cdr p) (cdr c11)) 0) 1)
+                      (h (cond ((> (- (cdr p) j1) 0) -1)
+                               ((< (- (cdr p) j1) 0) 1)
                                (t 0)))
                       (v1 0)
                       (h1 0))
@@ -211,22 +207,16 @@
 
             ((or (eq :mov k) (eq :mov! k))
              (with-current-buffer (*sudoku*)
-               (let* ((c11 (cons (cond ((> (car i) (car d))
-                                        (car d))
-                                       ((< (car i) (car o))
-                                        (car o))
-                                       (t (car i)))
-                                 (cond ((> (cdr i) (cdr d))
-                                        (cdr d))
-                                       ((< (cdr i) (cdr o))
-                                        (cdr o))
-                                       (t (cdr i)))))
-                      (v (- (car p) (car c11)))
-                      (h (- (cdr p) (cdr c11)))
-                      (v1 (abs v))
-                      (h1 (abs h)))
-                 (next-line (- v))
-                 (forward-char (- h))
+               (let* ((v (- (car p) (cond ((> i (car d)) (car d))
+                                          ((< i (car o)) (car o))
+                                          (t i))))
+                      (h (- (cdr p) (cond ((> j (cdr d)) (cdr d))
+                                          ((< j (cdr o)) (cdr o))
+                                          (t j)))))
+                 (when (/= v 0)
+                   (next-line (- v)))
+                 (when (/= h 0)
+                   (forward-char (- h)))
                  (when (eq :mov! k)
                    (setq p (cons (+ (- v) (car p))
                                  (+ (- h) (cdr p))))))))
@@ -247,16 +237,20 @@
                (when (eq :dia! k)
                  (setq p d))))
 
-            ((eq :pos! k) (with-current-buffer (*sudoku*)
-                            (goto-char (point-min))
-                            (next-line (1- (car i)))
-                            (forward-char (cdr i))
-                            (setq p i)))
             ((eq :cor! k) (setq o i d j p i))
-            ((eq :cor k) (list o d))
             ((eq :pos k) p)
             (t (list :ori o :dia d :pos p)))))
   "The `sudoku' board.")
+
+
+(defun sudoku-board-save ()
+  "Save sudoku's board."
+  (*sudoku-board* :ori)
+  (let ((i 0) (j 0))
+    (while (and (< i 9) (< j 9))
+      (setq i (% (1+ i) 9)
+            j )))
+)
 
 
 (defun sudoku-board-make (puzzle)
@@ -295,61 +289,63 @@
   "Move one step right."
   (interactive)
   (let ((pos (*sudoku-board* :pos)))
-    (*sudoku-board* :next! (cons (car pos)
-                                 (1+ (cdr pos))))))
+    (*sudoku-board* :next! (car pos) (1+ (cdr pos)))))
 
 (defun sudoku-board-move-left ()
   "Move one step left."
   (interactive)
   (let ((pos (*sudoku-board* :pos)))
-    (*sudoku-board* :next! (cons (car pos)
-                                 (1- (cdr pos))))))
+    (*sudoku-board* :next! (car pos) (1- (cdr pos)))))
 
 (defun sudoku-board-move-down ()
   "Move one step down."
   (interactive)
   (let ((pos (*sudoku-board* :pos)))
-    (*sudoku-board* :next! (cons (1+ (car pos))
-                                 (cdr pos)))))
+    (*sudoku-board* :next! (1+ (car pos)) (cdr pos))))
 
 (defun sudoku-board-move-up ()
   "Move one step up."
   (interactive)
   (let ((pos (*sudoku-board* :pos)))
-    (*sudoku-board* :next! (cons (1- (car pos))
-                                 (cdr pos)))))
+    (*sudoku-board* :next! (1- (car pos)) (cdr pos))))
 
 (defun sudoku-board-move-leftmost ()
   "Move to leftmost point."
   (interactive)
-  (let* ((cor (*sudoku-board*))
-         (ori (plist-get cor :ori))
-         (pos (plist-get cor :pos)))
-    (*sudoku-board* :mov! (cons (car pos) (cdr ori)))))
+  (let ((cor (*sudoku-board*)))
+    (message "## %d,%d"
+             (car (plist-get cor :pos))
+             (cdr (plist-get cor :ori)))
+    (*sudoku-board* :mov!
+                    (car (plist-get cor :pos))
+                    (cdr (plist-get cor :ori)))))
 
 (defun sudoku-board-move-rightmost ()
   "Move to rightmost point."
   (interactive)
-  (let* ((cor (*sudoku-board*))
-         (dia (plist-get cor :dia))
-         (pos (plist-get cor :pos)))
-    (*sudoku-board* :mov! (cons (car pos) (cdr dia)))))
+  (let ((cor (*sudoku-board*)))
+    (message "!! %d,%d"
+             (car (plist-get cor :pos))
+             (cdr (plist-get cor :dia)))
+    (*sudoku-board* :mov!
+                    (car (plist-get cor :pos))
+                    (cdr (plist-get cor :dia)))))
 
 (defun sudoku-board-move-topmost ()
   "Move to topmost point."
   (interactive)
-  (let* ((cor (*sudoku-board*))
-         (ori (plist-get cor :ori))
-         (pos (plist-get cor :pos)))
-    (*sudoku-board* :mov! (cons (car ori) (cdr pos)))))
+  (let ((cor (*sudoku-board*)))
+    (*sudoku-board* :mov!
+                    (car (plist-get cor :ori))
+                    (cdr (plist-get cor :pos)))))
 
 (defun sudoku-board-move-bottom ()
   "Move to bottom point."
   (interactive)
-  (let* ((cor (*sudoku-board*))
-         (dia (plist-get cor :dia))
-         (pos (plist-get cor :pos)))
-    (*sudoku-board* :mov! (cons (car dia) (cdr pos)))))
+  (let ((cor (*sudoku-board*)))
+    (*sudoku-board* :mov!
+                    (car (plist-get cor :dia))
+                    (cdr (plist-get cor :pos)))))
 
 
 (defun sudoku-board-cell-fill (num property)
@@ -428,11 +424,7 @@
   (interactive))
 
 
-(defun sudoku-board-save ()
-  "Save sudoku's board."
-  (save-sexp-to-file (list :puzzle (*sudoku-puzzle*)
-                           :board "xxx")
-                     ))
+
 
 (defun sudoku-quit ()
   "Quit `sudoku'."
@@ -449,22 +441,18 @@
     (define-key m [right] #'sudoku-board-move-right)
     (define-key m "\C-f" #'sudoku-board-move-right)
     (define-key m "l" #'sudoku-board-move-right)
-    (define-key m "d" #'sudoku-board-move-right)
 
     (define-key m [left] #'sudoku-board-move-left)
     (define-key m "\C-b" #'sudoku-board-move-left)
     (define-key m "h" #'sudoku-board-move-left)
-    (define-key m "a" #'sudoku-board-move-left)
 
     (define-key m [up] #'sudoku-board-move-up)
     (define-key m "\C-p" #'sudoku-board-move-up)
     (define-key m "k" #'sudoku-board-move-up)
-    (define-key m "w" #'sudoku-board-move-up)
 
     (define-key m [down] #'sudoku-board-move-down)
     (define-key m "\C-n" #'sudoku-board-move-down)
     (define-key m "j" #'sudoku-board-move-down)
-    (define-key m "s" #'sudoku-board-move-down)
 
     (define-key m [home] #'sudoku-board-move-leftmost)
     (define-key m "\C-a" #'sudoku-board-move-leftmost)
