@@ -271,8 +271,8 @@
     bs))
 
 
-(defun sudoku-board-drawn (board)
-  "Drawn sudoku BOARD."
+(defun sudoku-board-draw (board)
+  "Draw sudoku BOARD."
   (switch-to-buffer (*sudoku*))
   (with-current-buffer (*sudoku*)
     (let ((buffer-read-only nil))
@@ -532,7 +532,7 @@ The following commands are available:
   (if (file-exists-p level)
       (sudoku-board-load)
     (*sudoku-puzzle* :set! (sudoku-puzzle-make (intern level))))
-  (sudoku-board-drawn (*sudoku-puzzle*))
+  (sudoku-board-draw (*sudoku-puzzle*))
   (sudoku-mode))
 
 
