@@ -31,10 +31,11 @@
 
 
 (defalias '*sudoku-puzzle*
-  (lexical-let% ((b (v-home% ".games/sudoku/puzzle"))
+  (lexical-let% ((b (v-home! ".games/sudoku"))
+                 (p (v-home% ".games/sudoku/puzzle"))
                  (v))
     (lambda (&optional k d i j n)
-      (cond ((eq :file k) b)
+      (cond ((eq :file k) p)
             ((eq :set! k) (setq v d))
             ((eq :row k) (let ((row (* (% (cond ((eq :1d d) (/ i 9))
                                                 (t i))
@@ -494,7 +495,6 @@ The following commands are available:
                         (if exists
                             nil
                           '*sudoku-option-history*)))))
-  (v-home! ".games/sudoku/")
   (if (file-exists-p level)
       (sudoku-puzzle-load)
     (*sudoku-puzzle* :set! (sudoku-puzzle-make (intern level))))
