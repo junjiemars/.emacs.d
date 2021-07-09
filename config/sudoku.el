@@ -245,12 +245,18 @@
 
 (defun sudoku-board-save ()
   "Save sudoku's board."
-  (*sudoku-board* :ori)
-  (let ((i 0) (j 0))
-    (while (and (< i 9) (< j 9))
-      (setq i (% (1+ i) 9)
-            j )))
-)
+  (let* ((i 0) (j 0) (bs))
+    (*sudoku-board* :ori!)
+    (while (< i 9)
+      (while (< j 9)
+        (let ((ts (text-properties-at (point))))
+          (setq bs (append bs ts))
+          (setq j (1+ j))
+          (*sudoku-board* :next! i j)))
+      (*sudoku-board* :mov! )
+      (setq i (1+ i) j 0)
+      (*sudoku-board* :next i j))
+    bs))
 
 
 (defun sudoku-board-make (puzzle)
@@ -313,9 +319,6 @@
   "Move to leftmost point."
   (interactive)
   (let ((cor (*sudoku-board*)))
-    (message "## %d,%d"
-             (car (plist-get cor :pos))
-             (cdr (plist-get cor :ori)))
     (*sudoku-board* :mov!
                     (car (plist-get cor :pos))
                     (cdr (plist-get cor :ori)))))
@@ -324,9 +327,6 @@
   "Move to rightmost point."
   (interactive)
   (let ((cor (*sudoku-board*)))
-    (message "!! %d,%d"
-             (car (plist-get cor :pos))
-             (cdr (plist-get cor :dia)))
     (*sudoku-board* :mov!
                     (car (plist-get cor :pos))
                     (cdr (plist-get cor :dia)))))
