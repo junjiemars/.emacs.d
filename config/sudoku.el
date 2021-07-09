@@ -261,6 +261,18 @@
 
 (defun sudoku-board-make (puzzle)
   "Make sudoku board with PUZZLE."
+  (let ((i 0)
+        (bs))
+    (while (< i 81)
+      (let ((x (aref puzzle i)))
+        (setq bs (append bs (list (list :puzzle (cons i x)
+                                        :zero (= x 0))))
+              i (1+ i))))
+    bs))
+
+
+(defun sudoku-board-drawn (board)
+  "Drawn sudoku BOARD."
   (switch-to-buffer (*sudoku*))
   (with-current-buffer (*sudoku*)
     (let ((buffer-read-only nil))
@@ -274,21 +286,23 @@
         (while (< row 9)
           (when (= 0 (% row 3))
             (insert s))
-          (insert (apply #'format v
-                         (mapcar
-                          #'(lambda (x)
-                              (let ((ps (propertize
-                                         (cond ((= x 0) u)
-                                               (t (number-to-string x)))
-                                         :puzzle (cons idx x)
-                                         :zero (= x 0))))
-                                (setq idx (1+ idx))
-                                ps))
-                          (append (*sudoku-puzzle* :row :2d row) nil))))
-          (setq row (1+ row)))
+          (insert
+           (apply #'format v
+                  (mapcar
+                   #'(lambda (x)
+                       (prog1 
+                           (apply #'propertize
+                                  (let ((n (cdr (plist-get x :puzzle))))
+                                    (cond ((= n 0) u)
+                                          (t (number-to-string n))))
+                                  x)
+                         (setq idx (1+ idx))))
+                   (take 9 board))))
+          (setq board (drop 9 board)
+                row (1+ row)))
         (insert s))))
   (*sudoku-board* :cor! (cons 2 2) (cons 12 28))
-  (*sudoku-board* :ori))
+  (*sudoku-board* :ori!))
 
 
 (defun sudoku-board-move-right ()
@@ -505,7 +519,7 @@ The following commands are available:
   "Play sudoku in LEVEL."
   (interactive
    (list (let ((exists (and (file-exists-p
-                             (+sudoku-file+ :puzzle))
+                             (+sudoku-file+ :board))
                             (null current-prefix-arg))))
            (read-string (format "Sudoku %s: "
                                 (if exists "load" "level"))
@@ -516,9 +530,9 @@ The following commands are available:
                             nil
                           '*sudoku-option-history*)))))
   (if (file-exists-p level)
-      (sudoku-puzzle-load)
+      (sudoku-board-load)
     (*sudoku-puzzle* :set! (sudoku-puzzle-make (intern level))))
-  (sudoku-board-make (*sudoku-puzzle*))
+  (sudoku-board-drawn (*sudoku-puzzle*))
   (sudoku-mode))
 
 
