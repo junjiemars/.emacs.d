@@ -30,8 +30,19 @@ Or all items if SEQ has fewer items than N."
   (let ((acc nil) (n1 n) (s1 seq))
     (while (and (> n1 0) s1)
       (setq acc (cons (car s1) acc)
-            n1 (1- n1) s1 (cdr s1)))
+            n1 (1- n1)
+            s1 (cdr s1)))
     (nreverse acc)))
+
+
+(defun drop (n seq)
+  "Return rest sequence after drop the first N items in SEQ.
+
+Or nil if SEQ has fewer items than N."
+  (while (and (> n 0) seq)
+    (setq seq (cdr seq)
+          n (1- n)))
+  seq)
 
 
 (defun drop-while (pred seq)

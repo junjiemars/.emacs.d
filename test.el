@@ -214,6 +214,12 @@
   (should (= 3 (length (take 3 (range 1 10 1)))))
   (should (= 10 (length (take 100 (range 1 10 1))))))
 
+(ert-deftest %fns:drop ()
+  (should-not (drop 3 nil))
+  (should (equal '(8 9 10) (drop 7 (range 1 10 1))))
+  (should (= 3 (length (drop 7 (range 1 10 1)))))
+  (should (= 0 (length (drop 100 (range 1 10 1))))))
+
 (ert-deftest %fns:drop-while ()
   (should-not (drop-while nil nil))
   (should-not (drop-while (lambda (x) (= x 1)) nil))
@@ -595,7 +601,7 @@
 
 (ert-deftest %shells:shells-spec->% ()
   (should (= 8 (length (shells-spec->%))))
-  (should (string= ".shell-env"
+  (should (string= "shell-env"
                    (file-name-base* (shells-spec->% :source-file)))))
 
 (ert-deftest %shells:shell-env->/<- ()
