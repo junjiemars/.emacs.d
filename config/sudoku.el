@@ -409,7 +409,7 @@
   (let ((buffer-read-only nil))
     (with-current-buffer (*sudoku*)
       (let ((c (string-to-char (number-to-string num)))
-            (tp (text-properties-at (point)))
+            (tp (*sudoku-board* :prop))
             (pos (point)))
         (when (plist-get tp :zero)
           (delete-char 1)
@@ -567,6 +567,10 @@
 
     (define-key m "\C-k" #'sudoku-board-disabled-key)
     (define-key m "\C-l" #'sudoku-board-disabled-key)
+    (define-key m [mouse-1] #'sudoku-board-disabled-key)
+    (define-key m [down-mouse-1] #'sudoku-board-disabled-key)
+    (define-key m [drag-mouse-1] #'sudoku-board-disabled-key)
+    (define-key m [double-mouse-1] #'sudoku-board-disabled-key)
 
     ;; (define-key m "\C-h" #'sudoku-board-disabled-key)
 
