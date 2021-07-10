@@ -193,10 +193,16 @@
                       (h1 0))
                  (when (/= v 0)
                    (setq v1 v)
-                   (next-line v)
+                   (let ((col (current-column)))
+                     (forward-line v)
+                     (while (< (current-column) col)
+                       (forward-char 1)))
                    (while (not (get-text-property (point)
                                                   :puzzle))
-                     (next-line v)
+                     (let ((col (current-column)))
+                       (forward-line v)
+                       (while (< (current-column) col)
+                         (forward-char 1)))
                      (setq v1 (+ v1 v))))
                  (when (/= h 0)
                    (setq h1 h)
@@ -478,7 +484,7 @@
     (sudoku-board-draw b)))
 
 
-(defun sudoku-quit (&optional save)
+(defun sudoku-quit ()
   "Quit `*sudoku*'."
   (interactive)
   (when (and current-prefix-arg
