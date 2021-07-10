@@ -11,7 +11,7 @@
 ;; 2*
 ;;
 ;;;;
-;;
+;; http://play.websudoku.com/?level=
 ;;;;
 
 
@@ -138,8 +138,8 @@
                                (read-str-from-file
                                 (+sudoku-file+ :puzzle))))))
 
-(defun sudoku-puzzle-validate (block)
-  "Validate sudoku's block puzzle."
+(defun sudoku-puzzle-complete (block)
+  "Check sudoku's block puzzle is complete."
   (when (and block (= 9 (length block)))
     (= 45 (+ (aref block 0)
              (aref block 1)
@@ -151,26 +151,44 @@
              (aref block 7)
              (aref block 8)))))
 
+(defun sudoku-puzzle-unique (block)
+  "Check sudoku's block puzzle is unique."
+  (catch 'conflict
+    (when (and block (= 9 (length block)))
+      (let ((i 0)
+            (j 0))
+        (while (< i 9)
+          (setq j (+ i 1))
+          (while (< j 9)
+            (when (= (aref block i) (aref block j))
+              (throw 'conflict nil))
+            (setq j (1+ j)))
+          (setq i (1+ i)
+                j (+ i 1)))))))
+
 (defun sudoku-puzzle-row-validate (index)
   "Validate sudokus' row puzzle at INDEX."
   (catch 'conflict
     (let ((r (*sudoku-puzzle* :row :1d index)))
-      (unless (sudoku-puzzle-validate r)
-        (throw 'conflict (cons :row index))))))
+      (or (sudoku-puzzle-complete r)
+          (sudoku-puzzle-unique r)
+          (throw 'conflict (cons :row index))))))
 
 (defun sudoku-puzzle-col-validate (index)
   "Validate sudoku's column puzzle at INDEX."
   (catch 'conflict
     (let ((c (*sudoku-puzzle* :col :1d index)))
-      (unless (sudoku-puzzle-validate c)
-        (throw 'conflict (cons :col c))))))
+      (or (sudoku-puzzle-complete c)
+          (sudoku-puzzle-unique c)
+          (throw 'conflict (cons :col index))))))
 
 (defun sudoku-puzzle-sqr-validate (index)
   "Validate sudoku's square puzzle at INDEX."
   (catch 'conflict
     (let ((sqr (*sudoku-puzzle* :sqr :1d index)))
-      (unless (sudoku-puzzle-validate (cdr sqr))
-        (throw 'conflict (cons :sqr (car sqr)))))))
+      (or (sudoku-puzzle-complete (cdr sqr))
+          (sudoku-puzzle-unique (cdr sqr))
+          (throw 'conflict (cons :sqr (car sqr)))))))
 
 
 (defalias '*sudoku-board*
@@ -404,7 +422,7 @@
 
 
 (defun sudoku-board-input (num &rest properties)
-  "Input on sudoku's board with NUM and PROPERTY."
+  "Input on sudoku's board with NUM and PROPERTIES."
   (declare (indent 1))
   (let ((buffer-read-only nil))
     (with-current-buffer (*sudoku*)
