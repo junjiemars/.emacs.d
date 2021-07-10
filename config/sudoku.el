@@ -370,8 +370,9 @@
                     (cdr (plist-get cor :pos)))))
 
 
-(defun sudoku-board-cell-fill (num property)
+(defun sudoku-board-cell-fill (num &rest properties)
   "Fill sudoku board's cell with NUM and PROPERTY."
+  (declare (indent 1))
   (let ((buffer-read-only nil))
     (with-current-buffer (*sudoku*)
       (let ((c (string-to-char (number-to-string num)))
@@ -383,9 +384,10 @@
                 (t (insert-char c 1)))
           (forward-char -1)
           (set-text-properties pos (1+ pos) tp)
-          (put-text-property pos (1+ pos)
-                             (car property)
-                             (cdr property))
+          (dolist* (x properties)
+            (put-text-property pos (1+ pos)
+                               (car x)
+                               (cdr x)))
           (let ((cell (cons (car (plist-get tp :puzzle)) num)))
             (put-text-property pos (1+ pos) :puzzle cell)
             (*sudoku-puzzle* :cell! :1d (car cell) (cdr cell))))))))
@@ -463,9 +465,17 @@
 
 (defun sudoku-board-load ()
   "Load sudoku's board from `+sudoku-file+'."
-  (sudoku-board-draw (car (read-from-string
-                           (read-str-from-file
-                            (+sudoku-file+ :board))))))
+  (let ((b (car (read-from-string
+                 (read-str-from-file
+                  (+sudoku-file+ :board))))))
+    (*sudoku-puzzle*
+     :set!
+     (let ((i 0)
+           (p (make-vector (* 9 9) 0)))
+       (dolist* (x b p)
+         (aset p i (cdr (plist-get x :puzzle)))
+         (setq i (1+ i)))))
+    (sudoku-board-draw b)))
 
 
 (defun sudoku-quit (&optional save)
