@@ -171,7 +171,10 @@
 (defalias '*sudoku-board*
   (lexical-let% ((o) (d) (p))
     (lambda (&optional k i j)
-      (cond ((or (eq :next k) (eq :next! k))
+      (cond ((eq :cor! k) (setq o i d j p i))
+            ((eq :pos k) p)
+
+            ((or (eq :next k) (eq :next! k))
              (with-current-buffer (*sudoku*)
                (let* ((i1 (cond ((> i (car d)) (car d))
                                 ((< i (car o)) (car o))
@@ -237,26 +240,30 @@
                (when (eq :dia! k)
                  (setq p d))))
 
-            ((eq :cor! k) (setq o i d j p i))
-            ((eq :pos k) p)
+            ((eq :prop k)
+             (with-current-buffer (*sudoku*)
+               (text-properties-at (point))))
+
+            ((eq :props k)
+             (with-current-buffer (*sudoku*)
+               (let ((ps)
+                     (max (1- (point-max)))
+                     (n 0))
+                 (save-excursion
+                   (goto-char (point-min))
+                   (while (< n max)
+                     (let ((ts (text-properties-at (point))))
+                       (when (and ts (plist-get ts :puzzle))
+                         (setq ps (append ps (list ts)))))
+                     (forward-char 1)
+                     (setq n (1+ n))))
+                 ps)))
+
             (t (list :ori o :dia d :pos p)))))
   "The `sudoku' board.")
 
 
-(defun sudoku-board-save ()
-  "Save sudoku's board."
-  (let* ((i 0) (j 0) (bs))
-    (*sudoku-board* :ori!)
-    (while (< i 9)
-      (while (< j 9)
-        (let ((ts (text-properties-at (point))))
-          (setq bs (append bs ts))
-          (setq j (1+ j))
-          (*sudoku-board* :next! i j)))
-      (*sudoku-board* :mov! )
-      (setq i (1+ i) j 0)
-      (*sudoku-board* :next i j))
-    bs))
+
 
 
 (defun sudoku-board-make (puzzle)
@@ -438,6 +445,10 @@
   (interactive))
 
 
+(defun sudoku-board-save ()
+  "Save sudoku's board."
+  (let ((b (*sudoku-board* :props)))
+    (save-sexp-to-file b (+sudoku-file+ :board))))
 
 
 (defun sudoku-quit ()
