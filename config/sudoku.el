@@ -331,79 +331,79 @@
 
 (defun sudoku-board-move ()
   "Move to board."
-  (unless (*sudoku-board* :in)
-    (let* ((pos (*sudoku-board* :pos)))
-      (*sudoku-board* :ori!)
-      (*sudoku-board* :mov! (car pos) (cdr pos)))))
+  (or (*sudoku-board* :in)
+      (not (let* ((pos (*sudoku-board* :pos)))
+             (*sudoku-board* :ori!)
+             (*sudoku-board* :mov! (car pos) (cdr pos))))))
 
 
 (defun sudoku-board-move-right ()
   "Move one step right."
   (interactive)
-  (sudoku-board-move)
-  (let ((pos (*sudoku-board* :pos)))
-    (*sudoku-board* :nex! (car pos) (1+ (cdr pos)))))
+  (when (sudoku-board-move)
+    (let ((pos (*sudoku-board* :pos)))
+      (*sudoku-board* :nex! (car pos) (1+ (cdr pos))))))
 
 (defun sudoku-board-move-left ()
   "Move one step left."
   (interactive)
-  (sudoku-board-move)
-  (let ((pos (*sudoku-board* :pos)))
-    (*sudoku-board* :nex! (car pos) (1- (cdr pos)))))
+  (when (sudoku-board-move)
+    (let ((pos (*sudoku-board* :pos)))
+      (*sudoku-board* :nex! (car pos) (1- (cdr pos))))))
 
 (defun sudoku-board-move-down ()
   "Move one step down."
   (interactive)
-  (sudoku-board-move)
-  (let ((pos (*sudoku-board* :pos)))
-    (*sudoku-board* :nex! (1+ (car pos)) (cdr pos))))
+  (when (sudoku-board-move)
+    (let ((pos (*sudoku-board* :pos)))
+      (*sudoku-board* :nex! (1+ (car pos)) (cdr pos)))))
 
 (defun sudoku-board-move-up ()
   "Move one step up."
   (interactive)
-  (sudoku-board-move)
-  (let ((pos (*sudoku-board* :pos)))
-    (*sudoku-board* :nex! (1- (car pos)) (cdr pos))))
+  (when (sudoku-board-move)
+    (let ((pos (*sudoku-board* :pos)))
+      (*sudoku-board* :nex! (1- (car pos)) (cdr pos)))))
 
 (defun sudoku-board-move-leftmost ()
   "Move to leftmost point."
   (interactive)
-  (sudoku-board-move)
-  (let ((cor (*sudoku-board*)))
-    (*sudoku-board* :mov!
-                    (car (plist-get cor :pos))
-                    (cdr (plist-get cor :ori)))))
+  (when (sudoku-board-move)
+    (let ((cor (*sudoku-board*)))
+      (*sudoku-board* :mov!
+                      (car (plist-get cor :pos))
+                      (cdr (plist-get cor :ori))))))
 
 (defun sudoku-board-move-rightmost ()
   "Move to rightmost point."
   (interactive)
-  (sudoku-board-move)
-  (let ((cor (*sudoku-board*)))
-    (*sudoku-board* :mov!
-                    (car (plist-get cor :pos))
-                    (cdr (plist-get cor :dia)))))
+  (when (sudoku-board-move)
+    (let ((cor (*sudoku-board*)))
+      (*sudoku-board* :mov!
+                      (car (plist-get cor :pos))
+                      (cdr (plist-get cor :dia))))))
 
 (defun sudoku-board-move-topmost ()
   "Move to topmost point."
   (interactive)
-  (sudoku-board-move)
-  (let ((cor (*sudoku-board*)))
-    (*sudoku-board* :mov!
-                    (car (plist-get cor :ori))
-                    (cdr (plist-get cor :pos)))))
+  (when (sudoku-board-move)
+    (let ((cor (*sudoku-board*)))
+      (*sudoku-board* :mov!
+                      (car (plist-get cor :ori))
+                      (cdr (plist-get cor :pos))))))
 
 (defun sudoku-board-move-bottom ()
   "Move to bottom point."
   (interactive)
-  (sudoku-board-move)
-  (let ((cor (*sudoku-board*)))
-    (*sudoku-board* :mov!
-                    (car (plist-get cor :dia))
-                    (cdr (plist-get cor :pos)))))
+  (when (sudoku-board-move)
+    (let ((cor (*sudoku-board*)))
+      (*sudoku-board* :mov!
+                      (car (plist-get cor :dia))
+                      (cdr (plist-get cor :pos))))))
 
 
-(defun sudoku-board-cell-fill (num &rest properties)
-  "Fill sudoku board's cell with NUM and PROPERTY."
+(defun sudoku-board-input (num &rest properties)
+  "Input on sudoku's board with NUM and PROPERTY."
   (declare (indent 1))
   (let ((buffer-read-only nil))
     (with-current-buffer (*sudoku*)
@@ -425,65 +425,65 @@
             (*sudoku-puzzle* :cell! :1d (car cell) (cdr cell))))))))
 
 
-(defun sudoku-board-cell-erase ()
+(defun sudoku-board-input-erase ()
   "Erase at point."
   (interactive)
-  (sudoku-board-cell-fill 0 (cons 'face nil)))
+  (sudoku-board-input 0 (cons 'face nil)))
 
 
-(defun sudoku-board-cell-1 (&optional color)
+(defun sudoku-board-input-1 (&optional color)
   "Input 1 at point."
   (interactive)
   (ignore* color)
-  (sudoku-board-cell-fill 1 (cons 'face 'underline)))
+  (sudoku-board-input 1 (cons 'face 'underline)))
 
-(defun sudoku-board-cell-2 (&optional color)
+(defun sudoku-board-input-2 (&optional color)
   "Input 2 at point."
   (interactive)
   (ignore* color)
-  (sudoku-board-cell-fill 2 (cons 'face 'underline)))
+  (sudoku-board-input 2 (cons 'face 'underline)))
 
-(defun sudoku-board-cell-3 (&optional color)
+(defun sudoku-board-input-3 (&optional color)
   "Input 3 at point."
   (interactive)
   (ignore* color)
-  (sudoku-board-cell-fill 3 (cons 'face 'underline)))
+  (sudoku-board-input 3 (cons 'face 'underline)))
 
-(defun sudoku-board-cell-4 (&optional color)
+(defun sudoku-board-input-4 (&optional color)
   "Input 4 at point."
   (interactive)
   (ignore* color)
-  (sudoku-board-cell-fill 4 (cons 'face 'underline)))
+  (sudoku-board-input 4 (cons 'face 'underline)))
 
-(defun sudoku-board-cell-5 (&optional color)
+(defun sudoku-board-input-5 (&optional color)
   "Input 5 at point."
   (interactive)
   (ignore* color)
-  (sudoku-board-cell-fill 5 (cons 'face 'underline)))
+  (sudoku-board-input 5 (cons 'face 'underline)))
 
-(defun sudoku-board-cell-6 (&optional color)
+(defun sudoku-board-input-6 (&optional color)
   "Input 6 at point."
   (interactive)
   (ignore* color)
-  (sudoku-board-cell-fill 6 (cons 'face 'underline)))
+  (sudoku-board-input 6 (cons 'face 'underline)))
 
-(defun sudoku-board-cell-7 (&optional color)
+(defun sudoku-board-input-7 (&optional color)
   "Input 7 at point."
   (interactive)
   (ignore* color)
-  (sudoku-board-cell-fill 7 (cons 'face 'underline)))
+  (sudoku-board-input 7 (cons 'face 'underline)))
 
-(defun sudoku-board-cell-8 (&optional color)
+(defun sudoku-board-input-8 (&optional color)
   "Input 8 at point."
   (interactive)
   (ignore* color)
-  (sudoku-board-cell-fill 8 (cons 'face 'underline)))
+  (sudoku-board-input 8 (cons 'face 'underline)))
 
-(defun sudoku-board-cell-9 (&optional color)
+(defun sudoku-board-input-9 (&optional color)
   "Input 9 at point."
   (interactive)
   (ignore* color)
-  (sudoku-board-cell-fill 9 (cons 'face 'underline)))
+  (sudoku-board-input 9 (cons 'face 'underline)))
 
 
 (defun sudoku-board-disabled-key ()
@@ -550,19 +550,19 @@
     (define-key m "\M-<" #'sudoku-board-move-topmost)
     (define-key m "\M->" #'sudoku-board-move-bottom)
 
-    (define-key m "0" #'sudoku-board-cell-erase)
-    (define-key m "x" #'sudoku-board-cell-erase)
-    (define-key m "\C-d" #'sudoku-board-cell-erase)
+    (define-key m "0" #'sudoku-board-input-erase)
+    (define-key m "x" #'sudoku-board-input-erase)
+    (define-key m "\C-d" #'sudoku-board-input-erase)
 
-    (define-key m "1" #'sudoku-board-cell-1)
-    (define-key m "2" #'sudoku-board-cell-2)
-    (define-key m "3" #'sudoku-board-cell-3)
-    (define-key m "4" #'sudoku-board-cell-4)
-    (define-key m "5" #'sudoku-board-cell-5)
-    (define-key m "6" #'sudoku-board-cell-6)
-    (define-key m "7" #'sudoku-board-cell-7)
-    (define-key m "8" #'sudoku-board-cell-8)
-    (define-key m "9" #'sudoku-board-cell-9)
+    (define-key m "1" #'sudoku-board-input-1)
+    (define-key m "2" #'sudoku-board-input-2)
+    (define-key m "3" #'sudoku-board-input-3)
+    (define-key m "4" #'sudoku-board-input-4)
+    (define-key m "5" #'sudoku-board-input-5)
+    (define-key m "6" #'sudoku-board-input-6)
+    (define-key m "7" #'sudoku-board-input-7)
+    (define-key m "8" #'sudoku-board-input-8)
+    (define-key m "9" #'sudoku-board-input-9)
 
     (define-key m "\C-k" #'sudoku-board-disabled-key)
     (define-key m "\C-l" #'sudoku-board-disabled-key)
