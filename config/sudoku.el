@@ -43,16 +43,16 @@
 
 
 (defalias '*sudoku-color*
-  (lexical-let% ((n "black")
+  (lexical-let% ((b "black")
                  (g "gray")
                  (w "red"))
     (lambda (&optional k c)
-      (cond ((eq :normal k) n)
-            ((eq :guess k) g)
-            ((eq :wrong k) w)
-            ((eq :normal! k) (setq n c))
-            ((eq :guess! k) (setq g c))
-            ((eq :wrong! k) (setq w c))
+      (cond ((eq :b k) b)
+            ((eq :g k) g)
+            ((eq :w k) w)
+            ((eq :b! k) (setq b c))
+            ((eq :g! k) (setq g c))
+            ((eq :w! k) (setq w c))
             (t (list n g w)))))
   "The sudoku's colors.")
 
@@ -160,35 +160,57 @@
         (while (< i 9)
           (setq j (+ i 1))
           (while (< j 9)
-            (when (= (aref block i) (aref block j))
+            (when (and (/= 0 (aref block i))
+                       (= (aref block i) (aref block j)))
               (throw 'conflict nil))
             (setq j (1+ j)))
           (setq i (1+ i)
-                j (+ i 1)))))))
+                j (+ i 1)))
+        t))))
 
-(defun sudoku-puzzle-row-validate (index)
-  "Validate sudokus' row puzzle at INDEX."
+(defun sudoku-puzzle-row-complete (index)
+  "Check sudokus' row puzzle at INDEX is complete."
   (catch 'conflict
     (let ((r (*sudoku-puzzle* :row :1d index)))
-      (or (sudoku-puzzle-complete r)
-          (sudoku-puzzle-unique r)
-          (throw 'conflict (cons :row index))))))
+      (unless (sudoku-puzzle-complete r)
+        (throw 'conflict :conflict)))))
 
-(defun sudoku-puzzle-col-validate (index)
-  "Validate sudoku's column puzzle at INDEX."
+(defun sudoku-puzzle-row-unique (index)
+  "Check sudokus' row puzzle at INDEX is unique."
+  (catch 'conflict
+    (let ((r (*sudoku-puzzle* :row :1d index)))
+      (unless (sudoku-puzzle-unique r)
+        (throw 'conflict :conflict)))))
+
+
+(defun sudoku-puzzle-col-complete (index)
+  "Check sudoku's column puzzle at INDEX is complete."
   (catch 'conflict
     (let ((c (*sudoku-puzzle* :col :1d index)))
-      (or (sudoku-puzzle-complete c)
-          (sudoku-puzzle-unique c)
-          (throw 'conflict (cons :col index))))))
+      (unless (sudoku-puzzle-complete c)
+        (throw 'conflict :conflict)))))
 
-(defun sudoku-puzzle-sqr-validate (index)
-  "Validate sudoku's square puzzle at INDEX."
+(defun sudoku-puzzle-col-unique (index)
+  "Check sudoku's column puzzle at INDEX is unique."
+  (catch 'conflict
+    (let ((c (*sudoku-puzzle* :col :1d index)))
+      (unless (sudoku-puzzle-unique c)
+        (throw 'conflict :conflict)))))
+
+
+(defun sudoku-puzzle-sqr-complete (index)
+  "Check sudoku's square puzzle at INDEX is complete."
   (catch 'conflict
     (let ((sqr (*sudoku-puzzle* :sqr :1d index)))
-      (or (sudoku-puzzle-complete (cdr sqr))
-          (sudoku-puzzle-unique (cdr sqr))
-          (throw 'conflict (cons :sqr (car sqr)))))))
+      (unless (sudoku-puzzle-complete (cdr sqr))
+        (throw 'conflict :conflict)))))
+
+(defun sudoku-puzzle-sqr-unique (index)
+  "Check sudoku's square puzzle at INDEX is unique."
+  (catch 'conflict
+    (let ((sqr (*sudoku-puzzle* :sqr :1d index)))
+      (unless (sudoku-puzzle-unique (cdr sqr))
+        (throw 'conflict :conflict)))))
 
 
 (defalias '*sudoku-board*
@@ -424,24 +446,46 @@
 (defun sudoku-board-input (num &rest properties)
   "Input on sudoku's board with NUM and PROPERTIES."
   (declare (indent 1))
-  (let ((buffer-read-only nil))
-    (with-current-buffer (*sudoku*)
-      (let ((c (string-to-char (number-to-string num)))
-            (tp (*sudoku-board* :prop))
-            (pos (point)))
-        (when (plist-get tp :zero)
-          (delete-char 1)
-          (cond ((char= ?0 c) (insert-char ?_ 1))
-                (t (insert-char c 1)))
-          (forward-char -1)
-          (set-text-properties pos (1+ pos) tp)
-          (dolist* (x properties)
-            (put-text-property pos (1+ pos)
-                               (car x)
-                               (cdr x)))
-          (let ((cell (cons (car (plist-get tp :puzzle)) num)))
-            (put-text-property pos (1+ pos) :puzzle cell)
-            (*sudoku-puzzle* :cell! :1d (car cell) (cdr cell))))))))
+  (catch 'block
+    (let ((buffer-read-only nil))
+      (with-current-buffer (*sudoku*)
+        (let ((c (string-to-char (number-to-string num)))
+              (tp (*sudoku-board* :prop))
+              (pos (point)))
+          (when (plist-get tp :zero)
+            (delete-char 1)
+            (cond ((char= ?0 c) (insert-char ?_ 1))
+                  (t (insert-char c 1)))
+            (forward-char -1)
+            (set-text-properties pos (1+ pos) tp)
+
+            (dolist* (x properties)
+              (put-text-property pos (1+ pos)
+                                 (car x)
+                                 (cdr x)))
+
+            (let* ((idx (car (plist-get tp :puzzle)))
+                   (cell (cons idx num)))
+              (put-text-property pos (1+ pos) :puzzle cell)
+              (*sudoku-puzzle* :cell! :1d idx (cdr cell))
+
+              (let ((f (list :underline t
+                             :foreground (*sudoku-color* :w))))
+                (when (eq :conflict (sudoku-puzzle-sqr-unique idx))
+                  (put-text-property pos (1+ pos) 'face f)
+                  (throw 'block nil))
+
+                (when (eq :conflict (sudoku-puzzle-row-unique idx))
+                  (put-text-property pos (1+ pos) 'face f)
+                  (throw 'block nil))
+
+                (when (eq :conflict (sudoku-puzzle-col-unique idx))
+                  (put-text-property pos (1+ pos) 'face f)
+                  (throw 'block nil)))
+              
+              (put-text-property
+               pos (1+ pos)
+               'face 'underline))))))))
 
 
 (defun sudoku-board-input-erase ()
