@@ -53,7 +53,7 @@
             ((eq :b! k) (setq b c))
             ((eq :g! k) (setq g c))
             ((eq :w! k) (setq w c))
-            (t (list n g w)))))
+            (t (list b g w)))))
   "The sudoku's colors.")
 
 
