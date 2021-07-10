@@ -90,7 +90,7 @@
             ((eq :sqr k) (let ((row (cond ((eq :1d d)
                                            (* (/ (/ (% i 81) 9) 3) 3 9))
                                           (t (* (* i 3) 9))))
-                               (col (cond ((eq :1d d) (% (* j 3) 9))
+                               (col (cond ((eq :1d d) (% (* i 3) 9))
                                           (t (* (/ (% (% i 81) 9) 3) 3)))))
                            (cons (cons row col)
                                  (vector
@@ -137,51 +137,38 @@
                                (read-str-from-file
                                 (+sudoku-file+ :puzzle))))))
 
+(defun sudoku-puzzle-validate (block)
+  "Validate sudoku's block puzzle."
+  (when (and block (= 9 (length block)))
+    (= 45 (+ (aref block 0)
+             (aref block 1)
+             (aref block 2)
+             (aref block 3)
+             (aref block 4)
+             (aref block 5)
+             (aref block 6)
+             (aref block 7)
+             (aref block 8)))))
 
 (defun sudoku-puzzle-row-validate (index)
   "Validate sudokus' row puzzle at INDEX."
   (catch 'conflict
     (let ((r (*sudoku-puzzle* :row :1d index)))
-      (unless (= 45 (+ (aref r 0)
-                       (aref r 1)
-                       (aref r 2)
-                       (aref r 3)
-                       (aref r 4)
-                       (aref r 5)
-                       (aref r 6)
-                       (aref r 7)
-                       (aref r 8)))
+      (unless (sudoku-puzzle-validate r)
         (throw 'conflict (cons :row index))))))
 
 (defun sudoku-puzzle-col-validate (index)
   "Validate sudoku's column puzzle at INDEX."
   (catch 'conflict
     (let ((c (*sudoku-puzzle* :col :1d index)))
-      (unless (= 45 (+ (aref c 0)
-                       (aref c 1)
-                       (aref c 2)
-                       (aref c 3)
-                       (aref c 4)
-                       (aref c 5)
-                       (aref c 6)
-                       (aref c 7)
-                       (aref c 8)))
+      (unless (sudoku-puzzle-validate c)
         (throw 'conflict (cons :col c))))))
 
 (defun sudoku-puzzle-sqr-validate (index)
   "Validate sudoku's square puzzle at INDEX."
   (catch 'conflict
-    (let* ((sqr (*sudoku-puzzle* :sqr :1d index))
-           (s (cdr sqr)))
-      (unless (= 45 (+ (aref s 0)
-                       (aref s 1)
-                       (aref s 2)
-                       (aref s 3)
-                       (aref s 4)
-                       (aref s 5)
-                       (aref s 6)
-                       (aref s 7)
-                       (aref s 8)))
+    (let ((sqr (*sudoku-puzzle* :sqr :1d index)))
+      (unless (sudoku-puzzle-validate (cdr sqr))
         (throw 'conflict (cons :sqr (car sqr)))))))
 
 
@@ -191,6 +178,13 @@
       (cond ((eq :cor! k) (setq o i d j p i))
             ((eq :pos k) p)
 
+            ((eq :in k)
+             (with-current-buffer (*sudoku*)
+               (let ((row (line-number-at-pos))
+                     (col (current-column)))
+                 (and (>= row (car o)) (<= row (car d))
+                      (>= col (cdr o)) (<= col (cdr d))))))
+            
             ((or (eq :nex k) (eq :nex! k))
              (with-current-buffer (*sudoku*)
                (let* ((i1 (cond ((> i (car d)) (car d))
@@ -335,33 +329,46 @@
   (*sudoku-board* :ori!))
 
 
+(defun sudoku-board-move ()
+  "Move to board."
+  (unless (*sudoku-board* :in)
+    (let* ((pos (*sudoku-board* :pos)))
+      (*sudoku-board* :ori!)
+      (*sudoku-board* :mov! (car pos) (cdr pos)))))
+
+
 (defun sudoku-board-move-right ()
   "Move one step right."
   (interactive)
+  (sudoku-board-move)
   (let ((pos (*sudoku-board* :pos)))
     (*sudoku-board* :nex! (car pos) (1+ (cdr pos)))))
 
 (defun sudoku-board-move-left ()
   "Move one step left."
   (interactive)
+  (sudoku-board-move)
   (let ((pos (*sudoku-board* :pos)))
     (*sudoku-board* :nex! (car pos) (1- (cdr pos)))))
 
 (defun sudoku-board-move-down ()
   "Move one step down."
   (interactive)
+  (sudoku-board-move)
   (let ((pos (*sudoku-board* :pos)))
     (*sudoku-board* :nex! (1+ (car pos)) (cdr pos))))
 
 (defun sudoku-board-move-up ()
   "Move one step up."
   (interactive)
+  (sudoku-board-move)
   (let ((pos (*sudoku-board* :pos)))
     (*sudoku-board* :nex! (1- (car pos)) (cdr pos))))
 
 (defun sudoku-board-move-leftmost ()
   "Move to leftmost point."
   (interactive)
+  (sudoku-board-move)
   (let ((cor (*sudoku-board*)))
     (*sudoku-board* :mov!
                     (car (plist-get cor :pos))
@@ -370,6 +377,7 @@
 (defun sudoku-board-move-rightmost ()
   "Move to rightmost point."
   (interactive)
+  (sudoku-board-move)
   (let ((cor (*sudoku-board*)))
     (*sudoku-board* :mov!
                     (car (plist-get cor :pos))
@@ -378,6 +386,7 @@
 (defun sudoku-board-move-topmost ()
   "Move to topmost point."
   (interactive)
+  (sudoku-board-move)
   (let ((cor (*sudoku-board*)))
     (*sudoku-board* :mov!
                     (car (plist-get cor :ori))
@@ -386,6 +395,7 @@
 (defun sudoku-board-move-bottom ()
   "Move to bottom point."
   (interactive)
+  (sudoku-board-move)
   (let ((cor (*sudoku-board*)))
     (*sudoku-board* :mov!
                     (car (plist-get cor :dia))
@@ -419,6 +429,7 @@
   "Erase at point."
   (interactive)
   (sudoku-board-cell-fill 0 (cons 'face nil)))
+
 
 (defun sudoku-board-cell-1 (&optional color)
   "Input 1 at point."
@@ -473,6 +484,7 @@
   (interactive)
   (ignore* color)
   (sudoku-board-cell-fill 9 (cons 'face 'underline)))
+
 
 (defun sudoku-board-disabled-key ()
   "Disabled key."
@@ -553,6 +565,8 @@
     (define-key m "9" #'sudoku-board-cell-9)
 
     (define-key m "\C-k" #'sudoku-board-disabled-key)
+    (define-key m "\C-l" #'sudoku-board-disabled-key)
+
     ;; (define-key m "\C-h" #'sudoku-board-disabled-key)
 
     m)
@@ -590,8 +604,10 @@ The following commands are available:
                           '*sudoku-option-history*)))))
   (if (file-exists-p level)
       (sudoku-board-load)
-    (*sudoku-puzzle* :set! (sudoku-puzzle-make (intern level)))
-    (sudoku-board-draw (*sudoku-puzzle*)))
+    (sudoku-board-draw (sudoku-board-make
+                        (*sudoku-puzzle*
+                         :set!
+                         (sudoku-puzzle-make (intern level))))))
   (sudoku-mode))
 
 
