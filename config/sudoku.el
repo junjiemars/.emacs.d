@@ -15,10 +15,6 @@
 ;;;;
 
 
-(defvar *sudoku-option-history* (list "easy" "medium" "hard")
-  "Sudoku option history list.")
-
-
 (defalias '*sudoku*
   (lexical-let% ((b))
     (lambda (&optional n)
@@ -39,6 +35,10 @@
             ((eq :puzzle k) p)
             ((eq :board k) b)
             (t b)))))
+
+
+(defvar *sudoku-option-history* (list "easy" "medium" "hard")
+  "Sudoku option history list.")
 
 
 (defalias '*sudoku-puzzle*
@@ -98,6 +98,7 @@
 
 (defun sudoku-puzzle-make (level)
   "Make sudoku puzzle at LEVEL."
+  (ignore* level)
   [0 7 0 2 1 8 4 0 6
    0 0 0 5 0 4 0 0 0
    2 0 0 0 0 0 0 9 5
@@ -110,12 +111,12 @@
 
 
 (defun sudoku-puzzle-save ()
-  "Save sudoku's puzzle to file."
+  "Save sudoku's puzzle to `+sudoku-file+'."
   (save-sexp-to-file (*sudoku-puzzle*)
                      (+sudoku-file+ :puzzle)))
 
 (defun sudoku-puzzle-load ()
-  "Load sudoku's puzzle from file."
+  "Load sudoku's puzzle from `+sudoku-file+'."
   (*sudoku-puzzle* :set! (car (read-from-string
                                (read-str-from-file
                                 (+sudoku-file+ :puzzle))))))
@@ -149,7 +150,7 @@
                        (aref c 6)
                        (aref c 7)
                        (aref c 8)))
-        (throw 'conflict (cons :col col))))))
+        (throw 'conflict (cons :col c))))))
 
 (defun sudoku-puzzle-sqr-validate (index)
   "Validate sudoku's square puzzle at INDEX."
@@ -174,7 +175,7 @@
       (cond ((eq :cor! k) (setq o i d j p i))
             ((eq :pos k) p)
 
-            ((or (eq :next k) (eq :next! k))
+            ((or (eq :nex k) (eq :nex! k))
              (with-current-buffer (*sudoku*)
                (let* ((i1 (cond ((> i (car d)) (car d))
                                 ((< i (car o)) (car o))
@@ -204,7 +205,7 @@
                                                   :puzzle))
                      (forward-char h)
                      (setq h1 (+ h1 h))))
-                 (when (eq :next! k)
+                 (when (eq :nex! k)
                    (setq p (cons (+ (car p) v1)
                                  (+ (cdr p) h1)))))))
 
@@ -217,7 +218,10 @@
                                           ((< j (cdr o)) (cdr o))
                                           (t j)))))
                  (when (/= v 0)
-                   (next-line (- v)))
+                   (let ((col (current-column)))
+                     (forward-line (- v))
+                     (while (< (current-column) col)
+                       (forward-char 1))))
                  (when (/= h 0)
                    (forward-char (- h)))
                  (when (eq :mov! k)
@@ -227,7 +231,7 @@
             ((or (eq :ori k) (eq :ori! k))
              (with-current-buffer (*sudoku*)
                (goto-char (point-min))
-               (next-line (1- (car o)))
+               (forward-line (1- (car o)))
                (forward-char (cdr o))
                (when (eq :ori! k)
                  (setq p o))))
@@ -235,7 +239,7 @@
             ((or (eq :dia k) (eq :dia! k))
              (with-current-buffer (*sudoku*)
                (goto-char (point-min))
-               (next-line (1- (car d)))
+               (forward-line (1- (car d)))
                (forward-char (cdr d))
                (when (eq :dia! k)
                  (setq p d))))
@@ -263,11 +267,8 @@
   "The `sudoku' board.")
 
 
-
-
-
 (defun sudoku-board-make (puzzle)
-  "Make sudoku board with PUZZLE."
+  "Make sudoku's board with PUZZLE."
   (let ((i 0)
         (bs))
     (while (< i 81)
@@ -316,25 +317,25 @@
   "Move one step right."
   (interactive)
   (let ((pos (*sudoku-board* :pos)))
-    (*sudoku-board* :next! (car pos) (1+ (cdr pos)))))
+    (*sudoku-board* :nex! (car pos) (1+ (cdr pos)))))
 
 (defun sudoku-board-move-left ()
   "Move one step left."
   (interactive)
   (let ((pos (*sudoku-board* :pos)))
-    (*sudoku-board* :next! (car pos) (1- (cdr pos)))))
+    (*sudoku-board* :nex! (car pos) (1- (cdr pos)))))
 
 (defun sudoku-board-move-down ()
   "Move one step down."
   (interactive)
   (let ((pos (*sudoku-board* :pos)))
-    (*sudoku-board* :next! (1+ (car pos)) (cdr pos))))
+    (*sudoku-board* :nex! (1+ (car pos)) (cdr pos))))
 
 (defun sudoku-board-move-up ()
   "Move one step up."
   (interactive)
   (let ((pos (*sudoku-board* :pos)))
-    (*sudoku-board* :next! (1- (car pos)) (cdr pos))))
+    (*sudoku-board* :nex! (1- (car pos)) (cdr pos))))
 
 (defun sudoku-board-move-leftmost ()
   "Move to leftmost point."
@@ -370,7 +371,7 @@
 
 
 (defun sudoku-board-cell-fill (num property)
-  "Fill board's cell with NUM and PROPERTY."
+  "Fill sudoku board's cell with NUM and PROPERTY."
   (let ((buffer-read-only nil))
     (with-current-buffer (*sudoku*)
       (let ((c (string-to-char (number-to-string num)))
@@ -398,46 +399,55 @@
 (defun sudoku-board-cell-1 (&optional color)
   "Input 1 at point."
   (interactive)
+  (ignore* color)
   (sudoku-board-cell-fill 1 (cons 'face 'underline)))
 
 (defun sudoku-board-cell-2 (&optional color)
   "Input 2 at point."
   (interactive)
+  (ignore* color)
   (sudoku-board-cell-fill 2 (cons 'face 'underline)))
 
 (defun sudoku-board-cell-3 (&optional color)
   "Input 3 at point."
   (interactive)
+  (ignore* color)
   (sudoku-board-cell-fill 3 (cons 'face 'underline)))
 
 (defun sudoku-board-cell-4 (&optional color)
   "Input 4 at point."
   (interactive)
+  (ignore* color)
   (sudoku-board-cell-fill 4 (cons 'face 'underline)))
 
 (defun sudoku-board-cell-5 (&optional color)
   "Input 5 at point."
   (interactive)
+  (ignore* color)
   (sudoku-board-cell-fill 5 (cons 'face 'underline)))
 
 (defun sudoku-board-cell-6 (&optional color)
   "Input 6 at point."
   (interactive)
+  (ignore* color)
   (sudoku-board-cell-fill 6 (cons 'face 'underline)))
 
 (defun sudoku-board-cell-7 (&optional color)
   "Input 7 at point."
   (interactive)
+  (ignore* color)
   (sudoku-board-cell-fill 7 (cons 'face 'underline)))
 
 (defun sudoku-board-cell-8 (&optional color)
   "Input 8 at point."
   (interactive)
+  (ignore* color)
   (sudoku-board-cell-fill 8 (cons 'face 'underline)))
 
 (defun sudoku-board-cell-9 (&optional color)
   "Input 9 at point."
   (interactive)
+  (ignore* color)
   (sudoku-board-cell-fill 9 (cons 'face 'underline)))
 
 (defun sudoku-board-disabled-key ()
@@ -446,15 +456,24 @@
 
 
 (defun sudoku-board-save ()
-  "Save sudoku's board."
+  "Save sudoku's board to `+sudoku-file+'."
   (let ((b (*sudoku-board* :props)))
     (save-sexp-to-file b (+sudoku-file+ :board))))
 
 
-(defun sudoku-quit ()
-  "Quit `sudoku'."
+(defun sudoku-board-load ()
+  "Load sudoku's board from `+sudoku-file+'."
+  (sudoku-board-draw (car (read-from-string
+                           (read-str-from-file
+                            (+sudoku-file+ :board))))))
+
+
+(defun sudoku-quit (&optional save)
+  "Quit `*sudoku*'."
   (interactive)
-  (sudoku-puzzle-save)
+  (when (and current-prefix-arg
+             (yes-or-no-p "Save board? "))
+     (sudoku-board-save))
   (kill-buffer (*sudoku*)))
 
 
@@ -509,42 +528,40 @@
 
 
 
-
-
 (defun sudoku-mode ()
-  "Toggle sudoku's mode'.
+  "Switch to sudoku's mode'.
 
 The following commands are available:
 \\{sudoku-mode-map}"
-  :group 'sudoku-mode
   (interactive)
   (with-current-buffer (*sudoku*)
     (kill-all-local-variables)
     (use-local-map sudoku-mode-map)
     (setq major-mode 'sudoku-mode
           mode-name  "Sudoku")
-    (setq buffer-read-only t)))
+    (setq buffer-read-only t)
+    (buffer-disable-undo)))
 
 
 (defun sudoku (&optional level)
   "Play sudoku in LEVEL."
   (interactive
-   (list (let ((exists (and (file-exists-p
-                             (+sudoku-file+ :board))
+   (list (let ((exists (and (file-exists-p (+sudoku-file+ :board))
                             (null current-prefix-arg))))
            (read-string (format "Sudoku %s: "
                                 (if exists "load" "level"))
                         (if exists
-                            (*sudoku-puzzle* :file)
+                            (+sudoku-file+ :board)
                           (car *sudoku-option-history*))
                         (if exists
                             nil
                           '*sudoku-option-history*)))))
   (if (file-exists-p level)
       (sudoku-board-load)
-    (*sudoku-puzzle* :set! (sudoku-puzzle-make (intern level))))
-  (sudoku-board-draw (*sudoku-puzzle*))
+    (*sudoku-puzzle* :set! (sudoku-puzzle-make (intern level)))
+    (sudoku-board-draw (*sudoku-puzzle*)))
   (sudoku-mode))
+
 
 
 (provide 'sudoku)

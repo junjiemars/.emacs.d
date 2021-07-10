@@ -175,6 +175,13 @@
                    "Autoload `org-babel-execute:scheme*'." t)
         (fset 'org-babel-execute:scheme 'org-babel-execute:scheme*)))
 
+    ;; Sudoku
+    (prog1
+        (compile-unit% (emacs-home* "config/sudoku.el") t)
+      (autoload* 'sudoku (v-home% "config/sudoku.elc")
+                 "Play sudoku." t))
+
+
     ) ;; end of compile!
 
   ;; *scratch*
