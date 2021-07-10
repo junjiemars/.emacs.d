@@ -89,9 +89,10 @@
 
             ((eq :sqr k) (let ((row (cond ((eq :1d d)
                                            (* (/ (/ (% i 81) 9) 3) 3 9))
-                                          (t (* (* i 3) 9))))
-                               (col (cond ((eq :1d d) (% (* i 3) 9))
-                                          (t (* (/ (% (% i 81) 9) 3) 3)))))
+                                          (t (* (* (% i 3) 3) 9))))
+                               (col (cond ((eq :1d d)
+                                           (* (/ (% (% i 81) 9) 3) 3))
+                                          (t (* (% j 3) 3)))))
                            (cons (cons row col)
                                  (vector
                                   (aref v (+ row col (* 0 9) 0))
