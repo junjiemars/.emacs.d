@@ -23,7 +23,7 @@
             ((or (null b) (not (buffer-live-p b)))
              (setq b (get-buffer-create "*sudoku*")))
             (t b))))
-  "The current *sudoku* process buffer.")
+  "The *sudoku* process buffer.")
 
 
 (defalias '+sudoku-file+
@@ -33,8 +33,7 @@
     (lambda (&optional k)
       (cond ((eq :dir k) d)
             ((eq :puzzle k) p)
-            ((eq :board k) b)
-            (t b))))
+            ((eq :board k) b))))
   "The sudoku's files.")
 
 
@@ -110,21 +109,43 @@
             ((eq :cell! k) (cond ((eq :1d d) (aset v i j))
                                  (t (aset v (+ (* (% i 9) 9) j) n))))
             (t v))))
-  "The `sudoku' puzzle.")
+  "The `sudoku' puzzle in 1-dimension vector.")
 
 
 (defun sudoku-puzzle-make (level)
   "Make sudoku puzzle at LEVEL."
-  (ignore* level)
-  [0 7 0 2 1 8 4 0 6
-   0 0 0 5 0 4 0 0 0
-   2 0 0 0 0 0 0 9 5
-   4 0 8 6 5 0 3 0 7
-   0 0 7 0 0 0 6 0 0
-   6 0 1 0 8 7 2 0 9
-   7 6 0 0 0 0 0 0 4
-   0 0 0 4 0 6 0 0 0
-   1 0 5 8 2 9 0 6 0])
+  (let ((xs (list
+             'easy
+             [0 7 0 2 1 8 4 0 6
+              0 0 0 5 0 4 0 0 0
+              2 0 0 0 0 0 0 9 5
+              4 0 8 6 5 0 3 0 7
+              0 0 7 0 0 0 6 0 0
+              6 0 1 0 8 7 2 0 9
+              7 6 0 0 0 0 0 0 4
+              0 0 0 4 0 6 0 0 0
+              1 0 5 8 2 9 0 6 0]
+             'medium
+             [0 0 0 0 0 2 4 3 1
+              0 0 3 7 0 9 0 2 8
+              0 0 8 0 0 0 6 0 7
+              0 0 5 0 8 1 0 0 9
+              0 0 4 0 2 0 1 0 0
+              9 0 0 3 4 0 7 0 0
+              8 0 2 0 0 0 3 0 0
+              1 3 0 5 0 4 8 0 0
+              7 5 6 2 0 0 0 0 0]
+             'hard
+             [0 7 6 0 4 2 5 0 3
+              0 3 0 0 0 1 0 0 0 
+              0 0 0 0 0 5 0 8 0
+              9 0 7 2 0 8 0 3 0
+              5 0 0 0 6 0 0 0 8
+              0 1 0 4 0 7 9 0 6
+              0 9 0 7 0 0 0 0 0
+              0 0 0 5 0 0 0 7 0
+              7 0 2 8 1 0 0 3 4])))
+    (plist-get xs level)))
 
 
 (defun sudoku-puzzle-save ()
@@ -226,7 +247,7 @@
                  (and (>= row (car o)) (<= row (car d))
                       (>= col (cdr o)) (<= col (cdr d))))))
             
-            ((or (eq :nex k) (eq :nex! k))
+            ((eq :nex! k)
              (with-current-buffer (*sudoku*)
                (let* ((i1 (cond ((> i (car d)) (car d))
                                 ((< i (car o)) (car o))
@@ -262,11 +283,10 @@
                                                   :puzzle))
                      (forward-char h)
                      (setq h1 (+ h1 h))))
-                 (when (eq :nex! k)
-                   (setq p (cons (+ (car p) v1)
-                                 (+ (cdr p) h1)))))))
+                 (setq p (cons (+ (car p) v1)
+                               (+ (cdr p) h1))))))
 
-            ((or (eq :mov k) (eq :mov! k))
+            ((eq :mov! k)
              (with-current-buffer (*sudoku*)
                (let* ((v (- (car p) (cond ((> i (car d)) (car d))
                                           ((< i (car o)) (car o))
@@ -281,25 +301,22 @@
                        (forward-char 1))))
                  (when (/= h 0)
                    (forward-char (- h)))
-                 (when (eq :mov! k)
-                   (setq p (cons (+ (- v) (car p))
-                                 (+ (- h) (cdr p))))))))
+                 (setq p (cons (+ (- v) (car p))
+                               (+ (- h) (cdr p)))))))
 
-            ((or (eq :ori k) (eq :ori! k))
+            ((eq :ori! k)
              (with-current-buffer (*sudoku*)
                (goto-char (point-min))
                (forward-line (1- (car o)))
                (forward-char (cdr o))
-               (when (eq :ori! k)
-                 (setq p o))))
+               (setq p o)))
 
-            ((or (eq :dia k) (eq :dia! k))
+            ((eq :dia! k)
              (with-current-buffer (*sudoku*)
                (goto-char (point-min))
                (forward-line (1- (car d)))
                (forward-char (cdr d))
-               (when (eq :dia! k)
-                 (setq p d))))
+               (setq p d)))
 
             ((eq :prop k)
              (with-current-buffer (*sudoku*)
