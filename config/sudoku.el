@@ -34,11 +34,27 @@
       (cond ((eq :dir k) d)
             ((eq :puzzle k) p)
             ((eq :board k) b)
-            (t b)))))
+            (t b))))
+  "The sudoku's files.")
 
 
 (defvar *sudoku-option-history* (list "easy" "medium" "hard")
   "Sudoku option history list.")
+
+
+(defalias '*sudoku-color*
+  (lexical-let% ((n "black")
+                 (g "gray")
+                 (w "red"))
+    (lambda (&optional k c)
+      (cond ((eq :normal k) n)
+            ((eq :guess k) g)
+            ((eq :wrong k) w)
+            ((eq :normal! k) (setq n c))
+            ((eq :guess! k) (setq g c))
+            ((eq :wrong! k) (setq w c))
+            (t (list n g w)))))
+  "The sudoku's colors.")
 
 
 (defalias '*sudoku-puzzle*
