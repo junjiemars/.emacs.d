@@ -11,9 +11,7 @@
   "Extract value from the list of spec via KEYS at compile time."
   (declare (indent 0))
   `(self-spec->%
-       (list :source-file ,(v-home! ".exec/shell-env.el")
-             :compiled-file ,(v-home! ".exec/shell-env.elc")
-             :SHELL "SHELL"
+       (list :SHELL "SHELL"
              :PATH "PATH")
      ,@keys))
 
@@ -32,7 +30,7 @@
             ((eq :put! op) (setq dx (plist-put dx k n)))
             ((eq :save op) (save-sexp-to-file dx f))
             ((eq :load! op) (setq dx (car (read-from-string
-                                           (read-str-from-file f)))))
+                                        (read-str-from-file f)))))
             ((eq :file op) f)
             (t dx))))
 
