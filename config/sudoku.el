@@ -16,6 +16,7 @@
 ;;
 ;;;;
 ;; http://play.websudoku.com/?level=
+;; http://sudoku.math.com
 ;;;;
 
 
