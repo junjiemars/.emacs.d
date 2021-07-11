@@ -342,7 +342,7 @@
 ;; cc system include
 
 (defalias 'cc*-system-include
-  (lexical-let% ((dx (list 'native nil)))
+  (lexical-let% ((dx))
     (lambda (&optional cached remote)
       (let* ((ss (if remote
                      (intern (mapconcat #'identity
@@ -380,25 +380,30 @@ If specify REMOTE argument then return a list of remote system
 include directories. The REMOTE argument from `remote-norm-file'.")
 
 
-(defun cc*-extra-include (cached &rest dir)
-  "Return a list of extra include directories."
-  (declare (indent 1))
-  (let* ((c (v-home% ".exec/cc-extra-inc.el"))
-         (cc (concat c "c"))
-         (var 'cc*-extra-include)
-         (d1 (when (consp dir)
-               (mapcar (lambda (x)
-                         (expand-file-name (string-trim> x "/")))
-                       dir))))
-    (if cached
-        (when (or (boundp var)
-                  (and (file-exists-p cc)
-                       (load cc)))
-          (symbol-value var))
-      (prog1
-          (set var d1)
-        (when (save-sexp-to-file `(set ',var ',(symbol-value var)) c)
-          (byte-compile-file c))))))
+(defalias 'cc*-extra-include
+  (lexical-let% ((dx)
+                 (fs (v-home% ".exec/cc-extra-inc.el")))
+    (lambda (cached &rest dir)
+      (declare (indent 1))
+
+      (or (and cached dx)
+
+          (and cached (file-exists-p fs)
+               (setq dx (read-from-string
+                         (read-str-from-file fs))))
+
+          (and (consp dir)
+               (save-sexp-to-file
+                (setq dx
+                      (append dx
+                              (mapcar (lambda (x)
+                                        (expand-file-name
+                                         (string-trim> x "/")))
+                                      dir)))
+                fs)
+               dx))))
+
+  "Return a list of extra include directories.")
 
 
 (defun cc*-include-p (file)
