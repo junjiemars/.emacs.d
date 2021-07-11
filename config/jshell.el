@@ -6,7 +6,6 @@
 ;; jshell.el
 ;;;;
 ;;; https://nodejs.org
-;;; https://github.com/abicky/nodejs-repl.el/blob/develop/nodejs-repl.el
 ;;;
 ;;; fetures:
 ;;; 1. start parameterized jshell process.
