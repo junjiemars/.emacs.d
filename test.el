@@ -600,13 +600,13 @@
 ;;;;
 
 (ert-deftest %shells:shells-spec->% ()
-  (should (= 8 (length (shells-spec->%))))
+  (should (= 6 (length (shells-spec->%))))
   (should (string= "shell-env"
-                   (file-name-base* (shells-spec->% :source-file)))))
+                   (file-name-base* (shells-spec->% :file)))))
 
 (ert-deftest %shells:shell-env->/<- ()
-  (should (shell-env<- :xx "aa"))
-  (should (string= "aa" (shell-env-> :xx))))
+  (should (*default-shell-env* :put! :xx "aa"))
+  (should (string= "aa" (*default-shell-env* :get :xx))))
 
 (ert-deftest %shells:var->paths ()
   (should (null (var->paths 1)))

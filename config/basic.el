@@ -167,15 +167,13 @@ STANDARD always be computed at runtime whatever the current
   "Save SEXP to FILE. 
 
 Returns the name of FILE when successed otherwise nil."
-  (when (and (save-excursion
-               (let ((sexp-buffer (find-file-noselect file)))
-                 (set-buffer sexp-buffer)
-                 (erase-buffer)
-                 (print sexp sexp-buffer)
-                 (save-buffer)
-                 (kill-buffer sexp-buffer)))
-             (file-exists-p file))
-    file))
+  (unwind-protect
+      (progn
+        (with-temp-buffer
+          (print sexp (current-buffer))
+          (write-region (point-min) (point-max) file))
+        (and (file-exists-p file) file))
+    nil))
 
 
 (defun save-str-to-file (str file)
