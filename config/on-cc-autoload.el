@@ -567,24 +567,33 @@ RENEW whether to renew the existing FILE."
              tbl)
     tbl))
 
-(defun cc*-system-identity (&optional cached remote)
-  "Return a hashtable of cc identities."
-  (let* ((rid (when remote
-                (mapconcat #'identity (remote-norm-id remote) "-")))
-         (c (if remote
-                (v-home* (concat ".exec/.cc-id-" rid ".el"))
-              (v-home% ".exec/.cc-id.el")))
-         (cc (concat c "c"))
-         (var (if remote
-                  (intern (concat "cc*-system-identity@" rid))
-                'cc*-system-identity)))
-    (if (and cached (file-exists-p cc))
-        (load cc)
-      (let ((tbl (cc*-check-identity remote)))
-        (set var tbl)
-        (when (save-hash-table-to-file var tbl c 'string-hash=)
-          (byte-compile-file c))))
-    (symbol-value var)))
+(defalias 'cc*-system-identity
+  (lexical-let% ((dx))
+    (lambda (&optional cached remote)
+      (let* ((ss (if remote
+                     (intern (mapconcat #'identity
+                                        (remote-norm-id remote)
+                                        "-"))
+                   'native))
+             (fs (v-home* (concat ".exec/cc-id-"
+                                  (symbol-name ss)
+                                  ".el")))
+             (d))
+        (or (and cached (plist-get dx ss))
+
+            (and cached (file-exists-p fs)
+                 (plist-get (setq dx
+                                  (plist-put
+                                   dx ss
+                                   (car (read-from-string
+                                         (read-str-from-file fs)))))
+                            ss))
+
+            (and (setq d (cc*-check-identity remote))
+                 (hash-table-p d) (save-sexp-to-file d fs)
+                 (plist-get (setq dx (plist-put dx ss d)) ss))))))
+
+  "Return a hashtable of cc identities.")
 
 
 (defun cc*-eldoc-doc-fn ()
