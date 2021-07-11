@@ -24,22 +24,19 @@
    `(*self-env-spec* :get :shell ,@keys))
 
 
-(defvar *default-shell-env*
-  (list :exec-path nil
-        :copy-vars nil)
-  "Default shell environments,
-get via `(shell-env-> k)' and put via `(shell-env<- k v)'")
+(defalias '*default-shell-env*
+  (lexical-let% ((dx)
+                 (f (v-home! ".exec/shell-env.el")))
+    (lambda (&optional op k n)
+      (cond ((eq :get op) (plist-get dx k))
+            ((eq :put! op) (setq dx (plist-put dx k n)))
+            ((eq :save op) (save-sexp-to-file dx f))
+            ((eq :load! op) (setq dx (car (read-from-string
+                                           (read-str-from-file f)))))
+            ((eq :file op) f)
+            (t dx))))
 
-
-(defmacro shell-env-> (&optional k)
-  "Extract the value from `*default-shell-env*' via K."
-  `(if ,k
-       (plist-get *default-shell-env* ,k)
-     *default-shell-env*))
-
-(defmacro shell-env<- (k v)
-  "Put K and V into `*default-shell-env*'."
-  `(plist-put *default-shell-env* ,k ,v))
+  "Default shell's environment.")
 
 
 (defmacro echo-var (var &optional options)
@@ -75,7 +72,8 @@ See also: `parse-colon-path'."
 
 
 (defun save-shell-env! ()
-  (shell-env<-
+  (*default-shell-env*
+   :put!
    :copy-vars
    (let ((vars nil))
      (dolist* (v (shells-spec->* :copy-vars) vars)
@@ -90,22 +88,17 @@ See also: `parse-colon-path'."
                      (add-to-list 'exec-path p t #'string=)
                      (setq paths (cons p paths))))
                  (add-to-list 'exec-path (v-home% ".exec/") t)
-                 (shell-env<- :exec-path exec-path)
+                 (*default-shell-env* :put! :exec-path exec-path)
                  (setq val (paths->var (reverse paths)))))
              (push (cons v val) vars)))))))
-  (when (save-sexp-to-file
-         (list 'setq '*default-shell-env*
-               (list 'list
-                     ':exec-path (list 'quote (shell-env-> :exec-path))
-                     ':copy-vars (list 'quote (shell-env-> :copy-vars))))
-         (shells-spec->% :source-file))
-    (byte-compile-file (shells-spec->% :source-file))))
+  (*default-shell-env* :save))
 
 
 (defmacro read-shell-env! ()
   `(progn
-     (when (file-exists-p (shells-spec->% :compiled-file))
-       (load (shells-spec->% :compiled-file)))
+     (when (file-exists-p (*default-shell-env* :file))
+       (*default-shell-env* :load!))
+
      (add-hook 'kill-emacs-hook #'save-shell-env! t)))
 
 
@@ -173,10 +166,10 @@ See also: `parse-colon-path'."
       (setq shell-file-name shell)
       (setenv (shells-spec->% :SHELL) shell)))
   (when (shells-spec->* :exec-path)
-    (copy-exec-path! (shell-env-> :exec-path)))
+    (copy-exec-path! (*default-shell-env* :get :exec-path)))
   (let ((copying (shells-spec->* :copy-vars)))
     (when (consp copying)
-      (copy-env-vars! (shell-env-> :copy-vars)
+      (copy-env-vars! (*default-shell-env* :get :copy-vars)
                       (shells-spec->* :copy-vars))))
   (let ((spinning (shells-spec->* :spin-vars)))
     (when (consp spinning)
