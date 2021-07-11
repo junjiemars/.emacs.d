@@ -248,8 +248,8 @@
              (with-current-buffer (*sudoku*)
                (let ((row (line-number-at-pos))
                      (col (current-column)))
-                 (and (>= row (car o)) (<= row (car d))
-                      (>= col (cdr o)) (<= col (cdr d))))))
+                 (and (<= (car o) row) (<= row (car d))
+                      (<= (cdr o) col) (<= col (cdr d))))))
             
             ((eq :nex! k)
              (with-current-buffer (*sudoku*)
