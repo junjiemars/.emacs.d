@@ -11,7 +11,8 @@
   "Extract value from the list of spec via KEYS at compile time."
   (declare (indent 0))
   `(self-spec->%
-       (list :SHELL "SHELL"
+       (list :file ,(v-home! ".exec/shell-env.el")
+             :SHELL "SHELL"
              :PATH "PATH")
      ,@keys))
 
@@ -23,15 +24,11 @@
 
 
 (defalias '*default-shell-env*
-  (lexical-let% ((dx)
-                 (f (v-home! ".exec/shell-env.el")))
+  (lexical-let% ((dx))
     (lambda (&optional op k n)
       (cond ((eq :get op) (plist-get dx k))
             ((eq :put! op) (setq dx (plist-put dx k n)))
-            ((eq :save op) (save-sexp-to-file dx f))
-            ((eq :load! op) (setq dx (car (read-from-string
-                                        (read-str-from-file f)))))
-            ((eq :file op) f)
+            ((eq :set! op) (setq dx k))
             (t dx))))
 
   "Default shell's environment.")
@@ -70,32 +67,36 @@ See also: `parse-colon-path'."
 
 
 (defun save-shell-env! ()
-  (*default-shell-env*
-   :put!
-   :copy-vars
-   (let ((vars nil))
-     (dolist* (v (shells-spec->* :copy-vars) vars)
-       (when (stringp v)
-         (let ((val (echo-var v (shells-spec->* :options))))
-           (when (and val (> (length val) 0))
-             (when (string= v (shells-spec->% :PATH))
-               (let ((paths))
-                 (dolist* (p (var->paths val))
-                   (when (and (stringp p)
-                              (file-exists-p p))
-                     (add-to-list 'exec-path p t #'string=)
-                     (setq paths (cons p paths))))
-                 (add-to-list 'exec-path (v-home% ".exec/") t)
-                 (*default-shell-env* :put! :exec-path exec-path)
-                 (setq val (paths->var (reverse paths)))))
-             (push (cons v val) vars)))))))
-  (*default-shell-env* :save))
+  (save-sexp-to-file
+   (*default-shell-env*
+    :put!
+    :copy-vars
+    (let ((vars nil))
+      (dolist* (v (shells-spec->* :copy-vars) vars)
+        (when (stringp v)
+          (let ((val (echo-var v (shells-spec->* :options))))
+            (when (and val (> (length val) 0))
+              (when (string= v (shells-spec->% :PATH))
+                (let ((paths))
+                  (dolist* (p (var->paths val))
+                    (when (and (stringp p)
+                               (file-exists-p p))
+                      (add-to-list 'exec-path p t #'string=)
+                      (setq paths (cons p paths))))
+                  (add-to-list 'exec-path (v-home% ".exec/") t)
+                  (*default-shell-env* :put! :exec-path exec-path)
+                  (setq val (paths->var (reverse paths)))))
+              (push (cons v val) vars)))))))
+   (shells-spec->% :file)))
 
 
 (defmacro read-shell-env! ()
   `(progn
-     (when (file-exists-p (*default-shell-env* :file))
-       (*default-shell-env* :load!))
+     (when (file-exists-p (shells-spec->% :file))
+       (*default-shell-env*
+        :set!
+        (car (read-from-string (read-str-from-file
+                                (shells-spec->% :file))))))
 
      (add-hook 'kill-emacs-hook #'save-shell-env! t)))
 
