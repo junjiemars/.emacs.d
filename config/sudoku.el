@@ -60,6 +60,23 @@
   "The sudoku's colors.")
 
 
+(defalias '*sudoku-puzzle-rank*
+  (lexical-let% ((r 9))
+    (lambda (&optional k n)
+      (cond ((eq :set! k) (setq r n))
+            ((eq :len k) (* r r))
+            ((eq :sqr k) (floor (sqrt r)))
+            (t r))))
+  "The sudoku's rank.")
+
+
+(defmacro sudoku-puzzle-vec (vec rank idxer)
+  "Transform sudoku's puzzle vector."
+  `(vector ,@(mapcar (lambda (x)
+                       `(aref ,vec ,idxer))
+                     (range 0 rank 1))))
+
+
 (defalias '*sudoku-puzzle*
   (lexical-let% ((v))
     (lambda (&optional k d i j n)
@@ -273,8 +290,7 @@
                      (forward-line v)
                      (while (< (current-column) col)
                        (forward-char 1)))
-                   (while (not (get-text-property (point)
-                                                  :puzzle))
+                   (while (not (get-text-property (point) :puzzle))
                      (let ((col (current-column)))
                        (forward-line v)
                        (while (< (current-column) col)
@@ -283,8 +299,7 @@
                  (when (/= h 0)
                    (setq h1 h)
                    (forward-char h)
-                   (while (not (get-text-property (point)
-                                                  :puzzle))
+                   (while (not (get-text-property (point) :puzzle))
                      (forward-char h)
                      (setq h1 (+ h1 h))))
                  (setq p (cons (+ (car p) v1)
@@ -329,7 +344,7 @@
             ((eq :props k)
              (with-current-buffer (*sudoku*)
                (let ((ps)
-                     (max (1- (point-max)))
+                     (max (1+ (* (car d) (cdr d))))
                      (n 0))
                  (save-excursion
                    (goto-char (point-min))
