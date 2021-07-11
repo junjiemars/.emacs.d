@@ -22,18 +22,17 @@
 
 
 (defun save-env-spec! ()
-  (when (save-sexp-to-file
-         (list 'setq '*self-previous-env-spec*
-               (list 'quote (*self-env-spec*)))
-         (memory-spec->% :source))
-    (byte-compile-file (memory-spec->% :source))))
+  (save-sexp-to-file (*self-env-spec*)
+                     (memory-spec->% :source)))
 
 (add-hook 'kill-emacs-hook #'save-env-spec! t)
 
 
 (defmacro load-env-spec ()
-  `(when (file-exists-p (memory-spec->% :compiled))
-     (load (memory-spec->% :compiled))))
+  `(when (file-exists-p (memory-spec->% :source))
+     (setq *self-previous-env-spec*
+           (car (read-from-string (read-str-from-file
+                                   (memory-spec->% :source)))))))
 
 (load-env-spec)
 
