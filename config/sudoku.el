@@ -7,8 +7,12 @@
 ;;;;
 ;;
 ;; features:
-;; 1*
-;; 2*
+;; 1. save/load puzzle to/from file.
+;; 2. save/load board to/from file.
+;; 3. input validation.
+;; 4* zen mode.
+;; 5* step by step resolver.
+;; 6* auto generate puzzle.
 ;;
 ;;;;
 ;; http://play.websudoku.com/?level=
@@ -18,8 +22,7 @@
 (defalias '*sudoku*
   (lexical-let% ((b))
     (lambda (&optional n)
-      (cond ((not (null n))
-             (setq b (get-buffer-create n)))
+      (cond (n (setq b (get-buffer-create n)))
             ((or (null b) (not (buffer-live-p b)))
              (setq b (get-buffer-create "*sudoku*")))
             (t b))))
