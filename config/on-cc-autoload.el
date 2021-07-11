@@ -341,34 +341,43 @@
 
 ;; cc system include
 
-(defun cc*-system-include (&optional cached remote)
+(defalias 'cc*-system-include
+  (lexical-let% ((dx (list 'native nil)))
+    (lambda (&optional cached remote)
+      (let* ((ss (if remote
+                     (intern (mapconcat #'identity
+                                        (remote-norm-id remote)
+                                        "-"))
+                   'native))
+             (fs (v-home* (concat ".exec/cc-inc-"
+                                  (symbol-name ss)
+                                  ".el")))
+             (d))
+        (or (and cached (plist-get dx ss))
+
+            (and cached (file-exists-p fs)
+                 (plist-get (setq dx
+                                  (plist-put
+                                   dx ss
+                                   (car (read-from-string
+                                         (read-str-from-file fs)))))
+                            ss))
+
+            (and (setq d (mapcar (if remote
+                                 (lambda (x)
+                                   (concat remote x))
+                               #'identity)
+                             (cc*-check-include remote)))
+                 (consp d) (save-sexp-to-file d fs)
+                 (plist-get (setq dx (plist-put dx ss d)) ss))))))
+
   "Return a list of system include directories.
 
 Load `cc*-system-include' from file when CACHED is t,
 otherwise check cc include on the fly.
 
 If specify REMOTE argument then return a list of remote system
-include directories. The REMOTE argument from `remote-norm-file'."
-  (let* ((rid (when remote
-                (mapconcat #'identity (remote-norm-id remote) "-")))
-         (c (if remote
-                (v-home* (concat ".exec/cc-inc-" rid ".el"))
-              (v-home% ".exec/cc-inc.el")))
-         (cc (concat c "c"))
-         (var (if remote
-                  (intern (concat "cc*-system-include@" rid))
-                'cc*-system-include)))
-    (if (and cached (file-exists-p cc))
-        (load cc)
-      (let ((inc (if remote
-                     (mapcar (lambda (x)
-                               (concat remote x))
-                             (cc*-check-include remote))
-                   (cc*-check-include))))
-        (set var inc)
-        (when (save-sexp-to-file `(set ',var ',inc) c)
-          (byte-compile-file c))))
-    (symbol-value var)))
+include directories. The REMOTE argument from `remote-norm-file'.")
 
 
 (defun cc*-extra-include (cached &rest dir)
