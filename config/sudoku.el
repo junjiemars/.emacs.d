@@ -60,21 +60,44 @@
   "The sudoku's colors.")
 
 
-(defalias '*sudoku-puzzle-rank*
-  (lexical-let% ((r 9))
+(defalias '*sudoku-puzzle-d*
+  (lexical-let% ((l 81)
+                 (d (floor (sqrt 81)))
+                 (s (floor (sqrt (sqrt 81)))))
     (lambda (&optional k n)
-      (cond ((eq :set! k) (setq r n))
-            ((eq :len k) (* r r))
-            ((eq :sqr k) (floor (sqrt r)))
-            (t r))))
-  "The sudoku's rank.")
+      (cond ((eq :set! k) (setq l n
+                                w (floor (sqrt 81))
+                                s (floor (sqrt (sqrt 81)))))
+            ((eq :d k) d)
+            ((eq :len k) l)
+            ((eq :sqr k) s)
+            (t (list :len l :d d :sqr)))))
+  "The sudoku's dimensions.")
 
 
-(defmacro sudoku-puzzle-vec (vec rank idxer)
-  "Transform sudoku's puzzle vector."
-  `(vector ,@(mapcar (lambda (x)
-                       `(aref ,vec ,idxer))
-                     (range 0 rank 1))))
+(defmacro sudoku-puzzle-1d (i j)
+  "Transform sudoku's puzzle from 2d(I,J) to 1d."
+  (let ((d (gensym*)))
+    `(let ((,d (*sudoku-puzzle-d* :d)))
+       (+ (* (% ,i ,d) ,d)
+          (% ,j ,d)))))
+
+(defmacro sudoku-puzzle-2d (i)
+  "Transform sudoku's puzzle from 1d(I) to 2d."
+  (let ((d (gensym*))
+        (l (gensym*))
+        (d2 (gensym*)))
+    `(let* ((,d (*sudoku-puzzle-d* :d))
+            (,l (*sudoku-puzzle-d* :len))
+            (,d2 (/ (% ,i ,l) ,d)))
+       (cons ,d2 (% ,i ,d)))))
+
+
+;; (defmacro sudoku-puzzle-vec (vec rank idxer)
+;;   "Transform sudoku's puzzle vector."
+;;   `(vector ,@(mapcar (lambda (x)
+;;                        `(aref ,vec ,idxer))
+;;                      (range 0 rank 1))))
 
 
 (defalias '*sudoku-puzzle*
