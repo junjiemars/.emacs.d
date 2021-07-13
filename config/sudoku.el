@@ -255,14 +255,14 @@
 (defun sudoku-puzzle-row-complete (index)
   "Check sudokus' row puzzle at INDEX is complete."
   (catch 'conflict
-    (let ((r (*sudoku-puzzle* :row :1d index)))
+    (let ((r (*sudoku-puzzle* :row index)))
       (unless (sudoku-puzzle-complete r)
         (throw 'conflict :conflict)))))
 
 (defun sudoku-puzzle-row-unique (index)
   "Check sudokus' row puzzle at INDEX is unique."
   (catch 'conflict
-    (unless (sudoku-puzzle-unique (*sudoku-puzzle* :row :1d index))
+    (unless (sudoku-puzzle-unique (*sudoku-puzzle* :row index))
       (throw 'conflict :conflict))))
 
 
