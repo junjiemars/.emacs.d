@@ -105,6 +105,17 @@
     `(let ((,d (*sudoku-puzzle-d* :d)))
        (% ,i ,d))))
 
+(defmacro sudoku-puzzle-sqr (i)
+  "Locate sqr via 1d(I)."
+  (let ((d (gensym*))
+        (l (gensym*))
+        (s (gensym*)))
+    `(let* ((,d (*sudoku-puzzle-d* :d))
+            (,l (*sudoku-puzzle-d* :len))
+            (,s (*sudoku-puzzle-d* :sqr)))
+       (cons (/ (/ (% ,i ,l) ,d) ,s)
+             (/ (% (% ,i ,l) ,d) ,s)))))
+
 ;; (defmacro sudoku-puzzle-vec (vec rank idxer)
 ;;   "Transform sudoku's puzzle vector."
 ;;   `(vector ,@(mapcar (lambda (x)
