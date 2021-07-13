@@ -93,6 +93,18 @@
        (cons ,d2 (% ,i ,d)))))
 
 
+(defmacro sudoku-puzzle-row (i)
+  "Locate row via 1d(I)."
+  (let ((d (gensym*)))
+    `(let ((,d (*sudoku-puzzle-d* :d)))
+       (% (/ ,i ,d) ,d))))
+
+(defmacro sudoku-puzzle-col (i)
+  "Locate col via 1d(I)."
+  (let ((d (gensym*)))
+    `(let ((,d (*sudoku-puzzle-d* :d)))
+       (% ,i ,d))))
+
 ;; (defmacro sudoku-puzzle-vec (vec rank idxer)
 ;;   "Transform sudoku's puzzle vector."
 ;;   `(vector ,@(mapcar (lambda (x)
