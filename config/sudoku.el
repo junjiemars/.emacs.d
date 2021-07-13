@@ -66,7 +66,7 @@
                  (s (floor (sqrt (sqrt 81)))))
     (lambda (&optional k n)
       (cond ((eq :set! k) (setq l n
-                                w (floor (sqrt 81))
+                                d (floor (sqrt 81))
                                 s (floor (sqrt (sqrt 81)))))
             ((eq :d k) d)
             ((eq :len k) l)
@@ -116,22 +116,21 @@
        (cons (/ (/ (% ,i ,l) ,d) ,s)
              (/ (% (% ,i ,l) ,d) ,s)))))
 
-;; (defmacro sudoku-puzzle-vec (vec rank idxer)
+
+;; (defmacro sudoku-puzzle-vec (vec d )
 ;;   "Transform sudoku's puzzle vector."
 ;;   `(vector ,@(mapcar (lambda (x)
 ;;                        `(aref ,vec ,idxer))
-;;                      (range 0 rank 1))))
+;;                      (range 0 d 1))))
 
 
 (defalias '*sudoku-puzzle*
   (lexical-let% ((v))
-    (lambda (&optional k d i j n)
-      (cond ((eq :set! k) (setq v d))
+    (lambda (&optional k i j)
+      (cond ((eq :set! k) (setq v i))
 
-            ((eq :row k) (let ((row (* (% (cond ((eq :1d d) (/ i 9))
-                                                (t i))
-                                          9)
-                                       9)))
+            ((eq :row k) (let ((row (* (sudoku-puzzle-row i)
+                                       (*sudoku-puzzle-d* :d))))
                            (vector (aref v (+ row 0))
                                    (aref v (+ row 1))
                                    (aref v (+ row 2))
@@ -142,7 +141,8 @@
                                    (aref v (+ row 7))
                                    (aref v (+ row 8)))))
 
-            ((eq :col k) (let ((col (% (or i d) 9)))
+            ((eq :col k) (let ((col (% (sudoku-puzzle-col i)
+                                       (*sudoku-puzzle-d* :d))))
                            (vector (aref v (+ col (* 0 9)))
                                    (aref v (+ col (* 1 9)))
                                    (aref v (+ col (* 2 9)))
@@ -153,28 +153,24 @@
                                    (aref v (+ col (* 7 9)))
                                    (aref v (+ col (* 8 9))))))
 
-            ((eq :sqr k) (let ((row (cond ((eq :1d d)
-                                           (* (/ (/ (% i 81) 9) 3) 3 9))
-                                          (t (* (* (% i 3) 3) 9))))
-                               (col (cond ((eq :1d d)
-                                           (* (/ (% (% i 81) 9) 3) 3))
-                                          (t (* (% j 3) 3)))))
-                           (cons (cons row col)
-                                 (vector
-                                  (aref v (+ row col (* 0 9) 0))
-                                  (aref v (+ row col (* 0 9) 1))
-                                  (aref v (+ row col (* 0 9) 2))
-                                  (aref v (+ row col (* 1 9) 0))
-                                  (aref v (+ row col (* 1 9) 1))
-                                  (aref v (+ row col (* 1 9) 2))
-                                  (aref v (+ row col (* 2 9) 0))
-                                  (aref v (+ row col (* 2 9) 1))
-                                  (aref v (+ row col (* 2 9) 2))))))
+            ((eq :sqr k) (let* ((sqr (sudoku-puzzle-sqr i))
+                                (row (* (car sqr)
+                                        (*sudoku-puzzle-d* :d)))
+                                (col (* (cdr sqr)
+                                        (*sudoku-puzzle-d* :sqr))))
+                           (vector
+                            (aref v (+ row col (* 0 9) 0))
+                            (aref v (+ row col (* 0 9) 1))
+                            (aref v (+ row col (* 0 9) 2))
+                            (aref v (+ row col (* 1 9) 0))
+                            (aref v (+ row col (* 1 9) 1))
+                            (aref v (+ row col (* 1 9) 2))
+                            (aref v (+ row col (* 2 9) 0))
+                            (aref v (+ row col (* 2 9) 1))
+                            (aref v (+ row col (* 2 9) 2)))))
 
-            ((eq :cell k) (cond ((eq :1d d) (aref v i))
-                                (t (aref v (+ (* (% i 9) 9) j)))))
-            ((eq :cell! k) (cond ((eq :1d d) (aset v i j))
-                                 (t (aset v (+ (* (% i 9) 9) j) n))))
+            ((eq :cell k) (aref v (% i (*sudoku-puzzle-d* :len))))
+            ((eq :cell! k) (aset v (% i (*sudoku-puzzle-d* :len)) j))
             (t v))))
   "The `sudoku' puzzle in 1-dimension vector.")
 
@@ -266,39 +262,34 @@
 (defun sudoku-puzzle-row-unique (index)
   "Check sudokus' row puzzle at INDEX is unique."
   (catch 'conflict
-    (let ((r (*sudoku-puzzle* :row :1d index)))
-      (unless (sudoku-puzzle-unique r)
-        (throw 'conflict :conflict)))))
+    (unless (sudoku-puzzle-unique (*sudoku-puzzle* :row :1d index))
+      (throw 'conflict :conflict))))
 
 
 (defun sudoku-puzzle-col-complete (index)
   "Check sudoku's column puzzle at INDEX is complete."
   (catch 'conflict
-    (let ((c (*sudoku-puzzle* :col :1d index)))
-      (unless (sudoku-puzzle-complete c)
-        (throw 'conflict :conflict)))))
+    (unless (sudoku-puzzle-complete (*sudoku-puzzle* :col index))
+      (throw 'conflict :conflict))))
 
 (defun sudoku-puzzle-col-unique (index)
   "Check sudoku's column puzzle at INDEX is unique."
   (catch 'conflict
-    (let ((c (*sudoku-puzzle* :col :1d index)))
-      (unless (sudoku-puzzle-unique c)
-        (throw 'conflict :conflict)))))
+    (unless (sudoku-puzzle-unique (*sudoku-puzzle* :col index))
+      (throw 'conflict :conflict))))
 
 
 (defun sudoku-puzzle-sqr-complete (index)
   "Check sudoku's square puzzle at INDEX is complete."
   (catch 'conflict
-    (let ((sqr (*sudoku-puzzle* :sqr :1d index)))
-      (unless (sudoku-puzzle-complete (cdr sqr))
-        (throw 'conflict :conflict)))))
+    (unless (sudoku-puzzle-complete (*sudoku-puzzle* :sqr index))
+      (throw 'conflict :conflict))))
 
 (defun sudoku-puzzle-sqr-unique (index)
   "Check sudoku's square puzzle at INDEX is unique."
   (catch 'conflict
-    (let ((sqr (*sudoku-puzzle* :sqr :1d index)))
-      (unless (sudoku-puzzle-unique (cdr sqr))
-        (throw 'conflict :conflict)))))
+    (unless (sudoku-puzzle-unique (*sudoku-puzzle* :sqr index))
+      (throw 'conflict :conflict))))
 
 
 (defalias '*sudoku-board*
@@ -390,7 +381,7 @@
             ((eq :props k)
              (with-current-buffer (*sudoku*)
                (let ((ps)
-                     (max (1+ (* (car d) (cdr d))))
+                     (max (1- (point-max)))
                      (n 0))
                  (save-excursion
                    (goto-char (point-min))
@@ -549,7 +540,7 @@
             (let* ((idx (car (plist-get tp :puzzle)))
                    (cell (cons idx num)))
               (put-text-property pos (1+ pos) :puzzle cell)
-              (*sudoku-puzzle* :cell! :1d idx (cdr cell))
+              (*sudoku-puzzle* :cell! idx (cdr cell))
 
               (let ((f (list :underline t
                              :foreground (*sudoku-color* :w))))
