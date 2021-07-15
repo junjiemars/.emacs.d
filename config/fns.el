@@ -24,46 +24,34 @@
 
 
 (defun take (n seq)
-  "Return a sequence of the first N items in SEQ.
-
-Or all items if SEQ has fewer items than N."
-  (let ((acc nil) (n1 n) (s1 seq))
-    (while (and (> n1 0) s1)
-      (setq acc (cons (car s1) acc)
-            n1 (1- n1)
-            s1 (cdr s1)))
-    (nreverse acc)))
-
-
-(defun drop (n seq)
-  "Return rest sequence after drop the first N items in SEQ.
-
-Or nil if SEQ has fewer items than N."
-  (while (and (> n 0) seq)
-    (setq seq (cdr seq)
-          n (1- n)))
-  seq)
-
-
-(defun drop-while (pred seq)
-  "Return a sequence of items from SEQ drop that PRED is t."
-  (let ((s seq) (w nil))
-    (while (and (not w) (car s))
-      (if (funcall pred (car s))
-          (setq w t)
-        (setq s (cdr s))))
-    (cdr s)))
+  "Return a sequence of the first N items in SEQ."
+  (let ((s))
+    (while (and (> n 0) seq)
+      (setq s (cons (car seq) s)
+            n (1- n)
+            seq (cdr seq)))
+    (nreverse s)))
 
 
 (defun take-while (pred seq)
-  "Return a sequence of items from SEQ just take PRED is t."
-  (let ((s seq) (w nil) (s1 nil))
-    (while (and (not w) (car s))
-      (if (funcall pred (car s))
-          (setq w t)
-        (setq s1 (cons (car s) s1)
-              s (cdr s))))
-    (nreverse s1)))
+  "Return a sequence of items from SEQ just take while PRED is t."
+  (let ((s))
+    (while (and seq (not (funcall pred (car seq))))
+      (setq s (cons (car seq) s)
+            seq (cdr seq)))
+    (nreverse s)))
+
+
+(defmacro drop (n seq)
+  "Return rest sequence after drop the first N items in SEQ."
+  `(nthcdr ,n ,seq))
+
+
+(defun drop-while (pred seq)
+  "Return a sequence of items from SEQ drop while PRED is t."
+  (while (and seq (not (funcall pred (car seq))))
+    (setq seq (cdr seq)))
+  (cdr seq))
 
 
 ;;;;
