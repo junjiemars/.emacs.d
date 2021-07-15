@@ -121,8 +121,8 @@ The FILE should be posix path, see `path-separator'."
     (file &optional only-compile delete-booster dir)
   "Compile FILE.
 
-If ONLY-COMPILE is t, does not load COMPILED file after compile FILE.
-If DELETE-BOOSTER is t, remove booster file after compile FILE.
+If ONLY-COMPILE is t, does not load compiled file.
+If DELETE-BOOSTER is t, remove booster file.
 DIR where the compiled file located."
   (let ((c (gensym*))
         (s (gensym*)))
