@@ -49,9 +49,9 @@
 
 (defun drop-while (pred seq)
   "Return a sequence of items from SEQ drop while PRED is t."
-  (while (and seq (not (funcall pred (car seq))))
+  (while (and seq (funcall pred (car seq)))
     (setq seq (cdr seq)))
-  (cdr seq))
+  seq)
 
 
 ;;;;
