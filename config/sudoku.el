@@ -444,7 +444,8 @@
   (switch-to-buffer (*sudoku*))
   (let ((buffer-read-only nil)
         (d (*sudoku-puzzle-d* :d))
-        (sqr (*sudoku-puzzle-d* :sqr)))
+        (sqr (*sudoku-puzzle-d* :sqr))
+        (w 3))
     (with-current-buffer (*sudoku*)
       (erase-buffer)
       (goto-char 0)
@@ -453,7 +454,7 @@
 		               (setq ss (concat ss "+")
 					               s2 0)
 		               (while (< s2 sqr)
-			               (setq ss (concat ss "---")
+			               (setq ss (concat ss (make-string w ?-))
 						               s2 (1+ s2)))
 		               (setq s1 (1+ s1)))
 	               (concat ss "+\n")))
@@ -490,7 +491,7 @@
     (*sudoku-board* :cor!
                     (cons 2 2)
                     (cons (+ 1 d (1- sqr))
-                          (+ (* 3 d) (mod d 2))))
+                          (+ (* 3 w) (mod d 2))))
     (*sudoku-board* :ori!)))
 
 
@@ -788,9 +789,9 @@ The following commands are available:
 (defun sudoku (&optional level dimension)
   "Play sudoku on optional LEVEL and DIMENSION."
   (interactive
-   (list (let ((exists (and (file-exists-p (+sudoku-file+ :board))
-                            (null current-prefix-arg))))
-           (read-string (format "Sudoku %s: "
+   (let ((exists (and (file-exists-p (+sudoku-file+ :board))
+                      (null current-prefix-arg))))
+     (list (read-string (format "Sudoku %s: "
                                 (if exists
                                     "load (file)"
                                   (format "level (%s)"
@@ -800,13 +801,15 @@ The following commands are available:
                             (+sudoku-file+ :board)
                           (or (car *sudoku-level-history*)
                               (symbol-name (car +sudoku-level+))))
-                        '*sudoku-level-history*))
-         (read-string (format "Sudoku dimension (%s): "
-                              (mapconcat #'symbol-name
-                                         +sudoku-dimension+ "|"))
-                      (or (car *sudoku-dimension-history*)
-                          (symbol-name (car +sudoku-dimension+)))
-                      '*sudoku-dimension-history*)))
+                        (unless exists
+                          '*sudoku-level-history*))
+           (unless exists
+             (read-string (format "Sudoku dimension (%s): "
+                                  (mapconcat #'symbol-name
+                                             +sudoku-dimension+ "|"))
+                          (or (car *sudoku-dimension-history*)
+                              (symbol-name (car +sudoku-dimension+)))
+                          '*sudoku-dimension-history*)))))
   (if (file-exists-p level)
       (sudoku-board-load)
     (sudoku-board-draw
