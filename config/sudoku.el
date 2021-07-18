@@ -93,11 +93,10 @@
        (cons ,d2 (% ,i ,d)))))
 
 
-(defmacro sudoku-puzzle-row (i)
+(defun sudoku-puzzle-row (i)
   "Locate row via 1d(I)."
-  (let ((d (gensym*)))
-    `(let ((,d (*sudoku-puzzle-d* :d)))
-       (% (/ ,i ,d) ,d))))
+  (let ((d (*sudoku-puzzle-d* :d)))
+    (% (/ i d) d)))
 
 (defmacro sudoku-puzzle-col (i)
   "Locate col via 1d(I)."
@@ -117,60 +116,61 @@
              (/ (% (% ,i ,l) ,d) ,s)))))
 
 
-;; (defmacro sudoku-puzzle-vec (vec d )
-;;   "Transform sudoku's puzzle vector."
-;;   `(vector ,@(mapcar (lambda (x)
-;;                        `(aref ,vec ,idxer))
-;;                      (range 0 d 1))))
+(defmacro sudoku-puzzle-vec-row (matrix index)
+  "Return MATRIX's row vector on INDEX"
+  (let ((d (gensym*))
+        (m (gensym*))
+        (r (gensym*)))
+    `(let* ((,d (*sudoku-puzzle-d* :d))
+            (,m ,matrix)
+            (,r (* (sudoku-puzzle-row ,index) ,d)))
+       (apply #'vector (mapcar** (lambda (a)
+                                   (aref ,m (+ ,r a)))
+                                 (range 0 (1- ,d) 1))))))
+
+(defmacro sudoku-puzzle-vec-col (matrix index)
+  "Return MATRIX's col vector on INDEX."
+  (let ((d (gensym*))
+        (m (gensym*))
+        (c (gensym*)))
+    `(let* ((,d (*sudoku-puzzle-d* :d))
+            (,m ,matrix)
+            (,c (% (sudoku-puzzle-col ,index) ,d)))
+       (apply #'vector (mapcar** (lambda (x)
+                                   (aref ,m (+ ,c (* x ,d))))
+                                 (range 0 (1- ,d) 1))))))
+
+
+(defmacro sudoku-puzzle-vec-sqr (matrix index)
+  "Return MATRIX's sqr vector on INDEX."
+  (let ((d (gensym*))
+        (s (gensym*))
+        (m (gensym*))
+        (s1 (gensym*))
+        (r (gensym*))
+        (c (gensym*)))
+    `(let* ((,d (*sudoku-puzzle-d* :d))
+            (,s (*sudoku-puzzle-d* :sqr))
+            (,m ,matrix)
+            (,s1 (sudoku-puzzle-sqr ,index))
+            (,r (* (car ,s1) ,s ,d))
+            (,c (* (cdr ,s1) ,s)))
+       (apply #'vector (mapcar** (lambda (x)
+                                   (aref ,m (+ ,r (* (/ x ,s) ,d)
+                                               ,c (% x ,s))))
+                                 (range 0 (1- ,d) 1))))))
+
 
 
 (defalias '*sudoku-puzzle*
   (lexical-let% ((v))
-    (lambda (&optional k i j)
+    (lambda (&optional k i n)
       (cond ((eq :set! k) (setq v i))
-
-            ((eq :row k) (let ((row (* (sudoku-puzzle-row i)
-                                       (*sudoku-puzzle-d* :d))))
-                           (vector (aref v (+ row 0))
-                                   (aref v (+ row 1))
-                                   (aref v (+ row 2))
-                                   (aref v (+ row 3))
-                                   (aref v (+ row 4))
-                                   (aref v (+ row 5))
-                                   (aref v (+ row 6))
-                                   (aref v (+ row 7))
-                                   (aref v (+ row 8)))))
-
-            ((eq :col k) (let ((col (% (sudoku-puzzle-col i)
-                                       (*sudoku-puzzle-d* :d))))
-                           (vector (aref v (+ col (* 0 9)))
-                                   (aref v (+ col (* 1 9)))
-                                   (aref v (+ col (* 2 9)))
-                                   (aref v (+ col (* 3 9)))
-                                   (aref v (+ col (* 4 9)))
-                                   (aref v (+ col (* 5 9)))
-                                   (aref v (+ col (* 6 9)))
-                                   (aref v (+ col (* 7 9)))
-                                   (aref v (+ col (* 8 9))))))
-
-            ((eq :sqr k) (let* ((sqr (sudoku-puzzle-sqr i))
-                                (row (* (car sqr)
-                                        (*sudoku-puzzle-d* :d)))
-                                (col (* (cdr sqr)
-                                        (*sudoku-puzzle-d* :sqr))))
-                           (vector
-                            (aref v (+ row col (* 0 9) 0))
-                            (aref v (+ row col (* 0 9) 1))
-                            (aref v (+ row col (* 0 9) 2))
-                            (aref v (+ row col (* 1 9) 0))
-                            (aref v (+ row col (* 1 9) 1))
-                            (aref v (+ row col (* 1 9) 2))
-                            (aref v (+ row col (* 2 9) 0))
-                            (aref v (+ row col (* 2 9) 1))
-                            (aref v (+ row col (* 2 9) 2)))))
-
+            ((eq :row k) (sudoku-puzzle-vec-row v i))
+            ((eq :col k) (sudoku-puzzle-vec-col v i))
+            ((eq :sqr k) (sudoku-puzzle-vec-sqr v i))
             ((eq :cell k) (aref v (% i (*sudoku-puzzle-d* :len))))
-            ((eq :cell! k) (aset v (% i (*sudoku-puzzle-d* :len)) j))
+            ((eq :cell! k) (aset v (% i (*sudoku-puzzle-d* :len)) n))
             (t v))))
   "The `sudoku' puzzle in 1-dimension vector.")
 
