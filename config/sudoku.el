@@ -260,7 +260,7 @@
         (sum 0)
         (i))
     (while (< i len)
-      (setq sum (+ sum aref block i)
+      (setq sum (+ sum (aref block i))
             i (1+ i)))
     (= sum (*sudoku-puzzle-d* :sum))))
 
