@@ -27,7 +27,7 @@
             ((or (null b) (not (buffer-live-p b)))
              (setq b (get-buffer-create "*sudoku*")))
             (t b))))
-  "The *sudoku* process buffer.")
+  "The sudoku's process buffer.")
 
 
 (defalias '+sudoku-file+
@@ -41,8 +41,19 @@
   "The sudoku's files.")
 
 
-(defvar *sudoku-option-history* (list "easy" "medium" "hard")
-  "Sudoku option history list.")
+(defconst +sudoku-level+ '(easy medium hard)
+  "Sudoku levels.")
+
+
+(defconst +sudoku-dimension+ '(4x4 9x9)
+  "Sudoku dimension.")
+
+
+(defvar *sudoku-level-history* nil
+  "Sudoku level history list.")
+
+(defvar *sudoku-dimension-history* nil
+  "Sudoku dimension history list.")
 
 
 (defalias '*sudoku-color*
@@ -61,17 +72,20 @@
 
 
 (defalias '*sudoku-puzzle-d*
-  (lexical-let% ((l 81)
-                 (d (floor (sqrt 81)))
-                 (s (floor (sqrt (sqrt 81)))))
+  (lexical-let% ((l) (d) (s) (sum))
     (lambda (&optional k n)
-      (cond ((eq :set! k) (setq l n
-                                d (floor (sqrt 81))
-                                s (floor (sqrt (sqrt 81)))))
+      (cond ((eq :set! k) (let* ((n1 (length n))
+                                 (sqr1 (sqrt n1))
+                                 (d1 (floor sqr1)))
+                            (setq d d1
+                                  s (floor (sqrt d1))
+                                  sum (apply #'+ (range 1 d1 1))
+                                  l n1)))
             ((eq :d k) d)
             ((eq :len k) l)
             ((eq :sqr k) s)
-            (t (list :len l :d d :sqr)))))
+            ((eq :sum k) sum)
+            (t (list :len l :d d :sqr s)))))
   "The sudoku's dimensions.")
 
 
@@ -165,7 +179,8 @@
 (defalias '*sudoku-puzzle*
   (lexical-let% ((v))
     (lambda (&optional k i n)
-      (cond ((eq :set! k) (setq v i))
+      (cond ((eq :set! k) (progn (*sudoku-puzzle-d* :set! i)
+                                 (setq v i)))
             ((eq :row k) (sudoku-puzzle-vec-row v i))
             ((eq :col k) (sudoku-puzzle-vec-col v i))
             ((eq :sqr k) (sudoku-puzzle-vec-sqr v i))
@@ -175,40 +190,57 @@
   "The `sudoku' puzzle in 1-dimension vector.")
 
 
-(defun sudoku-puzzle-make (level)
+(defun sudoku-puzzle-make (level dimension)
   "Make sudoku puzzle at LEVEL."
   (let ((xs (list
              'easy
-             [0 7 0 2 1 8 4 0 6
-              0 0 0 5 0 4 0 0 0
-              2 0 0 0 0 0 0 9 5
-              4 0 8 6 5 0 3 0 7
-              0 0 7 0 0 0 6 0 0
-              6 0 1 0 8 7 2 0 9
-              7 6 0 0 0 0 0 0 4
-              0 0 0 4 0 6 0 0 0
-              1 0 5 8 2 9 0 6 0]
+             (list
+              '4x4 [4 0 0 3
+                    0 2 1 0
+                    0 3 4 0
+                    1 0 0 0]
+              '9x9 [0 7 0 2 1 8 4 0 6
+                    0 0 0 5 0 4 0 0 0
+                    2 0 0 0 0 0 0 9 5
+                    4 0 8 6 5 0 3 0 7
+                    0 0 7 0 0 0 6 0 0
+                    6 0 1 0 8 7 2 0 9
+                    7 6 0 0 0 0 0 0 4
+                    0 0 0 4 0 6 0 0 0
+                    1 0 5 8 2 9 0 6 0])
              'medium
-             [0 0 0 0 0 2 4 3 1
-              0 0 3 7 0 9 0 2 8
-              0 0 8 0 0 0 6 0 7
-              0 0 5 0 8 1 0 0 9
-              0 0 4 0 2 0 1 0 0
-              9 0 0 3 4 0 7 0 0
-              8 0 2 0 0 0 3 0 0
-              1 3 0 5 0 4 8 0 0
-              7 5 6 2 0 0 0 0 0]
+             (list
+              '4x4 [0 3 0 4
+                    4 0 0 0
+                    0 0 0 1
+                    0 0 2 0]
+              '9x9 [0 0 0 0 0 2 4 3 1
+                    0 0 3 7 0 9 0 2 8
+                    0 0 8 0 0 0 6 0 7
+                    0 0 5 0 8 1 0 0 9
+                    0 0 4 0 2 0 1 0 0
+                    9 0 0 3 4 0 7 0 0
+                    8 0 2 0 0 0 3 0 0
+                    1 3 0 5 0 4 8 0 0
+                    7 5 6 2 0 0 0 0 0])
              'hard
-             [0 7 6 0 4 2 5 0 3
-              0 3 0 0 0 1 0 0 0 
-              0 0 0 0 0 5 0 8 0
-              9 0 7 2 0 8 0 3 0
-              5 0 0 0 6 0 0 0 8
-              0 1 0 4 0 7 9 0 6
-              0 9 0 7 0 0 0 0 0
-              0 0 0 5 0 0 0 7 0
-              7 0 2 8 1 0 0 3 4])))
-    (copy-sequence (plist-get xs level))))
+             (list
+              '4x4 [0 0 0 2
+                    2 0 4 0
+                    0 3 0 0
+                    1 0 0 0]
+              '9x9 [0 7 6 0 4 2 5 0 3
+                    0 3 0 0 0 1 0 0 0 
+                    0 0 0 0 0 5 0 8 0
+                    9 0 7 2 0 8 0 3 0
+                    5 0 0 0 6 0 0 0 8
+                    0 1 0 4 0 7 9 0 6
+                    0 9 0 7 0 0 0 0 0
+                    0 0 0 5 0 0 0 7 0
+                    7 0 2 8 1 0 0 3 4]))))
+    (copy-sequence (plist-get
+                    (plist-get xs level)
+                    dimension))))
 
 
 (defun sudoku-puzzle-save ()
@@ -224,26 +256,23 @@
 
 (defun sudoku-puzzle-complete (block)
   "Check sudoku's block puzzle is complete."
-  (when (and block (= 9 (length block)))
-    (= 45 (+ (aref block 0)
-             (aref block 1)
-             (aref block 2)
-             (aref block 3)
-             (aref block 4)
-             (aref block 5)
-             (aref block 6)
-             (aref block 7)
-             (aref block 8)))))
+  (let ((len (length block))
+        (sum 0)
+        (i))
+    (while (< i len)
+      (setq sum (+ sum aref block i)
+            i (1+ i)))
+    (= sum (*sudoku-puzzle-d* :sum))))
 
 (defun sudoku-puzzle-unique (block)
   "Check sudoku's block puzzle is unique."
   (catch 'conflict
-    (when (and block (= 9 (length block)))
+    (let ((len (length block)))
       (let ((i 0)
             (j 0))
-        (while (< i 9)
+        (while (< i len)
           (setq j (+ i 1))
-          (while (< j 9)
+          (while (< j len)
             (when (and (/= 0 (aref block i))
                        (= (aref block i) (aref block j)))
               (throw 'conflict nil))
@@ -400,8 +429,9 @@
 (defun sudoku-board-make (puzzle)
   "Make sudoku's board with PUZZLE."
   (let ((i 0)
-        (bs))
-    (while (< i 81)
+        (bs)
+        (len (*sudoku-puzzle-d* :len)))
+    (while (< i len)
       (let ((x (aref puzzle i)))
         (setq bs (append bs (list (list :puzzle (cons i x)
                                         :zero (= x 0))))
@@ -412,17 +442,35 @@
 (defun sudoku-board-draw (board)
   "Draw sudoku BOARD."
   (switch-to-buffer (*sudoku*))
-  (with-current-buffer (*sudoku*)
-    (let ((buffer-read-only nil))
+  (let ((buffer-read-only nil)
+        (d (*sudoku-puzzle-d* :d))
+        (sqr (*sudoku-puzzle-d* :sqr)))
+    (with-current-buffer (*sudoku*)
       (erase-buffer)
       (goto-char 0)
-      (let ((s "+---------+---------+---------+\n")
-            (v "| %s  %s  %s | %s  %s  %s | %s  %s  %s |\n")
+      (let ((s (let ((s1 0) (s2 0) (ss))
+	               (while (< s1 sqr)
+		               (setq ss (concat ss "+")
+					               s2 0)
+		               (while (< s2 sqr)
+			               (setq ss (concat ss "---")
+						               s2 (1+ s2)))
+		               (setq s1 (1+ s1)))
+	               (concat ss "+\n")))
+            (v (let ((s1 0) (s2 0) (ss))
+	               (while (< s1 sqr)
+		               (setq ss (concat ss "|")
+					               s2 0)
+		               (while (< s2 sqr)
+			               (setq ss (concat ss " %s ")
+						               s2 (1+ s2)))
+		               (setq s1 (1+ s1)))
+	               (concat ss "|\n")))
             (u "_")
             (row 0)
             (idx 0))
-        (while (< row 9)
-          (when (= 0 (% row 3))
+        (while (< row d)
+          (when (= 0 (% row sqr))
             (insert s))
           (insert
            (apply #'format v
@@ -435,12 +483,15 @@
                                           (t (number-to-string n))))
                                   x)
                          (setq idx (1+ idx))))
-                   (take 9 board))))
-          (setq board (drop 9 board)
+                   (take d board))))
+          (setq board (drop d board)
                 row (1+ row)))
-        (insert s))))
-  (*sudoku-board* :cor! (cons 2 2) (cons 12 28))
-  (*sudoku-board* :ori!))
+        (insert s)))
+    (*sudoku-board* :cor!
+                    (cons 2 2)
+                    (cons (+ 1 d (1- sqr))
+                          (+ (* 3 d) (mod d 2))))
+    (*sudoku-board* :ori!)))
 
 
 (defun sudoku-board-move ()
@@ -595,31 +646,36 @@
   "Input 5 at point."
   (interactive)
   (ignore* color)
-  (sudoku-board-input 5 (cons 'face 'underline)))
+  (when (>= (*sudoku-puzzle-d* :d) 5)
+    (sudoku-board-input 5 (cons 'face 'underline))))
 
 (defun sudoku-board-input-6 (&optional color)
   "Input 6 at point."
   (interactive)
   (ignore* color)
-  (sudoku-board-input 6 (cons 'face 'underline)))
+  (when (>= (*sudoku-puzzle-d* :d) 5)
+    (sudoku-board-input 6 (cons 'face 'underline))))
 
 (defun sudoku-board-input-7 (&optional color)
   "Input 7 at point."
   (interactive)
   (ignore* color)
-  (sudoku-board-input 7 (cons 'face 'underline)))
+  (when (>= (*sudoku-puzzle-d* :d) 5)
+    (sudoku-board-input 7 (cons 'face 'underline))))
 
 (defun sudoku-board-input-8 (&optional color)
   "Input 8 at point."
   (interactive)
   (ignore* color)
-  (sudoku-board-input 8 (cons 'face 'underline)))
+  (when (>= (*sudoku-puzzle-d* :d) 5)
+    (sudoku-board-input 8 (cons 'face 'underline))))
 
 (defun sudoku-board-input-9 (&optional color)
   "Input 9 at point."
   (interactive)
   (ignore* color)
-  (sudoku-board-input 9 (cons 'face 'underline)))
+  (when (>= (*sudoku-puzzle-d* :d) 5)
+    (sudoku-board-input 9 (cons 'face 'underline))))
 
 
 (defun sudoku-board-disabled-key ()
@@ -641,7 +697,7 @@
     (*sudoku-puzzle*
      :set!
      (let ((i 0)
-           (p (make-vector (* 9 9) 0)))
+           (p (make-vector (length b) 0)))
        (dolist* (x b p)
          (aset p i (cdr (plist-get x :puzzle)))
          (setq i (1+ i)))))
@@ -729,25 +785,36 @@ The following commands are available:
     (buffer-disable-undo)))
 
 
-(defun sudoku (&optional level)
-  "Play sudoku in LEVEL."
+(defun sudoku (&optional level dimension)
+  "Play sudoku on optional LEVEL and DIMENSION."
   (interactive
    (list (let ((exists (and (file-exists-p (+sudoku-file+ :board))
                             (null current-prefix-arg))))
            (read-string (format "Sudoku %s: "
-                                (if exists "load" "level"))
+                                (if exists
+                                    "load (file)"
+                                  (format "level (%s)"
+                                          (mapconcat #'symbol-name
+                                                     +sudoku-level+ "|"))))
                         (if exists
                             (+sudoku-file+ :board)
-                          (car *sudoku-option-history*))
-                        (if exists
-                            nil
-                          '*sudoku-option-history*)))))
+                          (or (car *sudoku-level-history*)
+                              (symbol-name (car +sudoku-level+))))
+                        '*sudoku-level-history*))
+         (read-string (format "Sudoku dimension (%s): "
+                              (mapconcat #'symbol-name
+                                         +sudoku-dimension+ "|"))
+                      (or (car *sudoku-dimension-history*)
+                          (symbol-name (car +sudoku-dimension+)))
+                      '*sudoku-dimension-history*)))
   (if (file-exists-p level)
       (sudoku-board-load)
-    (sudoku-board-draw (sudoku-board-make
-                        (*sudoku-puzzle*
-                         :set!
-                         sudoku-puzzle-make))))
+    (sudoku-board-draw
+     (sudoku-board-make
+      (*sudoku-puzzle*
+       :set!
+       (sudoku-puzzle-make (intern level)
+                           (intern dimension))))))
   (sudoku-mode))
 
 
