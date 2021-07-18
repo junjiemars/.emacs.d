@@ -599,7 +599,8 @@
               (when (and (sudoku-puzzle-sqr-complete idx)
                          (sudoku-puzzle-row-complete idx)
                          (sudoku-puzzle-col-complete idx))
-                (message "%s!" "Resolved"))
+                (message "%s, but a busted clock still be right twice a day."
+                         "Resolved"))
 
               (put-text-property pos (1+ pos)
                                  'face 'underline))))))))
