@@ -258,7 +258,7 @@
   "Check sudoku's block puzzle is complete."
   (let ((len (length block))
         (sum 0)
-        (i))
+        (i 0))
     (while (< i len)
       (setq sum (+ sum (aref block i))
             i (1+ i)))
@@ -281,44 +281,31 @@
                 j (+ i 1)))
         t))))
 
-(defun sudoku-puzzle-row-complete (index)
+(defmacro sudoku-puzzle-row-complete (index)
   "Check sudokus' row puzzle at INDEX is complete."
-  (catch 'conflict
-    (let ((r (*sudoku-puzzle* :row index)))
-      (unless (sudoku-puzzle-complete r)
-        (throw 'conflict :conflict)))))
+  `(sudoku-puzzle-complete (*sudoku-puzzle* :row ,index)))
 
-(defun sudoku-puzzle-row-unique (index)
+(defmacro sudoku-puzzle-row-unique (index)
   "Check sudokus' row puzzle at INDEX is unique."
-  (catch 'conflict
-    (unless (sudoku-puzzle-unique (*sudoku-puzzle* :row index))
-      (throw 'conflict :conflict))))
+  `(sudoku-puzzle-unique (*sudoku-puzzle* :row ,index)))
 
 
-(defun sudoku-puzzle-col-complete (index)
+(defmacro sudoku-puzzle-col-complete (index)
   "Check sudoku's column puzzle at INDEX is complete."
-  (catch 'conflict
-    (unless (sudoku-puzzle-complete (*sudoku-puzzle* :col index))
-      (throw 'conflict :conflict))))
+  `(sudoku-puzzle-complete (*sudoku-puzzle* :col ,index)))
 
-(defun sudoku-puzzle-col-unique (index)
+(defmacro sudoku-puzzle-col-unique (index)
   "Check sudoku's column puzzle at INDEX is unique."
-  (catch 'conflict
-    (unless (sudoku-puzzle-unique (*sudoku-puzzle* :col index))
-      (throw 'conflict :conflict))))
+  `(sudoku-puzzle-unique (*sudoku-puzzle* :col ,index)))
 
 
-(defun sudoku-puzzle-sqr-complete (index)
+(defmacro sudoku-puzzle-sqr-complete (index)
   "Check sudoku's square puzzle at INDEX is complete."
-  (catch 'conflict
-    (unless (sudoku-puzzle-complete (*sudoku-puzzle* :sqr index))
-      (throw 'conflict :conflict))))
+  `(sudoku-puzzle-complete (*sudoku-puzzle* :sqr ,index)))
 
-(defun sudoku-puzzle-sqr-unique (index)
+(defmacro sudoku-puzzle-sqr-unique (index)
   "Check sudoku's square puzzle at INDEX is unique."
-  (catch 'conflict
-    (unless (sudoku-puzzle-unique (*sudoku-puzzle* :sqr index))
-      (throw 'conflict :conflict))))
+  `(sudoku-puzzle-unique (*sudoku-puzzle* :sqr ,index)))
 
 
 (defalias '*sudoku-board*
@@ -491,7 +478,7 @@
     (*sudoku-board* :cor!
                     (cons 2 2)
                     (cons (+ 1 d (1- sqr))
-                          (+ (* 3 w) (mod d 2))))
+                          (+ (* w d) (mod d 2))))
     (*sudoku-board* :ori!)))
 
 
@@ -590,27 +577,32 @@
                                  (cdr x)))
 
             (let* ((idx (car (plist-get tp :puzzle)))
-                   (cell (cons idx num)))
+                   (cell (cons idx num))
+                   (f (list :underline t
+                            :foreground (*sudoku-color* :w))))
+
               (put-text-property pos (1+ pos) :puzzle cell)
               (*sudoku-puzzle* :cell! idx (cdr cell))
 
-              (let ((f (list :underline t
-                             :foreground (*sudoku-color* :w))))
-                (when (eq :conflict (sudoku-puzzle-sqr-unique idx))
-                  (put-text-property pos (1+ pos) 'face f)
-                  (throw 'block nil))
+              (unless (sudoku-puzzle-sqr-unique idx)
+                (put-text-property pos (1+ pos) 'face f)
+                (throw 'block nil))
 
-                (when (eq :conflict (sudoku-puzzle-row-unique idx))
-                  (put-text-property pos (1+ pos) 'face f)
-                  (throw 'block nil))
+              (unless (sudoku-puzzle-row-unique idx)
+                (put-text-property pos (1+ pos) 'face f)
+                (throw 'block nil))
 
-                (when (eq :conflict (sudoku-puzzle-col-unique idx))
-                  (put-text-property pos (1+ pos) 'face f)
-                  (throw 'block nil)))
-              
-              (put-text-property
-               pos (1+ pos)
-               'face 'underline))))))))
+              (unless (sudoku-puzzle-col-unique idx)
+                (put-text-property pos (1+ pos) 'face f)
+                (throw 'block nil))
+
+              (when (and (sudoku-puzzle-sqr-complete idx)
+                         (sudoku-puzzle-row-complete idx)
+                         (sudoku-puzzle-col-complete idx))
+                (message "%s!" "Resolved"))
+
+              (put-text-property pos (1+ pos)
+                                 'face 'underline))))))))
 
 
 (defun sudoku-board-input-erase ()
