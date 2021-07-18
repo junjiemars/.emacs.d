@@ -619,64 +619,59 @@
   (sudoku-board-input 0 (cons 'face nil)))
 
 
-(defun sudoku-board-input-1 (&optional color)
+(defmacro sudoku-board-input-n (n)
+  "Input N at point."
+  (let ((d (gensym*)))
+    `(let ((,d (*sudoku-puzzle-d* :d)))
+       (if (>= ,d ,n)
+           (sudoku-board-input ,n (cons 'face 'underline))
+         (message "%d is invalid on %sx%s" ,n ,d ,d)))))
+
+
+(defun sudoku-board-input-1 ()
   "Input 1 at point."
   (interactive)
-  (ignore* color)
-  (sudoku-board-input 1 (cons 'face 'underline)))
+  (sudoku-board-input-n 1))
 
-(defun sudoku-board-input-2 (&optional color)
+(defun sudoku-board-input-2 ()
   "Input 2 at point."
   (interactive)
-  (ignore* color)
-  (sudoku-board-input 2 (cons 'face 'underline)))
+  (sudoku-board-input-n 2))
 
 (defun sudoku-board-input-3 (&optional color)
   "Input 3 at point."
   (interactive)
-  (ignore* color)
-  (sudoku-board-input 3 (cons 'face 'underline)))
+  (sudoku-board-input-n 3))
 
 (defun sudoku-board-input-4 (&optional color)
   "Input 4 at point."
   (interactive)
-  (ignore* color)
-  (sudoku-board-input 4 (cons 'face 'underline)))
+  (sudoku-board-input-n 4))
 
-(defun sudoku-board-input-5 (&optional color)
+(defun sudoku-board-input-5 ()
   "Input 5 at point."
   (interactive)
-  (ignore* color)
-  (when (>= (*sudoku-puzzle-d* :d) 5)
-    (sudoku-board-input 5 (cons 'face 'underline))))
+  (sudoku-board-input-n 5))
 
 (defun sudoku-board-input-6 (&optional color)
   "Input 6 at point."
   (interactive)
-  (ignore* color)
-  (when (>= (*sudoku-puzzle-d* :d) 5)
-    (sudoku-board-input 6 (cons 'face 'underline))))
+  (sudoku-board-input-n 6))
 
 (defun sudoku-board-input-7 (&optional color)
   "Input 7 at point."
   (interactive)
-  (ignore* color)
-  (when (>= (*sudoku-puzzle-d* :d) 5)
-    (sudoku-board-input 7 (cons 'face 'underline))))
+  (sudoku-board-input-n 7))
 
 (defun sudoku-board-input-8 (&optional color)
   "Input 8 at point."
   (interactive)
-  (ignore* color)
-  (when (>= (*sudoku-puzzle-d* :d) 5)
-    (sudoku-board-input 8 (cons 'face 'underline))))
+  (sudoku-board-input-n 8))
 
 (defun sudoku-board-input-9 (&optional color)
   "Input 9 at point."
   (interactive)
-  (ignore* color)
-  (when (>= (*sudoku-puzzle-d* :d) 5)
-    (sudoku-board-input 9 (cons 'face 'underline))))
+  (sudoku-board-input-n 9))
 
 
 (defun sudoku-board-disabled-key ()
