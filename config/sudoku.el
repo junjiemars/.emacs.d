@@ -10,9 +10,10 @@
 ;; 1. save/load puzzle to/from file.
 ;; 2. save/load board to/from file.
 ;; 3. input validation.
-;; 4* zen mode.
-;; 5* step by step resolver.
-;; 6* auto generate puzzle.
+;; 4. new/reload.
+;; 5* zen mode.
+;; 6* step by step resolver.
+;; 7* auto generate puzzle.
 ;;
 ;;;;
 ;; http://play.websudoku.com/?level=
@@ -190,57 +191,62 @@
   "The `sudoku' puzzle in 1-dimension vector.")
 
 
-(defun sudoku-puzzle-make (level dimension)
-  "Make sudoku puzzle at LEVEL."
-  (let ((xs (list
-             'easy
-             (list
-              '4x4 [4 0 0 3
-                    0 2 1 0
-                    0 3 4 0
-                    1 0 0 0]
-              '9x9 [0 7 0 2 1 8 4 0 6
-                    0 0 0 5 0 4 0 0 0
-                    2 0 0 0 0 0 0 9 5
-                    4 0 8 6 5 0 3 0 7
-                    0 0 7 0 0 0 6 0 0
-                    6 0 1 0 8 7 2 0 9
-                    7 6 0 0 0 0 0 0 4
-                    0 0 0 4 0 6 0 0 0
-                    1 0 5 8 2 9 0 6 0])
-             'medium
-             (list
-              '4x4 [0 3 0 4
-                    4 0 0 0
-                    0 0 0 1
-                    0 0 2 0]
-              '9x9 [0 0 0 0 0 2 4 3 1
-                    0 0 3 7 0 9 0 2 8
-                    0 0 8 0 0 0 6 0 7
-                    0 0 5 0 8 1 0 0 9
-                    0 0 4 0 2 0 1 0 0
-                    9 0 0 3 4 0 7 0 0
-                    8 0 2 0 0 0 3 0 0
-                    1 3 0 5 0 4 8 0 0
-                    7 5 6 2 0 0 0 0 0])
-             'hard
-             (list
-              '4x4 [0 0 0 2
-                    2 0 4 0
-                    0 3 0 0
-                    1 0 0 0]
-              '9x9 [0 7 6 0 4 2 5 0 3
-                    0 3 0 0 0 1 0 0 0 
-                    0 0 0 0 0 5 0 8 0
-                    9 0 7 2 0 8 0 3 0
-                    5 0 0 0 6 0 0 0 8
-                    0 1 0 4 0 7 9 0 6
-                    0 9 0 7 0 0 0 0 0
-                    0 0 0 5 0 0 0 7 0
-                    7 0 2 8 1 0 0 3 4]))))
-    (copy-sequence (plist-get
-                    (plist-get xs level)
-                    dimension))))
+(defalias '*sudoku-puzzle-make*
+  (lexical-let% ((l) (d) (c)
+                 (xs (list
+                      'easy
+                      (list
+                       '4x4 [4 0 0 3
+                               0 2 1 0
+                               0 3 4 0
+                               1 0 0 0]
+                       '9x9 [0 7 0 2 1 8 4 0 6
+                               0 0 0 5 0 4 0 0 0
+                               2 0 0 0 0 0 0 9 5
+                               4 0 8 6 5 0 3 0 7
+                               0 0 7 0 0 0 6 0 0
+                               6 0 1 0 8 7 2 0 9
+                               7 6 0 0 0 0 0 0 4
+                               0 0 0 4 0 6 0 0 0
+                               1 0 5 8 2 9 0 6 0])
+                      'medium
+                      (list
+                       '4x4 [0 3 0 4
+                               4 0 0 0
+                               0 0 0 1
+                               0 0 2 0]
+                       '9x9 [0 0 0 0 0 2 4 3 1
+                               0 0 3 7 0 9 0 2 8
+                               0 0 8 0 0 0 6 0 7
+                               0 0 5 0 8 1 0 0 9
+                               0 0 4 0 2 0 1 0 0
+                               9 0 0 3 4 0 7 0 0
+                               8 0 2 0 0 0 3 0 0
+                               1 3 0 5 0 4 8 0 0
+                               7 5 6 2 0 0 0 0 0])
+                      'hard
+                      (list
+                       '4x4 [0 0 0 2
+                               2 0 4 0
+                               0 3 0 0
+                               1 0 0 0]
+                       '9x9 [0 7 6 0 4 2 5 0 3
+                               0 3 0 0 0 1 0 0 0
+                               0 0 0 0 0 5 0 8 0
+                               9 0 7 2 0 8 0 3 0
+                               5 0 0 0 6 0 0 0 8
+                               0 1 0 4 0 7 9 0 6
+                               0 9 0 7 0 0 0 0 0
+                               0 0 0 5 0 0 0 7 0
+                               7 0 2 8 1 0 0 3 4]))))
+    (lambda (&optional k level dimension)
+      (cond ((eq :new! k) (setq c (plist-get
+                                    (plist-get xs
+                                               (setq l (or level l)))
+                                    (setq d (or dimension d)))))
+            ((eq :rld k) c)
+            (t c))))
+  "Make sudoku puzzle at LEVEL.")
 
 
 (defun sudoku-puzzle-save ()
@@ -320,7 +326,7 @@
                      (col (current-column)))
                  (and (<= (car o) row) (<= row (car d))
                       (<= (cdr o) col) (<= col (cdr d))))))
-            
+
             ((eq :nex! k)
              (with-current-buffer (*sudoku*)
                (let* ((i1 (cond ((> i (car d)) (car d))
@@ -464,7 +470,7 @@
            (apply #'format v
                   (mapcar
                    #'(lambda (x)
-                       (prog1 
+                       (prog1
                            (apply #'propertize
                                   (let ((n (cdr (plist-get x :puzzle))))
                                     (cond ((= n 0) u)
@@ -631,12 +637,12 @@
   (interactive)
   (sudoku-board-input-n 2))
 
-(defun sudoku-board-input-3 (&optional color)
+(defun sudoku-board-input-3 ()
   "Input 3 at point."
   (interactive)
   (sudoku-board-input-n 3))
 
-(defun sudoku-board-input-4 (&optional color)
+(defun sudoku-board-input-4 ()
   "Input 4 at point."
   (interactive)
   (sudoku-board-input-n 4))
@@ -646,22 +652,22 @@
   (interactive)
   (sudoku-board-input-n 5))
 
-(defun sudoku-board-input-6 (&optional color)
+(defun sudoku-board-input-6 ()
   "Input 6 at point."
   (interactive)
   (sudoku-board-input-n 6))
 
-(defun sudoku-board-input-7 (&optional color)
+(defun sudoku-board-input-7 ()
   "Input 7 at point."
   (interactive)
   (sudoku-board-input-n 7))
 
-(defun sudoku-board-input-8 (&optional color)
+(defun sudoku-board-input-8 ()
   "Input 8 at point."
   (interactive)
   (sudoku-board-input-n 8))
 
-(defun sudoku-board-input-9 (&optional color)
+(defun sudoku-board-input-9 ()
   "Input 9 at point."
   (interactive)
   (sudoku-board-input-n 9))
@@ -701,11 +707,43 @@
      (sudoku-board-save))
   (kill-buffer (*sudoku*)))
 
+(defun sudoku-save ()
+  "Save `*sudoku*'."
+  (interactive)
+  (sudoku-board-save))
+
+(defun sudoku-new (&optional level dimension)
+  "New `*sudoku*' with LEVEL and DIMENSION."
+  (interactive)
+  (sudoku-board-draw (sudoku-board-make
+                      (*sudoku-puzzle*
+                       :set!
+                       (copy-sequence
+                        (*sudoku-puzzle-make*
+                         :new!
+                         level
+                         dimension)))))
+  (sudoku-mode))
+
+(defun sudoku-reload ()
+  "Reload `*sudoku*'."
+  (interactive)
+  (sudoku-board-draw (sudoku-board-make
+                      (*sudoku-puzzle*
+                       :set!
+                       (copy-sequence
+                        (*sudoku-puzzle-make* :rld)))))
+  (sudoku-mode))
+
 
 (defvar sudoku-mode-map
   (let ((m (make-sparse-keymap)))
 
     (define-key m "q" #'sudoku-quit)
+    (define-key m "s" #'sudoku-save)
+    (define-key m "N" #'sudoku-new)
+    (define-key m "G" #'sudoku-reload)
+    ;; (define-key m "H" #'sudoku-resolve)
 
     (define-key m [right] #'sudoku-board-move-right)
     (define-key m "\C-f" #'sudoku-board-move-right)
@@ -800,13 +838,7 @@ The following commands are available:
                           '*sudoku-dimension-history*)))))
   (if (file-exists-p level)
       (sudoku-board-load)
-    (sudoku-board-draw
-     (sudoku-board-make
-      (*sudoku-puzzle*
-       :set!
-       (sudoku-puzzle-make (intern level)
-                           (intern dimension))))))
-  (sudoku-mode))
+    (sudoku-new (intern level) (intern dimension))))
 
 
 
