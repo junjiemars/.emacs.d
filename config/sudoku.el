@@ -696,7 +696,8 @@
        (dolist* (x b p)
          (aset p i (cdr (plist-get x :puzzle)))
          (setq i (1+ i)))))
-    (sudoku-board-draw b)))
+    (sudoku-board-draw b)
+    (sudoku-mode)))
 
 
 (defun sudoku-quit ()
