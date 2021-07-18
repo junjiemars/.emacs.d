@@ -208,7 +208,7 @@
               0 9 0 7 0 0 0 0 0
               0 0 0 5 0 0 0 7 0
               7 0 2 8 1 0 0 3 4])))
-    (plist-get xs level)))
+    (copy-sequence (plist-get xs level))))
 
 
 (defun sudoku-puzzle-save ()
@@ -747,7 +747,7 @@ The following commands are available:
     (sudoku-board-draw (sudoku-board-make
                         (*sudoku-puzzle*
                          :set!
-                         (sudoku-puzzle-make (intern level))))))
+                         sudoku-puzzle-make))))
   (sudoku-mode))
 
 
