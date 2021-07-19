@@ -260,27 +260,28 @@
                                (read-str-from-file
                                 (+sudoku-file+ :puzzle))))))
 
-(defun sudoku-puzzle-complete (block)
-  "Check sudoku's block puzzle is complete."
-  (let ((len (length block))
+
+(defun sudoku-puzzle-vec-complete (vector)
+  "Predicate sudoku puzzle's VECTOR is complete."
+  (let ((len (length vector))
         (sum 0)
         (i 0))
     (while (< i len)
-      (setq sum (+ sum (aref block i))
+      (setq sum (+ sum (aref vector i))
             i (1+ i)))
     (= sum (*sudoku-puzzle-d* :sum))))
 
-(defun sudoku-puzzle-unique (block)
-  "Check sudoku's block puzzle is unique."
+(defun sudoku-puzzle-vec-unique (vector)
+  "Predicate sudoku puzzle's VECTOR is unique."
   (catch 'conflict
-    (let ((len (length block)))
+    (let ((len (length vector)))
       (let ((i 0)
             (j 0))
         (while (< i len)
           (setq j (+ i 1))
           (while (< j len)
-            (when (and (/= 0 (aref block i))
-                       (= (aref block i) (aref block j)))
+            (when (and (/= 0 (aref vector i))
+                       (= (aref vector i) (aref vector j)))
               (throw 'conflict nil))
             (setq j (1+ j)))
           (setq i (1+ i)
@@ -288,30 +289,46 @@
         t))))
 
 (defmacro sudoku-puzzle-row-complete (index)
-  "Check sudokus' row puzzle at INDEX is complete."
-  `(sudoku-puzzle-complete (*sudoku-puzzle* :row ,index)))
+  "Predicate sudokus' row puzzle at INDEX is complete."
+  `(sudoku-puzzle-vec-complete (*sudoku-puzzle* :row ,index)))
 
 (defmacro sudoku-puzzle-row-unique (index)
-  "Check sudokus' row puzzle at INDEX is unique."
-  `(sudoku-puzzle-unique (*sudoku-puzzle* :row ,index)))
+  "Predicate sudokus' row puzzle at INDEX is unique."
+  `(sudoku-puzzle-vec-unique (*sudoku-puzzle* :row ,index)))
 
 
 (defmacro sudoku-puzzle-col-complete (index)
-  "Check sudoku's column puzzle at INDEX is complete."
-  `(sudoku-puzzle-complete (*sudoku-puzzle* :col ,index)))
+  "Predicate sudoku's column puzzle at INDEX is complete."
+  `(sudoku-puzzle-vec-complete (*sudoku-puzzle* :col ,index)))
 
 (defmacro sudoku-puzzle-col-unique (index)
-  "Check sudoku's column puzzle at INDEX is unique."
-  `(sudoku-puzzle-unique (*sudoku-puzzle* :col ,index)))
+  "Predicate sudoku's column puzzle at INDEX is unique."
+  `(sudoku-puzzle-vec-unique (*sudoku-puzzle* :col ,index)))
 
 
 (defmacro sudoku-puzzle-sqr-complete (index)
-  "Check sudoku's square puzzle at INDEX is complete."
-  `(sudoku-puzzle-complete (*sudoku-puzzle* :sqr ,index)))
+  "Predicate sudoku's square puzzle at INDEX is complete."
+  `(sudoku-puzzle-vec-complete (*sudoku-puzzle* :sqr ,index)))
 
 (defmacro sudoku-puzzle-sqr-unique (index)
-  "Check sudoku's square puzzle at INDEX is unique."
-  `(sudoku-puzzle-unique (*sudoku-puzzle* :sqr ,index)))
+  "Predicate sudoku's square puzzle at INDEX is unique."
+  `(sudoku-puzzle-vec-unique (*sudoku-puzzle* :sqr ,index)))
+
+
+(defun sudoku-puzzle-resolved-p ()
+  "Predicate sudoku's puzzle is resovled."
+  (catch 'block
+    (let ((sqr (*sudoku-puzzle-d* :sqr))
+          (d (*sudoku-puzzle-d* :d))
+          (i 0) (j 0))
+      (while (< i sqr)
+        (setq j (* (% j sqr) d))
+        (while (< j sqr)
+          (unless (sudoku-puzzle-sqr-complete (sudoku-puzzle-1d i j))
+            (throw 'block nil))
+          (setq j (+ j sqr)))
+        (setq i (1+ i))))
+    t))
 
 
 (defalias '*sudoku-board*
@@ -602,10 +619,11 @@
                 (put-text-property pos (1+ pos) 'face f)
                 (throw 'block nil))
 
+
               (when (and (sudoku-puzzle-sqr-complete idx)
                          (sudoku-puzzle-row-complete idx)
                          (sudoku-puzzle-col-complete idx))
-                (message "%s, but a busted clock still be right twice a day."
+                (message "%s, a busted clock still be right twice a day."
                          "Resolved"))
 
               (put-text-property pos (1+ pos)
