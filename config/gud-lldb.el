@@ -276,6 +276,20 @@ As the 3rd argument of `gud-common-init': marker-filter"
   string)
 
 
+(defun gud-lldb-print ()
+  "Evaluate C expression at point."
+  (interactive)
+  (let ((bounds (region-active-if
+                    (cons (region-beginning) (region-end))
+                  (bounds-of-thing-at-point 'sexp))))
+    (when bounds
+      (let ((cmd (concat "expression -- "
+                         (buffer-substring
+                          (car bounds) (cdr bounds)))))
+        (message "Command: %s" cmd)
+        (gud-basic-call cmd)))))
+
+
 ;; set default `gud-lldb-init-hook'
 (add-hook 'gud-lldb-init-hook #'lldb-settings-stop-display (emacs-arch))
 (add-hook 'gud-lldb-init-hook #'lldb-settings-frame-format (emacs-arch))
@@ -323,9 +337,11 @@ invoked."
   (gud-def gud-finish
            "thread step-out"
            "\C-f"   "Finish executing current function.")
-  (gud-def gud-print
-           "expression -- %e"
-           "\C-p"   "Evaluate C expression at point.")
+  ;; gud-print
+  ;; avoid emacs's builtin bugs.
+	(local-set-key "" #'gud-lldb-print)
+	(global-set-key (vconcat gud-key-prefix "") #'gud-lldb-print)
+
 
   (set (make-local-variable 'comint-prompt-regexp) +gud-lldb-prompt-regexp+)
   (set (make-local-variable 'comint-prompt-read-only) t)
