@@ -276,18 +276,19 @@ As the 3rd argument of `gud-common-init': marker-filter"
   string)
 
 
-(defun gud-lldb-print ()
+(defun gud-lldb-print (&optional options)
   "Evaluate C expression at point."
-  (interactive)
-  (let ((bounds (region-active-if
-                    (cons (region-beginning) (region-end))
-                  (bounds-of-thing-at-point 'sexp))))
-    (when bounds
-      (let ((cmd (concat "expression -- "
-                         (buffer-substring
-                          (car bounds) (cdr bounds)))))
-        (message "Command: %s" cmd)
-        (gud-basic-call cmd)))))
+  (interactive (list (if current-prefix-arg
+                         (read-string "expression options: ")
+                       "--")))
+  (let* ((expr (or (let ((bs (region-active-if
+                                 (cons (region-beginning) (region-end))
+                               (bounds-of-thing-at-point 'symbol))))
+                     (when bs (buffer-substring (car bs) (cdr bs))))
+                   ""))
+         (cmd (concat "expression " options " " expr)))
+    (message "Command: %s" cmd)
+    (gud-basic-call cmd)))
 
 
 ;; set default `gud-lldb-init-hook'
