@@ -326,6 +326,10 @@ invoked."
            ;; (progn (ignore* arg)
            ;;        (gud-call (lldb-toggle-breakpoint)))
            "\C-b"   "Set breakpoint at current line.")
+  (gud-def gud-tbreak
+           "tbreak %f:%l"
+           "\C-t"
+	         "Set temporary breakpoint at current line.")
   (gud-def gud-step
            "thread step-in"
            "\C-s"   "Step one source line with display.")
@@ -334,10 +338,17 @@ invoked."
            "\C-n"   "Step one line (skip functions).")
   (gud-def gud-cont
            "process continue"
-           "\C-r"   "Continue with display.")
+           "\C-c"   "Continue with display.")
   (gud-def gud-finish
            "thread step-out"
            "\C-f"   "Finish executing current function.")
+  (gud-def gud-up
+           "up %p"
+           "<" "Up N stack frames (numeric arg).")
+  (gud-def gud-down
+           "down %p"
+           ">" "Down N stack frames (numeric arg).")
+
   ;; gud-print
   ;; avoid emacs's builtin bugs.
 	(local-set-key "" #'gud-lldb-print)
