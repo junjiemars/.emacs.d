@@ -146,7 +146,8 @@ function node_emacs_apropos(what, max) {
            ((char= (char-syntax (char-before)) ?w)
             (let ((cur (point))
                   (idx 1))
-              (while (char= (char-syntax (char-before (- cur idx))) ?w)
+              (while (and (char-before (- cur idx))
+                          (char= (char-syntax (char-before (- cur idx))) ?w))
                 (setq idx (1+ idx)))
               (when (and (> idx 2)
                          (string-match

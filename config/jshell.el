@@ -122,7 +122,8 @@ void jshell_emacs_apropos(String what, int max) {
                   (idx 1))
               (when (<= (- cur idx) (point-min))
                 (throw 'break (point-min)))
-              (while (char= (char-syntax (char-before (- cur idx))) ?w)
+              (while (and (char-before (- cur idx))
+                      (char= (char-syntax (char-before (- cur idx))) ?w))
                 (setq idx (1+ idx)))
               (when (and (> idx 2)
                          (string-match
