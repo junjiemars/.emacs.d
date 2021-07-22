@@ -286,7 +286,7 @@ As the 3rd argument of `gud-common-init': marker-filter"
                                (bounds-of-thing-at-point 'symbol))))
                      (when bs (buffer-substring (car bs) (cdr bs))))
                    ""))
-         (cmd (concat "expression " options " " expr)))
+         (cmd (concat "expression " options " ( " expr " )")))
     (message "Command: %s" cmd)
     (gud-basic-call cmd)))
 
