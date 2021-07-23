@@ -642,32 +642,41 @@
      (when already (should (install-package!1 'htmlize))))))
 
 ;;;;
-;; enc
+;; trans
 ;;;;
 
-(ert-deftest %enc:roman->arabic ()
-  (should (= 1990 (roman->arabic (split-string* "MCMXC" "" t) 0)))
-  (should (= 2008 (roman->arabic (split-string* "MMVIII" "" t) 0)))
-  (should (= 1666 (roman->arabic (split-string* "MDCLXVI" "" t) 0))))
+(ert-deftest %trans:roman->arabic ()
+  (if-fn%
+      'roman->arabic nil
+      (progn
+        (should (= 1990 (roman->arabic (split-string* "MCMXC" "" t) 0)))
+        (should (= 2008 (roman->arabic (split-string* "MMVIII" "" t) 0)))
+        (should (= 1666 (roman->arabic (split-string* "MDCLXVI" "" t) 0))))
+    (should "#skip %trans:roman->arabic")))
 
 
-(ert-deftest %enc:chinese->arabic ()
-  (should (= 91234567
-             (chinese->arabic (split-string*
-                               "玖仟壹佰贰拾叁万肆仟伍佰陆拾柒" "" t)
-                              0)))
-  (should (= 91234567
-             (chinese->arabic (split-string*
-                               "玖仟壹佰贰拾叁万肆仟伍佰陆拾零柒" "" t)
-                              0)))
-  (should (= 678991234567
-             (chinese->arabic (split-string*
-                               "陆仟柒佰捌拾玖亿玖仟壹佰贰拾叁万肆仟伍佰陆拾柒"
-                               "" t)
-                              0))))
+(ert-deftest %trans:chinese->arabic ()
+  (if-fn%
+      'chinese->arabic nil
+      (progn
+        (should (= 91234567 (chinese->arabic
+                             (split-string*
+                              "玖仟壹佰贰拾叁万肆仟伍佰陆拾柒" "" t)
+                                    0)))
+        (should (= 91234567 (chinese->arabic
+                             (split-string*
+                              "玖仟壹佰贰拾叁万肆仟伍佰陆拾零柒" "" t)
+                                    0)))
+        (should (= 678991234567 (chinese->arabic
+                                 (split-string*
+                                  "陆仟柒佰捌拾玖亿玖仟壹佰贰拾叁万肆仟伍佰陆拾柒"
+                                  "" t)
+                                    0))))
+    (should "#skip %trans:chinese->arabic")))
 
 
- ;; end of enc
+
+ ;; end of trans
 
 
 
