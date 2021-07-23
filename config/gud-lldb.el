@@ -10,8 +10,9 @@
 ;; 1. start or attach to process.
 ;; 2. source code debugging.
 ;; 3. command auto completion.
-;; 4* show breakpoints on buffer in GUI/Terminal mode.
-;; 5* frame buffer and register buffer.
+;; 4. evaluate C expression.
+;; 5* show breakpoints on buffer in GUI/Terminal mode.
+;; 6* frame buffer and register buffer.
 ;;
 ;;;;
 ;;
@@ -37,7 +38,7 @@
 
 ;; (eval-when-compile (require 'cl))
 
-(require 'gud)
+(require 'guds)
 
 
 
@@ -281,14 +282,15 @@ As the 3rd argument of `gud-common-init': marker-filter"
   (interactive (list (if current-prefix-arg
                          (read-string "expression options: ")
                        "--")))
-  (let* ((expr (or (let ((bs (region-active-if
-                                 (cons (region-beginning) (region-end))
-                               (bounds-of-thing-at-point 'symbol))))
-                     (when bs (buffer-substring (car bs) (cdr bs))))
-                   ""))
+  (let* ((expr (region-active-if
+                   (buffer-substring-no-properties (region-beginning)
+                                                   (region-end))
+                 (gud*-find-c-last-expr)))
          (cmd (concat "expression " options " ( " expr " )")))
     (message "Command: %s" cmd)
     (gud-basic-call cmd)))
+
+
 
 
 ;; set default `gud-lldb-init-hook'
@@ -349,11 +351,7 @@ invoked."
            "down %p"
            ">" "Down N stack frames (numeric arg).")
 
-  ;; gud-print
-  ;; avoid emacs's builtin bugs.
-	(local-set-key "" #'gud-lldb-print)
-	(global-set-key (vconcat gud-key-prefix "") #'gud-lldb-print)
-
+  (gud*-def "\C-p" #'gud-lldb-print)
 
   (set (make-local-variable 'comint-prompt-regexp) +gud-lldb-prompt-regexp+)
   (set (make-local-variable 'comint-prompt-read-only) t)
