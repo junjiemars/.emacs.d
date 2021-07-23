@@ -168,11 +168,10 @@ STANDARD always be computed at runtime whatever the current
 
 Returns the name of FILE when successed otherwise nil."
   (unwind-protect
-      (progn
-        (with-temp-buffer
-          (print sexp (current-buffer))
-          (write-region (point-min) (point-max) file))
-        (and (file-exists-p file) file))
+    (with-temp-buffer
+      (print sexp (current-buffer))
+      (write-region (point-min) (point-max) file)
+      file)
     nil))
 
 
@@ -180,9 +179,11 @@ Returns the name of FILE when successed otherwise nil."
   "Save STR to FILE. 
 
 Returns the name of FILE when successed otherwise nil."
-  (with-temp-file file
-    (insert str)
-    file))
+  (unwind-protect
+      (with-temp-file file
+        (insert str)
+        file)
+    nil))
 
 
 (defun read-str-from-file (file)

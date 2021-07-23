@@ -399,31 +399,27 @@
                           (concat "/a/b/" "c.c")))))
 
 (ert-deftest %basic:save-sexp-to-file ()
-  (let ((f (emacs-home* "private/x.el")))
-    (should (and (save-sexp-to-file '(defvar test%basic-sstf1 t) f)
+  (let ((f (emacs-home* "private/sexp"))
+        (s1 '(defvar test%basic-sstf1 t))
+        (t1 (make-hash-table :test 'string-hash=)))
+    (should (and (save-sexp-to-file s1 f)
                  (file-exists-p f)
-                 (and (load f t) test%basic-sstf1)))
+                 (equal s1 (car (read-from-string
+                                 (read-str-from-file f))))))
+    (puthash "a" 1 t1)
+    (puthash "b" 2 t1)
+    (should (= 2 (hash-table-count t1)))
+    (should (and (save-sexp-to-file t1 f)
+                 (file-exists-p f)
+                 (= 2 (gethash "b" (car (read-from-string
+                                         (read-str-from-file f)))))))
     (should (or (delete-file f)
                 (not (file-exists-p f))))))
 
 (ert-deftest %basic:save/read-str-to/from-file ()
-  (let ((f (emacs-home* "private/x.el")))
+  (let ((f (emacs-home* "private/str")))
     (should (and (save-str-to-file "abc" f)
                  (string= "abc" (read-str-from-file f))))
-    (should (or (delete-file f)
-                (not (file-exists-p f))))))
-
-(ert-deftest %basic:save-hash-table-to-file ()
-  (let ((x (make-hash-table :test 'string-hash=))
-        (f (emacs-home* "private/x.tbl")))
-    (puthash "a" 1 x)
-    (puthash "b" 2 x)
-    (should (= 2 (hash-table-count x)))
-    (should (and (save-sexp-to-file x f)
-                 (file-exists-p f)
-                 (= 2 (gethash "b" (car
-                                    (read-from-string
-                                     (read-str-from-file f)))))))
     (should (or (delete-file f)
                 (not (file-exists-p f))))))
 
