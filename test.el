@@ -419,10 +419,11 @@
     (puthash "a" 1 x)
     (puthash "b" 2 x)
     (should (= 2 (hash-table-count x)))
-    (save-hash-table-to-file 'test%basic-shttf1 x f 'string-hash=)
-    (should (and (file-exists-p f)
-                 (load f)
-                 (= 2 (gethash "b" test%basic-shttf1))))
+    (should (and (save-sexp-to-file x f)
+                 (file-exists-p f)
+                 (= 2 (gethash "b" (car
+                                    (read-from-string
+                                     (read-str-from-file f)))))))
     (should (or (delete-file f)
                 (not (file-exists-p f))))))
 

@@ -195,29 +195,29 @@ Returns the name of FILE when successed otherwise nil."
 
 (define-hash-table-test 'string-hash= #'string= #'sxhash)
 
-(defmacro save-hash-table-to-file (var table file &optional test)
-  "Save the TABLE that referenced by VAR to FILE.
+;; (defmacro save-hash-table-to-file (var table file &optional test)
+;;   "Save the TABLE that referenced by VAR to FILE.
 
-TEST is the symbol of hash testing, default is `eql'.
-See also`define-hash-table-test'."
-  `(if% (let ((tbl (make-hash-table :test #'eql)))
-          (ignore* test)
-          (puthash 1 11 tbl)
-          (string-match "(1 11)" (prin1-to-string tbl)))
-       (save-sexp-to-file
-        `(set ',,var ,,table)
-        ,file)
-     (let ((lst nil))
-       (maphash (lambda (k v)
-                  (push (list k v) lst))
-                ,table)
-       (save-sexp-to-file
-        `(let ((tbl (make-hash-table :test (or ',,test #'eql))))
-           (mapc (lambda (x)
-                   (puthash (car x) (cadr x) tbl))
-                 ',lst)
-           (set ',,var tbl))
-        ,file))))
+;; TEST is the symbol of hash testing, default is `eql'.
+;; See also`define-hash-table-test'."
+;;   `(if% (let ((tbl (make-hash-table :test #'eql)))
+;;           (ignore* test)
+;;           (puthash 1 11 tbl)
+;;           (string-match "(1 11)" (prin1-to-string tbl)))
+;;        (save-sexp-to-file
+;;         `(set ',,var ,,table)
+;;         ,file)
+;;      (let ((lst nil))
+;;        (maphash (lambda (k v)
+;;                   (push (list k v) lst))
+;;                 ,table)
+;;        (save-sexp-to-file
+;;         `(let ((tbl (make-hash-table :test (or ',,test #'eql))))
+;;            (mapc (lambda (x)
+;;                    (puthash (car x) (cadr x) tbl))
+;;                  ',lst)
+;;            (set ',,var tbl))
+;;         ,file))))
 
 
 (defun path+ (root &rest path)
