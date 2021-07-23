@@ -645,36 +645,29 @@
 ;; trans
 ;;;;
 
-(ert-deftest %trans:roman->arabic ()
-  (if-fn%
-      'roman->arabic nil
-      (progn
-        (should (= 1990 (roman->arabic (split-string* "MCMXC" "" t) 0)))
-        (should (= 2008 (roman->arabic (split-string* "MMVIII" "" t) 0)))
-        (should (= 1666 (roman->arabic (split-string* "MDCLXVI" "" t) 0))))
-    (should "#skip %trans:roman->arabic")))
+(when-fn%
+    'roman->arabic nil
+  (ert-deftest %trans:roman->arabic ()
+    (should (= 1990 (roman->arabic (split-string* "MCMXC" "" t) 0)))
+    (should (= 2008 (roman->arabic (split-string* "MMVIII" "" t) 0)))
+    (should (= 1666 (roman->arabic (split-string* "MDCLXVI" "" t) 0)))))
 
-
-(ert-deftest %trans:chinese->arabic ()
-  (if-fn%
-      'chinese->arabic nil
-      (progn
-        (should (= 91234567 (chinese->arabic
+(when-fn%
+    'chinese->arabic nil
+  (ert-deftest %trans:chinese->arabic ()
+    (should (= 91234567 (chinese->arabic
+                         (split-string*
+                          "玖仟壹佰贰拾叁万肆仟伍佰陆拾柒" "" t)
+                         0)))
+    (should (= 91234567 (chinese->arabic
+                         (split-string*
+                          "玖仟壹佰贰拾叁万肆仟伍佰陆拾零柒" "" t)
+                         0)))
+    (should (= 678991234567 (chinese->arabic
                              (split-string*
-                              "玖仟壹佰贰拾叁万肆仟伍佰陆拾柒" "" t)
-                                    0)))
-        (should (= 91234567 (chinese->arabic
-                             (split-string*
-                              "玖仟壹佰贰拾叁万肆仟伍佰陆拾零柒" "" t)
-                                    0)))
-        (should (= 678991234567 (chinese->arabic
-                                 (split-string*
-                                  "陆仟柒佰捌拾玖亿玖仟壹佰贰拾叁万肆仟伍佰陆拾柒"
-                                  "" t)
-                                    0))))
-    (should "#skip %trans:chinese->arabic")))
-
-
+                              "陆仟柒佰捌拾玖亿玖仟壹佰贰拾叁万肆仟伍佰陆拾柒"
+                              "" t)
+                             0)))))
 
  ;; end of trans
 
