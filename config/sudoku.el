@@ -108,10 +108,11 @@
        (cons ,d2 (% ,i ,d)))))
 
 
-(defun sudoku-puzzle-row (i)
+(defmacro sudoku-puzzle-row (i)
   "Locate row via 1d(I)."
-  (let ((d (*sudoku-puzzle-d* :d)))
-    (% (/ i d) d)))
+  (let ((d (gensym*)))
+    `(let ((,d (*sudoku-puzzle-d* :d)))
+       (% (/ ,i ,d) ,d))))
 
 (defmacro sudoku-puzzle-col (i)
   "Locate col via 1d(I)."
