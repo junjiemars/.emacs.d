@@ -73,8 +73,8 @@
 
 
 (defalias '*sudoku-idiom*
-  (lexical-let% ((s '("a busted clock still be right twice a day."
-                      "even a blind pig can find an acorn once in a while."
+  (lexical-let% ((s '("a busted clock still be right twice a day"
+                      "even a blind pig can find an acorn once in a while"
                       "every dog has its day")))
     (lambda ()
       (nth (random (length s)) s)))
@@ -654,7 +654,7 @@
                        (put-text-property pos (1+ pos) 'face f)
                        (throw 'block nil))
                       ((eq :resolved rc)
-                       (message "Resolved, %s" (*sudoku-idiom*)))))
+                       (message "Resolved, %s." (*sudoku-idiom*)))))
 
               (put-text-property pos (1+ pos)
                                  'face 'underline))))))))
