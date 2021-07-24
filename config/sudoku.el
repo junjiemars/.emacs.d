@@ -72,6 +72,15 @@
   "The sudoku's colors.")
 
 
+(defalias '*sudoku-idiom*
+  (lexical-let% ((s '("a busted clock still be right twice a day."
+                      "even a blind pig can find an acorn once in a while."
+                      "every dog has its day")))
+    (lambda ()
+      (nth (random (length s)) s)))
+  "The sudoku's idiom.")
+
+
 (defalias '*sudoku-puzzle-d*
   (lexical-let% ((l) (d) (s) (sum))
     (lambda (&optional k n)
@@ -645,8 +654,7 @@
                        (put-text-property pos (1+ pos) 'face f)
                        (throw 'block nil))
                       ((eq :resolved rc)
-                       (message "%s, a busted clock still be right twice a day."
-                                "Resolved"))))
+                       (message "Resolved, %s" (*sudoku-idiom*)))))
 
               (put-text-property pos (1+ pos)
                                  'face 'underline))))))))
