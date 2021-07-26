@@ -12,12 +12,12 @@
 ;; 3. input validation.
 ;; 4. new/reload.
 ;; 5* zen mode.
-;; 6* step by step resolver.
+;; 6* step by step solver.
 ;; 7* auto generate puzzle.
 ;;
 ;;;;
-;; http://play.websudoku.com/?level=
-;; http://sudoku.math.com
+;; references:
+;; https://pi.math.cornell.edu/~mec/Summer2009/Mahmood/Count.html
 ;;;;
 
 
@@ -305,7 +305,7 @@
          t))))
 
 
-(defun sudoku-puzzle-resolved-p (&optional idx)
+(defun sudoku-puzzle-solved-p (&optional idx)
   "Predicate sudoku's puzzle is resovled."
   (catch 'block
     (let ((d (*sudoku-puzzle-d* :d))
@@ -370,7 +370,7 @@
             (throw 'block :complete))
           (setq j (+ j sqr)))
         (setq j 0 i (+ i sqr))))
-    :resolved))
+    :solve))
 
 
 (defalias '*sudoku-board*
@@ -649,12 +649,12 @@
               (put-text-property pos (1+ pos) :puzzle cell)
               (*sudoku-puzzle* :cell! idx (cdr cell))
 
-              (let ((rc (sudoku-puzzle-resolved-p idx)))
+              (let ((rc (sudoku-puzzle-solved-p idx)))
                 (cond ((eq :unique rc)
                        (put-text-property pos (1+ pos) 'face f)
                        (throw 'block nil))
-                      ((eq :resolved rc)
-                       (message "Resolved, %s." (*sudoku-idiom*)))))
+                      ((eq :solve rc)
+                       (message "Solved, %s." (*sudoku-idiom*)))))
 
               (put-text-property pos (1+ pos)
                                  'face 'underline))))))))
@@ -792,7 +792,7 @@
     (define-key m "s" #'sudoku-save)
     (define-key m "N" #'sudoku-new)
     (define-key m "G" #'sudoku-reload)
-    ;; (define-key m "H" #'sudoku-resolve)
+    ;; (define-key m "H" #'sudoku-solve)
 
     (define-key m [right] #'sudoku-board-move-right)
     (define-key m "\C-f" #'sudoku-board-move-right)
