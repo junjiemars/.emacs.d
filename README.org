@@ -60,14 +60,14 @@ it's programmable, elegant and /self-documenting/.
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
-After falling in love with [[https://en.wikipedia.org/wiki/Lisp_(programming_language)][Lisp]], I know it's the time to make Emacs
-being a part of my body and mind, not just open a file, navigating,
-editing, and save it. So, I build Nore Emacs approach Ecluid did in
-his geometry.
+After my daily work being done more and more in Emacs, I know it's the
+time to make Emacs being a part of my body and mind, not just open a
+file, navigating, editing, and save it. So, I build Nore Emacs and
+approach Ecluid did in his geometry.
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
-Nore Emacs strives to be consitent, fast, stable and hacker friendly,
+Nore Emacs strives to be consitent, fast, stable and hack friendly,
 which can be run and with consistent behaviors on wherever Emacs runs.
 
 #+ATTR_HTML: :style display:none
@@ -94,7 +94,7 @@ yourself some little Elisp (@@html:<kbd>@@M-x i m Elisp@@html:</kbd>@@).
   for all coexisting Emacs on the same machine.
 - *Consistent*: wherever and whenever you can play with Emacs always
   behaves in the same way.
-- *Minimalism style*: [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-windows.png][Windows]], [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-darwin.png][Darwin]], and [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-linux.png][Linux]]
+- *Minimalism style*: inside and outside, [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-windows.png][Windows]], [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-darwin.png][Darwin]], and [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-linux.png][Linux]].
 
 ** Requirements
    :PROPERTIES:
@@ -173,7 +173,7 @@ features, such as themes, packages, and fonts etc., see next section:
    :END:
 
 #+ATTR_HTML: :style text-align:left
-Annotated your Emacs HOME as =(emacs-home*)=.
+Signify your Emacs HOME as =(emacs-home*)=.
 
 #+ATTR_HTML: :style text-align:left
 Your private configuration directory at =(emacs-home* "private/")=.
@@ -565,8 +565,7 @@ shell.
     :END:
 
 #+ATTR_HTML: :style text-align:left
-The desktop spec locate in =(*self-env-spec* :get :desktop)= by
-default.
+The desktop spec locate in =(*self-env-spec* :get :desktop)= by default.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
