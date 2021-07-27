@@ -251,15 +251,16 @@
                                7 0 2 8 1 0 0 3 4]))))
     (lambda (&optional k level dimension)
       (cond ((eq :new! k)
-             (cond ((eq 'sandbox level)
-                    (make-vector (cond ((eq '4x4 dimension)
-                                        (* 4 4))
-                                       (t (* 9 9)))
-                                 0))
-                   (t (setq c (plist-get
-                               (plist-get xs
-                                          (setq l (or level l)))
-                               (setq d (or dimension d)))))))
+             (setq c
+                   (cond ((eq 'sandbox level)
+                          (make-vector (cond ((eq '4x4 dimension)
+                                              (* 4 4))
+                                             (t (* 9 9)))
+                                       0))
+                         (t (plist-get
+                             (plist-get xs
+                                        (setq l (or level l)))
+                             (setq d (or dimension d)))))))
             ((eq :rld k) c)
             (t c))))
   "Make sudoku puzzle at LEVEL.")
