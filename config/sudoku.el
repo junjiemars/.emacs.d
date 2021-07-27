@@ -248,27 +248,18 @@
                                0 1 0 4 0 7 9 0 6
                                0 9 0 7 0 0 0 0 0
                                0 0 0 5 0 0 0 7 0
-                               7 0 2 8 1 0 0 3 4])
-                      'sandbox
-                      (list
-                       '4x4 [0 0 0 0
-                               0 0 0 0
-                               0 0 0 0
-                               0 0 0 0]
-                       '9x9 [0 0 0 0 0 0 0 0 0
-                               0 0 0 0 0 0 0 0 0
-                               0 0 0 0 0 0 0 0 0
-                               0 0 0 0 0 0 0 0 0
-                               0 0 0 0 0 0 0 0 0
-                               0 0 0 0 0 0 0 0 0
-                               0 0 0 0 0 0 0 0 0
-                               0 0 0 0 0 0 0 0 0
-                               0 0 0 0 0 0 0 0 0]))))
+                               7 0 2 8 1 0 0 3 4]))))
     (lambda (&optional k level dimension)
-      (cond ((eq :new! k) (setq c (plist-get
-                                    (plist-get xs
-                                               (setq l (or level l)))
-                                    (setq d (or dimension d)))))
+      (cond ((eq :new! k)
+             (cond ((eq 'sandbox level)
+                    (make-vector (cond ((eq '4x4 dimension)
+                                        (* 4 4))
+                                       (t (* 9 9)))
+                                 0))
+                   (t (setq c (plist-get
+                               (plist-get xs
+                                          (setq l (or level l)))
+                               (setq d (or dimension d)))))))
             ((eq :rld k) c)
             (t c))))
   "Make sudoku puzzle at LEVEL.")
