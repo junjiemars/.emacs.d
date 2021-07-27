@@ -195,8 +195,8 @@
             ((eq :row k) (sudoku-puzzle-vec-row v i))
             ((eq :col k) (sudoku-puzzle-vec-col v i))
             ((eq :sqr k) (sudoku-puzzle-vec-sqr v i))
-            ((eq :cell k) (aref v (% i (*sudoku-puzzle-d* :len))))
-            ((eq :cell! k) (aset v (% i (*sudoku-puzzle-d* :len)) n))
+            ((eq :box k) (aref v (% i (*sudoku-puzzle-d* :len))))
+            ((eq :box! k) (aset v (% i (*sudoku-puzzle-d* :len)) n))
             (t v))))
   "The `sudoku' puzzle in 1-dimension vector.")
 
@@ -654,7 +654,7 @@
                             :foreground (*sudoku-color* :w))))
 
               (put-text-property pos (1+ pos) :puzzle cell)
-              (*sudoku-puzzle* :cell! idx (cdr cell))
+              (*sudoku-puzzle* :box! idx (cdr cell))
 
               (let ((rc (sudoku-puzzle-solved-p idx)))
                 (cond ((eq :unique rc)
