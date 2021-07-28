@@ -15,7 +15,7 @@
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="style.css" />
 
 
-@@html:<img src="https://github.com/junjiemars/.emacs.d/workflows/More%20Reasonable%20Emacs/badge.svg" alt="Darwin, Linux and Windows"/>@@
+@@html:<img src="https://github.com/junjiemars/.emacs.d/actions/workflows/ci.yml/badge.svg" alt="Darwin, Linux and Windows"/>@@
 
 * Quick start
   :PROPERTIES:
@@ -533,9 +533,10 @@ The shell spec locate in =(*self-env-spec* :get :shell)= by default.
 - =:spin-vars= spin customized variables, only affects =eshell=
 - =:options= a list of shell's options
 - =:exec-path= copy =$PATH= or =%PATH%= to =exec-path=
+#+REVEAL: split	
 - =:shell-file-name= where the shell program located
 - =:prompt= unify shell prompt in =term= mode, via @@html:<kbd>@@C-c
-  C-j@@html:</kbd>@@ then @@html:<kbd>M-x
+  C-j@@html:</kbd>@@ then @@html:<kbd>@@M-x
   term-unify-shell-prompt@@html:</kbd>@@
 - =:allowed= =t= allowed, =nil= disabled
 
