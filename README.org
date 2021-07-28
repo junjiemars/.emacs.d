@@ -995,7 +995,7 @@ mount tags file at the tail of =tags-table-list=. The =unmount-tags=
 is the inverse of =mount-tags=.
 
 #+REVEAL: split
-#+ATTR_HTML: :style text-align:left		 
+#+ATTR_HTML: :style text-align:left
 - =make-emacs-source-tags=: make tags for Emacs' C and Lisp source code.
 - =make-dir-tags=: make tags for specified directory.
 - =cc*-make-system-tags=: make system C tags.
@@ -1044,7 +1044,6 @@ Emulates /vi/'s *o* and *O* command in Emacs, the built-in one
 =open-line= or =split-line= do not indent accordingly the current
 line. See [[https://www.emacswiki.org/emacs/OpenNextLine][Open Next Line]].
 
-#+REVEAL: split
 - @@html:<kbd>@@C-o@@html:</kbd>@@ =open-next-line=
 - @@html:<kbd>@@C-M-o@@html:</kbd>@@ =open-previous-line=
 
@@ -1057,8 +1056,7 @@ line. See [[https://www.emacswiki.org/emacs/OpenNextLine][Open Next Line]].
 =comment-line= has stupid behaviors, that why =toggle-comment= had
 been made.
 
-#+REVEAL: split
-- @@html:<kbd>@@C-x C-;@@html:</kbd>@@ =toggle-comment=
+- =toggle-comment=: @@html:<kbd>@@C-x C-;@@html:</kbd>@@
 
 *** Kill
    :PROPERTIES:
