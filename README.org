@@ -974,6 +974,8 @@ nil, then forward or backword to word boundary, just like the builtin
    :CUSTOM_ID: edit-tags
    :END:
 
+
+#+REVEAL: split
 #+ATTR_HTML: :style text-align:left
 Prefer =etags= program, because it works well on varied platforms. In
 =(emacs-home* "config/tags.el")=, there are some handy functions to
@@ -981,16 +983,19 @@ create the tags for =Elisp= or =C= source code, such as
 =make-emacs-source-tags=, =make-system-c-tags=, =mount-tags=, and
 =unmount-tags=.
 
+#+REVEAL: split
 #+ATTR_HTML: :style text-align:left
 Nore Emacs also supports [[http://ctags.sourceforge.net/][Exuberant Ctags]].
 
 #+REVEAL: split
+#+ATTR_HTML: :style text-align:left
 Using =mount-tags= to mount the specified tags file at first order of
 =tags-table-list=. Or @@html:<kbd>@@C-u mount-tags@@html:</kbd>@@ to
 mount tags file at the tail of =tags-table-list=. The =unmount-tags=
 is the inverse of =mount-tags=.
 
 #+REVEAL: split
+#+ATTR_HTML: :style text-align:left		 
 - =make-emacs-source-tags=: make tags for Emacs' C and Lisp source code.
 - =make-dir-tags=: make tags for specified directory.
 - =cc*-make-system-tags=: make system C tags.
