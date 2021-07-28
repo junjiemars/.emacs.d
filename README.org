@@ -88,7 +88,7 @@ yourself some little Elisp (@@html:<kbd>@@M-x i m Elisp@@html:</kbd>@@).
    :CUSTOM_ID: principles
    :END:
 
-- *Adaptive*: run on any OS, GUI or Terminal, from most recent Emacs's
+- *Adaptive*: run on any OS, GUI or TUI, from most recent Emacs's
   versions to ancient ones, and one Emacs's configuration suit for all
   coexisting Emacs on the same machine.
 - *Consistent*: wherever and whenever you can play with Emacs always
