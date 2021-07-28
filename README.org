@@ -227,20 +227,12 @@ configuration or cached files.
     ├── .dired
     ├── .eshell
     ├── .exec (comment "executable")
-    ├── .games
     ├── .ido
-    ├── .image-dired
     ├── .mail
-    ├── .minibuffer
-    ├── .places
-    ├── .recentf
     ├── .save
-    ├── .semantic
-    ├── .semanticdb
-    ├── .server
     ├── .tags
     ├── .tramp
-    └── .url
+    └── (comment "more ...")
 
 #+END_EXAMPLE
 
@@ -260,16 +252,15 @@ Introduce the rules of naming /files/ and /functions/.
     ├── boot.el
     ├── chez.el
     ├── dicts.el
-    ├── financial.el
     ├── fns.el
     ├── gambit.el
-    ├── go.el
     ├── graphic.el
     ├── gud-cdb.el
     ├── gud-lldb.el
     ├── guds.el
     ├── memory.el
-    └── module.el
+    ├── module.el
+		└── (comment "more ...")
 #+END_EXAMPLE
 
 #+REVEAL: split
@@ -298,19 +289,8 @@ Introduce the rules of naming /files/ and /functions/.
     ├── on-eshell-autoload.el
     ├── on-eww-autoload.el
     ├── on-font-autoload.el
-    ├── on-hippie-autoload.el
-    ├── on-indent-autoload.el
-    ├── on-isearch-autoload.el
-    ├── on-lisp-autoload.el
     ├── on-module.el
-    ├── on-net-autoload.el
-    ├── on-org-autoload.el
-    ├── on-pp-autoload.el
-    ├── on-python-autoload.el
-    ├── on-semantic-autoload.el
-    ├── on-term-autoload.el
-    ├── on-tramp-autoload.el
-    └── on-window-autoload.el
+    └── (comment "more ...")
 #+END_EXAMPLE
 
 #+REVEAL: split
@@ -326,7 +306,8 @@ Introduce the rules of naming /files/ and /functions/.
     ├── use-lua-autoload.el
     ├── use-magit-autoload.el
     ├── use-slime-autoload.el
-    └── use-web-autoload.el
+    ├── use-web-autoload.el
+    └── (comment "more ...")
 #+END_EXAMPLE
 
 #+REVEAL: split
@@ -532,7 +513,7 @@ The shell spec locate in =(*self-env-spec* :get :shell)=.
 - =:spin-vars= spin customized variables, only affects =eshell=
 - =:options= a list of shell's options
 - =:exec-path= copy =$PATH= or =%PATH%= to =exec-path=
-#+REVEAL: split	
+#+REVEAL: split
 - =:shell-file-name= where the shell program located
 - =:prompt= unify shell prompt in =term= mode, via @@html:<kbd>@@C-c
   C-j@@html:</kbd>@@ then @@html:<kbd>@@M-x
