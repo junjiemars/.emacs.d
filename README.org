@@ -108,9 +108,9 @@ yourself some little Elisp (@@html:<kbd>@@M-x i m Elisp@@html:</kbd>@@).
    :CUSTOM_ID: where
    :END:
 
-- Linux, whatever GUI or Terminal
-- Darwin, whatever GUI or Terminal
-- Windows, whatever GUI or Terminal
+- Linux, whatever GUI or TUI
+- Darwin, whatever GUI or TUI
+- Windows, whatever GUI or TUI
 - Raspberry Pi and Docker container, etc.,
 - Network or without Network
 - One machine, multiple Emacs instances
