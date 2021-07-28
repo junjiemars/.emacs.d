@@ -382,8 +382,8 @@ Introduce the rules of naming /files/ and /functions/.
 Easy to switch themes, or try a new one.
 
 #+ATTR_HTML: :style text-align:left
-The theme's spec locate in =(*self-env-spec* :get :theme
-:custom-theme-directory)= by default.
+The =theme='s spec locate in =(*self-env-spec* :get :theme
+:custom-theme-directory)=.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
@@ -510,7 +510,7 @@ Suppport any =SHELL=, copying or spinning environment variables into
 Emacs environment.
 
 #+ATTR_HTML: :style text-align:left
-The shell spec locate in =(*self-env-spec* :get :shell)= by default.
+The shell spec locate in =(*self-env-spec* :get :shell)=.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
@@ -546,9 +546,8 @@ The shell spec locate in =(*self-env-spec* :get :shell)= by default.
     :END:
 
 #+ATTR_HTML: :style text-align:left
-The eshell spec locate in =(*self-env-spec* :get :eshell)= by
-default. And shared the copied environment variables =:copy-vars= with
-shell.
+The =eshell= spec locate in =(*self-env-spec* :get :eshell)=. And
+shared the copied environment variables =:copy-vars= with shell.
 
 #+REVEAL: splitV
 #+BEGIN_SRC emacs-lisp
@@ -574,7 +573,7 @@ shell.
     :END:
 
 #+ATTR_HTML: :style text-align:left
-The desktop spec locate in =(*self-env-spec* :get :desktop)= by default.
+The =desktop= spec locate in =(*self-env-spec* :get :desktop)=.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
@@ -607,7 +606,7 @@ The desktop spec locate in =(*self-env-spec* :get :desktop)= by default.
 Using socks proxy when installing packages or browsing web pages.
 
 #+ATTR_HTML: :style text-align:left
-The socks spec locate in =(*self-env-spec* :get :socks)= by default.
+The =socks= spec locate in =(*self-env-spec* :get :socks)=.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
