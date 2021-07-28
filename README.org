@@ -428,12 +428,8 @@ Using Emacs's builtin themes /tango-dark/ :
     :END:
 
 #+ATTR_HTML: :style text-align:left
-Easy to swtich fonts and glyph character such as [[https://en.wikipedia.org/wiki/CJK_characters][CJK]], or try a new
-one. The default encoding is [[https://en.wikipedia.org/wiki/UTF-8][UTF-8]].
-
-#+ATTR_HTML: :style text-align:left
-The frame's spec locate in =(*self-env-spec* :get :frame)= by default
-and for GUI mode only.
+The =frame='s spec locate in =(*self-env-spec* :get :frame)= and for
+GUI mode only.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
@@ -449,9 +445,20 @@ and for GUI mode only.
        :allowed t))
 #+END_SRC
 
+#+REVEAL: split
 - =:name= string of font name
 - =:size= integer of font size
 - =:allowed= =t= enabled, =nil= disabled
+
+** Glyph
+    :PROPERTIES:
+    :CUSTOM_ID: Glyph
+    :END:
+
+#+ATTR_HTML: :style text-align:left
+The =glyph='s spec locate in =(*self-env-spec* :get :glyph)= and for
+GUI mode only. It determines the appearance of =glyph= characters such
+as [[https://en.wikipedia.org/wiki/CJK_characters][CJK]], etc., the default encoding of =glyph= is [[https://en.wikipedia.org/wiki/UTF-8][UTF-8]].
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
@@ -476,6 +483,8 @@ and for GUI mode only.
           :scripts (han)
           :allowed nil)))
 #+END_SRC
+
+#+REVEAL: split
 - =:name= string of font name
 - =:size= integer of font size
 - =:scale= number of scale ratio of glyph font, =nil= disabled
