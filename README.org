@@ -1131,7 +1131,7 @@ avaiabled on ancient Emacs.
    :END:
 
 #+ATTR_HTML: :style text-align:left
-Just introduce Nore Emacs improvements or extra editing features.
+Just introduce Nore Emacs' improvements.
 
 ** Lisp programming
    :PROPERTIES:
