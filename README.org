@@ -62,8 +62,8 @@ it's programmable, elegant and /self-documenting/.
 #+ATTR_HTML: :style text-align:left
 After my daily work being done more and more in Emacs, I know it's the
 time to make Emacs being a part of my body and mind, not just open a
-file, navigating, editing, and save it. So, I build Nore Emacs and
-approach Ecluid did in his geometry.
+file, navigating, editing, and save it. So, I build Nore Emacs taking
+the approach that Euclid did in his geometry.
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
@@ -71,7 +71,7 @@ Nore Emacs strives to be consitent, fast, stable and hack friendly,
 which can be run and with consistent behaviors on wherever Emacs runs.
 
 #+ATTR_HTML: :style display:none
-- [[#highlights][Highlights]]
+- [[#principles][Principles]]
 - [[#requirements][Requirements]]
 - [[#where][Where]]
 - [[#what][What]]
@@ -83,18 +83,17 @@ which can be run and with consistent behaviors on wherever Emacs runs.
 Now, let's start from the Level Two. And one more thing: teach
 yourself some little Elisp (@@html:<kbd>@@M-x i m Elisp@@html:</kbd>@@).
 
-** Highlights
+** Principles
    :PROPERTIES:
-   :CUSTOM_ID: highlights
+   :CUSTOM_ID: principles
    :END:
 
-- *Carefully designed*: robust, fast and just load what's your want.
-- *Adaptive*: can run on any OS, GUI or Terminal, from most recent
-  Emacs's versions to ancient ones, and one Emacs's configuration suit
-  for all coexisting Emacs on the same machine.
+- *Adaptive*: run on any OS, GUI or Terminal, from most recent Emacs's
+  versions to ancient ones, and one Emacs's configuration suit for all
+  coexisting Emacs on the same machine.
 - *Consistent*: wherever and whenever you can play with Emacs always
   behaves in the same way.
-- *Minimalism style*: inside and outside, [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-windows.png][Windows]], [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-darwin.png][Darwin]], and [[https://github.com/junjiemars/images/blob/master/.emacs.d/dracula-theme-on-linux.png][Linux]].
+- *Minimalism*: inside and outside and just load what's your need.
 
 ** Requirements
    :PROPERTIES:
