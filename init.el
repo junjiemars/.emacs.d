@@ -1,11 +1,10 @@
 ;;; init.el --- init
 ;;;;
 ;; Nore Emacs
-;;
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
 ;;; Commentary:
-;;; the epoch of Nore Emacs.
+;;; common notions that the epoch of Nore Emacs.
 ;;
 ;;; Code:
 
@@ -14,8 +13,6 @@
   (current-time)
   "The epoch of loading init.el.")
 
-
-;; basic macro
 
 (defmacro comment (&rest body)
   "Ignore BODY, yields nil."
@@ -30,8 +27,6 @@
                (setq *gensym-counter* (1+ *gensym-counter*)))))
     (make-symbol (format "%s%d" (or prefix "g") num))))
 
-
- ;; end of basic macro
 
 ;; file macro
 
@@ -256,7 +251,5 @@ If (COND VERSION EMACS-VERSION) yield nil, and there are no ELSE’s, the value 
          (emacs-home* "init.el")
          (float-time (time-subtract (current-time) *loading-epoch*)))
 
-
-(provide 'init)
 
 ;;; init.el ends here

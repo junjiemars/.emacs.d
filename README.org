@@ -112,9 +112,8 @@ yourself some little Elisp (@@html:<kbd>@@M-x i m Elisp@@html:</kbd>@@).
 - Linux, whatever GUI or Terminal
 - Darwin, whatever GUI or Terminal
 - Windows, whatever GUI or Terminal
-- Raspberry Pi
-- Docker container
-- No Network
+- Raspberry Pi and Docker container, etc.,
+- Network or without Network
 - One machine, multiple Emacs instances
 
 ** What
