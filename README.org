@@ -1243,10 +1243,9 @@ whatever you are using /gcc/ and /clang/ locally or remotely.
 Using @@html:<kbd>@@M-x compile@@html:</kbd>@@ to /build/ or /test/.
 
 #+ATTR_HTML: :style text-align:left
-For /msvc/ there are need tricks to works with Emacs, More Resonable
-Emacs will generate a /msvc/'s host environment =cc-env.bat= for you
-that make life easy and if [[https://github.com/junjiemars/nore][Nore]] already on your machine, now life is
-perfect.
+For /msvc/ there are need tricks to works with Emacs, Nore Emacs will
+generate a /msvc/'s host environment =cc-env.bat= for you that make
+life easy and if [[https://github.com/junjiemars/nore][Nore]] already on your machine, now life is perfect.
 
 #+ATTR_HTML: :style display:none
 /screenshots/:
