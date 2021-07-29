@@ -3,8 +3,8 @@
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;;; Commentary:
-;;; common notions that the epoch of Nore Emacs.
+;; Commentary:
+;; common notions.
 ;;
 ;;; Code:
 
