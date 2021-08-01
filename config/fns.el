@@ -66,6 +66,10 @@
     (require 'cl)))
 
 
+(defmacro push* (newelt place)
+  "Push NEWELT into the car of PLACE."
+  `(setq ,place (cons ,newelt ,place)))
+
 
 
 (defmacro assoc** (key list &optional testfn)
