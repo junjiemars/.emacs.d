@@ -43,11 +43,11 @@
                 1)))
         (when (and d (file-exists-p d)
                    (not (string= d (car compilation-search-path))))
-          (push d (if (> (length compilation-search-path) (emacs-arch))
-                      (remove-if* #'(lambda (x)
-                                      (string= x d))
-                                  compilation-search-path)
-                    compilation-search-path)))))))
+          (setq compilation-search-path
+                (cons d (if (> (length compilation-search-path)
+                               (emacs-arch))
+                            (delete d compilation-search-path)
+                          compilation-search-path))))))))
 
 
 (with-eval-after-load 'compile
