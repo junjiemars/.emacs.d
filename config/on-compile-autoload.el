@@ -31,6 +31,20 @@
          (point-max))))))
 
 
+(when-platform% 'darwin
+  ;; `next-error' cannot find the source file on Darwin.
+  (defun compilation*-make-change-dir (&optional buffer how)
+    "Add the argument of make's -C option to `compilation-search-path'."
+    (ignore* buffer how)
+    (when (eq major-mode 'compilation-mode)
+      (let ((d (match-string*
+                ".*make.*-C\\S?\\([-_/a-zA-Z0-9]+\\)\\(?:\\S*\\|.*\\)$"
+                compile-command
+                1)))
+        (when d
+          (add-to-list 'compilation-search-path d nil #'string=))))))
+
+
 (with-eval-after-load 'compile
   
   (when-platform% 'windows-nt
@@ -38,7 +52,14 @@
 		(ad-enable-advice #'compilation-find-file 'before
 											"compilation-find-file-before")
     (ad-activate #'compilation-find-file t))
-  
+
+  (when-platform% 'darwin
+    ;; `next-error' find source file
+    (add-to-list 'compilation-finish-functions
+                 #'compilation*-make-change-dir
+                 nil
+                 #'string=))
+
   (add-hook 'compilation-filter-hook #'colorize-compilation-buffer!)
   (when-var% compilation-mode-map 'compile
     ;; define `recompile' and `quit-window' key bindings
