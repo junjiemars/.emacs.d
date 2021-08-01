@@ -54,15 +54,25 @@
   seq)
 
 
-(defmacro pushahead (newelt place)
-  "Push NEWELT the ahead of PLACE."
-  `(set (quote ,place) (cons ,newelt ,place)))
+(defmacro pushahead (newelt place &optional uniquely)
+  "Push NEWELT the ahead of PLACE.
+
+If optional UNIQUELY is non-nil then uniquely push."
+  `(set (quote ,place)
+        (cons ,newelt (if ,uniquely
+                          (delete ,newelt ,place)
+                        ,place))))
 
 
-(defmacro pushback (seq newelt)
-  "Push NEWELT to the back of SEQ uniquely."
-  `(set (quote ,seq) (append (delete ,newelt ,seq)
-                             (list ,newelt))))
+(defmacro pushback (seq newelt &optional uniquely)
+  "Push NEWELT to the back of SEQ.
+
+If optional UNIQUELY is non-nil then uniquely push."
+  `(set (quote ,seq)
+        (append (if ,uniquely
+                    (delete ,newelt ,seq)
+                  ,seq)
+                (list ,newelt))))
 
 
 

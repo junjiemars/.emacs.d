@@ -15,7 +15,7 @@
      (when (*self-env-spec* :get :eshell :allowed)
        (let ((visuals (*self-env-spec* :get :eshell :visual-commands)))
          (dolist* (x visuals)
-           (add-to-list 'eshell-visual-commands x t #'string=)))
+           (pushback eshell-visual-commands x t)))
        (setq% eshell-destroy-buffer-when-process-dies
               (*self-env-spec* :get
                                :eshell :destroy-buffer-when-process-dies))

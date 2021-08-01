@@ -47,7 +47,7 @@
 
 ;; auto `org-mode'
 (when-version% >= 23
-  (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode)))
+  (pushahead (cons "\\.org\\'" 'org-mode) auto-mode-alist ))
 
 
 ;; end of on-org-autoload.el

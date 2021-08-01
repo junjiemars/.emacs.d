@@ -81,9 +81,9 @@ See also: `parse-colon-path'."
                   (dolist* (p (var->paths val))
                     (when (and (stringp p)
                                (file-exists-p p))
-                      (add-to-list 'exec-path p t #'string=)
+                      (pushback exec-path p t)
                       (setq paths (cons p paths))))
-                  (add-to-list 'exec-path (v-home% ".exec/") t)
+                  (pushback exec-path (v-home% ".exec/") t)
                   (*default-shell-env* :put! :exec-path exec-path)
                   (setq val (paths->var (reverse paths)))))
               (push (cons v val) vars)))))))
@@ -157,7 +157,7 @@ See also: `parse-colon-path'."
 
 (if (not (shells-spec->* :allowed))
     ;; disallowed: append .exec/ to `exec-path'
-    (add-to-list 'exec-path (v-home% ".exec/") t #'string=)
+    (pushback exec-path (v-home% ".exec/"))
   (read-shell-env!)
   (let ((shell (shells-spec->* :shell-file-name)))
     (when shell

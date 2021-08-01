@@ -241,15 +241,14 @@
                                    (range 1 10 1))))))
 
 (ert-deftest %fns:pushahead ()
-  (should (equal (list "a" "b" "c")
-                 (let ((x (list "b" "c")))
-                   (pushahead "a" x)))))
+  (let ((x (list "b" "c")))
+    (should (equal (list "a" "b" "c") (pushahead "a" x)))
+    (should (equal (list "a" "b" "c") (pushahead "a" x t)))))
 
 (ert-deftest %fns:pushback ()
-  (should (equal (list "a" "b" "c")
-                 (let ((x (list "a" "b")))
-                   (pushback x "c")
-                   (pushback x "c")))))
+  (let ((x (list "a" "b")))
+    (should (equal (list "a" "b" "c") (pushback x "c")))
+    (should (equal (list "a" "b" "c") (pushback x "c" t)))))
 
 (ert-deftest %fns:assoc** ()
   (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
