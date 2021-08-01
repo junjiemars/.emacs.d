@@ -54,6 +54,19 @@
   seq)
 
 
+(defmacro pushahead (newelt place)
+  "Push NEWELT the ahead of PLACE."
+  `(set (quote ,place) (cons ,newelt ,place)))
+
+
+(defmacro pushback (seq newelt)
+  "Push NEWELT to the back of SEQ uniquely."
+  `(set (quote ,seq) (append (delete ,newelt ,seq)
+                             (list ,newelt))))
+
+
+
+
 ;;;;
 ;; common lisp macro
 ;;;;
@@ -64,12 +77,6 @@
                (require 'cl-lib))
   (with-no-warnings
     (require 'cl)))
-
-
-(defmacro push* (newelt place)
-  "Push NEWELT into the car of PLACE."
-  `(setq ,place (cons ,newelt ,place)))
-
 
 
 (defmacro assoc** (key list &optional testfn)

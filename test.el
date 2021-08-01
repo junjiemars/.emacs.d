@@ -240,6 +240,17 @@
   (should (= 2 (length (take-while (lambda (x) (>= x 3))
                                    (range 1 10 1))))))
 
+(ert-deftest %fns:pushahead ()
+  (should (equal (list "a" "b" "c")
+                 (let ((x (list "b" "c")))
+                   (pushahead "a" x)))))
+
+(ert-deftest %fns:pushback ()
+  (should (equal (list "a" "b" "c")
+                 (let ((x (list "a" "b")))
+                   (pushback x "c")
+                   (pushback x "c")))))
+
 (ert-deftest %fns:assoc** ()
   (should (equal '(a "a") (assoc** 'a '((b "b") (a "a")))))
   (should (equal '("a" a) (assoc** "a" '(("b" b) ("a" a)) #'string=))))
