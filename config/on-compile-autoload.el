@@ -41,8 +41,13 @@
                 ".*make.*-C\\S?\\([-~._/a-zA-Z0-9]+\\)\\(?:\\S*\\|.*\\)$"
                 compile-command
                 1)))
-        (when (and d (file-exists-p d))
-          (add-to-list 'compilation-search-path d nil #'string=))))))
+        (when (and d (file-exists-p d)
+                   (not (string= d (car compilation-search-path))))
+          (push d (if (> (length compilation-search-path) (emacs-arch))
+                      (remove-if* #'(lambda (x)
+                                      (string= x d))
+                                  compilation-search-path)
+                    compilation-search-path)))))))
 
 
 (with-eval-after-load 'compile
