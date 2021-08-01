@@ -38,10 +38,10 @@
     (ignore* buffer how)
     (when (eq major-mode 'compilation-mode)
       (let ((d (match-string*
-                ".*make.*-C\\S?\\([-_/a-zA-Z0-9]+\\)\\(?:\\S*\\|.*\\)$"
+                ".*make.*-C\\S?\\([-~._/a-zA-Z0-9]+\\)\\(?:\\S*\\|.*\\)$"
                 compile-command
                 1)))
-        (when d
+        (when (and d (file-exists-p d))
           (add-to-list 'compilation-search-path d nil #'string=))))))
 
 
@@ -55,10 +55,9 @@
 
   (when-platform% 'darwin
     ;; `next-error' find source file
-    (add-to-list 'compilation-finish-functions
-                 #'compilation*-make-change-dir
-                 nil
-                 #'string=))
+    (add-hook 'compilation-finish-functions
+              #'compilation*-make-change-dir
+              (emacs-arch)))
 
   (add-hook 'compilation-filter-hook #'compilation*-colorize-buffer!)
   (when-var% compilation-mode-map 'compile
