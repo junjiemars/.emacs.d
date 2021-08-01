@@ -19,7 +19,7 @@
                                  t t (ad-get-arg 1))))))
 
 
-(defun colorize-compilation-buffer! ()
+(defun compilation*-colorize-buffer! ()
   "Colorize *compilation* buffer."
   (when-fn% 'ansi-color-apply-on-region 'ansi-color
     (when (eq major-mode 'compilation-mode)
@@ -60,7 +60,7 @@
                  nil
                  #'string=))
 
-  (add-hook 'compilation-filter-hook #'colorize-compilation-buffer!)
+  (add-hook 'compilation-filter-hook #'compilation*-colorize-buffer!)
   (when-var% compilation-mode-map 'compile
     ;; define `recompile' and `quit-window' key bindings
     (define-key% compilation-mode-map (kbd "g") #'recompile)
