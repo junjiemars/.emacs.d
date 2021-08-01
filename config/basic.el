@@ -9,9 +9,9 @@
 
 
 ;; `load-path' versioned dirs
-(set 'load-path (cons (v-home% "private/")
-                      (cons (v-home% "config/")
-                            load-path)))
+(push (v-home% "config/") load-path)
+(push (v-home% "private/") load-path)
+
 
 
 
