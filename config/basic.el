@@ -9,9 +9,9 @@
 
 
 ;; `load-path' versioned dirs
-(add-to-list 'load-path (v-home% "config/") nil #'string=)
-(add-to-list 'load-path (v-home% "private/") nil #'string=)
-
+(set 'load-path (cons (v-home% "private/")
+                      (cons (v-home% "config/")
+                            load-path)))
 
 
 
