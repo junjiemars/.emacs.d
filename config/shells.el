@@ -176,4 +176,7 @@ See also: `parse-colon-path'."
   (add-hook 'kill-emacs-hook #'save-shell-env! t))
 
 
+(read-shell-env!)
+
+
  ;; end of shells.el
