@@ -324,18 +324,15 @@ Optional argument TRIM regexp used to trim."
 
 
 (defmacro posix-path (path)
-  "Transpose PATH to posix that determined by `system-type'."
-  `(if-platform% 'windows-nt
-       (when (stringp ,path)
-         (string-trim>
-          (if (string-match "^\\([A-Z]:\\)" ,path)
-              (replace-regexp-in-string "\\\\"
-                                        "/"
-                                        (replace-match
-                                         (downcase (match-string 1 ,path))
-                                         t t ,path))
-            ,path)))
-     ,path))
+  "Transpose PATH to posix path."
+  `(when (stringp ,path)
+     (if (string-match "^\\([A-Z]:\\)" ,path)
+         (replace-regexp-in-string "\\\\"
+                                   "/"
+                                   (replace-match
+                                    (downcase (match-string 1 ,path))
+                                    t t ,path))
+       ,path)))
 
 
 (defmacro shell-command* (command &rest args)

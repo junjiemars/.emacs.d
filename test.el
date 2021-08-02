@@ -548,15 +548,10 @@
 
 
 (ert-deftest %basic:posix-path ()
-  (if-platform% 'windows-nt
-      (progn
-        (should-not (posix-path nil))
-        (let ((p "c:/a/b/c.c"))
-          (should (string= p (posix-path "c:/a/b/c.c")))
-          (should (string= p (posix-path "c:\\a\\b\\c.c")))
-          (should (string= p (posix-path "C:\\a\\b\\c.c")))
-          (should (string= p (posix-path "C:\\a\\b\\c.c\n")))))
-    t))
+  (should-not (posix-path nil))
+  (let ((p "c:/a/b/c.c"))
+    (should (string= p (posix-path "c:/a/b/c.c")))
+    (should (string= p (posix-path "c:\\a\\b\\c.c")))))
 
 (ert-deftest %basic:if-key% ()
   (should (string= "defined"
