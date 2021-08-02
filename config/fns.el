@@ -63,9 +63,9 @@ If optional UNIQUELY is non-nil then push uniquely."
         (s1 (gensym*)))
     `(let* ((,n1 ,newelt)
             (,s1 (if ,uniquely (delete ,n1 ,seq) ,seq)))
-       (set (quote ,seq) (if ,append
-                             (append ,s1 (list ,n1))
-                           (cons ,n1 ,s1))))))
+       (setq ,seq (if ,append
+                      (append ,s1 (list ,n1))
+                    (cons ,n1 ,s1))))))
 
 
 
