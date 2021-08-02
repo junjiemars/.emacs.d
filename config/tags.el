@@ -96,10 +96,7 @@ when `desktop-globals-to-save' include it."
 
 With prefix argument APPEND TAGS to the tail of `tags-table-list'."
   (interactive "fmount tags from \nP")
-  (add-to-list 'tags-table-list
-               (expand-file-name tags)
-               append
-               #'string=))
+  (push! (expand-file-name tags) tags-table-list append t))
 
 
 (defun unmount-tags (&optional tags)

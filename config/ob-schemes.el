@@ -18,7 +18,7 @@
 
 (comment
  ;; optionally define a file extension for this language
- (add-to-list 'org-babel-tangle-lang-exts '("picolisp" . "l")))
+ (push! '("picolisp" . "l") org-babel-tangle-lang-exts))
 
 ;;; interferes with settings in org-babel buffer?
 ;; optionally declare default header arguments for this language

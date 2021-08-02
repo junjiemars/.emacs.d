@@ -59,13 +59,13 @@
 
 If optional APPEND is non-nil then push back else push ahead.
 If optional UNIQUELY is non-nil then push uniquely."
-  (let ((s1 (gensym*)))
-    `(let ((,s1 (if ,uniquely
-                    (delete ,newelt ,seq)
-                  ,seq)))
+  (let ((n1 (gensym*))
+        (s1 (gensym*)))
+    `(let* ((,n1 ,newelt)
+            (,s1 (if ,uniquely (delete ,n1 ,seq) ,seq)))
        (set (quote ,seq) (if ,append
-                             (append ,s1 (list ,newelt))
-                           (cons ,newelt ,s1))))))
+                             (append ,s1 (list ,n1))
+                           (cons ,n1 ,s1))))))
 
 
 

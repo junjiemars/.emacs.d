@@ -30,20 +30,17 @@
   (when% (executable-find% "docker")
     (when-var% tramp-methods 'tramp
       (unless (cdr (assoc** "docker" tramp-methods #'string=))
-        (add-to-list 'tramp-methods
-                     '("docker"
-                       (tramp-login-program "docker")
-                       (tramp-login-args
-                        (nil
-                         ("exec" "-it")
-                         ("-u" "%u")
-                         ("%h")
-                         ("sh")))
-                       (tramp-remote-shell "/bin/sh")
-                       (tramp-remote-shell-args ("-i" "-c")))
-                     nil
-                     (lambda (a b)
-                       (string= (car a) (car b))))
+        (push! '("docker"
+                 (tramp-login-program "docker")
+                 (tramp-login-args
+                  (nil
+                   ("exec" "-it")
+                   ("-u" "%u")
+                   ("%h")
+                   ("sh")))
+                 (tramp-remote-shell "/bin/sh")
+                 (tramp-remote-shell-args ("-i" "-c")))
+               tramp-methods)
         (tramp-set-completion-function
          "docker"
          '((tramp-parse-docker-containers "")))))))

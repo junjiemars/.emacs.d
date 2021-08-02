@@ -189,8 +189,8 @@
  (defmacro-if-feature% web-mode)
  (if-feature-web-mode%
      (progn%
-      (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
-      (add-to-list 'auto-mode-alist '("\\.vue\\'" . web-mode))
+      (push! '("\\.html\\'" . web-mode) auto-mode-alist)
+      (push! '("\\.vue\\'" . web-mode) auto-mode-alist )
       (add-hook 'web-mode-hook
                 #'(lambda ()
                     (setq web-mode-comment-formats

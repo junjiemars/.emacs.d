@@ -10,8 +10,8 @@
 (defun-on-module-autoload^ cider
   ;; use clojure mode for other extensions
   ;; (add-to-list 'auto-mode-alist '("\\.edn$" . clojure-mode))
-  (add-to-list 'auto-mode-alist '("\\.boot$" . clojure-mode))
-  (add-to-list 'magic-mode-alist '(".* boot" . clojure-mode))
+  (push! '("\\.boot$" . clojure-mode) auto-mode-alist )
+  (push! '(".* boot" . clojure-mode) magic-mode-alist)
 
   (declare-function use-clojure-mode (v-home% "config/use-cider.elc"))
   (declare-function use-cider-repl (v-home% "config/use-cider.elc"))
