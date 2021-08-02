@@ -9,8 +9,8 @@
 
 
 ;; `load-path' versioned dirs
-(pushahead (v-home% "config/") load-path)
-(pushahead (v-home% "private/") load-path)
+(push! (v-home% "config/") load-path)
+(push! (v-home% "private/") load-path)
 
 
 

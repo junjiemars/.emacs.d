@@ -117,7 +117,7 @@
           ;; fix: title bar text color broken #55
           ;; https://github.com/d12frosted/homebrew-emacs-plus/issues/55#issuecomment-408317248
           (mapc (lambda (x)
-                  (pushahead x frameset-filter-alist))
+                  (push! x frameset-filter-alist))
                 '((ns-transparent-titlebar . unbound)
                   (ns-appearance . unbound))))))
     

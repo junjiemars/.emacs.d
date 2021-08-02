@@ -54,25 +54,18 @@
   seq)
 
 
-(defmacro pushahead (newelt place &optional uniquely)
-  "Push NEWELT the ahead of PLACE.
+(defmacro push! (newelt seq &optional append uniquely)
+  "Push NEWELT to the ahead or back of SEQ.
 
-If optional UNIQUELY is non-nil then uniquely push."
-  `(set (quote ,place)
-        (cons ,newelt (if ,uniquely
-                          (delete ,newelt ,place)
-                        ,place))))
-
-
-(defmacro pushback (seq newelt &optional uniquely)
-  "Push NEWELT to the back of SEQ.
-
-If optional UNIQUELY is non-nil then uniquely push."
-  `(set (quote ,seq)
-        (append (if ,uniquely
+If optional APPEND is non-nil then push back else push ahead.
+If optional UNIQUELY is non-nil then push uniquely."
+  (let ((s1 (gensym*)))
+    `(let ((,s1 (if ,uniquely
                     (delete ,newelt ,seq)
-                  ,seq)
-                (list ,newelt))))
+                  ,seq)))
+       (set (quote ,seq) (if ,append
+                             (append ,s1 (list ,newelt))
+                           (cons ,newelt ,s1))))))
 
 
 

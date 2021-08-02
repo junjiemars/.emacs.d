@@ -47,9 +47,9 @@
 (when-graphic%
   (when (*self-env-spec* :get :frame :allowed)
     (dolist* (x (*self-env-spec* :get :frame :initial))
-      (pushahead x initial-frame-alist))
+      (push! x initial-frame-alist))
     (dolist* (x (*self-env-spec* :get :frame :default))
-      (pushahead x default-frame-alist)
+      (push! x default-frame-alist)
       (when (eq 'font (car x))
         (set-face-attribute 'default nil :font (cdr x))))
     (setq frame-resize-pixelwise
