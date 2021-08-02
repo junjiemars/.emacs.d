@@ -546,15 +546,17 @@
 (ert-deftest %basic:buffer-major-mode ()
   (should (eq 'fundamental-mode (buffer-major-mode))))
 
-(when-platform% 'windows-nt
-  (ert-deftest %basic:windows-posix-path ()
-    (should-not (windows-nt-posix-path nil))
-    (should (string= "c:/a/b/c.c"
-                     (windows-nt-posix-path "c:/a/b/c.c")))
-    (should (string= "c:/a/b/c.c"
-                     (windows-nt-posix-path "c:\\a\\b\\c.c")))
-    (should (string= "c:/a/B/c.c"
-                     (windows-nt-posix-path "C:\\a\\B\\c.c")))))
+
+(ert-deftest %basic:posix-path ()
+  (if-platform% 'windows-nt
+      (progn
+        (should-not (posix-path nil))
+        (let ((p "c:/a/b/c.c"))
+          (should (string= p (posix-path "c:/a/b/c.c")))
+          (should (string= p (posix-path "c:\\a\\b\\c.c")))
+          (should (string= p (posix-path "C:\\a\\b\\c.c")))
+          (should (string= p (posix-path "C:\\a\\b\\c.c\n")))))
+    t))
 
 (ert-deftest %basic:if-key% ()
   (should (string= "defined"
