@@ -664,6 +664,11 @@
   (ert-deftest %cc*:cc*-check-include ()
     (should (or (cc*-check-include) t))))
 
+(when-fn%
+    'cc*-system-include nil
+  (ert-deftest %cc*:cc*-system-include ()
+    (should (or (cc*-system-include) t))))
+
 
 ;;;;
 ;; trans
