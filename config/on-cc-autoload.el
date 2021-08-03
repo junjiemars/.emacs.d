@@ -311,32 +311,28 @@
                  (shell-command* (concat "echo '' | "
                                          +cc*-compiler-bin+
                                          " -v -E 2>&1 >/dev/null -")))))
-        (parser (lambda (preprocessed)
-                  (take-while
-                   (lambda (p)
-                     (string-match "End of search list." p))
-                   (drop-while
-                    (lambda (p)
-                      (string-match "#include <...> search starts here:" p))
-                    (split-string* preprocessed "\n" t "[ \t\n]"))))))
+        (parser (lambda (pre)
+                  (if-platform% 'windows-nt
+                      ;; Windows: msvc
+                      (mapcar
+                       (lambda (x) (posix-path x))
+                       (var->paths
+                        (car (nreverse
+                              (split-string* pre "\n" t "[ \"]*")))))
+                    ;; Darwin/Linux: clang or gcc
+                    (cdr
+                     (take-while
+                      (lambda (p)
+                        (string-match "End of search list\\." p))
+                      (drop-while
+                       (lambda (p)
+                         (not
+                          (string-match
+                           "#include <\\.\\.\\.> search starts here:"
+                           p)))
+                       (split-string* pre "\n" t "[ \t\n]"))))))))
     (when (zerop (car cmd))
-      (if remote
-          ;; Unix-like
-          (funcall parser (cdr cmd))
-        (if-platform% 'windows-nt
-            ;; Windows: msvc
-            (mapcar (lambda (x) (posix-path x))
-                    (var->paths
-                     (car (nreverse
-                           (split-string* (cdr cmd) "\n" t "[ \"]*")))))
-          ;; Darwin/Linux: clang or gcc
-          (let ((inc (funcall parser (cdr cmd))))
-            (if-platform% 'darwin
-                (mapcar (lambda (x)
-                          (file-truename
-                           (string-trim> x " (framework directory)")))
-                        inc)
-              inc)))))))
+      (funcall parser (cdr cmd)))))
 
 
 ;; cc system include
