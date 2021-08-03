@@ -345,9 +345,9 @@
                                         (remote-norm-id remote)
                                         "-"))
                    'native))
-             (fs (v-home! (concat ".exec/cc-inc-"
-                                  (symbol-name ss)
-                                  ".el")))
+             (fs (path! (v-home* (concat ".exec/cc-inc-"
+                                         (symbol-name ss)
+                                         ".el"))))
              (d))
         (or (and cached (plist-get dx ss))
 
