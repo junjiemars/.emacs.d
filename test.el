@@ -660,9 +660,10 @@
     (should (or +cc*-compiler-bin+ t))))
 
 (when-fn%
-    'cc*-system-include nil
-  (ert-deftest %cc*:cc*-system-include ()
-    (should (or (cc*-system-include) t))))
+    'cc*-check-include nil
+  (ert-deftest %cc*:cc*-check-include ()
+    (setq debug-on-error t)
+    (should (or (cc*-check-include) t))))
 
 
 ;;;;
