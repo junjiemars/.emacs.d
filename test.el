@@ -667,7 +667,10 @@
 (when-fn%
     'cc*-system-include nil
   (ert-deftest %cc*:cc*-system-include ()
-    (message "# %s" (v-home! ".exec/"))
+    (message "# v-home!=%s" (v-home! ".exec/"))
+    (message "# v-home*=%s" (v-home* ".exec/"))
+    (message "# file=%s" (v-home! "exec/cc-inc-native.el"))
+    (message "# file=%s" (v-home* "exec/cc-inc-native.el"))
     (should (or (cc*-system-include) t))))
 
 
