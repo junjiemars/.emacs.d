@@ -628,9 +628,6 @@
     (should (string= "" (paths->var '("a" "b" "c")
                                     (lambda (x) (file-exists-p x)))))))
 
-(ert-deftest %shells:check-exec-dir-exists ()
-  (should (file-exists-p (v-home* ".exec/"))))
-
  ;; end of shells
 
 
@@ -658,6 +655,9 @@
 ;; cc*
 ;;;;
 
+(when-var% +cc*-compiler-bin+ nil
+  (ert-deftest %cc*:+cc*-compiler-bin+ ()
+    (should (message "+cc*-compiler-bin+ = %s" +cc*-compiler-bin+))))
 
 (when-fn%
     'cc*-system-include nil
