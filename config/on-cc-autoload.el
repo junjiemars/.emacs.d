@@ -345,7 +345,7 @@
                                         (remote-norm-id remote)
                                         "-"))
                    'native))
-             (fs (v-home* (concat ".exec/cc-inc-"
+             (fs (v-home! (concat ".exec/cc-inc-"
                                   (symbol-name ss)
                                   ".el")))
              (d))
@@ -360,10 +360,10 @@
                             ss))
 
             (and (setq d (mapcar (if remote
-                                 (lambda (x)
-                                   (concat remote x))
-                               #'identity)
-                             (cc*-check-include remote)))
+                                     (lambda (x)
+                                       (concat remote x))
+                                   #'identity)
+                                 (cc*-check-include remote)))
                  (consp d) (save-sexp-to-file d fs)
                  (plist-get (setq dx (plist-put dx ss d)) ss))))))
 
