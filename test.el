@@ -662,6 +662,7 @@
 (when-fn%
     'cc*-check-include nil
   (ert-deftest %cc*:cc*-check-include ()
+    (message "# %s" (cc*-check-include))
     (should (or (cc*-check-include) t))))
 
 
