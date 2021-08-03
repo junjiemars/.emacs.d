@@ -9,21 +9,21 @@ on:
       - cc
 
 jobs:
-  Linux:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1 # without checkout history and tags
-      - name: Install Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install emacs
-      - name: Test
-        run: |
-          _TEST_=bone ./test.sh
-          _TEST_=axiom ./test.sh
-          _TEST_=package ./test.sh
+  # Linux:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 1 # without checkout history and tags
+  #     - name: Install Dependencies
+  #       run: |
+  #         sudo apt-get update
+  #         sudo apt-get install emacs
+  #     - name: Test
+  #       run: |
+  #         _TEST_=bone ./test.sh
+  #         _TEST_=axiom ./test.sh
+  #         _TEST_=package ./test.sh
 
   MacOS:
     runs-on: macos-latest
@@ -40,27 +40,27 @@ jobs:
           _TEST_=axiom ./test.sh
           _TEST_=package ./test.sh
 
-  Windows:
-    runs-on: windows-latest
-    defaults:
-      run:
-        shell: msys2 {0}
+  # Windows:
+  #   runs-on: windows-latest
+  #   defaults:
+  #     run:
+  #       shell: msys2 {0}
 
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 1 # without checkout history and tags
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #     with:
+  #       fetch-depth: 1 # without checkout history and tags
 
-    - name: Install Dependencies
-      uses: msys2/setup-msys2@v2
-      with:
-        update: true
-        install: git emacs
-    - name: Test
-      run: |
-        _TEST_=bone ./test.sh
-        _TEST_=axiom ./test.sh
-        _TEST_=package ./test.sh
+  #   - name: Install Dependencies
+  #     uses: msys2/setup-msys2@v2
+  #     with:
+  #       update: true
+  #       install: git emacs
+  #   - name: Test
+  #     run: |
+  #       _TEST_=bone ./test.sh
+  #       _TEST_=axiom ./test.sh
+  #       _TEST_=package ./test.sh
 
   # Matrix-Linux:
   #   runs-on: ubuntu-latest

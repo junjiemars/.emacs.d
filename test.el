@@ -653,6 +653,16 @@
      (when already (should (install-package!1 'htmlize))))))
 
 ;;;;
+;; cc*
+;;;;
+
+(when-fn%
+    'cc*-system-include nil
+  (ert-deftest %cc*:cc*-system-include ()
+    (should (> (length (cc*-system-include t)) 0))))
+
+
+;;;;
 ;; trans
 ;;;;
 
