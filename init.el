@@ -135,24 +135,26 @@ The FILE should be posix path, see `path-separator'."
 If ONLY-COMPILE is t, does not load compiled file.
 If DELETE-BOOSTER is t, remove booster file.
 DIR where the compiled file located."
-  (let ((c (gensym*))
+  (let ((f (gensym*))
+        (c (gensym*))
         (s (gensym*)))
-    `(when (and (stringp ,file) (file-exists-p ,file))
-       (let ((,c (if ,dir
-                     (file-name-new-extension*
-                      (concat ,dir (file-name-nondirectory ,file)) ".elc")
-                   (file-name-new-extension* ,file ".elc"))))
-         (when (or (not (file-exists-p ,c))
-                   (file-newer-than-file-p ,file ,c))
-           (let ((,s (if ,dir
-                         (concat ,dir (file-name-nondirectory ,file))
-                       ,file)))
-             (unless (string= ,file ,s) (copy-file ,file (path! ,s) t))
-             (when (byte-compile-file ,s)
-               (when ,delete-booster (delete-file ,s)))))
-         (when (file-exists-p ,c)
-           (cond (,only-compile t)
-                 (t (load ,c))))))))
+    `(let ((,f ,file))
+       (when (and (stringp ,f) (file-exists-p ,f))
+         (let ((,c (if ,dir
+                       (file-name-new-extension*
+                        (concat ,dir (file-name-nondirectory ,f)) ".elc")
+                     (file-name-new-extension* ,f ".elc"))))
+           (when (or (not (file-exists-p ,c))
+                     (file-newer-than-file-p ,f ,c))
+             (let ((,s (if ,dir
+                           (concat ,dir (file-name-nondirectory ,f))
+                         ,f)))
+               (unless (string= ,f ,s) (copy-file ,f (path! ,s) t))
+               (when (byte-compile-file ,s)
+                 (when ,delete-booster (delete-file ,s)))))
+           (when (file-exists-p ,c)
+             (cond (,only-compile t)
+                   (t (load ,c)))))))))
 
 
 (defun clean-compiled-files ()
