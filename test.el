@@ -662,7 +662,6 @@
 (when-fn%
     'cc*-check-include nil
   (ert-deftest %cc*:cc*-check-include ()
-    (setq debug-on-error t)
     (should (or (cc*-check-include) t))))
 
 

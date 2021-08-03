@@ -16,8 +16,8 @@
 (defmacro memory-spec->% (&rest keys)
   "Extract value from a list of spec via KEYS at compile time."
   `(self-spec->%
-       (list :source ,(v-home! ".exec/env-spec.el")
-             :compiled ,(v-home! ".exec/env-spec.elc"))
+       (list :source ,(v-home% ".exec/env-spec.el")
+             :compiled ,(v-home% ".exec/env-spec.elc"))
      ,@keys))
 
 

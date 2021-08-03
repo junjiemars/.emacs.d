@@ -11,7 +11,7 @@
   "Extract value from the list of spec via KEYS at compile time."
   (declare (indent 0))
   `(self-spec->%
-       (list :file ,(v-home! ".exec/shell-env.el")
+       (list :file ,(v-home% ".exec/shell-env.el")
              :SHELL "SHELL"
              :PATH "PATH")
      ,@keys))
