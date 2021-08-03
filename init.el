@@ -46,29 +46,36 @@
 
 (defmacro file-name-new-extension* (file extension)
   "Return FILE name with new EXTENSION."
-  `(concat (file-name-directory ,file)
-           (file-name-base* ,file)
-           ,extension))
+  (let ((f (gensym*)))
+    `(let ((,f ,file))
+       (concat (file-name-directory ,f)
+               (file-name-base* ,f)
+               ,extension))))
 
 
 (unless (fboundp 'directory-name-p)
   (defmacro directory-name-p (name)
     "Return t if NAME ends with a directory separator character."
-    `(let ((len (length ,name)))
-       (and (> len 0) (= ?/ (aref ,name (1- len)))))))
+    (let ((n (gensym*))
+          (w (gensym*)))
+      `(let* ((,n ,name)
+              (w (length ,n)))
+         (and (> w 0) (= ?/ (aref ,n (1- w))))))))
 
 
 (defmacro path! (file)
   "Make and return the path of the FILE.
 
 The FILE should be posix path, see `path-separator'."
-  (let ((d (gensym*)))
-    `(let ((,d (if (directory-name-p ,file)
-                   ,file
-                 (file-name-directory ,file))))
+  (let ((f (gensym*))
+        (d (gensym*)))
+    `(let* ((,f ,file)
+            (,d (if (directory-name-p ,f)
+                    ,f
+                  (file-name-directory ,f))))
        (unless (file-exists-p ,d)
          (make-directory ,d t))
-       ,file)))
+       ,f)))
 
 
  ;; end basic file macro
@@ -79,19 +86,27 @@ The FILE should be posix path, see `path-separator'."
 
 (defmacro v-path* (file &optional extension)
   "Return versioned FILE with new EXTENSION."
-  `(concat (if (directory-name-p ,file)
-               ,file
-             (file-name-directory ,file))
-           ,(concat (if (display-graphic-p) "g_" "t_") emacs-version) "/"
-           (if ,extension
-               (file-name-new-extension* (file-name-nondirectory ,file)
-                                         ,extension)
-             (file-name-nondirectory ,file))))
+  (let ((f (gensym*))
+        (n (gensym*))
+        (x (gensym*)))
+    `(let* ((,f ,file)
+            (,n (file-name-nondirectory ,f))
+            (,x ,extension))
+       (concat (if (directory-name-p ,f)
+                   ,f
+                 (file-name-directory ,f))
+               ,(concat (if (display-graphic-p) "g_" "t_")
+                        emacs-version "/")
+               (if ,x
+                   (file-name-new-extension* ,n ,x)
+                 ,n)))))
 
 
 (defmacro v-home* (file)
   "Return versioned path of `emacs-home'/`v-path*'/FILE."
-  `(v-path* (emacs-home* ,file)))
+  (let ((h (gensym*)))
+    `(let ((,h (emacs-home* ,file)))
+       (v-path* ,h))))
 
 
 (defmacro v-home% (file)
@@ -102,8 +117,9 @@ The FILE should be posix path, see `path-separator'."
 
 (defmacro v-home! (file)
   "Make versioned `emacs-home'/`v-path*'/FILE at compile-time."
-  (let ((_vfile!_ (path! (v-home* file))))
-    `,_vfile!_))
+  (let ((f (gensym*)))
+    `(let ((,f (path! (v-home* ,file))))
+       ,f)))
 
 
  ;; end of versioned file macro
