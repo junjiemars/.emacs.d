@@ -667,7 +667,7 @@
 (when-fn%
     'cc*-system-include nil
   (ert-deftest %cc*:cc*-system-include ()
-    (v-home! ".exec/")
+    (message "# %s" (v-home! ".exec/"))
     (should (or (cc*-system-include) t))))
 
 
