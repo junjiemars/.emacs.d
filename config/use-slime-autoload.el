@@ -11,10 +11,10 @@
   (lexical-let% ((b (let ((ns))
                       (dolist* (x '(sbcl ecl acl) ns)
                         (let ((bin (executable-find (symbol-name x))))
-                          (when bin (push (list x (list bin)) ns)))))))
+                          (when bin (push! (list x (list bin)) ns)))))))
     (lambda (&optional n)
       (setq% slime-lisp-implementations
-             (if n (push n b) b)
+             (if n (push! n b) b)
              'slime)))
   "Parameterized `slime-lisp-implementations'.")
 

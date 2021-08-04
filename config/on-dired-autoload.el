@@ -262,7 +262,7 @@
                               dired-compress-file-suffixes #'string=))
                 (executable-find% "zip")
                 (executable-find% "unzip"))
-      (push '("\\.zip\\'" ".zip" "unzip") dired-compress-file-suffixes)))
+      (push! '("\\.zip\\'" ".zip" "unzip") dired-compress-file-suffixes)))
   
   ;; uncompress/compress .7z file
   (when% (or (executable-find% "7z")
@@ -278,8 +278,8 @@
                                dired-compress-file-suffixes
                                #'string=)
                       (list "" uncompress))
-            (push (list "\\.7z\\'" "" uncompress)
-                  dired-compress-file-suffixes)))
+            (push! (list "\\.7z\\'" "" uncompress)
+                   dired-compress-file-suffixes)))
         ;; [c] compress to .7z
         (when-fn% 'dired-do-compress-to 'dired-aux
           (let ((compress (concat 7za? " a -t7z %o %i")))
@@ -291,8 +291,8 @@
                                  dired-compress-files-alist
                                  #'string=)
                         compress)
-              (push (cons "\\.7z\\'" compress)
-                    dired-compress-files-alist)))))))
+              (push! (cons "\\.7z\\'" compress)
+                     dired-compress-files-alist)))))))
 
   ;; error at `dired-internal-noselect' on Windows:
   ;; Reading directory: "ls --dired -al -- d:/abc/中文/" exited with status 2
@@ -326,7 +326,7 @@
                 (setcdr (assoc** "\\.gz\\'"
                                  dired-compress-file-suffixes #'string=)
                         (list "" 7za?))
-              (push (cons "\\.gz\\'" 7za?) dired-compress-file-suffixes))))
+              (push! (cons "\\.gz\\'" 7za?) dired-compress-file-suffixes))))
 
         (when-fn% 'dired-compress-file 'dired-aux
           (ad-enable-advice #'dired-compress-file 'before

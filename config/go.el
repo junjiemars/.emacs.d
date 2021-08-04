@@ -30,14 +30,14 @@
        (lambda (d fs)
          (dolist* (f fs)
            (cond ((string= "Makefile" f)
-                  (push (list :makefile (concat d f)) found))
+                  (push! (list :makefile (concat d f)) found))
                  ((string= ".git/" f)
-                  (throw 'out (push (list :git (concat d f)) found)))
+                  (throw 'out (push! (list :git (concat d f)) found)))
                  ((string= ".svn/" f)
-                  (throw 'out (push (list :svn (concat d f)) found))))))))
+                  (throw 'out (push! (list :svn (concat d f)) found))))))))
     (if (consp found)
         found
-      (push (list :pwd (file-name-directory file)) found))))
+      (push! (list :pwd (file-name-directory file)) found))))
 
 (defun prefer-project-root (seq &optional prefer)
   "Prefer what as project root."

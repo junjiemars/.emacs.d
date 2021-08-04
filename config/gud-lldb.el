@@ -356,7 +356,7 @@ invoked."
   (set (make-local-variable 'comint-prompt-regexp) +gud-lldb-prompt-regexp+)
   (set (make-local-variable 'comint-prompt-read-only) t)
   (unless (memq 'ansi-color-process-output comint-output-filter-functions)
-    (push #'ansi-color-process-output comint-output-filter-functions))
+    (push! #'ansi-color-process-output comint-output-filter-functions))
 
   ;; `lldb-completion'
   (add-hook (if-var% completion-at-point-functions 'minibuffer
