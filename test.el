@@ -657,7 +657,22 @@
 
 (when-var% +cc*-compiler-bin+ nil
   (ert-deftest %cc*:+cc*-compiler-bin+ ()
-    (should (or +cc*-compiler-bin+ t))))
+    (when +cc*-compiler-bin+
+      (let* ((d (temporary-file-directory))
+             (c (concat d "c.c"))
+             (x (concat d "a")))
+        (when (save-str-to-file
+               (concat
+                "#include <stdio.h>\n"
+                "int main(void) {\n"
+                "  printf(\"good\");\n"
+                "}")
+               c)
+          (compile
+           (if-platform% 'windows-nt
+               (format "cc-env.bat && cl %s -Fe%s.exe" c x)
+             (format "cd %s && cc %s -o%s" d c x)))
+          (should (zerop (car (shell-command* x)))))))))
 
 (when-fn%
     'cc*-check-include nil

@@ -1243,6 +1243,9 @@ whatever you are using /gcc/ and /clang/ locally or remotely.
 
 #+ATTR_HTML: :style text-align:left
 Using @@html:<kbd>@@M-x compile@@html:</kbd>@@ to /build/ or /test/.
+- Unix-like:
+	- raw: ~cd <where> && cc -Werror -I<include> c.c -oout/bin/hi~
+	- make: ~make -k -C <where> clean test~
 
 #+ATTR_HTML: :style text-align:left
 For /msvc/ there are need tricks to works with Emacs. Nore Emacs will
