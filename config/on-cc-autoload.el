@@ -61,14 +61,15 @@
 
 (defconst +cc*-compiler-bin+
   (let ((cx (if-platform% 'windows-nt
-                '("gcc" "cc-env.bat")
+                (progn%
+                 (unless (executable-find% "cc-env.bat")
+                   (make-cc-env-bat))
+                 '("gcc" "cc-env.bat"))
               '("cc" "gcc" "clang")))
-        (cmd (if-platform% 'windows-nt
-                 (if (string= "gcc")
-                     "%s %s -oa.exe"
-                   (concat "%s %s -Fea.exe " "-Fo "
-                           temporary-file-directory))
-               "%s %s -oa.out"))
+        (o (concat temporary-file-directory
+                   (if-platform% 'windows-nt
+                       "a.exe"
+                     "a.out")))
         (f (concat temporary-file-directory "c.c")))
     (catch 'block
       (dolist* (cc cx)
@@ -77,7 +78,11 @@
                                  "  return 0;\n"
                                  "}")
                                 f)
-          (let ((x (shell-command* (format cmd cc f))))
+          (let ((x (shell-command*
+                       (format (if-platform% 'windows-nt
+                                   "%s %s -Fe%s"
+                                 "%s %s -o%s")
+                               cc f o))))
             (when (zerop (car x))
               (throw 'block cc)))))))
   "The name of C compiler executable.")
