@@ -661,7 +661,7 @@
       (let* ((d (path! (temporary-file-directory)))
              (c (concat d "c.c"))
              (x (concat d "a")))
-        (message "# d=%s, %s" d (file-exists-p d))
+        (message "# cc=%s, d=%s, %s" +cc*-compiler-bin+ d (file-exists-p d))
         (let ((f (save-str-to-file
                   (concat
                    "int main(void) {\n"
