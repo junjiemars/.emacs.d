@@ -1242,10 +1242,14 @@ whatever you are using /gcc/ and /clang/ locally or remotely.
     :END:
 
 #+ATTR_HTML: :style text-align:left
-Using @@html:<kbd>@@M-x compile@@html:</kbd>@@ to /build/ or /test/.
+Press @@html:<kbd>@@M-x compile@@html:</kbd>@@ then:
 - Unix-like:
-	- raw: ~cd <where> && cc -Werror -I<include> c.c -oout/bin/hi~
-	- make: ~make -k -C <where> clean test~
+	- raw: ~cc c.c -oa.out~
+	- make: ~make~
+- Windows:
+	- raw: ~cc-env.bat && cl c.c -Fea.exe~
+	- make: ~cc-env.bat && make~
+to /build/.
 
 #+ATTR_HTML: :style text-align:left
 For /msvc/ there are need tricks to works with Emacs. Nore Emacs will
