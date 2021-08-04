@@ -60,17 +60,17 @@
 
 
 (defconst +cc*-compiler-bin+
-  (let ((cx (if-platform% 'windows-nt
-                (progn%
-                 (unless (executable-find% "cc-env.bat")
-                   (make-cc-env-bat))
-                 '("gcc" "cc-env.bat"))
-              '("cc" "gcc" "clang")))
-        (o (concat temporary-file-directory
-                   (if-platform% 'windows-nt
-                       "a.exe"
-                     "a.out")))
-        (f (concat temporary-file-directory "c.c")))
+  (let* ((cx (if-platform% 'windows-nt
+                 (progn%
+                  (unless (executable-find% "cc-env.bat")
+                    (make-cc-env-bat))
+                  '("gcc" "cc-env.bat"))
+               '("cc" "gcc" "clang")))
+         (d temporary-file-directory)
+         (o (concat d (if-platform% 'windows-nt
+                          "a.exe"
+                        "a.out")))
+         (f (concat d "c.c")))
     (catch 'block
       (dolist* (cc cx)
         (when (save-str-to-file (concat
@@ -80,9 +80,16 @@
                                 f)
           (let ((x (shell-command*
                        (format (if-platform% 'windows-nt
-                                   "%s %s -Fe%s"
+                                   (if (string= "cc-env.bat" cc)
+                                       (concat "%s %s -Fe%s -Fo" d)
+                                     "%s %s -o%s")
                                  "%s %s -o%s")
-                               cc f o))))
+                               (if-platform% 'windows-nt
+                                   (if (string= "cc-env.bat" cc)
+                                       "cc-env.bat && cl"
+                                     cc)
+                                 cc)
+                               f o))))
             (when (zerop (car x))
               (throw 'block cc)))))))
   "The name of C compiler executable.")
