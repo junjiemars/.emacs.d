@@ -671,8 +671,10 @@
           (when (and f (file-exists-p f))
             (compile
              (if-platform% 'windows-nt
-                 (format "cc-env.bat && cl %s -Fe%s.exe" c x)
-               (format "cd %s && cc %s -o%s" d c x)))
+                 (format "cc-env.bat && %s %s -Fe%s.exe"
+                         c +cc*-compiler-bin+ x)
+               (format "cd %s && %s %s -o%s"
+                       d +cc*-compiler-bin+ c x)))
             (should (zerop (car (shell-command* x))))))))))
 
 (when-fn%
