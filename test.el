@@ -661,21 +661,20 @@
       (let* ((d (path! (temporary-file-directory)))
              (c (concat d "c.c"))
              (x (concat d "a")))
-        (message "# d=%s, %s" (file-exists-p d))
+        (message "# d=%s, %s" d (file-exists-p d))
         (let ((f (save-str-to-file
                   (concat
-                   "#include <stdio.h>\n"
                    "int main(void) {\n"
-                   "  printf(\"good\");\n"
+                   "  return 0;"
                    "}")
                   c)))
           (when (and f (file-exists-p f))
             (compile
              (if-platform% 'windows-nt
-                 (format "cc-env.bat && %s %s -Fe%s.exe"
-                         c +cc*-compiler-bin+ x)
-               (format "cd %s && %s %s -o%s"
-                       d +cc*-compiler-bin+ c x)))
+                 (format "%s %s -Fe%s.exe -Fo%s"
+                         +cc*-compiler-bin+ c x d)
+               (format "%s %s -o%s"
+                       +cc*-compiler-bin+ c x)))
             (should (zerop (car (shell-command* x))))))))))
 
 (when-fn%
