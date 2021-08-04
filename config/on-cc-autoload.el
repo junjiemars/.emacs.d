@@ -60,30 +60,26 @@
 
 
 (defconst +cc*-compiler-bin+
-  (file-name-nondirectory%
-   (executable-find%
-    (if-platform% 'windows-nt
-        (or (let ((cc (executable-find% "cc-env.bat")))
-              (file-name-nondirectory cc))
-            (make-cc-env-bat))
-      "cc")
-    (lambda (cc)
-      (let ((c (concat temporary-file-directory "cc-bin.c")))
-        (save-str-to-file (concat
-                           "int main(int argc, char **argv) {\n"
-                           "  return 0;\n"
-                           "}")
-                          c)
-        (let ((x (shell-command* cc
-                   (concat (if-platform% 'windows-nt
-                               (concat
-                                " && cl -nologo"
-                                " " c
-                                " -Fo" temporary-file-directory
-                                " -Fe")
-                             (concat c " -o"))
-                           (concat temporary-file-directory "cc-bin.out")))))
-          (zerop (car x)))))))
+  (let ((cx (if-platform% 'windows-nt
+                '("gcc" "cc-env.bat")
+              '("cc" "gcc" "clang")))
+        (cmd (if-platform% 'windows-nt
+                 (if (string= "gcc")
+                     "%s %s -oa.exe"
+                   (concat "%s %s -Fea.exe " "-Fo "
+                           temporary-file-directory))
+               "%s %s -oa.out"))
+        (f (concat temporary-file-directory "c.c")))
+    (catch 'block
+      (dolist* (cc cx)
+        (when (save-str-to-file (concat
+                                 "int main(void) {\n"
+                                 "  return 0;\n"
+                                 "}")
+                                f)
+          (let ((x (shell-command* (format cmd cc f))))
+            (when (zerop (car x))
+              (throw 'block cc)))))))
   "The name of C compiler executable.")
 
 
