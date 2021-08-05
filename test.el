@@ -656,6 +656,12 @@
 ;; cc: conditional
 ;;;;
 
+
+(when-fn% 'check-vcvarsall-bat nil
+  (ert-deftest %z:cc:check-vcvarsall-bat ()
+    (should (message "# (check-vcvarsall-bat) = %s"
+                     (or (check-vcvarsall-bat) "")))))
+
 (when-fn% 'make-cc-env-bat nil
   (ert-deftest %z:cc:make-cc-env-bat ()
     (should (message "# (make-cc-env-bat) = %s"
@@ -669,6 +675,8 @@
                      (or (executable-find "cl") "")))
     (should (message "# (executable-find \"gcc\") = %s"
                      (or (executable-find "gcc") "")))
+    (should (message "# (executable-find \"make\") = %s"
+                     (or (executable-find "make") "")))
     (should (message "# (executable-find \"bash\") = %s"
                      (or (executable-find "bash") "")))
     (should (message "# +cc*-compiler-bin+ = %s"
