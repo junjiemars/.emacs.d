@@ -64,7 +64,7 @@
                  (progn%
                   (unless (executable-find% "cc-env.bat")
                     (make-cc-env-bat))
-                  '("cc-env.bat" "gcc" "cl"))
+                  '("cl" "cc-env.bat" "gcc"))
                '("cc" "gcc" "clang")))
          (d temporary-file-directory)
          (o (concat d (if-platform% 'windows-nt

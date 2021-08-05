@@ -656,7 +656,7 @@
 ;; cc: conditional
 ;;;;
 
-(when-var% make-cc-env-bat nil
+(when-fn% 'make-cc-env-bat nil
   (ert-deftest %z:cc:make-cc-env-bat ()
     (should (message "# make-cc-env-bat = %s"
                      (or (make-cc-env-bat) "")))))
