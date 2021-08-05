@@ -669,10 +669,11 @@
 
 (when-var% +cc*-compiler-bin+ nil
   (ert-deftest %z:cc:+cc*-compiler-bin+ ()
-    (should (message "# (executable-find \"cc-env.bat\") = %s"
-                     (or (executable-find "cc-env.bat") "")))
-    (should (message "# (executable-find \"cl\") = %s"
-                     (or (executable-find "cl") "")))
+    (when-platform% 'windows-nt
+      (should (message "# (executable-find \"cc-env.bat\") = %s"
+                       (or (executable-find "cc-env.bat") "")))
+      (should (message "# (executable-find \"cl\") = %s"
+                       (or (executable-find "cl") ""))))
     (should (message "# (executable-find \"gcc\") = %s"
                      (or (executable-find "gcc") "")))
     (should (message "# (executable-find \"clang\") = %s"
