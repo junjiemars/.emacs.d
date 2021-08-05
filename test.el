@@ -651,42 +651,48 @@
      (should (delete-package!1 'htmlize))
      (when already (should (install-package!1 'htmlize))))))
 
+
 ;;;;
-;; cc*
+;; cc: conditional
 ;;;;
 
+(when-var% make-cc-env-bat nil
+  (ert-deftest %z:cc:make-cc-env-bat ()
+    (should (message "# make-cc-env-bat = %s"
+                     (or (make-cc-env-bat) "")))))
+
 (when-var% +cc*-compiler-bin+ nil
-  (ert-deftest %cc*:+cc*-compiler-bin+ ()
+  (ert-deftest %z:cc:+cc*-compiler-bin+ ()
     (should (message "# +cc*-compiler-bin+ = %s"
                      (or +cc*-compiler-bin+ "")))))
 
 (when-fn%
     'cc*-check-include nil
-  (ert-deftest %cc*:cc*-check-include ()
+  (ert-deftest %z:cc:cc*-check-include ()
     (should (message "# cc*-check-include = %s"
                      (or (cc*-check-include) "")))))
 
 (when-fn%
     'cc*-system-include nil
-  (ert-deftest %cc*:cc*-system-include ()
+  (ert-deftest %z:cc:cc*-system-include ()
     (should (message "# cc*-system-include = %s"
                      (or (cc*-system-include) "")))))
 
 
 ;;;;
-;; trans
+;; trans: conditional
 ;;;;
 
 (when-fn%
     'roman->arabic nil
-  (ert-deftest %trans:roman->arabic ()
+  (ert-deftest %z:trans:roman->arabic ()
     (should (= 1990 (roman->arabic (split-string* "MCMXC" "" t) 0)))
     (should (= 2008 (roman->arabic (split-string* "MMVIII" "" t) 0)))
     (should (= 1666 (roman->arabic (split-string* "MDCLXVI" "" t) 0)))))
 
 (when-fn%
     'chinese->arabic nil
-  (ert-deftest %trans:chinese->arabic ()
+  (ert-deftest %z:trans:chinese->arabic ()
     (should (= 91234567 (chinese->arabic
                          (split-string*
                           "玖仟壹佰贰拾叁万肆仟伍佰陆拾柒" "" t)
