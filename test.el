@@ -675,6 +675,8 @@
                      (or (executable-find "cl") "")))
     (should (message "# (executable-find \"gcc\") = %s"
                      (or (executable-find "gcc") "")))
+    (should (message "# (executable-find \"clang\") = %s"
+                     (or (executable-find "clang") "")))
     (should (message "# (executable-find \"make\") = %s"
                      (or (executable-find "make") "")))
     (should (message "# (executable-find \"bash\") = %s"
