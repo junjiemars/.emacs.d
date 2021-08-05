@@ -666,14 +666,12 @@
     (should (message "# +cc*-compiler-bin+ = %s"
                      (or +cc*-compiler-bin+ "")))))
 
-(when-fn%
-    'cc*-check-include nil
+(when-fn% 'cc*-check-include nil
   (ert-deftest %z:cc:cc*-check-include ()
     (should (message "# cc*-check-include = %s"
                      (or (cc*-check-include) "")))))
 
-(when-fn%
-    'cc*-system-include nil
+(when-fn% 'cc*-system-include nil
   (ert-deftest %z:cc:cc*-system-include ()
     (should (message "# cc*-system-include = %s"
                      (or (cc*-system-include) "")))))
@@ -683,15 +681,13 @@
 ;; trans: conditional
 ;;;;
 
-(when-fn%
-    'roman->arabic nil
+(when-fn% 'roman->arabic nil
   (ert-deftest %z:trans:roman->arabic ()
     (should (= 1990 (roman->arabic (split-string* "MCMXC" "" t) 0)))
     (should (= 2008 (roman->arabic (split-string* "MMVIII" "" t) 0)))
     (should (= 1666 (roman->arabic (split-string* "MDCLXVI" "" t) 0)))))
 
-(when-fn%
-    'chinese->arabic nil
+(when-fn% 'chinese->arabic nil
   (ert-deftest %z:trans:chinese->arabic ()
     (should (= 91234567 (chinese->arabic
                          (split-string*
