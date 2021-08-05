@@ -658,8 +658,16 @@
 
 (when-fn% 'make-cc-env-bat nil
   (ert-deftest %z:cc:make-cc-env-bat ()
-    (should (message "# make-cc-env-bat = %s"
-                     (or (make-cc-env-bat) "")))))
+    (should (message "# (make-cc-env-bat) = %s"
+                     (or (make-cc-env-bat) "")))
+    (should (message "# (executable-find \"cc-env.bat\") = %s"
+                     (or (executable-find "cc-env.bat") "")))
+    (should (message "# (executable-find \"cl\") = %s"
+                     (or (executable-find "cl") "")))
+    (should (message "# (executable-find \"gcc\") = %s"
+                     (or (executable-find "gcc") "")))
+    (should (message "# (executable-find \"bash\") = %s"
+                     (or (executable-find "bash") "")))))
 
 (when-var% +cc*-compiler-bin+ nil
   (ert-deftest %z:cc:+cc*-compiler-bin+ ()
