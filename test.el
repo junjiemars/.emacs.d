@@ -682,8 +682,6 @@
                      (or (executable-find "make") "")))
     (should (message "# (executable-find \"bash\") = %s"
                      (or (executable-find "bash") "")))
-    (should (message "# (executable-find \"bash\") = %s"
-                     (or (executable-find "bash") "")))
     (should (message "# +cc*-compiler-bin+ = %s"
                      (or +cc*-compiler-bin+ "")))
     (should (message "# system-type = %s" system-type))

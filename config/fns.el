@@ -347,8 +347,10 @@ If you want to set the environment temporarily that
    (shell-command* \"echo 'a' | grep 'a'\"))
 Optional argument ARGS for COMMAND."
   (declare (indent 1))
-  (let ((buf (gensym*)))
-    `(let ((,buf (generate-new-buffer " *temp*")))
+  (let ((cmd (gensym*))
+        (buf (gensym*)))
+    `(let ((,cmd ,command)
+           (,buf (generate-new-buffer (symbol-name (gensym* "sc")))))
        (with-current-buffer ,buf
          (cons (let ((x (call-process
                          shell-file-name nil ,buf nil
