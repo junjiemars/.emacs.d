@@ -74,11 +74,14 @@ See also: `parse-colon-path'."
 
 
 (defmacro copy-env-vars! (env vars)
-  `(dolist* (v ,vars)
-     (when (and (stringp v) (not (string= v "")))
-       (let ((v1 (cdr (assoc** v ,env #'string=))))
-         (when (stringp v1)
-           (setenv v v1))))))
+  (let ((e (gensym*)))
+    `(let ((,e ,env))
+       (dolist* (v ,vars)
+         (when (and (stringp v) (not (string= v "")))
+           (let ((v1 (cdr (assoc** v ,e #'string=))))
+             (when (stringp v1)
+               (setenv v v1))))))))
+
 
 (defmacro spin-env-vars! (vars)
   `(dolist* (v ,vars)
@@ -88,7 +91,9 @@ See also: `parse-colon-path'."
 
 
 (defmacro copy-exec-path! (path)
-  `(when ,path (setq exec-path ,path)))
+  (let ((p (gensym*)))
+    `(let ((,p ,path))
+       (when ,p (setq exec-path ,p)))))
 
 
 
