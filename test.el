@@ -682,8 +682,13 @@
                      (or (executable-find "make") "")))
     (should (message "# (executable-find \"bash\") = %s"
                      (or (executable-find "bash") "")))
+    (should (message "# (executable-find \"bash\") = %s"
+                     (or (executable-find "bash") "")))
     (should (message "# +cc*-compiler-bin+ = %s"
-                     (or +cc*-compiler-bin+ "")))))
+                     (or +cc*-compiler-bin+ "")))
+    (should (message "# system-type = %s" system-type))
+    (should (message "# platform-arch = %s" (platform-arch)))
+    (should (message "# emacs-arch = %s" (emacs-arch)))))
 
 (when-fn% 'cc*-check-include nil
   (ert-deftest %z:cc:cc*-check-include ()
