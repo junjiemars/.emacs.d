@@ -14,7 +14,25 @@
 
 (require 'ert)
 
-;;; init
+;;;
+;; env
+;;;
+
+(ert-deftest %a:env ()
+  (should (message "# system-type = %s" system-type))
+  (should (message "# platform-arch = %s" (platform-arch)))
+  (should (message "# emacs-arch = %s" (emacs-arch)))
+  (should (message "# system-configuration-options = %s"
+                   system-configuration-options))
+  (should (message "# system-configuration-features = %s"
+                   system-configuration-features))
+  (should (message "# sh = %s" (or (executable-find "sh") ""))))
+
+
+;;;
+;; init
+;;;
+
 
 (ert-deftest %init:comment ()
   (should-not (comment))
@@ -152,7 +170,10 @@
                       (not (unless-platform% 'gnu/linux t)))))
         ((if-platform% 'windows-nt t)
          (should (and (when-platform% 'windows-nt t)
-                      (not (unless-platform% 'windows-nt t)))))))
+                      (not (unless-platform% 'windows-nt t)))))
+        ((if-platform% '(windows-nt cygwin) t)
+         (should (and (when-platform% '(windows-nt cygwin) t)
+                      (not (unless-platform% '(darwin gnu/linux))))))))
 
 (ert-deftest %boot:setq% ()
   "uncompleted..."
@@ -653,7 +674,7 @@
 
 
 ;;;;
-;; cc: conditional
+;; conditional: cc
 ;;;;
 
 
@@ -680,13 +701,9 @@
                      (or (executable-find "clang") "")))
     (should (message "# (executable-find \"make\") = %s"
                      (or (executable-find "make") "")))
-    (should (message "# (executable-find \"bash\") = %s"
-                     (or (executable-find "bash") "")))
+
     (should (message "# +cc*-compiler-bin+ = %s"
-                     (or +cc*-compiler-bin+ "")))
-    (should (message "# system-type = %s" system-type))
-    (should (message "# platform-arch = %s" (platform-arch)))
-    (should (message "# emacs-arch = %s" (emacs-arch)))))
+                     (or +cc*-compiler-bin+ "")))))
 
 (when-fn% 'cc*-check-include nil
   (ert-deftest %z:cc:cc*-check-include ()
@@ -700,7 +717,7 @@
 
 
 ;;;;
-;; trans: conditional
+;; conditional: trans
 ;;;;
 
 (when-fn% 'roman->arabic nil

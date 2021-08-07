@@ -103,7 +103,9 @@ Return the value of THEN or the value of the last of the ELSE’s."
 (defmacro if-platform% (os then &rest else)
   "If OS eq `system-type' yield non-nil, do THEN, else do ELSE..."
   (declare (indent 2))
-  `(if% (eq system-type ,os)
+  `(if% (cond ((consp ,os)
+               (memq system-type ,os))
+              (t (eq system-type ,os)))
        ,then
      (progn% ,@else)))
 
