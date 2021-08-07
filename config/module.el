@@ -21,7 +21,7 @@
 ;;   "Indicate `initialize-package-repository!' whether has been called.")
 
 
-(defsubst initialize-package-repository! ()
+(defun initialize-package-repository! ()
   (setq% package-check-signature
          (*self-env-spec* :get :package :package-check-signature)
          'package)
@@ -45,49 +45,59 @@
   (package-refresh-contents))
 
 
-(defsubst check-package-name (package)
+(defmacro check-package-name (package)
   "Check PACKAGE is a symbol or a tar file."
-  (cond ((and (symbolp package)
-              (not (null package)))
-         (cons package nil))
-        ((and (stringp package)
-              (file-exists-p package))
-         (cons (intern (match-string* "\\(.*\\)-[.0-9]+\\'"
-                                      (file-name-base* package) 1))
-               package))
-        (t nil)))
+  (let ((p (gensym*)))
+    `(let ((,p ,package))
+       (cond ((and (symbolp ,p)
+                   (not (null ,p)))
+              (cons ,p nil))
+             ((and (stringp ,p)
+                   (file-exists-p ,p))
+              (cons (intern (match-string* "\\(.*\\)-[.0-9]+\\'"
+                                           (file-name-base* ,p) 1))
+                    ,p))
+             (t nil)))))
 
 
-(defsubst delete-package! (package)
+(defmacro delete-package! (package)
   "Delete PACKAGE."
-  (when (and (not (null package))
-             (symbolp package))
-    (if-version%
-        <= 25.0
-        (package-delete (cadr (assq package package-alist)) t nil)
-      (if-version%
-          <= 24.4
-          (package-delete (cadr (assq package package-alist)))
-        (package-delete
-         (symbol-name package)
-         (mapconcat #'identity
-                    (mapcar (lambda (x)
-                              (number-to-string x))
-                            (aref (cdr (assq package package-alist)) 0))
-                    "."))))))
+  (let ((p (gensym*)))
+    `(let ((,p ,package))
+       (when (and (not (null ,p))
+                  (symbolp ,p))
+         (if-version%
+             <= 25.0
+             (package-delete (cadr (assq ,p package-alist)) t nil)
+           (if-version%
+               <= 24.4
+               (package-delete (cadr (assq ,p package-alist)))
+             (package-delete
+              (symbol-name ,p)
+              (mapconcat #'identity
+                         (mapcar (lambda (x)
+                                   (number-to-string x))
+                                 (aref (cdr (assq ,p package-alist)) 0))
+                         "."))))))))
 
 
-(defsubst install-package! (package &optional tar)
+(defmacro install-package! (package &optional tar)
   "Install PACKAGE."
-  (if tar
-      (package-install-file package)
-    (unless (*repository-initialized*)
-      (initialize-package-repository!)
-      (*repository-initialized* t))
-    (if-version%
-        <= 25.0
-        (package-install package t)
-      (package-install package))))
+  (let ((p (gensym*))
+        (f (gensym*))
+        (x (gensym*)))
+    `(let ((,p ,package)
+           (,f ,tar)
+           (,x (*repository-initialized*)))
+       (if ,f
+           (package-install-file ,p)
+         (unless ,x
+           (initialize-package-repository!)
+           (setq ,x (*repository-initialized* t)))
+         (if-version%
+             <= 25.0
+             (package-install ,p t)
+           (package-install ,p))))))
 
 
 ;; Package Initialize
@@ -103,7 +113,7 @@
 (package-initialize)
 
 
-(defsubst parse-package-spec! (spec &optional remove-unused)
+(defun parse-package-spec! (spec &optional remove-unused)
   "Parse SPEC, install, remove and setup packages."
   (dolist* (s spec)
     (let ((ss (cdr s)))
@@ -130,8 +140,7 @@
 (*self-packages*
  :put :|basic|
  `(:cond t :packages (paredit
-                      rainbow-delimiters
-                      ,(when-version% <= 24.1 'yaml-mode))))
+                      rainbow-delimiters)))
 
 (package-spec-:allowed-p
   ;; Load self packages spec
