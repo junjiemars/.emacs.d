@@ -273,13 +273,13 @@ Optional argument DELETE-BOOSTER delete booster file after FILE be compiled."
 (defun compile! (&rest units)
   "Compile and load UNITS."
   (declare (indent 0))
-  (dolist* (us units)
-    (when us
+  (dolist* (u units)
+    (when u
       (compile-and-load-file*
-       (compile-unit->file us)
-       (compile-unit->only-compile us)
-       (compile-unit->delete-booster us)
-       (compile-unit->dir us)))))
+       (compile-unit->file u)
+       (compile-unit->only-compile u)
+       (compile-unit->delete-booster u)
+       (compile-unit->dir u)))))
 
 
  ;; end of compile macro
