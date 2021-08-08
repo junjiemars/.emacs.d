@@ -17,8 +17,8 @@ echo_env() {
 }
 
 make_env() {
-  local d="`dirname $_ENV_PRO_`"
-  if [ -d "${_ENV_PRO_}" ]; then
+  local d="`dirname ${_ROOT_}/${_ENV_PRO_}`"
+  if [ -d "${_ROOT_}/${_ENV_PRO_}" ]; then
     return 0
   else
     mkdir -p "$d"
@@ -26,8 +26,8 @@ make_env() {
 }
 
 restore_env() {
-  if [ -f "${_ENV_PRO_}" ]; then
-    rm "${_ENV_PRO_}"
+  if [ -f "${_ROOT_}/${_ENV_PRO_}" ]; then
+    rm "${_ROOT_}/${_ENV_PRO_}"
   else
     return 0
   fi
@@ -42,26 +42,19 @@ test_bone() {
   (load \"${_ROOT_}/init.el\")
   (clean-compiled-files))"
   
-#   ${_EMACS_} --batch                                            \
-#              --no-window-system                                 \
-#              --eval="
-# (let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))
-#   (load (expand-file-name \"${_ROOT_}/init.el\"))
-#   (clean-compiled-files))"
+  echo_env "bone|compile"
+  ${_EMACS_} --batch                                            \
+             --no-window-system                                 \
+             --eval="
+(let ((user-emacs-directory \"${_ROOT_}/\"))
+  (load \"${_ROOT_}/init.el\"))"
 
-#   echo_env "bone|compile"
-#   ${_EMACS_} --batch                                            \
-#              --no-window-system                                 \
-#              --eval="
-# (let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))
-#   (load (expand-file-name \"${_ROOT_}/init.el\")))"
-
-#  echo_env "bone|boot"
-#   ${_EMACS_} --batch                                            \
-#              --no-window-system                                 \
-#              --eval="
-# (let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))
-#   (load (expand-file-name \"${_ROOT_}/init.el\")))"
+ echo_env "bone|boot"
+  ${_EMACS_} --batch                                            \
+             --no-window-system                                 \
+             --eval="
+(let ((user-emacs-directory \"${_ROOT_}/\"))
+  (load \"${_ROOT_}/init.el\"))"
 }
 
 test_debug() {
@@ -88,7 +81,7 @@ test_axiom() {
     return 0
   fi
 
-  cat <<END > "$_ENV_PRO_"
+  cat <<END > "${_ROOT_}/${_ENV_PRO_}"
 (*self-paths* :put :env-spec nil)
 (*self-paths* :put :package-spec nil)
 (*self-paths* :put :epilogue nil)
@@ -127,7 +120,7 @@ test_package() {
     return 0
   fi
 
-  cat <<END > "$_ENV_PRO_"
+  cat <<END > "${_ROOT_}/${_ENV_PRO_}"
 (*self-paths* :put :package-spec nil)
 (*self-paths* :put :env-spec nil)
 (*self-paths* :put :epilogue nil)
@@ -167,7 +160,7 @@ test_extra() {
     return 0
   fi
 
-  cat <<END > "$_ENV_PRO_"
+  cat <<END > "${_ROOT_}/${_ENV_PRO_}"
 (*self-paths* :put :package-spec nil)
 (*self-paths* :put :env-spec nil)
 (*self-paths* :put :epilogue nil)
@@ -229,18 +222,10 @@ _ENV_VER_="`$_EMACS_ --batch --eval='(prin1 emacs-version)'`"
 _ENV_ERT_="`$_EMACS_ --batch --eval='(prin1 (require (quote ert) nil t))'`"
 _ENV_PKG_="`$_EMACS_ --batch --eval='(prin1 (require (quote package) nil t))'`"
 
-pwd
-echo "_ROOT_=$_ROOT_"
-echo "_ENV_PRO_=$_ENV_PRO_"
-echo "_XXX_=`pwd`"
-ls -alh
-
 if [ "$_WINNT_" = "yes" ]; then
   _ROOT_="`echo $_ROOT_ | sed -e 's#/\([a-z]\)/\(.*\)$#\1:/\2#g'`"
-  _ENV_PRO_="${_ROOT_}/${_ENV_PRO_}"
 fi
-echo "_ROOT_=$_ROOT_"
-echo "_ENV_PRO_=$_ENV_PRO_"
+
 
 # make env
 make_env
