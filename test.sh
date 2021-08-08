@@ -232,6 +232,7 @@ _ENV_PKG_="`$_EMACS_ --batch --eval='(prin1 (require (quote package) nil t))'`"
 
 # make env
 make_env
+pwd
 ls -alh
 
 # test
