@@ -18,7 +18,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install emacs
+          sudo apt-get install emacs-full
       - name: Test
         run: |
           _TEST_=bone ./test.sh
