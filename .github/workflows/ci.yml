@@ -66,17 +66,16 @@ jobs:
 
   Windows:
     runs-on: windows-latest
-    # defaults:
-    #   run:
-    #     shell: cmd
+    defaults:
+      run:
+        shell: gitbash
     steps:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 1 # without checkout history and tags
     - name: Install Dependencies
-      uses: crazy-max/ghaction-chocolatey@v1.5.0
-      with:
-        args: install git make emacs
+      run: |
+        choco install make emacs
     - name: Test
       run: |
         _TEST_=bone ./test.sh
