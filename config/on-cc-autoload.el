@@ -9,7 +9,7 @@
 
 ;; msvc host environment
 
-(when-platform% '(windows-nt cygwin)
+(when-platform% 'windows-nt
 
   (defun check-vcvarsall-bat ()
     "Return the path of vcvarsall.bat if which exists."
@@ -32,7 +32,7 @@
              (when (file-exists-p bat) bat)))))))
 
 
-(when-platform% '(windows-nt cygwin)
+(when-platform% 'windows-nt
 
   (defun make-cc-env-bat ()
     "Make cc-env.bat in `exec-path'."
@@ -60,14 +60,14 @@
 
 
 (defconst +cc*-compiler-bin+
-  (let* ((cx (if-platform% '(windows-nt cygwin)
+  (let* ((cx (if-platform% 'windows-nt
                  (progn%
                   (unless (executable-find% "cc-env.bat")
                     (make-cc-env-bat))
                   '("cc-env.bat" "cl" "gcc"))
                '("cc" "gcc" "clang")))
          (d temporary-file-directory)
-         (o (concat d (if-platform% '(windows-nt cygwin)
+         (o (concat d (if-platform% 'windows-nt
                           "a.exe"
                         "a.out")))
          (f (concat d "c.c")))
@@ -79,12 +79,12 @@
                                  "}")
                                 f)
           (let ((x (shell-command*
-                       (format (if-platform% '(windows-nt cygwin)
+                       (format (if-platform% 'windows-nt
                                    (if (string= "cc-env.bat" cc)
                                        (concat "%s %s -Fe%s -Fo" d)
                                      "%s %s -o%s")
                                  "%s %s -o%s")
-                               (if-platform% '(windows-nt cygwin)
+                               (if-platform% 'windows-nt
                                    (if (string= "cc-env.bat" cc)
                                        "cc-env.bat && cl"
                                      cc)
@@ -95,7 +95,7 @@
   "The name of C compiler executable.")
 
 
-(when-platform% '(windows-nt cygwin)
+(when-platform% 'windows-nt
 
   (defun make-xargs-bin ()
     "Make a GNU's xargs alternation in `exec-path'."
@@ -127,7 +127,7 @@
             (file-name-nondirectory exe)))))))
 
 
-(when-platform% '(windows-nt cygwin)
+(when-platform% 'windows-nt
 
   (defconst +cc*-xargs-bin+
     (file-name-nondirectory%
@@ -144,7 +144,7 @@
     "The name of xargs executable."))
 
 
-(when-platform% '(windows-nt cygwin)
+(when-platform% 'windows-nt
 
   (defun make-cc-dmacro-bin (&optional options)
     "Make cc-dmacro.exe for printing predefined macros."
@@ -312,7 +312,7 @@
                    (shell-command* "ssh"
                      (concat (remote-norm->user@host remote)
                              " \"echo '' | cc -v -E 2>&1 >/dev/null -\"")))
-               (if-platform% '(windows-nt cygwin)
+               (if-platform% 'windows-nt
                    ;; Windows: msmvc
                    (shell-command* +cc*-compiler-bin+)
                  ;; Darwin/Linux: clang or gcc
@@ -320,7 +320,7 @@
                                          +cc*-compiler-bin+
                                          " -v -E 2>&1 >/dev/null -")))))
         (parser (lambda (pre)
-                  (if-platform% '(windows-nt cygwin)
+                  (if-platform% 'windows-nt
                       ;; Windows: msvc
                       (mapcar
                        (lambda (x) (posix-path x))
@@ -470,7 +470,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
                  'cmacexp)
           ad-do-it)
       ;; local: msvc, clang, gcc
-      (if-platform% '(windows-nt cygwin)
+      (if-platform% 'windows-nt
           ;; cl.exe cannot retrieve from stdin.
           (when (and +cc*-compiler-bin+ +cc*-xargs-bin+)
             (let* ((tmp (make-temp-file
@@ -502,7 +502,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
          (dump (if remote
                    (concat "ssh " (remote-norm->user@host remote)
                            " \'" cmd "\'")
-                 (if-platform% '(windows-nt cygwin)
+                 (if-platform% 'windows-nt
                      (and +cc*-compiler-bin+ (make-cc-dmacro-bin opts))
                    cmd))))
     (with-current-buffer
