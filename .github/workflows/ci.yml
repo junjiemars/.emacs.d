@@ -68,7 +68,7 @@ jobs:
     runs-on: windows-latest
     defaults:
       run:
-        shell: cmd
+        shell: bash {0}
     steps:
     - uses: actions/checkout@v2
       with:
