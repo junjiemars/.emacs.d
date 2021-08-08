@@ -66,8 +66,10 @@
 (defmacro var->paths (var)
   "Refine VAR like $PATH to list by `path-separator'.
 See also: `parse-colon-path'."
-  `(when (stringp ,var)
-     (split-string* ,var path-separator t "[ ]+\n")))
+  (let ((v (gensym*)))
+    `(let ((,v ,var))
+       (when (stringp ,v)
+         (split-string* ,v path-separator t "[ ]+\n")))))
 
 
 

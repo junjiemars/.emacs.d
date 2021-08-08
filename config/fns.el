@@ -260,31 +260,42 @@ Optional argument DOCSTRING about FEATURE."
 ;; Strings
 ;;;;
 
-(defsubst string-trim> (s &optional rr)
+(defmacro string-trim> (s &optional rr)
   "Remove tailing whitespaces or matching of RR at the end of S."
-  (when (stringp s)
-    (let ((r (if rr (concat rr "\\'") "[ \t\n\r]+\\'" )))
-      (if (string-match r s)
-          (replace-match "" t t s)
-        s))))
+  (let ((s1 (gensym*))
+        (r1 (gensym*)))
+    `(let ((,s1 ,s))
+       (when (stringp ,s1)
+         (let ((,r1 (if ,rr (concat ,rr "\\'") "[ \t\n\r]+\\'" )))
+           (if (string-match ,r1 ,s1)
+               (replace-match "" t t ,s1)
+             ,s1))))))
 
 
-(defsubst string-trim< (s &optional lr)
+(defmacro string-trim< (s &optional lr)
   "Remove leading whitespaces or matching of LR from S."
-  (when (stringp s)
-    (let ((r (if lr (concat "\\`" lr) "\\`[ \t\n\r]+")))
-      (if (string-match r s)
-          (replace-match "" t t s)
-        s))))
+  (let ((s1 (gensym*))
+        (l1 (gensym*))
+        (r1 (gensym*)))
+    `(let ((,s1 ,s))
+       (when (stringp ,s1)
+         (let* ((,l1 ,lr)
+                (,r1 (if ,l1 (concat "\\`" ,l1) "\\`[ \t\n\r]+")))
+           (if (string-match ,r1 ,s1)
+               (replace-match "" t t ,s1)
+             ,s1))))))
 
 
-(defsubst string-trim>< (s &optional rr lr)
+(defmacro string-trim>< (s &optional rr lr)
   "Remove leading and trailing whitespaces or matching of LR/RR from S."
-  (let ((s1 (string-trim> s rr)))
-    (string-trim< s1 lr)))
+  (let ((s1 (gensym*))
+        (r1 (gensym*)))
+    `(let* ((,r1 ,rr)
+            (,s1 (string-trim> ,s ,r1)))
+       (string-trim< ,s1 ,lr))))
 
 
-(defsubst match-string* (regexp string num &optional start)
+(defmacro match-string* (regexp string num &optional start)
   "Return string of text match for REGEXP in STRING.
 
 Return nil if NUMth pair didn’t match, or there were less than NUM pairs.
@@ -292,10 +303,14 @@ NUM specifies which parenthesized expression in the REGEXP.
 If START is non-nil, start search at that index in STRING.
 
 See `string-match' and `match-string'."
-  (when (and (stringp string)
-             (string-match regexp string start)
-             (match-beginning num))
-    (substring string (match-beginning num) (match-end num))))
+  (let ((s (gensym*))
+        (n (gensym*)))
+    `(let ((,s ,string)
+           (,n ,num))
+       (when (and (stringp ,s)
+                  (string-match ,regexp ,s ,start)
+                  (match-beginning ,n))
+         (substring ,s (match-beginning ,n) (match-end ,n))))))
 
 
 (defmacro split-string* (string &optional separators omit-nulls trim)

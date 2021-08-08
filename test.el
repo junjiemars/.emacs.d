@@ -376,7 +376,7 @@
   (should (string= "abc" (string-trim> "abcXX" "XX")))
   (should (string= "abc" (string-trim> "abcXX" "X+"))))
 
-(ert-deftest %basic:string-trim< ()
+(ert-deftest %fns:string-trim< ()
   (should-not (string-trim< nil "X"))
   (should (string= "abc" (string-trim< "  \n abc")))
   (should (string= "abc" (string-trim< "XXabc" "XX")))
@@ -714,7 +714,7 @@
 (when-fn% 'cc*-system-include nil
   (ert-deftest %z:cc:cc*-system-include ()
     (should (message "# cc*-system-include = %s"
-                     (or (cc*-system-include) "")))))
+                     (or (cc*-system-include t) "")))))
 
 
 ;;;;
