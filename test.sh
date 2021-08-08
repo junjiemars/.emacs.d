@@ -88,7 +88,7 @@ test_axiom() {
 (*self-paths* :put :epilogue nil)
 END
 
-  echo "cat < ${_ROOT_}/${_ENV_PRO_}"
+  echo "# cat < ${_ROOT_}/${_ENV_PRO_}"
   cat < ${_ROOT_}/${_ENV_PRO_}
 
   echo_env "axiom|clean"
@@ -135,7 +135,7 @@ test_package() {
        :allowed t))
 END
 
-  echo "cat  < ${_ROOT_}/${_ENV_PRO_}"
+  echo "# cat < ${_ROOT_}/${_ENV_PRO_}"
   cat < "${_ROOT_}/${_ENV_PRO_}"
 
   echo_env "package|clean"
@@ -201,7 +201,7 @@ test_extra() {
   :compile \`(,(compile-unit% (emacs-home* "config/use-slime-autoload.el")))))
 END
 
-  echo "cat < ${_ROOT_}/${_ENV_PRO_}"
+  echo "# cat < ${_ROOT_}/${_ENV_PRO_}"
   cat < "${_ROOT_}/${_ENV_PRO_}"
 
   echo_env "extra|clean"
