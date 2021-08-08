@@ -325,14 +325,16 @@ Optional argument TRIM regexp used to trim."
 
 (defmacro posix-path (path)
   "Transpose PATH to posix path."
-  `(when (stringp ,path)
-     (if (string-match "^\\([A-Z]:\\)" ,path)
-         (replace-regexp-in-string "\\\\"
-                                   "/"
-                                   (replace-match
-                                    (downcase (match-string 1 ,path))
-                                    t t ,path))
-       ,path)))
+  (let ((p (gensym*)))
+    `(let ((,p ,path))
+       (when (stringp ,p)
+         (if (string-match "^\\([A-Z]:\\)" ,p)
+             (replace-regexp-in-string "\\\\"
+                                       "/"
+                                       (replace-match
+                                        (downcase (match-string 1 ,p))
+                                        t t ,p))
+           ,p)))))
 
 
 (defmacro shell-command* (command &rest args)
