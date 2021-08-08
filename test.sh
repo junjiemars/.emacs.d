@@ -3,7 +3,8 @@
 _ROOT_="${_ROOT_:-`cd -- $(dirname -- $0) && pwd`}"
 _EMACS_="${_EMACS_:-emacs}"
 _TEST_="${_TEST_:-bone}"
-_ENV_PRO_="${_ROOT_}/private/self-prologue.el"
+_ENV_HOM_=
+_ENV_PRO_="${_ENV_HOM_}/private/self-prologue.el"
 _ENV_VER_=
 _ENV_ERT_=
 _ENV_PKG_=
@@ -12,7 +13,6 @@ echo_env() {
   echo "------------"
   echo "VERSION: $_ENV_VER_"
   echo "TEST: $1"
-  echo "ROOT: $_ROOT_"
   echo "------------"
 }
 
@@ -41,20 +41,27 @@ test_bone() {
 (let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))
   (load (expand-file-name \"${_ROOT_}/init.el\"))
   (clean-compiled-files))"
+  
+#   ${_EMACS_} --batch                                            \
+#              --no-window-system                                 \
+#              --eval="
+# (let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))
+#   (load (expand-file-name \"${_ROOT_}/init.el\"))
+#   (clean-compiled-files))"
 
-  echo_env "bone|compile"
-  ${_EMACS_} --batch                                            \
-             --no-window-system                                 \
-             --eval="
-(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))
-  (load (expand-file-name \"${_ROOT_}/init.el\")))"
+#   echo_env "bone|compile"
+#   ${_EMACS_} --batch                                            \
+#              --no-window-system                                 \
+#              --eval="
+# (let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))
+#   (load (expand-file-name \"${_ROOT_}/init.el\")))"
 
- echo_env "bone|boot"
-  ${_EMACS_} --batch                                            \
-             --no-window-system                                 \
-             --eval="
-(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))
-  (load (expand-file-name \"${_ROOT_}/init.el\")))"
+#  echo_env "bone|boot"
+#   ${_EMACS_} --batch                                            \
+#              --no-window-system                                 \
+#              --eval="
+# (let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))
+#   (load (expand-file-name \"${_ROOT_}/init.el\")))"
 }
 
 test_debug() {
@@ -218,12 +225,14 @@ END
 }
 
 # check env
+_ENV_HOM_="`$_EMACS_ --batch --eval='(prin1 (expand-file-name user-emacs-directory))'`"
 _ENV_VER_="`$_EMACS_ --batch --eval='(prin1 emacs-version)'`"
 _ENV_ERT_="`$_EMACS_ --batch --eval='(prin1 (require (quote ert) nil t))'`"
 _ENV_PKG_="`$_EMACS_ --batch --eval='(prin1 (require (quote package) nil t))'`"
 
 # make env
 make_env
+ls -alh
 
 # test
 case "${_TEST_}" in

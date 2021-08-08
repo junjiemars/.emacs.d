@@ -79,8 +79,8 @@ jobs:
     - name: Test
       run: |
         _TEST_=bone ./test.sh
-        _TEST_=axiom ./test.sh
-        _TEST_=package ./test.sh
+        # _TEST_=axiom ./test.sh
+        # _TEST_=package ./test.sh
 
   # Matrix-Linux:
   #   runs-on: ubuntu-latest
