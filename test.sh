@@ -12,6 +12,7 @@ echo_env() {
   echo "------------"
   echo "VERSION: $_ENV_VER_"
   echo "TEST: $1"
+  echo "ROOT: $_ROOT_"
   echo "------------"
 }
 
