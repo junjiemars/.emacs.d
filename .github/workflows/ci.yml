@@ -68,7 +68,7 @@ jobs:
     runs-on: windows-latest
     defaults:
       run:
-        shell: bash
+        shell: bash {0}
     steps:
     - uses: actions/checkout@v2
       with:
@@ -78,7 +78,7 @@ jobs:
         choco install make emacs
     - name: Test
       run: |
-        _TEST_=bone ./test.sh
+        _TEST_=bone _WINNT_=yes ./test.sh
         # _TEST_=axiom ./test.sh
         # _TEST_=package ./test.sh
 

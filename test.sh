@@ -3,8 +3,8 @@
 _ROOT_="${_ROOT_:-`cd -- $(dirname -- $0) && pwd`}"
 _EMACS_="${_EMACS_:-emacs}"
 _TEST_="${_TEST_:-bone}"
-_ENV_HOM_=
-_ENV_PRO_="${_ENV_HOM_}/private/self-prologue.el"
+_WINNT_="${_WINNT_:-no}"
+_ENV_PRO_="${_ROOT_}/private/self-prologue.el"
 _ENV_VER_=
 _ENV_ERT_=
 _ENV_PKG_=
@@ -234,8 +234,15 @@ _ENV_PKG_="`$_EMACS_ --batch --eval='(prin1 (require (quote package) nil t))'`"
 make_env
 pwd
 echo "_ROOT_=$_ROOT_"
+echo "_ENV_PRO_=$_ENV_PRO_"
 echo "_XXX_=`pwd`"
 ls -alh
+
+if [ "$_WINNT_" = "yes" ]; then
+  _ROOT_="`echo $_ROOT_ | sed -e 's#/\([a-z]\)/\(.*\)$#\1:/\2#g'`"
+fi
+echo "_ROOT_=$_ROOT_"
+echo "_ENV_PRO_=$_ENV_PRO_"
 
 # test
 case "${_TEST_}" in
