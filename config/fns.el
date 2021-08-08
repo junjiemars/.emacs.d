@@ -307,14 +307,20 @@ Optional argument TRIM regexp used to trim."
   (if-version%
       <= 24.4
       `(split-string ,string ,separators ,omit-nulls ,trim)
-    `(if ,trim
-         (delete ""
-                 (mapcar (lambda (s)
-                           (if (and (stringp ,trim) (> (length ,trim) 0))
-                               (string-trim>< s ,trim ,trim)
-                             (string-trim>< s)))
-                         (split-string ,string ,separators ,omit-nulls)))
-       (split-string ,string ,separators ,omit-nulls))))
+    (let ((s (gensym*))
+          (p (gensym*))
+          (d (gensym*)))
+      `(let ((,s ,string)
+             (,p ,separators)
+             (,d ,trim))
+         (if ,d
+             (delete ""
+                     (mapcar (lambda (s)
+                               (if (and (stringp ,d) (> (length ,d) 0))
+                                   (string-trim>< s ,d ,d)
+                                 (string-trim>< s)))
+                             (split-string ,s ,p ,omit-nulls)))
+           (split-string ,s ,p ,omit-nulls))))))
 
 
  ;; end of Strings
