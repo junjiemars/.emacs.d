@@ -16,20 +16,21 @@
     (let* ((pfroot (posix-path (getenv "PROGRAMFILES")))
            (vsroot (concat pfroot " (x86)/Microsoft Visual Studio/"))
            (vswhere (concat vsroot "Installer/vswhere.exe")))
-      (posix-path
-       (or (let* ((cmd (shell-command* (shell-quote-argument vswhere)
-                         "-nologo -latest -property installationPath"))
-                  (bat (and (zerop (car cmd))
-                            (concat (string-trim> (cdr cmd))
-                                    "/VC/Auxiliary/Build/vcvarsall.bat"))))
-             (when (file-exists-p bat) bat))
-           (let* ((ver (car (directory-files
-                             vsroot
-                             t "[0-9]+" #'string-greaterp)))
-                  (bat (concat
-                        ver
-                        "/BuildTools/VC/Auxiliary/Build/vcvarsall.bat")))
-             (when (file-exists-p bat) bat)))))))
+      (when (file-exists-p vswhere)
+        (posix-path
+         (or (let* ((cmd (shell-command* (shell-quote-argument vswhere)
+                           "-nologo -latest -property installationPath"))
+                    (bat (and (zerop (car cmd))
+                              (concat (string-trim> (cdr cmd))
+                                      "/VC/Auxiliary/Build/vcvarsall.bat"))))
+               (when (file-exists-p bat) bat))
+             (let* ((ver (car (directory-files
+                               vsroot
+                               t "[0-9]+" #'string-greaterp)))
+                    (bat (concat
+                          ver
+                          "/BuildTools/VC/Auxiliary/Build/vcvarsall.bat")))
+               (when (file-exists-p bat) bat))))))))
 
 
 (when-platform% 'windows-nt
@@ -53,7 +54,7 @@
                  "\n"
                  "popd\n"
                  "echo \"%INCLUDE%\"\n")
-         (v-home% ".exec/cc-env.bat"))))))
+         (path! (v-home* ".exec/cc-env.bat")))))))
 
 
  ;; msvc host environment

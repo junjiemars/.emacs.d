@@ -42,7 +42,7 @@ test_bone() {
 (let ((user-emacs-directory \"${_ENV_HOM_}/\"))
   (load \"${_ENV_HOM_}/init.el\")
   (clean-compiled-files))"
-  
+
   echo_env "bone|compile"
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
@@ -131,6 +131,9 @@ test_package() {
        :package-check-signature 'allow-unsigned
        :allowed t))
 END
+
+  echo "cat  < ${_ROOT_}/${_ENV_PRO_}"
+  cat < "${_ROOT_}/${_ENV_PRO_}"
 
   echo_env "package|clean"
   ${_EMACS_} --batch                                            \
