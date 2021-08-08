@@ -198,6 +198,9 @@ test_extra() {
   :compile \`(,(compile-unit% (emacs-home* "config/use-slime-autoload.el")))))
 END
 
+  echo "cat < ${_ROOT_}/${_ENV_PRO_}"
+  cat < "${_ROOT_}/${_ENV_PRO_}"
+
   echo_env "extra|clean"
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \

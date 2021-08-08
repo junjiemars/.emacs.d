@@ -8,8 +8,8 @@
 ;;
 ;;; Code:
 
-(defmacro more-reasonable-emacs ()
-  "More Reasonable Emacs git repo."
+(defmacro nore-emacs ()
+  "Nore Emacs git repo."
   "https://github.com/junjiemars/.emacs.d")
 
 
