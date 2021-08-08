@@ -4,7 +4,7 @@ _ROOT_="${_ROOT_:-`cd -- $(dirname -- $0) && pwd`}"
 _EMACS_="${_EMACS_:-emacs}"
 _TEST_="${_TEST_:-bone}"
 _WINNT_="${_WINNT_:-no}"
-_ENV_PRO_="${_ROOT_}/private/self-prologue.el"
+_ENV_PRO_="private/self-prologue.el"
 _ENV_VER_=
 _ENV_ERT_=
 _ENV_PKG_=
@@ -225,13 +225,10 @@ END
 }
 
 # check env
-_ENV_HOM_="`$_EMACS_ --batch --eval='(prin1 (expand-file-name user-emacs-directory))'`"
 _ENV_VER_="`$_EMACS_ --batch --eval='(prin1 emacs-version)'`"
 _ENV_ERT_="`$_EMACS_ --batch --eval='(prin1 (require (quote ert) nil t))'`"
 _ENV_PKG_="`$_EMACS_ --batch --eval='(prin1 (require (quote package) nil t))'`"
 
-# make env
-make_env
 pwd
 echo "_ROOT_=$_ROOT_"
 echo "_ENV_PRO_=$_ENV_PRO_"
@@ -240,9 +237,13 @@ ls -alh
 
 if [ "$_WINNT_" = "yes" ]; then
   _ROOT_="`echo $_ROOT_ | sed -e 's#/\([a-z]\)/\(.*\)$#\1:/\2#g'`"
+  _ENV_PRO_="${_ROOT_}/${_ENV_PRO_}"
 fi
 echo "_ROOT_=$_ROOT_"
 echo "_ENV_PRO_=$_ENV_PRO_"
+
+# make env
+make_env
 
 # test
 case "${_TEST_}" in
