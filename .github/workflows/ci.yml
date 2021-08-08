@@ -52,8 +52,13 @@ jobs:
       with:
         fetch-depth: 1 # without checkout history and tags
     - name: Install Dependencies
-      run: |
-        choco install make emacs-full
+      uses: msys2/setup-msys2@v2
+      with:
+        update: true
+        install: >-
+          make
+          mingw-w64-x86_64-gcc
+          emacs
     - name: Test
       run: |
         _TEST_=bone _WINNT_=yes ./test.sh
