@@ -4,6 +4,7 @@ _ROOT_="${_ROOT_:-`cd -- $(dirname -- $0) && pwd`}"
 _EMACS_="${_EMACS_:-emacs}"
 _TEST_="${_TEST_:-bone}"
 _WINNT_="${_WINNT_:-no}"
+_ENV_HOM_="$_ROOT_"
 _ENV_PRO_="private/self-prologue.el"
 _ENV_VER_=
 _ENV_ERT_=
@@ -38,23 +39,23 @@ test_bone() {
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
              --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
-  (load \"${_ROOT_}/init.el\")
+(let ((user-emacs-directory \"${_ENV_HOM_}/\"))
+  (load \"${_ENV_HOM_}/init.el\")
   (clean-compiled-files))"
   
   echo_env "bone|compile"
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
              --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
-  (load \"${_ROOT_}/init.el\"))"
+(let ((user-emacs-directory \"${_ENV_HOM_}/\"))
+  (load \"${_ENV_HOM_}/init.el\"))"
 
  echo_env "bone|boot"
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
              --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
-  (load \"${_ROOT_}/init.el\"))"
+(let ((user-emacs-directory \"${_ENV_HOM_}/\"))
+  (load \"${_ENV_HOM_}/init.el\"))"
 }
 
 test_debug() {
@@ -62,16 +63,16 @@ test_debug() {
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
              --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
-  (load \"${_ROOT_}/init.el\")
+(let ((user-emacs-directory \"${_ENV_HOM_}/\"))
+  (load \"${_ENV_HOM_}/init.el\")
   (clean-compiled-files))"
 
   echo_env "debug|capture"
   ${_EMACS_} --debug-init                                       \
              --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
+(let ((user-emacs-directory \"${_ENV_HOM_}/\"))
   (setq debug-on-error t)
-  (load \"${_ROOT_}/init.el\")
+  (load \"${_ENV_HOM_}/init.el\")
   (load (emacs-home* \"init.el\")))"
 }
 
@@ -91,16 +92,16 @@ END
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
              --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
-  (load \"${_ROOT_}/init.el\")
+(let ((user-emacs-directory \"${_ENV_HOM_}/\"))
+  (load \"${_ENV_HOM_}/init.el\")
   (clean-compiled-files))"
 
   echo_env "axiom|compile"
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
              --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
-  (load \"${_ROOT_}/init.el\")
+(let ((user-emacs-directory \"${_ENV_HOM_}/\"))
+  (load \"${_ENV_HOM_}/init.el\")
   (load (emacs-home* \"test.el\"))
   (ert-run-tests-batch-and-exit))"
 
@@ -108,8 +109,8 @@ END
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
              --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
-  (load \"${_ROOT_}/init.el\")
+(let ((user-emacs-directory \"${_ENV_HOM_}/\"))
+  (load \"${_ENV_HOM_}/init.el\")
   (load (emacs-home* \"test.el\"))
   (ert-run-tests-batch-and-exit))"
 }
@@ -135,23 +136,23 @@ END
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
              --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
-  (load \"${_ROOT_}/init.el\")
+(let ((user-emacs-directory \"${_ENV_HOM_}/\"))
+  (load \"${_ENV_HOM_}/init.el\")
   (clean-compiled-files))"
 
   echo_env "package|compile"
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
              --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
-  (load \"${_ROOT_}/init.el\"))"
+(let ((user-emacs-directory \"${_ENV_HOM_}/\"))
+  (load \"${_ENV_HOM_}/init.el\"))"
 
   echo_env "package|boot"
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
              --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
-  (load \"${_ROOT_}/init.el\"))"
+(let ((user-emacs-directory \"${_ENV_HOM_}/\"))
+  (load \"${_ENV_HOM_}/init.el\"))"
 }
 
 test_extra() {
@@ -198,23 +199,23 @@ END
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
              --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
-  (load \"${_ROOT_}/init.el\")
+(let ((user-emacs-directory \"${_ENV_HOM_}/\"))
+  (load \"${_ENV_HOM_}/init.el\")
   (clean-compiled-files))"
 
   echo_env "extra|compile"
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
              --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
-  (load \"${_ROOT_}/init.el\"))"
+(let ((user-emacs-directory \"${_ENV_HOM_}/\"))
+  (load \"${_ENV_HOM_}/init.el\"))"
 
   echo_env "extra|boot"
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
              --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
-  (load \"${_ROOT_}/init.el\"))"
+(let ((user-emacs-directory \"${_ENV_HOM_}/\"))
+  (load \"${_ENV_HOM_}/init.el\"))"
 }
 
 # check env
@@ -223,7 +224,7 @@ _ENV_ERT_="`$_EMACS_ --batch --eval='(prin1 (require (quote ert) nil t))'`"
 _ENV_PKG_="`$_EMACS_ --batch --eval='(prin1 (require (quote package) nil t))'`"
 
 if [ "$_WINNT_" = "yes" ]; then
-  _ROOT_="`echo $_ROOT_ | sed -e 's#/\([a-z]\)/\(.*\)$#\1:/\2#g'`"
+  _ENV_HOM_="`echo $_ENV_HOM_ | sed -e 's#/\([a-z]\)/\(.*\)$#\1:/\2#g'`"
 fi
 
 
