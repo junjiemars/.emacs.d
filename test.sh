@@ -38,8 +38,8 @@ test_bone() {
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
              --eval="
-(let ((user-emacs-directory (expand-file-name \"${_ROOT_}/\")))
-  (load (expand-file-name \"${_ROOT_}/init.el\"))
+(let ((user-emacs-directory \"${_ROOT_}/\"))
+  (load \"${_ROOT_}/init.el\")
   (clean-compiled-files))"
   
 #   ${_EMACS_} --batch                                            \
