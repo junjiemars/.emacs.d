@@ -19,6 +19,7 @@
 ;;;
 
 (ert-deftest %a:env ()
+  (should (message "# emacs-home* = %s" (emacs-home*)))
   (should (message "# system-type = %s" system-type))
   (should (message "# platform-arch = %s" (platform-arch)))
   (should (message "# emacs-arch = %s" (emacs-arch)))

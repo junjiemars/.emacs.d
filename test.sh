@@ -88,6 +88,9 @@ test_axiom() {
 (*self-paths* :put :epilogue nil)
 END
 
+  echo "cat < ${_ROOT_}/${_ENV_PRO_}"
+  cat < ${_ROOT_}/${_ENV_PRO_}
+
   echo_env "axiom|clean"
   ${_EMACS_} --batch                                            \
              --no-window-system                                 \
