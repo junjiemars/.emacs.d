@@ -18,7 +18,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install emacs-full
+          sudo apt-get install emacs
       - name: Test
         run: |
           _TEST_=bone ./test.sh
@@ -53,7 +53,7 @@ jobs:
         fetch-depth: 1 # without checkout history and tags
     - name: Install Dependencies
       run: |
-        choco install make emacs
+        choco install make emacs-full
     - name: Test
       run: |
         _TEST_=bone _WINNT_=yes ./test.sh
