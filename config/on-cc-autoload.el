@@ -444,12 +444,14 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
   "Find C include file in `cc*-system-include' or specified directory. "
   (interactive "P")
   (let ((file (buffer-file-name (current-buffer))))
-    (when (and file (file-exists-p file))
-      (setq% cc-search-directories
-             (append (list (string-trim> (file-name-directory file) "/"))
-                     (cc*-system-include t (remote-norm-file file))
-                     (cc*-extra-include t))
-             'find-file)))
+    (setq% cc-search-directories
+           (if (and file (file-exists-p file))
+               (append (list (string-trim> (file-name-directory file) "/"))
+                       (cc*-system-include t (remote-norm-file file))
+                       (cc*-extra-include t))
+             (append (cc*-system-include t)
+                     (cc*-extra-include t)))
+           'find-file))
   (when-fn% 'xref-push-marker-stack 'xref
     (autoload 'xref-push-marker-stack "xref.elc")
     (xref-push-marker-stack))
