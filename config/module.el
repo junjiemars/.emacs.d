@@ -84,16 +84,14 @@
 (defmacro install-package! (package &optional tar)
   "Install PACKAGE."
   (let ((p (gensym*))
-        (f (gensym*))
-        (x (gensym*)))
+        (f (gensym*)))
     `(let ((,p ,package)
-           (,f ,tar)
-           (,x (*repository-initialized*)))
+           (,f ,tar))
        (if ,f
            (package-install-file ,p)
-         (unless ,x
+         (unless (*repository-initialized*)
            (initialize-package-repository!)
-           (setq ,x (*repository-initialized* t)))
+           (*repository-initialized* t))
          (if-version%
              <= 25.0
              (package-install ,p t)
