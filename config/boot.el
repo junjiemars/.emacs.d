@@ -364,11 +364,11 @@ No matter the declaration order, the executing order is:
 
 
 (defalias '*self-packages*
-    (lexical-let% ((ps))
-      (lambda (&optional op k v)
-        (cond ((eq :get op) (list (assq k ps)))
-              ((eq :put op) (setq ps (cons (cons k v) ps)))
-              (t ps)))))
+  (lexical-let% ((ps))
+    (lambda (&optional op k v)
+      (cond ((eq :get op) (list (assq k ps)))
+            ((eq :put op) (setq ps (cons (cons k v) ps)))
+            (t ps)))))
 
 
 ;;; Duplicate spec files
