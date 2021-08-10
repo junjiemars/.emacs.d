@@ -23,12 +23,9 @@
   "Colorize *compilation* buffer."
   (when-fn% 'ansi-color-apply-on-region 'ansi-color
     (when (eq major-mode 'compilation-mode)
-      (let ((buffer-read-only nil))
+      (let ((inhibit-read-only t))
         (require 'ansi-color)
-        (ansi-color-apply-on-region
-         (if-var% compilation-filter-start 'compile
-                  compilation-filter-start (point-min))
-         (point-max))))))
+        (ansi-color-apply-on-region (point-min) (point-max))))))
 
 
 (when-platform% 'darwin
