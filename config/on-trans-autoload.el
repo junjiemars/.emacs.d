@@ -267,30 +267,30 @@ If BUFFER is non nil then output to `+decode-output-buffer-name+'."
   "Display basic ASCII table \[0-128\)."
   (interactive "P")
   (switch-to-buffer "*ASCII*")
-  (setq buffer-read-only nil)
-  (erase-buffer)
-  (save-excursion
-    (insert (propertize (format "ASCII characters \[0-128\) (%s).\n\n"
-                                (if octal "Oct Dec" "Hex Dec"))
-                        'face 'font-lock-type-face))
-    (insert (if octal
-                (concat "  Oct  Dec  Char|  Oct  Dec  Char|"
-                        "  Oct  Dec  Char|  Oct  Dec  Char\n")
-              (concat "  Hex  Dec  Char|  Hex  Dec  Char|"
-                      "  Hex  Dec  Char|  Hex  Dec  Char\n")))
-    (let ((i -1))
-      (while (< i 31)
-        (insert
-         (format (if octal
-                     (concat " %4o %4d %4s | %4o %4d %4s |"
-                             " %4o %4d %4s | %4o %4d %4s\n")
-                   (concat " %4x %4d %4s | %4x %4d %4s |"
-                           " %4x %4d %4s | %4x %4d %4s\n"))
-                 (setq i (+ 1  i)) i (single-key-description i)
-                 (setq i (+ 32 i)) i (single-key-description i)
-                 (setq i (+ 32 i)) i (single-key-description i)
-                 (setq i (+ 32 i)) i (single-key-description i)))
-        (setq i (- i 96)))))
+  (let ((inhibit-read-only t))
+    (erase-buffer)
+    (save-excursion
+      (insert (propertize (format "ASCII characters \[0-128\) (%s).\n\n"
+                                  (if octal "Oct Dec" "Hex Dec"))
+                          'face 'font-lock-type-face))
+      (insert (if octal
+                  (concat "  Oct  Dec  Char|  Oct  Dec  Char|"
+                          "  Oct  Dec  Char|  Oct  Dec  Char\n")
+                (concat "  Hex  Dec  Char|  Hex  Dec  Char|"
+                        "  Hex  Dec  Char|  Hex  Dec  Char\n")))
+      (let ((i -1))
+        (while (< i 31)
+          (insert
+           (format (if octal
+                       (concat " %4o %4d %4s | %4o %4d %4s |"
+                               " %4o %4d %4s | %4o %4d %4s\n")
+                     (concat " %4x %4d %4s | %4x %4d %4s |"
+                             " %4x %4d %4s | %4x %4d %4s\n"))
+                   (setq i (+ 1  i)) i (single-key-description i)
+                   (setq i (+ 32 i)) i (single-key-description i)
+                   (setq i (+ 32 i)) i (single-key-description i)
+                   (setq i (+ 32 i)) i (single-key-description i)))
+          (setq i (- i 96))))))
   (view-mode t))
 
 
@@ -298,46 +298,46 @@ If BUFFER is non nil then output to `+decode-output-buffer-name+'."
   "Display Greek alphabet."
   (interactive)
   (switch-to-buffer "*GREEK*")
-  (setq buffer-read-only nil)
-  (erase-buffer)
-  (save-excursion
-    (insert (propertize "Greek characters (Hex Dec).\n\n"
-                        'face 'font-lock-type-face))
-    (insert "  Hex  Dec  Char |  Hex  Dec  Char |  Name\n")
-    (let ((tbl '(
-                 913 "Alpha (al-fah)"
-                 914 "Beta (bay-tah)"
-                 915 "Gamma (gam-ah)"
-                 916 "Delta (del-ta)"
-                 917 "Epsilon (ep-si-lon)"
-                 918 "Zeta (zay-tah)"
-                 919 "Eta (ay-tah)"
-                 920 "Theta (thay-tah)"
-                 921 "Iota (eye-o-tah)"
-                 922 "Kappa (cap-pah)"
-                 923 "Lambda (lamb-dah)"
-                 924 "Mu (mew)"
-                 925 "Nu (new)"
-                 926 "Xi (zie)"
-                 927 "Omicron (om-e-cron)"
-                 928 "Pi (pie)"
-                 929 "Rho (roe)"
-                 931 "Sigma (sig-ma)"
-                 932 "Tau (taw)"
-                 933 "Upsilon (up-si-lon)"
-                 934 "Phi (fie)"
-                 935 "Chi (kie)"
-                 936 "Psi (sigh)"
-                 937 "Omega (oh-may-gah)")))
-      (mapc (lambda (s)
-              (let ((c (+ 32 s)))
-                (insert (format
-                         " %4x %4d %4s  | %4x %4d %4s  |  %s\n"
-                         s s (text-char-description s)
-                         c c (text-char-description c)
-                         (plist-get tbl s)))))
-            (remove-if* (lambda (x) (= x 930))
-                        (range 913 (+ 913 24))))))
+  (let ((inhibit-read-only t))
+    (erase-buffer)
+    (save-excursion
+      (insert (propertize "Greek characters (Hex Dec).\n\n"
+                          'face 'font-lock-type-face))
+      (insert "  Hex  Dec  Char |  Hex  Dec  Char |  Name\n")
+      (let ((tbl '(
+                   913 "Alpha (al-fah)"
+                   914 "Beta (bay-tah)"
+                   915 "Gamma (gam-ah)"
+                   916 "Delta (del-ta)"
+                   917 "Epsilon (ep-si-lon)"
+                   918 "Zeta (zay-tah)"
+                   919 "Eta (ay-tah)"
+                   920 "Theta (thay-tah)"
+                   921 "Iota (eye-o-tah)"
+                   922 "Kappa (cap-pah)"
+                   923 "Lambda (lamb-dah)"
+                   924 "Mu (mew)"
+                   925 "Nu (new)"
+                   926 "Xi (zie)"
+                   927 "Omicron (om-e-cron)"
+                   928 "Pi (pie)"
+                   929 "Rho (roe)"
+                   931 "Sigma (sig-ma)"
+                   932 "Tau (taw)"
+                   933 "Upsilon (up-si-lon)"
+                   934 "Phi (fie)"
+                   935 "Chi (kie)"
+                   936 "Psi (sigh)"
+                   937 "Omega (oh-may-gah)")))
+        (mapc (lambda (s)
+                (let ((c (+ 32 s)))
+                  (insert (format
+                           " %4x %4d %4s  | %4x %4d %4s  |  %s\n"
+                           s s (text-char-description s)
+                           c c (text-char-description c)
+                           (plist-get tbl s)))))
+              (remove-if* (lambda (x) (= x 930))
+                          (range 913 (+ 913 24)))))))
   (view-mode t))
 
 
