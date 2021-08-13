@@ -1,5 +1,5 @@
-#+title: More Reasonable Emacs: Sample of Org
-#+author: 南山竹
+#+title: Nore Emacs: Org *scratch*
+#+author: composer
 #+startup: entitiespretty
 #+latex_compiler: xelatex
 #+latex_header: \usepackage{listings}
@@ -10,12 +10,23 @@
 #+latex_header: \usepackage[utf8x]{inputenc}
 
 
-* \(\LaTeX{}\)
-
+* scratch
+	:PROPERTIES:
+	:CUSTOM_ID: scratch
+	:END:
+	
+** LaTeX
+	 :PROPERTIES:
+	 :CUSTOM_ID: latex
+	 :END:
+	 
 Another way to notate \({\LaTeX}\).
 
-* Quote
-
+** Quote
+	 :PROPERTIES:
+	 :CUSTOM_ID: quote
+	 :END:
+	 
 #+BEGIN_QUOTE
 Everything should be made as simple as possible,
 but not any simpler. -- Albert Einstein
@@ -29,27 +40,42 @@ whetstone, if it is to keep its edge." -- George R. R. Martin. "A Game
 Of Thrones."
 #+END_QUOTE
 
-* Style
-
-** Bold, Italic, Verbatim and Strikethrough
+** Style
+	 :PROPERTIES:
+	 :CUSTOM_ID: style
+	 :END:
 
 The quick /brown/ *fox* =jumps= +over+ the lazy *dog*.
 	 
-** Center and Right
+** Align
+	 :PROPERTIES:
+	 :CUSTOM_ID: align
+	 :END:
 
-#+begin_center
+#+BEGIN_LEFT
 Everything should be made as simple as possible,\\
 but not any simpler.
-#+end_center
+#+END_LEFT
+
+#+BEGIN_CENTER
+Everything should be made as simple as possible,\\
+but not any simpler.
+#+END_CENTER
 
 ** Example
+	 :PROPERTIES:
+	 :CUSTOM_ID: example
+	 :END:
 
-#+begin_example
+#+BEGIN_EXAMPLE
 some text here monospace
-#+end_example
+#+END_EXAMPLE
 
-* Spreadsheet
-
+** Table 
+	 :PROPERTIES:
+	 :CUSTOM_ID: table
+	 :END:
+	 
 Row formula:
 | Student  | Maths | Physics | Mean |
 |----------+-------+---------+------|
@@ -77,12 +103,12 @@ Row and Column formula:
 | Sum      |    45 |      36 |      |  81 |
 #+TBLFM: $2=vsum(@2$2..@4$2)::$3=vsum(@2$3..@4$3)::$4=vmean($2..$3)::$5=vsum($2..$3)::@5$2=vmean(@2$2..@4$2)::@5$3=vmean(@2$3..@4$3)
 
-* Code
+** Code
 	:PROPERTIES:
 	:CUSTOM_ID: code
 	:END:
 
-** Elisp
+*** Elisp
 	 :PROPERTIES:
 	 :CUSTOM_ID: elisp
 	 :END:
@@ -91,7 +117,7 @@ Row and Column formula:
 (emacs-home*)
 #+END_SRC
 
-** C
+*** C
 	 :PROPERTIES:
 	 :CUSTOM_ID: c
 	 :END:
@@ -171,11 +197,11 @@ Row and Column formula:
 #+RESULTS:
 : to = abcdefghijk
 
-* Math
+** Math
 
-** Symbol
+*** Symbol
 
-*** Greek Characters
+**** Greek Characters
 
 #+NAME: Greek
 | name       | character   | name     | character | name   | character |
@@ -198,7 +224,7 @@ Row and Column formula:
 | varrho     | \(\varrho\) | varsigma | \(\varsigma\)     | varphi | \(\varphi\)     |
 |            |             |          |           |        |           |
 
-*** Operators
+**** Operators
 
 #+NAME: Operator
 | name     | character     | name      | character | name       | character     |
@@ -216,7 +242,7 @@ Row and Column formula:
 | succ     | \(\succ\)         | leftarrow | \(\leftarrow\)     | rightarrow | \(\rightarrow\)         |
 |          |               |           |           |            |               |
 
-** Formula
+*** Formula
 
 R_sun = 6.96 x 10^8 m.
 
@@ -225,7 +251,7 @@ R_{Alpha Centauri} = 1.28 x R_{sun}
 If $a^2=b$ and \( b=2 \), then the solution must be
 either $$ a=+\sqrt{2} $$ or \[ a=-\sqrt{2} \].
 
-* Verse
+** Verse
 
 #+BEGIN_VERSE
 千山鸟飞绝，万径人踪灭。
