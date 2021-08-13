@@ -13,6 +13,12 @@
   "https://github.com/junjiemars/.emacs.d")
 
 
+(defmacro emacs-arch ()
+  "Return emacs architecture, 64bits or 32bits."
+  (if (= most-positive-fixnum (1- (expt 2 61))) 64
+    (if (= most-positive-fixnum (1- (expt 2 29))) 32 0)))
+
+
 ;;; Load cl-lib/cl at compile-time
 (eval-when-compile
   (if-version% <= 24
@@ -383,6 +389,23 @@ No matter the declaration order, the executing order is:
        ,@body)))
 
  ;; end of self-spec macro
+
+
+;;; gc
+
+(defmacro gc-delay* (scalar &rest body)
+  "Delay garbage collection at runtime."
+  (declare (indent 1))
+  (let ((s1 (gensym*)))
+    `(let ((,s1 ,scalar))
+       (let ((,s1 (if (numberp ,s1)
+                      ,s1
+                    ,(min 2 (emacs-arch))))
+             (gc-cons-threshold (* gc-cons-threshold ,s1))
+             (garbage-collection-messages noninteractive))
+         ,@body))))
+
+ ;; end of gc
 
 
 ;;; <1> prologue

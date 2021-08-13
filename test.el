@@ -132,6 +132,10 @@
 ;; boot
 ;;;;
 
+
+(ert-deftest %boot:emacs-arch ()
+  (should (> (emacs-arch) 0)))
+
 (ert-deftest %boot:if/when/unless-lexical% ()
   (if (if-lexical% t nil)
       (should (and (when-lexical% t)
@@ -216,6 +220,10 @@
   (should (= 3 (if-feature-ert% (+ 1 2) (* 3 4))))
   (should (= 12 (if-feature-ertxxx% (+ 1 2) (* 3 4)))))
 
+(ert-deftest %boot:gc-delay* ()
+  (should (= (let ((g0 gc-cons-threshold))
+               (* 2 g0))
+             (gc-delay* 2 gc-cons-threshold))))
 
  ;; end of boot
 
@@ -561,9 +569,6 @@
 (ert-deftest %basic:platform-arch ()
   (should (platform-arch))
   (should (consp (platform-arch))))
-
-(ert-deftest %basic:emacs-arch ()
-  (should (> (emacs-arch) 0)))
 
 (ert-deftest %basic:buffer-major-mode ()
   (should (eq 'fundamental-mode (buffer-major-mode))))
