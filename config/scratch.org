@@ -17,14 +17,14 @@
 	
 ** LaTeX
 	 :PROPERTIES:
-	 :CUSTOM_ID: latex
+	 :CUSTOM_ID: scratch-latex
 	 :END:
 	 
 Another way to notate \({\LaTeX}\).
 
 ** Quote
 	 :PROPERTIES:
-	 :CUSTOM_ID: quote
+	 :CUSTOM_ID: scratch-quote
 	 :END:
 	 
 #+BEGIN_QUOTE
@@ -42,14 +42,14 @@ Of Thrones."
 
 ** Style
 	 :PROPERTIES:
-	 :CUSTOM_ID: style
+	 :CUSTOM_ID: scratch-style
 	 :END:
 
 The quick /brown/ *fox* =jumps= +over+ the lazy *dog*.
 	 
 ** Align
 	 :PROPERTIES:
-	 :CUSTOM_ID: align
+	 :CUSTOM_ID: scratch-align
 	 :END:
 
 #+BEGIN_LEFT
@@ -64,7 +64,7 @@ but not any simpler.
 
 ** Example
 	 :PROPERTIES:
-	 :CUSTOM_ID: example
+	 :CUSTOM_ID: scratch-example
 	 :END:
 
 #+BEGIN_EXAMPLE
@@ -73,7 +73,7 @@ some text here monospace
 
 ** Table 
 	 :PROPERTIES:
-	 :CUSTOM_ID: table
+	 :CUSTOM_ID: scratch-table
 	 :END:
 	 
 Row formula:
@@ -105,12 +105,12 @@ Row and Column formula:
 
 ** Code
 	:PROPERTIES:
-	:CUSTOM_ID: code
+	:CUSTOM_ID: scratch-code
 	:END:
 
 *** Elisp
 	 :PROPERTIES:
-	 :CUSTOM_ID: elisp
+	 :CUSTOM_ID: scratch-code-elisp
 	 :END:
 
 #+BEGIN_SRC emacs-lisp
@@ -122,7 +122,7 @@ Row and Column formula:
 
 *** C
 	 :PROPERTIES:
-	 :CUSTOM_ID: c
+	 :CUSTOM_ID: scratch-code-c
 	 :END:
 
 #+BEGIN_SRC C :includes <stdio.h>
@@ -201,12 +201,21 @@ Row and Column formula:
 : to = abcdefghijk
 
 ** Math
-
+	 :PROPERTIES:
+	 :CUSTOM_ID: scratch-math
+	 :END:
+	 
 *** Symbol
-
+		:PROPERTIES:
+		:CUSTOM_ID: scratch-math-symbol
+		:END:
+		
 **** Greek Characters
-
-#+NAME: Greek
+		 :PROPERTIES:
+		 :CUSTOM_ID: scratch-math-greek-characters
+		 :END:
+		 
+#+NAME: math_greek_characters
 | name       | character   | name     | character | name   | character |
 |------------+-------------+----------+-----------+--------+-----------|
 | Gamma      | \(\Gamma\)       | Delta    | \(\Delta\)     | Theta  | \(\Theta\)     |
@@ -228,8 +237,11 @@ Row and Column formula:
 |            |             |          |           |        |           |
 
 **** Operators
+		 :PROPERTIES:
+		 :CUSTOM_ID: scratch-math-operators
+		 :END:
 
-#+NAME: Operator
+#+NAME: math_operators
 | name     | character     | name      | character | name       | character     |
 |----------+---------------+-----------+-----------+------------+---------------|
 | cdot     | \(\cdot\)         | times     | \(\times\)     | ast        | \(\ast\)         |
@@ -246,7 +258,10 @@ Row and Column formula:
 |          |               |           |           |            |               |
 
 *** Formula
-
+		:PROPERTIES:
+		:CUSTOM_ID: scratch-math-formula
+		:END:
+		
 R_sun = 6.96 x 10^8 m.
 
 R_{Alpha Centauri} = 1.28 x R_{sun}
@@ -254,8 +269,12 @@ R_{Alpha Centauri} = 1.28 x R_{sun}
 If $a^2=b$ and \( b=2 \), then the solution must be
 either $$ a=+\sqrt{2} $$ or \[ a=-\sqrt{2} \].
 
-** Verse
 
+** Verse
+	 :PROPERTIES:
+	 :CUSTOM_ID: scratch-verse
+	 :END:
+	 
 #+BEGIN_VERSE
 千山鸟飞绝，万径人踪灭。
 孤舟蓑笠翁，独钓寒江雪。
