@@ -117,6 +117,9 @@ Row and Column formula:
 (emacs-home*)
 #+END_SRC
 
+#+RESULTS:
+: /Users/junjie/.emacs.d/
+
 *** C
 	 :PROPERTIES:
 	 :CUSTOM_ID: c
