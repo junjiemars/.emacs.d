@@ -13,9 +13,10 @@
    (list (when current-prefix-arg
            (read-string (format "Choose (%s) "
                                 (mapconcat #'symbol-name
-                                           '(nil t :safe :all)
+                                           '(t :safe :all)
                                            "|"))))))
-  (setq local-enable-local-variables (intern what)))
+  (setq local-enable-local-variables (and (stringp what)
+                                          (intern what))))
 
 
 
