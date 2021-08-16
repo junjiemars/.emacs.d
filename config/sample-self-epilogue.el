@@ -19,7 +19,6 @@
 
 ;; (require 'financial)
 
-(comment (setq% enable-local-variables :all 'files))
 
 
 

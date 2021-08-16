@@ -270,6 +270,7 @@
      (load-autoloaded-modes!)
      (load-conditional-modes!)
      (set-global-keys!)
+     (compile! (compile-unit% (emacs-home* "config/safe.el")))
      (when (*self-paths* :get :epilogue)
        (gc-delay* 4
          (compile! (compile-unit* (*self-paths* :get :epilogue)))))
