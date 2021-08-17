@@ -7,10 +7,6 @@
 ;;;;
 
 
-(when-var% frame-inhibit-implied-resize nil
-  (setq frame-inhibit-implied-resize t))
-
-
 ;;; basic UI
 
 ;; Disable menu bar
@@ -24,6 +20,7 @@
 
 ;; Go straight to scratch buffer on startup
 (setq% inhibit-splash-screen t)
+
 
 
  ;; end of basic UI
@@ -46,7 +43,7 @@
  ;; end of when-* macro
 
 
-;; Frame
+;;; Frame
 
 (when-graphic%
   (when (*self-env-spec* :get :frame :allowed)
@@ -67,7 +64,7 @@
  ;; end of Frame
 
 
-;; Theme
+;;; Theme
 
 (when-theme%
 
