@@ -260,11 +260,10 @@
 ;; after-init
 (defun on-autoloads! ()
   (make-thread*
-   (progn
+   (gc-delay* 8
      (compile! (compile-unit% (emacs-home* "config/sockets.el")))
      (when-package%
-       (gc-delay* 8
-           (compile! (compile-unit% (emacs-home* "config/module.el")))))
+       (compile! (compile-unit% (emacs-home* "config/module.el"))))
      (compile! (compile-unit% (emacs-home* "config/on-module.el")))
      (package-spec-:allowed-p (apply #'compile! (*package-compile-units*)))
      (load-autoloaded-modes!)
@@ -272,8 +271,7 @@
      (set-global-keys!)
      (compile! (compile-unit% (emacs-home* "config/safe.el")))
      (when (*self-paths* :get :epilogue)
-       (gc-delay* 4
-         (compile! (compile-unit* (*self-paths* :get :epilogue)))))
+       (compile! (compile-unit* (*self-paths* :get :epilogue))))
      (when-fn% 'self-desktop-read! nil (self-desktop-read!))
      (ido-mode t))
    t "on-autoloads!"))
