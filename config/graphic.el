@@ -7,6 +7,10 @@
 ;;;;
 
 
+(when-var% frame-inhibit-implied-resize nil
+  (setq frame-inhibit-implied-resize t))
+
+
 ;;; basic UI
 
 ;; Disable menu bar
@@ -46,14 +50,19 @@
 
 (when-graphic%
   (when (*self-env-spec* :get :frame :allowed)
+    ;; `frame-resize-pixelwise'
+    (when-var% frame-resize-pixelwise nil
+      (setq frame-resize-pixelwise
+            (*self-env-spec* :get :frame
+                             :frame-resize-pixelwise)))
+    ;; `initial-frame-alist'
     (dolist* (x (*self-env-spec* :get :frame :initial))
       (push! x initial-frame-alist))
+    ;; `default-frame-alist'
     (dolist* (x (*self-env-spec* :get :frame :default))
       (push! x default-frame-alist)
       (when (eq 'font (car x))
-        (set-face-attribute 'default nil :font (cdr x))))
-    (setq frame-resize-pixelwise
-          (*self-env-spec* :get :frame :frame-resize-pixelwise))))
+        (set-face-attribute 'default nil :font (cdr x))))))
 
  ;; end of Frame
 
