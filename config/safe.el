@@ -19,11 +19,11 @@
                                           (intern what))))
 
 
-
-(when (*self-env-spec* :get :edit :allowed)
-  ;; default `local-enable-local-variables'
-  (setq local-enable-local-variables
-        (*self-env-spec* :get :edit :local-enable-local-variables)))
+;;; It's buggy.
+;; (when (*self-env-spec* :get :edit :allowed)
+;;   ;; default `local-enable-local-variables'
+;;   (setq local-enable-local-variables
+;;         (*self-env-spec* :get :edit :local-enable-local-variables)))
 
 
 
