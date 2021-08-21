@@ -114,7 +114,7 @@
                                    sh-mode-hook
                                    emacs-lisp-mode-hook)
        :narrow-to-region t
-       :local-enable-local-variables nil
+       :local-enable-local-variables t
        :allowed nil))
 
 ;;; eof
