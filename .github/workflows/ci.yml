@@ -115,12 +115,12 @@ jobs:
           elif [ "${{matrix.emacs}}" = "emacs-24" ]; then
             ./autogen.sh
             ./configure --with-x-toolkit=no --with-xpm=no --with-gif=no --with-gnutls=no
-            sudo make -j`lscpu` install
+            sudo make -j4 install
           elif [ "${{matrix.emacs}}" = "emacs-23" ]; then
             ./configure --with-x-toolkit=no --with-crt-dir=/usr/lib/`uname -m`-linux-gnu --with-xpm=no --with-jpeg=no --with-gif=no --without-makeinfo
             sudo make -j4 install
           elif [ "${{matrix.emacs}}" = "emacs-22" ]; then
-            ./configure --with-x-toolkit=no --with-xpm=no --with-jpeg=no --with-gif=no
+            ./configure --with-x-toolkit=no --with-xpm=no --with-jpeg=no --with-gif=no --without-makeinfo
             sudo make -j4 install
           fi
       - name: Test
