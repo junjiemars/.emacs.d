@@ -43,8 +43,8 @@ jobs:
         run: |
           sudo apt-get update
           git clone --depth=1 --branch=${{matrix.emacs}} ${{emacs_source}}
-          emacs/configure
-          make -C emacs -j4 install
+          cd emacs
+          make -j4 install
       - name: Test
         run: |
           _TEST_=bone ./test.sh
