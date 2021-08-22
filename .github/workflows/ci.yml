@@ -45,10 +45,16 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install build-essential gcc-multilib gnutls-bin
+      - name: Build Emacs
+        run: |
           git clone --depth=1 --branch=${{matrix.emacs}} ${{env.emacs_source}} ${{matrix.emacs}}
           cd ${{matrix.emacs}}
           autoreconf -i
-          ./configure --with-x-toolkit=no --with-xpm=no --with-gif=no
+          if [ "${{matrix.emacs}}" = "emacs-23" ]; then
+            ./configure --with-x-toolkit=no
+          else
+            ./configure --with-x-toolkit=no --with-xpm=no --with-gif=no
+          fi
           sudo make -j4 install
       - name: Test
         run: |
