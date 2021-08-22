@@ -34,7 +34,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        emacs: [emacs-27, emacs-26, emacs-25, emacs-23]
+        emacs: [emacs-27, emacs-26, emacs-25, emacs-24, emacs-23, emacs-22]
     steps:
       - uses: actions/checkout@v2
         with:
@@ -48,7 +48,11 @@ jobs:
         env:
           emacs_source: "https://github.com/emacs-mirror/emacs.git"
         run: |
-          git clone --depth=1 --branch=${{matrix.emacs}} ${{env.emacs_source}} ${{matrix.emacs}}
+          if [ "${{matrix.emacs}}" = "emacs-22]; then
+            git clone --depth=1 --branch="old-branches/EMACS_22_BASE" ${{env.emacs_source}} ${{matrix.emacs}}
+          else
+            git clone --depth=1 --branch=${{matrix.emacs}} ${{env.emacs_source}} ${{matrix.emacs}}
+          fi
           cd ${{matrix.emacs}}
           autoreconf -i
           if [ "${{matrix.emacs}}" = "emacs-23" ]; then
