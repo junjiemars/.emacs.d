@@ -49,7 +49,7 @@ jobs:
           ls -lh .
           cd ${{matrix.emacs}}
           ls -lh .
-          ./autogen.sh
+          autoreconf -i
           ./configure
           make -j4 install
       - name: Test
