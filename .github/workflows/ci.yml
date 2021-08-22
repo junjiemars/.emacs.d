@@ -10,27 +10,11 @@ on:
 
 jobs:
 
-  Ubuntu:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-18.04, ubuntu-20.04]
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1 # without checkout history and tags
-      - name: Install Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install emacs
-      - name: Test
-        run: |
-          _TEST_=bone ./test.sh
-          _TEST_=axiom ./test.sh
-          _TEST_=package ./test.sh
-
-  # Ubuntu-18_04:
-  #   runs-on: ubuntu-18.04
+  # Ubuntu:
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       os: [ubuntu-20.04, ubuntu-18.04]
   #   steps:
   #     - uses: actions/checkout@v2
   #       with:
@@ -44,6 +28,28 @@ jobs:
   #         _TEST_=bone ./test.sh
   #         _TEST_=axiom ./test.sh
   #         _TEST_=package ./test.sh
+  
+  Matrix:
+    runs-on: ubuntu-latest
+    strategy:
+      emacs: [emacs-23]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1 # without checkout history and tags
+      - name: Install Dependencies
+        env:
+          emacs_source: git@github.com:emacs-mirror/emacs.git
+        run: |
+          sudo apt-get update
+          git clone --depth=1 --branch=${{matrix.emacs}} ${{emacs_source}}
+          emacs/configure
+          make -C emacs -j4 install
+      - name: Test
+        run: |
+          _TEST_=bone ./test.sh
+          _TEST_=axiom ./test.sh
+          _TEST_=package ./test.sh
 
 
   # MacOS:
