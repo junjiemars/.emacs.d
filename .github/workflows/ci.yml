@@ -56,13 +56,19 @@ jobs:
           cd ${{matrix.emacs}}
           autoreconf -i
           if [ "${{matrix.emacs}}" = "emacs-27" ]; then
+            ./configure --with-x-toolkit=no --with-xpm=ifavailable --with-gif=ifavailable --with-gnutls=ifavailable
+          else if [ "${{matrix.emacs}}" = "emacs-26" ]; then
             ./configure --with-x-toolkit=no --with-xpm=no --with-gif=no --with-gnutls=no
-          elif [ "${{matrix.emacs}}" = "emacs-23" ]; then
+          else if [ "${{matrix.emacs}}" = "emacs-23" ]; then
             ./configure --with-x-toolkit=no
           else
             ./configure --with-x-toolkit=no --with-xpm=no --with-gif=no
           fi
-          sudo make -j4 install
+          if [ "${{matrix.emacs}}" = "emacs-22" ]; then
+            sudo make bootstrap
+          else
+            sudo make -j4 install
+          fi
       - name: Test
         run: |
           _TEST_=bone ./test.sh
