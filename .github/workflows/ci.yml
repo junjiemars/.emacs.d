@@ -74,7 +74,7 @@ jobs:
       fail-fast: false
       matrix:
         emacs: [
-        emacs-24
+        emacs-23
         # emacs-27,
         # emacs-26,
         # emacs-25,
@@ -116,11 +116,10 @@ jobs:
           elif [ "${{matrix.emacs}}" = "emacs-24" ]; then
             ./autogen.sh
             ./configure --with-x-toolkit=no --with-xpm=no --with-gif=no --with-gnutls=no
-            sudo make -j4 install
+            sudo make -j`lscpu` install
           elif [ "${{matrix.emacs}}" = "emacs-23" ]; then
-            ./configure --with-x-toolkit=no
-          else
-            ./configure --with-x-toolkit=no --with-xpm=no --with-gif=no
+            ./configure --build=x86_64-unknown-linux-gnu --with-x-toolkit=no
+            sudo make -j`lscpu` install
           fi
       - name: Test
         run: |
