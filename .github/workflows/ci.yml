@@ -32,7 +32,8 @@ jobs:
   Matrix:
     runs-on: ubuntu-latest
     strategy:
-      emacs: [emacs-23]
+      matrix:
+        emacs: [emacs-23]
     steps:
       - uses: actions/checkout@v2
         with:
