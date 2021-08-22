@@ -119,7 +119,7 @@ jobs:
             sudo make -j`lscpu` install
           elif [ "${{matrix.emacs}}" = "emacs-23" ]; then
             ./configure --with-x-toolkit=no --with-crt-dir=/usr/lib/`uname -m`-linux-gnu --with-xpm=no --with-jpeg=no --with-gif=no
-            sudo make -j`lscpu` install
+            sudo make -j4 install
           fi
       - name: Test
         run: |
