@@ -104,11 +104,11 @@ jobs:
             autoreconf -i
             ./configure --with-x-toolkit=no --with-xpm=ifavailable --with-gif=ifavailable --with-gnutls=ifavailable
             sudo make -j4 install
-          else if [ "${{matrix.emacs}}" = "emacs-26" ]; then
+          elif [ "${{matrix.emacs}}" = "emacs-26" ]; then
             autoreconf -i
             ./configure --with-x-toolkit=no --with-xpm=no --with-gif=no --with-gnutls=no
             sudo make -j4 install
-          else if [ "${{matrix.emacs}}" = "emacs-23" ]; then
+          elif [ "${{matrix.emacs}}" = "emacs-23" ]; then
             ./configure --with-x-toolkit=no
           else
             ./configure --with-x-toolkit=no --with-xpm=no --with-gif=no
