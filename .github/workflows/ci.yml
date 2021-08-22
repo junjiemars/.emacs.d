@@ -9,7 +9,7 @@ on:
       - cc
 
 jobs:
-  Linux:
+  Ubuntu-latest:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -25,23 +25,7 @@ jobs:
           _TEST_=axiom ./test.sh
           _TEST_=package ./test.sh
 
-  Ubuntu-20-04:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1 # without checkout history and tags
-      - name: Install Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install emacs
-      - name: Test
-        run: |
-          _TEST_=bone ./test.sh
-          _TEST_=axiom ./test.sh
-          _TEST_=package ./test.sh
-
-  Ubuntu-18-04:
+  Ubuntu-18.04:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
@@ -57,21 +41,6 @@ jobs:
           _TEST_=axiom ./test.sh
           _TEST_=package ./test.sh
 
-  Ubuntu-16-04:
-    runs-on: ubuntu-16.04
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1 # without checkout history and tags
-      - name: Install Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install emacs
-      - name: Test
-        run: |
-          _TEST_=bone ./test.sh
-          _TEST_=axiom ./test.sh
-          _TEST_=package ./test.sh
 
   # MacOS:
   #   runs-on: macos-latest
