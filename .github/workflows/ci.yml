@@ -68,13 +68,14 @@ jobs:
   #       _TEST_=axiom ./test.sh
   #       _TEST_=package ./test.sh
 
-  Emacs:
+  Linux:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         emacs: [
-        emacs-27
+        emacs-24
+        # emacs-27,
         # emacs-26,
         # emacs-25,
         # emacs-24,
@@ -105,6 +106,14 @@ jobs:
             ./configure --with-x-toolkit=no --with-xpm=ifavailable --with-gif=ifavailable --with-gnutls=ifavailable
             sudo make -j4 install
           elif [ "${{matrix.emacs}}" = "emacs-26" ]; then
+            autoreconf -i
+            ./configure --with-x-toolkit=no --with-xpm=no --with-gif=no --with-gnutls=no
+            sudo make -j4 install
+          elif [ "${{matrix.emacs}}" = "emacs-25" ]; then
+            autoreconf -i
+            ./configure --with-x-toolkit=no --with-xpm=no --with-gif=no --with-gnutls=no
+            sudo make -j4 install
+          elif [ "${{matrix.emacs}}" = "emacs-24" ]; then
             autoreconf -i
             ./configure --with-x-toolkit=no --with-xpm=no --with-gif=no --with-gnutls=no
             sudo make -j4 install
