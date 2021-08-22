@@ -40,14 +40,11 @@ jobs:
         with:
           fetch-depth: 1 # without checkout history and tags
       - name: Install Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install build-essential gcc-multilib
-      - name: Build Emacs
         env:
           emacs_source: "https://github.com/emacs-mirror/emacs.git"
         run: |
           sudo apt-get update
+          sudo apt-get install build-essential gcc-multilib
           git clone --depth=1 -b=${{matrix.emacs}} ${{env.emacs_source}} ${{matrix.emacs}}
           cd ${{matrix.emacs}}
           ./configure
