@@ -49,7 +49,7 @@ jobs:
           cd ${{matrix.emacs}}
           autoreconf -i
           ./configure --with-x-toolkit=no --with-xpm=no --with-gif=no
-          make -j4 install
+          sudo make -j4 install
       - name: Test
         run: |
           _TEST_=bone ./test.sh
