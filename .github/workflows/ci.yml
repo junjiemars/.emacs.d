@@ -43,7 +43,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install build-essential gcc-multilib
-          sudo apt-get install gnutls-bin libgnutls-dev
+          sudo apt-get install gnutls-bin
       - name: Build Emacs
         env:
           emacs_source: "https://github.com/emacs-mirror/emacs.git"
@@ -55,7 +55,9 @@ jobs:
           fi
           cd ${{matrix.emacs}}
           autoreconf -i
-          if [ "${{matrix.emacs}}" = "emacs-23" ]; then
+          if [ "${{matrix.emacs}}" = "emacs-27" ]; then
+            ./configure --with-x-toolkit=no --with-xpm=no --with-gif=no --with-gnutls=no
+          elif [ "${{matrix.emacs}}" = "emacs-23" ]; then
             ./configure --with-x-toolkit=no
           else
             ./configure --with-x-toolkit=no --with-xpm=no --with-gif=no
