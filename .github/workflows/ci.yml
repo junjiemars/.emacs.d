@@ -32,6 +32,7 @@ jobs:
   Matrix:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         emacs: [emacs-27, emacs-26, emacs-25, emacs-23]
     steps:
