@@ -74,13 +74,12 @@ jobs:
       fail-fast: false
       matrix:
         emacs: [
-        emacs-23
-        # emacs-27,
-        # emacs-26,
-        # emacs-25,
-        # emacs-24,
-        # emacs-23,
-        # emacs-22
+        emacs-27,
+        emacs-26,
+        emacs-25,
+        emacs-24,
+        emacs-23,
+        emacs-22
         ]
     steps:
       - uses: actions/checkout@v2
@@ -102,7 +101,7 @@ jobs:
           fi
           cd ${{matrix.emacs}}
           if [ "${{matrix.emacs}}" = "emacs-27" ]; then
-            autoreconf -i
+            ./autogen.sh
             ./configure --with-x-toolkit=no --with-xpm=ifavailable --with-gif=ifavailable --with-gnutls=ifavailable
             sudo make -j4 install
           elif [ "${{matrix.emacs}}" = "emacs-26" ]; then
@@ -110,7 +109,7 @@ jobs:
             ./configure --with-x-toolkit=no --with-xpm=no --with-gif=no --with-gnutls=no
             sudo make -j4 install
           elif [ "${{matrix.emacs}}" = "emacs-25" ]; then
-            autoreconf -i
+            ./autogen.sh
             ./configure --with-x-toolkit=no --with-xpm=no --with-gif=no --with-gnutls=no
             sudo make -j4 install
           elif [ "${{matrix.emacs}}" = "emacs-24" ]; then
@@ -119,6 +118,9 @@ jobs:
             sudo make -j`lscpu` install
           elif [ "${{matrix.emacs}}" = "emacs-23" ]; then
             ./configure --with-x-toolkit=no --with-crt-dir=/usr/lib/`uname -m`-linux-gnu --with-xpm=no --with-jpeg=no --with-gif=no --without-makeinfo
+            sudo make -j4 install
+          elif [ "${{matrix.emacs}}" = "emacs-22" ]; then
+            ./configure --with-x-toolkit=no --with-xpm=no --with-jpeg=no --with-gif=no
             sudo make -j4 install
           fi
       - name: Test
