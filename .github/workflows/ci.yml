@@ -45,7 +45,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install build-essential gcc-multilib
-          git clone --depth=1 -b=${{matrix.emacs}} ${{env.emacs_source}} ${{matrix.emacs}}
+          git clone --depth=1 --branch=${{matrix.emacs}} ${{env.emacs_source}} ${{matrix.emacs}}
           cd ${{matrix.emacs}}
           ./configure
           make -j4 install
