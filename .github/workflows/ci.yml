@@ -48,7 +48,7 @@ jobs:
         env:
           emacs_source: "https://github.com/emacs-mirror/emacs.git"
         run: |
-          if [ "${{matrix.emacs}}" = "emacs-22]; then
+          if [ "${{matrix.emacs}}" = "emacs-22" ]; then
             git clone --depth=1 --branch="old-branches/EMACS_22_BASE" ${{env.emacs_source}} ${{matrix.emacs}}
           else
             git clone --depth=1 --branch=${{matrix.emacs}} ${{env.emacs_source}} ${{matrix.emacs}}
