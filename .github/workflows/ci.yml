@@ -41,6 +41,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update
+          sudo apt-get install gcc-multilib
       - name: Build Emacs
         env:
           emacs_source: "https://github.com/emacs-mirror/emacs.git"
