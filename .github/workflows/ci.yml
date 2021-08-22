@@ -49,9 +49,7 @@ jobs:
         run: |
           sudo apt-get update
           git clone --depth=1 --branch=${{matrix.emacs}} ${{env.emacs_source}}
-          cd emacs
-          ./configure
-          make -j4 install
+          cd emacs && ./configure --disable-multilib &&  make -j4 install
       - name: Test
         run: |
           _TEST_=bone ./test.sh
