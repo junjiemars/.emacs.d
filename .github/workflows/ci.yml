@@ -50,7 +50,7 @@ jobs:
           cd ${{matrix.emacs}}
           ls -lh .
           autoreconf -i
-          ./configure
+          ./configure --with-x-toolkit=no
           make -j4 install
       - name: Test
         run: |
