@@ -68,7 +68,7 @@ jobs:
   #       _TEST_=axiom ./test.sh
   #       _TEST_=package ./test.sh
 
-  Linux:
+  Emacs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -114,7 +114,7 @@ jobs:
             ./configure --with-x-toolkit=no --with-xpm=no --with-gif=no --with-gnutls=no
             sudo make -j4 install
           elif [ "${{matrix.emacs}}" = "emacs-24" ]; then
-            autoreconf -i
+            ./autogen.sh
             ./configure --with-x-toolkit=no --with-xpm=no --with-gif=no --with-gnutls=no
             sudo make -j4 install
           elif [ "${{matrix.emacs}}" = "emacs-23" ]; then
