@@ -28,7 +28,7 @@ jobs:
   #         _TEST_=bone ./test.sh
   #         _TEST_=axiom ./test.sh
   #         _TEST_=package ./test.sh
-  
+
   Matrix:
     runs-on: ubuntu-latest
     strategy:
@@ -40,12 +40,12 @@ jobs:
         with:
           fetch-depth: 1 # without checkout history and tags
       - name: Install Dependencies
-        env:
-          emacs_source: "https://github.com/emacs-mirror/emacs.git"
         run: |
           sudo apt-get update
           sudo apt-get install build-essential gcc-multilib gnutls-bin
       - name: Build Emacs
+        env:
+          emacs_source: "https://github.com/emacs-mirror/emacs.git"
         run: |
           git clone --depth=1 --branch=${{matrix.emacs}} ${{env.emacs_source}} ${{matrix.emacs}}
           cd ${{matrix.emacs}}
