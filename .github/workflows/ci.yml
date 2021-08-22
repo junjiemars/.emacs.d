@@ -42,7 +42,8 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install build-essential gcc-multilib gnutls-bin
+          sudo apt-get install build-essential gcc-multilib
+          sudo apt-get install libgnutls
       - name: Build Emacs
         env:
           emacs_source: "https://github.com/emacs-mirror/emacs.git"
