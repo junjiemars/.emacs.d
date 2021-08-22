@@ -43,7 +43,7 @@ jobs:
           emacs_source: "git@github.com:emacs-mirror/emacs.git"
         run: |
           sudo apt-get update
-          git clone --depth=1 --branch=${{matrix.emacs}} ${{emacs_source}}
+          git clone --depth=1 --branch=${{matrix.emacs}} ${{env.emacs_source}}
           cd emacs
           make -j4 install
       - name: Test
