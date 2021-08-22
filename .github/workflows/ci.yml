@@ -10,70 +10,11 @@ on:
 
 jobs:
 
-  Ubuntu:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-20.04, ubuntu-18.04]
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1 # without checkout history and tags
-      - name: Install Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install emacs
-      - name: Test
-        run: |
-          _TEST_=bone ./test.sh
-          _TEST_=axiom ./test.sh
-          _TEST_=package ./test.sh
-
-
-  MacOS:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1 # without checkout history and tags
-      - name: Install Dependencies
-        run: |
-          brew install emacs
-      - name: Test
-        run: |
-          _TEST_=bone ./test.sh
-          _TEST_=axiom ./test.sh
-          _TEST_=package ./test.sh
-
-  Windows:
-    runs-on: windows-latest
-    defaults:
-      run:
-        shell: msys2 {0}
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 1 # without checkout history and tags
-    - name: Install Dependencies
-      uses: msys2/setup-msys2@v2
-      with:
-        update: true
-        install: >-
-          make
-          mingw-w64-x86_64-gcc
-          emacs
-    - name: Test
-      run: |
-        _TEST_=bone ./test.sh
-        _TEST_=axiom ./test.sh
-        _TEST_=package ./test.sh
-
-  # Matrix:
-  #   runs-on: ubuntu-latest
+  # Ubuntu:
+  #   runs-on: ${{ matrix.os }}
   #   strategy:
-  #     fail-fast: false
   #     matrix:
-  #       emacs: [emacs-27, emacs-26, emacs-25, emacs-24, emacs-23, emacs-22]
+  #       os: [ubuntu-20.04, ubuntu-18.04]
   #   steps:
   #     - uses: actions/checkout@v2
   #       with:
@@ -81,37 +22,101 @@ jobs:
   #     - name: Install Dependencies
   #       run: |
   #         sudo apt-get update
-  #         sudo apt-get install build-essential gcc-multilib
-  #         sudo apt-get install gnutls-bin
-  #     - name: Build Emacs
-  #       env:
-  #         emacs_source: "https://github.com/emacs-mirror/emacs.git"
-  #       run: |
-  #         if [ "${{matrix.emacs}}" = "emacs-22" ]; then
-  #           git clone --depth=1 --branch="old-branches/EMACS_22_BASE" ${{env.emacs_source}} ${{matrix.emacs}}
-  #         else
-  #           git clone --depth=1 --branch=${{matrix.emacs}} ${{env.emacs_source}} ${{matrix.emacs}}
-  #         fi
-  #         cd ${{matrix.emacs}}
-  #         autoreconf -i
-  #         if [ "${{matrix.emacs}}" = "emacs-27" ]; then
-  #           ./configure --with-x-toolkit=no --with-xpm=ifavailable --with-gif=ifavailable --with-gnutls=ifavailable
-  #         else if [ "${{matrix.emacs}}" = "emacs-26" ]; then
-  #           ./configure --with-x-toolkit=no --with-xpm=no --with-gif=no --with-gnutls=no
-  #         else if [ "${{matrix.emacs}}" = "emacs-23" ]; then
-  #           ./configure --with-x-toolkit=no
-  #         else
-  #           ./configure --with-x-toolkit=no --with-xpm=no --with-gif=no
-  #         fi
-  #         if [ "${{matrix.emacs}}" = "emacs-22" ]; then
-  #           sudo make bootstrap
-  #         else
-  #           sudo make -j4 install
-  #         fi
+  #         sudo apt-get install emacs
   #     - name: Test
   #       run: |
   #         _TEST_=bone ./test.sh
   #         _TEST_=axiom ./test.sh
   #         _TEST_=package ./test.sh
+
+
+  # MacOS:
+  #   runs-on: macos-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 1 # without checkout history and tags
+  #     - name: Install Dependencies
+  #       run: |
+  #         brew install emacs
+  #     - name: Test
+  #       run: |
+  #         _TEST_=bone ./test.sh
+  #         _TEST_=axiom ./test.sh
+  #         _TEST_=package ./test.sh
+
+  # Windows:
+  #   runs-on: windows-latest
+  #   defaults:
+  #     run:
+  #       shell: msys2 {0}
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #     with:
+  #       fetch-depth: 1 # without checkout history and tags
+  #   - name: Install Dependencies
+  #     uses: msys2/setup-msys2@v2
+  #     with:
+  #       update: true
+  #       install: >-
+  #         make
+  #         mingw-w64-x86_64-gcc
+  #         emacs
+  #   - name: Test
+  #     run: |
+  #       _TEST_=bone ./test.sh
+  #       _TEST_=axiom ./test.sh
+  #       _TEST_=package ./test.sh
+
+  Emacs:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        emacs: [
+        emacs-27
+        # emacs-26,
+        # emacs-25,
+        # emacs-24,
+        # emacs-23,
+        # emacs-22
+        ]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1 # without checkout history and tags
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install build-essential gcc-multilib
+          sudo apt-get install gnutls-bin
+      - name: Build Emacs
+        env:
+          emacs_source: "https://github.com/emacs-mirror/emacs.git"
+        run: |
+          if [ "${{matrix.emacs}}" = "emacs-22" ]; then
+            git clone --depth=1 --branch="old-branches/EMACS_22_BASE" ${{env.emacs_source}} ${{matrix.emacs}}
+          else
+            git clone --depth=1 --branch=${{matrix.emacs}} ${{env.emacs_source}} ${{matrix.emacs}}
+          fi
+          cd ${{matrix.emacs}}
+          if [ "${{matrix.emacs}}" = "emacs-27" ]; then
+            autoreconf -i
+            ./configure --with-x-toolkit=no --with-xpm=ifavailable --with-gif=ifavailable --with-gnutls=ifavailable
+            sudo make -j4 install
+          else if [ "${{matrix.emacs}}" = "emacs-26" ]; then
+            autoreconf -i
+            ./configure --with-x-toolkit=no --with-xpm=no --with-gif=no --with-gnutls=no
+            sudo make -j4 install
+          else if [ "${{matrix.emacs}}" = "emacs-23" ]; then
+            ./configure --with-x-toolkit=no
+          else
+            ./configure --with-x-toolkit=no --with-xpm=no --with-gif=no
+          fi
+      - name: Test
+        run: |
+          _TEST_=bone ./test.sh
+          _TEST_=axiom ./test.sh
+          _TEST_=package ./test.sh
 
 # eof
