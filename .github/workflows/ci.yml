@@ -44,13 +44,11 @@ jobs:
           emacs_source: "https://github.com/emacs-mirror/emacs.git"
         run: |
           sudo apt-get update
-          sudo apt-get install build-essential gcc-multilib
+          sudo apt-get install build-essential gcc-multilib gnutls-bin
           git clone --depth=1 --branch=${{matrix.emacs}} ${{env.emacs_source}} ${{matrix.emacs}}
-          ls -lh .
           cd ${{matrix.emacs}}
-          ls -lh .
           autoreconf -i
-          ./configure --with-x-toolkit=no
+          ./configure --with-x-toolkit=no --with-xpm=no --with-gif=no
           make -j4 install
       - name: Test
         run: |
