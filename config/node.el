@@ -378,10 +378,12 @@ end of buffer, otherwise just popup the buffer."
   (interactive)
   (let ((bounds (region-active-if
                     (cons (region-beginning) (region-end))
-                  (let ((b (node-last-sexp)))
-                    (if (and b (< b (point)))
-                        (cons b (point))
-                      (bounds-of-thing-at-point 'sexp))))))
+                  (if current-prefix-arg
+                      (let ((b (node-last-sexp)))
+                        (if (and b (< b (point)))
+                            (cons b (point))
+                          (bounds-of-thing-at-point 'sexp)))
+                    (bounds-of-thing-at-point 'symbol)))))
     (when bounds
       (node-send-region (car bounds) (cdr bounds)))))
 
