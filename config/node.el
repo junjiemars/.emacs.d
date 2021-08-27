@@ -382,7 +382,7 @@ end of buffer, otherwise just popup the buffer."
                       (let ((b (node-last-sexp)))
                         (if (and b (< b (point)))
                             (cons b (point))
-                          (bounds-of-thing-at-point 'sexp)))
+                          (bounds-of-thing-at-point 'symbol)))
                     (bounds-of-thing-at-point 'symbol)))))
     (when bounds
       (node-send-region (car bounds) (cdr bounds)))))
