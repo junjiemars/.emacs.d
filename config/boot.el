@@ -393,7 +393,7 @@ No matter the declaration order, the executing order is:
 
 ;;; gc
 
-(defmacro gc-delay* (scalar &rest body)
+(defmacro gc-delay (scalar &rest body)
   "Delay garbage collection at runtime."
   (declare (indent 1))
   (let ((s1 (gensym*)))

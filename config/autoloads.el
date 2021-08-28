@@ -260,7 +260,7 @@
 ;; after-init
 (defun on-autoloads! ()
   (make-thread*
-   (gc-delay* 8
+   (gc-delay 8
      (compile! (compile-unit% (emacs-home* "config/sockets.el")))
      (when-package%
        (compile! (compile-unit% (emacs-home* "config/module.el"))))

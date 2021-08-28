@@ -220,10 +220,10 @@
   (should (= 3 (if-feature-ert% (+ 1 2) (* 3 4))))
   (should (= 12 (if-feature-ertxxx% (+ 1 2) (* 3 4)))))
 
-(ert-deftest %boot:gc-delay* ()
+(ert-deftest %boot:gc-delay ()
   (should (= (let ((g0 gc-cons-threshold))
                (* 2 g0))
-             (gc-delay* 2 gc-cons-threshold))))
+             (gc-delay 2 gc-cons-threshold))))
 
  ;; end of boot
 
