@@ -317,7 +317,24 @@ If prefix N is non-nil, then forward or backward N functions."
 
 If prefix QUOTED is non-nil, then mark quoted string."
   (interactive "P")
-  (let ((bounds (bounds-of-thing-at-point 'string)))
+  (let ((bounds (or (bounds-of-thing-at-point 'string)
+                    (let ((max (* 80 10))
+                          (qs '(?\' ?\"))
+                          (cur (point))
+                          (idx 0)
+                          (left))
+                      (save-excursion
+                        (catch 'block
+                          (while (not (memq (char-before (- cur idx)) qs))
+                            (unless (< (1+ idx) max)
+                              (throw 'block nil))
+                            (setq idx (1+ idx)))
+                          (setq left (- cur idx) idx 0)
+                          (while (not (memq (char-after (+ cur idx)) qs))
+                            (unless (< (1+ idx) max)
+                              (throw 'block nil))
+                            (setq idx (1+ idx)))
+                          (cons left (+ cur idx))))))))
     (when bounds
       (_mark_thing@_ (goto-char (if quoted
                                     (1- (car bounds))
