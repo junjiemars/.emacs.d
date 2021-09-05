@@ -326,15 +326,17 @@ If prefix QUOTED is non-nil, then mark quoted string."
                           (cons
                            (let ((idx 0))
                              (while (not (memq (char-before (- cur idx)) qs))
-                               (unless (< (1+ idx) max)
-                                 (throw 'block nil))
-                               (setq idx (1+ idx)))
+                               (if (or (>= (1+ idx) max)
+                                       (= (- cur (1+ idx)) (point-min)))
+                                   (throw 'block nil)
+                                 (setq idx (1+ idx))))
                              (- cur idx))
                            (let ((idx 0))
                              (while (not (memq (char-after (+ cur idx)) qs))
-                               (unless (< (1+ idx) max)
-                                 (throw 'block nil))
-                               (setq idx (1+ idx)))
+                               (if (or (>= (1+ idx) max)
+                                       (= (+ cur (1+ idx)) (point-max)))
+                                   (throw 'block nil)
+                                 (setq idx (1+ idx))))
                              (+ cur idx)))))))))
     (when bounds
       (_mark_thing@_ (goto-char (if quoted
