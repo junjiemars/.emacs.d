@@ -166,11 +166,40 @@
 (eval-when-compile
 
   (defmacro _mark_thing@_ (begin end)
-    "Mark THING at point."
+    "Mark thing at point."
     `(progn
        ,begin
        (set-mark (point))
-       ,end)))
+       ,end))
+
+  (defmacro _mark_bound@_ (marks &optional depth)
+    "Mark bound at point."
+    (let ((m (gensym*))
+          (d (gensym*)))
+      `(catch 'block
+         (let ((cur (point))
+               (,d (or (numberp ,depth) (* 1024 8)))
+               (,m ,marks)
+               (s))
+           (cons
+            (let ((idx 0))
+              (while (not (memq (char-before (- cur idx)) ,m))
+                (if (or (>= (1+ idx) ,d)
+                        (= (- cur (1+ idx)) (point-min)))
+                    (throw 'block nil)
+                  (setq idx (1+ idx))))
+              (let ((c (car (memq (char-before (- cur idx)) ,m))))
+                (setq s (cond ((char= c ?\{) ?\})
+                              ((char= c ?\[) ?\])
+                              (t c))))
+              (- cur idx))
+            (let ((idx 0))
+              (while (not (char= (char-after (+ cur idx)) s))
+                (if (or (>= (1+ idx) ,d)
+                        (= (+ cur (1+ idx)) (point-max)))
+                    (throw 'block nil)
+                  (setq idx (1+ idx))))
+              (+ cur idx))))))))
 
 
 (defun mark-symbol@ (&optional n)
@@ -312,37 +341,32 @@ If prefix N is non-nil, then forward or backward N functions."
                      (goto-char (car bounds))))))
 
 
-(defun mark-string@ (&optional quoted)
-  "Mark unquoted string at point.
+(defun mark-quoted@ (&optional quoted)
+  "Mark QUOTED text at point.
 
-If prefix QUOTED is non-nil, then mark quoted string."
+If prefix QUOTED is non-nil, then mark whole quoted text."
   (interactive "P")
-  (let ((bounds (or (bounds-of-thing-at-point 'string)
-                    (let ((max (* 1024 8))
-                          (qs '(?\' ?\"))
-                          (cur (point)))
-                      (save-excursion
-                        (catch 'block
-                          (cons
-                           (let ((idx 0))
-                             (while (not (memq (char-before (- cur idx)) qs))
-                               (if (or (>= (1+ idx) max)
-                                       (= (- cur (1+ idx)) (point-min)))
-                                   (throw 'block nil)
-                                 (setq idx (1+ idx))))
-                             (- cur idx))
-                           (let ((idx 0))
-                             (while (not (memq (char-after (+ cur idx)) qs))
-                               (if (or (>= (1+ idx) max)
-                                       (= (+ cur (1+ idx)) (point-max)))
-                                   (throw 'block nil)
-                                 (setq idx (1+ idx))))
-                             (+ cur idx)))))))))
+  (let ((bounds (_mark_bound@_ '(?\' ?\"))))
     (when bounds
       (_mark_thing@_ (goto-char (if quoted
                                     (1- (car bounds))
                                   (car bounds)))
                      (goto-char (if quoted
+                                    (+ (cdr bounds) 1)
+                                  (cdr bounds)))))))
+
+
+(defun mark-blocked@ (&optional blocked)
+  "Mark BLOCKED text at point.
+
+If prefix BLOCKED cons cell is non-nil, then mark whole blocked text."
+  (interactive "P")
+  (let ((bounds (_mark_bound@_ '(?\{ ?\[))))
+    (when bounds
+      (_mark_thing@_ (goto-char (if blocked
+                                    (1- (car bounds))
+                                  (car bounds)))
+                     (goto-char (if blocked
                                     (+ (cdr bounds) 1)
                                   (cdr bounds)))))))
 
@@ -674,7 +698,8 @@ If `current-prefix-arg' < 0, then repeat n time with END in reversed."
 (define-key% (current-global-map) (kbd "C-c m s") #'mark-symbol@)
 (define-key% (current-global-map) (kbd "C-c m f") #'mark-filename@)
 (define-key% (current-global-map) (kbd "C-c m l") #'mark-line@)
-(define-key% (current-global-map) (kbd "C-c m q") #'mark-string@)
+(define-key% (current-global-map) (kbd "C-c m q") #'mark-quoted@)
+(define-key% (current-global-map) (kbd "C-c m b") #'mark-blocked@)
 (define-key% (current-global-map) (kbd "M-@") #'mark-word@)
 (define-key% (current-global-map) (kbd "C-M-@") #'mark-sexp@)
 (define-key% (current-global-map) (kbd "C-M-SPC") #'mark-sexp@)
