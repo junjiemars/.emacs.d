@@ -170,36 +170,7 @@
     `(progn
        ,begin
        (set-mark (point))
-       ,end))
-
-  (defmacro _mark_bound@_ (marks &optional depth)
-    "Mark bound at point."
-    (let ((m (gensym*))
-          (d (gensym*)))
-      `(catch 'block
-         (let ((cur (point))
-               (,d (or (numberp ,depth) (* 1024 8)))
-               (,m ,marks)
-               (s))
-           (cons
-            (let ((idx 0))
-              (while (not (memq (char-before (- cur idx)) ,m))
-                (if (or (>= (1+ idx) ,d)
-                        (= (- cur (1+ idx)) (point-min)))
-                    (throw 'block nil)
-                  (setq idx (1+ idx))))
-              (let ((c (car (memq (char-before (- cur idx)) ,m))))
-                (setq s (cond ((char= c ?\{) ?\})
-                              ((char= c ?\[) ?\])
-                              (t c))))
-              (- cur idx))
-            (let ((idx 0))
-              (while (not (char= (char-after (+ cur idx)) s))
-                (if (or (>= (1+ idx) ,d)
-                        (= (+ cur (1+ idx)) (point-max)))
-                    (throw 'block nil)
-                  (setq idx (1+ idx))))
-              (+ cur idx))))))))
+       ,end)))
 
 
 (defun mark-symbol@ (&optional n)
@@ -342,33 +313,65 @@ If prefix N is non-nil, then forward or backward N functions."
 
 
 (defun mark-quoted@ (&optional quoted)
-  "Mark QUOTED text at point.
+  "Mark QUOTED thing at point.
 
-If prefix QUOTED is non-nil, then mark whole quoted text."
-  (interactive "P")
-  (let ((bounds (_mark_bound@_ '(?\' ?\"))))
+If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
+  (interactive
+   (list (when current-prefix-arg
+           (read-char (propertize "Input quoted character: "
+                                  'face 'minibuffer-prompt)))))
+  (let ((bounds
+         (catch 'block
+           (let* ((lss '(?\' ?\" ?\( ?\{ ?\<))
+                  (rss '(?\' ?\" ?\) ?\} ?\>))
+                  (ls (if (characterp quoted)
+                          (list quoted)
+                        lss))
+                  (rs (if (characterp quoted)
+                          (let ((l (memq quoted lss)))
+                            (cond (l (list (nth (- (length rss) (length l))
+                                                rss)))
+                                  (t (list quoted))))
+                        rss))
+                  (depth (* (emacs-arch) 8))
+                  (ss)
+                  (cur (point))
+                  (min (point-min))
+                  (max (point-max))
+                  (rproc
+                   (lambda (i r)
+                     (catch 'right
+                       (while (and (< i depth)
+                                   (< (+ cur i) max))
+                         (let ((c (char-after (+ cur i))))
+                           (cond ((char= c r)
+                                  (throw 'right (cons c i)))))
+                         (setq i (1+ i)))
+                       i))))
+             (let ((li 0) (ri 0))
+               (catch 'left
+                 (while (and (< li depth)
+                             (> (- cur li) min))
+                   (let* ((c (char-before (- cur li)))
+                          (l (memq c ls)))
+                     (cond ((and quoted (not ss))
+                            (let ((m (funcall rproc ri (car rs))))
+                                (when (consp m)
+                                  (setq ri (cdr m)
+                                        ss (cons m ss))))
+                            (when (char= c (car ls))
+                              (throw 'left nil)))
+                           ((and quoted (char= c (car ls)))
+                            (throw 'left nil))
+                           ((and ss (char= c (cdar ss)))
+                            (setq ss (cdr ss)))
+                           (l (setq ss (cons (cons c li) ss))))
+                     (setq li (1+ li)))))
+               (cons (- cur li) (+ cur ri)))))))
     (when bounds
-      (_mark_thing@_ (goto-char (if quoted
-                                    (1- (car bounds))
-                                  (car bounds)))
-                     (goto-char (if quoted
-                                    (+ (cdr bounds) 1)
-                                  (cdr bounds)))))))
+      (_mark_thing@_ (goto-char (1- (car bounds)))
+                     (goto-char (1+ (cdr bounds)))))))
 
-
-(defun mark-blocked@ (&optional blocked)
-  "Mark BLOCKED text at point.
-
-If prefix BLOCKED cons cell is non-nil, then mark whole blocked text."
-  (interactive "P")
-  (let ((bounds (_mark_bound@_ '(?\{ ?\[))))
-    (when bounds
-      (_mark_thing@_ (goto-char (if blocked
-                                    (1- (car bounds))
-                                  (car bounds)))
-                     (goto-char (if blocked
-                                    (+ (cdr bounds) 1)
-                                  (cdr bounds)))))))
 
  ;; end of Mark thing at point
 
@@ -699,7 +702,6 @@ If `current-prefix-arg' < 0, then repeat n time with END in reversed."
 (define-key% (current-global-map) (kbd "C-c m f") #'mark-filename@)
 (define-key% (current-global-map) (kbd "C-c m l") #'mark-line@)
 (define-key% (current-global-map) (kbd "C-c m q") #'mark-quoted@)
-(define-key% (current-global-map) (kbd "C-c m b") #'mark-blocked@)
 (define-key% (current-global-map) (kbd "M-@") #'mark-word@)
 (define-key% (current-global-map) (kbd "C-M-@") #'mark-sexp@)
 (define-key% (current-global-map) (kbd "C-M-SPC") #'mark-sexp@)
