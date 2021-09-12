@@ -397,8 +397,6 @@ If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
                                      (throw 'q nil))
                                     ((consp m)
                                      (setq ri (cdr m))))))
-                           ((and quoted (char= c (car ls)))
-                            (throw 'q nil))
                            ((and l (not r) (not ss))
                             (let ((m (funcall rproc ri s)))
                               (cond ((consp m)
