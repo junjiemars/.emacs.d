@@ -338,12 +338,14 @@ If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
                   (min (point-min))
                   (max (point-max))
                   (rproc
-                   (lambda (i r)
+                   (lambda (i &optional r)
                      (catch 'right
                        (while (and (< i depth)
                                    (< (+ cur i) max))
                          (let ((c (char-after (+ cur i))))
-                           (cond ((char= c r)
+                           (cond ((and r (char= c r))
+                                  (throw 'right (cons c i)))
+                                 ((and (not r) (memq c rs))
                                   (throw 'right (cons c i)))))
                          (setq i (1+ i)))
                        i))))
@@ -358,7 +360,7 @@ If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
                                              (length l))
                                           rs))))
                      (cond ((and quoted (not ss))
-                            (let ((m (funcall rproc ri (car rs))))
+                            (let ((m (funcall rproc ri s)))
                                 (when (consp m)
                                   (setq ri (cdr m)
                                         ss (cons m ss))))
@@ -366,24 +368,31 @@ If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
                               (throw 'left nil)))
                            ((and quoted (char= c (car ls)))
                             (throw 'left nil))
-                           ((and l (not r)
-                                 (or (not ss)
-                                     (not (or (char= c (caar ss))
-                                              (char= s (caar ss))))))
+                           ((and l (not r) (not ss))
                             (let ((m (funcall rproc ri s)))
                               (cond ((consp m)
                                      (setq ri (cdr m))
-                                     (throw 'left nil))
-                                    (t (throw 'block nil)))))
-                           ((and ss (or (char= c (caar ss))
-                                        (and r (char= (car r) (caar ss)))))
+                                     (throw 'left nil)))))
+                           ((and l (not r) ss )
+                            (cond ((and (not (char= c (caar ss)))
+                                        (not (char= s (caar ss)))
+                                        (char= (caar ss)
+                                               (char-after (+ cur ri))))
+                                   (setq li (cdar ss))
+                                   (throw 'left nil))
+                                  ((char= s (caar ss))
+                                   (setq ss (cdr ss)))))
+                           ((and l (not ss))
+                            (let ((m (funcall rproc ri)))
+                              (cond ((and (consp m) (char= s (car m)))
+                                     (setq ri (cdr m)
+                                           ss (cons (cons c li) ss))))))
+                           ((and l r ss (not (char= c (caar ss))))
+                            (let ((m (funcall rproc ri)))
+                              (cond ((and (consp m) (char= c (car m)))
+                                     (setq ri (cdr m))))))
+                           ((and l ss (char= c (caar ss)))
                             (setq ss (cdr ss)))
-                           ((and l r)
-                            (let ((m (funcall rproc ri c)))
-                              (cond ((consp m)
-                                     (setq ri (cdr m))
-                                     (throw 'left nil))
-                                    (t (throw 'block nil)))))
                            ((or l r)
                             (setq ss (cons (cons c li) ss))))
                      (setq li (1+ li)))))
@@ -500,7 +509,7 @@ See also `open-line' and `split-line'."
 (defun echo-buffer-name (&optional arg)
   "Echo the buffer name of current buffer.
 
-If previous argument ARG is nil then copy the buffer name to 
+If previous argument ARG is nil then copy the buffer name to
 kill ring.
 
 If prefix argument ARG is non-nil then copy the qualified buffer
@@ -511,7 +520,7 @@ name to kill ring."
       (user-error* "Type \"w\" or \"C-u 0 w\" instead, in %s"
         mode-name)
     (message "%s"
-             (kill-new 
+             (kill-new
               (cond ((buffer-file-name)
                      (if arg (buffer-file-name) (buffer-name)))
                     (t (buffer-name)))))))
