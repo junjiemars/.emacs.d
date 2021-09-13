@@ -411,7 +411,8 @@ If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
                                           (char= s (char-after
                                                     (+ cur (cdr m)))))
                                      (setq ri (cdr m))
-                                     (throw 'q nil)))))
+                                     (throw 'q nil))
+                                    (t (throw 'block nil)))))
                            ((and l (not r) ss)
                             (cond ((and (not (char= c (caar ss)))
                                         (not (char= s (caar ss))))
