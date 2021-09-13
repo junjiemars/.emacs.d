@@ -401,20 +401,24 @@ If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
                             (let ((m (funcall rproc ri s)))
                               (cond ((consp m)
                                      (setq ri (cdr m))
-                                     (throw 'q nil))
-                                    (t (throw 'block nil)))))
+                                     (throw 'q nil)))))
                            ((and l (not r) ss)
                             (cond ((and (not (char= c (caar ss)))
-                                        (not (char= s (caar ss)))
-                                        (char= (caar ss)
-                                               (char-after (+ cur ri))))
-                                   (let ((m (funcall
-                                             lproc
-                                             0
-                                             (char-after (+ cur ri)))))
-                                     (cond ((consp m)
-                                            (setq li (cdr m))
-                                            (throw 'q nil)))))
+                                        (not (char= s (caar ss))))
+                                   (cond ((char= (caar ss)
+                                                 (char-after (+ cur ri)))
+                                          (let ((m (funcall
+                                                   lproc
+                                                   0
+                                                   (char-after (+ cur ri)))))
+                                           (cond ((consp m)
+                                                  (setq li (cdr m))
+                                                  (throw 'q nil)))))
+                                         (t (let ((m (funcall rproc ri s)))
+                                              (cond ((and (consp m)
+                                                          (char= s (car m)))
+                                                     (setq ri (cdr m))
+                                                     (throw 'q nil)))))))
                                   ((char= s (caar ss))
                                    (setq ss (cdr ss)))))
                            ((and l (not ss))
