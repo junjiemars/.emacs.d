@@ -419,9 +419,9 @@ If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
                                    (cond ((char= (caar ss)
                                                  (char-after (+ cur ri)))
                                           (let ((m (funcall
-                                                   lproc
-                                                   0
-                                                   (char-after (+ cur ri)))))
+                                                    lproc
+                                                    0
+                                                    (caar ss))))
                                            (cond ((consp m)
                                                   (setq li (cdr m))
                                                   (throw 'q nil)))))
@@ -433,21 +433,9 @@ If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
                                   ((char= s (caar ss))
                                    (setq ss (cdr ss)))))
                            ((and l (not ss))
-                            (let ((m (funcall rproc ri))
-                                  (m1 (funcall rproc ri s)))
-                              (cond ((and (consp m) (char= s (car m)))
-                                     (cond ((= (- cur (1+ li)) min)
-                                            (let ((n (funcall lproc 0 s)))
-                                              (cond ((consp n)
-                                                     (setq ri (cdr m)
-                                                           li (cdr n)))))
-                                            (throw 'q nil))
-                                           (t (setq ri (cdr m)
-                                                    ss (cons (cons c li)
-                                                             ss)))))
-                                    ((and (consp m1) (char= s (car m1)))
-                                     (setq ri (cdr m1)
-                                           ss (cons (cons c li) ss))))))
+                            (let ((n (funcall lproc li)))
+                              (cond ((and (consp n) (char= (car n) c))
+                                     (setq ss (cons (cons c li) ss))))))
                            ((and l r ss (not (char= c (caar ss))))
                             (let ((m (funcall rproc ri)))
                               (cond ((and (consp m) (char= c (car m)))
