@@ -409,7 +409,7 @@ If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
                            ((and (not l) r (not ss))
                             (let* ((s1 (nth (- (length ls) (length r)) ls))
                                    (m (funcall rproc ri c))
-                                   (n (funcall lproc (1+ li) s1)))
+                                   (n (funcall lproc li s1)))
                               (cond ((and (consp m) (consp n)
                                           (char= c (car m))
                                           (char= s1 (car n)))
