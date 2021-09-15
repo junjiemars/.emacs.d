@@ -74,7 +74,7 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
 (defun lookup-web (what &optional engine)
   "Lookup web via search ENGINE."
   (interactive
-   (list (read-string "lookup web for " (cdr (symbol@)))
+   (list (read-string "Lookup web for " (cdr (symbol@)))
          (when current-prefix-arg
            (let ((se (mapcar #'car (*web-defs*))))
              (read-string (format "Choose (%s) "

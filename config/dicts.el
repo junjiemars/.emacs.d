@@ -213,7 +213,7 @@
 (defun lookup-dict (what &optional dict)
   "Lookup WORD in DICT then show the result in the echo area."
   (interactive
-   (list (read-string "lookup dict for " (cdr (symbol@ 'word)))
+   (list (read-string "Lookup dict for " (cdr (symbol@ 'word)))
          (when current-prefix-arg
            (let* ((ns (mapcar #'car (*dict-defs*)))
                   (d (read-string (format "Choose (%s) "
