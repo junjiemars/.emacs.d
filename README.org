@@ -952,6 +952,11 @@ boundary, just like the builtin =mark-sexp= does.
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
+=mark-quoted@= mark whole quoted things at point and do not care
+whatever the /mode/ is.
+
+#+REVEAL: split
+#+ATTR_HTML: :style text-align:left
 =mark-word@= default mark the whole word at point. If prefix N is non
 nil, then forward or backword to word boundary, just like the builtin
 =mark-word= does.
