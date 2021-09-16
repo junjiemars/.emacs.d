@@ -476,8 +476,8 @@ If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
                                           (char-after (+ cur ri)))))
                                   (cond ((consp n)
                                          (setq li (cdr n))))))
-                            (t (throw 'block nil)))))
-               (cons (- cur li) (+ cur ri)))))))
+                            (t (throw 'block nil))))
+                     (t (cons (- cur li) (+ cur ri)))))))))
     (when bounds
       (_mark_thing@_ (goto-char (1- (car bounds)))
                      (goto-char (1+ (cdr bounds)))))))
