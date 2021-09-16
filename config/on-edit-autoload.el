@@ -333,7 +333,6 @@ If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
                                                 rss)))
                                   (t (list quoted))))
                         rss))
-                  (depth (* (emacs-arch) (emacs-arch)))
                   (cur (point))
                   (min (point-min))
                   (max (point-max))
@@ -341,8 +340,7 @@ If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
                    (lambda (i &optional l)
                      (catch 'left
                        (let ((s))
-                         (while (and (< i depth)
-                                     (> (- cur i) min))
+                         (while (> (- cur i) min)
                            (let ((c (char-before (- cur i)))
                                  (r (when l
                                       (nth (- (length rs)
@@ -364,8 +362,7 @@ If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
                    (lambda (i &optional r)
                      (catch 'right
                        (let ((s))
-                         (while (and (< i depth)
-                                     (< (+ cur i) max))
+                         (while (< (+ cur i) max)
                            (let ((c (char-after (+ cur i)))
                                  (l (when r
                                       (nth (- (length ls)
@@ -385,8 +382,7 @@ If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
                                (t i)))))))
              (let ((li 0) (ri 0) (ss))
                (catch 'q
-                 (while (and (< li depth)
-                             (> (- cur li) min))
+                 (while (> (- cur li) min)
                    (let* ((c (char-before (- cur li)))
                           (l (memq c ls))
                           (r (memq c rs))
@@ -473,7 +469,7 @@ If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
                            ((or l r)
                             (setq ss (cons (cons c li) ss))))
                      (setq li (1+ li)))))
-               (cond ((or (= li depth) (= (- cur li) min))
+               (cond ((= (- cur li) min)
                       (cond (ss (let ((n (funcall
                                           lproc
                                           0
