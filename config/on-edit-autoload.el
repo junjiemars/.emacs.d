@@ -478,9 +478,10 @@ If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
                                          (setq li (cdr n))))))
                             (t (throw 'block nil))))
                      (t (cons (- cur li) (+ cur ri)))))))))
-    (when bounds
+    (if bounds
       (_mark_thing@_ (goto-char (1- (car bounds)))
-                     (goto-char (1+ (cdr bounds)))))))
+                     (goto-char (1+ (cdr bounds))))
+      (message "quoted things no found"))))
 
 
  ;; end of Mark thing at point
