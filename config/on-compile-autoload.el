@@ -48,7 +48,7 @@
 
 
 (with-eval-after-load 'compile
-  
+
   (when-platform% 'windows-nt
     ;; compile and activate `compilation-find-file' advice on Windows
 		(ad-enable-advice #'compilation-find-file 'before
@@ -75,3 +75,18 @@
   (when-var% grep-mode-map 'grep
     (define-key% grep-mode-map (kbd "g") #'recompile)
     (define-key% grep-mode-map (kbd "q") #'quit-window)))
+
+
+(with-eval-after-load 'make-mode
+
+  ;; spaced blackslash-region for makefile.
+  (when-var% makefile-mode-map 'make-mode
+    (when-fn% 'makefile-backslash-region 'make-mode
+      (define-key% makefile-mode-map (kbd "C-c C-\\")
+        #'(lambda (from to delete-flag)
+            (interactive "r\nP")
+            (let ((indent-tabs-mode nil))
+              (makefile-backslash-region from to delete-flag)))))))
+
+
+;;; end of on-compile-autoload.el
