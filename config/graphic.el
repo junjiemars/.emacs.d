@@ -46,6 +46,7 @@
 ;;; Frame
 
 (when-graphic%
+
   (when (*self-env-spec* :get :frame :allowed)
     ;; `frame-resize-pixelwise'
     (when-var% frame-resize-pixelwise nil
@@ -71,44 +72,49 @@
   (defmacro self-load-theme! (name &optional dir)
     "`load-theme' by NAME.
 If DIR is nil then load the built-in `customize-themes' by NAME."
-    `(when ,name
-       (when (and ,dir (file-exists-p ,dir))
-         (setq custom-theme-directory ,dir))
-       (if-version% >= 24.1
-                    (load-theme ,name)
-         (load-theme ,name t)))))
+    (let ((n (gensym*))
+          (d (gensym*)))
+      `(let ((,n ,name)
+             (,d ,dir))
+         (when ,d (setq custom-theme-directory ,d))
+         (if-version% >= 24.1
+                      (load-theme ,n)
+           (load-theme ,n t))))))
 
 
-;; Load theme
+;;; disable customized themes
 (when-theme%
 
-  (when (and (*self-env-spec* :get :theme :allowed)
-             (*self-env-spec* :get :theme :name))
-    (cond
-     ((*self-env-spec* :get :theme :custom-theme-directory)
-      ;; load theme from :custom-theme-directory
-      (if (*self-env-spec* :get :theme :compile)
-          (progn
-            (compile! (compile-unit*
-                       (concat
-                        (*self-env-spec* :get :theme :custom-theme-directory)
-                        (symbol-name (*self-env-spec* :get :theme :name))
-                        "-theme.el")
-                       t t))
-            (self-load-theme!
-             (*self-env-spec* :get :theme :name)
-             (concat (*self-env-spec* :get :theme :custom-theme-directory)
-                     (v-path* "/"))))
-        (self-load-theme!
-         (*self-env-spec* :get :theme :name)
-         (*self-env-spec* :get :theme :custom-theme-directory))))
+  (defun unload-themes! ()
+    "Unload themes."
+    (interactive)
+    (mapc #'disable-theme custom-enabled-themes)))
 
-     ;; load builtin theme
-     (t (self-load-theme! (*self-env-spec* :get :theme :name))))))
+
+;;; Load theme
+(when-theme%
+
+  (when (*self-env-spec* :get :theme :allowed)
+    (let ((name (*self-env-spec* :get :theme :name)))
+      (when name
+        (let ((dir (*self-env-spec* :get :theme
+                                    :custom-theme-directory)))
+          (cond (dir
+                 ;; load theme from :custom-theme-directory
+                 (if (*self-env-spec* :get :theme :compile)
+                     (progn
+                       (compile!
+                         (compile-unit*
+                          (concat dir (symbol-name name) "-theme.el")
+                          t t))
+                       (self-load-theme! name (concat dir (v-path* "/"))))
+                   (self-load-theme! name dir)))
+                (t
+                 ;; load builtin theme
+                 (self-load-theme! name))))))))
 
 
  ;; end of when-theme%
 
 
 ;; end of file
-
