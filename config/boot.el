@@ -391,23 +391,6 @@ No matter the declaration order, the executing order is:
  ;; end of self-spec macro
 
 
-;;; gc
-
-(defmacro gc-delay (scalar &rest body)
-  "Delay garbage collection at runtime."
-  (declare (indent 1))
-  (let ((s1 (gensym*)))
-    `(let ((,s1 ,scalar))
-       (let ((,s1 (if (numberp ,s1)
-                      ,s1
-                    ,(min 2 (emacs-arch))))
-             (gc-cons-threshold (* gc-cons-threshold ,s1))
-             (garbage-collection-messages noninteractive))
-         ,@body))))
-
- ;; end of gc
-
-
 ;;; <1> prologue
 (compile! (compile-unit% (emacs-home* "config/fns.el"))
           (compile-unit* (*self-paths* :get :prologue)))
@@ -441,6 +424,7 @@ No matter the declaration order, the executing order is:
 (compile!
   ;; --batch mode: disable desktop read/save
   `,(unless noninteractive
+      (setq% desktop-save-mode nil 'desktop)
       (compile-unit% (emacs-home* "config/memory.el")))
   (compile-unit% (emacs-home* "config/autoloads.el")))
 

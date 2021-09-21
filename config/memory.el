@@ -86,6 +86,7 @@
         (setq% desktop-restore-frames nil 'desktop)))
     (setq% desktop-restore-eager
            (*self-env-spec* :get :desktop :restore-eager) 'desktop)
+    (setq% desktop-save-mode t 'desktop)
     (desktop-read (v-home% ".desktop/"))))
 
 
