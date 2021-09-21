@@ -85,7 +85,7 @@
       (define-key% makefile-mode-map (kbd "C-c C-\\")
         #'(lambda (from to delete-flag)
             (interactive "r\nP")
-            (let ((indent-tabs-mode nil))
+            (fluid-let (indent-tabs-mode nil)
               (makefile-backslash-region from to delete-flag)))))))
 
 
