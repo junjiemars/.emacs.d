@@ -15,8 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - "ubuntu-20.04"
-          - "ubuntu-18.04"
+          - "ubuntu-latest"
           - "macos-latest"
           - "windows-latest"
     runs-on: ${{ matrix.os }}
@@ -40,15 +39,9 @@ jobs:
             make
             mingw-w64-x86_64-gcc
             emacs
-      - name: Test (Linux and macOS)
-        if: ${{ matrix.os != 'windows-latest' }}
-        run: |
-          _TEST_=bone ./test.sh
-          _TEST_=axiom ./test.sh
-          _TEST_=package ./test.sh
-      - name: Test (Windows)
-        if: ${{ matrix.os == 'windows-latest' }}
-        shell: msys2 {0}
+        run: echo "_shell_='msys {0}'" >> $GITHUB_ENV
+      - name: Test (${{ matrix.os }})
+        shell: ${{ env._shell_ }}
         run: |
           _TEST_=bone ./test.sh
           _TEST_=axiom ./test.sh
