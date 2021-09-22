@@ -39,7 +39,7 @@ jobs:
             make
             mingw-w64-x86_64-gcc
             emacs
-            echo "_shell_='msys {0}'" >> $GITHUB_ENV
+            echo "_shell_=msys2 {0}" >> $GITHUB_ENV
       - name: Test (${{ matrix.os }})
         shell: ${{ env._shell_ }}
         run: |
