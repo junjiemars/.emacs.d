@@ -18,7 +18,14 @@ jobs:
           - "ubuntu-latest"
           - "macos-latest"
           - "windows-latest"
+        _TEST:
+          - "bone"
+          - "axiom"
+          - "package"
+    env:
+      _TEST: ${{ matrix._TEST }}
     runs-on: ${{ matrix.os }}
+    name: ${{ matrix._TEST }} on ${{matrix.os}}
     steps:
       - uses: actions/checkout@v2
       - name: Install Dependencies (Linux)
@@ -42,10 +49,7 @@ jobs:
             echo "_shell_=msys2 {0}" >> $GITHUB_ENV
       - name: Test (${{ matrix.os }})
         shell: ${{ env._shell_ }}
-        run: |
-          _TEST_=bone ./test.sh
-          _TEST_=axiom ./test.sh
-          _TEST_=package ./test.sh
+        run: ./test.sh
 
   # Emacs:
   #   runs-on: ubuntu-latest
