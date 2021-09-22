@@ -36,9 +36,9 @@
     (let ((b (*self-env-spec* :get :desktop :buffers-not-to-save)))
       (when b (setq% desktop-buffers-not-to-save b 'desktop)))
 
-    (let ((m (*self-env-spec* :get :desktop :modes-not-to-save)))
-      (setq% desktop-modes-not-to-save
-             (append '(tags-table-mode) m) 'desktop))
+    (setq% desktop-modes-not-to-save
+           (*self-env-spec* :get :desktop :modes-not-to-save)
+           'desktop)
 
     (when-graphic%
       (when-version% <= 26
