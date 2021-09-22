@@ -17,8 +17,6 @@ jobs:
         os: [ubuntu-20.04, ubuntu-18.04]
     steps:
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1 # without checkout history and tags
       - name: Install Dependencies
         run: |
           sudo apt-get update
@@ -34,8 +32,6 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1 # without checkout history and tags
       - name: Install Dependencies
         run: |
           brew install emacs
@@ -52,8 +48,6 @@ jobs:
         shell: msys2 {0}
     steps:
     - uses: actions/checkout@v2
-      with:
-        fetch-depth: 1 # without checkout history and tags
     - name: Install Dependencies
       uses: msys2/setup-msys2@v2
       with:
