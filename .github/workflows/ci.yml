@@ -49,9 +49,9 @@ jobs:
       - name: Test (Windows)
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
-          _TEST_=bone msys2 ./test.sh
-          _TEST_=axiom msys2 ./test.sh
-          _TEST_=package msys2 ./test.sh
+          msys2 _TEST_=bone ./test.sh
+          msys2 _TEST_=axiom ./test.sh
+          msys2 _TEST_=package ./test.sh
 
   # Emacs:
   #   runs-on: ubuntu-latest
