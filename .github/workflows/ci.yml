@@ -40,15 +40,9 @@ jobs:
             make
             mingw-w64-x86_64-gcc
             emacs
-      - name: Test (Linux and macOS)
-        if: ${{ matrix.os != 'windows-latest' }}
-        run: |
-          _TEST_=bone ./test.sh
-          _TEST_=axiom ./test.sh
-          _TEST_=package ./test.sh
-      - name: Test (Windows)
-        if: ${{ matrix.os == 'windows-latest' }}
-        shell: msys2 {0}
+      - name: Test
+        # https://github.com/actions/runner/issues/409#issuecomment-752775072
+        shell: ${{ matrix.os == 'windows-latest' && 'msys2 {0}' || '' }}
         run: |
           _TEST_=bone ./test.sh
           _TEST_=axiom ./test.sh
