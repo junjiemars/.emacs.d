@@ -10,63 +10,49 @@ on:
 
 jobs:
 
-  Ubuntu:
-    runs-on: ${{ matrix.os }}
+  Test:
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-20.04, ubuntu-18.04]
+        os:
+          - "ubuntu-20.04"
+          - "ubuntu-18.04"
+          - "macos-latest"
+          - "windows-latest"
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1 # without checkout history and tags
-      - name: Install Dependencies
+      - name: Install Dependencies (Linux)
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
         run: |
           sudo apt-get update
           sudo apt-get install emacs
-      - name: Test
-        run: |
-          _TEST_=bone ./test.sh
-          _TEST_=axiom ./test.sh
-          _TEST_=package ./test.sh
-
-
-  MacOS:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1 # without checkout history and tags
-      - name: Install Dependencies
+      - name: Install Dependencies (macOS)
+        if: ${{ matrix.os == 'macos-latest' }}
         run: |
           brew install emacs
-      - name: Test
+      - name: Install Dependencies (Windows)
+        if: ${{ matrix.os == 'windows-latest' }}
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          install: >-
+            make
+            mingw-w64-x86_64-gcc
+            emacs
+      - name: Test (Linux and macOS)
+        if: ${{ matrix.os != 'windows-latest' }}
         run: |
           _TEST_=bone ./test.sh
           _TEST_=axiom ./test.sh
           _TEST_=package ./test.sh
-
-  Windows:
-    runs-on: windows-latest
-    defaults:
-      run:
+      - name: Test (Windows)
+        if: ${{ matrix.os == 'windows-latest' }}
         shell: msys2 {0}
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 1 # without checkout history and tags
-    - name: Install Dependencies
-      uses: msys2/setup-msys2@v2
-      with:
-        update: true
-        install: >-
-          make
-          mingw-w64-x86_64-gcc
-          emacs
-    - name: Test
-      run: |
-        _TEST_=bone ./test.sh
-        _TEST_=axiom ./test.sh
-        _TEST_=package ./test.sh
+        run: |
+          _TEST_=bone ./test.sh
+          _TEST_=axiom ./test.sh
+          _TEST_=package ./test.sh
 
   # Emacs:
   #   runs-on: ubuntu-latest
