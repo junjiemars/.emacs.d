@@ -85,8 +85,8 @@ If DIR is nil then load the built-in `customize-themes' by NAME."
 ;;; disable customized themes
 (when-theme%
 
-  (defun unload-themes! ()
-    "Unload themes."
+  (defun restore-default-theme! ()
+    "Restore default theme."
     (interactive)
     (mapc #'disable-theme custom-enabled-themes)))
 
