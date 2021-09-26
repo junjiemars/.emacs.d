@@ -19,7 +19,8 @@
              (file-exists-p (v-home% ".desktop/")))
     (setq% desktop-restore-eager
            (*self-env-spec* :get :desktop :restore-eager) 'desktop)
-    (setq% desktop-save-mode t 'desktop)
+
+    (setq% desktop-save-mode 1 'desktop)
     (desktop-read (v-home% ".desktop/"))))
 
 
@@ -30,11 +31,14 @@
 (defun self-desktop-save! ()
   "Save the desktop of the current Emacs instance."
   (when (*self-env-spec* :get :desktop :allowed)
-    (let ((f (*self-env-spec* :get :desktop :files-not-to-save)))
-      (when f (setq% desktop-files-not-to-save f 'desktop)))
 
-    (let ((b (*self-env-spec* :get :desktop :buffers-not-to-save)))
-      (when b (setq% desktop-buffers-not-to-save b 'desktop)))
+    (setq% desktop-files-not-to-save
+           (*self-env-spec* :get :desktop :files-not-to-save)
+           'desktop)
+
+    (setq% desktop-buffers-not-to-save
+           (*self-env-spec* :get :desktop :buffers-not-to-save)
+           'desktop)
 
     (setq% desktop-modes-not-to-save
            (*self-env-spec* :get :desktop :modes-not-to-save)
@@ -49,7 +53,7 @@
                   (push! x frameset-filter-alist))
                 '((ns-transparent-titlebar . unbound)
                   (ns-appearance . unbound))))))
-    
+
     (if-version% >= 23
                  (desktop-save (v-home! ".desktop/"))
       (desktop-save (v-home! ".desktop/") t))))
