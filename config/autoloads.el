@@ -274,7 +274,8 @@
        (when (*self-paths* :get :epilogue)
          (compile! (compile-unit* (*self-paths* :get :epilogue))))
        (ido-mode t)
-       (when-fn% 'self-desktop-read! nil (self-desktop-read!))))))
+       (when-fn% 'self-desktop-read! nil (self-desktop-read!))))
+   t "on-autoloads!"))
 
 
 ;;; autoload when interactive or not
