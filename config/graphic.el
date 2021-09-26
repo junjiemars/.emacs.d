@@ -61,12 +61,12 @@
         (set-face-attribute 'default nil :font font)))
 
     ;; `initial-frame-alist'
-    (let ((initial (*self-env-spec* :get :frame :initial)))
-      (setq initial-frame-alist initial))
+    (setq initial-frame-alist
+          (*self-env-spec* :get :frame :initial))
 
     ;; `default-frame-alist'
-    (let ((default (*self-env-spec* :get :frame :default)))
-      (setq default-frame-alist default))))
+    (setq default-frame-alist
+          (*self-env-spec* :get :frame :default))))
 
  ;; end of Frame
 
