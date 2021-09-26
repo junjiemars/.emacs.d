@@ -48,19 +48,25 @@
 (when-graphic%
 
   (when (*self-env-spec* :get :frame :allowed)
+
     ;; `frame-resize-pixelwise'
     (when-var% frame-resize-pixelwise nil
       (setq frame-resize-pixelwise
             (*self-env-spec* :get :frame
                              :frame-resize-pixelwise)))
+
+    ;; font
+    (let ((font (*self-env-spec* :get :frame :font)))
+      (when font
+        (set-face-attribute 'default nil :font font)))
+
     ;; `initial-frame-alist'
-    (dolist* (x (*self-env-spec* :get :frame :initial))
-      (push! x initial-frame-alist))
+    (let ((initial (*self-env-spec* :get :frame :initial)))
+      (setq initial-frame-alist initial))
+
     ;; `default-frame-alist'
-    (dolist* (x (*self-env-spec* :get :frame :default))
-      (push! x default-frame-alist)
-      (when (eq 'font (car x))
-        (set-face-attribute 'default nil :font (cdr x))))))
+    (let ((default (*self-env-spec* :get :frame :default)))
+      (setq default-frame-alist default))))
 
  ;; end of Frame
 

@@ -25,14 +25,17 @@
 ;;; frame
 (*self-env-spec*
  :put :frame
- (list :initial nil ;; `((fullscreen . fullheight))
-       :default `((font . ,(if-platform% 'darwin
-                               "Monaco-17"
-                             (if-platform% 'windows-nt
-                                 "Consolas-13"
-                               "DejaVu Sans Mono-14"))))
-       :frame-resize-pixelwise t
-       :allowed nil))
+ (list :initial `((vertical-scroll-bars)) ;; `((fullscreen . fullheight))
+       :default `((vertical-scroll-bars)
+                  (height . 32))
+       :font (if-platform% 'darwin
+                 "Monaco-17"
+               (if-platform% 'windows-nt
+                   "Consolas-13"
+                 "Monaco-13"))
+       :frame-resize-pixelwise nil
+       :allowed t))
+
 
 ;;; glyph
 (*self-env-spec*
