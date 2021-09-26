@@ -9,14 +9,10 @@
 ;;; Code:
 
 
-(defvar *loading-epoch*
-  (current-time)
-  "The epoch of loading init.el.")
-
-
 (defmacro comment (&rest body)
   "Ignore BODY, yields nil."
   nil)
+
 
 (defvar *gensym-counter* 0
   "The counter of `gensym*'.")
@@ -265,11 +261,6 @@ If (COND VERSION EMACS-VERSION) yield nil, and there are no ELSE’s, the value 
 
 
 ;; After loaded ...
-
-
-(message "#Loading %s ... done (%.5fs)"
-         (emacs-home* "init.el")
-         (float-time (time-subtract (current-time) *loading-epoch*)))
 
 
 ;;; init.el ends here

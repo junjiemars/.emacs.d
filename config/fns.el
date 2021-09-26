@@ -194,6 +194,17 @@ accumulate clause and Miscellaneous clause."
       `(with-no-warnings
          (loop ,@clause)))))
 
+
+(defmacro time (&rest form)
+  "Execute FORM and print timing information on *message*."
+  (let ((b (gensym*)))
+    `(let ((,b (current-time)))
+       (let ((r ,@form))
+         (message "%.5fs"
+                  (float-time (time-subtract (current-time) ,b)))
+         r))))
+
+
  ;; end of common lisp macro
 
 
@@ -433,6 +444,8 @@ or the one that CHECK return t."
        (fluid-let (gc-cons-threshold ,s1)
          (fluid-let (garbage-collection-messages noninteractive)
            ,@body)))))
+
+
 
  ;; end of gc
 
