@@ -52,7 +52,7 @@ MINIFY the region when it's non-nil, otherwise pretty print it."
         (end (region-active-if (region-end) (point-max))))
     (if minify
         (make-thread*
-         (progn
+         (lambda ()
            (narrow-to-region begin end)
            (goto-char (point-min))
            (while (forward-whitespace 1)
@@ -65,7 +65,8 @@ MINIFY the region when it's non-nil, otherwise pretty print it."
                        (< (point) (point-max)))
              (delete-char -1 t))))
       (if-fn% 'json-pretty-print 'json
-              (make-thread* (json-pretty-print begin end))
+              (make-thread* (lambda ()
+                              (json-pretty-print begin end)))
         (message (propertize "No implemented"
                              'face 'font-lock-warning-face))))))
 

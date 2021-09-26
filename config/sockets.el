@@ -77,7 +77,7 @@ greate than 1, otherwise via native."
           (when-version% > 25
             (setq *url-gateway-method* url-gateway-method))
           (if activated
-              (make-thread* (progn
+              (make-thread* (lambda ()
                               (ad-enable-advice #'url-open-stream
                                                 'around
                                                 "url-open-stream-around")

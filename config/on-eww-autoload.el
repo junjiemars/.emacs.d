@@ -89,14 +89,14 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
     (let ((en (assoc** n (*web-defs*) #'string=)))
       (unless en (user-error* "Engine no found in `%s'" n))
       (make-thread*
-       (funcall browse-url-browser-function
-                (let ((en1 (cdr en)))
-                  (require 'browse-url)
-                  (browse-url-url-encode-chars (concat (car en1)
-                                                       (cdr en1)
-                                                       what)
-                                               "[ '()!`\"]")))
-       t))))
+       (lambda ()
+         (funcall browse-url-browser-function
+                  (let ((en1 (cdr en)))
+                    (require 'browse-url)
+                    (browse-url-url-encode-chars (concat (car en1)
+                                                         (cdr en1)
+                                                         what)
+                                                 "[ '()!`\"]"))))))))
 
 
 (if-feature-eww%

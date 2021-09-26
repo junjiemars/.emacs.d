@@ -260,21 +260,21 @@
 ;; after-init
 (defun on-autoloads! ()
   (make-thread*
-   (gc-delay (emacs-arch)
-     (compile! (compile-unit% (emacs-home* "config/sockets.el")))
-     (when-package%
-       (compile! (compile-unit% (emacs-home* "config/module.el"))))
-     (compile! (compile-unit% (emacs-home* "config/on-module.el")))
-     (package-spec-:allowed-p (apply #'compile! (*package-compile-units*)))
-     (load-autoloaded-modes!)
-     (load-conditional-modes!)
-     (set-global-keys!)
-     (compile! (compile-unit% (emacs-home* "config/safe.el")))
-     (when (*self-paths* :get :epilogue)
-       (compile! (compile-unit* (*self-paths* :get :epilogue))))
-     (ido-mode t)
-     (when-fn% 'self-desktop-read! nil (self-desktop-read!)))
-   t "on-autoloads!"))
+   (lambda ()
+     (gc-delay (emacs-arch)
+       (compile! (compile-unit% (emacs-home* "config/sockets.el")))
+       (when-package%
+         (compile! (compile-unit% (emacs-home* "config/module.el"))))
+       (compile! (compile-unit% (emacs-home* "config/on-module.el")))
+       (package-spec-:allowed-p (apply #'compile! (*package-compile-units*)))
+       (load-autoloaded-modes!)
+       (load-conditional-modes!)
+       (set-global-keys!)
+       (compile! (compile-unit% (emacs-home* "config/safe.el")))
+       (when (*self-paths* :get :epilogue)
+         (compile! (compile-unit* (*self-paths* :get :epilogue))))
+       (ido-mode t)
+       (when-fn% 'self-desktop-read! nil (self-desktop-read!))))))
 
 
 ;;; autoload when interactive or not

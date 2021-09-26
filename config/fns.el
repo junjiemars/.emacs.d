@@ -227,15 +227,15 @@ Optional argument DOCSTRING about FEATURE."
                   ,@body)))))
 
 
-(defmacro make-thread* (sexp &optional join name)
-  "Threading call SEXP with NAME or in JOIN mode."
+(defmacro make-thread* (fn &optional join name)
+  "Threading call FN with NAME or in JOIN mode."
   `(if-fn% 'make-thread nil
-           (let ((thread (make-thread (lambda () ,sexp) ,name)))
+           (let ((thread (make-thread ,fn ,name)))
              (if% ,join
                  (thread-join thread)
                thread))
      (ignore* ,join ,name)
-     (funcall (lambda () ,sexp))))
+     (funcall ,fn)))
 
 
 (defmacro fluid-let (binding &rest body)
