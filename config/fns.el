@@ -200,9 +200,9 @@ accumulate clause and Miscellaneous clause."
   (let ((b (gensym*)))
     `(let ((,b (current-time)))
        (let ((r ,@form))
-         (message "%.5fs"
-                  (float-time (time-subtract (current-time) ,b)))
-         r))))
+         (prog1 r
+           (message "%.6fs"
+                    (float-time (time-subtract (current-time) ,b))))))))
 
 
  ;; end of common lisp macro
