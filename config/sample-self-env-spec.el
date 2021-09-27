@@ -27,6 +27,7 @@
  :put :frame
  (list :initial `((vertical-scroll-bars)) ;; `((fullscreen . fullheight))
        :default `((vertical-scroll-bars)
+                  (width . 80)
                   (height . 32))
        :font (if-platform% 'darwin
                  "Monaco-17"
