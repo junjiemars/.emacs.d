@@ -197,6 +197,7 @@ accumulate clause and Miscellaneous clause."
 
 (defmacro time (&rest form)
   "Execute FORM and print timing information on *message*."
+  (declare (indent 0))
   (let ((b (gensym*)))
     `(let ((,b (current-time)))
        (prog1
