@@ -199,10 +199,10 @@ accumulate clause and Miscellaneous clause."
   "Execute FORM and print timing information on *message*."
   (let ((b (gensym*)))
     `(let ((,b (current-time)))
-       (let ((r ,@form))
-         (prog1 r
-           (message "%.6fs"
-                    (float-time (time-subtract (current-time) ,b))))))))
+       (prog1
+           (progn ,@form)
+         (message "%.6fs"
+                  (float-time (time-subtract (current-time) ,b)))))))
 
 
  ;; end of common lisp macro
