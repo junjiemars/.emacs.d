@@ -395,8 +395,8 @@ include directories. The REMOTE argument from `remote-norm-file'.")
       (or (and cached dx)
 
           (and cached (file-exists-p fs)
-               (setq dx (read-from-string
-                         (read-str-from-file fs))))
+               (setq dx (car (read-from-string
+                              (read-str-from-file fs)))))
 
           (and (consp dir)
                (save-sexp-to-file
