@@ -47,6 +47,20 @@ Optional prefix argument ENHANCED, displays additional details."
                            :desc-plan enhanced plan))))
 
 
+(when-fn% 'sql-execute-feature 'sql
+
+  (defun sql-list-code* (name &optional enhanced)
+    "List the code of a database procedure named NAME. "
+    (interactive (list (sql-read-table-name "Procedure name: ")
+                       current-prefix-arg))
+    (let ((sqlbuf (sql-find-sqli-buffer)))
+      (unless sqlbuf
+        (user-error* "No SQL interactive buffer found"))
+      (unless name
+        (user-error* "No procedure name specified"))
+      (sql-execute-feature sqlbuf (format "*List code %s*" name)
+                           :list-code enhanced name))))
+
 
 ;;;
 ;; oracle
@@ -120,20 +134,8 @@ Optional prefix argument ENHANCED, displays additional details."
                             " TAB OFF TIMING OFF FEEDBACK OFF"))
       (sql-oracle-restore-settings sqlbuf settings))))
 
-(when-fn% 'sql-oracle-restore-settings 'sql
 
-  (defun sql-list-code* (name &optional enhanced)
-    "List the code of a database procedure named NAME. "
-    (interactive
-     (list (sql-read-table-name "Procedure name: ")
-           current-prefix-arg))
-    (let ((sqlbuf (sql-find-sqli-buffer)))
-      (unless sqlbuf
-        (user-error* "No SQL interactive buffer found"))
-      (unless name
-        (user-error* "No procedure name specified"))
-      (sql-execute-feature sqlbuf (format "*List code %s*" name)
-                           :list-code enhanced name))))
+
 
 
 ;;;
@@ -179,18 +181,16 @@ Optional prefix argument ENHANCED, displays additional details."
   (when-var% sql-product-alist 'sql
 
     ;; oralce: replace `:list-all'
-    (when-fn% 'sql-oracle-list-all* nil
-      (when (plist-get (cdr (assoc** 'oracle sql-product-alist))
-                       :list-all)
-        (plist-put (cdr (assoc** 'oracle sql-product-alist))
-                   :list-all
-                   #'sql-oracle-list-all*)))
+    (when (plist-get (cdr (assoc** 'oracle sql-product-alist))
+                     :list-all)
+      (plist-put (cdr (assoc** 'oracle sql-product-alist))
+                 :list-all
+                 #'sql-oracle-list-all*))
 
     ;; oracle: new `:list-code'
-    (when-fn% 'sql-oracle-list-code* nil
-      (plist-put (cdr (assoc** 'oracle sql-product-alist))
-                 :list-code
-                 #'sql-oracle-list-code*))
+    (plist-put (cdr (assoc** 'oracle sql-product-alist))
+               :list-code
+               #'sql-oracle-list-code*)
 
     ;; mysql: new `:desc-table'
     (plist-put (cdr (assoc** 'mysql sql-product-alist))
