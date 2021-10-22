@@ -192,20 +192,6 @@ Optional prefix argument ENHANCED, displays additional details."
                :list-code
                #'sql-oracle-list-code*)
 
-    (when% (executable-find% sql-oracle-program)
-      (unless-platform% 'windows-nt
-        (let ((d (string-trim>
-                  (file-name-directory (executable-find%
-                                        sql-oracle-program))
-                  "/")))
-          (let* ((v (if-platform% 'darwin
-                        "DYLD_LIBRARY_PATH"
-                      "LD_LIBRARY_PATH"))
-                 (ld (getenv v)))
-            (when (or (not ld)
-                      (not (string-match d ld)))
-              (setenv v d))))))
-
     ;; mysql: new `:desc-table'
     (plist-put (cdr (assoc** 'mysql sql-product-alist))
                :desc-table
