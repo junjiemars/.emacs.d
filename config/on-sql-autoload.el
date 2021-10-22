@@ -7,6 +7,27 @@
 ;;;;
 
 
+(when-fn% 'sql-execute-feature 'sql
+
+  (defun sql-desc-table (name &optional enhanced)
+    "Describe the details of a database table named NAME.
+Displays the columns in the relation.  With optional prefix argument
+ENHANCED, displays additional details about each column."
+    (interactive (list (sql-read-table-name "Table name: ")
+                       current-prefix-arg))
+    (let ((sqlbuf (sql-find-sqli-buffer)))
+      (unless sqlbuf
+        (user-error "No SQL interactive buffer found"))
+      (unless name
+        (user-error "No table name specified"))
+      (sql-execute-feature sqlbuf (format "*Desc %s*" name)
+                           :desc-table enhanced name))))
+
+
+;;;
+;; oracle
+;;;
+
 (unless-fn% 'sql-oracle--list-object-name 'sql
 
   (defun sql-oracle--list-object-name (obj-name)
@@ -55,7 +76,7 @@
 
 
 (when-fn% 'sql-oracle-restore-settings 'sql
-  
+
   (defun sql-oracle-list-code* (sqlbuf outbuf enhanced procedure)
     "List source code of PROCEDURE or function object"
     (let ((settings (sql-oracle-save-settings sqlbuf))
@@ -90,6 +111,31 @@
                            :list-code enhanced name))))
 
 
+;;;
+;; mysql
+;;;
+
+
+(defun sql-mysql-desc-table (sqlbuf outbuf enhanced table)
+  "Describe mysql table."
+  (let ((simple-sql
+         (concat
+          "SELECT *"
+          " FROM information_schema.columns"
+          (format " WHERE table_name = '%s'\\G" table)))
+        (enhanced-sql nil))
+    (sql-redirect sqlbuf
+                  (if enhanced enhanced-sql simple-sql)
+                  outbuf)))
+
+
+ ;; end of mysql
+
+
+;;;
+;; loading
+;;;
+
 (with-eval-after-load 'sql
 
   (when-var% sql-product-alist 'sql
@@ -108,8 +154,15 @@
                  :list-code
                  #'sql-oracle-list-code*))
 
+    ;; mysql: new `:desc-table'
+    (plist-put (cdr (assoc** 'mysql sql-product-alist))
+               :desc-table
+               #'sql-mysql-desc-table)
+
     (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-code*)
-    (define-key% sql-interactive-mode-map (kbd "C-c C-l c") #'sql-list-code*)))
+    (define-key% sql-mode-map (kbd "C-c C-d t") #'sql-desc-table)
+    (define-key% sql-interactive-mode-map (kbd "C-c C-l c") #'sql-list-code*)
+    (define-key% sql-interactive-mode-map (kbd "C-c C-d t") #'sql-desc-table)))
 
 
 
