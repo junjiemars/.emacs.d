@@ -11,8 +11,9 @@
 
   (defun sql-desc-table (name &optional enhanced)
     "Describe the details of a database table named NAME.
-Displays the columns in the relation.  With optional prefix argument
-ENHANCED, displays additional details about each column."
+
+Optional prefix argument ENHANCED, displays additional details
+about each column."
     (interactive (list (sql-read-table-name "Table name: ")
                        current-prefix-arg))
     (let ((sqlbuf (sql-find-sqli-buffer)))
@@ -24,6 +25,29 @@ ENHANCED, displays additional details about each column."
                            :desc-table enhanced name))))
 
 
+(when-fn% 'sql-execute-feature 'sql
+
+  (defun sql-desc-plan (plan &optional enhanced)
+    "Describe a query execution plan named PLAN.
+
+Optional prefix argument ENHANCED, displays additional details."
+    (interactive
+     (list (region-active-if
+               (buffer-substring-no-properties (region-beginning)
+                                               (region-end))
+             (sql-read-table-name "Plan: "))
+           current-prefix-arg))
+    (let ((sqlbuf (sql-find-sqli-buffer)))
+      (unless sqlbuf
+        (user-error "No SQL interactive buffer found"))
+      (unless plan
+        (user-error "No plan specified"))
+      (sql-execute-feature sqlbuf (format "*Desc plan %s*"
+                                          (car (split-string* plan)))
+                           :desc-plan enhanced plan))))
+
+
+
 ;;;
 ;; oracle
 ;;;
@@ -31,7 +55,8 @@ ENHANCED, displays additional details about each column."
 (unless-fn% 'sql-oracle--list-object-name 'sql
 
   (defun sql-oracle--list-object-name (obj-name)
-    (format "CASE WHEN REGEXP_LIKE (%s, q'/^[A-Z0-9_#$]+$/','c') THEN %s ELSE '\"'|| %s ||'\"' END "
+    (format (concat "CASE WHEN REGEXP_LIKE (%s, q'/^[A-Z0-9_#$]+$/','c')"
+                    " THEN %s ELSE '\"'|| %s ||'\"' END ")
             obj-name obj-name obj-name)))
 
 
@@ -129,11 +154,24 @@ ENHANCED, displays additional details about each column."
                   outbuf)))
 
 
+(defun sql-mysql-desc-plan (sqlbuf outbuf enhanced query)
+  "Describe mysql query execution plan."
+  (let ((simple-sql
+         (concat
+          "explain FORMAT=json "
+          (string-trim> query "[\t\n\r\\g\\G;]+")
+          "\\G"))
+        (enhanced-sql nil))
+    (sql-redirect sqlbuf
+                  (if enhanced enhanced-sql simple-sql)
+                  outbuf)))
+
+
  ;; end of mysql
 
 
 ;;;
-;; loading
+;; after load
 ;;;
 
 (with-eval-after-load 'sql
@@ -159,12 +197,20 @@ ENHANCED, displays additional details about each column."
                :desc-table
                #'sql-mysql-desc-table)
 
+    ;; mysql: new `:desc-plan'
+    (plist-put (cdr (assoc** 'mysql sql-product-alist))
+               :desc-plan
+               #'sql-mysql-desc-plan)
+
     (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-code*)
     (define-key% sql-mode-map (kbd "C-c C-d t") #'sql-desc-table)
+    (define-key% sql-mode-map (kbd "C-c C-d p") #'sql-desc-plan)
+
     (define-key% sql-interactive-mode-map (kbd "C-c C-l c") #'sql-list-code*)
-    (define-key% sql-interactive-mode-map (kbd "C-c C-d t") #'sql-desc-table)))
+    (define-key% sql-interactive-mode-map (kbd "C-c C-d t") #'sql-desc-table)
+    (define-key% sql-interactive-mode-map (kbd "C-c C-d p") #'sql-desc-plan)))
 
 
 
 
- ;; end of file
+ ;; end of on-sql-autoload.el
