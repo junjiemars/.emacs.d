@@ -192,6 +192,14 @@ Optional prefix argument ENHANCED, displays additional details."
                :list-code
                #'sql-oracle-list-code*)
 
+    ;; find `sql-mysql-program'
+    (unless% (executable-find% sql-mysql-program)
+      (if-platform% 'darwin
+          (setq sql-mysql-program
+                (or (executable-find%
+                     "/Applications/MySQLWorkbench.app/Contents/MacOS/mysql")
+                    "mysql"))))
+
     ;; mysql: new `:desc-table'
     (plist-put (cdr (assoc** 'mysql sql-product-alist))
                :desc-table
