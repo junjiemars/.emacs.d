@@ -692,7 +692,9 @@ See `align-entire'."
 
     ;; keymap: find c include file
     (when-fn% 'ff-find-other-file 'find-file
-      (define-key% c-mode-map (kbd "C-c f i") #'cc*-find-include-file))
+      (define-key% c-mode-map (kbd "C-c f i") #'cc*-find-include-file)
+      ;; for c++, add include via `cc*-extra-include'
+      (define-key% c++-mode-map (kbd "C-c f i") #'cc*-find-include-file))
 
     ;; keymap: indent line or region
     (when-fn% 'c-indent-line-or-region 'cc-cmds
