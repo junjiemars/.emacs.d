@@ -86,7 +86,18 @@
         #'(lambda (from to delete-flag)
             (interactive "r\nP")
             (fluid-let (indent-tabs-mode nil)
-              (makefile-backslash-region from to delete-flag)))))))
+              (makefile-backslash-region from to delete-flag))))))
+
+  (when-platform% 'darwin
+    (when% (executable-find%
+            "make"
+            (lambda (make)
+              (let ((x (shell-command* make "--version")))
+								(and (zerop (car x))
+										 (string-match "^GNU Make.*" (cdr x))))))
+      (when% (assoc** "[Mm]akefile\\'" auto-mode-alist)
+        (setcdr (assoc** "[Mm]akefile\\'" auto-mode-alist)
+                'makefile-gmake-mode)))))
 
 
 ;;; end of on-compile-autoload.el
