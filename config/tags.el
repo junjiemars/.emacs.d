@@ -104,11 +104,10 @@ With prefix argument APPEND TAGS to the tail of `tags-table-list'."
 
 With prefix argument TAGS unmount all tags from `tags-table-list'."
   (interactive (list (when (not current-prefix-arg)
-                       (unless (car tags-table-list)
-                         (user-error "`tags-table-list' already empty"))
-                       (dolist* (f tags-table-list)
-                         (push! f file-name-history nil t))
-                       (read-file-name "unmount from "))))
+                       (fluid-let (file-name-history tags-table-list)
+                         (if (consp file-name-history)
+                             (read-file-name "unmount from ")
+                           (user-error "`tags-table-list' alreay empty"))))))
   (setq tags-table-list
         (when tags
           (let ((fn (expand-file-name tags)))
