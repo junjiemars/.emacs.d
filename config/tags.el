@@ -51,12 +51,12 @@ Examples:
   "The default tags program.
 This is used by commands like `make-tags'.
 
-The default is \"ctags -e %s -o %s -a %s\", 
+The default is \"ctags -e %s -o %s -a %s\",
 first %s: ctags options
 second %s: explicit name of file for tag table; overrides default TAGS or tags.
 third %s: append to existing tag file.
 
-`tags-table-list' should be persitent between sessions 
+`tags-table-list' should be persitent between sessions
 when `desktop-globals-to-save' include it."
   :type 'string
   :group 'tags)
@@ -95,7 +95,7 @@ when `desktop-globals-to-save' include it."
   "Mount existing TAGS into `tags-table-list'.
 
 With prefix argument APPEND TAGS to the tail of `tags-table-list'."
-  (interactive "fmount tags from \nP")
+  (interactive "fmount from \nP")
   (push! (expand-file-name tags) tags-table-list append t))
 
 
@@ -104,7 +104,11 @@ With prefix argument APPEND TAGS to the tail of `tags-table-list'."
 
 With prefix argument TAGS unmount all tags from `tags-table-list'."
   (interactive (list (when (not current-prefix-arg)
-                       (read-file-name "unmount tags from "))))
+                       (unless (car tags-table-list)
+                         (user-error "`tags-table-list' already empty"))
+                       (dolist* (f tags-table-list)
+                         (push! f file-name-history nil t))
+                       (read-file-name "unmount from "))))
   (setq tags-table-list
         (when tags
           (let ((fn (expand-file-name tags)))
@@ -262,12 +266,12 @@ RENEW overwrite the existing tags file when t else create it."
               (when (file-in-dirs-p (buffer-file-name* (current-buffer))
                                     (tags-in-view-mode))
                 (view-mode 1))))
-          
+
           (with-eval-after-load 'xref
             (ad-enable-advice #'xref-find-definitions 'after
                               "xref-find-definitions-after")
             (ad-activate #'xref-find-definitions t)))
-  
+
   ;; pop-tag-mark same as Emacs22+ for ancient Emacs
   (when-fn% 'pop-tag-mark 'etags
     (with-eval-after-load 'etags
@@ -281,7 +285,7 @@ RENEW overwrite the existing tags file when t else create it."
       (when (file-in-dirs-p (buffer-file-name* (current-buffer))
                             (tags-in-view-mode))
         (view-mode 1))))
-  
+
   (with-eval-after-load 'etags
     (ad-enable-advice #'find-tag 'after "find-tag-after")
     (ad-activate #'find-tag t)))
