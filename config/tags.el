@@ -103,7 +103,8 @@ With prefix argument APPEND TAGS to the tail of `tags-table-list'."
   "Unmount TAGS from `tags-table-list'.
 
 With prefix argument TAGS unmount all tags from `tags-table-list'."
-  (interactive (list (when (not current-prefix-arg)
+  (interactive (list (unless (and current-prefix-arg
+                                  (yes-or-no-p "unmount all? "))
                        (fluid-let (file-name-history tags-table-list)
                          (if (consp file-name-history)
                              (read-file-name "unmount from ")
