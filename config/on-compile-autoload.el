@@ -89,15 +89,16 @@
               (makefile-backslash-region from to delete-flag))))))
 
   (when-platform% 'darwin
-    (when% (executable-find%
-            "make"
-            (lambda (make)
-              (let ((x (shell-command* make "--version")))
-                (and (zerop (car x))
-                     (string-match "^GNU Make.*" (cdr x))))))
-      (when% (assoc** "[Mm]akefile\\'" auto-mode-alist)
-        (setcdr (assoc** "[Mm]akefile\\'" auto-mode-alist)
-                'makefile-gmake-mode)))))
+    (when-fn% 'makefile-gmake-mode 'make-mode
+      (when% (executable-find%
+              "make"
+              (lambda (make)
+                (let ((x (shell-command* make "--version")))
+                  (and (zerop (car x))
+                       (string-match "^GNU Make.*" (cdr x))))))
+        (when% (assoc** "[Mm]akefile\\'" auto-mode-alist)
+          (setcdr (assoc** "[Mm]akefile\\'" auto-mode-alist)
+                  'makefile-gmake-mode))))))
 
 
 ;;; end of on-compile-autoload.el
