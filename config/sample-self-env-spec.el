@@ -118,6 +118,7 @@
                                    sh-mode-hook
                                    emacs-lisp-mode-hook)
        :narrow-to-region t
+       :delete-trailing-whitespace '(prog-mode)
        :allowed nil))
 
 ;;; eof
