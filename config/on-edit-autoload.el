@@ -84,18 +84,6 @@
 
 ;; :edit
 
-(when (*self-env-spec* :get :edit :allowed)
-  ;; default `tab-width'
-  (setq-default tab-width (*self-env-spec* :get :edit :tab-width))
-  ;; `standard-indent'
-  (setq-default standard-indent (*self-env-spec* :get :edit :standard-indent))
-  ;; default `auto-save-default'
-  (setq auto-save-default (*self-env-spec* :get :edit :auto-save-default))
-  ;; allow `narrow-to-region'
-  (put 'narrow-to-region 'disabled
-       (not (*self-env-spec* :get :edit :narrow-to-region))))
-
-
 (when-version% > 24.4
   ;; fix: no quit key to hide *Messages* buffer for ancient Emacs
   ;; [DEL] for `scroll-down'
@@ -823,6 +811,32 @@ If `current-prefix-arg' < 0, then repeat n time with END in reversed."
 
 ;;; Surround
 (define-key% (current-global-map) (kbd "C-x r [") #'surround-region)
+
+
+;;; :edit env
+
+(when (*self-env-spec* :get :edit :allowed)
+
+  ;; default `tab-width'
+  (setq-default tab-width (*self-env-spec* :get :edit :tab-width))
+
+  ;; `standard-indent'
+  (setq-default standard-indent (*self-env-spec* :get :edit :standard-indent))
+
+  ;; default `auto-save-default'
+  (setq auto-save-default (*self-env-spec* :get :edit :auto-save-default))
+
+  ;; allow `narrow-to-region'
+  (put 'narrow-to-region 'disabled
+       (not (*self-env-spec* :get :edit :narrow-to-region)))
+
+  ;; `delete-trailing-whitespace' before save
+  (add-hook 'before-save-hook
+            #'(lambda ()
+                (when (apply #'derived-mode-p
+                             (*self-env-spec*
+                              :get :edit :delete-trailing-whitespace))
+                  (delete-trailing-whitespace)))))
 
 
 
