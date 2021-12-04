@@ -780,6 +780,18 @@ If `current-prefix-arg' < 0, then repeat n time with END in reversed."
  ;; end of surround
 
 
+(defun camel-case (string &optional separator)
+  "Return camel case of STRING."
+  (let ((d (or separator "_")))
+    (let ((ss (split-string* (or string "") d)))
+      (concat (downcase (car ss))
+              (apply #'concat
+                     (mapcar #'capitalize
+                             (cdr ss)))))))
+
+ ;; end of camel-case
+
+
 ;;;;
 ;; Keys
 ;;;;
