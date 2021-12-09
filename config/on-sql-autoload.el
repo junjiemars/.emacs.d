@@ -172,6 +172,18 @@ Optional prefix argument ENHANCED, displays additional details."
  ;; end of mysql
 
 
+(when-fn% 'sql-show-sqli-buffer 'sql
+
+  (defun sql-show-sqli-buffer* ()
+    "Display the current SQLi buffer.
+
+See `sql-show-sqli-buffer'."
+    (interactive)
+    (unless sql-buffer
+      (call-interactively #'sql-connect))
+    (call-interactively #'sql-show-sqli-buffer)))
+
+
 ;;;
 ;; after load
 ;;;
@@ -210,13 +222,17 @@ Optional prefix argument ENHANCED, displays additional details."
                :desc-plan
                #'sql-mysql-desc-plan)
 
+
     (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-code*)
     (define-key% sql-mode-map (kbd "C-c C-d t") #'sql-desc-table)
     (define-key% sql-mode-map (kbd "C-c C-d p") #'sql-desc-plan)
 
     (define-key% sql-interactive-mode-map (kbd "C-c C-l c") #'sql-list-code*)
     (define-key% sql-interactive-mode-map (kbd "C-c C-d t") #'sql-desc-table)
-    (define-key% sql-interactive-mode-map (kbd "C-c C-d p") #'sql-desc-plan)))
+    (define-key% sql-interactive-mode-map (kbd "C-c C-d p") #'sql-desc-plan))
+
+    (when-fn% 'sql-show-sqli-buffer 'sql
+      (define-key% sql-mode-map (kbd "C-c C-z") #'sql-show-sqli-buffer*)))
 
 
 
