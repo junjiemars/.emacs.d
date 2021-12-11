@@ -179,7 +179,7 @@ Optional prefix argument ENHANCED, displays additional details."
 
 See `sql-show-sqli-buffer'."
     (interactive)
-    (unless sql-buffer
+    (unless (get-buffer-process sql-buffer)
       (call-interactively #'sql-connect))
     (call-interactively #'sql-show-sqli-buffer)))
 
