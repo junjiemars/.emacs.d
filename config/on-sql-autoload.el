@@ -49,7 +49,7 @@ Optional prefix argument ENHANCED, displays additional details."
 
 (when-fn% 'sql-execute-feature 'sql
 
-  (defun sql-list-code* (name &optional enhanced)
+  (defun sql-list-code (name &optional enhanced)
     "List the code of a database procedure named NAME. "
     (interactive (list (sql-read-table-name "Procedure name: ")
                        current-prefix-arg))
@@ -60,6 +60,21 @@ Optional prefix argument ENHANCED, displays additional details."
         (user-error* "No procedure name specified"))
       (sql-execute-feature sqlbuf (format "*List code %s*" name)
                            :list-code enhanced name))))
+
+
+(when-fn% 'sql-execute-feature 'sql
+
+  (defun sql-list-index (name &optional enhanced)
+    "List the index of a database table named NAME. "
+    (interactive (list (sql-read-table-name "Table name: ")
+                       current-prefix-arg))
+    (let ((sqlbuf (sql-find-sqli-buffer)))
+      (unless sqlbuf
+        (user-error* "No SQL interactive buffer found"))
+      (unless name
+        (user-error* "No table name specified"))
+      (sql-execute-feature sqlbuf (format "*List index %s*" name)
+                           :list-index enhanced name))))
 
 
 ;;;
@@ -116,7 +131,7 @@ Optional prefix argument ENHANCED, displays additional details."
 
 (when-fn% 'sql-oracle-restore-settings 'sql
 
-  (defun sql-oracle-list-code* (sqlbuf outbuf enhanced procedure)
+  (defun sql-oracle-list-code (sqlbuf outbuf enhanced procedure)
     "List source code of PROCEDURE or function object"
     (let ((settings (sql-oracle-save-settings sqlbuf))
           (simple-sql
@@ -133,8 +148,6 @@ Optional prefix argument ENHANCED, displays additional details."
                     (concat "SET LINESIZE 80 PAGESIZE 50000 TRIMOUT ON"
                             " TAB OFF TIMING OFF FEEDBACK OFF"))
       (sql-oracle-restore-settings sqlbuf settings))))
-
-
 
 
 
@@ -169,6 +182,24 @@ Optional prefix argument ENHANCED, displays additional details."
                   outbuf)))
 
 
+(defun sql-mysql-list-index (sqlbuf outbuf enhanced table)
+  "List index of TABLE."
+  (let ((simple-sql
+         (concat
+          "SHOW index"
+          (format " FROM %s\\G" table)))
+        (enhanced-sql nil))
+    (sql-redirect sqlbuf
+                  (if enhanced enhanced-sql simple-sql)
+                  outbuf)))
+
+
+(defun sql-mysql-avoid-semicolon-filter (str)
+  "Avoid ; character."
+  (cond ((string= ";" str) "\n")
+        (t str)))
+
+
  ;; end of mysql
 
 
@@ -192,19 +223,23 @@ See `sql-show-sqli-buffer'."
 
   (when-var% sql-product-alist 'sql
 
-    ;; oralce: replace `:list-all'
-    (when (plist-get (cdr (assoc** 'oracle sql-product-alist))
-                     :list-all)
+    ;; oracle
+    (when-fn% 'sql-oracle-restore-settings 'sql
+
+      ;; oralce: replace `:list-all'
+      (when (plist-get (cdr (assoc** 'oracle sql-product-alist))
+                       :list-all)
+        (plist-put (cdr (assoc** 'oracle sql-product-alist))
+                   :list-all
+                   #'sql-oracle-list-all*))
+
+      ;; oracle: new `:list-code'
       (plist-put (cdr (assoc** 'oracle sql-product-alist))
-                 :list-all
-                 #'sql-oracle-list-all*))
+                 :list-code
+                 #'sql-oracle-list-code))
 
-    ;; oracle: new `:list-code'
-    (plist-put (cdr (assoc** 'oracle sql-product-alist))
-               :list-code
-               #'sql-oracle-list-code*)
 
-    ;; find `sql-mysql-program'
+    ;; mysql: `sql-mysql-program'
     (unless% (executable-find% sql-mysql-program)
       (if-platform% 'darwin
           (setq sql-mysql-program
@@ -222,17 +257,23 @@ See `sql-show-sqli-buffer'."
                :desc-plan
                #'sql-mysql-desc-plan)
 
+    ;; mysql: new `:list-index'
+    (plist-put (cdr (assoc** 'mysql sql-product-alist))
+               :list-index
+               #'sql-mysql-list-index)
 
-    (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-code*)
+
+    (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-code)
     (define-key% sql-mode-map (kbd "C-c C-d t") #'sql-desc-table)
     (define-key% sql-mode-map (kbd "C-c C-d p") #'sql-desc-plan)
+    (define-key% sql-mode-map (kbd "C-c C-l i") #'sql-list-index)
 
-    (define-key% sql-interactive-mode-map (kbd "C-c C-l c") #'sql-list-code*)
+    (define-key% sql-interactive-mode-map (kbd "C-c C-l c") #'sql-list-code)
     (define-key% sql-interactive-mode-map (kbd "C-c C-d t") #'sql-desc-table)
     (define-key% sql-interactive-mode-map (kbd "C-c C-d p") #'sql-desc-plan))
 
-    (when-fn% 'sql-show-sqli-buffer 'sql
-      (define-key% sql-mode-map (kbd "C-c C-z") #'sql-show-sqli-buffer*)))
+  (when-fn% 'sql-show-sqli-buffer 'sql
+    (define-key% sql-mode-map (kbd "C-c C-z") #'sql-show-sqli-buffer*)))
 
 
 
