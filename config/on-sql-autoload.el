@@ -7,6 +7,29 @@
 ;;;;
 
 
+(when-fn% 'sql-show-sqli-buffer 'sql
+
+  (defun sql-show-sqli-buffer* ()
+    "Display the current SQLi buffer.
+
+See `sql-show-sqli-buffer'."
+    (interactive)
+    (unless (get-buffer-process sql-buffer)
+      (call-interactively #'sql-connect))
+    (call-interactively #'sql-show-sqli-buffer)))
+
+
+(when-fn% 'sql-send-magic-terminator 'sql
+
+  (defadvice sql-send-magic-terminator
+      (before sql-send-magic-terminator-before compile)
+    "Send TERMINATOR to buffer BUF if its not present in STR."
+    ;; terminator
+    (ad-set-arg 2 (cond ((eq 'mysql sql-product)
+                         (ad-set-arg 2 t))
+                        (t sql-send-terminator)))))
+
+
 (when-fn% 'sql-execute-feature 'sql
 
   (defun sql-desc-table (name &optional enhanced)
@@ -194,25 +217,8 @@ Optional prefix argument ENHANCED, displays additional details."
                   outbuf)))
 
 
-(defun sql-mysql-avoid-semicolon-filter (str)
-  "Avoid ; character."
-  (cond ((string= ";" str) "\n")
-        (t str)))
-
-
  ;; end of mysql
 
-
-(when-fn% 'sql-show-sqli-buffer 'sql
-
-  (defun sql-show-sqli-buffer* ()
-    "Display the current SQLi buffer.
-
-See `sql-show-sqli-buffer'."
-    (interactive)
-    (unless (get-buffer-process sql-buffer)
-      (call-interactively #'sql-connect))
-    (call-interactively #'sql-show-sqli-buffer)))
 
 
 ;;;
@@ -221,7 +227,7 @@ See `sql-show-sqli-buffer'."
 
 (with-eval-after-load 'sql
 
-  (when-var% sql-product-alist 'sql
+  (when-fn% 'sql-execute-feature 'sql
 
     ;; oracle
     (when-fn% 'sql-oracle-restore-settings 'sql
@@ -263,6 +269,17 @@ See `sql-show-sqli-buffer'."
                #'sql-mysql-list-index)
 
 
+    (when-fn% 'sql-send-magic-terminator 'sql
+      ;; mysql: `:terminator'
+      (plist-put (cdr (assoc** 'mysql sql-product-alist))
+                 :terminator
+                 '("\\G" . ""))
+
+      (ad-enable-advice #'sql-send-magic-terminator 'before
+                        "sql-send-magic-terminator-before")
+      (ad-activate #'sql-send-magic-terminator t))
+
+
     (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-code)
     (define-key% sql-mode-map (kbd "C-c C-d t") #'sql-desc-table)
     (define-key% sql-mode-map (kbd "C-c C-d p") #'sql-desc-plan)
@@ -271,6 +288,7 @@ See `sql-show-sqli-buffer'."
     (define-key% sql-interactive-mode-map (kbd "C-c C-l c") #'sql-list-code)
     (define-key% sql-interactive-mode-map (kbd "C-c C-d t") #'sql-desc-table)
     (define-key% sql-interactive-mode-map (kbd "C-c C-d p") #'sql-desc-plan))
+
 
   (when-fn% 'sql-show-sqli-buffer 'sql
     (define-key% sql-mode-map (kbd "C-c C-z") #'sql-show-sqli-buffer*)))
