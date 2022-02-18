@@ -25,9 +25,8 @@ See `sql-show-sqli-buffer'."
       (before sql-send-magic-terminator-before compile)
     "Send TERMINATOR to buffer BUF if its not present in STR."
     ;; terminator
-    (ad-set-arg 2 (cond ((eq 'mysql sql-product)
-                         (ad-set-arg 2 t))
-                        (t sql-send-terminator)))))
+    (cond ((eq 'mysql sql-product)
+           (ad-set-arg 2 t)))))
 
 
 (when-fn% 'sql-execute-feature 'sql
