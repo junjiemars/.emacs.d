@@ -1,26 +1,11 @@
 #+title: Nore Emacs: Org *scratch*
-#+author: composer
-#+startup: entitiespretty
-#+latex_compiler: xelatex
-#+latex_header: \usepackage{listings}
-#+latex_header: \usepackage{fontspec}
-#+latex_header: \usepackage{xunicode}
-#+latex_header: \usepackage{xltxtra}
-#+latex_header: \usepackage{xeCJK}
-#+latex_header: \usepackage[utf8x]{inputenc}
+#+author: Nore Emacs
 
 
 * scratch
 	:PROPERTIES:
 	:CUSTOM_ID: scratch
 	:END:
-	
-** LaTeX
-	 :PROPERTIES:
-	 :CUSTOM_ID: scratch-latex
-	 :END:
-	 
-Another way to notate \({\LaTeX}\).
 
 ** Quote
 	 :PROPERTIES:
@@ -32,13 +17,25 @@ Everything should be made as simple as possible,
 but not any simpler. -- Albert Einstein
 #+END_QUOTE
 
-#+BEGIN_QUOTE
-"I have a realistic grasp of my own strengths and weaknesses. My mind
-is my weapon. My brother has his sword, King Robert has his warhammer,
-and I have my mind … and a mind needs books as a sword needs a
-whetstone, if it is to keep its edge." -- George R. R. Martin. "A Game
-Of Thrones."
-#+END_QUOTE
+** Example
+	 :PROPERTIES:
+	 :CUSTOM_ID: scratch-example
+	 :END:
+
+#+BEGIN_EXAMPLE
+For example, it's an example.
+#+END_EXAMPLE
+
+** Verse
+	 :PROPERTIES:
+	 :CUSTOM_ID: scratch-verse
+	 :END:
+	 
+#+BEGIN_VERSE
+千山鸟飞绝，万径人踪灭。
+孤舟蓑笠翁，独钓寒江雪。
+  -- 柳宗元 《江雪》
+#+END_VERSE
 
 ** Style
 	 :PROPERTIES:
@@ -47,29 +44,10 @@ Of Thrones."
 
 The quick /brown/ *fox* =jumps= +over+ the lazy *dog*.
 	 
-** Align
-	 :PROPERTIES:
-	 :CUSTOM_ID: scratch-align
-	 :END:
-
 #+BEGIN_LEFT
-Everything should be made as simple as possible,\\
-but not any simpler.
+The Left Behind \\
+is a newline.
 #+END_LEFT
-
-#+BEGIN_CENTER
-Everything should be made as simple as possible,\\
-but not any simpler.
-#+END_CENTER
-
-** Example
-	 :PROPERTIES:
-	 :CUSTOM_ID: scratch-example
-	 :END:
-
-#+BEGIN_EXAMPLE
-some text here monospace
-#+END_EXAMPLE
 
 ** Table 
 	 :PROPERTIES:
@@ -113,27 +91,20 @@ Row and Column formula:
 	 :CUSTOM_ID: scratch-code-elisp
 	 :END:
 
-#+BEGIN_SRC emacs-lisp
-(emacs-home*)
+#+BEGIN_SRC emacs-lisp :exports code
+	(list emacs-version (emacs-arch) (emacs-home*))
+
 #+END_SRC
 
 #+RESULTS:
-: /Users/junjie/.emacs.d/
+| 27.2 | 64 | /Users/junjie/.emacs.d/ |
 
 *** C
 	 :PROPERTIES:
 	 :CUSTOM_ID: scratch-code-c
 	 :END:
 
-#+BEGIN_SRC C :includes <stdio.h>
-	int a = 1, b = 2;
-	printf("%i + %i = %i\n", a, b, a+b);
-#+END_SRC
-
-#+RESULTS:
-: 1 + 2 = 3
-
-#+BEGIN_SRC C :includes <stdio.h> :main no :flags -O2
+#+BEGIN_SRC C :includes <stdio.h> :main no :flags -O2 :var to = 10
 	int
 	fibo(int n, int p, int acc)
 	{
@@ -141,12 +112,13 @@ Row and Column formula:
 			{
 				return acc;
 			}
-		return fibo(n-1, acc, p+acc);
+		return fibo(n-1, acc, acc+p);
 	}
 
-	int main(void)
+	int
+	main(void)
 	{
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < to; i++)
 			{
 				int f = fibo(i, 0, 1);
 				printf("fibo(%01i) = %04i\n", i, f);
@@ -156,55 +128,29 @@ Row and Column formula:
 #+END_SRC
 
 #+RESULTS:
-| fibo(0) | = | 0001 |
-| fibo(1) | = | 0001 |
-| fibo(2) | = | 0002 |
-| fibo(3) | = | 0003 |
-| fibo(4) | = | 0005 |
-| fibo(5) | = | 0008 |
-| fibo(6) | = | 0013 |
-| fibo(7) | = | 0021 |
-| fibo(8) | = | 0034 |
-| fibo(9) | = | 0055 |
-
-#+BEGIN_SRC C :includes <stdio.h> :main no :var from = "abcdefghijklmnopqrstuvwxyz"
-	void
-	send(char *to, char *from, int count) {
-		int n = (count + 7) / 8;  /* count > 0 assumed */
-		switch (count % 8) {
-		case 0:    do { *to++ = *from++; 
-		case 7:         *to++ = *from++;
-		case 6:         *to++ = *from++;
-		case 5:         *to++ = *from++;
-		case 4:         *to++ = *from++;
-		case 3:         *to++ = *from++;
-		case 2:         *to++ = *from++;
-		case 1:         *to++ = *from++;
-							 } while (--n > 0);
-		}
-	}
-
-	int
-	main(void)
-	{
-		/* char *from = "abcdefghijklmnopqrstuvwxyz"; */
-		char to[32] = {0};
-		send(to, from, 11);
-		printf("to = %s\n", to);
-
-		return 0;
-	}
-
-#+END_SRC
-
-#+RESULTS:
-: to = abcdefghijk
+| fibo(0) | = |  1 |
+| fibo(1) | = |  1 |
+| fibo(2) | = |  2 |
+| fibo(3) | = |  3 |
+| fibo(4) | = |  5 |
+| fibo(5) | = |  8 |
+| fibo(6) | = | 13 |
+| fibo(7) | = | 21 |
+| fibo(8) | = | 34 |
+| fibo(9) | = | 55 |
 
 ** Math
 	 :PROPERTIES:
 	 :CUSTOM_ID: scratch-math
 	 :END:
 	 
+Another way to notate \({\LaTeX}\).
+
+
+If $a^2=b$ and \( b=2 \), then the solution must be
+either $$ a=+\sqrt{2} $$ or \[ a=-\sqrt{2}. \]
+
+
 *** Symbol
 		:PROPERTIES:
 		:CUSTOM_ID: scratch-math-symbol
@@ -216,25 +162,32 @@ Row and Column formula:
 		 :END:
 		 
 #+NAME: math_greek_characters
-| name       | character   | name     | character | name   | character |
-|------------+-------------+----------+-----------+--------+-----------|
-| Gamma      | \(\Gamma\)       | Delta    | \(\Delta\)     | Theta  | \(\Theta\)     |
-| Lambda     | \(\Lambda\)       | Xi       | \(\Xi\)     | Pi     | \(\Pi\)     |
-| Sigma      | \(\Sigma\)       | Upsilon  | \(\Upsilon\)     | Phi    | \(\Phi\)     |
-| Psi        | \(\Psi\)       | Omega    | \(\Omega\)     |        |           |
-|------------+-------------+----------+-----------+--------+-----------|
-| alpha      | \(\alpha\)       | beta     | \(\beta\)     | gamma  | \(\gamma\)     |
-| delta      | \(\delta\)       | epsilon  | \(\epsilon\)     | zeta   | \(\zeta\)     |
-| eta        | \(\eta\)       | theta    | \(\theta\)     | iota   | \(\iota\)     |
-| kappa      | \(\kappa\)       | lambda   | \(\lambda\)     | mu     | \(\mu\)     |
-| nu         | \(\nu\)       | xi       | \(\xi\)     | pi     | \(\pi\)     |
-| rho        | \(\rho\)       | sigma    | \(\sigma\)     | tau    | \(\tau\)     |
-| upsilon    | \(\upsilon\)       | phi      | \(\phi\)     | chi    | \(\chi\)     |
-| psi        | \(\psi\)       | omega    | \(\omega\)     |        |           |
-|------------+-------------+----------+-----------+--------+-----------|
-| varepsilon | \(\varepsilon\)       | vartheta | \(\vartheta\)     | varpi  | \(\varpi\)     |
-| varrho     | \(\varrho\) | varsigma | \(\varsigma\)     | varphi | \(\varphi\)     |
-|            |             |          |           |        |           |
+| char         | char         | name                |
+|--------------+--------------+---------------------|
+| \(A\)        | \(\alpha\)   | Alpha (al-fah)      |
+| \(B\)        | \(\beta\)    | Beta (bay-tah)      |
+| \(\Gamma\)   | \(\gamma\)   | Gamma (gam-ah)      |
+| \(\Delta\)   | \(\delta\)   | Delta (del-ta)      |
+| \(E\)        | \(\epsilon\) | Epsilon (ep-si-lon) |
+| \(Z\)        | \(\zeta\)    | Zeta (zay-tah)      |
+| \(H\)        | \(\eta\)     | Eta (ay-tah)        |
+| \(\Theta\)   | \(\theta\)   | Theta (thay-tah)    |
+| \(I\)        | \(\iota\)    | Iota (eye-o-tah)    |
+| \(K\)        | \(\kappa\)   | Kappa (cap-pah)     |
+| \(\Lambda\)  | \(\lambda\)  | Lambda (lamb-dah)   |
+| \(M\)        | \(\mu\)      | Mu (mew)            |
+| \(N\)        | \(\nu\)      | Nu (new)            |
+| \(\Xi\)      | \(\xi\)      | Xi (zie)            |
+| \(O\)        | \(\omicron\) | Omicron (om-e-cron) |
+| \(\Pi\)      | \(\pi\)      | Pi (pie)            |
+| \(\Sigma\)   | \(\sigma\)   | Sigma (sig-ma)      |
+| \(T\)        | \(\tau\)     | Tau (taw)           |
+| \(\Upsilon\) | \(\upsilon\) | Upsilon (up-si-lon) |
+| \(\Phi\)     | \(\phi\)     | Phi (fie)           |
+| \(X\)        | \(\chi\)     | Chi (kie)           |
+| \(\Psi\)     | \(\psi\)     | Psi (sigh)          |
+| \(\Omega\)   | \(\omega\)   | Omega (oh-may-gah)  |
+|              |              |                     |
 
 **** Operators
 		 :PROPERTIES:
@@ -242,51 +195,19 @@ Row and Column formula:
 		 :END:
 
 #+NAME: math_operators
-| name     | character     | name      | character | name       | character     |
-|----------+---------------+-----------+-----------+------------+---------------|
-| cdot     | \(\cdot\)         | times     | \(\times\)     | ast        | \(\ast\)         |
-| div      | \(\div\)         | diamond   | \(\diamond\)     | pm         | \(\pm\)         |
-| mp       | \(\mp\)       | oplus     | \(\oplus\)     | ominus     | \(\ominus\)   |
-| otimes   | \(\otimes\)         | oslash    | \(\oslash\)     | odot       | \(\odot\)         |
-| bigcirc  | \(\bigcirc\)  | circ      | \(\circ\)     | bullet     | \(\bullet\)         |
-| asymp    | \(\asymp\)         | equiv     | \(\equiv\)     | subseteq   | \(\subseteq\) |
-| supseteq | \(\supseteq\) | leq       | \(\leq\)     | geq        | \(\geq\)         |
-| preceq   | \(\preceq\)         | succeq    | \(\succeq\)     | sim        | \(\sim\)         |
-| approx   | \(\approx\)         | subset    | \(\subset\)     | supset     | \(\supset\)         |
-| ll       | \(\ll\)         | gg        | \(\gg\)     | prec       | \(\prec\)         |
-| succ     | \(\succ\)         | leftarrow | \(\leftarrow\)     | rightarrow | \(\rightarrow\)         |
-|          |               |           |           |            |               |
-
-*** Formula
-		:PROPERTIES:
-		:CUSTOM_ID: scratch-math-formula
-		:END:
-		
-R_sun = 6.96 x 10^8 m.
-
-R_{Alpha Centauri} = 1.28 x R_{sun}
-
-If $a^2=b$ and \( b=2 \), then the solution must be
-either $$ a=+\sqrt{2} $$ or \[ a=-\sqrt{2} \].
-
-
-** Verse
-	 :PROPERTIES:
-	 :CUSTOM_ID: scratch-verse
-	 :END:
-	 
-#+BEGIN_VERSE
-千山鸟飞绝，万径人踪灭。
-孤舟蓑笠翁，独钓寒江雪。
-  -- 柳宗元 《江雪》
-#+END_VERSE
-
-
-#+BEGIN_VERSE
-The Tao that can be told of
-Is not the Absolute Tao;
-
-The Names that can be given
-Are not Absolute Names.
-  -- 老子
-#+END_VERSE
+| name            | character  | name           | character |
+|-----------------+------------+----------------+-----------|
+| \(\cdot\)       | cdot       | \(\bullet\)    | bullet    |
+| \(\circ\)       | circ       | \(\diamond\)   | diamond   |
+| \(\times\)      | times      | \(\div\)       | div       |
+| \(\mp\)         | mp         | \(\pm\)        | pm        |
+| \(\otimes\)     | otimes     | \(\oplus\)     | oplus     |
+| \(\oslash\)     | oslash     | \(\ominus\)    | ominus    |
+| \(\asymp\)      | asymp      | \(\equiv\)     | equiv     |
+| \(\simeq\)      | simeq      | \(\approx\)    | approx    |
+| \(\neq\)        | neq        |                |           |
+| \(\geq\)        | geq        | \(\leq\)       | leq       |
+| \(\supset\)     | supset     | \(\supseteq\)  | supseteq  |
+| \(\subset\)     | subset     | \(\subseteq\)  | subseteq  |
+| \(\preceq\)     | preceq     | \(\succeq\)    | succeq    |
+| \(\rightarrow\) | rightarrow | \(\leftarrow\) | leftarrow |
