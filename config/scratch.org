@@ -14,17 +14,8 @@
 	 
 #+BEGIN_QUOTE
 Everything should be made as simple as possible,
-but not any simpler. -- Albert Einstein
+but not any simpler. --- Albert Einstein
 #+END_QUOTE
-
-** Example
-	 :PROPERTIES:
-	 :CUSTOM_ID: scratch-example
-	 :END:
-
-#+BEGIN_EXAMPLE
-For example, it's an example.
-#+END_EXAMPLE
 
 ** Verse
 	 :PROPERTIES:
@@ -32,9 +23,13 @@ For example, it's an example.
 	 :END:
 	 
 #+BEGIN_VERSE
-千山鸟飞绝，万径人踪灭。
-孤舟蓑笠翁，独钓寒江雪。
-  -- 柳宗元 《江雪》
+The Tao that can be told of
+Is not the Absolute Tao;
+
+The Names that can be given
+Are not Absolute Names.
+
+   --- Laozi
 #+END_VERSE
 
 ** Style
@@ -49,28 +44,15 @@ The Left Behind \\
 is a newline.
 #+END_LEFT
 
+#+BEGIN_CENTER
+Where is the center of the universe?
+#+END_CENTER
+
 ** Table 
 	 :PROPERTIES:
 	 :CUSTOM_ID: scratch-table
 	 :END:
 	 
-Row formula:
-| Student  | Maths | Physics | Mean |
-|----------+-------+---------+------|
-| Bertrand |    13 |      09 |   11 |
-| Henri    |    15 |      14 |      |
-| Arnold   |    17 |      13 |      |
-#+TBLFM: @2$4=vmean($2..$3)
-
-Column formula:
-| Student  | Maths | Physics | Mean |
-|----------+-------+---------+------|
-| Bertrand |    13 |      09 |   11 |
-| Henri    |    15 |      14 | 14.5 |
-| Arnold   |    17 |      13 |   15 |
-#+TBLFM: $4=vmean($2..$3)
-
-Row and Column formula:
 | Student  | Maths | Physics | Mean | Sum |
 |----------+-------+---------+------+-----|
 | Bertrand |    13 |      09 |   11 |  22 |
@@ -144,7 +126,7 @@ Row and Column formula:
 	 :CUSTOM_ID: scratch-math
 	 :END:
 	 
-Another way to notate \({\LaTeX}\).
+Another way to notate ${\LaTeX}$.
 
 
 If $a^2=b$ and \( b=2 \), then the solution must be
@@ -156,38 +138,37 @@ either $$ a=+\sqrt{2} $$ or \[ a=-\sqrt{2}. \]
 		:CUSTOM_ID: scratch-math-symbol
 		:END:
 		
-**** Greek Characters
+**** Greek Letters
 		 :PROPERTIES:
-		 :CUSTOM_ID: scratch-math-greek-characters
+		 :CUSTOM_ID: scratch-math-greek-letters
 		 :END:
-		 
-#+NAME: math_greek_characters
-| char         | char         | name                |
-|--------------+--------------+---------------------|
-| \(A\)        | \(\alpha\)   | Alpha (al-fah)      |
-| \(B\)        | \(\beta\)    | Beta (bay-tah)      |
-| \(\Gamma\)   | \(\gamma\)   | Gamma (gam-ah)      |
-| \(\Delta\)   | \(\delta\)   | Delta (del-ta)      |
-| \(E\)        | \(\epsilon\) | Epsilon (ep-si-lon) |
-| \(Z\)        | \(\zeta\)    | Zeta (zay-tah)      |
-| \(H\)        | \(\eta\)     | Eta (ay-tah)        |
-| \(\Theta\)   | \(\theta\)   | Theta (thay-tah)    |
-| \(I\)        | \(\iota\)    | Iota (eye-o-tah)    |
-| \(K\)        | \(\kappa\)   | Kappa (cap-pah)     |
-| \(\Lambda\)  | \(\lambda\)  | Lambda (lamb-dah)   |
-| \(M\)        | \(\mu\)      | Mu (mew)            |
-| \(N\)        | \(\nu\)      | Nu (new)            |
-| \(\Xi\)      | \(\xi\)      | Xi (zie)            |
-| \(O\)        | \(\omicron\) | Omicron (om-e-cron) |
-| \(\Pi\)      | \(\pi\)      | Pi (pie)            |
-| \(\Sigma\)   | \(\sigma\)   | Sigma (sig-ma)      |
-| \(T\)        | \(\tau\)     | Tau (taw)           |
-| \(\Upsilon\) | \(\upsilon\) | Upsilon (up-si-lon) |
-| \(\Phi\)     | \(\phi\)     | Phi (fie)           |
-| \(X\)        | \(\chi\)     | Chi (kie)           |
-| \(\Psi\)     | \(\psi\)     | Psi (sigh)          |
-| \(\Omega\)   | \(\omega\)   | Omega (oh-may-gah)  |
-|              |              |                     |
+
+#+NAME: math_greek_letters
+| Letters    | letter     | name                |
+|------------+------------+---------------------|
+| $A$        | $\alpha$   | Alpha (al-fah)      |
+| $B$        | $\beta$    | Beta (bay-tah)      |
+| $\Gamma$   | $\gamma$   | Gamma (gam-ah)      |
+| $\Delta$   | $\delta$   | Delta (del-ta)      |
+| $E$        | $\epsilon$ | Epsilon (ep-si-lon) |
+| $Z$        | $\zeta$    | Zeta (zay-tah)      |
+| $H$        | $\eta$     | Eta (ay-tah)        |
+| $\Theta$   | $\theta$   | Theta (thay-tah)    |
+| $I$        | $\iota$    | Iota (eye-o-tah)    |
+| $K$        | $\kappa$   | Kappa (cap-pah)     |
+| $\Lambda$  | $\lambda$  | Lambda (lamb-dah)   |
+| $M$        | $\mu$      | Mu (mew)            |
+| $N$        | $\nu$      | Nu (new)            |
+| $\Xi$      | $\xi$      | Xi (zie)            |
+| $O$        | $\omicron$ | Omicron (om-e-cron) |
+| $\Pi$      | $\pi$      | Pi (pie)            |
+| $\Sigma$   | $\sigma$   | Sigma (sig-ma)      |
+| $T$        | $\tau$     | Tau (taw)           |
+| $\Upsilon$ | $\upsilon$ | Upsilon (up-si-lon) |
+| $\Phi$     | $\phi$     | Phi (fie)           |
+| $X$        | $\chi$     | Chi (kie)           |
+| $\Psi$     | $\psi$     | Psi (sigh)          |
+| $\Omega$   | $\omega$   | Omega (oh-may-gah)  |
 
 **** Operators
 		 :PROPERTIES:
@@ -195,19 +176,19 @@ either $$ a=+\sqrt{2} $$ or \[ a=-\sqrt{2}. \]
 		 :END:
 
 #+NAME: math_operators
-| name            | character  | name           | character |
-|-----------------+------------+----------------+-----------|
-| \(\cdot\)       | cdot       | \(\bullet\)    | bullet    |
-| \(\circ\)       | circ       | \(\diamond\)   | diamond   |
-| \(\times\)      | times      | \(\div\)       | div       |
-| \(\mp\)         | mp         | \(\pm\)        | pm        |
-| \(\otimes\)     | otimes     | \(\oplus\)     | oplus     |
-| \(\oslash\)     | oslash     | \(\ominus\)    | ominus    |
-| \(\asymp\)      | asymp      | \(\equiv\)     | equiv     |
-| \(\simeq\)      | simeq      | \(\approx\)    | approx    |
-| \(\neq\)        | neq        |                |           |
-| \(\geq\)        | geq        | \(\leq\)       | leq       |
-| \(\supset\)     | supset     | \(\supseteq\)  | supseteq  |
-| \(\subset\)     | subset     | \(\subseteq\)  | subseteq  |
-| \(\preceq\)     | preceq     | \(\succeq\)    | succeq    |
-| \(\rightarrow\) | rightarrow | \(\leftarrow\) | leftarrow |
+| operator      | name       | operator     | name      |
+|---------------+------------+--------------+-----------|
+| $\cdot$       | cdot       | $\bullet$    | bullet    |
+| $\circ$       | circ       | $\diamond$   | diamond   |
+| $\times$      | times      | $\div$       | div       |
+| $\mp$         | mp         | $\pm$        | pm        |
+| $\otimes$     | otimes     | $\oplus$     | oplus     |
+| $\oslash$     | oslash     | $\ominus$    | ominus    |
+| $\asymp$      | asymp      | $\equiv$     | equiv     |
+| $\simeq$      | simeq      | $\approx$    | approx    |
+| $\neq$        | neq        |              |           |
+| $\geq$        | geq        | $\leq$       | leq       |
+| $\supset$     | supset     | $\supseteq$  | supseteq  |
+| $\subset$     | subset     | $\subseteq$  | subseteq  |
+| $\preceq$     | preceq     | $\succeq$    | succeq    |
+| $\rightarrow$ | rightarrow | $\leftarrow$ | leftarrow |
