@@ -45,7 +45,7 @@ is a newline.
 #+END_LEFT
 
 #+BEGIN_CENTER
-Where is the center of the universe?
+Where is the Center of the universe?
 #+END_CENTER
 
 ** Table 
