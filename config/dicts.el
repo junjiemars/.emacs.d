@@ -87,14 +87,24 @@
   "Dictionaries using by `lookup-dict'.")
 
 
-(defun dict-find-def (&optional dict)
-  "Find DICT's definition in `*dict-defs*'."
-  (let ((dict (cdr (assoc** (or dict (caar (*dict-defs*)))
-                            (*dict-defs*) #'string=))))
-    (list (cons 'dict (list dict))
-          (cons 'style (list (remove-if* (lambda (x)
-                                           (string= x "url"))
-                                         (mapcar #'car dict)))))))
+(defalias 'dict-find-def
+  (lexical-let% ((b))
+    (lambda  (&optional dict)
+      (cond
+       ((or (consp dict) (not b))
+        (setq b
+              (let ((dd (cdr (assoc**
+                              (or (car dict) (caar (*dict-defs*)))
+                              (*dict-defs*) #'string=))))
+                (list (cons 'dict (list dd))
+                      (cons 'style
+                            (or (cdr dict)
+                                (list (remove-if*
+                                       (lambda (x) (string= x "url"))
+                                       (mapcar #'car dd)))))))))
+       (t b))))
+  "Find DICT's definition in `*dict-defs*'.")
+
 
 (defalias '*dict-debug-log*
   (lexical-let% ((b `(logging  nil
@@ -230,13 +240,12 @@
                        (or (car *dict-style-history*)
                            "all")
                        '*dict-style-history*)))
-             `((dict . ,(list dd))
-               (style . ,(if (and (stringp ss)
-                                  (or (string= "all" ss)
-                                      (match-string* "\\(all\\)" ss 1)))
-                             `(, sr)
-                           `(,(split-string* ss "," t "[ \n]*")))))))))
-  (let* ((d1 (if dict dict (dict-find-def)))
+             (cons d (if (and (stringp ss)
+                              (or (string= "all" ss)
+                                  (match-string* "\\(all\\)" ss 1)))
+                         `(, sr)
+                       `(,(split-string* ss "," t "[ \n]*"))))))))
+  (let* ((d1 (dict-find-def dict))
          (url (cdr (assoc** "url" (cadr (assoc** 'dict d1 #'eq))
                             #'string=))))
     (make-thread* (lambda ()
