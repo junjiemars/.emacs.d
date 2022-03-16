@@ -589,8 +589,8 @@ name to kill ring."
           (eq 'ibuffer-mode major-mode))
       (user-error* "Type \"w\" or \"C-u 0 w\" instead, in %s"
         mode-name)
-    (let ((name (cond ((buffer-file-name)
-                       (if arg (buffer-file-name) (buffer-name)))
+    (let ((name (cond (arg (or (buffer-file-name)
+                               (buffer-name)))
                       (t (buffer-name)))))
       (kill-new name)
       (message "%s" name))))
