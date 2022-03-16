@@ -4,7 +4,7 @@
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
 ;; sample-self-epilogue.el: specify the epilogue of yourself
-;;   should be run on the end of Emacs init 
+;;   should be run on the end of Emacs init
 ;;
 ;;;;
 
@@ -130,14 +130,6 @@
 
 ;;;; sql
 (comment
-
- (unless% (executable-find% "mysql")
-   (setq% sql-mysql-program
-          (if-platform% 'darwin
-              "/Applications/MySQLWorkbench.app/Contents/MacOS/mysql"
-            "<where>")
-          'sql))
- 
  (setq% sql-connection-alist
         '((mysql-local
            (sql-product 'mysql)
