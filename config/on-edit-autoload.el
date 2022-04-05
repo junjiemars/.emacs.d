@@ -300,14 +300,28 @@ If prefix N is non-nil, then forward or backward N functions."
                      (goto-char (car bounds))))))
 
 
-(defun mark-quoted@ (&optional quoted)
+(defun mark-quoted@ (&optional include quoted)
   "Mark QUOTED thing at point.
 
+If prefix INCLUDE is non-nil, then mark the whole quoted thing.
 If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
   (interactive
-   (list (when current-prefix-arg
-           (read-char (propertize "Input quoted character: "
-                                  'face 'minibuffer-prompt)))))
+   (list (cond ((and current-prefix-arg (symbolp current-prefix-arg)
+                     (not (eq '- current-prefix-arg)))
+                1)
+               ((and (numberp current-prefix-arg)
+                     (> current-prefix-arg -1))
+                1)
+               (t 0))
+         (cond ((and current-prefix-arg (symbolp current-prefix-arg)
+                     (eq '- current-prefix-arg))
+                nil)
+               ((and (numberp current-prefix-arg)
+                     (< current-prefix-arg -1))
+                nil)
+               (current-prefix-arg
+                (read-char (propertize "Input quoted character: "
+                                       'face 'minibuffer-prompt))))))
   (let ((bounds
          (catch 'block
            (let* ((lss '(?\' ?\" ?\( ?\[ ?\{))
@@ -467,8 +481,8 @@ If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
                             (t (throw 'block nil))))
                      (t (cons (- cur li) (+ cur ri)))))))))
     (if bounds
-      (_mark_thing@_ (goto-char (1- (car bounds)))
-                     (goto-char (1+ (cdr bounds))))
+        (_mark_thing@_ (goto-char (- (car bounds) include))
+                       (goto-char (+ (cdr bounds) include)))
       (message "quoted things no found"))))
 
 
