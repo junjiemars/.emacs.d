@@ -300,24 +300,21 @@ If prefix N is non-nil, then forward or backward N functions."
                      (goto-char (car bounds))))))
 
 
-(defun mark-quoted@ (&optional include quoted)
+(defun mark-quoted@ (&optional enclose quoted)
   "Mark QUOTED thing at point.
 
-If prefix INCLUDE is non-nil, then mark the whole quoted thing.
+If prefix ENCLOSE is non-nil, then mark the whole quoted thing.
 If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
   (interactive
-   (list (cond ((and current-prefix-arg (symbolp current-prefix-arg)
-                     (not (eq '- current-prefix-arg)))
-                1)
-               ((and (numberp current-prefix-arg)
-                     (> current-prefix-arg -1))
-                1)
-               (t 0))
-         (cond ((and current-prefix-arg (symbolp current-prefix-arg)
-                     (eq '- current-prefix-arg))
-                nil)
-               ((and (numberp current-prefix-arg)
-                     (< current-prefix-arg -1))
+   (list (if (or (consp current-prefix-arg)
+                 (and (numberp current-prefix-arg)
+                      (> current-prefix-arg -1)))
+             1 0)
+         (cond ((or (consp current-prefix-arg)
+                    (and (symbolp current-prefix-arg)
+                         (eq '- current-prefix-arg))
+                    (and (numberp current-prefix-arg)
+                         (< current-prefix-arg -1)))
                 nil)
                (current-prefix-arg
                 (read-char (propertize "Input quoted character: "
@@ -481,8 +478,8 @@ If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
                             (t (throw 'block nil))))
                      (t (cons (- cur li) (+ cur ri)))))))))
     (if bounds
-        (_mark_thing@_ (goto-char (- (car bounds) include))
-                       (goto-char (+ (cdr bounds) include)))
+        (_mark_thing@_ (goto-char (- (car bounds) enclose))
+                       (goto-char (+ (cdr bounds) enclose)))
       (message "quoted things no found"))))
 
 
