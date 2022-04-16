@@ -17,7 +17,7 @@
 ;; frames a little better. also added helper functions. see
 ;; 'cdbDebugChoice' at bottom for example.
 ;; Version: 1.5 (October 19, 2008) : parse fixes for latest debug tools.
-;; Version: 1.6 (June 26, 2018) : improved in More Reasonable Emacs. see
+;; Version: 1.6 (June 26, 2018) : improved in Nore Emacs. see
 ;; https://github.com/junjiemars/.emacs.d
 ;;
 ;; This file is NOT part of GNU Emacs but the same permissions apply.
@@ -102,7 +102,7 @@
 ;; generated via Nore (https://github.com/junjiemars/nore)
 ;; %userprofile%/.cc-env.bat && bash ./configure --new
 ;; %userprofile%/.cc-env.bat && make -k -C e:/lab/c clean test
-;; 
+;;
 ;;;;
 ;; Register/Unregister WinDbg
 ;; /HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows NT/CurrentVersion/AeDebug
@@ -212,14 +212,14 @@ l-s means do not display source code in `cdb' command line.
 (defun cdb-file-name (filename)
   "Transform a relative FILENAME to an absolute one.
 
-Return absolute filename when FILENAME existing or it's existing 
+Return absolute filename when FILENAME existing or it's existing
 in `gud-cdb-directories'.
 "
   (or (let ((f (expand-file-name filename)))
         (when (file-exists-p f) f))
       (loop* for d in gud-cdb-directories
              with p = nil
-             do (setq p (concat d "/" filename)) 
+             do (setq p (concat d "/" filename))
              when (file-exists-p p)
              return p)))
 
@@ -386,12 +386,12 @@ directory and source-file directory for your debugger."
   (setq comint-prompt-regexp +cdb-prompt-regexp+)
   (setq comint-prompt-read-only t)
 
-  ;; M-{ and M-} 
+  ;; M-{ and M-}
   (set (make-local-variable 'paragraph-separate) "\\'")
   (set (make-local-variable 'paragraph-start) +cdb-prompt-regexp+)
 
   (run-hooks 'gud-cdb-mode-hook)
-  
+
   (loop* for x in gud-cdb-init-hook
          when (functionp x) do (funcall x))
 

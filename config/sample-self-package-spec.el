@@ -47,7 +47,7 @@
  :put :scheme
  (list
   :cond (comment (and (when-version% <= 23.2 t)
-                      ;; More Reasonable Emacs has builtin supports for Chez
+                      ;; Nore Emacs has builtin supports for Chez
                       ;; scheme and gambitC scheme, and does not need to
                       ;; install the dumb geiser.
                       (or (executable-find% "racket")
