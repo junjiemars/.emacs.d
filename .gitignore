@@ -29,6 +29,7 @@ bookmarks
 cider-history
 config/.nrepl-history
 config/ltximg
+eln-cache/
 elpa/
 eshell
 eww-bookmarks
@@ -48,6 +49,7 @@ server/
 session.*
 src
 tramp
+transient/
 tutorial/
 url
 viper
