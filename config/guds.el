@@ -10,6 +10,8 @@
 ;;;;
 
 
+
+
 (require 'gud)
 
 
@@ -47,20 +49,20 @@ Avoid bugs in `gud-format-command' and `gud-find-c-expr'."
     (catch 'break
       (let ((ori (point)))
         (while (not (or (= (point) (point-min))
-                        (char= (char-before) ?\;)
-                        (char= (char-before) ?\n)))
+                        (char-equal (char-before) ?\;)
+                        (char-equal (char-before) ?\n)))
           (cond
            ;; right parenthesis
-           ((char= (char-before) ?\))
+           ((char-equal (char-before) ?\))
             (backward-list))
            ;; word
-           ((char= (char-syntax (char-before)) ?w)
+           ((char-equal (char-syntax (char-before)) ?w)
             (let ((cur (point))
                   (idx 1))
               (when (<= (- cur idx) (point-min))
                 (throw 'break (point-min)))
               (while (and (char-before (- cur idx))
-                      (char= (char-syntax (char-before (- cur idx))) ?w))
+                      (char-equal (char-syntax (char-before (- cur idx))) ?w))
                 (setq idx (1+ idx)))
               (when (and (> idx 2)
                          (string-match
@@ -70,26 +72,26 @@ Avoid bugs in `gud-format-command' and `gud-find-c-expr'."
                 (throw 'break cur))
               (backward-word)))
            ;; whitespace
-           ((char= (char-syntax (char-before)) ?\ )
-            (while (char= (char-syntax (char-before)) ?\ )
+           ((char-equal (char-syntax (char-before)) ?\ )
+            (while (char-equal (char-syntax (char-before)) ?\ )
               (backward-char)))
            ;; comma
-           ((char= (char-before) ?,)
+           ((char-equal (char-before) ?,)
             (throw 'break (point)))
            ;; assignment
-           ((char= (char-before) ?=)
+           ((char-equal (char-before) ?=)
             (let ((cur (point))
                   (idx 1))
               (when (<= (- cur idx) (point-min))
                 (throw 'break (point-min)))
-              (while (or (char= (char-before (- cur idx)) ?=)
-                         (char= (char-before (- cur idx)) ?!))
+              (while (or (char-equal (char-before (- cur idx)) ?=)
+                         (char-equal (char-before (- cur idx)) ?!))
                 (setq idx (1+ idx)))
               (if (< idx 2)
                   (throw 'break cur)
                 (backward-char idx))))
            ;; > >>
-           ((char= (char-before) ?>)
+           ((char-equal (char-before) ?>)
             (when (string-match
                    "^[> \t]+"
                    (buffer-substring-no-properties
@@ -98,33 +100,33 @@ Avoid bugs in `gud-format-command' and `gud-find-c-expr'."
               (throw 'break (point)))
             (backward-char))
            ;; _
-           ((char= (char-before) ?_)
+           ((char-equal (char-before) ?_)
             (let ((cur (point))
                   (idx 1))
               (while (and (char-before (- cur idx))
-                          (char= (char-before (- cur idx)) ?_))
+                          (char-equal (char-before (- cur idx)) ?_))
                 (setq idx (1+ idx)))
               (when (>= idx 3)
                 (throw 'break cur))
               (backward-char)))
            ;; dot
-           ((char= (char-before) ?.)
+           ((char-equal (char-before) ?.)
             (let ((cur (point))
                   (idx 1))
               (while (and (char-before (- cur idx))
-                          (char= (char-before (- cur idx)) ?.))
+                          (char-equal (char-before (- cur idx)) ?.))
                 (setq idx (1+ idx)))
               (when (>= idx 3)
                 (throw 'break cur))
               (backward-char)))
            ;; punctuation
-           ((char= (char-syntax (char-before)) ?.)
+           ((char-equal (char-syntax (char-before)) ?.)
             (let ((cur (point)))
               (when (or (= ori cur)
                         (and (< cur ori)
                              (let ((idx 0))
                                (while (and (< (+ cur idx) ori)
-                                           (char= (char-syntax
+                                           (char-equal (char-syntax
                                                    (char-after (+ cur idx)))
                                                   ?\ ))
                                  (setq idx (1+ idx)))
@@ -133,7 +135,7 @@ Avoid bugs in `gud-format-command' and `gud-find-c-expr'."
               (backward-char)))
            ;; default
            (t (throw 'break (point)))))))
-    (while (char= (char-syntax (char-after)) ?\ )
+    (while (char-equal (char-syntax (char-after)) ?\ )
       (forward-char))
     (point)))
 
@@ -235,5 +237,3 @@ Avoid bugs in `gud-format-command' and `gud-find-c-expr'."
 
 
 (provide 'guds)
-
-
