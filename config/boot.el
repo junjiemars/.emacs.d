@@ -159,6 +159,13 @@ Argument FEATURE that FN dependent on, be loaded at compile time."
   `(if-fn% ,fn ,feature nil ,@body))
 
 
+(defmacro if-native-comp% (then &rest else)
+  "If native compilation support is built-in do THEN, else do ELSE..."
+  `(if-fn% 'native-comp-available-p nil
+           ,then
+     (progn% ,@else)))
+
+
  ;; end of fn compile-time checking macro
 
 
