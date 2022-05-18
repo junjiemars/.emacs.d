@@ -143,8 +143,8 @@ Return absolute filename when FILENAME exists, otherwise nil."
 (defun lldb-script-apropos (ss)
   "Apropos via lldb's script.
 
-The `max_return_elements' argument in `HandleCompletion' had not been implemented.
-https://github.com/llvm/llvm-project/blob/7a580f3c28cf47a7e489faa1fc1ab7b88d9a5dbd/lldb/source/API/SBCommandInterpreter.cpp"
+The `max_return_elements' argument in `HandleCompletion' had not
+been implemented, see https://github.com/llvm/llvm-project/."
   (concat "script "
           "_m_.Clear();"
           (format "_d_.HandleCompletion('%s',%d,%d,%d,_m_);"
