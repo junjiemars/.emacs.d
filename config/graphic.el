@@ -18,6 +18,9 @@
 ;; Disable scroll bar
 (when-fn% 'scroll-bar-mode nil (scroll-bar-mode -1))
 
+;; Disable tab bar
+(when-fn% 'tab-bar-mode nil (tab-bar-mode -1))
+
 ;; Go straight to scratch buffer on startup
 (setq% inhibit-splash-screen t)
 
