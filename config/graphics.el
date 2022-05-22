@@ -3,7 +3,7 @@
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; graphic.el: menu, toolbar, font, theme, etc.
+;; graphics.el: menu, toolbar, font, theme, etc.
 ;;;;
 
 

@@ -34,9 +34,9 @@
   "Load autoloaded modes."
   (compile!
 
-    (compile-unit% (emacs-home* "config/financial.el") t)
-    (compile-unit% (emacs-home* "config/go.el") t)
-    (compile-unit% (emacs-home* "config/guds.el") t)
+    (compile-unit% (emacs-home* "config/financial.el") 'only)
+    (compile-unit% (emacs-home* "config/go.el") 'only)
+    (compile-unit% (emacs-home* "config/guds.el") 'only)
     (compile-unit% (emacs-home* "config/scratch.el"))
     (compile-unit% (emacs-home* "config/tags.el"))
     (compile-unit% (emacs-home* "config/on-cc-autoload.el"))
@@ -94,14 +94,14 @@
     (when-platform% 'windows-nt
       (when% (executable-find% "cdb")
         (prog1
-            (compile-unit% (emacs-home* "config/gud-cdb.el") t)
+            (compile-unit% (emacs-home* "config/gud-cdb.el") 'only)
           (autoload 'cdb (v-home% "config/gud-cdb.elc")
             "Run lldb on program FILE in buffer *gud-FILE*." t))))
 
     ;; Debugger `gud-lldb'
     (when% (executable-find% "lldb")
       (prog1
-          (compile-unit% (emacs-home* "config/gud-lldb.el") t)
+          (compile-unit% (emacs-home* "config/gud-lldb.el") 'only)
         (autoload 'lldb (v-home% "config/gud-lldb.elc")
           "Run cdb on program FILE in buffer *gud-FILE*." t)))
 
@@ -111,7 +111,7 @@
                                (let ((x (shell-command* jshell "--version")))
                                  (zerop (car x)))))
       (prog1
-          (compile-unit% (emacs-home* "config/jshell.el") t)
+          (compile-unit% (emacs-home* "config/jshell.el") 'only)
         (autoload 'jshell-mode (v-home% "config/jshell.elc")
           "Toggle Jshell's mode." t)
         (autoload 'run-jshell (v-home% "config/jshell.elc")
@@ -147,7 +147,7 @@
                                           "-e \"(system-type)\"")))
                                  (zerop (car x)))))
       (prog1
-          (compile-unit% (emacs-home* "config/gambit.el") t)
+          (compile-unit% (emacs-home* "config/gambit.el") 'only)
         (*org-babel-schemes* :put 'gambit "gsc-script")
         (autoload 'gambit-mode (v-home% "config/gambit.elc")
           "Toggle Gambit's mode." t)
@@ -161,7 +161,7 @@
                                           "'(+ 1 2 3)'|" chez "-q")))
                                  (zerop (car x)))))
       (prog1
-          (compile-unit% (emacs-home* "config/chez.el") t)
+          (compile-unit% (emacs-home* "config/chez.el") 'only)
         (*org-babel-schemes* :put 'chez "scheme")
         (autoload 'chez-mode (v-home% "config/chez.elc")
           "Toggle Chez's mode." t)
@@ -170,7 +170,7 @@
 
     ;; Org `ob' for Scheme
     (prog1
-        (compile-unit% (emacs-home* "config/ob-schemes.el") t)
+        (compile-unit% (emacs-home* "config/ob-schemes.el") 'only)
       (when (*org-babel-schemes*)
         (autoload* 'org-babel-execute:scheme*
                    (v-home% "config/ob-schemes.elc")
@@ -179,7 +179,7 @@
 
     ;; Sudoku
     (prog1
-        (compile-unit% (emacs-home* "config/sudoku.el") t)
+        (compile-unit% (emacs-home* "config/sudoku.el") 'only)
       (autoload* 'sudoku (v-home% "config/sudoku.elc")
                  "Play sudoku." t))
 

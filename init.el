@@ -80,6 +80,11 @@ The FILE should be posix path, see `path-separator'."
 ;; versioned file macro
 
 
+(defmacro v-name ()
+  "Return the versioned name."
+  `(concat (if (display-graphic-p) "g_" "t_") emacs-version))
+
+
 (defmacro v-path* (file &optional extension)
   "Return versioned FILE with new EXTENSION."
   (let ((f (gensym*))
@@ -91,8 +96,7 @@ The FILE should be posix path, see `path-separator'."
        (concat (if (directory-name-p ,f)
                    ,f
                  (file-name-directory ,f))
-               ,(concat (if (display-graphic-p) "g_" "t_")
-                        emacs-version "/")
+               ,(concat (v-name) "/")
                (if ,x
                    (file-name-new-extension* ,n ,x)
                  ,n)))))
@@ -119,62 +123,6 @@ The FILE should be posix path, see `path-separator'."
 
 
  ;; end of versioned file macro
-
-
-;; compile macro
-
-
-(defmacro compile-and-load-file*
-    (file &optional only-compile delete-booster dir)
-  "Compile FILE.
-
-If ONLY-COMPILE is t, does not load compiled file.
-If DELETE-BOOSTER is t, remove booster file.
-DIR where the compiled file located."
-  (let ((f (gensym*))
-        (d (gensym*))
-        (n (gensym*))
-        (c (gensym*))
-        (s (gensym*)))
-    `(let ((,f ,file))
-       (when (and (stringp ,f) (file-exists-p ,f))
-         (let* ((,n (file-name-nondirectory ,f))
-                (,d ,dir)
-                (,s (if ,d
-                        (concat ,d ,n)
-                      ,f))
-                (,c (file-name-new-extension* ,s ".elc")))
-           (when (or (not (file-exists-p ,c))
-                     (file-newer-than-file-p ,f ,c))
-             (unless (string= ,f ,s)
-               (copy-file ,f (path! ,s) t))
-             (when (byte-compile-file ,s)
-               (when ,delete-booster (delete-file ,s))))
-           (when (file-exists-p ,c)
-             (cond (,only-compile t)
-                   (t (load ,c)))))))))
-
-
-(defun clean-compiled-files ()
-  "Clean all compiled files."
-  (interactive)
-  (let ((dirs (list (v-home* "config/")
-                    (v-home* "private/")
-                    (v-home* "theme/")
-                    (v-home* ".exec/"))))
-    (while dirs
-      (let* ((d (car dirs))
-             (fs (when (file-exists-p d)
-                   (directory-files d nil "\\.elc?\\'"))))
-        (message "#Clean compiled files: %s..." d)
-        (while fs
-          (let ((f (car fs)))
-            (delete-file (concat d f)))
-          (setq fs (cdr fs))))
-      (setq dirs (cdr dirs)))))
-
-
- ;; end of compile macro
 
 
 ;; compile-time macro
@@ -207,6 +155,80 @@ Else return BODY sexp."
 
 
  ;; end of compile-time macro
+
+
+;; compile macro
+
+(defmacro if-native-comp% (then &rest else)
+  "If native compilation support is built-in do THEN, else do ELSE..."
+  (if (fboundp 'native-comp-available-p)
+      (and (native-comp-available-p)
+           (featurep 'native-compile)
+           `,then)
+    (progn% `,@else)))
+
+(defmacro when-native-comp% (&rest body)
+  "When native compilation support is built-in, do BODY."
+  (declare (indent 0))
+  `(if-native-comp% (progn% ,@body)))
+
+
+(defmacro compile-and-load-file*
+    (file &optional compile-option delete-booster dir)
+  "Compile FILE.
+
+If COMPILE-OPTION is t, does not load compiled file.
+If DELETE-BOOSTER is t, remove booster file.
+DIR where the compiled file located."
+  (let ((f (gensym*))
+        (d (gensym*))
+        (n (gensym*))
+        (c (gensym*))
+        (s (gensym*)))
+    `(let ((,f ,file))
+       (when (and (stringp ,f) (file-exists-p ,f))
+         (let* ((,n (file-name-nondirectory ,f))
+                (,d ,dir)
+                (,s (if ,d
+                        (concat ,d ,n)
+                      ,f))
+                (,c (file-name-new-extension* ,s ".elc")))
+           (when (or (not (file-exists-p ,c))
+                     (file-newer-than-file-p ,f ,c))
+             (unless (string= ,f ,s)
+               (copy-file ,f (path! ,s) t))
+             (when (byte-compile-file ,s)
+               (when ,delete-booster (delete-file ,s))
+               (when-native-comp%
+                 (when (eq 'native ,compile-option)
+                   (native-compile ,c)))))
+           (when (file-exists-p ,c)
+             (cond ((eq 'only ,compile-option) t)
+                   (t (load ,c)))))))))
+
+
+(defun clean-compiled-files ()
+  "Clean all compiled files."
+  (interactive)
+  (let ((dirs (list (v-home* "config/")
+                    (v-home* "private/")
+                    (v-home* "theme/")
+                    (v-home* ".exec/"))))
+    (while dirs
+      (let* ((d (car dirs))
+             (fs (when (file-exists-p d)
+                   (directory-files d nil "\\.elc?\\'"))))
+        (message "#Clean compiled files: %s..." d)
+        (while fs
+          (let ((f (car fs)))
+            (delete-file (concat d f)))
+          (setq fs (cdr fs))))
+      (setq dirs (cdr dirs)))))
+
+
+ ;; end of compile macro
+
+
 
 
 ;; *-version% macro
@@ -249,8 +271,18 @@ If (COND VERSION EMACS-VERSION) yield nil, and there are no ELSE’s, the value 
 
 
 ;; Boot
+
+(when-native-comp%
+
+  ;; slient native-comp warning
+  (setq native-comp-async-report-warnings-errors 'silent)
+
+  ;; first native-comp load
+  (setcar native-comp-eln-load-path (v-home! ".eln/")))
+
+
 (compile-and-load-file* (emacs-home* "config/boot.el")
-                        nil ;; only-compile
+                        'native ;; compile-option
                         nil ;; delete-booster
                         (v-home* "config/"))
 

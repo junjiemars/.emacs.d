@@ -159,11 +159,6 @@ Argument FEATURE that FN dependent on, be loaded at compile time."
   `(if-fn% ,fn ,feature nil ,@body))
 
 
-(defmacro if-native-comp% (then &rest else)
-  "If native compilation support is built-in do THEN, else do ELSE..."
-  `(if-fn% 'native-comp-available-p nil
-           ,then
-     (progn% ,@else)))
 
 
  ;; end of fn compile-time checking macro
@@ -210,8 +205,11 @@ Argument FEATURE that VAR dependent on, load at compile time."
  ;; end of var compile-time checking macro
 
 
+
+
 ;;; Preferred coding system
 (prefer-coding-system 'utf-8)
+
 
 ;;; Preferred loop routine
 (defmacro dolist* (spec &rest body)
@@ -241,22 +239,22 @@ Optional argument BODY"
 ;; compile macro
 ;;;;
 
-(defmacro compile-unit* (file &optional only-compile delete-booster)
+(defmacro compile-unit* (file &optional compile-option delete-booster)
   "Make an compile unit.
 
 Argument FILE elisp source file.
-Optional argument ONLY-COMPILE only compile and do not autoload.
+Optional argument COMPILE-OPTION: 'only, 'native.
 Optional argument DELETE-BOOSTER delete booster file after FILE be compiled."
   `(list :source ,file
          :dir (when ,file (v-path* (file-name-directory ,file)))
-         :only-compile ,only-compile
+         :compile-option ,compile-option
          :delete-booster ,delete-booster))
 
-(defmacro compile-unit% (file &optional only-compile delete-booster)
+(defmacro compile-unit% (file &optional compile-option delete-booster)
   "Make an compile unit at compile time.
 
 Argument FILE elisp source file.
-Optional argument ONLY-COMPILE only compile and do not autoload.
+Optional argument COMPILE-OPTION: 'only, 'native.
 Optional argument DELETE-BOOSTER delete booster file after FILE be compiled."
   (let* ((-source1- (funcall `(lambda () ,file)))
          (-dir1- (when -source1-
@@ -265,7 +263,7 @@ Optional argument DELETE-BOOSTER delete booster file after FILE be compiled."
                        (v-path* (file-name-directory ,-source1-)))))))
     `(list :source ,-source1-
            :dir ,-dir1-
-           :only-compile ,only-compile
+           :compile-option ,compile-option
            :delete-booster ,delete-booster)))
 
 (defmacro compile-unit->file (unit)
@@ -276,15 +274,13 @@ Optional argument DELETE-BOOSTER delete booster file after FILE be compiled."
   "Return the :dir part of UNIT."
   `(plist-get ,unit :dir))
 
-(defmacro compile-unit->only-compile (unit)
-  "Return the :only-compile indicator of UNIT."
-  `(plist-get ,unit :only-compile))
+(defmacro compile-unit->compile-option (unit)
+  "Return the :compile-option indicator of UNIT."
+  `(plist-get ,unit :compile-option))
 
 (defmacro compile-unit->delete-booster (unit)
   "Return the :delete-booster indicator of UNIT."
   `(plist-get ,unit :delete-booster))
-
-
 
 
 (defun compile! (&rest units)
@@ -294,7 +290,7 @@ Optional argument DELETE-BOOSTER delete booster file after FILE be compiled."
     (when u
       (compile-and-load-file*
        (compile-unit->file u)
-       (compile-unit->only-compile u)
+       (compile-unit->compile-option u)
        (compile-unit->delete-booster u)
        (compile-unit->dir u)))))
 
@@ -400,13 +396,14 @@ No matter the declaration order, the executing order is:
  ;; end of self-spec macro
 
 
+
 ;;; <1> prologue
 (compile! (compile-unit% (emacs-home* "config/fns.el"))
           (compile-unit* (*self-paths* :get :prologue)))
 
 ;;; <2> env
 (compile! (compile-unit* (*self-paths* :get :env-spec))
-          (compile-unit% (emacs-home* "config/graphic.el"))
+          (compile-unit% (emacs-home* "config/graphics.el"))
           (compile-unit% (emacs-home* "config/basic.el"))
           (compile-unit% (emacs-home* "config/shells.el")))
 

@@ -254,7 +254,7 @@ Introduce the rules of naming /files/ and /functions/.
     ├── dicts.el
     ├── fns.el
     ├── gambit.el
-    ├── graphic.el
+    ├── graphics.el
     ├── gud-cdb.el
     ├── gud-lldb.el
     ├── guds.el

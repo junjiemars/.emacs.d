@@ -164,7 +164,7 @@ STANDARD always be computed at runtime whatever the current
 ;; File Functions
 
 (defun save-sexp-to-file (sexp file)
-  "Save SEXP to FILE. 
+  "Save SEXP to FILE.
 
 Returns the name of FILE when successed otherwise nil."
   (unwind-protect
@@ -176,7 +176,7 @@ Returns the name of FILE when successed otherwise nil."
 
 
 (defun save-str-to-file (str file)
-  "Save STR to FILE. 
+  "Save STR to FILE.
 
 Returns the name of FILE when successed otherwise nil."
   (unwind-protect
