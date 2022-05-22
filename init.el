@@ -174,10 +174,10 @@ Else return BODY sexp."
 
 
 (defmacro compile-and-load-file*
-    (file &optional compile-option delete-booster dir)
+    (file &optional only-compile delete-booster dir)
   "Compile FILE.
 
-If COMPILE-OPTION is t, does not load compiled file.
+If ONLY-COMPILE is t, does not load compiled file.
 If DELETE-BOOSTER is t, remove booster file.
 DIR where the compiled file located."
   (let ((f (gensym*))
@@ -198,12 +198,10 @@ DIR where the compiled file located."
              (unless (string= ,f ,s)
                (copy-file ,f (path! ,s) t))
              (when (byte-compile-file ,s)
-               (when ,delete-booster (delete-file ,s))
-               (when-native-comp%
-                 (when (eq 'native ,compile-option)
-                   (native-compile ,c)))))
+               (when-native-comp% (native-compile ,c))
+               (when ,delete-booster (delete-file ,s))))
            (when (file-exists-p ,c)
-             (cond ((eq 'only ,compile-option) t)
+             (cond (,only-compile t)
                    (t (load ,c)))))))))
 
 
@@ -282,7 +280,7 @@ If (COND VERSION EMACS-VERSION) yield nil, and there are no ELSE’s, the value 
 
 
 (compile-and-load-file* (emacs-home* "config/boot.el")
-                        'native ;; compile-option
+                        nil ;; compile-option
                         nil ;; delete-booster
                         (v-home* "config/"))
 

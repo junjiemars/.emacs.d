@@ -239,23 +239,23 @@ Optional argument BODY"
 ;; compile macro
 ;;;;
 
-(defmacro compile-unit* (file &optional compile-option delete-booster)
+(defmacro compile-unit* (file &optional only-compile delete-booster)
   "Make an compile unit.
 
 Argument FILE elisp source file.
-Optional argument COMPILE-OPTION: 'only, 'native.
-Optional argument DELETE-BOOSTER delete booster file after FILE be compiled."
+Optional argument ONLY-COMPILE, see `compile-and-load-file*'.
+Optional argument DELETE-BOOSTER, see `compile-and-load-file*'."
   `(list :source ,file
          :dir (when ,file (v-path* (file-name-directory ,file)))
-         :compile-option ,compile-option
+         :only-compile ,only-compile
          :delete-booster ,delete-booster))
 
-(defmacro compile-unit% (file &optional compile-option delete-booster)
+(defmacro compile-unit% (file &optional only-compile delete-booster)
   "Make an compile unit at compile time.
 
 Argument FILE elisp source file.
-Optional argument COMPILE-OPTION: 'only, 'native.
-Optional argument DELETE-BOOSTER delete booster file after FILE be compiled."
+Optional argument ONLY-COMPILE: see `compile-and-load-file*'.
+Optional argument DELETE-BOOSTER: see `compile-and-load-file*'."
   (let* ((-source1- (funcall `(lambda () ,file)))
          (-dir1- (when -source1-
                    (funcall
@@ -263,7 +263,7 @@ Optional argument DELETE-BOOSTER delete booster file after FILE be compiled."
                        (v-path* (file-name-directory ,-source1-)))))))
     `(list :source ,-source1-
            :dir ,-dir1-
-           :compile-option ,compile-option
+           :only-compile ,only-compile
            :delete-booster ,delete-booster)))
 
 (defmacro compile-unit->file (unit)
@@ -274,9 +274,9 @@ Optional argument DELETE-BOOSTER delete booster file after FILE be compiled."
   "Return the :dir part of UNIT."
   `(plist-get ,unit :dir))
 
-(defmacro compile-unit->compile-option (unit)
-  "Return the :compile-option indicator of UNIT."
-  `(plist-get ,unit :compile-option))
+(defmacro compile-unit->only-compile (unit)
+  "Return the :only-compile indicator of UNIT."
+  `(plist-get ,unit :only-compile))
 
 (defmacro compile-unit->delete-booster (unit)
   "Return the :delete-booster indicator of UNIT."
@@ -290,7 +290,7 @@ Optional argument DELETE-BOOSTER delete booster file after FILE be compiled."
     (when u
       (compile-and-load-file*
        (compile-unit->file u)
-       (compile-unit->compile-option u)
+       (compile-unit->only-compile u)
        (compile-unit->delete-booster u)
        (compile-unit->dir u)))))
 
