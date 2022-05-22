@@ -172,6 +172,11 @@ Else return BODY sexp."
   (declare (indent 0))
   `(if-native-comp% (progn% ,@body)))
 
+(defmacro unless-native-comp% (&rest body)
+  "When native compilation support is built-in, do BODY."
+  (declare (indent 0))
+  `(if-native-comp% nil ,@body))
+
 
 (defmacro compile-and-load-file*
     (file &optional only-compile delete-booster dir)
@@ -198,7 +203,7 @@ DIR where the compiled file located."
              (unless (string= ,f ,s)
                (copy-file ,f (path! ,s) t))
              (when (byte-compile-file ,s)
-               (when-native-comp% (native-compile ,c))
+               (when-native-comp% (native-compile ,s))
                (when ,delete-booster (delete-file ,s))))
            (when (file-exists-p ,c)
              (cond (,only-compile t)
