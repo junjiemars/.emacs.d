@@ -125,7 +125,7 @@
                                               "'1+2+3'|" node "-p")))
                                      (zerop (car x))))))
       (prog1
-          (compile-unit% (emacs-home* "config/node.el"))
+          (compile-unit% (emacs-home* "config/node.el") t)
         (autoload 'node-mode (v-home% "config/node.elc")
           "Toggle Node's mode." t)
         (autoload 'run-node (v-home% "config/node.elc")
