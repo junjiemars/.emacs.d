@@ -203,8 +203,7 @@ DIR where the compiled file located."
              (unless (string= ,f ,s)
                (copy-file ,f (path! ,s) t))
              (when (byte-compile-file ,s)
-               (when-native-comp%
-                 (native-compile-async ,s nil t))
+               ;; (when-native-comp% (native-compile-async ,s nil t))
                (when ,delete-booster (delete-file ,s))))
 	         (when (file-exists-p ,c)
              (cond (,only-compile t)
