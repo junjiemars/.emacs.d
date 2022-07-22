@@ -72,14 +72,14 @@ Optional prefix argument ENHANCED, displays additional details."
 (when-fn% 'sql-execute-feature 'sql
 
   (defun sql-list-code (name &optional enhanced)
-    "List the code of a database procedure named NAME. "
-    (interactive (list (sql-read-table-name "Procedure name: ")
+    "List the code of the database object with qualified NAME. "
+    (interactive (list (sql-read-table-name "Qualified name: ")
                        current-prefix-arg))
     (let ((sqlbuf (sql-find-sqli-buffer)))
       (unless sqlbuf
         (user-error* "No SQL interactive buffer found"))
       (unless name
-        (user-error* "No procedure name specified"))
+        (user-error* "No name specified"))
       (sql-execute-feature sqlbuf (format "*List code %s*" name)
                            :list-code enhanced name))))
 
@@ -153,14 +153,14 @@ Optional prefix argument ENHANCED, displays additional details."
 
 (when-fn% 'sql-oracle-restore-settings 'sql
 
-  (defun sql-oracle-list-code (sqlbuf outbuf enhanced procedure)
-    "List source code of PROCEDURE or function object"
+  (defun sql-oracle-list-code (sqlbuf outbuf enhanced target)
+    "List code of oracle's TARGET."
     (let ((settings (sql-oracle-save-settings sqlbuf))
           (simple-sql
            (concat
             "SELECT text"
             " FROM all_source"
-            (format " WHERE name = '%s'" procedure)
+            (format " WHERE name = '%s'" target)
             " ORDER BY line;"))
           (enhanced-sql nil))
       (sql-redirect sqlbuf
@@ -192,7 +192,7 @@ Optional prefix argument ENHANCED, displays additional details."
 
 
 (defun sql-mysql-desc-plan (sqlbuf outbuf enhanced query)
-  "Describe mysql query execution plan."
+  "Describe execution plan of mysql's QUERY."
   (let ((simple-sql
          (concat
           "explain FORMAT=json "
@@ -204,11 +204,23 @@ Optional prefix argument ENHANCED, displays additional details."
                   outbuf)))
 
 
-(defun sql-mysql-list-index (sqlbuf outbuf enhanced table)
-  "List index of TABLE."
+(defun sql-mysql-list-code (sqlbuf outbuf enhanced target)
+  "List code of mysql's TARGET."
   (let ((simple-sql
          (concat
-          "SHOW index"
+          "SHOW CREATE"
+          (format " %s\\G" target)))
+        (enhanced-sql nil))
+    (sql-redirect sqlbuf
+                  (if enhanced enhanced-sql simple-sql)
+                  outbuf)))
+
+
+(defun sql-mysql-list-index (sqlbuf outbuf enhanced table)
+  "List index of mysql's TABLE."
+  (let ((simple-sql
+         (concat
+          "SHOW INDEX"
           (format " FROM %s\\G" table)))
         (enhanced-sql nil))
     (sql-redirect sqlbuf
@@ -262,6 +274,11 @@ Optional prefix argument ENHANCED, displays additional details."
                :desc-plan
                #'sql-mysql-desc-plan)
 
+    ;; mysql: new `:list-code'
+    (plist-put (cdr (assoc** 'mysql sql-product-alist))
+               :list-code
+               #'sql-mysql-list-code)
+
     ;; mysql: new `:list-index'
     (plist-put (cdr (assoc** 'mysql sql-product-alist))
                :list-index
@@ -280,11 +297,12 @@ Optional prefix argument ENHANCED, displays additional details."
 
 
     (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-code)
+    (define-key% sql-mode-map (kbd "C-c C-l i") #'sql-list-index)
     (define-key% sql-mode-map (kbd "C-c C-d t") #'sql-desc-table)
     (define-key% sql-mode-map (kbd "C-c C-d p") #'sql-desc-plan)
-    (define-key% sql-mode-map (kbd "C-c C-l i") #'sql-list-index)
 
     (define-key% sql-interactive-mode-map (kbd "C-c C-l c") #'sql-list-code)
+    (define-key% sql-interactive-mode-map (kbd "C-c C-l i") #'sql-list-index)
     (define-key% sql-interactive-mode-map (kbd "C-c C-d t") #'sql-desc-table)
     (define-key% sql-interactive-mode-map (kbd "C-c C-d p") #'sql-desc-plan))
 
