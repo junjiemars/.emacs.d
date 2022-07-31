@@ -98,6 +98,12 @@
   :compile `(,(compile-unit% (emacs-home* "config/use-lua-autoload.el")))))
 
 (*self-packages*
+ :put :zig
+ (list
+  :cond (executable-find% "zig")
+  :packages '(zig-mode)))
+
+(*self-packages*
  :put :web
  (list
   :cond nil
