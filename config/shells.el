@@ -36,17 +36,21 @@
 
 (defmacro echo-var (var &optional options)
   "Return the value of $VAR via echo."
-  `(when (stringp ,var)
-     (let* ((cmdproxy (when-platform% 'windows-nt
-                        (string-match "cmdproxy\\.exe$"
-                                      shell-file-name)))
-            (cmd (if cmdproxy
-                     (shell-command* (format "echo %%%s%%" ,var))
-                   (shell-command* shell-file-name
-                     (mapconcat #'identity ,options " ")
-                     (format "-c 'echo $%s'" ,var)))))
-       (when (zerop (car cmd))
-         (string-trim> (cdr cmd))))))
+  (let ((v (gensym*))
+        (o (gensym*)))
+    `(let ((,v ,var)
+           (,o ,options))
+       (when (stringp ,v)
+         (let* ((c1 (shell-command* shell-file-name
+                      (mapconcat #'identity ,o " ")
+                      (format "-c 'echo $%s'" ,v)))
+                (cmd (if-platform% 'windows-nt
+                         (if (string-match "cmdproxy\\.exe$" shell-file-name)
+                             (shell-command* (format "echo %%%s%%" ,v))
+                           c1)
+                       c1)))
+           (when (zerop (car cmd))
+             (string-trim> (cdr cmd))))))))
 
 
 (defmacro paths->var (path &optional predicate)
