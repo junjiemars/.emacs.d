@@ -52,15 +52,20 @@
 (defmacro paths->var (path &optional predicate)
   "Convert a list of PATH to $PATH like var that separated by
 `path-separator'."
-  `(string-trim> (apply #'concat
-                        (mapcar #'(lambda (s)
-                                    (if (null ,predicate)
-                                        (concat s path-separator)
-                                      (when (and (functionp ,predicate)
-                                                 (funcall ,predicate s))
-                                        (concat s path-separator))))
-                                ,path))
-                 path-separator))
+  (let ((p (gensym*))
+        (c (gensym*)))
+    `(let ((,p ,path)
+           (,c ,predicate))
+       (string-trim>
+        (apply #'concat
+               (mapcar #'(lambda (s)
+                           (if (null ,c)
+                               (concat s path-separator)
+                             (when (and (functionp ,c)
+                                        (funcall ,c s))
+                               (concat s path-separator))))
+                       ,p))
+        path-separator))))
 
 
 (defmacro var->paths (var)
@@ -146,17 +151,18 @@ See also: `parse-colon-path'."
                     (when (and (stringp p1) (file-exists-p p1))
                       (push! p1 exec-path t t)
                       (push! p1 paths t t))))
-                (push! (v-home% ".exec/") exec-path t t)
-                (*default-shell-env* :put! :exec-path exec-path)
+                (push! (v-home% ".exec/") paths t t)
                 (setq val (paths->var paths))))
             (push! (cons v val) vars)))))
-    (*default-shell-env* :put! :copy-vars vars))
+    (*default-shell-env* :put! :copy-vars vars)
+    (*default-shell-env* :put! :exec-path exec-path))
   (save-sexp-to-file (*default-shell-env*) (shells-spec->% :file)))
 
 
 (defun read-shell-env! ()
   "Read `*default-shell-env*' from file."
   (v-home! ".exec/")
+
   (if (not (shells-spec->* :allowed))
       ;; allowed/disallowed `shells-spec->*'
       (push! (v-home% ".exec/") exec-path t)
@@ -174,13 +180,13 @@ See also: `parse-colon-path'."
         (setq shell-file-name shell)
         (setenv (shells-spec->% :SHELL) shell)))
 
-    (when (shells-spec->* :exec-path)
-      (copy-exec-path! (*default-shell-env* :get :exec-path)))
-
     (let ((copying (shells-spec->* :copy-vars)))
       (when (consp copying)
         (copy-env-vars! (*default-shell-env* :get :copy-vars)
                         copying)))
+
+    (when (shells-spec->* :exec-path)
+      (copy-exec-path! (*default-shell-env* :get :exec-path)))
 
     (let ((spinning (shells-spec->* :spin-vars)))
       (when (consp spinning)
