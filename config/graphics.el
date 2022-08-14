@@ -130,7 +130,8 @@ If DIR is nil then load the built-in `customize-themes' by NAME."
 
 (when-graphic%
   (self-frame-load!)
-  (self-theme-load!))
+  (when-theme%
+    (self-theme-load!)))
 
 
 ;; end of file
