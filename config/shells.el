@@ -95,10 +95,12 @@ See also: `parse-colon-path'."
 
 
 (defmacro spin-env-vars! (vars)
-  `(dolist* (v ,vars)
-     (when (and (stringp (car v))
-                (stringp (cdr v)))
-       (setenv (car v) (cdr v)))))
+  (let ((vs (gensym*)))
+    `(let ((,vs ,vars))
+       (dolist* (v ,vs)
+         (when (and (stringp (car v))
+                    (stringp (cdr v)))
+           (setenv (car v) (cdr v)))))))
 
 
 (defmacro copy-exec-path! (path)
@@ -158,6 +160,7 @@ See also: `parse-colon-path'."
                 (push! (v-home% ".exec/") paths t t)
                 (setq val (paths->var paths))))
             (push! (cons v val) vars)))))
+    (*default-shell-env* :set! nil)
     (*default-shell-env* :put! :copy-vars vars)
     (*default-shell-env* :put! :exec-path exec-path))
   (save-sexp-to-file (*default-shell-env*) (shells-spec->% :file)))
