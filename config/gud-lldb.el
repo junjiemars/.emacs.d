@@ -325,7 +325,7 @@ As the 3rd argument of `gud-common-init': marker-filter"
 (add-hook 'gud-lldb-init-hook #'lldb-script-vars-init (emacs-arch))
 
 
-(defun lldb (command-line)
+(defun gud-lldb (command-line)
   "Run lldb passing it COMMAND-LINE as arguments.
 
 If COMMAND-LINE names a program FILE to debug, lldb will run in a

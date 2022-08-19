@@ -102,7 +102,7 @@
     (when% (executable-find% "lldb")
       (prog1
           (compile-unit% (emacs-home* "config/gud-lldb.el") t)
-        (autoload 'lldb (v-home% "config/gud-lldb.elc")
+        (autoload 'gud-lldb (v-home% "config/gud-lldb.elc")
           "Run cdb on program FILE in buffer *gud-FILE*." t)))
 
     ;; Jshell
