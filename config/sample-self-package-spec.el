@@ -104,6 +104,13 @@
   :packages '(zig-mode)))
 
 (*self-packages*
+ :put :rust
+ (list
+  :cond (and (executable-find% "rustc")
+             (executable-find% "cargo"))
+  :packages '(rust-mode)))
+
+(*self-packages*
  :put :web
  (list
   :cond nil
