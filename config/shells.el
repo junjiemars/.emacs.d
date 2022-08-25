@@ -85,9 +85,9 @@ See also: `parse-colon-path'."
 
 
 (defmacro copy-env-vars! (env vars)
-  (let ((e (gensym*)))
-    `(let ((,e ,env))
-       (dolist* (v ,vars)
+  (let ((e (gensym*)) (vs (gensym*)))
+    `(let ((,e ,env) (,vs ,vars))
+       (dolist* (v ,vs)
          (when (and (stringp v) (not (string= v "")))
            (let ((v1 (cdr (assoc** v ,e #'string=))))
              (when (stringp v1)
@@ -156,7 +156,7 @@ See also: `parse-colon-path'."
                   (let ((p1 (posix-path p)))
                     (when (and (stringp p1) (file-exists-p p1))
                       (when (shells-spec->* :exec-path)
-                        (push! p1 exec-path t))
+                        (push! p1 exec-path))
                       (push! p1 paths t t))))
                 (setq val (paths->var paths))))
             (push! (cons v val) vars)))))
@@ -178,7 +178,7 @@ See also: `parse-colon-path'."
 
   (if (not (shells-spec->* :allowed))
       ;; allowed/disallowed `shells-spec->*'
-      (push! (v-home% ".exec/") exec-path t)
+      (push! (v-home% ".exec/") exec-path t t)
 
     ;; read from file
     (when (file-exists-p (shells-spec->% :file))

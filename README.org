@@ -508,11 +508,11 @@ The shell spec locate in =(*self-env-spec* :get :shell)=.
 #+END_SRC
 
 #+REVEAL: split
-- =:copy-vars= copy environment variables from shell into Emacs, that
-  affects =eshell=, =shell= and =ansi-term=
+- =:copy-vars= copy environment variables from shell into Emacs
+  environment, that affects =eshell=, =shell= and =ansi-term=
 - =:spin-vars= spin customized variables, only affects =eshell=
 - =:options= a list of shell's options
-- =:exec-path= copy =$PATH= or =%PATH%= to =exec-path=
+- =:exec-path= copy =PATH= environment variable to =exec-path=
 #+REVEAL: split
 - =:shell-file-name= where the shell program located
 - =:prompt= unify shell prompt in =term= mode, via @@html:<kbd>@@C-c
