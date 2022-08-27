@@ -118,7 +118,8 @@
        :auto-save-default nil
        :disable-indent-tabs-mode '(c-mode-common-hook
                                    sh-mode-hook
-                                   emacs-lisp-mode-hook)
+                                   emacs-lisp-mode-hook
+                                   scheme-mode-hook)
        :narrow-to-region t
        :delete-trailing-whitespace '(prog-mode)
        :allowed nil))
