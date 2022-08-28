@@ -44,7 +44,7 @@
   (cond ((executable-find% "scheme"
                            (lambda (chez)
                              (let ((x (shell-command* "echo"
-                                        "'(+ 1 2 3)'|" chez "-q")))
+                                        "'(scheme-version)'|" chez "-q")))
                                (zerop (car x)))))
          "scheme")
         (t "scheme"))

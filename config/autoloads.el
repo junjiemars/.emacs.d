@@ -158,7 +158,7 @@
     (when% (executable-find% "scheme"
                              (lambda (chez)
                                (let ((x (shell-command* "echo"
-                                          "'(+ 1 2 3)'|" chez "-q")))
+                                          "'(scheme-version)'|" chez "-q")))
                                  (zerop (car x)))))
       (prog1
           (compile-unit% (emacs-home* "config/chez.el") t)
