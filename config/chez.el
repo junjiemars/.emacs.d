@@ -6,7 +6,8 @@
 ;; chez.el
 ;;;;
 ;;; https://scheme.com
-;;; http://groups.csail.mit.edu/mac/ftpdir/scm/
+;;; https://schemers.org
+;;; https://cisco.github.io/ChezScheme/
 ;;; https://schemers.org/Documents/Standards/R5RS/HTML/
 ;;; https://www.emacswiki.org/emacs/r5rs.el
 ;;;
@@ -20,7 +21,7 @@
 ;;; 7. indentation for chez scheme.
 ;;;
 ;;; bugs:
-;;; 
+;;;
 ;;;;;
 
 (require 'comint)
@@ -98,7 +99,7 @@ This is run before the process is cranked up."
 							 (vector->list xs))))))
 (import (chez-emacs))
 ;;; eof
- " 
+ "
   "The library of chez-emacs.")
 
 
@@ -274,7 +275,7 @@ The following commands are available:
 
 A chez process can be fired up with M-x `run-chez'.
 
-Customization: 
+Customization:
 Entry to this mode runs the hooks on `comint-mode-hook' and
   `chez-repl-mode-hook' (in that order)."
   :group 'chez                          ; keyword args
@@ -361,7 +362,7 @@ end of buffer, otherwise just popup the buffer."
                   (cons (file-name-directory n)
                         (file-name-nondirectory n)))
                 '(scheme-mode) nil))
-  (comint-check-source file) 
+  (comint-check-source file)
   (comint-send-string (chez-check-proc t)
                       (format "(load \"%s\")\n" file))
   (chez-switch-to-last-buffer (current-buffer))
