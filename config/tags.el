@@ -109,7 +109,8 @@ With prefix argument TAGS unmount all tags from `tags-table-list'."
                          (if (consp file-name-history)
                              (read-file-name "unmount from ")
                            (user-error "`tags-table-list' alreay empty"))))))
-  (setq tags-table-list
+  (setq tags-file-name nil
+        tags-table-list
         (when tags
           (let ((fn (expand-file-name tags)))
             (remove-if* (lambda (x) (string= x fn))
