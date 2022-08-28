@@ -10,6 +10,7 @@
 ;;; https://cisco.github.io/ChezScheme/
 ;;; https://schemers.org/Documents/Standards/R5RS/HTML/
 ;;; https://www.emacswiki.org/emacs/r5rs.el
+;;; https://groups.csail.mit.edu/mac/ftpdir/
 ;;;
 ;;; fetures:
 ;;; 1. start parameterized chez process.
