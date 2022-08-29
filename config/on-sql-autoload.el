@@ -299,12 +299,7 @@ Optional prefix argument ENHANCED, displays additional details."
     (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-code)
     (define-key% sql-mode-map (kbd "C-c C-l i") #'sql-list-index)
     (define-key% sql-mode-map (kbd "C-c C-d t") #'sql-desc-table)
-    (define-key% sql-mode-map (kbd "C-c C-d p") #'sql-desc-plan)
-
-    (define-key% sql-interactive-mode-map (kbd "C-c C-l c") #'sql-list-code)
-    (define-key% sql-interactive-mode-map (kbd "C-c C-l i") #'sql-list-index)
-    (define-key% sql-interactive-mode-map (kbd "C-c C-d t") #'sql-desc-table)
-    (define-key% sql-interactive-mode-map (kbd "C-c C-d p") #'sql-desc-plan))
+    (define-key% sql-mode-map (kbd "C-c C-d p") #'sql-desc-plan))
 
 
   (when-fn% 'sql-show-sqli-buffer 'sql
