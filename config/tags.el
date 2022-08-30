@@ -81,13 +81,16 @@ when `desktop-globals-to-save' include it."
 
 (defvar *tags-option-history*
   (let ((bin (string-trim> tags-program " +.*")))
-    (cond ((string= "etags" bin) (list "-l c" "-l lisp" "-l auto"))
-          ((string= "ctags" bin) (list "--langmap=c:.h --c-kinds=+px" "--lisp-kinds=+f"))
+    (cond ((string= "etags" bin)
+           (list "-l c" "-l lisp" "-l auto"))
+          ((string= "ctags" bin)
+           (list "--langmap=c:.h.c --c-kinds=+px -r"
+                 "--langmap=c++:.h.cc--c++-kinds=+px"))
           (t "")))
   "Tags option history list.")
 
 (defvar *tags-skip-history*
-  (list "cpp\\|c\\+\\+\\|python\\|llvm\\|php\\|ruby\\|Frameworks\\|X11")
+  (list "cpp\\|c\\+\\+\\|/python.*?/\\|/php.*?/\\|/ruby.*?/")
   "Tags option history list.")
 
 
