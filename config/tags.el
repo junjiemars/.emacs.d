@@ -82,7 +82,7 @@ when `desktop-globals-to-save' include it."
 (defvar *tags-option-history*
   (let ((bin (string-trim> tags-program " +.*")))
     (cond ((string= "etags" bin) (list "-l c" "-l lisp" "-l auto"))
-          ((string= "ctags" bin) (list "--c-kinds=+px" "--lisp-kinds=+f"))
+          ((string= "ctags" bin) (list "--langmap=c:.h --c-kinds=+px" "--lisp-kinds=+f"))
           (t "")))
   "Tags option history list.")
 
