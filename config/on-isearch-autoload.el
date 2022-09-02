@@ -91,7 +91,11 @@
 (define-key% (current-global-map) (kbd "C-s") #'isearch-forward*)
 (define-key% (current-global-map) (kbd "C-r") #'isearch-backward*)
 (define-key% (current-global-map) (kbd "M-s .") #'isearch-forward-symbol*)
-(define-key% (current-global-map) (kbd "M-s @") #'isearch-forward-word*)
+(when-fn% 'isearch-forward-symbol nil
+  (define-key% (current-global-map) (kbd "M-s >") #'isearch-forward-symbol))
+(define-key% (current-global-map) (kbd "M-s 2") #'isearch-forward-word*)
+(when-fn% 'isearch-forward-word nil
+  (define-key% (current-global-map) (kbd "M-s @") #'isearch-forward-word))
 (define-key% (current-global-map) (kbd "M-s f") #'isearch-forward-file*)
 (define-key% (current-global-map) (kbd "M-s _") #'isearch-forward-quoted*)
 
