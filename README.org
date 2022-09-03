@@ -1507,12 +1507,15 @@ It's *self-documenting* and great, keep reading it frequently.
 
 #+REVEAL: split
 - dynamic abbreviation: @@html:<kbd>@@M-/@@html:</kbd>@@
+- insert global abbreviation: @@html:<kbd>@@C-x a i g@@html:</kbd>@@
+- insert local abbreviation: @@html:<kbd>@@C-x a i l@@html:</kbd>@@
+
+#+REVEAL: split
 - flush lines: @@html:<kbd>@@M-x flush-lines@@html:</kbd>@@
 - insert parentheses: @@html:<kbd>@@M-(@@html:</kbd>@@, wrap selection
   in parentheses
-
-#+REVEAL: split
 - align region: @@html:<kbd>@@M-x align-entire@@html:</kbd>@@
+
 
 ** Coding system
    :PROPERTIES:
