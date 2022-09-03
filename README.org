@@ -1506,11 +1506,12 @@ It's *self-documenting* and great, keep reading it frequently.
 - indent and continuing comment: @@html:<kbd>@@C-M-j@@html:</kbd>@@
 
 #+REVEAL: split
-- dynamic abbreviation: @@html:<kbd>@@M-/@@html:</kbd>@@
-- add global abbreviation: @@html:<kbd>@@C-x a i g@@html:</kbd>@@
-- add local abbreviation: @@html:<kbd>@@C-x a i l@@html:</kbd>@@
+- expand abbreviation: @@html:<kbd>@@M-/@@html:</kbd>@@
+- add inverse global abbreviation: @@html:<kbd>@@C-x a i g@@html:</kbd>@@
+- add inverse local abbreviation: @@html:<kbd>@@C-x a i l@@html:</kbd>@@
 - list abbreviations: @@html:<kbd>@@M-x list-abbrevs@@html:</kbd>@@
 - edit abbreviations: @@html:<kbd>@@M-x edit-abbrevs@@html:</kbd>@@
+- write abbreviation file: @@html:<kbd>@@M-x write-abbrev-file@@html:</kbd>@@
 
 #+REVEAL: split
 - flush lines: @@html:<kbd>@@M-x flush-lines@@html:</kbd>@@
