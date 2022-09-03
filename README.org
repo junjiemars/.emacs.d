@@ -1507,8 +1507,8 @@ It's *self-documenting* and great, keep reading it frequently.
 
 #+REVEAL: split
 - dynamic abbreviation: @@html:<kbd>@@M-/@@html:</kbd>@@
-- insert global abbreviation: @@html:<kbd>@@C-x a i g@@html:</kbd>@@
-- insert local abbreviation: @@html:<kbd>@@C-x a i l@@html:</kbd>@@
+- add global abbreviation: @@html:<kbd>@@C-x a i g@@html:</kbd>@@
+- add local abbreviation: @@html:<kbd>@@C-x a i l@@html:</kbd>@@
 - list abbreviations: @@html:<kbd>@@M-x list-abbrevs@@html:</kbd>@@
 - edit abbreviations: @@html:<kbd>@@M-x edit-abbrevs@@html:</kbd>@@
 
