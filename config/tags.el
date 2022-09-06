@@ -84,7 +84,7 @@ when `desktop-globals-to-save' include it."
     (cond ((string= "etags" bin)
            (list "-l c" "-l lisp" "-l auto"))
           ((string= "ctags" bin)
-           (list "--langmap=c:.h.c --c-kinds=+px -r"
+           (list "--langmap=c:.h.c --c-kinds=+px"
                  "--langmap=c++:.h.cc--c++-kinds=+px"))
           (t "")))
   "Tags option history list.")
