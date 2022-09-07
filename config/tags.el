@@ -30,7 +30,9 @@ Examples:
               (and (zerop (car ver))
                    (string-match "Exuberant Ctags [.0-9]+"
                                  (cdr ver))))))
-         "ctags -e %s -o %s -a %s")
+         ``(:bin "ctags" :cmd "ctags -e %s -o %s -a %s"
+                 :opt ,(list "--langmap=c:.h.c --c-kinds=+px"
+                             "--langmap=c++:.h.cc--c++-kinds=+px")))
         ((executable-find%
           "etags"
           (lambda (bin)
@@ -39,7 +41,9 @@ Examples:
                    (string-match "Exuberant Ctags [.0-9]+"
                                  (cdr ver))))))
          ;; on Linux/Darwin ctags may be has the synonym: etags
-         "etags -e %s -o %s -a %s")
+         ``(:bin "etags" :cmd "etags -e %s -o %s -a %s"
+                 :opt ,(list "--langmap=c:.h.c --c-kinds=+px"
+                             "--langmap=c++:.h.cc--c++-kinds=+px")))
         ((executable-find%
           "etags"
           (lambda (bin)
@@ -47,7 +51,8 @@ Examples:
               (and (zerop (car ver))
                    (string-match "etags (GNU Emacs [.0-9]+)"
                                  (cdr ver))))))
-         "etags %s -o %s -a %s"))
+         ``(:bin "etags" :cmd "etags %s -o %s -a %s"
+                 :opt ,(list "-l c" "-l lisp" "-l auto"))))
   "The default tags program.
 This is used by commands like `make-tags'.
 
@@ -58,8 +63,15 @@ third %s: append to existing tag file.
 
 `tags-table-list' should be persitent between sessions
 when `desktop-globals-to-save' include it."
-  :type 'string
+  :type '(plist :key-type 'symbol :value-type 'string)
   :group 'tags)
+
+
+(defalias '*tags*
+  (lexical-let% ((b tags-program))
+    (lambda (&optional n)
+      (plist-get b (or n :bin))))
+  "Tags' binary and options.")
 
 
 (defalias 'tags-in-view-mode
@@ -80,13 +92,7 @@ when `desktop-globals-to-save' include it."
 
 
 (defvar *tags-option-history*
-  (let ((bin (string-trim> tags-program " +.*")))
-    (cond ((string= "etags" bin)
-           (list "-l c" "-l lisp" "-l auto"))
-          ((string= "ctags" bin)
-           (list "--langmap=c:.h.c --c-kinds=+px"
-                 "--langmap=c++:.h.cc--c++-kinds=+px"))
-          (t "")))
+  (*tags* :opt)
   "Tags option history list.")
 
 (defvar *tags-skip-history*
@@ -140,20 +146,21 @@ RENEW overwrite the existing tags file when t else create it."
         (path! td))
       (let ((header (propertize "make-tags"
                                 'face 'minibuffer-prompt)))
-        (dir-iterate home
-                     file-filter
-                     dir-filter
-                     (lambda (f)
-                       (let ((cmd (format tags-program
-                                          (or tags-option "")
-                                          tf
-                                          (shell-quote-argument f)
-                                          (shell-quote-argument f))))
-                         (message "%s %s... %s" header cmd
-                                  (if (zerop (car (shell-command* cmd)))
-                                      "ok"
-                                    "failed"))))
-                     nil)
+        (dir-iterate
+         home
+         file-filter
+         dir-filter
+         (lambda (f)
+           (let ((cmd (format (*tags* :cmd)
+                              (or tags-option "")
+                              tf
+                              (shell-quote-argument f)
+                              (shell-quote-argument f))))
+             (message "%s %s... %s" header cmd
+                      (if (zerop (car (shell-command* cmd)))
+                          "ok"
+                        "failed"))))
+         nil)
         (message "%s for %s ... %s" header tf (if (file-exists-p tf)
                                                   "done"
                                                 "failed"))))))
@@ -197,12 +204,11 @@ RENEW overwrite the existing tags file when t else create it."
 
 (defun make-emacs-home-tags (&optional option renew)
   "Make tags for Emacs' home directory."
-  (interactive (list (read-string (concat
-                                   (string-trim> tags-program " +.*")
-                                   " option: ")
-                                  (car *tags-option-history*)
-                                  '*tags-option-history*)
-                     (y-or-n-p "tags renew? ")))
+  (interactive (list
+                (read-string (concat (*tags*) " option: ")
+                             (car *tags-option-history*)
+                             '*tags-option-history*)
+                (y-or-n-p "tags renew? ")))
   (make-lisp-tags (emacs-home*)
                   (tags-spec->% :emacs-home)
                   option
@@ -216,9 +222,7 @@ RENEW overwrite the existing tags file when t else create it."
 (defun make-emacs-source-tags (source &optional option renew)
   "Make tags for Emacs' C and Lisp SOURCE code."
   (interactive (list (read-directory-name "make tags for " source-directory)
-                     (read-string (concat
-                                   (string-trim> tags-program " +.*")
-                                   " option: ")
+                     (read-string (concat (*tags*) " option: ")
                                   (car *tags-option-history*)
                                   '*tags-option-history*)
                      (y-or-n-p "tags renew? ")))
@@ -240,7 +244,7 @@ RENEW overwrite the existing tags file when t else create it."
   (interactive (list (read-directory-name "make tags for ")
                      (read-file-name "store tags in " nil nil nil ".tags")
                      (read-string (concat
-                                   (string-trim> tags-program " +.*")
+                                   (*tags*)
                                    " option: ")
                                   (car *tags-option-history*)
                                   '*tags-option-history*)

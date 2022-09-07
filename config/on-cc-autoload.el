@@ -467,7 +467,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
   (defun cc*-make-system-tags (&optional option file skip renew)
     "Make system C tags.
 
-OPTION for `tags-program'.
+OPTION for `*tags*'.
 FILE where the tags file located, default is `(tags-spec->% :os-include)'.
 SKIP regexp to skip directories.
 RENEW whether to renew the existing FILE."
