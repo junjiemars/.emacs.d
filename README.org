@@ -986,7 +986,7 @@ nil, then forward or backword to word boundary, just like the builtin
 Prefer =etags= program, because it works well on varied platforms. In
 =(emacs-home* "config/tags.el")=, there are some handy functions to
 create the tags for =Elisp= or =C= source code, such as
-=make-emacs-source-tags=, =make-system-c-tags=, =mount-tags=, and
+=make-emacs-source-tags=, =cc*-make-system-c-tags=, =mount-tags=, and
 =unmount-tags=.
 
 #+REVEAL: split
