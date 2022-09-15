@@ -15,6 +15,7 @@
 
 ;; safe local variables
 (comment (safe-local-variable* 'indent-tabs))
+(comment (setq% enable-local-variables :safe 'files))
 
 
 ;; (require 'financial)
