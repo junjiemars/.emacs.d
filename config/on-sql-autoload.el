@@ -182,9 +182,8 @@ Optional prefix argument ENHANCED, displays additional details."
   "Describe mysql table."
   (let ((simple-sql
          (concat
-          "SELECT *"
-          " FROM information_schema.columns"
-          (format " WHERE table_name = '%s'\\G" table)))
+          "SHOW FULL COLUMNS "
+          (format "FROM %s\\G" table)))
         (enhanced-sql nil))
     (sql-redirect sqlbuf
                   (if enhanced enhanced-sql simple-sql)
