@@ -183,6 +183,17 @@
       (autoload* 'sudoku (v-home% "config/sudoku.elc")
                  "Play sudoku." t))
 
+    ;; Vlang
+    (when% (executable-find% "v"
+                             (lambda (v)
+                               (let ((x (shell-command* "v"
+                                          "version")))
+                                 (zerop (car x)))))
+      (prog1
+          (compile-unit% (emacs-home* "config/vlang.el") t)
+        (autoload 'vlang-mode (v-home% "config/vlang.elc")
+          "Toggle Vlang's mode." t)))
+
 
     ) ;; end of compile!
 
