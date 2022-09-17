@@ -100,12 +100,8 @@ when `desktop-globals-to-save' include it."
   "Tags option history list.")
 
 
-(defun mount-tags (tags &optional append)
-  "Mount existing TAGS into `tags-table-list'.
-
-With prefix argument APPEND TAGS to the tail of `tags-table-list'."
-  (interactive "fmount from \nP")
-  (push! (expand-file-name tags) tags-table-list append t))
+(defalias 'mount-tags #'visit-tags-table
+  "Mount existing TAGS into `tags-table-list'.")
 
 
 (defun unmount-tags (&optional tags)
