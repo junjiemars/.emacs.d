@@ -288,7 +288,7 @@ Optional prefix argument ENHANCED, displays additional details."
       ;; mysql: `:terminator'
       (plist-put (cdr (assoc** 'mysql sql-product-alist))
                  :terminator
-                 '("\\G" . ""))
+                 '("\\c" . ""))
 
       (ad-enable-advice #'sql-send-magic-terminator 'before
                         "sql-send-magic-terminator-before")
