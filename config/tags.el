@@ -168,12 +168,12 @@ RENEW overwrite the existing tags file when t else create it."
   (make-tags home
              tags-file
              (or file-filter
-                 (lambda (f _) (string-match "\\\.[ch]$" f)))
+                 (lambda (f _) (string-match "\\.[ch]+$" f)))
              (or dir-filter
                  (lambda (d _)
                    (not
                     (string-match
-                     "^\\\.git/$\\|^out/$\\|^objs/$\\|^c\\\+\\\+/$"
+                     "^\\.git/$\\|\\.svn/$\\|^out/$\\|^objs/$"
                      d))))
              option
              renew))
@@ -186,13 +186,13 @@ RENEW overwrite the existing tags file when t else create it."
              tags-file
              (or file-filter
                  (lambda (f _)
-                   (string-match "\\\.el$\\|\\\.cl$\\|\\\.lis[p]?$"
+                   (string-match "\\.el$\\|\\.cl$\\|\\.lis[p]?$"
                                  f)))
              (or dir-filter
                  (lambda (d _)
                    (not
                     (string-match
-                     "^\\\.git/$\\|^\\\.svn/$\\|^out/$\\|^objs/$"
+                     "^\\.git/$\\|^\\.svn/$\\|^out/$\\|^objs/$"
                      d))))
              option
              renew))
@@ -209,7 +209,7 @@ RENEW overwrite the existing tags file when t else create it."
                   (tags-spec->% :emacs-home)
                   option
                   (lambda (f _)
-                    (string-match "\\\.el$" f))
+                    (string-match "\\.el$" f))
                   (lambda (d _)
                     (string-match "^config/$" d))
                   renew))
@@ -225,35 +225,44 @@ RENEW overwrite the existing tags file when t else create it."
   (make-c-tags (concat source "src/")
                (tags-spec->% :emacs-source)
                option
-               (lambda (f _) (string-match "\\\.[ch]$" f))
+               (lambda (f _) (string-match "\\.[ch]$" f))
                (lambda (_ __) t)
                renew)
   (make-lisp-tags (concat source "lisp/")
                   (tags-spec->% :emacs-source)
                   option
-                  (lambda (f _) (string-match "\\\.el$" f))
+                  (lambda (f _) (string-match "\\.el$" f))
                   (lambda (_ __) t)))
 
 
-(defun make-dir-tags (dir store &optional option renew)
+(defun make-dir-tags (dir store &optional include-dir exclude-dir option renew)
   "Make tags for specified DIR."
   (interactive (list (read-directory-name "make tags for ")
                      (read-file-name "store tags in " nil nil nil ".tags")
-                     (read-string (concat
-                                   (*tags*)
-                                   " option: ")
+                     (when current-prefix-arg
+                       (read-string "tags include dir: " nil))
+                     (when current-prefix-arg
+                       (read-string "tags exclude dir: " nil))
+                     (read-string (concat (*tags*) " option: ")
                                   (car *tags-option-history*)
                                   '*tags-option-history*)
                      (y-or-n-p "tags renew? ")))
-  (let ((home (path+ (expand-file-name dir))))
+  (let ((home (path+ (expand-file-name dir)))
+        (vcs "^\\.git/$\\|\\.svn/$")
+        (exc (unless (string= exclude-dir "") exclude-dir))
+        (inc (unless (string= include-dir "") include-dir)))
     (when (make-tags home
                      store
                      (lambda (f _)
-                       (not (string-match
-                             "\\\.tags$" f)))
-                     (lambda (d _)
-                       (not (string-match
-                             "^\\\.[_ a-zA-Z]+/$\\|^out/$\\|^build/$" d)))
+                       (not (string-match "\\.tags$" f)))
+                     (lambda (d a)
+                       (cond ((string-match vcs d) nil)
+                             ((and (stringp exc)
+                                   (string-match exc d))
+                              nil)
+                             ((null inc) t)
+                             (t (or (string-match inc d)
+                                    (string-match inc a)))))
                      option
                      renew))))
 

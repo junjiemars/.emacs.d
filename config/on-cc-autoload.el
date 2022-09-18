@@ -480,12 +480,13 @@ RENEW whether to renew the existing FILE."
                         (car *tags-skip-history*)
                         '*tags-skip-history*)
            (y-or-n-p "tags renew? ")))
-    (let ((includes (cc*-system-include (not renew)))
-          (filter (when (and skip (not (string= "" skip)))
+    (let ((inc (cc*-system-include (not renew)))
+          (filter (when (and (stringp skip)
+                             (not (string= "" skip)))
                     (lambda (_ a)
                       (not (string-match skip a))))))
-      (make-c-tags (car includes) file option nil filter renew)
-      (dolist* (p (cdr includes) file)
+      (make-c-tags (car inc) file option nil filter renew)
+      (dolist* (p (cdr inc) file)
         (make-c-tags p file option nil filter)))))
 
 
