@@ -1520,7 +1520,6 @@ It's *self-documenting* and great, keep reading it frequently.
   in parentheses
 - align region: @@html:<kbd>@@M-x align-entire@@html:</kbd>@@
 
-
 ** Coding system
    :PROPERTIES:
    :CUSTOM_ID: coding-system
