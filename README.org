@@ -1702,9 +1702,8 @@ automatically from one Emacs session to the next.
 - abort editing: @@html:<kbd>@@C-c C-k@@html:</kbd>@@
 
 #+REVEAL: split
-- browse file: @@html:<kbd>@@b@@html:</kbd>@@
 - echo current directory: @@html:<kbd>@@W@@html:</kbd>@@
-- hex edit file: @html:<kbd>@@f@@html:</kbd>@@
+- hex edit file: @html:<kbd>@@b@@html:</kbd>@@
 
 #+REVEAL: split
 - /find/ regexp recusive: @@html:<kbd>@@A@@html:</kbd>@@
