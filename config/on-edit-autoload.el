@@ -587,22 +587,17 @@ See also `open-line' and `split-line'."
  ;; end of open-*-line
 
 
-(defun echo-buffer-name (&optional arg)
-  "Echo the buffer name of current buffer.
+(defun echo-buffer-name ()
+  "Echo the qualified buffer name of current buffer.
 
-If previous argument ARG is nil then copy the buffer name to
-kill ring.
-
-If prefix argument ARG is non-nil then copy the qualified buffer
-name to kill ring."
-  (interactive "P")
+And copy the qualified buffer name to kill ring."
+  (interactive)
   (if (or (eq 'dired-mode major-mode)
           (eq 'ibuffer-mode major-mode))
       (user-error* "Type \"w\" or \"C-u 0 w\" instead, in %s"
         mode-name)
-    (let ((name (cond (arg (or (buffer-file-name)
-                               (buffer-name)))
-                      (t (buffer-name)))))
+    (let ((name (or (buffer-file-name)
+                    (buffer-name))))
       (kill-new name)
       (message "%s" name))))
 
