@@ -369,7 +369,7 @@ a tag name, or something else."
 
 
 
-(defun cdb (command-line)
+(defun gud-cdb (command-line)
   "Run cdb on program FILE in buffer *gud-FILE*.
 
 The directory containing FILE becomes the initial working

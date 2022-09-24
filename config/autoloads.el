@@ -95,7 +95,7 @@
       (when% (executable-find% "cdb")
         (prog1
             (compile-unit% (emacs-home* "config/gud-cdb.el") t)
-          (autoload 'cdb (v-home% "config/gud-cdb.elc")
+          (autoload 'gud-cdb (v-home% "config/gud-cdb.elc")
             "Run lldb on program FILE in buffer *gud-FILE*." t))))
 
     ;; Debugger `gud-lldb'
