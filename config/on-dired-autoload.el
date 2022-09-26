@@ -117,6 +117,13 @@
     (message "%s" d)))
 
 
+(defun dired-browse-file* ()
+	"Browse the file using external browser via `dired-mode'."
+	(interactive)
+	(let ((browse-url-browser-function #'browse-url-default-browser))
+		(browse-url (expand-file-name (dired-get-file-for-visit)))))
+
+
 (defun hexl-find-file* ()
   "Edit the current file as hex dump format in `dired-mode'."
   (interactive)
@@ -141,6 +148,7 @@
         (windows-nt-env-path+ (file-name-directory find)))))
 
   (define-key dired-mode-map (kbd "b") #'hexl-find-file*)
+  (define-key dired-mode-map (kbd "B") #'dired-browse-file*)
   (define-key dired-mode-map (kbd "W") #'dired-echo-current-directory*))
 
 
