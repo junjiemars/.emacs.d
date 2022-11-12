@@ -19,9 +19,10 @@
 
 (defun gensym* (&optional prefix)
   "Generate a new uninterned symbol, PREFIX default is \"g\"."
-  (let ((num (prog1 *gensym-counter*
-               (setq *gensym-counter* (1+ *gensym-counter*)))))
-    (make-symbol (format "%s%d" (or prefix "g") num))))
+  (make-symbol (format "%s%d" (or prefix "g")
+                       (prog1 *gensym-counter*
+                         (setq *gensym-counter*
+                               (1+ *gensym-counter*))))))
 
 
 ;; file macro
