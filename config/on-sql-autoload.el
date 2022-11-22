@@ -29,15 +29,6 @@ See `sql-show-sqli-buffer'."
            (ad-set-arg 2 t)))))
 
 
-(when-fn% 'sql-send-string 'sql
-
-  (defadvice sql-send-string
-      (before sql-send-string-before compile)
-    "Send the string STR to the SQL process."
-    (cond ((eq 'mysql sql-product)
-           (ad-set-arg 0 (concat "\\c" (ad-get-arg 0)))))))
-
-
 (when-fn% 'sql-execute-feature 'sql
 
   (defun sql-desc-table (name &optional enhanced)
@@ -302,14 +293,6 @@ Optional prefix argument ENHANCED, displays additional details."
       (ad-enable-advice #'sql-send-magic-terminator 'before
                         "sql-send-magic-terminator-before")
       (ad-activate #'sql-send-magic-terminator t))
-
-
-    (when-fn% 'sql-send-string 'sql
-      ;; mysql: prepend "\\c"
-      (ad-enable-advice #'sql-send-string 'before
-                        "sql-send-string-before")
-      (ad-activate #'sql-send-string t))
-
 
     (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-code)
     (define-key% sql-mode-map (kbd "C-c C-l i") #'sql-list-index)
