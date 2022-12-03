@@ -161,9 +161,10 @@ Return absolute filename when FILENAME exists, otherwise nil."
                     "_d_=lldb.debugger.GetCommandInterpreter();"
                     "_m_=lldb.SBStringList();"
                     "import random;"
-                    "_r_=lambda x:[a for a in range(0,128)] if x<128"
-                    " else [b for b in range(0,128)] if x<256"
-                    " else [random.randrange(0,x) for c in range(32)];")))
+                    "_r_=lambda x:[a for a in range(0,x)] if x<16"
+                    " else [b for b in range(0,16)] if x<32"
+                    " else [random.randrange(0,16)] if x<64"
+                    " else [random.randrange(0,16) for c in range(64)];")))
 
 (defun lldb-script-apropos (ss)
   "Apropos via lldb's script.
