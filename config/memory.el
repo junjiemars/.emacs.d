@@ -20,8 +20,15 @@
     (setq% desktop-restore-eager
            (*self-env-spec* :get :desktop :restore-eager) 'desktop)
 
-    (setq% desktop-save-mode 1 'desktop)
-    (desktop-read (v-home% ".desktop/"))))
+    (desktop-read (v-home% ".desktop/"))
+
+    ;; remove unnecessary hooks of `desktop'
+    (remove-hook 'kill-emacs-hook 'desktop--on-kill)
+    (if-var% kill-emacs-query-functions nil
+             (progn
+               (remove-hook 'kill-emacs-query-functions 'desktop-kill)
+               (add-hook 'kill-emacs-query-functions #'self-desktop-save! t))
+      (add-hook 'kill-emacs-hook #'self-desktop-save! t))))
 
 
  ;; end of Read desktop
@@ -57,9 +64,6 @@
     (if-version% >= 23
                  (desktop-save (v-home! ".desktop/"))
       (desktop-save (v-home! ".desktop/") t))))
-
-
-(add-hook 'kill-emacs-hook #'self-desktop-save! t)
 
 
 ;; end of file
