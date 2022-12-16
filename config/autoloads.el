@@ -236,7 +236,8 @@
   (define-key% (current-global-map) (kbd "C-x r v") #'view-register)
 
   ;; Buffer
-  (define-key% (current-global-map) (kbd "C-c b r") #'revert-buffer)
+  (unless-fn% 'revert-buffer-quick nil
+    (define-key% (current-global-map) (kbd "C-x x g") #'revert-buffer))
   (when-fn% 'linum-mode 'linum
     (define-key% (current-global-map) (kbd "C-c b l") #'linum-mode))
 
