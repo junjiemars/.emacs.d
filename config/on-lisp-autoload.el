@@ -38,13 +38,13 @@
              (aggressive-indent-mode)))))
 
 
-(if-feature-paredit%
-    
-    (defun enable-paredit-mode-in-minibuffer! ()
-      (if-platform% 'gnu/linux
-          (when (eq 'eval-expression this-command)
-            (enable-paredit-mode))
-        (enable-paredit-mode))))
+;; (if-feature-paredit%
+
+;;     (defun enable-paredit-mode-in-minibuffer! ()
+;;       (if-platform% 'gnu/linux
+;;           (when (eq 'eval-expression this-command)
+;;             (enable-paredit-mode))
+;;         (enable-paredit-mode))))
 
 
 (with-eval-after-load 'lisp-mode
@@ -64,13 +64,13 @@
 
 (when-feature-allowed% if-feature-paredit%
 
-  (if-platform%
-      ;; enable `paredit' in `minibuffer'
-      'gnu/linux
-      (add-hook 'minibuffer-setup-hook
-                #'enable-paredit-mode-in-minibuffer! t)
-    (add-hook 'eval-expression-minibuffer-setup-hook
-              #'enable-paredit-mode-in-minibuffer! t))
+  ;; (if-platform%
+  ;;     ;; enable `paredit' in `minibuffer'
+  ;;     'gnu/linux
+  ;;     (add-hook 'minibuffer-setup-hook
+  ;;               #'enable-paredit-mode-in-minibuffer! t)
+  ;;   (add-hook 'eval-expression-minibuffer-setup-hook
+  ;;             #'enable-paredit-mode-in-minibuffer! t))
 
   (with-eval-after-load 'paredit
 
