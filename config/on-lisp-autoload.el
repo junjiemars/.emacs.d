@@ -79,26 +79,33 @@
     ;; fix inconsistent `C-)' and `C-c )' behavior:#9
     ;; On Terminal mode, Ctrl+Shift combination can't send to Emacs
     (when-var% paredit-mode-map 'paredit
-      (define-key% paredit-mode-map
-        (kbd "C-c )") #'paredit-forward-slurp-sexp)
-      (define-key% paredit-mode-map
-        (kbd "C-c (") #'paredit-backward-slurp-sexp)
-      (define-key% paredit-mode-map
-        (kbd "C-c }") #'paredit-forward-barf-sexp)
-      (define-key% paredit-mode-map
-        (kbd "C-c {") #'paredit-backward-barf-sexp)
+      (define-key% paredit-mode-map (kbd "C-c )")
+        #'paredit-forward-slurp-sexp)
+      (define-key% paredit-mode-map (kbd "C-c (")
+        #'paredit-backward-slurp-sexp)
+      (define-key% paredit-mode-map (kbd "C-c }")
+        #'paredit-forward-barf-sexp)
+      (define-key% paredit-mode-map (kbd "C-c {")
+        #'paredit-backward-barf-sexp)
       ;; default `paredit-convolute-sexp' keybinding `M-?' conflicts with
       ;; `xref-find-references'
-      (define-key% paredit-mode-map
-        (kbd "C-c ?") #'paredit-convolute-sexp)
-      (define-key% paredit-mode-map
-        (kbd "M-?") #'xref-find-references)
+      (define-key% paredit-mode-map (kbd "C-c ?")
+        #'paredit-convolute-sexp)
+      (define-key% paredit-mode-map (kbd "M-?")
+        #'xref-find-references)
       ;; default `paredit-splice-sexp' keybinding `M-s' conflicts with
       ;; `isearch' command prefix.
-      (define-key% paredit-mode-map
-        (kbd "M-s") nil)
-      (define-key% paredit-mode-map
-        (kbd "C-c -") #'paredit-splice-sexp))))
+      (define-key% paredit-mode-map (kbd "M-s") nil)
+      (define-key% paredit-mode-map (kbd "C-c -")
+        #'paredit-splice-sexp)
+      (define-key% paredit-mode-map (kbd "C-j")
+        #'paredit-newline)
+      (define-key% paredit-mode-map (kbd "RET")
+        #'(lambda (&optional arg)
+            "Raw newline."
+            (interactive "*P")
+            (let ((electric-indent-mode nil))
+              (newline arg 'interactive)))))))
 
 
  ;; end of feature: paredit
