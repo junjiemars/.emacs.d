@@ -507,5 +507,11 @@ otherwise do ELSE..."
        (and ss (cons nil (substring-no-properties ss))))))
 
 
+(defun newline* (&optional arg)
+  "Raw newline."
+  (interactive "*P")
+  (let ((electric-indent-mode nil))
+    (newline arg 'interactive)))
+
 
  ;; end of basic.el

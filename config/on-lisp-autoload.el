@@ -101,11 +101,7 @@
       (define-key% paredit-mode-map (kbd "C-j")
         #'paredit-newline)
       (define-key% paredit-mode-map (kbd "RET")
-        #'(lambda (&optional arg)
-            "Raw newline."
-            (interactive "*P")
-            (let ((electric-indent-mode nil))
-              (newline arg 'interactive)))))))
+        #'newline*))))
 
 
  ;; end of feature: paredit
