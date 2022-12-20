@@ -90,6 +90,10 @@
 (setq% abbrev-file-name (v-home! ".abbrev/defs") 'abbrev)
 
 
+;; `project'
+(setq% project-list-file (v-home! ".project/list") 'project)
+
+
  ;; Versioned Dirs
 
 
