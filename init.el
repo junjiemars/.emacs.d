@@ -198,17 +198,22 @@ DIR where the compiled file located."
                 (,s (if ,d
                         (concat ,d ,n)
                       ,f))
-                (,c (file-name-new-extension* ,s ".elc")))
+                (,c (file-name-new-extension*
+                     ,s
+                     (if-native-comp% ".eln" ".elc"))))
            (when (or (not (file-exists-p ,c))
                      (file-newer-than-file-p ,f ,c))
              (unless (string= ,f ,s)
                (copy-file ,f (path! ,s) t))
-             (when (byte-compile-file ,s)
-               ;; (when-native-comp% (native-compile-async ,s nil t))
+             (when (if-native-comp%
+                    (native-compile ,s ,c)
+                    (byte-compile-file ,s))
                (when ,delete-booster (delete-file ,s))))
 	         (when (file-exists-p ,c)
              (cond (,only-compile t)
-                   (t (load ,c)))))))))
+                   (t (if-native-comp%
+                       (native-elisp-load ,c)
+                       (load ,c))))))))))
 
 
 (defun clean-compiled-files ()
@@ -221,7 +226,7 @@ DIR where the compiled file located."
     (while dirs
       (let* ((d (car dirs))
              (fs (when (file-exists-p d)
-                   (directory-files d nil "\\.elc?\\'"))))
+                   (directory-files d nil "\\.elc?\\|\\.eln?\\'"))))
         (message "#Clean compiled files: %s..." d)
         (while fs
           (let ((f (car fs)))
