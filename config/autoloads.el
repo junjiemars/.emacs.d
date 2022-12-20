@@ -64,7 +64,7 @@
   (compile!
     ;; Lookup dictionary
     (progn
-      (autoload 'lookup-dict (v-home% "config/dicts.elc")
+      (autoload 'lookup-dict (v-home%> "config/dicts")
         "Lookup WORD in DICT then show the result in the echo area." t)
       (compile-unit% (emacs-home* "config/dicts.el")))
 
@@ -76,7 +76,7 @@
     (if-feature-semantic%
         (progn
           (autoload 'set-semantic-cc-env!
-            (v-home% "config/on-semantic-autoload.elc"))
+            (v-home%> "config/on-semantic-autoload"))
           (compile-unit% (emacs-home* "config/on-semantic-autoload.el"))))
 
     ;; `eww-mode'
@@ -95,15 +95,15 @@
       (when% (executable-find% "cdb")
         (prog1
             (compile-unit% (emacs-home* "config/gud-cdb.el") t)
-          (autoload 'gud-cdb (v-home% "config/gud-cdb.elc")
+          (autoload 'gud-cdb (v-home%> "config/gud-cdb")
             "Run lldb on program FILE in buffer *gud-FILE*." t))))
 
     ;; Debugger `gud-lldb'
     (when% (executable-find% "lldb")
       (prog1
           (compile-unit% (emacs-home* "config/gud-lldb.el") t)
-        (autoload 'gud-lldb (v-home% "config/gud-lldb.elc")
-          "Run cdb on program FILE in buffer *gud-FILE*." t)))
+        (autoload 'gud-lldb (v-home%> "config/gud-lldb")
+          "Run lldb on program FILE in buffer *gud-FILE*." t)))
 
     ;; Jshell
     (when% (executable-find% "jshell"
@@ -112,9 +112,9 @@
                                  (zerop (car x)))))
       (prog1
           (compile-unit% (emacs-home* "config/jshell.el") t)
-        (autoload 'jshell-mode (v-home% "config/jshell.elc")
+        (autoload 'jshell-mode (v-home%> "config/jshell")
           "Toggle Jshell's mode." t)
-        (autoload 'run-jshell (v-home% "config/jshell.elc")
+        (autoload 'run-jshell (v-home%> "config/jshell")
           "Toggle jshell process in buffer `*jshell*'." t)))
 
     ;; Node
@@ -126,9 +126,9 @@
                                      (zerop (car x))))))
       (prog1
           (compile-unit% (emacs-home* "config/node.el") t)
-        (autoload 'node-mode (v-home% "config/node.elc")
+        (autoload 'node-mode (v-home%> "config/node")
           "Toggle Node's mode." t)
-        (autoload 'run-node (v-home% "config/node.elc")
+        (autoload 'run-node (v-home%> "config/node")
           "Toggle node process in buffer `*node*'." t)))
 
     ;; Python
@@ -149,9 +149,9 @@
       (prog1
           (compile-unit% (emacs-home* "config/gambit.el") t)
         (*org-babel-schemes* :put 'gambit "gsc-script")
-        (autoload 'gambit-mode (v-home% "config/gambit.elc")
+        (autoload 'gambit-mode (v-home%> "config/gambit")
           "Toggle Gambit's mode." t)
-        (autoload* 'run-gambit (v-home% "config/gambit.elc")
+        (autoload* 'run-gambit (v-home%> "config/gambit")
                    "Toggle gambit process in buffer `*gambit*'." t)))
 
     ;; Scheme `chez-mode'
@@ -163,9 +163,9 @@
       (prog1
           (compile-unit% (emacs-home* "config/chez.el") t)
         (*org-babel-schemes* :put 'chez "scheme")
-        (autoload 'chez-mode (v-home% "config/chez.elc")
+        (autoload 'chez-mode (v-home%> "config/chez")
           "Toggle Chez's mode." t)
-        (autoload* 'run-chez (v-home% "config/chez.elc")
+        (autoload* 'run-chez (v-home%> "config/chez")
                    "Toggle chez process in buffer `*chez*'." t)))
 
     ;; Org `ob' for Scheme
@@ -173,14 +173,14 @@
         (compile-unit% (emacs-home* "config/ob-schemes.el") t)
       (when (*org-babel-schemes*)
         (autoload* 'org-babel-execute:scheme*
-                   (v-home% "config/ob-schemes.elc")
+                   (v-home%> "config/ob-schemes")
                    "Autoload `org-babel-execute:scheme*'." t)
         (fset 'org-babel-execute:scheme 'org-babel-execute:scheme*)))
 
     ;; Sudoku
     (prog1
         (compile-unit% (emacs-home* "config/sudoku.el") t)
-      (autoload* 'sudoku (v-home% "config/sudoku.elc")
+      (autoload* 'sudoku (v-home%> "config/sudoku")
                  "Play sudoku." t))
 
     ;; Vlang
@@ -191,7 +191,7 @@
                                  (zerop (car x)))))
       (prog1
           (compile-unit% (emacs-home* "config/vlang.el") t)
-        (autoload 'vlang-mode (v-home% "config/vlang.elc")
+        (autoload 'vlang-mode (v-home%> "config/vlang")
           "Toggle Vlang's mode." t)))
 
 

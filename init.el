@@ -173,10 +173,10 @@ Else return BODY sexp."
   (declare (indent 0))
   `(if-native-comp% (progn% ,@body)))
 
-(defmacro unless-native-comp% (&rest body)
-  "When native compilation support is built-in, do BODY."
-  (declare (indent 0))
-  `(if-native-comp% nil ,@body))
+
+(defmacro v-home%> (&optional file)
+  "Return the `v-home*' FILE with the suffix of compiled file."
+  (concat (v-home* file) (if-native-comp% ".eln" ".elc")))
 
 
 (defmacro compile-and-load-file*
@@ -195,9 +195,7 @@ DIR where the compiled file located."
        (when (and (stringp ,f) (file-exists-p ,f))
          (let* ((,n (file-name-nondirectory ,f))
                 (,d ,dir)
-                (,s (if ,d
-                        (concat ,d ,n)
-                      ,f))
+                (,s (if ,d (concat ,d ,n) ,f))
                 (,c (file-name-new-extension*
                      ,s
                      (if-native-comp% ".eln" ".elc"))))
@@ -211,9 +209,8 @@ DIR where the compiled file located."
                (when ,delete-booster (delete-file ,s))))
 	         (when (file-exists-p ,c)
              (cond (,only-compile t)
-                   (t (if-native-comp%
-                       (native-elisp-load ,c)
-                       (load ,c))))))))))
+                   (t (if-native-comp% (native-elisp-load ,c)
+                                       (load ,c))))))))))
 
 
 (defun clean-compiled-files ()

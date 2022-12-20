@@ -380,7 +380,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
                      (cc*-extra-include t)))
            'find-file))
   (when-fn% 'xref-push-marker-stack 'xref
-    (autoload 'xref-push-marker-stack "xref.elc")
+    (autoload 'xref-push-marker-stack "xref")
     (xref-push-marker-stack))
   (ff-find-other-file in-other-window nil))
 

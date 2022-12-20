@@ -13,8 +13,8 @@
   (push! '("\\.boot$" . clojure-mode) auto-mode-alist )
   (push! '(".* boot" . clojure-mode) magic-mode-alist)
 
-  (declare-function use-clojure-mode (v-home% "config/use-cider.elc"))
-  (declare-function use-cider-repl (v-home% "config/use-cider.elc"))
+  (declare-function use-clojure-mode (v-home%> "config/use-cider"))
+  (declare-function use-cider-repl (v-home%> "config/use-cider"))
 
   (with-eval-after-load 'clojure-mode
     (use-clojure-mode))

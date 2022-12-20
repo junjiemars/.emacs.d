@@ -92,7 +92,7 @@ Equality is defined by TESTFN if non-nil or by `equal' if nil."
       `(assoc ,key ,list ,testfn)
     (if-fn% 'cl-assoc 'cl-lib
             (progn%
-             (declare-function cl-assoc "cl-seq.elc"
+             (declare-function cl-assoc "cl-seq"
                                (item seq &rest keys)
                                t)
              `(cl-assoc ,key ,list :test (or ,testfn #'equal)))
@@ -112,7 +112,7 @@ SEQ, this is like `mapcar'.  With several, it is like the Common Lisp
   (if-fn% 'cl-mapcar 'cl-lib
           (if-version% <= 25
                        `(cl-mapcar ,fn ,seq ,@seqs)
-            (declare-function cl-mapcar "cl-lib.elc"
+            (declare-function cl-mapcar "cl-lib"
                               (fn x &rest rest)
                               t)
             `(cl-mapcar ,fn ,seq ,@seqs))
@@ -131,7 +131,7 @@ Optional argument KEYS :key :count :start :end :from-end."
   (if-fn% 'cl-remove-if 'cl-lib
           (if-version% <= 25
                        `(cl-remove-if ,pred ,seq ,@keys)
-            (declare-function cl-remove-if "cl-seq.elc"
+            (declare-function cl-remove-if "cl-seq"
                               (pred seq &rest keys)
                               t)
             `(cl-remove-if ,pred ,seq ,@keys))
@@ -161,7 +161,7 @@ Optional argument KEYS :key."
   (if-fn% 'cl-every 'cl-lib
           (if-version% <= 25
                        `(cl-every ,pred ,@seq)
-            (declare-function cl-every "cl-extra.elc"
+            (declare-function cl-every "cl-extra"
                               (pred seq &rest rest)
                               t)
             `(cl-every ,pred ,@seq))
@@ -176,7 +176,7 @@ Optional argument KEYS :key."
   (if-fn% 'cl-some 'cl-lib
           (if-version% <= 25
                        `(cl-some ,pred ,@seq)
-            (declare-function cl-some "cl-extra.elc"
+            (declare-function cl-some "cl-extra"
                               (pred seq &rest rest)
                               t)
             `(cl-some ,pred ,@seq))
