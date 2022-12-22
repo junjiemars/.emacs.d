@@ -800,7 +800,8 @@ If `current-prefix-arg' < 0, then repeat n time with END in reversed."
 ;;;;
 
 ;; Buffer
-(define-key% (current-global-map) (kbd "C-c b n") #'echo-buffer-name)
+(define-key% (current-global-map) (kbd "C-x x n") #'echo-buffer-name)
+(define-key% (current-global-map) (kbd "C-x x c") #'clone-buffer)
 (define-key% (current-global-map) (kbd "C-x RET =") #'get-buffer-coding-system)
 
 ;; Kill

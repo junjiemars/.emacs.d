@@ -1090,7 +1090,7 @@ Global for all Emacs' version.
 - @@html:<kbd>@@M-/@@html:</kbd>@@ =hippie-expand=
 - @@html:<kbd>@@C-c f f@@html:</kbd>@@ =find-file-at-point=
 - @@html:<kbd>@@C-x x g@@html:</kbd>@@ =revert-buffer= or =revert-buffer-quick=
-- @@html:<kbd>@@C-c b n@@html:</kbd>@@ =echo-buffer-name=
+- @@html:<kbd>@@C-x x n@@html:</kbd>@@ =echo-buffer-name=
 #+REVEAL: split
 - @@html:<kbd>@@C-M-o@@html:</kbd>@@ =open-previous-line=
 - @@html:<kbd>@@C-o@@html:</kbd>@@ =open-next-line=
