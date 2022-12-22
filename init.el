@@ -223,7 +223,7 @@ DIR where the compiled file located."
     (while dirs
       (let* ((d (car dirs))
              (fs (when (file-exists-p d)
-                   (directory-files d nil "\\.elc?\\|\\.eln?\\'"))))
+                   (directory-files d nil "\\.el[cn]?\\'"))))
         (message "#Clean compiled files: %s..." d)
         (while fs
           (let ((f (car fs)))
