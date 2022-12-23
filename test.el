@@ -200,10 +200,6 @@
                (when-var% ert-batch-backtrace-right-margin 'ert t)
                (not (when-var% ert-batch-backtrace-right-marginxxx 'ert t)))))
 
-(ert-deftest %boot:ignore* ()
-  (if-lexical%
-      (should-not (macroexpand '(ignore* a b)))
-    (should-not (macroexpand '(ignore* a b)))))
 
 (ert-deftest %boot:dolist* ()
   (should (equal '(a nil b c)
@@ -259,6 +255,12 @@
                                     (range 1 3 1))))
   (should (= 10 (length (drop-while (lambda (x) (> x 3))
                                     (range 1 10 1))))))
+
+(ert-deftest %fns:ignore* ()
+  (if-lexical%
+      (should-not (let ((a 1) (b 2)) (ignore* a b)))
+    (should-not (let ((a 1) (b 2)) (ignore* a b)))))
+
 
 (ert-deftest %fns:take-while ()
   (should-not (take-while nil nil))
