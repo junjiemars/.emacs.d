@@ -18,6 +18,7 @@
 ;;;;
 ;; references:
 ;; https://pi.math.cornell.edu/~mec/Summer2009/Mahmood/Count.html
+;; http://www.gatsby.ucl.ac.uk/~turner/TeaTalks/Sudoku/Bertrand_and_Javis.pdf
 ;;;;
 
 
