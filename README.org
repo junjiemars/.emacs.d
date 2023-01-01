@@ -1338,8 +1338,12 @@ life easy and if [[https://github.com/junjiemars/nore][Nore]] already on your ma
 It's *self-documenting* and great, keep reading it frequently.
 
 - Tutorial: @@html:<kbd>@@C-h-t@@html:</kbd>@@
-- Help for Help: @@html:<kbd>@@C-h C-h@@html:</kbd>@@
 - Emacs manual: @@html:<kbd>@@C-h r@@html:</kbd>@@
+- Emacs news: @@html:<kbd>@@C-h C-n@@html:</kbd>@@
+- Emacs FAQ: @@html:<kbd>@@C-h C-f@@html:</kbd>@@
+
+#+REVEAL: split
+- Help for Help: @@html:<kbd>@@C-h C-h@@html:</kbd>@@
 - Apropos command: @@html:<kbd>@@C-h a@@html:</kbd>@@
 - Mode: @@html:<kbd>@@C-h-m@@html:</kbd>@@ see all the key bindings and
   documentation of current buffer
