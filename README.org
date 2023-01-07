@@ -132,7 +132,7 @@ yourself some little Elisp (@@html:<kbd>@@C-h i m Elisp@@html:</kbd>@@).
    :END:
 
 #+ATTR_HTML: :style text-align:left
-Just one thing you need to do, clone it (just <500KB) to your =HOME=
+Just one thing you need to do, clone it (just <1024KiB) to your =HOME=
 directory:
 
 #+BEGIN_SRC sh
@@ -142,7 +142,7 @@ git clone --depth=1 https://github.com/junjiemars/.emacs.d.git ~/.emacs.d
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
 First run Nore Emacs, it should automatically do:
-- byte compile elisp source files.
+- byte/native compile elisp source files.
 - install packages, if you allow it.
 
 #+ATTR_HTML: :style text-align:left
@@ -251,10 +251,10 @@ Introduce the rules of naming /files/ and /functions/.
     ├── basic.el
     ├── boot.el
     ├── chez.el
-    ├── dicts.el
-    ├── fns.el
+    ├── dict.el
+    ├── fn.el
     ├── gambit.el
-    ├── graphics.el
+    ├── graphic.el
     ├── gud-cdb.el
     ├── gud-lldb.el
     ├── memory.el

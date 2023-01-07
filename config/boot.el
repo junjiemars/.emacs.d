@@ -398,12 +398,12 @@ No matter the declaration order, the executing order is:
 
 
 ;;; <1> prologue
-(compile! (compile-unit% (emacs-home* "config/fns.el"))
+(compile! (compile-unit% (emacs-home* "config/fn.el"))
           (compile-unit* (*self-paths* :get :prologue)))
 
 ;;; <2> env
 (compile! (compile-unit* (*self-paths* :get :env-spec))
-          (compile-unit% (emacs-home* "config/graphics.el"))
+          (compile-unit% (emacs-home* "config/graphic.el"))
           (compile-unit% (emacs-home* "config/basic.el"))
           (compile-unit% (emacs-home* "config/shells.el")))
 

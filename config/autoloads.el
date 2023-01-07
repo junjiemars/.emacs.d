@@ -64,9 +64,9 @@
   (compile!
     ;; Lookup dictionary
     (progn
-      (autoload 'lookup-dict (v-home%> "config/dicts")
+      (autoload 'lookup-dict (v-home%> "config/dict")
         "Lookup WORD in DICT then show the result in the echo area." t)
-      (compile-unit% (emacs-home* "config/dicts.el")))
+      (compile-unit% (emacs-home* "config/dict.el")))
 
     ;; Glyph
     (when-font%

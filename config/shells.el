@@ -211,4 +211,7 @@ See also: `parse-colon-path'."
 (read-shell-env!)
 
 
+(provide 'shells)
+
+
  ;; end of shells.el

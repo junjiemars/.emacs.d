@@ -3,7 +3,7 @@
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; dicts.el
+;; dict.el
 ;;;;
 
 
@@ -257,4 +257,4 @@
 
 (provide 'dict)
 
-;; end of dicts.el
+;; end of dict.el

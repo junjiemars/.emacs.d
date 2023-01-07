@@ -451,6 +451,6 @@ or the one that CHECK return t."
  ;; end of gc
 
 
-(provide 'fns)
+(provide 'fn)
 
 ;;; fns.el ends here

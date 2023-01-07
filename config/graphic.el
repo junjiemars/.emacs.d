@@ -3,7 +3,7 @@
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; graphics.el: menu, toolbar, font, theme, etc.
+;; graphic.el: menu, toolbar, font, theme, etc.
 ;;;;
 
 
@@ -132,6 +132,9 @@ If DIR is nil then load the built-in `customize-themes' by NAME."
   (self-frame-load!)
   (when-theme%
     (self-theme-load!)))
+
+
+(provide 'graphic)
 
 
 ;; end of file
