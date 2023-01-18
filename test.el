@@ -693,56 +693,60 @@
 ;;;;
 
 
-(when-fn% 'check-vcvarsall-bat nil
-  (ert-deftest %z:cc:check-vcvarsall-bat ()
-    (should (message "# (check-vcvarsall-bat) = %s"
-                     (or (check-vcvarsall-bat) "")))))
+(ert-deftest %z:cc:check-vcvarsall-bat ()
+  (when-platform% 'windows-nt
+    (when-fn% 'check-vcvarsall-bat
+        (should (message "# (check-vcvarsall-bat) = %s"
+                         (or (check-vcvarsall-bat) ""))))))
 
-(when-fn% 'make-cc-env-bat nil
-  (ert-deftest %z:cc:make-cc-env-bat ()
-    (should (message "# (make-cc-env-bat) = %s"
-                     (or (make-cc-env-bat) "")))))
+(ert-deftest %z:cc:make-cc-env-bat ()
+  (when-platform% 'windows-nt
+    (when-fn% 'make-cc-env-bat
+        (should (message "# (make-cc-env-bat) = %s"
+                         (or (make-cc-env-bat) ""))))))
 
-(when-var% +cc*-compiler-bin+ nil
-  (ert-deftest %z:cc:+cc*-compiler-bin+ ()
-    (when-platform% 'windows-nt
-      (should (message "# (executable-find \"cc-env.bat\") = %s"
-                       (or (executable-find "cc-env.bat") "")))
-      (should (message "# (executable-find \"cl\") = %s"
-                       (or (executable-find "cl") ""))))
-    (should (message "# (executable-find \"gcc\") = %s"
-                     (or (executable-find "gcc") "")))
-    (should (message "# (executable-find \"clang\") = %s"
-                     (or (executable-find "clang") "")))
-    (should (message "# (executable-find \"make\") = %s"
-                     (or (executable-find "make") "")))
-
+(ert-deftest %z:cc:+cc*-compiler-bin+ ()
+  (when-platform% 'windows-nt
+    (should (message "# (executable-find \"cc-env.bat\") = %s"
+                     (or (executable-find "cc-env.bat") "")))
+    (should (message "# (executable-find \"cl\") = %s"
+                     (or (executable-find "cl") ""))))
+  (should (message "# (executable-find \"gcc\") = %s"
+                   (or (executable-find "gcc") "")))
+  (should (message "# (executable-find \"clang\") = %s"
+                   (or (executable-find "clang") "")))
+  (should (message "# (executable-find \"make\") = %s"
+                   (or (executable-find "make") "")))
+  (when-var% +cc*-compiler-bin+ nil
     (should (message "# +cc*-compiler-bin+ = %s"
                      (or +cc*-compiler-bin+ "")))))
 
-(when-fn% 'cc*-check-include nil
-  (ert-deftest %z:cc:cc*-check-include ()
+
+(ert-deftest %z:cc:cc*-check-include ()
+  (when-fn% 'cc*-check-include nil
     (should (message "# cc*-check-include = %s"
                      (or (cc*-check-include) "")))))
 
-(when-fn% 'cc*-system-include nil
-  (ert-deftest %z:cc:cc*-system-include ()
+(ert-deftest %z:cc:cc*-system-include ()
+  (when-fn% 'cc*-system-include nil
     (should (message "# cc*-system-include = %s"
                      (or (cc*-system-include t) "")))))
+
 
 
 ;;;;
 ;; conditional: trans
 ;;;;
 
-(when-fn% 'roman->arabic nil
-  (ert-deftest %z:trans:roman->arabic ()
+(ert-deftest %z:trans:roman->arabic ()
+  (when-fn% 'roman->arabic nil
     (should (= 1990 (roman->arabic (split-string* "MCMXC" "" t) 0)))
     (should (= 2008 (roman->arabic (split-string* "MMVIII" "" t) 0)))
     (should (= 1666 (roman->arabic (split-string* "MDCLXVI" "" t) 0)))))
 
-(when-fn% 'chinese->arabic nil
-  (ert-deftest %z:trans:chinese->arabic ()
+
+(ert-deftest %z:trans:chinese->arabic ()
+  (when-fn% 'chinese->arabic nil
     (should (= 91234567 (chinese->arabic
                          (split-string*
                           "玖仟壹佰贰拾叁万肆仟伍佰陆拾柒" "" t)
@@ -756,6 +760,7 @@
                               "陆仟柒佰捌拾玖亿玖仟壹佰贰拾叁万肆仟伍佰陆拾柒"
                               "" t)
                              0)))))
+
 
  ;; end of trans
 
