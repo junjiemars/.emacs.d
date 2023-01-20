@@ -273,7 +273,7 @@
 (defun on-autoloads! ()
   (make-thread*
    (lambda ()
-     (gc-delay (if (= 64 (emacs-arch)) 4096 512)
+     (gc-delay #x1000000
        (compile! (compile-unit% (emacs-home* "config/sockets.el")))
        (when-package%
          (compile! (compile-unit% (emacs-home* "config/module.el"))))
