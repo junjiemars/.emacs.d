@@ -287,7 +287,6 @@ If (COND VERSION EMACS-VERSION) yield nil, and there are no ELSE’s, the value 
   ;; first native-comp load
   (setcar native-comp-eln-load-path (v-home! ".eln/")))
 
-
 (compile-and-load-file* (emacs-home* "config/boot.el")
                         nil ;; compile-option
                         nil ;; delete-booster

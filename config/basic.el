@@ -460,18 +460,19 @@ otherwise default to keep the directories of current `emacs-version'."
 
 (defmacro platform-arch ()
   "Return platform architecture with (arch . bits) cons cell."
-  (let ((b64 "\\([xX]86_64\\|[aA][mM][dD]64\\)"))
-    (if (string-match b64 system-configuration)
-        `(cons ,(match-string* b64 system-configuration 1) 64)
+  (let ((m64 "\\([xX]86_64\\|[aA][mM][dD]64\\|aarch64\\)")
+        (bit (emacs-arch)))
+    (if (string-match m64 system-configuration)
+        `(cons ,(match-string* m64 system-configuration 1) ,bit)
       (if-platform% 'windows-nt
-          (if (string-match b64 (getenv "PROCESSOR_ARCHITECTURE"))
-              `(cons ,(getenv "PROCESSOR_ARCHITECTURE") 64)
-            `(cons ,(getenv "PROCESSOR_ARCHITECTURE") 32))
+          (if (string-match m64 (getenv "PROCESSOR_ARCHITECTURE"))
+              `(cons ,(getenv "PROCESSOR_ARCHITECTURE") ,bit)
+            `(cons ,(getenv "PROCESSOR_ARCHITECTURE") ,bit))
         (let ((m (shell-command* "uname -m")))
           (if (and (zerop (car m))
-                   (string-match b64 (string-trim> (cdr m) "\n")))
-              `(cons ,(string-trim> (cdr m) "\n") 64)
-            `(cons ,(string-trim> (cdr m) "\n") 32)))))))
+                   (string-match m64 (string-trim> (cdr m) "\n")))
+              `(cons ,(string-trim> (cdr m) "\n") ,bit)
+            `(cons ,(string-trim> (cdr m) "\n") ,bit)))))))
 
 
 ;; define key macro
