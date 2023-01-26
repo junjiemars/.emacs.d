@@ -435,20 +435,6 @@ or the one that CHECK return t."
  ;; end of Platform Related Functions
 
 
-;;; gc
-
-(defmacro gc-delay (scalar &rest body)
-  "Delay garbage collection at runtime."
-  (declare (indent 1))
-  (let ((s1 (gensym*)))
-    `(let ((,s1 (* gc-cons-threshold ,scalar)))
-       (fluid-let (gc-cons-threshold ,s1)
-         (fluid-let (garbage-collection-messages noninteractive)
-           ,@body)))))
-
-
-
- ;; end of gc
 
 
 (provide 'fn)

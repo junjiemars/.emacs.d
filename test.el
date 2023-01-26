@@ -187,10 +187,8 @@
                       (not (unless-platform% '(darwin gnu/linux))))))))
 
 (ert-deftest %boot:setq% ()
-  "uncompleted..."
-  (when% t
-    (should-not (setq% zzz 'xx))
-    (should-not (setq% zzz nil))))
+  (should-not (setq% zzz 'xx))
+  (should-not (setq% zzz nil)))
 
 (ert-deftest %boot:if/when/unless-fn% ()
   (should (and (if-fn% 'should 'ert t)
