@@ -132,7 +132,7 @@ If DIR is nil then load the built-in `customize-themes' by NAME."
 (when-graphic%
   (self-frame-load!)
   (when-theme%
-    (self-theme-load!)))
+    (make-thread* (lambda () (self-theme-load!)))))
 
 
 (provide 'graphic)
