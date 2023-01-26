@@ -112,7 +112,8 @@ If DIR is nil then load the built-in `customize-themes' by NAME."
                                        :custom-theme-directory)))
              (cond (dir
                     ;; load theme from :custom-theme-directory
-                    (if (*self-env-spec* :get :theme :compile)
+                    (if (and (*self-env-spec* :get :theme :compile)
+                             (if-native-comp% nil t))
                         (progn
                           (compile!
                             (compile-unit*
