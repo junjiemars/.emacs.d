@@ -592,14 +592,12 @@ See also `open-line' and `split-line'."
 
 And copy the qualified buffer name to kill ring."
   (interactive)
-  (if (or (eq 'dired-mode major-mode)
-          (eq 'ibuffer-mode major-mode))
-      (user-error* "Type \"w\" or \"C-u 0 w\" instead, in %s"
-        mode-name)
-    (let ((name (or (buffer-file-name)
-                    (buffer-name))))
-      (kill-new name)
-      (message "%s" name))))
+  (let ((name (if (eq 'dired-mode major-mode)
+                  (expand-file-name default-directory)
+                (or (buffer-file-name)
+                    (buffer-name)))))
+    (kill-new name)
+    (message "%s" name)))
 
 
  ;; end of `echo-buffer-name'

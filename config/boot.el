@@ -60,6 +60,7 @@
          (let ((lexical-binding t))
            (let ,varlist ,@body)))
      (when-fn% 'lexical-let 'cl
+       ;; `lexical-let' since Emacs22
        (lexical-let ,varlist ,@body))))
 
 (defmacro lexical-let*% (varlist &rest body)
@@ -69,6 +70,7 @@
        `(let ((lexical-binding t))
           (let ,varlist ,@body))
      (when-fn% 'lexical-let* 'cl
+       ;; `lexical-let' since Emacs22
        (lexical-let* ,varlist ,@body))))
 
 
