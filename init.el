@@ -163,10 +163,9 @@ Else return BODY sexp."
 (defmacro if-native-comp% (then &rest else)
   "If native compilation support is built-in do THEN, else do ELSE..."
   (declare (indent 1))
-  (if (fboundp 'native-comp-available-p)
-      (and (native-comp-available-p)
-           (featurep 'native-compile)
-           `,then)
+  (if (and (fboundp 'native-comp-available-p)
+           (native-comp-available-p))
+      `,then
     `(progn% ,@else)))
 
 (defmacro when-native-comp% (&rest body)
