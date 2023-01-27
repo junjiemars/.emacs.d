@@ -1,4 +1,4 @@
-;;; fns.el --- primitive functions -*- lexical-binding:t -*-
+;;; fn.el --- primitive functions -*- lexical-binding:t -*-
 ;;;;
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
@@ -439,4 +439,4 @@ or the one that CHECK return t."
 
 (provide 'fn)
 
-;;; fns.el ends here
+;;; fn.el ends here
