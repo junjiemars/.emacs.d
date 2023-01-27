@@ -38,7 +38,7 @@ jobs:
           fetch-depth: 1 # without checkout history and tags
       - name: Install Dependencies
         run: |
-          brew install emacs
+          brew install emacs --with-native-comp
       - name: Test
         run: |
           _TEST_=bone ./test.sh
