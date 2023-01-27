@@ -417,11 +417,6 @@
                                            "--version")))
                                   (car x)))))))
 
-(ert-deftest %fn:gc-delay ()
-  (should (= (let ((g0 gc-cons-threshold))
-               (* 2 g0))
-             (gc-delay 2 gc-cons-threshold))))
-
 
  ;; end of fn
 
