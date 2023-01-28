@@ -7,6 +7,11 @@
 ;;;;
 
 
+(defmacro-if-feature% aggressive-indent)
+(defmacro-if-feature% paredit)
+(defmacro-if-feature% rainbow-delimiters)
+
+
 (defun set-clojure-mode! ()
   "Hook into `clojure-mode-hook'"
   (subword-mode)
@@ -35,22 +40,22 @@
 
 (defun use-cider-repl ()
   "Use cide repl."
-  
+
   (require 'use-cider)
-  
+
   ;; Where to store the cider history.
   (setq% cider-repl-history-file
          (v-home! ".cider/repl-history") 'cider-repl)
   ;; Wrap when navigating history.
   (setq% cider-repl-wrap-history t 'cider)
-  
+
   ;; Go right to the REPL buffer when it's finished connecting
   (setq% cider-repl-pop-to-buffer-on-connect t 'cider)
-  
+
   ;; When there's a cider error, show its buffer and switch to it
   (setq% cider-show-error-buffer t 'cider)
   (setq% cider-auto-select-error-buffer t 'cider)
-  
+
   (add-hook 'cider-repl-mode-hook #'set-cider-repl-mode!))
 
 

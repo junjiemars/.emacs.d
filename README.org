@@ -681,6 +681,12 @@ The /user defined/ package spec locate in =(*self-packages*)=.
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
 (*self-packages*
+ :put :basis
+ (list
+  :cond t
+  :packages '(paredit rainbow-delimiters))
+
+(*self-packages*
  :put :doc
  (list
   :cond t
@@ -778,7 +784,7 @@ The /user defined/ package spec locate in =(*self-packages*)=.
 #+END_SRC
 
 #+REVEAL: split
-- =:cond= decide whether to install =:packages= or compile =:compile=
+- =:cond= decide whether to install =:packages= and compile =:compile=
 - =:packages= a list of package names or tar file names
 - =:compile= when installed packages, a list of files that should be
   compiled only or be loaded after been compiled

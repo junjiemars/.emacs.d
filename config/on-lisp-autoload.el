@@ -21,6 +21,11 @@
     (add-hook 'emacs-lisp-mode-hook #'eldoc-mode)))
 
 
+(defmacro-if-feature% aggressive-indent)
+(defmacro-if-feature% paredit)
+(defmacro-if-feature% rainbow-delimiters)
+
+
 (defun set-featured-lisp-mode! ()
   "Set Lisp basic minor modes."
   (cond ((or (string= "*scratch*" (buffer-name))

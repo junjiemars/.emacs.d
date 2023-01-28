@@ -135,15 +135,11 @@
        ,@body)))
 
 
-(*self-packages*
- :put :|basic|
- `(:cond t :packages (paredit
-                      rainbow-delimiters)))
-
 (package-spec-:allowed-p
   ;; Load self packages spec
   (parse-package-spec! (*self-packages*)
-                       (*self-env-spec* :get :package :remove-unused)))
+                       (*self-env-spec* :get :package
+                                        :remove-unused)))
 
 
 ;;; eof
