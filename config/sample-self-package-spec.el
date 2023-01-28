@@ -11,7 +11,8 @@
  :put :basis
  (list
   :cond nil
-  :packages '(paredit rainbow-delimiters))
+  :packages '(paredit rainbow-delimiters)))
+
 
 (*self-packages*
  :put :doc
