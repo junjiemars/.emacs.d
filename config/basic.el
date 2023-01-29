@@ -516,6 +516,8 @@ otherwise do ELSE..."
   "Raw newline."
   (interactive "*P")
   (let ((electric-indent-mode nil))
+    (when-version% > 26
+      (when-lexical% (ignore* electric-indent-mode)))
     (newline arg 'interactive)))
 
 
