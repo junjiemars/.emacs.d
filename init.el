@@ -111,7 +111,7 @@ The FILE should be posix path, see `path-separator'."
 
 
 (defmacro v-home% (file)
-  "Return versioned path of `emacs-home'/`v-path*'/FILE."
+  "Return versioned path of `emacs-home'/`v-path*'/FILE at compile-time."
   (let ((_vf_ (gensym*)))
     (let ((_vf_ (v-home* file)))
       `,_vf_)))
