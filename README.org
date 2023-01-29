@@ -1133,7 +1133,7 @@ avaiabled on ancient Emacs.
 The features provided by non-Emacs's packages, featured keys may not
 avaiabled on ancient Emacs.
 
-- @@html:<kbd>@@C-x v M@@html:</kbd>@@ =magit-status=
+- @@html:<kbd>@@C-x v d@@html:</kbd>@@ =magit-status=
 
 * Programming
   :PROPERTIES:
