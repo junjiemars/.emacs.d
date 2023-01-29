@@ -100,7 +100,7 @@ The FILE should be posix path, see `path-separator'."
 
 
 (defmacro v-home% (file)
-  "Return versioned path of `emacs-home'/`v-path*'/FILE at compile-time."
+  "Return versioned `emacs-home'/`v-path*'/FILE at compile-time."
   (v-home* file))
 
 
