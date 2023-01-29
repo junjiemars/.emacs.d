@@ -23,9 +23,8 @@
     (desktop-read (v-home% ".desktop/"))
 
     ;; remove unnecessary hooks of `desktop'
-    (when-fn% 'desktop--on-kill 'desktop
-      (remove-hook 'kill-emacs-hook 'desktop--on-kill))
-    (when-fn% 'desktop-kill 'desktop
+    (if-fn% 'desktop--on-kill 'desktop
+            (remove-hook 'kill-emacs-hook 'desktop--on-kill)
       (remove-hook 'kill-emacs-hook 'desktop-kill))
     (if-var% kill-emacs-query-functions nil
              (progn
