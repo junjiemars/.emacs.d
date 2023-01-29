@@ -30,9 +30,8 @@
 (setq% calc-settings-file (v-home! ".calc/calc.el") 'calc)
 
 ;; eww bookmarks
-(when-version%
-    <= 24.4
-  (setq% eww-bookmarks-directory (v-home! ".bookmarks/") 'eww))
+(when-var% eww-bookmarks-directory 'eww
+  (setq eww-bookmarks-directory (v-home! ".bookmarks/")))
 
 ;; `bookmark': file in which to save bookmarks
 (setq% bookmark-default-file
@@ -72,15 +71,14 @@
 (setq% server-auth-dir (v-home! ".server/") 'server)
 
 ;; `semantic'
-(when-version% <= 23
-  (setq% semanticdb-default-save-directory
-         (v-home! ".semantic/db/") 'semantic/db-file))
+(when-var% semanticdb-default-save-directory 'semantic/db-file
+  (setq semanticdb-default-save-directory (v-home! ".semantic/db/")))
 
 ;; `tramp'
-(when-version% <= 23
-  (setq% tramp-persistency-file-name (v-home! ".tramp/tramp")
-         (if-version% > 24 'tramp
-           'tramp-cache)))
+(when-var% tramp-persistency-file-name
+    (if-version% > 24 'tramp
+      'tramp-cache)
+  (setq tramp-persistency-file-name (v-home! ".tramp/tramp")))
 
 ;; `url'
 (setq% url-configuration-directory (v-home! ".url/") 'url)
