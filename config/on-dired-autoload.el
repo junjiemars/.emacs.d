@@ -120,6 +120,7 @@
 (defun dired-browse-file* ()
 	"Browse the file using external browser via `dired-mode'."
 	(interactive)
+  (declare-function browse-url-default-browser "browse-url" t)
 	(let ((browse-url-browser-function #'browse-url-default-browser))
 		(browse-url (expand-file-name (dired-get-file-for-visit)))))
 
