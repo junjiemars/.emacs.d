@@ -27,8 +27,8 @@
 
 
 (when-fn% 'magit-status 'magit
-  ;; should take up the `vc-create-tag' key binding
-  (define-key (current-global-map) (kbd "C-x v M") #'magit-status))
+  ;; should take up the `vc-dir' key binding
+  (define-key (current-global-map) (kbd "C-x v d") #'magit-status))
 
 
 
