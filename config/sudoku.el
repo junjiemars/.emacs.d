@@ -102,16 +102,16 @@
 
 (defmacro sudoku-puzzle-1d (i j)
   "Transform sudoku's puzzle from 2d(I,J) to 1d."
-  (let ((d (gensym)))
+  (let ((d (gensym*)))
     `(let ((,d (*sudoku-puzzle-d* :d)))
        (+ (* (% ,i ,d) ,d)
           (% ,j ,d)))))
 
 (defmacro sudoku-puzzle-2d (i)
   "Transform sudoku's puzzle from 1d(I) to 2d."
-  (let ((d (gensym))
-        (l (gensym))
-        (d2 (gensym)))
+  (let ((d (gensym*))
+        (l (gensym*))
+        (d2 (gensym*)))
     `(let* ((,d (*sudoku-puzzle-d* :d))
             (,l (*sudoku-puzzle-d* :len))
             (,d2 (/ (% ,i ,l) ,d)))
@@ -120,21 +120,21 @@
 
 (defmacro sudoku-puzzle-row (i)
   "Locate row via 1d(I)."
-  (let ((d (gensym)))
+  (let ((d (gensym*)))
     `(let ((,d (*sudoku-puzzle-d* :d)))
        (% (/ ,i ,d) ,d))))
 
 (defmacro sudoku-puzzle-col (i)
   "Locate col via 1d(I)."
-  (let ((d (gensym)))
+  (let ((d (gensym*)))
     `(let ((,d (*sudoku-puzzle-d* :d)))
        (% ,i ,d))))
 
 (defmacro sudoku-puzzle-sqr (i)
   "Locate sqr via 1d(I)."
-  (let ((d (gensym))
-        (l (gensym))
-        (s (gensym)))
+  (let ((d (gensym*))
+        (l (gensym*))
+        (s (gensym*)))
     `(let* ((,d (*sudoku-puzzle-d* :d))
             (,l (*sudoku-puzzle-d* :len))
             (,s (*sudoku-puzzle-d* :sqr)))
@@ -144,9 +144,9 @@
 
 (defmacro sudoku-puzzle-vec-row (matrix index)
   "Return MATRIX's row vector on INDEX"
-  (let ((d (gensym))
-        (m (gensym))
-        (r (gensym)))
+  (let ((d (gensym*))
+        (m (gensym*))
+        (r (gensym*)))
     `(let* ((,d (*sudoku-puzzle-d* :d))
             (,m ,matrix)
             (,r (* (sudoku-puzzle-row ,index) ,d)))
@@ -156,9 +156,9 @@
 
 (defmacro sudoku-puzzle-vec-col (matrix index)
   "Return MATRIX's col vector on INDEX."
-  (let ((d (gensym))
-        (m (gensym))
-        (c (gensym)))
+  (let ((d (gensym*))
+        (m (gensym*))
+        (c (gensym*)))
     `(let* ((,d (*sudoku-puzzle-d* :d))
             (,m ,matrix)
             (,c (% (sudoku-puzzle-col ,index) ,d)))
@@ -169,12 +169,12 @@
 
 (defmacro sudoku-puzzle-vec-sqr (matrix index)
   "Return MATRIX's sqr vector on INDEX."
-  (let ((d (gensym))
-        (s (gensym))
-        (m (gensym))
-        (s1 (gensym))
-        (r (gensym))
-        (c (gensym)))
+  (let ((d (gensym*))
+        (s (gensym*))
+        (m (gensym*))
+        (s1 (gensym*))
+        (r (gensym*))
+        (c (gensym*)))
     `(let* ((,d (*sudoku-puzzle-d* :d))
             (,s (*sudoku-puzzle-d* :sqr))
             (,m ,matrix)
@@ -281,9 +281,9 @@
 
 (defmacro sudoku-puzzle-vec-complete (vector)
   "Predicate sudoku puzzle's VECTOR is complete."
-  (let ((len (gensym))
-        (sum (gensym))
-        (i (gensym)))
+  (let ((len (gensym*))
+        (sum (gensym*))
+        (i (gensym*)))
     `(let ((,len (length ,vector))
            (,sum 0)
            (,i 0))
@@ -294,9 +294,9 @@
 
 (defmacro sudoku-puzzle-vec-unique (vector)
   "Predicate sudoku puzzle's VECTOR is unique."
-  (let ((len (gensym))
-        (i (gensym))
-        (j (gensym)))
+  (let ((len (gensym*))
+        (i (gensym*))
+        (j (gensym*)))
     `(catch 'conflict
        (let ((,len (length ,vector))
              (,i 0)
@@ -676,7 +676,7 @@
 
 (defmacro sudoku-board-input-n (n)
   "Input N at point."
-  (let ((d (gensym)))
+  (let ((d (gensym*)))
     `(let ((,d (*sudoku-puzzle-d* :d)))
        (if (>= ,d ,n)
            (sudoku-board-input ,n (cons 'face 'underline))
