@@ -516,7 +516,9 @@ otherwise do ELSE..."
   (let ((electric-indent-mode nil))
     (when-version% > 26
       (when-lexical% (ignore* electric-indent-mode)))
-    (newline arg 'interactive)))
+    (if-version% <= 24
+                 (newline arg 'interactive)
+      (newline arg))))
 
 
  ;; end of basic.el
