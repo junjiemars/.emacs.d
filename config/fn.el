@@ -75,10 +75,7 @@ If optional UNIQUELY is non-nil then push uniquely."
 ;;;;
 
 ;; Load cl-lib/cl at runtime
-;; (if-version% <= 24
-;;              (when-version% > 26
-;;                (require 'cl-lib))
-;;   (require 'cl))
+(when-version% <= 24.1 (require 'cl-lib))
 
 
 (defmacro assoc** (key list &optional testfn)
@@ -86,11 +83,9 @@ If optional UNIQUELY is non-nil then push uniquely."
 
 The value is actually the first element of LIST whose car equals KEY.
 Equality is defined by TESTFN if non-nil or by `equal' if nil."
-  (if-fn% 'assoc nil
-          `(assoc ,key ,list ,testfn)
-    (if-fn% 'cl-assoc 'cl-lib
-            `(cl-assoc ,key ,list :test (or ,testfn #'equal))
-      `(assoc* ,key ,list :test (or ,testfn #'equal)))))
+  (if-fn% 'cl-assoc 'cl-lib
+          `(cl-assoc ,key ,list :test (or ,testfn #'equal))
+    `(assoc* ,key ,list :test (or ,testfn #'equal))))
 
 
 ;; Unify `cl-mapcar' and `mapcar*'
