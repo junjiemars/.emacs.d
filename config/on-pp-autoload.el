@@ -34,6 +34,7 @@ If ARG < 0 then minify the region, otherwise pretty print it."
       (with-current-buffer (current-buffer)
         (eval-when-compile (require 'sgml-mode))
         (progn
+          (declare-function sgml-pretty-print "sgml-mode")
           (require 'sgml-mode)
           (sgml-pretty-print begin end))))))
 

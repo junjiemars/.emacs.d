@@ -75,10 +75,10 @@ If optional UNIQUELY is non-nil then push uniquely."
 ;;;;
 
 ;; Load cl-lib/cl at runtime
-(if-version% <= 24
-             (when-version% > 26
-               (require 'cl-lib))
-  (require 'cl))
+;; (if-version% <= 24
+;;              (when-version% > 26
+;;                (require 'cl-lib))
+;;   (require 'cl))
 
 
 (defmacro assoc** (key list &optional testfn)
@@ -86,17 +86,11 @@ If optional UNIQUELY is non-nil then push uniquely."
 
 The value is actually the first element of LIST whose car equals KEY.
 Equality is defined by TESTFN if non-nil or by `equal' if nil."
-  (if-version%
-      <= 26.1
-      `(assoc ,key ,list ,testfn)
+  (if-fn% 'assoc nil
+          `(assoc ,key ,list ,testfn)
     (if-fn% 'cl-assoc 'cl-lib
-            (progn%
-             (declare-function cl-assoc "cl-seq"
-                               (item seq &rest keys)
-                               t)
-             `(cl-assoc ,key ,list :test (or ,testfn #'equal)))
-      (when-fn% 'assoc* 'cl
-        `(assoc* ,key ,list :test (or ,testfn #'equal))))))
+            `(cl-assoc ,key ,list :test (or ,testfn #'equal))
+      `(assoc* ,key ,list :test (or ,testfn #'equal)))))
 
 
 ;; Unify `cl-mapcar' and `mapcar*'
@@ -108,14 +102,8 @@ SEQ, this is like `mapcar'.  With several, it is like the Common Lisp
 `mapcar' function extended to arbitrary sequence types.
 \n(FN FUNCTION SEQ...)"
   (if-fn% 'cl-mapcar 'cl-lib
-          (if-version% <= 25
-                       `(cl-mapcar ,fn ,seq ,@seqs)
-            (declare-function cl-mapcar "cl-lib"
-                              (fn x &rest rest)
-                              t)
-            `(cl-mapcar ,fn ,seq ,@seqs))
-    `(when-fn% 'mapcar* 'cl
-       (mapcar* ,fn ,seq ,@seqs))))
+          `(cl-mapcar ,fn ,seq ,@seqs)
+    `(mapcar* ,fn ,seq ,@seqs)))
 
 
 (defmacro remove-if* (pred seq &rest keys)
@@ -126,12 +114,7 @@ to avoid corrupting the original SEQ.
 \n(fn PREDICATE SEQ [KEYWORD VALUE]...)
 Optional argument KEYS :key :count :start :end :from-end."
   (if-fn% 'cl-remove-if 'cl-lib
-          (if-version% <= 25
-                       `(cl-remove-if ,pred ,seq ,@keys)
-            (declare-function cl-remove-if "cl-seq"
-                              (pred seq &rest keys)
-                              t)
-            `(cl-remove-if ,pred ,seq ,@keys))
+            `(cl-remove-if ,pred ,seq ,@keys)
     `(remove-if ,pred ,seq ,@keys)))
 
 
@@ -142,11 +125,7 @@ Return the sublist of LIST whose car matches.
 \n(fn PREDICATE LIST [KEYWORD VALUE]...)
 Optional argument KEYS :key."
   (if-fn% 'cl-member-if 'cl-lib
-          (if-version% <= 25
-                       `(cl-member-if ,pred ,list ,@keys)
-            (declare-function cl-member-if (pred seq &rest keys)
-                              t)
-            `(cl-member-if ,pred ,list ,@keys))
+          `(cl-member-if ,pred ,list ,@keys)
     `(member-if ,pred ,list ,@keys)))
 
 
@@ -154,28 +133,16 @@ Optional argument KEYS :key."
   "Return t if PRED is true of every element of SEQ or SEQs."
   (declare (indent 1))
   (if-fn% 'cl-every 'cl-lib
-          (if-version% <= 25
-                       `(cl-every ,pred ,@seq)
-            (declare-function cl-every "cl-extra"
-                              (pred seq &rest rest)
-                              t)
-            `(cl-every ,pred ,@seq))
-    (when-fn% 'every 'cl
-      `(every ,pred ,@seq))))
+          `(cl-every ,pred ,@seq)
+    `(every ,pred ,@seq)))
 
 
 (defmacro some* (pred &rest seq)
   "Return t if PRED is true of any element of SEQ or SEQs."
   (declare (indent 1))
   (if-fn% 'cl-some 'cl-lib
-          (if-version% <= 25
-                       `(cl-some ,pred ,@seq)
-            (declare-function cl-some "cl-extra"
-                              (pred seq &rest rest)
-                              t)
-            `(cl-some ,pred ,@seq))
-    (when-fn% 'some 'cl
-      `(some ,pred ,@seq))))
+          `(cl-some ,pred ,@seq)
+    `(some ,pred ,@seq)))
 
 (defmacro loop* (&rest clause)
   "The Common Lisp `loop' macro.
@@ -183,8 +150,7 @@ Optional argument CLAUSE such as for clause, iteration clause,
 accumulate clause and Miscellaneous clause."
   (if-fn% 'cl-loop 'cl-lib
           `(cl-loop ,@clause)
-    (when-fn% 'loop 'cl
-      `(loop ,@clause))))
+    `(loop ,@clause)))
 
 
 (defmacro time (&rest form)

@@ -20,10 +20,10 @@
 
 
 ;;; Load cl-lib/cl at compile-time
-(eval-when-compile
-  (if-version% <= 24
-               (require 'cl-lib)
-    (require 'cl)))
+;; (eval-when-compile
+;;   (if-version% <= 24
+;;                (require 'cl-lib)
+;;     (require 'cl)))
 
 ;;;;
 ;; *-lexical macro
