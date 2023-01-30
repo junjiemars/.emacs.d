@@ -101,43 +101,29 @@ SEQ, this is like `mapcar'.  With several, it is like the Common Lisp
     `(mapcar* ,fn ,seq ,@seqs)))
 
 
-(defmacro remove-if* (pred seq &rest keys)
-  "Remove all items satisfying PRED in SEQ.
-This is a non-destructive function; it makes a copy of SEQ if necessary
-to avoid corrupting the original SEQ.
-\nKeywords supported:  :key :count :start :end :from-end
-\n(fn PREDICATE SEQ [KEYWORD VALUE]...)
-Optional argument KEYS :key :count :start :end :from-end."
+(defalias 'remove-if*
   (if-fn% 'cl-remove-if 'cl-lib
-            `(cl-remove-if ,pred ,seq ,@keys)
-    `(remove-if ,pred ,seq ,@keys)))
+          #'cl-remove-if
+    #'remove-if))
 
 
-(defmacro member-if* (pred list &rest keys)
-  "Find the first item satisfying PRED in LIST.
-Return the sublist of LIST whose car matches.
-\nKeywords supported:  :key
-\n(fn PREDICATE LIST [KEYWORD VALUE]...)
-Optional argument KEYS :key."
+(defalias 'member-if*
   (if-fn% 'cl-member-if 'cl-lib
-          `(cl-member-if ,pred ,list ,@keys)
-    `(member-if ,pred ,list ,@keys)))
+          #'cl-member-if
+    #'member-if))
 
 
-(defmacro every* (pred &rest seq)
-  "Return t if PRED is true of every element of SEQ or SEQs."
-  (declare (indent 1))
+(defalias 'every*
   (if-fn% 'cl-every 'cl-lib
-          `(cl-every ,pred ,@seq)
-    `(every ,pred ,@seq)))
+          #'cl-every
+    #'every))
 
 
-(defmacro some* (pred &rest seq)
-  "Return t if PRED is true of any element of SEQ or SEQs."
-  (declare (indent 1))
+(defalias 'some*
   (if-fn% 'cl-some 'cl-lib
-          `(cl-some ,pred ,@seq)
-    `(some ,pred ,@seq)))
+          #'cl-some
+    #'some))
+
 
 (defmacro loop* (&rest clause)
   "The Common Lisp `loop' macro.
