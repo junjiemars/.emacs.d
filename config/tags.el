@@ -113,7 +113,7 @@ With prefix argument TAGS unmount all tags from `tags-table-list'."
                        (fluid-let (file-name-history tags-table-list)
                          (if (consp file-name-history)
                              (read-file-name "unmount from ")
-                           (user-error "`tags-table-list' alreay empty"))))))
+                           (user-error* "`tags-table-list' alreay empty"))))))
   (setq tags-file-name nil
         tags-table-list
         (when tags
