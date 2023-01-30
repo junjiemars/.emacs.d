@@ -135,7 +135,7 @@ Optional argument KEYS :key :count :start :end :from-end."
                               (pred seq &rest keys)
                               t)
             `(cl-remove-if ,pred ,seq ,@keys))
-    `(with-no-warnins
+    `(with-no-warnings
       (remove-if ,pred ,seq ,@keys))))
 
 

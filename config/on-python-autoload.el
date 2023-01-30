@@ -69,10 +69,10 @@ determine whether inside a virtual env. Another way is using `pip
           (if-var% python-shell-process-environment 'python
                    (setq python-shell-process-environment
                          (list
-                          (concat "PYTHONPATH=" p)
+                          (concat "PYTHONPATH=" d)
                           (concat "PYTHONHOME=" d)
                           (concat "VIRTUAL_ENV=" d)))
-            (setenv "PYTHONPATH" p)
+            (setenv "PYTHONPATH" d)
             (setenv "PYTHONHOME" d)
             (setenv "VIRTUAL_ENV" d)))))))
 
