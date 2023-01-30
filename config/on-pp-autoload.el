@@ -33,10 +33,9 @@ If ARG < 0 then minify the region, otherwise pretty print it."
           (set-mark (point)))
       (with-current-buffer (current-buffer)
         (eval-when-compile (require 'sgml-mode))
-        (with-no-warnings
-          (progn
-            (require 'sgml-mode)
-            (sgml-pretty-print begin end)))))))
+        (progn
+          (require 'sgml-mode)
+          (sgml-pretty-print begin end))))))
 
 (defalias 'pp-html #'pp-xml)
 

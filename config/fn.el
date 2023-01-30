@@ -78,15 +78,7 @@ If optional UNIQUELY is non-nil then push uniquely."
 (if-version% <= 24
              (when-version% > 26
                (require 'cl-lib))
-  (with-no-warnings
-    (require 'cl)))
-
-
-(when-fn% 'with-no-warnings nil
-  (defun with-no-warnings (&rest body)
-    "Prevents byte-compiler warnings in the body."
-    (declare (indent 0))
-    (car (last body))))
+  (require 'cl))
 
 
 (defmacro assoc** (key list &optional testfn)
@@ -104,8 +96,7 @@ Equality is defined by TESTFN if non-nil or by `equal' if nil."
                                t)
              `(cl-assoc ,key ,list :test (or ,testfn #'equal)))
       (when-fn% 'assoc* 'cl
-        `(with-no-warnings
-           (assoc* ,key ,list :test (or ,testfn #'equal)))))))
+        `(assoc* ,key ,list :test (or ,testfn #'equal))))))
 
 
 ;; Unify `cl-mapcar' and `mapcar*'
@@ -124,8 +115,7 @@ SEQ, this is like `mapcar'.  With several, it is like the Common Lisp
                               t)
             `(cl-mapcar ,fn ,seq ,@seqs))
     `(when-fn% 'mapcar* 'cl
-       (with-no-warnings
-         (mapcar* ,fn ,seq ,@seqs)))))
+       (mapcar* ,fn ,seq ,@seqs))))
 
 
 (defmacro remove-if* (pred seq &rest keys)
@@ -142,8 +132,7 @@ Optional argument KEYS :key :count :start :end :from-end."
                               (pred seq &rest keys)
                               t)
             `(cl-remove-if ,pred ,seq ,@keys))
-    `(with-no-warnings
-      (remove-if ,pred ,seq ,@keys))))
+    `(remove-if ,pred ,seq ,@keys)))
 
 
 (defmacro member-if* (pred list &rest keys)
@@ -158,8 +147,7 @@ Optional argument KEYS :key."
             (declare-function cl-member-if (pred seq &rest keys)
                               t)
             `(cl-member-if ,pred ,list ,@keys))
-    `(with-no-warnings
-       (member-if ,pred ,list ,@keys))))
+    `(member-if ,pred ,list ,@keys)))
 
 
 (defmacro every* (pred &rest seq)
@@ -173,8 +161,7 @@ Optional argument KEYS :key."
                               t)
             `(cl-every ,pred ,@seq))
     (when-fn% 'every 'cl
-      `(with-no-warnings
-         (every ,pred ,@seq)))))
+      `(every ,pred ,@seq))))
 
 
 (defmacro some* (pred &rest seq)
@@ -188,8 +175,7 @@ Optional argument KEYS :key."
                               t)
             `(cl-some ,pred ,@seq))
     (when-fn% 'some 'cl
-      `(with-no-warnings
-         (some ,pred ,@seq)))))
+      `(some ,pred ,@seq))))
 
 (defmacro loop* (&rest clause)
   "The Common Lisp `loop' macro.
@@ -198,8 +184,7 @@ accumulate clause and Miscellaneous clause."
   (if-fn% 'cl-loop 'cl-lib
           `(cl-loop ,@clause)
     (when-fn% 'loop 'cl
-      `(with-no-warnings
-         (loop ,@clause)))))
+      `(loop ,@clause))))
 
 
 (defmacro time (&rest form)
