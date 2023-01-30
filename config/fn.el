@@ -82,6 +82,13 @@ If optional UNIQUELY is non-nil then push uniquely."
     (require 'cl)))
 
 
+(when-fn% 'with-no-warnings nil
+  (defun with-no-warnings (&rest body)
+    "Prevents byte-compiler warnings in the body."
+    (declare (indent 0))
+    (car (last body))))
+
+
 (defmacro assoc** (key list &optional testfn)
   "Return non-nil if KEY is equal to the `car' of an element of LIST.
 
