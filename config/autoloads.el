@@ -168,14 +168,14 @@
         (autoload* 'run-chez (v-home%> "config/chez")
                    "Toggle chez process in buffer `*chez*'." t)))
 
-    ;; Org `ob' for Scheme
-    (prog1
-        (compile-unit% (emacs-home* "config/ob-schemes.el") t)
-      (when (*org-babel-schemes*)
-        (autoload* 'org-babel-execute:scheme*
-                   (v-home%> "config/ob-schemes")
-                   "Autoload `org-babel-execute:scheme*'." t)
-        (fset 'org-babel-execute:scheme 'org-babel-execute:scheme*)))
+    ;; ;; Org `ob' for Scheme
+    ;; (prog1
+    ;;     (compile-unit% (emacs-home* "config/ob-schemes.el") t)
+    ;;   (when (*org-babel-schemes*)
+    ;;     (autoload* 'org-babel-execute:scheme*
+    ;;                (v-home%> "config/ob-schemes")
+    ;;                "Autoload `org-babel-execute:scheme*'." t)
+    ;;     (fset 'org-babel-execute:scheme 'org-babel-execute:scheme*)))
 
     ;; Sudoku
     (prog1
