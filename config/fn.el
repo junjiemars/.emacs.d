@@ -88,17 +88,10 @@ Equality is defined by TESTFN if non-nil or by `equal' if nil."
     `(assoc* ,key ,list :test (or ,testfn #'equal))))
 
 
-;; Unify `cl-mapcar' and `mapcar*'
-(defmacro mapcar** (fn seq &rest seqs)
-  "Apply FUNCTION to each element of SEQ, and make a list of the results.
-If there are several SEQs, FUNCTION is called with that many arguments,
-and mapping stops as soon as the shortest list runs out.  With just one
-SEQ, this is like `mapcar'.  With several, it is like the Common Lisp
-`mapcar' function extended to arbitrary sequence types.
-\n(FN FUNCTION SEQ...)"
+(defalias 'mapcar**
   (if-fn% 'cl-mapcar 'cl-lib
-          `(cl-mapcar ,fn ,seq ,@seqs)
-    `(mapcar* ,fn ,seq ,@seqs)))
+          #'cl-mapcar
+    #'mapcar*))
 
 
 (defalias 'remove-if*
