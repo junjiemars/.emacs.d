@@ -36,9 +36,6 @@
 ;; require
 ;;;;
 
-;; (eval-when-compile (require 'cl))
-
-(eval-when-compile (require 'guds))
 
 (require 'guds)
 
@@ -97,25 +94,26 @@ to lldb.")
 ;;  gud-* declarations
 ;;;;
 
-(declare-function gud-basic-call    "gud" t)
-(declare-function gud-break         "gud" t)
-(declare-function gud-call          "gud" t)
-(declare-function gud-cont          "gud" t)
-(declare-function gud-common-init   "gud" t)
-(declare-function gud-down          "gud" t)
-(declare-function gud-finish        "gud" t)
-(declare-function gud-jump          "gud" t)
-(declare-function gud-next          "gud" t)
-(declare-function gud-print         "gud" t)
-(declare-function gud-pv            "gud" t)
-(declare-function gud-query-cmdline "gud" t)
-(declare-function gud-remove        "gud" t)
-(declare-function gud-statement     "gud" t)
-(declare-function gud-step          "gud" t)
-(declare-function gud-stepi         "gud" t)
-(declare-function gud-tbreak        "gud" t)
-(declare-function gud-until         "gud" t)
-(declare-function gud-up            "gud" t)
+(declare-function gud*-find-c-last-expr "guds")
+(declare-function gud-basic-call    "gud")
+(declare-function gud-break         "gud")
+(declare-function gud-call          "gud")
+(declare-function gud-cont          "gud")
+(declare-function gud-common-init   "gud")
+(declare-function gud-down          "gud")
+(declare-function gud-finish        "gud")
+(declare-function gud-jump          "gud")
+(declare-function gud-next          "gud")
+(declare-function gud-print         "gud")
+(declare-function gud-pv            "gud")
+(declare-function gud-query-cmdline "gud")
+(declare-function gud-remove        "gud")
+(declare-function gud-statement     "gud")
+(declare-function gud-step          "gud")
+(declare-function gud-stepi         "gud")
+(declare-function gud-tbreak        "gud")
+(declare-function gud-until         "gud")
+(declare-function gud-up            "gud")
 
  ;; end of gud-* declarations
 
