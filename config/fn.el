@@ -7,7 +7,7 @@
 ;;
 ;;; Code:
 
-(defalias 'range #'number-sequence)
+(fset 'range #'number-sequence)
 
 (unless-fn% 'char= nil
   (fset 'char= #'char-equal))
@@ -78,41 +78,37 @@ If optional UNIQUELY is non-nil then push uniquely."
 (when-version% <= 24.1 (require 'cl-lib))
 
 
-(defmacro assoc** (key list &optional testfn)
-  "Return non-nil if KEY is equal to the `car' of an element of LIST.
-
-The value is actually the first element of LIST whose car equals KEY.
-Equality is defined by TESTFN if non-nil or by `equal' if nil."
-  (if-fn% 'cl-assoc 'cl-lib
-          `(cl-assoc ,key ,list :test (or ,testfn #'equal))
-    `(assoc* ,key ,list :test (or ,testfn #'equal))))
+(fset 'assoc**
+      (if-fn% 'cl-assoc 'cl-lib
+              #'cl-assoc
+        #'assoc*))
 
 
-(defalias 'mapcar**
+(fset 'mapcar**
   (if-fn% 'cl-mapcar 'cl-lib
           #'cl-mapcar
     #'mapcar*))
 
 
-(defalias 'remove-if*
+(fset 'remove-if*
   (if-fn% 'cl-remove-if 'cl-lib
           #'cl-remove-if
     #'remove-if))
 
 
-(defalias 'member-if*
+(fset 'member-if*
   (if-fn% 'cl-member-if 'cl-lib
           #'cl-member-if
     #'member-if))
 
 
-(defalias 'every*
+(fset 'every*
   (if-fn% 'cl-every 'cl-lib
           #'cl-every
     #'every))
 
 
-(defalias 'some*
+(fset 'some*
   (if-fn% 'cl-some 'cl-lib
           #'cl-some
     #'some))

@@ -60,7 +60,7 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
                       ("wiki" "https://en.wikipedia.org/"
                        . "w/index.php?search="))))
     (lambda (&optional n)
-      (if n (let ((x (assoc** (car n) b #'string=)))
+      (if n (let ((x (assoc** (car n) b :test #'string=)))
               (if x (setcdr x (cdr n))
                 (setq b (cons n b))))
         b)))
@@ -86,7 +86,7 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
                    (string= "" engine))
                (caar (*web-defs*))
              engine)))
-    (let ((en (assoc** n (*web-defs*) #'string=)))
+    (let ((en (assoc** n (*web-defs*) :test #'string=)))
       (unless en (user-error* "Engine no found in `%s'" n))
       (make-thread*
        (lambda ()

@@ -80,7 +80,7 @@
                         "</span>" .
                         (dict-fn-remove-html-tag)))))))
     (lambda (&optional n)
-      (if n (let ((x (assoc** (car n) b #'string=)))
+      (if n (let ((x (assoc** (car n) b :test #'string=)))
               (if x (setcdr x (cdr n))
                 (setq b (cons n b))))
         b)))
@@ -93,9 +93,9 @@
       (cond
        ((or (consp dict) (not b))
         (setq b
-              (let ((dd (cdr (assoc**
-                              (or (car dict) (caar (*dict-defs*)))
-                              (*dict-defs*) #'string=))))
+              (let ((dd (cdr (assoc** (or (car dict)
+                                          (caar (*dict-defs*)))
+                                      (*dict-defs*) :test #'string=))))
                 (list (cons 'dict (list dd))
                       (cons 'style
                             (or (cdr dict)
@@ -190,12 +190,12 @@
   (when (*dict-debug-log* 'logging)
     (write-region (point-min) (point-max)
                   (path! (*dict-debug-log* 'dict))))
-  (let* ((dict (cadr (assoc** 'dict args #'eq)))
-         (style (cadr (assoc** 'style args #'eq)))
+  (let* ((dict (cadr (assoc** 'dict args :test #'eq)))
+         (style (cadr (assoc** 'style args :test #'eq)))
          (ss (mapcar
               (lambda (x)
                 (goto-char (point-min))
-                (let* ((re (cdr (assoc** x dict #'string=)))
+                (let* ((re (cdr (assoc** x dict :test #'string=)))
                        (b (re-search-forward (caar re) nil t (cdar re)))
                        (e (and b (re-search-forward (cadr re) nil t)))
                        (html (and b e (< b e)
@@ -231,7 +231,7 @@
                                   (or (car *dict-name-history*)
                                       (car ns))
                                   '*dict-name-history*))
-                  (dd (cdr (assoc** d (*dict-defs*) #'string=)))
+                  (dd (cdr (assoc** d (*dict-defs*) :test #'string=)))
                   (sr (remove-if* (lambda (x) (string= x "url"))
                                   (mapcar #'car dd)))
                   (ss (read-string
@@ -247,7 +247,7 @@
                        `(,(split-string* ss "," t "[ \n]*"))))))))
   (let* ((d1 (dict-find-def dict))
          (url (cdr (assoc** "url" (cadr (assoc** 'dict d1 #'eq))
-                            #'string=))))
+                            :test #'string=))))
     (make-thread* (lambda ()
                     (url-retrieve*
                      (concat url (url-hexify-string what))

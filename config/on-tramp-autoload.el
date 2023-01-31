@@ -29,7 +29,7 @@
   ;; C-x d /docker:user@container:/path/
   (when% (executable-find% "docker")
     (when-var% tramp-methods 'tramp
-      (unless (cdr (assoc** "docker" tramp-methods #'string=))
+      (unless (cdr (assoc** "docker" tramp-methods :test #'string=))
         (push! '("docker"
                  (tramp-login-program "docker")
                  (tramp-login-args
@@ -47,4 +47,3 @@
 
 
 ;; end of on-tramp-autoload.el
-

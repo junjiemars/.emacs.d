@@ -89,7 +89,7 @@ See also: `parse-colon-path'."
     `(let ((,e ,env) (,vs ,vars))
        (dolist* (v ,vs)
          (when (and (stringp v) (not (string= v "")))
-           (let ((v1 (cdr (assoc** v ,e #'string=))))
+           (let ((v1 (cdr (assoc** v ,e :test #'string=))))
              (when (stringp v1)
                (setenv v v1))))))))
 

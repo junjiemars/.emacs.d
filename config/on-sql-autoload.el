@@ -243,14 +243,14 @@ Optional prefix argument ENHANCED, displays additional details."
     (when-fn% 'sql-oracle-restore-settings 'sql
 
       ;; oralce: replace `:list-all'
-      (when (plist-get (cdr (assoc** 'oracle sql-product-alist))
+      (when (plist-get (cdr (assoc** 'oracle sql-product-alist :test #'eq))
                        :list-all)
-        (plist-put (cdr (assoc** 'oracle sql-product-alist))
+        (plist-put (cdr (assoc** 'oracle sql-product-alist :test #'eq))
                    :list-all
                    #'sql-oracle-list-all*))
 
       ;; oracle: new `:list-code'
-      (plist-put (cdr (assoc** 'oracle sql-product-alist))
+      (plist-put (cdr (assoc** 'oracle sql-product-alist :test #'eq))
                  :list-code
                  #'sql-oracle-list-code))
 
@@ -264,29 +264,29 @@ Optional prefix argument ENHANCED, displays additional details."
                     "mysql"))))
 
     ;; mysql: new `:desc-table'
-    (plist-put (cdr (assoc** 'mysql sql-product-alist))
+    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
                :desc-table
                #'sql-mysql-desc-table)
 
     ;; mysql: new `:desc-plan'
-    (plist-put (cdr (assoc** 'mysql sql-product-alist))
+    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
                :desc-plan
                #'sql-mysql-desc-plan)
 
     ;; mysql: new `:list-code'
-    (plist-put (cdr (assoc** 'mysql sql-product-alist))
+    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
                :list-code
                #'sql-mysql-list-code)
 
     ;; mysql: new `:list-index'
-    (plist-put (cdr (assoc** 'mysql sql-product-alist))
+    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
                :list-index
                #'sql-mysql-list-index)
 
 
     (when-fn% 'sql-send-magic-terminator 'sql
       ;; mysql: `:terminator'
-      (plist-put (cdr (assoc** 'mysql sql-product-alist))
+      (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
                  :terminator
                  '("^.*\\G" . ""))
 

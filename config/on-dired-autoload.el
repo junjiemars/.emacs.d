@@ -259,8 +259,8 @@
   ;; [! zip x.zip ?] compress marked files to x.zip，
   ;; see `dired-compress-file-suffixes'.
   (when-var% dired-compress-files-suffixes 'dired-aux
-    (when% (and (not (assoc** "\\.zip\\'"
-                              dired-compress-file-suffixes #'string=))
+    (when% (and (not (assoc** "\\.zip\\'" dired-compress-file-suffixes
+                              :test #'string=))
                 (executable-find% "zip")
                 (executable-find% "unzip"))
       (push! '("\\.zip\\'" ".zip" "unzip") dired-compress-file-suffixes)))
@@ -272,12 +272,10 @@
       (when-var% dired-compress-file-suffixes 'dired-aux
         ;; [Z] uncompress from .7z
         (let ((uncompress (concat 7za? " x -t7z -aoa -o%o %i")))
-          (if% (assoc** "\\.7z\\'"
-                        dired-compress-file-suffixes
-                        #'string=)
-              (setcdr (assoc** "\\.7z\\'"
-                               dired-compress-file-suffixes
-                               #'string=)
+          (if% (assoc** "\\.7z\\'" dired-compress-file-suffixes
+                        :test #'string=)
+              (setcdr (assoc** "\\.7z\\'" dired-compress-file-suffixes
+                               :test #'string=)
                       (list "" uncompress))
             (push! (list "\\.7z\\'" "" uncompress)
                    dired-compress-file-suffixes)))
@@ -285,12 +283,10 @@
         (when-fn% 'dired-do-compress-to 'dired-aux
           (let ((compress (concat 7za? " a -t7z %o %i")))
             (require 'format-spec)
-            (if% (assoc** "\\.7z\\'"
-                          dired-compress-files-alist
-                          #'string=)
-                (setcdr (assoc** "\\.7z\\'"
-                                 dired-compress-files-alist
-                                 #'string=)
+            (if% (assoc** "\\.7z\\'" dired-compress-files-alist
+                          :test #'string=)
+                (setcdr (assoc** "\\.7z\\'" dired-compress-files-alist
+                                 :test #'string=)
                         compress)
               (push! (cons "\\.7z\\'" compress)
                      dired-compress-files-alist)))))))
@@ -313,19 +309,20 @@
       (when% (or (executable-find% "gzip")
                  (executable-find% "7z")
                  (executable-find% "7za"))
-        (when% (assoc** ":" dired-compress-file-suffixes #'string=)
+        (when% (assoc** ":" dired-compress-file-suffixes :test #'string=)
           (setq dired-compress-file-suffixes
                 (remove (assoc** ":" dired-compress-file-suffixes
-                                 #'string=)
+                                 :test #'string=)
                         dired-compress-file-suffixes)))
         (when% (and (not (executable-find% "gunzip"))
                     (or (executable-find% "7z")
                         (executable-find% "7za")))
           (let ((7za? (concat (if (executable-find% "7z") "7z" "7za")
                               " x -tgz -aoa %i")))
-            (if% (assoc** "\\.gz\\'" dired-compress-file-suffixes #'string=)
-                (setcdr (assoc** "\\.gz\\'"
-                                 dired-compress-file-suffixes #'string=)
+            (if% (assoc** "\\.gz\\'" dired-compress-file-suffixes
+                          :test #'string=)
+                (setcdr (assoc** "\\.gz\\'" dired-compress-file-suffixes
+                                 :test #'string=)
                         (list "" 7za?))
               (push! (cons "\\.gz\\'" 7za?) dired-compress-file-suffixes))))
 

@@ -85,15 +85,15 @@
 
   (when-platform% 'darwin
     (when-fn% 'makefile-gmake-mode 'make-mode
-      (when% (and (assoc** "[Mm]akefile\\'" auto-mode-alist)
+      (when% (and (assoc** "[Mm]akefile\\'" auto-mode-alist :test #'string=)
                   (executable-find%
                    "make"
                    (lambda (make)
                      (let ((x (shell-command* make "--version")))
                        (and (zerop (car x))
                             (string-match "^GNU Make.*" (cdr x)))))))
-        (when% (assoc** "[Mm]akefile\\'" auto-mode-alist)
-          (setcdr (assoc** "[Mm]akefile\\'" auto-mode-alist)
+        (when% (assoc** "[Mm]akefile\\'" auto-mode-alist :test #'string=)
+          (setcdr (assoc** "[Mm]akefile\\'" auto-mode-alist :test #'string=)
                   'makefile-gmake-mode))))))
 
 
