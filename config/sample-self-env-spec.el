@@ -20,7 +20,6 @@
  (list :name nil ;; 'dracula
        :custom-theme-directory (emacs-home* "theme/")
        :compile nil ;; expert option
-       :inhibit-splash-screen nil
        :allowed nil))
 
 ;;; frame
@@ -36,6 +35,7 @@
                    "Consolas-13"
                  "Monaco-13"))
        :frame-resize-pixelwise nil
+       :inhibit-splash-screen nil
        :allowed t))
 
 
