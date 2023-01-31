@@ -20,6 +20,7 @@
  (list :name nil ;; 'dracula
        :custom-theme-directory (emacs-home* "theme/")
        :compile nil ;; expert option
+       :inhibit-splash-screen nil
        :allowed nil))
 
 ;;; frame
