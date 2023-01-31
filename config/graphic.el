@@ -22,7 +22,9 @@
 (when-fn% 'tab-bar-mode nil (tab-bar-mode -1))
 
 ;; Go straight to scratch buffer on startup
-(setq% inhibit-splash-screen t)
+(when (*self-env-spec* :get :frame :allowed)
+  (setq inhibit-splash-screen
+        (*self-env-spec* :get :frame :inhibit-splash-screen)))
 
 
 
