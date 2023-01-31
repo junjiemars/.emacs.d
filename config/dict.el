@@ -246,7 +246,7 @@
                          `(, sr)
                        `(,(split-string* ss "," t "[ \n]*"))))))))
   (let* ((d1 (dict-find-def dict))
-         (url (cdr (assoc** "url" (cadr (assoc** 'dict d1 #'eq))
+         (url (cdr (assoc** "url" (cadr (assoc** 'dict d1 :test #'eq))
                             :test #'string=))))
     (make-thread* (lambda ()
                     (url-retrieve*
