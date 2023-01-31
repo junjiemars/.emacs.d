@@ -7,7 +7,7 @@
 ;;;;
 
 
-(defsubst self-glyph-font! (name size scripts)
+(defun self-glyph-font! (name size scripts)
   "Set glyph font's NAME and SIZE in graphic mode."
   (when-fn% 'set-fontset-font nil
     (let ((fs (font-spec :family name :size size)))
@@ -18,7 +18,7 @@
           (set-fontset-font t c fs))))))
 
 
-(defsubst char-width* (char)
+(defun char-width* (char)
   "Return width in pixels of CHAR in graphic mode."
   (let* ((s (char-to-string char))
          (glyphs (with-temp-buffer
