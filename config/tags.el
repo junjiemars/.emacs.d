@@ -30,20 +30,7 @@ Examples:
               (and (zerop (car ver))
                    (string-match "Exuberant Ctags [.0-9]+"
                                  (cdr ver))))))
-         ``(:bin "ctags" :cmd "ctags -e %s -o %s -a %s"
-                 :opt ,(list "--langmap=c:.h.c --c-kinds=+px"
-                             "--langmap=c++:.h.cc--c++-kinds=+px")))
-        ((executable-find%
-          "etags"
-          (lambda (bin)
-            (let ((ver (shell-command* bin "--version")))
-              (and (zerop (car ver))
-                   (string-match "Exuberant Ctags [.0-9]+"
-                                 (cdr ver))))))
-         ;; on Linux/Darwin ctags may be has the synonym: etags
-         ``(:bin "etags" :cmd "etags -e %s -o %s -a %s"
-                 :opt ,(list "--langmap=c:.h.c --c-kinds=+px"
-                             "--langmap=c++:.h.cc--c++-kinds=+px")))
+         ``(:bin "ctags" :cmd "ctags -e %s -o %s -a %s"))
         ((executable-find%
           "etags"
           (lambda (bin)
@@ -51,8 +38,7 @@ Examples:
               (and (zerop (car ver))
                    (string-match "etags (GNU Emacs [.0-9]+)"
                                  (cdr ver))))))
-         ``(:bin "etags" :cmd "etags %s -o %s -a %s"
-                 :opt ,(list "-l c" "-l lisp" "-l auto"))))
+         ``(:bin "etags" :cmd "etags %s -o %s -a %s")))
   "The default tags program.
 This is used by commands like `make-tags'.
 
@@ -92,12 +78,25 @@ when `desktop-globals-to-save' include it."
 
 
 (defvar *tags-option-history*
-  (*tags* :opt)
+  (cond ((string= "ctags" (*tags*))
+         `("--langmap=c:.h.c --c-kinds=+px"
+           "--langmap=c++:.h.cc--c++-kinds=+px"
+           ,(eval-when-compile
+              (let ((rc (shell-command* "rustc" "--print sysroot")))
+                (when (zerop (car rc))
+                  (let ((d (concat
+                            (string-trim> (cdr rc))
+                            "/lib/rustlib/src/rust/src/etc/ctags.rust")))
+                    (when (file-exists-p d)
+                      (concat "--options=" d))))))))
+        ((string= "etags" (*tags*))
+         `("-l c" "-l lisp" "-l auto"))
+        (t nil))
   "Tags option history list.")
 
 (defvar *tags-skip-history*
   (list "cpp\\|c\\+\\+\\|/python.*?/\\|/php.*?/\\|/ruby.*?/")
-  "Tags option history list.")
+  "Tags skip history list.")
 
 
 (defalias 'mount-tags #'visit-tags-table
