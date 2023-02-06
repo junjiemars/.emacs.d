@@ -67,6 +67,16 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
   "Searching engines using by `lookup-web'.")
 
 
+(defalias 'web-find-def
+  (lexical-let% ((b))
+    (lambda  (&optional en)
+      (cond ((or en (not b))
+             (setq b (assoc** (or en (caar (*web-defs*)))
+                              (*web-defs*) :test #'string=)))
+            (t b))))
+  "Find WEB's definition in `*web-defs*'.")
+
+
 (defvar *lookup-web-history* nil
   "Searching history using by `lookup-web'.")
 
@@ -82,21 +92,16 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
                           (or (car *lookup-web-history*)
                               (car se))
                           '*lookup-web-history*)))))
-  (let ((n (if (or (null engine)
-                   (string= "" engine))
-               (caar (*web-defs*))
-             engine)))
-    (let ((en (assoc** n (*web-defs*) :test #'string=)))
-      (unless en (user-error* "Engine no found in `%s'" n))
-      (make-thread*
-       (lambda ()
-         (funcall browse-url-browser-function
-                  (let ((en1 (cdr en)))
-                    (require 'browse-url)
-                    (browse-url-url-encode-chars (concat (car en1)
-                                                         (cdr en1)
-                                                         what)
-                                                 "[ '()!`\"]"))))))))
+  (let ((en (web-find-def engine)))
+    (make-thread*
+     (lambda ()
+       (funcall browse-url-browser-function
+                (let ((en1 (cdr en)))
+                  (require 'browse-url)
+                  (browse-url-url-encode-chars (concat (car en1)
+                                                       (cdr en1)
+                                                       what)
+                                               "[ '()!`\"]")))))))
 
 
 (if-feature-eww%
