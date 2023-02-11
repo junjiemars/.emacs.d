@@ -459,6 +459,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
                     (t "/* C preprocessor output failed! */")))
       (message "Invoking [%s] ...done" dump)
       (c-mode)
+      (goto-char 0)
       (view-mode 1))))
 
 
