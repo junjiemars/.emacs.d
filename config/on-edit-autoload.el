@@ -321,8 +321,8 @@ If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
                                        'face 'minibuffer-prompt))))))
   (let ((bounds
          (catch 'block
-           (let* ((lss '(?\' ?\" ?\( ?\[ ?\{))
-                  (rss '(?\' ?\" ?\) ?\] ?\}))
+           (let* ((lss '(?\' ?\" ?\( ?\[ ?\{ ?\`))
+                  (rss '(?\' ?\" ?\) ?\] ?\} ?\`))
                   (ls (if (characterp quoted)
                           (list quoted)
                         lss))
