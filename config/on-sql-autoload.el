@@ -64,8 +64,9 @@ Optional prefix argument ENHANCED, displays additional details."
         (user-error "No SQL interactive buffer found"))
       (unless plan
         (user-error "No plan specified"))
-      (sql-execute-feature sqlbuf (format "*Desc plan %s*"
-                                          (car (split-string* plan)))
+      (sql-execute-feature sqlbuf
+                           (format "*Desc plan %s*"
+                                   (car (split-string* plan)))
                            :desc-plan enhanced plan))))
 
 
@@ -98,6 +99,7 @@ Optional prefix argument ENHANCED, displays additional details."
       (sql-execute-feature sqlbuf (format "*List index %s*" name)
                            :list-index enhanced name))))
 
+
 
 ;;;
 ;; oracle
@@ -106,8 +108,9 @@ Optional prefix argument ENHANCED, displays additional details."
 (unless-fn% 'sql-oracle--list-object-name 'sql
 
   (defun sql-oracle--list-object-name (obj-name)
-    (format (concat "CASE WHEN REGEXP_LIKE (%s, q'/^[A-Z0-9_#$]+$/','c')"
-                    " THEN %s ELSE '\"'|| %s ||'\"' END ")
+    (format (concat
+             "CASE WHEN REGEXP_LIKE (%s, q'/^[A-Z0-9_#$]+$/','c')"
+             " THEN %s ELSE '\"'|| %s ||'\"' END ")
             obj-name obj-name obj-name)))
 
 
@@ -128,20 +131,23 @@ Optional prefix argument ENHANCED, displays additional details."
            (concat
             "SELECT INITCAP(x.object_type) AS SQL_EL_TYPE "
             ", "  (sql-oracle--list-object-name "x.owner")
-            " ||'.'|| "  (sql-oracle--list-object-name "x.object_name")
+            " ||'.'|| "
+            (sql-oracle--list-object-name "x.object_name")
             " AS SQL_EL_NAME "
             "FROM all_objects x "
             "WHERE x.object_type NOT LIKE '%% BODY' "
             "AND x.owner <> 'SYS' "
             "ORDER BY SQL_EL_TYPE, SQL_EL_NAME;")))
-      (sql-redirect sqlbuf
-                    (concat "SET LINESIZE 80 PAGESIZE 50000 TRIMOUT ON"
-                            " TAB OFF TIMING OFF FEEDBACK OFF"))
-      (sql-redirect sqlbuf
-                    (list "COLUMN SQL_EL_TYPE  HEADING \"Type\" FORMAT A19"
-                          "COLUMN SQL_EL_NAME  HEADING \"Name\""
-                          (format "COLUMN SQL_EL_NAME  FORMAT A%d"
-                                  (if enhanced 60 35))))
+      (sql-redirect
+       sqlbuf
+       (concat "SET LINESIZE 80 PAGESIZE 50000 TRIMOUT ON"
+               " TAB OFF TIMING OFF FEEDBACK OFF"))
+      (sql-redirect
+       sqlbuf
+       (list "COLUMN SQL_EL_TYPE  HEADING \"Type\" FORMAT A19"
+             "COLUMN SQL_EL_NAME  HEADING \"Name\""
+             (format "COLUMN SQL_EL_NAME  FORMAT A%d"
+                     (if enhanced 60 35))))
       (sql-redirect sqlbuf
                     (if enhanced enhanced-sql simple-sql)
                     outbuf)
@@ -158,20 +164,21 @@ Optional prefix argument ENHANCED, displays additional details."
     (let ((settings (sql-oracle-save-settings sqlbuf))
           (simple-sql
            (concat
-            "SELECT text"
-            " FROM all_source"
+            "SELECT text FROM all_source"
             (format " WHERE name = '%s'" target)
             " ORDER BY line;"))
           (enhanced-sql nil))
       (sql-redirect sqlbuf
                     (if enhanced enhanced-sql simple-sql)
                     outbuf)
-      (sql-redirect sqlbuf
-                    (concat "SET LINESIZE 80 PAGESIZE 50000 TRIMOUT ON"
-                            " TAB OFF TIMING OFF FEEDBACK OFF"))
+      (sql-redirect
+       sqlbuf
+       (concat "SET LINESIZE 80 PAGESIZE 50000 TRIMOUT ON"
+               " TAB OFF TIMING OFF FEEDBACK OFF"))
       (sql-oracle-restore-settings sqlbuf settings))))
 
 
+ ;; end of oracle
 
 ;;;
 ;; mysql
@@ -243,16 +250,19 @@ Optional prefix argument ENHANCED, displays additional details."
     (when-fn% 'sql-oracle-restore-settings 'sql
 
       ;; oralce: replace `:list-all'
-      (when (plist-get (cdr (assoc** 'oracle sql-product-alist :test #'eq))
-                       :list-all)
-        (plist-put (cdr (assoc** 'oracle sql-product-alist :test #'eq))
-                   :list-all
-                   #'sql-oracle-list-all*))
+      (when (plist-get
+             (cdr (assoc** 'oracle sql-product-alist :test #'eq))
+             :list-all)
+        (plist-put
+         (cdr (assoc** 'oracle sql-product-alist :test #'eq))
+         :list-all
+         #'sql-oracle-list-all*))
 
       ;; oracle: new `:list-code'
-      (plist-put (cdr (assoc** 'oracle sql-product-alist :test #'eq))
-                 :list-code
-                 #'sql-oracle-list-code))
+      (plist-put
+       (cdr (assoc** 'oracle sql-product-alist :test #'eq))
+       :list-code
+       #'sql-oracle-list-code))
 
 
     ;; mysql: `sql-mysql-program'
@@ -286,9 +296,10 @@ Optional prefix argument ENHANCED, displays additional details."
 
     (when-fn% 'sql-send-magic-terminator 'sql
       ;; mysql: `:terminator'
-      (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
-                 :terminator
-                 '("^.*\\G" . ""))
+      (plist-put
+       (cdr (assoc** 'mysql sql-product-alist :test #'eq))
+       :terminator
+       '("^.*\\G" . ""))
 
       (ad-enable-advice #'sql-send-magic-terminator 'before
                         "sql-send-magic-terminator-before")
@@ -301,7 +312,8 @@ Optional prefix argument ENHANCED, displays additional details."
 
 
   (when-fn% 'sql-show-sqli-buffer 'sql
-    (define-key% sql-mode-map (kbd "C-c C-z") #'sql-show-sqli-buffer*)))
+    (define-key% sql-mode-map
+      (kbd "C-c C-z") #'sql-show-sqli-buffer*)))
 
 
 
