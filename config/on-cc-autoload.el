@@ -617,33 +617,32 @@ See `align-entire'."
 
 (with-eval-after-load 'cc-mode
 
-  (when-var% c-mode-map 'cc-mode
-
-    ;; keymap: find c include file
-    (when-fn% 'ff-find-other-file 'find-file
-      (define-key% c-mode-map (kbd "C-c f i") #'cc*-find-include-file)
-      ;; for c++, add include via `cc*-extra-include'
-      (define-key% c++-mode-map (kbd "C-c f i") #'cc*-find-include-file))
-
-    ;; keymap: indent line or region
-    (when-fn% 'c-indent-line-or-region 'cc-cmds
-      (define-key% c-mode-map (kbd "TAB") #'c-indent-line-or-region))
-
-    ;; keymap: dump predefined macros
-    (define-key% c-mode-map (kbd "C-c #") #'cc*-dump-predefined-macros)
-
-    ;; keymap: raw newline
-    (define-key% c-mode-map (kbd "RET") #'newline*))
-
   ;; load `tags'
-  (when-fn% 'make-c-tags 'tags
-    (require 'tags))
+  (when-fn% 'make-c-tags 'tags (require 'tags))
 
   ;; load styles
   (c-add-style (car cc*-style-nginx) (cdr cc*-style-nginx))
 
-  ;; keymap: align
-  (define-key% c-mode-map (kbd "C-c |") #'cc*-style-align-entire))
+  ;; keymap:
+  ;; find include file
+  (when-fn% 'ff-find-other-file 'find-file
+    (define-key% c-mode-map (kbd "C-c f i") #'cc*-find-include-file)
+    ;; for c++, add include via `cc*-extra-include'
+    (define-key% c++-mode-map (kbd "C-c f i") #'cc*-find-include-file))
+  ;; indent line or region
+  (when-fn% 'c-indent-line-or-region 'cc-cmds
+    (define-key% c-mode-map (kbd "TAB") #'c-indent-line-or-region))
+  ;; dump predefined macros
+  (define-key% c-mode-map (kbd "C-c #") #'cc*-dump-predefined-macros)
+  ;; raw newline
+  (define-key% c-mode-map (kbd "RET") #'newline*)
+  ;; align style
+  (define-key% c-mode-map (kbd "C-c |") #'cc*-style-align-entire)
+  ;; `subword-mode'
+  (define-key% c-mode-map (kbd "C-c C-w")
+    (if-fn% 'subword-mode 'subword
+            #'subword-mode
+      #'c-subword-mode)))
 
 
 (with-eval-after-load 'cmacexp

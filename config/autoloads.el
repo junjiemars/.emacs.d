@@ -238,12 +238,6 @@
   (define-key% (current-global-map) (kbd "C-x r g") #'string-insert-rectangle)
   (define-key% (current-global-map) (kbd "C-x r v") #'view-register)
 
-  ;; Buffer
-  (unless-fn% 'revert-buffer-quick nil
-    (define-key% (current-global-map) (kbd "C-x x g") #'revert-buffer))
-  (when-fn% 'linum-mode 'linum
-    (define-key% (current-global-map) (kbd "C-c b l") #'linum-mode))
-
   ;; Line
   (when-fn% 'electric-newline-and-maybe-indent 'electric
     ;; Default behaviour of RET

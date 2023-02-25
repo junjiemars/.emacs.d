@@ -803,6 +803,18 @@ If `current-prefix-arg' < 0, then repeat n time with END in reversed."
 (define-key% (current-global-map) (kbd "C-x x t") #'toggle-truncate-lines)
 (define-key% (current-global-map) (kbd "C-x RET =") #'get-buffer-coding-system)
 
+(define-key% (current-global-map) (kbd "C-x x g")
+  (if-fn% 'revert-buffer-quick nil
+          #'revert-buffer-quick
+    #'revert-buffer))
+(when-fn% 'linum-mode 'linum
+  (define-key% (current-global-map) (kbd "C-x x l") #'linum-mode))
+(when-fn% 'toggle-word-wrap 'simple
+  (define-key% (current-global-map) (kbd "C-x x w") #'toggle-word-wrap))
+(when-fn% 'whitespace-mode 'whitespace
+  (define-key% (current-global-map) (kbd "C-x x SPC") #'whitespace-mode))
+
+
 ;; Kill
 (define-key% (current-global-map) (kbd "C-o") #'open-next-line)
 (define-key% (current-global-map) (kbd "C-M-o") #'open-previous-line)
