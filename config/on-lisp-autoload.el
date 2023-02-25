@@ -110,7 +110,10 @@
       (define-key% paredit-mode-map (kbd "C-M-f") nil)
       (define-key% paredit-mode-map (kbd "C-M-b") nil)
       (define-key% paredit-mode-map (kbd "C-M-d") nil)
-      (define-key% paredit-mode-map (kbd "C-M-u") nil))))
+      (define-key% paredit-mode-map (kbd "C-M-u") nil)
+      ;; disable `paredit-forward-up' keybindings
+      (define-key% paredit-mode-map (kbd "C-M-n") nil)
+      (define-key% paredit-mode-map (kbd "C-M-p") nil))))
 
 
  ;; end of feature: paredit
