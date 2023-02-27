@@ -50,14 +50,13 @@ about each column."
 (when-fn% 'sql-execute-feature 'sql
 
   (defun sql-desc-plan (plan &optional enhanced)
-    "Describe a query execution plan named PLAN.
+    "Describe an execution plan named PLAN.
 
 Optional prefix argument ENHANCED, displays additional details."
     (interactive
-     (list (region-active-if
-               (buffer-substring-no-properties (region-beginning)
-                                               (region-end))
-             (sql-read-table-name "Plan: "))
+     (list (buffer-substring-no-properties
+            (save-excursion (backward-paragraph) (point))
+            (save-excursion (forward-paragraph) (point)))
            current-prefix-arg))
     (let ((sqlbuf (sql-find-sqli-buffer)))
       (unless sqlbuf
