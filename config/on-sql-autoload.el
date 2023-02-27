@@ -219,9 +219,7 @@ Optional prefix argument ENHANCED, displays additional details."
           (string-trim> (sql-mysql-norm-plan query)
                         "[ \t\n\r\\g\\G;]+")
           "\\G")))
-    (if enhanced
-        (sql-redirect sqlbuf sql outbuf)
-      (sql-send-string sql))))
+    (sql-redirect sqlbuf sql outbuf)))
 
 
 (defun sql-mysql-list-code (sqlbuf outbuf enhanced target)
