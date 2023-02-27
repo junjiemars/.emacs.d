@@ -187,6 +187,18 @@ Optional prefix argument ENHANCED, displays additional details."
 ;;;
 
 
+(defun sql-mysql-norm-plan (sql)
+  "Normlize SQL."
+  (with-temp-buffer
+    (insert sql)
+    (goto-char (point-min))
+    (flush-lines "[ \t]*\\(--+\\|#+\\).*")
+    (goto-char (point-min))
+    (while (search-forward-regexp "[ \t\n]+" nil t)
+      (replace-match " " t t))
+    (buffer-substring (point-min) (point-max))))
+
+
 (defun sql-mysql-desc-table (sqlbuf outbuf enhanced table)
   "Describe mysql table."
   (let ((simple-sql
@@ -199,30 +211,17 @@ Optional prefix argument ENHANCED, displays additional details."
                   outbuf)))
 
 
-(defun sql-mysql-norm-plan (sql)
-  "Normlize SQL."
-  (with-temp-buffer
-    (insert sql)
-    (goto-char (point-min))
-    (flush-lines "[ \t]*\\(--+\\|#+\\).*")
-    (goto-char (point-min))
-    (while (search-forward-regexp "[ \t\n]+" nil t)
-      (replace-match " " t t))
-    (buffer-substring (point-min) (point-max))))
-
 (defun sql-mysql-desc-plan (sqlbuf outbuf enhanced query)
   "Describe execution plan of mysql's QUERY."
-  (let ((simple-sql
+  (let ((sql
          (concat
-          "explain FORMAT=json "
+          "explain FORMAT=" (if enhanced "JSON " "TRADITIONAL ")
           (string-trim> (sql-mysql-norm-plan query)
                         "[ \t\n\r\\g\\G;]+")
-          "\\G"))
-        (enhanced-sql nil))
-    (message "%s" simple-sql)
-    (sql-redirect sqlbuf
-                  (if enhanced enhanced-sql simple-sql)
-                  outbuf)))
+          "\\G")))
+    (if enhanced
+        (sql-redirect sqlbuf sql outbuf)
+      (sql-send-string sql))))
 
 
 (defun sql-mysql-list-code (sqlbuf outbuf enhanced target)
@@ -258,6 +257,10 @@ Optional prefix argument ENHANCED, displays additional details."
 ;;;
 
 (with-eval-after-load 'sql
+
+  (when-fn% 'sql-show-sqli-buffer 'sql
+    (define-key% sql-mode-map
+      (kbd "C-c C-z") #'sql-show-sqli-buffer*))
 
   (when-fn% 'sql-execute-feature 'sql
 
@@ -320,17 +323,11 @@ Optional prefix argument ENHANCED, displays additional details."
                         "sql-send-magic-terminator-before")
       (ad-activate #'sql-send-magic-terminator t))
 
+    ;; features' keybindings
     (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-code)
     (define-key% sql-mode-map (kbd "C-c C-l i") #'sql-list-index)
     (define-key% sql-mode-map (kbd "C-c C-l T") #'sql-desc-table)
-    (define-key% sql-mode-map (kbd "C-c C-l P") #'sql-desc-plan))
-
-
-  (when-fn% 'sql-show-sqli-buffer 'sql
-    (define-key% sql-mode-map
-      (kbd "C-c C-z") #'sql-show-sqli-buffer*)))
-
-
+    (define-key% sql-mode-map (kbd "C-c C-l P") #'sql-desc-plan)))
 
 
  ;; end of on-sql-autoload.el
