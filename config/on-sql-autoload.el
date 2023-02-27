@@ -54,9 +54,12 @@ about each column."
 
 Optional prefix argument ENHANCED, displays additional details."
     (interactive
-     (list (buffer-substring-no-properties
-            (save-excursion (backward-paragraph) (point))
-            (save-excursion (forward-paragraph) (point)))
+     (list (region-active-if
+               (buffer-substring-no-properties
+                (region-beginning) (region-end))
+             (buffer-substring-no-properties
+              (save-excursion (backward-paragraph) (point))
+              (save-excursion (forward-paragraph) (point))))
            current-prefix-arg))
     (let ((sqlbuf (sql-find-sqli-buffer)))
       (unless sqlbuf
