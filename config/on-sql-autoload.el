@@ -187,7 +187,7 @@ Optional prefix argument ENHANCED, displays additional details."
 ;;;
 
 
-(defun sql-mysql-norm-plan (sql)
+(defun sql-mysql-norm (sql)
   "Normlize SQL."
   (with-temp-buffer
     (insert sql)
@@ -216,7 +216,7 @@ Optional prefix argument ENHANCED, displays additional details."
   (let ((sql
          (concat
           "explain FORMAT=" (if enhanced "JSON " "TRADITIONAL ")
-          (string-trim> (sql-mysql-norm-plan query)
+          (string-trim> (sql-mysql-norm query)
                         "[ \t\n\r\\g\\G;]+")
           "\\G")))
     (sql-redirect sqlbuf sql outbuf)))
