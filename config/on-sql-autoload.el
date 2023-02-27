@@ -199,14 +199,27 @@ Optional prefix argument ENHANCED, displays additional details."
                   outbuf)))
 
 
+(defun sql-mysql-norm-plan (sql)
+  "Normlize SQL."
+  (with-temp-buffer
+    (insert sql)
+    (goto-char (point-min))
+    (flush-lines "[ \t]*\\(--+\\|#+\\).*")
+    (goto-char (point-min))
+    (while (search-forward-regexp "[ \t\n]+" nil t)
+      (replace-match " " t t))
+    (buffer-substring (point-min) (point-max))))
+
 (defun sql-mysql-desc-plan (sqlbuf outbuf enhanced query)
   "Describe execution plan of mysql's QUERY."
   (let ((simple-sql
          (concat
           "explain FORMAT=json "
-          (string-trim> query "[\t\n\r\\g\\G;]+")
+          (string-trim> (sql-mysql-norm-plan query)
+                        "[ \t\n\r\\g\\G;]+")
           "\\G"))
         (enhanced-sql nil))
+    (message "%s" simple-sql)
     (sql-redirect sqlbuf
                   (if enhanced enhanced-sql simple-sql)
                   outbuf)))
