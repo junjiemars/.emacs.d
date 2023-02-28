@@ -34,12 +34,12 @@
     <= 25.0
 
     ;; `lisp-mode'
-    (with-eval-after-load 'lisp-mode
+    (with-eval-after-load 'elisp-mode
       (add-hook 'lisp-mode-hook #'set-featured-lisp-mode!)
       (add-hook 'emacs-lisp-mode-hook #'set-featured-lisp-mode!))
 
   ;; `elisp-mode'
-  (with-eval-after-load 'elisp-mode
+  (with-eval-after-load 'lisp-mode
     (add-hook 'lisp-mode-hook #'set-featured-lisp-mode!)
     (add-hook 'emacs-lisp-mode-hook #'set-featured-lisp-mode!)))
 
