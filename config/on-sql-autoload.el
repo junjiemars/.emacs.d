@@ -29,6 +29,18 @@ See `sql-show-sqli-buffer'."
            (ad-set-arg 2 t)))))
 
 
+(defun sql-first-word (sql)
+  "Return the first word in SQL."
+  (let* ((i 0) (j 0) (c (aref sql i)))
+    (while (not (or (and (>= c ?A) (<= c ?Z))
+                    (and (>= c ?a) (<= c ?z))))
+      (setq i (1+ i) c (aref sql i)))
+    (while (or (and (>= c ?A) (<= c ?Z))
+               (and (>= c ?a) (<= c ?z)))
+      (setq j (1+ j) c (aref sql j)))
+    (substring sql i j)))
+
+
 (when-fn% 'sql-execute-feature 'sql
 
   (defun sql-desc-table (name &optional enhanced)
@@ -68,7 +80,7 @@ Optional prefix argument ENHANCED, displays additional details."
         (user-error "No plan specified"))
       (sql-execute-feature sqlbuf
                            (format "*Desc plan %s*"
-                                   (car (split-string* plan)))
+                                   (sql-first-word plan))
                            :desc-plan enhanced plan))))
 
 
