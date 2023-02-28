@@ -7,20 +7,16 @@
 ;;;;
 
 
-;;; `lisp-mode'
-(with-eval-after-load 'lisp-mode
+;;; `elisp-mode'
+(with-eval-after-load (if-version% <= 25.0 'elisp-mode 'lisp-mode)
 
   ;; safe local variables
   (safe-local-variable* 'Syntax)
   (safe-local-variable* 'Base)
-  (safe-local-variable* 'Package))
+  (safe-local-variable* 'Package)
 
-
-;;; `elisp-mode'
-(with-eval-after-load 'elisp-mode
-
+  ;; `eldoc-mode'
   (add-hook 'emacs-lisp-mode-hook #'eldoc-mode))
-
 
 
 
