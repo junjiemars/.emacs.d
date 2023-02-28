@@ -31,10 +31,11 @@ See `sql-show-sqli-buffer'."
 
 (defun sql-first-word (sql)
   "Return the first word in SQL."
-  (let* ((i 0) (j 0) (c (aref sql i)))
+  (let* ((i 0) (j nil) (c (aref sql i)))
     (while (not (or (and (>= c ?A) (<= c ?Z))
                     (and (>= c ?a) (<= c ?z))))
       (setq i (1+ i) c (aref sql i)))
+    (setq j i)
     (while (or (and (>= c ?A) (<= c ?Z))
                (and (>= c ?a) (<= c ?z)))
       (setq j (1+ j) c (aref sql j)))
