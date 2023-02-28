@@ -8,11 +8,11 @@
 ;;;;
 
 (*self-packages*
- :put :basis
+ :put :edit
  (list
-  :cond nil
-  :packages '(paredit rainbow-delimiters)))
-
+  :cond t
+  :packages '(paredit rainbow-delimiters)
+  :compile `(,(compile-unit% (emacs-home* "config/use-edit-autoload.el")))))
 
 (*self-packages*
  :put :doc
