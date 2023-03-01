@@ -51,27 +51,31 @@
 ;;; Frame
 (when-graphic%
 
-  (defmacro self-frame-load! ()
-    "Load frame specs from `*self-env-spec*'."
+  (defmacro self-frame-init-load! ()
+    "Load frame initial specs from `*self-env-spec*'."
+    ;; `initial-frame-alist'
+    `(let ((init (*self-env-spec* :get :frame :initial)))
+       (setq initial-frame-alist init))))
 
-    `(when (*self-env-spec* :get :frame :allowed)
-       ;; `frame-resize-pixelwise'
-       (when-var% frame-resize-pixelwise nil
-         (setq frame-resize-pixelwise
-               (*self-env-spec* :get :frame
-                                :frame-resize-pixelwise)))
 
-       ;; `initial-frame-alist'
-       (setq initial-frame-alist
-             (*self-env-spec* :get :frame :initial))
+(when-graphic%
 
-       ;; `default-frame-alist'
-       (let ((font (*self-env-spec* :get :frame :font))
-             (frame (*self-env-spec* :get :frame :default)))
-         (setq default-frame-alist
-               (if font
-                   (push! (cons 'font font) frame)
-                 frame))))))
+  (defun self-frame-default-load! ()
+    "Load frame default specs from `*self-env-spec*'."
+    (when (*self-env-spec* :get :frame :allowed)
+      ;; `frame-resize-pixelwise'
+      (when-var% frame-resize-pixelwise nil
+        (let ((pixelwise (*self-env-spec* :get :frame
+                                          :frame-resize-pixelwise)))
+          (setq frame-resize-pixelwise pixelwise)))
+
+      ;; `default-frame-alist'
+      (let ((font (*self-env-spec* :get :frame :font))
+            (frame (*self-env-spec* :get :frame :default)))
+        (setq default-frame-alist
+              (if font
+                  (push! (cons 'font font) frame)
+                frame))))))
 
  ;; end of Frame
 
@@ -132,7 +136,7 @@ If DIR is nil then load the built-in `customize-themes' by NAME."
 
 
 (when-graphic%
-  (self-frame-load!)
+  (self-frame-init-load!)
   (when-theme%
     (make-thread* (lambda () (self-theme-load!)))))
 

@@ -281,6 +281,7 @@
      (compile! (compile-unit% (emacs-home* "config/safe.el")))
      (ido-mode t)
      (when-fn% 'self-desktop-read! nil (self-desktop-read!))
+     (when-fn% 'self-frame-default-load! nil (self-frame-default-load!))
      (when (*self-paths* :get :epilogue)
        (compile! (compile-unit* (*self-paths* :get :epilogue)))))
    t "on-autoloads!"))
