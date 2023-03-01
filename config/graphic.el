@@ -33,12 +33,13 @@
     (when (*self-env-spec* :get :frame :allowed)
       ;; `initial-frame-alist'
       (setq initial-frame-alist
-            (*self-env-spec* :get :frame :initial))
-      ;; `inhibit-splash-screen'
-      (setq inhibit-splash-screen
-            (*self-env-spec* :get :frame :inhibit-splash-screen)))
+            (*self-env-spec* :get :frame :initial)))
     ;; disable tool bar
     (when-fn% 'tool-bar-mode nil (tool-bar-mode -1)))
+  ;; `inhibit-splash-screen'
+  (when (*self-env-spec* :get :frame :allowed)
+    (setq inhibit-splash-screen
+          (*self-env-spec* :get :frame :inhibit-splash-screen)))
   ;; disable menu bar
   (when-fn%  'menu-bar-mode nil (menu-bar-mode -1))
   ;; disable scroll bar
