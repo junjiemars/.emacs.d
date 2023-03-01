@@ -7,30 +7,6 @@
 ;;;;
 
 
-;;; basic UI
-
-;; Disable menu bar
-(when-fn%  'menu-bar-mode nil (menu-bar-mode -1))
-
-;; Disable tool bar
-(when-graphic% (when-fn% 'tool-bar-mode nil (tool-bar-mode -1)))
-
-;; Disable scroll bar
-(when-fn% 'scroll-bar-mode nil (scroll-bar-mode -1))
-
-;; Disable tab bar
-(when-fn% 'tab-bar-mode nil (tab-bar-mode -1))
-
-;; Go straight to scratch buffer on startup
-(when (*self-env-spec* :get :frame :allowed)
-  (setq inhibit-splash-screen
-        (*self-env-spec* :get :frame :inhibit-splash-screen)))
-
-
-
- ;; end of basic UI
-
-
 ;;; basic macro
 
 (defmacro when-theme% (&rest body)
@@ -51,11 +27,30 @@
 ;;; Frame
 (when-graphic%
 
-  (defmacro self-frame-init-load! ()
+  (defun self-frame-init-load! ()
     "Load frame initial specs from `*self-env-spec*'."
-    ;; `initial-frame-alist'
-    `(let ((init (*self-env-spec* :get :frame :initial)))
-       (setq initial-frame-alist init))))
+    (when (*self-env-spec* :get :frame :allowed)
+
+      ;; `initial-frame-alist'
+      (let ((init (*self-env-spec* :get :frame :initial)))
+        (setq initial-frame-alist init))
+
+      ;; disable menu bar
+      (when-fn%  'menu-bar-mode nil (menu-bar-mode -1))
+
+      ;; disable tool bar
+      (when-graphic% (when-fn% 'tool-bar-mode nil (tool-bar-mode -1)))
+
+      ;; disable scroll bar
+      (when-fn% 'scroll-bar-mode nil (scroll-bar-mode -1))
+
+      ;; disable tab bar
+      (when-fn% 'tab-bar-mode nil (tab-bar-mode -1))
+
+      ;; `inhibit-splash-screen'
+      (when (*self-env-spec* :get :frame :allowed)
+        (setq inhibit-splash-screen
+              (*self-env-spec* :get :frame :inhibit-splash-screen))))))
 
 
 (when-graphic%
