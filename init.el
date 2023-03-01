@@ -283,8 +283,6 @@ If (COND VERSION EMACS-VERSION) yield nil, and there are no ELSE’s, the value 
   ;; first native-comp load
   (setcar native-comp-eln-load-path (v-home! ".eln/")))
 
-(setenv "LIBRARY_PATH" "/opt/local/lib/gcc12/gcc/x86_64-apple-darwin19/12.2.0/:/opt/local/lib/gcc12/gcc/x86_64-apple-darwin19/12.2.0/../../../")
-(setenv "COMPILER_PATH" "/opt/local/libexec/gcc/x86_64-apple-darwin19/12.2.0/:/opt/local/libexec/gcc/x86_64-apple-darwin19/12.2.0/:/opt/local/libexec/gcc/x86_64-apple-darwin19/:/opt/local/lib/gcc12/gcc/x86_64-apple-darwin19/12.2.0/:/opt/local/lib/gcc12/gcc/x86_64-apple-darwin19/")
 
 (compile-and-load-file* (emacs-home* "config/boot.el")
                         nil ;; compile-option
