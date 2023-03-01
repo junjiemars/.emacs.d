@@ -25,32 +25,26 @@
 
 
 ;;; Frame
-(when-graphic%
 
-  (defun self-frame-init-load! ()
-    "Load frame initial specs from `*self-env-spec*'."
+
+(defun self-frame-init-load! ()
+  "Load frame initial specs from `*self-env-spec*'."
+  (when-graphic%
     (when (*self-env-spec* :get :frame :allowed)
-
       ;; `initial-frame-alist'
-      (let ((init (*self-env-spec* :get :frame :initial)))
-        (setq initial-frame-alist init))
-
-      ;; disable menu bar
-      (when-fn%  'menu-bar-mode nil (menu-bar-mode -1))
-
-      ;; disable tool bar
-      (when-fn% 'tool-bar-mode nil (tool-bar-mode -1))
-
-      ;; disable scroll bar
-      (when-fn% 'scroll-bar-mode nil (scroll-bar-mode -1))
-
-      ;; disable tab bar
-      (when-fn% 'tab-bar-mode nil (tab-bar-mode -1))
-
+      (setq initial-frame-alist
+            (*self-env-spec* :get :frame :initial))
       ;; `inhibit-splash-screen'
-      (when (*self-env-spec* :get :frame :allowed)
-        (setq inhibit-splash-screen
-              (*self-env-spec* :get :frame :inhibit-splash-screen))))))
+      (setq inhibit-splash-screen
+            (*self-env-spec* :get :frame :inhibit-splash-screen)))
+    ;; disable tool bar
+    (when-fn% 'tool-bar-mode nil (tool-bar-mode -1)))
+  ;; disable menu bar
+  (when-fn%  'menu-bar-mode nil (menu-bar-mode -1))
+  ;; disable scroll bar
+  (when-fn% 'scroll-bar-mode nil (scroll-bar-mode -1))
+  ;; disable tab bar
+  (when-fn% 'tab-bar-mode nil (tab-bar-mode -1)))
 
 
 (when-graphic%
@@ -130,10 +124,9 @@ If DIR is nil then load the built-in `customize-themes' by NAME."
  ;; end of when-theme%
 
 
-(when-graphic%
-  (self-frame-init-load!)
-  (when-theme%
-    (make-thread* (lambda () (self-theme-load!)))))
+(self-frame-init-load!)
+(when-theme%
+  (make-thread* (lambda () (self-theme-load!))))
 
 
 (provide 'graphic)
