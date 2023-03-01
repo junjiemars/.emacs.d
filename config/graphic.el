@@ -39,7 +39,7 @@
       (when-fn%  'menu-bar-mode nil (menu-bar-mode -1))
 
       ;; disable tool bar
-      (when-graphic% (when-fn% 'tool-bar-mode nil (tool-bar-mode -1)))
+      (when-fn% 'tool-bar-mode nil (tool-bar-mode -1))
 
       ;; disable scroll bar
       (when-fn% 'scroll-bar-mode nil (scroll-bar-mode -1))
