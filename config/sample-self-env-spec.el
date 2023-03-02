@@ -25,10 +25,9 @@
 ;;; frame
 (*self-env-spec*
  :put :frame
- (list :initial `((vertical-scroll-bars)) ;; `((fullscreen . fullheight))
-       :default `((vertical-scroll-bars)
-                  (width . 80)
-                  (height . 32))
+ (list :initial `((width . 80)
+                  (height . 32)) ;; `((fullscreen . fullheight))
+       :default nil
        :font (if-platform% 'darwin
                  "Monaco-17"
                (if-platform% 'windows-nt

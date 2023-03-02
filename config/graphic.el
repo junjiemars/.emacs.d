@@ -26,26 +26,23 @@
 
 ;;; Frame
 
-
 (defun self-frame-init-load! ()
   "Load frame initial specs from `*self-env-spec*'."
-  (when-graphic%
-    (when (*self-env-spec* :get :frame :allowed)
-      ;; `initial-frame-alist'
-      (setq initial-frame-alist
-            (*self-env-spec* :get :frame :initial)))
-    ;; disable tool bar
-    (when-fn% 'tool-bar-mode nil (tool-bar-mode -1)))
+  (let ((initial (append
+                  `((menu-bar-lines . 0)
+                    (vertical-scroll-bars))
+                  (when-fn% 'tab-bar-mode nil `((tab-bar-lines . 0)))
+                  (when-graphic%
+                    `((tool-bar-lines . 0)))
+                  (when-graphic%
+                    (when (*self-env-spec* :get :frame :allowed)
+                      (*self-env-spec* :get :frame :initial))))))
+    (setq initial-frame-alist initial))
+
   ;; `inhibit-splash-screen'
   (when (*self-env-spec* :get :frame :allowed)
     (setq inhibit-splash-screen
-          (*self-env-spec* :get :frame :inhibit-splash-screen)))
-  ;; disable menu bar
-  (when-fn%  'menu-bar-mode nil (menu-bar-mode -1))
-  ;; disable scroll bar
-  (when-fn% 'scroll-bar-mode nil (scroll-bar-mode -1))
-  ;; disable tab bar
-  (when-fn% 'tab-bar-mode nil (tab-bar-mode -1)))
+          (*self-env-spec* :get :frame :inhibit-splash-screen))))
 
 
 (when-graphic%
@@ -97,37 +94,36 @@ If DIR is nil then load the built-in `customize-themes' by NAME."
 
 
 ;;; Load theme
-(when-theme%
 
-  (defmacro self-theme-load! ()
-    "Load theme specs from `*self-env-spec*'."
-    `(when (*self-env-spec* :get :theme :allowed)
-       (let ((name (*self-env-spec* :get :theme :name)))
-         (when name
-           (let ((dir (*self-env-spec* :get :theme
-                                       :custom-theme-directory)))
-             (cond (dir
-                    ;; load theme from :custom-theme-directory
-                    (if (and (*self-env-spec* :get :theme :compile)
-                             (if-native-comp% nil t))
-                        (progn
-                          (compile!
-                            (compile-unit*
-                             (concat dir (symbol-name name) "-theme.el")
-                             t t))
-                          (load-theme! name (concat dir (v-path* "/"))))
-                      (load-theme! name dir)))
-                   (t
-                    ;; load builtin theme
-                    (load-theme! name)))))))))
+(defun self-theme-load! ()
+  "Load theme specs from `*self-env-spec*'."
+  (when-theme%
+    (when (*self-env-spec* :get :theme :allowed)
+      (let ((name (*self-env-spec* :get :theme :name)))
+        (when name
+          (let ((dir (*self-env-spec* :get :theme
+                                      :custom-theme-directory)))
+            (cond (dir
+                   ;; load theme from :custom-theme-directory
+                   (if (and (*self-env-spec* :get :theme :compile)
+                            (if-native-comp% nil t))
+                       (progn
+                         (compile!
+                           (compile-unit*
+                            (concat dir (symbol-name name) "-theme.el")
+                            t t))
+                         (load-theme! name (concat dir (v-path* "/"))))
+                     (load-theme! name dir)))
+                  (t
+                   ;; load builtin theme
+                   (load-theme! name)))))))))
 
 
  ;; end of when-theme%
 
 
-(self-frame-init-load!)
-(when-theme%
-  (make-thread* (lambda () (self-theme-load!))))
+(make-thread* #'self-frame-init-load!)
+(make-thread* #'self-theme-load!)
 
 
 (provide 'graphic)
