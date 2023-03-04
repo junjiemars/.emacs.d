@@ -7,10 +7,18 @@
 ;;;;
 
 
-;; default view file
-(define-key% (current-global-map) (kbd "C-x 5 r") #'view-file-other-frame)
-(define-key% (current-global-map) (kbd "C-x 4 r") #'view-file-other-window)
-(define-key% (current-global-map) (kbd "C-x C-r") #'view-file)
+(with-eval-after-load 'view
+
+  ;; default view file
+  (define-key% (current-global-map)
+    (kbd "C-x 5 r") #'view-file-other-frame)
+  (define-key% (current-global-map)
+    (kbd "C-x 4 r") #'view-file-other-window)
+  (define-key% (current-global-map)
+    (kbd "C-x C-r") #'view-file))
+
+
+
 
 
 (with-eval-after-load 'ido

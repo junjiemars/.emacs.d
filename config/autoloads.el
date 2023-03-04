@@ -209,7 +209,7 @@
   ;; `view-mode'
   (setq view-read-only t)
 
-  ;; enable column number mode
+  ;; enable `column-number-mode'
   (setq% column-number-mode t 'simple)
 
   ) ;; end of `load-conditional-modes!'
