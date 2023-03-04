@@ -651,12 +651,6 @@ And copy the qualified buffer name to kill ring."
     "`count-lines-region' had been obsoleted since Emacs24.1+"))
 
 
-(define-key (current-global-map) (kbd "C-x C-v") #'view-file)
-;; (define-key (current-global-map) (kbd "C-x C-F") #'ido-find-alternate-file)
-
- ;; end of ido
-
-
 (defun multi-occur-in-matching-major-mode (&optional mode)
   "Show all lines matching REGEXP in buffers specified by `major-mode'.
 

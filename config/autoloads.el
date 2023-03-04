@@ -43,6 +43,7 @@
     (compile-unit% (emacs-home* "config/on-compile-autoload.el"))
     (compile-unit% (emacs-home* "config/on-dired-autoload.el"))
     (compile-unit% (emacs-home* "config/on-edit-autoload.el"))
+    (compile-unit% (emacs-home* "config/on-ido-autoload.el"))
     (compile-unit% (emacs-home* "config/on-trans-autoload.el"))
     (compile-unit% (emacs-home* "config/on-eshell-autoload.el"))
     (compile-unit% (emacs-home* "config/on-hippie-autoload.el"))
@@ -256,12 +257,6 @@
   (define-key% (current-global-map) (kbd "C-c s l") #'sort-lines)
   (define-key% (current-global-map) (kbd "C-c s r") #'reverse-region)
   (define-key% (current-global-map) (kbd "C-c s d") #'delete-duplicate-lines)
-
-  ;; View
-  (define-key% (current-global-map) (kbd "C-x 4 v") #'view-file-other-window)
-  (define-key% (current-global-map) (kbd "C-x 5 v") #'view-file-other-frame)
-  (define-key (current-global-map) (kbd "C-x C-v") #'view-file)
-
 
   ) ;; end of set-global-keys!
 
