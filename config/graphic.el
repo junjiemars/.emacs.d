@@ -52,17 +52,14 @@
     (when (*self-env-spec* :get :frame :allowed)
       ;; `frame-resize-pixelwise'
       (when-var% frame-resize-pixelwise nil
-        (let ((pixelwise (*self-env-spec* :get :frame
-                                          :frame-resize-pixelwise)))
-          (setq frame-resize-pixelwise pixelwise)))
+        (setq frame-resize-pixelwise
+              (*self-env-spec* :get :frame :frame-resize-pixelwise)))
 
       ;; `default-frame-alist'
-      (let ((font (*self-env-spec* :get :frame :font))
-            (frame (*self-env-spec* :get :frame :default)))
-        (setq default-frame-alist
-              (if font
-                  (push! (cons 'font font) frame)
-                frame))))))
+      (setq default-frame-alist
+            (append
+             (*self-env-spec* :get :frame :default)
+             `((font . ,(*self-env-spec* :get :frame :font))))))))
 
  ;; end of Frame
 
