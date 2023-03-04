@@ -54,6 +54,7 @@
     (compile-unit% (emacs-home* "config/on-net-autoload.el"))
     (compile-unit% (emacs-home* "config/on-org-autoload.el"))
     (compile-unit% (emacs-home* "config/on-pp-autoload.el"))
+    (compile-unit% (emacs-home* "config/on-sql-autoload.el"))
     (compile-unit% (emacs-home* "config/on-term-autoload.el"))
     (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))
     (compile-unit% (emacs-home* "config/on-window-autoload.el"))))
@@ -176,10 +177,6 @@
           (autoload 'set-semantic-cc-env!
             (v-home%> "config/on-semantic-autoload"))
           (compile-unit% (emacs-home* "config/on-semantic-autoload.el"))))
-
-    ;; SQL `sql'
-    (when-fn% 'sql-redirect 'sql
-      (compile-unit% (emacs-home* "config/on-sql-autoload.el")))
 
     ;; Sudoku
     (prog1

@@ -7,6 +7,25 @@
 ;;;;
 
 
+(defmacro when-sql-feature% (&rest body)
+  (declare (indent 0))
+  `(when-fn% 'sql-execute-feature 'sql
+     ,@body))
+
+(defmacro when-sql-oracle-feature% (&rest body)
+  (declare (indent 0))
+  `(when-sql-feature%
+     (when-fn% 'sql-oracle-restore-settings 'sql
+       ,@body)))
+
+(defmacro when-sql-mysql-feature% (&rest body)
+  (declare (indent 0))
+  `(when-sql-feature%
+     ,@body))
+
+ ;; end of when-* macro
+
+
 (when-fn% 'sql-show-sqli-buffer 'sql
 
   (defun sql-show-sqli-buffer* ()
@@ -54,7 +73,7 @@ See `sql-show-sqli-buffer'."
     (buffer-substring (point-min) (point-max))))
 
 
-(when-fn% 'sql-execute-feature 'sql
+(when-sql-feature%
 
   (defun sql-desc-table (name &optional enhanced)
     "Describe the details of a database table named NAME.
@@ -72,7 +91,7 @@ about each column."
                            :desc-table enhanced name))))
 
 
-(when-fn% 'sql-execute-feature 'sql
+(when-sql-feature%
 
   (defun sql-desc-plan (plan &optional enhanced)
     "Describe an execution plan named PLAN.
@@ -97,7 +116,7 @@ Optional prefix argument ENHANCED, displays additional details."
                            :desc-plan enhanced plan))))
 
 
-(when-fn% 'sql-execute-feature 'sql
+(when-sql-feature%
 
   (defun sql-list-code (name &optional enhanced)
     "List the code of the database object with qualified NAME. "
@@ -112,7 +131,7 @@ Optional prefix argument ENHANCED, displays additional details."
                            :list-code enhanced name))))
 
 
-(when-fn% 'sql-execute-feature 'sql
+(when-sql-feature%
 
   (defun sql-list-index (name &optional enhanced)
     "List the index of a database table named NAME. "
@@ -132,16 +151,17 @@ Optional prefix argument ENHANCED, displays additional details."
 ;; oracle
 ;;;
 
-(unless-fn% 'sql-oracle--list-object-name 'sql
+(when-sql-oracle-feature%
+  (unless-fn% 'sql-oracle--list-object-name 'sql
 
-  (defun sql-oracle--list-object-name (obj-name)
-    (format (concat
-             "CASE WHEN REGEXP_LIKE (%s, q'/^[A-Z0-9_#$]+$/','c')"
-             " THEN %s ELSE '\"'|| %s ||'\"' END ")
-            obj-name obj-name obj-name)))
+    (defun sql-oracle--list-object-name (obj-name)
+      (format (concat
+               "CASE WHEN REGEXP_LIKE (%s, q'/^[A-Z0-9_#$]+$/','c')"
+               " THEN %s ELSE '\"'|| %s ||'\"' END ")
+              obj-name obj-name obj-name))))
 
 
-(when-fn% 'sql-oracle-restore-settings 'sql
+(when-sql-oracle-feature%
 
   (defun sql-oracle-list-all* (sqlbuf outbuf enhanced _table-name)
     ;; Query from USER_OBJECTS or ALL_OBJECTS
@@ -184,7 +204,7 @@ Optional prefix argument ENHANCED, displays additional details."
       (sql-oracle-restore-settings sqlbuf settings))))
 
 
-(when-fn% 'sql-oracle-restore-settings 'sql
+(when-sql-oracle-feature%
 
   (defun sql-oracle-list-code (sqlbuf outbuf enhanced target)
     "List code of oracle's TARGET."
@@ -212,53 +232,58 @@ Optional prefix argument ENHANCED, displays additional details."
 ;;;
 
 
+(when-sql-mysql-feature%
+
+  (defun sql-mysql-desc-table (sqlbuf outbuf enhanced table)
+    "Describe mysql table."
+    (let ((simple-sql
+           (concat
+            "SHOW FULL COLUMNS "
+            (format "FROM %s\\G" table)))
+          (enhanced-sql nil))
+      (sql-redirect sqlbuf
+                    (if enhanced enhanced-sql simple-sql)
+                    outbuf))))
+
+(when-sql-mysql-feature%
+
+  (defun sql-mysql-desc-plan (sqlbuf outbuf enhanced query)
+    "Describe execution plan of mysql's QUERY."
+    (let ((sql
+           (concat
+            "explain FORMAT=" (if enhanced "JSON " "TRADITIONAL ")
+            (string-trim> (sql-norm query)
+                          "[ \t\n\r\\g\\G;]+")
+            "\\G")))
+      (sql-redirect sqlbuf sql outbuf))))
 
 
-(defun sql-mysql-desc-table (sqlbuf outbuf enhanced table)
-  "Describe mysql table."
-  (let ((simple-sql
-         (concat
-          "SHOW FULL COLUMNS "
-          (format "FROM %s\\G" table)))
-        (enhanced-sql nil))
-    (sql-redirect sqlbuf
-                  (if enhanced enhanced-sql simple-sql)
-                  outbuf)))
+(when-sql-mysql-feature%
+
+  (defun sql-mysql-list-code (sqlbuf outbuf enhanced target)
+    "List code of mysql's TARGET."
+    (let ((simple-sql
+           (concat
+            "SHOW CREATE"
+            (format " %s\\G" target)))
+          (enhanced-sql nil))
+      (sql-redirect sqlbuf
+                    (if enhanced enhanced-sql simple-sql)
+                    outbuf))))
 
 
-(defun sql-mysql-desc-plan (sqlbuf outbuf enhanced query)
-  "Describe execution plan of mysql's QUERY."
-  (let ((sql
-         (concat
-          "explain FORMAT=" (if enhanced "JSON " "TRADITIONAL ")
-          (string-trim> (sql-norm query)
-                        "[ \t\n\r\\g\\G;]+")
-          "\\G")))
-    (sql-redirect sqlbuf sql outbuf)))
+(when-sql-mysql-feature%
 
-
-(defun sql-mysql-list-code (sqlbuf outbuf enhanced target)
-  "List code of mysql's TARGET."
-  (let ((simple-sql
-         (concat
-          "SHOW CREATE"
-          (format " %s\\G" target)))
-        (enhanced-sql nil))
-    (sql-redirect sqlbuf
-                  (if enhanced enhanced-sql simple-sql)
-                  outbuf)))
-
-
-(defun sql-mysql-list-index (sqlbuf outbuf enhanced table)
-  "List index of mysql's TABLE."
-  (let ((simple-sql
-         (concat
-          "SHOW INDEX"
-          (format " FROM %s\\G" table)))
-        (enhanced-sql nil))
-    (sql-redirect sqlbuf
-                  (if enhanced enhanced-sql simple-sql)
-                  outbuf)))
+  (defun sql-mysql-list-index (sqlbuf outbuf enhanced table)
+    "List index of mysql's TABLE."
+    (let ((simple-sql
+           (concat
+            "SHOW INDEX"
+            (format " FROM %s\\G" table)))
+          (enhanced-sql nil))
+      (sql-redirect sqlbuf
+                    (if enhanced enhanced-sql simple-sql)
+                    outbuf))))
 
 
  ;; end of mysql
@@ -275,57 +300,7 @@ Optional prefix argument ENHANCED, displays additional details."
     (define-key% sql-mode-map
       (kbd "C-c C-z") #'sql-show-sqli-buffer*))
 
-  (when-fn% 'sql-execute-feature 'sql
-
-    ;; oracle
-    (when-fn% 'sql-oracle-restore-settings 'sql
-
-      ;; oralce: replace `:list-all'
-      (when (plist-get
-             (cdr (assoc** 'oracle sql-product-alist :test #'eq))
-             :list-all)
-        (plist-put
-         (cdr (assoc** 'oracle sql-product-alist :test #'eq))
-         :list-all
-         #'sql-oracle-list-all*))
-
-      ;; oracle: new `:list-code'
-      (plist-put
-       (cdr (assoc** 'oracle sql-product-alist :test #'eq))
-       :list-code
-       #'sql-oracle-list-code))
-
-
-    ;; mysql: `sql-mysql-program'
-    (unless% (executable-find% sql-mysql-program)
-      (if-platform% 'darwin
-          (setq sql-mysql-program
-                (or (executable-find%
-                     "/Applications/MySQLWorkbench.app/Contents/MacOS/mysql")
-                    "mysql"))))
-
-    ;; mysql: new `:desc-table'
-    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
-               :desc-table
-               #'sql-mysql-desc-table)
-
-    ;; mysql: new `:desc-plan'
-    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
-               :desc-plan
-               #'sql-mysql-desc-plan)
-
-    ;; mysql: new `:list-code'
-    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
-               :list-code
-               #'sql-mysql-list-code)
-
-    ;; mysql: new `:list-index'
-    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
-               :list-index
-               #'sql-mysql-list-index)
-
-
-    (when-fn% 'sql-send-magic-terminator 'sql
+  (when-fn% 'sql-send-magic-terminator 'sql
       ;; mysql: `:terminator'
       (plist-put
        (cdr (assoc** 'mysql sql-product-alist :test #'eq))
@@ -336,7 +311,51 @@ Optional prefix argument ENHANCED, displays additional details."
                         "sql-send-magic-terminator-before")
       (ad-activate #'sql-send-magic-terminator t))
 
-    ;; features' keybindings
+  ;; oracle
+  (when-sql-oracle-feature%
+    ;; replace `:list-all'
+    (when (plist-get
+           (cdr (assoc** 'oracle sql-product-alist :test #'eq))
+           :list-all)
+      (plist-put
+       (cdr (assoc** 'oracle sql-product-alist :test #'eq))
+       :list-all
+       #'sql-oracle-list-all*))
+    ;; new `:list-code'
+    (plist-put
+     (cdr (assoc** 'oracle sql-product-alist :test #'eq))
+     :list-code
+     #'sql-oracle-list-code))
+
+  ;; `sql-mysql-program'
+  (unless% (executable-find% sql-mysql-program)
+    (if-platform% 'darwin
+        (setq sql-mysql-program
+              (or (executable-find%
+                   "/Applications/MySQLWorkbench.app/Contents/MacOS/mysql")
+                  "mysql"))))
+
+  ;; mysql feature
+  (when-sql-mysql-feature%
+    ;; new `:desc-table'
+    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
+               :desc-table
+               #'sql-mysql-desc-table)
+    ;; new `:desc-plan'
+    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
+               :desc-plan
+               #'sql-mysql-desc-plan)
+    ;; new `:list-code'
+    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
+               :list-code
+               #'sql-mysql-list-code)
+    ;; new `:list-index'
+    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
+               :list-index
+               #'sql-mysql-list-index))
+
+  ;; features' keybindings
+  (when-sql-feature%
     (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-code)
     (define-key% sql-mode-map (kbd "C-c C-l i") #'sql-list-index)
     (define-key% sql-mode-map (kbd "C-c C-l T") #'sql-desc-table)
