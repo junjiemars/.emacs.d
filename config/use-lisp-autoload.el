@@ -3,7 +3,7 @@
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; use-edit-autoload.el
+;; use-lisp-autoload.el
 ;;;;
 
 
@@ -77,26 +77,29 @@
       (define-key% paredit-mode-map (kbd "C-j") #'paredit-newline)
       (define-key% paredit-mode-map (kbd "RET") #'newline*)
 
-      ;; default `paredit-convolute-sexp' keybinding `M-?' conflicts with
+      ;; default `paredit-convolute-sexp' key `M-?' conflicts with
       ;; `xref-find-references'
       (define-key% paredit-mode-map (kbd "C-c ?") #'paredit-convolute-sexp)
       (define-key% paredit-mode-map (kbd "M-?") #'xref-find-references)
 
-      ;; default `paredit-splice-sexp' keybinding `M-s' conflicts with
+      ;; disable `paredit-splice-sexp' key, `M-s' conflicts with
       ;; `isearch' command prefix.
       (define-key% paredit-mode-map (kbd "M-s") nil)
-      ;; disable `paredit-up/down' keybindings
+      ;; disable `paredit-up/down' key
       (define-key% paredit-mode-map (kbd "C-M-f") nil)
       (define-key% paredit-mode-map (kbd "C-M-b") nil)
       (define-key% paredit-mode-map (kbd "C-M-d") nil)
       (define-key% paredit-mode-map (kbd "C-M-u") nil)
-      ;; disable `paredit-forward-up' keybindings
+      ;; disable `paredit-forward-up' key
       (define-key% paredit-mode-map (kbd "C-M-n") nil)
-      (define-key% paredit-mode-map (kbd "C-M-p") nil))))
+      ;; disable `paredit-forward-down' key
+      (define-key% paredit-mode-map (kbd "C-M-p") nil)
+      ;; disable `paredit-kill' key
+      (define-key% paredit-mode-map (kbd "C-k") nil))))
 
 
  ;; end of feature: paredit
 
 
 
-;; end of file
+;; end of use-lisp-autoload.el

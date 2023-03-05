@@ -12,7 +12,7 @@
  (list
   :cond t
   :packages '(paredit rainbow-delimiters)
-  :compile `(,(compile-unit% (emacs-home* "config/use-edit-autoload.el")))))
+  :compile `(,(compile-unit% (emacs-home* "config/use-lisp-autoload.el")))))
 
 (*self-packages*
  :put :doc
