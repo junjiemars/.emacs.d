@@ -72,6 +72,8 @@
         #'paredit-forward-barf-sexp)
       (define-key% paredit-mode-map (kbd "C-c {")
         #'paredit-backward-barf-sexp)
+      (define-key% paredit-mode-map (kbd "C-c C-q")
+        #'paredit-reindent-defun)
 
       (define-key% paredit-mode-map (kbd "C-c -") #'paredit-splice-sexp)
       (define-key% paredit-mode-map (kbd "C-j") #'paredit-newline)
@@ -81,6 +83,7 @@
       ;; `xref-find-references'
       (define-key% paredit-mode-map (kbd "C-c ?") #'paredit-convolute-sexp)
       (define-key% paredit-mode-map (kbd "M-?") #'xref-find-references)
+
 
       ;; disable `paredit-splice-sexp' key, `M-s' conflicts with
       ;; `isearch' command prefix.
@@ -95,7 +98,10 @@
       ;; disable `paredit-forward-down' key
       (define-key% paredit-mode-map (kbd "C-M-p") nil)
       ;; disable `paredit-kill' key
-      (define-key% paredit-mode-map (kbd "C-k") nil))))
+      (define-key% paredit-mode-map (kbd "C-k") nil)
+      ;; disable `paredit-reindent-defun' key `M-q' conflicts with
+      ;; `fill-paragraph'.
+      (define-key% paredit-mode-map (kbd "M-q") nil))))
 
 
  ;; end of feature: paredit
