@@ -8,7 +8,7 @@
 ;;;;
 
 (*self-packages*
- :put :edit
+ :put :lisp
  (list
   :cond t
   :packages '(paredit rainbow-delimiters)
