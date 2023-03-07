@@ -57,11 +57,15 @@
               (emacs-arch)))
 
   (add-hook 'compilation-filter-hook #'compilation*-colorize-buffer!)
+
   (when-var% compilation-mode-map 'compile
     ;; define `recompile' and `quit-window' key bindings
     (define-key% compilation-mode-map (kbd "g") #'recompile)
     (define-key% compilation-mode-map (kbd "q") #'quit-window))
-  (setq% compilation-scroll-output t 'compile))
+
+  (setq% compilation-scroll-output t 'compile)
+
+  (define-key% (current-global-map) (kbd "C-x p c") #'compile))
 
 
 (with-eval-after-load 'grep
