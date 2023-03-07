@@ -48,29 +48,19 @@ See `sql-show-sqli-buffer'."
            (ad-set-arg 2 t)))))
 
 
-(defun sql-first-word (sql)
-  "Return the first word in SQL."
-  (let* ((i 0) (j nil) (c (aref sql i)))
-    (while (not (or (and (>= c ?A) (<= c ?Z))
-                    (and (>= c ?a) (<= c ?z))))
-      (setq i (1+ i) c (aref sql i)))
-    (setq j i)
-    (while (or (and (>= c ?A) (<= c ?Z))
-               (and (>= c ?a) (<= c ?z)))
-      (setq j (1+ j) c (aref sql j)))
-    (substring sql i j)))
+(when-sql-feature%
 
-
-(defun sql-norm (sql)
-  "Normlize SQL."
-  (with-temp-buffer
-    (insert sql)
-    (goto-char (point-min))
-    (flush-lines "[ \t]*\\(--+\\|#+\\).*")
-    (goto-char (point-min))
-    (while (search-forward-regexp "[ \t\n]+" nil t)
-      (replace-match " " t t))
-    (buffer-substring (point-min) (point-max))))
+  (defun sql-first-word (sql)
+    "Return the first word in SQL."
+    (let* ((i 0) (j nil) (c (aref sql i)))
+      (while (not (or (and (>= c ?A) (<= c ?Z))
+                      (and (>= c ?a) (<= c ?z))))
+        (setq i (1+ i) c (aref sql i)))
+      (setq j i)
+      (while (or (and (>= c ?A) (<= c ?Z))
+                 (and (>= c ?a) (<= c ?z)))
+        (setq j (1+ j) c (aref sql j)))
+      (substring sql i j))))
 
 
 (when-sql-feature%
@@ -231,6 +221,19 @@ Optional prefix argument ENHANCED, displays additional details."
 ;; mysql
 ;;;
 
+(when-sql-mysql-feature%
+
+  (defun sql-mysql-norm (sql)
+    "Normlize SQL."
+    (with-temp-buffer
+      (insert sql)
+      (goto-char (point-min))
+      (flush-lines "[ \t]*\\(--+\\|#+\\).*")
+      (goto-char (point-min))
+      (while (search-forward-regexp "[ \t\n]+" nil t)
+        (replace-match " " t t))
+      (buffer-substring (point-min) (point-max)))))
+
 
 (when-sql-mysql-feature%
 
@@ -252,7 +255,7 @@ Optional prefix argument ENHANCED, displays additional details."
     (let ((sql
            (concat
             "explain FORMAT=" (if enhanced "JSON " "TRADITIONAL ")
-            (string-trim> (sql-norm query)
+            (string-trim> (sql-mysql-norm query)
                           "[ \t\n\r\\g\\G;]+")
             "\\G")))
       (sql-redirect sqlbuf sql outbuf))))
