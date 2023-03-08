@@ -26,14 +26,20 @@
 
 ;;; Frame
 
+(defconst +essential-frame-set+
+  (append
+   `((menu-bar-lines . 0)
+     (vertical-scroll-bars))
+   (when-fn% 'tab-bar-mode nil `((tab-bar-lines . 0)))
+   (when-graphic%
+     `((tool-bar-lines . 0))))
+  "The essential frame set.")
+
+
 (defun self-frame-init-load! ()
   "Load frame initial specs from `*self-env-spec*'."
   (let ((initial (append
-                  `((menu-bar-lines . 0)
-                    (vertical-scroll-bars))
-                  (when-fn% 'tab-bar-mode nil `((tab-bar-lines . 0)))
-                  (when-graphic%
-                    `((tool-bar-lines . 0)))
+                  +essential-frame-set+
                   (when-graphic%
                     (when (*self-env-spec* :get :frame :allowed)
                       (*self-env-spec* :get :frame :initial))))))
@@ -54,12 +60,12 @@
       (when-var% frame-resize-pixelwise nil
         (setq frame-resize-pixelwise
               (*self-env-spec* :get :frame :frame-resize-pixelwise)))
-
       ;; `default-frame-alist'
       (setq default-frame-alist
             (append
-             (*self-env-spec* :get :frame :default)
-             `((font . ,(*self-env-spec* :get :frame :font))))))))
+             +essential-frame-set+
+             `((font . ,(*self-env-spec* :get :frame :font)))
+             (*self-env-spec* :get :frame :default))))))
 
  ;; end of Frame
 
