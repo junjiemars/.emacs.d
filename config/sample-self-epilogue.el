@@ -140,7 +140,8 @@
            (sql-port 3306)
            (sql-database "sys")
            (sql-user "root")
-           (sql-password "example"))
+           (sql-password "example")
+           (sql-mysql-options '("--local-infile=1")))
           (oracle-local
            ;; 1. install sql*plus instant client
            ;; 2. set environment variables: ORACLE_HOME, LD_LIBRARY_PATH
