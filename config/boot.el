@@ -308,7 +308,7 @@ Optional argument DELETE-BOOSTER: see `compile-and-load-file*'."
   "Read spec from SEQ via KEYS."
   (declare (indent 1))
   (let ((r seq) (ks keys))
-    (while (not (null ks))
+    (while ks
       (setq r (list 'plist-get r (car ks))
             ks (cdr ks)))
     r))
