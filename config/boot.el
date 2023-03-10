@@ -368,7 +368,7 @@ No matter the declaration order, the executing order is:
                             :edit nil)))
     (lambda (&optional op &rest keys)
       (cond ((eq :get op) (let ((rs env) (ks keys))
-                            (while (not (null ks))
+                            (while ks
                               (setq rs (plist-get rs (car ks))
                                     ks (cdr ks)))
                             rs))
@@ -417,7 +417,7 @@ No matter the declaration order, the executing order is:
     (lexical-let% ((us '()))
       (lambda (&optional n)
         (cond ((consp n) (let ((s n))
-                           (while (not (null s))
+                           (while s
                              (setq us (cons (car s) us)
                                    s (cdr s)))
                            us))
