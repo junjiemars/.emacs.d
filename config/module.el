@@ -49,11 +49,8 @@
   "Check PACKAGE is a symbol or a tar file."
   (let ((p (gensym*)))
     `(let ((,p ,package))
-       (cond ((and (symbolp ,p)
-                   (not (null ,p)))
-              (cons ,p nil))
-             ((and (stringp ,p)
-                   (file-exists-p ,p))
+       (cond ((and (symbolp ,p) ,p) (cons ,p nil))
+             ((and (stringp ,p) (file-exists-p ,p))
               (cons (intern (match-string* "\\(.*\\)-[.0-9]+\\'"
                                            (file-name-base* ,p) 1))
                     ,p))
@@ -64,8 +61,7 @@
   "Delete PACKAGE."
   (let ((p (gensym*)))
     `(let ((,p ,package))
-       (when (and (not (null ,p))
-                  (symbolp ,p))
+       (when (and (symbolp ,p) ,p)
          (if-version%
              <= 25.0
              (package-delete (cadr (assq ,p package-alist)) t nil)

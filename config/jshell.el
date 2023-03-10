@@ -43,8 +43,7 @@
 (defalias '*jshell*
   (lexical-let% ((b))
     (lambda (&optional n)
-      (cond ((not (null n))
-             (setq b (get-buffer-create n)))
+      (cond (n (setq b (get-buffer-create n)))
             ((or (null b) (not (buffer-live-p b)))
              (setq b (get-buffer-create "*jshell*")))
             (t b))))

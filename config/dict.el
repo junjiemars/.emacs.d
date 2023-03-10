@@ -203,7 +203,7 @@
                                    b (- e (length (cadr re))))))
                        (fns (cddr re))
                        (txt html))
-                  (cons x (when (and (not (null html)) (> (length html) 0))
+                  (cons x (when (and html (> (length html) 0))
                             (dolist* (fn fns txt)
                               (if (functionp fn)
                                   (setq txt (funcall fn txt))
