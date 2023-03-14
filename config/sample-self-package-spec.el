@@ -117,6 +117,12 @@
   :packages '(rust-mode)))
 
 (*self-packages*
+ :put :vlang
+ (list
+  :cond (executable-find% "v")
+  :packages '(v-mode)))
+
+(*self-packages*
  :put :web
  (list
   :cond nil
