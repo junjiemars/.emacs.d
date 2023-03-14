@@ -31,8 +31,7 @@
    `((menu-bar-lines . 0)
      (vertical-scroll-bars))
    (when-fn% 'tab-bar-mode nil `((tab-bar-lines . 0)))
-   (when-graphic%
-     `((tool-bar-lines . 0))))
+   (when-graphic% `((tool-bar-lines . 0))))
   "The essential frame set.")
 
 
