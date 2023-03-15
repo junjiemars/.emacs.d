@@ -113,8 +113,6 @@
 
 (ert-deftest %init:if-version% ()
   (should (if-version% < 0 t))
-  (should (if-version% < "0" t))
-  (should (if-version% < '0 t))
   (should (= 12 (if-version% < 1000 (+ 1 2) (* 3 4))))
   (should (equal '(progn (* 3 4) (* 5 6))
                  (macroexpand '(if-version%

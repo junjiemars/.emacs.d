@@ -241,18 +241,14 @@ DIR where the compiled file located."
 
 Return the value of THEN or the value of the last of the ELSE’s.
 THEN must be one expression, but ELSE... can be zero or more expressions.
-If (COND VERSION EMACS-VERSION) yield nil, and there are no ELSE’s, the value is nil."
+If (CMP VERSION `emacs-version') yield nil, and there are no ELSE’s,
+the value is nil."
   (declare (indent 3))
-  (let ((ver (cond ((numberp version) (number-to-string version))
-                   ((stringp version) version)
-                   (t (format "%s" (funcall `(lambda () ,version)))))))
-    `(if% (cond ((eq '< ',cmp) (version< ,ver emacs-version))
-                ((eq '<= ',cmp) (version<= ,ver emacs-version))
-                ((eq '> ',cmp) (not (version<= ,ver emacs-version)))
-                ((eq '>= ',cmp) (not (version< ,ver emacs-version)))
-                (t nil))
+  (let ((ev (string-to-number emacs-version)))
+    `(if% (,cmp ,version ,ev)
          ,then
        (progn% ,@else))))
+
 
 (defmacro when-version% (cmp version &rest body)
   "When VERSION CMP with variable `emacs-version' yield non-nil, do BODY."
