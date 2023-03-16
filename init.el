@@ -1,4 +1,4 @@
-;;; init.el --- init
+;;; init.el --- init -*- lexical-binding:t -*-
 ;;;;
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
