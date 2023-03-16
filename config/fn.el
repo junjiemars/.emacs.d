@@ -59,8 +59,8 @@
 
 If optional APPEND is non-nil then push back else push ahead.
 If optional UNIQUELY is non-nil then push uniquely."
-  (let ((n1 (gensym*))
-        (s1 (gensym*)))
+  (let ((n1 (gensym))
+        (s1 (gensym)))
     `(let* ((,n1 ,newelt)
             (,s1 (if ,uniquely (delete ,n1 ,seq) ,seq)))
        (setq ,seq (if ,append
@@ -126,7 +126,7 @@ accumulate clause and Miscellaneous clause."
 (defmacro time (&rest form)
   "Execute FORM and print timing information on *message*."
   (declare (indent 0))
-  (let ((b (gensym*)))
+  (let ((b (gensym)))
     `(let ((,b (current-time)))
        (prog1
            (progn ,@form)
@@ -181,9 +181,9 @@ Optional argument DOCSTRING about FEATURE."
 (defmacro fluid-let (binding &rest body)
   "Execute BODY and restore the BINDING after return."
   (declare (indent 1))
-  (let ((old (gensym*))
+  (let ((old (gensym))
         (var (car binding))
-        (new (gensym*)))
+        (new (gensym)))
     `(let ((,old ,(car binding))
            (,new ,(cadr binding)))
        (prog1
@@ -202,8 +202,8 @@ Optional argument DOCSTRING about FEATURE."
 
 (defmacro string-trim> (s &optional rr)
   "Remove tailing whitespaces or matching of RR at the end of S."
-  (let ((s1 (gensym*))
-        (r1 (gensym*)))
+  (let ((s1 (gensym))
+        (r1 (gensym)))
     `(let ((,s1 ,s))
        (when (stringp ,s1)
          (let ((,r1 (if ,rr (concat ,rr "\\'") "[ \t\n\r]+\\'" )))
@@ -214,9 +214,9 @@ Optional argument DOCSTRING about FEATURE."
 
 (defmacro string-trim< (s &optional lr)
   "Remove leading whitespaces or matching of LR from S."
-  (let ((s1 (gensym*))
-        (l1 (gensym*))
-        (r1 (gensym*)))
+  (let ((s1 (gensym))
+        (l1 (gensym))
+        (r1 (gensym)))
     `(let ((,s1 ,s))
        (when (stringp ,s1)
          (let* ((,l1 ,lr)
@@ -228,8 +228,8 @@ Optional argument DOCSTRING about FEATURE."
 
 (defmacro string-trim>< (s &optional rr lr)
   "Remove leading and trailing whitespaces or matching of LR/RR from S."
-  (let ((s1 (gensym*))
-        (r1 (gensym*)))
+  (let ((s1 (gensym))
+        (r1 (gensym)))
     `(let* ((,r1 ,rr)
             (,s1 (string-trim> ,s ,r1)))
        (string-trim< ,s1 ,lr))))
@@ -243,8 +243,8 @@ NUM specifies which parenthesized expression in the REGEXP.
 If START is non-nil, start search at that index in STRING.
 
 See `string-match' and `match-string'."
-  (let ((s (gensym*))
-        (n (gensym*)))
+  (let ((s (gensym))
+        (n (gensym)))
     `(let ((,s ,string)
            (,n ,num))
        (when (and (stringp ,s)
@@ -262,9 +262,9 @@ Optional argument TRIM regexp used to trim."
   (if-version%
       <= 24.4
       `(split-string ,string ,separators ,omit-nulls ,trim)
-    (let ((s (gensym*))
-          (p (gensym*))
-          (d (gensym*)))
+    (let ((s (gensym))
+          (p (gensym))
+          (d (gensym)))
       `(let ((,s ,string)
              (,p ,separators)
              (,d ,trim))
@@ -286,7 +286,7 @@ Optional argument TRIM regexp used to trim."
 
 (defmacro posix-path (path)
   "Transpose PATH to posix path."
-  (let ((p (gensym*)))
+  (let ((p (gensym)))
     `(let ((,p ,path))
        (when (stringp ,p)
          (if (string-match "^\\([A-Z]:\\)" ,p)
@@ -310,10 +310,10 @@ If you want to set the environment temporarily that
    (shell-command* \"echo 'a' | grep 'a'\"))
 Optional argument ARGS for COMMAND."
   (declare (indent 1))
-  (let ((cmd (gensym*))
-        (buf (gensym*)))
+  (let ((cmd (gensym))
+        (buf (gensym)))
     `(let ((,cmd ,command)
-           (,buf (generate-new-buffer (symbol-name (gensym* "sc")))))
+           (,buf (generate-new-buffer (symbol-name (gensym "sc")))))
        (with-current-buffer ,buf
          (cons (let ((x (call-process
                          shell-file-name nil ,buf nil

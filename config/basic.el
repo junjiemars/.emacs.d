@@ -265,7 +265,7 @@ Returns the name of FILE when successed otherwise nil."
 
 (defmacro buffer-file-name* (buffer)
   "Return the name of BUFFER only if BUFFER assocate with a file."
-  (let ((b (gensym*)))
+  (let ((b (gensym)))
     `(when (bufferp ,buffer)
        (let ((,b (buffer-file-name ,buffer)))
          (when (stringp ,b)
