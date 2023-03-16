@@ -14,6 +14,19 @@
   nil)
 
 
+(unless (functionp 'gensym)
+
+  (defvar *gensym-counter* 0
+    "The counter of `gensym*'.")
+
+  (defun gensym (&optional prefix)
+    "Generate a new uninterned symbol, PREFIX default is \"g\"."
+    (make-symbol (format "%s%d" (or prefix "g")
+                         (prog1 *gensym-counter*
+                           (setq *gensym-counter*
+                                 (1+ *gensym-counter*)))))))
+
+
 ;; file macro
 
 (defmacro emacs-home* (&rest subdirs)
