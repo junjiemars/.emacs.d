@@ -5,7 +5,7 @@
 ;;;;
 ;; jshell.el
 ;;;;
-;;; https://nodejs.org
+;;;
 ;;;
 ;;; fetures:
 ;;; 1. start parameterized jshell process.
