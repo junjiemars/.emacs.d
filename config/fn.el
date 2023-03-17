@@ -332,32 +332,12 @@ Optional argument ARGS for COMMAND."
 (defmacro executable-find% (command &optional check)
   "Find and check COMMAND at compile time.
 
-Return nil if no COMMAND found or CHECK failed.
-Return the first match, if multiple COMMANDs had been found
-or the one that CHECK return t."
-  (if check
-      (let ((cmd (shell-command* (if-platform% 'windows-nt
-                                     "where"
-                                   "command -v")
-                   (funcall `(lambda () ,command)))))
-        (when (zerop (car cmd))
-          (let* ((ss (cdr cmd))
-                 (path (split-string* ss "\n" t))
-                 (p (cond
-                     ((and (consp path) (functionp check))
-                      (catch 'check
-                        (dolist* (x path)
-                          (when (funcall check
-                                         (shell-quote-argument
-                                          (posix-path x)))
-                            (throw 'check x)))
-                        nil))
-                     ((consp path) (car path))
-                     (t path))))
-            (posix-path p))))
-    (let ((path (executable-find (funcall `(lambda () ,command)))))
-      (ignore* check)
-      `,path)))
+Return nil if no COMMAND found or CHECK failed."
+  (let ((path (executable-find (funcall `(lambda () ,command)))))
+    (if (null check)
+        `,path
+      (let ((rc (funcall check path)))
+        (when rc `,path)))))
 
 
  ;; end of Platform Related Functions

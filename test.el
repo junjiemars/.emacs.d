@@ -419,9 +419,8 @@
     (should (executable-find% (concat "l" "s")))
     (should (executable-find% "ls"
                               (lambda (ls)
-                                (let ((x (shell-command* "sh"
-                                           "--version")))
-                                  (car x)))))))
+                                (let ((x (shell-command* ls)))
+                                  (= 0 (car x))))))))
 
 
  ;; end of fn
