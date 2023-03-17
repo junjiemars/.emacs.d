@@ -236,6 +236,9 @@ DIR where the compiled file located."
 
 ;; *-version% macro
 
+(defconst +emacs-version+ (string-to-number emacs-version)
+  "The version of Emacs in `float'.")
+
 (defmacro if-version% (cmp version then &rest else)
   "If VERSION CMP with variable `emacs-version' is t, do THEN, else do ELSE...
 
@@ -244,10 +247,9 @@ THEN must be one expression, but ELSE... can be zero or more expressions.
 If (CMP VERSION `emacs-version') yield nil, and there are no ELSE’s,
 the value is nil."
   (declare (indent 3))
-  (let ((ev (string-to-number emacs-version)))
-    `(if% (,cmp ,version ,ev)
-         ,then
-       (progn% ,@else))))
+  `(if% (,cmp ,version +emacs-version+)
+       ,then
+     (progn% ,@else)))
 
 
 (defmacro when-version% (cmp version &rest body)
