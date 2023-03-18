@@ -145,8 +145,7 @@ accumulate clause and Miscellaneous clause."
   "Return nil, list VARS at compile time if in lexical context."
   (declare (indent 0))
   (when-lexical%
-    `(when% lexical-binding
-       (progn% ,@vars nil))))
+    `(progn ,@vars nil)))
 
 
 (defmacro defmacro-if-feature% (feature &optional docstring)
