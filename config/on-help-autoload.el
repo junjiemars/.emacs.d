@@ -27,14 +27,12 @@
        (view-mode 1)))))
 
 
-(when-version% > 24.0
-  ;; `View-quit' has different behaviors between Emacs24.0- and Emacs24.0+
-  (defadvice View-quit (after view-quit-after disable)
-    (quit-window))
+(with-eval-after-load 'view
+  ;; keep `view-mode' when quit
+  (define-key% view-mode-map (kbd "q") #'quit-window))
 
-  (with-eval-after-load 'view
-		(ad-enable-advice #'View-quit 'after "view-quit-after")
-    (ad-activate #'View-quit t)))
+
+
 
 
 
