@@ -303,26 +303,6 @@ RENEW overwrite the existing tags file when t else create it."
     (ad-activate #'find-tag t)))
 
 
-;; open emacs source in `view-mode'
-(with-eval-after-load 'help-mode
-
-  (lexical-let% ((help-fn (button-type-get 'help-function-def 'help-function)))
-    (button-type-put
-     'help-function-def 'help-function
-     #'(lambda (fn &optional file)
-         (funcall help-fn fn file)
-         (view-mode 1))))
-
-  (lexical-let% ((help-fn (button-type-get 'help-variable-def 'help-function)))
-    (button-type-put
-     'help-variable-def 'help-function
-     #'(lambda (var &optional file)
-         (funcall help-fn var file)
-         (view-mode 1)))))
-
- ;; end of go into `view-mode'
-
-
 (unless-fn% 'xref-find-references 'xref
 
   (defun xref-find-references (what)

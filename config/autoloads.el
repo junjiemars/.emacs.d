@@ -43,6 +43,7 @@
     (compile-unit% (emacs-home* "config/on-compile-autoload.el"))
     (compile-unit% (emacs-home* "config/on-dired-autoload.el"))
     (compile-unit% (emacs-home* "config/on-edit-autoload.el"))
+    (compile-unit% (emacs-home* "config/on-help-autoload.el"))
     (compile-unit% (emacs-home* "config/on-ido-autoload.el"))
     (compile-unit% (emacs-home* "config/on-trans-autoload.el"))
     (compile-unit% (emacs-home* "config/on-eshell-autoload.el"))
@@ -190,9 +191,6 @@
   (when (get-buffer "*scratch*")
     (with-current-buffer "*scratch*"
       (lisp-interaction-mode)))
-
-  ;; `view-mode'
-  (setq view-read-only t)
 
   ;; enable `column-number-mode'
   (setq% column-number-mode t 'simple)
