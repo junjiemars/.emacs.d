@@ -17,6 +17,10 @@
 
 ;; Versioned Dirs: .*
 
+
+;; `abbrev'
+(setq% abbrev-file-name (v-home! ".abbrev/defs") 'abbrev)
+
 ;; auto-save
 (setq auto-save-list-file-prefix (v-home! ".save/auto-"))
 
@@ -61,6 +65,9 @@
 ;; `nsm': Network Security Manager
 (setq% nsm-settings-file (v-home! ".nsm/security.data") 'nsm)
 
+;; `project'
+(setq% project-list-file (v-home! ".project/list") 'project)
+
 ;; `saveplace'
 ;; When you visit a file, point goes to the last place where it
 ;; was when you previously visited the same file.
@@ -83,13 +90,8 @@
 ;; `url'
 (setq% url-configuration-directory (v-home! ".url/") 'url)
 
-
-;; `abbrev'
-(setq% abbrev-file-name (v-home! ".abbrev/defs") 'abbrev)
-
-
-;; `project'
-(setq% project-list-file (v-home! ".project/list") 'project)
+;; treat `read-only-mode' as `view-mode'
+(setq view-read-only t)
 
 
  ;; Versioned Dirs

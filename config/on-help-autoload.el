@@ -37,9 +37,6 @@
     (ad-activate #'View-quit t)))
 
 
-;; treat `read-only-mode' as `view-mode'
-(setq view-read-only t)
-
 
 
 ;; end of on-help-autoload.el
