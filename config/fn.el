@@ -297,7 +297,7 @@ Optional argument TRIM regexp used to trim."
            ,p)))))
 
 
-(defun shell-command* (command &rest args)
+(defmacro shell-command* (command &rest args)
   "Return a cons cell (code . output) after execute COMMAND in inferior shell.
 
 See `shell-command' and `shell-command-to-string' for details.
@@ -309,20 +309,23 @@ If you want to set the environment temporarily that
    (shell-command* \"echo 'a' | grep 'a'\"))
 Optional argument ARGS for COMMAND."
   (declare (indent 1))
-  (let ((buf (generate-new-buffer (symbol-name (gensym* "sc")))))
-    (with-current-buffer buf
-      (cons (let ((x (call-process
-                      shell-file-name nil buf nil
-                      shell-command-switch
-                      (mapconcat #'identity
-                                 (cons command args) " "))))
-              (cond ((integerp x) x)
-                    ((string-match "^.*\\([0-9]+\\).*$" x)
-                     (match-string 1 x))
-                    (t -1)))
-            (let ((s (buffer-string)))
-              (kill-buffer buf)
-              (if (string= "\n" s) nil s))))))
+  (let ((cmd (gensym*))
+        (buf (gensym*)))
+    `(let ((,cmd ,command)
+           (,buf (generate-new-buffer (symbol-name (gensym* "sc")))))
+       (with-current-buffer ,buf
+         (cons (let ((x (call-process
+                         shell-file-name nil ,buf nil
+                         shell-command-switch
+                         (mapconcat #'identity
+                                    (cons ,cmd (list ,@args)) " "))))
+                 (cond ((integerp x) x)
+                       ((string-match "^.*\\([0-9]+\\).*$" x)
+                        (match-string 1 x))
+                       (t -1)))
+               (let ((s (buffer-string)))
+                 (kill-buffer ,buf)
+                 (if (string= "\n" s) nil s)))))))
 
 
 (defmacro executable-find% (command &optional check)
