@@ -286,7 +286,7 @@ Optional argument TRIM regexp used to trim."
         (buf (gensym*)))
     `(let ((,f ,file))
        (when (and (stringp ,f) (file-exists-p ,f))
-         (let ((,buf (generate-new-buffer (symbol-name (gensym* "sc")))))
+         (let ((,buf (generate-new-buffer (symbol-name (gensym* "rsff")))))
            (unwind-protect
                (with-current-buffer ,buf
                  (insert-file-contents ,f)
@@ -329,19 +329,20 @@ Optional argument ARGS for COMMAND."
         (buf (gensym*)))
     `(let ((,cmd ,command)
            (,buf (generate-new-buffer (symbol-name (gensym* "sc")))))
-       (with-current-buffer ,buf
-         (cons (let ((x (call-process
-                         shell-file-name nil ,buf nil
-                         shell-command-switch
-                         (mapconcat #'identity
-                                    (cons ,cmd (list ,@args)) " "))))
-                 (cond ((integerp x) x)
-                       ((string-match "^.*\\([0-9]+\\).*$" x)
-                        (match-string 1 x))
-                       (t -1)))
-               (let ((s (buffer-string)))
-                 (kill-buffer ,buf)
-                 (if (string= "\n" s) nil s)))))))
+       (unwind-protect
+           (with-current-buffer ,buf
+             (cons (let ((x (call-process
+                             shell-file-name nil ,buf nil
+                             shell-command-switch
+                             (mapconcat #'identity
+                                        (cons ,cmd (list ,@args)) " "))))
+                     (cond ((integerp x) x)
+                           ((string-match "^.*\\([0-9]+\\).*$" x)
+                            (match-string 1 x))
+                           (t -1)))
+                   (let ((s (buffer-string)))
+                     (if (string= "\n" s) nil s))))
+         (and (buffer-name ,buf) (kill-buffer ,buf))))))
 
 
 (defmacro executable-find% (command &optional check)
