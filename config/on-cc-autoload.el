@@ -291,7 +291,7 @@
             (and cached (file-exists-p fs)
                  (plist-get
                   (setq dx (plist-put dx ss
-                                      (read-sexpr-from-file fs)))
+                                      (read-sexp-from-file fs)))
                   ss))
 
             (and (setq d (mapcar (if remote
@@ -320,7 +320,7 @@ include directories. The REMOTE argument from `remote-norm-file'.")
       (or (and cached dx)
 
           (and cached (file-exists-p fs)
-               (setq dx (read-sexpr-from-file fs)))
+               (setq dx (read-sexp-from-file fs)))
 
           (and (consp dir)
                (save-sexp-to-file
@@ -519,7 +519,7 @@ RENEW whether to renew the existing FILE."
             (and cached (file-exists-p fs)
                  (plist-get
                   (setq dx (plist-put dx ss
-                                      (read-sexpr-from-file fs)))
+                                      (read-sexp-from-file fs)))
                   ss))
 
             (and (setq d (cc*-check-identity remote))

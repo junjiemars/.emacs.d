@@ -274,7 +274,7 @@
 
 (defun sudoku-puzzle-load ()
   "Load sudoku's puzzle from `+sudoku-file+'."
-  (*sudoku-puzzle* :set! (read-sexpr-from-file
+  (*sudoku-puzzle* :set! (read-sexp-from-file
                           (+sudoku-file+ :puzzle))))
 
 
@@ -741,7 +741,7 @@
 
 (defun sudoku-board-load ()
   "Load sudoku's board from `+sudoku-file+'."
-  (let ((b (read-sexpr-from-file (+sudoku-file+ :board))))
+  (let ((b (read-sexp-from-file (+sudoku-file+ :board))))
     (*sudoku-puzzle*
      :set!
      (let ((i 0)

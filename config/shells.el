@@ -184,7 +184,7 @@ See also: `parse-colon-path'."
     (when (file-exists-p (shells-spec->% :file))
       (*default-shell-env*
        :set!
-       (read-sexpr-from-file (shells-spec->% :file))))
+       (read-sexp-from-file (shells-spec->% :file))))
 
     (let ((shell (shells-spec->* :shell-file-name)))
       (when shell

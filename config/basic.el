@@ -171,38 +171,6 @@ STANDARD always be computed at runtime whatever the current
  ;; end of Compatible Functions
 
 
-;; File Functions
-
-(defun save-sexp-to-file (sexp file)
-  "Save SEXP to FILE.
-
-Returns the name of FILE when successed otherwise nil."
-  (unwind-protect
-    (with-temp-buffer
-      (print sexp (current-buffer))
-      (write-region (point-min) (point-max) file)
-      file)
-    nil))
-
-
-(defun save-str-to-file (str file)
-  "Save STR to FILE.
-
-Returns the name of FILE when successed otherwise nil."
-  (unwind-protect
-      (with-temp-file file
-        (insert str)
-        file)
-    nil))
-
-
-(defun read-str-from-file (file)
-  "Read string from FILE."
-  (when (and (stringp file) (file-exists-p file))
-    (with-temp-buffer
-      (insert-file-contents file)
-      (buffer-string))))
-
 
 (define-hash-table-test 'string-hash= #'string= #'sxhash)
 

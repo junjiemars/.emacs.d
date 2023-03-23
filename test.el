@@ -412,6 +412,29 @@
   (should (string= "abc"
                    (match-string* "XX\\(abc\\)XX" "XXabcXX" 1))))
 
+(ert-deftest %fn:save/read-sexp-to/from-file ()
+  (let ((f (emacs-home* "private/sexp"))
+        (s1 '(defvar test%fn-sstf1 t))
+        (t1 (make-hash-table :test 'string-hash=)))
+    (should (and (save-sexp-to-file s1 f)
+                 (file-exists-p f)
+                 (equal s1 (read-sexp-from-file f))))
+    (puthash "a" 1 t1)
+    (puthash "b" 2 t1)
+    (should (= 2 (hash-table-count t1)))
+    (should (and (save-sexp-to-file t1 f)
+                 (file-exists-p f)
+                 (= 2 (gethash "b" (read-sexp-from-file f)))))
+    (should (or (delete-file f)
+                (not (file-exists-p f))))))
+
+(ert-deftest %fn:save/read-str-to/from-file ()
+  (let ((f (emacs-home* "private/str")))
+    (should (and (save-str-to-file "abc" f)
+                 (string= "abc" (read-str-from-file f))))
+    (should (or (delete-file f)
+                (not (file-exists-p f))))))
+
 (ert-deftest %fn:executable-find% ()
   (if-platform% 'windows-nt
       (should (executable-find% "dir"))
@@ -450,30 +473,6 @@
   (should (string= "c.c" (file-name-nondirectory%
                           (concat "/a/b/" "c.c")))))
 
-(ert-deftest %basic:save-sexp-to-file ()
-  (let ((f (emacs-home* "private/sexp"))
-        (s1 '(defvar test%basic-sstf1 t))
-        (t1 (make-hash-table :test 'string-hash=)))
-    (should (and (save-sexp-to-file s1 f)
-                 (file-exists-p f)
-                 (equal s1 (car (read-from-string
-                                 (read-str-from-file f))))))
-    (puthash "a" 1 t1)
-    (puthash "b" 2 t1)
-    (should (= 2 (hash-table-count t1)))
-    (should (and (save-sexp-to-file t1 f)
-                 (file-exists-p f)
-                 (= 2 (gethash "b" (car (read-from-string
-                                         (read-str-from-file f)))))))
-    (should (or (delete-file f)
-                (not (file-exists-p f))))))
-
-(ert-deftest %basic:save/read-str-to/from-file ()
-  (let ((f (emacs-home* "private/str")))
-    (should (and (save-str-to-file "abc" f)
-                 (string= "abc" (read-str-from-file f))))
-    (should (or (delete-file f)
-                (not (file-exists-p f))))))
 
 (ert-deftest %basic:remote-norm-file/id/>user@host ()
   (should (and (null (remote-norm-file nil))
@@ -739,9 +738,9 @@
 
 (ert-deftest %z:trans:roman->arabic ()
   (when-fn% 'roman->arabic nil
-    (should (= 1990 (roman->arabic (split-string* "MCMXC" "" t) 0)))
-    (should (= 2008 (roman->arabic (split-string* "MMVIII" "" t) 0)))
-    (should (= 1666 (roman->arabic (split-string* "MDCLXVI" "" t) 0)))))
+    (should (= 1990 (roman->arabic "MCMXC")))
+    (should (= 2008 (roman->arabic "MMVIII")))
+    (should (= 1666 (roman->arabic "MDCLXVI")))))
 
 
 (ert-deftest %z:trans:chinese->arabic ()

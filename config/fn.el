@@ -280,18 +280,69 @@ Optional argument TRIM regexp used to trim."
  ;; end of Strings
 
 
-(defmacro read-sexpr-from-file (file)
-  "Read the first sexpr from FILE."
+(defmacro save-sexp-to-file (sexp file)
+  "Save SEXP to FILE.
+
+Returns the name of FILE when successed otherwise nil."
+  (let ((f (gensym*))
+        (buf (gensym*)))
+    `(let ((,f ,file)
+           (,buf (generate-new-buffer
+                  (symbol-name (gensym* "ssexprtf")))))
+       (unwind-protect
+           (with-current-buffer ,buf
+             (print ,sexp ,buf)
+             (write-region (point-min) (point-max) ,f)
+             ,f)
+         (and (buffer-name ,buf) (kill-buffer ,buf))))))
+
+
+(defmacro read-sexp-from-file (file)
+  "Read the first sexp from FILE."
   (let ((f (gensym*))
         (buf (gensym*)))
     `(let ((,f ,file))
        (when (and (stringp ,f) (file-exists-p ,f))
-         (let ((,buf (generate-new-buffer (symbol-name (gensym* "rsff")))))
+         (let ((,buf (generate-new-buffer
+                      (symbol-name (gensym* "rsexpff")))))
            (unwind-protect
                (with-current-buffer ,buf
                  (insert-file-contents ,f)
                  (read ,buf))
              (and (buffer-name ,buf) (kill-buffer ,buf))))))))
+
+
+(defmacro save-str-to-file (str file)
+  "Save STR to FILE.
+
+Returns the name of FILE when successed otherwise nil."
+  (let ((f (gensym*))
+        (buf (gensym*)))
+    `(let ((,f ,file)
+           (,buf (generate-new-buffer
+                  (symbol-name (gensym* "sstrtf")))))
+       (unwind-protect
+           (with-current-buffer ,buf
+             (insert ,str)
+             (write-region (point-min) (point-max) ,f)
+             ,f)
+         (and (buffer-name ,buf) (kill-buffer ,buf))))))
+
+
+(defmacro read-str-from-file (file)
+  "Read string from FILE."
+  (let ((f (gensym*))
+        (buf (gensym*)))
+    `(let ((,f ,file))
+       (when (and (stringp ,f) (file-exists-p ,f))
+         (let ((,buf (generate-new-buffer
+                      (symbol-name (gensym* "rstrff")))))
+           (unwind-protect
+               (with-temp-buffer
+                 (insert-file-contents ,f)
+                 (buffer-string))
+             (and (buffer-name ,buf) (kill-buffer ,buf))))))))
+
 
  ;; end of Files
 
