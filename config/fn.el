@@ -280,6 +280,22 @@ Optional argument TRIM regexp used to trim."
  ;; end of Strings
 
 
+(defmacro read-sexpr-from-file (file)
+  "Read the first sexpr from FILE."
+  (let ((f (gensym*))
+        (buf (gensym*)))
+    `(let ((,f ,file))
+       (when (and (stringp ,f) (file-exists-p ,f))
+         (let ((,buf (generate-new-buffer (symbol-name (gensym* "sc")))))
+           (unwind-protect
+               (with-current-buffer ,buf
+                 (insert-file-contents ,f)
+                 (read ,buf))
+             (and (buffer-name ,buf) (kill-buffer ,buf))))))))
+
+ ;; end of Files
+
+
 ;; Platform Related Functions
 
 

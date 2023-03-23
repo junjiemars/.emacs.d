@@ -274,9 +274,8 @@
 
 (defun sudoku-puzzle-load ()
   "Load sudoku's puzzle from `+sudoku-file+'."
-  (*sudoku-puzzle* :set! (car (read-from-string
-                               (read-str-from-file
-                                (+sudoku-file+ :puzzle))))))
+  (*sudoku-puzzle* :set! (read-sexpr-from-file
+                          (+sudoku-file+ :puzzle))))
 
 
 (defmacro sudoku-puzzle-vec-complete (vector)
@@ -742,9 +741,7 @@
 
 (defun sudoku-board-load ()
   "Load sudoku's board from `+sudoku-file+'."
-  (let ((b (car (read-from-string
-                 (read-str-from-file
-                  (+sudoku-file+ :board))))))
+  (let ((b (read-sexpr-from-file (+sudoku-file+ :board))))
     (*sudoku-puzzle*
      :set!
      (let ((i 0)
