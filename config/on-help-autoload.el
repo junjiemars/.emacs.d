@@ -29,7 +29,8 @@
 
 (with-eval-after-load 'view
   ;; keep `view-mode' when quit
-  (define-key% view-mode-map (kbd "q") #'quit-window))
+  (when-var% view-mode-map 'view
+    (define-key% view-mode-map (kbd "q") #'quit-window)))
 
 
 
