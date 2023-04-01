@@ -40,18 +40,22 @@
 
 
 
-;;; completion keys in `minibuffer'
-(let ((fn (if-fn% 'minibuffer-complete 'minibuffer
-                  #'minibuffer-complete
-            (if-fn% #'completion-at-point 'minibuffer
-                    #'completion-at-point
-              #'lisp-complete-symbol)))
-      (map (if-var% minibuffer-local-completion-map 'minibuffer
-                    minibuffer-local-completion-map
-             minibuffer-local-map)))
-  (define-key map (kbd "TAB") fn)
-  (define-key map (kbd "C-M-i") fn))
+(defmacro minibuffer-complete-key! (key)
+  "Complete KEY for `minibuffer' completion."
+  `(define-key% (if-var% minibuffer-local-completion-map 'minibuffer
+                         minibuffer-local-completion-map
+                  minibuffer-local-map)
+     (kbd ,key)
+     (if-fn% 'minibuffer-complete 'minibuffer
+             #'minibuffer-complete
+       (if-fn% #'completion-at-point 'minibuffer
+               #'completion-at-point
+         #'lisp-complete-symbol))))
 
+(minibuffer-complete-key! "TAB")
+(minibuffer-complete-key! "C-M-i")
+
+
 
 
 ;; end of file
