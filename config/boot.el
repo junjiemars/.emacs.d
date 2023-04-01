@@ -398,7 +398,6 @@ No matter the declaration order, the executing order is:
  ;; end of self-spec macro
 
 
-
 ;;; <1> prologue
 (compile! (compile-unit% (emacs-home* "config/fn.el"))
           (compile-unit* (*self-paths* :get :prologue)))
@@ -409,26 +408,7 @@ No matter the declaration order, the executing order is:
           (compile-unit% (emacs-home* "config/basic.el"))
           (compile-unit% (emacs-home* "config/shells.el")))
 
-;;; <3> package
-(when-package%
-  ;; (package-initialize)
-
-  (defalias '*package-compile-units*
-    (lexical-let% ((us '()))
-      (lambda (&optional n)
-        (cond ((consp n) (let ((s n))
-                           (while s
-                             (setq us (cons (car s) us)
-                                   s (cdr s)))
-                           us))
-              (t us))))
-    "Autloaded `compile-unit'.")
-
-
-  ;; Load basic and self modules
-  (compile! (compile-unit* (*self-paths* :get :package-spec))))
-
-;;; <4> epilogue
+;;; <3> epilogue
 (compile!
   ;; --batch mode: disable desktop read/save
   `,(unless noninteractive

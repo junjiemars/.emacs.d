@@ -7,6 +7,14 @@
 ;;;;
 
 
+;; (require 'package)
+(declare-function package-installed-p "package")
+
+
+;; Disable package initialize
+(package-spec-:allowed-p (setq package-enable-at-startup nil))
+
+
 ;; define package user dir
 (setq% package-user-dir (v-home% "elpa/") 'package)
 
@@ -94,17 +102,6 @@
            (package-install ,p))))))
 
 
-;; Package Initialize
-;; (require 'package)
-(declare-function package-installed-p "package")
-(setq package-enable-at-startup nil)
-
-
-(when-version%
-    <= 25.1
-  (setq custom-file (v-home% "config/.selected-packages.el")))
-
-(package-initialize)
 
 
 (defun parse-package-spec! (spec &optional remove-unused)
@@ -131,11 +128,35 @@
        ,@body)))
 
 
+(defalias '*package-compile-units*
+  (lexical-let% ((us '()))
+    (lambda (&optional n)
+      (cond ((consp n) (let ((s n))
+                         (while s
+                           (setq us (cons (car s) us)
+                                 s (cdr s)))
+                         us))
+            (t us))))
+  "Autloaded `compile-unit'.")
+
+
 (package-spec-:allowed-p
-  ;; Load self packages spec
+
+  ;; compile self :package-spec
+  (compile! (compile-unit* (*self-paths* :get :package-spec)))
+
+  (when-version%
+      <= 25.1
+    (setq custom-file (v-home% "config/.selected-packages.el")))
+
+  (package-initialize)
+
+  ;; load self :packages-spec
   (parse-package-spec! (*self-packages*)
                        (*self-env-spec* :get :package
-                                        :remove-unused)))
+                                        :remove-unused))
+
+  (apply #'compile! (*package-compile-units*)))
 
 
 ;;; eof

@@ -252,7 +252,6 @@
      (when-package%
        (compile! (compile-unit% (emacs-home* "config/module.el"))))
      (compile! (compile-unit% (emacs-home* "config/on-module.el")))
-     (package-spec-:allowed-p (apply #'compile! (*package-compile-units*)))
      (load-autoloaded-modes!)
      (load-conditional-modes!)
      (set-global-keys!)
