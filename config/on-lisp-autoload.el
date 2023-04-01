@@ -40,8 +40,8 @@
 
 
 
-(defmacro minibuffer-complete-key! (key)
-  "Complete KEY for `minibuffer' completion."
+(defmacro set-minibuffer-complete-key! (key)
+  "Set completing KEY for `minibuffer'."
   `(define-key% (if-var% minibuffer-local-completion-map 'minibuffer
                          minibuffer-local-completion-map
                   minibuffer-local-map)
@@ -52,8 +52,8 @@
                #'completion-at-point
          #'lisp-complete-symbol))))
 
-(minibuffer-complete-key! "TAB")
-(minibuffer-complete-key! "C-M-i")
+(set-minibuffer-complete-key! "TAB")
+(set-minibuffer-complete-key! "C-M-i")
 
 
 
