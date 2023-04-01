@@ -39,23 +39,44 @@
 
 
 
+;; (if-fn% 'minibuffer-complete 'minibuffer
+;;         (if-var% minibuffer-local-completion-map 'minibuffer
+;;                  #'minibuffer-complete
+;;           #'completion-at-point)
+;;   #'lisp-complete-symbol)
 
-;; fix: no TAB completion in minibuffer on ancient Emacs.
-(if-key% minibuffer-local-map
-    (kbd "TAB")
-    (lambda (def) (memq def '(self-insert-command)))
-    (progn
-      (defun minibuffer-tab-completion! ()
-        "TAB as completion key in minibuffer."
-        ;; `lisp-complete-symbol' is an obsolete since Emacs24.4
-        (define-key minibuffer-local-map (kbd "TAB")
-          (if-fn% 'completion-at-point 'minibuffer
-                  (if-version% > 24
-                               #'lisp-complete-symbol
-                    #'completion-at-point)
-            #'lisp-complete-symbol)))
-      (add-hook 'minibuffer-setup-hook #'minibuffer-tab-completion! t)))
+;; ;; fix: no TAB completion in minibuffer on ancient Emacs.
+;; (if-key% minibuffer-local-map
+;;     (kbd "TAB")
+;;     (lambda (def) (memq def '(self-insert-command)))
+;;     (progn
+;;       (defun minibuffer-tab-completion! ()
+;;         "TAB as completion key in minibuffer."
+;;         ;; `lisp-complete-symbol' is an obsolete since Emacs24.4
+;;         (define-key minibuffer-local-map (kbd "TAB")
+;;           (if-fn% 'completion-at-point 'minibuffer
+;;                   (if-version% > 24
+;;                                #'lisp-complete-symbol
+;;                     #'completion-at-point)
+;;             #'lisp-complete-symbol)))
+;;       (add-hook 'minibuffer-setup-hook #'minibuffer-tab-completion! t)))
 
+
+;; (define-key minibuffer-local-completion-map (kbd "C-M-i")
+;; #'minibuffer-complete)
+
+
+;;; completion keys in `minibuffer'
+(let ((fn (if-fn% 'minibuffer-complete 'minibuffer
+                  #'minibuffer-complete
+            (if-fn% #'completion-at-point 'minibuffer
+                    #'completion-at-point
+              #'lisp-complete-symbol)))
+      (map (if-var% minibuffer-local-completion-map 'minibuffer
+                    minibuffer-local-completion-map
+             minibuffer-local-map)))
+  (define-key map (kbd "TAB") fn)
+  (define-key map (kbd "C-M-i") fn))
 
 
 
