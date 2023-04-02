@@ -398,6 +398,10 @@ No matter the declaration order, the executing order is:
  ;; end of self-spec macro
 
 
+;; disable package initialize
+(when-package% (setq package-enable-at-startup nil))
+
+
 ;;; <1> prologue
 (compile! (compile-unit% (emacs-home* "config/fn.el"))
           (compile-unit* (*self-paths* :get :prologue)))

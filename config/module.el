@@ -11,10 +11,6 @@
 (declare-function package-installed-p "package")
 
 
-;; Disable package initialize
-(package-spec-:allowed-p (setq package-enable-at-startup nil))
-
-
 ;; define package user dir
 (setq% package-user-dir (v-home% "elpa/") 'package)
 
