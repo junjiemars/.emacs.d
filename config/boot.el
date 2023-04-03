@@ -395,6 +395,17 @@ No matter the declaration order, the executing order is:
      (when (*self-env-spec* :get :package :allowed)
        ,@body)))
 
+
+(defmacro when-feature-allowed% (if-feature &rest body)
+  "Run BODY when FEATURE be supported and be allowed.
+
+IF-FEATURE macro must be defined by `defmacro-if-feature%'."
+  (declare (indent 1))
+  `(,if-feature
+    (package-spec-:allowed-p
+      ,@body)))
+
+
  ;; end of self-spec macro
 
 
