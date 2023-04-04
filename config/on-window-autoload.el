@@ -73,11 +73,7 @@ A prefix argument is handled like `recenter':
 (define-key% (current-global-map) (kbd "C-c w d") #'windmove-down)
 
 
-(when-version% > 24.0
-  ;; `View-quit' has different behaviors between Emacs24.0- and Emacs24.0+
-  (defadvice View-quit (after view-quit-after disable)
-    (quit-window))
-
-  (with-eval-after-load 'view
-		(ad-enable-advice #'View-quit 'after "view-quit-after")
-    (ad-activate #'View-quit t)))
+(with-eval-after-load 'view
+  ;; keep `view-mode' when quit
+  (when-var% view-mode-map 'view
+    (define-key% view-mode-map (kbd "q") #'quit-window)))

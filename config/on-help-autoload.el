@@ -27,15 +27,4 @@
        (view-mode 1)))))
 
 
-(with-eval-after-load 'view
-  ;; keep `view-mode' when quit
-  (when-var% view-mode-map 'view
-    (define-key% view-mode-map (kbd "q") #'quit-window)))
-
-
-
-
-
-
-
 ;; end of on-help-autoload.el
