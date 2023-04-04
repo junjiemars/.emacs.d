@@ -19,7 +19,7 @@
 (with-eval-after-load 'org
   ;; load `ox-reveal' if it had been installed.
   ;; `ox-reveal' raising "package cl is deprecated".
-  (when-feature-allowed% if-feature-ox-reveal%
+  (if-feature-ox-reveal%
     (when-var% org-reveal-root 'ox-reveal
       (require 'ox-reveal)
       (setq org-reveal-root
