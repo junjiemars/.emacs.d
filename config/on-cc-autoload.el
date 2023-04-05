@@ -104,7 +104,7 @@
     (let* ((c (concat temporary-file-directory "xargs.c"))
            (exe (v-home% ".exec/xargs.exe"))
            (cc (concat +cc*-compiler-bin+
-                       " && cl -nologo -DNDEBUG=1 -O2 -utf-8"
+                       " -nologo -DNDEBUG=1 -O2 -utf-8"
                        " " c
                        " -Fo" temporary-file-directory
                        " -Fe" exe
@@ -226,7 +226,7 @@
                  "}"))
        c)
       (let ((cmd (shell-command* +cc*-compiler-bin+
-                   (concat " && cl -nologo"
+                   (concat " -nologo"
                            " " options
                            " " c
                            " -Fo" temporary-file-directory
