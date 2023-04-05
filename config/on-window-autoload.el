@@ -72,7 +72,7 @@ A prefix argument is handled like `recenter':
 (define-key% (current-global-map) (kbd "C-c w d") #'windmove-down)
 
 
-;;; Buffer
+;;; Buffer's key bindings
 (define-key% (current-global-map) (kbd "C-x x c") #'clone-buffer)
 (define-key% (current-global-map) (kbd "C-x x n") #'echo-buffer-name)
 (define-key% (current-global-map) (kbd "C-x x t") #'toggle-truncate-lines)
@@ -90,9 +90,11 @@ A prefix argument is handled like `recenter':
   (define-key% (current-global-map) (kbd "C-x x SPC") #'whitespace-mode))
 (define-key% (current-global-map) (kbd "C-x x u") #'rename-uniquely)
 
+
 
-;;; `view'
+
 (with-eval-after-load 'view
+
   ;; keep `view-mode' when quit
   (when-var% view-mode-map 'view
     (define-key% view-mode-map (kbd "q") #'quit-window)))
