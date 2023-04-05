@@ -246,21 +246,21 @@
 
 ;; after-init
 (defun on-autoloads! ()
+  (compile! (compile-unit% (emacs-home* "config/sockets.el")))
+  (when-package%
+    (compile! (compile-unit% (emacs-home* "config/module.el"))))
+  (load-autoloaded-modes!)
+  (load-conditional-modes!)
+  (set-global-keys!)
+  (compile! (compile-unit% (emacs-home* "config/safe.el")))
+  (when-fn% 'self-frame-default-load! nil (self-frame-default-load!))
+  (when-fn% 'self-desktop-read! nil (self-desktop-read!))
   (make-thread*
    (lambda ()
-     (compile! (compile-unit% (emacs-home* "config/sockets.el")))
-     (when-package%
-       (compile! (compile-unit% (emacs-home* "config/module.el"))))
-     (load-autoloaded-modes!)
-     (load-conditional-modes!)
-     (set-global-keys!)
-     (compile! (compile-unit% (emacs-home* "config/safe.el")))
      (ido-mode t)
-     (when-fn% 'self-desktop-read! nil (self-desktop-read!))
-     (when-fn% 'self-frame-default-load! nil (self-frame-default-load!))
      (when (*self-paths* :get :epilogue)
        (compile! (compile-unit* (*self-paths* :get :epilogue)))))
-   t "on-autoloads!"))
+   nil "on-autoloads!"))
 
 
 ;;; autoload when interactive or not

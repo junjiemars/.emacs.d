@@ -124,7 +124,7 @@ If DIR is nil then load the built-in `customize-themes' by NAME."
  ;; end of when-theme%
 
 
-(make-thread* #'self-frame-init-load!)
+(self-frame-init-load!)
 (make-thread* #'self-theme-load!)
 
 
