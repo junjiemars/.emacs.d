@@ -62,7 +62,79 @@ A prefix argument is handled like `recenter':
 
   (define-key (current-global-map) (kbd "C-l") #'recenter-top-bottom))
 
- ;; end of recenter-top-bottom
+ ; end of `recenter-top-bottom'
+
+
+;;; `dired' active/other window
+(unless-fn% 'dired-jump 'dired
+  (defun dired-jump (&optional other-window file-name)
+    "Jump to Dired buffer corresponding to current buffer.
+If in a buffer visiting a file, Dired that file's directory and
+move to that file's line in the directory listing.
+
+If the current buffer isn't visiting a file, Dired `default-directory'.
+
+If in Dired already, pop up a level and goto old directory's line.
+In case the proper Dired file line cannot be found, refresh the dired
+buffer and try again.
+
+When OTHER-WINDOW is non-nil, jump to Dired buffer in other window.
+
+When FILE-NAME is non-nil, jump to its line in Dired.
+Interactively with prefix argument, read FILE-NAME."
+    (interactive
+     (list nil (and current-prefix-arg
+                    (read-file-name "Jump to Dired file: "))))
+    (cond
+     ((and (bound-and-true-p archive-subfile-mode)
+           (buffer-live-p archive-superior-buffer))
+      (switch-to-buffer archive-superior-buffer))
+     ((and (bound-and-true-p tar-subfile-mode)
+           (buffer-live-p tar-superior-buffer))
+      (switch-to-buffer tar-superior-buffer))
+     (t
+      ;; Expand file-name before `dired-goto-file' call:
+      ;; `dired-goto-file' requires its argument to be an absolute
+      ;; file name; the result of `read-file-name' could be
+      ;; an abbreviated file name (Bug#24409).
+      (let* ((file (or (and file-name (expand-file-name file-name))
+                       buffer-file-name))
+             (dir (if file (file-name-directory file) default-directory)))
+        (if (and (eq major-mode 'dired-mode) (null file-name))
+            (progn
+              (setq dir (dired-current-directory))
+              (dired-up-directory other-window)
+              (unless (dired-goto-file dir)
+                ;; refresh and try again
+                (dired-insert-subdir (file-name-directory dir))
+                (dired-goto-file dir)))
+          (if other-window
+              (dired-other-window dir)
+            (dired dir))
+          (if file
+              (or (dired-goto-file file)
+                  ;; refresh and try again
+                  (progn
+                    (dired-insert-subdir (file-name-directory file))
+                    (dired-goto-file file))
+                  ;; Toggle omitting, if it is on, and try again.
+                  (when (bound-and-true-p dired-omit-mode)
+                    (dired-omit-mode)
+                    (dired-goto-file file)))))))))
+
+  (defun dired-jump-other-window (&optional file-name)
+    "Like \\[dired-jump] (`dired-jump') but in other window."
+    (interactive
+     (list (and current-prefix-arg
+	              (read-file-name "Jump to Dired file: "))))
+    (dired-jump t file-name))
+
+
+  (define-key (current-global-map) (kbd "C-x C-j") #'dired-jump)
+  (define-key (current-global-map) (kbd "C-x 4 C-j")
+    #'dired-jump-other-window))
+
+ ; `dired' active/other window
 
 
 ;;; Window move key bindings `windmove-default-keybindings'
@@ -90,7 +162,7 @@ A prefix argument is handled like `recenter':
   (define-key% (current-global-map) (kbd "C-x x SPC") #'whitespace-mode))
 (define-key% (current-global-map) (kbd "C-x x u") #'rename-uniquely)
 
-
+ ; end of keys
 
 
 (with-eval-after-load 'view
