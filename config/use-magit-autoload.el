@@ -10,7 +10,7 @@
 
   (when-platform% 'windows-nt
 
-    (when (executable-find% "git" t)
+    (when (executable-find% "git")
       ;; On Windows try to open remote git repo via sshx
       ;; will trigger `magit' error: No such file or directory.
       ;; GitHub issue: https://github.com/magit/magit/issues/3345
