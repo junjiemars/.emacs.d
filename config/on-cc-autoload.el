@@ -132,17 +132,18 @@
 (when-platform% 'windows-nt
 
   (defconst +cc*-xargs-bin+
-    (file-name-nondirectory%
-     (or (executable-find%
-          "xargs"
-          (lambda (xargs)
-            (let ((x (shell-command* "echo xxx"
-                       "&& echo zzz"
-                       "|xargs -0")))
-              (and (zerop (car x))
-                   (string-match "^zzz" (cdr x))))))
-         (and +cc*-compiler-bin+
-              (make-xargs-bin))))
+    (eval-when-compile
+      (file-name-nondirectory%
+       (or (executable-find%
+            "xargs"
+            (lambda (xargs)
+              (let ((x (shell-command* "echo xxx"
+                         "&& echo zzz"
+                         "|xargs -0")))
+                (and (zerop (car x))
+                     (string-match "^zzz" (cdr x))))))
+           (and +cc*-compiler-bin+
+                (make-xargs-bin)))))
     "The name of xargs executable."))
 
 
