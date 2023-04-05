@@ -127,24 +127,24 @@ Interactively with prefix argument, read FILE-NAME."
     (interactive
      (list (and current-prefix-arg
 	              (read-file-name "Jump to Dired file: "))))
-    (dired-jump t file-name))
+    (dired-jump t file-name)))
 
 
-  (define-key (current-global-map) (kbd "C-x C-j") #'dired-jump)
-  (define-key (current-global-map) (kbd "C-x 4 C-j")
-    #'dired-jump-other-window))
-
- ; `dired' active/other window
+(define-key% (current-global-map) (kbd "C-x C-j") #'dired-jump)
+(define-key% (current-global-map) (kbd "C-x 4 C-j") #'dired-jump-other-window)
 
 
-;;; Window move key bindings `windmove-default-keybindings'
+ ; end of `dired' active/other window
+
+
+;;; Window move keys `windmove-default-keybindings'
 (define-key% (current-global-map) (kbd "C-c w l") #'windmove-left)
 (define-key% (current-global-map) (kbd "C-c w r") #'windmove-right)
 (define-key% (current-global-map) (kbd "C-c w u") #'windmove-up)
 (define-key% (current-global-map) (kbd "C-c w d") #'windmove-down)
 
 
-;;; Buffer's key bindings
+;;; Buffer's keys
 (define-key% (current-global-map) (kbd "C-x x c") #'clone-buffer)
 (define-key% (current-global-map) (kbd "C-x x n") #'echo-buffer-name)
 (define-key% (current-global-map) (kbd "C-x x t") #'toggle-truncate-lines)
