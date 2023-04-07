@@ -116,6 +116,7 @@
  (list :tab-width 2
        :narrow-to-region t
        :auto-save-default nil
+       :indent nil
        :disable-indent-tabs-mode '(c-mode-common-hook
                                    sh-mode-hook
                                    emacs-lisp-mode-hook
