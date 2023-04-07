@@ -114,13 +114,12 @@
 (*self-env-spec*
  :put :edit
  (list :tab-width 2
-       :standard-indent 2
+       :narrow-to-region t
        :auto-save-default nil
        :disable-indent-tabs-mode '(c-mode-common-hook
                                    sh-mode-hook
                                    emacs-lisp-mode-hook
                                    scheme-mode-hook)
-       :narrow-to-region t
        :delete-trailing-whitespace '(prog-mode)
        :allowed nil))
 

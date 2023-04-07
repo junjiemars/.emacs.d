@@ -810,24 +810,27 @@ Avoiding a war. If /whitespace/ causes some trouble, you can swith to
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
-(*self-env-spec*
- :put :edit
- (list :tab-width 2
-       :standard-indent 2
-       :auto-save-default nil
-       :disable-indent-tabs-mode '(c-mode-common-hook
-                                   sh-mode-hook
-                                   emacs-lisp-mode-hook)
-       :narrow-to-region nil
-       :allowed t))
+  (*self-env-spec*
+   :put :edit
+   (list :tab-width 2
+         :auto-save-default nil
+         :narrow-to-region nil
+         :indent '((python-indent-offset . 4))
+         :disable-indent-tabs-mode '(c-mode-common-hook
+                                     sh-mode-hook
+                                     emacs-lisp-mode-hook)
+         :delete-trailing-whitespace '(prog-mode)
+         :allowed t))
 #+END_SRC
 
 #+REVEAL: split
 - =:tab-width= default @@html:<kbd>@@C-h-v tab-width@@html:</kbd>@@
+- =:narrow-to-region= =t= enabled, =nil= disabled
 - =:auto-save-default= @@html:<kbd>@@C-h-v auto-save-default@@html:</kbd>@@
 - =:disable-indent-tabs-mode= disble =indent-tabs-mode= in specified
   major modes
-- =:narrow-to-region= =t= enabled, =nil= disabled
+- =:delete-trailing-whitespace= delete trailing whitespace before save
+- =:indent= indent width does not equal =:tab-width=
 - =:allowed= =t= enabled, =nil= disabled
 
 ** File

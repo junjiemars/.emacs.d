@@ -819,13 +819,18 @@ If `current-prefix-arg' < 0, then repeat n time with END in reversed."
 
 ;;; :edit env
 
+(defun edit-env->delete-trailing-whitespace ()
+  "`delete-trailing-whitespace' before save."
+  (when (apply #'derived-mode-p
+               (*self-env-spec* :get :edit :delete-trailing-whitespace))
+    (delete-trailing-whitespace)))
+
 (when (*self-env-spec* :get :edit :allowed)
 
-  ;; default `tab-width'
-  (setq-default tab-width (*self-env-spec* :get :edit :tab-width))
-
-  ;; `standard-indent'
-  (setq-default standard-indent (*self-env-spec* :get :edit :standard-indent))
+  ;; default `tab-width' and `standard-indent'
+  (let ((w (*self-env-spec* :get :edit :tab-width)))
+    (setq-default tab-width w
+                  standard-indent w))
 
   ;; default `auto-save-default'
   (setq auto-save-default (*self-env-spec* :get :edit :auto-save-default))
@@ -835,15 +840,11 @@ If `current-prefix-arg' < 0, then repeat n time with END in reversed."
        (not (*self-env-spec* :get :edit :narrow-to-region)))
 
   ;; `delete-trailing-whitespace' before save
-  (add-hook 'before-save-hook
-            #'(lambda ()
-                (when (apply #'derived-mode-p
-                             (*self-env-spec*
-                              :get :edit :delete-trailing-whitespace))
-                  (delete-trailing-whitespace)))))
+  (add-hook 'before-save-hook #'edit-env->delete-trailing-whitespace))
 
 
-
+ ; end of :edit env
+
 
 (provide 'on-edit-autoload)
 
