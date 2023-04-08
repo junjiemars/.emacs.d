@@ -116,7 +116,8 @@
  (list :tab-width 2
        :narrow-to-region t
        :auto-save-default nil
-       :indent nil
+       :indent '((sh-basic-offset . 2)
+                 (python-indent-offset . 4))
        :disable-indent-tabs-mode '(c-mode-common-hook
                                    sh-mode-hook
                                    emacs-lisp-mode-hook
