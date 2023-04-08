@@ -31,17 +31,6 @@
 (setq% ring-bell-function 'ignore)
 
 
-;; Meta key for Darwin
-(when-graphic%
-  (when-platform% 'darwin
-    (when-var% mac-option-modifier nil
-      (unless% (or (eq 'meta mac-option-modifier)
-                   (eq 'meta (plist-get mac-option-modifier :ordinary)))
-        (if mac-option-modifier
-            (plist-put mac-option-modifier :ordinary 'meta)
-          (setq mac-option-modifier '(:ordinary meta)))))))
-
-
 ;; Changes all yes/no questions to y/n type
 ;; (defalias 'yes-or-no-p 'y-or-n-p)
 

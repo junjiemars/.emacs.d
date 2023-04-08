@@ -61,6 +61,17 @@
           :allowed nil)))
 
 
+;;; key
+(*self-env-spec*
+ :put :key
+ (list :modifier (when-graphic%
+                   (when-platform% 'darwin
+                     '((ns-option-modifier . meta)
+                       (ns-right-option-modifier . control)
+                       (ns-right-command-modifier . meta))))
+       :allowed t))
+
+
 ;;; shell
 (*self-env-spec*
  :put :shell

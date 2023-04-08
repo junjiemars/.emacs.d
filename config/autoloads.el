@@ -45,6 +45,7 @@
     (compile-unit% (emacs-home* "config/on-edit-autoload.el"))
     (compile-unit% (emacs-home* "config/on-help-autoload.el"))
     (compile-unit% (emacs-home* "config/on-ido-autoload.el"))
+    (compile-unit% (emacs-home* "config/on-key-autoload.el"))
     (compile-unit% (emacs-home* "config/on-trans-autoload.el"))
     (compile-unit% (emacs-home* "config/on-eshell-autoload.el"))
     (compile-unit% (emacs-home* "config/on-hippie-autoload.el"))
