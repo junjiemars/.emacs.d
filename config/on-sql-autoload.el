@@ -331,12 +331,12 @@ Optional prefix argument ENHANCED, displays additional details."
      #'sql-oracle-list-code))
 
   ;; `sql-mysql-program'
-  (unless% (executable-find% sql-mysql-program)
-    (if-platform% 'darwin
-        (setq sql-mysql-program
-              (or (executable-find%
-                   "/Applications/MySQLWorkbench.app/Contents/MacOS/mysql")
-                  "mysql"))))
+  (setq sql-mysql-program
+        (or (executable-find% sql-mysql-program)
+            (when-platform% 'darwin
+              (executable-find%
+               "/Applications/MySQLWorkbench.app/Contents/MacOS/mysql"))
+            "mysql"))
 
   ;; mysql feature
   (when-sql-mysql-feature%
