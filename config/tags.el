@@ -23,22 +23,29 @@ Examples:
 
 
 (defcustom% tags-program
-  (cond ((executable-find%
-          "ctags"
-          (lambda (bin)
-            (let ((ver (shell-command* bin "--version")))
-              (and (zerop (car ver))
-                   (string-match "Exuberant Ctags [.0-9]+"
-                                 (cdr ver))))))
-         ``(:bin "ctags" :cmd "ctags -e %s -o %s -a %s"))
-        ((executable-find%
-          "etags"
-          (lambda (bin)
-            (let ((ver (shell-command* bin "--version")))
-              (and (zerop (car ver))
-                   (string-match "etags (GNU Emacs [.0-9]+)"
-                                 (cdr ver))))))
-         ``(:bin "etags" :cmd "etags %s -o %s -a %s")))
+  (let ((out))
+    (or (executable-find%
+         "ctags"
+         (lambda (bin)
+           (let ((ver (shell-command* bin "--version")))
+             (setq out
+                   (and (zerop (car ver))
+                        (string-match "Exuberant Ctags [.0-9]+"
+                                      (cdr ver))
+                        ``(:bin "ctags" :cmd
+                                ,(concat ,bin " -e %s -o %s -a %s")))))))
+        (executable-find%
+         "etags"
+         (lambda (bin)
+           (let ((ver (shell-command* bin "--version")))
+             (setq out
+                   (and (zerop (car ver))
+                        (string-match "etags (GNU Emacs [.0-9]+)"
+                                      (cdr ver))
+                        ``(:bin "etags" :cmd
+                                ,(concat ,bin " %s -o %s -a %s"))))))))
+    out)
+
   "The default tags program.
 This is used by commands like `make-tags'.
 
@@ -95,7 +102,7 @@ when `desktop-globals-to-save' include it."
   "Tags option history list.")
 
 (defvar *tags-skip-history*
-  (list "cpp\\|c\\+\\+\\|/python.*?/\\|/php.*?/\\|/ruby.*?/")
+  (list "cpp\\|c\\+\\+\\|/python.*?/\\|/php.*?/\\|/ruby.*?/\\|/swift/")
   "Tags skip history list.")
 
 
