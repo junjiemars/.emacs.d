@@ -26,13 +26,13 @@
 (*self-env-spec*
  :put :frame
  (list :initial `((width . 80)
-                  (height . 32)) ;; `((fullscreen . fullheight))
-       :default nil
-       :font (if-platform% 'darwin
-                 "Monaco-17"
-               (if-platform% 'windows-nt
-                   "Consolas-13"
-                 "Monaco-13"))
+                  (height . 32)
+                  (font . ,(if-platform% 'darwin
+                               "Monaco-17"
+                             (if-platform% 'windows-nt
+                                 "Consolas-13"
+                               "Monaco-13"))))
+       :default nil ;; `((fullscreen . fullheight))
        :frame-resize-pixelwise nil
        :inhibit-splash-screen nil
        :allowed t))

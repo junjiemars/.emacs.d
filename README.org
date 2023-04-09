@@ -416,19 +416,21 @@ GUI mode only.
 #+BEGIN_SRC emacs-lisp
 (*self-env-spec*
  :put :frame
- (list :initial `((fullscreen . fullheight))
-       :default `((font . ,(if-platform% 'darwin
+ (list :initial `((width . 80)
+                  (height . 32)
+                  (font . ,(if-platform% 'darwin
                                "Monaco-17"
                              (if-platform% 'windows-nt
                                  "Consolas-13"
-                               "DejaVu Sans Mono-14"))))
-       :frame-resize-pixelwise t
+                               "Monaco-13"))))
+       :default nil ;; `((fullscreen . fullheight))
+       :inhibit-splash-screen nil
        :allowed t))
 #+END_SRC
 
 #+REVEAL: split
-- =:name= string of font name
-- =:size= integer of font size
+- =:initial= =initial-frame-alist=
+- =:inhibit-splash-screen= =inhibit-splash-screen=
 - =:allowed= =t= enabled, =nil= disabled
 
 ** Glyph
