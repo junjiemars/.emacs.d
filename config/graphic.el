@@ -27,12 +27,12 @@
 ;;; Frame
 
 (defconst +essential-frame-set+
-	(eval-when-compile
-		(append
-		 `((menu-bar-lines . 0)
-			 (vertical-scroll-bars))
-		 (when-fn% 'tab-bar-mode nil `((tab-bar-lines . 0)))
-		 (when-graphic% `((tool-bar-lines . 0)))))
+  (eval-when-compile
+    (append
+     `((menu-bar-lines . 0)
+       (vertical-scroll-bars))
+     (when-fn% 'tab-bar-mode nil `((tab-bar-lines . 0)))
+     (when-graphic% `((tool-bar-lines . 0)))))
   "The essential frame set.")
 
 
@@ -61,9 +61,9 @@
         (setq frame-resize-pixelwise
               (*self-env-spec* :get :frame :frame-resize-pixelwise)))
       ;; `default-frame-alist'
-			(setq default-frame-alist
-						(or (*self-env-spec* :get :frame :default)
-								initial-frame-alist)))))
+      (setq default-frame-alist
+            (or (*self-env-spec* :get :frame :default)
+                initial-frame-alist)))))
 
  ;; end of Frame
 
