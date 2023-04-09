@@ -40,7 +40,7 @@ image-dired/
 nul
 null
 places
-private/
+private/*
 projectile-bookmarks.eld
 projectile.cache
 recentf
