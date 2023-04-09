@@ -256,10 +256,10 @@
   (compile! (compile-unit% (emacs-home* "config/safe.el")))
   (when-fn% 'self-frame-default-load! nil (self-frame-default-load!))
   (when-fn% 'self-desktop-read! nil (self-desktop-read!))
+  (ido-mode t)
   (make-thread*
    (lambda ()
      (when-version% > 28 (require 'dired-x))
-     (ido-mode t)
      (when (*self-paths* :get :epilogue)
        (compile! (compile-unit* (*self-paths* :get :epilogue)))))
    nil "on-autoloads!"))
