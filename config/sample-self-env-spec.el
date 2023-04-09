@@ -67,9 +67,10 @@
  (list :modifier (when-graphic%
                    (when-platform% 'darwin
                      '((ns-option-modifier . meta)
-                       (ns-right-option-modifier . control)
-                       (ns-right-command-modifier . meta))))
-       :allowed t))
+                       ; (ns-right-option-modifier . control)
+                       ; (ns-right-command-modifier . meta)
+                       )))
+       :allowed (when-version% <= 23.1 t)))
 
 
 ;;; shell
@@ -85,7 +86,7 @@
        :prompt (unless-platform% 'windows-nt
                  (list :bash "\\u@\\h \\W \\$ "
                        :zsh "%n@%m %1~ %# "))
-       :allowed nil))
+       :allowed t))
 
 ;;; desktop
 (*self-env-spec*

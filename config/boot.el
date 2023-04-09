@@ -360,6 +360,7 @@ No matter the declaration order, the executing order is:
   (lexical-let% ((env (list :theme nil
                             :frame nil
                             :glyph nil
+                            :key nil
                             :shell nil
                             :desktop nil
                             :eshell nil
