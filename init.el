@@ -296,4 +296,4 @@ the value is nil."
 ;; After loaded ...
 
 
-;;; init.el ends here
+;;; end of init.el
