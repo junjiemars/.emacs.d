@@ -17,8 +17,8 @@
 ;;; theme
 (*self-env-spec*
  :put :theme
- (list :name nil ;; 'dracula
-       :custom-theme-directory (emacs-home* "theme/")
+ (list :name nil ; 'tango-dark
+       :custom-theme-directory nil ; (emacs-home* "theme/")
        :compile nil ;; expert option
        :allowed nil))
 

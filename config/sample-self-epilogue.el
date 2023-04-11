@@ -10,12 +10,12 @@
 
 
 
-(message "#self epilogue ...")
+;; (message "#self epilogue ...")
 
 
 ;; safe local variables
-(comment (safe-local-variable* 'indent-tabs))
-(comment (setq% enable-local-variables :safe 'files))
+;; (safe-local-variable* 'indent-tabs)
+;; (setq% enable-local-variables :safe 'files)
 
 
 ;; (require 'financial)
@@ -24,7 +24,7 @@
 
 
 ;; eww as default browser
-(comment (if-feature-eww% (toggle-browser! t)))
+;; (if-feature-eww% (toggle-browser! t)))
 
 
 

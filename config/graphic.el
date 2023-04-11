@@ -85,20 +85,14 @@ If DIR is nil then load the built-in `customize-themes' by NAME."
            (load-theme ,n t))))))
 
 
-;;; disable customized themes
 (when-theme%
 
-  (defun restore-default-theme! ()
-    "Restore default theme."
-    (interactive)
-    (mapc #'disable-theme custom-enabled-themes)))
+  (defun self-theme-load! (&optional reset)
+    "Load theme specs from `*self-env-spec*'.
 
-
-;;; Load theme
-
-(defun self-theme-load! ()
-  "Load theme specs from `*self-env-spec*'."
-  (when-theme%
+If RESET is true then reset before load."
+    (when reset
+      (mapc #'disable-theme custom-enabled-themes))
     (when (*self-env-spec* :get :theme :allowed)
       (let ((name (*self-env-spec* :get :theme :name)))
         (when name
@@ -124,7 +118,7 @@ If DIR is nil then load the built-in `customize-themes' by NAME."
 
 
 (self-frame-init-load!)
-(make-thread* #'self-theme-load!)
+(when-theme% (make-thread* #'self-theme-load!))
 
 
 (provide 'graphic)

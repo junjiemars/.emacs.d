@@ -48,6 +48,7 @@ semanticdb/
 server/
 session.*
 src
+theme/
 tramp
 transient/
 tutorial/
