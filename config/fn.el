@@ -400,11 +400,25 @@ Optional argument ARGS for COMMAND."
   "Find and check COMMAND at compile time.
 
 Return nil if no COMMAND found or CHECK failed."
-  (let ((path (executable-find (funcall `(lambda () ,command)))))
-    (if (null check)
-        `,path
-      (let ((rc (funcall check path)))
-        (when rc `,path)))))
+  (let ((cmd (shell-command* (if-platform% 'windows-nt
+                                 "where"
+                               "command -v")
+               (funcall `(lambda () ,command)))))
+    (when (zerop (car cmd))
+      (let* ((ss (cdr cmd))
+             (ps (split-string* ss "\n" t))
+             (path (posix-path
+                    (cond ((and (consp ps) (functionp check))
+                           (catch 'check
+                             (dolist* (x ps)
+                               (when (funcall check
+                                              (shell-quote-argument
+                                               (posix-path x)))
+                                 (throw 'check x)))
+                             nil))
+                          ((consp ps) (car ps))
+                          (t ps)))))
+        `,path))))
 
 
  ;; end of Platform Related Functions
