@@ -137,33 +137,34 @@ Return absolute filename when FILENAME exists, otherwise nil."
 
 
 (defmacro lldb-settings (subcommand &rest args)
-  "Make lldb's setting statments."
+  "Make lldb's setting statement."
   (declare (indent 1))
   `(mapconcat #'identity (list "settings" ,subcommand ,@args) " "))
 
 
-(defun lldb-settings-frame-format ()
-  "Set lldb's default frame-format."
-  (gud-call (lldb-settings
-                "set" "frame-format"
-                "frame #${frame.index}: ${frame.pc}{ ${module.file.basename}{`${function.name-with-args}{${frame.no-debug}${function.pc-offset}}}}{ at ${line.file.fullpath}:${line.number}}{${function.is-optimized} [opt]}\\n")))
+(defmacro lldb-init-statement ()
+	"Make lldb's init statements."
+	`(concat
+		(lldb-settings
+				"set" "frame-format"
+				"\"frame #${frame.index}: ${frame.pc}{ ${module.file.basename}{`${function.name-with-args}{${frame.no-debug}${function.pc-offset}}}}{ at ${line.file.fullpath}:${line.number}}{${function.is-optimized} [opt]}\"\n")
+		(lldb-settings "set" "stop-disassembly-display" "no-debuginfo\n")
+		(lldb-settings "set" "stop-line-count-before" "0\n")
+		(lldb-settings "set" "stop-line-count-after" "0\n")
+		(concat "script "
+						"_d_=lldb.debugger.GetCommandInterpreter();"
+						"_m_=lldb.SBStringList();"
+						"import random;"
+						"_r_=lambda x:[a for a in range(0,x)] if x<16"
+						" else [random.randrange(0,x) for c in range(0,16)];\n")))
 
 
-(defun lldb-settings-stop-display ()
-  "Set lldb's default stop display."
-  (gud-call (lldb-settings "set" "stop-disassembly-display" "no-debuginfo"))
-  (gud-call (lldb-settings "set" "stop-line-count-before" "0"))
-  (gud-call (lldb-settings "set" "stop-line-count-after" "0")))
+(defun lldb-settings-init-file (&optional force)
+	"Make lldb's init file."
+	(let ((file (expand-file-name "~/.lldbinit-lldb")))
+		(when (or force (null (file-exists-p file)))
+			(save-str-to-file (lldb-init-statement) file))))
 
-
-(defun lldb-script-vars-init ()
-  "Initialize lldb's script vars."
-  (gud-call (concat "script "
-                    "_d_=lldb.debugger.GetCommandInterpreter();"
-                    "_m_=lldb.SBStringList();"
-                    "import random;"
-                    "_r_=lambda x:[a for a in range(0,x)] if x<16"
-                    " else [random.randrange(0,x) for c in range(0,16)];")))
 
 (defun lldb-script-apropos (ss)
   "Apropos via lldb's script.
@@ -317,12 +318,8 @@ As the 3rd argument of `gud-common-init': marker-filter"
     (gud-basic-call cmd)))
 
 
-
-
-;; set default `gud-lldb-init-hook'
-(add-hook 'gud-lldb-init-hook #'lldb-settings-stop-display (emacs-arch))
-(add-hook 'gud-lldb-init-hook #'lldb-settings-frame-format (emacs-arch))
-(add-hook 'gud-lldb-init-hook #'lldb-script-vars-init (emacs-arch))
+;; ;; set default `gud-lldb-init-hook'
+;; (add-hook 'gud-lldb-init-hook #'lldb-settings-init-file (emacs-arch))
 
 
 (defun gud-lldb (command-line)
@@ -394,14 +391,17 @@ invoked."
   (set (make-local-variable 'paragraph-separate) "\\'")
   (set (make-local-variable 'paragraph-start) +gud-lldb-prompt-regexp+)
 
-  (loop* for x in gud-lldb-init-hook when (functionp x) do (funcall x))
   (setq gud-running nil)
   (setq gud-filter-pending-text nil)
   (run-hooks 'lldb-mode-hook))
 
  ;; end of gud-lldb-*
 
+;;; generate `~/.lldbinit-lldb'
+(lldb-settings-init-file)
+
 
 (provide 'gud-lldb)
 
-;;; end of file
+
+;;; end of gud-lldb.el
