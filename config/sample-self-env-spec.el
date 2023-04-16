@@ -19,7 +19,7 @@
  :put :theme
  (list :name nil ; 'tango-dark
        :custom-theme-directory nil ; (emacs-home* "theme/")
-       :compile nil ;; expert option
+       :compile nil ; expert option
        :allowed nil))
 
 ;;; frame
@@ -32,7 +32,7 @@
                              (if-platform% 'windows-nt
                                  "Consolas-13"
                                "Monaco-13"))))
-       :default nil ;; `((fullscreen . fullheight))
+       :default nil ; `((fullscreen . fullheight))
        :frame-resize-pixelwise nil
        :inhibit-splash-screen nil
        :allowed t))
@@ -77,8 +77,8 @@
 (*self-env-spec*
  :put :shell
  (list :copy-vars `("PATH")
-       :spin-vars nil     ;; `(("ZZZ" . "123"))
-       :options nil       ;; '("-i" "2>/dev/null") ;; '("--login")
+       :spin-vars nil     ; `(("ZZZ" . "123"))
+       :options nil       ; '("-i" "2>/dev/null") ; '("--login")
        :exec-path t
        :shell-file-name (unless-platform% 'windows-nt
                           (or (executable-find% "zsh")
@@ -104,7 +104,7 @@
  :put :eshell
  (list :visual-commands '("mtr")
        :destroy-buffer-when-process-dies nil
-       :visual-subcommands nil ;; '(("git" "log"))
+       :visual-subcommands nil ; '(("git" "log"))
        :visual-options nil
        :allowed nil))
 
