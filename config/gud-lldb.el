@@ -143,27 +143,27 @@ Return absolute filename when FILENAME exists, otherwise nil."
 
 
 (defmacro lldb-init-statement ()
-	"Make lldb's init statements."
-	`(concat
-		(lldb-settings
-				"set" "frame-format"
-				"\"frame #${frame.index}: ${frame.pc}{ ${module.file.basename}{`${function.name-with-args}{${frame.no-debug}${function.pc-offset}}}}{ at ${line.file.fullpath}:${line.number}}{${function.is-optimized} [opt]}\"\n")
-		(lldb-settings "set" "stop-disassembly-display" "no-debuginfo\n")
-		(lldb-settings "set" "stop-line-count-before" "0\n")
-		(lldb-settings "set" "stop-line-count-after" "0\n")
-		(concat "script "
-						"_d_=lldb.debugger.GetCommandInterpreter();"
-						"_m_=lldb.SBStringList();"
-						"import random;"
-						"_r_=lambda x:[a for a in range(0,x)] if x<16"
-						" else [random.randrange(0,x) for c in range(0,16)];\n")))
+  "Make lldb's init statements."
+  `(concat
+    (lldb-settings
+     "set" "frame-format"
+     "\"frame #${frame.index}: ${frame.pc}{ ${module.file.basename}{`${function.name-with-args}{${frame.no-debug}${function.pc-offset}}}}{ at ${line.file.fullpath}:${line.number}}{${function.is-optimized} [opt]}\"\n")
+    (lldb-settings "set" "stop-disassembly-display" "no-debuginfo\n")
+    (lldb-settings "set" "stop-line-count-before" "0\n")
+    (lldb-settings "set" "stop-line-count-after" "0\n")
+    (concat "script "
+            "_d_=lldb.debugger.GetCommandInterpreter();"
+            "_m_=lldb.SBStringList();"
+            "import random;"
+            "_r_=lambda x:[a for a in range(0,x)] if x<16"
+            " else [random.randrange(0,x) for c in range(0,16)];\n")))
 
 
 (defun lldb-settings-init-file (&optional force)
-	"Make lldb's init file."
-	(let ((file (expand-file-name "~/.lldbinit-lldb")))
-		(when (or force (null (file-exists-p file)))
-			(save-str-to-file (lldb-init-statement) file))))
+  "Make lldb's init file."
+  (let ((file (expand-file-name "~/.lldbinit-lldb")))
+    (when (or force (null (file-exists-p file)))
+      (save-str-to-file (lldb-init-statement) file))))
 
 
 (defun lldb-script-apropos (ss)
