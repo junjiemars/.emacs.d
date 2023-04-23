@@ -205,23 +205,24 @@ Optional argument DOCSTRING about FEATURE."
         (r1 (gensym*)))
     `(let ((,s1 ,s))
        (when (stringp ,s1)
-         (let ((,r1 (if ,rr (concat ,rr "\\'") "[ \t\n\r]+\\'" )))
-           (if (string-match ,r1 ,s1)
-               (replace-match "" t t ,s1)
-             ,s1))))))
+         (let ((,r1 (concat "\\(?:"
+                            (or ,rr "[ \t\n\r]+\\'")
+                            "\\)\\'")))
+           (let ((i (string-match ,r1 ,s1, 0)))
+             (if i (substring ,s1 0 i) ,s1)))))))
 
 
 (defmacro string-trim< (s &optional lr)
   "Remove leading whitespaces or matching of LR from S."
   (let ((s1 (gensym*))
-        (l1 (gensym*))
         (r1 (gensym*)))
     `(let ((,s1 ,s))
        (when (stringp ,s1)
-         (let* ((,l1 ,lr)
-                (,r1 (if ,l1 (concat "\\`" ,l1) "\\`[ \t\n\r]+")))
+         (let ((,r1 (concat "\\`\\(?:"
+                            (or ,lr "\\`[ \t\n\r]+")
+                            "\\)")))
            (if (string-match ,r1 ,s1)
-               (replace-match "" t t ,s1)
+               (substring ,s1 (match-end 0))
              ,s1))))))
 
 
