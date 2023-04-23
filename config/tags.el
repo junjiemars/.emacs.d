@@ -89,13 +89,13 @@ when `desktop-globals-to-save' include it."
          `("--langmap=c:.h.c --c-kinds=+px"
            "--langmap=c++:.h.cc--c++-kinds=+px"
            ,(eval-when-compile
-              (let ((rc (shell-command* "rustc" "--print sysroot")))
-                (when (zerop (car rc))
-                  (let ((d (concat
-                            (string-trim> (cdr rc))
-                            "/lib/rustlib/src/rust/src/etc/ctags.rust")))
-                    (when (file-exists-p d)
-                      (concat "--options=" d))))))))
+              (let ((rc (shell-command* "rustc" "--print sysroot"))
+                    (src "/lib/rustlib/src/rust/library/alloc/Cargo.toml"))
+                (when (and (zerop (car rc))
+                           (file-exists-p
+                            (concat (string-trim> (cdr rc)) src)))
+                  (concat "--options="
+                          (emacs-home* "etc/ctags.rust")))))))
         ((string= "etags" (*tags*))
          `("-l c" "-l lisp" "-l auto"))
         (t nil))
