@@ -7,11 +7,15 @@
 ;;;;
 
 
-;;; semantic, require Emacs-24.4+
+;; semantic, require Emacs-24.4+
 (defmacro-if-feature% semantic)
 
-;;; default web browser: eww, requires Emacs-24.4+
+;; default web browser: eww, requires Emacs-24.4+
 (defmacro-if-feature% eww)
+
+;; eglot
+(defmacro-if-feature% eglot)
+
 
 (defalias '*org-babel-schemes*
   (lexical-let% ((i '()))
@@ -70,6 +74,10 @@
       (autoload 'lookup-dict (v-home%> "config/dict")
         "Lookup WORD in DICT then show the result in the echo area." t)
       (compile-unit% (emacs-home* "config/dict.el")))
+
+    ;; Eglot
+    (if-feature-eglot%
+        (compile-unit% (emacs-home* "config/on-eglot-autoload.el")))
 
     ;; Glyph
     (when-font%
