@@ -13,9 +13,6 @@
 ;; default web browser: eww, requires Emacs-24.4+
 (defmacro-if-feature% eww)
 
-;; eglot
-(defmacro-if-feature% eglot)
-
 
 (defalias '*org-babel-schemes*
   (lexical-let% ((i '()))
@@ -75,9 +72,9 @@
         "Lookup WORD in DICT then show the result in the echo area." t)
       (compile-unit% (emacs-home* "config/dict.el")))
 
-    ;; Eglot
-    (if-feature-eglot%
-        (compile-unit% (emacs-home* "config/on-eglot-autoload.el")))
+    ;; `eglot'
+    (when-fn% 'eglot 'eglot
+      (compile-unit% (emacs-home* "config/on-eglot-autoload.el")))
 
     ;; Glyph
     (when-font%
