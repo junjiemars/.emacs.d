@@ -13,6 +13,9 @@
 ;; default web browser: eww, requires Emacs-24.4+
 (defmacro-if-feature% eww)
 
+;; `eglot': requires Emacs-29+
+(defmacro-if-feature% eglot)
+
 
 (defalias '*org-babel-schemes*
   (lexical-let% ((i '()))
@@ -73,10 +76,10 @@
       (compile-unit% (emacs-home* "config/dict.el")))
 
     ;; `eglot'
-    (when-fn% 'eglot 'eglot
-      (compile-unit% (emacs-home* "config/on-eglot-autoload.el")))
+    (if-feature-eglot%
+        (compile-unit% (emacs-home* "config/on-eglot-autoload.el")))
 
-    ;; Glyph
+    ;; `glyph'
     (when-font%
       (compile-unit% (emacs-home* "config/on-glyph-autoload.el")))
 
