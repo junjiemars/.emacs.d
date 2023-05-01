@@ -13,6 +13,8 @@
 (require 'cc-mode)
 
 
+;;; `elgot'
+
 (defun eglot*-lsp-server ()
   "Return the name of lsp-server program."
   (with-current-buffer (current-buffer)
@@ -43,12 +45,20 @@
                                  (number-to-string c-basic-offset))))
                         (save-str-to-file ss f))))))))))
 
+
+
+
+;;; `project'
 
 (when-var% project-find-functions 'project
 
   (defun project*-try-abs (dir)
     (let ((d (locate-dominating-file dir ".project.el")))
-      (when d (list 'vc 'Git d)))))
+      (when d (list 'vc 'Git d))))
+
+	(defun project*-set-root (dir)
+		"Set the root directory of `project-root'."
+		(save-str-to-file "" (concat dir ".project.el"))))
 
 
 
@@ -58,5 +68,6 @@
     (push! #'project*-try-abs project-find-functions nil t)))
 
 
+
 
 ;;; end of on-eglot-autoload.el
