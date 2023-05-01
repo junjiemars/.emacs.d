@@ -50,22 +50,19 @@
 
 ;;; `project'
 
-(when-var% project-find-functions 'project
+(defun project*-try-abs (dir)
+  (let ((d (locate-dominating-file dir ".project.el")))
+    (when d (list 'vc 'Git d))))
 
-  (defun project*-try-abs (dir)
-    (let ((d (locate-dominating-file dir ".project.el")))
-      (when d (list 'vc 'Git d))))
 
-	(defun project*-set-root (dir)
-		"Set the root directory of `project-root'."
-		(save-str-to-file "" (concat dir ".project.el"))))
-
+(defun project*-set-root (dir)
+	"Set the root directory of `project-root'."
+	(save-str-to-file "" (concat dir ".project.el")))
 
 
 (with-eval-after-load 'project
 
-  (when-var% project-find-functions 'project
-    (push! #'project*-try-abs project-find-functions nil t)))
+  (push! #'project*-try-abs project-find-functions nil t))
 
 
 
