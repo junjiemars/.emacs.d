@@ -67,10 +67,11 @@
         (when force
           (let ((fs (frame-parameter frame 'fullscreen))
                 (fr (frame-parameter frame 'fullscreen-restore)))
-            (modify-frame-parameters frame
-                                     (list (cons 'fullscreen fr)
-                                           (cons 'fullscreen-restore fs)))
-            (unless (or fs fr)
+            (modify-frame-parameters
+             frame
+             (list (cons 'fullscreen (and (not fs) fr))
+                   (cons 'fullscreen-restore fs)))
+            (unless (and (not fs) fr)
               (set-frame-width frame (cdr (assoc** 'width a)))
               (set-frame-height frame (cdr (assoc** 'height a))))))))))
 
