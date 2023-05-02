@@ -53,7 +53,7 @@
 
 (when-graphic%
 
-  (defun self-frame-default-load! ()
+  (defun self-frame-default-load! (&optional force)
     "Load frame default specs from `*self-env-spec*'."
     (when (*self-env-spec* :get :frame :allowed)
       ;; `frame-resize-pixelwise'
@@ -61,9 +61,12 @@
         (setq frame-resize-pixelwise
               (*self-env-spec* :get :frame :frame-resize-pixelwise)))
       ;; `default-frame-alist'
-      (setq default-frame-alist
-            (or (*self-env-spec* :get :frame :default)
-                initial-frame-alist)))))
+      (let ((a (setq default-frame-alist
+                     (or (*self-env-spec* :get :frame :default)
+                         initial-frame-alist))))
+        (when force
+          (set-frame-width nil (cdr (assoc** 'width a)))
+          (set-frame-height nil (cdr (assoc** 'height a))))))))
 
  ;; end of Frame
 
