@@ -44,8 +44,8 @@
                                                  c-indentation-style))
                                    "\n"
                                    "IndentWidth: "
-                                   (or indent
-                                       (number-to-string c-basic-offset)))))
+                                   (number-to-string
+                                    (or indent c-basic-offset)))))
                           (save-str-to-file ss f)))))))))))
 
 
