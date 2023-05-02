@@ -34,16 +34,17 @@
     (when (eglot-managed-p)
       (let ((p (caddr (eglot--current-project)))
             (s (eglot*-lsp-server)))
-        (cond ((eq major-mode 'c-mode)
-               (cond ((string= "clangd" (file-name-base* s))
-                      (let ((f (concat p ".clang-format"))
-                            (ss (concat
-                                 "BasedOnStyle: "
-                                 (upcase (or style c-indentation-style))
-                                 "\n"
-                                 "IndentWidth: "
-                                 (number-to-string c-basic-offset))))
-                        (save-str-to-file ss f))))))))))
+        (when (and p s)
+          (cond ((eq major-mode 'c-mode)
+                 (cond ((string= "clangd" (file-name-base* s))
+                        (let ((f (concat p ".clang-format"))
+                              (ss (concat
+                                   "BasedOnStyle: "
+                                   (downcase (or style c-indentation-style))
+                                   "\n"
+                                   "IndentWidth: "
+                                   (number-to-string c-basic-offset))))
+                          (save-str-to-file ss f)))))))))))
 
 
 
@@ -56,8 +57,9 @@
 
 
 (defun project*-set-root (dir)
-	"Set the root directory of `project-root'."
-	(save-str-to-file "" (concat dir ".project.el")))
+  "Set the root directory of `project-root'."
+  (when (and (file-exists-p dir) (directory-name-p dir))
+    (save-str-to-file "" (concat dir ".project.el"))))
 
 
 (with-eval-after-load 'project
