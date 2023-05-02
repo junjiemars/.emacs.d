@@ -53,7 +53,7 @@
 
 (when-graphic%
 
-  (defun self-frame-default-load! (&optional force)
+  (defun self-frame-default-load! (&optional frame force)
     "Load frame default specs from `*self-env-spec*'."
     (when (*self-env-spec* :get :frame :allowed)
       ;; `frame-resize-pixelwise'
@@ -65,8 +65,23 @@
                      (or (*self-env-spec* :get :frame :default)
                          initial-frame-alist))))
         (when force
-          (set-frame-width nil (cdr (assoc** 'width a)))
-          (set-frame-height nil (cdr (assoc** 'height a))))))))
+          (let ((fs (frame-parameter frame 'fullscreen))
+                (fr (frame-parameter frame 'fullscreen-restore)))
+            (modify-frame-parameters frame
+                                     (list (cons 'fullscreen fr)
+                                           (cons 'fullscreen-restore fs)))
+            (unless (or fs fr)
+              (set-frame-width frame (cdr (assoc** 'width a)))
+              (set-frame-height frame (cdr (assoc** 'height a))))))))))
+
+
+(when-graphic%
+
+  (defun toggle-frame-initialized (&optional frame)
+    "Toggle initialiation state of FRAME."
+    (interactive)
+    (self-frame-default-load! frame t)))
+
 
  ;; end of Frame
 
