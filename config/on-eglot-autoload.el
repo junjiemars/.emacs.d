@@ -58,10 +58,13 @@
     (when d (list 'vc 'Git d))))
 
 
-(defun project*-set-root (dir)
-  "Set the root directory of `project-root'."
-  (when (and (file-exists-p dir) (directory-name-p dir))
-    (save-str-to-file "" (concat dir ".project.el"))))
+(defun project*-anchor-root (&optional dir)
+  "Anchor the root DIR of `project-root'."
+  (let ((d (or dir default-directory)))
+    (when (and (directory-name-p d) (file-exists-p d))
+      (save-str-to-file
+       "; this is a metafile helping `project' to locate directory."
+       (concat dir ".project.el")))))
 
 
 (with-eval-after-load 'project
