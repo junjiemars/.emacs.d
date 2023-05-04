@@ -48,6 +48,25 @@
                                     (or indent c-basic-offset)))))
                           (save-str-to-file ss f)))))))))))
 
+
+(defalias 'eglot*-server-file
+  (lexical-let% ((b (v-home% ".exec/eglot-server.el")))
+    (lambda (&optional op sexp)
+      (cond ((eq op :read)
+             (read-sexp-from-file b))
+            ((eq op :save)
+             (when sexp (save-sexp-to-file sexp b)))
+            ((eq op :push)
+             (let ((c (or sexp (read-sexp-from-file b))))
+               (when c (car (push! c eglot-server-programs)))))
+            (t b))))
+  "The `eglot-server-programs' file.")
+
+
+(with-eval-after-load 'eglot
+
+  (eglot*-server-file :push))
+
 
 
 
