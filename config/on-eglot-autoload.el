@@ -83,7 +83,7 @@
 (defun project*-anchor-root (&optional dir)
   "Anchor the root DIR of `project-root'."
   (let ((d (or dir default-directory)))
-    (when (directory-name-p d)
+    (when (and (directory-name-p d) (file-exists-p d))
       (save-str-to-file
        "; this is a metafile helping `project' to locate directory."
        (concat dir ".project.el")))))
