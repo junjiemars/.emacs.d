@@ -50,15 +50,18 @@
 
 
 (defalias 'eglot*-server-file
-  (lexical-let% ((b (v-home% ".exec/eglot-server.el")))
+  (lexical-let% ((b (v-home% ".exec/eglot-server.el"))
+                 (c '(c-mode . ("clangd" "--header-insertion=never"))))
     (lambda (&optional op sexp)
-      (cond ((eq op :read)
+      (cond ((eq op :push)
+             (let ((c (or sexp (read-sexp-from-file b))))
+               (when c (car (push! c eglot-server-programs)))))
+            ((eq op :read)
              (read-sexp-from-file b))
             ((eq op :save)
              (when sexp (save-sexp-to-file sexp b)))
-            ((eq op :push)
-             (let ((c (or sexp (read-sexp-from-file b))))
-               (when c (car (push! c eglot-server-programs)))))
+            ((eq op 'c-mode)
+             (save-sexp-to-file c b))
             (t b))))
   "The `eglot-server-programs' file.")
 
@@ -88,7 +91,7 @@
 
 (with-eval-after-load 'project
 
-  (push! #'project*-try-abs project-find-functions nil t))
+  (push! #'project*-try-abs project-find-functions))
 
 
 
