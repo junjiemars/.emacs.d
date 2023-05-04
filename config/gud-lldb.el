@@ -147,16 +147,16 @@ Return absolute filename when FILENAME exists, otherwise nil."
   `(concat
     (lldb-settings
      "set" "frame-format"
-     "'frame #${frame.index}: ${frame.pc}{ ${module.file.basename}{`${function.name-with-args}{${frame.no-debug}${function.pc-offset}}}}{ at ${line.file.fullpath}:${line.number}}{${function.is-optimized} [opt]}\\n'\n")
+     "frame #${frame.index}: ${frame.pc}{ ${module.file.basename}{`${function.name-with-args}{${frame.no-debug}${function.pc-offset}}}}{ at ${line.file.fullpath}:${line.number}}{${function.is-optimized} [opt]}\\n\n")
     (lldb-settings "set" "stop-disassembly-display" "no-debuginfo\n")
     (lldb-settings "set" "stop-line-count-before" "0\n")
     (lldb-settings "set" "stop-line-count-after" "0\n")
     (concat "script "
-            "'_d_=lldb.debugger.GetCommandInterpreter();"
+            "_d_=lldb.debugger.GetCommandInterpreter();"
             "_m_=lldb.SBStringList();"
             "import random;"
             "_r_=lambda x:[a for a in range(0,x)] if x<16"
-            " else [random.randrange(0,x) for c in range(0,16)];'")))
+            " else [random.randrange(0,x) for c in range(0,16)];")))
 
 
 (defun lldb-settings-init-file (&optional force)
