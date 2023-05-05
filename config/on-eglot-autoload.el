@@ -85,7 +85,7 @@
   (let ((d (or dir default-directory)))
     (when (and (directory-name-p d) (file-exists-p d))
       (save-str-to-file
-       "; this is a metafile helping `project' to locate directory."
+       "; this is a metafile helping `project' to locate the root dir."
        (concat dir ".project.el")))))
 
 
