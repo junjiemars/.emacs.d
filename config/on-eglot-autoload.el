@@ -51,11 +51,12 @@
 
 (defalias 'eglot*-server-file
   (lexical-let% ((b (v-home% ".exec/eglot-server.el"))
-                 (c '(c-mode . ("clangd" "--header-insertion=never"))))
+                 (c '((c-mode . ("clangd" "--header-insertion=never")))))
     (lambda (&optional op sexp)
       (cond ((eq op :push)
              (let ((c (or sexp (read-sexp-from-file b))))
-               (when c (car (push! c eglot-server-programs)))))
+               (dolist* (c1 c)
+                 (push! c1 eglot-server-programs))))
             ((eq op :read)
              (read-sexp-from-file b))
             ((eq op :save)
@@ -75,22 +76,33 @@
 
 ;;; `project'
 
+(defalias 'project*-root-file
+  (lexical-let% ((b (v-home% ".exec/project-root.el"))
+                 (c '()))
+    (lambda (&optional op sexp)
+      (cond ((eq op :cache)
+             (if sexp
+                 (catch 'rc
+                   (dolist* (s1 c)
+                     (when (string= s1 sexp)
+                       (throw 'rc s1))))
+               c))
+            ((eq op :read)
+             (setq c (read-sexp-from-file b)))
+            ((eq op :save)
+             (when (setq c sexp) (save-sexp-to-file c b)))
+            (t b))))
+  "The `project-root' file.")
+
+
 (defun project*-try-abs (dir)
-  (let ((d (locate-dominating-file dir ".project.el")))
+  (let ((d (project*-root-file :cache dir)))
     (when d (list 'vc 'Git d))))
-
-
-(defun project*-anchor-root (&optional dir)
-  "Anchor the root DIR of `project-root'."
-  (let ((d (or dir default-directory)))
-    (when (and (directory-name-p d) (file-exists-p d))
-      (save-str-to-file
-       "; this is a metafile helping `project' to locate directory."
-       (concat dir ".project.el")))))
 
 
 (with-eval-after-load 'project
 
+  (project*-root-file :read)
   (push! #'project*-try-abs project-find-functions))
 
 
