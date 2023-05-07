@@ -11,8 +11,7 @@
   (lexical-let%
       ((b `(("bing"
              ("url" . "https://cn.bing.com/dict/search?q=")
-             ("meta"
-              .
+             ("meta" .
               (("<meta name=\"description\" content=\"必应词典为您提供.+的释义，")
                "\" /><" .
                (,(lambda (ss)
@@ -30,44 +29,24 @@
                        (buffer-substring (point-min) (point-max)))))
                 dict-fn-norm-zh-punc)))
              ("sounds-like" . (("<div class=\"df_wb_a\">音近词</div>")
-                               "</div></div></div>"
-                               .
+                               "</div></div></div>" .
                                (dict-fn-remove-html-tag)))
              ("spelled-like" . (("<div class=\"df_wb_a\">形近词</div>")
                                 "</div></div></div>" .
                                 (dict-fn-remove-html-tag))))
-            ("camb/zh"
-             ("url"
-              .
-              "https://dictionary.cambridge.org/dictionary/english-chinese-simplified/")
-             ("pron-us" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
-                           "<" .
-                           (,(lambda (x)
-                               (format "|%s|" x)))))
-             ("pron-uk" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 1)
-                           "<" .
-                           (,(lambda (x)
-                               (format "/%s/" x)))))
-             ("meta" . (("<meta itemprop=\"headline\" content=\".+translate: ")
-                        "Learn" .
-                        (dict-fn-decode-char
-                         dict-fn-decode-html-char
-                         dict-fn-norm-zh-punc))))
-            ("camb/en"
+            ("camb"
              ("url" . "https://dictionary.cambridge.org/dictionary/english/")
              ("pron-us" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
                            "<" .
                            (,(lambda (x)
                                (format "|%s|" x)))))
              ("pron-uk" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 1)
-                           "<"
-                           .
+                           "<" .
                            (,(lambda (x)
                                (format "/%s/" x)))))
-             ("meta"
-              .
+             ("meta" .
               (("<meta name=\"description\" content=\".*? definition: ")
-               "Learn" .
+               " Learn" .
                (dict-fn-decode-html-char))))
             ("longman"
              ("url" . "https://www.ldoceonline.com/dictionary/")
@@ -78,6 +57,16 @@
                                (format "/%s/" x)))))
              ("meta" . (("<span class=\"DEF\">")
                         "</span>" .
+                        (dict-fn-remove-html-tag))))
+            ("webster"
+             ("url" . "https://www.merriam-webster.com/dictionary/")
+             ("pron-us" . (("title=\"How to pronounce.*?(audio)\">" . 1)
+                           "<img" .
+                           (dict-fn-decode-html-char
+                            ,(lambda (x)
+                               (format "|%s|" (string-trim> x))))))
+             ("meta" . (("<meta name=\"description\" content=\"The meaning of ")
+                        " How to use" .
                         (dict-fn-remove-html-tag)))))))
     (lambda (&optional n)
       (if n (let ((x (assoc** (car n) b :test #'string=)))
@@ -107,9 +96,9 @@
 
 
 (defalias '*dict-debug-log*
-  (lexical-let% ((b `(logging  nil
-                      dict ,(emacs-home* ".dict/dict.log")
-                      lookup ,(emacs-home* ".dict/lookup.log"))))
+  (lexical-let% ((b `(:logging nil ; t
+                      :dict ,(emacs-home* ".dict/dict.log")
+                      :lookup ,(emacs-home* ".dict/lookup.log"))))
     (lambda (w &optional n)
       (if n (plist-put b w n) (plist-get b w))))
   "Dictonary logging switch.")
@@ -152,7 +141,7 @@
   "Decode &#[a-z]+; to string."
   (with-temp-buffer
     (insert ss)
-    (let ((m '(("&nasp;" . " ")
+    (let ((m '(("&nbsp;" . " ")
                ("&#lt;" . "<")
                ("&#gt;" . ">")
                ("&hellip;" .  "..."))))
@@ -187,9 +176,9 @@
       (kill-buffer)
       (user-error* "!%s in on-lookup-dict" err)))
   (set-buffer-multibyte t)
-  (when (*dict-debug-log* 'logging)
+  (when (*dict-debug-log* :logging)
     (write-region (point-min) (point-max)
-                  (path! (*dict-debug-log* 'dict))))
+                  (path! (*dict-debug-log* :dict))))
   (let* ((dict (cadr (assoc** 'dict args :test #'eq)))
          (style (cadr (assoc** 'style args :test #'eq)))
          (ss (mapcar
@@ -197,10 +186,10 @@
                 (goto-char (point-min))
                 (let* ((re (cdr (assoc** x dict :test #'string=)))
                        (b (re-search-forward (caar re) nil t (cdar re)))
-                       (e (and b (re-search-forward (cadr re) nil t)))
+                       (e (and b (re-search-forward (cadr re) nil t)
+                               (re-search-backward (cadr re) nil t)))
                        (html (and b e (< b e)
-                                  (buffer-substring-no-properties
-                                   b (- e (length (cadr re))))))
+                                  (buffer-substring-no-properties b e)))
                        (fns (cddr re))
                        (txt html))
                   (cons x (when (and html (> (length html) 0))
@@ -209,8 +198,8 @@
                                   (setq txt (funcall fn txt))
                                 txt))))))
               style)))
-    (when (*dict-debug-log* 'logging)
-      (save-sexp-to-file ss (path! (*dict-debug-log* 'lookup))))
+    (when (*dict-debug-log* :logging)
+      (save-sexp-to-file ss (path! (*dict-debug-log* :lookup))))
     (message "%s" (if (car ss)
                       (propertize (string-trim> (mapconcat #'identity
                                                            (mapcar #'cdr ss)
