@@ -54,18 +54,27 @@
   seq)
 
 
-(defmacro push! (newelt seq &optional append uniquely)
-  "Push NEWELT to the ahead or back of SEQ.
+(defmacro push! (newelt seq &optional uniquely)
+  "Push NEWELT to the head of SEQ.
 
-If optional APPEND is non-nil then push back else push ahead.
 If optional UNIQUELY is non-nil then push uniquely."
   (let ((n1 (gensym*))
         (s1 (gensym*)))
     `(let* ((,n1 ,newelt)
             (,s1 (if ,uniquely (delete ,n1 ,seq) ,seq)))
-       (setq ,seq (if ,append
-                      (append ,s1 (list ,n1))
-                    (cons ,n1 ,s1))))))
+       (setq ,seq (cons ,n1 ,s1)))))
+
+
+(defmacro append! (newelt seq &optional uniquely)
+  "Append NEWELT to the end of SEQ.
+
+If optional UNIQUELY is non-nil then append uniquely."
+  (let ((n1 (gensym*))
+        (s1 (gensym*)))
+    `(let* ((,n1 ,newelt)
+            (,s1 (if ,uniquely (delete ,n1 ,seq) ,seq)))
+       (setq ,seq (append ,s1 (list ,n1))))))
+
 
 
 

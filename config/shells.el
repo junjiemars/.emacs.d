@@ -157,7 +157,7 @@ See also: `parse-colon-path'."
                     (when (and (stringp p1) (file-exists-p p1))
                       (when (shells-spec->* :exec-path)
                         (push! p1 exec-path))
-                      (push! p1 paths t t))))
+                      (append! p1 paths t))))
                 (setq val (paths->var paths))))
             (push! (cons v val) vars)))))
     (*default-shell-env* :set! nil)
@@ -166,8 +166,8 @@ See also: `parse-colon-path'."
       (let ((paths nil))
         (dolist* (p exec-path)
           (when (and (stringp p) (file-exists-p p))
-            (push! p paths t t)))
-        (push! (v-home% ".exec/") paths t t)
+            (append! p paths t)))
+        (append! (v-home% ".exec/") paths t)
         (*default-shell-env* :put! :exec-path paths))))
   (save-sexp-to-file (*default-shell-env*) (shells-spec->% :file)))
 
@@ -178,7 +178,7 @@ See also: `parse-colon-path'."
 
   (if (not (shells-spec->* :allowed))
       ;; allowed/disallowed `shells-spec->*'
-      (push! (v-home% ".exec/") exec-path t t)
+      (append! (v-home% ".exec/") exec-path)
 
     ;; read from file
     (when (file-exists-p (shells-spec->% :file))

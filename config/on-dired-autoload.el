@@ -177,12 +177,12 @@
       (ad-set-arg 1 (let ((arg1 (ad-get-arg 1))
                           (files nil))
                       (dolist* (x arg1 files)
-                        (push! (if (multibyte-string-p x)
-                                   (encode-coding-string
-                                    x
-                                    locale-coding-system)
-                                 x)
-                               files t t)))))
+                        (append! (if (multibyte-string-p x)
+                                     (encode-coding-string
+                                      x
+                                      locale-coding-system)
+                                   x)
+                                 files t)))))
 
     (defadvice dired-shell-command (before dired-shell-command-before disable)
       "`dired-do-compress-to' should failed when
@@ -219,7 +219,7 @@
                                                        locale-coding-system))))
                  (aset x 0 decode)
                  (aset x 2 (length decode))))
-             (push! x files t t))))))
+             (append! x files t))))))
 
     (with-eval-after-load 'arc-mode
       (ad-enable-advice #'archive-summarize-files 'before

@@ -39,7 +39,7 @@
               compile-command
               1)))
       (when (and d (file-exists-p d))
-        (push! d compilation-search-path nil t))))))
+        (push! d compilation-search-path t))))))
 
 
 (with-eval-after-load 'compile
