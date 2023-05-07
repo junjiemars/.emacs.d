@@ -27,7 +27,7 @@
                                                    (match-string 1)))))
                         s1)
                        (buffer-substring (point-min) (point-max)))))
-                dict-fn-norm-zh-punc)))
+                dict-fn-norm-punc)))
              ("sounds-like" . (("<div class=\"df_wb_a\">音近词</div>")
                                "</div></div></div>" .
                                (dict-fn-remove-html-tag)))
@@ -67,7 +67,11 @@
                                (format "|%s|" (string-trim> x))))))
              ("meta" . (("<meta name=\"description\" content=\"The meaning of ")
                         " How to use" .
-                        (dict-fn-remove-html-tag)))))))
+                        (dict-fn-remove-html-tag)))
+             ("suggestion" . (("<p class=\"spelling-suggestions\">" . 1)
+                              "</div>" .
+                              (dict-fn-remove-html-tag
+                               dict-fn-norm-punc)))))))
     (lambda (&optional n)
       (if n (let ((x (assoc** (car n) b :test #'string=)))
               (if x (setcdr x (cdr n))
@@ -110,7 +114,7 @@
   "Dictionary style choosing history list.")
 
 
-(defun dict-fn-norm-zh-punc (ss)
+(defun dict-fn-norm-punc (ss)
   "Replace zh's punctuations to en's."
   (with-temp-buffer
     (insert ss)
@@ -120,7 +124,9 @@
                   ("（" . "(")
                   ("）" . ")")
                   ("“" . "\"")
-                  ("”" . "\""))))
+                  ("”" . "\"")
+                  ("\n" . " ")
+                  ("[ ]+" . " "))))
       (dolist* (s punc)
         (goto-char (point-min))
         (while (search-forward-regexp (car s) nil t)
