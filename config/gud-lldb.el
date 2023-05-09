@@ -318,10 +318,6 @@ As the 3rd argument of `gud-common-init': marker-filter"
     (gud-basic-call cmd)))
 
 
-;; ;; set default `gud-lldb-init-hook'
-;; (add-hook 'gud-lldb-init-hook #'lldb-settings-init-file (emacs-arch))
-
-
 (defun gud-lldb (command-line)
   "Run lldb passing it COMMAND-LINE as arguments.
 
@@ -341,6 +337,8 @@ invoked."
                    #'gud-lldb-massage-args
                    #'gud-lldb-marker-filter
                    #'gud-lldb-find-file)
+
+  (lldb-settings-init-file)
 
   (*lldb* (get-buffer (format "*gud-%s*" gud-target-name)))
 
@@ -397,8 +395,6 @@ invoked."
 
  ;; end of gud-lldb-*
 
-;;; generate `~/.lldbinit-lldb'
-(lldb-settings-init-file)
 
 
 (provide 'gud-lldb)
