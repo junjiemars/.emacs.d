@@ -294,64 +294,64 @@ Optional argument TRIM regexp used to trim."
   "Save SEXP to FILE.
 
 Returns the name of FILE when successed otherwise nil."
-  (let ((f (gensym*))
-        (buf (gensym*)))
-    `(let ((,f ,file)
-           (,buf (generate-new-buffer
-                  (symbol-name (gensym* "ssexprtf")))))
+  (let ((s (gensym*))
+        (f (gensym*))
+        (b (gensym*)))
+    `(let ((,s ,sexp)
+           (,f ,file)
+           (,b (generate-new-buffer (symbol-name (gensym* "ssexprtf")))))
        (unwind-protect
-           (with-current-buffer ,buf
-             (print ,sexp ,buf)
+           (with-current-buffer ,b
+             (print ,s ,b)
              (write-region (point-min) (point-max) ,f)
              ,f)
-         (and (buffer-name ,buf) (kill-buffer ,buf))))))
+         (and (buffer-name ,b) (kill-buffer ,b))))))
 
 
 (defmacro read-sexp-from-file (file)
   "Read the first sexp from FILE."
   (let ((f (gensym*))
-        (buf (gensym*)))
+        (b (gensym*)))
     `(let ((,f ,file))
        (when (and (stringp ,f) (file-exists-p ,f))
-         (let ((,buf (generate-new-buffer
-                      (symbol-name (gensym* "rsexpff")))))
+         (let ((,b (generate-new-buffer (symbol-name (gensym* "rsexpff")))))
            (unwind-protect
-               (with-current-buffer ,buf
+               (with-current-buffer ,b
                  (insert-file-contents ,f)
-                 (read ,buf))
-             (and (buffer-name ,buf) (kill-buffer ,buf))))))))
+                 (read ,b))
+             (and (buffer-name ,b) (kill-buffer ,b))))))))
 
 
 (defmacro save-str-to-file (str file)
   "Save STR to FILE.
 
 Returns the name of FILE when successed otherwise nil."
-  (let ((f (gensym*))
-        (buf (gensym*)))
-    `(let ((,f ,file)
-           (,buf (generate-new-buffer
-                  (symbol-name (gensym* "sstrtf")))))
+  (let ((s (gensym*))
+        (f (gensym*))
+        (b (gensym*)))
+    `(let ((,s ,str)
+           (,f ,file)
+           (,b (generate-new-buffer (symbol-name (gensym* "sstrtf")))))
        (unwind-protect
-           (with-current-buffer ,buf
-             (insert ,str)
+           (with-current-buffer ,b
+             (insert ,s)
              (write-region (point-min) (point-max) ,f)
              ,f)
-         (and (buffer-name ,buf) (kill-buffer ,buf))))))
+         (and (buffer-name ,b) (kill-buffer ,b))))))
 
 
 (defmacro read-str-from-file (file)
   "Read string from FILE."
   (let ((f (gensym*))
-        (buf (gensym*)))
+        (b (gensym*)))
     `(let ((,f ,file))
        (when (and (stringp ,f) (file-exists-p ,f))
-         (let ((,buf (generate-new-buffer
-                      (symbol-name (gensym* "rstrff")))))
+         (let ((,b (generate-new-buffer (symbol-name (gensym* "rstrff")))))
            (unwind-protect
                (with-temp-buffer
                  (insert-file-contents ,f)
                  (buffer-string))
-             (and (buffer-name ,buf) (kill-buffer ,buf))))))))
+             (and (buffer-name ,b) (kill-buffer ,b))))))))
 
 
  ;; end of Files

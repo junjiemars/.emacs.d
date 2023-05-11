@@ -13,12 +13,11 @@
 
 
 (when (*self-env-spec* :get :edit :allowed)
-
   (make-thread*
    (lambda ()
      ;; indent
      (let ((indent (*self-env-spec* :get :edit :indent))
-           (width (*self-env-spec* :get :edit :width)))
+           (width (*self-env-spec* :get :edit :tab-width)))
        (dolist* (x indent)
          (set (car x) (or (cdr x) width))))
      ;; disable `indent-tabs-mode'
