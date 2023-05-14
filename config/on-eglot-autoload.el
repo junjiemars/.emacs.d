@@ -21,7 +21,7 @@
         (when (eglot-managed-p)
           (with-current-buffer (jsonrpc-events-buffer (eglot-current-server))
             (goto-char (point-min))
-            (let* ((r "\"Running language server: \\([-/a-zA-Z0-9_]+\\)\"")
+            (let* ((r "\"Running language server: \\([.-/a-zA-Z0-9_]+\\)\"")
                    (i (search-forward-regexp r nil t)))
               (when i (buffer-substring-no-properties
                        (match-beginning 1)
@@ -77,8 +77,27 @@
 
 (if-feature-eglot%
 
-    (with-eval-after-load 'eglot
-      (eglot*-server-file :push)))
+    (defun eglot*-eldoc-no-builtins ()
+      "Remove the builtin `eldoc' fns from `eglot--managed-mode's mode."
+      (with-current-buffer (current-buffer)
+	      (when (eglot-managed-p)
+	        (let ((p (caddr (eglot--current-project)))
+		            (s (eglot*-lsp-server)))
+            (when (and p s)
+              (cond ((eq major-mode 'python-mode)
+                     (setq eldoc-documentation-functions
+                           (delq 'python-eldoc-function
+                                 eldoc-documentation-functions))
+                     (setq completion-at-point-functions
+                           (delq 'python-completion-at-point
+                                 completion-at-point-functions)))
+                    (t nil))))))))
+
+
+(if-feature-eglot%
+
+  (with-eval-after-load 'eglot
+    (eglot*-server-file :push)))
 
 
 
