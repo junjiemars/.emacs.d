@@ -121,6 +121,13 @@
         (autoload 'run-jshell (v-home%> "config/jshell")
           "Toggle jshell process in buffer `*jshell*'." t)))
 
+    ;; MIX
+    (when% (executable-find% "mixvm")
+      (prog1
+          (compile-unit% (emacs-home* "config/mixvm.el") t)
+        (autoload 'mixvm (v-home%> "config/mixvm")
+          "Run mixvm on program FILE in buffer *gud-FILE*.")))
+
     ;; Node
     (when% (or (file-exists-p "~/.nvm/nvm.sh")
                (executable-find% "node"
