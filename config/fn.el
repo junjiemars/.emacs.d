@@ -59,12 +59,10 @@
 
 If optional UNIQUELY is non-nil then push uniquely."
   (let ((n1 (gensym*))
-        (s1 (gensym*))
-        (s2 (gensym*)))
+        (s1 (gensym*)))
     `(let* ((,n1 ,newelt)
-            (,s1 ,seq)
-            (,s2 (if ,uniquely (delete ,n1 ,s1) ,s1)))
-       (setq ,s1 (cons ,n1 ,s2)))))
+            (,s1 (if ,uniquely (delete ,n1 ,seq) ,seq)))
+       (setq ,seq (cons ,n1 ,s1)))))
 
 
 (defmacro append! (newelt seq &optional uniquely)
@@ -72,12 +70,26 @@ If optional UNIQUELY is non-nil then push uniquely."
 
 If optional UNIQUELY is non-nil then append uniquely."
   (let ((n1 (gensym*))
-        (s1 (gensym*))
-        (s2 (gensym*)))
+        (s1 (gensym*)))
     `(let* ((,n1 ,newelt)
-            (,s1 ,seq)
-            (,s2 (if ,uniquely (delete ,n1 ,s1) ,s1)))
-       (setq ,s1 (append ,s2 (list ,n1))))))
+            (,s1 (if ,uniquely (delete ,n1 ,seq) ,seq)))
+       (setq ,seq (append ,s1 (list ,n1))))))
+
+
+(defmacro seq-ins! (newelt seq idx)
+  "Insert NEWELT into the SEQ."
+  (let ((n1 (gensym*))
+        (i1 (gensym*)))
+    `(let ((,n1 ,newelt)
+           (,i1 ,idx))
+       (let ((l (length ,seq)))
+         (when (and (integerp ,i1) (>= ,i1 0) (< ,i1 l))
+           (let ((c1 (copy-sequence ,seq))
+                 (j (1+ ,i1)))
+             (while (< j l)
+               (setf (nth j c1) (nth (1- j) ,seq) j (1+ j)))
+             (setf (nth ,i1 c1) ,n1)
+             (setq ,seq (append c1 `(,(nth (1- l) ,seq))))))))))
 
 
 

@@ -163,7 +163,7 @@ See also: `parse-colon-path'."
     (*default-shell-env* :set! nil)
     (*default-shell-env* :put! :copy-vars vars)
     (when (shells-spec->* :exec-path)
-      (let ((paths nil))
+      (let ((paths '()))
         (dolist* (p exec-path)
           (when (and (stringp p) (file-exists-p p))
             (append! p paths t)))

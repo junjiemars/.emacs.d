@@ -147,6 +147,14 @@ This should be an executable on your path, or an absolute file name."
   :group 'gud)
 
 
+(defun mixvm*-fix ()
+  "Fix some data in `mixal-mode'."
+  (when-var% mixal-operation-codes-alist 'mixal-mode
+    (let ((a (assoc** 'INCA mixal-operation-codes-alist)))
+      (when (and (< (length a) 7) (= (nth 3 a) 48))
+        (seq-ins! '0 a 4)))))
+
+
 ;;;###autoload
 (defun mixvm (command-line)
   "Run mixvm on program FILE in buffer `*gud-FILE*'.
@@ -159,7 +167,7 @@ and source-file directory for your debugger."
                                  (concat gud-mixvm-command-name " "))
                                mixvm-minibuffer-local-map nil
                                '(gud-mixvm-history . 1))))
-
+  (mixvm*-fix)
   (gud-common-init command-line 'gud-mixvm-massage-args
                    'gud-mixvm-marker-filter 'gud-mixvm-find-file)
 

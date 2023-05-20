@@ -280,6 +280,8 @@
                                    (range 1 10 1))))))
 
 (ert-deftest %fn:push! ()
+  (should (equal '(a b c) (let ((s '(a b c)))
+                            (push! 'a s t))))
   (should (equal (list (list "a" "b") (list "a" "bb"))
                  (let ((x (list "b")))
                    (list (push! "a" x)
@@ -288,12 +290,18 @@
                            (push! "a" x t)))))))
 
 (ert-deftest %fn:append! ()
+  (should (equal '(a b c) (let ((s '(a b c)))
+                            (append! 'c s t))))
   (should (equal (list (list "a" "b") (list "aa" "b"))
                  (let ((x (list "a")))
                    (list (append! "b" x t)
                          (let ((x (list "aa")))
                            (append! "b" x)
                            (append! "b" x t)))))))
+
+(ert-deftest %fn:seq-ins! ()
+  (should (equal '(a X b) (let ((s '(a b)))
+                            (seq-ins! 'X s 1)))))
 
 (ert-deftest %fn:assoc** ()
   (should (equal '(a 1) (assoc** 'a '((b 2) (a 1)))))
