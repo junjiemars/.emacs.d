@@ -22,8 +22,10 @@
 ;; the Ruby language.
 
 ;;; Change Log:
+;; Lexical and native-compiled.
 ;; Version 0.2
 ;; Initial release
+;;;
 
 
 ;;; Code:
@@ -161,22 +163,15 @@ and source-file directory for your debugger."
   (gud-common-init command-line 'gud-mixvm-massage-args
                    'gud-mixvm-marker-filter 'gud-mixvm-find-file)
 
-  (gud-def gud-break  "sbp %l"     "\C-b" "Set breakpoint at current line.")
-  (gud-def gud-remove "cbp %l"     "\C-d" "Remove breakpoint at current line")
-  (gud-def gud-step   "next"         "\C-s" "Step one source line with display.")
-  (gud-def gud-next   "next"         "\C-n" "Step one line.")
-  (gud-def gud-stepi   "next"         "\C-i" "Step one line.")
-  (gud-def gud-cont   "run"     "\C-r" "Continue with display.")
-  (gud-def gud-finish "run"       "\C-f" "Finish executing current function.")
-  (gud-def gud-print  "weval %e"         "\C-p" "Evaluate expression at point.")
-;   (gud-def gud-up     "up"           "<" "Up one stack frame.")
-;   (gud-def gud-down   "down"         ">" "Down one stack frame.")
-;   ;; Is this right?
-;   (gud-def gud-statement "! %e"      "\C-e" "Execute Python statement at point.")
+  (gud-def gud-break "sbp %l" "\C-b" "Set breakpoint at current line.")
+  (gud-def gud-remove "cbp %l" "\C-d" "Remove breakpoint at current line")
+  (gud-def gud-step "next" "\C-s" "Step one source line with display.")
+  (gud-def gud-next "next" "\C-n" "Step one line.")
+  (gud-def gud-stepi "next" "\C-i" "Step one line.")
+  (gud-def gud-cont "run" "\C-r" "Continue with display.")
+  (gud-def gud-finish "run" "\C-f" "Finish executing current function.")
+  (gud-def gud-print "weval %e" "\C-p" "Evaluate expression at point.")
 
-;   (local-set-key [menu-bar debug finish] '("Finish Function" . gud-finish))
-;   (local-set-key [menu-bar debug up] '("Up Stack" . gud-up))
-;   (local-set-key [menu-bar debug down] '("Down Stack" . gud-down))
   (setq comint-prompt-regexp "^MIX > ")
   (set (make-local-variable 'paragraph-start) comint-prompt-regexp)
   (run-hooks 'mixvm-mode-hook))
