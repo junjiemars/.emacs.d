@@ -126,7 +126,7 @@
       (prog1
           (compile-unit% (emacs-home* "config/mixvm.el") t)
         (autoload 'mixvm (v-home%> "config/mixvm")
-          "Run mixvm on program FILE in buffer *gud-FILE*.")))
+          "Run mixvm on program FILE in buffer *gud-FILE*." t)))
 
     ;; Node
     (when% (or (file-exists-p "~/.nvm/nvm.sh")
