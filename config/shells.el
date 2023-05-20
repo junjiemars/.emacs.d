@@ -151,7 +151,7 @@ See also: `parse-colon-path'."
         (let ((val (echo-var v (shells-spec->* :options))))
           (when (and val (> (length val) 0))
             (when (string= v (shells-spec->% :PATH))
-              (let ((paths))
+              (let ((paths nil))
                 (dolist* (p (var->paths val))
                   (let ((p1 (posix-path p)))
                     (when (and (stringp p1) (file-exists-p p1))

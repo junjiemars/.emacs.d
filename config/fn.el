@@ -59,10 +59,12 @@
 
 If optional UNIQUELY is non-nil then push uniquely."
   (let ((n1 (gensym*))
-        (s1 (gensym*)))
+        (s1 (gensym*))
+        (s2 (gensym*)))
     `(let* ((,n1 ,newelt)
-            (,s1 (if ,uniquely (delete ,n1 ,seq) ,seq)))
-       (setq ,seq (cons ,n1 ,s1)))))
+            (,s1 ,seq)
+            (,s2 (if ,uniquely (delete ,n1 ,s1) ,s1)))
+       (setq ,s1 (cons ,n1 ,s2)))))
 
 
 (defmacro append! (newelt seq &optional uniquely)
@@ -70,10 +72,12 @@ If optional UNIQUELY is non-nil then push uniquely."
 
 If optional UNIQUELY is non-nil then append uniquely."
   (let ((n1 (gensym*))
-        (s1 (gensym*)))
+        (s1 (gensym*))
+        (s2 (gensym*)))
     `(let* ((,n1 ,newelt)
-            (,s1 (if ,uniquely (delete ,n1 ,seq) ,seq)))
-       (setq ,seq (append ,s1 (list ,n1))))))
+            (,s1 ,seq)
+            (,s2 (if ,uniquely (delete ,n1 ,s1) ,s1)))
+       (setq ,s1 (append ,s2 (list ,n1))))))
 
 
 
