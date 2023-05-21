@@ -45,7 +45,7 @@
 
 
 (defun mixal*-describe-equipment ()
-  "Display the peripheral devices."
+  "Show help MIX's peripheral devices."
   (interactive)
   (with-output-to-temp-buffer (buffer-name (get-buffer-create "*Help*"))
     (princ "MIX has a fair amount of input-output equipment.
@@ -71,7 +71,7 @@ Each device is given a number as follows:")
 
 
 (defun mixal*-describe-register ()
-  "Display the MIX's registers."
+  "Show help for MIX's registers."
   (interactive)
   (with-output-to-temp-buffer (buffer-name (get-buffer-create "*Help*"))
     (princ "There are nine registers in MIX.") (terpri) (terpri)
@@ -85,7 +85,7 @@ Each device is given a number as follows:")
 
 
 (defun mixal*-describe-alphameric ()
-  "Display the MIX's alphameric characters."
+  "Show help for MIX's alphameric characters."
   (interactive)
   (with-output-to-temp-buffer (buffer-name (get-buffer-create "*Help*"))
     (let* ((am (list "⊔" "A" "B" "C" "D" "E" "F" "G" "H" "I"
@@ -118,11 +118,11 @@ Each device is given a number as follows:")
 (with-eval-after-load 'mixal-mode
   (mixal*-fix)
   (define-key% mixal-mode-map (kbd "C-h C-o") nil)
-  (define-key% mixal-mode-map (kbd "C-c C-h C-o")
+  (define-key% mixal-mode-map (kbd "C-c C-h o")
     #'mixal-describe-operation-code)
-  (define-key% mixal-mode-map (kbd "C-c C-h C-r") #'mixal*-describe-register)
-  (define-key% mixal-mode-map (kbd "C-c C-h C-a") #'mixal*-describe-alphameric)
-  (define-key% mixal-mode-map (kbd "C-c C-h C-e") #'mixal*-describe-equipment))
+  (define-key% mixal-mode-map (kbd "C-c C-h r") #'mixal*-describe-register)
+  (define-key% mixal-mode-map (kbd "C-c C-h a") #'mixal*-describe-alphameric)
+  (define-key% mixal-mode-map (kbd "C-c C-h e") #'mixal*-describe-equipment))
 
 
 ;; end of on-mixal-autoload.el
