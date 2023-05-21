@@ -147,43 +147,6 @@ This should be an executable on your path, or an absolute file name."
   :group 'gud)
 
 
-(defun mixvm*-fix ()
-  "Fix some data in `mixal-mode'."
-  (when-var% mixal-operation-codes-alist 'mixal-mode
-    (let ((aa '((HLT :a 5 :ai 3 :w 2 :wi 4 :l 7)
-                (SLA :a 6 :ai 3 :w 0 :wi 4 :l 7)
-                (SRA :a 6 :ai 3 :w 1 :wi 4 :l 7)
-                (SLAX :a 6 :ai 3 :w 2 :wi 4 :l 7)
-                (SRAX :a 6 :ai 3 :w 3 :wi 4 :l 7)
-                (SLC :a 6 :ai 3 :w 4 :wi 4 :l 7)
-                (SRC :a 6 :ai 3 :w 5 :wi 4 :l 7)
-                (INCA :a 48 :ai 3 :w 0 :wi 4 :l 7)
-                (INCX :a 55 :ai 3 :w 0 :wi 4 :l 7)
-                (INC1 :a 49 :ai 3 :w 0 :wi 4 :l 7)
-                (INC2 :a 50 :ai 3 :w 0 :wi 4 :l 7)
-                (INC3 :a 51 :ai 3 :w 0 :wi 4 :l 7)
-                (INC4 :a 52 :ai 3 :w 0 :wi 4 :l 7)
-                (INC5 :a 53 :ai 3 :w 0 :wi 4 :l 7)
-                (INC6 :a 54 :ai 3 :w 0 :wi 4 :l 7)
-                (DECA :a 48 :ai 3 :w 1 :wi 4 :l 7)
-                (DECX :a 55 :ai 3 :w 1 :wi 4 :l 7)
-                (DEC1 :a 49 :ai 3 :w 1 :wi 4 :l 7)
-                (DEC2 :a 50 :ai 3 :w 1 :wi 4 :l 7)
-                (DEC3 :a 51 :ai 3 :w 1 :wi 4 :l 7)
-                (DEC4 :a 52 :ai 3 :w 1 :wi 4 :l 7)
-                (DEC5 :a 53 :ai 3 :w 1 :wi 4 :l 7)
-                (DEC6 :a 54 :ai 3 :w 1 :wi 4 :l 7))))
-      (dolist* (x aa)
-        (let ((a1 (assoc** (car x) mixal-operation-codes-alist))
-              (a (plist-get (cdr x) :a))
-              (ai (plist-get (cdr x) :ai))
-              (w (plist-get (cdr x) :w))
-              (wi (plist-get (cdr x) :wi))
-              (l (plist-get (cdr x) :l)))
-          (when (and (< (length a1) l) (= (nth ai a1) a))
-            (setcdr a1 (cdr (seq-ins! w a1 wi)))))))))
-
-
 ;;;###autoload
 (defun mixvm (command-line)
   "Run mixvm on program FILE in buffer `*gud-FILE*'.
@@ -196,7 +159,6 @@ and source-file directory for your debugger."
                                  (concat gud-mixvm-command-name " "))
                                mixvm-minibuffer-local-map nil
                                '(gud-mixvm-history . 1))))
-  (mixvm*-fix)
   (gud-common-init command-line 'gud-mixvm-massage-args
                    'gud-mixvm-marker-filter 'gud-mixvm-find-file)
 

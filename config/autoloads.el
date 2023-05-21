@@ -57,6 +57,7 @@
     (compile-unit% (emacs-home* "config/on-isearch-autoload.el"))
     (compile-unit% (emacs-home* "config/on-js-autoload.el"))
     (compile-unit% (emacs-home* "config/on-lisp-autoload.el"))
+    (compile-unit% (emacs-home* "config/on-mixal-autoload.el"))
     (compile-unit% (emacs-home* "config/on-net-autoload.el"))
     (compile-unit% (emacs-home* "config/on-org-autoload.el"))
     (compile-unit% (emacs-home* "config/on-pp-autoload.el"))
@@ -120,13 +121,6 @@
           "Toggle Jshell's mode." t)
         (autoload 'run-jshell (v-home%> "config/jshell")
           "Toggle jshell process in buffer `*jshell*'." t)))
-
-    ;; MIX
-    (when% (executable-find% "mixvm")
-      (prog1
-          (compile-unit% (emacs-home* "config/mixvm.el") t)
-        (autoload 'mixvm (v-home%> "config/mixvm")
-          "Run mixvm on program FILE in buffer *gud-FILE*." t)))
 
     ;; Node
     (when% (or (file-exists-p "~/.nvm/nvm.sh")
