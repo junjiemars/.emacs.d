@@ -70,6 +70,44 @@ Each device is given a number as follows:")
     (terpri)))
 
 
+(defun mixal*-describe-register ()
+  "Display the MIX's registers."
+  (interactive)
+  (with-output-to-temp-buffer (buffer-name (get-buffer-create "*Help*"))
+    (princ "There are nine registers in MIX.") (terpri) (terpri)
+    (princ "                                      [*]:    [+]:") (terpri)
+    (princ "  rA = register A                     JL(4) < N(0)") (terpri)
+    (princ "  rX = register X                     JE(5) = Z(1)") (terpri)
+    (princ " rAX = registers A and X as one       JG(6) > P(2)") (terpri)
+    (princ " rIi = index register i, 1 ≤ i ≤ 6   JGE(7) ≥ NN(3)") (terpri)
+    (princ "  rJ = register J                    JNE(8) ≠ NZ(4)") (terpri)
+    (princ "  CI = comparation indicator         JLE(9) ≤ NP(5)") (terpri)))
+
+
+(defun mixal*-describe-alphameric ()
+  "Display the MIX's alphameric characters."
+  (interactive)
+  (with-output-to-temp-buffer (buffer-name (get-buffer-create "*Help*"))
+    (let* ((am (list "⊔" "A" "B" "C" "D" "E" "F" "G" "H" "I"
+                     "Θ" "J" "K" "L" "M" "N" "O" "P" "Q" "R"
+                     "Φ" "_" "S" "T" "U" "V" "W" "X" "Y" "Z"
+                     "0" "1" "2" "3" "4" "5" "6" "7" "8" "9"
+                     "." "," "(" ")" "+" "-" "*" "/" "=" "$"
+                     "<" ">" "@" ";" ":" "'"))
+           (l (length am))
+           (h 15) (w 4) (i 0) (j 0))
+      (princ "MIX alphameric characters.") (terpri) (terpri)
+      (princ " Code Char | Code Char | Code Char | Code Char") (terpri)
+      (while (< i h)
+        (let ((p (+ i (* h j))))
+          (while (and (< j w) (< p l))
+            (princ (format "  %02d    %s  %s" p (nth p am)
+                           (if (= j (- w 1)) "" "|")))
+            (setq j (1+ j))))
+        (terpri)
+        (setq i (1+ i) j 0)))))
+
+
 ;; `mixvm'
 (when% (executable-find% "mixvm")
   (compile! (compile-unit% (emacs-home* "config/mixvm.el") t))
@@ -79,7 +117,12 @@ Each device is given a number as follows:")
 
 (with-eval-after-load 'mixal-mode
   (mixal*-fix)
-  (define-key% mixal-mode-map (kbd "C-h C-e") #'mixal*-describe-equipment))
+  (define-key% mixal-mode-map (kbd "C-h C-o") nil)
+  (define-key% mixal-mode-map (kbd "C-c C-h C-o")
+    #'mixal-describe-operation-code)
+  (define-key% mixal-mode-map (kbd "C-c C-h C-r") #'mixal*-describe-register)
+  (define-key% mixal-mode-map (kbd "C-c C-h C-a") #'mixal*-describe-alphameric)
+  (define-key% mixal-mode-map (kbd "C-c C-h C-e") #'mixal*-describe-equipment))
 
 
 ;; end of on-mixal-autoload.el
