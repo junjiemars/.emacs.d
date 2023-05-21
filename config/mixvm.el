@@ -150,7 +150,14 @@ This should be an executable on your path, or an absolute file name."
 (defun mixvm*-fix ()
   "Fix some data in `mixal-mode'."
   (when-var% mixal-operation-codes-alist 'mixal-mode
-    (let ((aa '((INCA :a 48 :ai 3 :w 0 :wi 4 :l 7)
+    (let ((aa '((HLT :a 5 :ai 3 :w 2 :wi 4 :l 7)
+                (SLA :a 6 :ai 3 :w 0 :wi 4 :l 7)
+                (SRA :a 6 :ai 3 :w 1 :wi 4 :l 7)
+                (SLAX :a 6 :ai 3 :w 2 :wi 4 :l 7)
+                (SRAX :a 6 :ai 3 :w 3 :wi 4 :l 7)
+                (SLC :a 6 :ai 3 :w 4 :wi 4 :l 7)
+                (SRC :a 6 :ai 3 :w 5 :wi 4 :l 7)
+                (INCA :a 48 :ai 3 :w 0 :wi 4 :l 7)
                 (INCX :a 55 :ai 3 :w 0 :wi 4 :l 7)
                 (INC1 :a 49 :ai 3 :w 0 :wi 4 :l 7)
                 (INC2 :a 50 :ai 3 :w 0 :wi 4 :l 7)
