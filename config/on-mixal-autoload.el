@@ -90,7 +90,7 @@ Each device is given a number as follows:")
   (with-output-to-temp-buffer (buffer-name (get-buffer-create "*Help*"))
     (let* ((am (list "⊔" "A" "B" "C" "D" "E" "F" "G" "H" "I"
                      "Θ" "J" "K" "L" "M" "N" "O" "P" "Q" "R"
-                     "Φ" "_" "S" "T" "U" "V" "W" "X" "Y" "Z"
+                     "Φ" "Π" "S" "T" "U" "V" "W" "X" "Y" "Z"
                      "0" "1" "2" "3" "4" "5" "6" "7" "8" "9"
                      "." "," "(" ")" "+" "-" "*" "/" "=" "$"
                      "<" ">" "@" ";" ":" "'"))
