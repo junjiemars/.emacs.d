@@ -7,7 +7,7 @@
 ;;;;
 
 
-(defun mixal*-fix ()
+(defun mixal*-fix-operation-codes-alist ()
   "Fix some data in `mixal-mode'."
   (when-var% mixal-operation-codes-alist 'mixal-mode
     (let ((aa '((HLT :a 5 :ai 3 :w 2 :wi 4 :l 7)
@@ -34,12 +34,13 @@
                 (DEC5 :a 53 :ai 3 :w 1 :wi 4 :l 7)
                 (DEC6 :a 54 :ai 3 :w 1 :wi 4 :l 7))))
       (dolist* (x aa)
-        (let ((a1 (assoc** (car x) mixal-operation-codes-alist))
-              (a (plist-get (cdr x) :a))
-              (ai (plist-get (cdr x) :ai))
-              (w (plist-get (cdr x) :w))
-              (wi (plist-get (cdr x) :wi))
-              (l (plist-get (cdr x) :l)))
+        (let* ((a1 (assoc** (car x) mixal-operation-codes-alist))
+               (d1 (cdr x))
+               (a (plist-get d1 :a))
+               (ai (plist-get d1 :ai))
+               (w (plist-get d1 :w))
+               (wi (plist-get d1 :wi))
+               (l (plist-get d1 :l)))
           (when (and (< (length a1) l) (= (nth ai a1) a))
             (setcdr a1 (cdr (seq-ins! w a1 wi)))))))))
 
@@ -118,7 +119,7 @@ Each device is given a number as follows:")
 
 
 (with-eval-after-load 'mixal-mode
-  (mixal*-fix)
+  (mixal*-fix-operation-codes-alist)
   (define-key% mixal-mode-map (kbd "C-h C-o") nil)
   (define-key% mixal-mode-map (kbd "C-c C-h o")
     #'mixal-describe-operation-code)
