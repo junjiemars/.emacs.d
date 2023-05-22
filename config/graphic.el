@@ -110,8 +110,7 @@ If DIR is nil then load the built-in `customize-themes' by NAME."
     "Load theme specs from `*self-env-spec*'.
 
 If RESET is true then reset before load."
-    (when reset
-      (mapc #'disable-theme custom-enabled-themes))
+    (when reset (mapc #'disable-theme custom-enabled-themes))
     (when (*self-env-spec* :get :theme :allowed)
       (let ((name (*self-env-spec* :get :theme :name)))
         (when name
