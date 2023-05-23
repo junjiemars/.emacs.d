@@ -91,12 +91,12 @@ Each device is given a number as follows:")
   "Show help for MIX's alphameric characters."
   (interactive)
   (with-output-to-temp-buffer (buffer-name (get-buffer-create "*Help*"))
-    (let* ((am (list "⊔" "A" "B" "C" "D" "E" "F" "G" "H" "I"
-                     "Θ" "J" "K" "L" "M" "N" "O" "P" "Q" "R"
-                     "Φ" "Π" "S" "T" "U" "V" "W" "X" "Y" "Z"
-                     "0" "1" "2" "3" "4" "5" "6" "7" "8" "9"
-                     "." "," "(" ")" "+" "-" "*" "/" "=" "$"
-                     "<" ">" "@" ";" ":" "'"))
+    (let* ((am (vector "⊔" "A" "B" "C" "D" "E" "F" "G" "H" "I"
+                       "Θ" "J" "K" "L" "M" "N" "O" "P" "Q" "R"
+                       "Φ" "Π" "S" "T" "U" "V" "W" "X" "Y" "Z"
+                       "0" "1" "2" "3" "4" "5" "6" "7" "8" "9"
+                       "." "," "(" ")" "+" "-" "*" "/" "=" "$"
+                       "<" ">" "@" ";" ":" "'"))
            (l (length am))
            (h 12) (w 5) (i 0) (j 0))
       (princ "MIX alphameric characters.") (terpri) (terpri)
@@ -107,7 +107,7 @@ Each device is given a number as follows:")
           (let ((p (+ i (* h j))))
             (princ (format "  %02d    %s  %s"
                            p
-                           (nth p am)
+                           (aref am p)
                            (if (= j (- w 1)) "" "|"))))
           (setq j (1+ j)))
         (terpri)
