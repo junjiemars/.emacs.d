@@ -7,6 +7,7 @@
 **/*.log
 **/g_*/
 **/t_*/
+**/.clang-format
 *.*~
 *.b0
 *.elc
