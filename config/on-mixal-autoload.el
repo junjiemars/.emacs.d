@@ -19,6 +19,7 @@
                 (SRAX :a 6 :ai 3 :w 3 :wi 4 :l 7)
                 (SLC :a 6 :ai 3 :w 4 :wi 4 :l 7)
                 (SRC :a 6 :ai 3 :w 5 :wi 4 :l 7)
+                (JMP :a 39 :ai 3 :w 0 :wi 4 :l 7)
                 (INCA :a 48 :ai 3 :w 0 :wi 4 :l 7)
                 (INCX :a 55 :ai 3 :w 0 :wi 4 :l 7)
                 (INC1 :a 49 :ai 3 :w 0 :wi 4 :l 7)
