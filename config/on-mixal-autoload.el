@@ -43,6 +43,8 @@
                 (JXNP :a 47 :ai 3 :w 5 :wi 4 :l 7)
                 (INCA :a 48 :ai 3 :w 0 :wi 4 :l 7)
                 (DECA :a 48 :ai 3 :w 1 :wi 4 :l 7)
+                (ENTA :a 48 :ai 3 :w 2 :wi 4 :l 7)
+                (ENNA :a 48 :ai 3 :w 3 :wi 4 :l 7)
                 (INC1 :a 49 :ai 3 :w 0 :wi 4 :l 7)
                 (DEC1 :a 49 :ai 3 :w 1 :wi 4 :l 7)
                 (INC2 :a 50 :ai 3 :w 0 :wi 4 :l 7)
