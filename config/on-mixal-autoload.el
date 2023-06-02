@@ -47,6 +47,8 @@
                 (ENNA :a 48 :ai 3 :w 3 :wi 4 :l 7)
                 (INC1 :a 49 :ai 3 :w 0 :wi 4 :l 7)
                 (DEC1 :a 49 :ai 3 :w 1 :wi 4 :l 7)
+                (ENT1 :a 49 :ai 3 :w 2 :wi 4 :l 7)
+                (ENN1 :a 49 :ai 3 :w 3 :wi 4 :l 7)
                 (INC2 :a 50 :ai 3 :w 0 :wi 4 :l 7)
                 (DEC2 :a 50 :ai 3 :w 1 :wi 4 :l 7)
                 (INC3 :a 51 :ai 3 :w 0 :wi 4 :l 7)
