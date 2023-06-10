@@ -59,18 +59,19 @@
 
     (defalias 'eglot*-server-file
       (lexical-let% ((b (v-home% ".exec/eglot-server.el"))
-                     (c '((c-mode . ("clangd" "--header-insertion=never")))))
+                     (m '((c-mode . ("clangd" "--header-insertion=never"))
+                          (swift-mode . ("sourcekit-lsp")))))
         (lambda (&optional op sexp)
           (cond ((eq op :push)
-                 (let ((c (or sexp (read-sexp-from-file b))))
-                   (dolist* (c1 c)
-                     (push! c1 eglot-server-programs))))
+                 (let ((s (or sexp (read-sexp-from-file b) m)))
+                   (dolist* (x s)
+                     (push! x eglot-server-programs))))
                 ((eq op :read)
                  (read-sexp-from-file b))
                 ((eq op :save)
                  (when sexp (save-sexp-to-file sexp b)))
-                ((eq op 'c-mode)
-                 (save-sexp-to-file c b))
+                ((eq op :mode)
+                 (save-sexp-to-file m b))
                 (t b))))
       "The `eglot-server-programs' file."))
 
@@ -140,5 +141,6 @@
 
 
 
+
 
 ;;; end of on-eglot-autoload.el
