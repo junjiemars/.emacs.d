@@ -23,17 +23,15 @@
   "Adjoint of `python-shell-interpreter'.")
 
 
-(defun python*-version ()
-  "Return version of `python*-program'."
-  (let ((rc (shell-command* (python*-program) "--version")))
-    (if (zerop (car rc))
-        (match-string* "^Python \\([.0-9]+\\)$" (cdr rc) 1)
-      (user-error* "!%s no found" (or (python*-program)
-                                      "python*-program")))))
+(defun python*-version (&optional python)
+  "Return the version of PYTHON"
+  (let ((rc (shell-command* (or python (python*-program)) "--version")))
+    (when (zerop (car rc))
+      (match-string* "^Python \\([.0-9]+\\)$" (cdr rc) 1))))
 
 
-(defun python*-venv@ (&optional dir)
-  "Activate virtualenv at DIR.
+(defun python*-venv@ (&optional dir python)
+  "Activate virtualenv at DIR with PYTHON.
 
 PYTHONPATH: augment the default search path for module files. The
             format is the same as the shell’s PATH.
@@ -43,38 +41,39 @@ VIRTUALENV: virtualenv root path.
 After Python3.3+, we can use `python -m venv <dir>' to create a
 new virtual env at <dir>.
 
-Using `sys.prefix', `sys.base_prefix' or `sys.real_prefix' to
-determine whether inside a virtual env. Another way is using `pip
--V'."
+Using `sys.prefix' to determine whether inside a virtual
+env. Another way is using `pip -V'."
   (interactive "Dvirtualenv activate at ")
-  (let ((d (string-trim> (path! (expand-file-name (or dir
-                                                      default-directory)))
-                         "/")))
-    (if (and (not (executable-find% "virtualenv"))
-             (string< (python*-version) "3.3"))
-        (user-error* "!virtualenv no found")
-      (if (string< (python*-version) "3.3")
-          (unless (file-exists-p (concat d "/bin/activate"))
-            (let ((rc (shell-command* "virtualenv" d)))
-              (unless (zerop (car rc))
-                (user-error* "!%s" (string-trim> (cdr rc))))))
-        (unless (file-exists-p (concat d "/bin/activate"))
-          (let ((rc1 (shell-command* (python*-program) "-m" "venv" d)))
-            (unless (zerop (car rc1))
-              (user-error* "!%s" (string-trim> (cdr rc1)))))))
-      (if-var% python-shell-virtualenv-root 'python
-               (setq python-shell-virtualenv-root d)
-        (if-var% python-shell-virtualenv-path 'python
-                 (setq python-shell-virtualenv-path d)
-          (if-var% python-shell-process-environment 'python
-                   (setq python-shell-process-environment
-                         (list
-                          (concat "PYTHONPATH=" d)
-                          (concat "PYTHONHOME=" d)
-                          (concat "VIRTUAL_ENV=" d)))
-            (setenv "PYTHONPATH" d)
-            (setenv "PYTHONHOME" d)
-            (setenv "VIRTUAL_ENV" d)))))))
+  (let ((d (string-trim> (path! (expand-file-name
+                                 (or dir default-directory)))
+                         "/"))
+        (p (python*-program python))
+        (v (python*-version python)))
+    (unless (file-exists-p (concat d "/bin/activate"))
+      (cond ((and p (string< v "3.3") (executable-find% "virtualenv"))
+             (let ((rc (shell-command* "virtualenv" "-p" p d)))
+               (unless (zerop (car rc))
+                 (user-error* "!%s" (string-trim> (cdr rc))))))
+            ((and p (not (string< v "3.3")))
+             (let ((rc (shell-command* p "-m" "venv" d)))
+               (unless (zerop (car rc))
+                 (user-error* "!%s" (string-trim> (cdr rc))))))
+            (t (user-error* "!python venv unavailable"))))
+    (when-var% python-shell-interpreter 'python
+      (setq python-shell-interpreter (python*-program)))
+    (if-var% python-shell-virtualenv-root 'python
+             (setq python-shell-virtualenv-root d)
+      (if-var% python-shell-virtualenv-path 'python
+               (setq python-shell-virtualenv-path d)
+        (if-var% python-shell-process-environment 'python
+                 (setq python-shell-process-environment
+                       (list
+                        (concat "PYTHONPATH=" d)
+                        (concat "PYTHONHOME=" d)
+                        (concat "VIRTUAL_ENV=" d)))
+          (setenv "PYTHONPATH" d)
+          (setenv "PYTHONHOME" d)
+          (setenv "VIRTUAL_ENV" d))))))
 
 
 ;; (defun python*-inside-venv-p ()

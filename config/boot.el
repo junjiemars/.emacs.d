@@ -67,8 +67,10 @@
   "Lexically bind variables according to VARLIST sequentially then eval BODY."
   (declare (indent 1) (debug let))
   `(if-lexical%
-       `(let ((lexical-binding t))
-          (let ,varlist ,@body))
+       (if-version% < 27
+                    (let* ,varlist ,@body)
+         (let ((lexical-binding t))
+           (let* ,varlist ,@body)))
      (when-fn% 'lexical-let* 'cl
        ;; `lexical-let' since Emacs22
        (lexical-let* ,varlist ,@body))))
