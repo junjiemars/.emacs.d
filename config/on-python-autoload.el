@@ -30,8 +30,8 @@
       (match-string* "^Python \\([.0-9]+\\)$" (cdr rc) 1))))
 
 
-(defun python*-venv@ (&optional dir python)
-  "Activate virtualenv at DIR with PYTHON.
+(defun python*-activate-venv (&optional dir python)
+  "Activate PYTHON's virtualenv at DIR.
 
 PYTHONPATH: augment the default search path for module files. The
             format is the same as the shell’s PATH.
@@ -44,17 +44,17 @@ new virtual env at <dir>.
 Using `sys.prefix' to determine whether inside a virtual
 env. Another way is using `pip -V'."
   (interactive "Dvirtualenv activate at ")
-  (let ((d (string-trim> (path! (expand-file-name
-                                 (or dir default-directory)))
-                         "/"))
-        (p (python*-program python))
-        (v (python*-version python)))
+  (let* ((d (string-trim> (path! (expand-file-name dir))
+                          "/"))
+         (p (python*-program python))
+         (v (python*-version python))
+         (v3 (string< v "3.3")))
     (unless (file-exists-p (concat d "/bin/activate"))
-      (cond ((and p (string< v "3.3") (executable-find% "virtualenv"))
+      (cond ((and p v3 (executable-find% "virtualenv"))
              (let ((rc (shell-command* "virtualenv" "-p" p d)))
                (unless (zerop (car rc))
                  (user-error* "!%s" (string-trim> (cdr rc))))))
-            ((and p (not (string< v "3.3")))
+            ((and p (not v3))
              (let ((rc (shell-command* p "-m" "venv" d)))
                (unless (zerop (car rc))
                  (user-error* "!%s" (string-trim> (cdr rc))))))
@@ -74,11 +74,6 @@ env. Another way is using `pip -V'."
           (setenv "PYTHONPATH" d)
           (setenv "PYTHONHOME" d)
           (setenv "VIRTUAL_ENV" d))))))
-
-
-;; (defun python*-inside-venv-p ()
-;;   "Predicate inside venv."
-;;   (python-shell-send-string "import sys\nprint(sys.prefix)\n"))
 
 
 (with-eval-after-load 'python

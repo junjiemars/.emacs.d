@@ -137,12 +137,8 @@
           "Toggle node process in buffer `*node*'." t)))
 
     ;; Python
-    (when% (executable-find%
-            "python"
-            (lambda (python)
-              (let ((x (shell-command* "python -c'print(1+2)'")))
-                (and (zerop (car x))
-                     (string= "3" (string-trim> (cdr x)))))))
+    (when% (or (executable-find% "python3")
+               (executable-find% "python"))
       (compile-unit% (emacs-home* "config/on-python-autoload.el")))
 
     ;; Scheme `gambit-mode'
