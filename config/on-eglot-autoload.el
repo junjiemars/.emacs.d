@@ -21,7 +21,8 @@
         (when (eglot-managed-p)
           (with-current-buffer (jsonrpc-events-buffer (eglot-current-server))
             (goto-char (point-min))
-            (let* ((r "\"Running language server: \\([.-/a-zA-Z0-9_]+\\) *?.*?\"")
+            (let* ((r (concat "\"Running language server: "
+                              "\\([.-/a-zA-Z0-9_]+\\) *?.*?\""))
                    (i (search-forward-regexp r nil t)))
               (when i (buffer-substring-no-properties
                        (match-beginning 1)
