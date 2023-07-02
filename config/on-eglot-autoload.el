@@ -109,7 +109,7 @@
 (if-feature-project%
 
     (defalias 'project*-root-file
-      (lexical-let% ((b (v-home% ".exec/project-root.el"))
+      (lexical-let% ((b (emacs-home* "private/project-root.el"))
                      (c '()))
         (lambda (&optional op sexp)
           (cond ((eq op :cache)
