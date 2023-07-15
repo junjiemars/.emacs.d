@@ -24,7 +24,9 @@
   (define-key% (current-global-map)
     (kbd "C-x 4 r") #'ido-find-file-read-only-other-window)
   (define-key% (current-global-map)
-    (kbd "C-x C-r") #'ido-find-file-read-only))
+    (kbd "C-x C-r") #'ido-find-file-read-only)
+
+  (setq ido-enable-flex-matching t))
 
 
  ;; end of on-ido-autoload.el

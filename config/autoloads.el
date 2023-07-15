@@ -261,6 +261,7 @@
   (compile! (compile-unit% (emacs-home* "config/safe.el")))
   (when-fn% 'self-frame-default-load! nil (self-frame-default-load!))
   (when-fn% 'self-desktop-read! nil (self-desktop-read!))
+  (require 'ido)
   (ido-mode t)
   (make-thread*
    (lambda ()
