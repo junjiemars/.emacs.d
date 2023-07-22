@@ -8,7 +8,31 @@
 
 
 (defvar *scratch-kinds*
-  '("scratch" "org")
+  `(("*" . (:msg ,(substitute-command-keys initial-scratch-message)
+                     :mod (lambda () (lisp-interaction-mode))))
+    ("org" . (:msg
+              "#+title: Nore Emacs: Org *scratch*
+#+author: Nore Emacs
+
+* scratch
+	:PROPERTIES:
+	:CUSTOM_ID: scratch
+	:END:
+
+"
+              :mod (lambda () (org-mode))))
+    ("tex" . (:msg
+              "\\documentclass[10pt]{report}
+\\makeindex
+\\usepackage{amsmath, amsfonts, amssymb, amstext, amscd, amsthm, makeidx, graphicx, hyperref, url}
+\\begin{document}
+
+\\end{document}
+"
+              :mod latex-mode
+              :pos (lambda ()
+                     (goto-char (point-min))
+                     (forward-line 4)))))
   "Kinds of scratch.")
 
 
@@ -22,28 +46,29 @@
    (list (if current-prefix-arg
              (read-string (format "Choose (%s) "
                                   (mapconcat #'identity
-                                             *scratch-kinds*
+                                             (mapcar** #'car *scratch-kinds*)
                                              "|"))
                           (or (car *scratch-history*)
-                              (car *scratch-kinds*))
+                              (caar *scratch-kinds*))
                           '*scratch-history*)
-           "scratch")))
+           (caar *scratch-kinds*))))
   (switch-to-buffer
-   (let ((n (format "*%s*" (cond ((string= "org" kind) "scratch-org")
-                                 (t kind)))))
+   (let ((n (format "*%s*" (if (string= "*" kind)
+                               "scratch"
+                             (concat "scratch-" kind)))))
      (or (get-buffer n)
          (with-current-buffer (get-buffer-create n)
-           (set-buffer-major-mode (current-buffer))
            (when (zerop (buffer-size))
-             (cond ((string= "org" kind)
-                    (insert-file-contents (emacs-home* "config/scratch.org"))
-                    (org-mode))
-                 (t (insert (substitute-command-keys initial-scratch-message))
-                    (set-buffer-modified-p nil))))
+             (let ((k (cdr (assoc** kind *scratch-kinds* :test #'string=))))
+               (insert (substring-no-properties (plist-get k :msg)))
+               (funcall (plist-get k :mod))
+               (when (plist-get k :pos)
+                 (funcall (plist-get k :pos)))
+               (set-buffer-modified-p nil)))
            (current-buffer))))))
 
 
 
 (provide 'scratch)
 
-;;; eof
+;;; end of scratch.el

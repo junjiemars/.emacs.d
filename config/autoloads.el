@@ -193,11 +193,6 @@
 
     ) ;; end of compile!
 
-  ;; *scratch*
-  (when (get-buffer "*scratch*")
-    (with-current-buffer "*scratch*"
-      (lisp-interaction-mode)))
-
   ;; enable `column-number-mode'
   (setq% column-number-mode t 'simple)
 
