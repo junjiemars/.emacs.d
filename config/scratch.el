@@ -9,7 +9,7 @@
 
 (defvar *scratch-kinds*
   `(("*" . (:msg ,(substitute-command-keys initial-scratch-message)
-                     :mod (lambda () (lisp-interaction-mode))))
+                 :mod ,(lambda () (lisp-interaction-mode))))
     ("org" . (:msg
               "#+title: Nore Emacs: Org *scratch*
 #+author: Nore Emacs
@@ -20,19 +20,20 @@
 	:END:
 
 "
-              :mod (lambda () (org-mode))))
+              :mod ,(lambda () (org-mode))))
     ("tex" . (:msg
               "\\documentclass[10pt]{report}
 \\makeindex
-\\usepackage{amsmath, amsfonts, amssymb, amstext, amscd, amsthm, makeidx, graphicx, hyperref, url}
+\\usepackage{amsmath, amsfonts, amssymb, amstext, amscd, amsthm}
+\\usepackage{makeidx, graphicx, hyperref, url}
 \\begin{document}
 
 \\end{document}
 "
               :mod latex-mode
-              :pos (lambda ()
-                     (goto-char (point-min))
-                     (forward-line 4)))))
+              :pos ,(lambda ()
+                      (goto-char (point-min))
+                      (forward-line 5)))))
   "Kinds of scratch.")
 
 
