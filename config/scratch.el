@@ -26,6 +26,7 @@
 \\makeindex
 \\usepackage{amsmath, amsfonts, amssymb, amstext, amscd, amsthm}
 \\usepackage{makeidx, graphicx, hyperref, url}
+\\usepackage{fontspec}
 \\begin{document}
 
 \\end{document}
@@ -33,7 +34,7 @@
               :mod latex-mode
               :pos ,(lambda ()
                       (goto-char (point-min))
-                      (forward-line 5)))))
+                      (forward-line 6)))))
   "Kinds of scratch.")
 
 
