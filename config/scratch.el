@@ -27,14 +27,19 @@
 \\usepackage{amsmath, amsfonts, amssymb, amstext, amscd, amsthm}
 \\usepackage{makeidx, graphicx, hyperref, url}
 \\usepackage{fontspec}
+% \\usepackage[slantfont, boldfont]{xeCJK}
+% \\setCJKmainfont{Heiti SC}
 \\begin{document}
+\\title{Nore Emacs: TeX *scratch*}
+
+$a + b = c$.
 
 \\end{document}
 "
               :mod latex-mode
               :pos ,(lambda ()
                       (goto-char (point-min))
-                      (forward-line 6)))))
+                      (forward-line 10)))))
   "Kinds of scratch.")
 
 
