@@ -48,7 +48,7 @@
    (list (if current-prefix-arg
              (read-string (format "Choose (%s) "
                                   (mapconcat #'identity
-                                             (mapcar** #'car *scratch-kinds*)
+                                             (mapcar #'car *scratch-kinds*)
                                              "|"))
                           (or (car *scratch-history*)
                               (caar *scratch-kinds*))
