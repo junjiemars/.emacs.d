@@ -32,7 +32,7 @@
 \\begin{document}
 \\maketitle
 
-% This buffer is for \\TeX{} that is not saved
+% This buffer is for \\TeX{} that is not saved.
 
 \\end{document}
 "
