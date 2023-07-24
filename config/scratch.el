@@ -11,35 +11,34 @@
   `(("*" . (:msg ,(substitute-command-keys initial-scratch-message)
                  :mod ,(lambda () (lisp-interaction-mode))))
     ("org" . (:msg
-              "#+title: Nore Emacs: Org *scratch*
-#+author: Nore Emacs
+              "#+title: Nore Emacs: *scratch-org*
 
 * scratch
 	:PROPERTIES:
 	:CUSTOM_ID: scratch
 	:END:
 
-"
-              :mod ,(lambda () (org-mode))))
-    ("tex" . (:msg
-              "\\documentclass[10pt]{report}
-\\makeindex
-\\usepackage{amsmath, amsfonts, amssymb, amstext, amscd, amsthm}
-\\usepackage{makeidx, graphicx, hyperref, url}
-\\usepackage{fontspec}
-% \\usepackage[slantfont, boldfont]{xeCJK}
-% \\setCJKmainfont{Heiti SC}
-\\begin{document}
-\\title{Nore Emacs: TeX *scratch*}
+# This buffer is for /Org/ that is not saved.
 
-$a + b = c$.
+
+"
+              :mod ,(lambda () (org-mode))
+              :pos ,(lambda ()
+                      (goto-char (point-min))
+                      (forward-line 8))))
+    ("tex" . (:msg
+              "\\documentclass{article}
+\\begin{document}
+\\title{Nore Emacs: *scratch-tex*}
+
+% This buffer is for \\TeX{} that is not saved
 
 \\end{document}
 "
               :mod latex-mode
               :pos ,(lambda ()
                       (goto-char (point-min))
-                      (forward-line 10)))))
+                      (forward-line 4)))))
   "Kinds of scratch.")
 
 
