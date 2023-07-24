@@ -28,8 +28,9 @@
                       (forward-line 8))))
     ("tex" . (:msg
               "\\documentclass{article}
-\\begin{document}
 \\title{Nore Emacs: *scratch-tex*}
+\\begin{document}
+\\maketitle
 
 % This buffer is for \\TeX{} that is not saved
 
@@ -38,7 +39,7 @@
               :mod latex-mode
               :pos ,(lambda ()
                       (goto-char (point-min))
-                      (forward-line 4)))))
+                      (forward-line 5)))))
   "Kinds of scratch.")
 
 
