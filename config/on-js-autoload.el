@@ -10,7 +10,7 @@
 
 (with-eval-after-load 'js
 
-  (when-var% js-js-tmpdir 'js
+  (when-version% > 28.1
     (setq% js-js-tmpdir (v-home! ".js/") 'js))
 
   (when-var% js-indent-level 'js
