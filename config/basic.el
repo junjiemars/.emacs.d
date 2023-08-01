@@ -342,12 +342,12 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
                   ,file 1))
 
 (defmacro remote-norm-id (remote)
-  "Norm the REMOTE to \\=`(method {user | id} [host])\\=' form."
+  "Norm the REMOTE to (method {user | id} [host]) form."
   `(when (stringp ,remote)
      (split-string* ,remote "[:@]" t "/")))
 
 (defmacro remote-norm->user@host (remote)
-  "Norm the REMOTE to \\={user | id}[@host]\\=' form."
+  "Norm the REMOTE to {user | id}[@host] form."
   `(let ((rid (remote-norm-id ,remote)))
      (when (consp rid)
        (concat (cadr rid) (when (car (cddr rid))
@@ -428,7 +428,7 @@ otherwise default to keep the directories of current \\=`emacs-version\\='."
 
 
 (defmacro platform-arch ()
-  "Return platform architecture with \\=(arch . bits)\\=' cons cell."
+  "Return platform architecture with (arch . bits) cons cell."
   (let ((m64 "\\([xX]86_64\\|[aA][mM][dD]64\\|aarch64\\)")
         (bit (emacs-arch)))
     (if (string-match m64 system-configuration)
@@ -470,7 +470,7 @@ otherwise do ELSE..."
 
 
 (defmacro symbol@ (&optional thing)
-  "Return the \\=(cons \\='region|nil THING)\\=' at point."
+  "Return the (cons \\='region|nil THING) at point."
   `(region-active-if
        (let ((ss (buffer-substring-no-properties (region-beginning)
                                                  (region-end))))
