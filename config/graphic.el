@@ -120,11 +120,8 @@ If RESET is true then reset before load."
                    ;; load theme from :custom-theme-directory
                    (if (and (*self-env-spec* :get :theme :compile)
                             (if-native-comp% nil t))
-                       (progn
-                         (compile!
-                           (compile-unit*
-                            (concat dir (symbol-name name) "-theme.el")
-                            t t))
+                       (let ((f (concat dir (symbol-name name) "-theme.el")))
+                         (compile! (compile-unit* f t t))
                          (load-theme! name (concat dir (v-path* "/"))))
                      (load-theme! name dir)))
                   (t
