@@ -74,9 +74,9 @@ about each column."
                        current-prefix-arg))
     (let ((sqlbuf (sql-find-sqli-buffer)))
       (unless sqlbuf
-        (user-error "No SQL interactive buffer found"))
+        (user-error* "No SQL interactive buffer found"))
       (unless name
-        (user-error "No table name specified"))
+        (user-error* "No table name specified"))
       (sql-execute-feature sqlbuf (format "*Desc %s*" name)
                            :desc-table enhanced name))))
 
@@ -97,9 +97,9 @@ Optional prefix argument ENHANCED, displays additional details."
            current-prefix-arg))
     (let ((sqlbuf (sql-find-sqli-buffer)))
       (unless sqlbuf
-        (user-error "No SQL interactive buffer found"))
+        (user-error* "No SQL interactive buffer found"))
       (unless plan
-        (user-error "No plan specified"))
+        (user-error* "No plan specified"))
       (sql-execute-feature sqlbuf
                            (format "*Desc plan %s*"
                                    (sql-first-word plan))

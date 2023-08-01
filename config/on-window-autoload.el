@@ -81,8 +81,14 @@ A prefix argument is handled like `recenter':
   (if-fn% 'revert-buffer-quick nil
           #'revert-buffer-quick
     #'revert-buffer))
-(when-fn% 'linum-mode 'linum
-  (define-key% (current-global-map) (kbd "C-x x l") #'linum-mode))
+(define-key% (current-global-map) (kbd "C-x x l")
+             (if-fn% 'display-line-numbers-mode 'display-line-numbers
+                     #'display-line-numbers-mode
+               (if-fn% 'linum-mode 'linum
+                       #'linum-mode
+                 #'(lambda ()
+                     (interactive)
+                     (user-error* "No line mode found")))))
 (define-key% (current-global-map) (kbd "C-x x r") #'rename-buffer)
 (when-fn% 'toggle-word-wrap 'simple
   (define-key% (current-global-map) (kbd "C-x x w") #'toggle-word-wrap))
