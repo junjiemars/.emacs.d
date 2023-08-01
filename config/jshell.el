@@ -155,7 +155,7 @@ void jshell_emacs_apropos(String what, int max) {
             (when (string-match
                    "^[> \t]+"
                    (buffer-substring-no-properties
-                    (line-begining-position)
+                    (line-beginning-position)
                     (point)))
               (throw 'break (point)))
             (backward-char))
