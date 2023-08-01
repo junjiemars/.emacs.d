@@ -122,7 +122,7 @@ void jshell_emacs_apropos(String what, int max) {
               (when (<= (- cur idx) (point-min))
                 (throw 'break (point-min)))
               (while (and (char-before (- cur idx))
-                      (char= (char-syntax (char-before (- cur idx))) ?w))
+                          (char= (char-syntax (char-before (- cur idx))) ?w))
                 (setq idx (1+ idx)))
               (when (and (> idx 2)
                          (string-match
@@ -155,7 +155,7 @@ void jshell_emacs_apropos(String what, int max) {
             (when (string-match
                    "^[> \t]+"
                    (buffer-substring-no-properties
-                    (point-at-bol)
+                    (line-begining-position)
                     (point)))
               (throw 'break (point)))
             (backward-char))
