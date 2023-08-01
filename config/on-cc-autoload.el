@@ -317,8 +317,6 @@ include directories. The REMOTE argument from `remote-norm-file'.")
   (lexical-let% ((dx)
                  (fs (v-home% ".exec/cc-extra-inc.el")))
     (lambda (cached &rest dir)
-      (declare (indent 1))
-
       (or (and cached dx)
 
           (and cached (file-exists-p fs)
