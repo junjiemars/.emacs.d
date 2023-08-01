@@ -140,7 +140,7 @@ If optional UNIQUELY is non-nil then append uniquely."
 
 
 (defmacro loop* (&rest clause)
-  "The Common Lisp `loop' macro.
+  "The Common Lisp \\=`loop\\=' macro.
 Optional argument CLAUSE such as for clause, iteration clause,
 accumulate clause and Miscellaneous clause."
   (if-fn% 'cl-loop 'cl-lib
@@ -179,7 +179,7 @@ accumulate clause and Miscellaneous clause."
 Argument FEATURE that defining.
 Optional argument DOCSTRING about FEATURE."
   (let ((name (intern (format "if-feature-%s%%" feature)))
-        (ds1 (format "If has `%s' feauture do THEN, otherwise do BODY."
+        (ds1 (format "If has \\=`%s\\=' feauture do THEN, otherwise do BODY."
                      feature)))
     `(defmacro ,name (then &rest body)
        ,(or docstring ds1)
@@ -267,7 +267,7 @@ Return nil if NUMth pair didn’t match, or there were less than NUM pairs.
 NUM specifies which parenthesized expression in the REGEXP.
 If START is non-nil, start search at that index in STRING.
 
-See `string-match' and `match-string'."
+See \\=`string-match\\=' and \\=`match-string\\='."
   (let ((s (gensym*))
         (n (gensym*)))
     `(let ((,s ,string)
@@ -281,7 +281,7 @@ See `string-match' and `match-string'."
 (defmacro split-string* (string &optional separators omit-nulls trim)
   "Split STRING into substrings bounded by match for SEPARATORS.
 
-Like `split-string' in Emacs 24.4+
+Like \\=`split-string\\=' in Emacs 24.4+
 Optional argument OMIT-NULLS omit null strings.
 Optional argument TRIM regexp used to trim."
   (if-version%
@@ -393,13 +393,13 @@ Returns the name of FILE when successed otherwise nil."
 (defmacro shell-command* (command &rest args)
   "Return a cons cell (code . output) after execute COMMAND in inferior shell.
 
-See `shell-command' and `shell-command-to-string' for details.
+See \\=`shell-command\\=' and \\=`shell-command-to-string\\=' for details.
 
 If you want to set the environment temporarily that
-`shell-command*' run in:
+\\=`shell-command*\\=' run in:
  (let ((process-environment (cons \"GREP_OPTIONS=--color=always\"
                                    process-environment)))
-   (shell-command* \"echo 'a' | grep 'a'\"))
+   (shell-command* \"echo \\='a\\=' | grep \\='a\\='\"))
 Optional argument ARGS for COMMAND."
   (declare (indent 1))
   (let ((cmd (gensym*))

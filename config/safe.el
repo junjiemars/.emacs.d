@@ -8,7 +8,7 @@
 
 
 (defun toggle-enable-local-variables (&optional what)
-  "Toggle `local-enable-local-variables' to WHAT."
+  "Toggle \\=`local-enable-local-variables\\=' to WHAT."
   (interactive
    (list (when current-prefix-arg
            (read-string (format "Choose (%s) "

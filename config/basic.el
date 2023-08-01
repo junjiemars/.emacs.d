@@ -129,7 +129,7 @@
     "Execute BODY after FILE is loaded.
 
 FILE is normally a feature name, but it can also be a file name,
-in case that file does not provide any feature.  See ‘eval-after-load’
+in case that file does not provide any feature.  See \\=`eval-after-load\\='
 for more details about the different forms of FILE and their semantics."
     (declare (indent 1))
     `(eval-after-load ,file
@@ -138,9 +138,9 @@ for more details about the different forms of FILE and their semantics."
 
 (defmacro defcustom% (symbol standard doc &rest args)
   "Declare SYMBOL as a customizable variable with the STANDARD value.
-STANDARD should be computed at compile-time. In `defcustom'
+STANDARD should be computed at compile-time. In \\=`defcustom\\='
 STANDARD always be computed at runtime whatever the current
-`lexical-binding' is."
+\\=`lexical-binding\\=' is."
   (declare (doc-string 3) (debug (name body)))
   (let ((-standard- (funcall `(lambda () ,standard))))
     `(custom-declare-variable
@@ -151,7 +151,8 @@ STANDARD always be computed at runtime whatever the current
 
 
 (defmacro region-active-if (then &rest else)
-  "If `region-active-p' or `mark-active' is t do THEN, otherwise do ELSE..."
+  "If \\=`region-active-p\\=' or \\=`mark-active\\=' is t do THEN,
+otherwise do ELSE..."
   (declare (indent 1))
   (if-fn% 'region-active-p nil
           `(if (region-active-p)
@@ -162,7 +163,7 @@ STANDARD always be computed at runtime whatever the current
        (progn% ,@else))))
 
 (defmacro region-active-unless (&rest then)
-  "Unless `region-active-p' or `mark-active' is t do THEN."
+  "Unless \\=`region-active-p\\=' or \\=`mark-active\\=' is t do THEN."
   (declare (indent 0))
   `(region-active-if nil
      ,@then))
@@ -336,17 +337,17 @@ PREFER (lambda (dir files)...)."
 (defmacro remote-norm-file (file)
   "Return an identification when FILE specifies a location on a remote system.
 
-On ancient Emacs, `file-remote-p' will return a vector."
+On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
   `(match-string* "^\\(/sshx?:[_-a-zA-Z0-9]+@?[_-a-zA-Z0-9]+:\\)"
                   ,file 1))
 
 (defmacro remote-norm-id (remote)
-  "Norm the REMOTE to '(method {user | id} [host])' form."
+  "Norm the REMOTE to \\=`(method {user | id} [host])\\=' form."
   `(when (stringp ,remote)
      (split-string* ,remote "[:@]" t "/")))
 
 (defmacro remote-norm->user@host (remote)
-  "Norm the REMOTE to '{user | id}[@host]' form."
+  "Norm the REMOTE to \\={user | id}[@host]\\=' form."
   `(let ((rid (remote-norm-id ,remote)))
      (when (consp rid)
        (concat (cadr rid) (when (car (cddr rid))
@@ -364,7 +365,7 @@ On ancient Emacs, `file-remote-p' will return a vector."
 
 
 (defun buffer-major-mode (&optional buffer-or-name)
-  "Return `major-mode' associated with BUFFER-OR-NAME or current buffer."
+  "Return \\=`major-mode\\=' associated with BUFFER-OR-NAME or current buffer."
   (buffer-local-value 'major-mode
                       (if buffer-or-name
                           (get-buffer buffer-or-name)
@@ -377,10 +378,10 @@ On ancient Emacs, `file-remote-p' will return a vector."
 ;; Clean Emacs' user files
 
 (defun clean-saved-user-files (&optional all)
-  "Clean saved user files except current `emacs-version'.
+  "Clean saved user files except current \\=`emacs-version\\='.
 
 Clean all when ALL is t,
-otherwise default to keep the directories of current `emacs-version'."
+otherwise default to keep the directories of current \\=`emacs-version\\='."
   (interactive "P")
   (let ((dirs (list `,(emacs-home* ".backup/")
                     `,(emacs-home* ".bookmarks/")
@@ -427,7 +428,7 @@ otherwise default to keep the directories of current `emacs-version'."
 
 
 (defmacro platform-arch ()
-  "Return platform architecture with (arch . bits) cons cell."
+  "Return platform architecture with \\=(arch . bits)\\=' cons cell."
   (let ((m64 "\\([xX]86_64\\|[aA][mM][dD]64\\|aarch64\\)")
         (bit (emacs-arch)))
     (if (string-match m64 system-configuration)
@@ -463,13 +464,13 @@ otherwise do ELSE..."
 
 
 (defmacro safe-local-variable* (var)
-  "Safe local VAR in -*- line, see `enable-local-variables'"
+  "Safe local VAR in -*- line, see \\=`enable-local-variables\\='"
   `(put ,var 'safe-local-variable
         (lambda (x) (ignore* x) t)))
 
 
 (defmacro symbol@ (&optional thing)
-  "Return the (cons 'region|nil THING) at point."
+  "Return the \\=(cons \\='region|nil THING)\\=' at point."
   `(region-active-if
        (let ((ss (buffer-substring-no-properties (region-beginning)
                                                  (region-end))))
