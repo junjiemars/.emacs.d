@@ -108,15 +108,15 @@ If no region actived, then extract from buffer when BUFFER is t."
        (when (and (consp ,ss) (= 4 (length ,ss)))
          (if ,small-endian
              (logior
-              (lsh (string-to-number (nth 0 ,ss)) 24)
-              (lsh (string-to-number (nth 1 ,ss)) 16)
-              (lsh (string-to-number (nth 2 ,ss)) 8)
+              (ash (string-to-number (nth 0 ,ss)) 24)
+              (ash (string-to-number (nth 1 ,ss)) 16)
+              (ash (string-to-number (nth 2 ,ss)) 8)
               (logand (string-to-number (nth 3 ,ss)) #xff))
            (logior
             (logand (string-to-number (nth 0 ,ss)) #xff)
-            (lsh (string-to-number (nth 1 ,ss)) 8)
-            (lsh (string-to-number (nth 2 ,ss)) 16)
-            (lsh (string-to-number (nth 3 ,ss)) 24)))))))
+            (ash (string-to-number (nth 1 ,ss)) 8)
+            (ash (string-to-number (nth 2 ,ss)) 16)
+            (ash (string-to-number (nth 3 ,ss)) 24)))))))
 
 
 (defmacro int->ipv4 (n &optional small-endian)
@@ -124,15 +124,15 @@ If no region actived, then extract from buffer when BUFFER is t."
   `(when (integerp ,n)
      (if ,small-endian
          (format "%s.%s.%s.%s"
-                 (lsh (logand ,n #xff000000) -24)
-                 (lsh (logand ,n #x00ff0000) -16)
-                 (lsh (logand ,n #x0000ff00) -8)
+                 (ash (logand ,n #xff000000) -24)
+                 (ash (logand ,n #x00ff0000) -16)
+                 (ash (logand ,n #x0000ff00) -8)
                  (logand ,n #xff))
        (format "%s.%s.%s.%s"
                (logand ,n #xff)
-               (lsh (logand ,n #x0000ff00) -8)
-               (lsh (logand ,n #x00ff0000) -16)
-               (lsh (logand ,n #xff000000) -24)))))
+               (ash (logand ,n #x0000ff00) -8)
+               (ash (logand ,n #x00ff0000) -16)
+               (ash (logand ,n #xff000000) -24)))))
 
 
 (defun encode-ipv4 (&optional buffer endian)
