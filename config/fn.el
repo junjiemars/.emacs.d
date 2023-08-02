@@ -153,8 +153,7 @@ accumulate clause and Miscellaneous clause."
   (declare (indent 0))
   (let ((b (gensym*)))
     `(let ((,b (current-time)))
-       (prog1
-           (progn ,@form)
+       (prog1 (progn ,@form)
          (message "%.6fs"
                   (float-time (time-subtract (current-time) ,b)))))))
 
