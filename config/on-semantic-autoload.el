@@ -9,7 +9,8 @@
 
 (if-feature-semantic%
 
-		(defun set-semantic-cc-env! (&optional project-includes project-roots preprocessors)
+		(defun set-semantic-cc-env!
+        (&optional project-includes project-roots preprocessors)
 			"Use `semantic-mode' in`c-mode'.
 
 PROJECT-INCLUDES specify C include directories
@@ -25,7 +26,8 @@ via `semantic-lex-c-preprocessor-symbol-map'
 Use `semantic-c-describe-environment' to describe the current C environment."
 			(semantic-reset-system-include 'c-mode)
 
-			(dolist* (x (append (when-fn% 'system-cc-include nil (system-cc-include t))
+			(dolist* (x (append (when-fn% 'system-cc-include nil
+                            (system-cc-include t))
 													project-includes))
 				(semantic-add-system-include x 'c-mode))
 
@@ -35,10 +37,12 @@ Use `semantic-c-describe-environment' to describe the current C environment."
 				(global-semantic-idle-summary-mode))
 
 			(when-fn% 'semantic-ia-fast-jump 'semantic
-				(define-key semantic-mode-map (kbd "C-c , f") #'semantic-ia-fast-jump))
+				(define-key semantic-mode-map (kbd "C-c , f")
+                    #'semantic-ia-fast-jump))
 
 			(when-fn% 'semantic-ia-complete-symbol 'semantic
-				(define-key semantic-mode-map (kbd "C-c , TAB") #'semantic-ia-complete-symbol))
+				(define-key semantic-mode-map (kbd "C-c , TAB")
+                    #'semantic-ia-complete-symbol))
 
 			(setq% semantic-lex-c-preprocessor-symbol-map
 						 preprocessors 'semantic/bovine/c)))
