@@ -56,6 +56,12 @@
 ;; `multisession': where multisession variables stored
 (setq% multisession-directory (v-home! ".multisession") 'multisession)
 
+;; `nsm': Network Security Manager
+(setq% nsm-settings-file (v-home! ".nsm/security.data") 'nsm)
+
+;; `project'
+(setq% project-list-file (v-home! ".project/list") 'project)
+
 ;; Savehist: save minibuffer history
 (setq% savehist-file (v-home! ".minibuffer/history") 'savehist)
 
@@ -64,12 +70,6 @@
 
 ;; `rmail'
 (setq rmail-file-name (v-home! ".mail/RMAIL"))
-
-;; `nsm': Network Security Manager
-(setq% nsm-settings-file (v-home! ".nsm/security.data") 'nsm)
-
-;; `project'
-(setq% project-list-file (v-home! ".project/list") 'project)
 
 ;; `saveplace'
 ;; When you visit a file, point goes to the last place where it
@@ -89,6 +89,9 @@
     (if-version% > 24 'tramp
       'tramp-cache)
   (setq tramp-persistency-file-name (v-home! ".tramp/tramp")))
+
+;; `treesit-extra-load-path': where treesit first lookup
+(setq% treesit-extra-load-path (v-home! ".treesit/") 'treesit)
 
 ;; `url'
 (setq% url-configuration-directory (v-home! ".url/") 'url)
