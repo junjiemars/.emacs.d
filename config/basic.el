@@ -50,8 +50,11 @@
 ;; `ido' saved state between invocations
 (setq% ido-save-directory-list-file (v-home! ".ido/ido.last") 'ido)
 
-;; `image-dired': where thumbnail images are stored.
+;; `image-dired': where thumbnail images are stored
 (setq% image-dired-dir (v-home! ".dired/image/") 'image-dired)
+
+;; `multisession': where multisession variables stored
+(setq% multisession-directory (v-home! ".multisession") 'multisession)
 
 ;; Savehist: save minibuffer history
 (setq% savehist-file (v-home! ".minibuffer/history") 'savehist)

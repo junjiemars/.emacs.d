@@ -23,14 +23,15 @@
         (t (append (flatten (car seq)) (flatten (cdr seq))))))
 
 
-(defun take (n seq)
-  "Return a sequence of the first N items in SEQ."
-  (let ((s))
-    (while (and (> n 0) seq)
-      (setq s (cons (car seq) s)
-            n (1- n)
-            seq (cdr seq)))
-    (nreverse s)))
+(unless-fn% 'take nil
+  (defun take (n seq)
+    "Return a sequence of the first N items in SEQ."
+    (let ((s))
+      (while (and (> n 0) seq)
+        (setq s (cons (car seq) s)
+              n (1- n)
+              seq (cdr seq)))
+      (nreverse s))))
 
 
 (defun take-while (pred seq)
