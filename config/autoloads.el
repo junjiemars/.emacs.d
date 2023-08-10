@@ -16,6 +16,10 @@
 ;; `eglot': requires Emacs-29+
 (defmacro-if-feature% eglot)
 
+;; `treesit': requires Emacs-29+
+(defmacro-if-feature% treesit)
+
+
 
 (defalias '*org-babel-schemes*
   (lexical-let% ((i '()))
@@ -64,6 +68,7 @@
     (compile-unit% (emacs-home* "config/on-sql-autoload.el"))
     (compile-unit% (emacs-home* "config/on-term-autoload.el"))
     (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))
+
     (compile-unit% (emacs-home* "config/on-window-autoload.el"))))
  ;; end of `load-autoloaded-modes!'
 
@@ -190,6 +195,10 @@
         (compile-unit% (emacs-home* "config/sudoku.el") t)
       (autoload* 'sudoku (v-home%> "config/sudoku")
                  "Play sudoku." t))
+
+    ;; `treesit'
+    (if-feature-treesit%
+        (compile-unit% (emacs-home* "config/on-treesit-autoload.el")))
 
     ) ;; end of compile!
 

@@ -90,9 +90,6 @@
       'tramp-cache)
   (setq tramp-persistency-file-name (v-home! ".tramp/tramp")))
 
-;; `treesit-extra-load-path': where treesit first lookup
-(setq% treesit-extra-load-path (v-home! ".treesit/") 'treesit)
-
 ;; `url'
 (setq% url-configuration-directory (v-home! ".url/") 'url)
 
