@@ -19,8 +19,9 @@
 (when-feature-treesit%
 
  (with-eval-after-load 'treesit
-   (setq% treesit-extra-load-path `(,(v-home! ".treesit/")) 'treesit)))
+   (setq% treesit-extra-load-path `(,(v-home! ".treesit/")) 'treesit))
 
+ ) ;; end of `when-feature-treesit%'
 
 
 
