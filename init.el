@@ -3,10 +3,8 @@
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; Commentary:
-;; common notions.
-;;
-;;; Code:
+;; Commentary: common notions.
+;;;;
 
 
 (defmacro comment (&rest body)

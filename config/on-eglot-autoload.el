@@ -38,7 +38,10 @@
                 (i (search-forward-regexp r nil t)))
            (when i (buffer-substring-no-properties
                     (match-beginning 1)
-                    (match-end 1))))))))
+                    (match-end 1)))))))))
+
+
+(when-feature-eglot%
 
  (defun eglot*-set-style (&optional style indent)
    "Set the current `eglot-managed-p' buffer to use the STYLE and INDENT."
@@ -62,8 +65,10 @@
                             (or indent
                                 (buffer-local-value
                                  'c-basic-offset (current-buffer)))))
-                          (concat p ".clang-format")))))))))))
+                          (concat p ".clang-format"))))))))))))
 
+
+(when-feature-eglot%
 
  (defalias 'eglot*-server-file
    (lexical-let% ((b (v-home% ".exec/eglot-server.el"))
@@ -81,8 +86,9 @@
              ((eq op :mode)
               (save-sexp-to-file m b))
              (t b))))
-   "The `eglot-server-programs' file.")
+   "The `eglot-server-programs' file."))
 
+(when-feature-eglot%
 
  (defun eglot*-eldoc-no-builtins ()
    "Remove the builtin `eldoc' fns from `eglot--managed-mode's mode."
@@ -98,53 +104,51 @@
                   (setq completion-at-point-functions
                         (delq 'python-completion-at-point
                               completion-at-point-functions)))
-                 (t nil)))))))
+                 (t nil))))))))
 
+
+(when-feature-eglot%
 
  (with-eval-after-load 'eglot
-   (eglot*-server-file :push))
-
- ) ;; end of `when-feature-eglot%'
-
+   (eglot*-server-file :push)))
 
 
 
 
 ;;; `project'
 
-(if-feature-project%
+(when-feature-project%
 
-    (defalias 'project*-root-file
-      (lexical-let% ((b (emacs-home* "private/project-root.el"))
-                     (c '()))
-        (lambda (&optional op sexp)
-          (cond ((eq op :cache)
-                 (if sexp
-                     (catch 'rc
-                       (dolist* (s1 c)
-                         (when (string= s1 sexp)
-                           (throw 'rc s1))))
-                   c))
-                ((eq op :read)
-                 (setq c (read-sexp-from-file b)))
-                ((eq op :save)
-                 (when (setq c sexp) (save-sexp-to-file c b)))
-                (t b))))
-      "The `project-root' file."))
+ (defalias 'project*-root-file
+   (lexical-let% ((b (emacs-home* "private/project-root.el"))
+                  (c '()))
+     (lambda (&optional op sexp)
+       (cond ((eq op :cache)
+              (if sexp
+                  (catch 'rc
+                    (dolist* (s1 c)
+                      (when (string= s1 sexp)
+                        (throw 'rc s1))))
+                c))
+             ((eq op :read)
+              (setq c (read-sexp-from-file b)))
+             ((eq op :save)
+              (when (setq c sexp) (save-sexp-to-file c b)))
+             (t b))))
+   "The `project-root' file."))
 
 
 (when-feature-project%
 
  (defun project*-try-abs (dir)
    (let ((d (project*-root-file :cache dir)))
-     (when d (list 'vc 'Git d))))
+     (when d (list 'vc 'Git d)))))
 
+(when-feature-project%
 
  (with-eval-after-load 'project
    (project*-root-file :read)
-   (push! #'project*-try-abs project-find-functions))
-
- ) ;; end of `when-feature-project%'
+   (push! #'project*-try-abs project-find-functions)))
 
 
 
