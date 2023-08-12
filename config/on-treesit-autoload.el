@@ -39,7 +39,7 @@
              ((eq op :read)
               (setq m (read-sexp-from-file b)))
              ((eq op :dump)
-              (save-sexp-to-file m b))
+              (when m (save-sexp-to-file m b)))
              (t m))))
    "The \\=`treesit\\=' settings."))
 

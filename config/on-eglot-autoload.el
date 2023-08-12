@@ -12,13 +12,13 @@
 
 
 (defmacro when-feature-eglot% (&rest body)
-  "When \\=`eglot'\\=, do BODY."
+  "When \\=`eglot\\=', do BODY."
   (if-feature-eglot%
       `(progn% ,@body)))
 
 
 (defmacro when-feature-project% (&rest body)
-  "When \\=`project'\\=, do BODY."
+  "When \\=`project\\=', do BODY."
   (if-feature-project%
       `(progn% ,@body)))
 
@@ -31,7 +31,8 @@
    "Return the name of lsp-server program."
    (with-current-buffer (current-buffer)
      (when (eglot-managed-p)
-       (with-current-buffer (jsonrpc-events-buffer (eglot-current-server))
+       (with-current-buffer
+           (jsonrpc-events-buffer (eglot-current-server))
          (goto-char (point-min))
          (let* ((r (concat "\"Running language server: "
                            "\\([.-/a-zA-Z0-9_]+\\) *?.*?\""))
@@ -44,7 +45,7 @@
 (when-feature-eglot%
 
  (defun eglot*-set-style (&optional style indent)
-   "Set the current `eglot-managed-p' buffer to use the STYLE and INDENT."
+   "Set the current \\=`eglot-managed-p\\=' buffer to use the STYLE and INDENT."
    (with-current-buffer (current-buffer)
      (when (eglot-managed-p)
        (let ((p (caddr (eglot--current-project)))
@@ -70,28 +71,28 @@
 
 (when-feature-eglot%
 
- (defalias 'eglot*-server-file
+ (defalias 'eglot*-server-programs
    (lexical-let% ((b (v-home% ".exec/eglot-server.el"))
                   (m '((c-mode . ("clangd" "--header-insertion=never"))
                        (swift-mode . ("sourcekit-lsp")))))
      (lambda (&optional op sexp)
        (cond ((eq op :push)
-              (let ((s (or sexp (read-sexp-from-file b) m)))
+              (let ((s (or sexp m)))
                 (dolist* (x s)
                   (push! x eglot-server-programs))))
              ((eq op :read)
-              (read-sexp-from-file b))
+              (setq m (read-sexp-from-file b)))
              ((eq op :save)
               (when sexp (save-sexp-to-file sexp b)))
              ((eq op :dump)
-              (save-sexp-to-file m b))
-             (t b))))
-   "The \\=`eglot-server-programs'\\= file."))
+              (when m (save-sexp-to-file m b)))
+             (t m))))
+   "The \\=`eglot-server-programs\\=' cache."))
 
 (when-feature-eglot%
 
  (defun eglot*-eldoc-no-builtins ()
-   "Remove the builtin `eldoc' fns from `eglot--managed-mode's mode."
+   "Remove the builtin \\=`eldoc\\=' fns from \\=`eglot--managed-mode\\=' mode."
    (with-current-buffer (current-buffer)
      (when (eglot-managed-p)
        (let ((p (caddr (eglot--current-project)))
@@ -110,7 +111,7 @@
 (when-feature-eglot%
 
  (with-eval-after-load 'eglot
-   (eglot*-server-file :push)))
+   (eglot*-server-programs :push (eglot*-server-programs :read))))
 
  ; end of `eglot'
 
@@ -119,7 +120,7 @@
 
 (when-feature-project%
 
- (defalias 'project*-root-file
+ (defalias 'project*-root
    (lexical-let% ((b (emacs-home* "private/project-root.el"))
                   (c '()))
      (lambda (&optional op sexp)
@@ -133,21 +134,25 @@
              ((eq op :read)
               (setq c (read-sexp-from-file b)))
              ((eq op :save)
-              (when (setq c sexp) (save-sexp-to-file c b)))
-             (t b))))
-   "The `project-root' file."))
+              (when sexp (save-sexp-to-file sexp b)))
+             ((eq op :dump)
+              (when c (save-sexp-to-file c b)))
+             (t c))))
+   "The \\=`project-root\\=' cache."))
 
 
 (when-feature-project%
 
  (defun project*-try-abs (dir)
-   (let ((d (project*-root-file :cache dir)))
+   (let ((d (project*-root :cache dir)))
      (when d (list 'vc 'Git d)))))
+
 
 (when-feature-project%
 
  (with-eval-after-load 'project
-   (project*-root-file :read)
+
+   (project*-root :read)
    (push! #'project*-try-abs project-find-functions)))
 
  ; end of `project'
