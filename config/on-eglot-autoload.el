@@ -83,10 +83,10 @@
               (read-sexp-from-file b))
              ((eq op :save)
               (when sexp (save-sexp-to-file sexp b)))
-             ((eq op :mode)
+             ((eq op :dump)
               (save-sexp-to-file m b))
              (t b))))
-   "The `eglot-server-programs' file."))
+   "The \\=`eglot-server-programs'\\= file."))
 
 (when-feature-eglot%
 
@@ -112,7 +112,7 @@
  (with-eval-after-load 'eglot
    (eglot*-server-file :push)))
 
-
+ ; end of `eglot'
 
 
 ;;; `project'
@@ -150,7 +150,7 @@
    (project*-root-file :read)
    (push! #'project*-try-abs project-find-functions)))
 
-
+ ; end of `project'
 
 
 ;;; end of on-eglot-autoload.el
