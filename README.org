@@ -363,17 +363,16 @@ Introduce the rules of naming /files/ and /functions/.
 Easy to switch themes, or try a new one.
 
 #+ATTR_HTML: :style text-align:left
-The =theme='s spec locate in =(*self-env-spec* :get :theme
-:custom-theme-directory)=.
+The =theme='s spec locate in =(*self-env-spec* :get :theme :custom-theme-directory)=.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
-(*self-env-spec*
- :put :theme
- (list :name nil ;'tango-dark
-       :custom-theme-directory nil ; (emacs-home* "theme/")
-       :compile nil ;; expert option
-       :allowed nil))
+	(*self-env-spec*
+	 :put :theme
+	 (list :name nil                        ; 'tango-dark
+				 :custom-theme-directory nil      ; (emacs-home* "theme/")
+				 :compile nil                     ; expert option
+				 :allowed nil))
 #+END_SRC
 
 #+REVEAL: split
@@ -383,18 +382,6 @@ The =theme='s spec locate in =(*self-env-spec* :get :theme
   faster if you had already confirmed the theme is secure.
 - =:allowed= =t= enabled, =nil= disabled
 
-#+REVEAL: split
-#+ATTR_HTML: :style text-align:left
-Using Emacs's builtin themes /tango-dark/ :
-
-#+BEGIN_SRC emacs-lisp
-(*self-env-spec*
- :put :theme
- (list :name 'tango-dark ;; 'dracula
-       :custom-theme-directory (emacs-home* "theme/")
-       :compile nil ;; expert option
-       :allowed nil))
-#+END_SRC
 
 #+ATTR_HTML: :style display:none
 /screenshots/:
@@ -414,18 +401,18 @@ GUI mode only.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
-(*self-env-spec*
- :put :frame
- (list :initial `((width . 80)
-                  (height . 32)
-                  (font . ,(if-platform% 'darwin
-                               "Monaco-17"
-                             (if-platform% 'windows-nt
-                                 "Consolas-13"
-                               "Monaco-13"))))
-       :default nil ;; `((fullscreen . fullheight))
-       :inhibit-splash-screen nil
-       :allowed t))
+	(*self-env-spec*
+	 :put :frame
+	 (list :initial `((width . 80)
+										(height . 32)
+										(font . ,(if-platform% 'darwin
+																 "Monaco-17"
+															 (if-platform% 'windows-nt
+																	 "Consolas-13"
+																 "Monaco-13"))))
+				 :default nil                     ; `((fullscreen . fullheight))
+				 :inhibit-splash-screen nil
+				 :allowed t))
 #+END_SRC
 
 #+REVEAL: split
@@ -445,26 +432,26 @@ as [[https://en.wikipedia.org/wiki/CJK_characters][CJK]], etc., the default enco
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
-(*self-env-spec*
- :put :glyph
- `((:name ,(if-platform% 'darwin
-               "Hack"
-             (if-platform% 'windows-nt
-                 "Courier New"
-               "DejaVu Sans Mono"))
-          :size 17
-          :scale nil
-          :scripts (greek)
-          :allowed t)
-   (:name ,(if-platform% 'darwin
-               "PingFang"
-             (if-platform% 'windows-nt
-                 "Microsoft YaHei"
-               "Noto Sans"))
-          :size 12
-          :scale nil
-          :scripts (han)
-          :allowed nil)))
+	(*self-env-spec*
+	 :put :glyph
+	 `((:name ,(if-platform% 'darwin
+								 "Hack"
+							 (if-platform% 'windows-nt
+									 "Courier New"
+								 "DejaVu Sans Mono"))
+						:size 17
+						:scale nil
+						:scripts (greek)
+						:allowed t)
+		 (:name ,(if-platform% 'darwin
+								 "PingFang"
+							 (if-platform% 'windows-nt
+									 "Microsoft YaHei"
+								 "Noto Sans"))
+						:size 12
+						:scale nil
+						:scripts (han)
+						:allowed nil)))
 #+END_SRC
 
 #+REVEAL: split
@@ -497,17 +484,17 @@ The shell spec locate in =(*self-env-spec* :get :shell)=.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
-(*self-env-spec*
- :put :shell
- (list :copy-vars `("PATH")
-       :spin-vars nil                        ;; `(("ZZZ" . "123"))
-       :options '("-i" "2>/dev/null")        ;; '("--login")
-       :exec-path t
-       :shell-file-name (or (executable-find% "zsh")
-                            (executable-find% "bash"))
-       :prompt (list :zsh "%n@%m %1~ %# "
-                     :bash "\\u@\\h \\W \\$ ")
-       :allowed nil))
+	(*self-env-spec*
+	 :put :shell
+	 (list :copy-vars `("PATH")
+				 :spin-vars nil                   ; `(("ZZZ" . "123"))
+				 :options '("-i" "2>/dev/null")   ; '("--login")
+				 :exec-path t
+				 :shell-file-name (or (executable-find% "zsh")
+															(executable-find% "bash"))
+				 :prompt (list :zsh "%n@%m %1~ %# "
+											 :bash "\\u@\\h \\W \\$ ")
+				 :allowed nil))
 #+END_SRC
 
 #+REVEAL: split
@@ -534,13 +521,13 @@ shared the copied environment variables =:copy-vars= with shell.
 
 #+REVEAL: splitV
 #+BEGIN_SRC emacs-lisp
-(*self-env-spec*
- :put :eshell
- (list :visual-commands '("mtr")
-       :destroy-buffer-when-process-dies nil
-       :visual-subcommands nil ;; '(("git" "log"))
-       :visual-options nil
-       :allowed t))
+	(*self-env-spec*
+	 :put :eshell
+	 (list :visual-commands '("mtr")
+				 :destroy-buffer-when-process-dies nil
+				 :visual-subcommands nil          ; '(("git" "log"))
+				 :visual-options nil
+				 :allowed t))
 #+END_SRC
 
 #+REVEAL: split
@@ -560,15 +547,15 @@ The =desktop= spec locate in =(*self-env-spec* :get :desktop)=.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
-(*self-env-spec*
- :put :desktop
- (list :files-not-to-save
-       "\.t?gz$\\|\.zip$\\|\.desktop\\|~$\\|^/sudo:\\|^/ssh[x]?:\\|\.elc$"
-       :buffers-not-to-save "^TAGS\\|\\.log"
-       :modes-not-to-save
-       '(dired-mode fundamental-mode eww-mode rmail-mode)
-       :restore-eager 8
-       :allowed t))
+	(*self-env-spec*
+	 :put :desktop
+	 (list :files-not-to-save
+				 "\.t?gz$\\|\.zip$\\|\.desktop\\|~$\\|^/sudo:\\|^/ssh[x]?:\\|\.elc$"
+				 :buffers-not-to-save "^TAGS\\|\\.log"
+				 :modes-not-to-save
+				 '(dired-mode fundamental-mode eww-mode rmail-mode)
+				 :restore-eager 8
+				 :allowed t))
 #+END_SRC
 
 #+REVEAL: split
@@ -593,12 +580,12 @@ The =socks= spec locate in =(*self-env-spec* :get :socks)=.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
-(*self-env-spec*
- :put :socks
- (list :port 32000
-       :server "127.0.0.1"
-       :version 5
-       :allowed nil))
+	(*self-env-spec*
+	 :put :socks
+	 (list :port 32000
+				 :server "127.0.0.1"
+				 :version 5
+				 :allowed nil))
 #+END_SRC
 
 #+REVEAL: split
@@ -663,11 +650,11 @@ implement almost functionalities that =use-pacakge= does and more.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
-(*self-env-spec*
- :put :package
- (list :remove-unused nil
-       :package-check-signature 'allow-unsigned
-       :allowed t))
+	(*self-env-spec*
+	 :put :package
+	 (list :remove-unused nil
+				 :package-check-signature 'allow-unsigned
+				 :allowed t))
 #+END_SRC
 
 #+REVEAL: split
@@ -682,107 +669,107 @@ The /user defined/ package spec locate in =(*self-packages*)=.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
-(*self-packages*
- :put :basis
- (list
-  :cond t
-  :packages '(paredit rainbow-delimiters))
+	(*self-packages*
+	 :put :basis
+	 (list
+		:cond t
+		:packages '(paredit rainbow-delimiters))
 
-(*self-packages*
- :put :doc
- (list
-  :cond t
-  :packages (list (when% (executable-find% "gnuplot")
-                    'gnuplot-mode)
-                  'markdown-mode
-                  'multiple-cursors
-                  (when-version% <= 24.3 'yasnippet)
-                  'vlf)))
+	 (*self-packages*
+		:put :doc
+		(list
+		 :cond t
+		 :packages (list (when% (executable-find% "gnuplot")
+											 'gnuplot-mode)
+										 'markdown-mode
+										 'multiple-cursors
+										 (when-version% <= 24.3 'yasnippet)
+										 'vlf)))
 
-(*self-packages*
- :put :org
- (list
-  :cond t
-  :packages (flatten (list
-                      (when% (executable-find% "latex")
-                        '(auctex
-                          cdlatex))
-                      (when-version% <= 25 'ox-reveal)))))
+	 (*self-packages*
+		:put :org
+		(list
+		 :cond t
+		 :packages (flatten (list
+												 (when% (executable-find% "latex")
+													 '(auctex
+														 cdlatex))
+												 (when-version% <= 25 'ox-reveal)))))
 
-(*self-packages*
- :put :vcs
- (list
-  :cond (and (when-version% <= 24.4 t)
-             (executable-find% "git"))
-  :packages '(magit)
-  :compile `(,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
+	 (*self-packages*
+		:put :vcs
+		(list
+		 :cond (and (when-version% <= 24.4 t)
+								(executable-find% "git"))
+		 :packages '(magit)
+		 :compile `(,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
 
-(*self-packages*
- :put :docker
- (list
-  :cond (and (when-version% <= 24.4 t)
-             (executable-find% "docker"))
-  :packages '(dockerfile-mode)))
+	 (*self-packages*
+		:put :docker
+		(list
+		 :cond (and (when-version% <= 24.4 t)
+								(executable-find% "docker"))
+		 :packages '(dockerfile-mode)))
 
-(*self-packages*
- :put :scheme
- (list
-  :cond (and (when-version% <= 23.2 t)
-             (or (executable-find% "racket")
-                 (executable-find% "scheme")
-                 (executable-find% "chicken")
-                 (executable-find% "guile")))
-  :packages  '(geiser)
-  :compile `(,(compile-unit% (emacs-home* "config/use-geiser-autoload.el")))))
+	 (*self-packages*
+		:put :scheme
+		(list
+		 :cond (and (when-version% <= 23.2 t)
+								(or (executable-find% "racket")
+										(executable-find% "scheme")
+										(executable-find% "chicken")
+										(executable-find% "guile")))
+		 :packages  '(geiser)
+		 :compile `(,(compile-unit% (emacs-home* "config/use-geiser-autoload.el")))))
 
-(*self-packages*
- :put :common-lisp
- (list
-  :cond (executable-find% "sbcl")
-  :packages '(slime)
-  :compile `(,(compile-unit% (emacs-home* "config/use-slime-autoload.el")))))
+	 (*self-packages*
+		:put :common-lisp
+		(list
+		 :cond (executable-find% "sbcl")
+		 :packages '(slime)
+		 :compile `(,(compile-unit% (emacs-home* "config/use-slime-autoload.el")))))
 
-(*self-packages*
- :put :java
- (list
-  :cond (and (when-version% <= 25.1 t)
-             (executable-find% "java"))
-  :packages '(cider
-              clojure-mode
-              clojure-mode-extra-font-locking
-              kotlin-mode)
-  :compile `(,(compile-unit% (emacs-home* "config/use-cider.el") t)
-             ,(compile-unit%
-               (emacs-home* "config/use-cider-autoload.el") t))))
+	 (*self-packages*
+		:put :java
+		(list
+		 :cond (and (when-version% <= 25.1 t)
+								(executable-find% "java"))
+		 :packages '(cider
+								 clojure-mode
+								 clojure-mode-extra-font-locking
+								 kotlin-mode)
+		 :compile `(,(compile-unit% (emacs-home* "config/use-cider.el") t)
+								,(compile-unit%
+									(emacs-home* "config/use-cider-autoload.el") t))))
 
-(*self-packages*
- :put :erlang
- (list
-  :cond (executable-find% "erlc")
-  :packages (list 'erlang
-                  (when% (executable-find% "lfe")
-                    'lfe-mode))
-  :compile (list (when% (executable-find% "lfe")
-                   (compile-unit%
-                    (emacs-home* "config/use-lfe-autoload.el"))))))
+	 (*self-packages*
+		:put :erlang
+		(list
+		 :cond (executable-find% "erlc")
+		 :packages (list 'erlang
+										 (when% (executable-find% "lfe")
+											 'lfe-mode))
+		 :compile (list (when% (executable-find% "lfe")
+											(compile-unit%
+											 (emacs-home* "config/use-lfe-autoload.el"))))))
 
-(*self-packages*
- :put :lua
- (list
-  :cond (executable-find% "lua")
-  :packages '(lua-mode)
-  :compile `(,(compile-unit% (emacs-home* "config/use-lua-autoload.el")))))
+	 (*self-packages*
+		:put :lua
+		(list
+		 :cond (executable-find% "lua")
+		 :packages '(lua-mode)
+		 :compile `(,(compile-unit% (emacs-home* "config/use-lua-autoload.el")))))
 
-(*self-packages*
- :put :web
- (list
-  :cond nil
-  :packages (list 'htmlize
-                  'js2-mode
-                  (when-version% <= 25 'restclient)
-                  (when-version% <= 24.3 'skewer-mode)
-                  'web-mode
-                  'x509-mode)))
+	 (*self-packages*
+		:put :web
+		(list
+		 :cond nil
+		 :packages (list 'htmlize
+										 'js2-mode
+										 (when-version% <= 25 'restclient)
+										 (when-version% <= 24.3 'skewer-mode)
+										 'web-mode
+										 'x509-mode)))
 #+END_SRC
 
 #+REVEAL: split
@@ -812,17 +799,17 @@ Avoiding a war. If /whitespace/ causes some trouble, you can swith to
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
-  (*self-env-spec*
-   :put :edit
-   (list :tab-width 2
-         :auto-save-default nil
-         :narrow-to-region nil
-         :indent '((python-indent-offset . 4))
-         :disable-indent-tabs-mode '(c-mode-common-hook
-                                     sh-mode-hook
-                                     emacs-lisp-mode-hook)
-         :delete-trailing-whitespace '(prog-mode)
-         :allowed t))
+	(*self-env-spec*
+	 :put :edit
+	 (list :tab-width 2
+				 :auto-save-default nil
+				 :narrow-to-region nil
+				 :indent '((python-indent-offset . 4))
+				 :disable-indent-tabs-mode '(c-mode-common-hook
+																		 sh-mode-hook
+																		 emacs-lisp-mode-hook)
+				 :delete-trailing-whitespace '(prog-mode)
+				 :allowed t))
 #+END_SRC
 
 #+REVEAL: split

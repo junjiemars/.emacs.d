@@ -709,7 +709,8 @@ backwards N times if negative."
  ;; end of kill symbol/word/line
 
 
-;; Comment
+;;; Comment
+
 (defun toggle-comment (&optional n)
   "Toggle N lines' comment on current line or region."
   (interactive "p")
@@ -729,7 +730,7 @@ backwards N times if negative."
     (region-active-unless (forward-line n))
     (beginning-of-line)))
 
- ;; end of Comment
+ ; end of Comment
 
 
 (defun surround-region (&optional begin end)
@@ -780,10 +781,7 @@ If `current-prefix-arg' < 0, then repeat n time with END in reversed."
  ;; end of camelize
 
 
-;;;;
-;; Keys
-;;;;
-
+;;; Keys
 
 ;; Kill
 (define-key% (current-global-map) (kbd "C-o") #'open-next-line)
@@ -805,8 +803,9 @@ If `current-prefix-arg' < 0, then repeat n time with END in reversed."
 
 ;; Comment
 (define-key% (current-global-map) (kbd "C-x M-;") #'toggle-comment)
+(define-key% (current-global-map) (kbd "C-x ;") #'comment-indent)
 
-;;; Surround
+;; Surround
 (define-key% (current-global-map) (kbd "C-x r [") #'surround-region)
 
 
