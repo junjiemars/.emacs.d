@@ -12,7 +12,7 @@
   nil)
 
 
-(defvar *gensym-counter* 0 "The counter of `gensym*'.")
+(defvar *gensym-counter* 0 "The counter of \\=`gensym*\\='.")
 
 (defun gensym* (&optional prefix)
   "Generate a new uninterned symbol, PREFIX default is \"g\"."
@@ -22,10 +22,10 @@
                                (1+ *gensym-counter*))))))
 
 
-;; file macro
+;;; file macro
 
 (defmacro emacs-home* (&rest subdirs)
-  "Return path of SUBDIRS under `emacs-home'."
+  "Return path of SUBDIRS under \\=`emacs-home\\='."
   (declare (indent 0))
   `(concat ,(expand-file-name (if (boundp 'user-emacs-directory)
                                   user-emacs-directory
@@ -60,7 +60,7 @@
 (defmacro path! (file)
   "Make and return the path of the FILE.
 
-The FILE should be posix path, see `path-separator'."
+The FILE should be posix path, see \\=`path-separator\\='."
   (let ((f (gensym*))
         (d (gensym*)))
     `(let* ((,f ,file)
@@ -72,10 +72,10 @@ The FILE should be posix path, see `path-separator'."
        ,f)))
 
 
- ;; end basic file macro
+ ; end basic file macro
 
 
-;; versioned file macro
+;;; versioned file macro
 
 
 (defmacro v-name ()
@@ -101,30 +101,30 @@ The FILE should be posix path, see `path-separator'."
 
 
 (defmacro v-home* (file)
-  "Return versioned path of `emacs-home'/`v-path*'/FILE."
+  "Return versioned path of (emacs-home*)/(v-path*)/FILE."
   (let ((h (gensym*)))
     `(let ((,h (emacs-home* ,file)))
        (v-path* ,h))))
 
 
 (defmacro v-home% (file)
-  "Return versioned `emacs-home'/`v-path*'/FILE at compile-time."
+  "Return versioned (emacs-home*)/(v-path*)/FILE at compile-time."
   (v-home* file))
 
 
 (defmacro v-home! (file)
-  "Make versioned `emacs-home'/`v-path*'/FILE at compile-time."
+  "Make versioned (emacs-home*)/(v-path*)/FILE at compile-time."
   (path! (v-home* file)))
 
 
 
- ;; end of versioned file macro
+ ; end of versioned file macro
 
 
-;; compile-time macro
+;;; compile-time macro
 
 (defmacro progn% (&rest body)
-  "Return an `progn'ed form if BODY has more than one sexp.
+  "Return an \\=`progn\\='ed form if BODY has more than one sexp.
 
 Else return BODY sexp."
   (if (cdr body) `(progn ,@body) (car body)))
@@ -150,10 +150,10 @@ Else return BODY sexp."
   `(if% ,cond nil ,@body))
 
 
- ;; end of compile-time macro
+ ; end of compile-time macro
 
 
-;; compile macro
+;;; compile macro
 
 (defmacro if-native-comp% (then &rest else)
   "If native compilation support is built-in do THEN, else do ELSE..."
@@ -170,7 +170,7 @@ Else return BODY sexp."
 
 
 (defmacro v-home%> (&optional file)
-  "Return the `v-home*' FILE with the suffix of compiled file."
+  "Return the \\=`v-home*\\=' FILE with the suffix of compiled file."
   (concat (v-home* file) (if-native-comp% ".eln" ".elc")))
 
 
@@ -199,13 +199,13 @@ DIR where the compiled file located."
              (unless (string= ,f ,s)
                (copy-file ,f (path! ,s) t))
              (when (if-native-comp%
-                    (native-compile ,s ,c)
-                    (byte-compile-file ,s))
+                       (native-compile ,s ,c)
+                     (byte-compile-file ,s))
                (when ,delete-booster (delete-file ,s))))
 	         (when (file-exists-p ,c)
              (cond (,only-compile t)
                    (t (if-native-comp% (native-elisp-load ,c)
-                                       (load ,c))))))))))
+                        (load ,c))))))))))
 
 
 (defun clean-compiled-files ()
@@ -227,22 +227,22 @@ DIR where the compiled file located."
       (setq dirs (cdr dirs)))))
 
 
- ;; end of compile macro
+ ; end of compile macro
 
 
 
 
-;; *-version% macro
+;;; *-version% macro
 
 (defconst +emacs-version+ (string-to-number emacs-version)
-  "The version of Emacs in `float'.")
+  "The version of Emacs in \\=`float\\='.")
 
 (defmacro if-version% (cmp version then &rest else)
-  "If VERSION CMP with variable `emacs-version' is t, do THEN, else do ELSE...
+  "If VERSION CMP with variable \\=`emacs-version\\=' is t, do THEN, else do ELSE...
 
 Return the value of THEN or the value of the last of the ELSE’s.
 THEN must be one expression, but ELSE... can be zero or more expressions.
-If (CMP VERSION `emacs-version') yield nil, and there are no ELSE’s,
+If (CMP VERSION \\=`emacs-version\\=') yield nil, and there are no ELSE’s,
 the value is nil."
   (declare (indent 3))
   `(if% (,cmp ,version +emacs-version+)
@@ -251,25 +251,25 @@ the value is nil."
 
 
 (defmacro when-version% (cmp version &rest body)
-  "When VERSION CMP with variable `emacs-version' yield non-nil, do BODY."
+  "When VERSION CMP with variable \\=`emacs-version\\=' yield non-nil, do BODY."
   (declare (indent 2))
   `(if-version% ,cmp ,version (progn% ,@body)))
 
 
- ;; end of *-version% macro
+ ; end of *-version% macro
 
 
-;; *-package% macro
+;;; *-package% macro
 
 (defmacro when-package% (&rest body)
   "If Emacs support package, do BODY."
   (declare (indent 0))
   `(when-version% <= 24.1 ,@body))
 
- ;; end of *-package% macro
+ ; end of *-package% macro
 
 
-;; Boot
+;;; Boot
 
 (when-native-comp%
 
@@ -290,7 +290,7 @@ the value is nil."
   (comment (package-initialize)))
 
 
-;; After loaded ...
+;;; After loaded ...
 
 
 ;;; end of init.el
