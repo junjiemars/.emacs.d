@@ -49,25 +49,32 @@
  (defun toggle-treesit! ()
    "Toggle \\=`treesit\\=' on or off."
    (interactive)
-   (let ((on (catch 'rc
-               (let ((ss (treesit*-settings)))
-                 (dolist* (x ss)
-                   (when (some* (lambda (a)
-                                  (eq (plist-get x :map) (cdr a)))
-                                major-mode-remap-alist)
-                     (throw 'rc t)))))))
+   (let ((on (let ((ts (treesit*-settings)))
+               (some* (lambda (a)
+                        (catch 'break
+                          (dolist* (x ts)
+                            (when (eq (plist-get x :map) (cdr a))
+                              (throw 'break t)))))
+                      major-mode-remap-alist))))
      (if on
          (let ((ts (treesit*-settings)))
-           (dolist* (x ts)
-             (setq auto-mode-alist
-                   (remove-if* (lambda (a) (eq (plist-get x :map) a))
-                               auto-mode-alist
-                               :key #'cdr)
-                   major-mode-remap-alist
-                   (remove-if* (lambda (a) (eq (plist-get x :map) a))
-                               major-mode-remap-alist
-                               :key #'cdr)))
-           (setq treesit-language-source-alist nil)
+           (setq auto-mode-alist
+                 (remove-if* (lambda (a)
+                               (catch 'break
+                                 (dolist* (x ts)
+                                   (when (eq (plist-get x :map) a)
+                                     (throw 'break t)))))
+                             auto-mode-alist
+                             :key #'cdr)
+                 major-mode-remap-alist
+                 (remove-if* (lambda (a)
+                               (catch 'break
+                                 (dolist* (x ts)
+                                   (when (eq (plist-get x :map) a)
+                                     (throw 'break t)))))
+                             major-mode-remap-alist
+                             :key #'cdr)
+                 treesit-language-source-alist nil)
            (message "treesit off"))
        (let ((ts (treesit*-settings))
              (aa (copy-sequence auto-mode-alist)))
