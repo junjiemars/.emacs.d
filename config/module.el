@@ -127,11 +127,8 @@
 (defalias '*package-compile-units*
   (lexical-let% ((us '()))
     (lambda (&optional n)
-      (cond ((consp n) (let ((s n))
-                         (while s
-                           (setq us (cons (car s) us)
-                                 s (cdr s)))
-                         us))
+      (cond ((consp n) (dolist* (s n us)
+                         (setq us (cons s us))))
             (t us))))
   "Autloaded `compile-unit'.")
 
