@@ -159,10 +159,11 @@ Return absolute filename when FILENAME exists, otherwise nil."
             " else [random.randrange(0,x) for c in range(0,16)];")))
 
 
-(defun lldb-settings-init-file (dir)
-  "Make lldb's init file under DIR."
-  (save-str-to-file (lldb-init-statement)
-                    (concat dir ".lldbinit-lldb")))
+(defun lldb-settings-init-file (&optional force)
+  "Make lldb's init file if FORCE or the init file does not exists."
+  (let ((file (expand-file-name "~/.lldbinit-lldb")))
+    (when (or force (null (file-exists-p file)))
+      (save-str-to-file (lldb-init-statement) file))))
 
 
 (defun lldb-script-apropos (ss)
@@ -337,7 +338,7 @@ invoked."
                    #'gud-lldb-marker-filter
                    #'gud-lldb-find-file)
 
-  (lldb-settings-init-file default-directory)
+  (lldb-settings-init-file)
 
   (*lldb* (get-buffer (format "*gud-%s*" gud-target-name)))
 

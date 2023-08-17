@@ -1272,6 +1272,8 @@ life easy and if [[https://github.com/junjiemars/nore][Nore]] already on your ma
 
 #+ATTR_HTML: :style text-align:left
 [[https://lldb.llvm.org/][lldb]] and [[https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/][cdb]] had been perfectly integrated.
+- =gud-lldb=
+- =gud-cdb=
 
 #+ATTR_HTML: :style display:none
 /screenshots/:
