@@ -160,7 +160,7 @@ Return absolute filename when FILENAME exists, otherwise nil."
 
 
 (defun lldb-settings-init-file (&optional force)
-  "Make lldb's init file if FORCE or the init file does not exists."
+  "Make lldb's init file if FORCE or the init file is missing."
   (let ((file (expand-file-name "~/.lldbinit-lldb")))
     (when (or force (null (file-exists-p file)))
       (save-str-to-file (lldb-init-statement) file))))
