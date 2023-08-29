@@ -304,31 +304,44 @@ Optional prefix argument ENHANCED, displays additional details."
       (kbd "C-c C-z") #'sql-show-sqli-buffer*))
 
   (when-fn% 'sql-send-magic-terminator 'sql
-      ;; mysql: `:terminator'
-      (plist-put
-       (cdr (assoc** 'mysql sql-product-alist :test #'eq))
-       :terminator
-       '("^.*\\G" . ""))
+    ;; mysql: `:terminator'
+    (plist-put
+     (cdr (assoc** 'mysql sql-product-alist :test #'eq))
+     :terminator
+     '("^.*\\G" . ""))
 
-      (ad-enable-advice #'sql-send-magic-terminator 'before
-                        "sql-send-magic-terminator-before")
-      (ad-activate #'sql-send-magic-terminator t))
+    (ad-enable-advice #'sql-send-magic-terminator 'before
+                      "sql-send-magic-terminator-before")
+    (ad-activate #'sql-send-magic-terminator t))
 
   ;; oracle
   (when-sql-oracle-feature%
-    ;; replace `:list-all'
-    (when (plist-get
-           (cdr (assoc** 'oracle sql-product-alist :test #'eq))
-           :list-all)
-      (plist-put
-       (cdr (assoc** 'oracle sql-product-alist :test #'eq))
-       :list-all
-       #'sql-oracle-list-all*))
-    ;; new `:list-code'
-    (plist-put
-     (cdr (assoc** 'oracle sql-product-alist :test #'eq))
-     :list-code
-     #'sql-oracle-list-code))
+   ;; replace `:list-all'
+   (when (plist-get
+          (cdr (assoc** 'oracle sql-product-alist :test #'eq))
+          :list-all)
+     (plist-put
+      (cdr (assoc** 'oracle sql-product-alist :test #'eq))
+      :list-all
+      #'sql-oracle-list-all*))
+   ;; new `:list-code'
+   (plist-put
+    (cdr (assoc** 'oracle sql-product-alist :test #'eq))
+    :list-code
+    #'sql-oracle-list-code))
+
+
+  ;; `sql-oracle-program'
+  (setq sql-oracle-program
+        (or (executable-find% sql-oracle-program)
+            (when% (getenv "ORACLE_HOME")
+              (or (executable-find%
+                   (concat (getenv "ORACLE_HOME") "/"
+                           sql-oracle-program))
+                  (executable-find%
+                   (concat (getenv "ORACLE_HOME") "/bin/"
+                           sql-oracle-program))))
+            sql-oracle-program))
 
   ;; `sql-mysql-program'
   (setq sql-mysql-program
@@ -340,29 +353,29 @@ Optional prefix argument ENHANCED, displays additional details."
 
   ;; mysql feature
   (when-sql-mysql-feature%
-    ;; new `:desc-table'
-    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
-               :desc-table
-               #'sql-mysql-desc-table)
-    ;; new `:desc-plan'
-    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
-               :desc-plan
-               #'sql-mysql-desc-plan)
-    ;; new `:list-code'
-    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
-               :list-code
-               #'sql-mysql-list-code)
-    ;; new `:list-index'
-    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
-               :list-index
-               #'sql-mysql-list-index))
+   ;; new `:desc-table'
+   (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
+              :desc-table
+              #'sql-mysql-desc-table)
+   ;; new `:desc-plan'
+   (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
+              :desc-plan
+              #'sql-mysql-desc-plan)
+   ;; new `:list-code'
+   (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
+              :list-code
+              #'sql-mysql-list-code)
+   ;; new `:list-index'
+   (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
+              :list-index
+              #'sql-mysql-list-index))
 
   ;; features' keybindings
   (when-sql-feature%
-    (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-code)
-    (define-key% sql-mode-map (kbd "C-c C-l i") #'sql-list-index)
-    (define-key% sql-mode-map (kbd "C-c C-l T") #'sql-desc-table)
-    (define-key% sql-mode-map (kbd "C-c C-l P") #'sql-desc-plan)))
+   (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-code)
+   (define-key% sql-mode-map (kbd "C-c C-l i") #'sql-list-index)
+   (define-key% sql-mode-map (kbd "C-c C-l T") #'sql-desc-table)
+   (define-key% sql-mode-map (kbd "C-c C-l P") #'sql-desc-plan)))
 
 
  ;; end of on-sql-autoload.el
