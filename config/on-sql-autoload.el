@@ -333,23 +333,25 @@ Optional prefix argument ENHANCED, displays additional details."
 
   ;; `sql-oracle-program'
   (setq sql-oracle-program
-        (or (executable-find% sql-oracle-program)
-            (when% (getenv "ORACLE_HOME")
-              (or (executable-find%
-                   (concat (getenv "ORACLE_HOME") "/"
-                           sql-oracle-program))
-                  (executable-find%
-                   (concat (getenv "ORACLE_HOME") "/bin/"
-                           sql-oracle-program))))
-            sql-oracle-program))
+        (eval-when-compile
+          (or (executable-find% "sqlplus")
+              (when% (getenv "ORACLE_HOME")
+                (or (executable-find%
+                     (concat (getenv "ORACLE_HOME") "/"
+                             "sqlplus"))
+                    (executable-find%
+                     (concat (getenv "ORACLE_HOME") "/bin/"
+                             "sqlplus"))))
+              "sqlplus")))
 
   ;; `sql-mysql-program'
   (setq sql-mysql-program
-        (or (executable-find% sql-mysql-program)
-            (when-platform% 'darwin
-              (executable-find%
-               "/Applications/MySQLWorkbench.app/Contents/MacOS/mysql"))
-            "mysql"))
+        (eval-when-compile
+          (or (executable-find% "mysql")
+              (when-platform% 'darwin
+                (executable-find%
+                 "/Applications/MySQLWorkbench.app/Contents/MacOS/mysql"))
+              "mysql")))
 
   ;; mysql feature
   (when-sql-mysql-feature%
