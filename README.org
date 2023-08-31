@@ -1068,8 +1068,8 @@ been made.
    :END:
 
 #+ATTR_HTML: :style text-align:left
-=kill-whole-word= and =kill-whole-symbol= are frequently editing
-commands when programming.
+=kill-whole-word=, =kill-whole-symbol= and =kill-whole-sexp= are
+frequently editing commands when programming.
 
 ** Keys
    :PROPERTIES:

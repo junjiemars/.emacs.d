@@ -189,28 +189,29 @@ If prefix N is non-nil, then select the Nth symbol."
 
 If prefix N is non nil, then forward or backward N words."
   (interactive "p")
-  (let ((bounds (let ((n1 (if (not (consp current-prefix-arg))
-                              (if (or (null n) (zerop n)) 1 n)
-                            1)))
-                  (cons (save-excursion
-                          (cond ((bounds-of-thing-at-point 'word)
-                                 (cond ((> n1 0)
-                                        (forward-word)
-                                        (backward-word))
-                                       (t (backward-word)
-                                          (forward-word))))
-                                ((bounds-of-thing-at-point 'whitespace)
-                                 (cond ((> n1 0)
-                                        (forward-word)
-                                        (backward-word))
-                                       (t (backward-word)
-                                          (forward-word)))))
-                          (point))
-                        (save-excursion
-                          (if (> n1 0)
-                              (forward-word n1)
-                            (backward-word (abs n1)))
-                          (point))))))
+  (let ((bounds
+         (let ((n1 (if (not (consp current-prefix-arg))
+                       (if (or (null n) (zerop n)) 1 n)
+                     1)))
+           (cons (save-excursion
+                   (cond ((bounds-of-thing-at-point 'word)
+                          (cond ((> n1 0)
+                                 (forward-word)
+                                 (backward-word))
+                                (t (backward-word)
+                                   (forward-word))))
+                         ((bounds-of-thing-at-point 'whitespace)
+                          (cond ((> n1 0)
+                                 (forward-word)
+                                 (backward-word))
+                                (t (backward-word)
+                                   (forward-word)))))
+                   (point))
+                 (save-excursion
+                   (if (> n1 0)
+                       (forward-word n1)
+                     (backward-word (abs n1)))
+                   (point))))))
     (when bounds
       (_mark_thing@_  (goto-char (car bounds))
                       (goto-char (cdr bounds))))))
@@ -233,30 +234,29 @@ If prefix INDENT is non-nil, then mark indent line."
 If prefix N is non nil, then forward or backward N sexps.
 Otherwise, select the whole list."
   (interactive "p")
-  (let ((bounds (if current-prefix-arg
-                    (let ((n1 (if (not (consp current-prefix-arg))
-                                  (if (or (null n) (zerop n)) 1 n)
-                                1)))
-                      (cons (save-excursion
-                              (cond ((bounds-of-thing-at-point 'sexp)
-                                     (cond ((> n1 0)
-                                            (forward-sexp)
-                                            (backward-sexp))
-                                           (t (backward-sexp)
-                                              (forward-sexp))))
-                                    ((bounds-of-thing-at-point 'whitespace)
-                                     (cond ((> n1 0)
-                                            (forward-sexp)
-                                            (backward-sexp))
-                                           (t (backward-sexp)
-                                              (forward-sexp)))))
-                              (point))
-                            (save-excursion
-                              (if (> n1 0)
-                                  (forward-sexp n1)
-                                (backward-sexp (abs n1)))
-                              (point))))
-                  (bounds-of-thing-at-point 'list))))
+  (let ((bounds
+         (if current-prefix-arg
+             (let ((n1 (if (not (consp current-prefix-arg))
+                           (if (or (null n) (zerop n)) 1 n)
+                         1)))
+               (cons (save-excursion
+                       (cond ((bounds-of-thing-at-point 'sexp)
+                              (cond ((> n1 0)
+                                     (forward-sexp)
+                                     (backward-sexp))
+                                    (t (backward-sexp)
+                                       (forward-sexp))))
+                             ((bounds-of-thing-at-point 'whitespace)
+                              (cond ((> n1 0)
+                                     (forward-sexp)
+                                     (backward-sexp))
+                                    (t (backward-sexp)
+                                       (forward-sexp)))))
+                       (point))
+                     (save-excursion
+                       (forward-sexp n1)
+                       (point))))
+           (bounds-of-thing-at-point 'list))))
     (when bounds
       (_mark_thing@_ (goto-char (car bounds))
                      (goto-char (cdr bounds))))))
@@ -706,7 +706,17 @@ backwards N times if negative."
                  (point))))
 
 
- ;; end of kill symbol/word/line
+(defun kill-whole-sexp (&optional boundary)
+  "Kill current sexp.
+
+With prefix BOUNDARY, killing include BOUNDARY otherwise do not."
+  (interactive "P")
+  (let ((b (bounds-of-thing-at-point 'list)))
+    (when b (kill-region (if boundary (car b) (1+ (car b)))
+                         (if boundary (cdr b) (1- (cdr b)))))))
+
+
+ ; end of kill symbol/word/line
 
 
 ;;; Comment
@@ -789,16 +799,16 @@ If `current-prefix-arg' < 0, then repeat n time with END in reversed."
 
 (define-key% (current-global-map) (kbd "C-x M-d") #'kill-whole-word)
 (define-key% (current-global-map) (kbd "C-x M-s") #'kill-whole-symbol)
+(define-key% (current-global-map) (kbd "C-x M-e") #'kill-whole-sexp)
 (define-key% (current-global-map) (kbd "C-x M-DEL") #'kill-whole-line)
 
-;; Mark
+;;; Mark
 (define-key% (current-global-map) (kbd "C-c m s") #'mark-symbol@)
 (define-key% (current-global-map) (kbd "C-c m f") #'mark-filename@)
 (define-key% (current-global-map) (kbd "C-c m l") #'mark-line@)
 (define-key% (current-global-map) (kbd "C-c m q") #'mark-quoted@)
 (define-key% (current-global-map) (kbd "M-@") #'mark-word@)
 (define-key% (current-global-map) (kbd "C-M-@") #'mark-sexp@)
-(define-key% (current-global-map) (kbd "C-M-SPC") #'mark-sexp@)
 (define-key% (current-global-map) (kbd "C-M-h") #'mark-defun@)
 
 ;; Comment
