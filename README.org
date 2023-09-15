@@ -100,7 +100,7 @@ yourself some little Elisp (@@html:<kbd>@@C-h i m Elisp@@html:</kbd>@@).
    :CUSTOM_ID: requirements
    :END:
 
-- Emacs [22.1.1,29.1]
+- Emacs [22.2,29.1]
 - Keyboard+
 
 ** Where
