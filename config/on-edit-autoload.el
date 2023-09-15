@@ -842,7 +842,12 @@ If `current-prefix-arg' < 0, then repeat n time with END in reversed."
        (not (*self-env-spec* :get :edit :narrow-to-region)))
 
   ;; `delete-trailing-whitespace' before save
-  (add-hook 'before-save-hook #'edit-env->delete-trailing-whitespace))
+  (add-hook 'before-save-hook #'edit-env->delete-trailing-whitespace)
+
+  ;; `enable-local-variables'
+  (dolist* (x (*self-env-spec* :get :edit :enable-local-variables))
+    (safe-local-variable* x))
+  (setq% enable-local-variables :safe 'files))
 
 
  ; end of :edit env

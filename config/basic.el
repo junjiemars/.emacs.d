@@ -122,6 +122,10 @@
     `(interactive-p)))
 
 
+(eval-and-compile
+  (unless-fn% 'declare-function nil
+    (defmacro declare-function (&rest _))))
+
  ;; end of Compatible Macro
 
 
