@@ -24,7 +24,7 @@
 
 
 
-;;;; tag
+;;; tag
 
 (comment
  ;; using etags to view Emacs's source code: C and Elisp
@@ -35,10 +35,10 @@
          (setq% find-function-C-source-directory
                 (concat source-directory "src/") 'find-func))))
 
- ;; end of tag
+ ; end of tag
 
 
-;;;; org
+;;; org
 
 (comment
  (with-eval-after-load 'org
@@ -55,10 +55,10 @@
          :publishing-function org-html-publish-to-html)
         ("website" :components ("blog")))))))
 
- ;; end of org
+ ; end of org
 
 
-;;;; slime
+;;; slime
 
 (comment
  (defmacro-if-feature% slime)
@@ -66,67 +66,67 @@
      (when-fn% '*slime-source-locations* nil
        (*slime-source-locations* "<source-dir>"))))
 
- ;; end of slime
+ ; end of slime
 
 
-;;;; c/c++
+;;; c/c++
 
-(comment
- ;; if current Emacs session support `semantic-mode'
- ;; using semantic to view and editing any supported code
- ;; correctly and more faster
- (if-feature-semantic%
-     (add-hook 'semantic-mode-hook
-               #'(lambda ()
-                   (if-platform% 'windows-nt
-                       (set-semantic-cc-env!
-                        `("d:/opt/open/ecl/"
-                          "d:/opt/open/ecl/build/"
-                          "d:/opt/open/gambit/"
-                          "e:/apps/c/out/"
-                          "e:/apps/c/src/hi/"
-                          "e:/apps/c/src/io/"
-                          "e:/apps/c/src/lang/"
-                          "e:/apps/c/src/memory/"
-                          "e:/apps/c/src/posix/"
-                          ,source-directory)
-                        `("e:/apps/c/"
-                          ,source-directory))
-                     (set-semantic-cc-env!
-                      `("/opt/apps/c/out/"
-                        "/opt/apps/c/src/hi/"
-                        "/opt/apps/c/src/io/"
-                        "/opt/apps/c/src/lang/"
-                        "/opt/apps/c/src/memory/"
-                        "/opt/apps/c/src/posix/"
-                        "/opt/open/ecl/build/"
-                        "/opt/open/gambit/"
-                        "/opt/opt/open/ecl/"
-                        ,source-directory)
-                      `("/opt/apps/c/"
-                        ,source-directory))))
-               t)))
+;; (comment
+;;  ;; if current Emacs session support `semantic-mode'
+;;  ;; using semantic to view and editing any supported code
+;;  ;; correctly and more faster
+;;  (if-feature-semantic%
+;;      (add-hook 'semantic-mode-hook
+;;                #'(lambda ()
+;;                    (if-platform% 'windows-nt
+;;                        (set-semantic-cc-env!
+;;                         `("d:/opt/open/ecl/"
+;;                           "d:/opt/open/ecl/build/"
+;;                           "d:/opt/open/gambit/"
+;;                           "e:/apps/c/out/"
+;;                           "e:/apps/c/src/hi/"
+;;                           "e:/apps/c/src/io/"
+;;                           "e:/apps/c/src/lang/"
+;;                           "e:/apps/c/src/memory/"
+;;                           "e:/apps/c/src/posix/"
+;;                           ,source-directory)
+;;                         `("e:/apps/c/"
+;;                           ,source-directory))
+;;                      (set-semantic-cc-env!
+;;                       `("/opt/apps/c/out/"
+;;                         "/opt/apps/c/src/hi/"
+;;                         "/opt/apps/c/src/io/"
+;;                         "/opt/apps/c/src/lang/"
+;;                         "/opt/apps/c/src/memory/"
+;;                         "/opt/apps/c/src/posix/"
+;;                         "/opt/open/ecl/build/"
+;;                         "/opt/open/gambit/"
+;;                         "/opt/opt/open/ecl/"
+;;                         ,source-directory)
+;;                       `("/opt/apps/c/"
+;;                         ,source-directory))))
+;;                t)))
 
- ;; end of c/c++
-
-
-;;;; mail
-
-(comment
- ;; receive mail
- (require 'rmail)
- (setq rmail-primary-inbox-list '("<protocal://user:passwd@host>"))
- (setq% rmail-remote-password-required t 'rmail)
- ;; send mail
- (require 'sendmail)
- (setq send-mail-function 'smtpmail-send-it)
- (setq smtpmail-smtp-server "<smtp-server>")
- (setq smtpmail-smtp-server 587))
-
- ;; end of mail
+ ; end of c/c++
 
 
-;;;; sql
+;;; mail
+
+;; (comment
+;;  ;; receive mail
+;;  (require 'rmail)
+;;  (setq rmail-primary-inbox-list '("<protocal://user:passwd@host>"))
+;;  (setq% rmail-remote-password-required t 'rmail)
+;;  ;; send mail
+;;  (require 'sendmail)
+;;  (setq send-mail-function 'smtpmail-send-it)
+;;  (setq smtpmail-smtp-server "<smtp-server>")
+;;  (setq smtpmail-smtp-server 587))
+
+ ; end of mail
+
+
+;;; sql
 (comment
  (setq% sql-connection-alist
         '((mysql-local
@@ -150,21 +150,18 @@
            (sql-password "oracle")))
         'sql))
 
- ;; end of sql
+ ; end of sql
 
-;;;;
-;; Snippet
-;;;;
+;;; Snippet
 
 (comment
  ;; (setq yas-indent-line 'auto 'yasnippet)
  (setq% yas-snippet-dirs '("<where>") 'yasnippet))
 
- ;; end of snippet
+ ; end of snippet
 
-;;;;
-;; Web
-;;;;
+
+;;; Web
 
 (comment
  ;; httpd: M-x httpd-start
@@ -189,7 +186,7 @@
                             ("php" . "/*")
                             ("css" . "/*"))))))))
 
- ;; end of web
+ ; end of web
 
 
-;; end of file
+; end of file

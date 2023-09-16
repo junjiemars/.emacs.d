@@ -6,8 +6,7 @@
 ;; safe.el
 ;;;;
 
-
-;; always force `:safe'
+;;; default `:safe'
 (setq% enable-local-variables :safe 'files)
 
 
