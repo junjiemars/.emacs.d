@@ -426,28 +426,21 @@ Optional argument ARGS for COMMAND."
          (and (buffer-name ,buf) (kill-buffer ,buf))))))
 
 
-(defmacro executable-find% (command &optional check)
-  "Find and check COMMAND at compile time.
+(defmacro executable-find% (command &optional fn)
+  "Return the path of COMMAND at compile time.
 
-Return nil if no COMMAND found or CHECK failed."
+Return nil if no COMMAND found.
+If FN is nil then return the path, otherwise call FN with the path."
   (let ((cmd (shell-command* (if-platform% 'windows-nt
                                  "where"
                                "command -v")
                (funcall `(lambda () ,command)))))
     (when (zerop (car cmd))
       (let* ((ss (cdr cmd))
-             (ps (split-string* ss "\n" t))
-             (path (posix-path
-                    (cond ((and (consp ps) (functionp check))
-                           (catch 'check
-                             (dolist* (x ps)
-                               (when (funcall check
-                                              (shell-quote-argument
-                                               (posix-path x)))
-                                 (throw 'check x)))
-                             nil))
-                          ((consp ps) (car ps))
-                          (t ps)))))
+             (ps (string-trim> ss "\n"))
+             (path (if fn
+                       (funcall fn (shell-quote-argument ps))
+                     (posix-path ps))))
         `,path))))
 
 
