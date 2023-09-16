@@ -175,7 +175,7 @@ Else return BODY sexp."
 
 
 (defmacro compile-and-load-file*
-    (file &optional only-compile delete-booster dir)
+    (file &optional only-compile dir)
   "Compile FILE.
 
 If ONLY-COMPILE is t, does not load compiled file.
@@ -198,10 +198,9 @@ DIR where the compiled file located."
                      (file-newer-than-file-p ,f ,c))
              (unless (string= ,f ,s)
                (copy-file ,f (path! ,s) t))
-             (when (if-native-comp%
-                       (native-compile ,s ,c)
-                     (byte-compile-file ,s))
-               (when ,delete-booster (delete-file ,s))))
+             (if-native-comp%
+                 (native-compile ,s ,c)
+               (byte-compile-file ,s)))
 	         (when (file-exists-p ,c)
              (cond (,only-compile t)
                    (t (if-native-comp% (native-elisp-load ,c)
@@ -281,7 +280,6 @@ the value is nil."
 
 (compile-and-load-file* (emacs-home* "config/boot.el")
                         nil ;; compile-option
-                        nil ;; delete-booster
                         (v-home* "config/"))
 
 
@@ -290,7 +288,7 @@ the value is nil."
   (comment (package-initialize)))
 
 
-;;; After loaded ...
+; After loaded ...
 
 
-;;; end of init.el
+; end of init.el
