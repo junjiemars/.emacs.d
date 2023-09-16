@@ -172,6 +172,11 @@ accumulate clause and Miscellaneous clause."
     `(progn ,@vars nil)))
 
 
+(defun true (&rest x)
+  "Return true value ignore X."
+  (progn% (ignore* x) t))
+
+
 (defmacro defmacro-if-feature% (feature &optional docstring)
   "Define if-FEATURE% compile-time macro.
 
@@ -302,7 +307,7 @@ Optional argument TRIM regexp used to trim."
            (split-string ,s ,p ,omit-nulls))))))
 
 
- ;; end of Strings
+ ; end of Strings
 
 
 (defmacro save-sexp-to-file (sexp file)
@@ -369,10 +374,10 @@ Returns the name of FILE when successed otherwise nil."
              (and (buffer-name ,b) (kill-buffer ,b))))))))
 
 
- ;; end of Files
+ ; end of Files
 
 
-;; Platform Related Functions
+;;; Platform Related Functions
 
 
 (defmacro posix-path (path)
@@ -446,7 +451,7 @@ Return nil if no COMMAND found or CHECK failed."
         `,path))))
 
 
- ;; end of Platform Related Functions
+ ; end of Platform Related Functions
 
 
 

@@ -7,26 +7,21 @@
 ;;;;
 
 
-(defun toggle-enable-local-variables (&optional what)
-  "Toggle \\=`local-enable-local-variables\\=' to WHAT."
-  (interactive
-   (list (when current-prefix-arg
-           (read-string (format "Choose (%s) "
-                                (mapconcat #'symbol-name
-                                           '(t :safe :all)
-                                           "|"))))))
-  (setq local-enable-local-variables (and (stringp what)
-                                          (intern what))))
+;; always force `:safe'
+(setq% enable-local-variables :safe 'files)
 
 
-;;; It's buggy.
-;; (when (*self-env-spec* :get :edit :allowed)
-;;   ;; default `local-enable-local-variables'
-;;   (setq local-enable-local-variables
-;;         (*self-env-spec* :get :edit :local-enable-local-variables)))
+(defmacro safe-local-variable* (var &optional fn)
+  "Safe local VAR with FN, see \\=`enable-local-variables\\='"
+  `(put ,var 'safe-local-variable (or ,fn #'true)))
 
+
+;;; `safe-local-variable'
+(when (*self-env-spec* :get :edit :allowed)
+  (dolist* (x (*self-env-spec* :get :edit :safe-local-variable))
+    (safe-local-variable* x)))
 
 
 (provide 'safe)
 
-;; end of safe.el
+; end of safe.el

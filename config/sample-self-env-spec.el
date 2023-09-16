@@ -130,7 +130,7 @@
        :auto-save-default nil
        :indent '((sh-basic-offset . 2)
                  (python-indent-offset . 4))
-			 :enable-local-variables '(indent-tabs major-mode)
+			 :safe-local-variable '(major-mode)
        :disable-indent-tabs-mode '(c-mode-common-hook
                                    sh-mode-hook
                                    emacs-lisp-mode-hook

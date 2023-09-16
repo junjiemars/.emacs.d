@@ -8,14 +8,14 @@
 
 
 
-;; `load-path' versioned dirs
+;;; `load-path' versioned dirs
 (push! (v-home% "config/") load-path)
 (push! (v-home% "private/") load-path)
 
 
 
 
-;; Versioned Dirs: .*
+;;; Versioned Dirs: .*
 
 
 ;; `abbrev'
@@ -468,12 +468,6 @@ otherwise do ELSE..."
             (define-key ,keymap ,key ,def)))
 
  ;; End of key macro
-
-
-(defmacro safe-local-variable* (var)
-  "Safe local VAR in -*- line, see \\=`enable-local-variables\\='"
-  `(put ,var 'safe-local-variable
-        (lambda (x) (ignore* x) t)))
 
 
 (defmacro symbol@ (&optional thing)
