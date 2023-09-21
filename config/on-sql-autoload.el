@@ -210,7 +210,7 @@ Optional prefix argument ENHANCED, displays additional details."
                " TRIMOUT ON TAB OFF TIMING OFF FEEDBACK OFF"))
       (sql-redirect
        sqlbuf
-       (if enhanced enhanced-sql simple-sql)
+       (if enhanced simple-sql simple-sql)
        outbuf)
       (sql-oracle-restore-settings sqlbuf settings))))
 
