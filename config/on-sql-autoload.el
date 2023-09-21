@@ -201,17 +201,17 @@ Optional prefix argument ENHANCED, displays additional details."
     (let ((settings (sql-oracle-save-settings sqlbuf))
           (simple-sql
            (concat
-            "SELECT text FROM all_source"
-            (format " WHERE name = '%s'" target)
-            " ORDER BY line;"))
-          (enhanced-sql nil))
-      (sql-redirect sqlbuf
-                    (if enhanced enhanced-sql simple-sql)
-                    outbuf)
+            "SELECT DBMS_METADATA.GET_DDL("
+            (format "'TABLE','%s') FROM DUAL;"
+                    (upcase target)))))
       (sql-redirect
        sqlbuf
-       (concat "SET LINESIZE 80 PAGESIZE 50000 TRIMOUT ON"
-               " TAB OFF TIMING OFF FEEDBACK OFF"))
+       (concat "SET LINESIZE 80 LONG 809600 PAGESIZE 0"
+               " TRIMOUT ON TAB OFF TIMING OFF FEEDBACK OFF"))
+      (sql-redirect
+       sqlbuf
+       (if enhanced enhanced-sql simple-sql)
+       outbuf)
       (sql-oracle-restore-settings sqlbuf settings))))
 
 
