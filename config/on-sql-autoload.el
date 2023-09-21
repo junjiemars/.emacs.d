@@ -199,18 +199,24 @@ Optional prefix argument ENHANCED, displays additional details."
   (defun sql-oracle-list-code (sqlbuf outbuf enhanced target)
     "List code of oracle's TARGET."
     (let ((settings (sql-oracle-save-settings sqlbuf))
-          (simple-sql
-           (concat
-            "SELECT DBMS_METADATA.GET_DDL("
-            (format "'TABLE','%s') FROM DUAL;"
-                    (upcase target)))))
+					(ts (or (and enhanced
+											 (let ((p (string-match
+																 " "
+																 (string-trim>< target))))
+												 (when (and p (> p 0))
+													 (cons (substring target 0 p)
+																 (substring target p)))))
+									(cons "TABLE" target)))
+					(sql (concat
+								"SELECT DBMS_METADATA.GET_DDL('%s','%s')"
+								" FROM DUAL;")))
       (sql-redirect
        sqlbuf
        (concat "SET LINESIZE 80 LONG 809600 PAGESIZE 0"
                " TRIMOUT ON TAB OFF TIMING OFF FEEDBACK OFF"))
       (sql-redirect
        sqlbuf
-       (if enhanced simple-sql simple-sql)
+       (format sql (car ts) (upcase (cdr ts)))
        outbuf)
       (sql-oracle-restore-settings sqlbuf settings))))
 
@@ -265,14 +271,10 @@ Optional prefix argument ENHANCED, displays additional details."
 
   (defun sql-mysql-list-code (sqlbuf outbuf enhanced target)
     "List code of mysql's TARGET."
-    (let ((simple-sql
-           (concat
-            "SHOW CREATE"
-            (format " %s\\G" target)))
-          (enhanced-sql nil))
-      (sql-redirect sqlbuf
-                    (if enhanced enhanced-sql simple-sql)
-                    outbuf))))
+		(let ((sql (concat
+								"SHOW CREATE"
+								(format " %s\\G" (if enhanced target target)))))
+			(sql-redirect sqlbuf sql outbuf))))
 
 
 (when-sql-mysql-feature%
