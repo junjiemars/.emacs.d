@@ -655,7 +655,7 @@ Optional argument MODE `major-mode'."
  ;; end of Sorting
 
 
-;;; Kill word/symbol/line
+;;; Kill word/symbol/sexp
 
 (defun kill-whole-word (&optional n)
   "Kill current word.
@@ -705,7 +705,7 @@ With prefix BOUNDARY, killing include BOUNDARY otherwise do not."
                          (if boundary (cdr b) (1- (cdr b)))))))
 
 
- ; end of kill symbol/word/line
+ ; end of kill symbol/word/sexp
 
 
 ;;; Comment
@@ -783,30 +783,31 @@ If `current-prefix-arg' < 0, then repeat n time with END in reversed."
 ;;; Keys
 
 ;; Kill
-(define-key% (current-global-map) (kbd "C-o") #'open-next-line)
-(define-key% (current-global-map) (kbd "C-M-o") #'open-previous-line)
-
-(define-key% (current-global-map) (kbd "C-x M-d") #'kill-whole-word)
-(define-key% (current-global-map) (kbd "C-x M-s") #'kill-whole-symbol)
-(define-key% (current-global-map) (kbd "C-x M-e") #'kill-whole-sexp)
+(define-key (current-global-map) (kbd "C-o") #'open-next-line)
+(define-key (current-global-map) (kbd "C-M-o") #'open-previous-line)
+(define-key (current-global-map) (kbd "C-x M-d") #'kill-whole-word)
+(define-key (current-global-map) (kbd "C-x M-s") #'kill-whole-symbol)
+(define-key (current-global-map) (kbd "C-x M-e") #'kill-whole-sexp)
 (define-key% (current-global-map) (kbd "C-x M-DEL") #'kill-whole-line)
 
-;;; Mark
-(define-key% (current-global-map) (kbd "C-c m s") #'mark-symbol@)
-(define-key% (current-global-map) (kbd "C-c m f") #'mark-filename@)
-(define-key% (current-global-map) (kbd "C-c m l") #'mark-line@)
-(define-key% (current-global-map) (kbd "C-c m q") #'mark-quoted@)
-(define-key% (current-global-map) (kbd "M-@") #'mark-word@)
-(define-key% (current-global-map) (kbd "C-M-@") #'mark-sexp@)
-(define-key% (current-global-map) (kbd "C-M-h") #'mark-defun@)
+;; Mark
+(define-key (current-global-map) (kbd "C-c m s") #'mark-symbol@)
+(define-key (current-global-map) (kbd "C-c m f") #'mark-filename@)
+(define-key (current-global-map) (kbd "C-c m l") #'mark-line@)
+(define-key (current-global-map) (kbd "C-c m q") #'mark-quoted@)
+(define-key (current-global-map) (kbd "M-@") #'mark-word@)
+(define-key (current-global-map) (kbd "C-M-SPC") #'mark-sexp@)
+(define-key% (current-global-map) (kbd "C-M-@") #'mark-sexp)
+(define-key (current-global-map) (kbd "C-M-h") #'mark-defun@)
 
 ;; Comment
-(define-key% (current-global-map) (kbd "C-x M-;") #'toggle-comment)
+(define-key (current-global-map) (kbd "C-x M-;") #'toggle-comment)
 (define-key% (current-global-map) (kbd "C-x ;") #'comment-indent)
 
 ;; Surround
 (define-key% (current-global-map) (kbd "C-x r [") #'surround-region)
 
+ ; end of Keys
 
 ;;; :edit env
 

@@ -49,7 +49,7 @@
            (if-feature-magit% #'magit-status #'vc-dir))
           (t #'vc-dir))))
 
- ;; load
+ ;; general `vc-dir*' keybind
  (with-eval-after-load 'vc
    (define-key (current-global-map) (kbd "C-x v d") #'vc-dir*)))
 
