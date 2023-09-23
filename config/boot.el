@@ -5,8 +5,7 @@
 ;;;;
 ;;; Commentary:
 ;;; boot compiled elisp files and modules in order.
-;;
-;;; Code:
+;;;;
 
 (defmacro nore-emacs ()
   "Nore Emacs git repo."
@@ -25,9 +24,9 @@
 ;;                (require 'cl-lib)
 ;;     (require 'cl)))
 
-;;;;
+;;;
 ;; *-lexical macro
-;;;;
+;;;
 
 (defmacro if-lexical% (then &rest else)
   "If Emacs supports lexical binding do THEN, otherwise do ELSE..."
@@ -76,11 +75,11 @@
        (lexical-let* ,varlist ,@body))))
 
 
- ;; end of *-lexical% macro
+ ; end of *-lexical% macro
 
-;;;;
+;;;
 ;; *-graphic% macro
-;;;;
+;;;
 
 (defmacro if-graphic% (then &rest else)
   "If in graphic mode, do THEN, else do ELSE...
@@ -103,12 +102,12 @@ Return the value of THEN or the value of the last of the ELSE’s."
   (declare (indent 0))
   `(if-graphic% nil ,@body))
 
- ;; end of *-graphic% macro
+ ; end of *-graphic% macro
 
 
-;;;;
+;;;
 ;; *-platform% macro
-;;;;
+;;;
 
 (defmacro if-platform% (os then &rest else)
   "If OS eq `system-type' yield non-nil, do THEN, else do ELSE..."
@@ -129,12 +128,12 @@ Return the value of THEN or the value of the last of the ELSE’s."
   (declare (indent 1))
   `(if-platform% ,os nil ,@body))
 
- ;; end of if-platform% macro
+ ; end of if-platform% macro
 
 
-;;;;
+;;;
 ;; fn compile-time checking macro
-;;;;
+;;;
 
 (defmacro if-fn% (fn feature then &rest else)
   "If FN is bounded yield non-nil, do THEN, else do ELSE...
@@ -163,14 +162,12 @@ Argument FEATURE that FN dependent on, be loaded at compile time."
   `(if-fn% ,fn ,feature nil ,@body))
 
 
+ ; end of fn compile-time checking macro
 
 
- ;; end of fn compile-time checking macro
-
-
-;;;;
+;;;
 ;; var compile-time checking macro
-;;;;
+;;;
 
 (defmacro setq% (x val &optional feature)
   "Set X to the value of VAL when X is bound.
@@ -206,9 +203,7 @@ Argument FEATURE that VAR dependent on, load at compile time."
   `(if-var% ,var ,feature nil (progn% ,@body)))
 
 
- ;; end of var compile-time checking macro
-
-
+ ; end of var compile-time checking macro
 
 
 ;;; Preferred coding system
@@ -236,12 +231,12 @@ Optional argument BODY"
        ,@(cdr (cdr spec)))))
 
 
- ;; end of Preferred
+ ; end of Preferred
 
 
-;;;;
+;;;
 ;; compile macro
-;;;;
+;;;
 
 (defmacro compile-unit* (file &optional only-compile)
   "Make an compile unit.
@@ -288,11 +283,11 @@ Optional argument ONLY-COMPILE: see `compile-and-load-file*'."
 			 (compile-unit->dir u)))))
 
 
- ;; end of compile macro
+ ; end of compile macro
 
-;;;;
+;;;
 ;; self-spec macro
-;;;;
+;;;
 
 
 (defmacro self-spec-> (seq &rest keys)
@@ -387,7 +382,7 @@ No matter the declaration order, the executing order is:
      (when (*self-env-spec* :get :package :allowed)
        ,@body)))
 
- ;; end of self-spec macro
+ ; end of self-spec macro
 
 
 ;; disable package initialize
@@ -417,4 +412,4 @@ No matter the declaration order, the executing order is:
 
 (provide 'boot)
 
-; end of boot.el
+ ; end of boot.el
