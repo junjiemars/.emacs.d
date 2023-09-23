@@ -69,7 +69,8 @@
     (compile-unit% (emacs-home* "config/on-sql-autoload.el"))
     (compile-unit% (emacs-home* "config/on-term-autoload.el"))
     (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))
-
+    (compile-unit% (emacs-home* "config/on-transient-autoload.el"))
+    (compile-unit% (emacs-home* "config/on-vc-autoload.el"))
     (compile-unit% (emacs-home* "config/on-window-autoload.el"))))
  ;; end of `load-autoloaded-modes!'
 

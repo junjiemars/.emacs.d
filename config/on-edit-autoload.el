@@ -5,24 +5,13 @@
 ;;;;
 ;; on-edit-autoload.el
 ;;;;
-;;; Commentary:
-;;
-
-;;; Code:
-
-(unless-graphic%
-  ;; above version 23 transient-mark-mode is enabled by default
-  (when-version% > 23 (transient-mark-mode t))
-  ;; fix some terminal theme confused with background and foreground.
-  (set-face-background 'region "white")
-  (set-face-foreground 'region "black"))
 
 
 ;; No cursor blinking, it's distracting
 (when-fn% 'blink-cursor-mode nil (blink-cursor-mode 0))
 
 
-;; Full path in title bar
+;; Title bar with full path
 (when-graphic%
   (setq% frame-title-format "%b (%f)"))
 
@@ -850,4 +839,5 @@ If `current-prefix-arg' < 0, then repeat n time with END in reversed."
 
 (provide 'on-edit-autoload)
 
-;;; on-edit-autoload.el ends here
+
+ ; end of on-edit-autoload.el
