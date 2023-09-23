@@ -80,10 +80,6 @@
 ;; `server'
 (setq% server-auth-dir (v-home! ".server/") 'server)
 
-;; `semantic'
-(when-var% semanticdb-default-save-directory 'semantic/db-file
-  (setq semanticdb-default-save-directory (v-home! ".semantic/db/")))
-
 ;; `tramp'
 (when-var% tramp-persistency-file-name
     (if-version% > 24 'tramp
@@ -404,7 +400,6 @@ otherwise default to keep the directories of current \\=`emacs-version\\='."
                     `,(emacs-home* ".places/")
                     `,(emacs-home* ".recentf/")
                     `,(emacs-home* ".save/")
-                    `,(emacs-home* ".semantic/")
                     `,(emacs-home* ".server/")
                     `,(emacs-home* ".tags/")
                     `,(emacs-home* ".tramp/")

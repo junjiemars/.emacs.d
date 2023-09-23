@@ -21,7 +21,7 @@
 ;; eww as default browser
 ;; (if-feature-eww% (toggle-browser! t)))
 
-
+ ; end of eww
 
 
 ;;; tag
@@ -68,48 +68,6 @@
 
  ; end of slime
 
-
-;;; c/c++
-
-;; (comment
-;;  ;; if current Emacs session support `semantic-mode'
-;;  ;; using semantic to view and editing any supported code
-;;  ;; correctly and more faster
-;;  (if-feature-semantic%
-;;      (add-hook 'semantic-mode-hook
-;;                #'(lambda ()
-;;                    (if-platform% 'windows-nt
-;;                        (set-semantic-cc-env!
-;;                         `("d:/opt/open/ecl/"
-;;                           "d:/opt/open/ecl/build/"
-;;                           "d:/opt/open/gambit/"
-;;                           "e:/apps/c/out/"
-;;                           "e:/apps/c/src/hi/"
-;;                           "e:/apps/c/src/io/"
-;;                           "e:/apps/c/src/lang/"
-;;                           "e:/apps/c/src/memory/"
-;;                           "e:/apps/c/src/posix/"
-;;                           ,source-directory)
-;;                         `("e:/apps/c/"
-;;                           ,source-directory))
-;;                      (set-semantic-cc-env!
-;;                       `("/opt/apps/c/out/"
-;;                         "/opt/apps/c/src/hi/"
-;;                         "/opt/apps/c/src/io/"
-;;                         "/opt/apps/c/src/lang/"
-;;                         "/opt/apps/c/src/memory/"
-;;                         "/opt/apps/c/src/posix/"
-;;                         "/opt/open/ecl/build/"
-;;                         "/opt/open/gambit/"
-;;                         "/opt/opt/open/ecl/"
-;;                         ,source-directory)
-;;                       `("/opt/apps/c/"
-;;                         ,source-directory))))
-;;                t)))
-
- ; end of c/c++
-
-
 ;;; mail
 
 ;; (comment
@@ -152,7 +110,7 @@
 
  ; end of sql
 
-;;; Snippet
+;;; snippet
 
 (comment
  ;; (setq yas-indent-line 'auto 'yasnippet)
@@ -161,7 +119,7 @@
  ; end of snippet
 
 
-;;; Web
+;;; web
 
 (comment
  ;; httpd: M-x httpd-start
@@ -189,4 +147,4 @@
  ; end of web
 
 
-; end of file
+ ; end of sample-self-epilogue.el

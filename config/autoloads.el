@@ -7,9 +7,6 @@
 ;;;;
 
 
-;; semantic, require Emacs-24.4+
-(defmacro-if-feature% semantic)
-
 ;; default web browser: eww, requires Emacs-24.4+
 (defmacro-if-feature% eww)
 
@@ -184,13 +181,6 @@
     ;;                (v-home%> "config/ob-schemes")
     ;;                "Autoload `org-babel-execute:scheme*'." t)
     ;;     (fset 'org-babel-execute:scheme 'org-babel-execute:scheme*)))
-
-    ;; `semantic-mode'
-    (if-feature-semantic%
-        (progn
-          (autoload 'set-semantic-cc-env!
-            (v-home%> "config/on-semantic-autoload"))
-          (compile-unit% (emacs-home* "config/on-semantic-autoload.el"))))
 
     ;; Sudoku
     (prog1
