@@ -29,6 +29,7 @@
     ("tex" . (:msg
               "\\documentclass{article}
 \\title{Nore Emacs: *scratch-tex*}
+\\usepackage{amsmath}
 \\begin{document}
 \\maketitle
 
