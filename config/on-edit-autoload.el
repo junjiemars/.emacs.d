@@ -700,9 +700,23 @@ backwards N times if negative."
 
 With prefix BOUNDARY, killing include BOUNDARY otherwise do not."
   (interactive "P")
-  (let ((b (bounds-of-thing-at-point 'list)))
-    (when b (kill-region (if boundary (car b) (1+ (car b)))
-                         (if boundary (cdr b) (1- (cdr b)))))))
+  (let ((bs (bounds-of-thing-at-point 'list)))
+    (when bs
+      (kill-region
+       (let ((lhs (car bs)))
+         (if boundary
+             lhs
+           (+ lhs (save-excursion
+                    (goto-char lhs)
+                    (skip-syntax-forward "'([{")))))
+       (let ((rhs (cdr bs)))
+         (if boundary
+             rhs
+           (+ rhs (save-excursion
+                    (goto-char rhs)
+                    (save-excursion
+                      (if (<= (skip-syntax-backward ")]}") -1)
+                          -1 0))))))))))
 
 
  ; end of kill symbol/word/sexp
