@@ -21,11 +21,10 @@
 
   (defvar *vc-frontend*
     `("*" ,(if-feature-magit% "magit"))
-    "The fontend of VC.")
+    "The fontends of VC.")
 
-
-   (defvar *vc-history* nil
-    "The choosing history of VC."))
+   (defvar *vc-frontend-history* nil
+    "The VC frontend choosing history list."))
 
 
 (when-feature-vc%
@@ -34,15 +33,13 @@
    "Show the VC status."
    (interactive
     (list (if current-prefix-arg
-              (read-string (format "Choose (%s) "
-                                   (mapconcat #'identity
-                                              *vc-frontend*
-                                              "|"))
-                           (or (car *vc-history*)
-                               (car *vc-frontend*))
-                           '*vc-history*)
+              (completing-read
+               (format "Choose (%s) " (mapconcat #'identity
+                                                 *vc-frontend*
+                                                 "|"))
+               *vc-frontend* nil nil (car *vc-frontend-history*)
+               '*vc-frontend-history* (car *vc-frontend*))
             (car *vc-frontend*))))
-
    (call-interactively
     (cond ((string= "*" frontend) #'vc-dir)
           ((string= "magit" frontend)

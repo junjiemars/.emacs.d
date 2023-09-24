@@ -7,11 +7,12 @@
 ;;;;
 
 
-(defvar *scratch-kinds*
+(defvar *scratch-recipe*
   `(("*" . (:msg ,(substitute-command-keys initial-scratch-message)
                  :mod ,(lambda () (lisp-interaction-mode))))
     ("org" . (:msg
-              "#+title: Nore Emacs: *scratch-org*
+              "#+title: Scratch Org
+#+author: Nore Emacs
 
 * scratch
 	:PROPERTIES:
@@ -28,7 +29,8 @@
                       (forward-line 8))))
     ("tex" . (:msg
               "\\documentclass{article}
-\\title{Nore Emacs: *scratch-tex*}
+\\title{Scratch Tex}
+\\author{Nore Emacs}
 \\usepackage{amsmath}
 \\begin{document}
 \\maketitle
@@ -41,33 +43,34 @@
               :pos ,(lambda ()
                       (goto-char (point-min))
                       (forward-line 5)))))
-  "Kinds of scratch.")
+  "The recipes of scratch.")
 
 
-(defvar *scratch-history* nil
-  "Scrach choosing history list.")
+(defvar *scratch-recipe-history* nil
+  "The scratch recipe choosing history list.")
 
 
-(defun scratch (&optional kind)
-  "New a *scratch* buffer by KIND or switch to the existing one."
+(defun scratch (&optional recipe)
+  "New a *scratch* buffer by RECIPE or switch to the existing one."
   (interactive
    (list (if current-prefix-arg
-             (read-string (format "Choose (%s) "
-                                  (mapconcat #'identity
-                                             (mapcar #'car *scratch-kinds*)
-                                             "|"))
-                          (or (car *scratch-history*)
-                              (caar *scratch-kinds*))
-                          '*scratch-history*)
-           (caar *scratch-kinds*))))
+             (completing-read
+              (format "Choose (%s) "
+                      (mapconcat #'identity
+                                 (mapcar #'car *scratch-recipe*)
+                                 "|"))
+              (mapcar #'car *scratch-recipe*)
+              nil nil (car *scratch-recipe-history*)
+              '*scratch-recipe-history* (caar *scratch-recipe*))
+           (caar *scratch-recipe*))))
   (switch-to-buffer
-   (let ((n (format "*%s*" (if (string= "*" kind)
+   (let ((n (format "*%s*" (if (string= "*" recipe)
                                "scratch"
-                             (concat "scratch-" kind)))))
+                             (concat "scratch-" recipe)))))
      (or (get-buffer n)
          (with-current-buffer (get-buffer-create n)
            (when (zerop (buffer-size))
-             (let ((k (cdr (assoc** kind *scratch-kinds* :test #'string=))))
+             (let ((k (cdr (assoc** recipe *scratch-recipe* :test #'string=))))
                (insert (substring-no-properties (plist-get k :msg)))
                (funcall (plist-get k :mod))
                (when (plist-get k :pos)
