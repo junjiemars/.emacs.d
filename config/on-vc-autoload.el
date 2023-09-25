@@ -44,11 +44,7 @@
     (cond ((string= "*" frontend) #'vc-dir)
           ((string= "magit" frontend)
            (if-feature-magit% #'magit-status #'vc-dir))
-          (t #'vc-dir))))
-
- ;; general `vc-dir*' keybind
- (with-eval-after-load 'vc
-   (define-key (current-global-map) (kbd "C-x v d") #'vc-dir*)))
+          (t #'vc-dir)))))
 
 
  ; end of on-vc-autoload.el
