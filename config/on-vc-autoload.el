@@ -14,7 +14,8 @@
 (defmacro when-feature-vc% (&rest body)
   "When \\=`vc\\=', do BODY."
   (if-feature-vc%
-      `(progn% ,@body)))
+      (when-fn% 'vc-dir 'vc-dir
+        `(progn% ,@body))))
 
 
 (when-feature-vc%
@@ -45,6 +46,13 @@
           ((string= "magit" frontend)
            (if-feature-magit% #'magit-status #'vc-dir))
           (t #'vc-dir)))))
+
+
+(when-feature-vc%
+ (with-eval-after-load 'vc
+
+   ;; general `vc-dir*' keybind
+   (define-key% (current-global-map) (kbd "C-x v d") #'vc-dir*)))
 
 
  ; end of on-vc-autoload.el

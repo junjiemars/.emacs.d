@@ -243,10 +243,7 @@
   (define-key% (current-global-map) (kbd "C-c s r") #'reverse-region)
   (define-key% (current-global-map) (kbd "C-c s d") #'delete-duplicate-lines)
 
-  ;; VC
-  (define-key% (current-global-map) (kbd "C-x v d") #'vc-dir*)
-
-  ) ;; end of set-global-keys!
+  ) ; end of set-global-keys!
 
 
 ;; after-init
