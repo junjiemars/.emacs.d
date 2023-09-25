@@ -238,10 +238,7 @@ Optional prefix argument ENHANCED, displays additional details."
        (concat "SET LINESIZE 100 PAGESIZE 100"
                " VERIFY OFF FEEDBACK OFF"
                " TRIMOUT ON TAB OFF TIMING OFF"))
-      (sql-redirect
-       sqlbuf
-       sql
-       outbuf)
+      (sql-redirect sqlbuf sql outbuf)
       (sql-oracle-restore-settings sqlbuf settings))))
 
  ; end of oracle
