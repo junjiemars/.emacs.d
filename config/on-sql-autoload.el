@@ -212,7 +212,7 @@ Optional prefix argument ENHANCED, displays additional details."
 								" FROM DUAL;")))
       (sql-redirect
        sqlbuf
-       (concat "SET LINESIZE 80 LONG 409600 LONGCHUNKSIZE 409600"
+       (concat "SET LINESIZE 80 LONG 4096000 LONGCHUNKSIZE 4096000"
                " PAGESIZE 0 VERIFY OFF"
                " TRIMOUT ON TAB OFF TIMING OFF FEEDBACK OFF"))
       (sql-redirect
