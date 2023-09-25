@@ -212,7 +212,8 @@ Optional prefix argument ENHANCED, displays additional details."
 								" FROM DUAL;")))
       (sql-redirect
        sqlbuf
-       (concat "SET LINESIZE 80 LONG 809600 PAGESIZE 0"
+       (concat "SET LINESIZE 80 LONG 409600 LONGCHUNKSIZE 409600"
+               " PAGESIZE 0 VERIFY OFF"
                " TRIMOUT ON TAB OFF TIMING OFF FEEDBACK OFF"))
       (sql-redirect
        sqlbuf
@@ -221,7 +222,29 @@ Optional prefix argument ENHANCED, displays additional details."
       (sql-oracle-restore-settings sqlbuf settings))))
 
 
- ;; end of oracle
+(when-sql-oracle-feature%
+
+  (defun sql-oracle-desc-plan (sqlbuf outbuf enhanced target)
+    "Describe execution plan of mysql's QUERY."
+    (let ((settings (sql-oracle-save-settings sqlbuf))
+					(sql (if enhanced ; ignore enhanced
+                   target
+								 target)))
+      (sql-redirect
+       sqlbuf
+       (concat "SET AUTOTRACE ON EXPLAIN"))
+      (sql-redirect
+       sqlbuf
+       (concat "SET LINESIZE 100 PAGESIZE 100"
+               " VERIFY OFF FEEDBACK OFF"
+               " TRIMOUT ON TAB OFF TIMING OFF"))
+      (sql-redirect
+       sqlbuf
+       sql
+       outbuf)
+      (sql-oracle-restore-settings sqlbuf settings))))
+
+ ; end of oracle
 
 ;;;
 ;; mysql
@@ -316,22 +339,8 @@ Optional prefix argument ENHANCED, displays additional details."
                       "sql-send-magic-terminator-before")
     (ad-activate #'sql-send-magic-terminator t))
 
-  ;; oracle
-  (when-sql-oracle-feature%
-   ;; replace `:list-all'
-   (when (plist-get
-          (cdr (assoc** 'oracle sql-product-alist :test #'eq))
-          :list-all)
-     (plist-put
-      (cdr (assoc** 'oracle sql-product-alist :test #'eq))
-      :list-all
-      #'sql-oracle-list-all*))
-   ;; new `:list-code'
-   (plist-put
-    (cdr (assoc** 'oracle sql-product-alist :test #'eq))
-    :list-code
-    #'sql-oracle-list-code))
 
+  ;;; oracle
 
   ;; `sql-oracle-program'
   (setq sql-oracle-program
@@ -346,6 +355,27 @@ Optional prefix argument ENHANCED, displays additional details."
                              "sqlplus"))))
               "sqlplus")))
 
+  (when-sql-oracle-feature%
+    ;; replace `:list-all'
+    (when (plist-get
+           (cdr (assoc** 'oracle sql-product-alist :test #'eq))
+           :list-all)
+      (plist-put
+       (cdr (assoc** 'oracle sql-product-alist :test #'eq))
+       :list-all
+       #'sql-oracle-list-all*))
+    ;; new `:list-code'
+    (plist-put
+     (cdr (assoc** 'oracle sql-product-alist :test #'eq))
+     :list-code
+     #'sql-oracle-list-code)
+    ;; new `:desc-plan'
+    (plist-put (cdr (assoc** 'oracle sql-product-alist :test #'eq))
+               :desc-plan
+               #'sql-oracle-desc-plan))
+
+  ;;; mysql
+
   ;; `sql-mysql-program'
   (setq sql-mysql-program
         (eval-when-compile
@@ -357,29 +387,29 @@ Optional prefix argument ENHANCED, displays additional details."
 
   ;; mysql feature
   (when-sql-mysql-feature%
-   ;; new `:desc-table'
-   (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
-              :desc-table
-              #'sql-mysql-desc-table)
-   ;; new `:desc-plan'
-   (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
-              :desc-plan
-              #'sql-mysql-desc-plan)
-   ;; new `:list-code'
-   (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
-              :list-code
-              #'sql-mysql-list-code)
-   ;; new `:list-index'
-   (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
-              :list-index
-              #'sql-mysql-list-index))
+    ;; new `:desc-table'
+    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
+               :desc-table
+               #'sql-mysql-desc-table)
+    ;; new `:desc-plan'
+    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
+               :desc-plan
+               #'sql-mysql-desc-plan)
+    ;; new `:list-code'
+    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
+               :list-code
+               #'sql-mysql-list-code)
+    ;; new `:list-index'
+    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
+               :list-index
+               #'sql-mysql-list-index))
 
   ;; features' keybindings
   (when-sql-feature%
-   (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-code)
-   (define-key% sql-mode-map (kbd "C-c C-l i") #'sql-list-index)
-   (define-key% sql-mode-map (kbd "C-c C-l T") #'sql-desc-table)
-   (define-key% sql-mode-map (kbd "C-c C-l P") #'sql-desc-plan)))
+    (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-code)
+    (define-key% sql-mode-map (kbd "C-c C-l i") #'sql-list-index)
+    (define-key% sql-mode-map (kbd "C-c C-l T") #'sql-desc-table)
+    (define-key% sql-mode-map (kbd "C-c C-l P") #'sql-desc-plan)))
 
 
  ;; end of on-sql-autoload.el
