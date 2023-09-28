@@ -133,6 +133,8 @@
   (put 'defun 'forward-op   'end-of-defun))
 
 
+;;; Mark/Kill thing at point
+
 (eval-when-compile
 
   (defmacro _mark_thing@_ (begin end)
@@ -140,7 +142,52 @@
     `(progn
        ,begin
        (set-mark (point))
-       ,end)))
+       ,end))
+
+  (defmacro _mark_thing@_1 (begin end)
+    "Mark thing at point."
+    `(progn
+       (goto-char ,begin)
+       (set-mark (point))
+       (goto-char ,end)))
+
+  (defmacro _mark_symbol@_ (&optional n)
+    (let ((n1 (gensym*)))
+      `(let ((,n1 (or ,n 1))
+             (ls (bounds-of-thing-at-point 'list))
+             (bs (bounds-of-thing-at-point 'symbol))
+             (pos (point)))
+         (let ((cur (cond ((null bs) pos)
+                          ((and (>= ,n1 0) (> pos (car bs)) (< pos (cdr bs)))
+                           (car bs))
+                          ((and (< ,n1 0) (> pos (car bs)) (< pos (cdr bs)))
+                           (cdr bs))
+                          (t pos))))
+           (message "cur=%d" cur)
+           (save-excursion
+             (if (< ,n1 0)
+                 (let ((lhs (save-excursion
+                              (forward-symbol (1- ,n1))
+                              (forward-symbol 1)
+                              (skip-syntax-forward "'\"")
+                              (point)))
+                       (ss (save-excursion
+                             (goto-char (car ls))
+                             (skip-syntax-forward "'([{")
+                             (point))))
+                   (cons (max lhs ss) cur))
+               (let ((rhs (save-excursion
+                            (forward-symbol (1+ ,n1))
+                            (forward-symbol -1)
+                            (point)))
+                     (ss (save-excursion
+                           (goto-char (cdr ls))
+                           (if (<= (skip-syntax-backward ")]}") -1)
+                               (1- (cdr ls))
+                             (cdr ls)))))
+                 (cons cur (min rhs ss)))))))))
+
+  ) ; end of Mark macro at compile-time
 
 
 (defun mark-symbol@ (&optional n)
@@ -148,20 +195,18 @@
 
 If prefix N is non-nil, then select the Nth symbol."
   (interactive "p")
-  (let ((bounds (let ((n1 (if (not (consp current-prefix-arg))
-                              (if (or (null n) (zerop n)) 1 n)
-                            1)))
-                  (cons (save-excursion
-                          (forward-symbol n1)
-                          (when (> n1 0) (forward-symbol -1))
-                          (point))
-                        (save-excursion
-                          (forward-symbol n1)
-                          (when (< n1 0) (forward-symbol 1))
-                          (point))))))
-    (when bounds
-      (_mark_thing@_ (goto-char (car bounds))
-                     (goto-char (cdr bounds))))))
+  (let ((bs (_mark_symbol@_ n)))
+    (_mark_thing@_1 (car bs) (cdr bs))))
+
+
+(defun kill-whole-symbol (&optional n)
+  "Kill current symbol.
+
+With prefix N, do it N times forward if positive, or move
+backwards N times if negative."
+  (interactive "p")
+  (let ((bs (_mark_symbol@_ n)))
+    (kill-region (car bs) (cdr bs))))
 
 
 (defun mark-filename@ ()
@@ -676,23 +721,6 @@ backwards N times if negative."
                  (point))))
 
 
-(defun kill-whole-symbol (&optional n)
-  "Kill current symbol.
-
-With prefix N, do it N times forward if positive, or move
-backwards N times if negative."
-  (interactive "p")
-  (kill-region (goto-char
-                (let ((b (bounds-of-thing-at-point 'symbol)))
-                  (unless b
-                    (save-excursion
-                      (forward-symbol (if (>= n 0) 1 -1)))
-                    (setq b (bounds-of-thing-at-point 'symbol))
-                    (unless b (user-error* "%s" "No symbol found")))
-                  (if (>= n 0) (car b) (cdr b))))
-               (progn
-                 (forward-symbol n)
-                 (point))))
 
 
 (defun kill-whole-sexp (&optional boundary)
@@ -762,20 +790,20 @@ If `current-prefix-arg' < 0, then repeat n time with END in reversed."
     (let* ((n (if current-prefix-arg (abs current-prefix-arg) 1))
            (r (and current-prefix-arg (< current-prefix-arg 0)))
            (begin (let ((o (if (string= "<space>" begin) " " begin))
-                       (n1 n))
-                   (while (> n1 1)
-                     (setq o (concat o o)
-                           n1 (1- n1)))
-                   o))
+                        (n1 n))
+                    (while (> n1 1)
+                      (setq o (concat o o)
+                            n1 (1- n1)))
+                    o))
            (end (let ((cc (if (string= "<begin>" end)
-                                begin
-                              (let ((c end)
-                                    (n2 n))
-                                (while (> n2 1)
-                                  (setq c (concat c c)
-                                        n2 (1- n2)))
-                                c))))
-                    (if r (reverse cc) cc))))
+                              begin
+                            (let ((c end)
+                                  (n2 n))
+                              (while (> n2 1)
+                                (setq c (concat c c)
+                                      n2 (1- n2)))
+                              c))))
+                  (if r (reverse cc) cc))))
       (with-current-buffer (current-buffer)
         (goto-char (car bounds))
         (insert begin)
