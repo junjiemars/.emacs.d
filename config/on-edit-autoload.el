@@ -89,7 +89,7 @@
  ;; end of :edit
 
 
-;; Mark thing at point
+;;; `thingatpt' compatible definitions
 
 (unless-fn% 'thing-at-point-bounds-of-string-at-point 'thingatpt
   ;; fix wrong behavior on anicent Emacs.
@@ -132,25 +132,28 @@
   (put 'defun 'end-op       'end-of-defun)
   (put 'defun 'forward-op   'end-of-defun))
 
+ ; end of `thingatpt' compatible definitions
 
-;;; Mark/Kill thing at point
+
+;;; _mark_thing_ compile-time macros
 
 (eval-when-compile
-
   (defmacro _mark_thing@_ (begin end)
     "Mark thing at point."
     `(progn
        ,begin
        (set-mark (point))
-       ,end))
+       ,end)))
 
+(eval-when-compile
   (defmacro _mark_thing@_1 (begin end)
     "Mark thing at point."
     `(progn
        (goto-char ,begin)
        (set-mark (point))
-       (goto-char ,end)))
+       (goto-char ,end))))
 
+(eval-when-compile
   (defmacro _mark_symbol@_ (&optional n)
     (let ((n1 (gensym*)))
       `(let ((,n1 (or ,n 1))
@@ -158,12 +161,15 @@
              (bs (bounds-of-thing-at-point 'symbol))
              (pos (point)))
          (let ((cur (cond ((null bs) pos)
-                          ((and (>= ,n1 0) (> pos (car bs)) (< pos (cdr bs)))
+                          ((and (>= ,n1 0)
+                                (> pos (car bs))
+                                (< pos (cdr bs)))
                            (car bs))
-                          ((and (< ,n1 0) (> pos (car bs)) (< pos (cdr bs)))
+                          ((and (< ,n1 0)
+                                (> pos (car bs))
+                                (< pos (cdr bs)))
                            (cdr bs))
                           (t pos))))
-           (message "cur=%d" cur)
            (save-excursion
              (if (< ,n1 0)
                  (let ((lhs (save-excursion
@@ -185,10 +191,62 @@
                            (if (<= (skip-syntax-backward ")]}") -1)
                                (1- (cdr ls))
                              (cdr ls)))))
-                 (cons cur (min rhs ss)))))))))
+                 (cons cur (min rhs ss))))))))))
 
-  ) ; end of Mark macro at compile-time
+(eval-when-compile
+  (defmacro _forward_sexp_ (n)
+    (let ((n1 (gensym*))
+          (n2 (gensym*))
+          (pre (gensym*))
+          (err (gensym*)))
+      `(let* ((,n1 ,n)
+              (,n2 (abs ,n1))
+              (,pre (point))
+              (,err nil))
+         (condition-case ,err
+             (save-excursion
+               (while (> ,n2 0)
+                 (setq ,pre (point))
+                 (forward-sexp (if (>= ,n1 0) 1 -1))
+                 (setq ,n2 (1- ,n2)))
+               (point))
+           (scan-error ,pre))))))
 
+(eval-when-compile
+  (defmacro _mark_sexp@_ (&optional n)
+    (let ((n1 (gensym*)))
+      `(let ((,n1 (or ,n 1))
+             (ls (bounds-of-thing-at-point 'list))
+             (bs (bounds-of-thing-at-point 'symbol))
+             (pos (point)))
+         (let ((cur (cond ((null bs) pos)
+                          ((and (>= ,n1 0)
+                                (> pos (car bs))
+                                (< pos (cdr bs)))
+                           (car bs))
+                          ((and (< ,n1 0) (> pos (car bs))
+                                (< pos (cdr bs)))
+                           (cdr bs))
+                          (t pos))))
+           (if (< ,n1 0)
+               (let ((lhs (_forward_sexp_ ,n1))
+                     (ss (save-excursion
+                           (goto-char (car ls))
+                           (skip-syntax-forward "'([{")
+                           (point))))
+                 (cons (max lhs ss) cur))
+             (let ((rhs (_forward_sexp_ ,n1))
+                   (ss (save-excursion
+                         (goto-char (cdr ls))
+                         (if (<= (skip-syntax-backward ")]}") -1)
+                             (1- (cdr ls))
+                           (cdr ls)))))
+               (cons cur (min rhs ss)))))))))
+
+ ; end _mark_thing_ macros
+
+
+;;; mark/kill-*@ functions
 
 (defun mark-symbol@ (&optional n)
   "Mark symbol at point.
@@ -207,6 +265,41 @@ backwards N times if negative."
   (interactive "p")
   (let ((bs (_mark_symbol@_ n)))
     (kill-region (car bs) (cdr bs))))
+
+
+(defun mark-sexp@ (&optional n)
+  "Mark sexp at point.
+
+If prefix N is non nil, then forward or backward N sexps.
+Otherwise, select the whole list."
+  (interactive "p")
+  (let ((bs (_mark_sexp@_ n)))
+    (_mark_thing@_1 (car bs) (cdr bs))))
+
+
+(defun kill-whole-sexp (&optional boundary)
+  "Kill current sexp.
+
+With prefix BOUNDARY, killing include BOUNDARY otherwise do not."
+  (interactive "P")
+  (let ((bs (bounds-of-thing-at-point 'list)))
+    (unless bs (user-error "whole sexp no found"))
+    (kill-region
+     (let ((lhs (car bs)))
+       (+ lhs (if boundary
+                  0
+                (save-excursion
+                  (goto-char lhs)
+                  (skip-syntax-forward "'([{")))))
+     (let ((rhs (cdr bs)))
+       (+ rhs
+          (if boundary
+              0
+            (save-excursion
+              (goto-char rhs)
+              (save-excursion
+                (if (<= (skip-syntax-backward ")]}") -1)
+                    -1 0)))))))))
 
 
 (defun mark-filename@ ()
@@ -250,6 +343,24 @@ If prefix N is non nil, then forward or backward N words."
       (_mark_thing@_  (goto-char (car bounds))
                       (goto-char (cdr bounds))))))
 
+(defun kill-whole-word (&optional n)
+  "Kill current word.
+
+With prefix N, do it N times forward if positive, or move
+backwards N times if negative."
+  (interactive "p")
+  (kill-region (goto-char
+                (let ((b (bounds-of-thing-at-point 'word)))
+                  (unless b
+                    (save-excursion
+                      (forward-word (if (>= n 0) 1 -1)))
+                    (setq b (bounds-of-thing-at-point 'word))
+                    (unless b (user-error* "%s" "No word found")))
+                  (if (>= n 0) (car b) (cdr b))))
+               (progn
+                 (forward-word n)
+                 (point))))
+
 
 (defun mark-line@ (&optional indent)
   "Mark line at point.
@@ -260,40 +371,6 @@ If prefix INDENT is non-nil, then mark indent line."
                      (back-to-indentation)
                    (beginning-of-line))
                  (end-of-line)))
-
-
-(defun mark-sexp@ (&optional n)
-  "Mark sexp at point.
-
-If prefix N is non nil, then forward or backward N sexps.
-Otherwise, select the whole list."
-  (interactive "p")
-  (let ((bounds
-         (if current-prefix-arg
-             (let ((n1 (if (not (consp current-prefix-arg))
-                           (if (or (null n) (zerop n)) 1 n)
-                         1)))
-               (cons (save-excursion
-                       (cond ((bounds-of-thing-at-point 'sexp)
-                              (cond ((> n1 0)
-                                     (forward-sexp)
-                                     (backward-sexp))
-                                    (t (backward-sexp)
-                                       (forward-sexp))))
-                             ((bounds-of-thing-at-point 'whitespace)
-                              (cond ((> n1 0)
-                                     (forward-sexp)
-                                     (backward-sexp))
-                                    (t (backward-sexp)
-                                       (forward-sexp)))))
-                       (point))
-                     (save-excursion
-                       (forward-sexp n1)
-                       (point))))
-           (bounds-of-thing-at-point 'list))))
-    (when bounds
-      (_mark_thing@_ (goto-char (car bounds))
-                     (goto-char (cdr bounds))))))
 
 
 (defun mark-defun@ (&optional n)
@@ -510,7 +587,7 @@ If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
       (message "quoted things no found"))))
 
 
- ;; end of Mark thing at point
+ ; end of mark/kill-* functions
 
 
 ;; Makes killing/yanking interact with the clipboard
@@ -698,56 +775,6 @@ Optional argument MODE `major-mode'."
 
 
  ;; end of Sorting
-
-
-;;; Kill word/symbol/sexp
-
-(defun kill-whole-word (&optional n)
-  "Kill current word.
-
-With prefix N, do it N times forward if positive, or move
-backwards N times if negative."
-  (interactive "p")
-  (kill-region (goto-char
-                (let ((b (bounds-of-thing-at-point 'word)))
-                  (unless b
-                    (save-excursion
-                      (forward-word (if (>= n 0) 1 -1)))
-                    (setq b (bounds-of-thing-at-point 'word))
-                    (unless b (user-error* "%s" "No word found")))
-                  (if (>= n 0) (car b) (cdr b))))
-               (progn
-                 (forward-word n)
-                 (point))))
-
-
-
-
-(defun kill-whole-sexp (&optional boundary)
-  "Kill current sexp.
-
-With prefix BOUNDARY, killing include BOUNDARY otherwise do not."
-  (interactive "P")
-  (let ((bs (bounds-of-thing-at-point 'list)))
-    (when bs
-      (kill-region
-       (let ((lhs (car bs)))
-         (if boundary
-             lhs
-           (+ lhs (save-excursion
-                    (goto-char lhs)
-                    (skip-syntax-forward "'([{")))))
-       (let ((rhs (cdr bs)))
-         (if boundary
-             rhs
-           (+ rhs (save-excursion
-                    (goto-char rhs)
-                    (save-excursion
-                      (if (<= (skip-syntax-backward ")]}") -1)
-                          -1 0))))))))))
-
-
- ; end of kill symbol/word/sexp
 
 
 ;;; Comment
