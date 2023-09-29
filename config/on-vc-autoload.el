@@ -49,10 +49,8 @@
 
 
 (when-feature-vc%
- (with-eval-after-load 'vc
-
-   ;; general `vc-dir*' keybind
-   (define-key% (current-global-map) (kbd "C-x v d") #'vc-dir*)))
+ ;; general `vc-dir'
+ (define-key% (current-global-map) (kbd "C-x v d") #'vc-dir*))
 
 
- ; end of on-vc-autoload.el
+;; end of on-vc-autoload.el
