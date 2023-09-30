@@ -7,7 +7,8 @@
 ;;;;
 
 
-;; Define `recenter-top-bottom' for Emacs23.2-
+;;; Define `recenter-top-bottom' for Emacs23.2-
+
 (unless-fn% 'recenter-top-bottom nil
 
   (defvar recenter-last-op nil
@@ -62,10 +63,15 @@ A prefix argument is handled like `recenter':
 
   (define-key (current-global-map) (kbd "C-l") #'recenter-top-bottom))
 
- ; end of `recenter-top-bottom'
+;; end of `recenter-top-bottom'
+
+;;; enable `narrow-to-page'
+(when% (get 'narrow-to-page 'disabled)
+  (put 'narrow-to-page 'disabled nil))
 
 
-;;; Window move keys `windmove-default-keybindings'
+
+;;; Window keys `windmove-default-keybindings'
 (define-key% (current-global-map) (kbd "C-c w l") #'windmove-left)
 (define-key% (current-global-map) (kbd "C-c w r") #'windmove-right)
 (define-key% (current-global-map) (kbd "C-c w u") #'windmove-up)
@@ -106,3 +112,6 @@ A prefix argument is handled like `recenter':
   ;; keep `view-mode' when quit
   (when-var% view-mode-map 'view
     (define-key% view-mode-map (kbd "q") #'quit-window)))
+
+
+;; end of on-window-autoload.el

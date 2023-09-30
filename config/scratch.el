@@ -85,4 +85,4 @@
 
 (provide 'scratch)
 
-;;; end of scratch.el
+;; end of scratch.el
