@@ -73,6 +73,8 @@ A prefix argument is handled like `recenter':
 
 
 ;;; Buffer's keys
+(declare-function browse-url-default-browser "browse-file" t)
+(define-key% (current-global-map) (kbd "C-x x B") #'browse-file)
 (define-key% (current-global-map) (kbd "C-x x c") #'clone-buffer)
 (define-key% (current-global-map) (kbd "C-x x n") #'echo-buffer-name)
 (define-key% (current-global-map) (kbd "C-x x t") #'toggle-truncate-lines)
@@ -96,7 +98,7 @@ A prefix argument is handled like `recenter':
   (define-key% (current-global-map) (kbd "C-x x SPC") #'whitespace-mode))
 (define-key% (current-global-map) (kbd "C-x x u") #'rename-uniquely)
 
- ; end of keys
+;; end of keys
 
 
 (with-eval-after-load 'view

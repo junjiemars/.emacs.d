@@ -32,6 +32,9 @@
 \\title{Scratch Tex}
 \\author{Nore Emacs}
 \\usepackage{amsmath}
+% \\usepackage{xeCJK}
+% \\setCJKmainfont{SimSong}
+% \\setmainfont{Times New Roman}
 \\begin{document}
 \\maketitle
 
