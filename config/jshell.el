@@ -108,7 +108,7 @@ void jshell_emacs_apropos(String what, int max) {
   (save-excursion
     (catch 'break
       (let ((ori (point)))
-        (while (not (or (= (point) (point-min))
+        (while (not (or (bobp)
                         (char= (char-before) ?\;)
                         (char= (char-before) ?\n)))
           (cond

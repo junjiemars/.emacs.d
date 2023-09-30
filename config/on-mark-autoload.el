@@ -18,7 +18,7 @@ If prefix N is non-nil, then select the Nth symbol."
   (interactive "p")
   (let ((bs (_mark_symbol@_ n)))
     (unless (and bs (car bs) (cdr bs))
-      (user-error* "No symbol found"))
+      (user-error "No symbol found"))
     (_mark_thing_ (car bs) (cdr bs))))
 
 
@@ -30,7 +30,7 @@ backwards N times if negative."
   (interactive "p")
   (let ((bs (_mark_symbol@_ n)))
     (unless (and bs (car bs) (cdr bs))
-      (user-error* "No whole symbol found"))
+      (user-error "No whole symbol found"))
     (kill-region (car bs) (cdr bs))))
 
 ;; end of mark/kill-symbol
@@ -48,7 +48,7 @@ Otherwise, select the whole list."
                 (_mark_whole_sexp@_)
               (_mark_sexp@_ n))))
     (unless (and bs (car bs) (cdr bs))
-      (user-error* "No sexp found"))
+      (user-error "No sexp found"))
     (_mark_thing_ (car bs) (cdr bs))))
 
 
@@ -57,9 +57,11 @@ Otherwise, select the whole list."
 
 With prefix BOUNDARY, killing include BOUNDARY otherwise do not."
   (interactive "P")
-  (let ((bs (_mark_whole_sexp@_ boundary)))
+  (let ((bs (_mark_quoted@_ (if boundary 1 0))))
+    (unless bs
+      (setq bs (_mark_whole_sexp@_ boundary)))
     (unless (and bs (car bs) (cdr bs))
-      (user-error* "No whole sexp found"))
+      (user-error "No whole sexp found"))
     (kill-region (car bs) (cdr bs))))
 
 ;; end of mark/kill-sexp
@@ -74,7 +76,7 @@ If prefix N is non nil, then forward or backward N words."
   (interactive "p")
   (let ((bs (_mark_word@_ n)))
     (unless (and bs (car bs) (cdr bs))
-      (user-error* "No word found"))
+      (user-error "No word found"))
     (_mark_thing_ (car bs) (cdr bs))))
 
 
@@ -86,7 +88,7 @@ backwards N times if negative."
   (interactive "p")
   (let ((bs (_mark_word@_ n)))
     (unless (and bs (car bs) (cdr bs))
-      (user-error* "No whole word found"))
+      (user-error "No whole word found"))
     (kill-region (car bs) (cdr bs))))
 
 ;; end of mark/kill-word
@@ -118,7 +120,7 @@ If prefix N is non-nil, then forward or backward N functions."
   (interactive "p")
   (let ((bs (_mark_defun@_ n)))
     (unless (and bs (car bs) (cdr bs))
-      (user-error* "No defun found"))
+      (user-error "No defun found"))
     (_mark_thing_ (cdr bs) (car bs))))
 
 ;; end of mark-defun
@@ -131,7 +133,7 @@ If prefix N is non-nil, then forward or backward N functions."
   (interactive)
   (let ((bs (_mark_filename@_)))
     (unless (and bs (car bs) (cdr bs))
-      (user-error* "No filename found"))
+      (user-error "No filename found"))
     (_mark_thing_ (car bs) (cdr bs))))
 
 ;; end of mark-filename
@@ -140,10 +142,10 @@ If prefix N is non-nil, then forward or backward N functions."
 ;;; mark-quoted
 
 
-(defun mark-quoted@ (&optional enclose quoted)
+(defun mark-quoted@ (&optional boundary quoted)
   "Mark QUOTED thing at point.
 
-If prefix ENCLOSE is non-nil, then mark the whole quoted thing.
+If prefix BOUNDARY is non-nil, then mark the whole quoted thing.
 If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
   (interactive
    (list (if (or (consp current-prefix-arg)
@@ -159,10 +161,10 @@ If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
                (current-prefix-arg
                 (read-char (propertize "Input quoted character: "
                                        'face 'minibuffer-prompt))))))
-  (let ((bs (_mark_quoted@_ enclose quoted)))
+  (let ((bs (_mark_quoted@_ boundary quoted)))
     (unless (and bs (car bs) (cdr bs))
-      (user-error* "No quoted thing found"))
-    (_mark_thing_ (- (car bs) enclose) (+ (cdr bs) enclose))))
+      (user-error "No quoted thing found"))
+    (_mark_thing_ (car bs) (cdr bs))))
 
 ;; end of mark-quoted
 

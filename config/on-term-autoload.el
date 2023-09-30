@@ -11,10 +11,10 @@
   "Unify the shell prompt in `term'."
   (interactive)
   (unless (eq 'term-mode (buffer-major-mode (current-buffer)))
-    (user-error* "Current buffer not in `term-mode'"))
+    (user-error "Current buffer not in `term-mode'"))
   (let ((proc (get-buffer-process (current-buffer))))
     (unless proc
-      (user-error* "Current buffer has no process"))
+      (user-error "Current buffer has no process"))
     (process-send-string
      proc
      (format

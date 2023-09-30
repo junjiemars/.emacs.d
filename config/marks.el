@@ -53,18 +53,17 @@
 ;; end of `thingatpt' compatible definitions
 
 
+;;; mark-* macro
+
 (eval-when-compile
+
   (defmacro _mark_thing_ (begin end)
     "Mark thing at point."
     `(progn
        (goto-char ,begin)
        (set-mark (point))
-       (goto-char ,end))))
+       (goto-char ,end)))
 
-
-;;; mark-* macro
-
-(eval-when-compile
   (defmacro _mark_symbol@_ (&optional n)
     (let ((n1 (gensym*)))
       `(let ((,n1 (or ,n 1))
@@ -102,9 +101,9 @@
                              (if (<= (skip-syntax-backward ")]}") -1)
                                  (1- (cdr ls))
                                (cdr ls)))))
-                   (cons cur (min rhs ss)))))))))))
+                   (cons cur (min rhs ss))))))))))
 
-(eval-when-compile
+
   (defmacro _forward_sexp_ (n)
     (let ((n1 (gensym*))
           (n2 (gensym*))
@@ -121,9 +120,9 @@
                  (forward-sexp (if (>= ,n1 0) 1 -1))
                  (setq ,n2 (1- ,n2)))
                (point))
-           (scan-error ,pre))))))
+           (scan-error ,pre)))))
 
-(eval-when-compile
+
   (defmacro _mark_sexp@_ (&optional n)
     (let ((n1 (gensym*)))
       `(let ((,n1 (or ,n 1))
@@ -153,36 +152,33 @@
                            (if (<= (skip-syntax-backward ")]}") -1)
                                (1- (cdr ls))
                              (cdr ls)))))
-                 (cons cur (min rhs ss))))))))))
+                 (cons cur (min rhs ss)))))))))
 
-(eval-when-compile
+
   (defmacro _mark_whole_sexp@_ (&optional boundary)
     (let ((bs (gensym*))
           (lhs (gensym*))
           (rhs (gensym*)))
-      `(let ((,bs (bounds-of-thing-at-point 'string)))
-         (if ,bs
-             (cons (car ,bs) (cdr ,bs))
-           (let ((,bs (bounds-of-thing-at-point 'list)))
-             (when ,bs
-               (cons
-                (let ((,lhs (car ,bs)))
-                  (+ ,lhs (if ,boundary
-                              0
-                            (save-excursion
-                              (goto-char ,lhs)
-                              (skip-syntax-forward "'([{")))))
-                (let ((,rhs (cdr ,bs)))
-                  (+ ,rhs
-                     (if ,boundary
-                         0
-                       (save-excursion
-                         (goto-char ,rhs)
-                         (save-excursion
-                           (if (<= (skip-syntax-backward ")]}") -1)
-                               -1 0))))))))))))))
+      `(let ((,bs (bounds-of-thing-at-point 'list)))
+         (when ,bs
+           (cons
+            (let ((,lhs (car ,bs)))
+              (+ ,lhs (if ,boundary
+                          0
+                        (save-excursion
+                          (goto-char ,lhs)
+                          (skip-syntax-forward "'([{")))))
+            (let ((,rhs (cdr ,bs)))
+              (+ ,rhs
+                 (if ,boundary
+                     0
+                   (save-excursion
+                     (goto-char ,rhs)
+                     (save-excursion
+                       (if (<= (skip-syntax-backward ")]}") -1)
+                           -1 0)))))))))))
 
-(eval-when-compile
+
   (defmacro _mark_word@_ (&optional n)
     (let ((n1 (gensym*)))
       `(let ((,n1 (or ,n 1)))
@@ -192,14 +188,14 @@
               (save-excursion
                 (forward-word (if (>= ,n1 0) 1 -1)))
               (setq b (bounds-of-thing-at-point 'word))
-              (unless b (user-error* "%s" "No word found")))
+              (unless b (user-error "%s" "No word found")))
             (if (>= ,n1 0) (car b) (cdr b)))
           (progn
             (forward-word ,n1)
-            (point)))))))
+            (point))))))
 
+  ;; end of `_mark_word@_'
 
-(eval-when-compile
   (defmacro _mark_defun@_ (&optional n)
     (let ((n1 (gensym*)))
       `(let ((,n1 (or ,n 1)))
@@ -221,19 +217,13 @@
             (if (> ,n1 0)
                 (end-of-defun ,n1)
               (beginning-of-defun (- ,n1)))
-            (point)))))))
+            (point))))))
 
 
-(eval-when-compile
-  (defmacro _mark_filename@_ ()
-    `(bounds-of-thing-at-point 'filename)))
-
-
-(eval-when-compile
-  (defmacro _mark_quoted@_ (&optional enclose quoted)
-    (let ((enc (gensym*))
+  (defmacro _mark_quoted@_ (&optional boundary quoted)
+    (let ((bnd (gensym*))
           (qut (gensym*)))
-      `(let* ((,enc ,enclose)
+      `(let* ((,bnd ,boundary)
               (,qut ,quoted))
          (catch 'block
            (let* ((lss '(?\" ?\' ?\( ?\[ ?\` ?\{ ?\‘))
@@ -394,9 +384,14 @@
                                   (cond ((consp n)
                                          (setq li (cdr n))))))
                             (t (throw 'block nil))))
-                     (t (cons (- cur li) (+ cur ri)))))))))))
+                     (t (cons (- cur li ,bnd)
+                              (+ cur ri ,bnd))))))))))
 
 
+  (defmacro _mark_filename@_ ()
+    `(bounds-of-thing-at-point 'filename))
+
+  )
 ;; end of mark-* marco
 
 

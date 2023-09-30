@@ -134,7 +134,7 @@ function node_emacs_apropos(what, max) {
   (save-excursion
     (catch 'break
       (let ((ori (point)))
-        (while (not (or (= (point) (point-min))
+        (while (not (or (bobp)
                         (char= (char-before) ?\;)
                         (char= (char-before) ?\n)))
           (cond

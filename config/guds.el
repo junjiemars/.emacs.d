@@ -48,7 +48,7 @@ Avoid bugs in `gud-format-command' and `gud-find-c-expr'."
   (save-excursion
     (catch 'break
       (let ((ori (point)))
-        (while (not (or (= (point) (point-min))
+        (while (not (or (bobp)
                         (char-equal (char-before) ?\;)
                         (char-equal (char-before) ?\n)))
           (cond

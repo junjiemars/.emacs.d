@@ -53,12 +53,12 @@ env. Another way is using `pip -V'."
       (cond ((and p v3 (executable-find% "virtualenv"))
              (let ((rc (shell-command* "virtualenv" "-p" p d)))
                (unless (zerop (car rc))
-                 (user-error* "!%s" (string-trim> (cdr rc))))))
+                 (user-error "!%s" (string-trim> (cdr rc))))))
             ((and p (not v3))
              (let ((rc (shell-command* p "-m" "venv" d)))
                (unless (zerop (car rc))
-                 (user-error* "!%s" (string-trim> (cdr rc))))))
-            (t (user-error* "!python venv unavailable"))))
+                 (user-error "!%s" (string-trim> (cdr rc))))))
+            (t (user-error "!python venv unavailable"))))
     (when-var% python-shell-interpreter 'python
       (setq python-shell-interpreter (python*-program)))
     (if-var% python-shell-virtualenv-root 'python

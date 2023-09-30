@@ -96,17 +96,12 @@
  ;; Versioned Dirs
 
 
-;;;;
-;; Compatible Macro
-;;;;
+;;; Compatible Macros
 
-(defmacro user-error* (format &rest args)
-  "Signal a pilot error."
-  (declare (indent 1))
-  (if-fn% 'user-error nil
-          `(user-error , format ,@args)
-    `(signal 'user-error
-             (list (apply #'format ,format ,@args)))))
+(unless-fn% 'user-error nil
+  (defun user-error (format &rest args)
+    "Signal a pilot error."
+    (signal 'user-error (list (apply #'format-message format args)))))
 
 
 (defmacro called-interactively-p* (&optional kind)
@@ -122,10 +117,10 @@
   (unless-fn% 'declare-function nil
     (defmacro declare-function (&rest _))))
 
- ;; end of Compatible Macro
+;; end of Compatible Macros
 
 
-;; Compatible Functions
+;;; Compatible Functions
 
 (unless-fn% 'with-eval-after-load nil
   (defmacro with-eval-after-load (file &rest body)
