@@ -6,8 +6,7 @@
 ;; on-mark-autoload.el
 ;;;;
 
-(eval-when-compile
-  (require 'marks))
+(eval-when-compile (require 'marks))
 
 
 ;;; mark/kill-symbol
@@ -162,7 +161,7 @@ If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
                                        'face 'minibuffer-prompt))))))
   (let ((bs (_mark_quoted@_ enclose quoted)))
     (unless (and bs (car bs) (cdr bs))
-      (user-error* "No quoted found"))
+      (user-error* "No quoted thing found"))
     (_mark_thing_ (- (car bs) enclose) (+ (cdr bs) enclose))))
 
 ;; end of mark-quoted

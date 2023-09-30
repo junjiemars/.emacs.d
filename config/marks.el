@@ -50,7 +50,7 @@
   (put 'defun 'end-op       'end-of-defun)
   (put 'defun 'forward-op   'end-of-defun))
 
- ; end of `thingatpt' compatible definitions
+;; end of `thingatpt' compatible definitions
 
 
 (eval-when-compile
@@ -394,9 +394,9 @@
                      (t (cons (- cur li) (+ cur ri)))))))))))
 
 
-;;; end of mark-* marco
+;; end of mark-* marco
 
 
 (provide 'marks)
 
-;;; end of marks.el
+;; end of marks.el
