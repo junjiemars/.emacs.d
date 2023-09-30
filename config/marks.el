@@ -160,24 +160,27 @@
     (let ((bs (gensym*))
           (lhs (gensym*))
           (rhs (gensym*)))
-      `(let ((,bs (bounds-of-thing-at-point 'list)))
-         (when ,bs
-           (cons
-            (let ((,lhs (car ,bs)))
-              (+ ,lhs (if ,boundary
-                          0
-                        (save-excursion
-                          (goto-char ,lhs)
-                          (skip-syntax-forward "'([{")))))
-            (let ((,rhs (cdr ,bs)))
-              (+ ,rhs
-                 (if ,boundary
-                     0
-                   (save-excursion
-                     (goto-char ,rhs)
-                     (save-excursion
-                       (if (<= (skip-syntax-backward ")]}") -1)
-                           -1 0))))))))))))
+      `(let ((,bs (bounds-of-thing-at-point 'string)))
+         (if ,bs
+             (cons (car ,bs) (cdr ,bs))
+           (let ((,bs (bounds-of-thing-at-point 'list)))
+             (when ,bs
+               (cons
+                (let ((,lhs (car ,bs)))
+                  (+ ,lhs (if ,boundary
+                              0
+                            (save-excursion
+                              (goto-char ,lhs)
+                              (skip-syntax-forward "'([{")))))
+                (let ((,rhs (cdr ,bs)))
+                  (+ ,rhs
+                     (if ,boundary
+                         0
+                       (save-excursion
+                         (goto-char ,rhs)
+                         (save-excursion
+                           (if (<= (skip-syntax-backward ")]}") -1)
+                               -1 0))))))))))))))
 
 (eval-when-compile
   (defmacro _mark_word@_ (&optional n)
