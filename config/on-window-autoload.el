@@ -65,11 +65,6 @@ A prefix argument is handled like `recenter':
 
 ;; end of `recenter-top-bottom'
 
-;;; enable `narrow-to-page'
-(when% (get 'narrow-to-page 'disabled)
-  (put 'narrow-to-page 'disabled nil))
-
-
 
 ;;; Window keys `windmove-default-keybindings'
 (define-key% (current-global-map) (kbd "C-c w l") #'windmove-left)

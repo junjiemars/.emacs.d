@@ -21,6 +21,11 @@
     (safe-local-variable* x)))
 
 
+;;; enable `narrow-to-page'
+(when% (get 'narrow-to-page 'disabled)
+  (put 'narrow-to-page 'disabled nil))
+
+
 (provide 'safe)
 
-; end of safe.el
+;; end of safe.el

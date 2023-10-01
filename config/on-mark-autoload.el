@@ -6,7 +6,7 @@
 ;; on-mark-autoload.el
 ;;;;
 
-(eval-when-compile (require 'marks))
+;; (eval-when-compile (require 'marks))
 
 
 ;;; mark/kill-symbol
