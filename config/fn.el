@@ -177,22 +177,22 @@ accumulate clause and Miscellaneous clause."
   (progn% (ignore* x) t))
 
 
-(defmacro defmacro-if-feature% (feature &optional docstring)
-  "Define if-FEATURE% compile-time macro.
-
-Argument FEATURE that defining.
-Optional argument DOCSTRING about FEATURE."
-  (let ((name (intern (format "if-feature-%s%%" feature)))
-        (ds1 (format "If has \\=`%s\\=' feauture do THEN, otherwise do BODY."
-                     feature)))
-    `(defmacro ,name (then &rest body)
-       ,(or docstring ds1)
-       (declare (indent 1))
-       (if% (require ',feature nil t)
-           `(progn% (comment ,@body)
-                    ,then)
-         `(progn% (comment ,then)
-                  ,@body)))))
+(defmacro defmacro-if-feature% (feature)
+  "Define if-FEATURE% compile-time macro."
+  (let ((ss (format "if-feature-%s%%" feature)))
+    (unless (intern-soft ss)
+      (let ((name (intern ss))
+            (doc (format
+                  "If has \\=`%s\\=' feauture do THEN, otherwise do BODY."
+                  ss)))
+        `(defmacro ,name (then &rest body)
+           ,doc
+           (declare (indent 1))
+           (if% (require ',feature nil t)
+               `(progn% (comment ,@body)
+                        ,then)
+             `(progn% (comment ,then)
+                      ,@body)))))))
 
 
 (defmacro make-thread* (fn &optional join name)
