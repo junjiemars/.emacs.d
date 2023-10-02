@@ -69,25 +69,23 @@
                           (concat p ".clang-format"))))))))))))
 
 
-(when-feature-eglot%
+(when-feature-eglot%)
 
- (defalias 'eglot*-server-programs
-   (lexical-let% ((b (v-home% ".exec/eglot-server.el"))
-                  (m '((c-mode . ("clangd" "--header-insertion=never"))
-                       (swift-mode . ("sourcekit-lsp")))))
-     (lambda (&optional op sexp)
-       (cond ((eq op :push)
-              (let ((s (or sexp m)))
-                (dolist* (x s)
-                  (push! x eglot-server-programs))))
-             ((eq op :read)
-              (setq m (read-sexp-from-file b)))
-             ((eq op :save)
-              (when sexp (save-sexp-to-file sexp b)))
-             ((eq op :dump)
-              (when m (save-sexp-to-file m b)))
-             (t m))))
-   "The \\=`eglot-server-programs\\=' cache."))
+(defalias 'eglot*-server-programs
+  (lexical-let% ((b (v-home% ".exec/eglot-server.el"))
+                 (m '((c-mode . ("clangd" "--header-insertion=never"))
+                      (swift-mode . ("sourcekit-lsp")))))
+    (lambda (&optional op sexp)
+      (cond ((eq op :push)
+             (dolist* (x sexp sexp)
+               (push! x eglot-server-programs)))
+            ((eq op :read)
+             (read-sexp-from-file b))
+            ((eq op :save)
+             (when sexp (save-sexp-to-file sexp b)))
+            (t m))))
+  "The \\=`eglot-server-programs\\=' cache.")
+
 
 (when-feature-eglot%
 
@@ -109,11 +107,11 @@
 
 
 (when-feature-eglot%
-
  (with-eval-after-load 'eglot
-   (eglot*-server-programs :push (eglot*-server-programs :read))))
+   (eglot*-server-programs :push (or (eglot*-server-programs :read)
+                                     (eglot*-server-programs)))))
 
- ; end of `eglot'
+;; end of `eglot'
 
 
 ;;; `project'
@@ -135,8 +133,6 @@
               (setq c (read-sexp-from-file b)))
              ((eq op :save)
               (when sexp (save-sexp-to-file sexp b)))
-             ((eq op :dump)
-              (when c (save-sexp-to-file c b)))
              (t c))))
    "The \\=`project-root\\=' cache."))
 
@@ -155,7 +151,7 @@
    (project*-root :read)
    (push! #'project*-try-abs project-find-functions)))
 
- ; end of `project'
+;; end of `project'
 
 
 ;;; end of on-eglot-autoload.el
