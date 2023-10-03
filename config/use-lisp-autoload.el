@@ -102,8 +102,8 @@
       (define-key% paredit-mode-map (kbd "M-q") nil))))
 
 
- ;; end of feature: paredit
+;; end of `paredit'
 
 
 
-;; end of use-lisp-autoload.el
+;; end of use-lisp-autoload.el
