@@ -28,24 +28,24 @@
     "The VC frontend choosing history list."))
 
 
-(when-feature-vc%
+(when-feature-vc%)
 
- (defun vc-dir* (&optional frontend)
-   "Show the VC status."
-   (interactive
-    (list (if current-prefix-arg
-              (completing-read
-               (format "Choose (%s) " (mapconcat #'identity
-                                                 *vc-frontend*
-                                                 "|"))
-               *vc-frontend* nil nil (car *vc-frontend-history*)
-               '*vc-frontend-history* (car *vc-frontend*))
-            (car *vc-frontend*))))
-   (call-interactively
-    (cond ((string= "*" frontend) #'vc-dir)
-          ((string= "magit" frontend)
-           (if-feature-magit% #'magit-status #'vc-dir))
-          (t #'vc-dir)))))
+(defun vc-dir* (&optional frontend)
+  "Show the VC status."
+  (interactive
+   (list (if current-prefix-arg
+             (completing-read
+              (format "Choose (%s) " (mapconcat #'identity
+                                                *vc-frontend*
+                                                "|"))
+              *vc-frontend* nil nil (car *vc-frontend-history*)
+              '*vc-frontend-history* (car *vc-frontend*))
+           (car *vc-frontend*))))
+  (call-interactively
+   (cond ((string= "*" frontend) #'vc-dir)
+         ((string= "magit" frontend)
+          (if-feature-magit% #'magit-status #'vc-dir))
+         (t #'vc-dir))))
 
 
 (when-feature-vc%

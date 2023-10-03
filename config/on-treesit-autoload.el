@@ -7,13 +7,17 @@
 ;;;;
 
 
+;; `treesit': builtin since Emacs-29+
 (defmacro-if-feature% treesit)
+
 
 (defmacro when-feature-treesit% (&rest body)
   "When \\=`treesit\\=', do BODY."
-  (when (treesit-available-p)
-    (if-feature-treesit%
-        `(progn% ,@body))))
+  (if-feature-treesit%
+   `(if-fn% 'treesit-available-p 'treesit
+            ,@body
+      (comment ,@body))
+   `(comment ,@body)))
 
 
 (when-feature-treesit%
@@ -102,7 +106,4 @@
           'treesit)))
 
 
- ; end of `treesit'
-
-
-;;; end of on-treesit-autoload.el
+;; end of on-treesit-autoload.el

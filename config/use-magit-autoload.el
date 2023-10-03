@@ -18,7 +18,6 @@
 
 (when-feature-magit%
  (when-platform% 'windows-nt
-
    (with-eval-after-load 'magit
 
      (when (executable-find% "git")
@@ -28,4 +27,4 @@
        (setq% magit-git-executable "git" 'magit)))))
 
 
- ; end of use-magit-autoload.el
+;; end of use-magit-autoload.el

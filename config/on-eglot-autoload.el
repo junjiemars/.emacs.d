@@ -6,7 +6,7 @@
 ;; on-eglot-autoload.el
 ;;;;
 
-
+;;; `eglot' builtin since Emacs-29+
 (defmacro-if-feature% eglot)
 (defmacro-if-feature% project)
 
@@ -14,13 +14,15 @@
 (defmacro when-feature-eglot% (&rest body)
   "When \\=`eglot\\=', do BODY."
   (if-feature-eglot%
-      `(progn% ,@body)))
+      `(progn% ,@body)
+    `(comment ,@body)))
 
 
 (defmacro when-feature-project% (&rest body)
   "When \\=`project\\=', do BODY."
   (if-feature-project%
-      `(progn% ,@body)))
+      `(progn% ,@body)
+    `(comment ,@body)))
 
 
 ;;; `elgot'

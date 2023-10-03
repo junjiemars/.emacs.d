@@ -180,7 +180,7 @@ accumulate clause and Miscellaneous clause."
 (defmacro defmacro-if-feature% (feature)
   "Define if-FEATURE% compile-time macro."
   (let ((ss (format "if-feature-%s%%" feature)))
-    (unless (intern-soft ss)
+    (unless (featurep (intern-soft ss))
       (let ((name (intern ss))
             (doc (format
                   "If has \\=`%s\\=' feauture do THEN, otherwise do BODY."

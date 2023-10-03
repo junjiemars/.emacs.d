@@ -10,13 +10,6 @@
 ;; default web browser: eww, requires Emacs-24.4+
 (defmacro-if-feature% eww)
 
-;; `eglot': requires Emacs-29+
-(defmacro-if-feature% eglot)
-
-;; `treesit': requires Emacs-29+
-(defmacro-if-feature% treesit)
-
-
 
 (defalias '*org-babel-schemes*
   (lexical-let% ((i '()))
@@ -51,6 +44,7 @@
     (compile-unit% (emacs-home* "config/on-dired-autoload.el"))
     (compile-unit% (emacs-home* "config/on-edit-autoload.el"))
     (compile-unit% (emacs-home* "config/on-eshell-autoload.el"))
+    (compile-unit% (emacs-home* "config/on-eglot-autoload.el"))
     (compile-unit% (emacs-home* "config/on-help-autoload.el"))
     (compile-unit% (emacs-home* "config/on-hippie-autoload.el"))
     (compile-unit% (emacs-home* "config/on-ido-autoload.el"))
@@ -69,6 +63,7 @@
     (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))
     (compile-unit% (emacs-home* "config/on-trans-autoload.el"))
     (compile-unit% (emacs-home* "config/on-transient-autoload.el"))
+    (compile-unit% (emacs-home* "config/on-treesit-autoload.el"))
     (compile-unit% (emacs-home* "config/on-vc-autoload.el"))
     (compile-unit% (emacs-home* "config/on-window-autoload.el"))))
  ;; end of `load-autoloaded-modes!'
@@ -81,10 +76,6 @@
       (autoload 'lookup-dict (v-home%> "config/dict")
         "Lookup WORD in DICT then show the result in the echo area." t)
       (compile-unit% (emacs-home* "config/dict.el")))
-
-    ;; `eglot'
-    (if-feature-eglot%
-        (compile-unit% (emacs-home* "config/on-eglot-autoload.el")))
 
     ;; `glyph'
     (when-font%
@@ -189,10 +180,6 @@
         (compile-unit% (emacs-home* "config/sudoku.el") t)
       (autoload* 'sudoku (v-home%> "config/sudoku")
                  "Play sudoku." t))
-
-    ;; `treesit'
-    (if-feature-treesit%
-        (compile-unit% (emacs-home* "config/on-treesit-autoload.el")))
 
     ) ;; end of compile!
 
