@@ -169,28 +169,25 @@ accumulate clause and Miscellaneous clause."
   "Return nil, list VARS at compile time if in lexical context."
   (declare (indent 0))
   (when-lexical%
-    `(progn ,@vars nil)))
+    (list 'prog1 nil (cons 'list `,@vars))))
 
 
 (defun true (&rest x)
   "Return true value ignore X."
-  (progn% (ignore* x) t))
+  (prog1 t (ignore* x)))
 
 
 (defmacro defmacro-if-feature% (feature)
   "Define if-FEATURE% compile-time macro."
   (let ((ss (format "if-feature-%s%%" feature)))
-    (unless (featurep (intern-soft ss))
-      (let ((name (intern ss))
-            (doc (format
-                  "If has \\=`%s\\=' feauture do THEN, otherwise do BODY."
-                  ss)))
-        `(defmacro ,name (then &rest body)
-           ,doc
+    (unless (intern-soft ss)
+      (let ((name (intern ss)))
+	`(defmacro ,name (then &rest body)
+           "If has the feauture do THEN, otherwise do BODY."
            (declare (indent 1))
            (if% (require ',feature nil t)
                `(progn% (comment ,@body)
-                        ,then)
+			,then)
              `(progn% (comment ,then)
                       ,@body)))))))
 

@@ -31,15 +31,15 @@
 (when-platform% 'darwin
   ;; `next-error' cannot find the source file on Darwin.
   (defun compilation*-make-change-dir (&optional buffer how)
-  "Add the argument of make's -C option to `compilation-search-path'."
-  (ignore* buffer how)
-  (when (eq major-mode 'compilation-mode)
-    (let ((d (match-string*
-              ".*make.*-C[ \t]*\\([-~._/a-zA-Z0-9]+\\)\\(?:\\S*\\|.*\\)$"
-              compile-command
-              1)))
-      (when (and d (file-exists-p d))
-        (push! d compilation-search-path t))))))
+    "Add the argument of make's -C option to `compilation-search-path'."
+    (ignore* buffer how)
+    (when (eq major-mode 'compilation-mode)
+      (let ((d (match-string*
+                ".*make.*-C[ \t]*\\([-~._/a-zA-Z0-9]+\\)\\(?:\\S*\\|.*\\)$"
+                compile-command
+                1)))
+        (when (and d (file-exists-p d))
+          (push! d compilation-search-path t))))))
 
 
 (with-eval-after-load 'compile

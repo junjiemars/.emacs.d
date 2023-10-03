@@ -215,8 +215,8 @@
               (when (eq 'b x) (throw 'found t))))))
 
 (ert-deftest %boot:defmacro-if-feature% ()
-  (defmacro-if-feature% ert "just for ert test.")
-  (defmacro-if-feature% ertxxx "just for negative ert test.")
+  (defmacro-if-feature% ert)
+  (defmacro-if-feature% ertxxx)
   (should (= 3 (if-feature-ert% (+ 1 2) (* 3 4))))
   (should (= 12 (if-feature-ertxxx% (+ 1 2) (* 3 4)))))
 
