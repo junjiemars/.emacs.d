@@ -177,7 +177,7 @@ function node_emacs_apropos(what, max) {
             (when (string-match
                    "^[> \t]+"
                    (buffer-substring-no-properties
-                    (point-at-bol)
+                    (line-beginning-position)
                     (point)))
               (throw 'break (point)))
             (backward-char))
