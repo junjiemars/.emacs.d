@@ -14,10 +14,10 @@
 (defmacro when-feature-treesit% (&rest body)
   "When \\=`treesit\\=', do BODY."
   (if-feature-treesit%
-   `(if-fn% 'treesit-available-p 'treesit
-            ,@body
-      (comment ,@body))
-   `(comment ,@body)))
+      (if (treesit-available-p)
+          `(progn% ,@body)
+        `(comment ,@body))
+    `(comment ,@body)))
 
 
 (when-feature-treesit%
