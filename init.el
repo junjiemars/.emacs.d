@@ -290,7 +290,7 @@ the value is nil."
   (comment (package-initialize)))
 
 
-; After loaded ...
+;;; After loaded ...
 
 
-; end of init.el
+;; end of init.el
