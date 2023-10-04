@@ -29,21 +29,6 @@ jobs:
           _TEST_=axiom ./test.sh
           _TEST_=package ./test.sh
 
-  # MacOS:
-  #   runs-on: macos-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         fetch-depth: 1 # without checkout history and tags
-  #     - name: Install Dependencies
-  #       run: |
-  #         brew install emacs
-  #     - name: Test
-  #       run: |
-  #         _TEST_=bone ./test.sh
-  #         _TEST_=axiom ./test.sh
-  #         _TEST_=package ./test.sh
-
   MacOS:
     runs-on: macos-latest
     steps:
@@ -52,13 +37,28 @@ jobs:
           fetch-depth: 1 # without checkout history and tags
       - name: Install Dependencies
         run: |
-          brew tap d12frosted/emacs-plus
-          brew install emacs-plus@28 --with-native-comp
+          brew install emacs
       - name: Test
         run: |
           _TEST_=bone ./test.sh
           _TEST_=axiom ./test.sh
           _TEST_=package ./test.sh
+
+  # MacOS:
+  #   runs-on: macos-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 1 # without checkout history and tags
+  #     - name: Install Dependencies
+  #       run: |
+  #         brew tap d12frosted/emacs-plus
+  #         brew install emacs-plus@28 --with-native-comp
+  #     - name: Test
+  #       run: |
+  #         _TEST_=bone ./test.sh
+  #         _TEST_=axiom ./test.sh
+  #         _TEST_=package ./test.sh
           
   Windows:
     runs-on: windows-latest
