@@ -232,7 +232,7 @@
                   (ss (completing-read
                        (format "Choose (all|%s) "
                                (mapconcat #'identity sr ","))
-                       sr nil nil (car *dict-style-history*)
+                       (cons "all" sr) nil nil (car *dict-style-history*)
                        '*dict-style-history* (car sr))))
              (cons d (if (and (stringp ss)
                               (or (string= "all" ss)
