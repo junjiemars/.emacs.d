@@ -7,7 +7,6 @@
 ;;;;
 
 
-;; `treesit': builtin since Emacs-29+
 (defmacro-if-feature% treesit)
 
 

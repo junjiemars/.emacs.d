@@ -6,7 +6,7 @@
 ;; on-eglot-autoload.el
 ;;;;
 
-;;; `eglot' builtin since Emacs-29+
+
 (defmacro-if-feature% eglot)
 (defmacro-if-feature% project)
 
@@ -71,22 +71,22 @@
                           (concat p ".clang-format"))))))))))))
 
 
-(when-feature-eglot%)
+(when-feature-eglot%
 
-(defalias 'eglot*-server-programs
-  (lexical-let% ((b (v-home% ".exec/eglot-server.el"))
-                 (m '((c-mode . ("clangd" "--header-insertion=never"))
-                      (swift-mode . ("sourcekit-lsp")))))
-    (lambda (&optional op sexp)
-      (cond ((eq op :push)
-             (dolist* (x sexp sexp)
-               (push! x eglot-server-programs)))
-            ((eq op :read)
-             (read-sexp-from-file b))
-            ((eq op :save)
-             (when sexp (save-sexp-to-file sexp b)))
-            (t m))))
-  "The \\=`eglot-server-programs\\=' cache.")
+ (defalias 'eglot*-server-programs
+   (lexical-let% ((b (v-home% ".exec/eglot-server.el"))
+                  (m '((c-mode . ("clangd" "--header-insertion=never"))
+                       (swift-mode . ("sourcekit-lsp")))))
+     (lambda (&optional op sexp)
+       (cond ((eq op :push)
+              (dolist* (x sexp sexp)
+                (push! x eglot-server-programs)))
+             ((eq op :read)
+              (read-sexp-from-file b))
+             ((eq op :save)
+              (when sexp (save-sexp-to-file sexp b)))
+             (t m))))
+   "The \\=`eglot-server-programs\\=' cache."))
 
 
 (when-feature-eglot%
@@ -156,4 +156,4 @@
 ;; end of `project'
 
 
-;;; end of on-eglot-autoload.el
+;; end of on-eglot-autoload.el

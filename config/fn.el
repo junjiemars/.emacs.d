@@ -182,12 +182,12 @@ accumulate clause and Miscellaneous clause."
   (let ((ss (format "if-feature-%s%%" feature)))
     (unless (intern-soft ss)
       (let ((name (intern ss)))
-	`(defmacro ,name (then &rest body)
+        `(defmacro ,name (then &rest body)
            "If has the feauture do THEN, otherwise do BODY."
            (declare (indent 1))
            (if% (require ',feature nil t)
                `(progn% (comment ,@body)
-			,then)
+		                    ,then)
              `(progn% (comment ,then)
                       ,@body)))))))
 
