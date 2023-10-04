@@ -7,6 +7,9 @@
 ;;
 ;;; Code:
 
+
+;;; alias
+
 (fset 'range #'number-sequence)
 
 (unless-fn% 'char= nil
@@ -15,6 +18,22 @@
 (unless-fn% 'characterp nil
   (fset 'characterp #'char-valid-p))
 
+(defmacro get-buffer-create* (buffer-or-name &optional inhibit-buffer-hooks)
+  "See \\=`get-buffer-create\\='."
+  `(if-version%
+       <= 28
+       (get-buffer-create ,buffer-or-name ,inhibit-buffer-hooks)
+     (if ,inhibit-buffer-hooks
+         (let ((kill-buffer-hook nil)
+               (kill-buffer-query-functions nil)
+               (buffer-list-update-hook nil))
+           (get-buffer-create))
+       (get-buffer-create))))
+
+;; end of alias
+
+
+;;; general function/macro
 
 (defun flatten (seq)
   "Flatten SEQ."
@@ -318,7 +337,7 @@ Returns the name of FILE when successed otherwise nil."
         (b (gensym*)))
     `(let ((,s ,sexp)
            (,f ,file)
-           (,b (generate-new-buffer (symbol-name (gensym* "ssexprtf")))))
+           (,b (get-buffer-create* (symbol-name (gensym* "ssexprtf")) t)))
        (unwind-protect
            (let ((format-alist nil)
                  (coding-system-for-write 'no-conversion))
@@ -335,7 +354,7 @@ Returns the name of FILE when successed otherwise nil."
         (b (gensym*)))
     `(let ((,f ,file))
        (when (and (stringp ,f) (file-exists-p ,f))
-         (let ((,b (generate-new-buffer (symbol-name (gensym* "rsexpff")))))
+         (let ((,b (get-buffer-create* (symbol-name (gensym* "rsexpff")) t)))
            (unwind-protect
                (with-current-buffer ,b
                  (insert-file-contents-literally ,f)
@@ -352,7 +371,7 @@ Returns the name of FILE when successed otherwise nil."
         (b (gensym*)))
     `(let ((,s ,str)
            (,f ,file)
-           (,b (generate-new-buffer (symbol-name (gensym* "sstrtf")))))
+           (,b (get-buffer-create* (symbol-name (gensym* "sstrtf")) t)))
        (unwind-protect
            (let ((format-alist nil)
                  (coding-system-for-write 'no-conversion))
@@ -369,7 +388,7 @@ Returns the name of FILE when successed otherwise nil."
         (b (gensym*)))
     `(let ((,f ,file))
        (when (and (stringp ,f) (file-exists-p ,f))
-         (let ((,b (get-buffer-create (symbol-name (gensym* "rstrff")) t)))
+         (let ((,b (get-buffer-create* (symbol-name (gensym* "rstrff")) t)))
            (unwind-protect
                (with-current-buffer ,b
                  (insert-file-contents-literally ,f)
