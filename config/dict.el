@@ -252,4 +252,4 @@
 
 (provide 'dict)
 
-;; end of dict.el
+;; end of dict.el

@@ -75,11 +75,11 @@
 (defun load-conditional-modes! ()
   "Load conditional modes."
   (compile!
-    ;; Lookup dictionary
-    (progn
+    ;; `dict'
+    (prog1
+        (compile-unit% (emacs-home* "config/dict.el") t)
       (autoload 'lookup-dict (v-home%> "config/dict")
-        "Lookup WORD in DICT then show the result in the echo area." t)
-      (compile-unit% (emacs-home* "config/dict.el")))
+        "Lookup WORD in DICT then show the result in the echo area." t))
 
     ;; `glyph'
     (when-font%
