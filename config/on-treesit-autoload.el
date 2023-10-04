@@ -98,11 +98,7 @@
 
 (when-feature-treesit%
 
- (with-eval-after-load 'treesit
-
-   (setq% treesit-extra-load-path
-          `(,(v-home! ".treesit/"))
-          'treesit)))
+   (setq% treesit-extra-load-path `(,(v-home! ".treesit/"))))
 
 
 ;; end of on-treesit-autoload.el

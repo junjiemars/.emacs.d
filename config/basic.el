@@ -54,7 +54,7 @@
 (setq% image-dired-dir (v-home! ".dired/image/") 'image-dired)
 
 ;; `multisession': where multisession variables stored
-(setq% multisession-directory (v-home! ".multisession") 'multisession)
+(setq% multisession-directory (v-home! ".multisession/") 'multisession)
 
 ;; `nsm': Network Security Manager
 (setq% nsm-settings-file (v-home! ".nsm/security.data") 'nsm)
