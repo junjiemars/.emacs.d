@@ -190,7 +190,9 @@
                  "Play sudoku." t))
 
     ;; `treesit'
-    (compile-unit% (emacs-home* "config/on-treesit-autoload.el"))
+    (if-feature-treesit%
+        (compile-unit% (emacs-home* "config/on-treesit-autoload.el")))
+
 
     ) ;; end of compile!
 

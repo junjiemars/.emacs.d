@@ -132,7 +132,7 @@
                                  (+ 1 2)
                                  (* 3 4))))))
 
- ;; end of init
+;; end of init
 
 ;;;;
 ;; boot
@@ -648,7 +648,7 @@
       (should (string= "a bb" (cdr (symbol@)))))))
 
 
- ;; end of basic
+;; end of basic
 
 ;;;;
 ;; shells
@@ -675,7 +675,7 @@
     (should (string= "" (paths->var '("a" "b" "c")
                                     (lambda (x) (file-exists-p x)))))))
 
- ;; end of shells
+;; end of shells
 
 
 (comment
@@ -772,9 +772,7 @@
                               "" t)
                              0)))))
 
-
- ;; end of trans
-
+;; end of trans
 
 
-;; eof
+;; end of test.el

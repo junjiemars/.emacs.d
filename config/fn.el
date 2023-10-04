@@ -92,7 +92,7 @@ If optional UNIQUELY is non-nil then append uniquely."
              (setf (nth ,i1 c1) ,n1)
              (setq ,seq (append c1 `(,(nth (1- l) ,seq))))))))))
 
-
+;; end of general function/macro
 
 
 ;;;;
@@ -158,7 +158,7 @@ accumulate clause and Miscellaneous clause."
                   (float-time (time-subtract (current-time) ,b)))))))
 
 
- ;; end of common lisp macro
+;; end of common lisp macro
 
 
 ;;;;
@@ -219,7 +219,7 @@ accumulate clause and Miscellaneous clause."
          (setq ,var ,old)))))
 
 
- ;; end of byte-compiler macro
+;; end of byte-compiler macro
 
 ;;;;
 ;; Strings
@@ -304,7 +304,7 @@ Optional argument TRIM regexp used to trim."
            (split-string ,s ,p ,omit-nulls))))))
 
 
- ; end of Strings
+;; end of Strings
 
 
 (defmacro save-sexp-to-file (sexp file)
@@ -371,7 +371,7 @@ Returns the name of FILE when successed otherwise nil."
              (and (buffer-name ,b) (kill-buffer ,b))))))))
 
 
- ; end of Files
+;; end of Files
 
 
 ;;; Platform Related Functions
@@ -441,11 +441,10 @@ If FN is nil then return the path, otherwise call FN with the path."
         `,path))))
 
 
- ; end of Platform Related Functions
-
-
+;; end of Platform Related Functions
 
 
 (provide 'fn)
 
-;;; fn.el ends here
+
+;; end of fn.el

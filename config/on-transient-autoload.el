@@ -13,7 +13,8 @@
 (defmacro when-feature-transient% (&rest body)
   "When \\=`transient\\=', do BODY."
   (if-feature-transient%
-      `(progn% ,@body)))
+      `(progn% ,@body)
+		`(comment ,@body)))
 
 
 (when-feature-transient%

@@ -57,7 +57,7 @@
          (v-home% ".exec/cc-env.bat"))))))
 
 
- ;; msvc host environment
+;; msvc host environment
 
 
 (defconst +cc*-compiler-bin+
@@ -274,7 +274,7 @@
       (funcall parser (cdr cmd)))))
 
 
-;; cc system include
+;;; cc system include
 
 (defalias 'cc*-system-include
   (lexical-let% ((dx))
@@ -306,11 +306,11 @@
 
   "Return a list of system include directories.
 
-Load `cc*-system-include' from file when CACHED is t,
+Load \\=`cc*-system-include\\=' from file when CACHED is t,
 otherwise check cc include on the fly.
 
 If specify REMOTE argument then return a list of remote system
-include directories. The REMOTE argument from `remote-norm-file'.")
+include directories. The REMOTE argument from \\=`remote-norm-file\\='.")
 
 
 (defalias 'cc*-extra-include
@@ -361,7 +361,7 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
     (with-current-buffer buffer (view-mode 1))))
 
 
- ;; end of cc*-system-include
+;; end of cc*-system-include
 
 
 (defun cc*-find-include-file (&optional in-other-window)
@@ -555,7 +555,7 @@ RENEW whether to renew the existing FILE."
 ;; (add-hook 'c-mode-hook (defun-fn-threading^ cc*-system-autoload) t)
 
 
- ;; end of eldoc
+;; end of eldoc
 
 
 ;;; cc-styles
@@ -604,10 +604,10 @@ See `align-entire'."
     (align-entire begin end)))
 
 
- ;; end of `cc-styles'
+;; end of `cc-styles'
 
 
-;;; Default `c-mode-hook' involving useless `macrostep-c-mode-hook'.
+;; Default `c-mode-hook' involving useless `macrostep-c-mode-hook'.
 (setq% c-mode-hook nil 'cc-mode)
 
 (with-eval-after-load 'cc-mode
@@ -655,4 +655,4 @@ See `align-entire'."
       (setq% Man-header-file-path (cc*-system-include t) 'man))))
 
 
-;; end of on-cc-autoload.el
+;; end of on-cc-autoload.el
