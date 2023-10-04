@@ -175,8 +175,7 @@
                    (save-excursion
                      (goto-char ,rhs)
                      (save-excursion
-                       (if (<= (skip-syntax-backward ")]}") -1)
-                           -1 0)))))))))))
+                       (skip-syntax-backward ")]}")))))))))))
 
 
   (defmacro _mark_word@_ (&optional n)

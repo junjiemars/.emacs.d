@@ -44,9 +44,9 @@ backwards N times if negative."
 If prefix N is non nil, then forward or backward N sexps.
 Otherwise, select the whole list."
   (interactive "p")
-  (let ((bs (if (consp current-prefix-arg)
-                (_mark_whole_sexp@_)
-              (_mark_sexp@_ n))))
+  (let ((bs (cond ((consp current-prefix-arg)
+                   (_mark_whole_sexp@_ t))
+                  (t (_mark_sexp@_ n)))))
     (unless (and bs (car bs) (cdr bs))
       (user-error "No sexp found"))
     (_mark_thing_ (car bs) (cdr bs))))
