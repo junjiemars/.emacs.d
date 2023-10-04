@@ -307,6 +307,8 @@ Optional argument TRIM regexp used to trim."
 ;; end of Strings
 
 
+;;; read/save-str/sexp-file
+
 (defmacro save-sexp-to-file (sexp file)
   "Save SEXP to FILE.
 
@@ -318,10 +320,12 @@ Returns the name of FILE when successed otherwise nil."
            (,f ,file)
            (,b (generate-new-buffer (symbol-name (gensym* "ssexprtf")))))
        (unwind-protect
-           (with-current-buffer ,b
-             (print ,s ,b)
-             (write-region (point-min) (point-max) ,f)
-             ,f)
+           (let ((format-alist nil)
+                 (coding-system-for-write 'no-conversion))
+             (with-current-buffer ,b
+               (print ,s ,b)
+               (write-region (point-min) (point-max) ,f)
+               ,f))
          (and (buffer-name ,b) (kill-buffer ,b))))))
 
 
@@ -334,7 +338,7 @@ Returns the name of FILE when successed otherwise nil."
          (let ((,b (generate-new-buffer (symbol-name (gensym* "rsexpff")))))
            (unwind-protect
                (with-current-buffer ,b
-                 (insert-file-contents ,f)
+                 (insert-file-contents-literally ,f)
                  (read ,b))
              (and (buffer-name ,b) (kill-buffer ,b))))))))
 
@@ -350,10 +354,12 @@ Returns the name of FILE when successed otherwise nil."
            (,f ,file)
            (,b (generate-new-buffer (symbol-name (gensym* "sstrtf")))))
        (unwind-protect
-           (with-current-buffer ,b
-             (insert ,s)
-             (write-region (point-min) (point-max) ,f)
-             ,f)
+           (let ((format-alist nil)
+                 (coding-system-for-write 'no-conversion))
+             (with-current-buffer ,b
+               (insert ,s)
+               (write-region (point-min) (point-max) ,f)
+               ,f))
          (and (buffer-name ,b) (kill-buffer ,b))))))
 
 
@@ -363,15 +369,14 @@ Returns the name of FILE when successed otherwise nil."
         (b (gensym*)))
     `(let ((,f ,file))
        (when (and (stringp ,f) (file-exists-p ,f))
-         (let ((,b (generate-new-buffer (symbol-name (gensym* "rstrff")))))
+         (let ((,b (get-buffer-create (symbol-name (gensym* "rstrff")) t)))
            (unwind-protect
-               (with-temp-buffer
-                 (insert-file-contents ,f)
-                 (buffer-string))
+               (with-current-buffer ,b
+                 (insert-file-contents-literally ,f)
+                 (buffer-substring-no-properties (point-min) (point-max)))
              (and (buffer-name ,b) (kill-buffer ,b))))))))
 
-
-;; end of Files
+;; end of read/save-str/sexp-file
 
 
 ;;; Platform Related Functions
