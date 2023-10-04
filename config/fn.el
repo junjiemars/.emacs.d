@@ -27,8 +27,8 @@
          (let ((kill-buffer-hook nil)
                (kill-buffer-query-functions nil)
                (buffer-list-update-hook nil))
-           (get-buffer-create))
-       (get-buffer-create))))
+           (get-buffer-create ,buffer-or-name))
+       (get-buffer-create ,buffer-or-name))))
 
 ;; end of alias
 
