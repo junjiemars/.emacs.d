@@ -333,7 +333,7 @@ Optional argument ONLY-COMPILE: see `compile-and-load-file*'."
                             (let ((dst (plist-get ps (car fs)))
                                   (src (cdr fs)))
                               (unless (file-exists-p dst)
-                                (path! (file-name-directory dst))
+                                (path! dst)
                                 (copy-file src dst t)))))
             (t ps))))
   "Define the PATH references.

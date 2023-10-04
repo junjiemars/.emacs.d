@@ -64,9 +64,7 @@ The FILE should be posix path, see \\=`path-separator\\='."
   (let ((f (gensym*))
         (d (gensym*)))
     `(let* ((,f ,file)
-            (,d (if (directory-name-p ,f)
-                    ,f
-                  (file-name-directory ,f))))
+            (,d (file-name-directory ,f)))
        (unless (file-exists-p ,d)
          (make-directory ,d t))
        ,f)))
@@ -197,7 +195,7 @@ DIR where the compiled file located."
            (when (or (not (file-exists-p ,c))
                      (file-newer-than-file-p ,f ,c))
              (unless (string= ,f ,s)
-               (copy-file ,f (path! ,s) t))
+               (copy-file ,f ,s t))
              (if-native-comp%
                  (native-compile ,s ,c)
                (byte-compile-file ,s)))
@@ -278,6 +276,10 @@ the value is nil."
   ;; first native-comp load
   (setcar native-comp-eln-load-path (v-home! ".eln/")))
 
+;; make versioned dir for boot
+(path! (v-home% "config/"))
+
+;; boot
 (compile-and-load-file* (emacs-home* "config/boot.el")
                         nil ;; compile-option
                         (v-home* "config/"))

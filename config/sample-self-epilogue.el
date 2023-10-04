@@ -126,7 +126,7 @@
  ;; skewer: M-x run-skewer
 
  (setq% httpd-root
-        (path! (emacs-home* "private/httpd"))
+        (path! (emacs-home* "private/httpd/"))
         'simple-httpd)
  (setq% httpd-port 8080 'simple-httpd)
 
