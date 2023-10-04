@@ -20,10 +20,10 @@
 
 (defmacro get-buffer-create* (buffer-or-name &optional inhibit-buffer-hooks)
   "See \\=`get-buffer-create\\='."
-  `(if-version%
-       <= 28
-       (get-buffer-create ,buffer-or-name ,inhibit-buffer-hooks)
-     (if ,inhibit-buffer-hooks
+  (if-version%
+      <= 28
+      `(get-buffer-create ,buffer-or-name ,inhibit-buffer-hooks)
+    `(if ,inhibit-buffer-hooks
          (let ((kill-buffer-hook nil)
                (kill-buffer-query-functions nil)
                (buffer-list-update-hook nil))
