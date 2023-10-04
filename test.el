@@ -214,11 +214,6 @@
             (dolist* (x '(a b c))
               (when (eq 'b x) (throw 'found t))))))
 
-(ert-deftest %boot:defmacro-if-feature% ()
-  (defmacro-if-feature% ert)
-  (defmacro-if-feature% ertxxx)
-  (should (= 3 (if-feature-ert% (+ 1 2) (* 3 4))))
-  (should (= 12 (if-feature-ertxxx% (+ 1 2) (* 3 4)))))
 
 (ert-deftest %boot:self-spec-> ()
   (should (null (self-spec-> nil nil)))
@@ -228,12 +223,21 @@
 
 
 
- ;; end of boot
+;; end of boot
 
 
 ;;;;
 ;; fn
 ;;;;
+
+
+(defmacro-if-feature% ert)
+(defmacro-if-feature% ertxxx)
+(ert-deftest %fn:defmacro-if-feature% ()
+  (should (= 3 (if-feature-ert% (+ 1 2) (* 3 4))))
+  (should (= 12 (if-feature-ertxxx% (+ 1 2) (* 3 4))))
+  (should (and (unintern 'if-feature-ert%)
+               (unintern 'if-feature-ertxxx%))))
 
 (ert-deftest %fn:flatten ()
   (should (equal '(nil) (flatten nil)))
@@ -455,7 +459,7 @@
     (should (executable-find% "ls" (lambda (ls) ls)))))
 
 
- ;; end of fn
+;; end of `fn'
 
 
 ;;;;
