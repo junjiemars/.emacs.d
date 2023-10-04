@@ -221,20 +221,19 @@
    (list (read-string "Lookup dict for " (cdr (symbol@ 'word)))
          (when current-prefix-arg
            (let* ((ns (mapcar #'car (*dict-defs*)))
-                  (d (read-string (format "Choose (%s) "
-                                          (mapconcat #'identity ns "|"))
-                                  (or (car *dict-name-history*)
-                                      (car ns))
-                                  '*dict-name-history*))
+                  (d (completing-read
+                      (format "Choose (%s) "
+                              (mapconcat #'identity ns "|"))
+                      ns nil nil (car *dict-name-history*)
+                      '*dict-name-history* (car ns)))
                   (dd (cdr (assoc** d (*dict-defs*) :test #'string=)))
                   (sr (remove-if* (lambda (x) (string= x "url"))
                                   (mapcar #'car dd)))
-                  (ss (read-string
+                  (ss (completing-read
                        (format "Choose (all|%s) "
                                (mapconcat #'identity sr ","))
-                       (or (car *dict-style-history*)
-                           "all")
-                       '*dict-style-history*)))
+                       sr nil nil (car *dict-style-history*)
+                       '*dict-style-history* (car sr))))
              (cons d (if (and (stringp ss)
                               (or (string= "all" ss)
                                   (match-string* "\\(all\\)" ss 1)))
