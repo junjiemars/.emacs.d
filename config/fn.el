@@ -329,20 +329,20 @@ Optional argument TRIM regexp used to trim."
 ;;; read/save-str/sexp-file
 
 (defmacro save-sexp-to-file (sexp file)
-  "Save SEXP to FILE.
-
+  "Save SEXP to FILE.\n
 Returns the name of FILE when successed otherwise nil."
   (let ((s (gensym*))
         (f (gensym*))
         (b (gensym*)))
     `(let ((,s ,sexp)
            (,f ,file)
-           (,b (get-buffer-create* (symbol-name (gensym* "ssexprtf")) t)))
+           (,b (get-buffer-create*
+                (symbol-name (gensym* "ssexprtf")) t)))
        (unwind-protect
            (let ((format-alist nil)
                  (coding-system-for-write 'no-conversion))
              (with-current-buffer ,b
-               (print ,s ,b)
+               (prin1 ,s ,b t)
                (write-region (point-min) (point-max) ,f)
                ,f))
          (and (buffer-name ,b) (kill-buffer ,b))))))
@@ -354,7 +354,8 @@ Returns the name of FILE when successed otherwise nil."
         (b (gensym*)))
     `(let ((,f ,file))
        (when (and (stringp ,f) (file-exists-p ,f))
-         (let ((,b (get-buffer-create* (symbol-name (gensym* "rsexpff")) t)))
+         (let ((,b (get-buffer-create*
+                    (symbol-name (gensym* "rsexpff")) t)))
            (unwind-protect
                (with-current-buffer ,b
                  (insert-file-contents-literally ,f)
@@ -371,7 +372,8 @@ Returns the name of FILE when successed otherwise nil."
         (b (gensym*)))
     `(let ((,s ,str)
            (,f ,file)
-           (,b (get-buffer-create* (symbol-name (gensym* "sstrtf")) t)))
+           (,b (get-buffer-create*
+                (symbol-name (gensym* "sstrtf")) t)))
        (unwind-protect
            (let ((format-alist nil)
                  (coding-system-for-write 'no-conversion))
@@ -388,7 +390,8 @@ Returns the name of FILE when successed otherwise nil."
         (b (gensym*)))
     `(let ((,f ,file))
        (when (and (stringp ,f) (file-exists-p ,f))
-         (let ((,b (get-buffer-create* (symbol-name (gensym* "rstrff")) t)))
+         (let ((,b (get-buffer-create*
+                    (symbol-name (gensym* "rstrff")) t)))
            (unwind-protect
                (with-current-buffer ,b
                  (insert-file-contents-literally ,f)

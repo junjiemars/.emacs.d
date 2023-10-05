@@ -66,7 +66,7 @@ The FILE should be posix path, see \\=`path-separator\\='."
     `(let* ((,f ,file)
             (,d (file-name-directory ,f)))
        (unless (file-exists-p ,d)
-         (make-directory ,d t))
+         (make-directory-internal ,d))
        ,f)))
 
 
