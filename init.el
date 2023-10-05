@@ -282,13 +282,11 @@ the value is nil."
   ;; first native-comp load
   (setcar native-comp-eln-load-path (v-home! ".eln/")))
 
-;; make versioned dir for boot
-(v-home! "config/")
 
 ;; boot
 (compile-and-load-file* (emacs-home* "config/boot.el")
                         nil ;; compile-option
-                        (v-home* "config/"))
+                        (v-home! "config/"))
 
 
 (when-package%

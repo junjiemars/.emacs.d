@@ -329,11 +329,13 @@ Optional argument ONLY-COMPILE: see `compile-and-load-file*'."
     (lambda (&optional op k v)
       (cond ((eq :get op) (plist-get ps k))
             ((eq :put op) (setq ps (plist-put ps k v)))
-            ((eq :dup op) (dolist* (fs ss)
-														(let ((dst (plist-get ps (car fs)))
-																	(src (cdr fs)))
-															(unless (file-exists-p dst)
-																(copy-file src dst t)))))
+            ((eq :dup op)
+             (v-home! "private/")
+             (dolist* (fs ss)
+							 (let ((dst (plist-get ps (car fs)))
+										 (src (cdr fs)))
+								 (unless (file-exists-p dst)
+									 (copy-file src dst t)))))
             (t ps))))
   "Define the PATH references.
 
@@ -371,7 +373,6 @@ No matter the declaration order, the executing order is:
 
 
 ;;; Duplicate spec files
-(v-home! "private/")
 (*self-paths* :dup)
 
 
