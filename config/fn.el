@@ -342,7 +342,7 @@ Returns the name of FILE when successed otherwise nil."
            (let ((format-alist nil)
                  (coding-system-for-write 'no-conversion))
              (with-current-buffer ,b
-               (prin1 ,s ,b t)
+               (prin1 ,s ,b)
                (write-region (point-min) (point-max) ,f)
                ,f))
          (and (buffer-name ,b) (kill-buffer ,b))))))
