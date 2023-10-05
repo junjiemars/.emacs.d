@@ -66,11 +66,17 @@ The FILE should be posix path, see \\=`path-separator\\='."
     `(let* ((,f ,file)
             (,d (file-name-directory ,f)))
        (unless (file-exists-p ,d)
-         (make-directory-internal ,d))
+				 (let ((i 1) (l (length ,d)))
+					 (while (< i l)
+						 (when (= ?/ (aref ,d i))
+							 (let ((s (substring ,d 0 (+ i 1))))
+								 (unless (file-exists-p s)
+									 (make-directory-internal s))))
+						 (setq i (1+ i)))))
        ,f)))
 
 
- ; end basic file macro
+;; end basic file macro
 
 
 ;;; versioned file macro
@@ -277,7 +283,7 @@ the value is nil."
   (setcar native-comp-eln-load-path (v-home! ".eln/")))
 
 ;; make versioned dir for boot
-(path! (v-home% "config/"))
+(v-home! "config/")
 
 ;; boot
 (compile-and-load-file* (emacs-home* "config/boot.el")

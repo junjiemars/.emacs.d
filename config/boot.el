@@ -371,7 +371,7 @@ No matter the declaration order, the executing order is:
 
 
 ;;; Duplicate spec files
-(eval-when-compile (path! (v-home% "private/")))
+(v-home! "private/")
 (*self-paths* :dup)
 
 
