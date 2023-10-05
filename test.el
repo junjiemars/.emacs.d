@@ -429,27 +429,31 @@
                    (match-string* "XX\\(abc\\)XX" "XXabcXX" 1))))
 
 (ert-deftest %fn:save/read-sexp-to/from-file ()
-  (let ((f (emacs-home* "private/sexp"))
+  (let ((f (path! (concat temporary-file-directory
+                          (make-temp-name (symbol-name (gensym*)))
+                          "/sexp")))
         (s1 '(defvar test%fn-sstf1 t))
         (t1 (make-hash-table :test 'string-hash=)))
     (should (and (save-sexp-to-file s1 f)
                  (file-exists-p f)
                  (equal s1 (read-sexp-from-file f))))
+    (should (prog1 (file-exists-p f) (delete-file f)))
     (puthash "a" 1 t1)
     (puthash "b" 2 t1)
     (should (= 2 (hash-table-count t1)))
     (should (and (save-sexp-to-file t1 f)
                  (file-exists-p f)
                  (= 2 (gethash "b" (read-sexp-from-file f)))))
-    (should (or (delete-file f)
-                (not (file-exists-p f))))))
+    (should (prog1 (file-exists-p f) (delete-file f)))))
 
 (ert-deftest %fn:save/read-str-to/from-file ()
-  (let ((f (emacs-home* "private/str")))
+  (let ((f (path! (concat temporary-file-directory
+                          (make-temp-name (symbol-name (gensym*)))
+                          "/str"))))
     (should (and (save-str-to-file "abc" f)
+                 (file-exists-p f)
                  (string= "abc" (read-str-from-file f))))
-    (should (or (delete-file f)
-                (not (file-exists-p f))))))
+    (should (prog1 (file-exists-p f) (delete-file f)))))
 
 (ert-deftest %fn:executable-find% ()
   (if-platform% 'windows-nt
