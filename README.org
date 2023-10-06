@@ -340,7 +340,7 @@ Introduce the rules of naming /files/ and /functions/.
 - *v-χ* prefix: function or macro for versioned directory, such as
   =v-home*=
 - *_χ_* prefix: function or macro only existing in compile-time,
-  such as =_mark-thing@_=
+  such as =_mark_thing@_=
 - *χ​** or *χ*** suffix: extension of Emacs' builtin function or
   macro, such as =every*= and =assoc**=
 - *χ%* suffix: macro be expanded at compile time, such as =v-home%=
@@ -1082,8 +1082,8 @@ been made.
    :END:
 
 #+ATTR_HTML: :style text-align:left
-=kill-whole-word= and =kill-whole-sexp= are frequently editing
-commands when programming.
+=kill-word@= and =kill-sexp@= are frequently editing commands when
+programming.
 
 ** Keys
    :PROPERTIES:
