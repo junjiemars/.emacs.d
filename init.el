@@ -66,13 +66,15 @@ The FILE should be posix path, see \\=`path-separator\\='."
     `(let* ((,f ,file)
             (,d (file-name-directory ,f)))
        (unless (file-exists-p ,d)
-				 (let ((i 1) (l (length ,d)))
-					 (while (< i l)
-						 (when (= ?/ (aref ,d i))
-							 (let ((s (substring ,d 0 (+ i 1))))
-								 (unless (file-exists-p s)
-									 (make-directory-internal s))))
-						 (setq i (1+ i)))))
+				 (let ((i (1- (length ,d))))
+           (catch 'break
+					   (while (> i 0)
+						   (when (= ?/ (aref ,d i))
+							   (let ((s (substring ,d 0 i)))
+								   (if (file-exists-p s)
+                       (throw 'break t)
+									   (make-directory-internal s))))
+						   (setq i (1- i))))))
        ,f)))
 
 
