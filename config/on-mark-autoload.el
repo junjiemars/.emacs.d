@@ -9,6 +9,21 @@
 ;; (eval-when-compile (require 'marks))
 
 
+;;; mark/kill-symbol
+(defun mark-symbol@ ()
+  "Mark symbol at point."
+  (let ((bs (_mark_symbol@_)))
+    (unless (and bs (car bs) (cdr bs))
+      (user-error "No symbol found"))
+    (_mark_thing_ (car bs) (cdr bs))))
+
+(defun kill-symbol ()
+  "Kill symbol."
+  (let ((bs (_mark_symbol@_)))
+    (unless (and bs (car bs) (cdr bs))
+      (user-error "No symbol found"))
+    (kill-region (car bs) (cdr bs))))
+
 ;;; mark/kill-sexp
 
 (defun mark-sexp@ (&optional n)
@@ -23,9 +38,8 @@ Otherwise, select the whole list."
       (user-error "No sexp found"))
     (_mark_thing_ (car bs) (cdr bs))))
 
-
 (defun kill-whole-sexp (&optional boundary)
-  "Kill current sexp.\n
+  "Kill whole sexp.\n
 With prefix BOUNDARY, killing include BOUNDARY otherwise do not."
   (interactive "P")
   (let ((bs (_mark_quoted@_ (if boundary 1 0))))
@@ -143,6 +157,7 @@ If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
 
 ;; Kill
 (define-key (current-global-map) (kbd "C-x M-d") #'kill-whole-word)
+(define-key (current-global-map) (kbd "C-x M-s") #'kill-symbol)
 (define-key (current-global-map) (kbd "C-x M-e") #'kill-whole-sexp)
 (define-key% (current-global-map) (kbd "C-x M-DEL") #'kill-whole-line)
 

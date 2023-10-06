@@ -23,7 +23,7 @@
   :END:
 
 #+ATTR_HTML: :style text-align:left
-It's works on Emacs version 22.1.1+ , provides more reasonable styles:
+It works on Emacs version 22.1.1+ , provides more reasonable styles:
 more organized code, more consistent, more cleaner and more
 faster. You can run it on any environment Emacs itself runs on: GUI or
 Terminal, even you can run multiple Emacs instances with different
@@ -40,7 +40,8 @@ git clone --depth=1 https://github.com/junjiemars/.emacs.d.git ~/.emacs.d
 - want more functionalities see [[#recipe][Recipe]] section
 
 #+ATTR_HTML: :style text-align:left
-One more thing, it's best to remind you: take care, it's super fast.
+Additionally, it is important to remind you to take care as it is
+exceptionally fast.
 
 #+ATTR_HTML: :style display:none
 - [[#story][Story]]
@@ -55,20 +56,21 @@ One more thing, it's best to remind you: take care, it's super fast.
   :END:
 
 #+ATTR_HTML: :style text-align:left
-Emacs is the most powerful editor on the world there is no *one of*,
-it's programmable, elegant and /self-documenting/.
+Emacs is the most powerful editor in the world there is no *one of*.
+It's programmable, elegant and /self-documenting/.
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
-After my daily work being done more and more in Emacs, I know it's the
-time to make Emacs being a part of my body and mind, not just open a
-file, navigating, editing, and save it. So, I build Nore Emacs taking
-the approach that Euclid did in his geometry.
+As my daily work increasingly revolves around Emacs, I realize it's
+time to integrate Emacs into my very being - not just for opening,
+navigating, editing, and saving files. Inspired by Euclid's approach
+to geometry, I have created Nore Emacs.
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
-Nore Emacs strives to be consistent, fast, stable and hack friendly,
-which can run with consistent behaviors on wherever Emacs runs.
+Nore Emacs aims to provide a seamless experience with its focus on
+consistency, speed, stability, and hackability. It ensures consistent
+behavior across all platforms where Emacs is supported.
 
 #+ATTR_HTML: :style display:none
 - [[#principles][Principles]]
@@ -80,20 +82,30 @@ which can run with consistent behaviors on wherever Emacs runs.
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
-Now, let's start from the Level Two. The only thing to rember: teach
-yourself some little Elisp (@@html:<kbd>@@C-h i m Elisp@@html:</kbd>@@).
+Now, let's begin at Level Two. The key thing to remember is to
+familiarize yourself with some basic Elisp. You can start by using the
+Emacs built-in help system (@@html:<kbd>@@C-h i m
+Elisp@@html:</kbd>@@) and navigate to the Elisp documentation.
 
 ** Principles
    :PROPERTIES:
    :CUSTOM_ID: principles
    :END:
 
-- *Adaptive*: run on any OS, GUI or TUI, from most recent Emacs's
-  versions to ancient ones, and one Emacs's configuration suit for all
-  coexisting Emacs on the same machine.
-- *Consistent*: wherever and whenever you can play with Emacs always
-  behaves in the same way.
-- *Minimalism*: inside and outside and just load what's your need.
+- *Adaptive*: Nore Emacs is designed to run on any operating system,
+  whether it's a graphical or terminal interface. It is compatible
+  with both the latest Emacs versions and even older
+  ones. Furthermore, you can use a single Emacs configuration for
+  multiple coexisting Emacs instances on the same machine
+
+- *Consistent*: Regardless of the environment or time, Nore Emacs
+  always maintains consistent behavior. You can rely on a seamless
+  experience no matter where or when you use it.
+
+- *Minimalism*: Nore Emacs promotes a minimalist approach, both
+  internally and externally. It only loads the necessary components
+  based on your specific needs, ensuring efficiency and avoiding
+  unnecessary clutter.
 
 ** Requirements
    :PROPERTIES:
@@ -968,10 +980,11 @@ nil, then forward or backword to word boundary, just like the builtin
 `mark-defun'.
 
 #+REVEAL: split
+- @@html:<kbd>@@C-c m s@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-symbol.png][mark symbol at point]]
 - @@html:<kbd>@@C-c m f@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-filename.png][mark filename at point]]
 - @@html:<kbd>@@M-@@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-word.png][mark word at point]]
 - @@html:<kbd>@@C-c m l@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-line.png][mark line at point]]
-- @@html:<kbd>@@C-M-@@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-list.png][mark sexp at point]]
+- @@html:<kbd>@@C-M SPC@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-list.png][mark sexp at point]]
 - @@html:<kbd>@@C-M h@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-defun.png][mark defun at point]]
 
 *** Tags
@@ -1094,9 +1107,12 @@ Global for all Emacs' version.
 - @@html:<kbd>@@C-M-o@@html:</kbd>@@ =open-previous-line=
 - @@html:<kbd>@@C-o@@html:</kbd>@@ =open-next-line=
 #+REVEAL: split
+- @@html:<kbd>@@C-c m d@@html:</kbd>@@: =mark-symbol@=
+- @@html:<kbd>@@C-c m d@@html:</kbd>@@: =mark-word@=	
+- @@html:<kbd>@@C-c m d@@html:</kbd>@@: =mark-sexp@=
+- @@html:<kbd>@@C-c m d@@html:</kbd>@@: =mark-defun@=
 - @@html:<kbd>@@C-c m l@@html:</kbd>@@: =mark-line@=
 - @@html:<kbd>@@C-c m f@@html:</kbd>@@: =mark-filename@=
-- @@html:<kbd>@@C-c m d@@html:</kbd>@@: =mark-defun@=
 #+REVEAL: split
 - @@html:<kbd>@@C-s@@html:</kbd>@@: =isearch-forward*=
 - @@html:<kbd>@@C-r@@html:</kbd>@@: =isearch-backward*=

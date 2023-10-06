@@ -67,6 +67,13 @@
 
 
 (eval-when-compile
+  (defmacro _mark_symbol@_ ()
+    `(bounds-of-thing-at-point 'symbol)))
+
+;; end of `_mark_symbol@_'
+
+
+(eval-when-compile
   (defmacro _forward_sexp_ (n)
     (let ((n1 (gensym*))
           (n2 (gensym*))
@@ -99,7 +106,7 @@
               (,bs (bounds-of-thing-at-point 'sexp))
               (,fs (save-excursion
                      (goto-char (_forward_sexp_ ,n1))
-                     (bounds-of-thing-at-point 'sexp))))
+                     (bounds-of-thing-at-point 'symbol))))
          (cons (if (>= ,n1 0)
                    (or (car ,bs) ,p)
                  (or (car ,fs) (car ,bs) ,p))
