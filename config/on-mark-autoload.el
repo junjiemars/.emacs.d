@@ -9,58 +9,28 @@
 ;; (eval-when-compile (require 'marks))
 
 
-;;; mark/kill-symbol
-
-(defun mark-symbol@ (&optional n)
-  "Mark symbol at point.
-
-If prefix N is non-nil, then select the Nth symbol."
-  (interactive "p")
-  (let ((bs (_mark_symbol@_ n)))
-    (unless (and bs (car bs) (cdr bs))
-      (user-error "No symbol found"))
-    (_mark_thing_ (car bs) (cdr bs))))
-
-
-(defun kill-whole-symbol (&optional n)
-  "Kill current symbol.
-
-With prefix N, do it N times forward if positive, or move
-backwards N times if negative."
-  (interactive "p")
-  (let ((bs (_mark_symbol@_ n)))
-    (unless (and bs (car bs) (cdr bs))
-      (user-error "No whole symbol found"))
-    (kill-region (car bs) (cdr bs))))
-
-;; end of mark/kill-symbol
-
-
 ;;; mark/kill-sexp
 
 (defun mark-sexp@ (&optional n)
-  "Mark sexp at point.
-
+  "Mark sexp at point.\n
 If prefix N is non nil, then forward or backward N sexps.
 Otherwise, select the whole list."
   (interactive "p")
   (let ((bs (cond ((consp current-prefix-arg)
                    (_mark_whole_sexp@_ t))
                   (t (_mark_sexp@_ n)))))
-    (unless (and bs (car bs) (cdr bs))
+    (unless (and bs (car bs) (cdr bs) (null (= (car bs) (cdr bs))))
       (user-error "No sexp found"))
     (_mark_thing_ (car bs) (cdr bs))))
 
 
 (defun kill-whole-sexp (&optional boundary)
-  "Kill current sexp.
-
+  "Kill current sexp.\n
 With prefix BOUNDARY, killing include BOUNDARY otherwise do not."
   (interactive "P")
   (let ((bs (_mark_quoted@_ (if boundary 1 0))))
-    (unless bs
-      (setq bs (_mark_whole_sexp@_ boundary)))
-    (unless (and bs (car bs) (cdr bs))
+    (unless bs (setq bs (_mark_whole_sexp@_ boundary)))
+    (unless (and bs (car bs) (cdr bs) (null (= (car bs) (cdr bs))))
       (user-error "No whole sexp found"))
     (kill-region (car bs) (cdr bs))))
 
@@ -173,12 +143,10 @@ If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
 
 ;; Kill
 (define-key (current-global-map) (kbd "C-x M-d") #'kill-whole-word)
-(define-key (current-global-map) (kbd "C-x M-s") #'kill-whole-symbol)
 (define-key (current-global-map) (kbd "C-x M-e") #'kill-whole-sexp)
 (define-key% (current-global-map) (kbd "C-x M-DEL") #'kill-whole-line)
 
 ;; Mark
-(define-key (current-global-map) (kbd "C-c m s") #'mark-symbol@)
 (define-key (current-global-map) (kbd "C-c m f") #'mark-filename@)
 (define-key (current-global-map) (kbd "C-c m l") #'mark-line@)
 (define-key (current-global-map) (kbd "C-c m q") #'mark-quoted@)

@@ -335,7 +335,7 @@ Introduce the rules of naming /files/ and /functions/.
 - *χ!* suffix: function or macro with side-effects, such as
   =v-home!=
 - *χ@* suffix: position related functions or macros, such as
-  =mark-symbol@= and =mark-word@=
+   =mark-word@= and =mark-sexp@=
 
 * Recipe
    :PROPERTIES:
@@ -968,7 +968,6 @@ nil, then forward or backword to word boundary, just like the builtin
 `mark-defun'.
 
 #+REVEAL: split
-- @@html:<kbd>@@C-c m s@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-symbol.png][mark symbol at point]]
 - @@html:<kbd>@@C-c m f@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-filename.png][mark filename at point]]
 - @@html:<kbd>@@M-@@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-word.png][mark word at point]]
 - @@html:<kbd>@@C-c m l@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-line.png][mark line at point]]
@@ -1070,8 +1069,8 @@ been made.
    :END:
 
 #+ATTR_HTML: :style text-align:left
-=kill-whole-word=, =kill-whole-symbol= and =kill-whole-sexp= are
-frequently editing commands when programming.
+=kill-whole-word= and =kill-whole-sexp= are frequently editing
+commands when programming.
 
 ** Keys
    :PROPERTIES:
@@ -1095,7 +1094,6 @@ Global for all Emacs' version.
 - @@html:<kbd>@@C-M-o@@html:</kbd>@@ =open-previous-line=
 - @@html:<kbd>@@C-o@@html:</kbd>@@ =open-next-line=
 #+REVEAL: split
-- @@html:<kbd>@@C-c m s@@html:</kbd>@@: =mark-symbol@=
 - @@html:<kbd>@@C-c m l@@html:</kbd>@@: =mark-line@=
 - @@html:<kbd>@@C-c m f@@html:</kbd>@@: =mark-filename@=
 - @@html:<kbd>@@C-c m d@@html:</kbd>@@: =mark-defun@=

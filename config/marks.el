@@ -64,46 +64,6 @@
        (set-mark (point))
        (goto-char ,end)))
 
-  (defmacro _mark_symbol@_ (&optional n)
-    (let ((n1 (gensym*)))
-      `(let* ((,n1 (or ,n 1))
-              (bs (bounds-of-thing-at-point 'symbol))
-              (ls (or (bounds-of-thing-at-point 'list)
-                      (cons (car bs) (cdr bs))))
-              (pos (point)))
-         (when (and ls bs pos)
-           (let ((cur (cond ((null bs) pos)
-                            ((and (>= ,n1 0)
-                                  (> pos (car bs))
-                                  (< pos (cdr bs)))
-                             (car bs))
-                            ((and (< ,n1 0)
-                                  (> pos (car bs))
-                                  (< pos (cdr bs)))
-                             (cdr bs))
-                            (t pos))))
-             (save-excursion
-               (if (< ,n1 0)
-                   (let ((lhs (save-excursion
-                                (forward-symbol ,n1)
-                                (skip-syntax-backward "'\"")
-                                (point)))
-                         (ss (save-excursion
-                               (goto-char (car ls))
-                               (skip-syntax-forward "'([{")
-                               (point))))
-                     (cons (max lhs ss) cur))
-                 (let ((rhs (save-excursion
-                              (forward-symbol ,n1)
-                              (skip-syntax-forward "\"")
-                              (point)))
-                       (ss (save-excursion
-                             (goto-char (cdr ls))
-                             (if (<= (skip-syntax-backward ")]}") -1)
-                                 (1- (cdr ls))
-                               (cdr ls)))))
-                   (cons cur (min rhs ss))))))))))
-
 
   (defmacro _forward_sexp_ (n)
     (let ((n1 (gensym*))
@@ -125,59 +85,45 @@
 
 
   (defmacro _mark_sexp@_ (&optional n)
-    (let ((n1 (gensym*)))
+    (let ((n1 (gensym*))
+          (bs (gensym*))
+          (fs (gensym*))
+          (p (gensym*)))
       `(let* ((,n1 (or ,n 1))
-              (bs (bounds-of-thing-at-point 'symbol))
-              (ls (or (bounds-of-thing-at-point 'list)
-                      (cons (car bs) (cdr bs))))
-              (pos (point)))
-         (when (and ls bs pos)
-           (let ((cur (cond ((null bs) pos)
-                            ((and (>= ,n1 0)
-                                  (> pos (car bs))
-                                  (< pos (cdr bs)))
-                             (car bs))
-                            ((and (< ,n1 0) (> pos (car bs))
-                                  (< pos (cdr bs)))
-                             (cdr bs))
-                            (t pos))))
-             (if (< ,n1 0)
-                 (let ((lhs (_forward_sexp_ ,n1))
-                       (ss (save-excursion
-                             (goto-char (car ls))
-                             (skip-syntax-forward "'([{")
-                             (point))))
-                   (cons (max lhs ss) cur))
-               (let ((rhs (_forward_sexp_ ,n1))
-                     (ss (save-excursion
-                           (goto-char (cdr ls))
-                           (if (<= (skip-syntax-backward ")]}") -1)
-                               (1- (cdr ls))
-                             (cdr ls)))))
-                 (cons cur (min rhs ss)))))))))
+              (,p (point))
+              (,bs (bounds-of-thing-at-point 'sexp))
+              (,fs (save-excursion
+                     (goto-char (_forward_sexp_ ,n1))
+                     (bounds-of-thing-at-point 'sexp))))
+         (cons (if (>= ,n1 0)
+                   (or (car ,bs) ,p)
+                 (or (car ,fs) (car ,bs) ,p))
+               (if (>= ,n1 0)
+                   (or (cdr ,fs) (cdr ,bs) ,p)
+                 (or (cdr ,bs) ,p))))))
 
 
   (defmacro _mark_whole_sexp@_ (&optional boundary)
-    (let ((bs (gensym*))
+    (let ((b1 (gensym*))
+          (bs (gensym*))
+          (p (gensym*))
           (lhs (gensym*))
           (rhs (gensym*)))
-      `(let ((,bs (bounds-of-thing-at-point 'list)))
-         (when ,bs
-           (cons
-            (let ((,lhs (car ,bs)))
-              (+ ,lhs (if ,boundary
-                          0
-                        (save-excursion
-                          (goto-char ,lhs)
-                          (skip-syntax-forward "'([{")))))
-            (let ((,rhs (cdr ,bs)))
-              (+ ,rhs
-                 (if ,boundary
-                     0
-                   (save-excursion
-                     (goto-char ,rhs)
-                     (save-excursion
-                       (skip-syntax-backward ")]}")))))))))))
+      `(let* ((,b1 ,boundary)
+              (,p (point))
+              (,bs (bounds-of-thing-at-point 'list))
+              (,lhs (save-excursion
+                      (goto-char (or (car ,bs) ,p))
+                      (skip-syntax-forward "'([{")
+                      (goto-char (_forward_sexp_ -1))
+                      (bounds-of-thing-at-point 'sexp)))
+              (,rhs (save-excursion
+                      (goto-char (or (cdr ,bs) ,p))
+                      (skip-syntax-backward ")]}")
+                      (goto-char (_forward_sexp_ 1))
+                      (bounds-of-thing-at-point 'sexp))))
+         (cons (or (and ,b1 (car ,bs)) (car ,lhs) ,p)
+               (or (and ,b1 (cdr ,bs)) (cdr ,rhs) ,p)))))
 
 
   (defmacro _mark_word@_ (&optional n)

@@ -31,7 +31,7 @@
                     ((char= ?s style)
                      (cons "symbol"
                            (region-active-unless
-                             (let ((bs (_mark_symbol@_)))
+                             (let ((bs (_mark_sexp@_)))
                                (_mark_thing_ (car bs) (cdr bs))))))
                     ((char= ?w style)
                      (cons "word"
