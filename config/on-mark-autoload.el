@@ -45,7 +45,7 @@ With prefix BOUNDARY, killing include BOUNDARY otherwise do not."
 If prefix N is non nil, then forward or backward N words."
   (interactive "p")
   (let ((bs (_mark_word@_ n)))
-    (unless (and bs (car bs) (cdr bs))
+    (unless (and bs (car bs) (cdr bs) (null (= (car bs) (cdr bs))))
       (user-error "No word found"))
     (_mark_thing_ (car bs) (cdr bs))))
 
