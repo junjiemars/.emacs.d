@@ -12,6 +12,7 @@
 ;;; mark/kill-symbol
 (defun mark-symbol@ ()
   "Mark symbol at point."
+  (interactive)
   (let ((bs (_mark_symbol@_)))
     (unless (and bs (car bs) (cdr bs))
       (user-error "No symbol found"))
@@ -19,6 +20,7 @@
 
 (defun kill-symbol ()
   "Kill symbol."
+  (interactive)
   (let ((bs (_mark_symbol@_)))
     (unless (and bs (car bs) (cdr bs))
       (user-error "No symbol found"))

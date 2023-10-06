@@ -58,8 +58,7 @@
 
 
 (defmacro path! (file)
-  "Make and return the path of the FILE.
-
+  "Make and return the path of the FILE.\n
 The FILE should be posix path, see \\=`path-separator\\='."
   (let ((f (gensym*))
         (d (gensym*))
@@ -129,8 +128,7 @@ The FILE should be posix path, see \\=`path-separator\\='."
   (path! (v-home* file)))
 
 
-
- ; end of versioned file macro
+;; end of versioned file macro
 
 
 ;;; compile-time macro
@@ -162,7 +160,7 @@ Else return BODY sexp."
   `(if% ,cond nil ,@body))
 
 
- ; end of compile-time macro
+;; end of compile-time macro
 
 
 ;;; compile macro
@@ -186,12 +184,9 @@ Else return BODY sexp."
   (concat (v-home* file) (if-native-comp% ".eln" ".elc")))
 
 
-(defmacro compile-and-load-file*
-    (file &optional only-compile dir)
-  "Compile FILE.
-
+(defmacro compile-and-load-file* (file &optional only-compile dir)
+  "Compile FILE.\n
 If ONLY-COMPILE is t, does not load compiled file.
-If DELETE-BOOSTER is t, remove booster file.
 DIR where the compiled file located."
   (let ((f (gensym*))
         (d (gensym*))
@@ -238,9 +233,7 @@ DIR where the compiled file located."
       (setq dirs (cdr dirs)))))
 
 
- ; end of compile macro
-
-
+;; end of compile macro
 
 
 ;;; *-version% macro
@@ -249,8 +242,7 @@ DIR where the compiled file located."
   "The version of Emacs in \\=`float\\='.")
 
 (defmacro if-version% (cmp version then &rest else)
-  "If VERSION CMP with variable \\=`emacs-version\\=' is t, do THEN, else do ELSE...
-
+  "If VERSION CMP with variable \\=`emacs-version\\=' is t, do THEN, else do ELSE...\n
 Return the value of THEN or the value of the last of the ELSE’s.
 THEN must be one expression, but ELSE... can be zero or more expressions.
 If (CMP VERSION \\=`emacs-version\\=') yield nil, and there are no ELSE’s,
@@ -267,7 +259,7 @@ the value is nil."
   `(if-version% ,cmp ,version (progn% ,@body)))
 
 
- ; end of *-version% macro
+;; end of *-version% macro
 
 
 ;;; *-package% macro
@@ -277,7 +269,7 @@ the value is nil."
   (declare (indent 0))
   `(when-version% <= 24.1 ,@body))
 
- ; end of *-package% macro
+;; end of *-package% macro
 
 
 ;;; Boot
