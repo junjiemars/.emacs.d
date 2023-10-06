@@ -62,19 +62,25 @@
 
 The FILE should be posix path, see \\=`path-separator\\='."
   (let ((f (gensym*))
-        (d (gensym*)))
+        (d (gensym*))
+        (i (gensym*))
+        (ds (gensym*)))
     `(let* ((,f ,file)
             (,d (file-name-directory ,f)))
        (unless (file-exists-p ,d)
-				 (let ((i (1- (length ,d))))
+				 (let ((,i (1- (length ,d)))
+               (,ds nil))
            (catch 'break
-					   (while (> i 0)
-						   (when (= ?/ (aref ,d i))
-							   (let ((s (substring ,d 0 i)))
+					   (while (> ,i 0)
+						   (when (= ?/ (aref ,d ,i))
+							   (let ((s (substring ,d 0 (1+ ,i))))
 								   (if (file-exists-p s)
                        (throw 'break t)
-									   (make-directory-internal s))))
-						   (setq i (1- i))))))
+                     (setq ,ds (cons s ,ds)))))
+						   (setq ,i (1- ,i))))
+           (while (car ,ds)
+             (make-directory-internal (car ,ds))
+             (setq ,ds (cdr ,ds)))))
        ,f)))
 
 
