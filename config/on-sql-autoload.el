@@ -199,27 +199,37 @@ Optional prefix argument ENHANCED, displays additional details."
   (defun sql-oracle-list-code (sqlbuf outbuf enhanced target)
     "List code of oracle's TARGET."
     (let ((settings (sql-oracle-save-settings sqlbuf))
-					(ts (or (and enhanced
-											 (let ((p (string-match
-																 " "
-																 (string-trim>< target))))
-												 (when (and p (> p 0))
-													 (cons (substring target 0 p)
-																 (substring target p)))))
-									(cons "TABLE" target)))
-					(sql (concat
-								"SELECT DBMS_METADATA.GET_DDL('%s','%s')"
-								" FROM DUAL;")))
-      (sql-redirect
-       sqlbuf
-       (concat "SET LINESIZE 80 LONG 4096000 LONGCHUNKSIZE 4096000"
-               " PAGESIZE 0 VERIFY OFF"
-               " TRIMOUT ON TAB OFF TIMING OFF FEEDBACK OFF"))
-      (sql-redirect
-       sqlbuf
-       (format sql (car ts) (upcase (cdr ts)))
-       outbuf)
-      (sql-oracle-restore-settings sqlbuf settings))))
+				  (o (upcase (if enhanced
+                         ;; ignore enhanced
+                         target
+                       target)))
+				  (sql-ot (concat
+                   "VAR object_type VARCHAR2(128);"
+                   "\nBEGIN\n"
+                   " SELECT object_type INTO :object_type"
+                   " FROM user_objects"
+                   " WHERE object_name='%s';\n"
+                   "\END;\n/\n"))
+          (sql-ddl (concat
+                    "SELECT DBMS_METADATA.GET_DDL(:object_type,'%s')"
+                    " FROM DUAL;")))
+      (unwind-protect
+          (progn
+            (sql-redirect
+             sqlbuf
+             (concat "SET LINESIZE 200"
+                     " LONG 4096000"
+                     " LONGCHUNKSIZE 4096000"
+                     " PAGESIZE 0"
+                     " TRIMOUT ON"
+                     " FEEDBACK OFF"
+                     " TAB OFF"
+                     " TIMING OFF"
+                     " TERMOUT OFF"
+                     " VERIFY OFF"))
+            (sql-redirect sqlbuf (format sql-ot o) outbuf)
+            (sql-redirect sqlbuf (format sql-ddl o) outbuf))
+        (sql-oracle-restore-settings sqlbuf settings)))))
 
 
 (when-sql-oracle-feature%
