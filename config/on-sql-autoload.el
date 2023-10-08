@@ -208,8 +208,8 @@ Optional prefix argument ENHANCED, displays additional details."
                    "\nBEGIN\n"
                    " SELECT object_type INTO :object_type"
                    " FROM user_objects"
-                   " WHERE object_name='%s';\n"
-                   "\END;\n/\n"))
+                   " WHERE object_name='%s';"
+                   "\nEND;\n/\n"))
           (sql-ddl (concat
                     "SELECT DBMS_METADATA.GET_DDL(:object_type,'%s')"
                     " FROM DUAL;")))
