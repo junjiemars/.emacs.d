@@ -74,6 +74,72 @@
 
 
 (eval-when-compile
+  (defmacro _mark_filename@_ ()
+    `(bounds-of-thing-at-point 'filename)))
+
+
+;; end of mark-* marco
+
+
+(defmacro _mark_symmetry@_ (&optional left right)
+  ""
+  (let ((lhs (gensym*))
+        (rhs (gensym*)))
+    `(let* ((,lhs ,left)
+            (,rhs ,right)
+            (p (point))
+            (l1 p)
+            (r1 p)
+            (lx (point-min))
+            (rx (point-max))
+            (ls "\"'([{")
+            (rs "\"')]}"))
+       (catch 'break
+         (while (and (> l1 lx)
+                     (null (strchr ls (char-before l1))))
+           (setq l1 (1- l1)))
+         (while (and (< r1 rx)
+                     (null (strrchr rs (char-after r1))))
+           (setq r1 (1+ r1)))
+         (cond ((and l1 r1 (= (aref ls (strchr ls (char-before l1)))
+                              (aref rs (strchr rs (char-after r1)))))
+                (throw 'break (cons (1- l1) r1)))
+               ((and l1 r1)
+                (if (<= (- p l1) (- r1 p))
+                    (let ((r2 r1)
+                          (c2 (char-before l1)))
+                      (while (and (< r2 rx)
+                                  (null (= c2 (char-after r2))))
+                        (setq r2 (1+ r2)))
+                      (cond ((and r2 (= c2 (char-after r2)) (<= r2 r1))
+                             (throw 'break (cons (1- l1) r2)))
+                            (t (let ((l3 l1)
+                                     (c3 (char-after r1)))
+                                 (while (and (> l3 lx)
+                                             (null (= c3 (char-before l3))))
+                                   (setq l3 (1- l3)))
+                                 (cond ((and l3 (= c3 (char-before l3)))
+                                        (throw 'break (cons (1- l3) r1)))
+                                       (t (throw 'break nil)))))))
+                  (let ((l2 l1)
+                        (c2 (char-after r1)))
+                    (while (and (> l2 lx)
+                                (null (= c2 (char-before l2))))
+                      (setq l2 (1- l2)))
+                    (cond ((and l2 (= c2 (char-before l2)) (>= l2 l1))
+                           (throw 'break (cons (1- l2) r1)))
+                          (t (let ((r3 r1)
+                                   (c3 (char-after l1)))
+                               (while (and (< r3 rx)
+                                           (null (= c3 (char-after r3))))
+                                 (setq r3 (1+ r3)))
+                               (cond ((and r3 (= c3 (char-after r3)))
+                                      (throw 'break (cons (1- l1) r3)))
+                                     (t (throw 'break nil)))))))))
+               (t (throw 'break nil)))))))
+
+
+(eval-when-compile
   (defmacro _forward_sexp_ (n)
     (let ((n1 (gensym*))
           (n2 (gensym*))
@@ -362,13 +428,6 @@
 
 ;; end of `_mark_quoted@_'
 
-
-(eval-when-compile
-  (defmacro _mark_filename@_ ()
-    `(bounds-of-thing-at-point 'filename)))
-
-
-;; end of mark-* marco
 
 
 (provide 'marks)
