@@ -226,7 +226,7 @@ Optional prefix argument ENHANCED, displays additional details."
                      " FEEDBACK OFF"
                      " TAB OFF"
                      " TERMOUT OFF"
-                     " TIMING ON"
+                     " TIMING OFF"
                      " TRIMOUT ON"
                      " VERIFY OFF;"))
             (sql-redirect sqlbuf (format sql-ddl o) outbuf))
