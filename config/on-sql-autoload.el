@@ -203,33 +203,36 @@ Optional prefix argument ENHANCED, displays additional details."
                          ;; ignore enhanced
                          target
                        target)))
-				  (sql-ot (concat
-                   "VAR object_type VARCHAR2(128);"
-                   "\nBEGIN\n"
-                   " SELECT object_type INTO :object_type"
-                   " FROM user_objects"
-                   " WHERE object_name='%s';"
-                   "\nEND;\n/\n"))
+				  (sql-var (concat
+                    "VAR object_type VARCHAR2(128);"
+                    "\nBEGIN\n"
+                    " :object_type := '';"
+                    " SELECT object_type INTO :object_type"
+                    " FROM user_objects"
+                    " WHERE object_name='%s';"
+                    "\nEND;\n/\n"))
           (sql-ddl (concat
                     "SELECT DBMS_METADATA.GET_DDL(:object_type,'%s')"
                     " FROM DUAL;")))
       (unwind-protect
           (progn
+            (sql-redirect sqlbuf (format sql-var o) outbuf)
             (sql-redirect
              sqlbuf
              (concat "SET LINESIZE 200"
                      " LONG 4096000"
                      " LONGCHUNKSIZE 4096000"
                      " PAGESIZE 0"
-                     " TRIMOUT ON"
                      " FEEDBACK OFF"
                      " TAB OFF"
-                     " TIMING OFF"
                      " TERMOUT OFF"
-                     " VERIFY OFF"))
-            (sql-redirect sqlbuf (format sql-ot o) outbuf)
+                     " TIMING ON"
+                     " TRIMOUT ON"
+                     " VERIFY OFF;"))
             (sql-redirect sqlbuf (format sql-ddl o) outbuf))
-        (sql-oracle-restore-settings sqlbuf settings)))))
+        (progn
+          (sql-oracle-restore-settings sqlbuf settings)
+          (sql-send-string "\n"))))))
 
 
 (when-sql-oracle-feature%
