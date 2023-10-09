@@ -230,9 +230,8 @@ Optional prefix argument ENHANCED, displays additional details."
                      " TRIMOUT ON"
                      " VERIFY OFF;"))
             (sql-redirect sqlbuf (format sql-ddl o) outbuf))
-        (progn
-          (sql-oracle-restore-settings sqlbuf settings)
-          (sql-send-string "\n"))))))
+        (sql-oracle-restore-settings sqlbuf settings)
+        (sql-send-string "\n")))))
 
 
 (when-sql-oracle-feature%
@@ -240,21 +239,24 @@ Optional prefix argument ENHANCED, displays additional details."
   (defun sql-oracle-desc-plan (sqlbuf outbuf enhanced target)
     "Describe execution plan of mysql's QUERY."
     (let ((settings (sql-oracle-save-settings sqlbuf))
-					(sql (if enhanced ; ignore enhanced
+					(sql (if enhanced
+                   ;; ignore enhanced
                    target
 								 target)))
-      (sql-redirect
-       sqlbuf
-       (concat "SET AUTOTRACE ON EXPLAIN"))
-      (sql-redirect
-       sqlbuf
-       (concat "SET LINESIZE 100 PAGESIZE 100"
-               " VERIFY OFF FEEDBACK OFF"
-               " TRIMOUT ON TAB OFF TIMING OFF"))
-      (sql-redirect sqlbuf sql outbuf)
-      (sql-oracle-restore-settings sqlbuf settings))))
+      (unwind-protect
+          (progn
+            (sql-redirect
+             sqlbuf
+             (concat "SET AUTOTRACE ON EXPLAIN"))
+            (sql-redirect
+             sqlbuf
+             (concat "SET LINESIZE 100 PAGESIZE 100"
+                     " VERIFY OFF FEEDBACK OFF"
+                     " TRIMOUT ON TAB OFF TIMING OFF"))
+            (sql-redirect sqlbuf sql outbuf))
+        (sql-oracle-restore-settings sqlbuf settings)))))
 
- ; end of oracle
+;; end of oracle
 
 ;;;
 ;; mysql
