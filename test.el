@@ -392,13 +392,13 @@
   (should (null (strchr nil nil)))
   (should (null (strchr nil ?a)))
   (should (null (strchr "abc" ?d)))
-  (should (string= "c" (strchr "abc" ?c))))
+  (should (= 2 (strchr "abc" ?c))))
 
 (ert-deftest %fn:strrchr ()
   (should (null (strrchr nil nil)))
   (should (null (strrchr nil ?a)))
   (should (null (strrchr "abc" ?d)))
-  (should (string= "a" (strrchr "abc" ?a))))
+  (should (= 0 (strrchr "abc" ?a))))
 
 (ert-deftest %fn:split-string* ()
   (should (equal '("a" "b" "c")

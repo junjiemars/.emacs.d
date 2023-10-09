@@ -246,22 +246,22 @@ accumulate clause and Miscellaneous clause."
 
 
 (defun strchr (str chr)
-  "Return the substring from the located CHR of STR."
+  "Return the index of the located CHR of STR from left side."
   (let ((i 0) (l (length str)))
     (catch 'break
       (while (< i l)
         (when (= chr (aref str i))
-          (throw 'break (substring str i)))
+          (throw 'break i))
         (setq i (1+ i))))))
 
 
 (defun strrchr (str chr)
-  "Return the substring to the located CHR of STR from right side."
+  "Return the index of the located CHR of STR from right side."
   (let* ((l (length str)) (i (1- l)))
     (catch 'break
       (while (>= i 0)
         (when (= chr (aref str i))
-          (throw 'break (substring str 0 (1+ i))))
+          (throw 'break i))
         (setq i (1- i))))))
 
 
