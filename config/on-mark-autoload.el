@@ -159,6 +159,7 @@ If prefix QUOTED is non-nil, then mark nested quoted thing absolutely."
 (define-key (current-global-map) (kbd "C-x M-d") #'kill-word@)
 (define-key (current-global-map) (kbd "C-x M-s") #'kill-symbol@)
 (define-key (current-global-map) (kbd "C-x M-e") #'kill-sexp@)
+(define-key% (current-global-map) (kbd "C-x M-l") #'kill-whole-line)
 
 ;; Mark
 (define-key (current-global-map) (kbd "C-c m f") #'mark-filename@)
