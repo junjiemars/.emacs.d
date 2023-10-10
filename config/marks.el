@@ -81,147 +81,164 @@
 ;; end of mark-* marco
 
 (eval-when-compile
-  (defmacro _mark_symmetry@_ (&optional lhs rhs)
-    (let ((ls (gensym*))
-          (rs (gensym*)))
-      `(let* ((p (point)) (l1 p) (r1 p)
-              (lx (point-min)) (rx (point-max))
-              (,ls (or ,lhs "\"'([{"))
-              (,rs (or ,rhs "\"')]}")))
-         (while (and (> l1 lx)
-                     (null (strchr ,ls (char-before l1))))
-           (setq l1 (1- l1)))
-         (while (and (< r1 rx)
-                     (null (strchr ,rs (char-after r1))))
-           (setq r1 (1+ r1)))
-         (cond ((and l1 r1 (= (strchr ,ls (char-before l1))
-                              (strchr ,rs (char-after r1))))
-                (cons (1- l1) r1))
-               ((and l1 r1)
-                (if (<= (- p l1) (- r1 p))
-                    (let ((r2 (1+ r1)))
-                      (while
-                          (and (< r2 rx)
-                               (null (strchr ,rs (char-after r2))))
-                        (setq r2 (1+ r2)))
-                      (cond ((= (strchr ,ls (char-before l1))
-                                (strchr ,rs (char-after r2)))
-                             (cons (1- l1) r2))
-                            (t (let ((l3 (1- l1)))
-                                 (while
-                                     (and (> l3 lx)
-                                          (null (strchr ,ls (char-before l3))))
-                                   (setq l3 (1- l3)))
-                                 (when (= (strchr ,ls (char-before l3))
-                                          (strchr ,ls (char-after r1)))
-                                   (cons (1- l3) r1))))))
-                  (let ((l2 (1- l1)))
-                    (while (and (> l2 lx)
-                                (null (strchr ,ls (char-before l2))))
-                      (setq l2 (1- l2)))
-                    (cond ((= (strchr ,ls (char-before l2))
-                              (strchr ,rs (char-after r1)))
-                           (cons (1- l2) r1))
-                          (t (let ((r3 (1+ r1)))
+  (defmacro _mark_quoted@_ ()
+    `(let* ((p (point)) (l1 p) (r1 p)
+            (lx (point-min)) (rx (point-max))
+            (ls "\"'([{‘")
+            (rs "\"')]}’"))
+       (while (and (> l1 lx)
+                   (null (strchr ls (char-before l1))))
+         (setq l1 (1- l1)))
+       (while (and (< r1 rx)
+                   (null (strchr rs (char-after r1))))
+         (setq r1 (1+ r1)))
+       (cond ((and l1 r1 (= (strchr ls (char-before l1))
+                            (strchr rs (char-after r1))))
+              (cons (1- l1) (1+ r1)))
+             ((and l1 r1)
+              (if (<= (- p l1) (- r1 p))
+                  (let ((r2 (1+ r1)))
+                    (while
+                        (and (< r2 rx)
+                             (null (strchr rs (char-after r2))))
+                      (setq r2 (1+ r2)))
+                    (cond ((= (strchr ls (char-before l1))
+                              (strchr rs (char-after r2)))
+                           (cons (1- l1) (1+ r2)))
+                          (t (let ((l3 (1- l1)))
                                (while
-                                   (and (< r3 rx)
-                                        (null (strchr ,rs (char-after r3))))
-                                 (setq r3 (1+ r3)))
-                               (when (= (strchr ,ls (char-before l1))
-                                        (strchr ,rs (char-after r3)))
-                                 (cons (1- l1) r3)))))))))))))
+                                   (and (> l3 lx)
+                                        (null (strchr ls (char-before l3))))
+                                 (setq l3 (1- l3)))
+                               (when (= (strchr ls (char-before l3))
+                                        (strchr ls (char-after r1)))
+                                 (cons (1- l3) (1+ r1)))))))
+                (let ((l2 (1- l1)))
+                  (while (and (> l2 lx)
+                              (null (strchr ls (char-before l2))))
+                    (setq l2 (1- l2)))
+                  (cond ((= (strchr ls (char-before l2))
+                            (strchr rs (char-after r1)))
+                         (cons (1- l2) (1+ r1)))
+                        (t (let ((r3 (1+ r1)))
+                             (while
+                                 (and (< r3 rx)
+                                      (null (strchr rs (char-after r3))))
+                               (setq r3 (1+ r3)))
+                             (when (= (strchr ls (char-before l1))
+                                      (strchr rs (char-after r3)))
+                               (cons (1- l1) (1+ r3)))))))))))))
 
+;; end of `_mark_quoted@_'
+
+;;; `_forward_sexp_'
 
 (eval-when-compile
   (defmacro _forward_sexp_ (n)
-    (let ((n1 (gensym*))
-          (n2 (gensym*))
-          (pre (gensym*))
-          (err (gensym*)))
-      `(let* ((,n1 ,n)
-              (,n2 (abs ,n1))
-              (,pre (point))
-              (,err nil))
-         (condition-case ,err
+    (let ((n1 (gensym*)))
+      `(lexical-let*% ((,n1 ,n)
+                       (i (abs ,n1))
+                       (pre (point))
+                       (_ nil))
+         (condition-case _
              (save-excursion
-               (while (> ,n2 0)
-                 (setq ,pre (point))
+               (while (> i 0)
+                 (setq pre (point))
                  (forward-sexp (if (>= ,n1 0) 1 -1))
-                 (setq ,n2 (1- ,n2)))
+                 (setq i (1- i)))
                (point))
-           (scan-error ,pre))))))
+           (scan-error pre))))))
 
 ;; end of `_forward_sexp_'
 
 
 (eval-when-compile
   (defmacro _mark_sexp@_ (&optional n)
-    (let ((n1 (gensym*))
-          (bs (gensym*))
-          (fs (gensym*))
-          (p (gensym*)))
-      `(let* ((,n1 (or ,n 1))
-              (,p (point))
-              (,bs (bounds-of-thing-at-point 'sexp))
-              (,fs (save-excursion
-                     (goto-char (_forward_sexp_ ,n1))
-                     (bounds-of-thing-at-point 'symbol))))
+    (let ((n1 (gensym*)))
+      `(lexical-let*% ((,n1 (or ,n 1))
+                       (p (point))
+                       (bs (bounds-of-thing-at-point 'sexp))
+                       (fs (save-excursion
+                             (goto-char (if (>= ,n1 0) (1- p) (1+ p)))
+                             (goto-char (_forward_sexp_ ,n1))
+                             (bounds-of-thing-at-point 'sexp))))
          (cons (if (>= ,n1 0)
-                   (or (car ,bs) ,p)
-                 (or (car ,fs) (car ,bs) ,p))
+                   (or (car bs) p)
+                 (or (car fs) (car bs) p))
                (if (>= ,n1 0)
-                   (or (cdr ,fs) (cdr ,bs) ,p)
-                 (or (cdr ,bs) ,p)))))))
+                   (or (cdr fs) (cdr bs) p)
+                 (or (cdr bs) p)))))))
 
 ;; end of `_mark_sexp@_'
 
+;;; `_mark_whole_sexp@_'
 
 (eval-when-compile
   (defmacro _mark_whole_sexp@_ (&optional boundary)
-    (let ((b1 (gensym*))
-          (bs (gensym*))
-          (p (gensym*))
-          (ls (gensym*))
-          (rs (gensym*)))
-      `(let* ((,b1 ,boundary)
-              (,p (point))
-              (,bs (bounds-of-thing-at-point 'list))
-              (,ls (save-excursion
-                     (goto-char (or (car ,bs) ,p))
-                     (skip-syntax-forward "'([{")
-                     (goto-char (_forward_sexp_ -1))
-                     (bounds-of-thing-at-point 'sexp)))
-              (,rs (save-excursion
-                     (goto-char (or (cdr ,bs) ,p))
-                     (skip-syntax-backward ")]}")
-                     (goto-char (_forward_sexp_ 1))
-                     (bounds-of-thing-at-point 'sexp))))
-         (cons (or (and ,b1 (car ,bs)) (car ,ls) ,p)
-               (or (and ,b1 (cdr ,bs)) (cdr ,rs) ,p))))))
+    (let ((b1 (gensym*)))
+      `(lexical-let*% ((,b1 ,boundary)
+                       (p (point))
+                       (bs (bounds-of-thing-at-point 'list))
+                       (ls (save-excursion
+                             (goto-char (if (car bs)
+                                            (1+ (car bs))
+                                          (1+ p)))
+                             (goto-char (_forward_sexp_ -1))
+                             (bounds-of-thing-at-point 'sexp)))
+                       (rs (save-excursion
+                             (goto-char (if (cdr bs)
+                                            (1- (cdr bs))
+                                          (1- p)))
+                             (goto-char (_forward_sexp_ 1))
+                             (bounds-of-thing-at-point 'sexp))))
+         (cons (or (and ,b1 (car bs)) (car ls) p)
+               (or (and ,b1 (cdr bs)) (cdr rs) p))))))
 
 ;; end of `_mark_whole_sexp@_'
 
+;;; `_mark_word@_'
 
 (eval-when-compile
   (defmacro _mark_word@_ (&optional n)
-    (let ((n1 (gensym*))
-          (bs (gensym*))
-          (p (gensym*))
-          (fs (gensym*)))
-      `(let* ((,n1 (or ,n 1))
-              (,p (point))
-              (,bs (bounds-of-thing-at-point 'word))
-              (,fs (save-excursion
-                     (forward-word ,n1)
-                     (bounds-of-thing-at-point 'word))))
+    (let ((n1 (gensym*)))
+      `(lexical-let*% ((,n1 (or ,n 1))
+                       (p (point))
+                       (bs (bounds-of-thing-at-point 'word))
+                       (fs (save-excursion
+                             (goto-char (if (>= ,n1 0) (1- p) (1+ p)))
+                             (forward-word ,n1)
+                             (bounds-of-thing-at-point 'word))))
          (cons (if (>= ,n1 0)
-                   (or (car ,bs) ,p)
-                 (or (car ,fs) (car ,bs) ,p))
+                   (or (car bs) p)
+                 (or (car fs) (car bs) p))
                (if (>= ,n1 0)
-                   (or (cdr ,fs) (cdr ,bs) ,p)
-                 (or (cdr ,bs) ,p)))))))
+                   (or (cdr fs) (cdr bs) p)
+                 (or (cdr bs) p)))))))
 
 ;; end of `_mark_word@_'
+
+;;; `_mark_whole_word@_'
+
+(eval-when-compile
+  (defmacro _mark_whole_word@_ ()
+    `(lexical-let*% ((p (point))
+                     (bs (bounds-of-thing-at-point 'symbol))
+                     (ls (save-excursion
+                           (goto-char (if (car bs)
+                                          (1+ (car bs))
+                                        (1+ p)))
+                           (forward-word -1)
+                           (bounds-of-thing-at-point 'word)))
+                     (rs (save-excursion
+                           (goto-char (if (cdr bs)
+                                          (1- (cdr bs))
+                                        (1- p)))
+                           (forward-word 1)
+                           (bounds-of-thing-at-point 'word))))
+       (cons (or (car bs) (car ls) p)
+             (or (cdr bs) (cdr rs) p)))))
+
+;; end of `_mark_whole_word@_'
 
 
 (eval-when-compile
@@ -249,178 +266,6 @@
             (point)))))))
 
 ;; end of `_mark_defun@_'
-
-
-(eval-when-compile
-  (defmacro _mark_quoted@_ (&optional boundary quoted)
-    (let ((bnd (gensym*))
-          (qut (gensym*)))
-      `(let* ((,bnd ,boundary)
-              (,qut ,quoted))
-         (catch 'block
-           (let* ((lss '(?\" ?\' ?\( ?\[ ?\` ?\{ ?\‘))
-                  (rss '(?\" ?\' ?\) ?\] ?\` ?\} ?\’))
-                  (ls (if (characterp ,qut)
-                          (list ,qut)
-                        lss))
-                  (rs (if (characterp ,qut)
-                          (let ((l (memq ,qut lss)))
-                            (cond (l (list
-                                      (nth (- (length rss) (length l))
-                                           rss)))
-                                  (t (list ,qut))))
-                        rss))
-                  (cur (point))
-                  (min (point-min))
-                  (max (point-max))
-                  (lproc
-                   (lambda (i &optional l)
-                     (catch 'left
-                       (let ((s))
-                         (while (> (- cur i) min)
-                           (let ((c (char-before (- cur i)))
-                                 (r (when l
-                                      (nth (- (length rs)
-                                              (length (memq l ls)))
-                                           rs))))
-                             (cond ((and l s (char= c l))
-                                    (setq s (cdr s)))
-                                   ((and r (char= c r))
-                                    (setq s (cons (cons r i) s)))
-                                   ((and r (not s) (char= c l))
-                                    (throw 'left (cons l i)))
-                                   ((and (not l) (memq c ls))
-                                    (throw 'left (cons c i)))))
-                           (setq i (1+ i)))
-                         (cond ((caar s)
-                                (cons l (cdar s)))
-                               (t i))))))
-                  (rproc
-                   (lambda (i &optional r)
-                     (catch 'right
-                       (let ((s))
-                         (while (< (+ cur i) max)
-                           (let ((c (char-after (+ cur i)))
-                                 (l (when r
-                                      (nth (- (length ls)
-                                              (length (memq r rs)))
-                                           ls))))
-                             (cond ((and r s (char= c r))
-                                    (setq s (cdr s)))
-                                   ((and l (char= c l))
-                                    (setq s (cons (cons l i) s)))
-                                   ((and l (not s) (char= c r))
-                                    (throw 'right (cons r i)))
-                                   ((and (not r) (memq c rs))
-                                    (throw 'right (cons c i)))))
-                           (setq i (1+ i)))
-                         (cond ((caar s)
-                                (cons r (cdar s)))
-                               (t i)))))))
-             (let ((li 0) (ri 0) (ss))
-               (catch 'q
-                 (while (> (- cur li) min)
-                   (let* ((c (char-before (- cur li)))
-                          (l (memq c ls))
-                          (r (memq c rs))
-                          (s (when l (nth (- (length rs)
-                                             (length l))
-                                          rs))))
-                     (cond ((and ,qut (not ss))
-                            (let ((m (funcall rproc ri (car rs)))
-                                  (n (funcall lproc li (car ls))))
-                              (cond ((and (consp m) (consp n))
-                                     (setq ri (cdr m) li (cdr n))
-                                     (throw 'q nil))
-                                    ((consp m)
-                                     (setq ri (cdr m))))))
-                           ((and l (not r) (not ss))
-                            (let ((m (funcall rproc ri s)))
-                              (cond ((and (consp m) (char= s (car m)))
-                                     (setq ri (cdr m))
-                                     (throw 'q nil)))))
-                           ((and (not l) r (not ss))
-                            (let* ((s1 (nth (- (length ls) (length r))
-                                            ls))
-                                   (m (funcall rproc ri c))
-                                   (n (funcall lproc li s1)))
-                              (cond ((and (consp m) (consp n)
-                                          (char= c (car m))
-                                          (char= s1 (car n)))
-                                     (setq ri (cdr m)
-                                           li (cdr n))
-                                     (throw 'q nil))
-                                    (t (setq ss (cons (cons c li) ss))))))
-                           ((and l (not r) ss
-                                 (not (memq (caar ss) ls))
-                                 (not (char= c (caar ss)))
-                                 (not (char= s (caar ss))))
-                            (let ((m (funcall rproc ri s)))
-                              (cond ((and (consp m)
-                                          (char= s (car m)))
-                                     (setq ri (cdr m))
-                                     (throw 'q nil))
-                                    (t (throw 'block nil)))))
-                           ((and l (not r) ss
-                                 (not (char= c (caar ss)))
-                                 (not (char= s (caar ss))))
-                            (cond ((char= (caar ss)
-                                          (char-after (+ cur ri)))
-                                   (let ((m (funcall lproc 0 (caar ss))))
-                                     (cond ((and (consp m)
-                                                 (char= (caar ss)
-                                                        (car m)))
-                                            (setq li (cdr m))
-                                            (throw 'q nil)))))
-                                  (t (let ((m (funcall rproc ri s)))
-                                       (cond ((and (consp m)
-                                                   (char= s (car m)))
-                                              (setq ri (cdr m))
-                                              (throw 'q nil))
-                                             ((not (consp m))
-                                              (setq li (cdar ss))
-                                              (throw 'block nil)))))))
-                           ((and l r ss (not (char= c (caar ss))))
-                            (let ((m (funcall rproc ri)))
-                              (cond ((and (consp m) (char= c (car m)))
-                                     (setq ri (cdr m)))
-                                    ((and (char= (caar ss)
-                                                 (char-after (+ cur ri))))
-                                     (setq li (cdar ss))
-                                     (throw 'q nil)))))
-                           ((and l (not ss))
-                            (let ((m (funcall rproc ri)))
-                              (cond ((and (consp m) (char= s (car m)))
-                                     (let ((n1 (funcall lproc (1+ li) c))
-                                           (m1 (funcall rproc
-                                                        (1+ (cdr m))
-                                                        s)))
-                                       (cond ((or (not (consp n1))
-                                                  (not (consp m1)))
-                                              (setq ri (cdr m))
-                                              (throw 'q nil))
-                                             (t (setq ss
-                                                      (cons (cons c li)
-                                                            ss))))))
-                                    (t (setq ss (cons (cons c li) ss))))))
-                           ((and l ss (char= s (caar ss)))
-                            (setq ss (cdr ss)))
-                           ((or l r)
-                            (setq ss (cons (cons c li) ss))))
-                     (setq li (1+ li)))))
-               (cond ((= (- cur li) min)
-                      (cond (ss (let ((n (funcall
-                                          lproc
-                                          0
-                                          (char-after (+ cur ri)))))
-                                  (cond ((consp n)
-                                         (setq li (cdr n))))))
-                            (t (throw 'block nil))))
-                     (t (cons (- cur li ,bnd)
-                              (+ cur ri ,bnd)))))))))))
-
-;; end of `_mark_quoted@_'
-
 
 
 (provide 'marks)
