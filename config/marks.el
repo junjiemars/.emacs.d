@@ -80,6 +80,58 @@
 
 ;; end of mark-* marco
 
+;;; `_forward_symmetry_' `_backward_symmetry_'
+
+(defmacro _forward_symmetry_ (chr pos rx ls rs)
+  (let ((chr1 (gensym*))
+        (pos1 (gensym*))
+        (rx1 (gensym*))
+        (ls1 (gensym*))
+        (rs1 (gensym*)))
+    `(lexical-let*% ((,chr1 ,chr)
+                     (,pos1 ,pos)
+                     (,rx1 ,rx)
+                     (,ls1 ,ls)
+                     (,rs1 ,rs)
+                     (cur ,pos)
+                     (ss nil))
+       (catch 'break
+         (while (< cur ,rx1)
+           (cond ((= ,chr1 (char-after cur))
+                  (throw 'break cur))
+                 ((let ((c (strchr ,ls1 (char-after cur))))
+                    (and c (cons c ss))) t)
+                 ((let ((r (strchr ,rs1 (char-after cur))))
+                    (and r ss (= r (car ss))))
+                  (setq ss (cdr ss))))
+           (setq cur (1+ cur)))))))
+
+(defmacro _backward_symmetry_ (chr pos lx ls rs)
+  (let ((chr1 (gensym*))
+        (pos1 (gensym*))
+        (lx1 (gensym*))
+        (ls1 (gensym*))
+        (rs1 (gensym*)))
+    `(lexical-let*% ((,chr1 ,chr)
+                     (,pos1 ,pos)
+                     (,lx1 ,lx)
+                     (,ls1 ,ls)
+                     (,rs1 ,rs)
+                     (cur ,pos)
+                     (ss nil))
+       (catch 'break
+         (while (> cur ,lx1)
+           (cond ((= ,chr1 (char-before cur))
+                  (throw 'break cur))
+                 ((let ((c (strchr ,rs1 (char-before cur))))
+                    (and c (cons c ss))) t)
+                 ((let ((r (strchr ,ls1 (char-before cur))))
+                    (and r ss (= r (car ss))))
+                  (setq ss (cdr ss))))
+           (setq cur (1- cur)))))))
+
+;; `_forward_symmetry_' `_backward_symmetry_'
+
 (eval-when-compile
   (defmacro _mark_quoted@_ ()
     `(let* ((p (point)) (l1 p) (r1 p)
@@ -96,38 +148,14 @@
                             (strchr rs (char-after r1))))
               (cons (1- l1) (1+ r1)))
              ((and l1 r1)
-              (if (<= (- p l1) (- r1 p))
-                  (let ((r2 (1+ r1)))
-                    (while
-                        (and (< r2 rx)
-                             (null (strchr rs (char-after r2))))
-                      (setq r2 (1+ r2)))
-                    (cond ((= (strchr ls (char-before l1))
-                              (strchr rs (char-after r2)))
-                           (cons (1- l1) (1+ r2)))
-                          (t (let ((l3 (1- l1)))
-                               (while
-                                   (and (> l3 lx)
-                                        (null (strchr ls (char-before l3))))
-                                 (setq l3 (1- l3)))
-                               (when (= (strchr ls (char-before l3))
-                                        (strchr ls (char-after r1)))
-                                 (cons (1- l3) (1+ r1)))))))
-                (let ((l2 (1- l1)))
-                  (while (and (> l2 lx)
-                              (null (strchr ls (char-before l2))))
-                    (setq l2 (1- l2)))
-                  (cond ((= (strchr ls (char-before l2))
-                            (strchr rs (char-after r1)))
-                         (cons (1- l2) (1+ r1)))
-                        (t (let ((r3 (1+ r1)))
-                             (while
-                                 (and (< r3 rx)
-                                      (null (strchr rs (char-after r3))))
-                               (setq r3 (1+ r3)))
-                             (when (= (strchr ls (char-before l1))
-                                      (strchr rs (char-after r3)))
-                               (cons (1- l1) (1+ r3)))))))))))))
+              (cond ((strchr rs (char-after l1))
+                     (let ((l2 (_backward_symmetry_
+                                (char-after r1) r1 lx ls rs)))
+                       (when l2 (cons (1- l2) (1+ r1)))))
+                    ((strchr ls (char-after r1))
+                     (let ((r2 (_forward_symmetry_
+                                (char-before l1) l1 rx ls rs)))
+                       (when r2 (cons (1- l1) (1+ r2)))))))))))
 
 ;; end of `_mark_quoted@_'
 
