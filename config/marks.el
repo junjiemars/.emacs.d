@@ -94,18 +94,16 @@
                      (,ls1 ,ls)
                      (,rs1 ,rs)
                      (cur ,pos1)
-                     (ss nil))
+                     (ss (cons ,chr1 nil)))
        (catch 'break
          (while (< cur ,rx1)
-           (cond ((let ((c (strchr ,rs1 (char-after cur))))
-                    (and c (= c ,chr1) (null ss)))
-                  (throw 'break cur))
-                 ((let ((c (strchr ,ls1 (char-after cur))))
-                    (and c (setq ss (cons c ss))))
-                  ss)
-                 ((let ((r (strchr ,rs1 (char-after cur))))
-                    (and r ss (= r (car ss))))
-                  (setq ss (cdr ss))))
+           (let ((l (strchr ,ls1 (char-after cur)))
+                 (r (strchr ,rs1 (char-after cur))))
+             (cond ((and l (null (= l (car ss))))
+                    (setq ss (cons l ss)))
+                   ((and r ss (= r (car ss)))
+                    (setq ss (cdr ss)))))
+           (when (null ss) (throw 'break cur))
            (setq cur (1+ cur)))))))
 
 (defmacro _backward_symmetry_ (chr pos lx ls rs)
@@ -120,18 +118,16 @@
                      (,ls1 ,ls)
                      (,rs1 ,rs)
                      (cur ,pos1)
-                     (ss nil))
+                     (ss (cons ,chr1 nil)))
        (catch 'break
          (while (> cur ,lx1)
-           (cond ((let ((c (strchr ,ls1 (char-before cur))))
-                    (and c (= c ,chr1) (null ss)))
-                  (throw 'break cur))
-                 ((let ((c (strchr ,rs1 (char-before cur))))
-                    (and c (setq ss (cons c ss))))
-                  ss)
-                 ((let ((r (strchr ,ls1 (char-before cur))))
-                    (and r ss (= r (car ss))))
-                  (setq ss (cdr ss))))
+           (let ((l (strchr ,ls1 (char-before cur)))
+                 (r (strchr ,rs1 (char-before cur))))
+             (cond ((and r (null (= r (car ss))))
+                    (setq ss (cons r ss)))
+                   ((and l ss (= l (car ss)))
+                    (setq ss (cdr ss)))))
+           (when (null ss) (throw 'break cur))
            (setq cur (1- cur)))))))
 
 ;; `_forward_symmetry_' `_backward_symmetry_'
@@ -154,7 +150,8 @@
              (r2 (and l1 (_forward_symmetry_
                           (strchr ls (char-before l1))
                           l1 rx ls rs))))
-         (and l1 r1 (cons (1- (min l1 l2)) (1+ (max r1 r2))))))))
+         (and l1 r1 (cons (1- (if l2 (min l1 l2) l1))
+                          (1+ (if r2 (max r1 r2) r1))))))))
 
 ;; end of `_mark_quoted@_'
 
