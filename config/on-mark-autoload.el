@@ -71,7 +71,9 @@ If prefix N is non nil, then forward or backward N words."
 (defun kill-whole-word@ ()
   "Kill the whole word at point.\n"
   (interactive)
-  (let ((bs (_mark_whole_word@_)))
+  (let ((bs (if current-prefix-arg
+                (_mark_whole_word@_)
+              (_mark_word@_))))
     (unless (and bs (car bs) (cdr bs))
       (user-error "No whole word found"))
     (kill-region (car bs) (cdr bs))))

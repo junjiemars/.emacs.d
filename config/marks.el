@@ -93,14 +93,16 @@
                      (,rx1 ,rx)
                      (,ls1 ,ls)
                      (,rs1 ,rs)
-                     (cur ,pos)
+                     (cur ,pos1)
                      (ss nil))
        (catch 'break
          (while (< cur ,rx1)
-           (cond ((= ,chr1 (char-after cur))
+           (cond ((let ((c (strchr ,rs1 (char-after cur))))
+                    (and c (= c ,chr1) (null ss)))
                   (throw 'break cur))
                  ((let ((c (strchr ,ls1 (char-after cur))))
-                    (and c (cons c ss))) t)
+                    (and c (setq ss (cons c ss))))
+                  ss)
                  ((let ((r (strchr ,rs1 (char-after cur))))
                     (and r ss (= r (car ss))))
                   (setq ss (cdr ss))))
@@ -117,14 +119,16 @@
                      (,lx1 ,lx)
                      (,ls1 ,ls)
                      (,rs1 ,rs)
-                     (cur ,pos)
+                     (cur ,pos1)
                      (ss nil))
        (catch 'break
          (while (> cur ,lx1)
-           (cond ((= ,chr1 (char-before cur))
+           (cond ((let ((c (strchr ,ls1 (char-before cur))))
+                    (and c (= c ,chr1) (null ss)))
                   (throw 'break cur))
                  ((let ((c (strchr ,rs1 (char-before cur))))
-                    (and c (cons c ss))) t)
+                    (and c (setq ss (cons c ss))))
+                  ss)
                  ((let ((r (strchr ,ls1 (char-before cur))))
                     (and r ss (= r (car ss))))
                   (setq ss (cdr ss))))
@@ -144,18 +148,13 @@
        (while (and (< r1 rx)
                    (null (strchr rs (char-after r1))))
          (setq r1 (1+ r1)))
-       (cond ((and l1 r1 (= (strchr ls (char-before l1))
-                            (strchr rs (char-after r1))))
-              (cons (1- l1) (1+ r1)))
-             ((and l1 r1)
-              (cond ((strchr rs (char-after l1))
-                     (let ((l2 (_backward_symmetry_
-                                (char-after r1) r1 lx ls rs)))
-                       (when l2 (cons (1- l2) (1+ r1)))))
-                    ((strchr ls (char-after r1))
-                     (let ((r2 (_forward_symmetry_
-                                (char-before l1) l1 rx ls rs)))
-                       (when r2 (cons (1- l1) (1+ r2)))))))))))
+       (let ((l2 (and r1 (_backward_symmetry_
+                          (strchr rs (char-after r1))
+                          r1 lx ls rs)))
+             (r2 (and l1 (_forward_symmetry_
+                          (strchr ls (char-before l1))
+                          l1 rx ls rs))))
+         (and l1 r1 (cons (1- (min l1 l2)) (1+ (max r1 r2))))))))
 
 ;; end of `_mark_quoted@_'
 
