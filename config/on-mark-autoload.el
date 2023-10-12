@@ -65,10 +65,10 @@ If prefix N is non nil, then forward or backward N words."
   "Kill the whole word at point.\n
 If prefix N is non nil, then killing forward or backward N whole words."
   (interactive "p")
-  (let ((bs (if (consp current-prefix-arg)
-								(_mark_symbol@_)
-							(_mark_word@_ n))))
-    (unless (and bs (car bs) (cdr bs))
+  (let ((bs (cond ((consp current-prefix-arg)
+									 (_mark_symbol@_))
+									(t (_mark_word@_ n)))))
+    (unless (and bs (car bs) (cdr bs) (null (= (car bs) (cdr bs))))
       (user-error "No whole word found"))
     (kill-region (car bs) (cdr bs))))
 
