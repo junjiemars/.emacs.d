@@ -227,42 +227,15 @@
     (let ((n1 (gensym*)))
       `(lexical-let*% ((,n1 (or ,n 1))
                        (p (point))
-                       (bs (bounds-of-thing-at-point 'word))
-                       (fs (save-excursion
-                             (goto-char (if (>= ,n1 0) (1- p) (1+ p)))
-                             (forward-word ,n1)
-                             (bounds-of-thing-at-point 'word))))
-         (cons (if (>= ,n1 0)
-                   (or (car bs) p)
-                 (or (car fs) (car bs) p))
-               (if (>= ,n1 0)
-                   (or (cdr fs) (cdr bs) p)
-                 (or (cdr bs) p)))))))
+                       (p1 p) (p2 p))
+         (save-excursion
+           (forward-word ,n1)
+           (setq p1 (point))
+           (forward-word (* -1 ,n1))
+           (setq p2 (point)))
+         (cons (min p1 p2) (max p1 p2))))))
 
 ;; end of `_mark_word@_'
-
-;;; `_mark_whole_word@_'
-
-(eval-when-compile
-  (defmacro _mark_whole_word@_ ()
-    `(lexical-let*% ((p (point))
-                     (bs (bounds-of-thing-at-point 'symbol))
-                     (ls (save-excursion
-                           (goto-char (if (car bs)
-                                          (1+ (car bs))
-                                        (1+ p)))
-                           (forward-word -1)
-                           (bounds-of-thing-at-point 'word)))
-                     (rs (save-excursion
-                           (goto-char (if (cdr bs)
-                                          (1- (cdr bs))
-                                        (1- p)))
-                           (forward-word 1)
-                           (bounds-of-thing-at-point 'word))))
-       (cons (or (car bs) (car ls) p)
-             (or (cdr bs) (cdr rs) p)))))
-
-;; end of `_mark_whole_word@_'
 
 
 (eval-when-compile

@@ -32,21 +32,29 @@
                      (cons "symbol"
                            (region-active-unless
                              (let ((bs (_mark_symbol@_)))
+                               (unless bs
+                                 (user-error "No symbol at point"))
                                (_mark_thing_ (car bs) (cdr bs))))))
                     ((char= ?w style)
                      (cons "word"
                            (region-active-unless
                              (let ((bs (_mark_word@_)))
+                               (unless bs
+                                 (user-error "No word at point"))
                                (_mark_thing_ (car bs) (cdr bs))))))
                     ((char= ?f style)
                      (cons "file"
                            (region-active-unless
                              (let ((bs (_mark_filename@_)))
+                               (unless bs
+                                 (user-error "No file at point"))
                                (_mark_thing_ (car bs) (cdr bs))))))
                     ((char= ?q style)
                      (cons "quoted"
                            (region-active-unless
                              (let ((bs (_mark_quoted@_)))
+                               (unless bs
+                                 (user-error "No quoted thing at point"))
                                (_mark_thing_ (car bs) (cdr bs)))))))))
       (let ((ss (symbol@)))
         (if (eq 'region (car ss))
