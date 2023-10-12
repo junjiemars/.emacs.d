@@ -19,13 +19,6 @@
       (user-error "No symbol found"))
     (_mark_thing_ (car bs) (cdr bs))))
 
-(defun kill-symbol@ ()
-  "Kill the symbol at point."
-  (interactive)
-  (let ((bs (_mark_symbol@_)))
-    (unless (and bs (car bs) (cdr bs))
-      (user-error "No symbol found"))
-    (kill-region (car bs) (cdr bs))))
 
 ;; end of `mark-symbol@' `kill-symbol@'
 
@@ -68,13 +61,24 @@ If prefix N is non nil, then forward or backward N words."
       (user-error "No word found"))
     (_mark_thing_ (car bs) (cdr bs))))
 
-;; end of `mark-word'
+(defun kill-whole-word@ (&optional n)
+  "Kill the whole word at point.\n
+If prefix N is non nil, then killing forward or backward N whole words."
+  (interactive "p")
+  (let ((bs (if (consp current-prefix-arg)
+								(_mark_symbol@_)
+							(_mark_word@_ n))))
+    (unless (and bs (car bs) (cdr bs))
+      (user-error "No whole word found"))
+    (kill-region (car bs) (cdr bs))))
+
+
+;; end of `mark-word' `kill-whole-word@'
 
 ;;; `mark-line@'
 
 (defun mark-line@ (&optional indent)
-  "Mark line at point.
-
+  "Mark line at point.\n
 If prefix INDENT is non-nil, then mark indent line."
   (interactive "P")
   (_mark_thing_ (if indent
@@ -94,8 +98,7 @@ If prefix INDENT is non-nil, then mark indent line."
 ;;; `mark-defun@'
 
 (defun mark-defun@ (&optional n)
-  "Mark function at point.
-
+  "Mark function at point.\n
 If prefix N is non-nil, then forward or backward N functions."
   (interactive "p")
   (let ((bs (_mark_defun@_ n)))
@@ -121,8 +124,7 @@ If prefix N is non-nil, then forward or backward N functions."
 ;;; `mark-quoted@'
 
 (defun mark-quoted@ (&optional boundary)
-  "Mark QUOTE thing at point.
-
+  "Mark QUOTE thing at point.\n
 If prefix BOUNDARY is non-nil, then mark the whole quoted thing."
   (interactive "P")
   (let ((bs (_mark_quoted@_)))
@@ -137,14 +139,13 @@ If prefix BOUNDARY is non-nil, then mark the whole quoted thing."
 ;;; Keys
 
 ;; Kill
-(define-key% (current-global-map) (kbd "C-x M-s") #'kill-symbol@)
+(define-key% (current-global-map) (kbd "C-x M-d") #'kill-whole-word@)
 (define-key% (current-global-map) (kbd "C-x M-e") #'kill-whole-sexp@)
 (define-key% (current-global-map) (kbd "C-x M-l") #'kill-whole-line)
 
 ;; Mark
 (define-key% (current-global-map) (kbd "C-c m f") #'mark-filename@)
 (define-key% (current-global-map) (kbd "C-c m l") #'mark-line@)
-(define-key% (current-global-map) (kbd "C-c m s") #'mark-symbol@)
 (define-key% (current-global-map) (kbd "C-c m q") #'mark-quoted@)
 (define-key% (current-global-map) (kbd "M-@") #'mark-word@)
 (define-key% (current-global-map) (kbd "C-M-SPC") #'mark-sexp@)

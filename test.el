@@ -28,7 +28,7 @@
   (should (message "# system-configuration-options = %s"
                    system-configuration-options))
   (should (message "# system-configuration-features = %s"
-                   (when (boundp 'system-configuration-features1)
+                   (when (boundp 'system-configuration-features)
                        system-configuration-features))))
 
 
