@@ -23,12 +23,13 @@
   (should (message "# system-type = %s" system-type))
   (should (message "# platform-arch = %s" (platform-arch)))
   (should (message "# emacs-arch = %s" (emacs-arch)))
+  (should (message "# sh = %s" (or (executable-find "sh") "")))
   (should (message "# system-configuration = %s" system-configuration))
   (should (message "# system-configuration-options = %s"
                    system-configuration-options))
   (should (message "# system-configuration-features = %s"
-                   system-configuration-features))
-  (should (message "# sh = %s" (or (executable-find "sh") ""))))
+                   (when (boundp 'system-configuration-features1)
+                       system-configuration-features))))
 
 
 ;;;
