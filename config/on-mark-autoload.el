@@ -63,7 +63,7 @@ If prefix N is non nil, then forward or backward N words."
 
 (defun kill-whole-word@ (&optional n)
   "Kill the whole word at point.\n
-If prefix N is non nil, then killing forward or backward N whole words."
+If prefix N is non nil, then kill N whole word forward or backward."
   (interactive "p")
   (let ((bs (cond ((consp current-prefix-arg)
 									 (_mark_symbol@_))
