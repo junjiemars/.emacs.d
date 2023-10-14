@@ -10,37 +10,43 @@
 (eval-when-compile (require 'browse-url))
 
 
-(if-feature-eww%
-    (autoload 'browse-url-default-browser "browse-url"))
-(if-feature-eww%
-    (autoload 'browse-url-url-encode-chars "browse-ulr"))
+(defmacro when-feature-eww% (&rest body)
+  "When \\=`eww\\=', do BODY."
+  (if-feature-eww%
+      `(progn% ,@body)
+    `(comment ,@body)))
+
+;;; autoload
+(when-feature-eww%
+ (autoload 'browse-url-default-browser "browse-url")
+ (autoload 'browse-url-url-encode-chars "browse-ulr"))
 
 
-(if-feature-eww%
+(when-feature-eww%
 
-    (defun toggle-browser! (&optional arg)
-      "Toggle default browser to `eww' or not.
+ (defun toggle-browser! (&optional arg)
+   "Toggle default browser to `eww' or not.\n
 With prefix argument ARG, `eww' as default browser if ARG is
 non-nil, otherwise not.  See also: `browser-url-browser-function'."
-      (interactive "P")
-      (setq browse-url-browser-function
-            (if (null arg)
-                (if (eq browse-url-browser-function
-                        'browse-url-default-browser)
-                    #'eww-browse-url
-                  #'browse-url-default-browser)
-              #'eww-browse-url))
-      (message "eww as default browser %s"
-               (if (eq browse-url-browser-function
-                       'browse-url-default-browser)
-                   "disabled"
-                 "enabled"))))
+   (interactive "P")
+   (setq browse-url-browser-function
+         (if (null arg)
+             (if (eq browse-url-browser-function
+                     'browse-url-default-browser)
+                 #'eww-browse-url
+               #'browse-url-default-browser)
+           #'eww-browse-url))
+   (message "eww as default browser %s"
+            (if (eq browse-url-browser-function
+                    'browse-url-default-browser)
+                "disabled"
+              "enabled"))))
 
 
-(if-feature-eww%
+(when-feature-eww%
 
-    (defun set-eww-mode! ()
-      (toggle-truncate-lines nil)))
+ (defun set-eww-mode! ()
+   (toggle-truncate-lines nil)))
 
 
 ;; find web via search engine
@@ -87,11 +93,11 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
    (list (read-string "Lookup web for " (cdr (symbol@)))
          (when current-prefix-arg
            (let ((se (mapcar #'car (*web-defs*))))
-             (read-string (format "Choose (%s) "
-                                  (mapconcat #'identity se "|"))
-                          (or (car *lookup-web-history*)
-                              (car se))
-                          '*lookup-web-history*)))))
+             (completing-read (format "Choose (%s) "
+                                      (mapconcat #'identity se "|"))
+                              (mapcar #'car (*web-defs*))
+                              nil nil (car *lookup-web-history*)
+                              '*lookup-web-history* (car se))))))
   (let ((en (web-find-def engine)))
     (make-thread*
      (lambda ()
@@ -104,18 +110,18 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
                                                "[ '()!`\"]")))))))
 
 
-(if-feature-eww%
-    (with-eval-after-load 'eww
-      (add-hook 'eww-mode-hook #'set-eww-mode!)
-      (when (consp (*web-defs*))
-        (setq% eww-search-prefix
-               (concat (car (cdar (*web-defs*)))
-                       (cdr (cdar (*web-defs*))))))))
+(when-feature-eww%
+ (with-eval-after-load 'eww
+   (add-hook 'eww-mode-hook #'set-eww-mode!)
+   (when (consp (*web-defs*))
+     (setq% eww-search-prefix
+            (concat (car (cdar (*web-defs*)))
+                    (cdr (cdar (*web-defs*))))))))
 
 
-;;;;
+;;;
 ;; Keys
-;;;;
+;;;
 
 ;;; `eww-search-words' and `webjump' more leaner than `lookup-web'.
 
@@ -123,4 +129,5 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
 (define-key% (current-global-map) (kbd "C-c f w") #'lookup-web)
 (define-key% (current-global-map) (kbd "M-s M-b") #'eww-list-bookmarks)
 
-;; EOF
+
+;; end of on-eww-autoload.el
