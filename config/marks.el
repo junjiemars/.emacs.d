@@ -95,10 +95,9 @@
          (while (< cur ,rx1)
            (let ((l (strchr ,ls1 (char-after cur)))
                  (r (strchr ,rs1 (char-after cur))))
-             (cond ((and l (null (= l (car ss))))
-                    (setq ss (cons l ss)))
-                   ((and r ss (= r (car ss)))
-                    (setq ss (cdr ss)))))
+             (cond ((and r ss (= r (car ss)))
+                    (setq ss (cdr ss)))
+                   (l (setq ss (cons l ss)))))
            (when (null ss) (throw 'break cur))
            (setq cur (1+ cur)))))))
 
@@ -115,10 +114,9 @@
          (while (> cur ,lx1)
            (let ((l (strchr ,ls1 (char-before cur)))
                  (r (strchr ,rs1 (char-before cur))))
-             (cond ((and r (null (= r (car ss))))
-                    (setq ss (cons r ss)))
-                   ((and l ss (= l (car ss)))
-                    (setq ss (cdr ss)))))
+             (cond ((and l ss (= l (car ss)))
+                    (setq ss (cdr ss)))
+                   (r (setq ss (cons r ss)))))
            (when (null ss) (throw 'break cur))
            (setq cur (1- cur)))))))
 
@@ -128,22 +126,39 @@
   (defmacro _mark_quoted@_ ()
     `(let* ((p (point)) (l1 p) (r1 p)
             (lx (point-min)) (rx (point-max))
-            (ls "\"'`([{‘")
-            (rs "\"'`)]}’"))
+            (ls "\"'`([{<")
+            (rs "\"'`)]}>"))
        (while (and (> l1 lx)
                    (null (strchr ls (char-before l1))))
          (setq l1 (1- l1)))
        (while (and (< r1 rx)
                    (null (strchr rs (char-after r1))))
          (setq r1 (1+ r1)))
-       (let ((l2 (and r1 (_backward_symmetry_
-                          (strchr rs (char-after r1))
-                          r1 lx ls rs)))
-             (r2 (and l1 (_forward_symmetry_
-                          (strchr ls (char-before l1))
-                          l1 rx ls rs))))
-         (and l1 r1 (cons (1- (if l2 (min l1 l2) l1))
-                          (1+ (if r2 (max r1 r2) r1))))))))
+       (when (and l1 r1)
+         (let* ((l2 (and r1 (_backward_symmetry_
+                             (strchr rs (char-after r1))
+                             r1 lx ls rs)))
+                (r2 (and l1 (_forward_symmetry_
+                             (strchr ls (char-before l1))
+                             l1 rx ls rs)))
+                (l3 (and r2 (_backward_symmetry_
+                             (strchr rs (char-after r2))
+                             r2 lx ls rs)))
+                (r3 (and l2 (_forward_symmetry_
+                             (strchr ls (char-before l2))
+                             l2 rx ls rs))))
+           (cond ((and l2 r2 l3 r3 (= l1 l2 l3) (= r1 r2 r3))
+                  (cons (1- l1) (1+ r1)))
+                 ((and l2 l3 r3 (= l1 l3) (= r1 r3) (> r2 r3))
+                  (cons (1- l1) (1+ r2)))
+                 ((and l2 l3 r3 (= l1 l3) (= r1 r3))
+                  (cons (1- l2) (1+ r3)))
+                 ((and r2 l3 (= l1 l3))
+                  (cons (1- l1) (1+ r2)))
+                 ((and l2 r3 (= r1 r3))
+                  (cons (1- l2) (1+ r1)))
+                 (t (cons (1- (if l2 (min l1 l2) l1))
+                          (1+ (if r2 (max r1 r2) r1))))))))))
 
 ;; end of `_mark_quoted@_'
 
