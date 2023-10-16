@@ -41,17 +41,19 @@
   "Run a chez process in a buffer."
   :group 'scheme)
 
-(defcustom% chez-program
-  (cond ((executable-find% "scheme"
-                           (lambda (chez)
-                             (let ((x (shell-command* "echo"
-                                        "'(scheme-version)'|" chez "-q")))
-                               (zerop (car x)))))
-         "scheme")
-        (t "scheme"))
-  "Program invoked by the `run-chez' command."
-  :type 'string
-  :group 'chez)
+
+(defalias 'chez-program
+  (lexical-let% ((b (executable-find%
+                     "scheme"
+                     (lambda (chez)
+                       (let ((x (shell-command* "echo"
+                                  "'(scheme-version)'|" chez "-q")))
+                         (or (and (zerop (car x)) chez)
+                             "scheme"))))))
+    (lambda (&optional n)
+      (if (null n) b (setq b n))))
+  "Program invoked by the `run-chez' command.")
+
 
 (defcustom% chez-input-filter-regexp "\\`\\s *\\S ?\\S ?\\s *\\'"
   "Input matching this regexp are not saved on the history list.
@@ -139,7 +141,7 @@ This is run before the process is cranked up."
   "Chez tracing history list.")
 
 
- ;; end variable declarations
+;; end variable declarations
 
 
 (defun chez-input-filter (str)
@@ -307,7 +309,7 @@ Run the hook `chez-repl-mode-hook' after the `comint-mode-hook'."
       (apply #'make-comint-in-buffer
              (buffer-name (current-buffer))
              (current-buffer)
-             chez-program
+             (chez-program)
              (*chez-start-file*)
              (split-string* command-line "\\s-+" t))
       (chez-repl-mode)
@@ -318,7 +320,7 @@ Run the hook `chez-repl-mode-hook' after the `comint-mode-hook'."
   (switch-to-buffer-other-window (*chez*)))
 
 
- ;; end of REPL
+;; end of REPL
 
 
 (defun chez-switch-to-repl (&optional no-select)
@@ -448,10 +450,10 @@ interacting with the Chez REPL is at your disposal.
             #'chez-completion 0 'local)
   (chez-syntax-indent))
 
-
+
 
 
 (provide 'chez)
 
 
-;; end of chez.el
+;; end of chez.el

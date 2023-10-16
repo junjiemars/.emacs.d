@@ -34,7 +34,8 @@
                      "jshell"
                      (lambda (jshell)
                        (let ((x (shell-command* jshell "--version")))
-                         (zerop (car x)))))))
+                         (or (and (zerop (car x)) jshell)
+                             "jshell"))))))
     (lambda (&optional n)
       (if (null n) b (setq b n))))
   "Program invoked by the `run-jshell' command.")
@@ -91,7 +92,7 @@ void jshell_emacs_apropos(String what, int max) {
   "Jshell option history list.")
 
 
- ;; end variable declarations
+;; end variable declarations
 
 
 (defun jshell-check-proc (&optional spawn)
@@ -100,7 +101,7 @@ void jshell_emacs_apropos(String what, int max) {
              (not (eq 'run (car (comint-check-proc (*jshell*))))))
     (save-window-excursion (call-interactively #'run-jshell)))
   (or (get-buffer-process (*jshell*))
-      (error "No `*jshell*' process.")))
+      (user-error "No `*jshell*' process.")))
 
 
 (defun jshell-last-sexp ()
@@ -277,6 +278,7 @@ Run the hook `jshell-repl-mode-hook' after the `comint-mode-hook'."
                                   (car *jshell-option-history*)
                                   '*jshell-option-history*)))
   (unless (comint-check-proc (*jshell*))
+    (unless (jshell-program) (user-error "No jshell found"))
     (with-current-buffer (*jshell*)
       (apply #'make-comint-in-buffer
              (buffer-name (current-buffer))
@@ -314,34 +316,20 @@ end of buffer, otherwise just popup the buffer."
     (goto-char (point-max))))
 
 
- ;; end of REPL
+;; end of REPL
 
-
-(defun jshell-compile-file (file)
-  "Compile a javascript FILE in `*jshell*'."
-  (interactive (comint-get-source
-                "Compile java file: "
-                (let ((n (buffer-file-name)))
-                  (cons (file-name-directory n)
-                        (file-name-nondirectory n)))
-                '(js-mode) nil))
-  (comint-check-source file)
-  (comint-send-string (jshell-check-proc t)
-                      (format "System.out.printf('\"%s\"')\n" file))
-  (jshell-switch-to-last-buffer (current-buffer))
-  (jshell-switch-to-repl))
 
 (defun jshell-load-file (file)
-  "Load a javascript FILE into `*jshell*'."
+  "Load a java FILE into `*jshell*'."
   (interactive (comint-get-source
-                "Load javascript file: "
+                "Load java file: "
                 (let ((n (buffer-file-name)))
                   (cons (file-name-directory n)
                         (file-name-nondirectory n)))
-                '(js-mode) nil))
+                '(java-mode) nil))
   (comint-check-source file)
   (comint-send-string (jshell-check-proc t)
-                      (format "process.chdir('%s');\n.load %s\n"
+                      (format "/open %s%s\n"
                               (file-name-directory file)
                               (file-name-nondirectory file)))
   (jshell-switch-to-last-buffer (current-buffer))
@@ -416,7 +404,7 @@ end of buffer, otherwise just popup the buffer."
     (define-key m "\C-x\C-e" #'jshell-send-last-sexp)
     (define-key m "\C-c\C-j" #'jshell-send-line)
     (define-key m "\C-c\C-l" #'jshell-load-file)
-    (define-key m "\C-c\C-k" #'jshell-compile-file)
+    ;; (define-key m "\C-c\C-k" #'jshell-compile-file)
     (define-key m "\C-c\C-r" #'jshell-send-region)
     (define-key m "\C-c\C-z" #'jshell-switch-to-repl)
     (define-key m "\C-cI" #'jshell-inspect-object)
@@ -454,9 +442,10 @@ interacting with the Jshell REPL is at your disposal.
             #'jshell-completion 0 'local)
   (jshell-syntax-indent))
 
+
 
 
 (provide 'jshell)
 
 
-;; end of jshell.el
+;; end of jshell.el
