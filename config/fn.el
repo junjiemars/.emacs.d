@@ -78,10 +78,12 @@
   "Push NEWELT to the head of SEQ.\n
 If optional UNIQUELY is non-nil then push uniquely."
   (let ((n1 (gensym*))
-        (s1 (gensym*)))
+        (s1 (gensym*))
+        (u1 (gensym*)))
     `(let* ((,n1 ,newelt)
-            (,s1 (if ,uniquely (delete ,n1 ,seq) ,seq)))
-       (setq ,seq (cons ,n1 ,s1)))))
+            (,s1 ,seq)
+            (,u1 (if ,uniquely (delete ,n1 ,s1) ,s1)))
+       (setq ,s1 (cons ,n1 ,u1)))))
 
 
 (defmacro append! (newelt seq &optional uniquely)
