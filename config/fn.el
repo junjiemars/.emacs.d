@@ -75,8 +75,7 @@
 
 
 (defmacro push! (newelt seq &optional uniquely)
-  "Push NEWELT to the head of SEQ.
-
+  "Push NEWELT to the head of SEQ.\n
 If optional UNIQUELY is non-nil then push uniquely."
   (let ((n1 (gensym*))
         (s1 (gensym*)))
@@ -86,8 +85,7 @@ If optional UNIQUELY is non-nil then push uniquely."
 
 
 (defmacro append! (newelt seq &optional uniquely)
-  "Append NEWELT to the end of SEQ.
-
+  "Append NEWELT to the end of SEQ.\n
 If optional UNIQUELY is non-nil then append uniquely."
   (let ((n1 (gensym*))
         (s1 (gensym*)))
@@ -159,7 +157,7 @@ If optional UNIQUELY is non-nil then append uniquely."
 
 
 (defmacro loop* (&rest clause)
-  "The Common Lisp \\=`loop\\=' macro.
+  "The Common Lisp \\=`loop\\=' macro.\n
 Optional argument CLAUSE such as for clause, iteration clause,
 accumulate clause and Miscellaneous clause."
   (if-fn% 'cl-loop 'cl-lib
@@ -302,8 +300,7 @@ accumulate clause and Miscellaneous clause."
 
 
 (defmacro match-string* (regexp string num &optional start)
-  "Return string of text match for REGEXP in STRING.
-
+  "Return string of text match for REGEXP in STRING.\n
 Return nil if NUMth pair didn’t match, or there were less than NUM pairs.
 NUM specifies which parenthesized expression in the REGEXP.
 If START is non-nil, start search at that index in STRING.
@@ -320,8 +317,7 @@ See \\=`string-match\\=' and \\=`match-string\\='."
 
 
 (defmacro split-string* (string &optional separators omit-nulls trim)
-  "Split STRING into substrings bounded by match for SEPARATORS.
-
+  "Split STRING into substrings bounded by match for SEPARATORS.\n
 Like \\=`split-string\\=' in Emacs 24.4+
 Optional argument OMIT-NULLS omit null strings.
 Optional argument TRIM regexp used to trim."
@@ -357,11 +353,11 @@ Returns the name of FILE when successed otherwise nil."
         (b (gensym*)))
     `(let ((,s ,sexp)
            (,f ,file)
-           (,b (get-buffer-create*
-                (symbol-name (gensym* "ssexprtf")) t)))
+           (,b (get-buffer-create* (symbol-name (gensym*)) t)))
        (unwind-protect
-           (let ((format-alist nil)
-                 (coding-system-for-write 'no-conversion))
+           (lexical-let%
+               ((format-alist nil)
+                (coding-system-for-write 'no-conversion))
              (with-current-buffer ,b
                (prin1 ,s ,b)
                (write-region (point-min) (point-max) ,f)
@@ -375,8 +371,7 @@ Returns the name of FILE when successed otherwise nil."
         (b (gensym*)))
     `(let ((,f ,file))
        (when (and (stringp ,f) (file-exists-p ,f))
-         (let ((,b (get-buffer-create*
-                    (symbol-name (gensym* "rsexpff")) t)))
+         (let ((,b (get-buffer-create* (symbol-name (gensym*)) t)))
            (unwind-protect
                (with-current-buffer ,b
                  (insert-file-contents-literally ,f)
@@ -385,19 +380,18 @@ Returns the name of FILE when successed otherwise nil."
 
 
 (defmacro save-str-to-file (str file)
-  "Save STR to FILE.
-
+  "Save STR to FILE.\n
 Returns the name of FILE when successed otherwise nil."
   (let ((s (gensym*))
         (f (gensym*))
         (b (gensym*)))
     `(let ((,s ,str)
            (,f ,file)
-           (,b (get-buffer-create*
-                (symbol-name (gensym* "sstrtf")) t)))
+           (,b (get-buffer-create* (symbol-name (gensym*)) t)))
        (unwind-protect
-           (let ((format-alist nil)
-                 (coding-system-for-write 'no-conversion))
+           (lexical-let%
+               ((format-alist nil)
+                (coding-system-for-write 'no-conversion))
              (with-current-buffer ,b
                (insert ,s)
                (write-region (point-min) (point-max) ,f)
@@ -411,8 +405,7 @@ Returns the name of FILE when successed otherwise nil."
         (b (gensym*)))
     `(let ((,f ,file))
        (when (and (stringp ,f) (file-exists-p ,f))
-         (let ((,b (get-buffer-create*
-                    (symbol-name (gensym* "rstrff")) t)))
+         (let ((,b (get-buffer-create* (symbol-name (gensym*)) t)))
            (unwind-protect
                (with-current-buffer ,b
                  (insert-file-contents-literally ,f)
@@ -440,10 +433,8 @@ Returns the name of FILE when successed otherwise nil."
 
 
 (defmacro shell-command* (command &rest args)
-  "Return a cons cell (code . output) after execute COMMAND in inferior shell.
-
-See \\=`shell-command\\=' and \\=`shell-command-to-string\\=' for details.
-
+  "Return a cons cell (code . output) after execute COMMAND in inferior shell.\n
+See \\=`shell-command\\=' and \\=`shell-command-to-string\\=' for details.\n
 If you want to set the environment temporarily that
 \\=`shell-command*\\=' run in:
  (let ((process-environment (cons \"GREP_OPTIONS=--color=always\"
@@ -472,8 +463,7 @@ Optional argument ARGS for COMMAND."
 
 
 (defmacro executable-find% (command &optional fn)
-  "Return the path of COMMAND at compile time.
-
+  "Return the path of COMMAND at compile time.\n
 Return nil if no COMMAND found.
 If FN is nil then return the path, otherwise call FN with the path."
   (let ((cmd (shell-command* (if-platform% 'windows-nt

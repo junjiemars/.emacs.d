@@ -21,9 +21,12 @@
 (defun char-width* (char)
   "Return width in pixels of CHAR in graphic mode."
   (let* ((s (char-to-string char))
-         (glyphs (with-temp-buffer
-                   (insert s)
-                   (font-get-glyphs (font-at 0 nil s) 1 2))))
+         (glyphs (lexical-let%
+                     ((format-alist nil)
+                      (coding-system-for-write 'no-conversion))
+                   (with-temp-buffer
+                     (insert s)
+                     (font-get-glyphs (font-at 0 nil s) 1 2)))))
     (when (and (vectorp glyphs)
                (> (length glyphs) 0)
                (> (length (aref glyphs 0)) 4))
