@@ -147,7 +147,9 @@
                 (r3 (and l2 (_forward_symmetry_
                              (strchr ls (char-before l2))
                              l2 rx ls rs))))
-           (cond ((and l2 r2 l3 r3 (= (= l1 l2) l3) (= (= r1 r2) r3))
+           (cond ((and l2 r2 l3 r3
+                       (and (= l1 l2) (= l2 l3))
+                       (and (= r1 r2) (= r2 r3)))
                   (cons (1- l1) (1+ r1)))
                  ((and l2 l3 r3 (= l1 l3) (= r1 r3) (> r2 r3))
                   (cons (1- l1) (1+ r2)))
