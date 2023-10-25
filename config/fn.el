@@ -277,7 +277,7 @@ accumulate clause and Miscellaneous clause."
          (let ((,r1 (concat "\\(?:"
                             (or ,rr "[ \t\n\r]+\\'")
                             "\\)\\'")))
-           (let ((i (string-match ,r1 ,s1, 0)))
+           (let ((i (string-match ,r1 ,s1 0)))
              (if i (substring ,s1 0 i) ,s1)))))))
 
 
