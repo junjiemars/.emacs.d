@@ -121,8 +121,11 @@ If optional UNIQUELY is non-nil then append uniquely."
 ;; common lisp macro
 ;;;;
 
+
 ;; Load cl-lib/cl at runtime
-(when-version% <= 24.1 (require 'cl-lib))
+(if-version% <= 24.1 (require 'cl-lib)
+  (let ((byte-compile-warnings nil))
+    (require 'cl)))
 
 
 (fset 'assoc**

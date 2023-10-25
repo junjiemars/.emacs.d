@@ -18,12 +18,6 @@
     (if (= most-positive-fixnum (1- (expt 2 29))) 32 0)))
 
 
-;;; Load cl-lib/cl at compile-time
-;; (eval-when-compile
-;;   (if-version% <= 24
-;;                (require 'cl-lib)
-;;     (require 'cl)))
-
 ;;;
 ;; *-lexical macro
 ;;;
