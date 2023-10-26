@@ -257,7 +257,7 @@
   (load-conditional-modes!)
   (set-global-keys!)
   (when-fn% 'self-frame-default-load! nil (self-frame-default-load!))
-  (when-fn% 'self-desktop-read! nil (self-desktop-read!))
+  (when-fn% 'self-desktop-read! nil (funcall 'self-desktop-read!))
   (require 'ido)
   (ido-mode t)
   (make-thread*
