@@ -103,10 +103,11 @@ A prefix argument is handled like `recenter':
 
 
 (with-eval-after-load 'view
-
   ;; keep `view-mode' when quit
-  (when-var% view-mode-map 'view
-    (define-key% view-mode-map (kbd "q") #'quit-window)))
+  ;; (when-var% view-mode-map 'view
+  ;;   (define-key% view-mode-map (kbd "q") #'quit-window))
+  ;; treat `read-only-mode' as `view-mode'
+  (setq view-read-only t))
 
 
 ;; end of on-window-autoload.el

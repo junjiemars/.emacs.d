@@ -89,9 +89,6 @@
 ;; `url'
 (setq% url-configuration-directory (v-home! ".url/") 'url)
 
-;; treat `read-only-mode' as `view-mode'
-(setq view-read-only t)
-
 
  ;; Versioned Dirs
 
