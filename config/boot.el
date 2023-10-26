@@ -19,6 +19,36 @@
 
 
 ;;;
+;; fn compile-time checking macro
+;;;
+
+(defmacro if-fn% (fn feature then &rest else)
+  "If FN is bounded yield non-nil, do THEN, else do ELSE...\n
+Argument FEATURE that FN dependent on, be loaded at compile time."
+  (declare (indent 3))
+  `(if% (or (and ,feature (require ,feature nil t) (fboundp ,fn))
+            (fboundp ,fn))
+       ,then
+     (progn% ,@else)))
+
+
+(defmacro when-fn% (fn feature &rest body)
+  "When FN is bounded yield non-nil, do BODY.\n
+Argument FEATURE that FN dependent on, be loaded at compile time."
+  (declare (indent 2))
+  `(if-fn% ,fn ,feature (progn% ,@body)))
+
+
+(defmacro unless-fn% (fn feature &rest body)
+  "Unless FN is bounded yield non-nil, do BODY.\n
+Argument FEATURE that FN dependent on, be loaded at compile time."
+  (declare (indent 2))
+  `(if-fn% ,fn ,feature nil ,@body))
+
+;; end of fn compile-time checking macro
+
+
+;;;
 ;; *-lexical macro
 ;;;
 
@@ -124,39 +154,6 @@ Return the value of THEN or the value of the last of the ELSE’s."
 
 ;; end of if-platform% macro
 
-
-;;;
-;; fn compile-time checking macro
-;;;
-
-(defmacro if-fn% (fn feature then &rest else)
-  "If FN is bounded yield non-nil, do THEN, else do ELSE...
-
-Argument FEATURE that FN dependent on, be loaded at compile time."
-  (declare (indent 3))
-  `(if% (or (and ,feature (require ,feature nil t) (fboundp ,fn))
-            (fboundp ,fn))
-       ,then
-     (progn% ,@else)))
-
-
-(defmacro when-fn% (fn feature &rest body)
-  "When FN is bounded yield non-nil, do BODY.
-
-Argument FEATURE that FN dependent on, be loaded at compile time."
-  (declare (indent 2))
-  `(if-fn% ,fn ,feature (progn% ,@body)))
-
-
-(defmacro unless-fn% (fn feature &rest body)
-  "Unless FN is bounded yield non-nil, do BODY.
-
-Argument FEATURE that FN dependent on, be loaded at compile time."
-  (declare (indent 2))
-  `(if-fn% ,fn ,feature nil ,@body))
-
-
-;; end of fn compile-time checking macro
 
 
 ;;;
