@@ -62,17 +62,17 @@
 
 (defconst +cc*-compiler-bin+
   (eval-when-compile
-    (let* ((cx (if-platform% 'windows-nt
-                   (progn%
-                    (unless (executable-find% "cc-env.bat")
-                      (make-cc-env-bat))
-                    '("cc-env.bat" "cl" "gcc"))
-                 '("cc" "gcc" "clang")))
-           (d temporary-file-directory)
-           (o (concat d (if-platform% 'windows-nt
-                            "a.exe"
-                          "a.out")))
-           (f (concat d "c.c")))
+    (let ((cx (if-platform% 'windows-nt
+                  (progn%
+                   (unless (executable-find% "cc-env.bat")
+                     (make-cc-env-bat))
+                   '("cc-env.bat" "cl" "gcc"))
+                '("cc" "gcc" "clang")))
+          (o (make-temp-file "cc*-" nil
+                             (if-platform% 'windows-nt
+                                 ".exe"
+                               ".out")))
+          (f (make-temp-file "cc*-" nil ".c")))
       (catch 'block
         (dolist* (cc cx)
           (when (save-str-to-file (concat
