@@ -110,8 +110,13 @@
 
 (when-feature-eglot%
  (with-eval-after-load 'eglot
+
+   ;; load recipe
    (eglot*-server-programs :push (or (eglot*-server-programs :read)
-                                     (eglot*-server-programs)))))
+                                     (eglot*-server-programs)))
+   ;; most reduced
+   (when-var% eldoc-echo-area-use-multiline-p 'eldoc
+     (setq eldoc-echo-area-use-multiline-p nil))))
 
 ;; end of `eglot'
 
