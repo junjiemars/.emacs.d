@@ -286,7 +286,8 @@
 
 (ert-deftest %fn:push! ()
   (should (equal '(a b c) (let ((s '(a b c)))
-                            (push! 'a s t))))
+                            (push! 'a s t)
+                            s)))
   (should (equal (list (list "a" "b") (list "a" "bb"))
                  (let ((x (list "b")))
                    (list (push! "a" x)
@@ -296,7 +297,8 @@
 
 (ert-deftest %fn:append! ()
   (should (equal '(a b c) (let ((s '(a b c)))
-                            (append! 'c s t))))
+                            (append! 'c s t)
+                            s)))
   (should (equal (list (list "a" "b") (list "aa" "b"))
                  (let ((x (list "a")))
                    (list (append! "b" x t)
