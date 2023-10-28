@@ -230,32 +230,37 @@ Optional argument BODY"
 ;;;
 
 (defmacro compile-unit* (file &optional only-compile)
-  "Make an compile unit.
-
+  "Make an compile unit.\n
 Argument FILE elisp source file.
 Optional argument ONLY-COMPILE, see `compile-and-load-file*'."
-  `(vector ,file
-           (when ,file (v-path* (file-name-directory ,file)))
-           ,only-compile))
+  (let ((s1 (gensym*))
+        (d1 (gensym*)))
+    `(let* ((,s1 (v-copy-file! ,file))
+            (,d1 (when ,s1
+                   (file-name-new-extension
+                    ,s1
+                    (if-native-comp% ".eln" ".elc")))))
+       (when ,s1
+         (vector ,s1 ,d1 ,only-compile nil)))))
 
 (defmacro compile-unit% (file &optional only-compile)
-  "Make an compile unit at compile time.
-
+  "Make an compile unit at compile time.\n
 Argument FILE elisp source file.
 Optional argument ONLY-COMPILE: see `compile-and-load-file*'."
-  (let* ((-source1- (funcall `(lambda () ,file)))
-         (-dir1- (when -source1-
-                   (funcall
-                    `(lambda ()
-                       (v-path* (file-name-directory ,-source1-)))))))
-    `(vector ,-source1- ,-dir1- ,only-compile)))
+  (let* ((-src1- (v-copy-file! (funcall `(lambda () ,file))))
+         (-dst1- (when -src1-
+                   (file-name-new-extension
+                    -src1-
+                    (if-native-comp% ".eln" ".elc")))))
+    (when -src1-
+      `[,-src1- ,-dst1- ,only-compile nil])))
 
-(defmacro compile-unit->file (unit)
-  "Return the :source part of UNIT."
+(defmacro compile-unit->src (unit)
+  "Return the :src part of UNIT."
   `(aref ,unit 0))
 
-(defmacro compile-unit->dir (unit)
-  "Return the :dir part of UNIT."
+(defmacro compile-unit->dst (unit)
+  "Return the :dst part of UNIT."
   `(aref ,unit 1))
 
 (defmacro compile-unit->only-compile (unit)
@@ -269,10 +274,9 @@ Optional argument ONLY-COMPILE: see `compile-and-load-file*'."
   (dolist* (u units)
 		(when u
 			(compile-and-load-file*
-			 (compile-unit->file u)
-			 (compile-unit->only-compile u)
-			 (compile-unit->dir u)))))
-
+			 (compile-unit->src u)
+       (compile-unit->dst u)
+			 (compile-unit->only-compile u)))))
 
 ;; end of compile macro
 

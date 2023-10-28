@@ -51,11 +51,10 @@
   (should (string-match "\.emacs\.d/config/$" (emacs-home* "config/")))
   (should (string-match "\.emacs\.d/x/y/z/$" (emacs-home* "x/" "y/" "z/"))))
 
-(ert-deftest %init:file-name-base* ()
-  (should (string= "x" (file-name-base* "/a/b/c/x.z"))))
-
-(ert-deftest %init:file-name-new-extension* ()
-  (should (string= "/a/x.z" (file-name-new-extension* "/a/x.el" ".z"))))
+(ert-deftest %init:file-name-new-extension ()
+  (should (null (file-name-new-extension nil ".z")))
+  (should (string= "/a/b.z" (file-name-new-extension "/a/b" ".z")))
+  (should (string= "/a/b.z" (file-name-new-extension "/a/b.el" ".z"))))
 
 (ert-deftest %init:directory-name-p ()
   (should (directory-name-p "a/"))
@@ -443,6 +442,15 @@
   (should (string= "abc"
                    (match-string* "XX\\(abc\\)XX" "XXabcXX" 1))))
 
+(ert-deftest %fn:file-name-base* ()
+  (should (string= "x" (file-name-base* "/a/b/c/x.z"))))
+
+(ert-deftest %fn:posix-path ()
+  (should-not (posix-path nil))
+  (let ((p "c:/a/b/c.c"))
+    (should (string= p (posix-path "c:/a/b/c.c")))
+    (should (string= p (posix-path "c:\\a\\b\\c.c")))))
+
 (ert-deftest %fn:save/read-sexp-to/from-file ()
   (let ((f (path! (concat temporary-file-directory
                           (make-temp-name (symbol-name (gensym*)))
@@ -612,12 +620,6 @@
 (ert-deftest %basic:buffer-major-mode ()
   (should (eq 'fundamental-mode (buffer-major-mode))))
 
-
-(ert-deftest %basic:posix-path ()
-  (should-not (posix-path nil))
-  (let ((p "c:/a/b/c.c"))
-    (should (string= p (posix-path "c:/a/b/c.c")))
-    (should (string= p (posix-path "c:\\a\\b\\c.c")))))
 
 (ert-deftest %basic:if-key% ()
   (should (string= "defined"

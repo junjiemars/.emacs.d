@@ -11,6 +11,7 @@
 ;;; alias
 
 (fset 'range #'number-sequence)
+(fset 'basename #'file-name-nondirectory)
 
 (unless-fn% 'char= nil
   (fset 'char= #'char-equal))
@@ -420,6 +421,10 @@ Returns the name of FILE when successed otherwise nil."
 
 
 ;;; Platform Related Functions
+
+(defmacro file-name-base* (path)
+  "Return base name of PATH."
+  `(file-name-sans-extension (file-name-nondirectory ,path)))
 
 
 (defmacro posix-path (path)

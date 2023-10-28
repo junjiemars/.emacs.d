@@ -33,18 +33,23 @@
            ,@subdirs))
 
 
-(defmacro file-name-base* (file)
-  "Return base name of FILE without directory and extension."
-  `(file-name-sans-extension (file-name-nondirectory ,file)))
-
-
-(defmacro file-name-new-extension* (file extension)
+(defmacro file-name-new-extension (file extension)
   "Return FILE name with new EXTENSION."
-  (let ((f (gensym*)))
-    `(let ((,f ,file))
-       (concat (file-name-directory ,f)
-               (file-name-base* ,f)
-               ,extension))))
+  (let ((f (gensym*))
+        (x (gensym*)))
+    `(let* ((,f ,file)
+            (,x ,extension)
+            (l (length ,f)))
+       (when (> l 0)
+         (let* ((i (1- l))
+                (d (catch 'block
+                     (while (> i 0)
+                       (cond ((= ?/ (aref ,f i)) (throw 'block l))
+                             ((= ?. (aref ,f i)) (throw 'block i))
+                             (t (setq i (1- i)))))
+                     l)))
+           (concat (substring-no-properties ,f 0 d)
+                   (or ,x (substring-no-properties ,f d))))))))
 
 
 (unless (fboundp 'directory-name-p)
@@ -72,7 +77,7 @@ The FILE should be posix path, see \\=`path-separator\\='."
            (catch 'break
 					   (while (> ,i 0)
 						   (when (= ?/ (aref ,d ,i))
-							   (let ((s (substring ,d 0 (1+ ,i))))
+							   (let ((s (substring-no-properties ,d 0 (1+ ,i))))
 								   (if (file-exists-p s)
                        (throw 'break t)
                      (setq ,ds (cons s ,ds)))))
@@ -88,7 +93,6 @@ The FILE should be posix path, see \\=`path-separator\\='."
 
 ;;; versioned file macro
 
-
 (defmacro v-name ()
   "Return the versioned name."
   `(concat (if (display-graphic-p) "g_" "t_") emacs-version))
@@ -96,19 +100,11 @@ The FILE should be posix path, see \\=`path-separator\\='."
 
 (defmacro v-path* (file &optional extension)
   "Return versioned FILE with new EXTENSION."
-  (let ((f (gensym*))
-        (n (gensym*))
-        (x (gensym*)))
-    `(let* ((,f ,file)
-            (,n (file-name-nondirectory ,f))
-            (,x ,extension))
-       (concat (if (directory-name-p ,f)
-                   ,f
-                 (file-name-directory ,f))
-               ,(concat (v-name) "/")
-               (if ,x
-                   (file-name-new-extension* ,n ,x)
-                 ,n)))))
+  (let ((f (gensym*)))
+    `(let ((,f (file-name-new-extension ,file ,extension)))
+       (concat (file-name-directory ,f)
+               ,(v-name) "/"
+               (file-name-nondirectory ,f)))))
 
 
 (defmacro v-home* (file)
@@ -122,11 +118,21 @@ The FILE should be posix path, see \\=`path-separator\\='."
   "Return versioned (emacs-home*)/(v-path*)/FILE at compile-time."
   (v-home* file))
 
-
 (defmacro v-home! (file)
   "Make versioned (emacs-home*)/(v-path*)/FILE at compile-time."
   (path! (v-home* file)))
 
+
+(defmacro v-copy-file! (src)
+  "Make a versioned copy of SRC."
+  (let ((s1 (gensym*))
+        (d1 (gensym*)))
+    `(let ((,s1 ,src))
+       (when (file-exists-p ,s1)
+         (let ((,d1 (v-path* ,s1)))
+           (when (file-newer-than-file-p ,s1 ,d1)
+             (copy-file ,s1 ,d1 t))
+           ,d1)))))
 
 ;; end of versioned file macro
 
@@ -178,41 +184,27 @@ Else return BODY sexp."
   (declare (indent 0))
   `(if-native-comp% (progn% ,@body)))
 
-
 (defmacro v-home%> (&optional file)
   "Return the \\=`v-home*\\=' FILE with the suffix of compiled file."
   (concat (v-home* file) (if-native-comp% ".eln" ".elc")))
 
-
-(defmacro compile-and-load-file* (file &optional only-compile dir)
-  "Compile FILE.\n
-If ONLY-COMPILE is t, does not load compiled file.
-DIR where the compiled file located."
-  (let ((f (gensym*))
-        (d (gensym*))
-        (n (gensym*))
-        (c (gensym*))
-        (s (gensym*)))
-    `(let ((,f ,file))
-       (when (and (stringp ,f) (file-exists-p ,f))
-         (let* ((,n (file-name-nondirectory ,f))
-                (,d ,dir)
-                (,s (if ,d (concat ,d ,n) ,f))
-                (,c (file-name-new-extension*
-                     ,s
-                     (if-native-comp% ".eln" ".elc"))))
-           (when (or (not (file-exists-p ,c))
-                     (file-newer-than-file-p ,f ,c))
-             (unless (string= ,f ,s)
-               (copy-file ,f ,s t))
-             (if-native-comp%
-                 (native-compile ,s ,c)
-               (byte-compile-file ,s)))
-	         (when (file-exists-p ,c)
-             (cond (,only-compile t)
-                   (t (if-native-comp% (native-elisp-load ,c)
-                        (load ,c))))))))))
-
+(defmacro compile-and-load-file* (src dst &optional only-compile)
+  "Compile SRC to DST.\n
+If ONLY-COMPILE is t, does not load DST."
+  (let ((s1 (gensym*))
+        (d1 (gensym*))
+        (c1 (gensym*)))
+    `(let* ((,s1 ,src)
+            (,d1 ,dst)
+            (,c1 ,only-compile))
+       (unless (file-exists-p ,d1)
+         (if-native-comp%
+             (native-compile ,s1 ,d1)
+           (byte-compile-file ,s1)))
+       (cond (,c1 ,d1)
+             (t (if-native-comp%
+                    (native-elisp-load ,d1)
+                  (load ,d1)))))))
 
 (defun clean-compiled-files ()
   "Clean all compiled files."
@@ -282,11 +274,12 @@ the value is nil."
   ;; first native-comp load
   (setcar native-comp-eln-load-path (v-home! ".eln/")))
 
-
 ;; boot
-(compile-and-load-file* (emacs-home* "config/boot.el")
-                        nil ;; compile-option
-                        (v-home! "config/"))
+(let* ((src (v-copy-file! (emacs-home* "config/boot.el")))
+       (dst (file-name-new-extension
+	           src
+	           (if-native-comp% ".eln" ".elc"))))
+  (compile-and-load-file* src dst))
 
 
 (when-package%
