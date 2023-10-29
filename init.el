@@ -273,10 +273,11 @@ the value is nil."
   (setcar native-comp-eln-load-path (v-home! ".eln/")))
 
 ;; boot
-(compile-and-load-file* (v-copy-file! (emacs-home* "config/boot.el"))
-                        (file-name-new-extension
-                         (v-copy-file! (emacs-home* "config/boot.el"))
-                         (if-native-comp% ".eln" ".elc")))
+(let* ((b (emacs-home* "config/boot.el"))
+       (s (v-copy-file! b))
+       (d (file-name-new-extension s (if-native-comp% ".eln" ".elc"))))
+  (path! s)
+  (compile-and-load-file* s d))
 
 (when-package%
   (setq package-enable-at-startup nil)
