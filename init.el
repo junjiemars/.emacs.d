@@ -121,17 +121,6 @@ The FILE should be posix path, see \\=`path-separator\\='."
   (path! (v-home* file)))
 
 
-(defmacro v-copy-file! (src)
-  "Make a versioned copy of SRC."
-  (let ((s1 (gensym*)) (d1 (gensym*)))
-    `(let ((,s1 ,src))
-       (when (and (stringp ,s1) (file-exists-p ,s1))
-         (let ((,d1 (v-path* ,s1)))
-           (when (file-newer-than-file-p ,s1 ,d1)
-             (path! ,d1)
-             (copy-file ,s1 ,d1 t))
-           ,d1)))))
-
 ;; end of versioned file macro
 
 
@@ -185,6 +174,21 @@ Else return BODY sexp."
 (defmacro v-home%> (&optional file)
   "Return the \\=`v-home*\\=' FILE with the suffix of compiled file."
   (concat (v-home* file) (if-native-comp% ".eln" ".elc")))
+
+(defmacro v-comp-file! (src)
+  "Make a versioned copy of SRC."
+  (let ((s1 (gensym*)) (d1 (gensym*)) (d2 (gensym*)))
+    `(let ((,s1 ,src))
+       (when (and (stringp ,s1) (file-exists-p ,s1))
+         (let* ((,d1 (v-path* ,s1))
+                (,d2 (file-name-new-extension
+                      ,d1
+                      (if-native-comp% ".eln" ".elc"))))
+           (when (file-newer-than-file-p ,s1 ,d1)
+             (path! ,d1)
+             (delete-file ,d2)
+             (copy-file ,s1 ,d1 t))
+           (cons ,d1 ,d2))))))
 
 (defmacro compile-and-load-file* (src dst &optional only-compile)
   "Compile SRC to DST.\n
@@ -241,7 +245,6 @@ the value is nil."
        ,then
      (progn% ,@else)))
 
-
 (defmacro when-version% (cmp version &rest body)
   "When VERSION CMP with variable \\=`emacs-version\\=' yield non-nil, do BODY."
   (declare (indent 2))
@@ -272,11 +275,10 @@ the value is nil."
   (setcar native-comp-eln-load-path (v-home! ".eln/")))
 
 ;; boot
-(let* ((b (emacs-home* "config/boot.el"))
-       (s (v-copy-file! b))
-       (d (file-name-new-extension s (if-native-comp% ".eln" ".elc"))))
-  (compile-and-load-file* s d))
+(let* ((u (v-comp-file! (emacs-home* "config/boot.el"))))
+  (compile-and-load-file* (car u) (cdr u)))
 
+;; package
 (when-package%
   (setq package-enable-at-startup nil)
   (comment (package-initialize)))

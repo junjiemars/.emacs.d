@@ -226,24 +226,20 @@ Argument SPEC (VAR LIST [RESULT])."
   "Make an compile unit.\n
 Argument FILE elisp source file.
 Optional argument ONLY-COMPILE, see \\=`compile-and-load-file*\\='."
-  (let* ((s1 (v-copy-file! file))
-         (d1 (when s1
-               (file-name-new-extension
-                s1
-                (if-native-comp% ".eln" ".elc")))))
-    (when (and s1 d1)
+  (let* ((u1 (v-comp-file! file))
+         (s1 (car u1))
+         (d1 (cdr u1)))
+    (when u1
       (vector s1 d1 only-compile nil))))
 
 (defmacro compile-unit% (file &optional only-compile)
   "Make an compile unit at compile time.\n
 Argument FILE elisp source file.
 Optional argument ONLY-COMPILE: see `compile-and-load-file*'."
-  (let* ((-src1- (v-copy-file! (funcall `(lambda () ,file))))
-         (-dst1- (when -src1-
-                   (file-name-new-extension
-                    -src1-
-                    (if-native-comp% ".eln" ".elc")))))
-    (when (and -src1- -dst1-)
+  (let* ((-u1- (v-comp-file! (funcall `(lambda () ,file))))
+         (-src1- (car -u1-))
+         (-dst1- (cdr -u1-)))
+    (when -u1-
       `[,-src1- ,-dst1- ,only-compile nil])))
 
 (defmacro compile-unit->src (unit)
