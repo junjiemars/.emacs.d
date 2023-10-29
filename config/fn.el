@@ -278,7 +278,7 @@ accumulate clause and Miscellaneous clause."
                             (or ,rr "[ \t\n\r]+\\'")
                             "\\)\\'")))
            (let ((i (string-match ,r1 ,s1 0)))
-             (if i (substring ,s1 0 i) ,s1)))))))
+             (if i (substring-no-properties ,s1 0 i) ,s1)))))))
 
 
 (defmacro string-trim< (s &optional lr)
@@ -291,7 +291,7 @@ accumulate clause and Miscellaneous clause."
                             (or ,lr "\\`[ \t\n\r]+")
                             "\\)")))
            (if (string-match ,r1 ,s1)
-               (substring ,s1 (match-end 0))
+               (substring-no-properties ,s1 (match-end 0))
              ,s1))))))
 
 
@@ -318,7 +318,8 @@ See \\=`string-match\\=' and \\=`match-string\\='."
        (when (and (stringp ,s)
                   (string-match ,regexp ,s ,start)
                   (match-beginning ,n))
-         (substring ,s (match-beginning ,n) (match-end ,n))))))
+         (substring-no-properties
+          ,s (match-beginning ,n) (match-end ,n))))))
 
 
 (defmacro split-string* (string &optional separators omit-nulls trim)

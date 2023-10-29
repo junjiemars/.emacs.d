@@ -219,8 +219,7 @@ If ONLY-COMPILE is t, does not load DST."
                    (directory-files d nil "\\.el[cn]?\\'"))))
         (message "#Clean compiled files: %s..." d)
         (while fs
-          (let ((f (car fs)))
-            (delete-file (concat d f)))
+          (delete-file (concat d (car fs)))
           (setq fs (cdr fs))))
       (setq dirs (cdr dirs)))))
 

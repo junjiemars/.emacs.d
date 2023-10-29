@@ -250,6 +250,8 @@
 
 ;; after-init
 (defun on-autoloads! ()
+  ;; preferred coding system
+  (prefer-coding-system 'utf-8)
   (compile! (compile-unit% (emacs-home* "config/sockets.el")))
   (when-package%
     (compile! (compile-unit% (emacs-home* "config/module.el"))))

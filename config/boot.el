@@ -136,9 +136,7 @@ Return the value of THEN or the value of the last of the ELSE’s."
 (defmacro if-platform% (os then &rest else)
   "If OS eq `system-type' yield non-nil, do THEN, else do ELSE..."
   (declare (indent 2))
-  `(if% (cond ((consp ,os)
-               (memq system-type ,os))
-              (t (eq system-type ,os)))
+  `(if% (eq system-type ,os)
        ,then
      (progn% ,@else)))
 
@@ -197,17 +195,13 @@ Argument FEATURE that VAR dependent on, load at compile time."
 ;; end of var compile-time checking macro
 
 
-;;; Preferred coding system
-(prefer-coding-system 'utf-8)
+;;; Preferred `dolist*'
 
-
-;;; Preferred loop routine
 (defmacro dolist* (spec &rest body)
-  "Loop over a list.
-
+  "Loop over a list.\n
 Lexically `do-list'.
 Argument SPEC (VAR LIST [RESULT]).
-Optional argument BODY"
+Optional argument BODY."
   (declare (indent 1) (debug ((symbolp form &optional form) body)))
   (unless (consp spec)
     (signal 'wrong-type-argument (list 'consp spec)))
@@ -222,7 +216,7 @@ Optional argument BODY"
        ,@(cdr (cdr spec)))))
 
 
-;; end of Preferred
+;; end of Preferred `dolist*'
 
 
 ;;;

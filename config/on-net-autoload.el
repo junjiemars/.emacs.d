@@ -15,8 +15,10 @@
     (interactive (when current-prefix-arg
                    (list (read-from-minibuffer "Arp options: "))))
     (require 'net-utils)
-    (let ((arp-program-options (if arg (split-string* arg " " t)
+    (let ((arp-program-options (if arg
+                                   (split-string* arg " " t)
                                  arp-program-options)))
+      (ignore* arp-program-options)
       (arp))))
 
 
