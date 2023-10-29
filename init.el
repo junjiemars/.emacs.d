@@ -65,10 +65,8 @@
 (defmacro path! (file)
   "Make and return the path of the FILE.\n
 The FILE should be posix path, see \\=`path-separator\\='."
-  (let ((f (gensym*))
-        (d (gensym*))
-        (i (gensym*))
-        (ds (gensym*)))
+  (let ((f (gensym*)) (d (gensym*))
+        (i (gensym*)) (ds (gensym*)))
     `(let* ((,f ,file)
             (,d (file-name-directory ,f)))
        (unless (file-exists-p ,d)
@@ -130,6 +128,7 @@ The FILE should be posix path, see \\=`path-separator\\='."
        (when (and (stringp ,s1) (file-exists-p ,s1))
          (let ((,d1 (v-path* ,s1)))
            (when (file-newer-than-file-p ,s1 ,d1)
+             (path! ,d1)
              (copy-file ,s1 ,d1 t))
            ,d1)))))
 
@@ -276,7 +275,6 @@ the value is nil."
 (let* ((b (emacs-home* "config/boot.el"))
        (s (v-copy-file! b))
        (d (file-name-new-extension s (if-native-comp% ".eln" ".elc"))))
-  (path! s)
   (compile-and-load-file* s d))
 
 (when-package%
