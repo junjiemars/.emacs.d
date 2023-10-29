@@ -1,6 +1,6 @@
 #!/bin/sh
 
-_ROOT_="${_ROOT_:-`cd -- $(dirname -- $0) && pwd`}"
+_ROOT_="${_ROOT_:-$(cd -- $(dirname -- $0) && pwd)}"
 _EMACS_="${_EMACS_:-emacs}"
 _TEST_="${_TEST_:-bone}"
 _WINNT_="${_WINNT_:-no}"
@@ -17,12 +17,12 @@ echo_env() {
 }
 
 make_env() {
-  local d="`dirname ${_ENV_PRO_}`"
-  if [ -d "${_ENV_PRO_}" ]; then
-    return 0
-  else
-    mkdir -p "$d"
-  fi
+  local d="$(dirname ${_ENV_PRO_})"
+  local c1="${_ROOT_}/config/t_${_ENV_VER_}"
+  local p1="${_ROOT_}/private/t_${_ENV_VER_}"
+  [ -d "$d" ] || mkdir -p "$d"
+  [ -d "$c1" ] && rm "${c1}/*.el[cn]" 2>/dev/null
+  [ -d "$p1" ] && rm "${p1}/*.el[cn]" 2>/dev/null
 }
 
 restore_env() {
@@ -91,8 +91,8 @@ END
   cat < ${_ENV_PRO_}
 
   echo_env "axiom|clean"
-  ${_EMACS_} --batch                                            \
-             --no-window-system                                 \
+  ${_EMACS_} --batch                            \
+             --no-window-system                 \
              --eval="
 (let ((user-emacs-directory \"${_ROOT_}/\"))
   (load \"${_ROOT_}/init.el\")
@@ -227,10 +227,11 @@ END
 }
 
 # check env
-_ENV_VER_="`$_EMACS_ --batch --eval='(prin1 emacs-version)'`"
-_ENV_ERT_="`$_EMACS_ --batch --eval='(prin1 (require (quote ert) nil t))'`"
-_ENV_PKG_="`$_EMACS_ --batch --eval='(prin1 (require (quote package) nil t))'`"
-
+_ENV_VER_=$(${_EMACS_} --batch -Q --eval='(prin1 emacs-version)' \
+                        | sed 's/\"//g' \
+                        | cut -d '.' -f1,2)
+_ENV_ERT_=$($_EMACS_ --batch --eval='(prin1 (require (quote ert) nil t))')
+_ENV_PKG_=$($_EMACS_ --batch --eval='(prin1 (require (quote package) nil t))')
 
 # make env
 make_env
@@ -242,6 +243,7 @@ case "${_TEST_}" in
   package)  test_package  ;;
   extra)    test_extra    ;;
   debug)    test_debug    ;;
+  *) ;;
 esac
 
 # restore env

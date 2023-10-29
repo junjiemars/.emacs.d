@@ -127,7 +127,7 @@ The FILE should be posix path, see \\=`path-separator\\='."
   "Make a versioned copy of SRC."
   (let ((s1 (gensym*)) (d1 (gensym*)))
     `(let ((,s1 ,src))
-       (when (file-exists-p ,s1)
+       (when (and (stringp ,s1) (file-exists-p ,s1))
          (let ((,d1 (v-path* ,s1)))
            (when (file-newer-than-file-p ,s1 ,d1)
              (copy-file ,s1 ,d1 t))
@@ -275,7 +275,7 @@ the value is nil."
 ;; boot
 (compile-and-load-file* (v-copy-file! (emacs-home* "config/boot.el"))
                         (file-name-new-extension
-                         (v-path* (emacs-home* "config/boot.el"))
+                         (v-copy-file! (emacs-home* "config/boot.el"))
                          (if-native-comp% ".eln" ".elc")))
 
 (when-package%
