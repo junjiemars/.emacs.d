@@ -125,8 +125,7 @@ The FILE should be posix path, see \\=`path-separator\\='."
 
 (defmacro v-copy-file! (src)
   "Make a versioned copy of SRC."
-  (let ((s1 (gensym*))
-        (d1 (gensym*)))
+  (let ((s1 (gensym*)) (d1 (gensym*)))
     `(let ((,s1 ,src))
        (when (file-exists-p ,s1)
          (let ((,d1 (v-path* ,s1)))
@@ -274,12 +273,10 @@ the value is nil."
   (setcar native-comp-eln-load-path (v-home! ".eln/")))
 
 ;; boot
-(let* ((src (v-copy-file! (emacs-home* "config/boot.el")))
-       (dst (file-name-new-extension
-	           src
-	           (if-native-comp% ".eln" ".elc"))))
-  (compile-and-load-file* src dst))
-
+(compile-and-load-file* (v-copy-file! (emacs-home* "config/boot.el"))
+                        (file-name-new-extension
+                         (v-path* (emacs-home* "config/boot.el"))
+                         (if-native-comp% ".eln" ".elc")))
 
 (when-package%
   (setq package-enable-at-startup nil)
