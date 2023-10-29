@@ -11,7 +11,6 @@
 ;;; alias
 
 (fset 'range #'number-sequence)
-(fset 'basename #'file-name-nondirectory)
 
 (unless-fn% 'char= nil
   (fset 'char= #'char-equal))
@@ -217,10 +216,9 @@ accumulate clause and Miscellaneous clause."
 (defmacro make-thread* (fn &optional join name)
   "Threading call FN with NAME or in JOIN mode."
   `(if-fn% 'make-thread nil
-           (let ((thread (make-thread ,fn ,name)))
-             (if% ,join
-                 (thread-join thread)
-               thread))
+           (if% ,join
+               (thread-join (make-thread ,fn ,name))
+             (make-thread ,fn ,name))
      (ignore* ,join ,name)
      (funcall ,fn)))
 
@@ -452,24 +450,25 @@ If you want to set the environment temporarily that
    (shell-command* \"echo \\='a\\=' | grep \\='a\\='\"))
 Optional argument ARGS for COMMAND."
   (declare (indent 1))
-  (let ((cmd (gensym*))
-        (buf (gensym*)))
-    `(let ((,cmd ,command)
-           (,buf (generate-new-buffer (symbol-name (gensym* "sc")))))
+  (let ((c1 (gensym*))
+        (b (gensym*)))
+    `(let ((,c1 ,command)
+           (,b (get-buffer-create* (symbol-name (gensym*)) t)))
        (unwind-protect
-           (with-current-buffer ,buf
+           (with-current-buffer ,b
              (cons (let ((x (call-process
-                             shell-file-name nil ,buf nil
+                             shell-file-name nil ,b nil
                              shell-command-switch
                              (mapconcat #'identity
-                                        (cons ,cmd (list ,@args)) " "))))
+                                        (cons ,c1 (list ,@args)) " "))))
                      (cond ((integerp x) x)
                            ((string-match "^.*\\([0-9]+\\).*$" x)
                             (match-string 1 x))
                            (t -1)))
-                   (let ((s (buffer-string)))
+                   (let ((s (buffer-substring-no-properties
+                             (point-min) (point-max))))
                      (if (string= "\n" s) nil s))))
-         (and (buffer-name ,buf) (kill-buffer ,buf))))))
+         (and (buffer-name ,b) (kill-buffer ,b))))))
 
 
 (defmacro executable-find% (command &optional fn)
@@ -485,7 +484,9 @@ If FN is nil then return the path, otherwise call FN with the path."
              (ps (string-trim> ss "\n"))
              (path (if fn
                        (funcall fn (shell-quote-argument ps))
-                     (posix-path ps))))
+                     (if-platform% 'windows-nt
+                         (posix-path ps)
+                       ps))))
         `,path))))
 
 

@@ -55,7 +55,7 @@
 
 (defmacro paths->var (path &optional predicate)
   "Convert a list of PATH to $PATH like var that separated by
-`path-separator'."
+\\=`path-separator\\='."
   (let ((p (gensym*))
         (c (gensym*)))
     `(let ((,p ,path)
@@ -73,8 +73,8 @@
 
 
 (defmacro var->paths (var)
-  "Refine VAR like $PATH to list by `path-separator'.
-See also: `parse-colon-path'."
+  "Refine VAR like $PATH to list by \\=`path-separator\\='.\n
+See also: \\=`parse-colon-path\\='."
   (let ((v (gensym*)))
     `(let ((,v ,var))
        (when (stringp ,v)
@@ -144,7 +144,7 @@ See also: `parse-colon-path'."
 
 
 (defun save-shell-env! ()
-  "Save `*default-shell-env*' to file."
+  "Save \\=`*default-shell-env*\\=' to file."
   (let ((vars nil))
     (dolist* (v (shells-spec->* :copy-vars) vars)
       (when (stringp v)
@@ -153,7 +153,9 @@ See also: `parse-colon-path'."
             (when (string= v (shells-spec->% :PATH))
               (let ((paths nil))
                 (dolist* (p (var->paths val))
-                  (let ((p1 (posix-path p)))
+                  (let ((p1 (if-platform% 'windows-nt
+                                (posix-path p)
+                              p)))
                     (when (and (stringp p1) (file-exists-p p1))
                       (when (shells-spec->* :exec-path)
                         (push! p1 exec-path))
@@ -173,7 +175,7 @@ See also: `parse-colon-path'."
 
 
 (defun read-shell-env! ()
-  "Read `*default-shell-env*' from file."
+  "Read \\=`*default-shell-env*\\=' from file."
   (v-home! ".exec/")
 
   (if (not (shells-spec->* :allowed))

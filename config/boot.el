@@ -198,10 +198,9 @@ Argument FEATURE that VAR dependent on, load at compile time."
 ;;; Preferred `dolist*'
 
 (defmacro dolist* (spec &rest body)
-  "Loop over a list.\n
-Lexically `do-list'.
-Argument SPEC (VAR LIST [RESULT]).
-Optional argument BODY."
+  "Loop over a list and do DOBY.\n
+Lexically \\=`do-list\\='.
+Argument SPEC (VAR LIST [RESULT])."
   (declare (indent 1) (debug ((symbolp form &optional form) body)))
   (unless (consp spec)
     (signal 'wrong-type-argument (list 'consp spec)))
@@ -326,10 +325,9 @@ Optional argument ONLY-COMPILE: see `compile-and-load-file*'."
 								 (unless (file-exists-p dst)
 									 (copy-file src dst t)))))
             (t ps))))
-  "Define the PATH references.
-
+  "Define the PATH references.\n
 No matter the declaration order, the executing order is:
-:env-spec -> :package-spec -> :epilogue")
+\\=`:env-spec -> :package-spec -> :epilogue\\='")
 
 
 (defalias '*self-env-spec*
@@ -354,7 +352,7 @@ No matter the declaration order, the executing order is:
 
 
 (defalias '*self-packages*
-  (lexical-let% ((ps))
+  (lexical-let% ((ps nil))
     (lambda (&optional op k v)
       (cond ((eq :get op) (list (assq k ps)))
             ((eq :put op) (setq ps (cons (cons k v) ps)))
