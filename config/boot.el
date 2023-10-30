@@ -168,8 +168,7 @@ Argument FEATURE that X dependent on, load at compile time."
      (setq ,x ,val)))
 
 (defmacro if-var% (var feature then &rest else)
-  "If VAR is bounded yield non-nil, do THEN, else do ELSE...
-
+  "If VAR is bounded yield non-nil, do THEN, else do ELSE...\n
 Argument FEATURE that VAR dependent on, load at compile time."
   (declare (indent 3))
   `(if% (or (and ,feature (require ,feature nil t) (boundp ',var))
