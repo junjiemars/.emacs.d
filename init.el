@@ -89,12 +89,36 @@ The FILE should be posix path, see \\=`path-separator\\='."
 ;; end basic file macro
 
 
-;;; versioned file macro
+;;; *-version% macro
+
+(defconst +emacs-version+ (string-to-number emacs-version)
+  "The version of Emacs in \\=`float\\='.")
+
+(defmacro if-version% (cmp version then &rest else)
+  "If VERSION CMP with variable \\=`emacs-version\\=' is t, do THEN, else do ELSE...\n
+Return the value of THEN or the value of the last of the ELSE’s.
+THEN must be one expression, but ELSE... can be zero or more expressions.
+If (CMP VERSION \\=`emacs-version\\=') yield nil, and there are no ELSE’s,
+the value is nil."
+  (declare (indent 3))
+  `(if% (,cmp ,version +emacs-version+)
+       ,then
+     (progn% ,@else)))
+
+(defmacro when-version% (cmp version &rest body)
+  "When VERSION CMP with variable \\=`emacs-version\\=' yield non-nil, do BODY."
+  (declare (indent 2))
+  `(if-version% ,cmp ,version (progn% ,@body)))
 
 (defmacro v-name ()
   "Return the versioned name."
-  `(concat (if (display-graphic-p) "g_" "t_") emacs-version))
+  `(concat (if (display-graphic-p) "g_" "t_")
+           (number-to-string +emacs-version+)))
 
+;; end of *-version% macro
+
+
+;;; versioned file macro
 
 (defmacro v-path* (file &optional extension)
   "Return versioned FILE with new EXTENSION."
@@ -186,7 +210,7 @@ Else return BODY sexp."
                       (if-native-comp% ".eln" ".elc"))))
            (when (file-newer-than-file-p ,s1 ,d1)
              (path! ,d1)
-             (delete-file ,d2)
+             (when (file-exists-p ,d2) (delete-file ,d2))
              (copy-file ,s1 ,d1 t))
            (cons ,d1 ,d2))))))
 
@@ -227,31 +251,6 @@ If ONLY-COMPILE is t, does not load DST."
 
 
 ;; end of compile macro
-
-
-;;; *-version% macro
-
-(defconst +emacs-version+ (string-to-number emacs-version)
-  "The version of Emacs in \\=`float\\='.")
-
-(defmacro if-version% (cmp version then &rest else)
-  "If VERSION CMP with variable \\=`emacs-version\\=' is t, do THEN, else do ELSE...\n
-Return the value of THEN or the value of the last of the ELSE’s.
-THEN must be one expression, but ELSE... can be zero or more expressions.
-If (CMP VERSION \\=`emacs-version\\=') yield nil, and there are no ELSE’s,
-the value is nil."
-  (declare (indent 3))
-  `(if% (,cmp ,version +emacs-version+)
-       ,then
-     (progn% ,@else)))
-
-(defmacro when-version% (cmp version &rest body)
-  "When VERSION CMP with variable \\=`emacs-version\\=' yield non-nil, do BODY."
-  (declare (indent 2))
-  `(if-version% ,cmp ,version (progn% ,@body)))
-
-
-;; end of *-version% macro
 
 
 ;;; *-package% macro
