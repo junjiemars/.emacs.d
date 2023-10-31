@@ -49,6 +49,46 @@ Argument FEATURE that FN dependent on, be loaded at compile time."
 
 
 ;;;
+;; var compile-time checking macro
+;;;
+
+(defmacro setq% (x val &optional feature)
+  "Set X to the value of VAL when X is bound.
+
+Argument FEATURE that X dependent on, load at compile time."
+  ;; (declare (debug t))
+  `(when% (or (and ,feature (require ,feature nil t) (boundp ',x))
+              (boundp ',x))
+     (setq ,x ,val)))
+
+(defmacro if-var% (var feature then &rest else)
+  "If VAR is bounded yield non-nil, do THEN, else do ELSE...\n
+Argument FEATURE that VAR dependent on, load at compile time."
+  (declare (indent 3))
+  `(if% (or (and ,feature (require ,feature nil t) (boundp ',var))
+            (boundp ',var))
+       ,then
+     (progn% ,@else)))
+
+(defmacro when-var% (var feature &rest body)
+  "When VAR is bounded yield non-nil, do BODY.
+
+Argument FEATURE that VAR dependent on, load at compile time."
+  (declare (indent 2))
+  `(if-var% ,var ,feature (progn% ,@body)))
+
+(defmacro unless-var% (var feature &rest body)
+  "Unless VAR is bounded yield non-nil, do BODY.
+
+Argument FEATURE that VAR dependent on, load at compile time."
+  (declare (indent 2))
+  `(if-var% ,var ,feature nil (progn% ,@body)))
+
+
+;; end of var compile-time checking macro
+
+
+;;;
 ;; *-lexical macro
 ;;;
 
@@ -152,46 +192,18 @@ Return the value of THEN or the value of the last of the ELSE’s."
 
 ;; end of if-platform% macro
 
+;;; noninteractive macro
 
-
-;;;
-;; var compile-time checking macro
-;;;
-
-(defmacro setq% (x val &optional feature)
-  "Set X to the value of VAL when X is bound.
-
-Argument FEATURE that X dependent on, load at compile time."
-  ;; (declare (debug t))
-  `(when% (or (and ,feature (require ,feature nil t) (boundp ',x))
-              (boundp ',x))
-     (setq ,x ,val)))
-
-(defmacro if-var% (var feature then &rest else)
-  "If VAR is bounded yield non-nil, do THEN, else do ELSE...\n
-Argument FEATURE that VAR dependent on, load at compile time."
-  (declare (indent 3))
-  `(if% (or (and ,feature (require ,feature nil t) (boundp ',var))
-            (boundp ',var))
+(defmacro if-noninteractive% (then &rest body)
+  "If in \\=`noninteractive\\=' do THEN, else do BODY."
+  (declare (indent 1))
+  `(if% noninteractive
        ,then
-     (progn% ,@else)))
+     (progn% ,@body)))
 
-(defmacro when-var% (var feature &rest body)
-  "When VAR is bounded yield non-nil, do BODY.
-
-Argument FEATURE that VAR dependent on, load at compile time."
-  (declare (indent 2))
-  `(if-var% ,var ,feature (progn% ,@body)))
-
-(defmacro unless-var% (var feature &rest body)
-  "Unless VAR is bounded yield non-nil, do BODY.
-
-Argument FEATURE that VAR dependent on, load at compile time."
-  (declare (indent 2))
-  `(if-var% ,var ,feature nil (progn% ,@body)))
-
-
-;; end of var compile-time checking macro
+(defmacro unless-noninteractive% (&rest body)
+  "Unless in \\=`noninteractive\\=' do BODY."
+  `(if-noninteractive% nil ,@body))
 
 
 ;;; Preferred `dolist*'
@@ -383,9 +395,9 @@ No matter the declaration order, the executing order is:
 ;;; <3> epilogue
 (compile!
   ;; --batch mode: disable desktop read/save
-  `,(unless noninteractive
-      (setq% desktop-save-mode nil 'desktop)
-      (compile-unit% (emacs-home* "config/memory.el")))
+  (unless-noninteractive%
+   (setq% desktop-save-mode nil 'desktop)
+   (compile-unit% (emacs-home* "config/memory.el")))
   (compile-unit% (emacs-home* "config/autoloads.el")))
 
 
