@@ -10,27 +10,26 @@
 ;; Read desktop
 (defun self-desktop-read! ()
   "Read the desktop of the previous Emacs instance."
-  (unless-graphic%
-    (when-version% <= 24.4
-      (when-version% > 25
-        (setq% desktop-restore-forces-onscreen nil 'desktop))))
+  ;; disable `desktop-restore-forces-onscreen'
+  (setq% desktop-restore-forces-onscreen nil 'desktop)
+  (let ((desk (*self-env-spec* :get :desktop)))
+    (when (and desk (file-exists-p (v-home% ".desktop/")))
+      ;; restrict eager
+      (setq% desktop-restore-eager
+             (self-spec-> desk :restore-eager)
+             'desktop)
 
-  (when (and (*self-env-spec* :get :desktop :allowed)
-             (file-exists-p (v-home% ".desktop/")))
-    (setq% desktop-restore-eager
-           (*self-env-spec* :get :desktop :restore-eager) 'desktop)
+      (desktop-read (v-home% ".desktop/"))
 
-    (desktop-read (v-home% ".desktop/"))
-
-    ;; remove unnecessary hooks of `desktop'
-    (if-fn% 'desktop--on-kill 'desktop
-            (remove-hook 'kill-emacs-hook 'desktop--on-kill)
-      (remove-hook 'kill-emacs-hook 'desktop-kill))
-    (if-var% kill-emacs-query-functions nil
-             (progn
-               (remove-hook 'kill-emacs-query-functions 'desktop-kill)
-               (add-hook 'kill-emacs-query-functions #'self-desktop-save! t))
-      (add-hook 'kill-emacs-hook #'self-desktop-save! t))))
+      ;; remove unnecessary hooks of `desktop'
+      (if-fn% 'desktop--on-kill 'desktop
+              (remove-hook 'kill-emacs-hook 'desktop--on-kill)
+        (remove-hook 'kill-emacs-hook 'desktop-kill))
+      (if-var% kill-emacs-query-functions nil
+               (progn
+                 (remove-hook 'kill-emacs-query-functions 'desktop-kill)
+                 (add-hook 'kill-emacs-query-functions #'self-desktop-save! t))
+        (add-hook 'kill-emacs-hook #'self-desktop-save! t)))))
 
 
  ;; end of Read desktop

@@ -395,9 +395,10 @@ No matter the declaration order, the executing order is:
 ;;; <3> epilogue
 (compile!
   ;; --batch mode: disable desktop read/save
-  (unless-noninteractive%
-   (setq% desktop-save-mode nil 'desktop)
-   (compile-unit% (emacs-home* "config/memory.el")))
+  (progn
+    (setq% desktop-save-mode nil 'desktop)
+    (unless-noninteractive%
+     (compile-unit% (emacs-home* "config/memory.el"))))
   (compile-unit% (emacs-home* "config/autoloads.el")))
 
 
