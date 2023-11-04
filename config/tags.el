@@ -75,9 +75,9 @@ when `desktop-globals-to-save' include it."
                             (path- invocation-directory))
                           (when-var% package-user-dir 'package
                             package-user-dir)
-                          (v-home* "config/")
-                          (v-home* "private/")
-                          (v-home* "theme/"))))
+                          (v-home% "config/")
+                          (v-home% "private/")
+                          (v-home% "theme/"))))
     (lambda (&optional n)
       (cond (n (setq b (cons n b)))
             (t b))))
@@ -129,8 +129,7 @@ With prefix argument TAGS unmount all tags from `tags-table-list'."
 
 (defun make-tags (home tags-file file-filter dir-filter
                        &optional tags-option renew)
-  "Make tags.
-
+  "Make tags.\n
 HOME where the source files locate,
 TAGS-FILE where the tags file to save,
 FILE-FILTER file filter function,

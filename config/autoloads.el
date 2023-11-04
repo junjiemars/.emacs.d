@@ -77,7 +77,7 @@
     ;; `dict'
     (prog1
         (compile-unit% (emacs-home* "config/dict.el") t)
-      (autoload 'lookup-dict (v-home%> "config/dict")
+      (autoload 'lookup-dict (v-home%> "config/dict.el")
         "Lookup WORD in DICT then show the result in the echo area." t))
 
     ;; `glyph'
@@ -104,14 +104,14 @@
       (when% (executable-find% "cdb")
         (prog1
             (compile-unit% (emacs-home* "config/gud-cdb.el") t)
-          (autoload 'gud-cdb (v-home%> "config/gud-cdb")
+          (autoload 'gud-cdb (v-home%> "config/gud-cdb.el")
             "Run lldb on program FILE in buffer *gud-FILE*." t))))
 
     ;; Debugger `gud-lldb'
     (when% (executable-find% "lldb")
       (prog1
           (compile-unit% (emacs-home* "config/gud-lldb.el") t)
-        (autoload 'gud-lldb (v-home%> "config/gud-lldb")
+        (autoload 'gud-lldb (v-home%> "config/gud-lldb.el")
           "Run lldb on program FILE in buffer *gud-FILE*." t)))
 
     ;; Jshell
@@ -121,9 +121,9 @@
                                  (zerop (car x)))))
       (prog1
           (compile-unit% (emacs-home* "config/jshell.el") t)
-        (autoload 'jshell-mode (v-home%> "config/jshell")
+        (autoload 'jshell-mode (v-home%> "config/jshell.el")
           "Toggle Jshell's mode." t)
-        (autoload 'run-jshell (v-home%> "config/jshell")
+        (autoload 'run-jshell (v-home%> "config/jshell.el")
           "Toggle jshell process in buffer `*jshell*'." t)))
 
     ;; Node
@@ -135,9 +135,9 @@
                                      (zerop (car x))))))
       (prog1
           (compile-unit% (emacs-home* "config/node.el") t)
-        (autoload 'node-mode (v-home%> "config/node")
+        (autoload 'node-mode (v-home%> "config/node.el")
           "Toggle Node's mode." t)
-        (autoload 'run-node (v-home%> "config/node")
+        (autoload 'run-node (v-home%> "config/node.el")
           "Toggle node process in buffer `*node*'." t)))
 
     ;; Python
@@ -154,9 +154,9 @@
       (prog1
           (compile-unit% (emacs-home* "config/gambit.el") t)
         (*org-babel-schemes* :put 'gambit "gsc-script")
-        (autoload 'gambit-mode (v-home%> "config/gambit")
+        (autoload 'gambit-mode (v-home%> "config/gambit.el")
           "Toggle Gambit's mode." t)
-        (autoload* 'run-gambit (v-home%> "config/gambit")
+        (autoload* 'run-gambit (v-home%> "config/gambit.el")
                    "Toggle gambit process in buffer `*gambit*'." t)))
 
     ;; Scheme `chez-mode'
@@ -168,9 +168,9 @@
       (prog1
           (compile-unit% (emacs-home* "config/chez.el") t)
         (*org-babel-schemes* :put 'chez "scheme")
-        (autoload 'chez-mode (v-home%> "config/chez")
+        (autoload 'chez-mode (v-home%> "config/chez.el")
           "Toggle Chez's mode." t)
-        (autoload* 'run-chez (v-home%> "config/chez")
+        (autoload* 'run-chez (v-home%> "config/chez.el")
                    "Toggle chez process in buffer `*chez*'." t)))
 
     ;; ;; Org `ob' for Scheme
@@ -178,14 +178,14 @@
     ;;     (compile-unit% (emacs-home* "config/ob-schemes.el") t)
     ;;   (when (*org-babel-schemes*)
     ;;     (autoload* 'org-babel-execute:scheme*
-    ;;                (v-home%> "config/ob-schemes")
+    ;;                (v-home%> "config/ob-schemes.el")
     ;;                "Autoload `org-babel-execute:scheme*'." t)
     ;;     (fset 'org-babel-execute:scheme 'org-babel-execute:scheme*)))
 
     ;; Sudoku
     (prog1
         (compile-unit% (emacs-home* "config/sudoku.el") t)
-      (autoload* 'sudoku (v-home%> "config/sudoku")
+      (autoload* 'sudoku (v-home%> "config/sudoku.el")
                  "Play sudoku." t))
 
     ;; `treesit'
