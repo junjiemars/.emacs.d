@@ -13,7 +13,8 @@
   ;; disable `desktop-restore-forces-onscreen'
   (setq% desktop-restore-forces-onscreen nil 'desktop)
   (let ((desk (*self-env-spec* :get :desktop)))
-    (when (and desk (file-exists-p (v-home% ".desktop/")))
+    (when (and (self-spec-> desk :allowed)
+               (file-exists-p (v-home% ".desktop/")))
       ;; restrict eager
       (setq% desktop-restore-eager
              (self-spec-> desk :restore-eager)
@@ -38,35 +39,36 @@
 ;; Save desktop
 (defun self-desktop-save! ()
   "Save the desktop of the current Emacs instance."
-  (when (*self-env-spec* :get :desktop :allowed)
+  (let ((desk (*self-env-spec* :get :desktop)))
+    (when (self-spec-> desk :allowed)
 
-    (setq% desktop-files-not-to-save
-           (*self-env-spec* :get :desktop :files-not-to-save)
-           'desktop)
+      (setq% desktop-files-not-to-save
+             (self-spec-> desk :files-not-to-save)
+             'desktop)
 
-    (setq% desktop-buffers-not-to-save
-           (*self-env-spec* :get :desktop :buffers-not-to-save)
-           'desktop)
+      (setq% desktop-buffers-not-to-save
+             (self-spec-> desk :buffers-not-to-save)
+             'desktop)
 
-    (setq% desktop-modes-not-to-save
-           (*self-env-spec* :get :desktop :modes-not-to-save)
-           'desktop)
+      (setq% desktop-modes-not-to-save
+             (self-spec-> desk :modes-not-to-save)
+             'desktop)
 
-    (when-graphic%
-      (when-version% <= 26
-        (when-platform% 'darwin
-          ;; fix: title bar text color broken #55
-          ;; https://github.com/d12frosted/homebrew-emacs-plus/issues/55#issuecomment-408317248
-          (mapc (lambda (x)
-                  (push! x frameset-filter-alist))
-                '((ns-transparent-titlebar . unbound)
-                  (ns-appearance . unbound))))))
+      (when-graphic%
+        (when-version% <= 26
+          (when-platform% 'darwin
+            ;; fix: title bar text color broken #55
+            ;; https://github.com/d12frosted/homebrew-emacs-plus/issues/55#issuecomment-408317248
+            (mapc (lambda (x)
+                    (push! x frameset-filter-alist))
+                  '((ns-transparent-titlebar . unbound)
+                    (ns-appearance . unbound))))))
 
-    (when-theme% (self-theme-load! t))
+      (when-theme% (self-theme-load! t))
 
-    (if-version% >= 23
-                 (desktop-save (v-home! ".desktop/"))
-      (desktop-save (v-home! ".desktop/") t))))
+      (if-version% >= 23
+                   (desktop-save (v-home! ".desktop/"))
+        (desktop-save (v-home! ".desktop/") t)))))
 
 
 ;; end of file

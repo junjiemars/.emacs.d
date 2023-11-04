@@ -263,7 +263,7 @@
   (ido-mode t)
   (make-thread*
    (lambda ()
-     (when-version% > 28 (require 'dired-x))
+     (when-version% > 28 (require 'dired-x nil t))
      (when (*self-paths* :get :epilogue)
        (compile! (compile-unit* (*self-paths* :get :epilogue)))))
    nil "on-autoloads!"))
