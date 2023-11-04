@@ -39,7 +39,6 @@
   (compile!
 
     (compile-unit% (emacs-home* "config/financial.el") t)
-    (compile-unit% (emacs-home* "config/go.el") t)
     (compile-unit% (emacs-home* "config/guds.el") t)
     (compile-unit% (emacs-home* "config/safe.el"))
     (compile-unit% (emacs-home* "config/scratch.el"))

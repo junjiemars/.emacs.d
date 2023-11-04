@@ -58,9 +58,8 @@
     (let ((f1 (*self-env-spec* :get :frame)))
       (when (self-spec-> f1 :allowed)
         ;; `frame-resize-pixelwise'
-        (when-var% frame-resize-pixelwise nil
-          (setq frame-resize-pixelwise
-                (self-spec-> f1 :frame-resize-pixelwise)))
+        (setq% frame-resize-pixelwise
+               (self-spec-> f1 :frame-resize-pixelwise))
         ;; `default-frame-alist'
         (let ((a (setq default-frame-alist
                        (or (self-spec-> f1 :default)
