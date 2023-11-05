@@ -284,9 +284,16 @@ If ONLY-COMPILE is t, does not load DST."
   ;; env
   (when (eq system-type 'darwin)
     (defun library-path ()
-      (let* ((p (substring-no-properties
-                 system-configuration 0
-                 (string-match "\\." system-configuration)))
+      (let* ((_a (string-match ".*?-arch \\([_a-z0-9]+\\)"
+                               system-configuration-options))
+             (a1 (substring-no-properties
+                  system-configuration-options
+                  (match-beginning 1) (match-end 1)))
+             (_p (string-match "\\(\\-.*?\\)\\." system-configuration))
+             (p (concat a1
+                        (substring-no-properties
+                         system-configuration
+                         (match-beginning 1) (match-end 1))))
              (_ (string-match "-rpath \\([/a-z]+\\([0-9]+\\)\\)"
                               system-configuration-options))
              (g1 (substring-no-properties
@@ -297,6 +304,7 @@ If ONLY-COMPILE is t, does not load DST."
                   (match-beginning 2) (match-end 2)))
              (p1 (concat g1 "/gcc/" p "/"))
              (fs (directory-files p1 nil (concat g2 "[.0-9]+"))))
+        (message "%s" p)
         (concat p1 (car fs))))
     (setenv "LIBRARY_PATH" (library-path))))
 
