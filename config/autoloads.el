@@ -247,6 +247,12 @@
   ) ; end of set-global-keys!
 
 
+(defun on-epilogue! ()
+  (require 'view nil t)
+  (when-version% > 28 (require 'dired-x nil t))
+  (when (*self-paths* :get :epilogue)
+    (compile! (compile-unit* (*self-paths* :get :epilogue)))))
+
 ;; after-init
 (defun on-autoloads! ()
   ;; preferred coding system
@@ -259,14 +265,8 @@
   (set-global-keys!)
   (when-fn% 'self-frame-default-load! nil (self-frame-default-load!))
   (when-fn% 'self-desktop-read! nil (self-desktop-read!))
-  (require 'ido)
-  (ido-mode t)
-  (make-thread*
-   (lambda ()
-     (when-version% > 28 (require 'dired-x nil t))
-     (when (*self-paths* :get :epilogue)
-       (compile! (compile-unit* (*self-paths* :get :epilogue)))))
-   nil "on-autoloads!"))
+  (when-fn% 'ido-mode 'ido (ido-mode t))
+  (make-thread* #'on-epilogue!))
 
 
 ;;; autoload when interactive or not

@@ -240,17 +240,18 @@ If ONLY-COMPILE is t, does not load DST."
 (defun clean-compiled-files ()
   "Clean all compiled files."
   (interactive)
-  (let ((dirs (list (v-home% "config/")
-                    (v-home% "private/")
-                    (v-home% "theme/")
-                    (v-home% ".exec/"))))
+  (let ((dirs (list `(,(v-home% "config/") . "\\.el[cn]?\\'")
+                    `(,(v-home% "private/") . "\\.el[cn]?\\'")
+                    `(,(v-home% "theme/") . "\\.el[cn]?\\'")
+                    `(,(v-home% ".exec/") . "\\.el[cn]?\\'")
+                    `(,(emacs-home*) . "[_a-z]+\\.el[cn]+\\'"))))
     (while dirs
-      (let* ((d (car dirs))
-             (fs (when (file-exists-p d)
-                   (directory-files d nil "\\.el[cn]?\\'"))))
-        (message "#Clean compiled files: %s..." d)
+      (let* ((d (car dirs)) (f1 (car d)) (r1 (cdr d))
+             (fs (when (file-exists-p f1)
+                   (directory-files f1 nil r1))))
+        (message "#Clean compiled files: %s..." f1)
         (while fs
-          (delete-file (concat d (car fs)))
+          (delete-file (concat f1 (car fs)))
           (setq fs (cdr fs))))
       (setq dirs (cdr dirs)))))
 
@@ -273,10 +274,31 @@ If ONLY-COMPILE is t, does not load DST."
 (when-native-comp%
 
   ;; slient native-comp warning
-  (setq native-comp-async-report-warnings-errors 'silent)
+  (setq native-comp-async-report-warnings-errors 'silent
+        ;; native-comp-speed 1
+        )
 
   ;; first native-comp load
-  (setcar native-comp-eln-load-path (v-home! ".eln/")))
+  (setcar native-comp-eln-load-path (v-home! ".eln/"))
+
+  ;; env
+  (when (eq system-type 'darwin)
+    (defun library-path ()
+      (let* ((p (substring-no-properties
+                 system-configuration 0
+                 (string-match "\\." system-configuration)))
+             (_ (string-match "-rpath \\([/a-z]+\\([0-9]+\\)\\)"
+                              system-configuration-options))
+             (g1 (substring-no-properties
+                  system-configuration-options
+                  (match-beginning 1) (match-end 1)))
+             (g2 (substring-no-properties
+                  system-configuration-options
+                  (match-beginning 2) (match-end 2)))
+             (p1 (concat g1 "/gcc/" p "/"))
+             (fs (directory-files p1 nil (concat g2 "[.0-9]+"))))
+        (concat p1 (car fs))))
+    (setenv "LIBRARY_PATH" (library-path))))
 
 ;; boot
 (let* ((u (v-comp-file! (emacs-home* "config/boot.el"))))
