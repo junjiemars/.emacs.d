@@ -285,7 +285,7 @@ If ONLY-COMPILE is t, does not load DST."
   (when (eq system-type 'darwin)
     (defun library-path ()
       "Even a blind pig can find an acorn once in a while."
-      (let* ((_a (string-match ".*?-arch \\([_a-z0-9]+\\)"
+      (let* ((_a (string-match "\\-arch \\([_a-z0-9]+\\)"
                                system-configuration-options))
              (a1 (substring-no-properties
                   system-configuration-options
