@@ -295,8 +295,8 @@ If ONLY-COMPILE is t, does not load DST."
                         (substring-no-properties
                          system-configuration
                          (match-beginning 1) (match-end 1))))
-             (_ (string-match "-rpath \\([/a-z]+\\([0-9]+\\)\\)"
-                              system-configuration-options))
+             (_r (string-match "-rpath \\([/a-z]+\\([0-9]+\\)\\)"
+                               system-configuration-options))
              (g1 (substring-no-properties
                   system-configuration-options
                   (match-beginning 1) (match-end 1)))
