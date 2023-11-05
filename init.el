@@ -304,7 +304,6 @@ If ONLY-COMPILE is t, does not load DST."
                   (match-beginning 2) (match-end 2)))
              (p1 (concat g1 "/gcc/" p "/"))
              (fs (directory-files p1 nil (concat g2 "[.0-9]+"))))
-        (message "%s" p)
         (concat p1 (car fs))))
     (setenv "LIBRARY_PATH" (library-path))))
 
