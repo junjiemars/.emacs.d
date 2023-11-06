@@ -306,18 +306,17 @@ accumulate clause and Miscellaneous clause."
   "Return string of text match for REGEXP in STRING.\n
 Return nil if NUMth pair didn’t match, or there were less than NUM pairs.
 NUM specifies which parenthesized expression in the REGEXP.
-If START is non-nil, start search at that index in STRING.
-
+If START is non-nil, start search at that index in STRING.\n
 See \\=`string-match\\=' and \\=`match-string\\='."
   (let ((s (gensym*))
-        (n (gensym*)))
+        (n (gensym*))
+        (b (gensym*)))
     `(let ((,s ,string)
            (,n ,num))
-       (when (and (stringp ,s)
-                  (string-match ,regexp ,s ,start)
-                  (match-beginning ,n))
-         (substring-no-properties
-          ,s (match-beginning ,n) (match-end ,n))))))
+       (when (and (stringp ,s) (string-match ,regexp ,s ,start))
+         (let ((,b (match-beginning ,n)))
+           (when ,b
+             (substring-no-properties ,s ,b (match-end ,n))))))))
 
 
 (defmacro split-string* (string &optional separators omit-nulls trim)
@@ -432,11 +431,12 @@ Returns the name of FILE when successed otherwise nil."
     `(let ((,p ,path))
        (when (stringp ,p)
          (if (string-match "^\\([A-Z]:\\)" ,p)
-             (replace-regexp-in-string "\\\\"
-                                       "/"
-                                       (replace-match
-                                        (downcase (match-string 1 ,p))
-                                        t t ,p))
+             (replace-regexp-in-string
+              "\\\\"
+              "/"
+              (replace-match
+               (downcase (match-string 1 ,p))
+               t t ,p))
            ,p)))))
 
 
@@ -463,7 +463,7 @@ Optional argument ARGS for COMMAND."
                                         (cons ,c1 (list ,@args)) " "))))
                      (cond ((integerp x) x)
                            ((string-match "^.*\\([0-9]+\\).*$" x)
-                            (match-string 1 x))
+                            (match-string-no-properties 1 x))
                            (t -1)))
                    (let ((s (buffer-substring-no-properties
                              (point-min) (point-max))))
