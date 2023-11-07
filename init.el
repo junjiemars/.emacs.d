@@ -282,7 +282,7 @@ If ONLY-COMPILE is t, does not load DST."
   (setcar native-comp-eln-load-path (v-home! ".eln/"))
 
   ;; env
-  (when (eq system-type 'darwin)
+  (when% (eq system-type 'darwin)
     (defun library-path ()
       "Even a blind pig can find an acorn once in a while."
       (let* ((_a (string-match "\\-arch \\([_a-z0-9]+\\)"
