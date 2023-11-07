@@ -63,7 +63,7 @@
                  "  goto :getopt\n"
                  ")\n\n"
                  (cond ((string-match "7za?" zip)
-                        (let ((7z (match-string* "7za?" zip 0)))
+                        (let ((7z (string-match* "7za?" zip 0)))
                           (format (concat "REM %s call\n"
                                           "%s a %%_OPT%% -tzip -- %%_ZIP%% %%_ARGV%%\n"
                                           "if exist %%_ZIP%% (\n"

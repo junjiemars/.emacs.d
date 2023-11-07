@@ -27,7 +27,7 @@
   "Return the version of PYTHON"
   (let ((rc (shell-command* (or python (python*-program)) "--version")))
     (when (zerop (car rc))
-      (match-string* "^Python \\([.0-9]+\\)$" (cdr rc) 1))))
+      (string-match* "^Python \\([.0-9]+\\)$" (cdr rc) 1))))
 
 
 (defun python*-activate-venv (&optional dir python)

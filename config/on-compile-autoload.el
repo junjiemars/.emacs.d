@@ -34,7 +34,7 @@
     "Add the argument of make's -C option to `compilation-search-path'."
     (ignore* buffer how)
     (when (eq major-mode 'compilation-mode)
-      (let ((d (match-string*
+      (let ((d (string-match*
                 ".*make.*-C[ \t]*\\([-~._/a-zA-Z0-9]+\\)\\(?:\\S*\\|.*\\)$"
                 compile-command
                 1)))

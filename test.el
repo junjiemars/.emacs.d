@@ -435,14 +435,14 @@
   (should (string= "abc" (string-trim>< " \n abc \n ")))
   (should (string= "abc" (string-trim>< "ZZabcXX" "X+" "Z+"))))
 
-(ert-deftest %fn:match-string* ()
-  (should-not (match-string* nil nil 0))
-  (should-not (match-string* nil 123 0))
+(ert-deftest %fn:string-match* ()
+  (should-not (string-match* nil nil 0))
+  (should-not (string-match* nil 123 0))
   (should (string= "XXabcXX"
-                   (match-string* "XX\\(abc\\)XX" "XXabcXX" 0)))
-  (should-not (match-string* "XX\\(abc\\)XX" "XXabcXX" 2))
+                   (string-match* "XX\\(abc\\)XX" "XXabcXX" 0)))
+  (should-not (string-match* "XX\\(abc\\)XX" "XXabcXX" 2))
   (should (string= "abc"
-                   (match-string* "XX\\(abc\\)XX" "XXabcXX" 1))))
+                   (string-match* "XX\\(abc\\)XX" "XXabcXX" 1))))
 
 (ert-deftest %fn:file-name-base* ()
   (should (string= "x" (file-name-base* "/a/b/c/x.z"))))

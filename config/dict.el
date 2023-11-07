@@ -236,7 +236,7 @@
                        '*dict-style-history* (car sr))))
              (cons d (if (and (stringp ss)
                               (or (string= "all" ss)
-                                  (match-string* "\\(all\\)" ss 1)))
+                                  (string-match* "\\(all\\)" ss 1)))
                          `(, sr)
                        `(,(split-string* ss "," t "[ \n]*"))))))))
   (let* ((d1 (dict-find-def dict))

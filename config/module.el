@@ -55,7 +55,7 @@
     `(let ((,p ,package))
        (cond ((and (symbolp ,p) ,p) (cons ,p nil))
              ((and (stringp ,p) (file-exists-p ,p))
-              (cons (intern (match-string* "\\(.*\\)-[.0-9]+\\'"
+              (cons (intern (string-match* "\\(.*\\)-[.0-9]+\\'"
                                            (file-name-base* ,p) 1))
                     ,p))
              (t nil)))))

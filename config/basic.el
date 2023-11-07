@@ -329,7 +329,7 @@ PREFER (lambda (dir files)...)."
   "Return an identification when FILE specifies a location on a remote system.
 
 On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
-  `(match-string* "^\\(/sshx?:[_-a-zA-Z0-9]+@?[_-a-zA-Z0-9]+:\\)"
+  `(string-match* "^\\(/sshx?:[_-a-zA-Z0-9]+@?[_-a-zA-Z0-9]+:\\)"
                   ,file 1))
 
 (defmacro remote-norm-id (remote)
@@ -422,7 +422,7 @@ otherwise default to keep the directories of current \\=`emacs-version\\='."
   (let ((m64 "\\([xX]86_64\\|[aA][mM][dD]64\\|aarch64\\)")
         (bit (emacs-arch)))
     (if (string-match m64 system-configuration)
-        `(cons ,(match-string* m64 system-configuration 1) ,bit)
+        `(cons ,(string-match* m64 system-configuration 1) ,bit)
       (if-platform% 'windows-nt
           (if (string-match m64 (getenv "PROCESSOR_ARCHITECTURE"))
               `(cons ,(getenv "PROCESSOR_ARCHITECTURE") ,bit)
