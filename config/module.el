@@ -51,7 +51,7 @@
 
 (defmacro check-package-name (package)
   "Check PACKAGE is a symbol or a tar file."
-  (let ((p (gensym*)))
+  (let ((p (gensym)))
     `(let ((,p ,package))
        (cond ((and (symbolp ,p) ,p) (cons ,p nil))
              ((and (stringp ,p) (file-exists-p ,p))
@@ -63,7 +63,7 @@
 
 (defmacro delete-package! (package)
   "Delete PACKAGE."
-  (let ((p (gensym*)))
+  (let ((p (gensym)))
     `(let ((,p ,package))
        (when (and (symbolp ,p) ,p)
          (if-version%
@@ -83,8 +83,8 @@
 
 (defmacro install-package! (package &optional tar)
   "Install PACKAGE."
-  (let ((p (gensym*))
-        (f (gensym*)))
+  (let ((p (gensym))
+        (f (gensym)))
     `(let ((,p ,package)
            (,f ,tar))
        (if ,f

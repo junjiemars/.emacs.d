@@ -212,7 +212,7 @@ Argument SPEC (VAR LIST [RESULT])."
     (signal 'wrong-type-argument (list 'consp spec)))
   (unless (and (<= 2 (length spec)) (<= (length spec) 3))
     (signal 'wrong-number-of-arguments (list '(2 . 3) (length spec))))
-  (let ((lst (gensym*)))
+  (let ((lst (gensym)))
     `(lexical-let% ((,lst ,(nth 1 spec)))
        (while ,lst
          (let ((,(car spec) (car ,lst)))

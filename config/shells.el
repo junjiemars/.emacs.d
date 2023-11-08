@@ -36,8 +36,8 @@
 
 (defmacro echo-var (var &optional options)
   "Return the value of $VAR via echo."
-  (let ((v (gensym*))
-        (o (gensym*)))
+  (let ((v (gensym))
+        (o (gensym)))
     `(let ((,v ,var)
            (,o ,options))
        (when (stringp ,v)
@@ -56,8 +56,8 @@
 (defmacro paths->var (path &optional predicate)
   "Convert a list of PATH to $PATH like var that separated by
 \\=`path-separator\\='."
-  (let ((p (gensym*))
-        (c (gensym*)))
+  (let ((p (gensym))
+        (c (gensym)))
     `(let ((,p ,path)
            (,c ,predicate))
        (string-trim>
@@ -75,7 +75,7 @@
 (defmacro var->paths (var)
   "Refine VAR like $PATH to list by \\=`path-separator\\='.\n
 See also: \\=`parse-colon-path\\='."
-  (let ((v (gensym*)))
+  (let ((v (gensym)))
     `(let ((,v ,var))
        (when (stringp ,v)
          (split-string* ,v path-separator t "[ ]+\n")))))
@@ -85,7 +85,7 @@ See also: \\=`parse-colon-path\\='."
 
 
 (defmacro copy-env-vars! (env vars)
-  (let ((e (gensym*)) (vs (gensym*)))
+  (let ((e (gensym)) (vs (gensym)))
     `(let ((,e ,env) (,vs ,vars))
        (dolist* (v ,vs)
          (when (and (stringp v) (not (string= v "")))
@@ -95,7 +95,7 @@ See also: \\=`parse-colon-path\\='."
 
 
 (defmacro spin-env-vars! (vars)
-  (let ((vs (gensym*)))
+  (let ((vs (gensym)))
     `(let ((,vs ,vars))
        (dolist* (v ,vs)
          (when (and (stringp (car v))
@@ -104,7 +104,7 @@ See also: \\=`parse-colon-path\\='."
 
 
 (defmacro copy-exec-path! (path)
-  (let ((p (gensym*)))
+  (let ((p (gensym)))
     `(let ((,p ,path))
        (when ,p (setq exec-path ,p)))))
 

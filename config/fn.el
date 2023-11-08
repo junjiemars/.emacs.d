@@ -77,7 +77,7 @@
 (defmacro push! (newelt seq &optional uniquely)
   "Push NEWELT to the head of SEQ.\n
 If optional UNIQUELY is non-nil then push uniquely."
-  (let ((n1 (gensym*)))
+  (let ((n1 (gensym)))
     `(let ((,n1 ,newelt))
        (setq ,seq (if ,uniquely
                       (cons ,n1 (delete ,n1 ,seq))
@@ -87,7 +87,7 @@ If optional UNIQUELY is non-nil then push uniquely."
 (defmacro append! (newelt seq &optional uniquely)
   "Append NEWELT to the end of SEQ.\n
 If optional UNIQUELY is non-nil then append uniquely."
-  (let ((n1 (gensym*)))
+  (let ((n1 (gensym)))
     `(let ((,n1 ,newelt))
        (setq ,seq (append (if ,uniquely
                               (delete ,n1 ,seq)
@@ -97,8 +97,8 @@ If optional UNIQUELY is non-nil then append uniquely."
 
 (defmacro seq-ins! (newelt seq idx)
   "Insert NEWELT into the SEQ."
-  (let ((n1 (gensym*))
-        (i1 (gensym*)))
+  (let ((n1 (gensym))
+        (i1 (gensym)))
     `(let ((,n1 ,newelt)
            (,i1 ,idx))
        (let ((l (length ,seq)))
@@ -172,7 +172,7 @@ accumulate clause and Miscellaneous clause."
 (defmacro time (&rest form)
   "Execute FORM and print timing information on *message*."
   (declare (indent 0))
-  (let ((b (gensym*)))
+  (let ((b (gensym)))
     `(let ((,b (current-time)))
        (prog1 (progn ,@form)
          (message "%.6fs"
@@ -226,9 +226,9 @@ accumulate clause and Miscellaneous clause."
 (defmacro fluid-let (binding &rest body)
   "Execute BODY and restore the BINDING after return."
   (declare (indent 1))
-  (let ((old (gensym*))
+  (let ((old (gensym))
         (var (car binding))
-        (new (gensym*)))
+        (new (gensym)))
     `(let ((,old ,(car binding))
            (,new ,(cadr binding)))
        (prog1
@@ -268,8 +268,8 @@ accumulate clause and Miscellaneous clause."
 
 (defmacro string-trim> (s &optional rr)
   "Remove tailing whitespaces or matching of RR at the end of S."
-  (let ((s1 (gensym*))
-        (r1 (gensym*)))
+  (let ((s1 (gensym))
+        (r1 (gensym)))
     `(let ((,s1 ,s))
        (when (stringp ,s1)
          (let ((,r1 (concat "\\(?:"
@@ -281,8 +281,8 @@ accumulate clause and Miscellaneous clause."
 
 (defmacro string-trim< (s &optional lr)
   "Remove leading whitespaces or matching of LR from S."
-  (let ((s1 (gensym*))
-        (r1 (gensym*)))
+  (let ((s1 (gensym))
+        (r1 (gensym)))
     `(let ((,s1 ,s))
        (when (stringp ,s1)
          (let ((,r1 (concat "\\`\\(?:"
@@ -295,8 +295,8 @@ accumulate clause and Miscellaneous clause."
 
 (defmacro string-trim>< (s &optional rr lr)
   "Remove leading and trailing whitespaces or matching of LR/RR from S."
-  (let ((s1 (gensym*))
-        (r1 (gensym*)))
+  (let ((s1 (gensym))
+        (r1 (gensym)))
     `(let* ((,r1 ,rr)
             (,s1 (string-trim> ,s ,r1)))
        (string-trim< ,s1 ,lr))))
@@ -308,9 +308,9 @@ Return nil if NUMth pair didn’t match, or there were less than NUM pairs.
 NUM specifies which parenthesized expression in the REGEXP.
 If START is non-nil, start search at that index in STRING.\n
 See \\=`string-match\\=' and \\=`match-string\\='."
-  (let ((s (gensym*))
-        (n (gensym*))
-        (b (gensym*)))
+  (let ((s (gensym))
+        (n (gensym))
+        (b (gensym)))
     `(let* ((,s ,string)
             (,n ,num)
             (,b (and (stringp ,s) (string-match ,regexp ,s ,start)
@@ -327,9 +327,9 @@ Optional argument TRIM regexp used to trim."
   (if-version%
       <= 24.4
       `(split-string ,string ,separators ,omit-nulls ,trim)
-    (let ((s (gensym*))
-          (p (gensym*))
-          (d (gensym*)))
+    (let ((s (gensym))
+          (p (gensym))
+          (d (gensym)))
       `(let ((,s ,string)
              (,p ,separators)
              (,d ,trim))
@@ -351,12 +351,12 @@ Optional argument TRIM regexp used to trim."
 (defmacro save-sexp-to-file (sexp file)
   "Save SEXP to FILE.\n
 Returns the name of FILE when successed otherwise nil."
-  (let ((s (gensym*))
-        (f (gensym*))
-        (b (gensym*)))
+  (let ((s (gensym))
+        (f (gensym))
+        (b (gensym)))
     `(let ((,s ,sexp)
            (,f ,file)
-           (,b (get-buffer-create* (symbol-name (gensym*)) t)))
+           (,b (get-buffer-create* (symbol-name (gensym)) t)))
        (unwind-protect
            (lexical-let%
                ((format-alist nil)
@@ -370,11 +370,11 @@ Returns the name of FILE when successed otherwise nil."
 
 (defmacro read-sexp-from-file (file)
   "Read the first sexp from FILE."
-  (let ((f (gensym*))
-        (b (gensym*)))
+  (let ((f (gensym))
+        (b (gensym)))
     `(let ((,f ,file))
        (when (and (stringp ,f) (file-exists-p ,f))
-         (let ((,b (get-buffer-create* (symbol-name (gensym*)) t)))
+         (let ((,b (get-buffer-create* (symbol-name (gensym)) t)))
            (unwind-protect
                (with-current-buffer ,b
                  (insert-file-contents-literally ,f)
@@ -385,12 +385,12 @@ Returns the name of FILE when successed otherwise nil."
 (defmacro save-str-to-file (str file)
   "Save STR to FILE.\n
 Returns the name of FILE when successed otherwise nil."
-  (let ((s (gensym*))
-        (f (gensym*))
-        (b (gensym*)))
+  (let ((s (gensym))
+        (f (gensym))
+        (b (gensym)))
     `(let ((,s ,str)
            (,f ,file)
-           (,b (get-buffer-create* (symbol-name (gensym*)) t)))
+           (,b (get-buffer-create* (symbol-name (gensym)) t)))
        (unwind-protect
            (lexical-let%
                ((format-alist nil)
@@ -404,11 +404,11 @@ Returns the name of FILE when successed otherwise nil."
 
 (defmacro read-str-from-file (file)
   "Read string from FILE."
-  (let ((f (gensym*))
-        (b (gensym*)))
+  (let ((f (gensym))
+        (b (gensym)))
     `(let ((,f ,file))
        (when (and (stringp ,f) (file-exists-p ,f))
-         (let ((,b (get-buffer-create* (symbol-name (gensym*)) t)))
+         (let ((,b (get-buffer-create* (symbol-name (gensym)) t)))
            (unwind-protect
                (with-current-buffer ,b
                  (insert-file-contents-literally ,f)
@@ -427,7 +427,7 @@ Returns the name of FILE when successed otherwise nil."
 
 (defmacro posix-path (path)
   "Transpose PATH to posix path."
-  (let ((p (gensym*)))
+  (let ((p (gensym)))
     `(let ((,p ,path))
        (when (stringp ,p)
          (if (string-match "^\\([A-Z]:\\)" ,p)
@@ -450,10 +450,10 @@ If you want to set the environment temporarily that
    (shell-command* \"echo \\='a\\=' | grep \\='a\\='\"))
 Optional argument ARGS for COMMAND."
   (declare (indent 1))
-  (let ((c1 (gensym*))
-        (b (gensym*)))
+  (let ((c1 (gensym))
+        (b (gensym)))
     `(let ((,c1 ,command)
-           (,b (get-buffer-create* (symbol-name (gensym*)) t)))
+           (,b (get-buffer-create* (symbol-name (gensym)) t)))
        (unwind-protect
            (with-current-buffer ,b
              (cons (let ((x (call-process

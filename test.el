@@ -42,9 +42,9 @@
   (should-not (comment (+ 1 2 3)))
   (should-not (comment (progn (+ 1) (* 2 3)))))
 
-(ert-deftest %init:gensym* ()
-  (should (string-match "^g[0-9]+" (format "%s" (gensym*))))
-  (should (string-match "^X[0-9]+" (format "%s" (gensym* "X")))))
+(ert-deftest %init:gensym ()
+  (should (string-match "^g[0-9]+" (format "%s" (gensym))))
+  (should (string-match "^X[0-9]+" (format "%s" (gensym "X")))))
 
 (ert-deftest %init:emacs-home* ()
   (should (string-match "\.emacs\.d/$" (emacs-home*)))
@@ -62,7 +62,7 @@
 
 (ert-deftest %init:path! ()
   (let ((p (concat temporary-file-directory
-                   (make-temp-name (symbol-name (gensym*)))
+                   (make-temp-name (symbol-name (gensym)))
                    "/")))
     (should (and (path! p) (file-exists-p p)))
     (should (and (null (delete-directory p))
@@ -455,7 +455,7 @@
 
 (ert-deftest %fn:save/read-sexp-to/from-file ()
   (let ((f (path! (concat temporary-file-directory
-                          (make-temp-name (symbol-name (gensym*)))
+                          (make-temp-name (symbol-name (gensym)))
                           "/sexp")))
         (s1 '(defvar test%fn-sstf1 t))
         (t1 (make-hash-table :test 'string-hash=)))
@@ -473,7 +473,7 @@
 
 (ert-deftest %fn:save/read-str-to/from-file ()
   (let ((f (path! (concat temporary-file-directory
-                          (make-temp-name (symbol-name (gensym*)))
+                          (make-temp-name (symbol-name (gensym)))
                           "/str"))))
     (should (and (save-str-to-file "abc" f)
                  (file-exists-p f)

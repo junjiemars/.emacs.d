@@ -12,14 +12,14 @@
   nil)
 
 
-(defvar *gensym-counter* 0 "The counter of \\=`gensym*\\='.")
-
-(defun gensym* (&optional prefix)
-  "Generate a new uninterned symbol, PREFIX default is \"g\"."
-  (make-symbol (format "%s%d" (or prefix "g")
-                       (prog1 *gensym-counter*
-                         (setq *gensym-counter*
-                               (1+ *gensym-counter*))))))
+(unless (fboundp 'gensym)
+  (defvar gensym-counter 0 "The counter of \\=`gensym\\='.")
+  (defun gensym (&optional prefix)
+    "Generate a new uninterned symbol, PREFIX default is \"g\"."
+    (make-symbol (format "%s%d" (or prefix "g")
+                         (prog1 gensym-counter
+                           (setq gensym-counter
+                                 (1+ gensym-counter)))))))
 
 
 ;;; file macro
@@ -35,8 +35,8 @@
 
 (defmacro file-name-new-extension (file extension)
   "Return FILE name with new EXTENSION."
-  (let ((f (gensym*))
-        (x (gensym*)))
+  (let ((f (gensym))
+        (x (gensym)))
     `(let* ((,f ,file)
             (,x ,extension)
             (l (length ,f)))
@@ -55,8 +55,8 @@
 (unless (fboundp 'directory-name-p)
   (defmacro directory-name-p (name)
     "Return t if NAME ends with a directory separator character."
-    (let ((n (gensym*))
-          (w (gensym*)))
+    (let ((n (gensym))
+          (w (gensym)))
       `(let* ((,n ,name)
               (w (length ,n)))
          (and (> w 0) (= ?/ (aref ,n (1- w))))))))
@@ -65,8 +65,8 @@
 (defmacro path! (file)
   "Make and return the path of the FILE.\n
 The FILE should be posix path, see \\=`path-separator\\='."
-  (let ((f (gensym*)) (d (gensym*))
-        (i (gensym*)) (ds (gensym*)))
+  (let ((f (gensym)) (d (gensym))
+        (i (gensym)) (ds (gensym)))
     `(let* ((,f ,file)
             (,d (file-name-directory ,f)))
        (unless (file-exists-p ,d)
@@ -170,7 +170,7 @@ the value is nil."
 
 (defmacro v-path* (file &optional extension)
   "Return versioned FILE with new EXTENSION."
-  (let ((f1 (gensym*)))
+  (let ((f1 (gensym)))
     `(let ((,f1 (file-name-new-extension ,file ,extension)))
        (concat (file-name-directory ,f1)
                ,(v-name) "/"
@@ -186,7 +186,7 @@ the value is nil."
 
 (defmacro v-home* (file)
   "Return versioned FILE under \\=`emacs-home*\\='."
-  (let ((h (gensym*)))
+  (let ((h (gensym)))
     `(let ((,h (emacs-home* ,file)))
        (v-path* ,h))))
 
@@ -208,7 +208,7 @@ the value is nil."
 
 (defmacro v-comp-file! (src)
   "Make a versioned copy of SRC."
-  (let ((s1 (gensym*)) (d1 (gensym*)) (d2 (gensym*)))
+  (let ((s1 (gensym)) (d1 (gensym)) (d2 (gensym)))
     `(let ((,s1 ,src))
        (when (and (stringp ,s1) (file-exists-p ,s1))
          (let ((,d1 (v-path* ,s1))
@@ -222,9 +222,9 @@ the value is nil."
 (defmacro compile-and-load-file* (src dst &optional only-compile)
   "Compile SRC to DST.\n
 If ONLY-COMPILE is t, does not load DST."
-  (let ((s1 (gensym*))
-        (d1 (gensym*))
-        (c1 (gensym*)))
+  (let ((s1 (gensym))
+        (d1 (gensym))
+        (c1 (gensym)))
     `(let* ((,s1 ,src)
             (,d1 ,dst)
             (,c1 ,only-compile))

@@ -83,11 +83,11 @@
 ;;; `_forward_symmetry_' `_backward_symmetry_'
 
 (defmacro _forward_symmetry_ (chr pos rx ls rs)
-  (let ((chr1 (gensym*))
-        (pos1 (gensym*))
-        (rx1 (gensym*))
-        (ls1 (gensym*))
-        (rs1 (gensym*)))
+  (let ((chr1 (gensym))
+        (pos1 (gensym))
+        (rx1 (gensym))
+        (ls1 (gensym))
+        (rs1 (gensym)))
     `(let* ((,chr1 ,chr) (,pos1 ,pos) (,rx1 ,rx)
             (,ls1 ,ls) (,rs1 ,rs)
             (cur ,pos1) (ss (cons ,chr1 nil)))
@@ -102,11 +102,11 @@
            (setq cur (1+ cur)))))))
 
 (defmacro _backward_symmetry_ (chr pos lx ls rs)
-  (let ((chr1 (gensym*))
-        (pos1 (gensym*))
-        (lx1 (gensym*))
-        (ls1 (gensym*))
-        (rs1 (gensym*)))
+  (let ((chr1 (gensym))
+        (pos1 (gensym))
+        (lx1 (gensym))
+        (ls1 (gensym))
+        (rs1 (gensym)))
     `(let* ((,chr1 ,chr) (,pos1 ,pos) (,lx1 ,lx)
             (,ls1 ,ls) (,rs1 ,rs)
             (cur ,pos1) (ss (cons ,chr1 nil)))
@@ -168,7 +168,7 @@
 
 (eval-when-compile
   (defmacro _forward_sexp_ (n)
-    (let ((n1 (gensym*)))
+    (let ((n1 (gensym)))
       `(let* ((,n1 ,n)
               (i (abs ,n1))
               (pre (point))
@@ -187,7 +187,7 @@
 
 (eval-when-compile
   (defmacro _mark_sexp@_ (&optional n)
-    (let ((n1 (gensym*)))
+    (let ((n1 (gensym)))
       `(let* ((,n1 (or ,n 1))
               (p (point))
               (bs (bounds-of-thing-at-point 'sexp))
@@ -208,7 +208,7 @@
 
 (eval-when-compile
   (defmacro _mark_whole_sexp@_ (&optional boundary)
-    (let ((b1 (gensym*)))
+    (let ((b1 (gensym)))
       `(let* ((,b1 ,boundary)
               (p (point))
               (bs (bounds-of-thing-at-point 'list))
@@ -233,7 +233,7 @@
 
 (eval-when-compile
   (defmacro _mark_word@_ (&optional n)
-    (let ((n1 (gensym*)))
+    (let ((n1 (gensym)))
       `(let* ((,n1 (or ,n 1))
               (p (point))
               (p1 p) (p2 p))
@@ -249,7 +249,7 @@
 
 (eval-when-compile
   (defmacro _mark_defun@_ (&optional n)
-    (let ((n1 (gensym*)))
+    (let ((n1 (gensym)))
       `(let ((,n1 (or ,n 1)))
          (cons
           (save-excursion
