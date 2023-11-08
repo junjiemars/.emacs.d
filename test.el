@@ -56,10 +56,6 @@
   (should (string= "/a/b.z" (file-name-new-extension "/a/b" ".z")))
   (should (string= "/a/b.z" (file-name-new-extension "/a/b.el" ".z"))))
 
-(ert-deftest %init:directory-name-p ()
-  (should (directory-name-p "a/"))
-  (should-not (directory-name-p "a")))
-
 (ert-deftest %init:path! ()
   (let ((p (concat temporary-file-directory
                    (make-temp-name (symbol-name (gensym)))
@@ -446,6 +442,10 @@
 
 (ert-deftest %fn:file-name-base* ()
   (should (string= "x" (file-name-base* "/a/b/c/x.z"))))
+
+(ert-deftest %init:directory-name-p ()
+  (should (directory-name-p "a/"))
+  (should-not (directory-name-p "a")))
 
 (ert-deftest %fn:posix-path ()
   (should-not (posix-path nil))

@@ -6,13 +6,39 @@
 ;; Commentary: common notions.
 ;;;;
 
+;;; compile-time macro
 
 (defmacro comment (&rest body)
   "Ignore BODY, yields nil."
   nil)
 
+(defmacro progn% (&rest body)
+  "Return an \\=`progn\\='ed form if BODY has more than one sexp.\n
+Else return BODY sexp."
+  (if (cdr body) `(progn ,@body) (car body)))
 
-(unless (fboundp 'gensym)
+(defmacro if% (cond then &rest else)
+  "If COND yields non-nil, do THEN, else do ELSE..."
+  (declare (indent 2))
+  (if (funcall `(lambda () ,cond))
+      `,then
+    `(progn% ,@else)))
+
+(defmacro when% (cond &rest body)
+  "When COND yields non-nil, do BODY."
+  (declare (indent 1))
+  `(if% ,cond (progn% ,@body)))
+
+(defmacro unless% (cond &rest body)
+  "Unless COND yields nil, do BODY."
+  (declare (indent 1))
+  `(if% ,cond nil ,@body))
+
+
+;; end of compile-time macro
+
+
+(unless% (fboundp 'gensym)
   (defvar gensym-counter 0 "The counter of \\=`gensym\\='.")
   (defun gensym (&optional prefix)
     "Generate a new uninterned symbol, PREFIX default is \"g\"."
@@ -53,72 +79,33 @@
                    (or ,x (substring-no-properties ,f d))))))))
 
 
-(unless (fboundp 'directory-name-p)
-  (defmacro directory-name-p (name)
-    "Return t if NAME ends with a directory separator character."
-    (let ((n (gensym))
-          (w (gensym)))
-      `(let* ((,n ,name)
-              (w (length ,n)))
-         (and (> w 0) (= ?/ (aref ,n (1- w))))))))
-
-
 (defmacro path! (file)
   "Make and return the path of the FILE.\n
 The FILE should be posix path, see \\=`path-separator\\='."
   (let ((f (gensym)) (d (gensym))
         (i (gensym)) (ds (gensym)))
-    `(let* ((,f ,file)
-            (,d (file-name-directory ,f)))
-       (unless (file-exists-p ,d)
-				 (let ((,i (1- (length ,d)))
-               (,ds nil))
-           (catch 'break
-					   (while (> ,i 0)
-						   (when (= ?/ (aref ,d ,i))
-							   (let ((s (substring-no-properties ,d 0 (1+ ,i))))
-								   (if (file-exists-p s)
-                       (throw 'break t)
-                     (setq ,ds (cons s ,ds)))))
-						   (setq ,i (1- ,i))))
-           (while (car ,ds)
-             (make-directory-internal (car ,ds))
-             (setq ,ds (cdr ,ds)))))
-       ,f)))
+    `(let* ((,f ,file))
+       (if (file-exists-p ,f)
+           ,f
+         (let ((,d (file-name-directory ,f)))
+           (unless (file-exists-p ,d)
+				     (let ((,i (1- (length ,d)))
+                   (,ds nil))
+               (catch 'break
+					       (while (> ,i 0)
+						       (when (= ?/ (aref ,d ,i))
+							       (let ((s (substring-no-properties ,d 0 (1+ ,i))))
+								       (if (file-exists-p s)
+                           (throw 'break t)
+                         (setq ,ds (cons s ,ds)))))
+						       (setq ,i (1- ,i))))
+               (while (car ,ds)
+                 (make-directory-internal (car ,ds))
+                 (setq ,ds (cdr ,ds)))))
+           ,f)))))
 
 
 ;; end basic file macro
-
-
-;;; compile-time macro
-
-(defmacro progn% (&rest body)
-  "Return an \\=`progn\\='ed form if BODY has more than one sexp.\n
-Else return BODY sexp."
-  (if (cdr body) `(progn ,@body) (car body)))
-
-
-(defmacro if% (cond then &rest else)
-  "If COND yields non-nil, do THEN, else do ELSE..."
-  (declare (indent 2))
-  (if (funcall `(lambda () ,cond))
-      `,then
-    `(progn% ,@else)))
-
-
-(defmacro when% (cond &rest body)
-  "When COND yields non-nil, do BODY."
-  (declare (indent 1))
-  `(if% ,cond (progn% ,@body)))
-
-
-(defmacro unless% (cond &rest body)
-  "Unless COND yields nil, do BODY."
-  (declare (indent 1))
-  `(if% ,cond nil ,@body))
-
-
-;; end of compile-time macro
 
 
 ;;; *-version% macro

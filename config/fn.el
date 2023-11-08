@@ -425,6 +425,16 @@ Returns the name of FILE when successed otherwise nil."
   `(file-name-sans-extension (file-name-nondirectory ,path)))
 
 
+(unless% (fboundp 'directory-name-p)
+  (defmacro directory-name-p (name)
+    "Return t if NAME ends with a directory separator character."
+    (let ((n (gensym))
+          (w (gensym)))
+      `(let* ((,n ,name)
+              (,w (length ,n)))
+         (and (> ,w 0) (= ?/ (aref ,n (1- ,w))))))))
+
+
 (defmacro posix-path (path)
   "Transpose PATH to posix path."
   (let ((p (gensym)))
