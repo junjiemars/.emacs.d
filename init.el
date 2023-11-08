@@ -24,16 +24,17 @@
 
 ;;; file macro
 
-(defmacro emacs-home* (&rest subdirs)
-  "Return path of SUBDIRS under \\=`emacs-home\\='."
+(defmacro emacs-home* (&optional file)
+  "Return path of FILE under \\=`emacs-home\\='."
   (declare (indent 0))
-  `(concat ,(expand-file-name (if (boundp 'user-emacs-directory)
-                                  user-emacs-directory
-                                "~/.emacs.d/"))
-           ,@subdirs))
+  `(concat ,(expand-file-name
+             (if (boundp 'user-emacs-directory)
+                 user-emacs-directory
+               "~/.emacs.d/"))
+           ,file))
 
 
-(defmacro file-name-new-extension (file extension)
+(defmacro file-name-new-extension (file &optional extension)
   "Return FILE name with new EXTENSION."
   (let ((f (gensym))
         (x (gensym)))

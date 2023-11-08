@@ -49,7 +49,7 @@
 (ert-deftest %init:emacs-home* ()
   (should (string-match "\.emacs\.d/$" (emacs-home*)))
   (should (string-match "\.emacs\.d/config/$" (emacs-home* "config/")))
-  (should (string-match "\.emacs\.d/x/y/z/$" (emacs-home* "x/" "y/" "z/"))))
+  (should (string-match "\.emacs\.d/x/y/z$" (emacs-home* "x/y/z"))))
 
 (ert-deftest %init:file-name-new-extension ()
   (should (null (file-name-new-extension nil ".z")))

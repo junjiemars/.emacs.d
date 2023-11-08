@@ -9,11 +9,11 @@
 ;;
 
 
-(when (*self-env-spec* :get :key :allowed)
-
-  (let ((modifier (*self-env-spec* :get :key :modifier)))
-    (dolist* (x modifier)
-      (set (car x) (cdr x)))))
+(let ((key (*self-env-spec* :get :key)))
+  (when (self-spec-> key :allowed)
+    (let ((modifier (self-spec-> key :modifier)))
+      (dolist* (x modifier)
+        (set (car x) (cdr x))))))
 
 
 
