@@ -37,7 +37,7 @@
 ;;;;
 
 
-(require 'guds (v-home%> "config/guds"))
+(require 'guds (v-home%> "config/guds.el"))
 
 
 

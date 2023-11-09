@@ -174,16 +174,14 @@ the value is nil."
 
 (defmacro v-home* (file)
   "Return versioned FILE under \\=`emacs-home*\\='."
-  (let ((h (gensym)))
-    `(let ((,h (emacs-home* ,file)))
-       (v-path* ,h))))
+  `(v-path* (emacs-home* ,file)))
 
 (defmacro v-home% (file)
-  "Return versioned FILE under \\=`emacs-home*\\=' at compile-time."
+  "Return versioned path of FILE under \\=`v-home*\\=' at compile-time."
   (v-home* file))
 
 (defmacro v-home! (file)
-  "Make versioned FILE under \\=`emacs-home*\\=' at compile-time."
+  "Make versioned path of FILE under \\=`v-home*\\=' at compile-time."
   (path! (v-home* file)))
 
 (defmacro v-home%> (file)

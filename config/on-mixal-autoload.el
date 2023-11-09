@@ -143,7 +143,7 @@ Each device is given a number as follows:")
 ;; `mixvm'
 (when% (executable-find% "mixvm")
   (compile! (compile-unit% (emacs-home* "config/mixvm.el") t))
-  (autoload 'mixvm (v-home%> "config/mixvm")
+  (autoload 'mixvm (v-home%> "config/mixvm.el")
     "Run mixvm on program FILE in buffer *gud-FILE*." t))
 
 
