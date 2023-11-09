@@ -168,9 +168,10 @@ the value is nil."
   "Return the \\=`v-path*\\=' FILE with the suffix of compiled file."
   `(v-path* ,file ,(if-native-comp% ".eln" ".elc")))
 
-(defmacro v-path%> (file)
-  "Return the \\=`v-path*>\\=' FILE at compile-time."
-  (v-path*> (funcall `(lambda () ,file))))
+;; (defmacro v-path%> (file)
+;;   "Return the \\=`v-path*>\\=' FILE with the suffix of compiled file
+;; at compile-time."
+;;   (v-path*> file))
 
 (defmacro v-home* (file)
   "Return versioned FILE under \\=`emacs-home*\\='."
@@ -208,12 +209,8 @@ the value is nil."
 (defmacro compile-and-load-file* (src dst &optional only-compile)
   "Compile SRC to DST.\n
 If ONLY-COMPILE is t, does not load DST."
-  (let ((s1 (gensym))
-        (d1 (gensym))
-        (c1 (gensym)))
-    `(let* ((,s1 ,src)
-            (,d1 ,dst)
-            (,c1 ,only-compile))
+  (let ((s1 (gensym)) (d1 (gensym)) (c1 (gensym)))
+    `(let* ((,s1 ,src) (,d1 ,dst) (,c1 ,only-compile))
        (unless (file-exists-p ,d1)
          (if-native-comp%
              (native-compile ,s1 ,d1)
