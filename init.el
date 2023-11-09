@@ -52,7 +52,6 @@ Else return BODY sexp."
 
 (defmacro emacs-home* (&optional file)
   "Return path of FILE under \\=`emacs-home\\='."
-  (declare (indent 0))
   `(concat ,(expand-file-name
              (if (boundp 'user-emacs-directory)
                  user-emacs-directory
