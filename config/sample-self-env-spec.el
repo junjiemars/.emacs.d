@@ -64,12 +64,10 @@
 ;;; key
 (*self-env-spec*
  :put :key
- (list :modifier `(,(if-platform% 'darwin
-                        '(mac-option-modifier . meta)
-                      '(ns-option-modifier . meta))
-                   ; (ns-right-option-modifier . control)
-                   ; (ns-right-command-modifier . meta)
-                   )
+ (list :modifier (when-platform% 'darwin
+                   '((mac-option-modifier . meta)
+                     (mac-right-option-modifier . control)
+                     (mac-right-command-modifier . meta)))
        :allowed (when-version% <= 23 (when-graphic% t))))
 
 
