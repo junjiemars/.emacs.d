@@ -256,9 +256,7 @@ If ONLY-COMPILE is t, does not load DST."
 (when-native-comp%
 
   ;; slient native-comp warning
-  (setq native-comp-async-report-warnings-errors 'silent
-        ;; native-comp-speed 1
-        )
+  (setq native-comp-async-report-warnings-errors 'silent)
 
   ;; first native-comp load
   (setcar native-comp-eln-load-path (v-home! ".eln/"))
@@ -267,31 +265,39 @@ If ONLY-COMPILE is t, does not load DST."
   (when% (eq system-type 'darwin)
     (defun library-path ()
       "Even a blind pig can find an acorn once in a while."
-      (let* ((_a (string-match "\\-arch \\([_a-z0-9]+\\)"
-                               system-configuration-options))
-             (a1 (substring-no-properties
-                  system-configuration-options
-                  (match-beginning 1) (match-end 1)))
-             (_p (string-match "\\(\\-.*?\\)\\." system-configuration))
-             (p (concat a1
-                        (substring-no-properties
-                         system-configuration
-                         (match-beginning 1) (match-end 1))))
-             (_r (string-match "-rpath \\([/a-z]+\\([0-9]+\\)\\)"
-                               system-configuration-options))
-             (g1 (substring-no-properties
-                  system-configuration-options
-                  (match-beginning 1) (match-end 1)))
-             (g2 (substring-no-properties
-                  system-configuration-options
-                  (match-beginning 2) (match-end 2)))
-             (p1 (concat g1 "/gcc/" p "/"))
-             (fs (directory-files p1 nil (concat g2 "[.0-9]+"))))
-        (concat p1 (car fs))))
+      (let* ((arch (when (string-match
+                          "\\-arch \\([_a-z0-9]+\\)"
+                          system-configuration-options)
+                     (substring-no-properties
+                      system-configuration-options
+                      (match-beginning 1) (match-end 1))))
+             (platform (when (string-match
+                              "\\(\\-.*?\\)\\."
+                              system-configuration)
+                         (concat arch
+                                 (substring-no-properties
+                                  system-configuration
+                                  (match-beginning 1) (match-end 1)))))
+             (c3 (when (string-match
+                        "-rpath \\([/a-z]+/\\([a-z]+\\)\\([0-9]+\\)\\)"
+                        system-configuration-options)
+                   (let ((rpath (substring-no-properties
+                                 system-configuration-options
+                                 (match-beginning 1) (match-end 1)))
+                         (cc (substring-no-properties
+                              system-configuration-options
+                              (match-beginning 2) (match-end 2)))
+                         (ver (substring-no-properties
+                               system-configuration-options
+                               (match-beginning 3) (match-end 3))))
+                     (cons rpath (cons cc ver)))))
+             (path (concat (car c3) "/" (cadr c3) "/" platform))
+             (fs (directory-files path nil (concat (cddr c3) "[.0-9]+"))))
+        (concat path "/" (car fs))))
     (setenv "LIBRARY_PATH" (library-path))))
 
 ;; boot
-(let* ((u (v-comp-file! (emacs-home* "config/boot.el"))))
+(let ((u (v-comp-file! (emacs-home* "config/boot.el"))))
   (compile-and-load-file* (car u) (cdr u)))
 
 ;; package
