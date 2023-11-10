@@ -58,26 +58,6 @@ Else return BODY sexp."
                "~/.emacs.d/"))
            ,file))
 
-
-(defmacro file-name-new-extension (file &optional extension)
-  "Return FILE name with new EXTENSION."
-  (let ((f (gensym))
-        (x (gensym)))
-    `(let* ((,f ,file)
-            (,x ,extension)
-            (l (length ,f)))
-       (when (> l 0)
-         (let* ((i (1- l))
-                (d (catch 'block
-                     (while (> i 0)
-                       (cond ((= ?/ (aref ,f i)) (throw 'block l))
-                             ((= ?. (aref ,f i)) (throw 'block i))
-                             (t (setq i (1- i)))))
-                     l)))
-           (concat (substring-no-properties ,f 0 d)
-                   (or ,x (substring-no-properties ,f d))))))))
-
-
 (defmacro path! (file)
   "Make and return the path of the FILE.\n
 The FILE should be posix path, see \\=`path-separator\\='."
@@ -88,16 +68,16 @@ The FILE should be posix path, see \\=`path-separator\\='."
            ,f
          (let ((,d (file-name-directory ,f)))
            (unless (file-exists-p ,d)
-				     (let ((,i (1- (length ,d)))
+             (let ((,i (1- (length ,d)))
                    (,ds nil))
                (catch 'break
-					       (while (> ,i 0)
-						       (when (= ?/ (aref ,d ,i))
-							       (let ((s (substring-no-properties ,d 0 (1+ ,i))))
-								       (if (file-exists-p s)
+                 (while (> ,i 0)
+                   (when (= ?/ (aref ,d ,i))
+                     (let ((s (substring-no-properties ,d 0 (1+ ,i))))
+                       (if (file-exists-p s)
                            (throw 'break t)
                          (setq ,ds (cons s ,ds)))))
-						       (setq ,i (1- ,i))))
+                   (setq ,i (1- ,i))))
                (while (car ,ds)
                  (make-directory-internal (car ,ds))
                  (setq ,ds (cdr ,ds)))))
@@ -155,13 +135,31 @@ the value is nil."
 
 ;;; versioned file macro
 
+(defun strrchr (str chr)
+  "Return the index of the located CHR of STR from right side."
+  (let* ((l (length str)) (i (1- l)))
+    (catch 'break
+      (while (>= i 0)
+        (when (= chr (aref str i))
+          (throw 'break i))
+        (setq i (1- i))))))
+
 (defmacro v-path* (file &optional extension)
   "Return versioned FILE with new EXTENSION."
-  (let ((f1 (gensym)))
-    `(let ((,f1 (file-name-new-extension ,file ,extension)))
+  (let ((f1 (gensym))
+        (x1 (gensym)))
+    `(let* ((,f1 ,file)
+            (,x1 ,extension)
+            (b (file-name-nondirectory ,f1))
+            (i (or (strrchr b ?.) (1- (length b)))))
        (concat (file-name-directory ,f1)
                ,(v-name) "/"
-               (file-name-nondirectory ,f1)))))
+               (if ,x1
+                   (concat (if (>= i 0)
+                               (substring-no-properties b 0 i)
+                             "")
+                           ,x1)
+                 b)))))
 
 (defmacro v-path*> (file)
   "Return the \\=`v-path*\\=' FILE with the suffix of compiled file."

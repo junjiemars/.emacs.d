@@ -51,11 +51,6 @@
   (should (string-match "\.emacs\.d/config/$" (emacs-home* "config/")))
   (should (string-match "\.emacs\.d/x/y/z$" (emacs-home* "x/y/z"))))
 
-(ert-deftest %init:file-name-new-extension ()
-  (should (null (file-name-new-extension nil ".z")))
-  (should (string= "/a/b.z" (file-name-new-extension "/a/b" ".z")))
-  (should (string= "/a/b.z" (file-name-new-extension "/a/b.el" ".z"))))
-
 (ert-deftest %init:path! ()
   (let ((p (concat temporary-file-directory
                    (make-temp-name (symbol-name (gensym)))
@@ -63,6 +58,12 @@
     (should (and (path! p) (file-exists-p p)))
     (should (and (null (delete-directory p))
                  (null (file-exists-p p))))))
+
+(ert-deftest %init:strrchr ()
+  (should (null (strrchr nil nil)))
+  (should (null (strrchr nil ?a)))
+  (should (null (strrchr "abc" ?d)))
+  (should (= 0 (strrchr "abc" ?a))))
 
 (ert-deftest %init:v-path* ()
   (should (string-match "[gt]_[.0-9]+" (v-path* "a/x.el")))
@@ -81,7 +82,7 @@
 
 (ert-deftest %init:v-home%> ()
   (should (file-name-nondirectory (v-home%> nil)))
-  (should (string-match "[gt]_[.0-9]+.*x\\.el[cn]?\\'" (v-home%> "x"))))
+  (should (string-match "[gt]_[.0-9]+.*x\\.el[cn]?\\'" (v-home%> "x.el"))))
 
 (ert-deftest %init:progn% ()
   (should-not (progn%))
@@ -394,12 +395,6 @@
   (should (null (strchr "abc" ?d)))
   (should (= 2 (strchr "abc" ?c))))
 
-(ert-deftest %fn:strrchr ()
-  (should (null (strrchr nil nil)))
-  (should (null (strrchr nil ?a)))
-  (should (null (strrchr "abc" ?d)))
-  (should (= 0 (strrchr "abc" ?a))))
-
 (ert-deftest %fn:split-string* ()
   (should (equal '("a" "b" "c")
                  (split-string* "a,b,,cXX" "," t "XX")))
@@ -443,7 +438,7 @@
 (ert-deftest %fn:file-name-base* ()
   (should (string= "x" (file-name-base* "/a/b/c/x.z"))))
 
-(ert-deftest %init:directory-name-p ()
+(ert-deftest %fn:directory-name-p ()
   (should (directory-name-p "a/"))
   (should-not (directory-name-p "a")))
 

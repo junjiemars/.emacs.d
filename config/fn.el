@@ -256,16 +256,6 @@ accumulate clause and Miscellaneous clause."
         (setq i (1+ i))))))
 
 
-(defun strrchr (str chr)
-  "Return the index of the located CHR of STR from right side."
-  (let* ((l (length str)) (i (1- l)))
-    (catch 'break
-      (while (>= i 0)
-        (when (= chr (aref str i))
-          (throw 'break i))
-        (setq i (1- i))))))
-
-
 (defmacro string-trim> (s &optional rr)
   "Remove tailing whitespaces or matching of RR at the end of S."
   (let ((s1 (gensym))
@@ -422,7 +412,12 @@ Returns the name of FILE when successed otherwise nil."
 
 (defmacro file-name-base* (path)
   "Return base name of PATH."
-  `(file-name-sans-extension (file-name-nondirectory ,path)))
+  (let ((p1 (gensym)))
+    `(let* ((,p1 (file-name-nondirectory ,path))
+            (i (or (strrchr ,p1 ?.) (1- (length ,p1)))))
+       (if (>= i 0)
+           (substring-no-properties ,p1 0 i)
+         ""))))
 
 
 (unless% (fboundp 'directory-name-p)
