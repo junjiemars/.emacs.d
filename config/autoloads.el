@@ -198,8 +198,8 @@
   ;; enable `column-number-mode'
   (setq% column-number-mode t 'simple)
 
-  ) ;; end of `load-conditional-modes!'
-
+  )
+;; end of `load-conditional-modes!'
 
 (defun set-global-keys! ()
   "Set global keys."
@@ -244,8 +244,8 @@
   (define-key% (current-global-map) (kbd "C-c s r") #'reverse-region)
   (define-key% (current-global-map) (kbd "C-c s d") #'delete-duplicate-lines)
 
-  ) ; end of set-global-keys!
-
+  )
+;; end of set-global-keys!
 
 (defun on-epilogue! ()
   (require 'view nil t)
@@ -269,10 +269,10 @@
   (make-thread* #'on-epilogue!))
 
 
-;;; autoload when interactive or not
+;; autoload when interactive or not
 (if-noninteractive%
     (on-autoloads!)
   (add-hook 'after-init-hook #'on-autoloads! t))
 
 
-;; end of autoloads.el
+;; end of autoloads.el

@@ -7,7 +7,6 @@
 ;;;;
 
 
-;; Read desktop
 (defun self-desktop-read! ()
   "Read the desktop of the previous Emacs instance."
   ;; disable `desktop-restore-forces-onscreen'
@@ -33,10 +32,9 @@
         (add-hook 'kill-emacs-hook #'self-desktop-save! t)))))
 
 
- ;; end of Read desktop
+;; end of Read desktop
 
 
-;; Save desktop
 (defun self-desktop-save! ()
   "Save the desktop of the current Emacs instance."
   (let ((desk (*self-env-spec* :get :desktop)))
@@ -71,4 +69,4 @@
         (desktop-save (v-home! ".desktop/") t)))))
 
 
-;; end of file
+;; end of memory.el
