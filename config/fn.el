@@ -256,40 +256,26 @@ accumulate clause and Miscellaneous clause."
         (setq i (1+ i))))))
 
 
-(defmacro string-trim> (s &optional rr)
+(defun string-trim> (s &optional rr)
   "Remove tailing whitespaces or matching of RR at the end of S."
-  (let ((s1 (gensym))
-        (r1 (gensym)))
-    `(let ((,s1 ,s))
-       (when (stringp ,s1)
-         (let ((,r1 (concat "\\(?:"
-                            (or ,rr "[ \t\n\r]+\\'")
-                            "\\)\\'")))
-           (let ((i (string-match ,r1 ,s1 0)))
-             (if i (substring-no-properties ,s1 0 i) ,s1)))))))
+  (when (stringp s)
+    (let ((r1 (concat "\\(?:" (or rr "[ \t\n\r]+\\'") "\\)\\'")))
+      (let ((i (string-match r1 s 0)))
+        (if i (substring-no-properties s 0 i) s)))))
 
 
-(defmacro string-trim< (s &optional lr)
+(defun string-trim< (s &optional lr)
   "Remove leading whitespaces or matching of LR from S."
-  (let ((s1 (gensym))
-        (r1 (gensym)))
-    `(let ((,s1 ,s))
-       (when (stringp ,s1)
-         (let ((,r1 (concat "\\`\\(?:"
-                            (or ,lr "\\`[ \t\n\r]+")
-                            "\\)")))
-           (if (string-match ,r1 ,s1)
-               (substring-no-properties ,s1 (match-end 0))
-             ,s1))))))
+  (when (stringp s)
+    (let ((r1 (concat "\\`\\(?:" (or lr "\\`[ \t\n\r]+") "\\)")))
+      (if (string-match r1 s)
+          (substring-no-properties s (match-end 0))
+        s))))
 
 
 (defmacro string-trim>< (s &optional rr lr)
   "Remove leading and trailing whitespaces or matching of LR/RR from S."
-  (let ((s1 (gensym))
-        (r1 (gensym)))
-    `(let* ((,r1 ,rr)
-            (,s1 (string-trim> ,s ,r1)))
-       (string-trim< ,s1 ,lr))))
+  `(string-trim> (string-trim< ,s ,lr) ,rr))
 
 
 (defmacro string-match* (regexp string num &optional start)
@@ -412,11 +398,11 @@ Returns the name of FILE when successed otherwise nil."
 
 (defmacro file-name-base* (path)
   "Return base name of PATH."
-  (let ((p1 (gensym)))
-    `(let* ((,p1 (file-name-nondirectory ,path))
-            (i (or (strrchr ,p1 ?.) (1- (length ,p1)))))
+  (let ((p (gensym)))
+    `(let* ((,p (file-name-nondirectory ,path))
+            (i (or (strrchr ,p ?.) (1- (length ,p)))))
        (if (>= i 0)
-           (substring-no-properties ,p1 0 i)
+           (substring-no-properties ,p 0 i)
          ""))))
 
 
