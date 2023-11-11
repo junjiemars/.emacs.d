@@ -64,7 +64,7 @@
                   '((ns-transparent-titlebar . unbound)
                     (ns-appearance . unbound))))))
 
-      (when-theme% (self-theme-load! t))
+      (when-theme% (self-theme-init! t))
 
       (if-version% >= 23
                    (desktop-save (v-home! ".desktop/"))

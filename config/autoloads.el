@@ -263,7 +263,7 @@
   (load-autoloaded-modes!)
   (load-conditional-modes!)
   (set-global-keys!)
-  (when-fn% 'self-frame-default-load! nil (self-frame-default-load!))
+  (when-fn% 'toggle-frame-initialized nil (toggle-frame-initialized))
   (when-fn% 'self-desktop-read! nil (self-desktop-read!))
   (when-fn% 'ido-mode 'ido (ido-mode t))
   (make-thread* #'on-epilogue!))

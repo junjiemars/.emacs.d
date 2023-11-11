@@ -36,8 +36,8 @@
   "The essential frame set.")
 
 
-(defun self-frame-init-load! ()
-  "Load frame initial specs from \\=`*self-env-spec*\\='."
+(defun self-frame-init! ()
+  "Initialize frame specs from \\=`*self-env-spec*\\='."
   (let* ((f1 (*self-env-spec* :get :frame))
          (a1 (self-spec-> f1 :allowed)))
     ;; `initial-frame-alist'
@@ -53,8 +53,9 @@
 
 (when-graphic%
 
-  (defun self-frame-default-load! (&optional frame force)
-    "Load frame default specs from \\=`*self-env-spec*\\='."
+  (defun toggle-frame-initialized (&optional frame)
+    "Toggle initialiation state of FRAME."
+    (interactive)
     (let ((f1 (*self-env-spec* :get :frame)))
       (when (self-spec-> f1 :allowed)
         ;; `frame-resize-pixelwise'
@@ -64,24 +65,12 @@
         (let ((a (setq default-frame-alist
                        (or (self-spec-> f1 :default)
                            initial-frame-alist))))
-          (when force
-            (let ((fs (frame-parameter frame 'fullscreen))
-                  (fr (frame-parameter frame 'fullscreen-restore)))
-              (modify-frame-parameters
-               frame
-               (list (cons 'fullscreen (and (not fs) fr))
-                     (cons 'fullscreen-restore fs)))
-              (unless (and (not fs) fr)
-                (set-frame-width frame (cdr (assoc** 'width a)))
-                (set-frame-height frame (cdr (assoc** 'height a)))))))))))
-
-
-(when-graphic%
-
-  (defun toggle-frame-initialized (&optional frame)
-    "Toggle initialiation state of FRAME."
-    (interactive)
-    (self-frame-default-load! frame t)))
+          (modify-frame-parameters
+           frame
+           (list (cons 'fullscreen nil)
+                 (cons 'fullscreen-restore nil)))
+          (set-frame-width frame (cdr (assoc** 'width a)))
+          (set-frame-height frame (cdr (assoc** 'height a))))))))
 
 
  ;; end of Frame
@@ -106,8 +95,8 @@ If DIR is nil then load the built-in \\=`customize-themes\\=' by NAME."
 
 (when-theme%
 
-  (defun self-theme-load! (&optional reset)
-    "Load theme specs from \\=`*self-env-spec*\\='.\n
+  (defun self-theme-init! (&optional reset)
+    "Initilize theme specs from \\=`*self-env-spec*\\='.\n
 If RESET is true then reset before load."
     (when reset (mapc #'disable-theme custom-enabled-themes))
     (let ((t1 (*self-env-spec* :get :theme)))
@@ -131,8 +120,8 @@ If RESET is true then reset before load."
  ;; end of when-theme%
 
 
-(self-frame-init-load!)
-(when-theme% (make-thread* #'self-theme-load!))
+(self-frame-init!)
+(when-theme% (make-thread* #'self-theme-init!))
 
 
 (provide 'graphic)

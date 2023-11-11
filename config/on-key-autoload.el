@@ -9,12 +9,14 @@
 ;;
 
 
-(let ((key (*self-env-spec* :get :key)))
-  (when (self-spec-> key :allowed)
-    (let ((modifier (self-spec-> key :modifier)))
-      (dolist* (x modifier)
-        (set (car x) (cdr x))))))
+(defun self-key-init! ()
+  (let ((key (*self-env-spec* :get :key)))
+    (when (self-spec-> key :allowed)
+      (let ((modifier (self-spec-> key :modifier)))
+        (dolist* (x modifier)
+          (set (car x) (cdr x)))))))
 
 
+(self-key-init!)
 
  ; end of on-key-autoload.el
