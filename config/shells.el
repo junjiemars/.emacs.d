@@ -83,7 +83,6 @@ See also: \\=`parse-colon-path\\='."
 
 
 
-
 (defmacro copy-env-vars! (env vars)
   (let ((e (gensym)) (vs (gensym)))
     `(let ((,e ,env) (,vs ,vars))
@@ -111,20 +110,7 @@ See also: \\=`parse-colon-path\\='."
 
 
 
-;; Windows ansi-term/shell
-
-(when-platform% 'windows-nt
-
-  (defadvice ansi-term (before ansi-term-before disable)
-    (set-window-buffer (selected-window)
-                       (make-comint-in-buffer "ansi-term" nil "cmd"))))
-
-
-(when-platform% 'windows-nt
-  (with-eval-after-load 'term
-		(ad-enable-advice #'ansi-term 'before "ansi-term-before")
-		(ad-activate #'ansi-term t)))
-
+;;; Windows shell
 
 (when-platform% 'windows-nt
 
@@ -140,7 +126,7 @@ See also: \\=`parse-colon-path\\='."
                                   (append path dir)
                                 (cons dir path)))))))))
 
- ;; end of Windows ansi-term/shell
+;; end of Windows shell
 
 
 (defun save-shell-env! ()
@@ -215,4 +201,4 @@ See also: \\=`parse-colon-path\\='."
 (provide 'shells)
 
 
- ;; end of shells.el
+;; end of shells.el

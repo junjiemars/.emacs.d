@@ -40,5 +40,17 @@ esac
           "\\u@\\h \\W \\$ ")))))
 
 
+(when-platform% 'windows-nt
 
-;; eof
+  (defadvice ansi-term (before ansi-term-before disable)
+    (set-window-buffer (selected-window)
+                       (make-comint-in-buffer "ansi-term" nil "cmd"))))
+
+
+(when-platform% 'windows-nt
+  (with-eval-after-load 'term
+		(ad-enable-advice #'ansi-term 'before "ansi-term-before")
+		(ad-activate #'ansi-term t)))
+
+
+;; end of on-term-autoload.el
