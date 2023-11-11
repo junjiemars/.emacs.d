@@ -201,72 +201,58 @@ otherwise do ELSE..."
     (if (string= "" s) nil (funcall tail s))))
 
 
-(defun path- (file)
+(defmacro path- (file)
   "Return the parent path of FILE."
-  (and (stringp file)
-       (file-name-directory (directory-file-name file))))
+  (let ((f (gensym)))
+    `(let ((,f ,file))
+       (and (stringp ,f)
+            (file-name-directory (directory-file-name ,f))))))
 
 
-(defun path-depth (path &optional separator)
+(defmacro path-depth (path &optional separator)
   "Return the depth of PATH."
-  (if (stringp path)
-      (cond ((string= "" path) 0)
-            ((string= (or separator "/") path) 1)
-            (t (length (split-string* path (or separator "/") nil))))
-    0))
-
-
-(defmacro file-symlink-p* (file)
-  "Return the link target as a string if FILE is the name of a symbolic link."
-  `(file-symlink-p (if (directory-name-p ,file)
-                       (directory-file-name ,file)
-                     ,file)))
-
-
-(defmacro buffer-file-name* (buffer)
-  "Return the name of BUFFER only if BUFFER assocate with a file."
-  (let ((b (gensym)))
-    `(when (bufferp ,buffer)
-       (let ((,b (buffer-file-name ,buffer)))
-         (when (stringp ,b)
-           (substring-no-properties ,b))))))
+  (let ((p (gensym))
+        (s (gensym)))
+    `(let ((,p ,path)
+           (,s (or ,separator "/")))
+       (if (stringp ,p)
+           (cond ((string= "" ,p) 0)
+                 ((string= ,s ,p) 1)
+                 (t (length (split-string* ,p ,s nil))))
+         0))))
 
 
 (defmacro file-in-dirs-p (file dirs)
   "Return t if the name of FILE matching DIRS, otherwise nil."
-  `(when (and (stringp ,file)
-              (consp ,dirs))
-     (let ((fname (file-name-directory ,file)))
-       (some* (lambda (x)
-                (let ((case-fold-search (when-platform%
-                                            'windows-nt t)))
-                  (when (stringp x)
-                    (string-match (string-trim> x "/") fname))))
-         ,dirs))))
+  (let ((f (gensym))
+        (ds (gensym)))
+    `(let ((,f ,file)
+           (,ds ,dirs))
+       (when (and (stringp ,f) (consp ,ds))
+         (some* (lambda (x)
+                  (let ((case-fold-search (when-platform% 'windows-nt t)))
+                    (and (stringp x)
+                         (string-match x (file-name-directory ,f)))))
+                ,ds)))))
 
 
 (defmacro file-name-nondirectory% (filename)
   "Return file name FILENAME sans its directory at compile-time."
-  (let* ((n (funcall `(lambda () ,filename)))
-         (name (when n (file-name-nondirectory n))))
-    `,name))
+  (let* ((-f1- (funcall `(lambda () ,filename)))
+         (-n1- (and -f1- (file-name-nondirectory -f1-))))
+    `,-n1-))
 
 
 (defun dir-iterate (dir ff df fn dn)
-  "Iterate DIR.
-
+  "Iterate DIR.\n
 Starting at DIR, look down directory hierarchy for maching FF or
-DF. Ignores the symbol links of pointing itself or up directory.
-
+DF. Ignores the symbol links of pointing itself or up directory.\n
 FF specify file-filter (lambda (file-name absolute-name)...), if
-FF return non-nil then call FN.
-
+FF return non-nil then call FN.\n
 DF specify dir-filter (lambda (dir-name absolute-name)...), if DF
-return non-nil then call DN.
-
+return non-nil then call DN.\n
 FN specify file-function (lambda (absolute-name)...), process
-filted files.
-
+filted files.\n
 DN specify dir-function (lambda (aboslute-name)...), process
 filted directories."
   (let ((files (remove-if* (lambda (x)
@@ -278,7 +264,7 @@ filted directories."
       (let ((f (car files)))
         (let ((a (expand-file-name f dir)))
           (if (directory-name-p f)
-              (when (and (let ((ln (file-symlink-p* a)))
+              (when (and (let ((ln (file-symlink-p a)))
                            (if ln
                                (not (or
                                      (string-match "\\.\\'\\|\\.\\.\\'" ln)
@@ -297,11 +283,9 @@ filted directories."
 
 
 (defun dir-backtrack (dir prefer)
-  "Backtrack DIR.
-
+  "Backtrack DIR.\n
 Starting at DIR, look up directory hierarchy for prefered
-directory or file. Ignores the symbol links of directory.
-
+directory or file. Ignores the symbol links of directory.\n
 PREFER (lambda (dir files)...)."
   (let ((d (expand-file-name (if (directory-name-p dir)
                                  dir
@@ -318,7 +302,7 @@ PREFER (lambda (dir files)...)."
                                   (string= "../" x)
                                   (let ((dx (concat d x)))
                                     (and (directory-name-p dx)
-                                         (file-symlink-p* dx)))))
+                                         (file-symlink-p dx)))))
                             (file-name-all-completions "" d))))
       (setq d (path- d)))))
 

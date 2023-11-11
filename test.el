@@ -490,9 +490,6 @@
 ;; basic
 ;;;;
 
-(ert-deftest %basic:buffer-file-name* ()
-  (should (null (buffer-file-name* (get-buffer "*scratch*")))))
-
 (ert-deftest %basic:file-in-dirs-p ()
   (should-not (file-in-dirs-p nil nil))
   (should-not (file-in-dirs-p (emacs-home* "init.el") nil))
@@ -551,6 +548,9 @@
   (should (= 2 (path-depth "\\a" "\\\\")))
   (should (= 3 (path-depth "/a/b")))
   (should (= 4 (path-depth "/a/b/c"))))
+
+(ert-deftest %basic:dir-iterate ()
+  (should (not (file-symlink-p* (emacs-home*)))))
 
 (ert-deftest %basic:dir-iterate ()
   (should (string-match

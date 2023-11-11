@@ -280,7 +280,7 @@ RENEW overwrite the existing tags file when t else create it."
           (defadvice xref-find-definitions
               (after xref-find-definitions-after disable)
             (with-current-buffer (current-buffer)
-              (when (file-in-dirs-p (buffer-file-name* (current-buffer))
+              (when (file-in-dirs-p (buffer-file-name (current-buffer))
                                     (tags-in-view-mode))
                 (view-mode 1))))
 
@@ -299,7 +299,7 @@ RENEW overwrite the existing tags file when t else create it."
   ;; find-tag into `view-mode'
   (defadvice find-tag (after find-tag-after disable)
     (with-current-buffer (current-buffer)
-      (when (file-in-dirs-p (buffer-file-name* (current-buffer))
+      (when (file-in-dirs-p (buffer-file-name (current-buffer))
                             (tags-in-view-mode))
         (view-mode 1))))
 
