@@ -78,12 +78,10 @@
        :spin-vars nil     ; `(("ZZZ" . "123"))
        :options nil       ; '("-i" "2>/dev/null") ; '("--login")
        :exec-path t
-       :shell-file-name (unless-platform% 'windows-nt
-                          (or (executable-find% "zsh")
-                              (executable-find% "bash")))
-       :prompt (unless-platform% 'windows-nt
-                 (list :bash "\\u@\\h \\W \\$ "
-                       :zsh "%n@%m %1~ %# "))
+       :shell-file-name (or (executable-find% "zsh")
+                            (executable-find% "bash"))
+       :prompt (list :bash "\\u@\\h \\W \\$ "
+                     :zsh "%n@%m %1~ %# ")
        :allowed t))
 
 ;;; desktop
