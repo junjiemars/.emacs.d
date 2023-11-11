@@ -22,20 +22,19 @@
 (setq% abbrev-file-name (v-home! ".abbrev/defs") 'abbrev)
 
 ;; auto-save
-(setq auto-save-list-file-prefix (v-home! ".save/auto-"))
+(setq% auto-save-list-file-prefix (v-home! ".save/auto-"))
 
 
 ;; Emacs can automatically create backup files. This tells Emacs to
 ;; put all backups in ~/.emacs.d/backups. More info:
 ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Backup-Files.html
-(setq backup-directory-alist `(("." . ,(v-home! ".backup/"))))
+(setq% backup-directory-alist `(("." . ,(v-home! ".backup/"))))
 
 ;; `calc'
 (setq% calc-settings-file (v-home! ".calc/calc.el") 'calc)
 
-;; eww bookmarks
-(when-var% eww-bookmarks-directory 'eww
-  (setq eww-bookmarks-directory (v-home! ".bookmarks/")))
+;; `eww' bookmarks
+(setq% eww-bookmarks-directory (v-home! ".bookmarks/") 'eww)
 
 ;; `bookmark': file in which to save bookmarks
 (setq% bookmark-default-file
@@ -69,7 +68,7 @@
 (setq% recentf-save-file (v-home! ".recentf/recentf") 'recentf)
 
 ;; `rmail'
-(setq rmail-file-name (v-home! ".mail/RMAIL"))
+(setq% rmail-file-name (v-home! ".mail/RMAIL") 'rmail)
 
 ;; `saveplace'
 ;; When you visit a file, point goes to the last place where it
@@ -81,10 +80,9 @@
 (setq% server-auth-dir (v-home! ".server/") 'server)
 
 ;; `tramp'
-(when-var% tramp-persistency-file-name
-    (if-version% > 24 'tramp
-      'tramp-cache)
-  (setq tramp-persistency-file-name (v-home! ".tramp/tramp")))
+(setq% tramp-persistency-file-name (v-home! ".tramp/tramp")
+       (if-version% > 24 'tramp
+             'tramp-cache))
 
 ;; `url'
 (setq% url-configuration-directory (v-home! ".url/") 'url)
