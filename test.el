@@ -550,9 +550,6 @@
   (should (= 4 (path-depth "/a/b/c"))))
 
 (ert-deftest %basic:dir-iterate ()
-  (should (not (file-symlink-p* (emacs-home*)))))
-
-(ert-deftest %basic:dir-iterate ()
   (should (string-match
            "init\\.el\\'"
            (catch 'out

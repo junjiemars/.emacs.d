@@ -316,15 +316,17 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
 
 (defmacro remote-norm-id (remote)
   "Norm the REMOTE to (method {user | id} [host]) form."
-  `(when (stringp ,remote)
-     (split-string* ,remote "[:@]" t "/")))
+  (let ((r (gensym)))
+    `(let ((,r ,remote))
+       (and (stringp ,r) (split-string* ,r "[:@]" t "/")))))
 
 (defmacro remote-norm->user@host (remote)
   "Norm the REMOTE to {user | id}[@host] form."
-  `(let ((rid (remote-norm-id ,remote)))
-     (when (consp rid)
-       (concat (cadr rid) (when (car (cddr rid))
-                            (concat "@" (car (cddr rid))))))))
+  (let ((rid (gensym)))
+    `(let ((,rid (remote-norm-id ,remote)))
+       (when (consp ,rid)
+         (concat (cadr ,rid) (when (car (cddr ,rid))
+                               (concat "@" (car (cddr ,rid)))))))))
 
 
 (defmacro url-retrieve* (url callback &optional cbargs silent inhibit-cookies)
@@ -437,14 +439,15 @@ otherwise do ELSE..."
 
 (defmacro symbol@ (&optional thing)
   "Return the (cons \\='region|nil THING) at point."
-  `(region-active-if
-       (let ((ss (buffer-substring-no-properties (region-beginning)
-                                                 (region-end))))
-         (setq mark-active nil)
-         (cons 'region ss))
-     (let ((ss (thing-at-point (or ,thing
-                                   'symbol))))
-       (and ss (cons nil (substring-no-properties ss))))))
+  (let ((ss (gensym)))
+    `(region-active-if
+         (let ((,ss (buffer-substring-no-properties
+                     (region-beginning)
+                     (region-end))))
+           (setq mark-active nil)
+           (cons 'region ,ss))
+       (let ((,ss (thing-at-point (or ,thing 'symbol))))
+         (and ,ss (cons nil (substring-no-properties ,ss)))))))
 
 
 (defun newline* (&optional arg)
