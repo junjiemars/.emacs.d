@@ -3,7 +3,7 @@
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; memory.el
+;; memo.el
 ;;;;
 
 
@@ -69,4 +69,4 @@
         (desktop-save (v-home! ".desktop/") t)))))
 
 
-;; end of memory.el
+;; end of memo.el

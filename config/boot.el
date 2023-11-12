@@ -393,7 +393,7 @@ No matter the declaration order, the executing order is:
   (progn
     (setq% desktop-save-mode nil 'desktop)
     (unless-noninteractive%
-     (compile-unit% (emacs-home* "config/memory.el"))))
+     (compile-unit% (emacs-home* "config/memo.el"))))
   (compile-unit% (emacs-home* "config/autoloads.el")))
 
 

@@ -62,6 +62,7 @@
                               (+ w2 0.0)))
                      face-font-rescale-alist))))))))
 
-(self-glyph-init!)
+
+(make-thread* (self-glyph-init!))
 
 ;; end of file

@@ -17,6 +17,6 @@
           (set (car x) (cdr x)))))))
 
 
-(self-key-init!)
+(make-thread* (self-key-init!))
 
  ; end of on-key-autoload.el
