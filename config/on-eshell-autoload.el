@@ -7,26 +7,25 @@
 ;;;;
 
 
-(defmacro self-eshell-mode! ()
+(defun self-eshell-init! ()
   "Set the basics of `eshell-mode'"
-  `(progn
-     (eval-when-compile (require 'em-term))
-     (require 'em-term)
-     (when (*self-env-spec* :get :eshell :allowed)
-       (let ((visuals (*self-env-spec* :get :eshell :visual-commands)))
-         (dolist* (x visuals)
-           (append! x eshell-visual-commands t)))
-       (setq% eshell-destroy-buffer-when-process-dies
-              (*self-env-spec* :get
-                               :eshell :destroy-buffer-when-process-dies))
-       (setq% eshell-visual-subcommands
-              (*self-env-spec* :get :eshell :visual-subcommands))
-       (setq% eshell-visual-options
-              (*self-env-spec* :get :eshell :visual-options)))))
+  (eval-when-compile (require 'em-term))
+  (require 'em-term)
+  (let ((eshell (*self-env-spec* :get :eshell)))
+    (when (self-spec-> eshell :allowed)
+      (let ((visuals (self-spec-> eshell :visual-commands)))
+        (dolist* (x visuals)
+          (append! x eshell-visual-commands t)))
+      (setq% eshell-destroy-buffer-when-process-dies
+             (self-spec-> eshell :destroy-buffer-when-process-dies))
+      (setq% eshell-visual-subcommands
+             (self-spec-> eshell :visual-subcommands))
+      (setq% eshell-visual-options
+             (self-spec-> eshell :visual-options)))))
 
 
 (with-eval-after-load 'eshell
-  (self-eshell-mode!)
+  (self-eshell-init!)
 
   ;; abbreviated `eshell' prompt
   (when-version% > 23
@@ -39,4 +38,4 @@
                         (if (= (user-uid) 0) " # " " $ ")))))))
 
 
- ;; end of file
+;; end of file
