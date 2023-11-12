@@ -87,12 +87,12 @@ If optional UNIQUELY is non-nil then push uniquely."
 (defmacro append! (newelt seq &optional uniquely)
   "Append NEWELT to the end of SEQ.\n
 If optional UNIQUELY is non-nil then append uniquely."
-  (let ((n1 (gensym)))
-    `(let ((,n1 ,newelt))
-       (setq ,seq (append (if ,uniquely
-                              (delete ,n1 ,seq)
-                            ,seq)
-                          (list ,n1))))))
+  (let ((n1 (gensym)) (s1 (gensym)))
+    `(let ((,n1 ,newelt) (,s1 ,seq))
+       (setq ,seq (nconc (if ,uniquely
+                             (delete ,n1 ,s1)
+                           ,s1)
+                         (list ,n1))))))
 
 
 (defmacro seq-ins! (newelt seq idx)

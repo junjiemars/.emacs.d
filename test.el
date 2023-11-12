@@ -294,6 +294,7 @@
                            (push! "a" x t)))))))
 
 (ert-deftest %fn:append! ()
+  (should (equal '(a) (let ((s nil)) (append! 'a s))))
   (should (equal '(a b c) (let ((s '(a b c)))
                             (append! 'c s t)
                             s)))
@@ -301,7 +302,7 @@
                  (let ((x (list "a")))
                    (list (append! "b" x t)
                          (let ((x (list "aa")))
-                           (append! "b" x)
+                           (append! "b" x t)
                            (append! "b" x t)))))))
 
 (ert-deftest %fn:seq-ins! ()
