@@ -54,12 +54,12 @@
          #'lisp-complete-symbol))))
 
 
-(defun minibuffer-complete-key-init! ()
+(defun minibuffer*-init! ()
   (set-minibuffer-complete-key! "TAB")
   (set-minibuffer-complete-key! "C-M-i"))
 
 
 
-(make-thread* #'minibuffer-complete-key-init!)
+(make-thread* #'minibuffer*-init!)
 
 ;; end of on-lisp-autoload.el
