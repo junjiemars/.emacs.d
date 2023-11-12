@@ -20,6 +20,7 @@
 
 
 (defun self-edit-init! ()
+  "Initialize edit spec from \\=`*self-env-spec*\\='"
   (let ((edit (*self-env-spec* :get :edit)))
 		(when (self-spec-> edit :allowed)
 			;; indent

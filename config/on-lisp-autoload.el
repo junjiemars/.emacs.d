@@ -43,18 +43,20 @@
 
 (defmacro set-minibuffer-complete-key! (key)
   "Set completing KEY for `minibuffer'."
-  `(define-key% (if-var% minibuffer-local-completion-map 'minibuffer
-                         minibuffer-local-completion-map
-                  minibuffer-local-map)
-     (kbd ,key)
-     (if-fn% 'minibuffer-complete 'minibuffer
-             #'minibuffer-complete
-       (if-fn% #'completion-at-point 'minibuffer
-               #'completion-at-point
-         #'lisp-complete-symbol))))
+  `(define-key%
+    (if-var% minibuffer-local-completion-map 'minibuffer
+             minibuffer-local-completion-map
+      minibuffer-local-map)
+    (kbd ,key)
+    (if-fn% 'minibuffer-complete 'minibuffer
+            #'minibuffer-complete
+      (if-fn% #'completion-at-point 'minibuffer
+              #'completion-at-point
+        #'lisp-complete-symbol))))
 
 
 (defun minibuffer*-init! ()
+  "Intialize \\=`minibuffer-mode\\='."
   (set-minibuffer-complete-key! "TAB")
   (set-minibuffer-complete-key! "C-M-i"))
 

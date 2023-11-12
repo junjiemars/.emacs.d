@@ -24,22 +24,24 @@
 ;; (defalias 'yes-or-no-p 'y-or-n-p)
 
 
-;; Highlights matching parenthesis
-(show-paren-mode 1)
+(defun inter-require-init! ()
+  "Intialize the requirements of on-inter-autoload."
+  ;; Highlights matching parenthesis
+  (show-paren-mode 1)
+  ;; Enable save minibuffer history
+  (if-version%
+      <= 24
+      (savehist-mode)
+    (savehist-mode t))
+  ;; Enable save-place
+  (if-version%
+      <= 25.1
+      (save-place-mode t)
+    (setq% save-place t 'saveplace)))
 
+(make-thread* #'inter-require-init!)
 
-;; Enable save minibuffer history
-(if-version%
-    <= 24
-    (savehist-mode)
-  (savehist-mode t))
-
-
-;; Enable save-place
-(if-version%
-    <= 25.1
-    (save-place-mode t)
-  (setq% save-place t 'saveplace))
+;; end of `inter-require-init!'
 
 
 ;; Shows all options when running apropos. For more info,
@@ -64,7 +66,7 @@
 (put 'upcase-region 'disabled nil)
 
 
-;; :edit
+;;; Messages' keys
 
 (when-version% > 24.4
   ;; fix: no quit key to hide *Messages* buffer for ancient Emacs
@@ -78,6 +80,8 @@
     (local-set-key (kbd "DEL") #'scroll-down)
     (local-set-key (kbd "SPC") #'scroll-up)))
 
+;; end of Message' keys
+
 
 ;; fix: `uniquify' may not be autoloaded on ancient Emacs.
 (when-version% > 24
@@ -86,7 +90,7 @@
     (require 'uniquify)
     (setq uniquify-buffer-name-style 'post-forward-angle-brackets)))
 
- ;; end of :edit
+;; end of `uniquify'
 
 
 ;;; Makes killing/yanking interact with the clipboard
@@ -142,12 +146,12 @@
       (_enable_x_select_clipboard!_))))
 
 
- ; end of Makes killing/yanking interact with the clipboard
+;; end of Makes killing/yanking interact with the clipboard
 
 
-;; open-*-line fn
-;; control indent or not: `open-next-line' and `open-previous-line'.
-;; see also: https://www.emacswiki.org/emacs/OpenNextLine
+;;; open-*-line fn
+;;; control indent or not: `open-next-line' and `open-previous-line'.
+;;; see also: https://www.emacswiki.org/emacs/OpenNextLine
 
 (defun open-next-line (n &optional indent)
   "Move to the next line and then open N lines, like vi's o command.
@@ -183,27 +187,10 @@ See also `open-line' and `split-line'."
   (barf-if-buffer-read-only)
   (beginning-of-line)
   (open-line n)
-  (when indent
-    (indent-according-to-mode)))
+  (and indent (indent-according-to-mode)))
 
 
- ;; end of open-*-line
-
-
-(defun echo-buffer-name ()
-  "Echo the qualified buffer name of current buffer.
-
-And copy the qualified buffer name to kill ring."
-  (interactive)
-  (let ((name (if (eq 'dired-mode major-mode)
-                  (expand-file-name default-directory)
-                (or (buffer-file-name)
-                    (buffer-name)))))
-    (kill-new name)
-    (message "%s" name)))
-
-
- ;; end of `echo-buffer-name'
+;; end of open-*-line
 
 
 ;; Greek letters C-x 8 <RET> greek small letter lambda
@@ -230,50 +217,16 @@ And copy the qualified buffer name to kill ring."
           (unless (characterp c)
             (error "Invalid character"))
           (insert-char c count)))
-
       (define-key% (current-global-map) (kbd "C-x 8 RET") #'insert-char*)))
 
- ;; end of `insert-char*'
-
-
-(defun get-buffer-coding-system (&optional buffer)
-  "Return the coding system of current buffer or BUFFER."
-  (interactive)
-  (with-current-buffer (or buffer
-                           (current-buffer))
-    (if (called-interactively-p*)
-        (message "%s" buffer-file-coding-system)
-      buffer-file-coding-system)))
-
-
- ;; end of `current-buffer-coding-system'
+;; end of `insert-char*'
 
 
 (unless-fn% 'count-words-region 'simple
   (defalias 'count-words-region #'count-lines-region
     "`count-lines-region' had been obsoleted since Emacs24.1+"))
 
-
-(defun multi-occur-in-matching-major-mode (&optional mode)
-  "Show all lines matching REGEXP in buffers specified by `major-mode'.
-
-See also: `multi-occur-in-matching-buffers'.
-Optional argument MODE `major-mode'."
-  (interactive
-   (list (read-from-minibuffer
-          "List lines in buffers whose major-mode match regexp: "
-          (symbol-name major-mode))))
-  (multi-occur
-   (remove-if* (lambda (buffer)
-                 (or (null buffer)
-                     (with-current-buffer buffer
-                       (unless (string= mode (symbol-name major-mode))
-                         buffer))))
-               (buffer-list))
-   (car (occur-read-primary-args))))
-
-
- ;; end of Sorting
+;; end of `count-lines-region'
 
 
 ;;; Comment
@@ -301,11 +254,10 @@ Optional argument MODE `major-mode'."
 
 
 (defun surround-region (&optional begin end)
-  "Surround region with BEGIN or END string.
-
-If `current-prefix-arg' is nil or equals to 0, then repeat 1 times.
-If `current-prefix-arg' > 0, then repeat n times.
-If `current-prefix-arg' < 0, then repeat n time with END in reversed."
+  "Surround region with BEGIN or END string.\n
+If \\=`current-prefix-arg\\=' is nil or equals to 0, then repeat 1 times.
+If \\=`current-prefix-arg\\=' > 0, then repeat n times.
+If \\=`current-prefix-arg\\=' < 0, then repeat n time with END in reversed."
   (interactive (list (read-string "surround region begin with: "
                                   "<space>")
                      (read-string "surround region end with: "
@@ -336,7 +288,7 @@ If `current-prefix-arg' < 0, then repeat n time with END in reversed."
         (goto-char (+ (cdr bounds) (length begin)))
         (insert end)))))
 
- ;; end of surround
+;; end of `surround-region'
 
 
 (defun camelize (string &optional separator)
@@ -345,17 +297,17 @@ If `current-prefix-arg' < 0, then repeat n time with END in reversed."
     (concat (downcase (car ss))
             (mapconcat #'capitalize (cdr ss) ""))))
 
- ;; end of camelize
+;; end of camelize
 
 
 ;;; Keys
 
 ;; Line
-(define-key (current-global-map) (kbd "C-o") #'open-next-line)
-(define-key (current-global-map) (kbd "C-M-o") #'open-previous-line)
+(define-key% (current-global-map) (kbd "C-o") #'open-next-line)
+(define-key% (current-global-map) (kbd "C-M-o") #'open-previous-line)
 
 ;; Comment
-(define-key (current-global-map) (kbd "C-x M-;") #'toggle-comment)
+(define-key% (current-global-map) (kbd "C-x M-;") #'toggle-comment)
 (define-key% (current-global-map) (kbd "C-x ;") #'comment-indent)
 
 ;; Surround
