@@ -29,7 +29,7 @@
                (progn
                  (remove-hook 'kill-emacs-query-functions 'desktop-kill)
                  (add-hook 'kill-emacs-query-functions #'self-desktop-save! t))
-        (add-hook 'kill-emacs-hook #'self-desktop-save! t)))))
+        (append! #'self-desktop-save! kill-emacs-hook)))))
 
 
 ;; end of Read desktop

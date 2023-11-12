@@ -16,7 +16,7 @@
   (safe-local-variable* 'Package)
 
   ;; `eldoc-mode'
-  (add-hook 'emacs-lisp-mode-hook #'eldoc-mode))
+  (append! #'eldoc-mode emacs-lisp-mode-hook))
 
 
 
@@ -35,7 +35,8 @@
     (setq lexical-binding t)))
 
 (with-eval-after-load 'ielm
-  (add-hook 'ielm-mode-hook #'set-ielm-mode!))
+  (when-var% ielm-mode-hook 'ielm
+    (append! #'set-ielm-mode! ielm-mode-hook)))
 
 
 
@@ -52,10 +53,13 @@
                #'completion-at-point
          #'lisp-complete-symbol))))
 
-(set-minibuffer-complete-key! "TAB")
-(set-minibuffer-complete-key! "C-M-i")
+
+(defun minibuffer-complete-key-init! ()
+  (set-minibuffer-complete-key! "TAB")
+  (set-minibuffer-complete-key! "C-M-i"))
 
 
 
+(make-thread* #'minibuffer-complete-key-init!)
 
-;; end of file
+;; end of on-lisp-autoload.el

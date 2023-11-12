@@ -192,7 +192,7 @@ See also: \\=`parse-colon-path\\='."
       (when (consp spinning)
         (spin-env-vars! spinning))))
 
-  (add-hook 'kill-emacs-hook #'save-shell-env! t))
+  (append! #'save-shell-env! kill-emacs-hook))
 
 
 (read-shell-env!)
