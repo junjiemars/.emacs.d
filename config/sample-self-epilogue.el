@@ -44,16 +44,13 @@
  (with-eval-after-load 'org
    ;; define key bindings after `org-mode' had been loaded
    ;; publish blog
-   (when-var% org-publish-project-alist 'org
-     (setq
-      org-publish-project-alist
-      '(("blog"
-         :base-directory "<your-blog-dir>"
-         :base-extension "org"
-         :publishing-directory "<public/blog/>"
-         :recursive t
-         :publishing-function org-html-publish-to-html)
-        ("website" :components ("blog")))))))
+   (when-fn% 'org-babel-do-load-languages 'org
+     (org-babel-do-load-languages
+      'org-babel-load-languages
+      (remove-if* #'null
+                  `(,(when% (require 'ob-shell nil t)
+                       `(shell . t))
+                    (emacs-lisp . t)))))))
 
  ; end of org
 

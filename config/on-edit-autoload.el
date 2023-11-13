@@ -52,7 +52,7 @@
 
 
 
-(make-thread* (self-edit-init!))
+(make-thread* #'self-edit-init!)
 
 
 ;; end of on-edit-autoload.el
