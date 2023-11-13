@@ -7,10 +7,6 @@
 ;;;;
 
 
-;; No cursor blinking, it's distracting
-(when-fn% 'blink-cursor-mode nil (blink-cursor-mode 0))
-
-
 ;; Title bar with full path
 (when-graphic%
   (setq% frame-title-format "%b (%f)"))
@@ -26,6 +22,8 @@
 
 (defun inter-require-init! ()
   "Intialize the requirements of on-inter-autoload."
+  ;; No cursor blinking, it's distracting
+  (when-fn% 'blink-cursor-mode nil (blink-cursor-mode 0))
   ;; Highlights matching parenthesis
   (show-paren-mode 1)
   ;; Enable save minibuffer history
