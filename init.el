@@ -186,16 +186,18 @@ the value is nil."
 
 ;;; compiler macro
 
-(defun v-comp-file! (s1)
-  "Make a versioned copy of S1."
-  (when (and (stringp s1) (file-exists-p s1))
-    (let ((d1 (v-path* s1))
-          (d2 (v-path*> s1)))
-      (when (file-newer-than-file-p s1 d1)
-        (path! d1)
-        (when (file-exists-p d2) (delete-file d2))
-        (copy-file s1 d1 t))
-      (cons d1 d2))))
+(defmacro v-comp-file! (src)
+  "Make a versioned copy of SRC."
+  (let ((s1 (gensym)) (d1 (gensym)) (d2 (gensym)))
+    `(let ((,s1 ,src))
+       (when (and (stringp ,s1) (file-exists-p ,s1))
+         (let ((,d1 (v-path* ,s1))
+               (,d2 (v-path*> ,s1)))
+           (when (file-newer-than-file-p ,s1 ,d1)
+             (path! ,d1)
+             (when (file-exists-p ,d2) (delete-file ,d2))
+             (copy-file ,s1 ,d1 t))
+           (cons ,d1 ,d2))))))
 
 (defmacro compile-and-load-file* (src dst &optional only-compile)
   "Compile SRC to DST.\n
