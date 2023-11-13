@@ -272,7 +272,7 @@
 ;; autoload when interactive or not
 (if-noninteractive%
     (on-autoloads!)
-  (add-hook 'after-init-hook #'on-autoloads! t))
+  (append! #'on-autoloads! after-init-hook))
 
 
 ;; end of autoloads.el
