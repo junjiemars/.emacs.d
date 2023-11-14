@@ -194,8 +194,9 @@ the value is nil."
          (let ((,d1 (v-path* ,s1))
                (,d2 (v-path*> ,s1)))
            (when (file-newer-than-file-p ,s1 ,d1)
-             (path! ,d1)
-             (when (file-exists-p ,d2) (delete-file ,d2))
+             (if (file-exists-p ,d2)
+                 (delete-file ,d2)
+               (path! ,d1))
              (copy-file ,s1 ,d1 t))
            (cons ,d1 ,d2))))))
 
@@ -291,7 +292,8 @@ If ONLY-COMPILE is t, does not load DST."
     (setenv "LIBRARY_PATH" (library-path))))
 
 ;; boot
-(let ((u (v-comp-file! (emacs-home* "config/boot.el"))))
+(let ((u (v-comp-file! (emacs-home* "config/boot.el")))
+      (gc-cons-threshold most-positive-fixnum))
   (compile-and-load-file* (car u) (cdr u)))
 
 ;; package
