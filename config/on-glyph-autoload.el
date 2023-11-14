@@ -65,4 +65,4 @@
 
 (make-thread* #'self-glyph-init!)
 
-;; end of file
+;; end of on-glyph-autoload.el

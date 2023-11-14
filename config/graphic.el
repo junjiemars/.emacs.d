@@ -21,7 +21,7 @@
   `(when-graphic%
      ,@body))
 
- ;; end of when-* macro
+;; end of when-* macro
 
 
 ;;; Frame
@@ -73,7 +73,7 @@
           (set-frame-height frame (cdr (assoc** 'height a))))))))
 
 
- ;; end of Frame
+;; end of Frame
 
 
 ;;; Theme
@@ -117,7 +117,7 @@ If RESET is true then reset before load."
                      (load-theme! name))))))))))
 
 
- ;; end of when-theme%
+;; end of when-theme%
 
 
 (self-frame-init!)
@@ -127,4 +127,4 @@ If RESET is true then reset before load."
 (provide 'graphic)
 
 
-;; end of file
+;; end of graphic.el
