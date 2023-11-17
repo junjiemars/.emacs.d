@@ -52,7 +52,6 @@
     (compile-unit% (emacs-home* "config/on-hippie-autoload.el"))
     (compile-unit% (emacs-home* "config/on-ido-autoload.el"))
     (compile-unit% (emacs-home* "config/on-edit-autoload.el"))
-    (compile-unit% (emacs-home* "config/on-inter-autoload.el"))
     (compile-unit% (emacs-home* "config/on-isearch-autoload.el"))
     (compile-unit% (emacs-home* "config/on-js-autoload.el"))
     (compile-unit% (emacs-home* "config/on-key-autoload.el"))
@@ -248,24 +247,24 @@
 ;; end of set-global-keys!
 
 (defun on-epilogue! ()
-  (require 'view nil t)
-  (when-version% > 28 (require 'dired-x nil t))
-  (when (*self-paths* :get :epilogue)
-    (compile! (compile-unit* (*self-paths* :get :epilogue)))))
+  (compile!
+    (compile-unit% (emacs-home* "config/on-inter-autoload.el"))
+    (when (*self-paths* :get :epilogue)
+      (compile-unit* (*self-paths* :get :epilogue)))))
 
 ;; after-init
 (defun on-autoloads! ()
   ;; preferred coding system
   (prefer-coding-system 'utf-8)
-  (compile! (compile-unit% (emacs-home* "config/sockets.el")))
-  (when-package%
-    (compile! (compile-unit% (emacs-home* "config/module.el"))))
+  (compile!
+    (compile-unit% (emacs-home* "config/sockets.el"))
+    (when-package%
+      (compile-unit% (emacs-home* "config/module.el"))))
   (load-autoloaded-modes!)
   (load-conditional-modes!)
   (set-global-keys!)
   (when-fn% 'toggle-frame-initialized nil (toggle-frame-initialized))
   (when-fn% 'self-desktop-read! nil (self-desktop-read!))
-  (when-fn% 'ido-mode 'ido (ido-mode t))
   (make-thread* #'on-epilogue!))
 
 
