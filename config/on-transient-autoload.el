@@ -23,7 +23,8 @@
       (let ((dir (v-home! ".transient/")))
         (setq transient-history-file (concat dir "history.el")
               transient-levels-file (concat dir "levels.el")
-              transient-values-file (concat dir "values.el")))))
+              transient-values-file (concat dir "values.el")
+              transient-save-history t))))
 
 
 (unless-graphic%

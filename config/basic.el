@@ -84,6 +84,9 @@
        (if-version% > 24 'tramp
              'tramp-cache))
 
+;; `transient'
+(setq% transient-save-history nil 'transient)
+
 ;; `url'
 (setq% url-configuration-directory (v-home! ".url/") 'url)
 
