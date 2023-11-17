@@ -35,4 +35,4 @@
   (set-face-foreground 'region "black"))
 
 
- ; end of on-transient-autoload.el
+;; end of on-transient-autoload.el
