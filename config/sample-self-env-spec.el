@@ -54,7 +54,7 @@
                "PingFang"
              (if-platform% 'windows-nt
                  "Microsoft YaHei"
-               "Noto Sans"))
+               "Noto Sans CJK"))
           :size 12
           :scale nil
           :scripts (han)
