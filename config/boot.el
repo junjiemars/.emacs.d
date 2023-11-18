@@ -318,7 +318,6 @@ Optional argument ONLY-COMPILE: see `compile-and-load-file*'."
       (cond ((eq :get op) (plist-get ps k))
             ((eq :put op) (setq ps (plist-put ps k v)))
             ((eq :dup op)
-             (v-home! "private/")
              (dolist* (fs ss)
 							 (let ((dst (plist-get ps (car fs)))
 										 (src (cdr fs)))
@@ -359,6 +358,10 @@ No matter the declaration order, the executing order is:
             (t ps)))))
 
 
+;;; Make `v-home*' .exec/
+(v-home! ".exec/")
+;;; Make `v-home*' private/
+(v-home! "private/")
 ;;; Duplicate spec files
 (*self-paths* :dup)
 

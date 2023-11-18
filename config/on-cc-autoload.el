@@ -68,12 +68,12 @@
                      (make-cc-env-bat))
                    '("cc-env.bat" "cl" "gcc"))
                 '("cc" "gcc" "clang")))
-          (o (make-temp-file "cc*-" nil
+          (o (make-temp-file "cc-" nil
                              (if-platform% 'windows-nt
                                  ".exe"
                                ".out")))
-          (f (make-temp-file "cc*-" nil ".c")))
-      (catch 'block
+          (f (make-temp-file "cc-" nil ".c")))
+      (catch 'break
         (dolist* (cc cx)
           (when (save-str-to-file (concat
                                    "int main(void) {\n"
@@ -83,7 +83,7 @@
             (let ((x (shell-command*
                          (format (if-platform% 'windows-nt
                                      (if (string= "cc-env.bat" cc)
-                                         (concat "%s %s -Fe%s -Fo" d)
+                                         (concat "%s %s -Fe%s -Fo")
                                        "%s %s -o%s")
                                    "%s %s -o%s")
                                  (if-platform% 'windows-nt
@@ -93,7 +93,7 @@
                                    cc)
                                  f o))))
               (when (zerop (car x))
-                (throw 'block cc))))))))
+                (throw 'break cc))))))))
   "The name of C compiler executable.")
 
 
@@ -284,9 +284,7 @@
                                         (remote-norm-id remote)
                                         "-"))
                    'native))
-             (fs (concat (v-home! ".exec/") "cc-inc-"
-                         (symbol-name ss)
-                         ".el"))
+             (fs (concat (v-home% ".exec/cc-inc-") (symbol-name ss) ".el"))
              (d))
         (or (and cached (plist-get dx ss))
 
@@ -304,11 +302,9 @@
                  (consp d) (save-sexp-to-file d fs)
                  (plist-get (setq dx (plist-put dx ss d)) ss))))))
 
-  "Return a list of system include directories.
-
+  "Return a list of system include directories.\n
 Load \\=`cc*-system-include\\=' from file when CACHED is t,
-otherwise check cc include on the fly.
-
+otherwise check cc include on the fly.\n
 If specify REMOTE argument then return a list of remote system
 include directories. The REMOTE argument from \\=`remote-norm-file\\='.")
 
@@ -337,7 +333,7 @@ include directories. The REMOTE argument from \\=`remote-norm-file\\='.")
 
 
 (defun cc*-include-p (file)
-  "Return t if FILE in `cc*-system-include', otherwise nil."
+  "Return t if FILE in \\=`cc*-system-include\\=', otherwise nil."
   (when (stringp file)
     (let ((remote (remote-norm-file file)))
       (file-in-dirs-p (file-name-directory file)
@@ -348,10 +344,10 @@ include directories. The REMOTE argument from \\=`remote-norm-file\\='.")
 
 
 (defun cc*-view-include (buffer)
-  "View cc's BUFFER in `view-mode'.
-
-When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
-`cc*-extra-include' is t then view it in `view-mode'."
+  "View cc's BUFFER in \\=`view-mode\\='.\n
+When BUFFER in \\=`c-mode\\=' or \\=`c++-mode\\=' and
+\\=`cc*-system-include\\=' or \\=`cc*-extra-include\\=' is t then
+view it in \\=`view-mode\\='."
   (when (and (bufferp buffer)
              (let ((m (buffer-local-value 'major-mode buffer)))
                (or (eq 'c-mode m)
@@ -463,9 +459,8 @@ When BUFFER in `c-mode' or `c++-mode' and `cc*-system-include' or
 (when-fn% 'make-c-tags 'tags
 
   (defun cc*-make-system-tags (&optional option file skip renew)
-    "Make system C tags.
-
-OPTION for `*tags*'.
+    "Make system C tags.\n
+OPTION for \\=`*tags*\\='.
 FILE where the tags file located, default is `(tags-spec->% :os-include)'.
 SKIP regexp to skip directories.
 RENEW whether to renew the existing FILE."
@@ -530,7 +525,7 @@ RENEW whether to renew the existing FILE."
 
 
 (defun cc*-eldoc-doc-fn ()
-  "See `eldoc-documentation-function'."
+  "See \\=`eldoc-documentation-function\\='."
   (let ((tbl (cc*-system-identity t))
         (sym (thing-at-point 'symbol)))
     (when (and tbl (stringp sym))
@@ -546,7 +541,8 @@ RENEW whether to renew the existing FILE."
 
 
 (defun cc*-system-autoload ()
-  "Autoload `cc*-system-include', `cc*-system-include' and `eldoc-mode'."
+  "Autoload \\=`cc*-system-include\\=', \\=`cc*-system-include\\='
+and \\=`eldoc-mode\\='."
   (cc*-system-include t)
   (when (cc*-system-identity t)
     (toggle-cc*-eldoc-mode 1)))

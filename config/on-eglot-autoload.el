@@ -131,10 +131,10 @@
      (lambda (&optional op sexp)
        (cond ((eq op :cache)
               (if sexp
-                  (catch 'rc
+                  (catch 'break
                     (dolist* (s1 c)
                       (when (string= s1 sexp)
-                        (throw 'rc s1))))
+                        (throw 'break s1))))
                 c))
              ((eq op :read)
               (setq c (read-sexp-from-file b)))

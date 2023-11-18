@@ -162,8 +162,6 @@ See also: \\=`parse-colon-path\\='."
 
 (defun read-shell-env! ()
   "Read \\=`*default-shell-env*\\=' from file."
-  (v-home! ".exec/")
-
   (if (not (shells-spec->* :allowed))
       ;; allowed/disallowed `shells-spec->*'
       (append! (v-home% ".exec/") exec-path)
