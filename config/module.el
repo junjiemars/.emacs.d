@@ -12,7 +12,7 @@
 
 
 ;; define package user dir
-(setq% package-user-dir (v-home% "elpa/") 'package)
+(setq% package-user-dir (v-home! ".elpa/") 'package)
 
 
 (defalias '*repository-initialized*

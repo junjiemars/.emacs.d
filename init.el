@@ -52,7 +52,9 @@ Else return BODY sexp."
 
 (defmacro emacs-home* (&optional file)
   "Return path of FILE under \\=`emacs-home\\='."
-  `(concat ,(expand-file-name "~/.emacs.d/") ,file))
+  `(concat ,(expand-file-name
+             (or (getenv "EMACS_HOME") "~/.emacs.d/"))
+           ,file))
 
 (defmacro path! (file)
   "Make and return the path of the FILE.\n

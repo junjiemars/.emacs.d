@@ -9,24 +9,210 @@ _ENV_VER_=
 _ENV_ERT_=
 _ENV_PKG_=
 
-echo_env() {
+test_echo_env() {
   echo "------------"
   echo "VERSION: $_ENV_VER_"
   echo "TEST: $1"
   echo "------------"
 }
 
+test_clean_env() {
+  ${_EMACS_} --batch                            \
+             --no-window-system                 \
+             --eval="
+(progn
+  (load \"${_ROOT_}/init.el\")
+  (clean-compiled-files))
+"
+}
+
+test_bone() {
+  test_echo_env "bone|clean"
+  test_clean_env
+  test_echo_env "bone|compile"
+  ${_EMACS_} --batch                                \
+             --no-window-system                     \
+             --eval="(load \"${_ROOT_}/init.el\")"
+  test_echo_env "bone|boot"
+  ${_EMACS_} --batch                                \
+             --no-window-system                     \
+             --eval="
+(progn
+  (load \"${_ROOT_}/init.el\")
+  (message \"Elapsed: %s\" (emacs-init-time)))
+"
+}
+
+test_axiom() {
+  test_echo_env "axiom|check"
+  if [ "ert" != "$_ENV_ERT_" ]; then
+    echo "# skip axiom testing ..., ert no found"
+    return 0
+  else
+    echo "_ENV_ERT_: ${_ENV_ERT_}"
+  fi
+  test_echo_env "axiom|cat"
+  cat <<END >"${_ENV_PRO_}"
+(*self-paths* :put :env-spec nil)
+(*self-paths* :put :package-spec nil)
+(*self-paths* :put :epilogue nil)
+END
+  echo "# cat <${_ENV_PRO_}"
+  cat <"${_ENV_PRO_}"
+  test_echo_env "axiom|clean"
+  test_clean_env
+  test_echo_env "axiom|compile"
+  ${_EMACS_} --batch                            \
+             --no-window-system                 \
+             --eval="
+(progn
+  (load \"${_ROOT_}/init.el\")
+  (load (emacs-home* \"test.el\"))
+  (ert-run-tests-batch-and-exit))
+"
+  test_echo_env "axiom|boot"
+  ${_EMACS_} --batch                            \
+             --no-window-system                 \
+             --eval="
+(progn
+  (load \"${_ROOT_}/init.el\")
+  (load (emacs-home* \"test.el\"))
+  (ert-run-tests-batch-and-exit))
+"
+}
+
+test_package() {
+  test_echo_env "package|check"
+  if [ "package" != "$_ENV_PKG_" ]; then
+    echo "# skip package testing ..., package no support"
+    return 0
+  else
+    echo "_ENV_PKG_: ${_ENV_PKG_}"
+  fi
+  test_echo_env "package|cat"
+  cat <<END >"${_ENV_PRO_}"
+(*self-paths* :put :env-spec nil)
+(*self-paths* :put :package-spec nil)
+(*self-paths* :put :epilogue nil)
+(*self-env-spec*
+  :put :package
+  (list :remove-unused nil
+        :package-check-signature 'allow-unsigned
+        :allowed t))
+END
+  echo "# cat <${_ENV_PRO_}"
+  cat <"${_ENV_PRO_}"
+  test_echo_env "package|clean"
+  test_clean_env
+  test_echo_env "package|compile"
+  ${_EMACS_} --batch                                \
+             --no-window-system                     \
+             --eval="(load \"${_ROOT_}/init.el\")"
+  test_echo_env "package|boot"
+  ${_EMACS_} --batch                                \
+             --no-window-system                     \
+             --eval="
+(progn
+  (load \"${_ROOT_}/init.el\")
+  (message \"Elapsed: %s\" (emacs-init-time)))
+"
+}
+
+test_extra() {
+  test_echo_env "extra|check"
+  if [ "package" != "$_ENV_PKG_" ]; then
+    echo "# skipped package testing, package no support"
+    return 0
+  else
+    echo "_ENV_PKG_: ${_ENV_PKG_}"
+  fi
+  test_echo_env "extra|cat"
+  cat <<END > "${_ENV_PRO_}"
+(*self-paths* :put :package-spec nil)
+(*self-paths* :put :env-spec nil)
+(*self-paths* :put :epilogue nil)
+(*self-env-spec*
+  :put :package
+  (list :remove-unused nil
+        :package-check-signature 'allow-unsigned
+        :allowed t))
+(*self-packages*
+  :put :scheme
+  (list
+   :cond (and (when-version% <= 23.2 t)
+              (or (executable-find% "racket")
+                  (executable-find% "scheme")
+                  (executable-find% "chicken")
+                  (executable-find% "guile")))
+   :packages  '(geiser)
+   :compile \`(,(compile-unit%
+                  (emacs-home* "config/use-geiser-autoload.el")))))
+(*self-packages*
+  :put :common-lisp
+  (list
+   :cond (or (executable-find% "sbcl")
+             (executable-find% "ecl")
+             (executable-find% "acl"))
+   :packages '(slime)
+   :compile \`(,(compile-unit%
+                  (emacs-home* "config/use-slime-autoload.el")))))
+END
+  echo "# cat <${_ENV_PRO_}"
+  cat <"${_ENV_PRO_}"
+  test_echo_env "extra|clean"
+  test_clean_env
+  test_echo_env "extra|compile"
+  ${_EMACS_} --batch                                \
+             --no-window-system                     \
+             --eval="(load \"${_ROOT_}/init.el\")"
+  test_echo_env "extra|boot"
+  ${_EMACS_} --batch                                \
+             --no-window-system                     \
+             --eval="
+(progn
+  (load \"${_ROOT_}/init.el\")
+  (message \"Elapsed: %s\" (emacs-init-time)))
+"
+}
+
+test_debug() {
+  test_echo_env "debug|clean"
+  test_clean_env
+  test_echo_env "debug|compile"
+  ${_EMACS_} --debug-init                                       \
+             --eval="
+(progn
+  (setq debug-on-error t)
+  (load \"${_ROOT_}/init.el\"))"
+}
+
+check_env() {
+  echo "# check env ..."
+  echo "_ROOT_: ${_ROOT_}"
+  _ENV_VER_=$(${_EMACS_} --batch -Q --eval='(prin1 emacs-version)' \
+                | sed 's/\"//g' \
+                | cut -d '.' -f1,2)
+  echo "_ENV_VER_: ${_ENV_VER_}"
+  _ENV_ERT_=$($_EMACS_ --batch --eval='(prin1 (require (quote ert) nil t))')
+  echo "_ENV_ERT_: ${_ENV_ERT_}"
+  _ENV_PKG_=$($_EMACS_ --batch --eval='(prin1 (require (quote package) nil t))')
+  echo "_ENV_PKG_: ${_ENV_PKG_}"
+}
+
 make_env() {
-  local d="$(dirname ${_ENV_PRO_})"
-  local c1="${_ROOT_}/config/t_${_ENV_VER_}"
-  local p1="${_ROOT_}/private/t_${_ENV_VER_}"
-  local t1="${_ROOT_}/theme/t_${_ENV_VER_}"
-  local e1="${_ROOT_}/.exec/t_${_ENV_VER_}"
-  [ -d "$d" ] || mkdir -p "$d"
-  [ -d "$c1" ] && rm "${c1}/*.el[cn]" 2>/dev/null
-  [ -d "$p1" ] && rm "${p1}/*.el[cn]" 2>/dev/null
-  [ -d "$t1" ] && rm "${t1}/*.el[cn]" 2>/dev/null
-  [ -d "$e1" ] && rm "${e1}/*.el[cn]" 2>/dev/null
+  echo "# make env ..."
+  # local d="$(dirname ${_ENV_PRO_})"
+  # local c1="${_ROOT_}/config/t_${_ENV_VER_}"
+  # local p1="${_ROOT_}/private/t_${_ENV_VER_}"
+  # local t1="${_ROOT_}/theme/t_${_ENV_VER_}"
+  # local e1="${_ROOT_}/.exec/t_${_ENV_VER_}"
+  # [ -d "$d" ] || mkdir -p "$d"
+  # [ -d "$c1" ] && rm "${c1}/*.el[cn]" 2>/dev/null
+  # [ -d "$p1" ] && rm "${p1}/*.el[cn]" 2>/dev/null
+  # [ -d "$t1" ] && rm "${t1}/*.el[cn]" 2>/dev/null
+  # [ -d "$e1" ] && rm "${e1}/*.el[cn]" 2>/dev/null
+  export EMACS_HOME="${_ROOT_}/"
+  echo "EMACS_HOME: ${EMACS_HOME}"
 }
 
 restore_env() {
@@ -35,209 +221,10 @@ restore_env() {
   else
     return 0
   fi
+  unset EMACS_HOME
 }
 
-test_bone() {
-  echo_env "bone|clean"
-  ${_EMACS_} --batch                                            \
-             --no-window-system                                 \
-             --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
-  (load \"${_ROOT_}/init.el\")
-  (clean-compiled-files))"
-
-  echo_env "bone|compile"
-  ${_EMACS_} --batch                                            \
-             --no-window-system                                 \
-             --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
-  (load \"${_ROOT_}/init.el\"))"
-
- echo_env "bone|boot"
-  ${_EMACS_} --batch                                            \
-             --no-window-system                                 \
-             --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
-  (load \"${_ROOT_}/init.el\"))"
-}
-
-test_debug() {
-  echo_env "debug|clean"
-  ${_EMACS_} --batch                                            \
-             --no-window-system                                 \
-             --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
-  (load \"${_ROOT_}/init.el\")
-  (clean-compiled-files))"
-
-  echo_env "debug|capture"
-  ${_EMACS_} --debug-init                                       \
-             --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
-  (setq debug-on-error t)
-  (load \"${_ROOT_}/init.el\")
-  (load (emacs-home* \"init.el\")))"
-}
-
-test_axiom() {
-  if [ "ert" != "$_ENV_ERT_" ]; then
-    echo "#skipped axiom testing, ert no found"
-    return 0
-  fi
-
-  cat <<END > "${_ENV_PRO_}"
-(*self-paths* :put :env-spec nil)
-(*self-paths* :put :package-spec nil)
-(*self-paths* :put :epilogue nil)
-END
-
-  echo "# cat < ${_ENV_PRO_}"
-  cat < ${_ENV_PRO_}
-
-  echo_env "axiom|clean"
-  ${_EMACS_} --batch                            \
-             --no-window-system                 \
-             --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
-  (load \"${_ROOT_}/init.el\")
-  (clean-compiled-files))"
-
-  echo_env "axiom|compile"
-  ${_EMACS_} --batch                                            \
-             --no-window-system                                 \
-             --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
-  (load \"${_ROOT_}/init.el\")
-  (load (emacs-home* \"test.el\"))
-  (ert-run-tests-batch-and-exit))"
-
-  echo_env "axiom|boot"
-  ${_EMACS_} --batch                                            \
-             --no-window-system                                 \
-             --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
-  (load \"${_ROOT_}/init.el\")
-  (load (emacs-home* \"test.el\"))
-  (ert-run-tests-batch-and-exit))"
-}
-
-test_package() {
-  if [ "package" != "$_ENV_PKG_" ]; then
-    echo "#skipped package testing, package no support"
-    return 0
-  fi
-
-  cat <<END > "${_ENV_PRO_}"
-(*self-paths* :put :package-spec nil)
-(*self-paths* :put :env-spec nil)
-(*self-paths* :put :epilogue nil)
-(*self-env-spec*
- :put :package
- (list :remove-unused nil
-       :package-check-signature 'allow-unsigned
-       :allowed t))
-END
-
-  echo "# cat < ${_ENV_PRO_}"
-  cat < "${_ENV_PRO_}"
-
-  echo_env "package|clean"
-  ${_EMACS_} --batch                                            \
-             --no-window-system                                 \
-             --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
-  (load \"${_ROOT_}/init.el\")
-  (clean-compiled-files))"
-
-  echo_env "package|compile"
-  ${_EMACS_} --batch                                            \
-             --no-window-system                                 \
-             --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
-  (load \"${_ROOT_}/init.el\"))"
-
-  echo_env "package|boot"
-  ${_EMACS_} --batch                                            \
-             --no-window-system                                 \
-             --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
-  (load \"${_ROOT_}/init.el\"))"
-}
-
-test_extra() {
-  if [ "package" != "$_ENV_PKG_" ]; then
-    echo "#skipped package testing, package no support"
-    return 0
-  fi
-
-  cat <<END > "${_ENV_PRO_}"
-(*self-paths* :put :package-spec nil)
-(*self-paths* :put :env-spec nil)
-(*self-paths* :put :epilogue nil)
-(*self-env-spec*
- :put :package
- (list :remove-unused nil
-       :package-check-signature 'allow-unsigned
-       :allowed t))
-
-(*self-packages*
- :put :scheme
- (list
-  :cond (and (when-version% <= 23.2 t)
-             ;; Nore Emacs has builtin supports for Chez
-             ;; scheme and gambitC scheme, and does not need to
-             ;; install the dumb geiser.
-             (or (executable-find% "racket")
-                 (executable-find% "scheme")
-                 (executable-find% "chicken")
-                 (executable-find% "guile")))
-  :packages  '(geiser)
-  :compile \`(,(compile-unit% (emacs-home* "config/use-geiser-autoload.el")))))
-
-(*self-packages*
- :put :common-lisp
- (list
-  :cond (or (executable-find% "sbcl")
-            (executable-find% "ecl")
-            (executable-find% "acl"))
-  :packages '(slime)
-  :compile \`(,(compile-unit% (emacs-home* "config/use-slime-autoload.el")))))
-END
-
-  echo "# cat < ${_ENV_PRO_}"
-  cat < "${_ENV_PRO_}"
-
-  echo_env "extra|clean"
-  ${_EMACS_} --batch                                            \
-             --no-window-system                                 \
-             --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
-  (load \"${_ROOT_}/init.el\")
-  (clean-compiled-files))"
-
-  echo_env "extra|compile"
-  ${_EMACS_} --batch                                            \
-             --no-window-system                                 \
-             --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
-  (load \"${_ROOT_}/init.el\"))"
-
-  echo_env "extra|boot"
-  ${_EMACS_} --batch                                            \
-             --no-window-system                                 \
-             --eval="
-(let ((user-emacs-directory \"${_ROOT_}/\"))
-  (load \"${_ROOT_}/init.el\"))"
-}
-
-# check env
-_ENV_VER_=$(${_EMACS_} --batch -Q --eval='(prin1 emacs-version)' \
-                        | sed 's/\"//g' \
-                        | cut -d '.' -f1,2)
-_ENV_ERT_=$($_EMACS_ --batch --eval='(prin1 (require (quote ert) nil t))')
-_ENV_PKG_=$($_EMACS_ --batch --eval='(prin1 (require (quote package) nil t))')
-
-# make env
+check_env
 make_env
 
 # test
@@ -250,8 +237,6 @@ case "${_TEST_}" in
   *) ;;
 esac
 
-# restore env
 restore_env
-
 
 # eof
