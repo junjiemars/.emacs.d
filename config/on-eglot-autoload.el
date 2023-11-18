@@ -47,7 +47,8 @@
 (when-feature-eglot%
 
  (defun eglot*-set-style (&optional style indent)
-   "Set the current \\=`eglot-managed-p\\=' buffer to use the STYLE and INDENT."
+   "Set the current \\=`eglot-managed-p\\=' buffer to use the STYLE
+and INDENT."
    (with-current-buffer (current-buffer)
      (when (eglot-managed-p)
        (let ((p (caddr (eglot--current-project)))
@@ -112,10 +113,10 @@
 (when-feature-eglot%
 
  (defun eglot*-shutdown-all ()
-   (condition-case err
+   (condition-case _
        (let ((debug-on-error nil))
          (or (eglot-shutdown-all) t))
-     (error err t))))
+     (error t))))
 
 
 (when-feature-eglot%
@@ -131,7 +132,7 @@
 
    ;; shutdown when `kill-emacs'
    (when-var% kill-emacs-query-functions nil
-       (push! 'eglot*-shutdown-all kill-emacs-query-functions))))
+     (push! 'eglot*-shutdown-all kill-emacs-query-functions))))
 
 ;; end of `eglot'
 
