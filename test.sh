@@ -201,21 +201,12 @@ check_env() {
 
 make_env() {
   echo "# make env ..."
-  # local d="$(dirname ${_ENV_PRO_})"
-  # local c1="${_ROOT_}/config/t_${_ENV_VER_}"
-  # local p1="${_ROOT_}/private/t_${_ENV_VER_}"
-  # local t1="${_ROOT_}/theme/t_${_ENV_VER_}"
-  # local e1="${_ROOT_}/.exec/t_${_ENV_VER_}"
-  # [ -d "$d" ] || mkdir -p "$d"
-  # [ -d "$c1" ] && rm "${c1}/*.el[cn]" 2>/dev/null
-  # [ -d "$p1" ] && rm "${p1}/*.el[cn]" 2>/dev/null
-  # [ -d "$t1" ] && rm "${t1}/*.el[cn]" 2>/dev/null
-  # [ -d "$e1" ] && rm "${e1}/*.el[cn]" 2>/dev/null
   export EMACS_HOME="${_ROOT_}/"
   echo "EMACS_HOME: ${EMACS_HOME}"
 }
 
 restore_env() {
+  echo "# restore env ..."
   if [ -f "${_ENV_PRO_}" ]; then
     rm "${_ENV_PRO_}"
   else

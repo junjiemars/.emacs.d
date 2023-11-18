@@ -28,6 +28,7 @@ jobs:
           _TEST_=bone ./test.sh
           _TEST_=axiom ./test.sh
           _TEST_=package ./test.sh
+          _TEST_=extra ./test.sh
 
   MacOS:
     runs-on: macos-latest
@@ -43,6 +44,7 @@ jobs:
           _TEST_=bone ./test.sh
           _TEST_=axiom ./test.sh
           _TEST_=package ./test.sh
+          _TEST_=extra ./test.sh
 
   # MacOS:
   #   runs-on: macos-latest
@@ -82,6 +84,7 @@ jobs:
         _TEST_=bone ./test.sh
         _TEST_=axiom ./test.sh
         _TEST_=package ./test.sh
+        _TEST_=extra ./test.sh
 
   # Emacs:
   #   runs-on: ubuntu-latest
