@@ -92,7 +92,8 @@
 (when-feature-eglot%
 
  (defun eglot*-eldoc-no-builtins ()
-   "Remove the builtin \\=`eldoc\\=' fns from \\=`eglot--managed-mode\\=' mode."
+   "Remove the builtin \\=`eldoc\\=' fns from
+\\=`eglot--managed-mode\\=' mode."
    (with-current-buffer (current-buffer)
      (when (eglot-managed-p)
        (let ((p (caddr (eglot--current-project)))
@@ -109,6 +110,16 @@
 
 
 (when-feature-eglot%
+
+ (defun eglot*-shutdown-all ()
+   (condition-case err
+       (let ((debug-on-error nil))
+         (or (eglot-shutdown-all) t))
+     (error err t))))
+
+
+(when-feature-eglot%
+
  (with-eval-after-load 'eglot
 
    ;; load recipe
@@ -116,7 +127,11 @@
                                      (eglot*-server-programs)))
    ;; most reduced
    (when-var% eldoc-echo-area-use-multiline-p 'eldoc
-     (setq eldoc-echo-area-use-multiline-p nil))))
+     (setq eldoc-echo-area-use-multiline-p nil))
+
+   ;; shutdown when `kill-emacs'
+   (when-var% kill-emacs-query-functions nil
+       (push! 'eglot*-shutdown-all kill-emacs-query-functions))))
 
 ;; end of `eglot'
 

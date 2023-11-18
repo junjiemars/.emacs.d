@@ -21,13 +21,16 @@
 
       (desktop-read (v-home% ".desktop/"))
 
-      ;; remove unnecessary hooks of `desktop'
-      (if-fn% 'desktop--on-kill 'desktop
-              (delq 'desktop--on-kill kill-emacs-hook)
-        (delq 'desktop-kill kill-emacs-hook))
+      ;; remove unnecessary hooks of `kill-emacs-hook'
+      (setq kill-emacs-hook
+            (if-fn% 'desktop--on-kill 'desktop
+                    (delq 'desktop--on-kill kill-emacs-hook)
+              (delq 'desktop-kill kill-emacs-hook)))
+      ;; remove unnecessary hooks of `kill-emacs-query-functions'
       (if-var% kill-emacs-query-functions nil
                (progn
-                 (delq 'desktop-kill kill-emacs-query-functions)
+                 (setq kill-emacs-query-functions
+                       (delq 'desktop-kill kill-emacs-query-functions))
                  (append! #'self-desktop-save! kill-emacs-query-functions))
         (append! #'self-desktop-save! kill-emacs-hook)))))
 
