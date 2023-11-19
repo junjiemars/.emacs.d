@@ -15,16 +15,14 @@
   `(put ,var 'safe-local-variable (or ,fn #'true)))
 
 
-;;; `safe-local-variable'
-(when (*self-env-spec* :get :edit :allowed)
-  (dolist* (x (*self-env-spec* :get :edit :safe-local-variable))
-    (safe-local-variable* x)))
+(defun self-safe-init! ()
+  "Initialize edit spec from \\=`*self-env-spec*\\='."
+  (let ((spec (*self-env-spec* :get :edit)))
+    (when (self-spec-> spec :allowed)
+      (dolist* (x (self-spec-> spec :safe-local-variable))
+        (safe-local-variable* x)))))
 
-
-;;; enable `narrow-to-page'
-(when% (get 'narrow-to-page 'disabled)
-  (put 'narrow-to-page 'disabled nil))
-
+(self-safe-init!)
 
 (provide 'safe)
 

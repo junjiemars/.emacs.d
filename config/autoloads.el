@@ -38,9 +38,9 @@
   "Load autoloaded modes."
   (compile!
 
+    (compile-unit% (emacs-home* "config/safe.el"))
     (compile-unit% (emacs-home* "config/financial.el") t)
     (compile-unit% (emacs-home* "config/guds.el") t)
-    (compile-unit% (emacs-home* "config/safe.el"))
     (compile-unit% (emacs-home* "config/scratch.el"))
     (compile-unit% (emacs-home* "config/marks.el"))
     (compile-unit% (emacs-home* "config/tags.el"))

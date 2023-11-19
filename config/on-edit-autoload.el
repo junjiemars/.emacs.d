@@ -41,9 +41,12 @@
       ;; default `auto-save-default'
       (setq auto-save-default (self-spec-> edit :auto-save-default))
 
-      ;; allow `narrow-to-region'
+      ;; enable `narrow-to-region'
       (put 'narrow-to-region 'disabled
            (null (self-spec-> edit :narrow-to-region)))
+      ;; enable `narrow-to-page'
+      (when% (get 'narrow-to-page 'disabled)
+        (put 'narrow-to-page 'disabled nil))
 
       ;; `delete-trailing-whitespace' before save
       (append! #'self-edit-env->delete-trailing-whitespace before-save-hook))))
