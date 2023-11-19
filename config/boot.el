@@ -296,7 +296,6 @@ Optional argument ONLY-COMPILE: see `compile-and-load-file*'."
 
 (defmacro self-spec->% (seq &rest keys)
   "Read spec from SEQ via KEYS at compile time."
-  (declare (indent 1))
   `(eval-when-compile (self-spec-> ,seq ,@keys)))
 
 

@@ -87,7 +87,7 @@ See also: \\=`parse-colon-path\\='."
   (let ((e (gensym)) (vs (gensym)))
     `(let ((,e ,env) (,vs ,vars))
        (dolist* (v ,vs)
-         (when (and (stringp v) (not (string= v "")))
+         (when (> (length v) 0)
            (let ((v1 (cdr (assoc** v ,e :test #'string=))))
              (when (stringp v1)
                (setenv v v1))))))))
@@ -162,33 +162,34 @@ See also: \\=`parse-colon-path\\='."
 
 (defun read-shell-env! ()
   "Read \\=`*default-shell-env*\\=' from file."
-  (if (not (shells-spec->* :allowed))
-      ;; allowed/disallowed `shells-spec->*'
-      (append! (v-home% ".exec/") exec-path)
+  (let ((spec (shells-spec->*)))
+    (if (null (self-spec-> spec :allowed))
+        ;; allowed/disallowed `shells-spec->*'
+        (append! (v-home% ".exec/") exec-path)
 
-    ;; read from file
-    (when (file-exists-p (shells-spec->% :file))
-      (*default-shell-env*
-       :set!
-       (read-sexp-from-file (shells-spec->% :file))))
+      ;; read from file
+      (when (file-exists-p (shells-spec->% :file))
+        (*default-shell-env*
+         :set!
+         (read-sexp-from-file (shells-spec->% :file))))
 
-    (let ((shell (shells-spec->* :shell-file-name)))
-      (when shell
-        (setq% explicit-shell-file-name shell 'shell)
-        (setq shell-file-name shell)
-        (setenv (shells-spec->% :SHELL) shell)))
+      (let ((shell (self-spec-> spec :shell-file-name)))
+        (when shell
+          (setq% explicit-shell-file-name shell 'shell)
+          (setq shell-file-name shell)
+          (setenv (shells-spec->% :SHELL) shell)))
 
-    (let ((copying (shells-spec->* :copy-vars)))
-      (when (consp copying)
-        (copy-env-vars! (*default-shell-env* :get :copy-vars)
-                        copying)))
+      (let ((copying (self-spec-> spec :copy-vars)))
+        (when (consp copying)
+          (copy-env-vars! (*default-shell-env* :get :copy-vars)
+                          copying)))
 
-    (when (shells-spec->* :exec-path)
-      (copy-exec-path! (*default-shell-env* :get :exec-path)))
+      (when (self-spec-> spec :exec-path)
+        (copy-exec-path! (*default-shell-env* :get :exec-path)))
 
-    (let ((spinning (shells-spec->* :spin-vars)))
-      (when (consp spinning)
-        (spin-env-vars! spinning))))
+      (let ((spinning (self-spec-> spec :spin-vars)))
+        (when (consp spinning)
+          (spin-env-vars! spinning)))))
 
   (append! #'save-shell-env! kill-emacs-hook))
 
