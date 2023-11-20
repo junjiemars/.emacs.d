@@ -289,6 +289,9 @@ If \\=`current-prefix-arg\\=' < 0, then repeat n time with END in reversed."
 ;; Surround
 (define-key% (current-global-map) (kbd "C-x r [") #'surround-region)
 
+;; `imenu'
+(define-key% (current-global-map) (kbd "M-g i") #'imenu)
+
 ;; end of Keys
 
 
