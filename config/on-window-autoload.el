@@ -65,15 +65,6 @@ A prefix argument is handled like `recenter':
 
 ;; end of `recenter-top-bottom'
 
-;;; Keys
-
-(defun winmove*-keys-init! ()
-  "Intialize \\=`winmove\\='."
-  (define-key% (current-global-map) (kbd "C-c w l") #'windmove-left)
-  (define-key% (current-global-map) (kbd "C-c w r") #'windmove-right)
-  (define-key% (current-global-map) (kbd "C-c w u") #'windmove-up)
-  (define-key% (current-global-map) (kbd "C-c w d") #'windmove-down))
-
 
 (defun echo-buffer-name ()
   "Echo the qualified buffer name of current buffer.\n
@@ -95,9 +86,15 @@ And copy the qualified buffer name to kill ring."
         (message "%s" buffer-file-coding-system)
       buffer-file-coding-system)))
 
+
 
-(defun buffer*-keys-init! ()
-  "Intialize buffer keys."
+(defun winmove*-keys-init! ()
+  ;; windows
+  (define-key% (current-global-map) (kbd "C-c w l") #'windmove-left)
+  (define-key% (current-global-map) (kbd "C-c w r") #'windmove-right)
+  (define-key% (current-global-map) (kbd "C-c w u") #'windmove-up)
+  (define-key% (current-global-map) (kbd "C-c w d") #'windmove-down)
+  ;; buffers
   (declare-function browse-url-default-browser "browse-file" t)
   (define-key% (current-global-map) (kbd "C-x x B") #'browse-file)
   (define-key% (current-global-map) (kbd "C-x x c") #'clone-buffer)
@@ -124,8 +121,7 @@ And copy the qualified buffer name to kill ring."
     (define-key% (current-global-map) (kbd "C-x x SPC") #'whitespace-mode))
   (define-key% (current-global-map) (kbd "C-x x u") #'rename-uniquely))
 
-;; end of Keys
-
+
 
 (with-eval-after-load 'view
   ;; keep `view-mode' when quit
@@ -138,7 +134,6 @@ And copy the qualified buffer name to kill ring."
 
 
 (make-thread* #'winmove*-keys-init!)
-(make-thread* #'buffer*-keys-init!)
 
 
 ;; end of on-window-autoload.el
