@@ -46,7 +46,7 @@
                     'lfe-mode))
   :compile (list (when% (executable-find% "lfe")
                    (compile-unit%
-                    (emacs-home* "config/use-lfe-autoload.el"))))))
+                    (emacs-home* "config/use-lfe-autoload.el") t)))))
 
 
 (*self-packages*
@@ -76,7 +76,7 @@
  (list
   :cond (comment (executable-find% "lua"))
   :packages '(lua-mode)
-  :compile `(,(compile-unit% (emacs-home* "config/use-lua-autoload.el")))))
+  :compile `(,(compile-unit% (emacs-home* "config/use-lua-autoload.el") t))))
 
 
 (*self-packages*

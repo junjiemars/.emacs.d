@@ -6,14 +6,7 @@
 ;; use-lfe-autoload.el (Lisp Flavoured Erlang)
 ;;;;
 
+(autoload 'lfe-mode-hook "lfe-mode" "lfe editing mode." t)
+(push! '("\\.lfe$" . lfe-mode) auto-mode-alist)
 
-(with-eval-after-load 'lfe-mode
-  
-  ;; Enable paredit for LFE
-  (add-hook 'lfe-mode-hook #'enable-paredit-mode)
-
-  ;; For .lfe files
-  (push! '("\\.lfe\\'" . lfe-mode) auto-mode-alist))
-
-
-
+;; end of use-lfe-autoload.el
