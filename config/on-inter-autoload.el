@@ -282,7 +282,7 @@ If \\=`current-prefix-arg\\=' < 0, then repeat n time with END in reversed."
   "Clean versioned SCOPEd DIRS."
   (interactive "P")
   (dolist* (d dirs)
-    (when (file-exists-p d)
+    (when (and d (file-exists-p d))
       (dolist* (f (directory-files d nil "^[gt]_.*$"))
         (when (cond ((eq :8 scope) t)
                     ((eq :< scope)
@@ -300,10 +300,13 @@ If \\=`current-prefix-arg\\=' < 0, then repeat n time with END in reversed."
   "Clean all compiled file and desktop, then restart Emacs."
   (interactive)
   (clean-versioned-dirs
-   (mapcar (lambda (d)
-             (concat (emacs-home* d) "/"))
-           (directory-files (emacs-home*)
-                            nil "^\\.[^git][a-z]+"))
+   (delq nil
+         (mapcar
+          (lambda (d)
+						(unless (some* (lambda (x) (string= d x))
+													 '(".git" ".gitignore" ".github"))
+							(concat (emacs-home* d) "/")))
+					(directory-files (emacs-home*) nil "^\\.[a-z]+")))
    :<)
   (clean-compiled-files)
   (setq kill-emacs-hook nil)
