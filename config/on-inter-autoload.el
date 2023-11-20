@@ -276,6 +276,42 @@ If \\=`current-prefix-arg\\=' < 0, then repeat n time with END in reversed."
 ;; end of camelize
 
 
+;;; Clean Emacs' user files
+
+(defun clean-versioned-dirs (dirs &optional scope)
+  "Clean versioned SCOPEd DIRS."
+  (interactive "P")
+  (dolist* (d dirs)
+    (when (file-exists-p d)
+      (dolist* (f (directory-files d nil "^[gt]_.*$"))
+        (when (cond ((eq :8 scope) t)
+                    ((eq :< scope)
+                     (< (string-to-number
+                         (string-match* "^[gt]_\\(.*\\)$" f 1))
+                        +emacs-version+))
+                    (t (null (string-match
+                              (concat "^[gt]_" emacs-version) f))))
+          (message "#Clean saved user file: %s" (concat d f))
+          (if-platform% 'windows-nt
+              (shell-command (concat "rmdir /Q /S " (concat d f)))
+            (shell-command (concat "rm -r " (concat d f)))))))))
+
+(defun reset-emacs ()
+  "Clean all compiled file and desktop, then restart Emacs."
+  (interactive)
+  (clean-versioned-dirs
+   (mapcar (lambda (d)
+             (concat (emacs-home* d) "/"))
+           (directory-files (emacs-home*)
+                            nil "^\\.[^git][a-z]+"))
+   :<)
+  (clean-compiled-files)
+  (setq kill-emacs-hook nil)
+  (kill-emacs 0))
+
+;; end of Clean Emacs' user files
+
+
 ;;; Keys
 
 ;; Line

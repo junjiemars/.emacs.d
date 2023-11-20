@@ -349,59 +349,7 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
                           (get-buffer buffer-or-name)
                         (current-buffer))))
 
-
  ;; end of file functions
-
-
-;; Clean Emacs' user files
-
-(defun clean-saved-user-files (&optional all)
-  "Clean saved user files except current \\=`emacs-version\\='.
-
-Clean all when ALL is t,
-otherwise default to keep the directories of current \\=`emacs-version\\='."
-  (interactive "P")
-  (let ((dirs (list `,(emacs-home* ".backup/")
-                    `,(emacs-home* ".bookmarks/")
-                    `,(emacs-home* ".calc/")
-                    `,(emacs-home* ".desktop/")
-                    `,(emacs-home* ".dired/")
-                    `,(emacs-home* ".eshell/")
-                    `,(emacs-home* ".exec/")
-                    `,(emacs-home* ".games/")
-                    `,(emacs-home* ".ido/")
-                    `,(emacs-home* ".minibuffer/")
-                    `,(emacs-home* ".nsm/")
-                    `,(emacs-home* ".places/")
-                    `,(emacs-home* ".recentf/")
-                    `,(emacs-home* ".save/")
-                    `,(emacs-home* ".server/")
-                    `,(emacs-home* ".tags/")
-                    `,(emacs-home* ".tramp/")
-                    `,(emacs-home* ".url/"))))
-    (dolist* (d dirs)
-      (when (file-exists-p d)
-        (dolist* (f (directory-files d nil "^[gt]_.*$"))
-          (when (or all
-                    (not (string-match
-                          (concat "^[gt]_" emacs-version) f)))
-            (message "#Clean saved user file: %s" (concat d f))
-            (if-platform% 'windows-nt
-                (shell-command (concat "rmdir /Q /S " (concat d f)))
-              (shell-command (concat "rm -r " (concat d f))))))))))
-
-
-(defun reset-emacs ()
-  "Clean all compiled file and desktop, then restart Emacs."
-  (interactive)
-  (progn
-    (clean-saved-user-files t)
-    (clean-compiled-files)
-    (setq kill-emacs-hook nil)
-    (kill-emacs 0)))
-
-
- ;; end of Emacs manipulation
 
 
 (defmacro platform-arch ()
