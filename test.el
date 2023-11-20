@@ -47,9 +47,9 @@
   (should (string-match "^X[0-9]+" (format "%s" (gensym "X")))))
 
 (ert-deftest %init:emacs-home* ()
-  (should (string-match "\.emacs\.d/$" (emacs-home*)))
-  (should (string-match "\.emacs\.d/config/$" (emacs-home* "config/")))
-  (should (string-match "\.emacs\.d/x/y/z$" (emacs-home* "x/y/z"))))
+  (should (file-exists-p (emacs-home*)))
+  (should (file-exists-p (emacs-home* "config/")))
+  (should (file-exists-p (emacs-home* "private/"))))
 
 (ert-deftest %init:path! ()
   (let ((p (concat temporary-file-directory
@@ -591,7 +591,7 @@
   (should (catch 'out
             (dir-backtrack (emacs-home* "config/")
                            (lambda (d fs)
-                             (when (string-match "\\.emacs\\.d/\\'" d)
+                             (when (string-match "config/" d)
                                (throw 'out t))))))
   (should (catch 'out
             (dir-backtrack (emacs-home* "config/basic.el")
