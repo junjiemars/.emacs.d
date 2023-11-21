@@ -91,18 +91,20 @@ The FILE should be posix path, see \\=`path-separator\\='."
   "The version of Emacs in \\=`float\\='.")
 
 (defmacro if-version% (cmp version then &rest else)
-  "If VERSION CMP with variable \\=`emacs-version\\=' is t, do THEN, else do ELSE...\n
+  "If VERSION CMP with variable \\=`emacs-version\\=' is t do THEN,
+else do ELSE...\n
 Return the value of THEN or the value of the last of the ELSE’s.
-THEN must be one expression, but ELSE... can be zero or more expressions.
-If (CMP VERSION \\=`emacs-version\\=') yield nil, and there are no ELSE’s,
-the value is nil."
+THEN must be one expression, but ELSE... can be zero or more
+expressions.  If (CMP VERSION \\=`emacs-version\\=') yield nil,
+and there are no ELSE’s, the value is nil."
   (declare (indent 3))
   `(if% (,cmp ,version +emacs-version+)
        ,then
      (progn% ,@else)))
 
 (defmacro when-version% (cmp version &rest body)
-  "When VERSION CMP with variable \\=`emacs-version\\=' yield non-nil, do BODY."
+  "When VERSION CMP with variable \\=`emacs-version\\=' yield
+non-nil, do BODY."
   (declare (indent 2))
   `(if-version% ,cmp ,version (progn% ,@body)))
 
