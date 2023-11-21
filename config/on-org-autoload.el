@@ -15,27 +15,29 @@
 (when-fn% 'org-bookmark-jump-unhide 'org
   (autoload 'org-bookmark-jump-unhide "org"))
 
+;; auto `org-mode'
+(when-version% >= 23
+  (push! (cons "\\.org\\'" 'org-mode) auto-mode-alist ))
 
-(with-eval-after-load 'org
+
+(defun on-org-init! ()
+  "Intialize \\=`org-mode\\='."
   ;; load `ox-reveal' if it had been installed.
   ;; `ox-reveal' raising "package cl is deprecated".
   (if-feature-ox-reveal%
-    (when-var% org-reveal-root 'ox-reveal
-      (require 'ox-reveal)
-      (setq org-reveal-root
-            (let ((root (emacs-home* ".reveal.js/")))
-              (if (file-exists-p root)
-                  root
-                ;; "https://cdn.jsdelivr.net/reveal.js/3.8.0/"
-                "https://pagecdn.io/lib/reveal/3.8.0/")))))
-
+      (when-var% org-reveal-root 'ox-reveal
+        (require 'ox-reveal)
+        (setq org-reveal-root
+              (let ((root (emacs-home* ".reveal.js/")))
+                (if (file-exists-p root)
+                    root
+                  ;; "https://cdn.jsdelivr.net/reveal.js/3.8.0/"
+                  "https://pagecdn.io/lib/reveal/3.8.0/")))))
   ;; disable _ sub-superscripts
   (when-var% org-use-sub-superscripts 'org
     (setq org-use-sub-superscripts nil))
-
   ;; disable invisible edit
   (when-var% org-catch-invisible-edits 'org t)
-
   ;; define keys
   (define-key% (current-global-map) (kbd "C-c o l") #'org-store-link)
   (define-key% (current-global-map) (kbd "C-c o a") #'org-agenda)
@@ -44,10 +46,8 @@
   (when-fn% 'org-switchb 'org
     (define-key% (current-global-map) (kbd "C-c o s") #'org-switchb)))
 
-
-;; auto `org-mode'
-(when-version% >= 23
-  (push! (cons "\\.org\\'" 'org-mode) auto-mode-alist ))
+(with-eval-after-load 'org
+  (make-thread* #'on-org-init!))
 
 
-;; end of on-org-autoload.el
+;; end of on-org-autoload.el

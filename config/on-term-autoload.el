@@ -8,7 +8,7 @@
 
 
 (defun term-unify-shell-prompt ()
-  "Unify the shell prompt in `term'."
+  "Unify the shell prompt in \\=`term\\='."
   (interactive)
   (unless (eq 'term-mode (buffer-major-mode (current-buffer)))
     (user-error "Current buffer not in `term-mode'"))

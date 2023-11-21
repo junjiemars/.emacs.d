@@ -130,8 +130,7 @@
 ;;; see also: https://www.emacswiki.org/emacs/OpenNextLine
 
 (defun open-next-line (n &optional indent)
-  "Move to the next line and then open N lines, like vi's o command.
-
+  "Move to the next line and then open N lines, like vi's o command.\n
 Optional argument INDENT whether to indent lines.
 See also `open-line'."
   (interactive (list (prefix-numeric-value
@@ -149,8 +148,7 @@ See also `open-line'."
     (indent-according-to-mode)))
 
 (defun open-previous-line (n &optional indent)
-  "Open N lines above the current one, like vi's O command.
-
+  "Open N lines above the current one, like vi's O command.\n
 Optional argument INDENT whether to indent lines.
 See also `open-line' and `split-line'."
   (interactive (list (prefix-numeric-value
@@ -294,7 +292,6 @@ If \\=`current-prefix-arg\\=' < 0, then repeat n time with END in reversed."
                                (regexp-quote
                                 (number-to-string +emacs-version+)))
                               f))))
-          (message "#Clean versioned dirs: %s" (concat d f))
           (if-platform% 'windows-nt
               (shell-command (concat "rmdir /Q /S " (concat d f)))
             (shell-command (concat "rm -r " (concat d f)))))))))

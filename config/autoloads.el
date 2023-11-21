@@ -68,7 +68,7 @@
     (compile-unit% (emacs-home* "config/on-transient-autoload.el"))
     (compile-unit% (emacs-home* "config/on-vc-autoload.el"))
     (compile-unit% (emacs-home* "config/on-window-autoload.el"))))
- ;; end of `load-autoloaded-modes!'
+;; end of `load-autoloaded-modes!'
 
 (defun load-conditional-modes! ()
   "Load conditional modes."
@@ -123,7 +123,7 @@
         (autoload 'jshell-mode (v-home%> "config/jshell.el")
           "Toggle Jshell's mode." t)
         (autoload 'run-jshell (v-home%> "config/jshell.el")
-          "Toggle jshell process in buffer `*jshell*'." t)))
+          "Toggle jshell process in buffer \\=`*jshell*\\='." t)))
 
     ;; Node
     (when% (or (file-exists-p "~/.nvm/nvm.sh")
@@ -137,7 +137,7 @@
         (autoload 'node-mode (v-home%> "config/node.el")
           "Toggle Node's mode." t)
         (autoload 'run-node (v-home%> "config/node.el")
-          "Toggle node process in buffer `*node*'." t)))
+          "Toggle node process in buffer \\=`*node*\\='." t)))
 
     ;; Python
     (when% (or (executable-find% "python3")
@@ -156,7 +156,7 @@
         (autoload 'gambit-mode (v-home%> "config/gambit.el")
           "Toggle Gambit's mode." t)
         (autoload* 'run-gambit (v-home%> "config/gambit.el")
-                   "Toggle gambit process in buffer `*gambit*'." t)))
+                   "Toggle gambit process in buffer \\=`*gambit*\\='." t)))
 
     ;; Scheme `chez-mode'
     (when% (executable-find% "scheme"
@@ -170,7 +170,7 @@
         (autoload 'chez-mode (v-home%> "config/chez.el")
           "Toggle Chez's mode." t)
         (autoload* 'run-chez (v-home%> "config/chez.el")
-                   "Toggle chez process in buffer `*chez*'." t)))
+                   "Toggle chez process in buffer \\=`*chez*\\='." t)))
 
     ;; ;; Org `ob' for Scheme
     ;; (prog1

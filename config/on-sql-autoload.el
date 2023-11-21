@@ -23,15 +23,14 @@
   `(when-sql-feature%
      ,@body))
 
- ;; end of when-* macro
+;; end of when-* macro
 
 
 (when-fn% 'sql-show-sqli-buffer 'sql
 
   (defun sql-show-sqli-buffer* ()
-    "Display the current SQLi buffer.
-
-See `sql-show-sqli-buffer'."
+    "Display the current SQLi buffer.\n
+See \\=`sql-show-sqli-buffer\\='."
     (interactive)
     (unless (get-buffer-process sql-buffer)
       (call-interactively #'sql-connect))
@@ -66,8 +65,7 @@ See `sql-show-sqli-buffer'."
 (when-sql-feature%
 
   (defun sql-desc-table (name &optional enhanced)
-    "Describe the details of a database table named NAME.
-
+    "Describe the details of a database table named NAME.\n
 Optional prefix argument ENHANCED, displays additional details
 about each column."
     (interactive (list (sql-read-table-name "Table name: ")
@@ -84,8 +82,7 @@ about each column."
 (when-sql-feature%
 
   (defun sql-desc-plan (plan &optional enhanced)
-    "Describe an execution plan named PLAN.
-
+    "Describe an execution plan named PLAN.\n
 Optional prefix argument ENHANCED, displays additional details."
     (interactive
      (list (region-active-if
@@ -109,7 +106,7 @@ Optional prefix argument ENHANCED, displays additional details."
 (when-sql-feature%
 
   (defun sql-list-code (name &optional enhanced)
-    "List the code of the database object with qualified NAME. "
+    "List the code of the database object with qualified NAME."
     (interactive (list (sql-read-table-name "Qualified name: ")
                        current-prefix-arg))
     (let ((sqlbuf (sql-find-sqli-buffer)))
@@ -124,7 +121,7 @@ Optional prefix argument ENHANCED, displays additional details."
 (when-sql-feature%
 
   (defun sql-list-index (name &optional enhanced)
-    "List the index of a database table named NAME. "
+    "List the index of a database table named NAME."
     (interactive (list (sql-read-table-name "Table name: ")
                        current-prefix-arg))
     (let ((sqlbuf (sql-find-sqli-buffer)))
@@ -326,7 +323,7 @@ Optional prefix argument ENHANCED, displays additional details."
                     outbuf))))
 
 
- ;; end of mysql
+;; end of mysql
 
 
 
@@ -341,7 +338,7 @@ Optional prefix argument ENHANCED, displays additional details."
       (kbd "C-c C-z") #'sql-show-sqli-buffer*))
 
   (when-fn% 'sql-send-magic-terminator 'sql
-    ;; mysql: `:terminator'
+    ;; mysql: \\=`:terminator\\='
     (plist-put
      (cdr (assoc** 'mysql sql-product-alist :test #'eq))
      :terminator
@@ -424,4 +421,4 @@ Optional prefix argument ENHANCED, displays additional details."
     (define-key% sql-mode-map (kbd "C-c C-l P") #'sql-desc-plan)))
 
 
- ;; end of on-sql-autoload.el
+;; end of on-sql-autoload.el

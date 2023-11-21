@@ -20,7 +20,7 @@
     (lambda (&optional n)
       (cond (n (setq b n))
             (t b))))
-  "Adjoint of `python-shell-interpreter'.")
+  "Adjoint of \\=`python-shell-interpreter\\='.")
 
 
 (defun python*-version (&optional python)
@@ -31,18 +31,15 @@
 
 
 (defun python*-activate-venv (&optional dir python)
-  "Activate PYTHON's virtualenv at DIR.
-
+  "Activate PYTHON's virtualenv at DIR.\n
 PYTHONPATH: augment the default search path for module files. The
             format is the same as the shell’s PATH.
 PYTHONHOME: change the location of the standard Python libraries.
 VIRTUALENV: virtualenv root path.
-
-After Python3.3+, we can use `python -m venv <dir>' to create a
+After Python3.3+, we can use \\=`python -m venv <dir>\\=' to create a
 new virtual env at <dir>.
-
-Using `sys.prefix' to determine whether inside a virtual
-env. Another way is using `pip -V'."
+Using \\=`sys.prefix\\=' to determine whether inside a virtual
+env. Another way is using \\=`pip -V\\='."
   (interactive "Dvirtualenv activate at ")
   (let* ((d (string-trim> (path! (expand-file-name dir))
                           "/"))
@@ -90,4 +87,4 @@ env. Another way is using `pip -V'."
     (define-key% python-mode-map (kbd "C-c C-z") #'run-python)))
 
 
-;; end of on-python-autoload.el
+;; end of on-python-autoload.el

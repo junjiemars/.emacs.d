@@ -35,8 +35,7 @@
 
 
 (defmacro region-extract-str (&optional buffer properties)
-  "Extract string from region or BUFFER with or without PROPERTIES.
-
+  "Extract string from region or BUFFER with or without PROPERTIES.\n
 If no region actived, then extract from buffer when BUFFER is t."
   `(region-active-if
        (if ,properties
@@ -69,11 +68,10 @@ If no region actived, then extract from buffer when BUFFER is t."
                                        'utf-8)))))
 
 
- ;; end of URL
+;; end of URL
 
 
 ;; Encode/Decode base64
-
 
 (defun encode-base64 ()
   "Encode region via base64 encoded."
@@ -95,7 +93,7 @@ If no region actived, then extract from buffer when BUFFER is t."
                                        (base64-decode-string s) 'utf-8)))))
 
 
- ;; end of base64
+;; end of base64
 
 
 ;; Trans IP address
@@ -136,9 +134,8 @@ If no region actived, then extract from buffer when BUFFER is t."
 
 
 (defun encode-ipv4 (&optional buffer endian)
-  "Encode IPv4 address to int according to ENDIAN.
-
-If BUFFER is non nil then output to `+encode-output-buffer-name+'."
+  "Encode IPv4 address to int according to ENDIAN.\n
+If BUFFER is non nil then output to \\=`+encode-output-buffer-name+\\='."
   (interactive (list (if current-prefix-arg t nil)
                      (read-string "endian: " (_endian_) '*endian-history*)))
   (let* ((n (ipv4->int (string-trim>< (region-extract-str t))
@@ -152,9 +149,8 @@ If BUFFER is non nil then output to `+encode-output-buffer-name+'."
 
 
 (defun decode-ipv4 (&optional buffer endian)
-  "Decode IPv4 address to string according to ENDIAN.
-
-If BUFFER is non nil then output to `+decode-output-buffer-name+'."
+  "Decode IPv4 address to string according to ENDIAN.\n
+If BUFFER is non nil then output to \\=`+decode-output-buffer-name+\\='."
   (interactive (list (if current-prefix-arg t nil)
                      (read-string "endian: " (_endian_) '*endian-history*)))
   (let* ((s (string-trim>< (region-extract-str t)))
@@ -264,17 +260,17 @@ If BUFFER is non nil then output to `+decode-output-buffer-name+'."
       (message "%s" out))))
 
 
- ;; end of Roman/Chinese number
+;; end of Roman/Chinese number
 
 
 (defun ascii-table (&optional octal)
-  "Display basic ASCII table \[0-128\)."
+  "Display basic ASCII table \\=[0-128\\=)."
   (interactive "P")
   (switch-to-buffer "*ASCII*")
   (let ((inhibit-read-only t))
     (erase-buffer)
     (save-excursion
-      (insert (propertize (format "ASCII characters \[0-128\) (%s).\n\n"
+      (insert (propertize (format "ASCII characters [0-128) (%s).\n\n"
                                   (if octal "Oct Dec" "Hex Dec"))
                           'face 'font-lock-type-face))
       (insert (if octal
@@ -345,4 +341,4 @@ If BUFFER is non nil then output to `+decode-output-buffer-name+'."
   (view-mode t))
 
 
-;; EOF
+;; end of on-trans-autoload.el
