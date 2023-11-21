@@ -289,8 +289,12 @@ If \\=`current-prefix-arg\\=' < 0, then repeat n time with END in reversed."
                          (string-match* "^[gt]_\\(.*\\)$" f 1))
                         +emacs-version+))
                     (t (null (string-match
-                              (concat "^[gt]_" emacs-version) f))))
-          (message "#Clean saved user file: %s" (concat d f))
+                              (format
+                               "^[gt]_%s\\'"
+                               (regexp-quote
+                                (number-to-string +emacs-version+)))
+                              f))))
+          (message "#Clean versioned dirs: %s" (concat d f))
           (if-platform% 'windows-nt
               (shell-command (concat "rmdir /Q /S " (concat d f)))
             (shell-command (concat "rm -r " (concat d f)))))))))
@@ -300,7 +304,7 @@ If \\=`current-prefix-arg\\=' < 0, then repeat n time with END in reversed."
   (interactive)
   (clean-versioned-dirs
    (delq nil
-         (mapc
+         (mapcar
           (lambda (d)
 						(unless (member d '(".git" ".gitignore" ".github"))
 							(concat (emacs-home* d) "/")))

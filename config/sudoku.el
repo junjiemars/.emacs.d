@@ -33,9 +33,9 @@
 
 
 (defalias '+sudoku-file+
-  (lexical-let% ((d (v-home! ".games/sudoku/"))
-                 (p (v-home% ".games/sudoku/puzzle"))
-                 (b (v-home% ".games/sudoku/board")))
+  (lexical-let*% ((d (v-home! ".games/"))
+                  (p (concat d "sudoku-puzzle"))
+                  (b (concat d "sudoku-board")))
     (lambda (&optional k)
       (cond ((eq :dir k) d)
             ((eq :puzzle k) p)
