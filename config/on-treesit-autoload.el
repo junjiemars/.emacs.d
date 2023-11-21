@@ -96,8 +96,18 @@
 
 
 (when-feature-treesit%
+ (defadvice treesit--install-language-grammar-1
+     (before treesit--install-language-grammar-1-before compile)
+   (unless (ad-get-arg 0)
+     (ad-set-arg 0 (car treesit-extra-load-path)))))
 
-   (setq% treesit-extra-load-path `(,(v-home! ".treesit/"))))
+
+(when-feature-treesit%
+ (with-eval-after-load 'treesit
+   (setq% treesit-extra-load-path `(,(v-home% ".treesit/")))
+   (ad-enable-advice #'treesit--install-language-grammar-1 'before
+                     "treesit--install-language-grammar-1-before")
+   (ad-activate #'treesit--install-language-grammar-1 t)))
 
 
 ;; end of on-treesit-autoload.el
