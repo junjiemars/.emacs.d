@@ -280,7 +280,6 @@ If \\=`current-prefix-arg\\=' < 0, then repeat n time with END in reversed."
 
 (defun clean-versioned-dirs (dirs &optional scope)
   "Clean versioned SCOPEd DIRS."
-  (interactive "P")
   (dolist* (d dirs)
     (when (and d (file-exists-p d))
       (dolist* (f (directory-files d nil "^[gt]_.*$"))
@@ -301,7 +300,7 @@ If \\=`current-prefix-arg\\=' < 0, then repeat n time with END in reversed."
   (interactive)
   (clean-versioned-dirs
    (delq nil
-         (mapcar
+         (mapc
           (lambda (d)
 						(unless (member d '(".git" ".gitignore" ".github"))
 							(concat (emacs-home* d) "/")))
