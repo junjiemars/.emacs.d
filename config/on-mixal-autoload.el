@@ -8,7 +8,7 @@
 
 
 (defun mixal*-fix-operation-codes-alist ()
-  "Fix some data in `mixal-mode'."
+  "Fix some data in \\=`mixal-mode\\='."
   (when-var% mixal-operation-codes-alist 'mixal-mode
     (let ((aa '((NUM :a 5 :ai 3 :w 0 :wi 4 :l 7)
                 (CHAR :a 5 :ai 3 :w 1 :wi 4 :l 7)
@@ -157,4 +157,4 @@ Each device is given a number as follows:")
   (define-key% mixal-mode-map (kbd "C-c C-h e") #'mixal*-describe-equipment))
 
 
-;; end of on-mixal-autoload.el
+;; end of on-mixal-autoload.el
