@@ -8,7 +8,7 @@
 
 
 (defun self-eshell-init! ()
-  "Set the basics of `eshell-mode'"
+  "Set the basics of \\=`eshell-mode\\='"
   (eval-when-compile (require 'em-term))
   (require 'em-term)
   (let ((eshell (*self-env-spec* :get :eshell)))
@@ -38,4 +38,4 @@
                         (if (= (user-uid) 0) " # " " $ ")))))))
 
 
-;; end of file
+;; end of on-eshell-autoload.el

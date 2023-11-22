@@ -21,7 +21,7 @@
     (eval-when-compile
 
       (defun make-mudraw-bat (mutool)
-        "Make mudraw.bat in `exec-path' for mutool.exe ."
+        "Make mudraw.bat in \\=`exec-path\\=' for mutool.exe ."
         (save-str-to-file
          (concat "@echo off\n"
                  (format "REM mudraw.bat for %s on Windows\n" mutool)
@@ -31,7 +31,7 @@
          (v-home% ".exec/mudraw.bat")))
 
       (defun make-pdfinfo-bat (mutool)
-        "Make pdfinfo.bat in `exec-path' for mutool.exe ."
+        "Make pdfinfo.bat in \\=`exec-path\\=' for mutool.exe ."
         (save-str-to-file
          (concat "@echo off\n"
                  (format "REM pdfinfo.bat for %s on Windows\n" mutool)
@@ -52,7 +52,7 @@
                 (executable-find% "pdfinfo"))
 
       (defadvice doc-view-mode-p (after doc-view-mode-p-after disable)
-        "fix: the builtin `doc-view-mode-p' does not support mupdf."
+        "fix: the builtin \\=`doc-view-mode-p\\=' does not support mupdf."
         (when (eq 'pdf (ad-get-arg 0))
           (setq ad-return-value t)))
 
@@ -62,4 +62,4 @@
         (ad-activate #'doc-view-mode-p t)))))
 
 
-;; eof
+;; end of on-docview-autoload.el

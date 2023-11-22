@@ -149,7 +149,7 @@ This should be an executable on your path, or an absolute file name."
 
 ;;;###autoload
 (defun mixvm (command-line)
-  "Run mixvm on program FILE in buffer `*gud-FILE*'.
+  "Run mixvm on program FILE in buffer \\=`*gud-FILE*\\='.
 The directory containing FILE becomes the initial working directory
 and source-file directory for your debugger."
   (interactive
@@ -175,4 +175,4 @@ and source-file directory for your debugger."
   (set (make-local-variable 'paragraph-start) comint-prompt-regexp)
   (run-hooks 'mixvm-mode-hook))
 
-;;; mixvm.el ends here
+;; end of mixvm.el

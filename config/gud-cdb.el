@@ -142,23 +142,23 @@ containing the executable being debugged."
   :group 'gud)
 
 (defcustom% gud-cdb-command-line-hook nil
-  "Hook run by `cdb' on command line."
+  "Hook run by \\=`cdb\\=' on command line."
   :type 'hook
   :group 'gud)
 
 (defcustom% gud-cdb-mode-hook nil
-  "Mode hook run by `cdb' before `gud-cdb-init-hook'."
+  "Mode hook run by \\=`cdb\\=' before \\=`gud-cdb-init-hook\\='."
   :type 'hook
   :group 'gud)
 
 (defcustom% gud-cdb-init-hook nil
-  "Hook run by `cdb' process."
+  "Hook run by \\=`cdb\\=' process."
   :type 'hook
   :group 'gud)
 
 
 (defconst +cdb-prompt-regexp+ "^\\(?:[0-9]:[0-9][0-9][0-9]> *\\)"
-  "Regexp pattern of `cdb' prompt.")
+  "Regexp pattern of \\=`cdb\\=' prompt.")
 
 
 (defvar *cdb-symbol-alist*
@@ -181,7 +181,7 @@ containing the executable being debugged."
         '("$thread" . "the address of the current thread")
         '("$tid" . "the thread ID for the current thread")
         '("$tpid" . "the process ID (PID) for the process that owns the current thread"))
-  "A list of `cdb' symbol.")
+  "A list of \\=`cdb\\=' symbol.")
 
 
 ;; ;; buffer local variables
@@ -221,27 +221,22 @@ containing the executable being debugged."
 
 
 (defun cdb-command-line-list-source ()
-  "List source options.
-
+  "List source options.\n
 cdb [options]:
   -c \"<command>\" executes the given debugger command at the first debugger.
-  -lines requests that line number information be used if present.
-
-This function is an example for `gud-cdb-command-line-hook', we can do the same
-via: `M-x cdb -c \"l+*;l-s\" -lines <debuggee>'.
-
--lines option must be included, display line number.
-l-s means do not display source code in `cdb' command line.
-"
+  -lines requests that line number information be used if present.\n
+This function is an example for
+\\=`gud-cdb-command-line-hook\\=', we can do the same via:
+\\=`M-x cdb -c \"l+*;l-s\" -lines <debuggee>\\='.\n
+\\=`-lines\\=' option must be included, display line number.  l-s means
+do not display source code in \\=`cdb\\=' command line."
   (list "-c" "l+*;l-s" "-lines"))
 
 
 (defun cdb-file-name (filename)
-  "Transform a relative FILENAME to an absolute one.
-
+  "Transform a relative FILENAME to an absolute one.\n
 Return absolute filename when FILENAME existing or it's existing
-in `gud-cdb-directories'.
-"
+in \\=`gud-cdb-directories\\='."
   (or (let ((f (expand-file-name filename)))
         (when (file-exists-p f) f))
       (loop* for d in gud-cdb-directories
@@ -267,7 +262,7 @@ in `gud-cdb-directories'.
 
 
 (defun cdb-set-syntax-table! ()
-  "Specify special character in `syntax-table'."
+  "Specify special character in \\=`syntax-table\\='."
   (modify-syntax-entry ?` "_" (syntax-table))
   (modify-syntax-entry ?! "_" (syntax-table))
   (modify-syntax-entry ?. "_" (syntax-table)))
@@ -302,13 +297,10 @@ in `gud-cdb-directories'.
 
 
 (defun gud-cdb-massage-args (file args)
-  "As the 2nd argument: message-args of `gud-common-init'.
-
-`gud' callback it once when run `cdb'.
-
+  "As the 2nd argument: message-args of \\=`gud-common-init\\='.\n
+\\=`gud\\=' callback it once when run \\=`cdb\\='.
 The job of the massage-args method is to modify the given list of
-debugger arguments before running the debugger.
-"
+debugger arguments before running the debugger."
   (ignore* file)
   (append (loop* for o in gud-cdb-command-line-hook
                  append (funcall o))
@@ -316,15 +308,13 @@ debugger arguments before running the debugger.
 
 
 (defun gud-cdb-marker-filter (string)
-  "As the 3rd argument: marker-filter of `gud-common-init'.
-
+  "As the 3rd argument: marker-filter of \\=`gud-common-init\\='.\n
 The job of the marker-filter method is to detect file/line
 markers in strings and set the global gud-last-frame to indicate
 what display action (if any) should be triggered by the marker.
 Note that only whatever the method *returns* is displayed in the
 buffer; thus, you can filter the debugger's output, interpreting
-some and passing on the rest.
-"
+some and passing on the rest."
   ;; (setq gud-marker-acc (concat gud-marker-acc string))
   (cond ((or
           ;; g
@@ -353,11 +343,9 @@ some and passing on the rest.
 
 
 (defun gud-cdb-find-file (filename)
-  "As the optional argument: find-file of `gud-common-init'.
-
-`gud' callback it just when `gud-cdb-command-line-list-source'
-had been called first.
-
+  "As the optional argument: find-file of \\=`gud-common-init\\='.\n
+\\=`gud\\=' callback it just when
+\\=`gud-cdb-command-line-list-source\\=' had been called first.
 The job of the find-file method is to visit and return the buffer
 indicated by the car of gud-tag-frame.  This may be a file name,
 a tag name, or something else."
@@ -370,8 +358,7 @@ a tag name, or something else."
 
 
 (defun gud-cdb (command-line)
-  "Run cdb on program FILE in buffer *gud-FILE*.
-
+  "Run cdb on program FILE in buffer *gud-FILE*.\n
 The directory containing FILE becomes the initial working
 directory and source-file directory for your debugger."
   (interactive (list (gud-query-cmdline 'cdb)))
@@ -429,4 +416,4 @@ directory and source-file directory for your debugger."
 (provide 'gud-cdb)
 
 
-;; gud-cdb.el ends here
+;; end of gud-cdb.el

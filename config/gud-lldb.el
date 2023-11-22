@@ -59,7 +59,7 @@
 
 
 (defcustom% gud-lldb-init-hook nil
-  "Hook run by `lldb' process."
+  "Hook run by \\=`lldb\\=' process."
   :type 'hook
   :group 'gud)
 
@@ -71,7 +71,7 @@ to lldb.")
 
 
 (defconst +gud-lldb-prompt-regexp+ "^\\(?:(lldb) *\\)"
-  "The regexp pattern of `lldb' prompt.")
+  "The regexp pattern of \\=`lldb\\=' prompt.")
 
 
 (defalias '*lldb*
@@ -86,7 +86,7 @@ to lldb.")
     (lambda (&optional n)
       (if n (setq b n)
         (get-buffer-create b))))
-  "The output buffer of `lldb-completion'.")
+  "The output buffer of \\=`lldb-completion\\='.")
 
 
  ;; end of variable declarations
@@ -126,8 +126,7 @@ to lldb.")
 
 
 (defun lldb-file-name (filename)
-  "Transform a relative FILENAME to an absolute one.
-
+  "Transform a relative FILENAME to an absolute one.\n
 Return absolute filename when FILENAME exists, otherwise nil."
   (or (let ((f (expand-file-name filename)))
         (when (file-exists-p f) f))
@@ -169,10 +168,10 @@ Return absolute filename when FILENAME exists, otherwise nil."
 
 
 (defun lldb-script-apropos (ss)
-  "Apropos via lldb's script.
-
-The `max_return_elements' argument in `HandleCompletion' had not
-been implemented, see https://github.com/llvm/llvm-project/."
+  "Apropos via lldb's script.\n
+The \\=`max_return_elements\\=' argument in
+\\=`HandleCompletion\\=' had not been implemented, see
+https://github.com/llvm/llvm-project/."
   (concat "script "
           "_m_.Clear();"
           (format "_d_.HandleCompletion('%s',%d,%d,%d,_m_);"
@@ -265,9 +264,8 @@ been implemented, see https://github.com/llvm/llvm-project/."
 ;; `gud-lldb-find-file'
 
 (defun gud-lldb-find-file (filename)
-  "Find the source file associated with FILENAME.
-
-As the optional argument of `gud-common-init': find-file"
+  "Find the source file associated with FILENAME.\n
+As the optional argument of \\=`gud-common-init\\=': find-file."
   (save-excursion
     (or (let ((f (lldb-file-name filename)))
           (when f (find-file-noselect f t)))
@@ -275,9 +273,8 @@ As the optional argument of `gud-common-init': find-file"
 
 
 (defun gud-lldb-massage-args (file args)
-  "Run `gud-lldb-command-line-hook' before running debugger.
-
-As the 2nd argument of `gud-common-init': message-args"
+  "Run \\=`gud-lldb-command-line-hook\\=' before running debugger.\n
+As the 2nd argument of \\=`gud-common-init\\=': message-args"
   (ignore* file)
   (append (loop* for x in gud-lldb-command-line-hook
                  when (functionp x) append (funcall x))
@@ -285,9 +282,8 @@ As the 2nd argument of `gud-common-init': message-args"
 
 
 (defun gud-lldb-marker-filter (string)
-  "Detect the file/line markers in STRING.
-
-As the 3rd argument of `gud-common-init': marker-filter"
+  "Detect the file/line markers in STRING.\n
+As the 3rd argument of \\=`gud-common-init\\=': marker-filter"
   (cond ((string-match "[ \t]*frame.*at \\([^:]+\\):\\([0-9]+\\)" string)
          ;; frame format: `lldb-settings-frame-format'
          ;; (lldb) r
@@ -321,17 +317,15 @@ As the 3rd argument of `gud-common-init': marker-filter"
 
 
 (defun gud-lldb (command-line)
-  "Run lldb passing it COMMAND-LINE as arguments.
-
+  "Run lldb passing it COMMAND-LINE as arguments.\n
 If COMMAND-LINE names a program FILE to debug, lldb will run in a
 buffer named *gud-FILE*, and the directory containing FILE
 becomes the initial working directory and source-file directory
 for your debugger.
-
 If COMMAND-LINE requests that lldb attaches to a process PID,
 lldb will run in *gud-PID*, otherwise it will run in *lldb*; in
 these cases the initial working directory is the
-`default-directory' of the buffer in which this command was
+\\=`default-directory\\=' of the buffer in which this command was
 invoked."
   (interactive (list (gud-query-cmdline 'lldb)))
 

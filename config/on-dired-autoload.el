@@ -14,7 +14,7 @@
   (eval-when-compile
 
     (defun _make_zip_bat_ (zip &rest ignore)
-      "Make ZIP.bat in `exec-path' for minizip or 7z[a]."
+      "Make ZIP.bat in \\=`exec-path\\=' for minizip or 7z[a]."
       (declare (indent 1))
       (when (stringp zip)
         (save-str-to-file
@@ -110,7 +110,7 @@
 
 
 (defun dired-echo-current-directory* (&optional localp)
-  "Echo the current directory in `dired-mode'."
+  "Echo the current directory in \\=`dired-mode\\='."
   (interactive)
   (let ((d (dired-current-directory localp)))
     (kill-new d)
@@ -129,7 +129,7 @@
 
 
 (defun dired-hexl-find-file ()
-  "Edit the current file as hex dump format in `dired-mode'."
+  "Edit the current file as hex dump format in \\=`dired-mode\\='."
   (interactive)
   (hexl-find-file
    (if-fn% 'dired-get-file-for-visit 'dired
@@ -177,7 +177,7 @@
   (define-key dired-mode-map (kbd "W") #'dired-echo-current-directory*))
 
 
- ;; end of `dired' setting
+;; end of `dired' setting
 
 ;; detect-coding-string
 
@@ -186,18 +186,18 @@
   (unless% (eq default-file-name-coding-system locale-coding-system)
 
     (defadvice insert-directory (before insert-directory-before compile)
-      "`dired-find-file' should failed when using GNU's ls program on Windows.
+      "\\=`dired-find-file\\=' should failed when using GNU's ls program on Windows.
        We try to encode multibyte directory name with
-       `locale-coding-system' when the multibyte directory name
-       encoded with non `locale-coding-system'."
+       \\=`locale-coding-system\\=' when the multibyte directory name
+       encoded with non \\=`locale-coding-system\\='."
       (when (multibyte-string-p (ad-get-arg 0))
         (ad-set-arg 0 (encode-coding-string (ad-get-arg 0)
                                             locale-coding-system))))
 
     (defadvice dired-shell-stuff-it (before dired-shell-stuff-it-before disable)
-      "`dired-do-shell-command' or `dired-do-async-shell-command'
+      "\\=`dired-do-shell-command\\=' or \\=`dired-do-async-shell-command\\='
        should failed when open the files which does not been
-       encoded with `locale-coding-system'."
+       encoded with \\=`locale-coding-system\\='."
       (ad-set-arg 1 (let ((arg1 (ad-get-arg 1))
                           (files nil))
                       (dolist* (x arg1 files)
@@ -209,16 +209,16 @@
                                  files t)))))
 
     (defadvice dired-shell-command (before dired-shell-command-before disable)
-      "`dired-do-compress-to' should failed when
-       `default-directory' or `dired-get-marked-files' does not
-       encoded with `locale-coding-system'."
+      "\\=`dired-do-compress-to\\=' should failed when
+       \\=`default-directory\\=' or \\=`dired-get-marked-files\\=' does not
+       encoded with \\=`locale-coding-system\\='."
       (let ((arg0 (ad-get-arg 0)))
         (when (multibyte-string-p arg0)
           (ad-set-arg 0 (encode-coding-string arg0 locale-coding-system)))))
 
     (defadvice dired-compress-file (before dired-compress-file-before disable)
-      "`dired-compress-file' should failed when FILE arg does not
-       encoded with `locale-coding-string'."
+      "\\=`dired-compress-file\\=' should failed when FILE arg does not
+       encoded with \\=`locale-coding-string\\='."
       (let ((arg0 (ad-get-arg 0)))
         (when (multibyte-string-p arg0)
           (ad-set-arg 0 (encode-coding-string arg0 locale-coding-system)))))))
@@ -229,7 +229,7 @@
 
     (defadvice archive-summarize-files
         (before archive-summarize-files-before disable)
-      "`archive-summarize-files' may not display file name in right
+      "\\=`archive-summarize-files\\=' may not display file name in right
        coding system."
       (let ((arg0 (ad-get-arg 0))
             (files nil))
@@ -334,4 +334,4 @@
 (autoload 'dired-get-file-for-visit "dired")
 (autoload 'dired-current-directory "dired")
 
- ;; end of file
+;; end of on-dired-autoload.el

@@ -19,11 +19,7 @@
   (lexical-let% ((b))
     (lambda (&optional n)
       (if n (setq b n) b)))
-  "Indicate `initialize-package-repository!' whether has been called.")
-
-;; (defvar *repository-initialized* nil
-;;   "Indicate `initialize-package-repository!' whether has been called.")
-
+  "Indicate \\=`initialize-package-repository!\\=' whether has been called.")
 
 (defun initialize-package-repository! ()
   (setq% package-check-signature
@@ -130,7 +126,7 @@
       (cond ((consp n) (dolist* (s n us)
                          (setq us (cons s us))))
             (t us))))
-  "Autloaded `compile-unit'.")
+  "Autloaded \\=`compile-unit\\='.")
 
 
 (package-spec-:allowed-p
@@ -152,4 +148,4 @@
   (apply #'compile! (*package-compile-units*)))
 
 
-;;; eof
+;; end of module.el

@@ -70,7 +70,7 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
               (if x (setcdr x (cdr n))
                 (setq b (cons n b))))
         b)))
-  "Searching engines using by `lookup-web'.")
+  "Searching engines using by \\=`lookup-web\\='.")
 
 
 (defalias 'web-find-def
@@ -80,11 +80,11 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
              (setq b (assoc** (or en (caar (*web-defs*)))
                               (*web-defs*) :test #'string=)))
             (t b))))
-  "Find WEB's definition in `*web-defs*'.")
+  "Find WEB's definition in \\=`*web-defs*\\='.")
 
 
 (defvar *lookup-web-history* nil
-  "Searching history using by `lookup-web'.")
+  "Searching history using by \\=`lookup-web\\='.")
 
 
 (defun lookup-web (what &optional engine)

@@ -24,8 +24,7 @@
 
 ;; Key binding to use "hippie expand" for text autocompletion
 ;; See also: http://www.emacswiki.org/emacs/HippieExpand
-(define-key (current-global-map) (kbd "M-/") #'hippie-expand)
+(define-key% (current-global-map) (kbd "M-/") #'hippie-expand)
 
 
-;; end of on-hippie-autoload.el
-
+;; end of on-hippie-autoload.el
