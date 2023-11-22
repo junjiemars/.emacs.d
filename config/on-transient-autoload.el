@@ -19,11 +19,10 @@
 
 (when-feature-transient%
  (with-eval-after-load 'transient
-   (let ((dir (v-home! ".transient/")))
-     (setq transient-history-file (concat dir "history.el")
-           transient-levels-file (concat dir "levels.el")
-           transient-values-file (concat dir "values.el")
-           transient-save-history t))))
+   (setq transient-history-file (v-home! ".transient/history.el")
+         transient-levels-file (v-home% ".transient/levels.el")
+         transient-values-file (v-home%".transient/values.el")
+         transient-save-history t)))
 
 ;;; `transient-mark-mode'
 (unless-graphic%

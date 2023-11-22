@@ -65,12 +65,16 @@ If prefix N is non nil, then forward or backward N words."
   "Kill the whole word at point.\n
 If prefix N is non nil, then kill N whole word forward or backward."
   (interactive "p")
-  (let ((bs (cond ((consp current-prefix-arg)
-									 (_mark_symbol@_))
-									(t (_mark_word@_ n)))))
-    (unless (and bs (car bs) (cdr bs) (null (= (car bs) (cdr bs))))
+  (let ((bs (_mark_symbol@_))
+        (ws (_mark_word@_ n)))
+    (unless (and bs ws)
       (user-error "No whole word found"))
-    (kill-region (car bs) (cdr bs))))
+    (kill-region (if (>= n 0)
+                     (min (car bs) (car ws))
+                   (max (cdr bs) (cdr ws)))
+                 (if (>= n 0)
+                     (cdr ws)
+                   (car ws)))))
 
 
 ;; end of `mark-word' `kill-whole-word@'
@@ -148,8 +152,8 @@ If prefix BOUNDARY is non-nil, then mark the whole quoted thing."
 (define-key% (current-global-map) (kbd "C-c m l") #'mark-line@)
 (define-key% (current-global-map) (kbd "C-c m q") #'mark-quoted@)
 (define-key% (current-global-map) (kbd "M-@") #'mark-word@)
-(define-key% (current-global-map) (kbd "C-M-SPC") #'mark-sexp@)
-(define-key% (current-global-map) (kbd "C-M-@") #'mark-sexp)
+(define-key% (current-global-map) (kbd "C-M-@") #'mark-sexp@)
+(define-key% (current-global-map) (kbd "C-M-SPC") #'mark-sexp)
 (define-key% (current-global-map) (kbd "C-M-h") #'mark-defun@)
 
 ;; end of Keys

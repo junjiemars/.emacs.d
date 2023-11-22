@@ -221,10 +221,10 @@ If ONLY-COMPILE is t, does not load DST."
 (defun clean-compiled-files ()
   "Clean all compiled files."
   (interactive)
-  (let ((dirs (list `(,(v-home% "config/") . "\\.el[cn]?\\'")
-                    `(,(v-home% "private/") . "\\.el[cn]?\\'")
-                    `(,(v-home% "theme/") . "\\.el[cn]?\\'")
-                    `(,(v-home% ".exec/") . "\\.el[cn]?\\'")
+  (let ((dirs (list `(,(v-home% "config/") . "\\.el[cn]\\(\\.tmp\\)?\\'")
+                    `(,(v-home% "private/") . "\\.el[cn]\\(\\.tmp\\)?\\'")
+                    `(,(v-home% "theme/") . "\\.el[cn]\\(\\.tmp\\)?\\'")
+                    `(,(v-home% ".exec/") . "\\.el[cn]\\(\\.tmp\\)?\\'")
                     `(,(emacs-home*) . "[_a-z]+\\.el[cn]+\\'"))))
     (while dirs
       (let* ((d (car dirs)) (f1 (car d)) (r1 (cdr d))
