@@ -9,26 +9,19 @@
 
 (defalias '*dict-defs*
   (lexical-let%
-      ((b `(("bing"
+      ((b
+        (eval-when-compile
+          `(("bing"
              ("url" . "https://cn.bing.com/dict/search?q=")
-             ("meta" .
-              (("<meta name=\"description\" content=\"必应词典为您提供.+的释义，")
-               "\" /><" .
-               (,(lambda (ss)
-                   (with-temp-buffer
-                     (insert ss)
-                     (let ((s1 '(("美\\[\\(.+?\\)\\]" . "|%s|")
-                                 ("，?英\\[\\(.+?\\)\\]，?" . " /%s/ "))))
-                       (mapc
-                        (lambda (s)
-                          (goto-char (point-min))
-                          (while (search-forward-regexp (car s) nil t)
-                            (replace-match (format (cdr s)
-                                                   (match-string 1)))))
-                        s1)
-                       (buffer-substring-no-properties
-                        (point-min) (point-max)))))
-                dict-fn-norm-punc)))
+             ("pron-us" . (("<meta name=\"description\".*?美\\[" . 1)
+                           "\\].*?英\\[\\(.+?\\)\\]，" .
+                           (dict-fn-norm-pron-us)))
+             ("pron-uk" . (("<meta name=\"description\".*?美.*?英\\[" . 1)
+                           "\\]，" .
+                           (dict-fn-norm-pron-uk)))
+             ("meta" . (("<meta name=\"description\".*?英\\[\\(.+?\\)\\]，?")
+                        "\" /><" .
+                        (dict-fn-norm-punc)))
              ("sounds-like" . (("<div class=\"df_wb_a\">音近词</div>")
                                "</div></div></div>" .
                                (dict-fn-remove-html-tag)))
@@ -68,7 +61,7 @@
              ("suggestion" . (("<p class=\"spelling-suggestions\">" . 1)
                               "</div>" .
                               (dict-fn-remove-html-tag
-                               dict-fn-norm-punc)))))))
+                               dict-fn-norm-punc))))))))
     (lambda (&optional n)
       (if n (let ((x (assoc** (car n) b :test #'string=)))
               (if x (setcdr x (cdr n))
