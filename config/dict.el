@@ -26,7 +26,8 @@
                             (replace-match (format (cdr s)
                                                    (match-string 1)))))
                         s1)
-                       (buffer-substring (point-min) (point-max)))))
+                       (buffer-substring-no-properties
+                        (point-min) (point-max)))))
                 dict-fn-norm-punc)))
              ("sounds-like" . (("<div class=\"df_wb_a\">音近词</div>")
                                "</div></div></div>" .
@@ -38,12 +39,10 @@
              ("url" . "https://dictionary.cambridge.org/dictionary/english/")
              ("pron-us" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
                            "<" .
-                           (,(lambda (x)
-                               (format "|%s|" x)))))
+                           (dict-fn-norm-pron-us)))
              ("pron-uk" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 1)
                            "<" .
-                           (,(lambda (x)
-                               (format "/%s/" x)))))
+                           (dict-fn-norm-pron-uk)))
              ("meta" .
               (("<meta name=\"description\" content=\".*? definition: ")
                " Learn" .
@@ -53,8 +52,7 @@
              ("pron-uk" . (("<span class=\"PRON\">")
                            "</span>" .
                            (dict-fn-remove-html-tag
-                            ,(lambda (x)
-                               (format "/%s/" x)))))
+                            dict-fn-norm-pron-uk)))
              ("meta" . (("<span class=\"DEF\">")
                         "</span>" .
                         (dict-fn-remove-html-tag))))
@@ -63,8 +61,7 @@
              ("pron-us" . (("title=\"How to pronounce.*?(audio)\">" . 1)
                            "<img" .
                            (dict-fn-decode-html-char
-                            ,(lambda (x)
-                               (format "|%s|" (string-trim> x))))))
+                            dict-fn-norm-pron-us)))
              ("meta" . (("<meta name=\"description\" content=\"The meaning of ")
                         " How to use" .
                         (dict-fn-remove-html-tag)))
@@ -77,7 +74,7 @@
               (if x (setcdr x (cdr n))
                 (setq b (cons n b))))
         b)))
-  "Dictionaries using by `lookup-dict'.")
+  "Dictionaries using by \\=`lookup-dict\\='.")
 
 
 (defalias 'dict-find-def
@@ -96,11 +93,11 @@
                                        (lambda (x) (string= x "url"))
                                        (mapcar #'car dd)))))))))
        (t b))))
-  "Find DICT's definition in `*dict-defs*'.")
+  "Find DICT's definition in \\=`*dict-defs*\\='.")
 
 
 (defalias '*dict-debug-log*
-  (lexical-let% ((b `(:logging nil ; t
+  (lexical-let% ((b `(:logging nil ;; t
                       :dict ,(emacs-home* ".dict/dict.log")
                       :lookup ,(emacs-home* ".dict/lookup.log"))))
     (lambda (w &optional n)
@@ -113,9 +110,18 @@
 (defvar *dict-style-history* nil
   "Dictionary style choosing history list.")
 
+(defun dict-fn-norm-pron-us (ss)
+  "Normalize the pronounce of SS to us."
+  (format "|%s|" (string-match* "^[/]?\\(.*?\\)[/]?$"
+                                (string-trim>< ss) 1)))
+
+(defun dict-fn-norm-pron-uk (ss)
+  "Normalize the pronounce of SS to uk."
+  (format "/%s/" (string-match* "^[/]?\\(.*?\\)[/]?$"
+                                (string-trim>< ss) 1)))
 
 (defun dict-fn-norm-punc (ss)
-  "Replace zh's punctuations to en's."
+  "Normalize the punctuation of SS to en."
   (with-temp-buffer
     (insert ss)
     (let ((punc '(("，\s*" . ", ")
