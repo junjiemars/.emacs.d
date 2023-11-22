@@ -9,59 +9,57 @@
 
 (defalias '*dict-defs*
   (lexical-let%
-      ((b
-        (eval-when-compile
-          `(("bing"
-             ("url" . "https://cn.bing.com/dict/search?q=")
-             ("pron-us" . (("<meta name=\"description\".*?美\\[" . 1)
-                           "\\].*?英\\[\\(.+?\\)\\]，" .
-                           (dict-fn-norm-pron-us)))
-             ("pron-uk" . (("<meta name=\"description\".*?美.*?英\\[" . 1)
-                           "\\]，" .
-                           (dict-fn-norm-pron-uk)))
-             ("meta" . (("<meta name=\"description\".*?英\\[\\(.+?\\)\\]，?")
-                        "\" /><" .
-                        (dict-fn-norm-punc)))
-             ("sounds-like" . (("<div class=\"df_wb_a\">音近词</div>")
-                               "</div></div></div>" .
-                               (dict-fn-remove-html-tag)))
-             ("spelled-like" . (("<div class=\"df_wb_a\">形近词</div>")
-                                "</div></div></div>" .
-                                (dict-fn-remove-html-tag))))
-            ("camb"
-             ("url" . "https://dictionary.cambridge.org/dictionary/english/")
-             ("pron-us" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
-                           "<" .
-                           (dict-fn-norm-pron-us)))
-             ("pron-uk" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 1)
-                           "<" .
-                           (dict-fn-norm-pron-uk)))
-             ("meta" .
-              (("<meta name=\"description\" content=\".*? definition: ")
-               " Learn" .
-               (dict-fn-decode-html-char))))
-            ("longman"
-             ("url" . "https://www.ldoceonline.com/dictionary/")
-             ("pron-uk" . (("<span class=\"PRON\">")
-                           "</span>" .
-                           (dict-fn-remove-html-tag
-                            dict-fn-norm-pron-uk)))
-             ("meta" . (("<span class=\"DEF\">")
-                        "</span>" .
-                        (dict-fn-remove-html-tag))))
-            ("webster"
-             ("url" . "https://www.merriam-webster.com/dictionary/")
-             ("pron-us" . (("title=\"How to pronounce.*?(audio)\">" . 1)
-                           "<img" .
-                           (dict-fn-decode-html-char
-                            dict-fn-norm-pron-us)))
-             ("meta" . (("<meta name=\"description\" content=\"The meaning of ")
-                        " How to use" .
-                        (dict-fn-remove-html-tag)))
-             ("suggestion" . (("<p class=\"spelling-suggestions\">" . 1)
-                              "</div>" .
-                              (dict-fn-remove-html-tag
-                               dict-fn-norm-punc))))))))
+      ((b `(("bing"
+           ("url" . "https://cn.bing.com/dict/search?q=")
+           ("pron-us" . (("<meta name=\"description\".*?美\\[" . 1)
+                         "\\].*?英\\[\\(.+?\\)\\]，" .
+                         (dict-fn-norm-pron-us)))
+           ("pron-uk" . (("<meta name=\"description\".*?美.*?英\\[" . 1)
+                         "\\]，" .
+                         (dict-fn-norm-pron-uk)))
+           ("meta" . (("<meta name=\"description\".*?英\\[\\(.+?\\)\\]，?")
+                      "\" /><" .
+                      (dict-fn-norm-punc)))
+           ("sounds-like" . (("<div class=\"df_wb_a\">音近词</div>")
+                             "</div></div></div>" .
+                             (dict-fn-remove-html-tag)))
+           ("spelled-like" . (("<div class=\"df_wb_a\">形近词</div>")
+                              "</div></div></div>" .
+                              (dict-fn-remove-html-tag))))
+          ("camb"
+           ("url" . "https://dictionary.cambridge.org/dictionary/english/")
+           ("pron-us" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
+                         "<" .
+                         (dict-fn-norm-pron-us)))
+           ("pron-uk" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 1)
+                         "<" .
+                         (dict-fn-norm-pron-uk)))
+           ("meta" .
+            (("<meta name=\"description\" content=\".*? definition: ")
+             " Learn" .
+             (dict-fn-decode-html-char))))
+          ("longman"
+           ("url" . "https://www.ldoceonline.com/dictionary/")
+           ("pron-uk" . (("<span class=\"PRON\">")
+                         "</span>" .
+                         (dict-fn-remove-html-tag
+                          dict-fn-norm-pron-uk)))
+           ("meta" . (("<span class=\"DEF\">")
+                      "</span>" .
+                      (dict-fn-remove-html-tag))))
+          ("webster"
+           ("url" . "https://www.merriam-webster.com/dictionary/")
+           ("pron-us" . (("title=\"How to pronounce.*?(audio)\">" . 1)
+                         "<img" .
+                         (dict-fn-decode-html-char
+                          dict-fn-norm-pron-us)))
+           ("meta" . (("<meta name=\"description\" content=\"The meaning of ")
+                      " How to use" .
+                      (dict-fn-remove-html-tag)))
+           ("suggestion" . (("<p class=\"spelling-suggestions\">" . 1)
+                            "</div>" .
+                            (dict-fn-remove-html-tag
+                             dict-fn-norm-punc)))))))
     (lambda (&optional n)
       (if n (let ((x (assoc** (car n) b :test #'string=)))
               (if x (setcdr x (cdr n))
