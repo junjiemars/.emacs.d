@@ -16,18 +16,23 @@
     `(comment ,@body)))
 
 
-(when-feature-socks%
- (when-fn% 'url-open-stream 'url-gw
-   (defadvice url-open-stream (around url-open-stream-around disable)
-     "Fix the \\=`url-gateway-method\\=' bug in \\=`url-http\\='."
-     (if-version% <= 25
-                  (let ((gateway-method
-                         (if (eq 'socks url-gateway-method)
-                             'socks
-                           gateway-method)))
-                    ad-do-it)
-       (let ((url-gateway-method *url-gateway-method*))
-         ad-do-it)))))
+(defmacro when-fn-url-open-stream% (&rest body)
+  "When% \\=`url-open-stream\\='."
+  `(when-feature-socks%
+    (when-fn% 'url-open-stream 'url-gw
+      ,@body)))
+
+(when-fn-url-open-stream%
+ (defadvice url-open-stream (around url-open-stream-around disable)
+   "Fix the \\=`url-gateway-method\\=' bug in \\=`url-http\\='."
+   (if-version% <= 25
+                (let ((gateway-method
+                       (if (eq 'socks url-gateway-method)
+                           'socks
+                         gateway-method)))
+                  ad-do-it)
+     (let ((url-gateway-method *url-gateway-method*))
+       ad-do-it))))
 
 (when-feature-socks%
  (when-version% > 25
@@ -39,6 +44,17 @@
  (defvar *open-network-stream* nil
    "Alias of \\=`open-network-stream\\=' used to fix bug in
  \\=`url-http\\='."))
+
+(when-fn-url-open-stream%
+ (defun ad*-activate-url-open-stream (&optional activate)
+   (if activate
+       (progn
+         (ad-enable-advice #'url-open-stream 'around
+                           "url-open-stream-around")
+         (ad-activate #'url-open-stream t))
+     (ad-deactivate #'url-open-stream)
+     (ad-disable-advice #'url-open-stream 'around
+                        "url-open-stream-around"))))
 
 (when-feature-socks%
  (defun toggle-socks! (&optional arg)
@@ -76,30 +92,23 @@ if ARG is greate than 1, otherwise via native."
      (if (= 1 ver)
          (funcall (if (eq url-gateway-method 'native) socks native))
        (funcall (if (> ver 1) socks native)))
-     (let ((activated (eq 'socks url-gateway-method)))
+     (let ((activate (eq 'socks url-gateway-method)))
        (when-version% > 25
          (setq *url-gateway-method* url-gateway-method))
-       (if activated
-           (make-thread* (lambda ()
-                           (ad-enable-advice #'url-open-stream
-                                             'around
-                                             "url-open-stream-around")
-                           (ad-activate #'url-open-stream t))
-                         t "ad-enable-advice #'url-open-stream")
-         (ad-deactivate #'url-open-stream)
-         (ad-disable-advice #'url-open-stream
-                            'around
-                            "url-open-stream-around"))
+       (when-fn-url-open-stream%
+        (ad*-activate-url-open-stream activate))
        (message "socks%s as url gateway %s"
                 (list (*self-env-spec* :get :socks :server)
                       (*self-env-spec* :get :socks :port)
                       (*self-env-spec* :get :socks :version))
-                (if activated "enabled" "disabled"))))))
+                (if activate "enabled" "disabled"))))))
 
 
 (when-feature-socks%
- (when (*self-env-spec* :get :socks :allowed)
-   (make-thread* #'toggle-socks!)))
+ (if (*self-env-spec* :get :socks :allowed)
+     (make-thread* #'toggle-socks!)
+   (when-fn-url-open-stream%
+    (make-thread* #'ad*-activate-url-open-stream))))
 
 
 ;; end of sockets.el file
