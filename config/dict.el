@@ -169,7 +169,7 @@
 
 
 (defun on-lookup-dict (status &rest args)
-  "Callback after `lookup-dict'."
+  "Callback after \\=`lookup-dict\\='."
   (declare (indent 1))
   (let ((err (plist-get :error status)))
     (when err
@@ -195,7 +195,7 @@
                                   (buffer-substring-no-properties b e)))
                        (fns (cddr re))
                        (txt html))
-                  (cons x (when (and html (> (length html) 0))
+                  (cons x (when (> (length html) 0)
                             (dolist* (fn fns txt)
                               (if (functionp fn)
                                   (setq txt (funcall fn txt))

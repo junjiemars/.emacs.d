@@ -21,7 +21,7 @@
 ;; eww as default browser
 ;; (if-feature-eww% (toggle-browser! t)))
 
- ; end of eww
+;; end of eww
 
 
 ;;; tag
@@ -35,7 +35,7 @@
          (setq% find-function-C-source-directory
                 (concat source-directory "src/") 'find-func))))
 
- ; end of tag
+;; end of tag
 
 
 ;;; org
@@ -52,7 +52,7 @@
                        `(shell . t))
                     (emacs-lisp . t)))))))
 
- ; end of org
+;; end of org
 
 
 ;;; slime
@@ -63,7 +63,7 @@
      (when-fn% '*slime-source-locations* nil
        (*slime-source-locations* "<source-dir>"))))
 
- ; end of slime
+;; end of slime
 
 ;;; mail
 
@@ -78,10 +78,11 @@
 ;;  (setq smtpmail-smtp-server "<smtp-server>")
 ;;  (setq smtpmail-smtp-server 587))
 
- ; end of mail
+;; end of mail
 
 
 ;;; sql
+
 (comment
  (setq% sql-connection-alist
         '((mysql-local
@@ -105,7 +106,7 @@
            (sql-password "oracle")))
         'sql))
 
- ; end of sql
+;; end of sql
 
 ;;; snippet
 
@@ -113,7 +114,7 @@
  ;; (setq yas-indent-line 'auto 'yasnippet)
  (setq% yas-snippet-dirs '("<where>") 'yasnippet))
 
- ; end of snippet
+;; end of snippet
 
 
 ;;; web
@@ -141,7 +142,7 @@
                             ("php" . "/*")
                             ("css" . "/*"))))))))
 
- ; end of web
+;; end of web
 
 
- ; end of sample-self-epilogue.el
+;; end of sample-self-epilogue.el
