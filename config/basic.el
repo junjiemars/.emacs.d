@@ -91,7 +91,7 @@
 (setq% url-configuration-directory (v-home! ".url/") 'url)
 
 
- ;; Versioned Dirs
+;; Versioned Dirs
 
 
 ;;; Compatible Macros
@@ -161,7 +161,7 @@ otherwise do ELSE..."
      ,@then))
 
 
- ;; end of Compatible Functions
+;; end of Compatible Functions
 
 
 
@@ -349,7 +349,7 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
                           (get-buffer buffer-or-name)
                         (current-buffer))))
 
- ;; end of file functions
+;; end of file functions
 
 
 (defmacro platform-arch ()
@@ -385,7 +385,7 @@ otherwise do ELSE..."
             (lambda (d) (not (eq d ,def)))
             (define-key ,keymap ,key ,def)))
 
- ;; End of key macro
+;; End of key macro
 
 
 (defmacro symbol@ (&optional thing)
