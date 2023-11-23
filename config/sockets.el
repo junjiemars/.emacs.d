@@ -66,15 +66,16 @@ if ARG is greate than 1, otherwise via native."
                                (*self-env-spec* :get :socks :version))
                          'socks)
                   (setf (symbol-function 'open-network-stream)
-                        #'socks-open-network-stream))))
+                        #'socks-open-network-stream)))
+         (ver (if (null arg) 4 arg)))
      ;; (require 'url)
      (require 'socks)
      (unless *open-network-stream*
        (setf (symbol-value '*open-network-stream*)
              (symbol-function 'open-network-stream)))
-     (if (or (null arg) (= 1 arg))
+     (if (= 1 ver)
          (funcall (if (eq url-gateway-method 'native) socks native))
-       (funcall (if (> arg 1) socks native)))
+       (funcall (if (> ver 1) socks native)))
      (let ((activated (eq 'socks url-gateway-method)))
        (when-version% > 25
          (setq *url-gateway-method* url-gateway-method))
@@ -96,10 +97,9 @@ if ARG is greate than 1, otherwise via native."
                 (if activated "enabled" "disabled"))))))
 
 
-
 (when-feature-socks%
  (when (*self-env-spec* :get :socks :allowed)
-   (toggle-socks! 4)))
+   (make-thread* #'toggle-socks!)))
 
 
 ;; end of sockets.el file

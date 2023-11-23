@@ -291,10 +291,14 @@ RENEW overwrite the existing tags file when t else create it."
        (view-mode 1)))))
 
 (when-fn-xref-find-definitions%
- (with-eval-after-load 'xref
+ (defun on-xref-init! ()
    (ad-enable-advice #'xref-find-definitions 'after
                      "xref-find-definitions-after")
    (ad-activate #'xref-find-definitions t)))
+
+(when-fn-xref-find-definitions%
+ (with-eval-after-load 'xref
+   (make-thread* #'on-xref-init!)))
 
 
 ;; `pop-tag-mark' same as Emacs22+ for ancient Emacs
@@ -314,14 +318,18 @@ RENEW overwrite the existing tags file when t else create it."
        (view-mode 1)))))
 
 (unless-fn-xref-find-definitions%
- (with-eval-after-load 'etags
+ (defun on-etags-init! ()
    (ad-enable-advice #'find-tag 'after "find-tag-after")
    (ad-activate #'find-tag t)))
+
+(unless-fn-xref-find-definitions%
+ (with-eval-after-load 'etags
+   (make-thread* #'on-etags-init!)))
 
 
 (unless-fn% 'xref-find-references 'xref
   (defun xref-find-references (what)
-    "Alias of `tags-apropos'."
+    "Alias of \\=`tags-apropos\\='."
     (interactive
      (list (read-string "Find references of: "
                         (cdr (symbol@ 'symbol)))))
