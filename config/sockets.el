@@ -54,7 +54,8 @@
          (ad-activate #'url-open-stream t))
      (ad-deactivate #'url-open-stream)
      (ad-disable-advice #'url-open-stream 'around
-                        "url-open-stream-around"))))
+                        "url-open-stream-around")
+     (ad-clear-cache #'url-open-stream))))
 
 (when-feature-socks%
  (defun toggle-socks! (&optional arg)
@@ -104,11 +105,7 @@ if ARG is greate than 1, otherwise via native."
                 (if activate "enabled" "disabled"))))))
 
 
-(when-feature-socks%
- (if (*self-env-spec* :get :socks :allowed)
-     (make-thread* #'toggle-socks!)
-   (when-fn-url-open-stream%
-    (make-thread* #'ad*-activate-url-open-stream))))
+(when-feature-socks% (make-thread* #'toggle-socks!))
 
 
 ;; end of sockets.el file

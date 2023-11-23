@@ -21,7 +21,7 @@
 
 
 (defun on-org-init! ()
-  "Intialize \\=`org-mode\\='."
+  "Intialize \\=`org-mode\\=' on loading."
   ;; load `ox-reveal' if it had been installed.
   ;; `ox-reveal' raising "package cl is deprecated".
   (if-feature-ox-reveal%

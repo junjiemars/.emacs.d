@@ -257,7 +257,8 @@
   ;; preferred coding system
   (prefer-coding-system 'utf-8)
   (compile!
-    (compile-unit% (emacs-home* "config/sockets.el"))
+    (when (*self-env-spec* :get :socks :allowed)
+      (compile-unit% (emacs-home* "config/sockets.el")))
     (when-package%
       (compile-unit% (emacs-home* "config/module.el"))))
   (load-autoloaded-modes!)
