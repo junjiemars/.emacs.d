@@ -19,6 +19,7 @@
 ;;;
 
 (ert-deftest %a:env ()
+  (should (message "# nore-emacs = %s" (nore-emacs)))
   (should (message "# emacs-home* = %s" (emacs-home*)))
   (should (message "# system-type = %s" system-type))
   (should (message "# platform-arch = %s" (platform-arch)))
@@ -46,6 +47,10 @@
   (should (string-match "^g[0-9]+" (format "%s" (gensym))))
   (should (string-match "^X[0-9]+" (format "%s" (gensym "X")))))
 
+(ert-deftest %init:time ()
+  (should (null (time)))
+  (should (= 6 (time (+ 1 2 3)))))
+
 (ert-deftest %init:emacs-home* ()
   (should (file-exists-p (emacs-home*)))
   (should (file-exists-p (emacs-home* "config/")))
@@ -67,8 +72,7 @@
 
 (ert-deftest %init:v-path* ()
   (should (string-match "[gt]_[.0-9]+" (v-path* "a/x.el")))
-  (should (string-match "[gt]_[.0-9]+/" (v-path* "a/b/c/")))
-  (should (string-match "[gt]_[.0-9]+.*\\.z\\'" (v-path* "a/x.el" ".z"))))
+  (should (string-match "[gt]_[.0-9]+/" (v-path* "a/b/c/"))))
 
 (ert-deftest %init:v-home* ()
   (should (directory-name-p (v-home* nil)))
@@ -136,9 +140,6 @@
 ;; boot
 ;;;;
 
-
-(ert-deftest %boot:emacs-arch ()
-  (should (> (emacs-arch) 0)))
 
 (ert-deftest %boot:if/when/unless-lexical% ()
   (if (if-lexical% t nil)
@@ -237,6 +238,10 @@
 
 (defmacro-if-feature% ert)
 (defmacro-if-feature% ertxxx)
+
+(ert-deftest %fn:emacs-arch ()
+  (should (> (emacs-arch) 0)))
+
 (ert-deftest %fn:defmacro-if-feature% ()
   (should (= 3 (if-feature-ert% (+ 1 2) (* 3 4))))
   (should (= 12 (if-feature-ertxxx% (+ 1 2) (* 3 4))))

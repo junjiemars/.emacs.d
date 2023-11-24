@@ -8,6 +8,10 @@
 
 ;;; compile-time macro
 
+(defmacro nore-emacs ()
+  "Nore Emacs git repo."
+  "https://github.com/junjiemars/.emacs.d")
+
 (defmacro comment (&rest body)
   "Ignore BODY, yields nil."
   nil)
@@ -47,6 +51,15 @@ Else return BODY sexp."
                            (setq gensym-counter
                                  (1+ gensym-counter)))))))
 
+
+(defmacro time (&rest form)
+  "Execute FORM and print timing information on *message*."
+  (declare (indent 0))
+  (let ((b (gensym)))
+    `(let ((,b (current-time)))
+       (prog1 (progn ,@form)
+         (message "%.6f" (float-time
+                          (time-subtract (current-time) ,b)))))))
 
 ;;; file macro
 
@@ -131,6 +144,10 @@ non-nil, do BODY."
   (declare (indent 0))
   `(if-native-comp% (progn% ,@body)))
 
+(defmacro comp-file-extension% ()
+  "Return extension of compiled file."
+  `(if-native-comp% ".eln" ".elc"))
+
 ;; end of compile macro
 
 ;;; versioned file macro
@@ -144,31 +161,28 @@ non-nil, do BODY."
           (throw 'break i))
         (setq i (1- i))))))
 
-(defmacro v-path* (file &optional extension)
-  "Return versioned FILE with new EXTENSION."
-  (let ((f1 (gensym))
-        (x1 (gensym)))
-    `(let* ((,f1 ,file)
-            (,x1 ,extension)
-            (b (file-name-nondirectory ,f1))
-            (i (or (strrchr b ?.) (1- (length b)))))
+(defun file-name-sans-extension* (file)
+  "Return filename sans EXTENSION.\n
+See \\=`file-name-sans-extension\\='."
+  (let* ((l (length file)))
+    (when (> l 0)
+      (let ((i (1- l)))
+        (substring-no-properties
+         file 0
+         (catch 'break
+           (while (>= i 0)
+             (let ((c (aref file i)))
+               (cond ((= ?/ c) (throw 'break l))
+                     ((= ?. c) (throw 'break i))
+                     (t (setq i (1- i))))))))))))
+
+(defmacro v-path* (file)
+  "Return versioned FILE."
+  (let ((f1 (gensym)))
+    `(let* ((,f1 ,file))
        (concat (file-name-directory ,f1)
                ,(v-name) "/"
-               (if ,x1
-                   (concat (if (>= i 0)
-                               (substring-no-properties b 0 i)
-                             "")
-                           ,x1)
-                 b)))))
-
-(defmacro v-path*> (file)
-  "Return the \\=`v-path*\\=' FILE with the suffix of compiled file."
-  `(v-path* ,file ,(if-native-comp% ".eln" ".elc")))
-
-;; (defmacro v-path%> (file)
-;;   "Return the \\=`v-path*>\\=' FILE with the suffix of compiled file
-;; at compile-time."
-;;   (v-path*> file))
+               (file-name-nondirectory ,f1)))))
 
 (defmacro v-home* (file)
   "Return versioned FILE under \\=`emacs-home*\\='."
@@ -184,7 +198,8 @@ non-nil, do BODY."
 
 (defmacro v-home%> (file)
   "Return the \\=`v-home*\\=' FILE with the suffix of compiled file."
-  (v-path*> (emacs-home* file)))
+  (concat (file-name-sans-extension* (v-home* file))
+          (comp-file-extension%)))
 
 ;; end of versioned file macro
 
@@ -192,17 +207,19 @@ non-nil, do BODY."
 
 (defmacro v-comp-file! (src)
   "Make a versioned copy of SRC."
-  (let ((s1 (gensym)) (d1 (gensym)) (d2 (gensym)))
+  (let ((s1 (gensym)))
     `(let ((,s1 ,src))
        (when (and (stringp ,s1) (file-exists-p ,s1))
-         (let ((,d1 (v-path* ,s1))
-               (,d2 (v-path*> ,s1)))
-           (when (file-newer-than-file-p ,s1 ,d1)
-             (if (file-exists-p ,d2)
-                 (delete-file ,d2)
-               (path! ,d1))
-             (copy-file ,s1 ,d1 t))
-           (cons ,d1 ,d2))))))
+         (let* ((d1 (v-path* ,s1))
+                (d2 (concat (file-name-sans-extension* d1)
+                            ,(comp-file-extension%))))
+           (when (file-newer-than-file-p ,s1 d1)
+             (if (file-exists-p d2)
+                 (delete-file d2)
+               (path! d1))
+             (copy-file ,s1 d1 t))
+           (cons d1 d2))))))
+
 
 (defmacro compile-and-load-file* (src dst &optional only-compile)
   "Compile SRC to DST.\n

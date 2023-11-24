@@ -7,17 +7,6 @@
 ;;; boot compiled elisp files and modules in order.
 ;;;;
 
-(defmacro nore-emacs ()
-  "Nore Emacs git repo."
-  "https://github.com/junjiemars/.emacs.d")
-
-
-(defmacro emacs-arch ()
-  "Return emacs architecture, 64bits or 32bits."
-  (if (= most-positive-fixnum (1- (expt 2 61))) 64
-    (if (= most-positive-fixnum (1- (expt 2 29))) 32 0)))
-
-
 ;;;
 ;; fn compile-time checking macro
 ;;;
@@ -232,11 +221,9 @@ Argument SPEC (VAR LIST [RESULT])."
   "Make an compile unit.\n
 Argument FILE elisp source file.
 Optional argument ONLY-COMPILE, see \\=`compile-and-load-file*\\='."
-  (let* ((u1 (v-comp-file! file))
-         (s1 (car u1))
-         (d1 (cdr u1)))
+  (let ((u1 (v-comp-file! file)))
     (when u1
-      (vector s1 d1 only-compile nil))))
+      (vector (car u1) (cdr u1) only-compile nil))))
 
 (defmacro compile-unit% (file &optional only-compile)
   "Make an compile unit at compile time.\n
@@ -301,18 +288,18 @@ Optional argument ONLY-COMPILE: see `compile-and-load-file*'."
 
 (defalias '*self-paths*
   (lexical-let%
-      ((ps (list
-            :prologue (emacs-home* "private/self-prologue.el")
-            :env-spec (emacs-home* "private/self-env-spec.el")
-            :package-spec (emacs-home* "private/self-package-spec.el")
-            :epilogue (emacs-home* "private/self-epilogue.el")))
-       (ss (list
-            ;; exclude :prologue
-            (cons :env-spec (emacs-home* "config/sample-self-env-spec.el"))
-            (cons :package-spec
-                  (emacs-home* "config/sample-self-package-spec.el"))
-            (cons :epilogue
-                  (emacs-home* "config/sample-self-epilogue.el")))))
+      ((ps `(;; paths
+             :prologue ,(emacs-home* "private/self-prologue.el")
+             :env-spec ,(emacs-home* "private/self-env-spec.el")
+             :package-spec ,(emacs-home* "private/self-package-spec.el")
+             :epilogue ,(emacs-home* "private/self-epilogue.el")))
+       (ss `(;; specs, exclude :prologue
+             (:env-spec
+              . ,(emacs-home* "config/sample-self-env-spec.el"))
+             (:package-spec
+              . ,(emacs-home* "config/sample-self-package-spec.el"))
+             (:epilogue
+              . ,(emacs-home* "config/sample-self-epilogue.el")))))
     (lambda (&optional op k v)
       (cond ((eq :get op) (plist-get ps k))
             ((eq :put op) (setq ps (plist-put ps k v)))

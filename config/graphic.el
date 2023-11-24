@@ -110,7 +110,7 @@ If RESET is true then reset before load."
                               (if-native-comp% nil t))
                          (let ((f (concat dir (symbol-name name) "-theme.el")))
                            (compile! (compile-unit* f t))
-                           (load-theme! name (concat dir (v-path* "/"))))
+                           (load-theme! name (concat dir "/" (v-name) "/")))
                        (load-theme! name dir)))
                     (t
                      ;; load builtin theme

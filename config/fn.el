@@ -169,16 +169,6 @@ accumulate clause and Miscellaneous clause."
     `(loop ,@clause)))
 
 
-(defmacro time (&rest form)
-  "Execute FORM and print timing information on *message*."
-  (declare (indent 0))
-  (let ((b (gensym)))
-    `(let ((,b (current-time)))
-       (prog1 (progn ,@form)
-         (message "%.6fs"
-                  (float-time (time-subtract (current-time) ,b)))))))
-
-
 ;; end of common lisp macro
 
 
@@ -395,6 +385,12 @@ Returns the name of FILE when successed otherwise nil."
 
 
 ;;; Platform Related Functions
+
+(defmacro emacs-arch ()
+  "Return emacs architecture, 64bits or 32bits."
+  (if (= most-positive-fixnum (1- (expt 2 61))) 64
+    (if (= most-positive-fixnum (1- (expt 2 29))) 32 0)))
+
 
 (defmacro file-name-base* (path)
   "Return base name of PATH."
