@@ -107,8 +107,7 @@ when \\=`desktop-globals-to-save\\=' include it."
 
 
 (defun unmount-tags (&optional tags)
-  "Unmount TAGS from `tags-table-list'.
-
+  "Unmount TAGS from `tags-table-list'.\n
 With prefix argument TAGS unmount all tags from `tags-table-list'."
   (interactive (list (unless (and current-prefix-arg
                                   (yes-or-no-p "unmount all? "))
@@ -163,8 +162,8 @@ RENEW overwrite the existing tags file when t else create it."
                                                 "failed"))))))
 
 
-(defun make-c-tags (home tags-file
-                         &optional option file-filter dir-filter renew)
+(defun make-c-tags
+    (home tags-file &optional option file-filter dir-filter renew)
   "Make TAGS-FILE for C source code in HOME."
   (make-tags home
              tags-file
@@ -180,8 +179,8 @@ RENEW overwrite the existing tags file when t else create it."
              renew))
 
 
-(defun make-lisp-tags (home tags-file
-                            &optional option file-filter dir-filter renew)
+(defun make-lisp-tags
+    (home tags-file &optional option file-filter dir-filter renew)
   "Make TAGS-FILE for Lisp source code in HOME."
   (make-tags home
              tags-file
@@ -236,7 +235,8 @@ RENEW overwrite the existing tags file when t else create it."
                   (lambda (_ __) t)))
 
 
-(defun make-dir-tags (dir store &optional include-dir exclude-dir option renew)
+(defun make-dir-tags
+    (dir store &optional include-dir exclude-dir option renew)
   "Make tags for specified DIR."
   (interactive (list (read-directory-name "make tags for ")
                      (read-file-name "store tags in " nil nil nil ".tags")
@@ -339,4 +339,4 @@ RENEW overwrite the existing tags file when t else create it."
 (provide 'tags)
 
 
-;; eof
+;; end of tags.el

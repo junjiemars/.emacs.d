@@ -197,7 +197,7 @@ See \\=`file-name-sans-extension\\='."
   (path! (v-home* file)))
 
 (defmacro v-home%> (file)
-  "Return the \\=`v-home*\\=' FILE with the suffix of compiled file."
+  "Return the \\=`v-home*\\=' FILE with the extension of compiled file."
   (concat (file-name-sans-extension* (v-home* file))
           (comp-file-extension%)))
 
