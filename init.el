@@ -313,7 +313,7 @@ If ONLY-COMPILE is t, does not load DST."
 
 ;; boot
 (let ((u (v-comp-file! (emacs-home* "config/boot.el")))
-      (gc-cons-threshold most-positive-fixnum))
+      (gc-cons-percentage 0.4))
   (compile-and-load-file* (car u) (cdr u)))
 
 ;; package

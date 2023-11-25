@@ -520,7 +520,6 @@ RENEW whether to renew the existing FILE."
             (and (setq d (cc*-check-identity remote))
                  (hash-table-p d) (save-sexp-to-file d fs)
                  (plist-get (setq dx (plist-put dx ss d)) ss))))))
-
   "Return a hashtable of cc identities.")
 
 
@@ -606,14 +605,13 @@ See `align-entire'."
 ;; Default `c-mode-hook' involving useless `macrostep-c-mode-hook'.
 (setq% c-mode-hook nil 'cc-mode)
 
-(with-eval-after-load 'cc-mode
 
+(defun on-cc-mode-init! ()
+  "On \\=`cc-mode\\=' initialization."
   ;; load `tags'
   (when-fn% 'make-c-tags 'tags (require 'tags))
-
   ;; load styles
   (c-add-style (car cc*-style-nginx) (cdr cc*-style-nginx))
-
   ;; keymap:
   ;; find include file
   (when-fn% 'ff-find-other-file 'find-file
@@ -631,17 +629,27 @@ See `align-entire'."
   (define-key% c-mode-map (kbd "C-c |") #'cc*-style-align-entire)
   ;; `subword-mode'
   (define-key% c-mode-map (kbd "C-c C-w")
-    (if-fn% 'subword-mode 'subword
-            #'subword-mode
-      #'c-subword-mode)))
+               (if-fn% 'subword-mode 'subword
+                       #'subword-mode
+                 #'c-subword-mode)))
 
 
-(with-eval-after-load 'cmacexp
+;;; `cc-mode' after load
+(with-eval-after-load 'cc-mode
+  (on-cc-mode-init!))
 
+
+(defun on-cmacexp-init! ()
+  "On \\=`cmacexp\\=' initialization."
   ;; [C-c C-e] `c-macro-expand' in `cc-mode'
   (setq% c-macro-prompt-flag t 'cmacexp)
   (ad-enable-advice #'c-macro-expand 'around "c-macro-expand-around")
   (ad-activate #'c-macro-expand t))
+
+
+;;; `cmacexp' after load
+(with-eval-after-load 'cmacexp
+  (on-cmacexp-init!))
 
 
 (when-var% manual-program 'man

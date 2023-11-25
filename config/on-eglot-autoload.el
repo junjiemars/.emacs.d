@@ -14,15 +14,13 @@
 (defmacro when-feature-eglot% (&rest body)
   "When \\=`eglot\\=', do BODY."
   (if-feature-eglot%
-      `(progn% ,@body)
-    `(comment ,@body)))
+      `(progn% ,@body)))
 
 
 (defmacro when-feature-project% (&rest body)
   "When \\=`project\\=', do BODY."
   (if-feature-project%
-      `(progn% ,@body)
-    `(comment ,@body)))
+      `(progn% ,@body)))
 
 
 ;;; `elgot'
@@ -121,8 +119,8 @@ and INDENT."
 
 (when-feature-eglot%
 
- (with-eval-after-load 'eglot
-
+ (defun on-eglot-init! ()
+   "On \\=`eglot\\=' initialization."
    ;; load recipe
    (eglot*-server-programs :push (or (eglot*-server-programs :read)
                                      (eglot*-server-programs)))
@@ -133,6 +131,12 @@ and INDENT."
    ;; shutdown when `kill-emacs'
    (when-var% kill-emacs-query-functions nil
      (push! 'eglot*-shutdown-all kill-emacs-query-functions))))
+
+
+;;; `eglot' after load
+(when-feature-eglot%
+ (with-eval-after-load 'eglot
+   (on-eglot-init!)))
 
 ;; end of `eglot'
 
@@ -169,10 +173,16 @@ and INDENT."
 
 (when-feature-project%
 
- (with-eval-after-load 'project
-
+ (defun on-project-init! ()
+   "On \\=`project\\=' initialization."
    (project*-root :read)
    (push! #'project*-try-abs project-find-functions)))
+
+
+;;; `project' after load
+(when-feature-project%
+ (with-eval-after-load 'project
+   (on-project-init!)))
 
 ;; end of `project'
 
