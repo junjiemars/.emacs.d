@@ -13,8 +13,8 @@
 (defmacro when-feature-eww% (&rest body)
   "When \\=`eww\\=', do BODY."
   (if-feature-eww%
-      `(progn% ,@body)
-    `(comment ,@body)))
+      `(progn% ,@body)))
+
 
 ;;; autoload
 (when-feature-eww%
@@ -49,9 +49,6 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
    (toggle-truncate-lines nil)))
 
 
-;; find web via search engine
-;; eww also has a new `eww-search-words' supports searching via web.
-
 (defalias '*web-defs*
   (lexical-let% ((b `(("bing" "https://www.bing.com/"
                        . "search?ensearch=1&q=")
@@ -72,9 +69,29 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
         b)))
   "Searching engines using by \\=`lookup-web\\='.")
 
+(defun on-eww-init! ()
+  "On \\=`eww\\=' initialization."
+  (add-hook 'eww-mode-hook #'set-eww-mode!)
+  (when (consp (*web-defs*))
+    (setq% eww-search-prefix
+           (concat (car (cdar (*web-defs*)))
+                   (cdr (cdar (*web-defs*)))))))
+
+;;; `eww' after load
+(when-feature-eww%
+ (with-eval-after-load 'eww
+   (on-eww-init!)))
+
+
+;; end of `eww'
+
+
+;;; `lookup-web' find web via search engine
+;;; eww also has a new `eww-search-words' supports searching via web.
+
 
 (defalias 'web-find-def
-  (lexical-let% ((b))
+  (lexical-let% ((b '()))
     (lambda  (&optional en)
       (cond ((or en (not b))
              (setq b (assoc** (or en (caar (*web-defs*)))
@@ -109,25 +126,13 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
                                                        what)
                                                "[ '()!`\"]")))))))
 
-
-(when-feature-eww%
- (with-eval-after-load 'eww
-   (add-hook 'eww-mode-hook #'set-eww-mode!)
-   (when (consp (*web-defs*))
-     (setq% eww-search-prefix
-            (concat (car (cdar (*web-defs*)))
-                    (cdr (cdar (*web-defs*))))))))
-
-
-;;;
-;; Keys
-;;;
-
 ;;; `eww-search-words' and `webjump' more leaner than `lookup-web'.
 
 (define-key% (current-global-map) (kbd "M-s w") #'lookup-web)
 (define-key% (current-global-map) (kbd "C-c f w") #'lookup-web)
 (define-key% (current-global-map) (kbd "M-s M-b") #'eww-list-bookmarks)
+
+;; end of `lookup-web'
 
 
 ;; end of on-eww-autoload.el
