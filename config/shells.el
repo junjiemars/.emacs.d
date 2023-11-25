@@ -30,7 +30,6 @@
             ((eq :put! op) (setq dx (plist-put dx k n)))
             ((eq :set! op) (setq dx k))
             (t dx))))
-
   "Default shell's environment.")
 
 

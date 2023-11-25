@@ -53,13 +53,12 @@ Else return BODY sexp."
 
 
 (defmacro time (&rest form)
-  "Execute FORM and print timing information on *message*."
+  "Return the elapsed time of FORM executing."
   (declare (indent 0))
-  (let ((b (gensym)))
-    `(let ((,b (current-time)))
-       (prog1 (progn ,@form)
-         (message "%.6f" (float-time
-                          (time-subtract (current-time) ,b)))))))
+  `(let ((b (current-time)))
+     (prog1 (progn ,@form)
+       (message "%.6f"
+                (float-time (time-subtract (current-time) b))))))
 
 ;;; file macro
 
@@ -162,9 +161,9 @@ non-nil, do BODY."
         (setq i (1- i))))))
 
 (defun file-name-sans-extension* (file)
-  "Return filename sans EXTENSION.\n
+  "Return the FILE sans EXTENSION.\n
 See \\=`file-name-sans-extension\\='."
-  (let* ((l (length file)))
+  (let ((l (length file)))
     (when (> l 0)
       (let ((i (1- l)))
         (substring-no-properties
@@ -179,7 +178,7 @@ See \\=`file-name-sans-extension\\='."
 (defmacro v-path* (file)
   "Return versioned FILE."
   (let ((f1 (gensym)))
-    `(let* ((,f1 ,file))
+    `(let ((,f1 ,file))
        (concat (file-name-directory ,f1)
                ,(v-name) "/"
                (file-name-nondirectory ,f1)))))

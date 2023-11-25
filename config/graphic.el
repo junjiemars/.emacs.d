@@ -40,15 +40,18 @@
   "Initialize frame specs from \\=`*self-env-spec*\\='."
   (let* ((f1 (*self-env-spec* :get :frame))
          (a1 (self-spec-> f1 :allowed)))
-    ;; `initial-frame-alist'
-    (setq initial-frame-alist (append
-                               +essential-frame-set+
-                               (when-graphic%
-                                 (when a1
-                                   (self-spec-> f1 :initial)))))
-    ;; `inhibit-splash-screen'
-    (when a1 (setq inhibit-splash-screen
-                   (self-spec-> f1 :inhibit-splash-screen)))))
+    (setq
+     ;; `initial-frame-alist'
+     initial-frame-alist (append
+                          +essential-frame-set+
+                          (when-graphic%
+                            (when a1
+                              (self-spec-> f1 :initial))))
+     ;; `inhibit-splash-screen'
+     inhibit-splash-screen (if a1
+                               (self-spec-> f1 :inhibit-splash-screen)
+                             inhibit-splash-screen))))
+
 
 
 (when-graphic%
@@ -83,10 +86,8 @@
   (defmacro load-theme! (name &optional dir)
     "\\=`load-theme\\=' by NAME.\n
 If DIR is nil then load the built-in \\=`customize-themes\\=' by NAME."
-    (let ((n (gensym))
-          (d (gensym)))
-      `(let ((,n ,name)
-             (,d ,dir))
+    (let ((n (gensym)) (d (gensym)))
+      `(let ((,n ,name) (,d ,dir))
          (when ,d (setq custom-theme-directory ,d))
          (if-version% >= 24.1
                       (load-theme ,n)

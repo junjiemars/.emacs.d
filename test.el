@@ -493,6 +493,9 @@
     (should (executable-find% (concat "l" "s")))
     (should (executable-find% "ls" (lambda (ls) ls)))))
 
+(ert-deftest %fn:platform-arch ()
+  (should (platform-arch))
+  (should (consp (platform-arch))))
 
 ;; end of `fn'
 
@@ -617,10 +620,6 @@
                    (when (member-if* (lambda (z) (string= z x))
                                      std)
                      (setq count (1+ count))))))))
-
-(ert-deftest %basic:platform-arch ()
-  (should (platform-arch))
-  (should (consp (platform-arch))))
 
 (ert-deftest %basic:buffer-major-mode ()
   (should (eq 'fundamental-mode (buffer-major-mode))))

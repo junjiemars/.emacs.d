@@ -365,7 +365,6 @@ No matter the declaration order, the executing order is:
 ;; disable package initialize
 (when-package% (setq package-enable-at-startup nil))
 
-
 ;;; <1> prologue
 (compile! (compile-unit% (emacs-home* "config/fn.el"))
           (compile-unit* (*self-paths* :get :prologue)))
@@ -378,9 +377,10 @@ No matter the declaration order, the executing order is:
 
 ;;; <3> epilogue
 (compile!
-  ;; --batch mode: disable desktop read/save
   (progn
+    ;;; --batch mode: disable `desktop'
     (setq% desktop-save-mode nil 'desktop)
+    (setq% desktop-restore-forces-onscreen nil 'desktop)
     (unless-noninteractive%
      (compile-unit% (emacs-home* "config/memo.el"))))
   (compile-unit% (emacs-home* "config/autoloads.el")))

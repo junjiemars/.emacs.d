@@ -9,8 +9,6 @@
 
 (defun self-desktop-read! ()
   "Read the desktop of the previous Emacs instance."
-  ;; disable `desktop-restore-forces-onscreen'
-  (setq% desktop-restore-forces-onscreen nil 'desktop)
   (let ((desk (*self-env-spec* :get :desktop)))
     (when (and (self-spec-> desk :allowed)
                (file-exists-p (v-home% ".desktop/")))
@@ -30,8 +28,10 @@
       (if-var% kill-emacs-query-functions nil
                (progn
                  (setq kill-emacs-query-functions
-                       (delq 'desktop-kill kill-emacs-query-functions))
-                 (append! #'self-desktop-save! kill-emacs-query-functions))
+                       (delq 'desktop-kill
+                             kill-emacs-query-functions))
+                 (append! #'self-desktop-save!
+                          kill-emacs-query-functions))
         (append! #'self-desktop-save! kill-emacs-hook)))))
 
 
@@ -68,7 +68,9 @@
       (when-theme% (self-theme-init! t))
 
       (if-version% >= 23
-                   (desktop-save (v-home! ".desktop/"))
+                   (unwind-protect
+                       (desktop-save (v-home! ".desktop/"))
+                     (desktop-release-lock))
         (desktop-save (v-home! ".desktop/") t)))))
 
 

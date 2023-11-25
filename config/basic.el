@@ -12,11 +12,10 @@
 (push! (v-home% "config/") load-path)
 (push! (v-home% "private/") load-path)
 
+;; end of `load-path'
 
-
 
 ;;; Versioned Dirs: .*
-
 
 ;; `abbrev'
 (setq% abbrev-file-name (v-home! ".abbrev/defs") 'abbrev)
@@ -122,18 +121,18 @@
 
 (unless-fn% 'with-eval-after-load nil
   (defmacro with-eval-after-load (file &rest body)
-    "Execute BODY after FILE is loaded.
-
+    "Execute BODY after FILE is loaded.\n
 FILE is normally a feature name, but it can also be a file name,
-in case that file does not provide any feature.  See \\=`eval-after-load\\='
-for more details about the different forms of FILE and their semantics."
+in case that file does not provide any feature.See
+\\=`eval-after-load\\=' for more details about the different
+forms of FILE and their semantics."
     (declare (indent 1))
     `(eval-after-load ,file
        `(funcall ,(lambda () ,@body)))))
 
 
 (defmacro defcustom% (symbol standard doc &rest args)
-  "Declare SYMBOL as a customizable variable with the STANDARD value.
+  "Declare SYMBOL as a customizable variable with the STANDARD value.\n
 STANDARD should be computed at compile-time. In \\=`defcustom\\='
 STANDARD always be computed at runtime whatever the current
 \\=`lexical-binding\\=' is."
@@ -155,10 +154,10 @@ otherwise do ELSE..."
      (progn% ,@else)))
 
 (defmacro region-active-unless (&rest then)
-  "Unless \\=`region-active-p\\=' or \\=`mark-active\\=' is t do THEN."
+  "Unless \\=`region-active-p\\=' or \\=`mark-active\\=' is t do
+THEN."
   (declare (indent 0))
-  `(region-active-if nil
-     ,@then))
+  `(region-active-if nil ,@then))
 
 
 ;; end of Compatible Functions
@@ -208,8 +207,8 @@ otherwise do ELSE..."
   "Return the parent path of FILE."
   (let ((f (gensym)))
     `(let ((,f ,file))
-       (and (stringp ,f)
-            (file-name-directory (directory-file-name ,f))))))
+       (when (stringp ,f)
+         (file-name-directory (directory-file-name ,f))))))
 
 
 (defmacro path-depth (path &optional separator)
@@ -311,8 +310,8 @@ PREFER (lambda (dir files)...)."
 
 
 (defmacro remote-norm-file (file)
-  "Return an identification when FILE specifies a location on a remote system.
-
+  "Return an identification when FILE specifies a location on a
+remote system.\n
 On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
   `(string-match* "^\\(/sshx?:[_-a-zA-Z0-9]+@?[_-a-zA-Z0-9]+:\\)"
                   ,file 1))
@@ -321,7 +320,8 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
   "Norm the REMOTE to (method {user | id} [host]) form."
   (let ((r (gensym)))
     `(let ((,r ,remote))
-       (and (stringp ,r) (split-string* ,r "[:@]" t "/")))))
+       (when (stringp ,r)
+         (split-string* ,r "[:@]" t "/")))))
 
 (defmacro remote-norm->user@host (remote)
   "Norm the REMOTE to {user | id}[@host] form."
@@ -332,8 +332,10 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
                                (concat "@" (car (cddr ,rid)))))))))
 
 
-(defmacro url-retrieve* (url callback &optional cbargs silent inhibit-cookies)
-  "Retrieve URL asynchronously and call CALLBACK with CBARGS when finished."
+(defmacro url-retrieve*
+    (url callback &optional cbargs silent inhibit-cookies)
+  "Retrieve URL asynchronously and call CALLBACK with CBARGS when
+finished."
   (when-fn% 'url-retrieve 'url
     (if-version%
         <= 24
@@ -343,7 +345,8 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
 
 
 (defun buffer-major-mode (&optional buffer-or-name)
-  "Return \\=`major-mode\\=' associated with BUFFER-OR-NAME or current buffer."
+  "Return \\=`major-mode\\=' associated with BUFFER-OR-NAME or
+current buffer."
   (buffer-local-value 'major-mode
                       (if buffer-or-name
                           (get-buffer buffer-or-name)
@@ -352,24 +355,7 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
 ;; end of file functions
 
 
-(defmacro platform-arch ()
-  "Return platform architecture with (arch . bits) cons cell."
-  (let ((m64 "\\([xX]86_64\\|[aA][mM][dD]64\\|aarch64\\)")
-        (bit (emacs-arch)))
-    (if (string-match m64 system-configuration)
-        `(cons ,(string-match* m64 system-configuration 1) ,bit)
-      (if-platform% 'windows-nt
-          (if (string-match m64 (getenv "PROCESSOR_ARCHITECTURE"))
-              `(cons ,(getenv "PROCESSOR_ARCHITECTURE") ,bit)
-            `(cons ,(getenv "PROCESSOR_ARCHITECTURE") ,bit))
-        (let ((m (shell-command* "uname -m")))
-          (if (and (zerop (car m))
-                   (string-match m64 (string-trim> (cdr m) "\n")))
-              `(cons ,(string-trim> (cdr m) "\n") ,bit)
-            `(cons ,(string-trim> (cdr m) "\n") ,bit)))))))
-
-
-;; define key macro
+;;; define key macro
 
 (defmacro if-key% (keymap key test then &rest else)
   "If TEST function returns t for KEY in KEYMAP do then,
@@ -380,12 +366,13 @@ otherwise do ELSE..."
      ,@else))
 
 (defmacro define-key% (keymap key def)
-  "Define KEY to DEF in KEYMAP when the KEY binding of DEF is not exists."
+  "Define KEY to DEF in KEYMAP when the KEY binding of DEF is not
+exists."
   `(if-key% ,keymap ,key
             (lambda (d) (not (eq d ,def)))
             (define-key ,keymap ,key ,def)))
 
-;; End of key macro
+;; end of key macro
 
 
 (defmacro symbol@ (&optional thing)
