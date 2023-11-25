@@ -65,7 +65,7 @@
 
 ;;; `compile' after load
 (with-eval-after-load 'compile
-  (make-thread* #'on-compile-init!))
+  (on-compile-init!))
 
 
 (defun on-grep-init! ()
@@ -106,7 +106,7 @@
 
 ;;; `make-mode' after load
 (with-eval-after-load 'make-mode
-  (make-thread* #'on-make-mode-init!))
+  (on-make-mode-init!))
 
 
 ;; end of on-compile-autoload.el
