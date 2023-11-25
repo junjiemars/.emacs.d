@@ -26,12 +26,11 @@
   "The available Scheme's implementations for `ob'.")
 
 (defmacro autoload* (symbol file &optional docstring interactive type)
-  "Force autoload SYMBOL, like `autoload' does."
+  "Force autoload SYMBOL, like \\=`autoload\\=' does."
   `(progn
      (fset ,symbol nil)
      (setplist ,symbol nil)
-     (fset ,symbol
-           `(autoload ,,file ,,docstring ,,interactive ,,type))))
+     (fset ,symbol (list 'autoload ,file ,docstring ,interactive ,type))))
 
 
 (defun load-autoloaded-modes! ()
@@ -184,24 +183,20 @@
     ;; Sudoku
     (prog1
         (compile-unit% (emacs-home* "config/sudoku.el") t)
-      (autoload* 'sudoku (v-home%> "config/sudoku.el")
-                 "Play sudoku." t))
+      (autoload 'sudoku (v-home%> "config/sudoku.el")
+        "Play sudoku." t))
 
     ;; `treesit'
     (if-feature-treesit%
         (compile-unit% (emacs-home* "config/on-treesit-autoload.el")))
 
-
     ) ;; end of compile!
-
-  ;; enable `column-number-mode'
-  (setq% column-number-mode t 'simple)
 
   )
 ;; end of `load-conditional-modes!'
 
-(defun set-global-keys! ()
-  "Set global keys."
+(defun keys-autoload-init! ()
+  "Initialize keys on autoload."
 
   ;; Lookup dictionary
   (define-key% (current-global-map) (kbd "M-s d") 'lookup-dict)
@@ -244,7 +239,7 @@
   (define-key% (current-global-map) (kbd "C-c s d") #'delete-duplicate-lines)
 
   )
-;; end of set-global-keys!
+;; end of keys-autoload-init!
 
 (defun on-epilogue! ()
   (compile!
@@ -263,7 +258,7 @@
       (compile-unit% (emacs-home* "config/module.el"))))
   (load-autoloaded-modes!)
   (load-conditional-modes!)
-  (set-global-keys!)
+  (keys-autoload-init!)
   (when-fn% 'toggle-frame-initialized nil (toggle-frame-initialized))
   (when-fn% 'self-desktop-read! nil (self-desktop-read!))
   (make-thread* #'on-epilogue! (if-noninteractive% t nil)))

@@ -176,21 +176,6 @@ accumulate clause and Miscellaneous clause."
   (prog1 t (ignore* x)))
 
 
-(defmacro defmacro-if-feature% (feature)
-  "Define if-FEATURE% compile-time macro."
-  (let ((ss (format "if-feature-%s%%" feature)))
-    (unless (intern-soft ss)
-      (let ((name (intern ss)))
-        `(defmacro ,name (then &rest body)
-           "If has the feauture do THEN, otherwise do BODY."
-           (declare (indent 1))
-           (if% (require ',feature nil t)
-               `(progn% (comment ,@body)
-		                    ,then)
-             `(progn% (comment ,then)
-                      ,@body)))))))
-
-
 (defmacro make-thread* (fn &optional join name)
   "Threading call FN with NAME or in JOIN mode."
   `(if-fn% 'make-thread nil
@@ -216,6 +201,34 @@ accumulate clause and Miscellaneous clause."
              (setq ,var ,old))
          (setq ,var ,old)))))
 
+
+(defmacro defmacro-if-feature% (feature)
+  "Define if-feature-FEATURE% compile-time macro."
+  (let ((ss (format "if-feature-%s%%" feature)))
+    (unless (intern-soft ss)
+      (let ((name (intern ss)))
+        `(defmacro ,name (then &rest body)
+           "If has the feauture do THEN, otherwise do BODY."
+           (declare (indent 1))
+           (if% (require ',feature nil t)
+               `(progn% (comment ,@body)
+		                    ,then)
+             `(progn% (comment ,then)
+                      ,@body)))))))
+
+(defmacro defmacro-if-fn% (fn &optional feature)
+  "Define if-fn-FN% compile-time macro."
+  (let ((ss (format "if-fn-%s%%" fn)))
+    (unless (intern-soft ss)
+      (let ((name (intern ss)))
+        `(defmacro ,name (then &rest body)
+           "If has the fn do THEN, otherwise do BODY."
+           (declare (indent 1))
+           (if-fn% ',fn ',feature
+                   `(progn% (comment ,@body)
+		                        ,then)
+             `(progn% (comment ,then)
+                      ,@body)))))))
 
 ;; end of byte-compiler macro
 

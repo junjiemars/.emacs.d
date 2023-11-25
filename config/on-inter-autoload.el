@@ -341,6 +341,9 @@ If \\=`current-prefix-arg\\=' < 0, then repeat n time with END in reversed."
 ;; Highlights matching parenthesis
 (show-paren-mode 1)
 
+;; Enable `column-number-mode'
+(setq% column-number-mode t 'simple)
+
 ;; Enable save minibuffer history
 (if-version%
     <= 24

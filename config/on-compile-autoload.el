@@ -42,51 +42,55 @@
           (push! d compilation-search-path t))))))
 
 
-(with-eval-after-load 'compile
-
+(defun on-compile-init! ()
+  "On \\=`compile\\=' initialization."
   (when-platform% 'windows-nt
     ;; compile and activate `compilation-find-file' advice on Windows
     (ad-enable-advice #'compilation-find-file 'before
                       "compilation-find-file-before")
     (ad-activate #'compilation-find-file t))
-
   (when-platform% 'darwin
     ;; `next-error' find source file
     (add-hook 'compilation-finish-functions
               #'compilation*-make-change-dir
               (emacs-arch)))
-
   (add-hook 'compilation-filter-hook #'compilation*-colorize-buffer!)
-
   (when-var% compilation-mode-map 'compile
     ;; define `recompile' and `quit-window' key bindings
     (define-key% compilation-mode-map (kbd "g") #'recompile)
     (define-key% compilation-mode-map (kbd "q") #'quit-window))
-
   (setq% compilation-scroll-output t 'compile)
-
   (define-key% (current-global-map) (kbd "C-x p c") #'compile))
 
 
-(with-eval-after-load 'grep
+;;; `compile' after load
+(with-eval-after-load 'compile
+  (make-thread* #'on-compile-init!))
 
+
+(defun on-grep-init! ()
+  "On \\=`grep\\=' initialization."
   ;; define `recompile' and `quit-window' key binding for `grep'
   (when-var% grep-mode-map 'grep
     (define-key% grep-mode-map (kbd "g") #'recompile)
     (define-key% grep-mode-map (kbd "q") #'quit-window)))
 
 
-(with-eval-after-load 'make-mode
+;;; `grep' after load
+(with-eval-after-load 'grep
+  (on-grep-init!))
 
+
+(defun on-make-mode-init! ()
+  "On \\=`make-mode\\=' intialization."
   ;; spaced blackslash-region for makefile.
   (when-var% makefile-mode-map 'make-mode
     (when-fn% 'makefile-backslash-region 'make-mode
       (define-key% makefile-mode-map (kbd "C-c C-\\")
-        #'(lambda (from to delete-flag)
-            (interactive "r\nP")
-            (fluid-let (indent-tabs-mode nil)
-              (makefile-backslash-region from to delete-flag))))))
-
+                   #'(lambda (from to delete-flag)
+                       (interactive "r\nP")
+                       (fluid-let (indent-tabs-mode nil)
+                         (makefile-backslash-region from to delete-flag))))))
   (when-platform% 'darwin
     (when-fn% 'makefile-gmake-mode 'make-mode
       (when% (and (assoc** "[Mm]akefile\\'" auto-mode-alist :test #'string=)
@@ -100,5 +104,9 @@
           (setcdr (assoc** "[Mm]akefile\\'" auto-mode-alist :test #'string=)
                   'makefile-gmake-mode))))))
 
+;;; `make-mode' after load
+(with-eval-after-load 'make-mode
+  (make-thread* #'on-make-mode-init!))
 
-;;; end of on-compile-autoload.el
+
+;; end of on-compile-autoload.el

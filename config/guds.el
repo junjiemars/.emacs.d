@@ -12,7 +12,7 @@
 
 
 
-(require 'gud)
+(eval-when-compile (require 'gud))
 
 
 
@@ -237,3 +237,5 @@ Avoid bugs in `gud-format-command' and `gud-find-c-expr'."
 
 
 (provide 'guds)
+
+;; end of guds.el

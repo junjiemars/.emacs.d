@@ -7,6 +7,34 @@
 ;;;;
 
 
+(defmacro-if-fn% xref-find-definitions xref)
+
+(defmacro when-fn-xref-find-definitions% (&rest body)
+  `(if-fn-xref-find-definitions%
+       (progn% ,@body)))
+
+(defmacro unless-fn-xref-find-definitions% (&rest body)
+  `(if-fn-xref-find-definitions%
+       (comment ,@body)
+     (progn ,@body)))
+
+(if-fn-xref-find-definitions%
+    (defmacro if-fn-pop-tag-mark% (then &rest body)
+      `(comment ,then ,@body))
+  (defmacro-if-fn% pop-tag-mark etags))
+
+(if-fn-xref-find-definitions%
+    (defmacro if-feature-etags% (then &rest body)
+      `(comment ,then ,@body))
+  (defmacro-if-feature% etags))
+
+(defmacro when-fn-pop-tag-mark% (&rest body)
+  `(if-fn-pop-tag-mark%
+    (prog% ,@body)))
+
+;; end of macro
+
+
 (defmacro tags-spec->% (&rest key)
   "Extract value from the list of spec via KEYS at compile time.\n
 Examples:
@@ -18,7 +46,7 @@ Examples:
                   :emacs-home ,(v-home% ".tags/home/TAGS")
                   :emacs-source ,(v-home% ".tags/source/TAGS")
                   :os-include ,(emacs-home* ".tags/os/TAGS"))
-     ,@key))
+                 ,@key))
 
 
 (defcustom%
@@ -103,12 +131,13 @@ when \\=`desktop-globals-to-save\\=' include it."
 
 
 (defalias 'mount-tags #'visit-tags-table
-  "Mount existing TAGS into `tags-table-list'.")
+  "Mount existing TAGS into \\=`tags-table-list\\='.")
 
 
 (defun unmount-tags (&optional tags)
-  "Unmount TAGS from `tags-table-list'.\n
-With prefix argument TAGS unmount all tags from `tags-table-list'."
+  "Unmount TAGS from \\=`tags-table-list\\='.\n
+With prefix argument TAGS unmount all tags from
+\\=`tags-table-list\\='."
   (interactive (list (unless (and current-prefix-arg
                                   (yes-or-no-p "unmount all? "))
                        (fluid-let (file-name-history tags-table-list)
@@ -123,14 +152,14 @@ With prefix argument TAGS unmount all tags from `tags-table-list'."
                         tags-table-list)))))
 
 
-(defun make-tags (home tags-file file-filter dir-filter
-                       &optional tags-option renew)
+(defun make-tags
+    (home tags-file file-filter dir-filter &optional tags-option renew)
   "Make tags.\n
 HOME where the source files locate,
 TAGS-FILE where the tags file to save,
 FILE-FILTER file filter function,
 DIR-FILTER directory filter function,
-TAGS-OPTION `tags-program' extra options,
+TAGS-OPTION \\=`tags-program\\=' extra options,
 RENEW overwrite the existing tags file when t else create it."
   (unless tags-program
     (signal 'void-variable (list 'tags-program tags-program)))
@@ -269,16 +298,6 @@ RENEW overwrite the existing tags file when t else create it."
 
 
 ;;; go into `view-mode'
-
-(defmacro when-fn-xref-find-definitions% (&rest body)
-  `(when-fn% 'xref-find-definitions 'xref
-     ,@body))
-
-(defmacro unless-fn-xref-find-definitions% (&rest body)
-  `(unless-fn% 'xref-find-definitions 'xref
-     ,@body))
-
-
 ;;; `xref-find-definitions' into `view-mode'
 
 (when-fn-xref-find-definitions%
@@ -296,18 +315,27 @@ RENEW overwrite the existing tags file when t else create it."
                      "xref-find-definitions-after")
    (ad-activate #'xref-find-definitions t)))
 
+
+(unless-fn% 'xref-find-references 'xref
+  (defun xref-find-references (what)
+    "Alias of \\=`tags-apropos\\='."
+    (interactive
+     (list (read-string "Find references of: "
+                        (cdr (symbol@ 'symbol)))))
+    (tags-apropos what)))
+
+
+;;; `xref' after load
 (when-fn-xref-find-definitions%
  (with-eval-after-load 'xref
    (make-thread* #'on-xref-init!)))
 
+;; end of `xref'
 
-;; `pop-tag-mark' same as Emacs22+ for ancient Emacs
-(unless-fn-xref-find-definitions%
- (when-fn% 'pop-tag-mark 'etags
-   (with-eval-after-load 'etags
-     ;; define keys for `pop-tag-mark' and `tags-loop-continue'
-     (define-key% (current-global-map) (kbd "M-,") #'pop-tag-mark)
-     (define-key% (current-global-map) (kbd "M-*") #'tags-loop-continue))))
+
+;;; `etags' after load
+;;; `pop-tag-mark' same as Emacs22+ for ancient Emacs
+
 
 ;;; `find-tag' into `view-mode'
 (unless-fn-xref-find-definitions%
@@ -317,23 +345,23 @@ RENEW overwrite the existing tags file when t else create it."
                            (tags-in-view-mode))
        (view-mode 1)))))
 
-(unless-fn-xref-find-definitions%
- (defun on-etags-init! ()
+(defun on-etags-init! ()
+  "On \\=`etags\\=' initialization."
+  (when-fn-pop-tag-mark%
+   ;; define keys for `pop-tag-mark' and `tags-loop-continue'
+   (define-key% (current-global-map) (kbd "M-,") #'pop-tag-mark)
+   (define-key% (current-global-map) (kbd "M-*") #'tags-loop-continue))
+  (unless-fn-xref-find-definitions%
    (ad-enable-advice #'find-tag 'after "find-tag-after")
    (ad-activate #'find-tag t)))
 
+
+;;; `etags' after load
 (unless-fn-xref-find-definitions%
  (with-eval-after-load 'etags
-   (make-thread* #'on-etags-init!)))
+   (on-etags-init!)))
 
-
-(unless-fn% 'xref-find-references 'xref
-  (defun xref-find-references (what)
-    "Alias of \\=`tags-apropos\\='."
-    (interactive
-     (list (read-string "Find references of: "
-                        (cdr (symbol@ 'symbol)))))
-    (tags-apropos what)))
+;; end of `etags'
 
 
 (provide 'tags)
