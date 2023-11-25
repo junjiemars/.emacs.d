@@ -16,7 +16,7 @@
 
 
 (defun on-ido-init! ()
-  "Initialize \\=`ido\\=' on loading."
+  "On \\=`ido\\=' intialization."
   (define-key% (current-global-map) (kbd "C-x 5 r")
                #'ido-find-file-read-only-other-frame)
   (define-key% (current-global-map) (kbd "C-x 4 r")
@@ -26,8 +26,9 @@
   (setq ido-enable-flex-matching t))
 
 
+;;; `ido' after load
 (with-eval-after-load 'ido
-  (make-thread* #'on-ido-init!))
+  (on-ido-init!))
 
 
 ;; end of on-ido-autoload.el

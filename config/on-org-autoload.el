@@ -9,6 +9,7 @@
 
 (defmacro-if-feature% ox-reveal)
 
+;; end of macro
 
 ;; fix: Warning (bytecomp): `org-bookmark-jump-unhide' fn might not be
 ;; defined at runtime.
@@ -46,8 +47,9 @@
   (when-fn% 'org-switchb 'org
     (define-key% (current-global-map) (kbd "C-c o s") #'org-switchb)))
 
+;;; `org' after load
 (with-eval-after-load 'org
-  (make-thread* #'on-org-init!))
+  (on-org-init!))
 
 
 ;; end of on-org-autoload.el

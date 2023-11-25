@@ -124,19 +124,29 @@ And copy the qualified buffer name to kill ring."
     (define-key% (current-global-map) (kbd "C-x x SPC") #'whitespace-mode))
   (define-key% (current-global-map) (kbd "C-x x u") #'rename-uniquely))
 
-
 
-(with-eval-after-load 'view
+(make-thread* #'winmove*-keys-init!)
+
+;; end of winmove
+
+
+(defun on-view-init! ()
+  "On \\=`view\\=' initialization."
   ;; keep `view-mode' when quit
   ;; (when-var% view-mode-map 'view
   ;;   (define-key% view-mode-map (kbd "q") #'quit-window))
   ;; treat `read-only-mode' as `view-mode'
   (setq view-read-only t))
 
-
+
+;;; `view' after load
+(with-eval-after-load 'view
+  (on-view-init!))
+
+;; end of `view'
 
 
-(make-thread* #'winmove*-keys-init!)
+
 
 
 ;; end of on-window-autoload.el

@@ -43,7 +43,7 @@
 
 ;; Load glyph font
 (defun self-glyph-init! ()
-  "Initialize glyph spec from \\=`*self-env-spec*\\='.\n"
+  "Initialize glyph spec from \\=`*self-env-spec*\\='."
   (dolist* (g (*self-env-spec* :get :glyph))
     (when (plist-get g :allowed)
       (let ((name (plist-get g :name))

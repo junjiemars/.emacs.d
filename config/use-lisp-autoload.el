@@ -110,7 +110,7 @@
 
 (when-feature-paredit%
  (with-eval-after-load 'paredit
-   (make-thread* #'on-use-paredit-init!)))
+   (on-use-paredit-init!)))
 
 ;; end of `paredit'
 

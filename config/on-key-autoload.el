@@ -9,7 +9,8 @@
 ;;
 
 
-(defun self-key-init! ()
+(defun self-keys-init! ()
+  "Initialize key spec from \\=`*self-env-spec*\\='."
   (let ((key (*self-env-spec* :get :key)))
     (when (self-spec-> key :allowed)
       (let ((modifier (self-spec-> key :modifier)))
@@ -17,6 +18,6 @@
           (set (car x) (cdr x)))))))
 
 
-(make-thread* #'self-key-init!)
+(make-thread* #'self-keys-init!)
 
  ; end of on-key-autoload.el
