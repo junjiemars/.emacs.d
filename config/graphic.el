@@ -54,7 +54,6 @@
                              inhibit-splash-screen))))
 
 
-
 (when-graphic%
 
   (defun toggle-frame-initialized (&optional frame)
@@ -126,7 +125,7 @@ If RESET is true then reset before load."
 ;; end of when-theme%
 
 
-(make-thread* #'self-frame-init! t)
+(self-frame-init!)
 (when-theme% (make-thread* #'self-theme-init!))
 
 

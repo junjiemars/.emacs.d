@@ -22,14 +22,12 @@
   "Set Lisp basic minor modes."
   (unless (or (string= "*scratch*" (buffer-name))
               (string= "*ielm*" (buffer-name)))
-    (make-thread*
-     (lambda ()
-       ;; structured editing of s-expression data
-       (if-feature-paredit% (enable-paredit-mode))
-       ;; hilighting parentheses,brackets,and braces in minor mode
-       (if-feature-rainbow-delimiters% (rainbow-delimiters-mode))
-       ;; aggressive indent
-       (if-feature-aggressive-indent% (aggressive-indent-mode))))))
+    ;; structured editing of s-expression data
+    (if-feature-paredit% (make-thread* #'enable-paredit-mode))
+    ;; hilighting parentheses,brackets,and braces in minor mode
+    (if-feature-rainbow-delimiters% (make-thread* #'rainbow-delimiters-mode))
+    ;; aggressive indent
+    (if-feature-aggressive-indent% (make-thread* #'aggressive-indent-mode))))
 
 
 (defun on-use-lisp-init! ()
