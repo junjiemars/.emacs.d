@@ -135,7 +135,7 @@ and INDENT."
 
 ;;; `eglot' after load
 (when-feature-eglot%
- (with-eval-after-load* 'eglot #'on-eglot-init!))
+ (eval-after-load 'eglot #'on-eglot-init!))
 
 ;; end of `eglot'
 
@@ -180,7 +180,7 @@ and INDENT."
 
 ;;; `project' after load
 (when-feature-project%
- (with-eval-after-load* 'project #'on-project-init!))
+ (eval-after-load 'project #'on-project-init!))
 
 ;; end of `project'
 

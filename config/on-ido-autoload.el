@@ -27,7 +27,7 @@
 
 
 ;;; `ido' after load
-(with-eval-after-load* 'ido #'on-ido-init!)
+(eval-after-load 'ido #'on-ido-init!)
 
 
 ;; end of on-ido-autoload.el

@@ -635,7 +635,7 @@ See `align-entire'."
 
 
 ;;; `cc-mode' after load
-(with-eval-after-load* 'cc-mode #'on-cc-mode-init!)
+(eval-after-load 'cc-mode #'on-cc-mode-init!)
 
 
 (defun on-cmacexp-init! ()
@@ -647,7 +647,7 @@ See `align-entire'."
 
 
 ;;; `cmacexp' after load
-(with-eval-after-load* 'cmacexp #'on-cmacexp-init!)
+(eval-after-load 'cmacexp #'on-cmacexp-init!)
 
 
 (when-var% manual-program 'man

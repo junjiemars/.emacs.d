@@ -109,7 +109,7 @@
      (define-key% paredit-mode-map (kbd "M-q") nil))))
 
 (when-feature-paredit%
- (with-eval-after-load* 'paredit #'on-use-paredit-init!))
+ (eval-after-load 'paredit #'on-use-paredit-init!))
 
 ;; end of `paredit'
 

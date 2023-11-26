@@ -33,7 +33,7 @@
                         (if (= (user-uid) 0) " # " " $ ")))))))
 
 ;;; `eshell' after load
-(with-eval-after-load* 'eshell #'on-eshell-init!)
+(eval-after-load 'eshell #'on-eshell-init!)
 
 
 ;; end of on-eshell-autoload.el

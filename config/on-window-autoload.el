@@ -90,7 +90,7 @@ And copy the qualified buffer name to kill ring."
 
 
 
-(defun winmove*-keys-init! ()
+(defun window-keys-init! ()
   ;; windows
   (define-key% (current-global-map) (kbd "C-c w l") #'windmove-left)
   (define-key% (current-global-map) (kbd "C-c w r") #'windmove-right)
@@ -125,7 +125,7 @@ And copy the qualified buffer name to kill ring."
   (define-key% (current-global-map) (kbd "C-x x u") #'rename-uniquely))
 
 
-(make-thread* #'winmove*-keys-init!)
+(make-thread* #'window-keys-init!)
 
 ;; end of winmove
 
@@ -140,7 +140,7 @@ And copy the qualified buffer name to kill ring."
 
 
 ;;; `view' after load
-(with-eval-after-load* 'view #'on-view-init!)
+(eval-after-load 'view #'on-view-init!)
 
 ;; end of `view'
 

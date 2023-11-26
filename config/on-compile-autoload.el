@@ -59,12 +59,14 @@
     ;; define `recompile' and `quit-window' key bindings
     (define-key% compilation-mode-map (kbd "g") #'recompile)
     (define-key% compilation-mode-map (kbd "q") #'quit-window))
-  (setq% compilation-scroll-output t 'compile)
-  (define-key% (current-global-map) (kbd "C-x p c") #'compile))
+  (setq% compilation-scroll-output t 'compile))
 
 
-;;; `compile' after load
-(with-eval-after-load* 'compile #'on-compile-init!)
+;; `compile' after load
+(eval-after-load 'compile #'on-compile-init!)
+
+;; `compile' global key
+(define-key% (current-global-map) (kbd "C-x p c") #'compile)
 
 
 (defun on-grep-init! ()
@@ -76,7 +78,7 @@
 
 
 ;;; `grep' after load
-(with-eval-after-load* 'grep #'on-grep-init!)
+(eval-after-load 'grep #'on-grep-init!)
 
 
 (defun on-make-mode-init! ()
@@ -103,7 +105,7 @@
                   'makefile-gmake-mode))))))
 
 ;;; `make-mode' after load
-(with-eval-after-load* 'make-mode #'on-make-mode-init!)
+(eval-after-load 'make-mode #'on-make-mode-init!)
 
 
 ;; end of on-compile-autoload.el

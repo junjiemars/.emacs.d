@@ -230,12 +230,6 @@ accumulate clause and Miscellaneous clause."
              `(progn% (comment ,then)
                       ,@body)))))))
 
-(defmacro with-eval-after-load* (file fn)
-  "Execute FN after FILE is loaded.\n
-See \\=`with-eval-after-load\\='"
-  `(eval-after-load ,file ,fn))
-
-
 ;; end of byte-compiler macro
 
 ;;;

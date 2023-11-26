@@ -36,7 +36,7 @@
 
 ;;; `magit' after load
 (when-feature-magit%
- (with-eval-after-load* 'magit #'on-use-magit-init!))
+ (eval-after-load 'magit #'on-use-magit-init!))
 
 
 ;; end of use-magit-autoload.el
