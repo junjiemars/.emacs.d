@@ -344,9 +344,9 @@ No matter the declaration order, the executing order is:
             (t ps)))))
 
 
-;;; Make `v-home*' .exec/
+;;; Make `v-home' .exec/
 (v-home! ".exec/")
-;;; Make `v-home*' private/
+;;; Make `v-home' private/
 (v-home! "private/")
 ;;; Duplicate spec files
 (*self-paths* :dup)

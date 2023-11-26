@@ -505,9 +505,9 @@ RENEW whether to renew the existing FILE."
                                         (remote-norm-id remote)
                                         "-"))
                    'native))
-             (fs (v-home* (concat ".exec/cc-id-"
-                                  (symbol-name ss)
-                                  ".el")))
+             (fs (v-home (concat ".exec/cc-id-"
+                                 (symbol-name ss)
+                                 ".el")))
              (d))
         (or (and cached (plist-get dx ss))
 

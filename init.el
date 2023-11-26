@@ -175,7 +175,7 @@ See \\=`file-name-sans-extension\\='."
                      ((= ?. c) (throw 'break i))
                      (t (setq i (1- i))))))))))))
 
-(defmacro v-path* (file)
+(defmacro v-path (file)
   "Return versioned FILE."
   (let ((f1 (gensym)))
     `(let ((,f1 ,file))
@@ -183,21 +183,21 @@ See \\=`file-name-sans-extension\\='."
                ,(v-name) "/"
                (file-name-nondirectory ,f1)))))
 
-(defmacro v-home* (file)
+(defmacro v-home (file)
   "Return versioned FILE under \\=`emacs-home*\\='."
-  `(v-path* (emacs-home* ,file)))
+  `(v-path (emacs-home* ,file)))
 
 (defmacro v-home% (file)
-  "Return versioned path of FILE under \\=`v-home*\\=' at compile-time."
-  (v-home* file))
+  "Return versioned path of FILE under \\=`v-home\\=' at compile-time."
+  (v-home file))
 
 (defmacro v-home! (file)
-  "Make versioned path of FILE under \\=`v-home*\\=' at compile-time."
-  (path! (v-home* file)))
+  "Make versioned path of FILE under \\=`v-home\\=' at compile-time."
+  (path! (v-home file)))
 
 (defmacro v-home%> (file)
-  "Return the \\=`v-home*\\=' FILE with the extension of compiled file."
-  (concat (file-name-sans-extension* (v-home* file))
+  "Return the \\=`v-home\\=' FILE with the extension of compiled file."
+  (concat (file-name-sans-extension* (v-home file))
           (comp-file-extension%)))
 
 ;; end of versioned file macro
@@ -209,7 +209,7 @@ See \\=`file-name-sans-extension\\='."
   (let ((s1 (gensym)))
     `(let ((,s1 ,src))
        (when (and (stringp ,s1) (file-exists-p ,s1))
-         (let* ((d1 (v-path* ,s1))
+         (let* ((d1 (v-path ,s1))
                 (d2 (concat (file-name-sans-extension* d1)
                             ,(comp-file-extension%))))
            (when (file-newer-than-file-p ,s1 d1)
