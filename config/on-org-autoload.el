@@ -48,8 +48,7 @@
     (define-key% (current-global-map) (kbd "C-c o s") #'org-switchb)))
 
 ;;; `org' after load
-(with-eval-after-load 'org
-  (on-org-init!))
+(with-eval-after-load* 'org #'on-org-init!)
 
 
 ;; end of on-org-autoload.el

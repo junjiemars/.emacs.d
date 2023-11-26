@@ -7,8 +7,8 @@
 ;;;;
 
 
-(defun self-eshell-init! ()
-  "Set the basics of \\=`eshell-mode\\='"
+(defun on-eshell-init! ()
+  "On \\=`eshell-mode\\=' initialization."
   (eval-when-compile (require 'em-term))
   (require 'em-term)
   (let ((eshell (*self-env-spec* :get :eshell)))
@@ -21,12 +21,7 @@
       (setq% eshell-visual-subcommands
              (self-spec-> eshell :visual-subcommands))
       (setq% eshell-visual-options
-             (self-spec-> eshell :visual-options)))))
-
-
-(with-eval-after-load 'eshell
-  (self-eshell-init!)
-
+             (self-spec-> eshell :visual-options))))
   ;; abbreviated `eshell' prompt
   (when-version% > 23
     (setq% eshell-save-history-on-exit t 'em-hist)
@@ -36,6 +31,9 @@
             #'(lambda ()
                 (concat (abbreviate-file-name (eshell/pwd))
                         (if (= (user-uid) 0) " # " " $ ")))))))
+
+;;; `eshell' after load
+(with-eval-after-load* 'eshell #'on-eshell-init!)
 
 
 ;; end of on-eshell-autoload.el

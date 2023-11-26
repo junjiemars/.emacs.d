@@ -327,8 +327,7 @@ RENEW overwrite the existing tags file when t else create it."
 
 ;;; `xref' after load
 (when-fn-xref-find-definitions%
- (with-eval-after-load 'xref
-   (on-xref-init!)))
+ (with-eval-after-load* 'xref #'on-xref-init!))
 
 ;; end of `xref'
 

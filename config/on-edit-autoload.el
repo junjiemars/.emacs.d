@@ -8,7 +8,7 @@
 
 
 (defun self-edit-env->disable-indent-tabs-mode ()
-  "Disable `indent-tabs-mode' in major mode."
+  "Disable \\=`indent-tabs-mode\\=' in major mode."
   (set (make-local-variable 'indent-tabs-mode) nil))
 
 

@@ -140,8 +140,7 @@ And copy the qualified buffer name to kill ring."
 
 
 ;;; `view' after load
-(with-eval-after-load 'view
-  (on-view-init!))
+(with-eval-after-load* 'view #'on-view-init!)
 
 ;; end of `view'
 

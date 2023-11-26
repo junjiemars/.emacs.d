@@ -79,8 +79,7 @@ non-nil, otherwise not.  See also: `browser-url-browser-function'."
 
 ;;; `eww' after load
 (when-feature-eww%
- (with-eval-after-load 'eww
-   (on-eww-init!)))
+ (with-eval-after-load* 'eww #'on-eww-init!))
 
 
 ;; end of `eww'

@@ -21,8 +21,8 @@
 
 
 ;;; `elisp-mode' or `lisp-mode' after load
-(with-eval-after-load (if-version% <= 25.0 'elisp-mode 'lisp-mode)
-  (on-elisp-init!))
+(with-eval-after-load* (if-version% <= 25.0 'elisp-mode 'lisp-mode)
+  #'on-elisp-init!)
 
 ;; end of `elisp-mode'
 
@@ -51,8 +51,7 @@
     (append! #'set-ielm-mode! ielm-mode-hook)))
 
 ;;; `ielm' after load
-(with-eval-after-load 'ielm
-  (on-ielm-init!))
+(with-eval-after-load* 'ielm #'on-ielm-init!)
 
 ;; end of `ielm'
 

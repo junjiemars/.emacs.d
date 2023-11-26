@@ -64,8 +64,7 @@
 
 
 ;;; `compile' after load
-(with-eval-after-load 'compile
-  (on-compile-init!))
+(with-eval-after-load* 'compile #'on-compile-init!)
 
 
 (defun on-grep-init! ()
@@ -77,8 +76,7 @@
 
 
 ;;; `grep' after load
-(with-eval-after-load 'grep
-  (on-grep-init!))
+(with-eval-after-load* 'grep #'on-grep-init!)
 
 
 (defun on-make-mode-init! ()
@@ -105,8 +103,7 @@
                   'makefile-gmake-mode))))))
 
 ;;; `make-mode' after load
-(with-eval-after-load 'make-mode
-  (on-make-mode-init!))
+(with-eval-after-load* 'make-mode #'on-make-mode-init!)
 
 
 ;; end of on-compile-autoload.el

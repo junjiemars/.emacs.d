@@ -195,7 +195,7 @@
   )
 ;; end of `load-conditional-modes!'
 
-(defun keys-autoload-init! ()
+(defun load-autoloaded-keys! ()
   "Initialize keys on autoload."
 
   ;; Lookup dictionary
@@ -239,7 +239,7 @@
   (define-key% (current-global-map) (kbd "C-c s d") #'delete-duplicate-lines)
 
   )
-;; end of keys-autoload-init!
+;; end of load-autoloaded-keys!
 
 (defun on-epilogue! ()
   (compile!
@@ -258,7 +258,7 @@
       (compile-unit% (emacs-home* "config/module.el"))))
   (load-autoloaded-modes!)
   (load-conditional-modes!)
-  (keys-autoload-init!)
+  (load-autoloaded-keys!)
   (when-fn% 'toggle-frame-initialized nil (toggle-frame-initialized))
   (when-fn% 'self-desktop-read! nil (self-desktop-read!))
   (make-thread* #'on-epilogue! (if-noninteractive% t nil)))

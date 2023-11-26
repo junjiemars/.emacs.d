@@ -238,6 +238,8 @@
 
 (defmacro-if-feature% ert)
 (defmacro-if-feature% ertxxx)
+(defmacro-if-fn% ert-delete-test ert)
+(defmacro-if-fn% ert-delete-testxxx ert)
 
 (ert-deftest %fn:emacs-arch ()
   (should (> (emacs-arch) 0)))
@@ -247,6 +249,12 @@
   (should (= 12 (if-feature-ertxxx% (+ 1 2) (* 3 4))))
   (should (and (unintern 'if-feature-ert%)
                (unintern 'if-feature-ertxxx%))))
+
+(ert-deftest %fn:defmacro-if-fn% ()
+  (should (= 3 (if-fn-ert-delete-test% (+ 1 2) (* 3 4))))
+  (should (= 12 (if-fn-ert-delete-testxxx% (+ 1 2) (* 3 4))))
+  (should (and (unintern 'if-fn-ert-delete-test%)
+               (unintern 'if-fn-ert-delete-testxxx%))))
 
 (ert-deftest %fn:flatten ()
   (should (equal '(nil) (flatten nil)))
