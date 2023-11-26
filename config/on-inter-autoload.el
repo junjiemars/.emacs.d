@@ -130,9 +130,10 @@
 ;;; see also: https://www.emacswiki.org/emacs/OpenNextLine
 
 (defun open-next-line (n &optional indent)
-  "Move to the next line and then open N lines, like vi's o command.\n
-Optional argument INDENT whether to indent lines.
-See also `open-line'."
+  "Move to the next line and then open N lines, like vi\\=' o
+command.\n
+Optional argument INDENT whether to indent lines. See also
+\\=`open-line\\='."
   (interactive (list (prefix-numeric-value
                       (if (consp current-prefix-arg)
                           1
@@ -148,9 +149,9 @@ See also `open-line'."
     (indent-according-to-mode)))
 
 (defun open-previous-line (n &optional indent)
-  "Open N lines above the current one, like vi's O command.\n
-Optional argument INDENT whether to indent lines.
-See also `open-line' and `split-line'."
+  "Open N lines above the current one, like vi\\=' O command.\n
+Optional argument INDENT whether to indent lines. See also
+\\=`open-line\\=' and \\=`split-line\\='."
   (interactive (list (prefix-numeric-value
                       (if (consp current-prefix-arg)
                           1
@@ -198,7 +199,7 @@ See also `open-line' and `split-line'."
 
 (unless-fn% 'count-words-region 'simple
   (defalias 'count-words-region #'count-lines-region
-    "`count-lines-region' had been obsoleted since Emacs24.1+"))
+    "\\=`count-lines-region\\=' had been obsoleted since Emacs24.1+"))
 
 ;; end of `count-lines-region'
 
@@ -206,7 +207,7 @@ See also `open-line' and `split-line'."
 ;;; Comment
 
 (defun toggle-comment (&optional n)
-  "Toggle N lines' comment on current line or region."
+  "Toggle N lines\\=' comment on current line or region."
   (interactive "p")
   (let ((begin (region-active-if (region-beginning)
                  (if (and (< n 0))
@@ -224,7 +225,7 @@ See also `open-line' and `split-line'."
     (region-active-unless (forward-line n))
     (beginning-of-line)))
 
- ; end of Comment
+;; end of Comment
 
 
 (defun surround-region (&optional begin end)
@@ -297,7 +298,7 @@ If \\=`current-prefix-arg\\=' < 0, then repeat n time with END in reversed."
             (shell-command (concat "rm -r " (concat d f)))))))))
 
 (defun reset-emacs ()
-  "Clean all compiled file and desktop, then restart Emacs."
+  "Clean all compiled files and dot files, then kill Emacs."
   (interactive)
   (clean-versioned-dirs
    (delq nil
