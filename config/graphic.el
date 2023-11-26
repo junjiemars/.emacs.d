@@ -98,7 +98,7 @@ If DIR is nil then load the built-in \\=`customize-themes\\=' by NAME."
 (when-theme%
 
   (defun self-theme-init! (&optional reset)
-    "Initilize theme specs from \\=`*self-env-spec*\\='.\n
+    "Initialize theme specs from \\=`*self-env-spec*\\='.\n
 If RESET is true then reset before load."
     (when reset (mapc #'disable-theme custom-enabled-themes))
     (let ((t1 (*self-env-spec* :get :theme)))
