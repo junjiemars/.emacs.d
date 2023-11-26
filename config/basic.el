@@ -14,8 +14,9 @@
 
 ;; end of `load-path'
 
-
-;;; Versioned Dirs: .*
+;;;
+;; versioned dirs: .*
+;;;
 
 ;; `abbrev'
 (setq% abbrev-file-name (v-home! ".abbrev/defs") 'abbrev)
@@ -90,10 +91,11 @@
 (setq% url-configuration-directory (v-home! ".url/") 'url)
 
 
-;; Versioned Dirs
+;; end of versioned dirs
 
-
-;;; Compatible Macros
+;;;
+;; compatible macro
+;;;
 
 (unless-fn% 'user-error nil
   (defun user-error (format &rest args)
@@ -114,10 +116,11 @@
   (unless-fn% 'declare-function nil
     (defmacro declare-function (&rest _))))
 
-;; end of Compatible Macros
+;; end of compatible macro
 
-
-;;; Compatible Functions
+;;;
+;; compatible function
+;;;
 
 (unless-fn% 'with-eval-after-load nil
   (defmacro with-eval-after-load (file &rest body)
@@ -160,7 +163,7 @@ THEN."
   `(region-active-if nil ,@then))
 
 
-;; end of Compatible Functions
+;; end of compatible function
 
 
 
@@ -354,8 +357,9 @@ current buffer."
 
 ;; end of file functions
 
-
-;;; define key macro
+;;;
+;; define key macro
+;;;
 
 (defmacro if-key% (keymap key test then &rest else)
   "If TEST function returns t for KEY in KEYMAP do then,
@@ -372,7 +376,7 @@ exists."
             (lambda (d) (not (eq d ,def)))
             (define-key ,keymap ,key ,def)))
 
-;; end of key macro
+;; end of define key macro
 
 
 (defmacro symbol@ (&optional thing)

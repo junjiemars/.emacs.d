@@ -63,14 +63,13 @@ Else return BODY sexp."
 ;;; file macro
 
 (defmacro emacs-home* (&optional file)
-  "Return path of FILE under \\=`emacs-home\\='."
+  "Return path of FILE under \\='~/.emacs.d\\='."
   `(concat ,(expand-file-name
              (or (getenv "EMACS_HOME") "~/.emacs.d/"))
            ,file))
 
 (defmacro path! (file)
-  "Make and return the path of the FILE.\n
-The FILE should be posix path, see \\=`path-separator\\='."
+  "Make and return the path of posixed FILE.\n"
   (let ((f (gensym)) (d (gensym))
         (i (gensym)) (ds (gensym)))
     `(let* ((,f ,file))
@@ -100,22 +99,18 @@ The FILE should be posix path, see \\=`path-separator\\='."
 ;;; *-version% macro
 
 (defconst +emacs-version+ (string-to-number emacs-version)
-  "The version of Emacs in \\=`float\\='.")
+  "The \\=`float\\=' version of Emacs in.")
 
 (defmacro if-version% (cmp version then &rest else)
-  "If VERSION CMP with variable \\=`emacs-version\\=' is t do THEN,
-else do ELSE...\n
-Return the value of THEN or the value of the last of the ELSE’s.
-THEN must be one expression, but ELSE... can be zero or more
-expressions.  If (CMP VERSION \\=`emacs-version\\=') yield nil,
-and there are no ELSE’s, the value is nil."
+  "If VERSION CMP with variable \\=`+emacs-version+\\=' is t do
+THEN, else do ELSE..."
   (declare (indent 3))
   `(if% (,cmp ,version +emacs-version+)
        ,then
      (progn% ,@else)))
 
 (defmacro when-version% (cmp version &rest body)
-  "When VERSION CMP with variable \\=`emacs-version\\=' yield
+  "When VERSION CMP with variable \\=`+emacs-version+\\=' yield
 non-nil, do BODY."
   (declare (indent 2))
   `(if-version% ,cmp ,version (progn% ,@body)))
@@ -131,7 +126,7 @@ non-nil, do BODY."
 ;;; compile macro
 
 (defmacro if-native-comp% (then &rest else)
-  "If native compilation support is built-in do THEN, else do ELSE..."
+  "If native compilation is built-in do THEN, else do ELSE..."
   (declare (indent 1))
   (if (and (fboundp 'native-comp-available-p)
            (native-comp-available-p))
@@ -188,7 +183,8 @@ See \\=`file-name-sans-extension\\='."
   `(v-path (emacs-home* ,file)))
 
 (defmacro v-home% (file)
-  "Return versioned path of FILE under \\=`v-home\\=' at compile-time."
+  "Return versioned path of FILE under \\=`v-home\\=' at
+compile-time."
   (v-home file))
 
 (defmacro v-home! (file)
@@ -196,7 +192,8 @@ See \\=`file-name-sans-extension\\='."
   (path! (v-home file)))
 
 (defmacro v-home%> (file)
-  "Return the \\=`v-home\\=' FILE with the extension of compiled file."
+  "Return the \\=`v-home\\=' FILE with the extension of compiled
+file."
   (concat (file-name-sans-extension* (v-home file))
           (comp-file-extension%)))
 
@@ -205,7 +202,7 @@ See \\=`file-name-sans-extension\\='."
 ;;; compiler macro
 
 (defmacro v-comp-file! (src)
-  "Make a versioned copy of SRC."
+  "Make a versioned cons copy of SRC."
   (let ((s1 (gensym)))
     `(let ((,s1 ,src))
        (when (and (stringp ,s1) (file-exists-p ,s1))
@@ -237,11 +234,16 @@ If ONLY-COMPILE is t, does not load DST."
 (defun clean-compiled-files ()
   "Clean all compiled files."
   (interactive)
-  (let ((dirs (list `(,(v-home% "config/") . "\\.el[cn]\\(\\.tmp\\)?\\'")
-                    `(,(v-home% "private/") . "\\.el[cn]\\(\\.tmp\\)?\\'")
-                    `(,(v-home% "theme/") . "\\.el[cn]\\(\\.tmp\\)?\\'")
-                    `(,(v-home% ".exec/") . "\\.el[cn]\\(\\.tmp\\)?\\'")
-                    `(,(emacs-home*) . "[_a-z]+\\.el[cn]+\\'"))))
+  (let ((dirs (list `(,(v-home% "config/")
+                      . "\\.el[cn]\\(\\.tmp\\)?\\'")
+                    `(,(v-home% "private/")
+                      . "\\.el[cn]\\(\\.tmp\\)?\\'")
+                    `(,(v-home% "theme/")
+                      . "\\.el[cn]\\(\\.tmp\\)?\\'")
+                    `(,(v-home% ".exec/")
+                      . "\\.el[cn]\\(\\.tmp\\)?\\'")
+                    `(,(emacs-home*)
+                      . "[_a-z]+\\.el[cn]+\\'"))))
     (while dirs
       (let* ((d (car dirs)) (f1 (car d)) (r1 (cdr d))
              (fs (when (file-exists-p f1)
@@ -259,7 +261,7 @@ If ONLY-COMPILE is t, does not load DST."
 ;;; *-package% macro
 
 (defmacro when-package% (&rest body)
-  "If Emacs support package, do BODY."
+  "If package is built-in, do BODY."
   (declare (indent 0))
   `(when-version% <= 24.1 ,@body))
 

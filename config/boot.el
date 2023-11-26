@@ -77,7 +77,7 @@ Argument FEATURE that X dependent on, load at compile time."
 ;;;
 
 (defmacro if-lexical% (then &rest else)
-  "If Emacs supports lexical binding do THEN, otherwise do ELSE..."
+  "If lexical binding is built-in do THEN, otherwise do ELSE..."
   (declare (indent 1))
   `(if-version%
        <= 24.1
@@ -85,12 +85,12 @@ Argument FEATURE that X dependent on, load at compile time."
      (progn% ,@else)))
 
 (defmacro when-lexical% (&rest body)
-  "When Emacs supports lexical binding do BODY."
+  "When lexical binding is built-in do BODY."
   (declare (indent 0))
   `(if-lexical% (progn% ,@body)))
 
 (defmacro unless-lexical% (&rest body)
-  "Unless Emacs supports lexical binding do BODY."
+  "Unless lexical binding is built-in do BODY."
   (declare (indent 0))
   `(if-lexical% nil ,@body))
 
@@ -99,7 +99,8 @@ Argument FEATURE that X dependent on, load at compile time."
   (put 'lexical-binding 'safe-local-variable (lambda (_) t)))
 
 (defmacro lexical-let% (varlist &rest body)
-  "Lexically bind variables according to VARLIST in parallel then eval BODY."
+  "Lexically bind variables according to VARLIST in parallel then
+eval BODY."
   (declare (indent 1) (debug let))
   `(if-lexical%
        (if-version% < 27
@@ -111,7 +112,8 @@ Argument FEATURE that X dependent on, load at compile time."
        (lexical-let ,varlist ,@body))))
 
 (defmacro lexical-let*% (varlist &rest body)
-  "Lexically bind variables according to VARLIST sequentially then eval BODY."
+  "Lexically bind variables according to VARLIST sequentially then
+eval BODY."
   (declare (indent 1) (debug let))
   `(if-lexical%
        (if-version% < 27
@@ -130,8 +132,7 @@ Argument FEATURE that X dependent on, load at compile time."
 ;;;
 
 (defmacro if-graphic% (then &rest else)
-  "If in graphic mode, do THEN, else do ELSE...
-
+  "If in graphic mode, do THEN, else do ELSE...\n
 Return the value of THEN or the value of the last of the ELSE’s."
   (declare (indent 1))
   (if (display-graphic-p)
@@ -158,19 +159,20 @@ Return the value of THEN or the value of the last of the ELSE’s."
 ;;;
 
 (defmacro if-platform% (os then &rest else)
-  "If OS eq `system-type' yield non-nil, do THEN, else do ELSE..."
+  "If OS is \\=`system-type\\=' yield non-nil, do THEN, else do
+ELSE..."
   (declare (indent 2))
   `(if% (eq system-type ,os)
        ,then
      (progn% ,@else)))
 
 (defmacro when-platform% (os &rest body)
-  "When OS eq `system-type' yield non-nil, do BODY."
+  "When OS is \\=`system-type\\=' yield non-nil, do BODY."
   (declare (indent 1))
   `(if-platform% ,os (progn% ,@body)))
 
 (defmacro unless-platform% (os &rest body)
-  "Unless OS eq `system-type' yield non-nil do BODY."
+  "Unless OS is \\=`system-type\\=' yield non-nil do BODY."
   (declare (indent 1))
   `(if-platform% ,os nil ,@body))
 
@@ -218,17 +220,14 @@ Argument SPEC (VAR LIST [RESULT])."
 ;;;
 
 (defun compile-unit* (file &optional only-compile)
-  "Make an compile unit.\n
-Argument FILE elisp source file.
-Optional argument ONLY-COMPILE, see \\=`compile-and-load-file*\\='."
+  "Make an compile unit for \\=`compile-and-load-file*\\='."
   (let ((u1 (v-comp-file! file)))
     (when u1
       (vector (car u1) (cdr u1) only-compile nil))))
 
 (defmacro compile-unit% (file &optional only-compile)
-  "Make an compile unit at compile time.\n
-Argument FILE elisp source file.
-Optional argument ONLY-COMPILE: see `compile-and-load-file*'."
+  "Make an compile unit at compile time for
+\\=`compile-and-load-file*\\='"
   (let* ((-u1- (v-comp-file! (funcall `(lambda () ,file))))
          (-src1- (car -u1-))
          (-dst1- (cdr -u1-)))

@@ -32,6 +32,8 @@
      (setplist ,symbol nil)
      (fset ,symbol (list 'autoload ,file ,docstring ,interactive ,type))))
 
+;; end of macro
+
 
 (defun load-autoloaded-modes! ()
   "Load autoloaded modes."

@@ -119,33 +119,33 @@ If optional UNIQUELY is non-nil then append uniquely."
 
 
 (fset 'mapcar**
-  (if-fn% 'cl-mapcar 'cl-lib
-          #'cl-mapcar
-    #'mapcar*))
+      (if-fn% 'cl-mapcar 'cl-lib
+              #'cl-mapcar
+        #'mapcar*))
 
 
 (fset 'remove-if*
-  (if-fn% 'cl-remove-if 'cl-lib
-          #'cl-remove-if
-    #'remove-if))
+      (if-fn% 'cl-remove-if 'cl-lib
+              #'cl-remove-if
+        #'remove-if))
 
 
 (fset 'member-if*
-  (if-fn% 'cl-member-if 'cl-lib
-          #'cl-member-if
-    #'member-if))
+      (if-fn% 'cl-member-if 'cl-lib
+              #'cl-member-if
+        #'member-if))
 
 
 (fset 'every*
-  (if-fn% 'cl-every 'cl-lib
-          #'cl-every
-    #'every))
+      (if-fn% 'cl-every 'cl-lib
+              #'cl-every
+        #'every))
 
 
 (fset 'some*
-  (if-fn% 'cl-some 'cl-lib
-          #'cl-some
-    #'some))
+      (if-fn% 'cl-some 'cl-lib
+              #'cl-some
+        #'some))
 
 
 (defmacro loop* (&rest clause)
@@ -233,7 +233,7 @@ accumulate clause and Miscellaneous clause."
 ;; end of byte-compiler macro
 
 ;;;
-;; Strings
+;; strings
 ;;;
 
 
@@ -310,10 +310,11 @@ Optional argument TRIM regexp used to trim."
            (split-string ,s ,p ,omit-nulls))))))
 
 
-;; end of Strings
+;; end of strings
 
-
-;;; read/save-str/sexp-file
+;;;
+;; read/save-str/sexp-file
+;;;
 
 (defmacro get-buffer-create*
     (buffer-or-name &optional inhibit-buffer-hooks)
@@ -403,14 +404,9 @@ Returns the name of FILE when successed otherwise nil."
 
 ;; end of read/save-str/sexp-file
 
-
-;;; Platform Related Functions
-
-(defmacro emacs-arch ()
-  "Return emacs architecture, 64bits or 32bits."
-  (if (= most-positive-fixnum (1- (expt 2 61))) 64
-    (if (= most-positive-fixnum (1- (expt 2 29))) 32 0)))
-
+;;;
+;; platform related macro
+;;;
 
 (defmacro file-name-base* (path)
   "Return base name of PATH."
@@ -497,6 +493,11 @@ If FN is nil then return the path, otherwise call FN with the path."
         `,path))))
 
 
+(defmacro emacs-arch ()
+  "Return emacs architecture, 64bits or 32bits."
+  (if (= most-positive-fixnum (1- (expt 2 61))) 64
+    (if (= most-positive-fixnum (1- (expt 2 29))) 32 0)))
+
 (defmacro platform-arch ()
   "Return platform architecture with (arch . bits) cons cell."
   (let ((m64 "\\([xX]86_64\\|[aA][mM][dD]64\\|aarch64\\)")
@@ -514,7 +515,7 @@ If FN is nil then return the path, otherwise call FN with the path."
             `(cons ,(string-trim> (cdr m) "\n") ,bit)))))))
 
 
-;; end of Platform Related Functions
+;; end of platform related macro
 
 
 (provide 'fn)

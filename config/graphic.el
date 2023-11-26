@@ -7,7 +7,7 @@
 ;;;;
 
 
-;;; basic macro
+;;; macro
 
 (defmacro when-theme% (&rest body)
   (declare (indent 0))
@@ -21,10 +21,11 @@
   `(when-graphic%
      ,@body))
 
-;; end of when-* macro
+;; end of macro
 
-
-;;; Frame
+;;;
+;; frame
+;;;
 
 (defconst +essential-frame-set+
   (eval-when-compile
@@ -78,8 +79,9 @@
 
 ;; end of Frame
 
-
-;;; Theme
+;;;
+;; theme
+;;;
 
 (when-theme%
 
@@ -109,9 +111,12 @@ If RESET is true then reset before load."
                      ;; load theme from :custom-theme-directory
                      (if (and (self-spec-> t1 :compile)
                               (if-native-comp% nil t))
-                         (let ((f (concat dir (symbol-name name) "-theme.el")))
+                         (let ((f (concat dir
+                                          (symbol-name name)
+                                          "-theme.el")))
                            (compile! (compile-unit* f t))
-                           (load-theme! name (concat dir "/" (v-name) "/")))
+                           (load-theme!
+                            name (concat dir "/" (v-name) "/")))
                        (load-theme! name dir)))
                     (t
                      ;; load builtin theme

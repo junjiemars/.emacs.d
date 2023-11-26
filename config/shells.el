@@ -30,7 +30,7 @@
             ((eq :put! op) (setq dx (plist-put dx k n)))
             ((eq :set! op) (setq dx k))
             (t dx))))
-  "Default shell's environment.")
+  "Default shell\\='s environment.")
 
 
 (defmacro echo-var (var &optional options)
@@ -108,8 +108,9 @@ See also: \\=`parse-colon-path\\='."
 
 
 
-
-;;; Windows shell
+;;;
+;; windows shell
+;;;
 
 (when-platform% 'windows-nt
 
@@ -125,7 +126,7 @@ See also: \\=`parse-colon-path\\='."
                                   (append path dir)
                                 (cons dir path)))))))))
 
-;; end of Windows shell
+;; end of windows shell
 
 
 (defun save-shell-env! ()
