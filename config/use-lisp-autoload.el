@@ -20,42 +20,39 @@
 
 (defun set-featured-lisp-mode! ()
   "Set Lisp basic minor modes."
-  (cond ((or (string= "*scratch*" (buffer-name))
-             (string= "*ielm*" (buffer-name))))
-        (t
-         ;; structured editing of s-expression data
-         (if-feature-paredit% (enable-paredit-mode))
-
-         ;; hilighting parentheses,brackets,and braces in minor mode
-         (if-feature-rainbow-delimiters% (rainbow-delimiters-mode))
-
-         ;; aggressive indent
-         (if-feature-aggressive-indent% (aggressive-indent-mode)))))
-
-
-;;; `lisp-mode'
-(if-version%
-    <= 25.0
-
-    ;; `lisp-mode'
-    (with-eval-after-load 'elisp-mode
-      (append! #'set-featured-lisp-mode! lisp-mode-hook)
-      (append! #'set-featured-lisp-mode! emacs-lisp-mode-hook))
-
-  ;; `elisp-mode'
-  (with-eval-after-load 'lisp-mode
-    (append! #'set-featured-lisp-mode! lisp-mode-hook)
-    (append! #'set-featured-lisp-mode! emacs-lisp-mode-hook)))
+  (unless (or (string= "*scratch*" (buffer-name))
+              (string= "*ielm*" (buffer-name)))
+    (make-thread*
+     (lambda ()
+       ;; structured editing of s-expression data
+       (if-feature-paredit% (enable-paredit-mode))
+       ;; hilighting parentheses,brackets,and braces in minor mode
+       (if-feature-rainbow-delimiters% (rainbow-delimiters-mode))
+       ;; aggressive indent
+       (if-feature-aggressive-indent% (aggressive-indent-mode))))))
 
 
-;;; `scheme'
-(with-eval-after-load 'scheme
+(defun on-use-lisp-init! ()
+  "On \\=`elisp-mode\\=' initialization."
+  (append! #'set-featured-lisp-mode! lisp-mode-hook)
+  (append! #'set-featured-lisp-mode! emacs-lisp-mode-hook))
 
+
+;;; `elisp-mode' after load
+(eval-after-load (if-version% <= 25.0 'elisp-mode 'lisp-mode)
+  #'on-use-lisp-init!)
+
+
+(defun on-use-scheme-init! ()
+  "On \\=`scheme\\=' initialization."
   ;; disable auto active other scheme hooks
   (when-var% scheme-mode-hook 'scheme
     (setq scheme-mode-hook nil))
-
   (append! #'set-featured-lisp-mode! scheme-mode-hook))
+
+
+;;; `scheme' after load
+(eval-after-load 'scheme #'on-use-scheme-init!)
 
 
 ;;; `paredit'
@@ -108,6 +105,8 @@
      ;; `fill-paragraph'.
      (define-key% paredit-mode-map (kbd "M-q") nil))))
 
+
+;;; `paredit' after load
 (when-feature-paredit%
  (eval-after-load 'paredit #'on-use-paredit-init!))
 
