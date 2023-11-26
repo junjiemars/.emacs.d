@@ -179,7 +179,7 @@ test_debug() {
   test_echo_env "debug|clean"
   test_clean_env
   test_echo_env "debug|compile"
-  ${_EMACS_} --debug-init                                       \
+  ${_EMACS_} --debug-init                       \
              --eval="
 (progn
   (setq debug-on-error t)

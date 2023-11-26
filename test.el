@@ -70,14 +70,14 @@
   (should (null (strrchr "abc" ?d)))
   (should (= 0 (strrchr "abc" ?a))))
 
-(ert-deftest %init:v-path* ()
-  (should (string-match "[gt]_[.0-9]+" (v-path* "a/x.el")))
-  (should (string-match "[gt]_[.0-9]+/" (v-path* "a/b/c/"))))
+(ert-deftest %init:v-path ()
+  (should (string-match "[gt]_[.0-9]+" (v-path "a/x.el")))
+  (should (string-match "[gt]_[.0-9]+/" (v-path "a/b/c/"))))
 
-(ert-deftest %init:v-home* ()
-  (should (directory-name-p (v-home* nil)))
-  (should (string-match "[gt]_[.0-9]+" (v-home* nil)))
-  (should (string-match "[gt]_[.0-9]+.*x\\.el\\'" (v-home* "x.el"))))
+(ert-deftest %init:v-home ()
+  (should (directory-name-p (v-home nil)))
+  (should (string-match "[gt]_[.0-9]+" (v-home nil)))
+  (should (string-match "[gt]_[.0-9]+.*x\\.el\\'" (v-home "x.el"))))
 
 (ert-deftest %init:v-home% ()
   (should (directory-name-p (v-home% nil)))
