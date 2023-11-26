@@ -126,7 +126,7 @@ If RESET is true then reset before load."
 ;; end of when-theme%
 
 
-(self-frame-init!)
+(make-thread* #'self-frame-init! t)
 (when-theme% (make-thread* #'self-theme-init!))
 
 
