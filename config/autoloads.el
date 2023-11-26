@@ -261,7 +261,7 @@
   (load-autoloaded-keys!)
   (when-fn% 'toggle-frame-initialized nil (toggle-frame-initialized))
   (when-fn% 'self-desktop-read! nil (self-desktop-read!))
-  (make-thread* #'on-epilogue! (if-noninteractive% t nil)))
+  (make-thread* #'on-epilogue!))
 
 
 ;; autoload when interactive or not

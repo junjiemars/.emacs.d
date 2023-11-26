@@ -179,7 +179,7 @@ accumulate clause and Miscellaneous clause."
 (defmacro make-thread* (fn &optional join name)
   "Threading call FN with NAME or in JOIN mode."
   `(if-fn% 'make-thread nil
-           (if% ,join
+           (if% (if-noninteractive% t ,join)
                (thread-join (make-thread ,fn ,name))
              (make-thread ,fn ,name))
      (ignore* ,join ,name)
