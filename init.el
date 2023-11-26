@@ -57,8 +57,8 @@ Else return BODY sexp."
   (declare (indent 0))
   `(let ((b (current-time)))
      (prog1 (progn ,@form)
-       (message "%.6f"
-                (float-time (time-subtract (current-time) b))))))
+       (let ((d (time-subtract (current-time) b)))
+         (message "%.6f" (float-time d))))))
 
 ;;; file macro
 
