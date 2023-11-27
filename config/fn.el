@@ -352,6 +352,7 @@ Returns the name of FILE when successed otherwise nil."
        (unwind-protect
            (lexical-let%
                ((format-alist nil)
+                (file-name-handler-alist nil)
                 (coding-system-for-write 'no-conversion))
              (with-current-buffer b
                (prin1 ,s b)
@@ -363,7 +364,8 @@ Returns the name of FILE when successed otherwise nil."
 (defmacro read-sexp-from-file (file)
   "Read the first sexp from FILE."
   (let ((f (gensym)))
-    `(let ((,f ,file))
+    `(let ((,f ,file)
+           (file-name-handler-alist nil))
        (when (and (stringp ,f) (file-exists-p ,f))
          (let ((b (get-buffer-create* (symbol-name (gensym)) t)))
            (unwind-protect
@@ -382,6 +384,7 @@ Returns the name of FILE when successed otherwise nil."
        (unwind-protect
            (lexical-let%
                ((format-alist nil)
+                (file-name-handler-alist nil)
                 (coding-system-for-write 'no-conversion))
              (with-current-buffer b
                (insert ,s)
@@ -393,7 +396,8 @@ Returns the name of FILE when successed otherwise nil."
 (defmacro read-str-from-file (file)
   "Read string from FILE."
   (let ((f (gensym)))
-    `(let ((,f ,file))
+    `(let ((,f ,file)
+           (file-name-handler-alist nil))
        (when (and (stringp ,f) (file-exists-p ,f))
          (let ((b (get-buffer-create* (symbol-name (gensym)) t)))
            (unwind-protect

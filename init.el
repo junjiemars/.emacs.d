@@ -38,10 +38,6 @@ Else return BODY sexp."
   (declare (indent 1))
   `(if% ,cond nil ,@body))
 
-
-;; end of compile-time macro
-
-
 (unless% (fboundp 'gensym)
   (defvar gensym-counter 0 "The counter of \\=`gensym\\='.")
   (defun gensym (&optional prefix)
@@ -51,7 +47,6 @@ Else return BODY sexp."
                            (setq gensym-counter
                                  (1+ gensym-counter)))))))
 
-
 (defmacro time (&rest form)
   "Return the elapsed time of FORM executing."
   (declare (indent 0))
@@ -60,23 +55,21 @@ Else return BODY sexp."
        (let ((d (time-subtract (current-time) b)))
          (message "%.6f" (float-time d))))))
 
-;;; file macro
+;; end of compile-time macro
 
-(defmacro emacs-home* (&optional file)
-  "Return path of FILE under \\='~/.emacs.d\\='."
-  `(concat ,(expand-file-name
-             (or (getenv "EMACS_HOME") "~/.emacs.d/"))
-           ,file))
+;;; file macro
 
 (defmacro path! (file)
   "Make and return the path of posixed FILE.\n"
   (let ((f (gensym)) (d (gensym))
         (i (gensym)) (ds (gensym)))
-    `(let* ((,f ,file))
+    `(let ((,f ,file)
+           (file-name-handler-alist nil))
        (if (file-exists-p ,f)
            ,f
          (let ((,d (file-name-directory ,f)))
-           (unless (file-exists-p ,d)
+           (if (file-exists-p ,d)
+               ,f
              (let ((,i (1- (length ,d)))
                    (,ds nil))
                (catch 'break
@@ -89,11 +82,9 @@ Else return BODY sexp."
                    (setq ,i (1- ,i))))
                (while (car ,ds)
                  (make-directory-internal (car ,ds))
-                 (setq ,ds (cdr ,ds)))))
-           ,f)))))
+                 (setq ,ds (cdr ,ds))))))))))
 
-
-;; end basic file macro
+;; end of file macro
 
 
 ;;; *-version% macro
@@ -177,6 +168,12 @@ See \\=`file-name-sans-extension\\='."
        (concat (file-name-directory ,f1)
                ,(v-name) "/"
                (file-name-nondirectory ,f1)))))
+
+(defmacro emacs-home* (&optional file)
+  "Return path of FILE under \\='~/.emacs.d\\='."
+  `(concat ,(expand-file-name
+             (or (getenv "EMACS_HOME") "~/.emacs.d/"))
+           ,file))
 
 (defmacro v-home (file)
   "Return versioned FILE under \\=`emacs-home*\\='."
