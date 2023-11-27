@@ -68,8 +68,7 @@ Else return BODY sexp."
        (if (file-exists-p ,f)
            ,f
          (let ((,d (file-name-directory ,f)))
-           (if (file-exists-p ,d)
-               ,f
+           (unless (file-exists-p ,d)
              (let ((,i (1- (length ,d)))
                    (,ds nil))
                (catch 'break
@@ -82,7 +81,8 @@ Else return BODY sexp."
                    (setq ,i (1- ,i))))
                (while (car ,ds)
                  (make-directory-internal (car ,ds))
-                 (setq ,ds (cdr ,ds))))))))))
+                 (setq ,ds (cdr ,ds)))))
+           ,f)))))
 
 ;; end of file macro
 

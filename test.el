@@ -60,7 +60,8 @@
   (let ((p (concat temporary-file-directory
                    (make-temp-name (symbol-name (gensym)))
                    "/")))
-    (should (and (path! p) (file-exists-p p)))
+    (should (path! p))
+    (should (file-exists-p p))
     (should (and (null (delete-directory p))
                  (null (file-exists-p p))))))
 
