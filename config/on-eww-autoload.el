@@ -25,9 +25,10 @@
 (when-feature-eww%
 
  (defun toggle-browser! (&optional arg)
-   "Toggle default browser to `eww' or not.\n
-With prefix argument ARG, `eww' as default browser if ARG is
-non-nil, otherwise not.  See also: `browser-url-browser-function'."
+   "Toggle default browser to \\=`eww\\=' or not.\n
+With prefix argument ARG, \\=`eww\\=' as default browser if ARG
+is non-nil, otherwise not.  See also:
+\\=`browser-url-browser-function\\='."
    (interactive "P")
    (setq browse-url-browser-function
          (if (null arg)
