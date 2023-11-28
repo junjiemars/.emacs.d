@@ -32,15 +32,18 @@ Otherwise, select the whole list."
   (let ((bs (cond ((consp current-prefix-arg)
                    (_mark_whole_sexp@_ t))
                   (t (_mark_sexp@_ n)))))
-    (unless (and bs (car bs) (cdr bs) (null (= (car bs) (cdr bs))))
+    (unless (and bs (car bs) (cdr bs)
+                 (null (= (car bs) (cdr bs))))
       (user-error "No sexp found"))
     (_mark_thing_ (car bs) (cdr bs))))
 
-(defun kill-whole-sexp@ (&optional boundary)
+(defun kill-whole-sexp@ (&optional n)
   "Kill the whole sexp at point.\n
-With prefix BOUNDARY, killing include BOUNDARY otherwise do not."
+If prefix N is a number, killing forward or backward N sexps."
   (interactive "P")
-  (let ((bs (_mark_whole_sexp@_ boundary)))
+  (let ((bs (cond ((consp current-prefix-arg)
+                   (_mark_whole_sexp@_ t))
+                  (t (_mark_sexp@_ n)))))
     (unless (and bs (car bs) (cdr bs))
       (user-error "No whole sexp found"))
     (kill-region (car bs) (cdr bs))))
