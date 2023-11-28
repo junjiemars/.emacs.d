@@ -115,7 +115,7 @@ and INDENT."
        (let ((debug-on-error nil))
          (prog1 t
            (eglot-shutdown-all)
-           (flymake-mode-off)))
+           (flymake-mode 0)))
      (error t))))
 
 
