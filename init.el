@@ -219,8 +219,8 @@ file."
   "Compile SRC to DST.\n
 If ONLY-COMPILE is t, does not load DST."
   (let ((s1 (gensym)) (d1 (gensym)) (c1 (gensym)))
-    `(let* ((,s1 ,src) (,d1 ,dst) (,c1 ,only-compile)
-            (file-name-handler-alist nil))
+    `(let ((,s1 ,src) (,d1 ,dst) (,c1 ,only-compile)
+           (file-name-handler-alist nil))
        (unless (file-exists-p ,d1)
          (if-native-comp%
              (native-compile ,s1 ,d1)
