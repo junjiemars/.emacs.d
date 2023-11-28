@@ -54,27 +54,20 @@ With prefix BOUNDARY, killing include BOUNDARY otherwise do not."
   "Mark the word at point.\n
 If prefix N is non nil, then forward or backward N words."
   (interactive "p")
-  (let ((bs (cond ((consp current-prefix-arg)
-                   (_mark_symbol@_))
-                  (t (_mark_word@_ n)))))
-    (unless (and bs (car bs) (cdr bs) (null (= (car bs) (cdr bs))))
+  (let ((ws (_mark_word@_ n)))
+    (unless ws
       (user-error "No word found"))
-    (_mark_thing_ (car bs) (cdr bs))))
+    (_mark_thing_ (car ws) (cdr ws))))
 
 (defun kill-whole-word@ (&optional n)
   "Kill the whole word at point.\n
-If prefix N is non nil, then kill N whole word forward or backward."
+If prefix N is non nil, then kill N whole word forward or
+backward."
   (interactive "p")
-  (let ((bs (_mark_symbol@_))
-        (ws (_mark_word@_ n)))
-    (unless (and bs ws)
+  (let ((ws (_mark_word@_ n)))
+    (unless ws
       (user-error "No whole word found"))
-    (kill-region (if (>= n 0)
-                     (min (car bs) (car ws))
-                   (max (cdr bs) (cdr ws)))
-                 (if (>= n 0)
-                     (cdr ws)
-                   (car ws)))))
+    (kill-region (car ws) (cdr ws))))
 
 
 ;; end of `mark-word' `kill-whole-word@'

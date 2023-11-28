@@ -235,11 +235,16 @@
   (defmacro _mark_word@_ (&optional n)
     (let ((n1 (gensym)))
       `(let* ((,n1 (or ,n 1))
-              (p (point)))
-         (save-excursion
-           (forward-word ,n1)
-           (cons (if (>= ,n1 0) p (point))
-                 (if (>= ,n1 0) (point) p)))))))
+              (fp (save-excursion
+                    (forward-word ,n1)
+                    (point)))
+              (bp (save-excursion
+                    (goto-char fp)
+                    (forward-word (* -1 ,n1))
+                    (point))))
+         (if (>= ,n1 0)
+             (cons bp fp)
+           (cons fp bp))))))
 
 ;; end of `_mark_word@_'
 
