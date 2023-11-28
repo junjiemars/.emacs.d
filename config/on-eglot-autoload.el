@@ -130,7 +130,7 @@ and INDENT."
 
    ;; shutdown when `kill-emacs'
    (when-var% kill-emacs-query-functions nil
-     (push! 'eglot*-shutdown-all kill-emacs-query-functions))))
+     (push! 'eglot*-shutdown-all kill-emacs-query-functions t))))
 
 
 ;;; `eglot' after load

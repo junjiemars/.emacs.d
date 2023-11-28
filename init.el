@@ -201,7 +201,8 @@ file."
 (defmacro v-comp-file! (src)
   "Make a versioned cons copy of SRC."
   (let ((s1 (gensym)))
-    `(let ((,s1 ,src))
+    `(let ((,s1 ,src)
+           (file-name-handler-alist nil))
        (when (and (stringp ,s1) (file-exists-p ,s1))
          (let* ((d1 (v-path ,s1))
                 (d2 (concat (file-name-sans-extension* d1)
@@ -218,7 +219,8 @@ file."
   "Compile SRC to DST.\n
 If ONLY-COMPILE is t, does not load DST."
   (let ((s1 (gensym)) (d1 (gensym)) (c1 (gensym)))
-    `(let* ((,s1 ,src) (,d1 ,dst) (,c1 ,only-compile))
+    `(let* ((,s1 ,src) (,d1 ,dst) (,c1 ,only-compile)
+            (file-name-handler-alist nil))
        (unless (file-exists-p ,d1)
          (if-native-comp%
              (native-compile ,s1 ,d1)
