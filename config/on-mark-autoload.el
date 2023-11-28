@@ -149,7 +149,7 @@ If prefix BOUNDARY is non-nil, then mark the whole quoted thing."
 (define-key% (current-global-map) (kbd "C-c m q") #'mark-quoted@)
 (define-key% (current-global-map) (kbd "M-@") #'mark-word@)
 (define-key% (current-global-map) (kbd "C-M-@") #'mark-sexp@)
-(define-key% (current-global-map) (kbd "C-M-SPC") #'mark-sexp)
+(define-key% (current-global-map) (kbd "C-M-SPC") #'mark-sexp@)
 (define-key% (current-global-map) (kbd "C-M-h") #'mark-defun@)
 
 ;; end of Keys
