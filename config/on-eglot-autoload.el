@@ -113,7 +113,9 @@ and INDENT."
  (defun eglot*-shutdown-all ()
    (condition-case _
        (let ((debug-on-error nil))
-         (or (eglot-shutdown-all) t))
+         (prog1 t
+           (eglot-shutdown-all)
+           (flymake-mode-off)))
      (error t))))
 
 
@@ -130,7 +132,7 @@ and INDENT."
 
    ;; shutdown when `kill-emacs'
    (when-var% kill-emacs-query-functions nil
-     (push! 'eglot*-shutdown-all kill-emacs-query-functions t))))
+     (push! 'eglot*-shutdown-all kill-emacs-query-functions))))
 
 
 ;;; `eglot' after load
