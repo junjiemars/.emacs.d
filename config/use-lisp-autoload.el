@@ -78,6 +78,8 @@
    (define-key% paredit-mode-map (kbd "M-s") nil)
    ;; disable `paredit-delete-char' key
    (define-key% paredit-mode-map (kbd "C-d") nil)
+   ;; disable `paredit-backward-delete' key
+   (define-key% paredit-mode-map (kbd "DEL") nil)
    ;; disable `paredit-forward-kill-word' key
    (define-key% paredit-mode-map (kbd "M-d") nil)
    ;; disable `paredit-kill' key
