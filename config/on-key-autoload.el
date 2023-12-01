@@ -1,4 +1,4 @@
-;;; on-edit-autoload.el --- editing -*- lexical-binding:t -*-
+;;; on-key-autoload.el --- editing -*- lexical-binding:t -*-
 ;;;;
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
