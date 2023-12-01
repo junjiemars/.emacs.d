@@ -29,8 +29,11 @@
 If prefix N is a number, then forward or backward N sexps.
 Otherwise, select the whole list."
   (interactive "p")
-  (let ((bs (_mark_sexp@_ n)))
-    (unless (and bs (car bs) (cdr bs) (= (car bs) (cdr bs)))
+  (let ((bs (cond ((consp current-prefix-arg)
+                   (_mark_whole_sexp@_))
+                  (t (_mark_sexp@_ n)))))
+    (unless (and bs (car bs) (cdr bs)
+                 (null (= (car bs) (cdr bs))))
       (user-error "No sexp found"))
     (_mark_thing_ (car bs) (cdr bs))))
 
@@ -38,9 +41,12 @@ Otherwise, select the whole list."
   "Kill the whole sexp at point.\n
 If prefix N is a number, killing forward or backward N sexps."
   (interactive "P")
-  (let ((bs (_mark_sexp@_ n)))
-    (unless bs
-      (user-error "No whole sexp found"))
+  (let ((bs (cond ((consp current-prefix-arg)
+                   (_mark_whole_sexp@_))
+                  (t (_mark_sexp@_ n)))))
+    (unless (and bs (car bs) (cdr bs)
+                 (null (= (car bs) (cdr bs))))
+      (user-error "No sexp found"))
     (kill-region (car bs) (cdr bs))))
 
 ;; end of `mark-sexp@' `kill-sexp@'

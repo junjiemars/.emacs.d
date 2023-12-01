@@ -254,6 +254,29 @@
 
 ;; end of `_mark_sexp@_'
 
+;;; `_mark_whole_sexp@_
+
+(eval-when-compile
+  (defmacro _mark_whole_sexp@_ ()
+    `(let* ((p (point)) (p1 p)
+            (fp (condition-case _
+                    (save-excursion
+                      (while p1
+                        (forward-sexp 1)
+                        (setq p1 (point)))
+                      p1)
+                  (scan-error p1)))
+            (bp (condition-case _
+                    (save-excursion
+                      (goto-char fp)
+                      (while p1
+                        (forward-sexp -1)
+                        (setq p1 (point))))
+                  (scan-error p1))))
+       (cons bp fp))))
+
+;; end of `_mark_whole_sexp@_
+
 ;;; `_mark_word@_'
 
 (eval-when-compile
