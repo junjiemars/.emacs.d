@@ -129,7 +129,6 @@ is non-nil, otherwise is not. See also:
 ;;; `eww-search-words' and `webjump' more leaner than `lookup-web'.
 
 (define-key% (current-global-map) (kbd "M-s w") #'lookup-web)
-(define-key% (current-global-map) (kbd "C-c f w") #'lookup-web)
 (define-key% (current-global-map) (kbd "M-s M-b") #'eww-list-bookmarks)
 
 ;; end of `lookup-web'

@@ -197,52 +197,6 @@
   )
 ;; end of `load-conditional-modes!'
 
-(defun load-autoloaded-keys! ()
-  "Initialize keys on autoload."
-
-  ;; Lookup dictionary
-  (define-key% (current-global-map) (kbd "M-s d") 'lookup-dict)
-  (define-key% (current-global-map) (kbd "C-c f d") 'lookup-dict)
-
-  ;; Open file or url at point
-  (when-fn% 'find-file-at-point 'ffap
-    (define-key% (current-global-map) (kbd "C-c f f") #'find-file-at-point))
-
-  ;; Shows a list of buffers
-  (define-key% (current-global-map) (kbd "C-x C-b") #'ibuffer)
-
-  ;; Interactive query replace key bindings.
-  (define-key% (current-global-map) (kbd "M-%") #'query-replace-regexp)
-  (define-key% (current-global-map) (kbd "C-M-%") #'query-replace)
-
-  ;; Register
-  ;; `C-x r g' and `C-x r i' are all bound to insert-register
-  ;; let `C-x r g' do `string-insert-rectangle'
-  (define-key% (current-global-map) (kbd "C-x r g") #'string-insert-rectangle)
-  (define-key% (current-global-map) (kbd "C-x r v") #'view-register)
-
-  ;; Line
-  (when-fn% 'electric-newline-and-maybe-indent 'electric
-    ;; Default behaviour of RET
-    ;; https://lists.gnu.org/archive/html/emacs-devel/2013-10/msg00490.html
-    ;; electric-indent-mode: abolition of `newline' function is not
-    ;; the Right Thing
-    ;; https://lists.gnu.org/archive/html/emacs-devel/2013-10/msg00407.html
-    (define-key% (current-global-map) (kbd "RET")
-      #'electric-newline-and-maybe-indent)
-    (define-key% (current-global-map) (kbd "C-j") #'newline))
-
-  ;; Sorting
-  (define-key% (current-global-map) (kbd "C-c s f") #'sort-fields)
-  (define-key% (current-global-map) (kbd "C-c s n") #'sort-numeric-fields)
-  (define-key% (current-global-map) (kbd "C-c s x") #'sort-regexp-fields)
-  (define-key% (current-global-map) (kbd "C-c s l") #'sort-lines)
-  (define-key% (current-global-map) (kbd "C-c s r") #'reverse-region)
-  (define-key% (current-global-map) (kbd "C-c s d") #'delete-duplicate-lines)
-
-  )
-;; end of load-autoloaded-keys!
-
 (defun on-epilogue! ()
   (compile!
     (compile-unit% (emacs-home* "config/on-inter-autoload.el"))
@@ -260,7 +214,6 @@
       (compile-unit% (emacs-home* "config/module.el"))))
   (load-autoloaded-modes!)
   (load-conditional-modes!)
-  (load-autoloaded-keys!)
   (when-fn% 'toggle-frame-initialized nil (toggle-frame-initialized))
   (when-fn% 'self-desktop-read! nil (self-desktop-read!))
   (make-thread* #'on-epilogue!))
