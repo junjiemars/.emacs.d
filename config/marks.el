@@ -82,48 +82,52 @@
 
 ;;; `_forward_symmetry_' `_backward_symmetry_'
 
-(defmacro _forward_symmetry_ (chr pos rx ls rs)
-  (let ((chr1 (gensym))
-        (pos1 (gensym))
-        (rx1 (gensym))
-        (ls1 (gensym))
-        (rs1 (gensym)))
-    `(let* ((,chr1 ,chr) (,pos1 ,pos) (,rx1 ,rx)
-            (,ls1 ,ls) (,rs1 ,rs)
-            (cur ,pos1) (ss (cons ,chr1 nil)))
-       (catch 'break
-         (while (< cur ,rx1)
-           (let ((l (strchr ,ls1 (char-after cur)))
-                 (r (strchr ,rs1 (char-after cur))))
-             (cond ((and r ss (= r (car ss)))
-                    (setq ss (cdr ss)))
-                   (l (setq ss (cons l ss)))))
-           (when (null ss) (throw 'break cur))
-           (setq cur (1+ cur)))))))
+(eval-when-compile
+  (defmacro _forward_symmetry_ (chr pos rx ls rs)
+    (let ((chr1 (gensym))
+          (pos1 (gensym))
+          (rx1 (gensym))
+          (ls1 (gensym))
+          (rs1 (gensym)))
+      `(let* ((,chr1 ,chr) (,pos1 ,pos) (,rx1 ,rx)
+              (,ls1 ,ls) (,rs1 ,rs)
+              (cur ,pos1) (ss (cons ,chr1 nil)))
+         (catch 'break
+           (while (< cur ,rx1)
+             (let ((l (strchr ,ls1 (char-after cur)))
+                   (r (strchr ,rs1 (char-after cur))))
+               (cond ((and r ss (= r (car ss)))
+                      (setq ss (cdr ss)))
+                     (l (setq ss (cons l ss)))))
+             (when (null ss) (throw 'break cur))
+             (setq cur (1+ cur))))))))
 
-(defmacro _backward_symmetry_ (chr pos lx ls rs)
-  (let ((chr1 (gensym))
-        (pos1 (gensym))
-        (lx1 (gensym))
-        (ls1 (gensym))
-        (rs1 (gensym)))
-    `(let* ((,chr1 ,chr) (,pos1 ,pos) (,lx1 ,lx)
-            (,ls1 ,ls) (,rs1 ,rs)
-            (cur ,pos1) (ss (cons ,chr1 nil)))
-       (catch 'break
-         (while (> cur ,lx1)
-           (let ((l (strchr ,ls1 (char-before cur)))
-                 (r (strchr ,rs1 (char-before cur))))
-             (cond ((and l ss (= l (car ss)))
-                    (setq ss (cdr ss)))
-                   (r (setq ss (cons r ss)))))
-           (when (null ss) (throw 'break cur))
-           (setq cur (1- cur)))))))
+(eval-when-compile
+  (defmacro _backward_symmetry_ (chr pos lx ls rs)
+    (let ((chr1 (gensym))
+          (pos1 (gensym))
+          (lx1 (gensym))
+          (ls1 (gensym))
+          (rs1 (gensym)))
+      `(let* ((,chr1 ,chr) (,pos1 ,pos) (,lx1 ,lx)
+              (,ls1 ,ls) (,rs1 ,rs)
+              (cur ,pos1) (ss (cons ,chr1 nil)))
+         (catch 'break
+           (while (> cur ,lx1)
+             (let ((l (strchr ,ls1 (char-before cur)))
+                   (r (strchr ,rs1 (char-before cur))))
+               (cond ((and l ss (= l (car ss)))
+                      (setq ss (cdr ss)))
+                     (r (setq ss (cons r ss)))))
+             (when (null ss) (throw 'break cur))
+             (setq cur (1- cur))))))))
 
 ;; `_forward_symmetry_' `_backward_symmetry_'
 
+;;; `_mark_quoted_symmetry@_'
+
 (eval-when-compile
-  (defmacro _mark_quoted@_ ()
+  (defmacro _mark_quoted_symmetry@_ ()
     `(let* ((p (point)) (l1 p) (r1 p)
             (lx (point-min)) (rx (point-max))
             (ls "\"'`([{<")
@@ -162,7 +166,69 @@
                  (t (cons (1- (if l2 (min l1 l2) l1))
                           (1+ (if r2 (max r1 r2) r1))))))))))
 
-;; end of `_mark_quoted@_'
+;; end of `_mark_quoted_symmetry@_'
+
+;;; `_forward_asymmetry_' `_backward_asymmetry_'
+
+(eval-when-compile
+  (defmacro _forward_asymmetry_ (chr pos rx)
+    (let ((chr1 (gensym))
+          (pos1 (gensym))
+          (rx1 (gensym)))
+      `(let* ((,chr1 ,chr) (,pos1 ,pos) (,rx1 ,rx)
+              (cur ,pos1))
+         (catch 'break
+           (while (< cur ,rx1)
+             (when (char= ,chr1 (char-after cur))
+               (throw 'break cur))
+             (setq cur (1+ cur))))))))
+
+(eval-when-compile
+  (defmacro _backward_asymmetry_ (chr pos lx)
+    (let ((chr1 (gensym))
+          (pos1 (gensym))
+          (lx1 (gensym)))
+      `(let* ((,chr1 ,chr) (,pos1 ,pos) (,lx1 ,lx)
+              (cur ,pos1))
+         (catch 'break
+           (while (> cur ,lx1)
+             (when (char= ,chr1 (char-before cur))
+               (throw 'break cur))
+             (setq cur (1- cur))))))))
+
+
+;; end of `_forward_asymmetry_'
+
+
+(eval-when-compile
+  (defmacro _mark_quoted_asymmetry@_ ()
+    `(let* ((p (point)) (l1 p) (r1 p)
+            (lx (point-min)) (rx (point-max))
+            (ls "\"'`([{<")
+            (rs "\"'`)]}>"))
+       (while (and (> l1 lx)
+                   (null (strchr ls (char-before l1))))
+         (setq l1 (1- l1)))
+       (while (and (< r1 rx)
+                   (null (strchr rs (char-after r1))))
+         (setq r1 (1+ r1)))
+       (when (and l1 r1)
+         (let* ((l2 (and r1 (_backward_asymmetry_
+                             (aref
+                              ls (strchr rs (char-after r1)))
+                             r1 lx)))
+                (r2 (and l1 (_forward_asymmetry_
+                             (aref
+                              rs (strchr ls (char-before l1)))
+                             l1 rx))))
+           (cond ((and l2 r2 (and (= l1 l2) (= r1 r2)))
+                  (cons (1- l1) (1+ r1)))
+                 ((and l2 r2 (= r1 r2))
+                  (cons (1- l1) (1+ r2)))
+                 (l2 (cons (1- l2) (1+ r1)))
+                 (r2 (cons (1- l1) (1+ r2)))))))))
+
+;; end of `_mark_quoted_asymmetry@_'
 
 ;;; _mark_sexp@_
 

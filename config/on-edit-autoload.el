@@ -34,14 +34,16 @@
 				(dolist* (m modes)
           (let ((h (intern-soft (format "%s-hook" m))))
             (when h
-              (add-hook h #'self-edit-env->disable-indent-tabs-mode)))))
+              (add-hook
+               h #'self-edit-env->disable-indent-tabs-mode)))))
 
       ;; default `tab-width' and `standard-indent'
       (let ((w (self-spec-> edit :tab-width)))
         (setq-default tab-width w standard-indent w))
 
       ;; default `auto-save-default'
-      (setq auto-save-default (self-spec-> edit :auto-save-default))
+      (setq auto-save-default
+            (self-spec-> edit :auto-save-default))
 
       ;; enable `narrow-to-region'
       (put 'narrow-to-region 'disabled
