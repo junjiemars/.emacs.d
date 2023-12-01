@@ -22,36 +22,31 @@
 
 ;; end of `mark-symbol@' `kill-symbol@'
 
-;;; `mark-sexp@' `kill-whole-sexp@'
+;;; `mark-sexp@' `kill-sexp@'
 
 (defun mark-sexp@ (&optional n)
   "Mark the sexp at point.\n
 If prefix N is a number, then forward or backward N sexps.
 Otherwise, select the whole list."
   (interactive "p")
-  (let ((bs (cond ((consp current-prefix-arg)
-                   (_mark_whole_sexp@_ t))
-                  (t (_mark_sexp@_ n)))))
-    (unless (and bs (car bs) (cdr bs)
-                 (null (= (car bs) (cdr bs))))
+  (let ((bs (_mark_sexp@_ n)))
+    (unless bs
       (user-error "No sexp found"))
     (_mark_thing_ (car bs) (cdr bs))))
 
-(defun kill-whole-sexp@ (&optional n)
+(defun kill-sexp@ (&optional n)
   "Kill the whole sexp at point.\n
 If prefix N is a number, killing forward or backward N sexps."
   (interactive "P")
-  (let ((bs (cond ((consp current-prefix-arg)
-                   (_mark_whole_sexp@_ t))
-                  (t (_mark_sexp@_ n)))))
-    (unless (and bs (car bs) (cdr bs))
+  (let ((bs (_mark_sexp@_ n)))
+    (unless bs
       (user-error "No whole sexp found"))
     (kill-region (car bs) (cdr bs))))
 
-;; end of `mark-sexp@' `kill-whole-sexp@'
+;; end of `mark-sexp@' `kill-sexp@'
 
 
-;;; `mark-word' `kill-whole-word@'
+;;; `mark-word' `kill-word@'
 
 (defun mark-word@ (&optional n)
   "Mark the word at point.\n
@@ -62,7 +57,7 @@ If prefix N is non nil, then forward or backward N words."
       (user-error "No word found"))
     (_mark_thing_ (car ws) (cdr ws))))
 
-(defun kill-whole-word@ (&optional n)
+(defun kill-word@ (&optional n)
   "Kill the whole word at point.\n
 If prefix N is non nil, then kill N whole word forward or
 backward."
@@ -73,7 +68,7 @@ backward."
     (kill-region (car ws) (cdr ws))))
 
 
-;; end of `mark-word' `kill-whole-word@'
+;; end of `mark-word' `kill-word@'
 
 ;;; `mark-line@'
 
@@ -139,8 +134,8 @@ If prefix BOUNDARY is non-nil, then mark the whole quoted thing."
 ;;; Keys
 
 ;; Kill
-(define-key% (current-global-map) (kbd "C-x M-d") #'kill-whole-word@)
-(define-key% (current-global-map) (kbd "C-x M-e") #'kill-whole-sexp@)
+(define-key% (current-global-map) (kbd "C-x M-d") #'kill-word@)
+(define-key% (current-global-map) (kbd "C-x M-e") #'kill-sexp@)
 (define-key% (current-global-map) (kbd "C-x M-l") #'kill-whole-line)
 
 ;; Mark

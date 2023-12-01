@@ -164,70 +164,28 @@
 
 ;; end of `_mark_quoted@_'
 
-;;; `_forward_sexp_'
-
-(eval-when-compile
-  (defmacro _forward_sexp_ (n)
-    (let ((n1 (gensym)))
-      `(let* ((,n1 ,n)
-              (i (abs ,n1))
-              (pre (point))
-              (_ nil))
-         (condition-case _
-             (save-excursion
-               (while (> i 0)
-                 (setq pre (point))
-                 (forward-sexp (if (>= ,n1 0) 1 -1))
-                 (setq i (1- i)))
-               (point))
-           (scan-error pre))))))
-
-;; end of `_forward_sexp_'
-
+;;; _mark_sexp@_
 
 (eval-when-compile
   (defmacro _mark_sexp@_ (&optional n)
     (let ((n1 (gensym)))
       `(let* ((,n1 (or ,n 1))
               (p (point))
-              (bs (bounds-of-thing-at-point 'sexp))
-              (fs (save-excursion
-                    (goto-char (if (>= ,n1 0) (1- p) (1+ p)))
-                    (goto-char (_forward_sexp_ ,n1))
-                    (bounds-of-thing-at-point 'sexp))))
-         (cons (if (>= ,n1 0)
-                   (or (car bs) p)
-                 (or (car fs) (car bs) p))
-               (if (>= ,n1 0)
-                   (or (cdr fs) (cdr bs) p)
-                 (or (cdr bs) p)))))))
+              (fp (condition-case _
+                      (save-excursion
+                        (forward-sexp ,n1)
+                        (point))
+                    (scan-error p)))
+              (bp (condition-case _
+                      (save-excursion
+                        (goto-char fp)
+                        (forward-sexp (* -1 ,n1))
+                        (point)))))
+         (if (>= ,n1 0)
+             (cons bp fp)
+           (cons fp bp))))))
 
 ;; end of `_mark_sexp@_'
-
-;;; `_mark_whole_sexp@_'
-
-(eval-when-compile
-  (defmacro _mark_whole_sexp@_ (&optional boundary)
-    (let ((b1 (gensym)))
-      `(let* ((,b1 ,boundary)
-              (p (point))
-              (bs (bounds-of-thing-at-point 'list))
-              (ls (save-excursion
-                    (goto-char (if (car bs)
-                                   (1+ (car bs))
-                                 (1+ p)))
-                    (goto-char (_forward_sexp_ -1))
-                    (bounds-of-thing-at-point 'sexp)))
-              (rs (save-excursion
-                    (goto-char (if (cdr bs)
-                                   (1- (cdr bs))
-                                 (1- p)))
-                    (goto-char (_forward_sexp_ 1))
-                    (bounds-of-thing-at-point 'sexp))))
-         (cons (or (and ,b1 (car bs)) (car ls) p)
-               (or (and ,b1 (cdr bs)) (cdr rs) p))))))
-
-;; end of `_mark_whole_sexp@_'
 
 ;;; `_mark_word@_'
 
