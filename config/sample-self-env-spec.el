@@ -127,7 +127,7 @@
        :indent '((sh-basic-offset . 2)
                  (python-indent-offset . 4))
 			 :safe-local-variable nil
-       :disable-indent-tabs-mode '(c-mode-common
+       :disable-indent-tabs-mode '(c-mode
                                    sh-mode
                                    emacs-lisp-mode
                                    scheme-mode)
