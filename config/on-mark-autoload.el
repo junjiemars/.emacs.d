@@ -122,7 +122,7 @@ If prefix N is non-nil, then forward or backward N functions."
   "Mark symmetry quoted thing at point.\n
 If prefix BOUNDARY is non-nil, then mark the whole quoted thing."
   (interactive "P")
-  (let ((bs (_mark_quoted@_)))
+  (let ((bs (_mark_quoted_symmetry@_)))
     (unless (and bs (car bs) (cdr bs))
       (user-error "No quoted thing found"))
     (_mark_thing_ (if boundary (car bs) (1+ (car bs)))
@@ -132,7 +132,7 @@ If prefix BOUNDARY is non-nil, then mark the whole quoted thing."
   "Kill symmetry quoted thing at point.\n
 If prefix BOUNDARY is non-nil, then mark the whole quoted thing."
   (interactive "P")
-  (let ((bs (_mark_quoted@_)))
+  (let ((bs (_mark_quoted_symmetry@_)))
     (unless (and bs (car bs) (cdr bs))
       (user-error "No quoted thing found"))
     (kill-region (if boundary (car bs) (1+ (car bs)))

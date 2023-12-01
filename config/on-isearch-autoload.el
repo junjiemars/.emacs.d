@@ -52,7 +52,7 @@
                     ((char= ?q style)
                      (cons "quoted"
                            (region-active-unless
-                             (let ((bs (_mark_quoted@_)))
+                             (let ((bs (_mark_quoted_symmetry@_)))
                                (unless bs
                                  (user-error "No quoted thing at point"))
                                (_mark_thing_ (car bs) (cdr bs)))))))))
