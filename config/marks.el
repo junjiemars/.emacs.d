@@ -246,7 +246,8 @@
                       (save-excursion
                         (goto-char fp)
                         (forward-sexp (* -1 ,n1))
-                        (point)))))
+                        (point))
+                    (scan-error p))))
          (if (>= ,n1 0)
              (cons bp fp)
            (cons fp bp))))))

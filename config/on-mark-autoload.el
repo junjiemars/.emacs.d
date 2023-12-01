@@ -30,7 +30,7 @@ If prefix N is a number, then forward or backward N sexps.
 Otherwise, select the whole list."
   (interactive "p")
   (let ((bs (_mark_sexp@_ n)))
-    (unless bs
+    (unless (and bs (car bs) (cdr bs) (= (car bs) (cdr bs)))
       (user-error "No sexp found"))
     (_mark_thing_ (car bs) (cdr bs))))
 
