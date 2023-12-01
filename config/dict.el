@@ -241,7 +241,6 @@
 ;; end of `lookup-dict'
 
 
-(define-key% (current-global-map) (kbd "M-s d") 'lookup-dict)
 
 (provide 'dict)
 

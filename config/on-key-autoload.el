@@ -25,6 +25,10 @@
 
 (defun edit-keys-init! ()
   "Initialize editing keys."
+
+  ;; Lookup dictionary
+  (define-key% (current-global-map) (kbd "M-s d") 'lookup-dict)
+
   ;; Open file or url at point
   (when-fn% 'find-file-at-point 'ffap
     (define-key% (current-global-map) (kbd "C-c f f") #'find-file-at-point))
