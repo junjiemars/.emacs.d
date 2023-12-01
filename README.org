@@ -818,9 +818,9 @@ Avoiding a war. If /whitespace/ causes some trouble, you can swith to
 				 :auto-save-default nil
 				 :indent '((python-indent-offset . 4))
 				 :safe-local-variable '(major-mode)
-				 :disable-indent-tabs-mode '(c-mode-common-hook
-																		 sh-mode-hook
-																		 emacs-lisp-mode-hook)
+				 :disable-indent-tabs-mode '(c-mode
+																		 sh-mode
+																		 emacs-lisp-mode)
 				 :delete-trailing-whitespace '(prog-mode)
 				 :allowed t))
 #+END_SRC
@@ -1108,7 +1108,7 @@ Global for all Emacs' version.
 - @@html:<kbd>@@C-o@@html:</kbd>@@ =open-next-line=
 #+REVEAL: split
 - @@html:<kbd>@@C-c m d@@html:</kbd>@@: =mark-symbol@=
-- @@html:<kbd>@@C-c m d@@html:</kbd>@@: =mark-word@=	
+- @@html:<kbd>@@C-c m d@@html:</kbd>@@: =mark-word@=
 - @@html:<kbd>@@C-c m d@@html:</kbd>@@: =mark-sexp@=
 - @@html:<kbd>@@C-c m d@@html:</kbd>@@: =mark-defun@=
 - @@html:<kbd>@@C-c m l@@html:</kbd>@@: =mark-line@=
