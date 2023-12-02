@@ -17,9 +17,6 @@
         (dolist* (x modifier)
           (set (car x) (cdr x)))))))
 
-
-(make-thread* #'self-keys-init!)
-
 ;; end of `self-keys-init!'
 
 
@@ -66,9 +63,12 @@
   (define-key% (current-global-map) (kbd "C-c s d") #'delete-duplicate-lines))
 
 
-(make-thread* #'edit-keys-init!)
-
 ;; end of `edit-keys-init!'
 
+
+(make-thread*
+ (lambda ()
+	 (self-keys-init!)
+	 (edit-keys-init!)))
 
  ; end of on-key-autoload.el
