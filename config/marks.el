@@ -94,8 +94,8 @@
               (cur ,pos1) (ss (cons ,chr1 nil)))
          (catch 'break
            (while (< cur ,rx1)
-             (let ((l (strchr ,ls1 (char-after cur)))
-                   (r (strchr ,rs1 (char-after cur))))
+             (let ((l (and (= ,ls1 (char-after cur)) ,chr1))
+                   (r (and (= ,rs1 (char-after cur)) ,chr1)))
                (cond ((and r ss (= r (car ss)))
                       (setq ss (cdr ss)))
                      (l (setq ss (cons l ss)))))
@@ -114,8 +114,8 @@
               (cur ,pos1) (ss (cons ,chr1 nil)))
          (catch 'break
            (while (> cur ,lx1)
-             (let ((l (strchr ,ls1 (char-before cur)))
-                   (r (strchr ,rs1 (char-before cur))))
+             (let ((l (and (= ,ls1 (char-before cur)) ,chr1))
+                   (r (and (= ,rs1 (char-before cur)) ,chr1)))
                (cond ((and l ss (= l (car ss)))
                       (setq ss (cdr ss)))
                      (r (setq ss (cons r ss)))))
@@ -139,18 +139,22 @@
                    (null (strchr rs (char-after r1))))
          (setq r1 (1+ r1)))
        (when (and l1 r1)
-         (let* ((l2 (and r1 (_backward_symmetry_
-                             (strchr rs (char-after r1))
-                             r1 lx ls rs)))
-                (r2 (and l1 (_forward_symmetry_
-                             (strchr ls (char-before l1))
-                             l1 rx ls rs)))
-                (l3 (and r2 (_backward_symmetry_
-                             (strchr rs (char-after r2))
-                             r2 lx ls rs)))
-                (r3 (and l2 (_forward_symmetry_
-                             (strchr ls (char-before l2))
-                             l2 rx ls rs))))
+         (let* ((l2 (and r1 (let* ((c (char-after r1))
+																	 (i (strchr rs c)))
+															(_backward_symmetry_
+															 c r1 lx (aref ls i) c))))
+                (r2 (and l1 (let* ((c (char-before l1))
+																	 (i (strchr ls c)))
+															(_forward_symmetry_
+															 c l1 rx c (aref rs i)))))
+                (l3 (and r2 (let* ((c (char-after r2))
+																	 (i (strchr rs c)))
+															(_backward_symmetry_
+															 c r2 lx (aref ls i) c))))
+                (r3 (and l2 (let* ((c (char-before l2))
+																	 (i (strchr ls c)))
+															(_forward_symmetry_
+															 c l2 rx c (aref rs i))))))
            (cond ((and l2 r2 l3 r3
                        (and (= l1 l2) (= l2 l3))
                        (and (= r1 r2) (= r2 r3)))
