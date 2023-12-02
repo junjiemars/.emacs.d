@@ -12,7 +12,7 @@
 ;; 3. command auto completion.
 ;; 4. evaluate C expression.
 ;; 5* show breakpoints on buffer in GUI/Terminal mode.
-;; 6* frame buffer and register buffer.
+;; 6* show debugger' frame and register on buffer.
 ;;
 ;;;;
 ;;
