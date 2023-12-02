@@ -7,10 +7,20 @@
 ;;;;
 
 
-(defun tramp-parse-docker-containers (&optional ignored)
-  "Return a list of running docker container."
+(defalias 'docker-program
+  (lexical-let% ((b (or (executable-find% "podman")
+												(executable-find% "docker")
+												"docker")))
+    (lambda (&optional n)
+      (if (null n) b (setq b n))))
+  "Program of docker/podman.")
+
+
+(defun tramp*-docker-ls-containers (&optional ignored)
+  "List the running docker/podman containers."
   (ignore* ignored)
-  (let ((cmd (shell-command* "docker" "ps" "--format {{.Names}}")))
+  (let ((cmd (shell-command* (docker-program)
+							 "ps" "--format {{.Names}}")))
     (when (zerop (car cmd))
       (append '((nil nil))
               (mapcar (lambda (x)
@@ -18,9 +28,9 @@
                       (split-string* (cdr cmd) "\n" t "\n"))))))
 
 
-(with-eval-after-load 'tramp
-
-  (when% (executable-find% "ssh")
+(defun on-tramp-init! ()
+	"On \\=`tramp\\=' initialization."
+	(when% (executable-find% "ssh")
     ;; ssh faster than scp on ancient Emacs?
     (setq% tramp-default-method "ssh"))
 
@@ -31,7 +41,7 @@
     (when-var% tramp-methods 'tramp
       (unless (cdr (assoc** "docker" tramp-methods :test #'string=))
         (push! '("docker"
-                 (tramp-login-program "docker")
+                 (tramp-login-program (docker-program))
                  (tramp-login-args
                   (nil
                    ("exec" "-it")
@@ -43,7 +53,11 @@
                tramp-methods)
         (tramp-set-completion-function
          "docker"
-         '((tramp-parse-docker-containers "")))))))
+         '((tramp*-docker-ls-containers "")))))))
+
+
+;; `tramp' after load
+(eval-after-load 'tramp #'on-tramp-init!)
 
 
 ;; end of on-tramp-autoload.el
