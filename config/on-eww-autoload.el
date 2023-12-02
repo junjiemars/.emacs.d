@@ -19,7 +19,7 @@
 ;;; autoload
 (when-feature-eww%
  (autoload 'browse-url-default-browser "browse-url")
- (autoload 'browse-url-url-encode-chars "browse-ulr"))
+ (autoload 'browse-url-url-encode-chars "browse-url"))
 
 
 (when-feature-eww%
@@ -46,7 +46,8 @@ is non-nil, otherwise is not. See also:
 
 (when-feature-eww%
 
- (defun set-eww-mode! ()
+ (defun eww*-truncate-lines ()
+	 "Disable \\=`eww\\=' truncate long lines."
    (toggle-truncate-lines nil)))
 
 
@@ -72,7 +73,7 @@ is non-nil, otherwise is not. See also:
 
 (defun on-eww-init! ()
   "On \\=`eww\\=' initialization."
-  (add-hook 'eww-mode-hook #'set-eww-mode!)
+  (add-hook 'eww-mode-hook #'eww*-truncate-lines)
   (when (consp (*web-defs*))
     (setq% eww-search-prefix
            (concat (car (cdar (*web-defs*)))
