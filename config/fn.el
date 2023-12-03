@@ -212,7 +212,7 @@ accumulate clause and Miscellaneous clause."
            (declare (indent 1))
            (if% (require ',feature nil t)
                `(progn% (comment ,@body)
-		                    ,then)
+                        ,then)
              `(progn% (comment ,then)
                       ,@body)))))))
 
@@ -226,7 +226,7 @@ accumulate clause and Miscellaneous clause."
            (declare (indent 1))
            (if-fn% ',fn ',feature
                    `(progn% (comment ,@body)
-		                        ,then)
+                            ,then)
              `(progn% (comment ,then)
                       ,@body)))))))
 
@@ -329,19 +329,30 @@ Optional argument TRIM regexp used to trim."
            (get-buffer-create ,buffer-or-name))
        (get-buffer-create ,buffer-or-name))))
 
+
 (defmacro insert-file-contents-literally*
     (filename &optional visit beg end replace)
   "See \\=`insert-file-contents-literally\\='."
   `(lexical-let%
        ((format-alist nil)
-	      (after-insert-file-functions nil)
-	      (coding-system-for-read 'no-conversion)
-	      (coding-system-for-write 'no-conversion)
-        (inhibit-file-name-handlers
-         '(jka-compr-handler image-file-handler epa-file-handler))
-        (inhibit-file-name-operation 'insert-file-contents))
+        (file-name-handler-alist nil)
+        (after-insert-file-functions nil)
+        (file-coding-system-alist nil)
+        (coding-system-for-read 'no-conversion)
+        (coding-system-for-write 'no-conversion))
      (insert-file-contents ,filename ,visit ,beg ,end ,replace)))
 
+(defmacro write-region*
+    (start end filename &optional append visit lockname mustbenew)
+  "See \\=`write-region\\='."
+  `(lexical-let%
+       ((format-alist nil)
+        (file-name-handler-alist nil)
+        (coding-system-for-write 'no-conversion)
+        (write-region-inhibit-fsync t)
+        (write-region-annotate-functions nil))
+     (write-region ,start ,end ,filename
+                   ,append ,visit ,lockname ,mustbenew)))
 
 (defmacro save-sexp-to-file (sexp file)
   "Save SEXP to FILE.\n
@@ -350,16 +361,11 @@ Returns the name of FILE when successed otherwise nil."
     `(let ((,s ,sexp) (,f ,file)
            (b (get-buffer-create* (symbol-name (gensym)) t)))
        (unwind-protect
-           (lexical-let%
-               ((format-alist nil)
-                (file-name-handler-alist nil)
-                (coding-system-for-write 'no-conversion))
-             (with-current-buffer b
-               (prin1 ,s b)
-               (write-region (point-min) (point-max) ,f)
-               ,f))
+           (with-current-buffer b
+             (prin1 ,s b)
+             (write-region* (point-min) (point-max) ,f)
+             ,f)
          (when b (kill-buffer b))))))
-
 
 (defmacro read-sexp-from-file (file)
   "Read the first sexp from FILE."
@@ -374,7 +380,6 @@ Returns the name of FILE when successed otherwise nil."
                  (read b))
              (when b (kill-buffer b))))))))
 
-
 (defmacro save-str-to-file (str file)
   "Save STR to FILE.\n
 Returns the name of FILE when successed otherwise nil."
@@ -382,14 +387,10 @@ Returns the name of FILE when successed otherwise nil."
     `(let ((,s ,str) (,f ,file)
            (b (get-buffer-create* (symbol-name (gensym)) t)))
        (unwind-protect
-           (lexical-let%
-               ((format-alist nil)
-                (file-name-handler-alist nil)
-                (coding-system-for-write 'no-conversion))
-             (with-current-buffer b
-               (insert ,s)
-               (write-region (point-min) (point-max) ,f)
-               ,f))
+           (with-current-buffer b
+             (insert ,s)
+             (write-region* (point-min) (point-max) ,f)
+             ,f)
          (when b (kill-buffer b))))))
 
 
