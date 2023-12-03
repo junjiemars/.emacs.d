@@ -370,8 +370,7 @@ Returns the name of FILE when successed otherwise nil."
 (defmacro read-sexp-from-file (file)
   "Read the first sexp from FILE."
   (let ((f (gensym)))
-    `(let ((,f ,file)
-           (file-name-handler-alist nil))
+    `(let ((,f ,file))
        (when (and (stringp ,f) (file-exists-p ,f))
          (let ((b (get-buffer-create* (symbol-name (gensym)) t)))
            (unwind-protect
@@ -397,8 +396,7 @@ Returns the name of FILE when successed otherwise nil."
 (defmacro read-str-from-file (file)
   "Read string from FILE."
   (let ((f (gensym)))
-    `(let ((,f ,file)
-           (file-name-handler-alist nil))
+    `(let ((,f ,file))
        (when (and (stringp ,f) (file-exists-p ,f))
          (let ((b (get-buffer-create* (symbol-name (gensym)) t)))
            (unwind-protect
