@@ -300,17 +300,18 @@ If \\=`current-prefix-arg\\=' < 0, then repeat n time with END in reversed."
 (defun reset-emacs ()
   "Clean all compiled files and dot files, then kill Emacs."
   (interactive)
-  (clean-versioned-dirs
-   (delq nil
-         (mapcar
-          (lambda (d)
-						(unless (member d '(".git" ".gitignore" ".github"))
-							(concat (emacs-home* d) "/")))
-					(directory-files (emacs-home*) nil "^\\.[a-z]+")))
-   :8)
-  (clean-compiled-files)
-  (setq kill-emacs-hook nil)
-  (kill-emacs 0))
+	(when (yes-or-no-p "Reset emacs?")
+		(clean-versioned-dirs
+		 (delq nil
+					 (mapcar
+						(lambda (d)
+							(unless (member d '(".git" ".gitignore" ".github"))
+								(concat (emacs-home* d) "/")))
+						(directory-files (emacs-home*) nil "^\\.[a-z]+")))
+		 :8)
+		(clean-compiled-files)
+		(setq kill-emacs-hook nil)
+		(kill-emacs 0)))
 
 ;; end of Clean Emacs' user files
 
