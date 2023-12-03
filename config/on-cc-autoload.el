@@ -36,7 +36,7 @@
 (when-platform% 'windows-nt
 
   (defun make-cc-env-bat ()
-    "Make cc-env.bat in `exec-path'."
+    "Make cc-env.bat in \\=`exec-path\\='."
     (let ((vcvarsall (check-vcvarsall-bat))
           (arch (downcase (or (getenv "PROCESSOR_ARCHITECTURE")
                               (car (platform-arch))))))
@@ -100,7 +100,7 @@
 (when-platform% 'windows-nt
 
   (defun make-xargs-bin ()
-    "Make a GNU's xargs alternation in `exec-path'."
+    "Make a GNU's xargs alternation in \\=`exec-path\\='."
     (let* ((c (concat temporary-file-directory "xargs.c"))
            (exe (v-home% ".exec/xargs.exe"))
            (cc (concat +cc*-compiler-bin+
