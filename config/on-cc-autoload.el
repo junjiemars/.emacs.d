@@ -279,6 +279,7 @@
 (defalias 'cc*-system-include
   (lexical-let% ((dx))
     (lambda (&optional cached remote)
+			"CACHED REMOTE"
       (let* ((ss (if remote
                      (intern (mapconcat #'identity
                                         (remote-norm-id remote)
@@ -313,6 +314,7 @@ include directories. The REMOTE argument from \\=`remote-norm-file\\='.")
   (lexical-let% ((dx)
                  (fs (v-home% ".exec/cc-extra-inc.el")))
     (lambda (cached &rest dir)
+			"CACHED DIR"
       (or (and cached dx)
 
           (and cached (file-exists-p fs)
@@ -500,6 +502,7 @@ RENEW whether to renew the existing FILE."
 (defalias 'cc*-system-identity
   (lexical-let% ((dx))
     (lambda (&optional cached remote)
+			"CACHED REMOTE"
       (let* ((ss (if remote
                      (intern (mapconcat #'identity
                                         (remote-norm-id remote)

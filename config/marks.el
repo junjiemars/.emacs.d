@@ -74,6 +74,12 @@
 
 
 (eval-when-compile
+  (defmacro _mark_string@_ ()
+    `(bounds-of-thing-at-point 'string)))
+
+;; end of `_mark_string@_'
+
+(eval-when-compile
   (defmacro _mark_filename@_ ()
     `(bounds-of-thing-at-point 'filename)))
 

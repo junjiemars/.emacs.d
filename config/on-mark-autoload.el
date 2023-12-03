@@ -22,6 +22,32 @@
 
 ;; end of `mark-symbol@' `kill-symbol@'
 
+;;; `mark-string@'
+
+(defun mark-string@ (&optional boundary)
+	"Mark the string at point.\n
+If prefix BOUNDARY is non-nil, then mark the whole string."
+	(interactive "P")
+	(let ((bs (_mark_string@_)))
+		(unless bs
+			(user-error "No string found"))
+		(_mark_thing_ (if boundary (car bs) (1+ (car bs)))
+									(if boundary (cdr bs) (1- (cdr bs))))))
+
+
+(defun kill-string@ (&optional boundary)
+  "Kill the string at point.\n
+If prefix BOUNDARY is non-nil, then kill the whole string."
+  (interactive "P")
+  (let ((bs (_mark_string@_)))
+    (unless bs
+      (user-error "No string found"))
+    (kill-region (if boundary (car bs) (1+ (car bs)))
+								 (if boundary (cdr bs) (1- (cdr bs))))))
+
+;; end of `mark-string@'
+
+
 ;;; `mark-sexp@' `kill-sexp@'
 
 (defun mark-sexp@ (&optional n)
@@ -75,6 +101,7 @@ backward."
 
 
 ;; end of `mark-word' `kill-word@'
+
 
 ;;; `mark-line@'
 
@@ -180,6 +207,7 @@ If prefix BOUNDARY is non-nil, then mark the whole quoted thing."
 (define-key% (current-global-map) (kbd "C-x M-l") #'kill-whole-line)
 (define-key% (current-global-map) (kbd "C-x M-q s") #'kill-quoted-symmetry@)
 (define-key% (current-global-map) (kbd "C-x M-q a") #'kill-quoted-asymmetry@)
+(define-key% (current-global-map) (kbd "C-x M-s") #'kill-string@)
 
 ;; Mark
 (define-key% (current-global-map) (kbd "C-c M-@") #'mark-word@)
@@ -189,6 +217,7 @@ If prefix BOUNDARY is non-nil, then mark the whole quoted thing."
 (define-key% (current-global-map) (kbd "C-c M-l") #'mark-line@)
 (define-key% (current-global-map) (kbd "C-c M-q s") #'mark-quoted-symmetry@)
 (define-key% (current-global-map) (kbd "C-c M-q a") #'mark-quoted-asymmetry@)
+(define-key% (current-global-map) (kbd "C-c M-s") #'mark-string@)
 (define-key% (current-global-map) (kbd "M-@") #'mark-word)
 (define-key% (current-global-map) (kbd "C-M-@") #'mark-sexp)
 (define-key% (current-global-map) (kbd "C-M-SPC") #'mark-sexp)

@@ -88,6 +88,7 @@ when \\=`desktop-globals-to-save\\=' include it."
 (defalias '*tags*
   (lexical-let% ((b tags-program))
     (lambda (&optional n)
+			"N"
       (plist-get b (or n :bin))))
   "Tags' binary and options.")
 
@@ -104,6 +105,7 @@ when \\=`desktop-globals-to-save\\=' include it."
                           (v-home% "private/")
                           (v-home% "theme/"))))
     (lambda (&optional n)
+			"N"
       (cond (n (setq b (cons n b)))
             (t b))))
   "Tag's buffer should open in \\=`view-mode\\='.")
