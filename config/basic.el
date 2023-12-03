@@ -7,13 +7,6 @@
 ;;;;
 
 
-
-;;; `load-path' versioned dirs
-(push! (v-home% "config/") load-path)
-(push! (v-home% "private/") load-path)
-
-;; end of `load-path'
-
 ;;;
 ;; versioned dirs: .*
 ;;;

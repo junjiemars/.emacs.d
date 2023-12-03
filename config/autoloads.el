@@ -212,6 +212,9 @@
       (compile-unit% (emacs-home* "config/sockets.el")))
     (when-package%
       (compile-unit% (emacs-home* "config/module.el"))))
+	;; `load-path' versioned dirs
+	(push! (v-home% "config/") load-path)
+	(push! (v-home% "private/") load-path)
   (load-autoloaded-modes!)
   (load-conditional-modes!)
   (when-fn% 'toggle-frame-initialized nil (toggle-frame-initialized))
