@@ -52,7 +52,12 @@
              'desktop)
 
       (setq% desktop-modes-not-to-save
-             (self-spec-> desk :modes-not-to-save)
+             (append '(archive-mode
+                       eww-mode
+                       flymake-mode
+                       rmail-mode
+                       tags-table-mode)
+                     (self-spec-> desk :modes-not-to-save))
              'desktop)
 
       (when-graphic%

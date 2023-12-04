@@ -88,10 +88,10 @@
 (*self-env-spec*
  :put :desktop
  (list :files-not-to-save
-       "\\.t?gz$\\|\\.zip$\\|\\.desktop\\|~$\\|^/sudo:\\|^/ssh[x]?:\\|\\.el[cn]$"
+       "\\.desktop\\|~$\\|^/sudo:\\|^/ssh[x]?:\\|\\.el[cn]$"
        :buffers-not-to-save "^TAGS\\|\\.log"
        :modes-not-to-save
-       '(archive-mode dired-mode fundamental-mode eww-mode rmail-mode tags-table-mode)
+       '(dired-mode fundamental-mode)
        :restore-eager 8
        :allowed nil))
 
