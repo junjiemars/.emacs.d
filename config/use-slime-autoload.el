@@ -17,7 +17,7 @@
       (setq% slime-lisp-implementations
              (if n (push! n b) b)
              'slime)))
-  "Parameterized `slime-lisp-implementations'.")
+  "Parameterized \\=`slime-lisp-implementations\\='.")
 
 
 (defalias '*slime-source-locations*
@@ -25,15 +25,14 @@
     (lambda (&optional n)
       (cond (n (setq b (cons n b)))
             (t b))))
-  "Parameterized source locations for `slime'.")
-
+  "Parameterized source locations for \\=`slime\\='.")
 
 
 (when-fn% 'slime-show-source-location 'slime
   (defadvice slime-show-source-location (after
                                          slime-show-source-location-after
                                          disable)
-    "Show the Common LisP's source location in `view-mode'."
+    "Show the Common LisP's source location in \\=`view-mode\\='."
     (with-current-buffer (current-buffer)
       (dolist* (ss (*slime-source-locations*))
         (when (and (stringp ss)
@@ -41,19 +40,21 @@
           (view-mode 1))))))
 
 
-(with-eval-after-load 'slime
-
+(defun use-slime-init! ()
+  "On \\=`slime\\=' initialization."
   (*slime-lisp-implementations*)
-
   (when-fn% 'slime-setup 'slime
     (slime-setup '(slime-fancy slime-asdf)))
   (when-fn% 'slime-selector 'slime
-    (define-key (current-global-map) (kbd "C-c s s") #'slime-selector))
-
+    (define-key% (current-global-map) (kbd "C-c s s") #'slime-selector))
   (when-fn% 'slime-show-source-location 'slime
     (ad-enable-advice #'slime-show-source-location 'after
                       "slime-show-source-location-after")
     (ad-activate #'slime-show-source-location t)))
+
+
+;; `slime' aftere load
+(eval-after-load 'slime #'use-slime-init!)
 
 
 ;; end of file

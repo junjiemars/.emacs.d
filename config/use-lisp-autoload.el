@@ -30,15 +30,20 @@
     (if-feature-rainbow-delimiters% (make-thread* #'rainbow-delimiters-mode))))
 
 
-(defun on-use-lisp-init! ()
+
+(defun on-use-emacs-lisp-init! ()
   "On \\=`elisp-mode\\=' initialization."
-  (append! #'lisp*-featured! lisp-mode-hook)
-  (append! #'lisp*-featured! emacs-lisp-mode-hook))
+  (append! #'lisp*-featured! emacs-lisp-mode-hook t))
+
+(defun on-use-lisp-init! ()
+  "On \\=`lisp-mode\\=' initialization."
+  (append! #'lisp*-featured! lisp-mode-hook t))
 
 
 ;;; `elisp-mode' after load
-(eval-after-load (if-version% <= 25.0 'elisp-mode 'lisp-mode)
-  #'on-use-lisp-init!)
+(eval-after-load 'elisp-mode #'on-use-emacs-lisp-init!)
+
+(eval-after-load 'lisp-mode #'on-use-lisp-init!)
 
 
 (defun on-use-scheme-init! ()
@@ -46,7 +51,7 @@
   ;; disable auto active other scheme hooks
   (when-var% scheme-mode-hook 'scheme
     (setq scheme-mode-hook nil))
-  (append! #'lisp*-featured! scheme-mode-hook))
+  (append! #'lisp*-featured! scheme-mode-hook t))
 
 
 ;;; `scheme' after load
