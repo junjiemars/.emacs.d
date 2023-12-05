@@ -331,7 +331,9 @@
 (ert-deftest %fn:assoc** ()
   (should (equal '(a 1) (assoc** 'a '((b 2) (a 1)))))
   (should (equal '(a 1) (assoc** 'a '((b 2) (a 1)) :test #'eq)))
-  (should (equal '("a" a) (assoc** "a" '(("b" b) ("a" a)) :test #'string=))))
+  (should (equal '("a" a) (assoc** "a" '(("b" b) ("a" a)) :test #'string=)))
+  (let ((k "a") (lst '(("b" b) ("a" a))))
+    (should (equal (assoc** k lst :test #'string=) (assoc-string k lst)))))
 
 (ert-deftest %fn:mapcar** ()
   (should (equal '(a b c) (mapcar** #'identity '(a b c))))

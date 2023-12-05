@@ -15,17 +15,15 @@
       (if (null n) b (setq b n))))
   "Program of docker/podman.")
 
-
-(defun tramp*-docker-ls-containers (&optional ignored)
-  "List the running docker/podman containers."
-  (ignore* ignored)
+(defun tramp*-parse-docker-containers (&optional query)
+  "Return a list name of running docker/podman containers."
+  (ignore* query)
   (let ((cmd (shell-command* (docker-program)
 							 "ps" "--format {{.Names}}")))
     (when (zerop (car cmd))
-      (append '((nil nil))
-              (mapcar (lambda (x)
-                        (list nil x))
-                      (split-string* (cdr cmd) "\n" t "\n"))))))
+      (mapcar (lambda (x)
+                (list nil x))
+              (split-string* (cdr cmd) "\n" t "\n")))))
 
 
 (defun on-tramp-init! ()
@@ -34,26 +32,30 @@
     ;; ssh faster than scp on ancient Emacs?
     (setq% tramp-default-method "ssh"))
 
-  ;; docker
-  ;; C-x C-f /docker:user@container:/path/to/file
-  ;; C-x d /docker:user@container:/path/
-  (when% (executable-find% "docker")
-    (when-var% tramp-methods 'tramp
-      (unless (cdr (assoc** "docker" tramp-methods :test #'string=))
-        (push! '("docker"
-                 (tramp-login-program (docker-program))
-                 (tramp-login-args
-                  (nil
-                   ("exec" "-it")
-                   ("-u" "%u")
-                   ("%h")
-                   ("sh")))
-                 (tramp-remote-shell "/bin/sh")
-                 (tramp-remote-shell-args ("-i" "-c")))
-               tramp-methods)
-        (tramp-set-completion-function
-         "docker"
-         '((tramp*-docker-ls-containers "")))))))
+  ;;; docker
+  ;; `C-x C-f' /docker:[<user>@]<container>:/path/to/file
+  ;; `C-x d' /docker:[<user>@]<container>:/path/
+  (when-var% tramp-methods 'tramp
+    (setq tramp-methods
+          (let ((ts (remove-if* (lambda (x)
+                                  (string= "docker" x))
+                                tramp-methods :key #'car)))
+            (push! `("docker"
+                     (tramp-login-program ,(docker-program))
+                     (tramp-login-args
+                      (nil
+                       ("exec" "-it")
+                       ("-u" "%u")
+                       ("%h")
+                       ("sh")))
+                     (tramp-remote-shell "/bin/sh")
+                     (tramp-remote-shell-login ("-l"))
+                     (tramp-remote-shell-args ("-i" "-c")))
+                   ts t))))
+  ;; completion for docker container
+  (tramp-set-completion-function
+   "docker"
+   '((tramp*-parse-docker-containers ""))))
 
 
 ;; `tramp' after load
