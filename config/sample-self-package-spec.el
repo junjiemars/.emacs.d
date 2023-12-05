@@ -140,12 +140,27 @@
                   'web-mode
                   'x509-mode)))
 
-
 (*self-packages*
  :put :zig
  (list
   :cond (executable-find% "zig")
   :packages '(zig-mode)))
+
+;; `eglot' package for ancient Emacs
+(*self-packages*
+ :put :eglot
+ (list
+  :cond (unless-fn% 'eglot 'eglot t)
+  :packages (list 'eglot)
+  :compile `(,(compile-unit% (emacs-home* "config/on-eglot-autoload.el")))))
+
+;; `treesit' package for ancient Emacs
+(*self-packages*
+ :put :treesit
+ (list
+  :cond (unless-fn% 'treesit-available-p 'eglot t)
+  :packages (list 'eglot)
+  :compile `(,(compile-unit% (emacs-home* "config/on-treesit-autoload.el")))))
 
 
 ;; eof

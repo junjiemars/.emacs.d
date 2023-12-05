@@ -15,7 +15,8 @@
   (if-feature-treesit%
       (if (treesit-available-p)
           `(progn% ,@body)
-        `(comment ,@body))))
+        `(comment ,@body))
+    `(comment ,@body)))
 
 ;; end of macro
 
