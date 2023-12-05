@@ -450,11 +450,10 @@ Returns the name of FILE when successed otherwise nil."
   "Return a cons cell (code . output) after execute COMMAND in
  inferior shell.\n
 See \\=`shell-command\\=' and \\=`shell-command-to-string\\=' for
-details.\n If you want to set the environment temporarily that
+details. If you want to set the environment temporarily that
 \\=`shell-command*\\=' run in:
- (let ((process-environment (cons \"GREP_OPTIONS=--color=always\"
-                                   process-environment)))
-   (shell-command* \"echo \\='a\\=' | grep \\='a\\='\"))
+ (let ((process-environment (cons \"XXX=zzz\" process-environment)))
+   (shell-command* \"echo $XXX\"))\n
 Optional argument ARGS for COMMAND."
   (declare (indent 1))
   (let ((c1 (gensym)))
