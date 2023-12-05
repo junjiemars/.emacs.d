@@ -58,7 +58,7 @@
       ;; completion for docker container
       (tramp-set-completion-function
        "docker"
-       '((tramp*-parse-docker-containers (docker-program)))))))
+       `((tramp*-parse-docker-containers ,(docker-program)))))))
 
 
 ;; `tramp' after load
