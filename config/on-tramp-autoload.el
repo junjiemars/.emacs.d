@@ -15,14 +15,15 @@
       (if (null n) b (setq b n))))
   "Program of docker/podman.")
 
-(defun tramp*-parse-docker-containers (program)
-  "Return a list name of running docker/podman containers."
-  (let ((cmd (shell-command* program
-							 "ps" "--format {{.Names}}")))
-    (when (zerop (car cmd))
-      (mapcar (lambda (x)
-                (list nil x))
-              (split-string* (cdr cmd) "\n" t "\n")))))
+(when-fn% 'tramp-set-completion-function 'tramp
+  (defun tramp*-parse-docker-containers (program)
+    "Return a list name of running docker/podman containers."
+    (let ((cmd (shell-command* program
+							   "ps" "--format {{.Names}}")))
+      (when (zerop (car cmd))
+        (mapcar (lambda (x)
+                  (list nil x))
+                (split-string* (cdr cmd) "\n" t "\n"))))))
 
 
 (defun on-tramp-init! ()
