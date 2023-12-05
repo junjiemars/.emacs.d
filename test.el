@@ -30,7 +30,7 @@
                    system-configuration-options))
   (should (message "# system-configuration-features = %s"
                    (when (boundp 'system-configuration-features)
-                       system-configuration-features))))
+                     system-configuration-features))))
 
 
 ;;;
@@ -232,13 +232,17 @@
 ;; end of boot
 
 
-;;;;
+;;;
 ;; fn
-;;;;
+;;;
 
-
+(unintern "if-feature-ert%")
+(unintern "if-feature-ertxxx%")
 (defmacro-if-feature% ert)
 (defmacro-if-feature% ertxxx)
+
+(unintern "if-fn-ert-delete-test%")
+(unintern "if-fn-ert-delete-testxxx%")
 (defmacro-if-fn% ert-delete-test ert)
 (defmacro-if-fn% ert-delete-testxxx ert)
 
@@ -246,16 +250,20 @@
   (should (> (emacs-arch) 0)))
 
 (ert-deftest %fn:defmacro-if-feature% ()
-  (should (= 3 (if-feature-ert% (+ 1 2) (* 3 4))))
-  (should (= 12 (if-feature-ertxxx% (+ 1 2) (* 3 4))))
-  (should (and (unintern 'if-feature-ert%)
-               (unintern 'if-feature-ertxxx%))))
+	(unwind-protect
+			(progn
+				(should (= 3 (if-feature-ert% (+ 1 2) (* 3 4))))
+				(should (= 12 (if-feature-ertxxx% (+ 1 2) (* 3 4)))))
+		(unintern "if-feature-ert%")
+		(unintern "if-feature-ertxxx%")))
 
 (ert-deftest %fn:defmacro-if-fn% ()
-  (should (= 3 (if-fn-ert-delete-test% (+ 1 2) (* 3 4))))
-  (should (= 12 (if-fn-ert-delete-testxxx% (+ 1 2) (* 3 4))))
-  (should (and (unintern 'if-fn-ert-delete-test%)
-               (unintern 'if-fn-ert-delete-testxxx%))))
+	(unwind-protect
+			(progn
+				(should (= 3 (if-fn-ert-delete-test% (+ 1 2) (* 3 4))))
+				(should (= 12 (if-fn-ert-delete-testxxx% (+ 1 2) (* 3 4))))))
+  (unintern "if-fn-ert-delete-test%")
+	(unintern "if-fn-ert-delete-testxxx%"))
 
 (ert-deftest %fn:flatten ()
   (should (equal '(nil) (flatten nil)))
@@ -378,8 +386,8 @@
   (should (equal '("a") (member-if* (lambda (x) (string= x "a"))
                                     '("b" "a"))))
   (should (equal '((3 "c")) (member-if* (lambda (x) (string= x "c"))
-                                         '((1 "a") (2 "b") (3 "c"))
-                                         :key #'cadr))))
+                                        '((1 "a") (2 "b") (3 "c"))
+                                        :key #'cadr))))
 
 (ert-deftest %fn:every* ()
   (should (every* #'stringp "" "a" "b"))

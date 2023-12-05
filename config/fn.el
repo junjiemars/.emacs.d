@@ -33,7 +33,7 @@
 (unless-fn% 'take nil
   (defun take (n seq)
     "Return a sequence of the first N items in SEQ."
-    (let ((s))
+    (let ((s nil))
       (while (and (> n 0) seq)
         (setq s (cons (car seq) s)
               n (1- n)
@@ -43,7 +43,7 @@
 
 (defun take-while (pred seq)
   "Return a sequence of items from SEQ just take while PRED is t."
-  (let ((s))
+  (let ((s nil))
     (while (and seq (not (funcall pred (car seq))))
       (setq s (cons (car seq) s)
             seq (cdr seq)))
