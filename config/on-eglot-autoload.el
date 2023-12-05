@@ -114,8 +114,7 @@ and INDENT."
    (condition-case _
        (let ((debug-on-error nil))
          (prog1 t
-           (eglot-shutdown-all)
-           (flymake-mode 0)))
+           (eglot-shutdown-all)))
      (error t))))
 
 

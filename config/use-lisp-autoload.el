@@ -33,7 +33,7 @@
 
 (defun on-use-emacs-lisp-init! ()
   "On \\=`elisp-mode\\=' initialization."
-  (append! #'lisp*-featured! emacs-lisp-mode-hook t))
+  (append! #'lisp*-featured! emacs-lisp-mode-hook))
 
 (defun on-use-lisp-init! ()
   "On \\=`lisp-mode\\=' initialization."
@@ -51,7 +51,7 @@
   ;; disable auto active other scheme hooks
   (when-var% scheme-mode-hook 'scheme
     (setq scheme-mode-hook nil))
-  (append! #'lisp*-featured! scheme-mode-hook t))
+  (append! #'lisp*-featured! scheme-mode-hook))
 
 
 ;;; `scheme' after load

@@ -191,7 +191,7 @@ See also: \\=`parse-colon-path\\='."
         (when (consp spinning)
           (spin-env-vars! spinning)))))
 
-  (append! #'save-shell-env! kill-emacs-hook t))
+  (append! #'save-shell-env! kill-emacs-hook))
 
 
 (read-shell-env!)
