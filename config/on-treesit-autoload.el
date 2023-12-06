@@ -79,7 +79,7 @@
                              major-mode-remap-alist
                              :key #'cdr)
                  treesit-language-source-alist nil)
-           (message "treesit off"))
+           (message "%s" "treesit off"))
        (let ((ts (treesit*-settings))
              (aa (copy-sequence auto-mode-alist)))
          (dolist* (x ts)
@@ -94,7 +94,7 @@
                (when (eq (cdr y) m1)
                  (push! (cons (car y) r1) aa)))))
          (setq auto-mode-alist aa)
-         (message "treesit on"))))))
+         (message "%s" "treesit on"))))))
 
 
 (when-feature-treesit%
