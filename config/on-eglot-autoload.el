@@ -114,9 +114,8 @@ and INDENT."
 
  (defun eglot*-shutdown-all ()
    (condition-case _
-       (let ((debug-on-error nil)
-             (debug-on-quit nil))
-         (prog1 t
+       (prog1 t
+         (let ((debug-on-signal nil))
            (eglot-shutdown-all)))
      (error t))))
 
