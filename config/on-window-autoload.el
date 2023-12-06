@@ -116,7 +116,7 @@ And copy the qualified buffer name to kill ring."
                          #'linum-mode
                    #'(lambda ()
                        (interactive)
-                       (user-error "No line mode found")))))
+                       (user-error "%s" "No line mode found")))))
   (define-key% (current-global-map) (kbd "C-x x r") #'rename-buffer)
   (when-fn% 'toggle-word-wrap 'simple
     (define-key% (current-global-map) (kbd "C-x x w") #'toggle-word-wrap))

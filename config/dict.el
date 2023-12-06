@@ -168,7 +168,7 @@
                                 'face
                                 'font-lock-warning-face))
       (kill-buffer)
-      (user-error "!%s in on-lookup-dict" err)))
+      (user-error "%s in on-lookup-dict" err)))
   (set-buffer-multibyte t)
   (when (*dict-debug-log* :logging)
     (write-region (point-min) (point-max)

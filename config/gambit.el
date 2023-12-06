@@ -13,12 +13,12 @@
 ;;; 5. indentation in REPL.
 ;;; 6. completion in REPL and scheme source.
 ;;; 7*. migrate features from `(emacs-home* "config/chez.el")'.
-;;; 
-;;; bugs: 
+;;;
+;;; bugs:
 ;;;
 ;;; improve:
 ;;; 1. enlarge comint redirect buffered size.
-;;; 
+;;;
 
 
 (require 'comint)
@@ -157,7 +157,7 @@ This is run before the process is cranked up."
 					out))))
 
 ;;; eof
- " 
+ "
   "The library of gambit-emacs.")
 
 
@@ -232,7 +232,7 @@ This is run before the process is cranked up."
              (not (eq 'run (car (comint-check-proc (*gambit*))))))
     (save-window-excursion (call-interactively #'run-gambit)))
   (or (get-buffer-process (*gambit*))
-      (error "No `*gambit*' process.")))
+      (error "%s" "No *gambit* process")))
 
 (defun gambit-input-complete-p ()
   "Return t if the input string contains a complete sexp."
@@ -322,7 +322,7 @@ The following commands are available:
 
 A gambit process can be fired up with M-x `run-gambit'.
 
-Customization: 
+Customization:
 Entry to this mode runs the hooks on `comint-mode-hook' and
   `gambit-repl-mode-hook' (in that order)."
   :group 'gambit                          ; keyword args

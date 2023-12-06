@@ -177,7 +177,7 @@ This is run before the process is cranked up."
              (not (eq 'run (car (comint-check-proc (*chez*))))))
     (save-window-excursion (call-interactively #'run-chez)))
   (or (get-buffer-process (*chez*))
-      (error "No `*chez*' process.")))
+      (error "%s" "No *chez* process")))
 
 (defun chez-input-complete-p ()
   "Return t if the input string contains a complete sexp."

@@ -136,7 +136,7 @@
    (if-fn% 'dired-get-file-for-visit 'dired
            (dired-get-file-for-visit)
      (or (dired-get-filename nil t)
-         (error "No file on this line")))))
+         (user-error "%s" "No file on this line")))))
 
 
 (defun on-dired-init! ()

@@ -126,7 +126,7 @@ function node_emacs_apropos(what, max) {
              (not (eq 'run (car (comint-check-proc (*node*))))))
     (save-window-excursion (call-interactively #'run-node)))
   (or (get-buffer-process (*node*))
-      (error "No `*node*' process.")))
+      (error "%s" "No *node* process.")))
 
 
 (defun node-last-sexp ()

@@ -140,12 +140,14 @@ when \\=`desktop-globals-to-save\\=' include it."
   "Unmount TAGS from \\=`tags-table-list\\='.\n
 With prefix argument TAGS unmount all tags from
 \\=`tags-table-list\\='."
-  (interactive (list (unless (and current-prefix-arg
-                                  (yes-or-no-p "unmount all? "))
-                       (fluid-let (file-name-history tags-table-list)
-                         (if (consp file-name-history)
-                             (read-file-name "unmount from ")
-                           (user-error "`tags-table-list' alreay empty"))))))
+  (interactive (list
+                (unless (and current-prefix-arg
+                             (yes-or-no-p "unmount all? "))
+                  (fluid-let (file-name-history tags-table-list)
+                    (if (consp file-name-history)
+                        (read-file-name "unmount from ")
+                      (user-error
+                       "%s" "tags-table-list alreay empty"))))))
   (setq tags-file-name nil
         tags-table-list
         (when tags

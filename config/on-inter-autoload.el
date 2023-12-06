@@ -190,7 +190,7 @@ Optional argument INDENT whether to indent lines. See also
                        ((string-match "\\`[0-9a-fA-F]+\\'" character)
                         (ignore-errors (read (concat "?\\u" character)))))))
           (unless (characterp c)
-            (error "Invalid character"))
+            (error "%s" "Invalid character"))
           (insert-char c count)))
       (define-key% (current-global-map) (kbd "C-x 8 RET") #'insert-char*)))
 

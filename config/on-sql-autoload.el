@@ -72,9 +72,9 @@ about each column."
                        current-prefix-arg))
     (let ((sqlbuf (sql-find-sqli-buffer)))
       (unless sqlbuf
-        (user-error "No SQL interactive buffer found"))
+        (user-error "%s" "No SQL interactive buffer found"))
       (unless name
-        (user-error "No table name specified"))
+        (user-error "%s" "No table name specified"))
       (sql-execute-feature sqlbuf (format "*Desc %s*" name)
                            :desc-table enhanced name))))
 
@@ -94,9 +94,9 @@ Optional prefix argument ENHANCED, displays additional details."
            current-prefix-arg))
     (let ((sqlbuf (sql-find-sqli-buffer)))
       (unless sqlbuf
-        (user-error "No SQL interactive buffer found"))
+        (user-error "%s" "No SQL interactive buffer found"))
       (unless plan
-        (user-error "No plan specified"))
+        (user-error "%s" "No plan specified"))
       (sql-execute-feature sqlbuf
                            (format "*Desc plan %s*"
                                    (sql-first-word plan))
@@ -111,9 +111,9 @@ Optional prefix argument ENHANCED, displays additional details."
                        current-prefix-arg))
     (let ((sqlbuf (sql-find-sqli-buffer)))
       (unless sqlbuf
-        (user-error "No SQL interactive buffer found"))
+        (user-error "%s" "No SQL interactive buffer found"))
       (unless name
-        (user-error "No name specified"))
+        (user-error "%s" "No name specified"))
       (sql-execute-feature sqlbuf (format "*List code %s*" name)
                            :list-code enhanced name))))
 
@@ -126,9 +126,9 @@ Optional prefix argument ENHANCED, displays additional details."
                        current-prefix-arg))
     (let ((sqlbuf (sql-find-sqli-buffer)))
       (unless sqlbuf
-        (user-error "No SQL interactive buffer found"))
+        (user-error "%s" "No SQL interactive buffer found"))
       (unless name
-        (user-error "No table name specified"))
+        (user-error "%s" "No table name specified"))
       (sql-execute-feature sqlbuf (format "*List index %s*" name)
                            :list-index enhanced name))))
 
@@ -335,7 +335,7 @@ Optional prefix argument ENHANCED, displays additional details."
 
   (when-fn% 'sql-show-sqli-buffer 'sql
     (define-key% sql-mode-map
-      (kbd "C-c C-z") #'sql-show-sqli-buffer*))
+                 (kbd "C-c C-z") #'sql-show-sqli-buffer*))
 
   (when-fn% 'sql-send-magic-terminator 'sql
     ;; mysql: \\=`:terminator\\='

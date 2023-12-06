@@ -16,7 +16,7 @@
   (interactive)
   (let ((bs (_mark_symbol@_)))
     (unless (and bs (car bs) (cdr bs))
-      (user-error "No symbol found"))
+      (user-error "%s" "No symbol found"))
     (_mark_thing_ (car bs) (cdr bs))))
 
 
@@ -30,7 +30,7 @@ If prefix BOUNDARY is non-nil, then mark the whole string."
 	(interactive "P")
 	(let ((bs (_mark_string@_)))
 		(unless bs
-			(user-error "No string found"))
+			(user-error "%s" "No string found"))
 		(_mark_thing_ (if boundary (car bs) (1+ (car bs)))
 									(if boundary (cdr bs) (1- (cdr bs))))))
 
@@ -41,7 +41,7 @@ If prefix BOUNDARY is non-nil, then kill the whole string."
   (interactive "P")
   (let ((bs (_mark_string@_)))
     (unless bs
-      (user-error "No string found"))
+      (user-error "%s" "No string found"))
     (kill-region (if boundary (car bs) (1+ (car bs)))
 								 (if boundary (cdr bs) (1- (cdr bs))))))
 
@@ -60,7 +60,7 @@ Otherwise, select the whole list."
                   (t (_mark_sexp@_ n)))))
     (unless (and bs (car bs) (cdr bs)
                  (null (= (car bs) (cdr bs))))
-      (user-error "No sexp found"))
+      (user-error "%s" "No sexp found"))
     (_mark_thing_ (car bs) (cdr bs))))
 
 (defun kill-sexp@ (&optional n)
@@ -72,7 +72,7 @@ If prefix N is a number, killing forward or backward N sexps."
                   (t (_mark_sexp@_ n)))))
     (unless (and bs (car bs) (cdr bs)
                  (null (= (car bs) (cdr bs))))
-      (user-error "No sexp found"))
+      (user-error "%s" "No sexp found"))
     (kill-region (car bs) (cdr bs))))
 
 ;; end of `mark-sexp@' `kill-sexp@'
@@ -86,7 +86,7 @@ If prefix N is non nil, then forward or backward N words."
   (interactive "p")
   (let ((ws (_mark_word@_ n)))
     (unless ws
-      (user-error "No word found"))
+      (user-error "%s" "No word found"))
     (_mark_thing_ (car ws) (cdr ws))))
 
 (defun kill-word@ (&optional n)
@@ -96,7 +96,7 @@ backward."
   (interactive "p")
   (let ((ws (_mark_word@_ n)))
     (unless ws
-      (user-error "No whole word found"))
+      (user-error "%s" "No whole word found"))
     (kill-region (car ws) (cdr ws))))
 
 
@@ -131,7 +131,7 @@ If prefix N is non-nil, then forward or backward N functions."
   (interactive "p")
   (let ((bs (_mark_defun@_ n)))
     (unless (and bs (car bs) (cdr bs))
-      (user-error "No defun found"))
+      (user-error "%s" "No defun found"))
     (_mark_thing_ (cdr bs) (car bs))))
 
 ;; end of `mark-defun@'
@@ -144,7 +144,7 @@ If prefix N is non-nil, then forward or backward N functions."
   (interactive)
   (let ((bs (_mark_filename@_)))
     (unless (and bs (car bs) (cdr bs))
-      (user-error "No filename found"))
+      (user-error "%s" "No filename found"))
     (_mark_thing_ (car bs) (cdr bs))))
 
 ;; end of `mark-filename@'
@@ -157,7 +157,7 @@ If prefix BOUNDARY is non-nil, then mark the whole quoted thing."
   (interactive "P")
   (let ((bs (_mark_quoted_symmetry@_)))
     (unless (and bs (car bs) (cdr bs))
-      (user-error "No quoted thing found"))
+      (user-error "%s" "No quoted thing found"))
     (_mark_thing_ (if boundary (car bs) (1+ (car bs)))
                   (if boundary (cdr bs) (1- (cdr bs))))))
 
@@ -167,7 +167,7 @@ If prefix BOUNDARY is non-nil, then mark the whole quoted thing."
   (interactive "P")
   (let ((bs (_mark_quoted_symmetry@_)))
     (unless (and bs (car bs) (cdr bs))
-      (user-error "No quoted thing found"))
+      (user-error "%s" "No quoted thing found"))
     (kill-region (if boundary (car bs) (1+ (car bs)))
                  (if boundary (cdr bs) (1- (cdr bs))))))
 
@@ -182,7 +182,7 @@ If prefix BOUNDARY is non-nil, then mark the whole quoted thing."
   (interactive "P")
   (let ((bs (_mark_quoted_asymmetry@_)))
     (unless (and bs (car bs) (cdr bs))
-      (user-error "No quoted thing found"))
+      (user-error "%s" "No quoted thing found"))
     (_mark_thing_ (if boundary (car bs) (1+ (car bs)))
                   (if boundary (cdr bs) (1- (cdr bs))))))
 
@@ -192,7 +192,7 @@ If prefix BOUNDARY is non-nil, then mark the whole quoted thing."
   (interactive "P")
   (let ((bs (_mark_quoted_asymmetry@_)))
     (unless (and bs (car bs) (cdr bs))
-      (user-error "No quoted thing found"))
+      (user-error "%s" "No quoted thing found"))
     (kill-region (if boundary (car bs) (1+ (car bs)))
                  (if boundary (cdr bs) (1- (cdr bs))))))
 
