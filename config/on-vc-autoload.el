@@ -22,7 +22,7 @@
 
   (defvar *vc-frontend*
     `("*" ,(if-feature-magit% "magit"))
-    "The fontends of VC.")
+    "The fontend of VC.")
 
    (defvar *vc-frontend-history* nil
     "The VC frontend choosing history list."))
