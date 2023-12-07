@@ -507,9 +507,9 @@ If FN is nil then return the path, otherwise call FN with the path."
     (if (string-match m64 system-configuration)
         `(cons ,(string-match* m64 system-configuration 1) ,bit)
       (if-platform% 'windows-nt
-          (if (string-match m64 (getenv "PROCESSOR_ARCHITECTURE"))
-              `(cons ,(getenv "PROCESSOR_ARCHITECTURE") ,bit)
-            `(cons ,(getenv "PROCESSOR_ARCHITECTURE") ,bit))
+          (if (string-match m64 (getenv-internal "PROCESSOR_ARCHITECTURE"))
+              `(cons ,(getenv-internal "PROCESSOR_ARCHITECTURE") ,bit)
+            `(cons ,(getenv-internal "PROCESSOR_ARCHITECTURE") ,bit))
         (let ((m (shell-command* "uname" "-m")))
           (if (and (zerop (car m))
                    (string-match m64 (string-trim> (cdr m) "\n")))

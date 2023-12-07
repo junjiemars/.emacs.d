@@ -172,7 +172,7 @@ See \\=`file-name-sans-extension\\='."
 (defmacro emacs-home* (&optional file)
   "Return path of FILE under \\='~/.emacs.d\\='."
   `(concat ,(expand-file-name
-             (or (getenv "EMACS_HOME") "~/.emacs.d/"))
+             (or (getenv-internal "EMACS_HOME") "~/.emacs.d/"))
            ,file))
 
 (defmacro v-home (file)
