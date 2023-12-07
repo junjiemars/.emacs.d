@@ -347,8 +347,7 @@ Introduce the rules of naming /files/ and /functions/.
 - =χ!= function or macro =x= has side-effects, such as =v-home!=
 - =χ@= position related functions, such as =mark-word@= and
   =mark-sexp@=
-- =χ*-y= is the extension of function =y= of package =x=, such as
-  =vc*-dir=
+- =χ*-y= extension of function =y= of package =x=, such as =vc*-dir=
 
 * Recipe
    :PROPERTIES:
