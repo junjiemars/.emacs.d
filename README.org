@@ -271,6 +271,7 @@ Introduce the rules of naming /files/ and /functions/.
     ├── gud-lldb.el
     ├── memo.el
     ├── module.el
+    ├── sodoku.el
     └── (comment "more ...")
 #+END_EXAMPLE
 
@@ -281,9 +282,9 @@ Introduce the rules of naming /files/ and /functions/.
 - /extension/ for Emacs builtin packages: =<package-name>s.el=
 #+BEGIN_EXAMPLE
     (emacs-home* "config/")
+    ├── guds.el
     ├── shells.el
     ├── sockets.el
-    ├── guds.el
     ├── tags.el
     └── (comment "more ...")
 #+END_EXAMPLE
@@ -298,11 +299,11 @@ Introduce the rules of naming /files/ and /functions/.
     ├── on-dired-autoload.el
     ├── on-docview-autoload.el
     ├── on-edit-autoload.el
+		├── on-eglot-autoload.el
     ├── on-trans-autoload.el
     ├── on-eshell-autoload.el
     ├── on-eww-autoload.el
     ├── on-font-autoload.el
-    ├── on-module.el
     └── (comment "more ...")
 #+END_EXAMPLE
 
@@ -345,7 +346,7 @@ Introduce the rules of naming /files/ and /functions/.
   =x=, such as =every*= and =assoc**=
 - =χ*-y= is the extension of function =y= of package =x=, such as
   =vc*-dir=
-- =χ%= macro =x= will be expanded at compile time, such as =v-home%=
+- =χ%= macro =x= will be expanded at compile time, such as =if%=
 - =χ!= function or macro =x= has side-effects, such as =v-home!=
 - =χ@= positional functions, such as =mark-word@= and =mark-sexp@=
 
