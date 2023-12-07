@@ -469,7 +469,7 @@ as [[https://en.wikipedia.org/wiki/CJK_characters][CJK]], etc., the default enco
 #+REVEAL: split
 - =:name= string of font name
 - =:size= integer of font size
-- =:scale= number of scale ratio of glyph font, =nil= disabled
+- =:scale= =t= scaled, =nil= disabled
 - =:scripts= list of script symbol for character
 - =:allowed= =t= enabled, =nil= disabled
 
