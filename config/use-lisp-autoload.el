@@ -30,14 +30,13 @@
     (if-feature-rainbow-delimiters% (make-thread* #'rainbow-delimiters-mode))))
 
 
-
 (defun on-use-emacs-lisp-init! ()
   "On \\=`elisp-mode\\=' initialization."
   (append! #'lisp*-featured! emacs-lisp-mode-hook))
 
 (defun on-use-lisp-init! ()
   "On \\=`lisp-mode\\=' initialization."
-  (append! #'lisp*-featured! lisp-mode-hook t))
+  (append! #'lisp*-featured! lisp-mode-hook))
 
 
 ;;; `elisp-mode' after load
