@@ -30,7 +30,7 @@
 
 (when-feature-vc%
 
- (defun vc-dir* (&optional frontend)
+ (defun vc*-dir (&optional frontend)
    "Show the VC status."
    (interactive
     (list (if current-prefix-arg
@@ -49,8 +49,8 @@
 
 
 (when-feature-vc%
- ;; general `vc-dir'
- (define-key% (current-global-map) (kbd "C-x v d") #'vc-dir*))
+ ;; general `vc*-dir'
+ (define-key% (current-global-map) (kbd "C-x v d") #'vc*-dir))
 
 
 ;; end of on-vc-autoload.el
