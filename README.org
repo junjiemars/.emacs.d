@@ -337,17 +337,18 @@ Introduce the rules of naming /files/ and /functions/.
 **** Functions Naming (χ denotes name)
 
 #+REVEAL: split
-- *v-χ* prefix: function or macro for versioned directory, such as
-  =v-home=
-- *_χ_* prefix: function or macro only existing in compile-time,
-  such as =_mark_thing@_=
-- *χ​** or *χ*** suffix: extension of Emacs' builtin function or
-  macro, such as =every*= and =assoc**=
-- *χ%* suffix: macro be expanded at compile time, such as =v-home%=
-- *χ!* suffix: function or macro with side-effects, such as
-  =v-home!=
-- *χ@* suffix: position related functions or macros, such as
-   =mark-word@= and =mark-sexp@=
+- =v-χ= macro =x= for processing Versioned directories or files, such
+  as =v-home=
+- =_χ_= macro =x= only existing at compile-time, such as
+  =_mark_thing@_=
+- =χ​*= or =χ**= is the extension of Emacs' builtin function or macro
+  =x=, such as =every*= and =assoc**=
+- =χ%= macro =x= will be expanded at compile time, such as =v-home%=
+- =χ!= function or macro =x= has side-effects, such as =v-home!=
+- =χ@= position related functions, such as =mark-word@= and
+  =mark-sexp@=
+- =χ*-y= is the extension of function =y= of package =x=, such as
+  =vc*-dir=
 
 * Recipe
    :PROPERTIES:
