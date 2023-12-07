@@ -53,7 +53,7 @@
    (:name ,(if-platform% 'darwin
                "PingFang"
              (if-platform% 'windows-nt
-                 "Microsoft YaHei"
+                 "SimHei"
                "Noto Sans CJK"))
           :size 12
           :scale nil

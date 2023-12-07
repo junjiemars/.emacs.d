@@ -56,10 +56,7 @@
                 (w2 (char-width* #x4e2d)))
             (when (and w1 w2 (> w1 0) (> w2 0))
               (push! (cons (concat ".*" name ".*")
-                           (/ (* w1 (or (and (numberp scale)
-                                             (> scale 0) scale)
-                                        1))
-                              (+ w2 0.0)))
+                           (/ w1 (+ w2 0.0)))
                      face-font-rescale-alist))))))))
 
 
