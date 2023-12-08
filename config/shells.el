@@ -32,6 +32,8 @@
             (t dx))))
   "Default shell\\='s environment.")
 
+;; end of spec
+
 
 (defmacro echo-var (var &optional options)
   "Return the value of $VAR via echo."
@@ -79,7 +81,24 @@ See also: \\=`parse-colon-path\\='."
        (when (stringp ,v)
          (split-string* ,v path-separator t "[ ]+\n")))))
 
-
+;; end of vars/paths
+
+
+(defun setenv* (name value)
+  "Change or add an environment variable: NAME=VALUE.\n
+See \\=`setenv\\='."
+  (let* ((env process-environment)
+         (name= (concat name "="))
+         (len (length name=))
+         (newval (concat name= value)))
+    (if (catch 'break
+          (while (car env)
+            (when (eq t (compare-strings name= 0 len (car env) 0 len))
+              (setcar env newval)
+              (throw 'break t))
+            (setq env (cdr env))))
+        process-environment
+      (setq process-environment (cons newval process-environment)))))
 
 
 (defmacro copy-env-vars! (env vars)
@@ -89,16 +108,7 @@ See also: \\=`parse-colon-path\\='."
          (when (> (length v) 0)
            (let ((v1 (cdr (assoc-string v ,e))))
              (when (stringp v1)
-               (setenv v v1))))))))
-
-(defmacro copy-env-vars!1 (env vars)
-  (let ((e (gensym)) (vs (gensym)))
-    `(let ((,e ,env) (,vs ,vars))
-       (dolist* (v ,vs)
-         (when (> (length v) 0)
-           (let ((v1 (cdr (assoc** v ,e :test #'string=))))
-             (when (stringp v1)
-               (setenv v v1))))))))
+               (setenv* v v1))))))))
 
 
 (defmacro spin-env-vars! (vars)
@@ -107,7 +117,7 @@ See also: \\=`parse-colon-path\\='."
        (dolist* (v ,vs)
          (when (and (stringp (car v))
                     (stringp (cdr v)))
-           (setenv (car v) (cdr v)))))))
+           (setenv* (car v) (cdr v)))))))
 
 
 (defmacro copy-exec-path! (path)
@@ -115,7 +125,7 @@ See also: \\=`parse-colon-path\\='."
     `(let ((,p ,path))
        (when ,p (setq exec-path ,p)))))
 
-
+;; end of env
 
 ;;;
 ;; windows shell
@@ -130,10 +140,10 @@ See also: \\=`parse-colon-path\\='."
                 (and append (not (string= dir (last env)))))
         (let ((path (remove-if* (lambda (x) (string= x dir))
                                 env)))
-          (setenv (shells-spec->% :PATH)
-                  (paths->var (if append
-                                  (append path dir)
-                                (cons dir path)))))))))
+          (setenv* (shells-spec->% :PATH)
+                   (paths->var (if append
+                                   (append path dir)
+                                 (cons dir path)))))))))
 
 ;; end of windows shell
 
@@ -186,7 +196,7 @@ See also: \\=`parse-colon-path\\='."
         (when shell
           (setq% explicit-shell-file-name shell 'shell)
           (setq shell-file-name shell)
-          (setenv (shells-spec->% :SHELL) shell)))
+          (setenv* (shells-spec->% :SHELL) shell)))
 
       (let ((copying (self-spec-> spec :copy-vars)))
         (when (consp copying)

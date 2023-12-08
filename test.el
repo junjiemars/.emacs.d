@@ -694,9 +694,9 @@
 
 ;; end of basic
 
-;;;;
+;;;
 ;; shells
-;;;;
+;;;
 
 (ert-deftest %shells:shells-spec->% ()
   ;; (should (= 6 (length (shells-spec->%))))
@@ -718,6 +718,27 @@
                                      (lambda (x) (string= "b" x)))))
     (should (string= "" (paths->var '("a" "b" "c")
                                     (lambda (x) (file-exists-p x)))))))
+
+(ert-deftest %shells:setenv* ()
+  (should (member "D=44"
+                  (let ((process-environment '("A=1" "B=2" "C=3")))
+                    (setenv* "D" "44"))))
+  (should (member "C=4"
+                  (let ((process-environment '("A=1" "B=2" "C=3")))
+                    (setenv* "C" "4")))))
+
+(ert-deftest %shells:copy-env-vars! ()
+  (should (member "A=1"
+                  (let ((env '(("A" . "1") ("B" . "2") ("C" . "3")))
+                        (process-environment '("B=2")))
+                    (copy-env-vars! env '("A"))
+                    process-environment))))
+
+(ert-deftest %shells:spin-env-vars! ()
+  (should (member "C=22"
+                  (let ((process-environment '("A=1" "B=2" "C=3")))
+                    (spin-env-vars! '(("C" . "22")))
+                    process-environment))))
 
 ;; end of shells
 
