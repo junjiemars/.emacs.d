@@ -87,10 +87,11 @@ See also: \\=`parse-colon-path\\='."
 (defun setenv* (name value)
   "Change or add an environment variable: NAME=VALUE.\n
 See \\=`setenv\\='."
-  (let* ((env process-environment)
-         (name= (concat name "="))
-         (len (length name=))
-         (newval (concat name= value)))
+  (lexical-let*%
+      ((env process-environment)
+       (name= (concat name "="))
+       (len (length name=))
+       (newval (concat name= value)))
     (if (catch 'break
           (while (car env)
             (when (eq t (compare-strings name= 0 len (car env) 0 len))
