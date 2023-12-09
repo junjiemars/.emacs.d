@@ -255,11 +255,12 @@ FN specify file-function (lambda (absolute-name)...), process
 filted files.\n
 DN specify dir-function (lambda (aboslute-name)...), process
 filted directories."
-  (let ((files (remove-if* (lambda (x)
-                             (or (null x)
-                                 (string= "./" x)
-                                 (string= "../" x)))
-                           (file-name-all-completions "" dir))))
+  (let* ((file-name-handler-alist nil)
+         (files (remove-if* (lambda (x)
+                              (or (null x)
+                                  (string= "./" x)
+                                  (string= "../" x)))
+                            (file-name-all-completions "" dir))))
     (while files
       (let ((f (car files)))
         (let ((a (expand-file-name f dir)))
@@ -287,10 +288,12 @@ filted directories."
 Starting at DIR, look up directory hierarchy for prefered
 directory or file. Ignores the symbol links of directory.\n
 PREFER (lambda (dir files)...)."
-  (let ((d (expand-file-name (if (directory-name-p dir)
-                                 dir
-                               (file-name-directory dir))))
-        (stop "\\(^/\\|[a-zA-Z]:/\\)\\'"))
+  (let* ((file-name-handler-alist nil)
+         (d (expand-file-name
+             (if (directory-name-p dir)
+                 dir
+               (file-name-directory dir))))
+         (stop "\\(^/\\|[a-zA-Z]:/\\)\\'"))
     (while (and (stringp d)
                 (directory-name-p d)
                 (not (string-match stop d)))

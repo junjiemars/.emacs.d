@@ -249,14 +249,17 @@ Argument SPEC (VAR LIST [RESULT])."
 (defun compile-unit* (file &optional only-compile)
   "Make an compile unit for \\=`compile-and-load-file*\\='."
   (let ((file-name-handler-alist nil))
-    (when (file-exists-p file)
+    (when (and (stringp file) (file-exists-p file))
       (let ((u1 (v-comp-file! file)))
         (vector (car u1) (cdr u1) only-compile nil)))))
 
 (defmacro compile-unit% (file &optional only-compile)
   "Make an compile unit at compile time for
 \\=`compile-and-load-file*\\='"
-  (let* ((-u1- (v-comp-file! (funcall `(lambda () ,file))))
+  (let* ((-u1- (v-comp-file!
+                (funcall `(lambda ()
+                            (let ((file-name-handler-alist nil))
+                              ,file)))))
          (-src1- (car -u1-))
          (-dst1- (cdr -u1-)))
     (when -u1-
