@@ -1,9 +1,11 @@
-;;;; -*- lexical-binding:t -*-
+;; -*- lexical-binding:t -*-
 ;;;;
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
 ;; shells.el
+;;;;
+;; Commentary: shell's environment
 ;;;;
 
 
@@ -188,10 +190,9 @@ See \\=`setenv\\='."
         (append! (v-home% ".exec/") exec-path)
 
       ;; read from file
-      (when (file-exists-p (shells-spec->% :file))
-        (*default-shell-env*
-         :set!
-         (read-sexp-from-file (shells-spec->% :file))))
+			(let ((env (read-sexp-from-file (shells-spec->% :file))))
+				(when env
+					(*default-shell-env* :set!)))
 
       (let ((shell (self-spec-> spec :shell-file-name)))
         (when shell
@@ -201,11 +202,12 @@ See \\=`setenv\\='."
 
       (let ((copying (self-spec-> spec :copy-vars)))
         (when (consp copying)
-          (copy-env-vars! (*default-shell-env* :get :copy-vars)
-                          copying)))
+          (copy-env-vars!
+					 (*default-shell-env* :get :copy-vars) copying)))
 
       (when (self-spec-> spec :exec-path)
-        (copy-exec-path! (*default-shell-env* :get :exec-path)))
+        (copy-exec-path!
+				 (*default-shell-env* :get :exec-path)))
 
       (let ((spinning (self-spec-> spec :spin-vars)))
         (when (consp spinning)

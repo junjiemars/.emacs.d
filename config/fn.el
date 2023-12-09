@@ -1,10 +1,11 @@
-;;; fn.el --- primitive functions -*- lexical-binding:t -*-
+;; -*- lexical-binding:t -*-
 ;;;;
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;;; Commentary:
-;;
+;; fn.el
+;;;;
+;; Commentary: common notions.
 ;;; Code:
 
 
@@ -323,9 +324,10 @@ Optional argument TRIM regexp used to trim."
       <= 28
       `(get-buffer-create ,buffer-or-name ,inhibit-buffer-hooks)
     `(if ,inhibit-buffer-hooks
-         (let ((kill-buffer-hook nil)
-               (kill-buffer-query-functions nil)
-               (buffer-list-update-hook nil))
+         (lexical-let%
+						 ((kill-buffer-hook nil)
+              (kill-buffer-query-functions nil)
+              (buffer-list-update-hook nil))
            (get-buffer-create ,buffer-or-name))
        (get-buffer-create ,buffer-or-name))))
 
@@ -335,7 +337,6 @@ Optional argument TRIM regexp used to trim."
   "See \\=`insert-file-contents-literally\\='."
   `(lexical-let%
        ((format-alist nil)
-        (file-name-handler-alist nil)
         (after-insert-file-functions nil)
         (file-coding-system-alist nil)
         (coding-system-for-read 'no-conversion)
@@ -347,7 +348,6 @@ Optional argument TRIM regexp used to trim."
   "See \\=`write-region\\='."
   `(lexical-let%
        ((format-alist nil)
-        (file-name-handler-alist nil)
         (coding-system-for-write 'no-conversion)
         (write-region-inhibit-fsync t)
         (write-region-annotate-functions nil))
@@ -370,7 +370,8 @@ Returns the name of FILE when successed otherwise nil."
 (defmacro read-sexp-from-file (file)
   "Read the first sexp from FILE."
   (let ((f (gensym)))
-    `(let ((,f ,file))
+    `(lexical-let% ((,f ,file)
+                    (file-name-handler-alist nil))
        (when (and (stringp ,f) (file-exists-p ,f))
          (let ((b (get-buffer-create* (symbol-name (gensym)) t)))
            (unwind-protect
@@ -383,8 +384,10 @@ Returns the name of FILE when successed otherwise nil."
   "Save STR to FILE.\n
 Returns the name of FILE when successed otherwise nil."
   (let ((s (gensym)) (f (gensym)))
-    `(let ((,s ,str) (,f ,file)
-           (b (get-buffer-create* (symbol-name (gensym)) t)))
+    `(lexical-let%
+         ((,s ,str) (,f ,file)
+          (file-name-handler-alist nil)
+          (b (get-buffer-create* (symbol-name (gensym)) t)))
        (unwind-protect
            (with-current-buffer b
              (insert ,s)
@@ -396,7 +399,8 @@ Returns the name of FILE when successed otherwise nil."
 (defmacro read-str-from-file (file)
   "Read string from FILE."
   (let ((f (gensym)))
-    `(let ((,f ,file))
+    `(lexical-let% ((,f ,file)
+                    (file-name-handler-alist nil))
        (when (and (stringp ,f) (file-exists-p ,f))
          (let ((b (get-buffer-create* (symbol-name (gensym)) t)))
            (unwind-protect
@@ -457,8 +461,10 @@ details. If you want to set the environment temporarily that
 Optional argument ARGS for COMMAND."
   (declare (indent 1))
   (let ((c1 (gensym)))
-    `(let ((,c1 ,command)
-           (b (get-buffer-create* (symbol-name (gensym)) t)))
+    `(lexical-let%
+				 ((,c1 ,command)
+					(b (get-buffer-create* (symbol-name (gensym)) t))
+					(file-name-handler-alist nil))
        (unwind-protect
            (with-current-buffer b
              (cons (let ((x (call-process

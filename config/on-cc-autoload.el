@@ -1,9 +1,11 @@
-;;;; -*- lexical-binding:t -*-
+;; -*- lexical-binding:t -*-
 ;;;;
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
 ;; on-cc-autoload.el
+;;;;
+;; Commentary: essential C programming
 ;;;;
 
 

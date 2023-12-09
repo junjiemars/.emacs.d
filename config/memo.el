@@ -60,15 +60,14 @@
                      (self-spec-> desk :modes-not-to-save))
              'desktop)
 
-      (when-graphic%
+      (when-window% 'ns
         (when-version% <= 26
-          (when-platform% 'darwin
             ;; fix: title bar text color broken #55
             ;; https://github.com/d12frosted/homebrew-emacs-plus/issues/55#issuecomment-408317248
-            (mapc (lambda (x)
-                    (push! x frameset-filter-alist))
-                  '((ns-transparent-titlebar . unbound)
-                    (ns-appearance . unbound))))))
+          (mapc (lambda (x)
+                  (push! x frameset-filter-alist))
+                '((ns-transparent-titlebar . unbound)
+                  (ns-appearance . unbound)))))
 
       (when-theme% (self-theme-init! t))
 

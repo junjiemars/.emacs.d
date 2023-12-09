@@ -1,14 +1,15 @@
-;;; boot.el --- boot -*- lexical-binding:t -*-
+;; -*- lexical-binding:t -*-
 ;;;;
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;;; Commentary:
-;;; boot compiled elisp files and modules in order.
+;; boot.el
+;;;;
+;; Commentary: postulates.
 ;;;;
 
 ;;;
-;; fn compile-time checking macro
+;; compile-time macro for checking fn exists
 ;;;
 
 (defmacro if-fn% (fn feature then &rest else)
@@ -34,11 +35,11 @@ Argument FEATURE that FN dependent on, be loaded at compile time."
   (declare (indent 2))
   `(if-fn% ,fn ,feature nil ,@body))
 
-;; end of fn compile-time checking macro
+;; end of compile-time macro for checking fn exists
 
 
 ;;;
-;; var compile-time checking macro
+;; compile-time macro for checking var exists
 ;;;
 
 (defmacro if-var% (var feature then &rest else)
@@ -69,7 +70,7 @@ Argument FEATURE that X dependent on, load at compile time."
   `(when-var% ,x ,feature
      (setq ,x ,val)))
 
-;; end of var compile-time checking macro
+;; end of compile-time macro for checking var exists
 
 
 ;;;
@@ -159,7 +160,7 @@ Return the value of THEN or the value of the last of the ELSE’s."
 ;;;
 
 (defmacro if-platform% (os then &rest else)
-  "If OS is \\=`system-type\\=' yield non-nil, do THEN, else do
+  "If OS eq \\=`system-type\\=' yield non-nil, do THEN, else do
 ELSE..."
   (declare (indent 2))
   `(if% (eq system-type ,os)
@@ -167,16 +168,42 @@ ELSE..."
      (progn% ,@else)))
 
 (defmacro when-platform% (os &rest body)
-  "When OS is \\=`system-type\\=' yield non-nil, do BODY."
+  "When OS eq \\=`system-type\\=' yield non-nil, do BODY."
   (declare (indent 1))
   `(if-platform% ,os (progn% ,@body)))
 
 (defmacro unless-platform% (os &rest body)
-  "Unless OS is \\=`system-type\\=' yield non-nil do BODY."
+  "Unless OS eq \\=`system-type\\=' yield non-nil do BODY."
   (declare (indent 1))
   `(if-platform% ,os nil ,@body))
 
 ;; end of if-platform% macro
+
+;;;
+;; *-window% macro
+;;;
+
+(defmacro if-window% (window then &rest else)
+  "If WINDOW eq \\=`initial-window-system\\=' yield non-nil,
+do THEN, else do ELSE..."
+  (declare (indent 2))
+	`(if% (eq initial-window-system ,window)
+			 ,then
+		 (progn% ,@else)))
+
+(defmacro when-window% (window &rest body)
+  "When WINDOW eq \\=`initial-window-system\\=' yield non-nil, do
+BODY."
+  (declare (indent 1))
+	`(if-window% ,window (progn% ,@body)))
+
+(defmacro unless-window% (window &rest body)
+  "Unless WINDOW eq \\=`initial-window-system\\=' yield non-nil, do
+BODY."
+  (declare (indent 1))
+	`(if-window% ,window nil (progn% ,@body)))
+
+;; end of *-window% macro
 
 ;;; noninteractive macro
 
@@ -250,12 +277,13 @@ Argument SPEC (VAR LIST [RESULT])."
 (defun compile! (&rest units)
   "Compile and load UNITS."
   (declare (indent 0))
-  (dolist* (u units)
-		(when u
-			(compile-and-load-file*
-			 (compile-unit->src u)
-       (compile-unit->dst u)
-			 (compile-unit->only-compile u)))))
+	(lexical-let% ((file-name-handler-alist nil))
+		(dolist* (u units)
+			(when u
+				(compile-and-load-file*
+				 (compile-unit->src u)
+				 (compile-unit->dst u)
+				 (compile-unit->only-compile u))))))
 
 ;; end of compile macro
 
@@ -304,11 +332,12 @@ Argument SPEC (VAR LIST [RESULT])."
       (cond ((eq :get op) (plist-get ps k))
             ((eq :put op) (setq ps (plist-put ps k v)))
             ((eq :dup op)
-             (dolist* (fs ss)
-							 (let ((dst (plist-get ps (car fs)))
-										 (src (cdr fs)))
-								 (unless (file-exists-p dst)
-									 (copy-file src dst t)))))
+						 (let ((file-name-handler-alist nil))
+							 (dolist* (fs ss)
+								 (let ((dst (plist-get ps (car fs)))
+											 (src (cdr fs)))
+									 (unless (file-exists-p dst)
+										 (copy-file src dst t))))))
             (t ps))))
   "Define the PATH references.\n
 No matter the declaration order, the executing order is:
@@ -346,14 +375,6 @@ No matter the declaration order, the executing order is:
             (t ps)))))
 
 
-;;; Make `v-home' .exec/
-(v-home! ".exec/")
-;;; Make `v-home' private/
-(v-home! "private/")
-;;; Duplicate spec files
-(*self-paths* :dup)
-
-
 (defmacro package-spec-:allowed-p (&rest body)
   "If installing package be allowed then do BODY."
   (declare (indent 0))
@@ -364,6 +385,14 @@ No matter the declaration order, the executing order is:
 ;; end of self-spec macro
 
 
+;;; boot
+
+;; make `v-home' .exec/
+(v-home! ".exec/")
+;; make `v-home' private/
+(v-home! "private/")
+;; duplicate spec files
+(*self-paths* :dup)
 ;; disable package initialize
 (when-package% (setq package-enable-at-startup nil))
 

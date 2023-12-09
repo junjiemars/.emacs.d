@@ -1,9 +1,11 @@
-;;; init.el --- init -*- lexical-binding:t -*-
+;; -*- lexical-binding:t -*-
 ;;;;
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; Commentary: common notions.
+;; init.el
+;;;;
+;; Commentary: definitions.
 ;;;;
 
 ;;; compile-time macro
@@ -201,8 +203,7 @@ file."
 (defmacro v-comp-file! (src)
   "Make a versioned cons copy of SRC."
   (let ((s1 (gensym)))
-    `(let ((,s1 ,src)
-           (file-name-handler-alist nil))
+    `(let ((,s1 ,src))
        (when (and (stringp ,s1) (file-exists-p ,s1))
          (let* ((d1 (v-path ,s1))
                 (d2 (concat (file-name-sans-extension* d1)
@@ -219,8 +220,7 @@ file."
   "Compile SRC to DST.\n
 If ONLY-COMPILE is t, does not load DST."
   (let ((s1 (gensym)) (d1 (gensym)) (c1 (gensym)))
-    `(let ((,s1 ,src) (,d1 ,dst) (,c1 ,only-compile)
-           (file-name-handler-alist nil))
+    `(let ((,s1 ,src) (,d1 ,dst) (,c1 ,only-compile))
        (unless (file-exists-p ,d1)
          (if-native-comp%
              (native-compile ,s1 ,d1)
@@ -311,6 +311,7 @@ If ONLY-COMPILE is t, does not load DST."
              (fs (directory-files path nil (concat (cddr c3) "[.0-9]+"))))
         (concat path "/" (car fs))))
     (setenv "LIBRARY_PATH" (library-path))))
+
 
 ;; boot
 (let ((u (v-comp-file! (emacs-home* "config/boot.el")))

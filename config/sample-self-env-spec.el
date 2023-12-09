@@ -64,7 +64,7 @@
 ;;; key
 (*self-env-spec*
  :put :key
- (list :modifier (when-platform% 'darwin
+ (list :modifier (when-window% 'mac
                    '((mac-option-modifier . meta)
                      (mac-right-option-modifier . control)
                      (mac-right-command-modifier . meta)))

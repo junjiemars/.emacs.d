@@ -40,7 +40,8 @@
 (defun self-frame-init! ()
   "Initialize frame specs from \\=`*self-env-spec*\\='."
   (let* ((f1 (*self-env-spec* :get :frame))
-         (a1 (self-spec-> f1 :allowed)))
+         (a1 (self-spec-> f1 :allowed))
+				 (frame-inhibit-implied-resize t))
     (setq
      ;; `initial-frame-alist'
      initial-frame-alist (append
@@ -59,7 +60,8 @@
   (defun toggle-frame-initialized (&optional frame)
     "Toggle initialiation state of FRAME."
     (interactive)
-    (let ((f1 (*self-env-spec* :get :frame)))
+    (let ((f1 (*self-env-spec* :get :frame))
+					(frame-inhibit-implied-resize t))
       (when (self-spec-> f1 :allowed)
         ;; `frame-resize-pixelwise'
         (setq% frame-resize-pixelwise

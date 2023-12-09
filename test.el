@@ -186,6 +186,20 @@
          (should (and (when-platform% 'cygwin t)
                       (not (unless-platform% 'cygwin)))))))
 
+(ert-deftest %boot:if/when/unless-window% ()
+	(cond ((if-window% 'mac t)
+         (should (and (when-window% 'mac t)
+                      (not (unless-window% 'mac t)))))
+				((if-window% 'ns t)
+         (should (and (when-window% 'ns t)
+                      (not (unless-window% 'ns)))))
+        ((if-window% 'pgtk t)
+         (should (and (when-window% 'pgtk t)
+                      (not (unless-window% 'pgtk t)))))
+        ((if-window% 'w32 t)
+         (should (and (when-window% 'w32 t)
+                      (not (unless-window% 'w32 t)))))))
+
 (ert-deftest %boot:setq% ()
   (should-not (setq% zzz 'xx))
   (should-not (setq% zzz nil)))
@@ -506,7 +520,7 @@
     (should (prog1 (file-exists-p f) (delete-file f)))))
 
 (ert-deftest %fn:executable-find% ()
-  (if-platform% 'windows-nt
+  (if (eq system-type 'windows-nt)
       (should (executable-find% "dir"))
     (should (executable-find% "ls"))
     (should (executable-find% (concat "l" "s")))
