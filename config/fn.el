@@ -325,7 +325,7 @@ Optional argument TRIM regexp used to trim."
       `(get-buffer-create ,buffer-or-name ,inhibit-buffer-hooks)
     `(if ,inhibit-buffer-hooks
          (lexical-let%
-						 ((kill-buffer-hook nil)
+             ((kill-buffer-hook nil)
               (kill-buffer-query-functions nil)
               (buffer-list-update-hook nil))
            (get-buffer-create ,buffer-or-name))
@@ -462,9 +462,9 @@ Optional argument ARGS for COMMAND."
   (declare (indent 1))
   (let ((c1 (gensym)))
     `(lexical-let%
-				 ((,c1 ,command)
-					(b (get-buffer-create* (symbol-name (gensym)) t))
-					(file-name-handler-alist nil))
+         ((,c1 ,command)
+          (b (get-buffer-create* (symbol-name (gensym)) t))
+          (file-name-handler-alist nil))
        (unwind-protect
            (with-current-buffer b
              (cons (let ((x (call-process

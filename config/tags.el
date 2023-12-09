@@ -80,7 +80,7 @@ This is used by commands like \\=`make-tags\\='.\n
 The default is \"ctags -e %s -o %s -a %s\",
 first %s: ctags options
 second %s: explicit name of file for tag table; overrides default TAGS or tags.
-third %s: append to existing tag file.\n
+  hird %s: append to existing tag file.\n
 \\=`tags-table-list\\=' should be persitent between sessions
 when \\=`desktop-globals-to-save\\=' include it."
  :type '(plist :key-type 'symbol :value-type 'string)
@@ -90,7 +90,7 @@ when \\=`desktop-globals-to-save\\=' include it."
 (defalias '*tags*
   (lexical-let% ((b tags-program))
     (lambda (&optional n)
-			"N"
+  		"N"
       (plist-get b (or n :bin))))
   "Tags' binary and options.")
 
@@ -107,7 +107,7 @@ when \\=`desktop-globals-to-save\\=' include it."
                           (v-home% "private/")
                           (v-home% "theme/"))))
     (lambda (&optional n)
-			"N"
+  		"N"
       (cond (n (setq b (cons n b)))
             (t b))))
   "Tag's buffer should open in \\=`view-mode\\='.")

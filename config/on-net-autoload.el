@@ -124,19 +124,19 @@
 (unless% (eq default-file-name-coding-system locale-coding-system)
   (with-eval-after-load 'net-utils
     (append! (eval-when-compile
-							 (require 'net-utils)
-							 (list (mapconcat (lambda (x)
-																	(concat "^" x "$"))
-																(list arp-program
-																			dig-program
-																			ifconfig-program
-																			netstat-program
-																			(concat ping-program "[46]?")
-																			route-program
-																			(concat traceroute-program "[46]?"))
-																"\\|")
-										 locale-coding-system))
-						 process-coding-system-alist t)))
+  						 (require 'net-utils)
+  						 (list (mapconcat (lambda (x)
+  																(concat "^" x "$"))
+  															(list arp-program
+  																		dig-program
+  																		ifconfig-program
+  																		netstat-program
+  																		(concat ping-program "[46]?")
+  																		route-program
+  																		(concat traceroute-program "[46]?"))
+  															"\\|")
+  									 locale-coding-system))
+  					 process-coding-system-alist t)))
 
 
 (defun *ssh-port-forwarding (options)

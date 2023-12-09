@@ -119,10 +119,10 @@
 
 
 (defun browse-file ()
-	"Browse the file using external browser."
-	(interactive)
+  "Browse the file using external browser."
+  (interactive)
   (declare-function browse-url-default-browser "browse-url" t)
-	(let ((browse-url-browser-function #'browse-url-default-browser)
+  (let ((browse-url-browser-function #'browse-url-default-browser)
         (name (if (eq 'dired-mode major-mode)
                   (expand-file-name (dired-get-file-for-visit))
                 (buffer-file-name))))

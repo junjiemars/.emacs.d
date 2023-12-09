@@ -22,16 +22,16 @@
 (defun self-edit-init! ()
   "Initialize edit spec from \\=`*self-env-spec*\\='"
   (let ((edit (*self-env-spec* :get :edit)))
-		(when (self-spec-> edit :allowed)
-			;; indent
-			(let ((indent (self-spec-> edit :indent))
-						(width (self-spec-> edit :tab-width)))
-				(dolist* (x indent)
-					(set (car x) (or (cdr x) width))))
+  	(when (self-spec-> edit :allowed)
+  		;; indent
+  		(let ((indent (self-spec-> edit :indent))
+  					(width (self-spec-> edit :tab-width)))
+  			(dolist* (x indent)
+  				(set (car x) (or (cdr x) width))))
 
-			;; disable `indent-tabs-mode'
-			(let ((modes (self-spec-> edit :disable-indent-tabs-mode)))
-				(dolist* (m modes)
+  		;; disable `indent-tabs-mode'
+  		(let ((modes (self-spec-> edit :disable-indent-tabs-mode)))
+  			(dolist* (m modes)
           (let ((h (intern-soft (format "%s-hook" m))))
             (when h
               (add-hook

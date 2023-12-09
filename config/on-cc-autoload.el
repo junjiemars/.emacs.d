@@ -281,7 +281,7 @@
 (defalias 'cc*-system-include
   (lexical-let% ((dx))
     (lambda (&optional cached remote)
-			"CACHED REMOTE"
+  		"CACHED REMOTE"
       (let* ((ss (if remote
                      (intern (mapconcat #'identity
                                         (remote-norm-id remote)
@@ -316,7 +316,7 @@ include directories. The REMOTE argument from \\=`remote-norm-file\\='.")
   (lexical-let% ((dx)
                  (fs (v-home% ".exec/cc-extra-inc.el")))
     (lambda (cached &rest dir)
-			"CACHED DIR"
+  		"CACHED DIR"
       (or (and cached dx)
 
           (and cached (file-exists-p fs)
@@ -504,7 +504,7 @@ RENEW whether to renew the existing FILE."
 (defalias 'cc*-system-identity
   (lexical-let% ((dx))
     (lambda (&optional cached remote)
-			"CACHED REMOTE"
+  		"CACHED REMOTE"
       (let* ((ss (if remote
                      (intern (mapconcat #'identity
                                         (remote-norm-id remote)
@@ -567,13 +567,13 @@ and \\=`eldoc-mode\\='."
     (c-backslash-max-column . 78)
     (c-backslash-column . 77)
     (c-offsets-alist
-	   (statement-block-intro . +)
-	   (substatement-open . 0)
-	   (substatement-label . 0)
-	   (label . 0)
-	   (statement-cont . +)
-	   (inline-open . 0)
-	   (brace-list-intro first
+     (statement-block-intro . +)
+     (substatement-open . 0)
+     (substatement-label . 0)
+     (label . 0)
+     (statement-cont . +)
+     (inline-open . 0)
+     (brace-list-intro first
                        ,(when-fn% 'c-lineup-2nd-brace-entry-in-arglist
                             'cc-align
                           #'c-lineup-2nd-brace-entry-in-arglist)

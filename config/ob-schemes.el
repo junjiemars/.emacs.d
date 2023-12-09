@@ -42,7 +42,7 @@
    "Expand BODY according to PARAMS, return the expanded body."
    (let ((vars (org-babel--get-vars params))
          (print-level nil)
-	       (print-length nil))
+         (print-length nil))
      (if (> (length vars) 0)
          (concat "(prog (let ("
                  (mapconcat
@@ -60,14 +60,14 @@ This function is called by `org-babel-execute-src-block'."
   (message "executing Scheme source code block, body=%s, params=%s" body params)
   (comment
    (let* (
-	        ;; Name of the session or "none".
-	        (session-name (cdr (assq :session params)))
-	        ;; Set the session if the session variable is non-nil.
-	        (session (org-babel-picolisp-initiate-session session-name))
-	        ;; Either OUTPUT or VALUE which should behave as described above.
-	        (result-params (cdr (assq :result-params params)))
-	        ;; Expand the body with `org-babel-expand-body:picolisp'.
-	        (full-body (org-babel-expand-body:picolisp body params))
+          ;; Name of the session or "none".
+          (session-name (cdr (assq :session params)))
+          ;; Set the session if the session variable is non-nil.
+          (session (org-babel-picolisp-initiate-session session-name))
+          ;; Either OUTPUT or VALUE which should behave as described above.
+          (result-params (cdr (assq :result-params params)))
+          ;; Expand the body with `org-babel-expand-body:picolisp'.
+          (full-body (org-babel-expand-body:picolisp body params))
           ;; Wrap body appropriately for the type of evaluation and results.
           (wrapped-body
            (cond
@@ -132,7 +132,7 @@ This function is called by `org-babel-execute-src-block'."
 (comment
  (defun org-babel-picolisp-initiate-session (&optional session-name)
    "If there is not a current inferior-process-buffer in SESSION
-then create.  Return the initialized session."
+  hen create.  Return the initialized session."
    (unless (string= session-name "none")
      (require 'inferior-picolisp)
      ;; provide a reasonable default session name

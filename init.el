@@ -204,16 +204,15 @@ file."
   "Make a versioned cons copy of SRC."
   (let ((s1 (gensym)))
     `(let ((,s1 ,src))
-       (when (and (stringp ,s1) (file-exists-p ,s1))
-         (let* ((d1 (v-path ,s1))
-                (d2 (concat (file-name-sans-extension* d1)
-                            ,(comp-file-extension%))))
-           (when (file-newer-than-file-p ,s1 d1)
-             (if (file-exists-p d2)
-                 (delete-file d2)
-               (path! d1))
-             (copy-file ,s1 d1 t))
-           (cons d1 d2))))))
+       (let* ((d1 (v-path ,s1))
+              (d2 (concat (file-name-sans-extension* d1)
+                          ,(comp-file-extension%))))
+         (when (file-newer-than-file-p ,s1 d1)
+           (if (file-exists-p d2)
+               (delete-file d2)
+             (path! d1))
+           (copy-file ,s1 d1 t))
+         (cons d1 d2)))))
 
 
 (defmacro compile-and-load-file* (src dst &optional only-compile)
@@ -314,9 +313,10 @@ If ONLY-COMPILE is t, does not load DST."
 
 
 ;; boot
-(let ((u (v-comp-file! (emacs-home* "config/boot.el")))
-      (gc-cons-percentage 0.4))
-  (compile-and-load-file* (car u) (cdr u)))
+(let ((file-name-handler-alist nil))
+  (let ((u (v-comp-file! (emacs-home* "config/boot.el")))
+        (gc-cons-percentage 0.4))
+    (compile-and-load-file* (car u) (cdr u))))
 
 ;; package
 (when-package%

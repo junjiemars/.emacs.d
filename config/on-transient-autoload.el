@@ -14,7 +14,7 @@
   "When \\=`transient\\=', do BODY."
   (if-feature-transient%
       `(progn% ,@body)
-		`(comment ,@body)))
+  	`(comment ,@body)))
 
 
 (when-feature-transient%

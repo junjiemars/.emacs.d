@@ -25,14 +25,14 @@
 ;;; `mark-string@'
 
 (defun mark-string@ (&optional boundary)
-	"Mark the string at point.\n
+  "Mark the string at point.\n
 If prefix BOUNDARY is non-nil, then mark the whole string."
-	(interactive "P")
-	(let ((bs (_mark_string@_)))
-		(unless bs
-			(user-error "%s" "No string found"))
-		(_mark_thing_ (if boundary (car bs) (1+ (car bs)))
-									(if boundary (cdr bs) (1- (cdr bs))))))
+  (interactive "P")
+  (let ((bs (_mark_string@_)))
+  	(unless bs
+  		(user-error "%s" "No string found"))
+  	(_mark_thing_ (if boundary (car bs) (1+ (car bs)))
+  								(if boundary (cdr bs) (1- (cdr bs))))))
 
 
 (defun kill-string@ (&optional boundary)
@@ -43,7 +43,7 @@ If prefix BOUNDARY is non-nil, then kill the whole string."
     (unless bs
       (user-error "%s" "No string found"))
     (kill-region (if boundary (car bs) (1+ (car bs)))
-								 (if boundary (cdr bs) (1- (cdr bs))))))
+  							 (if boundary (cdr bs) (1- (cdr bs))))))
 
 ;; end of `mark-string@'
 

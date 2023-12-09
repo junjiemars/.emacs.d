@@ -73,88 +73,88 @@ This is run before the process is cranked up."
 (defconst +gambit-emacs-library+
   ";;; gambit-emacs: from `(emacs-home* \"config/gambit.el\")'
 (define (gambit-emacs/apropos what)
-	(let* ([split (lambda (ss sep)
-									(call-with-input-string
-											ss
-										(lambda (p)
-											(read-all p (lambda (p)
-																		(read-line p sep))))))]
-				 [trim (lambda (ss)
-								 (letrec ([tr (lambda (ss ori idx)
-																(let ([a (if (> (string-length ss) 0)
-																						 (substring ss 0 1)
-																						 \"\")]
-																			[l (string-length ss)]
-																			[ns \"namespace\"]
-																			[empty \"empty\"]
-																			[cs \"c#\"]
-																			[asm \"_asm#\"]
+  (let* ([split (lambda (ss sep)
+                  (call-with-input-string
+                      ss
+                    (lambda (p)
+                      (read-all p (lambda (p)
+                                    (read-line p sep))))))]
+         [trim (lambda (ss)
+                 (letrec ([tr (lambda (ss ori idx)
+                                (let ([a (if (> (string-length ss) 0)
+                                             (substring ss 0 1)
+                                             \"\")]
+                                      [l (string-length ss)]
+                                      [ns \"namespace\"]
+                                      [empty \"empty\"]
+                                      [cs \"c#\"]
+                                      [asm \"_asm#\"]
                                       [syn \"syn#\"]
                                       [x86 \"_x86#\"])
-																	(cond [(string=? \"\" a) a]
-																				[(or (string=? a \" \")
-																						 (string=? a \":\")
-																						 (string=? a \"\\n\")
-																						 (string=? a \"#\")
-																						 (string=? a \"\\\"\"))
-																				 (tr (substring ss 1 l) ori (+ idx 1))]
-																				[(and (>= l (string-length ns))
-																							(string=? (substring ss 0 (string-length ns))
-																												ns))
-																				 (tr (substring ss (string-length ns) (string-length ss))
-																						 ori (+ idx (string-length ns)))]
-																				[(and (>= l (string-length empty))
-																							(string=? (substring ss 0 (string-length empty))
-																												empty))
-																				 (tr (substring ss (string-length empty) (string-length ss))
-																						 ori (+ idx (string-length empty)))]
+                                  (cond [(string=? \"\" a) a]
+                                        [(or (string=? a \" \")
+                                             (string=? a \":\")
+                                             (string=? a \"\\n\")
+                                             (string=? a \"#\")
+                                             (string=? a \"\\\"\"))
+                                         (tr (substring ss 1 l) ori (+ idx 1))]
+                                        [(and (>= l (string-length ns))
+                                              (string=? (substring ss 0 (string-length ns))
+                                                        ns))
+                                         (tr (substring ss (string-length ns) (string-length ss))
+                                             ori (+ idx (string-length ns)))]
+                                        [(and (>= l (string-length empty))
+                                              (string=? (substring ss 0 (string-length empty))
+                                                        empty))
+                                         (tr (substring ss (string-length empty) (string-length ss))
+                                             ori (+ idx (string-length empty)))]
                                         [(and (>= l (string-length cs))
-																							(string=? (substring ss 0 (string-length cs))
-																												cs))
-																				 (tr (substring ss (string-length cs) (string-length ss))
-																						 ori (+ idx (string-length cs)))]
-																				[(and (>= l (string-length asm))
-																							(string=? (substring ss 0 (string-length asm))
-																												asm))
-																				 (tr (substring ss (string-length asm) (string-length ss))
-																						 ori (+ idx (string-length asm)))]
+                                              (string=? (substring ss 0 (string-length cs))
+                                                        cs))
+                                         (tr (substring ss (string-length cs) (string-length ss))
+                                             ori (+ idx (string-length cs)))]
+                                        [(and (>= l (string-length asm))
+                                              (string=? (substring ss 0 (string-length asm))
+                                                        asm))
+                                         (tr (substring ss (string-length asm) (string-length ss))
+                                             ori (+ idx (string-length asm)))]
                                         [(and (>= l (string-length syn))
-																							(string=? (substring ss 0 (string-length syn))
-																												syn))
-																				 (tr (substring ss (string-length syn) (string-length ss))
-																						 ori (+ idx (string-length syn)))]
+                                              (string=? (substring ss 0 (string-length syn))
+                                                        syn))
+                                         (tr (substring ss (string-length syn) (string-length ss))
+                                             ori (+ idx (string-length syn)))]
                                         [(and (>= l (string-length x86))
-																							(string=? (substring ss 0 (string-length x86))
-																												x86))
-																				 (tr (substring ss (string-length syn) (string-length ss))
-																						 ori (+ idx (string-length x86)))]
-																				[else (substring ori idx (string-length ori))])))])
-									 (tr ss ss 0)))]
-				 [lst (let ([out (open-output-string)])
-								(apropos what out)
-								(map (lambda (x)
-											 (when (not (string=? \"\" x))
-												 (trim x)))
-										 (split (get-output-string out) #\\,)))]
-				 [tbl (make-table 'test: string=?)])
-		(map (lambda (x)
-					 (when (not (null? x))
-						 (map (lambda (y)
-										(unless (string=? \"\" y)
-											(table-set! tbl y '())))
-									(let f ([ss (split x #\\newline)] [acc '()])
-										(cond [(null? ss) acc]
-													[(null? (car ss)) (f (cdr ss) acc)]
-													[(string=? \"\" (car ss)) (f (cdr ss) acc)]
-													[else (f (cdr ss) (cons (trim (car ss)) acc))])))))
-				 lst)
-		(let ([out (map car (table->list tbl))])
-			(if (> (length out) 10)
-					(let f ([xs out] [n 10] [acc '()])
-						(if (= n 0)
-								acc
-								(f (cdr xs) (- n 1) (cons (car xs) acc))))
-					out))))
+                                              (string=? (substring ss 0 (string-length x86))
+                                                        x86))
+                                         (tr (substring ss (string-length syn) (string-length ss))
+                                             ori (+ idx (string-length x86)))]
+                                        [else (substring ori idx (string-length ori))])))])
+                   (tr ss ss 0)))]
+         [lst (let ([out (open-output-string)])
+                (apropos what out)
+                (map (lambda (x)
+                       (when (not (string=? \"\" x))
+                         (trim x)))
+                     (split (get-output-string out) #\\,)))]
+         [tbl (make-table 'test: string=?)])
+    (map (lambda (x)
+           (when (not (null? x))
+             (map (lambda (y)
+                    (unless (string=? \"\" y)
+                      (table-set! tbl y '())))
+                  (let f ([ss (split x #\\newline)] [acc '()])
+                    (cond [(null? ss) acc]
+                          [(null? (car ss)) (f (cdr ss) acc)]
+                          [(string=? \"\" (car ss)) (f (cdr ss) acc)]
+                          [else (f (cdr ss) (cons (trim (car ss)) acc))])))))
+         lst)
+    (let ([out (map car (table->list tbl))])
+      (if (> (length out) 10)
+          (let f ([xs out] [n 10] [acc '()])
+            (if (= n 0)
+                acc
+                (f (cdr xs) (- n 1) (cons (car xs) acc))))
+          out))))
 
 ;;; eof
  "

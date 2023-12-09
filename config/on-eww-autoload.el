@@ -47,7 +47,7 @@ is non-nil, otherwise is not. See also:
 (when-feature-eww%
 
  (defun eww*-truncate-lines ()
-	 "Disable \\=`eww\\=' truncate long lines."
+   "Disable \\=`eww\\=' truncate long lines."
    (toggle-truncate-lines nil)))
 
 

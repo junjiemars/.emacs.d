@@ -187,21 +187,21 @@ ELSE..."
   "If WINDOW eq \\=`initial-window-system\\=' yield non-nil,
 do THEN, else do ELSE..."
   (declare (indent 2))
-	`(if% (eq initial-window-system ,window)
-			 ,then
-		 (progn% ,@else)))
+  `(if% (eq initial-window-system ,window)
+       ,then
+     (progn% ,@else)))
 
 (defmacro when-window% (window &rest body)
   "When WINDOW eq \\=`initial-window-system\\=' yield non-nil, do
 BODY."
   (declare (indent 1))
-	`(if-window% ,window (progn% ,@body)))
+  `(if-window% ,window (progn% ,@body)))
 
 (defmacro unless-window% (window &rest body)
   "Unless WINDOW eq \\=`initial-window-system\\=' yield non-nil, do
 BODY."
   (declare (indent 1))
-	`(if-window% ,window nil (progn% ,@body)))
+  `(if-window% ,window nil (progn% ,@body)))
 
 ;; end of *-window% macro
 
@@ -248,9 +248,10 @@ Argument SPEC (VAR LIST [RESULT])."
 
 (defun compile-unit* (file &optional only-compile)
   "Make an compile unit for \\=`compile-and-load-file*\\='."
-  (let ((u1 (v-comp-file! file)))
-    (when u1
-      (vector (car u1) (cdr u1) only-compile nil))))
+  (let ((file-name-handler-alist nil))
+    (when (file-exists-p file)
+      (let ((u1 (v-comp-file! file)))
+        (vector (car u1) (cdr u1) only-compile nil)))))
 
 (defmacro compile-unit% (file &optional only-compile)
   "Make an compile unit at compile time for
@@ -277,13 +278,13 @@ Argument SPEC (VAR LIST [RESULT])."
 (defun compile! (&rest units)
   "Compile and load UNITS."
   (declare (indent 0))
-	(lexical-let% ((file-name-handler-alist nil))
-		(dolist* (u units)
-			(when u
-				(compile-and-load-file*
-				 (compile-unit->src u)
-				 (compile-unit->dst u)
-				 (compile-unit->only-compile u))))))
+  (lexical-let% ((file-name-handler-alist nil))
+    (dolist* (u units)
+      (when u
+        (compile-and-load-file*
+         (compile-unit->src u)
+         (compile-unit->dst u)
+         (compile-unit->only-compile u))))))
 
 ;; end of compile macro
 
@@ -328,16 +329,16 @@ Argument SPEC (VAR LIST [RESULT])."
              (:epilogue
               . ,(emacs-home* "config/sample-self-epilogue.el")))))
     (lambda (&optional op k v)
-			"OP K V"
+      "OP K V"
       (cond ((eq :get op) (plist-get ps k))
             ((eq :put op) (setq ps (plist-put ps k v)))
             ((eq :dup op)
-						 (let ((file-name-handler-alist nil))
-							 (dolist* (fs ss)
-								 (let ((dst (plist-get ps (car fs)))
-											 (src (cdr fs)))
-									 (unless (file-exists-p dst)
-										 (copy-file src dst t))))))
+             (let ((file-name-handler-alist nil))
+               (dolist* (fs ss)
+                 (let ((dst (plist-get ps (car fs)))
+                       (src (cdr fs)))
+                   (unless (file-exists-p dst)
+                     (copy-file src dst t))))))
             (t ps))))
   "Define the PATH references.\n
 No matter the declaration order, the executing order is:
@@ -346,7 +347,7 @@ No matter the declaration order, the executing order is:
 
 (defalias '*self-env-spec*
   (lexical-let% ((env (list :theme nil
-														:frame nil
+                            :frame nil
                             :glyph nil
                             :key nil
                             :shell nil
@@ -356,7 +357,7 @@ No matter the declaration order, the executing order is:
                             :package nil
                             :edit nil)))
     (lambda (&optional op &rest keys)
-			"OP KEYS"
+      "OP KEYS"
       (cond ((eq :get op) (let ((rs env) (ks keys))
                             (while ks
                               (setq rs (plist-get rs (car ks))
@@ -369,7 +370,7 @@ No matter the declaration order, the executing order is:
 (defalias '*self-packages*
   (lexical-let% ((ps nil))
     (lambda (&optional op k v)
-			"OP K V"
+      "OP K V"
       (cond ((eq :get op) (list (assq k ps)))
             ((eq :put op) (setq ps (cons (cons k v) ps)))
             (t ps)))))

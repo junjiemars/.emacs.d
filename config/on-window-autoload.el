@@ -38,7 +38,7 @@ order is middle -> top -> bottom."))
  (defun recenter-top-bottom (&optional arg)
    "Move current buffer line to the specified window line.
 With no prefix argument, successive calls place point according
-to the cycling order defined by \\=`recenter-positions\\='.\n A
+  o the cycling order defined by \\=`recenter-positions\\='.\n A
 prefix argument is handled like \\=`recenter\\=': With numeric
 prefix ARG, move current line to window-line ARG.  With plain
 \\=`C-u\\=', move current line to window center."

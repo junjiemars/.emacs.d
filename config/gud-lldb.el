@@ -67,7 +67,7 @@
 (defvar gud-lldb-directories '(".")
   "A list of directories that lldb should search for source code.
 If nil, only source files in the program directory will be known
-to lldb.")
+  o lldb.")
 
 
 (defconst +gud-lldb-prompt-regexp+ "^\\(?:(lldb) *\\)"
@@ -213,8 +213,8 @@ https://github.com/llvm/llvm-project/."
                                  "\\)"))
                      (s1 (read-from-string
                           (with-current-buffer (*lldb-out*)
-				                    (flush-lines xs (point-min) (point-max) nil)
-				                    (buffer-substring-no-properties
+  			                    (flush-lines xs (point-min) (point-max) nil)
+  			                    (buffer-substring-no-properties
                              (point-min) (point-max))))))
                 (when (and (consp s1) (car s1))
                   (let* ((ss (car s1))
@@ -324,7 +324,7 @@ becomes the initial working directory and source-file directory
 for your debugger.
 If COMMAND-LINE requests that lldb attaches to a process PID,
 lldb will run in *gud-PID*, otherwise it will run in *lldb*; in
-these cases the initial working directory is the
+  hese cases the initial working directory is the
 \\=`default-directory\\=' of the buffer in which this command was
 invoked."
   (interactive (list (gud-query-cmdline 'lldb)))
@@ -348,7 +348,7 @@ invoked."
   (gud-def gud-tbreak
            "tbreak %f:%l"
            "\C-t"
-	         "Set temporary breakpoint at current line.")
+           "Set temporary breakpoint at current line.")
   (gud-def gud-step
            "thread step-in"
            "\C-s"   "Step one source line with display.")

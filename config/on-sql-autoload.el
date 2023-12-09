@@ -196,11 +196,11 @@ Optional prefix argument ENHANCED, displays additional details."
   (defun sql-oracle-list-code (sqlbuf outbuf enhanced target)
     "List code of oracle's TARGET."
     (let ((settings (sql-oracle-save-settings sqlbuf))
-				  (o (upcase (if enhanced
+  			  (o (upcase (if enhanced
                          ;; ignore enhanced
                          target
                        target)))
-				  (sql-var (concat
+  			  (sql-var (concat
                     "VAR object_type VARCHAR2(128);"
                     "\nBEGIN\n"
                     " :object_type := '';"
@@ -236,10 +236,10 @@ Optional prefix argument ENHANCED, displays additional details."
   (defun sql-oracle-desc-plan (sqlbuf outbuf enhanced target)
     "Describe execution plan of mysql's QUERY."
     (let ((settings (sql-oracle-save-settings sqlbuf))
-					(sql (if enhanced
+  				(sql (if enhanced
                    ;; ignore enhanced
                    target
-								 target)))
+  							 target)))
       (unwind-protect
           (progn
             (sql-redirect
@@ -303,10 +303,10 @@ Optional prefix argument ENHANCED, displays additional details."
 
   (defun sql-mysql-list-code (sqlbuf outbuf enhanced target)
     "List code of mysql's TARGET."
-		(let ((sql (concat
-								"SHOW CREATE"
-								(format " %s\\G" (if enhanced target target)))))
-			(sql-redirect sqlbuf sql outbuf))))
+  	(let ((sql (concat
+  							"SHOW CREATE"
+  							(format " %s\\G" (if enhanced target target)))))
+  		(sql-redirect sqlbuf sql outbuf))))
 
 
 (when-sql-mysql-feature%

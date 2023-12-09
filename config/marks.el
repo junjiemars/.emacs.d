@@ -146,21 +146,21 @@
          (setq r1 (1+ r1)))
        (when (and l1 r1)
          (let* ((l2 (and r1 (let* ((c (char-after r1))
-																	 (i (strchr rs c)))
-															(_backward_symmetry_
-															 c r1 lx (aref ls i) c))))
+  																 (i (strchr rs c)))
+  														(_backward_symmetry_
+  														 c r1 lx (aref ls i) c))))
                 (r2 (and l1 (let* ((c (char-before l1))
-																	 (i (strchr ls c)))
-															(_forward_symmetry_
-															 c l1 rx c (aref rs i)))))
+  																 (i (strchr ls c)))
+  														(_forward_symmetry_
+  														 c l1 rx c (aref rs i)))))
                 (l3 (and r2 (let* ((c (char-after r2))
-																	 (i (strchr rs c)))
-															(_backward_symmetry_
-															 c r2 lx (aref ls i) c))))
+  																 (i (strchr rs c)))
+  														(_backward_symmetry_
+  														 c r2 lx (aref ls i) c))))
                 (r3 (and l2 (let* ((c (char-before l2))
-																	 (i (strchr ls c)))
-															(_forward_symmetry_
-															 c l2 rx c (aref rs i))))))
+  																 (i (strchr ls c)))
+  														(_forward_symmetry_
+  														 c l2 rx c (aref rs i))))))
            (cond ((and l2 r2 l3 r3
                        (and (= l1 l2) (= l2 l3))
                        (and (= r1 r2) (= r2 r3)))

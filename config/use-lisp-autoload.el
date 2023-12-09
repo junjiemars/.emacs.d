@@ -28,9 +28,9 @@
     (if-feature-paredit% (make-thread* #'enable-paredit-mode))
     ;; `rainbow-delimiters': hilighting parentheses, brackets
     (if-feature-rainbow-delimiters%
-				(make-thread*
-				 (let ((inhibit-redisplay t))
-					 (rainbow-delimiters-mode))))))
+  			(make-thread*
+  			 (let ((inhibit-redisplay t))
+  				 (rainbow-delimiters-mode))))))
 
 
 (defun on-use-emacs-lisp-init! ()

@@ -9,8 +9,8 @@
 
 (defalias 'docker-program
   (lexical-let% ((b (or (executable-find% "podman")
-												(executable-find% "docker")
-												"docker")))
+  											(executable-find% "docker")
+  											"docker")))
     (lambda (&optional n)
       (if (null n) b (setq b n))))
   "Program of docker/podman.")
@@ -19,7 +19,7 @@
   (defun tramp*-parse-docker-containers (program)
     "Return a list name of running docker/podman containers."
     (let ((cmd (shell-command* program
-							   "ps" "--format {{.Names}}")))
+  						   "ps" "--format {{.Names}}")))
       (when (zerop (car cmd))
         (mapcar (lambda (x)
                   (list nil x))
@@ -27,8 +27,8 @@
 
 
 (defun on-tramp-init! ()
-	"On \\=`tramp\\=' initialization."
-	(when% (executable-find% "ssh")
+  "On \\=`tramp\\=' initialization."
+  (when% (executable-find% "ssh")
     ;; ssh faster than scp on ancient Emacs?
     (setq% tramp-default-method "ssh"))
 

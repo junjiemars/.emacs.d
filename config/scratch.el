@@ -15,9 +15,9 @@
 #+author: Nore Emacs
 
 * scratch
-	:PROPERTIES:
-	:CUSTOM_ID: scratch
-	:END:
+  :PROPERTIES:
+  :CUSTOM_ID: scratch
+  :END:
 
 # This buffer is for /Org/ that is not saved.
 

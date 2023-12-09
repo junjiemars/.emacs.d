@@ -48,8 +48,8 @@ esac
 
 (when-platform% 'windows-nt
   (with-eval-after-load 'term
-		(ad-enable-advice #'ansi-term 'before "ansi-term-before")
-		(ad-activate #'ansi-term t)))
+  	(ad-enable-advice #'ansi-term 'before "ansi-term-before")
+  	(ad-activate #'ansi-term t)))
 
 
 ;; end of on-term-autoload.el

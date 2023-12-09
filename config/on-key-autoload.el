@@ -68,7 +68,7 @@
 
 (make-thread*
  (lambda ()
-	 (self-keys-init!)
-	 (edit-keys-init!)))
+   (self-keys-init!)
+   (edit-keys-init!)))
 
  ; end of on-key-autoload.el

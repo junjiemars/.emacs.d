@@ -60,7 +60,7 @@
                                ;; (mapconcat #'identity
                                ;;            (system-cc-include t) " ")
                                )
-		                   'grep-mode
+                       'grep-mode
                        )))
 
 (provide 'go)
