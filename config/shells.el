@@ -26,7 +26,7 @@
 
 
 (defalias '*default-shell-env*
-  (lexical-let% ((dx))
+  (lexical-let% ((dx nil))
     (lambda (&optional op k n)
       (cond ((eq :get op) (plist-get dx k))
             ((eq :put! op) (setq dx (plist-put dx k n)))
@@ -192,7 +192,7 @@ See \\=`setenv\\='."
       ;; read from file
   		(let ((env (read-sexp-from-file (shells-spec->% :file))))
   			(when env
-  				(*default-shell-env* :set!)))
+  				(*default-shell-env* :set! env)))
 
       (let ((shell (self-spec-> spec :shell-file-name)))
         (when shell
