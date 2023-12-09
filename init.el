@@ -63,28 +63,27 @@ Else return BODY sexp."
 
 (defmacro path! (file)
   "Make and return the path of posixed FILE.\n"
-  (let ((f (gensym)) (d (gensym))
-        (i (gensym)) (ds (gensym)))
+  (let ((f (gensym)) (d (gensym)))
     `(let ((,f ,file)
            (file-name-handler-alist nil))
        (if (file-exists-p ,f)
            ,f
          (let ((,d (file-name-directory ,f)))
-           (unless (file-exists-p ,d)
-             (let ((,i (1- (length ,d)))
-                   (,ds nil))
-               (catch 'break
-                 (while (> ,i 0)
-                   (when (= ?/ (aref ,d ,i))
-                     (let ((s (substring-no-properties ,d 0 (1+ ,i))))
-                       (if (file-exists-p s)
-                           (throw 'break t)
-                         (setq ,ds (cons s ,ds)))))
-                   (setq ,i (1- ,i))))
-               (while (car ,ds)
-                 (make-directory-internal (car ,ds))
-                 (setq ,ds (cdr ,ds)))))
-           ,f)))))
+           (prog1 ,f
+             (unless (file-exists-p ,d)
+               (let ((i (1- (length ,d)))
+                     (ds nil))
+                 (catch 'break
+                   (while (> i 0)
+                     (when (= ?/ (aref ,d i))
+                       (let ((s (substring-no-properties ,d 0 (1+ i))))
+                         (if (file-exists-p s)
+                             (throw 'break t)
+                           (setq ds (cons s ds)))))
+                     (setq i (1- i))))
+                 (while (car ds)
+                   (make-directory-internal (car ds))
+                   (setq ds (cdr ds)))))))))))
 
 ;; end of file macro
 

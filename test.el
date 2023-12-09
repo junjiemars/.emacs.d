@@ -57,7 +57,8 @@
   (should (file-exists-p (emacs-home* "private/"))))
 
 (ert-deftest %init:path! ()
-  (let ((p (concat temporary-file-directory (symbol-name (gensym))
+  (let ((p (concat temporary-file-directory
+                   (make-temp-name (symbol-name (gensym)))
                    "/")))
     (should (null (file-exists-p p)))
     (should (path! p))
@@ -491,8 +492,10 @@
     (should (string= p (posix-path "c:\\a\\b\\c.c")))))
 
 (ert-deftest %fn:save/read-sexp-to/from-file ()
-  (let ((f1 (concat temporary-file-directory (symbol-name (gensym))))
-        (f2 (concat temporary-file-directory (symbol-name (gensym))))
+  (let ((f1 (concat temporary-file-directory
+                    (make-temp-name (symbol-name (gensym)))))
+        (f2 (concat temporary-file-directory
+                    (make-temp-name (symbol-name (gensym)))))
         (s1 '(defvar test%fn-srstff t))
         (t1 (make-hash-table :test 'string-hash=)))
     (should (and (save-sexp-to-file s1 f1)
@@ -501,7 +504,6 @@
     (puthash "b" 2 t1)
     (should (= 2 (hash-table-count t1)))
     (should (and (save-sexp-to-file t1 f2)
-                 (file-exists-p f2)
                  (= 2 (gethash "b" (read-sexp-from-file f2)))))))
 
 (ert-deftest %fn:save/read-str-to/from-file ()
