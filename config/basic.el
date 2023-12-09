@@ -161,32 +161,8 @@ THEN."
 ;; end of compatible function
 
 
-
+;;; `sxhash': see `%fn:save/read-sexp-to/from-file' in test.el
 (define-hash-table-test 'string-hash= #'string= #'sxhash)
-
-;; (defmacro save-hash-table-to-file (var table file &optional test)
-;;   "Save the TABLE that referenced by VAR to FILE.
-
-;; TEST is the symbol of hash testing, default is `eql'.
-;; See also`define-hash-table-test'."
-;;   `(if% (let ((tbl (make-hash-table :test #'eql)))
-;;           (ignore* test)
-;;           (puthash 1 11 tbl)
-;;           (string-match "(1 11)" (prin1-to-string tbl)))
-;;        (save-sexp-to-file
-;;         `(set ',,var ,,table)
-;;         ,file)
-;;      (let ((lst nil))
-;;        (maphash (lambda (k v)
-;;                   (push (list k v) lst))
-;;                 ,table)
-;;        (save-sexp-to-file
-;;         `(let ((tbl (make-hash-table :test (or ',,test #'eql))))
-;;            (mapc (lambda (x)
-;;                    (puthash (car x) (cadr x) tbl))
-;;                  ',lst)
-;;            (set ',,var tbl))
-;;         ,file))))
 
 
 (defun path+ (root &rest path)
@@ -224,10 +200,8 @@ THEN."
 
 (defmacro file-in-dirs-p (file dirs)
   "Return t if the name of FILE matching DIRS, otherwise nil."
-  (let ((f (gensym))
-        (ds (gensym)))
-    `(let ((,f ,file)
-           (,ds ,dirs))
+  (let ((f (gensym)) (ds (gensym)))
+    `(let ((,f ,file) (,ds ,dirs))
        (when (and (stringp ,f) (consp ,ds))
          (some* (lambda (x)
                   (let ((case-fold-search (when-platform% 'windows-nt t)))

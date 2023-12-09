@@ -1,4 +1,4 @@
-;;; on-isearch-autoload.el --- isearch -*- lexical-binding:t -*-
+;; -*- lexical-binding:t -*-
 ;;;;
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
@@ -11,7 +11,7 @@
 ;; (eval-when-compile (require 'marks))
 
 
-(defun isearch-forward* (&optional style backward)
+(defun isearch*-forward (&optional style backward)
   "Search incrementally forward or BACKWARD in STYLE."
   (interactive
    (list (when current-prefix-arg
@@ -67,7 +67,7 @@
                                  'face 'font-lock-warning-face))))))))
 
 
-(defun isearch-backward* (&optional style)
+(defun isearch*-backward (&optional style)
   "Search incrementally backward in STYLE."
   (interactive
    (list (when current-prefix-arg
@@ -75,48 +75,48 @@
             (format "%s: %s "
                     (propertize "I-search" 'face 'minibuffer-prompt)
                     "(r)egexp (s)ymbol (w)ord (f)ile (q)uoted")))))
-  (isearch-forward* style t))
+  (isearch*-forward style t))
 
 
-(defun isearch-forward-symbol* (&optional backward)
+(defun isearch*-forward-symbol (&optional backward)
   "Search symbol incrementally forward or BACKWARD."
   (interactive "P")
-  (isearch-forward* ?s backward))
+  (isearch*-forward ?s backward))
 
 
-(defun isearch-forward-word* (&optional backward)
+(defun isearch*-forward-word (&optional backward)
   "Search word incrementally forward or BACKWARD."
   (interactive "P")
-  (isearch-forward* ?w backward))
+  (isearch*-forward ?w backward))
 
 
-(defun isearch-forward-file* (&optional backward)
+(defun isearch*-forward-file (&optional backward)
   "Search filename incrementally forward or BACKWARD."
   (interactive "P")
-  (isearch-forward* ?f backward))
+  (isearch*-forward ?f backward))
 
 
-(defun isearch-forward-quoted* (&optional backward)
+(defun isearch*-forward-quoted (&optional backward)
   "Search quoted string incrementally search forward or BACKWARD."
   (interactive "P")
-  (isearch-forward* ?q backward))
+  (isearch*-forward ?q backward))
 
 
-(defun isearch-keys-init! ()
+(defun isearch*-init-keys! ()
   "Initialize \\=`isearch\\=' keys."
   (when-fn% 'isearch-forward-symbol nil
     (define-key% (current-global-map) (kbd "M-s >") #'isearch-forward-symbol))
   (when-fn% 'isearch-forward-word nil
     (define-key% (current-global-map) (kbd "M-s @") #'isearch-forward-word))
-  (define-key% (current-global-map) (kbd "C-s") #'isearch-forward*)
-  (define-key% (current-global-map) (kbd "C-r") #'isearch-backward*)
-  (define-key% (current-global-map) (kbd "M-s .") #'isearch-forward-symbol*)
-  (define-key% (current-global-map) (kbd "M-s 2") #'isearch-forward-word*)
-  (define-key% (current-global-map) (kbd "M-s f") #'isearch-forward-file*)
-  (define-key% (current-global-map) (kbd "M-s _") #'isearch-forward-quoted*))
+  (define-key% (current-global-map) (kbd "C-s") #'isearch*-forward)
+  (define-key% (current-global-map) (kbd "C-r") #'isearch*-backward)
+  (define-key% (current-global-map) (kbd "M-s .") #'isearch*-forward-symbol)
+  (define-key% (current-global-map) (kbd "M-s 2") #'isearch*-forward-word)
+  (define-key% (current-global-map) (kbd "M-s f") #'isearch*-forward-file)
+  (define-key% (current-global-map) (kbd "M-s _") #'isearch*-forward-quoted))
 
 
-(make-thread* #'isearch-keys-init!)
+(make-thread* #'isearch*-init-keys!)
 
 
 

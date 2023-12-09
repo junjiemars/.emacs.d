@@ -7,8 +7,8 @@
 ;;;;
 
 
-(defun on-help-mode-init! ()
-  "On \\=`help-mode\\=' initialization."
+(defun on-help-init! ()
+  "On \\=`help\\=' initialization."
   ;; open emacs source in `view-mode'
   (lexical-let% ((help (button-type-get 'help-function-def 'help-function)))
     (button-type-put
@@ -27,7 +27,7 @@
 
 
 ;;; `help-mode' after load
-(eval-after-load 'help-mode #'on-help-mode-init!)
+(eval-after-load 'help-mode #'on-help-init!)
 
 
 ;; end of on-help-autoload.el

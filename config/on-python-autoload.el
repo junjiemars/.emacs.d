@@ -34,7 +34,7 @@
   "Adjoint of \\=`python-shell-interpreter\\='.")
 
 
-(defun python*-venv-activate! (&optional dir)
+(defun python*-activate-venv! (&optional dir)
   "Activate Python's virtualenv at DIR.\n
 PYTHONPATH: augment the default search path for module files. The
             format is the same as the shell’s PATH.

@@ -160,8 +160,7 @@ Return the value of THEN or the value of the last of the ELSE’s."
 ;;;
 
 (defmacro if-platform% (os then &rest else)
-  "If OS eq \\=`system-type\\=' yield non-nil, do THEN, else do
-ELSE..."
+  "If OS eq \\=`system-type\\=' yield non-nil, do THEN, else do ELSE..."
   (declare (indent 2))
   `(if% (eq system-type ,os)
        ,then
@@ -192,14 +191,12 @@ do THEN, else do ELSE..."
      (progn% ,@else)))
 
 (defmacro when-window% (window &rest body)
-  "When WINDOW eq \\=`initial-window-system\\=' yield non-nil, do
-BODY."
+  "When WINDOW eq \\=`initial-window-system\\=' yield non-nil, do BODY."
   (declare (indent 1))
   `(if-window% ,window (progn% ,@body)))
 
 (defmacro unless-window% (window &rest body)
-  "Unless WINDOW eq \\=`initial-window-system\\=' yield non-nil, do
-BODY."
+  "Unless WINDOW eq \\=`initial-window-system\\=' yield non-nil, do BODY."
   (declare (indent 1))
   `(if-window% ,window nil (progn% ,@body)))
 
@@ -256,10 +253,8 @@ Argument SPEC (VAR LIST [RESULT])."
 (defmacro compile-unit% (file &optional only-compile)
   "Make an compile unit at compile time for
 \\=`compile-and-load-file*\\='"
-  (let* ((-u1- (v-comp-file!
-                (funcall `(lambda ()
-                            (let ((file-name-handler-alist nil))
-                              ,file)))))
+  (let* ((-u1- (let ((file-name-handler-alist nil))
+                 (v-comp-file! (funcall `(lambda () ,file)))))
          (-src1- (car -u1-))
          (-dst1- (cdr -u1-)))
     (when -u1-

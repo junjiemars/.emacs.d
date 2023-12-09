@@ -1,9 +1,11 @@
-;;;; -*- lexical-binding:t -*-
+;; -*- lexical-binding:t -*-
 ;;;;
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; graphic.el: menu, toolbar, font, theme, etc.
+;; graphic.el
+;;;;
+;; Commentary: initialize menu, toolbar, font, theme, etc.
 ;;;;
 
 

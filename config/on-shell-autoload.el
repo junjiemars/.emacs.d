@@ -1,9 +1,9 @@
-;;;; -*- lexical-binding:t -*-
+;; -*- lexical-binding:t -*-
 ;;;;
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; eshells.el
+;; on-shell-autoload.el
 ;;;;
 
 
@@ -36,4 +36,4 @@
 (eval-after-load 'eshell #'on-eshell-init!)
 
 
-;; end of on-eshell-autoload.el
+;; end of on-shell-autoload.el
