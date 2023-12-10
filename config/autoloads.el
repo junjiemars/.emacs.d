@@ -80,24 +80,24 @@
       (autoload 'lookup-dict (v-home%> "config/dict.el")
         "Lookup WORD in DICT then show the result in the echo area." t))
 
-    ;; `glyph'
-    (when-font%
-      (compile-unit% (emacs-home* "config/on-glyph-autoload.el")))
-
-    ;; `eww-mode'
-    (if-feature-eww%
-        (compile-unit% (emacs-home* "config/on-eww-autoload.el")))
-
-    ;; `eglot'
-    (if-feature-eglot%
-        (compile-unit% (emacs-home* "config/on-eglot-autoload.el")))
-
     ;; `doc-view-mode'
     (when-platform% 'windows-nt
       (when% (or (executable-find% "gswin64c")
                  (executable-find% "gswin32c")
                  (executable-find% "mutool"))
         (compile-unit% (emacs-home* "config/on-docview-autoload.el"))))
+
+    ;; `glyph'
+    (when-font%
+      (compile-unit% (emacs-home* "config/on-glyph-autoload.el")))
+
+    ;; `eglot'
+    (if-feature-eglot%
+        (compile-unit% (emacs-home* "config/on-eglot-autoload.el")))
+
+    ;; `eww-mode'
+    (if-feature-eww%
+        (compile-unit% (emacs-home* "config/on-eww-autoload.el")))
 
     ;; Debugger `gud-cdb'
     (when-platform% 'windows-nt
