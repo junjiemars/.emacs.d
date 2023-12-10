@@ -49,14 +49,6 @@ Else return BODY sexp."
                            (setq gensym-counter
                                  (1+ gensym-counter)))))))
 
-(defmacro time (&rest form)
-  "Return the elapsed time of FORM executing."
-  (declare (indent 0))
-  `(let ((b (current-time)))
-     (prog1 (progn ,@form)
-       (let ((d (time-subtract (current-time) b)))
-         (message "%.6f" (float-time d))))))
-
 ;; end of compile-time macro
 
 ;;; file macro
@@ -94,7 +86,7 @@ Else return BODY sexp."
   "The \\=`float\\=' version of Emacs in.")
 
 (defmacro if-version% (cmp version then &rest else)
-  "If VERSION CMP with variable \\=`+emacs-version+\\=' is t do
+  "If VERSION CMP with \\=`+emacs-version+\\=' yield non-nil, do
 THEN, else do ELSE..."
   (declare (indent 3))
   `(if% (,cmp ,version +emacs-version+)
@@ -176,11 +168,11 @@ See \\=`file-name-sans-extension\\='."
              (or (getenv-internal "EMACS_HOME") "~/.emacs.d/"))
            ,file))
 
-(defmacro v-home (file)
+(defmacro v-home (&optional file)
   "Return versioned FILE under \\=`emacs-home*\\='."
   `(v-path (emacs-home* ,file)))
 
-(defmacro v-home% (file)
+(defmacro v-home% (&optional file)
   "Return versioned path of FILE under \\=`v-home\\=' at
 compile-time."
   (v-home file))
@@ -190,8 +182,7 @@ compile-time."
   (path! (v-home file)))
 
 (defmacro v-home%> (file)
-  "Return the \\=`v-home\\=' FILE with the extension of compiled
-file."
+  "Return the \\=`v-home\\=' FILE with the extension of compiled file."
   (concat (file-name-sans-extension* (v-home file))
           (comp-file-extension%)))
 

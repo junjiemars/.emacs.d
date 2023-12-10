@@ -63,6 +63,22 @@
   seq)
 
 
+(defmacro fluid-let (binding &rest body)
+  "Execute BODY and restore the BINDING after return."
+  (declare (indent 1))
+  (let ((old (gensym))
+        (var (car binding))
+        (new (gensym)))
+    `(let ((,old ,(car binding))
+           (,new ,(cadr binding)))
+       (prog1
+           (unwind-protect (progn
+                             (setq ,var ,new)
+                             ,@body)
+             (setq ,var ,old))
+         (setq ,var ,old)))))
+
+
 (defmacro push! (newelt seq &optional uniquely)
   "Push NEWELT to the head of SEQ.\n
 If optional UNIQUELY is non-nil then push uniquely."
@@ -177,32 +193,6 @@ accumulate clause and Miscellaneous clause."
   (prog1 t (ignore* x)))
 
 
-(defmacro make-thread* (fn &optional join name)
-  "Threading call FN with NAME or in JOIN mode."
-  `(if-fn% 'make-thread nil
-           (if% (if-noninteractive% t ,join)
-               (thread-join (make-thread ,fn ,name))
-             (make-thread ,fn ,name))
-     (ignore* ,join ,name)
-     (funcall ,fn)))
-
-
-(defmacro fluid-let (binding &rest body)
-  "Execute BODY and restore the BINDING after return."
-  (declare (indent 1))
-  (let ((old (gensym))
-        (var (car binding))
-        (new (gensym)))
-    `(let ((,old ,(car binding))
-           (,new ,(cadr binding)))
-       (prog1
-           (unwind-protect (progn
-                             (setq ,var ,new)
-                             ,@body)
-             (setq ,var ,old))
-         (setq ,var ,old)))))
-
-
 (defmacro defmacro-if-feature% (feature)
   "Define if-feature-FEATURE% compile-time macro."
   (let ((ss (format "if-feature-%s%%" feature)))
@@ -231,7 +221,26 @@ accumulate clause and Miscellaneous clause."
              `(progn% (comment ,then)
                       ,@body)))))))
 
-;; end of byte-compiler macro
+(defmacro time (&rest form)
+  "Return the elapsed time of FORM executing."
+  (declare (indent 0))
+  `(let ((b (current-time)))
+     (prog1 (progn ,@form)
+       (unless-noninteractive%
+        (message "%.6f" (float-time
+                         (time-subtract (current-time) b)))))))
+
+(defmacro make-thread* (fn &optional join name)
+  "Threading call FN with NAME or in JOIN mode."
+  `(if-fn% 'make-thread nil
+           (if% (if-noninteractive% t ,join)
+               (thread-join (make-thread ,fn ,name))
+             (make-thread ,fn ,name))
+     (ignore* ,join ,name)
+     (funcall ,fn)))
+
+
+ ;; end of byte-compiler macro
 
 ;;;
 ;; strings

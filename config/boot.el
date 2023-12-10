@@ -416,7 +416,8 @@ No matter the declaration order, the executing order is:
   (compile-unit% (emacs-home* "config/autoloads.el")))
 
 
-
+;; end of boot
+
 
 (provide 'boot)
 

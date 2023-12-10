@@ -47,10 +47,6 @@
   (should (string-match "^g[0-9]+" (format "%s" (gensym))))
   (should (string-match "^X[0-9]+" (format "%s" (gensym "X")))))
 
-(ert-deftest %init:time ()
-  (should (null (time)))
-  (should (= 6 (time (+ 1 2 3)))))
-
 (ert-deftest %init:emacs-home* ()
   (should (file-exists-p (emacs-home*)))
   (should (file-exists-p (emacs-home* "config/")))
@@ -75,13 +71,13 @@
   (should (string-match "[gt]_[.0-9]+/" (v-path "a/b/c/"))))
 
 (ert-deftest %init:v-home ()
-  (should (directory-name-p (v-home nil)))
-  (should (string-match "[gt]_[.0-9]+" (v-home nil)))
+  (should (directory-name-p (v-home)))
+  (should (string-match "[gt]_[.0-9]+" (v-home)))
   (should (string-match "[gt]_[.0-9]+.*x\\.el\\'" (v-home "x.el"))))
 
 (ert-deftest %init:v-home% ()
-  (should (directory-name-p (v-home% nil)))
-  (should (string-match "[gt]_[.0-9]+" (v-home% nil)))
+  (should (directory-name-p (v-home%)))
+  (should (string-match "[gt]_[.0-9]+" (v-home%)))
   (should (string-match "[gt]_[.0-9]+.*x\\.el\\'" (v-home% "x.el"))))
 
 (ert-deftest %init:v-home%> ()
@@ -117,10 +113,9 @@
 
 (ert-deftest %init:if-version% ()
   (should (if-version% < 0 t))
-  (should (= 12 (if-version% < 1000 (+ 1 2) (* 3 4))))
+  (should (= 12 (if-version% < 10000 (+ 1 2) (* 3 4))))
   (should (equal '(progn (* 3 4) (* 5 6))
-                 (macroexpand '(if-version%
-                                   < 1000
+                 (macroexpand '(if-version% < 1000
                                    (+ 1 2)
                                  (* 3 4)
                                  (* 5 6))))))
@@ -136,9 +131,9 @@
 
 ;; end of init
 
-;;;;
+;;;
 ;; boot
-;;;;
+;;;
 
 
 (ert-deftest %boot:if/when/unless-lexical% ()
@@ -311,7 +306,6 @@
       (should-not (let ((a 1) (b 2)) (ignore* a b)))
     (should-not (let ((a 1) (b 2)) (ignore* a b)))))
 
-
 (ert-deftest %fn:take-while ()
   (should-not (take-while nil nil))
   (should-not (take-while (lambda (x) (= x 1)) nil))
@@ -431,6 +425,10 @@
     (fluid-let (x 456)
       (should (= x 456)))
     (should (= x 123))))
+
+(ert-deftest %init:time ()
+  (should (null (time)))
+  (should (= 6 (time (+ 1 2 3)))))
 
 (ert-deftest %fn:strchr ()
   (should (null (strchr nil nil)))
