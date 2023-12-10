@@ -17,13 +17,14 @@
 (defmacro-if-feature% treesit)
 
 
-(defalias '*org-babel-schemes*
-  (lexical-let% ((i '()))
-    (lambda (&optional op key val)
-      (cond ((eq :get op) (plist-get i key))
-            ((eq :put op) (setq i (plist-put i key val)))
-            (t i))))
-  "The available Scheme's implementations for `ob'.")
+;; (defalias '*org-babel-schemes*
+;;   (lexical-let% ((i '()))
+;;     (lambda (&optional op key val)
+;;       (cond ((eq :get op) (plist-get i key))
+;;             ((eq :put op) (setq i (plist-put i key val)))
+;;             (t i))))
+;;   "The available Scheme's implementations for `ob'.")
+
 
 (defmacro autoload* (symbol file &optional docstring interactive type)
   "Force autoload SYMBOL, like \\=`autoload\\=' does."
@@ -100,77 +101,56 @@
 
     ;; Debugger `gud-cdb'
     (when-platform% 'windows-nt
-      (when% (executable-find% "cdb")
-        (prog1
-            (compile-unit% (emacs-home* "config/gud-cdb.el") t)
-          (autoload 'gud-cdb (v-home%> "config/gud-cdb.el")
-            "Run lldb on program FILE in buffer *gud-FILE*." t))))
-
-    ;; Debugger `gud-lldb'
-    (when% (executable-find% "lldb")
       (prog1
-          (compile-unit% (emacs-home* "config/gud-lldb.el") t)
-        (autoload 'gud-lldb (v-home%> "config/gud-lldb.el")
+          (compile-unit% (emacs-home* "config/gud-cdb.el") t)
+        (autoload 'gud-cdb (v-home%> "config/gud-cdb.el")
           "Run lldb on program FILE in buffer *gud-FILE*." t)))
 
+    ;; Debugger `gud-lldb'
+    (prog1
+        (compile-unit% (emacs-home* "config/gud-lldb.el") t)
+      (autoload 'gud-lldb (v-home%> "config/gud-lldb.el")
+        "Run lldb on program FILE in buffer *gud-FILE*." t))
+
     ;; Jshell
-    (when% (executable-find% "jshell"
-                             (lambda (jshell)
-                               (let ((x (shell-command* jshell "--version")))
-                                 (zerop (car x)))))
-      (prog1
-          (compile-unit% (emacs-home* "config/jshell.el") t)
-        (autoload 'jshell-mode (v-home%> "config/jshell.el")
-          "Toggle Jshell's mode." t)
-        (autoload 'run-jshell (v-home%> "config/jshell.el")
-          "Toggle jshell process in buffer \\=`*jshell*\\='." t)))
+    (prog1
+        (compile-unit% (emacs-home* "config/jshell.el") t)
+      (autoload 'jshell-mode (v-home%> "config/jshell.el")
+        "Toggle Jshell's mode." t)
+      (autoload 'run-jshell (v-home%> "config/jshell.el")
+        "Toggle jshell process in buffer \\=`*jshell*\\='." t))
 
     ;; Node
-    (when% (or (file-exists-p "~/.nvm/nvm.sh")
-               (executable-find% "node"
-                                 (lambda (node)
-                                   (let ((x (shell-command* "echo"
-                                              "'1+2+3'|" node "-p")))
-                                     (zerop (car x))))))
-      (prog1
-          (compile-unit% (emacs-home* "config/node.el") t)
-        (autoload 'node-mode (v-home%> "config/node.el")
-          "Toggle Node's mode." t)
-        (autoload 'run-node (v-home%> "config/node.el")
-          "Toggle node process in buffer \\=`*node*\\='." t)))
+    (prog1
+        (compile-unit% (emacs-home* "config/node.el") t)
+      (autoload 'node-mode (v-home%> "config/node.el")
+        "Toggle Node's mode." t)
+      (autoload 'run-node (v-home%> "config/node.el")
+        "Toggle node process in buffer \\=`*node*\\='." t))
 
     ;; Python
-    (when% (or (executable-find% "python3")
-               (executable-find% "python"))
-      (compile-unit% (emacs-home* "config/on-python-autoload.el")))
+    (prog1
+        (compile-unit% (emacs-home* "config/on-python-autoload.el") t)
+      (autoload 'python*-activate-venv!
+        (v-home%> "config/on-python-autoload.el")
+        "Activate Python's virtualenv." t))
 
     ;; Scheme `gambit-mode'
-    (when% (executable-find% "gsc-script"
-                             (lambda (gsc)
-                               (let ((x (shell-command* gsc
-                                          "-e \"(system-type)\"")))
-                                 (zerop (car x)))))
-      (prog1
-          (compile-unit% (emacs-home* "config/gambit.el") t)
-        (*org-babel-schemes* :put 'gambit "gsc-script")
-        (autoload 'gambit-mode (v-home%> "config/gambit.el")
-          "Toggle Gambit's mode." t)
-        (autoload* 'run-gambit (v-home%> "config/gambit.el")
-                   "Toggle gambit process in buffer \\=`*gambit*\\='." t)))
+    (prog1
+        (compile-unit% (emacs-home* "config/gambit.el") t)
+      (autoload 'gambit-mode (v-home%> "config/gambit.el")
+        "Toggle Gambit's mode." t)
+      (autoload* 'run-gambit (v-home%> "config/gambit.el")
+                 "Toggle gambit process in buffer \\=`*gambit*\\='." t))
 
     ;; Scheme `chez-mode'
-    (when% (executable-find% "scheme"
-                             (lambda (chez)
-                               (let ((x (shell-command* "echo"
-                                          "'(scheme-version)'|" chez "-q")))
-                                 (zerop (car x)))))
-      (prog1
-          (compile-unit% (emacs-home* "config/chez.el") t)
-        (*org-babel-schemes* :put 'chez "scheme")
-        (autoload 'chez-mode (v-home%> "config/chez.el")
-          "Toggle Chez's mode." t)
-        (autoload* 'run-chez (v-home%> "config/chez.el")
-                   "Toggle chez process in buffer \\=`*chez*\\='." t)))
+    (prog1
+        (compile-unit% (emacs-home* "config/chez.el") t)
+      ;; (*org-babel-schemes* :put 'chez "scheme")
+      (autoload 'chez-mode (v-home%> "config/chez.el")
+        "Toggle Chez's mode." t)
+      (autoload* 'run-chez (v-home%> "config/chez.el")
+                 "Toggle chez process in buffer \\=`*chez*\\='." t))
 
     ;; ;; Org `ob' for Scheme
     ;; (prog1

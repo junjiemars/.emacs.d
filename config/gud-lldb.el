@@ -92,9 +92,9 @@ If nil, only source files in the program directory will be known
  ;; end of variable declarations
 
 
-;;;;
+;;;
 ;;  gud-* declarations
-;;;;
+;;;
 
 (declare-function gud*-find-c-last-expr "guds")
 (declare-function gud-basic-call    "gud")

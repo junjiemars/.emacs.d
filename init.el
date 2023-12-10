@@ -312,7 +312,9 @@ If ONLY-COMPILE is t, does not load DST."
 
 
 ;; boot
-(let ((file-name-handler-alist nil))
+(let ((file-name-handler-alist nil)
+      (frame-inhibit-implied-resize t)
+      (inhibit-redisplay t))
   (let ((u (v-comp-file! (emacs-home* "config/boot.el")))
         (gc-cons-percentage 0.4))
     (compile-and-load-file* (car u) (cdr u))))

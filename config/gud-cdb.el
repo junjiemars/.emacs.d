@@ -115,15 +115,15 @@
 
 ;; (eval-when-compile (require 'cl))
 
-(eval-when-compile (require 'guds))
-
+(eval-when-compile
+  (require 'guds (v-home%> "config/guds.el")))
 (require 'gud)
 
 
 
-;;;;
+;;;
 ;; gud-cdb-* variables
-;;;;
+;;;
 
 
 (defvar gud-cdb-history nil
@@ -190,9 +190,9 @@ containing the executable being debugged."
 (make-variable-buffer-local 'gud-output-acc)
 
 
-;;;;
+;;;
 ;;  gud-* declarations
-;;;;
+;;;
 
 
 (when-fn% 'declare-function nil
