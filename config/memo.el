@@ -9,14 +9,17 @@
 
 (defun self-desktop-read! ()
   "Read the desktop of the previous Emacs instance."
-  (let ((desk (*self-env-spec* :get :desktop)))
+  (let ((desk (*self-env-spec* :get :desktop))
+        (file-name-handler-alist nil))
     (when (and (self-spec-> desk :allowed)
                (file-exists-p (v-home% ".desktop/")))
+
       ;; restrict eager
       (setq% desktop-restore-eager
              (self-spec-> desk :restore-eager)
              'desktop)
 
+      ;; `desktop-read'
       (desktop-read (v-home% ".desktop/"))
 
       ;; remove unnecessary hooks of `kill-emacs-hook'
@@ -24,6 +27,7 @@
             (if-fn% 'desktop--on-kill 'desktop
                     (delq 'desktop--on-kill kill-emacs-hook)
               (delq 'desktop-kill kill-emacs-hook)))
+
       ;; remove unnecessary hooks of `kill-emacs-query-functions'
       (if-var% kill-emacs-query-functions nil
                (progn
