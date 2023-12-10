@@ -100,8 +100,7 @@ Argument FEATURE that X dependent on, load at compile time."
   (put 'lexical-binding 'safe-local-variable (lambda (_) t)))
 
 (defmacro lexical-let% (varlist &rest body)
-  "Lexically bind variables according to VARLIST in parallel then
-eval BODY."
+  "Lexically bind VARLIST in parallel then eval BODY."
   (declare (indent 1) (debug let))
   `(if-lexical%
        (if-version% < 27
@@ -113,8 +112,7 @@ eval BODY."
        (lexical-let ,varlist ,@body))))
 
 (defmacro lexical-let*% (varlist &rest body)
-  "Lexically bind variables according to VARLIST sequentially then
-eval BODY."
+  "Lexically bind VARLIST sequentially then eval BODY."
   (declare (indent 1) (debug let))
   `(if-lexical%
        (if-version% < 27
@@ -133,8 +131,7 @@ eval BODY."
 ;;;
 
 (defmacro if-graphic% (then &rest else)
-  "If in graphic mode, do THEN, else do ELSE...\n
-Return the value of THEN or the value of the last of the ELSE’s."
+  "If \\=`display-graphic-p\\=' yield non-nil, do THEN, else do ELSE..."
   (declare (indent 1))
   (if (display-graphic-p)
       `,then
@@ -142,13 +139,13 @@ Return the value of THEN or the value of the last of the ELSE’s."
 
 
 (defmacro when-graphic% (&rest body)
-  "When in graphic mode do BODY."
+  "When \\=`display-graphic-p\\=' yield non-nil, do BODY."
   (declare (indent 0))
   `(if-graphic% (progn% ,@body)))
 
 
 (defmacro unless-graphic% (&rest body)
-  "Unless in graphic mode do BODY."
+  "Unless \\=`display-graphic-p\\=' yield nil, do BODY."
   (declare (indent 0))
   `(if-graphic% nil ,@body))
 
@@ -183,8 +180,8 @@ Return the value of THEN or the value of the last of the ELSE’s."
 ;;;
 
 (defmacro if-window% (window then &rest else)
-  "If WINDOW eq \\=`initial-window-system\\=' yield non-nil,
-do THEN, else do ELSE..."
+  "If WINDOW eq \\=`initial-window-system\\=' yield non-nil, do THEN,
+else do ELSE..."
   (declare (indent 2))
   `(if% (eq initial-window-system ,window)
        ,then
@@ -244,15 +241,14 @@ Argument SPEC (VAR LIST [RESULT])."
 ;;;
 
 (defun compile-unit* (file &optional only-compile)
-  "Make an compile unit for \\=`compile-and-load-file*\\='."
+  "Make an compile unit for \\=`compile!\\='."
   (let ((file-name-handler-alist nil))
     (when (and (stringp file) (file-exists-p file))
       (let ((u1 (v-comp-file! file)))
         (vector (car u1) (cdr u1) only-compile nil)))))
 
 (defmacro compile-unit% (file &optional only-compile)
-  "Make an compile unit at compile time for
-\\=`compile-and-load-file*\\='"
+  "Make an compile unit at compile time for \\=`compile!\\='"
   (let* ((-u1- (let ((file-name-handler-alist nil))
                  (v-comp-file! (funcall `(lambda () ,file)))))
          (-src1- (car -u1-))
@@ -392,7 +388,7 @@ No matter the declaration order, the executing order is:
 (v-home! "private/")
 ;; duplicate spec files
 (*self-paths* :dup)
-;; disable package initialize
+;; disable package initialization
 (when-package% (setq package-enable-at-startup nil))
 
 ;;; <1> prologue

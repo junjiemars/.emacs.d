@@ -122,7 +122,7 @@
 
 (ert-deftest %init:when-version% ()
   (should (when-version% < 0 t))
-  (should-not (when-version% < 1000 (+ 1 2)))
+  (should-not (when-version% < 10000 (+ 1 2)))
   (should (equal '(progn (+ 1 2) (* 3 4))
                  (macroexpand '(when-version%
                                    < 0
@@ -162,10 +162,6 @@
                         (macroexpand '(unless-graphic%
                                         (+ 1 2) (* 3 4))))))))
 
-(ert-deftest %boot:when-version% ()
-  (should (when-version% < 0 t))
-  (should (not (when-version% < 1000 t))))
-
 (ert-deftest %boot:if/when/unless-platform% ()
   (cond ((if-platform% 'darwin t)
          (should (and (when-platform% 'darwin t)
@@ -204,15 +200,17 @@
                (when-fn% 'should 'ert t)
                (not (unless-fn% 'should 'ert t))))
   (should (equal '(progn (+ 1 2) (* 3 4))
-                 (macroexpand '(when-fn% 'should 'ert (+ 1 2) (* 3 4)))))
+                 (macroexpand '(when-fn% 'should 'ert
+                                 (+ 1 2) (* 3 4)))))
   (should (equal '(progn (+ 1 2) (* 3 4))
-                 (macroexpand '(unless-fn% 'shouldx 'ert (+ 1 2) (* 3 4))))))
+                 (macroexpand '(unless-fn% 'shouldx 'ert
+                                 (+ 1 2) (* 3 4))))))
 
-(ert-deftest %boot:if/when-var% ()
+(ert-deftest %boot:if/when/unless-var% ()
   (should (and (if-var% ert-batch-backtrace-right-margin 'ert t)
                (when-var% ert-batch-backtrace-right-margin 'ert t)
-               (not (when-var% ert-batch-backtrace-right-marginxxx 'ert t)))))
-
+               (not (unless-var% ert-batch-backtrace-right-margin 'ert))
+               (unless-var% ert-batch-xxx 'ert t))))
 
 (ert-deftest %boot:dolist* ()
   (should (equal '(a nil b c)
@@ -222,7 +220,6 @@
   (should (catch 'found
             (dolist* (x '(a b c))
               (when (eq 'b x) (throw 'found t))))))
-
 
 (ert-deftest %boot:self-spec-> ()
   (should (null (self-spec-> nil nil)))
@@ -426,7 +423,7 @@
       (should (= x 456)))
     (should (= x 123))))
 
-(ert-deftest %init:time ()
+(ert-deftest %fn:time ()
   (should (null (time)))
   (should (= 6 (time (+ 1 2 3)))))
 
@@ -523,9 +520,9 @@
 ;; end of `fn'
 
 
-;;;;
+;;;
 ;; basic
-;;;;
+;;;
 
 (ert-deftest %basic:file-in-dirs-p ()
   (should-not (file-in-dirs-p nil nil))
@@ -647,7 +644,6 @@
 (ert-deftest %basic:buffer-major-mode ()
   (should (eq 'fundamental-mode (buffer-major-mode))))
 
-
 (ert-deftest %basic:if-key% ()
   (should (string= "defined"
                    (if-key% (current-global-map) (kbd "C-x C-c")
@@ -671,8 +667,6 @@
       (set-mark (point-max))
       (should (= 3 (region-active-if (+ 1 2) (* 3 4)))))))
 
-
-
 (ert-deftest %basic:region-active-unless ()
   ;; interactive
   (unless noninteractive
@@ -682,7 +676,6 @@
       (set-mark (point-min))
       (set-mark (point-max))
       (should-not (region-active-unless (+ 1 2) (* 3 4))))))
-
 
 (ert-deftest %basic:symbol@ ()
   ;; interactive
@@ -768,10 +761,9 @@
      (when already (should (install-package!1 'htmlize))))))
 
 
-;;;;
+;;;
 ;; conditional: cc
-;;;;
-
+;;;
 
 (ert-deftest %z:cc:check-vcvarsall-bat ()
   (when-platform% 'windows-nt
@@ -812,11 +804,11 @@
     (should (message "# cc*-system-include = %s"
                      (or (cc*-system-include t) "")))))
 
+;; end of cc
 
-
-;;;;
+;;;
 ;; conditional: trans
-;;;;
+;;;
 
 (ert-deftest %z:trans:roman->arabic ()
   (when-fn% 'roman->arabic nil
