@@ -344,7 +344,7 @@ Introduce the rules of naming /files/ and /functions/.
   =_mark_thing@_=
 - =χ​*= or =χ**= is the extension of Emacs' builtin function or macro
   =x=, such as =every*= and =assoc**=
-- =χ*-y= is the extension of function =y= of package =x=, such as
+- =χ*-y= is the extension of function =y= of feature =x=, such as
   =vc*-dir=
 - =χ%= macro =x= will be expanded at compile time, such as =if%=
 - =χ!= function or macro =x= has side-effects, such as =v-home!=

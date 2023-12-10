@@ -75,7 +75,7 @@
 (setq% server-auth-dir (v-home! ".server/") 'server)
 
 ;; `tramp'
-(setq% tramp-persistency-file-name (v-home! ".tramp/tramp")
+(setq% tramp-persistency-file-name (v-home! ".tramp/cache")
        (if-version% > 24 'tramp
              'tramp-cache))
 
@@ -86,7 +86,7 @@
 (setq% url-configuration-directory (v-home! ".url/") 'url)
 
 
-;; end of versioned dirs
+;; end of versioned dir
 
 ;;;
 ;; compatible macro
@@ -95,27 +95,20 @@
 (unless-fn% 'user-error nil
   (defun user-error (format &rest args)
     "Signal a pilot error."
-    (signal 'user-error (list (apply #'format-message format args)))))
-
+    (signal 'user-error
+            (list (apply #'format-message format args)))))
 
 (defmacro called-interactively-p* (&optional kind)
   "Return t if the containing function was called by
-`call-interactively'."
+\\=`call-interactively\\='."
   (if-fn% 'called-interactively-p nil
           `(called-interactively-p ,kind)
     (ignore* kind)
     `(interactive-p)))
 
-
 (eval-and-compile
   (unless-fn% 'declare-function nil
     (defmacro declare-function (&rest _))))
-
-;; end of compatible macro
-
-;;;
-;; compatible function
-;;;
 
 (unless-fn% 'with-eval-after-load nil
   (defmacro with-eval-after-load (file &rest body)
@@ -127,7 +120,6 @@ forms of FILE and their semantics."
     (declare (indent 1))
     `(eval-after-load ,file
        `(funcall ,(lambda () ,@body)))))
-
 
 (defmacro defcustom% (symbol standard doc &rest args)
   "Declare SYMBOL as a customizable variable with the STANDARD value.\n
@@ -142,6 +134,14 @@ STANDARD always be computed at runtime whatever the current
       ,doc
       ,@args)))
 
+;;; `sxhash': see `%fn:save/read-sexp-to/from-file' in test.el
+(define-hash-table-test 'string-hash= #'string= #'sxhash)
+
+;; end of compatible function
+
+;;;
+;; region active
+;;;
 
 (defmacro region-active-if (then &rest else)
   "If \\=`region-active-p\\=' or \\=`mark-active\\=' is t do THEN,
@@ -157,13 +157,11 @@ THEN."
   (declare (indent 0))
   `(region-active-if nil ,@then))
 
+;; end of region active
 
-;; end of compatible function
-
-
-;;; `sxhash': see `%fn:save/read-sexp-to/from-file' in test.el
-(define-hash-table-test 'string-hash= #'string= #'sxhash)
-
+;;;
+;; file function
+;;;
 
 (defun path+ (root &rest path)
   "Append a list of PATH to ROOT."
@@ -306,7 +304,6 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
          (concat (cadr ,rid) (when (car (cddr ,rid))
                                (concat "@" (car (cddr ,rid)))))))))
 
-
 (defmacro url-retrieve*
     (url callback &optional cbargs silent inhibit-cookies)
   "Retrieve URL asynchronously and call CALLBACK with CBARGS when
@@ -327,7 +324,7 @@ current buffer."
                           (get-buffer buffer-or-name)
                         (current-buffer))))
 
-;; end of file functions
+;; end of file function
 
 ;;;
 ;; define key macro

@@ -89,7 +89,7 @@
  :put :desktop
  (list :files-not-to-save
        "\\.desktop\\|~$\\|^/sudo:\\|^/ssh[x]?:\\|\\.el[cn]$"
-       :buffers-not-to-save "^TAGS\\|\\.log"
+       :buffers-not-to-save "\\.?[Tt][Aa][Gg][Ss]\\|\\.[Ll][Oo][Gg]"
        :modes-not-to-save
        '(dired-mode fundamental-mode)
        :restore-eager 8

@@ -14,11 +14,11 @@
 ;;;
 
 
-(defun python*-version (python)
+(defmacro python*-version (python)
   "Return the version of PYTHON"
-  (let ((rc (shell-command* python "--version")))
-    (when (zerop (car rc))
-      (string-match* "^Python \\([.0-9]+\\)$" (cdr rc) 1))))
+  `(let ((rc (shell-command* ,python "--version")))
+     (when (zerop (car rc))
+       (string-match* "^Python \\([.0-9]+\\)$" (cdr rc) 1))))
 
 
 (defalias 'python*-program

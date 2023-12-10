@@ -8,12 +8,13 @@
 ;; Commentary: essential C programming
 ;;;;
 
-
+;;;
 ;; msvc host environment
+;;;
 
 (when-platform% 'windows-nt
 
-  (defun check-vcvarsall-bat ()
+  (defun cc*-check-vcvarsall-bat ()
     "Return the path of vcvarsall.bat if which exists."
     (let* ((pfroot (posix-path (getenv "PROGRAMFILES")))
            (vsroot (concat pfroot " (x86)/Microsoft Visual Studio/"))
@@ -37,9 +38,9 @@
 
 (when-platform% 'windows-nt
 
-  (defun make-cc-env-bat ()
+  (defun cc*-make-env-bat ()
     "Make cc-env.bat in \\=`exec-path\\='."
-    (let ((vcvarsall (check-vcvarsall-bat))
+    (let ((vcvarsall (cc*-check-vcvarsall-bat))
           (arch (downcase (or (getenv "PROCESSOR_ARCHITECTURE")
                               (car (platform-arch))))))
       (when (and vcvarsall arch)
@@ -58,16 +59,18 @@
                  "echo \"%INCLUDE%\"\n")
          (v-home% ".exec/cc-env.bat"))))))
 
-
 ;; msvc host environment
 
+;;;
+;; CC
+;;;
 
 (defconst +cc*-compiler-bin+
   (eval-when-compile
     (let ((cx (if-platform% 'windows-nt
                   (progn%
                    (unless (executable-find% "cc-env.bat")
-                     (make-cc-env-bat))
+                     (cc*-make-env-bat))
                    '("cc-env.bat" "cl" "gcc"))
                 '("cc" "gcc" "clang")))
           (o (make-temp-file "cc-" nil
@@ -98,10 +101,15 @@
                 (throw 'break cc))))))))
   "The name of C compiler executable.")
 
+;; end of CC
+
+;;;
+;; xargs
+;;;
 
 (when-platform% 'windows-nt
 
-  (defun make-xargs-bin ()
+  (defun cc*-make-xargs-bin ()
     "Make a GNU's xargs alternation in \\=`exec-path\\='."
     (let* ((c (concat temporary-file-directory "xargs.c"))
            (exe (v-home% ".exec/xargs.exe"))
@@ -145,13 +153,161 @@
                 (and (zerop (car x))
                      (string-match "^zzz" (cdr x))))))
            (and +cc*-compiler-bin+
-                (make-xargs-bin)))))
+                (cc*-make-xargs-bin)))))
     "The name of xargs executable."))
 
+;; end of xargs
+
+;;;
+;; #include
+;;;
+
+(defun cc*-check-include (&optional remote)
+  "Return a list of system cc include path."
+  (let ((cmd (if remote
+                 (when% (executable-find% "ssh")
+                   (shell-command* "ssh"
+                     (concat (remote-norm->user@host remote)
+                             " \"echo '' | cc -v -E 2>&1 >/dev/null -\"")))
+               (if-platform% 'windows-nt
+                   ;; Windows: msmvc
+                   (shell-command* +cc*-compiler-bin+)
+                 ;; Darwin/Linux: clang or gcc
+                 (shell-command* (concat "echo '' | "
+                                         +cc*-compiler-bin+
+                                         " -v -E 2>&1 >/dev/null -")))))
+        (parser (lambda (pre)
+                  (if-platform% 'windows-nt
+                      ;; Windows: msvc
+                      (mapcar
+                       (lambda (x) (posix-path x))
+                       (var->paths
+                        (car (nreverse
+                              (split-string* pre "\n" t "[ \"]*")))))
+                    ;; Darwin/Linux: clang or gcc
+                    (cdr
+                     (take-while
+                      (lambda (p)
+                        (string-match "End of search list\\." p))
+                      (drop-while
+                       (lambda (p)
+                         (not
+                          (string-match
+                           "#include <\\.\\.\\.> search starts here:"
+                           p)))
+                       (split-string* pre "\n" t "[ \t\n]"))))))))
+    (when (zerop (car cmd))
+      (funcall parser (cdr cmd)))))
+
+
+(defalias 'cc*-system-include
+  (lexical-let% ((dx))
+    (lambda (&optional cached remote)
+  		"CACHED REMOTE"
+      (let* ((ss (if remote
+                     (intern (mapconcat #'identity
+                                        (remote-norm-id remote)
+                                        "-"))
+                   'native))
+             (fs (concat (v-home% ".exec/cc-inc-") (symbol-name ss) ".el"))
+             (d))
+        (or (and cached (plist-get dx ss))
+
+            (and cached (file-exists-p fs)
+                 (plist-get
+                  (setq dx (plist-put dx ss
+                                      (read-sexp-from-file fs)))
+                  ss))
+
+            (and (setq d (mapcar (if remote
+                                     (lambda (x)
+                                       (concat remote x))
+                                   #'identity)
+                                 (cc*-check-include remote)))
+                 (consp d) (save-sexp-to-file d fs)
+                 (plist-get (setq dx (plist-put dx ss d)) ss))))))
+
+  "Return a list of system include directories.\n
+Load \\=`cc*-system-include\\=' from file when CACHED is t,
+otherwise check cc include on the fly.\n
+If specify REMOTE argument then return a list of remote system
+include directories. The REMOTE argument from \\=`remote-norm-file\\='.")
+
+
+(defalias 'cc*-extra-include
+  (lexical-let% ((dx)
+                 (fs (v-home% ".exec/cc-extra-inc.el")))
+    (lambda (cached &rest dir)
+  		"CACHED DIR"
+      (or (and cached dx)
+
+          (and cached (file-exists-p fs)
+               (setq dx (read-sexp-from-file fs)))
+
+          (and (consp dir)
+               (save-sexp-to-file
+                (setq dx
+                      (append dx
+                              (mapcar (lambda (x)
+                                        (expand-file-name
+                                         (string-trim> x "/")))
+                                      dir)))
+                fs)
+               dx))))
+  "Return a list of extra include directories.")
+
+
+(defun cc*-include-p (file)
+  "Return t if FILE in \\=`cc*-system-include\\=', otherwise nil."
+  (when (stringp file)
+    (let ((remote (remote-norm-file file)))
+      (file-in-dirs-p (file-name-directory file)
+                      (if remote
+                          (cc*-system-include t remote)
+                        (append (cc*-system-include t)
+                                (cc*-extra-include t)))))))
+
+
+(defun cc*-view-include (buffer)
+  "View cc's BUFFER in \\=`view-mode\\='.\n
+When BUFFER in \\=`c-mode\\=' or \\=`c++-mode\\=' and
+\\=`cc*-system-include\\=' or \\=`cc*-extra-include\\=' is t then
+view it in \\=`view-mode\\='."
+  (when (and (bufferp buffer)
+             (let ((m (buffer-local-value 'major-mode buffer)))
+               (or (eq 'c-mode m)
+                   (eq 'c++-mode m)))
+             (cc*-include-p (substring-no-properties
+                             (buffer-file-name buffer))))
+    (with-current-buffer buffer (view-mode 1))))
+
+
+(defun cc*-find-include-file (&optional in-other-window)
+  "Find C include file in `cc*-system-include' or specified directory. "
+  (interactive "P")
+  (let ((file (buffer-file-name (current-buffer))))
+    (setq% cc-search-directories
+           (if (and file (file-exists-p file))
+               (append (list (string-trim> (file-name-directory file) "/"))
+                       (cc*-system-include t (remote-norm-file file))
+                       (cc*-extra-include t))
+             (append (cc*-system-include t)
+                     (cc*-extra-include t)))
+           'find-file))
+  (when-fn% 'xref-push-marker-stack 'xref
+    (autoload 'xref-push-marker-stack "xref")
+    (xref-push-marker-stack))
+  (ff-find-other-file in-other-window nil))
+
+;; end of #include
+
+;;;
+;; #define
+;;;
 
 (when-platform% 'windows-nt
 
-  (defun make-cc-dmacro-bin (&optional options)
+  (defun cc*-make-macro-dump-bin (&optional options)
     "Make cc-dmacro.exe for printing predefined macros."
     (let* ((c (concat temporary-file-directory "cc-dmacro.c"))
            (exe (v-home% ".exec/cc-dmacro.exe")))
@@ -238,150 +394,6 @@
           (file-name-nondirectory exe))))))
 
 
-(defun cc*-check-include (&optional remote)
-  "Return a list of system cc include path."
-  (let ((cmd (if remote
-                 (when% (executable-find% "ssh")
-                   (shell-command* "ssh"
-                     (concat (remote-norm->user@host remote)
-                             " \"echo '' | cc -v -E 2>&1 >/dev/null -\"")))
-               (if-platform% 'windows-nt
-                   ;; Windows: msmvc
-                   (shell-command* +cc*-compiler-bin+)
-                 ;; Darwin/Linux: clang or gcc
-                 (shell-command* (concat "echo '' | "
-                                         +cc*-compiler-bin+
-                                         " -v -E 2>&1 >/dev/null -")))))
-        (parser (lambda (pre)
-                  (if-platform% 'windows-nt
-                      ;; Windows: msvc
-                      (mapcar
-                       (lambda (x) (posix-path x))
-                       (var->paths
-                        (car (nreverse
-                              (split-string* pre "\n" t "[ \"]*")))))
-                    ;; Darwin/Linux: clang or gcc
-                    (cdr
-                     (take-while
-                      (lambda (p)
-                        (string-match "End of search list\\." p))
-                      (drop-while
-                       (lambda (p)
-                         (not
-                          (string-match
-                           "#include <\\.\\.\\.> search starts here:"
-                           p)))
-                       (split-string* pre "\n" t "[ \t\n]"))))))))
-    (when (zerop (car cmd))
-      (funcall parser (cdr cmd)))))
-
-
-;;; cc system include
-
-(defalias 'cc*-system-include
-  (lexical-let% ((dx))
-    (lambda (&optional cached remote)
-  		"CACHED REMOTE"
-      (let* ((ss (if remote
-                     (intern (mapconcat #'identity
-                                        (remote-norm-id remote)
-                                        "-"))
-                   'native))
-             (fs (concat (v-home% ".exec/cc-inc-") (symbol-name ss) ".el"))
-             (d))
-        (or (and cached (plist-get dx ss))
-
-            (and cached (file-exists-p fs)
-                 (plist-get
-                  (setq dx (plist-put dx ss
-                                      (read-sexp-from-file fs)))
-                  ss))
-
-            (and (setq d (mapcar (if remote
-                                     (lambda (x)
-                                       (concat remote x))
-                                   #'identity)
-                                 (cc*-check-include remote)))
-                 (consp d) (save-sexp-to-file d fs)
-                 (plist-get (setq dx (plist-put dx ss d)) ss))))))
-
-  "Return a list of system include directories.\n
-Load \\=`cc*-system-include\\=' from file when CACHED is t,
-otherwise check cc include on the fly.\n
-If specify REMOTE argument then return a list of remote system
-include directories. The REMOTE argument from \\=`remote-norm-file\\='.")
-
-
-(defalias 'cc*-extra-include
-  (lexical-let% ((dx)
-                 (fs (v-home% ".exec/cc-extra-inc.el")))
-    (lambda (cached &rest dir)
-  		"CACHED DIR"
-      (or (and cached dx)
-
-          (and cached (file-exists-p fs)
-               (setq dx (read-sexp-from-file fs)))
-
-          (and (consp dir)
-               (save-sexp-to-file
-                (setq dx
-                      (append dx
-                              (mapcar (lambda (x)
-                                        (expand-file-name
-                                         (string-trim> x "/")))
-                                      dir)))
-                fs)
-               dx))))
-
-  "Return a list of extra include directories.")
-
-
-(defun cc*-include-p (file)
-  "Return t if FILE in \\=`cc*-system-include\\=', otherwise nil."
-  (when (stringp file)
-    (let ((remote (remote-norm-file file)))
-      (file-in-dirs-p (file-name-directory file)
-                      (if remote
-                          (cc*-system-include t remote)
-                        (append (cc*-system-include t)
-                                (cc*-extra-include t)))))))
-
-
-(defun cc*-view-include (buffer)
-  "View cc's BUFFER in \\=`view-mode\\='.\n
-When BUFFER in \\=`c-mode\\=' or \\=`c++-mode\\=' and
-\\=`cc*-system-include\\=' or \\=`cc*-extra-include\\=' is t then
-view it in \\=`view-mode\\='."
-  (when (and (bufferp buffer)
-             (let ((m (buffer-local-value 'major-mode buffer)))
-               (or (eq 'c-mode m)
-                   (eq 'c++-mode m)))
-             (cc*-include-p (substring-no-properties
-                             (buffer-file-name buffer))))
-    (with-current-buffer buffer (view-mode 1))))
-
-
-;; end of cc*-system-include
-
-
-(defun cc*-find-include-file (&optional in-other-window)
-  "Find C include file in `cc*-system-include' or specified directory. "
-  (interactive "P")
-  (let ((file (buffer-file-name (current-buffer))))
-    (setq% cc-search-directories
-           (if (and file (file-exists-p file))
-               (append (list (string-trim> (file-name-directory file) "/"))
-                       (cc*-system-include t (remote-norm-file file))
-                       (cc*-extra-include t))
-             (append (cc*-system-include t)
-                     (cc*-extra-include t)))
-           'find-file))
-  (when-fn% 'xref-push-marker-stack 'xref
-    (autoload 'xref-push-marker-stack "xref")
-    (xref-push-marker-stack))
-  (ff-find-other-file in-other-window nil))
-
-
 (defadvice c-macro-expand (around c-macro-expand-around disable)
   "Expand C macros in the region, using the C preprocessor."
   (let ((remote (remote-norm-file (buffer-file-name (current-buffer)))))
@@ -389,13 +401,13 @@ view it in \\=`view-mode\\='."
         ;; remote: Unix-like
         (when% (executable-find% "ssh")
           (setq% c-macro-buffer-name
-                 (concat "*Macroexpansion@"
-                         (remote-norm->user@host remote)
-                         "*")
+                 (format "*Macro Expanded@%s*"
+                         (remote-norm->user@host remote))
                  'cmacexp)
           (setq% c-macro-preprocessor
-                 (concat "ssh " (remote-norm->user@host remote)
-                         " \'cc -E -o - -\'")
+                 (format "ssh %s %s"
+                         (remote-norm->user@host remote)
+                         "cc -E -o - -")
                  'cmacexp)
           ad-do-it)
       ;; local: msvc, clang, gcc
@@ -424,16 +436,15 @@ view it in \\=`view-mode\\='."
   "Dump predefined macros."
   (interactive "sInput C compiler's options: ")
   (let* ((remote (remote-norm-file (buffer-file-name (current-buffer))))
-         (opts (if (> (length options) 0)
-                   (concat options " ")
-                 options))
-         (cmd  (concat "cc " opts "-dM -E -"))
-         (dump (if remote
-                   (concat "ssh " (remote-norm->user@host remote)
-                           " \'" cmd "\'")
-                 (if-platform% 'windows-nt
-                     (and +cc*-compiler-bin+ (make-cc-dmacro-bin opts))
-                   cmd))))
+         (cc (cond (remote "cc")
+                   (t +cc*-compiler-bin+)))
+         (opts  (format "%s -dM -E -" options))
+         (rc (cond (remote (shell-command* "ssh"
+                             (remote-norm->user@host remote)
+                             cc opts))
+                   (t (if-platform% 'windows-nt
+                          (cc*-make-macro-dump-bin options)
+                        (shell-command* cc opts))))))
     (with-current-buffer
         (switch-to-buffer
          (concat "*Macro Predefined"
@@ -442,23 +453,21 @@ view it in \\=`view-mode\\='."
                    "*")))
       (view-mode -1)
       (erase-buffer)
-      (message "Invoking [%s] ..." dump)
-      (insert (cond ((or remote (and +cc*-compiler-bin+
-                                     dump))
-                     (let ((x (shell-command* dump)))
-                       (if (zerop (car x))
-                           (if (> (length (cdr x)) 0)
-                               (cdr x)
-                             "/* C preprocessor no output! */")
-                         (cdr x))))
-                    ((not (or remote +cc*-compiler-bin+))
-                     "/* C compiler no found! */")
-                    (t "/* C preprocessor output failed! */")))
-      (message "Invoking [%s] ...done" dump)
+      (insert (if (zerop (car rc))
+                  (if (> (length (cdr rc)) 0)
+                      (cdr rc)
+                    "/* C preprocessor no output! */")
+                (cdr rc)))
       (c-mode)
       (goto-char (point-min))
       (view-mode 1))))
 
+;; end of #define
+
+
+;;;
+;; `tags'
+;;;
 
 (when-fn% 'make-c-tags 'tags
 
@@ -486,8 +495,55 @@ RENEW whether to renew the existing FILE."
       (dolist* (p (cdr inc) file)
         (make-c-tags p file option nil filter)))))
 
+;; end of `tags'
 
-;; eldoc
+;;;
+;; `eldoc'
+;;;
+
+(defun cc*-eldoc-doc-fn ()
+  "See \\=`eldoc-documentation-function\\='."
+  (let ((tbl (cc*-system-identity t))
+        (sym (thing-at-point 'symbol)))
+    (when (and tbl (stringp sym))
+      (gethash (substring-no-properties sym) tbl))))
+
+
+(defmacro toggle-cc*-eldoc-mode (&optional arg)
+  "Toggle cc-eldoc-mode enabled or disabled."
+  `(progn
+     (set (make-local-variable 'eldoc-documentation-function)
+          (if ,arg #'cc*-eldoc-doc-fn #'ignore))
+     (eldoc-mode (if ,arg 1 nil))))
+
+
+(defun cc*-system-autoload ()
+  "Autoload \\=`cc*-system-include\\=', \\=`cc*-system-include\\='
+and \\=`eldoc-mode\\='."
+  (cc*-system-include t)
+  (when (cc*-system-identity t)
+    (toggle-cc*-eldoc-mode 1)))
+
+;; (add-hook 'c-mode-hook (defun-fn-threading^ cc*-system-autoload) t)
+
+;; end of `eldoc'
+
+;;;
+;; `man'
+;;;
+
+(when-var% manual-program 'man
+  (when% (executable-find% manual-program)
+    (with-eval-after-load 'man
+      ;; fix cannot find include path on Darwin in `Man-mode'
+      (setq% Man-header-file-path (cc*-system-include t) 'man))))
+
+;; end of `man'
+
+
+;;;
+;; identity
+;;;
 
 (defun cc*-check-identity (&optional remote)
   "Return a hashtable of cc identities."
@@ -527,38 +583,11 @@ RENEW whether to renew the existing FILE."
                  (plist-get (setq dx (plist-put dx ss d)) ss))))))
   "Return a hashtable of cc identities.")
 
+;; end of identity
 
-(defun cc*-eldoc-doc-fn ()
-  "See \\=`eldoc-documentation-function\\='."
-  (let ((tbl (cc*-system-identity t))
-        (sym (thing-at-point 'symbol)))
-    (when (and tbl (stringp sym))
-      (gethash (substring-no-properties sym) tbl))))
-
-
-(defmacro toggle-cc*-eldoc-mode (&optional arg)
-  "Toggle cc-eldoc-mode enabled or disabled."
-  `(progn
-     (set (make-local-variable 'eldoc-documentation-function)
-          (if ,arg #'cc*-eldoc-doc-fn #'ignore))
-     (eldoc-mode (if ,arg 1 nil))))
-
-
-(defun cc*-system-autoload ()
-  "Autoload \\=`cc*-system-include\\=', \\=`cc*-system-include\\='
-and \\=`eldoc-mode\\='."
-  (cc*-system-include t)
-  (when (cc*-system-identity t)
-    (toggle-cc*-eldoc-mode 1)))
-
-
-;; (add-hook 'c-mode-hook (defun-fn-threading^ cc*-system-autoload) t)
-
-
-;; end of eldoc
-
-
-;;; cc-styles
+;;;
+;; `cc-styles'
+;;;
 
 (defvar cc*-style-nginx
   `("nginx"
@@ -587,29 +616,29 @@ and \\=`eldoc-mode\\='."
                                               (current-column))))
                                    (cond ((= col 0) 'c-basic-offset)
                                          (t 'c-lineup-arglist)))))))
-  "nginx style for `cc-styles'.
+  "nginx style for \\=`cc-styles\\='.
 https://nginx.org/en/docs/dev/development_guide.html#code_style")
 
 
 (defun cc*-style-align-entire (begin end &optional n)
-  "Align the selected region as if it were one alignment section.
-
+  "Align the selected region as if it were one alignment section.\n
 BEGIN and END mark the extent of the region.
 N specify the number of spaces when align, default is 2.
-See `align-entire'."
+See \\=`align-entire\\='."
   (interactive "r\nP")
   (eval-when-compile (require 'align))
   (require 'align)
   (fluid-let (align-default-spacing (or n 2))
     (align-entire begin end)))
 
-
 ;; end of `cc-styles'
 
+;;;
+;; `cc-mode'
+;;;
 
-;; Default `c-mode-hook' involving useless `macrostep-c-mode-hook'.
+;; default `c-mode-hook' involving useless `macrostep-c-mode-hook'.
 (setq% c-mode-hook nil 'cc-mode)
-
 
 (defun on-cc-mode-init! ()
   "On \\=`cc-mode\\=' initialization."
@@ -638,10 +667,14 @@ See `align-entire'."
                        #'subword-mode
                  #'c-subword-mode)))
 
-
 ;;; `cc-mode' after load
 (eval-after-load 'cc-mode #'on-cc-mode-init!)
 
+;; end of `cc-mode'
+
+;;;
+;; 'cmacexp'
+;;;
 
 (defun on-cmacexp-init! ()
   "On \\=`cmacexp\\=' initialization."
@@ -654,12 +687,7 @@ See `align-entire'."
 ;;; `cmacexp' after load
 (eval-after-load 'cmacexp #'on-cmacexp-init!)
 
-
-(when-var% manual-program 'man
-  (when% (executable-find% manual-program)
-    (with-eval-after-load 'man
-      ;; fix cannot find include path on Darwin in `Man-mode'
-      (setq% Man-header-file-path (cc*-system-include t) 'man))))
+;; end of `cmacexp'
 
 
 ;; end of on-cc-autoload.el

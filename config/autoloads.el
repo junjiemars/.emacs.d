@@ -61,6 +61,7 @@
     (compile-unit% (emacs-home* "config/on-net-autoload.el"))
     (compile-unit% (emacs-home* "config/on-org-autoload.el"))
     (compile-unit% (emacs-home* "config/on-pp-autoload.el"))
+    (compile-unit% (emacs-home* "config/on-python-autoload.el"))
     (compile-unit% (emacs-home* "config/on-sql-autoload.el"))
     (compile-unit% (emacs-home* "config/on-shell-autoload.el"))
     (compile-unit% (emacs-home* "config/on-term-autoload.el"))
@@ -128,13 +129,6 @@
       (autoload 'run-node (v-home%> "config/node.el")
         "Toggle node process in buffer \\=`*node*\\='." t))
 
-    ;; Python
-    (prog1
-        (compile-unit% (emacs-home* "config/on-python-autoload.el") t)
-      (autoload 'python*-activate-venv!
-        (v-home%> "config/on-python-autoload.el")
-        "Activate Python's virtualenv." t))
-
     ;; Scheme `gambit-mode'
     (prog1
         (compile-unit% (emacs-home* "config/gambit.el") t)
@@ -196,8 +190,8 @@
   (push! (v-home% "private/") load-path)
   (load-autoloaded-modes!)
   (load-conditional-modes!)
-  (when-fn% 'toggle-frame-initialized nil (toggle-frame-initialized))
-  (when-fn% 'self-desktop-read! nil (self-desktop-read!))
+  (when-fn% 'toggle-frame-initialized 'graphic (toggle-frame-initialized))
+  (when-fn% 'self-desktop-read! 'memo (self-desktop-read!))
   (make-thread* #'on-epilogue!))
 
 

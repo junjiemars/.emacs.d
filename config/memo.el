@@ -1,16 +1,21 @@
-;;;; -*- lexical-binding:t -*-
+;; -*- lexical-binding:t -*-
 ;;;;
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
 ;; memo.el
+;;;
+;; Commentary: read/save session
 ;;;;
 
 
+;;;
+;; read
+;;;
+
 (defun self-desktop-read! ()
   "Read the desktop of the previous Emacs instance."
-  (let ((desk (*self-env-spec* :get :desktop))
-        (file-name-handler-alist nil))
+  (let ((desk (*self-env-spec* :get :desktop)))
     (when (and (self-spec-> desk :allowed)
                (file-exists-p (v-home% ".desktop/")))
 
@@ -39,8 +44,11 @@
         (append! #'self-desktop-save! kill-emacs-hook)))))
 
 
-;; end of Read desktop
+;; end of read
 
+;;;
+;; save
+;;;
 
 (defun self-desktop-save! ()
   "Save the desktop of the current Emacs instance."
@@ -80,6 +88,11 @@
                        (desktop-save (v-home! ".desktop/"))
                      (desktop-release-lock))
         (desktop-save (v-home! ".desktop/") t)))))
+
+;; end of save
+
+
+(provide 'memo)
 
 
 ;; end of memo.el

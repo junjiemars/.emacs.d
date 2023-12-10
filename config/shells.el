@@ -9,6 +9,10 @@
 ;;;;
 
 
+;;;
+;; spec
+;;;
+
 (defmacro shells-spec->% (&rest keys)
   "Extract value from the list of spec via KEYS at compile time."
   (declare (indent 0))
@@ -36,6 +40,9 @@
 
 ;; end of spec
 
+;;;
+;; vars/paths
+;;;
 
 (defmacro echo-var (var &optional options)
   "Return the value of $VAR via echo."
@@ -85,6 +92,9 @@ See also: \\=`parse-colon-path\\='."
 
 ;; end of vars/paths
 
+;;;
+;; env
+;;;
 
 (defun setenv* (name value)
   "Change or add an environment variable: NAME=VALUE.\n
@@ -131,7 +141,7 @@ See \\=`setenv\\='."
 ;; end of env
 
 ;;;
-;; windows shell
+;; windows
 ;;;
 
 (when-platform% 'windows-nt
@@ -148,8 +158,11 @@ See \\=`setenv\\='."
                                    (append path dir)
                                  (cons dir path)))))))))
 
-;; end of windows shell
+;; end of windows
 
+;;;
+;; save/read env
+;;;
 
 (defun save-shell-env! ()
   "Save \\=`*default-shell-env*\\=' to file."
@@ -214,6 +227,9 @@ See \\=`setenv\\='."
           (spin-env-vars! spinning)))))
 
   (append! #'save-shell-env! kill-emacs-hook))
+
+
+;; save/read env
 
 
 (read-shell-env!)
