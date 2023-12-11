@@ -34,8 +34,9 @@
 ;;     (when-var% geiser-mode-auto-p 'geiser-mode
 ;;       (setq% geiser-mode-auto-p nil 'geiser-mode)))
 
-
+;;;
 ;; variable declarations
+;;;
 
 (defgroup chez nil
   "Run a chez process in a buffer."
@@ -43,16 +44,17 @@
 
 
 (defalias 'chez-program
-  (lexical-let% ((b (executable-find%
-                     "scheme"
-                     (lambda (chez)
-                       (let ((x (shell-command* "echo"
-                                  "'(scheme-version)'|" chez "-q")))
-                         (or (and (zerop (car x)) chez)
-                             "scheme"))))))
+  (lexical-let%
+      ((b (executable-find%
+           "scheme"
+           (lambda (chez)
+             (let ((x (shell-command* "echo"
+                        "'(scheme-version)'|" chez "-q")))
+               (or (and (zerop (car x)) chez)
+                   "scheme"))))))
     (lambda (&optional n)
       (if (null n) b (setq b n))))
-  "Program invoked by the `run-chez' command.")
+  "Program invoked by the \\=`run-chez\\=' command.")
 
 
 (defcustom% chez-input-filter-regexp "\\`\\s *\\S ?\\S ?\\s *\\'"
@@ -62,7 +64,7 @@ Defaults to a regexp ignoring all inputs of 0, 1, or 2 letters."
   :group 'chez)
 
 (defcustom% chez-repl-mode-hook nil
-  "Hook run upon entry to `chez-repl-mode'.
+  "Hook run upon entry to \\=`chez-repl-mode'\\=.\n
 This is run before the process is cranked up."
   :type 'hook
   :group 'chez)
@@ -101,9 +103,8 @@ This is run before the process is cranked up."
                (vector->list xs))))))
 (import (chez-emacs))
 ;;; eof
- "
+"
   "The library of chez-emacs.")
-
 
 
 (defalias '*chez-out*
@@ -111,7 +112,7 @@ This is run before the process is cranked up."
     (lambda (&optional n)
       (if n (setq b n)
         (get-buffer-create b))))
-  "The output buffer of `chez-completion'.")
+  "The output buffer of \\=`chez-completion'\\=.")
 
 
 (defalias '*chez-start-file*
@@ -122,7 +123,7 @@ This is run before the process is cranked up."
         (unless (file-exists-p b)
           (save-str-to-file +chez-emacs-library+ b))
         b)))
-  "The `*chez*' process start file.")
+  "The \\=`*chez*'\\= process start file.")
 
 
 (defalias 'chez-switch-to-last-buffer
@@ -131,7 +132,8 @@ This is run before the process is cranked up."
       (interactive)
       (if n (setq b n)
         (when b (switch-to-buffer-other-window b)))))
-  "Switch to the last `chez-mode' buffer from `*chez*' buffer.")
+  "Switch to the last \\=`chez-mode'\\= buffer from \\=`*chez*'\\=
+buffer.")
 
 
 (defvar *chez-option-history* nil
@@ -143,15 +145,19 @@ This is run before the process is cranked up."
 
 ;; end variable declarations
 
+;;;
+;; proc
+;;;
 
 (defun chez-input-filter (str)
-  "Don't save anything matching `chez-input-filter-regexp'."
+  "Don't save anything matching \\=`chez-input-filter-regexp'\\=."
   (not (string-match chez-input-filter-regexp str)))
 
 (defun chez-get-old-input ()
   "Snarf the sexp ending at point."
-  (let ((old (buffer-substring (save-excursion (backward-sexp) (point))
-                             (point))))
+  (let ((old (buffer-substring
+              (save-excursion (backward-sexp) (point))
+              (point))))
     (cond ((and (>= (length old) 2)
                 (string= "> " (substring old 0 2)))
            (substring old 2))
@@ -182,7 +188,8 @@ This is run before the process is cranked up."
 (defun chez-input-complete-p ()
   "Return t if the input string contains a complete sexp."
   (save-excursion
-    (let ((start (save-excursion (comint-goto-process-mark) (point)))
+    (let ((start (save-excursion
+                   (comint-goto-process-mark) (point)))
           (end (point-max)))
       (goto-char start)
       (cond ((looking-at "\\s *['`#]?[(\"]")
@@ -201,14 +208,14 @@ This is run before the process is cranked up."
   (let ((bounds (bounds-of-thing-at-point 'symbol)))
     (when bounds
       (let ((cmd (format "(chez-emacs/apropos \"%s\" 64)"
-                         (buffer-substring-no-properties (car bounds)
-                                                         (cdr bounds))))
+                         (buffer-substring-no-properties
+                          (car bounds)
+                          (cdr bounds))))
             (proc (get-buffer-process (*chez*))))
         (with-current-buffer (*chez-out*)
           (erase-buffer)
-          (comint-redirect-send-command-to-process cmd
-                                                   (*chez-out*)
-                                                   proc nil t)
+          (comint-redirect-send-command-to-process
+           cmd (*chez-out*) proc nil t)
           (set-buffer (*chez*))
           (while (or quit-flag (null comint-redirect-completed))
             (accept-process-output proc 2))
@@ -223,6 +230,12 @@ This is run before the process is cranked up."
                   (car s1)))
               :exclusive 'no)))))
 
+;; end of proc
+
+;;;
+;; REPL
+;;;
+
 (defun chez-repl-return ()
   "Newline or indent then newline the current input."
   (interactive)
@@ -235,7 +248,8 @@ This is run before the process is cranked up."
   (interactive)
   (goto-char (point-max))
   (save-restriction
-    (narrow-to-region (save-excursion (comint-goto-process-mark) (point))
+    (narrow-to-region (save-excursion
+                        (comint-goto-process-mark) (point))
                       (point))
     (while (ignore-errors (save-excursion (backward-up-list 1)) t)
       (insert ")")))
@@ -247,16 +261,17 @@ This is run before the process is cranked up."
     (if-graphic%
         (progn
           (define-key m [return] #'chez-repl-return)
-          (define-key m [(control return)] #'chez-repl-closing-return))
+          (define-key m [(control return)]
+                      #'chez-repl-closing-return))
       (define-key m "\C-m" #'chez-repl-return)
       (define-key m "\C-\M-m" #'chez-repl-closing-return))
     (define-key m "\C-c\C-b" #'chez-switch-to-last-buffer)
     m)
-  "The keymap for `*chez*' REPL.")
+  "The keymap for \\=`*chez*'\\= REPL.")
 
 
 (defun chez-syntax-table ()
-  "Specify special character in `syntax-table'."
+  "Specify special character in \\=`syntax-table'\\=."
   (modify-syntax-entry ?| "_" (syntax-table)))
 
 
@@ -270,16 +285,13 @@ This is run before the process is cranked up."
 
 
 (define-derived-mode chez-repl-mode comint-mode "REPL"
-  "Major mode for interacting with a chez process.
-
+  "Major mode for interacting with a chez process.\n
 The following commands are available:
-\\{chez-repl-mode-map}
-
-A chez process can be fired up with M-x `run-chez'.
-
+\\{chez-repl-mode-map}\n
+A chez process can be fired up with M-x \\=`run-chez'\\=.
 Customization:
-Entry to this mode runs the hooks on `comint-mode-hook' and
-  `chez-repl-mode-hook' (in that order)."
+Enter this mode runs the hooks on \\=`comint-mode-hook'\\= and
+  \\=`chez-repl-mode-hook'\\= (in that order)."
   :group 'chez                          ; keyword args
   (setq comint-prompt-regexp "^[^>\n-\"]*>+ *")
   (setq comint-prompt-read-only t)
@@ -294,17 +306,18 @@ Entry to this mode runs the hooks on `comint-mode-hook' and
 
 
 (defun run-chez (&optional command-line)
-  "Run a chez process, input and output via buffer *chez*.
-
-If there is a process already running in `*chez*', switch to that
-buffer. With prefix COMMAND-LINE, allows you to edit the command
-line.
-
-Run the hook `chez-repl-mode-hook' after the `comint-mode-hook'."
+  "Run a chez process, input and output via buffer *chez*.\n
+If there is a process already running in \\=`*chez*'\\=, switch
+to that buffer. With prefix COMMAND-LINE, allows you to edit the
+command line.
+Run the hook \\=`chez-repl-mode-hook'\\= after the
+\\=`comint-mode-hook'\\=."
   (interactive (list (read-string "Run chez: "
                                   (car *chez-option-history*)
                                   '*chez-option-history*)))
   (unless (comint-check-proc (*chez*))
+    (unless (chez-program)
+      (user-error "%s" "No chez program found"))
     (with-current-buffer (*chez*)
       (apply #'make-comint-in-buffer
              (buffer-name (current-buffer))
@@ -320,12 +333,8 @@ Run the hook `chez-repl-mode-hook' after the `comint-mode-hook'."
   (switch-to-buffer-other-window (*chez*)))
 
 
-;; end of REPL
-
-
 (defun chez-switch-to-repl (&optional no-select)
-  "Switch to the `*chez*' buffer.
-
+  "Switch to the \\=`*chez*'\\= buffer.\n
 If NO-SELECT is nil then select the buffer and put the cursor at
 end of buffer, otherwise just popup the buffer."
   (interactive "P")
@@ -341,9 +350,15 @@ end of buffer, otherwise just popup the buffer."
     (push-mark)
     (goto-char (point-max))))
 
+;; end of REPL
+
+
+;;;
+;; load/compile
+;;;
 
 (defun chez-compile-file (file)
-  "Compile a Scheme FILE in `*chez*'."
+  "Compile a Scheme FILE in \\=`*chez*'\\=."
   (interactive (comint-get-source
                 "Compile Scheme file: "
                 (let ((n (buffer-file-name)))
@@ -357,7 +372,7 @@ end of buffer, otherwise just popup the buffer."
   (chez-switch-to-repl))
 
 (defun chez-load-file (file)
-  "Load a Scheme FILE into `*chez*'."
+  "Load a Scheme FILE into \\=`*chez*'\\=."
   (interactive (comint-get-source
                 "Load Scheme file: "
                 (let ((n (buffer-file-name)))
@@ -370,42 +385,48 @@ end of buffer, otherwise just popup the buffer."
   (chez-switch-to-last-buffer (current-buffer))
   (chez-switch-to-repl))
 
+;; end of load/compile
+
+;;;
+;; `chez-mode'
+;;;
+
 (defun chez-send-region (start end)
-  "Send the current region to `*chez*'."
+  "Send the current region to \\=`*chez*'\\=."
   (interactive "r")
   (process-send-region (chez-check-proc) start end)
   (comint-send-string (*chez*) "\n")
   (chez-switch-to-repl t))
 
 (defun chez-send-last-sexp ()
-  "Send the previous sexp to `*chez*'."
+  "Send the previous sexp to \\=`*chez*'\\=."
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'sexp)))
     (when bounds
       (chez-send-region (car bounds) (cdr bounds)))))
 
 (defun chez-send-definition ()
-  "Send the current definition to `*chez*'."
+  "Send the current definition to \\=`*chez*'\\=."
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'defun)))
     (when bounds
       (chez-send-region (car bounds) (cdr bounds)))))
 
 (defun chez-trace-procedure (proc &optional untrace)
-  "Trace or untrace procedure PROC in `*chez*' process.
-
+  "Trace or untrace procedure PROC in \\=`*chez*'\\= process.\n
 If PROC is nil then untrace or list all traced procedures
 determined by the prefix UNTRACE argument."
-  (interactive (list (read-string (format "%s procedure: "
-                                          (if current-prefix-arg
-                                              "Untrace"
-                                            "Trace"))
-                                  (if current-prefix-arg
-                                      (car *chez-trace-history*)
-                                    (when (symbol-at-point)
-                                      (symbol-name (symbol-at-point))))
-                                  '*chez-trace-history*)
-                     current-prefix-arg))
+  (interactive
+   (list (read-string (format "%s procedure: "
+                              (if current-prefix-arg
+                                  "Untrace"
+                                "Trace"))
+                      (if current-prefix-arg
+                          (car *chez-trace-history*)
+                        (when (symbol-at-point)
+                          (symbol-name (symbol-at-point))))
+                      '*chez-trace-history*)
+         current-prefix-arg))
   (comint-send-string (chez-check-proc)
                       (format "(%s %s)\n"
                               (if untrace "untrace" "trace")
@@ -425,18 +446,16 @@ determined by the prefix UNTRACE argument."
 
 (make-variable-buffer-local
  (defvar chez-mode-string nil
-   "Modeline indicator for `chez-mode'."))
+   "Modeline indicator for \\=`chez-mode'\\=."))
 
 (defun chez-mode--lighter ()
   (or chez-mode-string " Chez"))
 
 (define-minor-mode chez-mode
-  "Toggle Chez's mode.
-
+  "Toggle Chez's mode.\n
 With no argument, this command toggles the mode.
 Non-null prefix argument turns on the mode.
-Null prefix argument turns off the mode.
-
+Null prefix argument turns off the mode.\n
 When Chez mode is enabled, a host of nice utilities for
 interacting with the Chez REPL is at your disposal.
 \\{chez-mode-map}"
@@ -450,7 +469,7 @@ interacting with the Chez REPL is at your disposal.
             #'chez-completion 0 'local)
   (chez-syntax-indent))
 
-
+;; end of `chez-mode'
 
 
 (provide 'chez)
