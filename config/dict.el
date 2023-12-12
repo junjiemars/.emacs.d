@@ -194,6 +194,8 @@
               style)))
     (when (*dict-debug-log* :logging)
       (save-sexp-to-file ss (path! (*dict-debug-log* :lookup))))
+    (let ((b (current-buffer)))
+      (when b (kill-buffer b)))
     (message "%s" (if (car ss)
                       (propertize (string-trim>
                                    (mapconcat #'identity
