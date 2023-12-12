@@ -297,9 +297,13 @@ If ONLY-COMPILE is t, does not load DST."
                                (match-beginning 3) (match-end 3))))
                      (cons rpath (cons cc ver)))))
              (path (concat (car c3) "/" (cadr c3) "/" platform))
-             (fs (directory-files path nil (concat (cddr c3) "[.0-9]+"))))
+             (fs (let ((file-name-handler-alist nil))
+                   (directory-files path nil
+                                    (concat (cddr c3) "[.0-9]+") 1))))
         (concat path "/" (car fs))))
-    (setenv "LIBRARY_PATH" (library-path))))
+    (setq process-environment
+          (cons (concat "LIBRARY_PATH=" (library-path))
+                process-environment))))
 
 
 ;; boot
