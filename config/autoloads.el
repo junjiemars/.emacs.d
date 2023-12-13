@@ -53,7 +53,7 @@
     (compile-unit% (emacs-home* "config/on-ido-autoload.el"))
     (compile-unit% (emacs-home* "config/on-edit-autoload.el"))
     (compile-unit% (emacs-home* "config/on-isearch-autoload.el"))
-    (compile-unit% (emacs-home* "config/on-js-autoload.el"))
+    ;; (compile-unit% (emacs-home* "config/on-js-autoload.el"))
     (compile-unit% (emacs-home* "config/on-key-autoload.el"))
     (compile-unit% (emacs-home* "config/on-lisp-autoload.el"))
     (compile-unit% (emacs-home* "config/on-mark-autoload.el"))

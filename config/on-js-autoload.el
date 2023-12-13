@@ -6,12 +6,11 @@
 ;; on-js-autoload.el
 ;;;;
 
-(defun on-js-init! ()
-  "On \\=js\\=' initialization."
-  (when-var% js-js-tmpdir 'js
-    (setq% js-js-tmpdir (v-home! ".js/") 'js)))
 
-(eval-after-load 'js #'on-js-init!)
+(when-version% > 28.1
+  (when-var% js-js-tmpdir 'js
+    (with-eval-after-load
+        (setq% js-js-tmpdir (v-home! ".js/") 'js))))
 
 
 ;;; end of on-js-autoload.el

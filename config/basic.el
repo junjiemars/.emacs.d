@@ -118,8 +118,7 @@ in case that file does not provide any feature.See
 \\=`eval-after-load\\=' for more details about the different
 forms of FILE and their semantics."
     (declare (indent 1))
-    `(eval-after-load ,file
-       `(funcall ,(lambda () ,@body)))))
+    `(eval-after-load ,file (lambda () ,@body))))
 
 (defmacro defcustom% (symbol standard doc &rest args)
   "Declare SYMBOL as a customizable variable with the STANDARD value.\n

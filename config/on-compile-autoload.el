@@ -62,23 +62,12 @@
   (setq% compilation-scroll-output t 'compile))
 
 
-;; `compile' after load
-(eval-after-load 'compile #'on-compile-init!)
-
-;; `compile' global key
-(define-key% (current-global-map) (kbd "C-x p c") #'compile)
-
-
 (defun on-grep-init! ()
   "On \\=`grep\\=' initialization."
   ;; define `recompile' and `quit-window' key binding for `grep'
   (when-var% grep-mode-map 'grep
     (define-key% grep-mode-map (kbd "g") #'recompile)
     (define-key% grep-mode-map (kbd "q") #'quit-window)))
-
-
-;;; `grep' after load
-(eval-after-load 'grep #'on-grep-init!)
 
 
 (defun on-make-mode-init! ()
@@ -103,6 +92,17 @@
         (when% (assoc** "[Mm]akefile\\'" auto-mode-alist :test #'string=)
           (setcdr (assoc** "[Mm]akefile\\'" auto-mode-alist :test #'string=)
                   'makefile-gmake-mode))))))
+
+
+
+;; `compile' after load
+(eval-after-load 'compile #'on-compile-init!)
+
+;; `compile' global key
+(define-key% (current-global-map) (kbd "C-x p c") #'compile)
+
+;;; `grep' after load
+(eval-after-load 'grep #'on-grep-init!)
 
 ;;; `make-mode' after load
 (eval-after-load 'make-mode #'on-make-mode-init!)

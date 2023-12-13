@@ -529,19 +529,6 @@ and \\=`eldoc-mode\\='."
 ;; end of `eldoc'
 
 ;;;
-;; `man'
-;;;
-
-(when-var% manual-program 'man
-  (when% (executable-find% manual-program)
-    (with-eval-after-load 'man
-      ;; fix cannot find include path on Darwin in `Man-mode'
-      (setq% Man-header-file-path (cc*-system-include t) 'man))))
-
-;; end of `man'
-
-
-;;;
 ;; identity
 ;;;
 
@@ -667,9 +654,6 @@ See \\=`align-entire\\='."
                        #'subword-mode
                  #'c-subword-mode)))
 
-;;; `cc-mode' after load
-(eval-after-load 'cc-mode #'on-cc-mode-init!)
-
 ;; end of `cc-mode'
 
 ;;;
@@ -684,10 +668,22 @@ See \\=`align-entire\\='."
   (ad-activate #'c-macro-expand t))
 
 
+;; end of `cmacexp'
+
+
+
+;;; `cc-mode' after load
+(eval-after-load 'cc-mode #'on-cc-mode-init!)
+
 ;;; `cmacexp' after load
 (eval-after-load 'cmacexp #'on-cmacexp-init!)
 
-;; end of `cmacexp'
+;;; `man' after load
+(when-var% manual-program 'man
+  (when% (executable-find% manual-program)
+    (with-eval-after-load 'man
+      ;; fix cannot find include path on Darwin in `Man-mode'
+      (setq% Man-header-file-path (cc*-system-include t) 'man))))
 
 
 ;; end of on-cc-autoload.el
