@@ -8,7 +8,7 @@
 
 (defun on-js-init! ()
   "On \\=js\\=' initialization."
-  (when-version% > 28.1
+  (when-var% js-js-tmpdir 'js
     (setq% js-js-tmpdir (v-home! ".js/") 'js)))
 
 (eval-after-load 'js #'on-js-init!)
