@@ -188,16 +188,18 @@
   (when-fn% 'toggle-frame-initialized 'graphic
     (toggle-frame-initialized))
   (when-fn% 'self-desktop-read! 'memo
-    (self-desktop-read!))
+    (condition-case err
+        (self-desktop-read!)
+      (error (message "self-desktop-read!: %s" err))))
   (compile!
     (compile-unit% (emacs-home* "config/on-inter-autoload.el")))
   (when (*self-paths* :get :epilogue)
     (make-thread*
      (lambda ()
-       (compile!
-         (condition-case err
-             (compile-unit* (*self-paths* :get :epilogue))
-           (error "%s" err)))))))
+       (condition-case err
+           (compile!
+             (compile-unit* (*self-paths* :get :epilogue)))
+         (error (message ":epilogue: %s" err)))))))
 
 
 ;; autoload when interactive or not
