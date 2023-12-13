@@ -23,7 +23,7 @@
                #'ido-find-file-read-only-other-window)
   (define-key% (current-global-map) (kbd "C-x C-r")
                #'ido-find-file-read-only)
-  (setq ido-enable-flex-matching t))
+  (setq% ido-enable-flex-matching t 'ido))
 
 
 ;;; `ido' after load

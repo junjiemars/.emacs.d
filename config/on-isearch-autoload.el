@@ -8,7 +8,7 @@
 ;;
 
 
-;; (eval-when-compile (require 'marks))
+(eval-when-compile (require 'marks))
 
 
 (defun isearch*-forward (&optional style backward)
