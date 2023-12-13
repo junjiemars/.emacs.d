@@ -335,33 +335,28 @@ If \\=`current-prefix-arg\\=' < 0, then repeat n time with END in reversed."
 ;; end of Keys
 
 
-;;; inter modes
+;; delay load modes
+(make-thread*
+ (lambda ()
+   ;; no cursor blinking, it's distracting
+   (when-fn% 'blink-cursor-mode nil (blink-cursor-mode 0))
+   ;; enable `column-number-mode'
+   (setq% column-number-mode t 'simple)
+   ;; highlights matching parenthesis
+   (show-paren-mode 1)
+   ;; enable save minibuffer history
+   (if-version%
+       <= 24
+       (savehist-mode)
+     (savehist-mode t))
+   ;; enable save-place
+   (if-version%
+       <= 25.1
+       (save-place-mode t)
+     (setq% save-place t 'saveplace))
+   (require 'view nil t)
+   (when-fn% 'ido-mode 'ido (ido-mode t))
+   (when-version% > 28 (require 'dired-x nil t))))
 
-;; No cursor blinking, it's distracting
-(when-fn% 'blink-cursor-mode nil (blink-cursor-mode 0))
-
-;; Highlights matching parenthesis
-(show-paren-mode 1)
-
-;; Enable `column-number-mode'
-(setq% column-number-mode t 'simple)
-
-;; Enable save minibuffer history
-(if-version%
-    <= 24
-    (savehist-mode)
-  (savehist-mode t))
-
-;; Enable save-place
-(if-version%
-    <= 25.1
-    (save-place-mode t)
-  (setq% save-place t 'saveplace))
-
-(require 'view nil t)
-(when-fn% 'ido-mode 'ido (ido-mode t))
-(when-version% > 28 (require 'dired-x nil t))
-
-;; inter modes
 
 ;; end of on-inter-autoload.el

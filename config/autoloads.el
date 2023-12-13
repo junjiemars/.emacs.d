@@ -170,11 +170,6 @@
   )
 ;; end of `load-conditional-modes!'
 
-(defun on-epilogue! ()
-  (compile!
-    (compile-unit% (emacs-home* "config/on-inter-autoload.el"))
-    (when (*self-paths* :get :epilogue)
-      (compile-unit* (*self-paths* :get :epilogue)))))
 
 ;; after-init
 (defun on-autoloads! ()
@@ -190,9 +185,19 @@
   (push! (v-home% "private/") load-path)
   (load-autoloaded-modes!)
   (load-conditional-modes!)
-  (when-fn% 'toggle-frame-initialized 'graphic (toggle-frame-initialized))
-  (when-fn% 'self-desktop-read! 'memo (self-desktop-read!))
-  (make-thread* #'on-epilogue!))
+  (when-fn% 'toggle-frame-initialized 'graphic
+    (toggle-frame-initialized))
+  (when-fn% 'self-desktop-read! 'memo
+    (self-desktop-read!))
+  (compile!
+    (compile-unit% (emacs-home* "config/on-inter-autoload.el")))
+  (when (*self-paths* :get :epilogue)
+    (make-thread*
+     (lambda ()
+       (compile!
+         (condition-case err
+             (compile-unit* (*self-paths* :get :epilogue))
+           (error "%s" err)))))))
 
 
 ;; autoload when interactive or not
