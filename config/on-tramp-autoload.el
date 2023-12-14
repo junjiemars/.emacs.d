@@ -62,7 +62,8 @@
 
 
 ;; `tramp' after load
-(eval-after-load 'tramp #'on-tramp-init!)
+(with-eval-after-load 'tramp
+  (on-tramp-init!))
 
 
 ;; end of on-tramp-autoload.el

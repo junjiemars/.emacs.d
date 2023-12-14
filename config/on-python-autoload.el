@@ -93,7 +93,8 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
 
 
 ;;; `python' after load
-(eval-after-load 'python #'on-python-init!)
+(with-eval-after-load 'python
+  (on-python-init!))
 
 
 ;; end of on-python-autoload.el
