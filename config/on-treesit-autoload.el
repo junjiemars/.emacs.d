@@ -104,12 +104,22 @@
      (ad-set-arg 0 (car treesit-extra-load-path)))))
 
 
+(defun on-treesit-init! ()
+  "On \\=`treesit\\=' initialization."
+  (setq% treesit-extra-load-path `(,(v-home% ".treesit/")))
+  (ad-enable-advice #'treesit--install-language-grammar-1 'before
+                    "treesit--install-language-grammar-1-before")
+  (ad-activate #'treesit--install-language-grammar-1 t))
+
+
+;;;
+;; after load
+;;;
+
+;;; `treesit'
 (when-feature-treesit%
  (with-eval-after-load 'treesit
-   (setq% treesit-extra-load-path `(,(v-home% ".treesit/")))
-   (ad-enable-advice #'treesit--install-language-grammar-1 'before
-                     "treesit--install-language-grammar-1-before")
-   (ad-activate #'treesit--install-language-grammar-1 t)))
+   (on-treesit-init!)))
 
 
 ;; end of on-treesit-autoload.el

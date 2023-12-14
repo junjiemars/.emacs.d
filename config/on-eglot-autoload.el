@@ -135,11 +135,6 @@ and INDENT."
    (when-var% kill-emacs-query-functions nil
      (push! 'eglot*-shutdown-all kill-emacs-query-functions))))
 
-
-;;; `eglot' after load
-(when-feature-eglot%
- (eval-after-load 'eglot #'on-eglot-init!))
-
 ;; end of `eglot'
 
 
@@ -180,12 +175,21 @@ and INDENT."
    (project*-root :read)
    (push! #'project*-try-abs project-find-functions)))
 
+;; end of `project'
+
+;;;
+;; after load
+;;;
+
+;;; `eglot' after load
+(when-feature-eglot%
+ (with-eval-after-load 'eglot
+   (on-eglot-init!)))
 
 ;;; `project' after load
 (when-feature-project%
- (eval-after-load 'project #'on-project-init!))
-
-;; end of `project'
+ (with-eval-after-load 'project
+   (on-project-init!)))
 
 
 ;; end of on-eglot-autoload.el
