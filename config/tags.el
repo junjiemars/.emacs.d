@@ -18,21 +18,13 @@
 (defmacro unless-fn-xref-find-definitions% (&rest body)
   `(if-fn-xref-find-definitions%
        (comment ,@body)
-     (progn ,@body)))
+     (progn% ,@body)))
 
-(if-fn-xref-find-definitions%
-    (defmacro if-fn-pop-tag-mark% (then &rest body)
-      `(comment ,then ,@body))
-  (defmacro-if-fn% pop-tag-mark etags))
-
-(if-fn-xref-find-definitions%
-    (defmacro if-feature-etags% (then &rest body)
-      `(comment ,then ,@body))
-  (defmacro-if-feature% etags))
+(defmacro when-feature-etags% (&rest body)
+  `(unless-fn-xref-find-definitions% ,@body))
 
 (defmacro when-fn-pop-tag-mark% (&rest body)
-  `(if-fn-pop-tag-mark%
-    (prog% ,@body)))
+  `(unless-fn-xref-find-definitions% ,@body))
 
 ;; end of macro
 
@@ -362,9 +354,8 @@ RENEW overwrite the existing tags file when t else create it."
 
 
 ;;; `etags' after load
-(unless-fn-xref-find-definitions%
- (with-eval-after-load 'etags
-   (on-etags-init!)))
+(when-feature-etags%
+ (eval-after-load 'etags #'on-etags-init!))
 
 ;; end of `etags'
 
