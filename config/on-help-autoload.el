@@ -27,7 +27,8 @@
 
 
 ;;; `help-mode' after load
-(eval-after-load 'help-mode #'on-help-init!)
+(with-eval-after-load 'help-mode
+  (on-help-init!))
 
 
 ;; end of on-help-autoload.el
