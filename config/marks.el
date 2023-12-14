@@ -90,11 +90,11 @@
 
 (eval-when-compile
   (defmacro _forward_symmetry_ (chr pos rx ls rs)
-    (let ((chr1 (gensym))
-          (pos1 (gensym))
-          (rx1 (gensym))
-          (ls1 (gensym))
-          (rs1 (gensym)))
+    (let ((chr1 (gensym*))
+          (pos1 (gensym*))
+          (rx1 (gensym*))
+          (ls1 (gensym*))
+          (rs1 (gensym*)))
       `(let* ((,chr1 ,chr) (,pos1 ,pos) (,rx1 ,rx)
               (,ls1 ,ls) (,rs1 ,rs)
               (cur ,pos1) (ss (cons ,chr1 nil)))
@@ -110,11 +110,11 @@
 
 (eval-when-compile
   (defmacro _backward_symmetry_ (chr pos lx ls rs)
-    (let ((chr1 (gensym))
-          (pos1 (gensym))
-          (lx1 (gensym))
-          (ls1 (gensym))
-          (rs1 (gensym)))
+    (let ((chr1 (gensym*))
+          (pos1 (gensym*))
+          (lx1 (gensym*))
+          (ls1 (gensym*))
+          (rs1 (gensym*)))
       `(let* ((,chr1 ,chr) (,pos1 ,pos) (,lx1 ,lx)
               (,ls1 ,ls) (,rs1 ,rs)
               (cur ,pos1) (ss (cons ,chr1 nil)))
@@ -182,9 +182,9 @@
 
 (eval-when-compile
   (defmacro _forward_asymmetry_ (chr pos rx)
-    (let ((chr1 (gensym))
-          (pos1 (gensym))
-          (rx1 (gensym)))
+    (let ((chr1 (gensym*))
+          (pos1 (gensym*))
+          (rx1 (gensym*)))
       `(let* ((,chr1 ,chr) (,pos1 ,pos) (,rx1 ,rx)
               (cur ,pos1))
          (catch 'break
@@ -195,9 +195,9 @@
 
 (eval-when-compile
   (defmacro _backward_asymmetry_ (chr pos lx)
-    (let ((chr1 (gensym))
-          (pos1 (gensym))
-          (lx1 (gensym)))
+    (let ((chr1 (gensym*))
+          (pos1 (gensym*))
+          (lx1 (gensym*)))
       `(let* ((,chr1 ,chr) (,pos1 ,pos) (,lx1 ,lx)
               (cur ,pos1))
          (catch 'break
@@ -244,7 +244,7 @@
 
 (eval-when-compile
   (defmacro _mark_sexp@_ (&optional n)
-    (let ((n1 (gensym)))
+    (let ((n1 (gensym*)))
       `(let* ((,n1 (or ,n 1))
               (p (point))
               (fp (condition-case _
@@ -291,7 +291,7 @@
 
 (eval-when-compile
   (defmacro _mark_word@_ (&optional n)
-    (let ((n1 (gensym)))
+    (let ((n1 (gensym*)))
       `(let* ((,n1 (or ,n 1))
               (fp (save-excursion
                     (forward-word ,n1)
@@ -309,7 +309,7 @@
 
 (eval-when-compile
   (defmacro _mark_defun@_ (&optional n)
-    (let ((n1 (gensym)))
+    (let ((n1 (gensym*)))
       `(let ((,n1 (or ,n 1)))
          (cons
           (save-excursion

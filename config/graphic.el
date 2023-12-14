@@ -89,7 +89,7 @@
   (defmacro load-theme! (name &optional dir)
     "\\=`load-theme\\=' by NAME.\n
 If DIR is nil then load the built-in \\=`customize-themes\\=' by NAME."
-    (let ((n (gensym)) (d (gensym)))
+    (let ((n (gensym*)) (d (gensym*)))
       `(let ((,n ,name) (,d ,dir))
          (when ,d (setq custom-theme-directory ,d))
          (if-version% >= 24.1

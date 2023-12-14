@@ -40,14 +40,16 @@ Else return BODY sexp."
   (declare (indent 1))
   `(if% ,cond nil ,@body))
 
-(unless% (fboundp 'gensym)
-  (defvar gensym-counter 0 "The counter of \\=`gensym\\='.")
-  (defun gensym (&optional prefix)
-    "Generate a new uninterned symbol, PREFIX default is \"g\"."
-    (make-symbol (format "%s%d" (or prefix "g")
-                         (prog1 gensym-counter
-                           (setq gensym-counter
-                                 (1+ gensym-counter)))))))
+(if% (fboundp 'gensym)
+    (defmacro gensym* (&optional prefix)
+      `(gensym (or ,prefix "n")))
+  (defvar *gensym-counter* 0 "The counter of \\=`gensym*\\='.")
+  (defun gensym* (&optional prefix)
+    "Generate a new uninterned symbol, PREFIX default is \"n\"."
+    (make-symbol
+     (format "%s%d" (or prefix "n")
+             (prog1 *gensym-counter*
+               (setq *gensym-counter* (1+ *gensym-counter*)))))))
 
 ;; end of compile-time macro
 
@@ -55,7 +57,7 @@ Else return BODY sexp."
 
 (defmacro path! (file)
   "Make and return the path of posixed FILE.\n"
-  (let ((f (gensym)) (d (gensym)))
+  (let ((f (gensym*)) (d (gensym*)))
     `(let ((,f ,file)
            (file-name-handler-alist nil))
        (if (file-exists-p ,f)
@@ -156,7 +158,7 @@ See \\=`file-name-sans-extension\\='."
 
 (defmacro v-path (file)
   "Return versioned FILE."
-  (let ((f1 (gensym)))
+  (let ((f1 (gensym*)))
     `(let ((,f1 ,file))
        (concat (file-name-directory ,f1)
                ,(v-name) "/"
@@ -192,7 +194,7 @@ compile-time."
 
 (defmacro v-comp-file! (src)
   "Make a versioned cons copy of SRC."
-  (let ((s1 (gensym)))
+  (let ((s1 (gensym*)))
     `(let ((,s1 ,src))
        (let* ((d1 (v-path ,s1))
               (d2 (concat (file-name-sans-extension* d1)
@@ -208,7 +210,7 @@ compile-time."
 (defmacro compile-and-load-file* (src dst &optional only-compile)
   "Compile SRC to DST.\n
 If ONLY-COMPILE is t, does not load DST."
-  (let ((s1 (gensym)) (d1 (gensym)) (c1 (gensym)))
+  (let ((s1 (gensym*)) (d1 (gensym*)) (c1 (gensym*)))
     `(let ((,s1 ,src) (,d1 ,dst) (,c1 ,only-compile))
        (unless (file-exists-p ,d1)
          (if-native-comp%

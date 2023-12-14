@@ -176,7 +176,7 @@ THEN."
 
 (defmacro path- (file)
   "Return the parent path of FILE."
-  (let ((f (gensym)))
+  (let ((f (gensym*)))
     `(let ((,f ,file))
        (when (stringp ,f)
          (file-name-directory (directory-file-name ,f))))))
@@ -184,8 +184,8 @@ THEN."
 
 (defmacro path-depth (path &optional separator)
   "Return the depth of PATH."
-  (let ((p (gensym))
-        (s (gensym)))
+  (let ((p (gensym*))
+        (s (gensym*)))
     `(let ((,p ,path)
            (,s (or ,separator "/")))
        (if (stringp ,p)
@@ -197,7 +197,7 @@ THEN."
 
 (defmacro file-in-dirs-p (file dirs)
   "Return t if the name of FILE matching DIRS, otherwise nil."
-  (let ((f (gensym)) (ds (gensym)))
+  (let ((f (gensym*)) (ds (gensym*)))
     `(let ((,f ,file) (,ds ,dirs))
        (when (and (stringp ,f) (consp ,ds))
          (some* (lambda (x)
@@ -290,14 +290,14 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
 
 (defmacro remote-norm-id (remote)
   "Norm the REMOTE to (method {user | id} [host]) form."
-  (let ((r (gensym)))
+  (let ((r (gensym*)))
     `(let ((,r ,remote))
        (when (stringp ,r)
          (split-string* ,r "[:@]" t "/")))))
 
 (defmacro remote-norm->user@host (remote)
   "Norm the REMOTE to {user | id}[@host] form."
-  (let ((rid (gensym)))
+  (let ((rid (gensym*)))
     `(let ((,rid (remote-norm-id ,remote)))
        (when (consp ,rid)
          (concat (cadr ,rid) (when (car (cddr ,rid))
@@ -349,7 +349,7 @@ exists."
 
 (defmacro symbol@ (&optional thing)
   "Return the (cons \\='region|nil THING) at point."
-  (let ((ss (gensym)))
+  (let ((ss (gensym*)))
     `(region-active-if
          (let ((,ss (buffer-substring-no-properties
                      (region-beginning)

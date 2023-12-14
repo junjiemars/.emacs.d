@@ -9,9 +9,9 @@
 
 (defmacro self-glyph-font! (name size scripts)
   "Set glyph font's NAME and SIZE in graphic mode."
-  (let ((n (gensym))
-        (s (gensym))
-        (rs (gensym)))
+  (let ((n (gensym*))
+        (s (gensym*))
+        (rs (gensym*)))
     `(when-fn% 'set-fontset-font nil
        (let* ((,n ,name)
               (,s ,size)
@@ -26,7 +26,7 @@
 
 (defmacro char-width* (char)
   "Return width in pixels of CHAR in graphic mode."
-  (let ((c (gensym)))
+  (let ((c (gensym*)))
     `(let* ((,c ,char)
             (s (char-to-string ,c))
             (glyphs (lexical-let%

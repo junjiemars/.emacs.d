@@ -100,7 +100,7 @@ If no region actived, then extract from buffer when BUFFER is t."
 
 (defmacro ipv4->int (s &optional small-endian)
   "Translate IPv4 address to int from string."
-  (let ((ss (gensym)))
+  (let ((ss (gensym*)))
     `(let ((,ss (and (stringp ,s)
                      (split-string* ,s "\\." t))))
        (when (and (consp ,ss) (= 4 (length ,ss)))

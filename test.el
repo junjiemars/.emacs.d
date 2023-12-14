@@ -43,9 +43,9 @@
   (should-not (comment (+ 1 2 3)))
   (should-not (comment (progn (+ 1) (* 2 3)))))
 
-(ert-deftest %init:gensym ()
-  (should (string-match "^g[0-9]+" (format "%s" (gensym))))
-  (should (string-match "^X[0-9]+" (format "%s" (gensym "X")))))
+(ert-deftest %init:gensym* ()
+  (should (string-match "^n[0-9]+" (format "%s" (gensym*))))
+  (should (string-match "^X[0-9]+" (format "%s" (gensym* "X")))))
 
 (ert-deftest %init:emacs-home* ()
   (should (file-exists-p (emacs-home*)))

@@ -10,10 +10,11 @@
 
 
 ;; Load cl-lib/cl at runtime
-(if-version% <= 24.1 (require 'cl-lib)
-  (require 'cl)
-  (eval-when-compile
-    (delq 'gensym byte-compile-cl-functions)))
+(eval-when-compile
+  (if-version%
+      <= 24.1
+      (require 'cl-lib)
+    (require 'cl)))
 
 ;;;
 ;; alias
@@ -70,9 +71,9 @@
 (defmacro fluid-let (binding &rest body)
   "Execute BODY and restore the BINDING after return."
   (declare (indent 1))
-  (let ((old (gensym))
+  (let ((old (gensym*))
         (var (car binding))
-        (new (gensym)))
+        (new (gensym*)))
     `(let ((,old ,(car binding))
            (,new ,(cadr binding)))
        (prog1
@@ -85,7 +86,7 @@
 (defmacro push! (newelt seq &optional uniquely)
   "Push NEWELT to the head of SEQ.\n
 If optional UNIQUELY is non-nil then push uniquely."
-  (let ((n1 (gensym)))
+  (let ((n1 (gensym*)))
     `(let ((,n1 ,newelt))
        (setq ,seq (if ,uniquely
                       (cons ,n1 (delete ,n1 ,seq))
@@ -94,7 +95,7 @@ If optional UNIQUELY is non-nil then push uniquely."
 (defmacro append! (newelt seq &optional uniquely)
   "Append NEWELT to the end of SEQ.\n
 If optional UNIQUELY is non-nil then append uniquely."
-  (let ((n1 (gensym)) (s1 (gensym)))
+  (let ((n1 (gensym*)) (s1 (gensym*)))
     `(let ((,n1 ,newelt) (,s1 ,seq))
        (setq ,seq (nconc (if ,uniquely
                              (delete ,n1 ,s1)
@@ -103,8 +104,8 @@ If optional UNIQUELY is non-nil then append uniquely."
 
 (defmacro seq-ins! (newelt seq idx)
   "Insert NEWELT into the SEQ."
-  (let ((n1 (gensym))
-        (i1 (gensym)))
+  (let ((n1 (gensym*))
+        (i1 (gensym*)))
     `(let ((,n1 ,newelt)
            (,i1 ,idx))
        (let ((l (length ,seq)))
@@ -270,9 +271,9 @@ Return nil if NUMth pair didn’t match, or there were less than NUM pairs.
 NUM specifies which parenthesized expression in the REGEXP.
 If START is non-nil, start search at that index in STRING.\n
 See \\=`string-match\\=' and \\=`match-string\\='."
-  (let ((s (gensym))
-        (n (gensym))
-        (b (gensym)))
+  (let ((s (gensym*))
+        (n (gensym*))
+        (b (gensym*)))
     `(let* ((,s ,string)
             (,n ,num)
             (,b (and (stringp ,s) (string-match ,regexp ,s ,start)
@@ -288,9 +289,9 @@ Optional argument TRIM regexp used to trim."
   (if-version%
       <= 24.4
       `(split-string ,string ,separators ,omit-nulls ,trim)
-    (let ((s (gensym))
-          (p (gensym))
-          (d (gensym)))
+    (let ((s (gensym*))
+          (p (gensym*))
+          (d (gensym*)))
       `(let ((,s ,string)
              (,p ,separators)
              (,d ,trim))
@@ -348,9 +349,9 @@ Optional argument TRIM regexp used to trim."
 (defmacro save-sexp-to-file (sexp file)
   "Save SEXP to FILE.\n
 Returns the name of FILE when successed otherwise nil."
-  (let ((s (gensym)) (f (gensym)))
+  (let ((s (gensym*)) (f (gensym*)))
     `(let ((,s ,sexp) (,f ,file)
-           (b (get-buffer-create* (symbol-name (gensym)) t)))
+           (b (get-buffer-create* (symbol-name (gensym*)) t)))
        (unwind-protect
            (with-current-buffer b
              (prin1 ,s b)
@@ -360,11 +361,11 @@ Returns the name of FILE when successed otherwise nil."
 
 (defmacro read-sexp-from-file (file)
   "Read the first sexp from FILE."
-  (let ((f (gensym)))
+  (let ((f (gensym*)))
     `(lexical-let% ((,f ,file)
                     (file-name-handler-alist nil))
        (when (and (stringp ,f) (file-exists-p ,f))
-         (let ((b (get-buffer-create* (symbol-name (gensym)) t)))
+         (let ((b (get-buffer-create* (symbol-name (gensym*)) t)))
            (unwind-protect
                (with-current-buffer b
                  (insert-file-contents-literally* ,f)
@@ -374,11 +375,11 @@ Returns the name of FILE when successed otherwise nil."
 (defmacro save-str-to-file (str file)
   "Save STR to FILE.\n
 Returns the name of FILE when successed otherwise nil."
-  (let ((s (gensym)) (f (gensym)))
+  (let ((s (gensym*)) (f (gensym*)))
     `(lexical-let%
          ((,s ,str) (,f ,file)
           (file-name-handler-alist nil)
-          (b (get-buffer-create* (symbol-name (gensym)) t)))
+          (b (get-buffer-create* (symbol-name (gensym*)) t)))
        (unwind-protect
            (with-current-buffer b
              (insert ,s)
@@ -388,11 +389,11 @@ Returns the name of FILE when successed otherwise nil."
 
 (defmacro read-str-from-file (file)
   "Read string from FILE."
-  (let ((f (gensym)))
+  (let ((f (gensym*)))
     `(lexical-let% ((,f ,file)
                     (file-name-handler-alist nil))
        (when (and (stringp ,f) (file-exists-p ,f))
-         (let ((b (get-buffer-create* (symbol-name (gensym)) t)))
+         (let ((b (get-buffer-create* (symbol-name (gensym*)) t)))
            (unwind-protect
                (with-current-buffer b
                  (insert-file-contents-literally* ,f)
@@ -407,7 +408,7 @@ Returns the name of FILE when successed otherwise nil."
 
 (defmacro file-name-base* (path)
   "Return base name of PATH."
-  (let ((p (gensym)))
+  (let ((p (gensym*)))
     `(let* ((,p (file-name-nondirectory ,path))
             (i (or (strrchr ,p ?.) (1- (length ,p)))))
        (if (>= i 0)
@@ -417,15 +418,15 @@ Returns the name of FILE when successed otherwise nil."
 (unless% (fboundp 'directory-name-p)
   (defmacro directory-name-p (name)
     "Return t if NAME ends with a directory separator character."
-    (let ((n (gensym))
-          (w (gensym)))
+    (let ((n (gensym*))
+          (w (gensym*)))
       `(let* ((,n ,name)
               (,w (length ,n)))
          (and (> ,w 0) (= ?/ (aref ,n (1- ,w))))))))
 
 (defmacro posix-path (path)
   "Transpose PATH to posix path."
-  (let ((p (gensym)))
+  (let ((p (gensym*)))
     `(let ((,p ,path))
        (when (stringp ,p)
          (if (string-match "^\\([A-Z]:\\)" ,p)
@@ -447,10 +448,10 @@ details. If you want to set the environment temporarily that
    (shell-command* \"echo $XXX\"))\n
 Optional argument ARGS for COMMAND."
   (declare (indent 1))
-  (let ((c1 (gensym)))
+  (let ((c1 (gensym*)))
     `(lexical-let%
          ((,c1 ,command)
-          (b (get-buffer-create* (symbol-name (gensym)) t)))
+          (b (get-buffer-create* (symbol-name (gensym*)) t)))
        (unwind-protect
            (with-current-buffer b
              (cons (let ((x (call-process
