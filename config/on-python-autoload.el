@@ -48,7 +48,7 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
   (let ((pv (python*-program)))
     (unless pv (user-error "%s" "python program unavailable"))
     (let ((d (string-trim> (path! (expand-file-name dir)) "/"))
-          (p (file-name-base (car pv)))
+          (p (file-name-base* (car pv)))
           (v3 (string< (cdr pv) "3.3")))
       (unless (file-exists-p (concat d "/bin/activate"))
         (cond ((and p v3 (executable-find% "virtualenv"))
