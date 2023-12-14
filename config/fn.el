@@ -8,6 +8,13 @@
 ;; Commentary: common notions.
 ;;; Code:
 
+
+;; Load cl-lib/cl at runtime
+(if-version% <= 24.1 (require 'cl-lib)
+  (require 'cl)
+  (eval-when-compile
+    (delq 'gensym byte-compile-cl-functions)))
+
 ;;;
 ;; alias
 ;;;
@@ -114,13 +121,6 @@ If optional UNIQUELY is non-nil then append uniquely."
 ;;;;
 ;; common-lisp macro
 ;;;;
-
-
-;; Load cl-lib/cl at runtime
-(if-version% <= 24.1 (require 'cl-lib)
-  (let ((byte-compile-warnings nil))
-    (require 'cl)))
-
 
 (fset 'assoc**
       (if-fn% 'cl-assoc 'cl-lib
