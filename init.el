@@ -40,16 +40,13 @@ Else return BODY sexp."
   (declare (indent 1))
   `(if% ,cond nil ,@body))
 
-(if% (fboundp 'gensym)
-    (defmacro gensym* (&optional prefix)
-      `(gensym (or ,prefix "n")))
-  (defvar *gensym-counter* 0 "The counter of \\=`gensym*\\='.")
-  (defun gensym* (&optional prefix)
-    "Generate a new uninterned symbol, PREFIX default is \"n\"."
-    (make-symbol
-     (format "%s%d" (or prefix "n")
-             (prog1 *gensym-counter*
-               (setq *gensym-counter* (1+ *gensym-counter*)))))))
+(defvar *gensym-counter* 0 "The counter of \\=`gensym*\\='.")
+(defmacro gensym* (&optional prefix)
+  "Generate a new uninterned symbol, PREFIX default is \"n\"."
+  `(make-symbol
+    (format "%s%d" (or ,prefix "n")
+            (prog1 *gensym-counter*
+              (setq *gensym-counter* (1+ *gensym-counter*))))))
 
 ;; end of compile-time macro
 
