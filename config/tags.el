@@ -325,7 +325,8 @@ RENEW overwrite the existing tags file when t else create it."
 
 ;;; `xref' after load
 (when-fn-xref-find-definitions%
- (eval-after-load 'xref #'on-xref-init!))
+ (with-eval-after-load 'xref
+   (on-xref-init!)))
 
 ;; end of `xref'
 
@@ -355,7 +356,8 @@ RENEW overwrite the existing tags file when t else create it."
 
 ;;; `etags' after load
 (when-feature-etags%
- (eval-after-load 'etags #'on-etags-init!))
+ (with-eval-after-load 'etags
+   (on-etags-init!)))
 
 ;; end of `etags'
 

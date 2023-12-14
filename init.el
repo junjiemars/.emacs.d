@@ -43,9 +43,10 @@ Else return BODY sexp."
 (defvar *gensym-counter* 0 "The counter of \\=`gensym*\\='.")
 (defmacro gensym* (&optional prefix)
   "Generate a new uninterned symbol, PREFIX default is \"n\"."
-  `(let ((n (prog1 *gensym-counter*
-              (setq *gensym-counter* (1+ *gensym-counter*)))))
-     (make-symbol (format "%s%d" (or ,prefix "n") n))))
+  `(make-symbol
+    (format "%s%d" (or ,prefix "n")
+            (prog1 *gensym-counter*
+              (setq *gensym-counter* (1+ *gensym-counter*))))))
 
 ;; end of compile-time macro
 
