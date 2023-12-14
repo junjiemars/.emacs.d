@@ -53,6 +53,7 @@
                (or (and (zerop (car x)) chez)
                    "scheme"))))))
     (lambda (&optional n)
+      "N"
       (if (null n) b (setq b n))))
   "Program invoked by the \\=`run-chez\\=' command.")
 
@@ -72,6 +73,7 @@ This is run before the process is cranked up."
 (defalias '*chez*
   (lexical-let% ((b))
     (lambda (&optional n)
+      "N"
       (cond (n (setq b (get-buffer-create n)))
             ((or (null b) (not (buffer-live-p b)))
              (setq b (get-buffer-create "*chez*")))
@@ -110,6 +112,7 @@ This is run before the process is cranked up."
 (defalias '*chez-out*
   (lexical-let% ((b "*out|chez*"))
     (lambda (&optional n)
+      "N"
       (if n (setq b n)
         (get-buffer-create b))))
   "The output buffer of \\=`chez-completion'\\=.")
@@ -117,20 +120,19 @@ This is run before the process is cranked up."
 
 (defalias '*chez-start-file*
   (lexical-let% ((b (v-home% ".exec/chez.ss")))
-    (lambda (&optional n)
-      (if n (setq b n)
-        (unless (file-exists-p b)
-          (save-str-to-file +chez-emacs-library+ b))
-        b)))
+    (lambda ()
+      (cond ((file-exists-p b) b)
+            (t (save-str-to-file +chez-emacs-library+ b)))))
   "The \\=`*chez*'\\= process start file.")
 
 
 (defalias 'chez-switch-to-last-buffer
-  (lexical-let% ((b))
+  (lexical-let% ((b nil))
     (lambda (&optional n)
-      (interactive)
-      (if n (setq b n)
-        (when b (switch-to-buffer-other-window b)))))
+      "N"
+      (interactive "P")
+      (cond (n (setq b n))
+            (b (switch-to-buffer-other-window b)))))
   "Switch to the last \\=`chez-mode'\\= buffer from \\=`*chez*'\\=
 buffer.")
 
