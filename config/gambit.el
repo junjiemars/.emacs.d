@@ -283,7 +283,7 @@ This is run before the process is cranked up."
   (interactive)
   (gambit-check-proc)
   (cond ((gambit-input-complete-p) (comint-send-input))
-        (t (newline 1 t))))
+        (t (newline* 1))))
 
 (defun gambit-repl-closing-return ()
   "Close all open lists and evaluate the current input."

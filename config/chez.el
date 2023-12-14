@@ -241,7 +241,7 @@ buffer.")
   (interactive)
   (chez-check-proc)
   (cond ((chez-input-complete-p) (comint-send-input))
-        (t (newline 1 t))))
+        (t (newline* 1))))
 
 (defun chez-repl-closing-return ()
   "Close all open lists and evaluate the current input."
