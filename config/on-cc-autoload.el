@@ -8,6 +8,14 @@
 ;; Commentary: essential C programming
 ;;;;
 
+(defmacro-if-feature% cmacexp)
+
+(defmacro when-feature-cmacexp% (&rest body)
+  `(if-feature-cmacexp%
+       (progn% ,@body)))
+
+
+
 ;;;
 ;; msvc host environment
 ;;;
@@ -660,13 +668,13 @@ See \\=`align-entire\\='."
 ;; 'cmacexp'
 ;;;
 
-(defun on-cmacexp-init! ()
-  "On \\=`cmacexp\\=' initialization."
-  ;; [C-c C-e] `c-macro-expand' in `cc-mode'
-  (setq% c-macro-prompt-flag t 'cmacexp)
-  (ad-enable-advice #'c-macro-expand 'around "c-macro-expand-around")
-  (ad-activate #'c-macro-expand t))
-
+(when-feature-cmacexp%
+ (defun on-cmacexp-init! ()
+   "On \\=`cmacexp\\=' initialization."
+   ;; [C-c C-e] `c-macro-expand' in `cc-mode'
+   (setq% c-macro-prompt-flag t 'cmacexp)
+   (ad-enable-advice #'c-macro-expand 'around "c-macro-expand-around")
+   (ad-activate #'c-macro-expand t)))
 
 ;; end of `cmacexp'
 
@@ -676,7 +684,8 @@ See \\=`align-entire\\='."
 (eval-after-load 'cc-mode #'on-cc-mode-init!)
 
 ;;; `cmacexp' after load
-(eval-after-load 'cmacexp #'on-cmacexp-init!)
+(when-feature-cmacexp%
+ (eval-after-load 'cmacexp #'on-cmacexp-init!))
 
 ;;; `man' after load
 (when-var% manual-program 'man
