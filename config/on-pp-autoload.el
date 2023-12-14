@@ -7,6 +7,9 @@
 ;;;;
 
 
+(when-version% >= 25
+  (declare-function forward-whitespace "subr"))
+
 ;; elisp
 
 (defmacro pprint (form)
