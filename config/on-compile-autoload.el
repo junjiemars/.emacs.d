@@ -96,16 +96,19 @@
 
 
 ;; `compile' after load
-(eval-after-load 'compile #'on-compile-init!)
+(with-eval-after-load 'compile
+  (on-compile-init!))
 
 ;; `compile' global key
 (define-key% (current-global-map) (kbd "C-x p c") #'compile)
 
 ;;; `grep' after load
-(eval-after-load 'grep #'on-grep-init!)
+(with-eval-after-load 'grep
+  (on-grep-init!))
 
 ;;; `make-mode' after load
-(eval-after-load 'make-mode #'on-make-mode-init!)
+(with-eval-after-load 'make-mode
+  (on-make-mode-init!))
 
 
 ;; end of on-compile-autoload.el

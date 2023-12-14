@@ -679,13 +679,14 @@ See \\=`align-entire\\='."
 ;; end of `cmacexp'
 
 
-
 ;;; `cc-mode' after load
-(eval-after-load 'cc-mode #'on-cc-mode-init!)
+(with-eval-after-load 'cc-mode
+  (on-cc-mode-init!))
 
 ;;; `cmacexp' after load
 (when-feature-cmacexp%
- (eval-after-load 'cmacexp #'on-cmacexp-init!))
+ (with-eval-after-load 'cmacexp
+   (on-cmacexp-init!)))
 
 ;;; `man' after load
 (when-var% manual-program 'man
