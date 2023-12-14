@@ -71,7 +71,6 @@ void jshell_emacs_apropos(String what, int max) {
 (defalias '*jshell-start-file*
   (lexical-let% ((b (v-home% ".exec/jshell.jsh")))
     (lambda (&optional n)
-      (interactive)
       (if n (setq b n)
         (unless (file-exists-p b)
           (save-str-to-file +jshell-emacs-module+ b))

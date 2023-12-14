@@ -172,7 +172,6 @@ This is run before the process is cranked up."
 (defalias '*gambit-start-file*
   (lexical-let% ((b (v-home% ".exec/gambit.ss")))
     (lambda (&optional n)
-      (interactive)
       (if n (setq b n)
         (unless (file-exists-p b)
           (save-str-to-file +gambit-emacs-library+ b))

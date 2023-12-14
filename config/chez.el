@@ -118,7 +118,6 @@ This is run before the process is cranked up."
 (defalias '*chez-start-file*
   (lexical-let% ((b (v-home% ".exec/chez.ss")))
     (lambda (&optional n)
-      (interactive)
       (if n (setq b n)
         (unless (file-exists-p b)
           (save-str-to-file +chez-emacs-library+ b))
