@@ -70,12 +70,10 @@ void jshell_emacs_apropos(String what, int max) {
 
 (defalias '*jshell-start-file*
   (lexical-let% ((b (v-home% ".exec/jshell.jsh")))
-    (lambda (&optional n)
-      (if n (setq b n)
-        (unless (file-exists-p b)
-          (save-str-to-file +jshell-emacs-module+ b))
-        b)))
-  "The `*jshell*' process start file.")
+    (lambda ()
+      (cond ((file-exists-p b) b)
+            (t (save-str-to-file +jshell-emacs-module+ b)))))
+  "The \\=`*jshell*\\=' process start file.")
 
 
 (defalias 'jshell-switch-to-last-buffer

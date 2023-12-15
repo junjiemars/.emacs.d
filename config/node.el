@@ -95,12 +95,10 @@ function node_emacs_apropos(what, max) {
 
 (defalias '*node-start-file*
   (lexical-let% ((b (v-home% ".exec/node.js")))
-    (lambda (&optional n)
-      (if n (setq b n)
-        (unless (file-exists-p b)
-          (save-str-to-file +node-emacs-module+ b))
-        b)))
-  "The `*node*' process start file.")
+    (lambda ()
+      (cond ((file-exists-p b) b)
+            (t (save-str-to-file +node-emacs-module+ b)))))
+  "the \\=`*node*\\=' process start file.")
 
 
 (defalias 'node-switch-to-last-buffer
