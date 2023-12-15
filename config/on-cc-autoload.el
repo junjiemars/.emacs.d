@@ -8,13 +8,6 @@
 ;; Commentary: essential C programming
 ;;;;
 
-(defmacro-if-feature% cmacexp)
-
-(defmacro when-feature-cmacexp% (&rest body)
-  (if-feature-cmacexp%
-      `(progn% ,@body)))
-
-
 
 ;;;
 ;; msvc host environment
@@ -662,11 +655,33 @@ See \\=`align-entire\\='."
                        #'subword-mode
                  #'c-subword-mode)))
 
+
+;;; `cc-mode' after load
+(with-eval-after-load 'cc-mode
+  (on-cc-mode-init!))
+
 ;; end of `cc-mode'
+
+
+;;; `man' after load
+(when-var% manual-program 'man
+  (when% (executable-find% manual-program)
+    (with-eval-after-load 'man
+      ;; fix cannot find include path on Darwin in `Man-mode'
+      (setq% Man-header-file-path (cc*-system-include t) 'man))))
+
+;; end of `man'
+
 
 ;;;
 ;; 'cmacexp'
 ;;;
+
+(defmacro-if-feature% cmacexp)
+
+(defmacro when-feature-cmacexp% (&rest body)
+  (if-feature-cmacexp%
+      `(progn% ,@body)))
 
 (when-feature-cmacexp%
  (defun on-cmacexp-init! ()
@@ -676,24 +691,12 @@ See \\=`align-entire\\='."
    (ad-enable-advice #'c-macro-expand 'around "c-macro-expand-around")
    (ad-activate #'c-macro-expand t)))
 
-;; end of `cmacexp'
-
-
-;;; `cc-mode' after load
-(with-eval-after-load 'cc-mode
-  (on-cc-mode-init!))
-
 ;;; `cmacexp' after load
 (when-feature-cmacexp%
  (with-eval-after-load 'cmacexp
    (on-cmacexp-init!)))
 
-;;; `man' after load
-(when-var% manual-program 'man
-  (when% (executable-find% manual-program)
-    (with-eval-after-load 'man
-      ;; fix cannot find include path on Darwin in `Man-mode'
-      (setq% Man-header-file-path (cc*-system-include t) 'man))))
+;; end of `cmacexp'
 
 
 ;; end of on-cc-autoload.el
