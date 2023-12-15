@@ -11,8 +11,8 @@
 (defmacro-if-feature% cmacexp)
 
 (defmacro when-feature-cmacexp% (&rest body)
-  `(if-feature-cmacexp%
-       (progn% ,@body)))
+  (if-feature-cmacexp%
+      `(progn% ,@body)))
 
 
 
