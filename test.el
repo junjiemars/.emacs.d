@@ -488,9 +488,9 @@
 
 (ert-deftest %fn:save/read-sexp-to/from-file ()
   (let ((f1 (concat temporary-file-directory
-                    (make-temp-name (symbol-name (gensym*))))
+                    (make-temp-name (symbol-name (gensym*)))))
         (f2 (concat temporary-file-directory
-                    (make-temp-name (symbol-name (gensym*))))
+                    (make-temp-name (symbol-name (gensym*)))))
         (s1 '(defvar test%fn-srstff t))
         (t1 (make-hash-table :test 'string-hash=)))
     (should (and (save-sexp-to-file s1 f1)
@@ -502,7 +502,8 @@
                  (= 2 (gethash "b" (read-sexp-from-file f2)))))))
 
 (ert-deftest %fn:save/read-str-to/from-file ()
-  (let ((f (concat temporary-file-directory (symbol-name (gensym*))))
+  (let ((f (concat temporary-file-directory
+                   (symbol-name (gensym*)))))
     (should (and (save-str-to-file "abc" f)
                  (string= "abc" (read-str-from-file f))))))
 
