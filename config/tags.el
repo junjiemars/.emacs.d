@@ -9,26 +9,6 @@
 ;;;;
 
 
-(defmacro-if-fn% xref-find-definitions xref)
-
-(defmacro when-fn-xref-find-definitions% (&rest body)
-  `(if-fn-xref-find-definitions%
-       (progn% ,@body)))
-
-(defmacro unless-fn-xref-find-definitions% (&rest body)
-  `(if-fn-xref-find-definitions%
-       (comment ,@body)
-     (progn% ,@body)))
-
-(defmacro when-feature-etags% (&rest body)
-  `(unless-fn-xref-find-definitions% ,@body))
-
-(defmacro when-fn-pop-tag-mark% (&rest body)
-  `(unless-fn-xref-find-definitions% ,@body))
-
-;; end of macro
-
-
 (defmacro tags-spec->% (&rest key)
   "Extract value from the list of spec via KEYS at compile time.\n
 Examples:
@@ -45,34 +25,32 @@ Examples:
 
 (defcustom%
  tags-program
- (let ((out))
-   (or (executable-find%
-        "ctags"
-        (lambda (bin)
-          (let ((ver (shell-command* bin "--version")))
-            (setq out
+ (eval-when-compile
+   (list 'quote
+         (or (executable-find%
+              "ctags"
+              (lambda (bin)
+                (let ((ver (shell-command* bin "--version")))
                   (and (zerop (car ver))
                        (string-match "Exuberant Ctags [.0-9]+"
                                      (cdr ver))
                        ``(:bin "ctags" :cmd
-                               ,(concat ,bin " -e %s -o %s -a %s")))))))
-       (executable-find%
-        "etags"
-        (lambda (bin)
-          (let ((ver (shell-command* bin "--version")))
-            (setq out
+                               ,(concat ,bin " -e %s -o %s -a %s"))))))
+             (executable-find%
+              "etags"
+              (lambda (bin)
+                (let ((ver (shell-command* bin "--version")))
                   (and (zerop (car ver))
                        (string-match "etags (GNU Emacs [.0-9]+)"
                                      (cdr ver))
                        ``(:bin "etags" :cmd
-                               ,(concat ,bin " %s -o %s -a %s"))))))))
-   out)
+                               ,(concat ,bin " %s -o %s -a %s")))))))))
  "The default tags program.
 This is used by commands like \\=`make-tags\\='.\n
 The default is \"ctags -e %s -o %s -a %s\",
-first %s: ctags options
-second %s: explicit name of file for tag table; overrides default TAGS or tags.
-  hird %s: append to existing tag file.\n
+first %s: ctags options;
+second %s: explicit name of file for tag table;
+third %s: append to existing tag file.\n
 \\=`tags-table-list\\=' should be persitent between sessions
 when \\=`desktop-globals-to-save\\=' include it."
  :type '(plist :key-type 'symbol :value-type 'string)
@@ -295,8 +273,25 @@ RENEW overwrite the existing tags file when t else create it."
                      renew))))
 
 
-;;; go into `view-mode'
-;;; `xref-find-definitions' into `view-mode'
+;;; `xref-find-definitions' macro
+
+(defmacro-if-fn% xref-find-definitions xref)
+
+(defmacro when-fn-xref-find-definitions% (&rest body)
+  `(if-fn-xref-find-definitions%
+       (progn% ,@body)))
+
+(defmacro unless-fn-xref-find-definitions% (&rest body)
+  `(if-fn-xref-find-definitions%
+       (comment ,@body)
+     (progn% ,@body)))
+
+;; end of `xref-find-definitions' macro
+
+;;;
+;; go into `view-mode'
+;; `xref-find-definitions' into `view-mode'
+;;;
 
 (when-fn-xref-find-definitions%
  ;; `xref-find-definitions' into `view-mode'
@@ -323,17 +318,18 @@ RENEW overwrite the existing tags file when t else create it."
     (tags-apropos what)))
 
 
-;;; `xref' after load
-(when-fn-xref-find-definitions%
- (with-eval-after-load 'xref
-   (on-xref-init!)))
-
 ;; end of `xref'
 
+;;;
+;; `etags' after load
+;; `pop-tag-mark' same as Emacs22+ for ancient Emacs
+;;;
 
-;;; `etags' after load
-;;; `pop-tag-mark' same as Emacs22+ for ancient Emacs
+(defmacro when-feature-etags% (&rest body)
+  `(unless-fn-xref-find-definitions% ,@body))
 
+(defmacro when-fn-pop-tag-mark% (&rest body)
+  `(unless-fn-xref-find-definitions% ,@body))
 
 ;;; `find-tag' into `view-mode'
 (unless-fn-xref-find-definitions%
@@ -353,13 +349,23 @@ RENEW overwrite the existing tags file when t else create it."
    (ad-enable-advice #'find-tag 'after "find-tag-after")
    (ad-activate #'find-tag t)))
 
+;; end of `etags'
+
+;;;
+;; after-load
+;;;
+
+;;; `xref' after load
+(when-fn-xref-find-definitions%
+ (with-eval-after-load 'xref
+   (on-xref-init!)))
 
 ;;; `etags' after load
 (when-feature-etags%
  (with-eval-after-load 'etags
    (on-etags-init!)))
 
-;; end of `etags'
+;; end of after-load
 
 
 (provide 'tags)
