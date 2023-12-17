@@ -59,7 +59,10 @@
     (when (self-spec-> desk :allowed)
 
       (setq% desktop-files-not-to-save
-             (self-spec-> desk :files-not-to-save)
+             (let ((ss (self-spec-> desk :files-not-to-save)))
+               (concat "\\(\\.el\\.gz\\)\\|"
+                       desktop-files-not-to-save
+                       (if ss (concat "\\|" ss) "")))
              'desktop)
 
       (setq% desktop-buffers-not-to-save
