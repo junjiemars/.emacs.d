@@ -66,7 +66,10 @@
              'desktop)
 
       (setq% desktop-buffers-not-to-save
-             (self-spec-> desk :buffers-not-to-save)
+             (let ((ss (self-spec-> desk :buffers-not-to-save)))
+               (concat "\\(\\.[tT][aA][gG][sS]?\\|\\.[lL][oO][gG]\\)"
+                       desktop-buffers-not-to-save
+                       (if ss (concat "\\|" ss) "")))
              'desktop)
 
       (setq% desktop-modes-not-to-save
