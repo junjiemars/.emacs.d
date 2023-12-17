@@ -15,13 +15,13 @@
 (setq% package-user-dir (v-home! ".elpa/") 'package)
 
 
-(defalias '*repository-initialized*
+(defalias '*package-init-repo*
   (lexical-let% ((b))
     (lambda (&optional n)
       (if n (setq b n) b)))
-  "Indicate \\=`initialize-package-repository!\\=' whether has been called.")
+  "Indicate \\=`package*-init-repo!\\=' whether has been called.")
 
-(defun initialize-package-repository! ()
+(defun package*-init-repo! ()
   (setq% package-check-signature
          (*self-env-spec* :get :package :package-check-signature)
          'package)
@@ -45,7 +45,7 @@
   (package-refresh-contents))
 
 
-(defmacro check-package-name (package)
+(defmacro package*-check-name (package)
   "Check PACKAGE is a symbol or a tar file."
   (let ((p (gensym*)))
     `(let ((,p ,package))
@@ -57,7 +57,7 @@
              (t nil)))))
 
 
-(defmacro delete-package! (package)
+(defmacro package*-delete! (package)
   "Delete PACKAGE."
   (let ((p (gensym*)))
     `(let ((,p ,package))
@@ -77,47 +77,38 @@
                          "."))))))))
 
 
-(defmacro install-package! (package &optional tar)
-  "Install PACKAGE."
+(defmacro package*-install! (package &optional tar)
+  "Install PACKAGE optional via TAR."
   (let ((p (gensym*))
         (f (gensym*)))
     `(let ((,p ,package)
            (,f ,tar))
        (if ,f
            (package-install-file ,p)
-         (unless (*repository-initialized*)
-           (initialize-package-repository!)
-           (*repository-initialized* t))
+         (unless (*package-init-repo*)
+           (package*-init-repo!)
+           (*package-init-repo* t))
          (if-version%
              <= 25.0
              (package-install ,p t)
            (package-install ,p))))))
 
-
 
-
-(defun parse-package-spec! (spec &optional remove-unused)
-  "Parse SPEC, install, remove and setup packages."
+(defun package*-parse-spec! (spec &optional remove-unused)
+  "Parse SPEC, install, REMOVE-UNUSED packages."
   (dolist* (s spec)
     (let ((ss (cdr s)))
       (when (and (consp ss) (self-spec-> ss :cond))
         (dolist* (p (self-spec-> ss :packages))
-          (let ((ns (check-package-name p)))
+          (let ((ns (package*-check-name p)))
             (when (consp ns)
               (let ((n (car ns)) (tar (cdr ns)))
                 (if (package-installed-p n)
-                    (when (and remove-unused (not (self-spec-> ss :cond)))
-                      (delete-package! n))
-                  (install-package! (if tar tar n) tar))))))
+                    (when (and remove-unused
+                               (null (self-spec-> ss :cond)))
+                      (package*-delete! n))
+                  (package*-install! (if tar tar n) tar))))))
         (*package-compile-units* (self-spec-> ss :compile))))))
-
-
-(defmacro defun-on-module-autoload^ (module &rest body)
-  "Define FN threading macro."
-  (declare (indent 1))
-  (let ((name (intern (format "on-%s-autoload^" module))))
-    `(defun ,name ()
-       ,@body)))
 
 
 (defalias '*package-compile-units*
@@ -135,12 +126,12 @@
   (compile! (compile-unit* (*self-paths* :get :package-spec)))
   (when-version%
       <= 25.1
-    (setq custom-file (v-home% "config/.packages.el")))
+    (setq custom-file (v-home! "/.transient/packages.el")))
   (package-initialize)
   ;; load self :packages-spec
-  (parse-package-spec! (*self-packages*)
-                       (*self-env-spec* :get :package
-                                        :remove-unused))
+  (package*-parse-spec! (*self-packages*)
+                        (*self-env-spec* :get :package
+                                         :remove-unused))
   (apply #'compile! (*package-compile-units*)))
 
 ;;; load

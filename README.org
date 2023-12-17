@@ -270,7 +270,6 @@ Introduce the rules of naming /files/ and /functions/.
     ├── gud-cdb.el
     ├── gud-lldb.el
     ├── memo.el
-    ├── module.el
     ├── sodoku.el
     └── (comment "more ...")
 #+END_EXAMPLE
@@ -284,6 +283,7 @@ Introduce the rules of naming /files/ and /functions/.
     (emacs-home* "config/")
     ├── guds.el
     ├── shells.el
+    ├── packages.el
     ├── sockets.el
     ├── tags.el
     └── (comment "more ...")
@@ -312,10 +312,7 @@ Introduce the rules of naming /files/ and /functions/.
   =use-<package-name>-autoload.el=
 #+BEGIN_EXAMPLE
     (emacs-home* "config/")
-    ├── use-cider-autoload.el
-    ├── use-cider.el
     ├── use-geiser-autoload.el
-    ├── use-inf-clojure.el
     ├── use-lfe-autoload.el
     ├── use-lua-autoload.el
     ├── use-magit-autoload.el
@@ -741,19 +738,6 @@ The /user defined/ package spec locate in =(*self-packages*)=.
 		 :cond (executable-find% "sbcl")
 		 :packages '(slime)
 		 :compile `(,(compile-unit% (emacs-home* "config/use-slime-autoload.el")))))
-
-	 (*self-packages*
-		:put :java
-		(list
-		 :cond (and (when-version% <= 25.1 t)
-								(executable-find% "java"))
-		 :packages '(cider
-								 clojure-mode
-								 clojure-mode-extra-font-locking
-								 kotlin-mode)
-		 :compile `(,(compile-unit% (emacs-home* "config/use-cider.el") t)
-								,(compile-unit%
-									(emacs-home* "config/use-cider-autoload.el") t))))
 
 	 (*self-packages*
 		:put :erlang

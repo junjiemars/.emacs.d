@@ -48,19 +48,6 @@
                    (compile-unit%
                     (emacs-home* "config/use-lfe-autoload.el") t)))))
 
-;;; :java
-(*self-packages*
- :put :java
- (list
-  :cond (comment (and (when-version% <= 25.1 t)
-                      (executable-find% "java")))
-  :packages '(cider
-              clojure-mode
-              clojure-mode-extra-font-locking)
-  :compile `(,(compile-unit% (emacs-home* "config/use-cider.el") t)
-             ,(compile-unit%
-               (emacs-home* "config/use-cider-autoload.el") t))))
-
 ;;; :lisp
 (*self-packages*
  :put :lisp

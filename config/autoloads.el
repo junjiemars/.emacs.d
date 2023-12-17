@@ -180,7 +180,7 @@
       (compile-unit% (emacs-home* "config/sockets.el")))
     (when-package%
       (when (*self-env-spec* :get :package :allowed)
-        (compile-unit% (emacs-home* "config/module.el")))))
+        (compile-unit% (emacs-home* "config/packages.el")))))
   ;; `load-path' versioned dirs
   (push! (v-home% "config/") load-path)
   (push! (v-home% "private/") load-path)
