@@ -3,7 +3,7 @@
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; module.el
+;; packages.el
 ;;;;
 
 
@@ -138,4 +138,4 @@
 (self-package-init!)
 
 
-;; end of module.el
+;; end of packages.el
