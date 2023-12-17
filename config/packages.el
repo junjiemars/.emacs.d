@@ -18,6 +18,7 @@
 (defalias '*package-init-repo*
   (lexical-let% ((b))
     (lambda (&optional n)
+      "N"
       (if n (setq b n) b)))
   "Indicate \\=`package*-init-repo!\\=' whether has been called.")
 
@@ -48,7 +49,8 @@
 (defmacro package*-check-name (package)
   "Check PACKAGE is a symbol or a tar file."
   (let ((p (gensym*)))
-    `(let ((,p ,package))
+    `(let ((,p ,package)
+           (file-name-handler-alist nil))
        (cond ((and (symbolp ,p) ,p) (cons ,p nil))
              ((and (stringp ,p) (file-exists-p ,p))
               (cons (intern (string-match* "\\(.*\\)-[.0-9]+\\'"
@@ -114,6 +116,7 @@
 (defalias '*package-compile-units*
   (lexical-let% ((us '()))
     (lambda (&optional n)
+      "N"
       (cond ((consp n) (dolist* (s n us)
                          (setq us (cons s us))))
             (t us))))
@@ -126,7 +129,7 @@
   (compile! (compile-unit* (*self-paths* :get :package-spec)))
   (when-version%
       <= 25.1
-    (setq custom-file (v-home! "/.transient/packages.el")))
+    (setq custom-file (v-home! ".transient/packages.el")))
   (package-initialize)
   ;; load self :packages-spec
   (package*-parse-spec! (*self-packages*)
