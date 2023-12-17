@@ -888,7 +888,7 @@ The following commands are available:
                    (or (car *sudoku-dimension-history*)
                        (symbol-name (car +sudoku-dimension+)))
                    '*sudoku-dimension-history*)))))
-  (if (file-exists-plevel)
+  (if (file-exists-p level)
       (sudoku-board-load)
     (sudoku-new (intern level) (intern dimension))))
 
