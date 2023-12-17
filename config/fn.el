@@ -159,13 +159,10 @@ If optional UNIQUELY is non-nil then append uniquely."
         #'some))
 
 
-(defmacro loop* (&rest clause)
-  "The Common Lisp \\=`loop\\=' macro.\n
-Optional argument CLAUSE such as for clause, iteration clause,
-accumulate clause and Miscellaneous clause."
-  (if-fn% 'cl-loop 'cl-lib
-          `(cl-loop ,@clause)
-    `(loop ,@clause)))
+(fset 'loop*
+      (if-fn% 'cl-loop 'cl-lib
+              #'cl-loop
+        #'loop))
 
 
 ;; end of common-lisp macro
