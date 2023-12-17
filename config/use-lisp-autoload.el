@@ -12,8 +12,8 @@
 (defmacro-if-feature% rainbow-delimiters)
 
 (defmacro when-feature-paredit% (&rest body)
-  `(if-feature-paredit%
-       (progn% ,@body)))
+  (if-feature-paredit%
+      `(progn% ,@body)))
 
 ;; end of macro
 
