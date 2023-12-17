@@ -406,7 +406,8 @@ Returns the name of FILE when successed otherwise nil."
 (defmacro file-name-base* (path)
   "Return base name of PATH."
   (let ((p (gensym*)))
-    `(let* ((,p (file-name-nondirectory ,path))
+    `(let* ((,p (let ((file-name-handler-alist nil))
+                  (file-name-nondirectory ,path)))
             (i (or (strrchr ,p ?.) (1- (length ,p)))))
        (if (>= i 0)
            (substring-no-properties ,p 0 i)

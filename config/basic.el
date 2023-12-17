@@ -198,7 +198,8 @@ THEN."
 (defmacro file-in-dirs-p (file dirs)
   "Return t if the name of FILE matching DIRS, otherwise nil."
   (let ((f (gensym*)) (ds (gensym*)))
-    `(let ((,f ,file) (,ds ,dirs))
+    `(let ((,f ,file) (,ds ,dirs)
+           (file-name-handler-alist nil))
        (when (and (stringp ,f) (consp ,ds))
          (some* (lambda (x)
                   (let ((case-fold-search (when-platform% 'windows-nt t)))
