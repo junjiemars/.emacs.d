@@ -896,4 +896,4 @@ The following commands are available:
 
 (provide 'sudoku)
 
-;;; eof
+;;; end of sudoku.el
