@@ -12,7 +12,8 @@
 (defmacro when-feature-magit% (&rest body)
   "When \\=`magit\\=', do BODY."
   (if-feature-magit%
-      `(progn% ,@body)))
+      `(progn% ,@body)
+    `(comment ,@body)))
 
 ;; end of macro
 

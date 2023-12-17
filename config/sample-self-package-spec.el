@@ -7,7 +7,7 @@
 ;;
 ;;;;
 
-
+;;; :common-lisp
 (*self-packages*
  :put :common-lisp
  (list
@@ -17,7 +17,7 @@
   :packages '(slime)
   :compile `(,(compile-unit% (emacs-home* "config/use-slime-autoload.el")))))
 
-
+;;; :doc
 (*self-packages*
  :put :doc
  (list
@@ -28,15 +28,15 @@
                   (when-version% <= 24.3 'yasnippet)
                   'vlf)))
 
-
+;; `eglot' package for ancient Emacs
 (*self-packages*
- :put :docker
+ :put :eglot
  (list
-  :cond (comment (and (when-version% <= 24.4 t)
-                      (executable-find% "docker")))
-  :packages '(dockerfile-mode)))
+  :cond (unless-fn% 'eglot 'eglot t)
+  :packages (list 'eglot)
+  :compile `(,(compile-unit% (emacs-home* "config/on-eglot-autoload.el")))))
 
-
+;;; :erlang
 (*self-packages*
  :put :erlang
  (list
@@ -48,7 +48,7 @@
                    (compile-unit%
                     (emacs-home* "config/use-lfe-autoload.el") t)))))
 
-
+;;; :java
 (*self-packages*
  :put :java
  (list
@@ -56,13 +56,12 @@
                       (executable-find% "java")))
   :packages '(cider
               clojure-mode
-              clojure-mode-extra-font-locking
-              kotlin-mode)
+              clojure-mode-extra-font-locking)
   :compile `(,(compile-unit% (emacs-home* "config/use-cider.el") t)
              ,(compile-unit%
                (emacs-home* "config/use-cider-autoload.el") t))))
 
-
+;;; :lisp
 (*self-packages*
  :put :lisp
  (list
@@ -70,7 +69,7 @@
   :packages '(paredit rainbow-delimiters)
   :compile `(,(compile-unit% (emacs-home* "config/use-lisp-autoload.el")))))
 
-
+;;; :lua
 (*self-packages*
  :put :lua
  (list
@@ -78,18 +77,17 @@
   :packages '(lua-mode)
   :compile `(,(compile-unit% (emacs-home* "config/use-lua-autoload.el") t))))
 
-
+;;; :org
 (*self-packages*
  :put :org
  (list
   :cond nil
-  :packages (flatten (list
-                      (when% (executable-find% "latex")
-                        '(auctex
-                          cdlatex))
-                      (when-version% <= 25 'ox-reveal)))))
+  :packages (flatten (list (when% (executable-find% "latex")
+                             '(auctex
+                               cdlatex))
+                           (when-version% <= 25 'ox-reveal)))))
 
-
+;;; :rust
 (*self-packages*
  :put :rust
  (list
@@ -97,7 +95,7 @@
              (executable-find% "cargo"))
   :packages '(rust-mode)))
 
-
+;;; :scheme
 (*self-packages*
  :put :scheme
  (list
@@ -112,7 +110,22 @@
   :packages  '(geiser)
   :compile `(,(compile-unit% (emacs-home* "config/use-geiser-autoload.el")))))
 
+;;; :vlang
+(*self-packages*
+ :put :vlang
+ (list
+  :cond (comment (executable-find% "v"))
+  :packages '(v-mode)))
 
+;;; :treesit package for ancient Emacs
+(*self-packages*
+ :put :treesit
+ (list
+  :cond (unless-fn% 'treesit-available-p 'treesit t)
+  :packages (list 'treesit)
+  :compile `(,(compile-unit% (emacs-home* "config/on-treesit-autoload.el")))))
+
+;;; :vcs
 (*self-packages*
  :put :vcs
  (list
@@ -121,14 +134,7 @@
   :packages '(magit)
   :compile `(,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
 
-
-(*self-packages*
- :put :vlang
- (list
-  :cond (comment (executable-find% "v"))
-  :packages '(v-mode)))
-
-
+;;; :web
 (*self-packages*
  :put :web
  (list
@@ -140,27 +146,12 @@
                   'web-mode
                   'x509-mode)))
 
+;;; :zig
 (*self-packages*
  :put :zig
  (list
   :cond (executable-find% "zig")
   :packages '(zig-mode)))
 
-;; `eglot' package for ancient Emacs
-(*self-packages*
- :put :eglot
- (list
-  :cond (unless-fn% 'eglot 'eglot t)
-  :packages (list 'eglot)
-  :compile `(,(compile-unit% (emacs-home* "config/on-eglot-autoload.el")))))
 
-;; `treesit' package for ancient Emacs
-(*self-packages*
- :put :treesit
- (list
-  :cond (unless-fn% 'treesit-available-p 'eglot t)
-  :packages (list 'eglot)
-  :compile `(,(compile-unit% (emacs-home* "config/on-treesit-autoload.el")))))
-
-
-;; eof
+;; end of sample-self-package-spec.el

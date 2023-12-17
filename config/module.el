@@ -129,23 +129,22 @@
   "Autloaded \\=`compile-unit\\='.")
 
 
-(package-spec-:allowed-p
-
+(defun self-package-init! ()
+  "Initialize package spec from \\=`*self-env-spec*\\='"
   ;; compile self :package-spec
   (compile! (compile-unit* (*self-paths* :get :package-spec)))
-
   (when-version%
       <= 25.1
     (setq custom-file (v-home% "config/.packages.el")))
-
   (package-initialize)
-
   ;; load self :packages-spec
   (parse-package-spec! (*self-packages*)
                        (*self-env-spec* :get :package
                                         :remove-unused))
-
   (apply #'compile! (*package-compile-units*)))
+
+;;; load
+(self-package-init!)
 
 
 ;; end of module.el

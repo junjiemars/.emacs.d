@@ -24,6 +24,9 @@
              (self-spec-> desk :restore-eager)
              'desktop)
 
+      ;; disable offscreen onscreen
+      (setq% desktop-restore-forces-onscreen nil 'desktop)
+
       ;; `desktop-read'
       (desktop-read (v-home% ".desktop/"))
 

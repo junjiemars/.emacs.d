@@ -9,7 +9,7 @@
 ;;;;
 
 ;;;
-;; compile-time macro for checking fn exists
+;; compile-time macro: checking fn exists
 ;;;
 
 (defmacro if-fn% (fn feature then &rest else)
@@ -21,13 +21,11 @@ Argument FEATURE that FN dependent on, be loaded at compile time."
        ,then
      (progn% ,@else)))
 
-
 (defmacro when-fn% (fn feature &rest body)
   "When FN is bounded yield non-nil, do BODY.\n
 Argument FEATURE that FN dependent on, be loaded at compile time."
   (declare (indent 2))
   `(if-fn% ,fn ,feature (progn% ,@body)))
-
 
 (defmacro unless-fn% (fn feature &rest body)
   "Unless FN is bounded yield non-nil, do BODY.\n
@@ -35,11 +33,11 @@ Argument FEATURE that FN dependent on, be loaded at compile time."
   (declare (indent 2))
   `(if-fn% ,fn ,feature nil ,@body))
 
-;; end of compile-time macro for checking fn exists
+;; end of compile-time macro: checking fn exists
 
 
 ;;;
-;; compile-time macro for checking var exists
+;; compile-time macro: checking var exists
 ;;;
 
 (defmacro if-var% (var feature then &rest else)
@@ -70,7 +68,7 @@ Argument FEATURE that X dependent on, load at compile time."
   `(when-var% ,x ,feature
      (setq ,x ,val)))
 
-;; end of compile-time macro for checking var exists
+;; end of compile-time macro: checking var exists
 
 
 ;;;
@@ -123,7 +121,6 @@ Argument FEATURE that X dependent on, load at compile time."
        ;; `lexical-let' since Emacs22
        (lexical-let* ,varlist ,@body))))
 
-
 ;; end of *-lexical% macro
 
 ;;;
@@ -137,12 +134,10 @@ Argument FEATURE that X dependent on, load at compile time."
       `,then
     `(progn% ,@else)))
 
-
 (defmacro when-graphic% (&rest body)
   "When \\=`display-graphic-p\\=' yield non-nil, do BODY."
   (declare (indent 0))
   `(if-graphic% (progn% ,@body)))
-
 
 (defmacro unless-graphic% (&rest body)
   "Unless \\=`display-graphic-p\\=' yield nil, do BODY."
@@ -150,7 +145,6 @@ Argument FEATURE that X dependent on, load at compile time."
   `(if-graphic% nil ,@body))
 
 ;; end of *-graphic% macro
-
 
 ;;;
 ;; *-platform% macro
@@ -173,7 +167,7 @@ Argument FEATURE that X dependent on, load at compile time."
   (declare (indent 1))
   `(if-platform% ,os nil ,@body))
 
-;; end of if-platform% macro
+;; end of *-platform% macro
 
 ;;;
 ;; *-window% macro
@@ -199,7 +193,9 @@ else do ELSE..."
 
 ;; end of *-window% macro
 
-;;; noninteractive macro
+;;;
+;; noninteractive macro
+;;;
 
 (defmacro if-noninteractive% (then &rest body)
   "If in \\=`noninteractive\\=' do THEN, else do BODY."
@@ -212,8 +208,11 @@ else do ELSE..."
   "Unless in \\=`noninteractive\\=' do BODY."
   `(if-noninteractive% nil ,@body))
 
+;; end of noninteractive macro
 
-;;; Preferred `dolist*'
+;;;
+;; preferred `dolist*'
+;;;
 
 (defmacro dolist* (spec &rest body)
   "Loop over a list and do DOBY.\n
@@ -232,9 +231,7 @@ Argument SPEC (VAR LIST [RESULT])."
            (setq ,lst (cdr ,lst))))
        ,@(cdr (cdr spec)))))
 
-
-;; end of Preferred `dolist*'
-
+;; end of preferred `dolist*'
 
 ;;;
 ;; compile macro
@@ -268,7 +265,6 @@ Argument SPEC (VAR LIST [RESULT])."
   "Return the :only-compile indicator of UNIT."
   `(aref ,unit 2))
 
-
 (defun compile! (&rest units)
   "Compile and load UNITS."
   (declare (indent 0))
@@ -286,7 +282,6 @@ Argument SPEC (VAR LIST [RESULT])."
 ;; self-spec macro
 ;;;
 
-
 (defmacro self-spec-> (seq &rest keys)
   "Read spec from SEQ via KEYS."
   (declare (indent 1))
@@ -296,17 +291,14 @@ Argument SPEC (VAR LIST [RESULT])."
             ks (cdr ks)))
     r))
 
-
 (defmacro self-spec<- (k v seq &rest keys)
   "Save the spec of K V to SEQ via KEYS."
   (declare (indent 3))
   `(plist-put (self-spec-> ,seq ,@keys) ,k ,v))
 
-
 (defmacro self-spec->% (seq &rest keys)
   "Read spec from SEQ via KEYS at compile time."
   (funcall `(lambda () (self-spec-> ,seq ,@keys))))
-
 
 (defalias '*self-paths*
   (lexical-let%
@@ -338,7 +330,6 @@ Argument SPEC (VAR LIST [RESULT])."
 No matter the declaration order, the executing order is:
 \\=`:env-spec -> :package-spec -> :epilogue\\='")
 
-
 (defalias '*self-env-spec*
   (lexical-let% ((env (list :theme nil
                             :frame nil
@@ -360,7 +351,6 @@ No matter the declaration order, the executing order is:
             ((eq :put op) (setq env (plist-put env (car keys) (cadr keys))))
             (t env)))))
 
-
 (defalias '*self-packages*
   (lexical-let% ((ps nil))
     (lambda (&optional op k v)
@@ -369,18 +359,11 @@ No matter the declaration order, the executing order is:
             ((eq :put op) (setq ps (cons (cons k v) ps)))
             (t ps)))))
 
-
-(defmacro package-spec-:allowed-p (&rest body)
-  "If installing package be allowed then do BODY."
-  (declare (indent 0))
-  `(when-package%
-     (when (*self-env-spec* :get :package :allowed)
-       ,@body)))
-
 ;; end of self-spec macro
 
-
-;;; boot
+;;;
+;; boot
+;;;
 
 ;; make `v-home' .exec/
 (v-home! ".exec/")
@@ -406,11 +389,9 @@ No matter the declaration order, the executing order is:
   (progn
     ;;; --batch mode: disable `desktop'
     (setq% desktop-save-mode nil 'desktop)
-    (setq% desktop-restore-forces-onscreen nil 'desktop)
     (unless-noninteractive%
      (compile-unit% (emacs-home* "config/memo.el"))))
   (compile-unit% (emacs-home* "config/autoloads.el")))
-
 
 ;; end of boot
 
