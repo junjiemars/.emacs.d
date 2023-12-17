@@ -268,12 +268,12 @@
 
 
 (defun sudoku-puzzle-save ()
-  "Save sudoku's puzzle to `+sudoku-file+'."
+  "Save sudoku's puzzle to \\=`+sudoku-file+\\='."
   (save-sexp-to-file (*sudoku-puzzle*)
                      (+sudoku-file+ :puzzle)))
 
 (defun sudoku-puzzle-load ()
-  "Load sudoku's puzzle from `+sudoku-file+'."
+  "Load sudoku's puzzle from \\=`+sudoku-file+\\='."
   (*sudoku-puzzle* :set! (read-sexp-from-file
                           (+sudoku-file+ :puzzle))))
 
@@ -734,13 +734,13 @@
 
 
 (defun sudoku-board-save ()
-  "Save sudoku's board to `+sudoku-file+'."
+  "Save sudoku's board to \\=`+sudoku-file+\\='."
   (let ((b (*sudoku-board* :props)))
     (save-sexp-to-file b (+sudoku-file+ :board))))
 
 
 (defun sudoku-board-load ()
-  "Load sudoku's board from `+sudoku-file+'."
+  "Load sudoku's board from \\=`+sudoku-file+\\='."
   (let ((b (read-sexp-from-file (+sudoku-file+ :board))))
     (*sudoku-puzzle*
      :set!
@@ -754,7 +754,7 @@
 
 
 (defun sudoku-quit ()
-  "Quit `*sudoku*'."
+  "Quit \\=`*sudoku*\\='."
   (interactive)
   (when (and current-prefix-arg
              (yes-or-no-p "Save board? "))
@@ -762,25 +762,22 @@
   (kill-buffer (*sudoku*)))
 
 (defun sudoku-save ()
-  "Save `*sudoku*'."
+  "Save \\=`*sudoku*\\='."
   (interactive)
   (sudoku-board-save))
 
-(defun sudoku-new (&optional level dimension)
-  "New `*sudoku*' with LEVEL and DIMENSION."
+(defun sudoku-new (level dimension)
+  "New \\=`*sudoku*\\=' with LEVEL and DIMENSION."
   (interactive)
-  (sudoku-board-draw (sudoku-board-make
-                      (*sudoku-puzzle*
-                       :set!
-                       (copy-sequence
-                        (*sudoku-puzzle-make*
-                         :new!
-                         level
-                         dimension)))))
+  (sudoku-board-draw
+   (sudoku-board-make
+    (*sudoku-puzzle*
+     :set! (copy-sequence
+            (*sudoku-puzzle-make* :new! level dimension)))))
   (sudoku-mode))
 
 (defun sudoku-reload ()
-  "Reload `*sudoku*'."
+  "Reload \\=`*sudoku*\\='."
   (interactive)
   (sudoku-board-draw (sudoku-board-make
                       (*sudoku-puzzle*
@@ -852,8 +849,7 @@
 
 
 (defun sudoku-mode ()
-  "Switch to sudoku's mode'.
-
+  "Switch to sudoku's mode'.\n
 The following commands are available:
 \\{sudoku-mode-map}"
   (interactive)
@@ -869,28 +865,30 @@ The following commands are available:
 (defun sudoku (&optional level dimension)
   "Play sudoku on optional LEVEL and DIMENSION."
   (interactive
-   (let ((exists (and (file-exists-p (+sudoku-file+ :board))
-                      (null current-prefix-arg))))
-     (list (read-string (format "Sudoku %s: "
-                                (if exists
-                                    "load (file)"
-                                  (format "level (%s)"
-                                          (mapconcat #'symbol-name
-                                                     +sudoku-level+ "|"))))
-                        (if exists
-                            (+sudoku-file+ :board)
-                          (or (car *sudoku-level-history*)
-                              (symbol-name (car +sudoku-level+))))
-                        (unless exists
-                          '*sudoku-level-history*))
-           (unless exists
-             (read-string (format "Sudoku dimension (%s): "
-                                  (mapconcat #'symbol-name
-                                             +sudoku-dimension+ "|"))
-                          (or (car *sudoku-dimension-history*)
-                              (symbol-name (car +sudoku-dimension+)))
-                          '*sudoku-dimension-history*)))))
-  (if (file-exists-p level)
+   (cond ((and (file-exists-p (+sudoku-file+ :board))
+               (null current-prefix-arg))
+          (list (completing-read
+                 "Sudoku load (file): "
+                 (+sudoku-file+ :board) nil nil
+                 (+sudoku-file+ :board))
+                nil))
+         (t (list (completing-read
+                   (format "Sudoku level (%s): "
+                           (mapconcat #'symbol-name
+                                      +sudoku-level+ "|"))
+                   +sudoku-level+ nil nil
+                   (or (car *sudoku-level-history*)
+                       (symbol-name (car +sudoku-level+)))
+                   '*sudoku-level-history*)
+                  (completing-read
+                   (format "Sudoku dimension (%s): "
+                           (mapconcat #'symbol-name
+                                      +sudoku-dimension+ "|"))
+                   +sudoku-dimension+ nil nil
+                   (or (car *sudoku-dimension-history*)
+                       (symbol-name (car +sudoku-dimension+)))
+                   '*sudoku-dimension-history*)))))
+  (if (file-exists-plevel)
       (sudoku-board-load)
     (sudoku-new (intern level) (intern dimension))))
 
