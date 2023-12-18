@@ -137,25 +137,12 @@ test_extra() {
         :package-check-signature 'allow-unsigned
         :allowed t))
 (*self-packages*
-  :put :scheme
+  :put :lisp
   (list
-   :cond (and (when-version% <= 23.2 t)
-              (or (executable-find% "racket")
-                  (executable-find% "scheme")
-                  (executable-find% "chicken")
-                  (executable-find% "guile")))
-   :packages  '(geiser)
-   :compile \`(,(compile-unit%
-                  (emacs-home* "config/use-geiser-autoload.el")))))
-(*self-packages*
-  :put :common-lisp
-  (list
-   :cond (or (executable-find% "sbcl")
-             (executable-find% "ecl")
-             (executable-find% "acl"))
-   :packages '(slime)
-   :compile \`(,(compile-unit%
-                  (emacs-home* "config/use-slime-autoload.el")))))
+   :cond nil
+   :packages  '(paredit magit)
+   :compile \`(,(compile-unit% (emacs-home* "config/use-lisp-autoload.el"))
+               ,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
 END
   echo "# cat <${_ENV_PRO_}"
   cat <"${_ENV_PRO_}"
