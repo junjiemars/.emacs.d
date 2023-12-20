@@ -17,13 +17,7 @@
              ("pron-uk" . (("<meta name=\"description\".*?美.*?英\\[" . 1)
                            "\\]，" . (dict-fn-norm-pron-uk)))
              ("meta" . (("<meta name=\"description\".*?英\\[\\(.+?\\)\\]，?")
-                        "\" /><" . (dict-fn-norm-punc)))
-             ("sounds-like" . (("<div class=\"df_wb_a\">音近词</div>")
-                               "</div></div></div>"
-                               . (dict-fn-remove-html-tag)))
-             ("spelled-like" . (("<div class=\"df_wb_a\">形近词</div>")
-                                "</div></div></div>"
-                                . (dict-fn-remove-html-tag))))
+                        "\" /><" . (dict-fn-norm-punc))))
             ("camb"
              ("url" . "https://dictionary.cambridge.org/dictionary/english/")
              ("pron-us" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
@@ -45,11 +39,10 @@
              ("pron-us" . (("title=\"How to pronounce.*?(audio)\">" . 1)
                            "<img" . (dict-fn-decode-html-char
                                      dict-fn-norm-pron-us)))
-             ("meta" . (("<meta name=\"description\" content=\"The meaning of ")
-                        " How to use" . (dict-fn-remove-html-tag)))
-             ("suggestion" . (("<p class=\"spelling-suggestions\">" . 1)
-                              "</div>" . (dict-fn-remove-html-tag
-                                          dict-fn-norm-punc)))))))
+             ("meta"
+              .
+              (("<meta name=\"description\" content=\"The meaning of ")
+               " How to use" . (dict-fn-remove-html-tag)))))))
     (lambda (&optional n)
       (if n (let ((x (assoc** (car n) b :test #'string=)))
               (if x (setcdr x (cdr n))
@@ -59,8 +52,9 @@
 
 
 (defalias 'dict-find-def
-  (lexical-let% ((b))
+  (lexical-let% ((b nil))
     (lambda  (&optional dict)
+      "DICT"
       (cond
        ((or (consp dict) (not b))
         (setq b
@@ -82,6 +76,7 @@
                       :dict ,(emacs-home* ".dict/dict.log")
                       :lookup ,(emacs-home* ".dict/lookup.log"))))
     (lambda (w &optional n)
+      "W N"
       (if n (plist-put b w n) (plist-get b w))))
   "Dictonary logging switch.")
 
@@ -194,8 +189,7 @@
               style)))
     (when (*dict-debug-log* :logging)
       (save-sexp-to-file ss (path! (*dict-debug-log* :lookup))))
-    (let ((b (current-buffer)))
-      (when b (kill-buffer b)))
+    (kill-buffer (current-buffer))
     (message "%s" (if (car ss)
                       (propertize (string-trim>
                                    (mapconcat #'identity
@@ -236,9 +230,10 @@
          (url (cdr (assoc** "url" (cadr (assoc** 'dict d1 :test #'eq))
                             :test #'string=))))
     (make-thread* (lambda ()
-                    (url-retrieve*
-                     (concat url (url-hexify-string what))
-                     #'on-lookup-dict d1 t t)))))
+                    (let ((url-history-track nil))
+                      (url-retrieve*
+                       (concat url (url-hexify-string what))
+                       #'on-lookup-dict d1 t t))))))
 
 ;; end of `lookup-dict'
 
