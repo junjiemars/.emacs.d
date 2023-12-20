@@ -86,11 +86,11 @@ about each column."
 Optional prefix argument ENHANCED, displays additional details."
     (interactive
      (list (if-region-active
-               (buffer-substring-no-properties
-                (region-beginning) (region-end))
-             (buffer-substring-no-properties
-              (save-excursion (backward-paragraph) (point))
-              (save-excursion (forward-paragraph) (point))))
+            (buffer-substring-no-properties
+             (region-beginning) (region-end))
+            (buffer-substring-no-properties
+             (save-excursion (backward-paragraph) (point))
+             (save-excursion (forward-paragraph) (point))))
            current-prefix-arg))
     (let ((sqlbuf (sql-find-sqli-buffer)))
       (unless sqlbuf
@@ -325,45 +325,62 @@ Optional prefix argument ENHANCED, displays additional details."
 
 ;; end of mysql
 
-
-
 ;;;
 ;; after load
 ;;;
 
-(with-eval-after-load 'sql
-
-  (when-fn% 'sql-show-sqli-buffer 'sql
-    (define-key% sql-mode-map
-                 (kbd "C-c C-z") #'sql-show-sqli-buffer*))
-
+(defun on-sql-mysql-init! ()
+  "On \\=`sql\\=' mysql initialization."
+  ;; mysql: \\=`:terminator\\='
   (when-fn% 'sql-send-magic-terminator 'sql
-    ;; mysql: \\=`:terminator\\='
     (plist-put
      (cdr (assoc** 'mysql sql-product-alist :test #'eq))
      :terminator
      '("^.*\\G" . ""))
-
     (ad-enable-advice #'sql-send-magic-terminator 'before
                       "sql-send-magic-terminator-before")
     (ad-activate #'sql-send-magic-terminator t))
 
+  ;; `sql-mysql-program'
+  (setq sql-mysql-program
+        (or (executable-find% "mysql")
+            (when-platform% 'darwin
+              (executable-find%
+               "/Applications/MySQLWorkbench.app/Contents/MacOS/mysql"))
+            "mysql"))
+  ;; mysql features
+  (when-sql-mysql-feature%
+    ;; new `:desc-table'
+    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
+               :desc-table
+               #'sql-mysql-desc-table)
+    ;; new `:desc-plan'
+    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
+               :desc-plan
+               #'sql-mysql-desc-plan)
+    ;; new `:list-code'
+    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
+               :list-code
+               #'sql-mysql-list-code)
+    ;; new `:list-index'
+    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
+               :list-index
+               #'sql-mysql-list-index)))
 
-  ;;; oracle
-
+(defun on-sql-oracle-init! ()
+  "On \\=`sql\\=' oracle initialization."
   ;; `sql-oracle-program'
   (setq sql-oracle-program
-        (eval-when-compile
-          (or (executable-find% "sqlplus")
-              (when% (getenv "ORACLE_HOME")
-                (or (executable-find%
-                     (concat (getenv "ORACLE_HOME") "/"
-                             "sqlplus"))
-                    (executable-find%
-                     (concat (getenv "ORACLE_HOME") "/bin/"
-                             "sqlplus"))))
-              "sqlplus")))
-
+        (or (executable-find% "sqlplus")
+            (when% (getenv "ORACLE_HOME")
+              (or (executable-find%
+                   (concat (getenv "ORACLE_HOME") "/"
+                           "sqlplus"))
+                  (executable-find%
+                   (concat (getenv "ORACLE_HOME") "/bin/"
+                           "sqlplus"))))
+            "sqlplus"))
+  ;; oracle features
   (when-sql-oracle-feature%
     ;; replace `:list-all'
     (when (plist-get
@@ -381,44 +398,25 @@ Optional prefix argument ENHANCED, displays additional details."
     ;; new `:desc-plan'
     (plist-put (cdr (assoc** 'oracle sql-product-alist :test #'eq))
                :desc-plan
-               #'sql-oracle-desc-plan))
+               #'sql-oracle-desc-plan)))
 
-  ;;; mysql
-
-  ;; `sql-mysql-program'
-  (setq sql-mysql-program
-        (eval-when-compile
-          (or (executable-find% "mysql")
-              (when-platform% 'darwin
-                (executable-find%
-                 "/Applications/MySQLWorkbench.app/Contents/MacOS/mysql"))
-              "mysql")))
-
-  ;; mysql feature
-  (when-sql-mysql-feature%
-    ;; new `:desc-table'
-    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
-               :desc-table
-               #'sql-mysql-desc-table)
-    ;; new `:desc-plan'
-    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
-               :desc-plan
-               #'sql-mysql-desc-plan)
-    ;; new `:list-code'
-    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
-               :list-code
-               #'sql-mysql-list-code)
-    ;; new `:list-index'
-    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
-               :list-index
-               #'sql-mysql-list-index))
-
+(defun on-sql-init! ()
+  "On \\=`sql\\=' initialization."
+  (on-sql-mysql-init!)
+  (on-sql-oracle-init!)
+  (when-fn% 'sql-show-sqli-buffer 'sql
+    (define-key% sql-mode-map
+                 (kbd "C-c C-z") #'sql-show-sqli-buffer*))
   ;; features' keybindings
   (when-sql-feature%
     (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-code)
     (define-key% sql-mode-map (kbd "C-c C-l i") #'sql-list-index)
     (define-key% sql-mode-map (kbd "C-c C-l T") #'sql-desc-table)
     (define-key% sql-mode-map (kbd "C-c C-l P") #'sql-desc-plan)))
+
+;;; after-load
+(with-eval-after-load 'sql
+  (on-sql-init!))
 
 
 ;; end of on-sql-autoload.el
