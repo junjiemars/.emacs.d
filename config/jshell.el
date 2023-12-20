@@ -343,7 +343,7 @@ end of buffer, otherwise just popup the buffer."
 (defun jshell-send-last-sexp ()
   "Send the previous sexp to `*jshell*'."
   (interactive)
-  (let ((bounds (region-active-if
+  (let ((bounds (if-region-active
                     (cons (region-beginning) (region-end))
                   (let ((b (jshell-last-sexp)))
                     (if (and b (< b (point)))
@@ -369,7 +369,7 @@ end of buffer, otherwise just popup the buffer."
 (defun jshell-inspect-object ()
   "Inspect object."
   (interactive)
-  (let ((bounds (region-active-if
+  (let ((bounds (if-region-active
                     (cons (region-beginning) (region-end))
                   (let ((b (jshell-last-symbol))
                         (s (bounds-of-thing-at-point 'symbol)))

@@ -85,7 +85,7 @@ about each column."
     "Describe an execution plan named PLAN.\n
 Optional prefix argument ENHANCED, displays additional details."
     (interactive
-     (list (region-active-if
+     (list (if-region-active
                (buffer-substring-no-properties
                 (region-beginning) (region-end))
              (buffer-substring-no-properties

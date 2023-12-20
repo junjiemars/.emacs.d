@@ -307,7 +307,7 @@ As the 3rd argument of \\=`gud-common-init\\=': marker-filter"
   (interactive (list (if current-prefix-arg
                          (read-string "expression options: ")
                        "--")))
-  (let* ((expr (region-active-if
+  (let* ((expr (if-region-active
                    (buffer-substring-no-properties (region-beginning)
                                                    (region-end))
                  (gud*-find-c-last-expr)))

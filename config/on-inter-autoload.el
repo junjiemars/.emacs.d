@@ -209,20 +209,20 @@ Optional argument INDENT whether to indent lines. See also
 (defun toggle-comment (&optional n)
   "Toggle N lines\\=' comment on current line or region."
   (interactive "p")
-  (let ((begin (region-active-if (region-beginning)
+  (let ((begin (if-region-active (region-beginning)
                  (if (and (< n 0))
                      (save-excursion
                        (forward-line (1+ n))
                        (line-beginning-position))
                    (line-beginning-position))))
-        (end (region-active-if (region-end)
+        (end (if-region-active (region-end)
                (if (and (> n 0))
                    (save-excursion
                      (forward-line (1- n))
                      (line-end-position))
                  (line-end-position)))))
     (comment-or-uncomment-region begin end)
-    (region-active-unless (forward-line n))
+    (unless-region-active (forward-line n))
     (beginning-of-line)))
 
 ;; end of Comment
@@ -237,7 +237,7 @@ If \\=`current-prefix-arg\\=' < 0, then repeat n time with END in reversed."
                                   "<space>")
                      (read-string "surround region end with: "
                                   "<begin>")))
-  (let ((bounds (region-active-if
+  (let ((bounds (if-region-active
                     (cons (region-beginning) (region-end))
                   (cons (point) (point)))))
     (let* ((n (if current-prefix-arg (abs current-prefix-arg) 1))

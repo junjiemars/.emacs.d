@@ -37,7 +37,7 @@
 (defmacro region-extract-str (&optional buffer properties)
   "Extract string from region or BUFFER with or without PROPERTIES.\n
 If no region actived, then extract from buffer when BUFFER is t."
-  `(region-active-if
+  `(if-region-active
        (if ,properties
          (buffer-substring (region-beginning) (region-end))
            (buffer-substring-no-properties (region-beginning) (region-end)))

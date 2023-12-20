@@ -139,24 +139,23 @@ STANDARD always be computed at runtime whatever the current
 ;; end of compatible function
 
 ;;;
-;; region active
+;; *-region-active
 ;;;
 
-(defmacro region-active-if (then &rest else)
-  "If \\=`region-active-p\\=' or \\=`mark-active\\=' is t do THEN,
-otherwise do ELSE..."
+(defmacro if-region-active (then &rest else)
+  "If \\=`region-active-p\\=' or \\=`mark-active\\=' is non-nil, do THEN,
+else do ELSE..."
   (declare (indent 1))
   `(if mark-active
        ,then
      (progn% ,@else)))
 
-(defmacro region-active-unless (&rest then)
-  "Unless \\=`region-active-p\\=' or \\=`mark-active\\=' is t do
-THEN."
+(defmacro unless-region-active (&rest then)
+  "Unless \\=`region-active-p\\=' or \\=`mark-active\\=' is non-nil, do THEN."
   (declare (indent 0))
-  `(region-active-if nil ,@then))
+  `(if-region-active nil ,@then))
 
-;; end of region active
+;; end of *-region-active
 
 ;;;
 ;; file function
@@ -351,7 +350,7 @@ exists."
 (defmacro symbol@ (&optional thing)
   "Return the (cons \\='region|nil THING) at point."
   (let ((ss (gensym*)))
-    `(region-active-if
+    `(if-region-active
          (let ((,ss (buffer-substring-no-properties
                      (region-beginning)
                      (region-end))))

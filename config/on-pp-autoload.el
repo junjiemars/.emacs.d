@@ -51,8 +51,8 @@ If ARG < 0 then minify the region, otherwise pretty print it."
 
 MINIFY the region when it's non-nil, otherwise pretty print it."
   (interactive "P")
-  (let ((begin (region-active-if (region-beginning) (point-min)))
-        (end (region-active-if (region-end) (point-max))))
+  (let ((begin (if-region-active (region-beginning) (point-min)))
+        (end (if-region-active (region-end) (point-max))))
     (if minify
         (make-thread*
          (lambda ()

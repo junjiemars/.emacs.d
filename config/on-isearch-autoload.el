@@ -30,28 +30,28 @@
     (let ((ms (cond ((null style) nil)
                     ((char= ?s style)
                      (cons "symbol"
-                           (region-active-unless
+                           (unless-region-active
                              (let ((bs (_mark_symbol@_)))
                                (unless bs
                                  (user-error "%s" "No symbol at point"))
                                (_mark_thing_ (car bs) (cdr bs))))))
                     ((char= ?w style)
                      (cons "word"
-                           (region-active-unless
+                           (unless-region-active
                              (let ((bs (_mark_word@_)))
                                (unless bs
                                  (user-error "%s" "No word at point"))
                                (_mark_thing_ (car bs) (cdr bs))))))
                     ((char= ?f style)
                      (cons "file"
-                           (region-active-unless
+                           (unless-region-active
                              (let ((bs (_mark_filename@_)))
                                (unless bs
                                  (user-error "%s" "No file at point"))
                                (_mark_thing_ (car bs) (cdr bs))))))
                     ((char= ?q style)
                      (cons "quoted"
-                           (region-active-unless
+                           (unless-region-active
                              (let ((bs (_mark_quoted_symmetry@_)))
                                (unless bs
                                  (user-error "%s" "No quoted thing at point"))

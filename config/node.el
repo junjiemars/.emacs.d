@@ -372,7 +372,7 @@ end of buffer, otherwise just popup the buffer."
 (defun node-send-last-sexp ()
   "Send the previous sexp to `*node*'."
   (interactive)
-  (let ((bounds (region-active-if
+  (let ((bounds (if-region-active
                     (cons (region-beginning) (region-end))
                   (if current-prefix-arg
                       (let ((b (node-last-sexp)))
@@ -400,7 +400,7 @@ end of buffer, otherwise just popup the buffer."
 (defun node-inspect-object ()
   "Inspect object."
   (interactive)
-  (let ((bounds (region-active-if
+  (let ((bounds (if-region-active
                     (cons (region-beginning) (region-end))
                   (let ((b (node-last-symbol))
                         (s (bounds-of-thing-at-point 'symbol)))
