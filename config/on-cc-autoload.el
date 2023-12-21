@@ -289,24 +289,28 @@ view it in \\=`view-mode\\='."
                              (buffer-file-name buffer))))
     (with-current-buffer buffer (view-mode 1))))
 
+(defmacro when-fn-ff-find-other-file% (&rest body)
+  (if-fn% 'ff-find-other-file 'find-file
+          `(progn% ,@body)
+    `(comment ,@body)))
 
-(defun cc*-find-include-file (&optional in-other-window)
-  "Find C include file in \\=`cc*-system-include\\=' or specified directory. "
-  (interactive "P")
-  (let ((file (buffer-file-name (current-buffer))))
-    (setq% cc-search-directories
-           (if (stringp file)
-               (append (list (string-trim>
-                              (file-name-directory file) "/"))
-                       (cc*-system-include t (ssh-remote-p file))
-                       (cc*-extra-include t))
-             (append (cc*-system-include t)
-                     (cc*-extra-include t)))
-           'find-file))
-  (when-fn% 'xref-push-marker-stack 'xref
-    (autoload 'xref-push-marker-stack "xref")
-    (xref-push-marker-stack))
-  (ff-find-other-file in-other-window nil))
+(when-fn-ff-find-other-file%
+ (defun cc*-find-include-file (&optional in-other-window)
+   "Find C include file in \\=`cc*-system-include\\=' or specified directory. "
+   (interactive "P")
+   (setq% cc-search-directories
+          (let ((file (buffer-file-name (current-buffer))))
+            (append (list
+                     (when (stringp file)
+                       (string-trim>
+                        (file-name-directory file) "/")))
+                    (cc*-system-include t (ssh-remote-p file))
+                    (cc*-extra-include t)))
+          'find-file)
+   (when-fn% 'xref-push-marker-stack 'xref
+     (autoload 'xref-push-marker-stack "xref")
+     (xref-push-marker-stack))
+   (ff-find-other-file in-other-window nil)))
 
 ;; end of #include
 
@@ -654,12 +658,12 @@ See \\=`align-entire\\='."
   (c-add-style (car cc*-style-nginx) (cdr cc*-style-nginx))
   ;; keymap:
   ;; find include file
-  (when-fn% 'ff-find-other-file 'find-file
-    (define-key% c-mode-map
-                 (kbd "C-c f i") #'cc*-find-include-file)
-    ;; for c++, add include via `cc*-extra-include'
-    (define-key% c++-mode-map
-                 (kbd "C-c f i") #'cc*-find-include-file))
+  (when-fn-ff-find-other-file%
+   (define-key% c-mode-map
+                (kbd "C-c f i") #'cc*-find-include-file)
+   ;; for c++, add include via `cc*-extra-include'
+   (define-key% c++-mode-map
+                (kbd "C-c f i") #'cc*-find-include-file))
   ;; indent line or region
   (when-fn% 'c-indent-line-or-region 'cc-cmds
     (define-key% c-mode-map
