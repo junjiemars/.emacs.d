@@ -243,7 +243,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 
 
 (defalias 'cc*-extra-include
-  (lexical-let% ((dx)
+  (lexical-let% ((dx nil)
                  (fs (v-home% ".exec/cc-extra-inc.el")))
     (lambda (cached &rest dir)
   		"CACHED DIR"
@@ -295,7 +295,7 @@ view it in \\=`view-mode\\='."
   (interactive "P")
   (let ((file (buffer-file-name (current-buffer))))
     (setq% cc-search-directories
-           (if (and file (file-exists-p file))
+           (if (stringp file)
                (append (list (string-trim>
                               (file-name-directory file) "/"))
                        (cc*-system-include t (ssh-remote-p file))
