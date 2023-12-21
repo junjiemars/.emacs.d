@@ -78,28 +78,30 @@
                              (if-platform% 'windows-nt
                                  ".exe"
                                ".out")))
-          (f (make-temp-file "cc-" nil ".c")))
-      (catch 'break
-        (dolist* (cc cx)
-          (when (save-str-to-file (concat
-                                   "int main(void) {\n"
-                                   "  return 0;\n"
-                                   "}")
-                                  f)
-            (let ((x (shell-command*
-                         (format (if-platform% 'windows-nt
-                                     (if (string= "cc-env.bat" cc)
-                                         (concat "%s %s -Fe%s -Fo")
-                                       "%s %s -o%s")
-                                   "%s %s -o%s")
-                                 (if-platform% 'windows-nt
-                                     (if (string= "cc-env.bat" cc)
-                                         "cc-env.bat && cl"
-                                       cc)
-                                   cc)
-                                 f o))))
-              (when (zerop (car x))
-                (throw 'break cc))))))))
+          (i (save-str-to-file
+              (concat
+               "int main(void) {\n"
+               "  return 0;\n"
+               "}")
+              (make-temp-file "cc-" nil ".c"))))
+      (when i
+        (catch 'br
+          (dolist* (cc cx)
+            (when (zerop
+                   (car
+                    (shell-command*
+                        (format (if-platform% 'windows-nt
+                                    (if (string= "cc-env.bat" cc)
+                                        (concat "%s %s -Fe%s -Fo")
+                                      "%s %s -o%s")
+                                  "%s %s -o%s")
+                                (if-platform% 'windows-nt
+                                    (if (string= "cc-env.bat" cc)
+                                        "cc-env.bat && cl"
+                                      cc)
+                                  cc)
+                                i o))))
+              (throw 'br cc)))))))
   "The name of C compiler executable.")
 
 ;; end of CC
