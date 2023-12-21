@@ -659,11 +659,13 @@ See \\=`align-entire\\='."
   ;; keymap:
   ;; find include file
   (when-fn-ff-find-other-file%
-   (define-key% c-mode-map
-                (kbd "C-c f i") #'cc*-find-include-file)
+   (when-var% c-mode-map 'cc-mode
+     (define-key% c-mode-map
+                  (kbd "C-c f i") #'cc*-find-include-file))
    ;; for c++, add include via `cc*-extra-include'
-   (define-key% c++-mode-map
-                (kbd "C-c f i") #'cc*-find-include-file))
+   (when-var% c++mode-map 'cc-mode
+       (define-key% c++-mode-map
+                    (kbd "C-c f i") #'cc*-find-include-file)))
   ;; indent line or region
   (when-fn% 'c-indent-line-or-region 'cc-cmds
     (define-key% c-mode-map
