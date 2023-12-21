@@ -239,14 +239,14 @@ Argument SPEC (VAR LIST [RESULT])."
 
 (defun compile-unit* (file &optional only-compile)
   "Make an compile unit for \\=`compile!\\='."
-  (let ((file-name-handler-alist nil))
+  (without-file-name-handler
     (when (and (stringp file) (file-exists-p file))
       (let ((u1 (v-comp-file! file)))
         (vector (car u1) (cdr u1) only-compile nil)))))
 
 (defmacro compile-unit% (file &optional only-compile)
   "Make an compile unit at compile time for \\=`compile!\\='"
-  (let* ((-u1- (let ((file-name-handler-alist nil))
+  (let* ((-u1- (without-file-name-handler
                  (v-comp-file! (funcall `(lambda () ,file)))))
          (-src1- (car -u1-))
          (-dst1- (cdr -u1-)))
@@ -268,13 +268,12 @@ Argument SPEC (VAR LIST [RESULT])."
 (defun compile! (&rest units)
   "Compile and load UNITS."
   (declare (indent 0))
-  (lexical-let% ((file-name-handler-alist nil))
-    (dolist* (u units)
-      (when u
-        (compile-and-load-file*
-         (compile-unit->src u)
-         (compile-unit->dst u)
-         (compile-unit->only-compile u))))))
+  (dolist* (u units)
+    (when u
+      (compile-and-load-file*
+       (compile-unit->src u)
+       (compile-unit->dst u)
+       (compile-unit->only-compile u)))))
 
 ;; end of compile macro
 
@@ -319,7 +318,7 @@ Argument SPEC (VAR LIST [RESULT])."
       (cond ((eq :get op) (plist-get ps k))
             ((eq :put op) (setq ps (plist-put ps k v)))
             ((eq :dup op)
-             (let ((file-name-handler-alist nil))
+             (without-file-name-handler
                (dolist* (fs ss)
                  (let ((dst (plist-get ps (car fs)))
                        (src (cdr fs)))

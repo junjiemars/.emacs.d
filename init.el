@@ -50,6 +50,12 @@ Else return BODY sexp."
             (prog1 *gensym-counter*
               (setq *gensym-counter* (1+ *gensym-counter*))))))
 
+(defmacro without-file-name-handler (&rest body)
+  "Without \\=`file-name-handler-alist\\='."
+  (declare (indent 0))
+  `(let ((file-name-handler-alist nil))
+     (progn% ,@body)))
+
 ;; end of compile-time macro
 
 ;;;
@@ -111,26 +117,26 @@ See \\=`file-name-sans-extension\\='."
 (defmacro path! (file)
   "Make and return the path of posixed FILE.\n"
   (let ((f (gensym*)) (d (gensym*)))
-    `(let ((,f ,file)
-           (file-name-handler-alist nil))
-       (if (file-exists-p ,f)
-           ,f
-         (let ((,d (file-name-directory ,f)))
-           (prog1 ,f
-             (unless (file-exists-p ,d)
-               (let ((i (1- (length ,d)))
-                     (ds nil))
-                 (catch 'break
-                   (while (> i 0)
-                     (when (= ?/ (aref ,d i))
-                       (let ((s (substring-no-properties ,d 0 (1+ i))))
-                         (if (file-exists-p s)
-                             (throw 'break t)
-                           (setq ds (cons s ds)))))
-                     (setq i (1- i))))
-                 (while (car ds)
-                   (make-directory-internal (car ds))
-                   (setq ds (cdr ds)))))))))))
+    `(without-file-name-handler
+       (let ((,f ,file))
+         (if (file-exists-p ,f)
+             ,f
+           (let ((,d (file-name-directory ,f)))
+             (prog1 ,f
+               (unless (file-exists-p ,d)
+                 (let ((i (1- (length ,d)))
+                       (ds nil))
+                   (catch 'break
+                     (while (> i 0)
+                       (when (= ?/ (aref ,d i))
+                         (let ((s (substring-no-properties ,d 0 (1+ i))))
+                           (if (file-exists-p s)
+                               (throw 'break t)
+                             (setq ds (cons s ds)))))
+                       (setq i (1- i))))
+                   (while (car ds)
+                     (make-directory-internal (car ds))
+                     (setq ds (cdr ds))))))))))))
 
 ;; end of file macro
 
@@ -147,10 +153,11 @@ See \\=`file-name-sans-extension\\='."
 (defmacro v-path (file)
   "Return versioned FILE."
   (let ((f1 (gensym*)))
-    `(let ((,f1 ,file))
-       (concat (file-name-directory ,f1)
-               ,(v-name) "/"
-               (file-name-nondirectory ,f1)))))
+    `(without-file-name-handler
+       (let ((,f1 ,file))
+         (concat (file-name-directory ,f1)
+                 ,(v-name) "/"
+                 (file-name-nondirectory ,f1))))))
 
 (defmacro v-home (&optional file)
   "Return versioned FILE under \\=`emacs-home*\\='."
@@ -211,15 +218,16 @@ compile-time."
   "Compile SRC to DST.\n
 If ONLY-COMPILE is t, does not load DST."
   (let ((s1 (gensym*)) (d1 (gensym*)) (c1 (gensym*)))
-    `(let ((,s1 ,src) (,d1 ,dst) (,c1 ,only-compile))
-       (unless (file-exists-p ,d1)
-         (if-native-comp%
-             (native-compile ,s1 ,d1)
-           (byte-compile-file ,s1)))
-       (cond (,c1 ,d1)
-             (t (if-native-comp%
-                    (native-elisp-load ,d1)
-                  (load ,d1)))))))
+    `(without-file-name-handler
+       (let ((,s1 ,src) (,d1 ,dst) (,c1 ,only-compile))
+         (unless (file-exists-p ,d1)
+           (if-native-comp%
+               (native-compile ,s1 ,d1)
+             (byte-compile-file ,s1)))
+         (cond (,c1 ,d1)
+               (t (if-native-comp%
+                      (native-elisp-load ,d1)
+                    (load ,d1))))))))
 
 (defun clean-compiled-files ()
   "Clean all compiled files."
@@ -312,7 +320,7 @@ If ONLY-COMPILE is t, does not load DST."
 ;; boot
 (let ((frame-inhibit-implied-resize t)
       (inhibit-redisplay t))
-  (let ((u (let ((file-name-handler-alist nil))
+  (let ((u (without-file-name-handler
              (v-comp-file! (emacs-home* "config/boot.el"))))
         (gc-cons-percentage 0.4))
     (compile-and-load-file* (car u) (cdr u))))
