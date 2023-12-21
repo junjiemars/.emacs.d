@@ -818,7 +818,6 @@
     (should (= 2008 (roman->arabic "MMVIII")))
     (should (= 1666 (roman->arabic "MDCLXVI")))))
 
-
 (ert-deftest %r:trans:chinese->arabic ()
   (when-fn% 'chinese->arabic nil
     (should (= 91234567 (chinese->arabic
