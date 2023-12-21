@@ -556,11 +556,11 @@
                          "/ssh:u@h.i.j:/a/b.c"))))
   (should (and (null (ssh-remote->ids nil))
                (equal '("abc") (ssh-remote->ids "abc"))
-               (equal '("/sshx" "pi")
+               (equal '("sshx" "pi")
                       (ssh-remote->ids "/sshx:pi:"))
-               (equal '("/ssh" "u" "h")
+               (equal '("ssh" "u" "h")
                       (ssh-remote->ids "/ssh:u@h:"))
-               (equal '("/ssh" "u" "h.i.j")
+               (equal '("ssh" "u" "h.i.j")
                       (ssh-remote->ids "/ssh:u@h.i.j:/a/b.c"))))
   (should (and (null (ssh-remote->user@host nil))
                (string= "pi@circle"
@@ -800,12 +800,6 @@
   (when-var% +cc*-compiler-bin+ nil
     (should (message "# +cc*-compiler-bin+ = %s"
                      (or +cc*-compiler-bin+ "")))))
-
-
-(ert-deftest %q:cc:cc*-check-include ()
-  (when-fn% 'cc*-check-include nil
-    (should (message "# cc*-check-include = %s"
-                     (or (cc*-check-include) "")))))
 
 (ert-deftest %q:cc:cc*-system-include ()
   (when-fn% 'cc*-system-include nil

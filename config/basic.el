@@ -297,7 +297,7 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
   (let ((r (gensym*)))
     `(let ((,r ,remote))
        (when (stringp ,r)
-         (split-string* ,r "[:@]" t "^/[^ssh].*")))))
+         (split-string* ,r "[:@]" t "\\(^/[^ssh].*$\\|^/\\)")))))
 
 (defmacro ssh-remote->user@host (remote)
   "Norm the REMOTE to {user|id}[@host] form."
