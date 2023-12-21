@@ -38,21 +38,21 @@
 ;;;
 
 
-(ert-deftest %init:comment ()
+(ert-deftest %b:init:comment ()
   (should-not (comment))
   (should-not (comment (+ 1 2 3)))
   (should-not (comment (progn (+ 1) (* 2 3)))))
 
-(ert-deftest %init:gensym* ()
+(ert-deftest %b:init:gensym* ()
   (should (string-match "^n[0-9]+" (format "%s" (gensym*))))
   (should (string-match "^X[0-9]+" (format "%s" (gensym* "X")))))
 
-(ert-deftest %init:emacs-home* ()
+(ert-deftest %b:init:emacs-home* ()
   (should (file-exists-p (emacs-home*)))
   (should (file-exists-p (emacs-home* "config/")))
   (should (file-exists-p (emacs-home* "private/"))))
 
-(ert-deftest %init:path! ()
+(ert-deftest %b:init:path! ()
   (let ((p (concat temporary-file-directory
                    (make-temp-name (symbol-name (gensym*)))
                    "/")))
@@ -60,58 +60,58 @@
     (should (path! p))
     (should (file-exists-p p))))
 
-(ert-deftest %init:strrchr ()
+(ert-deftest %b:init:strrchr ()
   (should (null (strrchr nil nil)))
   (should (null (strrchr nil ?a)))
   (should (null (strrchr "abc" ?d)))
   (should (= 0 (strrchr "abc" ?a))))
 
-(ert-deftest %init:v-path ()
+(ert-deftest %b:init:v-path ()
   (should (string-match "[gt]_[.0-9]+" (v-path "a/x.el")))
   (should (string-match "[gt]_[.0-9]+/" (v-path "a/b/c/"))))
 
-(ert-deftest %init:v-home ()
+(ert-deftest %b:init:v-home ()
   (should (directory-name-p (v-home)))
   (should (string-match "[gt]_[.0-9]+" (v-home)))
   (should (string-match "[gt]_[.0-9]+.*x\\.el\\'" (v-home "x.el"))))
 
-(ert-deftest %init:v-home% ()
+(ert-deftest %b:init:v-home% ()
   (should (directory-name-p (v-home%)))
   (should (string-match "[gt]_[.0-9]+" (v-home%)))
   (should (string-match "[gt]_[.0-9]+.*x\\.el\\'" (v-home% "x.el"))))
 
-(ert-deftest %init:v-home%> ()
+(ert-deftest %b:init:v-home%> ()
   (should (file-name-nondirectory (v-home%> nil)))
   (should (string-match "[gt]_[.0-9]+.*x\\.el[cn]?\\'" (v-home%> "x.el"))))
 
-(ert-deftest %init:progn% ()
+(ert-deftest %b:init:progn% ()
   (should-not (progn%))
   (should (equal '(+ 1 2) (macroexpand '(progn% (+ 1 2)))))
   (should (equal '(progn (+ 1 2) (* 3 4))
                  (macroexpand '(progn% (+ 1 2) (* 3 4))))))
 
-(ert-deftest %init:if% ()
+(ert-deftest %b:init:if% ()
   (should (= 3 (if% t (+ 1 2))))
   (should (= 12 (if% nil (+ 1 2) (* 3 4))))
   (should (equal '(+ 1 2) (macroexpand '(if% t (+ 1 2) (* 3 4)))))
   (should (equal '(progn (* 3 4) (* 5 6))
                  (macroexpand '(if% nil (+ 1 2) (* 3 4) (* 5 6))))))
 
-(ert-deftest %init:when% ()
+(ert-deftest %b:init:when% ()
   (should-not (when% t))
   (should-not (when% nil))
   (should (= 3 (when% t (+ 1 2))))
   (should (equal '(progn (+ 1 2) (* 3 4))
                  (macroexpand '(when% t (+ 1 2) (* 3 4))))))
 
-(ert-deftest %init:unless% ()
+(ert-deftest %b:init:unless% ()
   (should-not (unless% t))
   (should-not (unless% nil))
   (should (= 3 (unless% nil (+ 1 2))))
   (should (equal '(progn (+ 1 2) (* 3 4))
                  (macroexpand '(unless% nil (+ 1 2) (* 3 4))))))
 
-(ert-deftest %init:if-version% ()
+(ert-deftest %b:init:if-version% ()
   (should (if-version% < 0 t))
   (should (= 12 (if-version% < 10000 (+ 1 2) (* 3 4))))
   (should (equal '(progn (* 3 4) (* 5 6))
@@ -120,7 +120,7 @@
                                  (* 3 4)
                                  (* 5 6))))))
 
-(ert-deftest %init:when-version% ()
+(ert-deftest %b:init:when-version% ()
   (should (when-version% < 0 t))
   (should-not (when-version% < 10000 (+ 1 2)))
   (should (equal '(progn (+ 1 2) (* 3 4))
@@ -136,7 +136,7 @@
 ;;;
 
 
-(ert-deftest %boot:if/when/unless-lexical% ()
+(ert-deftest %c:boot:if/when/unless-lexical% ()
   (if (if-lexical% t nil)
       (should (and (when-lexical% t)
                    (not (unless-lexical% t))
@@ -149,7 +149,7 @@
                         (macroexpand '(unless-lexical%
                                         (+ 1 2) (* 3 4))))))))
 
-(ert-deftest %boot:if/when/unless-graphic% ()
+(ert-deftest %c:boot:if/when/unless-graphic% ()
   (if (if-graphic% t nil)
       (should (and (when-graphic% t)
                    (not (unless-graphic% t))
@@ -162,7 +162,7 @@
                         (macroexpand '(unless-graphic%
                                         (+ 1 2) (* 3 4))))))))
 
-(ert-deftest %boot:if/when/unless-platform% ()
+(ert-deftest %c:boot:if/when/unless-platform% ()
   (cond ((if-platform% 'darwin t)
          (should (and (when-platform% 'darwin t)
                       (not (unless-platform% 'darwin t)))))
@@ -176,7 +176,7 @@
          (should (and (when-platform% 'cygwin t)
                       (not (unless-platform% 'cygwin)))))))
 
-(ert-deftest %boot:if/when/unless-window% ()
+(ert-deftest %c:boot:if/when/unless-window% ()
 	(cond ((if-window% 'mac t)
          (should (and (when-window% 'mac t)
                       (not (unless-window% 'mac t)))))
@@ -190,11 +190,11 @@
          (should (and (when-window% 'w32 t)
                       (not (unless-window% 'w32 t)))))))
 
-(ert-deftest %boot:setq% ()
+(ert-deftest %c:boot:setq% ()
   (should-not (setq% zzz 'xx))
   (should-not (setq% zzz nil)))
 
-(ert-deftest %boot:if/when/unless-fn% ()
+(ert-deftest %c:boot:if/when/unless-fn% ()
   (should (null (if-fn% 'shouldx 'ert t)))
   (should (and (if-fn% 'should 'ert t)
                (when-fn% 'should 'ert t)
@@ -206,13 +206,13 @@
                  (macroexpand '(unless-fn% 'shouldx 'ert
                                  (+ 1 2) (* 3 4))))))
 
-(ert-deftest %boot:if/when/unless-var% ()
+(ert-deftest %c:boot:if/when/unless-var% ()
   (should (and (if-var% ert-batch-backtrace-right-margin 'ert t)
                (when-var% ert-batch-backtrace-right-margin 'ert t)
                (not (unless-var% ert-batch-backtrace-right-margin 'ert))
                (unless-var% ert-batch-xxx 'ert t))))
 
-(ert-deftest %boot:dolist* ()
+(ert-deftest %c:boot:dolist* ()
   (should (equal '(a nil b c)
                  (let ((lst nil))
                    (dolist* (x '(a nil b c) (nreverse lst))
@@ -221,13 +221,13 @@
             (dolist* (x '(a b c))
               (when (eq 'b x) (throw 'found t))))))
 
-(ert-deftest %boot:self-spec-> ()
+(ert-deftest %c:boot:self-spec-> ()
   (should (null (self-spec-> nil nil)))
   (should (null (self-spec-> '(a 1) nil)))
   (should (= 1 (self-spec-> '(a 1) 'a)))
   (should (= 1 (self-spec-> '(a (b (c 1))) 'a 'b 'c))))
 
-(ert-deftest %boot:self-spec->% ()
+(ert-deftest %c:boot:self-spec->% ()
   (should (null (self-spec->% nil nil)))
   (should (null (self-spec->% '(a 1) nil)))
   (should (= 1 (self-spec->% '(a 1) 'a)))
@@ -251,10 +251,10 @@
 (defmacro-if-fn% ert-delete-test ert)
 (defmacro-if-fn% ert-delete-testxxx ert)
 
-(ert-deftest %fn:emacs-arch ()
+(ert-deftest %d:fn:emacs-arch ()
   (should (> (emacs-arch) 0)))
 
-(ert-deftest %fn:defmacro-if-feature% ()
+(ert-deftest %d:fn:defmacro-if-feature% ()
 	(unwind-protect
 			(progn
 				(should (= 3 (if-feature-ert% (+ 1 2) (* 3 4))))
@@ -262,7 +262,7 @@
 		(unintern "if-feature-ert%")
 		(unintern "if-feature-ertxxx%")))
 
-(ert-deftest %fn:defmacro-if-fn% ()
+(ert-deftest %d:fn:defmacro-if-fn% ()
 	(unwind-protect
 			(progn
 				(should (= 3 (if-fn-ert-delete-test% (+ 1 2) (* 3 4))))
@@ -270,25 +270,25 @@
   (unintern "if-fn-ert-delete-test%")
 	(unintern "if-fn-ert-delete-testxxx%"))
 
-(ert-deftest %fn:flatten ()
+(ert-deftest %d:fn:flatten ()
   (should (equal '(nil) (flatten nil)))
   (should (equal '(a) (flatten 'a)))
   (should (equal '(a b) (flatten '(a (b)))))
   (should (equal '(a b c) (flatten '(a (b (c)))))))
 
-(ert-deftest %fn:take ()
+(ert-deftest %d:fn:take ()
   (should-not (take 3 nil))
   (should (equal '(1 2 3) (take 3 (range 1 10 1))))
   (should (= 3 (length (take 3 (range 1 10 1)))))
   (should (= 10 (length (take 100 (range 1 10 1))))))
 
-(ert-deftest %fn:drop ()
+(ert-deftest %d:fn:drop ()
   (should-not (drop 3 nil))
   (should (equal '(8 9 10) (drop 7 (range 1 10 1))))
   (should (= 3 (length (drop 7 (range 1 10 1)))))
   (should (= 0 (length (drop 100 (range 1 10 1))))))
 
-(ert-deftest %fn:drop-while ()
+(ert-deftest %d:fn:drop-while ()
   (should-not (drop-while nil nil))
   (should-not (drop-while (lambda (x) (= x 1)) nil))
   (should (= 1 (car (drop-while (lambda (x) (< x 1))
@@ -298,12 +298,12 @@
   (should (= 10 (length (drop-while (lambda (x) (> x 3))
                                     (range 1 10 1))))))
 
-(ert-deftest %fn:ignore* ()
+(ert-deftest %d:fn:ignore* ()
   (if-lexical%
       (should-not (let ((a 1) (b 2)) (ignore* a b)))
     (should-not (let ((a 1) (b 2)) (ignore* a b)))))
 
-(ert-deftest %fn:take-while ()
+(ert-deftest %d:fn:take-while ()
   (should-not (take-while nil nil))
   (should-not (take-while (lambda (x) (= x 1)) nil))
   (should-not (take-while (lambda (x) (>= x 1))
@@ -313,7 +313,7 @@
   (should (= 2 (length (take-while (lambda (x) (>= x 3))
                                    (range 1 10 1))))))
 
-(ert-deftest %fn:push! ()
+(ert-deftest %d:fn:push! ()
   (should (equal '(a b c) (let ((s '(a b c)))
                             (push! 'a s t)
                             s)))
@@ -324,7 +324,7 @@
                            (push! "a" x)
                            (push! "a" x t)))))))
 
-(ert-deftest %fn:append! ()
+(ert-deftest %d:fn:append! ()
   (should (equal '(a) (let ((s nil)) (append! 'a s))))
   (should (equal '(a b c) (let ((s '(a b c)))
                             (append! 'c s t)
@@ -336,23 +336,23 @@
                            (append! "b" x t)
                            (append! "b" x t)))))))
 
-(ert-deftest %fn:seq-ins! ()
+(ert-deftest %d:fn:seq-ins! ()
   (should (equal '(a X b) (let ((s '(a b)))
                             (seq-ins! 'X s 1)))))
 
-(ert-deftest %fn:assoc** ()
+(ert-deftest %d:fn:assoc** ()
   (should (equal '(a 1) (assoc** 'a '((b 2) (a 1)))))
   (should (equal '(a 1) (assoc** 'a '((b 2) (a 1)) :test #'eq)))
   (should (equal '("a" a) (assoc** "a" '(("b" b) ("a" a)) :test #'string=)))
   (let ((k "a") (lst '(("b" b) ("a" a))))
     (should (equal (assoc** k lst :test #'string=) (assoc-string k lst)))))
 
-(ert-deftest %fn:mapcar** ()
+(ert-deftest %d:fn:mapcar** ()
   (should (equal '(a b c) (mapcar** #'identity '(a b c))))
   (should (equal '((a 1) (b 2) (c 3))
                  (mapcar** #'list '(a b c) '(1 2 3)))))
 
-(ert-deftest %fn:remove-if* ()
+(ert-deftest %d:fn:remove-if* ()
   (should-not (remove-if* nil nil))
   (should-not (remove-if* (lambda (x) (eq x 'a)) nil))
   (should (equal '(b c) (remove-if* (lambda (x) (eq x 'a)) '(a b c))))
@@ -383,7 +383,7 @@
                              '((1 "a") (2 "b") (2 "b") (2 "b"))
                              :key #'cadr :end 2))))
 
-(ert-deftest %fn:member-if* ()
+(ert-deftest %d:fn:member-if* ()
   (should-not (member-if* nil nil))
   (should-not (member-if* (lambda (x) (eq x 'a)) nil))
   (should (equal '(a) (member-if* (lambda (x) (eq x 'a)) '(b a))))
@@ -393,17 +393,17 @@
                                         '((1 "a") (2 "b") (3 "c"))
                                         :key #'cadr))))
 
-(ert-deftest %fn:every* ()
+(ert-deftest %d:fn:every* ()
   (should (every* #'stringp "" "a" "b"))
   (should (every* #'< '(1 2 3) '(2 3 4)))
   (should-not (every* #'< '(1 2 3) '(2 3 3))))
 
-(ert-deftest %fn:some* ()
+(ert-deftest %d:fn:some* ()
   (should (some* #'characterp "abc"))
   (should (some* #'< '(1 2 3) '(1 2 4)))
   (should-not (some* #'< '(1 2 3) '(1 2 3))))
 
-(ert-deftest %fn:loop* ()
+(ert-deftest %d:fn:loop* ()
   (should (equal '(1 2 3) (loop* for i from 1 to 3 collect i)))
   (should (= 3 (loop* for x in '(a b c)
                       count x)))
@@ -417,23 +417,23 @@
                               when (string= d1 "b/1")
                               return d))))
 
-(ert-deftest %fn:fluid-let ()
+(ert-deftest %d:fn:fluid-let ()
   (let ((x 123))
     (fluid-let (x 456)
       (should (= x 456)))
     (should (= x 123))))
 
-(ert-deftest %fn:time ()
+(ert-deftest %d:fn:time ()
   (should (null (time)))
   (should (= 6 (time (+ 1 2 3)))))
 
-(ert-deftest %fn:strchr ()
+(ert-deftest %d:fn:strchr ()
   (should (null (strchr nil nil)))
   (should (null (strchr nil ?a)))
   (should (null (strchr "abc" ?d)))
   (should (= 2 (strchr "abc" ?c))))
 
-(ert-deftest %fn:split-string* ()
+(ert-deftest %d:fn:split-string* ()
   (should (equal '("a" "b" "c")
                  (split-string* "a,b,,cXX" "," t "XX")))
   (should (equal '("a" "b" "c")
@@ -447,24 +447,24 @@
   (should (equal '("a" "b")
                  (split-string* "a, b " "," t " "))))
 
-(ert-deftest %fn:string-trim> ()
+(ert-deftest %d:fn:string-trim> ()
   (should-not (string-trim> nil "X"))
   (should (string= "abc" (string-trim> "abc \n  ")))
   (should (string= "abc" (string-trim> "abcXX" "XX")))
   (should (string= "abc" (string-trim> "abcXX" "X+"))))
 
-(ert-deftest %fn:string-trim< ()
+(ert-deftest %d:fn:string-trim< ()
   (should-not (string-trim< nil "X"))
   (should (string= "abc" (string-trim< "  \n abc")))
   (should (string= "abc" (string-trim< "XXabc" "XX")))
   (should (string= "abc" (string-trim< "XXabc" "X+"))))
 
-(ert-deftest %fn:string-trim>< ()
+(ert-deftest %d:fn:string-trim>< ()
   (should-not (string-trim>< nil "X" "Z"))
   (should (string= "abc" (string-trim>< " \n abc \n ")))
   (should (string= "abc" (string-trim>< "ZZabcXX" "X+" "Z+"))))
 
-(ert-deftest %fn:string-match* ()
+(ert-deftest %d:fn:string-match* ()
   (should-not (string-match* nil nil 0))
   (should-not (string-match* nil 123 0))
   (should (string= "XXabcXX"
@@ -473,20 +473,20 @@
   (should (string= "abc"
                    (string-match* "XX\\(abc\\)XX" "XXabcXX" 1))))
 
-(ert-deftest %fn:file-name-base* ()
+(ert-deftest %d:fn:file-name-base* ()
   (should (string= "x" (file-name-base* "/a/b/c/x.z"))))
 
-(ert-deftest %fn:directory-name-p ()
+(ert-deftest %d:fn:directory-name-p ()
   (should (directory-name-p "a/"))
   (should-not (directory-name-p "a")))
 
-(ert-deftest %fn:posix-path ()
+(ert-deftest %d:fn:posix-path ()
   (should-not (posix-path nil))
   (let ((p "c:/a/b/c.c"))
     (should (string= p (posix-path "c:/a/b/c.c")))
     (should (string= p (posix-path "c:\\a\\b\\c.c")))))
 
-(ert-deftest %fn:save/read-sexp-to/from-file ()
+(ert-deftest %d:fn:save/read-sexp-to/from-file ()
   (let ((f1 (concat temporary-file-directory
                     (make-temp-name (symbol-name (gensym*)))))
         (f2 (concat temporary-file-directory
@@ -501,20 +501,20 @@
     (should (and (save-sexp-to-file t1 f2)
                  (= 2 (gethash "b" (read-sexp-from-file f2)))))))
 
-(ert-deftest %fn:save/read-str-to/from-file ()
+(ert-deftest %d:fn:save/read-str-to/from-file ()
   (let ((f (concat temporary-file-directory
                    (symbol-name (gensym*)))))
     (should (and (save-str-to-file "abc" f)
                  (string= "abc" (read-str-from-file f))))))
 
-(ert-deftest %fn:executable-find% ()
+(ert-deftest %d:fn:executable-find% ()
   (if (eq system-type 'windows-nt)
       (should (executable-find% "dir"))
     (should (executable-find% "ls"))
     (should (executable-find% (concat "l" "s")))
     (should (executable-find% "ls" (lambda (ls) ls)))))
 
-(ert-deftest %fn:platform-arch ()
+(ert-deftest %d:fn:platform-arch ()
   (should (platform-arch))
   (should (consp (platform-arch))))
 
@@ -525,7 +525,7 @@
 ;; basic
 ;;;
 
-(ert-deftest %basic:file-in-dirs-p ()
+(ert-deftest %e:basic:file-in-dirs-p ()
   (should-not (file-in-dirs-p nil nil))
   (should-not (file-in-dirs-p (emacs-home* "init.el") nil))
   (should-not (file-in-dirs-p (emacs-home* "init.el")
@@ -537,13 +537,13 @@
   (should (file-in-dirs-p (emacs-home* "init.el")
                           (list (string-trim> (emacs-home*) "/")))))
 
-(ert-deftest %basic:file-name-nondirectory% ()
+(ert-deftest %e:basic:file-name-nondirectory% ()
   (should (string= "c.c" (file-name-nondirectory% "/a/b/c.c")))
   (should (string= "c.c" (file-name-nondirectory%
                           (concat "/a/b/" "c.c")))))
 
 
-(ert-deftest %basic:remote-norm-file/id/>user@host ()
+(ert-deftest %e:basic:remote-norm-file/id/>user@host ()
   (should (and (null (remote-norm-file nil))
                (null (remote-norm-file "/xxh:abc:/a/b/c"))
                (string= "/sshx:pi:"
@@ -563,18 +563,18 @@
                (string= "pi"
                         (remote-norm->user@host "/sshx:pi:")))))
 
-(ert-deftest %basic:path+ ()
+(ert-deftest %e:basic:path+ ()
   (should-not (path+ nil))
   (should (string= "a/" (path+ "a")))
   (should (string= "a/b/c/" (path+ "a/" "b/" "c/")))
   (should (string= "a/b/c/" (path+ "a/" "b" "c"))))
 
-(ert-deftest %basic:path- ()
+(ert-deftest %e:basic:path- ()
   (should-not (path- nil))
   (should (string= "a/b/" (path- "a/b/c")))
   (should (string= "a/b/" (path- "a/b/c/"))))
 
-(ert-deftest %basic:path-depth ()
+(ert-deftest %e:basic:path-depth ()
   (should (= 0 (path-depth nil)))
   (should (= 0 (path-depth "")))
   (should (= 1 (path-depth "/")))
@@ -584,7 +584,7 @@
   (should (= 3 (path-depth "/a/b")))
   (should (= 4 (path-depth "/a/b/c"))))
 
-(ert-deftest %basic:dir-iterate ()
+(ert-deftest %e:basic:dir-iterate ()
   (should (string-match
            "init\\.el\\'"
            (catch 'out
@@ -616,7 +616,7 @@
                  nil)
     (should (= 2 (length matched)))))
 
-(ert-deftest %basic:dir-backtrack ()
+(ert-deftest %e:basic:dir-backtrack ()
   (should (catch 'out
             (dir-backtrack (emacs-home* "config/")
                            (lambda (d fs)
@@ -642,10 +642,10 @@
                                      std)
                      (setq count (1+ count))))))))
 
-(ert-deftest %basic:buffer-major-mode ()
+(ert-deftest %e:basic:buffer-major-mode ()
   (should (eq 'fundamental-mode (buffer-major-mode))))
 
-(ert-deftest %basic:if-key% ()
+(ert-deftest %e:basic:if-key% ()
   (should (string= "defined"
                    (if-key% (current-global-map) (kbd "C-x C-c")
                             (lambda (def)
@@ -658,27 +658,27 @@
                               (not (eq def #'xxx)))
                             "undefined"))))
 
-(ert-deftest %basic:region-active-if ()
+(ert-deftest %e:basic:if-region-active ()
   ;; interactive
   (unless noninteractive
     (with-temp-buffer
       (insert "a bb")
-      (should (= 12 (region-active-if (+ 1 2) (* 3 4))))
+      (should (= 12 (if-region-active (+ 1 2) (* 3 4))))
       (set-mark (point-min))
       (set-mark (point-max))
-      (should (= 3 (region-active-if (+ 1 2) (* 3 4)))))))
+      (should (= 3 (if-region-active (+ 1 2) (* 3 4)))))))
 
-(ert-deftest %basic:region-active-unless ()
+(ert-deftest %e:basic:unless-region-active ()
   ;; interactive
   (unless noninteractive
     (with-temp-buffer
       (insert "a bb")
-      (should (= 12 (region-active-unless (* 3 4))))
+      (should (= 12 (unless-region-active (* 3 4))))
       (set-mark (point-min))
       (set-mark (point-max))
-      (should-not (region-active-unless (+ 1 2) (* 3 4))))))
+      (should-not (unless-region-active (+ 1 2) (* 3 4))))))
 
-(ert-deftest %basic:symbol@ ()
+(ert-deftest %e:basic:symbol@ ()
   ;; interactive
   (unless noninteractive
     (with-temp-buffer
@@ -696,20 +696,20 @@
 ;; shells
 ;;;
 
-(ert-deftest %shells:shells-spec->% ()
+(ert-deftest %f:shells:shells-spec->% ()
   ;; (should (= 6 (length (shells-spec->%))))
   (should (string= "shell-env"
                    (file-name-base* (shells-spec->% :file)))))
 
-(ert-deftest %shells:shell-env->/<- ()
+(ert-deftest %f:shells:shell-env->/<- ()
   (should (*default-shell-env* :put! :xx "aa"))
   (should (string= "aa" (*default-shell-env* :get :xx))))
 
-(ert-deftest %shells:var->paths ()
+(ert-deftest %f:shells:var->paths ()
   (should (null (var->paths 1)))
   (should (var->paths (getenv "PATH"))))
 
-(ert-deftest %shells:paths->var ()
+(ert-deftest %f:shells:paths->var ()
   (let ((path-separator ":"))
     (should (string= "a:b:c" (paths->var '("a" "b" "c"))))
     (should (string= "b" (paths->var '("a" "b" "c")
@@ -717,7 +717,7 @@
     (should (string= "" (paths->var '("a" "b" "c")
                                     (lambda (x) (file-exists-p x)))))))
 
-(ert-deftest %shells:setenv* ()
+(ert-deftest %f:shells:setenv* ()
   (should (member "D=44"
                   (let ((process-environment '("A=1" "B=2" "C=3")))
                     (setenv* "D" "44"))))
@@ -725,14 +725,14 @@
                   (let ((process-environment '("A=1" "B=2" "C=3")))
                     (setenv* "C" "4")))))
 
-(ert-deftest %shells:copy-env-vars! ()
+(ert-deftest %f:shells:copy-env-vars! ()
   (should (member "A=1"
                   (let ((env '(("A" . "1") ("B" . "2") ("C" . "3")))
                         (process-environment '("B=2")))
                     (copy-env-vars! env '("A"))
                     process-environment))))
 
-(ert-deftest %shells:spin-env-vars! ()
+(ert-deftest %f:shells:spin-env-vars! ()
   (should (member "C=22"
                   (let ((process-environment '("A=1" "B=2" "C=3")))
                     (spin-env-vars! '(("C" . "22")))
@@ -742,7 +742,7 @@
 
 
 (comment
- (ert-deftest %module:install/delete-package!1 ()
+ (ert-deftest %g:module:install/delete-package!1 ()
    (unless *repository-initialized*
      (initialize-package-repository!)
      (setq *repository-initialized* t))
@@ -766,19 +766,19 @@
 ;; conditional: cc
 ;;;
 
-(ert-deftest %z:cc:check-vcvarsall-bat ()
+(ert-deftest %q:cc:check-vcvarsall-bat ()
   (when-platform% 'windows-nt
     (when-fn% 'check-vcvarsall-bat
         (should (message "# (check-vcvarsall-bat) = %s"
                          (or (check-vcvarsall-bat) ""))))))
 
-(ert-deftest %z:cc:make-cc-env-bat ()
+(ert-deftest %q:cc:make-cc-env-bat ()
   (when-platform% 'windows-nt
     (when-fn% 'make-cc-env-bat
         (should (message "# (make-cc-env-bat) = %s"
                          (or (make-cc-env-bat) ""))))))
 
-(ert-deftest %z:cc:+cc*-compiler-bin+ ()
+(ert-deftest %q:cc:+cc*-compiler-bin+ ()
   (when-platform% 'windows-nt
     (should (message "# (executable-find \"cc-env.bat\") = %s"
                      (or (executable-find "cc-env.bat") "")))
@@ -795,12 +795,12 @@
                      (or +cc*-compiler-bin+ "")))))
 
 
-(ert-deftest %z:cc:cc*-check-include ()
+(ert-deftest %q:cc:cc*-check-include ()
   (when-fn% 'cc*-check-include nil
     (should (message "# cc*-check-include = %s"
                      (or (cc*-check-include) "")))))
 
-(ert-deftest %z:cc:cc*-system-include ()
+(ert-deftest %q:cc:cc*-system-include ()
   (when-fn% 'cc*-system-include nil
     (should (message "# cc*-system-include = %s"
                      (or (cc*-system-include t) "")))))
@@ -811,14 +811,14 @@
 ;; conditional: trans
 ;;;
 
-(ert-deftest %z:trans:roman->arabic ()
+(ert-deftest %r:trans:roman->arabic ()
   (when-fn% 'roman->arabic nil
     (should (= 1990 (roman->arabic "MCMXC")))
     (should (= 2008 (roman->arabic "MMVIII")))
     (should (= 1666 (roman->arabic "MDCLXVI")))))
 
 
-(ert-deftest %z:trans:chinese->arabic ()
+(ert-deftest %r:trans:chinese->arabic ()
   (when-fn% 'chinese->arabic nil
     (should (= 91234567 (chinese->arabic
                          (split-string*
