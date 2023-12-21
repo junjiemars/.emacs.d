@@ -211,16 +211,21 @@
                   (d (completing-read
                       (format "Choose (%s) "
                               (mapconcat #'identity ns "|"))
-                      ns nil nil (car *dict-name-history*)
-                      '*dict-name-history* (car ns)))
+                      ns nil nil
+                      (or (car *dict-name-history*)
+                          (car ns))
+                      '*dict-name-history*
+                      (car ns)))
                   (dd (cdr (assoc** d (*dict-defs*) :test #'string=)))
                   (sr (remove-if* (lambda (x) (string= x "url"))
                                   (mapcar #'car dd)))
                   (ss (completing-read
                        (format "Choose (all|%s) "
                                (mapconcat #'identity sr ","))
-                       (cons "all" sr) nil nil (car *dict-style-history*)
-                       '*dict-style-history* (car sr))))
+                       (cons "all" sr) nil nil
+                       (car *dict-style-history*)
+                       '*dict-style-history*
+                       (car sr))))
              (cons d (if (and (stringp ss)
                               (or (string= "all" ss)
                                   (string-match* "\\(all\\)" ss 1)))

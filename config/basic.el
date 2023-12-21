@@ -121,7 +121,7 @@ FILE is normally a feature name, but it can also be a file name,
 in case that file does not provide any feature.See
 \\=`eval-after-load\\=' for more details about the different
 forms of FILE and their semantics."
-    (declare (indent 1))
+    (declare (indent 1) (debug t))
     `(eval-after-load ,file (lambda () ,@body))))
 
 (defmacro defcustom% (symbol standard doc &rest args)
