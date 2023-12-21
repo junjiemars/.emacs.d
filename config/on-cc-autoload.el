@@ -170,15 +170,17 @@
   (let ((cmd (if remote
                  (when% (executable-find% "ssh")
                    (shell-command* "ssh"
-                     (concat (remote-norm->user@host remote)
-                             " \"echo '' | cc -v -E 2>&1 >/dev/null -\"")))
+                     (concat
+                      (ssh-remote->user@host remote)
+                      " \"echo ''|cc -v -E 2>&1 >/dev/null -\"")))
                (if-platform% 'windows-nt
                    ;; Windows: msmvc
                    (shell-command* +cc*-compiler-bin+)
                  ;; Darwin/Linux: clang or gcc
-                 (shell-command* (concat "echo '' | "
-                                         +cc*-compiler-bin+
-                                         " -v -E 2>&1 >/dev/null -")))))
+                 (shell-command*
+                     (concat "echo ''|"
+                             +cc*-compiler-bin+
+                             " -v -E 2>&1 >/dev/null -")))))
         (parser (lambda (pre)
                   (if-platform% 'windows-nt
                       ;; Windows: msvc
@@ -204,15 +206,17 @@
 
 
 (defalias 'cc*-system-include
-  (lexical-let% ((dx))
+  (lexical-let% ((dx nil))
     (lambda (&optional cached remote)
   		"CACHED REMOTE"
       (let* ((ss (if remote
-                     (intern (mapconcat #'identity
-                                        (remote-norm-id remote)
-                                        "-"))
+                     (intern
+                      (mapconcat #'identity
+                                 (ssh-remote->ids remote)
+                                 "-"))
                    'native))
-             (fs (concat (v-home% ".exec/cc-inc-") (symbol-name ss) ".el"))
+             (fs (concat (v-home% ".exec/cc-inc-")
+                         (symbol-name ss) ".el"))
              (d))
         (or (and cached (plist-get dx ss))
 
@@ -234,7 +238,8 @@
 Load \\=`cc*-system-include\\=' from file when CACHED is t,
 otherwise check cc include on the fly.\n
 If specify REMOTE argument then return a list of remote system
-include directories. The REMOTE argument from \\=`remote-norm-file\\='.")
+include directories.\n
+The REMOTE argument from \\=`ssh-remote-p\\='.")
 
 
 (defalias 'cc*-extra-include
@@ -261,9 +266,9 @@ include directories. The REMOTE argument from \\=`remote-norm-file\\='.")
 
 
 (defun cc*-include-p (file)
-  "Return t if FILE in \\=`cc*-system-include\\=', otherwise nil."
+  "If FILE in \\=`cc*-system-include\\=' yield non-nil, else nil."
   (when (stringp file)
-    (let ((remote (remote-norm-file file)))
+    (let ((remote (ssh-remote-p file)))
       (file-in-dirs-p (file-name-directory file)
                       (if remote
                           (cc*-system-include t remote)
@@ -286,13 +291,14 @@ view it in \\=`view-mode\\='."
 
 
 (defun cc*-find-include-file (&optional in-other-window)
-  "Find C include file in `cc*-system-include' or specified directory. "
+  "Find C include file in \\=`cc*-system-include\\=' or specified directory. "
   (interactive "P")
   (let ((file (buffer-file-name (current-buffer))))
     (setq% cc-search-directories
            (if (and file (file-exists-p file))
-               (append (list (string-trim> (file-name-directory file) "/"))
-                       (cc*-system-include t (remote-norm-file file))
+               (append (list (string-trim>
+                              (file-name-directory file) "/"))
+                       (cc*-system-include t (ssh-remote-p file))
                        (cc*-extra-include t))
              (append (cc*-system-include t)
                      (cc*-extra-include t)))
@@ -399,17 +405,18 @@ view it in \\=`view-mode\\='."
 
 (defadvice c-macro-expand (around c-macro-expand-around disable)
   "Expand C macros in the region, using the C preprocessor."
-  (let ((remote (remote-norm-file (buffer-file-name (current-buffer)))))
+  (let ((remote (ssh-remote-p
+                 (buffer-file-name (current-buffer)))))
     (if remote
         ;; remote: Unix-like
         (when% (executable-find% "ssh")
           (setq% c-macro-buffer-name
                  (format "*Macro Expanded@%s*"
-                         (remote-norm->user@host remote))
+                         (ssh-remote->user@host remote))
                  'cmacexp)
           (setq% c-macro-preprocessor
                  (format "ssh %s %s"
-                         (remote-norm->user@host remote)
+                         (ssh-remote->user@host remote)
                          "cc -E -o - -")
                  'cmacexp)
           ad-do-it)
@@ -438,12 +445,13 @@ view it in \\=`view-mode\\='."
 (defun cc*-dump-predefined-macros (&optional options)
   "Dump predefined macros."
   (interactive "sInput C compiler's options: ")
-  (let* ((remote (remote-norm-file (buffer-file-name (current-buffer))))
+  (let* ((remote (ssh-remote-p
+                  (buffer-file-name (current-buffer))))
          (cc (cond (remote "cc")
                    (t +cc*-compiler-bin+)))
          (opts  (format "%s -dM -E -" options))
          (rc (cond (remote (shell-command* "ssh"
-                             (remote-norm->user@host remote)
+                             (ssh-remote->user@host remote)
                              cc opts))
                    (t (if-platform% 'windows-nt
                           (cc*-make-macro-dump-bin options)
@@ -452,7 +460,8 @@ view it in \\=`view-mode\\='."
         (switch-to-buffer
          (concat "*Macro Predefined"
                  (if remote
-                     (concat "@" (remote-norm->user@host remote) "*")
+                     (concat "@" (ssh-remote->user@host remote)
+                             "*")
                    "*")))
       (view-mode -1)
       (erase-buffer)
@@ -539,22 +548,25 @@ and \\=`eldoc-mode\\='."
   "Return a hashtable of cc identities."
   (ignore* remote)
   (let ((tbl (make-hash-table :test 'string-hash=)))
-    (puthash "printf"
-             "__inline int __cdecl printf(char const* const _Format, ...)"
-             tbl)
-    (puthash "fflush"
-             "int __cdecl fflush(FILE* _Stream);"
-             tbl)
+    (puthash
+     "printf"
+     "__inline int __cdecl printf(char const* const _Format, ...)"
+     tbl)
+    (puthash
+     "fflush"
+     "int __cdecl fflush(FILE* _Stream);"
+     tbl)
     tbl))
 
 (defalias 'cc*-system-identity
-  (lexical-let% ((dx))
+  (lexical-let% ((dx nil))
     (lambda (&optional cached remote)
   		"CACHED REMOTE"
       (let* ((ss (if remote
-                     (intern (mapconcat #'identity
-                                        (remote-norm-id remote)
-                                        "-"))
+                     (intern
+                      (mapconcat #'identity
+                                 (ssh-remote->ids remote)
+                                 "-"))
                    'native))
              (fs (v-home (concat ".exec/cc-id-"
                                  (symbol-name ss)
@@ -592,20 +604,23 @@ and \\=`eldoc-mode\\='."
      (label . 0)
      (statement-cont . +)
      (inline-open . 0)
-     (brace-list-intro first
-                       ,(when-fn% 'c-lineup-2nd-brace-entry-in-arglist
-                            'cc-align
-                          #'c-lineup-2nd-brace-entry-in-arglist)
-                       ,(when-fn% 'c-lineup-class-decl-init-+
-                            'cc-align
-                          #'c-lineup-class-decl-init-+)
-                       +)
-     (arglist-cont-nonempty . ,(lambda (langem)
-                                 (let ((col (save-excursion
-                                              (goto-char (cdr langem))
-                                              (current-column))))
-                                   (cond ((= col 0) 'c-basic-offset)
-                                         (t 'c-lineup-arglist)))))))
+     (brace-list-intro
+      first
+      ,(when-fn% 'c-lineup-2nd-brace-entry-in-arglist
+           'cc-align
+         #'c-lineup-2nd-brace-entry-in-arglist)
+      ,(when-fn% 'c-lineup-class-decl-init-+
+           'cc-align
+         #'c-lineup-class-decl-init-+)
+      +)
+     (arglist-cont-nonempty
+      .
+      ,(lambda (langem)
+         (let ((col (save-excursion
+                      (goto-char (cdr langem))
+                      (current-column))))
+           (cond ((= col 0) 'c-basic-offset)
+                 (t 'c-lineup-arglist)))))))
   "nginx style for \\=`cc-styles\\='.
 https://nginx.org/en/docs/dev/development_guide.html#code_style")
 
@@ -627,7 +642,8 @@ See \\=`align-entire\\='."
 ;; `cc-mode'
 ;;;
 
-;; default `c-mode-hook' involving useless `macrostep-c-mode-hook'.
+;; default `c-mode-hook'
+;; involving useless `macrostep-c-mode-hook'.
 (setq% c-mode-hook nil 'cc-mode)
 
 (defun on-cc-mode-init! ()
@@ -639,14 +655,18 @@ See \\=`align-entire\\='."
   ;; keymap:
   ;; find include file
   (when-fn% 'ff-find-other-file 'find-file
-    (define-key% c-mode-map (kbd "C-c f i") #'cc*-find-include-file)
+    (define-key% c-mode-map
+                 (kbd "C-c f i") #'cc*-find-include-file)
     ;; for c++, add include via `cc*-extra-include'
-    (define-key% c++-mode-map (kbd "C-c f i") #'cc*-find-include-file))
+    (define-key% c++-mode-map
+                 (kbd "C-c f i") #'cc*-find-include-file))
   ;; indent line or region
   (when-fn% 'c-indent-line-or-region 'cc-cmds
-    (define-key% c-mode-map (kbd "TAB") #'c-indent-line-or-region))
+    (define-key% c-mode-map
+                 (kbd "TAB") #'c-indent-line-or-region))
   ;; dump predefined macros
-  (define-key% c-mode-map (kbd "C-c #") #'cc*-dump-predefined-macros)
+  (define-key% c-mode-map
+               (kbd "C-c #") #'cc*-dump-predefined-macros)
   ;; raw newline
   (define-key% c-mode-map (kbd "RET") #'newline*)
   ;; align style
@@ -690,7 +710,8 @@ See \\=`align-entire\\='."
    "On \\=`cmacexp\\=' initialization."
    ;; [C-c C-e] `c-macro-expand' in `cc-mode'
    (setq% c-macro-prompt-flag t 'cmacexp)
-   (ad-enable-advice #'c-macro-expand 'around "c-macro-expand-around")
+   (ad-enable-advice #'c-macro-expand
+                     'around "c-macro-expand-around")
    (ad-activate #'c-macro-expand t)))
 
 ;;; `cmacexp' after load

@@ -285,27 +285,28 @@ PREFER (lambda (dir files)...)."
       (setq d (path- d)))))
 
 
-(defmacro remote-norm-file (file)
+(defmacro ssh-remote-p (file)
   "Return an identification when FILE specifies a location on a
 remote system.\n
 On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
-  `(string-match* "^\\(/sshx?:[_-a-zA-Z0-9]+@?[_-a-zA-Z0-9]+:\\)"
+  `(string-match* "^\\(/sshx?:[_-a-zA-Z0-9]+@?[._-a-zA-Z0-9]+:\\)"
                   ,file 1))
 
-(defmacro remote-norm-id (remote)
-  "Norm the REMOTE to (method {user | id} [host]) form."
+(defmacro ssh-remote->ids (remote)
+  "Norm the REMOTE to (method {user|id} [host]) form."
   (let ((r (gensym*)))
     `(let ((,r ,remote))
        (when (stringp ,r)
-         (split-string* ,r "[:@]" t "/")))))
+         (split-string* ,r "[:@]" t "^/[^ssh].*")))))
 
-(defmacro remote-norm->user@host (remote)
-  "Norm the REMOTE to {user | id}[@host] form."
+(defmacro ssh-remote->user@host (remote)
+  "Norm the REMOTE to {user|id}[@host] form."
   (let ((rid (gensym*)))
-    `(let ((,rid (remote-norm-id ,remote)))
+    `(let ((,rid (ssh-remote->ids ,remote)))
        (when (consp ,rid)
-         (concat (cadr ,rid) (when (car (cddr ,rid))
-                               (concat "@" (car (cddr ,rid)))))))))
+         (concat (cadr ,rid)
+                 (when (car (cddr ,rid))
+                   (concat "@" (car (cddr ,rid)))))))))
 
 (defmacro url-retrieve*
     (url callback &optional cbargs silent inhibit-cookies)

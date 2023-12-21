@@ -543,25 +543,32 @@
                           (concat "/a/b/" "c.c")))))
 
 
-(ert-deftest %e:basic:remote-norm-file/id/>user@host ()
-  (should (and (null (remote-norm-file nil))
-               (null (remote-norm-file "/xxh:abc:/a/b/c"))
+(ert-deftest %e:basic:ssh-remote-/p/>ids/>user@host ()
+  (should (and (null (ssh-remote-p nil))
+               (null (ssh-remote-p "/xxh:abc:/a/b.c"))
                (string= "/sshx:pi:"
-                        (remote-norm-file "/sshx:pi:/a/b/c.d"))
+                        (ssh-remote-p "/sshx:pi:/a/b.c"))
                (string= "/ssh:pi@circle:"
-                        (remote-norm-file "/ssh:pi@circle:/a/b/c.d"))))
-  (should (and (null (remote-norm-id nil))
-               (equal '("abc") (remote-norm-id "abc"))
-               (equal '("sshx" "pi") (remote-norm-id "/sshx:pi:"))
-               (equal '("ssh" "pi" "circle")
-                      (remote-norm-id "/ssh:pi@circle:"))
-               (equal '("sshx" "pi")
-                      (remote-norm-id "/sshx:pi:"))))
-  (should (and (null (remote-norm->user@host nil))
+                        (ssh-remote-p
+                         "/ssh:pi@circle:/a/b/c.d"))
+               (string= "/ssh:u@h.i.j:"
+                        (ssh-remote-p
+                         "/ssh:u@h.i.j:/a/b.c"))))
+  (should (and (null (ssh-remote->ids nil))
+               (equal '("abc") (ssh-remote->ids "abc"))
+               (equal '("/sshx" "pi")
+                      (ssh-remote->ids "/sshx:pi:"))
+               (equal '("/ssh" "u" "h")
+                      (ssh-remote->ids "/ssh:u@h:"))
+               (equal '("/ssh" "u" "h.i.j")
+                      (ssh-remote->ids "/ssh:u@h.i.j:/a/b.c"))))
+  (should (and (null (ssh-remote->user@host nil))
                (string= "pi@circle"
-                        (remote-norm->user@host "/ssh:pi@circle:"))
-               (string= "pi"
-                        (remote-norm->user@host "/sshx:pi:")))))
+                        (ssh-remote->user@host
+                         "/ssh:pi@circle:/a/b.c"))
+               (string= "u@h.i.j"
+                        (ssh-remote->user@host
+                         "/sshx:u@h.i.j:/a/b.c")))))
 
 (ert-deftest %e:basic:path+ ()
   (should-not (path+ nil))
