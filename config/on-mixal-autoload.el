@@ -145,6 +145,8 @@ Each device is given a number as follows:")
 
 (defun on-mixal-mode-init! ()
   "On \\=`mixal-mode\\=' initialization."
+  (autoload 'mixvm (v-home%> "config/mixvm.el")
+    "Run mixvm on program FILE in buffer *gud-FILE*." t)
   (mixal*-fix-operation-codes-alist)
   (define-key% mixal-mode-map (kbd "C-h C-o") nil)
   (define-key% mixal-mode-map
@@ -154,9 +156,7 @@ Each device is given a number as follows:")
   (define-key% mixal-mode-map
                (kbd "C-c C-h a") #'mixal*-describe-alphameric)
   (define-key% mixal-mode-map
-               (kbd "C-c C-h e") #'mixal*-describe-equipment)
-  (autoload 'mixvm (v-home%> "config/mixvm.el")
-    "Run mixvm on program FILE in buffer *gud-FILE*." t))
+               (kbd "C-c C-h e") #'mixal*-describe-equipment))
 
 ;;; after-load
 (with-eval-after-load 'mixal-mode

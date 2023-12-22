@@ -9,36 +9,36 @@
 
 (defmacro-if-feature% ox-reveal)
 
-;; end of macro
+(defmacro when-feature-ox-reveal% (&rest body)
+  (if-feature-ox-reveal%
+      `(progn% ,@body)
+    `(comment ,@body)))
 
-;; fix: Warning (bytecomp): `org-bookmark-jump-unhide' fn might not be
-;; defined at runtime.
-(when-fn% 'org-bookmark-jump-unhide 'org
-  (autoload 'org-bookmark-jump-unhide "org"))
+;; end of macro
 
 ;; auto `org-mode'
 (when-version% >= 23
   (push! (cons "\\.org\\'" 'org-mode) auto-mode-alist ))
 
-
 (defun on-org-init! ()
   "Intialize \\=`org-mode\\=' on loading."
+  ;; fix: Warning (bytecomp): `org-bookmark-jump-unhide' fn
+  ;; might not be defined at runtime.
+  (when-fn% 'org-bookmark-jump-unhide 'org
+    (autoload 'org-bookmark-jump-unhide "org"))
   ;; load `ox-reveal' if it had been installed.
   ;; `ox-reveal' raising "package cl is deprecated".
-  (if-feature-ox-reveal%
-      (when-var% org-reveal-root 'ox-reveal
-        (require 'ox-reveal)
-        (setq org-reveal-root
-              (let ((root (emacs-home* ".reveal.js/")))
-                (if (file-exists-p root)
-                    root
-                  ;; "https://cdn.jsdelivr.net/reveal.js/3.8.0/"
-                  "https://pagecdn.io/lib/reveal/3.8.0/")))))
+  (when-feature-ox-reveal%
+   (when-var% org-reveal-root 'ox-reveal
+     (require 'ox-reveal)
+     (setq org-reveal-root
+           (let ((root (emacs-home* ".reveal.js/")))
+             (if (file-exists-p root)
+                 root
+               ;; "https://cdn.jsdelivr.net/reveal.js/3.8.0/"
+               "https://pagecdn.io/lib/reveal/3.8.0/")))))
   ;; disable _ sub-superscripts
-  (when-var% org-use-sub-superscripts 'org
-    (setq org-use-sub-superscripts nil))
-  ;; disable invisible edit
-  (when-var% org-catch-invisible-edits 'org t)
+  (setq% org-use-sub-superscripts nil 'org)
   ;; define keys
   (define-key% (current-global-map) (kbd "C-c o l") #'org-store-link)
   (define-key% (current-global-map) (kbd "C-c o a") #'org-agenda)

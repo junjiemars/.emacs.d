@@ -47,10 +47,12 @@
    (when-fn% 'org-babel-do-load-languages 'org
      (org-babel-do-load-languages
       'org-babel-load-languages
-      (remove-if* #'null
-                  `(,(when% (require 'ob-shell nil t)
-                       `(shell . t))
-                    (emacs-lisp . t)))))))
+      (delq nil `(,(when-var% +cc*-compiler-bin+ nil
+                     (when +cc*-compiler-bin+
+                       `(C . t)))
+                  (emacs-lisp . t)
+                  ,(when% (require 'ob-shell nil t)
+                     `(shell . t))))))))
 
 ;; end of org
 
