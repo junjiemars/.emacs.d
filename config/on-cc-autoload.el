@@ -294,23 +294,24 @@ view it in \\=`view-mode\\='."
           `(progn% ,@body)
     `(comment ,@body)))
 
-(when-fn-ff-find-other-file%
- (defun cc*-find-include-file (&optional in-other-window)
-   "Find C include file in \\=`cc*-system-include\\=' or specified directory. "
-   (interactive "P")
-   (setq% cc-search-directories
-          (let ((file (buffer-file-name (current-buffer))))
-            (append (list
-                     (when (stringp file)
-                       (string-trim>
-                        (file-name-directory file) "/")))
-                    (cc*-system-include t (ssh-remote-p file))
-                    (cc*-extra-include t)))
-          'find-file)
-   (when-fn% 'xref-push-marker-stack 'xref
-     (autoload 'xref-push-marker-stack "xref")
-     (xref-push-marker-stack))
-   (ff-find-other-file in-other-window nil)))
+(when-fn-ff-find-other-file%)
+(defun cc*-find-include-file (&optional in-other-window)
+  "Find C include file in \\=`cc*-system-include\\=' or specified directory. "
+  (interactive "P")
+  (setq% cc-search-directories
+         (let ((file (buffer-file-name (current-buffer))))
+           (delq nil
+                 (append (list
+                          (when (stringp file)
+                            (string-trim>
+                             (file-name-directory file) "/")))
+                         (cc*-system-include t (ssh-remote-p file))
+                         (cc*-extra-include t))))
+         'find-file)
+  (when-fn% 'xref-push-marker-stack 'xref
+    (autoload 'xref-push-marker-stack "xref")
+    (xref-push-marker-stack))
+  (ff-find-other-file in-other-window nil))
 
 ;; end of #include
 
