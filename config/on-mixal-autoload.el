@@ -143,9 +143,8 @@ Each device is given a number as follows:")
 (eval-when-compile
   (compile! (compile-unit% (emacs-home* "config/mixvm.el") t)))
 
-
-;;; after-load
-(with-eval-after-load 'mixal-mode
+(defun on-mixal-mode-init! ()
+  "On \\=`mixal-mode\\=' initialization."
   (mixal*-fix-operation-codes-alist)
   (define-key% mixal-mode-map (kbd "C-h C-o") nil)
   (define-key% mixal-mode-map
@@ -157,7 +156,11 @@ Each device is given a number as follows:")
   (define-key% mixal-mode-map
                (kbd "C-c C-h e") #'mixal*-describe-equipment)
   (autoload 'mixvm (v-home%> "config/mixvm.el")
-      "Run mixvm on program FILE in buffer *gud-FILE*." t))
+    "Run mixvm on program FILE in buffer *gud-FILE*." t))
+
+;;; after-load
+(with-eval-after-load 'mixal-mode
+  (on-mixal-mode-init!))
 
 
 ;; end of on-mixal-autoload.el
