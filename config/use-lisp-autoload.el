@@ -51,8 +51,7 @@
 (defun on-use-scheme-init! ()
   "On \\=`scheme\\=' initialization."
   ;; disable auto active other scheme hooks
-  (when-var% scheme-mode-hook 'scheme
-    (setq scheme-mode-hook nil))
+  (setq% scheme-mode-hook nil 'scheme)
   (append! #'lisp*-featured! scheme-mode-hook))
 
 

@@ -128,8 +128,7 @@ and INDENT."
    (eglot*-server-programs :push (or (eglot*-server-programs :read)
                                      (eglot*-server-programs)))
    ;; most reduced
-   (when-var% eldoc-echo-area-use-multiline-p 'eldoc
-     (setq eldoc-echo-area-use-multiline-p nil))
+   (setq% eldoc-echo-area-use-multiline-p nil 'eldoc)
 
    ;; shutdown when `kill-emacs'
    (when-var% kill-emacs-query-functions nil

@@ -80,15 +80,14 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
 (defun on-python-init! ()
   "On \\=`python\\=' initialization."
   ;; interpreter
-  (when-var% python-shell-interpreter 'python
-    (setq python-shell-interpreter (python*-program)))
+  (setq% python-shell-interpreter (python*-program) 'python)
   ;; completion
-  (when-var% python-shell-completion-native-enable 'python
-    (setq python-shell-completion-native-enable
-          (when-platform% 'gnu/linux t)))
+  (setq% python-shell-completion-native-enable
+         (when-platform% 'gnu/linux t) 'python)
   ;; keys
   (when-var% python-mode-map 'python
-    ;; on ancient Emacs `(kbd "C-c C-p")' bind to `python-previous-statement'
+    ;; on ancient Emacs `(kbd "C-c C-p")' bind to
+    ;; `python-previous-statement'
     (define-key% python-mode-map (kbd "C-c C-z") #'run-python)))
 
 
