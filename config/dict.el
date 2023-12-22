@@ -236,6 +236,8 @@
                             :test #'string=))))
     (make-thread* (lambda ()
                     (let ((url-history-track nil))
+                      (when-version% > 25
+                        (ignore* url-history-track))
                       (url-retrieve*
                        (concat url (url-hexify-string what))
                        #'on-lookup-dict d1 t t))))))
