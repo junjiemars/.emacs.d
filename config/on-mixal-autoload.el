@@ -126,7 +126,7 @@ Each device is given a number as follows:")
            (l (length am))
            (h 12) (w 5) (i 0) (j 0))
       (princ "MIX alphameric characters.") (terpri) (terpri)
-      (princ " Code Char | Code Char | Code Char | Code Char | Code Char")
+      (princ " Dec  Char | Dec  Char | Dec  Char | Dec  Char | Dec  Char")
   		(terpri)
       (while (< i h)
         (while (and (< j w) (< (+ i (* h j)) l))
@@ -139,22 +139,25 @@ Each device is given a number as follows:")
         (terpri)
         (setq i (1+ i) j 0)))))
 
-
-;; `mixvm'
-(when% (executable-find% "mixvm")
-  (compile! (compile-unit% (emacs-home* "config/mixvm.el") t))
-  (autoload 'mixvm (v-home%> "config/mixvm.el")
-    "Run mixvm on program FILE in buffer *gud-FILE*." t))
+;;; `mixvm'
+(eval-when-compile
+  (compile! (compile-unit% (emacs-home* "config/mixvm.el") t)))
 
 
+;;; after-load
 (with-eval-after-load 'mixal-mode
   (mixal*-fix-operation-codes-alist)
   (define-key% mixal-mode-map (kbd "C-h C-o") nil)
-  (define-key% mixal-mode-map (kbd "C-c C-h o")
-    #'mixal-describe-operation-code)
-  (define-key% mixal-mode-map (kbd "C-c C-h r") #'mixal*-describe-register)
-  (define-key% mixal-mode-map (kbd "C-c C-h a") #'mixal*-describe-alphameric)
-  (define-key% mixal-mode-map (kbd "C-c C-h e") #'mixal*-describe-equipment))
+  (define-key% mixal-mode-map
+               (kbd "C-c C-h o") #'mixal-describe-operation-code)
+  (define-key% mixal-mode-map
+               (kbd "C-c C-h r") #'mixal*-describe-register)
+  (define-key% mixal-mode-map
+               (kbd "C-c C-h a") #'mixal*-describe-alphameric)
+  (define-key% mixal-mode-map
+               (kbd "C-c C-h e") #'mixal*-describe-equipment)
+  (autoload 'mixvm (v-home%> "config/mixvm.el")
+      "Run mixvm on program FILE in buffer *gud-FILE*." t))
 
 
 ;; end of on-mixal-autoload.el
