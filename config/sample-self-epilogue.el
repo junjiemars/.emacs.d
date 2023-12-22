@@ -48,8 +48,9 @@
      (org-babel-do-load-languages
       'org-babel-load-languages
       (delq nil `(,(when-var% +cc*-compiler-bin+ nil
-                     (when +cc*-compiler-bin+
-                       `(C . t)))
+                     (setq% org-babel-C-compiler
+                            +cc*-compiler-bin+ 'ob-C)
+                     `(C . t))
                   (emacs-lisp . t)
                   ,(when% (require 'ob-shell nil t)
                      `(shell . t))))))))

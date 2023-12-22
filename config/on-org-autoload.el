@@ -14,6 +14,11 @@
       `(progn% ,@body)
     `(comment ,@body)))
 
+;; fix: Warning (bytecomp): `org-bookmark-jump-unhide' fn
+;; might not be defined at runtime.
+(when-fn% 'org-bookmark-jump-unhide 'org
+  (autoload 'org-bookmark-jump-unhide "org"))
+
 ;; end of macro
 
 ;; auto `org-mode'
@@ -22,10 +27,6 @@
 
 (defun on-org-init! ()
   "Intialize \\=`org-mode\\=' on loading."
-  ;; fix: Warning (bytecomp): `org-bookmark-jump-unhide' fn
-  ;; might not be defined at runtime.
-  (when-fn% 'org-bookmark-jump-unhide 'org
-    (autoload 'org-bookmark-jump-unhide "org"))
   ;; load `ox-reveal' if it had been installed.
   ;; `ox-reveal' raising "package cl is deprecated".
   (when-feature-ox-reveal%

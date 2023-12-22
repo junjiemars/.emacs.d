@@ -139,14 +139,8 @@ Each device is given a number as follows:")
         (terpri)
         (setq i (1+ i) j 0)))))
 
-;;; `mixvm'
-(eval-when-compile
-  (compile! (compile-unit% (emacs-home* "config/mixvm.el") t)))
-
 (defun on-mixal-mode-init! ()
   "On \\=`mixal-mode\\=' initialization."
-  (autoload 'mixvm (v-home%> "config/mixvm.el")
-    "Run mixvm on program FILE in buffer *gud-FILE*." t)
   (mixal*-fix-operation-codes-alist)
   (define-key% mixal-mode-map (kbd "C-h C-o") nil)
   (define-key% mixal-mode-map

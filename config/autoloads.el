@@ -121,6 +121,12 @@
       (autoload 'run-jshell (v-home%> "config/jshell.el")
         "Toggle jshell process in buffer \\=`*jshell*\\='." t))
 
+    ;; `mixvm'
+    (prog1
+        (compile-unit% (emacs-home* "config/mixvm.el") t)
+      (autoload 'mixvm (v-home%> "config/mixvm.el")
+        "Run mixvm on program FILE in buffer *gud-FILE*." t))
+
     ;; Node
     (prog1
         (compile-unit% (emacs-home* "config/node.el") t)
