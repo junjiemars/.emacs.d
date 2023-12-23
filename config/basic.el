@@ -5,7 +5,7 @@
 ;;;;
 ;; basic.el
 ;;;;
-;; Commentary:
+;; Commentary: functional facilities.
 ;;;;
 
 
@@ -18,7 +18,6 @@
 
 ;; auto-save
 (setq% auto-save-list-file-prefix (v-home! ".save/auto-"))
-
 
 ;; Emacs can automatically create backup files. This tells Emacs to
 ;; put all backups in ~/.emacs.d/backups. More info:
