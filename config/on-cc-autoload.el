@@ -123,19 +123,18 @@
                        " -Fe" exe
                        " -link -release")))
       (when (save-str-to-file
-             (eval-when-compile
-               (concat "#include <stdio.h>\n"
-                       "int main(int argc, char **argv) {\n"
-                       "  int ch;\n"
-                       "  while (EOF != (ch = fgetc(stdin))) {\n"
-                       "    fputc(ch, stdout);\n"
-                       "  }\n"
-                       "  if (ferror(stdin)) {\n"
-                       "    perror(\"read failed from stdin\");\n"
-                       "    return 1;\n"
-                       "  }\n"
-                       "  return 0;\n"
-                       "}\n"))
+             (concat "#include <stdio.h>\n"
+                     "int main(int argc, char **argv) {\n"
+                     "  int ch;\n"
+                     "  while (EOF != (ch = fgetc(stdin))) {\n"
+                     "    fputc(ch, stdout);\n"
+                     "  }\n"
+                     "  if (ferror(stdin)) {\n"
+                     "    perror(\"read failed from stdin\");\n"
+                     "    return 1;\n"
+                     "  }\n"
+                     "  return 0;\n"
+                     "}\n")
              c)
         (let ((cmd (shell-command* cc)))
           (when (zerop (car cmd))
@@ -233,7 +232,6 @@
                                  (cc*-check-include remote)))
                  (consp d) (save-sexp-to-file d fs)
                  (plist-get (setq dx (plist-put dx ss d)) ss))))))
-
   "Return a list of system include directories.\n
 Load \\=`cc*-system-include\\=' from file when CACHED is t,
 otherwise check cc include on the fly.\n
@@ -326,77 +324,76 @@ view it in \\=`view-mode\\='."
     (let* ((c (concat temporary-file-directory "cc-dmacro.c"))
            (exe (v-home% ".exec/cc-dmacro.exe")))
       (save-str-to-file
-       (eval-when-compile
-         (concat "#include <stdio.h>\n"
-                 "#define _STR2_(x) #x\n"
-                 "#define _STR1_(x) _STR2_(x)\n"
-                 "#define _POUT_(x) \"#define \" #x \" \" _STR1_(x) \"\\n\"\n"
-                 "int main(void) {\n"
-                 "#if defined(__STDC__)\n" ;; /Za option is specified
-                 "   printf(_POUT_(__STDC__));\n"
-                 "#endif\n"
-                 "#if defined(__STDC_HOSTED__)\n"
-                 "   printf(_POUT_(__STDC_HOSTED__));\n"
-                 "#endif\n"
-                 "#if defined(__STDC_NO_ATOMICS__)\n"
-                 "   printf(_POUT_(__STDC_NO_ATOMICS__));\n"
-                 "#endif\n"
-                 "#if defined(__STDC_NO_COMPLEX__)\n"
-                 "   printf(_POUT_(__STDC_NO_COMPLEX__));\n"
-                 "#endif\n"
-                 "#if defined(__STDC_NO_THREADS__)\n"
-                 "   printf(_POUT_(__STDC_NO_THREADS__));\n"
-                 "#endif\n"
-                 "#if defined(__STDC_NO_VLA__)\n"
-                 "   printf(_POUT_(__STDC_NO_VLA__));\n"
-                 "#endif\n"
-                 "#if defined(__STDC_VERSION__)\n"
-                 "   printf(_POUT_(__STDC_VERSION__));\n"
-                 "#endif\n"
-                 "#if defined(_DEBUG)\n" ;;  /LDd, /MDd, or /MTd
-                 "  printf(_POUT_(_DEBUG));\n"
-                 "#endif\n"
-                 "#if defined(_DLL)\n" ;;  /MD, /MDd
-                 "  printf(_POUT_(_DLL));\n"
-                 "#endif\n"
-                 "#if defined(_WIN32)\n"
-                 "  printf(_POUT_(_WIN32));\n"
-                 "#endif\n"
-                 "#if defined(_WIN64)\n"
-                 "   printf(_POUT_(_WIN64));\n"
-                 "#endif\n"
-                 "#if defined(_WINRT_DLL)\n"
-                 "  printf(_POUT_(_WINRT_DLL));\n"
-                 "#endif\n"
-                 "#if defined(_MSC_BUILD)\n"
-                 "  printf(_POUT_(_MSC_BUILD));\n"
-                 "#endif\n"
-                 "#if defined(_MSC_EXTENSIONS)\n"
-                 "  printf(_POUT_(_MSC_EXTENSIONS));\n"
-                 "#endif\n"
-                 "#if defined(_MSC_FULL_VER)\n"
-                 "  printf(_POUT_(_MSC_FULL_VER));\n"
-                 "#endif\n"
-                 "#if defined(_MSC_VER)\n"
-                 "  printf(_POUT_(_MSC_VER));\n"
-                 "#endif\n"
-                 "#if defined(__MSVC_RUNTIME_CHECKS)\n" ;; /RTC1, /RTCc, etc.,
-                 "  printf(_POUT_(__MSVC_RUNTIME_CHECKS));\n"
-                 "#endif\n"
-                 "#if defined(_MT)\n" ;; /MD, /MDd
-                 "  printf(_POUT_(_MT));\n"
-                 "#endif\n"
-                 "#if defined(_OPENMP)\n" ;;  /openmp
-                 "  printf(_POUT_(_OPENMP));\n"
-                 "#endif\n"
-                 "#if defined(__SANITIZE_ADDRESS__)\n" ;;  /fsanitize=address
-                 "  printf(_POUT_(__SANITIZE_ADDRESS__));\n"
-                 "#endif\n"
-                 "#if defined(_WCHAR_T_DEFINED)\n" ;; /Zc:wchar_t
-                 "  printf(_POUT_(_WCHAR_T_DEFINED));\n"
-                 "#endif\n"
-                 ""
-                 "}"))
+       (concat "#include <stdio.h>\n"
+               "#define _STR2_(x) #x\n"
+               "#define _STR1_(x) _STR2_(x)\n"
+               "#define _POUT_(x) \"#define \" #x \" \" _STR1_(x) \"\\n\"\n"
+               "int main(void) {\n"
+               "#if defined(__STDC__)\n" ;; /Za option is specified
+               "   printf(_POUT_(__STDC__));\n"
+               "#endif\n"
+               "#if defined(__STDC_HOSTED__)\n"
+               "   printf(_POUT_(__STDC_HOSTED__));\n"
+               "#endif\n"
+               "#if defined(__STDC_NO_ATOMICS__)\n"
+               "   printf(_POUT_(__STDC_NO_ATOMICS__));\n"
+               "#endif\n"
+               "#if defined(__STDC_NO_COMPLEX__)\n"
+               "   printf(_POUT_(__STDC_NO_COMPLEX__));\n"
+               "#endif\n"
+               "#if defined(__STDC_NO_THREADS__)\n"
+               "   printf(_POUT_(__STDC_NO_THREADS__));\n"
+               "#endif\n"
+               "#if defined(__STDC_NO_VLA__)\n"
+               "   printf(_POUT_(__STDC_NO_VLA__));\n"
+               "#endif\n"
+               "#if defined(__STDC_VERSION__)\n"
+               "   printf(_POUT_(__STDC_VERSION__));\n"
+               "#endif\n"
+               "#if defined(_DEBUG)\n" ;;  /LDd, /MDd, or /MTd
+               "  printf(_POUT_(_DEBUG));\n"
+               "#endif\n"
+               "#if defined(_DLL)\n" ;;  /MD, /MDd
+               "  printf(_POUT_(_DLL));\n"
+               "#endif\n"
+               "#if defined(_WIN32)\n"
+               "  printf(_POUT_(_WIN32));\n"
+               "#endif\n"
+               "#if defined(_WIN64)\n"
+               "   printf(_POUT_(_WIN64));\n"
+               "#endif\n"
+               "#if defined(_WINRT_DLL)\n"
+               "  printf(_POUT_(_WINRT_DLL));\n"
+               "#endif\n"
+               "#if defined(_MSC_BUILD)\n"
+               "  printf(_POUT_(_MSC_BUILD));\n"
+               "#endif\n"
+               "#if defined(_MSC_EXTENSIONS)\n"
+               "  printf(_POUT_(_MSC_EXTENSIONS));\n"
+               "#endif\n"
+               "#if defined(_MSC_FULL_VER)\n"
+               "  printf(_POUT_(_MSC_FULL_VER));\n"
+               "#endif\n"
+               "#if defined(_MSC_VER)\n"
+               "  printf(_POUT_(_MSC_VER));\n"
+               "#endif\n"
+               "#if defined(__MSVC_RUNTIME_CHECKS)\n" ;; /RTC1, /RTCc, etc.,
+               "  printf(_POUT_(__MSVC_RUNTIME_CHECKS));\n"
+               "#endif\n"
+               "#if defined(_MT)\n" ;; /MD, /MDd
+               "  printf(_POUT_(_MT));\n"
+               "#endif\n"
+               "#if defined(_OPENMP)\n" ;;  /openmp
+               "  printf(_POUT_(_OPENMP));\n"
+               "#endif\n"
+               "#if defined(__SANITIZE_ADDRESS__)\n" ;;  /fsanitize=address
+               "  printf(_POUT_(__SANITIZE_ADDRESS__));\n"
+               "#endif\n"
+               "#if defined(_WCHAR_T_DEFINED)\n" ;; /Zc:wchar_t
+               "  printf(_POUT_(_WCHAR_T_DEFINED));\n"
+               "#endif\n"
+               ""
+               "}")
        c)
       (let ((cmd (shell-command* +cc*-compiler-bin+
                    (concat " -nologo"
