@@ -119,9 +119,9 @@ If optional UNIQUELY is non-nil then append uniquely."
 
 ;; end of general function/macro
 
-;;;;
+;;;
 ;; common-lisp macro
-;;;;
+;;;
 
 (fset 'assoc**
       (if-fn% 'cl-assoc 'cl-lib
@@ -168,9 +168,9 @@ If optional UNIQUELY is non-nil then append uniquely."
 ;; end of common-lisp macro
 
 
-;;;;
+;;;
 ;; byte-compiler macro
-;;;;
+;;;
 
 (defmacro ignore* (&rest vars)
   "Return nil, list VARS at compile time if in lexical context."
