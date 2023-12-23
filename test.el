@@ -336,9 +336,9 @@
                            (append! "b" x t)
                            (append! "b" x t)))))))
 
-(ert-deftest %d:fn:seq-ins! ()
+(ert-deftest %d:fn:insert! ()
   (should (equal '(a X b) (let ((s '(a b)))
-                            (seq-ins! 'X s 1)))))
+                            (insert! 'X s 1)))))
 
 (ert-deftest %d:fn:assoc** ()
   (should (equal '(a 1) (assoc** 'a '((b 2) (a 1)))))

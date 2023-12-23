@@ -70,7 +70,7 @@
                (wi (plist-get d1 :wi))
                (l (plist-get d1 :l)))
           (when (and (< (length a1) l) (= (nth ai a1) a))
-            (setcdr a1 (cdr (seq-ins! w a1 wi)))))))))
+            (setcdr a1 (cdr (insert! w a1 wi)))))))))
 
 
 (defun mixal*-describe-equipment ()

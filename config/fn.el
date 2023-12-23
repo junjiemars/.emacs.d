@@ -102,7 +102,7 @@ If optional UNIQUELY is non-nil then append uniquely."
                            ,s1)
                          (list ,n1))))))
 
-(defmacro seq-ins! (newelt seq idx)
+(defmacro insert! (newelt seq idx)
   "Insert NEWELT into the SEQ."
   (let ((n1 (gensym*))
         (i1 (gensym*)))
