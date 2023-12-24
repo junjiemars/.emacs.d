@@ -128,7 +128,11 @@ If RESET is true then reset before load."
 
 
 (self-frame-init!)
-(when-theme% (make-thread* #'self-theme-init!))
+(when-theme%
+  (if (*self-env-spec*
+       :get :desktop :allowed)
+      (make-thread* #'self-theme-init!)
+    (self-theme-init!)))
 
 
 (provide 'graphic)
