@@ -8,6 +8,11 @@
 ;; Commentary: read/save session
 ;;;;
 
+(defmacro without-frame-resize (&rest body)
+  (declare (indent 0))
+  `(let ((frame-inhibit-implied-resize t)
+         (inhibit-redisplay t))
+     (progn% ,@body)))
 
 ;;;
 ;; read
@@ -18,17 +23,15 @@
   (let ((desk (*self-env-spec* :get :desktop)))
     (when (and (self-spec-> desk :allowed)
                (file-exists-p (v-home% ".desktop/")))
-
       ;; restrict eager
-      (setq% desktop-restore-eager
-             (self-spec-> desk :restore-eager)
-             'desktop)
+      (setq% desktop-restore-eager 0 'desktop)
 
       ;; disable offscreen onscreen
       (setq% desktop-restore-forces-onscreen nil 'desktop)
 
       ;; `desktop-read'
-      (desktop-read (v-home% ".desktop/"))
+      (without-frame-resize
+        (desktop-read (v-home% ".desktop/")))
 
       ;; remove unnecessary hooks of `kill-emacs-hook'
       (setq kill-emacs-hook
@@ -45,7 +48,6 @@
                  (append! #'self-desktop-save!
                           kill-emacs-query-functions))
         (append! #'self-desktop-save! kill-emacs-hook)))))
-
 
 ;; end of read
 

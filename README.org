@@ -564,7 +564,6 @@ The =desktop= spec locate in =(*self-env-spec* :get :desktop)=.
          :buffers-not-to-save "^TAGS\\|\\.log"
          :modes-not-to-save
          '(dired-mode fundamental-mode eww-mode rmail-mode)
-         :restore-eager 8
          :allowed t))
 #+END_SRC
 
@@ -572,7 +571,6 @@ The =desktop= spec locate in =(*self-env-spec* :get :desktop)=.
 - =:files-not-to-save= @@html:<kbd>@@C-h-v desktop-files-not-to-save@@html:</kbd>@@
 - =:buffers-not-to-save= @@html:<kbd>@@C-h-v desktop-buffers-not-to-save@@html:</kbd>@@
 - =:modes-not-to-save= @@html:<kbd>@@C-h-v desktop-modes-not-to-save@@html:</kbd>@@
-- =:restore-eager= @@html:<kbd>@@C-h-v desktop-restore-eager@@html:</kbd>@@
 - =:allowed= =t= enabled, =nil= disabled
 
 ** Network
