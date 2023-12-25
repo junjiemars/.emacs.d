@@ -27,9 +27,10 @@
                (file-exists-p (v-home% ".desktop/")))
       ;; restrict eager
       (setq% desktop-restore-eager 0 'desktop)
-
       ;; disable offscreen onscreen
       (setq% desktop-restore-forces-onscreen nil 'desktop)
+      ;; quiet
+      (setq% desktop-lazy-verbose nil 'desktop)
 
       ;; `desktop-read'
       (without-frame-resize
