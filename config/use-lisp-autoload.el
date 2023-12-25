@@ -13,7 +13,8 @@
 
 (defmacro when-feature-paredit% (&rest body)
   (if-feature-paredit%
-      `(progn% ,@body)))
+      `(progn% ,@body)
+    `(comment ,@body)))
 
 ;; end of macro
 
