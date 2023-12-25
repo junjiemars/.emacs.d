@@ -52,7 +52,7 @@
 (*self-packages*
  :put :lisp
  (list
-  :cond t
+  :cond (comment t)
   :packages '(paredit rainbow-delimiters)
   :compile `(,(compile-unit% (emacs-home* "config/use-lisp-autoload.el")))))
 
