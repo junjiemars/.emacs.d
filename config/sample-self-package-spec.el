@@ -32,8 +32,8 @@
 (*self-packages*
  :put :eglot
  (list
-  :cond (unless-fn% 'eglot 'eglot t)
-  :packages (list 'eglot)
+  :cond (comment t)
+  :packages `(,(when-version% > 29 'eglot))
   :compile `(,(compile-unit% (emacs-home* "config/on-eglot-autoload.el")))))
 
 ;;; :erlang
@@ -108,8 +108,8 @@
 (*self-packages*
  :put :treesit
  (list
-  :cond (unless-fn% 'treesit-available-p 'treesit t)
-  :packages (list 'treesit)
+  :cond (comment t)
+  :packages (list (when-version% > 29 'treesit))
   :compile `(,(compile-unit% (emacs-home* "config/on-treesit-autoload.el")))))
 
 ;;; :vcs
