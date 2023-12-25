@@ -370,6 +370,8 @@ No matter the declaration order, the executing order is:
 (v-home! "private/")
 ;; duplicate spec files
 (*self-paths* :dup)
+;; reset user emacs dir
+(setq% user-emacs-directory (emacs-home*))
 ;; disable package initialization
 (when-package% (setq package-enable-at-startup nil))
 

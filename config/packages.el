@@ -127,7 +127,8 @@
       <= 25.1
     (setq custom-file (v-home! ".transient/packages.el")))
   ;; define package user dir
-  (setq% package-user-dir package*-user-dir 'package)
+  (setq% package-gnupghome-dir (v-home! ".elpa/gnupg/") 'package)
+  (setq% package-user-dir (v-home! ".elpa/") 'package)
   (package-initialize)
   ;; load self :packages-spec
   (package*-parse-spec! (*self-packages*)
