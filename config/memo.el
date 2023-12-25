@@ -12,6 +12,8 @@
   (declare (indent 0))
   `(let ((frame-inhibit-implied-resize t)
          (inhibit-redisplay t))
+     (when-version% >= 25
+       (ignore* frame-inhibit-implied-resize))
      (progn% ,@body)))
 
 ;;;
