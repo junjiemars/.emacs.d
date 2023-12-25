@@ -78,8 +78,8 @@
 (*self-packages*
  :put :rust
  (list
-  :cond (and (executable-find% "rustc")
-             (executable-find% "cargo"))
+  :cond (comment (and (executable-find% "rustc")
+                      (executable-find% "cargo")))
   :packages '(rust-mode)))
 
 ;;; :scheme
@@ -137,7 +137,7 @@
 (*self-packages*
  :put :zig
  (list
-  :cond (executable-find% "zig")
+  :cond (comment (executable-find% "zig"))
   :packages '(zig-mode)))
 
 
