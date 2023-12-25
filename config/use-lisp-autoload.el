@@ -42,9 +42,11 @@
 
 
 ;;; `elisp-mode' after load
-(eval-after-load 'elisp-mode #'on-use-emacs-lisp-init!)
+(with-eval-after-load 'elisp-mode
+  (on-use-emacs-lisp-init!))
 
-(eval-after-load 'lisp-mode #'on-use-lisp-init!)
+(with-eval-after-load 'lisp-mode
+  (on-use-lisp-init!))
 
 
 (defun on-use-scheme-init! ()
@@ -55,7 +57,8 @@
 
 
 ;;; `scheme' after load
-(eval-after-load 'scheme #'on-use-scheme-init!)
+(with-eval-after-load 'scheme
+  (on-use-scheme-init!))
 
 
 ;;; `paredit'
@@ -114,7 +117,8 @@
 
 ;;; `paredit' after load
 (when-feature-paredit%
- (eval-after-load 'paredit #'paredit*-refine-keys!))
+ (with-eval-after-load 'paredit
+   (paredit*-refine-keys!)))
 
 ;; end of `paredit'
 
