@@ -71,7 +71,9 @@ when \\=`desktop-globals-to-save\\=' include it."
                                       (path- invocation-directory)))
                                     2)
                             (path- invocation-directory))
-                          (when-package% package-user-dir)
+                          (when-package%
+                            (when-var% package-user-dir 'package
+                              package-user-dir))
                           (v-home% "config/")
                           (v-home% "private/")
                           (v-home% "theme/"))))
