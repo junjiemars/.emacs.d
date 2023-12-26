@@ -52,7 +52,10 @@
  (defun on-project-init! ()
    "On \\=`project\\=' initialization."
    (project*-root :read)
-   (push! #'project*-try-abs project-find-functions)))
+   (push! #'project*-try-abs project-find-functions)
+   (when-fn% 'project-find-file 'project
+     (define-key% (current-global-map)
+                  (kbd "C-x p f") #'project-find-file))))
 
 ;; end of `project'
 
