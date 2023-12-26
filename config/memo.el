@@ -20,9 +20,9 @@
       (inhibit-blinking
         ;; restrict eager
         (setq% desktop-restore-eager 0 'desktop)
-        ;; disable restore frames
         ;; (setq% desktop-restore-frames nil 'desktop)
-        ;; (setq% desktop-restore-forces-onscreen nil 'desktop)
+        ;; disable stupid resizing
+        (setq% desktop-restore-forces-onscreen nil 'desktop)
         ;; (setq% desktop-restore-in-current-display t 'desktop)
         ;; (setq% desktop-restore-reuses-frames t 'desktop)
         ;; quiet
