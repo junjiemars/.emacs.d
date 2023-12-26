@@ -58,16 +58,11 @@
                 (when a1 (self-spec-> f1 :initial)))))
          (d1 (when-graphic%
                (when a1 (self-spec-> f1 :default)))))
-    ;; `frame-resize-pixelwise'
     (setq% frame-resize-pixelwise
            (self-spec-> f1 :frame-resize-pixelwise))
-    (setq
-     ;; `inhibit-splash-screen'
-     inhibit-splash-screen s1
-     ;; `initial-frame-alist'
-     initial-frame-alist i1
-     ;; `default-frame-alist'
-     default-frame-alist (or d1 i1))))
+    (setq inhibit-splash-screen s1
+          initial-frame-alist i1
+          default-frame-alist (or d1 i1))))
 
 
 (when-graphic%
