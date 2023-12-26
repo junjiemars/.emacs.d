@@ -10,6 +10,9 @@
 ;; default web browser: eww, requires Emacs-24.4+
 (defmacro-if-feature% eww)
 
+;; `project' builtin since Emacs-26+
+(defmacro-if-feature% project)
+
 ;; `eglot' builtin since Emacs-29+
 (defmacro-if-feature% eglot)
 
@@ -100,20 +103,20 @@
     (if-feature-eww%
         (compile-unit% (emacs-home* "config/on-eww-autoload.el")))
 
-    ;; Debugger `gud-cdb'
+    ;; `gud': `gud-cdb'
     (when-platform% 'windows-nt
       (prog1
           (compile-unit% (emacs-home* "config/gud-cdb.el") t)
         (autoload 'gud-cdb (v-home%> "config/gud-cdb.el")
           "Run lldb on program FILE in buffer *gud-FILE*." t)))
 
-    ;; Debugger `gud-lldb'
+    ;; `gud': `gud-lldb'
     (prog1
         (compile-unit% (emacs-home* "config/gud-lldb.el") t)
       (autoload 'gud-lldb (v-home%> "config/gud-lldb.el")
         "Run lldb on program FILE in buffer *gud-FILE*." t))
 
-    ;; Jshell
+    ;; `jshell'
     (prog1
         (compile-unit% (emacs-home* "config/jshell.el") t)
       (autoload 'jshell-mode (v-home%> "config/jshell.el")
@@ -127,7 +130,7 @@
       (autoload 'mixvm (v-home%> "config/mixvm.el")
         "Run mixvm on program FILE in buffer *gud-FILE*." t))
 
-    ;; Node
+    ;; `node'
     (prog1
         (compile-unit% (emacs-home* "config/node.el") t)
       (autoload 'node-mode (v-home%> "config/node.el")
@@ -135,7 +138,11 @@
       (autoload 'run-node (v-home%> "config/node.el")
         "Toggle node process in buffer \\=`*node*\\='." t))
 
-    ;; Scheme `gambit-mode'
+    ;; `project'
+    (if-feature-project%
+        (compile-unit% (emacs-home* "config/on-project-autoload.el")))
+
+    ;; `scheme': `gambit-mode'
     (prog1
         (compile-unit% (emacs-home* "config/gambit.el") t)
       (autoload 'gambit-mode (v-home%> "config/gambit.el")
@@ -143,7 +150,7 @@
       (autoload* 'run-gambit (v-home%> "config/gambit.el")
                  "Toggle gambit process in buffer \\=`*gambit*\\='." t))
 
-    ;; Scheme `chez-mode'
+    ;; `scheme': `chez-mode'
     (prog1
         (compile-unit% (emacs-home* "config/chez.el") t)
       ;; (*org-babel-schemes* :put 'chez "scheme")
@@ -161,7 +168,7 @@
     ;;                "Autoload `org-babel-execute:scheme*'." t)
     ;;     (fset 'org-babel-execute:scheme 'org-babel-execute:scheme*)))
 
-    ;; Sudoku
+    ;; `sudoku'
     (prog1
         (compile-unit% (emacs-home* "config/sudoku.el") t)
       (autoload 'sudoku (v-home%> "config/sudoku.el")
