@@ -374,6 +374,8 @@ No matter the declaration order, the executing order is:
 (setq% user-emacs-directory (emacs-home*))
 ;; disable package initialization
 (when-package% (setq package-enable-at-startup nil))
+(unless-noninteractive%
+ (setq inhibit-startup-echo-area-message t))
 
 ;;; <1> prologue
 (compile! (compile-unit% (emacs-home* "config/fn.el"))

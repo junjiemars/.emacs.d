@@ -192,8 +192,6 @@
   (push! (v-home% "private/") load-path)
   (load-autoloaded-modes!)
   (load-conditional-modes!)
-  (when-fn% 'toggle-frame-initialized 'graphic
-    (toggle-frame-initialized))
   (when-fn% 'self-desktop-read! 'memo
     (condition-case err
         (self-desktop-read!)

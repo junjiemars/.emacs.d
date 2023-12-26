@@ -17,11 +17,18 @@
      (when-version% < 23
        ,@body)))
 
-
 (defmacro when-font% (&rest body)
   (declare (indent 0))
   `(when-graphic%
      ,@body))
+
+(defmacro inhibit-blinking (&rest body)
+  (declare (indent 0))
+  `(lexical-let% ((inhibit-redisplay t)
+                  (frame-inhibit-implied-resize t))
+     (when-version% >= 25
+       (ignore* frame-inhibit-implied-resize))
+     (progn% ,@body)))
 
 ;; end of macro
 
@@ -43,17 +50,20 @@
   "Initialize frame specs from \\=`*self-env-spec*\\='."
   (let* ((f1 (*self-env-spec* :get :frame))
          (a1 (self-spec-> f1 :allowed)))
+    ;; `frame-resize-pixelwise'
+    (setq% frame-resize-pixelwise
+           (self-spec-> f1 :frame-resize-pixelwise))
     (setq
+     ;; `inhibit-splash-screen'
+     inhibit-splash-screen (if a1
+                               (self-spec-> f1 :inhibit-splash-screen)
+                             inhibit-splash-screen)
      ;; `initial-frame-alist'
      initial-frame-alist (append
                           +essential-frame-set+
                           (when-graphic%
                             (when a1
-                              (self-spec-> f1 :initial))))
-     ;; `inhibit-splash-screen'
-     inhibit-splash-screen (if a1
-                               (self-spec-> f1 :inhibit-splash-screen)
-                             inhibit-splash-screen))))
+                              (self-spec-> f1 :initial)))))))
 
 
 (when-graphic%
@@ -63,19 +73,14 @@
     (interactive)
     (let ((f1 (*self-env-spec* :get :frame)))
       (when (self-spec-> f1 :allowed)
-        ;; `frame-resize-pixelwise'
-        (setq% frame-resize-pixelwise
-               (self-spec-> f1 :frame-resize-pixelwise))
         ;; `default-frame-alist'
-        (let ((a (setq default-frame-alist
-                       (or (self-spec-> f1 :default)
-                           initial-frame-alist))))
-          (modify-frame-parameters
-           frame
-           (list (cons 'fullscreen nil)
-                 (cons 'fullscreen-restore nil)))
-          (set-frame-width frame (cdr (assoc** 'width a)))
-          (set-frame-height frame (cdr (assoc** 'height a))))))))
+        (setq default-frame-alist
+              (or (self-spec-> f1 :default)
+                  initial-frame-alist))
+        (modify-frame-parameters
+         frame
+         (list (cons 'fullscreen nil)
+               (cons 'fullscreen-restore nil)))))))
 
 
 ;; end of Frame
@@ -126,13 +131,12 @@ If RESET is true then reset before load."
 
 ;; end of when-theme%
 
-
-(self-frame-init!)
-(when-theme%
-  (if (*self-env-spec*
-       :get :desktop :allowed)
-      (make-thread* #'self-theme-init!)
-    (self-theme-init!)))
+(inhibit-blinking
+  (self-frame-init!)
+  (when-theme%
+    (if (*self-env-spec* :get :desktop :allowed)
+        (make-thread* #'self-theme-init!)
+      (self-theme-init!))))
 
 
 (provide 'graphic)
