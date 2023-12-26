@@ -49,21 +49,25 @@
 (defun self-frame-init! ()
   "Initialize frame specs from \\=`*self-env-spec*\\='."
   (let* ((f1 (*self-env-spec* :get :frame))
-         (a1 (self-spec-> f1 :allowed)))
+         (a1 (self-spec-> f1 :allowed))
+         (s1 (cond (a1 (self-spec-> f1 :inhibit-splash-screen))
+                   (t inhibit-splash-screen)))
+         (i1 (append
+              +essential-frame-set+
+              (when-graphic%
+                (when a1 (self-spec-> f1 :initial)))))
+         (d1 (when-graphic%
+               (when a1 (self-spec-> f1 :default)))))
     ;; `frame-resize-pixelwise'
     (setq% frame-resize-pixelwise
            (self-spec-> f1 :frame-resize-pixelwise))
     (setq
      ;; `inhibit-splash-screen'
-     inhibit-splash-screen (if a1
-                               (self-spec-> f1 :inhibit-splash-screen)
-                             inhibit-splash-screen)
+     inhibit-splash-screen s1
      ;; `initial-frame-alist'
-     initial-frame-alist (append
-                          +essential-frame-set+
-                          (when-graphic%
-                            (when a1
-                              (self-spec-> f1 :initial)))))))
+     initial-frame-alist i1
+     ;; `default-frame-alist'
+     default-frame-alist (or d1 i1))))
 
 
 (when-graphic%
@@ -73,14 +77,14 @@
     (interactive)
     (let ((f1 (*self-env-spec* :get :frame)))
       (when (self-spec-> f1 :allowed)
-        ;; `default-frame-alist'
-        (setq default-frame-alist
-              (or (self-spec-> f1 :default)
-                  initial-frame-alist))
         (modify-frame-parameters
          frame
          (list (cons 'fullscreen nil)
-               (cons 'fullscreen-restore nil)))))))
+               (cons 'fullscreen-restore nil)))
+        (let ((w (cdr (assoc** 'width default-frame-alist)))
+              (h (cdr (assoc** 'height default-frame-alist))))
+          (when w (set-frame-width nil w))
+          (when h (set-frame-height nil h)))))))
 
 
 ;; end of Frame
