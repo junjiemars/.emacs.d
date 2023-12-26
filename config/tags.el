@@ -66,17 +66,16 @@ when \\=`desktop-globals-to-save\\=' include it."
 
 
 (defalias 'tags-in-view-mode
-  (lexical-let% ((b (list (when% (> (path-depth
+  (lexical-let%
+      ((b (delq nil (list (when% (> (path-depth
                                      (expand-file-name
                                       (path- invocation-directory)))
                                     2)
                             (path- invocation-directory))
-                          (when-package%
-                            (when-var% package-user-dir 'package
-                              package-user-dir))
+                          (when-package% package*-user-dir)
                           (v-home% "config/")
                           (v-home% "private/")
-                          (v-home% "theme/"))))
+                          (v-home% "theme/")))))
     (lambda (&optional n)
   		"N"
       (cond (n (setq b (cons n b)))

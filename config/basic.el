@@ -52,6 +52,10 @@
 ;; `nsm': Network Security Manager
 (setq% nsm-settings-file (v-home! ".nsm/security.data") 'nsm)
 
+;; `package': default `package-usr-dir'
+(when-package%
+  (defconst package*-user-dir (v-home! ".elpa/")))
+
 ;; `project'
 (setq% project-list-file (v-home! ".project/list") 'project)
 
