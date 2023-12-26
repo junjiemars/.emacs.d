@@ -21,6 +21,7 @@ test_clean_env() {
              --no-window-system                 \
              --eval="
 (progn
+  (defvar *emacs-no-boot* t)
   (load \"${_ROOT_}/init.el\")
   (clean-compiled-files))
 "
