@@ -25,24 +25,26 @@
    (lexical-let% ((b (emacs-home* ".project/root.el"))
                   (c '()))
      (lambda (&optional op sexp)
+       "OP SEXP"
        (cond ((eq op :cache)
               (if sexp
-                  (catch 'break
+                  (catch 'br
                     (dolist* (s1 c)
                       (when (string= s1 sexp)
-                        (throw 'break s1))))
+                        (throw 'br s1))))
                 c))
              ((eq op :read)
               (setq c (read-sexp-from-file b)))
              ((eq op :save)
               (when sexp (save-sexp-to-file sexp b)))
              (t c))))
-   "The \\=`project-root\\=' cache."))
+   "The \\=`project-root\\=' cache.
+ROOT must be absolute but can be nested."))
 
 
 (when-feature-project%
 
- (defun project*-try-abs (dir)
+ (defun project*-try-root (dir)
    (let ((d (project*-root :cache dir)))
      (when d (list 'vc 'Git d)))))
 
@@ -52,7 +54,7 @@
  (defun on-project-init! ()
    "On \\=`project\\=' initialization."
    (project*-root :read)
-   (push! #'project*-try-abs project-find-functions)
+   (push! #'project*-try-root project-find-functions)
    (when-fn% 'project-find-file 'project
      (define-key% (current-global-map)
                   (kbd "C-x p f") #'project-find-file))))
