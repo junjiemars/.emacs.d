@@ -406,11 +406,11 @@ Returns the name of FILE when successed otherwise nil."
 (defmacro file-name-base* (path)
   "Return base name of PATH."
   (let ((p (gensym*)))
-    `(let* ((,p (file-name-nondirectory ,path))
-            (i (or (strrchr ,p ?.) (1- (length ,p)))))
-       (if (>= i 0)
-           (substring-no-properties ,p 0 i)
-         ""))))
+    `(let* ((,p ,path) (l (length ,p)))
+       (substring-no-properties ,p
+                                (let ((p1 (strrchr ,p ?/)))
+                                  (if p1 (1+ p1) 0))
+                                (or (strrchr ,p ?.) l)))))
 
 (unless% (fboundp 'directory-name-p)
   (defmacro directory-name-p (name)

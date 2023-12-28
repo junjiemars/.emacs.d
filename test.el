@@ -474,7 +474,9 @@
                    (string-match* "XX\\(abc\\)XX" "XXabcXX" 1))))
 
 (ert-deftest %d:fn:file-name-base* ()
-  (should (string= "x" (file-name-base* "/a/b/c/x.z"))))
+  (should (string= "x" (file-name-base* "x")))
+  (should (string= "x" (file-name-base* "x.z")))
+  (should (string= "x" (file-name-base* "/a/b.c/x.z"))))
 
 (ert-deftest %d:fn:directory-name-p ()
   (should (directory-name-p "a/"))
