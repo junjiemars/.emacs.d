@@ -60,12 +60,6 @@
     (should (path! p))
     (should (file-exists-p p))))
 
-(ert-deftest %b:init:strrchr ()
-  (should (null (strrchr nil nil)))
-  (should (null (strrchr nil ?a)))
-  (should (null (strrchr "abc" ?d)))
-  (should (= 0 (strrchr "abc" ?a))))
-
 (ert-deftest %b:init:v-path ()
   (should (string-match "[gt]_[.0-9]+" (v-path "a/x.el")))
   (should (string-match "[gt]_[.0-9]+/" (v-path "a/b/c/"))))
@@ -432,6 +426,12 @@
   (should (null (strchr nil ?a)))
   (should (null (strchr "abc" ?d)))
   (should (= 2 (strchr "abc" ?c))))
+
+(ert-deftest %d:fn:strrchr ()
+  (should (null (strrchr nil nil)))
+  (should (null (strrchr nil ?a)))
+  (should (null (strrchr "abc" ?d)))
+  (should (= 0 (strrchr "abc" ?a))))
 
 (ert-deftest %d:fn:split-string* ()
   (should (equal '("a" "b" "c")

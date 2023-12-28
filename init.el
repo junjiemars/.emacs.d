@@ -90,15 +90,6 @@ non-nil, do BODY."
 ;; file macro
 ;;;
 
-(defun strrchr (str chr)
-  "Return the index of the located CHR of STR from right side."
-  (let* ((l (length str)) (i (1- l)))
-    (catch 'break
-      (while (>= i 0)
-        (when (= chr (aref str i))
-          (throw 'break i))
-        (setq i (1- i))))))
-
 (defun file-name-sans-extension* (file)
   "Return the FILE sans EXTENSION.\n
 See \\=`file-name-sans-extension\\='."
@@ -107,11 +98,11 @@ See \\=`file-name-sans-extension\\='."
       (let ((i (1- l)))
         (substring-no-properties
          file 0
-         (catch 'break
+         (catch 'br
            (while (>= i 0)
              (let ((c (aref file i)))
-               (cond ((= ?/ c) (throw 'break l))
-                     ((= ?. c) (throw 'break i))
+               (cond ((= ?/ c) (throw 'br l))
+                     ((= ?. c) (throw 'br i))
                      (t (setq i (1- i))))))))))))
 
 (defmacro path! (file)
@@ -126,12 +117,12 @@ See \\=`file-name-sans-extension\\='."
                (unless (file-exists-p ,d)
                  (let ((i (1- (length ,d)))
                        (ds nil))
-                   (catch 'break
+                   (catch 'br
                      (while (> i 0)
                        (when (= ?/ (aref ,d i))
                          (let ((s (substring-no-properties ,d 0 (1+ i))))
                            (if (file-exists-p s)
-                               (throw 'break t)
+                               (throw 'br t)
                              (setq ds (cons s ds)))))
                        (setq i (1- i))))
                    (while (car ds)

@@ -237,11 +237,20 @@ If optional UNIQUELY is non-nil then append uniquely."
 (defun strchr (str chr)
   "Return the index of the located CHR of STR from left side."
   (let ((i 0) (l (length str)))
-    (catch 'break
+    (catch 'br
       (while (< i l)
         (when (= chr (aref str i))
-          (throw 'break i))
+          (throw 'br i))
         (setq i (1+ i))))))
+
+(defun strrchr (str chr)
+  "Return the index of the located CHR of STR from right side."
+  (let* ((l (length str)) (i (1- l)))
+    (catch 'br
+      (while (>= i 0)
+        (when (= chr (aref str i))
+          (throw 'br i))
+        (setq i (1- i))))))
 
 (defun string-trim> (s &optional rr)
   "Remove tailing whitespaces or matching of RR at the end of S."
@@ -406,11 +415,11 @@ Returns the name of FILE when successed otherwise nil."
 (defmacro file-name-base* (path)
   "Return base name of PATH."
   (let ((p (gensym*)))
-    `(let* ((,p ,path) (l (length ,p)))
+    `(let* ((,p ,path))
        (substring-no-properties ,p
                                 (let ((p1 (strrchr ,p ?/)))
                                   (if p1 (1+ p1) 0))
-                                (or (strrchr ,p ?.) l)))))
+                                (or (strrchr ,p ?.) (length ,p))))))
 
 (unless% (fboundp 'directory-name-p)
   (defmacro directory-name-p (name)
