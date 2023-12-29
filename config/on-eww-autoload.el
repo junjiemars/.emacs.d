@@ -37,11 +37,12 @@ is non-nil, otherwise is not. See also:
                  #'eww-browse-url
                #'browse-url-default-browser)
            #'eww-browse-url))
-   (message "eww as default browser %s"
-            (if (eq browse-url-browser-function
-                    'browse-url-default-browser)
-                "disabled"
-              "enabled"))))
+   (unless-noninteractive%
+    (message "eww as default browser %s"
+             (if (eq browse-url-browser-function
+                     'browse-url-default-browser)
+                 "disabled"
+               "enabled")))))
 
 
 (when-feature-eww%

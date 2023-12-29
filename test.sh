@@ -10,10 +10,10 @@ _ENV_ERT_=
 _ENV_PKG_=
 
 test_echo_env() {
-  echo "------------"
-  echo "VERSION: $_ENV_VER_"
-  echo "TEST: $1"
-  echo "------------"
+  echo "# ------------"
+  echo "# VERSION: $_ENV_VER_"
+  echo "# TEST: $1"
+  echo "# ------------"
 }
 
 test_clean_env() {
@@ -21,7 +21,7 @@ test_clean_env() {
              --no-window-system                 \
              --eval="
 (progn
-  (defvar *emacs-no-boot* t)
+  (defvar *nore-emacs-no-boot* nil)
   (load \"${_ROOT_}/init.el\")
   (clean-compiled-files))
 "
@@ -163,6 +163,32 @@ END
 "
 }
 
+test_profile() {
+	local d="${_ROOT_}/.profile"
+	local fc="${d}/compile"
+	local fb="${d}/boot"
+	local ps="${_ROOT_}/.github/prof.sh"
+  test_echo_env "profile|clean"
+  test_clean_env
+	mkdir -p "$d"
+  test_echo_env "profile|compile"
+  ${_EMACS_} --batch \
+             --no-window-system \
+             --eval="
+(progn
+  (defvar *nore-emacs-profile* nil)
+  (load \"${_ROOT_}/init.el\"))" 2>"$fc"
+	$ps "$fc"
+  test_echo_env "profile|boot"
+  ${_EMACS_} --batch \
+             --no-window-system \
+             --eval="
+(progn
+  (defvar *nore-emacs-profile* nil)
+  (load \"${_ROOT_}/init.el\"))" 2>"$fb"
+	$ps "$fb"
+}
+
 test_debug() {
   test_echo_env "debug|clean"
   test_clean_env
@@ -178,21 +204,21 @@ test_debug() {
 
 check_env() {
   echo "# check env ..."
-  echo "_ROOT_: ${_ROOT_}"
+  echo "# _ROOT_: ${_ROOT_}"
   _ENV_VER_=$(${_EMACS_} --batch -Q --eval='(prin1 emacs-version)' \
                 | sed 's/\"//g' \
                 | cut -d '.' -f1,2)
-  echo "_ENV_VER_: ${_ENV_VER_}"
+  echo "# _ENV_VER_: ${_ENV_VER_}"
   _ENV_ERT_=$($_EMACS_ --batch --eval='(prin1 (require (quote ert) nil t))')
-  echo "_ENV_ERT_: ${_ENV_ERT_}"
+  echo "# _ENV_ERT_: ${_ENV_ERT_}"
   _ENV_PKG_=$($_EMACS_ --batch --eval='(prin1 (require (quote package) nil t))')
-  echo "_ENV_PKG_: ${_ENV_PKG_}"
+  echo "# _ENV_PKG_: ${_ENV_PKG_}"
 }
 
 make_env() {
   echo "# make env ..."
   export EMACS_HOME="${_ROOT_}/"
-  echo "EMACS_HOME: ${EMACS_HOME}"
+  echo "# EMACS_HOME: ${EMACS_HOME}"
 }
 
 restore_env() {
@@ -214,6 +240,7 @@ case "${_TEST_}" in
   axiom)    test_axiom    ;;
   package)  test_package  ;;
   extra)    test_extra    ;;
+	profile)  test_profile  ;;
   debug)    test_debug    ;;
   *) ;;
 esac

@@ -211,7 +211,31 @@ compile-time."
            (copy-file ,s1 d1 t))
          (cons d1 d2)))))
 
-(defmacro compile-and-load-file* (src dst &optional only-compile)
+(defmacro time (id &rest form)
+  "Run FORM and summarize resource usage."
+  (declare (indent 0))
+  `(let ((bt (float-time))
+         (gc gcs-done)
+         (gt gc-elapsed))
+     (prog1 (progn% ,@form)
+       (let ((ct (float-time)))
+         (message "%.6f %d %.6f %.2f %d %d %d %d %d %d %d %d %.6f %s"
+                  (- ct bt)
+                  (- gcs-done gc)
+                  (- gc-elapsed gt)
+                  gc-cons-percentage
+                  pure-bytes-used
+                  cons-cells-consed
+                  floats-consed
+                  vector-cells-consed
+                  symbols-consed
+                  string-chars-consed
+                  intervals-consed
+                  strings-consed
+                  ct
+                  ,id)))))
+
+(defmacro compile-and-load-file (src dst &optional only-compile)
   "Compile SRC to DST.\n
 If ONLY-COMPILE is t, does not load DST."
   (let ((s1 (gensym*)) (d1 (gensym*)) (c1 (gensym*)))
@@ -242,32 +266,11 @@ If ONLY-COMPILE is t, does not load DST."
       (let* ((d (car dirs)) (f1 (car d)) (r1 (cdr d))
              (fs (when (file-exists-p f1)
                    (directory-files f1 nil r1))))
-        (message "#Clean compiled files: %s..." f1)
+        (message "# Clean compiled files: %s..." f1)
         (while fs
           (delete-file (concat f1 (car fs)))
           (setq fs (cdr fs))))
       (setq dirs (cdr dirs)))))
-
-(defmacro time (&rest form)
-  "Run FORM and summarize resource usage."
-  (declare (indent 0))
-  `(let ((bt (current-time))
-         (gc gcs-done)
-         (gt gc-elapsed))
-     (prog1 (progn% ,@form)
-       (message "%.6f %d %.6f %.2f %d %d %d %d %d %d %d %d"
-                (float-time (time-subtract (current-time) bt))
-                (- gcs-done gc)
-                (- gc-elapsed gt)
-                gc-cons-percentage
-                pure-bytes-used
-                cons-cells-consed
-                floats-consed
-                vector-cells-consed
-                symbols-consed
-                string-chars-consed
-                intervals-consed
-                strings-consed))))
 
 ;; end of compile macro
 
@@ -333,8 +336,14 @@ If ONLY-COMPILE is t, does not load DST."
           (cons (concat "LIBRARY_PATH=" (library-path))
                 process-environment))))
 
+(defmacro compile-and-load-file* (src dst &optional only-compile)
+  "The profiling shim of \\=`compile-and-load-file*\\='."
+  (if% (boundp '*nore-emacs-profile*)
+      `(time ,src (compile-and-load-file ,src ,dst ,only-compile))
+    `(compile-and-load-file ,src ,dst ,only-compile)))
+
 ;; boot
-(unless (boundp '*emacs-no-boot*)
+(unless (boundp '*nore-emacs-no-boot*)
   (inhibit-gc
     (inhibit-file-name-handler
       (let ((u (v-comp-file! (emacs-home* "config/boot.el"))))

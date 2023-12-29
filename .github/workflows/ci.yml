@@ -29,6 +29,7 @@ jobs:
           _TEST_=axiom ./test.sh
           _TEST_=package ./test.sh
           _TEST_=extra ./test.sh
+          _TEST_=profile ./test.sh
 
   MacOS:
     runs-on: macos-latest
@@ -45,6 +46,7 @@ jobs:
           _TEST_=axiom ./test.sh
           _TEST_=package ./test.sh
           _TEST_=extra ./test.sh
+          _TEST_=profile ./test.sh
 
   # MacOS:
   #   runs-on: macos-latest
@@ -85,6 +87,7 @@ jobs:
         _TEST_=axiom ./test.sh
         _TEST_=package ./test.sh
         _TEST_=extra ./test.sh
+        _TEST_=profile ./test.sh
 
   # Emacs:
   #   runs-on: ubuntu-latest
