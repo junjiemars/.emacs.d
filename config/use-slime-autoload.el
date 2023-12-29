@@ -54,7 +54,8 @@
 
 
 ;; `slime' aftere load
-(eval-after-load 'slime #'use-slime-init!)
+(with-eval-after-load 'slime
+  (use-slime-init!))
 
 
 ;; end of file
