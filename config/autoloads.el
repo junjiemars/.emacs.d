@@ -204,7 +204,7 @@
         (self-desktop-read!)
       (error (message "self-desktop-read!: %s" err))))
   (compile!
-    (compile-unit% (emacs-home* "config/on-inter-autoload.el")))
+    (compile-unit% (emacs-home* "config/on-delay-autoload.el")))
   (when (*self-paths* :get :epilogue)
     (make-thread*
      (lambda ()

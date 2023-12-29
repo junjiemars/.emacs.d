@@ -336,7 +336,7 @@ current buffer."
 (defmacro if-key% (keymap key test then &rest else)
   "If TEST function returns t for KEY in KEYMAP do then,
 otherwise do ELSE..."
-  (declare (indent 4))
+  (declare (indent 3))
   `(if% (funcall ,test (lookup-key ,keymap ,key))
        ,then
      ,@else))
@@ -346,7 +346,7 @@ otherwise do ELSE..."
 exists."
   `(if-key% ,keymap ,key
             (lambda (d) (not (eq d ,def)))
-            (define-key ,keymap ,key ,def)))
+     (define-key ,keymap ,key ,def)))
 
 ;; end of define key macro
 

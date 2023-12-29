@@ -17,6 +17,7 @@
 
 (defun on-ido-init! ()
   "On \\=`ido\\=' intialization."
+  (when-version% > 28 (require 'dired-x nil t))
   (define-key% (current-global-map) (kbd "C-x 5 r")
                #'ido-find-file-read-only-other-frame)
   (define-key% (current-global-map) (kbd "C-x 4 r")
