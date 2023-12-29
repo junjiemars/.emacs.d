@@ -215,16 +215,15 @@ compile-time."
   "Compile SRC to DST.\n
 If ONLY-COMPILE is t, does not load DST."
   (let ((s1 (gensym*)) (d1 (gensym*)) (c1 (gensym*)))
-    `(inhibit-file-name-handler
-       (let ((,s1 ,src) (,d1 ,dst) (,c1 ,only-compile))
-         (unless (file-exists-p ,d1)
-           (if-native-comp%
-               (native-compile ,s1 ,d1)
-             (byte-compile-file ,s1)))
-         (cond (,c1 ,d1)
-               (t (if-native-comp%
-                      (native-elisp-load ,d1)
-                    (load ,d1))))))))
+    `(let ((,s1 ,src) (,d1 ,dst) (,c1 ,only-compile))
+       (unless (file-exists-p ,d1)
+         (if-native-comp%
+             (native-compile ,s1 ,d1)
+           (byte-compile-file ,s1)))
+       (cond (,c1 ,d1)
+             (t (if-native-comp%
+                    (native-elisp-load ,d1)
+                  (load ,d1)))))))
 
 (defun clean-compiled-files ()
   "Clean all compiled files."
@@ -249,6 +248,26 @@ If ONLY-COMPILE is t, does not load DST."
           (setq fs (cdr fs))))
       (setq dirs (cdr dirs)))))
 
+(defmacro time (&rest form)
+  "Run FORM and summarize resource usage."
+  (declare (indent 0))
+  `(let ((bt (current-time))
+         (gc gcs-done)
+         (gt gc-elapsed))
+     (prog1 (progn% ,@form)
+       (message "%.6f %d %.6f %.2f %d %d %d %d %d %d %d %d"
+                (float-time (time-subtract (current-time) bt))
+                (- gcs-done gc)
+                (- gc-elapsed gt)
+                gc-cons-percentage
+                pure-bytes-used
+                cons-cells-consed
+                floats-consed
+                vector-cells-consed
+                symbols-consed
+                string-chars-consed
+                intervals-consed
+                strings-consed))))
 
 ;; end of compile macro
 
@@ -316,10 +335,10 @@ If ONLY-COMPILE is t, does not load DST."
 
 ;; boot
 (unless (boundp '*emacs-no-boot*)
-  (let ((u (inhibit-file-name-handler
-             (v-comp-file! (emacs-home* "config/boot.el"))))
-        (gc-cons-percentage 0.4))
-    (compile-and-load-file* (car u) (cdr u))))
+  (inhibit-gc
+    (inhibit-file-name-handler
+      (let ((u (v-comp-file! (emacs-home* "config/boot.el"))))
+        (compile-and-load-file* (car u) (cdr u))))))
 
 ;; end of Boot
 

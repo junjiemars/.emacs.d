@@ -265,38 +265,17 @@ Argument SPEC (VAR LIST [RESULT])."
   "Return the :only-compile indicator of UNIT."
   `(aref ,unit 2))
 
-(defmacro time (&rest form)
-  "Return the elapsed time of FORM executing."
-  (declare (indent 0))
-  `(let ((bt (current-time))
-         (gc gcs-done)
-         (gt gc-elapsed))
-     (prog1 (progn ,@form)
-       (message "%.6f %d %.6f %.2f %d %d %d %d %d %d %d %d"
-                (float-time
-                 (time-subtract (current-time) bt))
-                (- gcs-done gc)
-                (- gc-elapsed gt)
-                gc-cons-percentage
-                pure-bytes-used
-                cons-cells-consed
-                floats-consed
-                vector-cells-consed
-                symbols-consed
-                string-chars-consed
-                intervals-consed
-                strings-consed))))
-
 (defun compile! (&rest units)
   "Compile and load UNITS."
   (declare (indent 0))
   (inhibit-gc
-    (dolist* (u units)
-      (when u
-        (compile-and-load-file*
-         (compile-unit->src u)
-         (compile-unit->dst u)
-         (compile-unit->only-compile u))))))
+    (inhibit-file-name-handler
+      (dolist* (u units)
+        (when u
+          (compile-and-load-file*
+           (compile-unit->src u)
+           (compile-unit->dst u)
+           (compile-unit->only-compile u)))))))
 
 ;; end of compile macro
 

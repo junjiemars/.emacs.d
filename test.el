@@ -123,6 +123,11 @@
                                  (+ 1 2)
                                  (* 3 4))))))
 
+(ert-deftest %b:init:time ()
+  (should (null (time)))
+  (should (= 6 (time (+ 1 2 3))))
+  (should (= 120 (time (+ 1 2 3) (* 4 5 6)))))
+
 ;; end of init
 
 ;;;
@@ -214,10 +219,6 @@
   (should (catch 'found
             (dolist* (x '(a b c))
               (when (eq 'b x) (throw 'found t))))))
-
-(ert-deftest %c:boot:time ()
-  (should (null (time)))
-  (should (= 6 (time (+ 1 2 3)))))
 
 (ert-deftest %c:boot:self-spec-> ()
   (should (null (self-spec-> nil nil)))
