@@ -50,11 +50,17 @@ Else return BODY sexp."
             (prog1 *gensym-counter*
               (setq *gensym-counter* (1+ *gensym-counter*))))))
 
-(defmacro without-file-name-handler (&rest body)
-  "Without \\=`file-name-handler-alist\\='."
+(defmacro inhibit-file-name-handler (&rest body)
+  "Inhibit BODY under \\=`file-name-handler-alist\\='."
   (declare (indent 0))
   `(let ((file-name-handler-alist nil))
-     (progn% ,@body)))
+     ,@body))
+
+(defmacro inhibit-gc (&rest body)
+  "Inhibiti BODY under GC."
+  (declare (indent 0))
+  `(let ((gc-cons-percentage 0.4))
+     ,@body))
 
 ;; end of compile-time macro
 
@@ -108,7 +114,7 @@ See \\=`file-name-sans-extension\\='."
 (defmacro path! (file)
   "Make and return the path of posixed FILE.\n"
   (let ((f (gensym*)) (d (gensym*)))
-    `(without-file-name-handler
+    `(inhibit-file-name-handler
        (let ((,f ,file))
          (if (file-exists-p ,f)
              ,f
@@ -144,7 +150,7 @@ See \\=`file-name-sans-extension\\='."
 (defmacro v-path (file)
   "Return versioned FILE."
   (let ((f1 (gensym*)))
-    `(without-file-name-handler
+    `(inhibit-file-name-handler
        (let ((,f1 ,file))
          (concat (file-name-directory ,f1)
                  ,(v-name) "/"
@@ -209,7 +215,7 @@ compile-time."
   "Compile SRC to DST.\n
 If ONLY-COMPILE is t, does not load DST."
   (let ((s1 (gensym*)) (d1 (gensym*)) (c1 (gensym*)))
-    `(without-file-name-handler
+    `(inhibit-file-name-handler
        (let ((,s1 ,src) (,d1 ,dst) (,c1 ,only-compile))
          (unless (file-exists-p ,d1)
            (if-native-comp%
@@ -310,7 +316,7 @@ If ONLY-COMPILE is t, does not load DST."
 
 ;; boot
 (unless (boundp '*emacs-no-boot*)
-  (let ((u (without-file-name-handler
+  (let ((u (inhibit-file-name-handler
              (v-comp-file! (emacs-home* "config/boot.el"))))
         (gc-cons-percentage 0.4))
     (compile-and-load-file* (car u) (cdr u))))

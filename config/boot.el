@@ -239,14 +239,14 @@ Argument SPEC (VAR LIST [RESULT])."
 
 (defun compile-unit* (file &optional only-compile)
   "Make an compile unit for \\=`compile!\\='."
-  (without-file-name-handler
+  (inhibit-file-name-handler
     (when (and (stringp file) (file-exists-p file))
       (let ((u1 (v-comp-file! file)))
         (vector (car u1) (cdr u1) only-compile nil)))))
 
 (defmacro compile-unit% (file &optional only-compile)
   "Make an compile unit at compile time for \\=`compile!\\='"
-  (let* ((-u1- (without-file-name-handler
+  (let* ((-u1- (inhibit-file-name-handler
                  (v-comp-file! (funcall `(lambda () ,file)))))
          (-src1- (car -u1-))
          (-dst1- (cdr -u1-)))
@@ -265,15 +265,38 @@ Argument SPEC (VAR LIST [RESULT])."
   "Return the :only-compile indicator of UNIT."
   `(aref ,unit 2))
 
+(defmacro time (&rest form)
+  "Return the elapsed time of FORM executing."
+  (declare (indent 0))
+  `(let ((bt (current-time))
+         (gc gcs-done)
+         (gt gc-elapsed))
+     (prog1 (progn ,@form)
+       (message "%.6f %d %.6f %.2f %d %d %d %d %d %d %d %d"
+                (float-time
+                 (time-subtract (current-time) bt))
+                (- gcs-done gc)
+                (- gc-elapsed gt)
+                gc-cons-percentage
+                pure-bytes-used
+                cons-cells-consed
+                floats-consed
+                vector-cells-consed
+                symbols-consed
+                string-chars-consed
+                intervals-consed
+                strings-consed))))
+
 (defun compile! (&rest units)
   "Compile and load UNITS."
   (declare (indent 0))
-  (dolist* (u units)
-    (when u
-      (compile-and-load-file*
-       (compile-unit->src u)
-       (compile-unit->dst u)
-       (compile-unit->only-compile u)))))
+  (inhibit-gc
+    (dolist* (u units)
+      (when u
+        (compile-and-load-file*
+         (compile-unit->src u)
+         (compile-unit->dst u)
+         (compile-unit->only-compile u))))))
 
 ;; end of compile macro
 
@@ -318,7 +341,7 @@ Argument SPEC (VAR LIST [RESULT])."
       (cond ((eq :get op) (plist-get ps k))
             ((eq :put op) (setq ps (plist-put ps k v)))
             ((eq :dup op)
-             (without-file-name-handler
+             (inhibit-file-name-handler
                (dolist* (fs ss)
                  (let ((dst (plist-get ps (car fs)))
                        (src (cdr fs)))

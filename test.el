@@ -215,6 +215,10 @@
             (dolist* (x '(a b c))
               (when (eq 'b x) (throw 'found t))))))
 
+(ert-deftest %c:boot:time ()
+  (should (null (time)))
+  (should (= 6 (time (+ 1 2 3)))))
+
 (ert-deftest %c:boot:self-spec-> ()
   (should (null (self-spec-> nil nil)))
   (should (null (self-spec-> '(a 1) nil)))
@@ -416,10 +420,6 @@
     (fluid-let (x 456)
       (should (= x 456)))
     (should (= x 123))))
-
-(ert-deftest %d:fn:time ()
-  (should (null (time)))
-  (should (= 6 (time (+ 1 2 3)))))
 
 (ert-deftest %d:fn:strchr ()
   (should (null (strchr nil nil)))

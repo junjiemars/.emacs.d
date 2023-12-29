@@ -28,7 +28,7 @@
                   (frame-inhibit-implied-resize t))
      (when-version% >= 25
        (ignore* frame-inhibit-implied-resize))
-     (progn% ,@body)))
+     ,@body))
 
 ;; end of macro
 

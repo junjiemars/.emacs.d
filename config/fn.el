@@ -210,15 +210,6 @@ If optional UNIQUELY is non-nil then append uniquely."
              `(progn% (comment ,then)
                       ,@body)))))))
 
-(defmacro time (&rest form)
-  "Return the elapsed time of FORM executing."
-  (declare (indent 0))
-  `(let ((b (current-time)))
-     (prog1 (progn ,@form)
-       (unless-noninteractive%
-        (message "%.6f" (float-time
-                         (time-subtract (current-time) b)))))))
-
 (defmacro make-thread* (fn &optional join name)
   "Threading call FN with NAME or in JOIN mode."
   `(if-fn% 'make-thread nil
