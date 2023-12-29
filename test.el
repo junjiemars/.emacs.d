@@ -124,9 +124,9 @@
                                  (* 3 4))))))
 
 (ert-deftest %b:init:time ()
-  (should (null (time)))
-  (should (= 6 (time (+ 1 2 3))))
-  (should (= 120 (time (+ 1 2 3) (* 4 5 6)))))
+  (should (null (time "")))
+  (should (= 6 (time "a" (+ 1 2 3))))
+  (should (= 120 (time "a" (+ 1 2 3) (* 4 5 6)))))
 
 ;; end of init
 
