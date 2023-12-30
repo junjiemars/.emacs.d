@@ -25,8 +25,8 @@ Examples:
 
 (defcustom%
  tags-program
- (eval-when-compile
-   (list 'quote
+ (list 'quote
+       (eval-when-compile
          (or (executable-find%
               "ctags"
               (lambda (bin)

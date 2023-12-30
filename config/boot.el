@@ -242,7 +242,7 @@ Argument SPEC (VAR LIST [RESULT])."
   (inhibit-file-name-handler
     (when (and (stringp file) (file-exists-p file))
       (let ((u1 (v-comp-file! file)))
-        (vector (car u1) (cdr u1) only-compile nil)))))
+        `[,(car u1) ,(cdr u1) ,only-compile nil]))))
 
 (defmacro compile-unit% (file &optional only-compile)
   "Make an compile unit at compile time for \\=`compile!\\='"
