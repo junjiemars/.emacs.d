@@ -22,9 +22,10 @@
 
 
 (defalias 'python*-program
-  (lexical-let% ((b (let ((p (or (executable-find% "python3")
-                                 (executable-find% "python"))))
-                      (when p (cons p (python*-version p))))))
+  (lexical-let% ((b (eval-when-compile
+                      (let ((p (or (executable-find% "python3")
+                                   (executable-find% "python"))))
+                        (when p (cons p (python*-version p)))))))
     (lambda (&optional op n)
       "OP N"
       (cond ((eq :new op) (setq b (cons n (python*-version n))))
