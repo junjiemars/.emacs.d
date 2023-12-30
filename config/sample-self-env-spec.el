@@ -34,8 +34,8 @@
                                "Monaco-13"))))
        :default nil ; `((fullscreen . fullheight))
        :frame-resize-pixelwise nil
-       :inhibit-splash-screen nil
-       :allowed nil))
+       :inhibit-splash-screen t
+       :allowed t))
 
 
 ;;; glyph
