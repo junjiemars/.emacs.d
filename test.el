@@ -483,6 +483,9 @@
   (should (directory-name-p "a/"))
   (should-not (directory-name-p "a")))
 
+(ert-deftest %d:fn:make-thread* ()
+  (should (= 6 (make-thread* (lambda () (* 2 3)) t))))
+
 (ert-deftest %d:fn:posix-path ()
   (should-not (posix-path nil))
   (let ((p "c:/a/b/c.c"))
