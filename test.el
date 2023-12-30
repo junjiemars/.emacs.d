@@ -718,9 +718,9 @@
   (should (*default-shell-env* :put! :xx "aa"))
   (should (string= "aa" (*default-shell-env* :get :xx))))
 
-(ert-deftest %f:shells:var->paths ()
-  (should (null (var->paths 1)))
-  (should (var->paths (getenv "PATH"))))
+(ert-deftest %f:shells:echo-var ()
+  (should (string= "1" (let ((process-environment '("A=1")))
+                         (echo-var "A")))))
 
 (ert-deftest %f:shells:paths->var ()
   (let ((path-separator ":"))
@@ -729,6 +729,10 @@
                                      (lambda (x) (string= "b" x)))))
     (should (string= "" (paths->var '("a" "b" "c")
                                     (lambda (x) (file-exists-p x)))))))
+
+(ert-deftest %f:shells:var->paths ()
+  (let ((path-separator ":"))
+    (should (equal '("a" "b" "c") (var->paths "a:b:c")))))
 
 (ert-deftest %f:shells:setenv* ()
   (should (member "D=44"

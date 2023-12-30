@@ -44,51 +44,42 @@
 ;; vars/paths
 ;;;
 
-(defmacro echo-var (var &optional options)
+
+(defun echo-var (var &optional options)
   "Return the value of $VAR via echo."
-  (let ((v (gensym*))
-        (o (gensym*)))
-    `(let ((,v ,var)
-           (,o ,options))
-       (when (stringp ,v)
-         (let* ((c1 (shell-command* shell-file-name
-                      (mapconcat #'identity ,o " ")
-                      (format "-c 'echo $%s'" ,v)))
-                (cmd (if-platform% 'windows-nt
-                         (if (string-match "cmdproxy\\.exe$" shell-file-name)
-                             (shell-command* (format "echo %%%s%%" ,v))
-                           c1)
-                       c1)))
-           (when (zerop (car cmd))
-             (string-trim> (cdr cmd))))))))
+  (when (stringp var)
+    (let* ((c1 (shell-command* shell-file-name
+                 (mapconcat #'identity options " ")
+                 (format "-c 'echo $%s'" var)))
+           (cmd (if-platform% 'windows-nt
+                    (if (string-match "cmdproxy\\.exe$" shell-file-name)
+                        (shell-command* (format "echo %%%s%%" var))
+                      c1)
+                  c1)))
+      (when (zerop (car cmd))
+        (string-trim> (cdr cmd))))))
 
 
-(defmacro paths->var (path &optional predicate)
+(defun paths->var (path &optional predicate)
   "Convert a list of PATH to $PATH like var that separated by
 \\=`path-separator\\='."
-  (let ((p (gensym*))
-        (c (gensym*)))
-    `(let ((,p ,path)
-           (,c ,predicate))
-       (string-trim>
-        (apply #'concat
-               (mapcar #'(lambda (s)
-                           (if (null ,c)
-                               (concat s path-separator)
-                             (when (and (functionp ,c)
-                                        (funcall ,c s))
-                               (concat s path-separator))))
-                       ,p))
-        path-separator))))
+  (string-trim>
+   (apply #'concat
+          (mapcar #'(lambda (s)
+                      (if (null predicate)
+                          (concat s path-separator)
+                        (when (and (functionp predicate)
+                                   (funcall predicate s))
+                          (concat s path-separator))))
+                  path))
+   path-separator))
 
 
-(defmacro var->paths (var)
+(defun var->paths (var)
   "Refine VAR like $PATH to list by \\=`path-separator\\='.\n
 See also: \\=`parse-colon-path\\='."
-  (let ((v (gensym*)))
-    `(let ((,v ,var))
-       (when (stringp ,v)
-         (split-string* ,v path-separator t "[ ]+\n")))))
+  (when (stringp var)
+    (split-string* var path-separator t "[ ]+\n")))
 
 ;; end of vars/paths
 
@@ -114,23 +105,19 @@ See \\=`setenv\\='."
       (setq process-environment (cons newval process-environment)))))
 
 
-(defmacro copy-env-vars! (env vars)
-  (let ((e (gensym*)) (vs (gensym*)))
-    `(let ((,e ,env) (,vs ,vars))
-       (dolist* (v ,vs)
-         (when (> (length v) 0)
-           (let ((v1 (cdr (assoc-string v ,e))))
-             (when (stringp v1)
-               (setenv* v v1))))))))
+(defun copy-env-vars! (env vars)
+  (dolist* (v vars)
+    (when (> (length v) 0)
+      (let ((v1 (cdr (assoc-string v env))))
+        (when (stringp v1)
+          (setenv* v v1))))))
 
 
-(defmacro spin-env-vars! (vars)
-  (let ((vs (gensym*)))
-    `(let ((,vs ,vars))
-       (dolist* (v ,vs)
-         (when (and (stringp (car v))
-                    (stringp (cdr v)))
-           (setenv* (car v) (cdr v)))))))
+(defun spin-env-vars! (vars)
+  (dolist* (v vars)
+    (when (and (stringp (car v))
+               (stringp (cdr v)))
+      (setenv* (car v) (cdr v)))))
 
 
 (defmacro copy-exec-path! (path)
