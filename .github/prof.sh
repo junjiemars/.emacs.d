@@ -16,4 +16,7 @@ if [ -f "$PROF_FILE" ]; then
 	printf "# profile: gc elapsed time\n# ------------\n"
 	awk -f ${PROF_ROOT}/elapsed.awk "$PROF_FILE" \
 		| sort -k3n,3nr -k1n,1nr -k2n,2nr
+	printf "# profile: serial\n# ------------\n"
+	awk -f ${PROF_ROOT}/elapsed.awk "$PROF_FILE" \
+		| sort -k5n -k1n,1nr -k2n,2nr
 fi
