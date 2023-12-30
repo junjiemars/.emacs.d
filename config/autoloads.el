@@ -72,7 +72,8 @@
     (compile-unit% (emacs-home* "config/on-trans-autoload.el"))
     (compile-unit% (emacs-home* "config/on-transient-autoload.el"))
     (compile-unit% (emacs-home* "config/on-vc-autoload.el"))
-    (compile-unit% (emacs-home* "config/on-window-autoload.el"))))
+    (compile-unit% (emacs-home* "config/on-window-autoload.el"))
+    (compile-unit% (emacs-home* "config/on-xref-autoload.el"))))
 ;; end of `load-autoloaded-modes!'
 
 (defun load-conditional-modes! ()

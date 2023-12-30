@@ -10,12 +10,7 @@
 
 
 (defmacro tags-spec->% (&rest key)
-  "Extract value from the list of spec via KEYS at compile time.\n
-Examples:
- (tags-spec->% :emacs-home)
- (tags-spec->% :emacs-source)
- (tags-spec->% :os-include)
-"
+  "Extract value from the list of spec via KEYS at compile time."
   `(self-spec->% (list
                   :emacs-home ,(v-home% ".tags/home/TAGS")
                   :emacs-source ,(v-home% ".tags/source/TAGS")
@@ -45,12 +40,10 @@ Examples:
                                      (cdr ver))
                        ``(:bin "etags" :cmd
                                ,(concat ,bin " %s -o %s -a %s")))))))))
- "The default tags program.
-This is used by commands like \\=`make-tags\\='.\n
-The default is \"ctags -e %s -o %s -a %s\",
-first %s: ctags options;
-second %s: explicit name of file for tag table;
-third %s: append to existing tag file.\n
+ "The tags program.\n
+1st %s: ctags options;
+2nd %s: explicit name of file for tag table;
+3rd %s: append to existing tag file.\n
 \\=`tags-table-list\\=' should be persitent between sessions
 when \\=`desktop-globals-to-save\\=' include it."
  :type '(plist :key-type 'symbol :value-type 'string)
@@ -60,7 +53,6 @@ when \\=`desktop-globals-to-save\\=' include it."
 (defalias '*tags*
   (lexical-let% ((b tags-program))
     (lambda (&optional n)
-  		"N"
       (plist-get b (or n :bin))))
   "Tags' binary and options.")
 
@@ -80,10 +72,9 @@ when \\=`desktop-globals-to-save\\=' include it."
                       (v-home% "private/")
                       (v-home% "theme/")))))
     (lambda (&optional n)
-  		"N"
       (cond (n (setq b (cons n b)))
             (t b))))
-  "Tag's buffer should open in \\=`view-mode\\='.")
+  "Tags buffer should open in \\=`view-mode\\='.")
 
 
 (defvar *tags-option-history*
@@ -112,9 +103,7 @@ when \\=`desktop-globals-to-save\\=' include it."
 
 
 (defun unmount-tags (&optional tags)
-  "Unmount TAGS from \\=`tags-table-list\\='.\n
-With prefix argument TAGS unmount all tags from
-\\=`tags-table-list\\='."
+  "Unmount TAGS from \\=`tags-table-list\\='."
   (interactive (list
                 (unless (and current-prefix-arg
                              (yes-or-no-p "unmount all? "))
@@ -207,7 +196,7 @@ RENEW overwrite the existing tags file when t else create it."
 
 
 (defun make-emacs-home-tags (&optional option renew)
-  "Make tags for Emacs' home directory."
+  "Make tags for \\=`emacs-home*\\=' directory."
   (interactive (list
                 (read-string (concat (*tags*) " option: ")
                              (car *tags-option-history*)
@@ -242,6 +231,9 @@ RENEW overwrite the existing tags file when t else create it."
                   (lambda (f _) (string-match "\\.el$" f))
                   (lambda (_ __) t)))
 
+;;
+
+;;; `make-dir-tags'
 
 (defun make-dir-tags
     (dir store &optional include-dir exclude-dir option renew)
@@ -275,100 +267,7 @@ RENEW overwrite the existing tags file when t else create it."
                      option
                      renew))))
 
-
-;;; `xref-find-definitions' macro
-
-(defmacro-if-fn% xref-find-definitions xref)
-
-(defmacro when-fn-xref-find-definitions% (&rest body)
-  `(if-fn-xref-find-definitions%
-       (progn% ,@body)))
-
-(defmacro unless-fn-xref-find-definitions% (&rest body)
-  `(if-fn-xref-find-definitions%
-       (comment ,@body)
-     (progn% ,@body)))
-
-;; end of `xref-find-definitions' macro
-
-;;;
-;; go into `view-mode'
-;; `xref-find-definitions' into `view-mode'
-;;;
-
-(when-fn-xref-find-definitions%
- ;; `xref-find-definitions' into `view-mode'
- (defadvice xref-find-definitions
-     (after xref-find-definitions-after disable)
-   (with-current-buffer (current-buffer)
-     (when (file-in-dirs-p (buffer-file-name (current-buffer))
-                           (tags-in-view-mode))
-       (view-mode 1)))))
-
-(when-fn-xref-find-definitions%
- (defun on-xref-init! ()
-   (ad-enable-advice #'xref-find-definitions 'after
-                     "xref-find-definitions-after")
-   (ad-activate #'xref-find-definitions t)))
-
-
-(unless-fn% 'xref-find-references 'xref
-  (defun xref-find-references (what)
-    "Alias of \\=`tags-apropos\\='."
-    (interactive
-     (list (read-string "Find references of: "
-                        (cdr (symbol@ 'symbol)))))
-    (tags-apropos what)))
-
-
-;; end of `xref'
-
-;;;
-;; `etags' after load
-;; `pop-tag-mark' same as Emacs22+ for ancient Emacs
-;;;
-
-(defmacro when-feature-etags% (&rest body)
-  `(unless-fn-xref-find-definitions% ,@body))
-
-(defmacro when-fn-pop-tag-mark% (&rest body)
-  `(unless-fn-xref-find-definitions% ,@body))
-
-;;; `find-tag' into `view-mode'
-(unless-fn-xref-find-definitions%
- (defadvice find-tag (after find-tag-after disable)
-   (with-current-buffer (current-buffer)
-     (when (file-in-dirs-p (buffer-file-name (current-buffer))
-                           (tags-in-view-mode))
-       (view-mode 1)))))
-
-(defun on-etags-init! ()
-  "On \\=`etags\\=' initialization."
-  (when-fn-pop-tag-mark%
-   ;; define keys for `pop-tag-mark' and `tags-loop-continue'
-   (define-key% (current-global-map) (kbd "M-,") #'pop-tag-mark)
-   (define-key% (current-global-map) (kbd "M-*") #'tags-loop-continue))
-  (unless-fn-xref-find-definitions%
-   (ad-enable-advice #'find-tag 'after "find-tag-after")
-   (ad-activate #'find-tag t)))
-
-;; end of `etags'
-
-;;;
-;; after-load
-;;;
-
-;;; `xref' after load
-(when-fn-xref-find-definitions%
- (with-eval-after-load 'xref
-   (on-xref-init!)))
-
-;;; `etags' after load
-(when-feature-etags%
- (with-eval-after-load 'etags
-   (on-etags-init!)))
-
-;; end of after-load
+;; end of `make-dir-tags'
 
 
 (provide 'tags)
