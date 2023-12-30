@@ -167,7 +167,7 @@ test_profile() {
 	local d="${_ROOT_}/.profile"
 	local fc="${d}/compile"
 	local fb="${d}/boot"
-	local ps="${_ROOT_}/.github/prof.sh"
+	local prof="${_ROOT_}/.github/prof.sh"
   test_echo_env "profile|clean"
   test_clean_env
 	mkdir -p "$d"
@@ -178,7 +178,7 @@ test_profile() {
 (progn
   (defvar *nore-emacs-profile* nil)
   (load \"${_ROOT_}/init.el\"))" 2>"$fc"
-	$ps "$fc"
+	$prof "$fc"
   test_echo_env "profile|boot"
   ${_EMACS_} --batch \
              --no-window-system \
@@ -186,7 +186,7 @@ test_profile() {
 (progn
   (defvar *nore-emacs-profile* nil)
   (load \"${_ROOT_}/init.el\"))" 2>"$fb"
-	$ps "$fb"
+	$prof "$fb"
 }
 
 test_debug() {
