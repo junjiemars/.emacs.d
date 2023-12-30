@@ -17,8 +17,15 @@ test_echo_env() {
 }
 
 test_clean_env() {
-  ${_EMACS_} --batch                            \
-             --no-window-system                 \
+  cat <<END >"${_ENV_PRO_}"
+(*self-paths* :put :env-spec nil)
+(*self-paths* :put :package-spec nil)
+(*self-paths* :put :epilogue nil)
+END
+  echo "# cat <${_ENV_PRO_}"
+  cat <"${_ENV_PRO_}"
+  ${_EMACS_} --batch \
+             --no-window-system \
              --eval="
 (progn
   (defvar *nore-emacs-no-boot* nil)
@@ -31,12 +38,12 @@ test_bone() {
   test_echo_env "bone|clean"
   test_clean_env
   test_echo_env "bone|compile"
-  ${_EMACS_} --batch                                \
-             --no-window-system                     \
+  ${_EMACS_} --batch \
+             --no-window-system \
              --eval="(load \"${_ROOT_}/init.el\")"
   test_echo_env "bone|boot"
-  ${_EMACS_} --batch                                \
-             --no-window-system                     \
+  ${_EMACS_} --batch \
+             --no-window-system \
              --eval="
 (progn
   (load \"${_ROOT_}/init.el\")
@@ -52,19 +59,11 @@ test_axiom() {
   else
     echo "_ENV_ERT_: ${_ENV_ERT_}"
   fi
-  test_echo_env "axiom|cat"
-  cat <<END >"${_ENV_PRO_}"
-(*self-paths* :put :env-spec nil)
-(*self-paths* :put :package-spec nil)
-(*self-paths* :put :epilogue nil)
-END
-  echo "# cat <${_ENV_PRO_}"
-  cat <"${_ENV_PRO_}"
   test_echo_env "axiom|clean"
   test_clean_env
   test_echo_env "axiom|compile"
-  ${_EMACS_} --batch                            \
-             --no-window-system                 \
+  ${_EMACS_} --batch \
+             --no-window-system \
              --eval="
 (progn
   (load \"${_ROOT_}/init.el\")
@@ -72,8 +71,8 @@ END
   (ert-run-tests-batch-and-exit))
 "
   test_echo_env "axiom|boot"
-  ${_EMACS_} --batch                            \
-             --no-window-system                 \
+  ${_EMACS_} --batch \
+             --no-window-system \
              --eval="
 (progn
   (load \"${_ROOT_}/init.el\")
@@ -90,7 +89,9 @@ test_package() {
   else
     echo "_ENV_PKG_: ${_ENV_PKG_}"
   fi
-  test_echo_env "package|cat"
+  test_echo_env "package|clean"
+  test_clean_env
+  test_echo_env "package|prologue"
   cat <<END >"${_ENV_PRO_}"
 (*self-paths* :put :env-spec nil)
 (*self-paths* :put :package-spec nil)
@@ -103,15 +104,13 @@ test_package() {
 END
   echo "# cat <${_ENV_PRO_}"
   cat <"${_ENV_PRO_}"
-  test_echo_env "package|clean"
-  test_clean_env
   test_echo_env "package|compile"
-  ${_EMACS_} --batch                                \
-             --no-window-system                     \
+  ${_EMACS_} --batch \
+             --no-window-system \
              --eval="(load \"${_ROOT_}/init.el\")"
   test_echo_env "package|boot"
-  ${_EMACS_} --batch                                \
-             --no-window-system                     \
+  ${_EMACS_} --batch \
+             --no-window-system \
              --eval="
 (progn
   (load \"${_ROOT_}/init.el\")
@@ -127,7 +126,9 @@ test_extra() {
   else
     echo "_ENV_PKG_: ${_ENV_PKG_}"
   fi
-  test_echo_env "extra|cat"
+  test_echo_env "extra|clean"
+  test_clean_env
+  test_echo_env "extra|prologue"
   cat <<END > "${_ENV_PRO_}"
 (*self-paths* :put :package-spec nil)
 (*self-paths* :put :env-spec nil)
@@ -147,15 +148,13 @@ test_extra() {
 END
   echo "# cat <${_ENV_PRO_}"
   cat <"${_ENV_PRO_}"
-  test_echo_env "extra|clean"
-  test_clean_env
   test_echo_env "extra|compile"
-  ${_EMACS_} --batch                                \
-             --no-window-system                     \
+  ${_EMACS_} --batch \
+             --no-window-system \
              --eval="(load \"${_ROOT_}/init.el\")"
   test_echo_env "extra|boot"
-  ${_EMACS_} --batch                                \
-             --no-window-system                     \
+  ${_EMACS_} --batch \
+             --no-window-system \
              --eval="
 (progn
   (load \"${_ROOT_}/init.el\")
@@ -193,9 +192,9 @@ test_debug() {
   test_echo_env "debug|clean"
   test_clean_env
   test_echo_env "debug|compile"
-  ${_EMACS_} --batch                              \
-             --no-window-system                   \
-             --debug-init                         \
+  ${_EMACS_} --batch \
+             --no-window-system \
+             --debug-init \
              --eval="
 (progn
   (setq debug-on-error t)
