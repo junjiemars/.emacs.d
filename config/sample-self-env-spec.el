@@ -35,7 +35,7 @@
        :default nil ; `((fullscreen . fullheight))
        :frame-resize-pixelwise nil
        :inhibit-splash-screen nil
-       :allowed t))
+       :allowed nil))
 
 
 ;;; glyph
@@ -49,7 +49,7 @@
           :size 17
           :scale nil
           :scripts (greek)
-          :allowed t)
+          :allowed nil)
    (:name ,(if-platform% 'darwin
                "PingFang"
              (if-platform% 'windows-nt
@@ -68,7 +68,7 @@
                    '((mac-option-modifier . meta)
                      (mac-right-option-modifier . control)
                      (mac-right-command-modifier . meta)))
-       :allowed (when-version% <= 23 (when-graphic% t))))
+       :allowed nil))
 
 
 ;;; shell
@@ -82,7 +82,7 @@
                             (executable-find% "bash"))
        :prompt (list :bash "\\u@\\h \\W \\$ "
                      :zsh "%n@%m %1~ %# ")
-       :allowed t))
+       :allowed nil))
 
 ;;; desktop
 (*self-env-spec*

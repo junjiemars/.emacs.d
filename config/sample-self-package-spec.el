@@ -28,14 +28,6 @@
                   (when-version% <= 24.3 'yasnippet)
                   'vlf)))
 
-;; `eglot' package for ancient Emacs
-(*self-packages*
- :put :eglot
- (list
-  :cond (comment t)
-  :packages `(,(when-version% > 29 'eglot))
-  :compile `(,(compile-unit% (emacs-home* "config/on-eglot-autoload.el")))))
-
 ;;; :erlang
 (*self-packages*
  :put :erlang
@@ -103,14 +95,6 @@
  (list
   :cond (comment (executable-find% "v"))
   :packages '(v-mode)))
-
-;;; :treesit package for ancient Emacs
-(*self-packages*
- :put :treesit
- (list
-  :cond (comment t)
-  :packages (list (when-version% > 29 'treesit))
-  :compile `(,(compile-unit% (emacs-home* "config/on-treesit-autoload.el")))))
 
 ;;; :vcs
 (*self-packages*
