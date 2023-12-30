@@ -54,10 +54,7 @@ ROOT must be absolute but can be nested."))
  (defun on-project-init! ()
    "On \\=`project\\=' initialization."
    (project*-root :read)
-   (push! #'project*-try-root project-find-functions)
-   (when-fn% 'project-find-file 'project
-     (define-key% (current-global-map)
-                  (kbd "C-x p f") #'project-find-file))))
+   (push! #'project*-try-root project-find-functions)))
 
 ;; end of `project'
 
@@ -65,7 +62,10 @@ ROOT must be absolute but can be nested."))
 ;;; `project' after load
 (when-feature-project%
  (with-eval-after-load 'project
-   (on-project-init!)))
+   (on-project-init!))
+ (when-fn% 'project-find-file 'project
+   (define-key% (current-global-map) (kbd "C-x p f")
+                #'project-find-file)))
 
 
 ;; end of on-project-autoload.el
