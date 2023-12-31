@@ -48,10 +48,9 @@
 (defun echo-var (var &optional options)
   "Return the value of $VAR via echo."
   (when (stringp var)
-    (let* ((c1 (inhibit-file-name-handler
-                 (shell-command* shell-file-name
-                   (mapconcat #'identity options " ")
-                   (format "-c 'echo $%s'" var))))
+    (let* ((c1 (shell-command* shell-file-name
+                 (mapconcat #'identity options " ")
+                 (format "-c 'echo $%s'" var)))
            (cmd (if-platform% 'windows-nt
                     (if (string-match "cmdproxy\\.exe$" shell-file-name)
                         (shell-command* (format "echo %%%s%%" var))
@@ -96,11 +95,11 @@ See \\=`setenv\\='."
        (name= (concat name "="))
        (len (length name=))
        (newval (concat name= value)))
-    (if (catch 'break
+    (if (catch 'br
           (while (car env)
             (when (eq t (compare-strings name= 0 len (car env) 0 len))
               (setcar env newval)
-              (throw 'break t))
+              (throw 'br t))
             (setq env (cdr env))))
         process-environment
       (setq process-environment (cons newval process-environment)))))
