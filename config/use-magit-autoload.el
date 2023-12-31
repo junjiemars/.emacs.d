@@ -24,20 +24,21 @@
    ;; toggle on `magit-auto-revert-mode'
    (setq% magit-auto-revert-mode t 'magit-autorevert)
    (when-platform% 'windows-nt
-     (when (executable-find% "git")
+     (when% (executable-find% "git")
        ;; On Windows try to open remote git repo via sshx
        ;; will trigger `magit' error: No such file or directory.
        ;; GitHub issue: https://github.com/magit/magit/issues/3345
        (setq% magit-git-executable "git" 'magit)))))
 
-;;; toggle off `magit-auto-revert-mode'
-(when-feature-magit%
- (setq% magit-auto-revert-mode nil 'magit-autorevert))
-
 
 ;;; `magit' after load
 (when-feature-magit%
- (eval-after-load 'magit #'on-use-magit-init!))
+ (with-eval-after-load 'magit
+   #'on-use-magit-init!))
+
+;;; toggle off `magit-auto-revert-mode'
+(when-feature-magit%
+ (setq% magit-auto-revert-mode nil 'magit-autorevert))
 
 
 ;; end of use-magit-autoload.el

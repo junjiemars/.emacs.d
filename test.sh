@@ -84,7 +84,7 @@ test_axiom() {
 test_package() {
   test_echo_env "package|check"
   if [ "package" != "$_ENV_PKG_" ]; then
-    echo "# skip package testing ..., package no support"
+    echo "# skipped package testing, package no support"
     return 0
   else
     echo "_ENV_PKG_: ${_ENV_PKG_}"
@@ -92,15 +92,22 @@ test_package() {
   test_echo_env "package|clean"
   test_clean_env
   test_echo_env "package|prologue"
-  cat <<END >"${_ENV_PRO_}"
-(*self-paths* :put :env-spec nil)
+  cat <<END > "${_ENV_PRO_}"
 (*self-paths* :put :package-spec nil)
+(*self-paths* :put :env-spec nil)
 (*self-paths* :put :epilogue nil)
 (*self-env-spec*
   :put :package
-  (list :remove-unused nil
+  (list :remove-unused t
         :package-check-signature 'allow-unsigned
         :allowed t))
+(*self-packages*
+  :put :lisp
+  (list
+   :cond (when-version% <= 29 t)
+   :packages  '(paredit magit)
+   :compile \`(,(compile-unit% (emacs-home* "config/use-lisp-autoload.el"))
+               ,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
 END
   echo "# cat <${_ENV_PRO_}"
   cat <"${_ENV_PRO_}"
@@ -109,50 +116,6 @@ END
              --no-window-system \
              --eval="(load \"${_ROOT_}/init.el\")"
   test_echo_env "package|boot"
-  ${_EMACS_} --batch \
-             --no-window-system \
-             --eval="
-(progn
-  (load \"${_ROOT_}/init.el\")
-  (message \"Elapsed: %s\" (emacs-init-time)))
-"
-}
-
-test_extra() {
-  test_echo_env "extra|check"
-  if [ "package" != "$_ENV_PKG_" ]; then
-    echo "# skipped package testing, package no support"
-    return 0
-  else
-    echo "_ENV_PKG_: ${_ENV_PKG_}"
-  fi
-  test_echo_env "extra|clean"
-  test_clean_env
-  test_echo_env "extra|prologue"
-  cat <<END > "${_ENV_PRO_}"
-(*self-paths* :put :package-spec nil)
-(*self-paths* :put :env-spec nil)
-(*self-paths* :put :epilogue nil)
-(*self-env-spec*
-  :put :package
-  (list :remove-unused nil
-        :package-check-signature 'allow-unsigned
-        :allowed t))
-(*self-packages*
-  :put :lisp
-  (list
-   :cond nil
-   :packages  '(paredit magit)
-   :compile \`(,(compile-unit% (emacs-home* "config/use-lisp-autoload.el"))
-               ,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
-END
-  echo "# cat <${_ENV_PRO_}"
-  cat <"${_ENV_PRO_}"
-  test_echo_env "extra|compile"
-  ${_EMACS_} --batch \
-             --no-window-system \
-             --eval="(load \"${_ROOT_}/init.el\")"
-  test_echo_env "extra|boot"
   ${_EMACS_} --batch \
              --no-window-system \
              --eval="
@@ -185,6 +148,13 @@ test_profile() {
   :put :package
   (list :package-check-signature 'allow-unsigned
         :allowed t))
+(*self-packages*
+  :put :lisp
+  (list
+   :cond (when-version% <= 29 t)
+   :packages  '(paredit magit)
+   :compile \`(,(compile-unit% (emacs-home* "config/use-lisp-autoload.el"))
+               ,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
 END
   echo "# cat <${_ENV_PRO_}"
   cat <"${_ENV_PRO_}"
@@ -257,7 +227,6 @@ case "${_TEST_}" in
   bone)     test_bone     ;;
   axiom)    test_axiom    ;;
   package)  test_package  ;;
-  extra)    test_extra    ;;
 	profile)  test_profile  ;;
   debug)    test_debug    ;;
   *) ;;
