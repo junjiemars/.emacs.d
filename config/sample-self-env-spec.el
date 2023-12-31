@@ -49,7 +49,7 @@
           :size 17
           :scale nil
           :scripts (greek)
-          :allowed nil)
+          :allowed (if-graphic% t))
    (:name ,(if-platform% 'darwin
                "PingFang"
              (if-platform% 'windows-nt

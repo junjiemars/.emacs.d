@@ -169,6 +169,25 @@ test_profile() {
 	local prof="${_ROOT_}/.github/prof.sh"
   test_echo_env "profile|clean"
   test_clean_env
+  cat <<END > "${_ENV_PRO_}"
+(*self-paths* :put :package-spec nil)
+(*self-paths* :put :env-spec nil)
+(*self-paths* :put :epilogue nil)
+(*self-env-spec*
+ :put :shell
+ (list :copy-vars \`("PATH")
+       :spin-vars \`(("ZZZ" . "123"))
+       :exec-path t
+       :shell-file-name (or (executable-find% "zsh")
+                            (executable-find% "bash"))
+       :allowed t))
+(*self-env-spec*
+  :put :package
+  (list :package-check-signature 'allow-unsigned
+        :allowed t))
+END
+  echo "# cat <${_ENV_PRO_}"
+  cat <"${_ENV_PRO_}"
 	mkdir -p "$d"
   test_echo_env "profile|compile"
   ${_EMACS_} --batch \
