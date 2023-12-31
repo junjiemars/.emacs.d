@@ -57,7 +57,7 @@ Else return BODY sexp."
      ,@body))
 
 (defmacro inhibit-gc (&rest body)
-  "Inhibiti BODY under GC."
+  "Inhibit BODY under GC."
   (declare (indent 0))
   `(let ((gc-cons-percentage 0.4))
      ,@body))

@@ -207,7 +207,6 @@
 (defalias 'cc*-system-include
   (lexical-let% ((dx nil))
     (lambda (&optional cached remote)
-  		"CACHED REMOTE"
       (let* ((ss (if remote
                      (intern
                       (mapconcat #'identity
@@ -234,17 +233,13 @@
                  (plist-get (setq dx (plist-put dx ss d)) ss))))))
   "Return a list of system include directories.\n
 Load \\=`cc*-system-include\\=' from file when CACHED is t,
-otherwise check cc include on the fly.\n
-If specify REMOTE argument then return a list of remote system
-include directories.\n
+otherwise check cc include on the fly.
 The REMOTE argument from \\=`ssh-remote-p\\='.")
-
 
 (defalias 'cc*-extra-include
   (lexical-let% ((dx nil)
                  (fs (v-home% ".exec/cc-extra-inc.el")))
     (lambda (cached &rest dir)
-  		"CACHED DIR"
       (or (and cached dx)
 
           (and cached (file-exists-p fs)
@@ -275,10 +270,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 
 
 (defun cc*-view-include (buffer)
-  "View cc's BUFFER in \\=`view-mode\\='.\n
-When BUFFER in \\=`c-mode\\=' or \\=`c++-mode\\=' and
-\\=`cc*-system-include\\=' or \\=`cc*-extra-include\\=' is t then
-view it in \\=`view-mode\\='."
+  "View cc's BUFFER in \\=`view-mode\\='."
   (when (and (bufferp buffer)
              (let ((m (buffer-local-value 'major-mode buffer)))
                (or (eq 'c-mode m)
@@ -487,10 +479,10 @@ view it in \\=`view-mode\\='."
 
   (defun cc*-make-system-tags (&optional option file skip renew)
     "Make system C tags.\n
-OPTION for \\=`*tags*\\='.
-FILE where the tags file located, default is `(tags-spec->% :os-include)'.
-SKIP regexp to skip directories.
-RENEW whether to renew the existing FILE."
+OPTION for \\=`tags-program\\='.
+FILE where the tags file located;
+SKIP directories;
+RENEW the existing FILE."
     (interactive
      (list (read-string "tags option: "
                         (car *tags-option-history*)
@@ -509,85 +501,7 @@ RENEW whether to renew the existing FILE."
       (dolist* (p (cdr inc) file)
         (make-c-tags p file option nil filter)))))
 
-;; end of `tags'
-
-;;;
-;; `eldoc'
-;;;
-
-(defun cc*-eldoc-doc-fn ()
-  "See \\=`eldoc-documentation-function\\='."
-  (let ((tbl (cc*-system-identity t))
-        (sym (thing-at-point 'symbol)))
-    (when (and tbl (stringp sym))
-      (gethash (substring-no-properties sym) tbl))))
-
-
-(defmacro toggle-cc*-eldoc-mode (&optional arg)
-  "Toggle cc-eldoc-mode enabled or disabled."
-  `(progn
-     (set (make-local-variable 'eldoc-documentation-function)
-          (if ,arg #'cc*-eldoc-doc-fn #'ignore))
-     (eldoc-mode (if ,arg 1 nil))))
-
-
-(defun cc*-system-autoload ()
-  "Autoload \\=`cc*-system-include\\=', \\=`cc*-system-include\\='
-and \\=`eldoc-mode\\='."
-  (cc*-system-include t)
-  (when (cc*-system-identity t)
-    (toggle-cc*-eldoc-mode 1)))
-
-;; (add-hook 'c-mode-hook (defun-fn-threading^ cc*-system-autoload) t)
-
-;; end of `eldoc'
-
-;;;
-;; identity
-;;;
-
-(defun cc*-check-identity (&optional remote)
-  "Return a hashtable of cc identities."
-  (ignore* remote)
-  (let ((tbl (make-hash-table :test 'string-hash=)))
-    (puthash
-     "printf"
-     "__inline int __cdecl printf(char const* const _Format, ...)"
-     tbl)
-    (puthash
-     "fflush"
-     "int __cdecl fflush(FILE* _Stream);"
-     tbl)
-    tbl))
-
-(defalias 'cc*-system-identity
-  (lexical-let% ((dx nil))
-    (lambda (&optional cached remote)
-  		"CACHED REMOTE"
-      (let* ((ss (if remote
-                     (intern
-                      (mapconcat #'identity
-                                 (ssh-remote->ids remote)
-                                 "-"))
-                   'native))
-             (fs (v-home (concat ".exec/cc-id-"
-                                 (symbol-name ss)
-                                 ".el")))
-             (d))
-        (or (and cached (plist-get dx ss))
-
-            (and cached (file-exists-p fs)
-                 (plist-get
-                  (setq dx (plist-put dx ss
-                                      (read-sexp-from-file fs)))
-                  ss))
-
-            (and (setq d (cc*-check-identity remote))
-                 (hash-table-p d) (save-sexp-to-file d fs)
-                 (plist-get (setq dx (plist-put dx ss d)) ss))))))
-  "Return a hashtable of cc identities.")
-
-;; end of identity
+;; end of `make-c-tags'
 
 ;;;
 ;; `cc-styles'
@@ -697,7 +611,6 @@ See \\=`align-entire\\='."
       (setq% Man-header-file-path (cc*-system-include t) 'man))))
 
 ;; end of `man'
-
 
 ;;;
 ;; 'cmacexp'

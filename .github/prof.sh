@@ -19,4 +19,6 @@ if [ -f "$PROF_FILE" ]; then
 	printf "# profile: serial\n# ------------\n"
 	awk -f ${PROF_ROOT}/elapsed.awk "$PROF_FILE" \
 		| sort -k5n -k1n,1nr -k2n,2nr
+	printf "# profile: resource\n# ------------\n"
+	awk -f ${PROF_ROOT}/res.awk "$PROF_FILE"
 fi
