@@ -513,6 +513,14 @@
     (should (and (save-str-to-file "abc" f)
                  (string= "abc" (read-str-from-file f))))))
 
+(ert-deftest %d:fn:shell-command* ()
+  (should (let ((x (shell-command* "echo" "a")))
+            (and (= (car x) 0) (string= (cdr x) "a\n"))))
+  (should (let ((x (shell-command* "wc" "-c"
+                                   (emacs-home* "test.el"))))
+            (or (= (car x) 0)
+                (= (car x) 127)))))
+
 (ert-deftest %d:fn:executable-find% ()
   (if (eq system-type 'windows-nt)
       (should (executable-find% "dir"))

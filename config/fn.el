@@ -453,11 +453,13 @@ Optional argument ARGS for COMMAND."
           (b (get-buffer-create* (symbol-name (gensym*)) t)))
        (unwind-protect
            (with-current-buffer b
-             (cons (let ((x (call-process
-                             shell-file-name nil b nil
-                             shell-command-switch
-                             (mapconcat #'identity
-                                        (cons ,c1 (list ,@args)) " "))))
+             (cons (let ((x (inhibit-file-name-handler
+                              (call-process
+                               shell-file-name nil b nil
+                               shell-command-switch
+                               (mapconcat #'identity
+                                          (cons ,c1 (list ,@args))
+                                          " ")))))
                      (cond ((integerp x) x)
                            ((string-match "^.*\\([0-9]+\\).*$" x)
                             (match-string-no-properties 1 x))
@@ -469,8 +471,7 @@ Optional argument ARGS for COMMAND."
 
 (defmacro executable-find% (command &optional fn)
   "Return the path of COMMAND at compile time.\n
-Return nil if no COMMAND found.
-If FN is nil then return the path, otherwise call FN with the path."
+Call FN with the path if FN is non-nil."
   (let ((cmd (shell-command* (if-platform% 'windows-nt
                                  "where"
                                "command -v")

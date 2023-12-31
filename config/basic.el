@@ -102,8 +102,7 @@
             (list (apply #'format-message format args)))))
 
 (defmacro called-interactively-p* (&optional kind)
-  "Return t if the containing function was called by
-\\=`call-interactively\\='."
+  "Return t if called by \\=`call-interactively\\='."
   (if-fn% 'called-interactively-p nil
           `(called-interactively-p ,kind)
     (ignore* kind)
@@ -115,19 +114,14 @@
 
 (unless-fn% 'with-eval-after-load nil
   (defmacro with-eval-after-load (file &rest body)
-    "Execute BODY after FILE is loaded.\n
-FILE is normally a feature name, but it can also be a file name,
-in case that file does not provide any feature.See
-\\=`eval-after-load\\=' for more details about the different
-forms of FILE and their semantics."
+    "Execute BODY after FILE is loaded.
+See \\=`with-eval-after-load\\='."
     (declare (indent 1) (debug t))
     `(eval-after-load ,file (lambda () ,@body))))
 
 (defmacro defcustom% (symbol standard doc &rest args)
-  "Declare SYMBOL as a customizable variable with the STANDARD value.\n
-STANDARD should be computed at compile-time. In \\=`defcustom\\='
-STANDARD always be computed at runtime whatever the current
-\\=`lexical-binding\\=' is."
+  "Declare SYMBOL as a customizable variable with the STANDARD value.
+See \\=`defcustom\\='."
   (declare (doc-string 3) (debug (name body)))
   (let ((-standard- (funcall `(lambda () ,standard))))
     `(custom-declare-variable
@@ -146,15 +140,14 @@ STANDARD always be computed at runtime whatever the current
 ;;;
 
 (defmacro if-region-active (then &rest else)
-  "If \\=`region-active-p\\=' or \\=`mark-active\\=' is non-nil, do THEN,
-else do ELSE..."
+  "If \\=`mark-active\\=' is non-nil, do THEN, else do ELSE..."
   (declare (indent 1))
   `(if mark-active
        ,then
      (progn% ,@else)))
 
 (defmacro unless-region-active (&rest then)
-  "Unless \\=`region-active-p\\=' or \\=`mark-active\\=' is non-nil, do THEN."
+  "Unless \\=`mark-active\\=' is non-nil, do THEN."
   (declare (indent 0))
   `(if-region-active nil ,@then))
 
@@ -175,14 +168,12 @@ else do ELSE..."
                              (mapconcat trim path "/"))))))
     (if (string= "" s) nil (funcall tail s))))
 
-
 (defmacro path- (file)
   "Return the parent path of FILE."
   (let ((f (gensym*)))
     `(let ((,f ,file))
        (when (stringp ,f)
          (file-name-directory (directory-file-name ,f))))))
-
 
 (defmacro path-depth (path &optional separator)
   "Return the depth of PATH."
@@ -196,7 +187,6 @@ else do ELSE..."
                  (t (length (split-string* ,p ,s nil))))
          0))))
 
-
 (defmacro file-in-dirs-p (file dirs)
   "Return t if the name of FILE matching DIRS, otherwise nil."
   (let ((f (gensym*)) (ds (gensym*)))
@@ -209,26 +199,18 @@ else do ELSE..."
                          (string-match x (file-name-directory ,f)))))
                 ,ds)))))
 
-
 (defmacro file-name-nondirectory% (filename)
   "Return file name FILENAME sans its directory at compile-time."
   (let* ((-f1- (funcall `(lambda () ,filename)))
          (-n1- (and -f1- (file-name-nondirectory -f1-))))
     `,-n1-))
 
-
 (defun dir-iterate (dir ff df fn dn)
   "Iterate DIR.\n
-Starting at DIR, look down directory hierarchy for maching FF or
-DF. Ignores the symbol links of pointing itself or up directory.\n
-FF specify file-filter (lambda (file-name absolute-name)...), if
-FF return non-nil then call FN.\n
-DF specify dir-filter (lambda (dir-name absolute-name)...), if DF
-return non-nil then call DN.\n
-FN specify file-function (lambda (absolute-name)...), process
-filted files.\n
-DN specify dir-function (lambda (aboslute-name)...), process
-filted directories."
+FF file-filter (lambda (file-name absolute-name)...),
+DF dir-filter (lambda (dir-name absolute-name)...),
+FN file-processor (lambda (absolute-name)...),
+DN dir-processor (lambda (aboslute-name)...)."
   (let* ((file-name-handler-alist nil)
          (files (remove-if* (lambda (x)
                               (or (null x)
@@ -307,26 +289,6 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
                  (when (car (cddr ,rid))
                    (concat "@" (car (cddr ,rid)))))))))
 
-(defmacro url-retrieve*
-    (url callback &optional cbargs silent inhibit-cookies)
-  "Retrieve URL asynchronously and call CALLBACK with CBARGS when
-finished."
-  (when-fn% 'url-retrieve 'url
-    (if-version%
-        <= 24
-        `(url-retrieve ,url ,callback ,cbargs ,silent ,inhibit-cookies)
-      (ignore* silent inhibit-cookies)
-      `(url-retrieve ,url ,callback ,cbargs))))
-
-
-(defun buffer-major-mode (&optional buffer-or-name)
-  "Return \\=`major-mode\\=' associated with BUFFER-OR-NAME or
-current buffer."
-  (buffer-local-value 'major-mode
-                      (if buffer-or-name
-                          (get-buffer buffer-or-name)
-                        (current-buffer))))
-
 ;; end of file function
 
 ;;;
@@ -334,16 +296,14 @@ current buffer."
 ;;;
 
 (defmacro if-key% (keymap key test then &rest else)
-  "If TEST function returns t for KEY in KEYMAP do then,
-otherwise do ELSE..."
+  "If TEST yields t for KEY in KEYMAP do then, else do ELSE..."
   (declare (indent 3))
   `(if% (funcall ,test (lookup-key ,keymap ,key))
        ,then
      ,@else))
 
 (defmacro define-key% (keymap key def)
-  "Define KEY to DEF in KEYMAP when the KEY binding of DEF is not
-exists."
+  "Define KEY to DEF in KEYMAP."
   `(if-key% ,keymap ,key
             (lambda (d) (not (eq d ,def)))
      (define-key ,keymap ,key ,def)))
