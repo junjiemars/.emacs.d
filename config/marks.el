@@ -8,9 +8,18 @@
 
 
 ;;; `thingatpt' compatible definitions
+;;; fix wrong behavior on anicent Emacs.
 
-(unless-fn% 'thing-at-point-bounds-of-string-at-point 'thingatpt
-  ;; fix wrong behavior on anicent Emacs.
+(defmacro-if-fn% thing-at-point-bounds-of-string-at-point thingatpt)
+
+(defmacro unless-fn-thing-at-point-bounds-of-string-at-point%
+    (&rest body)
+  (declare (indent 0))
+  (if-fn-thing-at-point-bounds-of-string-at-point%
+      `(comment ,@body)
+    `(progn% ,@body)))
+
+(unless-fn-thing-at-point-bounds-of-string-at-point%
   (defun thing-at-point-bounds-of-string-at-point ()
     "Return the bounds of the double quoted string at point."
     (save-excursion
@@ -18,14 +27,22 @@
         (when beg
           (goto-char beg)
           (forward-sexp)
-          (cons (1+  beg) (1- (point)))))))
+          (cons (1+  beg) (1- (point))))))))
 
+(unless-fn-thing-at-point-bounds-of-string-at-point%
   (put 'string 'bounds-of-thing-at-point
        'thing-at-point-bounds-of-string-at-point))
 
+(defmacro-if-fn% thing-at-point-bounds-of-list-at-point thingatpt)
 
-(unless-fn% 'thing-at-point-bounds-of-list-at-point 'thingatpt
-  ;; fix wrong behavior on ancient Emacs.
+(defmacro unless-fn-thing-at-point-bounds-of-list-at-point%
+    (&rest body)
+  (declare (indent 0))
+  (if-fn-thing-at-point-bounds-of-list-at-point%
+      `(comment ,@body)
+    `(progn% ,@body)))
+
+(unless-fn-thing-at-point-bounds-of-list-at-point%
   (defun thing-at-point-bounds-of-list-at-point ()
     "Return the bounds of the list at point."
     (save-excursion
@@ -37,11 +54,11 @@
         (when beg
           (goto-char beg)
           (forward-sexp)
-          (cons beg (point))))))
+          (cons beg (point)))))))
 
+(unless-fn-thing-at-point-bounds-of-list-at-point%
   (put 'list 'bounds-of-thing-at-point
        'thing-at-point-bounds-of-list-at-point))
-
 
 (unless% (or (get 'defun 'beginning-of-defun)
              (get 'defun 'end-of-defun))

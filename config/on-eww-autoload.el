@@ -12,44 +12,46 @@
 
 (defmacro when-feature-eww% (&rest body)
   "When \\=`eww\\=', do BODY."
+  (declare (indent 0))
   (if-feature-eww%
-      `(progn% ,@body)))
+      `(progn% ,@body)
+    `(comment ,@body)))
 
 
 ;;; autoload
 (when-feature-eww%
- (autoload 'browse-url-default-browser "browse-url")
- (autoload 'browse-url-url-encode-chars "browse-url"))
+  (autoload 'browse-url-default-browser "browse-url")
+  (autoload 'browse-url-url-encode-chars "browse-url"))
 
 
 (when-feature-eww%
 
- (defun toggle-browser! (&optional arg)
-   "Toggle default browser.\n
+  (defun toggle-browser! (&optional arg)
+    "Toggle default browser.\n
 With prefix argument ARG, \\=`eww\\=' as default browser if ARG
 is non-nil, otherwise is not. See also:
 \\=`browser-url-browser-function\\='."
-   (interactive "P")
-   (setq browse-url-browser-function
-         (if (null arg)
-             (if (eq browse-url-browser-function
-                     'browse-url-default-browser)
-                 #'eww-browse-url
-               #'browse-url-default-browser)
-           #'eww-browse-url))
-   (unless-noninteractive%
-    (message "eww as default browser %s"
-             (if (eq browse-url-browser-function
-                     'browse-url-default-browser)
-                 "disabled"
-               "enabled")))))
+    (interactive "P")
+    (setq browse-url-browser-function
+          (if (null arg)
+              (if (eq browse-url-browser-function
+                      'browse-url-default-browser)
+                  #'eww-browse-url
+                #'browse-url-default-browser)
+            #'eww-browse-url))
+    (unless-noninteractive%
+     (message "eww as default browser %s"
+              (if (eq browse-url-browser-function
+                      'browse-url-default-browser)
+                  "disabled"
+                "enabled")))))
 
 
 (when-feature-eww%
 
- (defun eww*-truncate-lines ()
-   "Disable \\=`eww\\=' truncate long lines."
-   (toggle-truncate-lines nil)))
+  (defun eww*-truncate-lines ()
+    "Disable \\=`eww\\=' truncate long lines."
+    (toggle-truncate-lines nil)))
 
 
 (defalias '*web-defs*
@@ -82,7 +84,7 @@ is non-nil, otherwise is not. See also:
 
 ;;; `eww' after load
 (when-feature-eww%
- (eval-after-load 'eww #'on-eww-init!))
+  (eval-after-load 'eww #'on-eww-init!))
 
 
 ;; end of `eww'

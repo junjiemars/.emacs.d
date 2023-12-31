@@ -9,21 +9,21 @@
 
 (defmacro-if-feature% transient)
 
-
 (defmacro when-feature-transient% (&rest body)
   "When \\=`transient\\=', do BODY."
+  (declare (indent 0))
   (if-feature-transient%
       `(progn% ,@body)
   	`(comment ,@body)))
 
 
 (when-feature-transient%
- (with-eval-after-load 'transient
-   (v-home! ".transient/history.el")
-   (setq transient-history-file (v-home% ".transient/history.el")
-         transient-levels-file (v-home% ".transient/levels.el")
-         transient-values-file (v-home%".transient/values.el")
-         transient-save-history t)))
+  (with-eval-after-load 'transient
+    (v-home! ".transient/history.el")
+    (setq transient-history-file (v-home% ".transient/history.el")
+          transient-levels-file (v-home% ".transient/levels.el")
+          transient-values-file (v-home%".transient/values.el")
+          transient-save-history t)))
 
 ;;; `transient-mark-mode'
 (unless-graphic%

@@ -619,22 +619,24 @@ See \\=`align-entire\\='."
 (defmacro-if-feature% cmacexp)
 
 (defmacro when-feature-cmacexp% (&rest body)
+  (declare (indent 0))
   (if-feature-cmacexp%
-      `(progn% ,@body)))
+      `(progn% ,@body)
+    `(comment ,@body)))
 
 (when-feature-cmacexp%
- (defun on-cmacexp-init! ()
-   "On \\=`cmacexp\\=' initialization."
-   ;; [C-c C-e] `c-macro-expand' in `cc-mode'
-   (setq% c-macro-prompt-flag t 'cmacexp)
-   (ad-enable-advice #'c-macro-expand
-                     'around "c-macro-expand-around")
-   (ad-activate #'c-macro-expand t)))
+  (defun on-cmacexp-init! ()
+    "On \\=`cmacexp\\=' initialization."
+    ;; [C-c C-e] `c-macro-expand' in `cc-mode'
+    (setq% c-macro-prompt-flag t 'cmacexp)
+    (ad-enable-advice #'c-macro-expand
+                      'around "c-macro-expand-around")
+    (ad-activate #'c-macro-expand t)))
 
 ;;; `cmacexp' after load
 (when-feature-cmacexp%
- (with-eval-after-load 'cmacexp
-   (on-cmacexp-init!)))
+  (with-eval-after-load 'cmacexp
+    #'on-cmacexp-init!))
 
 ;; end of `cmacexp'
 
