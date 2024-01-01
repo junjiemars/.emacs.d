@@ -636,7 +636,7 @@ See \\=`align-entire\\='."
 ;;; `cmacexp' after load
 (when-feature-cmacexp%
   (with-eval-after-load 'cmacexp
-    #'on-cmacexp-init!))
+    (on-cmacexp-init!)))
 
 ;; end of `cmacexp'
 

@@ -51,7 +51,7 @@
 
 ;;; `org' after load
 (with-eval-after-load 'org
-  #'on-org-init!)
+  (on-org-init!))
 
 
 ;; end of on-org-autoload.el

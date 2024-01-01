@@ -35,7 +35,7 @@
 ;;; `magit' after load
 (when-feature-magit%
   (with-eval-after-load 'magit
-    #'on-use-magit-init!))
+    (on-use-magit-init!)))
 
 ;;; toggle off `magit-auto-revert-mode'
 (when-feature-magit%

@@ -96,12 +96,12 @@
 ;;; `xref' after load
 (when-fn-xref-find-definitions%
   (with-eval-after-load 'xref
-    #'on-xref-init!))
+    (on-xref-init!)))
 
 ;;; `etags' after load
 (when-feature-etags%
  (with-eval-after-load 'etags
-   #'on-etags-init!))
+   (on-etags-init!)))
 
 
 

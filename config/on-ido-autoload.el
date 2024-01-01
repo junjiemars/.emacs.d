@@ -37,7 +37,7 @@
 
 ;;; `ido' after load
 (with-eval-after-load 'ido
-  #'on-ido-init!)
+  (on-ido-init!))
 
 ;; default view file keybindings
 (on-view-key!)

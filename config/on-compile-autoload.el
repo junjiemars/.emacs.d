@@ -99,16 +99,15 @@
 
 ;; `compile' after load
 (with-eval-after-load 'compile
-  #'on-compile-init!)
+  (on-compile-init!))
 
 ;;; `grep' after load
 (with-eval-after-load 'grep
-  #'on-grep-init!)
+  (on-grep-init!))
 
 ;;; `make-mode' after load
 (with-eval-after-load 'make-mode
-  #'on-make-mode-init!)
-
+  (on-make-mode-init!))
 ;; `compile' global key
 (define-key% (current-global-map) (kbd "C-x p c") #'compile)
 
