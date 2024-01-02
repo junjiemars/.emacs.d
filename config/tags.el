@@ -61,12 +61,8 @@ when \\=`desktop-globals-to-save\\=' include it."
   (lexical-let%
       ((b (delq nil
                 (eval-when-compile
-                  (list (inhibit-file-name-handler
-                          (let ((inv (path- invocation-directory)))
-                            (when (>= (path-depth
-                                       (expand-file-name inv))
-                                      2)
-                              inv)))
+                  (list (when (> (path-depth invocation-directory) 1)
+                          (path- invocation-directory))
                         (when-package% package*-user-dir)
                         (v-home% "config/")
                         (v-home% "private/")

@@ -90,7 +90,8 @@ See \\=`defcustom\\='."
   (let ((f (gensym*)))
     `(let ((,f ,file))
        (when (stringp ,f)
-         (file-name-directory (directory-file-name ,f))))))
+         (inhibit-file-name-handler
+           (file-name-directory (directory-file-name ,f)))))))
 
 (defmacro path-depth (path &optional separator)
   "Return the depth of PATH."
@@ -98,7 +99,7 @@ See \\=`defcustom\\='."
         (s (gensym*)))
     `(let ((,p ,path)
            (,s (or ,separator "/")))
-       (cond ((= (length ,p) 0) 0)
+       (cond ((= 0 (length ,p)) 0)
              ((string= ,p ,s) 1)
              (t (length (split-string* ,p ,s t)))))))
 
