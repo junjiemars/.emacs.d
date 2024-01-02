@@ -60,17 +60,17 @@ when \\=`desktop-globals-to-save\\=' include it."
 (defalias 'tags-in-view-mode
   (lexical-let%
       ((b (delq nil
-                (list (eval-when-compile
-                        (inhibit-file-name-handler
-                          (when% (> (path-depth
-                                     (expand-file-name
-                                      (path- invocation-directory)))
-                                    2)
-                            (path- invocation-directory))))
-                      (when-package% package*-user-dir)
-                      (v-home% "config/")
-                      (v-home% "private/")
-                      (v-home% "theme/")))))
+                (eval-when-compile
+                  (list (inhibit-file-name-handler
+                          (let ((inv (path- invocation-directory)))
+                            (when (>= (path-depth
+                                       (expand-file-name inv))
+                                      2)
+                              inv)))
+                        (when-package% package*-user-dir)
+                        (v-home% "config/")
+                        (v-home% "private/")
+                        (v-home% "theme/"))))))
     (lambda (&optional n)
       (cond (n (setq b (cons n b)))
             (t b))))

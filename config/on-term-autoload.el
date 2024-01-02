@@ -49,8 +49,9 @@ esac
 
 (when-platform% 'windows-nt
   (defadvice ansi-term (before ansi-term-before disable)
-    (set-window-buffer (selected-window)
-                       (make-comint-in-buffer "ansi-term" nil "cmd"))))
+    (set-window-buffer
+     (selected-window)
+     (make-comint-in-buffer "ansi-term" nil "cmd"))))
 
 
 (when-platform% 'windows-nt
