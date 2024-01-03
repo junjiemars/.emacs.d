@@ -14,7 +14,6 @@
 ;;;
 
 (when-platform% 'windows-nt
-
   (defun cc*-check-vcvarsall-bat ()
     "Return the path of vcvarsall.bat if which exists."
     (let* ((pfroot (posix-path (getenv "PROGRAMFILES")))
@@ -36,9 +35,7 @@
                           "/BuildTools/VC/Auxiliary/Build/vcvarsall.bat")))
                (when (file-exists-p bat) bat))))))))
 
-
 (when-platform% 'windows-nt
-
   (defun cc*-make-env-bat ()
     "Make cc-env.bat in \\=`exec-path\\='."
     (let ((vcvarsall (cc*-check-vcvarsall-bat))
@@ -111,7 +108,6 @@
 ;;;
 
 (when-platform% 'windows-nt
-
   (defun cc*-make-xargs-bin ()
     "Make a GNU's xargs alternation in \\=`exec-path\\='."
     (let* ((c (concat temporary-file-directory "xargs.c"))
@@ -140,9 +136,7 @@
           (when (zerop (car cmd))
             (file-name-nondirectory exe)))))))
 
-
 (when-platform% 'windows-nt
-
   (defconst +cc*-xargs-bin+
     (eval-when-compile
       (file-name-nondirectory%
@@ -284,24 +278,24 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
           `(progn% ,@body)
     `(comment ,@body)))
 
-(when-fn-ff-find-other-file%)
-(defun cc*-find-include-file (&optional in-other-window)
-  "Find C include file in \\=`cc*-system-include\\=' or specified directory. "
-  (interactive "P")
-  (setq% cc-search-directories
-         (let ((file (buffer-file-name (current-buffer))))
-           (delq nil
-                 (append (list
-                          (when (stringp file)
-                            (string-trim>
-                             (file-name-directory file) "/")))
-                         (cc*-system-include t (ssh-remote-p file))
-                         (cc*-extra-include t))))
-         'find-file)
-  (when-fn% 'xref-push-marker-stack 'xref
-    (autoload 'xref-push-marker-stack "xref")
-    (xref-push-marker-stack))
-  (ff-find-other-file in-other-window nil))
+(when-fn-ff-find-other-file%
+  (defun cc*-find-include-file (&optional in-other-window)
+    "Find C include file in \\=`cc*-system-include\\=' or specified directory. "
+    (interactive "P")
+    (setq% cc-search-directories
+           (let ((file (buffer-file-name (current-buffer))))
+             (delq nil
+                   (append (list
+                            (when (stringp file)
+                              (string-trim>
+                               (file-name-directory file) "/")))
+                           (cc*-system-include t (ssh-remote-p file))
+                           (cc*-extra-include t))))
+           'find-file)
+    (when-fn% 'xref-push-marker-stack 'xref
+      (autoload 'xref-push-marker-stack "xref")
+      (xref-push-marker-stack))
+    (ff-find-other-file in-other-window nil)))
 
 ;; end of #include
 
@@ -310,83 +304,12 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 ;;;
 
 (when-platform% 'windows-nt
-
   (defun cc*-make-macro-dump-bin (&optional options)
     "Make cc-dmacro.exe for printing predefined macros."
-    (let* ((c (concat temporary-file-directory "cc-dmacro.c"))
-           (exe (v-home% ".exec/cc-dmacro.exe")))
-      (save-str-to-file
-       (concat "#include <stdio.h>\n"
-               "#define _STR2_(x) #x\n"
-               "#define _STR1_(x) _STR2_(x)\n"
-               "#define _POUT_(x) \"#define \" #x \" \" _STR1_(x) \"\\n\"\n"
-               "int main(void) {\n"
-               "#if defined(__STDC__)\n" ;; /Za option is specified
-               "   printf(_POUT_(__STDC__));\n"
-               "#endif\n"
-               "#if defined(__STDC_HOSTED__)\n"
-               "   printf(_POUT_(__STDC_HOSTED__));\n"
-               "#endif\n"
-               "#if defined(__STDC_NO_ATOMICS__)\n"
-               "   printf(_POUT_(__STDC_NO_ATOMICS__));\n"
-               "#endif\n"
-               "#if defined(__STDC_NO_COMPLEX__)\n"
-               "   printf(_POUT_(__STDC_NO_COMPLEX__));\n"
-               "#endif\n"
-               "#if defined(__STDC_NO_THREADS__)\n"
-               "   printf(_POUT_(__STDC_NO_THREADS__));\n"
-               "#endif\n"
-               "#if defined(__STDC_NO_VLA__)\n"
-               "   printf(_POUT_(__STDC_NO_VLA__));\n"
-               "#endif\n"
-               "#if defined(__STDC_VERSION__)\n"
-               "   printf(_POUT_(__STDC_VERSION__));\n"
-               "#endif\n"
-               "#if defined(_DEBUG)\n" ;;  /LDd, /MDd, or /MTd
-               "  printf(_POUT_(_DEBUG));\n"
-               "#endif\n"
-               "#if defined(_DLL)\n" ;;  /MD, /MDd
-               "  printf(_POUT_(_DLL));\n"
-               "#endif\n"
-               "#if defined(_WIN32)\n"
-               "  printf(_POUT_(_WIN32));\n"
-               "#endif\n"
-               "#if defined(_WIN64)\n"
-               "   printf(_POUT_(_WIN64));\n"
-               "#endif\n"
-               "#if defined(_WINRT_DLL)\n"
-               "  printf(_POUT_(_WINRT_DLL));\n"
-               "#endif\n"
-               "#if defined(_MSC_BUILD)\n"
-               "  printf(_POUT_(_MSC_BUILD));\n"
-               "#endif\n"
-               "#if defined(_MSC_EXTENSIONS)\n"
-               "  printf(_POUT_(_MSC_EXTENSIONS));\n"
-               "#endif\n"
-               "#if defined(_MSC_FULL_VER)\n"
-               "  printf(_POUT_(_MSC_FULL_VER));\n"
-               "#endif\n"
-               "#if defined(_MSC_VER)\n"
-               "  printf(_POUT_(_MSC_VER));\n"
-               "#endif\n"
-               "#if defined(__MSVC_RUNTIME_CHECKS)\n" ;; /RTC1, /RTCc, etc.,
-               "  printf(_POUT_(__MSVC_RUNTIME_CHECKS));\n"
-               "#endif\n"
-               "#if defined(_MT)\n" ;; /MD, /MDd
-               "  printf(_POUT_(_MT));\n"
-               "#endif\n"
-               "#if defined(_OPENMP)\n" ;;  /openmp
-               "  printf(_POUT_(_OPENMP));\n"
-               "#endif\n"
-               "#if defined(__SANITIZE_ADDRESS__)\n" ;;  /fsanitize=address
-               "  printf(_POUT_(__SANITIZE_ADDRESS__));\n"
-               "#endif\n"
-               "#if defined(_WCHAR_T_DEFINED)\n" ;; /Zc:wchar_t
-               "  printf(_POUT_(_WCHAR_T_DEFINED));\n"
-               "#endif\n"
-               ""
-               "}")
-       c)
+    (let ((c (v-home% ".exec/cc-dmacro.c"))
+          (exe (v-home% ".exec/cc-dmacro.exe")))
+      (unless (file-exists-p c)
+        (copy-file (emacs-home* "config/sample-cc-dmacro.c") c))
       (let ((cmd (shell-command* +cc*-compiler-bin+
                    (concat " -nologo"
                            " " options
@@ -395,45 +318,6 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
                            " -Fe" exe))))
         (when (zerop (car cmd))
           (file-name-nondirectory exe))))))
-
-
-(defadvice c-macro-expand (around c-macro-expand-around disable)
-  "Expand C macros in the region, using the C preprocessor."
-  (let ((remote (ssh-remote-p
-                 (buffer-file-name (current-buffer)))))
-    (if remote
-        ;; remote: Unix-like
-        (when% (executable-find% "ssh")
-          (setq% c-macro-buffer-name
-                 (format "*Macro Expanded@%s*"
-                         (ssh-remote->user@host remote))
-                 'cmacexp)
-          (setq% c-macro-preprocessor
-                 (format "ssh %s %s"
-                         (ssh-remote->user@host remote)
-                         "cc -E -o - -")
-                 'cmacexp)
-          ad-do-it)
-      ;; local: msvc, clang, gcc
-      (if-platform% 'windows-nt
-          ;; cl.exe cannot retrieve from stdin.
-          (when (and +cc*-compiler-bin+ +cc*-xargs-bin+)
-            (let* ((tmp (make-temp-file
-                         (expand-file-name "cc-" temporary-file-directory)))
-                   (c-macro-buffer-name "*Macro Expanded*")
-                   (c-macro-preprocessor
-                    (format "%s -0 > %s && %s && cl -E %s"
-                            +cc*-xargs-bin+ tmp +cc*-compiler-bin+ tmp)))
-              (unwind-protect ad-do-it
-                (delete-file tmp))))
-        (when +cc*-compiler-bin+
-          (setq% c-macro-buffer-name
-                 "*Macro Expanded*"
-                 'cmacexp)
-          (setq% c-macro-preprocessor
-                 (format "%s -E -o - -" +cc*-compiler-bin+)
-                 'cmacexp)
-          ad-do-it)))))
 
 
 (defun cc*-dump-predefined-macros (&optional options)
@@ -470,19 +354,18 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 
 ;; end of #define
 
-
 ;;;
 ;; `tags'
 ;;;
 
-(when-fn% 'make-c-tags 'tags
+(defmacro when-fn-make-c-tags% (&rest body)
+  (declare (indent 0))
+  (when-fn% 'make-c-tags 'tags
+    `(progn% ,@body)))
 
+(when-fn-make-c-tags%
   (defun cc*-make-system-tags (&optional option file skip renew)
-    "Make system C tags.\n
-OPTION for \\=`tags-program\\='.
-FILE where the tags file located;
-SKIP directories;
-RENEW the existing FILE."
+    "Make system C tags."
     (interactive
      (list (read-string "tags option: "
                         (car *tags-option-history*)
@@ -508,49 +391,48 @@ RENEW the existing FILE."
 ;;;
 
 (defvar cc*-style-nginx
-  `("nginx"
-    (c-basic-offset . 4)
-    (c-comment-only-line-offset . 0)
-    (c-backslash-max-column . 78)
-    (c-backslash-column . 77)
-    (c-offsets-alist
-     (statement-block-intro . +)
-     (substatement-open . 0)
-     (substatement-label . 0)
-     (label . 0)
-     (statement-cont . +)
-     (inline-open . 0)
-     (brace-list-intro
-      first
-      ,(when-fn% 'c-lineup-2nd-brace-entry-in-arglist
-           'cc-align
-         #'c-lineup-2nd-brace-entry-in-arglist)
-      ,(when-fn% 'c-lineup-class-decl-init-+
-           'cc-align
-         #'c-lineup-class-decl-init-+)
-      +)
-     (arglist-cont-nonempty
-      .
-      ,(lambda (langem)
-         (let ((col (save-excursion
-                      (goto-char (cdr langem))
-                      (current-column))))
-           (cond ((= col 0) 'c-basic-offset)
-                 (t 'c-lineup-arglist)))))))
+  (eval-when-compile
+    `("nginx"
+      (c-basic-offset . 4)
+      (c-comment-only-line-offset . 0)
+      (c-backslash-max-column . 78)
+      (c-backslash-column . 77)
+      (c-offsets-alist
+       (statement-block-intro . +)
+       (substatement-open . 0)
+       (substatement-label . 0)
+       (label . 0)
+       (statement-cont . +)
+       (inline-open . 0)
+       (brace-list-intro
+        first
+        ,(when-fn% 'c-lineup-2nd-brace-entry-in-arglist
+             'cc-align
+           #'c-lineup-2nd-brace-entry-in-arglist)
+        ,(when-fn% 'c-lineup-class-decl-init-+
+             'cc-align
+           #'c-lineup-class-decl-init-+)
+        +)
+       (arglist-cont-nonempty
+        .
+        ,(lambda (langem)
+           (let ((col (save-excursion
+                        (goto-char (cdr langem))
+                        (current-column))))
+             (cond ((= col 0) 'c-basic-offset)
+                   (t 'c-lineup-arglist))))))))
   "nginx style for \\=`cc-styles\\='.
 https://nginx.org/en/docs/dev/development_guide.html#code_style")
-
 
 (defun cc*-style-align-entire (begin end &optional n)
   "Align the selected region as if it were one alignment section.\n
 BEGIN and END mark the extent of the region.
-N specify the number of spaces when align, default is 2.
-See \\=`align-entire\\='."
+N specify the number of spaces when align."
   (interactive "r\nP")
-  (eval-when-compile (require 'align))
-  (require 'align)
-  (fluid-let (align-default-spacing (or n 2))
-    (align-entire begin end)))
+  (when-fn% 'align-entire 'align
+    (when-var% align-default-spacing 'align
+      (fluid-let (align-default-spacing (or n 2))
+        (align-entire begin end)))))
 
 ;; end of `cc-styles'
 
@@ -558,33 +440,27 @@ See \\=`align-entire\\='."
 ;; `cc-mode'
 ;;;
 
-;; default `c-mode-hook'
-;; involving useless `macrostep-c-mode-hook'.
-(setq% c-mode-hook nil 'cc-mode)
-
 (defun on-cc-mode-init! ()
   "On \\=`cc-mode\\=' initialization."
-  ;; load `tags'
-  (when-fn% 'make-c-tags 'tags (require 'tags))
   ;; load styles
   (c-add-style (car cc*-style-nginx) (cdr cc*-style-nginx))
   ;; keymap:
   ;; find include file
   (when-fn-ff-find-other-file%
    (when-var% c-mode-map 'cc-mode
-     (define-key% c-mode-map
-                  (kbd "C-c f i") #'cc*-find-include-file))
+     (define-key% c-mode-map (kbd "C-c f i")
+                  #'cc*-find-include-file))
    ;; for c++, add include via `cc*-extra-include'
    (when-var% c++mode-map 'cc-mode
-       (define-key% c++-mode-map
-                    (kbd "C-c f i") #'cc*-find-include-file)))
+       (define-key% c++-mode-map (kbd "C-c f i")
+                    #'cc*-find-include-file)))
   ;; indent line or region
   (when-fn% 'c-indent-line-or-region 'cc-cmds
     (define-key% c-mode-map
                  (kbd "TAB") #'c-indent-line-or-region))
   ;; dump predefined macros
-  (define-key% c-mode-map
-               (kbd "C-c #") #'cc*-dump-predefined-macros)
+  (define-key% c-mode-map (kbd "C-c #")
+               #'cc*-dump-predefined-macros)
   ;; raw newline
   (define-key% c-mode-map (kbd "RET") #'newline*)
   ;; align style
@@ -595,13 +471,18 @@ See \\=`align-entire\\='."
                        #'subword-mode
                  #'c-subword-mode)))
 
+;;;
+;; `cc-mode' after load
+;;;
 
-;;; `cc-mode' after load
+;; default `c-mode-hook'
+;; involving useless `macrostep-c-mode-hook'.
+(setq% c-mode-hook nil 'cc-mode)
+
 (with-eval-after-load 'cc-mode
   (on-cc-mode-init!))
 
 ;; end of `cc-mode'
-
 
 ;;; `man' after load
 (when-var% manual-program 'man
@@ -613,7 +494,7 @@ See \\=`align-entire\\='."
 ;; end of `man'
 
 ;;;
-;; 'cmacexp'
+;; `cmacexp'
 ;;;
 
 (defmacro-if-feature% cmacexp)
@@ -623,6 +504,45 @@ See \\=`align-entire\\='."
   (if-feature-cmacexp%
       `(progn% ,@body)
     `(comment ,@body)))
+
+(when-feature-cmacexp%
+  (defadvice c-macro-expand (around c-macro-expand-around disable)
+    "Expand C macros in the region, using the C preprocessor."
+    (let ((remote (ssh-remote-p
+                   (buffer-file-name (current-buffer)))))
+      (if remote
+          ;; remote: Unix-like
+          (when% (executable-find% "ssh")
+            (setq% c-macro-buffer-name
+                   (format "*Macro Expanded@%s*"
+                           (ssh-remote->user@host remote))
+                   'cmacexp)
+            (setq% c-macro-preprocessor
+                   (format "ssh %s %s"
+                           (ssh-remote->user@host remote)
+                           "cc -E -o - -")
+                   'cmacexp)
+            ad-do-it)
+        ;; local: msvc, clang, gcc
+        (if-platform% 'windows-nt
+            ;; cl.exe cannot retrieve from stdin.
+            (when (and +cc*-compiler-bin+ +cc*-xargs-bin+)
+              (let* ((tmp (make-temp-file
+                           (expand-file-name "cc-" temporary-file-directory)))
+                     (c-macro-buffer-name "*Macro Expanded*")
+                     (c-macro-preprocessor
+                      (format "%s -0 > %s && %s && cl -E %s"
+                              +cc*-xargs-bin+ tmp +cc*-compiler-bin+ tmp)))
+                (unwind-protect ad-do-it
+                  (delete-file tmp))))
+          (when +cc*-compiler-bin+
+            (setq% c-macro-buffer-name
+                   "*Macro Expanded*"
+                   'cmacexp)
+            (setq% c-macro-preprocessor
+                   (format "%s -E -o - -" +cc*-compiler-bin+)
+                   'cmacexp)
+            ad-do-it))))))
 
 (when-feature-cmacexp%
   (defun on-cmacexp-init! ()
