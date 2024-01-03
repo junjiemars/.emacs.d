@@ -23,21 +23,30 @@
   `(when-sql-feature%
      ,@body))
 
+(defmacro when-fn-sql-show-sqli-buffer% (&rest body)
+  (declare (indent 0))
+  `(when-fn% 'sql-show-sqli-buffer 'sql
+     ,@body))
+
+(defmacro when-fn-sql-send-magic-terminator% (&rest body)
+  (declare (indent 0))
+  `(when-fn% 'sql-send-magic-terminator 'sql
+     ,@body))
+
 ;; end of when-* macro
 
 
-(when-fn% 'sql-show-sqli-buffer 'sql
+(when-fn-sql-show-sqli-buffer%
 
   (defun sql-show-sqli-buffer* ()
-    "Display the current SQLi buffer.\n
-See \\=`sql-show-sqli-buffer\\='."
+    "Display the current SQLi buffer."
     (interactive)
     (unless (get-buffer-process sql-buffer)
       (call-interactively #'sql-connect))
     (call-interactively #'sql-show-sqli-buffer)))
 
 
-(when-fn% 'sql-send-magic-terminator 'sql
+(when-fn-sql-send-magic-terminator%
 
   (defadvice sql-send-magic-terminator
       (before sql-send-magic-terminator-before compile)
@@ -332,7 +341,7 @@ Optional prefix argument ENHANCED, displays additional details."
 (defun on-sql-mysql-init! ()
   "On \\=`sql\\=' mysql initialization."
   ;; mysql: \\=`:terminator\\='
-  (when-fn% 'sql-send-magic-terminator 'sql
+  (when-fn-sql-send-magic-terminator%
     (plist-put
      (cdr (assoc** 'mysql sql-product-alist :test #'eq))
      :terminator
@@ -404,9 +413,9 @@ Optional prefix argument ENHANCED, displays additional details."
   "On \\=`sql\\=' initialization."
   (on-sql-mysql-init!)
   (on-sql-oracle-init!)
-  (when-fn% 'sql-show-sqli-buffer 'sql
-    (define-key% sql-mode-map
-                 (kbd "C-c C-z") #'sql-show-sqli-buffer*))
+  (when-fn-sql-show-sqli-buffer%
+    (define-key% sql-mode-map (kbd "C-c C-z")
+                 #'sql-show-sqli-buffer*))
   ;; features' keybindings
   (when-sql-feature%
     (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-code)
