@@ -274,9 +274,8 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
     (with-current-buffer buffer (view-mode 1))))
 
 (defmacro when-fn-ff-find-other-file% (&rest body)
-  (if-fn% 'ff-find-other-file 'find-file
-          `(progn% ,@body)
-    `(comment ,@body)))
+  (when-fn% 'ff-find-other-file 'find-file
+    `(progn% ,@body)))
 
 (when-fn-ff-find-other-file%
   (defun cc*-find-include-file (&optional in-other-window)
