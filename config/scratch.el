@@ -8,10 +8,15 @@
 
 
 (defvar *scratch-recipe*
-  `(("*" . (:msg ,(substitute-command-keys initial-scratch-message)
-                 :mod ,(lambda () (lisp-interaction-mode))))
-    ("org" . (:msg
-              "#+title: Scratch Org
+  (eval-when-compile
+    `(("*"
+       .
+       (:msg ,(substitute-command-keys initial-scratch-message)
+             :mod ,(lambda () (lisp-interaction-mode))))
+      ("org"
+       .
+       (:msg
+        "#+title: Scratch Org
 #+author: Nore Emacs
 
 * scratch
@@ -23,12 +28,14 @@
 
 
 "
-              :mod ,(lambda () (org-mode))
-              :pos ,(lambda ()
-                      (goto-char (point-min))
-                      (forward-line 8))))
-    ("tex" . (:msg
-              "\\documentclass{article}
+        :mod ,(lambda () (org-mode))
+        :pos ,(lambda ()
+                (goto-char (point-min))
+                (forward-line 8))))
+      ("tex"
+       .
+       (:msg
+        "\\documentclass{article}
 \\title{Scratch Tex}
 \\author{Nore Emacs}
 \\usepackage{amsmath}
@@ -43,10 +50,10 @@
 
 \\end{document}
 "
-              :mod latex-mode
-              :pos ,(lambda ()
-                      (goto-char (point-min))
-                      (forward-line 5)))))
+        :mod latex-mode
+        :pos ,(lambda ()
+                (goto-char (point-min))
+                (forward-line 5))))))
   "The recipes of scratch.")
 
 
