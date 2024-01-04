@@ -27,8 +27,7 @@
 (setq% eww-bookmarks-directory (v-home! ".bookmarks/") 'eww)
 
 ;; `bookmark': file in which to save bookmarks
-(setq% bookmark-default-file
-       (v-home! ".bookmarks/emacs.bmk") 'bookmark)
+(setq% bookmark-default-file (v-home! ".bookmarks/emacs.bmk") 'bookmark)
 
 ;; `eshell'
 (setq% eshell-directory-name (v-home! ".eshell/") 'eshell)
