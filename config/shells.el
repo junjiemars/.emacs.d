@@ -14,7 +14,7 @@
 ;;;
 
 (defmacro shells-spec->% (&rest keys)
-  "Extract value from the list of spec via KEYS at compile time."
+  "Extract constant from env-spec via KEYS."
   (declare (indent 0))
   `(self-spec->%
     (list :file ,(v-home% ".exec/shell-env.el")
@@ -24,7 +24,7 @@
 
 
 (defmacro shells-spec->* (&rest keys)
-  "Extract value from the list of :shell spec via KEYS at runtime."
+  "Extract :shell from env-spec via KEYS."
   (declare (indent 0))
   `(*self-env-spec* :get :shell ,@keys))
 
@@ -151,7 +151,7 @@ See \\=`setenv\\='."
 ;; save/read env
 ;;;
 
-(defun save-shell-env! ()
+(defun self-shell-save! ()
   "Save \\=`*default-shell-env*\\=' to file."
   (let ((vars nil))
     (dolist* (v (shells-spec->* :copy-vars) vars)
@@ -177,42 +177,43 @@ See \\=`setenv\\='."
         (dolist* (p exec-path)
           (when (and (stringp p) (file-exists-p p))
             (append! p paths t)))
-        (push! (v-home% ".exec/") paths t)
+        (append! (v-home% ".exec/") paths t)
         (*default-shell-env* :put! :exec-path paths))))
   (save-sexp-to-file (*default-shell-env*) (shells-spec->% :file)))
 
 
-(defun read-shell-env! ()
+(defun self-shell-read! ()
   "Read \\=`*default-shell-env*\\=' from file."
-  (if (shells-spec->* :allowed)
-      (push! (v-home% ".exec/") exec-path)
-    ;; read from file
-    (*default-shell-env*
-     :set!
-     (read-sexp-from-file (shells-spec->% :file)))
-    ;; `shell-file-name'
-    (let ((shell (shells-spec->* :shell-file-name)))
-      (when shell
-        (setq% explicit-shell-file-name shell 'shell)
-        (setq shell-file-name shell)
-        (setenv* (shells-spec->% :SHELL) shell)))
-    ;; :copy-vars
-    (copy-env-vars!
-     (*default-shell-env* :get :copy-vars)
-     (shells-spec->* :copy-vars))
-    ;; :exec-path
-    (when (shells-spec->* :exec-path)
-      (copy-exec-path!
-       (*default-shell-env* :get :exec-path)))
-    ;; :spin-vars
-    (spin-env-vars! (shells-spec->* :spin-vars)))
-  (append! #'save-shell-env! kill-emacs-hook))
+  (cond ((null (shells-spec->* :allowed))
+         (append! (v-home% ".exec/") exec-path))
+        (t
+         ;; read from file
+         (*default-shell-env*
+          :set!
+          (read-sexp-from-file (shells-spec->% :file)))
+         ;; `shell-file-name'
+         (let ((shell (shells-spec->* :shell-file-name)))
+           (when shell
+             (setq% explicit-shell-file-name shell 'shell)
+             (setq shell-file-name shell)
+             (setenv* (shells-spec->% :SHELL) shell)))
+         ;; :copy-vars
+         (copy-env-vars!
+          (*default-shell-env* :get :copy-vars)
+          (shells-spec->* :copy-vars))
+         ;; :exec-path
+         (when (shells-spec->* :exec-path)
+           (copy-exec-path!
+            (*default-shell-env* :get :exec-path)))
+         ;; :spin-vars
+         (spin-env-vars! (shells-spec->* :spin-vars))))
+  (append! #'self-shell-save! kill-emacs-hook))
 
 
 ;; save/read env
 
 
-(read-shell-env!)
+(self-shell-read!)
 
 
 (provide 'shells)

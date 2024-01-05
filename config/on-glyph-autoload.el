@@ -7,6 +7,11 @@
 ;;;;
 
 
+(defmacro glyph-spec->* (&rest keys)
+  "Extract glyph :from env-spec via KEYS."
+  (declare (indent 0))
+  `(*self-env-spec* :get :glyph ,@keys))
+
 (defmacro self-glyph-font! (name size scripts)
   "Set glyph font's NAME and SIZE in graphic mode."
   (let ((n (gensym*))
@@ -44,7 +49,7 @@
 ;; Load glyph font
 (defun self-glyph-init! ()
   "Initialize glyph spec from \\=`*self-env-spec*\\='."
-  (dolist* (g (*self-env-spec* :get :glyph))
+  (dolist* (g (glyph-spec->*))
     (when (plist-get g :allowed)
       (let ((name (plist-get g :name))
             (size (plist-get g :size))

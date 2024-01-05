@@ -30,6 +30,16 @@
        (ignore* frame-inhibit-implied-resize))
      ,@body))
 
+(defmacro frame-spec->* (&rest keys)
+  "Extract from :frame env-spec via KEYS."
+  (declare (indent 0))
+  `(*self-env-spec* :get :frame ,@keys))
+
+(defmacro theme-spec->* (&rest keys)
+  "Extract from :theme env-spec via KEYS."
+  (declare (indent 0))
+  `(*self-env-spec* :get :theme ,@keys))
+
 ;; end of macro
 
 ;;;
@@ -48,21 +58,27 @@
 
 (defun self-frame-init! ()
   "Initialize frame specs from \\=`*self-env-spec*\\='."
-  (let* ((f1 (*self-env-spec* :get :frame))
-         (a1 (self-spec-> f1 :allowed))
-         (s1 (cond (a1 (self-spec-> f1 :inhibit-splash-screen))
-                   (t inhibit-splash-screen)))
-         (i1 (append
-              +essential-frame-set+
-              (when-graphic%
-                (when a1 (self-spec-> f1 :initial)))))
-         (d1 (when-graphic%
-               (when a1 (self-spec-> f1 :default)))))
-    (setq% frame-resize-pixelwise
-           (self-spec-> f1 :frame-resize-pixelwise))
-    (setq inhibit-splash-screen s1
-          initial-frame-alist i1
-          default-frame-alist (or d1 i1))))
+  (setq% frame-resize-pixelwise
+         (frame-spec->* :frame-resize-pixelwise))
+  (setq inhibit-splash-screen
+        (or (and (frame-spec->* :allowed)
+                 (frame-spec->* :inhibit-splash-screen))
+            inhibit-splash-screen)
+        initial-frame-alist
+        (append
+         +essential-frame-set+
+         (when-graphic%
+           (and (frame-spec->* :allowed)
+                (frame-spec->* :initial))))
+        default-frame-alist
+        (or (when-graphic%
+              (and (frame-spec->* :allowed)
+                   (frame-spec->* :default)))
+            (append
+             +essential-frame-set+
+             (when-graphic%
+               (and (frame-spec->* :allowed)
+                    (frame-spec->* :initial)))))))
 
 
 (when-graphic%
@@ -70,16 +86,15 @@
   (defun toggle-frame-initialized (&optional frame)
     "Toggle initialiation state of FRAME."
     (interactive)
-    (let ((f1 (*self-env-spec* :get :frame)))
-      (when (self-spec-> f1 :allowed)
-        (modify-frame-parameters
-         frame
-         (list (cons 'fullscreen nil)
-               (cons 'fullscreen-restore nil)))
-        (let ((w (cdr (assoc** 'width default-frame-alist)))
-              (h (cdr (assoc** 'height default-frame-alist))))
-          (when w (set-frame-width nil w))
-          (when h (set-frame-height nil h)))))))
+    (when (frame-spec->* :allowed)
+      (modify-frame-parameters
+       frame
+       (list (cons 'fullscreen nil)
+             (cons 'fullscreen-restore nil)))
+      (let ((w (cdr (assoc** 'width default-frame-alist)))
+            (h (cdr (assoc** 'height default-frame-alist))))
+        (when w (set-frame-width nil w))
+        (when h (set-frame-height nil h))))))
 
 
 ;; end of Frame
@@ -107,25 +122,24 @@ If DIR is nil then load the built-in \\=`customize-themes\\=' by NAME."
     "Initialize theme specs from \\=`*self-env-spec*\\='.\n
 If RESET is true then reset before load."
     (when reset (mapc #'disable-theme custom-enabled-themes))
-    (let ((t1 (*self-env-spec* :get :theme)))
-      (when (self-spec-> t1 :allowed)
-        (let ((name (self-spec-> t1 :name)))
-          (when name
-            (let ((dir (self-spec-> t1 :custom-theme-directory)))
-              (cond (dir
-                     ;; load theme from :custom-theme-directory
-                     (if (and (self-spec-> t1 :compile)
-                              (if-native-comp% nil t))
-                         (let ((f (concat dir
-                                          (symbol-name name)
-                                          "-theme.el")))
-                           (compile! (compile-unit* f t))
-                           (load-theme!
-                            name (concat dir "/" (v-name) "/")))
-                       (load-theme! name dir)))
-                    (t
-                     ;; load builtin theme
-                     (load-theme! name))))))))))
+    (when (and (theme-spec->* :allowed)
+               (theme-spec->* :name))
+      (cond ((theme-spec->* :custom-theme-directory)
+             ;; load theme from :custom-theme-directory
+             (let ((dir (theme-spec->* :custom-theme-directory))
+                   (name (theme-spec->* :name)))
+               (if (and (theme-spec->* :compile)
+                        (if-native-comp% nil t))
+                   (let ((f (concat dir
+                                    (symbol-name name)
+                                    "-theme.el")))
+                     (compile! (compile-unit* f t))
+                     (load-theme!
+                      name (concat dir "/" (v-name) "/")))
+                 (load-theme! name dir))))
+            (t
+             ;; load builtin theme
+             (load-theme! (theme-spec->* :name)))))))
 
 
 ;; end of when-theme%
