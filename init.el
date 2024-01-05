@@ -208,7 +208,7 @@ compile-time."
            (if (file-exists-p d2)
                (delete-file d2)
              (path! d1))
-           (copy-file ,s1 d1 t))
+           (copy-file ,s1 d1 t t))
          (cons d1 d2)))))
 
 (defmacro time (id &rest form)

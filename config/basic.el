@@ -99,9 +99,9 @@ See \\=`defcustom\\='."
         (s (gensym*)))
     `(let ((,p ,path)
            (,s (or ,separator "/")))
-       (cond ((= 0 (length ,p)) 0)
-             ((string= ,p ,s) 1)
-             (t (length (split-string* ,p ,s t)))))))
+       (if (= 0 (length ,p))
+           0
+         (- (length (split-string* ,p ,s nil)) 1)))))
 
 (defmacro file-in-dirs-p (file dirs)
   "Return t if the name of FILE matching DIRS, otherwise nil."
