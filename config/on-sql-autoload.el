@@ -15,8 +15,7 @@
 (defmacro when-sql-oracle-feature% (&rest body)
   (declare (indent 0))
   `(when-sql-feature%
-     (when-fn% 'sql-oracle-restore-settings 'sql
-       ,@body)))
+     ,@body))
 
 (defmacro when-sql-mysql-feature% (&rest body)
   (declare (indent 0))
@@ -95,11 +94,11 @@ about each column."
 Optional prefix argument ENHANCED, displays additional details."
     (interactive
      (list (if-region-active
-            (buffer-substring-no-properties
-             (region-beginning) (region-end))
-            (buffer-substring-no-properties
-             (save-excursion (backward-paragraph) (point))
-             (save-excursion (forward-paragraph) (point))))
+               (buffer-substring-no-properties
+                (region-beginning) (region-end))
+             (buffer-substring-no-properties
+              (save-excursion (backward-paragraph) (point))
+              (save-excursion (forward-paragraph) (point))))
            current-prefix-arg))
     (let ((sqlbuf (sql-find-sqli-buffer)))
       (unless sqlbuf
@@ -147,18 +146,18 @@ Optional prefix argument ENHANCED, displays additional details."
 ;; oracle
 ;;;
 
+(unless-fn% 'sql-oracle--list-object-name 'sql
+  (defun sql-oracle--list-object-name (obj-name)
+    (format (concat
+             "CASE WHEN REGEXP_LIKE (%s, q'/^[A-Z0-9_#$]+$/','c')"
+             " THEN %s ELSE '\"'|| %s ||'\"' END ")
+            obj-name obj-name obj-name)))
+
+(unless-fn% 'sql-oracle-restore-settings 'sql
+  (defun sql-oracle-restore-settings (_ __)
+    (message "unimplmented")))
+
 (when-sql-oracle-feature%
-  (unless-fn% 'sql-oracle--list-object-name 'sql
-
-    (defun sql-oracle--list-object-name (obj-name)
-      (format (concat
-               "CASE WHEN REGEXP_LIKE (%s, q'/^[A-Z0-9_#$]+$/','c')"
-               " THEN %s ELSE '\"'|| %s ||'\"' END ")
-              obj-name obj-name obj-name))))
-
-
-(when-sql-oracle-feature%
-
   (defun sql-oracle-list-all* (sqlbuf outbuf enhanced _table-name)
     ;; Query from USER_OBJECTS or ALL_OBJECTS
     (let ((settings (sql-oracle-save-settings sqlbuf))

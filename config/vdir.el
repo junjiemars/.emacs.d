@@ -39,7 +39,7 @@
 (setq% ido-save-directory-list-file (v-home! ".ido/ido.last") 'ido)
 
 ;; `image-dired': where thumbnail images are stored
-(setq% image-dired-dir (v-home! ".dired/image/") 'image-dired)
+(setq% image-dired-dir (v-home! ".dired/") 'image-dired)
 
 ;; `multisession': where multisession variables stored
 (setq% multisession-directory (v-home! ".multisession/") 'multisession)
