@@ -44,6 +44,7 @@
   (compile!
     (compile-unit% (emacs-home* "config/safe.el"))
     (compile-unit% (emacs-home* "config/financial.el") t)
+    (compile-unit% (emacs-home* "config/edit.el"))
     (compile-unit% (emacs-home* "config/guds.el") t)
     (compile-unit% (emacs-home* "config/scratch.el"))
     (compile-unit% (emacs-home* "config/marks.el"))
@@ -54,7 +55,6 @@
     (compile-unit% (emacs-home* "config/on-help-autoload.el"))
     (compile-unit% (emacs-home* "config/on-hippie-autoload.el"))
     (compile-unit% (emacs-home* "config/on-ido-autoload.el"))
-    (compile-unit% (emacs-home* "config/on-edit-autoload.el"))
     (compile-unit% (emacs-home* "config/on-isearch-autoload.el"))
     ;; (compile-unit% (emacs-home* "config/on-js-autoload.el"))
     (compile-unit% (emacs-home* "config/on-key-autoload.el"))
@@ -181,6 +181,9 @@
     (if-feature-treesit%
         (compile-unit% (emacs-home* "config/on-treesit-autoload.el")))
 
+    ;; on `edit'
+    (compile-unit% (emacs-home* "config/on-edit-autoload.el"))
+
     ) ;; end of compile!
 
   )
@@ -206,14 +209,11 @@
     (condition-case err
         (self-desktop-read!)
       (error (message "self-desktop-read!: %s" err))))
-  (compile!
-    (compile-unit% (emacs-home* "config/on-delay-autoload.el")))
   (when (*self-paths* :get :epilogue)
     (make-thread*
      (lambda ()
        (condition-case err
-           (compile!
-             (compile-unit* (*self-paths* :get :epilogue)))
+           (compile! (compile-unit* (*self-paths* :get :epilogue)))
          (error (message ":epilogue: %s" err)))))))
 
 
