@@ -177,42 +177,35 @@ See \\=`setenv\\='."
         (dolist* (p exec-path)
           (when (and (stringp p) (file-exists-p p))
             (append! p paths t)))
-        (append! (v-home% ".exec/") paths t)
+        (push! (v-home% ".exec/") paths t)
         (*default-shell-env* :put! :exec-path paths))))
   (save-sexp-to-file (*default-shell-env*) (shells-spec->% :file)))
 
 
 (defun read-shell-env! ()
   "Read \\=`*default-shell-env*\\=' from file."
-  (let ((spec (shells-spec->*)))
-    (if (null (self-spec-> spec :allowed))
-        ;; allowed/disallowed `shells-spec->*'
-        (append! (v-home% ".exec/") exec-path)
-
-      ;; read from file
-      (let ((env (read-sexp-from-file (shells-spec->% :file))))
-        (when env
-          (*default-shell-env* :set! env)))
-
-      (let ((shell (self-spec-> spec :shell-file-name)))
-        (when shell
-          (setq% explicit-shell-file-name shell 'shell)
-          (setq shell-file-name shell)
-          (setenv* (shells-spec->% :SHELL) shell)))
-
-      (let ((copying (self-spec-> spec :copy-vars)))
-        (when (consp copying)
-          (copy-env-vars!
-           (*default-shell-env* :get :copy-vars) copying)))
-
-      (when (self-spec-> spec :exec-path)
-        (copy-exec-path!
-         (*default-shell-env* :get :exec-path)))
-
-      (let ((spinning (self-spec-> spec :spin-vars)))
-        (when (consp spinning)
-          (spin-env-vars! spinning)))))
-
+  (if (shells-spec->* :allowed)
+      (push! (v-home% ".exec/") exec-path)
+    ;; read from file
+    (*default-shell-env*
+     :set!
+     (read-sexp-from-file (shells-spec->% :file)))
+    ;; `shell-file-name'
+    (let ((shell (shells-spec->* :shell-file-name)))
+      (when shell
+        (setq% explicit-shell-file-name shell 'shell)
+        (setq shell-file-name shell)
+        (setenv* (shells-spec->% :SHELL) shell)))
+    ;; :copy-vars
+    (copy-env-vars!
+     (*default-shell-env* :get :copy-vars)
+     (shells-spec->* :copy-vars))
+    ;; :exec-path
+    (when (shells-spec->* :exec-path)
+      (copy-exec-path!
+       (*default-shell-env* :get :exec-path)))
+    ;; :spin-vars
+    (spin-env-vars! (shells-spec->* :spin-vars)))
   (append! #'save-shell-env! kill-emacs-hook))
 
 
