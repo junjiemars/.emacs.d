@@ -126,7 +126,7 @@ END
 }
 
 test_profile() {
-	local d="${_ROOT_}/.profile"
+	local d="${_ROOT_}/.profile/${_ENV_VER_}"
 	local fc="${d}/compile"
 	local fb="${d}/boot"
 	local prof="${_ROOT_}/.github/prof.sh"
