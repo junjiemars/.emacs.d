@@ -361,7 +361,7 @@ If \\=`current-prefix-arg\\=' < 0, then repeat n time with END in reversed."
 
 ;; end of modes
 
-(defun on-delay-init! ()
+(defun on-edit-init! ()
   (inhibit-gc
     (on-edit-setq!)
     (on-edit-key!)
