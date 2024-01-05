@@ -5,10 +5,10 @@
 ;;;;
 ;; on-cc-autoload.el
 ;;;;
-;; Commentary: `ccs' autoload.
+;; Commentary: `cc' autoload.
 ;;;;
 
-(require 'ccs (v-home%> "config/ccs"))
+(require 'cc (v-home%> "config/cc"))
 
 ;;;
 ;; `cc-mode'

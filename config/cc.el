@@ -3,7 +3,7 @@
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; ccs.el
+;; cc.el
 ;;;;
 ;; Commentary: essential C programming
 ;;;;
@@ -462,6 +462,6 @@ N specify the number of spaces when align."
 ;; end of `cmacexp'
 
 
-(provide 'ccs)
+(provide 'cc)
 
 ;; end of cc.el

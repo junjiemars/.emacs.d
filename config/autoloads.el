@@ -48,7 +48,7 @@
     (compile-unit% (emacs-home* "config/scratch.el"))
     (compile-unit% (emacs-home* "config/marks.el"))
     (compile-unit% (emacs-home* "config/tags.el"))
-    (compile-unit% (emacs-home* "config/ccs.el"))
+    (compile-unit% (emacs-home* "config/cc.el"))
     (compile-unit% (emacs-home* "config/on-compile-autoload.el"))
     (compile-unit% (emacs-home* "config/on-dired-autoload.el"))
     (compile-unit% (emacs-home* "config/on-help-autoload.el"))
