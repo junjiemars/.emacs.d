@@ -74,11 +74,7 @@
         (or (when-graphic%
               (and (frame-spec->* :allowed)
                    (frame-spec->* :default)))
-            (append
-             +essential-frame-set+
-             (when-graphic%
-               (and (frame-spec->* :allowed)
-                    (frame-spec->* :initial)))))))
+            initial-frame-alist)))
 
 
 (when-graphic%
