@@ -151,7 +151,7 @@ test_profile() {
 (*self-packages*
   :put :lisp
   (list
-   :cond (when-version% <= 29 t)
+   :cond nil ; (when-version% <= 29 t)
    :packages  '(paredit magit)
    :compile \`(,(compile-unit% (emacs-home* "config/use-lisp-autoload.el"))
                ,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))

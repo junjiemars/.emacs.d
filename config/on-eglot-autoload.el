@@ -21,8 +21,7 @@
                    (match-end 1))))))))
 
 (defun eglot*-set-style (&optional style indent)
-  "Set the current \\=`eglot-managed-p\\=' buffer to use the STYLE
-and INDENT."
+  "Set the current \\=`eglot-managed-p\\=' buffer to use the STYLE and INDENT."
   (with-current-buffer (current-buffer)
     (when (eglot-managed-p)
       (let ((p (caddr (eglot--current-project)))
