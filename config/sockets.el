@@ -1,4 +1,4 @@
-;;;; -*- lexical-binding:t -*-
+;; -*- lexical-binding:t -*-
 ;;;;
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
@@ -23,7 +23,8 @@
       ,@body)))
 
 (when-fn-url-open-stream%
- (defadvice url-open-stream (around url-open-stream-around disable)
+ (defadvice url-open-stream
+     (around url-open-stream-around first compile disable)
    "Fix the \\=`url-gateway-method\\=' bug in \\=`url-http\\='."
    (if-version% <= 25
                 (let ((gateway-method
@@ -61,7 +62,7 @@
  (defun toggle-socks! (&optional arg)
    "Toggle \\=`url-gatewary-method\\=' to socks or native.\n
 With prefix argument ARG, \\=`url-gatewary-method\\=' via socks
-if ARG is greate than 1, otherwise via native."
+if ARG is greater than 1, otherwise via native."
    (interactive "p")
    (let ((native (lambda ()
                    (setq% url-gateway-method 'native 'url-vars)
@@ -105,7 +106,14 @@ if ARG is greate than 1, otherwise via native."
                 (if activate "enabled" "disabled"))))))
 
 
-(when-feature-socks% (make-thread* #'toggle-socks!))
+(defun self-socks-init! ()
+  "Initialize :socks spec from \\=`*self-env-spec*\\='."
+  (when-feature-socks%
+   (when (*self-env-spec* :get :socks :allowed)
+     (toggle-socks!))))
 
+
+
+(provide 'sockets)
 
 ;; end of sockets.el file

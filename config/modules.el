@@ -1,9 +1,9 @@
-;;;; -*- lexical-binding:t -*-
+;; -*- lexical-binding:t -*-
 ;;;;
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; packages.el
+;; modules.el
 ;;;;
 
 
@@ -120,24 +120,25 @@
 
 
 (defun self-package-init! ()
-  "Initialize package spec from \\=`*self-env-spec*\\='"
-  ;; compile self :package-spec
-  (compile! (compile-unit* (*self-paths* :get :package-spec)))
-  (when-version%
-      <= 25.1
-    (setq custom-file (v-home! ".transient/packages.el")))
-  ;; define package user dir
-  (setq% package-gnupghome-dir (v-home! ".elpa/gnupg/") 'package)
-  (setq% package-user-dir package*-user-dir 'package)
-  (package-initialize)
-  ;; load self :packages-spec
-  (package*-parse-spec! (*self-packages*)
-                        (*self-env-spec* :get :package
-                                         :remove-unused))
-  (apply #'compile! (*package-compile-units*)))
+  "Initialize :package spec from \\=`*self-env-spec*\\='."
+  (when (*self-env-spec* :get :package :allowed)
+    ;; compile self :package-spec
+    (compile! (compile-unit* (*self-paths* :get :package-spec)))
+    (when-version%
+        <= 25.1
+      (setq custom-file (v-home! ".transient/packages.el")))
+    ;; define package user dir
+    (setq% package-gnupghome-dir (v-home! ".elpa/gnupg/") 'package)
+    (setq% package-user-dir package*-user-dir 'package)
+    (package-initialize)
+    ;; load self :packages-spec
+    (package*-parse-spec! (*self-packages*)
+                          (*self-env-spec* :get :package
+                                           :remove-unused))
+    (apply #'compile! (*package-compile-units*))))
 
-;;; load
-(self-package-init!)
+
 
+(provide 'modules)
 
-;; end of packages.el
+;; end of modules.el

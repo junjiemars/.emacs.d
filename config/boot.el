@@ -394,7 +394,9 @@ No matter the declaration order, the executing order is:
     ;;; --batch mode: disable `desktop'
     (setq% desktop-save-mode nil 'desktop)
     (unless-noninteractive%
-     (compile-unit% (emacs-home* "config/memo.el"))))
+     (prog1
+         (compile-unit% (emacs-home* "config/memo.el") t)
+       (autoload 'self-desktop-read! (v-home%> "config/memo.el")))))
   (compile-unit% (emacs-home* "config/autoloads.el")))
 
 ;; end of boot

@@ -8,7 +8,11 @@
 ;;
 
 
-(when-version% >= 25 (require 'marks))
+(if-version%
+    < 25
+    (eval-when-compile
+      (require 'marks (v-home%> "config/marks")))
+  (require 'marks (v-home%> "config/marks")))
 
 
 (defun isearch*-forward (&optional style backward)
@@ -102,8 +106,8 @@
   (isearch*-forward ?q backward))
 
 
-(defun isearch*-init-keys! ()
-  "Initialize \\=`isearch\\=' keys."
+(defun on-isearch-init! ()
+  "On \\=`isearch\\=' initialization."
   (when-fn% 'isearch-forward-symbol nil
     (define-key% (current-global-map) (kbd "M-s >") #'isearch-forward-symbol))
   (when-fn% 'isearch-forward-word nil
@@ -115,8 +119,12 @@
   (define-key% (current-global-map) (kbd "M-s f") #'isearch*-forward-file)
   (define-key% (current-global-map) (kbd "M-s _") #'isearch*-forward-quoted))
 
-
-(make-thread* #'isearch*-init-keys!)
+;;; after load
+(if-version%
+    < 25
+    (with-eval-after-load 'isearch
+      (on-isearch-init!))
+  (on-isearch-init!))
 
 
 

@@ -435,32 +435,106 @@ N specify the number of spaces when align."
 ;; end of `cc-styles'
 
 ;;;
+;; `cc-mode'
+;;;
+
+(defun on-cc-mode-init! ()
+  "On \\=`cc-mode\\=' initialization."
+  ;; load styles
+  (c-add-style (car cc*-style-nginx) (cdr cc*-style-nginx))
+  ;; keymap:
+  ;; find include file
+  (when-fn-ff-find-other-file%
+   (when-var% c-mode-map 'cc-mode
+     (define-key% c-mode-map (kbd "C-c f i")
+                  #'cc*-find-include-file))
+   ;; for c++, add include via `cc*-extra-include'
+   (when-var% c++mode-map 'cc-mode
+     (define-key% c++-mode-map (kbd "C-c f i")
+                  #'cc*-find-include-file)))
+  ;; indent line or region
+  (when-fn% 'c-indent-line-or-region 'cc-cmds
+    (define-key% c-mode-map
+                 (kbd "TAB") #'c-indent-line-or-region))
+  ;; dump predefined macros
+  (define-key% c-mode-map (kbd "C-c #")
+               #'cc*-dump-predefined-macros)
+  ;; raw newline
+  (define-key% c-mode-map (kbd "RET") #'newline*)
+  ;; align style
+  (define-key% c-mode-map (kbd "C-c |") #'cc*-style-align-entire)
+  ;; `subword-mode'
+  (define-key% c-mode-map (kbd "C-c C-w")
+               (if-fn% 'subword-mode 'subword
+                       #'subword-mode
+                 #'c-subword-mode)))
+
+;; end of `cc-mode'
+
+;;;
 ;; `cmacexp'
 ;;;
 
-(defun cc*-macro-expand (buffer)
-  "Macro expanding in BUFFER."
-  (let ((remote (ssh-remote-p (buffer-file-name buffer))))
-    (list :c-macro-buffer-name
-          (if remote
-              (format "*Macro Expanded@%s*"
-                      (ssh-remote->user@host remote))
-            "*Macro Expanded*")
-          :c-macro-preprocessor
-          (if remote
-              (format "ssh %s %s"
-                      (ssh-remote->user@host remote)
-                      "cc -E -o - -")
-            (if-platform% 'windows-nt
-                ;; cl.exe can't compile on the fly without xargs
-                (let ((tmp (make-temp-file "cc-m-" nil ".c")))
-                  (format "%s -0 > %s && %s && cl -E %s"
-                          +cc*-xargs-bin+ tmp
-                          +cc*-compiler-bin+ tmp))
-              (format "%s -E -o - -" +cc*-compiler-bin+))))))
+(defmacro when-fn-c-macro-expand% (&rest body)
+  (declare (indent 0))
+  (when-fn% 'c-macro-expand 'cmacexp
+    `(progn% ,@body)))
+
+(when-fn-c-macro-expand%
+  (defun cc*-macro-expand ()
+    "Macro expanding current buffer."
+    (let ((remote (ssh-remote-p (buffer-file-name (current-buffer)))))
+      (setq% c-macro-prompt-flag t 'cmacexp)
+      (setq% c-macro-buffer-name
+             (if remote
+                 (format "*Macro Expanded@%s*"
+                         (ssh-remote->user@host remote))
+               "*Macro Expanded*")
+             'cmacexp)
+      (setq% c-macro-preprocessor
+             (if remote
+                 (format "ssh %s %s"
+                         (ssh-remote->user@host remote)
+                         "cc -E -o - -")
+               (if-platform% 'windows-nt
+                   ;; cl.exe can't compile on the fly without xargs
+                   (let ((tmp (make-temp-file "cc-m-" nil ".c")))
+                     (format "%s -0 > %s && %s && cl -E %s"
+                             +cc*-xargs-bin+ tmp
+                             +cc*-compiler-bin+ tmp))
+                 (format "%s -E -o - -" +cc*-compiler-bin+)))
+             'cmacexp))))
+
+(when-fn-c-macro-expand%
+  (defadvice c-macro-expand
+      (around c-macro-expand-around first compile disable)
+    "Expand C macros in the region, using the C preprocessor."
+    (cc*-macro-expand)
+    ad-do-it))
+
+(defun on-cmacexp-init! ()
+  "On \\=`cmacexp\\=' initialization."
+  (when-fn-c-macro-expand%
+    ;; [C-c C-e] `c-macro-expand' in `cc-mode'
+    (setq% c-macro-prompt-flag t 'cmacexp)
+    (ad-enable-advice #'c-macro-expand
+                      'around "c-macro-expand-around")
+    (ad-activate #'c-macro-expand t)))
 
 ;; end of `cmacexp'
 
+;;;
+;; `man'
+;;;
+
+(defun on-man-init! ()
+  "On \\=`man\\=' initialization."
+  ;; fix cannot find include path on Darwin in `Man-mode'
+  (when-var% manual-program 'man
+    (when% (executable-find% manual-program)
+      (setq% Man-header-file-path (cc*-system-include t) 'man))))
+
+;; end of `man'
 
 (provide 'cc)
 

@@ -281,9 +281,10 @@ Introduce the rules of naming /files/ and /functions/.
 - /extension/ for Emacs builtin packages: =<package-name>s.el=
 #+BEGIN_EXAMPLE
     (emacs-home* "config/")
+    ├── cc.el
     ├── guds.el
     ├── shells.el
-    ├── packages.el
+    ├── modules.el
     ├── sockets.el
     ├── tags.el
     └── (comment "more ...")
