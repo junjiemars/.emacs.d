@@ -9,12 +9,24 @@
 
 ;; default web browser: eww, requires Emacs-24.4+
 (defmacro-if-feature% eww)
+(defmacro when-feature-eww% (&rest body)
+  (declare (indent 0))
+  (if-feature-eww%
+      `(progn% ,@body)))
 
 ;; `project' builtin since Emacs-26+
 (defmacro-if-feature% project)
+(defmacro when-feature-project% (&rest body)
+  (declare (indent 0))
+  (if-feature-project%
+      `(progn% ,@body)))
 
 ;; `eglot' builtin since Emacs-29+
 (defmacro-if-feature% eglot)
+(defmacro when-feature-eglot% (&rest body)
+  (declare (indent 0))
+  (if-feature-eglot%
+      `(progn% ,@body)))
 
 ;; `treesit': builtin since Emacs-29+
 (defmacro-if-feature% treesit)
@@ -50,10 +62,13 @@
     (compile-unit% (emacs-home* "config/cc.el") t)
     (compile-unit% (emacs-home* "config/financial.el") t)
     (compile-unit% (emacs-home* "config/guds.el") t)
-    (compile-unit% (emacs-home* "config/scratch.el"))
+    (compile-unit% (emacs-home* "config/lisps.el") t)
     (compile-unit% (emacs-home* "config/marks.el") t)
+    (compile-unit% (emacs-home* "config/isearchs.el"))
     (compile-unit% (emacs-home* "config/mixal.el") t)
     (compile-unit% (emacs-home* "config/progs.el") t)
+    (compile-unit% (emacs-home* "config/pythons.el") t)
+    (compile-unit% (emacs-home* "config/scratch.el"))
     (compile-unit% (emacs-home* "config/sqls.el") t)
     (compile-unit% (emacs-home* "config/tags.el"))
     (compile-unit% (emacs-home* "config/trans.el") t)
@@ -63,14 +78,11 @@
     (compile-unit% (emacs-home* "config/on-help-autoload.el"))
     (compile-unit% (emacs-home* "config/on-hippie-autoload.el"))
     (compile-unit% (emacs-home* "config/on-ido-autoload.el"))
-    (compile-unit% (emacs-home* "config/on-isearch-autoload.el"))
     ;; (compile-unit% (emacs-home* "config/on-js-autoload.el"))
-    (compile-unit% (emacs-home* "config/on-lisp-autoload.el"))
     (compile-unit% (emacs-home* "config/on-marks-autoload.el"))
     (compile-unit% (emacs-home* "config/on-net-autoload.el"))
     (compile-unit% (emacs-home* "config/on-org-autoload.el"))
     (compile-unit% (emacs-home* "config/on-pp-autoload.el"))
-    (compile-unit% (emacs-home* "config/on-python-autoload.el"))
     (compile-unit% (emacs-home* "config/on-shell-autoload.el"))
     (compile-unit% (emacs-home* "config/on-term-autoload.el"))
     (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))
@@ -94,12 +106,14 @@
                  (executable-find% "gswin32c")
                  (executable-find% "mutool"))
         (compile-unit% (emacs-home* "config/on-docview-autoload.el"))))
-    ;; `eglot'
-    (if-feature-eglot%
-        (compile-unit% (emacs-home* "config/on-eglot-autoload.el")))
-    ;; `eww-mode'
-    (if-feature-eww%
-        (compile-unit% (emacs-home* "config/on-eww-autoload.el")))
+    ;; on `ewws'
+    (when-feature-eww%
+      (prog1
+          (compile-unit% (emacs-home* "config/ewws.el") t)
+        (autoload 'on-eww-init! (v-home%> "config/ewws.el"))
+        (autoload 'lookup-web (v-home%> "config/ewws.el"))))
+    (when-feature-eww%
+      (compile-unit% (emacs-home* "config/on-eww-autoload.el")))
     ;; self :glyph
     (when-font%
       (compile-unit% (emacs-home* "config/glyph.el")))
@@ -141,8 +155,16 @@
       (autoload 'run-node (v-home%> "config/node.el")
         "Toggle node process in buffer \\=`*node*\\='." t))
     ;; `project'
-    (if-feature-project%
-        (compile-unit% (emacs-home* "config/on-project-autoload.el")))
+    (when-feature-project%
+      (prog1
+          (compile-unit% (emacs-home* "config/projects.el") t)
+        (autoload 'on-project-init! (v-home%> "config/projects.el"))))
+    (when-feature-project%
+      (compile-unit% (emacs-home* "config/on-project-autoload.el")))
+    ;; on `pythons'
+    (progn
+      (autoload 'on-python-init! (v-home%> "config/pythons.el"))
+      (compile-unit% (emacs-home* "config/on-python-autoload.el")))
     ;; `scheme': `gambit-mode'
     (prog1
         (compile-unit% (emacs-home* "config/gambit.el") t)
@@ -179,6 +201,22 @@
       (autoload 'on-cmacexp-init! (v-home%> "config/cc.el"))
       (autoload 'on-man-init! (v-home%> "config/cc.el"))
       (compile-unit% (emacs-home* "config/on-cc-autoload.el")))
+    ;; on `eglot'
+    (when-feature-eglot%
+      (prog1
+          (compile-unit% (emacs-home* "config/eglots.el") t)
+        (autoload 'on-eglot-init! (v-home%> "config/eglots.el"))))
+    (when-feature-eglot%
+      (compile-unit% (emacs-home* "config/on-eglot-autoload.el")))
+    ;; on `isearchs'
+    (progn
+      (autoload 'on-isearch-init! (v-home%> "config/isearchs.el"))
+      (compile-unit% (emacs-home* "config/on-isearch-autoload.el")))
+    ;; on `lisps'
+    (progn
+      (autoload 'on-elisp-init! (v-home%> "config/lisps.el"))
+      (autoload 'on-ielm-init! (v-home%> "config/lisps.el"))
+      (compile-unit% (emacs-home* "config/on-lisp-autoload.el")))
     ;; on `progs'
     (progn
       (autoload 'on-progs-init! (v-home%> "config/progs.el"))
@@ -191,9 +229,8 @@
     (when-feature-treesit%
       (prog1
           (compile-unit% (emacs-home* "config/treesits.el") t)
-        (autoload 'on-treesit-init! (v-home%> "config/treesits.el"))))
-    (when-feature-treesit%
-      (compile-unit% (emacs-home* "config/on-treesit-autoload.el")))
+        (autoload 'on-treesit-init! (v-home%> "config/treesits.el"))
+        (compile-unit% (emacs-home* "config/on-treesit-autoload.el"))))
     ;; on `xrefs'
     (progn
       (autoload 'on-xref-init! (v-home%> "config/xrefs.el"))

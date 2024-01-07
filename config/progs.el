@@ -308,6 +308,25 @@ And copy the qualified buffer name to kill ring."
 ;; end of buffer
 
 ;;;
+;; `minibuffer'
+;;;
+
+(defmacro set-minibuffer-complete-key! (key)
+  "Set completing KEY for `minibuffer'."
+  `(define-key%
+    (if-var% minibuffer-local-completion-map 'minibuffer
+             minibuffer-local-completion-map
+      minibuffer-local-map)
+    (kbd ,key)
+    (if-fn% 'minibuffer-complete 'minibuffer
+            #'minibuffer-complete
+      (if-fn% #'completion-at-point 'minibuffer
+              #'completion-at-point
+        #'lisp-complete-symbol))))
+
+;; end of `minibuffer'
+
+;;;
 ;; env
 ;;;
 
@@ -447,7 +466,9 @@ And copy the qualified buffer name to kill ring."
     (define-key% (current-global-map) (kbd "C-x x w") #'toggle-word-wrap))
   (when-fn% 'whitespace-mode 'whitespace
     (define-key% (current-global-map) (kbd "C-x x SPC") #'whitespace-mode))
-  (define-key% (current-global-map) (kbd "C-x x u") #'rename-uniquely))
+  (define-key% (current-global-map) (kbd "C-x x u") #'rename-uniquely)
+  (set-minibuffer-complete-key! "TAB")
+  (set-minibuffer-complete-key! "C-M-i"))
 
 ;; end of `on-progs-key!'
 
