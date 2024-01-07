@@ -361,8 +361,7 @@ Returns the name of FILE when successed otherwise nil."
 (defmacro read-sexp-from-file (file)
   "Read the first sexp from FILE."
   (let ((f (gensym*)))
-    `(lexical-let% ((,f ,file)
-                    (file-name-handler-alist nil))
+    `(lexical-let% ((,f ,file))
        (when (and (stringp ,f) (file-exists-p ,f))
          (let ((b (get-buffer-create* (symbol-name (gensym*)) t)))
            (unwind-protect
@@ -377,7 +376,6 @@ Returns the name of FILE when successed otherwise nil."
   (let ((s (gensym*)) (f (gensym*)))
     `(lexical-let%
          ((,s ,str) (,f ,file)
-          (file-name-handler-alist nil)
           (b (get-buffer-create* (symbol-name (gensym*)) t)))
        (unwind-protect
            (with-current-buffer b
@@ -389,8 +387,7 @@ Returns the name of FILE when successed otherwise nil."
 (defmacro read-str-from-file (file)
   "Read string from FILE."
   (let ((f (gensym*)))
-    `(lexical-let% ((,f ,file)
-                    (file-name-handler-alist nil))
+    `(lexical-let% ((,f ,file))
        (when (and (stringp ,f) (file-exists-p ,f))
          (let ((b (get-buffer-create* (symbol-name (gensym*)) t)))
            (unwind-protect
@@ -409,10 +406,11 @@ Returns the name of FILE when successed otherwise nil."
   "Return base name of PATH."
   (let ((p (gensym*)))
     `(let* ((,p ,path))
-       (substring-no-properties ,p
-                                (let ((p1 (strrchr ,p ?/)))
-                                  (if p1 (1+ p1) 0))
-                                (or (strrchr ,p ?.) (length ,p))))))
+       (substring-no-properties
+        ,p
+        (let ((p1 (strrchr ,p ?/)))
+          (if p1 (1+ p1) 0))
+        (or (strrchr ,p ?.) (length ,p))))))
 
 (unless% (fboundp 'directory-name-p)
   (defmacro directory-name-p (name)

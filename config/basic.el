@@ -102,13 +102,14 @@ See \\=`defcustom\\='."
 (defmacro file-in-dirs-p (file dirs)
   "Return t if the name of FILE matching DIRS, otherwise nil."
   (let ((f (gensym*)) (ds (gensym*)))
-    `(let ((,f ,file) (,ds ,dirs)
-           (file-name-handler-alist nil))
+    `(let ((,f ,file) (,ds ,dirs))
        (when (and (stringp ,f) (consp ,ds))
          (some* (lambda (x)
-                  (let ((case-fold-search (when-platform% 'windows-nt t)))
-                    (and (stringp x)
-                         (string-match x (file-name-directory ,f)))))
+                  (inhibit-file-name-handler
+                    (let ((case-fold-search
+                           (when-platform% 'windows-nt t)))
+                      (and (stringp x)
+                           (string-match x (file-name-directory ,f))))))
                 ,ds)))))
 
 (defmacro file-name-nondirectory% (filename)
@@ -123,32 +124,32 @@ FF file-filter (lambda (file-name absolute-name)...),
 DF dir-filter (lambda (dir-name absolute-name)...),
 FN file-processor (lambda (absolute-name)...),
 DN dir-processor (lambda (aboslute-name)...)."
-  (let* ((file-name-handler-alist nil)
-         (files (remove-if* (lambda (x)
-                              (or (null x)
-                                  (string= "./" x)
-                                  (string= "../" x)))
-                            (file-name-all-completions "" dir))))
-    (while files
-      (let ((f (car files)))
-        (let ((a (expand-file-name f dir)))
-          (if (directory-name-p f)
-              (when (and (let ((ln (file-symlink-p a)))
-                           (if ln
-                               (not (or
-                                     (string-match "\\.\\'\\|\\.\\.\\'" ln)
-                                     (and (>= (length a) (length ln))
-                                          (string=
-                                           ln
-                                           (substring a 0 (length ln))))))
-                             t))
-                         df
-                         (funcall df f a))
-                (and dn (funcall dn a))
-                (dir-iterate a ff df fn dn))
-            (when (and ff (funcall ff f a))
-              (and fn (funcall fn a)))))
-        (setq files (cdr files))))))
+  (inhibit-file-name-handler
+    (let ((files (remove-if* (lambda (x)
+                               (or (null x)
+                                   (string= "./" x)
+                                   (string= "../" x)))
+                             (file-name-all-completions "" dir))))
+      (while files
+        (let ((f (car files)))
+          (let ((a (expand-file-name f dir)))
+            (if (directory-name-p f)
+                (when (and (let ((ln (file-symlink-p a)))
+                             (if ln
+                                 (not (or
+                                       (string-match "\\.\\'\\|\\.\\.\\'" ln)
+                                       (and (>= (length a) (length ln))
+                                            (string=
+                                             ln
+                                             (substring a 0 (length ln))))))
+                               t))
+                           df
+                           (funcall df f a))
+                  (and dn (funcall dn a))
+                  (dir-iterate a ff df fn dn))
+              (when (and ff (funcall ff f a))
+                (and fn (funcall fn a)))))
+          (setq files (cdr files)))))))
 
 
 (defun dir-backtrack (dir prefer)
@@ -156,26 +157,26 @@ DN dir-processor (lambda (aboslute-name)...)."
 Starting at DIR, look up directory hierarchy for prefered
 directory or file. Ignores the symbol links of directory.\n
 PREFER (lambda (dir files)...)."
-  (let* ((file-name-handler-alist nil)
-         (d (expand-file-name
-             (if (directory-name-p dir)
-                 dir
-               (file-name-directory dir))))
-         (stop "\\(^/\\|[a-zA-Z]:/\\)\\'"))
-    (while (and (stringp d)
-                (directory-name-p d)
-                (not (string-match stop d)))
-      (and prefer (funcall prefer d
-                           (remove-if*
-                            (lambda (x)
-                              (or (null x)
-                                  (string= "./" x)
-                                  (string= "../" x)
-                                  (let ((dx (concat d x)))
-                                    (and (directory-name-p dx)
-                                         (file-symlink-p dx)))))
-                            (file-name-all-completions "" d))))
-      (setq d (path- d)))))
+  (inhibit-file-name-handler
+    (let ((d (expand-file-name
+              (if (directory-name-p dir)
+                  dir
+                (file-name-directory dir))))
+          (stop "\\(^/\\|[a-zA-Z]:/\\)\\'"))
+      (while (and (stringp d)
+                  (directory-name-p d)
+                  (not (string-match stop d)))
+        (and prefer (funcall prefer d
+                             (remove-if*
+                              (lambda (x)
+                                (or (null x)
+                                    (string= "./" x)
+                                    (string= "../" x)
+                                    (let ((dx (concat d x)))
+                                      (and (directory-name-p dx)
+                                           (file-symlink-p dx)))))
+                              (file-name-all-completions "" d))))
+        (setq d (path- d))))))
 
 
 (defmacro ssh-remote-p (file)

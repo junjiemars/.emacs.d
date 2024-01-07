@@ -45,10 +45,10 @@
 (defmacro package*-check-name (package)
   "Check PACKAGE is a symbol or a tar file."
   (let ((p (gensym*)))
-    `(let ((,p ,package)
-           (file-name-handler-alist nil))
+    `(let ((,p ,package))
        (cond ((and (symbolp ,p) ,p) (cons ,p nil))
-             ((and (stringp ,p) (file-exists-p ,p))
+             ((and (stringp ,p) (inhibit-file-name-handler
+                                  (file-exists-p ,p)))
               (cons (intern (string-match* "\\(.*\\)-[.0-9]+\\'"
                                            (file-name-base* ,p) 1))
                     ,p))
