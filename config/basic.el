@@ -25,10 +25,6 @@
     (ignore* kind)
     `(interactive-p)))
 
-(eval-and-compile
-  (unless-fn% 'declare-function nil
-    (defmacro declare-function (&rest _))))
-
 (unless-fn% 'with-eval-after-load nil
   (defmacro with-eval-after-load (file &rest body)
     "Execute BODY after FILE is loaded.

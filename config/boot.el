@@ -237,6 +237,10 @@ Argument SPEC (VAR LIST [RESULT])."
 ;; compile macro
 ;;;
 
+(eval-and-compile
+  (unless-fn% 'declare-function nil
+    (defmacro declare-function (&rest _))))
+
 (defun compile-unit* (file &optional only-compile)
   "Make an compile unit for \\=`compile!\\='."
   (inhibit-file-name-handler
@@ -397,6 +401,19 @@ No matter the declaration order, the executing order is:
      (prog1
          (compile-unit% (emacs-home* "config/memo.el") t)
        (autoload 'self-desktop-read! (v-home%> "config/memo.el")))))
+  (when (*self-env-spec* :get :socks :allowed)
+    (prog1
+        (compile-unit% (emacs-home* "config/socks.el") t)
+      (autoload 'self-socks-init! (v-home%> "config/sockets.el"))
+      (declare-function self-socks-init!
+                        (v-home%> "config/sockets.el"))))
+  (when-package%
+    (when (*self-env-spec* :get :package :allowed)
+      (prog1
+          (compile-unit% (emacs-home* "config/modules.el") t)
+        (autoload 'self-package-init! (v-home%> "config/modules.el"))
+        (declare-function self-package-init!
+                          (v-home%> "config/modules.el")))))
   (compile-unit% (emacs-home* "config/autoloads.el")))
 
 ;; end of boot

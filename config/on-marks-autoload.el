@@ -1,12 +1,16 @@
-;;;; -*- lexical-binding:t -*-
+;; -*- lexical-binding:t -*-
 ;;;;
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; on-mark-autoload.el
+;; on-marks-autoload.el
 ;;;;
 
-(when-version% >= 25 (require 'marks))
+(if-version%
+    < 25
+    (eval-when-compile
+      (require 'marks (v-home%> "config/marks")))
+  (require 'marks (v-home%> "config/marks")))
 
 
 ;;; `mark-symbol@' `kill-symbol@'
@@ -226,4 +230,4 @@ If prefix BOUNDARY is non-nil, then mark the whole quoted thing."
 ;; end of Keys
 
 
-;; end of on-mark-autoload.el
+;; end of on-marks-autoload.el

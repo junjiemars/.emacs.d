@@ -46,12 +46,18 @@
   "Load autoloaded modes."
   (compile!
     (compile-unit% (emacs-home* "config/safe.el"))
-    (compile-unit% (emacs-home* "config/financial.el") t)
     (compile-unit% (emacs-home* "config/edit.el"))
+    (compile-unit% (emacs-home* "config/cc.el") t)
+    (compile-unit% (emacs-home* "config/financial.el") t)
     (compile-unit% (emacs-home* "config/guds.el") t)
     (compile-unit% (emacs-home* "config/scratch.el"))
-    (compile-unit% (emacs-home* "config/marks.el"))
+    (compile-unit% (emacs-home* "config/marks.el") t)
+    (compile-unit% (emacs-home* "config/mixal.el") t)
+    (compile-unit% (emacs-home* "config/progs.el") t)
+    (compile-unit% (emacs-home* "config/sqls.el") t)
     (compile-unit% (emacs-home* "config/tags.el"))
+    (compile-unit% (emacs-home* "config/trans.el") t)
+    (compile-unit% (emacs-home* "config/xrefs.el") t)
     (compile-unit% (emacs-home* "config/on-compile-autoload.el"))
     (compile-unit% (emacs-home* "config/on-dired-autoload.el"))
     (compile-unit% (emacs-home* "config/on-help-autoload.el"))
@@ -59,9 +65,8 @@
     (compile-unit% (emacs-home* "config/on-ido-autoload.el"))
     (compile-unit% (emacs-home* "config/on-isearch-autoload.el"))
     ;; (compile-unit% (emacs-home* "config/on-js-autoload.el"))
-    (compile-unit% (emacs-home* "config/on-key-autoload.el"))
     (compile-unit% (emacs-home* "config/on-lisp-autoload.el"))
-    (compile-unit% (emacs-home* "config/on-mark-autoload.el"))
+    (compile-unit% (emacs-home* "config/on-marks-autoload.el"))
     (compile-unit% (emacs-home* "config/on-net-autoload.el"))
     (compile-unit% (emacs-home* "config/on-org-autoload.el"))
     (compile-unit% (emacs-home* "config/on-pp-autoload.el"))
@@ -71,60 +76,44 @@
     (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))
     (compile-unit% (emacs-home* "config/on-trans-autoload.el"))
     (compile-unit% (emacs-home* "config/on-transient-autoload.el"))
-    (compile-unit% (emacs-home* "config/on-vc-autoload.el"))
-    (compile-unit% (emacs-home* "config/on-window-autoload.el"))
-))
+    (compile-unit% (emacs-home* "config/on-vc-autoload.el"))))
+
 ;; end of `load-autoloaded-modes!'
 
 (defun load-conditional-modes! ()
   "Load conditional modes."
   (compile!
-    ;; on `cc'
-    (prog1
-        (compile-unit% (emacs-home* "config/cc.el") t)
-      (autoload 'on-cc-mode-init! (v-home%> "config/cc.el"))
-      (autoload 'on-cmacexp-init! (v-home%> "config/cc.el"))
-      (autoload 'on-man-init! (v-home%> "config/cc.el")))
-    (compile-unit% (emacs-home* "config/on-cc-autoload.el"))
-
     ;; `dict'
     (prog1
         (compile-unit% (emacs-home* "config/dict.el") t)
       (autoload 'lookup-dict (v-home%> "config/dict.el")
         "Lookup WORD in DICT then show the result in the echo area." t))
-
     ;; `doc-view-mode'
     (when-platform% 'windows-nt
       (when% (or (executable-find% "gswin64c")
                  (executable-find% "gswin32c")
                  (executable-find% "mutool"))
         (compile-unit% (emacs-home* "config/on-docview-autoload.el"))))
-
-    ;; `glyph'
-    (when-font%
-      (compile-unit% (emacs-home* "config/on-glyph-autoload.el")))
-
     ;; `eglot'
     (if-feature-eglot%
         (compile-unit% (emacs-home* "config/on-eglot-autoload.el")))
-
     ;; `eww-mode'
     (if-feature-eww%
         (compile-unit% (emacs-home* "config/on-eww-autoload.el")))
-
+    ;; self :glyph
+    (when-font%
+      (compile-unit% (emacs-home* "config/glyph.el")))
     ;; `gud': `gud-cdb'
     (when-platform% 'windows-nt
       (prog1
           (compile-unit% (emacs-home* "config/gud-cdb.el") t)
         (autoload 'gud-cdb (v-home%> "config/gud-cdb.el")
           "Run lldb on program FILE in buffer *gud-FILE*." t)))
-
     ;; `gud': `gud-lldb'
     (prog1
         (compile-unit% (emacs-home* "config/gud-lldb.el") t)
       (autoload 'gud-lldb (v-home%> "config/gud-lldb.el")
         "Run lldb on program FILE in buffer *gud-FILE*." t))
-
     ;; `jshell'
     (prog1
         (compile-unit% (emacs-home* "config/jshell.el") t)
@@ -132,18 +121,18 @@
         "Toggle Jshell's mode." t)
       (autoload 'run-jshell (v-home%> "config/jshell.el")
         "Toggle jshell process in buffer \\=`*jshell*\\='." t))
-
+    ;; self :key
+    (when-graphic%
+      (compile-unit% (emacs-home* "config/key.el")))
     ;; `mixvm'
     (prog1
         (compile-unit% (emacs-home* "config/mixvm.el") t)
       (autoload 'mixvm (v-home%> "config/mixvm.el")
         "Run mixvm on program FILE in buffer *gud-FILE*." t))
     ;; on `mixal'
-    (prog1
-        (compile-unit% (emacs-home* "config/mixal.el") t)
-      (autoload 'on-mixal-mode-init! (v-home%> "config/mixal.el")))
-    (compile-unit% (emacs-home* "config/on-mixal-autoload.el"))
-
+    (progn
+      (autoload 'on-mixal-mode-init! (v-home%> "config/mixal.el"))
+      (compile-unit% (emacs-home* "config/on-mixal-autoload.el")))
     ;; `node'
     (prog1
         (compile-unit% (emacs-home* "config/node.el") t)
@@ -151,11 +140,9 @@
         "Toggle Node's mode." t)
       (autoload 'run-node (v-home%> "config/node.el")
         "Toggle node process in buffer \\=`*node*\\='." t))
-
     ;; `project'
     (if-feature-project%
         (compile-unit% (emacs-home* "config/on-project-autoload.el")))
-
     ;; `scheme': `gambit-mode'
     (prog1
         (compile-unit% (emacs-home* "config/gambit.el") t)
@@ -163,7 +150,6 @@
         "Toggle Gambit's mode." t)
       (autoload* 'run-gambit (v-home%> "config/gambit.el")
                  "Toggle gambit process in buffer \\=`*gambit*\\='." t))
-
     ;; `scheme': `chez-mode'
     (prog1
         (compile-unit% (emacs-home* "config/chez.el") t)
@@ -187,28 +173,32 @@
         (compile-unit% (emacs-home* "config/sudoku.el") t)
       (autoload 'sudoku (v-home%> "config/sudoku.el")
         "Play sudoku." t))
-
-    ;; `treesit'
+    ;; on `cc'
+    (progn
+      (autoload 'on-cc-mode-init! (v-home%> "config/cc.el"))
+      (autoload 'on-cmacexp-init! (v-home%> "config/cc.el"))
+      (autoload 'on-man-init! (v-home%> "config/cc.el"))
+      (compile-unit% (emacs-home* "config/on-cc-autoload.el")))
+    ;; on `progs'
+    (progn
+      (autoload 'on-progs-init! (v-home%> "config/progs.el"))
+      (compile-unit% (emacs-home* "config/on-progs-autoload.el")))
+    ;; on `sqls'
+    (progn
+      (autoload 'on-sql-init! (v-home%> "config/sqls.el"))
+      (compile-unit% (emacs-home* "config/on-sql-autoload.el")))
+    ;; on `treesit'
     (when-feature-treesit%
       (prog1
           (compile-unit% (emacs-home* "config/treesits.el") t)
         (autoload 'on-treesit-init! (v-home%> "config/treesits.el"))))
     (when-feature-treesit%
       (compile-unit% (emacs-home* "config/on-treesit-autoload.el")))
-
-    ;; on `edit'
-    (compile-unit% (emacs-home* "config/on-edit-autoload.el"))
-    (prog1
-        (compile-unit% (emacs-home* "config/sqls.el") t)
-      (autoload 'on-sql-init! (v-home%> "config/sqls.el")))
-    ;; on `sqls'
-    (compile-unit% (emacs-home* "config/on-sql-autoload.el"))
     ;; on `xrefs'
-    (prog1
-        (compile-unit% (emacs-home* "config/xrefs.el") t)
+    (progn
       (autoload 'on-xref-init! (v-home%> "config/xrefs.el"))
-      (autoload 'on-etags-init! (v-home%> "config/xrefs.el")))
-    (compile-unit% (emacs-home* "config/on-xref-autoload.el"))
+      (autoload 'on-etags-init! (v-home%> "config/xrefs.el"))
+      (compile-unit% (emacs-home* "config/on-xref-autoload.el")))
 
     ) ;; end of compile!
 
@@ -223,19 +213,10 @@
   ;; `load-path' versioned dirs
   (push! (v-home% "config/") load-path)
   (push! (v-home% "private/") load-path)
-  (compile!
-    ;; `sockets'
-    (prog1
-        (compile-unit% (emacs-home* "config/sockets.el") t)
-      (autoload 'self-socks-init! (v-home%> "config/sockets.el"))
-      (declare-function self-socks-init! (v-home%> "config/sockets.el")))
-    ;; `modules'
-    (prog1
-        (compile-unit% (emacs-home* "config/modules.el") t)
-      (autoload 'self-package-init! (v-home%> "config/modules.el"))
-      (declare-function self-package-init! (v-home%> "config/modules.el"))))
-  (self-socks-init!)
-  (self-package-init!)
+  (when-fn% 'self-socks-init! 'sockets
+    (self-socks-init!))
+  (when-fn% 'self-package-init! 'modules
+    (self-package-init!))
   (load-autoloaded-modes!)
   (load-conditional-modes!)
   (when-fn% 'self-desktop-read! 'memo
@@ -248,7 +229,7 @@
        (condition-case err
            (compile!
              (compile-unit* (*self-paths* :get :epilogue)))
-         (error (message ":epilogue: %s" err)))))))
+         (error (message "self-epilogue: %s" err)))))))
 
 
 ;; autoload when interactive or not

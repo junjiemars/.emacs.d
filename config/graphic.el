@@ -31,7 +31,7 @@
      ,@body))
 
 (defmacro frame-spec->* (&rest keys)
-  "Extract from :frame env-spec via KEYS."
+  "Extract :frame from env-spec via KEYS."
   (declare (indent 0))
   `(*self-env-spec* :get :frame ,@keys))
 

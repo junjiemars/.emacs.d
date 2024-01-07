@@ -9,7 +9,7 @@
 ;;;;
 
 (defmacro desktop-spec->* (&rest keys)
-  "Extract desktop :from env-spec via KEYS."
+  "Extract :desktop from env-spec via KEYS."
   (declare (indent 0))
   `(*self-env-spec* :get :desktop ,@keys))
 

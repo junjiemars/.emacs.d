@@ -422,10 +422,6 @@ Optional prefix argument ENHANCED, displays additional details."
     (define-key% sql-mode-map (kbd "C-c C-l T") #'sql-desc-table)
     (define-key% sql-mode-map (kbd "C-c C-l P") #'sql-desc-plan)))
 
-;;; after-load
-(with-eval-after-load 'sql
-  (on-sql-init!))
-
 
 
 (provide 'sqls)

@@ -3,11 +3,10 @@
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; on-edit-autoload.el
+;; progs.el
 ;;;;
-
-(require 'edit (v-home%> "config/edit"))
-
+;; Commentary: essential for programming.
+;;;;
 
 ;;; killing/yanking with the clipboard
 ;;; See also: http://emacswiki.org/emacs/CopyAndPaste
@@ -148,7 +147,9 @@ Optional argument INDENT whether to indent lines. See also
 
 ;; end of `count-lines-region'
 
-;;; Comment
+;;;
+;; Comment
+;;;
 
 (defun toggle-comment (&optional n)
   "Toggle N lines\\=' comment on current line or region."
@@ -218,55 +219,109 @@ If \\=`current-prefix-arg\\=' < 0, then repeat n time with END in reversed."
 
 ;; end of camelize
 
+;;;
+;; `recenter-top-bottom' for Emacs23.2-
+;;;
 
-;;; Clean Emacs' user files
+(defmacro unless-fn-recenter-top-bottom% (&rest body)
+  `(unless-fn% 'recenter-top-bottom nil
+     ,@body))
 
-(defun clean-versioned-dirs (dirs &optional scope)
-  "Clean versioned SCOPEd DIRS."
-  (dolist* (d dirs)
-    (when (and d (file-exists-p d))
-      (dolist* (f (directory-files d nil "^[gt]_.*$"))
-        (when (cond ((eq :8 scope) t)
-                    ((eq :< scope)
-                     (< (string-to-number
-                         (string-match* "^[gt]_\\(.*\\)$" f 1))
-                        +emacs-version+))
-                    (t (null (string-match
-                              (format
-                               "^[gt]_%s\\'"
-                               (regexp-quote
-                                (number-to-string +emacs-version+)))
-                              f))))
-          (if-platform% 'windows-nt
-              (shell-command (concat "rmdir /Q /S " (concat d f)))
-            (shell-command (concat "rm -r " (concat d f)))))))))
+(unless-fn-recenter-top-bottom%
+ (defvar recenter-last-op nil
+   "Indicates the last recenter operation performed.\n
+Possible values: \\=`top\\=', \\=`middle\\=', \\=`bottom\\=',
+integer or float numbers.  It can also be nil, which means the
+first value in \\=`recenter-positions\\='."))
 
-(defun reset-emacs ()
-  "Clean all compiled files and dot files, then kill Emacs."
+(unless-fn-recenter-top-bottom%
+ (defvar recenter-positions '(middle top bottom)
+   "Cycling order for \\=`recenter-top-bottom\\='.
+A list of elements with possible values \\=`top\\=',
+\\=`middle\\=', \\=`bottom\\=', integer or float numbers that
+define the cycling order for the command
+\\=`recenter-top-bottom\\='.\n Top and bottom destinations are
+\\=`scroll-margin\\=' lines from the true window top and bottom.
+Middle redraws the frame and centers point vertically within the
+window.  Integer number moves current line to the specified
+absolute window-line.  Float number between 0.0 and 1.0 means the
+percentage of the screen space from the top.  The default cycling
+order is middle -> top -> bottom."))
+
+(unless-fn-recenter-top-bottom%
+ (defun recenter-top-bottom (&optional arg)
+   "Move current buffer line to the specified window line.
+With no prefix argument, successive calls place point according
+  o the cycling order defined by \\=`recenter-positions\\='.\n A
+prefix argument is handled like \\=`recenter\\=': With numeric
+prefix ARG, move current line to window-line ARG.  With plain
+\\=`C-u\\=', move current line to window center."
+   (interactive "P")
+   (cond (arg (recenter arg))
+         (t (setq recenter-last-op
+                  (if (eq this-command last-command)
+                      (car (or (cdr (memq recenter-last-op
+                                          recenter-positions))
+                               recenter-positions))
+                    (car recenter-positions)))
+            (let ((this-scroll-margin
+                   (min (max 0 scroll-margin)
+                        (truncate (/ (window-body-height) 4.0)))))
+              (cond ((eq recenter-last-op 'middle)
+                     (recenter))
+                    ((eq recenter-last-op 'top)
+                     (recenter this-scroll-margin))
+                    ((eq recenter-last-op 'bottom)
+                     (recenter (- -1 this-scroll-margin)))
+                    ((integerp recenter-last-op)
+                     (recenter recenter-last-op))
+                    ((floatp recenter-last-op)
+                     (recenter (round (* recenter-last-op
+                                         (window-height)))))))))))
+
+;; end of `recenter-top-bottom'
+
+;;;
+;; buffer
+;;;
+
+(defun echo-buffer-name ()
+  "Echo the qualified buffer name of current buffer.\n
+And copy the qualified buffer name to kill ring."
   (interactive)
-  (when (yes-or-no-p "Reset emacs?")
-  	(clean-versioned-dirs
-  	 (delq nil
-  				 (mapcar
-  					(lambda (d)
-  						(unless (member d '(".git" ".gitignore" ".github"))
-  							(concat (emacs-home* d) "/")))
-  					(directory-files (emacs-home*) nil "^\\.[a-z]+")))
-  	 :8)
-  	(clean-compiled-files)
-  	(setq kill-emacs-hook nil)
-  	(kill-emacs 0)))
+  (let ((name (if (eq 'dired-mode major-mode)
+                  (expand-file-name default-directory)
+                (or (buffer-file-name)
+                    (buffer-name)))))
+    (kill-new name)
+    (message "%s" name)))
 
-;; end of Clean Emacs' user files
+(defun get-buffer-coding-system (&optional buffer)
+  "Return the coding system of current buffer or BUFFER."
+  (interactive)
+  (with-current-buffer (or buffer
+                           (current-buffer))
+    (if (called-interactively-p*)
+        (message "%s" buffer-file-coding-system)
+      buffer-file-coding-system)))
 
-;;; setq
+;; end of buffer
 
-(defun on-edit-setq! ()
+;;;
+;; env
+;;;
+
+(defun on-progs-env! ()
   ;; title bar with full path
   (when-graphic%
     (setq% frame-title-format "%b (%f)"))
   ;; ignore ring bell
   (setq% ring-bell-function 'ignore)
+  ;; keep `view-mode' when quit
+  ;; (when-var% view-mode-map 'view
+  ;;   (define-key% view-mode-map (kbd "q") #'quit-window))
+  ;; treat `read-only-mode' as `view-mode'
+  (setq view-read-only t)
   ;; Changes all yes/no questions to y/n type
   ;; (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -308,11 +363,13 @@ If \\=`current-prefix-arg\\=' < 0, then repeat n time with END in reversed."
     (setq interprogram-cut-function #'x-kill*
           interprogram-paste-function #'x-yank*)))
 
-;; end of setq
+;; end of `on-progs-env!'
 
-;;; keys
+;;;
+;; key
+;;;
 
-(defun on-edit-key! ()
+(defun on-progs-key! ()
   ;; line
   (define-key% (current-global-map) (kbd "C-o") #'open-next-line)
   (define-key% (current-global-map) (kbd "C-M-o") #'open-previous-line)
@@ -326,13 +383,79 @@ If \\=`current-prefix-arg\\=' < 0, then repeat n time with END in reversed."
   ;; `insert-char*'
   (unless-key-insert-char%
     (define-key% (current-global-map) (kbd "C-x 8 RET")
-                 #'insert-char*)))
+                 #'insert-char*))
+  ;; lookup dictionary
+  (define-key% (current-global-map) (kbd "M-s d") 'lookup-dict)
+  ;; open file or url at point
+  (when-fn% 'find-file-at-point 'ffap
+    (define-key% (current-global-map) (kbd "C-c f f") #'find-file-at-point))
+  ;; shows a list of buffers
+  (define-key% (current-global-map) (kbd "C-x C-b") #'ibuffer)
+  ;; interactive query replace key bindings.
+  (define-key% (current-global-map) (kbd "M-%") #'query-replace-regexp)
+  (define-key% (current-global-map) (kbd "C-M-%") #'query-replace)
+  ;; register:
+  ;; `C-x r g' and `C-x r i' are all bound to insert-register
+  ;; let `C-x r g' do `string-insert-rectangle'
+  (define-key% (current-global-map) (kbd "C-x r g") #'string-insert-rectangle)
+  (define-key% (current-global-map) (kbd "C-x r v") #'view-register)
+  ;; line
+  (when-fn% 'electric-newline-and-maybe-indent 'electric
+    ;; Default behaviour of RET
+    ;; https://lists.gnu.org/archive/html/emacs-devel/2013-10/msg00490.html
+    ;; electric-indent-mode: abolition of `newline' function is not
+    ;; the Right Thing
+    ;; https://lists.gnu.org/archive/html/emacs-devel/2013-10/msg00407.html
+    (define-key% (current-global-map) (kbd "RET")
+                 #'electric-newline-and-maybe-indent)
+    (define-key% (current-global-map) (kbd "C-j") #'newline))
+  ;; sorting
+  (define-key% (current-global-map) (kbd "C-c s f") #'sort-fields)
+  (define-key% (current-global-map) (kbd "C-c s n") #'sort-numeric-fields)
+  (define-key% (current-global-map) (kbd "C-c s x") #'sort-regexp-fields)
+  (define-key% (current-global-map) (kbd "C-c s l") #'sort-lines)
+  (define-key% (current-global-map) (kbd "C-c s r") #'reverse-region)
+  (define-key% (current-global-map) (kbd "C-c s d") #'delete-duplicate-lines)
+  ;; windows
+  (define-key% (current-global-map) (kbd "C-c w l") #'windmove-left)
+  (define-key% (current-global-map) (kbd "C-c w r") #'windmove-right)
+  (define-key% (current-global-map) (kbd "C-c w u") #'windmove-up)
+  (define-key% (current-global-map) (kbd "C-c w d") #'windmove-down)
+  ;; buffers
+  (declare-function browse-url-default-browser "browse-file" t)
+  (define-key% (current-global-map) (kbd "C-l") #'recenter-top-bottom)
+  ;; (define-key% (current-global-map) (kbd "C-x x B") #'browse-file)
+  (define-key% (current-global-map) (kbd "C-x x c") #'clone-buffer)
+  (define-key% (current-global-map) (kbd "C-x x n") #'echo-buffer-name)
+  (define-key% (current-global-map) (kbd "C-x x t") #'toggle-truncate-lines)
+  (define-key% (current-global-map) (kbd "C-x RET =")
+               #'get-buffer-coding-system)
+  (define-key% (current-global-map) (kbd "C-x x g")
+               (if-fn% 'revert-buffer-quick nil
+                       #'revert-buffer-quick
+                 #'revert-buffer))
+  (define-key% (current-global-map) (kbd "C-x x l")
+               (if-fn% 'display-line-numbers-mode 'display-line-numbers
+                       #'display-line-numbers-mode
+                 (if-fn% 'linum-mode 'linum
+                         #'linum-mode
+                   #'(lambda ()
+                       (interactive)
+                       (user-error "%s" "No line mode found")))))
+  (define-key% (current-global-map) (kbd "C-x x r") #'rename-buffer)
+  (when-fn% 'toggle-word-wrap 'simple
+    (define-key% (current-global-map) (kbd "C-x x w") #'toggle-word-wrap))
+  (when-fn% 'whitespace-mode 'whitespace
+    (define-key% (current-global-map) (kbd "C-x x SPC") #'whitespace-mode))
+  (define-key% (current-global-map) (kbd "C-x x u") #'rename-uniquely))
 
-;; end of keys
+;; end of `on-progs-key!'
 
-;;; modes
+;;;
+;; mode
+;;;
 
-(defun on-edit-mode! ()
+(defun on-progs-mode! ()
   (inhibit-gc
     ;; no cursor blinking, it's distracting
     (when-fn% 'blink-cursor-mode nil (blink-cursor-mode 0))
@@ -359,17 +482,17 @@ If \\=`current-prefix-arg\\=' < 0, then repeat n time with END in reversed."
         (require 'uniquify)
         (setq uniquify-buffer-name-style 'post-forward-angle-brackets)))))
 
-;; end of modes
+;; end of `on-progs-mode!'
 
-(defun on-edit-init! ()
+(defun on-progs-init! ()
   (inhibit-gc
-    (on-edit-setq!)
-    (on-edit-key!)
-    (on-edit-mode!)
-    (self-edit-init!)))
+    (on-progs-env!)
+    (on-progs-key!)
+    (on-progs-mode!)))
 
-;; delay load modes
-(make-thread* #'on-edit-init!)
+
+
+(provide 'progs)
 
 
-;; end of on-edit-autoload.el
+;; end of progs.el
