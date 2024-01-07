@@ -8,20 +8,20 @@
 ;; Commentary: `trans' autoload.
 ;;;;
 
-(autoload 'ascii-table (v-home%> "config/trans.el"))
-(autoload 'chinese->arabic (v-home%> "config/trans.el"))
-(autoload 'decode-base64 (v-home%> "config/trans.el"))
-(autoload 'decode-chinese-number (v-home%> "config/trans.el"))
-(autoload 'decode-ipv4 (v-home%> "config/trans.el"))
-(autoload 'decode-roman-number (v-home%> "config/trans.el"))
-(autoload 'decode-url (v-home%> "config/trans.el"))
-(autoload 'encode-base64 (v-home%> "config/trans.el"))
-(autoload 'encode-ipv4 (v-home%> "config/trans.el"))
-(autoload 'encode-url (v-home%> "config/trans.el"))
-(autoload 'greek-alphabet (v-home%> "config/trans.el"))
-(autoload 'int->ipv4 (v-home%> "config/trans.el"))
-(autoload 'ipv4->int (v-home%> "config/trans.el"))
-(autoload 'region-extract-str (v-home%> "config/trans.el"))
-(autoload 'roman->arabic (v-home%> "config/trans.el"))
+(autoload 'ascii-table (v-home%> "config/trans.el") nil t)
+(autoload 'chinese->arabic (v-home%> "config/trans.el") nil t)
+(autoload 'decode-base64 (v-home%> "config/trans.el") nil t)
+(autoload 'decode-chinese-number (v-home%> "config/trans.el") nil t)
+(autoload 'decode-ipv4 (v-home%> "config/trans.el") nil t)
+(autoload 'decode-roman-number (v-home%> "config/trans.el") nil t)
+(autoload 'decode-url (v-home%> "config/trans.el") nil t)
+(autoload 'encode-base64 (v-home%> "config/trans.el") nil t)
+(autoload 'encode-ipv4 (v-home%> "config/trans.el") nil t)
+(autoload 'encode-url (v-home%> "config/trans.el") nil t)
+(autoload 'greek-alphabet (v-home%> "config/trans.el") nil t)
+(autoload 'int->ipv4 (v-home%> "config/trans.el") nil t)
+(autoload 'ipv4->int (v-home%> "config/trans.el") nil t)
+(autoload 'region-extract-str (v-home%> "config/trans.el") nil t)
+(autoload 'roman->arabic (v-home%> "config/trans.el") nil t)
 
 ;; end of on-trans-autoload.el
