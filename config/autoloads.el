@@ -225,7 +225,7 @@
     (progn
       (autoload 'on-sql-init! (v-home%> "config/sqls.el"))
       (compile-unit% (emacs-home* "config/on-sql-autoload.el")))
-    ;; on `treesit'
+    ;; on `treesits'
     (when-feature-treesit%
       (prog1
           (compile-unit% (emacs-home* "config/treesits.el") t)
