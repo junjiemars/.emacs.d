@@ -33,6 +33,10 @@ Argument FEATURE that FN dependent on, be loaded at compile time."
   (declare (indent 2))
   `(if-fn% ,fn ,feature nil ,@body))
 
+(eval-and-compile
+  (unless-fn% 'declare-function nil
+    (defmacro declare-function (&rest _))))
+
 ;; end of compile-time macro: checking fn exists
 
 
@@ -236,10 +240,6 @@ Argument SPEC (VAR LIST [RESULT])."
 ;;;
 ;; compile macro
 ;;;
-
-(eval-and-compile
-  (unless-fn% 'declare-function nil
-    (defmacro declare-function (&rest _))))
 
 (defun compile-unit* (file &optional only-compile)
   "Make an compile unit for \\=`compile!\\='."
