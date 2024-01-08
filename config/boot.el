@@ -33,9 +33,8 @@ Argument FEATURE that FN dependent on, be loaded at compile time."
   (declare (indent 2))
   `(if-fn% ,fn ,feature nil ,@body))
 
-(eval-and-compile
-  (unless-fn% 'declare-function nil
-    (defmacro declare-function (&rest _))))
+(unless-fn% 'declare-function nil
+  (defmacro declare-function (&rest _)))
 
 ;; end of compile-time macro: checking fn exists
 
