@@ -53,7 +53,6 @@
                (or (and (zerop (car x)) chez)
                    "scheme"))))))
     (lambda (&optional n)
-      "N"
       (if (null n) b (setq b n))))
   "Program invoked by the \\=`run-chez\\=' command.")
 

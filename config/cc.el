@@ -99,7 +99,8 @@
                                         cc)
                                       i o))))
                     (throw 'br cc))))))))
-    (lambda () b))
+    (lambda (&optional n)
+      (if (null n) b (setq b n))))
   "The name of C compiler executable.")
 
 ;; end of CC
