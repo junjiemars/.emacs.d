@@ -64,6 +64,7 @@
     (compile-unit% (emacs-home* "config/safe.el"))
     (compile-unit% (emacs-home* "config/edit.el"))
     (compile-unit% (emacs-home* "config/cc.el") t)
+    (compile-unit% (emacs-home* "config/compiles.el") t)
     (compile-unit% (emacs-home* "config/direds.el") t)
     (compile-unit% (emacs-home* "config/financial.el") t)
     (compile-unit% (emacs-home* "config/guds.el") t)
@@ -71,6 +72,7 @@
     (compile-unit% (emacs-home* "config/marks.el") t)
     (compile-unit% (emacs-home* "config/isearchs.el"))
     (compile-unit% (emacs-home* "config/mixal.el") t)
+    (compile-unit% (emacs-home* "config/pps.el") t)
     (compile-unit% (emacs-home* "config/progs.el") t)
     (compile-unit% (emacs-home* "config/pythons.el") t)
     (compile-unit% (emacs-home* "config/scratch.el"))
@@ -78,7 +80,6 @@
     (compile-unit% (emacs-home* "config/tags.el"))
     (compile-unit% (emacs-home* "config/trans.el") t)
     (compile-unit% (emacs-home* "config/xrefs.el") t)
-    (compile-unit% (emacs-home* "config/on-compile-autoload.el"))
     (compile-unit% (emacs-home* "config/on-help-autoload.el"))
     (compile-unit% (emacs-home* "config/on-hippie-autoload.el"))
     (compile-unit% (emacs-home* "config/on-ido-autoload.el"))
@@ -86,7 +87,6 @@
     (compile-unit% (emacs-home* "config/on-marks-autoload.el"))
     (compile-unit% (emacs-home* "config/on-net-autoload.el"))
     (compile-unit% (emacs-home* "config/on-org-autoload.el"))
-    (compile-unit% (emacs-home* "config/on-pp-autoload.el"))
     (compile-unit% (emacs-home* "config/on-shell-autoload.el"))
     (compile-unit% (emacs-home* "config/on-term-autoload.el"))
     (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))
@@ -205,6 +205,12 @@
       (autoload 'on-cmacexp-init! (v-home%> "config/cc.el"))
       (autoload 'on-man-init! (v-home%> "config/cc.el"))
       (compile-unit% (emacs-home* "config/on-cc-autoload.el")))
+    ;; on `compiles'
+    (progn
+      (autoload 'on-compile-init! (v-home%> "config/compiles.el"))
+      (autoload 'on-grep-init! (v-home%> "config/compiles.el"))
+      (autoload 'on-make-mode-init! (v-home%> "config/compiles.el"))
+      (compile-unit% (emacs-home* "config/on-compile-autoload.el")))
     ;; on `direds'
     (progn
       (autoload 'on-dired-init! (v-home%> "config/direds.el"))
@@ -226,6 +232,8 @@
       (autoload 'on-elisp-init! (v-home%> "config/lisps.el"))
       (autoload 'on-ielm-init! (v-home%> "config/lisps.el"))
       (compile-unit% (emacs-home* "config/on-lisp-autoload.el")))
+    ;; on `pps'
+    (compile-unit% (emacs-home* "config/on-pp-autoload.el"))
     ;; on `progs'
     (progn
       (autoload 'on-progs-init! (v-home%> "config/progs.el"))
