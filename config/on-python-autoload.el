@@ -12,5 +12,7 @@
 (with-eval-after-load 'python
   (on-python-init!))
 
+(autoload 'python*-program (v-home%> "config/pythons.el"))
+(autoload 'python*-activate-venv! (v-home%> "config/pythons.el"))
 
 ;; end of on-python-autoload.el

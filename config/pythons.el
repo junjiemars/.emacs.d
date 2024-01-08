@@ -81,7 +81,7 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
 (defun on-python-init! ()
   "On \\=`python\\=' initialization."
   ;; interpreter
-  (setq% python-shell-interpreter (python*-program) 'python)
+  (setq% python-shell-interpreter (python*-program :bin) 'python)
   ;; completion
   (setq% python-shell-completion-native-enable
          (when-platform% 'gnu/linux t) 'python)
