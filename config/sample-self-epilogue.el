@@ -47,7 +47,7 @@
    (when-fn% 'org-babel-do-load-languages 'org
      (org-babel-do-load-languages
       'org-babel-load-languages
-      (delq nil `(,(when-var% +cc*-compiler-bin+ nil
+      (delq nil `(,(when-var% +cc*-compiler-bin+ 'cc
                      (setq% org-babel-C-compiler
                             +cc*-compiler-bin+ 'ob-C)
                      `(C . t))
