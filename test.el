@@ -794,18 +794,6 @@
 ;; conditional: cc
 ;;;
 
-(ert-deftest %q:cc:check-vcvarsall-bat ()
-  (when-platform% 'windows-nt
-    (when-fn% 'check-vcvarsall-bat
-        (should (message "# (check-vcvarsall-bat) = %s"
-                         (or (check-vcvarsall-bat) ""))))))
-
-(ert-deftest %q:cc:make-cc-env-bat ()
-  (when-platform% 'windows-nt
-    (when-fn% 'make-cc-env-bat
-        (should (message "# (make-cc-env-bat) = %s"
-                         (or (make-cc-env-bat) ""))))))
-
 (ert-deftest %q:cc:+cc*-compiler-bin+ ()
   (when-platform% 'windows-nt
     (should (message "# (executable-find \"cc-env.bat\") = %s"
@@ -820,7 +808,7 @@
                    (or (executable-find "make") "")))
   (when-var% +cc*-compiler-bin+ nil
     (should (message "# +cc*-compiler-bin+ = %s"
-                     (or +cc*-compiler-bin+ "")))))
+                     (or (cc*-compiler) "")))))
 
 (ert-deftest %q:cc:cc*-system-include ()
   (when-fn% 'cc*-system-include nil
