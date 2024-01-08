@@ -64,6 +64,7 @@
     (compile-unit% (emacs-home* "config/safe.el"))
     (compile-unit% (emacs-home* "config/edit.el"))
     (compile-unit% (emacs-home* "config/cc.el") t)
+    (compile-unit% (emacs-home* "config/direds.el") t)
     (compile-unit% (emacs-home* "config/financial.el") t)
     (compile-unit% (emacs-home* "config/guds.el") t)
     (compile-unit% (emacs-home* "config/lisps.el") t)
@@ -78,7 +79,6 @@
     (compile-unit% (emacs-home* "config/trans.el") t)
     (compile-unit% (emacs-home* "config/xrefs.el") t)
     (compile-unit% (emacs-home* "config/on-compile-autoload.el"))
-    (compile-unit% (emacs-home* "config/on-dired-autoload.el"))
     (compile-unit% (emacs-home* "config/on-help-autoload.el"))
     (compile-unit% (emacs-home* "config/on-hippie-autoload.el"))
     (compile-unit% (emacs-home* "config/on-ido-autoload.el"))
@@ -205,6 +205,11 @@
       (autoload 'on-cmacexp-init! (v-home%> "config/cc.el"))
       (autoload 'on-man-init! (v-home%> "config/cc.el"))
       (compile-unit% (emacs-home* "config/on-cc-autoload.el")))
+    ;; on `direds'
+    (progn
+      (autoload 'on-dired-init! (v-home%> "config/direds.el"))
+      (autoload 'on-dired-aux-init! (v-home%> "config/direds.el"))
+      (compile-unit% (emacs-home* "config/on-dired-autoload.el")))
     ;; on `eglot'
     (when-feature-eglot%
       (prog1

@@ -441,9 +441,7 @@ And copy the qualified buffer name to kill ring."
   (define-key% (current-global-map) (kbd "C-c w u") #'windmove-up)
   (define-key% (current-global-map) (kbd "C-c w d") #'windmove-down)
   ;; buffers
-  (declare-function browse-url-default-browser "browse-file" t)
   (define-key% (current-global-map) (kbd "C-l") #'recenter-top-bottom)
-  ;; (define-key% (current-global-map) (kbd "C-x x B") #'browse-file)
   (define-key% (current-global-map) (kbd "C-x x c") #'clone-buffer)
   (define-key% (current-global-map) (kbd "C-x x n") #'echo-buffer-name)
   (define-key% (current-global-map) (kbd "C-x x t") #'toggle-truncate-lines)
