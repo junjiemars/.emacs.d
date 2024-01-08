@@ -8,10 +8,13 @@
 
 
 (declare-function 'on-sql-init! (v-home%> "config/sqls.el"))
+(autoload 'on-sql-init! (v-home%> "config/sqls.el"))
 
 ;;; after-load
 (with-eval-after-load 'sql
   (on-sql-init!))
+
+;;; autoload
 
 
 ;; end of on-sql-autoload.el

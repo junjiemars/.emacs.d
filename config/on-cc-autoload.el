@@ -11,6 +11,10 @@
 (declare-function on-cc-mode-init! (v-home%> "config/cc.el"))
 (declare-function on-cmacexp-init! (v-home%> "config/cc.el"))
 (declare-function on-man-init! (v-home%> "config/cc.el"))
+(autoload 'on-cc-mode-init! (v-home%> "config/cc.el"))
+(autoload 'on-cmacexp-init! (v-home%> "config/cc.el"))
+(autoload 'on-man-init! (v-home%> "config/cc.el"))
+
 
 ;; default `c-mode-hook'
  ;; involving useless `macrostep-c-mode-hook'.
@@ -32,6 +36,7 @@
 (with-eval-after-load 'man
   (on-man-init!))
 
+;;; autoload
 (autoload 'cc*-compiler (v-home%> "config/cc.el"))
 (autoload 'cc*-system-include (v-home%> "config/cc.el"))
 (autoload 'cc*-make-system-tags (v-home%> "config/cc.el"))

@@ -7,6 +7,7 @@
 ;;;;
 
 (declare-function on-progs-init! (v-home%> "config/progs.el"))
+(autoload 'on-progs-init! (v-home%> "config/progs.el"))
 
 ;; delay load modes
 (make-thread* #'on-progs-init!)

@@ -7,10 +7,10 @@
 ;;;;
 
 (declare-function on-eglot-init! (v-home%> "config/eglots.el"))
+(autoload 'on-eglot-init! (v-home%> "config/eglots.el"))
 
 ;;; `eglot' after load
 (with-eval-after-load 'eglot
   (on-eglot-init!))
-
 
 ;; end of on-eglot-autoload.el

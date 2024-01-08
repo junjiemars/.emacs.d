@@ -15,6 +15,7 @@
       (on-isearch-init!))
   (on-isearch-init!))
 
-
+;;; autoload
+(autoload 'on-isearch-init! (v-home%> "config/isearchs.el"))
 
 ;; end of on-isearch-autoload.el

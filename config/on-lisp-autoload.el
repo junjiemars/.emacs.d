@@ -8,7 +8,8 @@
 
 (declare-function on-elisp-init! (v-home%> "config/lisps.el"))
 (declare-function on-ielm-init! (v-home%> "config/lisps.el"))
-
+(autoload 'on-elisp-init! (v-home%> "config/lisps.el"))
+(autoload 'on-ielm-init! (v-home%> "config/lisps.el"))
 
 ;;; `elisp-mode' or `lisp-mode' after load
 (with-eval-after-load
@@ -19,6 +20,6 @@
 (with-eval-after-load 'ielm
   (on-ielm-init!))
 
-
+;;; autoload
 
 ;; end of on-lisp-autoload.el
