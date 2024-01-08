@@ -6,6 +6,14 @@
 ;; direds.el
 ;;;;
 
+;;; macro
+
+(defmacro unless-default-file-name-coding-system% (&rest body)
+  (declare (indent 0))
+  `(unless% (eq default-file-name-coding-system locale-coding-system)
+     ,@body))
+
+;; end of macro
 
 (when-platform% 'windows-nt
   ;; on Windows: there are no builtin zip program
@@ -176,15 +184,9 @@
   (define-key dired-mode-map (kbd "B") #'browse-file)
   (define-key dired-mode-map (kbd "W") #'dired-echo-current-directory*))
 
-
-;;; `dired' after load
-(with-eval-after-load 'dired
-  (on-dired-init!))
-
-
 ;; end of `dired' setting
 
-;; detect-coding-string
+;;; detect-coding-string
 
 (when-platform% 'windows-nt
 
@@ -228,33 +230,44 @@
         (when (multibyte-string-p arg0)
           (ad-set-arg 0 (encode-coding-string arg0 locale-coding-system)))))))
 
+;;
 
-(when-fn% 'archive-summarize-files 'arc-mode
-  (unless% (eq default-file-name-coding-system locale-coding-system)
+;;; `arc-mode'
 
-    (defadvice archive-summarize-files
-        (before archive-summarize-files-before disable)
-      "\\=`archive-summarize-files\\=' may not display file name in right
+(defmacro when-fn-archive-summarize-files% (&rest body)
+  (declare (indent 0))
+  (when-fn% 'archive-summarize-files 'arc-mode
+    `(unless-default-file-name-coding-system%
+       ,@body)))
+
+(when-fn-archive-summarize-files%
+  (defadvice archive-summarize-files
+      (before archive-summarize-files-before first compile disable)
+    "\\=`archive-summarize-files\\=' may not display file name in right
        coding system."
-      (let ((arg0 (ad-get-arg 0))
-            (files nil))
-        (when (consp arg0)
-          (ad-set-arg
-           0
-           (dolist* (x arg0 files)
-             (when (and (arrayp x) (= 3 (length x)))
-               (let ((decode (substring-no-properties (decode-coding-string
-                                                       (aref x 0)
-                                                       locale-coding-system))))
-                 (aset x 0 decode)
-                 (aset x 2 (length decode))))
-             (append! x files t))))))
+    (let ((arg0 (ad-get-arg 0))
+          (files nil))
+      (when (consp arg0)
+        (ad-set-arg
+         0
+         (dolist* (x arg0 files)
+           (when (and (arrayp x) (= 3 (length x)))
+             (let ((decode (substring-no-properties
+                            (decode-coding-string
+                             (aref x 0) locale-coding-system))))
+               (aset x 0 decode)
+               (aset x 2 (length decode))))
+           (append! x files t)))))))
 
-    (with-eval-after-load 'arc-mode
-      (ad-enable-advice #'archive-summarize-files 'before
-                        "archive-summarize-files-before")
-      (ad-activate #'archive-summarize-files t))))
+(defun on-arc-mode-init! ()
+  (when-fn-archive-summarize-files%
+    (ad-enable-advice #'archive-summarize-files 'before
+                      "archive-summarize-files-before")
+    (ad-activate #'archive-summarize-files t)))
 
+;; end of `arc-mode'
+
+;;; `dired-aux'
 
 (defun on-dired-aux-init! ()
   "On \\=`dired-aux\\=' initialization."
@@ -267,7 +280,6 @@
                 (executable-find% "zip")
                 (executable-find% "unzip"))
       (push! '("\\.zip\\'" ".zip" "unzip") dired-compress-file-suffixes)))
-
   ;; uncompress/compress .7z file
   (when% (or (executable-find% "7z")
              (executable-find% "7za"))
@@ -293,7 +305,6 @@
                         compress)
               (push! (cons "\\.7z\\'" compress)
                      dired-compress-files-alist)))))))
-
   ;; error at `dired-internal-noselect' on Windows:
   ;; Reading directory: "ls --dired -al -- d:/abc/中文/" exited with status 2
   ;; https://lists.gnu.org/archive/html/emacs-devel/2016-01/msg00406.html
@@ -306,7 +317,6 @@
                         "dired-shell-command-before")
       (ad-activate #'dired-shell-stuff-it t)
       (ad-activate #'dired-shell-command t))
-
     ;; [Z] to compress or uncompress .gz file
     (when-var% dired-compress-file-suffixes 'dired-aux
       (when% (or (executable-find% "gzip")
@@ -334,7 +344,7 @@
                             "dired-compress-file-before")
           (ad-activate #'dired-compress-file t))))))
 
-
+;; end of `dired-aux'
 
 (provide 'direds)
 

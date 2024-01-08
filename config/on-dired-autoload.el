@@ -19,6 +19,9 @@
 (with-eval-after-load 'dired-aux
   (on-dired-aux-init!))
 
+;;; `arc-mode' after load
+(with-eval-after-load 'arc-mode
+  (on-arc-mode-init!))
 
 ;; autoload
 (autoload 'dired-get-file-for-visit "dired")
