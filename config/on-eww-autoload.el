@@ -9,6 +9,7 @@
 (declare-function on-eww-init! (v-home%> "config/ewws.el"))
 (declare-function lookup-web (v-home%> "config/ewws.el"))
 
+
 ;;; `eww' after load
 (with-eval-after-load 'eww
   (on-eww-init!))
@@ -18,6 +19,7 @@
 (when-fn% 'eww-list-bookmarks 'eww
   (define-key% (current-global-map) (kbd "M-s M-b")
                #'eww-list-bookmarks))
-
+;;; outside
+(autoload 'toggle-browser! (v-home%> "config/ewws.el"))
 
 ;; end of on-eww-autoload.el
