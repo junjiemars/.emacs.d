@@ -78,6 +78,8 @@
     (compile-unit% (emacs-home* "config/cc.el") t)
     (compile-unit% (emacs-home* "config/compiles.el") t)
     (compile-unit% (emacs-home* "config/direds.el") t)
+    (when-platform% 'windows-nt
+      (compile-unit% (emacs-home* "config/docs.el") t))
     (when-feature-eww%
       (compile-unit% (emacs-home* "config/ewws.el") t))
     (when-feature-eglot%
@@ -123,15 +125,12 @@
     (prog1
         (compile-unit% (emacs-home* "config/dict.el") t)
       (autoload 'lookup-dict (v-home%> "config/dict.el")
-        "Lookup WORD in DICT then show the result in the echo area." t))
+        "Lookup dict." t))
     ;; on `direds'
     (compile-unit% (emacs-home* "config/on-dired-autoload.el"))
-    ;; `doc-view-mode'
+    ;; on `docs'
     (when-platform% 'windows-nt
-      (when% (or (executable-find% "gswin64c")
-                 (executable-find% "gswin32c")
-                 (executable-find% "mutool"))
-        (compile-unit% (emacs-home* "config/on-docview-autoload.el"))))
+      (compile-unit% (emacs-home* "config/on-docview-autoload.el")))
     ;; on `eglot'
     (when-feature-eglot%
       (compile-unit% (emacs-home* "config/on-eglot-autoload.el")))
@@ -148,12 +147,12 @@
       (prog1
           (compile-unit% (emacs-home* "config/gud-cdb.el") t)
         (autoload 'gud-cdb (v-home%> "config/gud-cdb.el")
-          "Run lldb on program FILE in buffer *gud-FILE*." t)))
+          "Run cdb." t)))
     ;; `gud': `gud-lldb'
     (prog1
         (compile-unit% (emacs-home* "config/gud-lldb.el") t)
       (autoload 'gud-lldb (v-home%> "config/gud-lldb.el")
-        "Run lldb on program FILE in buffer *gud-FILE*." t))
+        "Run lldb." t))
     ;; on `helps'
     (compile-unit% (emacs-home* "config/on-help-autoload.el"))
     ;; on `hippies'
@@ -170,9 +169,9 @@
     (prog1
         (compile-unit% (emacs-home* "config/jshell.el") t)
       (autoload 'jshell-mode (v-home%> "config/jshell.el")
-        "Toggle Jshell's mode." t)
+        "Toggle jshell mode." t)
       (autoload 'run-jshell (v-home%> "config/jshell.el")
-        "Toggle jshell process in buffer \\=`*jshell*\\='." t))
+        "Toggle jshell process." t))
     ;; self :key
     (when-graphic%
       (compile-unit% (emacs-home* "config/key.el")))
@@ -182,16 +181,16 @@
     (prog1
         (compile-unit% (emacs-home* "config/mixvm.el") t)
       (autoload 'mixvm (v-home%> "config/mixvm.el")
-        "Run mixvm on program FILE in buffer *gud-FILE*." t))
+        "Run mixvm." t))
     ;; on `mixal'
     (compile-unit% (emacs-home* "config/on-mixal-autoload.el"))
     ;; `node'
     (prog1
         (compile-unit% (emacs-home* "config/node.el") t)
       (autoload 'node-mode (v-home%> "config/node.el")
-        "Toggle Node's mode." t)
+        "Toggle node mode." t)
       (autoload 'run-node (v-home%> "config/node.el")
-        "Toggle node process in buffer \\=`*node*\\='." t))
+        "Toggle node process." t))
     ;; on `orgs'
     (compile-unit% (emacs-home* "config/on-org-autoload.el"))
     ;; on `pps'
@@ -207,17 +206,17 @@
     (prog1
         (compile-unit% (emacs-home* "config/gambit.el") t)
       (autoload 'gambit-mode (v-home%> "config/gambit.el")
-        "Toggle Gambit's mode." t)
+        "Toggle gambit mode." t)
       (autoload* 'run-gambit (v-home%> "config/gambit.el")
-                 "Toggle gambit process in buffer \\=`*gambit*\\='." t))
+                 "Toggle gambit process." t))
     ;; `scheme': `chez-mode'
     (prog1
         (compile-unit% (emacs-home* "config/chez.el") t)
       ;; (*org-babel-schemes* :put 'chez "scheme")
       (autoload 'chez-mode (v-home%> "config/chez.el")
-        "Toggle Chez's mode." t)
+        "Toggle chez mode." t)
       (autoload* 'run-chez (v-home%> "config/chez.el")
-                 "Toggle chez process in buffer \\=`*chez*\\='." t))
+                 "Toggle chez process." t))
     ;; on `sqls'
     (compile-unit% (emacs-home* "config/on-sql-autoload.el"))
 

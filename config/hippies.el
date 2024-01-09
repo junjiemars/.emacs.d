@@ -5,6 +5,8 @@
 ;;;;
 ;; hippies.el
 ;;;;
+;; Commentary: `hippie-exp'
+;;;;
 
 
 (defun on-hippie-init! ()

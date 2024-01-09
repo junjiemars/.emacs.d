@@ -248,4 +248,18 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
       (newline arg))))
 
 
+;; (defmacro defmacro-if-bin% (bin)
+;;   "Define if-bin-BIN% compile-time macro."
+;;   (let ((ss (format "if-bin-%s%%" bin)))
+;;     (unless (intern-soft ss)
+;;       (let ((name (intern ss)))
+;;         `(defmacro ,name (then &rest body)
+;;            "If has the bin do THEN, otherwise do BODY."
+;;            (declare (indent 1))
+;;            (if% (executable-find% ',bin)
+;;                `(progn% (comment ,@body)
+;;                         ,then)
+;;              `(progn% (comment ,then)
+;;                       ,@body)))))))
+
 ;; end of basic.el

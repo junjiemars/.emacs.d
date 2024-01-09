@@ -14,13 +14,16 @@
 (with-eval-after-load 'eww
   (on-eww-init!))
 
+;;; autoload
+(autoload 'lookup-web (v-home%> "config/ewws.el")
+  "Lookup web." t)
+(autoload 'toggle-browser! (v-home%> "config/ewws.el")
+  "Toggle browser." t)
+
 ;;; `eww-search-words' and `webjump' more leaner than `lookup-web'.
 (define-key% (current-global-map) (kbd "M-s w") #'lookup-web)
 (when-fn% 'eww-list-bookmarks 'eww
   (define-key% (current-global-map) (kbd "M-s M-b")
                #'eww-list-bookmarks))
-;;; autoload
-(autoload 'lookup-web (v-home%> "config/ewws.el"))
-(autoload 'toggle-browser! (v-home%> "config/ewws.el"))
 
 ;; end of on-eww-autoload.el

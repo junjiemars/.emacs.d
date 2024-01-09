@@ -1,4 +1,4 @@
-;;;; -*- lexical-binding:t -*-
+;; -*- lexical-binding:t -*-
 ;;;;
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
@@ -9,18 +9,15 @@
 ;;; default `:safe'
 (setq% enable-local-variables :safe 'files)
 
-
 (defmacro safe-local-variable* (var &optional fn)
-  "Safe local VAR with FN, see \\=`enable-local-variables\\='"
+  "Safe local VAR with FN."
   `(put ,var 'safe-local-variable (or ,fn #'true)))
 
-
 (defun self-safe-init! ()
-  "Initialize edit spec from \\=`*self-env-spec*\\='."
-  (let ((spec (*self-env-spec* :get :edit)))
-    (when (self-spec-> spec :allowed)
-      (dolist* (x (self-spec-> spec :safe-local-variable))
-        (safe-local-variable* x)))))
+  "Initialize :safe-local-variable from \\=`*self-env-spec*\\='."
+  (when (*self-env-spec* :get :edit :allowed)
+    (dolist* (x (*self-env-spec* :get :edit :safe-local-variable))
+      (safe-local-variable* x))))
 
 (self-safe-init!)
 
