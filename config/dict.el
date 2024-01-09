@@ -44,7 +44,7 @@
               (("<meta name=\"description\" content=\"The meaning of ")
                " How to use" . (dict-fn-remove-html-tag)))))))
     (lambda (&optional n)
-      (if n (let ((x (assoc** (car n) b :test #'string=)))
+      (if n (let ((x (assoc-string (car n) b)))
               (if x (setcdr x (cdr n))
                 (setq b (cons n b))))
         b)))
@@ -58,9 +58,9 @@
       (cond
        ((or (consp dict) (not b))
         (setq b
-              (let ((dd (cdr (assoc** (or (car dict)
-                                          (caar (*dict-defs*)))
-                                      (*dict-defs*) :test #'string=))))
+              (let ((dd (cdr (assoc-string
+                              (or (car dict) (caar (*dict-defs*)))
+                              (*dict-defs*)))))
                 (list (cons 'dict (list dd))
                       (cons 'style
                             (or (cdr dict)
@@ -168,12 +168,12 @@
   (when (*dict-debug-log* :logging)
     (write-region (point-min) (point-max)
                   (path! (*dict-debug-log* :dict))))
-  (let* ((dict (cadr (assoc** 'dict args :test #'eq)))
-         (style (cadr (assoc** 'style args :test #'eq)))
+  (let* ((dict (cadr (assq 'dict args)))
+         (style (cadr (assq 'style args)))
          (ss (mapcar
               (lambda (x)
                 (goto-char (point-min))
-                (let* ((re (cdr (assoc** x dict :test #'string=)))
+                (let* ((re (cdr (assoc-string x dict)))
                        (b (re-search-forward (caar re) nil t (cdar re)))
                        (e (and b (re-search-forward (cadr re) nil t)
                                (re-search-backward (cadr re) nil t)))
@@ -226,7 +226,7 @@ finished."
                           (car ns))
                       '*dict-name-history*
                       (car ns)))
-                  (dd (cdr (assoc** d (*dict-defs*) :test #'string=)))
+                  (dd (cdr (assoc-string d (*dict-defs*))))
                   (sr (remove-if* (lambda (x) (string= x "url"))
                                   (mapcar #'car dd)))
                   (ss (completing-read
@@ -242,8 +242,7 @@ finished."
                          `(, sr)
                        `(,(split-string* ss "," t "[ \n]*"))))))))
   (let* ((d1 (dict-find-def dict))
-         (url (cdr (assoc** "url" (cadr (assoc** 'dict d1 :test #'eq))
-                            :test #'string=))))
+         (url (cdr (assoc-string "url" (cadr (assq 'dict d1))))))
     (make-thread* (lambda ()
                     (let ((url-history-track nil))
                       (when-version% > 25

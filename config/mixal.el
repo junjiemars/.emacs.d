@@ -62,7 +62,7 @@
                 (INCX :a 55 :ai 3 :w 0 :wi 4 :l 7)
                 (DECX :a 55 :ai 3 :w 1 :wi 4 :l 7))))
       (dolist* (x aa)
-        (let* ((a1 (assoc** (car x) mixal-operation-codes-alist))
+        (let* ((a1 (assq (car x) mixal-operation-codes-alist))
                (d1 (cdr x))
                (a (plist-get d1 :a))
                (ai (plist-get d1 :ai))

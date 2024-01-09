@@ -87,8 +87,8 @@
        frame
        (list (cons 'fullscreen nil)
              (cons 'fullscreen-restore nil)))
-      (let ((w (cdr (assoc** 'width default-frame-alist)))
-            (h (cdr (assoc** 'height default-frame-alist))))
+      (let ((w (cdr (assq 'width default-frame-alist)))
+            (h (cdr (assq 'height default-frame-alist))))
         (when w (set-frame-width nil w))
         (when h (set-frame-height nil h))))))
 

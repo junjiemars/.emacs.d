@@ -6,18 +6,12 @@
 ;; terms.el
 ;;;;
 
-(defun buffer-major-mode (&optional buffer-or-name)
-  "Return \\=`major-mode\\=' associated with BUFFER-OR-NAME or
-current buffer."
-  (buffer-local-value 'major-mode
-                      (if buffer-or-name
-                          (get-buffer buffer-or-name)
-                        (current-buffer))))
 
 (defun term*-unify-shell-prompt ()
   "Unify the shell prompt in \\=`term\\='."
   (interactive)
-  (unless (eq 'term-mode (buffer-major-mode (current-buffer)))
+  (unless (eq 'term-mode (buffer-local-value
+                          'major-mode (current-buffer)))
     (user-error "%s" "Current buffer not in term-mode"))
   (let ((proc (get-buffer-process (current-buffer))))
     (unless proc

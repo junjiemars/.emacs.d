@@ -1,4 +1,4 @@
-;;;; -*- lexical-binding:t -*-
+;; -*- lexical-binding:t -*-
 ;;;;
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
@@ -81,7 +81,7 @@
      (or (get-buffer n)
          (with-current-buffer (get-buffer-create n)
            (when (zerop (buffer-size))
-             (let ((k (cdr (assoc** recipe *scratch-recipe* :test #'string=))))
+             (let ((k (cdr (assoc-string recipe *scratch-recipe*))))
                (insert (substring-no-properties (plist-get k :msg)))
                (funcall (plist-get k :mod))
                (when (plist-get k :pos)

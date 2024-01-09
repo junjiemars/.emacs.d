@@ -342,7 +342,7 @@ Optional prefix argument ENHANCED, displays additional details."
   ;; mysql: \\=`:terminator\\='
   (when-fn-sql-send-magic-terminator%
     (plist-put
-     (cdr (assoc** 'mysql sql-product-alist :test #'eq))
+     (cdr (assq 'mysql sql-product-alist))
      :terminator
      '("^.*\\G" . ""))
     (ad-enable-advice #'sql-send-magic-terminator 'before
@@ -359,19 +359,19 @@ Optional prefix argument ENHANCED, displays additional details."
   ;; mysql features
   (when-sql-mysql-feature%
     ;; new `:desc-table'
-    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
+    (plist-put (cdr (assq 'mysql sql-product-alist))
                :desc-table
                #'sql-mysql-desc-table)
     ;; new `:desc-plan'
-    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
+    (plist-put (cdr (assq 'mysql sql-product-alist))
                :desc-plan
                #'sql-mysql-desc-plan)
     ;; new `:list-code'
-    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
+    (plist-put (cdr (assq 'mysql sql-product-alist))
                :list-code
                #'sql-mysql-list-code)
     ;; new `:list-index'
-    (plist-put (cdr (assoc** 'mysql sql-product-alist :test #'eq))
+    (plist-put (cdr (assq 'mysql sql-product-alist))
                :list-index
                #'sql-mysql-list-index)))
 
@@ -392,19 +392,19 @@ Optional prefix argument ENHANCED, displays additional details."
   (when-sql-oracle-feature%
     ;; replace `:list-all'
     (when (plist-get
-           (cdr (assoc** 'oracle sql-product-alist :test #'eq))
+           (cdr (assq 'oracle sql-product-alist))
            :list-all)
       (plist-put
-       (cdr (assoc** 'oracle sql-product-alist :test #'eq))
+       (cdr (assq 'oracle sql-product-alist))
        :list-all
        #'sql-oracle-list-all*))
     ;; new `:list-code'
     (plist-put
-     (cdr (assoc** 'oracle sql-product-alist :test #'eq))
+     (cdr (assq 'oracle sql-product-alist))
      :list-code
      #'sql-oracle-list-code)
     ;; new `:desc-plan'
-    (plist-put (cdr (assoc** 'oracle sql-product-alist :test #'eq))
+    (plist-put (cdr (assq 'oracle sql-product-alist))
                :desc-plan
                #'sql-oracle-desc-plan)))
 

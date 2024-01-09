@@ -342,6 +342,8 @@
 (ert-deftest %d:fn:assoc** ()
   (should (equal '(a 1) (assoc** 'a '((b 2) (a 1)))))
   (should (equal '(a 1) (assoc** 'a '((b 2) (a 1)) :test #'eq)))
+  (let ((lst '((b 2) (a 1))))
+    (should (equal (assoc** 'a lst :test #'eq) (assq 'a lst))))
   (should (equal '("a" a) (assoc** "a" '(("b" b) ("a" a)) :test #'string=)))
   (let ((k "a") (lst '(("b" b) ("a" a))))
     (should (equal (assoc** k lst :test #'string=) (assoc-string k lst)))))
@@ -665,9 +667,6 @@
                    (when (member-if* (lambda (z) (string= z x))
                                      std)
                      (setq count (1+ count))))))))
-
-(ert-deftest %e:basic:buffer-major-mode ()
-  (should (eq 'fundamental-mode (buffer-major-mode))))
 
 (ert-deftest %e:basic:if-key% ()
   (should (string= "defined"

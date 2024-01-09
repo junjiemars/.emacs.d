@@ -51,7 +51,7 @@ is non-nil, otherwise is not. See also:
                       ("wiki" "https://en.wikipedia.org/"
                        . "w/index.php?search="))))
     (lambda (&optional n)
-      (if n (let ((x (assoc** (car n) b :test #'string=)))
+      (if n (let ((x (assoc-string (car n) b)))
               (if x (setcdr x (cdr n))
                 (setq b (cons n b))))
         b)))
@@ -74,8 +74,8 @@ is non-nil, otherwise is not. See also:
   (lexical-let% ((b '()))
     (lambda  (&optional en)
       (cond ((or en (not b))
-             (setq b (assoc** (or en (caar (*web-defs*)))
-                              (*web-defs*) :test #'string=)))
+             (setq b (assoc-string
+                      (or en (caar (*web-defs*))) (*web-defs*))))
             (t b))))
   "Find WEB's definition in \\=`*web-defs*\\='.")
 

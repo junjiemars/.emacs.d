@@ -44,7 +44,7 @@
   (let ((prefer (or prefer '(:git :svn :makefile :pwd))))
     (catch 'out
       (dolist* (x prefer)
-        (let ((found (cdr (assoc** x seq :test #'eq))))
+        (let ((found (cdr (assq x seq))))
           (when found
             (throw 'out (file-name-directory (car found)))))))))
 
@@ -54,14 +54,14 @@
   (let ((s (find-position-at-point))
         (r (prefer-project-root
             (find-project-root (buffer-file-name (current-buffer))))))
-    (compilation-start (format "grep --color=always -I -nH --null -e'%s' -r %s"
-                               (plist-get s :symbol)
-                               (directory-file-name r)
-                               ;; (mapconcat #'identity
-                               ;;            (system-cc-include t) " ")
-                               )
-                       'grep-mode
-                       )))
+    (compilation-start
+     (format "grep --color=always -I -nH --null -e'%s' -r %s"
+             (plist-get s :symbol)
+             (directory-file-name r)
+             ;; (mapconcat #'identity
+             ;;            (system-cc-include t) " ")
+             )
+     'grep-mode)))
 
 (provide 'go)
 
