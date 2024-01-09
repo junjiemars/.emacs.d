@@ -19,6 +19,7 @@
 .emacs.desktop
 .emacs.desktop.lock
 .mc-lists.el
+.project/
 .recentf
 .reveal.js
 .smex-items

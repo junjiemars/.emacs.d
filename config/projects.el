@@ -10,7 +10,6 @@
   (lexical-let% ((b (emacs-home* ".project/root.el"))
                  (c '()))
     (lambda (&optional op sexp)
-      "OP SEXP"
       (cond ((eq op :cache)
              (if sexp
                  (catch 'br

@@ -17,5 +17,7 @@
   (define-key% (current-global-map) (kbd "C-x p f")
                #'project-find-file))
 
+;;; autoload
+(autoload 'project*-root (v-home%> "config/projects.el"))
 
 ;; end of on-project-autoload.el
