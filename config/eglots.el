@@ -24,7 +24,10 @@
   "Set the current \\=`eglot-managed-p\\=' buffer to use the STYLE and INDENT."
   (with-current-buffer (current-buffer)
     (when (eglot-managed-p)
-      (let ((p (caddr (eglot--current-project)))
+      (let ((p (let ((c (eglot--current-project)))
+                 (cond ((eq 'transient (car c)) (cdr c))
+                       ((eq 'vc (car c)) (caddr c))
+                       (t (last c)))))
             (s (eglot*-lsp-server)))
         (when (and p s)
           (cond ((eq major-mode 'c-mode)
