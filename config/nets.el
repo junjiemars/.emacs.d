@@ -1,11 +1,11 @@
-;;;; -*- lexical-binding:t -*-
+;; -*- lexical-binding:t -*-
 ;;;;
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; on-net-autoload.el
+;; nets.el
 ;;;;
-;; supports [C-u] prefix to set program options
+;; Commentary: supports [C-u] prefix to set program options
 ;;;;
 
 
@@ -181,6 +181,8 @@ ssh -R <remote-port>:localhost:<remote-port> <ssh-server>"
                           (if arg
                               (split-string* arg " " t)
                             ""))))
+
 
+(provide 'nets)
 
-;; end of file
+;; end of nets.el

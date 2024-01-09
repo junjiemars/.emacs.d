@@ -6,8 +6,9 @@
 ;; autoloads.el
 ;;;;
 
+;;; macro
 
-;; default web browser: eww, requires Emacs-24.4+
+;;; default web browser: `eww', requires Emacs-24.4+
 (defmacro-if-feature% eww)
 (defmacro when-feature-eww% (&rest body)
   (declare (indent 0))
@@ -15,15 +16,8 @@
       `(progn% ,@body)
     `(comment ,@body)))
 
-;; `project' builtin since Emacs-26+
-(defmacro-if-feature% project)
-(defmacro when-feature-project% (&rest body)
-  (declare (indent 0))
-  (if-feature-project%
-      `(progn% ,@body)
-    `(comment ,@body)))
 
-;; `eglot' builtin since Emacs-29+
+;;; `eglot' builtin since Emacs-29+
 (defmacro-if-feature% eglot)
 (defmacro when-feature-eglot% (&rest body)
   (declare (indent 0))
@@ -31,7 +25,24 @@
       `(progn% ,@body)
     `(comment ,@body)))
 
-;; `treesit': builtin since Emacs-29+
+;;; `project' builtin since Emacs-26+
+(defmacro-if-feature% project)
+(defmacro when-feature-project% (&rest body)
+  (declare (indent 0))
+  (if-feature-project%
+      `(progn% ,@body)
+    `(comment ,@body)))
+
+;;; `transient'
+(defmacro-if-feature% transient)
+(defmacro when-feature-transient% (&rest body)
+  "When \\=`transient\\=', do BODY."
+  (declare (indent 0))
+  (if-feature-transient%
+      `(progn% ,@body)
+  	`(comment ,@body)))
+
+;;; `treesit': builtin since Emacs-29+
 (defmacro-if-feature% treesit)
 (defmacro when-feature-treesit% (&rest body)
   (declare (indent 0))
@@ -47,6 +58,7 @@
 ;;             (t i))))
 ;;   "The available Scheme's implementations for `ob'.")
 
+;; end of macro
 
 (defmacro autoload* (symbol file &optional docstring interactive type)
   "Force autoload SYMBOL, like \\=`autoload\\=' does."
@@ -70,12 +82,18 @@
       (compile-unit% (emacs-home* "config/ewws.el") t))
     (when-feature-eglot%
       (compile-unit% (emacs-home* "config/eglots.el") t))
+    (compile-unit% (emacs-home* "config/eshells.el") t)
     (compile-unit% (emacs-home* "config/financial.el") t)
     (compile-unit% (emacs-home* "config/guds.el") t)
+    (compile-unit% (emacs-home* "config/helps.el") t)
+    (compile-unit% (emacs-home* "config/hippies.el") t)
+    (compile-unit% (emacs-home* "config/idos.el") t)
     (compile-unit% (emacs-home* "config/lisps.el") t)
     (compile-unit% (emacs-home* "config/marks.el") t)
     (compile-unit% (emacs-home* "config/isearchs.el"))
     (compile-unit% (emacs-home* "config/mixal.el") t)
+    (compile-unit% (emacs-home* "config/nets.el") t)
+    (compile-unit% (emacs-home* "config/orgs.el") t)
     (compile-unit% (emacs-home* "config/pps.el") t)
     (when-feature-project%
       (compile-unit% (emacs-home* "config/projects.el") t))
@@ -84,38 +102,41 @@
     (compile-unit% (emacs-home* "config/scratch.el"))
     (compile-unit% (emacs-home* "config/sqls.el") t)
     (compile-unit% (emacs-home* "config/tags.el"))
+    (compile-unit% (emacs-home* "config/terms.el") t)
     (compile-unit% (emacs-home* "config/trans.el") t)
+    (when-feature-transient%
+      (compile-unit% (emacs-home* "config/transients.el") t))
     (compile-unit% (emacs-home* "config/tramps.el") t)
     (compile-unit% (emacs-home* "config/xrefs.el") t)
-    (compile-unit% (emacs-home* "config/on-help-autoload.el"))
-    (compile-unit% (emacs-home* "config/on-hippie-autoload.el"))
-    (compile-unit% (emacs-home* "config/on-ido-autoload.el"))
-    ;; (compile-unit% (emacs-home* "config/on-js-autoload.el"))
-    (compile-unit% (emacs-home* "config/on-marks-autoload.el"))
-    (compile-unit% (emacs-home* "config/on-net-autoload.el"))
-    (compile-unit% (emacs-home* "config/on-org-autoload.el"))
-    (compile-unit% (emacs-home* "config/on-shell-autoload.el"))
-    (compile-unit% (emacs-home* "config/on-term-autoload.el"))
-    (compile-unit% (emacs-home* "config/on-trans-autoload.el"))
-    (compile-unit% (emacs-home* "config/on-transient-autoload.el"))
-    (compile-unit% (emacs-home* "config/on-vc-autoload.el"))))
+    (compile-unit% (emacs-home* "config/vcs.el"))))
 
 ;; end of `load-autoloaded-modes!'
 
 (defun load-conditional-modes! ()
   "Load conditional modes."
   (compile!
+    ;; on `cc'
+    (compile-unit% (emacs-home* "config/on-cc-autoload.el"))
+    ;; on `compiles'
+    (compile-unit% (emacs-home* "config/on-compile-autoload.el"))
     ;; `dict'
     (prog1
         (compile-unit% (emacs-home* "config/dict.el") t)
       (autoload 'lookup-dict (v-home%> "config/dict.el")
         "Lookup WORD in DICT then show the result in the echo area." t))
+    ;; on `direds'
+    (compile-unit% (emacs-home* "config/on-dired-autoload.el"))
     ;; `doc-view-mode'
     (when-platform% 'windows-nt
       (when% (or (executable-find% "gswin64c")
                  (executable-find% "gswin32c")
                  (executable-find% "mutool"))
         (compile-unit% (emacs-home* "config/on-docview-autoload.el"))))
+    ;; on `eglot'
+    (when-feature-eglot%
+      (compile-unit% (emacs-home* "config/on-eglot-autoload.el")))
+    ;; on `eshells'
+    (compile-unit% (emacs-home* "config/on-eshell-autoload.el"))
     ;; on `ewws'
     (when-feature-eww%
       (compile-unit% (emacs-home* "config/on-eww-autoload.el")))
@@ -133,6 +154,18 @@
         (compile-unit% (emacs-home* "config/gud-lldb.el") t)
       (autoload 'gud-lldb (v-home%> "config/gud-lldb.el")
         "Run lldb on program FILE in buffer *gud-FILE*." t))
+    ;; on `helps'
+    (compile-unit% (emacs-home* "config/on-help-autoload.el"))
+    ;; on `hippies'
+    (compile-unit% (emacs-home* "config/on-hippie-autoload.el"))
+    ;; on `idos'
+    (compile-unit% (emacs-home* "config/on-ido-autoload.el"))
+    ;; on `isearchs'
+    (compile-unit% (emacs-home* "config/on-isearch-autoload.el"))
+    ;; on `lisps'
+    (compile-unit% (emacs-home* "config/on-lisp-autoload.el"))
+    ;; ;; `js'
+    ;; (compile-unit% (emacs-home* "config/on-js-autoload.el"))
     ;; `jshell'
     (prog1
         (compile-unit% (emacs-home* "config/jshell.el") t)
@@ -143,6 +176,8 @@
     ;; self :key
     (when-graphic%
       (compile-unit% (emacs-home* "config/key.el")))
+    ;; on `marks'
+    (compile-unit% (emacs-home* "config/on-marks-autoload.el"))
     ;; `mixvm'
     (prog1
         (compile-unit% (emacs-home* "config/mixvm.el") t)
@@ -157,7 +192,13 @@
         "Toggle Node's mode." t)
       (autoload 'run-node (v-home%> "config/node.el")
         "Toggle node process in buffer \\=`*node*\\='." t))
-    ;; `projects'
+    ;; on `orgs'
+    (compile-unit% (emacs-home* "config/on-org-autoload.el"))
+    ;; on `pps'
+    (compile-unit% (emacs-home* "config/on-pp-autoload.el"))
+    ;; on `progs'
+    (compile-unit% (emacs-home* "config/on-progs-autoload.el"))
+    ;; on `projects'
     (when-feature-project%
       (compile-unit% (emacs-home* "config/on-project-autoload.el")))
     ;; on `pythons'
@@ -177,6 +218,8 @@
         "Toggle Chez's mode." t)
       (autoload* 'run-chez (v-home%> "config/chez.el")
                  "Toggle chez process in buffer \\=`*chez*\\='." t))
+    ;; on `sqls'
+    (compile-unit% (emacs-home* "config/on-sql-autoload.el"))
 
     ;; ;; Org `ob' for Scheme
     ;; (prog1
@@ -192,25 +235,13 @@
         (compile-unit% (emacs-home* "config/sudoku.el") t)
       (autoload 'sudoku (v-home%> "config/sudoku.el")
         "Play sudoku." t))
-    ;; on `cc'
-    (compile-unit% (emacs-home* "config/on-cc-autoload.el"))
-    ;; on `compiles'
-    (compile-unit% (emacs-home* "config/on-compile-autoload.el"))
-    ;; on `direds'
-    (compile-unit% (emacs-home* "config/on-dired-autoload.el"))
-    ;; on `eglot'
-    (when-feature-eglot%
-      (compile-unit% (emacs-home* "config/on-eglot-autoload.el")))
-    ;; on `isearchs'
-    (compile-unit% (emacs-home* "config/on-isearch-autoload.el"))
-    ;; on `lisps'
-    (compile-unit% (emacs-home* "config/on-lisp-autoload.el"))
-    ;; on `pps'
-    (compile-unit% (emacs-home* "config/on-pp-autoload.el"))
-    ;; on `progs'
-    (compile-unit% (emacs-home* "config/on-progs-autoload.el"))
-    ;; on `sqls'
-    (compile-unit% (emacs-home* "config/on-sql-autoload.el"))
+    ;; on `terms'
+    (compile-unit% (emacs-home* "config/on-term-autoload.el"))
+    ;; on `trans'
+    (compile-unit% (emacs-home* "config/on-trans-autoload.el"))
+    ;; on `transients'
+    (when-feature-transient%
+      (compile-unit% (emacs-home* "config/on-transient-autoload.el")))
     ;; on `treesits'
     (when-feature-treesit%
       (prog1

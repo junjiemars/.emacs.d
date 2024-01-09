@@ -1,9 +1,9 @@
-;;;; -*- lexical-binding:t -*-
+;; -*- lexical-binding:t -*-
 ;;;;
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; on-vc-autoload.el
+;; vcs.el
 ;;;;
 
 
@@ -58,5 +58,8 @@
   (define-key% (current-global-map) (kbd "C-x v d")
                #'vc*-dir))
 
+
 
-;; end of on-vc-autoload.el
+(provide 'vcs)
+
+;; end of vcs.el

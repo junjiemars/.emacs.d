@@ -3,7 +3,7 @@
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; on-shell-autoload.el
+;; eshells.el
 ;;;;
 
 
@@ -31,10 +31,8 @@
             #'(lambda ()
                 (concat (abbreviate-file-name (eshell/pwd))
                         (if (= (user-uid) 0) " # " " $ ")))))))
+
 
-;;; `eshell' after load
-(with-eval-after-load 'eshell
-  (on-eshell-init!))
+(provide 'eshells)
 
-
-;; end of on-shell-autoload.el
+;; end of eshells.el

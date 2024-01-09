@@ -6,20 +6,11 @@
 ;; on-hippie-autoload.el
 ;;;;
 
+(declare-function on-hippie-init! (v-home%> "config/hippies.el"))
+(autoload 'on-hippie-init! (v-home%> "config/hippies.el"))
 
 (with-eval-after-load 'hippie-exp
-  (setq% hippie-expand-try-functions-list
-         '(try-complete-file-name-partially
-           try-complete-file-name
-           try-expand-all-abbrevs
-           ;; try-expand-list
-           ;; try-expand-line
-           try-expand-dabbrev
-           try-expand-dabbrev-all-buffers
-           try-expand-dabbrev-from-kill
-           try-complete-lisp-symbol-partially
-           try-complete-lisp-symbol)
-         'hippie-exp))
+  (on-hippie-init!))
 
 
 ;; Key binding to use "hippie expand" for text autocompletion
