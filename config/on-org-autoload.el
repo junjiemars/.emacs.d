@@ -14,13 +14,6 @@
 (with-eval-after-load 'org
   (on-org-init!))
 
-;; fix: Warning (bytecomp): `org-bookmark-jump-unhide' fn
-;; might not be defined at runtime.
-(when-fn% 'org-bookmark-jump-unhide 'org
-  (when-version%
-      > 25 (declare-function org-bookmark-jump-unhide "org"))
-  (autoload 'org-bookmark-jump-unhide "org"))
-
 ;; end of macro
 
 ;; auto `org-mode'
