@@ -11,9 +11,6 @@
 ;; fix: Warning (bytecomp): `org-bookmark-jump-unhide' fn
 ;; might not be defined at runtime.
 (when-fn% 'org-bookmark-jump-unhide 'org
-  (when-version%
-      > 25
-    (declare-function org-bookmark-jump-unhide "org"))
   (autoload 'org-bookmark-jump-unhide "org"))
 
 (defmacro-if-feature% ox-reveal)
