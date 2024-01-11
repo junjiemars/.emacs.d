@@ -6,11 +6,11 @@
 ;; projects.el
 ;;;;
 
-(defalias 'project*-root
-  (lexical-let% ((b (emacs-home* ".project/root.el"))
+(defalias 'project*-root-dirs
+  (lexical-let% ((b (v-home% ".exec/project-root-dirs.el"))
                  (c '()))
     (lambda (&optional op sexp)
-      (cond ((eq op :cache)
+      (cond ((eq op :find)
              (if sexp
                  (catch 'br
                    (dolist* (s1 c)
@@ -22,16 +22,15 @@
             ((eq op :save)
              (when sexp (save-sexp-to-file sexp b)))
             (t c))))
-  "The \\=`project-root\\=' cache.
-ROOT must be absolute but can be nested.")
+  "The root dirs for `project'.")
 
 (defun project*-try-root (dir)
-  (let ((d (project*-root :cache dir)))
+  (let ((d (project*-root-dirs :find dir)))
     (when d (list 'vc 'Git d))))
 
 (defun on-project-init! ()
   "On \\=`project\\=' initialization."
-  (project*-root :read)
+  (project*-root-dirs :read)
   (push! #'project*-try-root project-find-functions))
 
 
