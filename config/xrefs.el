@@ -31,14 +31,17 @@
 ;; `xref-find-definitions' into `view-mode'
 ;;;
 
+(defun xref*-find-definitions ()
+  (with-current-buffer (current-buffer)
+    (when (file-in-dirs-p (buffer-file-name (current-buffer))
+                          (tags-in-view-mode))
+      (view-mode 1))))
+
 (when-fn-xref-find-definitions%
   ;; `xref-find-definitions' into `view-mode'
   (defadvice xref-find-definitions
       (after xref-find-definitions-after first compile disable)
-    (with-current-buffer (current-buffer)
-      (when (file-in-dirs-p (buffer-file-name (current-buffer))
-                            (tags-in-view-mode))
-        (view-mode 1)))))
+    (xref*-find-definitions)))
 
 (defun on-xref-init! ()
   (when-fn-xref-find-definitions%
@@ -69,10 +72,7 @@
 ;;; `find-tag' into `view-mode'
 (unless-fn-xref-find-definitions%
   (defadvice find-tag (after find-tag-after first compile disable)
-    (with-current-buffer (current-buffer)
-      (when (file-in-dirs-p (buffer-file-name (current-buffer))
-                            (tags-in-view-mode))
-        (view-mode 1)))))
+    (xref*-find-definitions)))
 
 (defun on-etags-init! ()
   "On \\=`etags\\=' initialization."
