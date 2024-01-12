@@ -27,8 +27,7 @@
 
 (unless-fn% 'with-eval-after-load nil
   (defmacro with-eval-after-load (file &rest body)
-    "Execute BODY after FILE is loaded.
-See \\=`with-eval-after-load\\='."
+    "Execute BODY after FILE is loaded."
     (declare (indent 1) (debug t))
     `(eval-after-load ,file (lambda () ,@body))))
 
