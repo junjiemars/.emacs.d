@@ -39,8 +39,7 @@
   (defun cc*-make-env-bat ()
     "Make cc-env.bat in \\=`exec-path\\='."
     (let ((vcvarsall (cc*-check-vcvarsall-bat))
-          (arch (downcase (or (getenv "PROCESSOR_ARCHITECTURE")
-                              (car (platform-arch))))))
+          (arch (downcase (platform-arch))))
       (when (and vcvarsall arch)
         (save-str-to-file
          (concat "@echo off\n"
