@@ -51,6 +51,17 @@ test_bone() {
 "
 }
 
+test_boot() {
+  test_echo_env "bone|boot"
+  ${_EMACS_} --batch \
+             --no-window-system \
+             --eval="
+(progn
+  (load \"${_ROOT_}/init.el\")
+  (message \"Elapsed: %s\" (emacs-init-time)))
+"
+}
+
 test_axiom() {
   test_echo_env "axiom|check"
   if [ "ert" != "$_ENV_ERT_" ]; then
@@ -225,6 +236,7 @@ make_env
 # test
 case "${_TEST_}" in
   bone)     test_bone     ;;
+	boot)     test_boot     ;;
   axiom)    test_axiom    ;;
   package)  test_package  ;;
 	profile)  test_profile  ;;
