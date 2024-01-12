@@ -18,6 +18,6 @@
                #'project-find-file))
 
 ;;; autoload
-(autoload 'project*-root (v-home%> "config/projects.el"))
+(autoload 'project*-root-dirs (v-home%> "config/projects.el"))
 
 ;; end of on-project-autoload.el
