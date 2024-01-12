@@ -729,7 +729,8 @@
   (should (string= "aa" (*default-shell-env* :get :xx))))
 
 (ert-deftest %f:shells:echo-var ()
-  (should (string= "1" (let ((process-environment '("A=1")))
+  (should (string= "1" (let ((process-environment
+                              (cons "A=1" process-environment)))
                          (echo-var "A")))))
 
 (ert-deftest %f:shells:paths->var ()
