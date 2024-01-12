@@ -494,18 +494,18 @@ Call FN with the path if FN is non-nil."
   (let ((m64 "\\([xX]86_64\\|[aA][mM][dD]64\\|aarch64\\)")
         (bit (emacs-arch)))
     (if (string-match m64 system-configuration)
-        `(,(string-match* m64 system-configuration 1) . ,bit)
+        `(cons ,(string-match* m64 system-configuration 1) ,bit)
       (if-platform% 'windows-nt
           (if (string-match m64 (getenv-internal "PROCESSOR_ARCHITECTURE"))
-              `(,(string-match*
-                  m64 (getenv-internal "PROCESSOR_ARCHITECTURE") 1)
-                . ,bit)
-            `(,(getenv-internal "PROCESSOR_ARCHITECTURE") . ,bit))
+              `(cons ,(string-match*
+                       m64 (getenv-internal "PROCESSOR_ARCHITECTURE") 1)
+                     ,bit)
+            `(cons ,(getenv-internal "PROCESSOR_ARCHITECTURE") ,bit))
         (let ((m (shell-command* "uname" "-m")))
           (if (and (zerop (car m))
                    (string-match m64 (string-trim> (cdr m) "\n")))
-              `(,(string-trim> (cdr m) "\n") . ,bit)
-            `(,(string-trim> (cdr m) "\n") . ,bit)))))))
+              `(cons ,(string-trim> (cdr m) "\n") ,bit)
+            `(cons ,(string-trim> (cdr m) "\n") ,bit)))))))
 
 
 ;; end of platform macro
