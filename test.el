@@ -531,8 +531,7 @@
     (should (executable-find% "ls" (lambda (ls) ls)))))
 
 (ert-deftest %d:fn:platform-arch ()
-  (should (platform-arch))
-  (should (consp (platform-arch))))
+  (should (platform-arch)))
 
 ;; end of `fn'
 

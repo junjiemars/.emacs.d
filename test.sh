@@ -68,7 +68,7 @@ test_axiom() {
     echo "# skip axiom testing ..., ert no found"
     return 0
   else
-    echo "_ENV_ERT_: ${_ENV_ERT_}"
+    echo "# _ENV_ERT_: ${_ENV_ERT_}"
   fi
   test_echo_env "axiom|clean"
   test_clean_env

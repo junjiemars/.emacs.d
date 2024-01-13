@@ -490,22 +490,20 @@ Call FN with the path if FN is non-nil."
     (if (= most-positive-fixnum (1- (expt 2 29))) 32 0)))
 
 (defmacro platform-arch ()
-  "Return platform architecture with (arch . bits) cons cell."
-  (let ((m64 "\\([xX]86_64\\|[aA][mM][dD]64\\|aarch64\\)")
-        (bit (emacs-arch)))
+  "Return platform architecture."
+  (let ((m64 "\\([xX]86_64\\|[aA][mM][dD]64\\|aarch64\\|arm64\\)"))
     (if (string-match m64 system-configuration)
-        `(cons ,(string-match* m64 system-configuration 1) ,bit)
+        (string-match* m64 system-configuration 1)
       (if-platform% 'windows-nt
           (if (string-match m64 (getenv-internal "PROCESSOR_ARCHITECTURE"))
-              `(cons ,(string-match*
-                       m64 (getenv-internal "PROCESSOR_ARCHITECTURE") 1)
-                     ,bit)
-            `(cons ,(getenv-internal "PROCESSOR_ARCHITECTURE") ,bit))
+              (string-match*
+                m64 (getenv-internal "PROCESSOR_ARCHITECTURE") 1)
+            (getenv-internal "PROCESSOR_ARCHITECTURE"))
         (let ((m (shell-command* "uname" "-m")))
           (if (and (zerop (car m))
                    (string-match m64 (string-trim> (cdr m) "\n")))
-              `(cons ,(string-trim> (cdr m) "\n") ,bit)
-            `(cons ,(string-trim> (cdr m) "\n") ,bit)))))))
+              (string-trim> (cdr m) "\n")
+            (string-trim> (cdr m) "\n")))))))
 
 
 ;; end of platform macro
