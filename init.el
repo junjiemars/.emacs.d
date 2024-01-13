@@ -247,7 +247,7 @@ If ONLY-COMPILE is t, does not load DST."
        (cond (,c1 ,d1)
              (t (if-native-comp%
                     (native-elisp-load ,d1)
-                  (load ,d1)))))))
+                  (load ,d1 nil nil t)))))))
 
 (defun clean-compiled-files ()
   "Clean all compiled files."
