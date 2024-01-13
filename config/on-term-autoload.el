@@ -16,6 +16,7 @@
   	(on-term-init!)))
 
 ;;; autoload
-(autoload 'term*-unify-shell-prompt (v-home%> "config/terms.el"))
+(autoload 'term*-unify-shell-prompt (v-home%> "config/terms.el")
+  "Unify shell prompt." t)
 
 ;; end of on-term-autoload.el
