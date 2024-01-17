@@ -171,8 +171,7 @@ compile-time."
 
 (defmacro v-home%> (file)
   "Return the \\=`v-home\\=' FILE with the extension of compiled file."
-  (concat (file-name-sans-extension* (v-home file))
-          (comp-file-extension%)))
+  (concat (v-home file) (comp-file-extension%)))
 
 ;; end of versioned file macro
 

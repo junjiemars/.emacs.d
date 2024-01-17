@@ -76,7 +76,7 @@
 
 (ert-deftest %b:init:v-home%> ()
   (should (file-name-nondirectory (v-home%> nil)))
-  (should (string-match "[gt]_[.0-9]+.*x\\.el[cn]?\\'" (v-home%> "x.el"))))
+  (should (string-match "[gt]_[.0-9]+.*x\\.el[cn]?\\'" (v-home%> "x"))))
 
 (ert-deftest %b:init:progn% ()
   (should-not (progn%))

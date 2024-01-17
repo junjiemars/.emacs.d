@@ -6,8 +6,8 @@
 ;; on-tramp-autoload.el
 ;;;;
 
-(declare-function on-tramp-init! (v-home%> "config/tramps.el"))
-(autoload 'on-tramp-init! (v-home%> "config/tramps.el"))
+(declare-function on-tramp-init! (v-home%> "config/tramps"))
+(autoload 'on-tramp-init! (v-home%> "config/tramps"))
 
 ;; `tramp' after load
 (with-eval-after-load 'tramp

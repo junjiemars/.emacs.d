@@ -6,8 +6,8 @@
 ;; on-eshell-autoload.el
 ;;;;
 
-(declare-function on-eshell-init! (v-home%> "config/eshells.el"))
-(autoload 'on-eshell-init! (v-home%> "config/eshells.el"))
+(declare-function on-eshell-init! (v-home%> "config/eshells"))
+(autoload 'on-eshell-init! (v-home%> "config/eshells"))
 
 ;;; `eshell' after load
 (with-eval-after-load 'eshell

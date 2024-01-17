@@ -8,10 +8,10 @@
 ;; Commentary:
 ;;;;
 
-(declare-function on-xref-init! (v-home%> "config/xrefs.el"))
-(declare-function on-etags-init! (v-home%> "config/xrefs.el"))
-(autoload 'on-xref-init! (v-home%> "config/xrefs.el"))
-(autoload 'on-etags-init! (v-home%> "config/xrefs.el"))
+(declare-function on-xref-init! (v-home%> "config/xrefs"))
+(declare-function on-etags-init! (v-home%> "config/xrefs"))
+(autoload 'on-xref-init! (v-home%> "config/xrefs"))
+(autoload 'on-etags-init! (v-home%> "config/xrefs"))
 
 ;;; `xref' after load
 (with-eval-after-load 'xref

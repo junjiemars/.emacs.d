@@ -6,8 +6,8 @@
 ;; on-help-autoload.el
 ;;;;
 
-(declare-function on-help-init! (v-home%> "config/helps.el"))
-(autoload 'on-help-init! (v-home%> "config/helps.el"))
+(declare-function on-help-init! (v-home%> "config/helps"))
+(autoload 'on-help-init! (v-home%> "config/helps"))
 
 ;;; `help-mode' after load
 (with-eval-after-load 'help-mode

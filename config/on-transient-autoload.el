@@ -6,8 +6,8 @@
 ;; on-transient-autoload.el
 ;;;;
 
-(declare-function on-transient-init! (v-home%> "config/transients.el"))
-(autoload 'on-transient-init! (v-home%> "config/transients.el"))
+(declare-function on-transient-init! (v-home%> "config/transients"))
+(autoload 'on-transient-init! (v-home%> "config/transients"))
 
 (when-feature-transient%
   (with-eval-after-load 'transient

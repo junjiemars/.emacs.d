@@ -6,13 +6,13 @@
 ;; on-dired-autoload.el
 ;;;;
 
-(declare-function on-dired-init! (v-home%> "config/direds.el"))
-(declare-function on-dired-aux-init! (v-home%> "config/direds.el"))
-(declare-function on-arc-mode-init! (v-home%> "config/direds.el"))
-(declare-function browse-file (v-home%> "config/direds.el"))
-(autoload 'on-dired-init! (v-home%> "config/direds.el"))
-(autoload 'on-dired-aux-init! (v-home%> "config/direds.el"))
-(autoload 'on-arc-mode-init! (v-home%> "config/direds.el"))
+(declare-function on-dired-init! (v-home%> "config/direds"))
+(declare-function on-dired-aux-init! (v-home%> "config/direds"))
+(declare-function on-arc-mode-init! (v-home%> "config/direds"))
+(declare-function browse-file (v-home%> "config/direds"))
+(autoload 'on-dired-init! (v-home%> "config/direds"))
+(autoload 'on-dired-aux-init! (v-home%> "config/direds"))
+(autoload 'on-arc-mode-init! (v-home%> "config/direds"))
 
 
 ;;; `dired' after load
@@ -30,7 +30,7 @@
 ;;; autoload
 (autoload 'dired-get-file-for-visit "dired")
 (autoload 'dired-current-directory "dired")
-(autoload 'browse-file (v-home%> "config/direds.el"))
+(autoload 'browse-file (v-home%> "config/direds"))
 
 (define-key% (current-global-map) (kbd "C-x x B") 'browse-file)
 

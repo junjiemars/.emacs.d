@@ -6,9 +6,9 @@
 ;; on-pp-autoload.el
 ;;;;
 
-(autoload 'pp*-xml (v-home%> "config/pps.el")
+(autoload 'pp*-xml (v-home%> "config/pps")
   "Pretty print XML." t)
-(autoload 'pp*-json (v-home%> "config/pps.el")
+(autoload 'pp*-json (v-home%> "config/pps")
   "Pretty print JSON." t)
 
 (defalias 'pp-html #'pp*-xml)

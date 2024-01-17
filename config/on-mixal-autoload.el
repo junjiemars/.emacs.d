@@ -6,8 +6,8 @@
 ;; on-mixal-autoload.el
 ;;;;
 
-(declare-function on-mixal-mode-init! (v-home%> "config/mixal.el"))
-(autoload 'on-mixal-mode-init! (v-home%> "config/mixal.el"))
+(declare-function on-mixal-mode-init! (v-home%> "config/mixal"))
+(autoload 'on-mixal-mode-init! (v-home%> "config/mixal"))
 
 ;;; after-load
 (with-eval-after-load 'mixal-mode

@@ -6,8 +6,8 @@
 ;; on-hippie-autoload.el
 ;;;;
 
-(declare-function on-hippie-init! (v-home%> "config/hippies.el"))
-(autoload 'on-hippie-init! (v-home%> "config/hippies.el"))
+(declare-function on-hippie-init! (v-home%> "config/hippies"))
+(autoload 'on-hippie-init! (v-home%> "config/hippies"))
 
 (with-eval-after-load 'hippie-exp
   (on-hippie-init!))

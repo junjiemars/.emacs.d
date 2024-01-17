@@ -124,7 +124,7 @@
     ;; `dict'
     (prog1
         (compile-unit% (emacs-home* "config/dict.el") t)
-      (autoload 'lookup-dict (v-home%> "config/dict.el")
+      (autoload 'lookup-dict (v-home%> "config/dict")
         "Lookup dict." t))
     ;; on `direds'
     (compile-unit% (emacs-home* "config/on-dired-autoload.el"))
@@ -146,12 +146,12 @@
     (when-platform% 'windows-nt
       (prog1
           (compile-unit% (emacs-home* "config/gud-cdb.el") t)
-        (autoload 'gud-cdb (v-home%> "config/gud-cdb.el")
+        (autoload 'gud-cdb (v-home%> "config/gud-cdb")
           "Run cdb." t)))
     ;; `gud': `gud-lldb'
     (prog1
         (compile-unit% (emacs-home* "config/gud-lldb.el") t)
-      (autoload 'gud-lldb (v-home%> "config/gud-lldb.el")
+      (autoload 'gud-lldb (v-home%> "config/gud-lldb")
         "Run lldb." t))
     ;; on `helps'
     (compile-unit% (emacs-home* "config/on-help-autoload.el"))
@@ -168,9 +168,9 @@
     ;; `jshell'
     (prog1
         (compile-unit% (emacs-home* "config/jshell.el") t)
-      (autoload 'jshell-mode (v-home%> "config/jshell.el")
+      (autoload 'jshell-mode (v-home%> "config/jshell")
         "Toggle jshell mode." t)
-      (autoload 'run-jshell (v-home%> "config/jshell.el")
+      (autoload 'run-jshell (v-home%> "config/jshell")
         "Toggle jshell process." t))
     ;; self :key
     (when-graphic%
@@ -180,16 +180,16 @@
     ;; `mixvm'
     (prog1
         (compile-unit% (emacs-home* "config/mixvm.el") t)
-      (autoload 'mixvm (v-home%> "config/mixvm.el")
+      (autoload 'mixvm (v-home%> "config/mixvm")
         "Run mixvm." t))
     ;; on `mixal'
     (compile-unit% (emacs-home* "config/on-mixal-autoload.el"))
     ;; `node'
     (prog1
         (compile-unit% (emacs-home* "config/node.el") t)
-      (autoload 'node-mode (v-home%> "config/node.el")
+      (autoload 'node-mode (v-home%> "config/node")
         "Toggle node mode." t)
-      (autoload 'run-node (v-home%> "config/node.el")
+      (autoload 'run-node (v-home%> "config/node")
         "Toggle node process." t))
     ;; on `orgs'
     (compile-unit% (emacs-home* "config/on-org-autoload.el"))
@@ -205,17 +205,17 @@
     ;; `scheme': `gambit-mode'
     (prog1
         (compile-unit% (emacs-home* "config/gambit.el") t)
-      (autoload 'gambit-mode (v-home%> "config/gambit.el")
+      (autoload 'gambit-mode (v-home%> "config/gambit")
         "Toggle gambit mode." t)
-      (autoload* 'run-gambit (v-home%> "config/gambit.el")
+      (autoload* 'run-gambit (v-home%> "config/gambit")
                  "Toggle gambit process." t))
     ;; `scheme': `chez-mode'
     (prog1
         (compile-unit% (emacs-home* "config/chez.el") t)
       ;; (*org-babel-schemes* :put 'chez "scheme")
-      (autoload 'chez-mode (v-home%> "config/chez.el")
+      (autoload 'chez-mode (v-home%> "config/chez")
         "Toggle chez mode." t)
-      (autoload* 'run-chez (v-home%> "config/chez.el")
+      (autoload* 'run-chez (v-home%> "config/chez")
                  "Toggle chez process." t))
     ;; on `sqls'
     (compile-unit% (emacs-home* "config/on-sql-autoload.el"))
@@ -225,14 +225,14 @@
     ;;     (compile-unit% (emacs-home* "config/ob-schemes.el") t)
     ;;   (when (*org-babel-schemes*)
     ;;     (autoload* 'org-babel-execute:scheme*
-    ;;                (v-home%> "config/ob-schemes.el")
+    ;;                (v-home%> "config/ob-schemes")
     ;;                "Autoload `org-babel-execute:scheme*'." t)
     ;;     (fset 'org-babel-execute:scheme 'org-babel-execute:scheme*)))
 
     ;; `sudoku'
     (prog1
         (compile-unit% (emacs-home* "config/sudoku.el") t)
-      (autoload 'sudoku (v-home%> "config/sudoku.el")
+      (autoload 'sudoku (v-home%> "config/sudoku")
         "Play sudoku." t))
     ;; on `terms'
     (compile-unit% (emacs-home* "config/on-term-autoload.el"))
@@ -245,7 +245,7 @@
     (when-feature-treesit%
       (prog1
           (compile-unit% (emacs-home* "config/treesits.el") t)
-        (autoload 'on-treesit-init! (v-home%> "config/treesits.el"))
+        (autoload 'on-treesit-init! (v-home%> "config/treesits"))
         (compile-unit% (emacs-home* "config/on-treesit-autoload.el"))))
     ;; on `tramps'
     (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))
@@ -265,13 +265,13 @@
   ;; `load-path' versioned dirs
   (push! (v-home% "config/") load-path)
   (push! (v-home% "private/") load-path)
-  (when-fn% 'self-socks-init! 'sockets
+  (when-fn% 'self-socks-init! `(sockets . ,(v-home%> "config/sockets"))
     (self-socks-init!))
-  (when-fn% 'self-package-init! 'modules
+  (when-fn% 'self-package-init! `(modules . ,(v-home%> "config/modules"))
     (self-package-init!))
   (load-autoloaded-modes!)
   (load-conditional-modes!)
-  (when-fn% 'self-desktop-read! 'memo
+  (when-fn% 'self-desktop-read! `(memo . ,(v-home%> "config/memo"))
     (condition-case err
         (self-desktop-read!)
       (error (message "self-desktop-read!: %s" err))))

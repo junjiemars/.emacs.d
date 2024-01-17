@@ -38,7 +38,7 @@
 
 
 (eval-when-compile
-  (require 'guds (v-home%> "config/guds.el")))
+  (require 'guds (v-home%> "config/guds")))
 (require 'gud)
 
 

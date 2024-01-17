@@ -6,8 +6,8 @@
 ;; on-docview-autoload.el
 ;;;;
 
-(declare-function on-doc-view-init! (v-home%> "config/docs.el"))
-(autoload 'on-doc-view-init! (v-home%> "config/docs.el"))
+(declare-function on-doc-view-init! (v-home%> "config/docs"))
+(autoload 'on-doc-view-init! (v-home%> "config/docs"))
 
 (with-eval-after-load 'doc-view
   (on-doc-view-init!))

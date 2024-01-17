@@ -6,8 +6,8 @@
 ;; on-project-autoload.el
 ;;;;
 
-(declare-function on-project-init! (v-home%> "config/projects.el"))
-(autoload 'on-project-init! (v-home%> "config/projects.el"))
+(declare-function on-project-init! (v-home%> "config/projects"))
+(autoload 'on-project-init! (v-home%> "config/projects"))
 
 ;;; `project' after load
 (with-eval-after-load 'project
@@ -18,6 +18,6 @@
                #'project-find-file))
 
 ;;; autoload
-(autoload 'project*-root-dirs (v-home%> "config/projects.el"))
+(autoload 'project*-root-dirs (v-home%> "config/projects"))
 
 ;; end of on-project-autoload.el

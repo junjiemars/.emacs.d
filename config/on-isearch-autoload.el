@@ -6,8 +6,8 @@
 ;; on-isearch-autoload.el
 ;;;;
 
-(declare-function on-isearch-init! (v-home%> "config/isearchs.el"))
-(autoload 'on-isearch-init! (v-home%> "config/isearchs.el"))
+(declare-function on-isearch-init! (v-home%> "config/isearchs"))
+(autoload 'on-isearch-init! (v-home%> "config/isearchs"))
 
 ;;; after load
 (if-version%

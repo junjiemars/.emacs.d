@@ -8,12 +8,12 @@
 ;; Commentary: `cc' autoload.
 ;;;;
 
-(declare-function on-cc-mode-init! (v-home%> "config/cc.el"))
-(declare-function on-cmacexp-init! (v-home%> "config/cc.el"))
-(declare-function on-man-init! (v-home%> "config/cc.el"))
-(autoload 'on-cc-mode-init! (v-home%> "config/cc.el"))
-(autoload 'on-cmacexp-init! (v-home%> "config/cc.el"))
-(autoload 'on-man-init! (v-home%> "config/cc.el"))
+(declare-function on-cc-mode-init! (v-home%> "config/cc"))
+(declare-function on-cmacexp-init! (v-home%> "config/cc"))
+(declare-function on-man-init! (v-home%> "config/cc"))
+(autoload 'on-cc-mode-init! (v-home%> "config/cc"))
+(autoload 'on-cmacexp-init! (v-home%> "config/cc"))
+(autoload 'on-man-init! (v-home%> "config/cc"))
 
 
 ;; default `c-mode-hook'
@@ -37,9 +37,9 @@
   (on-man-init!))
 
 ;;; autoload
-(autoload 'cc*-compiler (v-home%> "config/cc.el"))
-(autoload 'cc*-system-include (v-home%> "config/cc.el"))
-(autoload 'cc*-make-system-tags (v-home%> "config/cc.el")
+(autoload 'cc*-compiler (v-home%> "config/cc"))
+(autoload 'cc*-system-include (v-home%> "config/cc"))
+(autoload 'cc*-make-system-tags (v-home%> "config/cc")
   "Make system C tags." t)
 
 

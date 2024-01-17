@@ -16,8 +16,13 @@
   "If FN is bounded yield non-nil, do THEN, else do ELSE...\n
 Argument FEATURE that FN dependent on, be loaded at compile time."
   (declare (indent 3))
-  `(if% (or (and ,feature (require ,feature nil t) (fboundp ,fn))
-            (fboundp ,fn))
+  `(if% (cond ((consp ,feature)
+               (and (require (car ,feature) (cdr ,feature) t)
+                    (fboundp ,fn)))
+              (,feature
+               (and (require ,feature nil t)
+                    (fboundp ,fn)))
+              (t (fboundp ,fn)))
        ,then
      (progn% ,@else)))
 
@@ -399,20 +404,20 @@ No matter the declaration order, the executing order is:
     (unless-noninteractive%
      (prog1
          (compile-unit% (emacs-home* "config/memo.el") t)
-       (autoload 'self-desktop-read! (v-home%> "config/memo.el")))))
+       (autoload 'self-desktop-read! (v-home%> "config/memo")))))
   (when (*self-env-spec* :get :socks :allowed)
     (prog1
         (compile-unit% (emacs-home* "config/socks.el") t)
-      (autoload 'self-socks-init! (v-home%> "config/sockets.el"))
+      (autoload 'self-socks-init! (v-home%> "config/sockets"))
       (declare-function self-socks-init!
-                        (v-home%> "config/sockets.el"))))
+                        (v-home%> "config/sockets"))))
   (when-package%
     (when (*self-env-spec* :get :package :allowed)
       (prog1
           (compile-unit% (emacs-home* "config/modules.el") t)
-        (autoload 'self-package-init! (v-home%> "config/modules.el"))
+        (autoload 'self-package-init! (v-home%> "config/modules"))
         (declare-function self-package-init!
-                          (v-home%> "config/modules.el")))))
+                          (v-home%> "config/modules")))))
   (compile-unit% (emacs-home* "config/autoloads.el")))
 
 ;; end of boot

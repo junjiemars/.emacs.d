@@ -6,8 +6,8 @@
 ;; on-ido-autoload.el
 ;;;;
 
-(declare-function on-ido-init! (v-home%> "config/idos.el"))
-(autoload 'on-ido-init! (v-home%> "config/idos.el"))
+(declare-function on-ido-init! (v-home%> "config/idos"))
+(autoload 'on-ido-init! (v-home%> "config/idos"))
 
 ;;; `ido' after load
 (with-eval-after-load 'ido
