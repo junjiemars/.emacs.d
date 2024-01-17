@@ -265,13 +265,13 @@
   ;; `load-path' versioned dirs
   (push! (v-home% "config/") load-path)
   (push! (v-home% "private/") load-path)
-  (when-fn% 'self-socks-init! `(sockets . ,(v-home%> "config/sockets"))
+  (when-fn% 'self-socks-init! nil
     (self-socks-init!))
-  (when-fn% 'self-package-init! `(modules . ,(v-home%> "config/modules"))
+  (when-fn% 'self-package-init! nil
     (self-package-init!))
   (load-autoloaded-modes!)
   (load-conditional-modes!)
-  (when-fn% 'self-desktop-read! `(memo . ,(v-home%> "config/memo"))
+  (when-fn% 'self-desktop-read! nil
     (condition-case err
         (self-desktop-read!)
       (error (message "self-desktop-read!: %s" err))))

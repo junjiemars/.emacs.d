@@ -16,13 +16,9 @@
   "If FN is bounded yield non-nil, do THEN, else do ELSE...\n
 Argument FEATURE that FN dependent on, be loaded at compile time."
   (declare (indent 3))
-  `(if% (cond ((consp ,feature)
-               (and (require (car ,feature) (cdr ,feature) t)
-                    (fboundp ,fn)))
-              (,feature
-               (and (require ,feature nil t)
-                    (fboundp ,fn)))
-              (t (fboundp ,fn)))
+  `(if% (cond ((null ,feature) (fboundp ,fn))
+              (t (and (require ,feature nil t)
+                      (fboundp ,fn))))
        ,then
      (progn% ,@else)))
 
@@ -402,12 +398,15 @@ No matter the declaration order, the executing order is:
     ;;; --batch mode: disable `desktop'
     (setq% desktop-save-mode nil 'desktop)
     (unless-noninteractive%
-     (prog1
-         (compile-unit% (emacs-home* "config/memo.el") t)
-       (autoload 'self-desktop-read! (v-home%> "config/memo")))))
+     (when (*self-env-spec* :get :desktop :allowed)
+       (prog1
+           (compile-unit% (emacs-home* "config/memo.el") t)
+         (autoload 'self-desktop-read! (v-home%> "config/memo"))
+         (declare-function self-desktop-read!
+                           (v-home%> "config/memo"))))))
   (when (*self-env-spec* :get :socks :allowed)
     (prog1
-        (compile-unit% (emacs-home* "config/socks.el") t)
+        (compile-unit% (emacs-home* "config/sockets.el") t)
       (autoload 'self-socks-init! (v-home%> "config/sockets"))
       (declare-function self-socks-init!
                         (v-home%> "config/sockets"))))
