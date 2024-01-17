@@ -97,8 +97,7 @@ non-nil, do BODY."
 ;;;
 
 (defun file-name-sans-extension* (file)
-  "Return the FILE sans EXTENSION.\n
-See \\=`file-name-sans-extension\\='."
+  "Return the FILE sans extension."
   (let ((l (length file)))
     (when (> l 0)
       (let ((i (1- l)))
@@ -112,7 +111,7 @@ See \\=`file-name-sans-extension\\='."
                      (t (setq i (1- i))))))))))))
 
 (defmacro path! (file)
-  "Make and return the path of posixed FILE.\n"
+  "Make and return the path of posixed FILE."
   (let ((f (gensym*)) (d (gensym*)))
     `(inhibit-file-name-handler
        (let ((,f ,file))
