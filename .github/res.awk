@@ -19,7 +19,7 @@ function basename(path) {
 		strings_consed = $12 - (strings_consed ? strings_consed:$12);
 		filename = basename($14);
 
-		printf "%03d %2d %2d %8d %4d %8d %4d %8d %2d %6d %s\n",
+		printf "%3d %2d %2d %8d %4d %8d %4d %8d %2d %6d %s\n",
 				NR, $2,
 				pure_bytes_used,
 				cons_cells_consed,
