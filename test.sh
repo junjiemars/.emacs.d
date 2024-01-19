@@ -34,14 +34,7 @@ END
 "
 }
 
-test_bone() {
-  test_echo_env "bone|clean"
-  test_clean_env
-  test_echo_env "bone|compile"
-  ${_EMACS_} --batch \
-             --no-window-system \
-             --eval="(load \"${_ROOT_}/init.el\")"
-  test_echo_env "bone|boot"
+test_boot_env() {
   ${_EMACS_} --batch \
              --no-window-system \
              --eval="
@@ -51,15 +44,23 @@ test_bone() {
 "
 }
 
+test_clean() {
+  test_echo_env "clean"
+  test_clean_env
+}
+
 test_boot() {
+  test_echo_env "boot"
+	test_boot_env
+}
+
+test_bone() {
+  test_echo_env "bone|clean"
+  test_clean_env
+  test_echo_env "bone|compile"
+	test_boot_env
   test_echo_env "bone|boot"
-  ${_EMACS_} --batch \
-             --no-window-system \
-             --eval="
-(progn
-  (load \"${_ROOT_}/init.el\")
-  (message \"Elapsed: %s\" (emacs-init-time)))
-"
+	test_boot_env
 }
 
 test_axiom() {
@@ -123,17 +124,9 @@ END
   echo "# cat <${_ENV_PRO_}"
   cat <"${_ENV_PRO_}"
   test_echo_env "package|compile"
-  ${_EMACS_} --batch \
-             --no-window-system \
-             --eval="(load \"${_ROOT_}/init.el\")"
+	test_boot_env
   test_echo_env "package|boot"
-  ${_EMACS_} --batch \
-             --no-window-system \
-             --eval="
-(progn
-  (load \"${_ROOT_}/init.el\")
-  (message \"Elapsed: %s\" (emacs-init-time)))
-"
+	test_boot_env
 }
 
 test_profile() {
@@ -198,7 +191,8 @@ test_debug() {
              --eval="
 (progn
   (setq debug-on-error t)
-  (load \"${_ROOT_}/init.el\"))"
+  (load \"${_ROOT_}/init.el\"))
+"
 }
 
 check_env() {
@@ -236,10 +230,11 @@ make_env
 # test
 case "${_TEST_}" in
   bone)     test_bone     ;;
-	boot)     test_boot     ;;
   axiom)    test_axiom    ;;
   package)  test_package  ;;
 	profile)  test_profile  ;;
+	clean)    test_clean    ;;
+	boot)     test_boot     ;;
   debug)    test_debug    ;;
   *) ;;
 esac
