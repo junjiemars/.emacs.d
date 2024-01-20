@@ -248,7 +248,7 @@ If optional UNIQUELY is non-nil then append uniquely."
 (defun string-trim> (s &optional rr)
   "Remove tailing whitespaces or matching of RR at the end of S."
   (when (stringp s)
-    (let ((r1 (concat "\\(?:" (or rr "[ \t\n\r]+\\'") "\\)\\'")))
+    (let ((r1 (concat "\\(?:" (or rr "[ \t\n\r]+") "\\)\\'")))
       (let ((i (string-match r1 s 0)))
         (if i (substring-no-properties s 0 i) s)))))
 
@@ -265,20 +265,16 @@ If optional UNIQUELY is non-nil then append uniquely."
   `(string-trim> (string-trim< ,s ,lr) ,rr))
 
 (defmacro string-match* (regexp string num &optional start)
-  "Return string of text match for REGEXP in STRING.\n
-Return nil if NUMth pair didn’t match, or there were less than NUM pairs.
-NUM specifies which parenthesized expression in the REGEXP.
-If START is non-nil, start search at that index in STRING.\n
+  "Return the NUMth match for REGEXP in STRING from START.\n
 See \\=`string-match\\=' and \\=`match-string\\='."
   (let ((s (gensym*))
-        (n (gensym*))
-        (b (gensym*)))
+        (n (gensym*)))
     `(let* ((,s ,string)
             (,n ,num)
-            (,b (and (stringp ,s) (string-match ,regexp ,s ,start)
-                     (match-beginning ,n))))
-       (when ,b
-         (substring-no-properties ,s ,b (match-end ,n))))))
+            (b (and (stringp ,s) (string-match ,regexp ,s ,start)
+                    (match-beginning ,n))))
+       (when b
+         (substring-no-properties ,s b (match-end ,n))))))
 
 (defmacro split-string* (string &optional separators omit-nulls trim)
   "Split STRING into substrings bounded by match for SEPARATORS.\n
