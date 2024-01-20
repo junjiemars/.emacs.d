@@ -103,13 +103,17 @@ See \\=`defcustom\\='."
   (let ((f (gensym*)) (ds (gensym*)))
     `(let ((,f ,file) (,ds ,dirs))
        (when (and (stringp ,f) (consp ,ds))
-         (some* (lambda (x)
-                  (inhibit-file-name-handler
-                    (let ((case-fold-search
-                           (when-platform% 'windows-nt t)))
-                      (and (stringp x)
-                           (string-match x (file-name-directory ,f))))))
-                ,ds)))))
+         (inhibit-file-name-handler
+           (let ((case-fold-search (when-platform% 'windows-nt t))
+                 (d (file-name-directory ,f)))
+             (catch 'br
+               (dolist* (x ,ds)
+                 (when (and (stringp x)
+                            (eq 't
+                                (compare-strings
+                                 x 0 (length x) d 0 (length x)
+                                 case-fold-search)))
+                   (throw 'br t))))))))))
 
 (defmacro file-name-nondirectory% (filename)
   "Return file name FILENAME sans its directory at compile-time."
