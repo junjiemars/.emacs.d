@@ -37,7 +37,7 @@
   (on-man-init!))
 
 ;;; autoload
-(autoload 'cc*-compiler (v-home%> "config/cc"))
+(autoload 'cc*-cc (v-home%> "config/cc"))
 (autoload 'cc*-system-include (v-home%> "config/cc"))
 (autoload 'cc*-make-system-tags (v-home%> "config/cc")
   "Make system C tags." t)

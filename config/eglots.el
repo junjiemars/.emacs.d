@@ -50,6 +50,7 @@
 (defalias 'eglot*-server-programs
   (lexical-let% ((b (v-home% ".exec/eglot-server.el"))
                  (m '((c-mode . ("clangd" "--header-insertion=never"))
+                      ;; (c++-mode . ("clangd" "--query-driver=c++"))
                       (swift-mode . ("sourcekit-lsp")))))
     (lambda (&optional op sexp)
       (cond ((eq op :push)

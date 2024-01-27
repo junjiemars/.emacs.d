@@ -62,7 +62,7 @@
 ;; CC
 ;;;
 
-(defalias 'cc*-compiler
+(defalias 'cc*-cc
   (lexical-let%
       ((b (eval-when-compile
             (let ((cx (if-platform% 'windows-nt
@@ -102,6 +102,46 @@
       (if (null n) b (setq b n))))
   "The name of C compiler executable.")
 
+(defalias 'cc*-cxx
+  (lexical-let%
+      ((b (eval-when-compile
+            (let ((cx (if-platform% 'windows-nt
+                          (progn%
+                           (unless (executable-find% "cc-env.bat")
+                             (cc*-make-env-bat))
+                           '("cc-env.bat" "cl" "g++"))
+                        '("c++" "g++" "clang++")))
+                  (o (make-temp-file "cc-cc-" nil
+                                     (if-platform% 'windows-nt
+                                         ".exe"
+                                       ".out")))
+                  (i (save-str-to-file
+                      (concat
+                       "int main(void) {\n"
+                       "  return 0;\n"
+                       "}")
+                      (make-temp-file "cc-s-" nil ".cc"))))
+              (catch 'br
+                (dolist* (cc cx)
+                  (when (zerop
+                         (car
+                          (shell-command*
+                              (format (if-platform% 'windows-nt
+                                          (if (string= "cc-env.bat" cc)
+                                              (concat "%s %s -Fe%s -Fo")
+                                            "%s %s -o%s")
+                                        "%s %s -o%s")
+                                      (if-platform% 'windows-nt
+                                          (if (string= "cc-env.bat" cc)
+                                              "cc-env.bat && cl"
+                                            cc)
+                                        cc)
+                                      i o))))
+                    (throw 'br cc))))))))
+    (lambda (&optional n)
+      (if (null n) b (setq b n))))
+  "The name of C++ compiler executable.")
+
 ;; end of CC
 
 ;;;
@@ -113,7 +153,7 @@
     "Make a GNU's xargs alternation in \\=`exec-path\\='."
     (let* ((c (make-temp-file "cc-xargs-" nil ".c"))
            (exe (v-home% ".exec/xargs.exe"))
-           (cc (concat (cc*-compiler)
+           (cc (concat (cc*-cc)
                        " -nologo -DNDEBUG=1 -O2 -utf-8"
                        " " c
                        " -Fo" temporary-file-directory
@@ -149,7 +189,7 @@
                          "|xargs -0")))
                 (and (zerop (car x))
                      (string-match "^zzz" (cdr x))))))
-           (and (cc*-compiler)
+           (and (cc*-cc)
                 (cc*-make-xargs-bin)))))
     "The name of xargs executable."))
 
@@ -169,11 +209,11 @@
                       " \"echo ''|cc -v -E 2>&1 >/dev/null -\"")))
                (if-platform% 'windows-nt
                    ;; Windows: msmvc
-                   (shell-command* (cc*-compiler))
+                   (shell-command* (cc*-cc))
                  ;; Darwin/Linux: clang or gcc
                  (shell-command*
                      (concat "echo ''|"
-                             (cc*-compiler)
+                             (cc*-cc)
                              " -v -E 2>&1 >/dev/null -")))))
         (parser (lambda (pre)
                   (if-platform% 'windows-nt
@@ -310,7 +350,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
           (exe (v-home% ".exec/cc-dmacro.exe")))
       (unless (file-exists-p c)
         (copy-file (emacs-home* "config/sample-cc-dmacro.c") c))
-      (let ((cmd (shell-command* (cc*-compiler)
+      (let ((cmd (shell-command* (cc*-cc)
                    (concat " -nologo"
                            " " options
                            " " c
@@ -326,7 +366,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
   (let* ((remote (ssh-remote-p
                   (buffer-file-name (current-buffer))))
          (cc (cond (remote "cc")
-                   (t (cc*-compiler))))
+                   (t (cc*-cc))))
          (opts  (format "%s -dM -E -" options))
          (rc (cond (remote (shell-command* "ssh"
                              (ssh-remote->user@host remote)
@@ -503,8 +543,8 @@ N specify the number of spaces when align."
                    (let ((tmp (make-temp-file "cc-m-" nil ".c")))
                      (format "%s -0 > %s && %s && cl -E %s"
                              +cc*-xargs-bin+ tmp
-                             (cc*-compiler) tmp))
-                 (format "%s -E -o - -" (cc*-compiler))))
+                             (cc*-cc) tmp))
+                 (format "%s -E -o - -" (cc*-cc))))
              'cmacexp))))
 
 (when-fn-c-macro-expand%

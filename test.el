@@ -793,7 +793,7 @@
 ;; conditional: cc
 ;;;
 
-(ert-deftest %q:cc:+cc*-compiler-bin+ ()
+(ert-deftest %q:cc:+cc*-cc ()
   (when-platform% 'windows-nt
     (should (message "# (executable-find \"cc-env.bat\") = %s"
                      (or (executable-find "cc-env.bat") "")))
@@ -805,9 +805,8 @@
                    (or (executable-find "clang") "")))
   (should (message "# (executable-find \"make\") = %s"
                    (or (executable-find "make") "")))
-  (when-var% +cc*-compiler-bin+ nil
-    (should (message "# +cc*-compiler-bin+ = %s"
-                     (or (cc*-compiler) "")))))
+  (when-var% +cc*-cc nil
+    (should (message "# +cc*-cc = %s" (or (cc*-cc) "")))))
 
 (ert-deftest %q:cc:cc*-system-include ()
   (when-fn% 'cc*-system-include nil
