@@ -98,22 +98,20 @@ See \\=`defcustom\\='."
            0
          (- (length (split-string* ,p ,s nil)) 1)))))
 
-(defmacro file-in-dirs-p (file dirs)
-  "Return t if the name of FILE matching DIRS, otherwise nil."
-  (let ((f (gensym*)) (ds (gensym*)))
-    `(let ((,f ,file) (,ds ,dirs))
-       (when (and (stringp ,f) (consp ,ds))
-         (inhibit-file-name-handler
-           (let ((case-fold-search (when-platform% 'windows-nt t))
-                 (d (file-name-directory ,f)))
-             (catch 'br
-               (dolist* (x ,ds)
-                 (when (and (stringp x)
-                            (eq 't
-                                (compare-strings
-                                 x 0 (length x) d 0 (length x)
-                                 case-fold-search)))
-                   (throw 'br t))))))))))
+(defun file-in-dirs-p (file dirs)
+  "Return the dir if FILE matching DIRS, otherwise nil."
+  (when (and (stringp file) (consp dirs))
+    (inhibit-file-name-handler
+      (let ((case-fold-search (when-platform% 'windows-nt t))
+            (d (file-name-directory file)))
+        (catch 'br
+          (dolist* (x dirs)
+            (when (and (stringp x)
+                       (eq 't
+                           (compare-strings
+                            x 0 (length x) d 0 (length x)
+                            case-fold-search)))
+              (throw 'br x))))))))
 
 (defmacro file-name-nondirectory% (filename)
   "Return file name FILENAME sans its directory at compile-time."

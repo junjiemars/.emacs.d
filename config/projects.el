@@ -11,12 +11,7 @@
                  (c '()))
     (lambda (&optional op sexp)
       (cond ((eq op :find)
-             (if sexp
-                 (catch 'br
-                   (dolist* (s1 c)
-                     (when (string= s1 sexp)
-                       (throw 'br s1))))
-               c))
+             (file-in-dirs-p sexp c))
             ((eq op :read)
              (setq c (read-sexp-from-file b)))
             ((eq op :save)
