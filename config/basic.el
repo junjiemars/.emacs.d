@@ -99,7 +99,7 @@ See \\=`defcustom\\='."
          (- (length (split-string* ,p ,s nil)) 1)))))
 
 (defun file-in-dirs-p (file dirs)
-  "Return the dir if FILE matching DIRS, otherwise nil."
+  "Return the matched dir if FILE in DIRS, otherwise nil."
   (when (and (stringp file) (consp dirs))
     (inhibit-file-name-handler
       (let ((case-fold-search (when-platform% 'windows-nt t))
