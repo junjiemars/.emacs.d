@@ -102,46 +102,6 @@
       (if (null n) b (setq b n))))
   "The name of C compiler executable.")
 
-(defalias 'cc*-cxx
-  (lexical-let%
-      ((b (eval-when-compile
-            (let ((cx (if-platform% 'windows-nt
-                          (progn%
-                           (unless (executable-find% "cc-env.bat")
-                             (cc*-make-env-bat))
-                           '("cc-env.bat" "cl" "g++"))
-                        '("c++" "g++" "clang++")))
-                  (o (make-temp-file "cc-cc-" nil
-                                     (if-platform% 'windows-nt
-                                         ".exe"
-                                       ".out")))
-                  (i (save-str-to-file
-                      (concat
-                       "int main(void) {\n"
-                       "  return 0;\n"
-                       "}")
-                      (make-temp-file "cc-s-" nil ".cc"))))
-              (catch 'br
-                (dolist* (cc cx)
-                  (when (zerop
-                         (car
-                          (shell-command*
-                              (format (if-platform% 'windows-nt
-                                          (if (string= "cc-env.bat" cc)
-                                              (concat "%s %s -Fe%s -Fo")
-                                            "%s %s -o%s")
-                                        "%s %s -o%s")
-                                      (if-platform% 'windows-nt
-                                          (if (string= "cc-env.bat" cc)
-                                              "cc-env.bat && cl"
-                                            cc)
-                                        cc)
-                                      i o))))
-                    (throw 'br cc))))))))
-    (lambda (&optional n)
-      (if (null n) b (setq b n))))
-  "The name of C++ compiler executable.")
-
 ;; end of CC
 
 ;;;
