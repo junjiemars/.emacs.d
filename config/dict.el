@@ -197,7 +197,9 @@
                                               " "))
                                   'face 'font-lock-comment-face)
                     (propertize "No match"
-                                'face 'font-lock-warning-face)))))
+                                'face 'font-lock-warning-face)))
+    (when-var% execute-extended-command--binding-timer 'simple
+      (sit-for 15))))
 
 ;; end of `on-lookup-dict'
 
