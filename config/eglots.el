@@ -106,5 +106,6 @@
 
 
 
+(provide 'eglots)
 
 ;; end of eglots.el

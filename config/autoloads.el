@@ -108,6 +108,8 @@
     (compile-unit% (emacs-home* "config/trans.el") t)
     (when-feature-transient%
       (compile-unit% (emacs-home* "config/transients.el") t))
+    (when-feature-treesit%
+      (compile-unit% (emacs-home* "config/treesits.el") t))
     (compile-unit% (emacs-home* "config/tramps.el") t)
     (compile-unit% (emacs-home* "config/xrefs.el") t)
     (compile-unit% (emacs-home* "config/vcs.el"))))
@@ -243,10 +245,7 @@
       (compile-unit% (emacs-home* "config/on-transient-autoload.el")))
     ;; on `treesits'
     (when-feature-treesit%
-      (prog1
-          (compile-unit% (emacs-home* "config/treesits.el") t)
-        (autoload 'on-treesit-init! (v-home%> "config/treesits"))
-        (compile-unit% (emacs-home* "config/on-treesit-autoload.el"))))
+      (compile-unit% (emacs-home* "config/on-treesit-autoload.el")))
     ;; on `tramps'
     (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))
     ;; on `xrefs'
