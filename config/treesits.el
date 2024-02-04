@@ -6,7 +6,7 @@
 ;; treesits.el
 ;;;;
 
-(defalias 'treesit*-settings
+(defalias 'treesit*-recipe
   (lexical-let%
       ((b (v-home% ".exec/treesit-settings.el"))
        (m '((:lang cpp
@@ -28,12 +28,12 @@
             ((eq op :dump)
              (when m (save-sexp-to-file m b)))
             (t m))))
-  "The \\=`treesit\\=' settings.")
+  "The \\=`treesit\\=' recipe.")
 
 (defun toggle-treesit! ()
   "Toggle \\=`treesit\\=' on or off."
   (interactive)
-  (let ((on (let ((ts (treesit*-settings)))
+  (let ((on (let ((ts (treesit*-recipe)))
               (some* (lambda (a)
                        (catch 'break
                          (dolist* (x ts)
@@ -41,7 +41,7 @@
                              (throw 'break t)))))
                      major-mode-remap-alist))))
     (if on
-        (let ((ts (treesit*-settings)))
+        (let ((ts (treesit*-recipe)))
           (setq auto-mode-alist
                 (remove-if* (lambda (a)
                               (catch 'break
@@ -60,7 +60,7 @@
                             :key #'cdr)
                 treesit-language-source-alist nil)
           (message "%s" "treesit off"))
-      (let ((ts (treesit*-settings))
+      (let ((ts (treesit*-recipe))
             (aa (copy-sequence auto-mode-alist)))
         (dolist* (x ts)
           (let ((l1 (plist-get x :lang))
