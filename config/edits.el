@@ -3,7 +3,7 @@
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; edit.el
+;; edits.el
 ;;;;
 ;; Commentary: essential editing environment.
 ;;;;
@@ -100,7 +100,10 @@
 
 ;; end of Clean Emacs' user files
 
-
 (self-edit-init!)
 
-;; end of edit.el
+
+
+(provide 'edits)
+
+;; end of edits.el

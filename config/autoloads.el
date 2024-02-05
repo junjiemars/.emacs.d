@@ -74,12 +74,13 @@
   "Load autoloaded modes."
   (compile!
     (compile-unit% (emacs-home* "config/safe.el"))
-    (compile-unit% (emacs-home* "config/edit.el"))
+
     (compile-unit% (emacs-home* "config/cc.el") t)
     (compile-unit% (emacs-home* "config/compiles.el") t)
     (compile-unit% (emacs-home* "config/direds.el") t)
     (when-platform% 'windows-nt
       (compile-unit% (emacs-home* "config/docs.el") t))
+
     (when-feature-eww%
       (compile-unit% (emacs-home* "config/ewws.el") t))
     (when-feature-eglot%
@@ -250,6 +251,8 @@
     (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))
     ;; on `xrefs'
     (compile-unit% (emacs-home* "config/on-xref-autoload.el"))
+    ;; on `edits`
+    (compile-unit% (emacs-home* "config/edits.el"))
 
     ) ;; end of compile!
 
