@@ -35,10 +35,8 @@
 
     ;; disable `indent-tabs-mode'
     (dolist* (m (edit-spec->* :disable-indent-tabs-mode))
-      (let ((h (intern-soft (format "%s-hook" m))))
-        (when h
-          (add-hook
-           h #'self-edit-env->disable-indent-tabs-mode))))
+      (let ((h (intern (format "%s-hook" m))))
+        (add-hook h #'self-edit-env->disable-indent-tabs-mode)))
 
     ;; default `tab-width' and `standard-indent'
     (setq-default tab-width (edit-spec->* :tab-width)
