@@ -144,7 +144,10 @@
       (compile-unit% (emacs-home* "config/on-eww-autoload.el")))
     ;; self :glyph
     (when-font%
-      (compile-unit% (emacs-home* "config/glyph.el")))
+      (prog1
+          (compile-unit% (emacs-home* "config/glyph.el") t)
+        (autoload 'self-glyph-init! (v-home%> "config/glyph"))
+        (declare-function self-glyph-init! (v-home%> "config/glyph"))))
     ;; `gud': `gud-cdb'
     (when-platform% 'windows-nt
       (prog1
@@ -276,6 +279,7 @@
   (load-conditional-modes!)
   (when-fn% 'self-edit-init! nil
     (self-edit-init!))
+  (when-font% (make-thread* #'self-glyph-init!))
   (when-fn% 'self-desktop-read! nil
     (condition-case err
         (self-desktop-read!)

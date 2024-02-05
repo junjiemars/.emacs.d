@@ -67,6 +67,6 @@
 
 
 
-(make-thread* #'self-glyph-init!)
+(provide 'glyph)
 
 ;; end of glyph.el
