@@ -213,11 +213,6 @@ See \\=`setenv\\='."
 ;; save/read env
 
 
-(self-shell-read!)
-
-
-
-
 (provide 'shells)
 
 

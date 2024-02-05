@@ -80,12 +80,12 @@
     (compile-unit% (emacs-home* "config/direds.el") t)
     (when-platform% 'windows-nt
       (compile-unit% (emacs-home* "config/docs.el") t))
-
-    (when-feature-eww%
-      (compile-unit% (emacs-home* "config/ewws.el") t))
+    (compile-unit% (emacs-home* "config/edits.el") t)
     (when-feature-eglot%
       (compile-unit% (emacs-home* "config/eglots.el") t))
     (compile-unit% (emacs-home* "config/eshells.el") t)
+    (when-feature-eww%
+      (compile-unit% (emacs-home* "config/ewws.el") t))
     (compile-unit% (emacs-home* "config/financial.el") t)
     (compile-unit% (emacs-home* "config/guds.el") t)
     (compile-unit% (emacs-home* "config/helps.el") t)
@@ -251,8 +251,7 @@
     (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))
     ;; on `xrefs'
     (compile-unit% (emacs-home* "config/on-xref-autoload.el"))
-    ;; on `edits`
-    (compile-unit% (emacs-home* "config/edits.el"))
+
 
     ) ;; end of compile!
 
@@ -267,12 +266,16 @@
   ;; `load-path' versioned dirs
   (push! (v-home% "config/") load-path)
   (push! (v-home% "private/") load-path)
+  (when-fn% 'self-shell-read! nil
+    (self-shell-read!))
   (when-fn% 'self-socks-init! nil
     (self-socks-init!))
   (when-fn% 'self-package-init! nil
     (self-package-init!))
   (load-autoloaded-modes!)
   (load-conditional-modes!)
+  (when-fn% 'self-edit-init! nil
+    (self-edit-init!))
   (when-fn% 'self-desktop-read! nil
     (condition-case err
         (self-desktop-read!)

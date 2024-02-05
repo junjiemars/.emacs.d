@@ -387,13 +387,24 @@ No matter the declaration order, the executing order is:
           (compile-unit* (*self-paths* :get :prologue)))
 
 ;;; <2> env
-(compile! (compile-unit* (*self-paths* :get :env-spec))
-          (compile-unit% (emacs-home* "config/graphic.el"))
-          (compile-unit% (emacs-home* "config/basic.el"))
-          (compile-unit% (emacs-home* "config/shells.el")))
+(compile!
+  (compile-unit* (*self-paths* :get :env-spec))
+  (compile-unit% (emacs-home* "config/graphic.el"))
+  (compile-unit% (emacs-home* "config/basic.el")))
 
 ;;; <3> epilogue
 (compile!
+  (prog1
+      (compile-unit% (emacs-home* "config/shells.el") t)
+    (autoload 'self-shell-read! (v-home%> "config/shells"))
+    (declare-function self-shell-read!
+                      (v-home%> "config/shells")))
+  (when (*self-env-spec* :get :edit :allowed)
+    (prog1
+	(compile-unit% (emacs-home* "config/edits.el") t)
+      (autoload 'self-edit-init! (v-home%> "config/edits"))
+      (declare-function self-edit-init!
+			(v-home%> "config/edits"))))
   (progn
     ;;; --batch mode: disable `desktop'
     (setq% desktop-save-mode nil 'desktop)

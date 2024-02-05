@@ -126,10 +126,13 @@
        :indent '((sh-basic-offset . 2)
                  (python-indent-offset . 4))
        :safe-local-variable nil
-       :disable-indent-tabs-mode '(c-mode
-                                   sh-mode
+       :disable-indent-tabs-mode '(awk-mode
+                                   c-mode
                                    emacs-lisp-mode
-                                   scheme-mode)
+                                   mixal-mode
+                                   scheme-mode
+                                   sh-mode
+                                   sql-mode)
        :delete-trailing-whitespace '(prog-mode)
        :allowed nil))
 

@@ -100,10 +100,6 @@
 
 ;; end of Clean Emacs' user files
 
-(self-edit-init!)
-
-
-
 (provide 'edits)
 
 ;; end of edits.el
