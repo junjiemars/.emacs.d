@@ -56,10 +56,8 @@
                 (forward-line 5))))))
   "The recipes of scratch.")
 
-
 (defvar *scratch-recipe-history* nil
   "The scratch recipe choosing history list.")
-
 
 (defun scratch (&optional recipe)
   "New a *scratch* buffer by RECIPE or switch to the existing one."
@@ -89,7 +87,7 @@
                (set-buffer-modified-p nil)))
            (current-buffer))))))
 
-
+
 
 (provide 'scratch)
 

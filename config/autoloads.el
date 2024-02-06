@@ -101,7 +101,6 @@
       (compile-unit% (emacs-home* "config/projects.el") t))
     (compile-unit% (emacs-home* "config/progs.el") t)
     (compile-unit% (emacs-home* "config/pythons.el") t)
-    (compile-unit% (emacs-home* "config/scratch.el"))
     (compile-unit% (emacs-home* "config/sqls.el") t)
     (compile-unit% (emacs-home* "config/tags.el"))
     (compile-unit% (emacs-home* "config/terms.el") t)
@@ -222,6 +221,11 @@
         "Toggle chez mode." t)
       (autoload* 'run-chez (v-home%> "config/chez")
                  "Toggle chez process." t))
+    ;; `scratch'
+    (prog1
+        (compile-unit% (emacs-home* "config/scratch.el") t)
+      (autoload 'scratch (v-home%> "config/scratch")
+        "scratch" t))
     ;; on `sqls'
     (compile-unit% (emacs-home* "config/on-sql-autoload.el"))
 
@@ -268,16 +272,13 @@
   ;; `load-path' versioned dirs
   (push! (v-home% "config/") load-path)
   (push! (v-home% "private/") load-path)
-  (when-fn% 'self-shell-read! nil
-    (self-shell-read!))
-  (when-fn% 'self-socks-init! nil
-    (self-socks-init!))
-  (when-fn% 'self-package-init! nil
-    (self-package-init!))
+  (self-graphic-init!)
+  (when-fn% 'self-shell-read! nil (self-shell-read!))
+  (when-fn% 'self-socks-init! nil (self-socks-init!))
+  (when-fn% 'self-package-init! nil (self-package-init!))
   (load-autoloaded-modes!)
   (load-conditional-modes!)
-  (when-fn% 'self-edit-init! nil
-    (self-edit-init!))
+  (when-fn% 'self-edit-init! nil (self-edit-init!))
   (when-font% (make-thread* #'self-glyph-init!))
   (when-fn% 'self-desktop-read! nil
     (condition-case err
