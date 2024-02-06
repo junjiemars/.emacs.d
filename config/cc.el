@@ -358,6 +358,8 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 ;; `tags'
 ;;;
 
+(declare-function make-c-tags (v-home%> "config/tags"))
+
 (defmacro when-fn-make-c-tags% (&rest body)
   (declare (indent 0))
   (when-fn% 'make-c-tags 'tags

@@ -102,7 +102,6 @@
     (compile-unit% (emacs-home* "config/progs.el") t)
     (compile-unit% (emacs-home* "config/pythons.el") t)
     (compile-unit% (emacs-home* "config/sqls.el") t)
-    (compile-unit% (emacs-home* "config/tags.el"))
     (compile-unit% (emacs-home* "config/terms.el") t)
     (compile-unit% (emacs-home* "config/trans.el") t)
     (when-feature-transient%
@@ -243,6 +242,16 @@
         (compile-unit% (emacs-home* "config/sudoku.el") t)
       (autoload 'sudoku (v-home%> "config/sudoku")
         "Play sudoku." t))
+    ;; on `tags'
+    (prog1
+        (compile-unit% (emacs-home* "config/tags.el") t)
+      (autoload 'mount-tags (v-home%> "config/tags")
+        "Mount tags." t)
+      (autoload 'unmount-tags (v-home%> "config/tags")
+        "Unmount tags." t)
+      (autoload 'make-c-tags (v-home%> "config/tags")
+        "Make C tags.")
+      (autoload 'tags-in-view-mode (v-home%> "config/tags")))
     ;; on `terms'
     (compile-unit% (emacs-home* "config/on-term-autoload.el"))
     ;; on `trans'

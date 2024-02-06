@@ -42,6 +42,8 @@
              (when sexp (save-sexp-to-file sexp b)))
             (t c)))))
 
+(declare-function tags-in-view-mode (v-home%> "config/tags"))
+
 (defun xref*-find-definitions ()
   (with-current-buffer (current-buffer)
     (when (file-in-dirs-p
