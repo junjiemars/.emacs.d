@@ -80,7 +80,6 @@
     (compile-unit% (emacs-home* "config/direds.el") t)
     (when-platform% 'windows-nt
       (compile-unit% (emacs-home* "config/docs.el") t))
-    (compile-unit% (emacs-home* "config/edits.el") t)
     (when-feature-eglot%
       (compile-unit% (emacs-home* "config/eglots.el") t))
     (compile-unit% (emacs-home* "config/eshells.el") t)

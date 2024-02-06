@@ -401,10 +401,10 @@ No matter the declaration order, the executing order is:
                       (v-home%> "config/shells")))
   (when (*self-env-spec* :get :edit :allowed)
     (prog1
-	(compile-unit% (emacs-home* "config/edits.el") t)
-      (autoload 'self-edit-init! (v-home%> "config/edits"))
+	      (compile-unit% (emacs-home* "config/edit.el") t)
+      (autoload 'self-edit-init! (v-home%> "config/edit"))
       (declare-function self-edit-init!
-			(v-home%> "config/edits"))))
+			                  (v-home%> "config/edit"))))
   (progn
     ;;; --batch mode: disable `desktop'
     (setq% desktop-save-mode nil 'desktop)
