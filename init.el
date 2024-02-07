@@ -21,8 +21,7 @@
   nil)
 
 (defmacro progn% (&rest body)
-  "Return an \\=`progn\\='ed form if BODY has more than one sexp.\n
-Else return BODY sexp."
+  "Return an \\=`progn\\='ed form if BODY has more than one sexp."
   (if (cdr body) `(progn ,@body) (car body)))
 
 (defmacro if% (cond then &rest else)
@@ -69,7 +68,7 @@ Else return BODY sexp."
 ;;;
 
 (defconst +emacs-version+ (string-to-number emacs-version)
-  "The \\=`float\\=' version of Emacs in.")
+  "The \\=`float\\=' version number of Emacs.")
 
 (defmacro if-version% (cmp version then &rest else)
   "If VERSION CMP with \\=`+emacs-version+\\=' yield non-nil, do
@@ -110,29 +109,28 @@ non-nil, do BODY."
                      ((= ?. c) (throw 'br i))
                      (t (setq i (1- i))))))))))))
 
-(defmacro path! (file)
+(defun path! (file)
   "Make and return the path of posixed FILE."
-  (let ((f (gensym*)) (d (gensym*)))
-    `(inhibit-file-name-handler
-       (let ((,f ,file))
-         (if (file-exists-p ,f)
-             ,f
-           (let ((,d (file-name-directory ,f)))
-             (prog1 ,f
-               (unless (file-exists-p ,d)
-                 (let ((i (1- (length ,d)))
-                       (ds nil))
-                   (catch 'br
-                     (while (> i 0)
-                       (when (= ?/ (aref ,d i))
-                         (let ((s (substring-no-properties ,d 0 (1+ i))))
-                           (if (file-exists-p s)
-                               (throw 'br t)
-                             (setq ds (cons s ds)))))
-                       (setq i (1- i))))
-                   (while (car ds)
-                     (make-directory-internal (car ds))
-                     (setq ds (cdr ds))))))))))))
+  (inhibit-file-name-handler
+    (if (file-exists-p file)
+        file
+      (let ((dir (file-name-directory file)))
+        (prog1 file
+          (unless (file-exists-p dir)
+            (let ((i (1- (length dir)))
+                  (ds nil))
+              (catch 'br
+                (while (> i 0)
+                  (when (= ?/ (aref dir i))
+                    (let ((s (substring-no-properties dir 0 (1+ i))))
+                      (if (file-exists-p s)
+                          (throw 'br t)
+                        (setq ds (cons s ds)))))
+                  (setq i (1- i))))
+              (while (car ds)
+                (make-directory-internal (car ds))
+                (setq ds (cdr ds))))))))))
+
 
 ;; end of file macro
 
