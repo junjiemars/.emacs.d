@@ -6,16 +6,16 @@ PROF_FILE="$1"
 if [ -f "$PROF_FILE" ]; then
 	printf "# profile: elspsed time\n# ------------\n"
 	awk -f ${PROF_ROOT}/elapsed.awk "$PROF_FILE" \
-			| sort -k1n,1nr -k2n,2nr -k3n,3nr
+			| sort -k1nr -k2nr -k3nr
 	printf "# profile: elapsed real time\n# ------------\n"
 	awk -f ${PROF_ROOT}/elapsed.awk "$PROF_FILE" \
-		| sort -k4n,4nr -k1n,1nr -k2n,2nr
+		| sort -k4nr -k1nr -k2nr
 	printf "# profile: gc count\n# ------------\n"
 	awk -f ${PROF_ROOT}/elapsed.awk "$PROF_FILE" \
-		| sort -k2n,2nr -k1n,1nr -k3n,3nr
+		| sort -k2nr -k1nr -k3nr
 	printf "# profile: gc elapsed time\n# ------------\n"
 	awk -f ${PROF_ROOT}/elapsed.awk "$PROF_FILE" \
-		| sort -k3n,3nr -k1n,1nr -k2n,2nr
+		| sort -k3nr -k1nr -k2nr
 	printf "# profile: resource\n# ------------\n"
 	awk -f ${PROF_ROOT}/res.awk "$PROF_FILE"
 fi
