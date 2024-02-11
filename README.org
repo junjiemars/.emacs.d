@@ -292,6 +292,7 @@ Introduce the rules of naming /files/ and /functions/.
 
 #+REVEAL: split
 - /autoload extension/ for Emacs builtin packages:
+	=<package>.el=
   =on-<package-name>-autoload.el=
 #+BEGIN_EXAMPLE
     (emacs-home* "config/")
@@ -310,15 +311,13 @@ Introduce the rules of naming /files/ and /functions/.
 
 #+REVEAL: split
 - /extension/ for /non/ Emacs builtin packages:
+	=use-<package-name>.el=
   =use-<package-name>-autoload.el=
 #+BEGIN_EXAMPLE
     (emacs-home* "config/")
     ├── use-geiser-autoload.el
-    ├── use-lfe-autoload.el
-    ├── use-lua-autoload.el
     ├── use-magit-autoload.el
     ├── use-slime-autoload.el
-    ├── use-web-autoload.el
     └── (comment "more ...")
 #+END_EXAMPLE
 

@@ -15,7 +15,8 @@
                      (executable-find% "ecl")
                      (executable-find% "acl")))
   :packages '(slime)
-  :compile `(,(compile-unit% (emacs-home* "config/use-slime-autoload.el")))))
+  :compile `(,(compile-unit% (emacs-home* "config/use-slime.el") t)
+             ,(compile-unit% (emacs-home* "config/use-slime-autoload.el")))))
 
 ;;; :doc
 (*self-packages*
@@ -33,12 +34,7 @@
  :put :erlang
  (list
   :cond (comment (executable-find% "erlc"))
-  :packages (list 'erlang
-                  (when% (executable-find% "lfe")
-                    'lfe-mode))
-  :compile (list (when% (executable-find% "lfe")
-                   (compile-unit%
-                    (emacs-home* "config/use-lfe-autoload.el") t)))))
+  :packages (list 'erlang)))
 
 ;;; :lisp
 (*self-packages*
@@ -46,15 +42,15 @@
  (list
   :cond (comment t)
   :packages '(paredit rainbow-delimiters)
-  :compile `(,(compile-unit% (emacs-home* "config/use-lisp-autoload.el")))))
+  :compile `(,(compile-unit% (emacs-home* "config/use-lisp.el") t)
+             ,(compile-unit% (emacs-home* "config/use-lisp-autoload.el")))))
 
 ;;; :lua
 (*self-packages*
  :put :lua
  (list
   :cond (comment (executable-find% "lua"))
-  :packages '(lua-mode)
-  :compile `(,(compile-unit% (emacs-home* "config/use-lua-autoload.el") t))))
+  :packages '(lua-mode)))
 
 ;;; :org
 (*self-packages*
@@ -87,7 +83,8 @@
                           (executable-find% "chicken")
                           (executable-find% "guile"))))
   :packages  '(geiser)
-  :compile `(,(compile-unit% (emacs-home* "config/use-geiser-autoload.el")))))
+  :compile `(,(compile-unit% (emacs-home* "config/use-geiser.el") t)
+             ,(compile-unit% (emacs-home* "config/use-geiser-autoload.el")))))
 
 ;;; :vlang
 (*self-packages*
@@ -103,7 +100,8 @@
   :cond (comment (and (when-version% <= 24.4 t)
                       (executable-find% "git")))
   :packages '(magit)
-  :compile `(,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
+  :compile `(,(compile-unit% (emacs-home* "config/use-magit.el") t)
+             ,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
 
 ;;; :web
 (*self-packages*

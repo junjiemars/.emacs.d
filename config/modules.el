@@ -92,6 +92,16 @@
            (package-install ,p))))))
 
 
+(defalias '*package-compile-units*
+  (lexical-let% ((us '()))
+    (lambda (&optional n)
+      "N"
+      (cond ((consp n) (dolist* (s (nreverse n) us)
+                         (setq us (cons s us))))
+            (t us))))
+  "Autloaded \\=`compile-unit\\='.")
+
+
 (defun package*-parse-spec! (spec &optional remove-unused)
   "Parse SPEC, install, REMOVE-UNUSED packages."
   (dolist* (s spec)
@@ -107,16 +117,6 @@
                       (package*-delete! n))
                   (package*-install! (if tar tar n) tar))))))
         (*package-compile-units* (self-spec-> ss :compile))))))
-
-
-(defalias '*package-compile-units*
-  (lexical-let% ((us '()))
-    (lambda (&optional n)
-      "N"
-      (cond ((consp n) (dolist* (s n us)
-                         (setq us (cons s us))))
-            (t us))))
-  "Autloaded \\=`compile-unit\\='.")
 
 
 (defun self-package-init! ()

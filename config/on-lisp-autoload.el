@@ -14,11 +14,11 @@
 ;;; `elisp-mode' or `lisp-mode' after load
 (with-eval-after-load
     (if-version% <= 25.0 'elisp-mode 'lisp-mode)
-  (on-elisp-init!))
+  (make-thread* #'on-elisp-init!))
 
 ;;; `ielm' after load
 (with-eval-after-load 'ielm
-  (on-ielm-init!))
+  (make-thread* #'on-ielm-init!))
 
 ;;; autoload
 

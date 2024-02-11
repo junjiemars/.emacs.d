@@ -11,7 +11,7 @@
 
 ;;; `eshell' after load
 (with-eval-after-load 'eshell
-  (on-eshell-init!))
+  (make-thread* #'on-eshell-init!))
 
 
 ;; end of on-eshell-autoload.el
