@@ -51,16 +51,16 @@ test_clean() {
 
 test_boot() {
   test_echo_env "boot"
-	test_boot_env
+  test_boot_env
 }
 
 test_bone() {
   test_echo_env "bone|clean"
   test_clean_env
   test_echo_env "bone|compile"
-	test_boot_env
+  test_boot_env
   test_echo_env "bone|boot"
-	test_boot_env
+  test_boot_env
 }
 
 test_axiom() {
@@ -124,16 +124,16 @@ END
   echo "# cat <${_ENV_PRO_}"
   cat <"${_ENV_PRO_}"
   test_echo_env "package|compile"
-	test_boot_env
+  test_boot_env
   test_echo_env "package|boot"
-	test_boot_env
+  test_boot_env
 }
 
 test_profile() {
-	local d="${_ROOT_}/.profile/${_ENV_VER_}"
-	local fc="${d}/compile"
-	local fb="${d}/boot"
-	local prof="${_ROOT_}/.github/prof.sh"
+  local d="${_ROOT_}/.profile/${_ENV_VER_}"
+  local fc="${d}/compile"
+  local fb="${d}/boot"
+  local prof="${_ROOT_}/.github/prof.sh"
   test_echo_env "profile|clean"
   test_clean_env
   cat <<END > "${_ENV_PRO_}"
@@ -164,7 +164,7 @@ test_profile() {
 END
   echo "# cat <${_ENV_PRO_}"
   cat <"${_ENV_PRO_}"
-	mkdir -p "$d"
+  mkdir -p "$d"
   test_echo_env "profile|compile"
   ${_EMACS_} --batch \
              --no-window-system \
@@ -172,7 +172,7 @@ END
 (progn
   (defvar *nore-emacs-profile* nil)
   (load \"${_ROOT_}/init.el\"))" 2>"$fc"
-	$prof "$fc"
+  $prof "$fc"
   test_echo_env "profile|boot"
   ${_EMACS_} --batch \
              --no-window-system \
@@ -180,7 +180,7 @@ END
 (progn
   (defvar *nore-emacs-profile* nil)
   (load \"${_ROOT_}/init.el\"))" 2>"$fb"
-	$prof "$fb"
+  $prof "$fb"
 }
 
 test_debug() {
@@ -234,9 +234,9 @@ case "${_TEST_}" in
   bone)     test_bone     ;;
   axiom)    test_axiom    ;;
   package)  test_package  ;;
-	profile)  test_profile  ;;
-	clean)    test_clean    ;;
-	boot)     test_boot     ;;
+  profile)  test_profile  ;;
+  clean)    test_clean    ;;
+  boot)     test_boot     ;;
   debug)    test_debug    ;;
   *) ;;
 esac
