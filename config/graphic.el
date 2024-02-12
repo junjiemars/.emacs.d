@@ -55,16 +55,15 @@
      (when-graphic% `((tool-bar-lines . 0)))))
   "The essential frame set.")
 
-;;; compatible for Emacs-23-
-(unless-var% initial-buffer-choice nil
-  (defvar initial-buffer-choice t))
+;; ;;; compatible for Emacs-23-
+;; (unless-var% initial-buffer-choice nil
+;;   (defvar initial-buffer-choice t))
 
 (defun self-frame-init! ()
   "Initialize frame specs from \\=`*self-env-spec*\\='."
   (setq% frame-resize-pixelwise
          (frame-spec->* :frame-resize-pixelwise))
-  (setq initial-buffer-choice t
-        inhibit-splash-screen
+  (setq inhibit-splash-screen
         (or (and (frame-spec->* :allowed)
                  (frame-spec->* :inhibit-splash-screen))
             inhibit-splash-screen)
