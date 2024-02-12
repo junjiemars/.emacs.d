@@ -3,14 +3,40 @@
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; on-marks-autoload.el
+;; mill.el
+;;;;
+;; Commentary: mark and kill keys
 ;;;;
 
-(if-version%
-    < 25
-    (eval-when-compile
-      (require 'marks (v-home%> "config/marks")))
-  (require 'marks (v-home%> "config/marks")))
+;;; macro
+
+;; (if-version%
+;;     < 25
+;;     (eval-when-compile
+;;       (require 'marks (v-home%> "config/marks")))
+;;   (require 'marks (v-home%> "config/marks")))
+
+(declare-function _mark_defun@_ (v-home%> "config/marks"))
+(declare-function _mark_filename@_ (v-home%> "config/marks"))
+(declare-function _mark_quoted_asymmetry@_ (v-home%> "config/marks"))
+(declare-function _mark_quoted_symmetry@_ (v-home%> "config/marks"))
+(declare-function _mark_sexp@_ (v-home%> "config/marks"))
+(declare-function _mark_string@_ (v-home%> "config/marks"))
+(declare-function _mark_symbol@_ (v-home%> "config/marks"))
+(declare-function _mark_thing_ (v-home%> "config/marks"))
+(declare-function _mark_whole_sexp@_ (v-home%> "config/marks"))
+(declare-function _mark_word@_ (v-home%> "config/marks"))
+(eval-when-compile
+  (autoload '_mark_defun@_ (v-home%> "config/marks") nil nil 'macro)
+  (autoload '_mark_filename@_ (v-home%> "config/marks") nil nil 'macro)
+  (autoload '_mark_quoted_asymmetry@_ (v-home%> "config/marks") nil nil 'macro)
+  (autoload '_mark_quoted_symmetry@_ (v-home%> "config/marks") nil nil 'macro)
+  (autoload '_mark_sexp@_ (v-home%> "config/marks") nil nil 'macro)
+  (autoload '_mark_string@_ (v-home%> "config/marks") nil nil 'macro)
+  (autoload '_mark_symbol@_ (v-home%> "config/marks") nil nil 'macro)
+  (autoload '_mark_thing_ (v-home%> "config/marks") nil nil 'macro)
+  (autoload '_mark_whole_sexp@_ (v-home%> "config/marks") nil nil 'macro)
+  (autoload '_mark_word@_ (v-home%> "config/marks") nil nil 'macro))
 
 
 ;;; `mark-symbol@' `kill-symbol@'
@@ -205,29 +231,30 @@ If prefix BOUNDARY is non-nil, then mark the whole quoted thing."
 
 ;;; Keys
 
-;; Kill
-(define-key% (current-global-map) (kbd "C-x M-d") #'kill-word@)
-(define-key% (current-global-map) (kbd "C-x M-e") #'kill-sexp@)
-(define-key% (current-global-map) (kbd "C-x M-l") #'kill-whole-line)
-(define-key% (current-global-map) (kbd "C-x M-q s") #'kill-quoted-symmetry@)
-(define-key% (current-global-map) (kbd "C-x M-q a") #'kill-quoted-asymmetry@)
-(define-key% (current-global-map) (kbd "C-x M-s") #'kill-string@)
-
-;; Mark
-(define-key% (current-global-map) (kbd "C-c M-@") #'mark-word@)
-(define-key% (current-global-map) (kbd "C-c C-M-@") #'mark-sexp@)
-(define-key% (current-global-map) (kbd "C-c M-h") #'mark-defun@)
-(define-key% (current-global-map) (kbd "C-c M-f") #'mark-filename@)
-(define-key% (current-global-map) (kbd "C-c M-l") #'mark-line@)
-(define-key% (current-global-map) (kbd "C-c M-q s") #'mark-quoted-symmetry@)
-(define-key% (current-global-map) (kbd "C-c M-q a") #'mark-quoted-asymmetry@)
-(define-key% (current-global-map) (kbd "C-c M-s") #'mark-string@)
-(define-key% (current-global-map) (kbd "M-@") #'mark-word)
-(define-key% (current-global-map) (kbd "C-M-@") #'mark-sexp)
-(define-key% (current-global-map) (kbd "C-M-SPC") #'mark-sexp)
-(define-key% (current-global-map) (kbd "C-M-h") #'mark-defun)
+(defun on-mill-init! ()
+  ;; Kill
+  (define-key% (current-global-map) (kbd "C-x M-d") #'kill-word@)
+  (define-key% (current-global-map) (kbd "C-x M-e") #'kill-sexp@)
+  (define-key% (current-global-map) (kbd "C-x M-l") #'kill-whole-line)
+  (define-key% (current-global-map) (kbd "C-x M-q s") #'kill-quoted-symmetry@)
+  (define-key% (current-global-map) (kbd "C-x M-q a") #'kill-quoted-asymmetry@)
+  (define-key% (current-global-map) (kbd "C-x M-s") #'kill-string@)
+  ;; Mark
+  (define-key% (current-global-map) (kbd "C-c M-@") #'mark-word@)
+  (define-key% (current-global-map) (kbd "C-c C-M-@") #'mark-sexp@)
+  (define-key% (current-global-map) (kbd "C-c M-h") #'mark-defun@)
+  (define-key% (current-global-map) (kbd "C-c M-f") #'mark-filename@)
+  (define-key% (current-global-map) (kbd "C-c M-l") #'mark-line@)
+  (define-key% (current-global-map) (kbd "C-c M-q s") #'mark-quoted-symmetry@)
+  (define-key% (current-global-map) (kbd "C-c M-q a") #'mark-quoted-asymmetry@)
+  (define-key% (current-global-map) (kbd "C-c M-s") #'mark-string@)
+  (define-key% (current-global-map) (kbd "M-@") #'mark-word)
+  (define-key% (current-global-map) (kbd "C-M-@") #'mark-sexp)
+  (define-key% (current-global-map) (kbd "C-M-SPC") #'mark-sexp)
+  (define-key% (current-global-map) (kbd "C-M-h") #'mark-defun))
 
 ;; end of Keys
 
+(provide 'mill)
 
-;; end of on-marks-autoload.el
+;; end of mill.el

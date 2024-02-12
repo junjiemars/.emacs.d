@@ -6,13 +6,27 @@
 ;; isearchs.el
 ;;;;
 
+;;; macro
 
-(if-version%
-    < 25
-    (eval-when-compile
-      (require 'marks (v-home%> "config/marks")))
-  (require 'marks (v-home%> "config/marks")))
+;; (if-version%
+;;     < 25
+;;     (eval-when-compile
+;;       (require 'marks (v-home%> "config/marks")))
+;;   (require 'marks (v-home%> "config/marks")))
 
+(declare-function _mark_filename@_ (v-home%> "config/marks"))
+(declare-function _mark_quoted_symmetry@_ (v-home%> "config/marks"))
+(declare-function _mark_symbol@_ (v-home%> "config/marks"))
+(declare-function _mark_thing_ (v-home%> "config/marks"))
+(declare-function _mark_word@_ (v-home%> "config/marks"))
+(eval-when-compile
+  (autoload '_mark_filename@_ (v-home%> "config/marks") nil nil 'macro)
+  (autoload '_mark_quoted_symmetry@_ (v-home%> "config/marks") nil nil 'macro)
+  (autoload '_mark_symbol@_ (v-home%> "config/marks") nil nil 'macro)
+  (autoload '_mark_thing_ (v-home%> "config/marks") nil nil 'macro)
+  (autoload '_mark_word@_ (v-home%> "config/marks") nil nil 'macro))
+
+;; end of macro
 
 (defun isearch*-forward (&optional style backward)
   "Search incrementally forward or BACKWARD in STYLE."

@@ -22,7 +22,7 @@
 
 ;;; `cc-mode' after load
 (with-eval-after-load 'cc-mode
-  (on-cc-mode-init!))
+  (make-thread* #'on-cc-mode-init!))
 
 ;;; `cmacexp' after load
 
@@ -30,11 +30,11 @@
 
 (if-feature-cmacexp%
  (with-eval-after-load 'cmacexp
-   (on-cmacexp-init!)))
+   (make-thread* #'on-cmacexp-init!)))
 
 ;;; `man' after load
 (with-eval-after-load 'man
-  (on-man-init!))
+  (make-thread* #'on-man-init!))
 
 ;;; autoload
 (autoload 'cc*-cc (v-home%> "config/cc"))

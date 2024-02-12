@@ -12,7 +12,7 @@
 
 ;;; after-load
 (with-eval-after-load 'sql
-  (on-sql-init!))
+  (make-thread* #'on-sql-init!))
 
 ;;; autoload
 

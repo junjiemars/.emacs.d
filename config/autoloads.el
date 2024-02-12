@@ -92,7 +92,6 @@
     (compile-unit% (emacs-home* "config/idos.el") t)
     (compile-unit% (emacs-home* "config/lisps.el") t)
     (compile-unit% (emacs-home* "config/marks.el") t)
-    (compile-unit% (emacs-home* "config/isearchs.el"))
     (compile-unit% (emacs-home* "config/mixal.el") t)
     (compile-unit% (emacs-home* "config/nets.el") t)
     (compile-unit% (emacs-home* "config/orgs.el") t)
@@ -163,6 +162,7 @@
     ;; on `idos'
     (compile-unit% (emacs-home* "config/on-ido-autoload.el"))
     ;; on `isearchs'
+    (compile-unit% (emacs-home* "config/isearchs.el") t)
     (compile-unit% (emacs-home* "config/on-isearch-autoload.el"))
     ;; on `lisps'
     (compile-unit% (emacs-home* "config/on-lisp-autoload.el"))
@@ -178,8 +178,9 @@
     ;; self :key
     (when-graphic%
       (compile-unit% (emacs-home* "config/key.el")))
-    ;; on `marks'
-    (compile-unit% (emacs-home* "config/on-marks-autoload.el"))
+    ;; on `mill'
+    (compile-unit% (emacs-home* "config/mill.el") t)
+    (compile-unit% (emacs-home* "config/on-mill-autoload.el"))
     ;; `mixvm'
     (prog1
         (compile-unit% (emacs-home* "config/mixvm.el") t)

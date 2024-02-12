@@ -13,7 +13,7 @@
 (if-version%
     < 25
     (with-eval-after-load 'isearch
-      (on-isearch-init!))
+      (make-thread* #'on-isearch-init!))
   (on-isearch-init!))
 
 ;;; autoload
