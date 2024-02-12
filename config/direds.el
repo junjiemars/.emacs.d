@@ -172,8 +172,7 @@
                 (zerop (car dired)))))
            'dired)
     ;; using `insert-directory-program'
-    (setq% ls-lisp-use-insert-directory-program t 'ls-lisp)
-)
+    (setq% ls-lisp-use-insert-directory-program t 'ls-lisp))
 
   (when-platform% 'windows-nt
     ;; prefer GNU find on Windows, such for `find-dired' or `find-name-dired'.
