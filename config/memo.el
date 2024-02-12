@@ -63,23 +63,25 @@
 
     (setq% desktop-files-not-to-save
            (let ((ss (desktop-spec->* :files-not-to-save)))
-             (concat "\\(\\.el\\.gz\\)\\|"
-                     desktop-files-not-to-save
-                     (if ss (concat "\\|" ss) "")))
+             (concat
+              "\\.desktop\\|~$\\|^/sudo:\\|^/ssh[x]?:\\|ftp:\\|\\.elc$\\|\\.el\\.gz$\\|\\.[tT][aA][gG][sS]?\\|\\.[lL][oO][gG]"
+              (when ss (concat "\\|" ss))))
            'desktop)
 
     (setq% desktop-buffers-not-to-save
            (let ((ss (desktop-spec->* :buffers-not-to-save)))
-             (concat "\\(\\.[tT][aA][gG][sS]?\\|\\.[lL][oO][gG]\\)"
-                     desktop-buffers-not-to-save
-                     (if ss (concat "\\|" ss) "")))
+             (concat
+              "\\*.*?\\*"
+              (when ss (concat "\\|" ss))))
            'desktop)
 
     (setq% desktop-modes-not-to-save
            (append '(archive-mode
+                     dired-mode
                      eww-mode
                      flymake-mode
                      rmail-mode
+                     special-mode
                      tags-table-mode)
                    (desktop-spec->* :modes-not-to-save))
            'desktop)

@@ -87,11 +87,9 @@
 ;;; desktop
 (*self-env-spec*
  :put :desktop
- (list :files-not-to-save
-       "\\.desktop\\|~$\\|^/sudo:\\|^/ssh[x]?:\\|\\.el[cn]$"
-       :buffers-not-to-save "\\.?[Tt][Aa][Gg][Ss]\\|\\.[Ll][Oo][Gg]"
-       :modes-not-to-save
-       '(dired-mode fundamental-mode)
+ (list :files-not-to-save nil
+       :buffers-not-to-save nil
+       :modes-not-to-save nil
        :allowed nil))
 
 ;;; eshell

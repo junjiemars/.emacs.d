@@ -17,15 +17,15 @@
 
 ;;; `dired' after load
 (with-eval-after-load 'dired
-  (on-dired-init!))
+  (make-thread* #'on-dired-init!))
 
 ;;; `dired-aux' after load
 (with-eval-after-load 'dired-aux
-  (on-dired-aux-init!))
+  (make-thread* #'on-dired-aux-init!))
 
 ;;; `arc-mode' after load
 (with-eval-after-load 'arc-mode
-  (on-arc-mode-init!))
+  (make-thread* #'on-arc-mode-init!))
 
 ;;; autoload
 (autoload 'dired-get-file-for-visit "dired")

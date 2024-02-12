@@ -16,15 +16,15 @@
 
 ;; `compile' after load
 (with-eval-after-load 'compile
-  (on-compile-init!))
+  (make-thread* #'on-compile-init!))
 
 ;;; `grep' after load
 (with-eval-after-load 'grep
-  (on-grep-init!))
+  (make-thread* #'on-grep-init!))
 
 ;;; `make-mode' after load
 (with-eval-after-load 'make-mode
-  (on-make-mode-init!))
+  (make-thread* #'on-make-mode-init!))
 
 ;;; autoload
 
