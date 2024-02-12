@@ -292,8 +292,9 @@ And copy the qualified buffer name to kill ring."
   (let ((name (if (eq 'dired-mode major-mode)
                   (expand-file-name default-directory)
                 (or (buffer-file-name)
-                    (buffer-name)))))
-    (kill-new name)
+                    (buffer-name))))
+        (interprogram-paste-function nil))
+    (kill-new name t)
     (message "%s" name)))
 
 (defun get-buffer-coding-system (&optional buffer)

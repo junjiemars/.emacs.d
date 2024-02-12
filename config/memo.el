@@ -64,7 +64,7 @@
     (setq% desktop-files-not-to-save
            (let ((ss (desktop-spec->* :files-not-to-save)))
              (concat
-              "\\.desktop\\|~$\\|^/sudo:\\|^/ssh[x]?:\\|ftp:\\|\\.elc$\\|\\.el\\.gz$\\|\\.[tT][aA][gG][sS]?\\|\\.[lL][oO][gG]"
+              "\\.desktop$\\|~$\\|\\.elc$\\|\\.el\\.gz$\\|\\.[tT][aA][gG][sS]?$\\|\\.[lL][oO][gG]$\\|^/sudo:\\|^/ssh[x]?:\\|ftp:"
               (when ss (concat "\\|" ss))))
            'desktop)
 
@@ -82,7 +82,8 @@
                      flymake-mode
                      rmail-mode
                      special-mode
-                     tags-table-mode)
+                     tags-table-mode
+                     vc-dir-mode)
                    (desktop-spec->* :modes-not-to-save))
            'desktop)
 
