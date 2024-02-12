@@ -118,10 +118,11 @@
             ((executable-find% "minizip") (_make_zip_bat_ "minizip"))))))
 
 
-(defun dired-echo-current-directory* (&optional localp)
+(defun dired*-echo-current-directory (&optional localp)
   "Echo the current directory in \\=`dired-mode\\='."
   (interactive)
-  (let ((d (dired-current-directory localp)))
+  (let ((d (dired-current-directory localp))
+        (interprogram-paste-function nil))
     (kill-new d)
     (message "%s" d)))
 
@@ -146,6 +147,11 @@
      (or (dired-get-filename nil t)
          (user-error "%s" "No file on this line")))))
 
+(defun dired*-copy-filename-as-kill (&optional arg)
+  "See \\=`dired-copy-filename-as-kill\\='."
+  (interactive "P")
+  (let ((interprogram-paste-function nil))
+    (dired-copy-filename-as-kill arg)))
 
 (defun on-dired-init! ()
   "On \\=`dired\\=' initialization."
@@ -166,7 +172,8 @@
                 (zerop (car dired)))))
            'dired)
     ;; using `insert-directory-program'
-    (setq% ls-lisp-use-insert-directory-program t 'ls-lisp))
+    (setq% ls-lisp-use-insert-directory-program t 'ls-lisp)
+)
 
   (when-platform% 'windows-nt
     ;; prefer GNU find on Windows, such for `find-dired' or `find-name-dired'.
@@ -182,7 +189,8 @@
 
   (define-key dired-mode-map (kbd "b") #'dired-hexl-find-file)
   (define-key dired-mode-map (kbd "B") #'browse-file)
-  (define-key dired-mode-map (kbd "W") #'dired-echo-current-directory*))
+  (define-key dired-mode-map (kbd "w") #'dired*-copy-filename-as-kill)
+  (define-key dired-mode-map (kbd "W") #'dired*-echo-current-directory))
 
 ;; end of `dired' setting
 
