@@ -64,7 +64,7 @@
     (setq% desktop-files-not-to-save
            (let ((ss (desktop-spec->* :files-not-to-save)))
              (concat
-              "\\.desktop$\\|~$\\|\\.elc$\\|\\.el\\.gz$\\|\\.[tT][aA][gG][sS]?$\\|\\.[lL][oO][gG]$\\|^/sudo:\\|^/ssh[x]?:\\|ftp:"
+              "\\.desktop$\\|~$\\|\\.elc$\\|\\.el\\.gz$\\|\\.[tT][aA][gG][sS]?$\\|\\.[lL][oO][gG]$\\|^/sudo:\\|^/sshx?:\\|ftp:"
               (when ss (concat "\\|" ss))))
            'desktop)
 
