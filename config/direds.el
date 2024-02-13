@@ -138,7 +138,7 @@
     (and name (browse-url name))))
 
 
-(defun dired-hexl-find-file ()
+(defun dired*-hexl-find-file ()
   "Edit the current file as hex dump format in \\=`dired-mode\\='."
   (interactive)
   (hexl-find-file
@@ -186,7 +186,7 @@
       (when find
         (windows-nt-env-path+ (file-name-directory find)))))
 
-  (define-key dired-mode-map (kbd "b") #'dired-hexl-find-file)
+  (define-key dired-mode-map (kbd "b") #'dired*-hexl-find-file)
   (define-key dired-mode-map (kbd "B") #'browse-file)
   (define-key dired-mode-map (kbd "w") #'dired*-copy-filename-as-kill)
   (define-key dired-mode-map (kbd "W") #'dired*-echo-current-directory))
