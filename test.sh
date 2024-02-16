@@ -204,6 +204,7 @@ check_env() {
   _ENV_VER_=$(${_EMACS_} --batch -Q --eval='(prin1 emacs-version)' \
                 | sed 's/\"//g' \
                 | cut -d '.' -f1,2)
+  echo "# _ENV_PRO_: ${_ENV_PRO_}"
   echo "# _ENV_VER_: ${_ENV_VER_}"
   _ENV_ERT_=$($_EMACS_ --batch --eval='(prin1 (require (quote ert) nil t))')
   echo "# _ENV_ERT_: ${_ENV_ERT_}"
