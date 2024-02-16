@@ -213,11 +213,11 @@ If optional UNIQUELY is non-nil then append uniquely."
 (defmacro make-thread* (fn &optional join name)
   "Threading call FN with NAME or in JOIN mode."
   `(if-fn% 'make-thread nil
-           (if ,join
+           (if% ,join
                (thread-join (make-thread ,fn ,name))
              (make-thread ,fn ,name))
      (ignore* ,join ,name)
-     (if (functionp ,fn)
+     (if% (functionp ,fn)
          (funcall ,fn)
        ,fn)))
 

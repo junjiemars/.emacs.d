@@ -16,4 +16,12 @@
 (with-eval-after-load 'magit
   (use-magit-init!))
 
+;;; add `magit' into `vc*-frontend'
+(when-feature-vc%
+  (declare-function vc*-frontend (v-home%> "config/vcs"))
+  (autoload 'vc*-frontend (v-home%> "config/vcs"))
+  (make-thread*
+   (lambda ()
+     (vc*-frontend '("magit" . magit-status)))))
+
 ;; end of use-magit-autoload.el
