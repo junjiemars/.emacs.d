@@ -6,30 +6,17 @@
 ;; vcs.el
 ;;;;
 
-
-(defmacro-if-feature% vc)
-(defmacro-if-feature% magit)
-
-
-(defmacro when-feature-vc% (&rest body)
-  "When \\=`vc\\=', do BODY."
-  (declare (indent 0))
-  (if-feature-vc%
-      (if-fn% 'vc-dir 'vc-dir
-              `(progn% ,@body)
-        `(comment ,@body))
-    `(comment ,@body)))
-
-
 (when-feature-vc%
-  (defvar *vc-frontend*
-    (delq nil `("*" ,(if-feature-magit% "magit")))
+  (defalias 'vc*-frontend
+    (lexical-let% ((b `(("*" . vc-dir))))
+      (lambda (&optional n)
+        (cond (n (append! n b t))
+              (t b))))
     "The fontend of VC."))
 
 (when-feature-vc%
   (defvar *vc-frontend-history* nil
     "The VC frontend choosing history list."))
-
 
 (when-feature-vc%
   (defun vc*-dir (&optional frontend)
@@ -39,18 +26,15 @@
                (completing-read
                 (format "Choose (%s) "
                         (mapconcat #'identity
-                                   *vc-frontend*
+                                   (mapcar #'car (vc*-frontend))
                                    "|"))
-                *vc-frontend* nil nil
+                (vc*-frontend) nil nil
                 (or (car *vc-frontend-history*)
-                    (car *vc-frontend*))
-                '*vc-frontend-history* (car *vc-frontend*))
-             (car *vc-frontend*))))
+                    (car (vc*-frontend)))
+                '*vc-frontend-history* (caar (vc*-frontend)))
+             (caar (vc*-frontend)))))
     (call-interactively
-     (cond ((string= "*" frontend) #'vc-dir)
-           ((string= "magit" frontend)
-            (if-feature-magit% #'magit-status #'vc-dir))
-           (t #'vc-dir)))))
+     (cdr (assoc-string frontend (vc*-frontend))))))
 
 
 (when-feature-vc%

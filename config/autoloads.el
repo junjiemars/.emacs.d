@@ -58,6 +58,17 @@
 ;;             (t i))))
 ;;   "The available Scheme's implementations for `ob'.")
 
+;;; `vc'
+(defmacro-if-feature% vc)
+(defmacro when-feature-vc% (&rest body)
+  "When \\=`vc\\=', do BODY."
+  (declare (indent 0))
+  (if-feature-vc%
+      (if-fn% 'vc-dir 'vc-dir
+              `(progn% ,@body)
+        `(comment ,@body))
+    `(comment ,@body)))
+
 ;; end of macro
 
 (defmacro autoload* (symbol file &optional docstring interactive type)
@@ -109,7 +120,8 @@
       (compile-unit% (emacs-home* "config/treesits.el") t))
     (compile-unit% (emacs-home* "config/tramps.el") t)
     (compile-unit% (emacs-home* "config/xrefs.el") t)
-    (compile-unit% (emacs-home* "config/vcs.el"))))
+    (when-feature-vc%
+      (compile-unit% (emacs-home* "config/vcs.el") t))))
 
 ;; end of `load-autoloaded-modes!'
 
@@ -267,7 +279,8 @@
     (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))
     ;; on `xrefs'
     (compile-unit% (emacs-home* "config/on-xref-autoload.el"))
-
+    ;; on `vcs'
+    (compile-unit% (emacs-home* "config/on-vcs-autoload.el"))
 
     ) ;; end of compile!
 
@@ -285,11 +298,14 @@
   (self-graphic-init!)
   (when-fn% 'self-shell-read! nil (self-shell-read!))
   (when-fn% 'self-socks-init! nil (self-socks-init!))
-  (when-fn% 'self-package-init! nil (self-package-init!))
   (load-autoloaded-modes!)
   (load-conditional-modes!)
   (when-fn% 'self-edit-init! nil (self-edit-init!))
   (when-font% (make-thread* #'self-glyph-init!))
+  (when-fn% 'self-package-init! nil
+    (condition-case err
+      (make-thread* #'self-package-init! (if-noninteractive% t))
+      (error (message "self-package-init!: %s" err))))
   (when-fn% 'self-desktop-read! nil
     (condition-case err
         (self-desktop-read!)
@@ -300,7 +316,8 @@
        (condition-case err
            (compile!
              (compile-unit* (*self-paths* :get :epilogue)))
-         (error (message "self-epilogue: %s" err)))))))
+         (error (message "self-epilogue: %s" err))))
+     (if-noninteractive% t))))
 
 
 ;; autoload when interactive or not
