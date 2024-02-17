@@ -313,13 +313,12 @@
         (self-desktop-read!)
       (error (message "self-desktop-read!: %s" err))))
   (when (*self-paths* :get :epilogue)
-    (if-noninteractive%
-        (compile! (compile-unit* (*self-paths* :get :epilogue)))
-      (make-thread*
-       (lambda ()
-         (condition-case err
-             (compile! (compile-unit* (*self-paths* :get :epilogue)))
-           (error (message "self-epilogue: %s" err))))))))
+    (condition-case err
+        (if-noninteractive%
+            (compile! (compile-unit* (*self-paths* :get :epilogue)))
+          (make-thread*
+           (compile! (compile-unit* (*self-paths* :get :epilogue)))))
+      (error (message "self-epilogue: %s" err)))))
 
 
 ;; autoload when interactive or not
