@@ -14,7 +14,7 @@
     < 25
     (with-eval-after-load 'isearch
       (make-thread* #'on-isearch-init!))
-  (on-isearch-init!))
+  (make-thread* #'on-isearch-init!))
 
 ;;; autoload
 

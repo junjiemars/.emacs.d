@@ -6,7 +6,7 @@
 ;; fn.el
 ;;;;
 ;; Commentary: common notions.
-;;; Code:
+;;;;
 
 
 ;; Load cl-lib/cl at runtime
