@@ -17,7 +17,7 @@ test_echo_env() {
 }
 
 test_clean_env() {
-  cat <<END >"${_ENV_PRO_}"
+  cat <<END>"${_ENV_PRO_}"
 (*self-paths* :put :env-spec nil)
 (*self-paths* :put :package-spec nil)
 (*self-paths* :put :epilogue nil)
@@ -104,7 +104,7 @@ test_package() {
   test_echo_env "package|clean"
   test_clean_env
   test_echo_env "package|prologue"
-  cat <<END > "${_ENV_PRO_}"
+  cat <<END> "${_ENV_PRO_}"
 (*self-paths* :put :package-spec nil)
 (*self-paths* :put :env-spec nil)
 (*self-paths* :put :epilogue nil)
@@ -137,7 +137,7 @@ test_profile() {
   local prof="${_ROOT_}/.github/prof.sh"
   test_echo_env "profile|clean"
   test_clean_env
-  cat <<END > "${_ENV_PRO_}"
+  cat <<END> "${_ENV_PRO_}"
 (*self-paths* :put :package-spec nil)
 (*self-paths* :put :env-spec nil)
 (*self-paths* :put :epilogue nil)
@@ -215,6 +215,7 @@ check_env() {
 make_env() {
   echo "# make env ..."
   export EMACS_HOME="${_ROOT_}/"
+  [ -d $(dirname "${EMACS_HOME}") ] || mkdir -p "${EMACS_HOME}"
   echo "# EMACS_HOME: ${EMACS_HOME}"
 }
 
