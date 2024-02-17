@@ -215,7 +215,7 @@ check_env() {
 make_env() {
   echo "# make env ..."
   export EMACS_HOME="${_ROOT_}/"
-  [ -d $(dirname "${EMACS_HOME}") ] || mkdir -p "${EMACS_HOME}"
+  [ -d $(dirname "${EMACS_HOME}") ] || mkdir -p $(dirname "${EMACS_HOME}")
   echo "# EMACS_HOME: ${EMACS_HOME}"
 }
 
