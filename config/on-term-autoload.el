@@ -7,16 +7,12 @@
 ;;;;
 
 (declare-function term*-unify-shell-prompt (v-home%> "config/terms"))
-(when-platform% 'windows-nt
-  (declare-function on-term-init! (v-home%> "config/terms"))
-  (autoload 'on-term-init! (v-home%> "config/terms")))
-
-(when-platform% 'windows-nt
-  (with-eval-after-load 'term
-  	(on-term-init!)))
-
-;;; autoload
+(declare-function on-term-init! (v-home%> "config/terms"))
 (autoload 'term*-unify-shell-prompt (v-home%> "config/terms")
   "Unify shell prompt." t)
+(autoload 'on-term-init! (v-home%> "config/terms"))
+
+(with-eval-after-load 'term
+  (make-thread* #'on-term-init!))
 
 ;; end of on-term-autoload.el
