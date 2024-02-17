@@ -304,20 +304,22 @@
   (when-font% (make-thread* #'self-glyph-init!))
   (when-fn% 'self-package-init! nil
     (condition-case err
-      (make-thread* #'self-package-init! (if-noninteractive% t))
+        (if-noninteractive%
+            (self-package-init!)
+          (make-thread* #'self-package-init!))
       (error (message "self-package-init!: %s" err))))
   (when-fn% 'self-desktop-read! nil
     (condition-case err
         (self-desktop-read!)
       (error (message "self-desktop-read!: %s" err))))
   (when (*self-paths* :get :epilogue)
-    (make-thread*
-     (lambda ()
-       (condition-case err
-           (compile!
-             (compile-unit* (*self-paths* :get :epilogue)))
-         (error (message "self-epilogue: %s" err))))
-     (if-noninteractive% t))))
+    (if-noninteractive%
+        (compile! (compile-unit* (*self-paths* :get :epilogue)))
+      (make-thread*
+       (lambda ()
+         (condition-case err
+             (compile! (compile-unit* (*self-paths* :get :epilogue)))
+           (error (message "self-epilogue: %s" err))))))))
 
 
 ;; autoload when interactive or not
