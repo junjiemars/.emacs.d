@@ -304,9 +304,7 @@
   (when-font% (make-thread* #'self-glyph-init!))
   (when-fn% 'self-package-init! nil
     (condition-case err
-        (if-noninteractive%
-            (self-package-init!)
-          (make-thread* #'self-package-init!))
+        (make-thread* #'self-package-init! (if-noninteractive% t))
       (error (message "self-package-init!: %s" err))))
   (when-fn% 'self-desktop-read! nil
     (condition-case err
@@ -314,10 +312,10 @@
       (error (message "self-desktop-read!: %s" err))))
   (when (*self-paths* :get :epilogue)
     (condition-case err
-        (if-noninteractive%
-            (compile! (compile-unit* (*self-paths* :get :epilogue)))
-          (make-thread*
-           (compile! (compile-unit* (*self-paths* :get :epilogue)))))
+        (make-thread*
+         (lambda ()
+           (compile! (compile-unit* (*self-paths* :get :epilogue))))
+         (if-noninteractive% t))
       (error (message "self-epilogue: %s" err)))))
 
 

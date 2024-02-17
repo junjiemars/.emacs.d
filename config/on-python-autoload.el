@@ -11,7 +11,7 @@
 
 ;;; `python' after load
 (with-eval-after-load 'python
-  (on-python-init!))
+  (make-thread* #'on-python-init!))
 
 ;;; autoload
 (autoload 'python*-program (v-home%> "config/pythons")

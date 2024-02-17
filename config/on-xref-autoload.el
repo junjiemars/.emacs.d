@@ -15,11 +15,11 @@
 
 ;;; `xref' after load
 (with-eval-after-load 'xref
-  (on-xref-init!))
+  (make-thread* #'on-xref-init!))
 
 ;;; `etags' after load
 (with-eval-after-load 'etags
-  (on-etags-init!))
+  (make-thread* #'on-etags-init!))
 
 ;;; autoload
 

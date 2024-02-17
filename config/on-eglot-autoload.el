@@ -11,6 +11,6 @@
 
 ;;; `eglot' after load
 (with-eval-after-load 'eglot
-  (on-eglot-init!))
+  (make-thread* #'on-eglot-init!))
 
 ;; end of on-eglot-autoload.el

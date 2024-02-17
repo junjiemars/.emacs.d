@@ -11,6 +11,6 @@
 
 ;;; `treesit' after load
 (with-eval-after-load 'treesit
-  (on-treesit-init!))
+  (make-thread* #'on-treesit-init!))
 
 ;; end of on-treesit-autoload.el

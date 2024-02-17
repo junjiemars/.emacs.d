@@ -11,7 +11,7 @@
 
 ;;; `ido' after load
 (with-eval-after-load 'ido
-  (on-ido-init!))
+  (make-thread* #'on-ido-init!))
 
 ;; default view file keybindings
 (define-key% (current-global-map) (kbd "C-x 5 r")

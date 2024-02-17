@@ -11,7 +11,7 @@
 
 ;; `tramp' after load
 (with-eval-after-load 'tramp
-  (on-tramp-init!))
+  (make-thread* #'on-tramp-init!))
 
 ;;; autoload
 

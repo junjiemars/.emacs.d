@@ -12,7 +12,7 @@
 
 ;;; `eww' after load
 (with-eval-after-load 'eww
-  (on-eww-init!))
+  (make-thread* #'on-eww-init!))
 
 ;;; autoload
 (autoload 'lookup-web (v-home%> "config/ewws")

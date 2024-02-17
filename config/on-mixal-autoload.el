@@ -11,6 +11,6 @@
 
 ;;; after-load
 (with-eval-after-load 'mixal-mode
-  (on-mixal-mode-init!))
+  (make-thread* #'on-mixal-mode-init!))
 
 ;; end of on-mixal-autoload.el

@@ -10,7 +10,7 @@
 (autoload 'on-hippie-init! (v-home%> "config/hippies"))
 
 (with-eval-after-load 'hippie-exp
-  (on-hippie-init!))
+  (make-thread* #'on-hippie-init!))
 
 
 ;; Key binding to use "hippie expand" for text autocompletion

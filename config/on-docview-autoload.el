@@ -10,6 +10,6 @@
 (autoload 'on-doc-view-init! (v-home%> "config/docs"))
 
 (with-eval-after-load 'doc-view
-  (on-doc-view-init!))
+  (make-thread* #'on-doc-view-init!))
 
 ;; end of on-docview-autoload.el

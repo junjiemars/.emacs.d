@@ -11,7 +11,7 @@
 
 ;;; `project' after load
 (with-eval-after-load 'project
-  (on-project-init!))
+  (make-thread* #'on-project-init!))
 
 (when-fn% 'project-find-file 'project
   (define-key% (current-global-map) (kbd "C-x p f")
