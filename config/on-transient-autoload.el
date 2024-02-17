@@ -11,7 +11,7 @@
 
 (when-feature-transient%
   (with-eval-after-load 'transient
-    (on-transient-init!)))
+    (make-thread* #'on-transient-init!)))
 
 
 ;;; `transient-mark-mode'
