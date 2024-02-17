@@ -114,8 +114,8 @@ non-nil, do BODY."
   (inhibit-file-name-handler
     (if (file-exists-p file)
         file
-      (let ((dir (file-name-directory file)))
-        (prog1 file
+      (prog1 file
+        (let ((dir (file-name-directory file)))
           (unless (file-exists-p dir)
             (let ((i (1- (length dir)))
                   (ds nil))
