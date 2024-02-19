@@ -279,7 +279,8 @@
     ;; on `xrefs'
     (compile-unit% (emacs-home* "config/on-xref-autoload.el"))
     ;; on `vcs'
-    (compile-unit% (emacs-home* "config/on-vcs-autoload.el"))
+    (when-feature-vc%
+      (compile-unit% (emacs-home* "config/on-vcs-autoload.el")))
 
     ) ;; end of compile!
 

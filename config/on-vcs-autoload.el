@@ -11,9 +11,8 @@
 (autoload 'vc*-dir (v-home%> "config/vcs"))
 (autoload 'vc*-frontend (v-home%> "config/vcs"))
 
-(when-feature-vc%
-  ;; general `vc*-dir'
-  (define-key% (current-global-map) (kbd "C-x v d") #'vc*-dir))
+;; general `vc*-dir'
+(define-key% (current-global-map) (kbd "C-x v d") #'vc*-dir)
 
 
 
