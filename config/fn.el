@@ -31,6 +31,53 @@
 ;; end of alias
 
 ;;;
+;; common-lisp macro
+;;;
+
+(fset 'assoc**
+      (if-fn% 'cl-assoc 'cl-lib
+              #'cl-assoc
+        #'assoc*))
+
+
+(fset 'mapcar**
+      (if-fn% 'cl-mapcar 'cl-lib
+              #'cl-mapcar
+        #'mapcar*))
+
+
+(fset 'remove-if*
+      (if-fn% 'cl-remove-if 'cl-lib
+              #'cl-remove-if
+        #'remove-if))
+
+
+(fset 'member-if*
+      (if-fn% 'cl-member-if 'cl-lib
+              #'cl-member-if
+        #'member-if))
+
+
+(fset 'every*
+      (if-fn% 'cl-every 'cl-lib
+              #'cl-every
+        #'every))
+
+
+(fset 'some*
+      (if-fn% 'cl-some 'cl-lib
+              #'cl-some
+        #'some))
+
+
+(fset 'loop*
+      (if-fn% 'cl-loop 'cl-lib
+              #'cl-loop
+        #'loop))
+
+;; end of common-lisp macro
+
+;;;
 ;; general function/macro
 ;;;
 
@@ -118,55 +165,6 @@ If optional UNIQUELY is non-nil then append uniquely."
              (setq ,seq (append c1 `(,(nth (1- l) ,seq))))))))))
 
 ;; end of general function/macro
-
-;;;
-;; common-lisp macro
-;;;
-
-(fset 'assoc**
-      (if-fn% 'cl-assoc 'cl-lib
-              #'cl-assoc
-        #'assoc*))
-
-
-(fset 'mapcar**
-      (if-fn% 'cl-mapcar 'cl-lib
-              #'cl-mapcar
-        #'mapcar*))
-
-
-(fset 'remove-if*
-      (if-fn% 'cl-remove-if 'cl-lib
-              #'cl-remove-if
-        #'remove-if))
-
-
-(fset 'member-if*
-      (if-fn% 'cl-member-if 'cl-lib
-              #'cl-member-if
-        #'member-if))
-
-
-(fset 'every*
-      (if-fn% 'cl-every 'cl-lib
-              #'cl-every
-        #'every))
-
-
-(fset 'some*
-      (if-fn% 'cl-some 'cl-lib
-              #'cl-some
-        #'some))
-
-
-(fset 'loop*
-      (if-fn% 'cl-loop 'cl-lib
-              #'cl-loop
-        #'loop))
-
-
-;; end of common-lisp macro
-
 
 ;;;
 ;; byte-compiler macro
