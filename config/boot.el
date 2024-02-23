@@ -202,14 +202,14 @@ else do ELSE..."
 ;;;
 
 (defmacro if-noninteractive% (then &rest body)
-  "If in \\=`noninteractive\\=' do THEN, else do BODY."
+  "If \\=`noninteractive\\=' do THEN, else do BODY."
   (declare (indent 1))
   `(if% noninteractive
        ,then
      (progn% ,@body)))
 
 (defmacro unless-noninteractive% (&rest body)
-  "Unless in \\=`noninteractive\\=' do BODY."
+  "Unless \\=`noninteractive\\=' do BODY."
   `(if-noninteractive% nil ,@body))
 
 ;; end of noninteractive macro
