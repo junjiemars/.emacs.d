@@ -35,8 +35,7 @@
 
 
 (defmacro gud*-def (key fn)
-  "Define KEY bind to FN.
-
+  "Define KEY bind to FN.\n
 Avoid bugs in `gud-format-command' and `gud-find-c-expr'."
   `(progn
      ,(if key `(local-set-key ,(concat "\C-c" key) ,fn))

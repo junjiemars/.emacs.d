@@ -36,9 +36,6 @@
 ;; require
 ;;;;
 
-
-(eval-when-compile
-  (require 'guds (v-home%> "config/guds")))
 (require 'gud)
 
 
@@ -96,7 +93,8 @@ If nil, only source files in the program directory will be known
 ;;  gud-* declarations
 ;;;
 
-(declare-function gud*-find-c-last-expr "guds")
+(declare-function gud*-def (v-home%> "config/guds"))
+(declare-function gud*-find-c-last-expr (v-home%> "config/guds"))
 (declare-function gud-basic-call    "gud")
 (declare-function gud-break         "gud")
 (declare-function gud-call          "gud")
@@ -116,6 +114,8 @@ If nil, only source files in the program directory will be known
 (declare-function gud-tbreak        "gud")
 (declare-function gud-until         "gud")
 (declare-function gud-up            "gud")
+(autoload 'gud*-def (v-home%> "config/guds") nil nil 'macro)
+(autoload 'gud*-find-c-last-expr (v-home%> "config/guds"))
 
  ;; end of gud-* declarations
 
