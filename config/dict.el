@@ -199,7 +199,7 @@
                     (propertize "No match"
                                 'face 'font-lock-warning-face)))
     (when-var% execute-extended-command--binding-timer 'simple
-      (sit-for 15))))
+      (sit-for 30))))
 
 ;; end of `on-lookup-dict'
 
