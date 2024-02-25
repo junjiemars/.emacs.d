@@ -50,41 +50,38 @@
         b)))
   "Dictionaries using by \\=`lookup-dict\\='.")
 
-
-(defalias 'dict-find-def
-  (lexical-let% ((b nil))
-    (lambda  (&optional dict)
-      "DICT"
-      (cond
-       ((or (consp dict) (not b))
-        (setq b
-              (let ((dd (cdr (assoc-string
-                              (or (car dict) (caar (*dict-defs*)))
-                              (*dict-defs*)))))
-                (list (cons 'dict (list dd))
-                      (cons 'style
-                            (or (cdr dict)
-                                (list (remove-if*
-                                       (lambda (x) (string= x "url"))
-                                       (mapcar #'car dd)))))))))
-       (t b))))
-  "Find DICT's definition in \\=`*dict-defs*\\='.")
-
-
-(defalias '*dict-debug-log*
-  (lexical-let% ((b `(:logging nil ;; t
-                      :dict ,(emacs-home* ".dict/dict.log")
-                      :lookup ,(emacs-home* ".dict/lookup.log"))))
-    (lambda (w &optional n)
-      "W N"
-      (if n (plist-put b w n) (plist-get b w))))
-  "Dictonary logging switch.")
-
 (defvar *dict-name-history* nil
   "Dictionary choosing history list.")
 
 (defvar *dict-style-history* nil
   "Dictionary style choosing history list.")
+
+(defalias 'dict-find-def
+  (lexical-let% ((b nil))
+    (lambda  (&optional dict)
+      (cond
+       ((or (consp dict) (not b))
+        (setq b (let ((dd (cdr (assoc-string
+                                (or (car dict)
+                                    (car *dict-name-history*)
+                                    (caar (*dict-defs*)))
+                                (*dict-defs*)))))
+                  (list (cons 'dict (list dd))
+                        (cons 'style
+                              (or (cdr dict)
+                                  (list (remove-if*
+                                         (lambda (x) (string= x "url"))
+                                         (mapcar #'car dd)))))))))
+       (t b))))
+  "Find dictionary's definition in \\=`*dict-defs*\\='.")
+
+(defalias '*dict-debug-log*
+  (lexical-let% ((b `(:log nil ;; t
+                      :dict ,(emacs-home* ".dict/dict.log")
+                      :lookup ,(emacs-home* ".dict/lookup.log"))))
+    (lambda (w &optional n)
+      (if n (plist-put b w n) (plist-get b w))))
+  "Dictonary logging switch.")
 
 (defun dict-fn-norm-pron-us (ss)
   "Normalize the pronounce of SS to us."
@@ -165,7 +162,7 @@
       (kill-buffer)
       (user-error "%s in on-lookup-dict" err)))
   (set-buffer-multibyte t)
-  (when (*dict-debug-log* :logging)
+  (when (*dict-debug-log* :log)
     (write-region (point-min) (point-max)
                   (path! (*dict-debug-log* :dict))))
   (let* ((dict (cadr (assq 'dict args)))
@@ -187,7 +184,7 @@
                                   (setq txt (funcall fn txt))
                                 txt))))))
               style)))
-    (when (*dict-debug-log* :logging)
+    (when (*dict-debug-log* :log)
       (save-sexp-to-file ss (path! (*dict-debug-log* :lookup))))
     (kill-buffer (current-buffer))
     (message "%s" (if (car ss)
