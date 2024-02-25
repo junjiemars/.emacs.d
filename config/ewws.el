@@ -70,17 +70,19 @@ is non-nil, otherwise is not. See also:
 ;;; `lookup-web' find web via search engine
 ;;; eww also has a new `eww-search-words' supports searching via web.
 
+(defvar *lookup-web-history* nil
+  "Searching history using by \\=`lookup-web\\='.")
+
 (defalias 'web-find-def
   (lexical-let% ((b '()))
     (lambda  (&optional en)
       (cond ((or en (not b))
-             (setq b (assoc-string
-                      (or en (caar (*web-defs*))) (*web-defs*))))
+             (setq b (assoc-string (or en
+                                       (car *lookup-web-history*)
+                                       (caar (*web-defs*)))
+                                   (*web-defs*))))
             (t b))))
-  "Find WEB's definition in \\=`*web-defs*\\='.")
-
-(defvar *lookup-web-history* nil
-  "Searching history using by \\=`lookup-web\\='.")
+  "Find web's definition in \\=`*web-defs*\\='.")
 
 (defun lookup-web (what &optional engine)
   "Lookup web via search ENGINE."
