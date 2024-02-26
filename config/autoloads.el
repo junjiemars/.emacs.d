@@ -295,6 +295,7 @@
   ;; `load-path' versioned dirs
   (push! (v-home% "config/") load-path)
   (push! (v-home% "private/") load-path)
+  (setq% history-length 4)
   (self-graphic-init!)
   (when-fn% 'self-shell-read! nil (self-shell-read!))
   (when-fn% 'self-socks-init! nil (self-socks-init!))
