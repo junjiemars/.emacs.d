@@ -147,7 +147,7 @@
         (goto-char (point-min))
         (while (search-forward-regexp x nil t)
           (replace-match "" t t)))
-      (buffer-substring (point-min) (point-max)))))
+      (string-trim>< (buffer-substring (point-min) (point-max))))))
 
 ;; end of definition
 
