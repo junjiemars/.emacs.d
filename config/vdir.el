@@ -8,6 +8,12 @@
 ;; Commentary: versioned directories.
 ;;;;
 
+;; preferred coding system
+(prefer-coding-system 'utf-8)
+
+;; `history-length'
+(setq% history-length 4)
+
 
 ;; `abbrev'
 (setq% abbrev-file-name (v-home! ".abbrev/defs") 'abbrev)

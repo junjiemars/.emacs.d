@@ -111,6 +111,7 @@
     (compile-unit% (emacs-home* "config/progs.el") t)
     (compile-unit% (emacs-home* "config/pythons.el") t)
     (compile-unit% (emacs-home* "config/sqls.el") t)
+    (compile-unit% (emacs-home* "config/tags.el") t)
     (compile-unit% (emacs-home* "config/terms.el") t)
     (compile-unit% (emacs-home* "config/trans.el") t)
     (when-feature-transient%
@@ -255,15 +256,7 @@
       (autoload 'sudoku (v-home%> "config/sudoku")
         "Play sudoku." t))
     ;; on `tags'
-    (prog1
-        (compile-unit% (emacs-home* "config/tags.el") t)
-      (autoload 'mount-tags (v-home%> "config/tags")
-        "Mount tags." t)
-      (autoload 'unmount-tags (v-home%> "config/tags")
-        "Unmount tags." t)
-      (autoload 'make-c-tags (v-home%> "config/tags")
-        "Make C tags.")
-      (autoload 'tags-in-view-mode (v-home%> "config/tags")))
+    (compile-unit% (emacs-home* "config/on-tags-autoload.el"))
     ;; on `terms'
     (compile-unit% (emacs-home* "config/on-term-autoload.el"))
     ;; on `trans'
@@ -290,12 +283,6 @@
 
 ;; after-init
 (defun on-autoloads! ()
-  ;; preferred coding system
-  (prefer-coding-system 'utf-8)
-  ;; `load-path' versioned dirs
-  (push! (v-home% "config/") load-path)
-  (push! (v-home% "private/") load-path)
-  (setq% history-length 4)
   (self-graphic-init!)
   (when-fn% 'self-shell-read! nil (self-shell-read!))
   (when-fn% 'self-socks-init! nil (self-socks-init!))
@@ -311,6 +298,9 @@
     (condition-case err
         (self-desktop-read!)
       (error (message "self-desktop-read!: %s" err))))
+  ;; `load-path' versioned dirs
+  (push! (v-home% "config/") load-path)
+  (push! (v-home% "private/") load-path)
   (when (*self-paths* :get :epilogue)
     (condition-case err
         (make-thread*

@@ -359,32 +359,33 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 ;;;
 
 (declare-function make-c-tags (v-home%> "config/tags"))
+(declare-function tags-history (v-home%> "config/tags"))
 
-(defmacro when-fn-make-c-tags% (&rest body)
-  (declare (indent 0))
-  (when-fn% 'make-c-tags 'tags
-    `(progn% ,@body)))
+(defvar cc*-tags-option-history (tags-history 'option))
+(defvar cc*-tags-skip-history (tags-history 'skip))
+(defvar cc*-tags-file-history `(,(emacs-home* ".tags/os/TAGS")))
 
-(when-fn-make-c-tags%
-  (defun cc*-make-system-tags (&optional option file skip renew)
-    "Make system C tags."
-    (interactive
-     (list (read-string "tags option: "
-                        (car *tags-option-history*)
-                        '*tags-option-history*)
-           (read-string "tags file: " (tags-spec->% :os-include))
-           (read-string "tags skip: "
-                        (car *tags-skip-history*)
-                        '*tags-skip-history*)
-           (y-or-n-p "tags renew? ")))
-    (let ((inc (cc*-system-include (not renew)))
-          (filter (when (and (stringp skip)
-                             (not (string= "" skip)))
-                    (lambda (_ a)
-                      (not (string-match skip a))))))
-      (make-c-tags (car inc) file option nil filter renew)
-      (dolist* (p (cdr inc) file)
-        (make-c-tags p file option nil filter)))))
+(defun cc*-make-system-tags (&optional option file skip renew)
+  "Make system C tags."
+  (interactive
+   (list (read-string "tags option: "
+                      (car cc*-tags-option-history)
+                      'cc*-tags-option-history)
+         (read-string "tags file: "
+                      (car cc*-tags-file-history)
+                      'cc*-tags-file-history)
+         (read-string "tags skip: "
+                      (car cc*-tags-skip-history)
+                      'cc*-tags-skip-history)
+         (y-or-n-p "tags renew? ")))
+  (let ((inc (cc*-system-include (not renew)))
+        (filter (when (and (stringp skip)
+                           (not (string= "" skip)))
+                  (lambda (_ a)
+                    (not (string-match skip a))))))
+    (make-c-tags (car inc) file option nil filter renew)
+    (dolist* (p (cdr inc) file)
+      (make-c-tags p file option nil filter))))
 
 ;; end of `make-c-tags'
 
