@@ -10,7 +10,8 @@
 (autoload 'use-geiser-init! (v-home%> "config/use-geiser"))
 
 ;;; Disable auto active `geiser-mode'
-(fset 'geiser-mode--maybe-activate nil)
+(when-fn% 'geiser-mode--maybe-activate 'geiser-mode
+  (fset 'geiser-mode--maybe-activate #'true))
 
 ;;; Disable auto `geiser-mode' for `scheme-mode'
 (when-var% geiser-mode-auto-p 'geiser-mode
