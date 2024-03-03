@@ -16,7 +16,4 @@
       (make-thread* #'on-isearch-init!))
   (make-thread* #'on-isearch-init!))
 
-;;; autoload
-
-
 ;; end of on-isearch-autoload.el
