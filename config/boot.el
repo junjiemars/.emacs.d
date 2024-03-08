@@ -320,7 +320,6 @@ Argument SPEC (VAR LIST [RESULT])."
              (:epilogue
               . ,(emacs-home* "config/sample-self-epilogue.el")))))
     (lambda (&optional op k v)
-      "OP K V"
       (cond ((eq :get op) (plist-get ps k))
             ((eq :put op) (setq ps (plist-put ps k v)))
             ((eq :dup op)
@@ -347,7 +346,6 @@ No matter the declaration order, the executing order is:
                             :package nil
                             :edit nil)))
     (lambda (&optional op &rest keys)
-      "OP KEYS"
       (cond ((eq :get op) (let ((rs env) (ks keys))
                             (while ks
                               (setq rs (plist-get rs (car ks))
