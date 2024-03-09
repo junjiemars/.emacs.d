@@ -6,14 +6,16 @@
 ;; on-isearch-autoload.el
 ;;;;
 
-(declare-function on-isearch-init! (v-home%> "config/isearchs"))
-(autoload 'on-isearch-init! (v-home%> "config/isearchs"))
 
-;;; after load
-(if-version%
-    < 25
-    (with-eval-after-load 'isearch
-      (make-thread* #'on-isearch-init!))
-  (make-thread* #'on-isearch-init!))
+(declare-function isearch*-forward (v-home%> "config/isearchs"))
+(declare-function isearch*-backward (v-home%> "config/isearchs"))
+(declare-function isearch*-forward-symbol (v-home%> "config/isearchs"))
+(autoload 'isearch*-forward (v-home%> "config/isearchs"))
+(autoload 'isearch*-backward (v-home%> "config/isearchs"))
+(autoload 'isearch*-forward-symbol (v-home%> "config/isearchs"))
+
+(define-key% (current-global-map) (kbd "C-s") #'isearch*-forward)
+(define-key% (current-global-map) (kbd "C-r") #'isearch*-backward)
+(define-key% (current-global-map) (kbd "M-s .") #'isearch*-forward-symbol)
 
 ;; end of on-isearch-autoload.el
