@@ -93,13 +93,15 @@ when \\=`desktop-globals-to-save\\=' include it."
   "Tags skip history list.")
 
 (defun tags-history (op)
-  ""
   (cond ((eq op 'option) *tags-option-history*)
         ((eq op 'skip) *tags-skip-history*)
         (t nil)))
 
 (defalias 'mount-tags #'visit-tags-table
   "Mount existing TAGS into \\=`tags-table-list\\='.")
+
+(defvar *tags-vcs-meta-dir*
+  "^\\.git/$\\|\\.hg/$\\|\\.svn/$")
 
 
 (defun unmount-tags (&optional tags)
@@ -170,7 +172,7 @@ RENEW overwrite the existing tags file when t else create it."
                  (lambda (d _)
                    (not
                     (string-match
-                     "^\\.git/$\\|\\.svn/$\\|^out/$\\|^objs/$"
+                     (concat *tags-vcs-meta-dir* "\\|^out/$\\|^objs/$")
                      d))))
              option
              renew))
@@ -189,7 +191,7 @@ RENEW overwrite the existing tags file when t else create it."
                  (lambda (d _)
                    (not
                     (string-match
-                     "^\\.git/$\\|^\\.svn/$\\|^out/$\\|^objs/$"
+                     (concat *tags-vcs-meta-dir* "\\|^out/$\\|^objs/$")
                      d))))
              option
              renew))
@@ -249,7 +251,7 @@ RENEW overwrite the existing tags file when t else create it."
                                   '*tags-option-history*)
                      (y-or-n-p "tags renew? ")))
   (let ((home (path+ (expand-file-name dir)))
-        (vcs "^\\.git/$\\|\\.svn/$")
+        (vcs *tags-vcs-meta-dir*)
         (exc (unless (string= exclude-dir "") exclude-dir))
         (inc (unless (string= include-dir "") include-dir)))
     (when (make-tags home
