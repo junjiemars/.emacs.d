@@ -228,33 +228,6 @@ If prefix BOUNDARY is non-nil, then mark the whole quoted thing."
 
 ;; end of `mark-quoted-asymmetry@'
 
-
-;;; Keys
-
-(defun on-mill-init! ()
-  ;; Kill
-  (define-key% (current-global-map) (kbd "C-x M-d") #'kill-word@)
-  (define-key% (current-global-map) (kbd "C-x M-e") #'kill-sexp@)
-  (define-key% (current-global-map) (kbd "C-x M-l") #'kill-whole-line)
-  (define-key% (current-global-map) (kbd "C-x M-q s") #'kill-quoted-symmetry@)
-  (define-key% (current-global-map) (kbd "C-x M-q a") #'kill-quoted-asymmetry@)
-  (define-key% (current-global-map) (kbd "C-x M-s") #'kill-string@)
-  ;; Mark
-  (define-key% (current-global-map) (kbd "C-c M-@") #'mark-word@)
-  (define-key% (current-global-map) (kbd "C-c C-M-@") #'mark-sexp@)
-  (define-key% (current-global-map) (kbd "C-c M-h") #'mark-defun@)
-  (define-key% (current-global-map) (kbd "C-c M-f") #'mark-filename@)
-  (define-key% (current-global-map) (kbd "C-c M-l") #'mark-line@)
-  (define-key% (current-global-map) (kbd "C-c M-q s") #'mark-quoted-symmetry@)
-  (define-key% (current-global-map) (kbd "C-c M-q a") #'mark-quoted-asymmetry@)
-  (define-key% (current-global-map) (kbd "C-c M-s") #'mark-string@)
-  (define-key% (current-global-map) (kbd "M-@") #'mark-word)
-  (define-key% (current-global-map) (kbd "C-M-@") #'mark-sexp)
-  (define-key% (current-global-map) (kbd "C-M-SPC") #'mark-sexp)
-  (define-key% (current-global-map) (kbd "C-M-h") #'mark-defun))
-
-;; end of Keys
-
 (provide 'mill)
 
 ;; end of mill.el
