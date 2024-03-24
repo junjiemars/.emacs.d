@@ -378,8 +378,6 @@ No matter the declaration order, the executing order is:
 (*self-paths* :dup)
 ;; reset user emacs dir
 (setq% user-emacs-directory (emacs-home*))
-;; disable package initialization
-(when-package% (setq package-enable-at-startup nil))
 
 ;;; <1> prologue
 (compile! (compile-unit% (emacs-home* "config/fn.el"))
