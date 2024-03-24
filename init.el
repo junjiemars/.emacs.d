@@ -297,37 +297,44 @@ If ONLY-COMPILE is t, does not load DST."
   (when% (eq system-type 'darwin)
     (defun library-path ()
       "Even a blind pig can find an acorn once in a while."
-      (let* ((arch (when (string-match
-                          "\\-arch \\([_a-z0-9]+\\)"
-                          system-configuration-options)
-                     (substring-no-properties
-                      system-configuration-options
-                      (match-beginning 1) (match-end 1))))
-             (platform (when (string-match
-                              "\\(\\-.*?\\)\\."
-                              system-configuration)
-                         (concat arch
-                                 (substring-no-properties
-                                  system-configuration
-                                  (match-beginning 1) (match-end 1)))))
-             (c3 (when (string-match
+      (let ((arch (when (string-match
+                         "\\-arch \\([_a-z0-9]+\\)"
+                         system-configuration-options)
+                    (substring-no-properties
+                     system-configuration-options
+                     (match-beginning 1) (match-end 1))))
+            (platform (when (string-match
+                             "\\(\\-.*?\\)\\."
+                             system-configuration)
+                        (substring-no-properties
+                         system-configuration
+                         (match-beginning 1) (match-end 1))))
+            (cc3 (when (string-match
                         "-rpath \\([/a-z]+/\\([a-z]+\\)\\([0-9]+\\)\\)"
                         system-configuration-options)
-                   (let ((rpath (substring-no-properties
-                                 system-configuration-options
-                                 (match-beginning 1) (match-end 1)))
-                         (cc (substring-no-properties
-                              system-configuration-options
-                              (match-beginning 2) (match-end 2)))
-                         (ver (substring-no-properties
-                               system-configuration-options
-                               (match-beginning 3) (match-end 3))))
-                     (cons rpath (cons cc ver)))))
-             (path (concat (car c3) "/" (cadr c3) "/" platform))
-             (fs (inhibit-file-name-handler
-                   (directory-files path nil
-                                    (concat (cddr c3) "[.0-9]+") 1))))
-        (concat path "/" (car fs))))
+                   (vector
+                    ;; path
+                    (substring-no-properties
+                     system-configuration-options
+                     (match-beginning 1) (match-end 1))
+                    ;; cc
+                    (substring-no-properties
+                     system-configuration-options
+                     (match-beginning 2) (match-end 2))
+                    ;; ver
+                    (substring-no-properties
+                     system-configuration-options
+                     (match-beginning 3) (match-end 3))))))
+        (let ((path (concat (aref cc3 0) "/"
+                            (aref cc3 1) "/"
+                            arch platform)))
+          (concat
+           path "/"
+           (car (inhibit-file-name-handler
+                  (directory-files
+                   path nil (concat (aref cc3 2) "[.0-9]+") 1))))))))
+
+  (when% (eq system-type 'darwin)
     (setq process-environment
           (cons (concat "LIBRARY_PATH=" (library-path))
                 process-environment))))

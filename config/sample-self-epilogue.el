@@ -147,6 +147,4 @@
 
 ;; end of web
 
-(message "#self epilogue done")
-
 ;; end of sample-self-epilogue.el
