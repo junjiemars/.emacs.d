@@ -368,6 +368,8 @@ No matter the declaration order, the executing order is:
 ;; boot
 ;;;
 
+;; disable `package' at startup
+(when-package% (setq package-enable-at-startup nil))
 ;; make `v-home' .exec/
 (v-home! ".exec/")
 ;; make `v-home' private/

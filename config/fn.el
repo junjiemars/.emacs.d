@@ -444,21 +444,22 @@ Optional argument ARGS for COMMAND."
          ((,c1 ,command)
           (b (get-buffer-create* (symbol-name (gensym*)) t)))
        (unwind-protect
-           (with-current-buffer b
-             (cons (let ((x (inhibit-file-name-handler
-                              (call-process
-                               shell-file-name nil b nil
-                               shell-command-switch
-                               (mapconcat #'identity
-                                          (cons ,c1 (list ,@args))
-                                          " ")))))
-                     (cond ((integerp x) x)
-                           ((string-match "^.*\\([0-9]+\\).*$" x)
-                            (match-string-no-properties 1 x))
-                           (t -1)))
-                   (let ((s (buffer-substring-no-properties
-                             (point-min) (point-max))))
-                     (if (string= "\n" s) nil s))))
+         (with-current-buffer b
+           (cons
+            (let ((x (inhibit-file-name-handler
+                       (call-process
+                        shell-file-name nil b nil
+                        shell-command-switch
+                        (mapconcat #'identity
+                                   (list ,c1 ,@args)
+                                   " ")))))
+              (cond ((integerp x) x)
+                    ((string-match "^.*\\([0-9]+\\).*$" x)
+                     (match-string-no-properties 1 x))
+                    (t -1)))
+            (let ((s (buffer-substring-no-properties
+                      (point-min) (point-max))))
+              (if (string= "\n" s) nil s))))
          (when b (kill-buffer b))))))
 
 (defmacro executable-find% (command &optional fn)

@@ -324,7 +324,7 @@ If ONLY-COMPILE is t, does not load DST."
                                (match-beginning 3) (match-end 3))))
                      (cons rpath (cons cc ver)))))
              (path (concat (car c3) "/" (cadr c3) "/" platform))
-             (fs (let ((file-name-handler-alist nil))
+             (fs (inhibit-file-name-handler
                    (directory-files path nil
                                     (concat (cddr c3) "[.0-9]+") 1))))
         (concat path "/" (car fs))))
@@ -339,7 +339,7 @@ If ONLY-COMPILE is t, does not load DST."
     `(compile-and-load-file ,src ,dst ,only-compile)))
 
 ;; boot
-(unless (boundp '*nore-emacs-no-boot*)
+(unless% (boundp '*nore-emacs-no-boot*)
   (inhibit-gc
     (inhibit-file-name-handler
       (let ((u (v-comp-file! (emacs-home* "config/boot.el"))))
