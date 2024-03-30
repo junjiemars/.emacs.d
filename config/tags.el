@@ -74,7 +74,7 @@ when \\=`desktop-globals-to-save\\=' include it."
 
 (defvar *tags-option-history*
   (cond ((string= "ctags" (*tags*))
-         `("--langmap=c:.h.c --c-kinds=+px"
+         `("--langmap=c:.h.c --c-kinds=+ptesgux --extra=+fq"
            "--langmap=c++:.h.cc--c++-kinds=+px"
            ,(eval-when-compile
               (let ((rc (shell-command* "rustc" "--print sysroot")))
