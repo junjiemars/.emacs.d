@@ -19,18 +19,18 @@
 (defun vc*-dir (&optional frontend)
   "Show the VC status."
   (interactive
-   (list (if current-prefix-arg
-             (completing-read
-              (format "Choose (%s) "
-                      (mapconcat #'identity
-                                 (mapcar #'car (vc*-frontend))
-                                 "|"))
-              (vc*-frontend) nil nil
-              (or (car *vc-frontend-history*)
-                  (caar (vc*-frontend)))
-              '*vc-frontend-history* (caar (vc*-frontend)))
-           (or (car *vc-frontend-history*)
-               (caar (vc*-frontend))))))
+   (list (let ((default (or (car *vc-frontend-history*)
+                            (caar (vc*-frontend)))))
+           (if current-prefix-arg
+               (completing-read
+                (format "Choose (%s) "
+                        (mapconcat #'identity
+                                   (mapcar #'car (vc*-frontend))
+                                   "|"))
+                (vc*-frontend) nil nil
+                default
+                '*vc-frontend-history* (caar (vc*-frontend)))
+             default))))
   (call-interactively
    (cdr (assoc-string frontend (vc*-frontend)))))
 
