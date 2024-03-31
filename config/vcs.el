@@ -27,10 +27,10 @@
                                  "|"))
               (vc*-frontend) nil nil
               (or (car *vc-frontend-history*)
-                  (car (vc*-frontend)))
+                  (caar (vc*-frontend)))
               '*vc-frontend-history* (caar (vc*-frontend)))
            (or (car *vc-frontend-history*)
-               (car (vc*-frontend))))))
+               (caar (vc*-frontend))))))
   (call-interactively
    (cdr (assoc-string frontend (vc*-frontend)))))
 
