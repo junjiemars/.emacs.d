@@ -213,9 +213,13 @@ If \\=`current-prefix-arg\\=' < 0, then repeat n time with END in reversed."
 
 (defun camelize (string &optional separator)
   "Return camel case of STRING."
-  (let ((ss (split-string* (or string "") (or separator "_"))))
-    (concat (downcase (car ss))
-            (mapconcat #'capitalize (cdr ss) ""))))
+  (when (and (stringp string) (> (length string) 0))
+    (let ((ss (split-string* string (or separator "_"))))
+      (cond ((string= string (car ss))
+             (concat (downcase (substring (car ss) 0 1))
+                     (substring (car ss) 1)))
+            (t (concat (downcase (car ss))
+                       (mapconcat #'capitalize (cdr ss) "")))))))
 
 ;; end of camelize
 
