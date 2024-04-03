@@ -211,15 +211,19 @@ If \\=`current-prefix-arg\\=' < 0, then repeat n time with END in reversed."
 ;; end of `surround-region'
 
 
-(defun camelize (string &optional separator)
+(defun camelize (string)
   "Return camel case of STRING."
   (when (and (stringp string) (> (length string) 0))
-    (let ((ss (split-string* string (or separator "_"))))
-      (cond ((string= string (car ss))
-             (concat (downcase (substring (car ss) 0 1))
-                     (substring (car ss) 1)))
-            (t (concat (downcase (car ss))
-                       (mapconcat #'capitalize (cdr ss) "")))))))
+    (cond ((string-match
+            "[a-zA-Z]+_\\([_a-zA-Z0-9]+\\)*" string)
+           (let ((ss (split-string* string "_")))
+             (concat (downcase (car ss))
+                     (mapconcat #'capitalize (cdr ss) ""))))
+          ((string-match
+            "[A-Z][a-z0-9]*\\([A-Z][a-z0-9]*\\)*" string)
+           (concat (downcase (substring string 0 1))
+                   (substring string 1)))
+          (t string))))
 
 ;; end of camelize
 
