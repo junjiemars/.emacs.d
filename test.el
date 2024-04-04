@@ -711,6 +711,14 @@
       (set-mark (point-max))
       (should (string= "a bb" (cdr (symbol@)))))))
 
+(ert-deftest %e:basic:version-string= ()
+  (should (= 0 (version-string= "" "")))
+  (should (= 1 (version-string= "1" "")))
+  (should (= -1 (version-string= "" "1")))
+  (should (= 0 (version-string= "1" "1")))
+  (should (= 0 (version-string= "1.0" "1")))
+  (should (= 1 (version-string= "1.21" "1.2.12"))))
+
 
 ;; end of basic
 

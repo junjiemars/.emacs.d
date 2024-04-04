@@ -34,7 +34,7 @@
   "Adjoint of \\=`python-shell-interpreter\\='.")
 
 
-(defun python*-activate-venv! (&optional dir)
+(defun python*-venv! (&optional dir)
   "Activate Python\\='s virtualenv at DIR.\n
 PYTHONPATH: augment the default search path for module files. The
             format is the same as the shell’s PATH.
@@ -44,18 +44,18 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
  a new virtual env at DIR, then Using \\=`sys.prefix\\=' to
  determine whether inside a virtual env. Another way is using
  \\=`pip -V\\='."
-  (interactive "Dvirtualenv activate at ")
+  (interactive "Dpython venv activate at ")
   (let ((pv (python*-program)))
     (unless pv (user-error "%s" "python program unavailable"))
     (let ((d (string-trim> (path! (expand-file-name dir)) "/"))
           (p (file-name-base* (car pv)))
-          (v3 (string< (cdr pv) "3.3")))
+          (v3.3- (= -1 (version-string= (cdr pv) "3.3"))))
       (unless (file-exists-p (concat d "/bin/activate"))
-        (cond ((and p v3 (executable-find% "virtualenv"))
+        (cond ((and p v3.3- (executable-find% "virtualenv"))
                (let ((rc (shell-command* "virtualenv" "-p" p d)))
                  (unless (zerop (car rc))
                    (user-error "%s" (string-trim> (cdr rc))))))
-              ((and p (not v3))
+              ((and p (not v3.3-))
                (let ((rc (shell-command* p "-m" "venv" d)))
                  (unless (zerop (car rc))
                    (user-error "%s" (string-trim> (cdr rc))))))

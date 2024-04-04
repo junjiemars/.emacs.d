@@ -8,7 +8,7 @@
 
 (declare-function on-python-init! (v-home%> "config/pythons"))
 (declare-function python*-program (v-home%> "config/pythons"))
-(declare-function python*-activate-venv! (v-home%> "config/pythons"))
+(declare-function python*-venv! (v-home%> "config/pythons"))
 (autoload 'on-python-init! (v-home%> "config/pythons"))
 
 ;;; `python' after load
@@ -18,7 +18,7 @@
 ;;; autoload
 (autoload 'python*-program (v-home%> "config/pythons")
   "The program of python executable.")
-(autoload 'python*-activate-venv! (v-home%> "config/pythons")
+(autoload 'python*-venv! (v-home%> "config/pythons")
   "Activate python\\='s virtualenv." t)
 
 ;; end of on-python-autoload.el
