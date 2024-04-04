@@ -27,7 +27,6 @@
                                    (executable-find% "python"))))
                         (when p (cons p (python*-version p)))))))
     (lambda (&optional op n)
-      "OP N"
       (cond ((eq :new op) (setq b (cons n (python*-version n))))
             ((eq :bin op) (car b))
             ((eq :ver op) (cdr b))
@@ -36,7 +35,7 @@
 
 
 (defun python*-activate-venv! (&optional dir)
-  "Activate Python's virtualenv at DIR.\n
+  "Activate Python\\='s virtualenv at DIR.\n
 PYTHONPATH: augment the default search path for module files. The
             format is the same as the shell’s PATH.
 PYTHONHOME: change the location of the standard Python libraries.
