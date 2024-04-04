@@ -139,8 +139,7 @@ RENEW overwrite the existing tags file when t else create it."
       (if (file-exists-p tf)
           (when renew (delete-file tf))
         (path! td))
-      (let ((header (propertize "make-tags"
-                                'face 'minibuffer-prompt)))
+      (let ((h (propertize "make-tags" 'face 'minibuffer-prompt)))
         (dir-iterate
          home
          file-filter
@@ -151,14 +150,13 @@ RENEW overwrite the existing tags file when t else create it."
                               tf
                               (shell-quote-argument f)
                               (shell-quote-argument f))))
-             (message "%s %s... %s" header cmd
-                      (if (zerop (car (shell-command* cmd)))
-                          "ok"
-                        "failed"))))
+             (message "%s %s... %s"
+                      h cmd (if (zerop (car (shell-command* cmd)))
+                                "ok"
+                              "failed"))))
          nil)
-        (message "%s for %s ... %s" header tf (if (file-exists-p tf)
-                                                  "done"
-                                                "failed"))))))
+        (message "%s for %s ... %s"
+                 h tf (if (file-exists-p tf) "done" "failed"))))))
 
 
 (defun make-c-tags
@@ -270,6 +268,31 @@ RENEW overwrite the existing tags file when t else create it."
                      renew))))
 
 ;; end of `make-dir-tags'
+
+;;; `make-dir-ctags'
+
+(defun make-dir-ctags (dir store options)
+  "Make tags via ctags for specified DIR."
+  (interactive (list (read-directory-name "make tags for ")
+                     (read-file-name
+                      "store tags in " nil nil nil ".tags")
+                     (read-file-name "ctags options in ")))
+  (unless (string= "ctags" (*tags*))
+    (user-error "%s" "ctags unavailable"))
+  (let ((dir (path+ (expand-file-name dir)))
+        (store (expand-file-name store))
+        (options (concat "--options=" (expand-file-name options))))
+    (let ((h (propertize "make-dir-ctags" 'face 'minibuffer-prompt))
+          (rc (shell-command* (*tags*)
+                "-R"
+                "-e"
+                "-o" store
+                options
+                dir)))
+      (message "%s for %s ... %s"
+               h store (if (zerop (car rc)) "done" "failed")))))
+
+;; end of `make-dir-ctags'
 
 
 (provide 'tags)
