@@ -122,8 +122,9 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
                      "exec pylsp $@\n")
                     pylsp))))
       (when (zerop (car rc))
-        (when-var% eglot-command-history 'eglot
-          (push! pylsp eglot-command-history t))))))
+        (when-feature-eglot%
+          (when-var% eglot-command-history 'eglot
+            (push! pylsp eglot-command-history t)))))))
 
 
 
