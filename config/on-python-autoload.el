@@ -18,7 +18,7 @@
 ;;; autoload
 (autoload 'python*-program (v-home%> "config/pythons")
   "The program of python executable.")
-(autoload 'python*-venv! (v-home%> "config/pythons")
-  "Activate python\\='s virtualenv." t)
+(autoload 'python*-venv-activate! (v-home%> "config/pythons")
+  "Activate python\\='s venv." t)
 
 ;; end of on-python-autoload.el

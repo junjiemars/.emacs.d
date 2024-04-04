@@ -288,7 +288,7 @@
   (self-graphic-init!)
   (when-fn% 'self-shell-read! nil (self-shell-read!))
   (when-fn% 'self-socks-init! nil (self-socks-init!))
-  (setq% history-length 4)
+  (setq% history-length (/ (emacs-arch) 8))
   (load-autoloaded-modes!)
   (load-conditional-modes!)
   (when-fn% 'self-edit-init! nil (self-edit-init!))

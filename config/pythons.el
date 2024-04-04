@@ -34,7 +34,10 @@
   "Adjoint of \\=`python-shell-interpreter\\='.")
 
 
-(defun python*-venv! (&optional dir)
+(defvar *python-venv-root* nil
+  "Python venv root.")
+
+(defun python*-venv-activate! (&optional dir)
   "Activate Python\\='s virtualenv at DIR.\n
 PYTHONPATH: augment the default search path for module files. The
             format is the same as the shell’s PATH.
@@ -63,7 +66,8 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
       (when-var% python-shell-interpreter 'python
         (setq python-shell-interpreter p))
       (if-var% python-shell-virtualenv-root 'python
-               (setq python-shell-virtualenv-root d)
+               (setq python-shell-virtualenv-root d
+                     *python-venv-root* d)
         (if-var% python-shell-virtualenv-path 'python
                  (setq python-shell-virtualenv-path d)
           (if-var% python-shell-process-environment 'python
@@ -76,6 +80,52 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
             (setenv "PYTHONHOME" d)
             (setenv "VIRTUAL_ENV" d)))))))
 
+(unless-platform% 'windows-nt
+  (defalias 'python*-pip-mirror!
+    (lexical-let*%
+        ((b '("https://pypi.tuna.tsinghua.edu.cn/simple/"
+              "https://pypi.mirrors.ustc.edu.cn/simple/"
+              "http://pypi.hustunique.com/"
+              "http://pypi.sdutlinux.org/")))
+      (lambda (&optional op n)
+        (unless *python-venv-root*
+          (user-error "%s" "python venv unavailable"))
+        (cond ((eq op :set)
+               (shell-command* "source"
+                 (concat *python-venv-root* "/bin/activate")
+                 "&& pip config set global.index-url"
+                 (nth (% n (length b)) b)))
+              ((eq op :ls) (if (< n 0) b (nth (% n (length b)) b)))
+              (t (let ((rc (shell-command* "source"
+                             (concat *python-venv-root* "/bin/activate")
+                             "&& pip config get global.index-url")))
+                   (when (zerop (car rc))
+                     (string-trim> (cdr rc))))))))
+    "Python pip mirror."))
+
+(unless-platform% 'windows-nt
+  (defun python*-lsp-make! ()
+    "Make pylsp.sh for \\=`elgot\\='."
+    (interactive)
+    (unless *python-venv-root*
+      (user-error "%s" "python venv unavailable"))
+    (let* ((pylsp (v-home% ".exec/pylsp.sh"))
+           (rc (shell-command*
+                   "chmod" "u+x"
+                   (save-str-to-file
+                    (concat
+                     "#!/bin/sh\n"
+                     "source " *python-venv-root* "/bin/activate\n"
+                     "if ! pip show python-lsp-server &>/dev/null; then\n"
+                     "  pip install python-lsp-server\n"
+                     "fi\n"
+                     "exec pylsp $@\n")
+                    pylsp))))
+      (when (zerop (car rc))
+        (when-var% eglot-command-history 'eglot
+          (push! pylsp eglot-command-history t))))))
+
+
 
 (defun on-python-init! ()
   "On \\=`python\\=' initialization."
