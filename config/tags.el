@@ -282,15 +282,16 @@ RENEW overwrite the existing tags file when t else create it."
   (let ((dir (path+ (expand-file-name dir)))
         (store (expand-file-name store))
         (options (concat "--options=" (expand-file-name options))))
-    (let ((h (propertize "make-dir-ctags" 'face 'minibuffer-prompt))
-          (rc (shell-command* (*tags*)
+    (let ((rc (shell-command* (*tags*)
                 "-R"
                 "-e"
                 "-o" store
                 options
                 dir)))
       (message "%s for %s ... %s"
-               h store (if (zerop (car rc)) "done" "failed")))))
+               (propertize "make-dir-ctags" 'face 'minibuffer-prompt)
+               store
+               (if (zerop (car rc)) "done" "failed")))))
 
 ;; end of `make-dir-ctags'
 
