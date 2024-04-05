@@ -86,6 +86,7 @@
   (compile!
     (compile-unit% (emacs-home* "config/safe.el"))
     (compile-unit% (emacs-home* "config/cc.el") t)
+    (compile-unit% (emacs-home* "config/clip.el") t)
     (compile-unit% (emacs-home* "config/compiles.el") t)
     (compile-unit% (emacs-home* "config/direds.el") t)
     (when-platform% 'windows-nt
@@ -130,6 +131,9 @@
   (compile!
     ;; on `cc'
     (compile-unit% (emacs-home* "config/on-cc-autoload.el"))
+    ;; on `clip'
+    (unless-graphic%
+      (compile-unit% (emacs-home* "config/on-clip-autoload.el")))
     ;; on `compiles'
     (compile-unit% (emacs-home* "config/on-compile-autoload.el"))
     ;; `dict'
@@ -142,6 +146,8 @@
     ;; on `docs'
     (when-platform% 'windows-nt
       (compile-unit% (emacs-home* "config/on-docview-autoload.el")))
+    ;; on `elisp'
+    (compile-unit% (emacs-home* "config/on-elisp-autoload.el"))
     ;; on `eglot'
     (when-feature-eglot%
       (compile-unit% (emacs-home* "config/on-eglot-autoload.el")))
@@ -173,11 +179,11 @@
     (compile-unit% (emacs-home* "config/on-hippie-autoload.el"))
     ;; on `idos'
     (compile-unit% (emacs-home* "config/on-ido-autoload.el"))
+    ;; on `ielm'
+    (compile-unit% (emacs-home* "config/on-ielm-autoload.el"))
     ;; on `isearchs'
     (compile-unit% (emacs-home* "config/isearchs.el") t)
     (compile-unit% (emacs-home* "config/on-isearch-autoload.el"))
-    ;; on `lisps'
-    (compile-unit% (emacs-home* "config/on-lisp-autoload.el"))
     ;; ;; `js'
     ;; (compile-unit% (emacs-home* "config/on-js-autoload.el"))
     ;; `jshell'
@@ -211,8 +217,6 @@
     (compile-unit% (emacs-home* "config/on-org-autoload.el"))
     ;; on `pps'
     (compile-unit% (emacs-home* "config/on-pp-autoload.el"))
-    ;; on `progs'
-    (compile-unit% (emacs-home* "config/on-progs-autoload.el"))
     ;; on `projects'
     (when-feature-project%
       (compile-unit% (emacs-home* "config/on-project-autoload.el")))
@@ -274,7 +278,8 @@
     ;; on `vcs'
     (when-feature-vc%
       (compile-unit% (emacs-home* "config/on-vcs-autoload.el")))
-
+    ;; last: on `progs'
+    (compile-unit% (emacs-home* "config/on-progs-autoload.el"))
     ) ;; end of compile!
 
   )

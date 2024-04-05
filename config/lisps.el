@@ -6,7 +6,6 @@
 ;; lisps.el
 ;;;;
 
-
 ;;; `elisp-mode'
 
 (defun on-elisp-init! ()

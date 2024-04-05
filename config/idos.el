@@ -10,7 +10,7 @@
   "On \\=`ido\\=' intialization."
   (when-version% > 28
     (make-thread*
-     (require 'dired-x nil t)))
+     (lambda () (require 'dired-x nil t))))
   (define-key% (current-global-map) (kbd "C-x 5 r")
                #'ido-find-file-read-only-other-frame)
   (define-key% (current-global-map) (kbd "C-x 4 r")

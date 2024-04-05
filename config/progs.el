@@ -8,60 +8,6 @@
 ;; Commentary: essential for programming.
 ;;;;
 
-;;; killing/yanking with the clipboard
-;;; See also: http://emacswiki.org/emacs/CopyAndPaste
-
-(defmacro when-x-select% (&rest body)
-  "When x-select do BODY."
-  (declare (indent 0))
-  `(unless-graphic%
-     (unless-platform% 'windows-nt
-       (if-platform% 'darwin
-           (when% (and (executable-find% "pbcopy")
-                       (executable-find% "pbpaste"))
-             ,@body)
-         (if-platform% 'gnu/linux
-             (when% (executable-find% "xsel")
-               ,@body))))))
-
-(when-x-select%
-  (defmacro defun-x-kill* (bin &rest args)
-    (declare (indent 1))
-    `(defun x-kill* (text &optional _)
-       "Copy TEXT to system clipboard."
-       (with-temp-buffer
-         (insert text)
-         (call-process-region (point-min) (point-max)
-                              ,bin
-                              nil 0 nil
-                              ,@args)))))
-
-(when-x-select%
-  (defmacro defun-x-yank* (bin &rest args)
-    (declare (indent 1))
-    `(defun x-yank* ()
-       "Paste from system clipboard."
-       (let ((out (shell-command* ,bin ,@args)))
-         (when (zerop (car out))
-           (cdr out))))))
-
-(when-x-select%
-  (when-platform% 'darwin
-    (defun-x-kill* "pbcopy")))
-(when-x-select%
-  (when-platform% 'darwin
-    (defun-x-yank* "pbpaste")))
-
-(when-x-select%
-  (when-platform% 'gnu/linux
-    (defun-x-kill* "xsel" "--clipboard" "--input")))
-(when-x-select%
-  (when-platform% 'gnu/linux
-    (defun-x-yank* "xsel" "--clipboard" "--output")))
-
-;; end of killing/yanking with the clipboard
-
-
 ;;; open-*-line fn
 ;;; control indent or not: `open-next-line' and `open-previous-line'.
 ;;; see also: https://www.emacswiki.org/emacs/OpenNextLine
@@ -359,19 +305,7 @@ And copy the qualified buffer name to kill ring."
         (toggle-read-only t))
       (local-set-key (kbd "q") #'quit-window)
       (local-set-key (kbd "DEL") #'scroll-down)
-      (local-set-key (kbd "SPC") #'scroll-up)))
-  ;; enable select
-  (if-version%
-      <= 24.1
-      (setq% select-enable-clipboard t)
-    (setq% x-select-enable-clipboard t))
-  (if-version%
-      <= 25.1
-      (setq% select-enable-primary t 'select)
-    (setq% x-select-enable-primary t 'select))
-  (when-x-select%
-    (setq interprogram-cut-function #'x-kill*
-          interprogram-paste-function #'x-yank*)))
+      (local-set-key (kbd "SPC") #'scroll-up))))
 
 ;; end of `on-progs-env!'
 
