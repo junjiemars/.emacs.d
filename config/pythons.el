@@ -115,9 +115,13 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
                    (save-str-to-file
                     (concat
                      "#!/bin/sh\n"
+                     "if pgrep -f $0 &>/dev/null; then\n"
+                     "  exit 0\n"
+                     "fi\n"
                      "source " *python-venv-root* "/bin/activate\n"
                      "if ! pip show python-lsp-server &>/dev/null; then\n"
                      "  pip install python-lsp-server\n"
+                     "  exec $0 $@\n"
                      "fi\n"
                      "exec pylsp $@\n")
                     pylsp))))
