@@ -12,10 +12,10 @@
 (defmacro tags-spec->% (&rest key)
   "Extract value from the list of spec via KEYS at compile time."
   `(self-spec->% (list
-                  :emacs-home ,(v-home% ".tags/home/TAGS")
-                  :emacs-source ,(v-home% ".tags/source/TAGS"))
+                  :root ,(emacs-home* ".tags/")
+                  :nore ,(v-home% ".tags/nore.emacs.TAGS")
+                  :emacs ,(v-home% ".tags/emacs.TAGS"))
                  ,@key))
-
 
 (defcustom%
  tags-program
@@ -48,13 +48,11 @@ when \\=`desktop-globals-to-save\\=' include it."
  :type '(plist :key-type 'symbol :value-type 'string)
  :group 'tags)
 
-
 (defalias '*tags*
   (lexical-let% ((b tags-program))
     (lambda (&optional n)
       (plist-get b (or n :bin))))
   "Tags' binary and options.")
-
 
 (defalias 'tags-in-view-mode
   (lexical-let%
@@ -70,7 +68,6 @@ when \\=`desktop-globals-to-save\\=' include it."
       (cond (n (setq b (cons n b)))
             (t b))))
   "Tags buffer should open in \\=`view-mode\\='.")
-
 
 (defvar *tags-option-history*
   (cond ((string= "ctags" (*tags*))
@@ -102,7 +99,6 @@ when \\=`desktop-globals-to-save\\=' include it."
 
 (defvar *tags-vcs-meta-dir*
   "^\\.git/$\\|\\.hg/$\\|\\.svn/$")
-
 
 (defun unmount-tags (&optional tags)
   "Unmount TAGS from \\=`tags-table-list\\='."
@@ -195,15 +191,15 @@ RENEW overwrite the existing tags file when t else create it."
              renew))
 
 
-(defun make-emacs-home-tags (&optional option renew)
-  "Make tags for \\=`emacs-home*\\=' directory."
+(defun make-nore-tags (&optional option renew)
+  "Make tags for Nore \\=`emacs-home*\\=' directory."
   (interactive (list
                 (read-string (concat (*tags*) " option: ")
                              (car *tags-option-history*)
                              '*tags-option-history*)
                 (y-or-n-p "tags renew? ")))
   (make-lisp-tags (emacs-home*)
-                  (tags-spec->% :emacs-home)
+                  (tags-spec->% :nore)
                   option
                   (lambda (f _)
                     (string-match "\\.el$" f))
@@ -212,7 +208,7 @@ RENEW overwrite the existing tags file when t else create it."
                   renew))
 
 
-(defun make-emacs-source-tags (source &optional option renew)
+(defun make-emacs-tags (source &optional option renew)
   "Make tags for Emacs' C and Lisp SOURCE code."
   (interactive (list (read-directory-name "make tags for " source-directory)
                      (read-string (concat (*tags*) " option: ")
@@ -220,13 +216,13 @@ RENEW overwrite the existing tags file when t else create it."
                                   '*tags-option-history*)
                      (y-or-n-p "tags renew? ")))
   (make-c-tags (concat source "src/")
-               (tags-spec->% :emacs-source)
+               (tags-spec->% :emacs)
                option
                (lambda (f _) (string-match "\\.[ch]$" f))
                (lambda (_ __) t)
                renew)
   (make-lisp-tags (concat source "lisp/")
-                  (tags-spec->% :emacs-source)
+                  (tags-spec->% :emacs)
                   option
                   (lambda (f _) (string-match "\\.el$" f))
                   (lambda (_ __) t)))
@@ -271,27 +267,21 @@ RENEW overwrite the existing tags file when t else create it."
 
 ;;; `make-dir-ctags'
 
-(defun make-dir-ctags (dir store options)
+(defun make-dir-ctags (dir tags options)
   "Make tags via ctags for specified DIR."
-  (interactive (list (read-directory-name "make tags for ")
-                     (read-file-name
-                      "store tags in " nil nil nil ".tags")
-                     (read-file-name "ctags options in ")))
   (unless (string= "ctags" (*tags*))
     (user-error "%s" "ctags unavailable"))
   (let ((dir (path+ (expand-file-name dir)))
-        (store (expand-file-name store))
+        (tags (expand-file-name tags))
         (options (concat "--options=" (expand-file-name options))))
     (let ((rc (shell-command* (*tags*)
                 "-R"
                 "-e"
-                "-o" store
+                "-o" tags
                 options
                 dir)))
-      (message "%s for %s ... %s"
-               (propertize "make-dir-ctags" 'face 'minibuffer-prompt)
-               store
-               (if (zerop (car rc)) "done" "failed")))))
+      (when (zerop (car rc))
+        tags))))
 
 ;; end of `make-dir-ctags'
 

@@ -68,7 +68,9 @@
  (list
   :cond (comment (and (executable-find% "rustc")
                       (executable-find% "cargo")))
-  :packages '(rust-mode)))
+  :packages '(rust-mode)
+  :compile `(,(compile-unit% (emacs-home* "config/use-rust.el") t)
+             ,(compile-unit% (emacs-home* "config/use-rust-autoload.el")))))
 
 ;;; :scheme
 (*self-packages*

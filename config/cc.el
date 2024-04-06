@@ -358,12 +358,14 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 ;; `tags'
 ;;;
 
+(declare-function tags-spec->% (v-home%> "config/tags"))
 (declare-function make-c-tags (v-home%> "config/tags"))
 (declare-function tags-history (v-home%> "config/tags"))
 
 (defvar cc*-tags-option-history (tags-history 'option))
 (defvar cc*-tags-skip-history (tags-history 'skip))
-(defvar cc*-tags-file-history `(,(emacs-home* ".tags/os/TAGS")))
+(defvar cc*-tags-file-history
+  (list (concat (tags-spec->% :root) "os.TAGS")))
 
 (defun cc*-make-system-tags (&optional option file skip renew)
   "Make system C tags."
