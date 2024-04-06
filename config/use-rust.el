@@ -96,7 +96,7 @@
 
 (defalias 'rust*-make-debug!
   (lexical-let*%
-      ((b (eval-when-compile (rust*-debug-spec))))
+      ((b (rust*-debug-spec)))
     (lambda (&optional op)
       (cond ((eq op :new) (setq b (rust*-debug-spec)))
             (t b))))
@@ -108,12 +108,12 @@
 
 (defmacro rust*-tags-spec ()
   "Return rust tags spec."
-  `(let ((f (format "%srust.%s.TAGS" (tags-spec->% :root)
-                    (rust*-sysroot :hash))))))
+  `(format "%srust.%s.TAGS" (tags-spec->% :root)
+           (rust*-sysroot :hash)))
 
 (defalias 'rust*-make-tags
   (lexical-let*%
-      ((b (eval-when-compile (rust*-tags-spec))))
+      ((b (rust*-tags-spec)))
     (lambda (&optional op)
       (cond ((eq op :new)
              (setq b (inhibit-file-name-handler
@@ -130,11 +130,12 @@
 (defun use-rust-init! ()
   "On \\=`rust\\=' initialization."
   ;; compile-time
-  (comment
-   (unless (rust*-sysroot)
-     (rust*-sysroot :new)
-     (rust*-make-debug! :new)
-     (rust*-make-tags :new))))
+  ;; (comment
+  ;;  (unless (rust*-sysroot)
+  ;;    (rust*-sysroot :new)
+  ;;    (rust*-make-debug! :new)
+  ;;    (rust*-make-tags :new)))
+  )
 
 
 
