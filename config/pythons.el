@@ -117,38 +117,39 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
                        (string-trim> (cdr rc)))))))))
     "Python pip mirror."))
 
+(defmacro python*-lsp-spec ()
+  "Return python lsp spec."
+  `(let* ((venv (python*-venv-activate!))
+          (pylsp (v-home% ".exec/pylsp.sh")))
+     (unless venv
+       (user-error "%s" "python venv unavailable"))
+     (let ((rc (shell-command*
+                   "chmod" "u+x"
+                   (save-str-to-file
+                    (concat
+                     "#!/bin/sh\n"
+                     "if pgrep -f $0 &>/dev/null; then\n"
+                     "  exit 0\n"
+                     "fi\n"
+                     "source " venv "/bin/activate\n"
+                     "if ! pip show python-lsp-server &>/dev/null; then\n"
+                     "  pip install python-lsp-server\n"
+                     "  exec $0 $@\n"
+                     "fi\n"
+                     "exec pylsp $@\n")
+                    pylsp))))
+       (if-feature-eglot%
+           (when-var% eglot-command-history 'eglot
+             (when (zerop (car rc))
+               (push! pylsp eglot-command-history t)))
+         (ignore* rc)))))
+
 (unless-platform% 'windows-nt
   (defalias 'python*-lsp-make!
     (lexical-let*%
-        ((b (v-home% ".exec/pylsp.sh"))
-         (fn
-          (lambda ()
-            (let ((venv (python*-venv-activate!)))
-              (unless venv
-                (user-error "%s" "python venv unavailable"))
-              (let
-                  ((rc (shell-command*
-                           "chmod" "u+x"
-                           (save-str-to-file
-                            (concat
-                             "#!/bin/sh\n"
-                             "if pgrep -f $0 &>/dev/null; then\n"
-                             "  exit 0\n"
-                             "fi\n"
-                             "source " venv "/bin/activate\n"
-                             "if ! pip show python-lsp-server &>/dev/null; then\n"
-                             "  pip install python-lsp-server\n"
-                             "  exec $0 $@\n"
-                             "fi\n"
-                             "exec pylsp $@\n")
-                            b))))
-                (when (zerop (car rc))
-                  (if-feature-eglot%
-                      (when-var% eglot-command-history 'eglot
-                        (push! b eglot-command-history t))
-                    (ignore* (zerop (car rc))))))))))
+        ((b nil))
       (lambda (&optional op)
-        (cond ((eq op :new) (setq b (funcall fn)))
+        (cond ((eq op :new) (setq b (python*-lsp-spec)))
               (t (inhibit-file-name-handler
                    (and b (file-exists-p b) b))))))
     "Make pylsp.sh for \\=`elgot\\='."))
