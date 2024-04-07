@@ -374,7 +374,7 @@ Returns the name of FILE when successed otherwise nil."
        (unwind-protect
            (with-current-buffer b
              (insert ,s)
-             (write-region* (point-min) (point-max) ,f)
+             (write-region* (point-min) (point-max) ,f nil :slient)
              ,f)
          (when b (kill-buffer b))))))
 

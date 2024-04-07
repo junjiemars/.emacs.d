@@ -50,7 +50,7 @@
 
 (defalias 'rust*-sysroot
   (lexical-let*%
-      ((b (eval-when-compile (rust*-sysroot-spec))))
+      ((b (rust*-sysroot-spec)))
     (lambda (&optional op)
       (cond ((eq op :new) (setq b (rust*-sysroot-spec)))
             (op (plist-get b op))
@@ -73,25 +73,34 @@
                         "gdb_load_rust_pretty_printers.py"
                       "lldb_commands"))))
      (unwind-protect
-         (prog1 f
-           (with-current-buffer w
-             (insert-file-contents-literally* f)
-             (goto-char (point-min))
-             (when (re-search-forward
-                    (if-platform% 'gnu/linux
-                        "set substitute-path"
-                      "^settings set target\\.source-map")
-                    nil t)
-               (delete-line))
-             (goto-char (point-max))
-             (forward-line 1)
-             (insert
-              (if-platform% 'gnu/linux
-                  (format "gdb.execute('set substitute-path %s %s')"
-                          x s)
-                (format "settings set target.source-map %s %s"
-                        x s)))
-             (write-region* (point-min) (point-max) f nil :slient)))
+         (catch 'br
+           (prog1 f
+             (with-current-buffer w
+               (insert-file-contents-literally* f)
+               (goto-char (point-min))
+               (when (re-search-forward
+                      (concat (if-platform% 'gnu/linux
+                                  "set substitute-path"
+                                "^settings set target\\.source-map")
+                              " " x)
+                      nil t)
+                 (throw 'br f))
+               (goto-char (point-min))
+               (when (re-search-forward
+                      (if-platform% 'gnu/linux
+                          "set substitute-path"
+                        "^settings set target\\.source-map")
+                      nil t)
+                 (delete-line))
+               (goto-char (point-max))
+               (forward-line 1)
+               (insert
+                (if-platform% 'gnu/linux
+                    (format "gdb.execute('set substitute-path %s %s')"
+                            x s)
+                  (format "settings set target.source-map %s %s"
+                          x s)))
+               (write-region* (point-min) (point-max) f nil :slient))))
        (when w (kill-buffer w)))))
 
 (defalias 'rust*-make-debug!

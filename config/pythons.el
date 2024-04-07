@@ -159,8 +159,9 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
 (defun on-python-init! ()
   "On \\=`python\\=' initialization."
   ;; venv
-  (unless-platform% 'windows-nt
-    (when (python*-program)
+  (when (python*-program)
+    (setq% python-shell-interpreter (python*-program :bin) 'python)
+    (unless-platform% 'windows-nt
       (python*-venv-activate!)
       (unless (python*-lsp-make!)
         (python*-lsp-make! :new))))
