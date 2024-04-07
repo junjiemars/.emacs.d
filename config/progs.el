@@ -166,9 +166,12 @@ If \\=`current-prefix-arg\\=' < 0, then repeat n time with END in reversed."
              (concat (downcase (car ss))
                      (mapconcat #'capitalize (cdr ss) ""))))
           ((string-match
-            "[A-Z][a-z0-9]*\\([A-Z][a-z0-9]*\\)*" string)
+            "[A-Z][a-z0-9]+\\([A-Z][a-z0-9]*\\)*" string)
            (concat (downcase (substring string 0 1))
                    (substring string 1)))
+          ((string-match
+            "[_A-Z0-9]+" string)
+           (downcase string))
           (t string))))
 
 ;; end of camelize
