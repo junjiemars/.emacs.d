@@ -42,8 +42,7 @@
 
 (unless-platform% 'windows-nt
   (defalias 'python*-venv-activate!
-    (lexical-let%
-        ((b (emacs-home* "private/progs/py/ve/")))
+    (lexical-let% ((b (emacs-home* "private/progs/py/ve/")))
       (lambda (&optional dir)
         (let ((pv (python*-program)))
           (unless pv
@@ -95,7 +94,7 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
 
 (unless-platform% 'windows-nt
   (defalias 'python*-pip-mirror!
-    (lexical-let*%
+    (lexical-let%
         ((b '("https://pypi.tuna.tsinghua.edu.cn/simple/"
               "https://pypi.mirrors.ustc.edu.cn/simple/"
               "http://pypi.hustunique.com/"
@@ -117,32 +116,32 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
                        (string-trim> (cdr rc)))))))))
     "Python pip mirror."))
 
-(defmacro python*-lsp-spec ()
+(defun python*-lsp-spec ()
   "Return python lsp spec."
-  `(let* ((venv (python*-venv-activate!))
-          (pylsp (v-home% ".exec/pylsp.sh")))
-     (unless venv
-       (user-error "%s" "python venv unavailable"))
-     (let ((rc (shell-command*
-                   "chmod" "u+x"
-                   (save-str-to-file
-                    (concat
-                     "#!/bin/sh\n"
-                     "if pgrep -f $0 &>/dev/null; then\n"
-                     "  exit 0\n"
-                     "fi\n"
-                     "source " venv "/bin/activate\n"
-                     "if ! pip show python-lsp-server &>/dev/null; then\n"
-                     "  pip install python-lsp-server\n"
-                     "  exec $0 $@\n"
-                     "fi\n"
-                     "exec pylsp $@\n")
-                    pylsp))))
-       (if-feature-eglot%
-           (when-var% eglot-command-history 'eglot
-             (when (zerop (car rc))
-               (push! pylsp eglot-command-history t)))
-         (ignore* rc)))))
+  (let ((venv (python*-venv-activate!))
+        (pylsp (v-home% ".exec/pylsp.sh")))
+    (unless venv
+      (user-error "%s" "python venv unavailable"))
+    (let ((rc (shell-command*
+                  "chmod" "u+x"
+                  (save-str-to-file
+                   (concat
+                    "#!/bin/sh\n"
+                    "if pgrep -f $0 &>/dev/null; then\n"
+                    "  exit 0\n"
+                    "fi\n"
+                    "source " venv "/bin/activate\n"
+                    "if ! pip show python-lsp-server &>/dev/null; then\n"
+                    "  pip install python-lsp-server\n"
+                    "  exec $0 $@\n"
+                    "fi\n"
+                    "exec pylsp $@\n")
+                   pylsp))))
+      (if-feature-eglot%
+          (when-var% eglot-command-history 'eglot
+            (when (zerop (car rc))
+              (push! pylsp eglot-command-history t)))
+        (ignore* rc)))))
 
 (unless-platform% 'windows-nt
   (defalias 'python*-lsp-make!

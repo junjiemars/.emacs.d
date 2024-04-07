@@ -15,28 +15,28 @@
 
 ;;; sysroot
 
-(defmacro rust*-sysroot-spec ()
+(defun rust*-sysroot-spec ()
   "Return rust sysroot spec."
-  `(let ((rc (shell-command* "~/.cargo/bin/rustc"
-               "--print sysroot 2>/dev/null")))
-     (when (zerop (car rc))
-       (let ((sysroot (path+ (string-trim> (cdr rc)))))
-         (list
-          :sysroot sysroot
-          :hash
-          (let ((h (shell-command* (concat sysroot "bin/rustc")
-                     "-vV")))
-            (when (zerop (car h))
-              (string-match* "^commit-hash: \\([a-z0-9]+\\)"
-                             (cdr h) 1)))
-          :etc (path+ sysroot "lib/rustlib/etc")
-          :src (path+ sysroot "lib/rustlib/src")
-          :tag
-          (let ((ctags (concat (tags-spec->% :root) "ctags.rust")))
-            (prog1 ctags
-              (unless (file-exists-p ctags)
-                (save-str-to-file
-                 "--langdef=Rust
+  (let ((rc (shell-command* "~/.cargo/bin/rustc"
+              "--print sysroot 2>/dev/null")))
+    (when (zerop (car rc))
+      (let ((sysroot (path+ (string-trim> (cdr rc)))))
+        (list
+         :sysroot sysroot
+         :hash
+         (let ((h (shell-command* (concat sysroot "bin/rustc")
+                    "-vV")))
+           (when (zerop (car h))
+             (string-match* "^commit-hash: \\([a-z0-9]+\\)"
+                            (cdr h) 1)))
+         :etc (path+ sysroot "lib/rustlib/etc")
+         :src (path+ sysroot "lib/rustlib/src")
+         :tag
+         (let ((ctags (concat (tags-spec->% :root) "ctags.rust")))
+           (prog1 ctags
+             (unless (file-exists-p ctags)
+               (save-str-to-file
+                "--langdef=Rust
 --langmap=Rust:.rs
 --regex-Rust=/^[ \\t]*(#\\[[^\\]]\\][ \\t]*)*(pub[ \\t]+)?(extern[ \\t]+)?(\"[^\"]+\"[ \\t]+)?(unsafe[ \\t]+)?fn[ \\t]+([a-zA-Z0-9_]+)/\\6/f,functions,function definitions/
 --regex-Rust=/^[ \\t]*(pub[ \\t]+)?type[ \\t]+([a-zA-Z0-9_]+)/\\2/T,types,type definitions/
@@ -63,45 +63,45 @@
 ;; debug
 ;;;
 
-(defmacro rust*-debug-spec ()
+(defun rust*-debug-spec ()
   "Return rust debugger spec."
-  `(let ((w (get-buffer-create* (symbol-name (gensym*)) t))
-         (x (concat "/rustc/" (rust*-sysroot :hash)))
-         (s (path+ (rust*-sysroot :src) "rust"))
-         (f (concat (rust*-sysroot :etc)
-                    (if-platform% 'gnu/linux
-                        "gdb_load_rust_pretty_printers.py"
-                      "lldb_commands"))))
-     (unwind-protect
-         (catch 'br
-           (prog1 f
-             (with-current-buffer w
-               (insert-file-contents-literally* f)
-               (goto-char (point-min))
-               (when (re-search-forward
-                      (concat (if-platform% 'gnu/linux
-                                  "set substitute-path"
-                                "^settings set target\\.source-map")
-                              " " x)
-                      nil t)
-                 (throw 'br f))
-               (goto-char (point-min))
-               (when (re-search-forward
-                      (if-platform% 'gnu/linux
-                          "set substitute-path"
-                        "^settings set target\\.source-map")
-                      nil t)
-                 (delete-line))
-               (goto-char (point-max))
-               (forward-line 1)
-               (insert
-                (if-platform% 'gnu/linux
-                    (format "gdb.execute('set substitute-path %s %s')"
-                            x s)
-                  (format "settings set target.source-map %s %s"
-                          x s)))
-               (write-region* (point-min) (point-max) f nil :slient))))
-       (when w (kill-buffer w)))))
+  (let ((w (get-buffer-create* (symbol-name (gensym*)) t))
+        (x (concat "/rustc/" (rust*-sysroot :hash)))
+        (s (path+ (rust*-sysroot :src) "rust"))
+        (f (concat (rust*-sysroot :etc)
+                   (if-platform% 'gnu/linux
+                       "gdb_load_rust_pretty_printers.py"
+                     "lldb_commands"))))
+    (unwind-protect
+        (catch 'br
+          (prog1 f
+            (with-current-buffer w
+              (insert-file-contents-literally* f)
+              (goto-char (point-min))
+              (when (re-search-forward
+                     (concat (if-platform% 'gnu/linux
+                                 "set substitute-path"
+                               "^settings set target\\.source-map")
+                             " " x)
+                     nil t)
+                (throw 'br f))
+              (goto-char (point-min))
+              (when (re-search-forward
+                     (if-platform% 'gnu/linux
+                         "set substitute-path"
+                       "^settings set target\\.source-map")
+                     nil t)
+                (delete-line))
+              (goto-char (point-max))
+              (forward-line 1)
+              (insert
+               (if-platform% 'gnu/linux
+                   (format "gdb.execute('set substitute-path %s %s')"
+                           x s)
+                 (format "settings set target.source-map %s %s"
+                         x s)))
+              (write-region* (point-min) (point-max) f nil :slient))))
+      (when w (kill-buffer w)))))
 
 (defalias 'rust*-make-debug!
   (lexical-let*%
@@ -115,10 +115,10 @@
 ;; tags
 ;;;
 
-(defmacro rust*-tags-spec ()
+(defun rust*-tags-spec ()
   "Return rust tags spec."
-  `(format "%srust.%s.TAGS" (tags-spec->% :root)
-           (rust*-sysroot :hash)))
+  (format "%srust.%s.TAGS" (tags-spec->% :root)
+          (rust*-sysroot :hash)))
 
 (defalias 'rust*-make-tags
   (lexical-let*%
