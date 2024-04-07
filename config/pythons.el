@@ -23,10 +23,9 @@
        (string-match* "^Python \\([.0-9]+\\)$" (cdr rc) 1))))
 
 (defalias 'python*-program
-  (lexical-let% ((b (eval-when-compile
-                      (let ((p (or (executable-find% "python3")
-                                   (executable-find% "python"))))
-                        (when p (cons p (python*-version p)))))))
+  (lexical-let% ((b (let ((p (or (executable-find% "python3")
+                                 (executable-find% "python"))))
+                      (when p (cons p (python*-version p))))))
     (lambda (&optional op n)
       (cond ((eq :new op) (setq b (cons n (python*-version n))))
             ((eq :bin op) (car b))
@@ -145,8 +144,7 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
 
 (unless-platform% 'windows-nt
   (defalias 'python*-lsp-make!
-    (lexical-let*%
-        ((b nil))
+    (lexical-let% ((b nil))
       (lambda (&optional op)
         (cond ((eq op :new) (setq b (python*-lsp-spec)))
               (t (inhibit-file-name-handler

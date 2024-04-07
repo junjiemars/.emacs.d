@@ -49,8 +49,7 @@
 --regex-Rust=/^[ \\t]*macro_rules![ \\t]+([a-zA-Z0-9_]+)/\\1/d,macros,macro definitions/" ctags)))))))))
 
 (defalias 'rust*-sysroot
-  (lexical-let*%
-      ((b (rust*-sysroot-spec)))
+  (lexical-let% ((b (rust*-sysroot-spec)))
     (lambda (&optional op)
       (cond ((eq op :new) (setq b (rust*-sysroot-spec)))
             (op (plist-get b op))
@@ -104,8 +103,7 @@
       (when w (kill-buffer w)))))
 
 (defalias 'rust*-make-debug!
-  (lexical-let*%
-      ((b (rust*-debug-spec)))
+  (lexical-let% ((b (rust*-debug-spec)))
     (lambda (&optional op)
       (cond ((eq op :new) (setq b (rust*-debug-spec)))
             (t b))))
@@ -121,8 +119,7 @@
           (rust*-sysroot :hash)))
 
 (defalias 'rust*-make-tags
-  (lexical-let*%
-      ((b (rust*-tags-spec)))
+  (lexical-let% ((b (rust*-tags-spec)))
     (lambda (&optional op)
       (cond ((eq op :new)
              (setq b (inhibit-file-name-handler
