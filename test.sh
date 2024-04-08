@@ -26,21 +26,21 @@ END
   cat <"${_ENV_PRO_}"
   ${_EMACS_} --batch \
              --no-window-system \
-             --eval="
-(progn
-  (defvar *nore-emacs-no-boot* nil)
-  (load \"${_ROOT_}/init.el\")
-  (clean-compiled-files))
+             --eval="\
+(progn\
+  (defvar *nore-emacs-no-boot* nil)\
+  (load \"${_ROOT_}/init.el\")\
+  (clean-compiled-files))\
 "
 }
 
 test_boot_env() {
   ${_EMACS_} --batch \
              --no-window-system \
-             --eval="
-(progn
-  (load \"${_ROOT_}/init.el\")
-  (message \"Elapsed: %s\" (emacs-init-time)))
+             --eval="\
+(progn\
+  (load \"${_ROOT_}/init.el\")\
+  (message \"Elapsed: %s\" (emacs-init-time)))\
 "
 }
 
@@ -76,20 +76,20 @@ test_axiom() {
   test_echo_env "axiom|compile"
   ${_EMACS_} --batch \
              --no-window-system \
-             --eval="
-(progn
-  (load \"${_ROOT_}/init.el\")
-  (load (emacs-home* \"test.el\"))
-  (ert-run-tests-batch-and-exit))
+             --eval="\
+(progn\
+  (load \"${_ROOT_}/init.el\")\
+  (load (emacs-home* \"test.el\"))\
+  (ert-run-tests-batch-and-exit))\
 "
   test_echo_env "axiom|boot"
   ${_EMACS_} --batch \
              --no-window-system \
-             --eval="
-(progn
-  (load \"${_ROOT_}/init.el\")
-  (load (emacs-home* \"test.el\"))
-  (ert-run-tests-batch-and-exit))
+             --eval="\
+(progn\
+  (load \"${_ROOT_}/init.el\")\
+  (load (emacs-home* \"test.el\"))\
+  (ert-run-tests-batch-and-exit))\
 "
 }
 
@@ -177,11 +177,12 @@ END
   test_echo_env "profile|boot"
   ${_EMACS_} --batch \
              --no-window-system \
-             --eval="
-(progn
-  (defvar *nore-emacs-profile* nil)
-  (load \"${_ROOT_}/init.el\"))" 2>"$fb"
-  $prof "$fb"
+             --eval="\
+(progn\
+  (defvar *nore-emacs-profile* nil)\
+  (load \"${_ROOT_}/init.el\"))" 2>"$fb"\
+  $prof "$fb\
+"
 }
 
 test_debug() {
@@ -191,10 +192,10 @@ test_debug() {
   ${_EMACS_} --batch \
              --no-window-system \
              --debug-init \
-             --eval="
-(progn
-  (setq debug-on-error t)
-  (load \"${_ROOT_}/init.el\"))
+             --eval="\
+(progn\
+  (setq debug-on-error t)\
+  (load \"${_ROOT_}/init.el\"))\
 "
 }
 
