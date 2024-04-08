@@ -93,6 +93,7 @@
       (compile-unit% (emacs-home* "config/docs.el") t))
     (when-feature-eglot%
       (compile-unit% (emacs-home* "config/eglots.el") t))
+    (compile-unit% (emacs-home* "config/elisps.el") t)
     (compile-unit% (emacs-home* "config/eshells.el") t)
     (when-feature-eww%
       (compile-unit% (emacs-home* "config/ewws.el") t))
@@ -101,7 +102,6 @@
     (compile-unit% (emacs-home* "config/helps.el") t)
     (compile-unit% (emacs-home* "config/hippies.el") t)
     (compile-unit% (emacs-home* "config/idos.el") t)
-    (compile-unit% (emacs-home* "config/lisps.el") t)
     (compile-unit% (emacs-home* "config/marks.el") t)
     (compile-unit% (emacs-home* "config/mixal.el") t)
     (compile-unit% (emacs-home* "config/nets.el") t)
@@ -151,8 +151,6 @@
     ;; on `eglot'
     (when-feature-eglot%
       (compile-unit% (emacs-home* "config/on-eglot-autoload.el")))
-    ;; on `eshells'
-    (compile-unit% (emacs-home* "config/on-eshell-autoload.el"))
     ;; on `ewws'
     (when-feature-eww%
       (compile-unit% (emacs-home* "config/on-eww-autoload.el")))
@@ -179,8 +177,6 @@
     (compile-unit% (emacs-home* "config/on-hippie-autoload.el"))
     ;; on `idos'
     (compile-unit% (emacs-home* "config/on-ido-autoload.el"))
-    ;; on `ielm'
-    (compile-unit% (emacs-home* "config/on-ielm-autoload.el"))
     ;; on `isearchs'
     (compile-unit% (emacs-home* "config/isearchs.el") t)
     (compile-unit% (emacs-home* "config/on-isearch-autoload.el"))

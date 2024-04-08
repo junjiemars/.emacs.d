@@ -3,7 +3,7 @@
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; lisps.el
+;; elisps.el
 ;;;;
 
 ;;; `elisp-mode'
@@ -45,6 +45,6 @@
 
 ;; end of `ielm'
 
-(provide 'lisps)
+(provide 'elisps)
 
-;; end of lisps.el
+;; end of elisps.el
