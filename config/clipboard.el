@@ -3,7 +3,7 @@
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; clip.el
+;; clipboard.el
 ;;;;
 ;; Commentary: killing/yanking with the clipboard
 ;; See also: http://emacswiki.org/emacs/CopyAndPaste
@@ -42,7 +42,7 @@
 
 
 
-(provide 'clip)
+(provide 'clipboard)
 
 
-;; end of clip.el
+;; end of clipboard.el

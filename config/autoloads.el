@@ -86,7 +86,7 @@
   (compile!
     (compile-unit% (emacs-home* "config/safe.el"))
     (compile-unit% (emacs-home* "config/cc.el") t)
-    (compile-unit% (emacs-home* "config/clip.el") t)
+    (compile-unit% (emacs-home* "config/clipboard.el") t)
     (compile-unit% (emacs-home* "config/compiles.el") t)
     (compile-unit% (emacs-home* "config/direds.el") t)
     (when-platform% 'windows-nt
@@ -131,9 +131,9 @@
   (compile!
     ;; on `cc'
     (compile-unit% (emacs-home* "config/on-cc-autoload.el"))
-    ;; on `clip'
+    ;; on `clipboard'
     (unless-graphic%
-      (compile-unit% (emacs-home* "config/on-clip-autoload.el")))
+      (compile-unit% (emacs-home* "config/on-clipboard-autoload.el")))
     ;; on `compiles'
     (compile-unit% (emacs-home* "config/on-compile-autoload.el"))
     ;; `dict'
