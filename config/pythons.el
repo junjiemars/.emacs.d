@@ -136,11 +136,11 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
                     "fi\n"
                     "exec pylsp $@\n")
                    pylsp))))
-      (if-feature-eglot%
-          (when-var% eglot-command-history 'eglot
-            (when (zerop (car rc))
-              (push! pylsp eglot-command-history t)))
-        (ignore* rc)))))
+      (when (zerop (car rc))
+        (prog1 pylsp
+          (when-feature-eglot%
+            (when-var% eglot-command-history 'eglot
+              (push! pylsp eglot-command-history t))))))))
 
 (unless-platform% 'windows-nt
   (defalias 'python*-lsp-make!
