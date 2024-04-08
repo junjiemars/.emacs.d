@@ -360,36 +360,29 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 
 (declare-function tags-spec->% (v-home%> "config/tags"))
 (declare-function make-c-tags (v-home%> "config/tags"))
-(declare-function tags-history (v-home%> "config/tags"))
 
-(defvar cc*-tags-option-history (tags-history 'option))
-(defvar cc*-tags-skip-history (tags-history 'skip))
-(defvar cc*-tags-file-history
-  (list (concat (tags-spec->% :root) "os.TAGS")))
+(defalias 'cc*-make-tags
+  (lexical-let%
+      ((b (concat (tags-spec->% :root) "os.TAGS"))
+       (option "--langmap=c:.h.c --c-kinds=+ptesgux --extra=+fq")
+       (skip (concat "cpp\\|c\\+\\+"
+                     "\\|/python.*?/"
+                     "\\|/php.*?/"
+                     "\\|/ruby.*?/"
+                     "\\|/swift/")))
+    (lambda (&optional op)
+      (cond ((eq op :new)
+             (let ((inc (cc*-system-include))
+                   (filter (lambda (_ a)
+                             (not (string-match skip a)))))
+               (make-c-tags (car inc) b option nil filter)
+               (dolist* (p (cdr inc) b)
+                 (make-c-tags p b option nil filter))))
+            (t (inhibit-file-name-handler
+                 (and b (file-exists-p b) b))))))
+  "Make system C tags.")
 
-(defun cc*-make-system-tags (&optional option file skip renew)
-  "Make system C tags."
-  (interactive
-   (list (read-string "tags option: "
-                      (car cc*-tags-option-history)
-                      'cc*-tags-option-history)
-         (read-string "tags file: "
-                      (car cc*-tags-file-history)
-                      'cc*-tags-file-history)
-         (read-string "tags skip: "
-                      (car cc*-tags-skip-history)
-                      'cc*-tags-skip-history)
-         (y-or-n-p "tags renew? ")))
-  (let ((inc (cc*-system-include (not renew)))
-        (filter (when (and (stringp skip)
-                           (not (string= "" skip)))
-                  (lambda (_ a)
-                    (not (string-match skip a))))))
-    (make-c-tags (car inc) file option nil filter renew)
-    (dolist* (p (cdr inc) file)
-      (make-c-tags p file option nil filter))))
-
-;; end of `make-c-tags'
+;; end of `cc*-make-tags'
 
 ;;;
 ;; `cc-styles'

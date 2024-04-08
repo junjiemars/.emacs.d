@@ -89,11 +89,6 @@ when \\=`desktop-globals-to-save\\=' include it."
   (list "cpp\\|c\\+\\+\\|/python.*?/\\|/php.*?/\\|/ruby.*?/\\|/swift/")
   "Tags skip history list.")
 
-(defun tags-history (op)
-  (cond ((eq op 'option) *tags-option-history*)
-        ((eq op 'skip) *tags-skip-history*)
-        (t nil)))
-
 (defalias 'mount-tags #'visit-tags-table
   "Mount existing TAGS into \\=`tags-table-list\\='.")
 
