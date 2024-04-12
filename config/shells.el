@@ -8,20 +8,9 @@
 ;; Commentary: shell's environment
 ;;;;
 
-
 ;;;
 ;; spec
 ;;;
-
-(defmacro shells-spec->% (&rest keys)
-  "Extract constant from env-spec via KEYS."
-  (declare (indent 0))
-  `(self-spec->%
-    (list :file ,(v-home% ".exec/shell-env.el")
-          :SHELL "SHELL"
-          :PATH "PATH")
-    ,@keys))
-
 
 (defmacro shells-spec->* (&rest keys)
   "Extract :shell from env-spec via KEYS."
@@ -43,7 +32,6 @@
 ;;;
 ;; vars/paths
 ;;;
-
 
 (defun echo-var (var &optional options)
   "Return the value of $VAR via echo."

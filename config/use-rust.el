@@ -8,7 +8,6 @@
 
 ;;; require
 
-(declare-function tags-spec->% (v-home%> "config/tags"))
 (declare-function make-dir-ctags (v-home%> "config/tags"))
 
 ;; end of require

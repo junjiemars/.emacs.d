@@ -6,8 +6,6 @@
 ;; on-tags-autoload.el
 ;;;;
 
-(autoload 'tags-spec->% (v-home%> "config/tags")
-  "Tags spec" nil 'macro)
 (autoload 'mount-tags (v-home%> "config/tags")
   "Mount tags." t)
 (autoload 'unmount-tags (v-home%> "config/tags")

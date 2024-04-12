@@ -8,6 +8,11 @@
 ;; Commentary: essential C programming
 ;;;;
 
+;;; require
+
+(declare-function make-c-tags (v-home%> "config/tags"))
+
+;; end of require
 
 ;;;
 ;; msvc host environment
@@ -357,9 +362,6 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 ;;;
 ;; `tags'
 ;;;
-
-(declare-function tags-spec->% (v-home%> "config/tags"))
-(declare-function make-c-tags (v-home%> "config/tags"))
 
 (defalias 'cc*-make-tags
   (lexical-let%

@@ -362,6 +362,23 @@ No matter the declaration order, the executing order is:
             ((eq :put op) (setq ps (cons (cons k v) ps)))
             (t ps)))))
 
+(defmacro shells-spec->% (&rest keys)
+  "Extract constant from env-spec via KEYS."
+  (declare (indent 0))
+  `(self-spec->%
+    (list :file ,(v-home% ".exec/shell-env.el")
+          :SHELL "SHELL"
+          :PATH "PATH")
+    ,@keys))
+
+(defmacro tags-spec->% (&rest key)
+  "Extract value from the list of spec via KEYS at compile time."
+  `(self-spec->% (list
+                  :root ,(emacs-home* ".tags/")
+                  :nore ,(v-home% ".tags/nore.emacs.TAGS")
+                  :emacs ,(v-home% ".tags/emacs.TAGS"))
+                 ,@key))
+
 ;; end of self-spec macro
 
 ;;;
@@ -378,6 +395,7 @@ No matter the declaration order, the executing order is:
 (*self-paths* :dup)
 ;; reset user emacs dir
 (setq% user-emacs-directory (emacs-home*))
+
 
 ;;; <1> prologue
 (compile! (compile-unit% (emacs-home* "config/fn.el"))

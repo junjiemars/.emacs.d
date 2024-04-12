@@ -8,15 +8,6 @@
 ;; Commentary: tagging
 ;;;;
 
-
-(defmacro tags-spec->% (&rest key)
-  "Extract value from the list of spec via KEYS at compile time."
-  `(self-spec->% (list
-                  :root ,(emacs-home* ".tags/")
-                  :nore ,(v-home% ".tags/nore.emacs.TAGS")
-                  :emacs ,(v-home% ".tags/emacs.TAGS"))
-                 ,@key))
-
 (defcustom%
  tags-program
  (list 'quote
