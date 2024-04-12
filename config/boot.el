@@ -406,21 +406,18 @@ No matter the declaration order, the executing order is:
 (compile!
   (compile-unit* (*self-paths* :get :env-spec))
   (compile-unit% (emacs-home* "config/graphic.el"))
-  (compile-unit% (emacs-home* "config/basic.el")))
-
-;;; <3> epilogue
-(compile!
   (prog1
       (compile-unit% (emacs-home* "config/shells.el") t)
     (autoload 'self-shell-read! (v-home%> "config/shells"))
-    (declare-function self-shell-read!
-                      (v-home%> "config/shells")))
+    (declare-function self-shell-read! (v-home%> "config/shells"))))
+
+;;; <3> epilogue
+(compile!
   (when (*self-env-spec* :get :edit :allowed)
     (prog1
 	      (compile-unit% (emacs-home* "config/edit.el") t)
       (autoload 'self-edit-init! (v-home%> "config/edit"))
-      (declare-function self-edit-init!
-			                  (v-home%> "config/edit"))))
+      (declare-function self-edit-init! (v-home%> "config/edit"))))
   (progn
     ;;; --batch mode: disable `desktop'
     (setq% desktop-save-mode nil 'desktop)
@@ -429,8 +426,7 @@ No matter the declaration order, the executing order is:
        (prog1
            (compile-unit% (emacs-home* "config/memo.el") t)
          (autoload 'self-desktop-read! (v-home%> "config/memo"))
-         (declare-function self-desktop-read!
-                           (v-home%> "config/memo"))))))
+         (declare-function self-desktop-read! (v-home%> "config/memo"))))))
   (when (*self-env-spec* :get :socks :allowed)
     (prog1
         (compile-unit% (emacs-home* "config/sockets.el") t)
@@ -442,8 +438,7 @@ No matter the declaration order, the executing order is:
       (prog1
           (compile-unit% (emacs-home* "config/modules.el") t)
         (autoload 'self-package-init! (v-home%> "config/modules"))
-        (declare-function self-package-init!
-                          (v-home%> "config/modules")))))
+        (declare-function self-package-init! (v-home%> "config/modules")))))
   (compile-unit% (emacs-home* "config/autoloads.el")))
 
 ;; end of boot

@@ -103,6 +103,64 @@ when \\=`desktop-globals-to-save\\=' include it."
             (remove-if* (lambda (x) (string= x fn))
                         tags-table-list)))))
 
+(defun dir-iterate (dir ff df fn dn)
+  "Iterate DIR.\n
+FF file-filter (lambda (file-name absolute-name)...),
+DF dir-filter (lambda (dir-name absolute-name)...),
+FN file-processor (lambda (absolute-name)...),
+DN dir-processor (lambda (aboslute-name)...)."
+  (inhibit-file-name-handler
+    (let ((files (remove-if* (lambda (x)
+                               (or (null x)
+                                   (string= "./" x)
+                                   (string= "../" x)))
+                             (file-name-all-completions "" dir))))
+      (while files
+        (let ((f (car files)))
+          (let ((a (expand-file-name f dir)))
+            (if (directory-name-p f)
+                (when (and (let ((ln (file-symlink-p a)))
+                             (if ln
+                                 (not (or
+                                       (string-match "\\.\\'\\|\\.\\.\\'" ln)
+                                       (and (>= (length a) (length ln))
+                                            (string=
+                                             ln
+                                             (substring a 0 (length ln))))))
+                               t))
+                           df
+                           (funcall df f a))
+                  (and dn (funcall dn a))
+                  (dir-iterate a ff df fn dn))
+              (when (and ff (funcall ff f a))
+                (and fn (funcall fn a)))))
+          (setq files (cdr files)))))))
+
+(defun dir-backtrack (dir prefer)
+  "Backtrack DIR.\n
+Starting at DIR, look up directory hierarchy for prefered
+directory or file. Ignores the symbol links of directory.\n
+PREFER (lambda (dir files)...)."
+  (inhibit-file-name-handler
+    (let ((d (expand-file-name
+              (if (directory-name-p dir)
+                  dir
+                (file-name-directory dir))))
+          (stop "\\(^/\\|[a-zA-Z]:/\\)\\'"))
+      (while (and (stringp d)
+                  (directory-name-p d)
+                  (not (string-match stop d)))
+        (and prefer (funcall prefer d
+                             (remove-if*
+                              (lambda (x)
+                                (or (null x)
+                                    (string= "./" x)
+                                    (string= "../" x)
+                                    (let ((dx (concat d x)))
+                                      (and (directory-name-p dx)
+                                           (file-symlink-p dx)))))
+                              (file-name-all-completions "" d))))
+        (setq d (path- d))))))
 
 (defun make-tags
     (home tags-file file-filter dir-filter &optional tags-option renew)

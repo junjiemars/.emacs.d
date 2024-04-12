@@ -533,14 +533,7 @@
 (ert-deftest %d:fn:platform-arch ()
   (should (platform-arch)))
 
-;; end of `fn'
-
-
-;;;
-;; basic
-;;;
-
-(ert-deftest %e:basic:file-in-dirs-p ()
+(ert-deftest %e:fn:file-in-dirs-p ()
   (should-not (file-in-dirs-p nil nil))
   (should-not (file-in-dirs-p (emacs-home* "init.el") nil))
   (should-not (file-in-dirs-p (emacs-home* "init.el")
@@ -552,13 +545,13 @@
   (should (file-in-dirs-p (emacs-home* "init.el")
                           (list (string-trim> (emacs-home*) "/")))))
 
-(ert-deftest %e:basic:file-name-nondirectory% ()
+(ert-deftest %e:fn:file-name-nondirectory% ()
   (should (string= "c.c" (file-name-nondirectory% "/a/b/c.c")))
   (should (string= "c.c" (file-name-nondirectory%
                           (concat "/a/b/" "c.c")))))
 
 
-(ert-deftest %e:basic:ssh-remote-/p/>ids/>user@host ()
+(ert-deftest %e:fn:ssh-remote-/p/>ids/>user@host ()
   (should (and (null (ssh-remote-p nil))
                (null (ssh-remote-p "/xxh:abc:/a/b.c"))
                (string= "/sshx:pi:"
@@ -585,18 +578,18 @@
                         (ssh-remote->user@host
                          "/sshx:u@h.i.j:/a/b.c")))))
 
-(ert-deftest %e:basic:path+ ()
+(ert-deftest %e:fn:path+ ()
   (should-not (path+ nil))
   (should (string= "a/" (path+ "a")))
   (should (string= "a/b/c/" (path+ "a/" "b/" "c/")))
   (should (string= "a/b/c/" (path+ "a/" "b" "c"))))
 
-(ert-deftest %e:basic:path- ()
+(ert-deftest %e:fn:path- ()
   (should-not (path- nil))
   (should (string= "a/b/" (path- "a/b/c")))
   (should (string= "a/b/" (path- "a/b/c/"))))
 
-(ert-deftest %e:basic:path-depth ()
+(ert-deftest %e:fn:path-depth ()
   (should (= 0 (path-depth nil)))
   (should (= 0 (path-depth "")))
   (should (= 1 (path-depth "/")))
@@ -609,65 +602,7 @@
   (should (= 3 (path-depth "/a/b/")))
   (should (= 3 (path-depth "/a/b/c"))))
 
-(ert-deftest %e:basic:dir-iterate ()
-  (should (string-match
-           "init\\.el\\'"
-           (catch 'out
-             (dir-iterate (emacs-home*)
-                          (lambda (f _)
-                            (string= "init.el" f))
-                          nil
-                          (lambda (a)
-                            (throw 'out a))
-                          nil))))
-  (should (string-match
-           "/config/"
-           (catch 'out
-             (dir-iterate (emacs-home*)
-                          nil
-                          (lambda (f _)
-                            (string= "config/" f))
-                          nil
-                          (lambda (a)
-                            (throw 'out a))))))
-  (let ((matched nil))
-    (dir-iterate (emacs-home*)
-                 (lambda (f _)
-                   (string-match "init\\.el\\'\\|basic\\.el\\'" f))
-                 (lambda (d _)
-                   (string-match "config" d))
-                 (lambda (f)
-                   (setq matched (cons f matched)))
-                 nil)
-    (should (= 2 (length matched)))))
-
-(ert-deftest %e:basic:dir-backtrack ()
-  (should (catch 'out
-            (dir-backtrack (emacs-home* "config/")
-                           (lambda (d fs)
-                             (when (string-match "config/" d)
-                               (throw 'out t))))))
-  (should (catch 'out
-            (dir-backtrack (emacs-home* "config/basic.el")
-                           (lambda (d fs)
-                             (dolist* (x fs)
-                               (when (string= "init.el" x)
-                                 (throw 'out t)))))))
-  (should (= 2 (let ((prefered nil)
-                     (count 0)
-                     (std '("init.el" ".git/")))
-                 (dir-backtrack (emacs-home* "config/basic.el")
-                                (lambda (d fs)
-                                  (dolist* (x fs)
-                                    (when (or (string= "init.el" x)
-                                              (string= ".git/" x))
-                                      (push x prefered)))))
-                 (dolist* (x prefered count)
-                   (when (member-if* (lambda (z) (string= z x))
-                                     std)
-                     (setq count (1+ count))))))))
-
-(ert-deftest %e:basic:if-key% ()
+(ert-deftest %e:fn:if-key% ()
   (should (string= "defined"
                    (if-key% (current-global-map) (kbd "C-x C-c")
                             (lambda (def)
@@ -680,7 +615,7 @@
                               (not (eq def #'xxx)))
                             "undefined"))))
 
-(ert-deftest %e:basic:if-region-active ()
+(ert-deftest %e:fn:if-region-active ()
   ;; interactive
   (unless noninteractive
     (with-temp-buffer
@@ -690,7 +625,7 @@
       (set-mark (point-max))
       (should (= 3 (if-region-active (+ 1 2) (* 3 4)))))))
 
-(ert-deftest %e:basic:unless-region-active ()
+(ert-deftest %e:fn:unless-region-active ()
   ;; interactive
   (unless noninteractive
     (with-temp-buffer
@@ -700,7 +635,7 @@
       (set-mark (point-max))
       (should-not (unless-region-active (+ 1 2) (* 3 4))))))
 
-(ert-deftest %e:basic:symbol@ ()
+(ert-deftest %e:fn:symbol@ ()
   ;; interactive
   (unless noninteractive
     (with-temp-buffer
@@ -711,7 +646,7 @@
       (set-mark (point-max))
       (should (string= "a bb" (cdr (symbol@)))))))
 
-(ert-deftest %e:basic:version-string= ()
+(ert-deftest %e:fn:version-string= ()
   (should (= 0 (version-string= "" "")))
   (should (= 1 (version-string= "1" "")))
   (should (= -1 (version-string= "" "1")))
@@ -719,8 +654,7 @@
   (should (= 0 (version-string= "1.0" "1")))
   (should (= 1 (version-string= "1.21" "1.2.12"))))
 
-
-;; end of basic
+;; end of `fn'
 
 ;;;
 ;; shells
@@ -775,7 +709,6 @@
 
 ;; end of shells
 
-
 (comment
  (ert-deftest %g:module:install/delete-package!1 ()
    (unless *repository-initialized*
@@ -795,7 +728,6 @@
      (should (install-package!1 '(:name 'htmlize :version 1.54)))
      (should (delete-package!1 'htmlize))
      (when already (should (install-package!1 'htmlize))))))
-
 
 ;;;
 ;; conditional: cc
@@ -824,8 +756,68 @@
 ;; end of cc
 
 ;;;
-;; conditional: trans
+;; conditional
 ;;;
+
+(ert-deftest %r:tags:dir-iterate ()
+  (when-fn% 'dir-iterate nil
+    (should (string-match
+             "init\\.el\\'"
+             (catch 'out
+               (dir-iterate (emacs-home*)
+                            (lambda (f _)
+                              (string= "init.el" f))
+                            nil
+                            (lambda (a)
+                              (throw 'out a))
+                            nil))))
+    (should (string-match
+             "/config/"
+             (catch 'out
+               (dir-iterate (emacs-home*)
+                            nil
+                            (lambda (f _)
+                              (string= "config/" f))
+                            nil
+                            (lambda (a)
+                              (throw 'out a))))))
+    (let ((matched nil))
+      (dir-iterate (emacs-home*)
+                   (lambda (f _)
+                     (string-match "init\\.el\\'\\|basic\\.el\\'" f))
+                   (lambda (d _)
+                     (string-match "config" d))
+                   (lambda (f)
+                     (setq matched (cons f matched)))
+                   nil)
+      (should (= 2 (length matched))))))
+
+(ert-deftest %r:fn:dir-backtrack ()
+  (when-fn% 'dir-backtrack nil
+    (should (catch 'out
+              (dir-backtrack (emacs-home* "config/")
+                             (lambda (d fs)
+                               (when (string-match "config/" d)
+                                 (throw 'out t))))))
+    (should (catch 'out
+              (dir-backtrack (emacs-home* "config/basic.el")
+                             (lambda (d fs)
+                               (dolist* (x fs)
+                                 (when (string= "init.el" x)
+                                   (throw 'out t)))))))
+    (should (= 2 (let ((prefered nil)
+                       (count 0)
+                       (std '("init.el" ".git/")))
+                   (dir-backtrack (emacs-home* "config/basic.el")
+                                  (lambda (d fs)
+                                    (dolist* (x fs)
+                                      (when (or (string= "init.el" x)
+                                                (string= ".git/" x))
+                                        (push x prefered)))))
+                   (dolist* (x prefered count)
+                     (when (member-if* (lambda (z) (string= z x))
+                                       std)
+                       (setq count (1+ count)))))))))
 
 (ert-deftest %r:trans:roman->arabic ()
   (when-fn% 'roman->arabic nil
@@ -849,7 +841,7 @@
                               "" t)
                              0)))))
 
-;; end of trans
+;; end of conditional
 
 
 ;; end of test.el

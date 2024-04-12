@@ -8,14 +8,6 @@
 ;; Commentary: common notions.
 ;;;;
 
-
-;; Load cl-lib/cl at runtime
-(eval-when-compile
-  (if-version%
-      <= 24.1
-      (require 'cl-lib)
-    (require 'cl)))
-
 ;;;
 ;; alias
 ;;;
@@ -34,41 +26,42 @@
 ;; common-lisp macro
 ;;;
 
+;; Load cl-lib/cl at runtime
+(eval-when-compile
+  (if-version%
+      <= 24.1
+      (require 'cl-lib)
+    (require 'cl)))
+
 (fset 'assoc**
       (if-fn% 'cl-assoc 'cl-lib
               #'cl-assoc
         #'assoc*))
-
 
 (fset 'mapcar**
       (if-fn% 'cl-mapcar 'cl-lib
               #'cl-mapcar
         #'mapcar*))
 
-
 (fset 'remove-if*
       (if-fn% 'cl-remove-if 'cl-lib
               #'cl-remove-if
         #'remove-if))
-
 
 (fset 'member-if*
       (if-fn% 'cl-member-if 'cl-lib
               #'cl-member-if
         #'member-if))
 
-
 (fset 'every*
       (if-fn% 'cl-every 'cl-lib
               #'cl-every
         #'every))
 
-
 (fset 'some*
       (if-fn% 'cl-some 'cl-lib
               #'cl-some
         #'some))
-
 
 (fset 'loop*
       (if-fn% 'cl-loop 'cl-lib
@@ -500,11 +493,228 @@ Call FN with the path if FN is non-nil."
               (string-trim> (cdr m) "\n")
             (string-trim> (cdr m) "\n")))))))
 
+(defun version-string= (v1 v2)
+  "Return 0 if V1 equals V2, -1 if V1 less than V2, otherwise 1."
+  (let ((l1 (length v1)) (l2 (length v2))
+        (nv1 0) (nv2 0)
+        (i 0) (j1 0) (j2 0) (k1 0) (k2 0))
+    (cond ((and (= l1 0) (= l2 0)) 0)
+          ((and (= l1 0) (> l2 0)) -1)
+          ((and (> l1 0) (= l2 0) 1))
+          (t (catch 'br
+               (while (< i 4)
+                 (setq nv1
+                       (catch 'br1
+                         (when (= j1 l1) (throw 'br1 0))
+                         (while (< j1 l1)
+                           (when (= ?. (aref v1 j1))
+                             (throw 'br1
+                                    (string-to-number
+                                     (substring-no-properties
+                                      v1 k1 (prog1 j1
+                                              (setq j1 (1+ j1)
+                                                    k1 j1))))))
+                           (setq j1 (1+ j1)))
+                         (string-to-number
+                          (substring-no-properties v1 k1 j1)))
+                       nv2
+                       (catch 'br2
+                         (when (= j2 l2) (throw 'br2 0))
+                         (while (< j2 l2)
+                           (when (= ?. (aref v2 j2))
+                             (throw 'br2
+                                    (string-to-number
+                                     (substring-no-properties
+                                      v2 k2 (prog1 j2
+                                              (setq j2 (1+ j2)
+                                                    k2 j2))))))
+                           (setq j2 (1+ j2)))
+                         (string-to-number
+                          (substring-no-properties v2 k2 j2))))
+                 (cond ((< nv1 nv2) (throw 'br -1))
+                       ((> nv1 nv2) (throw 'br 1))
+                       ((and (= j1 l1) (= j2 l2)) (throw 'br 0))
+                       (t (setq i (1+ i))))))))))
 
 ;; end of platform macro
 
+;;;
+;; compatible macro
+;;;
+
+(unless-fn% 'user-error nil
+  (defun user-error (format &rest args)
+    "Signal a pilot error."
+    (signal 'user-error
+            (list (apply #'format-message format args)))))
+
+(defmacro called-interactively-p* (&optional kind)
+  "Return t if called by \\=`call-interactively\\='."
+  (if-fn% 'called-interactively-p nil
+          `(called-interactively-p ,kind)
+    (ignore* kind)
+    `(interactive-p)))
+
+(unless-fn% 'with-eval-after-load nil
+  (defmacro with-eval-after-load (file &rest body)
+    "Execute BODY after FILE is loaded."
+    (declare (indent 1) (debug t))
+    `(eval-after-load ,file (lambda () ,@body))))
+
+(defmacro defcustom% (symbol standard doc &rest args)
+  "Declare SYMBOL as a customizable variable with the STANDARD value.
+See \\=`defcustom\\='."
+  (declare (doc-string 3) (debug (name body)))
+  (let ((-standard- (funcall `(lambda () ,standard))))
+    `(custom-declare-variable
+      ',symbol
+      ',-standard-
+      ,doc
+      ,@args)))
+
+;;; `sxhash': see `%fn:save/read-sexp-to/from-file' in test.el
+(define-hash-table-test 'string-hash= #'string= #'sxhash)
+
+;; end of compatible function
+
+;;;
+;; file function
+;;;
+
+(defun path+ (root &rest path)
+  "Append a list of PATH to ROOT."
+  (declare (indent 1))
+  (let* ((trim (lambda (x) (string-trim>< x "/" "/")))
+         (tail (lambda (x) (concat (string-trim> x "/") "/")))
+         (s (cond ((null root) (mapconcat trim path "/"))
+                  ((null path) root)
+                  (t (concat (funcall tail root)
+                             (mapconcat trim path "/"))))))
+    (if (string= "" s) nil (funcall tail s))))
+
+(defmacro path- (file)
+  "Return the parent path of FILE."
+  (let ((f (gensym*)))
+    `(let ((,f ,file))
+       (when (stringp ,f)
+         (inhibit-file-name-handler
+           (file-name-directory (directory-file-name ,f)))))))
+
+(defmacro path-depth (path &optional separator)
+  "Return the depth of PATH."
+  (let ((p (gensym*))
+        (s (gensym*)))
+    `(let ((,p ,path)
+           (,s (or ,separator "/")))
+       (if (= 0 (length ,p))
+           0
+         (- (length (split-string* ,p ,s nil)) 1)))))
+
+(defun file-in-dirs-p (file dirs)
+  "Return the matched dir if FILE in DIRS, otherwise nil."
+  (when (and (stringp file) (consp dirs))
+    (inhibit-file-name-handler
+      (let ((case-fold-search (when-platform% 'windows-nt t))
+            (d (file-name-directory file)))
+        (catch 'br
+          (dolist* (x dirs)
+            (when (and (stringp x)
+                       (eq 't
+                           (compare-strings
+                            x 0 (length x) d 0 (length x)
+                            case-fold-search)))
+              (throw 'br x))))))))
+
+(defmacro file-name-nondirectory% (filename)
+  "Return file name FILENAME sans its directory at compile-time."
+  (let* ((-f1- (funcall `(lambda () ,filename)))
+         (-n1- (and -f1- (file-name-nondirectory -f1-))))
+    `,-n1-))
+
+(defmacro ssh-remote-p (file)
+  "Return an identification when FILE specifies a location on a
+remote system.\n
+On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
+  `(string-match* "^\\(/sshx?:[_-a-zA-Z0-9]+@?[._-a-zA-Z0-9]+:\\)"
+                  ,file 1))
+
+(defmacro ssh-remote->ids (remote)
+  "Norm the REMOTE to (method {user|id} [host]) form."
+  (let ((r (gensym*)))
+    `(let ((,r ,remote))
+       (when (stringp ,r)
+         (split-string* ,r "[:@]" t "\\(^/[^ssh].*$\\|^/\\)")))))
+
+(defmacro ssh-remote->user@host (remote)
+  "Norm the REMOTE to {user|id}[@host] form."
+  (let ((rid (gensym*)))
+    `(let ((,rid (ssh-remote->ids ,remote)))
+       (when (consp ,rid)
+         (concat (cadr ,rid)
+                 (when (car (cddr ,rid))
+                   (concat "@" (car (cddr ,rid)))))))))
+
+;; end of file function
+
+;;;
+;; define key macro
+;;;
+
+(defmacro if-key% (keymap key test then &rest else)
+  "If TEST yields t for KEY in KEYMAP do then, else do ELSE..."
+  (declare (indent 3))
+  `(if% (funcall ,test (lookup-key ,keymap ,key))
+       ,then
+     ,@else))
+
+(defmacro define-key% (keymap key def)
+  "Define KEY to DEF in KEYMAP."
+  `(if-key% ,keymap ,key
+            (lambda (d) (not (eq d ,def)))
+     (define-key ,keymap ,key ,def)))
+
+;; end of define key macro
+
+;;;
+;; interactive fn/macro
+;;;
+
+(defmacro if-region-active (then &rest else)
+  "If \\=`mark-active\\=' is non-nil, do THEN, else do ELSE..."
+  (declare (indent 1))
+  `(if mark-active
+       ,then
+     (progn% ,@else)))
+
+(defmacro unless-region-active (&rest then)
+  "Unless \\=`mark-active\\=' is non-nil, do THEN."
+  (declare (indent 0))
+  `(if-region-active nil ,@then))
+
+(defmacro symbol@ (&optional thing)
+  "Return the (cons \\='region|nil THING) at point."
+  (let ((ss (gensym*)))
+    `(if-region-active
+         (let ((,ss (buffer-substring-no-properties
+                     (region-beginning)
+                     (region-end))))
+           (setq mark-active nil)
+           (cons 'region ,ss))
+       (let ((,ss (thing-at-point (or ,thing 'symbol))))
+         (and ,ss (cons nil (substring-no-properties ,ss)))))))
+
+(defun newline* (&optional arg)
+  "Raw newline."
+  (interactive "*P")
+  (let ((electric-indent-mode nil))
+    (when-version% > 26
+      (when-lexical% (ignore* electric-indent-mode)))
+    (if-version% <= 24.4
+                 (newline arg 'interactive)
+      (newline arg))))
+
+;; end of interactive fn/macro
 
 (provide 'fn)
-
 
 ;; end of fn.el
