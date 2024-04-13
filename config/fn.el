@@ -572,9 +572,6 @@ See \\=`defcustom\\='."
       ,doc
       ,@args)))
 
-;;; `sxhash': see `%fn:save/read-sexp-to/from-file' in test.el
-(define-hash-table-test 'string-hash= #'string= #'sxhash)
-
 ;; end of compatible function
 
 ;;;
