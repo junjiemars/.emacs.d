@@ -150,6 +150,10 @@ test_profile() {
                             (executable-find% "bash"))
        :allowed t))
 (*self-env-spec*
+  :put :edit
+  (list :tab-width 2
+        :allowed t))
+(*self-env-spec*
   :put :package
   (list :package-check-signature 'allow-unsigned
         :allowed t))

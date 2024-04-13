@@ -395,7 +395,8 @@ No matter the declaration order, the executing order is:
 (*self-paths* :dup)
 ;; reset user emacs dir
 (setq% user-emacs-directory (emacs-home*))
-
+;; string hash test: see `%fn:save/read-sexp-to/from-file' in test.el
+(define-hash-table-test 'nore-emacs-string-hash= #'string= #'sxhash)
 
 ;;; <1> prologue
 (compile! (compile-unit% (emacs-home* "config/fn.el"))

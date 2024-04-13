@@ -500,10 +500,10 @@
         (f2 (concat temporary-file-directory
                     (make-temp-name (symbol-name (gensym*)))))
         (s1 '(defvar test%fn-srstff t))
-        (t1 (make-hash-table :test 'nore-string-hash=)))
+        (t1 (make-hash-table :test 'nore-emacs-string-hash=)))
     (should (and (save-sexp-to-file s1 f1)
                  (equal s1 (read-sexp-from-file f1))))
-    (should (eq 'nore-string-hash= (hash-table-test t1)))
+    (should (eq 'nore-emacs-string-hash= (hash-table-test t1)))
     (puthash "a" 1 t1)
     (puthash "b" 2 t1)
     (should (= 2 (hash-table-count t1)))
