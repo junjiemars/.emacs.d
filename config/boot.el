@@ -97,10 +97,6 @@ Argument FEATURE that X dependent on, load at compile time."
   (declare (indent 0))
   `(if-lexical% nil ,@body))
 
-;;; Let `lexical-binding' var safe under Emacs24.1-
-(unless-lexical%
-  (put 'lexical-binding 'safe-local-variable (lambda (_) t)))
-
 (defmacro lexical-let% (varlist &rest body)
   "Lexically bind VARLIST in parallel then eval BODY."
   (declare (indent 1) (debug let))
@@ -124,6 +120,20 @@ Argument FEATURE that X dependent on, load at compile time."
      (when-fn% 'lexical-let* 'cl
        ;; `lexical-let' since Emacs22
        (lexical-let* ,varlist ,@body))))
+
+(defmacro ignore* (&rest vars)
+  "Return nil, list VARS at compile time if in lexical context."
+  (declare (indent 0))
+  (when-lexical%
+    (list 'prog1 nil (cons 'list `,@vars))))
+
+(defun true (&rest x)
+  "Return true value ignore X."
+  (prog1 t (ignore* x)))
+
+(defmacro safe-local-variable* (var &optional fn)
+  "Safe local VAR with FN."
+  `(put ,var 'safe-local-variable (or ,fn #'true)))
 
 ;; end of *-lexical% macro
 
@@ -395,6 +405,10 @@ No matter the declaration order, the executing order is:
 (*self-paths* :dup)
 ;; reset user emacs dir
 (setq% user-emacs-directory (emacs-home*))
+;; default `:safe'
+(setq% enable-local-variables :safe 'files)
+;; let `lexical-binding' var safe under Emacs24.1-
+(unless-lexical% (safe-local-variable 'lexical-binding))
 ;; string hash test: see `%fn:save/read-sexp-to/from-file' in test.el
 (define-hash-table-test 'nore-emacs-string-hash= #'string= #'sxhash)
 

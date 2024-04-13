@@ -163,16 +163,6 @@ If optional UNIQUELY is non-nil then append uniquely."
 ;; byte-compiler macro
 ;;;
 
-(defmacro ignore* (&rest vars)
-  "Return nil, list VARS at compile time if in lexical context."
-  (declare (indent 0))
-  (when-lexical%
-    (list 'prog1 nil (cons 'list `,@vars))))
-
-(defun true (&rest x)
-  "Return true value ignore X."
-  (prog1 t (ignore* x)))
-
 (defmacro defmacro-if-feature% (feature)
   "Define if-feature-FEATURE% compile-time macro."
   (let ((ss (format "if-feature-%s%%" feature)))

@@ -84,7 +84,6 @@
 (defun load-autoloaded-modes! ()
   "Load autoloaded modes."
   (compile!
-    (compile-unit% (emacs-home* "config/safe.el"))
     (compile-unit% (emacs-home* "config/cc.el") t)
     (compile-unit% (emacs-home* "config/clipboard.el") t)
     (compile-unit% (emacs-home* "config/compiles.el") t)

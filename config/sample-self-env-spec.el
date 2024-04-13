@@ -123,7 +123,6 @@
        :auto-save-default nil
        :indent '((sh-basic-offset . 2)
                  (python-indent-offset . 4))
-       :safe-local-variable nil
        :disable-indent-tabs-mode '(awk-mode
                                    c-mode
                                    emacs-lisp-mode
