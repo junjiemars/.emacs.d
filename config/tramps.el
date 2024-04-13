@@ -8,10 +8,9 @@
 
 
 (defalias 'docker-program
-  (lexical-let% ((b (eval-when-compile
-                      (or (executable-find% "podman")
-  											  (executable-find% "docker")
-  											  "docker"))))
+  (lexical-let% ((b (or (executable-find% "podman")
+  											(executable-find% "docker")
+  											"docker")))
     (lambda (&optional n)
       (if (null n) b (setq b n))))
   "Program of docker/podman.")

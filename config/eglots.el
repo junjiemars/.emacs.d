@@ -50,13 +50,12 @@
 (defalias 'eglot*-server-programs
   (lexical-let%
       ((b (v-home% ".exec/eglot-server.el"))
-       (m (eval-when-compile
-            `((c-mode . ("clangd" "--header-insertion=never"))
-              ,(let ((cxx (executable-find% "c++")))
-                 `(c++-mode
-                   .
-                   ("clangd"
-                    ,(format "--query-driver=%s" cxx))))))))
+       (m `((c-mode . ("clangd" "--header-insertion=never"))
+            ,(let ((cxx (executable-find% "c++")))
+               `(c++-mode
+                 .
+                 ("clangd"
+                  ,(format "--query-driver=%s" cxx)))))))
     (lambda (&optional op sexp)
       (cond ((eq op :push)
              (dolist* (x sexp sexp)
