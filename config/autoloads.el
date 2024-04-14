@@ -293,10 +293,10 @@
   (load-conditional-modes!)
   (when-fn% 'self-edit-init! nil (self-edit-init!))
   (when-font% (make-thread* #'self-glyph-init!))
-  (when-fn% 'self-package-init! nil
+  (when-fn% 'self-module-init! nil
     (condition-case err
-        (self-package-init!)
-      (error (message "self-package-init!: %s" err))))
+        (self-module-init!)
+      (error (message "self-module-init!: %s" err))))
   (when-fn% 'self-desktop-read! nil
     (condition-case err
         (self-desktop-read!)

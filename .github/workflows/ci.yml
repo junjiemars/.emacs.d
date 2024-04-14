@@ -27,7 +27,7 @@ jobs:
         run: |
           _TEST_=bone ./test.sh
           _TEST_=axiom ./test.sh
-          _TEST_=package ./test.sh
+          _TEST_=module ./test.sh
           _TEST_=profile ./test.sh
 
   MacOS:
@@ -43,7 +43,7 @@ jobs:
         run: |
           _TEST_=bone ./test.sh
           _TEST_=axiom ./test.sh
-          _TEST_=package ./test.sh
+          _TEST_=module ./test.sh
           _TEST_=profile ./test.sh
 
   # MacOS:
@@ -60,7 +60,7 @@ jobs:
   #       run: |
   #         _TEST_=bone ./test.sh
   #         _TEST_=axiom ./test.sh
-  #         _TEST_=package ./test.sh
+  #         _TEST_=module ./test.sh
           
   Windows:
     runs-on: windows-latest
@@ -83,7 +83,7 @@ jobs:
       run: |
         _TEST_=bone ./test.sh
         _TEST_=axiom ./test.sh
-        _TEST_=package ./test.sh
+        _TEST_=module ./test.sh
         _TEST_=profile ./test.sh
 
   # Emacs:
@@ -145,6 +145,6 @@ jobs:
   #       run: |
   #         _TEST_=bone ./test.sh
   #         _TEST_=axiom ./test.sh
-  #         _TEST_=package ./test.sh
+  #         _TEST_=module ./test.sh
 
 # eof

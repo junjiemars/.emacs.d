@@ -320,13 +320,13 @@ Argument SPEC (VAR LIST [RESULT])."
       ((ps `(;; paths
              :prologue ,(emacs-home* "private/self-prologue.el")
              :env-spec ,(emacs-home* "private/self-env-spec.el")
-             :package-spec ,(emacs-home* "private/self-package-spec.el")
+             :mod-spec ,(emacs-home* "private/self-mod-spec.el")
              :epilogue ,(emacs-home* "private/self-epilogue.el")))
        (ss `(;; specs, exclude :prologue
              (:env-spec
               . ,(emacs-home* "config/sample-self-env-spec.el"))
-             (:package-spec
-              . ,(emacs-home* "config/sample-self-package-spec.el"))
+             (:mod-spec
+              . ,(emacs-home* "config/sample-self-mod-spec.el"))
              (:epilogue
               . ,(emacs-home* "config/sample-self-epilogue.el")))))
     (lambda (&optional op k v)
@@ -342,7 +342,7 @@ Argument SPEC (VAR LIST [RESULT])."
             (t ps))))
   "Define the PATH references.\n
 No matter the declaration order, the executing order is:
-\\=`:env-spec -> :package-spec -> :epilogue\\='")
+\\=`:env-spec -> :mod-spec -> :epilogue\\='")
 
 (defalias '*self-env-spec*
   (lexical-let% ((env (list :theme nil
@@ -353,7 +353,7 @@ No matter the declaration order, the executing order is:
                             :desktop nil
                             :eshell nil
                             :socks nil
-                            :package nil
+                            :module nil
                             :edit nil)))
     (lambda (&optional op &rest keys)
       (cond ((eq :get op) (let ((rs env) (ks keys))
@@ -364,10 +364,9 @@ No matter the declaration order, the executing order is:
             ((eq :put op) (setq env (plist-put env (car keys) (cadr keys))))
             (t env)))))
 
-(defalias '*self-packages*
+(defalias '*self-mod-spec*
   (lexical-let% ((ps nil))
     (lambda (&optional op k v)
-      "OP K V"
       (cond ((eq :get op) (list (assq k ps)))
             ((eq :put op) (setq ps (cons (cons k v) ps)))
             (t ps)))))
@@ -449,11 +448,11 @@ No matter the declaration order, the executing order is:
       (declare-function self-socks-init!
                         (v-home%> "config/sockets"))))
   (when-package%
-    (when (*self-env-spec* :get :package :allowed)
+    (when (*self-env-spec* :get :module :allowed)
       (prog1
           (compile-unit% (emacs-home* "config/modules.el") t)
-        (autoload 'self-package-init! (v-home%> "config/modules"))
-        (declare-function self-package-init! (v-home%> "config/modules")))))
+        (autoload 'self-module-init! (v-home%> "config/modules"))
+        (declare-function self-module-init! (v-home%> "config/modules")))))
   (compile-unit% (emacs-home* "config/autoloads.el")))
 
 ;; end of boot

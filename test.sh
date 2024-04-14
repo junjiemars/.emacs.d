@@ -7,7 +7,7 @@ _WINNT_="${_WINNT_:-no}"
 _ENV_PRO_="${_ROOT_}/private/self-prologue.el"
 _ENV_VER_=
 _ENV_ERT_=
-_ENV_PKG_=
+_ENV_MOD_=
 
 test_echo_env() {
   echo "# ------------"
@@ -93,27 +93,27 @@ test_axiom() {
 "
 }
 
-test_package() {
-  test_echo_env "package|check"
-  if [ "package" != "$_ENV_PKG_" ]; then
-    echo "# skipped package testing, package no support"
+test_module() {
+  test_echo_env "module|check"
+  if [ "package" != "$_ENV_MOD_" ]; then
+    echo "# skipped module testing, package no support"
     return 0
   else
-    echo "_ENV_PKG_: ${_ENV_PKG_}"
+    echo "_ENV_MOD_: ${_ENV_MOD_}"
   fi
-  test_echo_env "package|clean"
+  test_echo_env "module|clean"
   test_clean_env
-  test_echo_env "package|prologue"
+  test_echo_env "module|prologue"
   cat <<END> "${_ENV_PRO_}"
-(*self-paths* :put :package-spec nil)
+(*self-paths* :put :mod-spec nil)
 (*self-paths* :put :env-spec nil)
 (*self-paths* :put :epilogue nil)
 (*self-env-spec*
-  :put :package
+  :put :module
   (list :remove-unused t
         :package-check-signature 'allow-unsigned
         :allowed t))
-(*self-packages*
+(*self-mod-spec*
   :put :lisp
   (list
    :cond (when-version% <= 29 t)
@@ -124,9 +124,9 @@ test_package() {
 END
   echo "# cat <${_ENV_PRO_}"
   cat <"${_ENV_PRO_}"
-  test_echo_env "package|compile"
+  test_echo_env "module|compile"
   test_boot_env
-  test_echo_env "package|boot"
+  test_echo_env "module|boot"
   test_boot_env
 }
 
@@ -138,7 +138,7 @@ test_profile() {
   test_echo_env "profile|clean"
   test_clean_env
   cat <<END> "${_ENV_PRO_}"
-(*self-paths* :put :package-spec nil)
+(*self-paths* :put :mod-spec nil)
 (*self-paths* :put :env-spec nil)
 (*self-paths* :put :epilogue nil)
 (*self-env-spec*
@@ -152,12 +152,14 @@ test_profile() {
 (*self-env-spec*
   :put :edit
   (list :tab-width 2
-        :allowed t))
+        :narrow-to-region t
+        :delete-trailing-whitespace '(prog-mode)
+        :allowed nil))
 (*self-env-spec*
-  :put :package
+  :put :module
   (list :package-check-signature 'allow-unsigned
         :allowed t))
-(*self-packages*
+(*self-mod-spec*
   :put :lisp
   (list
    :cond nil ; (when-version% <= 29 t)
@@ -213,8 +215,8 @@ check_env() {
   echo "# _ENV_VER_: ${_ENV_VER_}"
   _ENV_ERT_=$($_EMACS_ --batch --eval='(prin1 (require (quote ert) nil t))')
   echo "# _ENV_ERT_: ${_ENV_ERT_}"
-  _ENV_PKG_=$($_EMACS_ --batch --eval='(prin1 (require (quote package) nil t))')
-  echo "# _ENV_PKG_: ${_ENV_PKG_}"
+  _ENV_MOD_=$($_EMACS_ --batch --eval='(prin1 (require (quote package) nil t))')
+  echo "# _ENV_MOD_: ${_ENV_MOD_}"
 }
 
 make_env() {
@@ -241,7 +243,7 @@ make_env
 case "${_TEST_}" in
   bone)     test_bone     ;;
   axiom)    test_axiom    ;;
-  package)  test_package  ;;
+  module)   test_module   ;;
   profile)  test_profile  ;;
   clean)    test_clean    ;;
   boot)     test_boot     ;;

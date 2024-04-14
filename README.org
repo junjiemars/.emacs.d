@@ -205,7 +205,7 @@ run it and reopen the Emacs.
     ├── init.el (comment "Emacs init file")
     ├── private (comment "your configuration can put here")
     │   ├── self-env-spec.el
-    │   ├── self-package-spec.el
+    │   ├── self-mod-spec.el
     │   ├── self-epilogue.el
     └── theme (comment "themes directory")
 #+END_EXAMPLE
@@ -215,13 +215,13 @@ run it and reopen the Emacs.
 Locate your spec via =(*self-paths*)=.
 
 #+BEGIN_SRC emacs-lisp
-;; Run order: :env-spec -> :package-spec -> :epilogue
+;; Run order: :env-spec -> :mod-spec -> :epilogue
 ;; You can point to your Gited Emacs' configuration repo.
 ;; Default samples `sample-self-*.el' in `(emacs-home* "config/")' directory.
 ;; :epilogue run in `after-init-hook'
 
-(*self-paths* :put :package-spec
-              (comment (emacs-home* "private/self-package-spec.el")))
+(*self-paths* :put :mod-spec
+              (comment (emacs-home* "private/self-mod-spec.el")))
 (*self-paths* :put  :epilogue
               (comment (emacs-home* "private/self-epilogue.el")))
 #+END_SRC
@@ -326,7 +326,7 @@ Introduce the rules of naming /files/ and /functions/.
 #+BEGIN_EXAMPLE
     (emacs-home* "config/")
     ├── sample-self-env-spec.el
-    ├── sample-self-package-spec.el
+    ├── sample-self-mod-spec.el
     └── sample-self-epilogue.el
 #+END_EXAMPLE
 
@@ -658,7 +658,7 @@ implement almost functionalities that =use-pacakge= does and more.
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
   (*self-env-spec*
-   :put :package
+   :put :module
    (list :remove-unused nil
          :package-check-signature 'allow-unsigned
          :allowed t))
@@ -676,94 +676,124 @@ The /user defined/ package spec locate in =(*self-packages*)=.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
-  (*self-packages*
-   :put :basis
-   (list
-    :cond t
-    :packages '(paredit rainbow-delimiters))
+;;; :common-lisp
+(*self-mod-spec*
+ :put :common-lisp
+ (list
+  :cond (comment (or (executable-find% "sbcl")
+                     (executable-find% "ecl")
+                     (executable-find% "acl")))
+  :packages '(slime)
+  :compile `(,(compile-unit% (emacs-home* "config/use-slime.el") t)
+             ,(compile-unit% (emacs-home* "config/use-slime-autoload.el")))))
 
-   (*self-packages*
-    :put :doc
-    (list
-     :cond t
-     :packages (list (when% (executable-find% "gnuplot")
-                       'gnuplot-mode)
-                     'markdown-mode
-                     'multiple-cursors
-                     (when-version% <= 24.3 'yasnippet)
-                     'vlf)))
+;;; :doc
+(*self-mod-spec*
+ :put :doc
+ (list
+  :cond nil
+  :packages (list (when% (executable-find% "gnuplot")
+                    'gnuplot-mode)
+                  'markdown-mode
+                  (when-version% <= 24.3 'yasnippet)
+                  'vlf)))
 
-   (*self-packages*
-    :put :org
-    (list
-     :cond t
-     :packages (flatten (list
-                         (when% (executable-find% "latex")
-                           '(auctex
-                             cdlatex))
-                         (when-version% <= 25 'ox-reveal)))))
+;;; :erlang
+(*self-mod-spec*
+ :put :erlang
+ (list
+  :cond (comment (executable-find% "erlc"))
+  :packages (list 'erlang)))
 
-   (*self-packages*
-    :put :vcs
-    (list
-     :cond (and (when-version% <= 24.4 t)
-                (executable-find% "git"))
-     :packages '(magit)
-     :compile `(,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
+;;; :lisp
+(*self-mod-spec*
+ :put :lisp
+ (list
+  :cond (comment t)
+  :packages '(paredit rainbow-delimiters)
+  :compile `(,(compile-unit% (emacs-home* "config/use-lisp.el") t)
+             ,(compile-unit% (emacs-home* "config/use-lisp-autoload.el")))))
 
-   (*self-packages*
-    :put :docker
-    (list
-     :cond (and (when-version% <= 24.4 t)
-                (executable-find% "docker"))
-     :packages '(dockerfile-mode)))
+;;; :lua
+(*self-mod-spec*
+ :put :lua
+ (list
+  :cond (comment (executable-find% "lua"))
+  :packages '(lua-mode)))
 
-   (*self-packages*
-    :put :scheme
-    (list
-     :cond (and (when-version% <= 23.2 t)
-                (or (executable-find% "racket")
-                    (executable-find% "scheme")
-                    (executable-find% "chicken")
-                    (executable-find% "guile")))
-     :packages  '(geiser)
-     :compile `(,(compile-unit% (emacs-home* "config/use-geiser-autoload.el")))))
+;;; :org
+(*self-mod-spec*
+ :put :org
+ (list
+  :cond (comment (executable-find% "latex"))
+  :packages (flatten (list 'auctex 'cdlatex
+                           (when-version% <= 25 'ox-reveal)))))
 
-   (*self-packages*
-    :put :common-lisp
-    (list
-     :cond (executable-find% "sbcl")
-     :packages '(slime)
-     :compile `(,(compile-unit% (emacs-home* "config/use-slime-autoload.el")))))
+;;; :rust
+(*self-mod-spec*
+ :put :rust
+ (list
+  :cond (comment (and (executable-find% "rustc")
+                      (executable-find% "cargo")))
+  :packages '(rust-mode)
+  :compile `(,(compile-unit% (emacs-home* "config/use-rust.el") t)
+             ,(compile-unit% (emacs-home* "config/use-rust-autoload.el")))))
 
-   (*self-packages*
-    :put :erlang
-    (list
-     :cond (executable-find% "erlc")
-     :packages (list 'erlang
-                     (when% (executable-find% "lfe")
-                       'lfe-mode))
-     :compile (list (when% (executable-find% "lfe")
-                      (compile-unit%
-                       (emacs-home* "config/use-lfe-autoload.el"))))))
+;;; :scheme
+(*self-mod-spec*
+ :put :scheme
+ (list
+  :cond (comment (and (when-version% <= 23.2 t)
+                      ;; Nore Emacs has builtin supports for Chez
+                      ;; scheme and gambitC scheme, and does not need to
+                      ;; install the dumb geiser.
+                      (or (executable-find% "racket")
+                          (executable-find% "scheme")
+                          (executable-find% "chicken")
+                          (executable-find% "guile"))))
+  :packages  '(geiser)
+  :compile `(,(compile-unit% (emacs-home* "config/use-geiser.el") t)
+             ,(compile-unit% (emacs-home* "config/use-geiser-autoload.el")))))
 
-   (*self-packages*
-    :put :lua
-    (list
-     :cond (executable-find% "lua")
-     :packages '(lua-mode)
-     :compile `(,(compile-unit% (emacs-home* "config/use-lua-autoload.el")))))
+;;; :vlang
+(*self-mod-spec*
+ :put :vlang
+ (list
+  :cond (comment (executable-find% "v"))
+  :packages '(v-mode)))
 
-   (*self-packages*
-    :put :web
-    (list
-     :cond nil
-     :packages (list 'htmlize
-                     'js2-mode
-                     (when-version% <= 25 'restclient)
-                     (when-version% <= 24.3 'skewer-mode)
-                     'web-mode
-                     'x509-mode)))
+;;; :vcs
+(*self-mod-spec*
+ :put :vcs
+ (list
+  :cond (comment (and (when-version% <= 24.4 t)
+                      (executable-find% "git")))
+  :packages '(magit)
+  :compile `(,(compile-unit% (emacs-home* "config/use-magit.el") t)
+             ,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
+
+;;; :web
+(*self-mod-spec*
+ :put :web
+ (list
+  :cond nil
+  :packages (list 'htmlize
+                  'js2-mode
+                  (when-version% <= 25 'restclient)
+                  (when-version% <= 24.3 'skewer-mode)
+                  'web-mode
+                  'x509-mode)))
+
+;;; :zig
+(*self-mod-spec*
+ :put :zig
+ (list
+  :cond (comment (executable-find% "zig"))
+  :packages '(zig-mode)))
+
+
+;; end of sample-self-package-spec.el
+
 #+END_SRC
 
 #+REVEAL: split

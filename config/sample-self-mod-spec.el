@@ -8,7 +8,7 @@
 ;;;;
 
 ;;; :common-lisp
-(*self-packages*
+(*self-mod-spec*
  :put :common-lisp
  (list
   :cond (comment (or (executable-find% "sbcl")
@@ -19,7 +19,7 @@
              ,(compile-unit% (emacs-home* "config/use-slime-autoload.el")))))
 
 ;;; :doc
-(*self-packages*
+(*self-mod-spec*
  :put :doc
  (list
   :cond nil
@@ -30,14 +30,14 @@
                   'vlf)))
 
 ;;; :erlang
-(*self-packages*
+(*self-mod-spec*
  :put :erlang
  (list
   :cond (comment (executable-find% "erlc"))
   :packages (list 'erlang)))
 
 ;;; :lisp
-(*self-packages*
+(*self-mod-spec*
  :put :lisp
  (list
   :cond (comment t)
@@ -46,24 +46,22 @@
              ,(compile-unit% (emacs-home* "config/use-lisp-autoload.el")))))
 
 ;;; :lua
-(*self-packages*
+(*self-mod-spec*
  :put :lua
  (list
   :cond (comment (executable-find% "lua"))
   :packages '(lua-mode)))
 
 ;;; :org
-(*self-packages*
+(*self-mod-spec*
  :put :org
  (list
-  :cond nil
-  :packages (flatten (list (when% (executable-find% "latex")
-                             '(auctex
-                               cdlatex))
+  :cond (comment (executable-find% "latex"))
+  :packages (flatten (list 'auctex 'cdlatex
                            (when-version% <= 25 'ox-reveal)))))
 
 ;;; :rust
-(*self-packages*
+(*self-mod-spec*
  :put :rust
  (list
   :cond (comment (and (executable-find% "rustc")
@@ -73,7 +71,7 @@
              ,(compile-unit% (emacs-home* "config/use-rust-autoload.el")))))
 
 ;;; :scheme
-(*self-packages*
+(*self-mod-spec*
  :put :scheme
  (list
   :cond (comment (and (when-version% <= 23.2 t)
@@ -89,14 +87,14 @@
              ,(compile-unit% (emacs-home* "config/use-geiser-autoload.el")))))
 
 ;;; :vlang
-(*self-packages*
+(*self-mod-spec*
  :put :vlang
  (list
   :cond (comment (executable-find% "v"))
   :packages '(v-mode)))
 
 ;;; :vcs
-(*self-packages*
+(*self-mod-spec*
  :put :vcs
  (list
   :cond (comment (and (when-version% <= 24.4 t)
@@ -106,7 +104,7 @@
              ,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
 
 ;;; :web
-(*self-packages*
+(*self-mod-spec*
  :put :web
  (list
   :cond nil
@@ -118,7 +116,7 @@
                   'x509-mode)))
 
 ;;; :zig
-(*self-packages*
+(*self-mod-spec*
  :put :zig
  (list
   :cond (comment (executable-find% "zig"))

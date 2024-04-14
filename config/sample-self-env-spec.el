@@ -110,7 +110,7 @@
        :allowed nil))
 
 (*self-env-spec*
- :put :package
+ :put :module
  (list :remove-unused nil
        :package-check-signature 'allow-unsigned
        :allowed nil))

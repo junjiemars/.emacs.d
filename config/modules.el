@@ -95,7 +95,6 @@
 (defalias '*package-compile-units*
   (lexical-let% ((us '()))
     (lambda (&optional n)
-      "N"
       (cond ((consp n) (dolist* (s (nreverse n) us)
                          (setq us (cons s us))))
             (t us))))
@@ -119,11 +118,11 @@
         (*package-compile-units* (self-spec-> ss :compile))))))
 
 
-(defun self-package-init! ()
+(defun self-module-init! ()
   "Initialize :package spec from \\=`*self-env-spec*\\='."
-  (when (*self-env-spec* :get :package :allowed)
+  (when (*self-env-spec* :get :module :allowed)
     ;; compile self :package-spec
-    (compile! (compile-unit* (*self-paths* :get :package-spec)))
+    (compile! (compile-unit* (*self-paths* :get :mod-spec)))
     (when-version%
         <= 25.1
       (setq custom-file (v-home! ".transient/packages.el")))
@@ -132,10 +131,12 @@
     (setq% package-user-dir package*-user-dir 'package)
     (package-initialize)
     ;; load self :packages-spec
-    (package*-parse-spec! (*self-packages*)
-                          (*self-env-spec* :get :package
-                                           :remove-unused))
-    (apply #'compile! (*package-compile-units*))))
+    (package*-parse-spec!
+     (*self-mod-spec*) (*self-env-spec* :get :module :remove-unused))
+    (make-thread*
+     (lambda ()
+       (apply #'compile! (*package-compile-units*)))
+     (if-noninteractive% t))))
 
 
 
