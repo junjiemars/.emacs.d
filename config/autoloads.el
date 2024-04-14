@@ -306,10 +306,13 @@
   (push! (v-home% "private/") load-path)
   (when (*self-paths* :get :epilogue)
     (condition-case err
-        (make-thread*
-         (lambda ()
-           (compile! (compile-unit* (*self-paths* :get :epilogue))))
-         (if-noninteractive% t))
+      (make-thread*
+       (lambda ()
+         (inhibit-gc
+           (inhibit-file-name-handler
+             (compile!
+               (compile-unit* (*self-paths* :get :epilogue))))))
+       (if-noninteractive% t))
       (error (message "self-epilogue: %s" err)))))
 
 

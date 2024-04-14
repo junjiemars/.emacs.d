@@ -14,7 +14,6 @@
 (defalias '*package-init-repo*
   (lexical-let% ((b))
     (lambda (&optional n)
-      "N"
       (if n (setq b n) b)))
   "Indicate \\=`package*-init-repo!\\=' whether has been called.")
 
@@ -135,10 +134,11 @@
      (*self-mod-spec*) (*self-env-spec* :get :module :remove-unused))
     (make-thread*
      (lambda ()
-       (apply #'compile! (*package-compile-units*)))
-     (if-noninteractive% t))))
+       (inhibit-gc
+         (inhibit-file-name-handler
+           (apply #'compile! (*package-compile-units*))))))))
 
-
+;; end of package*
 
 (provide 'modules)
 
