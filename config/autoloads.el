@@ -295,7 +295,7 @@
   (when-font% (make-thread* #'self-glyph-init!))
   (when-fn% 'self-package-init! nil
     (condition-case err
-        (make-thread* #'self-package-init! (if-noninteractive% t))
+        (self-package-init!)
       (error (message "self-package-init!: %s" err))))
   (when-fn% 'self-desktop-read! nil
     (condition-case err
