@@ -10,7 +10,8 @@
 (autoload 'on-progs-init! (v-home%> "config/progs"))
 
 ;; delay load modes
-(make-thread* #'on-progs-init!)
+(with-eval-after-load 'prog-mode
+  (make-thread* #'on-progs-init!))
 
 
 ;; end of on-progs-autoload.el
