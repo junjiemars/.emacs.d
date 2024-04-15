@@ -347,15 +347,6 @@ Optional prefix argument ENHANCED, displays additional details."
 ;; oceanbase: oracle-mode
 ;;;
 
-(defvar sql-oceanbase-program "obclient"
-  "Command to start obclient by Oceanbase.")
-
-(defvar sql-oceanbase-options '("--prompt=obclient> ")
-  "List of additional options for \\=`sql-oceanbase-program\\='.")
-
-(defvar sql-oceanbase-login-params '(user password server)
-  "List of login parameters needed to connect to Oceanbase.")
-
 (defun sql-comint-oceanbase (product options &optional buf-name)
   "Create comint buffer and connect to Oceanbase."
   ;; Put all parameters to the program (if defined) in a list and call
@@ -483,17 +474,16 @@ Optional prefix argument ENHANCED, displays additional details."
                :desc-plan
                #'sql-oracle-desc-plan)))
 
-
 (defun on-sql-oceanbase-init! ()
   "On \\=`sql\\=' oceanbase initialization."
-  (unless (assq 'oceanbase sql-product-alist)
+  (when (assq 'oceanbase sql-product-alist)
     (assq-delete-all 'oceanbase sql-product-alist))
   (append! '(oceanbase
              :name "Oceanbase"
              :font-lock sql-mode-oracle-font-lock-keywords
-             :sqli-program sql-oceanbase-program
-             :sqli-options sql-oceanbase-options
-             :sqli-login sql-oceanbase-login-params
+             :sqli-program "obclient"
+             :sqli-options '("--prompt=obclient> ")
+             :sqli-login '(user password server)
              :sqli-comint-func sql-comint-oceanbase
              :prompt-regexp "^obclient> "
              :prompt-length 9
@@ -502,18 +492,18 @@ Optional prefix argument ENHANCED, displays additional details."
              :input-filter sql-remove-tabs-filter)
            sql-product-alist)
   (when-sql-oceanbase-feature%
-    ;; new `:desc-table'
-    (plist-put (cdr (assq 'oceanbase sql-product-alist))
-               :desc-table
-               #'sql-oceanbase-desc-table)
-    ;; new `:desc-plan'
-    (plist-put (cdr (assq 'oceanbase sql-product-alist))
-               :desc-plan
-               #'sql-oceanbase-desc-plan)
-    ;; new `:list-code'
-    (plist-put (cdr (assq 'oceanbase sql-product-alist))
-               :list-code
-               #'sql-oceanbase-list-code)))
+   ;; new `:desc-table'
+   (plist-put (cdr (assq 'oceanbase sql-product-alist))
+              :desc-table
+              #'sql-oceanbase-desc-table)
+   ;; new `:desc-plan'
+   (plist-put (cdr (assq 'oceanbase sql-product-alist))
+              :desc-plan
+              #'sql-oceanbase-desc-plan)
+   ;; new `:list-code'
+   (plist-put (cdr (assq 'oceanbase sql-product-alist))
+              :list-code
+              #'sql-oceanbase-list-code)))
 
 (defun on-sql-init! ()
   "On \\=`sql\\=' initialization."
