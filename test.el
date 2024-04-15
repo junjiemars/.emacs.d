@@ -486,7 +486,8 @@
   (should-not (directory-name-p "a")))
 
 (ert-deftest %d:fn:make-thread* ()
-  (should (= 6 (make-thread* (lambda () (* 2 3)) t))))
+  (should
+   (= 6 (let ((a 1)) (make-thread* (lambda () (* a 2 3)) t)))))
 
 (ert-deftest %d:fn:posix-path ()
   (should-not (posix-path nil))
