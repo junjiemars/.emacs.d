@@ -492,15 +492,15 @@ Optional prefix argument ENHANCED, displays additional details."
              :input-filter sql-remove-tabs-filter)
            sql-product-alist)
   (when-sql-oceanbase-feature%
-   ;; new `:desc-table'
+   ;; :desc-table
    (plist-put (cdr (assq 'oceanbase sql-product-alist))
               :desc-table
               #'sql-oceanbase-desc-table)
-   ;; new `:desc-plan'
+   ;; :desc-plan
    (plist-put (cdr (assq 'oceanbase sql-product-alist))
               :desc-plan
               #'sql-oceanbase-desc-plan)
-   ;; new `:list-code'
+   ;; :list-code
    (plist-put (cdr (assq 'oceanbase sql-product-alist))
               :list-code
               #'sql-oceanbase-list-code)))
