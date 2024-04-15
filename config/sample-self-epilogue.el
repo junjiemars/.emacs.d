@@ -106,7 +106,14 @@
            (sql-port 1521)
            (sql-database "127.0.0.1/XE")
            (sql-user "system")
-           (sql-password "oracle")))
+           (sql-password "oracle"))
+          (oceanbase-local
+           (sql-product 'oceanbase)
+           (sql-server "127.0.0.1")
+           (sql-port 2883)
+           (sql-database "example")
+           (sql-user "jyzx1@example")
+           (sql-password "example")))
         'sql))
 
 ;; end of sql

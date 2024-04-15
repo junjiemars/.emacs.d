@@ -6,6 +6,7 @@
 ;; sqls.el
 ;;;;
 
+;;; when-*macro
 
 (defmacro when-sql-feature% (&rest body)
   (declare (indent 0))
@@ -22,6 +23,11 @@
   `(when-sql-feature%
      ,@body))
 
+(defmacro when-sql-oceanbase-feature% (&rest body)
+  (declare (indent 0))
+  `(when-sql-feature%
+     ,@body))
+
 (defmacro when-fn-sql-show-sqli-buffer% (&rest body)
   (declare (indent 0))
   `(when-fn% 'sql-show-sqli-buffer 'sql
@@ -34,6 +40,7 @@
 
 ;; end of when-* macro
 
+;;; sqli
 
 (when-fn-sql-show-sqli-buffer%
 
@@ -54,6 +61,9 @@
     (cond ((eq 'mysql sql-product)
            (ad-set-arg 2 t)))))
 
+;; end of sqli
+
+;;; features
 
 (when-sql-feature%
 
@@ -140,7 +150,7 @@ Optional prefix argument ENHANCED, displays additional details."
       (sql-execute-feature sqlbuf (format "*List index %s*" name)
                            :list-index enhanced name))))
 
-
+;; end of features
 
 ;;;
 ;; oracle
@@ -334,7 +344,72 @@ Optional prefix argument ENHANCED, displays additional details."
 ;; end of mysql
 
 ;;;
-;; after load
+;; oceanbase: oracle-mode
+;;;
+
+(defvar sql-oceanbase-program "obclient"
+  "Command to start obclient by Oceanbase.")
+
+(defvar sql-oceanbase-options '("--prompt=obclient> ")
+  "List of additional options for \\=`sql-oceanbase-program\\='.")
+
+(defvar sql-oceanbase-login-params '(user password server)
+  "List of login parameters needed to connect to Oceanbase.")
+
+(defun sql-comint-oceanbase (product options &optional buf-name)
+  "Create comint buffer and connect to Oceanbase."
+  ;; Put all parameters to the program (if defined) in a list and call
+  ;; make-comint.
+  (let ((params
+         (append
+          options
+          (if (not (string= "" sql-user))
+              (list (concat "--user=" sql-user)))
+          (if (not (string= "" sql-password))
+              (list (concat "--password=" sql-password)))
+          (if (not (= 0 sql-port))
+              (list (concat "--port=" (number-to-string sql-port))))
+          (if (not (string= "" sql-server))
+              (list (concat "--host=" sql-server))))))
+    (sql-comint product params buf-name)))
+
+(when-sql-oceanbase-feature%
+
+  (defun sql-oceanbase-desc-table (sqlbuf outbuf enhanced table)
+    "Describe oceanbase table."
+    (let ((simple-sql
+           (format "DESCRIBE %s\\G" table))
+          (enhanced-sql nil))
+      (sql-redirect sqlbuf
+                    (if enhanced enhanced-sql simple-sql)
+                    outbuf))))
+
+(when-sql-oceanbase-feature%
+
+  (defun sql-oceanbase-desc-plan (sqlbuf outbuf enhanced query)
+    "Describe execution plan of oceanbase's QUERY."
+    (let ((sql
+           (concat
+            "EXPLAIN FORMAT=" (if enhanced "JSON " "TRADITIONAL ")
+            (string-trim> (sql-mysql-norm query)
+                          "[ \t\n\r\\g\\G;]+")
+            "\\G")))
+      (sql-redirect sqlbuf sql outbuf))))
+
+(when-sql-oceanbase-feature%
+
+  (defun sql-oceanbase-list-code (sqlbuf outbuf enhanced target)
+    "List code of oceanbase's TARGET."
+  	(let ((sql
+           (format
+  					"SELECT DBMS_METADATA.GET_DDL('TABLE','%s') FROM DUAL\\G"
+            (upcase (if enhanced target target)))))
+  		(sql-redirect sqlbuf sql outbuf))))
+
+;; end of oceanbase
+
+;;;
+;; init!
 ;;;
 
 (defun on-sql-mysql-init! ()
@@ -408,10 +483,43 @@ Optional prefix argument ENHANCED, displays additional details."
                :desc-plan
                #'sql-oracle-desc-plan)))
 
+
+(defun on-sql-oceanbase-init! ()
+  "On \\=`sql\\=' oceanbase initialization."
+  (unless (assq 'oceanbase sql-product-alist)
+    (assq-delete-all 'oceanbase sql-product-alist))
+  (append! '(oceanbase
+             :name "Oceanbase"
+             :font-lock sql-mode-oracle-font-lock-keywords
+             :sqli-program sql-oceanbase-program
+             :sqli-options sql-oceanbase-options
+             :sqli-login sql-oceanbase-login-params
+             :sqli-comint-func sql-comint-oceanbase
+             :prompt-regexp "^obclient> "
+             :prompt-length 9
+             :prompt-cont-regexp "^    -> "
+             :syntax-alist ((?# . "< b") (?\\ . "\\"))
+             :input-filter sql-remove-tabs-filter)
+           sql-product-alist)
+  (when-sql-oceanbase-feature%
+    ;; new `:desc-table'
+    (plist-put (cdr (assq 'oceanbase sql-product-alist))
+               :desc-table
+               #'sql-oceanbase-desc-table)
+    ;; new `:desc-plan'
+    (plist-put (cdr (assq 'oceanbase sql-product-alist))
+               :desc-plan
+               #'sql-oceanbase-desc-plan)
+    ;; new `:list-code'
+    (plist-put (cdr (assq 'oceanbase sql-product-alist))
+               :list-code
+               #'sql-oceanbase-list-code)))
+
 (defun on-sql-init! ()
   "On \\=`sql\\=' initialization."
   (on-sql-mysql-init!)
   (on-sql-oracle-init!)
+  (on-sql-oceanbase-init!)
   (when-fn-sql-show-sqli-buffer%
     (define-key% sql-mode-map (kbd "C-c C-z")
                  #'sql-show-sqli-buffer*))
@@ -422,7 +530,7 @@ Optional prefix argument ENHANCED, displays additional details."
     (define-key% sql-mode-map (kbd "C-c C-l T") #'sql-desc-table)
     (define-key% sql-mode-map (kbd "C-c C-l P") #'sql-desc-plan)))
 
-
+;; end of init!
 
 (provide 'sqls)
 
