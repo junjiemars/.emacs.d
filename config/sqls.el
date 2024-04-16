@@ -347,6 +347,15 @@ Optional prefix argument ENHANCED, displays additional details."
 ;; oceanbase: oracle-mode
 ;;;
 
+(defvar sql-oceanbase-program "obclient"
+  "Command to start obclient by Oceanbase.")
+
+(defvar sql-oceanbase-options '("--prompt=obclient> ")
+  "List of additional options for \\=`sql-oceanbase-program\\='.")
+
+(defvar sql-oceanbase-login-params '(user password server)
+  "List of login parameters needed to connect to Oceanbase.")
+
 (defun sql-comint-oceanbase (product options &optional buf-name)
   "Create comint buffer and connect to Oceanbase."
   ;; Put all parameters to the program (if defined) in a list and call
@@ -481,9 +490,9 @@ Optional prefix argument ENHANCED, displays additional details."
   (append! '(oceanbase
              :name "Oceanbase"
              :font-lock sql-mode-oracle-font-lock-keywords
-             :sqli-program "obclient"
-             :sqli-options '("--prompt=obclient> ")
-             :sqli-login '(user password server)
+             :sqli-program sql-oceanbase-program
+             :sqli-options sql-oceanbase-options
+             :sqli-login sql-oceanbase-login-params
              :sqli-comint-func sql-comint-oceanbase
              :prompt-regexp "^obclient> "
              :prompt-length 9

@@ -672,7 +672,7 @@ implement almost functionalities that =use-pacakge= does and more.
 - =:allowed= =t= enabled, =nil= disabled
 
 #+ATTR_HTML: :style text-align:left
-The /user defined/ package spec locate in =(*self-packages*)=.
+The /user defined/ package spec locate in =(*self-mod-spec*)=.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
@@ -1327,7 +1327,7 @@ life easy and if [[https://github.com/junjiemars/nore][Nore]] already on your ma
 - III. Check =*Compilation-Log*= buffer, then do =I=.
 - IV. Check =(*self-paths*)=, then do =I=.
 - V. Disable the problematic item in =(*self-env-spec*)=, then do =I=.
-- VI. Disable the problematic item in =(*self-packages*)=, then do =I=.
+- VI. Disable the problematic item in =(*self-mod-spec*)=, then do =I=.
 
 * Mnemonic
   :PROPERTIES:
