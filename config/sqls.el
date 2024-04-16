@@ -60,6 +60,8 @@
     "Send TERMINATOR to buffer BUF if its not present in STR."
     ;; terminator
     (cond ((eq 'mysql sql-product)
+           (ad-set-arg 2 t))
+          ((eq 'oceanbase sql-product)
            (ad-set-arg 2 t)))))
 
 ;; end of sqli
@@ -136,7 +138,6 @@ Optional prefix argument ENHANCED, displays additional details."
       (sql-execute-feature sqlbuf (format "*List code %s*" name)
                            :list-code enhanced name))))
 
-
 (when-sql-feature%
 
   (defun sql-list-index (name &optional enhanced)
@@ -150,7 +151,6 @@ Optional prefix argument ENHANCED, displays additional details."
         (user-error "%s" "No table name specified"))
       (sql-execute-feature sqlbuf (format "*List index %s*" name)
                            :list-index enhanced name))))
-
 ;; end of features
 
 ;;;
@@ -215,10 +215,10 @@ Optional prefix argument ENHANCED, displays additional details."
   (defun sql-oracle-list-code (sqlbuf outbuf enhanced target)
     "List code of oracle's TARGET."
     (let ((settings (sql-oracle-save-settings sqlbuf))
-  			  (o (upcase (if enhanced
-                         ;; ignore enhanced
-                         target
-                       target)))
+  			  (o (if enhanced
+                   ;; ignore enhanced
+                   target
+                 target))
   			  (sql-var (concat
                     "VAR object_type VARCHAR2(128);"
                     "\nBEGIN\n"
@@ -254,7 +254,7 @@ Optional prefix argument ENHANCED, displays additional details."
   (defun sql-oracle-desc-table (sqlbuf outbuf enhanced table)
     "Describe oracle table."
     (let ((simple-sql
-           (format "DESCRIBE FROM %s" (upcase table)))
+           (format "DESCRIBE %s" (upcase table)))
           (enhanced-sql nil))
       (sql-redirect sqlbuf
                     (if enhanced enhanced-sql simple-sql)
@@ -301,7 +301,6 @@ Optional prefix argument ENHANCED, displays additional details."
         (replace-match " " t t))
       (buffer-substring (point-min) (point-max)))))
 
-
 (when-sql-mysql-feature%
 
   (defun sql-mysql-desc-table (sqlbuf outbuf enhanced table)
@@ -327,7 +326,6 @@ Optional prefix argument ENHANCED, displays additional details."
             "\\G")))
       (sql-redirect sqlbuf sql outbuf))))
 
-
 (when-sql-mysql-feature%
 
   (defun sql-mysql-list-code (sqlbuf outbuf enhanced target)
@@ -336,7 +334,6 @@ Optional prefix argument ENHANCED, displays additional details."
   							"SHOW CREATE"
   							(format " %s\\G" (if enhanced target target)))))
   		(sql-redirect sqlbuf sql outbuf))))
-
 
 (when-sql-mysql-feature%
 
@@ -350,7 +347,6 @@ Optional prefix argument ENHANCED, displays additional details."
       (sql-redirect sqlbuf
                     (if enhanced enhanced-sql simple-sql)
                     outbuf))))
-
 
 ;; end of mysql
 
@@ -460,7 +456,6 @@ Optional prefix argument ENHANCED, displays additional details."
     (ad-enable-advice #'sql-send-magic-terminator 'before
                       "sql-send-magic-terminator-before")
     (ad-activate #'sql-send-magic-terminator t))
-
   ;; `sql-mysql-program'
   (setq sql-mysql-program
         (or (executable-find% "mysql")
@@ -541,6 +536,14 @@ Optional prefix argument ENHANCED, displays additional details."
              :syntax-alist ((?# . "< b") (?\\ . "\\"))
              :input-filter sql-remove-tabs-filter)
            sql-product-alist)
+  (when-fn-sql-send-magic-terminator%
+    (plist-put
+     (cdr (assq 'oceanbase sql-product-alist))
+     :terminator
+     '("^.*\\G" . ""))
+    (ad-enable-advice #'sql-send-magic-terminator 'before
+                      "sql-send-magic-terminator-before")
+    (ad-activate #'sql-send-magic-terminator t))
   (when-sql-oceanbase-feature%
     ;; :desc-table
     (plist-put (cdr (assq 'oceanbase sql-product-alist))
@@ -565,8 +568,7 @@ Optional prefix argument ENHANCED, displays additional details."
   (on-sql-oracle-init!)
   (on-sql-oceanbase-init!)
   (when-fn-sql-show-sqli-buffer%
-    (define-key% sql-mode-map (kbd "C-c C-z")
-                 #'sql-show-sqli-buffer*))
+    (define-key% sql-mode-map (kbd "C-c C-z") #'sql-show-sqli-buffer*))
   ;; features' keybindings
   (when-sql-feature%
     (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-code)
