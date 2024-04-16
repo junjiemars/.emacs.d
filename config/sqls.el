@@ -42,14 +42,15 @@
 
 ;;; sqli
 
-(when-fn-sql-show-sqli-buffer%
+(when-fn-sql-show-sqli-buffer%)
 
-  (defun sql-show-sqli-buffer* ()
-    "Display the current SQLi buffer."
-    (interactive)
-    (unless (get-buffer-process sql-buffer)
-      (call-interactively #'sql-connect))
-    (call-interactively #'sql-show-sqli-buffer)))
+(defun sql-show-sqli-buffer* ()
+  "Display the current SQLi buffer."
+  (interactive)
+  (when (or current-prefix-arg
+            (null (get-buffer-process sql-buffer)))
+    (call-interactively #'sql-connect))
+  (call-interactively #'sql-show-sqli-buffer))
 
 
 (when-fn-sql-send-magic-terminator%
