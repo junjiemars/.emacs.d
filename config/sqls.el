@@ -249,6 +249,16 @@ Optional prefix argument ENHANCED, displays additional details."
         (sql-oracle-restore-settings sqlbuf settings)
         (sql-send-string "\n")))))
 
+(when-sql-oracle-feature%
+
+  (defun sql-oracle-desc-table (sqlbuf outbuf enhanced table)
+    "Describe oracle table."
+    (let ((simple-sql
+           (format "DESCRIBE FROM %s" (upcase table)))
+          (enhanced-sql nil))
+      (sql-redirect sqlbuf
+                    (if enhanced enhanced-sql simple-sql)
+                    outbuf))))
 
 (when-sql-oracle-feature%
 
@@ -407,6 +417,32 @@ Optional prefix argument ENHANCED, displays additional details."
             (upcase (if enhanced target target)))))
   		(sql-redirect sqlbuf sql outbuf))))
 
+(when-sql-oceanbase-feature%
+
+  (defun sql-oceanbase-list-all (sqlbuf outbuf enhanced _table-name)
+    ;; Query from USER_OBJECTS or ALL_OBJECTS
+    (let ((simple-sql
+           (concat
+            "SELECT INITCAP(x.object_type) AS SQL_EL_TYPE "
+            ", " (sql-oracle--list-object-name "x.object_name")
+            " AS SQL_EL_NAME "
+            "FROM user_objects x "
+            "WHERE x.object_type NOT LIKE '%% BODY' "
+            "ORDER BY SQL_EL_TYPE, SQL_EL_NAME;"))
+          (enhanced-sql
+           (concat
+            "SELECT INITCAP(x.object_type) AS SQL_EL_TYPE "
+            ", "  (sql-oracle--list-object-name "x.owner")
+            " ||'.'|| "
+            (sql-oracle--list-object-name "x.object_name")
+            " AS SQL_EL_NAME "
+            "FROM all_objects x "
+            "WHERE x.object_type NOT LIKE '%% BODY' "
+            "AND x.owner <> 'SYS' "
+            "ORDER BY SQL_EL_TYPE, SQL_EL_NAME;")))
+      (sql-redirect
+       sqlbuf (if enhanced enhanced-sql simple-sql) outbuf))))
+
 ;; end of oceanbase
 
 ;;;
@@ -479,6 +515,10 @@ Optional prefix argument ENHANCED, displays additional details."
      (cdr (assq 'oracle sql-product-alist))
      :list-code
      #'sql-oracle-list-code)
+    ;; new `:desc-table'
+    (plist-put (cdr (assq 'oracle sql-product-alist))
+               :desc-table
+               #'sql-oracle-desc-table)
     ;; new `:desc-plan'
     (plist-put (cdr (assq 'oracle sql-product-alist))
                :desc-plan
@@ -502,18 +542,22 @@ Optional prefix argument ENHANCED, displays additional details."
              :input-filter sql-remove-tabs-filter)
            sql-product-alist)
   (when-sql-oceanbase-feature%
-   ;; :desc-table
-   (plist-put (cdr (assq 'oceanbase sql-product-alist))
-              :desc-table
-              #'sql-oceanbase-desc-table)
-   ;; :desc-plan
-   (plist-put (cdr (assq 'oceanbase sql-product-alist))
-              :desc-plan
-              #'sql-oceanbase-desc-plan)
-   ;; :list-code
-   (plist-put (cdr (assq 'oceanbase sql-product-alist))
-              :list-code
-              #'sql-oceanbase-list-code)))
+    ;; :desc-table
+    (plist-put (cdr (assq 'oceanbase sql-product-alist))
+               :desc-table
+               #'sql-oceanbase-desc-table)
+    ;; :desc-plan
+    (plist-put (cdr (assq 'oceanbase sql-product-alist))
+               :desc-plan
+               #'sql-oceanbase-desc-plan)
+    ;; :list-code
+    (plist-put (cdr (assq 'oceanbase sql-product-alist))
+               :list-code
+               #'sql-oceanbase-list-code)
+    ;; :list-all
+    (plist-put (cdr (assq 'oceanbase sql-product-alist))
+               :list-all
+               #'sql-oceanbase-list-all)))
 
 (defun on-sql-init! ()
   "On \\=`sql\\=' initialization."
