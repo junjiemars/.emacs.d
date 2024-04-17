@@ -168,46 +168,44 @@ Optional prefix argument ENHANCED, displays additional details."
   (defun sql-oracle-restore-settings (_ __)
     (message "unimplmented")))
 
-(when-sql-oracle-feature%
-  (defun sql-oracle-list-all* (sqlbuf outbuf enhanced _table-name)
-    ;; Query from USER_OBJECTS or ALL_OBJECTS
-    (let ((settings (sql-oracle-save-settings sqlbuf))
-          (simple-sql
-           (concat
-            "SELECT INITCAP(x.object_type) AS SQL_EL_TYPE "
-            ", " (sql-oracle--list-object-name "x.object_name")
-            " AS SQL_EL_NAME "
-            "FROM user_objects                    x "
-            "WHERE x.object_type NOT LIKE '%% BODY' "
-            "ORDER BY SQL_EL_TYPE, SQL_EL_NAME;"))
-          (enhanced-sql
-           (concat
-            "SELECT INITCAP(x.object_type) AS SQL_EL_TYPE "
-            ", "  (sql-oracle--list-object-name "x.owner")
-            " ||'.'|| "
-            (sql-oracle--list-object-name "x.object_name")
-            " AS SQL_EL_NAME "
-            "FROM all_objects x "
-            "WHERE x.object_type NOT LIKE '%% BODY' "
-            "AND x.owner <> 'SYS' "
-            "ORDER BY SQL_EL_TYPE, SQL_EL_NAME;")))
-      (sql-redirect
-       sqlbuf
-       (concat "SET LINESIZE 80 PAGESIZE 50000 TRIMOUT ON"
-               " TAB OFF TIMING OFF FEEDBACK OFF"))
-      (sql-redirect
-       sqlbuf
-       (list "COLUMN SQL_EL_TYPE  HEADING \"Type\" FORMAT A19"
-             "COLUMN SQL_EL_NAME  HEADING \"Name\""
-             (format "COLUMN SQL_EL_NAME  FORMAT A%d"
-                     (if enhanced 60 35))))
-      (sql-redirect sqlbuf
-                    (if enhanced enhanced-sql simple-sql)
-                    outbuf)
-      (sql-redirect sqlbuf
-                    '("COLUMN SQL_EL_NAME CLEAR"
-                      "COLUMN SQL_EL_TYPE CLEAR"))
-      (sql-oracle-restore-settings sqlbuf settings))))
+(when-sql-oracle-feature%)
+(defun sql-oracle-list-all* (sqlbuf outbuf enhanced _table-name)
+  ;; Query from USER_OBJECTS or ALL_OBJECTS
+  (let ((settings (sql-oracle-save-settings sqlbuf))
+        (simple-sql
+         (concat
+          "SELECT INITCAP(x.object_type) AS SQL_TYPE,"
+          (sql-oracle--list-object-name "x.object_name")
+          " AS SQL_NAME "
+          "FROM user_objects x "
+          "WHERE x.object_type NOT LIKE '%% BODY' "
+          "ORDER BY SQL_TYPE, SQL_NAME;"))
+        (enhanced-sql
+         (concat
+          "SELECT INITCAP(x.object_type) AS SQL_TYPE,"
+          (sql-oracle--list-object-name "x.owner")
+          " ||'.'|| "
+          (sql-oracle--list-object-name "x.object_name")
+          " AS SQL_NAME "
+          "FROM all_objects x "
+          "WHERE x.object_type NOT LIKE '%% BODY' "
+          "AND x.owner <> 'SYS' "
+          "ORDER BY SQL_TYPE, SQL_NAME;")))
+    (sql-redirect
+     sqlbuf
+     (concat "SET LINESIZE 80 PAGESIZE 50000 TRIMOUT ON"
+             " TAB OFF TIMING OFF FEEDBACK OFF"))
+    (sql-redirect
+     sqlbuf
+     (list "COLUMN SQL_TYPE  HEADING \"TYPE\" FORMAT A19"
+           "COLUMN SQL_NAME  HEADING \"NAME\""
+           (format "COLUMN SQL_NAME  FORMAT A%d" (if enhanced 60 35))))
+    (sql-redirect
+     sqlbuf (if enhanced enhanced-sql simple-sql) outbuf)
+    (sql-redirect
+     sqlbuf '("COLUMN SQL_EL_NAME CLEAR"
+              "COLUMN SQL_EL_TYPE CLEAR"))
+    (sql-oracle-restore-settings sqlbuf settings)))
 
 
 (when-sql-oracle-feature%
@@ -487,13 +485,11 @@ Optional prefix argument ENHANCED, displays additional details."
   ;; `sql-oracle-program'
   (setq sql-oracle-program
         (or (executable-find% "sqlplus")
-            (when% (getenv "ORACLE_HOME")
-              (or (executable-find%
-                   (concat (getenv "ORACLE_HOME") "/"
-                           "sqlplus"))
-                  (executable-find%
-                   (concat (getenv "ORACLE_HOME") "/bin/"
-                           "sqlplus"))))
+            (let ((d (getenv "ORACLE_HOME")))
+              (when (and d (file-exists-p d))
+                (or (executable-find (concat d "/" "sqlplus"))
+                    (executable-find (concat d "/bin/" "sqlplus")))))
+            (executable-find% "sqlplus.sh")
             "sqlplus"))
   ;; oracle features
   (when-sql-oracle-feature%
