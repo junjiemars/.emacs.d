@@ -42,19 +42,17 @@
 
 ;;; sqli
 
-(when-fn-sql-show-sqli-buffer%)
-
-(defun sql-show-sqli-buffer* ()
-  "Display the current SQLi buffer."
-  (interactive)
-  (when (or current-prefix-arg
-            (null (get-buffer-process sql-buffer)))
-    (call-interactively #'sql-connect))
-  (call-interactively #'sql-show-sqli-buffer))
-
+(when-fn-sql-show-sqli-buffer%
+  (defun sql-show-sqli-buffer* ()
+    "Display the current SQLi buffer."
+    (interactive)
+    (with-current-buffer (current-buffer)
+      (when (or current-prefix-arg
+                (null (get-buffer-process sql-buffer)))
+        (call-interactively #'sql-connect))
+      (call-interactively #'sql-show-sqli-buffer))))
 
 (when-fn-sql-send-magic-terminator%
-
   (defadvice sql-send-magic-terminator
       (before sql-send-magic-terminator-before first compile disable)
     "Send TERMINATOR to buffer BUF if its not present in STR."
@@ -69,7 +67,6 @@
 ;;; features
 
 (when-sql-feature%
-
   (defun sql-first-word (sql)
     "Return the first word in SQL."
     (let* ((i 0) (j nil) (c (aref sql i)))
@@ -82,26 +79,23 @@
         (setq j (1+ j) c (aref sql j)))
       (substring sql i j))))
 
-
 (when-sql-feature%
-
   (defun sql-desc-table (name &optional enhanced)
     "Describe the details of a database table named NAME.\n
 Optional prefix argument ENHANCED, displays additional details
 about each column."
     (interactive (list (sql-read-table-name "Table name: ")
                        current-prefix-arg))
-    (let ((sqlbuf (sql-find-sqli-buffer)))
-      (unless sqlbuf
+    (with-current-buffer (current-buffer)
+      (unless sql-buffer
         (user-error "%s" "No SQL interactive buffer found"))
       (unless name
         (user-error "%s" "No table name specified"))
-      (sql-execute-feature sqlbuf (format "*Desc %s*" name)
+      (sql-execute-feature sql-buffer
+                           (format "*Desc %s*" name)
                            :desc-table enhanced name))))
 
-
 (when-sql-feature%
-
   (defun sql-desc-plan (plan &optional enhanced)
     "Describe an execution plan named PLAN.\n
 Optional prefix argument ENHANCED, displays additional details."
@@ -113,44 +107,46 @@ Optional prefix argument ENHANCED, displays additional details."
               (save-excursion (backward-paragraph) (point))
               (save-excursion (forward-paragraph) (point))))
            current-prefix-arg))
-    (let ((sqlbuf (sql-find-sqli-buffer)))
-      (unless sqlbuf
+    (with-current-buffer (current-buffer)
+      (unless sql-buffer
         (user-error "%s" "No SQL interactive buffer found"))
       (unless plan
         (user-error "%s" "No plan specified"))
-      (sql-execute-feature sqlbuf
-                           (format "*Desc plan %s*"
-                                   (sql-first-word plan))
-                           :desc-plan enhanced plan))))
-
+      (sql-execute-feature
+       sql-buffer
+       (format "*Desc plan %s*" (sql-first-word plan))
+       :desc-plan enhanced plan))))
 
 (when-sql-feature%
-
   (defun sql-list-code (name &optional enhanced)
     "List the code of the database object with qualified NAME."
     (interactive (list (sql-read-table-name "Qualified name: ")
                        current-prefix-arg))
-    (let ((sqlbuf (sql-find-sqli-buffer)))
-      (unless sqlbuf
+    (with-current-buffer (current-buffer)
+      (unless sql-buffer
         (user-error "%s" "No SQL interactive buffer found"))
       (unless name
         (user-error "%s" "No name specified"))
-      (sql-execute-feature sqlbuf (format "*List code %s*" name)
-                           :list-code enhanced name))))
+      (sql-execute-feature
+       sql-buffer
+       (format "*List code %s*" name)
+       :list-code enhanced name))))
 
 (when-sql-feature%
-
   (defun sql-list-index (name &optional enhanced)
     "List the index of a database table named NAME."
     (interactive (list (sql-read-table-name "Table name: ")
                        current-prefix-arg))
-    (let ((sqlbuf (sql-find-sqli-buffer)))
-      (unless sqlbuf
+    (with-current-buffer (current-buffer)
+      (unless sql-buffer
         (user-error "%s" "No SQL interactive buffer found"))
       (unless name
         (user-error "%s" "No table name specified"))
-      (sql-execute-feature sqlbuf (format "*List index %s*" name)
-                           :list-index enhanced name))))
+      (sql-execute-feature
+       sql-buffer
+       (format "*List index %s*" name)
+       :list-index enhanced name))))
+
 ;; end of features
 
 ;;;
@@ -168,55 +164,54 @@ Optional prefix argument ENHANCED, displays additional details."
   (defun sql-oracle-restore-settings (_ __)
     (message "unimplmented")))
 
-(when-sql-oracle-feature%)
-(defun sql-oracle-list-all* (sqlbuf outbuf enhanced _table-name)
-  ;; Query from USER_OBJECTS or ALL_OBJECTS
-  (let ((settings (sql-oracle-save-settings sqlbuf))
-        (simple-sql
-         (concat
-          "SELECT INITCAP(x.object_type) AS SQL_TYPE,"
-          (sql-oracle--list-object-name "x.object_name")
-          " AS SQL_NAME "
-          "FROM user_objects x "
-          "WHERE x.object_type NOT LIKE '%% BODY' "
-          "ORDER BY SQL_TYPE, SQL_NAME;"))
-        (enhanced-sql
-         (concat
-          "SELECT INITCAP(x.object_type) AS SQL_TYPE,"
-          (sql-oracle--list-object-name "x.owner")
-          " ||'.'|| "
-          (sql-oracle--list-object-name "x.object_name")
-          " AS SQL_NAME "
-          "FROM all_objects x "
-          "WHERE x.object_type NOT LIKE '%% BODY' "
-          "AND x.owner <> 'SYS' "
-          "ORDER BY SQL_TYPE, SQL_NAME;")))
-    (sql-redirect
-     sqlbuf
-     (concat "SET LINESIZE 80 PAGESIZE 50000 TRIMOUT ON"
-             " TAB OFF TIMING OFF FEEDBACK OFF"))
-    (sql-redirect
-     sqlbuf
-     (list "COLUMN SQL_TYPE  HEADING \"TYPE\" FORMAT A19"
-           "COLUMN SQL_NAME  HEADING \"NAME\""
-           (format "COLUMN SQL_NAME  FORMAT A%d" (if enhanced 60 35))))
-    (sql-redirect
-     sqlbuf (if enhanced enhanced-sql simple-sql) outbuf)
-    (sql-redirect
-     sqlbuf '("COLUMN SQL_EL_NAME CLEAR"
-              "COLUMN SQL_EL_TYPE CLEAR"))
-    (sql-oracle-restore-settings sqlbuf settings)))
+(when-sql-oracle-feature%
+  (defun sql-oracle-list-all* (sqlbuf outbuf enhanced _table-name)
+    ;; Query from USER_OBJECTS or ALL_OBJECTS
+    (let ((settings (sql-oracle-save-settings sqlbuf))
+          (simple-sql
+           (concat
+            "SELECT INITCAP(x.object_type) AS SQL_TYPE,"
+            (sql-oracle--list-object-name "x.object_name")
+            " AS SQL_NAME "
+            "FROM user_objects x "
+            "WHERE x.object_type NOT LIKE '%% BODY' "
+            "ORDER BY SQL_TYPE, SQL_NAME;"))
+          (enhanced-sql
+           (concat
+            "SELECT INITCAP(x.object_type) AS SQL_TYPE,"
+            (sql-oracle--list-object-name "x.owner")
+            " ||'.'|| "
+            (sql-oracle--list-object-name "x.object_name")
+            " AS SQL_NAME "
+            "FROM all_objects x "
+            "WHERE x.object_type NOT LIKE '%% BODY' "
+            "AND x.owner <> 'SYS' "
+            "ORDER BY SQL_TYPE, SQL_NAME;")))
+      (sql-redirect
+       sqlbuf
+       (concat "SET LINESIZE 80 PAGESIZE 50000 TRIMOUT ON"
+               " TAB OFF TIMING OFF FEEDBACK OFF"))
+      (sql-redirect
+       sqlbuf
+       (list "COLUMN SQL_TYPE  HEADING \"TYPE\" FORMAT A19"
+             "COLUMN SQL_NAME  HEADING \"NAME\""
+             (format "COLUMN SQL_NAME  FORMAT A%d" (if enhanced 60 35))))
+      (sql-redirect
+       sqlbuf (if enhanced enhanced-sql simple-sql) outbuf)
+      (sql-redirect
+       sqlbuf '("COLUMN SQL_EL_NAME CLEAR"
+                "COLUMN SQL_EL_TYPE CLEAR"))
+      (sql-oracle-restore-settings sqlbuf settings))))
 
 
 (when-sql-oracle-feature%
-
   (defun sql-oracle-list-code (sqlbuf outbuf enhanced target)
     "List code of oracle's TARGET."
     (let ((settings (sql-oracle-save-settings sqlbuf))
   			  (o (if enhanced
-                   ;; ignore enhanced
-                   target
-                 target))
+                 ;; ignore enhanced
+                 target
+               target))
   			  (sql-var (concat
                     "VAR object_type VARCHAR2(128);"
                     "\nBEGIN\n"
@@ -248,7 +243,6 @@ Optional prefix argument ENHANCED, displays additional details."
         (sql-send-string "\n")))))
 
 (when-sql-oracle-feature%
-
   (defun sql-oracle-desc-table (sqlbuf outbuf enhanced table)
     "Describe oracle table."
     (let ((simple-sql
@@ -259,7 +253,6 @@ Optional prefix argument ENHANCED, displays additional details."
                     outbuf))))
 
 (when-sql-oracle-feature%
-
   (defun sql-oracle-desc-plan (sqlbuf outbuf enhanced target)
     "Describe execution plan of mysql's QUERY."
     (let ((settings (sql-oracle-save-settings sqlbuf))
@@ -287,7 +280,6 @@ Optional prefix argument ENHANCED, displays additional details."
 ;;;
 
 (when-sql-mysql-feature%
-
   (defun sql-mysql-norm (sql)
     "Normlize SQL."
     (with-temp-buffer
@@ -300,7 +292,6 @@ Optional prefix argument ENHANCED, displays additional details."
       (buffer-substring (point-min) (point-max)))))
 
 (when-sql-mysql-feature%
-
   (defun sql-mysql-desc-table (sqlbuf outbuf enhanced table)
     "Describe mysql table."
     (let ((simple-sql
@@ -308,12 +299,10 @@ Optional prefix argument ENHANCED, displays additional details."
             "SHOW FULL COLUMNS "
             (format "FROM %s\\G" table)))
           (enhanced-sql nil))
-      (sql-redirect sqlbuf
-                    (if enhanced enhanced-sql simple-sql)
-                    outbuf))))
+      (sql-redirect
+       sqlbuf (if enhanced enhanced-sql simple-sql) outbuf))))
 
 (when-sql-mysql-feature%
-
   (defun sql-mysql-desc-plan (sqlbuf outbuf enhanced query)
     "Describe execution plan of mysql's QUERY."
     (let ((sql
@@ -325,7 +314,6 @@ Optional prefix argument ENHANCED, displays additional details."
       (sql-redirect sqlbuf sql outbuf))))
 
 (when-sql-mysql-feature%
-
   (defun sql-mysql-list-code (sqlbuf outbuf enhanced target)
     "List code of mysql's TARGET."
   	(let ((sql (concat
@@ -334,7 +322,6 @@ Optional prefix argument ENHANCED, displays additional details."
   		(sql-redirect sqlbuf sql outbuf))))
 
 (when-sql-mysql-feature%
-
   (defun sql-mysql-list-index (sqlbuf outbuf enhanced table)
     "List index of mysql's TABLE."
     (let ((simple-sql
@@ -345,7 +332,6 @@ Optional prefix argument ENHANCED, displays additional details."
       (sql-redirect sqlbuf
                     (if enhanced enhanced-sql simple-sql)
                     outbuf))))
-
 ;; end of mysql
 
 ;;;
@@ -379,7 +365,6 @@ Optional prefix argument ENHANCED, displays additional details."
     (sql-comint product params buf-name)))
 
 (when-sql-oceanbase-feature%
-
   (defun sql-oceanbase-desc-table (sqlbuf outbuf enhanced table)
     "Describe oceanbase table."
     (let ((simple-sql
@@ -390,7 +375,6 @@ Optional prefix argument ENHANCED, displays additional details."
                     outbuf))))
 
 (when-sql-oceanbase-feature%
-
   (defun sql-oceanbase-desc-plan (sqlbuf outbuf enhanced query)
     "Describe execution plan of oceanbase's QUERY."
     (let ((sql
@@ -402,7 +386,6 @@ Optional prefix argument ENHANCED, displays additional details."
       (sql-redirect sqlbuf sql outbuf))))
 
 (when-sql-oceanbase-feature%
-
   (defun sql-oceanbase-list-code (sqlbuf outbuf enhanced target)
     "List code of oceanbase's TARGET."
   	(let ((sql
@@ -412,7 +395,6 @@ Optional prefix argument ENHANCED, displays additional details."
   		(sql-redirect sqlbuf sql outbuf))))
 
 (when-sql-oceanbase-feature%
-
   (defun sql-oceanbase-list-all (sqlbuf outbuf enhanced _table-name)
     ;; Query from USER_OBJECTS or ALL_OBJECTS
     (let ((simple-sql
