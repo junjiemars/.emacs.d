@@ -200,7 +200,7 @@ Optional prefix argument ENHANCED, displays additional details."
        sqlbuf
        (list "COLUMN SQL_TYPE  HEADING \"SQL_TYPE\" FORMAT A19"
              "COLUMN SQL_NAME  HEADING \"SQL_NAME\""
-             "COLUMN SQL_NAME  FORMAT A64"))
+             "COLUMN SQL_NAME  FORMAT A60"))
       (sql-redirect
        sqlbuf (if enhanced enhanced-sql simple-sql) outbuf)
       (sql-redirect

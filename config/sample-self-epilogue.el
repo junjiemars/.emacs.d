@@ -112,7 +112,7 @@
            (sql-server "127.0.0.1")
            (sql-port 2883)
            (sql-database "example")
-           (sql-user "jyzx1@example")
+           (sql-user "ocean@example")
            (sql-password "example")))
         'sql))
 
