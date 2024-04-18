@@ -108,9 +108,10 @@ about each column."
         (user-error "%s" "No SQL interactive buffer found"))
       (unless name
         (user-error "%s" "No table name specified"))
-      (sql-execute-feature sql-buffer
-                           (format "*Desc %s*" name)
-                           :desc-table enhanced name))))
+      (sql-execute-feature
+       sql-buffer
+       (format "*Desc %s*" name)
+       :desc-table enhanced name))))
 
 (when-sql-feature%
   (defun sql-desc-plan (plan &optional enhanced)
@@ -134,22 +135,22 @@ Optional prefix argument ENHANCED, displays additional details."
        (format "*Desc plan %s*" (sql-first-word plan))
        :desc-plan enhanced plan))))
 
-(when-sql-feature%)
-(defun sql-list-code (name &optional enhanced)
-  "List the code of the database object with qualified NAME."
-  (interactive (list (sql-read-table-name "Qualified name: ")
-                     (if current-prefix-arg
-                         (read-string "Object type: " "table")
-                       "table")))
-  (with-current-buffer (current-buffer)
-    (unless sql-buffer
-      (user-error "%s" "No SQL interactive buffer found"))
-    (unless name
-      (user-error "%s" "No name specified"))
-    (sql-execute-feature
-     sql-buffer
-     (format "*List code %s*" name)
-     :list-code enhanced name)))
+(when-sql-feature%
+  (defun sql-list-code (name &optional enhanced)
+    "List the code of the database object with qualified NAME."
+    (interactive (list (sql-read-table-name "Qualified name: ")
+                       (if current-prefix-arg
+                           (read-string "Object type: " "table")
+                         "table")))
+    (with-current-buffer (current-buffer)
+      (unless sql-buffer
+        (user-error "%s" "No SQL interactive buffer found"))
+      (unless name
+        (user-error "%s" "No name specified"))
+      (sql-execute-feature
+       sql-buffer
+       (format "*List code %s*" name)
+       :list-code enhanced name))))
 
 ;; end of features
 
@@ -206,7 +207,6 @@ Optional prefix argument ENHANCED, displays additional details."
        sqlbuf '("COLUMN SQL_NAME CLEAR"
                 "COLUMN SQL_TYPE CLEAR"))
       (sql-oracle-restore-settings sqlbuf settings))))
-
 
 (when-sql-oracle-feature%
   (defun sql-oracle-list-code (sqlbuf outbuf enhanced target)
