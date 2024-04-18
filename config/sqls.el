@@ -80,6 +80,23 @@
       (substring sql i j))))
 
 (when-sql-feature%
+  (defun sql-list-all (&optional enhanced)
+    "List all database objects.\n
+With optional prefix argument ENHANCED, displays additional
+details or extends the listing to include other schemas objects."
+    (interactive "P")
+    (with-current-buffer (current-buffer)
+      (unless sql-buffer
+        (user-error "No SQL interactive buffer found"))
+      (sql-execute-feature
+       sql-buffer
+       (format "*List All-%s*" sql-product)
+       :list-all enhanced nil)
+      (with-current-buffer sql-buffer
+        ;; Contains the name of database objects
+        (setq-local sql-contains-names t)))))
+
+(when-sql-feature%
   (defun sql-desc-table (name &optional enhanced)
     "Describe the details of a database table named NAME.\n
 Optional prefix argument ENHANCED, displays additional details
@@ -193,8 +210,8 @@ Optional prefix argument ENHANCED, displays additional details."
                " TAB OFF TIMING OFF FEEDBACK OFF"))
       (sql-redirect
        sqlbuf
-       (list "COLUMN SQL_TYPE  HEADING \"TYPE\" FORMAT A19"
-             "COLUMN SQL_NAME  HEADING \"NAME\""
+       (list "COLUMN SQL_TYPE  HEADING \"SQL_TYPE\" FORMAT A19"
+             "COLUMN SQL_NAME  HEADING \"SQL_NAME\""
              (format "COLUMN SQL_NAME  FORMAT A%d" (if enhanced 60 35))))
       (sql-redirect
        sqlbuf (if enhanced enhanced-sql simple-sql) outbuf)
@@ -399,23 +416,23 @@ Optional prefix argument ENHANCED, displays additional details."
     ;; Query from USER_OBJECTS or ALL_OBJECTS
     (let ((simple-sql
            (concat
-            "SELECT INITCAP(x.object_type) AS SQL_EL_TYPE "
+            "SELECT INITCAP(x.object_type) AS SQL_TYPE "
             ", " (sql-oracle--list-object-name "x.object_name")
-            " AS SQL_EL_NAME "
+            " AS SQL_NAME "
             "FROM user_objects x "
             "WHERE x.object_type NOT LIKE '%% BODY' "
-            "ORDER BY SQL_EL_TYPE, SQL_EL_NAME;"))
+            "ORDER BY SQL_TYPE, SQL_NAME;"))
           (enhanced-sql
            (concat
-            "SELECT INITCAP(x.object_type) AS SQL_EL_TYPE "
+            "SELECT INITCAP(x.object_type) AS SQL_TYPE "
             ", "  (sql-oracle--list-object-name "x.owner")
             " ||'.'|| "
             (sql-oracle--list-object-name "x.object_name")
-            " AS SQL_EL_NAME "
+            " AS SQL_NAME "
             "FROM all_objects x "
             "WHERE x.object_type NOT LIKE '%% BODY' "
             "AND x.owner <> 'SYS' "
-            "ORDER BY SQL_EL_TYPE, SQL_EL_NAME;")))
+            "ORDER BY SQL_TYPE, SQL_NAME;")))
       (sql-redirect
        sqlbuf (if enhanced enhanced-sql simple-sql) outbuf))))
 
@@ -466,11 +483,11 @@ Optional prefix argument ENHANCED, displays additional details."
   "On \\=`sql\\=' oracle initialization."
   ;; `sql-oracle-program'
   (setq sql-oracle-program
-        (or (executable-find% "sqlplus")
-            (let ((d (getenv "ORACLE_HOME")))
+        (or (let ((d (getenv "ORACLE_HOME")))
               (when (and d (file-exists-p d))
                 (or (executable-find (concat d "/" "sqlplus"))
                     (executable-find (concat d "/bin/" "sqlplus")))))
+            (executable-find% "sqlplus")
             (executable-find% "sqlplus.sh")
             "sqlplus"))
   ;; oracle features
@@ -549,6 +566,7 @@ Optional prefix argument ENHANCED, displays additional details."
     (define-key% sql-mode-map (kbd "C-c C-z") #'sql-show-sqli-buffer*))
   ;; features' keybindings
   (when-sql-feature%
+    (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-all)
     (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-code)
     (define-key% sql-mode-map (kbd "C-c C-l i") #'sql-list-index)
     (define-key% sql-mode-map (kbd "C-c C-l T") #'sql-desc-table)
