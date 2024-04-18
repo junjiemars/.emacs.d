@@ -134,35 +134,22 @@ Optional prefix argument ENHANCED, displays additional details."
        (format "*Desc plan %s*" (sql-first-word plan))
        :desc-plan enhanced plan))))
 
-(when-sql-feature%
-  (defun sql-list-code (name &optional enhanced)
-    "List the code of the database object with qualified NAME."
-    (interactive (list (sql-read-table-name "Qualified name: ")
-                       current-prefix-arg))
-    (with-current-buffer (current-buffer)
-      (unless sql-buffer
-        (user-error "%s" "No SQL interactive buffer found"))
-      (unless name
-        (user-error "%s" "No name specified"))
-      (sql-execute-feature
-       sql-buffer
-       (format "*List code %s*" name)
-       :list-code enhanced name))))
-
-(when-sql-feature%
-  (defun sql-list-index (name &optional enhanced)
-    "List the index of a database table named NAME."
-    (interactive (list (sql-read-table-name "Table name: ")
-                       current-prefix-arg))
-    (with-current-buffer (current-buffer)
-      (unless sql-buffer
-        (user-error "%s" "No SQL interactive buffer found"))
-      (unless name
-        (user-error "%s" "No table name specified"))
-      (sql-execute-feature
-       sql-buffer
-       (format "*List index %s*" name)
-       :list-index enhanced name))))
+(when-sql-feature%)
+(defun sql-list-code (name &optional enhanced)
+  "List the code of the database object with qualified NAME."
+  (interactive (list (sql-read-table-name "Qualified name: ")
+                     (if current-prefix-arg
+                         (read-string "Object type: " "table")
+                       "table")))
+  (with-current-buffer (current-buffer)
+    (unless sql-buffer
+      (user-error "%s" "No SQL interactive buffer found"))
+    (unless name
+      (user-error "%s" "No name specified"))
+    (sql-execute-feature
+     sql-buffer
+     (format "*List code %s*" name)
+     :list-code enhanced name)))
 
 ;; end of features
 
@@ -187,37 +174,37 @@ Optional prefix argument ENHANCED, displays additional details."
     (let ((settings (sql-oracle-save-settings sqlbuf))
           (simple-sql
            (concat
-            "SELECT INITCAP(x.object_type) AS SQL_TYPE,"
-            (sql-oracle--list-object-name "x.object_name")
+            "SELECT LOWER(X.object_type) AS SQL_TYPE,"
+            (sql-oracle--list-object-name "X.object_name")
             " AS SQL_NAME "
-            "FROM user_objects x "
-            "WHERE x.object_type NOT LIKE '%% BODY' "
+            "FROM user_objects X "
             "ORDER BY SQL_TYPE, SQL_NAME;"))
           (enhanced-sql
            (concat
-            "SELECT INITCAP(x.object_type) AS SQL_TYPE,"
-            (sql-oracle--list-object-name "x.owner")
+            "SELECT LOWER(X.object_type) AS SQL_TYPE,"
+            (sql-oracle--list-object-name "X.owner")
             " ||'.'|| "
-            (sql-oracle--list-object-name "x.object_name")
+            (sql-oracle--list-object-name "X.object_name")
             " AS SQL_NAME "
-            "FROM all_objects x "
-            "WHERE x.object_type NOT LIKE '%% BODY' "
-            "AND x.owner <> 'SYS' "
+            "FROM all_objects X "
+            "WHERE X.owner <> 'SYS' "
             "ORDER BY SQL_TYPE, SQL_NAME;")))
+      ;; `stty size' will output rows and columns separated by a space
+      ;; but the columns be determine also by the frame size.
       (sql-redirect
        sqlbuf
-       (concat "SET LINESIZE 80 PAGESIZE 50000 TRIMOUT ON"
+       (concat "SET LINESIZE 160 PAGESIZE 50000 TRIMOUT ON"
                " TAB OFF TIMING OFF FEEDBACK OFF"))
       (sql-redirect
        sqlbuf
        (list "COLUMN SQL_TYPE  HEADING \"SQL_TYPE\" FORMAT A19"
              "COLUMN SQL_NAME  HEADING \"SQL_NAME\""
-             (format "COLUMN SQL_NAME  FORMAT A%d" (if enhanced 60 35))))
+             "COLUMN SQL_NAME  FORMAT A64"))
       (sql-redirect
        sqlbuf (if enhanced enhanced-sql simple-sql) outbuf)
       (sql-redirect
-       sqlbuf '("COLUMN SQL_EL_NAME CLEAR"
-                "COLUMN SQL_EL_TYPE CLEAR"))
+       sqlbuf '("COLUMN SQL_NAME CLEAR"
+                "COLUMN SQL_TYPE CLEAR"))
       (sql-oracle-restore-settings sqlbuf settings))))
 
 
@@ -225,24 +212,14 @@ Optional prefix argument ENHANCED, displays additional details."
   (defun sql-oracle-list-code (sqlbuf outbuf enhanced target)
     "List code of oracle's TARGET."
     (let ((settings (sql-oracle-save-settings sqlbuf))
-  			  (o (if enhanced
-                 ;; ignore enhanced
-                 target
-               target))
-  			  (sql-var (concat
-                    "VAR object_type VARCHAR2(128);"
-                    "\nBEGIN\n"
-                    " :object_type := '';"
-                    " SELECT object_type INTO :object_type"
-                    " FROM user_objects"
-                    " WHERE object_name='%s';"
-                    "\nEND;\n/\n"))
-          (sql-ddl (concat
-                    "SELECT DBMS_METADATA.GET_DDL(:object_type,'%s')"
-                    " FROM DUAL;")))
+          (sql-ddl
+           (concat
+            (format
+             "SELECT DBMS_METADATA.GET_DDL(UPPER('%s'),UPPER('%s'))"
+             enhanced target)
+            " FROM DUAL;")))
       (unwind-protect
           (progn
-            (sql-redirect sqlbuf (format sql-var o) outbuf)
             (sql-redirect
              sqlbuf
              (concat "SET LINESIZE 200"
@@ -255,7 +232,7 @@ Optional prefix argument ENHANCED, displays additional details."
                      " TIMING OFF"
                      " TRIMOUT ON"
                      " VERIFY OFF;"))
-            (sql-redirect sqlbuf (format sql-ddl o) outbuf))
+            (sql-redirect sqlbuf sql-ddl outbuf))
         (sql-oracle-restore-settings sqlbuf settings)
         (sql-send-string "\n")))))
 
@@ -333,22 +310,11 @@ Optional prefix argument ENHANCED, displays additional details."
 (when-sql-mysql-feature%
   (defun sql-mysql-list-code (sqlbuf outbuf enhanced target)
     "List code of mysql's TARGET."
-  	(let ((sql (concat
-  							"SHOW CREATE"
-  							(format " %s\\G" (if enhanced target target)))))
-  		(sql-redirect sqlbuf sql outbuf))))
+    (let ((sql (format
+  						  "SHOW CREATE %s %s\\G"
+                enhanced target)))
+  	  (sql-redirect sqlbuf sql outbuf))))
 
-(when-sql-mysql-feature%
-  (defun sql-mysql-list-index (sqlbuf outbuf enhanced table)
-    "List index of mysql's TABLE."
-    (let ((simple-sql
-           (concat
-            "SHOW INDEX"
-            (format " FROM %s\\G" table)))
-          (enhanced-sql nil))
-      (sql-redirect sqlbuf
-                    (if enhanced enhanced-sql simple-sql)
-                    outbuf))))
 ;; end of mysql
 
 ;;;
@@ -405,33 +371,34 @@ Optional prefix argument ENHANCED, displays additional details."
 (when-sql-oceanbase-feature%
   (defun sql-oceanbase-list-code (sqlbuf outbuf enhanced target)
     "List code of oceanbase's TARGET."
-  	(let ((sql
-           (format
-  					"SELECT DBMS_METADATA.GET_DDL('TABLE','%s') FROM DUAL\\G"
-            (upcase (if enhanced target target)))))
-  		(sql-redirect sqlbuf sql outbuf))))
+    (let ((sql
+           (concat
+            (format
+  				   "SELECT DBMS_METADATA.GET_DDL(UPPER('%s'),UPPER('%s'))"
+             enhanced target)
+            " FROM DUAL\\G")))
+  	  (sql-redirect sqlbuf sql outbuf))))
 
 (when-sql-oceanbase-feature%
   (defun sql-oceanbase-list-all (sqlbuf outbuf enhanced _table-name)
     ;; Query from USER_OBJECTS or ALL_OBJECTS
     (let ((simple-sql
            (concat
-            "SELECT INITCAP(x.object_type) AS SQL_TYPE "
-            ", " (sql-oracle--list-object-name "x.object_name")
+            "SELECT LOWER(X.object_type) AS SQL_TYPE,"
+            (sql-oracle--list-object-name "X.object_name")
             " AS SQL_NAME "
-            "FROM user_objects x "
-            "WHERE x.object_type NOT LIKE '%% BODY' "
+            "FROM user_objects X "
+            ;; "WHERE x.object_type NOT LIKE '%% BODY' "
             "ORDER BY SQL_TYPE, SQL_NAME;"))
           (enhanced-sql
            (concat
-            "SELECT INITCAP(x.object_type) AS SQL_TYPE "
-            ", "  (sql-oracle--list-object-name "x.owner")
+            "SELECT LOWER(x.object_type) AS SQL_TYPE,"
+            (sql-oracle--list-object-name "X.owner")
             " ||'.'|| "
-            (sql-oracle--list-object-name "x.object_name")
+            (sql-oracle--list-object-name "X.object_name")
             " AS SQL_NAME "
-            "FROM all_objects x "
-            "WHERE x.object_type NOT LIKE '%% BODY' "
-            "AND x.owner <> 'SYS' "
+            "FROM all_objects X "
+            "WHERE AND X.owner <> 'SYS' "
             "ORDER BY SQL_TYPE, SQL_NAME;")))
       (sql-redirect
        sqlbuf (if enhanced enhanced-sql simple-sql) outbuf))))
@@ -473,11 +440,7 @@ Optional prefix argument ENHANCED, displays additional details."
     ;; new `:list-code'
     (plist-put (cdr (assq 'mysql sql-product-alist))
                :list-code
-               #'sql-mysql-list-code)
-    ;; new `:list-index'
-    (plist-put (cdr (assq 'mysql sql-product-alist))
-               :list-index
-               #'sql-mysql-list-index)))
+               #'sql-mysql-list-code)))
 
 (defun on-sql-oracle-init! ()
   "On \\=`sql\\=' oracle initialization."
@@ -568,7 +531,6 @@ Optional prefix argument ENHANCED, displays additional details."
   (when-sql-feature%
     (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-all)
     (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-code)
-    (define-key% sql-mode-map (kbd "C-c C-l i") #'sql-list-index)
     (define-key% sql-mode-map (kbd "C-c C-l T") #'sql-desc-table)
     (define-key% sql-mode-map (kbd "C-c C-l P") #'sql-desc-plan)))
 
