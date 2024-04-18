@@ -529,10 +529,10 @@ Optional prefix argument ENHANCED, displays additional details."
     (define-key% sql-mode-map (kbd "C-c C-z") #'sql-show-sqli-buffer*))
   ;; features' keybindings
   (when-sql-feature%
-    (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-all)
+    (define-key% sql-mode-map (kbd "C-c C-l a") #'sql-list-all)
     (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-code)
-    (define-key% sql-mode-map (kbd "C-c C-l T") #'sql-desc-table)
-    (define-key% sql-mode-map (kbd "C-c C-l P") #'sql-desc-plan)))
+    (define-key% sql-mode-map (kbd "C-c C-l t") #'sql-desc-table)
+    (define-key% sql-mode-map (kbd "C-c C-l p") #'sql-desc-plan)))
 
 ;; end of init!
 
