@@ -11,7 +11,10 @@
 
 ;; delay load modes
 (with-eval-after-load 'prog-mode
-  (make-thread* #'on-progs-init!))
+  (make-thread*
+   (lambda ()
+     (inhibit-gc
+       (on-progs-init!)))))
 
 
 ;; end of on-progs-autoload.el

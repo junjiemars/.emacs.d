@@ -348,9 +348,9 @@ If ONLY-COMPILE is t, does not load DST."
 ;; boot
 (unless% (boundp '*nore-emacs-no-boot*)
   (inhibit-gc
-    (inhibit-file-name-handler
-      (let ((u (v-comp-file! (emacs-home* "config/boot.el"))))
-        (compile-and-load-file* (car u) (cdr u))))))
+    ;; (inhibit-file-name-handler)
+    (let ((u (v-comp-file! (emacs-home* "config/boot.el"))))
+      (compile-and-load-file* (car u) (cdr u)))))
 
 ;; end of Boot
 

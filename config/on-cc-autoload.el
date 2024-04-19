@@ -22,7 +22,10 @@
 
 ;;; `cc-mode' after load
 (with-eval-after-load 'cc-mode
-  (make-thread* #'on-cc-mode-init!))
+  (make-thread*
+   (lambda ()
+     (inhibit-gc
+       (on-cc-mode-init!)))))
 
 ;;; `cmacexp' after load
 

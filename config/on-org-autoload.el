@@ -12,7 +12,10 @@
 
 ;;; `org' after load
 (with-eval-after-load 'org
-  (make-thread* #'on-org-init!))
+  (make-thread*
+   (lambda ()
+     (inhibit-gc
+       (on-org-init!)))))
 
 ;; end of macro
 

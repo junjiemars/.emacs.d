@@ -309,9 +309,8 @@
       (make-thread*
        (lambda ()
          (inhibit-gc
-           (inhibit-file-name-handler
-             (compile!
-               (compile-unit* (*self-paths* :get :epilogue))))))
+           (compile!
+             (compile-unit* (*self-paths* :get :epilogue)))))
        (if-noninteractive% t))
       (error (message "self-epilogue: %s" err)))))
 

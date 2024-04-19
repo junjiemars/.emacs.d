@@ -15,15 +15,15 @@
 
 ;;; `elisp-mode' after load
 (with-eval-after-load 'elisp-mode
-  (make-thread* #'use-emacs-lisp-init!))
+  (use-emacs-lisp-init!))
 
 ;;; `lisp-mode' after load
 (with-eval-after-load 'lisp-mode
-  (make-thread* #'use-lisp-init!))
+  (use-lisp-init!))
 
 ;;; `scheme' after load
 (with-eval-after-load 'scheme
-  (make-thread* #'use-scheme-init!))
+  (use-scheme-init!))
 
 
 ;; end of use-lisp-autoload.el

@@ -6,10 +6,11 @@
 ;; modules.el
 ;;;;
 
-
 ;; (require 'package)
+
 (declare-function package-installed-p "package")
 
+;; end of require
 
 (defalias '*package-init-repo*
   (lexical-let% ((b))
@@ -40,7 +41,6 @@
 
   (package-refresh-contents))
 
-
 (defmacro package*-check-name (package)
   "Check PACKAGE is a symbol or a tar file."
   (let ((p (gensym*)))
@@ -52,7 +52,6 @@
                                            (file-name-base* ,p) 1))
                     ,p))
              (t nil)))))
-
 
 (defmacro package*-delete! (package)
   "Delete PACKAGE."
@@ -73,7 +72,6 @@
                                  (aref (cdr (assq ,p package-alist)) 0))
                          "."))))))))
 
-
 (defmacro package*-install! (package &optional tar)
   "Install PACKAGE optional via TAR."
   (let ((p (gensym*))
@@ -90,16 +88,6 @@
              (package-install ,p t)
            (package-install ,p))))))
 
-
-(defalias '*package-compile-units*
-  (lexical-let% ((us '()))
-    (lambda (&optional n)
-      (cond ((consp n) (dolist* (s (nreverse n) us)
-                         (setq us (cons s us))))
-            (t us))))
-  "Autloaded \\=`compile-unit\\='.")
-
-
 (defun package*-parse-spec! (spec &optional remove-unused)
   "Parse SPEC, install, REMOVE-UNUSED packages."
   (dolist* (s spec)
@@ -114,8 +102,7 @@
                                (null (self-spec-> ss :cond)))
                       (package*-delete! n))
                   (package*-install! (if tar tar n) tar))))))
-        (*package-compile-units* (self-spec-> ss :compile))))))
-
+        (apply #'compile! (self-spec-> ss :compile))))))
 
 (defun self-module-init! ()
   "Initialize :package spec from \\=`*self-env-spec*\\='."
@@ -130,13 +117,12 @@
     (setq% package-user-dir package*-user-dir 'package)
     (package-initialize)
     ;; load self :packages-spec
-    (package*-parse-spec!
-     (*self-mod-spec*) (*self-env-spec* :get :module :remove-unused))
     (make-thread*
      (lambda ()
        (inhibit-gc
-         (inhibit-file-name-handler
-           (apply #'compile! (*package-compile-units*))))))))
+         (package*-parse-spec!
+          (*self-mod-spec*)
+          (*self-env-spec* :get :module :remove-unused)))))))
 
 ;; end of package*
 

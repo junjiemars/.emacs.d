@@ -12,7 +12,10 @@
 
 ;;; after-load
 (with-eval-after-load 'sql
-  (make-thread* #'on-sql-init!))
+  (make-thread*
+   (lambda ()
+     (inhibit-gc
+       (on-sql-init!)))))
 
 ;;; autoload
 
