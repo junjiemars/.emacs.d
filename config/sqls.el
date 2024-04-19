@@ -144,7 +144,7 @@ Optional prefix argument ENHANCED, displays additional details."
 (when-sql-feature%
   (defun sql-list-code (name &optional enhanced)
     "List the code of the database object with qualified NAME."
-    (interactive (list (sql-read-table-name "Qualified name: ")
+    (interactive (list (sql-read-table-name "Object name: ")
                        (if current-prefix-arg
                            (read-string "Object type: " "table")
                          "table")))
