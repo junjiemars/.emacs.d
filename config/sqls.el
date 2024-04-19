@@ -52,6 +52,13 @@
         (call-interactively #'sql-connect))
       (call-interactively #'sql-show-sqli-buffer))))
 
+(when-fn-sql-show-sqli-buffer%
+  (defun sql-find-sqli-buffer* ()
+    "Return the living \\=`sql-buffer\\='."
+    (with-current-buffer (current-buffer)
+      (when (and sql-buffer (get-buffer-process sql-buffer))
+        sql-buffer))))
+
 (when-fn-sql-send-magic-terminator%
   (defadvice sql-send-magic-terminator
       (before sql-send-magic-terminator-before first compile disable)
@@ -85,14 +92,14 @@
 With optional prefix argument ENHANCED, displays additional
 details or extends the listing to include other schemas objects."
     (interactive "P")
-    (with-current-buffer (current-buffer)
-      (unless sql-buffer
+    (let ((sqlbuf (sql-find-sqli-buffer*)))
+      (unless sqlbuf
         (user-error "No SQL interactive buffer found"))
       (sql-execute-feature
-       sql-buffer
+       sqlbuf
        (format "*List All-%s*" sql-product)
        :list-all enhanced nil)
-      (with-current-buffer sql-buffer
+      (with-current-buffer sqlbuf
         ;; Contains the name of database objects
         (setq-local sql-contains-names t)))))
 
@@ -103,14 +110,13 @@ Optional prefix argument ENHANCED, displays additional details
 about each column."
     (interactive (list (sql-read-table-name "Table name: ")
                        current-prefix-arg))
-    (with-current-buffer (current-buffer)
-      (unless sql-buffer
+    (let ((sqlbuf (sql-find-sqli-buffer*)))
+      (unless sqlbuf
         (user-error "%s" "No SQL interactive buffer found"))
       (unless name
         (user-error "%s" "No table name specified"))
       (sql-execute-feature
-       sql-buffer
-       (format "*Desc %s*" name)
+       sqlbuf (format "*Desc %s*" name)
        :desc-table enhanced name))))
 
 (when-sql-feature%
@@ -125,13 +131,13 @@ Optional prefix argument ENHANCED, displays additional details."
               (save-excursion (backward-paragraph) (point))
               (save-excursion (forward-paragraph) (point))))
            current-prefix-arg))
-    (with-current-buffer (current-buffer)
-      (unless sql-buffer
+    (let ((sqlbuf (sql-find-sqli-buffer*)))
+      (unless sqlbuf
         (user-error "%s" "No SQL interactive buffer found"))
       (unless plan
         (user-error "%s" "No plan specified"))
       (sql-execute-feature
-       sql-buffer
+       sqlbuf
        (format "*Desc plan %s*" (sql-first-word plan))
        :desc-plan enhanced plan))))
 
@@ -142,13 +148,13 @@ Optional prefix argument ENHANCED, displays additional details."
                        (if current-prefix-arg
                            (read-string "Object type: " "table")
                          "table")))
-    (with-current-buffer (current-buffer)
-      (unless sql-buffer
+    (let ((sqlbuf (sql-find-sqli-buffer*)))
+      (unless sqlbuf
         (user-error "%s" "No SQL interactive buffer found"))
       (unless name
         (user-error "%s" "No name specified"))
       (sql-execute-feature
-       sql-buffer
+       sqlbuf
        (format "*List code %s*" name)
        :list-code enhanced name))))
 
