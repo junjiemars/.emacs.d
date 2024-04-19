@@ -122,7 +122,8 @@
        (inhibit-gc
          (package*-parse-spec!
           (*self-mod-spec*)
-          (*self-env-spec* :get :module :remove-unused)))))))
+          (*self-env-spec* :get :module :remove-unused))))
+     (if-noninteractive% t))))
 
 ;; end of package*
 
