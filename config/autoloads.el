@@ -295,11 +295,11 @@
   (when-font% (make-thread* #'self-glyph-init!))
   (when-fn% 'self-module-init! nil
     (condition-case err
-        (self-module-init!)
+        (inhibit-gc (self-module-init!))
       (error (message "self-module-init!: %s" err))))
   (when-fn% 'self-desktop-read! nil
     (condition-case err
-        (self-desktop-read!)
+        (inhibit-gc (self-desktop-read!))
       (error (message "self-desktop-read!: %s" err))))
   ;; `load-path' versioned dirs
   (push! (v-home% "config/") load-path)
