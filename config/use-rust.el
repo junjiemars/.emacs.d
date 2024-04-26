@@ -45,7 +45,8 @@
 --regex-Rust=/^[ \\t]*(pub[ \\t]+)?(static|const)[ \\t]+(mut[ \\t]+)?([a-zA-Z0-9_]+)/\\4/c,consts,static constants/
 --regex-Rust=/^[ \\t]*(pub[ \\t]+)?(unsafe[ \\t]+)?trait[ \\t]+([a-zA-Z0-9_]+)/\\3/t,traits,traits/
 --regex-Rust=/^[ \\t]*(pub[ \\t]+)?(unsafe[ \\t]+)?impl([ \\t\\n]*<[^>]*>)?[ \\t]+(([a-zA-Z0-9_:]+)[ \\t]*(<[^>]*>)?[ \\t]+(for)[ \\t]+)?([a-zA-Z0-9_]+)/\\5 \\7 \\8/i,impls,trait implementations/
---regex-Rust=/^[ \\t]*macro_rules![ \\t]+([a-zA-Z0-9_]+)/\\1/d,macros,macro definitions/" ctags)))))))))
+--regex-Rust=/^[ \\t]*macro_rules![ \\t]+([a-zA-Z0-9_]+)/\\1/d,macros,macro definitions/"
+                ctags)))))))))
 
 (defalias 'rust*-sysroot
   (lexical-let% ((b (rust*-sysroot-spec)))
@@ -55,7 +56,7 @@
             (t b))))
   "Rust sysroot.")
 
-
+;; end of sysroot
 
 ;;;
 ;; debug
@@ -108,6 +109,8 @@
             (t b))))
   "Make rust source debuggable.")
 
+;; end of debug
+
 ;;;
 ;; tags
 ;;;
@@ -130,7 +133,7 @@
                  (and b (file-exists-p b) b))))))
   "Make rust tags.")
 
-;; end of `rust*-make-tags'
+;; end of tags
 
 (defun use-rust-init! ()
   "On \\=`rust\\=' initialization."
