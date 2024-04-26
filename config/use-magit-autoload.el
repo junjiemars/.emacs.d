@@ -18,6 +18,8 @@
 
 ;;; add `magit' into `vc*-frontend'
 (when-fn% 'magit-status 'magit-status
-  (make-thread* (vc*-frontend '("magit" . magit-status))))
+  (make-thread*
+   (lambda ()
+     (vc*-frontend '("magit" . magit-status)))))
 
 ;; end of use-magit-autoload.el
