@@ -106,24 +106,22 @@
 
 (defun self-module-init! ()
   "Initialize :package spec from \\=`*self-env-spec*\\='."
-  (when (*self-env-spec* :get :module :allowed)
-    ;; compile self :package-spec
-    (compile! (compile-unit* (*self-paths* :get :mod-spec)))
-    (when-version%
-        <= 25.1
-      (setq custom-file (v-home! ".transient/packages.el")))
-    ;; define package user dir
-    (setq% package-gnupghome-dir (v-home! ".elpa/gnupg/") 'package)
-    (setq% package-user-dir package*-user-dir 'package)
-    (package-initialize)
-    ;; load self :packages-spec
-    (make-thread*
-     (lambda ()
-       (inhibit-gc
-         (package*-parse-spec!
-          (*self-mod-spec*)
-          (*self-env-spec* :get :module :remove-unused))))
-     (if-noninteractive% t))))
+  (when-version%
+      <= 25.1
+    (setq custom-file (v-home! ".transient/packages.el")))
+  ;; define package user dir
+  (setq% package-gnupghome-dir (v-home! ".elpa/gnupg/") 'package)
+  (setq% package-user-dir package*-user-dir 'package)
+  (package-initialize)
+  ;; load self :packages-spec
+  (make-thread*
+   (lambda ()
+     (inhibit-gc
+       (compile! (compile-unit* (*self-paths* :get :mod-spec)))
+       (package*-parse-spec!
+        (*self-mod-spec*)
+        (*self-env-spec* :get :module :remove-unused))))
+   (if-noninteractive% t)))
 
 ;; end of package*
 
