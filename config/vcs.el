@@ -6,10 +6,19 @@
 ;; vcs.el
 ;;;;
 
+(defvar vc*-frontend-hook nil
+  "Hook called by \\=`vc*-frontend\\='")
+
 (defalias 'vc*-frontend
-  (lexical-let% ((b `(("*" . vc-dir))))
+  (lexical-let% ((b `(("*" . vc-dir)))
+                 (i nil))
     (lambda (&optional n)
       (cond (n (append! n b t))
+            ((and (not i) vc*-frontend-hook)
+             (dolist* (x vc*-frontend-hook)
+               (append! x b t))
+             (setq i t)
+             b)
             (t b))))
   "The fontend of VC.")
 
@@ -32,7 +41,8 @@
                 '*vc-frontend-history* (caar (vc*-frontend)))
              default))))
   (call-interactively
-   (cdr (assoc-string frontend (vc*-frontend)))))
+   (cdr (or (assoc-string frontend (vc*-frontend))
+            (car (vc*-frontend))))))
 
 
 
