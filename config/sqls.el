@@ -187,12 +187,16 @@ Optional prefix argument ENHANCED, displays additional details."
             obj-name obj-name obj-name)))
 
 (unless-fn% 'sql-oracle-restore-settings 'sql
-  (defun sql-oracle-restore-settings (_ __)
-    (message "unimplmented")))
+  (defun sql-oracle-restore-settings (sqlbuf saved-settings)
+    (mapc
+     (lambda (one-cur-setting)
+       (setq saved-settings (delete one-cur-setting saved-settings)))
+     (sql-oracle-save-settings sqlbuf))
+    (sql-redirect sqlbuf saved-settings)))
 
 (when-sql-oracle-feature%
   (defun sql-oracle-list-all* (sqlbuf outbuf enhanced _table-name)
-    ;; Query from USER_OBJECTS or ALL_OBJECTS
+    "List all oracle objects."
     (let ((settings (sql-oracle-save-settings sqlbuf))
           (simple-sql
            (concat
@@ -213,21 +217,23 @@ Optional prefix argument ENHANCED, displays additional details."
             "ORDER BY SQL_TYPE, SQL_NAME;")))
       ;; `stty size' will output rows and columns separated by a space
       ;; but the columns be determine also by the frame size.
-      (sql-redirect
-       sqlbuf
-       (concat "SET LINESIZE 160 PAGESIZE 50000 TRIMOUT ON"
-               " TAB OFF TIMING OFF FEEDBACK OFF"))
-      (sql-redirect
-       sqlbuf
-       (list "COLUMN SQL_TYPE  HEADING \"SQL_TYPE\" FORMAT A19"
-             "COLUMN SQL_NAME  HEADING \"SQL_NAME\""
-             "COLUMN SQL_NAME  FORMAT A60"))
-      (sql-redirect
-       sqlbuf (if enhanced enhanced-sql simple-sql) outbuf)
-      (sql-redirect
-       sqlbuf '("COLUMN SQL_NAME CLEAR"
-                "COLUMN SQL_TYPE CLEAR"))
-      (sql-oracle-restore-settings sqlbuf settings))))
+      (unwind-protect
+          (progn
+            (sql-redirect
+             sqlbuf
+             (concat "SET LINESIZE 160 PAGESIZE 50000 TRIMOUT ON"
+                     " TAB OFF TIMING OFF FEEDBACK OFF"))
+            (sql-redirect
+             sqlbuf
+             (list "COLUMN SQL_TYPE  HEADING \"SQL_TYPE\" FORMAT A19"
+                   "COLUMN SQL_NAME  HEADING \"SQL_NAME\""
+                   "COLUMN SQL_NAME  FORMAT A60"))
+            (sql-redirect
+             sqlbuf (if enhanced enhanced-sql simple-sql) outbuf)
+            (sql-redirect
+             sqlbuf '("COLUMN SQL_NAME CLEAR"
+                      "COLUMN SQL_TYPE CLEAR")))
+        (sql-oracle-restore-settings sqlbuf settings)))))
 
 (when-sql-oracle-feature%
   (defun sql-oracle-list-code (sqlbuf outbuf enhanced target)
@@ -260,12 +266,14 @@ Optional prefix argument ENHANCED, displays additional details."
 (when-sql-oracle-feature%
   (defun sql-oracle-desc-table (sqlbuf outbuf enhanced table)
     "Describe oracle table."
-    (let ((simple-sql
+    (let ((settings (sql-oracle-save-settings sqlbuf))
+          (simple-sql
            (format "DESCRIBE %s" (upcase table)))
           (enhanced-sql nil))
-      (sql-redirect sqlbuf
-                    (if enhanced enhanced-sql simple-sql)
-                    outbuf))))
+      (unwind-protect
+          (sql-redirect
+           sqlbuf (if enhanced enhanced-sql simple-sql) outbuf)
+        (sql-oracle-restore-settings sqlbuf settings)))))
 
 (when-sql-oracle-feature%
   (defun sql-oracle-desc-plan (sqlbuf outbuf enhanced target)
@@ -286,6 +294,39 @@ Optional prefix argument ENHANCED, displays additional details."
                      " VERIFY OFF FEEDBACK OFF"
                      " TRIMOUT ON TAB OFF TIMING OFF"))
             (sql-redirect sqlbuf sql outbuf))
+        (sql-oracle-restore-settings sqlbuf settings)))))
+
+(when-sql-oracle-feature%
+  (defun sql-oracle-help-table (sqlbuf outbuf enhanced table-name)
+    (let ((settings (sql-oracle-save-settings sqlbuf))
+          (simple-sql
+           (concat
+            "SELECT comments FROM all_tab_comments"
+            (format " WHERE table_name='%s';" table-name)))
+          (enhanced-sql
+           (concat
+            "SELECT DISTINCT T.column_name,C.comments"
+            " FROM all_tab_cols T"
+            " INNER JOIN all_col_comments C"
+            " ON T.table_name=C.table_name"
+            " AND T.column_name=C.column_name"
+            (format " WHERE T.table_name='%s'" table-name)
+            " ORDER BY T.column_name ASC;")))
+      (unwind-protect
+          (progn
+            (when enhanced
+              (sql-redirect
+               sqlbuf
+               "SET LINESIZE 200 PAGESIZE 100")
+              (sql-redirect
+               sqlbuf
+               "COLUMN column_name JUSTIFY LEFT FORMAT A40;")
+              (sql-redirect
+               sqlbuf
+               "COLUMN comments JUSTIFY LEFT FORMAT A80;"))
+            (sql-redirect
+             sqlbuf
+             (if enhanced enhanced-sql  simple-sql) outbuf))
         (sql-oracle-restore-settings sqlbuf settings)))))
 
 ;; end of oracle
@@ -513,7 +554,11 @@ Optional prefix argument ENHANCED, displays additional details."
     ;; new `:desc-plan'
     (plist-put (cdr (assq 'oracle sql-product-alist))
                :desc-plan
-               #'sql-oracle-desc-plan)))
+               #'sql-oracle-desc-plan)
+    ;; new `:help-table'
+    (plist-put (cdr (assq 'oracle sql-product-alist))
+               :help-table
+               #'sql-oracle-help-table)))
 
 (defun on-sql-oceanbase-init! ()
   "On \\=`sql\\=' oceanbase initialization."
