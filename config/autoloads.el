@@ -307,19 +307,12 @@
     (push! (v-home% "private/") load-path)
     (when (*self-paths* :get :epilogue)
       (condition-case err
-          (make-thread*
-           (lambda ()
-             (inhibit-gc
-               (compile!
-                 (compile-unit* (*self-paths* :get :epilogue)))))
-           (if-noninteractive% t))
+          (compile! (compile-unit* (*self-paths* :get :epilogue)))
         (error (message "self-epilogue: %s" err))))))
 
-
-;; autoload when interactive or not
+;;; autoload when interactive or not
 (if-noninteractive%
     (on-autoloads!)
   (append! #'on-autoloads! after-init-hook))
-
 
 ;; end of autoloads.el
