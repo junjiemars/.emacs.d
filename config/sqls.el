@@ -320,10 +320,10 @@ Optional prefix argument ENHANCED, displays additional details."
                "SET LINESIZE 200 PAGESIZE 100")
               (sql-redirect
                sqlbuf
-               "COLUMN column_name JUSTIFY LEFT FORMAT A40;")
+               "COLUMN column_name FORMAT A40;")
               (sql-redirect
                sqlbuf
-               "COLUMN comments JUSTIFY LEFT FORMAT A80;"))
+               "COLUMN comments FORMAT A80;"))
             (sql-redirect
              sqlbuf
              (if enhanced enhanced-sql  simple-sql) outbuf))
