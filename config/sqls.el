@@ -158,6 +158,21 @@ Optional prefix argument ENHANCED, displays additional details."
        (format "*List code %s*" name)
        :list-code enhanced name))))
 
+(when-sql-feature%
+  (defun sql-help-table (name &optional enhanced)
+    "Show the comment of the database table."
+    (interactive (list (upcase (sql-read-table-name "Table name: "))
+                       current-prefix-arg))
+    (let ((sqlbuf (sql-find-sqli-buffer*)))
+      (unless sqlbuf
+        (user-error "%s" "No SQL interactive buffer found"))
+      (unless name
+        (user-error "%s" "No name specified"))
+      (sql-execute-feature
+       sqlbuf
+       (format "*Help table %s*" name)
+       :help-table enhanced name))))
+
 ;; end of features
 
 ;;;
@@ -409,6 +424,23 @@ Optional prefix argument ENHANCED, displays additional details."
       (sql-redirect
        sqlbuf (if enhanced enhanced-sql simple-sql) outbuf))))
 
+(when-sql-oceanbase-feature%
+  (defun sql-oceanbase-help-table (sqlbuf outbuf enhanced table-name)
+    (let ((simple-sql
+           (concat
+            "SELECT comments FROM all_tab_comments"
+            (format " WHERE table_name='%s';" table-name)))
+          (enhanced-sql
+           (concat
+            "SELECT T.column_name,C.comments FROM all_tab_cols T"
+            " INNER JOIN all_col_comments C"
+            " ON T.table_name=C.table_name"
+            " AND T.column_name=C.column_name"
+            (format " WHERE T.table_name='%s'" table-name)
+            " ORDER BY T.column_name ASC;")))
+      (sql-redirect
+       sqlbuf (if enhanced enhanced-sql  simple-sql) outbuf))))
+
 ;; end of oceanbase
 
 ;;;
@@ -524,7 +556,11 @@ Optional prefix argument ENHANCED, displays additional details."
     ;; :list-all
     (plist-put (cdr (assq 'oceanbase sql-product-alist))
                :list-all
-               #'sql-oceanbase-list-all)))
+               #'sql-oceanbase-list-all)
+    ;; :help-table
+    (plist-put (cdr (assq 'oceanbase sql-product-alist))
+               :help-table
+               #'sql-oceanbase-help-table)))
 
 (defun on-sql-init! ()
   "On \\=`sql\\=' initialization."
@@ -538,7 +574,8 @@ Optional prefix argument ENHANCED, displays additional details."
     (define-key% sql-mode-map (kbd "C-c C-l a") #'sql-list-all)
     (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-code)
     (define-key% sql-mode-map (kbd "C-c C-l t") #'sql-desc-table)
-    (define-key% sql-mode-map (kbd "C-c C-l p") #'sql-desc-plan)))
+    (define-key% sql-mode-map (kbd "C-c C-l p") #'sql-desc-plan)
+    (define-key% sql-mode-map (kbd "C-c C-l h") #'sql-help-table)))
 
 ;; end of init!
 
