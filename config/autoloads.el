@@ -311,7 +311,8 @@
            (lambda ()
              (inhibit-gc
                (compile!
-                 (compile-unit* (*self-paths* :get :epilogue))))))
+                 (compile-unit* (*self-paths* :get :epilogue)))))
+           (if-noninteractive% t))
         (error (message "self-epilogue: %s" err))))))
 
 ;;; autoload when interactive or not
