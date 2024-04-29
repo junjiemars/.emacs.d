@@ -154,4 +154,7 @@
 
 ;; end of web
 
+;; start server
+(unless server-process (server-start))
+
 ;; end of sample-self-epilogue.el
