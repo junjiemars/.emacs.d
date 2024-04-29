@@ -114,10 +114,13 @@
   (setq% package-user-dir package*-user-dir 'package)
   (package-initialize)
   ;; load self :packages-spec
-  (compile! (compile-unit* (*self-paths* :get :mod-spec)))
-  (package*-parse-spec!
-   (*self-mod-spec*)
-   (*self-env-spec* :get :module :remove-unused)))
+  (make-thread*
+   (lambda ()
+     (inhibit-gc
+       (compile! (compile-unit* (*self-paths* :get :mod-spec)))
+       (package*-parse-spec!
+        (*self-mod-spec*)
+        (*self-env-spec* :get :module :remove-unused))))))
 
 ;; end of package*
 
