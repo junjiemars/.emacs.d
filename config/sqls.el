@@ -439,7 +439,14 @@ Optional prefix argument ENHANCED, displays additional details."
   				   "SELECT DBMS_METADATA.GET_DDL(UPPER('%s'),UPPER('%s'))"
              enhanced target)
             " FROM DUAL\\G")))
-  	  (sql-redirect sqlbuf sql outbuf))))
+  	  (sql-redirect sqlbuf sql outbuf)
+      (with-current-buffer outbuf
+        (save-excursion
+          (goto-char (point-min))
+          (delete-line)
+          (while (re-search-forward
+                  "\\(^DBMS_METADATA.*: \\|^[0-9]+ row.*\\)" nil t)
+            (replace-match "")))))))
 
 (when-sql-oceanbase-feature%
   (defun sql-oceanbase-list-all (sqlbuf outbuf enhanced _table-name)
