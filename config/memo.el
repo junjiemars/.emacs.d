@@ -19,37 +19,38 @@
 
 (defun self-desktop-read! ()
   "Read the desktop of the previous Emacs instance."
-  (when (and (desktop-spec->* :allowed)
-             (eval-when-compile
-               (file-exists-p (v-home% ".desktop/"))))
-    (inhibit-blinking
-      ;; restrict eager
-      (setq% desktop-restore-eager 0 'desktop)
-      ;; (setq% desktop-restore-frames nil 'desktop)
-      ;; disable stupid resizing
-      (setq% desktop-restore-forces-onscreen nil 'desktop)
-      ;; (setq% desktop-restore-in-current-display t 'desktop)
-      ;; (setq% desktop-restore-reuses-frames t 'desktop)
-      ;; quiet
-      (setq% desktop-lazy-verbose nil 'desktop)
-      ;; `desktop-read'
-      (desktop-read (v-home% ".desktop/")))
+  (inhibit-gc
+    (when (and (desktop-spec->* :allowed)
+               (eval-when-compile
+                 (file-exists-p (v-home% ".desktop/"))))
+      (inhibit-blinking
+        ;; restrict eager
+        (setq% desktop-restore-eager 0 'desktop)
+        ;; (setq% desktop-restore-frames nil 'desktop)
+        ;; disable stupid resizing
+        (setq% desktop-restore-forces-onscreen nil 'desktop)
+        ;; (setq% desktop-restore-in-current-display t 'desktop)
+        ;; (setq% desktop-restore-reuses-frames t 'desktop)
+        ;; quiet
+        (setq% desktop-lazy-verbose nil 'desktop)
+        ;; `desktop-read'
+        (desktop-read (v-home% ".desktop/")))
 
-    ;; remove unnecessary hooks of `kill-emacs-hook'
-    (setq kill-emacs-hook
-          (if-fn% 'desktop--on-kill 'desktop
-                  (delq 'desktop--on-kill kill-emacs-hook)
-            (delq 'desktop-kill kill-emacs-hook)))
+      ;; remove unnecessary hooks of `kill-emacs-hook'
+      (setq kill-emacs-hook
+            (if-fn% 'desktop--on-kill 'desktop
+                    (delq 'desktop--on-kill kill-emacs-hook)
+              (delq 'desktop-kill kill-emacs-hook)))
 
-    ;; remove unnecessary hooks of `kill-emacs-query-functions'
-    (if-var% kill-emacs-query-functions nil
-             (progn
-               (setq kill-emacs-query-functions
-                     (delq 'desktop-kill
-                           kill-emacs-query-functions))
-               (append! #'self-desktop-save!
-                        kill-emacs-query-functions))
-      (append! #'self-desktop-save! kill-emacs-hook))))
+      ;; remove unnecessary hooks of `kill-emacs-query-functions'
+      (if-var% kill-emacs-query-functions nil
+               (progn
+                 (setq kill-emacs-query-functions
+                       (delq 'desktop-kill
+                             kill-emacs-query-functions))
+                 (append! #'self-desktop-save!
+                          kill-emacs-query-functions))
+        (append! #'self-desktop-save! kill-emacs-hook)))))
 
 ;; end of read
 
