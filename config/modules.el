@@ -113,12 +113,12 @@
     ;; define package user dir
     (setq% package-gnupghome-dir (v-home! ".elpa/gnupg/") 'package)
     (setq% package-user-dir package*-user-dir 'package)
-    (compile! (compile-unit* (*self-paths* :get :mod-spec)))
-    (package-initialize)
     ;; load self :packages-spec
     (make-thread*
      (lambda ()
        (inhibit-gc
+         (compile! (compile-unit* (*self-paths* :get :mod-spec)))
+         (package-initialize)
          (package*-parse-spec!
           (*self-mod-spec*)
           (*self-env-spec* :get :module :remove-unused))))
