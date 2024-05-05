@@ -41,23 +41,23 @@
         (when (and d (file-exists-p d))
           (push! d compilation-search-path t))))))
 
-(defun compilation*-buffer-name (compile-command-or-mode)
-  "Rename buffer name based on COMPILE-COMMAND-OR-MODE."
-  (cond ((string= "compilation" compile-command-or-mode)
-         (cond (compile-command
-                (let ((cmd (string-match* " *\\([-a-zA-z0-9]+\\) +"
-                                          compile-command 1)))
-                  (concat "*compilation-" cmd "*")))
-               (t "*compilation*")))
-        ((or (eq major-mode (intern-soft compile-command-or-mode))
-             (eq major-mode (intern-soft
-                             (concat compile-command-or-mode "-mode"))))
-         (buffer-name))
-        (t (concat "*" (downcase compile-command-or-mode) "*"))))
+;; (defun compilation*-buffer-name (compile-command-or-mode)
+;;   "Rename buffer name based on COMPILE-COMMAND-OR-MODE."
+;;   (cond ((string= "compilation" compile-command-or-mode)
+;;          (cond (compile-command
+;;                 (let ((cmd (string-match* " *\\([-a-zA-z0-9]+\\) +"
+;;                                           compile-command 1)))
+;;                   (concat "*compilation-" cmd "*")))
+;;                (t "*compilation*")))
+;;         ((or (eq major-mode (intern-soft compile-command-or-mode))
+;;              (eq major-mode (intern-soft
+;;                              (concat compile-command-or-mode "-mode"))))
+;;          (buffer-name))
+;;         (t (concat "*" (downcase compile-command-or-mode) "*"))))
 
 (defun on-compile-init! ()
   "On \\=`compile\\=' initialization."
-  (setq% compilation-buffer-name-function #'compilation*-buffer-name 'compile)
+  ;; (setq% compilation-buffer-name-function #'compilation*-buffer-name 'compile)
   (when-platform% 'windows-nt
     ;; compile and activate `compilation-find-file' advice on Windows
     (ad-enable-advice #'compilation-find-file 'before
