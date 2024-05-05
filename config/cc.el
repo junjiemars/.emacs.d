@@ -327,14 +327,14 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 (defun cc*-dump-predefined-macros (&optional options)
   "Dump predefined macros."
   (interactive "sInput C compiler's options: ")
-  (let* ((remote (ssh-remote-p
-                  (buffer-file-name (current-buffer))))
-         (cc (cond (remote "cc")
-                   (t (cc*-cc))))
+  (let* ((remote (ssh-remote-p (buffer-file-name (current-buffer))))
+         (cc (if remote "cc" (cc*-cc)))
          (opts  (format "%s -dM -E -" options))
-         (rc (cond (remote (shell-command* "ssh"
-                             (ssh-remote->user@host remote)
-                             cc opts))
+         (rc (cond (remote
+                    (fluid-let (shell-file-name "sh")
+                      (shell-command* "ssh"
+                        (ssh-remote->user@host remote)
+                        cc opts)))
                    (t (if-platform% 'windows-nt
                           (cc*-make-macro-dump-bin options)
                         (shell-command* cc opts))))))
