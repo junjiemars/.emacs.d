@@ -429,13 +429,12 @@ Optional argument ARGS for COMMAND."
        (unwind-protect
          (with-current-buffer b
            (cons
-            (let ((x (inhibit-file-name-handler
-                       (call-process
-                        shell-file-name nil b nil
-                        shell-command-switch
-                        (mapconcat #'identity
-                                   (list ,c1 ,@args)
-                                   " ")))))
+            (let ((x (call-process
+                      shell-file-name nil b nil
+                      shell-command-switch
+                      (mapconcat #'identity
+                                 (list ,c1 ,@args)
+                                 " "))))
               (cond ((integerp x) x)
                     ((string-match "^.*\\([0-9]+\\).*$" x)
                      (match-string-no-properties 1 x))
