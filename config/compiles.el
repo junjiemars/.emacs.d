@@ -41,23 +41,35 @@
         (when (and d (file-exists-p d))
           (push! d compilation-search-path t))))))
 
-;; (defun compilation*-buffer-name (compile-command-or-mode)
-;;   "Rename buffer name based on COMPILE-COMMAND-OR-MODE."
-;;   (cond ((string= "compilation" compile-command-or-mode)
-;;          (cond (compile-command
-;;                 (let ((cmd (string-match* " *\\([-a-zA-z0-9]+\\) +"
-;;                                           compile-command 1)))
-;;                   (concat "*compilation-" cmd "*")))
-;;                (t "*compilation*")))
-;;         ((or (eq major-mode (intern-soft compile-command-or-mode))
-;;              (eq major-mode (intern-soft
-;;                              (concat compile-command-or-mode "-mode"))))
-;;          (buffer-name))
-;;         (t (concat "*" (downcase compile-command-or-mode) "*"))))
+(defun compilation*-compile-command (command)
+  "Return the classified compile command."
+  (string-match* " *\\([-a-zA-z0-9]+\\) *" command 1))
+
+(defun compilation*-buffer-name (command-or-mode)
+  "Classify the compilation buffer name via COMMAND-OR-MODE."
+  (format "*compilation-%s*"
+          (compilation*-compile-command
+           (cond ((string= "compilation" command-or-mode)
+                  compile-command)
+                 (t command-or-mode)))))
+
+(defun compilation*-recompile (&optional _ __)
+  "Re-compile."
+  (interactive)
+  (cond ((and current-prefix-arg
+              (not (string= (compilation*-compile-command
+                             (car compilation-arguments))
+                            (compilation*-compile-command
+                             compile-command))))
+         (let ((current-prefix-arg nil))
+           (call-interactively #'compile)))
+        (t (let ((compile-command (or (car compilation-arguments)
+                                      compile-command)))
+             (call-interactively #'recompile)))))
 
 (defun on-compile-init! ()
   "On \\=`compile\\=' initialization."
-  ;; (setq% compilation-buffer-name-function #'compilation*-buffer-name 'compile)
+  (setq% compilation-buffer-name-function #'compilation*-buffer-name 'compile)
   (when-platform% 'windows-nt
     ;; compile and activate `compilation-find-file' advice on Windows
     (ad-enable-advice #'compilation-find-file 'before
@@ -71,7 +83,7 @@
   (add-hook 'compilation-filter-hook #'compilation*-colorize-buffer!)
   (when-var% compilation-mode-map 'compile
     ;; define `recompile' and `quit-window' key bindings
-    (define-key% compilation-mode-map (kbd "g") #'recompile)
+    (define-key% compilation-mode-map (kbd "g") #'compilation*-recompile)
     (define-key% compilation-mode-map (kbd "q") #'quit-window))
   (setq% compilation-scroll-output t 'compile))
 
