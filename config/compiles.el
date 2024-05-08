@@ -57,10 +57,10 @@
   "Re-compile."
   (interactive)
   (cond ((and current-prefix-arg
-              (not (string= (compilation*-compile-command
-                             (car compilation-arguments))
-                            (compilation*-compile-command
-                             compile-command))))
+              (not
+               (string=
+                (compilation*-compile-command (car compilation-arguments))
+                (compilation*-compile-command compile-command))))
          (let ((current-prefix-arg nil))
            (call-interactively #'compile)))
         (t (let ((compile-command (or (car compilation-arguments)
@@ -92,7 +92,7 @@
   "On \\=`grep\\=' initialization."
   ;; define `recompile' and `quit-window' key binding for `grep'
   (when-var% grep-mode-map 'grep
-    (define-key% grep-mode-map (kbd "g") #'recompile)
+    (define-key% grep-mode-map (kbd "g") #'compilation*-recompile)
     (define-key% grep-mode-map (kbd "q") #'quit-window)))
 
 
