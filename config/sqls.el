@@ -279,10 +279,10 @@ Optional prefix argument ENHANCED, displays additional details."
   (defun sql-oracle-desc-plan (sqlbuf outbuf enhanced target)
     "Describe execution plan of mysql's QUERY."
     (let ((settings (sql-oracle-save-settings sqlbuf))
-  				(sql (if enhanced
+  			  (sql (if enhanced
                    ;; ignore enhanced
                    target
-  							 target)))
+  						   target)))
       (unwind-protect
           (progn
             (sql-redirect
@@ -290,10 +290,17 @@ Optional prefix argument ENHANCED, displays additional details."
              (concat "SET AUTOTRACE ON EXPLAIN"))
             (sql-redirect
              sqlbuf
-             (concat "SET LINESIZE 100 PAGESIZE 100"
+             (concat "SET LINESIZE 200 PAGESIZE 1000"
                      " VERIFY OFF FEEDBACK OFF"
                      " TRIMOUT ON TAB OFF TIMING OFF"))
-            (sql-redirect sqlbuf sql outbuf))
+            (sql-redirect
+             sqlbuf
+             (format "EXPLAIN PLAN FOR %s;" sql)
+             outbuf)
+            (sql-redirect
+             sqlbuf
+             "SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY(format=>'ALL'));"
+             outbuf))
         (sql-oracle-restore-settings sqlbuf settings)))))
 
 (when-sql-oracle-feature%
