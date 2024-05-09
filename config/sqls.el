@@ -221,8 +221,10 @@ Optional prefix argument ENHANCED, displays additional details."
           (progn
             (sql-redirect
              sqlbuf
-             (concat "SET LINESIZE 160 PAGESIZE 50000 TRIMOUT ON"
-                     " TAB OFF TIMING OFF FEEDBACK OFF"))
+             (concat
+              (format "SET LINESIZE %d PAGESIZE 50000 TRIMOUT ON"
+                      (window-width))
+              " TAB OFF TIMING OFF FEEDBACK OFF"))
             (sql-redirect
              sqlbuf
              (list "COLUMN SQL_TYPE  HEADING \"SQL_TYPE\" FORMAT A19"
@@ -249,16 +251,17 @@ Optional prefix argument ENHANCED, displays additional details."
           (progn
             (sql-redirect
              sqlbuf
-             (concat "SET LINESIZE 200"
-                     " LONG 4096000"
-                     " LONGCHUNKSIZE 4096000"
-                     " PAGESIZE 0"
-                     " FEEDBACK OFF"
-                     " TAB OFF"
-                     " TERMOUT OFF"
-                     " TIMING OFF"
-                     " TRIMOUT ON"
-                     " VERIFY OFF;"))
+             (concat
+              (format "SET LINESIZE %d" (window-width))
+              " LONG 4096000"
+              " LONGCHUNKSIZE 4096000"
+              " PAGESIZE 0"
+              " FEEDBACK OFF"
+              " TAB OFF"
+              " TERMOUT OFF"
+              " TIMING OFF"
+              " TRIMOUT ON"
+              " VERIFY OFF;"))
             (sql-redirect sqlbuf sql-ddl outbuf))
         (sql-oracle-restore-settings sqlbuf settings)
         (sql-send-string "\n")))))
@@ -290,9 +293,10 @@ Optional prefix argument ENHANCED, displays additional details."
              (concat "SET AUTOTRACE ON EXPLAIN"))
             (sql-redirect
              sqlbuf
-             (concat "SET LINESIZE 200 PAGESIZE 1000"
-                     " VERIFY OFF FEEDBACK OFF"
-                     " TRIMOUT ON TAB OFF TIMING OFF"))
+             (concat
+              (format "SET LINESIZE %d PAGESIZE 1000" (window-width))
+              " VERIFY OFF FEEDBACK OFF"
+              " TRIMOUT ON TAB OFF TIMING OFF"))
             (sql-redirect
              sqlbuf
              (format "EXPLAIN PLAN FOR %s;" sql)
