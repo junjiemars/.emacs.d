@@ -14,13 +14,14 @@
   (defadvice compilation-find-file
       (before compilation-find-file-before first compile disable)
     (when (string-match "^/\\([a-zA-Z]\\)/" (ad-get-arg 1))
-      (ad-set-arg 1 ;; filename argument
-                  (replace-match (concat (match-string 1 (ad-get-arg 1)) ":/")
-                                 t t (ad-get-arg 1))))))
+      (ad-set-arg
+       1 ;; filename argument
+       (replace-match (concat (match-string 1 (ad-get-arg 1)) ":/")
+                      t t (ad-get-arg 1))))))
 
 
 (defun compilation*-colorize-buffer! ()
-  "Colorize *compilation* buffer."
+  "Colorize compilation buffer."
   (when-fn% 'ansi-color-apply-on-region 'ansi-color
     (when (eq major-mode 'compilation-mode)
       (let ((inhibit-read-only t))
@@ -42,11 +43,11 @@
           (push! d compilation-search-path t))))))
 
 (defun compilation*-compile-command (command)
-  "Return the classified compile command."
+  "Return classified compile command."
   (string-match* " *\\([-a-zA-z0-9]+\\) *" command 1))
 
 (defun compilation*-buffer-name (command-or-mode)
-  "Classify the compilation buffer name via COMMAND-OR-MODE."
+  "Classify compilation buffer name based on COMMAND-OR-MODE."
   (format "*compilation-%s*"
           (compilation*-compile-command
            (cond ((string= "compilation" command-or-mode)

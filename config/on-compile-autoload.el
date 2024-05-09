@@ -26,12 +26,7 @@
 (with-eval-after-load 'make-mode
   (make-thread* #'on-make-mode-init!))
 
-;;; autoload
-
 ;; `compile' global key
 (define-key% (current-global-map) (kbd "C-x p c") #'compile)
-
-
-
 
 ;; end of on-compile-autoload.el
