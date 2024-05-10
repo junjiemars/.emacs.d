@@ -283,13 +283,12 @@ Argument SPEC (VAR LIST [RESULT])."
   "Compile and load UNITS."
   (declare (indent 0))
   (inhibit-gc
-    (inhibit-file-name-handler
-      (dolist* (u units)
-        (when u
-          (compile-and-load-file*
-           (compile-unit->src u)
-           (compile-unit->dst u)
-           (compile-unit->only-compile u)))))))
+    (dolist* (u units)
+      (when u
+        (compile-and-load-file*
+         (compile-unit->src u)
+         (compile-unit->dst u)
+         (compile-unit->only-compile u))))))
 
 ;; end of compile macro
 
