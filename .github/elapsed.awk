@@ -4,7 +4,7 @@
 #
 
 function basename(path) {
-		sub(/*\//, "", path)
+		sub(/.*\//, "", path)
 		return path
 }
 
