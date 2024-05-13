@@ -104,20 +104,21 @@ details or extends the listing to include other schemas objects."
         (setq-local sql-contains-names t)))))
 
 (when-sql-feature%
-  (defun sql-desc-table (name &optional enhanced)
-    "Describe the details of a database table named NAME.\n
-Optional prefix argument ENHANCED, displays additional details
-about each column."
-    (interactive (list (sql-read-table-name "Table name: ")
-                       current-prefix-arg))
+  (defun sql-list-code (name &optional enhanced)
+    "List the code of the database object with qualified NAME."
+    (interactive (list (sql-read-table-name "Object name: ")
+                       (if current-prefix-arg
+                           (read-string "Object type: " "table")
+                         "table")))
     (let ((sqlbuf (sql-find-sqli-buffer*)))
       (unless sqlbuf
         (user-error "%s" "No SQL interactive buffer found"))
       (unless name
-        (user-error "%s" "No table name specified"))
+        (user-error "%s" "No name specified"))
       (sql-execute-feature
-       sqlbuf (format "*Desc %s*" name)
-       :desc-table enhanced name))))
+       sqlbuf
+       (format "*List code %s*" name)
+       :list-code enhanced name))))
 
 (when-sql-feature%
   (defun sql-desc-plan (plan &optional enhanced)
@@ -142,25 +143,8 @@ Optional prefix argument ENHANCED, displays additional details."
        :desc-plan enhanced plan))))
 
 (when-sql-feature%
-  (defun sql-list-code (name &optional enhanced)
-    "List the code of the database object with qualified NAME."
-    (interactive (list (sql-read-table-name "Object name: ")
-                       (if current-prefix-arg
-                           (read-string "Object type: " "table")
-                         "table")))
-    (let ((sqlbuf (sql-find-sqli-buffer*)))
-      (unless sqlbuf
-        (user-error "%s" "No SQL interactive buffer found"))
-      (unless name
-        (user-error "%s" "No name specified"))
-      (sql-execute-feature
-       sqlbuf
-       (format "*List code %s*" name)
-       :list-code enhanced name))))
-
-(when-sql-feature%
-  (defun sql-help-table (name &optional enhanced)
-    "Show the comment of the database table."
+  (defun sql-desc-table (name &optional enhanced)
+    "Describe the database table."
     (interactive (list (upcase (sql-read-table-name "Table name: "))
                        current-prefix-arg))
     (let ((sqlbuf (sql-find-sqli-buffer*)))
@@ -170,8 +154,8 @@ Optional prefix argument ENHANCED, displays additional details."
         (user-error "%s" "No name specified"))
       (sql-execute-feature
        sqlbuf
-       (format "*Help table %s*" name)
-       :help-table enhanced name))))
+       (format "*Desc table %s*" name)
+       :desc-table enhanced name))))
 
 ;; end of features
 
@@ -196,7 +180,6 @@ Optional prefix argument ENHANCED, displays additional details."
 
 (when-sql-oracle-feature%
   (defun sql-oracle-list-all* (sqlbuf outbuf enhanced _table-name)
-    "List all oracle objects."
     (let ((settings (sql-oracle-save-settings sqlbuf))
           (simple-sql
            (concat
@@ -239,7 +222,6 @@ Optional prefix argument ENHANCED, displays additional details."
 
 (when-sql-oracle-feature%
   (defun sql-oracle-list-code (sqlbuf outbuf enhanced target)
-    "List code of oracle's TARGET."
     (let ((settings (sql-oracle-save-settings sqlbuf))
           (sql-ddl
            (concat
@@ -267,24 +249,10 @@ Optional prefix argument ENHANCED, displays additional details."
         (sql-send-string "\n")))))
 
 (when-sql-oracle-feature%
-  (defun sql-oracle-desc-table (sqlbuf outbuf enhanced table)
-    "Describe oracle table."
-    (let ((settings (sql-oracle-save-settings sqlbuf))
-          (simple-sql
-           (format "DESCRIBE %s" (upcase table)))
-          (enhanced-sql nil))
-      (unwind-protect
-          (sql-redirect
-           sqlbuf (if enhanced enhanced-sql simple-sql) outbuf)
-        (sql-oracle-restore-settings sqlbuf settings)))))
-
-(when-sql-oracle-feature%
   (defun sql-oracle-desc-plan (sqlbuf outbuf enhanced target)
-    "Describe execution plan of mysql's QUERY."
     (let ((settings (sql-oracle-save-settings sqlbuf))
   			  (sql (if enhanced
-                   ;; ignore enhanced
-                   target
+                   target ;; ignore enhanced
   						   target)))
       (unwind-protect
           (progn
@@ -308,7 +276,7 @@ Optional prefix argument ENHANCED, displays additional details."
         (sql-oracle-restore-settings sqlbuf settings)))))
 
 (when-sql-oracle-feature%
-  (defun sql-oracle-help-table (sqlbuf outbuf enhanced table-name)
+  (defun sql-oracle-desc-table (sqlbuf outbuf enhanced table-name)
     (let ((settings (sql-oracle-save-settings sqlbuf))
           (simple-sql
            (concat
@@ -359,17 +327,6 @@ Optional prefix argument ENHANCED, displays additional details."
       (buffer-substring (point-min) (point-max)))))
 
 (when-sql-mysql-feature%
-  (defun sql-mysql-desc-table (sqlbuf outbuf enhanced table)
-    "Describe mysql table."
-    (let ((simple-sql
-           (concat
-            "SHOW FULL COLUMNS "
-            (format "FROM %s\\G" table)))
-          (enhanced-sql nil))
-      (sql-redirect
-       sqlbuf (if enhanced enhanced-sql simple-sql) outbuf))))
-
-(when-sql-mysql-feature%
   (defun sql-mysql-desc-plan (sqlbuf outbuf enhanced query)
     "Describe execution plan of mysql's QUERY."
     (let ((sql
@@ -387,6 +344,17 @@ Optional prefix argument ENHANCED, displays additional details."
   						  "SHOW CREATE %s %s\\G"
                 enhanced target)))
   	  (sql-redirect sqlbuf sql outbuf))))
+
+(when-sql-mysql-feature%
+  (defun sql-mysql-desc-table (sqlbuf outbuf enhanced table)
+    "Describe mysql table."
+    (let ((simple-sql
+           (concat
+            "SHOW FULL COLUMNS "
+            (format "FROM %s\\G" table)))
+          (enhanced-sql nil))
+      (sql-redirect
+       sqlbuf (if enhanced enhanced-sql simple-sql) outbuf))))
 
 ;; end of mysql
 
@@ -421,29 +389,29 @@ Optional prefix argument ENHANCED, displays additional details."
     (sql-comint product params buf-name)))
 
 (when-sql-oceanbase-feature%
-  (defun sql-oceanbase-desc-table (sqlbuf outbuf enhanced table)
-    "Describe oceanbase table."
+  (defun sql-oceanbase-list-all (sqlbuf outbuf enhanced _table-name)
     (let ((simple-sql
-           (format "DESCRIBE %s\\G" table))
-          (enhanced-sql nil))
-      (sql-redirect sqlbuf
-                    (if enhanced enhanced-sql simple-sql)
-                    outbuf))))
-
-(when-sql-oceanbase-feature%
-  (defun sql-oceanbase-desc-plan (sqlbuf outbuf enhanced query)
-    "Describe execution plan of oceanbase's QUERY."
-    (let ((sql
            (concat
-            "EXPLAIN FORMAT=" (if enhanced "JSON " "TRADITIONAL ")
-            (string-trim> (sql-mysql-norm query)
-                          "[ \t\n\r\\g\\G;]+")
-            "\\G")))
-      (sql-redirect sqlbuf sql outbuf))))
+            "SELECT LOWER(X.object_type) AS SQL_TYPE,"
+            (sql-oracle--list-object-name "X.object_name")
+            " AS SQL_NAME "
+            "FROM user_objects X "
+            "ORDER BY SQL_TYPE, SQL_NAME;"))
+          (enhanced-sql
+           (concat
+            "SELECT LOWER(x.object_type) AS SQL_TYPE,"
+            (sql-oracle--list-object-name "X.owner")
+            " ||'.'|| "
+            (sql-oracle--list-object-name "X.object_name")
+            " AS SQL_NAME "
+            "FROM all_objects X "
+            "WHERE AND X.owner <> 'SYS' "
+            "ORDER BY SQL_TYPE, SQL_NAME;")))
+      (sql-redirect
+       sqlbuf (if enhanced enhanced-sql simple-sql) outbuf))))
 
 (when-sql-oceanbase-feature%
   (defun sql-oceanbase-list-code (sqlbuf outbuf enhanced target)
-    "List code of oceanbase's TARGET."
     (let ((sql
            (concat
             (format
@@ -460,31 +428,17 @@ Optional prefix argument ENHANCED, displays additional details."
             (replace-match "")))))))
 
 (when-sql-oceanbase-feature%
-  (defun sql-oceanbase-list-all (sqlbuf outbuf enhanced _table-name)
-    ;; Query from USER_OBJECTS or ALL_OBJECTS
-    (let ((simple-sql
+  (defun sql-oceanbase-desc-plan (sqlbuf outbuf enhanced query)
+    (let ((sql
            (concat
-            "SELECT LOWER(X.object_type) AS SQL_TYPE,"
-            (sql-oracle--list-object-name "X.object_name")
-            " AS SQL_NAME "
-            "FROM user_objects X "
-            ;; "WHERE x.object_type NOT LIKE '%% BODY' "
-            "ORDER BY SQL_TYPE, SQL_NAME;"))
-          (enhanced-sql
-           (concat
-            "SELECT LOWER(x.object_type) AS SQL_TYPE,"
-            (sql-oracle--list-object-name "X.owner")
-            " ||'.'|| "
-            (sql-oracle--list-object-name "X.object_name")
-            " AS SQL_NAME "
-            "FROM all_objects X "
-            "WHERE AND X.owner <> 'SYS' "
-            "ORDER BY SQL_TYPE, SQL_NAME;")))
-      (sql-redirect
-       sqlbuf (if enhanced enhanced-sql simple-sql) outbuf))))
+            "EXPLAIN FORMAT=" (if enhanced "JSON " "TRADITIONAL ")
+            (string-trim> (sql-mysql-norm query)
+                          "[ \t\n\r\\g\\G;]+")
+            "\\G")))
+      (sql-redirect sqlbuf sql outbuf))))
 
 (when-sql-oceanbase-feature%
-  (defun sql-oceanbase-help-table (sqlbuf outbuf enhanced table-name)
+  (defun sql-oceanbase-desc-table (sqlbuf outbuf enhanced table-name)
     (let ((simple-sql
            (concat
             "SELECT comments FROM all_tab_comments"
@@ -526,18 +480,18 @@ Optional prefix argument ENHANCED, displays additional details."
             "mysql"))
   ;; mysql features
   (when-sql-mysql-feature%
-    ;; new `:desc-table'
+    ;; new `:list-code'
     (plist-put (cdr (assq 'mysql sql-product-alist))
-               :desc-table
-               #'sql-mysql-desc-table)
+               :list-code
+               #'sql-mysql-list-code)
     ;; new `:desc-plan'
     (plist-put (cdr (assq 'mysql sql-product-alist))
                :desc-plan
                #'sql-mysql-desc-plan)
-    ;; new `:list-code'
+    ;; new `:desc-table'
     (plist-put (cdr (assq 'mysql sql-product-alist))
-               :list-code
-               #'sql-mysql-list-code)))
+               :desc-table
+               #'sql-mysql-desc-table)))
 
 (defun on-sql-oracle-init! ()
   "On \\=`sql\\=' oracle initialization."
@@ -565,18 +519,14 @@ Optional prefix argument ENHANCED, displays additional details."
      (cdr (assq 'oracle sql-product-alist))
      :list-code
      #'sql-oracle-list-code)
-    ;; new `:desc-table'
-    (plist-put (cdr (assq 'oracle sql-product-alist))
-               :desc-table
-               #'sql-oracle-desc-table)
     ;; new `:desc-plan'
     (plist-put (cdr (assq 'oracle sql-product-alist))
                :desc-plan
                #'sql-oracle-desc-plan)
-    ;; new `:help-table'
+    ;; new `:desc-table'
     (plist-put (cdr (assq 'oracle sql-product-alist))
-               :help-table
-               #'sql-oracle-help-table)))
+               :desc-table
+               #'sql-oracle-desc-table)))
 
 (defun on-sql-oceanbase-init! ()
   "On \\=`sql\\=' oceanbase initialization."
@@ -604,26 +554,22 @@ Optional prefix argument ENHANCED, displays additional details."
                       "sql-send-magic-terminator-before")
     (ad-activate #'sql-send-magic-terminator t))
   (when-sql-oceanbase-feature%
-    ;; :desc-table
-    (plist-put (cdr (assq 'oceanbase sql-product-alist))
-               :desc-table
-               #'sql-oceanbase-desc-table)
-    ;; :desc-plan
-    (plist-put (cdr (assq 'oceanbase sql-product-alist))
-               :desc-plan
-               #'sql-oceanbase-desc-plan)
-    ;; :list-code
-    (plist-put (cdr (assq 'oceanbase sql-product-alist))
-               :list-code
-               #'sql-oceanbase-list-code)
     ;; :list-all
     (plist-put (cdr (assq 'oceanbase sql-product-alist))
                :list-all
                #'sql-oceanbase-list-all)
-    ;; :help-table
+    ;; :list-code
     (plist-put (cdr (assq 'oceanbase sql-product-alist))
-               :help-table
-               #'sql-oceanbase-help-table)))
+               :list-code
+               #'sql-oceanbase-list-code)
+    ;; :desc-plan
+    (plist-put (cdr (assq 'oceanbase sql-product-alist))
+               :desc-plan
+               #'sql-oceanbase-desc-plan)
+    ;; :desc-table
+    (plist-put (cdr (assq 'oceanbase sql-product-alist))
+               :desc-table
+               #'sql-oceanbase-desc-table)))
 
 (defun on-sql-init! ()
   "On \\=`sql\\=' initialization."
@@ -636,9 +582,8 @@ Optional prefix argument ENHANCED, displays additional details."
   (when-sql-feature%
     (define-key% sql-mode-map (kbd "C-c C-l a") #'sql-list-all)
     (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-code)
-    (define-key% sql-mode-map (kbd "C-c C-l t") #'sql-desc-table)
     (define-key% sql-mode-map (kbd "C-c C-l p") #'sql-desc-plan)
-    (define-key% sql-mode-map (kbd "C-c C-l h") #'sql-help-table)))
+    (define-key% sql-mode-map (kbd "C-c C-l t") #'sql-desc-table)))
 
 ;; end of init!
 
