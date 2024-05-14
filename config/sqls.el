@@ -157,6 +157,27 @@ Optional prefix argument ENHANCED, displays additional details."
        (format "*Desc table %s*" name)
        :desc-table enhanced name))))
 
+(when-sql-feature%
+  (defun sql-export-query (query &optional enhanced)
+    "Export the QUERY result."
+    (interactive
+     (list (if-region-active
+               (buffer-substring-no-properties
+                (region-beginning) (region-end))
+             (buffer-substring-no-properties
+              (save-excursion (backward-paragraph) (point))
+              (save-excursion (forward-paragraph) (point))))
+           current-prefix-arg))
+    (let ((sqlbuf (sql-find-sqli-buffer*)))
+      (unless sqlbuf
+        (user-error "%s" "No SQL interactive buffer found"))
+      (unless query
+        (user-error "%s" "No query specified"))
+      (sql-execute-feature
+       sqlbuf
+       (format "*Export query %s*" (sql-first-word query))
+       :export-query enhanced query))))
+
 ;; end of features
 
 ;;;
@@ -306,6 +327,19 @@ Optional prefix argument ENHANCED, displays additional details."
             (sql-redirect
              sqlbuf
              (if enhanced enhanced-sql  simple-sql) outbuf))
+        (sql-oracle-restore-settings sqlbuf settings)))))
+
+(when-sql-oracle-feature%
+  (defun sql-oracle-export-query (sqlbuf outbuf enhanced target)
+    (let ((settings (sql-oracle-save-settings sqlbuf))
+  			  (sql (if enhanced
+                   target ;; ignore enhanced
+  						   target)))
+      (unwind-protect
+          (progn
+            (sql-redirect sqlbuf "SET MARKUP CSV ON QUOTE ON")
+            (sql-redirect sqlbuf sql outbuf))
+        (sql-redirect sqlbuf "SET MARKUP CSV OFF QUOTE OFF")
         (sql-oracle-restore-settings sqlbuf settings)))))
 
 ;; end of oracle
@@ -526,7 +560,11 @@ Optional prefix argument ENHANCED, displays additional details."
     ;; new `:desc-table'
     (plist-put (cdr (assq 'oracle sql-product-alist))
                :desc-table
-               #'sql-oracle-desc-table)))
+               #'sql-oracle-desc-table)
+    ;; new `:export-query'
+    (plist-put (cdr (assq 'oracle sql-product-alist))
+               :export-query
+               #'sql-oracle-export-query)))
 
 (defun on-sql-oceanbase-init! ()
   "On \\=`sql\\=' oceanbase initialization."
@@ -583,7 +621,8 @@ Optional prefix argument ENHANCED, displays additional details."
     (define-key% sql-mode-map (kbd "C-c C-l a") #'sql-list-all)
     (define-key% sql-mode-map (kbd "C-c C-l c") #'sql-list-code)
     (define-key% sql-mode-map (kbd "C-c C-l p") #'sql-desc-plan)
-    (define-key% sql-mode-map (kbd "C-c C-l t") #'sql-desc-table)))
+    (define-key% sql-mode-map (kbd "C-c C-l t") #'sql-desc-table)
+    (define-key% sql-mode-map (kbd "C-c C-l x") #'sql-export-query)))
 
 ;; end of init!
 
