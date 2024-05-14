@@ -160,13 +160,16 @@ If \\=`current-prefix-arg\\=' < 0, then repeat n time with END in reversed."
 
 (defun downcase* (string)
   "Return down case of STRING."
-  (when (and (stringp string) (> (length string) 0))
-    (apply #'string
-           (mapcar (lambda (c)
-                     (if (and (>= c ?A) (<= c ?Z))
-                         (+ c 32)
-                       c))
-                   string))))
+  (when (stringp string)
+    (let ((ss (copy-sequence string))
+          (len (length string))
+          (i 0))
+      (prog1 ss
+        (while (< i len)
+          (let ((c (aref ss i)))
+            (when (and (>= c ?A) (<= c ?Z))
+              (aset ss i (+ c 32))))
+          (setq i (1+ i)))))))
 
 (defun camelize (string)
   "Return camel case of STRING."
