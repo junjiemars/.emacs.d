@@ -59,7 +59,7 @@
                        (unless (zerop (car rc))
                          (user-error "%s" (string-trim> (cdr rc))))))
                     (t (user-error "%s" "python venv unavailable"))))
-            (prog1 d
+            (prog1 (setq b d)
               (when-var% python-shell-interpreter 'python
                 (setq python-shell-interpreter (concat d "bin/python")))
               (if-var% python-shell-virtualenv-root 'python
