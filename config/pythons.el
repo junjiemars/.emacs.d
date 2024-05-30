@@ -93,21 +93,33 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
 
 (unless-platform% 'windows-nt
   (defalias 'python*-pip-mirror!
-    (lexical-let%
+    (lexical-let*%
         ((b '("https://pypi.tuna.tsinghua.edu.cn/simple/"
               "https://pypi.mirrors.ustc.edu.cn/simple/"
               "http://pypi.hustunique.com/"
-              "http://pypi.sdutlinux.org/")))
+              "http://pypi.sdutlinux.org/"))
+         (fn (lambda (a v)
+               (let ((rc (shell-command* "source"
+                           (concat v "/bin/activate")
+                           "&& pip config set global.index-url"
+                           a)))
+                 (when (zerop (car rc))
+                   a)))))
       (lambda (&optional op n)
         (let ((venv (python*-venv-activate!)))
           (unless venv
             (user-error "%s" "python venv unavailable"))
-          (cond ((eq op :set)
-                 (shell-command* "source"
-                   (concat venv "/bin/activate")
-                   "&& pip config set global.index-url"
-                   (nth (% n (length b)) b)))
-                ((eq op :ls) (if (< n 0) b (nth (% n (length b)) b)))
+          (cond ((eq op :ls)
+                 (cond ((or (null n) (< n 0)) b)
+                       (t (nth (% n (length b)) b))))
+                ((eq op :set) (funcall fn n venv))
+                ((eq op :new)
+                 (let ((x (catch 'br
+                            (dolist* (a b)
+                              (let ((rc (shell-command* "curl" "-fsIL" a)))
+                                (when (zerop (car rc))
+                                  (throw 'br a)))))))
+                   (when x (funcall fn x venv))))
                 (t (let ((rc (shell-command* "source"
                                (concat venv "/bin/activate")
                                "&& pip config get global.index-url")))
@@ -152,6 +164,12 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
     "Make pylsp.sh for \\=`elgot\\='."))
 
 ;; end of lsp
+
+(defun python*-make-venv! (&optional dir)
+  "Make \\=`python\\=' venv for DIR."
+  (interactive (list (read-directory-name "make venv for ")))
+  (python*-venv-activate! dir)
+  (python*-lsp-make! :new))
 
 (defun on-python-init! ()
   "On \\=`python\\=' initialization."
