@@ -40,7 +40,7 @@
 ;;;
 
 (unless-platform% 'windows-nt
-  (defalias 'python*-venv-activate!
+  (defalias 'python*-venv!
     (lexical-let% ((b (emacs-home* "private/progs/py/ve/")))
       (lambda (&optional dir)
         (let ((pv (python*-program)))
@@ -106,7 +106,7 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
                  (when (zerop (car rc))
                    a)))))
       (lambda (&optional op n)
-        (let ((venv (python*-venv-activate!)))
+        (let ((venv (python*-venv!)))
           (unless venv
             (user-error "%s" "python venv unavailable"))
           (cond ((eq op :ls)
@@ -129,7 +129,7 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
 
 (defun python*-lsp-spec ()
   "Return python lsp spec."
-  (let ((venv (python*-venv-activate!))
+  (let ((venv (python*-venv!))
         (pylsp (v-home% ".exec/pylsp.sh")))
     (unless venv
       (user-error "%s" "python venv unavailable"))
@@ -138,11 +138,11 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
                   (save-str-to-file
                    (concat
                     "#!/bin/sh\n"
-                    "if pgrep -f $0 &>/dev/null; then\n"
+                    "if pgrep -qf $0; then\n"
                     "  exit 0\n"
                     "fi\n"
                     "source " venv "/bin/activate\n"
-                    "if ! pip show python-lsp-server &>/dev/null; then\n"
+                    "if ! pip -qqq show python-lsp-server; then\n"
                     "  pip install python-lsp-server\n"
                     "  exec $0 $@\n"
                     "fi\n"
@@ -166,9 +166,9 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
 ;; end of lsp
 
 (defun python*-make-venv! (&optional dir)
-  "Make \\=`python\\=' venv for DIR."
-  (interactive (list (read-directory-name "make venv for ")))
-  (python*-venv-activate! dir)
+  "Make \\=`python\\=' venv in DIR."
+  (interactive (list (read-directory-name "make venv in ")))
+  (python*-venv! dir)
   (python*-lsp-make! :new))
 
 (defun on-python-init! ()
@@ -177,7 +177,7 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
   (when (python*-program)
     (setq% python-shell-interpreter (python*-program :bin) 'python)
     (unless-platform% 'windows-nt
-      (python*-venv-activate!)
+      (python*-venv!)
       (unless (python*-lsp-make!)
         (python*-lsp-make! :new))))
   ;; completion
