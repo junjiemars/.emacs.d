@@ -39,43 +39,42 @@
 ;; venv
 ;;;
 
-(unless-platform% 'windows-nt
-  (defalias 'python*-venv!
-    (lexical-let% ((b (emacs-home* "private/scratch/venv/")))
-      (lambda (&optional dir)
-        (let ((pv (python*-program)))
-          (unless pv
-            (user-error "%s" "python program unavailable"))
-          (let ((d (path! (path+ (expand-file-name (or dir b)))))
-                (p (car pv))
-                (v- (= -1 (version-string= (cdr pv) "3.3"))))
-            (unless (file-exists-p (concat d "/bin/activate"))
-              (cond ((and p v- (executable-find% "virtualenv"))
-                     (let ((rc (shell-command* "virtualenv" "-p" p d)))
-                       (unless (zerop (car rc))
-                         (user-error "%s" (string-trim> (cdr rc))))))
-                    ((and p (not v-))
-                     (let ((rc (shell-command* p "-m" "venv" d)))
-                       (unless (zerop (car rc))
-                         (user-error "%s" (string-trim> (cdr rc))))))
-                    (t (user-error "%s" "python venv unavailable"))))
-            (prog1 (setq b d)
-              (when-var% python-shell-interpreter 'python
-                (setq python-shell-interpreter (concat d "bin/python")))
-              (if-var% python-shell-virtualenv-root 'python
-                       (setq python-shell-virtualenv-root d)
-                (if-var% python-shell-virtualenv-path 'python
-                         (setq python-shell-virtualenv-path d)
-                  (if-var% python-shell-process-environment 'python
-                           (setq python-shell-process-environment
-                                 (list
-                                  (concat "PYTHONPATH=" d)
-                                  (concat "PYTHONHOME=" d)
-                                  (concat "VIRTUAL_ENV=" d)))
-                    (setenv "PYTHONPATH" d)
-                    (setenv "PYTHONHOME" d)
-                    (setenv "VIRTUAL_ENV" d)))))))))
-    "Activate Python\\='s virtualenv at DIR.\n
+(defalias 'python*-venv!
+  (lexical-let% ((b (emacs-home* "private/scratch/venv/")))
+    (lambda (&optional dir)
+      (let ((pv (python*-program)))
+        (unless pv
+          (user-error "%s" "python program unavailable"))
+        (let ((d (path! (path+ (expand-file-name (or dir b)))))
+              (p (car pv))
+              (v- (= -1 (version-string= (cdr pv) "3.3"))))
+          (unless (file-exists-p (concat d "/bin/activate"))
+            (cond ((and p v- (executable-find% "virtualenv"))
+                   (let ((rc (shell-command* "virtualenv" "-p" p d)))
+                     (unless (zerop (car rc))
+                       (user-error "%s" (string-trim> (cdr rc))))))
+                  ((and p (not v-))
+                   (let ((rc (shell-command* p "-m" "venv" d)))
+                     (unless (zerop (car rc))
+                       (user-error "%s" (string-trim> (cdr rc))))))
+                  (t (user-error "%s" "python venv unavailable"))))
+          (prog1 (setq b d)
+            (when-var% python-shell-interpreter 'python
+              (setq python-shell-interpreter (concat d "bin/python")))
+            (if-var% python-shell-virtualenv-root 'python
+                     (setq python-shell-virtualenv-root d)
+              (if-var% python-shell-virtualenv-path 'python
+                       (setq python-shell-virtualenv-path d)
+                (if-var% python-shell-process-environment 'python
+                         (setq python-shell-process-environment
+                               (list
+                                (concat "PYTHONPATH=" d)
+                                (concat "PYTHONHOME=" d)
+                                (concat "VIRTUAL_ENV=" d)))
+                  (setenv "PYTHONPATH" d)
+                  (setenv "PYTHONHOME" d)
+                  (setenv "VIRTUAL_ENV" d)))))))))
+  "Activate Python\\='s virtualenv at DIR.\n
 PYTHONPATH: augment the default search path for module files. The
             format is the same as the shell’s PATH.
 PYTHONHOME: change the location of the standard Python libraries.
@@ -83,7 +82,7 @@ VIRTUALENV: virtualenv root path.\n
 After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
  a new virtual env at DIR, then Using \\=`sys.prefix\\=' to
  determine whether inside a virtual env. Another way is using
- \\=`pip -V\\='."))
+ \\=`pip -V\\='.")
 
 ;; end of venv
 
@@ -91,41 +90,40 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
 ;; lsp
 ;;;
 
-(unless-platform% 'windows-nt
-  (defalias 'python*-pip-mirror!
-    (lexical-let*%
-        ((b '("https://pypi.tuna.tsinghua.edu.cn/simple/"
-              "https://pypi.mirrors.ustc.edu.cn/simple/"
-              "http://pypi.hustunique.com/"
-              "http://pypi.sdutlinux.org/"))
-         (fn (lambda (a v)
-               (let ((rc (shell-command* "source"
-                           (concat v "/bin/activate")
-                           "&& pip config set global.index-url"
-                           a)))
-                 (when (zerop (car rc))
-                   a)))))
-      (lambda (&optional op n)
-        (let ((venv (python*-venv!)))
-          (unless venv
-            (user-error "%s" "python venv unavailable"))
-          (cond ((eq op :ls)
-                 (cond ((or (null n) (< n 0)) b)
-                       (t (nth (% n (length b)) b))))
-                ((eq op :set) (funcall fn n venv))
-                ((eq op :new)
-                 (let ((x (catch 'br
-                            (dolist* (a b)
-                              (let ((rc (shell-command* "curl" "-fsIL" a)))
-                                (when (zerop (car rc))
-                                  (throw 'br a)))))))
-                   (when x (funcall fn x venv))))
-                (t (let ((rc (shell-command* "source"
-                               (concat venv "/bin/activate")
-                               "&& pip config get global.index-url")))
-                     (when (zerop (car rc))
-                       (string-trim> (cdr rc)))))))))
-    "Python pip mirror."))
+(defalias 'python*-pip-mirror!
+  (lexical-let*%
+      ((b '("https://pypi.tuna.tsinghua.edu.cn/simple/"
+            "https://pypi.mirrors.ustc.edu.cn/simple/"
+            "http://pypi.hustunique.com/"
+            "http://pypi.sdutlinux.org/"))
+       (fn (lambda (a v)
+             (let ((rc (shell-command* "source"
+                         (concat v "/bin/activate")
+                         "&& pip config set global.index-url"
+                         a)))
+               (when (zerop (car rc))
+                 a)))))
+    (lambda (&optional op n)
+      (let ((venv (python*-venv!)))
+        (unless venv
+          (user-error "%s" "python venv unavailable"))
+        (cond ((eq op :ls)
+               (cond ((or (null n) (< n 0)) b)
+                     (t (nth (% n (length b)) b))))
+              ((eq op :set) (funcall fn n venv))
+              ((eq op :new)
+               (let ((x (catch 'br
+                          (dolist* (a b)
+                            (let ((rc (shell-command* "curl" "-fsIL" a)))
+                              (when (zerop (car rc))
+                                (throw 'br a)))))))
+                 (when x (funcall fn x venv))))
+              (t (let ((rc (shell-command* "source"
+                             (concat venv "/bin/activate")
+                             "&& pip config get global.index-url")))
+                   (when (zerop (car rc))
+                     (string-trim> (cdr rc)))))))))
+  "Python pip mirror.")
 
 (defun python*-lsp-spec ()
   "Return python lsp spec."
@@ -154,14 +152,13 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
             (when-var% eglot-command-history 'eglot
               (push! pylsp eglot-command-history t))))))))
 
-(unless-platform% 'windows-nt
-  (defalias 'python*-lsp-make!
-    (lexical-let% ((b nil))
-      (lambda (&optional op)
-        (cond ((eq op :new) (setq b (python*-lsp-spec)))
-              (t (inhibit-file-name-handler
-                   (and b (file-exists-p b) b))))))
-    "Make pylsp.sh for \\=`elgot\\='."))
+(defalias 'python*-lsp-make!
+  (lexical-let% ((b nil))
+    (lambda (&optional op)
+      (cond ((eq op :new) (setq b (python*-lsp-spec)))
+            (t (inhibit-file-name-handler
+                 (and b (file-exists-p b) b))))))
+  "Make pylsp.sh for \\=`elgot\\='.")
 
 ;; end of lsp
 
@@ -177,7 +174,6 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
   (when (python*-program)
     (setq% python-shell-interpreter (python*-program :bin) 'python)
     (unless-platform% 'windows-nt
-      ;; make `emacs-home*'/private/scratch/
       (path! `,(emacs-home* "private/scratch/"))
       (python*-venv!)
       (unless (python*-lsp-make!)
