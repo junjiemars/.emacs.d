@@ -172,11 +172,7 @@ determine whether inside a virtual env. Another way is using
     (python*-venv :mirror (python*-pip-mirror! venv mirror))
     (python*-pylsp-make! venv (python*-venv :pylsp))
     (setq% python-shell-interpreter (python*-venv :python) 'python)
-    (save-sexp-to-file (python*-venv) (python*-venv :file))
-    (when-var% gud-pdb-history 'gud
-      (push! gud-pdb-command-name gud-pdb-history t)
-      (let ((pdb (format "%s -m pdb " (python*-venv :python))))
-        (push! pdb gud-pdb-history t)))))
+    (save-sexp-to-file (python*-venv) (python*-venv :file))))
 
 (defun on-python-init! ()
   "On \\=`python\\=' initialization."
