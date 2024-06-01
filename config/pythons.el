@@ -41,7 +41,7 @@
 
 (unless-platform% 'windows-nt
   (defalias 'python*-venv!
-    (lexical-let% ((b (emacs-home* "private/progs/py/ve/")))
+    (lexical-let% ((b (emacs-home* "private/scratch/venv/")))
       (lambda (&optional dir)
         (let ((pv (python*-program)))
           (unless pv
@@ -177,6 +177,8 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
   (when (python*-program)
     (setq% python-shell-interpreter (python*-program :bin) 'python)
     (unless-platform% 'windows-nt
+      ;; make `emacs-home*'/private/scratch/
+      (path! `,(emacs-home* "private/scratch/"))
       (python*-venv!)
       (unless (python*-lsp-make!)
         (python*-lsp-make! :new))))
