@@ -141,7 +141,7 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
                     "if pgrep -qf $0; then\n"
                     "  exit 0\n"
                     "fi\n"
-                    "source " venv "/bin/activate\n"
+                    "source " (string-trim> venv "/") "/bin/activate\n"
                     "if ! pip -qqq show python-lsp-server; then\n"
                     "  pip install python-lsp-server\n"
                     "  exec $0 $@\n"
