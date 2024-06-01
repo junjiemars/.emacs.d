@@ -16,7 +16,7 @@
 (autoload 'python*-venv (v-home%> "config/pythons")
   "Python\\='s venv.")
 (autoload 'python*-venv-make! (v-home%> "config/pythons")
-  "Make python\\='s venv." t)
+  "Make Python\\='s venv." t)
 
 ;;; `python' after load
 (with-eval-after-load 'python

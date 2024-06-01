@@ -94,7 +94,7 @@ determine whether inside a virtual env. Another way is using
               "https://pypi.mirrors.ustc.edu.cn/simple/"
               "http://pypi.hustunique.com/"
               "http://pypi.sdutlinux.org/"))
-         (x (or mirror
+         (x (or (and (> (length mirror) 0) mirror)
                 (catch 'br
                   (dolist* (a m)
                     (let ((rc (shell-command* "curl" "-fsIL" a)))
@@ -159,10 +159,10 @@ determine whether inside a virtual env. Another way is using
   "Python\\='s venv.")
 
 (defun python*-venv-make! (&optional dir mirror)
-  "Make \\=`python\\=' venv for DIR."
+  "Make Python\\='s venv for DIR."
   (interactive (if current-prefix-arg
                    (list (read-directory-name "make venv for ")
-                         (read-directory-name "set pip mirror "))
+                         (read-string "set pip mirror "))
                  (list (python*-venv :venv)
                        (python*-venv :mirror))))
   (let ((venv (python*-venv-activate! dir)))
@@ -172,7 +172,11 @@ determine whether inside a virtual env. Another way is using
     (python*-venv :mirror (python*-pip-mirror! venv mirror))
     (python*-pylsp-make! venv (python*-venv :pylsp))
     (setq% python-shell-interpreter (python*-venv :python) 'python)
-    (save-sexp-to-file (python*-venv) (python*-venv :file))))
+    (save-sexp-to-file (python*-venv) (python*-venv :file))
+    (when-var% gud-pdb-history 'gud
+      (push! gud-pdb-command-name gud-pdb-history t)
+      (let ((pdb (format "%s -m pdb " (python*-venv :python))))
+        (push! pdb gud-pdb-history t)))))
 
 (defun on-python-init! ()
   "On \\=`python\\=' initialization."
