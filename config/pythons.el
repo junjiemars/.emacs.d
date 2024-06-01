@@ -141,7 +141,7 @@ After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
                     "fi\n"
                     "source " (string-trim> venv "/") "/bin/activate\n"
                     "if ! pip -qqq show python-lsp-server; then\n"
-                    "  pip install python-lsp-server\n"
+                    "  pip install python-lsp-server pyflakes\n"
                     "  exec $0 $@\n"
                     "fi\n"
                     "exec pylsp $@\n")
