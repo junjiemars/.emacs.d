@@ -88,19 +88,25 @@ determine whether inside a virtual env. Another way is using
 ;; lsp
 ;;;
 
+(defalias 'python*-pip-mirror
+  (lexical-let% ((b '("https://pypi.tuna.tsinghua.edu.cn/simple/"
+                      "https://pypi.mirrors.ustc.edu.cn/simple/"
+                      "http://pypi.hustunique.com/"
+                      "http://pypi.sdutlinux.org/")))
+    (lambda (&optional n)
+      (cond (n (nth (% n (length b)) b))
+            (t b))))
+  "List pip mirror.")
+
 (defun python*-pip-mirror! (venv &optional mirror)
   "Set pip MIRROR in VENV."
-  (let* ((m '("https://pypi.tuna.tsinghua.edu.cn/simple/"
-              "https://pypi.mirrors.ustc.edu.cn/simple/"
-              "http://pypi.hustunique.com/"
-              "http://pypi.sdutlinux.org/"))
-         (x (or (and (> (length mirror) 0) mirror)
+  (let* ((x (or (and (> (length mirror) 0) mirror)
                 (catch 'br
-                  (dolist* (a m)
+                  (dolist* (a (python*-pip-mirror))
                     (let ((rc (shell-command* "curl" "-fsIL" a)))
                       (when (zerop (car rc))
                         (throw 'br a)))))
-                (car m)))
+                (python*-pip-mirror 0)))
          (rc (shell-command* "source"
                (concat venv "/bin/activate")
                "&& pip config set global.index-url"
@@ -133,17 +139,18 @@ determine whether inside a virtual env. Another way is using
 ;; end of lsp
 
 (defalias 'python*-venv
-  (lexical-let%
-      ((file (v-home% ".exec/python-venv.el"))
-       (env (let ((venv (path! `,(emacs-home* "private/scratch/venv/"))))
-              (list :venv venv
-                    :pylsp (v-home% ".exec/pylsp.sh")
-                    :python (concat venv "bin/python")
-                    :pip (concat venv "bin/pip")
-                    :mirror (python*-pip-mirror! venv)))))
+  (lexical-let*%
+      ((b (path! `,(emacs-home* "private/scratch/venv/")))
+       (file (v-home% ".exec/python-venv.el"))
+       (env (list :venv b
+                  :pylsp (v-home% ".exec/pylsp.sh")
+                  :python (concat b "bin/python")
+                  :pip (concat b "bin/pip")
+                  :mirror (python*-pip-mirror! b))))
     (lambda (&optional op n)
       (cond ((eq op :file) file)
             ((and (eq op :load) n) (setq env n))
+            ((eq op :scratch) b)
             ((and (eq op :venv) n)
              (plist-put env :venv n)
              (plist-put env :python (concat n "bin/python"))
@@ -163,7 +170,7 @@ determine whether inside a virtual env. Another way is using
   (interactive (if current-prefix-arg
                    (list (read-directory-name "make venv for ")
                          (read-string "set pip mirror "))
-                 (list (python*-venv :venv)
+                 (list (python*-venv :scratch)
                        (python*-venv :mirror))))
   (let ((venv (python*-venv-activate! dir)))
     (unless venv
