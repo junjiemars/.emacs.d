@@ -116,20 +116,16 @@ determine whether inside a virtual env. Another way is using
 (defun python*-pylsp-make! (venv pylsp)
   "Make PYLSP for VENV."
   (let ((rc (shell-command*
-                "chmod" "u+x"
-                (save-str-to-file
-                 (concat
-                  "#!/bin/sh\n"
-                  "if pgrep -qf $0; then\n"
-                  "  exit 0\n"
-                  "fi\n"
-                  "source " (string-trim> venv "/") "/bin/activate\n"
-                  "if ! pip -qqq show python-lsp-server; then\n"
-                  "  pip install python-lsp-server pyflakes\n"
-                  "  exec $0 $@\n"
-                  "fi\n"
-                  "exec pylsp $@\n")
-                 pylsp))))
+                 "chmod" "u+x"
+                 (save-str-to-file
+                  (concat
+                   "#!/bin/sh\n"
+                   ". " venv "bin/activate\n"
+                   "if ! pip -qqq show python-lsp-server; then\n"
+                   "  pip install python-lsp-server pyflakes\n"
+                   "fi\n"
+                   "exec " venv "bin/pylsp $@\n")
+                  pylsp))))
     (when (zerop (car rc))
       (prog1 pylsp
         (when-feature-eglot%
