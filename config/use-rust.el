@@ -124,26 +124,29 @@
   (lexical-let% ((b (rust*-tags-spec)))
     (lambda (&optional op)
       (cond ((eq op :new)
-             (setq b (inhibit-file-name-handler
-                       (make-dir-ctags
-                        (rust*-sysroot :src)
-                        (rust*-tags-spec)
-                        (rust*-sysroot :tag)))))
-            (t (inhibit-file-name-handler
-                 (and b (file-exists-p b) b))))))
+             (setq b (make-dir-ctags
+                      (rust*-sysroot :src)
+                      (rust*-tags-spec)
+                      (rust*-sysroot :tag))))
+            (t (and b (file-exists-p b) b)))))
   "Make rust tags.")
 
 ;; end of tags
 
 (defun use-rust-init! ()
   "On \\=`rust\\=' initialization."
+  (when-var% *tags-option-history* 'tags
+    (let ((p (and (file-exists-p (rust*-sysroot :tag))
+                  (concat "--options=" (rust*-sysroot :tag)))))
+      (push! p *tags-option-history* t))) )
+
   ;; compile-time
   ;; (comment
   ;;  (unless (rust*-sysroot)
   ;;    (rust*-sysroot :new)
   ;;    (rust*-make-debug! :new)
   ;;    (rust*-make-tags :new)))
-  )
+
 
 
 
