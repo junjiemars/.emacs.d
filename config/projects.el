@@ -15,7 +15,7 @@
             ((eq op :read)
              (setq c (read-sexp-from-file b)))
             ((eq op :save)
-             (when sexp (save-sexp-to-file sexp b)))
+             (save-sexp-to-file (or sexp `(,default-directory)) b))
             (t c))))
   "The root dirs for `project'.")
 
