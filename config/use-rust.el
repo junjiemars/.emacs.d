@@ -138,7 +138,7 @@
   (when-var% *tags-option-history* 'tags
     (let ((p (and (file-exists-p (rust*-sysroot :tag))
                   (concat "--options=" (rust*-sysroot :tag)))))
-      (push! p *tags-option-history* t))) )
+      (append! p *tags-option-history* t))) )
 
   ;; compile-time
   ;; (comment
