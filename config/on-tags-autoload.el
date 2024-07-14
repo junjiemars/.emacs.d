@@ -12,7 +12,5 @@
   "Unmount tags." t)
 (autoload 'make-c-tags (v-home%> "config/tags")
   "Make C tags.")
-(autoload 'tags-in-view-mode (v-home%> "config/tags"))
-
 
 ;; end of on-tags-autoload.el

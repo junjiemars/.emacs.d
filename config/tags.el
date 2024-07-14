@@ -45,20 +45,6 @@ when \\=`desktop-globals-to-save\\=' include it."
       (plist-get b (or n :bin))))
   "Tags' binary and options.")
 
-(defalias 'tags-in-view-mode
-  (lexical-let%
-      ((b (delq nil
-                (list (when (> (path-depth invocation-directory) 1)
-                        (path- invocation-directory))
-                      (when-package% package*-user-dir)
-                      (v-home% "config/")
-                      (v-home% "private/")
-                      (v-home% "theme/")))))
-    (lambda (&optional n)
-      (cond (n (setq b (cons n b)))
-            (t b))))
-  "Tags buffer should open in \\=`view-mode\\='.")
-
 (defvar *tags-option-history*
   (cond ((string= "ctags" (*tags*))
          `("--langmap=c:.h.c --c-kinds=+ptesgux --extra=+fq"

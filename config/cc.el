@@ -257,26 +257,26 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
   "Return a list of extra include directories.")
 
 
-(defun cc*-include-p (file)
-  "If FILE in \\=`cc*-system-include\\=' yield non-nil, else nil."
-  (when (stringp file)
-    (let ((remote (ssh-remote-p file)))
-      (file-in-dirs-p (file-name-directory file)
-                      (if remote
-                          (cc*-system-include t remote)
-                        (append (cc*-system-include t)
-                                (cc*-extra-include t)))))))
+;; (defun cc*-include-p (file)
+;;   "If FILE in \\=`cc*-system-include\\=' yield non-nil, else nil."
+;;   (when (stringp file)
+;;     (let ((remote (ssh-remote-p file)))
+;;       (file-in-dirs-p (file-name-directory file)
+;;                       (if remote
+;;                           (cc*-system-include t remote)
+;;                         (append (cc*-system-include t)
+;;                                 (cc*-extra-include t)))))))
 
 
-(defun cc*-view-include (buffer)
-  "View cc's BUFFER in \\=`view-mode\\='."
-  (when (and (bufferp buffer)
-             (let ((m (buffer-local-value 'major-mode buffer)))
-               (or (eq 'c-mode m)
-                   (eq 'c++-mode m)))
-             (cc*-include-p (substring-no-properties
-                             (buffer-file-name buffer))))
-    (with-current-buffer buffer (view-mode 1))))
+;; (defun cc*-view-include (buffer)
+;;   "View cc's BUFFER in \\=`view-mode\\='."
+;;   (when (and (bufferp buffer)
+;;              (let ((m (buffer-local-value 'major-mode buffer)))
+;;                (or (eq 'c-mode m)
+;;                    (eq 'c++-mode m)))
+;;              (cc*-include-p (substring-no-properties
+;;                              (buffer-file-name buffer))))
+;;     (with-current-buffer buffer (view-mode 1))))
 
 (defmacro when-fn-ff-find-other-file% (&rest body)
   (when-fn% 'ff-find-other-file 'find-file

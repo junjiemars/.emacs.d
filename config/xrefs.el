@@ -31,25 +31,25 @@
 ;; `xref-find-definitions' into `view-mode'
 ;;;
 
-
 (defalias 'xref*-read-only-dirs
   (lexical-let% ((b (v-home% ".exec/xref-read-only-dirs.el"))
-                 (c '()))
+                 (c `(,(when% (> (path-depth invocation-directory) 1)
+                         (path- invocation-directory))
+                      ,(when-package% package*-user-dir))))
     (lambda (&optional op sexp)
       (cond ((eq op :read)
              (setq c (read-sexp-from-file b)))
+            ((eq op :push)
+             (when (> (length sexp) 0) (push! sexp c t)))
             ((eq op :save)
-             (when sexp (save-sexp-to-file sexp b)))
+             (save-sexp-to-file (or sexp c) b))
+            ((eq op :path) b)
             (t c)))))
-
-(declare-function tags-in-view-mode (v-home%> "config/tags"))
 
 (defun xref*-find-definitions ()
   (with-current-buffer (current-buffer)
-    (when (file-in-dirs-p
-              (buffer-file-name (current-buffer))
-            (append (xref*-read-only-dirs)
-                    (tags-in-view-mode)))
+    (when (file-in-dirs-p (buffer-file-name (current-buffer))
+                          (xref*-read-only-dirs))
       (view-mode 1))))
 
 (when-fn-xref-find-definitions%
@@ -59,7 +59,8 @@
     (xref*-find-definitions)))
 
 (defun on-xref-init! ()
-  (xref*-read-only-dirs :read)
+  (when (file-exists-p (xref*-read-only-dirs :path))
+    (xref*-read-only-dirs :read))
   (when-fn-xref-find-definitions%
     (ad-enable-advice #'xref-find-definitions 'after
                       "xref-find-definitions-after")

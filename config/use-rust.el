@@ -138,7 +138,9 @@
   (when-var% *tags-option-history* 'tags
     (let ((p (and (file-exists-p (rust*-sysroot :tag))
                   (concat "--options=" (rust*-sysroot :tag)))))
-      (append! p *tags-option-history* t))) )
+      (append! p *tags-option-history* t)))
+  (when-fn% 'xref*-read-only-dirs 'xrefs
+    (xref*-read-only-dirs :push (rust*-sysroot :sysroot))))
 
   ;; compile-time
   ;; (comment
