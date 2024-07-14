@@ -38,7 +38,7 @@ jobs:
           fetch-depth: 1 # without checkout history and tags
       - name: Install Dependencies
         run: |
-          brew install --cask emacs
+          brew install --formulae emacs
       - name: Test
         run: |
           _TEST_=bone ./test.sh
