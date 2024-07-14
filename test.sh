@@ -175,9 +175,9 @@ END
   test_echo_env "profile|compile"
   ${_EMACS_} --batch \
              --no-window-system \
-             --eval="
-(progn
-  (defvar *nore-emacs-profile* nil)
+             --eval="\
+(progn\
+  (defvar *nore-emacs-profile* nil)\
   (load \"${_ROOT_}/init.el\"))" 2>"$fc"
   $prof "$fc"
   test_echo_env "profile|boot"
@@ -186,9 +186,8 @@ END
              --eval="\
 (progn\
   (defvar *nore-emacs-profile* nil)\
-  (load \"${_ROOT_}/init.el\"))" 2>"$fb"\
-  $prof "$fb\
-"
+  (load \"${_ROOT_}/init.el\"))" 2>"$fb"
+  $prof "$fb"
 }
 
 test_debug() {
