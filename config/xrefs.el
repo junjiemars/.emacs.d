@@ -8,7 +8,7 @@
 ;; Commentary:
 ;;;;
 
-;;; `xref-find-definitions' macro
+;;; `xref-find-definitions' associated macro, since emacs25+
 
 (defmacro-if-fn% xref-find-definitions xref)
 
@@ -24,9 +24,9 @@
       `(comment ,@body)
     `(progn% ,@body)))
 
-;; end of `xref-find-definitions' macro
+;; end of `xref-find-definitions' associated macro
 
-;;; `xref--show-location' macro
+;;; `xref--show-location' associated macro, since emacs25+
 
 (defmacro-if-fn% xref--show-location xref)
 
@@ -36,7 +36,7 @@
       `(progn% ,@body)
     `(comment ,@body)))
 
-;; end of `xref--show-location' macro
+;; end of `xref--show-location' associated macro
 
 ;;;
 ;; go into `view-mode'
@@ -61,8 +61,8 @@
 (defun xref*-buffer-in-view-mode (&optional buffer)
   (let* ((buf (or buffer (current-buffer)))
          (name (buffer-file-name buf)))
-    (with-current-buffer buf
-      (when (and name (file-in-dirs-p name (xref*-read-only-dirs)))
+    (when (and name (file-in-dirs-p name (xref*-read-only-dirs)))
+      (with-current-buffer buf
         (view-mode 1)))))
 
 (when-fn-xref-find-definitions%

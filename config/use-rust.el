@@ -9,6 +9,7 @@
 ;;; require
 
 (declare-function make-dir-ctags (v-home%> "config/tags"))
+(autoload 'make-dir-ctags (v-home%> "config/tags"))
 
 ;; end of require
 
