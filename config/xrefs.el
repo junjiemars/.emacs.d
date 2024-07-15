@@ -8,7 +8,7 @@
 ;; Commentary:
 ;;;;
 
-;;; `xref-find-definitions' associated macro, since emacs25+
+;;; `xref-find-definitions' associated macro, since emacs25
 
 (defmacro-if-fn% xref-find-definitions xref)
 
@@ -26,7 +26,7 @@
 
 ;; end of `xref-find-definitions' associated macro
 
-;;; `xref--show-location' associated macro, since emacs25+
+;;; `xref--show-location' associated macro, since emacs25
 
 (defmacro-if-fn% xref--show-location xref)
 
