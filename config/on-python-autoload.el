@@ -6,10 +6,6 @@
 ;; on-python-autoload.el
 ;;;;
 
-(declare-function on-python-init! (v-home%> "config/pythons"))
-(declare-function python*-program (v-home%> "config/pythons"))
-(declare-function python*-venv (v-home%> "config/pythons"))
-(declare-function python*-venv-make! (v-home%> "config/pythons"))
 (autoload 'on-python-init! (v-home%> "config/pythons"))
 (autoload 'python*-program (v-home%> "config/pythons")
   "The program of python executable.")

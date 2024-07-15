@@ -8,9 +8,6 @@
 ;; Commentary: `cc' autoload.
 ;;;;
 
-(declare-function on-cc-mode-init! (v-home%> "config/cc"))
-(declare-function on-cmacexp-init! (v-home%> "config/cc"))
-(declare-function on-man-init! (v-home%> "config/cc"))
 (autoload 'on-cc-mode-init! (v-home%> "config/cc"))
 (autoload 'on-cmacexp-init! (v-home%> "config/cc"))
 (autoload 'on-man-init! (v-home%> "config/cc"))
@@ -22,10 +19,7 @@
 
 ;;; `cc-mode' after load
 (with-eval-after-load 'cc-mode
-  (make-thread*
-   (lambda ()
-     (inhibit-gc
-       (on-cc-mode-init!)))))
+  (make-thread* #'on-cc-mode-init!))
 
 ;;; `cmacexp' after load
 

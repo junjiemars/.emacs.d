@@ -6,10 +6,6 @@
 ;; on-term-autoload.el
 ;;;;
 
-(declare-function on-term-init! (v-home%> "config/terms"))
-(declare-function term*-unify-shell-prompt (v-home%> "config/terms"))
-(declare-function on-eshell-init! (v-home%> "config/eshells"))
-(declare-function on-ielm-init! (v-home%> "config/elisps"))
 (autoload 'on-term-init! (v-home%> "config/terms"))
 (autoload 'on-eshell-init! (v-home%> "config/eshells"))
 (autoload 'on-ielm-init! (v-home%> "config/elisps"))

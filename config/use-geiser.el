@@ -6,7 +6,6 @@
 ;; use-geiser.el
 ;;;;
 
-
 (defalias 'geiser*-lisp-implementations
   (lexical-let% ((ls (let ((ns nil))
                        (dolist* (x ns)

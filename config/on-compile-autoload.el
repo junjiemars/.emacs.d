@@ -6,13 +6,9 @@
 ;; on-compile-autoload.el
 ;;;;
 
-(declare-function on-compile-init! (v-home%> "config/compiles"))
-(declare-function on-grep-init! (v-home%> "config/compiles"))
-(declare-function on-make-mode-init! (v-home%> "config/compiles"))
 (autoload 'on-compile-init! (v-home%> "config/compiles"))
 (autoload 'on-grep-init! (v-home%> "config/compiles"))
 (autoload 'on-make-mode-init! (v-home%> "config/compiles"))
-
 
 ;; `compile' after load
 (with-eval-after-load 'compile

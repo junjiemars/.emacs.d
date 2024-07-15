@@ -6,8 +6,6 @@
 ;; on-eww-autoload.el
 ;;;;
 
-(declare-function on-eww-init! (v-home%> "config/ewws"))
-(declare-function lookup-web (v-home%> "config/ewws"))
 (autoload 'on-eww-init! (v-home%> "config/ewws"))
 
 ;;; `eww' after load

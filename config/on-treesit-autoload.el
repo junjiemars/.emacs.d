@@ -6,7 +6,6 @@
 ;; on-treesit-autoload.el
 ;;;;
 
-(declare-function on-treesit-init! (v-home%> "config/treesits"))
 (autoload 'on-treesit-init! (v-home%> "config/treesits"))
 
 ;;; `treesit' after load

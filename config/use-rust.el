@@ -9,7 +9,7 @@
 ;;; require
 
 (declare-function make-dir-ctags (v-home%> "config/tags"))
-(autoload 'make-dir-ctags (v-home%> "config/tags"))
+
 
 ;; end of require
 
@@ -125,6 +125,7 @@
   (lexical-let% ((b (rust*-tags-spec)))
     (lambda (&optional op)
       (cond ((eq op :new)
+             (autoload 'make-dir-ctags (v-home%> "config/tags"))
              (setq b (make-dir-ctags
                       (rust*-sysroot :src)
                       (rust*-tags-spec)

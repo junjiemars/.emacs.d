@@ -6,7 +6,6 @@
 ;; use-slime-autoload.el
 ;;;;
 
-(declare-function use-slime-init! (v-home%> "config/use-slime"))
 (autoload 'use-slime-init! (v-home%> "config/use-slime"))
 
 ;; `slime' after load

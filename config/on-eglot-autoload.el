@@ -6,7 +6,6 @@
 ;; on-eglot-autoload.el
 ;;;;
 
-(declare-function on-eglot-init! (v-home%> "config/eglots"))
 (autoload 'on-eglot-init! (v-home%> "config/eglots"))
 
 ;;; `eglot' after load

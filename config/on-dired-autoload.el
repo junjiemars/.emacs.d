@@ -6,10 +6,6 @@
 ;; on-dired-autoload.el
 ;;;;
 
-(declare-function on-dired-init! (v-home%> "config/direds"))
-(declare-function on-dired-aux-init! (v-home%> "config/direds"))
-(declare-function on-arc-mode-init! (v-home%> "config/direds"))
-(declare-function browse-file (v-home%> "config/direds"))
 (autoload 'on-dired-init! (v-home%> "config/direds"))
 (autoload 'on-dired-aux-init! (v-home%> "config/direds"))
 (autoload 'on-arc-mode-init! (v-home%> "config/direds"))

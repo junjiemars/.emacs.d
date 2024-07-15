@@ -6,8 +6,7 @@
 ;; use-lua-autoload.el
 ;;;;
 
-
-(autoload 'lua-mode "lua-mode" "Lua editing mode." t)
+;; (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 (push! '("\\.lua$" . lua-mode) auto-mode-alist)
 (push! '("lua" . lua-mode) interpreter-mode-alist)
 

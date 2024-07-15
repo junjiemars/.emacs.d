@@ -8,20 +8,6 @@
 ;; Commentary:
 ;;;;
 
-(declare-function 'kill-word@ (v-home%> "config/mill"))
-(declare-function 'kill-sexp@ (v-home%> "config/mill"))
-(declare-function 'kill-whole-line@ (v-home%> "config/mill"))
-(declare-function 'kill-quoted-symmetry@ (v-home%> "config/mill"))
-(declare-function 'kill-quoted-asymmetry@ (v-home%> "config/mill"))
-(declare-function 'kill-string@ (v-home%> "config/mill"))
-(declare-function 'mark-word@ (v-home%> "config/mill"))
-(declare-function 'mark-sexp@ (v-home%> "config/mill"))
-(declare-function 'mark-defun@ (v-home%> "config/mill"))
-(declare-function 'mark-filename@ (v-home%> "config/mill"))
-(declare-function 'mark-line@ (v-home%> "config/mill"))
-(declare-function 'mark-quoted-symmetry@ (v-home%> "config/mill"))
-(declare-function 'mark-quoted-asymmetry@ (v-home%> "config/mill"))
-(declare-function 'mark-string@ (v-home%> "config/mill"))
 (autoload 'kill-word@ (v-home%> "config/mill") nil t)
 (autoload 'kill-sexp@ (v-home%> "config/mill") nil t)
 (autoload 'kill-whole-line@ (v-home%> "config/mill") nil t)

@@ -6,16 +6,11 @@
 ;; on-sql-autoload.el
 ;;;;
 
-
-(declare-function 'on-sql-init! (v-home%> "config/sqls"))
 (autoload 'on-sql-init! (v-home%> "config/sqls"))
 
 ;;; after-load
 (with-eval-after-load 'sql
-  (make-thread*
-   (lambda ()
-     (inhibit-gc
-       (on-sql-init!)))))
+  (make-thread* #'on-sql-init!))
 
 ;;; autoload
 

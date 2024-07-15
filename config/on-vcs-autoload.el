@@ -6,7 +6,6 @@
 ;; on-vcs-autoload.el
 ;;;;
 
-(declare-function vc*-dir (v-home%> "config/vcs"))
 (autoload 'vc*-dir (v-home%> "config/vcs"))
 
 ;; general `vc*-dir'

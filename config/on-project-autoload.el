@@ -6,7 +6,6 @@
 ;; on-project-autoload.el
 ;;;;
 
-(declare-function on-project-init! (v-home%> "config/projects"))
 (autoload 'on-project-init! (v-home%> "config/projects"))
 
 ;;; `project' after load

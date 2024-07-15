@@ -6,7 +6,6 @@
 ;; use-magit-autoload.el
 ;;;;
 
-(declare-function use-magit-init! (v-home%> "config/use-magit"))
 (autoload 'use-magit-init! (v-home%> "config/use-magit"))
 
 ;;; toggle off `magit-auto-revert-mode'

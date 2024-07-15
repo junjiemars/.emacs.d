@@ -6,7 +6,6 @@
 ;; use-rust-autoload.el
 ;;;;
 
-(declare-function use-rust-init! (v-home%> "config/use-rust"))
 (autoload 'use-rust-init! (v-home%> "config/use-rust"))
 
 ;; `rust' after load

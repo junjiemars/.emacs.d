@@ -7,9 +7,6 @@
 ;;;;
 
 
-(declare-function isearch*-forward (v-home%> "config/isearchs"))
-(declare-function isearch*-backward (v-home%> "config/isearchs"))
-(declare-function isearch*-forward-symbol (v-home%> "config/isearchs"))
 (autoload 'isearch*-forward (v-home%> "config/isearchs"))
 (autoload 'isearch*-backward (v-home%> "config/isearchs"))
 (autoload 'isearch*-forward-symbol (v-home%> "config/isearchs"))

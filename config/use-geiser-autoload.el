@@ -6,7 +6,6 @@
 ;; use-geiser-autoload.el
 ;;;;
 
-(declare-function use-geiser-init! (v-home%> "config/use-geiser"))
 (autoload 'use-geiser-init! (v-home%> "config/use-geiser"))
 
 ;;; Disable auto active `geiser-mode'

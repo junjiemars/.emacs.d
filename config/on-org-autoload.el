@@ -6,16 +6,11 @@
 ;; on-org-autoload.el
 ;;;;
 
-(declare-function on-org-init! (v-home%> "config/orgs"))
 (autoload 'on-org-init! (v-home%> "config/orgs"))
-
 
 ;;; `org' after load
 (with-eval-after-load 'org
-  (make-thread*
-   (lambda ()
-     (inhibit-gc
-       (on-org-init!)))))
+  (make-thread* #'on-org-init!))
 
 ;; end of macro
 
