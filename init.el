@@ -310,7 +310,7 @@ If ONLY-COMPILE is t, does not load DST."
                          system-configuration
                          (match-beginning 1) (match-end 1))))
             (cc3 (when (string-match
-                        "-rpath \\([/a-z]+/\\([a-z]+\\)\\([0-9]+\\)\\)"
+                        "-rpath +\\([/a-z]+/\\([a-z]+\\)\\([0-9]+\\)\\)"
                         system-configuration-options)
                    (vector
                     ;; path
@@ -325,19 +325,21 @@ If ONLY-COMPILE is t, does not load DST."
                     (substring-no-properties
                      system-configuration-options
                      (match-beginning 3) (match-end 3))))))
-        (let ((path (concat (aref cc3 0) "/"
-                            (aref cc3 1) "/"
-                            arch platform)))
-          (concat
-           path "/"
-           (car (inhibit-file-name-handler
-                  (directory-files
-                   path nil (concat (aref cc3 2) "[.0-9]+") 1))))))))
+        (when (and arch platform cc3)
+          (let ((path (concat (aref cc3 0) "/" (aref cc3 1) "/"
+                              arch platform)))
+            (concat
+             path "/"
+             (car (inhibit-file-name-handler
+                    (directory-files
+                     path nil (concat (aref cc3 2) "[.0-9]+") 1)))))))))
 
   (when% (eq system-type 'darwin)
-    (setq process-environment
-          (cons (concat "LIBRARY_PATH=" (library-path))
-                process-environment))))
+    (let ((libpath (library-path)))
+      (when libpath
+        (setq process-environment
+              (cons (concat "LIBRARY_PATH=" libpath)
+                    process-environment))))))
 
 (defmacro compile-and-load-file* (src dst &optional only-compile)
   "The profiling shim of \\=`compile-and-load-file*\\='."
