@@ -154,7 +154,10 @@
 
 ;; end of web
 
-;; start server
-(unless server-process (server-start))
+;;;; start server
+;; (unless (and server-process
+;;              (eq 'listen (process-status server-process)))
+;;   (when server-process (server-force-stop))
+;;   (server-start))
 
 ;; end of sample-self-epilogue.el
