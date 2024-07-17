@@ -20,25 +20,19 @@
 
 (defun package*-init-repo! ()
   (setq% package-check-signature
-         (*self-env-spec* :get :package :package-check-signature)
+         (*self-env-spec* :get :module :package-check-signature)
          'package)
-  (setq%
-   package-archives
-   (append (list '("gnu" . "https://elpa.gnu.org/packages/")
-                 '("melpa-stable" . "https://stable.melpa.org/packages/"))
-           (when-version%
-               <= 25.1
-             (list '("melpa" . "https://melpa.org/packages/"))))
-   'package)
-
+  (let ((archives (*self-env-spec* :get :module :package-archives)))
+    (when archives
+      (setq% package-archives archives 'package)))
   (when-version%
       <= 25.1
     (setq% package-archive-priorities
-           (list '("melpa-stable" . 10)
-                 '("melpa" . 5)
-                 '("gnu" . 0))
+           `(list ("gnu" . 7)
+                  ("melpa-stable" . 5)
+                  ("melpa" . 3)
+                  ("nongnu" . 1))
            'package))
-
   (package-refresh-contents))
 
 (defmacro package*-check-name (package)

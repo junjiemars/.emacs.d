@@ -657,11 +657,12 @@ implement almost functionalities that =use-pacakge= does and more.
 
 #+REVEAL: split
 #+BEGIN_SRC emacs-lisp
-  (*self-env-spec*
-   :put :module
-   (list :remove-unused nil
-         :package-check-signature 'allow-unsigned
-         :allowed t))
+	(*self-env-spec*
+	 :put :module
+	 (list :remove-unused nil
+				 :package-check-signature 'allow-unsigned
+				 :package-archives nil
+				 :allowed t))
 #+END_SRC
 
 #+REVEAL: split
@@ -669,6 +670,7 @@ implement almost functionalities that =use-pacakge= does and more.
   in =def-self-package-spec=
 - =:package-check-signature= =nil= does not check signature when
   installing packages.
+- =:package-archives= if non =nil= should replace =package-archives=
 - =:allowed= =t= enabled, =nil= disabled
 
 #+ATTR_HTML: :style text-align:left

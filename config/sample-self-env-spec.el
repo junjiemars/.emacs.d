@@ -113,6 +113,11 @@
  :put :module
  (list :remove-unused nil
        :package-check-signature 'allow-unsigned
+       :package-archives nil
+       ;; `(("gnu" . "https://elpa.gnu.org/packages/")
+       ;;   ("nongnu" . "https://elpa.nongnu.org/nongnu/")
+       ;;   ("melpa-stable" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
+       ;;   ("melpa" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))
        :allowed nil))
 
 ;;; edit
