@@ -405,7 +405,7 @@ Optional prefix argument ENHANCED, displays additional details."
 (defvar sql-oceanbase-login-params '(user password server)
   "List of login parameters needed to connect to Oceanbase.")
 
-(defun sql-comint-oceanbase (product options &optional buf-name)
+(defun sql-comint-oceanbase (product options &optional _buf-name)
   "Create comint buffer and connect to Oceanbase."
   ;; Put all parameters to the program (if defined) in a list and call
   ;; make-comint.
@@ -420,7 +420,9 @@ Optional prefix argument ENHANCED, displays additional details."
               (list (concat "--port=" (number-to-string sql-port))))
           (if (not (string= "" sql-server))
               (list (concat "--host=" sql-server))))))
-    (sql-comint product params buf-name)))
+    (if-version% > 25
+                 (sql-comint product params _buf-name)
+      (sql-comint product params))))
 
 (when-sql-oceanbase-feature%
   (defun sql-oceanbase-list-all (sqlbuf outbuf enhanced _table-name)
