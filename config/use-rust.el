@@ -9,7 +9,7 @@
 ;;; require
 
 (declare-function make-dir-ctags (v-home%> "config/tags"))
-
+(declare-function xref*-read-only-dirs (v-home%> "config/xrefs"))
 
 ;; end of require
 
@@ -137,19 +137,19 @@
 
 (defun use-rust-init! ()
   "On \\=`rust\\=' initialization."
-  (when-var% *tags-option-history* 'tags
-    (let ((p (and (file-exists-p (rust*-sysroot :tag))
-                  (concat "--options=" (rust*-sysroot :tag)))))
-      (append! p *tags-option-history* t)))
-  (when-fn% 'xref*-read-only-dirs 'xrefs
-    (xref*-read-only-dirs :push (rust*-sysroot :sysroot))))
+  (xref*-read-only-dirs :push (rust*-sysroot :sysroot))
+  (setq% *tags-option-history*
+         (let ((p (and (file-exists-p (rust*-sysroot :tag))
+                       (concat "--options=" (rust*-sysroot :tag)))))
+           (append! p *tags-option-history* t))
+         'tags))
 
-  ;; compile-time
-  ;; (comment
-  ;;  (unless (rust*-sysroot)
-  ;;    (rust*-sysroot :new)
-  ;;    (rust*-make-debug! :new)
-  ;;    (rust*-make-tags :new)))
+;; compile-time
+;; (comment
+;;  (unless (rust*-sysroot)
+;;    (rust*-sysroot :new)
+;;    (rust*-make-debug! :new)
+;;    (rust*-make-tags :new)))
 
 
 

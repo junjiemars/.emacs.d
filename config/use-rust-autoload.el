@@ -10,6 +10,7 @@
 
 ;; `rust' after load
 (with-eval-after-load 'rust-mode
+  (message "ZZZ")
   (make-thread* #'use-rust-init!))
 
 ;; end of use-rust-autoload.el
