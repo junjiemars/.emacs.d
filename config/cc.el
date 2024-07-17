@@ -11,6 +11,8 @@
 ;;; require
 
 (declare-function make-c-tags (v-home%> "config/tags"))
+(autoload 'make-c-tags (v-home%> "config/tags")
+  "Make C tags.")
 
 ;; end of require
 

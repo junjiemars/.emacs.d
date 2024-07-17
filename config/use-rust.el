@@ -125,7 +125,6 @@
   (lexical-let% ((b (rust*-tags-spec)))
     (lambda (&optional op)
       (cond ((eq op :new)
-             (autoload 'make-dir-ctags (v-home%> "config/tags"))
              (setq b (make-dir-ctags
                       (rust*-sysroot :src)
                       (rust*-tags-spec)
@@ -137,12 +136,7 @@
 
 (defun use-rust-init! ()
   "On \\=`rust\\=' initialization."
-  (xref*-read-only-dirs :push (rust*-sysroot :sysroot))
-  (setq% *tags-option-history*
-         (let ((p (and (file-exists-p (rust*-sysroot :tag))
-                       (concat "--options=" (rust*-sysroot :tag)))))
-           (append! p *tags-option-history* t))
-         'tags))
+  (xref*-read-only-dirs :push (rust*-sysroot :sysroot)))
 
 ;; compile-time
 ;; (comment
@@ -151,6 +145,11 @@
 ;;    (rust*-make-debug! :new)
 ;;    (rust*-make-tags :new)))
 
+;; (setq% *tags-option-history*
+;;        (let ((p (and (file-exists-p (rust*-sysroot :tag))
+;;                      (concat "--options=" (rust*-sysroot :tag)))))
+;;          (append! p *tags-option-history* t))
+;;        'tags)
 
 
 
