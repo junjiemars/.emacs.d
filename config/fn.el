@@ -699,7 +699,14 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
                  (newline arg 'interactive)
       (newline arg))))
 
-;; end of interactive fn/macro
+(unless-fn% 'delete-line nil
+  (defun delete-line ()
+    "Delete current line."
+    (let ((inhibit-field-text-motion t))
+      (delete-region (line-beginning-position)
+                     (line-beginning-position 2)))))
+
+ ;; end of interactive fn/macro
 
 (provide 'fn)
 
