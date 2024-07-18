@@ -57,7 +57,7 @@
                  ("clangd"
                   ,(format "--query-driver=%s" cxx)))))))
     (lambda (&optional op sexp)
-      (cond ((eq op :push)
+      (cond ((eq op :put)
              (dolist* (x sexp sexp)
                (push! x eglot-server-programs)))
             ((eq op :read)
@@ -94,7 +94,7 @@
 (defun on-eglot-init! ()
   "On \\=`eglot\\=' initialization."
   ;; load recipe
-  (eglot*-server-programs :push (or (eglot*-server-programs :read)
+  (eglot*-server-programs :put (or (eglot*-server-programs :read)
                                     (eglot*-server-programs)))
   ;; most reduced
   (setq% eldoc-echo-area-use-multiline-p nil 'eldoc)

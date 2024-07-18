@@ -21,7 +21,7 @@
                    :mode c-or-c++-mode
                    :map c-or-c++-ts-mode))))
     (lambda (&optional op sexp)
-      (cond ((eq op :push)
+      (cond ((eq op :put)
              (dolist* (x sexp) (push! x m t)))
             ((eq op :read)
              (setq m (read-sexp-from-file b)))

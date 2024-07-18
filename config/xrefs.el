@@ -51,7 +51,7 @@
     (lambda (&optional op sexp)
       (cond ((eq op :read)
              (setq c (read-sexp-from-file b)))
-            ((eq op :push)
+            ((eq op :put)
              (when (> (length sexp) 0) (push! sexp c t)))
             ((eq op :save)
              (save-sexp-to-file (or sexp c) b))
