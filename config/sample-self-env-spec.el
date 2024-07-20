@@ -114,8 +114,8 @@
  (list :remove-unused nil
        :package-check-signature 'allow-unsigned
        :package-archives nil
-       ;; `(("gnu" . "https://elpa.gnu.org/packages/")
-       ;;   ("nongnu" . "https://elpa.nongnu.org/nongnu/")
+       ;; `(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+       ;;   ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
        ;;   ("melpa-stable" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
        ;;   ("melpa" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))
        :allowed nil))
