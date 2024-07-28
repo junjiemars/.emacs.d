@@ -136,7 +136,7 @@ Elisp@@html:</kbd>@@) and navigate to the Elisp documentation.
 - Navigating, finding, grepping in the same way wherever, ...
 - Org Mode that's your new life, ...
 - Amazing programming experiments, C, Lisp, ...
-- It's a no-cost extension and git friendly infrastructure.
+- It's a zero-cost extension and git friendly infrastructure.
 
 ** Install
    :PROPERTIES:
@@ -201,7 +201,8 @@ run it and reopen the Emacs.
     ├── LICENSE
     ├── README.org
     ├── config (comment "all stuff here")
-    ├── elpa (comment "installed packages")
+    ├── .eln (comment "native compiled packages")    
+    ├── .elpa (comment "installed packages")
     ├── init.el (comment "Emacs init file")
     ├── private (comment "your configuration can put here")
     │   ├── self-env-spec.el
@@ -334,7 +335,7 @@ Introduce the rules of naming /files/ and /functions/.
 **** Functions Naming (χ denotes name)
 
 #+REVEAL: split
-- =v-χ= macro =x= for processing Versioned directories or files, such
+- =v-χ= macro =x= for processing versioned directories or files, such
   as =v-home=
 - =_χ_= macro =x= only existing at compile-time, such as
   =_mark_thing@_=
@@ -347,9 +348,9 @@ Introduce the rules of naming /files/ and /functions/.
 - =χ@= positional functions, such as =mark-word@= and =mark-sexp@=
 
 * Recipe
-   :PROPERTIES:
-   :CUSTOM_ID: recipe
-   :END:
+  :PROPERTIES:
+  :CUSTOM_ID: recipe
+  :END:
 
 #+ATTR_HTML: :style display:none
 - [[#theme][Theme]]
@@ -419,7 +420,7 @@ GUI mode only.
                                (if-platform% 'windows-nt
                                    "Consolas-13"
                                  "Monaco-13"))))
-         :default nil                     ; `((fullscreen . fullheight))
+         :default nil ; `((fullscreen . fullheight))
          :inhibit-splash-screen nil
          :allowed t))
 #+END_SRC
@@ -496,8 +497,8 @@ The shell spec locate in =(*self-env-spec* :get :shell)=.
   (*self-env-spec*
    :put :shell
    (list :copy-vars `("PATH")
-         :spin-vars nil                   ; `(("ZZZ" . "123"))
-         :options '("-i" "2>/dev/null")   ; '("--login")
+         :spin-vars nil                 ; `(("ZZZ" . "123"))
+         :options '("-i" "2>/dev/null") ; '("--login")
          :exec-path t
          :shell-file-name (or (executable-find% "zsh")
                               (executable-find% "bash"))
@@ -534,7 +535,7 @@ shared the copied environment variables =:copy-vars= with shell.
    :put :eshell
    (list :visual-commands '("mtr")
          :destroy-buffer-when-process-dies nil
-         :visual-subcommands nil          ; '(("git" "log"))
+         :visual-subcommands nil ; '(("git" "log"))
          :visual-options nil
          :allowed t))
 #+END_SRC
@@ -559,7 +560,7 @@ The =desktop= spec locate in =(*self-env-spec* :get :desktop)=.
   (*self-env-spec*
    :put :desktop
    (list :files-not-to-save
-         "\\.t?gz$\\|\\.zip$\\|\.desktop\\|~$\\|^/sudo:\\|^/ssh[x]?:$"
+         "\\.t?gz$\\|\\.zip$\\|\\.desktop\\|~$\\|^/sudo:\\|^/ssh[x]?:$"
          :buffers-not-to-save "^TAGS\\|\\.log"
          :modes-not-to-save
          '(dired-mode fundamental-mode eww-mode rmail-mode)
@@ -1853,7 +1854,7 @@ It's the duty of [[https://www.gnu.org/software/tramp/][TRAMP]].
 
 **** On Darwin
 
-- aspell
+- [[http://aspell.net][aspell]]
 - aspell-dict-en
 
 * Issues?
