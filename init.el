@@ -326,8 +326,14 @@ If ONLY-COMPILE is t, does not load DST."
                      system-configuration-options
                      (match-beginning 3) (match-end 3))))))
         (when (and arch platform cc3)
-          (let ((path (concat (aref cc3 0) "/" (aref cc3 1) "/"
-                              arch platform)))
+          (let ((path (concat
+                       (aref cc3 0) "/" (aref cc3 1) "/"
+                       (or (and (string-equal "arm64" arch)
+                                (string-equal "gcc" (aref cc3 1))
+                                (<= 14 (string-to-number (aref cc3 2)))
+                                "aarch64")
+                           arch)
+                       platform)))
             (concat
              path "/"
              (car (inhibit-file-name-handler
