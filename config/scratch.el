@@ -46,7 +46,7 @@
 \\begin{document}
 \\maketitle
 
-% This buffer is for \\TeX{} that is not saved.
+% This buffer is for \\TeX{} that is not 保存. (setq TeX-engine 'xetex)
 
 \\end{document}
 "
