@@ -296,38 +296,33 @@ Optional prefix argument ENHANCED, displays additional details."
              outbuf))
         (sql-oracle-restore-settings sqlbuf settings)))))
 
-(when-sql-oracle-feature%
-  (defun sql-oracle-desc-table (sqlbuf outbuf enhanced table-name)
-    (let ((settings (sql-oracle-save-settings sqlbuf))
-          (simple-sql
-           (concat
-            "SELECT comments FROM all_tab_comments"
-            (format " WHERE table_name='%s';" table-name)))
-          (enhanced-sql
-           (concat
-            "SELECT DISTINCT T.column_name,C.comments"
-            " FROM all_tab_cols T"
-            " INNER JOIN all_col_comments C"
-            " ON T.table_name=C.table_name"
-            " AND T.column_name=C.column_name"
-            (format " WHERE T.table_name='%s'" table-name)
-            " ORDER BY T.column_name ASC;")))
-      (unwind-protect
-          (progn
-            (when enhanced
-              (sql-redirect
-               sqlbuf
-               "SET LINESIZE 200 PAGESIZE 100")
-              (sql-redirect
-               sqlbuf
-               "COLUMN column_name FORMAT A40;")
-              (sql-redirect
-               sqlbuf
-               "COLUMN comments FORMAT A80;"))
-            (sql-redirect
-             sqlbuf
-             (if enhanced enhanced-sql  simple-sql) outbuf))
-        (sql-oracle-restore-settings sqlbuf settings)))))
+(when-sql-oracle-feature%)
+(defun sql-oracle-desc-table (sqlbuf outbuf enhanced table-name)
+  (let ((settings (sql-oracle-save-settings sqlbuf))
+        (sql
+         (concat
+          "SELECT DISTINCT T.column_name,C.comments"
+          " FROM all_tab_cols T "
+          " INNER JOIN all_col_comments C"
+          "   ON    T.table_name=C.table_name"
+          "     AND T.column_name=C.column_name"
+          " WHERE T.table_name=" (format "'%s'" table-name)
+          (when enhanced
+            " ORDER BY T.column_name ASC")
+          ";")))
+    (unwind-protect
+        (progn
+          (sql-redirect
+           sqlbuf
+           "SET LINESIZE 200 PAGESIZE 100")
+          (sql-redirect
+           sqlbuf
+           "COLUMN column_name FORMAT A40;")
+          (sql-redirect
+           sqlbuf
+           "COLUMN comments FORMAT A80;")
+          (sql-redirect sqlbuf sql outbuf))
+      (sql-oracle-restore-settings sqlbuf settings))))
 
 (when-sql-oracle-feature%
   (defun sql-oracle-export-query (sqlbuf outbuf enhanced target)
