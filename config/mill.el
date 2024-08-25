@@ -41,7 +41,7 @@
 
 ;;; `mark-symbol@' `kill-symbol@'
 
-(defun mark-symbol@ ()
+(defun mark-symbol@ (&optional _)
   "Mark the symbol at point."
   (interactive)
   (let ((bs (_mark_symbol@_)))
@@ -169,7 +169,7 @@ If prefix N is non-nil, then forward or backward N functions."
 
 ;;; `mark-filename@'
 
-(defun mark-filename@ ()
+(defun mark-filename@ (&optional _)
   "Mark filename at point."
   (interactive)
   (let ((bs (_mark_filename@_)))
