@@ -26,17 +26,16 @@
 (declare-function _mark_thing_ (v-home%> "config/marks"))
 (declare-function _mark_whole_sexp@_ (v-home%> "config/marks"))
 (declare-function _mark_word@_ (v-home%> "config/marks"))
-(eval-when-compile
-  (autoload '_mark_defun@_ (v-home%> "config/marks") nil nil 'macro)
-  (autoload '_mark_filename@_ (v-home%> "config/marks") nil nil 'macro)
-  (autoload '_mark_quoted_asymmetry@_ (v-home%> "config/marks") nil nil 'macro)
-  (autoload '_mark_quoted_symmetry@_ (v-home%> "config/marks") nil nil 'macro)
-  (autoload '_mark_sexp@_ (v-home%> "config/marks") nil nil 'macro)
-  (autoload '_mark_string@_ (v-home%> "config/marks") nil nil 'macro)
-  (autoload '_mark_symbol@_ (v-home%> "config/marks") nil nil 'macro)
-  (autoload '_mark_thing_ (v-home%> "config/marks") nil nil 'macro)
-  (autoload '_mark_whole_sexp@_ (v-home%> "config/marks") nil nil 'macro)
-  (autoload '_mark_word@_ (v-home%> "config/marks") nil nil 'macro))
+(autoload '_mark_defun@_ (v-home%> "config/marks") nil nil 'macro)
+(autoload '_mark_filename@_ (v-home%> "config/marks") nil nil 'macro)
+(autoload '_mark_quoted_asymmetry@_ (v-home%> "config/marks") nil nil 'macro)
+(autoload '_mark_quoted_symmetry@_ (v-home%> "config/marks") nil nil 'macro)
+(autoload '_mark_sexp@_ (v-home%> "config/marks") nil nil 'macro)
+(autoload '_mark_string@_ (v-home%> "config/marks") nil nil 'macro)
+(autoload '_mark_symbol@_ (v-home%> "config/marks") nil nil 'macro)
+(autoload '_mark_thing_ (v-home%> "config/marks") nil nil 'macro)
+(autoload '_mark_whole_sexp@_ (v-home%> "config/marks") nil nil 'macro)
+(autoload '_mark_word@_ (v-home%> "config/marks") nil nil 'macro)
 
 
 ;;; `mark-symbol@' `kill-symbol@'
