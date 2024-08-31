@@ -398,7 +398,7 @@ And copy the qualified buffer name to kill ring."
                        #'display-line-numbers-mode
                  (if-fn% 'linum-mode 'linum
                          #'linum-mode
-                   #'(lambda ()
+                   #'(lambda (&optional _)
                        (interactive)
                        (user-error "%s" "No line mode found")))))
   (define-key% (current-global-map) (kbd "C-x x r") #'rename-buffer)

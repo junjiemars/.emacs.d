@@ -1149,8 +1149,8 @@ avaiabled on ancient Emacs.
 - @@html:<kbd>@@M-,@@html:</kbd>@@ =pop-tag-mark=
 - @@html:<kbd>@@M-*@@html:</kbd>@@ =tags-loop-continue=
 - @@html:<kbd>@@C-l@@html:</kbd>@@ =recenter-top-bottom=
-- @@html:<kbd>@@C-c b l@@html:</kbd>@@ =linum-mode=
-- @@html:<kbd>@@M-#@@html:</kbd>@@ =xref-find-references=
+- @@html:<kbd>@@C-x x l@@html:</kbd>@@ =display-line-numbers-mode=
+- @@html:<kbd>@@M-?@@html:</kbd>@@ =xref-find-references=
 
 *** Featured keys
 
@@ -1315,7 +1315,7 @@ life easy and if [[https://github.com/junjiemars/nore][Nore]] already on your ma
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-linux.png][debugging via lldb on Ubuntu]]
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-cdb-on-windows.png][debugging via cdb]]
 
-* Troubleshoting
+* Troubleshooting
    :PROPERTIES:
    :CUSTOM_ID: troubleshoting
    :END:
