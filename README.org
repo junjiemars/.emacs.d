@@ -1146,11 +1146,15 @@ Compatibled for ancient Emacs versions, compatible keys may not
 avaiabled on ancient Emacs.
 
 #+REVEAL: split
-- @@html:<kbd>@@M-,@@html:</kbd>@@ =pop-tag-mark=
-- @@html:<kbd>@@M-*@@html:</kbd>@@ =tags-loop-continue=
-- @@html:<kbd>@@C-l@@html:</kbd>@@ =recenter-top-bottom=
-- @@html:<kbd>@@C-x x l@@html:</kbd>@@ =display-line-numbers-mode=
-- @@html:<kbd>@@M-?@@html:</kbd>@@ =xref-find-references=
+- @@html:<kbd>@@M-.@@html:</kbd>@@ find definition of the identifier
+  at point
+- @@html:<kbd>@@M-,@@html:</kbd>@@ go back to the previous position of
+  the identifier after find the definition
+- @@html:<kbd>@@M-?@@html:</kbd>@@ find references to the identifier
+  at point
+- @@html:<kbd>@@C-l@@html:</kbd>@@ scroll the current line to the
+  middle of the window.
+- @@html:<kbd>@@C-x x l@@html:</kbd>@@ line mode
 
 *** Featured keys
 
