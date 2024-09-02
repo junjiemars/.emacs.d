@@ -39,17 +39,18 @@
 \\title{Scratch Tex}
 \\author{Nore Emacs}
 \\usepackage{amsmath}
-% \\usepackage{amssymb}
-% \\usepackage{xeCJK}
-% \\setCJKmainfont{SimSong}
-% \\setmainfont{Times New Roman}
 \\begin{document}
 \\maketitle
 
-% This buffer is for \\TeX{} that is not 保存. (setq TeX-engine 'xetex)
+% This buffer is for \\TeX{} that is not saved.
 
 \\end{document}
 "
+;; % \\usepackage{amssymb}
+;; % \\usepackage{xeCJK}
+;; % \\setCJKmainfont{SimSong}
+;; % \\setmainfont{Times New Roman}
+;; % (setq TeX-engine 'xetex)
         :mod latex-mode
         :pos ,(lambda ()
                 (goto-char (point-min))
