@@ -40,7 +40,7 @@
   (declare (indent 0))
   (if-feature-transient%
       `(progn% ,@body)
-  	`(comment ,@body)))
+    `(comment ,@body)))
 
 ;;; `treesit': builtin since Emacs-29+
 (defmacro-if-feature% treesit)
@@ -283,37 +283,37 @@
 
 ;; after-init
 (defun on-autoloads! ()
-  (inhibit-gc
-    ;; preferred coding system
-    (prefer-coding-system 'utf-8)
-    (self-graphic-init!)
-    (when-fn% 'self-shell-read! nil (self-shell-read!))
-    (when-fn% 'self-socks-init! nil (self-socks-init!))
-    (setq% history-length (/ (emacs-arch) 8))
-    (load-autoloaded-modes!)
-    (load-conditional-modes!)
-    (when-fn% 'self-edit-init! nil (self-edit-init!))
-    (when-font% (make-thread* #'self-glyph-init!))
-    (when-fn% 'self-module-init! nil
-      (condition-case err
-          (self-module-init!)
-        (error (message "self-module-init!: %s" err))))
-    (when-fn% 'self-desktop-read! nil
-      (condition-case err
-          (self-desktop-read!)
-        (error (message "self-desktop-read!: %s" err))))
-    ;; `load-path' versioned dirs
-    (push! (v-home% "config/") load-path)
-    (push! (v-home% "private/") load-path)
-    (when (*self-paths* :get :epilogue)
-      (condition-case err
-          (make-thread*
-           (lambda ()
-             (inhibit-gc
-               (compile!
-                 (compile-unit* (*self-paths* :get :epilogue)))))
-           (if-noninteractive% t))
-        (error (message "self-epilogue: %s" err))))))
+  "Autoload after init."
+  ;; preferred coding system
+  (prefer-coding-system 'utf-8)
+  (self-graphic-init!)
+  (when-fn% 'self-shell-read! nil (self-shell-read!))
+  (when-fn% 'self-socks-init! nil (self-socks-init!))
+  (setq% history-length (/ (emacs-arch) 8))
+  (load-autoloaded-modes!)
+  (load-conditional-modes!)
+  (when-fn% 'self-edit-init! nil (self-edit-init!))
+  (when-font% (make-thread* (inhibit-gc (self-glyph-init!))))
+  (when-fn% 'self-module-init! nil
+    (condition-case err
+        (self-module-init!)
+      (error (message "self-module-init!: %s" err))))
+  (when-fn% 'self-desktop-read! nil
+    (condition-case err
+        (self-desktop-read!)
+      (error (message "self-desktop-read!: %s" err))))
+  ;; `load-path' versioned dirs
+  (push! (v-home% "config/") load-path)
+  (push! (v-home% "private/") load-path)
+  (when (*self-paths* :get :epilogue)
+    (condition-case err
+        (make-thread*
+         (lambda ()
+           (inhibit-gc
+             (compile!
+               (compile-unit* (*self-paths* :get :epilogue)))))
+         (if-noninteractive% t))
+      (error (message "self-epilogue: %s" err)))))
 
 ;;; autoload when interactive or not
 (if-noninteractive%
