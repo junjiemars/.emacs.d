@@ -417,31 +417,30 @@ And copy the qualified buffer name to kill ring."
 ;;;
 
 (defun on-progs-mode! ()
-  (inhibit-gc
-    ;; no cursor blinking, it's distracting
-    (when-fn% 'blink-cursor-mode nil (blink-cursor-mode 0))
-    ;; enable `column-number-mode'
-    (setq% column-number-mode t 'simple)
-    ;; highlights matching parenthesis
-    (inhibit-blinking (show-paren-mode 1))
-    ;; enable save minibuffer history
-    (if-version%
-        <= 24
-        (savehist-mode)
-      (savehist-mode t))
-    ;; enable save-place
-    (if-version%
-        <= 25.1
-        (save-place-mode t)
-      (setq% save-place t 'saveplace))
-    (require 'view nil t)
-    (when-fn% 'ido-mode 'ido (ido-mode t))
-    ;; fix: `uniquify' may not be autoloaded on ancient Emacs.
-    (when-version% > 24
-      (when% (fluid-let (byte-compile-warnings nil)
-               (require 'uniquify nil t))
-        (require 'uniquify)
-        (setq uniquify-buffer-name-style 'post-forward-angle-brackets)))))
+  ;; no cursor blinking, it's distracting
+  (when-fn% 'blink-cursor-mode nil (blink-cursor-mode 0))
+  ;; enable `column-number-mode'
+  (setq% column-number-mode t 'simple)
+  ;; highlights matching parenthesis
+  (inhibit-blinking (show-paren-mode 1))
+  ;; enable save minibuffer history
+  (if-version%
+      <= 24
+      (savehist-mode)
+    (savehist-mode t))
+  ;; enable save-place
+  (if-version%
+      <= 25.1
+      (save-place-mode t)
+    (setq% save-place t 'saveplace))
+  (require 'view nil t)
+  (when-fn% 'ido-mode 'ido (ido-mode t))
+  ;; fix: `uniquify' may not be autoloaded on ancient Emacs.
+  (when-version% > 24
+    (when% (fluid-let (byte-compile-warnings nil)
+             (require 'uniquify nil t))
+      (require 'uniquify)
+      (setq uniquify-buffer-name-style 'post-forward-angle-brackets))))
 
 ;; end of `on-progs-mode!'
 

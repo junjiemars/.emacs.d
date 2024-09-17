@@ -29,10 +29,9 @@
     ;; (if-feature-aggressive-indent% (make-thread* #'aggressive-indent-mode))
     ;; `paredit' structured editing of s-expression data
     (if-feature-paredit%
-        (make-thread* (inhibit-blinking (use-paredit-init!))))
+        (use-paredit-init!))
     ;; `rainbow-delimiters': hilighting parentheses, brackets
-    (if-feature-rainbow-delimiters%
-        (make-thread* (inhibit-blinking (rainbow-delimiters-mode))))))
+    (rainbow-delimiters-mode)))
 
 
 (defun use-emacs-lisp-init! ()

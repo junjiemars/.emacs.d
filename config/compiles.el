@@ -70,55 +70,59 @@
 
 (defun on-compile-init! ()
   "On \\=`compile\\=' initialization."
-  (setq% compilation-buffer-name-function #'compilation*-buffer-name 'compile)
-  (when-platform% 'windows-nt
-    ;; compile and activate `compilation-find-file' advice on Windows
-    (ad-enable-advice #'compilation-find-file 'before
-                      "compilation-find-file-before")
-    (ad-activate #'compilation-find-file t))
-  (when-platform% 'darwin
-    ;; `next-error' find source file
-    (add-hook 'compilation-finish-functions
-              #'compilation*-make-change-dir
-              (emacs-arch)))
-  (add-hook 'compilation-filter-hook #'compilation*-colorize-buffer!)
-  (when-var% compilation-mode-map 'compile
-    ;; define `recompile' and `quit-window' key bindings
-    (define-key% compilation-mode-map (kbd "g") #'compilation*-recompile)
-    (define-key% compilation-mode-map (kbd "q") #'quit-window))
-  (setq% compilation-scroll-output t 'compile))
+  (inhibit-gc
+    (setq% compilation-buffer-name-function #'compilation*-buffer-name 'compile)
+    (when-platform% 'windows-nt
+      ;; compile and activate `compilation-find-file' advice on Windows
+      (ad-enable-advice #'compilation-find-file 'before
+                        "compilation-find-file-before")
+      (ad-activate #'compilation-find-file t))
+    (when-platform% 'darwin
+      ;; `next-error' find source file
+      (add-hook 'compilation-finish-functions
+                #'compilation*-make-change-dir
+                (emacs-arch)))
+    (add-hook 'compilation-filter-hook #'compilation*-colorize-buffer!)
+    (when-var% compilation-mode-map 'compile
+      ;; define `recompile' and `quit-window' key bindings
+      (define-key% compilation-mode-map (kbd "g") #'compilation*-recompile)
+      (define-key% compilation-mode-map (kbd "q") #'quit-window))
+    (setq% compilation-scroll-output t 'compile)))
 
 
 (defun on-grep-init! ()
   "On \\=`grep\\=' initialization."
-  ;; define `recompile' and `quit-window' key binding for `grep'
-  (when-var% grep-mode-map 'grep
-    (define-key% grep-mode-map (kbd "g") #'compilation*-recompile)
-    (define-key% grep-mode-map (kbd "q") #'quit-window)))
+  (inhibit-gc
+    ;; define `recompile' and `quit-window' key binding for `grep'
+    (when-var% grep-mode-map 'grep
+      (define-key% grep-mode-map (kbd "g") #'compilation*-recompile)
+      (define-key% grep-mode-map (kbd "q") #'quit-window))))
 
 
 (defun on-make-mode-init! ()
   "On \\=`make-mode\\=' intialization."
-  ;; spaced blackslash-region for makefile.
-  (when-var% makefile-mode-map 'make-mode
-    (when-fn% 'makefile-backslash-region 'make-mode
-      (define-key% makefile-mode-map (kbd "C-c C-\\")
-                   #'(lambda (from to delete-flag)
-                       (interactive "r\nP")
-                       (fluid-let (indent-tabs-mode nil)
-                         (makefile-backslash-region from to delete-flag))))))
-  (when-platform% 'darwin
-    (when-fn% 'makefile-gmake-mode 'make-mode
-      (when% (and (assoc-string "[Mm]akefile\\'" auto-mode-alist)
-                  (executable-find%
-                   "make"
-                   (lambda (make)
-                     (let ((x (shell-command* make "--version")))
-                       (and (zerop (car x))
-                            (string-match "^GNU Make.*" (cdr x)))))))
-        (when% (assoc-string "[Mm]akefile\\'" auto-mode-alist)
-          (setcdr (assoc-string "[Mm]akefile\\'" auto-mode-alist)
-                  'makefile-gmake-mode))))))
+  (inhibit-gc
+    ;; spaced blackslash-region for makefile.
+    (when-var% makefile-mode-map 'make-mode
+      (when-fn% 'makefile-backslash-region 'make-mode
+        (define-key%
+         makefile-mode-map (kbd "C-c C-\\")
+         #'(lambda (from to delete-flag)
+             (interactive "r\nP")
+             (fluid-let (indent-tabs-mode nil)
+               (makefile-backslash-region from to delete-flag))))))
+    (when-platform% 'darwin
+      (when-fn% 'makefile-gmake-mode 'make-mode
+        (when% (and (assoc-string "[Mm]akefile\\'" auto-mode-alist)
+                    (executable-find%
+                     "make"
+                     (lambda (make)
+                       (let ((x (shell-command* make "--version")))
+                         (and (zerop (car x))
+                              (string-match "^GNU Make.*" (cdr x)))))))
+          (when% (assoc-string "[Mm]akefile\\'" auto-mode-alist)
+            (setcdr (assoc-string "[Mm]akefile\\'" auto-mode-alist)
+                    'makefile-gmake-mode)))))))
 
 
 

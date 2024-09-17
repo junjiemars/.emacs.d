@@ -198,9 +198,7 @@ If optional UNIQUELY is non-nil then append uniquely."
                (thread-join (make-thread ,fn ,name))
              (make-thread ,fn ,name))
      (ignore* ,join ,name)
-     (if% (functionp ,fn)
-         (funcall ,fn)
-       ,fn)))
+     (funcall ,fn)))
 
 ;; end of byte-compiler macro
 
