@@ -13,10 +13,8 @@
   (make-thread* #'on-eww-init!))
 
 ;;; autoload
-(autoload 'lookup-web (v-home%> "config/ewws")
-  "Lookup web." t)
-(autoload 'toggle-browser! (v-home%> "config/ewws")
-  "Toggle browser." t)
+(autoload 'lookup-web (v-home%> "config/ewws") nil t)
+(autoload 'toggle-browser! (v-home%> "config/ewws") nil t)
 
 ;;; `eww-search-words' and `webjump' more leaner than `lookup-web'.
 (define-key% (current-global-map) (kbd "M-s w") #'lookup-web)

@@ -236,7 +236,7 @@
     (prog1
         (compile-unit% (emacs-home* "config/scratch.el") t)
       (autoload 'scratch (v-home%> "config/scratch")
-        "scratch" t))
+        "Scratch" t))
     ;; on `sqls'
     (compile-unit% (emacs-home* "config/on-sql-autoload.el"))
 

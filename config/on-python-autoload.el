@@ -7,12 +7,9 @@
 ;;;;
 
 (autoload 'on-python-init! (v-home%> "config/pythons"))
-(autoload 'python*-program (v-home%> "config/pythons")
-  "The program of python executable.")
-(autoload 'python*-venv (v-home%> "config/pythons")
-  "Python\\='s venv.")
-(autoload 'python*-venv-make! (v-home%> "config/pythons")
-  "Make Python\\='s venv." t)
+(autoload 'python*-program (v-home%> "config/pythons"))
+(autoload 'python*-venv (v-home%> "config/pythons"))
+(autoload 'python*-venv-make! (v-home%> "config/pythons") nil t)
 
 ;;; `python' after load
 (with-eval-after-load 'python

@@ -23,7 +23,6 @@
   (make-thread* #'on-ielm-init!))
 
 ;;; autoload
-(autoload 'term*-unify-shell-prompt (v-home%> "config/terms")
-  "Unify shell prompt." t)
+(autoload 'term*-unify-shell-prompt (v-home%> "config/terms") nil t)
 
 ;; end of on-term-autoload.el
