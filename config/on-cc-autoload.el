@@ -36,8 +36,7 @@
 ;;; autoload
 (autoload 'cc*-cc (v-home%> "config/cc"))
 (autoload 'cc*-system-include (v-home%> "config/cc"))
-(autoload 'cc*-make-tags (v-home%> "config/cc")
-  "Make system C tags." t)
+(autoload 'cc*-make-tags (v-home%> "config/cc"))
 
 
 ;; end of on-cc-autoload.el
