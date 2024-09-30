@@ -6,6 +6,7 @@
 ;; compiles.el
 ;;;;
 
+(declare-function recompile "compile")
 
 (when-platform% 'windows-nt
   ;; There are no builtin `grep' in Windows, GNU's `grep' may use
