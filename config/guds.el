@@ -9,12 +9,11 @@
 ;; common gud vars and fns for `gud-cdb' and `gud-lldb'.
 ;;;;
 
+;;; require
 
+;; (eval-when-compile (require 'gud))
 
-
-(eval-when-compile (require 'gud))
-
-
+;; end of require
 
 ;;;;
 ;;  variables                                       ;
@@ -61,7 +60,9 @@ Avoid bugs in `gud-format-command' and `gud-find-c-expr'."
               (when (<= (- cur idx) (point-min))
                 (throw 'break (point-min)))
               (while (and (char-before (- cur idx))
-                          (char-equal (char-syntax (char-before (- cur idx))) ?w))
+                          (char-equal
+                           (char-syntax (char-before (- cur idx)))
+                           ?w))
                 (setq idx (1+ idx)))
               (when (and (> idx 2)
                          (string-match
@@ -125,9 +126,10 @@ Avoid bugs in `gud-format-command' and `gud-find-c-expr'."
                         (and (< cur ori)
                              (let ((idx 0))
                                (while (and (< (+ cur idx) ori)
-                                           (char-equal (char-syntax
-                                                        (char-after (+ cur idx)))
-                                                       ?\ ))
+                                           (char-equal
+                                            (char-syntax
+                                             (char-after (+ cur idx)))
+                                            ?\ ))
                                  (setq idx (1+ idx)))
                                (= (+ cur idx) ori))))
                 (throw 'break ori))

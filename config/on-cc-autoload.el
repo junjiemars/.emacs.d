@@ -11,6 +11,9 @@
 (autoload 'on-cc-mode-init! (v-home%> "config/cc"))
 (autoload 'on-cmacexp-init! (v-home%> "config/cc"))
 (autoload 'on-man-init! (v-home%> "config/cc"))
+(autoload 'cc*-cc (v-home%> "config/cc"))
+(autoload 'cc*-system-include (v-home%> "config/cc"))
+(autoload 'cc*-make-tags (v-home%> "config/cc"))
 
 
 ;; default `c-mode-hook'
@@ -33,10 +36,6 @@
 (with-eval-after-load 'man
   (make-thread* #'on-man-init!))
 
-;;; autoload
-(autoload 'cc*-cc (v-home%> "config/cc"))
-(autoload 'cc*-system-include (v-home%> "config/cc"))
-(autoload 'cc*-make-tags (v-home%> "config/cc"))
 
 
 ;; end of on-cc-autoload.el

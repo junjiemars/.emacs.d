@@ -20,9 +20,7 @@
 (defun self-desktop-read! ()
   "Read the desktop of the previous Emacs instance."
   (inhibit-gc
-    (when (and (desktop-spec->* :allowed)
-               (eval-when-compile
-                 (file-exists-p (v-home% ".desktop/"))))
+    (when (and (desktop-spec->* :allowed) (v-home! ".desktop/"))
       (inhibit-blinking
         ;; restrict eager
         (setq% desktop-restore-eager 0 'desktop)

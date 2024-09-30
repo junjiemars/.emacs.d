@@ -154,20 +154,20 @@ test_profile() {
   (list :tab-width 2
         :narrow-to-region t
         :delete-trailing-whitespace '(prog-mode)
-        :allowed nil))
+        :allowed t))
 (*self-env-spec*
   :put :module
   (list :package-check-signature 'allow-unsigned
+       :package-archives
+       \`(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+          ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
+          ("melpa-stable" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
+          ("melpa" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))
         :allowed t))
 (*self-mod-spec*
   :put :lisp
   (list
-   :cond nil ; (when-version% <= 29 t)
-   :packages  '(paredit magit)
-   :compile \`(,(compile-unit% (emacs-home* "config/use-lisp.el") t)
-               ,(compile-unit% (emacs-home* "config/use-lisp-autoload.el"))
-               ,(compile-unit% (emacs-home* "config/use-magit.el") t)
-               ,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
+   :cond nil))
 END
   echo "# cat <${_ENV_PRO_}"
   cat <"${_ENV_PRO_}"

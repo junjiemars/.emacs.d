@@ -9,26 +9,24 @@
 ;; See also: http://emacswiki.org/emacs/CopyAndPaste
 ;;;;
 
-(eval-when-compile
-  (defmacro _defun_x_kill_ (bin &rest args)
-    (declare (indent 1))
-    `(defun x-kill* (text &optional _)
-       "Copy TEXT to system clipboard."
-       (with-temp-buffer
-         (insert text)
-         (call-process-region (point-min) (point-max)
-                              ,bin
-                              nil 0 nil
-                              ,@args)))))
+(defmacro _defun_x_kill_ (bin &rest args)
+  (declare (indent 1))
+  `(defun x-kill* (text &optional _)
+     "Copy TEXT to system clipboard."
+     (with-temp-buffer
+       (insert text)
+       (call-process-region (point-min) (point-max)
+                            ,bin
+                            nil 0 nil
+                            ,@args))))
 
-(eval-when-compile
-  (defmacro _defun_x_yank_ (bin &rest args)
-    (declare (indent 1))
-    `(defun x-yank* ()
-       "Paste from system clipboard."
-       (let ((out (shell-command* ,bin ,@args)))
-         (when (zerop (car out))
-           (cdr out))))))
+(defmacro _defun_x_yank_ (bin &rest args)
+  (declare (indent 1))
+  `(defun x-yank* ()
+     "Paste from system clipboard."
+     (let ((out (shell-command* ,bin ,@args)))
+       (when (zerop (car out))
+         (cdr out)))))
 
 ;;; `darwin'
 (when-platform% 'darwin (_defun_x_kill_ "pbcopy"))

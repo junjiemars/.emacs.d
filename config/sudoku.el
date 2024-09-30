@@ -308,51 +308,45 @@
           (throw 'block :unique)))
 
       (while (< i d)
-        (unless (sudoku-puzzle-vec-unique (*sudoku-puzzle*
-                                           :row
-                                           (sudoku-puzzle-1d i 0)))
+        (unless (sudoku-puzzle-vec-unique
+                 (*sudoku-puzzle* :row (sudoku-puzzle-1d i 0)))
           (throw 'block :unique))
         (setq i (1+ i)))
 
       (while (< j d)
-        (unless (sudoku-puzzle-vec-unique (*sudoku-puzzle*
-                                           :col
-                                           (sudoku-puzzle-1d 0 j)))
+        (unless (sudoku-puzzle-vec-unique
+                 (*sudoku-puzzle* :col (sudoku-puzzle-1d 0 j)))
           (throw 'block :unique))
         (setq j (1+ j)))
 
       (setq i 0 j 0)
       (while (< i d)
         (while (< j d)
-          (unless (sudoku-puzzle-vec-unique (*sudoku-puzzle*
-                                             :sqr
-                                             (sudoku-puzzle-1d i j)))
+          (unless (sudoku-puzzle-vec-unique
+                   (*sudoku-puzzle* :sqr (sudoku-puzzle-1d i j)))
             (throw 'block :unique))
           (setq j (+ j sqr)))
         (setq j 0 i (+ i sqr)))
 
       (setq i 0)
       (while (< i d)
-        (unless (sudoku-puzzle-vec-complete (*sudoku-puzzle*
-                                             :row
-                                             (sudoku-puzzle-1d i 0)))
+        (unless (sudoku-puzzle-vec-complete
+                 (*sudoku-puzzle* :row (sudoku-puzzle-1d i 0)))
           (throw 'block :complete))
         (setq i (1+ i)))
 
       (setq j 0)
       (while (< j d)
-        (unless (sudoku-puzzle-vec-complete (*sudoku-puzzle*
-                                             :col
-                                             (sudoku-puzzle-1d 0 j)))
+        (unless (sudoku-puzzle-vec-complete
+                 (*sudoku-puzzle* :col (sudoku-puzzle-1d 0 j)))
           (throw 'block :complete))
         (setq j (1+ j)))
 
       (setq i 0 j 0)
       (while (< i d)
         (while (< j d)
-          (unless (sudoku-puzzle-vec-complete (*sudoku-puzzle*
-                                               :sqr
-                                               (sudoku-puzzle-1d i j)))
+          (unless (sudoku-puzzle-vec-complete
+                   (*sudoku-puzzle* :sqr (sudoku-puzzle-1d i j)))
             (throw 'block :complete))
           (setq j (+ j sqr)))
         (setq j 0 i (+ i sqr))))
@@ -489,21 +483,21 @@
         (goto-char 0)
         (let ((s (let ((s1 0) (s2 0) (ss))
                    (while (< s1 sqr)
-  	                 (setq ss (concat ss "+")
-  				                 s2 0)
-  	                 (while (< s2 sqr)
-  		                 (setq ss (concat ss (make-string w ?-))
-  					                 s2 (1+ s2)))
-  	                 (setq s1 (1+ s1)))
+                     (setq ss (concat ss "+")
+                           s2 0)
+                     (while (< s2 sqr)
+                       (setq ss (concat ss (make-string w ?-))
+                             s2 (1+ s2)))
+                     (setq s1 (1+ s1)))
                    (concat ss "+\n")))
               (v (let ((s1 0) (s2 0) (ss))
                    (while (< s1 sqr)
-  	                 (setq ss (concat ss "|")
-  				                 s2 0)
-  	                 (while (< s2 sqr)
-  		                 (setq ss (concat ss " %s ")
-  					                 s2 (1+ s2)))
-  	                 (setq s1 (1+ s1)))
+                     (setq ss (concat ss "|")
+                           s2 0)
+                     (while (< s2 sqr)
+                       (setq ss (concat ss " %s ")
+                             s2 (1+ s2)))
+                     (setq s1 (1+ s1)))
                    (concat ss "|\n")))
               (u "_")
               (row 0)

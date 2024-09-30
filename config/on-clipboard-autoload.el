@@ -3,7 +3,7 @@
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; on-clip-autoload.el
+;; on-clipboard-autoload.el
 ;;;;
 
 ;;; (unless-graphic% t)
@@ -38,4 +38,4 @@
   (setq interprogram-cut-function #'x-kill*
         interprogram-paste-function #'x-yank*))
 
- ;; end of on-clip-autoload.el
+ ;; end of on-clipboard-autoload.el

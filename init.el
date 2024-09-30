@@ -58,7 +58,7 @@
 (defmacro inhibit-gc (&rest body)
   "Inhibit BODY under GC."
   (declare (indent 0))
-  `(let ((gc-cons-percentage 0.6))
+  `(let ((gc-cons-percentage 0.7))
      ,@body))
 
 ;; end of compile-time macro

@@ -8,36 +8,11 @@
 ;; Commentary: mark and kill keys
 ;;;;
 
-;;; macro
+;;; require
 
-;; (if-version%
-;;     < 25
-;;     (eval-when-compile
-;;       (require 'marks (v-home%> "config/marks")))
-;;   (require 'marks (v-home%> "config/marks")))
-
-(declare-function _mark_defun@_ (v-home%> "config/marks"))
-(declare-function _mark_filename@_ (v-home%> "config/marks"))
-(declare-function _mark_quoted_asymmetry@_ (v-home%> "config/marks"))
-(declare-function _mark_quoted_symmetry@_ (v-home%> "config/marks"))
-(declare-function _mark_sexp@_ (v-home%> "config/marks"))
-(declare-function _mark_string@_ (v-home%> "config/marks"))
-(declare-function _mark_symbol@_ (v-home%> "config/marks"))
-(declare-function _mark_thing_ (v-home%> "config/marks"))
-(declare-function _mark_whole_sexp@_ (v-home%> "config/marks"))
-(declare-function _mark_word@_ (v-home%> "config/marks"))
 (eval-when-compile (require 'marks (v-home%> "config/marks")))
-;; (autoload '_mark_defun@_ (v-home%> "config/marks") nil nil 'macro)
-;; (autoload '_mark_filename@_ (v-home%> "config/marks") nil nil 'macro)
-;; (autoload '_mark_quoted_asymmetry@_ (v-home%> "config/marks") nil nil 'macro)
-;; (autoload '_mark_quoted_symmetry@_ (v-home%> "config/marks") nil nil 'macro)
-;; (autoload '_mark_sexp@_ (v-home%> "config/marks") nil nil 'macro)
-;; (autoload '_mark_string@_ (v-home%> "config/marks") nil nil 'macro)
-;; (autoload '_mark_symbol@_ (v-home%> "config/marks") nil nil 'macro)
-;; (autoload '_mark_thing_ (v-home%> "config/marks") nil nil 'macro)
-;; (autoload '_mark_whole_sexp@_ (v-home%> "config/marks") nil nil 'macro)
-;; (autoload '_mark_word@_ (v-home%> "config/marks") nil nil 'macro)
 
+;; end of require
 
 ;;; `mark-symbol@' `kill-symbol@'
 
