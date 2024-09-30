@@ -56,7 +56,9 @@
 (defun compilation*-recompile (&optional _ __)
   "Re-compile."
   (interactive)
-  (when-version% > 27 (eval-when-compile (require 'compile)))
+  (when-version% > 27
+    (eval-when-compile (require 'compile))
+    (declare-function recompile 'compile))
   (cond ((and current-prefix-arg
               (not
                (string=
