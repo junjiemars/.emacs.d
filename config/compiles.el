@@ -6,8 +6,6 @@
 ;; compiles.el
 ;;;;
 
-(declare-function recompile "compile")
-
 (when-platform% 'windows-nt
   ;; There are no builtin `grep' in Windows, GNU's `grep' may use
   ;; the UNIX path in Windows which cannot be recognized by Emacs.
@@ -58,6 +56,7 @@
 (defun compilation*-recompile (&optional _ __)
   "Re-compile."
   (interactive)
+  (when-version% > 27 (eval-when-compile (require 'compile)))
   (cond ((and current-prefix-arg
               (not
                (string=
