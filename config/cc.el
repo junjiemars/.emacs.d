@@ -30,8 +30,9 @@
          (or (let* ((cmd (shell-command* (shell-quote-argument vswhere)
                            "-nologo -latest -property installationPath"))
                     (bat (and (zerop (car cmd))
-                              (concat (string-trim> (cdr cmd))
-                                      "/VC/Auxiliary/Build/vcvarsall.bat"))))
+                              (concat
+                               (string-trim> (cdr cmd))
+                               "/VC/Auxiliary/Build/vcvarsall.bat"))))
                (when (file-exists-p bat) bat))
              (let* ((ver (car (directory-files
                                vsroot
@@ -55,7 +56,9 @@
                  "\n"
                  "call vcvarsall.bat " arch "\n"
                  "set CC=cl" "\n"
-                 "set AS=ml" (if (string-match "[_a-zA-Z]*64" arch) "64" "")
+                 "set AS=ml" (if (string-match "[_a-zA-Z]*64" arch)
+                                 "64"
+                               "")
                  "\n"
                  "\n"
                  "popd\n"
