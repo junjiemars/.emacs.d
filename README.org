@@ -1320,6 +1320,16 @@ life easy and if [[https://github.com/junjiemars/nore][Nore]] already on your ma
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-linux.png][debugging via lldb on Ubuntu]]
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-cdb-on-windows.png][debugging via cdb]]
 
+*** Formatting
+    :PROPERTIES:
+    :CUSTOM_ID: c-programming-formatting
+    :END:
+
+#+ATTR_HTML: :style text-align:left
+Formatting C source code.
+
+- =cc*-format-buffer= @@html:<kbd>@@C-c C-f@@html:</kbd>@@
+  
 * Troubleshooting
    :PROPERTIES:
    :CUSTOM_ID: troubleshoting

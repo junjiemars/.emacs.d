@@ -437,6 +437,32 @@ N specify the number of spaces when align."
 ;; end of `cc-styles'
 
 ;;;
+;; format
+;;;
+
+(defun cc*-format-buffer ()
+  "Format the current buffer via clang-format."
+  (interactive)
+  (with-current-buffer (current-buffer)
+    (when (eq major-mode 'c-mode)
+      (let* ((bounds (if-region-active
+                         (cons (region-beginning) (region-end))
+                       (cons (point-min) (point-max))))
+             (rs (buffer-substring (car bounds) (cdr bounds)))
+             (f (save-str-to-file
+                 rs (concat (make-temp-name ".cc-fmt-") ".c")))
+             (ss (let ((x (shell-command* "clang-format" "-i" f)))
+                   (when (= 0 (car x))
+                     (read-str-from-file f)))))
+        (when (not (string= rs ss))
+          (save-excursion
+            (delete-region (car bounds) (cdr bounds))
+            (insert ss)))
+        (when (file-exists-p f) (delete-file f))))))
+
+;; end of format
+
+;;;
 ;; `cc-mode'
 ;;;
 
@@ -469,7 +495,9 @@ N specify the number of spaces when align."
   (define-key% c-mode-map (kbd "C-c C-w")
                (if-fn% 'subword-mode 'subword
                        #'subword-mode
-                 #'c-subword-mode)))
+                 #'c-subword-mode))
+  ;; format code
+  (define-key% c-mode-map (kbd "C-c C-f") #'cc*-format-buffer))
 
 ;; end of `cc-mode'
 
