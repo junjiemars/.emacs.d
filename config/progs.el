@@ -395,7 +395,10 @@ And copy the qualified buffer name to kill ring."
                  #'revert-buffer))
   (define-key% (current-global-map) (kbd "C-x x l")
                (if-fn% 'display-line-numbers-mode 'display-line-numbers
-                       #'display-line-numbers-mode
+                       (progn
+                         (setq% display-line-numbers-type 'relative
+                                'display-line-numbers)
+                         #'display-line-numbers-mode)
                  (if-fn% 'linum-mode 'linum
                          #'linum-mode
                    #'(lambda (&optional _)

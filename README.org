@@ -1159,10 +1159,11 @@ avaiabled on ancient Emacs.
 *** Featured keys
 
 #+ATTR_HTML: :style text-align:left
-The features provided by non-Emacs's packages, featured keys may not
-avaiabled on ancient Emacs.
+Featured for non-Emacs's packages, and may not avaiabled on ancient
+Emacs.
 
-- @@html:<kbd>@@C-x v d@@html:</kbd>@@ =magit-status=
+- @@html:<kbd>@@C-x v d@@html:</kbd>@@ =vc*-dir= could be toggled
+  between =magit-status= and =vc-dir=
 
 * Programming
   :PROPERTIES:
@@ -1676,6 +1677,8 @@ It's *self-documenting* and great, keep reading it frequently.
 - /jump to/ register: @@html:<kbd>@@C-x r j <REG>@@html:</kbd>@@
 - /insert from/ register: @@html:<kbd>@@C-x r i <REG>@@html:</kbd>@@
 - /view/ the content of register: @@html:<kbd>@@M-x view-register
+  <REG>@@html:</kbd>@@
+- /list/ the content of register: @@html:<kbd>@@M-x list-register
   <REG>@@html:</kbd>@@
 
 ** Bookmark
