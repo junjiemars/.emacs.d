@@ -448,7 +448,8 @@ N specify the number of spaces when align."
   (interactive)
   (with-current-buffer (current-buffer)
     (when (eq major-mode 'c-mode)
-      (let* ((bounds (if-region-active
+      (let* ((p (point))
+             (bounds (if-region-active
                          (cons (region-beginning) (region-end))
                        (cons (point-min) (point-max))))
              (rs (buffer-substring (car bounds) (cdr bounds)))
@@ -460,49 +461,11 @@ N specify the number of spaces when align."
         (unless (string= rs ss)
           (save-excursion
             (delete-region (car bounds) (cdr bounds))
-            (insert ss)))
+            (insert ss))
+          (goto-char p))
         (when (file-exists-p f) (delete-file f))))))
 
 ;; end of format
-
-;;;
-;; `cc-mode'
-;;;
-
-(defun on-cc-mode-init! ()
-  "On \\=`cc-mode\\=' initialization."
-  ;; add styles
-  (c-add-style (car cc*-style-nginx) (cdr cc*-style-nginx))
-  ;; keymap:
-  ;; find include file
-  (when-fn-ff-find-other-file%
-   (when-var% c-mode-map 'cc-mode
-     (define-key% c-mode-map (kbd "C-c f i")
-                  #'cc*-find-include-file))
-   ;; for c++, add include via `cc*-extra-include'
-   (when-var% c++mode-map 'cc-mode
-     (define-key% c++-mode-map (kbd "C-c f i")
-                  #'cc*-find-include-file)))
-  ;; indent line or region
-  (when-fn% 'c-indent-line-or-region 'cc-cmds
-    (define-key% c-mode-map
-                 (kbd "TAB") #'c-indent-line-or-region))
-  ;; dump predefined macros
-  (define-key% c-mode-map (kbd "C-c #")
-               #'cc*-dump-predefined-macros)
-  ;; raw newline
-  (define-key% c-mode-map (kbd "RET") #'newline*)
-  ;; align style
-  (define-key% c-mode-map (kbd "C-c |") #'cc*-style-align-entire)
-  ;; `subword-mode'
-  (define-key% c-mode-map (kbd "C-c C-w")
-               (if-fn% 'subword-mode 'subword
-                       #'subword-mode
-                 #'c-subword-mode))
-  ;; format buffer
-  (define-key% c-mode-map (kbd "C-c C-f") #'cc*-format-buffer))
-
-;; end of `cc-mode'
 
 ;;;
 ;; `cmacexp'
@@ -545,15 +508,6 @@ N specify the number of spaces when align."
     (cc*-macro-expand)
     ad-do-it))
 
-(defun on-cmacexp-init! ()
-  "On \\=`cmacexp\\=' initialization."
-  (when-fn-c-macro-expand%
-    ;; [C-c C-e] `c-macro-expand' in `cc-mode'
-    (setq% c-macro-prompt-flag t 'cmacexp)
-    (ad-enable-advice #'c-macro-expand
-                      'around "c-macro-expand-around")
-    (ad-activate #'c-macro-expand t)))
-
 ;; end of `cmacexp'
 
 ;;;
@@ -568,6 +522,51 @@ N specify the number of spaces when align."
       (setq% Man-header-file-path (cc*-system-include t) 'man))))
 
 ;; end of `man'
+
+;;;
+;; `cc-mode'
+;;;
+
+(defun on-cc-mode-init! ()
+  "On \\=`cc-mode\\=' initialization."
+  ;; add styles
+  (c-add-style (car cc*-style-nginx) (cdr cc*-style-nginx))
+  ;; keymap:
+  ;; find include file
+  (when-fn-ff-find-other-file%
+   (when-var% c-mode-map 'cc-mode
+     (define-key% c-mode-map (kbd "C-c f i")
+                  #'cc*-find-include-file))
+   ;; for c++, add include via `cc*-extra-include'
+   (when-var% c++mode-map 'cc-mode
+     (define-key% c++-mode-map (kbd "C-c f i")
+                  #'cc*-find-include-file)))
+  ;; indent line or region
+  (when-fn% 'c-indent-line-or-region 'cc-cmds
+    (define-key% c-mode-map
+                 (kbd "TAB") #'c-indent-line-or-region))
+  ;; dump predefined macros
+  (define-key% c-mode-map (kbd "C-c #")
+               #'cc*-dump-predefined-macros)
+  ;; raw newline
+  (define-key% c-mode-map (kbd "RET") #'newline*)
+  ;; align style
+  (define-key% c-mode-map (kbd "C-c |") #'cc*-style-align-entire)
+  ;; `subword-mode'
+  (define-key% c-mode-map (kbd "C-c C-w")
+               (if-fn% 'subword-mode 'subword
+                       #'subword-mode
+                 #'c-subword-mode))
+  ;; format buffer
+  (define-key% c-mode-map (kbd "C-c C-f") #'cc*-format-buffer)
+  (when-fn-c-macro-expand%
+    ;; [C-c C-e] `c-macro-expand' in `cc-mode'
+    (setq% c-macro-prompt-flag t 'cmacexp)
+    (ad-enable-advice #'c-macro-expand 'around "c-macro-expand-around")
+    (ad-activate #'c-macro-expand t)))
+
+;; end of `cc-mode'
+
 
 (provide 'cc)
 
