@@ -73,7 +73,7 @@ when \\=`desktop-globals-to-save\\=' include it."
                     (if (consp file-name-history)
                         (read-file-name "unmount from ")
                       (user-error
-                       "%s" "tags-table-list alreay empty"))))))
+                       "%s" "No mounted tags-table-list"))))))
   (setq tags-file-name nil
         tags-table-list
         (when tags
@@ -292,7 +292,7 @@ RENEW overwrite the existing tags file when t else create it."
 (defun make-dir-ctags (dir tags options)
   "Make tags via ctags for specified DIR."
   (unless (string= "ctags" (*tags*))
-    (user-error "%s" "ctags unavailable"))
+    (error "%s" "No ctags program found"))
   (let ((dir (path+ (expand-file-name dir)))
         (tags (expand-file-name tags))
         (options (concat "--options=" (expand-file-name options))))
@@ -302,8 +302,7 @@ RENEW overwrite the existing tags file when t else create it."
                 "-o" tags
                 options
                 dir)))
-      (when (zerop (car rc))
-        tags))))
+      (and (zerop (car rc)) tags))))
 
 ;; end of `make-dir-ctags'
 

@@ -98,8 +98,7 @@ void jshell_emacs_apropos(String what, int max) {
              (not (eq 'run (car (comint-check-proc (*jshell*))))))
     (save-window-excursion (call-interactively #'run-jshell)))
   (or (get-buffer-process (*jshell*))
-      (user-error "%s" "No *jshell* process")))
-
+      (error "%s" "No *jshell* process")))
 
 (defun jshell-last-sexp ()
   "Return the position of left side of the last expression."
@@ -275,7 +274,8 @@ Run the hook `jshell-repl-mode-hook' after the `comint-mode-hook'."
                                   (car *jshell-option-history*)
                                   '*jshell-option-history*)))
   (unless (comint-check-proc (*jshell*))
-    (unless (jshell-program) (user-error "%s" "No jshell found"))
+    (unless (jshell-program)
+      (error "%s" "No jshell program found"))
     (with-current-buffer (*jshell*)
       (apply #'make-comint-in-buffer
              (buffer-name (current-buffer))

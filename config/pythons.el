@@ -51,7 +51,7 @@ determine whether inside a virtual env. Another way is using
 \\=`pip -V\\='."
   (let ((pv (python*-program)))
     (unless pv
-      (user-error "%s" "python program unavailable"))
+      (error "%s" "No python program found"))
     (let ((d (path! (path+ (expand-file-name dir))))
           (p (car pv))
           (v- (= -1 (version-string= (cdr pv) "3.3"))))
@@ -59,12 +59,12 @@ determine whether inside a virtual env. Another way is using
         (cond ((and p v- (executable-find% "virtualenv"))
                (let ((rc (shell-command* "virtualenv" "-p" p d)))
                  (unless (zerop (car rc))
-                   (user-error "%s" (string-trim> (cdr rc))))))
+                   (error "Panic, %s" (string-trim> (cdr rc))))))
               ((and p (not v-))
                (let ((rc (shell-command* p "-m" "venv" d)))
                  (unless (zerop (car rc))
-                   (user-error "%s" (string-trim> (cdr rc))))))
-              (t (user-error "%s" "python venv unavailable"))))
+                   (error "Panic, %s" (string-trim> (cdr rc))))))
+              (t (error "%s" "No python's venv found"))))
       (prog1 d
         (when-var% python-shell-interpreter 'python
           (setq python-shell-interpreter (concat d "bin/python")))

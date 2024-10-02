@@ -12,10 +12,10 @@
   (interactive)
   (unless (eq 'term-mode (buffer-local-value
                           'major-mode (current-buffer)))
-    (user-error "%s" "Current buffer not in term-mode"))
+    (user-error "%s" "Not in term-mode"))
   (let ((proc (get-buffer-process (current-buffer))))
     (unless proc
-      (user-error "%s" "Current buffer has no process"))
+      (user-error "%s" "No term process"))
     (process-send-string
      proc
      (format

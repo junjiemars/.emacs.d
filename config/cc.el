@@ -457,7 +457,7 @@ N specify the number of spaces when align."
              (ss (let ((x (shell-command* "clang-format" "-i" f)))
                    (when (= 0 (car x))
                      (read-str-from-file f)))))
-        (when (not (string= rs ss))
+        (unless (string= rs ss)
           (save-excursion
             (delete-region (car bounds) (cdr bounds))
             (insert ss)))
@@ -471,7 +471,7 @@ N specify the number of spaces when align."
 
 (defun on-cc-mode-init! ()
   "On \\=`cc-mode\\=' initialization."
-  ;; load styles
+  ;; add styles
   (c-add-style (car cc*-style-nginx) (cdr cc*-style-nginx))
   ;; keymap:
   ;; find include file

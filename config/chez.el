@@ -317,7 +317,7 @@ Run the hook \\=`chez-repl-mode-hook'\\= after the
                                   '*chez-option-history*)))
   (unless (comint-check-proc (*chez*))
     (unless (chez-program)
-      (user-error "%s" "No chez program found"))
+      (error "%s" "No chez program found"))
     (with-current-buffer (*chez*)
       (apply #'make-comint-in-buffer
              (buffer-name (current-buffer))

@@ -156,11 +156,8 @@
   (declare (indent 1))
   (let ((err (plist-get :error status)))
     (when err
-      (message "%s" (propertize "Network error"
-                                'face
-                                'font-lock-warning-face))
       (kill-buffer)
-      (user-error "%s in on-lookup-dict" err)))
+      (error "Panic, %s" err)))
   (set-buffer-multibyte t)
   (when (*dict-debug-log* :log)
     (write-region (point-min) (point-max)

@@ -297,11 +297,11 @@
   (when-fn% 'self-module-init! nil
     (condition-case err
         (self-module-init!)
-      (error (message "self-module-init!: %s" err))))
+      (error "self-module-init!: %s" err)))
   (when-fn% 'self-desktop-read! nil
     (condition-case err
         (self-desktop-read!)
-      (error (message "self-desktop-read!: %s" err))))
+      (error "self-desktop-read!: %s" err)))
   ;; `load-path' versioned dirs
   (push! (v-home% "config/") load-path)
   (push! (v-home% "private/") load-path)
@@ -312,7 +312,7 @@
            (compile!
              (compile-unit* (*self-paths* :get :epilogue))))
          (if-noninteractive% t))
-      (error (message "self-epilogue: %s" err)))))
+      (error "self-epilogue: %s" err))))
 
 ;;; autoload when interactive or not
 (if-noninteractive%
