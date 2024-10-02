@@ -455,8 +455,8 @@ N specify the number of spaces when align."
              (f (save-str-to-file
                  rs (concat (make-temp-name ".cc-fmt-") ".c")))
              (ss (let ((x (shell-command* "clang-format" "-i" f)))
-                   (when (= 0 (car x))
-                     (read-str-from-file f)))))
+                   (and (= 0 (car x))
+                        (read-str-from-file f)))))
         (unless (string= rs ss)
           (save-excursion
             (delete-region (car bounds) (cdr bounds))
@@ -499,7 +499,7 @@ N specify the number of spaces when align."
                (if-fn% 'subword-mode 'subword
                        #'subword-mode
                  #'c-subword-mode))
-  ;; format code
+  ;; format buffer
   (define-key% c-mode-map (kbd "C-c C-f") #'cc*-format-buffer))
 
 ;; end of `cc-mode'
