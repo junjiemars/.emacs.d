@@ -8,12 +8,8 @@
 
 ;;; require
 
-(when-version% > 27
-  (eval-when-compile (require 'compile))
-  (declare-function recompile 'compile))
-
-(declare-function 'ansi-color-apply-on-region 'ansi-color)
-(autoload 'ansi-color-apply-on-region "ansi-color")
+(require 'compile)
+(require 'ansi-color)
 
 ;; end of require
 
@@ -29,7 +25,7 @@
        (replace-match (concat (match-string 1 (ad-get-arg 1)) ":/")
                       t t (ad-get-arg 1))))))
 
-(defun compilation*-colorize-buffer! ()
+(defun compile*-colorize-buffer! ()
   "Colorize compilation buffer."
   (when-fn% 'ansi-color-apply-on-region 'ansi-color
     (when (eq major-mode 'compilation-mode)
@@ -38,7 +34,7 @@
 
 (when-platform% 'darwin
   ;; `next-error' cannot find the source file on Darwin.
-  (defun compilation*-make-change-dir (&optional buffer how)
+  (defun compile*-make-change-dir (&optional buffer how)
     "Add the argument of make's -C option to \\=`compilation-search-path\\='."
     (ignore* buffer how)
     (when (eq major-mode 'compilation-mode)
@@ -49,23 +45,24 @@
         (when (and d (file-exists-p d))
           (push! d compilation-search-path t))))))
 
-(defun compilation*-compile-command (command)
+(defun compile*-compile-command (command)
   "Return classified compile command."
   (string-match* " *\\([-a-zA-z0-9]+\\) *" command 1))
 
-(defun compilation*-buffer-name (command-or-mode)
+(defun compile*-buffer-name (command-or-mode)
   "Classify compilation buffer name based on COMMAND-OR-MODE."
   (format "*compilation-%s*"
-          (compilation*-compile-command
+          (compile*-compile-command
            (cond ((string= "compilation" command-or-mode)
-                  compile-command)
+                  (or (car compilation-arguments)
+                      compile-command))
                  (t command-or-mode)))))
 
-(defun compilation*-recompile (&optional _ __)
+(defun compile*-recompile (&optional _ __)
   "Re-compile."
   (interactive)
-  (let ((a1 (compilation*-compile-command (car compilation-arguments)))
-        (c1 (compilation*-compile-command compile-command)))
+  (let ((a1 (compile*-compile-command (car compilation-arguments)))
+        (c1 (compile*-compile-command compile-command)))
     (cond ((and current-prefix-arg (not (string= a1 c1)))
            (let ((current-prefix-arg nil))
              (call-interactively
@@ -78,7 +75,7 @@
 
 (defun on-compile-init! ()
   "On \\=`compile\\=' initialization."
-  (setq% compilation-buffer-name-function #'compilation*-buffer-name
+  (setq% compilation-buffer-name-function #'compile*-buffer-name
          'compile)
   (when-platform% 'windows-nt
     ;; compile and activate `compilation-find-file' advice on Windows
@@ -88,12 +85,12 @@
   (when-platform% 'darwin
     ;; `next-error' find source file
     (add-hook 'compilation-finish-functions
-              #'compilation*-make-change-dir
+              #'compile*-make-change-dir
               (emacs-arch)))
-  (add-hook 'compilation-filter-hook #'compilation*-colorize-buffer!)
+  (add-hook 'compilation-filter-hook #'compile*-colorize-buffer!)
   (when-var% compilation-mode-map 'compile
     ;; define `recompile' and `quit-window' key bindings
-    (define-key% compilation-mode-map (kbd "g") #'compilation*-recompile)
+    (define-key% compilation-mode-map (kbd "g") #'compile*-recompile)
     (define-key% compilation-mode-map (kbd "q") #'quit-window))
   (setq% compilation-scroll-output t 'compile))
 
@@ -102,7 +99,7 @@
   "On \\=`grep\\=' initialization."
   ;; define `recompile' and `quit-window' key binding for `grep'
   (when-var% grep-mode-map 'grep
-    (define-key% grep-mode-map (kbd "g") #'compilation*-recompile)
+    (define-key% grep-mode-map (kbd "g") #'compile*-recompile)
     (define-key% grep-mode-map (kbd "q") #'quit-window)))
 
 

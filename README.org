@@ -1178,6 +1178,14 @@ Emacs.
 #+ATTR_HTML: :style text-align:left
 Just introduce Nore Emacs' improvements.
 
+** Generic compiling
+   :PROPERTIES:
+   :CUSTOM_ID: general-compile
+   :END:
+
+#+ATTR_HTML: :style text-align:left
+Classified =compilation=.
+
 ** Lisp programming
    :PROPERTIES:
    :CUSTOM_ID: lisp-programming
