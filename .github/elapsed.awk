@@ -1,6 +1,12 @@
 #!/usr/bin/awk -f
 #
-# format output: elapsed time, gc count, gc elapsed time, sn, filename
+# format output:
+# 1. elapsed time
+# 2. gc count
+# 3. gc elapsed time
+# 4. elapsed real time
+# 5. sn
+# 6. filename
 #
 
 function basename(path) {
