@@ -1007,7 +1007,7 @@ nil, then forward or backward to line boundary.
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
-=mark-string@= mark the whole string or partial string.
+=mark-string@= mark the partial string.
 
 #+REVEAL: split
 - @@html:<kbd>@@C-c M-@@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-word.png][mark word at point]]

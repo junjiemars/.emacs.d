@@ -30,32 +30,30 @@
 ;;; `mark-string@'
 
 (defun mark-string@ (&optional n)
-  "Mark the string at point.\n
-If prefix N is positive, mark from point to the end of string;
-If prefix N is negative, mark from point to the begining of string;
+  "Mark the partial string at point.\n
+If prefix N is positive, mark from point to the end;
+If prefix N is negative, mark from point to the begining;
 Otherwise mark the whole string."
   (interactive "p")
   (let ((bs (_mark_string@_))
-        (n1 (or n 0)))
+        (n1 (if (consp current-prefix-arg) 0 n)))
     (unless bs
       (user-error "%s" "No string found"))
-    (_mark_thing_ (cond ((> n1 0) (point))
-                        ((< n1 0) (car bs))
-                        (t (car bs)))
-                  (cond ((> n1 0) (cdr bs))
-                        ((< n1 0) (point))
-                        (t (cdr bs))))))
+    (_mark_thing_ (if (> n1 0) (point) (1+ (car bs)))
+                  (if (< n1 0) (point) (1- (cdr bs))))))
 
-
-(defun kill-string@ (&optional boundary)
-  "Kill the string at point.\n
-If prefix BOUNDARY is non-nil, then kill the whole string."
-  (interactive "P")
-  (let ((bs (_mark_string@_)))
+(defun kill-string@ (&optional n)
+  "Kill the partial string at point.\n
+If prefix N is positive, kill from point to the end;
+If prefix N is negative, kill from point to the begining;
+Otherwise kill the whole string."
+  (interactive "p")
+  (let ((bs (_mark_string@_))
+        (n1 (if (consp current-prefix-arg) 0 n)))
     (unless bs
       (user-error "%s" "No string found"))
-    (kill-region (if boundary (car bs) (1+ (car bs)))
-                 (if boundary (cdr bs) (1- (cdr bs))))))
+    (kill-region (if (> n1 0) (point) (1+ (car bs)))
+                 (if (< n1 0) (point) (1- (cdr bs))))))
 
 ;; end of `mark-string@'
 
@@ -77,9 +75,8 @@ Otherwise, select the whole list."
 (defun kill-sexp@ (&optional n)
   "Kill the whole sexp at point.\n
 If prefix N is a number, killing forward or backward N sexps."
-  (interactive "P")
-  (let ((bs (cond ((consp current-prefix-arg)
-                   (_mark_whole_sexp@_))
+  (interactive "p")
+  (let ((bs (cond ((consp current-prefix-arg) (_mark_whole_sexp@_))
                   (t (_mark_sexp@_ n)))))
     (unless (and bs (car bs) (cdr bs)
                  (null (= (car bs) (cdr bs))))
