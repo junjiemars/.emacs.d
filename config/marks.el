@@ -101,7 +101,7 @@
 ;;; `_forward_symmetry_' `_backward_symmetry_'
 
 (defsubst _forward_symmetry_ (chr pos rx ls rs)
-  (let ((cur pos))
+  (let ((cur pos) (ss (cons chr nil)))
     (catch 'break
       (while (< cur rx)
         (let ((l (and (= ls (char-after cur)) chr))
@@ -113,7 +113,7 @@
         (setq cur (1+ cur))))))
 
 (defsubst _backward_symmetry_ (chr pos lx ls rs)
-  (let ((cur pos))
+  (let ((cur pos) (ss (cons chr nil)))
     (catch 'break
       (while (> cur lx)
         (let ((l (and (= ls (char-before cur)) chr))
@@ -176,7 +176,7 @@
 ;;; `_forward_asymmetry_' `_backward_asymmetry_'
 
 (defsubst _forward_asymmetry_ (chr pos rx)
-  (let ((cur (pos)))
+  (let ((cur pos))
     (catch 'break
       (while (< cur rx)
         (when (char= chr (char-after cur))
