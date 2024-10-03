@@ -10,7 +10,6 @@
 
 (autoload 'kill-word@ (v-home%> "config/mill") nil t)
 (autoload 'kill-sexp@ (v-home%> "config/mill") nil t)
-(autoload 'kill-whole-line@ (v-home%> "config/mill") nil t)
 (autoload 'kill-quoted-symmetry@ (v-home%> "config/mill") nil t)
 (autoload 'kill-quoted-asymmetry@ (v-home%> "config/mill") nil t)
 (autoload 'kill-string@ (v-home%> "config/mill") nil t)
