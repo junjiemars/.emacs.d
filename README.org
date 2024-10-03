@@ -201,7 +201,7 @@ run it and reopen the Emacs.
     ├── LICENSE
     ├── README.org
     ├── config (comment "all stuff here")
-    ├── .eln (comment "native compiled packages")    
+    ├── .eln (comment "native compiled packages")
     ├── .elpa (comment "installed packages")
     ├── init.el (comment "Emacs init file")
     ├── private (comment "your configuration can put here")
@@ -978,7 +978,7 @@ marked part.
 #+ATTR_HTML: :style text-align:left
 Using =mark-sexp@= default mark whole Lisp /sexp/ or C /block/ at
 point. If prefix N is non nil, then forward or backward to sexps
-boundary, just like the builtin =mark-sexp= does.
+boundary, no like the builtin =mark-sexp= do partial.
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
@@ -987,9 +987,14 @@ whatever the /mode/ is.
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
-=mark-word@= default mark the whole word at point. If prefix N is non
-nil, then forward or backword to word boundary, just like the builtin
-=mark-word= does.
+=mark-word@= mark the whole word at point. If prefix N is non nil,
+then forward or backward to word boundary, no like the builtin
+=mark-word= do partial.
+
+#+REVEAL: split
+#+ATTR_HTML: :style text-align:left
+=mark-line@= default mark the whole line at point. If prefix N is non
+nil, then forward or backward to line boundary.
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
@@ -997,11 +1002,20 @@ nil, then forward or backword to word boundary, just like the builtin
 =mark-defun=.
 
 #+REVEAL: split
+#+ATTR_HTML: :style text-align:left
+=mark-filename@= mark the whole filename or URL.
+
+#+REVEAL: split
+#+ATTR_HTML: :style text-align:left
+=mark-string@= mark the whole string or partial string.
+
+#+REVEAL: split
 - @@html:<kbd>@@C-c M-@@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-word.png][mark word at point]]
 - @@html:<kbd>@@C-c C-M-@@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-list.png][mark sexp at point]]
 - @@html:<kbd>@@C-M M-h@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-defun.png][mark defun at point]]
 - @@html:<kbd>@@C-c M-l@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-line.png][mark line at point]]
 - @@html:<kbd>@@C-c M-f@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-filename.png][mark filename at point]]
+- @@html:<kbd>@@C-c M-s@@html:</kbd>@@ =mark-string@=
 
 *** Tags
    :PROPERTIES:
@@ -1128,6 +1142,7 @@ Global for all Emacs' version.
 - @@html:<kbd>@@C-c M-h@@html:</kbd>@@: =mark-defun@=
 - @@html:<kbd>@@C-c M-l@@html:</kbd>@@: =mark-line@=
 - @@html:<kbd>@@C-c M-f@@html:</kbd>@@: =mark-filename@=
+- @@html:<kbd>@@C-c M-s@@html:</kbd>@@: =mark-string@=
 #+REVEAL: split
 - @@html:<kbd>@@C-s@@html:</kbd>@@: =isearch-forward*=
 - @@html:<kbd>@@C-r@@html:</kbd>@@: =isearch-backward*=
@@ -1335,7 +1350,7 @@ life easy and if [[https://github.com/junjiemars/nore][Nore]] already on your ma
 Formatting C source code.
 
 - =cc*-format-buffer= @@html:<kbd>@@C-c C-f@@html:</kbd>@@
-  
+
 * Troubleshooting
    :PROPERTIES:
    :CUSTOM_ID: troubleshoting

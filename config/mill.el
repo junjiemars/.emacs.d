@@ -29,15 +29,22 @@
 
 ;;; `mark-string@'
 
-(defun mark-string@ (&optional boundary)
+(defun mark-string@ (&optional n)
   "Mark the string at point.\n
-If prefix BOUNDARY is non-nil, then mark the whole string."
-  (interactive "P")
-  (let ((bs (_mark_string@_)))
+If prefix N is positive, mark from point to the end of string;
+If prefix N is negative, mark from point to the begining of string;
+Otherwise mark the whole string."
+  (interactive "p")
+  (let ((bs (_mark_string@_))
+        (n1 (or n 0)))
     (unless bs
       (user-error "%s" "No string found"))
-    (_mark_thing_ (if boundary (car bs) (1+ (car bs)))
-                  (if boundary (cdr bs) (1- (cdr bs))))))
+    (_mark_thing_ (cond ((> n1 0) (point))
+                        ((< n1 0) (car bs))
+                        (t (car bs)))
+                  (cond ((> n1 0) (cdr bs))
+                        ((< n1 0) (point))
+                        (t (cdr bs))))))
 
 
 (defun kill-string@ (&optional boundary)
@@ -60,8 +67,7 @@ If prefix BOUNDARY is non-nil, then kill the whole string."
 If prefix N is a number, then forward or backward N sexps.
 Otherwise, select the whole list."
   (interactive "p")
-  (let ((bs (cond ((consp current-prefix-arg)
-                   (_mark_whole_sexp@_))
+  (let ((bs (cond ((consp current-prefix-arg) (_mark_whole_sexp@_))
                   (t (_mark_sexp@_ n)))))
     (unless (and bs (car bs) (cdr bs)
                  (null (= (car bs) (cdr bs))))
@@ -96,8 +102,7 @@ If prefix N is non nil, then forward or backward N words."
 
 (defun kill-word@ (&optional n)
   "Kill the whole word at point.\n
-If prefix N is non nil, then kill N whole word forward or
-backward."
+If prefix N is non nil, then kill N whole word forward or backward."
   (interactive "p")
   (let ((ws (_mark_word@_ n)))
     (unless ws
