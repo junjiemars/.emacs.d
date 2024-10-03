@@ -110,20 +110,14 @@ backward."
 
 ;;; `mark-line@'
 
-(defun mark-line@ (&optional indent)
+(defun mark-line@ (&optional n)
   "Mark line at point.\n
-If prefix INDENT is non-nil, then mark indent line."
+If prefix N is non nil, then forward or backward N lines."
   (interactive "P")
-  (_mark_thing_ (if indent
-                    (save-excursion
-                      (back-to-indentation)
-                      (point))
-                  (save-excursion
-                    (beginning-of-line)
-                    (point)))
-                (save-excursion
-                  (end-of-line)
-                  (point))))
+  (let ((ls (_mark_line@_ n)))
+    (unless ls
+      (user-error "%s" "No line found"))
+    (_mark_thing_ (car ls) (cdr ls))))
 
 ;; end of `mark-line@'
 

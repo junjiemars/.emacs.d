@@ -281,6 +281,21 @@
 
 ;; end of `_mark_word@_'
 
+;;; `_mark_line@_'
+
+(defsubst _mark_line@_ (&optional n)
+  (let* ((n1 (or n 0))
+         (fp (save-excursion (forward-line n1)
+                             (if (> n1 0) (end-of-line) (beginning-of-line))
+                             (point)))
+         (bp (save-excursion (if (> n1 0) (beginning-of-line)
+                               (end-of-line))
+                             (point))))
+    (cons fp bp)))
+
+;; end of `_mark_line@_'
+
+;;; `_mark_defun@_'
 
 (defsubst _mark_defun@_ (&optional n)
   (let ((n1 (or n 1)))

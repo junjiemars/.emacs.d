@@ -993,16 +993,15 @@ nil, then forward or backword to word boundary, just like the builtin
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
-=mark-defun@= more stable in variant programming modes than
-`mark-defun'.
+=mark-defun@= more stable in variant programming modes than builtin
+=mark-defun=.
 
 #+REVEAL: split
-- @@html:<kbd>@@C-M M-h@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-defun.png][mark defun at point]]
-- @@html:<kbd>@@C-c M-f@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-filename.png][mark filename at point]]
-- @@html:<kbd>@@C-c M-l@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-line.png][mark line at point]]
-- @@html:<kbd>@@C-c M-s@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-symbol.png][mark symbol at point]]
 - @@html:<kbd>@@C-c M-@@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-word.png][mark word at point]]
 - @@html:<kbd>@@C-c C-M-@@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-list.png][mark sexp at point]]
+- @@html:<kbd>@@C-M M-h@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-defun.png][mark defun at point]]
+- @@html:<kbd>@@C-c M-l@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-line.png][mark line at point]]
+- @@html:<kbd>@@C-c M-f@@html:</kbd>@@ [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/mark-filename.png][mark filename at point]]
 
 *** Tags
    :PROPERTIES:
@@ -1124,12 +1123,11 @@ Global for all Emacs' version.
 - @@html:<kbd>@@C-M-o@@html:</kbd>@@ =open-previous-line=
 - @@html:<kbd>@@C-o@@html:</kbd>@@ =open-next-line=
 #+REVEAL: split
-- @@html:<kbd>@@C-c m d@@html:</kbd>@@: =mark-symbol@=
-- @@html:<kbd>@@C-c m d@@html:</kbd>@@: =mark-word@=
-- @@html:<kbd>@@C-c m d@@html:</kbd>@@: =mark-sexp@=
-- @@html:<kbd>@@C-c m d@@html:</kbd>@@: =mark-defun@=
-- @@html:<kbd>@@C-c m l@@html:</kbd>@@: =mark-line@=
-- @@html:<kbd>@@C-c m f@@html:</kbd>@@: =mark-filename@=
+- @@html:<kbd>@@C-c M-@@@html:</kbd>@@: =mark-word@=
+- @@html:<kbd>@@C-c C-M-@@@html:</kbd>@@: =mark-sexp@=
+- @@html:<kbd>@@C-c M-h@@html:</kbd>@@: =mark-defun@=
+- @@html:<kbd>@@C-c M-l@@html:</kbd>@@: =mark-line@=
+- @@html:<kbd>@@C-c M-f@@html:</kbd>@@: =mark-filename@=
 #+REVEAL: split
 - @@html:<kbd>@@C-s@@html:</kbd>@@: =isearch-forward*=
 - @@html:<kbd>@@C-r@@html:</kbd>@@: =isearch-backward*=
