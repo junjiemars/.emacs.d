@@ -69,10 +69,8 @@
         `(comment ,@body))
     `(comment ,@body)))
 
-;; end of macro
-
 (defmacro autoload* (symbol file &optional docstring interactive type)
-  "Force autoload SYMBOL, like \\=`autoload\\=' does."
+  "Force autoload SYMBOL."
   `(progn
      (fset ,symbol nil)
      (setplist ,symbol nil)

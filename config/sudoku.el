@@ -739,7 +739,7 @@
   (interactive)
   (sudoku-board-save))
 
-(defun sudoku-new (level dimension)
+(defun sudoku-new (&optional level dimension)
   "New \\=`*sudoku*\\=' with LEVEL and DIMENSION."
   (interactive)
   (sudoku-board-draw
