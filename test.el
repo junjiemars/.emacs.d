@@ -487,7 +487,14 @@
 
 (ert-deftest %d:fn:make-thread* ()
   (should
-   (= 6 (let ((a 1)) (make-thread* (lambda () (* a 2 3)) t)))))
+   (= 6 (let ((a 1))
+          (make-thread*
+           (lambda ()
+             (*
+              ;; cannot capture the free `a'
+              (unwind-protect a 1)
+              2 3))
+           t)))))
 
 (ert-deftest %d:fn:posix-path ()
   (should-not (posix-path nil))
