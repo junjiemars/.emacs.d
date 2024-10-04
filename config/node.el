@@ -129,7 +129,7 @@ function node_emacs_apropos(what, max) {
 (defun node-last-sexp ()
   "Return the position of left side of the last expression."
   (save-excursion
-    (catch 'break
+    (catch 'br
       (let ((ori (point)))
         (while (not (or (bobp)
                         (char= (char-before) ?\;)
@@ -150,7 +150,7 @@ function node_emacs_apropos(what, max) {
                           "await\\|const\\|let\\|var"
                           (buffer-substring-no-properties
                            (- cur idx) cur)))
-                (throw 'break cur))
+                (throw 'br cur))
               (backward-word)))
            ;; whitespace
            ((char= (char-syntax (char-before)) ?\ )
@@ -158,7 +158,7 @@ function node_emacs_apropos(what, max) {
               (backward-char)))
            ;; comma
            ((char= (char-before) ?,)
-            (throw 'break (point)))
+            (throw 'br (point)))
            ;; assignment
            ((char= (char-before) ?=)
             (let ((cur (point))
@@ -167,7 +167,7 @@ function node_emacs_apropos(what, max) {
                          (char= (char-before (- cur idx)) ?!))
                 (setq idx (1+ idx)))
               (if (< idx 2)
-                  (throw 'break cur)
+                  (throw 'br cur)
                 (backward-char idx))))
            ;; > >> >>> or REPL's prompt
            ((char= (char-before) ?>)
@@ -176,7 +176,7 @@ function node_emacs_apropos(what, max) {
                    (buffer-substring-no-properties
                     (line-beginning-position)
                     (point)))
-              (throw 'break (point)))
+              (throw 'br (point)))
             (backward-char))
            ;; dot
            ((char= (char-before) ?.)
@@ -185,7 +185,7 @@ function node_emacs_apropos(what, max) {
               (while (char= (char-before (- cur idx)) ?.)
                 (setq idx (1+ idx)))
               (when (>= idx 3)
-                (throw 'break cur))
+                (throw 'br cur))
               (backward-char)))
            ;; punctuation
            ((char= (char-syntax (char-before)) ?.)
@@ -199,10 +199,10 @@ function node_emacs_apropos(what, max) {
                                                   ?\ ))
                                  (setq idx (1+ idx)))
                                (= (+ cur idx) ori))))
-                (throw 'break ori))
+                (throw 'br ori))
               (backward-char)))
            ;; default
-           (t (throw 'break (point)))))))
+           (t (throw 'br (point)))))))
     (while (char= (char-syntax (char-after)) ?\ )
       (forward-char))
     (point)))
@@ -210,7 +210,7 @@ function node_emacs_apropos(what, max) {
 (defun node-last-symbol ()
   "Return the position of left side of the last symbol."
   (save-excursion
-    (catch 'break
+    (catch 'br
       (while (not (or (char= (char-before) ?\;)
                       (char= (char-before) ?\n)
                       (eq (char-syntax (char-before)) ? )))
@@ -219,7 +219,7 @@ function node_emacs_apropos(what, max) {
                (backward-char))
               ((eq (char-syntax (char-before)) ?w)
                (backward-word))
-              (t (throw 'break (point))))))
+              (t (throw 'br (point))))))
     (point)))
 
 

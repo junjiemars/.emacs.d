@@ -44,7 +44,7 @@ Avoid bugs in `gud-format-command' and `gud-find-c-expr'."
 (defun c-last-expr ()
   "Return the position of left side of the last C expression."
   (save-excursion
-    (catch 'break
+    (catch 'br
       (let ((ori (point)))
         (while (not (or (bobp)
                         (char-equal (char-before) ?\;)
@@ -58,7 +58,7 @@ Avoid bugs in `gud-format-command' and `gud-find-c-expr'."
             (let ((cur (point))
                   (idx 1))
               (when (<= (- cur idx) (point-min))
-                (throw 'break (point-min)))
+                (throw 'br (point-min)))
               (while (and (char-before (- cur idx))
                           (char-equal
                            (char-syntax (char-before (- cur idx)))
@@ -69,7 +69,7 @@ Avoid bugs in `gud-format-command' and `gud-find-c-expr'."
                           "var"
                           (buffer-substring-no-properties
                            (- cur idx) cur)))
-                (throw 'break cur))
+                (throw 'br cur))
               (backward-word)))
            ;; whitespace
            ((char-equal (char-syntax (char-before)) ?\ )
@@ -77,18 +77,18 @@ Avoid bugs in `gud-format-command' and `gud-find-c-expr'."
               (backward-char)))
            ;; comma
            ((char-equal (char-before) ?,)
-            (throw 'break (point)))
+            (throw 'br (point)))
            ;; assignment
            ((char-equal (char-before) ?=)
             (let ((cur (point))
                   (idx 1))
               (when (<= (- cur idx) (point-min))
-                (throw 'break (point-min)))
+                (throw 'br (point-min)))
               (while (or (char-equal (char-before (- cur idx)) ?=)
                          (char-equal (char-before (- cur idx)) ?!))
                 (setq idx (1+ idx)))
               (if (< idx 2)
-                  (throw 'break cur)
+                  (throw 'br cur)
                 (backward-char idx))))
            ;; > >>
            ((char-equal (char-before) ?>)
@@ -97,7 +97,7 @@ Avoid bugs in `gud-format-command' and `gud-find-c-expr'."
                    (buffer-substring-no-properties
                     (line-beginning-position)
                     (point)))
-              (throw 'break (point)))
+              (throw 'br (point)))
             (backward-char))
            ;; _
            ((char-equal (char-before) ?_)
@@ -107,7 +107,7 @@ Avoid bugs in `gud-format-command' and `gud-find-c-expr'."
                           (char-equal (char-before (- cur idx)) ?_))
                 (setq idx (1+ idx)))
               (when (>= idx 3)
-                (throw 'break cur))
+                (throw 'br cur))
               (backward-char)))
            ;; dot
            ((char-equal (char-before) ?.)
@@ -117,7 +117,7 @@ Avoid bugs in `gud-format-command' and `gud-find-c-expr'."
                           (char-equal (char-before (- cur idx)) ?.))
                 (setq idx (1+ idx)))
               (when (>= idx 3)
-                (throw 'break cur))
+                (throw 'br cur))
               (backward-char)))
            ;; punctuation
            ((char-equal (char-syntax (char-before)) ?.)
@@ -132,10 +132,10 @@ Avoid bugs in `gud-format-command' and `gud-find-c-expr'."
                                             ?\ ))
                                  (setq idx (1+ idx)))
                                (= (+ cur idx) ori))))
-                (throw 'break ori))
+                (throw 'br ori))
               (backward-char)))
            ;; default
-           (t (throw 'break (point)))))))
+           (t (throw 'br (point)))))))
     (while (char-equal (char-syntax (char-after)) ?\ )
       (forward-char))
     (point)))

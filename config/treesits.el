@@ -35,27 +35,27 @@
   (interactive)
   (let ((on (let ((ts (treesit*-recipe)))
               (some* (lambda (a)
-                       (catch 'break
+                       (catch 'br
                          (dolist* (x ts)
                            (when (eq (plist-get x :map) (cdr a))
-                             (throw 'break t)))))
+                             (throw 'br t)))))
                      major-mode-remap-alist))))
     (if on
         (let ((ts (treesit*-recipe)))
           (setq auto-mode-alist
                 (remove-if* (lambda (a)
-                              (catch 'break
+                              (catch 'br
                                 (dolist* (x ts)
                                   (when (eq (plist-get x :map) a)
-                                    (throw 'break t)))))
+                                    (throw 'br t)))))
                             auto-mode-alist
                             :key #'cdr)
                 major-mode-remap-alist
                 (remove-if* (lambda (a)
-                              (catch 'break
+                              (catch 'br
                                 (dolist* (x ts)
                                   (when (eq (plist-get x :map) a)
-                                    (throw 'break t)))))
+                                    (throw 'br t)))))
                             major-mode-remap-alist
                             :key #'cdr)
                 treesit-language-source-alist nil)

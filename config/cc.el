@@ -448,6 +448,11 @@ N specify the number of spaces when align."
   (interactive)
   (with-current-buffer (current-buffer)
     (when (eq major-mode 'c-mode)
+      (when-feature-eglot%
+        (when (and (fboundp 'eglot-managed-p) (eglot-managed-p))
+          (catch 'br
+            (call-interactively #'eglot-format-buffer)
+            (throw 'br t))))
       (let* ((p (point))
              (bounds (if-region-active
                          (cons (region-beginning) (region-end))
