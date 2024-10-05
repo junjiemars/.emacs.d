@@ -121,10 +121,10 @@ determine whether inside a virtual env. Another way is using
                  (concat
                   "#!/bin/sh\n"
                   ". " venv "bin/activate\n"
-                  "if ! pip -qqq show ruff-lsp; then\n"
-                  "  pip install ruff-lsp\n"
+                  "if ! pip -qqq show python-lsp-server; then\n"
+                  "  pip install python-lsp-server python-lsp-ruff\n"
                   "fi\n"
-                  "exec " venv "bin/ruff-lsp $@\n")
+                  "exec " venv "bin/pylsp $@\n")
                  pylsp))))
     (when (zerop (car rc))
       (prog1 pylsp
