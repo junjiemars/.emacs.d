@@ -136,7 +136,7 @@ determine whether inside a virtual env. Another way is using
 
 (defalias 'python*-venv
   (lexical-let*%
-      ((b (path! `,(emacs-home* "private/scratch/venv/")))
+      ((b (path! `,(emacs-home* "scratch/pyvenv/")))
        (file (v-home% ".exec/python-venv.el"))
        (env (list :venv b
                   :pylsp (v-home% ".exec/pylsp.sh")
