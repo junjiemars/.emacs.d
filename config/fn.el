@@ -654,7 +654,7 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
 (defmacro define-key% (keymap key def)
   "Define KEY to DEF in KEYMAP."
   `(if-key% ,keymap ,key
-            (lambda (d) (not (eq d ,def)))
+            (lambda (d) (null (eq d ,def)))
      (define-key ,keymap ,key ,def)))
 
 ;; end of define key macro

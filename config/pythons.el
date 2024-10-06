@@ -122,7 +122,7 @@ determine whether inside a virtual env. Another way is using
                   "#!/bin/sh\n"
                   ". " venv "bin/activate\n"
                   "if ! pip -qqq show python-lsp-server; then\n"
-                  "  pip install python-lsp-server python-lsp-ruff\n"
+                  "  pip install python-lsp-server python-lsp-ruff pyflakes isort\n"
                   "fi\n"
                   "exec " venv "bin/pylsp $@\n")
                  pylsp))))
@@ -177,25 +177,59 @@ determine whether inside a virtual env. Another way is using
     (setq% python-shell-interpreter (python*-venv :python) 'python)
     (save-sexp-to-file (python*-venv) (python*-venv :file))))
 
+
+(defun python*-format-buffer ()
+  "Format the current buffer."
+  (interactive)
+  (with-current-buffer (current-buffer)
+    (when (eq major-mode 'python-mode)
+      (when-feature-eglot%
+        (when (and (fboundp 'eglot-managed-p) (eglot-managed-p))
+          (catch 'br
+            (call-interactively #'eglot-format-buffer)
+            (throw 'br t))))
+      (let* ((p (point))
+             (bounds (if-region-active
+                         (cons (region-beginning) (region-end))
+                       (cons (point-min) (point-max))))
+             (rs (buffer-substring (car bounds) (cdr bounds)))
+             (f (save-str-to-file
+                 rs (concat (make-temp-name ".py-fmt-") ".py")))
+             (ss (let ((x (shell-command*
+                              (concat (python*-venv :venv) "bin/ruff")
+                            "format"
+                            f)))
+                   (and (= 0 (car x))
+                        (read-str-from-file f)))))
+        (unless (string= rs ss)
+          (save-excursion
+            (delete-region (car bounds) (cdr bounds))
+            (insert ss))
+          (goto-char p))
+        (when (file-exists-p f) (delete-file f))))))
+
+
+
 (defun on-python-init! ()
   "On \\=`python\\=' initialization."
-  ;; venv
+  ;; interpreter
   (when (python*-program)
-    (setq% python-shell-interpreter
+    (let ((interpreter
            (or (let ((f (python*-venv :file)))
                  (and (file-exists-p f)
                       (python*-venv :load (read-sexp-from-file f))
                       (python*-venv :python)))
-               (python*-program :bin))
-           'python))
+               (python*-program :bin))))
+      (setq% python-shell-interpreter interpreter 'python)
+      (setq% python-interpreter interpreter 'python)))
+
   ;; completion
   (setq% python-shell-completion-native-enable
          (when-platform% 'gnu/linux t) 'python)
   ;; keys
   (when-var% python-mode-map 'python
-    ;; on ancient Emacs `(kbd "C-c C-p")' bind to
-    ;; `python-previous-statement'
-    (define-key% python-mode-map (kbd "C-c C-z") #'run-python)))
+    (define-key python-mode-map (kbd "C-c C-z") #'run-python)
+    (define-key python-mode-map (kbd "C-c M-c f") #'python*-format-buffer)))
 
 
 

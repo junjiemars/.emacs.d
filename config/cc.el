@@ -563,7 +563,7 @@ N specify the number of spaces when align."
                        #'subword-mode
                  #'c-subword-mode))
   ;; format buffer
-  (define-key% c-mode-map (kbd "C-c C-f") #'cc*-format-buffer)
+  (define-key c-mode-map (kbd "C-c M-c f") #'cc*-format-buffer)
   (when-fn-c-macro-expand%
     ;; [C-c C-e] `c-macro-expand' in `cc-mode'
     (setq% c-macro-prompt-flag t 'cmacexp)

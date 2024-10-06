@@ -95,13 +95,16 @@
   "On \\=`eglot\\=' initialization."
   ;; load recipe
   (eglot*-server-programs :put (or (eglot*-server-programs :read)
-                                    (eglot*-server-programs)))
-  ;; most reduced
+                                   (eglot*-server-programs)))
+  ;; most reduced `eldoc'
   (setq% eldoc-echo-area-use-multiline-p nil 'eldoc)
 
   ;; shutdown when `kill-emacs'
   (when-var% kill-emacs-query-functions nil
-    (push! 'eglot*-shutdown-all kill-emacs-query-functions)))
+    (push! 'eglot*-shutdown-all kill-emacs-query-functions))
+  ;; keys
+  (define-key eglot-mode-map (kbd "C-c M-c f") #'eglot-format-buffer)
+  (define-key eglot-mode-map (kbd "C-c M-c r") #'eglot-rename))
 
 
 
