@@ -611,6 +611,10 @@
   (should (= 3 (path-depth "/a/b/")))
   (should (= 3 (path-depth "/a/b/c"))))
 
+(ert-deftest %e:fn:kbd% ()
+  (should (equal [tab ret] (kbd% "<tab> <ret>")))
+  (should (string= "fi" (kbd% "C-c f i"))))
+
 (ert-deftest %e:fn:if-key% ()
   (should (string= "defined"
                    (if-key% (current-global-map) (kbd "C-x C-c")
