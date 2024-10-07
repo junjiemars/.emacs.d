@@ -103,8 +103,8 @@
   (when-var% kill-emacs-query-functions nil
     (push! 'eglot*-shutdown-all kill-emacs-query-functions))
   ;; keys
-  (define-key eglot-mode-map (kbd "C-c M-c f") #'eglot-format-buffer)
-  (define-key eglot-mode-map (kbd "C-c M-c r") #'eglot-rename))
+  (define-key eglot-mode-map (kbd% "C-c M-c f") #'eglot-format-buffer)
+  (define-key eglot-mode-map (kbd% "C-c M-c r") #'eglot-rename))
 
 
 

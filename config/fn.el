@@ -644,6 +644,11 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
 ;; define key macro
 ;;;
 
+(defmacro kbd% (keys)
+  "Convert KEYS to the internal Emacs key representation."
+  (let ((-k1- (kbd keys)))
+    `,-k1-))
+
 (defmacro if-key% (keymap key test then &rest else)
   "If TEST yields t for KEY in KEYMAP do then, else do ELSE..."
   (declare (indent 3))
@@ -653,10 +658,9 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
 
 (defmacro define-key% (keymap key def)
   "Define KEY to DEF in KEYMAP."
-  (let ((-k1- (funcall `(lambda () ,key))))
-    `(if-key% ,keymap ,-k1-
-              (lambda (d) (null (eq d ,def)))
-       (define-key ,keymap ,-k1- ,def))))
+  `(if-key% ,keymap ,key
+            (lambda (d) (null (eq d ,def)))
+     (define-key ,keymap ,key ,def)))
 
 ;; end of define key macro
 

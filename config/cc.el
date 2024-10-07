@@ -540,30 +540,30 @@ N specify the number of spaces when align."
   ;; find include file
   (when-fn-ff-find-other-file%
    (when-var% c-mode-map 'cc-mode
-     (define-key% c-mode-map (kbd "C-c f i")
+     (define-key% c-mode-map (kbd% "C-c f i")
                   #'cc*-find-include-file))
    ;; for c++, add include via `cc*-extra-include'
    (when-var% c++mode-map 'cc-mode
-     (define-key% c++-mode-map (kbd "C-c f i")
+     (define-key% c++-mode-map (kbd% "C-c f i")
                   #'cc*-find-include-file)))
   ;; indent line or region
   (when-fn% 'c-indent-line-or-region 'cc-cmds
     (define-key% c-mode-map
-                 (kbd "TAB") #'c-indent-line-or-region))
+                 (kbd% "TAB") #'c-indent-line-or-region))
   ;; dump predefined macros
-  (define-key% c-mode-map (kbd "C-c #")
+  (define-key% c-mode-map (kbd% "C-c #")
                #'cc*-dump-predefined-macros)
   ;; raw newline
-  (define-key% c-mode-map (kbd "RET") #'newline*)
+  (define-key% c-mode-map (kbd% "RET") #'newline*)
   ;; align style
-  (define-key% c-mode-map (kbd "C-c |") #'cc*-style-align-entire)
+  (define-key% c-mode-map (kbd% "C-c |") #'cc*-style-align-entire)
   ;; `subword-mode'
-  (define-key% c-mode-map (kbd "C-c C-w")
+  (define-key% c-mode-map (kbd% "C-c C-w")
                (if-fn% 'subword-mode 'subword
                        #'subword-mode
                  #'c-subword-mode))
   ;; format buffer
-  (define-key c-mode-map (kbd "C-c M-c f") #'cc*-format-buffer)
+  (define-key c-mode-map (kbd% "C-c M-c f") #'cc*-format-buffer)
   (when-fn-c-macro-expand%
     ;; [C-c C-e] `c-macro-expand' in `cc-mode'
     (setq% c-macro-prompt-flag t 'cmacexp)

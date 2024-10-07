@@ -13,7 +13,7 @@
   (make-thread* #'on-project-init!))
 
 (when-fn% 'project-find-file 'project
-  (define-key% (current-global-map) (kbd "C-x p f")
+  (define-key% (current-global-map) (kbd% "C-x p f")
                #'project-find-file))
 
 ;;; autoload

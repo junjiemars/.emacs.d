@@ -59,7 +59,7 @@ Optional argument INDENT whether to indent lines. See also
 (defmacro unless-key-insert-char% (&rest body)
   "Unless [C-x 8 RET] key bind to \\=`insert-char\\='."
   (declare (indent 0))
-  (if-key% (current-global-map) (kbd "C-x 8 RET")
+  (if-key% (current-global-map) (kbd% "C-x 8 RET")
            (lambda (def) (null (eq def #'insert-char)))
     `(progn% ,@body)
     `(comment ,@body)))
@@ -271,7 +271,7 @@ And copy the qualified buffer name to kill ring."
     (if-var% minibuffer-local-completion-map 'minibuffer
              minibuffer-local-completion-map
       minibuffer-local-map)
-    (kbd ,key)
+    (kbd% ,key)
     (if-fn% 'minibuffer-complete 'minibuffer
             #'minibuffer-complete
       (if-fn% #'completion-at-point 'minibuffer
@@ -292,7 +292,7 @@ And copy the qualified buffer name to kill ring."
   (setq% ring-bell-function 'ignore)
   ;; keep `view-mode' when quit
   ;; (when-var% view-mode-map 'view
-  ;;   (define-key% view-mode-map (kbd "q") #'quit-window))
+  ;;   (define-key% view-mode-map (kbd% "q") #'quit-window))
   ;; treat `read-only-mode' as `view-mode'
   (setq view-read-only t)
   ;; Changes all yes/no questions to y/n type
@@ -320,9 +320,9 @@ And copy the qualified buffer name to kill ring."
       (if-fn% 'read-only-mode nil
               (read-only-mode 1)
         (toggle-read-only t))
-      (local-set-key (kbd "q") #'quit-window)
-      (local-set-key (kbd "DEL") #'scroll-down)
-      (local-set-key (kbd "SPC") #'scroll-up))))
+      (local-set-key (kbd% "q") #'quit-window)
+      (local-set-key (kbd% "DEL") #'scroll-down)
+      (local-set-key (kbd% "SPC") #'scroll-up))))
 
 ;; end of `on-progs-env!'
 
@@ -332,34 +332,34 @@ And copy the qualified buffer name to kill ring."
 
 (defun on-progs-key! ()
   ;; line
-  (define-key% (current-global-map) (kbd "C-o") #'open-next-line)
-  (define-key% (current-global-map) (kbd "C-M-o") #'open-previous-line)
+  (define-key% (current-global-map) (kbd% "C-o") #'open-next-line)
+  (define-key% (current-global-map) (kbd% "C-M-o") #'open-previous-line)
   ;; comment
-  (define-key% (current-global-map) (kbd "C-x M-;") #'toggle-comment)
-  (define-key% (current-global-map) (kbd "C-x ;") #'comment-indent)
+  (define-key% (current-global-map) (kbd% "C-x M-;") #'toggle-comment)
+  (define-key% (current-global-map) (kbd% "C-x ;") #'comment-indent)
   ;; surround
-  (define-key% (current-global-map) (kbd "C-x r [") #'surround-region)
+  (define-key% (current-global-map) (kbd% "C-x r [") #'surround-region)
   ;; `imenu'
-  (define-key% (current-global-map) (kbd "M-g i") #'imenu)
+  (define-key% (current-global-map) (kbd% "M-g i") #'imenu)
   ;; `insert-char*'
   (unless-key-insert-char%
-    (define-key% (current-global-map) (kbd "C-x 8 RET")
+    (define-key% (current-global-map) (kbd% "C-x 8 RET")
                  #'insert-char*))
   ;; lookup dictionary
-  (define-key% (current-global-map) (kbd "M-s d") 'lookup-dict)
+  (define-key% (current-global-map) (kbd% "M-s d") 'lookup-dict)
   ;; open file or url at point
   (when-fn% 'find-file-at-point 'ffap
-    (define-key% (current-global-map) (kbd "C-c f f") #'find-file-at-point))
+    (define-key% (current-global-map) (kbd% "C-c f f") #'find-file-at-point))
   ;; shows a list of buffers
-  (define-key% (current-global-map) (kbd "C-x C-b") #'ibuffer)
+  (define-key% (current-global-map) (kbd% "C-x C-b") #'ibuffer)
   ;; interactive query replace key bindings.
-  (define-key% (current-global-map) (kbd "M-%") #'query-replace-regexp)
-  (define-key% (current-global-map) (kbd "C-M-%") #'query-replace)
+  (define-key% (current-global-map) (kbd% "M-%") #'query-replace-regexp)
+  (define-key% (current-global-map) (kbd% "C-M-%") #'query-replace)
   ;; register:
   ;; `C-x r g' and `C-x r i' are all bound to insert-register
   ;; let `C-x r g' do `string-insert-rectangle'
-  (define-key% (current-global-map) (kbd "C-x r g") #'string-insert-rectangle)
-  (define-key% (current-global-map) (kbd "C-x r v") #'view-register)
+  (define-key% (current-global-map) (kbd% "C-x r g") #'string-insert-rectangle)
+  (define-key% (current-global-map) (kbd% "C-x r v") #'view-register)
   ;; line
   (when-fn% 'electric-newline-and-maybe-indent 'electric
     ;; Default behaviour of RET
@@ -367,36 +367,36 @@ And copy the qualified buffer name to kill ring."
     ;; electric-indent-mode: abolition of `newline' function is not
     ;; the Right Thing
     ;; https://lists.gnu.org/archive/html/emacs-devel/2013-10/msg00407.html
-    (define-key% (current-global-map) (kbd "RET")
+    (define-key% (current-global-map) (kbd% "RET")
                  #'electric-newline-and-maybe-indent)
-    (define-key% (current-global-map) (kbd "C-j") #'newline))
+    (define-key% (current-global-map) (kbd% "C-j") #'newline))
   ;; sorting
-  (define-key% (current-global-map) (kbd "C-c s f") #'sort-fields)
-  (define-key% (current-global-map) (kbd "C-c s n") #'sort-numeric-fields)
-  (define-key% (current-global-map) (kbd "C-c s x") #'sort-regexp-fields)
-  (define-key% (current-global-map) (kbd "C-c s l") #'sort-lines)
-  (define-key% (current-global-map) (kbd "C-c s r") #'reverse-region)
-  (define-key% (current-global-map) (kbd "C-c s d") #'delete-duplicate-lines)
+  (define-key% (current-global-map) (kbd% "C-c s f") #'sort-fields)
+  (define-key% (current-global-map) (kbd% "C-c s n") #'sort-numeric-fields)
+  (define-key% (current-global-map) (kbd% "C-c s x") #'sort-regexp-fields)
+  (define-key% (current-global-map) (kbd% "C-c s l") #'sort-lines)
+  (define-key% (current-global-map) (kbd% "C-c s r") #'reverse-region)
+  (define-key% (current-global-map) (kbd% "C-c s d") #'delete-duplicate-lines)
   ;; windows
-  (define-key% (current-global-map) (kbd "C-c w l") #'windmove-left)
-  (define-key% (current-global-map) (kbd "C-c w r") #'windmove-right)
-  (define-key% (current-global-map) (kbd "C-c w u") #'windmove-up)
-  (define-key% (current-global-map) (kbd "C-c w d") #'windmove-down)
+  (define-key% (current-global-map) (kbd% "C-c w l") #'windmove-left)
+  (define-key% (current-global-map) (kbd% "C-c w r") #'windmove-right)
+  (define-key% (current-global-map) (kbd% "C-c w u") #'windmove-up)
+  (define-key% (current-global-map) (kbd% "C-c w d") #'windmove-down)
   ;; buffers
-  (define-key% (current-global-map) (kbd "C-l") #'recenter-top-bottom)
-  (define-key% (current-global-map) (kbd "C-x x c") #'clone-buffer)
-  (define-key% (current-global-map) (kbd "C-x x n") #'echo-buffer-name)
-  (define-key% (current-global-map) (kbd "C-x x t") #'toggle-truncate-lines)
-  (define-key% (current-global-map) (kbd "C-x RET =")
+  (define-key% (current-global-map) (kbd% "C-l") #'recenter-top-bottom)
+  (define-key% (current-global-map) (kbd% "C-x x c") #'clone-buffer)
+  (define-key% (current-global-map) (kbd% "C-x x n") #'echo-buffer-name)
+  (define-key% (current-global-map) (kbd% "C-x x t") #'toggle-truncate-lines)
+  (define-key% (current-global-map) (kbd% "C-x RET =")
                #'get-buffer-coding-system)
-  (define-key% (current-global-map) (kbd "C-x x g")
+  (define-key% (current-global-map) (kbd% "C-x x g")
                (if-fn% 'revert-buffer-quick nil
                        #'revert-buffer-quick
                  #'revert-buffer))
   ;; line number mode
   (setq% global-display-line-numbers-mode -1 'display-line-numbers)
   (setq% display-line-numbers-type 'relative 'display-line-numbers)
-  (define-key% (current-global-map) (kbd "C-x x l")
+  (define-key% (current-global-map) (kbd% "C-x x l")
                (if-fn% 'display-line-numbers-mode 'display-line-numbers
                        #'display-line-numbers-mode
                  (if-fn% 'linum-mode 'linum
@@ -404,12 +404,12 @@ And copy the qualified buffer name to kill ring."
                    #'(lambda (&optional _)
                        (interactive)
                        (error "%s" "No line number mode found")))))
-  (define-key% (current-global-map) (kbd "C-x x r") #'rename-buffer)
+  (define-key% (current-global-map) (kbd% "C-x x r") #'rename-buffer)
   (when-fn% 'toggle-word-wrap 'simple
-    (define-key% (current-global-map) (kbd "C-x x w") #'toggle-word-wrap))
+    (define-key% (current-global-map) (kbd% "C-x x w") #'toggle-word-wrap))
   (when-fn% 'whitespace-mode 'whitespace
-    (define-key% (current-global-map) (kbd "C-x x SPC") #'whitespace-mode))
-  (define-key% (current-global-map) (kbd "C-x x u") #'rename-uniquely)
+    (define-key% (current-global-map) (kbd% "C-x x SPC") #'whitespace-mode))
+  (define-key% (current-global-map) (kbd% "C-x x u") #'rename-uniquely)
   (set-minibuffer-complete-key! "TAB")
   (set-minibuffer-complete-key! "C-M-i"))
 

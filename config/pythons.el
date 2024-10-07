@@ -228,8 +228,8 @@ determine whether inside a virtual env. Another way is using
          (when-platform% 'gnu/linux t) 'python)
   ;; keys
   (when-var% python-mode-map 'python
-    (define-key python-mode-map (kbd "C-c C-z") #'run-python)
-    (define-key python-mode-map (kbd "C-c M-c f") #'python*-format-buffer)))
+    (define-key python-mode-map (kbd% "C-c C-z") #'run-python)
+    (define-key python-mode-map (kbd% "C-c M-c f") #'python*-format-buffer)))
 
 
 

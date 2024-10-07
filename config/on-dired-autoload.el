@@ -46,6 +46,6 @@
 (autoload 'dired-current-directory "dired")
 (autoload 'browse-file (v-home%> "config/direds"))
 
-(define-key% (current-global-map) (kbd "C-x x B") 'browse-file)
+(define-key% (current-global-map) (kbd% "C-x x B") 'browse-file)
 
 ;; end of on-dired-autoload.el

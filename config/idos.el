@@ -11,11 +11,11 @@
   (when-version% > 28
     (make-thread*
      (lambda () (require 'dired-x nil t))))
-  (define-key% (current-global-map) (kbd "C-x 5 r")
+  (define-key% (current-global-map) (kbd% "C-x 5 r")
                #'ido-find-file-read-only-other-frame)
-  (define-key% (current-global-map) (kbd "C-x 4 r")
+  (define-key% (current-global-map) (kbd% "C-x 4 r")
                #'ido-find-file-read-only-other-window)
-  (define-key% (current-global-map) (kbd "C-x C-r")
+  (define-key% (current-global-map) (kbd% "C-x C-r")
                #'ido-find-file-read-only)
   (setq% ido-enable-flex-matching t 'ido))
 
