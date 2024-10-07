@@ -90,7 +90,7 @@
   (add-hook 'compilation-filter-hook #'compile*-colorize-buffer!)
   (when-var% compilation-mode-map 'compile
     ;; define `recompile' and `quit-window' key bindings
-    (define-key% compilation-mode-map (kbd% "g") #'compile*-recompile)
+    (define-key compilation-mode-map (kbd% "g") #'compile*-recompile)
     (define-key% compilation-mode-map (kbd% "q") #'quit-window))
   (setq% compilation-scroll-output t 'compile))
 
@@ -99,7 +99,7 @@
   "On \\=`grep\\=' initialization."
   ;; define `recompile' and `quit-window' key binding for `grep'
   (when-var% grep-mode-map 'grep
-    (define-key% grep-mode-map (kbd% "g") #'compile*-recompile)
+    (define-key grep-mode-map (kbd% "g") #'compile*-recompile)
     (define-key% grep-mode-map (kbd% "q") #'quit-window)))
 
 
