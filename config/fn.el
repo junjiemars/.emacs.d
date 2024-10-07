@@ -653,9 +653,10 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
 
 (defmacro define-key% (keymap key def)
   "Define KEY to DEF in KEYMAP."
-  `(if-key% ,keymap ,key
-            (lambda (d) (null (eq d ,def)))
-     (define-key ,keymap ,key ,def)))
+  (let ((-k1- (funcall `(lambda () ,key))))
+    `(if-key% ,keymap ,-k1-
+              (lambda (d) (null (eq d ,def)))
+       (define-key ,keymap ,-k1- ,def))))
 
 ;; end of define key macro
 
