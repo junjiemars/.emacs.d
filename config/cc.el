@@ -446,29 +446,15 @@ N specify the number of spaces when align."
 (defun cc*-format-buffer ()
   "Format the current buffer via clang-format."
   (interactive)
-  (with-current-buffer (current-buffer)
-    (when (eq major-mode 'c-mode)
-      (when-feature-eglot%
-        (when (and (fboundp 'eglot-managed-p) (eglot-managed-p))
-          (catch 'br
-            (call-interactively #'eglot-format-buffer)
-            (throw 'br t))))
-      (let* ((p (point))
-             (bounds (if-region-active
-                         (cons (region-beginning) (region-end))
-                       (cons (point-min) (point-max))))
-             (rs (buffer-substring (car bounds) (cdr bounds)))
-             (f (save-str-to-file
-                 rs (concat (make-temp-name ".cc-fmt-") ".c")))
-             (ss (let ((x (shell-command* "clang-format" "-i" f)))
-                   (and (= 0 (car x))
-                        (read-str-from-file f)))))
-        (unless (string= rs ss)
-          (save-excursion
-            (delete-region (car bounds) (cdr bounds))
-            (insert ss))
-          (goto-char p))
-        (when (file-exists-p f) (delete-file f))))))
+  (shell-format-buffer
+    'c-mode
+    (when-feature-eglot%
+      (when (and (fboundp 'eglot-managed-p) (eglot-managed-p))
+        (catch 'br
+          (call-interactively #'eglot-format-buffer)
+          (throw 'br t))))
+    (concat (make-temp-name ".cc-fmt-") ".c")
+    (shell-command* "clang-format" "-i" f)))
 
 ;; end of format
 

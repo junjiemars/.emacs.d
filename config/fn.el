@@ -709,6 +709,29 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
       (delete-region (line-beginning-position)
                      (line-beginning-position 2)))))
 
+(defmacro shell-format-buffer (mode alternate tmpfile shell*)
+  "Format the current buffer via SHELL\\=*."
+  (declare (indent 0))
+  `(with-current-buffer (current-buffer)
+     (when (eq major-mode ,mode)
+       ,alternate
+       (let* ((p (point))
+              (bs (if-region-active
+                      (cons (region-beginning) (region-end))
+                    (cons (point-min) (point-max))))
+              (rs (buffer-substring (car bs) (cdr bs)))
+              (f (save-str-to-file rs ,tmpfile))
+              (ss (let ((x ,shell*))
+                    (and (= 0 (car x))
+                         (read-str-from-file f)))))
+         (unless (string= rs ss)
+           (save-excursion
+             (save-restriction
+               (delete-region (car bs) (cdr bs))
+               (insert ss)))
+           (goto-char p))
+         (when (file-exists-p f) (delete-file f))))))
+
  ;; end of interactive fn/macro
 
 (provide 'fn)
