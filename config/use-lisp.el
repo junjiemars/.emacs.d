@@ -54,6 +54,8 @@
     ;; fix inconsistent `C-)' and `C-c )' behavior:#9
     ;; On Terminal mode, Ctrl+Shift combination can't send to Emacs
     (let ((map (make-sparse-keymap)))
+      (define-key map (kbd% "(") #'paredit-open-round)
+      (define-key map (kbd% ")") #'paredit-close-round)
       (define-key map (kbd% "C-c )") #'paredit-forward-slurp-sexp)
       (define-key map (kbd% "C-c (") #'paredit-backward-slurp-sexp)
       (define-key map (kbd% "C-c }") #'paredit-forward-barf-sexp)
@@ -62,7 +64,8 @@
       (define-key map (kbd% "C-c -") #'paredit-splice-sexp)
       (define-key map (kbd% "C-j") #'paredit-newline)
       (define-key map (kbd% "RET") #'newline*)
-      (setcdr (assoc** 'paredit-mode minor-mode-map-alist) map))))
+      (setcdr
+       (assoc** 'paredit-mode minor-mode-map-alist :test #'eq) map))))
 
 (when-feature-paredit%
   (defun use-paredit-init! ()
