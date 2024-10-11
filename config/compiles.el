@@ -51,12 +51,10 @@
 
 (defun compile*-buffer-name (command-or-mode)
   "Classify compilation buffer name based on COMMAND-OR-MODE."
-  (format "*compilation-%s*"
-          (compile*-compile-command
-           (cond ((string= "compilation" command-or-mode)
-                  (or (car compilation-arguments)
-                      compile-command))
-                 (t command-or-mode)))))
+  (let ((c (and (string= "compilation" command-or-mode)
+                compile-command)))
+    (cond (c (format "*compilation-%s*" (compile*-compile-command c)))
+          (t "*compilation*"))))
 
 (defun compile*-recompile (&optional _ __)
   "Re-compile."
