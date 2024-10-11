@@ -54,6 +54,7 @@
     ;; fix inconsistent `C-)' and `C-c )' behavior:#9
     ;; On Terminal mode, Ctrl+Shift combination can't send to Emacs
     (let ((map (make-sparse-keymap)))
+      (define-key map (kbd% "\"") #'paredit-doublequote)
       (define-key map (kbd% "(") #'paredit-open-round)
       (define-key map (kbd% ")") #'paredit-close-round)
       (define-key map (kbd% "C-c )") #'paredit-forward-slurp-sexp)
