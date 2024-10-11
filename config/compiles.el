@@ -47,7 +47,7 @@
 
 (defun compile*-compile-command (command)
   "Return classified compile command."
-  (string-match* " *\\([-a-zA-z0-9]+\\) *" command 1))
+  (string-match* "/?\\([^ /]+\\) +" command 1))
 
 (defun compile*-buffer-name (command-or-mode)
   "Classify compilation buffer name based on COMMAND-OR-MODE."
