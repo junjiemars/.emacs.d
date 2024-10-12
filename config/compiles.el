@@ -50,7 +50,7 @@
   `(string-match* "/?\\([^ /]+\\) +" ,command 1))
 
 (defmacro compile*-buffer-name (command)
-  "Make compilation  buffer name with COMMAND."
+  "Make compilation buffer name with COMMAND."
   `(if ,command
        (format "*compilation-%s*" ,command)
      "*compilation*"))
