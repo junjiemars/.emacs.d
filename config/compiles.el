@@ -45,35 +45,34 @@
         (when (and d (file-exists-p d))
           (push! d compilation-search-path t))))))
 
-(defun compile*-compile-command (command)
-  "Return classified compile command."
-  (string-match* "/?\\([^ /]+\\) +" command 1))
+(defmacro compile*-command-name (command)
+  "Return classified compile COMMAND name."
+  `(string-match* "/?\\([^ /]+\\) +" ,command 1))
 
-(defun compile*-buffer-name (command-or-mode)
+(defmacro compile*-buffer-name (command)
+  "Make compilation  buffer name with COMMAND."
+  `(if ,command
+       (format "*compilation-%s*" ,command)
+     "*compilation*"))
+
+(defun compile*-buffer-name-fn (command-or-mode)
   "Classify compilation buffer name based on COMMAND-OR-MODE."
-  (let ((c (and (string= "compilation" command-or-mode)
-                compile-command)))
-    (cond (c (format "*compilation-%s*" (compile*-compile-command c)))
-          (t "*compilation*"))))
+  (let ((c (cond ((string= "compilation" command-or-mode)
+                  (compile*-command-name compile-command))
+                 (t command-or-mode))))
+    (compile*-buffer-name c)))
 
 (defun compile*-recompile (&optional _ __)
   "Re-compile."
   (interactive)
-  (let ((a1 (compile*-compile-command (car compilation-arguments)))
-        (c1 (compile*-compile-command compile-command)))
-    (cond ((and current-prefix-arg (not (string= a1 c1)))
-           (let ((current-prefix-arg nil))
-             (call-interactively
-              (cond ((string= "grep" a1) #'grep)
-                    ((string= "find" a1) #'find-grep)
-                    (t #'compile)))))
-          (t (let ((compile-command (or (car compilation-arguments)
-                                        compile-command)))
-               (call-interactively #'recompile))))))
+  (cond ((null current-prefix-arg)
+         (call-interactively #'recompile))
+        (t (let ((current-prefix-arg nil))
+             (call-interactively #'compile)))))
 
 (defun on-compile-init! ()
   "On \\=`compile\\=' initialization."
-  (setq% compilation-buffer-name-function #'compile*-buffer-name
+  (setq% compilation-buffer-name-function #'compile*-buffer-name-fn
          'compile)
   (when-platform% 'windows-nt
     ;; compile and activate `compilation-find-file' advice on Windows
