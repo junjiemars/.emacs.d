@@ -9,6 +9,8 @@
 ;;; require
 
 (eval-when-compile (require 'marks (v-home%> "config/marks")))
+(declare-function symbol@ (v-home%> "config/ed"))
+(autoload 'symbol@ (v-home%> "config/ed") nil nil 'macro)
 
 ;; end of require
 

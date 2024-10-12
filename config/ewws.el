@@ -6,12 +6,16 @@
 ;; ewws.el
 ;;;;
 
-
+;;; require
 (eval-when-compile (require 'browse-url))
 
-;;; autoload
 (autoload 'browse-url-default-browser "browse-url")
 (autoload 'browse-url-url-encode-chars "browse-url")
+
+(declare-function symbol@ (v-home%> "config/ed"))
+(autoload 'symbol@ (v-home%> "config/ed") nil nil 'macro)
+
+;; end of require
 
 (defun toggle-browser! (&optional arg)
   "Toggle default browser.\n

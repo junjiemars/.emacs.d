@@ -680,58 +680,6 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
   (declare (indent 0))
   `(if-region-active nil ,@then))
 
-(defmacro symbol@ (&optional thing)
-  "Return the (cons \\='region|nil THING) at point."
-  (let ((ss (gensym*)))
-    `(if-region-active
-         (let ((,ss (buffer-substring-no-properties
-                     (region-beginning)
-                     (region-end))))
-           (setq mark-active nil)
-           (cons 'region ,ss))
-       (let ((,ss (thing-at-point (or ,thing 'symbol))))
-         (and ,ss (cons nil (substring-no-properties ,ss)))))))
-
-(defun newline* (&optional arg)
-  "Raw newline."
-  (interactive "*P")
-  (let ((electric-indent-mode nil))
-    (when-version% > 26
-      (when-lexical% (ignore* electric-indent-mode)))
-    (if-version% <= 24.4
-                 (newline arg 'interactive)
-      (newline arg))))
-
-(unless-fn% 'delete-line nil
-  (defun delete-line ()
-    "Delete current line."
-    (let ((inhibit-field-text-motion t))
-      (delete-region (line-beginning-position)
-                     (line-beginning-position 2)))))
-
-(defmacro shell-format-buffer (mode alternate tmpfile shell*)
-  "Format the current buffer via SHELL\\=*."
-  (declare (indent 0))
-  `(with-current-buffer (current-buffer)
-     (when (eq major-mode ,mode)
-       ,alternate
-       (let* ((p (point))
-              (bs (if-region-active
-                      (cons (region-beginning) (region-end))
-                    (cons (point-min) (point-max))))
-              (rs (buffer-substring (car bs) (cdr bs)))
-              (f (save-str-to-file rs ,tmpfile))
-              (ss (let ((x ,shell*))
-                    (and (= 0 (car x))
-                         (read-str-from-file f)))))
-         (unless (string= rs ss)
-           (save-excursion
-             (save-restriction
-               (delete-region (car bs) (cdr bs))
-               (insert ss)))
-           (goto-char p))
-         (when (file-exists-p f) (delete-file f))))))
-
  ;; end of interactive fn/macro
 
 (provide 'fn)

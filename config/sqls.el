@@ -6,6 +6,13 @@
 ;; sqls.el
 ;;;;
 
+;;; require
+
+(declare-function delete-line* (v-home%> "config/ed"))
+(autoload 'delete-line* (v-home%> "config/ed"))
+
+;; end of require
+
 ;;; when-*macro
 
 (defmacro when-sql-feature% (&rest body)
@@ -453,7 +460,7 @@ Optional prefix argument ENHANCED, displays additional details."
       (with-current-buffer outbuf
         (save-excursion
           (goto-char (point-min))
-          (delete-line)
+          (delete-line*)
           (while (re-search-forward
                   "\\(^DBMS_METADATA.*: \\|^[0-9]+ row.*\\)" nil t)
             (replace-match "")))))))

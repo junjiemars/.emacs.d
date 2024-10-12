@@ -6,6 +6,13 @@
 ;; use-lisp.el
 ;;;;
 
+;;; require
+
+(declare-function newline* (v-home%> "config/ed"))
+(autoload 'newline* (v-home%> "config/ed"))
+
+;; end of require
+
 ;;; macro
 
 (defmacro-if-feature% aggressive-indent)

@@ -10,6 +10,8 @@
 
 (declare-function make-dir-ctags (v-home%> "config/tags"))
 (declare-function xref*-read-only-dirs (v-home%> "config/xrefs"))
+(declare-function delete-line* (v-home%> "config/ed"))
+(autoload 'delete-line* (v-home%> "config/ed"))
 
 ;; end of require
 
@@ -91,7 +93,7 @@
                          "set substitute-path"
                        "^settings set target\\.source-map")
                      nil t)
-                (delete-line))
+                (delete-line*))
               (goto-char (point-max))
               (forward-line 1)
               (insert

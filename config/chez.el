@@ -25,9 +25,20 @@
 ;;;
 ;;;;;
 
+
+
+;;; require
+
 (require 'comint)
 (require 'scheme)
+
+(declare-function newline* (v-home%> "config/ed"))
+(autoload 'newline* (v-home%> "config/ed"))
+
+
 ;; (require 'thingatpt)
+
+;; end of require
 
 ;; ;; Disable `geiser-mode' for `scheme-mode'
 ;; (if-feature-geiser%

@@ -8,6 +8,13 @@
 ;; Commentary:
 ;;;;
 
+;;; require
+
+(declare-function symbol@ (v-home%> "config/ed"))
+(autoload 'symbol@ (v-home%> "config/ed") nil nil 'macro)
+
+;; end of require
+
 ;;; `xref-find-definitions' associated macro, since emacs25
 
 (defmacro-if-fn% xref-find-definitions xref)

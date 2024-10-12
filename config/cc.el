@@ -13,6 +13,9 @@
 (declare-function make-c-tags (v-home%> "config/tags"))
 (autoload 'make-c-tags (v-home%> "config/tags"))
 
+(declare-function shell-format-buffer (v-home%> "config/ed"))
+(autoload 'shell-format-buffer (v-home%> "config/ed") nil nil 'macro)
+
 ;; end of require
 
 ;;;

@@ -14,6 +14,13 @@
 ;; dis:     disassembler
 ;;;
 
+;;; require
+
+(declare-function shell-format-buffer (v-home%> "config/ed"))
+(autoload 'shell-format-buffer (v-home%> "config/ed") nil nil 'macro)
+
+;; end of require
+
 ;;; version/program
 
 (defmacro python*-version (python)

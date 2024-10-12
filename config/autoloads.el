@@ -82,6 +82,7 @@
 (defun load-autoloaded-modes! ()
   "Load autoloaded modes."
   (compile!
+    (compile-unit% (emacs-home* "config/ed.el") t)
     (compile-unit% (emacs-home* "config/cc.el") t)
     (compile-unit% (emacs-home* "config/clipboard.el") t)
     (compile-unit% (emacs-home* "config/compiles.el") t)
@@ -103,7 +104,6 @@
     (compile-unit% (emacs-home* "config/mixal.el") t)
     (compile-unit% (emacs-home* "config/nets.el") t)
     (compile-unit% (emacs-home* "config/orgs.el") t)
-    (compile-unit% (emacs-home* "config/pps.el") t)
     (when-feature-project%
       (compile-unit% (emacs-home* "config/projects.el") t))
     (compile-unit% (emacs-home* "config/progs.el") t)
@@ -208,8 +208,6 @@
         "Toggle node process." t))
     ;; on `orgs'
     (compile-unit% (emacs-home* "config/on-org-autoload.el"))
-    ;; on `pps'
-    (compile-unit% (emacs-home* "config/on-pp-autoload.el"))
     ;; on `projects'
     (when-feature-project%
       (compile-unit% (emacs-home* "config/on-project-autoload.el")))

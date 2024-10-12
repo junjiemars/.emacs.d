@@ -6,6 +6,13 @@
 ;; dict.el
 ;;;;
 
+;;; require
+
+(declare-function symbol@ (v-home%> "config/ed"))
+(autoload 'symbol@ (v-home%> "config/ed") nil nil 'macro)
+
+;; end of require
+
 
 (defalias '*dict-defs*
   (lexical-let%
