@@ -56,7 +56,7 @@
      "*compilation*"))
 
 (defun compile*-buffer-name-fn (command-or-mode)
-  "Classify compilation buffer name based on COMMAND-OR-MODE."
+  "Classify compilation buffer name with COMMAND-OR-MODE."
   (let ((c (cond ((string= "compilation" command-or-mode)
                   (compile*-command-name compile-command))
                  (t command-or-mode))))
