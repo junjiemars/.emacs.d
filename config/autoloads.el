@@ -48,7 +48,8 @@
   (declare (indent 0))
   (if-feature-treesit%
       (if-fn% 'treesit-available-p nil
-              `(progn% ,@body)
+              (when% (treesit-available-p)
+		            `(progn% ,@body))
         `(comment ,@body))
     `(comment ,@body)))
 
