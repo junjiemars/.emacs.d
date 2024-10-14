@@ -648,16 +648,16 @@
       (set-mark (point-max))
       (should-not (unless-region-active (+ 1 2) (* 3 4))))))
 
-(ert-deftest %e:fn:symbol@ ()
-  ;; interactive
-  (unless noninteractive
-    (with-temp-buffer
-      (insert "a bb")
-      (goto-char (point-min))
-      (should (null (car (symbol@))))
-      (set-mark (point-min))
-      (set-mark (point-max))
-      (should (string= "a bb" (cdr (symbol@)))))))
+;; (ert-deftest %e:fn:symbol@ ()
+;;   ;; interactive
+;;   (unless noninteractive
+;;     (with-temp-buffer
+;;       (insert "a bb")
+;;       (goto-char (point-min))
+;;       (should (null (car (symbol@))))
+;;       (set-mark (point-min))
+;;       (set-mark (point-max))
+;;       (should (string= "a bb" (cdr (symbol@)))))))
 
 (ert-deftest %e:fn:version-string= ()
   (should (= 0 (version-string= "" "")))

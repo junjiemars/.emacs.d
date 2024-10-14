@@ -9,7 +9,7 @@
 ;;; require
 
 (declare-function delete-line* (v-home%> "config/ed"))
-(autoload 'delete-line* (v-home%> "config/ed"))
+(autoload 'delete-line* (v-home%> "config/ed") nil nil 'macro)
 
 ;; end of require
 

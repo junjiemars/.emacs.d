@@ -47,7 +47,9 @@
 (defmacro when-feature-treesit% (&rest body)
   (declare (indent 0))
   (if-feature-treesit%
-      `(progn% ,@body)
+      (if-fn% 'treesit-available-p nil
+              `(progn% ,@body)
+        `(comment ,@body))
     `(comment ,@body)))
 
 ;; (defalias '*org-babel-schemes*

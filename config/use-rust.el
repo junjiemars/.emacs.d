@@ -11,7 +11,7 @@
 (declare-function make-dir-ctags (v-home%> "config/tags"))
 (declare-function xref*-read-only-dirs (v-home%> "config/xrefs"))
 (declare-function delete-line* (v-home%> "config/ed"))
-(autoload 'delete-line* (v-home%> "config/ed"))
+(autoload 'delete-line* (v-home%> "config/ed") nil nil 'macro)
 
 ;; end of require
 

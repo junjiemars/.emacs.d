@@ -13,14 +13,13 @@
 
 ;; end of require
 
-(fset 'delete-line*
-      (if-fn% 'delete-line1 nil
-              #'delete-line
-        (lambda ()
-          "Delete current line."
-          (let ((inhibit-field-text-motion t))
-            (delete-region (line-beginning-position)
-                           (line-beginning-position 2))))))
+(defmacro delete-line* ()
+  "Delete current line."
+  `(if-fn% 'delete-line nil
+           (delete-line)
+     (let ((inhibit-field-text-motion t))
+       (delete-region (line-beginning-position)
+                      (line-beginning-position 2)))))
 
 (defun newline* (&optional arg)
   "Raw newline."
