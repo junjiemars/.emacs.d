@@ -110,26 +110,27 @@ test_module() {
 (*self-paths* :put :epilogue nil)
 (*self-env-spec*
   :put :module
-  (list :package-check-signature 'allow-unsigned
-        :package-archives
-        \`(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-           ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
-           ("melpa-stable" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
-           ("melpa" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))
-        :allowed t))
+  (list
+    :package-check-signature 'allow-unsigned
+    :package-archives
+    \`(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+       ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
+       ("melpa-stable" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
+       ("melpa" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))
+    :allowed t))
 (*self-mod-spec*
   :put :lisp
   (list
-   :cond t
-   :packages  '(paredit)
-   :compile \`(,(compile-unit% (emacs-home* "config/use-lisp-autoload.el")))))
+    :cond t
+    :packages  '(paredit)
+    :compile \`(,(compile-unit% (emacs-home* "config/use-lisp-autoload.el")))))
 (*self-mod-spec*
   :put :vc
   (list
-   :cond (executable-find% "git")
-   :packages  '(magit)
-   :compile \`(,(compile-unit% (emacs-home* "config/use-magit.el") t)
-               ,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
+    :cond (executable-find% "git")
+    :packages  '(magit)
+    :compile \`(,(compile-unit% (emacs-home* "config/use-magit.el") t)
+                ,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
 END
   echo "# cat <${_ENV_PRO_}"
   cat <"${_ENV_PRO_}"
