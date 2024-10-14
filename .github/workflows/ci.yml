@@ -77,7 +77,6 @@ jobs:
         update: true
         install: >-
           make
-          git
           mingw-w64-x86_64-gcc
           emacs
     - name: Test

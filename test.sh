@@ -116,7 +116,7 @@ test_module() {
 (*self-mod-spec*
   :put :lisp
   (list
-   :cond (when-version% <= 29 t)
+   :cond (and (when-version% <= 24.4 t) (executable-find% "git"))
    :packages  '(paredit magit)
    :compile \`(,(compile-unit% (emacs-home* "config/use-lisp-autoload.el"))
                ,(compile-unit% (emacs-home* "config/use-magit.el") t)
