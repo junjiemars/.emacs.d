@@ -293,7 +293,7 @@
   (load-autoloaded-modes!)
   (load-conditional-modes!)
   (when-fn% 'self-edit-init! nil (self-edit-init!))
-  (when-font% (make-thread* #'self-glyph-init!))
+  (when-font% (make-thread* (lambda () (thread-yield*) (self-glyph-init!))))
   (when-fn% 'self-module-init! nil
     (condition-case err
         (self-module-init!)
@@ -308,9 +308,8 @@
   (when (*self-paths* :get :epilogue)
     (condition-case err
         (make-thread*
-         (lambda ()
-           (compile!
-             (compile-unit* (*self-paths* :get :epilogue))))
+         (lambda () (thread-yield*)
+           (compile! (compile-unit* (*self-paths* :get :epilogue))))
          (if-noninteractive% t))
       (error "self-epilogue: %s" err))))
 

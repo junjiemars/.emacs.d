@@ -490,6 +490,7 @@
    (= 6 (let ((a 1))
           (make-thread*
            (lambda ()
+             (thread-yield*)
              (*
               ;; cannot capture the free `a'
               (unwind-protect a 1)

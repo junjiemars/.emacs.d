@@ -200,6 +200,10 @@ If optional UNIQUELY is non-nil then append uniquely."
      (ignore* ,join ,name)
      (funcall ,fn)))
 
+(defmacro thread-yield* ()
+  "Yield the CPU to another thread."
+  `(when-fn% 'thread-yield nil (thread-yield)))
+
 ;; end of byte-compiler macro
 
 ;;;
