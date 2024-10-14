@@ -108,18 +108,18 @@ test_module() {
 (*self-paths* :put :mod-spec nil)
 (*self-paths* :put :env-spec nil)
 (*self-paths* :put :epilogue nil)
-(*self-env-spec*
-  :put :module
-  (list :remove-unused t
-        :package-check-signature 'allow-unsigned
-        :allowed t))
 (*self-mod-spec*
   :put :lisp
   (list
-   :cond (and (when-version% <= 24.4 t) (executable-find% "git"))
-   :packages  '(paredit magit)
-   :compile \`(,(compile-unit% (emacs-home* "config/use-lisp-autoload.el"))
-               ,(compile-unit% (emacs-home* "config/use-magit.el") t)
+   :cond t
+   :packages  '(paredit)
+   :compile \`(,(compile-unit% (emacs-home* "config/use-lisp-autoload.el")))))
+(*self-mod-spec*
+  :put :lisp
+  (list
+   :cond (executable-find% "git")
+   :packages  '(magit)
+   :compile \`(,(compile-unit% (emacs-home* "config/use-magit.el") t)
                ,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
 END
   echo "# cat <${_ENV_PRO_}"
