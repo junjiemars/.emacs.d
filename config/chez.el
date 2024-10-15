@@ -335,7 +335,7 @@ Run the hook \\=`chez-repl-mode-hook'\\= after the
              (current-buffer)
              (chez-program)
              (*chez-start-file*)
-             (split-string* command-line "\\s-+" t))
+             (cdr (split-string* command-line "\\s-+" t)))
       (chez-repl-mode)
       (add-hook (if-var% completion-at-point-functions 'minibuffer
                          'completion-at-point-functions
