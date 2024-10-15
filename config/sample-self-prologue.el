@@ -8,9 +8,8 @@
 ;;
 ;;;;
 
-(comment
- (*self-paths* :put :env-spec nil)
- (*self-paths* :put :package-spec nil)
- (*self-paths* :put :epilogue nil))
+(*self-paths* :put :env-spec nil)
+(*self-paths* :put :package-spec nil)
+(*self-paths* :put :epilogue nil)
 
 ;; eof

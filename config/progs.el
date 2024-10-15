@@ -253,8 +253,7 @@ And copy the qualified buffer name to kill ring."
 (defun get-buffer-coding-system (&optional buffer)
   "Return the coding system of current buffer or BUFFER."
   (interactive)
-  (with-current-buffer (or buffer
-                           (current-buffer))
+  (with-current-buffer (or buffer (current-buffer))
     (if (called-interactively-p*)
         (message "%s" buffer-file-coding-system)
       buffer-file-coding-system)))
