@@ -430,6 +430,11 @@ No matter the declaration order, the executing order is:
 	      (compile-unit% (emacs-home* "config/edit.el") t)
       (autoload 'self-edit-init! (v-home%> "config/edit"))
       (declare-function self-edit-init! (v-home%> "config/edit"))))
+  (when (*self-env-spec* :get :key :allowed)
+    (prog1
+	      (compile-unit% (emacs-home* "config/key.el") t)
+      (autoload 'self-key-init! (v-home%> "config/key"))
+      (declare-function self-key-init! (v-home%> "config/key"))))
   (progn
     ;;; --batch mode: disable `desktop'
     (setq% desktop-save-mode nil 'desktop)

@@ -190,9 +190,6 @@
         "Toggle jshell mode." t)
       (autoload 'run-jshell (v-home%> "config/jshell")
         "Toggle jshell process." t))
-    ;; self :key
-    (when-graphic%
-      (compile-unit% (emacs-home* "config/key.el")))
     ;; on `mill'
     (compile-unit% (emacs-home* "config/mill.el") t)
     (compile-unit% (emacs-home* "config/on-mill-autoload.el"))
@@ -293,6 +290,7 @@
   (load-autoloaded-modes!)
   (load-conditional-modes!)
   (when-fn% 'self-edit-init! nil (self-edit-init!))
+  (when-fn% 'self-key-init! nil (self-key-init!))
   (when-font% (make-thread* (lambda () (thread-yield*) (self-glyph-init!))))
   (when-fn% 'self-module-init! nil
     (condition-case err
