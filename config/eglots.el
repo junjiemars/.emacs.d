@@ -21,7 +21,7 @@
                    (match-end 1))))))))
 
 (defun eglot*-set-style (&optional style indent)
-  "Set the current \\=`eglot-managed-p\\=' buffer to use the STYLE and INDENT."
+  "Set STYLE and INDENT for \\=`eglot-managed-p\\=' buffer."
   (with-current-buffer (current-buffer)
     (when (eglot-managed-p)
       (let ((p (let ((c (eglot--current-project)))
@@ -35,16 +35,19 @@
                         (save-str-to-file
                          (concat
                           "BasedOnStyle: "
-                          (downcase
+                          (upcase
                            (or style
                                (buffer-local-value
                                 'c-indentation-style (current-buffer))))
-                          "\n"
+                          "\n---\n"
+                          "Language: Cpp\n"
                           "IndentWidth: "
                           (number-to-string
                            (or indent
                                (buffer-local-value
                                 'c-basic-offset (current-buffer)))))
+                         ;; /* clang-format on */
+                         ;; /* clang-format off */
                          (concat p ".clang-format")))))))))))
 
 (defalias 'eglot*-server-programs
