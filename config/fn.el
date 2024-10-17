@@ -254,28 +254,25 @@ See \\=`string-match\\=' and \\=`match-string\\='."
                 (match-beginning num))))
     (and b (substring-no-properties string b (match-end num)))))
 
+(when-version% > 24.4
+  (defun split-string4 (string &optional separators omit-nulls trim)
+    (if trim
+        (delete ""
+                (mapcar (lambda (s)
+                          (if (and (stringp trim) (> (length trim) 0))
+                              (string-trim>< s trim trim)
+                            (string-trim>< s)))
+                        (split-string string separators omit-nulls)))
+      (split-string string separators omit-nulls))))
+
 (defmacro split-string* (string &optional separators omit-nulls trim)
   "Split STRING into substrings bounded by match for SEPARATORS.\n
-Like \\=`split-string\\=' in Emacs 24.4+
 Optional argument OMIT-NULLS omit null strings.
 Optional argument TRIM regexp used to trim."
   (if-version%
       <= 24.4
       `(split-string ,string ,separators ,omit-nulls ,trim)
-    (let ((s (gensym*))
-          (p (gensym*))
-          (d (gensym*)))
-      `(let ((,s ,string)
-             (,p ,separators)
-             (,d ,trim))
-         (if ,d
-             (delete ""
-                     (mapcar (lambda (s)
-                               (if (and (stringp ,d) (> (length ,d) 0))
-                                   (string-trim>< s ,d ,d)
-                                 (string-trim>< s)))
-                             (split-string ,s ,p ,omit-nulls)))
-           (split-string ,s ,p ,omit-nulls))))))
+    `(split-string4 ,string ,separators ,omit-nulls ,trim)))
 
 ;; end of string
 
@@ -319,56 +316,47 @@ Optional argument TRIM regexp used to trim."
      (write-region ,start ,end ,filename
                    ,append ,visit ,lockname ,mustbenew)))
 
-(defmacro save-sexp-to-file (sexp file)
+(defun save-sexp-to-file (sexp file)
   "Save SEXP to FILE.\n
 Returns the name of FILE when successed otherwise nil."
-  (let ((s (gensym*)) (f (gensym*)))
-    `(let ((,s ,sexp) (,f ,file)
-           (b (get-buffer-create* (symbol-name (gensym*)) t)))
-       (unwind-protect
-           (with-current-buffer b
-             (prin1 ,s b)
-             (write-region* (point-min) (point-max) ,f)
-             ,f)
-         (when b (kill-buffer b))))))
+  (let ((b (get-buffer-create* (symbol-name (gensym*)) t)))
+    (unwind-protect
+        (with-current-buffer b
+          (prin1 sexp b)
+          (write-region* (point-min) (point-max) file)
+          file)
+      (and b (kill-buffer b)))))
 
-(defmacro read-sexp-from-file (file)
+(defun read-sexp-from-file (file)
   "Read the first sexp from FILE."
-  (let ((f (gensym*)))
-    `(lexical-let% ((,f ,file))
-       (when (and (stringp ,f) (file-exists-p ,f))
-         (let ((b (get-buffer-create* (symbol-name (gensym*)) t)))
-           (unwind-protect
-               (with-current-buffer b
-                 (insert-file-contents-literally* ,f)
-                 (read b))
-             (when b (kill-buffer b))))))))
+  (when (and (stringp file) (file-exists-p file))
+    (let ((b (get-buffer-create* (symbol-name (gensym*)) t)))
+      (unwind-protect
+          (with-current-buffer b
+            (insert-file-contents-literally* file)
+            (read b))
+        (and b (kill-buffer b))))))
 
-(defmacro save-str-to-file (str file)
+(defun save-str-to-file (str file)
   "Save STR to FILE.\n
-Returns the name of FILE when successed otherwise nil."
-  (let ((s (gensym*)) (f (gensym*)))
-    `(lexical-let%
-         ((,s ,str) (,f ,file)
-          (b (get-buffer-create* (symbol-name (gensym*)) t)))
-       (unwind-protect
-           (with-current-buffer b
-             (insert ,s)
-             (write-region* (point-min) (point-max) ,f nil :slient)
-             ,f)
-         (when b (kill-buffer b))))))
+Return the name of FILE when successed otherwise nil."
+  (let ((b (get-buffer-create* (symbol-name (gensym*)) t)))
+    (unwind-protect
+        (with-current-buffer b
+          (insert str)
+          (write-region* (point-min) (point-max) file nil :slient)
+          file)
+      (and b (kill-buffer b)))))
 
-(defmacro read-str-from-file (file)
+(defun read-str-from-file (file)
   "Read string from FILE."
-  (let ((f (gensym*)))
-    `(lexical-let% ((,f ,file))
-       (when (and (stringp ,f) (file-exists-p ,f))
-         (let ((b (get-buffer-create* (symbol-name (gensym*)) t)))
-           (unwind-protect
-               (with-current-buffer b
-                 (insert-file-contents-literally* ,f)
-                 (buffer-substring-no-properties (point-min) (point-max)))
-             (when b (kill-buffer b))))))))
+  (when (and (stringp file) (file-exists-p file))
+    (let ((b (get-buffer-create* (symbol-name (gensym*)) t)))
+      (unwind-protect
+          (with-current-buffer b
+            (insert-file-contents-literally* file)
+            (buffer-substring-no-properties (point-min) (point-max)))
+        (and b (kill-buffer b))))))
 
 ;; end of read/save-str/sexp-file
 
@@ -399,7 +387,7 @@ Returns the name of FILE when successed otherwise nil."
          (replace-match (downcase (match-string 1 path)) t t path))
       path)))
 
-(defmacro shell-command* (command &rest args)
+(defun shell-command* (command &rest args)
   "Return a cons cell (code . output) after execute COMMAND in
  inferior shell.\n
 See \\=`shell-command\\=' and \\=`shell-command-to-string\\=' for
@@ -409,27 +397,24 @@ details. If you want to set the environment temporarily that
    (shell-command* \"echo $XXX\"))\n
 Optional argument ARGS for COMMAND."
   (declare (indent 1))
-  (let ((c1 (gensym*)))
-    `(lexical-let%
-         ((,c1 ,command)
-          (b (get-buffer-create* (symbol-name (gensym*)) t)))
-       (unwind-protect
-         (with-current-buffer b
-           (cons
-            (let ((x (call-process
-                      shell-file-name nil b nil
-                      shell-command-switch
-                      (mapconcat #'identity
-                                 (list ,c1 ,@args)
-                                 " "))))
-              (cond ((integerp x) x)
-                    ((string-match "^.*\\([0-9]+\\).*$" x)
-                     (match-string-no-properties 1 x))
-                    (t -1)))
-            (let ((s (buffer-substring-no-properties
-                      (point-min) (point-max))))
-              (if (string= "\n" s) nil s))))
-         (when b (kill-buffer b))))))
+  (let ((b (get-buffer-create* (symbol-name (gensym*)) t)))
+    (unwind-protect
+        (with-current-buffer b
+          (cons
+           (let ((x (call-process
+                     shell-file-name nil b nil
+                     shell-command-switch
+                     (mapconcat #'identity
+                                (apply #'list command args)
+                                " "))))
+             (cond ((integerp x) x)
+                   ((string-match "^.*\\([0-9]+\\).*$" x)
+                    (match-string-no-properties 1 x))
+                   (t -1)))
+           (let ((s (buffer-substring-no-properties
+                     (point-min) (point-max))))
+             (if (string= "\n" s) nil s))))
+      (and b (kill-buffer b)))))
 
 (defmacro executable-find% (command &optional fn)
   "Return the path of COMMAND at compile time.\n
