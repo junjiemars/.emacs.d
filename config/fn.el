@@ -376,38 +376,28 @@ Returns the name of FILE when successed otherwise nil."
 ;; platform macro
 ;;;
 
-(defmacro file-name-base* (path)
+(defun file-name-base* (path)
   "Return base name of PATH."
-  (let ((p (gensym*)))
-    `(let* ((,p ,path))
-       (substring-no-properties
-        ,p
-        (let ((p1 (strrchr ,p ?/)))
-          (if p1 (1+ p1) 0))
-        (or (strrchr ,p ?.) (length ,p))))))
+  (substring-no-properties path
+   (let ((p1 (strrchr path ?/)))
+     (if p1 (1+ p1) 0))
+   (or (strrchr path ?.) (length path))))
 
 (unless% (fboundp 'directory-name-p)
-  (defmacro directory-name-p (name)
+  (defun directory-name-p (name)
     "Return t if NAME ends with a directory separator character."
-    (let ((n (gensym*))
-          (w (gensym*)))
-      `(let* ((,n ,name)
-              (,w (length ,n)))
-         (and (> ,w 0) (= ?/ (aref ,n (1- ,w))))))))
+    (let ((len (length name)))
+      (and (> len 0) (= ?/ (aref name (1- len)))))))
 
-(defmacro posix-path (path)
+(defun posix-path (path)
   "Transpose PATH to posix path."
-  (let ((p (gensym*)))
-    `(let ((,p ,path))
-       (when (stringp ,p)
-         (if (string-match "^\\([A-Z]:\\)" ,p)
-             (replace-regexp-in-string
-              "\\\\"
-              "/"
-              (replace-match
-               (downcase (match-string 1 ,p))
-               t t ,p))
-           ,p)))))
+  (when (stringp path)
+    (if (string-match "^\\([A-Z]:\\)" path)
+        (replace-regexp-in-string
+         "\\\\"
+         "/"
+         (replace-match (downcase (match-string 1 path)) t t path))
+      path)))
 
 (defmacro shell-command* (command &rest args)
   "Return a cons cell (code . output) after execute COMMAND in
@@ -575,23 +565,17 @@ See \\=`defcustom\\='."
                              (mapconcat trim path "/"))))))
     (if (string= "" s) nil (funcall tail s))))
 
-(defmacro path- (file)
+(defun path- (file)
   "Return the parent path of FILE."
-  (let ((f (gensym*)))
-    `(let ((,f ,file))
-       (when (stringp ,f)
-         (inhibit-file-name-handler
-           (file-name-directory (directory-file-name ,f)))))))
+  (when (stringp file)
+    (inhibit-file-name-handler
+      (file-name-directory (directory-file-name file)))))
 
-(defmacro path-depth (path &optional separator)
+(defun path-depth (path &optional separator)
   "Return the depth of PATH."
-  (let ((p (gensym*))
-        (s (gensym*)))
-    `(let ((,p ,path)
-           (,s (or ,separator "/")))
-       (if (= 0 (length ,p))
-           0
-         (- (length (split-string* ,p ,s nil)) 1)))))
+  (if (= 0 (length path))
+      0
+    (- (length (split-string* path (or separator "/") nil)) 1)))
 
 (defun file-in-dirs-p (file dirs)
   "Return the matched dir if FILE in DIRS, otherwise nil."
