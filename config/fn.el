@@ -247,17 +247,12 @@ If optional UNIQUELY is non-nil then append uniquely."
   "Remove leading and trailing whitespaces or matching of LR/RR from S."
   `(string-trim> (string-trim< ,s ,lr) ,rr))
 
-(defmacro string-match* (regexp string num &optional start)
+(defun string-match* (regexp string num &optional start)
   "Return the NUMth match for REGEXP in STRING from START.\n
 See \\=`string-match\\=' and \\=`match-string\\='."
-  (let ((s (gensym*))
-        (n (gensym*)))
-    `(let* ((,s ,string)
-            (,n ,num)
-            (b (and (stringp ,s) (string-match ,regexp ,s ,start)
-                    (match-beginning ,n))))
-       (when b
-         (substring-no-properties ,s b (match-end ,n))))))
+  (let ((b (and (stringp string) (string-match regexp string start)
+                (match-beginning num))))
+    (and b (substring-no-properties string b (match-end num)))))
 
 (defmacro split-string* (string &optional separators omit-nulls trim)
   "Split STRING into substrings bounded by match for SEPARATORS.\n
@@ -654,7 +649,7 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
     `,-k1-))
 
 (defmacro if-key% (keymap key test then &rest else)
-  "If TEST yields t for KEY in KEYMAP do then, else do ELSE..."
+  "If TEST yield t for KEY in KEYMAP do then, else do ELSE..."
   (declare (indent 3))
   `(if% (funcall ,test (lookup-key ,keymap ,key))
        ,then

@@ -448,8 +448,7 @@ No matter the declaration order, the executing order is:
     (prog1
         (compile-unit% (emacs-home* "config/sockets.el") t)
       (autoload 'self-socks-init! (v-home%> "config/sockets"))
-      (declare-function self-socks-init!
-                        (v-home%> "config/sockets"))))
+      (declare-function self-socks-init! (v-home%> "config/sockets"))))
   (when-package%
     (when (*self-env-spec* :get :module :allowed)
       (prog1

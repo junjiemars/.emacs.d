@@ -17,7 +17,7 @@
   "https://github.com/junjiemars/.emacs.d")
 
 (defmacro comment (&rest body)
-  "Ignore BODY, yields nil."
+  "Ignore BODY, yield nil."
   nil)
 
 (defmacro progn% (&rest body)
@@ -25,19 +25,19 @@
   (if (cdr body) `(progn ,@body) (car body)))
 
 (defmacro if% (cond then &rest else)
-  "If COND yields non-nil, do THEN, else do ELSE..."
+  "If COND yield non-nil, do THEN, else do ELSE..."
   (declare (indent 2))
   (if (funcall `(lambda () ,cond))
       `,then
     `(progn% ,@else)))
 
 (defmacro when% (cond &rest body)
-  "When COND yields non-nil, do BODY."
+  "When COND yield non-nil, do BODY."
   (declare (indent 1))
   `(if% ,cond (progn% ,@body)))
 
 (defmacro unless% (cond &rest body)
-  "Unless COND yields nil, do BODY."
+  "Unless COND yield nil, do BODY."
   (declare (indent 1))
   `(if% ,cond nil ,@body))
 

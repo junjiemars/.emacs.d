@@ -9,6 +9,7 @@
 
 ;;
 ;; Running Test Interactively:
+;; M-x eval-buffer
 ;; M-x ert RET t
 
 
