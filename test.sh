@@ -128,7 +128,8 @@ test_module() {
   :put :vc
   (list
     :cond (executable-find% "git")
-    :packages  '(magit)
+    :packages (prog1 '(magit)
+                (set-default 'magit-define-global-key-bindings nil))
     :compile \`(,(compile-unit% (emacs-home* "config/use-magit.el") t)
                 ,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
 END

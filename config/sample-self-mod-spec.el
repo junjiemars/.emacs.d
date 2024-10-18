@@ -99,7 +99,8 @@
  (list
   :cond (comment (and (when-version% <= 24.4 t)
                       (executable-find% "git")))
-  :packages '(magit)
+  :packages (prog1 '(magit)
+              (set-default 'magit-define-global-key-bindings nil))
   :compile `(,(compile-unit% (emacs-home* "config/use-magit.el") t)
              ,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
 
