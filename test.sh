@@ -114,9 +114,9 @@ test_module() {
     :package-check-signature 'allow-unsigned
     :package-archives
     \`(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-       ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
-       ("melpa-stable" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
-       ("melpa" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))
+      ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
+      ("melpa-stable" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
+      ("melpa" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))
     :allowed t))
 (*self-mod-spec*
   :put :lisp
@@ -131,7 +131,7 @@ test_module() {
     :packages (prog1 '(magit)
                 (set-default 'magit-define-global-key-bindings nil))
     :compile \`(,(compile-unit% (emacs-home* "config/use-magit.el") t)
-                ,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
+               ,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
 END
   echo "# cat <${_ENV_PRO_}"
   cat <"${_ENV_PRO_}"
@@ -168,17 +168,10 @@ test_profile() {
         :allowed t))
 (*self-env-spec*
   :put :module
-  (list :package-check-signature 'allow-unsigned
-       :package-archives
-       \`(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-          ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
-          ("melpa-stable" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
-          ("melpa" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))
-        :allowed t))
+  (list :allowed nil))
 (*self-mod-spec*
   :put :lisp
-  (list
-   :cond nil))
+  (list :cond nil))
 END
   echo "# cat <${_ENV_PRO_}"
   cat <"${_ENV_PRO_}"

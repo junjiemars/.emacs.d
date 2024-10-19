@@ -15,7 +15,6 @@
       `(progn% ,@body)
     `(comment ,@body)))
 
-
 (defmacro when-fn-url-open-stream% (&rest body)
   "When% \\=`url-open-stream\\='."
   `(when-feature-socks%

@@ -14,6 +14,8 @@
   (declare (indent 0))
   `(*self-env-spec* :get :key ,@keys))
 
+
+
 (defun self-key-init! ()
   "Initialize key spec from \\=`*self-env-spec*\\='."
   (when-graphic%

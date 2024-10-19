@@ -1312,6 +1312,8 @@ Press @@html:<kbd>@@M-x compile@@html:</kbd>@@ then:
 - Windows:
   - raw: ~cc-env.bat && cl c.c -Fea.exe~
   - make: ~cc-env.bat && make~
+- Remote:
+  - raw: ~/bin/sh -c "ssh <remote> cc c.c -oa.out"~
 to /build/.
 
 #+ATTR_HTML: :style text-align:left

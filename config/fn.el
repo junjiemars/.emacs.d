@@ -23,7 +23,7 @@
 ;; end of alias
 
 ;;;
-;; common-lisp macro
+;; common-lisp
 ;;;
 
 ;; Load cl-lib/cl at runtime
@@ -68,10 +68,10 @@
               #'cl-loop
         #'loop))
 
-;; end of common-lisp macro
+;; end of common-lisp
 
 ;;;
-;; general function/macro
+;; sequence
 ;;;
 
 (defun flatten (seq)
@@ -157,10 +157,10 @@ If optional UNIQUELY is non-nil then append uniquely."
              (setf (nth ,i1 c1) ,n1)
              (setq ,seq (append c1 `(,(nth (1- l) ,seq))))))))))
 
-;; end of general function/macro
+;; end of sequence
 
 ;;;
-;; byte-compiler macro
+;; feature
 ;;;
 
 (defmacro defmacro-if-feature% (feature)
@@ -191,6 +191,12 @@ If optional UNIQUELY is non-nil then append uniquely."
              `(progn% (comment ,then)
                       ,@body)))))))
 
+;; end of feature
+
+;;;
+;; thread
+;;;
+
 (defmacro make-thread* (fn &optional join name)
   "Threading call FN with NAME or in JOIN mode."
   `(if-fn% 'make-thread nil
@@ -204,7 +210,7 @@ If optional UNIQUELY is non-nil then append uniquely."
   "Yield the CPU to another thread."
   `(when-fn% 'thread-yield nil (thread-yield)))
 
-;; end of byte-compiler macro
+;; end of thread
 
 ;;;
 ;; string
@@ -277,7 +283,7 @@ Optional argument TRIM regexp used to trim."
 ;; end of string
 
 ;;;
-;; read/save-str/sexp-file
+;; IO
 ;;;
 
 (defmacro get-buffer-create*
@@ -358,18 +364,18 @@ Return the name of FILE when successed otherwise nil."
             (buffer-substring-no-properties (point-min) (point-max)))
         (and b (kill-buffer b))))))
 
-;; end of read/save-str/sexp-file
+;; end of IO
 
 ;;;
-;; platform macro
+;; platform
 ;;;
 
 (defun file-name-base* (path)
   "Return base name of PATH."
   (substring-no-properties path
-   (let ((p1 (strrchr path ?/)))
-     (if p1 (1+ p1) 0))
-   (or (strrchr path ?.) (length path))))
+                           (let ((p1 (strrchr path ?/)))
+                             (if p1 (1+ p1) 0))
+                           (or (strrchr path ?.) (length path))))
 
 (unless% (fboundp 'directory-name-p)
   (defun directory-name-p (name)
@@ -446,7 +452,7 @@ Call FN with the path if FN is non-nil."
       (if-platform% 'windows-nt
           (if (string-match m64 (getenv-internal "PROCESSOR_ARCHITECTURE"))
               (string-match*
-                m64 (getenv-internal "PROCESSOR_ARCHITECTURE") 1)
+               m64 (getenv-internal "PROCESSOR_ARCHITECTURE") 1)
             (getenv-internal "PROCESSOR_ARCHITECTURE"))
         (let ((m (shell-command* "uname" "-m")))
           (if (and (zerop (car m))
@@ -497,7 +503,7 @@ Call FN with the path if FN is non-nil."
                        ((and (= j1 l1) (= j2 l2)) (throw 'br 0))
                        (t (setq i (1+ i))))))))))
 
-;; end of platform macro
+;; end of platform
 
 ;;;
 ;; compatible macro
@@ -536,7 +542,7 @@ See \\=`defcustom\\='."
 ;; end of compatible macro
 
 ;;;
-;; file fn
+;; file
 ;;;
 
 (defun path+ (root &rest path)
@@ -605,10 +611,10 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
               (when (car (cddr rid))
                 (concat "@" (car (cddr rid))))))))
 
-;; end of file fn
+;; end of file
 
 ;;;
-;; define key macro
+;; key
 ;;;
 
 (defmacro kbd% (keys)
@@ -629,10 +635,10 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
             (lambda (d) (null (eq d ,def)))
      (define-key ,keymap ,key ,def)))
 
-;; end of define key macro
+;; end of key
 
 ;;;
-;; interactive fn/macro
+;; interactive
 ;;;
 
 (defmacro if-region-active (then &rest else)
@@ -647,7 +653,7 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
   (declare (indent 0))
   `(if-region-active nil ,@then))
 
- ;; end of interactive fn/macro
+ ;; end of interactive
 
 (provide 'fn)
 

@@ -8,8 +8,10 @@
 ;; Commentary: postulates.
 ;;;;
 
+
+
 ;;;
-;; compile-time macro: checking fn exists
+;; *-fn%: checking fn existing
 ;;;
 
 (defmacro if-fn% (fn feature then &rest else)
@@ -37,11 +39,11 @@ Argument FEATURE that FN dependent on, be loaded at compile time."
 (unless-fn% 'declare-function nil
   (defmacro declare-function (&rest _)))
 
-;; end of compile-time macro: checking fn exists
+;; end of *-fn% macro
 
 
 ;;;
-;; compile-time macro: checking var exists
+;; *-var%: checking var existing
 ;;;
 
 (defmacro if-var% (var feature then &rest else)
@@ -72,11 +74,11 @@ Argument FEATURE that X dependent on, load at compile time."
   `(when-var% ,x ,feature
      (setq ,x ,val)))
 
-;; end of compile-time macro: checking var exists
+;; end of *-var% macro
 
 
 ;;;
-;; *-lexical macro
+;; *lexical*: checking lexical context
 ;;;
 
 (defmacro if-lexical% (then &rest else)
@@ -135,10 +137,10 @@ Argument FEATURE that X dependent on, load at compile time."
   "Safe local VAR with FN."
   `(put ,var 'safe-local-variable (or ,fn #'true)))
 
-;; end of *-lexical% macro
+;; end of *lexical* compile-time macro
 
 ;;;
-;; *-graphic% macro
+;; *-graphic%: checking graphical context
 ;;;
 
 (defmacro if-graphic% (then &rest else)
@@ -161,7 +163,7 @@ Argument FEATURE that X dependent on, load at compile time."
 ;; end of *-graphic% macro
 
 ;;;
-;; *-platform% macro
+;; *-platform%: checking platform identifier
 ;;;
 
 (defmacro if-platform% (os then &rest else)
@@ -184,7 +186,7 @@ Argument FEATURE that X dependent on, load at compile time."
 ;; end of *-platform% macro
 
 ;;;
-;; *-window% macro
+;; *-window%: checking windowing identifier
 ;;;
 
 (defmacro if-window% (window then &rest else)
@@ -208,7 +210,7 @@ else do ELSE..."
 ;; end of *-window% macro
 
 ;;;
-;; noninteractive macro
+;; *-noninteractive%: checking non-interactive context
 ;;;
 
 (defmacro if-noninteractive% (then &rest body)
@@ -222,10 +224,10 @@ else do ELSE..."
   "Unless \\=`noninteractive\\=' do BODY."
   `(if-noninteractive% nil ,@body))
 
-;; end of noninteractive macro
+;; end of *-noninteractive% macro
 
 ;;;
-;; preferred `dolist*'
+;; preferred lexical `dolist*'
 ;;;
 
 (defmacro dolist* (spec &rest body)
@@ -248,7 +250,7 @@ Argument SPEC (VAR LIST [RESULT])."
 ;; end of preferred `dolist*'
 
 ;;;
-;; compile macro
+;; compile-*: compiling instrument
 ;;;
 
 (defun compile-unit* (file &optional only-compile)
@@ -289,10 +291,10 @@ Argument SPEC (VAR LIST [RESULT])."
        (compile-unit->dst u)
        (compile-unit->only-compile u)))))
 
-;; end of compile macro
+;; end of compile-* macro
 
 ;;;
-;; self-spec macro
+;; self-spec*: self specifications
 ;;;
 
 (defmacro self-spec-> (seq &rest keys)
@@ -386,7 +388,7 @@ No matter the declaration order, the executing order is:
                   :emacs ,(v-home% ".tags/emacs.TAGS"))
                  ,@key))
 
-;; end of self-spec macro
+;; end of self-spec* macro
 
 ;;;
 ;; boot

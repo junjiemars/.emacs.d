@@ -12,6 +12,8 @@
   (declare (indent 0))
   `(*self-env-spec* :get :glyph ,@keys))
 
+
+
 (defmacro self-glyph-font! (name size scripts)
   "Set glyph font's NAME and SIZE in graphic mode."
   (let ((n (gensym*))

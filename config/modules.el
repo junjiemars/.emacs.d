@@ -6,7 +6,7 @@
 ;; modules.el
 ;;;;
 
-;; (require 'package)
+;;; require
 
 (declare-function package-installed-p "package")
 

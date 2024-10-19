@@ -447,10 +447,9 @@ And copy the qualified buffer name to kill ring."
 ;; end of `on-progs-mode!'
 
 (defun on-progs-init! ()
-  (inhibit-gc
-    (on-progs-env!)
-    (on-progs-key!)
-    (on-progs-mode!)))
+  (on-progs-env!)
+  (on-progs-key!)
+  (on-progs-mode!))
 
 
 

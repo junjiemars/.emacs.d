@@ -221,15 +221,12 @@
                    'native))
              (fs (concat (v-home% ".exec/cc-inc-")
                          (symbol-name ss) ".el"))
-             (d))
+             (d nil))
         (or (and cached (plist-get dx ss))
-
             (and cached (file-exists-p fs)
                  (plist-get
-                  (setq dx (plist-put dx ss
-                                      (read-sexp-from-file fs)))
+                  (setq dx (plist-put dx ss (read-sexp-from-file fs)))
                   ss))
-
             (and (setq d (mapcar (if remote
                                      (lambda (x)
                                        (concat remote x))
@@ -247,18 +244,14 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
                  (fs (v-home% ".exec/cc-extra-inc.el")))
     (lambda (cached &rest dir)
       (or (and cached dx)
-
           (and cached (file-exists-p fs)
                (setq dx (read-sexp-from-file fs)))
-
           (and (consp dir)
                (save-sexp-to-file
-                (setq dx
-                      (append dx
-                              (mapcar (lambda (x)
-                                        (expand-file-name
-                                         (string-trim> x "/")))
-                                      dir)))
+                (setq dx (append dx (mapcar (lambda (x)
+                                              (expand-file-name
+                                               (string-trim> x "/")))
+                                            dir)))
                 fs)
                dx))))
   "Return a list of extra include directories.")
@@ -291,7 +284,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 
 (when-fn-ff-find-other-file%
  (defun cc*-find-include-file (&optional in-other-window)
-   "Find C include file in \\=`cc*-system-include\\=' or specified directory. "
+   "Find C include file in \\=`cc*-system-include\\=' or specified directory."
    (interactive "P")
    (setq% cc-search-directories
           (let ((file (buffer-file-name (current-buffer))))
@@ -529,19 +522,15 @@ N specify the number of spaces when align."
   ;; find include file
   (when-fn-ff-find-other-file%
    (when-var% c-mode-map 'cc-mode
-     (define-key% c-mode-map (kbd% "C-c f i")
-                  #'cc*-find-include-file))
+     (define-key% c-mode-map (kbd% "C-c f i") #'cc*-find-include-file))
    ;; for c++, add include via `cc*-extra-include'
    (when-var% c++mode-map 'cc-mode
-     (define-key% c++-mode-map (kbd% "C-c f i")
-                  #'cc*-find-include-file)))
+     (define-key% c++-mode-map (kbd% "C-c f i") #'cc*-find-include-file)))
   ;; indent line or region
   (when-fn% 'c-indent-line-or-region 'cc-cmds
-    (define-key% c-mode-map
-                 (kbd% "TAB") #'c-indent-line-or-region))
+    (define-key% c-mode-map (kbd% "TAB") #'c-indent-line-or-region))
   ;; dump predefined macros
-  (define-key% c-mode-map (kbd% "C-c #")
-               #'cc*-dump-predefined-macros)
+  (define-key% c-mode-map (kbd% "C-c #") #'cc*-dump-predefined-macros)
   ;; raw newline
   (define-key% c-mode-map (kbd% "RET") #'newline*)
   ;; align style
@@ -554,10 +543,10 @@ N specify the number of spaces when align."
   ;; format buffer
   (define-key c-mode-map (kbd% "C-c M-c f") #'cc*-format-buffer)
   (when-fn-c-macro-expand%
-    ;; [C-c C-e] `c-macro-expand' in `cc-mode'
-    (setq% c-macro-prompt-flag t 'cmacexp)
-    (ad-enable-advice #'c-macro-expand 'around "c-macro-expand-around")
-    (ad-activate #'c-macro-expand t)))
+   ;; [C-c C-e] `c-macro-expand' in `cc-mode'
+   (setq% c-macro-prompt-flag t 'cmacexp)
+   (ad-enable-advice #'c-macro-expand 'around "c-macro-expand-around")
+   (ad-activate #'c-macro-expand t)))
 
 ;; end of `cc-mode'
 

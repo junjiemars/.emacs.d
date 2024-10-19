@@ -1,4 +1,4 @@
-;; -*- lexical-binding:t -*-
+4;; -*- lexical-binding:t -*-
 ;;;;
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
@@ -11,9 +11,6 @@
 ;; `tramp' after load
 (with-eval-after-load 'tramp
   (make-thread* #'on-tramp-init!))
-
-;;; autoload
-
 
 
 ;; end of on-tramp-autoload.el
