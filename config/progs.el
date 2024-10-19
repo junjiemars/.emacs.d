@@ -342,8 +342,7 @@ And copy the qualified buffer name to kill ring."
   (define-key% (current-global-map) (kbd% "M-g i") #'imenu)
   ;; `insert-char*'
   (unless-key-insert-char%
-    (define-key% (current-global-map) (kbd% "C-x 8 RET")
-                 #'insert-char*))
+    (define-key% (current-global-map) (kbd% "C-x 8 RET") #'insert-char*))
   ;; lookup dictionary
   (define-key% (current-global-map) (kbd% "M-s d") 'lookup-dict)
   ;; open file or url at point
@@ -395,6 +394,7 @@ And copy the qualified buffer name to kill ring."
   ;; line number mode
   (setq% global-display-line-numbers-mode -1 'display-line-numbers)
   (setq% display-line-numbers-type 'relative 'display-line-numbers)
+  (setq% display-line-numbers-current-absolute nil 'display-line-numbers)
   (define-key% (current-global-map) (kbd% "C-x x l")
                (if-fn% 'display-line-numbers-mode 'display-line-numbers
                        #'display-line-numbers-mode

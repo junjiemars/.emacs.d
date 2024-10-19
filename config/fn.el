@@ -533,10 +533,10 @@ See \\=`defcustom\\='."
       ,doc
       ,@args)))
 
-;; end of compatible function
+;; end of compatible macro
 
 ;;;
-;; file function
+;; file fn
 ;;;
 
 (defun path+ (root &rest path)
@@ -597,16 +597,15 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
        (when (stringp ,r)
          (split-string* ,r "[:@]" t "\\(^/[^ssh].*$\\|^/\\)")))))
 
-(defmacro ssh-remote->user@host (remote)
+(defun ssh-remote->user@host (remote)
   "Norm the REMOTE to {user|id}[@host] form."
-  (let ((rid (gensym*)))
-    `(let ((,rid (ssh-remote->ids ,remote)))
-       (when (consp ,rid)
-         (concat (cadr ,rid)
-                 (when (car (cddr ,rid))
-                   (concat "@" (car (cddr ,rid)))))))))
+  (let ((rid (ssh-remote->ids remote)))
+    (when (consp rid)
+      (concat (cadr rid)
+              (when (car (cddr rid))
+                (concat "@" (car (cddr rid))))))))
 
-;; end of file function
+;; end of file fn
 
 ;;;
 ;; define key macro
