@@ -410,6 +410,8 @@ No matter the declaration order, the executing order is:
 (unless-lexical% (safe-local-variable 'lexical-binding))
 ;; string hash test: see `%fn:save/read-sexp-to/from-file' in test.el
 (define-hash-table-test 'nore-emacs-string-hash= #'string= #'sxhash)
+;; scratch dir
+(path! `,(emacs-home* "scratch/"))
 
 ;;; <1> prologue
 (compile! (compile-unit% (emacs-home* "config/fn.el"))

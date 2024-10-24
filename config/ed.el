@@ -41,8 +41,10 @@
               (bs (if-region-active
                       (cons (region-beginning) (region-end))
                     (cons (point-min) (point-max))))
-              (rs (buffer-substring (car bs) (cdr bs)))
-              (f (save-str-to-file rs ,tmpfile))
+              (rs (buffer-substring-no-properties (car bs) (cdr bs)))
+              (f (save-str-to-file
+                  rs
+                  (concat ,(emacs-home* "scratch/") ,tmpfile)))
               (ss (let ((x ,shell*))
                     (and (= 0 (car x))
                          (read-str-from-file f)))))
