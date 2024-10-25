@@ -661,13 +661,15 @@
 ;;       (set-mark (point-max))
 ;;       (should (string= "a bb" (cdr (symbol@)))))))
 
-(ert-deftest %e:fn:version-string= ()
-  (should (= 0 (version-string= "" "")))
-  (should (= 1 (version-string= "1" "")))
-  (should (= -1 (version-string= "" "1")))
-  (should (= 0 (version-string= "1" "1")))
-  (should (= 0 (version-string= "1.0" "1")))
-  (should (= 1 (version-string= "1.21" "1.2.12"))))
+(ert-deftest %e:fn:version-strncmp ()
+  (should (= 0 (version-strncmp "" "")))
+  (should (= 1 (version-strncmp "1" "")))
+  (should (= -1 (version-strncmp "" "1")))
+  (should (= 0 (version-strncmp "1" "1")))
+  (should (= 0 (version-strncmp "1.0" "1")))
+  (should (= 1 (version-strncmp "1.21" "1.2.12" 2)))
+  (should (= 0 (version-strncmp "1.2.3.1" "1.2.3.2" 3)))
+  (should (= -1 (version-strncmp "1.2.3.1" "1.2.3.2" 4))))
 
 ;; end of `fn'
 
