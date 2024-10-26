@@ -292,7 +292,8 @@
   (load-conditional-modes!)
   (when-fn% 'self-edit-init! nil (self-edit-init!))
   (when-fn% 'self-key-init! nil (self-key-init!))
-  (when-font% (make-thread* (lambda () (thread-yield*) (self-glyph-init!))))
+  (when-font%
+    (make-thread* (lambda () (thread-yield*) (self-glyph-init!))))
   (when-fn% 'self-module-init! nil
     (condition-case err
         (self-module-init!)
@@ -305,12 +306,12 @@
   (push! (v-home% "config/") load-path)
   (push! (v-home% "private/") load-path)
   (when (*self-paths* :get :epilogue)
-    (condition-case err
-        (make-thread*
-         (lambda () (thread-yield*)
-           (compile! (compile-unit* (*self-paths* :get :epilogue))))
-         (if-noninteractive% t))
-      (error "self-epilogue: %s" err))))
+    (make-thread*
+     (lambda () (thread-yield*)
+       (condition-case err
+           (compile! (compile-unit* (*self-paths* :get :epilogue)))
+         (error "self-epilogue: %s" err)))
+     (if-noninteractive% t))))
 
 ;;; autoload when interactive or not
 (if-noninteractive%
