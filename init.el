@@ -285,15 +285,13 @@ If ONLY-COMPILE is t, does not load DST."
 ;; Boot
 ;;;
 
+;; native-comp env
 (when-native-comp%
-
   ;; slient native-comp warning
   (setq native-comp-async-report-warnings-errors 'silent)
-
   ;; first native-comp load
   (setcar native-comp-eln-load-path (v-home! ".eln/"))
-
-  ;; env
+  ;; darwin native-comp env
   (when% (eq system-type 'darwin)
     (defun library-path ()
       "Even a blind pig can find an acorn once in a while."
@@ -338,9 +336,7 @@ If ONLY-COMPILE is t, does not load DST."
              path "/"
              (car (inhibit-file-name-handler
                     (directory-files
-                     path nil (concat (aref cc3 2) "[.0-9]+") 1)))))))))
-
-  (when% (eq system-type 'darwin)
+                     path nil (concat (aref cc3 2) "[.0-9]+") 1))))))))
     (let ((libpath (library-path)))
       (when libpath
         (setq process-environment
@@ -348,7 +344,7 @@ If ONLY-COMPILE is t, does not load DST."
                     process-environment))))))
 
 (defmacro compile-and-load-file* (src dst &optional only-compile)
-  "The profiling shim of \\=`compile-and-load-file*\\='."
+  "Profiling shim of \\=`compile-and-load-file*\\='."
   (if% (boundp '*nore-emacs-profile*)
       `(time ,src (compile-and-load-file ,src ,dst ,only-compile))
     `(compile-and-load-file ,src ,dst ,only-compile)))

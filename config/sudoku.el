@@ -32,7 +32,7 @@
   "The sudoku's process buffer.")
 
 
-(defalias '+sudoku-file+
+(defalias '*sudoku-file*
   (lexical-let*% ((d (v-home! ".games/"))
                   (p (concat d "sudoku-puzzle"))
                   (b (concat d "sudoku-board")))
@@ -247,48 +247,42 @@
 
 
 (defun sudoku-puzzle-save ()
-  "Save sudoku's puzzle to \\=`+sudoku-file+\\='."
+  "Save sudoku's puzzle to \\=`*sudoku-file*\\='."
   (save-sexp-to-file (*sudoku-puzzle*)
-                     (+sudoku-file+ :puzzle)))
+                     (*sudoku-file* :puzzle)))
 
 (defun sudoku-puzzle-load ()
-  "Load sudoku's puzzle from \\=`+sudoku-file+\\='."
+  "Load sudoku's puzzle from \\=`*sudoku-file*\\='."
   (*sudoku-puzzle* :set! (read-sexp-from-file
-                          (+sudoku-file+ :puzzle))))
+                          (*sudoku-file* :puzzle))))
 
 
-(defmacro sudoku-puzzle-vec-complete (vector)
+(defun sudoku-puzzle-vec-complete (vector)
   "Predicate sudoku puzzle's VECTOR is complete."
-  (let ((len (gensym*))
-        (sum (gensym*))
-        (i (gensym*)))
-    `(let ((,len (length ,vector))
-           (,sum 0)
-           (,i 0))
-       (while (< ,i ,len)
-         (setq ,sum (+ ,sum (aref ,vector ,i))
-               ,i (1+ ,i)))
-       (= ,sum (*sudoku-puzzle-d* :sum)))))
+  (let ((len (length vector))
+        (sum 0)
+        (i 0))
+    (while (< i len)
+      (setq sum (+ sum (aref vector i))
+            i (1+ i)))
+    (= sum (*sudoku-puzzle-d* :sum))))
 
-(defmacro sudoku-puzzle-vec-unique (vector)
+(defun sudoku-puzzle-vec-unique (vector)
   "Predicate sudoku puzzle's VECTOR is unique."
-  (let ((len (gensym*))
-        (i (gensym*))
-        (j (gensym*)))
-    `(catch 'conflict
-       (let ((,len (length ,vector))
-             (,i 0)
-             (,j 0))
-         (while (< ,i ,len)
-           (setq ,j (+ ,i 1))
-           (while (< ,j ,len)
-             (when (and (/= 0 (aref ,vector ,i))
-                        (= (aref ,vector ,i) (aref ,vector ,j)))
-               (throw 'conflict nil))
-             (setq ,j (1+ ,j)))
-           (setq ,i (1+ ,i)
-                 ,j (+ ,i 1)))
-         t))))
+  (catch 'br
+    (let ((len (length vector))
+          (i 0)
+          (j 0))
+      (while (< i len)
+        (setq j (+ i 1))
+        (while (< j len)
+          (when (and (/= 0 (aref vector i))
+                     (= (aref vector i) (aref vector j)))
+            (throw 'br nil))
+          (setq j (1+ j)))
+        (setq i (1+ i)
+              j (+ i 1)))
+      t)))
 
 
 (defun sudoku-puzzle-solved-p (&optional idx)
@@ -707,14 +701,14 @@
 
 
 (defun sudoku-board-save ()
-  "Save sudoku's board to \\=`+sudoku-file+\\='."
+  "Save sudoku's board to \\=`*sudoku-file*\\='."
   (let ((b (*sudoku-board* :props)))
-    (save-sexp-to-file b (+sudoku-file+ :board))))
+    (save-sexp-to-file b (*sudoku-file* :board))))
 
 
 (defun sudoku-board-load ()
-  "Load sudoku's board from \\=`+sudoku-file+\\='."
-  (let ((b (read-sexp-from-file (+sudoku-file+ :board))))
+  "Load sudoku's board from \\=`*sudoku-file*\\='."
+  (let ((b (read-sexp-from-file (*sudoku-file* :board))))
     (*sudoku-puzzle*
      :set!
      (let ((i 0)
@@ -838,12 +832,12 @@ The following commands are available:
 (defun sudoku (&optional level dimension)
   "Play sudoku on optional LEVEL and DIMENSION."
   (interactive
-   (cond ((and (file-exists-p (+sudoku-file+ :board))
+   (cond ((and (file-exists-p (*sudoku-file* :board))
                (null current-prefix-arg))
           (list (completing-read
                  "Sudoku load (file): "
-                 (+sudoku-file+ :board) nil nil
-                 (+sudoku-file+ :board))
+                 (*sudoku-file* :board) nil nil
+                 (*sudoku-file* :board))
                 nil))
          (t (list (completing-read
                    (format "Sudoku level (%s): "
@@ -865,7 +859,7 @@ The following commands are available:
       (sudoku-board-load)
     (sudoku-new (intern level) (intern dimension))))
 
-
+
 
 (provide 'sudoku)
 
