@@ -166,7 +166,25 @@
                                         (cdr ver))))))))
       (when find
         (windows-nt-env-path+ (file-name-directory find)))))
-
+  ;; prefer GNU's ls (--dired option) on Windows or Darwin. on
+  ;; Windows: `dired-mode' does not display executable flag in file
+  ;; mode，see `dired-use-ls-dired' and `ido-dired' for more defails
+  (when% (executable-find%
+          "ls"
+          (lambda (bin)
+            (let ((home (shell-command* bin (emacs-home*))))
+              (zerop (car home)))))
+    ;; on Drawin: the builtin ls does not support --dired option
+    (setq% dired-use-ls-dired
+           (executable-find%
+            "ls"
+            (lambda (bin)
+              (let ((dired (shell-command* bin "--dired")))
+                (zerop (car dired)))))
+           'dired)
+    ;; using `insert-directory-program'
+    (setq% ls-lisp-use-insert-directory-program t 'ls-lisp))
+  ;; keys
   (define-key dired-mode-map (kbd% "b") #'dired*-hexl-find-file)
   (define-key dired-mode-map (kbd% "B") #'browse-file)
   (define-key dired-mode-map (kbd% "w") #'dired*-copy-filename-as-kill)

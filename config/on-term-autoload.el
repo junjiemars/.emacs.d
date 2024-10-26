@@ -9,6 +9,7 @@
 (autoload 'on-term-init! (v-home%> "config/terms"))
 (autoload 'on-eshell-init! (v-home%> "config/eshells"))
 (autoload 'on-ielm-init! (v-home%> "config/elisps"))
+(autoload 'term*-unify-shell-prompt (v-home%> "config/terms") nil t)
 
 ;;; `term'
 (with-eval-after-load 'term
@@ -21,8 +22,5 @@
 ;;; `ielm' after load
 (with-eval-after-load 'ielm
   (make-thread* #'on-ielm-init!))
-
-;;; autoload
-(autoload 'term*-unify-shell-prompt (v-home%> "config/terms") nil t)
 
 ;; end of on-term-autoload.el
