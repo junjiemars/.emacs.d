@@ -94,24 +94,24 @@ DN dir-processor (lambda (aboslute-name)...)."
                                    (string= "../" x)))
                              (file-name-all-completions "" dir))))
       (while files
-        (let ((f (car files)))
-          (let ((a (expand-file-name f dir)))
-            (if (directory-name-p f)
-                (when (and (let ((ln (file-symlink-p a)))
-                             (if ln
-                                 (not (or
-                                       (string-match "\\.\\'\\|\\.\\.\\'" ln)
-                                       (and (>= (length a) (length ln))
-                                            (string=
-                                             ln
-                                             (substring a 0 (length ln))))))
-                               t))
-                           df
-                           (funcall df f a))
-                  (and dn (funcall dn a))
-                  (dir-iterate a ff df fn dn))
-              (when (and ff (funcall ff f a))
-                (and fn (funcall fn a)))))
+        (let* ((f (car files))
+               (a (expand-file-name f dir)))
+          (if (directory-name-p f)
+              (when (and (let ((ln (file-symlink-p a)))
+                           (if ln
+                               (not (or
+                                     (string-match "\\.\\'\\|\\.\\.\\'" ln)
+                                     (and (>= (length a) (length ln))
+                                          (string=
+                                           ln
+                                           (substring a 0 (length ln))))))
+                             t))
+                         df
+                         (funcall df f a))
+                (and dn (funcall dn a))
+                (dir-iterate a ff df fn dn))
+            (when (and ff (funcall ff f a))
+              (and fn (funcall fn a))))
           (setq files (cdr files)))))))
 
 (defun dir-backtrack (dir prefer)

@@ -111,7 +111,7 @@
   (should (= 12 (if-version% < 10000 (+ 1 2) (* 3 4))))
   (should (equal '(progn (* 3 4) (* 5 6))
                  (macroexpand '(if-version% < 1000
-                                   (+ 1 2)
+                                            (+ 1 2)
                                  (* 3 4)
                                  (* 5 6))))))
 
@@ -622,13 +622,13 @@
                    (if-key% (current-global-map) (kbd "C-x C-c")
                             (lambda (def)
                               (eq def #'save-buffers-kill-terminal))
-                            "defined"
+                     "defined"
                      "undefined")))
   (should (string= "undefined"
                    (if-key% (current-global-map) (kbd "C-x C-c")
                             (lambda (def)
                               (not (eq def #'xxx)))
-                            "undefined"))))
+                     "undefined"))))
 
 (ert-deftest %e:fn:if-region-active ()
   ;; interactive
@@ -780,48 +780,51 @@
   (when-fn% 'dir-iterate nil
     (should (string-match
              "init\\.el\\'"
-             (catch 'out
+             (catch 'br
                (dir-iterate (emacs-home*)
                             (lambda (f _)
                               (string= "init.el" f))
                             nil
                             (lambda (a)
-                              (throw 'out a))
+                              (throw 'br a))
                             nil))))
     (should (string-match
              "/config/"
-             (catch 'out
+             (catch 'br
                (dir-iterate (emacs-home*)
                             nil
                             (lambda (f _)
                               (string= "config/" f))
                             nil
                             (lambda (a)
-                              (throw 'out a))))))
-    (let ((matched nil))
-      (dir-iterate (emacs-home*)
-                   (lambda (f _)
-                     (string-match "init\\.el\\'\\|basic\\.el\\'" f))
-                   (lambda (d _)
-                     (string-match "config" d))
-                   (lambda (f)
-                     (setq matched (cons f matched)))
-                   nil)
-      (should (= 2 (length matched))))))
+                              (throw 'br a))))))
+    (should (catch 'br
+              (let ((matched nil))
+                (dir-iterate
+                 (emacs-home*)
+                 (lambda (f _)
+                   (string-match "init\\.el\\'\\|boot\\.el\\'" f))
+                 (lambda (d _)
+                   (string-match "config" d))
+                 (lambda (f)
+                   (when (= 2 (length
+                               (setq matched (cons f matched))))
+                     (throw 'br t)))
+                 nil))))))
 
 (ert-deftest %r:tags:dir-backtrack ()
   (when-fn% 'dir-backtrack nil
-    (should (catch 'out
+    (should (catch 'br
               (dir-backtrack (emacs-home* "config/")
                              (lambda (d fs)
                                (when (string-match "config/" d)
-                                 (throw 'out t))))))
-    (should (catch 'out
+                                 (throw 'br t))))))
+    (should (catch 'br
               (dir-backtrack (emacs-home* "config/basic.el")
                              (lambda (d fs)
                                (dolist* (x fs)
                                  (when (string= "init.el" x)
-                                   (throw 'out t)))))))
+                                   (throw 'br t)))))))
     (should (= 2 (let ((prefered nil)
                        (count 0)
                        (std '("init.el" ".git/")))
