@@ -257,8 +257,6 @@
         "Play sudoku." t))
     ;; on `terms'
     (compile-unit% (emacs-home* "config/on-term-autoload.el"))
-    ;; on `trans'
-    (compile-unit% (emacs-home* "config/on-trans-autoload.el"))
     ;; on `transients'
     (when-feature-transient%
       (compile-unit% (emacs-home* "config/on-transient-autoload.el")))
