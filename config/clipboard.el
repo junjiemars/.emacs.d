@@ -9,7 +9,7 @@
 ;; See also: http://emacswiki.org/emacs/CopyAndPaste
 ;;;;
 
-(defun clipboard-x-kill (text)
+(defun x-kill (text)
   "Kill TEXT to system clipboard."
   (with-temp-buffer
     (insert text)
@@ -22,7 +22,7 @@
       (apply #'call-process-region (point-min) (point-max)
              (car kill) nil 0 nil (cdr kill)))))
 
-(defun clipboard-x-yank ()
+(defun x-yank ()
   "Yank from system clipboard."
   (let ((yank (if-platform% 'darwin
                   `("pbpaste" . nil)

@@ -6,8 +6,8 @@
 ;; on-clipboard-autoload.el
 ;;;;
 
-(autoload 'clipboard-x-kill (v-home%> "config/clipboard"))
-(autoload 'clipboard-x-yank (v-home%> "config/clipboard"))
+(autoload 'x-kill (v-home%> "config/clipboard"))
+(autoload 'x-yank (v-home%> "config/clipboard"))
 
 ;;; enable `select'
 (if-version%
@@ -21,7 +21,7 @@
 
 ;; kill/yank
 (unless-platform% 'windows-nt
-  (setq interprogram-cut-function #'clipboard-x-kill
-        interprogram-paste-function #'clipboard-x-yank))
+  (setq interprogram-cut-function #'x-kill
+        interprogram-paste-function #'x-yank))
 
  ;; end of on-clipboard-autoload.el
