@@ -3,24 +3,10 @@
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; on-mill-autoload.el
-;;;;
-;; Commentary:
+;; on-afterload.el
 ;;;;
 
-(autoload 'kill-word@ (v-home%> "config/mill") nil t)
-(autoload 'kill-sexp@ (v-home%> "config/mill") nil t)
-(autoload 'kill-quoted-symmetry@ (v-home%> "config/mill") nil t)
-(autoload 'kill-quoted-asymmetry@ (v-home%> "config/mill") nil t)
-(autoload 'kill-string@ (v-home%> "config/mill") nil t)
-(autoload 'mark-word@ (v-home%> "config/mill") nil t)
-(autoload 'mark-sexp@ (v-home%> "config/mill") nil t)
-(autoload 'mark-defun@ (v-home%> "config/mill") nil t)
-(autoload 'mark-filename@ (v-home%> "config/mill") nil t)
-(autoload 'mark-line@ (v-home%> "config/mill") nil t)
-(autoload 'mark-quoted-symmetry@ (v-home%> "config/mill") nil t)
-(autoload 'mark-quoted-asymmetry@ (v-home%> "config/mill") nil t)
-(autoload 'mark-string@ (v-home%> "config/mill") nil t)
+;;; `mill'
 
 ;; Kill
 (define-key (current-global-map) (kbd% "C-x M-d") #'kill-word@)
@@ -43,4 +29,15 @@
 (define-key% (current-global-map) (kbd% "C-M-SPC") #'mark-sexp)
 (define-key% (current-global-map) (kbd% "C-M-h") #'mark-defun)
 
-;; end of on-mill-autoload.el
+;; end of `mill'
+
+;;; `progs'
+
+(autoload 'on-progs-init! (v-home%> "config/progs"))
+
+(with-eval-after-load 'prog-mode
+  (make-thread* #'on-progs-init!))
+
+;; end of `progs'
+
+;; end of on-afterload.el

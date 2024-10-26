@@ -197,8 +197,6 @@
         "Toggle jshell mode." t)
       (autoload 'run-jshell (v-home%> "config/jshell")
         "Toggle jshell process." t))
-    ;; on `mill'
-    (compile-unit% (emacs-home* "config/on-mill-autoload.el"))
     ;; `mixvm'
     (prog1
         (compile-unit% (emacs-home* "config/mixvm.el") t)
@@ -274,8 +272,8 @@
     ;; on `vcs'
     (when-feature-vc%
       (compile-unit% (emacs-home* "config/on-vcs-autoload.el")))
-    ;; last: on `progs'
-    (compile-unit% (emacs-home* "config/on-progs-autoload.el"))
+    ;; on last:
+    (compile-unit% (emacs-home* "config/on-afterload.el"))
     ) ;; end of compile!
 
   )
