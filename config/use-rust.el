@@ -8,10 +8,14 @@
 
 ;;; require
 
-(declare-function make-dir-ctags (v-home%> "config/tags"))
-(declare-function xref*-read-only-dirs (v-home%> "config/xrefs"))
-(declare-function delete-line* (v-home%> "config/ed"))
-(autoload 'delete-line* (v-home%> "config/ed") nil nil 'macro)
+(unless% (featurep 'ed)
+  (require 'ed (v-home%> "config/ed")))
+
+(unless% (featurep 'tags)
+  (require 'tags (v-home%> "config/tags")))
+
+(unless% (featurep 'xrefs)
+  (require 'xrefs (v-home%> "config/xrefs")))
 
 ;; end of require
 

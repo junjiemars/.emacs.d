@@ -16,8 +16,8 @@
 
 ;;; require
 
-(declare-function shell-format-buffer (v-home%> "config/ed"))
-(autoload 'shell-format-buffer (v-home%> "config/ed") nil nil 'macro)
+(unless% (featurep 'ed)
+  (require 'ed (v-home%> "config/ed")))
 
 ;; end of require
 
@@ -188,15 +188,14 @@ determine whether inside a virtual env. Another way is using
   "Format the current buffer."
   (interactive)
   (shell-format-buffer
-    'python-mode
-    (when-feature-eglot%
-      (when (and (fboundp 'eglot-managed-p) (eglot-managed-p))
-        (catch 'br
-          (call-interactively #'eglot-format-buffer)
-          (throw 'br t))))
-    (concat (make-temp-name ".py-fmt-") ".py")
-    (shell-command*
-        (concat (python*-venv :venv) "bin/ruff") "format" f)))
+   'python-mode
+   (when-feature-eglot%
+     (when (and (fboundp 'eglot-managed-p) (eglot-managed-p))
+       (catch 'br
+         (call-interactively #'eglot-format-buffer)
+         (throw 'br t))))
+   (concat (make-temp-name ".py-fmt-") ".py")
+   (concat (python*-venv :venv) "bin/ruff") "format"))
 
 
 

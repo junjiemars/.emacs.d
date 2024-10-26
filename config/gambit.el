@@ -27,8 +27,8 @@
 (require 'scheme)
 ;; (require 'thingatpt)
 
-(declare-function newline* (v-home%> "config/ed"))
-(autoload 'newline* (v-home%> "config/ed"))
+(unless% (featurep 'ed)
+  (require 'ed (v-home%> "config/ed")))
 
 ;; end of require
 

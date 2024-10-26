@@ -31,7 +31,7 @@
                  (newline arg 'interactive)
       (newline arg))))
 
-(defmacro shell-format-buffer (mode alternate tmpfile shell*)
+(defmacro shell-format-buffer (mode alternate tmpfile &rest shell*)
   "Format the current buffer via SHELL\\=*."
   (declare (indent 0))
   `(with-current-buffer (current-buffer)
@@ -45,7 +45,7 @@
               (f (save-str-to-file
                   rs
                   (concat ,(path! (emacs-home* "scratch/")) ,tmpfile)))
-              (ss (let ((x ,shell*))
+              (ss (let ((x (shell-command* ,@shell* f)))
                     (and (= 0 (car x))
                          (read-str-from-file f)))))
          (unless (string= rs ss)

@@ -11,8 +11,5 @@
 ;; general `vc*-dir'
 (define-key% (current-global-map) (kbd% "C-x v d") #'vc*-dir)
 
-
-
-(provide 'vcs)
 
 ;; end of on-vcs-autoload.el

@@ -73,8 +73,9 @@
         `(comment ,@body))
     `(comment ,@body)))
 
-(defmacro autoload* (symbol file &optional docstring interactive type)
+(defmacro autoload! (symbol file &optional docstring interactive type)
   "Force autoload SYMBOL."
+  (declare (indent 0))
   `(progn
      (fset ,symbol nil)
      (setplist ,symbol nil)
@@ -83,10 +84,14 @@
 ;; end of macro
 
 
-(defun load-autoloaded-modes! ()
+(defun load-compiling-modes! ()
   "Load autoloaded modes."
   (compile!
+    ;; prologue
     (compile-unit% (emacs-home* "config/ed.el") t)
+    (compile-unit% (emacs-home* "config/marks.el") t)
+    (compile-unit% (emacs-home* "config/tags.el") t)
+    ;; end of prologue
     (compile-unit% (emacs-home* "config/cc.el") t)
     (compile-unit% (emacs-home* "config/clipboard.el") t)
     (compile-unit% (emacs-home* "config/compiles.el") t)
@@ -104,7 +109,7 @@
     (compile-unit% (emacs-home* "config/helps.el") t)
     (compile-unit% (emacs-home* "config/hippies.el") t)
     (compile-unit% (emacs-home* "config/idos.el") t)
-    (compile-unit% (emacs-home* "config/marks.el") t)
+    (compile-unit% (emacs-home* "config/mill.el") t)
     (compile-unit% (emacs-home* "config/mixal.el") t)
     (compile-unit% (emacs-home* "config/nets.el") t)
     (compile-unit% (emacs-home* "config/orgs.el") t)
@@ -113,7 +118,6 @@
     (compile-unit% (emacs-home* "config/progs.el") t)
     (compile-unit% (emacs-home* "config/pythons.el") t)
     (compile-unit% (emacs-home* "config/sqls.el") t)
-    (compile-unit% (emacs-home* "config/tags.el") t)
     (compile-unit% (emacs-home* "config/terms.el") t)
     (compile-unit% (emacs-home* "config/trans.el") t)
     (when-feature-transient%
@@ -125,11 +129,14 @@
     (when-feature-vc%
       (compile-unit% (emacs-home* "config/vcs.el") t))))
 
-;; end of `load-autoloaded-modes!'
+;; end of `load-compiling-modes!'
 
 (defun load-conditional-modes! ()
   "Load conditional modes."
   (compile!
+    ;; on first:
+    (compile-unit% (emacs-home* "config/on-autoload.el"))
+    ;; end on first:
     ;; on `cc'
     (compile-unit% (emacs-home* "config/on-cc-autoload.el"))
     ;; on `clipboard'
@@ -191,7 +198,6 @@
       (autoload 'run-jshell (v-home%> "config/jshell")
         "Toggle jshell process." t))
     ;; on `mill'
-    (compile-unit% (emacs-home* "config/mill.el") t)
     (compile-unit% (emacs-home* "config/on-mill-autoload.el"))
     ;; `mixvm'
     (prog1
@@ -219,7 +225,7 @@
         (compile-unit% (emacs-home* "config/gambit.el") t)
       (autoload 'gambit-mode (v-home%> "config/gambit")
         "Toggle gambit mode." t)
-      (autoload* 'run-gambit (v-home%> "config/gambit")
+      (autoload! 'run-gambit (v-home%> "config/gambit")
                  "Toggle gambit process." t))
     ;; `scheme': `chez-mode'
     (prog1
@@ -227,7 +233,7 @@
       ;; (*org-babel-schemes* :put 'chez "scheme")
       (autoload 'chez-mode (v-home%> "config/chez")
         "Toggle chez mode." t)
-      (autoload* 'run-chez (v-home%> "config/chez")
+      (autoload! 'run-chez (v-home%> "config/chez")
                  "Toggle chez process." t))
     ;; `scratch'
     (prog1
@@ -241,7 +247,7 @@
     ;; (prog1
     ;;     (compile-unit% (emacs-home* "config/ob-schemes.el") t)
     ;;   (when (*org-babel-schemes*)
-    ;;     (autoload* 'org-babel-execute:scheme*
+    ;;     (autoload! 'org-babel-execute:scheme*
     ;;                (v-home%> "config/ob-schemes")
     ;;                "Autoload `org-babel-execute:scheme*'." t)
     ;;     (fset 'org-babel-execute:scheme 'org-babel-execute:scheme*)))
@@ -251,8 +257,6 @@
         (compile-unit% (emacs-home* "config/sudoku.el") t)
       (autoload 'sudoku (v-home%> "config/sudoku")
         "Play sudoku." t))
-    ;; on `tags'
-    (compile-unit% (emacs-home* "config/on-tags-autoload.el"))
     ;; on `terms'
     (compile-unit% (emacs-home* "config/on-term-autoload.el"))
     ;; on `trans'
@@ -288,7 +292,7 @@
   (when-fn% 'self-socks-init! nil (self-socks-init!))
   (setq% history-length (emacs-arch))
   (setq% message-log-max 512)
-  (load-autoloaded-modes!)
+  (load-compiling-modes!)
   (load-conditional-modes!)
   (when-fn% 'self-edit-init! nil (self-edit-init!))
   (when-fn% 'self-key-init! nil (self-key-init!))

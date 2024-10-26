@@ -8,9 +8,11 @@
 
 ;;; require
 
-(eval-when-compile (require 'marks (v-home%> "config/marks")))
-(declare-function symbol@ (v-home%> "config/ed"))
-(autoload 'symbol@ (v-home%> "config/ed") nil nil 'macro)
+(unless% (featurep 'marks)
+  (require 'marks (v-home%> "config/marks")))
+
+(unless% (featurep 'ed)
+  (require 'ed (v-home%> "config/ed")))
 
 ;; end of require
 

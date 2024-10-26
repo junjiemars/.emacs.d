@@ -12,8 +12,8 @@
 (autoload 'browse-url-default-browser "browse-url")
 (autoload 'browse-url-url-encode-chars "browse-url")
 
-(declare-function symbol@ (v-home%> "config/ed"))
-(autoload 'symbol@ (v-home%> "config/ed") nil nil 'macro)
+(unless% (featurep 'ed)
+  (require 'ed (v-home%> "config/ed")))
 
 ;; end of require
 

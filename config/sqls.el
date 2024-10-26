@@ -8,8 +8,8 @@
 
 ;;; require
 
-(declare-function delete-line* (v-home%> "config/ed"))
-(autoload 'delete-line* (v-home%> "config/ed") nil nil 'macro)
+(unless% (featurep 'ed)
+  (require 'ed (v-home%> "config/ed")))
 
 ;; end of require
 

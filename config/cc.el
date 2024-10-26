@@ -10,11 +10,11 @@
 
 ;;; require
 
-(declare-function make-c-tags (v-home%> "config/tags"))
-(autoload 'make-c-tags (v-home%> "config/tags"))
+(unless% (featurep 'ed)
+  (require 'ed (v-home%> "config/ed")))
 
-(declare-function shell-format-buffer (v-home%> "config/ed"))
-(autoload 'shell-format-buffer (v-home%> "config/ed") nil nil 'macro)
+(unless% (featurep 'tags)
+  (require 'tags (v-home%> "config/tags")))
 
 ;; end of require
 
@@ -443,14 +443,14 @@ N specify the number of spaces when align."
   "Format the current buffer via clang-format."
   (interactive)
   (shell-format-buffer
-    'c-mode
-    (when-feature-eglot%
-      (when (and (fboundp 'eglot-managed-p) (eglot-managed-p))
-        (catch 'br
-          (call-interactively #'eglot-format-buffer)
-          (throw 'br t))))
-    (concat (make-temp-name ".cc-fmt-") ".c")
-    (shell-command* "clang-format" "-i" f)))
+   'c-mode
+   (when-feature-eglot%
+     (when (and (fboundp 'eglot-managed-p) (eglot-managed-p))
+       (catch 'br
+         (call-interactively #'eglot-format-buffer)
+         (throw 'br t))))
+   (concat (make-temp-name ".cc-fmt-") ".c")
+   "clang-format" "-i"))
 
 ;; end of format
 
