@@ -6,36 +6,22 @@
 ;; on-clipboard-autoload.el
 ;;;;
 
-;;; (unless-graphic% t)
-(defmacro when-clipboard% (&rest body)
-  "When clipboard do BODY."
-  (declare (indent 0))
-  `(unless-platform% 'windows-nt
-     (if-platform% 'darwin
-         (when% (and (executable-find% "pbcopy")
-                     (executable-find% "pbpaste"))
-           ,@body)
-       (if-platform% 'gnu/linux
-           (when% (executable-find% "xsel")
-             ,@body)))))
+(autoload 'clipboard-x-kill (v-home%> "config/clipboard"))
+(autoload 'clipboard-x-yank (v-home%> "config/clipboard"))
 
-(when-clipboard%
-  ;; declaration
-  (declare-function x-kill* (v-home%> "config/clipboard"))
-  (declare-function x-yank* (v-home%> "config/clipboard"))
-  (autoload 'x-kill* (v-home%> "config/clipboard"))
-  (autoload 'x-yank* (v-home%> "config/clipboard"))
-  ;; enable `select'
-  (if-version%
-      <= 24.1
-      (setq% select-enable-clipboard t)
-    (setq% x-select-enable-clipboard t))
-  (if-version%
-      <= 25.1
-      (setq% select-enable-primary t 'select)
-    (setq% x-select-enable-primary t 'select))
-  ;; kill/yank
-  (setq interprogram-cut-function #'x-kill*
-        interprogram-paste-function #'x-yank*))
+;;; enable `select'
+(if-version%
+    <= 24.1
+    (setq% select-enable-clipboard t)
+  (setq% x-select-enable-clipboard t))
+(if-version%
+    <= 25.1
+    (setq% select-enable-primary t 'select)
+  (setq% x-select-enable-primary t 'select))
+
+;; kill/yank
+(unless-platform% 'windows-nt
+  (setq interprogram-cut-function #'clipboard-x-kill
+        interprogram-paste-function #'clipboard-x-yank))
 
  ;; end of on-clipboard-autoload.el

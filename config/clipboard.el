@@ -9,34 +9,30 @@
 ;; See also: http://emacswiki.org/emacs/CopyAndPaste
 ;;;;
 
-(defmacro _defun_x_kill_ (bin &rest args)
-  (declare (indent 1))
-  `(defun x-kill* (text &optional _)
-     "Copy TEXT to system clipboard."
-     (with-temp-buffer
-       (insert text)
-       (call-process-region (point-min) (point-max)
-                            ,bin
-                            nil 0 nil
-                            ,@args))))
+(defun clipboard-x-kill (text)
+  "Kill TEXT to system clipboard."
+  (with-temp-buffer
+    (insert text)
+    (let ((kill (if-platform% 'darwin
+                    `("pbcopy" . nil)
+                  (if-platform% 'gnu/linux
+                      `("xsel" . `("--clipboard" "--input"))))))
+      (unless kill
+        (error "%s" "No kill command found"))
+      (apply #'call-process-region (point-min) (point-max)
+             (car kill) nil 0 nil (cdr kill)))))
 
-(defmacro _defun_x_yank_ (bin &rest args)
-  (declare (indent 1))
-  `(defun x-yank* ()
-     "Paste from system clipboard."
-     (let ((out (shell-command* ,bin ,@args)))
-       (when (zerop (car out))
-         (cdr out)))))
-
-;;; `darwin'
-(when-platform% 'darwin (_defun_x_kill_ "pbcopy"))
-(when-platform% 'darwin (_defun_x_yank_ "pbpaste"))
-
-;;; `gnu/linux'
-(when-platform% 'gnu/linux
-  (_defun_x_kill_ "xsel" "--clipboard" "--input"))
-(when-platform% 'gnu/linux
-  (_defun_x_yank_ "xsel" "--clipboard" "--output"))
+(defun clipboard-x-yank ()
+  "Yank from system clipboard."
+  (let ((yank (if-platform% 'darwin
+                  `("pbpaste" . nil)
+                (if-platform% 'gnu/linux
+                    `("xsel" . `("--clipboard" "--output"))))))
+    (unless yank
+      (error "%s" "No yank command found"))
+    (let ((out (apply #'shell-command* (car yank) (cdr yank))))
+      (when (zerop (car out))
+        (cdr out)))))
 
 
 
