@@ -809,7 +809,7 @@
                    nil)
       (should (= 2 (length matched))))))
 
-(ert-deftest %r:fn:dir-backtrack ()
+(ert-deftest %r:tags:dir-backtrack ()
   (when-fn% 'dir-backtrack nil
     (should (catch 'out
               (dir-backtrack (emacs-home* "config/")
