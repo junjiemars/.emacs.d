@@ -10,7 +10,7 @@
 
 ;;; require
 
-(unless% (featurep 'marks)
+(eval-when-compile
   (require 'marks (v-home%> "config/marks")))
 
 ;; end of require

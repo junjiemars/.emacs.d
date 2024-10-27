@@ -89,7 +89,7 @@
     (compile-unit% (emacs-home* "config/ed.el") t)
     (compile-unit% (emacs-home* "config/marks.el") t)
     (compile-unit% (emacs-home* "config/tags.el") t)
-    (compile-unit% (emacs-home* "config/on-beforeload.el"))))
+    (compile-unit% (emacs-home* "config/on-firstload.el"))))
 
 (defun load-compiling-modes! ()
   "Load compiling modes."
@@ -270,7 +270,7 @@
     (when-feature-vc%
       (compile-unit% (emacs-home* "config/on-vcs-autoload.el")))
     ;; on last:
-    (compile-unit% (emacs-home* "config/on-afterload.el"))
+    (compile-unit% (emacs-home* "config/on-lastload.el"))
     ) ;; end of compile!
 
   )
