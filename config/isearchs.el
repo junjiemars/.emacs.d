@@ -8,11 +8,9 @@
 
 ;;; require
 
-(unless% (featurep 'marks)
+(eval-when-compile
+  (require 'ed (v-home%> "config/ed"))
   (require 'marks (v-home%> "config/marks")))
-
-(unless% (featurep 'ed)
-  (require 'ed (v-home%> "config/ed")))
 
 ;; end of require
 

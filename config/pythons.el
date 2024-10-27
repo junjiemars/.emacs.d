@@ -16,7 +16,7 @@
 
 ;;; require
 
-(unless% (featurep 'ed)
+(eval-when-compile
   (require 'ed (v-home%> "config/ed")))
 
 ;; end of require

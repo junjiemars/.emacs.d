@@ -83,15 +83,17 @@
 
 ;; end of macro
 
-
-(defun load-compiling-modes! ()
-  "Load autoloaded modes."
+(defun load-prologue-modes! ()
+  "Load prologue modes."
   (compile!
-    ;; prologue
     (compile-unit% (emacs-home* "config/ed.el") t)
     (compile-unit% (emacs-home* "config/marks.el") t)
     (compile-unit% (emacs-home* "config/tags.el") t)
-    ;; end of prologue
+    (compile-unit% (emacs-home* "config/on-beforeload.el"))))
+
+(defun load-compiling-modes! ()
+  "Load compiling modes."
+  (compile!
     (compile-unit% (emacs-home* "config/cc.el") t)
     (compile-unit% (emacs-home* "config/clipboard.el") t)
     (compile-unit% (emacs-home* "config/compiles.el") t)
@@ -109,6 +111,7 @@
     (compile-unit% (emacs-home* "config/helps.el") t)
     (compile-unit% (emacs-home* "config/hippies.el") t)
     (compile-unit% (emacs-home* "config/idos.el") t)
+    (compile-unit% (emacs-home* "config/isearchs.el") t)
     (compile-unit% (emacs-home* "config/mill.el") t)
     (compile-unit% (emacs-home* "config/mixal.el") t)
     (compile-unit% (emacs-home* "config/nets.el") t)
@@ -134,9 +137,6 @@
 (defun load-conditional-modes! ()
   "Load conditional modes."
   (compile!
-    ;; on first:
-    (compile-unit% (emacs-home* "config/on-autoload.el"))
-    ;; end on first:
     ;; on `cc'
     (compile-unit% (emacs-home* "config/on-cc-autoload.el"))
     ;; on `clipboard'
@@ -186,7 +186,6 @@
     ;; on `idos'
     (compile-unit% (emacs-home* "config/on-ido-autoload.el"))
     ;; on `isearchs'
-    (compile-unit% (emacs-home* "config/isearchs.el") t)
     (compile-unit% (emacs-home* "config/on-isearch-autoload.el"))
     ;; ;; `js'
     ;; (compile-unit% (emacs-home* "config/on-js-autoload.el"))
@@ -288,6 +287,7 @@
   (when-fn% 'self-socks-init! nil (self-socks-init!))
   (setq% history-length (emacs-arch))
   (setq% message-log-max 512)
+  (load-prologue-modes!)
   (load-compiling-modes!)
   (load-conditional-modes!)
   (when-fn% 'self-edit-init! nil (self-edit-init!))

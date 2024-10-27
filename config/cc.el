@@ -10,11 +10,9 @@
 
 ;;; require
 
-(unless% (featurep 'ed)
-  (require 'ed (v-home%> "config/ed")))
-
-(unless% (featurep 'tags)
-  (require 'tags (v-home%> "config/tags")))
+;; (eval-when-compile
+;;   (require 'ed (v-home%> "config/ed"))
+;;   (require 'tags (v-home%> "config/tags")))
 
 ;; end of require
 

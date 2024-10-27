@@ -7,10 +7,9 @@
 ;;;;
 
 ;;; require
-(unless% (featurep 'browse-url)
-  (require 'browse-url))
 
-(unless% (featurep 'ed)
+(eval-when-compile
+  (require 'browse-url)
   (require 'ed (v-home%> "config/ed")))
 
 (autoload 'browse-url-default-browser "browse-url")
