@@ -44,7 +44,7 @@
               (rs (buffer-substring-no-properties (car bs) (cdr bs)))
               (f (save-str-to-file
                   rs
-                  (concat ,(path! (emacs-home* "scratch/")) ,tmpfile)))
+                  (concat default-directory ,tmpfile)))
               (ss (let ((x (shell-command* ,@shell* f)))
                     (and (= 0 (car x))
                          (read-str-from-file f)))))

@@ -148,18 +148,17 @@
 
 (when-platform% 'windows-nt
   (defconst +cc*-xargs-bin+
-    (eval-when-compile
-      (file-name-nondirectory%
-       (or (executable-find%
-            "xargs"
-            (lambda (xargs)
-              (let ((x (shell-command* "echo xxx"
-                         "&& echo zzz"
-                         "|xargs -0")))
-                (and (zerop (car x))
-                     (string-match "^zzz" (cdr x))))))
-           (and (cc*-cc)
-                (cc*-make-xargs-bin)))))
+    (file-name-nondirectory%
+     (or (executable-find%
+          "xargs"
+          (lambda (xargs)
+            (let ((x (shell-command* "echo xxx"
+                       "&& echo zzz"
+                       "|xargs -0")))
+              (and (zerop (car x))
+                   (string-match "^zzz" (cdr x))))))
+         (and (cc*-cc)
+              (cc*-make-xargs-bin))))
     "The name of xargs executable."))
 
 ;; end of xargs
@@ -388,36 +387,35 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 ;;;
 
 (defvar cc*-style-nginx
-  (eval-when-compile
-    `("nginx"
-      (c-basic-offset . 4)
-      (c-comment-only-line-offset . 0)
-      (c-backslash-max-column . 78)
-      (c-backslash-column . 77)
-      (c-offsets-alist
-       (statement-block-intro . +)
-       (substatement-open . 0)
-       (substatement-label . 0)
-       (label . 0)
-       (statement-cont . +)
-       (inline-open . 0)
-       (brace-list-intro
-        first
-        ,(when-fn% 'c-lineup-2nd-brace-entry-in-arglist
-             'cc-align
-           #'c-lineup-2nd-brace-entry-in-arglist)
-        ,(when-fn% 'c-lineup-class-decl-init-+
-             'cc-align
-           #'c-lineup-class-decl-init-+)
-        +)
-       (arglist-cont-nonempty
-        .
-        ,(lambda (langem)
-           (let ((col (save-excursion
-                        (goto-char (cdr langem))
-                        (current-column))))
-             (cond ((= col 0) 'c-basic-offset)
-                   (t 'c-lineup-arglist))))))))
+  `("nginx"
+    (c-basic-offset . 4)
+    (c-comment-only-line-offset . 0)
+    (c-backslash-max-column . 78)
+    (c-backslash-column . 77)
+    (c-offsets-alist
+     (statement-block-intro . +)
+     (substatement-open . 0)
+     (substatement-label . 0)
+     (label . 0)
+     (statement-cont . +)
+     (inline-open . 0)
+     (brace-list-intro
+      first
+      ,(when-fn% 'c-lineup-2nd-brace-entry-in-arglist
+           'cc-align
+         #'c-lineup-2nd-brace-entry-in-arglist)
+      ,(when-fn% 'c-lineup-class-decl-init-+
+           'cc-align
+         #'c-lineup-class-decl-init-+)
+      +)
+     (arglist-cont-nonempty
+      .
+      ,(lambda (langem)
+         (let ((col (save-excursion
+                      (goto-char (cdr langem))
+                      (current-column))))
+           (cond ((= col 0) 'c-basic-offset)
+                 (t 'c-lineup-arglist)))))))
   "nginx style for \\=`cc-styles\\='.
 https://nginx.org/en/docs/dev/development_guide.html#code_style")
 
@@ -541,10 +539,10 @@ N specify the number of spaces when align."
   ;; format buffer
   (define-key c-mode-map (kbd% "C-c M-c f") #'cc*-format-buffer)
   (when-fn-c-macro-expand%
-   ;; [C-c C-e] `c-macro-expand' in `cc-mode'
-   (setq% c-macro-prompt-flag t 'cmacexp)
-   (ad-enable-advice #'c-macro-expand 'around "c-macro-expand-around")
-   (ad-activate #'c-macro-expand t)))
+    ;; [C-c C-e] `c-macro-expand' in `cc-mode'
+    (setq% c-macro-prompt-flag t 'cmacexp)
+    (ad-enable-advice #'c-macro-expand 'around "c-macro-expand-around")
+    (ad-activate #'c-macro-expand t)))
 
 ;; end of `cc-mode'
 

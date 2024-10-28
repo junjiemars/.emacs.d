@@ -8,42 +8,34 @@
 ;; Commentary: tagging
 ;;;;
 
-(defcustom%
- tags-program
- (list 'quote
-       (eval-when-compile
-         (or (executable-find%
-              "ctags"
-              (lambda (bin)
-                (let ((ver (shell-command* bin "--version")))
-                  (and (zerop (car ver))
-                       (string-match "Exuberant Ctags [.0-9]+"
-                                     (cdr ver))
-                       ``(:bin "ctags" :cmd
-                               ,(concat ,bin " -e %s -o %s -a %s"))))))
-             (executable-find%
-              "etags"
-              (lambda (bin)
-                (let ((ver (shell-command* bin "--version")))
-                  (and (zerop (car ver))
-                       (string-match "etags (GNU Emacs [.0-9]+)"
-                                     (cdr ver))
-                       ``(:bin "etags" :cmd
-                               ,(concat ,bin " %s -o %s -a %s")))))))))
- "The tags program.\n
-1st %s: ctags options;
+(defalias '*tags*
+  (lexical-let%
+      ((b (or (executable-find%
+               "ctags"
+               (lambda (bin)
+                 (let ((ver (shell-command* bin "--version")))
+                   (and (zerop (car ver))
+                        (string-match "Exuberant Ctags [.0-9]+"
+                                      (cdr ver))
+                        ``(:bin "ctags" :cmd
+                                ,(concat ,bin " -e %s -o %s -a %s"))))))
+              (executable-find%
+               "etags"
+               (lambda (bin)
+                 (let ((ver (shell-command* bin "--version")))
+                   (and (zerop (car ver))
+                        (string-match "etags (GNU Emacs [.0-9]+)"
+                                      (cdr ver))
+                        ``(:bin "etags" :cmd
+                                ,(concat ,bin " %s -o %s -a %s")))))))))
+    (lambda (&optional n)
+      (plist-get b (or n :bin))))
+  "The tags program.\n
+1st %s: tags options;
 2nd %s: explicit name of file for tag table;
 3rd %s: append to existing tag file.\n
 \\=`tags-table-list\\=' should be persitent between sessions
-when \\=`desktop-globals-to-save\\=' include it."
- :type '(plist :key-type 'symbol :value-type 'string)
- :group 'tags)
-
-(defalias '*tags*
-  (lexical-let% ((b tags-program))
-    (lambda (&optional n)
-      (plist-get b (or n :bin))))
-  "Tags' binary and options.")
+when \\=`desktop-globals-to-save\\=' include it.")
 
 (defvar *tags-option-history*
   (cond ((string= "ctags" (*tags*))
@@ -147,10 +139,10 @@ HOME where the source files locate,
 TAGS-FILE where the tags file to save,
 FILE-FILTER file filter function,
 DIR-FILTER directory filter function,
-TAGS-OPTION \\=`tags-program\\=' extra options,
+TAGS-OPTION \\=`*tags*\\=' extra options,
 RENEW overwrite the existing tags file when t else create it."
-  (unless tags-program
-    (signal 'void-variable (list 'tags-program tags-program)))
+  (unless (*tags*)
+    (error "%s" "No tags program found"))
   (when (file-exists-p home)
     (let* ((tf (expand-file-name tags-file))
            (td (file-name-directory tf)))
