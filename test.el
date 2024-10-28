@@ -746,8 +746,10 @@
      (should (delete-package!1 'htmlize))
      (when already (should (install-package!1 'htmlize))))))
 
+
+
 ;;;
-;; conditional: cc
+;; conditional: `cc'
 ;;;
 
 (ert-deftest %q:cc:+cc*-cc ()
@@ -770,10 +772,10 @@
     (should (message "# cc*-system-include = %s"
                      (or (cc*-system-include t) "")))))
 
-;; end of cc
+;; end of `cc'
 
 ;;;
-;; conditional
+;; conditional: `tags'
 ;;;
 
 (ert-deftest %r:tags:dir-iterate ()
@@ -839,13 +841,19 @@
                                        std)
                        (setq count (1+ count)))))))))
 
-(ert-deftest %r:trans:roman->arabic ()
+
+
+;;;
+;; conditional: `trans'
+;;;
+
+(ert-deftest %s:trans:roman->arabic ()
   (when-fn% 'roman->arabic nil
     (should (= 1990 (roman->arabic "MCMXC")))
     (should (= 2008 (roman->arabic "MMVIII")))
     (should (= 1666 (roman->arabic "MDCLXVI")))))
 
-(ert-deftest %r:trans:chinese->arabic ()
+(ert-deftest %s:trans:chinese->arabic ()
   (when-fn% 'chinese->arabic nil
     (should (= 91234567 (chinese->arabic
                          (split-string*
@@ -861,7 +869,7 @@
                               "" t)
                              0)))))
 
-;; end of conditional
+ ;; end of conditional `trans'
 
 
-;; end of test.el
+ ;; end of test.el
