@@ -10,9 +10,8 @@
 
 ;;; require
 
-(eval-when-compile
-  (require 'ed (v-home%> "config/ed"))
-  (require 'tags (v-home%> "config/tags")))
+(require% 'ed (v-home%> "config/ed"))
+(require% 'tags (v-home%> "config/tags"))
 
 ;; end of require
 

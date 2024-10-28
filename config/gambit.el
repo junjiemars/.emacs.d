@@ -27,8 +27,7 @@
 (require 'scheme)
 ;; (require 'thingatpt)
 
-(eval-when-compile
-  (require 'ed (v-home%> "config/ed")))
+(require% 'ed (v-home%> "config/ed"))
 
 ;; end of require
 

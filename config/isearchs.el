@@ -8,9 +8,8 @@
 
 ;;; require
 
-(eval-when-compile
-  (require 'ed (v-home%> "config/ed"))
-  (require 'marks (v-home%> "config/marks")))
+(require% 'ed (v-home%> "config/ed"))
+(require% 'marks (v-home%> "config/marks"))
 
 ;; end of require
 

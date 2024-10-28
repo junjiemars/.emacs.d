@@ -542,7 +542,13 @@ See \\=`defcustom\\='."
       ,doc
       ,@args)))
 
-;; end of compatible macro
+(defmacro require% (feature &optional filename noerror)
+  "Require feature at compile-time."
+  `(eval-when-compile
+     (unless (featurep ,feature)
+       (require ,feature ,filename ,noerror))))
+
+ ;; end of compatible macro
 
 ;;;
 ;; file

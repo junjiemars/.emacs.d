@@ -32,8 +32,7 @@
 (require 'comint)
 (require 'scheme)
 
-(eval-when-compile
-  (require 'ed (v-home%> "config/ed")))
+(require% 'ed (v-home%> "config/ed"))
 
 ;; (require 'thingatpt)
 

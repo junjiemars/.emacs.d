@@ -8,12 +8,11 @@
 
 ;;; require
 
-(eval-when-compile
-  (require 'browse-url)
-  (require 'ed (v-home%> "config/ed")))
+(require 'browse-url)
+(require% 'ed (v-home%> "config/ed"))
 
-(autoload 'browse-url-default-browser "browse-url")
-(autoload 'browse-url-url-encode-chars "browse-url")
+;; (autoload 'browse-url-default-browser "browse-url")
+;; (autoload 'browse-url-url-encode-chars "browse-url")
 
 ;; end of require
 
