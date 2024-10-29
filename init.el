@@ -26,7 +26,7 @@
 
 (defmacro if% (cond then &rest else)
   "If COND yield non-nil, do THEN, else do ELSE..."
-  (declare (indent 2))
+  (declare (indent 2) (pure t))
   (if (funcall `(lambda () ,cond))
       `,then
     `(progn% ,@else)))
@@ -73,7 +73,7 @@
 (defmacro if-version% (cmp version then &rest else)
   "If VERSION CMP with \\=`+emacs-version+\\=' yield non-nil, do
 THEN, else do ELSE..."
-  (declare (indent 3))
+  (declare (indent 3) (pure t))
   `(if% (,cmp ,version +emacs-version+)
        ,then
      (progn% ,@else)))
@@ -111,6 +111,7 @@ non-nil, do BODY."
 
 (defun path! (file)
   "Make and return the path of posixed FILE."
+  (declare (pure t))
   (inhibit-file-name-handler
     (if (file-exists-p file)
         file
@@ -140,12 +141,14 @@ non-nil, do BODY."
 
 (defmacro emacs-home* (&optional file)
   "Return path of FILE under \\='~/.emacs.d\\='."
+  (declare (pure t))
   `(concat ,(expand-file-name
              (or (getenv-internal "EMACS_HOME") "~/.emacs.d/"))
            ,file))
 
 (defmacro v-path (file)
   "Return versioned FILE."
+  (declare (pure t))
   (let ((f1 (gensym*)))
     `(inhibit-file-name-handler
        (let ((,f1 ,file))
@@ -178,7 +181,7 @@ compile-time."
 
 (defmacro if-native-comp% (then &rest else)
   "If native compilation is built-in do THEN, else do ELSE..."
-  (declare (indent 1))
+  (declare (indent 1) (pure t))
   (if (and (fboundp 'native-comp-available-p)
            (native-comp-available-p))
       `,then
@@ -276,7 +279,7 @@ If ONLY-COMPILE is t, does not load DST."
 
 (defmacro when-package% (&rest body)
   "If package is built-in, do BODY."
-  (declare (indent 0))
+  (declare (indent 0) (pure t))
   `(when-version% <= 24.1 ,@body))
 
 ;; end of *-package% macro

@@ -17,7 +17,7 @@
 (defmacro if-fn% (fn feature then &rest else)
   "If FN is bounded yield non-nil, do THEN, else do ELSE...\n
 Argument FEATURE that FN dependent on, be loaded at compile time."
-  (declare (indent 3))
+  (declare (indent 3) (pure t))
   `(if% (cond ((null ,feature) (fboundp ,fn))
               (t (and (require ,feature nil t)
                       (fboundp ,fn))))
@@ -49,7 +49,7 @@ Argument FEATURE that FN dependent on, be loaded at compile time."
 (defmacro if-var% (var feature then &rest else)
   "If VAR is bounded yield non-nil, do THEN, else do ELSE...\n
 Argument FEATURE that VAR dependent on, load at compile time."
-  (declare (indent 3))
+  (declare (indent 3) (pure t))
   `(if% (or (and ,feature (require ,feature nil t) (boundp ',var))
             (boundp ',var))
        ,then
@@ -83,7 +83,7 @@ Argument FEATURE that X dependent on, load at compile time."
 
 (defmacro if-lexical% (then &rest else)
   "If lexical binding is built-in do THEN, otherwise do ELSE..."
-  (declare (indent 1))
+  (declare (indent 1) (pure t))
   `(if-version%
        <= 24.1
        ,then

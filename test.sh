@@ -1,7 +1,7 @@
 #!/bin/sh
 
 _ROOT_="${_ROOT_:-$(cd -- $(dirname -- $0) && pwd)}"
-_EMACS_="${_EMACS_:-emacs}"
+_EMACS_="${_EMACS_:-emacs --no-site-file}"
 _TEST_="${_TEST_}"
 _WINNT_="${_WINNT_:-no}"
 _ENV_PRO_="${_ROOT_}/private/self-prologue.el"
@@ -64,6 +64,9 @@ test_bone() {
 }
 
 test_axiom() {
+  local d="${_ROOT_}/.axiom/${_ENV_VER_}"
+  local fc="${d}/compile"
+  local fb="${d}/boot"
   test_echo_env "axiom|check"
   if [ "ert" != "$_ENV_ERT_" ]; then
     echo "# skip axiom testing ..., ert no found"
@@ -71,6 +74,7 @@ test_axiom() {
   else
     echo "# _ENV_ERT_: ${_ENV_ERT_}"
   fi
+  mkdir -p "$d"
   test_echo_env "axiom|clean"
   test_clean_env
   test_echo_env "axiom|compile"
@@ -81,7 +85,8 @@ test_axiom() {
   (load \"${_ROOT_}/init.el\")\
   (load (emacs-home* \"test.el\"))\
   (ert-run-tests-batch-and-exit))\
-"
+" 2>&1 | tee "$fc"
+  cat "$fc"
   test_echo_env "axiom|boot"
   ${_EMACS_} --batch \
              --no-window-system \
@@ -90,7 +95,7 @@ test_axiom() {
   (load \"${_ROOT_}/init.el\")\
   (load (emacs-home* \"test.el\"))\
   (ert-run-tests-batch-and-exit))\
-"
+" 2>&1 | tee "$fb"
 }
 
 test_module() {
