@@ -76,8 +76,7 @@
       (define-key map (kbd% "C-c -") #'paredit-splice-sexp)
       (define-key map (kbd% "C-j") #'paredit-newline)
       (define-key map (kbd% "RET") #'newline*)
-      (setcdr
-       (assoc** 'paredit-mode minor-mode-map-alist :test #'eq) map))))
+      (setcdr (assoc 'paredit-mode minor-mode-map-alist) map))))
 
 (when-feature-paredit%
   (defun use-paredit-init! ()

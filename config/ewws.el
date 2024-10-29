@@ -93,21 +93,21 @@ is non-nil, otherwise is not. See also:
    (list (read-string "Lookup web for " (cdr (symbol@)))
          (when current-prefix-arg
            (let ((se (mapcar #'car (*web-defs*))))
-             (completing-read (format "Choose (%s) "
-                                      (mapconcat #'identity se "|"))
-                              (mapcar #'car (*web-defs*))
-                              nil nil (car *lookup-web-history*)
-                              '*lookup-web-history* (car se))))))
+             (completing-read
+              (format "Choose (%s) "
+                      (mapconcat #'identity se "|"))
+              (mapcar #'car (*web-defs*))
+              nil nil (car *lookup-web-history*)
+              '*lookup-web-history* (car se))))))
   (let ((en (web-find-def engine)))
     (make-thread*
      (lambda ()
        (funcall browse-url-browser-function
                 (let ((en1 (cdr en)))
                   (require 'browse-url)
-                  (browse-url-url-encode-chars (concat (car en1)
-                                                       (cdr en1)
-                                                       what)
-                                               "[ '()!`\"]")))))))
+                  (browse-url-url-encode-chars
+                   (concat (car en1) (cdr en1) what)
+                   "[ '()!`\"]")))))))
 
 ;; end of `lookup-web'
 

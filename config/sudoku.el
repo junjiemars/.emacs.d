@@ -138,18 +138,18 @@
   (let* ((d (*sudoku-puzzle-d* :d))
          (m matrix)
          (r (* (sudoku-puzzle-row index) d)))
-    (apply #'vector (mapcar** (lambda (a)
-                                (aref m (+ r a)))
-                              (range 0 (1- d) 1)))))
+    (apply #'vector (mapcar (lambda (a)
+                              (aref m (+ r a)))
+                            (range 0 (1- d) 1)))))
 
 (defun sudoku-puzzle-vec-col (matrix index)
   "Return MATRIX's col vector on INDEX."
   (let* ((d (*sudoku-puzzle-d* :d))
          (m matrix)
          (c (% (sudoku-puzzle-col index) d)))
-    (apply #'vector (mapcar** (lambda (x)
-                                (aref m (+ c (* x d))))
-                              (range 0 (1- d) 1)))))
+    (apply #'vector (mapcar (lambda (x)
+                              (aref m (+ c (* x d))))
+                            (range 0 (1- d) 1)))))
 
 
 (defun sudoku-puzzle-vec-sqr (matrix index)
@@ -160,10 +160,10 @@
          (s1 (sudoku-puzzle-sqr index))
          (r (* (car s1) s d))
          (c (* (cdr s1) s)))
-    (apply #'vector (mapcar** (lambda (x)
-                                (aref m (+ r (* (/ x s) d)
-                                           c (% x s))))
-                              (range 0 (1- d) 1)))))
+    (apply #'vector (mapcar (lambda (x)
+                              (aref m (+ r (* (/ x s) d)
+                                         c (% x s))))
+                            (range 0 (1- d) 1)))))
 
 
 
@@ -725,7 +725,7 @@
   (interactive)
   (when (and current-prefix-arg
              (yes-or-no-p "Save board? "))
-     (sudoku-board-save))
+    (sudoku-board-save))
   (kill-buffer (*sudoku*)))
 
 (defun sudoku-save ()
