@@ -205,9 +205,10 @@ determine whether inside a virtual env. Another way is using
   (when (python*-program)
     (let ((interpreter
            (or (let ((f (python*-venv :file)))
-                 (and (file-exists-p f)
-                      (python*-venv :load (read-sexp-from-file f))
-                      (python*-venv :python)))
+                 (when (file-exists-p f)
+                   (python*-venv :load (read-sexp-from-file f))
+                   (and (file-exists-p (python*-venv :python))
+                        (python*-venv :python))))
                (python*-program :bin))))
       (setq% python-shell-interpreter interpreter 'python)
       (setq% python-interpreter interpreter 'python)))
