@@ -96,7 +96,6 @@
         (when w (set-frame-width nil w))
         (when h (set-frame-height nil h))))))
 
-
 ;; end of Frame
 
 ;;;

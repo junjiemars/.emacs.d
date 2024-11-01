@@ -23,4 +23,9 @@
 (with-eval-after-load 'ielm
   (make-thread* #'on-ielm-init!))
 
+;; fix some terminal theme confused with background and foreground.
+(unless-graphic%
+  (set-face-background 'region "white")
+  (set-face-foreground 'region "black"))
+
 ;; end of on-term-autoload.el

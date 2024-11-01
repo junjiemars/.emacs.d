@@ -16,10 +16,7 @@
 ;;; `transient-mark-mode'
 (unless-graphic%
   ;; above version 23 transient-mark-mode is enabled by default
-  (when-version% > 23 (transient-mark-mode t))
-  ;; fix some terminal theme confused with background and foreground.
-  (set-face-background 'region "white")
-  (set-face-foreground 'region "black"))
+  (when-version% > 23 (transient-mark-mode t)))
 
 
 ;; end of on-transient-autoload.el
