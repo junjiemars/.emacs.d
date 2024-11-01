@@ -5,24 +5,33 @@
 ;;;;
 ;; use-magit.el
 ;;;;
+;; References:
+;; 1. https://developer.mozilla.org/en-US/docs/Web/Accessibility/Understanding_Colors_and_Luminance
+;;
+;;;;
 
 (unless-graphic%
 
-  (defun color-contrast (color &optional frame)
-    "Contrast COLOR to integer in selected FRAME."
+  (defun trans-color (color &optional fn frame)
+    "Trans COLOR by FN in selected FRAME."
     (when (stringp color)
       (let ((cs (color-values color frame)))
         (when cs
           (let ((rc 0) (i 16))
             (dolist* (x cs (logand #xffffff rc))
-              (setq rc (logior (ash (+ #x13 (lognot x)) i) rc)
+              (setq rc (logior
+                        (ash (if fn (funcall fn x) x) i)
+                        rc)
                     i (- i 8)))))))))
 
 (unless-graphic%
 
   (defun toggle-face-background! (face &optional frame)
-    "Toggle \\=`face-background\\= to contrasted color."
-    (let ((c (color-contrast (face-background face frame))))
+    "Toggle \\=`face-background\\=' to contrasted color."
+    (let ((c (trans-color
+              (face-background face frame)
+              (lambda (x) (+ #x13 (lognot x)))
+              frame)))
       (when c
         (set-face-background face (format "#%x" c) frame)))))
 
