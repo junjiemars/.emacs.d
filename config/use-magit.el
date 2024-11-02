@@ -30,7 +30,7 @@
     "Toggle \\=`face-background\\=' to contrasted color."
     (let ((c (trans-color
               (face-background face frame)
-              (lambda (x) (+ #x13 (lognot x)))
+              (lambda (x) (- #xff x))
               frame)))
       (when c
         (set-face-background face (format "#%x" c) frame)))))
