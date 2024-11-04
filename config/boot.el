@@ -65,7 +65,7 @@ Argument FEATURE that VAR dependent on, load at compile time."
   "Unless VAR is bounded yield non-nil, do BODY.\n
 Argument FEATURE that VAR dependent on, load at compile time."
   (declare (indent 2))
-  `(if-var% ,var ,feature nil (progn% ,@body)))
+  `(if-var% ,var ,feature nil ,@body))
 
 (defmacro setq% (x val &optional feature)
   "Set X to the value of VAL when X is bound.\n
@@ -205,7 +205,7 @@ else do ELSE..."
 (defmacro unless-window% (window &rest body)
   "Unless WINDOW eq \\=`initial-window-system\\=' yield non-nil, do BODY."
   (declare (indent 1))
-  `(if-window% ,window nil (progn% ,@body)))
+  `(if-window% ,window nil ,@body))
 
 ;; end of *-window% macro
 
