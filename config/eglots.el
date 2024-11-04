@@ -52,22 +52,19 @@
 
 (defalias 'eglot*-server-programs
   (lexical-let%
-      ((b (v-home% ".exec/eglot-server.el"))
-       (m `((c-mode . ("clangd" "--header-insertion=never"))
+      ((f (v-home% ".exec/eglot-server.el"))
+       (b `((c-mode . ("clangd" "--header-insertion=never"))
             ,(let ((cxx (executable-find% "c++")))
                `(c++-mode
                  .
                  ("clangd"
                   ,(format "--query-driver=%s" cxx)))))))
     (lambda (&optional op sexp)
-      (cond ((eq op :put)
-             (dolist* (x sexp sexp)
-               (push! x eglot-server-programs)))
-            ((eq op :read)
-             (read-sexp-from-file b))
-            ((eq op :save)
-             (when sexp (save-sexp-to-file sexp b)))
-            (t m))))
+      (cond ((eq op :push) (dolist* (x sexp sexp)
+                             (push! x eglot-server-programs t)))
+            ((eq op :read) (read-sexp-from-file f))
+            ((eq op :save) (save-sexp-to-file (or sexp b) f))
+            (t b))))
   "The \\=`eglot-server-programs\\=' cache.")
 
 (defun eglot*-eldoc-no-builtins ()
@@ -97,8 +94,7 @@
 (defun on-eglot-init! ()
   "On \\=`eglot\\=' initialization."
   ;; load recipe
-  (eglot*-server-programs :put (or (eglot*-server-programs :read)
-                                   (eglot*-server-programs)))
+  (eglot*-server-programs :push (eglot*-server-programs :read))
   ;; most reduced `eldoc'
   (setq% eldoc-echo-area-use-multiline-p nil 'eldoc)
 
