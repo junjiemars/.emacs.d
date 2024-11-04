@@ -392,17 +392,22 @@ And copy the qualified buffer name to kill ring."
                        #'revert-buffer-quick
                  #'revert-buffer))
   ;; line number mode
-  (setq% global-display-line-numbers-mode -1 'display-line-numbers)
-  (setq% display-line-numbers-type 'relative 'display-line-numbers)
-  (setq% display-line-numbers-current-absolute nil 'display-line-numbers)
-  (define-key% (current-global-map) (kbd% "C-x x l")
-               (if-fn% 'display-line-numbers-mode 'display-line-numbers
-                       #'display-line-numbers-mode
-                 (if-fn% 'linum-mode 'linum
-                         #'linum-mode
-                   #'(lambda (&optional _)
-                       (interactive)
-                       (error "%s" "No line number mode found")))))
+  (define-key%
+   (current-global-map) (kbd% "C-x x l")
+   (if-fn% 'display-line-numbers-mode 'display-line-numbers
+           (prog1 #'display-line-numbers-mode
+             (when-fn% 'global-display-line-numbers-mode
+                 'display-line-numbers
+               (global-display-line-numbers-mode -1))
+             (setq% display-line-numbers-type 'relative
+                    'display-line-numbers)
+             (setq% display-line-numbers-current-absolute nil
+                    'display-line-numbers))
+     (if-fn% 'linum-mode 'linum
+             #'linum-mode
+       #'(lambda (&optional _)
+           (interactive)
+           (error "%s" "No line number mode found")))))
   (define-key% (current-global-map) (kbd% "C-x x r") #'rename-buffer)
   (when-fn% 'toggle-word-wrap 'simple
     (define-key% (current-global-map) (kbd% "C-x x w") #'toggle-word-wrap))
