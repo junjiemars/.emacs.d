@@ -7,18 +7,15 @@
 ;;;;
 
 (defalias 'project*-root-dirs
-  (lexical-let% ((b (v-home% ".exec/project-root-dirs.el"))
-                 (c '()))
-    (lambda (&optional op sexp)
-      (cond ((eq op :find)
-             (file-in-dirs-p sexp c))
-            ((eq op :read)
-             (setq c (read-sexp-from-file b)))
-            ((eq op :save)
-             (save-sexp-to-file (or sexp `(,default-directory)) b))
-            ((eq op :path) b)
-            (t c))))
-  "The root dirs for `project'.")
+  (lexical-let% ((f (v-home% ".exec/project-root-dirs.el"))
+                 (b '()))
+    (lambda (&optional op dir)
+      (cond ((eq op :find) (file-in-dirs-p dir b))
+            ((eq op :read) (setq b (read-sexp-from-file f)))
+            ((eq op :save) (save-sexp-to-file (or dir b) f))
+            ((eq op :file) f)
+            (t b))))
+  "The root dirs for \\=`project\\='.")
 
 (defun project*-try-root (dir)
   (let ((d (project*-root-dirs :find dir)))

@@ -60,10 +60,12 @@
                  ("clangd"
                   ,(format "--query-driver=%s" cxx)))))))
     (lambda (&optional op sexp)
-      (cond ((eq op :push) (dolist* (x sexp sexp)
-                             (push! x eglot-server-programs t)))
-            ((eq op :read) (read-sexp-from-file f))
+      (cond ((eq op :read) (let ((s1 (read-sexp-from-file f)))
+                             (dolist* (x s1 s1)
+                               (push! x b t)
+                               (push! x eglot-server-programs t))))
             ((eq op :save) (save-sexp-to-file (or sexp b) f))
+            ((eq op :file) f)
             (t b))))
   "The \\=`eglot-server-programs\\=' cache.")
 
@@ -94,7 +96,7 @@
 (defun on-eglot-init! ()
   "On \\=`eglot\\=' initialization."
   ;; load recipe
-  (eglot*-server-programs :push (eglot*-server-programs :read))
+  (eglot*-server-programs :read)
   ;; most reduced `eldoc'
   (setq% eldoc-echo-area-use-multiline-p nil 'eldoc)
 

@@ -50,19 +50,17 @@
 ;;;
 
 (defalias 'xref*-read-only-dirs
-  (lexical-let% ((b (v-home% ".exec/xref-read-only-dirs.el"))
-                 (c `(,(when% (> (path-depth invocation-directory) 1)
+  (lexical-let% ((f (v-home% ".exec/xref-read-only-dirs.el"))
+                 (b `(,(when% (> (path-depth invocation-directory) 1)
                          (path- invocation-directory))
                       ,(when-package% package*-user-dir))))
-    (lambda (&optional op sexp)
-      (cond ((eq op :read)
-             (setq c (read-sexp-from-file b)))
-            ((eq op :put)
-             (when (> (length sexp) 0) (push! sexp c t)))
-            ((eq op :save)
-             (save-sexp-to-file (or sexp c) b))
-            ((eq op :path) b)
-            (t c)))))
+    (lambda (&optional op dir)
+      (cond ((eq op :read) (setq b (read-sexp-from-file f)))
+            ((eq op :push) (when (> (length dir) 0)
+                             (push! dir b t)))
+            ((eq op :save) (save-sexp-to-file b f))
+            ((eq op :file) f)
+            (t b)))))
 
 (defun xref*-buffer-in-view-mode (&optional buffer)
   (let* ((buf (or buffer (current-buffer)))
@@ -84,7 +82,7 @@
    (xref*-buffer-in-view-mode (window-buffer ad-return-value))))
 
 (defun on-xref-init! ()
-  (when (file-exists-p (xref*-read-only-dirs :path))
+  (when (file-exists-p (xref*-read-only-dirs :file))
     (xref*-read-only-dirs :read))
   (when-fn-xref-find-definitions%
     (ad-enable-advice #'xref-find-definitions 'after

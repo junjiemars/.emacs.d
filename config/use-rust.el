@@ -137,7 +137,7 @@
 
 (defun use-rust-init! ()
   "On \\=`rust\\=' initialization."
-  (xref*-read-only-dirs :put (rust*-sysroot :sysroot)))
+  (xref*-read-only-dirs :push (rust*-sysroot :sysroot)))
 
 ;; compile-time
 ;; (comment
