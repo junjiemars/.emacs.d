@@ -14,7 +14,7 @@
 
 (defmacro shells-spec->* (&rest keys)
   "Extract :shell from env-spec via KEYS."
-  (declare (indent 0))
+  (declare (indent 0) (pure t))
   `(*self-env-spec* :get :shell ,@keys))
 
 
@@ -35,39 +35,41 @@
 
 (defun echo-var (var &optional options)
   "Return the value of $VAR via echo."
-  (when (stringp var)
-    (let* ((c1 (shell-command* shell-file-name
-                 (mapconcat #'identity options " ")
-                 (format "-c 'echo $%s'" var)))
-           (cmd (if-platform% 'windows-nt
-                    (if (string-match "cmdproxy\\.exe$" shell-file-name)
-                        (shell-command* (format "echo %%%s%%" var))
-                      c1)
-                  c1)))
-      (when (zerop (car cmd))
-        (string-trim> (cdr cmd))))))
+  (and
+   (stringp var)
+   (let* ((c1 (shell-command* shell-file-name
+                (let ((os nil))
+                  (dolist* (s options os)
+                    (setq os (concat os s " "))))
+                (format "-c 'echo $%s'" var)))
+          (cmd (if-platform% 'windows-nt
+                   (if (string-match "cmdproxy\\.exe$" shell-file-name)
+                       (shell-command* (format "echo %%%s%%" var))
+                     c1)
+                 c1)))
+     (and (zerop (car cmd))
+          (string-trim> (cdr cmd))))))
 
 
 (defun paths->var (path &optional predicate)
   "Convert a list of PATH to $PATH like var that separated by
 \\=`path-separator\\='."
   (string-trim>
-   (apply #'concat
-          (mapcar #'(lambda (s)
-                      (if (null predicate)
-                          (concat s path-separator)
-                        (when (and (functionp predicate)
-                                   (funcall predicate s))
-                          (concat s path-separator))))
-                  path))
+   (let ((vs))
+     (dolist* (s path vs)
+       (setq vs (concat vs (if (null predicate)
+                               (concat s path-separator)
+                             (when (and (functionp predicate)
+                                        (funcall predicate s))
+                               (concat s path-separator)))))))
    path-separator))
 
 
 (defun var->paths (var)
   "Refine VAR like $PATH to list by \\=`path-separator\\='.\n
 See also: \\=`parse-colon-path\\='."
-  (when (stringp var)
-    (split-string* var path-separator t "[ ]+\n")))
+  (and (stringp var)
+       (split-string* var path-separator t "[ ]+\n")))
 
 ;; end of vars/paths
 
@@ -78,16 +80,15 @@ See also: \\=`parse-colon-path\\='."
 (defun setenv* (name value)
   "Change or add an environment variable: NAME=VALUE.\n
 See \\=`setenv\\='."
-  (lexical-let*%
-      ((env process-environment)
-       (name= (concat name "="))
-       (len (length name=))
-       (newval (concat name= value)))
+  (let* ((env process-environment)
+         (name= (concat name "="))
+         (len (length name=))
+         (newval (concat name= value)))
     (if (catch 'br
           (while (car env)
-            (when (eq t (compare-strings name= 0 len (car env) 0 len))
-              (setcar env newval)
-              (throw 'br t))
+            (and (eq t (compare-strings name= 0 len (car env) 0 len))
+                 (setcar env newval)
+                 (throw 'br t))
             (setq env (cdr env))))
         process-environment
       (setq process-environment (cons newval process-environment)))))
@@ -109,7 +110,7 @@ See \\=`setenv\\='."
 (defmacro copy-exec-path! (path)
   (let ((p (gensym*)))
     `(let ((,p ,path))
-       (when ,p (setq exec-path ,p)))))
+       (and ,p (setq exec-path ,p)))))
 
 ;; end of env
 
@@ -162,8 +163,8 @@ See \\=`setenv\\='."
     (when (shells-spec->* :exec-path)
       (let ((paths '()))
         (dolist* (p exec-path)
-          (when (and (stringp p) (file-exists-p p))
-            (append! p paths t)))
+          (and (and (stringp p) (file-exists-p p))
+               (append! p paths t)))
         (append! (v-home% ".exec/") paths t)
         (*default-shell-env* :put! :exec-path paths))))
   (save-sexp-to-file (*default-shell-env*) (shells-spec->% :file)))
@@ -185,9 +186,8 @@ See \\=`setenv\\='."
              (setq shell-file-name shell)
              (setenv* (shells-spec->% :SHELL) shell)))
          ;; :copy-vars
-         (copy-env-vars!
-          (*default-shell-env* :get :copy-vars)
-          (shells-spec->* :copy-vars))
+         (copy-env-vars! (*default-shell-env* :get :copy-vars)
+                         (shells-spec->* :copy-vars))
          ;; :exec-path
          (when (shells-spec->* :exec-path)
            (copy-exec-path!

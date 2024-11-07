@@ -29,7 +29,7 @@
             ((or (null b) (not (buffer-live-p b)))
              (setq b (get-buffer-create "*sudoku*")))
             (t b))))
-  "The sudoku's process buffer.")
+  "The sudoku\\='s process buffer.")
 
 
 (defalias '*sudoku-file*
@@ -40,7 +40,7 @@
       (cond ((eq :dir k) d)
             ((eq :puzzle k) p)
             ((eq :board k) b))))
-  "The sudoku's files.")
+  "The sudoku\\='s files.")
 
 
 (defconst +sudoku-level+ '(easy medium hard sandbox)
@@ -70,7 +70,7 @@
             ((eq :g! k) (setq g c))
             ((eq :w! k) (setq w c))
             (t (list b g w)))))
-  "The sudoku's colors.")
+  "The sudoku\\='s colors.")
 
 
 (defalias '*sudoku-idiom*
@@ -79,7 +79,7 @@
                       "every dog has its day")))
     (lambda ()
       (nth (random (length s)) s)))
-  "The sudoku's idiom.")
+  "The sudoku\\='s idiom.")
 
 
 (defalias '*sudoku-puzzle-d*
@@ -97,17 +97,17 @@
             ((eq :sqr k) s)
             ((eq :sum k) sum)
             (t (list :len l :d d :sqr s)))))
-  "The sudoku's dimensions.")
+  "The sudoku\\='s dimensions.")
 
 
 (defun sudoku-puzzle-1d (i j)
-  "Transform sudoku's puzzle from 2d(I,J) to 1d."
+  "Transform sudoku\\='s puzzle from 2d(I,J) to 1d."
   (let ((d (*sudoku-puzzle-d* :d)))
     (+ (* (% i d) d)
        (% j d))))
 
 (defun sudoku-puzzle-2d (i)
-  "Transform sudoku's puzzle from 1d(I) to 2d."
+  "Transform sudoku\\='s puzzle from 1d(I) to 2d."
   (let* ((d (*sudoku-puzzle-d* :d))
          (l (*sudoku-puzzle-d* :len))
          (d2 (/ (% i l) d)))
@@ -134,7 +134,7 @@
 
 
 (defun sudoku-puzzle-vec-row (matrix index)
-  "Return MATRIX's row vector on INDEX"
+  "Return MATRIX\\='s row vector on INDEX"
   (let* ((d (*sudoku-puzzle-d* :d))
          (m matrix)
          (r (* (sudoku-puzzle-row index) d)))
@@ -153,7 +153,7 @@
 
 
 (defun sudoku-puzzle-vec-sqr (matrix index)
-  "Return MATRIX's sqr vector on INDEX."
+  "Return MATRIX\\='s sqr vector on INDEX."
   (let* ((d (*sudoku-puzzle-d* :d))
          (s (*sudoku-puzzle-d* :sqr))
          (m matrix)
@@ -178,7 +178,7 @@
             ((eq :box k) (aref v (% i (*sudoku-puzzle-d* :len))))
             ((eq :box! k) (aset v (% i (*sudoku-puzzle-d* :len)) n))
             (t v))))
-  "The `sudoku' puzzle in 1-dimension vector.")
+  "The \\=`sudoku\\=' puzzle in 1-dimension vector.")
 
 
 (defalias '*sudoku-puzzle-make*
@@ -247,18 +247,18 @@
 
 
 (defun sudoku-puzzle-save ()
-  "Save sudoku's puzzle to \\=`*sudoku-file*\\='."
+  "Save sudoku\\='s puzzle to \\=`*sudoku-file*\\='."
   (save-sexp-to-file (*sudoku-puzzle*)
                      (*sudoku-file* :puzzle)))
 
 (defun sudoku-puzzle-load ()
-  "Load sudoku's puzzle from \\=`*sudoku-file*\\='."
+  "Load sudoku\\='s puzzle from \\=`*sudoku-file*\\='."
   (*sudoku-puzzle* :set! (read-sexp-from-file
                           (*sudoku-file* :puzzle))))
 
 
 (defun sudoku-puzzle-vec-complete (vector)
-  "Predicate sudoku puzzle's VECTOR is complete."
+  "Predicate sudoku puzzle\\='s VECTOR is complete."
   (let ((len (length vector))
         (sum 0)
         (i 0))
@@ -268,7 +268,7 @@
     (= sum (*sudoku-puzzle-d* :sum))))
 
 (defun sudoku-puzzle-vec-unique (vector)
-  "Predicate sudoku puzzle's VECTOR is unique."
+  "Predicate sudoku puzzle\\='s VECTOR is unique."
   (catch 'br
     (let ((len (length vector))
           (i 0)
@@ -286,31 +286,30 @@
 
 
 (defun sudoku-puzzle-solved-p (&optional idx)
-  "Predicate sudoku's puzzle is resovled."
-  (catch 'block
+  "Predicate sudoku\\='s puzzle is resovled."
+  (catch 'br
     (let ((d (*sudoku-puzzle-d* :d))
           (sqr (*sudoku-puzzle-d* :sqr))
-          (i 0)
-          (j 0))
+          (i 0) (j 0))
 
       (when idx
         (unless (sudoku-puzzle-vec-unique (*sudoku-puzzle* :row idx))
-          (throw 'block :unique))
+          (throw 'br :unique))
         (unless (sudoku-puzzle-vec-unique (*sudoku-puzzle* :col idx))
-          (throw 'block :unique))
+          (throw 'br :unique))
         (unless (sudoku-puzzle-vec-unique (*sudoku-puzzle* :sqr idx))
-          (throw 'block :unique)))
+          (throw 'br :unique)))
 
       (while (< i d)
         (unless (sudoku-puzzle-vec-unique
                  (*sudoku-puzzle* :row (sudoku-puzzle-1d i 0)))
-          (throw 'block :unique))
+          (throw 'br :unique))
         (setq i (1+ i)))
 
       (while (< j d)
         (unless (sudoku-puzzle-vec-unique
                  (*sudoku-puzzle* :col (sudoku-puzzle-1d 0 j)))
-          (throw 'block :unique))
+          (throw 'br :unique))
         (setq j (1+ j)))
 
       (setq i 0 j 0)
@@ -318,7 +317,7 @@
         (while (< j d)
           (unless (sudoku-puzzle-vec-unique
                    (*sudoku-puzzle* :sqr (sudoku-puzzle-1d i j)))
-            (throw 'block :unique))
+            (throw 'br :unique))
           (setq j (+ j sqr)))
         (setq j 0 i (+ i sqr)))
 
@@ -326,14 +325,14 @@
       (while (< i d)
         (unless (sudoku-puzzle-vec-complete
                  (*sudoku-puzzle* :row (sudoku-puzzle-1d i 0)))
-          (throw 'block :complete))
+          (throw 'br :complete))
         (setq i (1+ i)))
 
       (setq j 0)
       (while (< j d)
         (unless (sudoku-puzzle-vec-complete
                  (*sudoku-puzzle* :col (sudoku-puzzle-1d 0 j)))
-          (throw 'block :complete))
+          (throw 'br :complete))
         (setq j (1+ j)))
 
       (setq i 0 j 0)
@@ -341,7 +340,7 @@
         (while (< j d)
           (unless (sudoku-puzzle-vec-complete
                    (*sudoku-puzzle* :sqr (sudoku-puzzle-1d i j)))
-            (throw 'block :complete))
+            (throw 'br :complete))
           (setq j (+ j sqr)))
         (setq j 0 i (+ i sqr))))
     :solve))
@@ -449,11 +448,11 @@
                  ps)))
 
             (t (list :ori o :dia d :pos p)))))
-  "The `sudoku' board.")
+  "The \\=`sudoku\\=' board.")
 
 
 (defun sudoku-board-make (puzzle)
-  "Make sudoku's board with PUZZLE."
+  "Make sudoku\\='s board with PUZZLE."
   (let ((i 0)
         (bs)
         (len (*sudoku-puzzle-d* :len)))
@@ -595,9 +594,9 @@
 
 
 (defun sudoku-board-input (num &rest properties)
-  "Input on sudoku's board with NUM and PROPERTIES."
+  "Input on sudoku\\='s board with NUM and PROPERTIES."
   (declare (indent 1))
-  (catch 'block
+  (catch 'br
     (with-current-buffer (*sudoku*)
       (let ((inhibit-read-only t))
         (let ((c (string-to-char (number-to-string num)))
@@ -626,7 +625,7 @@
               (let ((rc (sudoku-puzzle-solved-p idx)))
                 (cond ((eq :unique rc)
                        (put-text-property pos (1+ pos) 'face f)
-                       (throw 'block nil))
+                       (throw 'br nil))
                       ((eq :solve rc)
                        (message "Solved, %s." (*sudoku-idiom*)))))
 
@@ -701,13 +700,13 @@
 
 
 (defun sudoku-board-save ()
-  "Save sudoku's board to \\=`*sudoku-file*\\='."
+  "Save sudoku\\='s board to \\=`*sudoku-file*\\='."
   (let ((b (*sudoku-board* :props)))
     (save-sexp-to-file b (*sudoku-file* :board))))
 
 
 (defun sudoku-board-load ()
-  "Load sudoku's board from \\=`*sudoku-file*\\='."
+  "Load sudoku\\='s board from \\=`*sudoku-file*\\='."
   (let ((b (read-sexp-from-file (*sudoku-file* :board))))
     (*sudoku-puzzle*
      :set!
@@ -811,12 +810,12 @@
     ;; (define-key m "\C-h" #'sudoku-board-disabled-key)
 
     m)
-  "The keymap of `sudoku-mode'.")
+  "The keymap of \\=`sudoku-mode\\='.")
 
 
 
 (defun sudoku-mode ()
-  "Switch to sudoku's mode'.\n
+  "Switch to sudoku\\='s mode'.\n
 The following commands are available:
 \\{sudoku-mode-map}"
   (interactive)
