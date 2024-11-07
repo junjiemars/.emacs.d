@@ -89,13 +89,13 @@
       (when (and (consp ss) (self-spec-> ss :cond))
         (dolist* (p (self-spec-> ss :packages))
           (let ((ns (package*-check-name p)))
-            (when (consp ns)
-              (let ((n (car ns)) (tar (cdr ns)))
-                (if (package-installed-p n)
-                    (when (and remove-unused
-                               (null (self-spec-> ss :cond)))
-                      (package*-delete! n))
-                  (package*-install! (if tar tar n) tar))))))
+            (and (consp ns)
+                 (let ((n (car ns)) (tar (cdr ns)))
+                   (if (package-installed-p n)
+                       (and remove-unused
+                            (null (self-spec-> ss :cond))
+                            (package*-delete! n))
+                     (package*-install! (if tar tar n) tar))))))
         (apply #'compile! (self-spec-> ss :compile))))))
 
 (defun self-module-init! ()

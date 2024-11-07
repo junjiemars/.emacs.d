@@ -95,17 +95,15 @@ See \\=`setenv\\='."
 
 (defun copy-env-vars! (env vars)
   (dolist* (v vars)
-    (when (> (length v) 0)
-      (let ((v1 (cdr (assoc-string v env))))
-        (when (stringp v1)
-          (setenv* v v1))))))
+    (and (> (length v) 0)
+         (let ((v1 (cdr (assoc-string v env))))
+           (and (stringp v1) (setenv* v v1))))))
 
 
 (defun spin-env-vars! (vars)
   (dolist* (v vars)
-    (when (and (stringp (car v))
-               (stringp (cdr v)))
-      (setenv* (car v) (cdr v)))))
+    (and (stringp (car v)) (stringp (cdr v))
+         (setenv* (car v) (cdr v)))))
 
 
 (defmacro copy-exec-path! (path)

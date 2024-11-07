@@ -101,7 +101,7 @@ Argument FEATURE that X dependent on, load at compile time."
 
 (defmacro lexical-let% (varlist &rest body)
   "Lexically bind VARLIST in parallel then eval BODY."
-  (declare (indent 1) (debug let))
+  (declare (indent 1))
   `(if-lexical%
        (if-version% < 27
                     (let ,varlist ,@body)
@@ -113,7 +113,7 @@ Argument FEATURE that X dependent on, load at compile time."
 
 (defmacro lexical-let*% (varlist &rest body)
   "Lexically bind VARLIST sequentially then eval BODY."
-  (declare (indent 1) (debug let))
+  (declare (indent 1))
   `(if-lexical%
        (if-version% < 27
                     (let* ,varlist ,@body)
@@ -145,7 +145,7 @@ Argument FEATURE that X dependent on, load at compile time."
 
 (defmacro if-graphic% (then &rest else)
   "If \\=`display-graphic-p\\=' yield non-nil, do THEN, else do ELSE..."
-  (declare (indent 1))
+  (declare (indent 1) (pure t))
   (if (display-graphic-p)
       `,then
     `(progn% ,@else)))
@@ -168,7 +168,7 @@ Argument FEATURE that X dependent on, load at compile time."
 
 (defmacro if-platform% (os then &rest else)
   "If OS eq \\=`system-type\\=' yield non-nil, do THEN, else do ELSE..."
-  (declare (indent 2))
+  (declare (indent 2) (pure t))
   `(if% (eq system-type ,os)
        ,then
      (progn% ,@else)))
@@ -192,7 +192,7 @@ Argument FEATURE that X dependent on, load at compile time."
 (defmacro if-window% (window then &rest else)
   "If WINDOW eq \\=`initial-window-system\\=' yield non-nil, do THEN,
 else do ELSE..."
-  (declare (indent 2))
+  (declare (indent 2) (pure t))
   `(if% (eq initial-window-system ,window)
        ,then
      (progn% ,@else)))
@@ -215,13 +215,14 @@ else do ELSE..."
 
 (defmacro if-noninteractive% (then &rest body)
   "If \\=`noninteractive\\=' do THEN, else do BODY."
-  (declare (indent 1))
+  (declare (indent 1) (pure t))
   `(if% noninteractive
        ,then
      (progn% ,@body)))
 
 (defmacro unless-noninteractive% (&rest body)
   "Unless \\=`noninteractive\\=' do BODY."
+  (declare (indent 0))
   `(if-noninteractive% nil ,@body))
 
 ;; end of *-noninteractive% macro
@@ -256,9 +257,9 @@ Argument SPEC (VAR LIST [RESULT])."
 (defun compile-unit* (file &optional only-compile)
   "Make an compile unit for \\=`compile!\\='."
   (inhibit-file-name-handler
-    (when (and (stringp file) (file-exists-p file))
-      (let ((u1 (v-comp-file! file)))
-        `[,(car u1) ,(cdr u1) ,only-compile nil]))))
+    (and (stringp file) (file-exists-p file)
+         (let ((u1 (v-comp-file! file)))
+           `[,(car u1) ,(cdr u1) ,only-compile nil]))))
 
 (defmacro compile-unit% (file &optional only-compile)
   "Make an compile unit at compile time for \\=`compile!\\='"
@@ -266,8 +267,7 @@ Argument SPEC (VAR LIST [RESULT])."
                  (v-comp-file! (funcall `(lambda () ,file)))))
          (-src1- (car -u1-))
          (-dst1- (cdr -u1-)))
-    (when -u1-
-      `[,-src1- ,-dst1- ,only-compile nil])))
+    (and -u1- `[,-src1- ,-dst1- ,only-compile nil])))
 
 (defmacro compile-unit->src (unit)
   "Return the :src part of UNIT."
@@ -285,11 +285,10 @@ Argument SPEC (VAR LIST [RESULT])."
   "Compile and load UNITS."
   (declare (indent 0))
   (dolist* (u units)
-    (when u
-      (compile-and-load-file*
-       (compile-unit->src u)
-       (compile-unit->dst u)
-       (compile-unit->only-compile u)))))
+    (and u (compile-and-load-file*
+            (compile-unit->src u)
+            (compile-unit->dst u)
+            (compile-unit->only-compile u)))))
 
 ;; end of compile-* macro
 
@@ -299,7 +298,7 @@ Argument SPEC (VAR LIST [RESULT])."
 
 (defmacro self-spec-> (seq &rest keys)
   "Read spec from SEQ via KEYS."
-  (declare (indent 1))
+  (declare (indent 1) (pure t))
   (let ((r seq) (ks keys))
     (while ks
       (setq r (list 'plist-get r (car ks))
@@ -308,11 +307,12 @@ Argument SPEC (VAR LIST [RESULT])."
 
 (defmacro self-spec<- (k v seq &rest keys)
   "Save the spec of K V to SEQ via KEYS."
-  (declare (indent 3))
+  (declare (indent 3) (pure t))
   `(plist-put (self-spec-> ,seq ,@keys) ,k ,v))
 
 (defmacro self-spec->% (seq &rest keys)
   "Read spec from SEQ via KEYS at compile time."
+  (declare (indent 1) (pure t))
   (funcall `(lambda () (self-spec-> ,seq ,@keys))))
 
 (defalias '*self-paths*
@@ -373,7 +373,7 @@ No matter the declaration order, the executing order is:
 
 (defmacro shells-spec->% (&rest keys)
   "Extract constant from env-spec via KEYS."
-  (declare (indent 0))
+  (declare (indent 0) (pure t))
   `(self-spec->%
     (list :file ,(v-home% ".exec/shell-env.el")
           :SHELL "SHELL"
@@ -382,6 +382,7 @@ No matter the declaration order, the executing order is:
 
 (defmacro tags-spec->% (&rest key)
   "Extract value from the list of spec via KEYS at compile time."
+  (declare (indent 0) (pure t))
   `(self-spec->% (list
                   :root ,(emacs-home* ".tags/")
                   :nore ,(v-home% ".tags/nore.emacs.TAGS")

@@ -221,8 +221,7 @@ If optional UNIQUELY is non-nil then append uniquely."
   (let ((i 0) (l (length str)))
     (catch 'br
       (while (< i l)
-        (when (= chr (aref str i))
-          (throw 'br i))
+        (and (= chr (aref str i)) (throw 'br i))
         (setq i (1+ i))))))
 
 (defun strrchr (str chr)
@@ -230,24 +229,23 @@ If optional UNIQUELY is non-nil then append uniquely."
   (let* ((l (length str)) (i (1- l)))
     (catch 'br
       (while (>= i 0)
-        (when (= chr (aref str i))
-          (throw 'br i))
+        (and (= chr (aref str i)) (throw 'br i))
         (setq i (1- i))))))
 
 (defun string-trim> (s &optional rr)
   "Remove tailing whitespaces or matching of RR at the end of S."
-  (when (stringp s)
-    (let ((r1 (concat "\\(?:" (or rr "[ \t\n\r]+") "\\)\\'")))
-      (let ((i (string-match r1 s 0)))
-        (if i (substring-no-properties s 0 i) s)))))
+  (and (stringp s)
+       (let ((r1 (concat "\\(?:" (or rr "[ \t\n\r]+") "\\)\\'")))
+         (let ((i (string-match r1 s 0)))
+           (if i (substring-no-properties s 0 i) s)))))
 
 (defun string-trim< (s &optional lr)
   "Remove leading whitespaces or matching of LR from S."
-  (when (stringp s)
-    (let ((r1 (concat "\\`\\(?:" (or lr "\\`[ \t\n\r]+") "\\)")))
-      (if (string-match r1 s)
-          (substring-no-properties s (match-end 0))
-        s))))
+  (and (stringp s)
+       (let ((r1 (concat "\\`\\(?:" (or lr "\\`[ \t\n\r]+") "\\)")))
+         (if (string-match r1 s)
+             (substring-no-properties s (match-end 0))
+           s))))
 
 (defmacro string-trim>< (s &optional rr lr)
   "Remove leading and trailing whitespaces or matching of LR/RR from S."
@@ -590,12 +588,11 @@ See \\=`defcustom\\='."
             (d (file-name-directory file)))
         (catch 'br
           (dolist* (x dirs)
-            (when (and (stringp x)
-                       (eq 't
-                           (compare-strings
-                            x 0 (length x) d 0 (length x)
-                            case-fold-search)))
-              (throw 'br x))))))))
+            (and (stringp x)
+                 (eq 't (compare-strings
+                         x 0 (length x) d 0 (length x)
+                         case-fold-search))
+                 (throw 'br x))))))))
 
 (defmacro file-name-nondirectory% (filename)
   "Return file name FILENAME sans its directory at compile-time."
@@ -614,16 +611,16 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
   "Norm the REMOTE to (method {user|id} [host]) form."
   (let ((r (gensym*)))
     `(let ((,r ,remote))
-       (when (stringp ,r)
-         (split-string* ,r "[:@]" t "\\(^/[^ssh].*$\\|^/\\)")))))
+       (and (stringp ,r)
+            (split-string* ,r "[:@]" t "\\(^/[^ssh].*$\\|^/\\)")))))
 
 (defun ssh-remote->user@host (remote)
   "Norm the REMOTE to {user|id}[@host] form."
   (let ((rid (ssh-remote->ids remote)))
     (when (consp rid)
       (concat (cadr rid)
-              (when (car (cddr rid))
-                (concat "@" (car (cddr rid))))))))
+              (and (car (cddr rid))
+                   (concat "@" (car (cddr rid))))))))
 
 ;; end of file
 
