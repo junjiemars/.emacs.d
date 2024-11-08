@@ -15,6 +15,8 @@
 
 (require 'ert)
 
+(setq ert-batch-backtrace-right-margin 2048)
+
 ;;;
 ;; env
 ;;;
