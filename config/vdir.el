@@ -22,6 +22,10 @@
 ;; `calc'
 (setq% calc-settings-file (v-home! ".calc/calc.el") 'calc)
 
+;; `desktop'
+(unless-noninteractive%
+  (setq% desktop-dirname (v-home! ".desktop/") 'desktop))
+
 ;; `eww' bookmarks
 (setq% eww-bookmarks-directory (v-home! ".bookmarks/") 'eww)
 

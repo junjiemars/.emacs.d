@@ -21,7 +21,7 @@
 
 (defun self-desktop-read! ()
   "Read the desktop of the previous Emacs instance."
-  (when (and (desktop-spec->* :allowed) (v-home! ".desktop/"))
+  (when (desktop-spec->* :allowed)
     (inhibit-blinking
       ;; restrict eager
       (setq% desktop-restore-eager 0 'desktop)
@@ -33,7 +33,7 @@
       ;; quiet
       (setq% desktop-lazy-verbose nil 'desktop)
       ;; `desktop-read'
-      (desktop-read (v-home% ".desktop/")))
+      (desktop-read desktop-dirname))
 
     ;; remove unnecessary hooks of `kill-emacs-hook'
     (setq kill-emacs-hook
@@ -66,7 +66,7 @@
              (concat
               "\\.desktop$"
               "\\|~$"
-              "\\|\\.elc$"
+              "\\|\\.elc\\|\\.eln$"
               "\\|\\.el\\.gz$"
               "\\|\\.[tT][aA][gG][sS]?$"
               "\\|\\.[lL][oO][gG]$"
@@ -78,14 +78,13 @@
            (let ((ss (desktop-spec->* :buffers-not-to-save)))
              (concat
               "\\*.*?\\*"
-              (when ss (concat "\\|" ss))))
+              (and ss (concat "\\|" ss))))
            'desktop)
 
     (setq% desktop-modes-not-to-save
            (append '(archive-mode
                      dired-mode
                      eww-mode
-                     flymake-mode
                      rmail-mode
                      special-mode
                      tags-table-mode
@@ -106,9 +105,9 @@
 
     (if-version% >= 23
                  (unwind-protect
-                     (desktop-save (v-home! ".desktop/"))
+                     (desktop-save desktop-dirname)
                    (desktop-release-lock))
-      (desktop-save (v-home! ".desktop/") t))))
+      (desktop-save desktop-dirname t))))
 
 ;; end of save
 
