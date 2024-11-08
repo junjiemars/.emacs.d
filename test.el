@@ -409,6 +409,7 @@
 
 (ert-deftest %d:fn:loop* ()
   (should (equal '(1 2 3) (loop* for i from 1 to 3 collect i)))
+  (should (equal '(2 4 6) (loop* for i from 1 to 3 collect (* 2 i))))
   (should (= 3 (loop* for x in '(a b c)
                       count x)))
   (should (= 5050 (loop* for i from 1 to 100 sum i)))
