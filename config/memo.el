@@ -22,6 +22,7 @@
 (defun self-desktop-read! ()
   "Read the desktop of the previous Emacs instance."
   (when (desktop-spec->* :allowed)
+    (setq% desktop-dirname (v-home! ".desktop/") 'desktop)
     (inhibit-blinking
       ;; restrict eager
       (setq% desktop-restore-eager 0 'desktop)

@@ -432,23 +432,23 @@ No matter the declaration order, the executing order is:
 (compile!
   (when (*self-env-spec* :get :edit :allowed)
     (prog1
-	      (compile-unit% (emacs-home* "config/edit.el") t)
+        (compile-unit% (emacs-home* "config/edit.el") t)
       (autoload 'self-edit-init! (v-home%> "config/edit"))
       (declare-function self-edit-init! (v-home%> "config/edit"))))
   (when (*self-env-spec* :get :key :allowed)
     (prog1
-	      (compile-unit% (emacs-home* "config/key.el") t)
+        (compile-unit% (emacs-home* "config/key.el") t)
       (autoload 'self-key-init! (v-home%> "config/key"))
       (declare-function self-key-init! (v-home%> "config/key"))))
   (progn
     ;;; --batch mode: disable `desktop'
     (setq% desktop-save-mode nil 'desktop)
     (unless-noninteractive%
-     (when (*self-env-spec* :get :desktop :allowed)
-       (prog1
-           (compile-unit% (emacs-home* "config/memo.el") t)
-         (autoload 'self-desktop-read! (v-home%> "config/memo"))
-         (declare-function self-desktop-read! (v-home%> "config/memo"))))))
+      (when (*self-env-spec* :get :desktop :allowed)
+        (prog1
+            (compile-unit% (emacs-home* "config/memo.el") t)
+          (autoload 'self-desktop-read! (v-home%> "config/memo"))
+          (declare-function self-desktop-read! (v-home%> "config/memo"))))))
   (when (*self-env-spec* :get :socks :allowed)
     (prog1
         (compile-unit% (emacs-home* "config/sockets.el") t)
