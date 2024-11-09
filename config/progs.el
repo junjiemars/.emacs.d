@@ -265,7 +265,7 @@ And copy the qualified buffer name to kill ring."
 ;;;
 
 (defmacro set-minibuffer-complete-key! (key)
-  "Set completing KEY for `minibuffer'."
+  "Set completing KEY for \\=`minibuffer\\='."
   `(define-key%
     (if-var% minibuffer-local-completion-map 'minibuffer
              minibuffer-local-completion-map
@@ -289,9 +289,6 @@ And copy the qualified buffer name to kill ring."
     (setq% frame-title-format "%b (%f)"))
   ;; ignore ring bell
   (setq% ring-bell-function 'ignore)
-  ;; keep `view-mode' when quit
-  ;; (when-var% view-mode-map 'view
-  ;;   (define-key% view-mode-map (kbd% "q") #'quit-window))
   ;; treat `read-only-mode' as `view-mode'
   (setq view-read-only t)
   ;; Changes all yes/no questions to y/n type
@@ -309,19 +306,7 @@ And copy the qualified buffer name to kill ring."
   (setq% create-lockfiles nil)
   ;; enable upcase/downcase region
   (put 'downcase-region 'disabled nil)
-  (put 'upcase-region 'disabled nil)
-  ;; messages' keys
-  (when-version% > 24.4
-    ;; fix: no quit key to hide *Messages* buffer for ancient Emacs
-    ;; [DEL] for `scroll-down'
-    ;; [SPC] for `scroll-up'
-    (with-current-buffer (get-buffer "*Messages*")
-      (if-fn% 'read-only-mode nil
-              (read-only-mode 1)
-        (toggle-read-only t))
-      (local-set-key (kbd% "q") #'quit-window)
-      (local-set-key (kbd% "DEL") #'scroll-down)
-      (local-set-key (kbd% "SPC") #'scroll-up))))
+  (put 'upcase-region 'disabled nil))
 
 ;; end of `on-progs-env!'
 
@@ -414,8 +399,21 @@ And copy the qualified buffer name to kill ring."
   (when-fn% 'whitespace-mode 'whitespace
     (define-key% (current-global-map) (kbd% "C-x x SPC") #'whitespace-mode))
   (define-key% (current-global-map) (kbd% "C-x x u") #'rename-uniquely)
+  ;; `minibuffer'
   (set-minibuffer-complete-key! "TAB")
-  (set-minibuffer-complete-key! "C-M-i"))
+  (set-minibuffer-complete-key! "C-M-i")
+  ;; `messages-buffer-mode'
+  (when-version% > 24.4
+    ;; fix: no quit key to hide *Messages* buffer for ancient Emacs
+    ;; [DEL] for `scroll-down'
+    ;; [SPC] for `scroll-up'
+    (with-current-buffer (get-buffer "*Messages*")
+      (if-fn% 'read-only-mode nil
+              (read-only-mode 1)
+        (toggle-read-only t))
+      (local-set-key (kbd% "q") #'quit-window)
+      (local-set-key (kbd% "DEL") #'scroll-down)
+      (local-set-key (kbd% "SPC") #'scroll-up))))
 
 ;; end of `on-progs-key!'
 

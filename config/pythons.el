@@ -187,15 +187,17 @@ determine whether inside a virtual env. Another way is using
 (defun python*-format-buffer ()
   "Format the current buffer."
   (interactive)
-  (shell-format-buffer
-   'python-mode
-   (when-feature-eglot%
-     (when (and (fboundp 'eglot-managed-p) (eglot-managed-p))
-       (catch 'br
-         (call-interactively #'eglot-format-buffer)
-         (throw 'br t))))
-   (concat (make-temp-name ".py-fmt-") ".py")
-   (concat (python*-venv :venv) "bin/ruff") "format"))
+  (shell-format-buffer 'python-mode
+    (when-feature-eglot%
+      (when (and (fboundp 'eglot-managed-p) (eglot-managed-p))
+        (catch 'br
+          (call-interactively #'eglot-format-buffer)
+          (throw 'br t))))
+    (make-temp-file "py-fmt-src-" nil ".py")
+    (lambda (src)
+      (let ((x (shell-command* (concat (python*-venv :venv) "bin/ruff")
+                 "format" src)))
+        (and (zerop (car x)) src)))))
 
 
 

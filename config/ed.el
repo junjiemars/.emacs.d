@@ -31,30 +31,28 @@
                  (newline arg 'interactive)
       (newline arg))))
 
-(defmacro shell-format-buffer (mode alternate tmpfile &rest shell*)
+(defmacro shell-format-buffer (mode alternate src shell*)
   "Format the current buffer via SHELL\\=*."
-  (declare (indent 0))
+  (declare (indent 1))
   `(with-current-buffer (current-buffer)
      (when (eq major-mode ,mode)
        ,alternate
-       (let* ((p (point))
-              (bs (if-region-active
-                      (cons (region-beginning) (region-end))
-                    (cons (point-min) (point-max))))
-              (rs (buffer-substring-no-properties (car bs) (cdr bs)))
-              (f (save-str-to-file
-                  rs
-                  (concat ,(path! (emacs-home* "scratch/")) ,tmpfile)))
-              (ss (let ((x (shell-command* ,@shell* f)))
-                    (and (= 0 (car x))
-                         (read-str-from-file f)))))
-         (unless (string= rs ss)
-           (save-excursion
-             (save-restriction
-               (delete-region (car bs) (cdr bs))
-               (insert ss)))
-           (goto-char p))
-         (when (file-exists-p f) (delete-file f))))))
+       (let ((p (point))
+             (bs (if-region-active
+                     (cons (region-beginning) (region-end))
+                   (cons (point-min) (point-max)))))
+         (let ((rs (buffer-substring-no-properties (car bs) (cdr bs)))
+               (s1 ,src))
+           (when (and rs s1)
+             (let ((ss (when (save-str-to-file rs s1)
+                         (let ((dst (funcall ,shell* s1)))
+                           (and dst (read-str-from-file dst))))))
+               (unless (string= rs ss)
+                 (save-excursion
+                   (save-restriction
+                     (delete-region (car bs) (cdr bs))
+                     (insert ss)))
+                 (goto-char p)))))))))
 
 (defmacro symbol@ (&optional thing)
   "Return the (cons \\='region|nil THING) at point."

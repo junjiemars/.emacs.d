@@ -272,7 +272,6 @@
     ;; on last:
     (compile-unit% (emacs-home* "config/on-lastload.el"))
     ) ;; end of compile!
-
   )
 ;; end of `load-conditional-modes!'
 
