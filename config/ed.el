@@ -47,7 +47,7 @@
              (let ((ss (when (save-str-to-file rs s1)
                          (let ((dst (funcall ,shell* s1)))
                            (and dst (read-str-from-file dst))))))
-               (unless (string= rs ss)
+               (unless (or (null ss) (string= rs ss))
                  (save-excursion
                    (save-restriction
                      (delete-region (car bs) (cdr bs))
