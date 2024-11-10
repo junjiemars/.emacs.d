@@ -381,9 +381,6 @@ And copy the qualified buffer name to kill ring."
    (current-global-map) (kbd% "C-x x l")
    (if-fn% 'display-line-numbers-mode 'display-line-numbers
            (prog1 #'display-line-numbers-mode
-             (when-fn% 'global-display-line-numbers-mode
-                 'display-line-numbers
-               (global-display-line-numbers-mode -1))
              (setq% display-line-numbers-type 'relative
                     'display-line-numbers)
              (setq% display-line-numbers-current-absolute nil
