@@ -102,6 +102,10 @@
               '((ns-transparent-titlebar . unbound)
                 (ns-appearance . unbound)))))
 
+    ;; disable line number mode
+    (when-fn% 'global-display-line-numbers-mode 'display-line-numbers
+      (global-display-line-numbers-mode -1))
+
     (when-theme% (self-theme-init! t))
 
     (if-version% >= 23
