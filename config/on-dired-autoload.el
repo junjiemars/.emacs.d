@@ -25,6 +25,6 @@
 (with-eval-after-load 'arc-mode
   (make-thread* #'on-arc-mode-init!))
 
-(define-key% (current-global-map) (kbd% "C-x x B") 'browse-file)
+(define-key% (current-global-map) "C-x x B" 'browse-file)
 
 ;; end of on-dired-autoload.el

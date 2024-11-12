@@ -631,21 +631,26 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
 (defmacro kbd% (keys)
   "Convert KEYS to the internal Emacs key representation."
   (declare (pure t))
-  (let ((-k1- (kbd keys)))
-    `,-k1-))
+  (let ((-k%1- (kbd keys)))
+    `,-k%1-))
 
 (defmacro if-key% (keymap key test then &rest else)
   "If TEST yield t for KEY in KEYMAP do then, else do ELSE..."
-  (declare (indent 3) (pure t))
-  `(if% (funcall ,test (lookup-key ,keymap ,key))
-       ,then
-     ,@else))
+  (declare (indent 4) (pure t))
+  (let ((-ik%-m1- keymap)
+        (-ik%-k1- (kbd key))
+        (-ik%-t1- test))
+    `(if% (eq ,-ik%-t1- (lookup-key ,-ik%-m1- ,-ik%-k1-))
+         ,then
+       ,@else)))
 
 (defmacro define-key% (keymap key def)
   "Define KEY to DEF in KEYMAP."
-  `(if-key% ,keymap ,key
-            (lambda (d) (null (eq d ,def)))
-     (define-key ,keymap ,key ,def)))
+  (let ((-dk%-m1- keymap)
+        (-dk%-k1- (kbd key))
+        (-dk%-d1- def))
+    `(unless% (eq ,-dk%-d1- (lookup-key ,-dk%-m1- ,-dk%-k1-))
+       (define-key ,-dk%-m1- ,-dk%-k1- ,-dk%-d1-))))
 
 ;; end of key
 

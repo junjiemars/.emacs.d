@@ -122,8 +122,8 @@
   "On \\=`etags\\=' initialization."
   (when-fn-pop-tag-mark%
    ;; define keys for `pop-tag-mark' and `tags-loop-continue'
-   (define-key% (current-global-map) (kbd% "M-,") #'pop-tag-mark)
-   (define-key% (current-global-map) (kbd% "M-*") #'tags-loop-continue))
+   (define-key% (current-global-map) "M-," #'pop-tag-mark)
+   (define-key% (current-global-map) "M-*" #'tags-loop-continue))
   (unless-fn-xref-find-definitions%
     (ad-enable-advice #'find-tag 'after "find-tag-after")
     (ad-activate #'find-tag t)))

@@ -621,17 +621,9 @@
   (should (string= "fi" (kbd% "C-c f i"))))
 
 (ert-deftest %e:fn:if-key% ()
-  (should (string= "defined"
-                   (if-key% (current-global-map) (kbd "C-x C-c")
-                            (lambda (def)
-                              (eq def #'save-buffers-kill-terminal))
-                     "defined"
-                     "undefined")))
-  (should (string= "undefined"
-                   (if-key% (current-global-map) (kbd "C-x C-c")
-                            (lambda (def)
-                              (not (eq def #'xxx)))
-                     "undefined"))))
+  (should (= 0 (if-key% (current-global-map) "C-c C-c C-c" #'+ 1 0)))
+  (should (eq #'+ (define-key% (current-global-map) "C-c C-c C-c" #'+)))
+  (should (null (define-key% (current-global-map) "C-c C-c C-c" nil))))
 
 (ert-deftest %e:fn:if-region-active ()
   ;; interactive

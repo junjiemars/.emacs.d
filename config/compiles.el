@@ -88,7 +88,7 @@
   (when-var% compilation-mode-map 'compile
     ;; define `recompile' and `quit-window' key bindings
     (define-key compilation-mode-map (kbd% "g") #'compile*-recompile)
-    (define-key% compilation-mode-map (kbd% "q") #'quit-window))
+    (define-key% compilation-mode-map "q" #'quit-window))
   (setq% compilation-scroll-output t 'compile))
 
 
@@ -97,7 +97,7 @@
   ;; define `recompile' and `quit-window' key binding for `grep'
   (when-var% grep-mode-map 'grep
     (define-key grep-mode-map (kbd% "g") #'compile*-recompile)
-    (define-key% grep-mode-map (kbd% "q") #'quit-window)))
+    (define-key% grep-mode-map "q" #'quit-window)))
 
 
 (defun on-make-mode-init! ()
@@ -105,12 +105,12 @@
   ;; spaced blackslash-region for makefile.
   (when-var% makefile-mode-map 'make-mode
     (when-fn% 'makefile-backslash-region 'make-mode
-      (define-key%
+      (define-key
        makefile-mode-map (kbd% "C-c C-\\")
-       #'(lambda (from to delete-flag)
-           (interactive "r\nP")
-           (fluid-let (indent-tabs-mode nil)
-             (makefile-backslash-region from to delete-flag))))))
+       (lambda (from to delete-flag)
+         (interactive "r\nP")
+         (fluid-let (indent-tabs-mode nil)
+           (makefile-backslash-region from to delete-flag))))))
   (when-platform% 'darwin
     (when-fn% 'makefile-gmake-mode 'make-mode
       (when% (and (assoc-string "[Mm]akefile\\'" auto-mode-alist)

@@ -13,12 +13,9 @@
   (make-thread* #'on-ido-init!))
 
 ;; default view file keybindings
-(define-key% (current-global-map) (kbd% "C-x 5 r")
-             #'view-file-other-frame)
-(define-key% (current-global-map) (kbd% "C-x 4 r")
-             #'view-file-other-window)
-(define-key% (current-global-map) (kbd% "C-x C-r")
-             #'view-file)
+(define-key% (current-global-map) "C-x 5 r" #'view-file-other-frame)
+(define-key% (current-global-map) "C-x 4 r" #'view-file-other-window)
+(define-key% (current-global-map) "C-x C-r" #'view-file)
 
 
 ;; end of on-ido-autoload.el

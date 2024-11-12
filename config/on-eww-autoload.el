@@ -15,9 +15,8 @@
   (make-thread* #'on-eww-init!))
 
 ;;; `eww-search-words' and `webjump' more leaner than `lookup-web'.
-(define-key% (current-global-map) (kbd% "M-s w") #'lookup-web)
+(define-key% (current-global-map) "M-s w" #'lookup-web)
 (when-fn% 'eww-list-bookmarks 'eww
-  (define-key% (current-global-map) (kbd% "M-s M-b")
-               #'eww-list-bookmarks))
+  (define-key% (current-global-map) "M-s M-b" #'eww-list-bookmarks))
 
 ;; end of on-eww-autoload.el

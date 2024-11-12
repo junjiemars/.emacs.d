@@ -142,15 +142,15 @@ Each device is given a number as follows:")
 (defun on-mixal-mode-init! ()
   "On \\=`mixal-mode\\=' initialization."
   (mixal*-fix-operation-codes-alist)
-  (define-key% mixal-mode-map (kbd% "C-h C-o") nil)
-  (define-key% mixal-mode-map
-               (kbd% "C-c C-h o") #'mixal-describe-operation-code)
-  (define-key% mixal-mode-map
-               (kbd% "C-c C-h r") #'mixal*-describe-register)
-  (define-key% mixal-mode-map
-               (kbd% "C-c C-h a") #'mixal*-describe-alphameric)
-  (define-key% mixal-mode-map
-               (kbd% "C-c C-h e") #'mixal*-describe-equipment))
+  (define-key% mixal-mode-map "C-h C-o" nil)
+  (define-key% mixal-mode-map "C-c C-h o"
+               #'mixal-describe-operation-code)
+  (define-key% mixal-mode-map "C-c C-h r"
+               #'mixal*-describe-register)
+  (define-key% mixal-mode-map "C-c C-h a"
+               #'mixal*-describe-alphameric)
+  (define-key% mixal-mode-map "C-c C-h e"
+               #'mixal*-describe-equipment))
 
 
 

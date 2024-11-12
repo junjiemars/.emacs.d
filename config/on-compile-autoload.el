@@ -23,6 +23,6 @@
   (make-thread* #'on-make-mode-init!))
 
 ;; `compile' global key
-(define-key% (current-global-map) (kbd% "C-x p c") #'compile)
+(define-key% (current-global-map) "C-x p c" #'compile)
 
 ;; end of on-compile-autoload.el
