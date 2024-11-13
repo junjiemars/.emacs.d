@@ -291,7 +291,7 @@ And copy the qualified buffer name to kill ring."
   ;; treat `read-only-mode' as `view-mode'
   (setq view-read-only t)
   ;; Changes all yes/no questions to y/n type
-  ;; (defalias 'yes-or-no-p 'y-or-n-p)
+  (defalias 'yes-or-no-p 'y-or-n-p)
 
   ;; shows all options when running apropos. For more info,
   ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html
