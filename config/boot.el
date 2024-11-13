@@ -257,16 +257,15 @@ Argument SPEC (VAR LIST [RESULT])."
 (defun compile-unit* (file &optional only-compile)
   "Make an compile unit for \\=`compile!\\='."
   (declare (pure t))
-  (inhibit-file-name-handler
-    (and (stringp file) (file-exists-p file)
-         (let ((u1 (v-comp-file! file)))
-           `[,(car u1) ,(cdr u1) ,only-compile nil]))))
+  (and (stringp file)
+       (inhibit-file-name-handler (file-exists-p file))
+       (let ((u1 (v-comp-file! file)))
+         `[,(car u1) ,(cdr u1) ,only-compile nil])))
 
 (defmacro compile-unit% (file &optional only-compile)
   "Make an compile unit at compile time for \\=`compile!\\='"
   (declare (pure t))
-  (let* ((-u1- (inhibit-file-name-handler
-                 (v-comp-file! (funcall `(lambda () ,file)))))
+  (let* ((-u1- (v-comp-file! (funcall `(lambda () ,file))))
          (-src1- (car -u1-))
          (-dst1- (cdr -u1-)))
     (and -u1- `[,-src1- ,-dst1- ,only-compile nil])))

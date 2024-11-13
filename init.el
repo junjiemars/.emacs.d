@@ -196,19 +196,18 @@ compile-time."
   "Return extension of compiled file."
   `(if-native-comp% ".eln" ".elc"))
 
-(defmacro v-comp-file! (src)
+(defun v-comp-file! (src)
   "Make a versioned cons copy of SRC."
-  (let ((s1 (gensym*)))
-    `(let ((,s1 ,src))
-       (let* ((d1 (v-path ,s1))
-              (d2 (concat (file-name-sans-extension* d1)
-                          ,(comp-file-extension%))))
-         (when (file-newer-than-file-p ,s1 d1)
-           (if (file-exists-p d2)
-               (delete-file d2)
-             (path! d1))
-           (copy-file ,s1 d1 t t))
-         (cons d1 d2)))))
+  (inhibit-file-name-handler
+    (let* ((d1 (v-path src))
+           (d2 (concat (file-name-sans-extension* d1)
+                       (comp-file-extension%))))
+      (when (file-newer-than-file-p src d1)
+        (if (file-exists-p d2)
+            (delete-file d2)
+          (path! d1))
+        (copy-file src d1 t t))
+      (cons d1 d2))))
 
 (defmacro time (id &rest form)
   "Run FORM and summarize resource usage."
