@@ -14,6 +14,7 @@
 
   (defun trans-color (color &optional fn frame)
     "Trans COLOR by FN in selected FRAME."
+    (declare (indent 1))
     (when (stringp color)
       (let ((cs (color-values color frame)))
         (when cs
@@ -28,12 +29,9 @@
 
   (defun toggle-face-background! (face &optional frame)
     "Toggle \\=`face-background\\=' to contrasted color."
-    (let ((c (trans-color
-              (face-background face frame)
-              (lambda (x) (- #xff x))
-              frame)))
-      (when c
-        (set-face-background face (format "#%x" c) frame)))))
+    (let ((c (trans-color (face-background face frame)
+               (lambda (x) (- #xff x)) frame)))
+      (and c (set-face-background face (format "#%x" c) frame)))))
 
 
 
