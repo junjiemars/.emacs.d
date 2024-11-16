@@ -34,11 +34,9 @@
 ;; end of `mill'
 
 ;;; `progs'
-
+(declare-function on-progs-init! (v-home%> "config/progs"))
 (autoload 'on-progs-init! (v-home%> "config/progs"))
-
-(with-eval-after-load 'prog-mode
-  (make-thread* #'on-progs-init!))
+(make-thread* #'on-progs-init!)
 
 ;; end of `progs'
 
