@@ -45,8 +45,8 @@
 (defmacro gensym* (&optional prefix)
   "Generate a new uninterned symbol, PREFIX default is \"n\"."
   `(make-symbol
-    (format "%s%d" (or ,prefix "n")
-            (prog1 *gensym-counter*
+    (concat (or ,prefix "n")
+            (prog1 (number-to-string *gensym-counter*)
               (setq *gensym-counter* (1+ *gensym-counter*))))))
 
 (defmacro inhibit-file-name-handler (&rest body)
@@ -95,42 +95,46 @@ non-nil, do BODY."
 ;; file macro
 ;;;
 
-(defun file-name-sans-extension* (file)
+(defmacro file-name-sans-extension* (file)
   "Return the FILE sans extension."
-  (let ((l (length file)))
-    (when (> l 0)
-      (let ((i (1- l)))
-        (substring-no-properties
-         file 0
-         (catch 'br
-           (while (>= i 0)
-             (let ((c (aref file i)))
-               (cond ((= ?/ c) (throw 'br l))
-                     ((= ?. c) (throw 'br i))
-                     (t (setq i (1- i))))))))))))
+  (let ((f1 (gensym*)))
+    `(let* ((,f1 ,file)
+            (l (length ,f1)))
+       (when (> l 0)
+         (let ((i (1- l)))
+           (substring-no-properties
+            ,f1 0
+            (catch 'br
+              (while (>= i 0)
+                (let ((c (aref ,f1 i)))
+                  (cond ((= ?/ c) (throw 'br l))
+                        ((= ?. c) (throw 'br i))
+                        (t (setq i (1- i)))))))))))))
 
-(defun path! (file)
+(defmacro mkdir! (file)
   "Make and return the path of posixed FILE."
   (declare (pure t))
-  (inhibit-file-name-handler
-    (if (file-exists-p file)
-        file
-      (prog1 file
-        (let ((dir (file-name-directory file)))
-          (unless (file-exists-p dir)
-            (let ((i (1- (length dir)))
-                  (ds nil))
-              (catch 'br
-                (while (> i 0)
-                  (when (= ?/ (aref dir i))
-                    (let ((s (substring-no-properties dir 0 (1+ i))))
-                      (if (file-exists-p s)
-                          (throw 'br t)
-                        (setq ds (cons s ds)))))
-                  (setq i (1- i))))
-              (while (car ds)
-                (make-directory-internal (car ds))
-                (setq ds (cdr ds))))))))))
+  (let ((f1 (gensym*)))
+    `(inhibit-file-name-handler
+       (let ((,f1 ,file))
+         (if (file-exists-p ,f1)
+             ,f1
+           (prog1 ,f1
+             (let ((dir (file-name-directory ,f1)))
+               (unless (file-exists-p dir)
+                 (let ((i (1- (length dir)))
+                       (ds nil))
+                   (catch 'br
+                     (while (> i 0)
+                       (when (= ?/ (aref dir i))
+                         (let ((s (substring-no-properties dir 0 (1+ i))))
+                           (if (file-exists-p s)
+                               (throw 'br t)
+                             (setq ds (cons s ds)))))
+                       (setq i (1- i))))
+                   (while (car ds)
+                     (make-directory-internal (car ds))
+                     (setq ds (cdr ds))))))))))))
 
 
 ;; end of file macro
@@ -167,7 +171,7 @@ compile-time."
 
 (defmacro v-home! (file)
   "Make versioned path of FILE under \\=`v-home\\=' at compile-time."
-  (path! (v-home file)))
+  (mkdir! (v-home file)))
 
 (defmacro v-home%> (file)
   "Return the \\=`v-home\\=' FILE with the extension of compiled file."
@@ -196,18 +200,20 @@ compile-time."
   "Return extension of compiled file."
   `(if-native-comp% ".eln" ".elc"))
 
-(defun v-comp-file! (src)
+(defmacro make-v-comp-file! (src)
   "Make a versioned cons copy of SRC."
-  (inhibit-file-name-handler
-    (let* ((d1 (v-path src))
-           (d2 (concat (file-name-sans-extension* d1)
-                       (comp-file-extension%))))
-      (when (file-newer-than-file-p src d1)
-        (if (file-exists-p d2)
-            (delete-file d2)
-          (path! d1))
-        (copy-file src d1 t t))
-      (cons d1 d2))))
+  (let ((s1 (gensym*)) (d1 (gensym*)) (d2 (gensym*)))
+    `(inhibit-file-name-handler
+       (let* ((,s1 ,src)
+              (,d1 (v-path ,s1))
+              (,d2 (concat (file-name-sans-extension* ,d1)
+                           (comp-file-extension%))))
+         (when (file-newer-than-file-p ,s1 ,d1)
+           (if (file-exists-p ,d2)
+               (delete-file ,d2)
+             (mkdir! ,d1))
+           (copy-file ,s1 ,d1 t t))
+         (cons ,d1 ,d2)))))
 
 (defmacro time (id &rest form)
   "Run FORM and summarize resource usage."
@@ -355,8 +361,10 @@ If ONLY-COMPILE is t, does not load DST."
 (unless% (boundp '*nore-emacs-no-boot*)
   (inhibit-gc
     ;; (inhibit-file-name-handler)
-    (let ((u (v-comp-file! (emacs-home* "config/boot.el"))))
-      (compile-and-load-file* (car u) (cdr u)))))
+    (let ((uc (make-v-comp-file! (emacs-home* "config/vcomp.el")))
+          (ub (make-v-comp-file! (emacs-home* "config/boot.el"))))
+      (compile-and-load-file* (car uc) (cdr uc))
+      (compile-and-load-file* (car ub) (cdr ub)))))
 
 ;; end of Boot
 
