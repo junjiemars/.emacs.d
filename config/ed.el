@@ -31,11 +31,11 @@
                  (newline arg 'interactive)
       (newline arg))))
 
-(defmacro shell-format-buffer (mode alternate src shell*)
+(defmacro shell-format-buffer (modes alternate src shell*)
   "Format the current buffer via SHELL\\=*."
   (declare (indent 1))
   `(with-current-buffer (current-buffer)
-     (when (eq major-mode ,mode)
+     (when (loop* for x in ,modes when (eq x major-mode) return t)
        ,alternate
        (let ((p (point))
              (bs (if-region-active

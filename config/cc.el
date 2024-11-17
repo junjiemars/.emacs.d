@@ -437,7 +437,7 @@ N specify the number of spaces when align."
 (defun cc*-format-buffer ()
   "Format the current buffer via clang-format."
   (interactive)
-  (shell-format-buffer 'c-mode
+  (shell-format-buffer `(c-mode c-ts-mode)
     (when-feature-eglot%
       (when (and (fboundp 'eglot-managed-p) (eglot-managed-p))
         (catch 'br
@@ -508,45 +508,72 @@ N specify the number of spaces when align."
 ;; end of `man'
 
 ;;;
+;; keys
+;;;
+
+(defmacro cc*-define-keys (keymap)
+  `(progn
+     ;; dump predefined macros
+     (define-key ,keymap (kbd% "C-c #") #'cc*-dump-predefined-macros)
+     ;; raw newline
+     (define-key ,keymap (kbd% "RET") #'newline*)
+     ;; align style
+     (define-key ,keymap (kbd% "C-c |") #'cc*-style-align-entire)
+     ;; format buffer
+     (define-key ,keymap (kbd% "C-c M-c f") #'cc*-format-buffer)
+     (when-fn-ff-find-other-file%
+      ;; find include file
+      (define-key ,keymap (kbd% "C-c f i") #'cc*-find-include-file))
+     (when-fn-c-macro-expand%
+       (define-key ,keymap (kbd% "C-c C-e") #'c-macro-expand))))
+
+;; end of keys
+
+;;;
 ;; `cc-mode'
 ;;;
 
 (defun on-cc-mode-init! ()
   "On \\=`cc-mode\\=' initialization."
   ;; add styles
-  (c-add-style (car cc*-style-nginx) (cdr cc*-style-nginx))
-  ;; keymap:
-  ;; find include file
-  (when-fn-ff-find-other-file%
-   (when-var% c-mode-map 'cc-mode
-     (define-key% c-mode-map "C-c f i" #'cc*-find-include-file))
-   ;; for c++, add include via `cc*-extra-include'
-   (when-var% c++mode-map 'cc-mode
-     (define-key% c++-mode-map "C-c f i" #'cc*-find-include-file)))
+  ;; (c-add-style (car cc*-style-nginx) (cdr cc*-style-nginx))
+  (when-fn-c-macro-expand%
+    ;; [C-c C-e] `c-macro-expand'
+    (setq% c-macro-prompt-flag t 'cmacexp)
+    (ad-enable-advice #'c-macro-expand 'around "c-macro-expand-around")
+    (ad-activate #'c-macro-expand t))
   ;; indent line or region
   (when-fn% 'c-indent-line-or-region 'cc-cmds
     (define-key% c-mode-map "TAB" #'c-indent-line-or-region))
-  ;; dump predefined macros
-  (define-key% c-mode-map "C-c #" #'cc*-dump-predefined-macros)
-  ;; raw newline
-  (define-key% c-mode-map "RET" #'newline*)
-  ;; align style
-  (define-key% c-mode-map "C-c |" #'cc*-style-align-entire)
   ;; `subword-mode'
   (define-key% c-mode-map "C-c C-w"
                (if-fn% 'subword-mode 'subword
                        #'subword-mode
                  #'c-subword-mode))
-  ;; format buffer
-  (define-key c-mode-map (kbd% "C-c M-c f") #'cc*-format-buffer)
-  (when-fn-c-macro-expand%
-    ;; [C-c C-e] `c-macro-expand' in `cc-mode'
-    (setq% c-macro-prompt-flag t 'cmacexp)
-    (ad-enable-advice #'c-macro-expand 'around "c-macro-expand-around")
-    (ad-activate #'c-macro-expand t)))
+  (when (boundp 'c-mode-map)
+    (cc*-define-keys c-mode-map))
+  (when (boundp 'c++-mode-map)
+    (cc*-define-keys c++-mode-map)))
 
 ;; end of `cc-mode'
 
+;;;
+;; `c-ts-mode'
+;;;
+
+(when-feature-treesit%
+  (defun on-c-ts-mode-init! ()
+    "On \\=`c-ts-mode\\=' initialization."
+    (when-fn-c-macro-expand%
+      (setq% c-macro-prompt-flag t 'cmacexp)
+      (ad-enable-advice #'c-macro-expand 'around "c-macro-expand-around")
+      (ad-activate #'c-macro-expand t))
+    (when (boundp 'c-ts-mode-map)
+      (cc*-define-keys c-ts-mode-map))
+    (when (boundp 'c++-ts-mode-map)
+      (cc*-define-keys c++-ts-mode-map))))
+
+;; end of `c-ts-mode'
 
 (provide 'cc)
 

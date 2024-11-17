@@ -79,6 +79,22 @@
 ;; `transient'
 (setq% transient-save-history nil 'transient)
 
+
+;;; `treesit': builtin since Emacs-29+
+(defmacro-if-feature% treesit)
+(defmacro when-feature-treesit% (&rest body)
+  (declare (indent 0))
+  (if-feature-treesit%
+      (if-fn% 'treesit-available-p nil
+              (if% (treesit-available-p)
+		              `(progn% ,@body)
+                `(comment ,@body))
+        `(comment ,@body))
+    `(comment ,@body)))
+
+(when-feature-treesit%
+  (setq treesit-extra-load-path `(,(v-home% ".treesit/"))))
+
 ;; `url'
 (setq% url-configuration-directory (v-home! ".url/") 'url)
 

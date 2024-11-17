@@ -187,7 +187,7 @@ determine whether inside a virtual env. Another way is using
 (defun python*-format-buffer ()
   "Format the current buffer."
   (interactive)
-  (shell-format-buffer 'python-mode
+  (shell-format-buffer `(python-mode)
     (when-feature-eglot%
       (when (and (fboundp 'eglot-managed-p) (eglot-managed-p))
         (catch 'br

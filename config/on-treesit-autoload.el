@@ -7,6 +7,7 @@
 ;;;;
 
 (autoload 'on-treesit-init! (v-home%> "config/treesits"))
+(autoload 'toggle-treesit! (v-home%> "config/treesits") nil t)
 
 ;;; `treesit' after load
 (with-eval-after-load 'treesit

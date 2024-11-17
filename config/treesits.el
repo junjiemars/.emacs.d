@@ -6,6 +6,8 @@
 ;; treesits.el
 ;;;;
 
+(require 'treesit)
+
 (defalias 'treesit*-recipe
   (lexical-let%
       ((b (v-home% ".exec/treesit-settings.el"))
@@ -83,10 +85,14 @@
 
 (defun on-treesit-init! ()
   "On \\=`treesit\\=' initialization."
-  (setq% treesit-extra-load-path `(,(v-home% ".treesit/")))
+  ;; activate grammar
   (ad-enable-advice #'treesit--install-language-grammar-1 'before
                     "treesit--install-language-grammar-1-before")
-  (ad-activate #'treesit--install-language-grammar-1 t))
+  (ad-activate #'treesit--install-language-grammar-1 t)
+  ;;; `on-c-ts-mode-init!'
+  (declare-function on-c-ts-mode-init! (v-home%> "config/cc"))
+  (autoload 'on-c-ts-mode-init! (v-home%> "config/cc"))
+  (with-eval-after-load 'c-ts-mode (on-c-ts-mode-init!)))
 
 
 
