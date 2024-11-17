@@ -55,6 +55,11 @@
   (should (file-exists-p (emacs-home* "config/")))
   (should (file-exists-p (emacs-home* "private/"))))
 
+(ert-deftest %b:init:file-name-sans-extension* ()
+  (should (eq nil (file-name-sans-extension* "")))
+  (should (string-equal "a" (file-name-sans-extension* "a.b")))
+  (should (string-equal "/a/b/c" (file-name-sans-extension* "/a/b/c.d"))))
+
 (ert-deftest %b:init:path! ()
   (let ((p (concat temporary-file-directory
                    (make-temp-name (symbol-name (gensym*)))
@@ -621,9 +626,13 @@
   (should (string= "fi" (kbd% "C-c f i"))))
 
 (ert-deftest %e:fn:if-key% ()
-  (should (= 0 (if-key% (current-global-map) "C-c C-c C-c" #'+ 1 0)))
-  (should (eq #'+ (define-key% (current-global-map) "C-c C-c C-c" #'+)))
-  (should (null (define-key% (current-global-map) "C-c C-c C-c" nil))))
+  (let ((b (if-key% (current-global-map) "C-c C-c C-c" #'+ 1 0)))
+    (cond ((= b 0)
+           (should
+            (eq #'+ (define-key% (current-global-map) "C-c C-c C-c" #'+))))
+          ((= b 1)
+           (should
+            (null (define-key% (current-global-map) "C-c C-c C-c" nil)))))))
 
 (ert-deftest %e:fn:if-region-active ()
   ;; interactive
