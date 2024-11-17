@@ -361,7 +361,7 @@ If ONLY-COMPILE is t, does not load DST."
 (unless% (boundp '*nore-emacs-no-boot*)
   (inhibit-gc
     ;; (inhibit-file-name-handler)
-    (let ((uc (make-v-comp-file! (emacs-home* "config/vcomp.el")))
+    (let ((uc (make-v-comp-file! (emacs-home* "config/fn.el")))
           (ub (make-v-comp-file! (emacs-home* "config/boot.el"))))
       (compile-and-load-file* (car uc) (cdr uc))
       (compile-and-load-file* (car ub) (cdr ub)))))

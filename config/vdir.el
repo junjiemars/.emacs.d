@@ -22,8 +22,15 @@
 ;; `calc'
 (setq% calc-settings-file (v-home! ".calc/calc.el") 'calc)
 
-;; `eww' bookmarks
-(setq% eww-bookmarks-directory (v-home! ".bookmarks/") 'eww)
+;;; `eww', requires Emacs-24.4+
+(defmacro-if-feature% eww)
+(defmacro when-feature-eww% (&rest body)
+  (declare (indent 0))
+  (if-feature-eww%
+      `(progn% ,@body)
+    `(comment ,@body)))
+(when-feature-eww%
+  (setq eww-bookmarks-directory (v-home! ".bookmarks/")))
 
 ;; `bookmark': file in which to save bookmarks
 (setq% bookmark-default-file (v-home! ".bookmarks/emacs.bmk") 'bookmark)
@@ -50,8 +57,16 @@
 (when-package%
   (defconst package*-user-dir (v-home! ".elpa/")))
 
-;; `project'
-(setq% project-list-file (v-home! ".project/list") 'project)
+
+;;; `project' builtin since Emacs-26+
+(defmacro-if-feature% project)
+(defmacro when-feature-project% (&rest body)
+  (declare (indent 0))
+  (if-feature-project%
+      `(progn% ,@body)
+    `(comment ,@body)))
+(when-feature-project%
+  (setq project-list-file (v-home! ".project/list")))
 
 ;; Savehist: save minibuffer history
 (setq% savehist-file (v-home! ".minibuffer/history") 'savehist)
@@ -76,9 +91,16 @@
        (if-version% > 24 'tramp
              'tramp-cache))
 
-;; `transient'
-(setq% transient-save-history nil 'transient)
-
+;;; `transient'
+(defmacro-if-feature% transient)
+(defmacro when-feature-transient% (&rest body)
+  "When \\=`transient\\=', do BODY."
+  (declare (indent 0))
+  (if-feature-transient%
+      `(progn% ,@body)
+    `(comment ,@body)))
+(when-feature-transient%
+  (setq transient-save-history nil))
 
 ;;; `treesit': builtin since Emacs-29+
 (defmacro-if-feature% treesit)
@@ -91,7 +113,6 @@
                 `(comment ,@body))
         `(comment ,@body))
     `(comment ,@body)))
-
 (when-feature-treesit%
   (setq treesit-extra-load-path `(,(v-home% ".treesit/"))))
 

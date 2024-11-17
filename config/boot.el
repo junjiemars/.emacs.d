@@ -174,8 +174,7 @@ No matter the declaration order, the executing order is:
 (define-hash-table-test 'nore-emacs-string-hash= #'string= #'sxhash)
 
 ;;; <1> prologue
-(compile! (compile-unit% (emacs-home* "config/fn.el"))
-          (compile-unit% (emacs-home* "config/vdir.el"))
+(compile! (compile-unit% (emacs-home* "config/vdir.el"))
           (compile-unit* (*self-paths* :get :prologue)))
 
 ;;; <2> env
