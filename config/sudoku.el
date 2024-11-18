@@ -73,13 +73,12 @@
   "The sudoku\\='s colors.")
 
 
-(defalias '*sudoku-idiom*
-  (lexical-let% ((s '("a busted clock still be right twice a day"
-                      "even a blind pig can find an acorn once in a while"
-                      "every dog has its day")))
-    (lambda ()
-      (nth (random (length s)) s)))
-  "The sudoku\\='s idiom.")
+(defun *sudoku-idiom* ()
+  "The sudoku\\='s idiom."
+  (let ((s '("a busted clock still be right twice a day"
+             "even a blind pig can find an acorn once in a while"
+             "every dog has its day")))
+    (nth (random (length s)) s)))
 
 
 (defalias '*sudoku-puzzle-d*
@@ -137,19 +136,19 @@
   "Return MATRIX\\='s row vector on INDEX"
   (let* ((d (*sudoku-puzzle-d* :d))
          (m matrix)
-         (r (* (sudoku-puzzle-row index) d)))
-    (apply #'vector (mapcar (lambda (a)
-                              (aref m (+ r a)))
-                            (range 0 (1- d) 1)))))
+         (r (* (sudoku-puzzle-row index) d))
+         (v (make-vector d 0)))
+    (dolist* (x (range 0 (1- d) 1) v)
+      (aset v x (aref m (+ r x))))))
 
 (defun sudoku-puzzle-vec-col (matrix index)
   "Return MATRIX's col vector on INDEX."
   (let* ((d (*sudoku-puzzle-d* :d))
          (m matrix)
-         (c (% (sudoku-puzzle-col index) d)))
-    (apply #'vector (mapcar (lambda (x)
-                              (aref m (+ c (* x d))))
-                            (range 0 (1- d) 1)))))
+         (c (% (sudoku-puzzle-col index) d))
+         (v (make-vector d 0)))
+    (dolist (x (range 0 (1- d) 1) v)
+      (aset v x (aref m (+ c (* x d)))))))
 
 
 (defun sudoku-puzzle-vec-sqr (matrix index)
@@ -159,11 +158,10 @@
          (m matrix)
          (s1 (sudoku-puzzle-sqr index))
          (r (* (car s1) s d))
-         (c (* (cdr s1) s)))
-    (apply #'vector (mapcar (lambda (x)
-                              (aref m (+ r (* (/ x s) d)
-                                         c (% x s))))
-                            (range 0 (1- d) 1)))))
+         (c (* (cdr s1) s))
+         (v (make-vector d 0)))
+    (dolist* (x (range 0 (1- d) 1) v)
+      (aset v x (aref m (+ r (* (/ x s) d) c (% x s)))))))
 
 
 
@@ -345,6 +343,98 @@
         (setq j 0 i (+ i sqr))))
     :solve))
 
+(defun sudoku-board-in (o d)
+  (with-current-buffer (*sudoku*)
+    (let ((row (line-number-at-pos))
+          (col (current-column)))
+      (and (<= (car o) row) (<= row (car d))
+           (<= (cdr o) col) (<= col (cdr d))))))
+
+(defun sudoku-board-nex! (o d p i j)
+  (with-current-buffer (*sudoku*)
+    (let* ((i1 (cond ((> i (car d)) (car d))
+                     ((< i (car o)) (car o))
+                     (t i)))
+           (j1 (cond ((> j (cdr d)) (cdr d))
+                     ((< j (cdr o)) (cdr o))
+                     (t j)))
+           (v (cond ((> (- (car p) i1) 0) -1)
+                    ((< (- (car p) i1) 0) 1)
+                    (t 0)))
+           (h (cond ((> (- (cdr p) j1) 0) -1)
+                    ((< (- (cdr p) j1) 0) 1)
+                    (t 0)))
+           (v1 0)
+           (h1 0))
+      (when (/= v 0)
+        (setq v1 v)
+        (let ((col (current-column)))
+          (forward-line v)
+          (while (< (current-column) col)
+            (forward-char 1)))
+        (while (not (get-text-property (point) :puzzle))
+          (let ((col (current-column)))
+            (forward-line v)
+            (while (< (current-column) col)
+              (forward-char 1)))
+          (setq v1 (+ v1 v))))
+      (when (/= h 0)
+        (setq h1 h)
+        (forward-char h)
+        (while (not (get-text-property (point) :puzzle))
+          (forward-char h)
+          (setq h1 (+ h1 h))))
+      (cons (+ (car p) v1) (+ (cdr p) h1)))))
+
+(defun sudoku-board-mov! (o d p i j)
+  (with-current-buffer (*sudoku*)
+    (let* ((v (- (car p) (cond ((> i (car d)) (car d))
+                               ((< i (car o)) (car o))
+                               (t i))))
+           (h (- (cdr p) (cond ((> j (cdr d)) (cdr d))
+                               ((< j (cdr o)) (cdr o))
+                               (t j)))))
+      (when (/= v 0)
+        (let ((col (current-column)))
+          (forward-line (- v))
+          (while (< (current-column) col)
+            (forward-char 1))))
+      (when (/= h 0)
+        (forward-char (- h)))
+      (cons (+ (- v) (car p)) (+ (- h) (cdr p))))))
+
+(defun sudoku-board-ori! (o)
+  (with-current-buffer (*sudoku*)
+    (goto-char (point-min))
+    (forward-line (1- (car o)))
+    (forward-char (cdr o))
+    o))
+
+(defun sudoku-board-dia! (d)
+  (with-current-buffer (*sudoku*)
+    (goto-char (point-min))
+    (forward-line (1- (car d)))
+    (forward-char (cdr d))
+    d))
+
+(defun sudoku-board-prop ()
+  (with-current-buffer (*sudoku*)
+    (text-properties-at (point))))
+
+(defun sudoku-board-props ()
+  (with-current-buffer (*sudoku*)
+    (let ((ps)
+          (max (1- (point-max)))
+          (n 0))
+      (save-excursion
+        (goto-char (point-min))
+        (while (< n max)
+          (let ((ts (text-properties-at (point))))
+            (when (and ts (plist-get ts :puzzle))
+              (setq ps (append ps (list ts)))))
+          (forward-char 1)
+          (setq n (1+ n))))
+      ps)))
 
 (defalias '*sudoku-board*
   (lexical-let% ((o) (d) (p))
@@ -352,100 +442,19 @@
       (cond ((eq :cor! k) (setq o i d j p i))
             ((eq :pos k) p)
 
-            ((eq :in k)
-             (with-current-buffer (*sudoku*)
-               (let ((row (line-number-at-pos))
-                     (col (current-column)))
-                 (and (<= (car o) row) (<= row (car d))
-                      (<= (cdr o) col) (<= col (cdr d))))))
+            ((eq :in k) (sudoku-board-in o d))
 
-            ((eq :nex! k)
-             (with-current-buffer (*sudoku*)
-               (let* ((i1 (cond ((> i (car d)) (car d))
-                                ((< i (car o)) (car o))
-                                (t i)))
-                      (j1 (cond ((> j (cdr d)) (cdr d))
-                                ((< j (cdr o)) (cdr o))
-                                (t j)))
-                      (v (cond ((> (- (car p) i1) 0) -1)
-                               ((< (- (car p) i1) 0) 1)
-                               (t 0)))
-                      (h (cond ((> (- (cdr p) j1) 0) -1)
-                               ((< (- (cdr p) j1) 0) 1)
-                               (t 0)))
-                      (v1 0)
-                      (h1 0))
-                 (when (/= v 0)
-                   (setq v1 v)
-                   (let ((col (current-column)))
-                     (forward-line v)
-                     (while (< (current-column) col)
-                       (forward-char 1)))
-                   (while (not (get-text-property (point) :puzzle))
-                     (let ((col (current-column)))
-                       (forward-line v)
-                       (while (< (current-column) col)
-                         (forward-char 1)))
-                     (setq v1 (+ v1 v))))
-                 (when (/= h 0)
-                   (setq h1 h)
-                   (forward-char h)
-                   (while (not (get-text-property (point) :puzzle))
-                     (forward-char h)
-                     (setq h1 (+ h1 h))))
-                 (setq p (cons (+ (car p) v1)
-                               (+ (cdr p) h1))))))
+            ((eq :nex! k) (setq p (sudoku-board-nex! o d p i j)))
 
-            ((eq :mov! k)
-             (with-current-buffer (*sudoku*)
-               (let* ((v (- (car p) (cond ((> i (car d)) (car d))
-                                          ((< i (car o)) (car o))
-                                          (t i))))
-                      (h (- (cdr p) (cond ((> j (cdr d)) (cdr d))
-                                          ((< j (cdr o)) (cdr o))
-                                          (t j)))))
-                 (when (/= v 0)
-                   (let ((col (current-column)))
-                     (forward-line (- v))
-                     (while (< (current-column) col)
-                       (forward-char 1))))
-                 (when (/= h 0)
-                   (forward-char (- h)))
-                 (setq p (cons (+ (- v) (car p))
-                               (+ (- h) (cdr p)))))))
+            ((eq :mov! k) (setq p (sudoku-board-mov! o d p i j)))
 
-            ((eq :ori! k)
-             (with-current-buffer (*sudoku*)
-               (goto-char (point-min))
-               (forward-line (1- (car o)))
-               (forward-char (cdr o))
-               (setq p o)))
+            ((eq :ori! k) (setq p (sudoku-board-ori! o)))
 
-            ((eq :dia! k)
-             (with-current-buffer (*sudoku*)
-               (goto-char (point-min))
-               (forward-line (1- (car d)))
-               (forward-char (cdr d))
-               (setq p d)))
+            ((eq :dia! k) (setq p (sudoku-board-dia! d)))
 
-            ((eq :prop k)
-             (with-current-buffer (*sudoku*)
-               (text-properties-at (point))))
+            ((eq :prop k) (sudoku-board-prop))
 
-            ((eq :props k)
-             (with-current-buffer (*sudoku*)
-               (let ((ps)
-                     (max (1- (point-max)))
-                     (n 0))
-                 (save-excursion
-                   (goto-char (point-min))
-                   (while (< n max)
-                     (let ((ts (text-properties-at (point))))
-                       (when (and ts (plist-get ts :puzzle))
-                         (setq ps (append ps (list ts)))))
-                     (forward-char 1)
-                     (setq n (1+ n))))
-                 ps)))
+            ((eq :props k) (sudoku-board-props))
 
             (t (list :ori o :dia d :pos p)))))
   "The \\=`sudoku\\=' board.")
@@ -499,17 +508,15 @@
             (when (= 0 (% row sqr))
               (insert s))
             (insert
-             (apply #'format v
-                    (mapcar
-                     #'(lambda (x)
-                         (prog1
-                             (apply #'propertize
+             (apply
+              #'format v
+              (loop* for x in (take d board)
+                     collect (apply #'propertize
                                     (let ((n (cdr (plist-get x :puzzle))))
                                       (cond ((= n 0) u)
                                             (t (number-to-string n))))
                                     x)
-                           (setq idx (1+ idx))))
-                     (take d board))))
+                     do (setq idx (1+ idx)))))
             (setq board (drop d board)
                   row (1+ row)))
           (insert s))))
@@ -639,13 +646,12 @@
   (sudoku-board-input 0 (cons 'face nil)))
 
 
-(defmacro sudoku-board-input-n (n)
+(defun sudoku-board-input-n (n)
   "Input N at point."
-  (let ((d (gensym*)))
-    `(let ((,d (*sudoku-puzzle-d* :d)))
-       (if (>= ,d ,n)
-           (sudoku-board-input ,n (cons 'face 'underline))
-         (message "%d is invalid on %sx%s" ,n ,d ,d)))))
+  (let ((d (*sudoku-puzzle-d* :d)))
+    (if (>= d n)
+        (sudoku-board-input n (cons 'face 'underline))
+      (message "%d is invalid on %sx%s" n d d))))
 
 
 (defun sudoku-board-input-1 ()
@@ -752,8 +758,7 @@
                         (*sudoku-puzzle-make* :rld)))))
   (sudoku-mode))
 
-
-(defvar sudoku-mode-map
+(defun sudoku-mode-make-keymap ()
   (let ((m (make-sparse-keymap)))
 
     (define-key m "q" #'sudoku-quit)
@@ -809,19 +814,20 @@
 
     ;; (define-key m "\C-h" #'sudoku-board-disabled-key)
 
-    m)
+    m))
+
+(defvar *sudoku-mode-map* nil
   "The keymap of \\=`sudoku-mode\\='.")
-
-
 
 (defun sudoku-mode ()
   "Switch to sudoku\\='s mode'.\n
 The following commands are available:
-\\{sudoku-mode-map}"
+\\{*sudoku-mode-map*}"
   (interactive)
   (with-current-buffer (*sudoku*)
     (kill-all-local-variables)
-    (use-local-map sudoku-mode-map)
+    (use-local-map
+     (setq *sudoku-mode-map* (sudoku-mode-make-keymap)))
     (setq major-mode 'sudoku-mode
           mode-name  "Sudoku")
     (setq buffer-read-only t)

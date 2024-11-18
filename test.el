@@ -425,7 +425,11 @@
                               with d1 = nil
                               do (setq d1 (concat d "/" "1"))
                               when (string= d1 "b/1")
-                              return d))))
+                              return d)))
+  (should (equal [0 1 4 9] (let ((v (make-vector 4 0)))
+                             (loop* for i from 1 upto 3
+                                    do (aset v i (* i i))
+                                    finally return v)))))
 
 (ert-deftest %d:fn:fluid-let ()
   (let ((x 123))
