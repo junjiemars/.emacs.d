@@ -39,6 +39,10 @@
             (buffer-substring (point-min) (point-max))
           (buffer-substring-no-properties (point-min) (point-max)))))))
 
+(defmacro kill-new* (string &optional replace)
+  `(unless-noninteractive%
+     (kill-new ,string ,replace)))
+
 ;; end of vars & fns
 
 
@@ -55,7 +59,7 @@
       (if buffered
           (trans-with-output-buffer +encode-output-buffer-name+
             (insert d))
-        (kill-new d t)
+        (kill-new* d t)
         (message "%s" d)))))
 
 (defun decode-url (&optional buffered)
@@ -67,7 +71,7 @@
       (if buffered
           (trans-with-output-buffer +decode-output-buffer-name+
             (insert d))
-        (kill-new d t)
+        (kill-new* d t)
         (message "%s" d)))))
 
 ;; end of URL
@@ -89,7 +93,7 @@
       (if buffered
           (trans-with-output-buffer +encode-output-buffer-name+
             (insert d))
-        (kill-new d t)
+        (kill-new* d t)
         (message "%s" d)))))
 
 (defun decode-base64 (&optional buffered)
@@ -101,7 +105,7 @@
       (if buffered
           (trans-with-output-buffer +decode-output-buffer-name+
             (insert d))
-        (kill-new d t)
+        (kill-new* d t)
         (message "%s" d)))))
 
 ;; end of base64
@@ -126,7 +130,7 @@
         (if buffered
             (trans-with-output-buffer +encode-output-buffer-name+
               (insert d1))
-          (kill-new d1 t)
+          (kill-new* d1 t)
           (message "%d (#o%o, #x%x)" d d d))))))
 
 (defun decode-ipv4 (&optional buffered)
@@ -148,7 +152,7 @@
       (if buffered
           (trans-with-output-buffer +decode-output-buffer-name+
             (insert d))
-        (kill-new d t)
+        (kill-new* d t)
         (message "%s" d)))))
 
 ;; end of Trans IPv4
@@ -189,7 +193,7 @@
         (if buffered
             (trans-with-output-buffer +decode-output-buffer-name+
               (insert d1))
-          (kill-new d1 t)
+          (kill-new* d1 t)
           (message "%d (#o%o, #x%x)" d d d))))))
 
 
@@ -247,7 +251,7 @@
       (if buffered
           (trans-with-output-buffer +decode-output-buffer-name+
             (insert d1))
-        (kill-new d1 t)
+        (kill-new* d1 t)
         (message "%d (#o%o, #x%x)" d d d)))))
 
 
