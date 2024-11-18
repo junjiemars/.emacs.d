@@ -851,11 +851,35 @@
 ;; conditional: `trans'
 ;;;
 
+
+(ert-deftest %s:trans:encode-url ()
+  (when-fn% 'encode-url nil
+    (let ((ss "https://a/b/ ?c=中abc"))
+      (let* ((s1 (with-temp-buffer (insert ss) (encode-url)))
+             (d1 (with-temp-buffer (insert s1) (decode-url))))
+        (should (string= ss d1))))))
+
+(ert-deftest %s:trans:encode-base64 ()
+  (when-fn% 'encode-base64 nil
+    (let ((ss "https://a/b/ ?c=中abc"))
+      (let* ((s1 (with-temp-buffer (insert ss) (encode-base64)))
+             (d1 (with-temp-buffer (insert s1) (decode-base64))))
+        (should (string= ss d1))))))
+
+(ert-deftest %s:trans:encode-ipv4 ()
+  (when-fn% 'encode-ipv4 nil
+    (let ((ss "192.168.2.1"))
+      (let* ((s1 (with-temp-buffer (insert ss) (encode-ipv4)))
+             (d1 (with-temp-buffer (insert (number-to-string s1))
+                                   (decode-ipv4))))
+        (should (string= ss d1))))))
+
 (ert-deftest %s:trans:roman->arabic ()
   (when-fn% 'roman->arabic nil
     (should (= 1990 (roman->arabic "MCMXC")))
     (should (= 2008 (roman->arabic "MMVIII")))
-    (should (= 1666 (roman->arabic "MDCLXVI")))))
+    (should (= 1666 (roman->arabic "MDCLXIVII")))
+    (should (= 2025 (roman->arabic "MMXXV")))))
 
 (ert-deftest %s:trans:chinese->arabic ()
   (when-fn% 'chinese->arabic nil

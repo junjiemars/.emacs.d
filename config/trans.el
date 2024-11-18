@@ -21,160 +21,145 @@
   '("small" "big")
   "Endian choosing history list.")
 
+(defmacro trans-with-output-buffer (buffer &rest body)
+  (declare (indent 1))
+  `(with-current-buffer (switch-to-buffer-other-window ,buffer)
+     (erase-buffer)
+     ,@body))
 
-(eval-when-compile
+(defun region-extract-str (&optional properties)
+  "Extract string from region or current buffer with or without PROPERTIES."
+  (if-region-active
+      (if properties
+          (buffer-substring (region-beginning) (region-end))
+        (buffer-substring-no-properties (region-beginning) (region-end)))
+    (with-current-buffer (current-buffer)
+      (save-excursion
+        (if properties
+            (buffer-substring (point-min) (point-max))
+          (buffer-substring-no-properties (point-min) (point-max)))))))
 
-  (defmacro _enc_with_output_buffer_ (buffer &rest body)
-    (declare (indent 0))
-    `(with-current-buffer (switch-to-buffer-other-window ,buffer)
-       (delete-region (point-min) (point-max))
-       ,@body))
-
-  (defmacro _endian_ ()
-    `(if (= 108 (byteorder))
-         "small"
-       "endian")))
-
-
-(defmacro region-extract-str (&optional buffer properties)
-  "Extract string from region or BUFFER with or without PROPERTIES.\n
-If no region actived, then extract from buffer when BUFFER is t."
-  `(if-region-active
-       (if ,properties
-         (buffer-substring (region-beginning) (region-end))
-           (buffer-substring-no-properties (region-beginning) (region-end)))
-     (when ,buffer
-       (with-current-buffer (current-buffer)
-         (save-excursion
-           (if ,properties
-               (buffer-substring (point-min) (point-max))
-             (buffer-substring-no-properties (point-min) (point-max))))))))
+;; end of vars & fns
 
 
+;;;
 ;; Trans URL
+;;;
 
-(defun encode-url ()
+(defun encode-url (&optional buffered)
   "Encode region via URL encoded."
-  (interactive)
-  (let ((s (string-trim>< (region-extract-str t))))
-    (_enc_with_output_buffer_ +encode-output-buffer-name+
-                              (insert (url-hexify-string s)))))
+  (interactive "P")
+  (let* ((s (region-extract-str))
+         (d (url-hexify-string s)))
+    (prog1 d
+      (if buffered
+          (trans-with-output-buffer +encode-output-buffer-name+
+            (insert d))
+        (kill-new d t)
+        (message "%s" d)))))
 
-(defun decode-url ()
+(defun decode-url (&optional buffered)
   "Decode region via URL decoded."
-  (interactive)
-  (let ((s (string-trim>< (region-extract-str t))))
-    (_enc_with_output_buffer_ +decode-output-buffer-name+
-                              (insert (decode-coding-string
-                                       (url-unhex-string s)
-                                       'utf-8)))))
-
+  (interactive "P")
+  (let* ((s (region-extract-str))
+         (d (decode-coding-string (url-unhex-string s) 'utf-8)))
+    (prog1 d
+      (if buffered
+          (trans-with-output-buffer +decode-output-buffer-name+
+            (insert d))
+        (kill-new d t)
+        (message "%s" d)))))
 
 ;; end of URL
 
-
+;;;
 ;; Encode/Decode base64
+;;;
 
-(defun encode-base64 ()
+(defun encode-base64 (&optional buffered)
   "Encode region via base64 encoded."
-  (interactive)
-  (let ((s (string-trim>< (region-extract-str t))))
-    (_enc_with_output_buffer_ +encode-output-buffer-name+
-                              (insert (base64-encode-string
-                                       (if (multibyte-string-p s)
-                                           (encode-coding-string s 'utf-8)
-                                         s)
-                                       t)))))
+  (interactive "P")
+  (let* ((s (region-extract-str))
+         (d (base64-encode-string
+             (if (multibyte-string-p s)
+                 (encode-coding-string s 'utf-8)
+               s)
+             t)))
+    (prog1 d
+      (if buffered
+          (trans-with-output-buffer +encode-output-buffer-name+
+            (insert d))
+        (kill-new d t)
+        (message "%s" d)))))
 
-(defun decode-base64 ()
+(defun decode-base64 (&optional buffered)
   "Decode region base64 decoded."
-  (interactive)
-  (let ((s (string-trim>< (region-extract-str t))))
-    (_enc_with_output_buffer_ +decode-output-buffer-name+
-                              (insert (decode-coding-string
-                                       (base64-decode-string s) 'utf-8)))))
-
+  (interactive "P")
+  (let* ((s (region-extract-str))
+         (d (decode-coding-string (base64-decode-string s) 'utf-8)))
+    (prog1 d
+      (if buffered
+          (trans-with-output-buffer +decode-output-buffer-name+
+            (insert d))
+        (kill-new d t)
+        (message "%s" d)))))
 
 ;; end of base64
 
+;;;
+;; Trans IPv4
+;;;
 
-;; Trans IP address
+(defun encode-ipv4 (&optional buffered)
+  "Encode IPv4 address to int."
+  (interactive "P")
+  (let* ((s (split-string* (or (region-extract-str) "") "\\." t)))
+    (unless (or (stringp s) (= (length s) 4))
+      (user-error "%s" "Not a valid IPv4 string"))
+    (let* ((d (logior
+               (logand (string-to-number (nth 0 s)) #xff)
+               (ash (string-to-number (nth 1 s)) 8)
+               (ash (string-to-number (nth 2 s)) 16)
+               (ash (string-to-number (nth 3 s)) 24)))
+           (d1 (number-to-string d)))
+      (prog1 d
+        (if buffered
+            (trans-with-output-buffer +encode-output-buffer-name+
+              (insert d1))
+          (kill-new d1 t)
+          (message "%d (#o%o, #x%x)" d d d))))))
 
-(defmacro ipv4->int (s &optional small-endian)
-  "Translate IPv4 address to int from string."
-  (let ((ss (gensym*)))
-    `(let ((,ss (and (stringp ,s)
-                     (split-string* ,s "\\." t))))
-       (when (and (consp ,ss) (= 4 (length ,ss)))
-         (if ,small-endian
-             (logior
-              (ash (string-to-number (nth 0 ,ss)) 24)
-              (ash (string-to-number (nth 1 ,ss)) 16)
-              (ash (string-to-number (nth 2 ,ss)) 8)
-              (logand (string-to-number (nth 3 ,ss)) #xff))
-           (logior
-            (logand (string-to-number (nth 0 ,ss)) #xff)
-            (ash (string-to-number (nth 1 ,ss)) 8)
-            (ash (string-to-number (nth 2 ,ss)) 16)
-            (ash (string-to-number (nth 3 ,ss)) 24)))))))
+(defun decode-ipv4 (&optional buffered)
+  "Decode IPv4 address to string."
+  (interactive "P")
+  (let* ((s (or (region-extract-str) ""))
+         (n (cond ((string-match "^[#0][xX]" s)
+                   (string-to-number (substring s 2) 16))
+                  ((string-match "^[#0][oO]" s)
+                   (string-to-number (substring s 2) 8))
+                  (t (string-to-number s))))
+         (d (format "%s.%s.%s.%s"
+                    (logand n #xff)
+                    (ash (logand n #x0000ff00) -8)
+                    (ash (logand n #x00ff0000) -16)
+                    (ash (logand n #xff000000) -24))))
 
+    (prog1 d
+      (if buffered
+          (trans-with-output-buffer +decode-output-buffer-name+
+            (insert d))
+        (kill-new d t)
+        (message "%s" d)))))
 
-(defmacro int->ipv4 (n &optional small-endian)
-  "Translate IPv4 address to string from int."
-  `(when (integerp ,n)
-     (if ,small-endian
-         (format "%s.%s.%s.%s"
-                 (ash (logand ,n #xff000000) -24)
-                 (ash (logand ,n #x00ff0000) -16)
-                 (ash (logand ,n #x0000ff00) -8)
-                 (logand ,n #xff))
-       (format "%s.%s.%s.%s"
-               (logand ,n #xff)
-               (ash (logand ,n #x0000ff00) -8)
-               (ash (logand ,n #x00ff0000) -16)
-               (ash (logand ,n #xff000000) -24)))))
-
-
-(defun encode-ipv4 (&optional buffer endian)
-  "Encode IPv4 address to int according to ENDIAN.\n
-If BUFFER is non nil then output to \\=`+encode-output-buffer-name+\\='."
-  (interactive (list (if current-prefix-arg t nil)
-                     (read-string "endian: " (_endian_) '*endian-history*)))
-  (let* ((n (ipv4->int (string-trim>< (region-extract-str t))
-                       (string= "small" endian)))
-         (out (and (integerp n)
-                   (format "%d (#o%o, #x%x)" n n n))))
-    (if buffer
-        (_enc_with_output_buffer_ +encode-output-buffer-name+
-                                  (insert out))
-      (message "%s" out))))
-
-
-(defun decode-ipv4 (&optional buffer endian)
-  "Decode IPv4 address to string according to ENDIAN.\n
-If BUFFER is non nil then output to \\=`+decode-output-buffer-name+\\='."
-  (interactive (list (if current-prefix-arg t nil)
-                     (read-string "endian: " (_endian_) '*endian-history*)))
-  (let* ((s (string-trim>< (region-extract-str t)))
-         (out (int->ipv4 (cond ((string-match "^[#0][xX]" s)
-                                (string-to-number (substring s 2) 16))
-                               ((string-match "^[#0][oO]" s)
-                                (string-to-number (substring s 2) 8))
-                               (t (string-to-number s)))
-                         (string= "small" endian))))
-    (if buffer
-        (_enc_with_output_buffer_ +decode-output-buffer-name+
-                                  (insert out))
-      (message "%s" out))))
-
+;; end of Trans IPv4
 
 ;; Roman/Chinese number to Arabic number
 
-(defun roman->arabic (ss)
-  "Translate a roman number N into arabic number."
-  (when (and (stringp ss) (< (length ss) 16))
+(defun roman->arabic (n)
+  "Translate a Roman number R into Arabic number."
+  (when (and (stringp n) (< (length n) 16))
     (let ((aa (make-vector (1+ ?X) 0))
-          (i 0) (s 0) (n (length ss)))
+          (i 0) (s 0) (l (length n)))
       (aset aa ?I 1)
       (aset aa ?V 5)
       (aset aa ?X 10)
@@ -182,9 +167,9 @@ If BUFFER is non nil then output to \\=`+decode-output-buffer-name+\\='."
       (aset aa ?C 100)
       (aset aa ?D 500)
       (aset aa ?M 1000)
-      (while (< i n)
-        (let* ((cur (aref ss i))
-               (nxt (if (< (+ i 1) n) (aref ss (+ i 1)) cur))
+      (while (< i l)
+        (let* ((cur (aref n i))
+               (nxt (if (< (+ i 1) l) (aref n (+ i 1)) cur))
                (cc (aref aa cur)))
           (setq s (if (< cc (aref aa nxt))
                       (- s cc)
@@ -192,22 +177,24 @@ If BUFFER is non nil then output to \\=`+decode-output-buffer-name+\\='."
                 i (1+ i))))
       s)))
 
-
-(defun decode-roman-number (&optional arg)
-  "Decode roman number into decimal number."
+(defun decode-roman-number (&optional buffered)
+  "Decode Roman number into decimal number."
   (interactive "P")
-  (let* ((ss (region-extract-str))
-         (n (roman->arabic ss))
-         (out (or (and n (format "%d (#o%o, #x%x)" n n n))
-                  "unknown")))
-    (if arg
-        (_enc_with_output_buffer_ +decode-output-buffer-name+
-                                  (insert out))
-      (message "%s" out))))
+  (let ((s (region-extract-str)))
+    (unless (or (stringp s) (< (length s) 16))
+      (user-error "%s" "Not a valid Roman number"))
+    (let* ((d (roman->arabic s))
+           (d1 (number-to-string d)))
+      (prog1 d
+        (if buffered
+            (trans-with-output-buffer +decode-output-buffer-name+
+              (insert d1))
+          (kill-new d1 t)
+          (message "%d (#o%o, #x%x)" d d d))))))
 
 
 (defun chinese->arabic (n acc)
-  "Translate a chinese number N into arabic number."
+  "Translate a Chinese number N into arabic number."
   (cond ((null n) acc)
         ((stringp n) (cond ((or (string= "亿" n)
                                 (string= "億" n))
@@ -250,20 +237,25 @@ If BUFFER is non nil then output to \\=`+decode-output-buffer-name+\\='."
                             (+ acc (chinese->arabic (car n) 0))))))
 
 
-(defun decode-chinese-number (&optional arg)
+(defun decode-chinese-number (&optional buffered)
   "Decode chinese number to decimal number."
   (interactive "P")
-  (let* ((ss (split-string* (region-extract-str t) "" t))
-         (n (chinese->arabic ss 0))
-         (out (format "%d (#o%o, #x%x)" n n n)))
-    (if arg
-        (_enc_with_output_buffer_ +decode-output-buffer-name+
-                                  (insert out))
-      (message "%s" out))))
+  (let* ((ss (split-string* (or (region-extract-str) "") "" t))
+         (d (chinese->arabic ss 0))
+         (d1 (number-to-string d)))
+    (prog1 d
+      (if buffered
+          (trans-with-output-buffer +decode-output-buffer-name+
+            (insert d1))
+        (kill-new d1 t)
+        (message "%d (#o%o, #x%x)" d d d)))))
 
 
 ;; end of Roman/Chinese number
 
+;;;
+;; Alphabet
+;;;
 
 (defun ascii-table (&optional octal)
   "Display basic ASCII table \\=[0-128\\=)."
@@ -331,18 +323,18 @@ If BUFFER is non nil then output to \\=`+decode-output-buffer-name+\\='."
                    935 "Chi (kie)"
                    936 "Psi (sigh)"
                    937 "Omega (oh-may-gah)")))
-        (mapc (lambda (s)
-                (let ((c (+ 32 s)))
-                  (insert (format
-                           " %4x %4d %4s  | %4x %4d %4s  |  %s\n"
-                           s s (text-char-description s)
-                           c c (text-char-description c)
-                           (plist-get tbl s)))))
-              (remove-if* (lambda (x) (= x 930))
-                          (range 913 (+ 913 24)))))))
+        (dolist* (s (loop* for x in (range 913 (+ 913 24))
+                           unless (= x 930)
+                           collect x))
+          (let ((c (+ 32 s)))
+            (insert (format
+                     " %4x %4d %4s  | %4x %4d %4s  |  %s\n"
+                     s s (text-char-description s)
+                     c c (text-char-description c)
+                     (plist-get tbl s))))))))
   (view-mode t))
 
-
+;; end of Alphabet
 
 (provide 'trans)
 

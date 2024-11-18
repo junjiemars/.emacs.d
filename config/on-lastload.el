@@ -55,7 +55,6 @@
 (autoload 'greek-alphabet (v-home%> "config/trans") nil t)
 (autoload 'int->ipv4 (v-home%> "config/trans") nil t)
 (autoload 'ipv4->int (v-home%> "config/trans") nil t)
-(autoload 'region-extract-str (v-home%> "config/trans") nil t)
 (autoload 'roman->arabic (v-home%> "config/trans") nil t)
 
 ;; end of `trans'
