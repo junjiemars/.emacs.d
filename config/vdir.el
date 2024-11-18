@@ -66,7 +66,7 @@
       `(progn% ,@body)
     `(comment ,@body)))
 (when-feature-project%
-  (setq project-list-file (v-home! ".project/list")))
+  (setq% project-list-file (v-home! ".project/list") 'project))
 
 ;; Savehist: save minibuffer history
 (setq% savehist-file (v-home! ".minibuffer/history") 'savehist)

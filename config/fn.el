@@ -324,7 +324,8 @@ Argument SPEC (VAR LIST [RESULT])."
 
 (fset 'assoc**
       (if-fn% 'cl-assoc 'cl-lib
-              #'cl-assoc
+              (prog1 #'cl-assoc
+                (declare-function cl-assoc 'cl-lib))
         #'assoc*))
 
 (fset 'mapcar**
