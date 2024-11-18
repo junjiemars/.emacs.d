@@ -71,41 +71,43 @@
 ;; CC
 ;;;
 
+(defun cc*-check-cc ()
+  (let ((cx (if-platform% 'windows-nt
+                (progn%
+                 (unless (executable-find% "cc-env.bat")
+                   (cc*-make-env-bat))
+                 '("cc-env.bat" "cl" "gcc"))
+              '("cc" "gcc" "clang")))
+        (o (make-temp-file "cc-c-" nil
+                           (if-platform% 'windows-nt
+                               ".exe"
+                             ".out")))
+        (i (save-str-to-file
+            (concat
+             "int main(void) {\n"
+             "  return 0;\n"
+             "}")
+            (make-temp-file "cc-s-" nil ".c"))))
+    (catch 'br
+      (dolist* (cc cx)
+        (when (zerop
+               (car
+                (shell-command*
+                    (format (if-platform% 'windows-nt
+                                (if (string= "cc-env.bat" cc)
+                                    (concat "%s %s -Fe%s -Fo")
+                                  "%s %s -o%s")
+                              "%s %s -o%s")
+                            (if-platform% 'windows-nt
+                                (if (string= "cc-env.bat" cc)
+                                    "cc-env.bat && cl"
+                                  cc)
+                              cc)
+                            i o))))
+          (throw 'br cc))))))
+
 (defalias 'cc*-cc
-  (lexical-let%
-      ((b (let ((cx (if-platform% 'windows-nt
-                        (progn%
-                         (unless (executable-find% "cc-env.bat")
-                           (cc*-make-env-bat))
-                         '("cc-env.bat" "cl" "gcc"))
-                      '("cc" "gcc" "clang")))
-                (o (make-temp-file "cc-c-" nil
-                                   (if-platform% 'windows-nt
-                                       ".exe"
-                                     ".out")))
-                (i (save-str-to-file
-                    (concat
-                     "int main(void) {\n"
-                     "  return 0;\n"
-                     "}")
-                    (make-temp-file "cc-s-" nil ".c"))))
-            (catch 'br
-              (dolist* (cc cx)
-                (when (zerop
-                       (car
-                        (shell-command*
-                            (format (if-platform% 'windows-nt
-                                        (if (string= "cc-env.bat" cc)
-                                            (concat "%s %s -Fe%s -Fo")
-                                          "%s %s -o%s")
-                                      "%s %s -o%s")
-                                    (if-platform% 'windows-nt
-                                        (if (string= "cc-env.bat" cc)
-                                            "cc-env.bat && cl"
-                                          cc)
-                                      cc)
-                                    i o))))
-                  (throw 'br cc)))))))
+  (lexical-let% ((b (cc*-check-cc)))
     (lambda (&optional n)
       (if (null n) b (setq b n))))
   "The name of C compiler executable.")
@@ -166,7 +168,7 @@
 ;; #include
 ;;;
 
-(defun cc*-check-include (&optional remote)
+(defun cc*-include-check (&optional remote)
   "Return a list of system cc include path."
   (let ((cmd (if remote
                  (when% (executable-find% "ssh")
@@ -181,29 +183,28 @@
                  (shell-command*
                      (concat "echo ''|"
                              (cc*-cc)
-                             " -v -E 2>&1 >/dev/null -")))))
-        (parser (lambda (pre)
-                  (if-platform% 'windows-nt
-                      ;; Windows: msvc
-                      (mapcar
-                       (lambda (x) (posix-path x))
-                       (var->paths
-                        (car (nreverse
-                              (split-string* pre "\n" t "[ \"]*")))))
-                    ;; Darwin/Linux: clang or gcc
-                    (cdr
-                     (take-while
-                      (lambda (p)
-                        (string-match "End of search list\\." p))
-                      (drop-while
-                       (lambda (p)
-                         (not
-                          (string-match
-                           "#include <\\.\\.\\.> search starts here:"
-                           p)))
-                       (split-string* pre "\n" t "[ \t\n]"))))))))
+                             " -v -E 2>&1 >/dev/null -"))))))
     (when (zerop (car cmd))
-      (funcall parser (cdr cmd)))))
+      (let ((pre (cdr cmd)))
+        (if-platform% 'windows-nt
+            ;; Windows: msvc
+            (mapcar
+             (lambda (x) (posix-path x))
+             (var->paths
+              (car (nreverse
+                    (split-string* pre "\n" t "[ \"]*")))))
+          ;; Darwin/Linux: clang or gcc
+          (cdr
+           (take-while
+            (lambda (p)
+              (string-match "End of search list\\." p))
+            (drop-while
+             (lambda (p)
+               (not
+                (string-match
+                 "#include <\\.\\.\\.> search starts here:"
+                 p)))
+             (split-string* pre "\n" t "[ \t\n]")))))))))
 
 
 (defalias 'cc*-system-include
@@ -227,7 +228,7 @@
                                      (lambda (x)
                                        (concat remote x))
                                    #'identity)
-                                 (cc*-check-include remote)))
+                                 (cc*-include-check remote)))
                  (consp d) (save-sexp-to-file d fs)
                  (plist-get (setq dx (plist-put dx ss d)) ss))))))
   "Return a list of system include directories.\n
