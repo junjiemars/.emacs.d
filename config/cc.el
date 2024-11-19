@@ -71,7 +71,7 @@
 ;; CC
 ;;;
 
-(defun cc*-check-cc ()
+(defun cc*-cc-check ()
   (let ((cx (if-platform% 'windows-nt
                 (progn%
                  (unless (executable-find% "cc-env.bat")
@@ -107,7 +107,7 @@
           (throw 'br cc))))))
 
 (defalias 'cc*-cc
-  (lexical-let% ((b (cc*-check-cc)))
+  (lexical-let% ((b (cc*-cc-check)))
     (lambda (&optional n)
       (if (null n) b (setq b n))))
   "The name of C compiler executable.")
@@ -185,26 +185,24 @@
                              (cc*-cc)
                              " -v -E 2>&1 >/dev/null -"))))))
     (when (zerop (car cmd))
-      (let ((pre (cdr cmd)))
+      (let ((pre (cdr cmd)) (inc nil) (beg nil))
         (if-platform% 'windows-nt
             ;; Windows: msvc
-            (mapcar
-             (lambda (x) (posix-path x))
-             (var->paths
-              (car (nreverse
-                    (split-string* pre "\n" t "[ \"]*")))))
+            (dolist* (x (var->paths
+                         (car
+                          (nreverse (split-string* pre "\n" t "[ \"]*"))))
+                        (nreverse inc))
+              (setq inc (cons (posix-path x) inc)))
           ;; Darwin/Linux: clang or gcc
-          (cdr
-           (take-while
-            (lambda (p)
-              (string-match "End of search list\\." p))
-            (drop-while
-             (lambda (p)
-               (not
-                (string-match
-                 "#include <\\.\\.\\.> search starts here:"
-                 p)))
-             (split-string* pre "\n" t "[ \t\n]")))))))))
+          (catch 'br
+            (dolist* (x (split-string* pre "\n" t "[ \t\n]"))
+              (when (and beg (string-match "End of search list\\." x))
+                (throw 'br (nreverse inc)))
+              (when beg (setq inc (cons x inc)))
+              (when (and (null beg)
+                         (string-match
+                          "#include <\\.\\.\\.> search starts here:" x))
+                (setq beg t)))))))))
 
 
 (defalias 'cc*-system-include
