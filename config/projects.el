@@ -6,6 +6,12 @@
 ;; projects.el
 ;;;;
 
+;;; requires
+
+(require% 'ed (v-home%> "config/ed"))
+
+;; end of requires
+
 (defalias 'project*-root-dirs
   (lexical-let% ((f (v-home% ".exec/project-root-dirs.el"))
                  (b '()))

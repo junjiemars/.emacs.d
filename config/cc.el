@@ -209,10 +209,9 @@
   (lexical-let% ((dx nil))
     (lambda (&optional cached remote)
       (let* ((ss (if remote
-                     (intern
-                      (mapconcat #'identity
-                                 (ssh-remote->ids remote)
-                                 "-"))
+                     (intern (mapconcat #'identity
+                                        (ssh-remote->ids remote)
+                                        "-"))
                    'native))
              (fs (concat (v-home% ".exec/cc-inc-")
                          (symbol-name ss) ".el"))
@@ -222,11 +221,11 @@
                  (plist-get
                   (setq dx (plist-put dx ss (read-sexp-from-file fs)))
                   ss))
-            (and (setq d (mapcar (if remote
-                                     (lambda (x)
-                                       (concat remote x))
-                                   #'identity)
-                                 (cc*-include-check remote)))
+            (and (setq d
+                       (let ((xs nil))
+                         (dolist* (x (cc*-include-check remote) (nreverse xs))
+                           (setq xs (cond (remote (cons (concat remote x) xs))
+                                          (t (cons x xs)))))))
                  (consp d) (save-sexp-to-file d fs)
                  (plist-get (setq dx (plist-put dx ss d)) ss))))))
   "Return a list of system include directories.\n
@@ -243,10 +242,13 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
                (setq dx (read-sexp-from-file fs)))
           (and (consp dir)
                (save-sexp-to-file
-                (setq dx (append dx (mapcar (lambda (x)
-                                              (expand-file-name
-                                               (string-trim> x "/")))
-                                            dir)))
+                (setq dx
+                      (append dx
+                              (let ((xs nil))
+                                (dolist* (a dir (nreverse xs))
+                                  (let ((b (string-trim> a "/")))
+                                    (setq xs (cons (expand-file-name b)
+                                                   xs)))))))
                 fs)
                dx))))
   "Return a list of extra include directories.")

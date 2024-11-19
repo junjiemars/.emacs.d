@@ -60,11 +60,13 @@
                (package-delete (cadr (assq ,p package-alist)))
              (package-delete
               (symbol-name ,p)
-              (mapconcat #'identity
-                         (mapcar (lambda (x)
-                                   (number-to-string x))
-                                 (aref (cdr (assq ,p package-alist)) 0))
-                         "."))))))))
+              (mapconcat
+               #'identity
+               (let ((xs nil))
+                 (dolist* (x (aref (cdr (assq ,p package-alist)) 0)
+                             (nreverse xs))
+                   (setq xs (cons (number-to-string x) xs))))
+               "."))))))))
 
 (defmacro package*-install! (package &optional tar)
   "Install PACKAGE optional via TAR."

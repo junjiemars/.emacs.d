@@ -468,14 +468,19 @@ See \\=`string-match\\=' and \\=`match-string\\='."
 
 (when-version% > 24.4
   (defun split-string4 (string &optional separators omit-nulls trim)
-    (if trim
-        (delete ""
-                (mapcar (lambda (s)
-                          (if (and (stringp trim) (> (length trim) 0))
-                              (string-trim>< s trim trim)
-                            (string-trim>< s)))
-                        (split-string string separators omit-nulls)))
-      (split-string string separators omit-nulls))))
+    (let ((ss (split-string string separators omit-nulls)))
+      (cond ((or (null ss) (= (length ss) 0)) ss)
+            ((and (> (length ss) 0) trim (> (length trim) 0))
+             (let ((xs nil))
+               (while ss
+                 (let ((s (car ss)))
+                   (setq xs (cons (if (and (stringp trim) (> (length trim) 0))
+                                      (string-trim>< s trim trim)
+                                    (string-trim>< s))
+                                  xs)))
+                 (setq ss (cdr ss)))
+               (nreverse xs)))
+            (t ss)))))
 
 (defmacro split-string* (string &optional separators omit-nulls trim)
   "Split STRING into substrings bounded by match for SEPARATORS.\n
@@ -767,13 +772,25 @@ See \\=`defcustom\\='."
 (defun path+ (root &rest path)
   "Append a list of PATH to ROOT."
   (declare (indent 1))
-  (let* ((trim (lambda (x) (string-trim>< x "/" "/")))
-         (tail (lambda (x) (concat (string-trim> x "/") "/")))
-         (s (cond ((null root) (mapconcat trim path "/"))
-                  ((null path) root)
-                  (t (concat (funcall tail root)
-                             (mapconcat trim path "/"))))))
-    (if (string= "" s) nil (funcall tail s))))
+  (when (and (stringp root) (> (length root) 0))
+    (let ((ss root) (pc ?/) (ps "/"))
+      (unless (char-equal (aref ss (1- (length ss))) pc)
+        (setq ss (concat ss ps)))
+      (while path
+        (let* ((s (car path)) (len (length s)))
+          (when (> len 0)
+            (let ((i 0) (j (1- len)))
+              (while (and (< i len) (char-equal (aref s i) pc))
+                (setq i (1+ i)))
+              (while (and (> j i) (char-equal (aref s j) pc))
+                (setq j (1- j)))
+              (setq ss (concat ss (substring-no-properties s i (1+ j))))
+              (unless (char-equal (aref ss (1- (length ss))) pc)
+                (setq ss (concat ss ps))))))
+        (setq path (cdr path)))
+      (unless (char-equal (aref ss (1- (length ss))) pc)
+        (setq ss (concat ss ps)))
+      ss)))
 
 (defun path- (file)
   "Return the parent path of FILE."
@@ -786,20 +803,6 @@ See \\=`defcustom\\='."
   (if (= 0 (length path))
       0
     (- (length (split-string* path (or separator "/") nil)) 1)))
-
-(defun file-in-dirs-p (file dirs)
-  "Return the matched dir if FILE in DIRS, otherwise nil."
-  (when (and (stringp file) (consp dirs))
-    (inhibit-file-name-handler
-      (let ((case-fold-search (when-platform% 'windows-nt t))
-            (d (file-name-directory file)))
-        (catch 'br
-          (dolist* (x dirs)
-            (and (stringp x)
-                 (eq 't (compare-strings
-                         x 0 (length x) d 0 (length x)
-                         case-fold-search))
-                 (throw 'br x))))))))
 
 (defmacro file-name-nondirectory% (filename)
   "Return file name FILENAME sans its directory at compile-time."

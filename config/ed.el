@@ -21,6 +21,20 @@
        (delete-region (line-beginning-position)
                       (line-beginning-position 2)))))
 
+(defun file-in-dirs-p (file dirs)
+  "Return the matched dir if FILE in DIRS, otherwise nil."
+  (when (and (stringp file) (consp dirs))
+    (inhibit-file-name-handler
+      (let ((case-fold-search (when-platform% 'windows-nt t))
+            (d (file-name-directory file)))
+        (catch 'br
+          (dolist* (x dirs)
+            (and (stringp x)
+                 (eq 't (compare-strings
+                         x 0 (length x) d 0 (length x)
+                         case-fold-search))
+                 (throw 'br x))))))))
+
 (defun newline* (&optional arg)
   "Raw newline."
   (interactive "*P")
