@@ -35,7 +35,10 @@
   "Format the current buffer via SHELL\\=*."
   (declare (indent 1))
   `(with-current-buffer (current-buffer)
-     (when (loop* for x in ,modes when (eq x major-mode) return t)
+     (when (catch 'br
+             (dolist* (x ,modes)
+               (and (eq x major-mode)
+                    (throw 'br t))))
        ,alternate
        (let ((p (point))
              (bs (if-region-active

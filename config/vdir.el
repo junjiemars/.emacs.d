@@ -35,6 +35,14 @@
 ;; `bookmark': file in which to save bookmarks
 (setq% bookmark-default-file (v-home! ".bookmarks/emacs.bmk") 'bookmark)
 
+;;; `eglot' builtin since Emacs-29+
+(defmacro-if-feature% eglot)
+(defmacro when-feature-eglot% (&rest body)
+  (declare (indent 0))
+  (if-feature-eglot%
+      `(progn% ,@body)
+    `(comment ,@body)))
+
 ;; `eshell'
 (setq% eshell-directory-name (v-home! ".eshell/") 'eshell)
 
@@ -119,5 +127,15 @@
 ;; `url'
 (setq% url-configuration-directory (v-home! ".url/") 'url)
 
+;;; `vc'
+(defmacro-if-feature% vc)
+(defmacro when-feature-vc% (&rest body)
+  "When \\=`vc\\=', do BODY."
+  (declare (indent 0))
+  (if-feature-vc%
+      (if-fn% 'vc-dir 'vc-dir
+              `(progn% ,@body)
+        `(comment ,@body))
+    `(comment ,@body)))
 
 ;; end of vdir.el

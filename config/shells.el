@@ -125,8 +125,11 @@ See \\=`setenv\\='."
     (let ((env (var->paths (getenv (shells-spec->% :PATH)))))
       (when (or (and (null append) (not (string= dir (car env))))
                 (and append (not (string= dir (last env)))))
-        (let ((path (remove-if* (lambda (x) (string= x dir))
-                                env)))
+        (let ((path (let ((xs nil))
+                      ;; remove dir
+                      (dolist* (x env (nreverse xs))
+                        (unless (string= x dir)
+                          (setq xs (cons x xs)))))))
           (setenv* (shells-spec->% :PATH)
                    (paths->var (if append
                                    (append path dir)

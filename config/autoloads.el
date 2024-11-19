@@ -8,14 +8,6 @@
 
 ;;; macro
 
-;;; `eglot' builtin since Emacs-29+
-(defmacro-if-feature% eglot)
-(defmacro when-feature-eglot% (&rest body)
-  (declare (indent 0))
-  (if-feature-eglot%
-      `(progn% ,@body)
-    `(comment ,@body)))
-
 ;; (defalias '*org-babel-schemes*
 ;;   (lexical-let% ((i '()))
 ;;     (lambda (&optional op key val)
@@ -24,16 +16,6 @@
 ;;             (t i))))
 ;;   "The available Scheme's implementations for `ob'.")
 
-;;; `vc'
-(defmacro-if-feature% vc)
-(defmacro when-feature-vc% (&rest body)
-  "When \\=`vc\\=', do BODY."
-  (declare (indent 0))
-  (if-feature-vc%
-      (if-fn% 'vc-dir 'vc-dir
-              `(progn% ,@body)
-        `(comment ,@body))
-    `(comment ,@body)))
 
 (defmacro autoload! (symbol file &optional docstring interactive type)
   "Force autoload SYMBOL."
@@ -48,6 +30,7 @@
 (defun load-prologue-modes! ()
   "Load prologue modes."
   (compile!
+    (compile-unit% (emacs-home* "config/cls.el") t)
     (compile-unit% (emacs-home* "config/ed.el") t)
     (compile-unit% (emacs-home* "config/marks.el") t)
     (compile-unit% (emacs-home* "config/tags.el") t)

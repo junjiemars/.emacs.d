@@ -69,9 +69,12 @@ when \\=`desktop-globals-to-save\\=' include it.")
   (setq tags-file-name nil
         tags-table-list
         (when tags
-          (let ((fn (expand-file-name tags)))
-            (remove-if* (lambda (x) (string= x fn))
-                        tags-table-list)))))
+          (let ((fn (expand-file-name tags))
+                (xs nil))
+            (dolist* (x tags-table-list (nreverse xs))
+              (unless (string= x fn)
+                (setq xs (cons x xs))))))))
+
 
 (defun dir-iterate (dir ff df fn dn)
   "Iterate DIR.\n
@@ -80,11 +83,12 @@ DF dir-filter (lambda (dir-name absolute-name)...),
 FN file-processor (lambda (absolute-name)...),
 DN dir-processor (lambda (aboslute-name)...)."
   (inhibit-file-name-handler
-    (let ((files (remove-if* (lambda (x)
-                               (or (null x)
-                                   (string= "./" x)
-                                   (string= "../" x)))
-                             (file-name-all-completions "" dir))))
+    (let ((files (let ((xs nil))
+                   (dolist* (x (file-name-all-completions "" dir) xs)
+                     (unless (or (null x)
+                                 (string= "./" x)
+                                 (string= "../" x))
+                       (setq xs (cons x xs)))))))
       (while files
         (let* ((f (car files))
                (a (expand-file-name f dir)))
@@ -120,16 +124,16 @@ PREFER (lambda (dir files)...)."
       (while (and (stringp d)
                   (directory-name-p d)
                   (not (string-match stop d)))
-        (and prefer (funcall prefer d
-                             (remove-if*
-                              (lambda (x)
-                                (or (null x)
-                                    (string= "./" x)
-                                    (string= "../" x)
-                                    (let ((dx (concat d x)))
-                                      (and (directory-name-p dx)
-                                           (file-symlink-p dx)))))
-                              (file-name-all-completions "" d))))
+        (and prefer
+             (funcall
+              prefer d
+              (let ((xs nil))
+                (dolist* (x (file-name-all-completions "" d) xs)
+                  (unless (or (null x) (string= "./" x) (string= "../" x)
+                              (let ((dx (concat d x)))
+                                (and (directory-name-p dx)
+                                     (file-symlink-p dx))))
+                    (setq xs (cons x xs)))))))
         (setq d (path- d))))))
 
 (defun make-tags

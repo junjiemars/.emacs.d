@@ -18,12 +18,11 @@
 (when-fn% 'tramp-set-completion-function 'tramp
   (defun tramp*-parse-docker-containers (program)
     "Return a list name of running docker/podman containers."
-    (let ((cmd (shell-command* program
-                 "ps" "--format {{.Names}}")))
+    (let ((cmd (shell-command* program "ps" "--format {{.Names}}")))
       (when (zerop (car cmd))
-        (mapcar (lambda (x)
-                  (list nil x))
-                (split-string* (cdr cmd) "\n" t "\n"))))))
+        (let ((xs nil) (ss (split-string* (cdr cmd) "\n" t "\n")))
+          (dolist* (x ss (nreverse xs))
+            (setq xs (cons (list nil x) xs))))))))
 
 
 (defun on-tramp-init! ()
@@ -35,13 +34,18 @@
   ;; `C-x C-f' /docker:[<user>@]<container>:/path/to/file
   ;; `C-x d' /docker:[<user>@]<container>:/path/
   (when-var% tramp-methods 'tramp
-    (unless% (some* #'string= '("docker" "podman")
-                    (mapcar #'car tramp-methods))
+    (unless% (catch 'br
+               (dolist* (x tramp-methods)
+                 (let ((x1 (car x)))
+                   (and (or (string= "docker" x1) (string= "podman" x1))
+                        (throw 'br t)))))
       (setq tramp-methods
             ;; podman is compatible with docker
-            (let ((ts (remove-if* (lambda (x)
-                                    (string= "docker" x))
-                                  tramp-methods :key #'car)))
+            (let ((ts (let ((xs nil))
+                        (dolist* (x tramp-methods (nreverse xs))
+                          (let ((x1 (car x)))
+                            (unless (string= "docker" x1)
+                              (setq xs (cons x xs))))))))
               (push! `("docker"
                        (tramp-login-program ,(docker-program))
                        (tramp-login-args

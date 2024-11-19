@@ -130,11 +130,11 @@ If nil, only source files in the program directory will be known
 Return absolute filename when FILENAME exists, otherwise nil."
   (or (let ((f (expand-file-name filename)))
         (when (file-exists-p f) f))
-      (loop* for d in gud-lldb-directories
-             with p = nil
-             do (setq p (concat d "/" filename))
-             when (file-exists-p p)
-             return p)))
+      (catch 'br
+        (dolist* (d gud-lldb-directories)
+          (let ((p (concat d "/" filename)))
+            (and (file-exists-p p)
+                 (throw 'br p)))))))
 
 
 (defmacro lldb-settings (subcommand &rest args)
@@ -276,8 +276,10 @@ As the optional argument of \\=`gud-common-init\\=': find-file."
   "Run \\=`gud-lldb-command-line-hook\\=' before running debugger.\n
 As the 2nd argument of \\=`gud-common-init\\=': message-args"
   (ignore* file)
-  (append (loop* for x in gud-lldb-command-line-hook
-                 when (functionp x) append (funcall x))
+  (append (let ((xs nil))
+            (dolist* (x gud-lldb-command-line-hook xs)
+              (and (functionp x)
+                   (setq xs (append (funcall x))))))
           args))
 
 

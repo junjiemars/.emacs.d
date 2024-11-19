@@ -205,9 +205,9 @@ buffer.")
              (ignore-errors
                (save-restriction
                  (narrow-to-region start end)
-                 (loop* do (skip-chars-forward " \t\r\n)")
-                        until (eobp)
-                        do (forward-sexp))
+                 (while (null (eobp))
+                   (skip-chars-forward " \t\r\n)")
+                   (forward-sexp))
                  t)))
             (t t)))))
 

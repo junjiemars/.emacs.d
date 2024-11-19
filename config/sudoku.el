@@ -147,7 +147,7 @@
          (m matrix)
          (c (% (sudoku-puzzle-col index) d))
          (v (make-vector d 0)))
-    (dolist (x (range 0 (1- d) 1) v)
+    (dolist* (x (range 0 (1- d) 1) v)
       (aset v x (aref m (+ c (* x d)))))))
 
 
@@ -510,13 +510,15 @@
             (insert
              (apply
               #'format v
-              (loop* for x in (take d board)
-                     collect (apply #'propertize
-                                    (let ((n (cdr (plist-get x :puzzle))))
-                                      (cond ((= n 0) u)
-                                            (t (number-to-string n))))
-                                    x)
-                     do (setq idx (1+ idx)))))
+              (let ((xs nil))
+                (dolist* (x (take d board) (nreverse xs))
+                  (setq xs (cons (apply #'propertize
+                                        (let ((n (cdr (plist-get x :puzzle))))
+                                          (cond ((= n 0) u)
+                                                (t (number-to-string n))))
+                                        x)
+                                 xs))
+                  (setq idx (1+ idx))))))
             (setq board (drop d board)
                   row (1+ row)))
           (insert s))))

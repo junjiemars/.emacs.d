@@ -75,9 +75,12 @@
                   (list (cons 'dict (list dd))
                         (cons 'style
                               (or (cdr dict)
-                                  (list (remove-if*
-                                         (lambda (x) (string= x "url"))
-                                         (mapcar #'car dd)))))))))
+                                  (list
+                                   (let ((xs nil))
+                                     (dolist* (x dd (nreverse xs))
+                                       (let ((x1 (car x)))
+                                         (when (string= x1 "url")
+                                           (setq xs (cons x1 xs)))))))))))))
        (t b))))
   "Find dictionary's definition in \\=`*dict-defs*\\='.")
 
@@ -229,8 +232,11 @@ finished."
                       '*dict-name-history*
                       (car ns)))
                   (dd (cdr (assoc-string d (*dict-defs*))))
-                  (sr (remove-if* (lambda (x) (string= x "url"))
-                                  (mapcar #'car dd)))
+                  (sr (let ((xs nil))
+                        (dolist* (x dd (nreverse xs))
+                          (let ((x1 (car x)))
+                            (unless (string= x1 "url")
+                              (setq xs (cons x1 xs)))))))
                   (ss (completing-read
                        (format "Choose (all|%s) "
                                (mapconcat #'identity sr ","))

@@ -331,9 +331,10 @@
                    935 "Chi (kie)"
                    936 "Psi (sigh)"
                    937 "Omega (oh-may-gah)")))
-        (dolist* (s (loop* for x in (range 913 (+ 913 24))
-                           unless (= x 930)
-                           collect x))
+        (dolist* (s (let ((xs nil))
+                      (dolist* (x (range 913 (+ 913 24)) (nreverse xs))
+                        (unless (= x 930)
+                          (setq xs (cons x xs))))))
           (let ((c (+ 32 s)))
             (insert (format
                      " %4x %4d %4s  | %4x %4d %4s  |  %s\n"

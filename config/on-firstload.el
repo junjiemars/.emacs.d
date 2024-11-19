@@ -8,6 +8,18 @@
 ;; Commentary: run before conditional loading
 ;;;;
 
+;;; `cls'
+
+(autoload 'assoc** (v-home%> "config/cls"))
+(autoload 'mapcar** (v-home%> "config/cls"))
+(autoload 'remove-if* (v-home%> "config/cls"))
+(autoload 'member-if* (v-home%> "config/cls"))
+(autoload 'every* (v-home%> "config/cls"))
+(autoload 'some* (v-home%> "config/cls"))
+(autoload 'loop* (v-home%> "config/cls"))
+
+;; end of `cls'
+
 ;;; `ed'
 
 (autoload 'delete-line* (v-home%> "config/ed") nil nil 'macro)

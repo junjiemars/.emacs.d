@@ -238,11 +238,11 @@ Return absolute filename when FILENAME existing or it's existing
 in \\=`gud-cdb-directories\\='."
   (or (let ((f (expand-file-name filename)))
         (when (file-exists-p f) f))
-      (loop* for d in gud-cdb-directories
-             with p = nil
-             do (setq p (concat d "/" filename))
-             when (file-exists-p p)
-             return p)))
+      (catch 'br
+        (dolist* (d gud-cdb-directories)
+          (let ((p (concat d "/" filename)))
+            (and (file-exists-p p)
+                 (throw 'br p)))))))
 
 
 (defun cdb-annotate-completion (s)
@@ -301,8 +301,10 @@ in \\=`gud-cdb-directories\\='."
 The job of the massage-args method is to modify the given list of
 debugger arguments before running the debugger."
   (ignore* file)
-  (append (loop* for o in gud-cdb-command-line-hook
-                 append (funcall o))
+  (append (let ((xs nil))
+            (dolist* (o gud-cdb-command-line-hook xs)
+              (and (functionp o)
+                   (setq xs (append xs (funcall o))))))
           args))
 
 
@@ -405,8 +407,8 @@ directory and source-file directory for your debugger."
 
   (run-hooks 'gud-cdb-mode-hook)
 
-  (loop* for x in gud-cdb-init-hook
-         when (functionp x) do (funcall x))
+  (dolist* (x gud-cdb-init-hook)
+    (and (functionp x) (funcall x)))
 
   (add-hook 'completion-at-point-functions
             #'cdb-completion-at-point nil 'local))
