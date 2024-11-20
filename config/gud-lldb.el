@@ -225,13 +225,14 @@ https://github.com/llvm/llvm-project/."
                               (if (> n 0) n 0)))
                          (ls (substring cmd 0 w))
                          (rs (substring cmd w)))
-                    (mapcar (lambda (z) (concat ls z))
-                            (if (and (cadr ss)
-                                     (string-match
-                                      (concat rs (string-trim> (car ss)))
-                                      (cadr ss)))
-                                (cdr ss)
-                              ss)))))
+                    (let ((xs nil))
+                      (dolist* (z (if (and (cadr ss)
+                                           (string-match
+                                            (concat rs (string-trim> (car ss)))
+                                            (cadr ss)))
+                                      (cdr ss)
+                                    ss))
+                        (setq xs (cons (concat ls z) xs)))))))
               :exclusive 'no)))))
 
 
