@@ -806,12 +806,12 @@
                               (throw 'br a))
                             nil))))
     (should (string-match
-             "/config/"
+             (emacs-home* "config")
              (catch 'br
                (dir-iterate (emacs-home*)
                             nil
                             (lambda (f _)
-                              (string= "config/" f))
+                              (string= "config" f))
                             nil
                             (lambda (a)
                               (throw 'br a))))))
@@ -824,8 +824,7 @@
                  (lambda (d _)
                    (string-match "config" d))
                  (lambda (f)
-                   (when (= 2 (length
-                               (setq matched (cons f matched))))
+                   (when (= 2 (length (setq matched (cons f matched))))
                      (throw 'br t)))
                  nil))))))
 
@@ -837,23 +836,25 @@
                                (when (string-match "config/" d)
                                  (throw 'br t))))))
     (should (catch 'br
-              (dir-backtrack (emacs-home* "config/basic.el")
+              (dir-backtrack (emacs-home* "config/")
                              (lambda (d fs)
                                (dolist* (x fs)
                                  (when (string= "init.el" x)
                                    (throw 'br t)))))))
     (should (= 2 (let ((prefered nil)
                        (count 0)
-                       (std '("init.el" ".git/")))
-                   (dir-backtrack (emacs-home* "config/basic.el")
+                       (std '("init.el" ".git")))
+                   (dir-backtrack (emacs-home* "config/")
                                   (lambda (d fs)
                                     (dolist* (x fs)
                                       (when (or (string= "init.el" x)
-                                                (string= ".git/" x))
+                                                (string= ".git" x))
                                         (push x prefered)))))
                    (dolist* (x prefered count)
-                     (when (member-if* (lambda (z) (string= z x))
-                                       std)
+                     (when (catch 'br
+                             (dolist* (y std)
+                               (when (string= x y)
+                                 (throw 'br t))))
                        (setq count (1+ count)))))))))
 
 

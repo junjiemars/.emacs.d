@@ -75,7 +75,6 @@ when \\=`desktop-globals-to-save\\=' include it.")
               (unless (string= x fn)
                 (setq xs (cons x xs))))))))
 
-
 (defun dir-iterate (dir ff df fn dn)
   "Iterate DIR.\n
 FF file-filter (lambda (file-name absolute-name)...),
@@ -83,58 +82,40 @@ DF dir-filter (lambda (dir-name absolute-name)...),
 FN file-processor (lambda (absolute-name)...),
 DN dir-processor (lambda (aboslute-name)...)."
   (inhibit-file-name-handler
-    (let ((files (let ((xs nil))
-                   (dolist* (x (file-name-all-completions "" dir) xs)
-                     (unless (or (null x)
-                                 (string= "./" x)
-                                 (string= "../" x))
-                       (setq xs (cons x xs)))))))
+    (let ((files (directory-files dir t)))
       (while files
-        (let* ((f (car files))
-               (a (expand-file-name f dir)))
-          (if (directory-name-p f)
-              (when (and (let ((ln (file-symlink-p a)))
-                           (if ln
-                               (not (or
-                                     (string-match "\\.\\'\\|\\.\\.\\'" ln)
-                                     (and (>= (length a) (length ln))
-                                          (string=
-                                           ln
-                                           (substring a 0 (length ln))))))
-                             t))
-                         df
-                         (funcall df f a))
-                (and dn (funcall dn a))
-                (dir-iterate a ff df fn dn))
-            (when (and ff (funcall ff f a))
-              (and fn (funcall fn a))))
+        (let* ((a (car files))
+               (s (file-attributes a)) (ft (nth 0 s))
+               (f (file-name-nondirectory a))
+               (len (length f)))
+          (cond ((eq ft t) (cond ((char= (aref f (1- len)) ?.))
+                                 ((and df (funcall df f a))
+                                  (and dn (funcall dn a))
+                                  (dir-iterate a ff df fn dn))))
+                ((stringp ft))
+                (ff (cond ((funcall ff f a) (and fn (funcall fn a))))))
           (setq files (cdr files)))))))
 
 (defun dir-backtrack (dir prefer)
   "Backtrack DIR.\n
 Starting at DIR, look up directory hierarchy for prefered
-directory or file. Ignores the symbol links of directory.\n
+directory or file. Ignore the symbol links of directory.\n
 PREFER (lambda (dir files)...)."
   (inhibit-file-name-handler
-    (let ((d (expand-file-name
-              (if (directory-name-p dir)
-                  dir
-                (file-name-directory dir))))
-          (stop "\\(^/\\|[a-zA-Z]:/\\)\\'"))
-      (while (and (stringp d)
-                  (directory-name-p d)
-                  (not (string-match stop d)))
+    (let ((stop "\\(^/\\|[a-zA-Z]:/\\)\\'"))
+      (while (and (directory-name-p dir) (null (string-match stop dir)))
         (and prefer
-             (funcall
-              prefer d
-              (let ((xs nil))
-                (dolist* (x (file-name-all-completions "" d) xs)
-                  (unless (or (null x) (string= "./" x) (string= "../" x)
-                              (let ((dx (concat d x)))
-                                (and (directory-name-p dx)
-                                     (file-symlink-p dx))))
-                    (setq xs (cons x xs)))))))
-        (setq d (path- d))))))
+             (funcall prefer dir
+                      (let ((xs nil))
+                        (dolist* (x (directory-files dir t) xs)
+                          (let ((f (file-name-nondirectory x))
+                                (ft (nth 0 (file-attributes x))))
+                            (unless (or (and (eq ft t)
+                                             (or (string= "." f)
+                                                 (string= ".." f)))
+                                        (stringp ft))
+                              (setq xs (cons f xs))))))))
+        (setq dir (path- dir))))))
 
 (defun make-tags
     (home tags-file file-filter dir-filter &optional tags-option renew)
