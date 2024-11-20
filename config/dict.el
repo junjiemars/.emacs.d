@@ -62,34 +62,28 @@
 (defvar *dict-style-history* nil
   "Dictionary style choosing history list.")
 
-(defalias 'dict-find-def
-  (lexical-let% ((b nil))
-    (lambda  (&optional dict)
-      (cond
-       ((or (consp dict) (not b))
-        (setq b (let ((dd (cdr (assoc-string
-                                (or (car dict)
-                                    (car *dict-name-history*)
-                                    (caar (*dict-defs*)))
-                                (*dict-defs*)))))
-                  (list (cons 'dict (list dd))
-                        (cons 'style
-                              (or (cdr dict)
-                                  (list
-                                   (let ((xs nil))
-                                     (dolist* (x dd (nreverse xs))
-                                       (let ((x1 (car x)))
-                                         (when (string= x1 "url")
-                                           (setq xs (cons x1 xs)))))))))))))
-       (t b))))
-  "Find dictionary's definition in \\=`*dict-defs*\\='.")
+(defun dict-def-find (dict)
+  "Find dictionary's definition in \\=`*dict-defs*\\='."
+  (let ((dd (cdr (assoc-string (or (car dict)
+                                   (car *dict-name-history*)
+                                   (caar (*dict-defs*)))
+                               (*dict-defs*)))))
+    (list (cons 'dict (list dd))
+          (cons 'style
+                (or (cdr dict)
+                    (list (let ((xs nil))
+                            (dolist* (x dd (nreverse xs))
+                              (let ((x1 (car x)))
+                                (unless (string= x1 "url")
+                                  (setq xs (cons x1 xs))))))))))))
 
 (defalias '*dict-debug-log*
   (lexical-let% ((b `(:log nil ;; t
                       :dict ,(emacs-home* ".dict/dict.log")
                       :lookup ,(emacs-home* ".dict/lookup.log"))))
     (lambda (w &optional n)
-      (if n (plist-put b w n) (plist-get b w))))
+      (cond (n (plist-put b w n))
+            (t (plist-get b w)))))
   "Dictonary logging switch.")
 
 (defun dict-fn-norm-pron-us (ss)
@@ -160,6 +154,27 @@
 
 ;; end of definition
 
+
+(defun dict-lookup-pipeline (dict style)
+  "Pipeline dictionary lookup."
+  (let ((xs nil))
+    (dolist* (x style (nreverse xs))
+      (goto-char (point-min))
+      (let* ((re (cdr (assoc-string x dict)))
+             (b (re-search-forward (caar re) nil t (cdar re)))
+             (e (and b (re-search-forward (cadr re) nil t)
+                     (re-search-backward (cadr re) nil t)))
+             (html (and b e (< b e)
+                        (buffer-substring-no-properties b e)))
+             (fns (cddr re))
+             (txt html))
+        (setq xs (cons (cons x (when (> (length html) 0)
+                                 (dolist* (fn fns txt)
+                                   (if (functionp fn)
+                                       (setq txt (funcall fn txt))
+                                     txt))))
+                       xs))))))
+
 (defun on-lookup-dict (status &rest args)
   "Callback after \\=`lookup-dict\\='."
   (declare (indent 1))
@@ -169,27 +184,10 @@
       (error "Panic, %s" err)))
   (set-buffer-multibyte t)
   (when (*dict-debug-log* :log)
-    (write-region (point-min) (point-max)
-                  (path! (*dict-debug-log* :dict))))
+    (write-region (point-min) (point-max) (path! (*dict-debug-log* :dict))))
   (let* ((dict (cadr (assq 'dict args)))
          (style (cadr (assq 'style args)))
-         (ss (mapcar
-              (lambda (x)
-                (goto-char (point-min))
-                (let* ((re (cdr (assoc-string x dict)))
-                       (b (re-search-forward (caar re) nil t (cdar re)))
-                       (e (and b (re-search-forward (cadr re) nil t)
-                               (re-search-backward (cadr re) nil t)))
-                       (html (and b e (< b e)
-                                  (buffer-substring-no-properties b e)))
-                       (fns (cddr re))
-                       (txt html))
-                  (cons x (when (> (length html) 0)
-                            (dolist* (fn fns txt)
-                              (if (functionp fn)
-                                  (setq txt (funcall fn txt))
-                                txt))))))
-              style)))
+         (ss (dict-lookup-pipeline dict style)))
     (when (*dict-debug-log* :log)
       (save-sexp-to-file ss (path! (*dict-debug-log* :lookup))))
     (kill-buffer (current-buffer))
@@ -249,7 +247,7 @@ finished."
                                   (string-match* "\\(all\\)" ss 1)))
                          `(, sr)
                        `(,(split-string* ss "," t "[ \n]*"))))))))
-  (let* ((d1 (dict-find-def dict))
+  (let* ((d1 (dict-def-find dict))
          (url (cdr (assoc-string "url" (cadr (assq 'dict d1))))))
     (make-thread* (lambda ()
                     (let ((url-history-track nil))

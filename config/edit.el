@@ -87,12 +87,11 @@
   (interactive)
   (when (yes-or-no-p "Reset emacs?")
   	(clean-versioned-dirs
-  	 (delq nil
-  				 (mapcar
-  					(lambda (d)
-  						(unless (member d '(".git" ".gitignore" ".github"))
-  							(concat (emacs-home* d) "/")))
-  					(directory-files (emacs-home*) nil "^\\.[a-z]+")))
+  	 (delq nil (let ((xs nil))
+                 (dolist* (d (directory-files
+                              (emacs-home*) nil "^\\.[a-z]+"))
+                   (unless (member d '(".git" ".gitignore" ".github"))
+  							     (setq xs (cons (concat (emacs-home* d) "/") xs))))))
   	 :8)
   	(clean-compiled-files)
   	(setq kill-emacs-hook nil)
