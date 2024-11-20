@@ -231,7 +231,8 @@ https://github.com/llvm/llvm-project/."
                                             (concat rs (string-trim> (car ss)))
                                             (cadr ss)))
                                       (cdr ss)
-                                    ss))
+                                    ss)
+                                  (nreverse xs))
                         (setq xs (cons (concat ls z) xs)))))))
               :exclusive 'no)))))
 

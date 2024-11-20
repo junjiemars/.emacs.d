@@ -622,9 +622,7 @@ Optional argument ARGS for COMMAND."
            (let ((x (call-process
                      shell-file-name nil b nil
                      shell-command-switch
-                     (mapconcat #'identity
-                                (apply #'list command args)
-                                " "))))
+                     (mapconcat #'identity (nconc (list command) args) " "))))
              (cond ((integerp x) x)
                    ((string-match "^.*\\([0-9]+\\).*$" x)
                     (match-string-no-properties 1 x))

@@ -97,10 +97,9 @@
       (when-version% <= 26
         ;; fix: title bar text color broken #55
         ;; https://github.com/d12frosted/homebrew-emacs-plus/issues/55#issuecomment-408317248
-        (mapc (lambda (x)
-                (push! x frameset-filter-alist))
-              '((ns-transparent-titlebar . unbound)
-                (ns-appearance . unbound)))))
+        (dolist* (x '((ns-transparent-titlebar . unbound)
+                      (ns-appearance . unbound)))
+          (push! x frameset-filter-alist))))
 
     (when-theme% (self-theme-init! t))
 
