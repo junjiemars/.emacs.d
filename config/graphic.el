@@ -96,6 +96,10 @@
         (when w (set-frame-width nil w))
         (when h (set-frame-height nil h))))))
 
+(unless-graphic%
+  (defconst +term-background-color+ "yellow")
+  (defconst +term-foreground-color+ "black"))
+
 ;; end of Frame
 
 ;;;

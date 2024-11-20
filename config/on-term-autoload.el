@@ -25,7 +25,7 @@
 
 ;; fix some terminal theme confused with background and foreground.
 (unless-graphic%
-  (set-face-background 'region "yellow")
-  (set-face-foreground 'region "black"))
+  (set-face-background 'region +term-background-color+)
+  (set-face-foreground 'region +term-foreground-color+))
 
 ;; end of on-term-autoload.el

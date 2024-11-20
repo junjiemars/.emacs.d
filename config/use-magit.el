@@ -10,28 +10,28 @@
 ;;
 ;;;;
 
-(unless-graphic%
+;; (unless-graphic%
 
-  (defun trans-color (color &optional fn frame)
-    "Trans COLOR by FN in selected FRAME."
-    (declare (indent 1))
-    (when (stringp color)
-      (let ((cs (color-values color frame)))
-        (when cs
-          (let ((rc 0) (i 16))
-            (dolist* (x cs (logand #xffffff rc))
-              (setq rc (logior
-                        (ash (if fn (funcall fn x) x) i)
-                        rc)
-                    i (- i 8)))))))))
+;;   (defun trans-color (color &optional fn frame)
+;;     "Trans COLOR by FN in selected FRAME."
+;;     (declare (indent 1))
+;;     (when (stringp color)
+;;       (let ((cs (color-values color frame)))
+;;         (when cs
+;;           (let ((rc 0) (i 16))
+;;             (dolist* (x cs (logand #xffffff rc))
+;;               (setq rc (logior
+;;                         (ash (if fn (funcall fn x) x) i)
+;;                         rc)
+;;                     i (- i 8)))))))))
 
-(unless-graphic%
+;; (unless-graphic%
 
-  (defun toggle-face-background! (face &optional frame)
-    "Toggle \\=`face-background\\=' to contrasted color."
-    (let ((c (trans-color (face-background face frame)
-               (lambda (x) (- #xff x)) frame)))
-      (and c (set-face-background face (format "#%x" c) frame)))))
+;;   (defun toggle-face-background! (face &optional frame)
+;;     "Toggle \\=`face-background\\=' to contrasted color."
+;;     (let ((c (trans-color (face-background face frame)
+;;                (lambda (x) (- #xff x)) frame)))
+;;       (and c (set-face-background face (format "#%x" c) frame)))))
 
 
 
@@ -47,7 +47,8 @@
       (setq% magit-git-executable "git" 'magit)))
   ;; contrast color for `magit-section-highlight'
   (unless-graphic%
-    (toggle-face-background! 'magit-section-highlight)))
+    (set-face-background 'magit-section-highlight +term-background-color+)
+    (set-face-foreground 'magit-section-highlight +term-foreground-color+)))
 
 
 
