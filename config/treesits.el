@@ -29,15 +29,21 @@
             (t m))))
   "The \\=`treesit\\=' recipe.")
 
+(defun treesit*-on/off-check (recipe)
+  "Return t if \\=`treesit\\=' is on, otherwise nil."
+  (catch 'br
+    (dolist* (x recipe)
+      (let ((m (plist-get x :map)))
+        (dolist* (a major-mode-remap-alist)
+          (and (eq m (cdr a)) (throw 'br t)))
+        (dolist* (a auto-mode-alist)
+          (and (eq m (cdr a)) (throw 'br t)))))))
+
 (defun toggle-treesit! ()
   "Toggle \\=`treesit\\=' on or off."
   (interactive)
   (let* ((ts (treesit*-recipe))
-         (on (catch 'br
-               (dolist* (a major-mode-remap-alist)
-                 (dolist* (x ts)
-                   (and (eq (plist-get x :map) (cdr a))
-                        (throw 'br t)))))))
+         (on (treesit*-on/off-check ts)))
     (cond (on (setq auto-mode-alist
                     (let ((as nil))
                       (dolist* (a auto-mode-alist (nreverse as))
@@ -54,8 +60,7 @@
                                     (and (eq (plist-get x :map) (cdr a))
                                          (throw 'br t))))
                           (setq as (cons a as)))))
-                    treesit-language-source-alist nil)
-              (message "%s" "treesit off"))
+                    treesit-language-source-alist nil))
           (t (let ((aa (copy-sequence auto-mode-alist)))
                (dolist* (x ts)
                  (let ((l1 (plist-get x :lang))
@@ -68,8 +73,9 @@
                    (dolist* (y auto-mode-alist)
                      (and (eq (cdr y) m1)
                           (push! (cons (car y) r1) aa)))))
-               (setq auto-mode-alist aa))
-             (message "%s" "treesit on")))))
+               (setq auto-mode-alist aa))))
+    (unless-noninteractive%
+      (message "treesit %s" (if on "off" "on")))))
 
 (defadvice treesit--install-language-grammar-1
     (before treesit--install-language-grammar-1-before first compile disable)
