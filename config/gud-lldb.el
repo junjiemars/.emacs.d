@@ -37,6 +37,7 @@
 ;;;;
 
 (require 'gud)
+(require% 'guds (v-home%> "config/guds") t)
 
 
 
@@ -114,8 +115,8 @@ If nil, only source files in the program directory will be known
 (declare-function gud-tbreak        "gud")
 (declare-function gud-until         "gud")
 (declare-function gud-up            "gud")
-(autoload 'gud*-def (v-home%> "config/guds") nil nil 'macro)
-(autoload 'gud*-find-c-last-expr (v-home%> "config/guds"))
+;; (autoload 'gud*-def (v-home%> "config/guds") nil nil 'macro)
+;; (autoload 'gud*-find-c-last-expr (v-home%> "config/guds"))
 
  ;; end of gud-* declarations
 
@@ -129,7 +130,7 @@ If nil, only source files in the program directory will be known
   "Transform a relative FILENAME to an absolute one.\n
 Return absolute filename when FILENAME exists, otherwise nil."
   (or (let ((f (expand-file-name filename)))
-        (when (file-exists-p f) f))
+        (and (file-exists-p f) f))
       (catch 'br
         (dolist* (d gud-lldb-directories)
           (let ((p (concat d "/" filename)))
@@ -195,27 +196,27 @@ https://github.com/llvm/llvm-project/."
         (end (point)))
     (when proc
       (let* ((cmd (buffer-substring-no-properties start end))
-             (script (lldb-script-apropos cmd)))
-        (with-current-buffer (*lldb-out*) (erase-buffer))
-        (comint-redirect-send-command-to-process script
-                                                 (*lldb-out*)
-                                                 proc nil t)
+             (script (lldb-script-apropos cmd))
+             (*out* (*lldb-out*))
+             (+xs+ (concat "^\\(script.*"
+                           "\\|[[:digit:]]+"
+                           "\\|\"\s*\""
+                           "\\|\"None\""
+                           "\\|\\[.*\\]"
+                           "\\)")))
+        (with-current-buffer *out* (erase-buffer))
+        (comint-redirect-send-command-to-process
+         script *out* proc nil t)
         (unwind-protect
             (while (or quit-flag (null comint-redirect-completed))
               (accept-process-output nil 2))
           (comint-redirect-cleanup))
         (list start end
-              (let* ((xs (concat "^\\(script.*"
-                                 "\\|[[:digit:]]+"
-                                 "\\|\"\s*\""
-                                 "\\|\"None\""
-                                 "\\|\\[.*\\]"
-                                 "\\)"))
-                     (s1 (read-from-string
-                          (with-current-buffer (*lldb-out*)
-  			                    (flush-lines xs (point-min) (point-max) nil)
-  			                    (buffer-substring-no-properties
-                             (point-min) (point-max))))))
+              (let ((s1 (read-from-string
+                         (with-current-buffer *out*
+  			                   (flush-lines +xs+ (point-min) (point-max) nil)
+  			                   (buffer-substring-no-properties
+                            (point-min) (point-max))))))
                 (when (and (consp s1) (car s1))
                   (let* ((ss (car s1))
                          (w (let ((n (- end start)))
@@ -225,15 +226,15 @@ https://github.com/llvm/llvm-project/."
                               (if (> n 0) n 0)))
                          (ls (substring cmd 0 w))
                          (rs (substring cmd w)))
-                    (let ((xs nil))
+                    (let ((zs nil))
                       (dolist* (z (if (and (cadr ss)
                                            (string-match
                                             (concat rs (string-trim> (car ss)))
                                             (cadr ss)))
                                       (cdr ss)
                                     ss)
-                                  (nreverse xs))
-                        (setq xs (cons (concat ls z) xs)))))))
+                                  (nreverse zs))
+                        (setq zs (cons (concat ls z) zs)))))))
               :exclusive 'no)))))
 
 
