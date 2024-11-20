@@ -50,10 +50,10 @@
               (("<meta name=\"description\" content=\"The meaning of ")
                " How to use" . (dict-fn-remove-html-tag)))))))
     (lambda (&optional n)
-      (if n (let ((x (assoc-string (car n) b)))
-              (if x (setcdr x (cdr n))
-                (setq b (cons n b))))
-        b)))
+      (cond (n (let ((x (assoc-string (car n) b)))
+                 (if x (setcdr x (cdr n))
+                   (setq b (cons n b)))))
+            (t b))))
   "Dictionaries using by \\=`lookup-dict\\='.")
 
 (defvar *dict-name-history* nil
@@ -121,9 +121,8 @@
     (insert ss)
     (goto-char (point-min))
     (while (search-forward-regexp "&#\\([0-9]+\\);" nil t)
-      (replace-match (char-to-string
-                      (string-to-number (match-string 1)))))
-    (buffer-substring (point-min) (point-max))))
+      (replace-match (char-to-string (string-to-number (match-string 1)))))
+    (buffer-substring-no-properties (point-min) (point-max))))
 
 (defun dict-fn-decode-html-char (ss)
   "Decode &#[a-z]+; to string."
@@ -150,7 +149,8 @@
         (goto-char (point-min))
         (while (search-forward-regexp x nil t)
           (replace-match "" t t)))
-      (string-trim>< (buffer-substring (point-min) (point-max))))))
+      (string-trim><
+       (buffer-substring-no-properties (point-min) (point-max))))))
 
 ;; end of definition
 
@@ -215,6 +215,14 @@ finished."
       (ignore* silent inhibit-cookies)
       `(url-retrieve ,url ,callback ,cbargs))))
 
+(defun dict-lookup-retrieve (what url def)
+  (let ((url-history-track nil))
+    (when-version% > 25
+      (ignore* url-history-track))
+    (url-retrieve*
+     (concat url (url-hexify-string what))
+     #'on-lookup-dict def t t)))
+
 (defun lookup-dict (what &optional dict)
   "Lookup WORD in DICT then show the result in the echo area."
   (interactive
@@ -222,8 +230,7 @@ finished."
          (when current-prefix-arg
            (let* ((ns (mapcar #'car (*dict-defs*)))
                   (d (completing-read
-                      (format "Choose (%s) "
-                              (mapconcat #'identity ns "|"))
+                      (format "Choose (%s) " (mapconcat #'identity ns "|"))
                       ns nil nil
                       (or (car *dict-name-history*)
                           (car ns))
@@ -247,15 +254,9 @@ finished."
                                   (string-match* "\\(all\\)" ss 1)))
                          `(, sr)
                        `(,(split-string* ss "," t "[ \n]*"))))))))
-  (let* ((d1 (dict-def-find dict))
-         (url (cdr (assoc-string "url" (cadr (assq 'dict d1))))))
-    (make-thread* (lambda ()
-                    (let ((url-history-track nil))
-                      (when-version% > 25
-                        (ignore* url-history-track))
-                      (url-retrieve*
-                       (concat url (url-hexify-string what))
-                       #'on-lookup-dict d1 t t))))))
+  (let* ((def (dict-def-find dict))
+         (url (cdr (assoc-string "url" (cadr (assq 'dict def))))))
+    (make-thread* (lambda () (dict-lookup-retrieve what url def)))))
 
 ;; end of `lookup-dict'
 
