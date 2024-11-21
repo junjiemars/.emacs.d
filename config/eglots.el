@@ -96,7 +96,7 @@
 (defun on-eglot-init! ()
   "On \\=`eglot\\=' initialization."
   ;; load recipe
-  (eglot*-server-programs :read)
+  (or (eglot*-server-programs :read) (eglot*-server-programs))
   ;; most reduced `eldoc'
   (setq% eldoc-echo-area-use-multiline-p nil 'eldoc)
 
