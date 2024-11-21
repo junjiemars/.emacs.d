@@ -30,6 +30,13 @@
 
 ;; end of `ed'
 
+;;; `marks'
+
+(autoload '_mark_quoted_asymmetry@_ (v-home%> "config/marks"))
+(autoload '_mark_quoted_symmetry@_ (v-home%> "config/marks"))
+
+;; end of `marks'
+
 ;;; `mill'
 
 (autoload 'kill-quoted-asymmetry@ (v-home%> "config/mill") nil t)

@@ -8,8 +8,7 @@
 
 ;;; require
 
-(declare-function symbol@ (v-home%> "config/ed"))
-
+(require% 'ed (v-home%> "config/ed"))
 (require% 'marks (v-home%> "config/marks"))
 
 ;; end of require
