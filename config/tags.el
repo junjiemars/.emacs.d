@@ -130,6 +130,8 @@ RENEW overwrite the existing tags file when t else create it."
         (message "%s for %s ... %s"
                  h tf (if (file-exists-p tf) "done" "failed"))))))
 
+;;; file/dir filters
+
 (defun tags-c-file-filter (f _)
   (declare (pure t))
   (string-match "\\.[ch]+$" f))
@@ -138,6 +140,12 @@ RENEW overwrite the existing tags file when t else create it."
   (declare (pure t))
   (null
    (string-match (concat *tags-vcs-meta-dir* "\\|^out$\\|^objs$") d)))
+
+(defun tags-lisp-file-filter (f _)
+  (declare (pure t))
+  (string-match "\\.el$\\|\\.cl$\\|\\.lis[p]?$\\|\\.ss$\\|\\.scm$" f))
+
+;; end of file/dir filters
 
 (defun make-c-tags
     (home tags-file &optional option file-filter dir-filter renew)
@@ -148,9 +156,6 @@ RENEW overwrite the existing tags file when t else create it."
              (or dir-filter #'tags-c-dir-filter)
              option
              renew))
-
-(defun tags-lisp-file-filter (f _)
-  (string-match "\\.el$\\|\\.cl$\\|\\.lis[p]?$" f))
 
 (defun tags-lisp-dir-filter (d _)
   (null
@@ -176,8 +181,7 @@ RENEW overwrite the existing tags file when t else create it."
   (make-lisp-tags (emacs-home*)
                   (tags-spec->% :nore)
                   option
-                  (lambda (f _)
-                    (string-match "\\.el$" f))
+                  #'tags-lisp-file-filter
                   (lambda (d _)
                     (string= "config" d))
                   renew))
@@ -193,13 +197,13 @@ RENEW overwrite the existing tags file when t else create it."
   (make-c-tags (concat source "src/")
                (tags-spec->% :emacs)
                option
-               (lambda (f _) (string-match "\\.[ch]$" f))
+               #'tags-c-file-filter
                #'true
                renew)
   (make-lisp-tags (concat source "lisp/")
                   (tags-spec->% :emacs)
                   option
-                  (lambda (f _) (string-match "\\.el$" f))
+                  #'tags-lisp-file-filter
                   #'true))
 
 ;;
