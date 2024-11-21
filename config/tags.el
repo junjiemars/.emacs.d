@@ -64,8 +64,7 @@ when \\=`desktop-globals-to-save\\=' include it.")
                   (fluid-let (file-name-history tags-table-list)
                     (if (consp file-name-history)
                         (read-file-name "unmount from ")
-                      (user-error
-                       "%s" "No mounted tags-table-list"))))))
+                      (user-error "%s" "No mounted tags-table-list"))))))
   (setq tags-file-name nil
         tags-table-list
         (when tags
@@ -75,12 +74,12 @@ when \\=`desktop-globals-to-save\\=' include it.")
               (unless (string= x fn)
                 (setq xs (cons x xs))))))))
 
-(defun dir-iterate (dir ff df fn dn)
+(defun dir-iterate (dir ff &optional df fp dp)
   "Iterate DIR.\n
 FF file-filter (lambda (file-name absolute-name)...),
 DF dir-filter (lambda (dir-name absolute-name)...),
-FN file-processor (lambda (absolute-name)...),
-DN dir-processor (lambda (aboslute-name)...)."
+FP file-processor (lambda (absolute-name)...),
+DP dir-processor (lambda (aboslute-name)...)."
   (inhibit-file-name-handler
     (let ((files (directory-files dir t)))
       (while files
@@ -90,32 +89,12 @@ DN dir-processor (lambda (aboslute-name)...)."
                (len (length f)))
           (cond ((eq ft t) (cond ((char= (aref f (1- len)) ?.))
                                  ((and df (funcall df f a))
-                                  (and dn (funcall dn a))
-                                  (dir-iterate a ff df fn dn))))
+                                  (and dp (funcall dp a))
+                                  (dir-iterate a ff df fp dp))))
                 ((stringp ft))
-                (ff (cond ((funcall ff f a) (and fn (funcall fn a))))))
+                ((null ft) (cond ((and ff (funcall ff f a))
+                                  (and fp (funcall fp a))))))
           (setq files (cdr files)))))))
-
-(defun dir-backtrack (dir prefer)
-  "Backtrack DIR.\n
-Starting at DIR, look up directory hierarchy for prefered
-directory or file. Ignore the symbol links of directory.\n
-PREFER (lambda (dir files)...)."
-  (inhibit-file-name-handler
-    (let ((stop "\\(^/\\|[a-zA-Z]:/\\)\\'"))
-      (while (and (directory-name-p dir) (null (string-match stop dir)))
-        (and prefer
-             (funcall prefer dir
-                      (let ((xs nil))
-                        (dolist* (x (directory-files dir t) xs)
-                          (let ((f (file-name-nondirectory x))
-                                (ft (nth 0 (file-attributes x))))
-                            (unless (or (and (eq ft t)
-                                             (or (string= "." f)
-                                                 (string= ".." f)))
-                                        (stringp ft))
-                              (setq xs (cons f xs))))))))
-        (setq dir (path- dir))))))
 
 (defun make-tags
     (home tags-file file-filter dir-filter &optional tags-option renew)
@@ -131,84 +110,81 @@ RENEW overwrite the existing tags file when t else create it."
   (when (file-exists-p home)
     (let* ((tf (expand-file-name tags-file))
            (td (file-name-directory tf)))
-      (if (file-exists-p tf)
-          (when renew (delete-file tf))
-        (path! td))
+      (cond ((file-exists-p tf) (when renew (delete-file tf)))
+            (t (path! td)))
       (let ((h (propertize "make-tags" 'face 'minibuffer-prompt)))
-        (dir-iterate
-         home
-         file-filter
-         dir-filter
-         (lambda (f)
-           (let ((cmd (format (*tags* :cmd)
-                              (or tags-option "")
-                              tf
-                              (shell-quote-argument f)
-                              (shell-quote-argument f))))
-             (message "%s %s... %s"
-                      h cmd (if (zerop (car (shell-command* cmd)))
-                                "ok"
-                              "failed"))))
-         nil)
+        (dir-iterate home
+                     file-filter
+                     dir-filter
+                     (lambda (f)
+                       (let ((cmd (format (*tags* :cmd)
+                                          (or tags-option "")
+                                          tf
+                                          (shell-quote-argument f)
+                                          (shell-quote-argument f))))
+                         (message "%s %s... %s"
+                                  h cmd (if (zerop (car (shell-command* cmd)))
+                                            "ok"
+                                          "failed"))))
+                     nil)
         (message "%s for %s ... %s"
                  h tf (if (file-exists-p tf) "done" "failed"))))))
 
+(defun tags-c-file-filter (f _)
+  (declare (pure t))
+  (string-match "\\.[ch]+$" f))
+
+(defun tags-c-dir-filter (d _)
+  (declare (pure t))
+  (null
+   (string-match (concat *tags-vcs-meta-dir* "\\|^out$\\|^objs$") d)))
 
 (defun make-c-tags
     (home tags-file &optional option file-filter dir-filter renew)
   "Make TAGS-FILE for C source code in HOME."
   (make-tags home
              tags-file
-             (or file-filter
-                 (lambda (f _) (string-match "\\.[ch]+$" f)))
-             (or dir-filter
-                 (lambda (d _)
-                   (not
-                    (string-match
-                     (concat *tags-vcs-meta-dir* "\\|^out/$\\|^objs/$")
-                     d))))
+             (or file-filter #'tags-c-file-filter)
+             (or dir-filter #'tags-c-dir-filter)
              option
              renew))
 
+(defun tags-lisp-file-filter (f _)
+  (string-match "\\.el$\\|\\.cl$\\|\\.lis[p]?$" f))
+
+(defun tags-lisp-dir-filter (d _)
+  (null
+   (string-match (concat *tags-vcs-meta-dir* "\\|^out$\\|^objs/$") d)))
 
 (defun make-lisp-tags
     (home tags-file &optional option file-filter dir-filter renew)
   "Make TAGS-FILE for Lisp source code in HOME."
   (make-tags home
              tags-file
-             (or file-filter
-                 (lambda (f _)
-                   (string-match "\\.el$\\|\\.cl$\\|\\.lis[p]?$"
-                                 f)))
-             (or dir-filter
-                 (lambda (d _)
-                   (not
-                    (string-match
-                     (concat *tags-vcs-meta-dir* "\\|^out/$\\|^objs/$")
-                     d))))
+             (or file-filter #'tags-lisp-file-filter)
+             (or dir-filter #'tags-lisp-dir-filter)
              option
              renew))
 
 
 (defun make-nore-tags (&optional option renew)
   "Make tags for Nore \\=`emacs-home*\\=' directory."
-  (interactive (list
-                (read-string (concat (*tags*) " option: ")
-                             (car *tags-option-history*)
-                             '*tags-option-history*)
-                (y-or-n-p "tags renew? ")))
+  (interactive (list (read-string (concat (*tags*) " option: ")
+                                  (car *tags-option-history*)
+                                  '*tags-option-history*)
+                     (y-or-n-p "tags renew? ")))
   (make-lisp-tags (emacs-home*)
                   (tags-spec->% :nore)
                   option
                   (lambda (f _)
                     (string-match "\\.el$" f))
                   (lambda (d _)
-                    (string-match "^config/$" d))
+                    (string= "config" d))
                   renew))
 
 
 (defun make-emacs-tags (source &optional option renew)
-  "Make tags for Emacs' C and Lisp SOURCE code."
+  "Make tags for Emacs\\=' C and Lisp SOURCE code."
   (interactive (list (read-directory-name "make tags for " source-directory)
                      (read-string (concat (*tags*) " option: ")
                                   (car *tags-option-history*)
@@ -218,13 +194,13 @@ RENEW overwrite the existing tags file when t else create it."
                (tags-spec->% :emacs)
                option
                (lambda (f _) (string-match "\\.[ch]$" f))
-               (lambda (_ __) t)
+               #'true
                renew)
   (make-lisp-tags (concat source "lisp/")
                   (tags-spec->% :emacs)
                   option
                   (lambda (f _) (string-match "\\.el$" f))
-                  (lambda (_ __) t)))
+                  #'true))
 
 ;;
 
@@ -250,7 +226,7 @@ RENEW overwrite the existing tags file when t else create it."
     (when (make-tags home
                      store
                      (lambda (f _)
-                       (not (string-match "\\.tags$" f)))
+                       (null (string= "tags" f)))
                      (lambda (d a)
                        (cond ((string-match vcs d) nil)
                              ((and (stringp exc)
@@ -268,18 +244,19 @@ RENEW overwrite the existing tags file when t else create it."
 
 (defun make-dir-ctags (dir tags options)
   "Make tags via ctags for specified DIR."
-  (unless (string= "ctags" (*tags*))
-    (error "%s" "No ctags program found"))
-  (let ((dir (path+ (expand-file-name dir)))
-        (tags (expand-file-name tags))
-        (options (concat "--options=" (expand-file-name options))))
-    (let ((rc (shell-command* (*tags*)
-                "-R"
-                "-e"
-                "-o" tags
-                options
-                dir)))
-      (and (zerop (car rc)) tags))))
+  (let ((tp (*tags*)))
+    (unless (string= "ctags" tp)
+      (error "%s" "No ctags program found"))
+    (let ((d1 (path+ (expand-file-name dir)))
+          (f1 (expand-file-name tags))
+          (o1 (concat "--options=" (expand-file-name options))))
+      (let ((rc (shell-command* tp
+                  "-R"
+                  "-e"
+                  "-o" f1
+                  o1
+                  d1)))
+        (and (zerop (car rc)) f1)))))
 
 ;; end of `make-dir-ctags'
 
