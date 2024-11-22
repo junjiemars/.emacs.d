@@ -122,15 +122,17 @@
   (format "%srust.%s.TAGS"
           (tags-spec->% :root) (rust*-sysroot :hash)))
 
+(defun rust*-make-tags (&optional renew)
+  "Make rust tags."
+  (let ((file (rust*-tags-spec)))
+    (cond (renew (make-dir-ctags (rust*-sysroot :src)
+                                 (rust*-tags-spec)
+                                 (rust*-sysroot :tag)))
+          (t file))))
+
 (defalias 'rust*-make-tags
-  (lexical-let% ((b (rust*-tags-spec)))
-    (lambda (&optional op)
-      (cond ((eq op :new)
-             (setq b (make-dir-ctags (rust*-sysroot :src)
-                                     (rust*-tags-spec)
-                                     (rust*-sysroot :tag))))
-            (t (and b (file-exists-p b) b)))))
-  "Make rust tags.")
+
+  "")
 
 ;; end of tags
 

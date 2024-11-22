@@ -8,26 +8,34 @@
 ;; Commentary: tagging
 ;;;;
 
+
+
+;;;
+;; tags envrionments
+;;;
+
+(defun tags*-check ()
+  (or (executable-find%
+       "ctags"
+       (lambda (bin)
+         (let ((ver (shell-command* bin "--version")))
+           (and (zerop (car ver))
+                (string-match "Exuberant Ctags [.0-9]+"
+                              (cdr ver))
+                ``(:bin "ctags" :cmd
+                        ,(concat ,bin " -e %s -o %s -a %s"))))))
+      (executable-find%
+       "etags"
+       (lambda (bin)
+         (let ((ver (shell-command* bin "--version")))
+           (and (zerop (car ver))
+                (string-match "etags (GNU Emacs [.0-9]+)"
+                              (cdr ver))
+                ``(:bin "etags" :cmd
+                        ,(concat ,bin " %s -o %s -a %s"))))))))
+
 (defalias '*tags*
-  (lexical-let%
-      ((b (or (executable-find%
-               "ctags"
-               (lambda (bin)
-                 (let ((ver (shell-command* bin "--version")))
-                   (and (zerop (car ver))
-                        (string-match "Exuberant Ctags [.0-9]+"
-                                      (cdr ver))
-                        ``(:bin "ctags" :cmd
-                                ,(concat ,bin " -e %s -o %s -a %s"))))))
-              (executable-find%
-               "etags"
-               (lambda (bin)
-                 (let ((ver (shell-command* bin "--version")))
-                   (and (zerop (car ver))
-                        (string-match "etags (GNU Emacs [.0-9]+)"
-                                      (cdr ver))
-                        ``(:bin "etags" :cmd
-                                ,(concat ,bin " %s -o %s -a %s")))))))))
+  (lexical-let% ((b (tags*-check)))
     (lambda (&optional n)
       (plist-get b (or n :bin))))
   "The tags program.\n
@@ -56,6 +64,8 @@ when \\=`desktop-globals-to-save\\=' include it.")
 (defvar *tags-vcs-meta-dir*
   "^\\.git/$\\|\\.hg/$\\|\\.svn/$")
 
+;; end of tags environments
+
 (defun unmount-tags (&optional tags)
   "Unmount TAGS from \\=`tags-table-list\\='."
   (interactive (list
@@ -74,27 +84,43 @@ when \\=`desktop-globals-to-save\\=' include it.")
               (unless (string= x fn)
                 (setq xs (cons x xs))))))))
 
-(defun dir-iterate (dir ff &optional df fp dp)
+(defun dir-iterate (dir ff &optional df fp dp env)
   "Iterate DIR.\n
 FF file-filter (lambda (file-name absolute-name)...),
 DF dir-filter (lambda (dir-name absolute-name)...),
-FP file-processor (lambda (absolute-name)...),
-DP dir-processor (lambda (aboslute-name)...)."
-  (inhibit-file-name-handler
-    (let ((files (directory-files dir t)))
-      (while files
-        (let* ((a (car files))
-               (s (file-attributes a)) (ft (nth 0 s))
-               (f (file-name-nondirectory a))
-               (len (length f)))
-          (cond ((eq ft t) (cond ((char= (aref f (1- len)) ?.))
-                                 ((and df (funcall df f a))
-                                  (and dp (funcall dp a))
-                                  (dir-iterate a ff df fp dp))))
-                ((stringp ft))
-                ((null ft) (cond ((and ff (funcall ff f a))
-                                  (and fp (funcall fp a))))))
-          (setq files (cdr files)))))))
+FP file-processor (lambda (absolute-name env)...),
+DP dir-processor (lambda (aboslute-name env)...),
+ENV (:k1 v1 :k2 v2 ...)."
+  ;; (inhibit-file-name-handler)
+  (let ((files (directory-files dir t)))
+    (while files
+      (let* ((a (car files))
+             (s (file-attributes a)) (ft (nth 0 s))
+             (f (file-name-nondirectory a))
+             (len (length f)))
+        (cond ((eq ft t) (cond ((char= (aref f (1- len)) ?.) nil)
+                               ((and df (funcall df f a))
+                                (and dp (funcall dp a env))
+                                (dir-iterate a ff df fp dp env))))
+              ((stringp ft) nil)
+              ((null ft) (and ff (funcall ff f a)
+                              fp (funcall fp a env))))
+        (setq files (cdr files))))))
+
+(defvar +tags-make-prompt+
+  (propertize "Make tags" 'face 'minibuffer-prompt))
+
+(defun tags-file-processor (f &optional env)
+  (let ((tf (plist-get env :tags-file))
+        (opt (plist-get env :tags-option))
+        (fmt (plist-get env :tags-cmd))
+        (qf (shell-quote-argument f)))
+    (let* ((cmd (format fmt (or opt "") tf qf))
+           (rc (shell-command* cmd))
+           (done (zerop (car rc))))
+      (message "%s %s... %s"
+               +tags-make-prompt+ cmd (if done "ok" "failed"))
+      (and done f))))
 
 (defun make-tags
     (home tags-file file-filter dir-filter &optional tags-option renew)
@@ -112,25 +138,25 @@ RENEW overwrite the existing tags file when t else create it."
            (td (file-name-directory tf)))
       (cond ((file-exists-p tf) (when renew (delete-file tf)))
             (t (path! td)))
-      (let ((h (propertize "Make tags" 'face 'minibuffer-prompt)))
+      (let ((env (list :tags-file tf
+                       :tags-option tags-option
+                       :tags-prompt +tags-make-prompt+
+                       :tags-cmd (*tags* :cmd))))
         (dir-iterate home
                      file-filter
                      dir-filter
-                     (lambda (f)
-                       (let ((cmd (format (*tags* :cmd)
-                                          (or tags-option "")
-                                          tf
-                                          (shell-quote-argument f)
-                                          (shell-quote-argument f))))
-                         (message "%s %s... %s"
-                                  h cmd (if (zerop (car (shell-command* cmd)))
-                                            "ok"
-                                          "failed"))))
-                     nil)
+                     #'tags-file-processor
+                     nil
+                     env)
         (message "%s for %s ... %s"
-                 h tf (if (file-exists-p tf) "done" "failed"))))))
+                 +tags-make-prompt+ tf
+                 (if (file-exists-p tf) "done" "failed"))))))
 
 ;;; file/dir filters
+
+(defun tags-dir-file-filter (f _)
+  (declare (pure t))
+  (null (string-match "tags$" f)))
 
 (defun tags-c-file-filter (f _)
   (declare (pure t))
@@ -145,7 +171,13 @@ RENEW overwrite the existing tags file when t else create it."
   (declare (pure t))
   (string-match "\\.el$\\|\\.cl$\\|\\.lis[p]?$\\|\\.ss$\\|\\.scm$" f))
 
+(defun tags-lisp-dir-filter (d _)
+  (null
+   (string-match (concat *tags-vcs-meta-dir* "\\|^out$\\|^objs/$") d)))
+
 ;; end of file/dir filters
+
+;;; make tags
 
 (defun make-c-tags
     (home tags-file &optional option file-filter dir-filter renew)
@@ -157,10 +189,6 @@ RENEW overwrite the existing tags file when t else create it."
              option
              renew))
 
-(defun tags-lisp-dir-filter (d _)
-  (null
-   (string-match (concat *tags-vcs-meta-dir* "\\|^out$\\|^objs/$") d)))
-
 (defun make-lisp-tags
     (home tags-file &optional option file-filter dir-filter renew)
   "Make TAGS-FILE for Lisp source code in HOME."
@@ -170,7 +198,6 @@ RENEW overwrite the existing tags file when t else create it."
              (or dir-filter #'tags-lisp-dir-filter)
              option
              renew))
-
 
 (defun make-nore-tags (&optional option renew)
   "Make tags for Nore \\=`emacs-home*\\=' directory."
@@ -206,10 +233,6 @@ RENEW overwrite the existing tags file when t else create it."
                   #'tags-lisp-file-filter
                   #'true))
 
-;;
-
-;;; `make-dir-tags'
-
 (defun make-dir-tags
     (dir store &optional include-dir exclude-dir option renew)
   "Make tags for specified DIR."
@@ -229,8 +252,7 @@ RENEW overwrite the existing tags file when t else create it."
         (inc (unless (string= include-dir "") include-dir)))
     (when (make-tags home
                      store
-                     (lambda (f _)
-                       (null (string= "tags" f)))
+                     #'tags-dir-file-filter
                      (lambda (d a)
                        (cond ((string-match vcs d) nil)
                              ((and (stringp exc)
@@ -242,10 +264,6 @@ RENEW overwrite the existing tags file when t else create it."
                      option
                      renew))))
 
-;; end of `make-dir-tags'
-
-;;; `make-dir-ctags'
-
 (defun make-dir-ctags (dir tags options)
   "Make tags via ctags for specified DIR."
   (let ((tp (*tags*)))
@@ -254,18 +272,16 @@ RENEW overwrite the existing tags file when t else create it."
     (let ((d1 (path+ (expand-file-name dir)))
           (f1 (expand-file-name tags))
           (o1 (concat "--options=" (expand-file-name options))))
-      (let ((rc (shell-command* tp
-                  "-R"
-                  "-e"
-                  "-o" f1
-                  o1
-                  d1)))
-        (and (zerop (car rc)) f1)))))
+      (message "%s %s %s %s ..." +tags-make-prompt+ dir tp o1)
+      (let* ((rc (shell-command* tp "-R" "-e" "-o" f1 o1 d1))
+             (done (zerop (car rc))))
+        (message "%s for %s ... %s"
+                 +tags-make-prompt+ dir (if done "done" "failed"))
+        (and done f1)))))
 
-;; end of `make-dir-ctags'
+;; end of make tags
 
 
 (provide 'tags)
-
 
 ;; end of tags.el

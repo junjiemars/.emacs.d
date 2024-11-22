@@ -161,6 +161,6 @@
 ;;   (server-start))
 
 (unless-noninteractive%
-  (message "Elapsed %ss" (emacs-init-time)))
+  (message "Elapsed %s" (emacs-init-time)))
 
 ;; end of sample-self-epilogue.el

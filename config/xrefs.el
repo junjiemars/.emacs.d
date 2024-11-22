@@ -89,9 +89,12 @@
                       "xref-find-definitions-after")
     (ad-activate #'xref-find-definitions t))
   (when-fn-xref--show-location%
-   (ad-enable-advice #'xref--show-location 'after
-                     "xref--show-location-after")
-   (ad-activate #'xref--show-location t)))
+    (ad-enable-advice #'xref--show-location 'after
+                      "xref--show-location-after")
+    (ad-activate #'xref--show-location t))
+  (unless-graphic%
+    (set-face-background 'xref-match +term-background-color+)
+    (set-face-foreground 'xref-match +term-foreground-color+)))
 
 
 (unless-fn% 'xref-find-references 'xref

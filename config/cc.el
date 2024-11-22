@@ -90,20 +90,18 @@
             (make-temp-file "cc-s-" nil ".c"))))
     (catch 'br
       (dolist* (cc cx)
-        (when (zerop
-               (car
-                (shell-command*
-                    (format (if-platform% 'windows-nt
-                                (if (string= "cc-env.bat" cc)
-                                    (concat "%s %s -Fe%s -Fo")
-                                  "%s %s -o%s")
-                              "%s %s -o%s")
-                            (if-platform% 'windows-nt
-                                (if (string= "cc-env.bat" cc)
-                                    "cc-env.bat && cl"
-                                  cc)
-                              cc)
-                            i o))))
+        (when (zerop (car (shell-command*
+                              (format (if-platform% 'windows-nt
+                                          (if (string= "cc-env.bat" cc)
+                                              (concat "%s %s -Fe%s -Fo")
+                                            "%s %s -o%s")
+                                        "%s %s -o%s")
+                                      (if-platform% 'windows-nt
+                                          (if (string= "cc-env.bat" cc)
+                                              "cc-env.bat && cl"
+                                            cc)
+                                        cc)
+                                      i o))))
           (throw 'br cc))))))
 
 (defalias 'cc*-cc
@@ -150,16 +148,14 @@
 (when-platform% 'windows-nt
   (defconst +cc*-xargs-bin+
     (file-name-nondirectory%
-     (or (executable-find%
-          "xargs"
-          (lambda (xargs)
-            (let ((x (shell-command* "echo xxx"
-                       "&& echo zzz"
-                       "|xargs -0")))
-              (and (zerop (car x))
-                   (string-match "^zzz" (cdr x))))))
-         (and (cc*-cc)
-              (cc*-make-xargs-bin))))
+     (or (executable-find% "xargs"
+                           (lambda (xargs)
+                             (let ((x (shell-command* "echo xxx"
+                                        "&& echo zzz"
+                                        "|xargs -0")))
+                               (and (zerop (car x))
+                                    (string-match "^zzz" (cdr x))))))
+         (and (cc*-cc) (cc*-make-xargs-bin))))
     "The name of xargs executable."))
 
 ;; end of xargs
@@ -204,76 +200,33 @@
                           "#include <\\.\\.\\.> search starts here:" x))
                 (setq beg t)))))))))
 
+(defun cc*-system-include-read (file &optional remote)
+  (or (read-sexp-from-file file)
+      (let ((xs nil))
+        (dolist* (x (cc*-include-check remote) (nreverse xs))
+          (let ((x1 (if remote (concat remote x) x)))
+            (and (file-exists-p x1)
+                 (setq xs (cons x1 xs))))))))
 
 (defalias 'cc*-system-include
   (lexical-let% ((dx nil))
-    (lambda (&optional cached remote)
+    (lambda (&optional op remote)
       (let* ((ss (if remote
                      (intern (mapconcat #'identity
                                         (ssh-remote->ids remote)
                                         "-"))
                    'native))
-             (fs (concat (v-home% ".exec/cc-inc-")
-                         (symbol-name ss) ".el"))
-             (d nil))
-        (or (and cached (plist-get dx ss))
-            (and cached (file-exists-p fs)
-                 (plist-get
-                  (setq dx (plist-put dx ss (read-sexp-from-file fs)))
-                  ss))
-            (and (setq d
-                       (let ((xs nil))
-                         (dolist* (x (cc*-include-check remote) (nreverse xs))
-                           (setq xs (cond (remote (cons (concat remote x) xs))
-                                          (t (cons x xs)))))))
-                 (consp d) (save-sexp-to-file d fs)
-                 (plist-get (setq dx (plist-put dx ss d)) ss))))))
+             (fs (concat (v-home% ".exec/cc-inc-") (symbol-name ss) ".el")))
+        (cond ((eq op :read)
+               (let ((ds (cc*-system-include-read fs remote)))
+                 (plist-get (setq dx (plist-put dx ss ds)) ss)))
+              ((eq op :save) (save-sexp-to-file (plist-get dx ss) fs))
+              (t (plist-get dx ss))))))
   "Return a list of system include directories.\n
 Load \\=`cc*-system-include\\=' from file when CACHED is t,
 otherwise check cc include on the fly.
 The REMOTE argument from \\=`ssh-remote-p\\='.")
 
-(defalias 'cc*-extra-include
-  (lexical-let% ((dx nil)
-                 (fs (v-home% ".exec/cc-extra-inc.el")))
-    (lambda (cached &rest dir)
-      (or (and cached dx)
-          (and cached (file-exists-p fs)
-               (setq dx (read-sexp-from-file fs)))
-          (and (consp dir)
-               (save-sexp-to-file
-                (setq dx
-                      (append dx
-                              (let ((xs nil))
-                                (dolist* (a dir (nreverse xs))
-                                  (let ((b (string-trim> a "/")))
-                                    (setq xs (cons (expand-file-name b)
-                                                   xs)))))))
-                fs)
-               dx))))
-  "Return a list of extra include directories.")
-
-
-;; (defun cc*-include-p (file)
-;;   "If FILE in \\=`cc*-system-include\\=' yield non-nil, else nil."
-;;   (when (stringp file)
-;;     (let ((remote (ssh-remote-p file)))
-;;       (file-in-dirs-p (file-name-directory file)
-;;                       (if remote
-;;                           (cc*-system-include t remote)
-;;                         (append (cc*-system-include t)
-;;                                 (cc*-extra-include t)))))))
-
-
-;; (defun cc*-view-include (buffer)
-;;   "View cc's BUFFER in \\=`view-mode\\='."
-;;   (when (and (bufferp buffer)
-;;              (let ((m (buffer-local-value 'major-mode buffer)))
-;;                (or (eq 'c-mode m)
-;;                    (eq 'c++-mode m)))
-;;              (cc*-include-p (substring-no-properties
-;;                              (buffer-file-name buffer))))
-;;     (with-current-buffer buffer (view-mode 1))))
 
 (defmacro when-fn-ff-find-other-file% (&rest body)
   (when-fn% 'ff-find-other-file 'find-file
@@ -290,8 +243,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
                            (when (stringp file)
                              (string-trim>
                               (file-name-directory file) "/")))
-                          (cc*-system-include t (ssh-remote-p file))
-                          (cc*-extra-include t))))
+                          (cc*-system-include :read (ssh-remote-p file)))))
           'find-file)
    (when-fn% 'xref-push-marker-stack 'xref
      (autoload 'xref-push-marker-stack "xref")
@@ -306,11 +258,11 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 
 (when-platform% 'windows-nt
   (defun cc*-make-macro-dump-bin (&optional options)
-    "Make cc-dmacro.exe for printing predefined macros."
-    (let ((c (v-home% ".exec/cc-dmacro.c"))
-          (exe (v-home% ".exec/cc-dmacro.exe")))
+    "Make cc-dump-macro.exe for printing predefined macros."
+    (let ((c (v-home% ".exec/cc-dump-macro.c"))
+          (exe (v-home% ".exec/cc-dump-macro.exe")))
       (unless (file-exists-p c)
-        (copy-file (emacs-home* "config/sample-cc-dmacro.c") c))
+        (copy-file (emacs-home* "config/sample-cc-dump-macro.c") c))
       (let ((cmd (shell-command* (cc*-cc)
                    (concat " -nologo"
                            " " options
@@ -359,32 +311,28 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 ;; `tags'
 ;;;
 
-(defalias 'cc*-make-tags
-  (lexical-let%
-      ((b (concat (tags-spec->% :root) "os.TAGS"))
-       (option "--langmap=c:.h.c --c-kinds=+ptesgux --extra=+fq")
-       (skip (concat "cpp\\|c\\+\\+"
-                     "\\|/python.*?/"
-                     "\\|/php.*?/"
-                     "\\|/ruby.*?/"
-                     "\\|/swift/")))
-    (lambda (&optional op)
-      (cond ((eq op :new)
-             (let ((inc (cc*-system-include))
-                   (filter (lambda (_ a)
-                             (not (string-match skip a)))))
-               (make-c-tags (car inc) b option nil filter)
-               (dolist* (p (cdr inc) b)
-                 (make-c-tags p b option nil filter))))
-            (t (inhibit-file-name-handler
-                 (and b (file-exists-p b) b))))))
-  "Make system C tags.")
+(defun cc*-make-tags (&optional renew)
+  "Make system C tags."
+  (let ((file (concat (tags-spec->% :root) "os.TAGS"))
+        (opt "--langmap=c:.h.c --c-kinds=+ptesgux --extra=+fq"))
+    (cond (renew (let ((inc (cc*-system-include :read)))
+                   (make-c-tags (car inc) file opt nil nil t)
+                   (dolist* (p (cdr inc) file)
+                     (make-c-tags p file opt))))
+          (t file))))
 
 ;; end of `cc*-make-tags'
 
 ;;;
 ;; `cc-styles'
 ;;;
+
+(defun cc*-style-arglist-cont-nonempty (langem)
+  (let ((col (save-excursion
+               (goto-char (cdr langem))
+               (current-column))))
+    (cond ((= col 0) 'c-basic-offset)
+          (t 'c-lineup-arglist))))
 
 (defvar cc*-style-nginx
   `("nginx"
@@ -410,12 +358,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
       +)
      (arglist-cont-nonempty
       .
-      ,(lambda (langem)
-         (let ((col (save-excursion
-                      (goto-char (cdr langem))
-                      (current-column))))
-           (cond ((= col 0) 'c-basic-offset)
-                 (t 'c-lineup-arglist)))))))
+      #'cc*-style-arglist-cont-nonempty)))
   "nginx style for \\=`cc-styles\\='.
 https://nginx.org/en/docs/dev/development_guide.html#code_style")
 
@@ -435,6 +378,11 @@ N specify the number of spaces when align."
 ;; format
 ;;;
 
+(defun cc*-format-buffer-shell (src)
+  (let ((dst (make-temp-file "cc-fmt-dst-" nil ".c")))
+    (let ((x (shell-command* "cat <" src "|clang-format >" dst)))
+      (and (zerop (car x)) dst))))
+
 (defun cc*-format-buffer ()
   "Format the current buffer via clang-format."
   (interactive)
@@ -445,10 +393,7 @@ N specify the number of spaces when align."
           (call-interactively #'eglot-format-buffer)
           (throw 'br t))))
     (make-temp-file "cc-fmt-src-" nil ".c")
-    (lambda (src)
-      (let ((dst (make-temp-file "cc-fmt-dst-" nil ".c")))
-        (let ((x (shell-command* "cat <" src "|clang-format >" dst)))
-          (and (zerop (car x)) dst))))))
+    #'cc*-format-buffer-shell))
 
 ;; end of format
 
@@ -504,7 +449,7 @@ N specify the number of spaces when align."
   ;; fix cannot find include path on Darwin in `Man-mode'
   (when-var% manual-program 'man
     (when% (executable-find% manual-program)
-      (setq% Man-header-file-path (cc*-system-include t) 'man))))
+      (setq% Man-header-file-path (cc*-system-include :read) 'man))))
 
 ;; end of `man'
 

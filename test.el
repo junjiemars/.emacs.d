@@ -785,7 +785,7 @@
 (ert-deftest %q:cc:cc*-system-include ()
   (when-fn% 'cc*-system-include nil
     (should (message "# (cc*-system-include) = %s"
-                     (or (cc*-system-include t) "")))))
+                     (or (cc*-system-include :read) "")))))
 
 ;; end of `cc'
 
@@ -807,7 +807,7 @@
                                          (lambda (f _)
                                            (string= "init.el" f))
                                          nil
-                                         (lambda (a)
+                                         (lambda (a _)
                                            (throw 'br a))))))
     (should (string= "config"
                      (catch 'br
@@ -823,22 +823,34 @@
                                          (lambda (f _)
                                            (string= "config" f))
                                          nil
-                                         (lambda (a)
+                                         (lambda (a _)
                                            (throw 'br a))))))
-    (let ((fcnt 0) (dcnt 0) (feq 0) (deq 0))
-      (dir-iterate
-       (emacs-home*)
-       (lambda (f _)
-         (when (string-match "init\\.el\\'\\|tags\\.el\\'" f)
-           (setq fcnt (1+ fcnt))))
-       (lambda (d _)
-         (when (string-match "config" d)
-           (setq dcnt (1+ dcnt))))
-       (lambda (f)
-         (setq feq (1+ feq)))
-       (lambda (d)
-         (setq deq (1+ deq))))
-      (should (and (= fcnt 2) (= dcnt 1) (= feq 2) (= deq 1))))))
+    (should (string= "xy"
+                     (catch 'br
+                       (dir-iterate (emacs-home*)
+                                    (lambda (f _)
+                                      (string= "test.el" f))
+                                    (lambda (d _)
+                                      (string= ".emacs.d" d))
+                                    (lambda (a env)
+                                      (let ((k1 (plist-get env :k1))
+                                            (k2 (plist-get env :k2)))
+                                        (throw 'br (format "%s%s" k1 k2))))
+                                    nil
+                                    (list :k1 "x" :k2 "y")))))
+    (should (= 1 (let ((fcnt 0) (dcnt 0))
+                   (catch 'br
+                     (dir-iterate
+                      (emacs-home*)
+                      (lambda (f _)
+                        (string= "tags.el" f))
+                      (lambda (d a)
+                        (unless (cond ((string= ".git" d) t)
+                                      ((string-match "^[gt]_[0-9]+" d) t)
+                                      (t nil))
+                          (string-match "config" a)))
+                      (lambda (f _)
+                        (throw 'br (setq fcnt (1+ fcnt)))))))))))
 
 
 
