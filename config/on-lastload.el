@@ -8,6 +8,15 @@
 
 
 
+;;; `clipboard'
+
+(unless-graphic%
+  (declare-function on-clipboard-init! (v-home%> "config/clipboard"))
+  (autoload 'on-clipboard-init! (v-home%> "config/clipboard"))
+  (make-thread* #'on-clipboard-init!))
+
+;; end of `clipboard'
+
 ;;; `mill'
 
 ;; Kill

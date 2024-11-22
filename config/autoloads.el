@@ -40,7 +40,8 @@
   "Load compiling modes."
   (compile!
     (compile-unit% (emacs-home* "config/cc.el") t)
-    (compile-unit% (emacs-home* "config/clipboard.el") t)
+    (unless-graphic%
+      (compile-unit% (emacs-home* "config/clipboard.el") t))
     (compile-unit% (emacs-home* "config/compiles.el") t)
     (compile-unit% (emacs-home* "config/direds.el") t)
     (when-platform% 'windows-nt
@@ -84,9 +85,9 @@
   (compile!
     ;; on `cc'
     (compile-unit% (emacs-home* "config/on-cc-autoload.el"))
-    ;; on `clipboard'
-    (unless-graphic%
-      (compile-unit% (emacs-home* "config/on-clipboard-autoload.el")))
+    ;; ;; on `clipboard'
+    ;; (unless-graphic%
+    ;;   (compile-unit% (emacs-home* "config/on-clipboard-autoload.el")))
     ;; on `compiles'
     (compile-unit% (emacs-home* "config/on-compile-autoload.el"))
     ;; `dict'
