@@ -11,7 +11,7 @@
 
 
 ;;;
-;; tags envrionments
+;; tags envrionment
 ;;;
 
 (defun tags*-check ()
@@ -64,7 +64,7 @@ when \\=`desktop-globals-to-save\\=' include it.")
 (defvar *tags-vcs-meta-dir*
   "^\\.git/$\\|\\.hg/$\\|\\.svn/$")
 
-;; end of tags environments
+;; end of tags environment
 
 (defun unmount-tags (&optional tags)
   "Unmount TAGS from \\=`tags-table-list\\='."

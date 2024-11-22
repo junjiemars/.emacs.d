@@ -44,23 +44,24 @@
 ;;       (setq% geiser-mode-auto-p nil 'geiser-mode)))
 
 ;;;
-;; variable declarations
+;; chez environment
 ;;;
 
 (defgroup chez nil
   "Run a chez process in a buffer."
   :group 'scheme)
 
+(defun chez-program-check ()
+  (executable-find%
+   "scheme"
+   (lambda (chez)
+     (let ((x (shell-command* "echo"
+                "'(scheme-version)'|" chez "-q")))
+       (or (and (zerop (car x)) chez)
+           "scheme")))))
 
 (defalias 'chez-program
-  (lexical-let%
-      ((b (executable-find%
-           "scheme"
-           (lambda (chez)
-             (let ((x (shell-command* "echo"
-                        "'(scheme-version)'|" chez "-q")))
-               (or (and (zerop (car x)) chez)
-                   "scheme"))))))
+  (lexical-let% ((b (chez-program-check)))
     (lambda (&optional n)
       (if (null n) b (setq b n))))
   "Program invoked by the \\=`run-chez\\=' command.")
@@ -152,7 +153,7 @@ buffer.")
   "Chez tracing history list.")
 
 
-;; end variable declarations
+;; end of chez environment
 
 ;;;
 ;; proc

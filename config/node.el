@@ -18,17 +18,19 @@
 ;;;
 ;;;;;
 
+;;; require
+
 (require 'comint)
-;; (require 'thingatpt)
 
+;; end of require
 
-
-;; variable declarations
+;;;
+;; node environment
+;;;
 
 (defgroup node nil
   "Run a node process in a buffer."
   :group 'node)
-
 
 (defun nvm (command)
   "Node version manager."
@@ -37,22 +39,23 @@
         (shell-command* "source" nvmsh "; nvm" command)
       (cons 1 (format "%s no found" nvmsh)))))
 
+(defun node-program-check ()
+  (or (let ((out (nvm "which node")))
+        (and (zerop (car out))
+             (string-trim> (cdr out))))
+      (executable-find%
+       "node"
+       (lambda (node)
+         (let ((x (shell-command* "echo"
+                    "'1+2+3'|" node "-p")))
+           (zerop (car x)))))
+      "node"))
 
 (defalias 'node-program
-  (lexical-let% ((b (or (let ((out (nvm "which node")))
-                          (and (zerop (car out))
-                               (string-trim> (cdr out))))
-                        (executable-find%
-                         "node"
-                         (lambda (node)
-                           (let ((x (shell-command* "echo"
-                                      "'1+2+3'|" node "-p")))
-                             (zerop (car x)))))
-                        "node")))
+  (lexical-let% ((b (node-program-check)))
     (lambda (&optional n)
       (if (null n) b (setq b n))))
   "Program invoked by the `run-node' command.")
-
 
 (defalias '*node*
   (lexical-let% ((b))
@@ -62,7 +65,6 @@
              (setq b (get-buffer-create "*node*")))
             (t b))))
   "The current *node* process buffer.")
-
 
 (defconst +node-emacs-module+
   "
@@ -84,7 +86,6 @@ function node_emacs_apropos(what, max) {
 "
   "The module of node-emacs.")
 
-
 (defalias '*node-out*
   (lexical-let% ((b "*out|node*"))
     (lambda (&optional n)
@@ -92,14 +93,12 @@ function node_emacs_apropos(what, max) {
         (get-buffer-create b))))
   "The output buffer of `node-completion'.")
 
-
 (defalias '*node-start-file*
   (lexical-let% ((b (v-home% ".exec/node.js")))
     (lambda ()
       (cond ((file-exists-p b) b)
             (t (save-str-to-file +node-emacs-module+ b)))))
   "the \\=`*node*\\=' process start file.")
-
 
 (defalias 'node-switch-to-last-buffer
   (lexical-let% ((b))
@@ -109,12 +108,10 @@ function node_emacs_apropos(what, max) {
         (when b (switch-to-buffer-other-window b)))))
   "Switch to the last `node-mode' buffer from `*node*' buffer.")
 
-
 (defvar *node-option-history* nil
   "Node option history list.")
 
-
- ;; end variable declarations
+;; end node environment
 
 
 (defun node-check-proc (&optional spawn)

@@ -17,29 +17,34 @@
 ;;;
 ;;;;;
 
+;;; require
+
 (require 'comint)
 ;; (require 'thingatpt)
 
+;; end of require
 
-
-;; variable declarations
+;;;
+;; jshell environtment
+;;;
 
 (defgroup jshell nil
   "Run a jshell process in a buffer."
   :group 'jshell)
 
+(defun jshell-program-check ()
+  (executable-find%
+   "jshell"
+   (lambda (jshell)
+     (let ((x (shell-command* jshell "--version")))
+       (or (and (zerop (car x)) jshell)
+           "jshell")))))
 
 (defalias 'jshell-program
-  (lexical-let% ((b (executable-find%
-                     "jshell"
-                     (lambda (jshell)
-                       (let ((x (shell-command* jshell "--version")))
-                         (or (and (zerop (car x)) jshell)
-                             "jshell"))))))
+  (lexical-let% ((b (jshell-program-check)))
     (lambda (&optional n)
       (if (null n) b (setq b n))))
   "Program invoked by the `run-jshell' command.")
-
 
 (defalias '*jshell*
   (lexical-let% ((b))
@@ -88,8 +93,7 @@ void jshell_emacs_apropos(String what, int max) {
 (defvar *jshell-option-history* nil
   "Jshell option history list.")
 
-
-;; end variable declarations
+;; end of jshell environment
 
 
 (defun jshell-check-proc (&optional spawn)
@@ -211,8 +215,8 @@ void jshell_emacs_apropos(String what, int max) {
     (if (= (car bounds) (cdr bounds))
         (list (car bounds) (cdr bounds) :exclusive 'no)
       (let ((cmd (format "jshell_emacs_apropos(\"%s\", 64)"
-                         (buffer-substring-no-properties (car bounds)
-                                                         (cdr bounds))))
+                         (buffer-substring-no-properties
+                          (car bounds) (cdr bounds))))
             (proc (get-buffer-process (*jshell*))))
         (with-current-buffer (*jshell-out*)
           (erase-buffer)
