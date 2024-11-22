@@ -289,11 +289,10 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
                         (shell-command* cc opts))))))
     (with-current-buffer
         (switch-to-buffer
-         (concat "*Macro Predefined"
+         (format "*Macro Predefined%s*"
                  (if remote
-                     (concat "@" (ssh-remote->user@host remote)
-                             "*")
-                   "*")))
+                     (concat "@" (ssh-remote->user@host remote))
+                   "")))
       (view-mode -1)
       (erase-buffer)
       (insert (if (zerop (car rc))
