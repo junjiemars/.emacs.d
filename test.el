@@ -60,12 +60,12 @@
   (should (string-equal "a" (file-name-sans-extension* "a.b")))
   (should (string-equal "/a/b/c" (file-name-sans-extension* "/a/b/c.d"))))
 
-(ert-deftest %b:init:path! ()
+(ert-deftest %b:init:mkdir* ()
   (let ((p (concat temporary-file-directory
                    (make-temp-name (symbol-name (gensym*)))
                    "/")))
     (should (null (file-exists-p p)))
-    (should (path! p))
+    (should (mkdir* p))
     (should (file-exists-p p))))
 
 (ert-deftest %b:init:v-path ()
@@ -130,6 +130,12 @@
                                    < 0
                                  (+ 1 2)
                                  (* 3 4))))))
+
+(ert-deftest %b:init:make-v-comp-file ()
+  (let ((fs (make-v-comp-file (make-temp-file "nore-mvcf-"))))
+    (should (and (consp fs)
+                 (file-exists-p (car fs))
+                 (null (file-exists-p (cdr fs)))))))
 
 (ert-deftest %b:init:time ()
   (should (null (time "")))
@@ -219,15 +225,6 @@
                (not (unless-var% ert-batch-backtrace-right-margin 'ert))
                (unless-var% ert-batch-xxx 'ert t))))
 
-(ert-deftest %c:boot:dolist* ()
-  (should (equal '(a nil b c)
-                 (let ((lst nil))
-                   (dolist* (x '(a nil b c) (nreverse lst))
-                     (push x lst)))))
-  (should (catch 'found
-            (dolist* (x '(a b c))
-              (when (eq 'b x) (throw 'found t))))))
-
 (ert-deftest %c:boot:self-spec-> ()
   (should (null (self-spec-> nil nil)))
   (should (null (self-spec-> '(a 1) nil)))
@@ -276,6 +273,15 @@
 				(should (= 12 (if-fn-ert-delete-testxxx% (+ 1 2) (* 3 4))))))
   (unintern "if-fn-ert-delete-test%")
 	(unintern "if-fn-ert-delete-testxxx%"))
+
+(ert-deftest %d:fn:dolist* ()
+  (should (equal '(a nil b c)
+                 (let ((lst nil))
+                   (dolist* (x '(a nil b c) (nreverse lst))
+                     (push x lst)))))
+  (should (catch 'found
+            (dolist* (x '(a b c))
+              (when (eq 'b x) (throw 'found t))))))
 
 (ert-deftest %d:fn:flatten ()
   (should (equal '(nil) (flatten nil)))

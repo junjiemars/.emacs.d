@@ -15,10 +15,17 @@
 ;;;
 
 (defun path! (file)
-  (mkdir! file))
+  (mkdir* file))
+
+(defun mkdir! (file)
+  (mkdir* (v-home file)))
 
 (defun v-comp-file! (src)
-  (make-v-comp-file! src))
+  (make-v-comp-file src))
+
+(defmacro v-home! (file)
+  "Make versioned path of FILE under \\=`v-home\\=' at compile-time."
+  (mkdir! file))
 
 ;; end of compiled init fn
 

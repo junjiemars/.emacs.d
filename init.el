@@ -111,7 +111,7 @@ non-nil, do BODY."
                         ((= ?. c) (throw 'br i))
                         (t (setq i (1- i)))))))))))))
 
-(defmacro mkdir! (file)
+(defmacro mkdir* (file)
   "Make and return the path of posixed FILE."
   (declare (pure t))
   (let ((f1 (gensym*)))
@@ -169,10 +169,6 @@ non-nil, do BODY."
 compile-time."
   (v-home file))
 
-(defmacro v-home! (file)
-  "Make versioned path of FILE under \\=`v-home\\=' at compile-time."
-  (mkdir! (v-home file)))
-
 (defmacro v-home%> (file)
   "Return the \\=`v-home\\=' FILE with the extension of compiled file."
   (concat (v-home file) (comp-file-extension%)))
@@ -200,7 +196,7 @@ compile-time."
   "Return extension of compiled file."
   `(if-native-comp% ".eln" ".elc"))
 
-(defmacro make-v-comp-file! (src)
+(defmacro make-v-comp-file (src)
   "Make a versioned cons copy of SRC."
   (let ((s1 (gensym*)) (d1 (gensym*)) (d2 (gensym*)))
     `(inhibit-file-name-handler
@@ -211,7 +207,7 @@ compile-time."
          (when (file-newer-than-file-p ,s1 ,d1)
            (if (file-exists-p ,d2)
                (delete-file ,d2)
-             (mkdir! ,d1))
+             (mkdir* ,d1))
            (copy-file ,s1 ,d1 t t))
          (cons ,d1 ,d2)))))
 
@@ -298,7 +294,7 @@ If ONLY-COMPILE is t, does not load DST."
   ;; slient native-comp warning
   (setq native-comp-async-report-warnings-errors 'silent)
   ;; first native-comp load
-  (setcar native-comp-eln-load-path (v-home! ".eln/"))
+  (setcar native-comp-eln-load-path (mkdir* (v-home ".eln/")))
   ;; darwin native-comp env
   (when% (eq system-type 'darwin)
     (defun library-path ()
@@ -364,7 +360,7 @@ If ONLY-COMPILE is t, does not load DST."
     (let ((fs `(,(emacs-home* "config/fn.el")
                 ,(emacs-home* "config/boot.el"))))
       (while (car fs)
-        (let ((us (make-v-comp-file! (car fs))))
+        (let ((us (make-v-comp-file (car fs))))
           (compile-and-load-file* (car us) (cdr us)))
         (setq fs (cdr fs))))))
 
