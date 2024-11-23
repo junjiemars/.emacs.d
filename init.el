@@ -143,7 +143,7 @@ non-nil, do BODY."
 ;; versioned file macro
 ;;;
 
-(defmacro emacs-home* (&optional file)
+(defmacro emacs-home (&optional file)
   "Return path of FILE under \\='~/.emacs.d\\='."
   (declare (pure t))
   `(concat ,(expand-file-name
@@ -161,17 +161,12 @@ non-nil, do BODY."
                  (file-name-nondirectory ,f1))))))
 
 (defmacro v-home (&optional file)
-  "Return versioned FILE under \\=`emacs-home*\\='."
-  `(v-path (emacs-home* ,file)))
+  "Return versioned FILE under \\=`emacs-home\\='."
+  `(v-path (emacs-home ,file)))
 
-(defmacro v-home% (&optional file)
-  "Return versioned path of FILE under \\=`v-home\\=' at
-compile-time."
-  (v-home file))
-
-(defmacro v-home%> (file)
-  "Return the \\=`v-home\\=' FILE with the extension of compiled file."
-  (concat (v-home file) (comp-file-extension%)))
+(defmacro make-v-home (file)
+  "Make \\=`v-home\\='."
+  `(mkdir* (v-home ,file)))
 
 ;; end of versioned file macro
 
@@ -252,15 +247,15 @@ If ONLY-COMPILE is t, does not load DST."
 (defun clean-compiled-files ()
   "Clean all compiled files."
   (interactive)
-  (let ((dirs (list `(,(v-home% "config/")
+  (let ((dirs (list `(,(v-home "config/")
                       . "\\.el[cn]\\(\\.tmp\\)?\\'")
-                    `(,(v-home% "private/")
+                    `(,(v-home "private/")
                       . "\\.el[cn]\\(\\.tmp\\)?\\'")
-                    `(,(v-home% "theme/")
+                    `(,(v-home "theme/")
                       . "\\.el[cn]\\(\\.tmp\\)?\\'")
-                    `(,(v-home% ".exec/")
+                    `(,(v-home ".exec/")
                       . "\\.el[cn]\\(\\.tmp\\)?\\'")
-                    `(,(emacs-home*)
+                    `(,(emacs-home)
                       . "[_a-z]+\\.el[cn]+\\'"))))
     (while dirs
       (let* ((d (car dirs)) (f1 (car d)) (r1 (cdr d))
@@ -294,7 +289,7 @@ If ONLY-COMPILE is t, does not load DST."
   ;; slient native-comp warning
   (setq native-comp-async-report-warnings-errors 'silent)
   ;; first native-comp load
-  (setcar native-comp-eln-load-path (mkdir* (v-home ".eln/")))
+  (setcar native-comp-eln-load-path (make-v-home ".eln/"))
   ;; darwin native-comp env
   (when% (eq system-type 'darwin)
     (defun library-path ()
@@ -357,8 +352,8 @@ If ONLY-COMPILE is t, does not load DST."
 (unless% (boundp '*nore-emacs-no-boot*)
   (inhibit-gc
     ;; (inhibit-file-name-handler)
-    (let ((fs `(,(emacs-home* "config/fn.el")
-                ,(emacs-home* "config/boot.el"))))
+    (let ((fs `(,(emacs-home "config/fn.el")
+                ,(emacs-home "config/boot.el"))))
       (while (car fs)
         (let ((us (make-v-comp-file (car fs))))
           (compile-and-load-file* (car us) (cdr us)))

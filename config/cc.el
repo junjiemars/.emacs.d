@@ -262,7 +262,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
     (let ((c (v-home% ".exec/cc-dump-macro.c"))
           (exe (v-home% ".exec/cc-dump-macro.exe")))
       (unless (file-exists-p c)
-        (copy-file (emacs-home* "config/sample-cc-dump-macro.c") c))
+        (copy-file (emacs-home% "config/sample-cc-dump-macro.c") c))
       (let ((cmd (shell-command* (cc*-cc)
                    (concat " -nologo"
                            " " options

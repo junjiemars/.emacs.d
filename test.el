@@ -23,7 +23,7 @@
 
 (ert-deftest %a:env ()
   (should (message "# nore-emacs = %s" (nore-emacs)))
-  (should (message "# emacs-home* = %s" (emacs-home*)))
+  (should (message "# emacs-home = %s" (emacs-home)))
   (should (message "# system-type = %s" system-type))
   (should (message "# platform-arch = %s" (platform-arch)))
   (should (message "# emacs-arch = %s" (emacs-arch)))
@@ -50,10 +50,10 @@
   (should (string-match "^n[0-9]+" (format "%s" (gensym*))))
   (should (string-match "^X[0-9]+" (format "%s" (gensym* "X")))))
 
-(ert-deftest %b:init:emacs-home* ()
-  (should (file-exists-p (emacs-home*)))
-  (should (file-exists-p (emacs-home* "config/")))
-  (should (file-exists-p (emacs-home* "private/"))))
+(ert-deftest %b:init:emacs-home ()
+  (should (file-exists-p (emacs-home)))
+  (should (file-exists-p (emacs-home "config/")))
+  (should (file-exists-p (emacs-home "private/"))))
 
 (ert-deftest %b:init:file-name-sans-extension* ()
   (should (eq nil (file-name-sans-extension* "")))
@@ -76,15 +76,6 @@
   (should (directory-name-p (v-home)))
   (should (string-match "[gt]_[.0-9]+" (v-home)))
   (should (string-match "[gt]_[.0-9]+.*x\\.el\\'" (v-home "x.el"))))
-
-(ert-deftest %b:init:v-home% ()
-  (should (directory-name-p (v-home%)))
-  (should (string-match "[gt]_[.0-9]+" (v-home%)))
-  (should (string-match "[gt]_[.0-9]+.*x\\.el\\'" (v-home% "x.el"))))
-
-(ert-deftest %b:init:v-home%> ()
-  (should (file-name-nondirectory (v-home%> nil)))
-  (should (string-match "[gt]_[.0-9]+.*x\\.el[cn]?\\'" (v-home%> "x"))))
 
 (ert-deftest %b:init:progn% ()
   (should-not (progn%))
@@ -254,6 +245,20 @@
 (unintern "if-fn-ert-delete-testxxx%")
 (defmacro-if-fn% ert-delete-test ert)
 (defmacro-if-fn% ert-delete-testxxx ert)
+
+(ert-deftest %d:fn:v-home% ()
+  (should (directory-name-p (v-home%)))
+  (should (string-match "[gt]_[.0-9]+" (v-home%)))
+  (should (string-match "[gt]_[.0-9]+.*x\\.el\\'" (v-home% "x.el"))))
+
+(ert-deftest %d:fn:v-home%> ()
+  (should (string-match "\\.el[cn]$" (file-name-nondirectory (v-home%> nil))))
+  (should (string-match "[gt]_[.0-9]+.*x\\.el[cn]?$" (v-home%> "x"))))
+
+;; (ert-deftest %d:fn:v-home! ()
+;;   (should (directory-name-p (v-home! (make-temp-file "nore"))))
+;;   (should (string-match "[gt]_[.0-9]+" (v-home%)))
+;;   (should (string-match "[gt]_[.0-9]+.*x\\.el\\'" (v-home% "x.el"))))
 
 (ert-deftest %d:fn:emacs-arch ()
   (should (> (emacs-arch) 0)))
@@ -465,7 +470,7 @@
   (should (let ((x (shell-command* "echo" "a")))
             (and (= (car x) 0) (string= (cdr x) "a\n"))))
   (should (let ((x (shell-command* "wc" "-c"
-                                   (emacs-home* "test.el"))))
+                                   (emacs-home% "test.el"))))
             (or (= (car x) 0)
                 (= (car x) 127)))))
 
@@ -481,15 +486,15 @@
 
 (ert-deftest %e:fn:file-in-dirs-p ()
   (should-not (file-in-dirs-p nil nil))
-  (should-not (file-in-dirs-p (emacs-home* "init.el") nil))
-  (should-not (file-in-dirs-p (emacs-home* "init.el")
-                              (list (emacs-home* "config/"))))
-  (should (file-in-dirs-p (emacs-home* "init.el")
-                          (list (emacs-home*))))
-  (should (file-in-dirs-p (emacs-home* "init.elx")
-                          (list (emacs-home*))))
-  (should (file-in-dirs-p (emacs-home* "init.el")
-                          (list (string-trim> (emacs-home*) "/")))))
+  (should-not (file-in-dirs-p (emacs-home% "init.el") nil))
+  (should-not (file-in-dirs-p (emacs-home% "init.el")
+                              (list (emacs-home% "config/"))))
+  (should (file-in-dirs-p (emacs-home% "init.el")
+                          (list (emacs-home%))))
+  (should (file-in-dirs-p (emacs-home% "init.elx")
+                          (list (emacs-home%))))
+  (should (file-in-dirs-p (emacs-home% "init.el")
+                          (list (string-trim> (emacs-home%) "/")))))
 
 (ert-deftest %e:fn:file-name-nondirectory% ()
   (should (string= "c.c" (file-name-nondirectory% "/a/b/c.c")))
@@ -803,13 +808,13 @@
   (when-fn% 'dir-iterate nil
     (should (string= "init.el"
                      (catch 'br
-                       (dir-iterate (emacs-home*)
+                       (dir-iterate (emacs-home%)
                                     (lambda (f _)
                                       (when (string= "init.el" f)
                                         (throw 'br f)))))))
     (should (string-match "init\\.el$"
                           (catch 'br
-                            (dir-iterate (emacs-home*)
+                            (dir-iterate (emacs-home%)
                                          (lambda (f _)
                                            (string= "init.el" f))
                                          nil
@@ -817,14 +822,14 @@
                                            (throw 'br a))))))
     (should (string= "config"
                      (catch 'br
-                       (dir-iterate (emacs-home*)
+                       (dir-iterate (emacs-home%)
                                     nil
                                     (lambda (f _)
                                       (when (string= "config" f)
                                         (throw 'br f)))))))
     (should (string-match "config$"
                           (catch 'br
-                            (dir-iterate (emacs-home*)
+                            (dir-iterate (emacs-home%)
                                          nil
                                          (lambda (f _)
                                            (string= "config" f))
@@ -833,7 +838,7 @@
                                            (throw 'br a))))))
     (should (string= "xy"
                      (catch 'br
-                       (dir-iterate (emacs-home*)
+                       (dir-iterate (emacs-home%)
                                     (lambda (f _)
                                       (string= "test.el" f))
                                     (lambda (d _)
@@ -847,7 +852,7 @@
     (should (= 1 (let ((fcnt 0) (dcnt 0))
                    (catch 'br
                      (dir-iterate
-                      (emacs-home*)
+                      (emacs-home%)
                       (lambda (f _)
                         (string= "tags.el" f))
                       (lambda (d a)

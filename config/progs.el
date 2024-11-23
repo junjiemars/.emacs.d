@@ -245,7 +245,7 @@ And copy the qualified buffer name to kill ring."
                   (expand-file-name default-directory)
                 (or (buffer-file-name)
                     (buffer-name))))
-        (default-directory (emacs-home*)))
+        (default-directory (emacs-home%)))
     (kill-new name t)
     (message "%s" name)))
 

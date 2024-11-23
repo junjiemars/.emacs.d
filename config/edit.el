@@ -89,7 +89,7 @@
   	(clean-versioned-dirs
   	 (delq nil (let ((xs nil))
                  (dolist* (d (directory-files
-                              (emacs-home*) nil "^\\.[a-z]+"))
+                              (emacs-home%) nil "^\\.[a-z]+"))
                    (unless (member d '(".git" ".gitignore" ".github"))
   							     (setq xs (cons (concat (emacs-home* d) "/") xs))))))
   	 :8)

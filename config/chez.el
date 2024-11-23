@@ -91,7 +91,7 @@ This is run before the process is cranked up."
 
 
 (defconst +chez-emacs-library+
-  ";;; chez-emacs: from `(emacs-home* \"config/chez.el\")'
+  ";;; chez-emacs: from `(emacs-home% \"config/chez.el\")'
 (library (chez-emacs)
     (export chez-emacs/apropos)
   (import (chezscheme))

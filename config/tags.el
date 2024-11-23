@@ -200,12 +200,12 @@ RENEW overwrite the existing tags file when t else create it."
              renew))
 
 (defun make-nore-tags (&optional option renew)
-  "Make tags for Nore \\=`emacs-home*\\=' directory."
+  "Make tags for Nore \\=`emacs-home%\\=' directory."
   (interactive (list (read-string (concat (*tags*) " option: ")
                                   (car *tags-option-history*)
                                   '*tags-option-history*)
                      (y-or-n-p "tags renew? ")))
-  (make-lisp-tags (emacs-home*)
+  (make-lisp-tags (emacs-home%)
                   (tags-spec->% :nore)
                   option
                   #'tags-lisp-file-filter

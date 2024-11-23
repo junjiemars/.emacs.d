@@ -11,7 +11,7 @@
 	 :PROPERTIES:
 	 :CUSTOM_ID: scratch-quote
 	 :END:
-	 
+
 #+BEGIN_QUOTE
 Everything should be made as simple as possible,
 but not any simpler. --- Albert Einstein
@@ -21,7 +21,7 @@ but not any simpler. --- Albert Einstein
 	 :PROPERTIES:
 	 :CUSTOM_ID: scratch-verse
 	 :END:
-	 
+
 #+BEGIN_VERSE
 The Tao that can be told of
 Is not the Absolute Tao;
@@ -38,7 +38,7 @@ Are not Absolute Names.
 	 :END:
 
 The quick /brown/ *fox* =jumps= +over+ the lazy *dog*.
-	 
+
 #+BEGIN_LEFT
 The Left Behind \\
 is a newline.
@@ -48,11 +48,11 @@ is a newline.
 Where is the Center of the universe?
 #+END_CENTER
 
-** Table 
+** Table
 	 :PROPERTIES:
 	 :CUSTOM_ID: scratch-table
 	 :END:
-	 
+
 | Student  | Maths | Physics | Mean | Sum |
 |----------+-------+---------+------+-----|
 | Bertrand |    13 |      09 |   11 |  22 |
@@ -74,7 +74,7 @@ Where is the Center of the universe?
 	 :END:
 
 #+BEGIN_SRC emacs-lisp :exports code
-	(list emacs-version (emacs-arch) (emacs-home*))
+	(list emacs-version (emacs-arch) (emacs-home%))
 
 #+END_SRC
 
@@ -125,7 +125,7 @@ Where is the Center of the universe?
 	 :PROPERTIES:
 	 :CUSTOM_ID: scratch-math
 	 :END:
-	 
+
 Another way to notate ${\LaTeX}$.
 
 
@@ -137,7 +137,7 @@ either $$ a=+\sqrt{2} $$ or \[ a=-\sqrt{2}. \]
 		:PROPERTIES:
 		:CUSTOM_ID: scratch-math-symbol
 		:END:
-		
+
 **** Greek Letters
 		 :PROPERTIES:
 		 :CUSTOM_ID: scratch-math-greek-letters

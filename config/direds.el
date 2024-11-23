@@ -172,7 +172,7 @@
   (when% (executable-find%
           "ls"
           (lambda (bin)
-            (let ((home (shell-command* bin (emacs-home*))))
+            (let ((home (shell-command* bin (emacs-home%))))
               (zerop (car home)))))
     ;; on Drawin: the builtin ls does not support --dired option
     (setq% dired-use-ls-dired

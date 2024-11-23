@@ -144,7 +144,7 @@ See \\=`setenv\\='."
 (defun self-shell-save! ()
   "Save \\=`*default-shell-env*\\=' to file."
   (let ((vars nil)
-        (default-directory (emacs-home*)))
+        (default-directory (emacs-home%)))
     (dolist* (v (shells-spec->* :copy-vars) vars)
       (when (stringp v)
         (let ((val (echo-var v (shells-spec->* :options))))

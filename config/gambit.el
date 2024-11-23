@@ -12,7 +12,7 @@
 ;;; 4. compile/load scheme file.
 ;;; 5. indentation in REPL.
 ;;; 6. completion in REPL and scheme source.
-;;; 7*. migrate features from `(emacs-home* "config/chez.el")'.
+;;; 7*. migrate features from `(emacs-home% "config/chez.el")'.
 ;;;
 ;;; bugs:
 ;;;
@@ -71,7 +71,7 @@ This is run before the process is cranked up."
 
 
 (defconst +gambit-emacs-library+
-  ";;; gambit-emacs: from `(emacs-home* \"config/gambit.el\")'
+  ";;; gambit-emacs: from `(emacs-home% \"config/gambit.el\")'
 (define (gambit-emacs/apropos what)
   (let* ([split (lambda (ss sep)
                   (call-with-input-string

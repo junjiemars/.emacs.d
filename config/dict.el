@@ -79,8 +79,8 @@
 
 (defalias '*dict-debug-log*
   (lexical-let% ((b `(:log nil ;; t
-                      :dict ,(emacs-home* ".dict/dict.log")
-                      :lookup ,(emacs-home* ".dict/lookup.log"))))
+                      :dict ,(emacs-home% ".dict/dict.log")
+                      :lookup ,(emacs-home% ".dict/lookup.log"))))
     (lambda (w &optional n)
       (cond (n (plist-put b w n))
             (t (plist-get b w)))))

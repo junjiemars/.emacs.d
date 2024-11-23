@@ -183,10 +183,10 @@ features, such as themes, packages, and fonts etc., see next section:
    :END:
 
 #+ATTR_HTML: :style text-align:left
-Signify your Emacs HOME as =(emacs-home*)=.
+Signify your Emacs HOME as =(emacs-home)=.
 
 #+ATTR_HTML: :style text-align:left
-Your private configuration directory at =(emacs-home* "private/")=.
+Your private configuration directory at =(emacs-home "private/")=.
 All things under it you can rename, move, delete.
 
 #+ATTR_HTML: :style text-align:left
@@ -197,7 +197,7 @@ run it and reopen the Emacs.
 *** Directory
 
 #+BEGIN_EXAMPLE
-    (emacs-home*)
+    (emacs-home)
     ├── LICENSE
     ├── README.org
     ├── config (comment "all stuff here")
@@ -218,13 +218,13 @@ Locate your spec via =(*self-paths*)=.
 #+BEGIN_SRC emacs-lisp
 ;; Run order: :env-spec -> :mod-spec -> :epilogue
 ;; You can point to your Gited Emacs' configuration repo.
-;; Default samples `sample-self-*.el' in `(emacs-home* "config/")' directory.
+;; Default samples `sample-self-*.el' in `(emacs-home "config/")' directory.
 ;; :epilogue run in `after-init-hook'
 
 (*self-paths* :put :mod-spec
-              (comment (emacs-home* "private/self-mod-spec.el")))
+              (comment (emacs-home "private/self-mod-spec.el")))
 (*self-paths* :put  :epilogue
-              (comment (emacs-home* "private/self-epilogue.el")))
+              (comment (emacs-home "private/self-epilogue.el")))
 #+END_SRC
 
 #+REVEAL: split
@@ -233,7 +233,7 @@ Directories with =.= /prefix/ are for the modules that need store
 configuration or cached files.
 
 #+BEGIN_EXAMPLE
-    (emacs-home*)
+    (emacs-home)
     ├── .backup
     ├── .bookmarks
     ├── .desktop
@@ -259,7 +259,7 @@ Introduce the rules of naming /files/ and /functions/.
 **** Core Files Naming: single word and simple name.
 
 #+BEGIN_EXAMPLE
-    (emacs-home* "config/")
+    (emacs-home "config/")
     ├── autoloads.el
     ├── boot.el
     ├── chez.el
@@ -280,7 +280,7 @@ Introduce the rules of naming /files/ and /functions/.
 #+REVEAL: split
 - /extension/ for Emacs builtin packages: =<package-name>s.el=
 #+BEGIN_EXAMPLE
-    (emacs-home* "config/")
+    (emacs-home "config/")
     ├── cc.el
     ├── guds.el
     ├── shells.el
@@ -295,7 +295,7 @@ Introduce the rules of naming /files/ and /functions/.
 	=<package>.el=
   =on-<package-name>-autoload.el=
 #+BEGIN_EXAMPLE
-    (emacs-home* "config/")
+    (emacs-home "config/")
     ├── on-cc-autoload.el
     ├── on-compile-autoload.el
     ├── on-dired-autoload.el
@@ -314,7 +314,7 @@ Introduce the rules of naming /files/ and /functions/.
 	=use-<package-name>.el=
   =use-<package-name>-autoload.el=
 #+BEGIN_EXAMPLE
-    (emacs-home* "config/")
+    (emacs-home "config/")
     ├── use-geiser-autoload.el
     ├── use-magit-autoload.el
     ├── use-slime-autoload.el
@@ -325,7 +325,7 @@ Introduce the rules of naming /files/ and /functions/.
 **** Sample Files Naming: =sample-self-*.el=
 
 #+BEGIN_EXAMPLE
-    (emacs-home* "config/")
+    (emacs-home "config/")
     ├── sample-self-env-spec.el
     ├── sample-self-mod-spec.el
     └── sample-self-epilogue.el
@@ -380,7 +380,7 @@ The =theme='s spec locate in =(*self-env-spec* :get :theme :custom-theme-directo
   (*self-env-spec*
    :put :theme
    (list :name nil                        ; 'tango-dark
-         :custom-theme-directory nil      ; (emacs-home* "theme/")
+         :custom-theme-directory nil      ; (emacs-home "theme/")
          :compile nil                     ; expert option
          :allowed nil))
 #+END_SRC
@@ -687,8 +687,8 @@ The /user defined/ package spec locate in =(*self-mod-spec*)=.
                      (executable-find% "ecl")
                      (executable-find% "acl")))
   :packages '(slime)
-  :compile `(,(compile-unit% (emacs-home* "config/use-slime.el") t)
-             ,(compile-unit% (emacs-home* "config/use-slime-autoload.el")))))
+  :compile `(,(compile-unit% (emacs-home "config/use-slime.el") t)
+             ,(compile-unit% (emacs-home "config/use-slime-autoload.el")))))
 
 ;;; :doc
 (*self-mod-spec*
@@ -714,8 +714,8 @@ The /user defined/ package spec locate in =(*self-mod-spec*)=.
  (list
   :cond (comment t)
   :packages '(paredit rainbow-delimiters)
-  :compile `(,(compile-unit% (emacs-home* "config/use-lisp.el") t)
-             ,(compile-unit% (emacs-home* "config/use-lisp-autoload.el")))))
+  :compile `(,(compile-unit% (emacs-home "config/use-lisp.el") t)
+             ,(compile-unit% (emacs-home "config/use-lisp-autoload.el")))))
 
 ;;; :lua
 (*self-mod-spec*
@@ -739,8 +739,8 @@ The /user defined/ package spec locate in =(*self-mod-spec*)=.
   :cond (comment (and (executable-find% "rustc")
                       (executable-find% "cargo")))
   :packages '(rust-mode)
-  :compile `(,(compile-unit% (emacs-home* "config/use-rust.el") t)
-             ,(compile-unit% (emacs-home* "config/use-rust-autoload.el")))))
+  :compile `(,(compile-unit% (emacs-home "config/use-rust.el") t)
+             ,(compile-unit% (emacs-home "config/use-rust-autoload.el")))))
 
 ;;; :scheme
 (*self-mod-spec*
@@ -755,8 +755,8 @@ The /user defined/ package spec locate in =(*self-mod-spec*)=.
                           (executable-find% "chicken")
                           (executable-find% "guile"))))
   :packages  '(geiser)
-  :compile `(,(compile-unit% (emacs-home* "config/use-geiser.el") t)
-             ,(compile-unit% (emacs-home* "config/use-geiser-autoload.el")))))
+  :compile `(,(compile-unit% (emacs-home "config/use-geiser.el") t)
+             ,(compile-unit% (emacs-home "config/use-geiser-autoload.el")))))
 
 ;;; :vlang
 (*self-mod-spec*
@@ -772,8 +772,8 @@ The /user defined/ package spec locate in =(*self-mod-spec*)=.
   :cond (comment (and (when-version% <= 24.4 t)
                       (executable-find% "git")))
   :packages '(magit)
-  :compile `(,(compile-unit% (emacs-home* "config/use-magit.el") t)
-             ,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
+  :compile `(,(compile-unit% (emacs-home "config/use-magit.el") t)
+             ,(compile-unit% (emacs-home "config/use-magit-autoload.el")))))
 
 ;;; :web
 (*self-mod-spec*
@@ -1026,7 +1026,7 @@ nil, then forward or backward to line boundary.
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
 Prefer =etags= program, because it works well on varied platforms. In
-=(emacs-home* "config/tags.el")=, there are some handy functions to
+=(emacs-home "config/tags.el")=, there are some handy functions to
 create the tags for =Elisp= or =C= source code, such as
 =make-emacs-source-tags=, =cc*-make-tags=, =mount-tags=, and
 =unmount-tags=.

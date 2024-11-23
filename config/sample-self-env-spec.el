@@ -10,7 +10,7 @@
 
 ;; Run order: :env-spec -> :mod-spec -> :epilogue
 ;; You can point to your Gited Emacs' configuration repo.
-;; Default samples `sample-self-*.el' in `(emacs-home* "config/")' directory.
+;; Default samples `sample-self-*.el' in `(emacs-home% "config/")' directory.
 ;; :epilogue run in `after-init-hook'
 
 
@@ -18,7 +18,7 @@
 (*self-env-spec*
  :put :theme
  (list :name nil ; 'tango-dark
-       :custom-theme-directory nil ; (emacs-home* "theme/")
+       :custom-theme-directory nil ; (emacs-home% "theme/")
        :compile nil ; expert option
        :allowed nil))
 

@@ -83,7 +83,7 @@ test_axiom() {
              --eval="\
 (progn\
   (load \"${_ROOT_}/init.el\")\
-  (load (emacs-home* \"test.el\"))\
+  (load (emacs-home \"test.el\"))\
   (ert-run-tests-batch-and-exit))\
 " 2>&1 | tee "$fc"
   cat "$fc"
@@ -93,7 +93,7 @@ test_axiom() {
              --eval="\
 (progn\
   (load \"${_ROOT_}/init.el\")\
-  (load (emacs-home* \"test.el\"))\
+  (load (emacs-home \"test.el\"))\
   (ert-run-tests-batch-and-exit))\
 " 2>&1 | tee "$fb"
 }
@@ -128,15 +128,15 @@ test_module() {
   (list
     :cond t
     :packages  '(paredit)
-    :compile \`(,(compile-unit% (emacs-home* "config/use-lisp-autoload.el")))))
+    :compile \`(,(compile-unit% (emacs-home "config/use-lisp-autoload.el")))))
 (*self-mod-spec*
   :put :vc
   (list
     :cond (executable-find% "git")
     :packages (prog1 '(magit)
                 (set-default 'magit-define-global-key-bindings nil))
-    :compile \`(,(compile-unit% (emacs-home* "config/use-magit.el") t)
-               ,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
+    :compile \`(,(compile-unit% (emacs-home "config/use-magit.el") t)
+               ,(compile-unit% (emacs-home "config/use-magit-autoload.el")))))
 END
   echo "# cat <${_ENV_PRO_}"
   cat <"${_ENV_PRO_}"

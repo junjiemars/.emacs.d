@@ -79,17 +79,17 @@
 (defalias '*self-paths*
   (lexical-let%
       ((ps `(;; paths
-             :prologue ,(emacs-home* "private/self-prologue.el")
-             :env-spec ,(emacs-home* "private/self-env-spec.el")
-             :mod-spec ,(emacs-home* "private/self-mod-spec.el")
-             :epilogue ,(emacs-home* "private/self-epilogue.el")))
+             :prologue ,(emacs-home% "private/self-prologue.el")
+             :env-spec ,(emacs-home% "private/self-env-spec.el")
+             :mod-spec ,(emacs-home% "private/self-mod-spec.el")
+             :epilogue ,(emacs-home% "private/self-epilogue.el")))
        (ss `(;; specs, exclude :prologue
              (:env-spec
-              . ,(emacs-home* "config/sample-self-env-spec.el"))
+              . ,(emacs-home% "config/sample-self-env-spec.el"))
              (:mod-spec
-              . ,(emacs-home* "config/sample-self-mod-spec.el"))
+              . ,(emacs-home% "config/sample-self-mod-spec.el"))
              (:epilogue
-              . ,(emacs-home* "config/sample-self-epilogue.el")))))
+              . ,(emacs-home% "config/sample-self-epilogue.el")))))
     (lambda (&optional op k v)
       (cond ((eq :get op) (plist-get ps k))
             ((eq :put op) (setq ps (plist-put ps k v)))
@@ -145,7 +145,7 @@ No matter the declaration order, the executing order is:
   "Extract value from the list of spec via KEYS at compile time."
   (declare (indent 0) (pure t))
   `(self-spec->% (list
-                  :root ,(emacs-home* ".tags/")
+                  :root ,(emacs-home% ".tags/")
                   :nore ,(v-home% ".tags/nore.emacs.TAGS")
                   :emacs ,(v-home% ".tags/emacs.TAGS"))
                  ,@key))
@@ -165,7 +165,7 @@ No matter the declaration order, the executing order is:
 ;; duplicate spec files
 (*self-paths* :dup)
 ;; reset user emacs dir
-(setq% user-emacs-directory (emacs-home*))
+(setq% user-emacs-directory (emacs-home%))
 ;; default `:safe'
 (setq% enable-local-variables :safe 'files)
 ;; let `lexical-binding' var safe under Emacs24.1-
@@ -174,15 +174,15 @@ No matter the declaration order, the executing order is:
 (define-hash-table-test 'nore-emacs-string-hash= #'string= #'sxhash)
 
 ;;; <1> prologue
-(compile! (compile-unit% (emacs-home* "config/vdir.el"))
+(compile! (compile-unit% (emacs-home% "config/vdir.el"))
           (compile-unit* (*self-paths* :get :prologue)))
 
 ;;; <2> env
 (compile!
   (compile-unit* (*self-paths* :get :env-spec))
-  (compile-unit% (emacs-home* "config/graphic.el"))
+  (compile-unit% (emacs-home% "config/graphic.el"))
   (prog1
-      (compile-unit% (emacs-home* "config/shells.el") t)
+      (compile-unit% (emacs-home% "config/shells.el") t)
     (autoload 'self-shell-read! (v-home%> "config/shells"))
     (declare-function self-shell-read! (v-home%> "config/shells"))))
 
@@ -190,12 +190,12 @@ No matter the declaration order, the executing order is:
 (compile!
   (when (*self-env-spec* :get :edit :allowed)
     (prog1
-        (compile-unit% (emacs-home* "config/edit.el") t)
+        (compile-unit% (emacs-home% "config/edit.el") t)
       (autoload 'self-edit-init! (v-home%> "config/edit"))
       (declare-function self-edit-init! (v-home%> "config/edit"))))
   (when (*self-env-spec* :get :key :allowed)
     (prog1
-        (compile-unit% (emacs-home* "config/key.el") t)
+        (compile-unit% (emacs-home% "config/key.el") t)
       (autoload 'self-key-init! (v-home%> "config/key"))
       (declare-function self-key-init! (v-home%> "config/key"))))
   (progn
@@ -204,21 +204,21 @@ No matter the declaration order, the executing order is:
     (unless-noninteractive%
       (when (*self-env-spec* :get :desktop :allowed)
         (prog1
-            (compile-unit% (emacs-home* "config/memo.el") t)
+            (compile-unit% (emacs-home% "config/memo.el") t)
           (autoload 'self-desktop-read! (v-home%> "config/memo"))
           (declare-function self-desktop-read! (v-home%> "config/memo"))))))
   (when (*self-env-spec* :get :socks :allowed)
     (prog1
-        (compile-unit% (emacs-home* "config/sockets.el") t)
+        (compile-unit% (emacs-home% "config/sockets.el") t)
       (autoload 'self-socks-init! (v-home%> "config/sockets"))
       (declare-function self-socks-init! (v-home%> "config/sockets"))))
   (when-package%
     (when (*self-env-spec* :get :module :allowed)
       (prog1
-          (compile-unit% (emacs-home* "config/modules.el") t)
+          (compile-unit% (emacs-home% "config/modules.el") t)
         (autoload 'self-module-init! (v-home%> "config/modules"))
         (declare-function self-module-init! (v-home%> "config/modules")))))
-  (compile-unit% (emacs-home* "config/autoloads.el")))
+  (compile-unit% (emacs-home% "config/autoloads.el")))
 
 ;; end of boot
 
