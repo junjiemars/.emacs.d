@@ -187,7 +187,7 @@ determine whether inside a virtual env. Another way is using
 (defun python*-format-buffer ()
   "Format the current buffer."
   (interactive)
-  (shell-format-buffer `(python-mode)
+  (shell-format-buffer `(python-mode python-ts-mode)
     (when-feature-eglot%
       (when (and (fboundp 'eglot-managed-p) (eglot-managed-p))
         (catch 'br
@@ -200,6 +200,17 @@ determine whether inside a virtual env. Another way is using
         (and (zerop (car x)) src)))))
 
 
+
+;;;
+;; keys
+;;;
+
+(defmacro python*-define-keys (keymap)
+  `(progn
+    (define-key ,keymap (kbd% "C-c C-z") #'run-python)
+    (define-key ,keymap (kbd% "C-c M-c f") #'python*-format-buffer)))
+
+;; end of keys
 
 (defun on-python-init! ()
   "On \\=`python\\=' initialization."
@@ -214,16 +225,17 @@ determine whether inside a virtual env. Another way is using
                (python*-program :bin))))
       (setq% python-shell-interpreter interpreter 'python)
       (setq% python-interpreter interpreter 'python)))
-
   ;; completion
   (setq% python-shell-completion-native-enable
          (when-platform% 'gnu/linux t) 'python)
   ;; keys
   (when-var% python-mode-map 'python
-    (define-key python-mode-map (kbd% "C-c C-z") #'run-python)
-    (define-key python-mode-map (kbd% "C-c M-c f") #'python*-format-buffer)))
+    (python*-define-keys python-mode-map))
+  (when-var% python-ts-mode-map 'python-ts-mode
+    (python*-define-keys python-ts-mode-map)))
 
 
+
 
 (provide 'pythons)
 
