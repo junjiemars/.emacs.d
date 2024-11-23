@@ -54,11 +54,9 @@
   (lexical-let%
       ((f (v-home% ".exec/eglot-server.el"))
        (b `((c-mode . ("clangd" "--header-insertion=never"))
-            ,(let ((cxx (executable-find% "c++")))
-               `(c++-mode
-                 .
-                 ("clangd"
-                  ,(format "--query-driver=%s" cxx)))))))
+            (c++-mode . ("clangd"
+                         ,(format "--query-driver=%s"
+                                  (executable-find% "c++")))))))
     (lambda (&optional op sexp)
       (cond ((eq op :read) (let ((s1 (read-sexp-from-file f)))
                              (dolist* (x s1 s1)
