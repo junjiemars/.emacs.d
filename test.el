@@ -809,13 +809,13 @@
     (should (string= "init.el"
                      (catch 'br
                        (dir-iterate (emacs-home%)
-                                    (lambda (f _)
+                                    (lambda (f &rest _)
                                       (when (string= "init.el" f)
                                         (throw 'br f)))))))
     (should (string-match "init\\.el$"
                           (catch 'br
                             (dir-iterate (emacs-home%)
-                                         (lambda (f _)
+                                         (lambda (f &rest _)
                                            (string= "init.el" f))
                                          nil
                                          (lambda (a _)
@@ -824,24 +824,24 @@
                      (catch 'br
                        (dir-iterate (emacs-home%)
                                     nil
-                                    (lambda (f _)
+                                    (lambda (f &rest _)
                                       (when (string= "config" f)
                                         (throw 'br f)))))))
     (should (string-match "config$"
                           (catch 'br
                             (dir-iterate (emacs-home%)
                                          nil
-                                         (lambda (f _)
+                                         (lambda (f &rest _)
                                            (string= "config" f))
                                          nil
-                                         (lambda (a _)
+                                         (lambda (a &rest _)
                                            (throw 'br a))))))
     (should (string= "xy"
                      (catch 'br
                        (dir-iterate (emacs-home%)
-                                    (lambda (f _)
+                                    (lambda (f &rest _)
                                       (string= "test.el" f))
-                                    (lambda (d _)
+                                    (lambda (d &rest _)
                                       (string= ".emacs.d" d))
                                     (lambda (a env)
                                       (let ((k1 (plist-get env :k1))
@@ -853,14 +853,14 @@
                    (catch 'br
                      (dir-iterate
                       (emacs-home%)
-                      (lambda (f _)
+                      (lambda (f &rest _)
                         (string= "tags.el" f))
-                      (lambda (d a)
+                      (lambda (d a &rest _)
                         (unless (cond ((string= ".git" d) t)
                                       ((string-match "^[gt]_[0-9]+" d) t)
                                       (t nil))
                           (string-match "config" a)))
-                      (lambda (f _)
+                      (lambda (f &rest _)
                         (throw 'br (setq fcnt (1+ fcnt)))))))))))
 
 

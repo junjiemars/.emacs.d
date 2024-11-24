@@ -54,17 +54,22 @@ when \\=`desktop-globals-to-save\\=' include it.")
         (t nil))
   "Tags option history list.")
 
-(defvar *tags-skip-history*
-  (list "cpp\\|c\\+\\+\\|/python.*?/\\|/php.*?/\\|/ruby.*?/\\|/swift/")
-  "Tags skip history list.")
+(defvar +tags-make-prompt+
+  (propertize "Make tags" 'face 'minibuffer-prompt))
+
+(defvar *tags-out-dir*
+  "^\\.\\|^out$\\|^bin$\\|^objs$\\|^[dD]ebug$\\|^[rR]elease$")
+
+(defvar *tags-vcs-dir*
+  ".git$\\|\\.hg$\\|\\.svn$")
+
+(defvar *tags-archive-dir*
+  "\\.bz2$\\|\\.gz$\\|\\.tgz$\\|\\.xz$\\|\\.Z$")
+
+;; end of tags environment
 
 (defalias 'mount-tags #'visit-tags-table
   "Mount existing TAGS into \\=`tags-table-list\\='.")
-
-(defvar *tags-vcs-meta-dir*
-  "^\\.git/$\\|\\.hg/$\\|\\.svn/$")
-
-;; end of tags environment
 
 (defun unmount-tags (&optional tags)
   "Unmount TAGS from \\=`tags-table-list\\='."
@@ -86,10 +91,10 @@ when \\=`desktop-globals-to-save\\=' include it.")
 
 (defun dir-iterate (dir ff &optional df fp dp env)
   "Iterate DIR.\n
-FF file-filter (lambda (file-name absolute-name)...),
-DF dir-filter (lambda (dir-name absolute-name)...),
-FP file-processor (lambda (absolute-name env)...),
-DP dir-processor (lambda (aboslute-name env)...),
+FF file-filter (lambda (filename absolute-name env)...),
+DF dir-filter (lambda (dirname absolute-name env)...),
+FP file-processor (lambda (filename-absolute env)...),
+DP dir-processor (lambda (dirname-absolute env)...),
 ENV (:k1 v1 :k2 v2 ...)."
   ;; (inhibit-file-name-handler)
   (let ((files (directory-files dir t)))
@@ -99,16 +104,13 @@ ENV (:k1 v1 :k2 v2 ...)."
              (f (file-name-nondirectory a))
              (len (length f)))
         (cond ((eq ft t) (cond ((char= (aref f (1- len)) ?.) nil)
-                               ((and df (funcall df f a))
+                               ((and df (funcall df f a env))
                                 (and dp (funcall dp a env))
                                 (dir-iterate a ff df fp dp env))))
               ((stringp ft) nil)
-              ((null ft) (and ff (funcall ff f a)
+              ((null ft) (and ff (funcall ff f a env)
                               fp (funcall fp a env))))
         (setq files (cdr files))))))
-
-(defvar +tags-make-prompt+
-  (propertize "Make tags" 'face 'minibuffer-prompt))
 
 (defun tags-file-processor (f &optional env)
   (let ((tf (plist-get env :tags-file))
@@ -118,12 +120,12 @@ ENV (:k1 v1 :k2 v2 ...)."
     (let* ((cmd (format fmt (or opt "") tf qf))
            (rc (shell-command* cmd))
            (done (zerop (car rc))))
-      (message "%s %s... %s"
+      (message "%s %s ... %s"
                +tags-make-prompt+ cmd (if done "ok" "failed"))
       (and done f))))
 
-(defun make-tags
-    (home tags-file file-filter dir-filter &optional tags-option renew)
+(defun make-tags (home tags-file file-filter dir-filter
+                       &optional tags-option renew env)
   "Make tags.\n
 HOME where the source files locate,
 TAGS-FILE where the tags file to save,
@@ -138,10 +140,11 @@ RENEW overwrite the existing tags file when t else create it."
            (td (file-name-directory tf)))
       (cond ((file-exists-p tf) (when renew (delete-file tf)))
             (t (path! td)))
-      (let ((env (list :tags-file tf
-                       :tags-option tags-option
-                       :tags-prompt +tags-make-prompt+
-                       :tags-cmd (*tags* :cmd))))
+      (let ((env (append (list :tags-file tf
+                               :tags-option tags-option
+                               :tags-prompt +tags-make-prompt+
+                               :tags-cmd (*tags* :cmd))
+                         env)))
         (dir-iterate home
                      file-filter
                      dir-filter
@@ -154,26 +157,41 @@ RENEW overwrite the existing tags file when t else create it."
 
 ;;; file/dir filters
 
-(defun tags-dir-file-filter (f _)
-  (declare (pure t))
-  (null (string-match "tags$" f)))
+(defun tags--file-filter (fd &optional _ env)
+  (let ((exc (plist-get env :exc))
+        (inc (plist-get env :inc)))
+    (cond ((and exc (string-match exc fd)) nil)
+          ((null inc) t)
+          ((and inc (string-match inc fd)) t))))
 
-(defun tags-c-file-filter (f _)
+(defun tags--dir-filter (fd &optional _ env)
+  (let ((exc (plist-get env :exc))
+        (inc (plist-get env :inc)))
+    (cond ((and exc (string-match exc fd)) nil)
+          ((null inc) t)
+          (inc (and (string-match inc fd) t))
+          (t nil))))
+
+(defun tags-c-file-filter (f &rest _)
   (declare (pure t))
   (string-match "\\.[ch]+$" f))
 
-(defun tags-c-dir-filter (d _)
+(defun tags-c-dir-filter (d &rest _)
   (declare (pure t))
-  (null
-   (string-match (concat *tags-vcs-meta-dir* "\\|^out$\\|^objs$") d)))
+  (null (string-match (concat *tags-vcs-dir*
+                              "\\|" *tags-archive-dir*
+                              "\\|" *tags-out-dir*)
+                      d)))
 
-(defun tags-lisp-file-filter (f _)
+(defun tags-lisp-file-filter (f &rest _)
   (declare (pure t))
   (string-match "\\.el$\\|\\.cl$\\|\\.lis[p]?$\\|\\.ss$\\|\\.scm$" f))
 
-(defun tags-lisp-dir-filter (d _)
-  (null
-   (string-match (concat *tags-vcs-meta-dir* "\\|^out$\\|^objs/$") d)))
+(defun tags-lisp-dir-filter (d &rest _)
+  (declare (pure t))
+  (null (string-match (concat *tags-vcs-dir*
+                              "\\|" *tags-archive-dir*)
+                      d)))
 
 ;; end of file/dir filters
 
@@ -213,7 +231,6 @@ RENEW overwrite the existing tags file when t else create it."
                     (string= "config" d))
                   renew))
 
-
 (defun make-emacs-tags (source &optional option renew)
   "Make tags for Emacs\\=' C and Lisp SOURCE code."
   (interactive (list (read-directory-name "make tags for " source-directory)
@@ -233,36 +250,31 @@ RENEW overwrite the existing tags file when t else create it."
                   #'tags-lisp-file-filter
                   #'true))
 
-(defun make-dir-tags
-    (dir store &optional include-dir exclude-dir option renew)
+(defun make-dir-tags (dir store &optional include exclude option renew)
   "Make tags for specified DIR."
   (interactive (list (read-directory-name "make tags for ")
                      (read-file-name "store tags in " nil nil nil ".tags")
                      (when current-prefix-arg
-                       (read-string "tags include dir: " nil))
+                       (read-string "tags include regexp: " nil))
                      (when current-prefix-arg
-                       (read-string "tags exclude dir: " nil))
+                       (read-string "tags exclude regexp: " nil))
                      (read-string (concat (*tags*) " option: ")
                                   (car *tags-option-history*)
                                   '*tags-option-history*)
                      (y-or-n-p "tags renew? ")))
   (let ((home (path+ (expand-file-name dir)))
-        (vcs *tags-vcs-meta-dir*)
-        (exc (unless (string= exclude-dir "") exclude-dir))
-        (inc (unless (string= include-dir "") include-dir)))
+        (exc (concat *tags-out-dir*
+                     "\\|" *tags-vcs-dir*
+                     "\\|" *tags-archive-dir*
+                     (unless (string= exclude "") "\\|" exclude)))
+        (inc (unless (string= include "") "\\|" include)))
     (when (make-tags home
                      store
-                     #'tags-dir-file-filter
-                     (lambda (d a)
-                       (cond ((string-match vcs d) nil)
-                             ((and (stringp exc)
-                                   (string-match exc d))
-                              nil)
-                             ((null inc) t)
-                             (t (or (string-match inc d)
-                                    (string-match inc a)))))
+                     #'tags--file-filter
+                     #'tags--dir-filter
                      option
-                     renew))))
+                     renew
+                     (list :exc exc :inc inc)))))
 
 (defun make-dir-ctags (dir tags options)
   "Make tags via ctags for specified DIR."
