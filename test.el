@@ -561,10 +561,12 @@
   (let ((b (if-key% (current-global-map) "C-c C-c C-c" #'+ 1 0)))
     (cond ((= b 0)
            (should
-            (eq #'+ (define-key% (current-global-map) "C-c C-c C-c" #'+))))
+            (eq #'+ (define-key% (current-global-map)
+                                 (kbd "C-c C-c C-c") #'+))))
           ((= b 1)
            (should
-            (null (define-key% (current-global-map) "C-c C-c C-c" nil)))))))
+            (null (define-key% (current-global-map)
+                               (kbd "C-c C-c C-c") nil)))))))
 
 (ert-deftest %e:fn:if-region-active ()
   ;; interactive

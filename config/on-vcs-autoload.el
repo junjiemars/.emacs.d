@@ -9,7 +9,7 @@
 (autoload 'vc*-dir (v-home%> "config/vcs") nil t)
 
 ;; general `vc*-dir'
-(define-key% (current-global-map) "C-x v d" #'vc*-dir)
+(define-key% (current-global-map) (kbd% "C-x v d") #'vc*-dir)
 
 
 ;; end of on-vcs-autoload.el

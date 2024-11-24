@@ -873,7 +873,7 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
   "If TEST yield t for KEY in KEYMAP do then, else do ELSE..."
   (declare (indent 4) (pure t))
   (let ((-ik%-m1- keymap)
-        (-ik%-k1- (kbd key))
+        (-ik%-k1- key)
         (-ik%-t1- test))
     `(if% (eq ,-ik%-t1- (lookup-key ,-ik%-m1- ,-ik%-k1-))
          ,then
@@ -882,7 +882,7 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
 (defmacro define-key% (keymap key def)
   "Define KEY to DEF in KEYMAP."
   (let ((-dk%-m1- keymap)
-        (-dk%-k1- (kbd key))
+        (-dk%-k1- key)
         (-dk%-d1- def))
     `(unless% (eq ,-dk%-d1- (lookup-key ,-dk%-m1- ,-dk%-k1-))
        (define-key ,-dk%-m1- ,-dk%-k1- ,-dk%-d1-))))

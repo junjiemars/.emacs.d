@@ -59,7 +59,7 @@ Optional argument INDENT whether to indent lines. See also
 (defmacro unless-key-insert-char% (&rest body)
   "Unless [C-x 8 RET] key bind to \\=`insert-char\\='."
   (declare (indent 0))
-  (if-key% (current-global-map) "C-x 8 RET" #'insert-char
+  (if-key% (current-global-map) "8" #'insert-char
            `(comment ,@body)
     `(progn% ,@body)))
 
@@ -315,33 +315,33 @@ And copy the qualified buffer name to kill ring."
 
 (defun on-progs-key! ()
   ;; line
-  (define-key% (current-global-map) "C-o" #'open-next-line)
-  (define-key% (current-global-map) "C-M-o" #'open-previous-line)
+  (define-key% (current-global-map) "" #'open-next-line)
+  (define-key% (current-global-map) (kbd% "C-M-o") #'open-previous-line)
   ;; comment
-  (define-key% (current-global-map) "C-x M-;" #'toggle-comment)
-  (define-key% (current-global-map) "C-x ;" #'comment-indent)
+  (define-key% (current-global-map) (kbd% "C-x M-;") #'toggle-comment)
+  (define-key% (current-global-map) ";" #'comment-indent)
   ;; surround
-  (define-key% (current-global-map) "C-x r [" #'surround-region)
+  (define-key% (current-global-map) "r[" #'surround-region)
   ;; `imenu'
-  (define-key% (current-global-map) "M-g i" #'imenu)
+  (define-key% (current-global-map) (kbd% "M-g i") #'imenu)
   ;; `insert-char*'
   (unless-key-insert-char%
-    (define-key% (current-global-map) "C-x 8 RET" #'insert-char*))
+    (define-key% (current-global-map) "8" #'insert-char*))
   ;; lookup dictionary
-  (define-key% (current-global-map) "M-s d" 'lookup-dict)
+  (define-key% (current-global-map) (kbd% "M-s d") 'lookup-dict)
   ;; open file or url at point
   (when-fn% 'find-file-at-point 'ffap
-    (define-key% (current-global-map) "C-c f f" #'find-file-at-point))
+    (define-key% (current-global-map) "ff" #'find-file-at-point))
   ;; shows a list of buffers
-  (define-key% (current-global-map) "C-x C-b" #'ibuffer)
+  (define-key% (current-global-map) "" #'ibuffer)
   ;; interactive query replace key bindings.
-  (define-key% (current-global-map) "M-%" #'query-replace-regexp)
-  (define-key% (current-global-map) "C-M-%" #'query-replace)
+  (define-key% (current-global-map) (kbd% "M-%") #'query-replace-regexp)
+  (define-key% (current-global-map) (kbd% "C-M-%") #'query-replace)
   ;; register:
   ;; `C-x r g' and `C-x r i' are all bound to insert-register
   ;; let `C-x r g' do `string-insert-rectangle'
-  (define-key% (current-global-map) "C-x r g" #'string-insert-rectangle)
-  (define-key% (current-global-map) "C-x r v" #'view-register)
+  (define-key% (current-global-map) "rg" #'string-insert-rectangle)
+  (define-key% (current-global-map) "rv" #'view-register)
   ;; line
   (when-fn% 'electric-newline-and-maybe-indent 'electric
     ;; Default behaviour of RET
@@ -349,34 +349,34 @@ And copy the qualified buffer name to kill ring."
     ;; electric-indent-mode: abolition of `newline' function is not
     ;; the Right Thing
     ;; https://lists.gnu.org/archive/html/emacs-devel/2013-10/msg00407.html
-    (define-key% (current-global-map) "RET"
+    (define-key% (current-global-map) (kbd% "RET")
                  #'electric-newline-and-maybe-indent)
-    (define-key% (current-global-map) "C-j" #'newline))
+    (define-key% (current-global-map) (kbd% "C-j") #'newline))
   ;; sorting
-  (define-key% (current-global-map) "C-c s f" #'sort-fields)
-  (define-key% (current-global-map) "C-c s n" #'sort-numeric-fields)
-  (define-key% (current-global-map) "C-c s x" #'sort-regexp-fields)
-  (define-key% (current-global-map) "C-c s l" #'sort-lines)
-  (define-key% (current-global-map) "C-c s r" #'reverse-region)
-  (define-key% (current-global-map) "C-c s d" #'delete-duplicate-lines)
+  (define-key% (current-global-map) "sf" #'sort-fields)
+  (define-key% (current-global-map) "sn" #'sort-numeric-fields)
+  (define-key% (current-global-map) "sx" #'sort-regexp-fields)
+  (define-key% (current-global-map) "sl" #'sort-lines)
+  (define-key% (current-global-map) "sr" #'reverse-region)
+  (define-key% (current-global-map) "sd" #'delete-duplicate-lines)
   ;; windows
-  (define-key% (current-global-map) "C-c w l" #'windmove-left)
-  (define-key% (current-global-map) "C-c w r" #'windmove-right)
-  (define-key% (current-global-map) "C-c w u" #'windmove-up)
-  (define-key% (current-global-map) "C-c w d" #'windmove-down)
+  (define-key% (current-global-map) "wl" #'windmove-left)
+  (define-key% (current-global-map) "wr" #'windmove-right)
+  (define-key% (current-global-map) "wu" #'windmove-up)
+  (define-key% (current-global-map) "wd" #'windmove-down)
   ;; buffers
-  (define-key% (current-global-map) "C-l" #'recenter-top-bottom)
-  (define-key% (current-global-map) "C-x x c" #'clone-buffer)
-  (define-key% (current-global-map) "C-x x n" #'echo-buffer-name)
-  (define-key% (current-global-map) "C-x x t" #'toggle-truncate-lines)
-  (define-key% (current-global-map) "C-x RET ="
+  (define-key% (current-global-map) "" #'recenter-top-bottom)
+  (define-key% (current-global-map) "xc" #'clone-buffer)
+  (define-key% (current-global-map) "xn" #'echo-buffer-name)
+  (define-key% (current-global-map) "xt" #'toggle-truncate-lines)
+  (define-key% (current-global-map) (kbd% "C-x RET =")
                #'get-buffer-coding-system)
-  (define-key% (current-global-map) "C-x x g"
+  (define-key% (current-global-map) "xg"
                (if-fn% 'revert-buffer-quick nil
                        #'revert-buffer-quick
                  #'revert-buffer))
   ;; line number mode
-  (define-key (current-global-map) (kbd% "C-x x l")
+  (define-key (current-global-map) "xl"
               (if-fn% 'display-line-numbers-mode 'display-line-numbers
                       (prog1 #'display-line-numbers-mode
                         (setq% display-line-numbers-type 'relative
@@ -387,16 +387,16 @@ And copy the qualified buffer name to kill ring."
                         #'linum-mode
                   #'(lambda (&optional _)
                       (interactive)
-                      (error "%s" "No line number mode found")))))
-  (define-key% (current-global-map) "C-x x r" #'rename-buffer)
+                      (error (kbd% "%s") "No line number mode found")))))
+  (define-key% (current-global-map) "xr" #'rename-buffer)
   (when-fn% 'toggle-word-wrap 'simple
-    (define-key% (current-global-map) "C-x x w" #'toggle-word-wrap))
+    (define-key% (current-global-map) "xw" #'toggle-word-wrap))
   (when-fn% 'whitespace-mode 'whitespace
-    (define-key% (current-global-map) "C-x x SPC" #'whitespace-mode))
-  (define-key% (current-global-map) "C-x x u" #'rename-uniquely)
+    (define-key% (current-global-map) (kbd% "C-x x SPC") #'whitespace-mode))
+  (define-key% (current-global-map) "xu" #'rename-uniquely)
   ;; `minibuffer'
-  (set-minibuffer-complete-key! "TAB")
-  (set-minibuffer-complete-key! "C-M-i")
+  (set-minibuffer-complete-key! (kbd% "TAB"))
+  (set-minibuffer-complete-key! (kbd% "C-M-i"))
   ;; `messages-buffer-mode'
   (when-version% > 24.4
     ;; fix: no quit key to hide *Messages* buffer for ancient Emacs
@@ -406,7 +406,7 @@ And copy the qualified buffer name to kill ring."
       (if-fn% 'read-only-mode nil
               (read-only-mode 1)
         (toggle-read-only t))
-      (local-set-key (kbd% "q") #'quit-window)
+      (local-set-key "q" #'quit-window)
       (local-set-key (kbd% "DEL") #'scroll-down)
       (local-set-key (kbd% "SPC") #'scroll-up))))
 

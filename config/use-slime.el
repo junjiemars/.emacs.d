@@ -41,7 +41,7 @@
   (when-fn% 'slime-setup 'slime
     (slime-setup '(slime-fancy slime-asdf)))
   (when-fn% 'slime-selector 'slime
-    (define-key% (current-global-map) "C-c s s" #'slime-selector))
+    (define-key% (current-global-map) "ss" #'slime-selector))
   (when-fn% 'slime-show-source-location 'slime
     (ad-enable-advice #'slime-show-source-location 'after
                       "slime-show-source-location-after")

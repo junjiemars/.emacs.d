@@ -194,10 +194,10 @@
     ;; using `insert-directory-program'
     (setq% ls-lisp-use-insert-directory-program t 'ls-lisp))
   ;; keys
-  (define-key dired-mode-map (kbd% "b") #'dired*-hexl-find-file)
-  (define-key dired-mode-map (kbd% "B") #'dired*-browse-file)
-  (define-key dired-mode-map (kbd% "w") #'dired*-copy-filename-as-kill)
-  (define-key dired-mode-map (kbd% "W") #'dired*-echo-current-directory))
+  (define-key dired-mode-map "b" #'dired*-hexl-find-file)
+  (define-key dired-mode-map "B" #'dired*-browse-file)
+  (define-key dired-mode-map "w" #'dired*-copy-filename-as-kill)
+  (define-key dired-mode-map "W" #'dired*-echo-current-directory))
 
 ;; end of `dired' setting
 

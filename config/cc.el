@@ -459,18 +459,18 @@ N specify the number of spaces when align."
 (defmacro cc*-define-keys (keymap)
   `(progn
      ;; dump predefined macros
-     (define-key ,keymap (kbd% "C-c #") #'cc*-dump-predefined-macros)
+     (define-key ,keymap "#" #'cc*-dump-predefined-macros)
      ;; raw newline
      (define-key ,keymap (kbd% "RET") #'newline*)
      ;; align style
-     (define-key ,keymap (kbd% "C-c |") #'cc*-style-align-entire)
+     (define-key ,keymap "|" #'cc*-style-align-entire)
      ;; format buffer
      (define-key ,keymap (kbd% "C-c M-c f") #'cc*-format-buffer)
      (when-fn-ff-find-other-file%
       ;; find include file
-      (define-key ,keymap (kbd% "C-c f i") #'cc*-find-include-file))
+      (define-key ,keymap "fi" #'cc*-find-include-file))
      (when-fn-c-macro-expand%
-       (define-key ,keymap (kbd% "C-c C-e") #'c-macro-expand))))
+       (define-key ,keymap "" #'c-macro-expand))))
 
 ;; end of keys
 
@@ -489,9 +489,9 @@ N specify the number of spaces when align."
     (ad-activate #'c-macro-expand t))
   ;; indent line or region
   (when-fn% 'c-indent-line-or-region 'cc-cmds
-    (define-key% c-mode-map "TAB" #'c-indent-line-or-region))
+    (define-key% c-mode-map (kbd% "TAB") #'c-indent-line-or-region))
   ;; `subword-mode'
-  (define-key% c-mode-map "C-c C-w"
+  (define-key% c-mode-map ""
                (if-fn% 'subword-mode 'subword
                        #'subword-mode
                  #'c-subword-mode))
