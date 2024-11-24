@@ -9,9 +9,6 @@
 (autoload 'on-dired-init! (v-home%> "config/direds"))
 (autoload 'on-dired-aux-init! (v-home%> "config/direds"))
 (autoload 'on-arc-mode-init! (v-home%> "config/direds"))
-;; (autoload 'browse-file (v-home%> "config/direds"))
-(autoload 'dired-get-file-for-visit "dired")
-(autoload 'dired-current-directory "dired")
 
 ;;; `dired' after load
 (with-eval-after-load 'dired
@@ -24,7 +21,5 @@
 ;;; `arc-mode' after load
 (with-eval-after-load 'arc-mode
   (make-thread* #'on-arc-mode-init!))
-
-;; (define-key% (current-global-map) "C-x x B" 'browse-file)
 
 ;; end of on-dired-autoload.el

@@ -6,6 +6,14 @@
 ;; direds.el
 ;;;;
 
+;;; require
+
+(declare-function browse-url-default-browser "browse-url")
+(declare-function dired-current-directory "dired")
+(autoload 'dired-current-directory "dired")
+
+;; end of require
+
 ;;; macro
 
 (defmacro unless-default-file-name-coding-system% (&rest body)
@@ -127,13 +135,18 @@
     (message "%s" d)))
 
 
-(defun browse-file ()
+(defun dired*-get-filename ()
+  (if-fn% 'dired-get-file-for-visit 'dired
+          (dired-get-file-for-visit)
+    (or (dired-get-filename nil t)
+        (user-error "%s" "No file on this line"))))
+
+(defun dired*-browse-file ()
   "Browse the file using external browser."
   (interactive)
-  (declare-function browse-url-default-browser "browse-url" t)
   (let ((browse-url-browser-function #'browse-url-default-browser)
         (name (if (eq 'dired-mode major-mode)
-                  (expand-file-name (dired-get-file-for-visit))
+                  (dired*-get-filename)
                 (buffer-file-name))))
     (and name (browse-url name))))
 
@@ -141,11 +154,7 @@
 (defun dired*-hexl-find-file ()
   "Edit the current file as hex dump format in \\=`dired-mode\\='."
   (interactive)
-  (hexl-find-file
-   (if-fn% 'dired-get-file-for-visit 'dired
-           (dired-get-file-for-visit)
-     (or (dired-get-filename nil t)
-         (user-error "%s" "No file on this line")))))
+  (hexl-find-file (dired*-get-filename)))
 
 (defun dired*-copy-filename-as-kill (&optional arg)
   "See \\=`dired-copy-filename-as-kill\\='."
@@ -186,7 +195,7 @@
     (setq% ls-lisp-use-insert-directory-program t 'ls-lisp))
   ;; keys
   (define-key dired-mode-map (kbd% "b") #'dired*-hexl-find-file)
-  (define-key dired-mode-map (kbd% "B") #'browse-file)
+  (define-key dired-mode-map (kbd% "B") #'dired*-browse-file)
   (define-key dired-mode-map (kbd% "w") #'dired*-copy-filename-as-kill)
   (define-key dired-mode-map (kbd% "W") #'dired*-echo-current-directory))
 
