@@ -125,6 +125,8 @@ determine whether inside a virtual env. Another way is using
     (let ((pylsp (python*-venv :pylsp)))
       (when (and pylsp (file-exists-p pylsp))
         (when-var% eglot-server-programs 'eglot
+          (unless (boundp 'eglot-server-programs)
+            (require 'eglot))
           (let ((ent (assoc '(python-mode python-ts-mode)
                             eglot-server-programs)))
             (when ent
