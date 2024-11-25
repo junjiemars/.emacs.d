@@ -14,6 +14,29 @@
 ;; tags envrionment
 ;;;
 
+(defalias 'tags-spec->*
+  (lexical-let%
+      ((b (list
+           :root (emacs-home% ".tags/")
+           :nore (v-home% ".tags/nore.emacs.TAGS")
+           :emacs (v-home% ".tags/emacs.TAGS")
+           :prompt (propertize "Make tags" 'face 'minibuffer-prompt)
+           :out-dir
+           "^\\.\\|^out$\\|^bin$\\|^objs$\\|^[dD]ebug$\\|^[rR]elease$"
+           :vcs-dir ".git$\\|\\.hg$\\|\\.svn$"
+           :arc-dir "\\.bz2$\\|\\.gz$\\|\\.tgz$\\|\\.xz$\\|\\.Z$")))
+    (lambda (&optional op k v)
+      (cond ((eq :get op) (plist-get b k))
+            ((eq :put op) (plist-put b k v))
+            (t b))))
+  "Tags spec.")
+
+(defun tags-spec-> (key)
+  (tags-spec->* :get key))
+
+(defmacro tags-spec->% (key)
+  (tags-spec-> key))
+
 (defun tags*-check ()
   (or (executable-find%
        "ctags"
@@ -53,18 +76,6 @@ when \\=`desktop-globals-to-save\\=' include it.")
          `("-l c" "-l lisp" "-l auto"))
         (t nil))
   "Tags option history list.")
-
-(defvar +tags-make-prompt+
-  (propertize "Make tags" 'face 'minibuffer-prompt))
-
-(defvar *tags-out-dir*
-  "^\\.\\|^out$\\|^bin$\\|^objs$\\|^[dD]ebug$\\|^[rR]elease$")
-
-(defvar *tags-vcs-dir*
-  ".git$\\|\\.hg$\\|\\.svn$")
-
-(defvar *tags-archive-dir*
-  "\\.bz2$\\|\\.gz$\\|\\.tgz$\\|\\.xz$\\|\\.Z$")
 
 ;; end of tags environment
 
@@ -121,7 +132,7 @@ ENV (:k1 v1 :k2 v2 ...)."
            (rc (shell-command* cmd))
            (done (zerop (car rc))))
       (message "%s %s ... %s"
-               +tags-make-prompt+ cmd (if done "ok" "failed"))
+               (tags-spec-> :prompt) cmd (if done "ok" "failed"))
       (and done f))))
 
 (defun make-tags (home tags-file file-filter dir-filter
@@ -142,7 +153,7 @@ RENEW overwrite the existing tags file when t else create it."
             (t (path! td)))
       (let ((env (append (list :tags-file tf
                                :tags-option tags-option
-                               :tags-prompt +tags-make-prompt+
+                               :tags-prompt (tags-spec-> :prompt)
                                :tags-cmd (*tags* :cmd))
                          env)))
         (dir-iterate home
@@ -152,7 +163,7 @@ RENEW overwrite the existing tags file when t else create it."
                      nil
                      env)
         (message "%s for %s ... %s"
-                 +tags-make-prompt+ tf
+                 (tags-spec-> :prompt) tf
                  (if (file-exists-p tf) "done" "failed"))))))
 
 ;;; file/dir filters
@@ -178,9 +189,9 @@ RENEW overwrite the existing tags file when t else create it."
 
 (defun tags-c-dir-filter (d &rest _)
   (declare (pure t))
-  (null (string-match (concat *tags-vcs-dir*
-                              "\\|" *tags-archive-dir*
-                              "\\|" *tags-out-dir*)
+  (null (string-match (concat (tags-spec-> :vcs-dir)
+                              "\\|" (tags-spec-> :arc-dir)
+                              "\\|" (tags-spec-> :out-dir))
                       d)))
 
 (defun tags-lisp-file-filter (f &rest _)
@@ -189,8 +200,8 @@ RENEW overwrite the existing tags file when t else create it."
 
 (defun tags-lisp-dir-filter (d &rest _)
   (declare (pure t))
-  (null (string-match (concat *tags-vcs-dir*
-                              "\\|" *tags-archive-dir*)
+  (null (string-match (concat (tags-spec-> :vcs-dir)
+                              "\\|" (tags-spec-> :arc-dir))
                       d)))
 
 ;; end of file/dir filters
@@ -224,7 +235,7 @@ RENEW overwrite the existing tags file when t else create it."
                                   '*tags-option-history*)
                      (y-or-n-p "tags renew? ")))
   (make-lisp-tags (emacs-home%)
-                  (tags-spec->% :nore)
+                  (tags-spec-> :nore)
                   option
                   #'tags-lisp-file-filter
                   (lambda (d _)
@@ -239,13 +250,13 @@ RENEW overwrite the existing tags file when t else create it."
                                   '*tags-option-history*)
                      (y-or-n-p "tags renew? ")))
   (make-c-tags (concat source "src/")
-               (tags-spec->% :emacs)
+               (tags-spec-> :emacs)
                option
                #'tags-c-file-filter
                #'true
                renew)
   (make-lisp-tags (concat source "lisp/")
-                  (tags-spec->% :emacs)
+                  (tags-spec-> :emacs)
                   option
                   #'tags-lisp-file-filter
                   #'true))
@@ -263,9 +274,9 @@ RENEW overwrite the existing tags file when t else create it."
                                   '*tags-option-history*)
                      (y-or-n-p "tags renew? ")))
   (let ((home (path+ (expand-file-name dir)))
-        (exc (concat *tags-out-dir*
-                     "\\|" *tags-vcs-dir*
-                     "\\|" *tags-archive-dir*
+        (exc (concat (tags-spec-> :out-dir)
+                     "\\|" (tags-spec-> :vcs-dir)
+                     "\\|" (tags-spec-> :arc-dir)
                      (unless (string= exclude "") "\\|" exclude)))
         (inc (unless (string= include "") "\\|" include)))
     (when (make-tags home
@@ -284,11 +295,11 @@ RENEW overwrite the existing tags file when t else create it."
     (let ((d1 (path+ (expand-file-name dir)))
           (f1 (expand-file-name tags))
           (o1 (concat "--options=" (expand-file-name options))))
-      (message "%s %s %s %s ..." +tags-make-prompt+ dir tp o1)
+      (message "%s %s %s %s ..." (tags-spec-> :prompt) dir tp o1)
       (let* ((rc (shell-command* tp "-R" "-e" "-o" f1 o1 d1))
              (done (zerop (car rc))))
         (message "%s for %s ... %s"
-                 +tags-make-prompt+ dir (if done "done" "failed"))
+                 (tags-spec-> :prompt) dir (if done "done" "failed"))
         (and done f1)))))
 
 ;; end of make tags

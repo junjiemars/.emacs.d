@@ -57,6 +57,7 @@
 
 ;;; `tags'
 
+(autoload 'tags-spec->% (v-home%> "config/tags") nil nil 'macro)
 (autoload 'make-c-tags (v-home%> "config/tags"))
 (autoload 'make-dir-ctags (v-home%> "config/tags"))
 (autoload 'make-dir-tags (v-home%> "config/tags") nil t)

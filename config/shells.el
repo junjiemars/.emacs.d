@@ -12,10 +12,11 @@
 ;; spec
 ;;;
 
-(defmacro shells-spec->* (&rest keys)
-  "Extract :shell from env-spec via KEYS."
+(defun shells-spec->* (&optional key)
+  "Extract :shell from env-spec via KEY."
   (declare (indent 0) (pure t))
-  `(*self-env-spec* :get :shell ,@keys))
+  (cond (key (*self-env-spec* :get :shell key))
+        (t (*self-env-spec* :get :shell))))
 
 
 (defalias '*default-shell-env*

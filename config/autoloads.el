@@ -221,6 +221,12 @@
   )
 ;; end of `load-conditional-modes!'
 
+(defun self-epilogue-init! ()
+  (condition-case err
+      (compile! (compile-unit* (*self-paths* :get :epilogue)))
+    (error "self-epilogue: %s" err)))
+
+;; end of `self-epilogue-init!'
 
 ;; after-init
 (defun on-autoloads! ()
@@ -250,12 +256,7 @@
   (push! (v-home% "config/") load-path)
   (push! (v-home% "private/") load-path)
   (when (*self-paths* :get :epilogue)
-    (make-thread*
-     (lambda () (thread-yield*)
-       (condition-case err
-           (compile! (compile-unit* (*self-paths* :get :epilogue)))
-         (error "self-epilogue: %s" err)))
-     (if-noninteractive% t))))
+    (make-thread* #'self-epilogue-init! (if-noninteractive% t))))
 
 ;;; autoload when interactive or not
 (if-noninteractive%

@@ -141,15 +141,6 @@ No matter the declaration order, the executing order is:
              :PATH "PATH")
      ,@keys))
 
-(defmacro tags-spec->% (&rest key)
-  "Extract value from the list of spec via KEYS at compile time."
-  (declare (indent 0) (pure t))
-  `(self-spec->% (list
-                  :root ,(emacs-home% ".tags/")
-                  :nore ,(v-home% ".tags/nore.emacs.TAGS")
-                  :emacs ,(v-home% ".tags/emacs.TAGS"))
-     ,@key))
-
 ;; end of self-spec* macro
 
 ;;;
