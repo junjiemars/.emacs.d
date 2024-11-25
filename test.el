@@ -470,7 +470,7 @@
   (should (let ((x (shell-command* "echo" "a")))
             (and (= (car x) 0) (string= (cdr x) "a\n"))))
   (should (let ((x (shell-command* "wc" "-c"
-                                   (emacs-home% "test.el"))))
+                                   (emacs-home* "test.el"))))
             (or (= (car x) 0)
                 (= (car x) 127)))))
 
@@ -486,15 +486,15 @@
 
 (ert-deftest %e:fn:file-in-dirs-p ()
   (should-not (file-in-dirs-p nil nil))
-  (should-not (file-in-dirs-p (emacs-home% "init.el") nil))
-  (should-not (file-in-dirs-p (emacs-home% "init.el")
-                              (list (emacs-home% "config/"))))
-  (should (file-in-dirs-p (emacs-home% "init.el")
-                          (list (emacs-home%))))
-  (should (file-in-dirs-p (emacs-home% "init.elx")
-                          (list (emacs-home%))))
-  (should (file-in-dirs-p (emacs-home% "init.el")
-                          (list (string-trim> (emacs-home%) "/")))))
+  (should-not (file-in-dirs-p (emacs-home* "init.el") nil))
+  (should-not (file-in-dirs-p (emacs-home* "init.el")
+                              (list (emacs-home* "config/"))))
+  (should (file-in-dirs-p (emacs-home* "init.el")
+                          (list (emacs-home*))))
+  (should (file-in-dirs-p (emacs-home* "init.elx")
+                          (list (emacs-home*))))
+  (should (file-in-dirs-p (emacs-home* "init.el")
+                          (list (string-trim> (emacs-home*) "/")))))
 
 (ert-deftest %e:fn:file-name-nondirectory% ()
   (should (string= "c.c" (file-name-nondirectory% "/a/b/c.c")))
@@ -810,13 +810,13 @@
   (when-fn% 'dir-iterate nil
     (should (string= "init.el"
                      (catch 'br
-                       (dir-iterate (emacs-home%)
+                       (dir-iterate (emacs-home*)
                                     (lambda (f &rest _)
                                       (when (string= "init.el" f)
                                         (throw 'br f)))))))
     (should (string-match "init\\.el$"
                           (catch 'br
-                            (dir-iterate (emacs-home%)
+                            (dir-iterate (emacs-home*)
                                          (lambda (f &rest _)
                                            (string= "init.el" f))
                                          nil
@@ -824,14 +824,14 @@
                                            (throw 'br a))))))
     (should (string= "config"
                      (catch 'br
-                       (dir-iterate (emacs-home%)
+                       (dir-iterate (emacs-home*)
                                     nil
                                     (lambda (f &rest _)
                                       (when (string= "config" f)
                                         (throw 'br f)))))))
     (should (string-match "config$"
                           (catch 'br
-                            (dir-iterate (emacs-home%)
+                            (dir-iterate (emacs-home*)
                                          nil
                                          (lambda (f &rest _)
                                            (string= "config" f))
@@ -840,7 +840,7 @@
                                            (throw 'br a))))))
     (should (string= "xy"
                      (catch 'br
-                       (dir-iterate (emacs-home%)
+                       (dir-iterate (emacs-home*)
                                     (lambda (f &rest _)
                                       (string= "test.el" f))
                                     (lambda (d &rest _)
@@ -854,7 +854,7 @@
     (should (= 1 (let ((fcnt 0) (dcnt 0))
                    (catch 'br
                      (dir-iterate
-                      (emacs-home%)
+                      (emacs-home*)
                       (lambda (f &rest _)
                         (string= "tags.el" f))
                       (lambda (d a &rest _)

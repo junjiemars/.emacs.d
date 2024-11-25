@@ -136,10 +136,10 @@ No matter the declaration order, the executing order is:
   "Extract constant from env-spec via KEYS."
   (declare (indent 0) (pure t))
   `(self-spec->%
-    (list :file ,(v-home% ".exec/shell-env.el")
-          :SHELL "SHELL"
-          :PATH "PATH")
-    ,@keys))
+       (list :file ,(v-home% ".exec/shell-env.el")
+             :SHELL "SHELL"
+             :PATH "PATH")
+     ,@keys))
 
 (defmacro tags-spec->% (&rest key)
   "Extract value from the list of spec via KEYS at compile time."
@@ -148,7 +148,7 @@ No matter the declaration order, the executing order is:
                   :root ,(emacs-home% ".tags/")
                   :nore ,(v-home% ".tags/nore.emacs.TAGS")
                   :emacs ,(v-home% ".tags/emacs.TAGS"))
-                 ,@key))
+     ,@key))
 
 ;; end of self-spec* macro
 
@@ -174,15 +174,15 @@ No matter the declaration order, the executing order is:
 (define-hash-table-test 'nore-emacs-string-hash= #'string= #'sxhash)
 
 ;;; <1> prologue
-(compile! (compile-unit% (emacs-home% "config/vdir.el"))
+(compile! (compile-unit% (emacs-home* "config/vdir.el"))
           (compile-unit* (*self-paths* :get :prologue)))
 
 ;;; <2> env
 (compile!
   (compile-unit* (*self-paths* :get :env-spec))
-  (compile-unit% (emacs-home% "config/graphic.el"))
+  (compile-unit% (emacs-home* "config/graphic.el"))
   (prog1
-      (compile-unit% (emacs-home% "config/shells.el") t)
+      (compile-unit% (emacs-home* "config/shells.el") t)
     (autoload 'self-shell-read! (v-home%> "config/shells"))
     (declare-function self-shell-read! (v-home%> "config/shells"))))
 
@@ -190,12 +190,12 @@ No matter the declaration order, the executing order is:
 (compile!
   (when (*self-env-spec* :get :edit :allowed)
     (prog1
-        (compile-unit% (emacs-home% "config/edit.el") t)
+        (compile-unit% (emacs-home* "config/edit.el") t)
       (autoload 'self-edit-init! (v-home%> "config/edit"))
       (declare-function self-edit-init! (v-home%> "config/edit"))))
   (when (*self-env-spec* :get :key :allowed)
     (prog1
-        (compile-unit% (emacs-home% "config/key.el") t)
+        (compile-unit% (emacs-home* "config/key.el") t)
       (autoload 'self-key-init! (v-home%> "config/key"))
       (declare-function self-key-init! (v-home%> "config/key"))))
   (progn
@@ -204,21 +204,21 @@ No matter the declaration order, the executing order is:
     (unless-noninteractive%
       (when (*self-env-spec* :get :desktop :allowed)
         (prog1
-            (compile-unit% (emacs-home% "config/memo.el") t)
+            (compile-unit% (emacs-home* "config/memo.el") t)
           (autoload 'self-desktop-read! (v-home%> "config/memo"))
           (declare-function self-desktop-read! (v-home%> "config/memo"))))))
   (when (*self-env-spec* :get :socks :allowed)
     (prog1
-        (compile-unit% (emacs-home% "config/sockets.el") t)
+        (compile-unit% (emacs-home* "config/sockets.el") t)
       (autoload 'self-socks-init! (v-home%> "config/sockets"))
       (declare-function self-socks-init! (v-home%> "config/sockets"))))
   (when-package%
     (when (*self-env-spec* :get :module :allowed)
       (prog1
-          (compile-unit% (emacs-home% "config/modules.el") t)
+          (compile-unit% (emacs-home* "config/modules.el") t)
         (autoload 'self-module-init! (v-home%> "config/modules"))
         (declare-function self-module-init! (v-home%> "config/modules")))))
-  (compile-unit% (emacs-home% "config/autoloads.el")))
+  (compile-unit% (emacs-home* "config/autoloads.el")))
 
 ;; end of boot
 
