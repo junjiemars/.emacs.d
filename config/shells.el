@@ -14,7 +14,6 @@
 
 (defun shells-spec->* (&optional key)
   "Extract :shell from env-spec via KEY."
-  (declare (indent 0) (pure t))
   (cond (key (*self-env-spec* :get :shell key))
         (t (*self-env-spec* :get :shell))))
 

@@ -123,7 +123,7 @@ Argument FEATURE that X dependent on, load at compile time."
 
 (defmacro if-lexical% (then &rest else)
   "If lexical binding is built-in do THEN, otherwise do ELSE..."
-  (declare (indent 1) (pure t))
+  (declare (indent 1))
   `(if-version%
        <= 24.1
        ,then
