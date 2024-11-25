@@ -17,9 +17,6 @@
 (defalias 'tags-spec->*
   (lexical-let%
       ((b (list
-           :root (emacs-home% ".tags/")
-           :nore (v-home% ".tags/nore.emacs.TAGS")
-           :emacs (v-home% ".tags/emacs.TAGS")
            :prompt (propertize "Make tags" 'face 'minibuffer-prompt)
            :out-dir
            "^\\.\\|^out$\\|^bin$\\|^objs$\\|^[dD]ebug$\\|^[rR]elease$"
@@ -35,7 +32,7 @@
   (tags-spec->* :get key))
 
 (defmacro tags-spec->% (key)
-  (tags-spec-> key))
+  (nore-spec-> :tags key))
 
 (defun tags*-check ()
   (or (executable-find%
@@ -235,7 +232,7 @@ RENEW overwrite the existing tags file when t else create it."
                                   '*tags-option-history*)
                      (y-or-n-p "tags renew? ")))
   (make-lisp-tags (emacs-home%)
-                  (tags-spec-> :nore)
+                  (tags-spec->% :nore)
                   option
                   #'tags-lisp-file-filter
                   (lambda (d _)
@@ -250,13 +247,13 @@ RENEW overwrite the existing tags file when t else create it."
                                   '*tags-option-history*)
                      (y-or-n-p "tags renew? ")))
   (make-c-tags (concat source "src/")
-               (tags-spec-> :emacs)
+               (tags-spec->% :emacs)
                option
                #'tags-c-file-filter
                #'true
                renew)
   (make-lisp-tags (concat source "lisp/")
-                  (tags-spec-> :emacs)
+                  (tags-spec->% :emacs)
                   option
                   #'tags-lisp-file-filter
                   #'true))

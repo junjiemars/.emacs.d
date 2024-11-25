@@ -71,11 +71,6 @@
   (declare (indent 3) (pure t))
   `(plist-put (self-spec-> ,seq ,@keys) ,k ,v))
 
-(defmacro self-spec->% (seq &rest keys)
-  "Read spec from SEQ via KEYS at compile time."
-  (declare (indent 1) (pure t))
-  (funcall `(lambda () (self-spec-> ,seq ,@keys))))
-
 (defalias '*self-paths*
   (lexical-let%
       ((ps `(;; paths
@@ -132,14 +127,18 @@ No matter the declaration order, the executing order is:
             ((eq :put op) (setq ps (cons (cons k v) ps)))
             (t ps)))))
 
-(defmacro shells-spec->% (&rest keys)
-  "Extract constant from env-spec via KEYS."
-  (declare (indent 0) (pure t))
-  `(self-spec->%
-       (list :file ,(v-home% ".exec/shell-env.el")
-             :SHELL "SHELL"
-             :PATH "PATH")
-     ,@keys))
+(defun nore-spec-> (&rest keys)
+  "Nore spec."
+  (let ((b (list :shell (list :file (v-home% ".exec/shell-env.el")
+                              :SHELL "SHELL"
+                              :PATH "PATH")
+                 :tags (list :root (emacs-home% ".tags/")
+                             :nore (v-home% ".tags/nore.emacs.TAGS")
+                             :emacs (v-home% ".tags/emacs.TAGS")))))
+    (while keys
+      (setq b (plist-get b (car keys))
+            keys (cdr keys)))
+    b))
 
 ;; end of self-spec* macro
 

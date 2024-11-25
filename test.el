@@ -222,11 +222,10 @@
   (should (= 1 (self-spec-> '(a 1) 'a)))
   (should (= 1 (self-spec-> '(a (b (c 1))) 'a 'b 'c))))
 
-(ert-deftest %c:boot:self-spec->% ()
-  (should (null (self-spec->% nil nil)))
-  (should (null (self-spec->% '(a 1) nil)))
-  (should (= 1 (self-spec->% '(a 1) 'a)))
-  (should (= 1 (self-spec->% '(a (b (c 1))) 'a 'b 'c))))
+(ert-deftest %c:boot:nore-spec-> ()
+  (should (= 4 (length (nore-spec->))))
+  (should (= 6 (length (nore-spec-> :shell))))
+  (should (= 6 (length (nore-spec-> :tags)))))
 
 
 ;; end of boot
@@ -614,11 +613,6 @@
 ;;;
 ;; shells
 ;;;
-
-(ert-deftest %f:shells:shells-spec->% ()
-  ;; (should (= 6 (length (shells-spec->%))))
-  (should (string= "shell-env"
-                   (file-name-base* (shells-spec->% :file)))))
 
 (ert-deftest %f:shells:shell-env->/<- ()
   (should (*default-shell-env* :put! :xx "aa"))
