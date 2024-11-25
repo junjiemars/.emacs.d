@@ -353,6 +353,7 @@ If ONLY-COMPILE is t, does not load DST."
   (inhibit-gc
     ;; (inhibit-file-name-handler)
     (let ((fs `(,(emacs-home "config/fn.el")
+                ,(emacs-home "config/features.el")
                 ,(emacs-home "config/boot.el"))))
       (while (car fs)
         (let ((us (make-v-comp-file (car fs))))
