@@ -82,11 +82,10 @@ See also: \\=`parse-colon-path\\='."
 See \\=`setenv\\='."
   (let* ((env process-environment)
          (name= (concat name "="))
-         (len (length name=))
          (newval (concat name= value)))
     (if (catch 'br
           (while (car env)
-            (and (eq t (compare-strings name= 0 len (car env) 0 len))
+            (and (string= name= (car env))
                  (setcar env newval)
                  (throw 'br t))
             (setq env (cdr env))))

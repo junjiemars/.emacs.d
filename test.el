@@ -558,7 +558,7 @@
   (should (string= "fi" (kbd% "C-c f i"))))
 
 (ert-deftest %e:fn:if-key% ()
-  (let ((b (if-key% (current-global-map) "C-c C-c C-c" #'+ 1 0)))
+  (let ((b (if-key% (current-global-map) (kbd "C-c C-c C-c") #'+ 1 0)))
     (cond ((= b 0)
            (should
             (eq #'+ (define-key% (current-global-map)
