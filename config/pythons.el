@@ -120,6 +120,17 @@ determine whether inside a virtual env. Another way is using
                x)))
     (and (zerop (car rc)) x)))
 
+(when-feature-eglot%
+  (defun python*-eglot-sever-program ()
+    (let ((pylsp (python*-venv :pylsp)))
+      (when (and pylsp (file-exists-p pylsp))
+        (when-var% eglot-server-programs 'eglot
+          (let ((ent (assoc '(python-mode python-ts-mode)
+                            eglot-server-programs)))
+            (when ent
+              (setcdr ent (list pylsp))
+              ent)))))))
+
 (defun python*-pylsp-make! (venv pylsp)
   "Make PYLSP for VENV."
   (let ((rc (shell-command*
@@ -136,8 +147,7 @@ determine whether inside a virtual env. Another way is using
     (when (zerop (car rc))
       (prog1 pylsp
         (when-feature-eglot%
-          (when-var% eglot-command-history 'eglot
-            (push! pylsp eglot-command-history t)))))))
+          (python*-eglot-sever-program))))))
 
 ;; end of lsp
 
@@ -175,7 +185,9 @@ determine whether inside a virtual env. Another way is using
                          (read-string "set pip mirror "))
                  (list (python*-venv :scratch)
                        (python*-venv :mirror))))
-  (let ((venv (python*-venv-activate! dir)))
+  (let* ((dir (or dir (python*-venv :scratch)))
+         (mirror (or mirror (python*-venv :mirror)))
+         (venv (python*-venv-activate! dir)))
     (unless venv
       (user-error "%s" "python venv unavailable"))
     (python*-venv :venv venv)
