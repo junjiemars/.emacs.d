@@ -16,7 +16,7 @@
     (let ((kill (if-platform% 'darwin
                     `("pbcopy" . nil)
                   (if-platform% 'gnu/linux
-                      `("xsel" . `("--clipboard" "--input"))))))
+                      `("xsel" . ("--clipboard" "--input"))))))
       (unless kill
         (error "%s" "No kill command found"))
       (apply #'call-process-region (point-min) (point-max)
@@ -27,7 +27,7 @@
   (let ((yank (if-platform% 'darwin
                   `("pbpaste" . nil)
                 (if-platform% 'gnu/linux
-                    `("xsel" . `("--clipboard" "--output"))))))
+                    `("xsel" . ("--clipboard" "--output"))))))
     (unless yank
       (error "%s" "No yank command found"))
     (let ((out (apply #'shell-command* (car yank) (cdr yank))))
