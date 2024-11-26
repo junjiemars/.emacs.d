@@ -32,19 +32,17 @@
   "Run a jshell process in a buffer."
   :group 'jshell)
 
-(defun jshell-program-check ()
-  (executable-find%
-   "jshell"
-   (lambda (jshell)
-     (let ((x (shell-command* jshell "--version")))
-       (or (and (zerop (car x)) jshell)
-           "jshell")))))
-
 (defalias 'jshell-program
-  (lexical-let% ((b (jshell-program-check)))
+  (lexical-let% ((b (executable-find%
+                     "jshell"
+                     (lambda (jshell)
+                       (let ((x (shell-command* jshell "--version")))
+                         (or (and (zerop (car x)) jshell)
+                             "jshell"))))))
     (lambda (&optional n)
-      (if (null n) b (setq b n))))
-  "Program invoked by the `run-jshell' command.")
+      (cond (n (setq b n))
+            (t b))))
+  "Program invoked by the \\=`run-jshell\\=' command.")
 
 (defalias '*jshell*
   (lexical-let% ((b))
@@ -70,7 +68,7 @@ void jshell_emacs_apropos(String what, int max) {
     (lambda (&optional n)
       (if n (setq b n)
         (get-buffer-create b))))
-  "The output buffer of `jshell-completion'.")
+  "The output buffer of \\=`jshell-completion\\='.")
 
 
 (defalias '*jshell-start-file*
@@ -80,29 +78,28 @@ void jshell_emacs_apropos(String what, int max) {
             (t (save-str-to-file +jshell-emacs-module+ b)))))
   "The \\=`*jshell*\\=' process start file.")
 
-
 (defalias 'jshell-switch-to-last-buffer
   (lexical-let% ((b))
     (lambda (&optional n)
       (interactive)
       (if n (setq b n)
         (when b (switch-to-buffer-other-window b)))))
-  "Switch to the last `jshell-mode' buffer from `*jshell*' buffer.")
-
+  "Switch to the last \\=`jshell-mode\\=' buffer from \\=`*jshell*\\=' buffer.")
 
 (defvar *jshell-option-history* nil
   "Jshell option history list.")
 
-;; end of jshell environment
-
-
 (defun jshell-check-proc (&optional spawn)
-  "Return the `*jshell*' process or start one if necessary."
+  "Return the \\`*jshell*\\=' process or start one if necessary."
   (when (and spawn
              (not (eq 'run (car (comint-check-proc (*jshell*))))))
     (save-window-excursion (call-interactively #'run-jshell)))
   (or (get-buffer-process (*jshell*))
       (error "%s" "No *jshell* process")))
+
+;; end of jshell environment
+
+;;; completion
 
 (defun jshell-last-sexp ()
   "Return the position of left side of the last expression."
@@ -240,25 +237,25 @@ void jshell_emacs_apropos(String what, int max) {
                   (car s1)))
               :exclusive 'no)))))
 
+;; end of completion
+
+;;; repl
 
 (defvar jshell-repl-mode-map
   (let ((m (make-sparse-keymap "jshell")))
     (define-key m "\C-c\C-b" #'jshell-switch-to-last-buffer)
     m)
-  "The keymap for `*jshell*' REPL.")
+  "The keymap for \\=`*jshell*\\=' REPL.")
 
 
 (define-derived-mode jshell-repl-mode comint-mode "REPL"
-  "Major mode for interacting with a jshell process.
-
+  "Major mode for interacting with a jshell process.\n
 The following commands are available:
 \\{jshell-repl-mode-map}
-
-A jshell process can be fired up with M-x `run-jshell'.
-
+A jshell process can be fired up with M-x \\=`run-jshell\\='.\n
 Customization:
-Entry to this mode runs the hooks on `comint-mode-hook' and
-  `jshell-repl-mode-hook' (in that order)."
+Entry to this mode runs the hooks on \\=`comint-mode-hook\\=' and
+  \\=`jshell-repl-mode-hook\\=' (in that order)."
   :group 'jshell                          ; keyword args
   (setq comint-prompt-regexp "^\\(?:jshell> *\\)")
   (setq comint-prompt-read-only t)
@@ -267,13 +264,10 @@ Entry to this mode runs the hooks on `comint-mode-hook' and
 
 
 (defun run-jshell (&optional command-line)
-  "Run a jshell process, input and output via buffer *jshell*.
-
-If there is a process already running in `*jshell*', switch to that
-buffer. With prefix COMMAND-LINE, allows you to edit the command
-line.
-
-Run the hook `jshell-repl-mode-hook' after the `comint-mode-hook'."
+  "Run a jshell process, input and output via buffer *jshell*.\n
+If there is a process already running in \\=`*jshell*\\=', switch to that
+buffer. With prefix COMMAND-LINE, allows you to edit the command line.\n
+Run the hook \\=`jshell-repl-mode-hook\\=' after the \\=`comint-mode-hook\\='."
   (interactive (list (read-string "Run jshell: "
                                   (car *jshell-option-history*)
                                   '*jshell-option-history*)))
@@ -299,8 +293,7 @@ Run the hook `jshell-repl-mode-hook' after the `comint-mode-hook'."
 
 
 (defun jshell-switch-to-repl (&optional no-select)
-  "Switch to the `*jshell*' buffer.
-
+  "Switch to the `*jshell*' buffer.\n
 If NO-SELECT is nil then select the buffer and put the cursor at
 end of buffer, otherwise just popup the buffer."
   (interactive "P")
@@ -317,17 +310,13 @@ end of buffer, otherwise just popup the buffer."
     (goto-char (point-max))))
 
 
-;; end of REPL
-
-
 (defun jshell-load-file (file)
-  "Load a java FILE into `*jshell*'."
-  (interactive (comint-get-source
-                "Load java file: "
-                (let ((n (buffer-file-name)))
-                  (cons (file-name-directory n)
-                        (file-name-nondirectory n)))
-                '(java-mode) nil))
+  "Load a java FILE into \\=`*jshell*\\='."
+  (interactive (comint-get-source "Load java file: "
+                                  (let ((n (buffer-file-name)))
+                                    (cons (file-name-directory n)
+                                          (file-name-nondirectory n)))
+                                  '(java-mode) nil))
   (comint-check-source file)
   (comint-send-string (jshell-check-proc t)
                       (format "/open %s%s\n"
@@ -338,14 +327,14 @@ end of buffer, otherwise just popup the buffer."
 
 
 (defun jshell-send-region (start end)
-  "Send the current region to `*jshell*'."
+  "Send the current region to \\=`*jshell*\\='."
   (interactive "r")
   (process-send-region (jshell-check-proc) start end)
   (comint-send-string (*jshell*) "\n")
   (jshell-switch-to-repl t))
 
 (defun jshell-send-last-sexp ()
-  "Send the previous sexp to `*jshell*'."
+  "Send the previous sexp to \\=`*jshell*\\='."
   (interactive)
   (let ((bounds (if-region-active
                     (cons (region-beginning) (region-end))
@@ -357,14 +346,14 @@ end of buffer, otherwise just popup the buffer."
       (jshell-send-region (car bounds) (cdr bounds)))))
 
 (defun jshell-send-definition ()
-  "Send the current definition to `*jshell*'."
+  "Send the current definition to \\=`*jshell*\\='."
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'defun)))
     (when bounds
       (jshell-send-region (car bounds) (cdr bounds)))))
 
 (defun jshell-send-line ()
-  "Send the current line to `*jshell*'."
+  "Send the current line to \\=`*jshell*\\='."
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'line)))
     (when bounds
@@ -398,6 +387,9 @@ end of buffer, otherwise just popup the buffer."
                 rhs (1+ (cdr bounds))))
         (jshell-send-region lhs rhs)))))
 
+;; end of repl
+
+;;; jshell-mode
 
 (defvar jshell-mode-map
   (let ((m (make-sparse-keymap)))
@@ -414,7 +406,7 @@ end of buffer, otherwise just popup the buffer."
 
 (make-variable-buffer-local
  (defvar jshell-mode-string nil
-   "Modeline indicator for `jshell-mode'."))
+   "Modeline indicator for \\=`jshell-mode\\='."))
 
 (defun jshell-mode--lighter ()
   (or jshell-mode-string " Jshell"))
@@ -422,14 +414,11 @@ end of buffer, otherwise just popup the buffer."
 (defun jshell-syntax-indent ()
   "Jshell java syntax indent.")
 
-
 (define-minor-mode jshell-mode
-  "Toggle Jshell's mode.
-
+  "Toggle Jshell's mode.\n
 With no argument, this command toggles the mode.
 Non-null prefix argument turns on the mode.
-Null prefix argument turns off the mode.
-
+Null prefix argument turns off the mode.\n
 When Jshell mode is enabled, a host of nice utilities for
 interacting with the Jshell REPL is at your disposal.
 \\{jshell-mode-map}"
@@ -443,7 +432,7 @@ interacting with the Jshell REPL is at your disposal.
             #'jshell-completion 0 'local)
   (jshell-syntax-indent))
 
-
+;; end of jshell-mode
 
 
 (provide 'jshell)

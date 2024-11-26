@@ -447,7 +447,7 @@ N specify the number of spaces when align."
   "On \\=`man\\=' initialization."
   ;; fix cannot find include path on Darwin in `Man-mode'
   (when-var% manual-program 'man
-    (when% (executable-find% manual-program)
+    (when (executable-find* manual-program)
       (setq% Man-header-file-path (cc*-system-include :read) 'man))))
 
 ;; end of `man'

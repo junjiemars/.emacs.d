@@ -443,12 +443,12 @@
             (or (= (car x) 0)
                 (= (car x) 127)))))
 
-(ert-deftest %d:fn:executable-find% ()
+(ert-deftest %d:fn:executable-find* ()
   (if (eq system-type 'windows-nt)
-      (should (executable-find% "dir"))
-    (should (executable-find% "ls"))
-    (should (executable-find% (concat "l" "s")))
-    (should (executable-find% "ls" (lambda (ls) ls)))))
+      (should (executable-find* "dir"))
+    (should (executable-find* "ls"))
+    (should (executable-find* (concat "l" "s")))
+    (should (executable-find* "ls" (lambda (ls) ls)))))
 
 (ert-deftest %d:fn:platform-arch ()
   (should (platform-arch)))

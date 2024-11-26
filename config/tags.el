@@ -33,28 +33,26 @@
 (defmacro tags-spec->% (key)
   (nore-spec-> :tags key))
 
-(defun tags*-check ()
-  (or (executable-find%
-       "ctags"
-       (lambda (bin)
-         (let ((ver (shell-command* bin "--version")))
-           (and (zerop (car ver))
-                (string-match "Exuberant Ctags [.0-9]+"
-                              (cdr ver))
-                ``(:bin "ctags" :cmd
-                        ,(concat ,bin " -e %s -o %s -a %s"))))))
-      (executable-find%
-       "etags"
-       (lambda (bin)
-         (let ((ver (shell-command* bin "--version")))
-           (and (zerop (car ver))
-                (string-match "etags (GNU Emacs [.0-9]+)"
-                              (cdr ver))
-                ``(:bin "etags" :cmd
-                        ,(concat ,bin " %s -o %s -a %s"))))))))
-
 (defalias '*tags*
-  (lexical-let% ((b (tags*-check)))
+  (lexical-let%
+      ((b (or (executable-find%
+               "ctags"
+               (lambda (bin)
+                 (let ((ver (shell-command* bin "--version")))
+                   (and (zerop (car ver))
+                        (string-match "Exuberant Ctags [.0-9]+"
+                                      (cdr ver))
+                        ``(:bin "ctags" :cmd
+                                ,(concat ,bin " -e %s -o %s -a %s"))))))
+              (executable-find%
+               "etags"
+               (lambda (bin)
+                 (let ((ver (shell-command* bin "--version")))
+                   (and (zerop (car ver))
+                        (string-match "etags (GNU Emacs [.0-9]+)"
+                                      (cdr ver))
+                        ``(:bin "etags" :cmd
+                                ,(concat ,bin " %s -o %s -a %s")))))))))
     (lambda (&optional n)
       (plist-get b (or n :bin))))
   "The tags program.\n

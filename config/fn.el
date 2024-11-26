@@ -616,23 +616,24 @@ Optional argument ARGS for COMMAND."
              (if (string= "\n" s) nil s))))
       (and b (kill-buffer b)))))
 
-(defmacro executable-find% (command &optional fn)
-  "Return the path of COMMAND at compile time.\n
+(defun executable-find* (command &optional fn)
+  "Return the path of COMMAND.\n
 Call FN with the path if FN is non-nil."
-  (declare)
   (let ((cmd (shell-command* (if-platform% 'windows-nt
                                  "where"
                                "command -v")
-               (funcall `(lambda () ,command)))))
+               command)))
     (when (zerop (car cmd))
       (let* ((ss (cdr cmd))
-             (ps (string-trim> ss "\n"))
-             (path (if fn
-                       (funcall fn (shell-quote-argument ps))
-                     (if-platform% 'windows-nt
-                         (posix-path ps)
-                       ps))))
-        `,path))))
+             (ps (string-trim> ss "\n")))
+        (cond (fn (funcall fn (shell-quote-argument ps)))
+              (t (if-platform% 'windows-nt
+                     (posix-path ps)
+                   ps)))))))
+
+(defmacro executable-find% (command &optional fn)
+  "Return from \\=excutable-find*\\= at compile time."
+  (executable-find* command fn))
 
 (defmacro emacs-arch ()
   "Return emacs architecture, 64bits or 32bits."
