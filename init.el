@@ -104,7 +104,6 @@ non-nil, do BODY."
 
 (defmacro mkdir* (file)
   "Make and return the path of posixed FILE."
-  (declare)
   `(inhibit-file-name-handler
      (let ((-m-f1- ,file))
        (if (file-exists-p -m-f1-)
@@ -135,14 +134,12 @@ non-nil, do BODY."
 
 (defmacro emacs-home (&optional file)
   "Return path of FILE under \\='~/.emacs.d\\='."
-  (declare)
   `(concat ,(expand-file-name
              (or (getenv-internal "EMACS_HOME") "~/.emacs.d/"))
            ,file))
 
 (defmacro v-path (file)
   "Return versioned FILE."
-  (declare)
   `(inhibit-file-name-handler
      (let ((-vp-f1- ,file))
        (concat (file-name-directory -vp-f1-)

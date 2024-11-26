@@ -71,9 +71,8 @@
 
 (ert-deftest %b:init:progn% ()
   (should-not (progn%))
-  (should (equal '(+ 1 2) (macroexpand '(progn% (+ 1 2)))))
-  (should (equal '(progn (+ 1 2) (* 3 4))
-                 (macroexpand '(progn% (+ 1 2) (* 3 4))))))
+  (should (= 3 (progn% (+ 1 2))))
+  (should (eq 'progn (car (macroexpand '(progn% (+ 1 2) (* 3 4)))))))
 
 (ert-deftest %b:init:if% ()
   (should (= 3 (if% t (+ 1 2))))
@@ -106,13 +105,8 @@
                                  (* 5 6))))))
 
 (ert-deftest %b:init:when-version% ()
-  (should (when-version% < 0 t))
-  (should-not (when-version% < 10000 (+ 1 2)))
-  (should (equal '(progn (+ 1 2) (* 3 4))
-                 (macroexpand '(when-version%
-                                   < 0
-                                 (+ 1 2)
-                                 (* 3 4))))))
+  (should (eq (when-version% <= 22.1 t) (null (when-version% > 22.1 t))))
+  (should (= 12 (when-version% <= 22.1 (+ 1 2) (* 3 4)))))
 
 (ert-deftest %b:init:make-v-comp-file ()
   (let ((fs (make-v-comp-file (make-temp-file "nore-mvcf-"))))

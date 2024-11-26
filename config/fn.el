@@ -730,10 +730,10 @@ If optional N is non-nil compare no more than N parts, default N is 4."
   "Declare SYMBOL as a customizable variable with the STANDARD value.
 See \\=`defcustom\\='."
   (declare (doc-string 3) (debug (name body)))
-  (let ((-standard- (funcall `(lambda () ,standard))))
+  (let ((-dc-std- (funcall `(lambda () ,standard))))
     `(custom-declare-variable
       ',symbol
-      ',-standard-
+      ',-dc-std-
       ,doc
       ,@args)))
 
@@ -820,26 +820,26 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
 
 (defmacro kbd% (keys)
   "Convert KEYS to the internal Emacs key representation."
-  (let ((-k%1- (kbd keys)))
-    `,-k%1-))
+  (let ((-k1- (kbd keys)))
+    `,-k1-))
 
 (defmacro if-key% (keymap key test then &rest else)
   "If TEST yield t for KEY in KEYMAP do then, else do ELSE..."
   (declare (indent 4))
-  (let ((-ik%-m1- keymap)
-        (-ik%-k1- key)
-        (-ik%-t1- test))
-    `(if% (eq ,-ik%-t1- (lookup-key ,-ik%-m1- ,-ik%-k1-))
+  (let ((-ik-m1- keymap)
+        (-ik-k1- key)
+        (-ik-t1- test))
+    `(if (eq ,-ik-t1- (lookup-key ,-ik-m1- ,-ik-k1-))
          ,then
        ,@else)))
 
 (defmacro define-key% (keymap key def)
   "Define KEY to DEF in KEYMAP."
-  (let ((-dk%-m1- keymap)
-        (-dk%-k1- key)
-        (-dk%-d1- def))
-    `(unless% (eq ,-dk%-d1- (lookup-key ,-dk%-m1- ,-dk%-k1-))
-       (define-key ,-dk%-m1- ,-dk%-k1- ,-dk%-d1-))))
+  (let ((-dk-m1- keymap)
+        (-dk-k1- key)
+        (-dk-d1- def))
+    `(unless (eq ,-dk-d1- (lookup-key ,-dk-m1- ,-dk-k1-))
+       (define-key ,-dk-m1- ,-dk-k1- ,-dk-d1-))))
 
 ;; end of key
 
