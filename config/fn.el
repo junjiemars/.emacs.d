@@ -16,7 +16,7 @@
 (defmacro if-fn% (fn feature then &rest else)
   "If FN is bounded yield non-nil, do THEN, else do ELSE...\n
 Argument FEATURE that FN dependent on, be loaded at compile time."
-  (declare (indent 3) (pure t))
+  (declare (indent 3))
   `(if% (cond ((null ,feature) (fboundp ,fn))
               (t (and (require ,feature nil t)
                       (fboundp ,fn))))
@@ -48,7 +48,7 @@ Argument FEATURE that FN dependent on, be loaded at compile time."
 (defmacro if-var% (var feature then &rest else)
   "If VAR is bounded yield non-nil, do THEN, else do ELSE...\n
 Argument FEATURE that VAR dependent on, load at compile time."
-  (declare (indent 3) (pure t))
+  (declare (indent 3))
   `(if% (or (and ,feature (require ,feature nil t) (boundp ',var))
             (boundp ',var))
        ,then
@@ -144,7 +144,7 @@ Argument FEATURE that X dependent on, load at compile time."
 
 (defmacro if-graphic% (then &rest else)
   "If \\=`display-graphic-p\\=' yield non-nil, do THEN, else do ELSE..."
-  (declare (indent 1) (pure t))
+  (declare (indent 1))
   (if (display-graphic-p)
       `,then
     `(progn% ,@else)))
@@ -167,7 +167,7 @@ Argument FEATURE that X dependent on, load at compile time."
 
 (defmacro if-platform% (os then &rest else)
   "If OS eq \\=`system-type\\=' yield non-nil, do THEN, else do ELSE..."
-  (declare (indent 2) (pure t))
+  (declare (indent 2))
   `(if% (eq system-type ,os)
        ,then
      (progn% ,@else)))
@@ -191,7 +191,7 @@ Argument FEATURE that X dependent on, load at compile time."
 (defmacro if-window% (window then &rest else)
   "If WINDOW eq \\=`initial-window-system\\=' yield non-nil, do THEN,
 else do ELSE..."
-  (declare (indent 2) (pure t))
+  (declare (indent 2))
   `(if% (eq initial-window-system ,window)
        ,then
      (progn% ,@else)))
@@ -214,7 +214,7 @@ else do ELSE..."
 
 (defmacro if-noninteractive% (then &rest body)
   "If \\=`noninteractive\\=' do THEN, else do BODY."
-  (declare (indent 1) (pure t))
+  (declare (indent 1))
   `(if% noninteractive
        ,then
      (progn% ,@body)))
@@ -442,7 +442,6 @@ If optional UNIQUELY is non-nil then append uniquely."
 
 (defmacro string-trim>< (s &optional rr lr)
   "Remove leading and trailing whitespaces or matching of LR/RR from S."
-  (declare (pure t))
   `(string-trim> (string-trim< ,s ,lr) ,rr))
 
 (defun string-match* (regexp string num &optional start)
@@ -472,7 +471,6 @@ See \\=`string-match\\=' and \\=`match-string\\='."
   "Split STRING into substrings bounded by match for SEPARATORS.\n
 Optional argument OMIT-NULLS omit null strings.
 Optional argument TRIM regexp used to trim."
-  (declare (pure t))
   (if-version%
       <= 24.4
       `(split-string ,string ,separators ,omit-nulls ,trim)
@@ -621,7 +619,7 @@ Optional argument ARGS for COMMAND."
 (defmacro executable-find% (command &optional fn)
   "Return the path of COMMAND at compile time.\n
 Call FN with the path if FN is non-nil."
-  (declare (pure t))
+  (declare)
   (let ((cmd (shell-command* (if-platform% 'windows-nt
                                  "where"
                                "command -v")
@@ -638,13 +636,11 @@ Call FN with the path if FN is non-nil."
 
 (defmacro emacs-arch ()
   "Return emacs architecture, 64bits or 32bits."
-  (declare (pure t))
   (if (= most-positive-fixnum (1- (expt 2 61))) 64
     (if (= most-positive-fixnum (1- (expt 2 29))) 32 0)))
 
 (defmacro platform-arch ()
   "Return platform architecture."
-  (declare (pure t))
   (let ((m64 "\\([xX]86_64\\|[aA][mM][dD]64\\|aarch64\\|arm64\\)"))
     (if (string-match m64 system-configuration)
         (string-match* m64 system-configuration 1)
@@ -824,13 +820,12 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
 
 (defmacro kbd% (keys)
   "Convert KEYS to the internal Emacs key representation."
-  (declare (pure t))
   (let ((-k%1- (kbd keys)))
     `,-k%1-))
 
 (defmacro if-key% (keymap key test then &rest else)
   "If TEST yield t for KEY in KEYMAP do then, else do ELSE..."
-  (declare (indent 4) (pure t))
+  (declare (indent 4))
   (let ((-ik%-m1- keymap)
         (-ik%-k1- key)
         (-ik%-t1- test))
@@ -854,7 +849,7 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
 
 (defmacro if-region-active (then &rest else)
   "If \\=`mark-active\\=' is non-nil, do THEN, else do ELSE..."
-  (declare (indent 1) (pure t))
+  (declare (indent 1))
   `(if mark-active
        ,then
      (progn% ,@else)))

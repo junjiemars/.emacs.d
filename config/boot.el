@@ -7,7 +7,6 @@
 ;;;;
 ;; Commentary: boot.
 ;;;;
-
 
 
 ;;;
@@ -16,7 +15,7 @@
 
 (defmacro self-spec-> (seq &rest keys)
   "Read spec from SEQ via KEYS."
-  (declare (indent 1) (pure t))
+  (declare (indent 1))
   (let ((r seq) (ks keys))
     (while ks
       (setq r (list 'plist-get r (car ks))
@@ -25,7 +24,7 @@
 
 (defmacro self-spec<- (k v seq &rest keys)
   "Save the spec of K V to SEQ via KEYS."
-  (declare (indent 3) (pure t))
+  (declare (indent 3))
   `(plist-put (self-spec-> ,seq ,@keys) ,k ,v))
 
 (defalias '*self-paths*

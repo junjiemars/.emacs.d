@@ -7,7 +7,6 @@
 ;;;;
 ;; Commentary: tagging
 ;;;;
-
 
 
 ;;;
@@ -181,22 +180,18 @@ RENEW overwrite the existing tags file when t else create it."
           (t nil))))
 
 (defun tags-c-file-filter (f &rest _)
-  (declare (pure t))
   (string-match "\\.[ch]+$" f))
 
 (defun tags-c-dir-filter (d &rest _)
-  (declare (pure t))
   (null (string-match (concat (tags-spec-> :vcs-dir)
                               "\\|" (tags-spec-> :arc-dir)
                               "\\|" (tags-spec-> :out-dir))
                       d)))
 
 (defun tags-lisp-file-filter (f &rest _)
-  (declare (pure t))
   (string-match "\\.el$\\|\\.cl$\\|\\.lis[p]?$\\|\\.ss$\\|\\.scm$" f))
 
 (defun tags-lisp-dir-filter (d &rest _)
-  (declare (pure t))
   (null (string-match (concat (tags-spec-> :vcs-dir)
                               "\\|" (tags-spec-> :arc-dir))
                       d)))
