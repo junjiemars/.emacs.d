@@ -11,49 +11,6 @@
 
 
 ;;;
-;; compile-*: compiling instrument
-;;;
-
-(defun compile-unit* (file &optional only-compile)
-  "Make an compile unit for \\=`compile!\\='."
-  (declare (pure t))
-  (and (stringp file)
-       (inhibit-file-name-handler (file-exists-p file))
-       (let ((u1 (v-comp-file! file)))
-         `[,(car u1) ,(cdr u1) ,only-compile nil])))
-
-(defmacro compile-unit% (file &optional only-compile)
-  "Make an compile unit at compile time for \\=`compile!\\='"
-  (declare (pure t))
-  (let* ((-u1- (v-comp-file! (funcall `(lambda () ,file))))
-         (-src1- (car -u1-))
-         (-dst1- (cdr -u1-)))
-    (and -u1- `[,-src1- ,-dst1- ,only-compile nil])))
-
-(defmacro compile-unit->src (unit)
-  "Return the :src part of UNIT."
-  `(aref ,unit 0))
-
-(defmacro compile-unit->dst (unit)
-  "Return the :dst part of UNIT."
-  `(aref ,unit 1))
-
-(defmacro compile-unit->only-compile (unit)
-  "Return the :only-compile indicator of UNIT."
-  `(aref ,unit 2))
-
-(defun compile! (&rest units)
-  "Compile and load UNITS."
-  (declare (indent 0))
-  (dolist* (u units)
-    (and u (compile-and-load-file*
-            (compile-unit->src u)
-            (compile-unit->dst u)
-            (compile-unit->only-compile u)))))
-
-;; end of compile-* macro
-
-;;;
 ;; self-spec*: self specifications
 ;;;
 
@@ -143,41 +100,24 @@ No matter the declaration order, the executing order is:
 ;; end of self-spec* macro
 
 ;;;
-;; boot
+;; feature
 ;;;
 
-;; disable `package' at startup
-(when-package% (setq package-enable-at-startup nil))
-;; make `v-home' .exec/
-(v-home! ".exec/")
-;; make `v-home' private/
-(v-home! "private/")
-;; duplicate spec files
-(*self-paths* :dup)
-;; reset user emacs dir
-(setq% user-emacs-directory (emacs-home%))
-;; default `:safe'
-(setq% enable-local-variables :safe 'files)
-;; let `lexical-binding' var safe under Emacs24.1-
-(unless-lexical% (safe-local-variable 'lexical-binding))
-;; string hash test: see `%fn:save/read-sexp-to/from-file' in test.el
-(define-hash-table-test 'nore-emacs-string-hash= #'string= #'sxhash)
-
-;;; `eglot'
+;;; `eglot' builtin since Emacs-29+
 (defmacro when-feature-eglot% (&rest body)
   (declare (indent 0))
   (if-feature-eglot%
       `(progn% ,@body)
     `(comment ,@body)))
 
-;;; `eww'
+;;; `eww' builtin since Emacs-24.4+
 (defmacro when-feature-eww% (&rest body)
   (declare (indent 0))
   (if-feature-eww%
       `(progn% ,@body)
     `(comment ,@body)))
 
-;;; `project'
+;;; `project' builtin since Emacs-26+
 (defmacro when-feature-project% (&rest body)
   (declare (indent 0))
   (if-feature-project%
@@ -192,7 +132,7 @@ No matter the declaration order, the executing order is:
       `(progn% ,@body)
     `(comment ,@body)))
 
-;;; `treesit'
+;;; `treesit' builtin since Emacs-29+
 (defmacro when-feature-treesit% (&rest body)
   (declare (indent 0))
   (if-feature-treesit%
@@ -213,6 +153,28 @@ No matter the declaration order, the executing order is:
         `(comment ,@body))
     `(comment ,@body)))
 
+;; end of feature
+
+;;;
+;; boot
+;;;
+
+;; disable `package' at startup
+(when-package% (setq package-enable-at-startup nil))
+;; make `v-home' .exec/
+(v-home! ".exec/")
+;; make `v-home' private/
+(v-home! "private/")
+;; duplicate spec files
+(*self-paths* :dup)
+;; reset user emacs dir
+(setq% user-emacs-directory (emacs-home%))
+;; default `:safe'
+(setq% enable-local-variables :safe 'files)
+;; let `lexical-binding' var safe under Emacs24.1-
+(unless-lexical% (safe-local-variable 'lexical-binding))
+;; string hash test: see `%fn:save/read-sexp-to/from-file' in test.el
+(define-hash-table-test 'nore-emacs-string-hash= #'string= #'sxhash)
 
 ;;; <1> prologue
 (compile! (compile-unit% (emacs-home* "config/vdir.el"))

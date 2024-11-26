@@ -3,12 +3,10 @@
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; features.el
+;; feature.el
 ;;;;
 ;; Commentary: builtin features checking.
 ;;;;
-
-
 
 ;;; `eglot' builtin since Emacs-29+
 (defmacro-if-feature% eglot)
@@ -30,6 +28,6 @@
 
 
 
-(provide 'features)
+(provide 'feature)
 
-;; end of features.el
+;; end of feature.el

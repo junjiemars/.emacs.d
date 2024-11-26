@@ -7,48 +7,7 @@
 ;;;;
 ;; Commentary: common notions.
 ;;;;
-
 
-
-;;;
-;; compiled init fn
-;;;
-
-(defun emacs-home* (&optional file)
-  (emacs-home file))
-
-(defun path! (file)
-  (mkdir* file))
-
-(defun make-v-home* (file)
-  (mkdir* (v-home file)))
-
-(defun v-home* (&optional file)
-  (v-home file))
-
-(defun v-comp-file! (src)
-  (make-v-comp-file src))
-
-
-
-(defmacro emacs-home% (&optional file)
-  "Return path of FILE under \\='~/.emacs.d\\=' at compile-time."
-  (emacs-home* file))
-
-(defmacro v-home% (&optional file)
-  "Return versioned path of FILE under \\=`v-home\\=' at compile-time."
-  (v-home* file))
-
-(defmacro v-home%> (file)
-  "Return the \\=`v-home\\=' FILE with the extension of compiled file."
-  (concat (v-home* file) (comp-file-extension%)))
-
-(defmacro v-home! (file)
-  "Make versioned path of FILE under \\=`v-home\\=' at compile-time."
-  (make-v-home* file))
-
-;; end of compiled init fn
-
 
 ;;;
 ;; *-fn%: checking fn existing
