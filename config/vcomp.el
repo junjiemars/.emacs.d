@@ -62,10 +62,10 @@
 (defmacro compile-unit% (file &optional only-compile)
   "Make an compile unit at compile time for \\=`compile!\\='"
   (declare (pure t))
-  (let* ((-u1- (v-comp-file! (funcall `(lambda () ,file))))
-         (-src1- (car -u1-))
-         (-dst1- (cdr -u1-)))
-    (and -u1- `[,-src1- ,-dst1- ,only-compile nil])))
+  (let* ((-cu-u1- (v-comp-file! (funcall `(lambda () ,file))))
+         (-cu-src1- (car -cu-u1-))
+         (-cu-dst1- (cdr -cu-u1-)))
+    (and -cu-u1- `[,-cu-src1- ,-cu-dst1- ,only-compile nil])))
 
 (defmacro compile-unit->src (unit)
   "Return the :src part of UNIT."
@@ -90,7 +90,21 @@
               (compile-unit->only-compile u))))
     (setq units (cdr units))))
 
+
 ;; end of compile-* macro
+
+;;; `gensym*' since Emacs-26+
+
+(defvar *gensym-counter* 0 "The counter of \\=`gensym*\\='.")
+
+(defun gensym* (&optional prefix)
+  "Generate a new uninterned symbol, PREFIX default is \"n\"."
+  (make-symbol
+   (concat (or prefix "n")
+           (prog1 (number-to-string *gensym-counter*)
+             (setq *gensym-counter* (1+ *gensym-counter*))))))
+
+;; end of `gensym*'
 
 (provide 'vcomp)
 

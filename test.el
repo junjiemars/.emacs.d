@@ -22,11 +22,11 @@
 ;;;
 
 (ert-deftest %a:env ()
-  (should (message "# nore-emacs = %s" (nore-emacs)))
-  (should (message "# emacs-home = %s" (emacs-home)))
+  (should (message "# (nore-emacs) = %s" (nore-emacs)))
+  (should (message "# EMACS_HOME = %s" (getenv "EMACS_HOME")))
+  (should (message "# ~/.emacs.d = %s" (expand-file-name "~/.emacs.d")))
   (should (message "# system-type = %s" system-type))
   (should (message "# platform-arch = %s" (platform-arch)))
-  (should (message "# emacs-arch = %s" (emacs-arch)))
   (should (message "# sh = %s" (or (executable-find "sh") "")))
   (should (message "# system-configuration = %s" system-configuration))
   (should (message "# system-configuration-options = %s"
@@ -35,20 +35,14 @@
                    (when (boundp 'system-configuration-features)
                      system-configuration-features))))
 
-
 ;;;
 ;; init
 ;;;
-
 
 (ert-deftest %b:init:comment ()
   (should-not (comment))
   (should-not (comment (+ 1 2 3)))
   (should-not (comment (progn (+ 1) (* 2 3)))))
-
-(ert-deftest %b:init:gensym* ()
-  (should (string-match "^n[0-9]+" (format "%s" (gensym*))))
-  (should (string-match "^X[0-9]+" (format "%s" (gensym* "X")))))
 
 (ert-deftest %b:init:emacs-home ()
   (should (file-exists-p (emacs-home)))
@@ -61,9 +55,7 @@
   (should (string-equal "/a/b/c" (file-name-sans-extension* "/a/b/c.d"))))
 
 (ert-deftest %b:init:mkdir* ()
-  (let ((p (concat temporary-file-directory
-                   (make-temp-name (symbol-name (gensym*)))
-                   "/")))
+  (let ((p (concat temporary-file-directory (make-temp-name "mkdir*") "/")))
     (should (null (file-exists-p p)))
     (should (mkdir* p))
     (should (file-exists-p p))))
@@ -75,7 +67,7 @@
 (ert-deftest %b:init:v-home ()
   (should (directory-name-p (v-home)))
   (should (string-match "[gt]_[.0-9]+" (v-home)))
-  (should (string-match "[gt]_[.0-9]+.*x\\.el\\'" (v-home "x.el"))))
+  (should (string-match "xxx/[gt]_[.0-9]+/yyy" (v-home "xxx/yyy"))))
 
 (ert-deftest %b:init:progn% ()
   (should-not (progn%))
@@ -136,100 +128,30 @@
 ;; end of init
 
 ;;;
-;; boot
+;; vcomp
 ;;;
 
+(ert-deftest %c:vcomp:emacs-home* ()
+  (should (string= (emacs-home) (emacs-home*))))
 
-(ert-deftest %c:boot:if/when/unless-lexical% ()
-  (if (if-lexical% t nil)
-      (should (and (when-lexical% t)
-                   (not (unless-lexical% t))
-                   (equal '(progn (+ 1 2) (* 3 4))
-                          (macroexpand '(when-lexical%
-                                          (+ 1 2) (* 3 4))))))
-    (should (and (not (when-lexical% t))
-                 (unless-lexical% t)
-                 (equal '(progn (+ 1 2) (* 3 4))
-                        (macroexpand '(unless-lexical%
-                                        (+ 1 2) (* 3 4))))))))
+(ert-deftest %c:vcomp:path! ()
+  (let ((p (concat temporary-file-directory (make-temp-name "path!") "/")))
+    (should (null (file-exists-p p)))
+    (should (path! p))
+    (should (file-exists-p p))))
 
-(ert-deftest %c:boot:if/when/unless-graphic% ()
-  (if (if-graphic% t nil)
-      (should (and (when-graphic% t)
-                   (not (unless-graphic% t))
-                   (equal '(progn (+ 1 2) (* 3 4))
-                          (macroexpand '(when-graphic%
-                                          (+ 1 2) (* 3 4))))))
-    (should (and (not (when-graphic% t))
-                 (unless-graphic% t)
-                 (equal '(progn (+ 1 2) (* 3 4))
-                        (macroexpand '(unless-graphic%
-                                        (+ 1 2) (* 3 4))))))))
+(ert-deftest %c:vcomp:make-v-home* ()
+  (should (string-match "[gt]_[.0-9]+" (make-v-home* "xxx"))))
 
-(ert-deftest %c:boot:if/when/unless-platform% ()
-  (cond ((if-platform% 'darwin t)
-         (should (and (when-platform% 'darwin t)
-                      (not (unless-platform% 'darwin t)))))
-        ((if-platform% 'gnu/linux t)
-         (should (and (when-platform% 'gnu/linux t)
-                      (not (unless-platform% 'gnu/linux t)))))
-        ((if-platform% 'windows-nt t)
-         (should (and (when-platform% 'windows-nt t)
-                      (not (unless-platform% 'windows-nt t)))))
-        ((if-platform% 'cygwin t)
-         (should (and (when-platform% 'cygwin t)
-                      (not (unless-platform% 'cygwin)))))))
+(ert-deftest %c:vcomp:v-home* ()
+  (should (string= (v-home) (v-home*)))
+  (should (string= (v-home "xxx/yyy") (v-home* "xxx/yyy"))))
 
-(ert-deftest %c:boot:if/when/unless-window% ()
-	(cond ((if-window% 'mac t)
-         (should (and (when-window% 'mac t)
-                      (not (unless-window% 'mac t)))))
-				((if-window% 'ns t)
-         (should (and (when-window% 'ns t)
-                      (not (unless-window% 'ns)))))
-        ((if-window% 'pgtk t)
-         (should (and (when-window% 'pgtk t)
-                      (not (unless-window% 'pgtk t)))))
-        ((if-window% 'w32 t)
-         (should (and (when-window% 'w32 t)
-                      (not (unless-window% 'w32 t)))))))
+(ert-deftest %c:vcomp:gensym* ()
+  (should (string-match "^n[0-9]+" (format "%s" (gensym*))))
+  (should (string-match "^X[0-9]+" (format "%s" (gensym* "X")))))
 
-(ert-deftest %c:boot:setq% ()
-  (should-not (setq% zzz 'xx))
-  (should-not (setq% zzz nil)))
-
-(ert-deftest %c:boot:if/when/unless-fn% ()
-  (should (null (if-fn% 'shouldx 'ert t)))
-  (should (and (if-fn% 'should 'ert t)
-               (when-fn% 'should 'ert t)
-               (not (unless-fn% 'should 'ert t))))
-  (should (equal '(progn (+ 1 2) (* 3 4))
-                 (macroexpand '(when-fn% 'should 'ert
-                                 (+ 1 2) (* 3 4)))))
-  (should (equal '(progn (+ 1 2) (* 3 4))
-                 (macroexpand '(unless-fn% 'shouldx 'ert
-                                 (+ 1 2) (* 3 4))))))
-
-(ert-deftest %c:boot:if/when/unless-var% ()
-  (should (and (if-var% ert-batch-backtrace-right-margin 'ert t)
-               (when-var% ert-batch-backtrace-right-margin 'ert t)
-               (not (unless-var% ert-batch-backtrace-right-margin 'ert))
-               (unless-var% ert-batch-xxx 'ert t))))
-
-(ert-deftest %c:boot:self-spec-> ()
-  (should (null (self-spec-> nil nil)))
-  (should (null (self-spec-> '(a 1) nil)))
-  (should (= 1 (self-spec-> '(a 1) 'a)))
-  (should (= 1 (self-spec-> '(a (b (c 1))) 'a 'b 'c))))
-
-(ert-deftest %c:boot:nore-spec-> ()
-  (should (= 4 (length (nore-spec->))))
-  (should (= 6 (length (nore-spec-> :shell))))
-  (should (= 6 (length (nore-spec-> :tags)))))
-
-
-;; end of boot
-
+;; end of vcomp
 
 ;;;
 ;; fn
@@ -286,6 +208,60 @@
   (should (catch 'found
             (dolist* (x '(a b c))
               (when (eq 'b x) (throw 'found t))))))
+
+(ert-deftest %d:fn:if/when/unless-lexical% ()
+  (if (if-lexical% t nil)
+      (should (and (when-lexical% t)
+                   (not (unless-lexical% t))
+                   (equal '(progn (+ 1 2) (* 3 4))
+                          (macroexpand '(when-lexical%
+                                          (+ 1 2) (* 3 4))))))
+    (should (and (not (when-lexical% t))
+                 (unless-lexical% t)
+                 (equal '(progn (+ 1 2) (* 3 4))
+                        (macroexpand '(unless-lexical%
+                                        (+ 1 2) (* 3 4))))))))
+
+(ert-deftest %d:fn:if/when/unless-graphic% ()
+  (if (if-graphic% t nil)
+      (should (and (when-graphic% t)
+                   (not (unless-graphic% t))
+                   (equal '(progn (+ 1 2) (* 3 4))
+                          (macroexpand '(when-graphic%
+                                          (+ 1 2) (* 3 4))))))
+    (should (and (not (when-graphic% t))
+                 (unless-graphic% t)
+                 (equal '(progn (+ 1 2) (* 3 4))
+                        (macroexpand '(unless-graphic%
+                                        (+ 1 2) (* 3 4))))))))
+
+(ert-deftest %d:fn:if/when/unless-platform% ()
+  (cond ((if-platform% 'darwin t)
+         (should (and (when-platform% 'darwin t)
+                      (not (unless-platform% 'darwin t)))))
+        ((if-platform% 'gnu/linux t)
+         (should (and (when-platform% 'gnu/linux t)
+                      (not (unless-platform% 'gnu/linux t)))))
+        ((if-platform% 'windows-nt t)
+         (should (and (when-platform% 'windows-nt t)
+                      (not (unless-platform% 'windows-nt t)))))
+        ((if-platform% 'cygwin t)
+         (should (and (when-platform% 'cygwin t)
+                      (not (unless-platform% 'cygwin)))))))
+
+(ert-deftest %d:fn:if/when/unless-window% ()
+	(cond ((if-window% 'mac t)
+         (should (and (when-window% 'mac t)
+                      (not (unless-window% 'mac t)))))
+				((if-window% 'ns t)
+         (should (and (when-window% 'ns t)
+                      (not (unless-window% 'ns)))))
+        ((if-window% 'pgtk t)
+         (should (and (when-window% 'pgtk t)
+                      (not (unless-window% 'pgtk t)))))
+        ((if-window% 'w32 t)
+         (should (and (when-window% 'w32 t)
+                      (not (unless-window% 'w32 t)))))))
 
 (ert-deftest %d:fn:flatten ()
   (should (equal '(nil) (flatten nil)))
@@ -609,6 +585,46 @@
   (should (= -1 (version-strncmp "1.2.3.1" "1.2.3.2" 4))))
 
 ;; end of `fn'
+
+;;;
+;; boot
+;;;
+
+(ert-deftest %e:boot:setq% ()
+  (should-not (setq% zzz 'xx))
+  (should-not (setq% zzz nil)))
+
+(ert-deftest %e:boot:if/when/unless-fn% ()
+  (should (null (if-fn% 'shouldx 'ert t)))
+  (should (and (if-fn% 'should 'ert t)
+               (when-fn% 'should 'ert t)
+               (not (unless-fn% 'should 'ert t))))
+  (should (equal '(progn (+ 1 2) (* 3 4))
+                 (macroexpand '(when-fn% 'should 'ert
+                                 (+ 1 2) (* 3 4)))))
+  (should (equal '(progn (+ 1 2) (* 3 4))
+                 (macroexpand '(unless-fn% 'shouldx 'ert
+                                 (+ 1 2) (* 3 4))))))
+
+(ert-deftest %e:boot:if/when/unless-var% ()
+  (should (and (if-var% ert-batch-backtrace-right-margin 'ert t)
+               (when-var% ert-batch-backtrace-right-margin 'ert t)
+               (not (unless-var% ert-batch-backtrace-right-margin 'ert))
+               (unless-var% ert-batch-xxx 'ert t))))
+
+(ert-deftest %e:boot:self-spec-> ()
+  (should (null (self-spec-> nil nil)))
+  (should (null (self-spec-> '(a 1) nil)))
+  (should (= 1 (self-spec-> '(a 1) 'a)))
+  (should (= 1 (self-spec-> '(a (b (c 1))) 'a 'b 'c))))
+
+(ert-deftest %e:boot:nore-spec-> ()
+  (should (= 4 (length (nore-spec->))))
+  (should (= 6 (length (nore-spec-> :shell))))
+  (should (= 6 (length (nore-spec-> :tags)))))
+
+;; end of boot
+
 
 ;;;
 ;; shells
