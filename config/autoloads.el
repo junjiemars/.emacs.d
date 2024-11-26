@@ -60,7 +60,6 @@
     (compile-unit% (emacs-home* "config/isearchs.el") t)
     (compile-unit% (emacs-home* "config/mill.el") t)
     (compile-unit% (emacs-home* "config/mixal.el") t)
-    (compile-unit% (emacs-home* "config/nets.el") t)
     (compile-unit% (emacs-home* "config/orgs.el") t)
     (when-feature-project%
       (compile-unit% (emacs-home* "config/projects.el") t))
