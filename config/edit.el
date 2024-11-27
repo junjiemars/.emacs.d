@@ -7,14 +7,14 @@
 ;;;;
 ;; Commentary: essential editing environment.
 ;;;;
+
 
-;;;
-;; self-edit
-;;;
+(defun edit-spec->* (&optional key)
+  "Extract :edit from env-spec via KEY."
+  (cond (key (*self-env-spec* :get :edit key))
+        (t (*self-env-spec* :get :edit))))
 
-(defmacro edit-spec->* (&rest keys)
-  "Extract :edit from env-spec via KEYS."
-  `(*self-env-spec* :get :edit ,@keys))
+
 
 (defun self-edit-env->disable-indent-tabs-mode ()
   "Disable \\=`indent-tabs-mode\\=' in major mode."

@@ -5,23 +5,28 @@
 ;;;;
 ;; eshells.el
 ;;;;
+
 
+(defun eshell-spec->* (&optional key)
+  "Extract :eshell from env-spec via KEY."
+  (cond (key (*self-env-spec* :get :eshell key))
+        (t (*self-env-spec* :get :eshell))))
+
+
 
 (defun on-eshell-init! ()
   "On \\=`eshell-mode\\=' initialization."
   (eval-when-compile (require 'em-term))
   (require 'em-term)
-  (let ((eshell (*self-env-spec* :get :eshell)))
-    (when (self-spec-> eshell :allowed)
-      (let ((visuals (self-spec-> eshell :visual-commands)))
-        (dolist* (x visuals)
-          (append! x eshell-visual-commands t)))
-      (setq% eshell-destroy-buffer-when-process-dies
-             (self-spec-> eshell :destroy-buffer-when-process-dies))
-      (setq% eshell-visual-subcommands
-             (self-spec-> eshell :visual-subcommands))
-      (setq% eshell-visual-options
-             (self-spec-> eshell :visual-options))))
+  (when (eshell-spec->* :allowed)
+    (dolist* (x (eshell-spec->* :visual-commands))
+      (append! x eshell-visual-commands t))
+    (setq% eshell-destroy-buffer-when-process-dies
+           (eshell-spec->* :destroy-buffer-when-process-dies))
+    (setq% eshell-visual-subcommands
+           (eshell-spec->* :visual-subcommands))
+    (setq% eshell-visual-options
+           (eshell-spec->* :visual-options)))
   ;; abbreviated `eshell' prompt
   (when-version% > 23
     (setq% eshell-save-history-on-exit t 'em-hist)

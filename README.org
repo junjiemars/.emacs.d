@@ -216,15 +216,15 @@ run it and reopen the Emacs.
 Locate your spec via =(*self-paths*)=.
 
 #+BEGIN_SRC emacs-lisp
-;; Run order: :env-spec -> :mod-spec -> :epilogue
-;; You can point to your Gited Emacs' configuration repo.
-;; Default samples `sample-self-*.el' in `(emacs-home "config/")' directory.
-;; :epilogue run in `after-init-hook'
+  ;; Run order: :env-spec -> :mod-spec -> :epilogue
+  ;; You can point to your Gited Emacs' configuration repo.
+  ;; Default samples `sample-self-*.el' in `(emacs-home "config/")' directory.
+  ;; :epilogue run in `after-init-hook'
 
-(*self-paths* :put :mod-spec
-              (comment (emacs-home "private/self-mod-spec.el")))
-(*self-paths* :put  :epilogue
-              (comment (emacs-home "private/self-epilogue.el")))
+  (*self-paths* :put :mod-spec
+                (comment (emacs-home "private/self-mod-spec.el")))
+  (*self-paths* :put :epilogue
+                (comment (emacs-home "private/self-epilogue.el")))
 #+END_SRC
 
 #+REVEAL: split

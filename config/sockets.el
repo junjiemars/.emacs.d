@@ -5,9 +5,16 @@
 ;;;;
 ;; sockets.el
 ;;;;
-
+
 
 (defmacro-if-feature% socks)
+
+(defun socks-spec->* (&optional key)
+  "Extract :socks from env-spec via KEY."
+  (cond (key (*self-env-spec* :get :socks key))
+        (t (*self-env-spec* :get :socks))))
+
+
 
 (defmacro when-feature-socks% (&rest body)
   "When \\=`socks\\=', do BODY."
@@ -68,8 +75,8 @@ if ARG is greater than 1, otherwise via native."
                    (setq% socks-server
                           (list "Default server"
                                 nil
-                                (*self-env-spec* :get :socks :port)
-                                (*self-env-spec* :get :socks :version))
+                                (socks-spec->* :port)
+                                (socks-spec->* :version))
                           'socks)
                    (when *open-network-stream*
                      (setf (symbol-function 'open-network-stream)
@@ -78,9 +85,9 @@ if ARG is greater than 1, otherwise via native."
                   (setq% url-gateway-method 'socks 'url-vars)
                   (setq% socks-server
                          (list "Default server"
-                               (*self-env-spec* :get :socks :server)
-                               (*self-env-spec* :get :socks :port)
-                               (*self-env-spec* :get :socks :version))
+                               (socks-spec->* :server)
+                               (socks-spec->* :port)
+                               (socks-spec->* :version))
                          'socks)
                   (setf (symbol-function 'open-network-stream)
                         #'socks-open-network-stream)))
@@ -99,16 +106,16 @@ if ARG is greater than 1, otherwise via native."
        (when-fn-url-open-stream%
         (ad*-activate-url-open-stream activate))
        (message "socks%s as url gateway %s"
-                (list (*self-env-spec* :get :socks :server)
-                      (*self-env-spec* :get :socks :port)
-                      (*self-env-spec* :get :socks :version))
+                (list (socks-spec->* :server)
+                      (socks-spec->* :port)
+                      (socks-spec->* :version))
                 (if activate "enabled" "disabled"))))))
 
 
 (defun self-socks-init! ()
   "Initialize :socks spec from \\=`*self-env-spec*\\='."
   (when-feature-socks%
-   (when (*self-env-spec* :get :socks :allowed)
+   (when (socks-spec->* :allowed)
      (toggle-socks!))))
 
 

@@ -5,12 +5,21 @@
 ;;;;
 ;; modules.el
 ;;;;
+
 
 ;;; require
 
 (declare-function package-installed-p "package")
 
 ;; end of require
+
+
+(defun module-spec->* (&optional key)
+  "Extract :module from env-spec via KEY."
+  (cond (key (*self-env-spec* :get :module key))
+        (t (*self-env-spec* :get :module))))
+
+
 
 (defalias '*package-init-repo*
   (lexical-let% ((b))
@@ -20,9 +29,8 @@
 
 (defun package*-init-repo! ()
   (setq% package-check-signature
-         (*self-env-spec* :get :module :package-check-signature)
-         'package)
-  (let ((archives (*self-env-spec* :get :module :package-archives)))
+         (module-spec->* :package-check-signature) 'package)
+  (let ((archives (module-spec->* :package-archives)))
     (when archives
       (setq% package-archives archives 'package)))
   (when-version%
@@ -105,15 +113,13 @@
   (when-version%
       <= 25.1
     (setq custom-file (v-home! ".transient/packages.el")))
-    ;; define package user dir
+  ;; define package user dir
   (setq% package-gnupghome-dir (v-home! ".elpa/gnupg/") 'package)
   (setq% package-user-dir package*-user-dir 'package)
   ;; load self :packages-spec
   (compile! (compile-unit* (*self-paths* :get :mod-spec)))
   (package-initialize)
-  (package*-parse-spec!
-   (*self-mod-spec*)
-   (*self-env-spec* :get :module :remove-unused)))
+  (package*-parse-spec! (*self-mod-spec*) (module-spec->* :remove-unused)))
 
 ;; end of package*
 

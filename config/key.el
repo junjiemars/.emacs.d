@@ -7,12 +7,12 @@
 ;;;;
 ;; Commentary: self modifier keys.
 ;;;;
+
 
-
-(defmacro key-spec->* (&rest keys)
-  "Extract :key from env-spec via KEYS."
-  (declare (indent 0))
-  `(*self-env-spec* :get :key ,@keys))
+(defun key-spec->* (&optional key)
+  "Extract :key from env-spec via KEY."
+  (cond (key (*self-env-spec* :get :key key))
+        (t (*self-env-spec* :get :key))))
 
 
 

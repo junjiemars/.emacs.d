@@ -7,11 +7,12 @@
 ;;;
 ;; Commentary: read/save session
 ;;;;
+
 
-(defmacro desktop-spec->* (&rest keys)
-  "Extract :desktop from env-spec via KEYS."
-  (declare (indent 0))
-  `(*self-env-spec* :get :desktop ,@keys))
+(defun desktop-spec->* (&optional key)
+  "Extract :desktop from env-spec via KEY."
+  (cond (key (*self-env-spec* :get :desktop key))
+        (t (*self-env-spec* :get :desktop key))))
 
 
 

@@ -7,7 +7,19 @@
 ;;;;
 ;; Commentary: initialize menu, toolbar, font, theme, etc.
 ;;;;
+
 
+(defun frame-spec->* (&optional key)
+  "Extract :frame from env-spec via KEY."
+  (cond (key (*self-env-spec* :get :frame key))
+        (t (*self-env-spec* :get :frame))))
+
+(defun theme-spec->* (&optional key)
+  "Extract from :theme env-spec via KEY."
+  (cond (key (*self-env-spec* :get :theme key))
+        (t (*self-env-spec* :get :theme))))
+
+
 
 ;;; macro
 
@@ -29,16 +41,6 @@
      (when-version% >= 25
        (ignore* frame-inhibit-implied-resize))
      ,@body))
-
-(defmacro frame-spec->* (&rest keys)
-  "Extract :frame from env-spec via KEYS."
-  (declare (indent 0))
-  `(*self-env-spec* :get :frame ,@keys))
-
-(defmacro theme-spec->* (&rest keys)
-  "Extract from :theme env-spec via KEYS."
-  (declare (indent 0))
-  `(*self-env-spec* :get :theme ,@keys))
 
 ;; end of macro
 

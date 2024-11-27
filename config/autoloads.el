@@ -110,8 +110,7 @@
     ;; self :glyph
     (when-font%
       (prog1
-          (compile-unit% (emacs-home* "config/glyph.el") t)
-        (autoload 'self-glyph-init! (v-home%> "config/glyph"))
+          (compile-unit% (emacs-home* "config/glyph.el"))
         (declare-function self-glyph-init! (v-home%> "config/glyph"))))
     ;; `gud': `gud-cdb'
     (when-platform% 'windows-nt

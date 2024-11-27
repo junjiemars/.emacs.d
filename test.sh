@@ -172,6 +172,23 @@ test_profile() {
         :delete-trailing-whitespace '(prog-mode)
         :allowed t))
 (*self-env-spec*
+ :put :key
+ (list :modifier
+       :allowed t))
+(*self-env-spec*
+ :put :eshell
+ (list :visual-commands '("mtr")
+       :destroy-buffer-when-process-dies nil
+       :visual-subcommands nil ;; '(("git" "log"))
+       :visual-options nil
+       :allowed t))
+(*self-env-spec*
+ :put :socks
+ (list :port 32000
+       :server "127.0.0.1"
+       :version 5
+       :allowed nil))
+(*self-env-spec*
   :put :module
   (list :allowed nil))
 (*self-mod-spec*
