@@ -78,24 +78,28 @@
                                (regexp-quote
                                 (number-to-string +emacs-version+)))
                               f))))
-          (if-platform% 'windows-nt
-              (shell-command (concat "rmdir /Q /S " (concat d f)))
-            (shell-command (concat "rm -r " (concat d f)))))))))
+          (let ((cmd (if-platform% 'windows-nt
+                         (concat "rmdir /Q /S " (concat d f))
+                       (concat "rm -r " (concat d f)))))
+            (message "%s ..." cmd)
+            (with-temp-buffer
+              (shell-command cmd (current-buffer)))))))))
 
-(defun reset-emacs ()
+(defun reset-emacs (&optional do?)
   "Clean all compiled files and dot files, then kill Emacs."
   (interactive)
-  (when (yes-or-no-p "Reset emacs?")
-  	(clean-versioned-dirs
-  	 (delq nil (let ((xs nil))
-                 (dolist* (d (directory-files
-                              (emacs-home%) nil "^\\.[a-z]+"))
-                   (unless (member d '(".git" ".gitignore" ".github"))
-  							     (setq xs (cons (concat (emacs-home* d) "/") xs))))))
-  	 :8)
-  	(clean-compiled-files)
-  	(setq kill-emacs-hook nil)
-  	(kill-emacs 0)))
+  (when (if-noninteractive%
+            do?
+          (or do? (yes-or-no-p "Reset emacs?")))
+    (clean-versioned-dirs
+     (let ((xs nil))
+       (dolist* (d (directory-files (emacs-home%) nil "^\\.[a-z]+") xs)
+         (unless (member d '(".git" ".gitignore" ".github"))
+           (setq xs (cons (concat (emacs-home* d) "/") xs)))))
+     :8)
+    (clean-compiled-files)
+    (setq kill-emacs-hook nil)
+    (kill-emacs 0)))
 
 ;; end of Clean Emacs' user files
 

@@ -230,6 +230,31 @@ test_debug() {
 "
 }
 
+test_reset() {
+  test_echo_env "reset|clean"
+  test_clean_env
+  cat <<END> "${_ENV_PRO_}"
+(*self-paths* :put :mod-spec nil)
+(*self-paths* :put :env-spec nil)
+(*self-paths* :put :epilogue nil)
+(*self-env-spec*
+  :put :edit
+  (list :allowed t))
+END
+  echo "# cat <${_ENV_PRO_}"
+  cat <"${_ENV_PRO_}"
+  test_echo_env "reset|compile"
+  ${_EMACS_} --batch \
+             --no-window-system \
+             --debug-init \
+             --eval="\
+(progn\
+  (setq debug-on-error t)\
+  (load \"${_ROOT_}/init.el\")\
+  (reset-emacs t))\
+"
+}
+
 check_env() {
   echo "# check env ..."
   echo "# _ROOT_: ${_ROOT_}"
@@ -273,6 +298,7 @@ case "${_TEST_}" in
   clean)    test_clean    ;;
   boot)     test_boot     ;;
   debug)    test_debug    ;;
+  reset)    test_reset    ;;
   *) ;;
 esac
 
