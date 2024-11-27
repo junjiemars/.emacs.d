@@ -50,7 +50,7 @@
   (should (file-exists-p (emacs-home "private/"))))
 
 (ert-deftest %b:init:file-name-sans-extension* ()
-  (should (eq nil (file-name-sans-extension* "")))
+  (should-not (file-name-sans-extension* ""))
   (should (string-equal "a" (file-name-sans-extension* "a.b")))
   (should (string-equal "/a/b/c" (file-name-sans-extension* "/a/b/c.d"))))
 
@@ -96,8 +96,8 @@
                  (macroexpand '(unless% nil (+ 1 2) (* 3 4))))))
 
 (ert-deftest %b:init:if-version% ()
-  (should (if-version% < 0 t))
-  (should (= 12 (if-version% < 10000 (+ 1 2) (* 3 4))))
+  (should (eq (if-version% <= 22.1 t) (if-version% > 22.1 nil t)))
+  (should (= 12 (if-version% > 22.1 (+ 1 2) (* 3 4))))
   (should (equal '(progn (* 3 4) (* 5 6))
                  (macroexpand '(if-version% < 1000
                                             (+ 1 2)
