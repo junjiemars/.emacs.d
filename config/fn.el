@@ -610,10 +610,10 @@ Optional argument ARGS for COMMAND."
                         ((string-match "^.*\\([0-9]+\\).*$" x)
                          (match-string-no-properties 1 x))
                         (t -1))
-                  (buffer-substring-no-properties
-                   (point-min) (let ((max (point-max)))
-                                 (cond ((> max 1) (1- max))
-                                       (t max)))))))
+                  (let ((s (buffer-substring-no-properties
+                            (point-min) (point-max))))
+                    (cond ((string= s "\n") nil)
+                          (t s))))))
       (and b (kill-buffer b)))))
 
 (defun executable-find* (command &optional fn)
@@ -624,7 +624,7 @@ Call FN with the path if FN is non-nil."
                               "command -v")
               command)))
     (when (zerop (car rc))
-      (let ((ss (cdr rc)))
+      (let ((ss (string-trim> (cdr rc))))
         (cond (fn (funcall fn (shell-quote-argument ss)))
               (t (if-platform% 'windows-nt
                      (posix-path ss)
@@ -636,24 +636,22 @@ Call FN with the path if FN is non-nil."
 
 (defmacro emacs-arch ()
   "Return emacs architecture, 64bits or 32bits."
-  (if (= most-positive-fixnum (1- (expt 2 61))) 64
-    (if (= most-positive-fixnum (1- (expt 2 29))) 32 0)))
+  (cond ((= most-positive-fixnum (1- (expt 2 61))) 64)
+        ((= most-positive-fixnum (1- (expt 2 29))) 32)
+        (t 16)))
 
 (defmacro platform-arch ()
   "Return platform architecture."
-  (let ((m64 "\\([xX]86_64\\|[aA][mM][dD]64\\|aarch64\\|arm64\\)"))
-    (if (string-match m64 system-configuration)
-        (string-match* m64 system-configuration 1)
+  (let* ((m64 "\\([xX]86_64\\|[aA][mM][dD]64\\|aarch64\\|arm64\\)")
+         (x64 (string-match* m64 system-configuration 1)))
+    (if x64 x64
       (if-platform% 'windows-nt
-          (if (string-match m64 (getenv-internal "PROCESSOR_ARCHITECTURE"))
-              (string-match*
-               m64 (getenv-internal "PROCESSOR_ARCHITECTURE") 1)
-            (getenv-internal "PROCESSOR_ARCHITECTURE"))
+          (let* ((cpu "PROCESSOR_ARCHITECTURE")
+                 (c64 (string-match* m64 (getenv-internal cpu) 1)))
+            (if c64 c64 (getenv-internal cpu)))
         (let ((m (shell-command* "uname" "-m")))
-          (if (and (zerop (car m))
-                   (string-match m64 (string-trim> (cdr m) "\n")))
-              (string-trim> (cdr m) "\n")
-            (string-trim> (cdr m) "\n")))))))
+          (cond ((zerop (car m)) (string-trim> (cdr m)))
+                (t nil)))))))
 
 (defun version-strncmp (v1 v2 &optional n)
   "Return 0 if V1 equals V2, -1 if V1 less than V2, otherwise 1.\n
@@ -780,9 +778,8 @@ See \\=`defcustom\\='."
 
 (defun path-depth (path &optional separator)
   "Return the depth of PATH."
-  (if (= 0 (length path))
-      0
-    (- (length (split-string* path (or separator "/") nil)) 1)))
+  (cond ((= 0 (length path)) 0)
+        (t (- (length (split-string* path (or separator "/") nil)) 1))))
 
 (defmacro file-name-nondirectory% (filename)
   "Return file name FILENAME sans its directory at compile-time."
@@ -794,8 +791,7 @@ See \\=`defcustom\\='."
   "Return an identification when FILE specifies a location on a
 remote system.\n
 On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
-  `(string-match* "^\\(/sshx?:[_-a-zA-Z0-9]+@?[._-a-zA-Z0-9]+:\\)"
-                  ,file 1))
+  `(string-match* "^\\(/sshx?:[_-a-zA-Z0-9]+@?[._-a-zA-Z0-9]+:\\)" ,file 1))
 
 (defmacro ssh-remote->ids (remote)
   "Norm the REMOTE to (method {user|id} [host]) form."

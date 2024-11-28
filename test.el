@@ -176,7 +176,10 @@
 ;;   (should (string-match "[gt]_[.0-9]+.*x\\.el\\'" (v-home% "x.el"))))
 
 (ert-deftest %d:fn:emacs-arch ()
-  (should (> (emacs-arch) 0)))
+  (should (= (logand (emacs-arch) 2) 0)))
+
+(ert-deftest %d:fn:platform-arch ()
+  (should (platform-arch)))
 
 (ert-deftest %d:fn:defmacro-if-feature% ()
 	(unwind-protect
@@ -437,7 +440,7 @@
 
 (ert-deftest %d:fn:shell-command* ()
   (should (let ((x (shell-command* "echo" "a")))
-            (and (= (car x) 0) (string= (cdr x) "a"))))
+            (and (= (car x) 0) (string= (cdr x) "a\n"))))
   (should (let ((x (shell-command* "wc" "-l" (emacs-home* "test.el"))))
             (or (= (car x) 0)
                 (= (car x) 127)))))
@@ -448,9 +451,6 @@
     (should (executable-find* "ls"))
     (should (executable-find* (concat "l" "s")))
     (should (executable-find* "ls" (lambda (ls) ls)))))
-
-(ert-deftest %d:fn:platform-arch ()
-  (should (platform-arch)))
 
 (ert-deftest %e:fn:file-in-dirs-p ()
   (should-not (file-in-dirs-p nil nil))
