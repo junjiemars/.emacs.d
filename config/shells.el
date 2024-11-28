@@ -38,20 +38,20 @@
 
 (defun echo-var (var &optional options)
   "Return the value of $VAR via echo."
-  (and
-   (stringp var)
-   (let* ((c1 (shell-command* shell-file-name
-                (let ((os nil))
-                  (dolist* (s options os)
-                    (setq os (concat os s " "))))
-                (format "-c 'echo $%s'" var)))
-          (cmd (if-platform% 'windows-nt
-                   (if (string-match "cmdproxy\\.exe$" shell-file-name)
-                       (shell-command* (format "echo %%%s%%" var))
-                     c1)
-                 c1)))
-     (and (zerop (car cmd))
-          (string-trim> (cdr cmd))))))
+  (when (stringp var)
+    (let ((rc (if-platform% 'windows-nt
+                  (if (string-match "cmdproxy\\.exe$" shell-file-name)
+                      (shell-command* (format "echo %%%s%%" var))
+                    ;; non cmdproxy
+                    (shell-command* shell-file-name
+                      (mapconcat #'identity options " ")
+                      (format "-c 'echo $%s'" var)))
+                ;; other platforms
+                (shell-command* shell-file-name
+                  (mapconcat #'identity options " ")
+                  (format "-c 'echo $%s'" var)))))
+      (and (zerop (car rc))
+           (string-trim> (cdr rc))))))
 
 
 (defun paths->var (path &optional predicate)

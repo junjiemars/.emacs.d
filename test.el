@@ -437,9 +437,8 @@
 
 (ert-deftest %d:fn:shell-command* ()
   (should (let ((x (shell-command* "echo" "a")))
-            (and (= (car x) 0) (string= (cdr x) "a\n"))))
-  (should (let ((x (shell-command* "wc" "-c"
-                                   (emacs-home* "test.el"))))
+            (and (= (car x) 0) (string= (cdr x) "a"))))
+  (should (let ((x (shell-command* "wc" "-l" (emacs-home* "test.el"))))
             (or (= (car x) 0)
                 (= (car x) 127)))))
 

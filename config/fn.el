@@ -590,8 +590,8 @@ Return the name of FILE when successed otherwise nil."
       path)))
 
 (defun shell-command* (command &rest args)
-  "Return a cons cell (code . output) after execute COMMAND in
- inferior shell.\n
+  "Return a cons cell (code . output) after execute COMMAND
+ in inferior shell.\n
 See \\=`shell-command\\=' and \\=`shell-command-to-string\\=' for
 details. If you want to set the environment temporarily that
 \\=`shell-command*\\=' run in:
@@ -602,34 +602,33 @@ Optional argument ARGS for COMMAND."
   (let ((b (get-buffer-create* (symbol-name (gensym*)) t)))
     (unwind-protect
         (with-current-buffer b
-          (cons
-           (let ((x (call-process
-                     shell-file-name nil b nil
-                     shell-command-switch
-                     (mapconcat #'identity (nconc (list command) args) " "))))
-             (cond ((integerp x) x)
-                   ((string-match "^.*\\([0-9]+\\).*$" x)
-                    (match-string-no-properties 1 x))
-                   (t -1)))
-           (let ((s (buffer-substring-no-properties
-                     (point-min) (point-max))))
-             (if (string= "\n" s) nil s))))
+          (let ((x (call-process
+                    shell-file-name nil b nil
+                    shell-command-switch
+                    (mapconcat #'identity (nconc (list command) args) " "))))
+            (cons (cond ((integerp x) x)
+                        ((string-match "^.*\\([0-9]+\\).*$" x)
+                         (match-string-no-properties 1 x))
+                        (t -1))
+                  (buffer-substring-no-properties
+                   (point-min) (let ((max (point-max)))
+                                 (cond ((> max 1) (1- max))
+                                       (t max)))))))
       (and b (kill-buffer b)))))
 
 (defun executable-find* (command &optional fn)
   "Return the path of COMMAND.\n
 Call FN with the path if FN is non-nil."
-  (let ((cmd (shell-command* (if-platform% 'windows-nt
-                                 "where"
-                               "command -v")
-               command)))
-    (when (zerop (car cmd))
-      (let* ((ss (cdr cmd))
-             (ps (string-trim> ss "\n")))
-        (cond (fn (funcall fn (shell-quote-argument ps)))
+  (let ((rc (shell-command* (if-platform% 'windows-nt
+                                "where"
+                              "command -v")
+              command)))
+    (when (zerop (car rc))
+      (let ((ss (cdr rc)))
+        (cond (fn (funcall fn (shell-quote-argument ss)))
               (t (if-platform% 'windows-nt
-                     (posix-path ps)
-                   ps)))))))
+                     (posix-path ss)
+                   ss)))))))
 
 (defmacro executable-find% (command &optional fn)
   "Return from \\=excutable-find*\\= at compile time."
