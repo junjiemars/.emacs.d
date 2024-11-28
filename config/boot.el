@@ -77,6 +77,7 @@ No matter the declaration order, the executing order is:
             (t env)))))
 
 (defmacro env-spec->* (&rest keys)
+  "Extract spec from \\=`*self-env-spec*\\=' via KEYS."
   `(self-spec-> (*self-env-spec*) ,@keys))
 
 (defalias '*self-mod-spec*
