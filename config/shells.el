@@ -14,8 +14,8 @@
 
 (defun shells-spec->* (&optional key)
   "Extract :shell from env-spec via KEY."
-  (cond (key (*self-env-spec* :get :shell key))
-        (t (*self-env-spec* :get :shell))))
+  (cond (key (env-spec->* :shell key))
+        (t (env-spec->* :shell))))
 
 (defmacro shells-spec->% (key)
   "Return :shell spec of \\=`+nore-spec+\\='."

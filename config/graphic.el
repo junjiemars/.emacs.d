@@ -11,13 +11,13 @@
 
 (defun frame-spec->* (&optional key)
   "Extract :frame from env-spec via KEY."
-  (cond (key (*self-env-spec* :get :frame key))
-        (t (*self-env-spec* :get :frame))))
+  (cond (key (env-spec->* :frame key))
+        (t (env-spec->* :frame))))
 
 (defun theme-spec->* (&optional key)
   "Extract from :theme env-spec via KEY."
-  (cond (key (*self-env-spec* :get :theme key))
-        (t (*self-env-spec* :get :theme))))
+  (cond (key (env-spec->* :theme key))
+        (t (env-spec->* :theme))))
 
 
 

@@ -16,8 +16,12 @@
 
 (defun module-spec->* (&optional key)
   "Extract :module from env-spec via KEY."
-  (cond (key (*self-env-spec* :get :module key))
-        (t (*self-env-spec* :get :module))))
+  (cond (key (env-spec->* :module key))
+        (t (env-spec->* :module))))
+
+(defmacro unit-spec->* (module key)
+  "Extract unit spec from MODULE via KEY."
+  `(plist-get ,module ,key))
 
 
 
@@ -96,17 +100,17 @@
   "Parse SPEC, install, REMOVE-UNUSED packages."
   (dolist* (s spec)
     (let ((ss (cdr s)))
-      (when (and (consp ss) (self-spec-> ss :cond))
-        (dolist* (p (self-spec-> ss :packages))
+      (when (and (consp ss) (unit-spec->* ss :cond))
+        (dolist* (p (unit-spec->* ss :packages))
           (let ((ns (package*-check-name p)))
             (and (consp ns)
                  (let ((n (car ns)) (tar (cdr ns)))
                    (if (package-installed-p n)
                        (and remove-unused
-                            (null (self-spec-> ss :cond))
+                            (null (unit-spec->* ss :cond))
                             (package*-delete! n))
                      (package*-install! (if tar tar n) tar))))))
-        (apply #'compile! (self-spec-> ss :compile))))))
+        (apply #'compile! (unit-spec->* ss :compile))))))
 
 (defun self-module-init! ()
   "Initialize :package spec from \\=`*self-env-spec*\\='."

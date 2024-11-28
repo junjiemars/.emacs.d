@@ -11,8 +11,8 @@
 
 (defun desktop-spec->* (&optional key)
   "Extract :desktop from env-spec via KEY."
-  (cond (key (*self-env-spec* :get :desktop key))
-        (t (*self-env-spec* :get :desktop key))))
+  (cond (key (env-spec->* :desktop key))
+        (t (env-spec->* :desktop key))))
 
 
 

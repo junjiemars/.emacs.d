@@ -57,16 +57,16 @@ No matter the declaration order, the executing order is:
 \\=`:env-spec -> :mod-spec -> :epilogue\\='")
 
 (defalias '*self-env-spec*
-  (lexical-let% ((env (list :theme nil
+  (lexical-let% ((env (list :desktop nil
+                            :edit nil
+                            :eshell nil
                             :frame nil
                             :glyph nil
                             :key nil
-                            :shell nil
-                            :desktop nil
-                            :eshell nil
-                            :socks nil
                             :module nil
-                            :edit nil)))
+                            :shell nil
+                            :socks nil
+                            :theme nil)))
     (lambda (&optional op &rest keys)
       (cond ((eq :get op) (let ((rs env) (ks keys))
                             (while ks
@@ -75,6 +75,9 @@ No matter the declaration order, the executing order is:
                             rs))
             ((eq :put op) (setq env (plist-put env (car keys) (cadr keys))))
             (t env)))))
+
+(defmacro env-spec->* (&rest keys)
+  `(self-spec-> (*self-env-spec*) ,@keys))
 
 (defalias '*self-mod-spec*
   (lexical-let% ((ps nil))
@@ -130,12 +133,12 @@ No matter the declaration order, the executing order is:
 
 ;;; <3> epilogue
 (compile!
-  (when (*self-env-spec* :get :edit :allowed)
+  (when (env-spec->* :edit :allowed)
     (prog1
         (compile-unit% (emacs-home* "config/edit.el") t)
       (autoload 'self-edit-init! (v-home%> "config/edit"))
       (declare-function self-edit-init! (v-home%> "config/edit"))))
-  (when (*self-env-spec* :get :key :allowed)
+  (when (env-spec->* :key :allowed)
     (prog1
         (compile-unit% (emacs-home* "config/key.el") t)
       (autoload 'self-key-init! (v-home%> "config/key"))
@@ -144,18 +147,18 @@ No matter the declaration order, the executing order is:
     ;;; --batch mode: disable `desktop'
     (setq% desktop-save-mode nil 'desktop)
     (unless-noninteractive%
-      (when (*self-env-spec* :get :desktop :allowed)
+      (when (env-spec->* :desktop :allowed)
         (prog1
             (compile-unit% (emacs-home* "config/memo.el") t)
           (autoload 'self-desktop-read! (v-home%> "config/memo"))
           (declare-function self-desktop-read! (v-home%> "config/memo"))))))
-  (when (*self-env-spec* :get :socks :allowed)
+  (when (env-spec->* :socks :allowed)
     (prog1
         (compile-unit% (emacs-home* "config/sockets.el") t)
       (autoload 'self-socks-init! (v-home%> "config/sockets"))
       (declare-function self-socks-init! (v-home%> "config/sockets"))))
   (when-package%
-    (when (*self-env-spec* :get :module :allowed)
+    (when (env-spec->* :module :allowed)
       (prog1
           (compile-unit% (emacs-home* "config/modules.el") t)
         (autoload 'self-module-init! (v-home%> "config/modules"))

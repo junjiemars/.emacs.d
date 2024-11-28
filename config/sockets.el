@@ -11,8 +11,8 @@
 
 (defun socks-spec->* (&optional key)
   "Extract :socks from env-spec via KEY."
-  (cond (key (*self-env-spec* :get :socks key))
-        (t (*self-env-spec* :get :socks))))
+  (cond (key (env-spec->* :socks key))
+        (t (env-spec->* :socks))))
 
 
 

@@ -11,8 +11,8 @@
 
 (defun key-spec->* (&optional key)
   "Extract :key from env-spec via KEY."
-  (cond (key (*self-env-spec* :get :key key))
-        (t (*self-env-spec* :get :key))))
+  (cond (key (env-spec->* :key key))
+        (t (env-spec->* :key))))
 
 
 
