@@ -18,7 +18,8 @@
         (t (*self-env-spec* :get :shell))))
 
 (defmacro shells-spec->% (key)
-  (nore-spec-> :shell key))
+  "Return :shell spec of \\=`+nore-spec+\\='."
+  (self-spec-> +nore-spec+ :shell key))
 
 (defalias '*default-shell-env*
   (lexical-let% ((dx nil))

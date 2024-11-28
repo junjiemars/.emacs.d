@@ -83,18 +83,14 @@ No matter the declaration order, the executing order is:
             ((eq :put op) (setq ps (cons (cons k v) ps)))
             (t ps)))))
 
-(defun nore-spec-> (&rest keys)
-  "Nore spec."
-  (let ((b (list :shell (list :file (v-home% ".exec/shell-env.el")
-                              :SHELL "SHELL"
-                              :PATH "PATH")
-                 :tags (list :root (emacs-home% ".tags/")
-                             :nore (v-home% ".tags/nore.emacs.TAGS")
-                             :emacs (v-home% ".tags/emacs.TAGS")))))
-    (while keys
-      (setq b (plist-get b (car keys))
-            keys (cdr keys)))
-    b))
+(defconst +nore-spec+
+  `( :shell ( :file ,(v-home% ".exec/shell-env.el")
+              :SHELL "SHELL"
+              :PATH "PATH")
+     :tags ( :root ,(emacs-home% ".tags/")
+             :nore ,(v-home% ".tags/nore.emacs.TAGS")
+             :emacs ,(v-home% ".tags/emacs.TAGS")))
+  "Nore spec.")
 
 ;; end of self-spec* macro
 

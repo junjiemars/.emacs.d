@@ -612,11 +612,6 @@
   (should (= 1 (self-spec-> '(a 1) 'a)))
   (should (= 1 (self-spec-> '(a (b (c 1))) 'a 'b 'c))))
 
-(ert-deftest %e:boot:nore-spec-> ()
-  (should (= 4 (length (nore-spec->))))
-  (should (= 6 (length (nore-spec-> :shell))))
-  (should (= 6 (length (nore-spec-> :tags)))))
-
 ;; end of boot
 
 

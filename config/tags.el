@@ -31,7 +31,8 @@
   (tags-spec->* :get key))
 
 (defmacro tags-spec->% (key)
-  (nore-spec-> :tags key))
+  "Return :tags of \\=`+nore-spec+\\='."
+  (self-spec-> +nore-spec+ :tags key))
 
 (defalias '*tags*
   (lexical-let%
