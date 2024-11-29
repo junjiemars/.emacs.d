@@ -117,9 +117,8 @@ non-nil, do BODY."
                    (while (> i 0)
                      (when (= ?/ (aref dir i))
                        (let ((s (substring-no-properties dir 0 (1+ i))))
-                         (if (file-exists-p s)
-                             (throw 'br t)
-                           (setq ds (cons s ds)))))
+                         (cond ((file-exists-p s) (throw 'br t))
+                               (t (setq ds (cons s ds))))))
                      (setq i (1- i))))
                  (while (car ds)
                    (make-directory-internal (car ds))
@@ -183,7 +182,7 @@ non-nil, do BODY."
      (let* ((-mvcf-s1- ,src)
             (-mvcf-d1- (v-path -mvcf-s1-))
             (-mvcf-d2- (concat (file-name-sans-extension* -mvcf-d1-)
-                               (comp-file-extension%))))
+                               ,(comp-file-extension%))))
        (when (file-newer-than-file-p -mvcf-s1- -mvcf-d1-)
          (if (file-exists-p -mvcf-d2-)
              (delete-file -mvcf-d2-)
@@ -231,16 +230,11 @@ If ONLY-COMPILE is t, does not load DST."
 (defun clean-compiled-files ()
   "Clean all compiled files."
   (interactive)
-  (let ((dirs (list `(,(v-home "config/")
-                      . "\\.el[cn]\\(\\.tmp\\)?\\'")
-                    `(,(v-home "private/")
-                      . "\\.el[cn]\\(\\.tmp\\)?\\'")
-                    `(,(v-home "theme/")
-                      . "\\.el[cn]\\(\\.tmp\\)?\\'")
-                    `(,(v-home ".exec/")
-                      . "\\.el[cn]\\(\\.tmp\\)?\\'")
-                    `(,(emacs-home)
-                      . "[_a-z]+\\.el[cn]+\\'"))))
+  (let ((dirs `((,(v-home "config/") . "\\.el[cn]\\(\\.tmp\\)?\\'")
+                (,(v-home "private/") . "\\.el[cn]\\(\\.tmp\\)?\\'")
+                (,(v-home "theme/") . "\\.el[cn]\\(\\.tmp\\)?\\'")
+                (,(v-home ".exec/") . "\\.el[cn]\\(\\.tmp\\)?\\'")
+                (,(emacs-home) . "[_a-z]+\\.el[cn]+\\'"))))
     (while dirs
       (let* ((d (car dirs)) (f1 (car d)) (r1 (cdr d))
              (fs (when (file-exists-p f1)
@@ -275,7 +269,7 @@ If ONLY-COMPILE is t, does not load DST."
   ;; first native-comp load
   (setcar native-comp-eln-load-path (make-v-home ".eln/"))
   ;; darwin native-comp env
-  (when% (eq system-type 'darwin)
+  (when (eq system-type 'darwin)
     (defun library-path ()
       "Even a blind pig can find an acorn once in a while."
       (let ((arch (when (string-match

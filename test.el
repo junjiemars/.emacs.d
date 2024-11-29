@@ -99,14 +99,22 @@
   (should (eq (if-version% <= 22.1 t) (if-version% > 22.1 nil t)))
   (should (= 12 (if-version% > 22.1 (+ 1 2) (* 3 4))))
   (should (equal '(progn (* 3 4) (* 5 6))
-                 (macroexpand '(if-version% < 1000
-                                            (+ 1 2)
+                 (macroexpand '(if-version%
+                                   < 1000
+                                   (+ 1 2)
                                  (* 3 4)
                                  (* 5 6))))))
 
 (ert-deftest %b:init:when-version% ()
   (should (eq (when-version% <= 22.1 t) (null (when-version% > 22.1 t))))
   (should (= 12 (when-version% <= 22.1 (+ 1 2) (* 3 4)))))
+
+(ert-deftest %b:init:if/when-native-comp% ()
+  (should (eq (if-native-comp% nil t) (null (when-native-comp% t)))))
+
+(ert-deftest %b:init:comp-file-extension% ()
+  (should (or (string-equal ".eln" (comp-file-extension%))
+              (string-equal ".elc" (comp-file-extension%)))))
 
 (ert-deftest %b:init:make-v-comp-file ()
   (let ((fs (make-v-comp-file (make-temp-file "nore-mvcf-"))))
