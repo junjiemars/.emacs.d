@@ -78,7 +78,7 @@
    (list (when current-prefix-arg
            (read-key
             (format "%s: %s"
-                    (propertize "I-search" 'face 'minibuffer-prompt)
+                    (propertize "I-search backward" 'face 'minibuffer-prompt)
                     *isearch-style-minibuffer-prompt*)))))
   (isearch*-forward style t))
 
