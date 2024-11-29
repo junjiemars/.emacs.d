@@ -13,22 +13,25 @@
 
 ;; end of require
 
+(defvar *isearch-style-minibuffer-prompt*
+  (format "(%s)egexp (%s)ymbol (%s)ord (%s)ile (%s)uoted"
+          (propertize "r" 'face 'minibuffer-prompt)
+          (propertize "s" 'face 'minibuffer-prompt)
+          (propertize "w" 'face 'minibuffer-prompt)
+          (propertize "f" 'face 'minibuffer-prompt)
+          (propertize "q" 'face 'minibuffer-prompt)))
+
 (defun isearch*-forward (&optional style backward)
   "Search incrementally forward or BACKWARD in STYLE."
   (interactive
    (list (when current-prefix-arg
            (read-key
-            (let ((r (propertize "r" 'face 'minibuffer-prompt))
-                  (s (propertize "s" 'face 'minibuffer-prompt))
-                  (w (propertize "w" 'face 'minibuffer-prompt))
-                  (f (propertize "f" 'face 'minibuffer-prompt))
-                  (q (propertize "q" 'face 'minibuffer-prompt)))
-              (format "%s: (%s)egexp (%s)ymbol (%s)ord (%s)ile (%s)uoted "
-                      (propertize "I-search" 'face 'minibuffer-prompt)
-                      r s w f q))))))
+            (format "%s: %s"
+                    (propertize "I-search" 'face 'minibuffer-prompt)
+                    *isearch-style-minibuffer-prompt*)))))
   (let ((regexp-p (and style (or (char= ?\r style) (char= ?r style)))))
-    (if backward (isearch-backward regexp-p 1)
-      (isearch-forward regexp-p 1))
+    (cond (backward (isearch-backward regexp-p 1))
+          (t (isearch-forward regexp-p 1)))
     (let ((ms (cond ((null style) nil)
                     ((char= ?s style)
                      (cons "symbol"
@@ -74,9 +77,9 @@
   (interactive
    (list (when current-prefix-arg
            (read-key
-            (format "%s: %s "
+            (format "%s: %s"
                     (propertize "I-search" 'face 'minibuffer-prompt)
-                    "(r)egexp (s)ymbol (w)ord (f)ile (q)uoted")))))
+                    *isearch-style-minibuffer-prompt*)))))
   (isearch*-forward style t))
 
 
