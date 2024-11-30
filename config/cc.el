@@ -238,12 +238,11 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
    (interactive "P")
    (setq% cc-search-directories
           (let ((file (buffer-file-name (current-buffer))))
-            (delq nil
-                  (append (list
-                           (when (stringp file)
-                             (string-trim>
-                              (file-name-directory file) "/")))
-                          (cc*-system-include :read (ssh-remote-p file)))))
+            (nconc (when (stringp file)
+                     (let ((pwd (file-name-directory file)))
+                       (list (string-trim> pwd "/")
+                             (string-trim> (path- pwd) "/"))))
+                   (cc*-system-include :read (ssh-remote-p file))))
           'find-file)
    (when-fn% 'xref-push-marker-stack 'xref
      (autoload 'xref-push-marker-stack "xref")
