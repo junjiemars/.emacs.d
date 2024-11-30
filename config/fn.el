@@ -568,10 +568,10 @@ Return the name of FILE when successed otherwise nil."
 
 (defun file-name-base* (path)
   "Return base name of PATH."
-  (substring-no-properties path
-                           (let ((p1 (strrchr path ?/)))
-                             (if p1 (1+ p1) 0))
-                           (or (strrchr path ?.) (length path))))
+  (let* ((sep (strrchr path ?/))
+         (from (if sep (1+ sep) 0))
+         (to (strrchr path ?.)))
+    (substring-no-properties path from (and to (> to from) to))))
 
 (unless% (fboundp 'directory-name-p)
   (defun directory-name-p (name)
