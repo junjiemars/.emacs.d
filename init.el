@@ -63,16 +63,15 @@
   "The \\=`float\\=' version number of Emacs.")
 
 (defmacro if-version% (cmp version then &rest else)
-  "If VERSION CMP with \\=`+emacs-version+\\=' yield non-nil, do
-THEN, else do ELSE..."
+  "If (CMP VERSION \\=`+emacs-version+\\=') yield non-nil, do THEN,
+else do ELSE..."
   (declare (indent 3))
   `(if% (,cmp ,version +emacs-version+)
        ,then
      (progn% ,@else)))
 
 (defmacro when-version% (cmp version &rest body)
-  "When VERSION CMP with variable \\=`+emacs-version+\\=' yield
-non-nil, do BODY."
+  "When (CMP VERSION \\=`+emacs-version+\\=') yield non-nil, do BODY."
   (declare (indent 2))
   `(if-version% ,cmp ,version (progn% ,@body)))
 
@@ -160,7 +159,7 @@ non-nil, do BODY."
 ;;;
 
 (defmacro if-native-comp% (then &rest else)
-  "If native compilation is built-in do THEN, else do ELSE..."
+  "If native compilation is built-in, do THEN, else do ELSE..."
   (declare (indent 1))
   (if (and (fboundp 'native-comp-available-p)
            (native-comp-available-p))
@@ -216,7 +215,7 @@ non-nil, do BODY."
 
 (defmacro compile-and-load-file (src dst &optional only-compile)
   "Compile SRC to DST.\n
-If ONLY-COMPILE is t, does not load DST."
+If ONLY-COMPILE is t, do not load DST."
   `(let ((-calf-s1- ,src) (-calf-d1- ,dst) (-calf-c1- ,only-compile))
      (unless (file-exists-p -calf-d1-)
        (if-native-comp%
