@@ -28,7 +28,7 @@
 
 (comment
  ;; using etags to view Emacs's source code: C and Elisp
- (let ((srcdir (format "/opt/open/emacs-%s/"
+ (let ((srcdir (format "/opt/open/emacs/emacs-%s/"
                        emacs-major-version)))
    (when (file-exists-p srcdir)
      (xref*-read-only-dirs :push (setq source-directory srcdir))
