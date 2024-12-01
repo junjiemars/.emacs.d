@@ -35,11 +35,13 @@
 (defalias '*sudoku-file*
   (lexical-let*% ((d (v-home! ".games/"))
                   (p (concat d "sudoku-puzzle"))
-                  (b (concat d "sudoku-board")))
+                  (b (concat d "sudoku-board"))
+                  (s (concat d "sudoku-sample")))
     (lambda (&optional k)
       (cond ((eq :dir k) d)
             ((eq :puzzle k) p)
-            ((eq :board k) b))))
+            ((eq :board k) b)
+            ((eq :sample k) s))))
   "The sudoku\\='s files.")
 
 
@@ -168,8 +170,9 @@
 (defalias '*sudoku-puzzle*
   (lexical-let% ((v))
     (lambda (&optional k i n)
-      (cond ((eq :set! k) (progn (*sudoku-puzzle-d* :set! i)
-                                 (setq v i)))
+      (cond ((eq :set! k) (progn
+                            (*sudoku-puzzle-d* :set! i)
+                            (setq v i)))
             ((eq :row k) (sudoku-puzzle-vec-row v i))
             ((eq :col k) (sudoku-puzzle-vec-col v i))
             ((eq :sqr k) (sudoku-puzzle-vec-sqr v i))
@@ -179,66 +182,24 @@
   "The \\=`sudoku\\=' puzzle in 1-dimension vector.")
 
 
+(defun sudoku-puzzle--sample ()
+  (let ((dst (*sudoku-file* :sample)))
+    (unless (file-exists-p dst)
+      (copy-file (emacs-home% "config/sample-sudoku-puzzle.el") dst))
+    (read-sexp-from-file dst)))
+
 (defalias '*sudoku-puzzle-make*
-  (lexical-let% ((l) (d) (c)
-                 (xs (list
-                      'easy
-                      (list
-                       '4x4 [4 0 0 3
-                               0 2 1 0
-                               0 3 4 0
-                               1 0 0 0]
-                       '9x9 [0 7 0 2 1 8 4 0 6
-                               0 0 0 5 0 4 0 0 0
-                               2 0 0 0 0 0 0 9 5
-                               4 0 8 6 5 0 3 0 7
-                               0 0 7 0 0 0 6 0 0
-                               6 0 1 0 8 7 2 0 9
-                               7 6 0 0 0 0 0 0 4
-                               0 0 0 4 0 6 0 0 0
-                               1 0 5 8 2 9 0 6 0])
-                      'medium
-                      (list
-                       '4x4 [0 3 0 4
-                               4 0 0 0
-                               0 0 0 1
-                               0 0 2 0]
-                       '9x9 [0 0 0 0 0 2 4 3 1
-                               0 0 3 7 0 9 0 2 8
-                               0 0 8 0 0 0 6 0 7
-                               0 0 5 0 8 1 0 0 9
-                               0 0 4 0 2 0 1 0 0
-                               9 0 0 3 4 0 7 0 0
-                               8 0 2 0 0 0 3 0 0
-                               1 3 0 5 0 4 8 0 0
-                               7 5 6 2 0 0 0 0 0])
-                      'hard
-                      (list
-                       '4x4 [0 0 0 2
-                               2 0 4 0
-                               0 3 0 0
-                               1 0 0 0]
-                       '9x9 [0 7 6 0 4 2 5 0 3
-                               0 3 0 0 0 1 0 0 0
-                               0 0 0 0 0 5 0 8 0
-                               9 0 7 2 0 8 0 3 0
-                               5 0 0 0 6 0 0 0 8
-                               0 1 0 4 0 7 9 0 6
-                               0 9 0 7 0 0 0 0 0
-                               0 0 0 5 0 0 0 7 0
-                               7 0 2 8 1 0 0 3 4]))))
+  (lexical-let% ((l nil) (d nil) (c nil)
+                 (xs nil))
     (lambda (&optional k level dimension)
       (cond ((eq :new! k)
-             (setq c
-                   (cond ((eq 'sandbox level)
-                          (make-vector (cond ((eq '4x4 dimension)
-                                              (* 4 4))
-                                             (t (* 9 9)))
-                                       0))
-                         (t (plist-get
-                             (plist-get xs
-                                        (setq l (or level l)))
-                             (setq d (or dimension d)))))))
+             (setq c (cond ((eq 'sandbox level)
+                            (make-vector (cond ((eq '4x4 dimension) (* 4 4))
+                                               (t (* 9 9)))
+                                         0))
+                           (t (unless xs (setq xs (sudoku-puzzle--sample)))
+                              (plist-get (plist-get xs (setq l (or level l)))
+                                         (setq d (or dimension d)))))))
             ((eq :rld k) c)
             (t c))))
   "Make sudoku puzzle at LEVEL.")
@@ -246,13 +207,11 @@
 
 (defun sudoku-puzzle-save ()
   "Save sudoku\\='s puzzle to \\=`*sudoku-file*\\='."
-  (save-sexp-to-file (*sudoku-puzzle*)
-                     (*sudoku-file* :puzzle)))
+  (save-sexp-to-file (*sudoku-puzzle*) (*sudoku-file* :puzzle)))
 
 (defun sudoku-puzzle-load ()
   "Load sudoku\\='s puzzle from \\=`*sudoku-file*\\='."
-  (*sudoku-puzzle* :set! (read-sexp-from-file
-                          (*sudoku-file* :puzzle))))
+  (*sudoku-puzzle* :set! (read-sexp-from-file (*sudoku-file* :puzzle))))
 
 
 (defun sudoku-puzzle-vec-complete (vector)
@@ -746,18 +705,16 @@
   (sudoku-board-draw
    (sudoku-board-make
     (*sudoku-puzzle*
-     :set! (copy-sequence
-            (*sudoku-puzzle-make* :new! level dimension)))))
+     :set! (copy-sequence (*sudoku-puzzle-make* :new! level dimension)))))
   (sudoku-mode))
 
 (defun sudoku-reload ()
   "Reload \\=`*sudoku*\\='."
   (interactive)
-  (sudoku-board-draw (sudoku-board-make
-                      (*sudoku-puzzle*
-                       :set!
-                       (copy-sequence
-                        (*sudoku-puzzle-make* :rld)))))
+  (sudoku-board-draw
+   (sudoku-board-make
+    (*sudoku-puzzle*
+     :set! (copy-sequence (*sudoku-puzzle-make* :rld)))))
   (sudoku-mode))
 
 (defun sudoku-mode-make-keymap ()
