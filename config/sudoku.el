@@ -101,20 +101,20 @@
   "The sudoku\\='s dimensions.")
 
 
-(defmacro sudoku--puzzle-1d (d i j)
+(defmacro sudoku-puzzle--1d (d i j)
   "Transform sudoku\\='s puzzle from 2d(I,J) to 1d."
   `(+ (* (% ,i ,d) ,d) (% ,j ,d)))
 
-(defmacro sudoku--puzzle-2d (d l i)
+(defmacro sudoku-puzzle--2d (d l i)
   "Transform sudoku\\='s puzzle from 1d(I) to 2d."
   `(cons (/ (% ,i ,l) ,d) (% ,i ,d)))
 
 
-(defmacro sudoku--puzzle-row (d i)
+(defmacro sudoku-puzzle--row (d i)
   "Locate row via 1d(I)."
   `(% (/ ,i ,d) ,d))
 
-(defmacro sudoku--puzzle-col (d i)
+(defmacro sudoku-puzzle--col (d i)
   "Locate col via 1d(I)."
   `(% ,i ,d))
 
@@ -128,7 +128,7 @@
   "Return MATRIX\\='s row vector on INDEX"
   (let* ((d (*sudoku-puzzle-d* :d))
          (m matrix)
-         (r (* (sudoku--puzzle-row d index) d))
+         (r (* (sudoku-puzzle--row d index) d))
          (v (make-vector d 0)))
     (dolist* (x (range 0 (1- d) 1) v)
       (aset v x (aref m (+ r x))))))
@@ -137,7 +137,7 @@
   "Return MATRIX's col vector on INDEX."
   (let* ((d (*sudoku-puzzle-d* :d))
          (m matrix)
-         (c (% (sudoku--puzzle-col d index) d))
+         (c (% (sudoku-puzzle--col d index) d))
          (v (make-vector d 0)))
     (dolist* (x (range 0 (1- d) 1) v)
       (aset v x (aref m (+ c (* x d)))))))
@@ -250,13 +250,13 @@
 
       (while (< i d)
         (unless (sudoku-puzzle-vec-unique
-                 (*sudoku-puzzle* :row (sudoku--puzzle-1d d i 0)))
+                 (*sudoku-puzzle* :row (sudoku-puzzle--1d d i 0)))
           (throw 'br :unique))
         (setq i (1+ i)))
 
       (while (< j d)
         (unless (sudoku-puzzle-vec-unique
-                 (*sudoku-puzzle* :col (sudoku--puzzle-1d d 0 j)))
+                 (*sudoku-puzzle* :col (sudoku-puzzle--1d d 0 j)))
           (throw 'br :unique))
         (setq j (1+ j)))
 
@@ -264,7 +264,7 @@
       (while (< i d)
         (while (< j d)
           (unless (sudoku-puzzle-vec-unique
-                   (*sudoku-puzzle* :sqr (sudoku--puzzle-1d d i j)))
+                   (*sudoku-puzzle* :sqr (sudoku-puzzle--1d d i j)))
             (throw 'br :unique))
           (setq j (+ j sqr)))
         (setq j 0 i (+ i sqr)))
@@ -272,14 +272,14 @@
       (setq i 0)
       (while (< i d)
         (unless (sudoku-puzzle-vec-complete
-                 (*sudoku-puzzle* :row (sudoku--puzzle-1d d i 0)))
+                 (*sudoku-puzzle* :row (sudoku-puzzle--1d d i 0)))
           (throw 'br :complete))
         (setq i (1+ i)))
 
       (setq j 0)
       (while (< j d)
         (unless (sudoku-puzzle-vec-complete
-                 (*sudoku-puzzle* :col (sudoku--puzzle-1d d 0 j)))
+                 (*sudoku-puzzle* :col (sudoku-puzzle--1d d 0 j)))
           (throw 'br :complete))
         (setq j (1+ j)))
 
@@ -287,7 +287,7 @@
       (while (< i d)
         (while (< j d)
           (unless (sudoku-puzzle-vec-complete
-                   (*sudoku-puzzle* :sqr (sudoku--puzzle-1d d i j)))
+                   (*sudoku-puzzle* :sqr (sudoku-puzzle--1d d i j)))
             (throw 'br :complete))
           (setq j (+ j sqr)))
         (setq j 0 i (+ i sqr))))
@@ -708,7 +708,7 @@
      :set! (copy-sequence (*sudoku-puzzle-make* :rld)))))
   (sudoku-mode))
 
-(defun sudoku-mode-make-keymap ()
+(defvar sudoku-mode-map
   (let ((m (make-sparse-keymap)))
 
     (define-key m "q" #'sudoku-quit)
@@ -764,20 +764,17 @@
 
     ;; (define-key m "\C-h" #'sudoku-board-disabled-key)
 
-    m))
-
-(defvar *sudoku-mode-map* nil
+    m)
   "The keymap of \\=`sudoku-mode\\='.")
 
 (defun sudoku-mode ()
   "Switch to sudoku\\='s mode'.\n
 The following commands are available:
-\\{*sudoku-mode-map*}"
+\\{sudoku-mode-map}"
   (interactive)
   (with-current-buffer (*sudoku*)
     (kill-all-local-variables)
-    (use-local-map
-     (setq *sudoku-mode-map* (sudoku-mode-make-keymap)))
+    (use-local-map sudoku-mode-map)
     (setq major-mode 'sudoku-mode
           mode-name  "Sudoku")
     (setq buffer-read-only t)
