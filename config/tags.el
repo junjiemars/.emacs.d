@@ -60,7 +60,13 @@
                         (string-match "etags (GNU Emacs [.0-9]+)"
                                       (cdr ver))
                         ``( :bin etags
-                            :cmd ,(concat ,bin " %s -o %s -a %s")))))))))
+                            :cmd ,(concat ,bin " %s -o %s -a %s"))))))
+              (eval-when-compile
+                (let ((etags (concat (path- (car command-line-args))
+                                     "bin/etags")))
+                  (and (file-exists-p etags)
+                       ``( :bin etags
+                           :cmd ,(concat ,etags " %s -o %s -a %s"))))))))
     (lambda (&optional k v)
       (cond (k (plist-get b k))
             (v (setq b v))
