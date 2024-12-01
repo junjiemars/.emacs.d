@@ -101,44 +101,34 @@
   "The sudoku\\='s dimensions.")
 
 
-(defun sudoku-puzzle-1d (i j)
+(defmacro sudoku--puzzle-1d (d i j)
   "Transform sudoku\\='s puzzle from 2d(I,J) to 1d."
-  (let ((d (*sudoku-puzzle-d* :d)))
-    (+ (* (% i d) d)
-       (% j d))))
+  `(+ (* (% ,i ,d) ,d) (% ,j ,d)))
 
-(defun sudoku-puzzle-2d (i)
+(defmacro sudoku--puzzle-2d (d l i)
   "Transform sudoku\\='s puzzle from 1d(I) to 2d."
-  (let* ((d (*sudoku-puzzle-d* :d))
-         (l (*sudoku-puzzle-d* :len))
-         (d2 (/ (% i l) d)))
-    (cons d2 (% i d))))
+  `(cons (/ (% ,i ,l) ,d) (% ,i ,d)))
 
 
-(defun sudoku-puzzle-row (i)
+(defmacro sudoku--puzzle-row (d i)
   "Locate row via 1d(I)."
-  (let ((d (*sudoku-puzzle-d* :d)))
-    (% (/ i d) d)))
+  `(% (/ ,i ,d) ,d))
 
-(defun sudoku-puzzle-col (i)
+(defmacro sudoku--puzzle-col (d i)
   "Locate col via 1d(I)."
-  (let ((d (*sudoku-puzzle-d* :d)))
-    (% i d)))
+  `(% ,i ,d))
 
-(defun sudoku-puzzle-sqr (i)
+(defmacro sudoku--puzzle-sqr (d l s i)
   "Locate sqr via 1d(I)."
-  (let* ((d (*sudoku-puzzle-d* :d))
-         (l (*sudoku-puzzle-d* :len))
-         (s (*sudoku-puzzle-d* :sqr)))
-    (cons (/ (/ (% i l) d) s)
-          (/ (% (% i l) d) s))))
+  `(cons (/ (/ (% ,i ,l) ,d) ,s)
+         (/ (% (% ,i ,l) ,d) ,s)))
 
 
 (defun sudoku-puzzle-vec-row (matrix index)
   "Return MATRIX\\='s row vector on INDEX"
   (let* ((d (*sudoku-puzzle-d* :d))
          (m matrix)
-         (r (* (sudoku-puzzle-row index) d))
+         (r (* (sudoku--puzzle-row d index) d))
          (v (make-vector d 0)))
     (dolist* (x (range 0 (1- d) 1) v)
       (aset v x (aref m (+ r x))))))
@@ -147,7 +137,7 @@
   "Return MATRIX's col vector on INDEX."
   (let* ((d (*sudoku-puzzle-d* :d))
          (m matrix)
-         (c (% (sudoku-puzzle-col index) d))
+         (c (% (sudoku--puzzle-col d index) d))
          (v (make-vector d 0)))
     (dolist* (x (range 0 (1- d) 1) v)
       (aset v x (aref m (+ c (* x d)))))))
@@ -156,9 +146,10 @@
 (defun sudoku-puzzle-vec-sqr (matrix index)
   "Return MATRIX\\='s sqr vector on INDEX."
   (let* ((d (*sudoku-puzzle-d* :d))
+         (l (*sudoku-puzzle-d* :len))
          (s (*sudoku-puzzle-d* :sqr))
          (m matrix)
-         (s1 (sudoku-puzzle-sqr index))
+         (s1 (sudoku--puzzle-sqr d l s index))
          (r (* (car s1) s d))
          (c (* (cdr s1) s))
          (v (make-vector d 0)))
@@ -259,13 +250,13 @@
 
       (while (< i d)
         (unless (sudoku-puzzle-vec-unique
-                 (*sudoku-puzzle* :row (sudoku-puzzle-1d i 0)))
+                 (*sudoku-puzzle* :row (sudoku--puzzle-1d d i 0)))
           (throw 'br :unique))
         (setq i (1+ i)))
 
       (while (< j d)
         (unless (sudoku-puzzle-vec-unique
-                 (*sudoku-puzzle* :col (sudoku-puzzle-1d 0 j)))
+                 (*sudoku-puzzle* :col (sudoku--puzzle-1d d 0 j)))
           (throw 'br :unique))
         (setq j (1+ j)))
 
@@ -273,7 +264,7 @@
       (while (< i d)
         (while (< j d)
           (unless (sudoku-puzzle-vec-unique
-                   (*sudoku-puzzle* :sqr (sudoku-puzzle-1d i j)))
+                   (*sudoku-puzzle* :sqr (sudoku--puzzle-1d d i j)))
             (throw 'br :unique))
           (setq j (+ j sqr)))
         (setq j 0 i (+ i sqr)))
@@ -281,14 +272,14 @@
       (setq i 0)
       (while (< i d)
         (unless (sudoku-puzzle-vec-complete
-                 (*sudoku-puzzle* :row (sudoku-puzzle-1d i 0)))
+                 (*sudoku-puzzle* :row (sudoku--puzzle-1d d i 0)))
           (throw 'br :complete))
         (setq i (1+ i)))
 
       (setq j 0)
       (while (< j d)
         (unless (sudoku-puzzle-vec-complete
-                 (*sudoku-puzzle* :col (sudoku-puzzle-1d 0 j)))
+                 (*sudoku-puzzle* :col (sudoku--puzzle-1d d 0 j)))
           (throw 'br :complete))
         (setq j (1+ j)))
 
@@ -296,7 +287,7 @@
       (while (< i d)
         (while (< j d)
           (unless (sudoku-puzzle-vec-complete
-                   (*sudoku-puzzle* :sqr (sudoku-puzzle-1d i j)))
+                   (*sudoku-puzzle* :sqr (sudoku--puzzle-1d d i j)))
             (throw 'br :complete))
           (setq j (+ j sqr)))
         (setq j 0 i (+ i sqr))))
@@ -607,7 +598,7 @@
   (sudoku-board-input 0 (cons 'face nil)))
 
 
-(defun sudoku-board-input-n (n)
+(defun sudoku--board-input-n (n)
   "Input N at point."
   (let ((d (*sudoku-puzzle-d* :d)))
     (if (>= d n)
@@ -618,47 +609,47 @@
 (defun sudoku-board-input-1 ()
   "Input 1 at point."
   (interactive)
-  (sudoku-board-input-n 1))
+  (sudoku--board-input-n 1))
 
 (defun sudoku-board-input-2 ()
   "Input 2 at point."
   (interactive)
-  (sudoku-board-input-n 2))
+  (sudoku--board-input-n 2))
 
 (defun sudoku-board-input-3 ()
   "Input 3 at point."
   (interactive)
-  (sudoku-board-input-n 3))
+  (sudoku--board-input-n 3))
 
 (defun sudoku-board-input-4 ()
   "Input 4 at point."
   (interactive)
-  (sudoku-board-input-n 4))
+  (sudoku--board-input-n 4))
 
 (defun sudoku-board-input-5 ()
   "Input 5 at point."
   (interactive)
-  (sudoku-board-input-n 5))
+  (sudoku--board-input-n 5))
 
 (defun sudoku-board-input-6 ()
   "Input 6 at point."
   (interactive)
-  (sudoku-board-input-n 6))
+  (sudoku--board-input-n 6))
 
 (defun sudoku-board-input-7 ()
   "Input 7 at point."
   (interactive)
-  (sudoku-board-input-n 7))
+  (sudoku--board-input-n 7))
 
 (defun sudoku-board-input-8 ()
   "Input 8 at point."
   (interactive)
-  (sudoku-board-input-n 8))
+  (sudoku--board-input-n 8))
 
 (defun sudoku-board-input-9 ()
   "Input 9 at point."
   (interactive)
-  (sudoku-board-input-n 9))
+  (sudoku--board-input-n 9))
 
 
 (defun sudoku-board-disabled-key ()
