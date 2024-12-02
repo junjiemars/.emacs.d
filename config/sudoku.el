@@ -5,20 +5,18 @@
 ;;;;
 ;; sudoku.el
 ;;;;
-;;
 ;; features:
-;; 1. save/load puzzle to/from file.
-;; 2. save/load board to/from file.
-;; 3. input validation.
-;; 4. new/reload.
-;; 5* zen mode.
-;; 6* step by step solver.
-;; 7* auto generate puzzle.
-;;
+;;; 1. save/load puzzle to/from file.
+;;; 2. save/load board to/from file.
+;;; 3. input validation.
+;;; 4. new/reload.
+;;; 5* zen mode.
+;;; 6* step by step solver.
+;;; 7* auto generate puzzle.
 ;;;;
 ;; references:
-;; https://pi.math.cornell.edu/~mec/Summer2009/Mahmood/Count.html
-;; http://www.gatsby.ucl.ac.uk/~turner/TeaTalks/Sudoku/Bertrand_and_Javis.pdf
+;;; https://pi.math.cornell.edu/~mec/Summer2009/Mahmood/Count.html
+;;; http://www.gatsby.ucl.ac.uk/~turner/TeaTalks/Sudoku/Bertrand_and_Javis.pdf
 ;;;;
 
 

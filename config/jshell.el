@@ -5,14 +5,15 @@
 ;;;;
 ;; jshell.el
 ;;;;
-;;;
-;;;
-;;; fetures:
+;; fetures:
 ;;; 1. start parameterized jshell process.
 ;;; 2. switch/back to jshell REPL.
 ;;; 3. send sexp/definition/region to jshell REPL.
-;;; 4. TODO: completion in REPL and java source.
-;;;
+;;; 4. completion in REPL and java source (buggy).
+;;;;
+;; references:
+;;; https://docs.oracle.com/en/java/javase/21/jshell/introduction-jshell.html
+;;;;
 ;;; bugs:
 ;;;
 ;;;;;
@@ -53,16 +54,6 @@
             (t b))))
   "The current *jshell* process buffer.")
 
-
-(defconst +jshell-emacs-module+
-  "
-void jshell_emacs_apropos(String what, int max) {
-  System.out.println(what);
-}
-"
-  "The module of jshell-emacs.")
-
-
 (defalias '*jshell-out*
   (lexical-let% ((b "*out|jshell*"))
     (lambda (&optional n)
@@ -70,123 +61,49 @@ void jshell_emacs_apropos(String what, int max) {
         (get-buffer-create b))))
   "The output buffer of \\=`jshell-completion\\='.")
 
-
 (defalias '*jshell-start-file*
   (lexical-let% ((b (v-home% ".exec/jshell.jsh")))
     (lambda ()
       (cond ((file-exists-p b) b)
-            (t (save-str-to-file +jshell-emacs-module+ b)))))
+            (t (copy-file (emacs-home% "config/jshell-apropos.jsh") b)))))
   "The \\=`*jshell*\\=' process start file.")
 
 (defalias 'jshell-switch-to-last-buffer
   (lexical-let% ((b))
     (lambda (&optional n)
-      (interactive)
-      (if n (setq b n)
-        (when b (switch-to-buffer-other-window b)))))
+      (interactive "P")
+      (cond (n (setq b n))
+            (b (switch-to-buffer-other-window b)))))
   "Switch to the last \\=`jshell-mode\\=' buffer from \\=`*jshell*\\=' buffer.")
 
 (defvar *jshell-option-history* nil
   "Jshell option history list.")
 
+;; end of jshell environment
+
+;;;
+;; proc
+;;;
+
+(defun jshell-input-filter (in)
+  ;; raw
+  in)
+
+(defun jshell-get-old-input ()
+  "Snarf the sexp ending at point."
+  (buffer-substring (point-min) (point-max)))
+
+(defun jshell-preoutput-filter (out)
+  "Output start a newline when empty out or tracing."
+  ;; raw
+  out)
+
 (defun jshell-check-proc (&optional spawn)
   "Return the \\`*jshell*\\=' process or start one if necessary."
-  (when (and spawn
-             (not (eq 'run (car (comint-check-proc (*jshell*))))))
+  (when (and spawn (not (eq 'run (car (comint-check-proc (*jshell*))))))
     (save-window-excursion (call-interactively #'run-jshell)))
   (or (get-buffer-process (*jshell*))
       (error "%s" "No *jshell* process")))
-
-;; end of jshell environment
-
-;;; completion
-
-(defun jshell-last-sexp ()
-  "Return the position of left side of the last expression."
-  (save-excursion
-    (catch 'br
-      (let ((ori (point)))
-        (while (not (or (bobp)
-                        (char= (char-before) ?\;)
-                        (char= (char-before) ?\n)))
-          (cond
-           ;; right parenthesis
-           ((char= (char-before) ?\))
-            (backward-list))
-           ;; word
-           ((char= (char-syntax (char-before)) ?w)
-            (let ((cur (point))
-                  (idx 1))
-              (when (<= (- cur idx) (point-min))
-                (throw 'br (point-min)))
-              (while (and (char-before (- cur idx))
-                          (char= (char-syntax (char-before (- cur idx))) ?w))
-                (setq idx (1+ idx)))
-              (when (and (> idx 2)
-                         (string-match
-                          "var"
-                          (buffer-substring-no-properties
-                           (- cur idx) cur)))
-                (throw 'br cur))
-              (backward-word)))
-           ;; whitespace
-           ((char= (char-syntax (char-before)) ?\ )
-            (while (char= (char-syntax (char-before)) ?\ )
-              (backward-char)))
-           ;; comma
-           ((char= (char-before) ?,)
-            (throw 'br (point)))
-           ;; assignment
-           ((char= (char-before) ?=)
-            (let ((cur (point))
-                  (idx 1))
-              (when (<= (- cur idx) (point-min))
-                (throw 'br (point-min)))
-              (while (or (char= (char-before (- cur idx)) ?=)
-                         (char= (char-before (- cur idx)) ?!))
-                (setq idx (1+ idx)))
-              (if (< idx 2)
-                  (throw 'br cur)
-                (backward-char idx))))
-           ;; > >> >>>
-           ((char= (char-before) ?>)
-            (when (string-match
-                   "^[> \t]+"
-                   (buffer-substring-no-properties
-                    (line-beginning-position)
-                    (point)))
-              (throw 'br (point)))
-            (backward-char))
-           ;; dot
-           ((char= (char-before) ?.)
-            (let ((cur (point))
-                  (idx 1))
-              (when (<= (- cur idx) (point-min))
-                (throw 'br (point-min)))
-              (while (char= (char-before (- cur idx)) ?.)
-                (setq idx (1+ idx)))
-              (when (>= idx 3)
-                (throw 'br cur))
-              (backward-char)))
-           ;; punctuation
-           ((char= (char-syntax (char-before)) ?.)
-            (let ((cur (point)))
-              (when (or (= ori cur)
-                        (and (< cur ori)
-                             (let ((idx 0))
-                               (while (and (< (+ cur idx) ori)
-                                           (char= (char-syntax
-                                                   (char-after (+ cur idx)))
-                                                  ?\ ))
-                                 (setq idx (1+ idx)))
-                               (= (+ cur idx) ori))))
-                (throw 'br ori))
-              (backward-char)))
-           ;; default
-           (t (throw 'br (point)))))))
-    (while (char= (char-syntax (char-after)) ?\ )
-      (forward-char))
-    (point)))
 
 (defun jshell-last-symbol ()
   "Return the position of left side of the last symbol."
@@ -203,50 +120,52 @@ void jshell_emacs_apropos(String what, int max) {
               (t (throw 'br (point))))))
     (point)))
 
+(defun jshell-completion-read (in)
+  (catch 'br
+    (with-current-buffer (*jshell-out*)
+      (goto-char (point-min))
+      (let ((ss nil) (in1 (concat in "[._a-zA-Z0-9]+")))
+        (while (and (null (eobp)) (search-forward-regexp in1 nil t))
+          (let ((sym (buffer-substring-no-properties
+                      (match-beginning 0) (match-end 0))))
+            (setq ss (append! sym ss t))))
+        ss))))
 
 (defun jshell-completion ()
   (interactive)
   (jshell-check-proc)
-  (let ((bounds (cons (save-excursion (jshell-last-symbol))
-                      (point))))
-    (if (= (car bounds) (cdr bounds))
-        (list (car bounds) (cdr bounds) :exclusive 'no)
-      (let ((cmd (format "jshell_emacs_apropos(\"%s\", 64)"
-                         (buffer-substring-no-properties
-                          (car bounds) (cdr bounds))))
-            (proc (get-buffer-process (*jshell*))))
+  (let ((token (bounds-of-thing-at-point 'symbol))
+        (sexp (cons (jshell-last-symbol) (point))))
+    (when (and token sexp)
+      (let* ((tkn (buffer-substring-no-properties (car token) (cdr token)))
+             (sxp (buffer-substring-no-properties (car sexp) (cdr sexp)))
+             (cmd (format "%s\t" sxp))
+             (proc (get-buffer-process (*jshell*))))
         (with-current-buffer (*jshell-out*)
           (erase-buffer)
-          (comint-redirect-send-command-to-process cmd
-                                                   (*jshell-out*)
-                                                   proc nil t)
+          (comint-redirect-send-command-to-process
+           cmd (*jshell-out*) proc nil t)
           (set-buffer (*jshell*))
           (while (or quit-flag (null comint-redirect-completed))
-            (accept-process-output proc 2))
+            (accept-process-output proc 3))
           (comint-redirect-cleanup)
           (setcar mode-line-process ""))
-        (list (car bounds) (cdr bounds)
-              (let ((s1 (read-from-string
-                         (with-current-buffer (*jshell-out*)
-                           (string-trim><
-                            (buffer-substring-no-properties
-                             (point-min) (point-max))
-                            "^undefined.*\\|[ \t\n]*\\'"
-                            "[ \t\n]*jshell_emacs_apropos.*")))))
-                (when (and (consp s1) (consp (car s1)))
-                  (car s1)))
+        (list (car token) (cdr token)
+              (let ((s1 (jshell-completion-read tkn)))
+                (and (consp s1) s1))
               :exclusive 'no)))))
 
-;; end of completion
+;; end of proc
 
-;;; repl
+;;;
+;; REPL
+;;;
 
 (defvar jshell-repl-mode-map
   (let ((m (make-sparse-keymap "jshell")))
     (define-key m "\C-c\C-b" #'jshell-switch-to-last-buffer)
     m)
   "The keymap for \\=`*jshell*\\=' REPL.")
-
 
 (define-derived-mode jshell-repl-mode comint-mode "REPL"
   "Major mode for interacting with a jshell process.\n
@@ -256,12 +175,15 @@ A jshell process can be fired up with M-x \\=`run-jshell\\='.\n
 Customization:
 Entry to this mode runs the hooks on \\=`comint-mode-hook\\=' and
   \\=`jshell-repl-mode-hook\\=' (in that order)."
-  :group 'jshell                          ; keyword args
-  (setq comint-prompt-regexp "^\\(?:jshell> *\\)")
-  (setq comint-prompt-read-only t)
-  (use-local-map jshell-repl-mode-map)
-  (setq mode-line-process '("" ":%s")))
-
+  :group 'jshell                        ; keyword args
+  (setq comint-prompt-regexp "^\\(?:jshell> *\\)"
+        comint-prompt-read-only t
+        comint-input-filter #'jshell-input-filter
+        comint-get-old-input #'jshell-get-old-input
+        mode-line-process '("" ":%s"))
+  (add-hook 'comint-preoutput-filter-functions
+            #'jshell-preoutput-filter nil 'local)
+  (use-local-map jshell-repl-mode-map))
 
 (defun run-jshell (&optional command-line)
   "Run a jshell process, input and output via buffer *jshell*.\n
@@ -291,7 +213,6 @@ Run the hook \\=`jshell-repl-mode-hook\\=' after the \\=`comint-mode-hook\\='."
                 #'jshell-completion 0 'local)))
   (switch-to-buffer-other-window (*jshell*)))
 
-
 (defun jshell-switch-to-repl (&optional no-select)
   "Switch to the `*jshell*' buffer.\n
 If NO-SELECT is nil then select the buffer and put the cursor at
@@ -309,6 +230,11 @@ end of buffer, otherwise just popup the buffer."
     (push-mark)
     (goto-char (point-max))))
 
+;; end of REPL
+
+;;;
+;; load
+;;;
 
 (defun jshell-load-file (file)
   "Load a java FILE into \\=`*jshell*\\='."
@@ -325,25 +251,20 @@ end of buffer, otherwise just popup the buffer."
   (jshell-switch-to-last-buffer (current-buffer))
   (jshell-switch-to-repl))
 
+;; end of load
+
+;;;
+;; `jshell-mode'
+;;;
 
 (defun jshell-send-region (start end)
   "Send the current region to \\=`*jshell*\\='."
   (interactive "r")
-  (process-send-region (jshell-check-proc) start end)
+  (process-send-string
+   (jshell-check-proc)
+   (replace-regexp-in-string "^\t+" " " (buffer-substring start end)))
   (comint-send-string (*jshell*) "\n")
   (jshell-switch-to-repl t))
-
-(defun jshell-send-last-sexp ()
-  "Send the previous sexp to \\=`*jshell*\\='."
-  (interactive)
-  (let ((bounds (if-region-active
-                    (cons (region-beginning) (region-end))
-                  (let ((b (jshell-last-sexp)))
-                    (if (and b (< b (point)))
-                        (cons b (point))
-                      (bounds-of-thing-at-point 'sexp))))))
-    (when bounds
-      (jshell-send-region (car bounds) (cdr bounds)))))
 
 (defun jshell-send-definition ()
   "Send the current definition to \\=`*jshell*\\='."
@@ -366,17 +287,16 @@ end of buffer, otherwise just popup the buffer."
                     (cons (region-beginning) (region-end))
                   (let ((b (jshell-last-symbol))
                         (s (bounds-of-thing-at-point 'symbol)))
-                    (cond ((and b s) (cons (if (<= b (car s))
-                                               b
-                                             (car s))
-                                           (if (>= (cdr s) (point))
-                                               (cdr s)
-                                             b)))
-                          (b (cons (if (<= b (point))
-                                       b
-                                     (point))
+                    (cond ((and b s) (cons (cond ((<= b (car s)) b)
+                                                 (t (car s)))
+                                           (cond ((>= (cdr s) (point))
+                                                  (cdr s))
+                                                 (t b))))
+                          (b (cons (cond ((<= b (point)) b)
+                                         (t (point)))
                                    (point)))
-                          (s (cons (if (<= (car s) (point)) (car s) (point))
+                          (s (cons (cond ((<= (car s) (point)) (car s))
+                                         (t (point)))
                                    (point))))))))
     (when bounds
       (let ((lhs (car bounds))
@@ -387,14 +307,9 @@ end of buffer, otherwise just popup the buffer."
                 rhs (1+ (cdr bounds))))
         (jshell-send-region lhs rhs)))))
 
-;; end of repl
-
-;;; jshell-mode
-
 (defvar jshell-mode-map
   (let ((m (make-sparse-keymap)))
     (define-key m "\M-\C-x" #'jshell-send-definition)
-    (define-key m "\C-x\C-e" #'jshell-send-last-sexp)
     (define-key m "\C-c\C-j" #'jshell-send-line)
     (define-key m "\C-c\C-l" #'jshell-load-file)
     ;; (define-key m "\C-c\C-k" #'jshell-compile-file)
@@ -402,7 +317,6 @@ end of buffer, otherwise just popup the buffer."
     (define-key m "\C-c\C-z" #'jshell-switch-to-repl)
     (define-key m "\C-cI" #'jshell-inspect-object)
     m))
-
 
 (make-variable-buffer-local
  (defvar jshell-mode-string nil

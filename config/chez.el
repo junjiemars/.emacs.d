@@ -5,7 +5,7 @@
 ;;;;
 ;; chez.el
 ;;;;
-;;; fetures:
+;; fetures:
 ;;; 1. start parameterized chez process.
 ;;; 2. switch/back to chez REPL.
 ;;; 3. send sexp/definition/region to chez REPL.
@@ -14,7 +14,7 @@
 ;;; 6. completion in REPL and scheme source.
 ;;; 7. indentation for chez scheme.
 ;;;;
-;;; references:
+;; references:
 ;;; https://scheme.com
 ;;; https://schemers.org
 ;;; https://cisco.github.io/ChezScheme/
@@ -22,7 +22,7 @@
 ;;; https://www.emacswiki.org/emacs/r5rs.el
 ;;; https://groups.csail.mit.edu/mac/ftpdir/
 ;;;;
-;;; bugs:
+;; bugs:
 ;;;
 ;;;;;
 
@@ -60,7 +60,6 @@
             (t b))))
   "Program invoked by the \\=`run-chez\\=' command.")
 
-
 (defcustom% chez-input-filter-regexp "\\`\\s *\\S ?\\S ?\\s *\\'"
   "Input matching this regexp are not saved on the history list.
 Defaults to a regexp ignoring all inputs of 0, 1, or 2 letters."
@@ -89,14 +88,12 @@ This is run before the process is cranked up."
             (t (get-buffer-create b)))))
   "The output buffer of \\=`chez-completion'\\=.")
 
-
 (defalias '*chez-start-file*
   (lexical-let% ((b (v-home% ".exec/chez.ss")))
     (lambda ()
       (cond ((file-exists-p b) b)
             (t (copy-file (emacs-home% "config/chez-apropos.ss") b)))))
   "The \\=`*chez*'\\= process start file.")
-
 
 (defalias 'chez-switch-to-last-buffer
   (lexical-let% ((b nil))
@@ -106,13 +103,11 @@ This is run before the process is cranked up."
             (b (switch-to-buffer-other-window b)))))
   "Switch to the last \\=`chez-mode'\\= buffer from \\=`*chez*'\\= buffer.")
 
-
 (defvar *chez-option-history* nil
   "Chez option history list.")
 
 (defvar *chez-trace-history* nil
   "Chez tracing history list.")
-
 
 ;; end of chez environment
 
@@ -147,6 +142,7 @@ This is run before the process is cranked up."
               (string= "" (chez-get-old-input)) "\n")
          (concat "\n" out))
         (t out)))
+
 
 (defun chez-check-proc (&optional spawn)
   "Return the `*chez*' process or start one if necessary."
@@ -267,7 +263,6 @@ Enter this mode runs the hooks on \\=`comint-mode-hook'\\= and
   (chez-syntax-table)
   (setq mode-line-process '("" ":%s")))
 
-
 (defun run-chez (&optional command-line)
   "Run a chez process, input and output via buffer *chez*.\n
 If there is a process already running in \\=`*chez*'\\=, switch
@@ -295,7 +290,6 @@ Run the hook \\=`chez-repl-mode-hook'\\= after the
                 #'chez-completion 0 'local)))
   (switch-to-buffer-other-window (*chez*)))
 
-
 (defun chez-switch-to-repl (&optional no-select)
   "Switch to the \\=`*chez*'\\= buffer.\n
 If NO-SELECT is nil then select the buffer and put the cursor at
@@ -315,9 +309,8 @@ end of buffer, otherwise just popup the buffer."
 
 ;; end of REPL
 
-
 ;;;
-;; load/compile
+;; compile / load
 ;;;
 
 (defun chez-compile-file (file)
@@ -348,7 +341,7 @@ end of buffer, otherwise just popup the buffer."
   (chez-switch-to-last-buffer (current-buffer))
   (chez-switch-to-repl))
 
-;; end of load/compile
+;; end of compile / load
 
 ;;;
 ;; `chez-mode'
