@@ -115,9 +115,9 @@ This is run before the process is cranked up."
 ;; proc
 ;;;
 
-(defun chez-input-filter (str)
+(defun chez-input-filter (in)
   "Don't save anything matching \\=`chez-input-filter-regexp'\\=."
-  (not (string-match chez-input-filter-regexp str)))
+  (not (string-match chez-input-filter-regexp in)))
 
 (defun chez-get-old-input ()
   "Snarf the sexp ending at point."
@@ -252,10 +252,10 @@ Customization:
 Enter this mode runs the hooks on \\=`comint-mode-hook'\\= and
   \\=`chez-repl-mode-hook'\\= (in that order)."
   :group 'chez                          ; keyword args
-  (setq comint-prompt-regexp "^[^>\n-\"]*>+ *")
-  (setq comint-prompt-read-only t)
-  (setq comint-input-filter #'chez-input-filter)
-  (setq comint-get-old-input #'chez-get-old-input)
+  (setq comint-prompt-regexp "^[^>\n-\"]*>+ *"
+        comint-prompt-read-only t
+        comint-input-filter #'chez-input-filter
+        comint-get-old-input #'chez-get-old-input)
   (add-hook 'comint-preoutput-filter-functions
             #'chez-preoutput-filter nil 'local)
   (scheme-mode-variables)
