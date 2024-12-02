@@ -161,13 +161,13 @@
       (compile-unit% (emacs-home* "config/on-project-autoload.el")))
     ;; on `pythons'
     (compile-unit% (emacs-home* "config/on-python-autoload.el"))
-    ;; `scheme': `gambit-mode'
-    (prog1
-        (compile-unit% (emacs-home* "config/gambit.el") t)
-      (autoload 'gambit-mode (v-home%> "config/gambit")
-        "Toggle gambit mode." t)
-      (autoload! 'run-gambit (v-home%> "config/gambit")
-                 "Toggle gambit process." t))
+    ;; `scheme': `gambit-mode' abandoned
+    ;; (prog1
+    ;;     (compile-unit% (emacs-home* "config/gambit.el") t)
+    ;;   (autoload 'gambit-mode (v-home%> "config/gambit")
+    ;;     "Toggle gambit mode." t)
+    ;;   (autoload! 'run-gambit (v-home%> "config/gambit")
+    ;;              "Toggle gambit process." t))
     ;; `scheme': `chez-mode'
     (prog1
         (compile-unit% (emacs-home* "config/chez.el") t)
