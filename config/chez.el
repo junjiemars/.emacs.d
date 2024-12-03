@@ -179,8 +179,8 @@ This is run before the process is cranked up."
         (with-current-buffer (*chez-out*)
           (erase-buffer)
           (comint-redirect-send-command-to-process
-           cmd (*chez-out*) proc nil t)
-          (set-buffer (*chez*))
+           cmd (*chez-out*) proc nil t))
+        (with-current-buffer (*chez*)
           (while (or quit-flag (null comint-redirect-completed))
             (accept-process-output proc 2))
           (comint-redirect-cleanup)

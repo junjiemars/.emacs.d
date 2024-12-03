@@ -9,7 +9,7 @@
 ;;; 1. start parameterized jshell process.
 ;;; 2. switch/back to jshell REPL.
 ;;; 3. send sexp/definition/region to jshell REPL.
-;;; 4. completion in REPL and java source (buggy).
+;;; 4. completion in REPL and java source.
 ;;;;
 ;; references:
 ;;; https://docs.oracle.com/en/java/javase/21/jshell/introduction-jshell.html
@@ -120,16 +120,15 @@
               (t (throw 'br (point))))))
     (point)))
 
-(defun jshell-completion-read (in)
-  (catch 'br
-    (with-current-buffer (*jshell-out*)
-      (goto-char (point-min))
-      (let ((ss nil) (in1 (concat in "[._a-zA-Z0-9]+")))
-        (while (and (null (eobp)) (search-forward-regexp in1 nil t))
-          (let ((sym (buffer-substring-no-properties
-                      (match-beginning 0) (match-end 0))))
-            (setq ss (append! sym ss t))))
-        ss))))
+(defun jshell-completion-read (in buffer)
+  (with-current-buffer buffer
+    (goto-char (point-min))
+    (let ((ss nil) (in1 (concat in "[._a-zA-Z0-9]+")))
+      (while (search-forward-regexp in1 nil t)
+        (let ((sym (buffer-substring-no-properties
+                    (match-beginning 0) (match-end 0))))
+          (setq ss (append! sym ss t))))
+      ss)))
 
 (defun jshell-completion ()
   (interactive)
@@ -139,19 +138,21 @@
     (when (and token sexp)
       (let* ((tkn (buffer-substring-no-properties (car token) (cdr token)))
              (sxp (buffer-substring-no-properties (car sexp) (cdr sexp)))
-             (cmd (format "%s\t" sxp))
-             (proc (get-buffer-process (*jshell*))))
-        (with-current-buffer (*jshell-out*)
+             (proc (get-buffer-process (*jshell*)))
+             (out (*jshell-out*))
+             ;; tricky, the last forward slash make error no wait.
+             (cmd (format "%s\t\\" sxp)))
+        (with-current-buffer out
           (erase-buffer)
           (comint-redirect-send-command-to-process
            cmd (*jshell-out*) proc nil t)
-          (set-buffer (*jshell*))
-          (while (or quit-flag (null comint-redirect-completed))
-            (accept-process-output proc 3))
-          (comint-redirect-cleanup)
-          (setcar mode-line-process ""))
+          (with-current-buffer (*jshell*)
+            (while (or quit-flag (null comint-redirect-completed))
+              (accept-process-output proc 2))
+            (comint-redirect-cleanup)
+            (setcar mode-line-process "")))
         (list (car token) (cdr token)
-              (let ((s1 (jshell-completion-read tkn)))
+              (let ((s1 (jshell-completion-read tkn out)))
                 (and (consp s1) s1))
               :exclusive 'no)))))
 

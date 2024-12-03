@@ -1,6 +1,7 @@
 // jshell-emacs: from `(emacs-home% \"config/jshell.el\")'
 import java.util.*;
 import java.lang.*;
+//import jdk.jshell.*;
 class JshellEmacs {
     public static void apropos(String what, int max) {
         // TODO
