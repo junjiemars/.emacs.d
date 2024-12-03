@@ -141,16 +141,16 @@
              (proc (get-buffer-process (*jshell*)))
              (out (*jshell-out*))
              ;; tricky, the last forward slash make error no wait.
-             (cmd (format "%s\t\\" sxp)))
+             (cmd (format "%s\t\t\\" sxp)))
         (with-current-buffer out
           (erase-buffer)
           (comint-redirect-send-command-to-process
-           cmd (*jshell-out*) proc nil t)
-          (with-current-buffer (*jshell*)
-            (while (or quit-flag (null comint-redirect-completed))
-              (accept-process-output proc 2))
-            (comint-redirect-cleanup)
-            (setcar mode-line-process "")))
+           cmd (*jshell-out*) proc nil t))
+        (with-current-buffer (*jshell*)
+          (while (or quit-flag (null comint-redirect-completed))
+            (accept-process-output proc 2))
+          (comint-redirect-cleanup)
+          (setcar mode-line-process ""))
         (list (car token) (cdr token)
               (let ((s1 (jshell-completion-read tkn out)))
                 (and (consp s1) s1))
