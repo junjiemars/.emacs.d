@@ -21,7 +21,6 @@
 ;;; require
 
 (require 'comint)
-;; (require 'thingatpt)
 
 ;; end of require
 
@@ -144,8 +143,7 @@
              (cmd (format "%s\t\t\\" sxp)))
         (with-current-buffer out
           (erase-buffer)
-          (comint-redirect-send-command-to-process
-           cmd (*jshell-out*) proc nil t))
+          (comint-redirect-send-command-to-process cmd out proc nil t))
         (with-current-buffer (*jshell*)
           (while (or quit-flag (null comint-redirect-completed))
             (accept-process-output proc 2))

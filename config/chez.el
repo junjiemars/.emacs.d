@@ -145,7 +145,7 @@ This is run before the process is cranked up."
 
 
 (defun chez-check-proc (&optional spawn)
-  "Return the `*chez*' process or start one if necessary."
+  "Return the \\=`*chez*\\=' process or start one if necessary."
   (when (and spawn (not (eq 'run (car (comint-check-proc (*chez*))))))
     (save-window-excursion (call-interactively #'run-chez)))
   (or (get-buffer-process (*chez*))
@@ -175,11 +175,11 @@ This is run before the process is cranked up."
       (let ((cmd (format "(chez-emacs/apropos \"%s\" 64)"
                          (buffer-substring-no-properties
                           (car bounds) (cdr bounds))))
-            (proc (get-buffer-process (*chez*))))
-        (with-current-buffer (*chez-out*)
+            (proc (get-buffer-process (*chez*)))
+            (out (*chez-out*)))
+        (with-current-buffer out
           (erase-buffer)
-          (comint-redirect-send-command-to-process
-           cmd (*chez-out*) proc nil t))
+          (comint-redirect-send-command-to-process cmd out proc nil t))
         (with-current-buffer (*chez*)
           (while (or quit-flag (null comint-redirect-completed))
             (accept-process-output proc 2))
@@ -187,7 +187,7 @@ This is run before the process is cranked up."
           (setcar mode-line-process ""))
         (list (car bounds) (cdr bounds)
               (let ((s1 (read-from-string
-                         (with-current-buffer (*chez-out*)
+                         (with-current-buffer out
                            (buffer-substring-no-properties
                             (point-min) (point-max))))))
                 (when (and (consp s1) (consp (car s1)))

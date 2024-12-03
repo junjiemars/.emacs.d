@@ -5,15 +5,16 @@
 ;;;;
 ;; node.el
 ;;;;
-;;; https://nodejs.org
-;;;
-;;; fetures:
+;; fetures:
 ;;; 1. start parameterized node process.
 ;;; 2. nvm supports.
 ;;; 3. switch/back to node REPL.
 ;;; 4. send sexp/definition/region to node REPL.
 ;;; 5. completion in REPL and javascript source.
-;;;
+;;;;
+;; references:
+;;; https://nodejs.org
+;;;;
 ;;; bugs:
 ;;;
 ;;;;;
@@ -39,20 +40,17 @@
         (shell-command* "source" nvmsh "; nvm" command)
       (cons 1 (format "%s no found" nvmsh)))))
 
-(defun node-program-check ()
-  (or (let ((out (nvm "which node")))
-        (and (zerop (car out))
-             (string-trim> (cdr out))))
-      (executable-find%
-       "node"
-       (lambda (node)
-         (let ((x (shell-command* "echo"
-                    "'1+2+3'|" node "-p")))
-           (zerop (car x)))))
-      "node"))
-
 (defalias 'node-program
-  (lexical-let% ((b (node-program-check)))
+  (lexical-let% ((b (or (let ((out (nvm "which node")))
+                          (and (zerop (car out))
+                               (string-trim> (cdr out))))
+                        (executable-find%
+                         "node"
+                         (lambda (node)
+                           (let ((x (shell-command* "echo"
+                                      "'1+2+3'|" node "-p")))
+                             (zerop (car x)))))
+                        "node")))
     (lambda (&optional n)
       (if (null n) b (setq b n))))
   "Program invoked by the `run-node' command.")
@@ -66,26 +64,6 @@
             (t b))))
   "The current *node* process buffer.")
 
-(defconst +node-emacs-module+
-  "
-function node_emacs_apropos(what, max) {
-    global.repl.repl.complete(what, (err, data) => {
-        if (err) {
-            console.log('()');
-        } else {
-            if (Array.isArray(data)) {
-                let out = [];
-                for (let ss of data[0]) {
-                    out.push('\"' + ss + '\"');
-                }
-                console.log('(%s)', out.join(' '));
-            }
-        }
-    });
-}
-"
-  "The module of node-emacs.")
-
 (defalias '*node-out*
   (lexical-let% ((b "*out|node*"))
     (lambda (&optional n)
@@ -97,7 +75,7 @@ function node_emacs_apropos(what, max) {
   (lexical-let% ((b (v-home% ".exec/node.js")))
     (lambda ()
       (cond ((file-exists-p b) b)
-            (t (save-str-to-file +node-emacs-module+ b)))))
+            (t (copy-file (emacs-home% "config/node-apropos.js") b)))))
   "the \\=`*node*\\=' process start file.")
 
 (defalias 'node-switch-to-last-buffer
@@ -113,96 +91,16 @@ function node_emacs_apropos(what, max) {
 
 ;; end node environment
 
+;;;
+;; proc
+;;;
 
 (defun node-check-proc (&optional spawn)
   "Return the `*node*' process or start one if necessary."
-  (when (and spawn
-             (not (eq 'run (car (comint-check-proc (*node*))))))
+  (when (and spawn (not (eq 'run (car (comint-check-proc (*node*))))))
     (save-window-excursion (call-interactively #'run-node)))
   (or (get-buffer-process (*node*))
       (error "%s" "No *node* process")))
-
-
-(defun node-last-sexp ()
-  "Return the position of left side of the last expression."
-  (save-excursion
-    (catch 'br
-      (let ((ori (point)))
-        (while (not (or (bobp)
-                        (char= (char-before) ?\;)
-                        (char= (char-before) ?\n)))
-          (cond
-           ;; right parenthesis
-           ((char= (char-before) ?\))
-            (backward-list))
-           ;; word
-           ((char= (char-syntax (char-before)) ?w)
-            (let ((cur (point))
-                  (idx 1))
-              (while (and (char-before (- cur idx))
-                          (char= (char-syntax (char-before (- cur idx))) ?w))
-                (setq idx (1+ idx)))
-              (when (and (> idx 2)
-                         (string-match
-                          "await\\|const\\|let\\|var"
-                          (buffer-substring-no-properties
-                           (- cur idx) cur)))
-                (throw 'br cur))
-              (backward-word)))
-           ;; whitespace
-           ((char= (char-syntax (char-before)) ?\ )
-            (while (char= (char-syntax (char-before)) ?\ )
-              (backward-char)))
-           ;; comma
-           ((char= (char-before) ?,)
-            (throw 'br (point)))
-           ;; assignment
-           ((char= (char-before) ?=)
-            (let ((cur (point))
-                  (idx 1))
-              (while (or (char= (char-before (- cur idx)) ?=)
-                         (char= (char-before (- cur idx)) ?!))
-                (setq idx (1+ idx)))
-              (if (< idx 2)
-                  (throw 'br cur)
-                (backward-char idx))))
-           ;; > >> >>> or REPL's prompt
-           ((char= (char-before) ?>)
-            (when (string-match
-                   "^[> \t]+"
-                   (buffer-substring-no-properties
-                    (line-beginning-position)
-                    (point)))
-              (throw 'br (point)))
-            (backward-char))
-           ;; dot
-           ((char= (char-before) ?.)
-            (let ((cur (point))
-                  (idx 1))
-              (while (char= (char-before (- cur idx)) ?.)
-                (setq idx (1+ idx)))
-              (when (>= idx 3)
-                (throw 'br cur))
-              (backward-char)))
-           ;; punctuation
-           ((char= (char-syntax (char-before)) ?.)
-            (let ((cur (point)))
-              (when (or (= ori cur)
-                        (and (< cur ori)
-                             (let ((idx 0))
-                               (while (and (< (+ cur idx) ori)
-                                           (char= (char-syntax
-                                                   (char-after (+ cur idx)))
-                                                  ?\ ))
-                                 (setq idx (1+ idx)))
-                               (= (+ cur idx) ori))))
-                (throw 'br ori))
-              (backward-char)))
-           ;; default
-           (t (throw 'br (point)))))))
-    (while (char= (char-syntax (char-after)) ?\ )
-      (forward-char))
-    (point)))
 
 (defun node-last-symbol ()
   "Return the position of left side of the last symbol."
@@ -219,7 +117,6 @@ function node_emacs_apropos(what, max) {
               (t (throw 'br (point))))))
     (point)))
 
-
 (defun node-completion ()
   (interactive)
   (node-check-proc)
@@ -228,22 +125,21 @@ function node_emacs_apropos(what, max) {
     (if (= (car bounds) (cdr bounds))
         (list (car bounds) (cdr bounds) :exclusive 'no)
       (let ((cmd (format "node_emacs_apropos(\"%s\", 64)"
-                         (buffer-substring-no-properties (car bounds)
-                                                         (cdr bounds))))
-            (proc (get-buffer-process (*node*))))
-        (with-current-buffer (*node-out*)
+                         (buffer-substring-no-properties
+                          (car bounds) (cdr bounds))))
+            (proc (get-buffer-process (*node*)))
+            (out (*node-out*)))
+        (with-current-buffer out
           (erase-buffer)
-          (comint-redirect-send-command-to-process cmd
-                                                   (*node-out*)
-                                                   proc nil t)
-          (set-buffer (*node*))
+          (comint-redirect-send-command-to-process cmd out proc nil t))
+        (with-current-buffer (*node*)
           (while (or quit-flag (null comint-redirect-completed))
             (accept-process-output proc 2))
           (comint-redirect-cleanup)
           (setcar mode-line-process ""))
         (list (car bounds) (cdr bounds)
               (let ((s1 (read-from-string
-                         (with-current-buffer (*node-out*)
+                         (with-current-buffer out
                            (string-trim><
                             (buffer-substring-no-properties
                              (point-min) (point-max))
@@ -253,6 +149,11 @@ function node_emacs_apropos(what, max) {
                   (car s1)))
               :exclusive 'no)))))
 
+;; end of proc
+
+;;;
+;; REPL
+;;;
 
 (defvar node-repl-mode-map
   (let ((m (make-sparse-keymap "node")))
@@ -260,37 +161,32 @@ function node_emacs_apropos(what, max) {
     m)
   "The keymap for `*node*' REPL.")
 
-
 (define-derived-mode node-repl-mode comint-mode "REPL"
-  "Major mode for interacting with a node process.
-
+  "Major mode for interacting with a node process.\n
 The following commands are available:
-\\{node-repl-mode-map}
-
+\\{node-repl-mode-map}\n
 A node process can be fired up with M-x `run-node'.
-
 Customization:
 Entry to this mode runs the hooks on `comint-mode-hook' and
-  `node-repl-mode-hook' (in that order)."
+  \\=`node-repl-mode-hook\\=' (in that order)."
   :group 'node                          ; keyword args
-  (setq comint-prompt-regexp "^[^>\n-\"]*>+ *")
-  (setq comint-prompt-read-only t)
-  (use-local-map node-repl-mode-map)
-  (setq mode-line-process '("" ":%s")))
-
+  (setq comint-prompt-regexp "^[^>\n-\"]*>+ *"
+        comint-prompt-read-only t
+        mode-line-process '("" ":%s"))
+  (use-local-map node-repl-mode-map))
 
 (defun run-node (&optional command-line)
-  "Run a node process, input and output via buffer *node*.
-
-If there is a process already running in `*node*', switch to that
-buffer. With prefix COMMAND-LINE, allows you to edit the command
-line.
-
+  "Run a node process, input and output via buffer *node*.\n
+If there is a process already running in \\=`*node*\\=', switch
+to that buffer. With prefix COMMAND-LINE, allows you to edit the
+command line.
 Run the hook `node-repl-mode-hook' after the `comint-mode-hook'."
   (interactive (list (read-string "Run node: "
                                   (car *node-option-history*)
                                   '*node-option-history*)))
   (unless (comint-check-proc (*node*))
+    (unless (node-program)
+      (error "%s" "No node program found"))
     (with-current-buffer (*node*)
       (apply #'make-comint-in-buffer
              (buffer-name (current-buffer))
@@ -307,8 +203,7 @@ Run the hook `node-repl-mode-hook' after the `comint-mode-hook'."
 
 
 (defun node-switch-to-repl (&optional no-select)
-  "Switch to the `*node*' buffer.
-
+  "Switch to the \\=`*node*\\=' buffer.\n
 If NO-SELECT is nil then select the buffer and put the cursor at
 end of buffer, otherwise just popup the buffer."
   (interactive "P")
@@ -324,12 +219,14 @@ end of buffer, otherwise just popup the buffer."
     (push-mark)
     (goto-char (point-max))))
 
-
  ;; end of REPL
 
+;;;
+;; compile / load
+;;;
 
 (defun node-compile-file (file)
-  "Compile a javascript FILE in `*node*'."
+  "Compile a javascript FILE in \\=`*node*\\='."
   (interactive (comint-get-source
                 "Compile javascript file: "
                 (let ((n (buffer-file-name)))
@@ -343,7 +240,7 @@ end of buffer, otherwise just popup the buffer."
   (node-switch-to-repl))
 
 (defun node-load-file (file)
-  "Load a javascript FILE into `*node*'."
+  "Load a javascript FILE into \\=`*node*\\='."
   (interactive (comint-get-source
                 "Load javascript file: "
                 (let ((n (buffer-file-name)))
@@ -358,37 +255,28 @@ end of buffer, otherwise just popup the buffer."
   (node-switch-to-last-buffer (current-buffer))
   (node-switch-to-repl))
 
+;; end of compile / load
+
+;;;
+;; `node-mode'
+;;;
 
 (defun node-send-region (start end)
-  "Send the current region to `*node*'."
+  "Send the current region to \\=`*node*\\='."
   (interactive "r")
   (process-send-region (node-check-proc) start end)
   (comint-send-string (*node*) "\n")
   (node-switch-to-repl t))
 
-(defun node-send-last-sexp ()
-  "Send the previous sexp to `*node*'."
-  (interactive)
-  (let ((bounds (if-region-active
-                    (cons (region-beginning) (region-end))
-                  (if current-prefix-arg
-                      (let ((b (node-last-sexp)))
-                        (if (and b (< b (point)))
-                            (cons b (point))
-                          (bounds-of-thing-at-point 'symbol)))
-                    (bounds-of-thing-at-point 'symbol)))))
-    (when bounds
-      (node-send-region (car bounds) (cdr bounds)))))
-
 (defun node-send-definition ()
-  "Send the current definition to `*node*'."
+  "Send the current definition to \\=`*node*\\='."
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'defun)))
     (when bounds
       (node-send-region (car bounds) (cdr bounds)))))
 
 (defun node-send-line ()
-  "Send the current line to `*node*'."
+  "Send the current line to \\=`*node*\\='."
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'line)))
     (when bounds
@@ -426,8 +314,7 @@ end of buffer, otherwise just popup the buffer."
 (defvar node-mode-map
   (let ((m (make-sparse-keymap)))
     (define-key m "\M-\C-x" #'node-send-definition)
-    (define-key m "\C-x\C-e" #'node-send-last-sexp)
-    (define-key m "\C-c\C-n" #'node-send-line)
+    (define-key m "\C-c\C-j" #'node-send-line)
     (define-key m "\C-c\C-l" #'node-load-file)
     (define-key m "\C-c\C-k" #'node-compile-file)
     (define-key m "\C-c\C-r" #'node-send-region)
@@ -438,7 +325,7 @@ end of buffer, otherwise just popup the buffer."
 
 (make-variable-buffer-local
  (defvar node-mode-string nil
-   "Modeline indicator for `node-mode'."))
+   "Modeline indicator for \\=`node-mode\\='."))
 
 (defun node-mode--lighter ()
   (or node-mode-string " Node"))
@@ -448,12 +335,10 @@ end of buffer, otherwise just popup the buffer."
 
 
 (define-minor-mode node-mode
-  "Toggle Node's mode.
-
+  "Toggle Node's mode.\n
 With no argument, this command toggles the mode.
 Non-null prefix argument turns on the mode.
-Null prefix argument turns off the mode.
-
+Null prefix argument turns off the mode.\n
 When Node mode is enabled, a host of nice utilities for
 interacting with the Node REPL is at your disposal.
 \\{node-mode-map}"
@@ -467,6 +352,7 @@ interacting with the Node REPL is at your disposal.
             #'node-completion 0 'local)
   (node-syntax-indent))
 
+;; end of `node-mode'
 
 
 (provide 'node)
