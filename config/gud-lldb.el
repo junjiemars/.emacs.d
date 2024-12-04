@@ -159,10 +159,17 @@ Return absolute filename when FILENAME exists, otherwise nil."
 
 
 (defun lldb-settings-init-file (&optional force)
-  "Make lldb's init file if FORCE or the init file is missing."
-  (let ((file (expand-file-name "~/.lldbinit-lldb")))
+  "Make lldb's init file if FORCE or the init file is missing.\n
+Return init file name and ~/.lldbinit-lldb file no touched."
+  (let ((file (v-home% ".exec/gud-lldb"))
+        (proc (get-buffer-process (*lldb*)))
+        (ss (lldb-init-statement)))
     (when (or force (null (file-exists-p file)))
-      (save-str-to-file (lldb-init-statement) file))))
+      (save-str-to-file ss file))
+    (unless proc
+      (error "%s" "No lldb process found"))
+    (comint-redirect-send-command-to-process ss nil proc nil t)
+    file))
 
 
 (defun lldb-script-apropos (ss)
@@ -327,10 +334,8 @@ invoked."
                    #'gud-lldb-marker-filter
                    #'gud-lldb-find-file)
 
-  (lldb-settings-init-file)
-
   (*lldb* (get-buffer (format "*gud-%s*" gud-target-name)))
-
+  (lldb-settings-init-file t)
   (set (make-local-variable 'gud-minor-mode) 'lldb)
 
   (gud-def gud-break
