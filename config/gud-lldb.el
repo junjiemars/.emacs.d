@@ -47,15 +47,15 @@
 
 
 (defcustom% gud-lldb-command-line-hook nil
-  "Hook run by `lldb' on command line."
-  :type 'hook
-  :group 'gud)
+            "Hook run by `lldb' on command line."
+            :type 'hook
+            :group 'gud)
 
 
 (defcustom% gud-lldb-init-hook nil
-  "Hook run by \\=`lldb\\=' process."
-  :type 'hook
-  :group 'gud)
+            "Hook run by \\=`lldb\\=' process."
+            :type 'hook
+            :group 'gud)
 
 
 (defvar gud-lldb-directories '(".")
@@ -145,61 +145,38 @@ Return absolute filename when FILENAME exists, otherwise nil."
   "Make lldb's init statements."
   `(concat
     (lldb-settings
-     "set" "frame-format"
-     "frame #${frame.index}: ${frame.pc}{ ${module.file.basename}{`${function.name-with-args}{${frame.no-debug}${function.pc-offset}}}}{ at ${line.file.fullpath}:${line.number}}{${function.is-optimized} [opt]}\\n\n")
+        "set" "frame-format"
+        "frame #${frame.index}: ${frame.pc}{ ${module.file.basename}{`${function.name-with-args}{${frame.no-debug}${function.pc-offset}}}}{ at ${line.file.fullpath}:${line.number}}{${function.is-optimized} [opt]}\\n\n")
     (lldb-settings "set" "stop-disassembly-display" "no-debuginfo\n")
     (lldb-settings "set" "stop-line-count-before" "0\n")
     (lldb-settings "set" "stop-line-count-after" "0\n")
-    (concat "script "
-            "_d_=lldb.debugger.GetCommandInterpreter();"
-            "_m_=lldb.SBStringList();"
-            "import random;"
-            "_r_=lambda x:[a for a in range(0,x)] if x<64"
-            " else [random.randrange(0,x) for c in range(0,128)];")))
+    (format "script import sys; sys.path.append('%s'); import gud_lldb;"
+            ,(v-home% ".exec/"))))
 
-
-(defun lldb-settings-init-file (&optional force)
+(defun lldb-start-file (&optional force)
   "Make lldb's init file if FORCE or the init file is missing.\n
 Return init file name and ~/.lldbinit-lldb file no touched."
-  (let ((file (v-home% ".exec/gud-lldb"))
+  (let ((init (v-home% ".exec/gud_lldb.rc"))
         (proc (get-buffer-process (*lldb*)))
         (ss (lldb-init-statement)))
-    (when (or force (null (file-exists-p file)))
-      (save-str-to-file ss file))
+    (when (or force (null (file-exists-p init)))
+      (save-str-to-file ss init)
+      (copy-file (emacs-home% "config/gud_lldb.py")
+                 (v-home% ".exec/gud_lldb.py") t))
     (unless proc
       (error "%s" "No lldb process found"))
     (comint-redirect-send-command-to-process ss nil proc nil t)
-    file))
-
-
-(defun lldb-script-apropos (ss)
-  "Apropos via lldb's script.\n
-The \\=`max_return_elements\\=' argument in
-\\=`HandleCompletion\\=' had not been implemented."
-  (concat "script "
-          "_m_.Clear();"
-          (format "_d_.HandleCompletion('%s',%d,%d,%d,_m_);"
-                  ss
-                  (if (string= "" ss) 0 (length ss))
-                  (if (string= "" ss) 0 (length ss))
-                  -1)
-          "["
-          "print('%s' % (_m_.GetStringAtIndex(x)))"
-          " for x in _r_(_m_.GetSize())"
-          "];"
-          "_m_.Clear();"))
-
-(defconst +lldb-completion-read-filter+
-  "^\\(script.*\\|[[:digit:]]+\\|\" *\"\\|\"None\"\\|\\[.*\\]\\)")
+    init))
 
 (defun lldb-completion-read (in buffer start end)
   (with-current-buffer buffer
-    (let ((alts nil))
+    (let ((alts nil)
+          (xs "^\\(script.*\\|[[:digit:]]+\\|\" *\"\\|\"None\"\\|\\[.*\\]\\)"))
       (goto-char (point-min))
       (while (not (eobp))
         (let ((ln (buffer-substring-no-properties
                    (line-beginning-position) (line-end-position))))
-          (cond ((string-match +lldb-completion-read-filter+ ln) nil)
+          (cond ((string-match xs ln) nil)
                 (t (let* ((w (let ((n (- end start)))
                                (while (and (> n 0)
                                            (not (char= (aref in (1- n)) #x20)))
@@ -220,7 +197,8 @@ The \\=`max_return_elements\\=' argument in
       (let* ((start (save-excursion (comint-goto-process-mark) (point)))
              (end (point))
              (cmd (buffer-substring-no-properties start end))
-             (script (lldb-script-apropos cmd))
+             (script (format "script gud_lldb.lldb_emacs_apropos('%s', 64)"
+                             cmd))
              (out (*lldb-out*)))
         (with-current-buffer out (erase-buffer))
         (comint-redirect-send-command-to-process script out proc nil t)
@@ -335,7 +313,7 @@ invoked."
                    #'gud-lldb-find-file)
 
   (*lldb* (get-buffer (format "*gud-%s*" gud-target-name)))
-  (lldb-settings-init-file t)
+  (lldb-start-file t)
   (set (make-local-variable 'gud-minor-mode) 'lldb)
 
   (gud-def gud-break
