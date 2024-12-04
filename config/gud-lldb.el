@@ -5,30 +5,26 @@
 ;;;;
 ;; gud-lldb.el
 ;;;;
-;;
 ;; features:
-;; 1. start or attach to process.
-;; 2. source code debugging.
-;; 3. command auto completion.
-;; 4. evaluate C expression.
-;; 5* show breakpoints on buffer in GUI/Terminal mode.
-;; 6* show debugger' frame and register on buffer.
-;;
+;;; 1. start or attach to process.
+;;; 2. source code debugging.
+;;; 3. command auto completion.
+;;; 4. evaluate C expression.
+;;; 5* show breakpoints on buffer in GUI/Terminal mode.
+;;; 6* show frames and registers on buffer.
 ;;;;
-;;
 ;; sample C code:
-;; generated via Nore (https://github.com/junjiemars/nore)
-;; ./configure --new
-;; make clean test
-;;
-;; website:
-;; https://lldb.llvm.org
-;;
-;; original from:
-;; https://opensource.apple.com/source/lldb/lldb-69/utils/emacs/gud.el.auto.html
-;;
+;;; generated via Nore (https://github.com/junjiemars/nore)
+;;; ./configure --new
+;;; make clean test
+;;;;
+;; references:
+;;; https://lldb.llvm.org
+;;; https://lldb.llvm.org/python_api/lldb.SBCommandInterpreter.html
+;;; https://opensource.apple.com/source/lldb/lldb-69/utils/emacs/gud.el.auto.html
+;;;;
 ;; lldb builtin:
-;; apropos
+;;; apropos
 ;;;;
 
 
@@ -75,15 +71,16 @@ If nil, only source files in the program directory will be known
 (defalias '*lldb*
   (lexical-let% ((b))
     (lambda (&optional n)
-      (if n (setq b n) b)))
+      (cond (n (setq b n))
+            (t b))))
   "The current *lldb* process buffer.")
 
 
 (defalias '*lldb-out*
   (lexical-let% ((b "*out|lldb*"))
     (lambda (&optional n)
-      (if n (setq b n)
-        (get-buffer-create b))))
+      (cond (n (setq b n))
+            (t (get-buffer-create b)))))
   "The output buffer of \\=`lldb-completion\\='.")
 
 
@@ -157,8 +154,8 @@ Return absolute filename when FILENAME exists, otherwise nil."
             "_d_=lldb.debugger.GetCommandInterpreter();"
             "_m_=lldb.SBStringList();"
             "import random;"
-            "_r_=lambda x:[a for a in range(0,x)] if x<16"
-            " else [random.randrange(0,x) for c in range(0,16)];")))
+            "_r_=lambda x:[a for a in range(0,x)] if x<64"
+            " else [random.randrange(0,x) for c in range(0,128)];")))
 
 
 (defun lldb-settings-init-file (&optional force)
@@ -171,8 +168,7 @@ Return absolute filename when FILENAME exists, otherwise nil."
 (defun lldb-script-apropos (ss)
   "Apropos via lldb's script.\n
 The \\=`max_return_elements\\=' argument in
-\\=`HandleCompletion\\=' had not been implemented, see
-https://github.com/llvm/llvm-project/."
+\\=`HandleCompletion\\=' had not been implemented."
   (concat "script "
           "_m_.Clear();"
           (format "_d_.HandleCompletion('%s',%d,%d,%d,_m_);"
@@ -180,61 +176,53 @@ https://github.com/llvm/llvm-project/."
                   (if (string= "" ss) 0 (length ss))
                   (if (string= "" ss) 0 (length ss))
                   -1)
-          "print('(');"
           "["
-          "print('\"%s\"' % (_m_.GetStringAtIndex(x)))"
+          "print('%s' % (_m_.GetStringAtIndex(x)))"
           " for x in _r_(_m_.GetSize())"
           "];"
-          "print(')');"
           "_m_.Clear();"))
 
+(defconst +lldb-completion-read-filter+
+  "^\\(script.*\\|[[:digit:]]+\\|\" *\"\\|\"None\"\\|\\[.*\\]\\)")
+
+(defun lldb-completion-read (in buffer start end)
+  (with-current-buffer buffer
+    (let ((alts nil))
+      (goto-char (point-min))
+      (while (not (eobp))
+        (let ((ln (buffer-substring-no-properties
+                   (line-beginning-position) (line-end-position))))
+          (cond ((string-match +lldb-completion-read-filter+ ln) nil)
+                (t (let* ((w (let ((n (- end start)))
+                               (while (and (> n 0)
+                                           (not (char= (aref in (1- n)) #x20)))
+                                 (setq n (1- n)))
+                               (if (> n 0) n 0)))
+                          (ls (substring-no-properties in 0 w))
+                          (rs (substring-no-properties in w))
+                          (ss (string-trim> ln)))
+                     (when (string-match rs ss)
+                       (setq alts (nconc alts (list (concat ls ss)))))))))
+        (forward-line 1))
+      alts)))
 
 (defun lldb-completion ()
   (interactive)
-  (let ((proc (get-buffer-process (*lldb*)))
-        (start (save-excursion (comint-goto-process-mark) (point)))
-        (end (point)))
+  (let ((proc (get-buffer-process (*lldb*))))
     (when proc
-      (let* ((cmd (buffer-substring-no-properties start end))
+      (let* ((start (save-excursion (comint-goto-process-mark) (point)))
+             (end (point))
+             (cmd (buffer-substring-no-properties start end))
              (script (lldb-script-apropos cmd))
-             (*out* (*lldb-out*))
-             (+xs+ (concat "^\\(script.*"
-                           "\\|[[:digit:]]+"
-                           "\\|\"\s*\""
-                           "\\|\"None\""
-                           "\\|\\[.*\\]"
-                           "\\)")))
-        (with-current-buffer *out* (erase-buffer))
-        (comint-redirect-send-command-to-process
-         script *out* proc nil t)
-        (unwind-protect
-            (while (or quit-flag (null comint-redirect-completed))
-              (accept-process-output nil 2))
-          (comint-redirect-cleanup))
-        (list start end
-              (let ((s1 (read-from-string
-                         (with-current-buffer *out*
-  			                   (flush-lines +xs+ (point-min) (point-max) nil)
-  			                   (buffer-substring-no-properties
-                            (point-min) (point-max))))))
-                (when (and (consp s1) (car s1))
-                  (let* ((ss (car s1))
-                         (w (let ((n (- end start)))
-                              (while (and (> n 0)
-                                          (not (char= (aref cmd (1- n)) ?\ )))
-                                (setq n (1- n)))
-                              (if (> n 0) n 0)))
-                         (ls (substring cmd 0 w))
-                         (rs (substring cmd w)))
-                    (let ((zs nil))
-                      (dolist* (z (if (and (cadr ss)
-                                           (string-match
-                                            (concat rs (string-trim> (car ss)))
-                                            (cadr ss)))
-                                      (cdr ss)
-                                    ss)
-                                  (nreverse zs))
-                        (setq zs (cons (concat ls z) zs)))))))
+             (out (*lldb-out*)))
+        (with-current-buffer out (erase-buffer))
+        (comint-redirect-send-command-to-process script out proc nil t)
+        (with-current-buffer (*lldb*)
+          (unwind-protect
+              (while (or quit-flag (null comint-redirect-completed))
+                (accept-process-output proc 2))
+            (comint-redirect-cleanup)))
+        (list start end (lldb-completion-read cmd out start end)
               :exclusive 'no)))))
 
 
@@ -313,8 +301,8 @@ As the 3rd argument of \\=`gud-common-init\\=': marker-filter"
                          (read-string "expression options: ")
                        "--")))
   (let* ((expr (if-region-active
-                   (buffer-substring-no-properties (region-beginning)
-                                                   (region-end))
+                   (buffer-substring-no-properties
+                    (region-beginning) (region-end))
                  (gud*-find-c-last-expr)))
          (cmd (concat "expression " options " ( " expr " )")))
     (message "Command: %s" cmd)

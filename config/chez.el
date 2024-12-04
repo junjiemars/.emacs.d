@@ -177,13 +177,13 @@ This is run before the process is cranked up."
                           (car bounds) (cdr bounds))))
             (proc (get-buffer-process (*chez*)))
             (out (*chez-out*)))
-        (with-current-buffer out
-          (erase-buffer)
-          (comint-redirect-send-command-to-process cmd out proc nil t))
+        (with-current-buffer out (erase-buffer))
+        (comint-redirect-send-command-to-process cmd out proc nil t)
         (with-current-buffer (*chez*)
-          (while (or quit-flag (null comint-redirect-completed))
-            (accept-process-output proc 2))
-          (comint-redirect-cleanup)
+          (unwind-protect
+              (while (or quit-flag (null comint-redirect-completed))
+                (accept-process-output proc 2))
+            (comint-redirect-cleanup))
           (setcar mode-line-process ""))
         (list (car bounds) (cdr bounds)
               (let ((s1 (read-from-string
