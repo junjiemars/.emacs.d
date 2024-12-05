@@ -192,17 +192,19 @@ Return init file name and ~/.lldbinit-lldb file no touched."
 
 (defun lldb-completion ()
   (interactive)
-  (let ((proc (get-buffer-process (*lldb*))))
+  (let* ((lldb (*lldb*)) (proc (get-buffer-process lldb))
+         (start nil) (end nil) (cmd nil))
     (when proc
-      (let* ((start (save-excursion (comint-goto-process-mark) (point)))
-             (end (point))
-             (cmd (buffer-substring-no-properties start end))
-             (script (format "script gud_lldb.lldb_emacs_apropos('%s',64)"
-                             cmd))
-             (out (*lldb-out*)))
+      (with-current-buffer lldb
+        (setq start (save-excursion (comint-goto-process-mark) (point))
+              end (point)
+              cmd (buffer-substring-no-properties start end)))
+      (let ((script (format "script gud_lldb.lldb_emacs_apropos('%s',64)"
+                            cmd))
+            (out (*lldb-out*)))
         (with-current-buffer out (erase-buffer))
         (comint-redirect-send-command-to-process script out proc nil t)
-        (with-current-buffer (*lldb*)
+        (with-current-buffer lldb
           (unwind-protect
               (while (or quit-flag (null comint-redirect-completed))
                 (accept-process-output proc 2))
