@@ -150,7 +150,7 @@ Return absolute filename when FILENAME exists, otherwise nil."
     (lldb-settings "set" "stop-disassembly-display" "no-debuginfo\n")
     (lldb-settings "set" "stop-line-count-before" "0\n")
     (lldb-settings "set" "stop-line-count-after" "0\n")
-    (format "script import sys; sys.path.append('%s'); import gud_lldb;"
+    (format "script import sys;sys.path.append('%s');import gud_lldb;"
             ,(v-home% ".exec/"))))
 
 (defun lldb-start-file (&optional force)
@@ -165,7 +165,7 @@ Return init file name and ~/.lldbinit-lldb file no touched."
                  (v-home% ".exec/gud_lldb.py") t))
     (unless proc
       (error "%s" "No lldb process found"))
-    (comint-redirect-send-command-to-process ss nil proc nil t)
+    (gud-basic-call ss)
     init))
 
 (defun lldb-completion-read (in buffer start end)
@@ -197,7 +197,7 @@ Return init file name and ~/.lldbinit-lldb file no touched."
       (let* ((start (save-excursion (comint-goto-process-mark) (point)))
              (end (point))
              (cmd (buffer-substring-no-properties start end))
-             (script (format "script gud_lldb.lldb_emacs_apropos('%s', 64)"
+             (script (format "script gud_lldb.lldb_emacs_apropos('%s',64)"
                              cmd))
              (out (*lldb-out*)))
         (with-current-buffer out (erase-buffer))
@@ -250,12 +250,11 @@ As the optional argument of \\=`gud-common-init\\=': find-file."
 
 (defun gud-lldb-massage-args (file args)
   "Run \\=`gud-lldb-command-line-hook\\=' before running debugger.\n
-As the 2nd argument of \\=`gud-common-init\\=': message-args"
+As the 2nd argument of \\=`gud-common-init\\=': massage-args."
   (ignore* file)
   (append (let ((xs nil))
             (dolist* (x gud-lldb-command-line-hook xs)
-              (and (functionp x)
-                   (setq xs (append (funcall x))))))
+              (and (functionp x) (setq xs (append xs (funcall x))))))
           args))
 
 
