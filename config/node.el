@@ -53,7 +53,7 @@
                         "node")))
     (lambda (&optional n)
       (if (null n) b (setq b n))))
-  "Program invoked by the `run-node' command.")
+  "Program invoked by the \\=`run-node\\=' command.")
 
 (defalias '*node*
   (lexical-let% ((b))
@@ -69,13 +69,13 @@
     (lambda (&optional n)
       (if n (setq b n)
         (get-buffer-create b))))
-  "The output buffer of `node-completion'.")
+  "The output buffer of \\=`node-completion\\='.")
 
 (defalias '*node-start-file*
   (lexical-let% ((b (v-home% ".exec/node.js")))
     (lambda ()
       (cond ((file-exists-p b) b)
-            (t (copy-file (emacs-home% "config/node-apropos.js") b)))))
+            (t (copy-file (emacs-home% "config/node.js") b)))))
   "the \\=`*node*\\=' process start file.")
 
 (defalias 'node-switch-to-last-buffer
@@ -84,7 +84,7 @@
       (interactive)
       (if n (setq b n)
         (when b (switch-to-buffer-other-window b)))))
-  "Switch to the last `node-mode' buffer from `*node*' buffer.")
+  "Switch to the last \\=`node-mode\\=' buffer from \\=`*node*\\=' buffer.")
 
 (defvar *node-option-history* nil
   "Node option history list.")
@@ -96,7 +96,7 @@
 ;;;
 
 (defun node-check-proc (&optional spawn)
-  "Return the `*node*' process or start one if necessary."
+  "Return the \\=`*node*\\=' process or start one if necessary."
   (when (and spawn (not (eq 'run (car (comint-check-proc (*node*))))))
     (save-window-excursion (call-interactively #'run-node)))
   (or (get-buffer-process (*node*))
@@ -120,8 +120,7 @@
 (defun node-completion ()
   (interactive)
   (node-check-proc)
-  (let ((bounds (cons (save-excursion (node-last-symbol))
-                      (point))))
+  (let ((bounds (cons (save-excursion (node-last-symbol)) (point))))
     (if (= (car bounds) (cdr bounds))
         (list (car bounds) (cdr bounds) :exclusive 'no)
       (let ((cmd (format "node_emacs_apropos(\"%s\", 64)"
@@ -129,9 +128,8 @@
                           (car bounds) (cdr bounds))))
             (proc (get-buffer-process (*node*)))
             (out (*node-out*)))
-        (with-current-buffer out
-          (erase-buffer)
-          (comint-redirect-send-command-to-process cmd out proc nil t))
+        (with-current-buffer out (erase-buffer))
+        (comint-redirect-send-command-to-process cmd out proc nil t)
         (with-current-buffer (*node*)
           (while (or quit-flag (null comint-redirect-completed))
             (accept-process-output proc 2))

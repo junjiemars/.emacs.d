@@ -92,7 +92,7 @@ This is run before the process is cranked up."
   (lexical-let% ((b (v-home% ".exec/chez.ss")))
     (lambda ()
       (cond ((file-exists-p b) b)
-            (t (copy-file (emacs-home% "config/chez-apropos.ss") b)))))
+            (t (copy-file (emacs-home% "config/chez.ss") b)))))
   "The \\=`*chez*'\\= process start file.")
 
 (defalias 'chez-switch-to-last-buffer

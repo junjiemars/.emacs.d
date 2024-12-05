@@ -64,7 +64,7 @@
   (lexical-let% ((b (v-home% ".exec/jshell.jsh")))
     (lambda ()
       (cond ((file-exists-p b) b)
-            (t (copy-file (emacs-home% "config/jshell-apropos.jsh") b)))))
+            (t (copy-file (emacs-home% "config/jshell.jsh") b)))))
   "The \\=`*jshell*\\=' process start file.")
 
 (defalias 'jshell-switch-to-last-buffer
@@ -141,9 +141,8 @@
              (out (*jshell-out*))
              ;; tricky, the last forward slash make error no wait.
              (cmd (format "%s\t\t\\" sxp)))
-        (with-current-buffer out
-          (erase-buffer)
-          (comint-redirect-send-command-to-process cmd out proc nil t))
+        (with-current-buffer out (erase-buffer))
+        (comint-redirect-send-command-to-process cmd out proc nil t)
         (with-current-buffer (*jshell*)
           (while (or quit-flag (null comint-redirect-completed))
             (accept-process-output proc 2))
