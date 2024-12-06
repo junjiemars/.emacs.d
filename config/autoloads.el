@@ -139,7 +139,8 @@
       (autoload 'jshell-mode (v-home%> "config/jshell")
         "Toggle jshell mode." t)
       (autoload 'run-jshell (v-home%> "config/jshell")
-        "Toggle jshell process." t))
+        "Toggle jshell process." t)
+      (push! `("\\.jsh\\'" . java-mode) auto-mode-alist))
     ;; `mixvm'
     (prog1
         (compile-unit% (emacs-home* "config/mixvm.el") t)

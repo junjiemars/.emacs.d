@@ -169,7 +169,7 @@ Return init file name and ~/.lldbinit-lldb file no touched."
     init))
 
 (defvar *lldb-completion-filter*
-  "^\\(script gud_lldb\\|[[:digit:]]+\\|\\|\\[None\\|[ \t]*$\\)")
+  "^\\(script gud_lldb\\|[[:digit:]]+\\|\\[None\\|[ \t]*$\\)")
 
 (defun lldb-completion-read (in buffer)
   (with-current-buffer buffer
