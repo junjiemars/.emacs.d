@@ -167,32 +167,36 @@ This is run before the process is cranked up."
                  t)))
             (t t)))))
 
+(defun chez-completion-read (buffer)
+  (car
+   (read-from-string
+    (with-current-buffer buffer
+      (buffer-substring-no-properties
+       (point-min) (point-max))))))
+
 (defun chez-completion ()
   (interactive)
-  (chez-check-proc)
-  (let ((bounds (bounds-of-thing-at-point 'symbol)))
-    (when bounds
-      (let ((cmd (format "(chez-emacs/apropos \"%s\" 64)"
-                         (buffer-substring-no-properties
-                          (car bounds) (cdr bounds))))
-            (proc (get-buffer-process (*chez*)))
-            (out (*chez-out*)))
-        (with-current-buffer out (erase-buffer))
-        (comint-redirect-send-command-to-process cmd out proc nil t)
-        (with-current-buffer (*chez*)
-          (unwind-protect
-              (while (or quit-flag (null comint-redirect-completed))
-                (accept-process-output proc 2))
-            (comint-redirect-cleanup))
-          (setcar mode-line-process ""))
-        (list (car bounds) (cdr bounds)
-              (let ((s1 (read-from-string
-                         (with-current-buffer out
-                           (buffer-substring-no-properties
-                            (point-min) (point-max))))))
-                (when (and (consp s1) (consp (car s1)))
-                  (car s1)))
-              :exclusive 'no)))))
+  (let* ((chez (*chez*)) (proc (get-buffer-process (*chez*)))
+         (start nil) (end nil) (in nil))
+    (when proc
+      (with-current-buffer chez
+        (let ((bs (bounds-of-thing-at-point 'symbol)))
+          (when bs
+            (setq start (car bs)
+                  end (cdr bs)
+                  in (buffer-substring-no-properties start end)))))
+      (when in
+        (let ((cmd (format "(chez-emacs/apropos \"%s\" 1024)" in))
+              (out (*chez-out*)))
+          (with-current-buffer out (erase-buffer))
+          (comint-redirect-send-command-to-process cmd out proc nil t)
+          (with-current-buffer (*chez*)
+            (unwind-protect
+                (while (or quit-flag (null comint-redirect-completed))
+                  (accept-process-output proc 2))
+              (comint-redirect-cleanup)))
+          (list start end (chez-completion-read out)
+                :exclusive 'no))))))
 
 ;; end of proc
 

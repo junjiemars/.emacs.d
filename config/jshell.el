@@ -131,27 +131,27 @@
 
 (defun jshell-completion ()
   (interactive)
-  (jshell-check-proc)
-  (let ((token (bounds-of-thing-at-point 'symbol))
-        (sexp (cons (jshell-last-symbol) (point))))
-    (when (and token sexp)
-      (let* ((tkn (buffer-substring-no-properties (car token) (cdr token)))
-             (sxp (buffer-substring-no-properties (car sexp) (cdr sexp)))
-             (proc (get-buffer-process (*jshell*)))
-             (out (*jshell-out*))
-             ;; tricky, the last forward slash make error no wait.
-             (cmd (format "%s\t\t\\" sxp)))
-        (with-current-buffer out (erase-buffer))
-        (comint-redirect-send-command-to-process cmd out proc nil t)
-        (with-current-buffer (*jshell*)
-          (while (or quit-flag (null comint-redirect-completed))
-            (accept-process-output proc 2))
-          (comint-redirect-cleanup)
-          (setcar mode-line-process ""))
-        (list (car token) (cdr token)
-              (let ((s1 (jshell-completion-read tkn out)))
-                (and (consp s1) s1))
-              :exclusive 'no)))))
+  (let* ((jshell (*jshell*)) (proc (get-buffer-process jshell))
+         (sym nil) (last nil))
+    (when proc
+      (with-current-buffer jshell
+        (setq sym (bounds-of-thing-at-point 'symbol)
+              last (cons (jshell-last-symbol) (point))))
+      (when (and sym last)
+        (let* ((tkn (buffer-substring-no-properties (car sym) (cdr sym)))
+               (sxp (buffer-substring-no-properties (car last) (cdr last)))
+               ;; tricky, the last forward slash make error no wait.
+               (cmd (format "%s\t\t\\" sxp))
+               (out (*jshell-out*)))
+          (with-current-buffer out (erase-buffer))
+          (comint-redirect-send-command-to-process cmd out proc nil t)
+          (with-current-buffer jshell
+            (unwind-protect
+                (while (or quit-flag (null comint-redirect-completed))
+                  (accept-process-output proc 2))
+              (comint-redirect-cleanup)))
+          (list (car sym) (cdr sym) (jshell-completion-read tkn out)
+                :exclusive 'no))))))
 
 ;; end of proc
 

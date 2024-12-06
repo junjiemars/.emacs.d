@@ -117,34 +117,42 @@
               (t (throw 'br (point))))))
     (point)))
 
+(defvar *node-completion-filter*
+  "^\\(node_emacs_apropos\\|undefined\\|[ \t]*$\\)")
+
+(defun node-completion-read (in buffer)
+  (with-current-buffer buffer
+    (let ((alts nil) (xs *node-completion-filter*))
+      (goto-char (point-min))
+      (while (not (eobp))
+        (let ((ln (buffer-substring-no-properties
+                   (line-beginning-position) (line-end-position))))
+          (cond ((string-match xs ln) nil)
+                ((string= in ln) nil)
+                (t (setq alts (nconc alts (list ln))))))
+        (forward-line 1))
+      alts)))
+
 (defun node-completion ()
   (interactive)
-  (node-check-proc)
-  (let ((bounds (cons (save-excursion (node-last-symbol)) (point))))
-    (if (= (car bounds) (cdr bounds))
-        (list (car bounds) (cdr bounds) :exclusive 'no)
-      (let ((cmd (format "node_emacs_apropos(\"%s\", 64)"
-                         (buffer-substring-no-properties
-                          (car bounds) (cdr bounds))))
-            (proc (get-buffer-process (*node*)))
+  (let* ((node (*node*)) (proc (get-buffer-process node))
+         (start nil) (end nil) (in nil))
+    (when proc
+      (with-current-buffer node
+        (let ((bs (cons (save-excursion (node-last-symbol)) (point))))
+          (setq start (car bs)
+                end (cdr bs)
+                in (buffer-substring-no-properties start end))))
+      (let ((cmd (format "node_emacs_apropos(\"%s\",128)" in))
             (out (*node-out*)))
         (with-current-buffer out (erase-buffer))
         (comint-redirect-send-command-to-process cmd out proc nil t)
-        (with-current-buffer (*node*)
-          (while (or quit-flag (null comint-redirect-completed))
-            (accept-process-output proc 2))
-          (comint-redirect-cleanup)
-          (setcar mode-line-process ""))
-        (list (car bounds) (cdr bounds)
-              (let ((s1 (read-from-string
-                         (with-current-buffer out
-                           (string-trim><
-                            (buffer-substring-no-properties
-                             (point-min) (point-max))
-                            "^undefined.*\\|[ \t\n]*\\'"
-                            "[ \t\n]*node_emacs_apropos.*")))))
-                (when (and (consp s1) (consp (car s1)))
-                  (car s1)))
+        (with-current-buffer node
+          (unwind-protect
+              (while (or quit-flag (null comint-redirect-completed))
+                (accept-process-output proc 2))
+            (comint-redirect-cleanup)))
+        (list start end (node-completion-read in out)
               :exclusive 'no)))))
 
 ;; end of proc

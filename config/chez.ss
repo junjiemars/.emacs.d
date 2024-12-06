@@ -3,21 +3,13 @@
     (export chez-emacs/apropos)
   (import (chezscheme))
   (define (chez-emacs/apropos what max)
-    (let* ([lst (apropos-list what (interaction-environment))]
-           [tbl (make-eq-hashtable)]
-           [xs (let f ([ls lst] [acc tbl])
-                 (cond [(null? ls) (hashtable-keys acc)]
-                       [(symbol? (car ls))
-                        (f (cdr ls)
-                           (begin (hashtable-set! acc (car ls) '())
-                                  acc))]
-                       [else (f (cdar ls) acc)]))])
-      (map symbol->string
-           (if (> (vector-length xs) max)
-               (let v->l ([n max] [ss '()])
-                 (if (= n 0)
-                     ss
-                     (v->l (- n 1) (cons (vector-ref xs n) ss))))
-               (vector->list xs))))))
+    (let ([rs (apropos-list what (interaction-environment))])
+			;; ((namespace...) symbol...)
+			(let take-n->str ([n max] [lst rs] [acc '()])
+				(if (or (<= n 0) (null? lst))
+						(reverse acc)
+						(if (list? (car lst))
+								(take-n->str (- n 1) (cdr lst) acc)
+								(take-n->str (- n 1) (cdr lst) (cons (car lst) acc))))))))
 (import (chez-emacs))
 ;;; eof

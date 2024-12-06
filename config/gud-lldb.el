@@ -169,7 +169,7 @@ Return init file name and ~/.lldbinit-lldb file no touched."
     init))
 
 (defvar *lldb-completion-filter*
-  "^\\(script gud_lldb.*\\|[[:digit:]]+\\|\" *\"\\|\"None\"\\|\\[.*\\]\\)")
+  "^\\(script gud_lldb\\|[[:digit:]]+\\|\\|\\[None\\|[ \t]*$\\)")
 
 (defun lldb-completion-read (in buffer)
   (with-current-buffer buffer
@@ -194,23 +194,22 @@ Return init file name and ~/.lldbinit-lldb file no touched."
 (defun lldb-completion ()
   (interactive)
   (let* ((lldb (*lldb*)) (proc (get-buffer-process lldb))
-         (start nil) (end nil) (cmd nil))
+         (start nil) (end nil) (in nil))
     (when proc
       (with-current-buffer lldb
         (setq start (save-excursion (comint-goto-process-mark) (point))
               end (point)
-              cmd (buffer-substring-no-properties start end)))
-      (let ((script (format "script gud_lldb.lldb_emacs_apropos('%s',128)"
-                            cmd))
+              in (buffer-substring-no-properties start end)))
+      (let ((cmd (format "script gud_lldb.lldb_emacs_apropos('%s',128)" in))
             (out (*lldb-out*)))
         (with-current-buffer out (erase-buffer))
-        (comint-redirect-send-command-to-process script out proc nil t)
+        (comint-redirect-send-command-to-process cmd out proc nil t)
         (with-current-buffer lldb
           (unwind-protect
               (while (or quit-flag (null comint-redirect-completed))
                 (accept-process-output proc 2))
             (comint-redirect-cleanup)))
-        (list start end (lldb-completion-read cmd out)
+        (list start end (lldb-completion-read in out)
               :exclusive 'no)))))
 
 
