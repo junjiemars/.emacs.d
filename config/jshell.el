@@ -208,7 +208,8 @@ Run the hook \\=`jshell-repl-mode-hook\\=' after the \\=`comint-mode-hook\\='."
       (add-hook (if-var% completion-at-point-functions 'minibuffer
                          'completion-at-point-functions
                   'comint-dynamic-complete-functions)
-                #'jshell-completion 0 'local)))
+                #'jshell-completion 0 'local)
+      (setq comint-process-echoes t)))
   (switch-to-buffer-other-window (*jshell*)))
 
 (defun jshell-switch-to-repl (&optional no-select)

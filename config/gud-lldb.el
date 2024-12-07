@@ -315,7 +315,16 @@ invoked."
 
   (*lldb* (get-buffer (format "*gud-%s*" gud-target-name)))
   (lldb-start-file t)
+
   (set (make-local-variable 'gud-minor-mode) 'lldb)
+  (set (make-local-variable 'comint-prompt-regexp) +gud-lldb-prompt-regexp+)
+  (set (make-local-variable 'comint-prompt-read-only) t)
+  (set (make-local-variable 'comint-process-echoes) t)
+  ;; M-{ and M-}
+  (set (make-local-variable 'paragraph-separate) "\\'")
+  (set (make-local-variable 'paragraph-start) +gud-lldb-prompt-regexp+)
+  (unless% (memq 'ansi-color-process-output comint-output-filter-functions)
+    (push! #'ansi-color-process-output comint-output-filter-functions))
 
   (gud-def gud-break
            "breakpoint set -f %f -l %l"
@@ -347,20 +356,11 @@ invoked."
 
   (gud*-def "\C-p" #'gud-lldb-print)
 
-  (set (make-local-variable 'comint-prompt-regexp) +gud-lldb-prompt-regexp+)
-  (set (make-local-variable 'comint-prompt-read-only) t)
-  (unless (memq 'ansi-color-process-output comint-output-filter-functions)
-    (push! #'ansi-color-process-output comint-output-filter-functions))
-
   ;; `lldb-completion'
   (add-hook (if-var% completion-at-point-functions 'minibuffer
                      'completion-at-point-functions
               'comint-dynamic-complete-functions)
             #'lldb-completion 0 'local)
-
-  ;; M-{ and M-}
-  (set (make-local-variable 'paragraph-separate) "\\'")
-  (set (make-local-variable 'paragraph-start) +gud-lldb-prompt-regexp+)
 
   (setq gud-running nil)
   (setq gud-filter-pending-text nil)

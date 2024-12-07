@@ -204,7 +204,8 @@ Run the hook `node-repl-mode-hook' after the `comint-mode-hook'."
       (add-hook (if-var% completion-at-point-functions 'minibuffer
                          'completion-at-point-functions
                   'comint-dynamic-complete-functions)
-                #'node-completion 0 'local)))
+                #'node-completion 0 'local)
+      (setq comint-process-echoes t)))
   (switch-to-buffer-other-window (*node*)))
 
 
