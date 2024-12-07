@@ -5,7 +5,7 @@ def lldb_emacs_apropos(what, max):
     m = lldb.SBStringList()
     p = 0 if len(what) == 0 else len(what)
     # max is useless in HandleCompletion
-    d.HandleCompletion(what, p, p, -1, m)
+    d.HandleCompletion(what, p, p, max, m)
     u = min(m.GetSize(), max)
     for x in range(0, u):
         print(m.GetStringAtIndex(x))
