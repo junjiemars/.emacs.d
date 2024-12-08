@@ -160,7 +160,7 @@
 ;;   (when server-process (server-force-stop))
 ;;   (server-start))
 
-(if-noninteractive%
-    (message "Elapsed %s" (emacs-init-time)))
+(when-interactive%
+  (message "Elapsed %s" (emacs-init-time)))
 
 ;; end of sample-self-epilogue.el

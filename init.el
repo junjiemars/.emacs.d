@@ -161,8 +161,7 @@ else do ELSE..."
 (defmacro if-native-comp% (then &rest else)
   "If native compilation is built-in, do THEN, else do ELSE..."
   (declare (indent 1))
-  (if (and (fboundp 'native-comp-available-p)
-           (native-comp-available-p))
+  (if (and (fboundp 'native-comp-available-p) (native-comp-available-p))
       `,then
     `(progn% ,@else)))
 
@@ -192,24 +191,33 @@ else do ELSE..."
 (defmacro time (id &rest form)
   "Run FORM and summarize resource usage."
   (declare (indent 0))
-  `(let ((bt (float-time))
-         (gc gcs-done)
-         (gt gc-elapsed))
+  `(let ((gd gcs-done)
+         (ge gc-elapsed)
+         (gcp gc-cons-percentage)
+         (pbu pure-bytes-used)
+         (ccc cons-cells-consed)
+         (fc floats-consed)
+         (vcc vector-cells-consed)
+         (sc symbols-consed)
+         (scc string-chars-consed)
+         (ic intervals-consed)
+         (strc strings-consed)
+         (bt (float-time)))
      (prog1 (progn% ,@form)
        (let ((ct (float-time)))
          (message "%.6f %d %.6f %.2f %d %d %d %d %d %d %d %d %.6f %s"
                   (- ct bt)
-                  (- gcs-done gc)
-                  (- gc-elapsed gt)
-                  gc-cons-percentage
-                  pure-bytes-used
-                  cons-cells-consed
-                  floats-consed
-                  vector-cells-consed
-                  symbols-consed
-                  string-chars-consed
-                  intervals-consed
-                  strings-consed
+                  (- gcs-done gd)
+                  (- gc-elapsed ge)
+                  (- gc-cons-percentage gcp)
+                  (- pure-bytes-used pbu)
+                  (- cons-cells-consed ccc)
+                  (- floats-consed fc)
+                  (- vector-cells-consed vcc)
+                  (- symbols-consed sc)
+                  (- string-chars-consed scc)
+                  (- intervals-consed ic)
+                  (- strings-consed strc)
                   ct
                   ,id)))))
 
