@@ -87,15 +87,6 @@ No matter the declaration order, the executing order is:
             ((eq :put op) (setq ps (cons (cons k v) ps)))
             (t ps)))))
 
-(defconst +nore-spec+
-  `( :shell ( :file ,(v-home% ".exec/shell-env.el")
-              :SHELL "SHELL"
-              :PATH "PATH")
-     :tags ( :root ,(emacs-home% ".tags/")
-             :nore ,(v-home% ".tags/nore.emacs.TAGS")
-             :emacs ,(v-home% ".tags/emacs.TAGS")))
-  "Nore spec.")
-
 ;; end of self-spec* macro
 
 ;;;

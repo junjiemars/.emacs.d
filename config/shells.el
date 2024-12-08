@@ -19,7 +19,9 @@
 
 (defmacro shells-spec->% (key)
   "Return :shell spec of \\=`+nore-spec+\\='."
-  (self-spec-> +nore-spec+ :shell key))
+  (cond ((eq key :file) (v-home% ".exec/shell-env.el"))
+        ((eq key :SHELL) "SHELL")
+        ((eq key :PATH) "PATH")))
 
 (defalias '*default-shell-env*
   (lexical-let% ((dx nil))
