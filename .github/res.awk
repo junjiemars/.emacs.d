@@ -19,7 +19,7 @@ function basename(path) {
 		strings_consed = $12;
 		filename = basename($14);
 
-		printf "%3d %2d %2d %8d %4d %8d %5d %8d %2d %6d %s\n",
+		printf "%3d %2d %2d %8d %5d %8d %5d %8d %2d %6d %s\n",
 				NR,
         $2,                     #  2. gc count
 				pure_bytes_used,        #  3.
