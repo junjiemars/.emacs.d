@@ -147,7 +147,7 @@ No matter the declaration order, the executing order is:
   (progn
     ;;; --batch mode: disable `desktop'
     (setq% desktop-save-mode nil 'desktop)
-    (unless-noninteractive%
+    (when-interactive%
       (when (env-spec->* :desktop :allowed)
         (prog1
             (compile-unit% (emacs-home* "config/memo.el") t)

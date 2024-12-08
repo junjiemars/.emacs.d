@@ -29,12 +29,12 @@ is non-nil, otherwise is not. See also:
                 #'eww-browse-url
               #'browse-url-default-browser)
           #'eww-browse-url))
-  (unless-noninteractive%
-   (message "eww as default browser %s"
-            (if (eq browse-url-browser-function
-                    'browse-url-default-browser)
-                "disabled"
-              "enabled"))))
+  (when-interactive%
+    (message "eww as default browser %s"
+             (if (eq browse-url-browser-function
+                     'browse-url-default-browser)
+                 "disabled"
+               "enabled"))))
 
 (defun eww*-truncate-lines ()
   "Disable \\=`eww\\=' truncate long lines."

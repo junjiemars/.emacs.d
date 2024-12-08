@@ -74,7 +74,7 @@
                      (and (eq (cdr y) m1)
                           (push! (cons (car y) r1) aa)))))
                (setq auto-mode-alist aa))))
-    (unless-noninteractive%
+    (when-interactive%
       (message "treesit %s" (if on "off" "on")))))
 
 (defadvice treesit--install-language-grammar-1

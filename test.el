@@ -268,6 +268,11 @@
          (should (and (when-window% 'w32 t)
                       (not (unless-window% 'w32 t)))))))
 
+(ert-deftest %d:fn:if/when/unless-interface% ()
+  (should (eq (if-interactive% t) (when-interactive% t)))
+  (should (eq (when-interactive% t) (not (unless-interactive% t))))
+  (should (eq (not (when-interactive% t)) (unless-interactive% t))))
+
 (ert-deftest %d:fn:flatten ()
   (should (equal '(nil) (flatten nil)))
   (should (equal '(a) (flatten 'a)))

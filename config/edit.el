@@ -88,9 +88,9 @@
 (defun reset-emacs (&optional do?)
   "Clean all compiled files and dot files, then kill Emacs."
   (interactive)
-  (when (if-noninteractive%
-            do?
-          (or do? (yes-or-no-p "Reset emacs?")))
+  (when (if-interactive%
+            (or do? (yes-or-no-p "Reset emacs?"))
+          do?)
     (clean-versioned-dirs
      (let ((xs nil))
        (dolist* (d (directory-files (emacs-home%) nil "^\\.[a-z]+") xs)

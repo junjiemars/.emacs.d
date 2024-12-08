@@ -53,9 +53,8 @@
          (d (url-hexify-string s)))
     (prog1 d
       (if buffered
-          (trans-with-output-buffer +encode-output-buffer-name+
-            (insert d))
-        (unless-noninteractive%
+          (trans-with-output-buffer +encode-output-buffer-name+ (insert d))
+        (when-interactive%
           (kill-new d t)
           (message "%s" d))))))
 
@@ -66,9 +65,8 @@
          (d (decode-coding-string (url-unhex-string s) 'utf-8)))
     (prog1 d
       (if buffered
-          (trans-with-output-buffer +decode-output-buffer-name+
-            (insert d))
-        (unless-noninteractive%
+          (trans-with-output-buffer +decode-output-buffer-name+ (insert d))
+        (when-interactive%
           (kill-new d t)
           (message "%s" d))))))
 
@@ -90,8 +88,8 @@
     (prog1 d
       (if buffered
           (trans-with-output-buffer +encode-output-buffer-name+
-            (insert d))
-        (unless-noninteractive%
+                                    (insert d))
+        (when-interactive%
           (kill-new d t)
           (message "%s" d))))))
 
@@ -103,8 +101,8 @@
     (prog1 d
       (if buffered
           (trans-with-output-buffer +decode-output-buffer-name+
-            (insert d))
-        (unless-noninteractive%
+                                    (insert d))
+        (when-interactive%
           (kill-new d t)
           (message "%s" d))))))
 
@@ -129,8 +127,8 @@
       (prog1 d
         (if buffered
             (trans-with-output-buffer +encode-output-buffer-name+
-              (insert d1))
-          (unless-noninteractive%
+                                      (insert d1))
+          (when-interactive%
             (kill-new d1 t)
             (message "%d (#o%o, #x%x)" d d d)))))))
 
@@ -152,8 +150,8 @@
     (prog1 d
       (if buffered
           (trans-with-output-buffer +decode-output-buffer-name+
-            (insert d))
-        (unless-noninteractive%
+                                    (insert d))
+        (when-interactive%
           (kill-new d t)
           (message "%s" d))))))
 
@@ -194,8 +192,8 @@
       (prog1 d
         (if buffered
             (trans-with-output-buffer +decode-output-buffer-name+
-              (insert d1))
-          (unless-noninteractive%
+                                      (insert d1))
+          (when-interactive%
             (kill-new d1 t)
             (message "%d (#o%o, #x%x)" d d d)))))))
 
@@ -253,8 +251,8 @@
     (prog1 d
       (if buffered
           (trans-with-output-buffer +decode-output-buffer-name+
-            (insert d1))
-        (unless-noninteractive%
+                                    (insert d1))
+        (when-interactive%
           (kill-new d1 t)
           (message "%d (#o%o, #x%x)" d d d))))))
 

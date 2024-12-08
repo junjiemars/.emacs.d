@@ -209,22 +209,27 @@ else do ELSE..."
 ;; end of *-window% macro
 
 ;;;
-;; *-noninteractive%: checking non-interactive context
+;; if/when/unless-interactive%: checking `non-interactive' context
 ;;;
 
-(defmacro if-noninteractive% (then &rest body)
-  "If \\=`noninteractive\\=' do THEN, else do BODY."
+(defmacro if-interactive% (then &rest body)
+  "If not \\=`noninteractive\\=' do THEN, else do BODY."
   (declare (indent 1))
-  `(if% noninteractive
+  `(if% (null noninteractive)
        ,then
      (progn% ,@body)))
 
-(defmacro unless-noninteractive% (&rest body)
-  "Unless \\=`noninteractive\\=' do BODY."
+(defmacro when-interactive% (&rest body)
+  "When not \\=`noninteractive\\=' do BODY."
   (declare (indent 0))
-  `(if-noninteractive% nil ,@body))
+  `(if-interactive% (progn% ,@body)))
 
-;; end of *-noninteractive% macro
+(defmacro unless-interactive% (&rest body)
+  "Unless not \\=`noninteractive\\=' do BODY."
+  (declare (indent 0))
+  `(if-interactive% nil ,@body))
+
+;; end of if/when/unless-interactive% macro
 
 ;;;
 ;; preferred lexical `dolist*'

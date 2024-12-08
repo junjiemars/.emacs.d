@@ -255,11 +255,11 @@
   (push! (v-home% "config/") load-path)
   (push! (v-home% "private/") load-path)
   (when (*self-paths* :get :epilogue)
-    (make-thread* #'self-epilogue-init! (if-noninteractive% t))))
+    (make-thread* #'self-epilogue-init! (unless-interactive% t))))
 
 ;;; autoload when interactive or not
-(if-noninteractive%
-    (on-autoloads!)
-  (append! #'on-autoloads! after-init-hook))
+(if-interactive%
+    (append! #'on-autoloads! after-init-hook)
+  (on-autoloads!))
 
 ;; end of autoloads.el
