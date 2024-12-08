@@ -199,9 +199,9 @@ RENEW overwrite the existing tags file when t else create it."
              option
              renew
              `( :inc "\\.[ch]+$"
-                :exc (concat (tags-spec->% :vcs-dir)
-                             "\\|" (tags-spec->% :arc-dir)
-                             "\\|" (tags-spec->% :out-dir)))))
+                :exc ,(concat (tags-spec->% :vcs-dir)
+                              "\\|" (tags-spec->% :arc-dir)
+                              "\\|" (tags-spec->% :out-dir)))))
 
 (defun make-lisp-tags
     (home tags-file &optional option file-filter dir-filter renew)
@@ -213,8 +213,8 @@ RENEW overwrite the existing tags file when t else create it."
              option
              renew
              `( :inc "\\.el$\\|\\.cl$\\|\\.lis[p]?$\\|\\.ss$\\|\\.scm$"
-                :exc (concat (tags-spec->% :vcs-dir)
-                             "\\|" (tags-spec->% :arc-dir)))))
+                :exc ,(concat (tags-spec->% :vcs-dir)
+                              "\\|" (tags-spec->% :arc-dir)))))
 
 (defun make-emacs-tags (source &optional option renew)
   "Make tags for Emacs\\=' C and Lisp SOURCE code."
