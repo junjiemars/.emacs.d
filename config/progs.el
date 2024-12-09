@@ -45,11 +45,10 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
 
 ;; end of open-next/previous-line
 
-
-;; Greek letters C-x 8 <RET> greek small letter lambda
-
-
-;;; bind `insert-char*' to [C-x 8 RET] for ancient Emacs
+;;;
+;; bind `insert-char*' to [C-x 8 RET] for ancient Emacs
+;; greek letters C-x 8 <RET> greek small letter lambda
+;;;
 
 (defmacro unless-key-insert-char% (&rest body)
   "Unless [C-x 8 RET] key bind to \\=`insert-char\\='."
@@ -60,7 +59,7 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
 
 (unless-key-insert-char%
   (defun insert-char* (character &optional count inherit)
-    "Interactive `insert-char' for ancient Emacs."
+    "Interactive \\=`insert-char\\=' for ancient Emacs."
     (interactive
      (list (read-string "Insert character (Unicode or hex number): ")
            (prefix-numeric-value current-prefix-arg)
@@ -104,6 +103,9 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
 
 ;; end of Comment
 
+;;;
+;; surround region
+;;;
 
 (defun surround-region (&optional begin end)
   "Surround region with BEGIN or END string.\n
@@ -142,7 +144,9 @@ If \\=`current-prefix-arg\\=' < 0, then repeat n time with END in reversed."
 
 ;; end of `surround-region'
 
-;;; string case
+;;;
+;; string case
+;;;
 
 (defun downcase* (string)
   "Return down case of STRING."
@@ -203,25 +207,6 @@ And copy the qualified buffer name to kill ring."
 ;; end of buffer
 
 ;;;
-;; `minibuffer'
-;;;
-
-(defmacro set-minibuffer-complete-key! (key)
-  "Set completing KEY for \\=`minibuffer\\='."
-  `(define-key%
-    (if-var% minibuffer-local-completion-map 'minibuffer
-             minibuffer-local-completion-map
-      minibuffer-local-map)
-    ,key
-    (if-fn% 'minibuffer-complete 'minibuffer
-            #'minibuffer-complete
-      (if-fn% #'completion-at-point 'minibuffer
-              #'completion-at-point
-        #'lisp-complete-symbol))))
-
-;; end of `minibuffer'
-
-;;;
 ;; ido
 ;;;
 
@@ -244,6 +229,24 @@ And copy the qualified buffer name to kill ring."
   (when-version% > 28 (require 'dired-x nil t)))
 
 ;; end of ido
+
+;;;
+;; `minibuffer'
+;;;
+
+(defun on-minibuffer-init! ()
+  (let ((km (if-var% minibuffer-local-completion-map 'minibuffer
+                     minibuffer-local-completion-map
+              minibuffer-local-map))
+        (kf (if-fn% 'minibuffer-complete 'minibuffer
+                    #'minibuffer-complete
+              (if-fn% #'completion-at-point 'minibuffer
+                      #'completion-at-point
+                #'lisp-complete-symbol))))
+    (define-key km (kbd% "TAB") kf)
+    (define-key km (kbd% "C-M-i") kf)))
+
+;; end of `minibuffer'
 
 ;;;
 ;; `sort'
@@ -364,9 +367,6 @@ And copy the qualified buffer name to kill ring."
   (when-fn% 'whitespace-mode 'whitespace
     (define-key% (current-global-map) (kbd% "C-x x SPC") #'whitespace-mode))
   (define-key% (current-global-map) "xu" #'rename-uniquely)
-  ;; `minibuffer'
-  (set-minibuffer-complete-key! (kbd% "TAB"))
-  (set-minibuffer-complete-key! (kbd% "C-M-i"))
   ;; `messages-buffer-mode'
   (when-version% > 24.4
     ;; fix: no quit key to hide *Messages* buffer for ancient Emacs
@@ -418,6 +418,7 @@ And copy the qualified buffer name to kill ring."
   (on-progs-key!)
   (on-progs-mode!)
   (on-ido-init!)
+  (on-minibuffer-init!)
   (on-sort-init!))
 
 
