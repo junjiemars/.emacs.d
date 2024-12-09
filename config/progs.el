@@ -261,6 +261,14 @@ And copy the qualified buffer name to kill ring."
   (define-key% (current-global-map) "sr" #'reverse-region)
   (define-key% (current-global-map) "sd" #'delete-duplicate-lines))
 
+(when-fn% 'whitespace-mode 'whitespace
+  (defun on-whitespace-init! ()
+    "On \\=`sort\\=' intialization."
+    (define-key% (current-global-map) (kbd% "C-x x SPC") #'whitespace-mode)
+    (unless-graphic%
+      (with-eval-after-load 'whitespace
+        (set-face-background 'whitespace-space nil)))))
+
 ;; end of `sort'
 
 ;;;
@@ -364,8 +372,6 @@ And copy the qualified buffer name to kill ring."
   (define-key% (current-global-map) "xr" #'rename-buffer)
   (when-fn% 'toggle-word-wrap 'simple
     (define-key% (current-global-map) "xw" #'toggle-word-wrap))
-  (when-fn% 'whitespace-mode 'whitespace
-    (define-key% (current-global-map) (kbd% "C-x x SPC") #'whitespace-mode))
   (define-key% (current-global-map) "xu" #'rename-uniquely)
   ;; `messages-buffer-mode'
   (when-version% > 24.4
@@ -419,7 +425,9 @@ And copy the qualified buffer name to kill ring."
   (on-progs-mode!)
   (on-ido-init!)
   (on-minibuffer-init!)
-  (on-sort-init!))
+  (on-sort-init!)
+  (when-fn% 'whitespace-mode 'whitespace
+    (on-whitespace-init!)))
 
 
 
