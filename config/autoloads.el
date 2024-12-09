@@ -43,6 +43,7 @@
     (unless-graphic%
       (compile-unit% (emacs-home* "config/clipboard.el") t))
     (compile-unit% (emacs-home* "config/compiles.el") t)
+    (compile-unit% (emacs-home* "config/dict.el") t)
     (compile-unit% (emacs-home* "config/direds.el") t)
     (when-platform% 'windows-nt
       (compile-unit% (emacs-home* "config/docs.el") t))
@@ -88,11 +89,6 @@
     ;;   (compile-unit% (emacs-home* "config/on-clipboard-autoload.el")))
     ;; on `compiles'
     (compile-unit% (emacs-home* "config/on-compile-autoload.el"))
-    ;; `dict'
-    (prog1
-        (compile-unit% (emacs-home* "config/dict.el") t)
-      (autoload 'lookup-dict (v-home%> "config/dict")
-        "Lookup dict." t))
     ;; on `direds'
     (compile-unit% (emacs-home* "config/on-dired-autoload.el"))
     ;; on `docs'

@@ -339,7 +339,7 @@ And copy the qualified buffer name to kill ring."
 
 (defun on-progs-key! ()
   ;; line
-  (define-key% (current-global-map) "" #'open-next-line)
+  (define-key% (current-global-map) "" #'open-next-line)
   (define-key% (current-global-map) (kbd% "C-M-o") #'open-previous-line)
   ;; comment
   (define-key% (current-global-map) (kbd% "C-x M-;") #'toggle-comment)
@@ -351,8 +351,6 @@ And copy the qualified buffer name to kill ring."
   ;; `insert-char*'
   (unless-key-insert-char%
     (define-key% (current-global-map) "8" #'insert-char*))
-  ;; lookup dictionary
-  (define-key% (current-global-map) (kbd% "M-s d") 'lookup-dict)
   ;; open file or url at point
   (when-fn% 'find-file-at-point 'ffap
     (define-key% (current-global-map) "ff" #'find-file-at-point))

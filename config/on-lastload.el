@@ -17,6 +17,13 @@
 
 ;; end of `clipboard'
 
+;;; `dict'
+
+(autoload 'lookup-dict (v-home%> "config/dict") "Lookup dict." t)
+(define-key% (current-global-map) (kbd% "M-s d") 'lookup-dict)
+
+;; end of `dict'
+
 ;;; `mill'
 
 ;; Kill
