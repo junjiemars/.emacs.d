@@ -207,6 +207,8 @@
     ;; on `vcs'
     (when-feature-vc%
       (compile-unit% (emacs-home* "config/on-vcs-autoload.el")))
+    ;; `windows'
+    (compile-unit% (emacs-home* "config/windows.el"))
     ;; on last:
     (compile-unit% (emacs-home* "config/on-lastload.el"))
     ) ;; end of compile!

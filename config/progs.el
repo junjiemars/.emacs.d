@@ -190,50 +190,6 @@ If \\=`current-prefix-arg\\=' < 0, then repeat n time with END in reversed."
 ;; end of string case
 
 ;;;
-;; `recenter-top-bottom' for Emacs23.2-
-;;;
-
-(defmacro unless-fn-recenter-top-bottom% (&rest body)
-  `(unless-fn% 'recenter-top-bottom nil
-     ,@body))
-
-(unless-fn-recenter-top-bottom%
- (defvar recenter-last-op nil
-   "Indicates the last recenter operation performed."))
-
-(unless-fn-recenter-top-bottom%
- (defvar recenter-positions '(middle top bottom)
-   "Cycling order for \\=`recenter-top-bottom\\='."))
-
-(unless-fn-recenter-top-bottom%
- (defun recenter-top-bottom (&optional arg)
-   "Move current buffer line to the specified window line."
-   (interactive "P")
-   (cond (arg (recenter arg))
-         (t (setq recenter-last-op
-                  (if (eq this-command last-command)
-                      (car (or (cdr (memq recenter-last-op
-                                          recenter-positions))
-                               recenter-positions))
-                    (car recenter-positions)))
-            (let ((this-scroll-margin
-                   (min (max 0 scroll-margin)
-                        (truncate (/ (window-body-height) 4.0)))))
-              (cond ((eq recenter-last-op 'middle)
-                     (recenter))
-                    ((eq recenter-last-op 'top)
-                     (recenter this-scroll-margin))
-                    ((eq recenter-last-op 'bottom)
-                     (recenter (- -1 this-scroll-margin)))
-                    ((integerp recenter-last-op)
-                     (recenter recenter-last-op))
-                    ((floatp recenter-last-op)
-                     (recenter (round (* recenter-last-op
-                                         (window-height)))))))))))
-
-;; end of `recenter-top-bottom'
-
-;;;
 ;; buffer
 ;;;
 
@@ -303,6 +259,21 @@ And copy the qualified buffer name to kill ring."
 ;; end of ido
 
 ;;;
+;; `sort'
+;;;
+
+(defun on-sort-init! ()
+  "On \\=`sort\\=' intialization."
+  (define-key% (current-global-map) "sf" #'sort-fields)
+  (define-key% (current-global-map) "sn" #'sort-numeric-fields)
+  (define-key% (current-global-map) "sx" #'sort-regexp-fields)
+  (define-key% (current-global-map) "sl" #'sort-lines)
+  (define-key% (current-global-map) "sr" #'reverse-region)
+  (define-key% (current-global-map) "sd" #'delete-duplicate-lines))
+
+;; end of `sort'
+
+;;;
 ;; env
 ;;;
 
@@ -339,7 +310,7 @@ And copy the qualified buffer name to kill ring."
 
 (defun on-progs-key! ()
   ;; line
-  (define-key% (current-global-map) "" #'open-next-line)
+  (define-key% (current-global-map) (kbd% "C-o") #'open-next-line)
   (define-key% (current-global-map) (kbd% "C-M-o") #'open-previous-line)
   ;; comment
   (define-key% (current-global-map) (kbd% "C-x M-;") #'toggle-comment)
@@ -374,20 +345,7 @@ And copy the qualified buffer name to kill ring."
     (define-key% (current-global-map) (kbd% "RET")
                  #'electric-newline-and-maybe-indent)
     (define-key% (current-global-map) (kbd% "C-j") #'newline))
-  ;; sorting
-  (define-key% (current-global-map) "sf" #'sort-fields)
-  (define-key% (current-global-map) "sn" #'sort-numeric-fields)
-  (define-key% (current-global-map) "sx" #'sort-regexp-fields)
-  (define-key% (current-global-map) "sl" #'sort-lines)
-  (define-key% (current-global-map) "sr" #'reverse-region)
-  (define-key% (current-global-map) "sd" #'delete-duplicate-lines)
-  ;; windows
-  (define-key% (current-global-map) "wl" #'windmove-left)
-  (define-key% (current-global-map) "wr" #'windmove-right)
-  (define-key% (current-global-map) "wu" #'windmove-up)
-  (define-key% (current-global-map) "wd" #'windmove-down)
   ;; buffers
-  (define-key% (current-global-map) "" #'recenter-top-bottom)
   (define-key% (current-global-map) "xc" #'clone-buffer)
   (define-key% (current-global-map) "xn" #'echo-buffer-name)
   (define-key% (current-global-map) "xt" #'toggle-truncate-lines)
@@ -469,7 +427,8 @@ And copy the qualified buffer name to kill ring."
   (on-progs-env!)
   (on-progs-key!)
   (on-progs-mode!)
-  (on-ido-init!))
+  (on-ido-init!)
+  (on-sort-init!))
 
 
 
