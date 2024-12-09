@@ -56,7 +56,6 @@
     (compile-unit% (emacs-home* "config/guds.el") t)
     (compile-unit% (emacs-home* "config/helps.el") t)
     (compile-unit% (emacs-home* "config/hippies.el") t)
-    (compile-unit% (emacs-home* "config/idos.el") t)
     (compile-unit% (emacs-home* "config/isearchs.el") t)
     (compile-unit% (emacs-home* "config/mill.el") t)
     (compile-unit% (emacs-home* "config/mixal.el") t)
@@ -127,8 +126,6 @@
     (compile-unit% (emacs-home* "config/on-help-autoload.el"))
     ;; on `hippies'
     (compile-unit% (emacs-home* "config/on-hippie-autoload.el"))
-    ;; on `idos'
-    (compile-unit% (emacs-home* "config/on-ido-autoload.el"))
     ;; on `isearchs'
     (compile-unit% (emacs-home* "config/on-isearch-autoload.el"))
     ;; ;; `js'

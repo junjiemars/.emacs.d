@@ -279,6 +279,30 @@ And copy the qualified buffer name to kill ring."
 ;; end of `minibuffer'
 
 ;;;
+;; ido
+;;;
+
+(defun on-ido-init! ()
+  "On \\=`ido\\=' intialization."
+  (if-fn% 'ido-mode 'ido
+    (progn
+      (ido-mode t)
+      (define-key% (current-global-map) "5r"
+                   #'ido-find-file-read-only-other-frame)
+      (define-key% (current-global-map) "4r"
+                   #'ido-find-file-read-only-other-window)
+      (define-key% (current-global-map) ""
+                   #'ido-find-file-read-only)
+      (setq% ido-enable-flex-matching t 'ido))
+    ;; default view file keybindings
+    (define-key% (current-global-map) "5r" #'view-file-other-frame)
+    (define-key% (current-global-map) "4r" #'view-file-other-window)
+    (define-key% (current-global-map) "" #'view-file))
+  (when-version% > 28 (require 'dired-x nil t)))
+
+;; end of ido
+
+;;;
 ;; env
 ;;;
 
@@ -315,7 +339,7 @@ And copy the qualified buffer name to kill ring."
 
 (defun on-progs-key! ()
   ;; line
-  (define-key% (current-global-map) "" #'open-next-line)
+  (define-key% (current-global-map) "" #'open-next-line)
   (define-key% (current-global-map) (kbd% "C-M-o") #'open-previous-line)
   ;; comment
   (define-key% (current-global-map) (kbd% "C-x M-;") #'toggle-comment)
@@ -434,7 +458,6 @@ And copy the qualified buffer name to kill ring."
       (save-place-mode t)
     (setq% save-place t 'saveplace))
   (require 'view nil t)
-  (when-fn% 'ido-mode 'ido (ido-mode t))
   ;; fix: `uniquify' may not be autoloaded on ancient Emacs.
   (when-version% > 24
     (when% (fluid-let (byte-compile-warnings nil)
@@ -447,7 +470,8 @@ And copy the qualified buffer name to kill ring."
 (defun on-progs-init! ()
   (on-progs-env!)
   (on-progs-key!)
-  (on-progs-mode!))
+  (on-progs-mode!)
+  (on-ido-init!))
 
 
 
