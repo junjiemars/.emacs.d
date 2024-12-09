@@ -8,15 +8,13 @@
 ;; Commentary: essential for programming.
 ;;;;
 
-;;; open-*-line fn
+;;; open-next/previous-line fn
 ;;; control indent or not: `open-next-line' and `open-previous-line'.
 ;;; see also: https://www.emacswiki.org/emacs/OpenNextLine
 
 (defun open-next-line (n &optional indent)
-  "Move to the next line and then open N lines, like vi\\=' o
-command.\n
-Optional argument INDENT whether to indent lines. See also
-\\=`open-line\\='."
+  "Move to the next line and then open N lines, like vi\\=' \\=`o\\=' command.\n
+Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
   (interactive (list (prefix-numeric-value
                       (if (consp current-prefix-arg)
                           1
@@ -28,13 +26,11 @@ Optional argument INDENT whether to indent lines. See also
   (end-of-line)
   (open-line n)
   (forward-line 1)
-  (when indent
-    (indent-according-to-mode)))
+  (and indent (indent-according-to-mode)))
 
 (defun open-previous-line (n &optional indent)
-  "Open N lines above the current one, like vi\\=' O command.\n
-Optional argument INDENT whether to indent lines. See also
-\\=`open-line\\=' and \\=`split-line\\='."
+  "Open N lines above the current one, like vi\\=' \\=`O\\=' command.\n
+Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
   (interactive (list (prefix-numeric-value
                       (if (consp current-prefix-arg)
                           1
@@ -47,8 +43,7 @@ Optional argument INDENT whether to indent lines. See also
   (open-line n)
   (and indent (indent-according-to-mode)))
 
-
-;; end of open-*-line
+;; end of open-next/previous-line
 
 
 ;; Greek letters C-x 8 <RET> greek small letter lambda
@@ -83,14 +78,6 @@ Optional argument INDENT whether to indent lines. See also
       (insert-char c count))))
 
 ;; end of `insert-char*'
-
-;;; `count-lines-region'
-
-(unless-fn% 'count-words-region 'simple
-  (defalias 'count-words-region #'count-lines-region
-    "\\=`count-lines-region\\=' had been obsoleted since Emacs24.1+"))
-
-;; end of `count-lines-region'
 
 ;;;
 ;; Comment
@@ -241,15 +228,15 @@ And copy the qualified buffer name to kill ring."
 (defun on-ido-init! ()
   "On \\=`ido\\=' intialization."
   (if-fn% 'ido-mode 'ido
-    (progn
-      (ido-mode t)
-      (define-key% (current-global-map) "5r"
-                   #'ido-find-file-read-only-other-frame)
-      (define-key% (current-global-map) "4r"
-                   #'ido-find-file-read-only-other-window)
-      (define-key% (current-global-map) ""
-                   #'ido-find-file-read-only)
-      (setq% ido-enable-flex-matching t 'ido))
+          (progn
+            (ido-mode t)
+            (define-key% (current-global-map) "5r"
+                         #'ido-find-file-read-only-other-frame)
+            (define-key% (current-global-map) "4r"
+                         #'ido-find-file-read-only-other-window)
+            (define-key% (current-global-map) ""
+                         #'ido-find-file-read-only)
+            (setq% ido-enable-flex-matching t 'ido))
     ;; default view file keybindings
     (define-key% (current-global-map) "5r" #'view-file-other-frame)
     (define-key% (current-global-map) "4r" #'view-file-other-window)
@@ -278,6 +265,10 @@ And copy the qualified buffer name to kill ring."
 ;;;
 
 (defun on-progs-env! ()
+  ;; count region
+  (unless-fn% 'count-words-region 'simple
+    (defalias 'count-words-region #'count-lines-region
+      "\\=`count-lines-region\\=' had been obsoleted since Emacs24.1+"))
   ;; title bar with full path
   (when-graphic%
     (setq% frame-title-format "%b (%f)"))
@@ -287,7 +278,6 @@ And copy the qualified buffer name to kill ring."
   (setq view-read-only t)
   ;; Changes all yes/no questions to y/n type
   (defalias 'yes-or-no-p 'y-or-n-p)
-
   ;; shows all options when running apropos. For more info,
   ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html
   ;;enable apropos-do-all, but slower
