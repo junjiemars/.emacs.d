@@ -7,43 +7,13 @@
 ;;;;
 ;; Commentary: essential for programming.
 ;;;;
+
 
-;;; open-next/previous-line fn
-;;; control indent or not: `open-next-line' and `open-previous-line'.
-;;; see also: https://www.emacswiki.org/emacs/OpenNextLine
+;;; require
 
-(defun open-next-line (n &optional indent)
-  "Move to the next line and then open N lines, like vi\\=' \\=`o\\=' command.\n
-Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
-  (interactive (list (prefix-numeric-value
-                      (if (consp current-prefix-arg)
-                          1
-                        current-prefix-arg))
-                     (if current-prefix-arg
-                         (y-or-n-p "Indent? ")
-                       t)))
-  (barf-if-buffer-read-only)
-  (end-of-line)
-  (open-line n)
-  (forward-line 1)
-  (and indent (indent-according-to-mode)))
+(require% 'ed (v-home%> "config/ed"))
 
-(defun open-previous-line (n &optional indent)
-  "Open N lines above the current one, like vi\\=' \\=`O\\=' command.\n
-Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
-  (interactive (list (prefix-numeric-value
-                      (if (consp current-prefix-arg)
-                          1
-                        current-prefix-arg))
-                     (if current-prefix-arg
-                         (y-or-n-p "Indent:? ")
-                       t)))
-  (barf-if-buffer-read-only)
-  (beginning-of-line)
-  (open-line n)
-  (and indent (indent-according-to-mode)))
-
-;; end of open-next/previous-line
+;; end of require
 
 ;;;
 ;; bind `insert-char*' to [C-x 8 RET] for ancient Emacs
@@ -337,15 +307,8 @@ And copy the qualified buffer name to kill ring."
   (define-key% (current-global-map) "rg" #'string-insert-rectangle)
   (define-key% (current-global-map) "rv" #'view-register)
   ;; line
-  (when-fn% 'electric-newline-and-maybe-indent 'electric
-    ;; Default behaviour of RET
-    ;; https://lists.gnu.org/archive/html/emacs-devel/2013-10/msg00490.html
-    ;; electric-indent-mode: abolition of `newline' function is not
-    ;; the Right Thing
-    ;; https://lists.gnu.org/archive/html/emacs-devel/2013-10/msg00407.html
-    (define-key% (current-global-map) (kbd% "RET")
-                 #'electric-newline-and-maybe-indent)
-    (define-key% (current-global-map) (kbd% "C-j") #'newline))
+  (define-key (current-global-map) (kbd% "RET") #'newline*)
+  (define-key% (current-global-map) (kbd% "C-j") #'newline-and-indent)
   ;; buffers
   (define-key% (current-global-map) "xc" #'clone-buffer)
   (define-key% (current-global-map) "xn" #'echo-buffer-name)

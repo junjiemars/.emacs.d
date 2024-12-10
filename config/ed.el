@@ -13,6 +13,10 @@
 
 ;; end of require
 
+;;;
+;; line
+;;;
+
 (defmacro delete-line* ()
   "Delete current line."
   `(if-fn% 'delete-line nil
@@ -20,6 +24,57 @@
      (let ((inhibit-field-text-motion t))
        (delete-region (line-beginning-position)
                       (line-beginning-position 2)))))
+
+(defun newline* (&optional arg)
+  "Raw newline."
+  (interactive "*P")
+  (let ((electric-indent-mode nil))
+    (when-version% > 26
+      (when-lexical% (ignore* electric-indent-mode)))
+    (if-version% <= 24.4
+                 (newline arg 'interactive)
+      (newline arg))))
+
+;;; open-next/previous-line fn
+;;; control indent or not: `open-next-line' and `open-previous-line'.
+;;; see also: https://www.emacswiki.org/emacs/OpenNextLine
+
+(defun open-next-line (n &optional indent)
+  "Move to the next line and then open N lines, like vi\\=' \\=`o\\=' command.\n
+Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
+  (interactive (list (prefix-numeric-value
+                      (if (consp current-prefix-arg)
+                          1
+                        current-prefix-arg))
+                     (if current-prefix-arg
+                         (y-or-n-p "Indent? ")
+                       t)))
+  (barf-if-buffer-read-only)
+  (end-of-line)
+  (open-line n)
+  (forward-line 1)
+  (and indent (indent-according-to-mode)))
+
+(defun open-previous-line (n &optional indent)
+  "Open N lines above the current one, like vi\\=' \\=`O\\=' command.\n
+Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
+  (interactive (list (prefix-numeric-value
+                      (if (consp current-prefix-arg)
+                          1
+                        current-prefix-arg))
+                     (if current-prefix-arg
+                         (y-or-n-p "Indent:? ")
+                       t)))
+  (barf-if-buffer-read-only)
+  (beginning-of-line)
+  (open-line n)
+  (and indent (indent-according-to-mode)))
+
+;; end of line
+
+;;;
+;; file
+;;;
 
 (defun file-in-dirs-p (file dirs)
   "Return the matched dir if FILE in DIRS, otherwise nil."
@@ -35,15 +90,7 @@
                          case-fold-search))
                  (throw 'br x))))))))
 
-(defun newline* (&optional arg)
-  "Raw newline."
-  (interactive "*P")
-  (let ((electric-indent-mode nil))
-    (when-version% > 26
-      (when-lexical% (ignore* electric-indent-mode)))
-    (if-version% <= 24.4
-                 (newline arg 'interactive)
-      (newline arg))))
+;; end of file
 
 (defmacro shell-format-buffer (modes alternate src shell*)
   "Format the current buffer via SHELL\\=*."
