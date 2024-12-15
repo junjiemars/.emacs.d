@@ -65,27 +65,15 @@
          (-cu-dst1- (cdr -cu-u1-)))
     (and -cu-u1- (vector -cu-src1- -cu-dst1- only-compile nil))))
 
-(defmacro compile-unit->src (unit)
-  "Return the :src part of UNIT."
-  `(aref ,unit 0))
-
-(defmacro compile-unit->dst (unit)
-  "Return the :dst part of UNIT."
-  `(aref ,unit 1))
-
-(defmacro compile-unit->only-compile (unit)
-  "Return the :only-compile indicator of UNIT."
-  `(aref ,unit 2))
-
 (defun compile! (&rest units)
   "Compile and load UNITS."
   (declare (indent 0))
   (while units
     (let ((u (car units)))
       (and u (compile-and-load-file*
-              (compile-unit->src u)
-              (compile-unit->dst u)
-              (compile-unit->only-compile u))))
+              (aref u 0)
+              (aref u 1)
+              (aref u 2))))
     (setq units (cdr units))))
 
 

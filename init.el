@@ -329,12 +329,12 @@ If ONLY-COMPILE is t, do not load DST."
 
 (defmacro compile-and-load-file* (src dst &optional only-compile)
   "Profiling shim of \\=`compile-and-load-file*\\='."
-  (if% (boundp '*nore-emacs-profile*)
+  (if (boundp '*nore-emacs-profile*)
       `(time ,src (compile-and-load-file ,src ,dst ,only-compile))
     `(compile-and-load-file ,src ,dst ,only-compile)))
 
 ;; boot
-(unless% (boundp '*nore-emacs-no-boot*)
+(unless (boundp '*nore-emacs-no-boot*)
   (inhibit-gc
     (let ((vc (make-v-comp-file (emacs-home "config/vcomp.el"))))
       (compile-and-load-file* (car vc) (cdr vc)))
