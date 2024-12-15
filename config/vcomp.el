@@ -54,8 +54,8 @@
 
 (defun compile-unit* (file &optional only-compile)
   "Make an compile unit for \\=`compile!\\='."
-  (and (stringp file) (file-exists-p file)
-       (let ((u1 (make-v-comp-file file)))
+  (and (stringp file) (inhibit-file-name-handler (file-exists-p file))
+       (let ((u1 (v-comp-file! file)))
          (vector (car u1) (cdr u1) only-compile nil))))
 
 (defmacro compile-unit% (file &optional only-compile)
@@ -63,7 +63,7 @@
   (let* ((-cu-u1- (v-comp-file! (funcall `(lambda () ,file))))
          (-cu-src1- (car -cu-u1-))
          (-cu-dst1- (cdr -cu-u1-)))
-    (and -cu-u1- `[,-cu-src1- ,-cu-dst1- ,only-compile nil])))
+    (and -cu-u1- (vector -cu-src1- -cu-dst1- only-compile nil))))
 
 (defmacro compile-unit->src (unit)
   "Return the :src part of UNIT."
