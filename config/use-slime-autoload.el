@@ -10,6 +10,6 @@
 
 ;; `slime' after load
 (with-eval-after-load 'slime
-  (use-slime-init!))
+  (make-thread* #'use-slime-init!))
 
 ;; end of file
