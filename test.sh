@@ -137,7 +137,7 @@ test_module() {
   (list
     :cond t
     :packages '(paredit)
-    :compile \`(,(compile-unit% (emacs-home "config/use-lisp-autoload.el")))))
+    :compile \`(,(compile-unit% (emacs-home* "config/use-lisp-autoload.el")))))
 (*self-mod-spec*
  :put :rust
  (list
@@ -151,8 +151,8 @@ test_module() {
     :cond (executable-find% "git")
     :packages (prog1 '(magit)
                 (set-default 'magit-define-global-key-bindings nil))
-    :compile \`(,(compile-unit% (emacs-home "config/use-magit.el") t)
-               ,(compile-unit% (emacs-home "config/use-magit-autoload.el")))))
+    :compile \`(,(compile-unit% (emacs-home* "config/use-magit.el") t)
+               ,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
 END
   echo "# cat <${_ENV_PRO_}"
   cat <"${_ENV_PRO_}"
@@ -173,6 +173,7 @@ test_profile() {
   if [ -z "$mod" ]; then
     mod="nil"
   fi
+  test_echo_env "profile(module=$mod)|prologue"
   cat <<END> "${_ENV_PRO_}"
 (*self-paths* :put :mod-spec nil)
 (*self-paths* :put :env-spec nil)
@@ -232,7 +233,7 @@ test_profile() {
   (list
     :cond t
     :packages '(paredit)
-    :compile \`(,(compile-unit% (emacs-home "config/use-lisp-autoload.el")))))
+    :compile \`(,(compile-unit% (emacs-home* "config/use-lisp-autoload.el")))))
 (*self-mod-spec*
  :put :rust
  (list
@@ -246,8 +247,8 @@ test_profile() {
     :cond (executable-find% "git")
     :packages (prog1 '(magit)
                 (set-default 'magit-define-global-key-bindings nil))
-    :compile \`(,(compile-unit% (emacs-home "config/use-magit.el") t)
-               ,(compile-unit% (emacs-home "config/use-magit-autoload.el")))))
+    :compile \`(,(compile-unit% (emacs-home* "config/use-magit.el") t)
+               ,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
 END
   echo "# cat <${_ENV_PRO_}"
   cat <"${_ENV_PRO_}"

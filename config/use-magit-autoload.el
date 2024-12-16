@@ -8,8 +8,8 @@
 
 (autoload 'use-magit-init! (v-home%> "config/use-magit"))
 
-;;; toggle off `magit-auto-revert-mode'
-;; (setq% magit-auto-revert-mode nil 'magit-autorevert)
+;; toggle off `magit-auto-revert-mode' in `magit-autorevert'
+(set-default 'magit-auto-revert-mode nil)
 
 ;;; add `magit' into `vc*-frontend'
 (add-hook 'vc*-frontend-hook `("magit" . magit-status))
