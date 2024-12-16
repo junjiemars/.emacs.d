@@ -163,12 +163,16 @@ END
 }
 
 test_profile() {
+  local mod="$1"
   local d="${_ROOT_}/.profile/${_ENV_VER_}"
   local fc="${d}/compile"
   local fb="${d}/boot"
   local prof="${_ROOT_}/.github/prof.sh"
   test_echo_env "profile|clean"
   test_clean_env
+  if [ -z "$mod" ]; then
+    mod="nil"
+  fi
   cat <<END> "${_ENV_PRO_}"
 (*self-paths* :put :mod-spec nil)
 (*self-paths* :put :env-spec nil)
@@ -206,9 +210,6 @@ test_profile() {
        :allowed nil))
 (*self-env-spec*
   :put :module
-  (list :allowed t))
-(*self-env-spec*
-  :put :module
   (list
     :package-check-signature 'allow-unsigned
     :package-archives
@@ -216,7 +217,7 @@ test_profile() {
       ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
       ("melpa-stable" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
       ("melpa" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))
-    :allowed t))
+    :allowed $mod))
 (*self-mod-spec*
  :put :common-lisp
  (list
@@ -344,14 +345,15 @@ make_env
 
 # test
 case "${_TEST_}" in
-  bone)     test_bone     ;;
-  axiom)    test_axiom    ;;
-  module)   test_module   ;;
-  profile)  test_profile  ;;
-  clean)    test_clean    ;;
-  boot)     test_boot     ;;
-  debug)    test_debug    ;;
-  reset)    test_reset    ;;
+  bone)           test_bone        ;;
+  axiom)          test_axiom       ;;
+  module)         test_module      ;;
+  profile)        test_profile     ;;
+  profile_module) test_profile t   ;;
+  clean)          test_clean       ;;
+  boot)           test_boot        ;;
+  debug)          test_debug       ;;
+  reset)          test_reset       ;;
   *) ;;
 esac
 
