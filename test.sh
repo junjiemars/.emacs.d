@@ -124,11 +124,27 @@ test_module() {
       ("melpa" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))
     :allowed t))
 (*self-mod-spec*
+ :put :common-lisp
+ (list
+  :cond (or (executable-find% "sbcl")
+            (executable-find% "ecl")
+            (executable-find% "acl"))
+  :packages '(slime)
+  :compile \`(,(compile-unit% (emacs-home* "config/use-slime.el") t)
+             ,(compile-unit% (emacs-home* "config/use-slime-autoload.el")))))
+(*self-mod-spec*
   :put :lisp
   (list
     :cond t
-    :packages  '(paredit)
+    :packages '(paredit)
     :compile \`(,(compile-unit% (emacs-home "config/use-lisp-autoload.el")))))
+(*self-mod-spec*
+ :put :rust
+ (list
+  :cond (and (executable-find% "rustc") (executable-find% "cargo"))
+  :packages '(rust-mode)
+  :compile \`(,(compile-unit% (emacs-home* "config/use-rust.el") t)
+             ,(compile-unit% (emacs-home* "config/use-rust-autoload.el")))))
 (*self-mod-spec*
   :put :vc
   (list
