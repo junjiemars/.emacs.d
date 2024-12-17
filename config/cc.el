@@ -385,7 +385,7 @@ N specify the number of spaces when align."
   "Format the current buffer via clang-format."
   (interactive)
   (shell-format-buffer `(c-mode c-ts-mode)
-    (when-feature-eglot%
+    (when-feature% eglot
       (when (and (fboundp 'eglot-managed-p) (eglot-managed-p))
         (catch 'br
           (call-interactively #'eglot-format-buffer)

@@ -120,7 +120,7 @@ determine whether inside a virtual env. Another way is using
                x)))
     (and (zerop (car rc)) x)))
 
-(when-feature-eglot%
+(when-feature% eglot
   (defun python*-eglot-sever-program ()
     (let ((pylsp (python*-venv :pylsp)))
       (when (and pylsp (file-exists-p pylsp))
@@ -148,7 +148,7 @@ determine whether inside a virtual env. Another way is using
                  pylsp))))
     (when (zerop (car rc))
       (prog1 pylsp
-        (when-feature-eglot%
+        (when-feature% eglot
           (python*-eglot-sever-program))))))
 
 ;; end of lsp
@@ -205,7 +205,7 @@ determine whether inside a virtual env. Another way is using
   "Format the current buffer."
   (interactive)
   (shell-format-buffer `(python-mode python-ts-mode)
-    (when-feature-eglot%
+    (when-feature% eglot
       (when (and (fboundp 'eglot-managed-p) (eglot-managed-p))
         (catch 'br
           (call-interactively #'eglot-format-buffer)

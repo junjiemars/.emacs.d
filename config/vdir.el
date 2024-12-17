@@ -23,7 +23,7 @@
 (setq% calc-settings-file (v-home! ".calc/calc.el") 'calc)
 
 ;; `eww'
-(when-feature-eww%
+(when-feature% eww
   (setq eww-bookmarks-directory (v-home! ".bookmarks/")))
 
 ;; `bookmark': file in which to save bookmarks
@@ -52,7 +52,7 @@
   (defconst package*-user-dir (v-home! ".elpa/")))
 
 ;; `project'
-(when-feature-project%
+(when-feature% project
   (setq% project-list-file (v-home! ".project/list") 'project))
 
 ;; Savehist: save minibuffer history
@@ -79,7 +79,7 @@
              'tramp-cache))
 
 ;; `transient'
-(when-feature-transient%
+(when-feature% transient
   (setq transient-save-history nil))
 
 ;; `treesit'

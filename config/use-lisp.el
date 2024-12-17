@@ -12,20 +12,6 @@
 
 ;; end of require
 
-;;; macro
-
-(defmacro-if-feature% aggressive-indent)
-(defmacro-if-feature% paredit)
-(defmacro-if-feature% rainbow-delimiters)
-
-(defmacro when-feature-paredit% (&rest body)
-  (declare (indent 0))
-  (if-feature-paredit%
-      `(progn% ,@body)
-    `(comment ,@body)))
-
-;; end of macro
-
 (defun lisp*-featured! ()
   "Featured \\=`lisp-mode\\='."
   (unless (or (string= "*scratch*" (buffer-name))
@@ -33,8 +19,8 @@
     ;; don't autoload: `aggressive' indent
     ;; (if-feature-aggressive-indent% (make-thread* #'aggressive-indent-mode))
     ;; `paredit' structured editing of s-expression data
-    (if-feature-paredit%
-        (use-paredit-init!))
+    (when-feature% paredit
+      (use-paredit-init!))
     ;; `rainbow-delimiters': hilighting parentheses, brackets
     (rainbow-delimiters-mode)))
 
@@ -54,7 +40,7 @@
 
 ;;; `paredit'
 
-(when-feature-paredit%
+(when-feature% paredit
   (defun paredit*-refine-keys! ()
     ;; On Windows C-) is not work
     ;; fix inconsistent `C-)' and `C-c )' behavior:#9
@@ -78,12 +64,12 @@
       (define-key map (kbd% "RET") #'newline*)
       (setcdr (assoc 'paredit-mode minor-mode-map-alist) map))))
 
-(when-feature-paredit%
+(when-feature% paredit
   (defun use-paredit-init! ()
     (enable-paredit-mode)
     (paredit*-refine-keys!)))
 
-(when-feature-paredit%
+(when-feature% paredit
   (defun toggle-paredit! ()
     "Toggle \\=`paredit\\='."
     (interactive)

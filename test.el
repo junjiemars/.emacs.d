@@ -159,15 +159,27 @@
 ;; fn
 ;;;
 
-(unintern "if-feature-ert%")
-(unintern "if-feature-ertxxx%")
-(defmacro-if-feature% ert)
-(defmacro-if-feature% ertxxx)
-
 (unintern "if-fn-ert-delete-test%")
 (unintern "if-fn-ert-delete-testxxx%")
 (defmacro-if-fn% ert-delete-test ert)
 (defmacro-if-fn% ert-delete-testxxx ert)
+
+
+(ert-deftest %d:fn:if/when/unless-feature% ()
+  (unintern "has-feature-ert%")
+  (unintern "non-feature-ertxxx%")
+  (should (and (if-feature% ert t) (when-feature% ert t)
+               (null (unless-feature% t))))
+  (should (and (if-feature% ertxxx nil t) (unless-feature% ertxxx t)
+               (null (when-feature% ertxxx nil)))))
+
+(ert-deftest %d:fn:defmacro-if-fn% ()
+	(unwind-protect
+			(progn
+				(should (= 3 (if-fn-ert-delete-test% (+ 1 2) (* 3 4))))
+				(should (= 12 (if-fn-ert-delete-testxxx% (+ 1 2) (* 3 4))))))
+  (unintern "if-fn-ert-delete-test%")
+	(unintern "if-fn-ert-delete-testxxx%"))
 
 (ert-deftest %d:fn:v-home% ()
   (should (directory-name-p (v-home%)))
@@ -188,22 +200,6 @@
 
 (ert-deftest %d:fn:platform-arch ()
   (should (platform-arch)))
-
-(ert-deftest %d:fn:defmacro-if-feature% ()
-	(unwind-protect
-			(progn
-				(should (= 3 (if-feature-ert% (+ 1 2) (* 3 4))))
-				(should (= 12 (if-feature-ertxxx% (+ 1 2) (* 3 4)))))
-		(unintern "if-feature-ert%")
-		(unintern "if-feature-ertxxx%")))
-
-(ert-deftest %d:fn:defmacro-if-fn% ()
-	(unwind-protect
-			(progn
-				(should (= 3 (if-fn-ert-delete-test% (+ 1 2) (* 3 4))))
-				(should (= 12 (if-fn-ert-delete-testxxx% (+ 1 2) (* 3 4))))))
-  (unintern "if-fn-ert-delete-test%")
-	(unintern "if-fn-ert-delete-testxxx%"))
 
 (ert-deftest %d:fn:dolist* ()
   (should (equal '(a nil b c)

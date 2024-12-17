@@ -47,11 +47,11 @@
     (compile-unit% (emacs-home* "config/direds.el") t)
     (when-platform% 'windows-nt
       (compile-unit% (emacs-home* "config/docs.el") t))
-    (when-feature-eglot%
+    (when-feature% eglot
       (compile-unit% (emacs-home* "config/eglots.el") t))
     (compile-unit% (emacs-home* "config/elisps.el") t)
     (compile-unit% (emacs-home* "config/eshells.el") t)
-    (when-feature-eww%
+    (when-feature% eww
       (compile-unit% (emacs-home* "config/ewws.el") t))
     (compile-unit% (emacs-home* "config/financial.el") t)
     (compile-unit% (emacs-home* "config/guds.el") t)
@@ -61,14 +61,14 @@
     (compile-unit% (emacs-home* "config/mill.el") t)
     (compile-unit% (emacs-home* "config/mixal.el") t)
     (compile-unit% (emacs-home* "config/orgs.el") t)
-    (when-feature-project%
+    (when-feature% project
       (compile-unit% (emacs-home* "config/projects.el") t))
     (compile-unit% (emacs-home* "config/progs.el") t)
     (compile-unit% (emacs-home* "config/pythons.el") t)
     (compile-unit% (emacs-home* "config/sqls.el") t)
     (compile-unit% (emacs-home* "config/terms.el") t)
     (compile-unit% (emacs-home* "config/trans.el") t)
-    (when-feature-transient%
+    (when-feature% transient
       (compile-unit% (emacs-home* "config/transients.el") t))
     (when-feature-treesit%
       (compile-unit% (emacs-home* "config/treesits.el") t))
@@ -97,10 +97,10 @@
     ;; on `elisp'
     (compile-unit% (emacs-home* "config/on-elisp-autoload.el"))
     ;; on `eglot'
-    (when-feature-eglot%
+    (when-feature% eglot
       (compile-unit% (emacs-home* "config/on-eglot-autoload.el")))
     ;; on `ewws'
-    (when-feature-eww%
+    (when-feature% eww
       (compile-unit% (emacs-home* "config/on-eww-autoload.el")))
     ;; self :glyph
     (when-font%
@@ -151,7 +151,7 @@
     ;; on `orgs'
     (compile-unit% (emacs-home* "config/on-org-autoload.el"))
     ;; on `projects'
-    (when-feature-project%
+    (when-feature% project
       (compile-unit% (emacs-home* "config/on-project-autoload.el")))
     ;; on `pythons'
     (compile-unit% (emacs-home* "config/on-python-autoload.el"))
@@ -195,7 +195,7 @@
     ;; on `terms'
     (compile-unit% (emacs-home* "config/on-term-autoload.el"))
     ;; on `transients'
-    (when-feature-transient%
+    (when-feature% transient
       (compile-unit% (emacs-home* "config/on-transient-autoload.el")))
     ;; on `treesits'
     (when-feature-treesit%

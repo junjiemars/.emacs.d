@@ -10,6 +10,51 @@
 
 
 ;;;
+;; feature
+;;;
+
+(defmacro if-feature% (feature then &rest else)
+  "If has the FEAUTURE do THEN, otherwise do ELSE..."
+  (declare (indent 2))
+  (let ((has (format "has-feature-%s%%" feature))
+        (non (format "non-feature-%s%%" feature)))
+    (cond ((intern-soft has) `(comment ,@else) `(progn% ,then))
+          ((intern-soft non) `(comment ,then) `(progn% ,@else))
+          ((require feature nil t) (intern has)
+           `(comment ,@else) `(progn% ,then))
+          (t (intern non) `(comment ,then) `(progn% ,@else)))))
+
+(defmacro when-feature% (feature &rest body)
+  "When FEATURE do BODY."
+  (declare (indent 1))
+  `(if-feature% ,feature
+       (progn% ,@body)
+     (comment ,@body)))
+
+(defmacro unless-feature% (feature &rest body)
+  "Unless FEATURE do BODY."
+  (declare (indent 1))
+  `(if-feature% ,feature
+       (comment ,@body)
+     (progn% ,@body)))
+
+(defmacro defmacro-if-fn% (fn &optional feature)
+  "Define if-fn-FN% compile-time macro."
+  (let ((ss (format "if-fn-%s%%" fn)))
+    (unless (intern-soft ss)
+      (let ((name (intern ss)))
+        `(defmacro ,name (then &rest body)
+           "If has the fn do THEN, otherwise do BODY."
+           (declare (indent 1))
+           (if-fn% ',fn ',feature
+                   `(progn% (comment ,@body)
+                            ,then)
+             `(progn% (comment ,then)
+                      ,@body)))))))
+
+;; end of feature
+
+;;;
 ;; *-fn%: checking fn existing
 ;;;
 
@@ -254,39 +299,6 @@ Argument SPEC (VAR LIST [RESULT])."
 
 ;; end of preferred `dolist*'
 
-;;;
-;; feature
-;;;
-
-(defmacro defmacro-if-feature% (feature)
-  "Define if-feature-FEATURE% compile-time macro."
-  (let ((ss (format "if-feature-%s%%" feature)))
-    (unless (intern-soft ss)
-      (let ((name (intern ss)))
-        `(defmacro ,name (then &rest body)
-           "If has the feauture do THEN, otherwise do BODY."
-           (declare (indent 1))
-           (if% (require ',feature nil t)
-               `(progn% (comment ,@body)
-                        ,then)
-             `(progn% (comment ,then)
-                      ,@body)))))))
-
-(defmacro defmacro-if-fn% (fn &optional feature)
-  "Define if-fn-FN% compile-time macro."
-  (let ((ss (format "if-fn-%s%%" fn)))
-    (unless (intern-soft ss)
-      (let ((name (intern ss)))
-        `(defmacro ,name (then &rest body)
-           "If has the fn do THEN, otherwise do BODY."
-           (declare (indent 1))
-           (if-fn% ',fn ',feature
-                   `(progn% (comment ,@body)
-                            ,then)
-             `(progn% (comment ,then)
-                      ,@body)))))))
-
-;; end of feature
 
 ;;;
 ;; alias

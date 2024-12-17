@@ -6,28 +6,20 @@
 ;; orgs.el
 ;;;;
 
-;;; macro
+;;; require
 
 ;; fix: Warning (bytecomp): `org-bookmark-jump-unhide' fn
 ;; might not be defined at runtime.
 (when-fn% 'org-bookmark-jump-unhide 'org
   (autoload 'org-bookmark-jump-unhide "org"))
 
-(defmacro-if-feature% ox-reveal)
-
-(defmacro when-feature-ox-reveal% (&rest body)
-  (declare (indent 0))
-  (if-feature-ox-reveal%
-      `(progn% ,@body)
-    `(comment ,@body)))
-
-;; end of macro
+;; end of require
 
 (defun on-org-init! ()
   "On \\=`org-mode\\=' initialization."
   ;; load `ox-reveal' if it had been installed.
   ;; `ox-reveal' raising "package cl is deprecated".
-  (when-feature-ox-reveal%
+  (when-feature% ox-reveal
     (when-var% org-reveal-root 'ox-reveal
       (require 'ox-reveal)
       (setq org-reveal-root

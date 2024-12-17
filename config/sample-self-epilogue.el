@@ -61,10 +61,9 @@
 ;;; slime
 
 (comment
- (defmacro-if-feature% slime)
- (if-feature-slime%
-     (when-fn% '*slime-source-locations* nil
-       (*slime-source-locations* "<source-dir>"))))
+ (when-feature% slime
+   (when-fn% '*slime-source-locations* nil
+     (*slime-source-locations* "<source-dir>"))))
 
 ;; end of slime
 
@@ -139,18 +138,16 @@
  (setq% httpd-port 8080 'simple-httpd)
 
  ;; web-mode, http://web-mode.org
- (defmacro-if-feature% web-mode)
- (if-feature-web-mode%
-     (progn%
-      (push! '("\\.html\\'" . web-mode) auto-mode-alist)
-      (push! '("\\.vue\\'" . web-mode) auto-mode-alist )
-      (add-hook 'web-mode-hook
-                #'(lambda ()
-                    (setq web-mode-comment-formats
-                          '(("java" . "/*")
-                            ("javascript" . "//")
-                            ("php" . "/*")
-                            ("css" . "/*"))))))))
+ (when-feature% web-mode
+   (push! '("\\.html\\'" . web-mode) auto-mode-alist)
+   (push! '("\\.vue\\'" . web-mode) auto-mode-alist )
+   (add-hook 'web-mode-hook
+             #'(lambda ()
+                 (setq web-mode-comment-formats
+                       '(("java" . "/*")
+                         ("javascript" . "//")
+                         ("php" . "/*")
+                         ("css" . "/*")))))))
 
 ;; end of web
 
