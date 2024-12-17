@@ -5,19 +5,22 @@
 ;;;;
 ;; marks.el
 ;;;;
+
 
+;;; require
 
 ;;; `thingatpt' compatible definitions
 ;;; fix wrong behavior on anicent Emacs.
 
-(defmacro-if-fn% thing-at-point-bounds-of-string-at-point thingatpt)
-
-(defmacro unless-fn-thing-at-point-bounds-of-string-at-point%
-    (&rest body)
+(defmacro unless-fn-thing-at-point-bounds-of-string-at-point% (&rest body)
   (declare (indent 0))
-  (if-fn-thing-at-point-bounds-of-string-at-point%
-      `(comment ,@body)
-    `(progn% ,@body)))
+  (let ((hasfn (intern-function-name 'tapbosap t))
+        (nonfn (intern-function-name 'tapbosap nil)))
+    (cond ((intern-soft nonfn) `(progn% ,@body))
+          ((intern-soft hasfn) `(comment ,@body))
+          ((unless-fn% 'thing-at-point-bounds-of-string-at-point 'thingatpt t)
+           (intern nonfn) `(progn% ,@body))
+          (t (intern hasfn) `(comment ,@body)))))
 
 (unless-fn-thing-at-point-bounds-of-string-at-point%
   (defun thing-at-point-bounds-of-string-at-point ()
@@ -33,14 +36,15 @@
   (put 'string 'bounds-of-thing-at-point
        'thing-at-point-bounds-of-string-at-point))
 
-(defmacro-if-fn% thing-at-point-bounds-of-list-at-point thingatpt)
-
-(defmacro unless-fn-thing-at-point-bounds-of-list-at-point%
-    (&rest body)
+(defmacro unless-fn-thing-at-point-bounds-of-list-at-point% (&rest body)
   (declare (indent 0))
-  (if-fn-thing-at-point-bounds-of-list-at-point%
-      `(comment ,@body)
-    `(progn% ,@body)))
+  (let ((hasfn (intern-function-name 'tapbolap t))
+        (nonfn (intern-function-name 'tapbolap nil)))
+    (cond ((intern-soft nonfn) `(progn% ,@body))
+          ((intern-soft hasfn) `(comment ,@body))
+          ((unless-fn% 'thing-at-point-bounds-of-list-at-point 'thingatpt t)
+           (intern nonfn) `(progn% ,@body))
+          (t (intern hasfn) `(comment ,@body)))))
 
 (unless-fn-thing-at-point-bounds-of-list-at-point%
   (defun thing-at-point-bounds-of-list-at-point ()
@@ -67,7 +71,7 @@
   (put 'defun 'end-op       'end-of-defun)
   (put 'defun 'forward-op   'end-of-defun))
 
-;; end of `thingatpt' compatible definitions
+;; end of require
 
 
 ;;; mark-* macro

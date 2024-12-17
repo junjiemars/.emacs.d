@@ -24,7 +24,7 @@
 
 ;; `eww'
 (when-feature% eww
-  (setq eww-bookmarks-directory (v-home! ".bookmarks/")))
+  (set-default 'eww-bookmarks-directory (v-home! ".bookmarks/")))
 
 ;; `bookmark': file in which to save bookmarks
 (setq% bookmark-default-file (v-home! ".bookmarks/emacs.bmk") 'bookmark)
@@ -80,7 +80,7 @@
 
 ;; `transient'
 (when-feature% transient
-  (setq transient-save-history nil))
+  (set-default 'transient-save-history nil))
 
 ;; `treesit'
 (when-feature-treesit%

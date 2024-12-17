@@ -13,16 +13,25 @@
 ;; feature
 ;;;
 
+(defmacro intern-feature-name (feature has)
+  "Intern FEATURE name with or without HAS prefix."
+  `(cond (,has (format "has-ft-%s%%" ,feature))
+         (t (format "non-ft-%s%%" ,feature))))
+
+(defmacro intern-function-name (function has)
+  "Intern FUNCTION name with or without HAS prefix."
+  `(cond (,has (format "has-fn-%s%%" ,function))
+         (t (format "non-fn-%s%%" ,function))))
+
 (defmacro if-feature% (feature then &rest else)
   "If has the FEAUTURE do THEN, otherwise do ELSE..."
   (declare (indent 2))
-  (let ((has (format "has-feature-%s%%" feature))
-        (non (format "non-feature-%s%%" feature)))
-    (cond ((intern-soft has) `(comment ,@else) `(progn% ,then))
-          ((intern-soft non) `(comment ,then) `(progn% ,@else))
-          ((require feature nil t) (intern has)
-           `(comment ,@else) `(progn% ,then))
-          (t (intern non) `(comment ,then) `(progn% ,@else)))))
+  (let ((hasft (intern-feature-name feature t))
+        (nonft (intern-feature-name feature nil)))
+    (cond ((intern-soft hasft) `,then)
+          ((intern-soft nonft) `(progn% ,@else))
+          ((require feature nil t) (intern hasft) `,then)
+          (t (intern nonft) `(progn% ,@else)))))
 
 (defmacro when-feature% (feature &rest body)
   "When FEATURE do BODY."
@@ -36,21 +45,7 @@
   (declare (indent 1))
   `(if-feature% ,feature
        (comment ,@body)
-     (progn% ,@body)))
-
-(defmacro defmacro-if-fn% (fn &optional feature)
-  "Define if-fn-FN% compile-time macro."
-  (let ((ss (format "if-fn-%s%%" fn)))
-    (unless (intern-soft ss)
-      (let ((name (intern ss)))
-        `(defmacro ,name (then &rest body)
-           "If has the fn do THEN, otherwise do BODY."
-           (declare (indent 1))
-           (if-fn% ',fn ',feature
-                   `(progn% (comment ,@body)
-                            ,then)
-             `(progn% (comment ,then)
-                      ,@body)))))))
+     ,@body))
 
 ;; end of feature
 

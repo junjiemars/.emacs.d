@@ -7,6 +7,7 @@
 ;;;;
 ;; Commentary:
 ;;;;
+
 
 ;;; require
 
@@ -16,31 +17,41 @@
 
 ;;; `xref-find-definitions' associated macro, since emacs25
 
-(defmacro-if-fn% xref-find-definitions xref)
+(defmacro if-fn-xref-find-definitions% (then &rest body)
+  (declare (indent 1))
+  (let ((hasfn (intern-function-name 'xfd t))
+        (nonfn (intern-function-name 'xfd nil)))
+    (cond ((intern-soft hasfn) `,then)
+          ((intern-soft nonfn) `(progn% ,@body))
+          ((when-fn% 'xref-find-definitions 'xref t)
+           (intern hasfn) `,then)
+          (t (intern nonfn) `(progn% ,@body)))))
 
 (defmacro when-fn-xref-find-definitions% (&rest body)
   (declare (indent 0))
-  (if-fn-xref-find-definitions%
-      `(progn% ,@body)
-    `(comment ,@body)))
+  `(if-fn-xref-find-definitions%
+       (progn% ,@body)
+     (comment ,@body)))
 
 (defmacro unless-fn-xref-find-definitions% (&rest body)
   (declare (indent 0))
-  (if-fn-xref-find-definitions%
-      `(comment ,@body)
-    `(progn% ,@body)))
+  `(if-fn-xref-find-definitions%
+       (comment ,@body)
+     (progn% ,@body)))
 
 ;; end of `xref-find-definitions' associated macro
 
 ;;; `xref--show-location' associated macro, since emacs25
 
-(defmacro-if-fn% xref--show-location xref)
-
 (defmacro when-fn-xref--show-location% (&rest body)
   (declare (indent 0))
-  (if-fn-xref--show-location%
-      `(progn% ,@body)
-    `(comment ,@body)))
+  (let ((hasfn (intern-function-name 'xsl t))
+        (nonfn (intern-function-name 'xsl nil)))
+    (cond ((intern-soft hasfn) `(progn% ,@body))
+          ((intern-soft nonfn) `(comment ,@body))
+          ((when-fn% 'xref--show-location 'xref t)
+           (intern hasfn) `(progn% ,@body))
+          (t (intern nonfn) `(comment ,@body)))))
 
 ;; end of `xref--show-location' associated macro
 
@@ -76,10 +87,10 @@
     (xref*-buffer-in-view-mode)))
 
 (when-fn-xref--show-location%
- ;; `xref--show-location' into `view-mode'
- (defadvice xref--show-location
-     (after xref--show-location-after first compile disable)
-   (xref*-buffer-in-view-mode (window-buffer ad-return-value))))
+  ;; `xref--show-location' into `view-mode'
+  (defadvice xref--show-location
+      (after xref--show-location-after first compile disable)
+    (xref*-buffer-in-view-mode (window-buffer ad-return-value))))
 
 (defun on-xref-init! ()
   (when (file-exists-p (xref*-read-only-dirs :file))

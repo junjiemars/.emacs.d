@@ -22,25 +22,29 @@
 (when-feature% transient)
 
 ;;; `treesit' builtin since Emacs-29+
+;; (when-feature% treesit)
 (defmacro when-feature-treesit% (&rest body)
   (declare (indent 0))
-  (if-feature% treesit
-      (if-fn% 'treesit-available-p nil
-              (if% (treesit-available-p)
-		              `(progn% ,@body)
-                `(comment ,@body))
-        `(comment ,@body))
-    `(comment ,@body)))
+  (let ((hasfn (intern-function-name 'treesit t))
+        (nonfn (intern-function-name 'treesit nil)))
+    (cond ((intern-soft hasfn) `(progn% ,@body))
+          ((intern-soft nonfn) `(comment ,@body))
+          ((when-fn% 'treesit-available-p nil t)
+           (cond ((treesit-available-p) (intern hasfn) `(progn%,@body))
+                 (t (intern nonfn) `(comment ,@body))))
+          (t (intern nonfn) `(comment ,@body)))))
 
 ;;; `vc'
+;; (when-feature% vc-dir)
 (defmacro when-feature-vc% (&rest body)
   "When \\=`vc\\=', do BODY."
   (declare (indent 0))
-  (if-feature% vc
-      (if-fn% 'vc-dir 'vc-dir
-              `(progn% ,@body)
-        `(comment ,@body))
-    `(comment ,@body)))
+  (let ((hasfn (intern-function-name 'vc-dir t))
+        (nonfn (intern-function-name 'vc-dir nil)))
+    (cond ((intern-soft hasfn) `(progn% ,@body))
+          ((intern-soft nonfn) `(comment ,@body))
+          ((when-fn% 'vc-dir 'vc-dir t) (intern hasfn) `(progn% ,@body))
+          (t (intern nonfn) `(comment ,@body)))))
 
 
 
