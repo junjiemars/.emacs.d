@@ -3,7 +3,7 @@
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; sample-self-env-spec.el: specify the private environment specs
+;; sample-self-env-spec.el: specify the environment specs
 ;;
 ;;;;
 

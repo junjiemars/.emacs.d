@@ -729,8 +729,7 @@ The /user defined/ package spec locate in =(*self-mod-spec*)=.
  :put :org
  (list
   :cond (comment (executable-find% "latex"))
-  :packages (flatten (list 'auctex 'cdlatex
-                           (when-version% <= 25 'ox-reveal)))))
+  :packages (list 'auctex 'cdlatex (when-version% <= 25 'ox-reveal))))
 
 ;;; :rust
 (*self-mod-spec*

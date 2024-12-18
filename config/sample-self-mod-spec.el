@@ -3,7 +3,7 @@
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; sample-self-mod-spec.el: specify the package spec of yourself
+;; sample-self-mod-spec.el: specify the module spec
 ;;
 ;;;;
 

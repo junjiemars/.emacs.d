@@ -3,7 +3,7 @@
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; sample-self-epilogue.el: specify the epilogue of yourself
+;; sample-self-epilogue.el: specify the epilogue spec,
 ;;   should be run on the end of Emacs init
 ;;
 ;;;;
