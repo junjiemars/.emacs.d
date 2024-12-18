@@ -51,7 +51,7 @@
                 ctags)))))))))
 
 (defalias 'rust*-sysroot
-  (lexical-let% ((b (rust*-sysroot-spec)))
+  (let ((b (rust*-sysroot-spec)))
     (lambda (&optional op)
       (cond ((eq op :new) (setq b (rust*-sysroot-spec)))
             (op (plist-get b op))
@@ -105,7 +105,7 @@
       (when w (kill-buffer w)))))
 
 (defalias 'rust*-make-debug!
-  (lexical-let% ((b (rust*-debug-spec)))
+  (let ((b (rust*-debug-spec)))
     (lambda (&optional op)
       (cond ((eq op :new) (setq b (rust*-debug-spec)))
             (t b))))

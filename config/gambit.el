@@ -56,7 +56,7 @@ Defaults to a regexp ignoring all inputs of 0, 1, or 2 letters.")
 This is run before the process is cranked up.")
 
 (defalias '*gambit*
-  (lexical-let% ((b))
+  (let ((b))
     (lambda (&optional n)
       (if n (setq b n) b)))
   "The current *gambit* process buffer.")
@@ -154,7 +154,7 @@ This is run before the process is cranked up.")
 
 
 (defalias '*gambit-out*
-  (lexical-let% ((b "*out|gambit*"))
+  (let ((b "*out|gambit*"))
     (lambda (&optional n)
       (if n (setq b n)
         (get-buffer-create b))))
@@ -162,14 +162,14 @@ This is run before the process is cranked up.")
 
 
 (defalias '*gambit-start-file*
-  (lexical-let% ((b (v-home% ".exec/gambit.ss")))
+  (let ((b (v-home% ".exec/gambit.ss")))
     (lambda ()
       (cond ((file-exists-p b) b)
             (t (save-str-to-file +gambit-emacs-library+ b)))))
   "The \\=`*gambit*\\=' process start file.")
 
 (defalias 'gambit-switch-to-last-buffer
-  (lexical-let% ((b))
+  (let ((b))
     (lambda (&optional n)
       (interactive)
       (if n (setq b n)

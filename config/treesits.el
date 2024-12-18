@@ -9,23 +9,22 @@
 (require 'treesit)
 
 (defalias 'treesit*-recipe
-  (lexical-let%
-      ((b (v-home% ".exec/treesit-settings.el"))
-       (m '((:lang cpp
-                   :mode c++-mode
-                   :url "https://github.com/tree-sitter/tree-sitter-cpp"
-                   :map c++-ts-mode)
-            (:lang c
-                   :mode c-mode
-                   :url "https://github.com/tree-sitter/tree-sitter-c"
-                   :map c-ts-mode)
-            (:lang c-or-c++
-                   :mode c-or-c++-mode
-                   :map c-or-c++-ts-mode)
-            (:lang python
-                   :mode python-mode
-                   :url "https://github.com/tree-sitter/tree-sitter-python"
-                   :map python-ts-mode))))
+  (let ((b (v-home% ".exec/treesit-settings.el"))
+        (m '((:lang cpp
+                    :mode c++-mode
+                    :url "https://github.com/tree-sitter/tree-sitter-cpp"
+                    :map c++-ts-mode)
+             (:lang c
+                    :mode c-mode
+                    :url "https://github.com/tree-sitter/tree-sitter-c"
+                    :map c-ts-mode)
+             (:lang c-or-c++
+                    :mode c-or-c++-mode
+                    :map c-or-c++-ts-mode)
+             (:lang python
+                    :mode python-mode
+                    :url "https://github.com/tree-sitter/tree-sitter-python"
+                    :map python-ts-mode))))
     (lambda (&optional op sexp)
       (cond ((eq op :put) (dolist (x sexp) (push! x m t)))
             ((eq op :read) (setq m (read-sexp-from-file b)))

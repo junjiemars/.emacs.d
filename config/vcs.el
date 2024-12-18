@@ -10,8 +10,8 @@
   "Hook called by \\=`vc*-frontend\\='")
 
 (defalias 'vc*-frontend
-  (lexical-let% ((b `(("*" . vc-dir)))
-                 (i nil))
+  (let ((b `(("*" . vc-dir)))
+        (i nil))
     (lambda (&optional n)
       (cond (n (append! n b t))
             ((and (not i) vc*-frontend-hook)

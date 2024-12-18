@@ -41,22 +41,22 @@
       (cons 1 (format "%s no found" nvmsh)))))
 
 (defalias 'node-program
-  (lexical-let% ((b (or (let ((out (nvm "which node")))
-                          (and (zerop (car out))
-                               (string-trim> (cdr out))))
-                        (executable-find%
-                         "node"
-                         (lambda (node)
-                           (let ((x (shell-command* "echo"
-                                      "'1+2+3'|" node "-p")))
-                             (zerop (car x)))))
-                        "node")))
+  (let ((b (or (let ((out (nvm "which node")))
+                 (and (zerop (car out))
+                      (string-trim> (cdr out))))
+               (executable-find%
+                "node"
+                (lambda (node)
+                  (let ((x (shell-command* "echo"
+                             "'1+2+3'|" node "-p")))
+                    (zerop (car x)))))
+               "node")))
     (lambda (&optional n)
       (if (null n) b (setq b n))))
   "Program invoked by the \\=`run-node\\=' command.")
 
 (defalias '*node*
-  (lexical-let% ((b))
+  (let ((b))
     (lambda (&optional n)
       (cond (n (setq b (get-buffer-create n)))
             ((or (null b) (not (buffer-live-p b)))
@@ -65,21 +65,21 @@
   "The current *node* process buffer.")
 
 (defalias '*node-out*
-  (lexical-let% ((b "*out|node*"))
+  (let ((b "*out|node*"))
     (lambda (&optional n)
       (if n (setq b n)
         (get-buffer-create b))))
   "The output buffer of \\=`node-completion\\='.")
 
 (defalias '*node-start-file*
-  (lexical-let% ((b (v-home% ".exec/node.js")))
+  (let ((b (v-home% ".exec/node.js")))
     (lambda ()
       (cond ((file-exists-p b) b)
             (t (copy-file (emacs-home% "config/node.js") b)))))
   "the \\=`*node*\\=' process start file.")
 
 (defalias 'node-switch-to-last-buffer
-  (lexical-let% ((b))
+  (let ((b))
     (lambda (&optional n)
       (interactive)
       (if n (setq b n)

@@ -65,7 +65,7 @@ If nil, only source files in the program directory will be known
 
 
 (defalias '*lldb*
-  (lexical-let% ((b))
+  (let ((b))
     (lambda (&optional n)
       (cond (n (setq b n))
             (t b))))
@@ -73,7 +73,7 @@ If nil, only source files in the program directory will be known
 
 
 (defalias '*lldb-out*
-  (lexical-let% ((b "*out|lldb*"))
+  (let ((b "*out|lldb*"))
     (lambda (&optional n)
       (cond (n (setq b n))
             (t (get-buffer-create b)))))

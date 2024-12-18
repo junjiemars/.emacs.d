@@ -26,7 +26,7 @@
 
 
 (defalias '*package-init-repo*
-  (lexical-let% ((b))
+  (let ((b))
     (lambda (&optional n)
       (if n (setq b n) b)))
   "Indicate \\=`package*-init-repo!\\=' whether has been called.")

@@ -48,13 +48,13 @@
   :group 'scheme)
 
 (defalias 'chez-program
-  (lexical-let% ((b (executable-find%
-                     "scheme"
-                     (lambda (chez)
-                       (let ((x (shell-command* "echo"
-                                  "'(scheme-version)'|" chez "-q")))
-                         (or (and (zerop (car x)) chez)
-                             "scheme"))))))
+  (let ((b (executable-find%
+            "scheme"
+            (lambda (chez)
+              (let ((x (shell-command* "echo"
+                         "'(scheme-version)'|" chez "-q")))
+                (or (and (zerop (car x)) chez)
+                    "scheme"))))))
     (lambda (&optional n)
       (cond (n (setq b n))
             (t b))))
@@ -69,7 +69,7 @@ Defaults to a regexp ignoring all inputs of 0, 1, or 2 letters.")
 This is run before the process is cranked up.")
 
 (defalias '*chez*
-  (lexical-let% ((b))
+  (let ((b))
     (lambda (&optional n)
       (cond (n (setq b (get-buffer-create n)))
             ((or (null b) (not (buffer-live-p b)))
@@ -78,21 +78,21 @@ This is run before the process is cranked up.")
   "The current *chez* process buffer.")
 
 (defalias '*chez-out*
-  (lexical-let% ((b "*out|chez*"))
+  (let ((b "*out|chez*"))
     (lambda (&optional n)
       (cond (n (setq b n))
             (t (get-buffer-create b)))))
   "The output buffer of \\=`chez-completion'\\=.")
 
 (defalias '*chez-start-file*
-  (lexical-let% ((b (v-home% ".exec/chez.ss")))
+  (let ((b (v-home% ".exec/chez.ss")))
     (lambda ()
       (cond ((file-exists-p b) b)
             (t (copy-file (emacs-home% "config/chez.ss") b)))))
   "The \\=`*chez*'\\= process start file.")
 
 (defalias 'chez-switch-to-last-buffer
-  (lexical-let% ((b nil))
+  (let ((b nil))
     (lambda (&optional n)
       (interactive "P")
       (cond (n (setq b n))

@@ -125,30 +125,6 @@
   (declare (indent 0))
   `(if-lexical% nil ,@body))
 
-(defmacro lexical-let% (varlist &rest body)
-  "Lexically bind VARLIST in parallel then eval BODY."
-  (declare (indent 1))
-  `(if-lexical%
-       (if-version% < 27
-                    (let ,varlist ,@body)
-         (let ((lexical-binding t))
-           (let ,varlist ,@body)))
-     (when-fn% lexical-let cl
-       ;; `lexical-let' since Emacs22
-       (lexical-let ,varlist ,@body))))
-
-(defmacro lexical-let*% (varlist &rest body)
-  "Lexically bind VARLIST sequentially then eval BODY."
-  (declare (indent 1))
-  `(if-lexical%
-       (if-version% < 27
-                    (let* ,varlist ,@body)
-         (let ((lexical-binding t))
-           (let* ,varlist ,@body)))
-     (when-fn% 'lexical-let* 'cl
-       ;; `lexical-let' since Emacs22
-       (lexical-let* ,varlist ,@body))))
-
 (defmacro ignore* (&rest vars)
   "Return nil, list VARS at compile time if in lexical context."
   (declare (indent 0))
@@ -464,7 +440,7 @@ Optional argument TRIM regexp used to trim."
       <= 28
       `(get-buffer-create ,buffer-or-name ,inhibit-buffer-hooks)
     `(if ,inhibit-buffer-hooks
-         (lexical-let%
+         (let
              ((kill-buffer-hook nil)
               (kill-buffer-query-functions nil)
               (buffer-list-update-hook nil))
@@ -474,7 +450,7 @@ Optional argument TRIM regexp used to trim."
 (defmacro insert-file-contents-literally*
     (filename &optional visit beg end replace)
   "See \\=`insert-file-contents-literally\\='."
-  `(lexical-let%
+  `(let
        ((format-alist nil)
         (after-insert-file-functions nil)
         (file-coding-system-alist nil)
@@ -485,7 +461,7 @@ Optional argument TRIM regexp used to trim."
 (defmacro write-region*
     (start end filename &optional append visit lockname mustbenew)
   "See \\=`write-region\\='."
-  `(lexical-let%
+  `(let
        ((format-alist nil)
         (coding-system-for-write 'no-conversion)
         (write-region-inhibit-fsync t)

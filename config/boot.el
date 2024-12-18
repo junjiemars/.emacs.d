@@ -28,8 +28,7 @@
   `(plist-put (self-spec-> ,seq ,@keys) ,k ,v))
 
 (defalias '*self-paths*
-  (lexical-let%
-      ((ps `(;; paths
+  (let ((ps `(;; paths
              :prologue ,(emacs-home% "private/self-prologue.el")
              :env-spec ,(emacs-home% "private/self-env-spec.el")
              :mod-spec ,(emacs-home% "private/self-mod-spec.el")
@@ -57,7 +56,7 @@ No matter the declaration order, the executing order is:
 \\=`:env-spec -> :mod-spec -> :epilogue\\='")
 
 (defalias '*self-env-spec*
-  (lexical-let% ((env (list :desktop nil
+  (let ((env (list :desktop nil
                             :edit nil
                             :eshell nil
                             :frame nil
@@ -81,7 +80,7 @@ No matter the declaration order, the executing order is:
   `(self-spec-> (*self-env-spec*) ,@keys))
 
 (defalias '*self-mod-spec*
-  (lexical-let% ((ps nil))
+  (let ((ps nil))
     (lambda (&optional op k v)
       (cond ((eq :get op) (list (assq k ps)))
             ((eq :put op) (setq ps (cons (cons k v) ps)))

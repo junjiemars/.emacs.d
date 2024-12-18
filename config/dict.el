@@ -14,7 +14,7 @@
 
 
 (defalias '*dict-defs*
-  (lexical-let%
+  (let
       ((b `(("bing"
              ("url" . "https://cn.bing.com/dict/search?q=")
              ("pron-us" . (("<meta name=\"description\".*?美\\[" . 1)
@@ -78,7 +78,7 @@
                                   (setq xs (cons x1 xs))))))))))))
 
 (defalias '*dict-debug-log*
-  (lexical-let% ((b `( :log nil ;; t
+  (let ((b `( :log nil ;; t
                        :dict ,(emacs-home% ".dict/dict.log")
                        :lookup ,(emacs-home% ".dict/lookup.log"))))
     (lambda (w &optional n)

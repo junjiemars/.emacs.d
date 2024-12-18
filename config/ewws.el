@@ -41,18 +41,18 @@ is non-nil, otherwise is not. See also:
   (toggle-truncate-lines nil))
 
 (defalias '*web-defs*
-  (lexical-let% ((b `(("bing" "https://www.bing.com/"
-                       . "search?ensearch=1&q=")
-                      ("duck" "https://duckduckgo.com/"
-                       . "?q=")
-                      ("google" "https://www.google.com/"
-                       . "search?q=")
-                      ("math" "https://mathworld.wolfram.com/"
-                       . "search?query=")
-                      ("so" "https://stackoverflow.com/"
-                       . "search?q=")
-                      ("wiki" "https://en.wikipedia.org/"
-                       . "w/index.php?search="))))
+  (let ((b `(("bing" "https://www.bing.com/"
+              . "search?ensearch=1&q=")
+             ("duck" "https://duckduckgo.com/"
+              . "?q=")
+             ("google" "https://www.google.com/"
+              . "search?q=")
+             ("math" "https://mathworld.wolfram.com/"
+              . "search?query=")
+             ("so" "https://stackoverflow.com/"
+              . "search?q=")
+             ("wiki" "https://en.wikipedia.org/"
+              . "w/index.php?search="))))
     (lambda (&optional n)
       (if n (let ((x (assoc-string (car n) b)))
               (if x (setcdr x (cdr n))
@@ -77,7 +77,7 @@ is non-nil, otherwise is not. See also:
   "Searching history using by \\=`lookup-web\\='.")
 
 (defalias 'web-find-def
-  (lexical-let% ((b '()))
+  (let ((b '()))
     (lambda  (&optional en)
       (cond ((or en (not b))
              (setq b (assoc-string (or en

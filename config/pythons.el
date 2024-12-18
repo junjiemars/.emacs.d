@@ -30,9 +30,9 @@
        (string-match* "^Python \\([.0-9]+\\)$" (cdr rc) 1))))
 
 (defalias 'python*-program
-  (lexical-let% ((b (let ((p (or (executable-find% "python3")
-                                 (executable-find% "python"))))
-                      (when p (cons p (python*-version p))))))
+  (let ((b (let ((p (or (executable-find% "python3")
+                        (executable-find% "python"))))
+             (when p (cons p (python*-version p))))))
     (lambda (&optional op n)
       (cond ((eq :new op) (setq b (cons n (python*-version n))))
             ((eq :bin op) (car b))
@@ -96,10 +96,10 @@ determine whether inside a virtual env. Another way is using
 ;;;
 
 (defalias 'python*-pip-mirror
-  (lexical-let% ((b '("https://pypi.tuna.tsinghua.edu.cn/simple/"
-                      "https://pypi.mirrors.ustc.edu.cn/simple/"
-                      "http://pypi.hustunique.com/"
-                      "http://pypi.sdutlinux.org/")))
+  (let ((b '("https://pypi.tuna.tsinghua.edu.cn/simple/"
+             "https://pypi.mirrors.ustc.edu.cn/simple/"
+             "http://pypi.hustunique.com/"
+             "http://pypi.sdutlinux.org/")))
     (lambda (&optional n)
       (cond (n (nth (% n (length b)) b))
             (t b))))
@@ -154,17 +154,16 @@ determine whether inside a virtual env. Another way is using
 ;; end of lsp
 
 (defalias 'python*-venv
-  (lexical-let*%
-      ((b (let ((pyvenv (emacs-home% "scratch/pyvenv/")))
-            (prog1 pyvenv
-              (unless (file-exists-p pyvenv)
-                (path! pyvenv)))))
-       (file (v-home% ".exec/python-venv.el"))
-       (env (list :venv b
-                  :pylsp (v-home% ".exec/pylsp.sh")
-                  :python (concat b "bin/python")
-                  :pip (concat b "bin/pip")
-                  :mirror (python*-pip-mirror! b))))
+  (let* ((b (let ((pyvenv (emacs-home% "scratch/pyvenv/")))
+              (prog1 pyvenv
+                (unless (file-exists-p pyvenv)
+                  (path! pyvenv)))))
+         (file (v-home% ".exec/python-venv.el"))
+         (env (list :venv b
+                    :pylsp (v-home% ".exec/pylsp.sh")
+                    :python (concat b "bin/python")
+                    :pip (concat b "bin/pip")
+                    :mirror (python*-pip-mirror! b))))
     (lambda (&optional op n)
       (cond ((eq op :file) file)
             ((and (eq op :load) n) (setq env n))

@@ -13,8 +13,8 @@
 ;; end of requires
 
 (defalias 'project*-root-dirs
-  (lexical-let% ((f (v-home% ".exec/project-root-dirs.el"))
-                 (b '()))
+  (let ((f (v-home% ".exec/project-root-dirs.el"))
+        (b '()))
     (lambda (&optional op dir)
       (cond ((eq op :find) (file-in-dirs-p dir b))
             ((eq op :read) (setq b (read-sexp-from-file f)))

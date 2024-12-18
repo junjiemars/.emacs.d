@@ -24,7 +24,7 @@
         ((eq key :PATH) "PATH")))
 
 (defalias '*default-shell-env*
-  (lexical-let% ((dx nil))
+  (let ((dx nil))
     (lambda (&optional op k n)
       (cond ((eq :get op) (plist-get dx k))
             ((eq :put! op) (setq dx (plist-put dx k n)))

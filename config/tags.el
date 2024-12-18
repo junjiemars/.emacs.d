@@ -58,7 +58,7 @@
                 :opt ("-l c" "-l lisp" "-l auto"))))))
 
 (defalias '*tags*
-  (lexical-let% ((b (tags-program-check)))
+  (let ((b (tags-program-check)))
     (lambda (&optional k v)
       (cond (k (plist-get b k))
             (v (setq b v))

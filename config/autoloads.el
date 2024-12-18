@@ -9,7 +9,7 @@
 ;;; macro
 
 ;; (defalias '*org-babel-schemes*
-;;   (lexical-let% ((i '()))
+;;   (let ((i '()))
 ;;     (lambda (&optional op key val)
 ;;       (cond ((eq :get op) (plist-get i key))
 ;;             ((eq :put op) (setq i (plist-put i key val)))

@@ -61,10 +61,10 @@
 ;;;
 
 (defalias 'xref*-read-only-dirs
-  (lexical-let% ((f (v-home% ".exec/xref-read-only-dirs.el"))
-                 (b `(,(when% (> (path-depth invocation-directory) 1)
-                         (path- invocation-directory))
-                      ,(when-package% package*-user-dir))))
+  (let ((f (v-home% ".exec/xref-read-only-dirs.el"))
+        (b `(,(when% (> (path-depth invocation-directory) 1)
+                (path- invocation-directory))
+             ,(when-package% package*-user-dir))))
     (lambda (&optional op dir)
       (cond ((eq op :read) (setq b (read-sexp-from-file f)))
             ((eq op :push) (when (> (length dir) 0)

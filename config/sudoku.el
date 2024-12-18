@@ -21,7 +21,7 @@
 
 
 (defalias '*sudoku*
-  (lexical-let% ((b))
+  (let ((b))
     (lambda (&optional n)
       (cond (n (setq b (get-buffer-create n)))
             ((or (null b) (not (buffer-live-p b)))
@@ -31,10 +31,10 @@
 
 
 (defalias '*sudoku-file*
-  (lexical-let*% ((d (v-home! ".games/"))
-                  (p (concat d "sudoku-puzzle"))
-                  (b (concat d "sudoku-board"))
-                  (s (concat d "sudoku-sample")))
+  (let* ((d (v-home! ".games/"))
+         (p (concat d "sudoku-puzzle"))
+         (b (concat d "sudoku-board"))
+         (s (concat d "sudoku-sample")))
     (lambda (&optional k)
       (cond ((eq :dir k) d)
             ((eq :puzzle k) p)
@@ -59,9 +59,9 @@
 
 
 (defalias '*sudoku-color*
-  (lexical-let% ((b "black")
-                 (g "gray")
-                 (w "red"))
+  (let ((b "black")
+        (g "gray")
+        (w "red"))
     (lambda (&optional k c)
       (cond ((eq :b k) b)
             ((eq :g k) g)
@@ -82,7 +82,7 @@
 
 
 (defalias '*sudoku-puzzle-d*
-  (lexical-let% ((l) (d) (s) (sum))
+  (let ((l) (d) (s) (sum))
     (lambda (&optional k n)
       (cond ((eq :set! k) (let* ((n1 (length n))
                                  (sqr1 (sqrt n1))
@@ -157,7 +157,7 @@
 
 
 (defalias '*sudoku-puzzle*
-  (lexical-let% ((v))
+  (let ((v))
     (lambda (&optional k i n)
       (cond ((eq :set! k) (progn
                             (*sudoku-puzzle-d* :set! i)
@@ -178,8 +178,8 @@
     (read-sexp-from-file dst)))
 
 (defalias '*sudoku-puzzle-make*
-  (lexical-let% ((l nil) (d nil) (c nil)
-                 (xs nil))
+  (let ((l nil) (d nil) (c nil)
+        (xs nil))
     (lambda (&optional k level dimension)
       (cond ((eq :new! k)
              (setq c (cond ((eq 'sandbox level)
@@ -385,7 +385,7 @@
       ps)))
 
 (defalias '*sudoku-board*
-  (lexical-let% ((o) (d) (p))
+  (let ((o) (d) (p))
     (lambda (&optional k i j)
       (cond ((eq :cor! k) (setq o i d j p i))
             ((eq :pos k) p)

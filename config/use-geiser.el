@@ -7,11 +7,11 @@
 ;;;;
 
 (defalias 'geiser*-lisp-implementations
-  (lexical-let% ((ls (let ((ns nil))
-                       (dolist (x ns)
-                         (let ((bin (executable-find (symbol-name x))))
-                           (when bin (push! x ns))))
-                       '(chicken guile racket))))
+  (let ((ls (let ((ns nil))
+              (dolist (x ns)
+                (let ((bin (executable-find (symbol-name x))))
+                  (when bin (push! x ns))))
+              '(chicken guile racket))))
     (lambda (&optional new)
       (setq% geiser-active-implementations
              (if new (push! new ls) ls)

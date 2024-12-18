@@ -106,7 +106,7 @@
           (throw 'br cc))))))
 
 (defalias 'cc*-cc
-  (lexical-let% ((b (cc*-cc-check)))
+  (let ((b (cc*-cc-check)))
     (lambda (&optional n)
       (if (null n) b (setq b n))))
   "The name of C compiler executable.")
@@ -210,7 +210,7 @@
                  (setq xs (cons x1 xs))))))))
 
 (defalias 'cc*-system-include
-  (lexical-let% ((dx nil))
+  (let ((dx nil))
     (lambda (&optional op remote)
       (let* ((ss (if remote
                      (intern (mapconcat #'identity

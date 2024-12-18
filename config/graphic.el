@@ -36,8 +36,8 @@
 
 (defmacro inhibit-blinking (&rest body)
   (declare (indent 0))
-  `(lexical-let% ((inhibit-redisplay t)
-                  (frame-inhibit-implied-resize t))
+  `(let ((inhibit-redisplay t)
+         (frame-inhibit-implied-resize t))
      (when-version% >= 25
        (ignore* frame-inhibit-implied-resize))
      ,@body))

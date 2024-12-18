@@ -33,19 +33,19 @@
   :group 'jshell)
 
 (defalias 'jshell-program
-  (lexical-let% ((b (executable-find%
-                     "jshell"
-                     (lambda (jshell)
-                       (let ((x (shell-command* jshell "--version")))
-                         (or (and (zerop (car x)) jshell)
-                             "jshell"))))))
+  (let ((b (executable-find%
+            "jshell"
+            (lambda (jshell)
+              (let ((x (shell-command* jshell "--version")))
+                (or (and (zerop (car x)) jshell)
+                    "jshell"))))))
     (lambda (&optional n)
       (cond (n (setq b n))
             (t b))))
   "Program invoked by the \\=`run-jshell\\=' command.")
 
 (defalias '*jshell*
-  (lexical-let% ((b))
+  (let ((b))
     (lambda (&optional n)
       (cond (n (setq b (get-buffer-create n)))
             ((or (null b) (not (buffer-live-p b)))
@@ -54,21 +54,21 @@
   "The current *jshell* process buffer.")
 
 (defalias '*jshell-out*
-  (lexical-let% ((b "*out|jshell*"))
+  (let ((b "*out|jshell*"))
     (lambda (&optional n)
       (if n (setq b n)
         (get-buffer-create b))))
   "The output buffer of \\=`jshell-completion\\='.")
 
 (defalias '*jshell-start-file*
-  (lexical-let% ((b (v-home% ".exec/jshell.jsh")))
+  (let ((b (v-home% ".exec/jshell.jsh")))
     (lambda ()
       (cond ((file-exists-p b) b)
             (t (copy-file (emacs-home% "config/jshell.jsh") b)))))
   "The \\=`*jshell*\\=' process start file.")
 
 (defalias 'jshell-switch-to-last-buffer
-  (lexical-let% ((b))
+  (let ((b))
     (lambda (&optional n)
       (interactive "P")
       (cond (n (setq b n))
