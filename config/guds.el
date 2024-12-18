@@ -200,7 +200,7 @@ Avoid bugs in `gud-format-command' and `gud-find-c-expr'."
 ;; Remove only strings that were put in `current-buffer' with calls
 ;; to `gud-put-string'."
 ;;   (let ((pos (gud-line-positions (line-number-at-pos))))
-;;     (dolist* (o (overlays-in (1- (car pos)) (1+ (cdr pos))))
+;;     (dolist (o (overlays-in (1- (car pos)) (1+ (cdr pos))))
 ;;       (when (or (overlay-get o 'gud-breakpoint)
 ;;                 (overlay-get o 'before-string))
 ;;         (delete-overlay o)))))
@@ -210,7 +210,7 @@ Avoid bugs in `gud-format-command' and `gud-find-c-expr'."
 ;;   "Return t if 'gud-breakpoint had been set, otherwise nil."
 ;;   (let ((pos (gud-line-positions (line-number-at-pos))))
 ;;     (catch 'gud-breakpoint
-;;       (dolist* (o (overlays-in (1- (car pos)) (1+ (cdr pos))))
+;;       (dolist (o (overlays-in (1- (car pos)) (1+ (cdr pos))))
 ;;         (when (overlay-get o 'gud-breakpoint)
 ;;           (throw 'gud-breakpoint t))))))
 

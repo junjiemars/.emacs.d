@@ -27,7 +27,7 @@
                    :url "https://github.com/tree-sitter/tree-sitter-python"
                    :map python-ts-mode))))
     (lambda (&optional op sexp)
-      (cond ((eq op :put) (dolist* (x sexp) (push! x m t)))
+      (cond ((eq op :put) (dolist (x sexp) (push! x m t)))
             ((eq op :read) (setq m (read-sexp-from-file b)))
             ((eq op :dump) (when m (save-sexp-to-file m b)))
             (t m))))
@@ -36,11 +36,11 @@
 (defun treesit*-on/off-check (recipe)
   "Return t if \\=`treesit\\=' is on, otherwise nil."
   (catch 'br
-    (dolist* (x recipe)
+    (dolist (x recipe)
       (let ((m (plist-get x :map)))
-        (dolist* (a major-mode-remap-alist)
+        (dolist (a major-mode-remap-alist)
           (and (eq m (cdr a)) (throw 'br t)))
-        (dolist* (a auto-mode-alist)
+        (dolist (a auto-mode-alist)
           (and (eq m (cdr a)) (throw 'br t)))))))
 
 (defun toggle-treesit! ()
@@ -50,23 +50,23 @@
          (on (treesit*-on/off-check ts)))
     (cond (on (setq auto-mode-alist
                     (let ((as nil))
-                      (dolist* (a auto-mode-alist (nreverse as))
+                      (dolist (a auto-mode-alist (nreverse as))
                         (unless (catch 'br
-                                  (dolist* (x ts)
+                                  (dolist (x ts)
                                     (and (eq (plist-get x :map) (cdr a))
                                          (throw 'br t))))
                           (setq as (cons a as)))))
                     major-mode-remap-alist
                     (let ((as nil))
-                      (dolist* (a major-mode-remap-alist (nreverse as))
+                      (dolist (a major-mode-remap-alist (nreverse as))
                         (unless (catch 'br
-                                  (dolist* (x ts)
+                                  (dolist (x ts)
                                     (and (eq (plist-get x :map) (cdr a))
                                          (throw 'br t))))
                           (setq as (cons a as)))))
                     treesit-language-source-alist nil))
           (t (let ((aa (copy-sequence auto-mode-alist)))
-               (dolist* (x ts)
+               (dolist (x ts)
                  (let ((l1 (plist-get x :lang))
                        (m1 (plist-get x :mode))
                        (u1 (plist-get x :url))
@@ -74,7 +74,7 @@
                    (when u1
                      (push! (list l1 u1) treesit-language-source-alist t))
                    (push! (cons m1 r1) major-mode-remap-alist t)
-                   (dolist* (y auto-mode-alist)
+                   (dolist (y auto-mode-alist)
                      (and (eq (cdr y) m1)
                           (push! (cons (car y) r1) aa)))))
                (setq auto-mode-alist aa))))

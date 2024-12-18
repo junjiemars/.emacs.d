@@ -128,7 +128,7 @@
          (m matrix)
          (r (* (sudoku-puzzle--row d index) d))
          (v (make-vector d 0)))
-    (dolist* (x (range 0 (1- d) 1) v)
+    (dolist (x (range 0 (1- d) 1) v)
       (aset v x (aref m (+ r x))))))
 
 (defun sudoku-puzzle-vec-col (matrix index)
@@ -137,7 +137,7 @@
          (m matrix)
          (c (% (sudoku-puzzle--col d index) d))
          (v (make-vector d 0)))
-    (dolist* (x (range 0 (1- d) 1) v)
+    (dolist (x (range 0 (1- d) 1) v)
       (aset v x (aref m (+ c (* x d)))))))
 
 
@@ -151,7 +151,7 @@
          (r (* (car s1) s d))
          (c (* (cdr s1) s))
          (v (make-vector d 0)))
-    (dolist* (x (range 0 (1- d) 1) v)
+    (dolist (x (range 0 (1- d) 1) v)
       (aset v x (aref m (+ r (* (/ x s) d) c (% x s)))))))
 
 
@@ -459,7 +459,7 @@
              (apply
               #'format v
               (let ((xs nil))
-                (dolist* (x (take d board) (nreverse xs))
+                (dolist (x (take d board) (nreverse xs))
                   (setq xs (cons (apply #'propertize
                                         (let ((n (cdr (plist-get x :puzzle))))
                                           (cond ((= n 0) u)
@@ -566,7 +566,7 @@
             (forward-char -1)
             (set-text-properties pos (1+ pos) tp)
 
-            (dolist* (x properties)
+            (dolist (x properties)
               (put-text-property pos (1+ pos)
                                  (car x)
                                  (cdr x)))
@@ -668,7 +668,7 @@
      :set!
      (let ((i 0)
            (p (make-vector (length b) 0)))
-       (dolist* (x b p)
+       (dolist (x b p)
          (aset p i (cdr (plist-get x :puzzle)))
          (setq i (1+ i)))))
     (sudoku-board-draw b)

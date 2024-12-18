@@ -92,7 +92,7 @@ when \\=`desktop-globals-to-save\\=' include it.")
         (when tags
           (let ((fn (expand-file-name tags))
                 (xs nil))
-            (dolist* (x tags-table-list (nreverse xs))
+            (dolist (x tags-table-list (nreverse xs))
               (unless (string= x fn)
                 (setq xs (cons x xs))))))))
 

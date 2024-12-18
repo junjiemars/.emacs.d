@@ -259,30 +259,6 @@ else do ELSE..."
 ;; end of if/when/unless-interactive% macro
 
 ;;;
-;; preferred lexical `dolist*'
-;;;
-
-(defmacro dolist* (spec &rest body)
-  "Loop over a list and do DOBY.\n
-Lexically \\=`do-list\\='.
-Argument SPEC (VAR LIST [RESULT])."
-  (declare (indent 1) (debug ((symbolp form &optional form) body)))
-  (unless (consp spec)
-    (signal 'wrong-type-argument (list 'consp spec)))
-  (unless (and (<= 2 (length spec)) (<= (length spec) 3))
-    (signal 'wrong-number-of-arguments (list '(2 . 3) (length spec))))
-  (let ((lst (gensym*)))
-    `(lexical-let% ((,lst ,(nth 1 spec)))
-       (while ,lst
-         (let ((,(car spec) (car ,lst)))
-           ,@body
-           (setq ,lst (cdr ,lst))))
-       ,@(cdr (cdr spec)))))
-
-;; end of preferred `dolist*'
-
-
-;;;
 ;; alias
 ;;;
 

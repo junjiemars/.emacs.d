@@ -46,7 +46,7 @@
             ((eq :put op) (setq ps (plist-put ps k v)))
             ((eq :dup op)
              (inhibit-file-name-handler
-               (dolist* (fs ss)
+               (dolist (fs ss)
                  (let ((dst (plist-get ps (car fs)))
                        (src (cdr fs)))
                    (unless (file-exists-p dst)

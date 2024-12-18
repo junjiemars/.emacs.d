@@ -90,7 +90,7 @@
              "}")
             (make-temp-file "cc-s-" nil ".c"))))
     (catch 'br
-      (dolist* (cc cx)
+      (dolist (cc cx)
         (when (zerop (car (shell-command*
                               (format (if-platform% 'windows-nt
                                           (if (string= "cc-env.bat" cc)
@@ -185,14 +185,14 @@
       (let ((pre (cdr cmd)) (inc nil) (beg nil))
         (if-platform% 'windows-nt
             ;; Windows: msvc
-            (dolist* (x (var->paths
+            (dolist (x (var->paths
                          (car
                           (nreverse (split-string* pre "\n" t "[ \"]*"))))
                         (nreverse inc))
               (setq inc (cons (posix-path x) inc)))
           ;; Darwin/Linux: clang or gcc
           (catch 'br
-            (dolist* (x (split-string* pre "\n" t "[ \t\n]"))
+            (dolist (x (split-string* pre "\n" t "[ \t\n]"))
               (when (and beg (string-match "End of search list\\." x))
                 (throw 'br (nreverse inc)))
               (when beg (setq inc (cons x inc)))
@@ -204,7 +204,7 @@
 (defun cc*-system-include-read (file &optional remote)
   (or (read-sexp-from-file file)
       (let ((xs nil))
-        (dolist* (x (cc*-include-check remote) (nreverse xs))
+        (dolist (x (cc*-include-check remote) (nreverse xs))
           (let ((x1 (if remote (concat remote x) x)))
             (and (file-exists-p x1)
                  (setq xs (cons x1 xs))))))))
@@ -316,7 +316,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
         (opt "--langmap=c:.h.c --c-kinds=+ptesgux --extra=+fq"))
     (cond (renew (let ((inc (cc*-system-include :read)))
                    (make-c-tags (car inc) file opt nil nil t)
-                   (dolist* (p (cdr inc) file)
+                   (dolist (p (cdr inc) file)
                      (make-c-tags p file opt))))
           (t file))))
 

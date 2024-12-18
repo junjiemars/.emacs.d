@@ -96,7 +96,7 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
       (let ((case-fold-search (when-platform% 'windows-nt t))
             (d (file-name-directory file)))
         (catch 'br
-          (dolist* (x dirs)
+          (dolist (x dirs)
             (and (stringp x)
                  (eq 't (compare-strings
                          x 0 (length x) d 0 (length x)
@@ -110,7 +110,7 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
   (declare (indent 1))
   `(with-current-buffer (current-buffer)
      (when (catch 'br
-             (dolist* (x ,modes)
+             (dolist (x ,modes)
                (and (eq x major-mode)
                     (throw 'br t))))
        ,alternate

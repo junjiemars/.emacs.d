@@ -227,7 +227,7 @@ in \\=`gud-cdb-directories\\='."
   (or (let ((f (expand-file-name filename)))
         (when (file-exists-p f) f))
       (catch 'br
-        (dolist* (d gud-cdb-directories)
+        (dolist (d gud-cdb-directories)
           (let ((p (concat d "/" filename)))
             (and (file-exists-p p)
                  (throw 'br p)))))))
@@ -290,7 +290,7 @@ The job of the massage-args method is to modify the given list of
 debugger arguments before running the debugger."
   (ignore* file)
   (append (let ((xs nil))
-            (dolist* (o gud-cdb-command-line-hook xs)
+            (dolist (o gud-cdb-command-line-hook xs)
               (and (functionp o)
                    (setq xs (append xs (funcall o))))))
           args))
@@ -395,7 +395,7 @@ directory and source-file directory for your debugger."
 
   (run-hooks 'gud-cdb-mode-hook)
 
-  (dolist* (x gud-cdb-init-hook)
+  (dolist (x gud-cdb-init-hook)
     (and (functionp x) (funcall x)))
 
   (add-hook 'completion-at-point-functions

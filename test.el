@@ -202,15 +202,6 @@
 (ert-deftest %d:fn:platform-arch ()
   (should (platform-arch)))
 
-(ert-deftest %d:fn:dolist* ()
-  (should (equal '(a nil b c)
-                 (let ((lst nil))
-                   (dolist* (x '(a nil b c) (nreverse lst))
-                     (push x lst)))))
-  (should (catch 'found
-            (dolist* (x '(a b c))
-              (when (eq 'b x) (throw 'found t))))))
-
 (ert-deftest %d:fn:if/when/unless-lexical% ()
   (if (if-lexical% t nil)
       (should (and (when-lexical% t)
@@ -549,16 +540,6 @@
 ;;       (set-mark (point-max))
 ;;       (should (string= "a bb" (cdr (symbol@)))))))
 
-(ert-deftest %d:fn:version-strncmp ()
-  (should (= 0 (version-strncmp "" "")))
-  (should (= 1 (version-strncmp "1" "")))
-  (should (= -1 (version-strncmp "" "1")))
-  (should (= 0 (version-strncmp "1" "1")))
-  (should (= 0 (version-strncmp "1.0" "1")))
-  (should (= 1 (version-strncmp "1.21" "1.2.12" 2)))
-  (should (= 0 (version-strncmp "1.2.3.1" "1.2.3.2" 3)))
-  (should (= -1 (version-strncmp "1.2.3.1" "1.2.3.2" 4))))
-
 ;; end of `fn'
 
 ;;;
@@ -648,6 +629,22 @@
      (when already (should (install-package!1 'htmlize))))))
 
 
+
+;;;
+;; `ed'
+;;;
+
+(ert-deftest %h:ed:version-strncmp ()
+  (should (= 0 (version-strncmp "" "")))
+  (should (= 1 (version-strncmp "1" "")))
+  (should (= -1 (version-strncmp "" "1")))
+  (should (= 0 (version-strncmp "1" "1")))
+  (should (= 0 (version-strncmp "1.0" "1")))
+  (should (= 1 (version-strncmp "1.21" "1.2.12" 2)))
+  (should (= 0 (version-strncmp "1.2.3.1" "1.2.3.2" 3)))
+  (should (= -1 (version-strncmp "1.2.3.1" "1.2.3.2" 4))))
+
+;; end of `ed'
 
 ;;;
 ;; `cls'

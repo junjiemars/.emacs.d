@@ -125,7 +125,7 @@ Return absolute filename when FILENAME exists, otherwise nil."
   (or (let ((f (expand-file-name filename)))
         (and (file-exists-p f) f))
       (catch 'br
-        (dolist* (d gud-lldb-directories)
+        (dolist (d gud-lldb-directories)
           (let ((p (concat d "/" filename)))
             (and (file-exists-p p)
                  (throw 'br p)))))))
@@ -251,7 +251,7 @@ As the optional argument of \\=`gud-common-init\\=': find-file."
 As the 2nd argument of \\=`gud-common-init\\=': massage-args."
   (ignore* file)
   (append (let ((xs nil))
-            (dolist* (x gud-lldb-command-line-hook xs)
+            (dolist (x gud-lldb-command-line-hook xs)
               (and (functionp x) (setq xs (append xs (funcall x))))))
           args))
 

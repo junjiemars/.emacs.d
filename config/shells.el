@@ -61,7 +61,7 @@
 \\=`path-separator\\='."
   (string-trim>
    (let ((vs))
-     (dolist* (s path vs)
+     (dolist (s path vs)
        (setq vs (concat vs (if (null predicate)
                                (concat s path-separator)
                              (when (and (functionp predicate)
@@ -99,14 +99,14 @@ See \\=`setenv\\='."
 
 
 (defun copy-env-vars! (env vars)
-  (dolist* (v vars)
+  (dolist (v vars)
     (and (> (length v) 0)
          (let ((v1 (cdr (assoc-string v env))))
            (and (stringp v1) (setenv* v v1))))))
 
 
 (defun spin-env-vars! (vars)
-  (dolist* (v vars)
+  (dolist (v vars)
     (and (stringp (car v)) (stringp (cdr v))
          (setenv* (car v) (cdr v)))))
 
@@ -131,7 +131,7 @@ See \\=`setenv\\='."
                 (and append (not (string= dir (last env)))))
         (let ((path (let ((xs nil))
                       ;; remove dir
-                      (dolist* (x env (nreverse xs))
+                      (dolist (x env (nreverse xs))
                         (unless (string= x dir)
                           (setq xs (cons x xs)))))))
           (setenv* (shells-spec->% :PATH)
@@ -149,13 +149,13 @@ See \\=`setenv\\='."
   "Save \\=`*default-shell-env*\\=' to file."
   (let ((vars nil)
         (default-directory (emacs-home%)))
-    (dolist* (v (shells-spec->* :copy-vars) vars)
+    (dolist (v (shells-spec->* :copy-vars) vars)
       (when (stringp v)
         (let ((val (echo-var v (shells-spec->* :options))))
           (when (and val (> (length val) 0))
             (when (string= v (shells-spec->% :PATH))
               (let ((paths nil))
-                (dolist* (p (var->paths val))
+                (dolist (p (var->paths val))
                   (let ((p1 (if-platform% 'windows-nt
                                 (posix-path p)
                               p)))
@@ -169,7 +169,7 @@ See \\=`setenv\\='."
     (*default-shell-env* :put! :copy-vars vars)
     (when (shells-spec->* :exec-path)
       (let ((paths '()))
-        (dolist* (p exec-path)
+        (dolist (p exec-path)
           (and (and (stringp p) (file-exists-p p))
                (append! p paths t)))
         (append! (v-home% ".exec/") paths t)

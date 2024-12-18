@@ -109,7 +109,7 @@ determine whether inside a virtual env. Another way is using
   "Set pip MIRROR in VENV."
   (let* ((x (or (and (> (length mirror) 0) mirror)
                 (catch 'br
-                  (dolist* (a (python*-pip-mirror))
+                  (dolist (a (python*-pip-mirror))
                     (let ((rc (shell-command* "curl" "-fsIL" a)))
                       (when (zerop (car rc))
                         (throw 'br a)))))

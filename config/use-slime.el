@@ -8,7 +8,7 @@
 
 (defalias 'slime*-lisp-implementations
   (lexical-let% ((b (let ((ns nil))
-                      (dolist* (x '(sbcl ecl acl) ns)
+                      (dolist (x '(sbcl ecl acl) ns)
                         (let ((bin (executable-find (symbol-name x))))
                           (when bin (push! (list x (list bin)) ns)))))))
     (lambda (&optional n)
@@ -28,7 +28,7 @@
     "Show the Common LisP's source location in \\=`view-mode\\='."
     (with-current-buffer (current-buffer)
       (let ((b (current-buffer)))
-        (dolist* (ss (slime*-source-locations))
+        (dolist (ss (slime*-source-locations))
           (when (and (stringp ss) (string-match ss (buffer-file-name b)))
             (view-mode 1)))))))
 

@@ -329,8 +329,8 @@
                    935 "Chi (kie)"
                    936 "Psi (sigh)"
                    937 "Omega (oh-may-gah)")))
-        (dolist* (s (let ((xs nil))
-                      (dolist* (x (range 913 (+ 913 24)) (nreverse xs))
+        (dolist (s (let ((xs nil))
+                      (dolist (x (range 913 (+ 913 24)) (nreverse xs))
                         (unless (= x 930)
                           (setq xs (cons x xs))))))
           (let ((c (+ 32 s)))

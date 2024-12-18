@@ -21,7 +21,7 @@
     (let ((cmd (shell-command* program "ps" "--format {{.Names}}")))
       (when (zerop (car cmd))
         (let ((xs nil) (ss (split-string* (cdr cmd) "\n" t "\n")))
-          (dolist* (x ss (nreverse xs))
+          (dolist (x ss (nreverse xs))
             (setq xs (cons (list nil x) xs))))))))
 
 
@@ -35,14 +35,14 @@
   ;; `C-x d' /docker:[<user>@]<container>:/path/
   (when-var% tramp-methods tramp
     (unless% (catch 'br
-               (dolist* (x tramp-methods)
+               (dolist (x tramp-methods)
                  (let ((x1 (car x)))
                    (and (or (string= "docker" x1) (string= "podman" x1))
                         (throw 'br t)))))
       (setq tramp-methods
             ;; podman is compatible with docker
             (let ((ts (let ((xs nil))
-                        (dolist* (x tramp-methods (nreverse xs))
+                        (dolist (x tramp-methods (nreverse xs))
                           (let ((x1 (car x)))
                             (unless (string= "docker" x1)
                               (setq xs (cons x xs))))))))

@@ -75,7 +75,7 @@
               (mapconcat
                #'identity
                (let ((xs nil))
-                 (dolist* (x (aref (cdr (assq ,p package-alist)) 0)
+                 (dolist (x (aref (cdr (assq ,p package-alist)) 0)
                              (nreverse xs))
                    (setq xs (cons (number-to-string x) xs))))
                "."))))))))
@@ -98,10 +98,10 @@
 
 (defun package*-parse-spec! (spec &optional remove-unused)
   "Parse SPEC, install, REMOVE-UNUSED packages."
-  (dolist* (s spec)
+  (dolist (s spec)
     (let ((ss (cdr s)))
       (when (and (consp ss) (module-unit-spec->* ss :cond))
-        (dolist* (p (module-unit-spec->* ss :packages))
+        (dolist (p (module-unit-spec->* ss :packages))
           (let ((ns (package*-check-name p)))
             (and (consp ns)
                  (let ((n (car ns)) (tar (cdr ns)))

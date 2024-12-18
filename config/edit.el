@@ -30,11 +30,11 @@
   "Initialize edit spec from \\=`*self-edit-spec*\\='"
   (when (edit-spec->* :allowed)
     ;; indent
-    (dolist* (x (edit-spec->* :indent))
+    (dolist (x (edit-spec->* :indent))
       (set (car x) (or (cdr x) (edit-spec->* :tab-width))))
 
     ;; disable `indent-tabs-mode'
-    (dolist* (m (edit-spec->* :disable-indent-tabs-mode))
+    (dolist (m (edit-spec->* :disable-indent-tabs-mode))
       (let ((h (intern (format "%s-hook" m))))
         (add-hook h #'self-edit-env->disable-indent-tabs-mode)))
 
@@ -64,9 +64,9 @@
 
 (defun clean-versioned-dirs (dirs &optional scope)
   "Clean versioned SCOPEd DIRS."
-  (dolist* (d dirs)
+  (dolist (d dirs)
     (when (and d (file-exists-p d))
-      (dolist* (f (directory-files d nil "^[gt]_.*$"))
+      (dolist (f (directory-files d nil "^[gt]_.*$"))
         (when (cond ((eq :8 scope) t)
                     ((eq :< scope)
                      (< (string-to-number
@@ -93,7 +93,7 @@
           do?)
     (clean-versioned-dirs
      (let ((xs nil))
-       (dolist* (d (directory-files (emacs-home%) nil "^\\.[a-z]+") xs)
+       (dolist (d (directory-files (emacs-home%) nil "^\\.[a-z]+") xs)
          (unless (member d '(".git" ".gitignore" ".github"))
            (setq xs (cons (concat (emacs-home* d) "/") xs)))))
      :8)

@@ -18,7 +18,7 @@
   "Set glyph font's NAME and SIZE in graphic mode."
   (when-fn% set-fontset-font nil
     (let ((fs (font-spec :family name :size size)))
-      (dolist* (c scripts)
+      (dolist (c scripts)
         (if-version%
             <= 23
             (set-fontset-font t c fs nil 'prepend)
@@ -42,7 +42,7 @@
 ;; Load glyph font
 (defun self-glyph-init! ()
   "Initialize glyph spec from \\=`*self-env-spec*\\='."
-  (dolist* (g (glyph-spec->*))
+  (dolist (g (glyph-spec->*))
     (when (plist-get g :allowed)
       (let ((name (plist-get g :name))
             (size (plist-get g :size))

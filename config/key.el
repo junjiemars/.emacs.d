@@ -21,7 +21,7 @@
   (when-graphic%
     (when (key-spec->* :allowed)
       (let ((modifier (key-spec->* :modifier)))
-        (dolist* (x modifier)
+        (dolist (x modifier)
           (set (car x) (cdr x)))))
     ;; disable suspend-frame
     (when-platform% 'darwin

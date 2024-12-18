@@ -19,7 +19,7 @@
 ;;       (let ((cs (color-values color frame)))
 ;;         (when cs
 ;;           (let ((rc 0) (i 16))
-;;             (dolist* (x cs (logand #xffffff rc))
+;;             (dolist (x cs (logand #xffffff rc))
 ;;               (setq rc (logior
 ;;                         (ash (if fn (funcall fn x) x) i)
 ;;                         rc)

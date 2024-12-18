@@ -19,7 +19,7 @@
   (eval-when-compile (require 'em-term))
   (require 'em-term)
   (when (eshell-spec->* :allowed)
-    (dolist* (x (eshell-spec->* :visual-commands))
+    (dolist (x (eshell-spec->* :visual-commands))
       (append! x eshell-visual-commands t))
     (setq% eshell-destroy-buffer-when-process-dies
            (eshell-spec->* :destroy-buffer-when-process-dies))
