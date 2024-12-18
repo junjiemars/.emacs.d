@@ -303,7 +303,7 @@ end of buffer, otherwise just popup the buffer."
   (chez-switch-to-last-buffer (current-buffer))
   (if no-select
       (display-buffer (*chez*)
-                      (if-fn% 'display-buffer-pop-up-window nil
+                      (if-fn% display-buffer-pop-up-window nil
                               #'display-buffer-pop-up-window
                         t))
     ;; switch to REPL and select it

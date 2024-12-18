@@ -10,7 +10,7 @@
 
 ;; fix: Warning (bytecomp): `org-bookmark-jump-unhide' fn
 ;; might not be defined at runtime.
-(when-fn% 'org-bookmark-jump-unhide 'org
+(when-fn% org-bookmark-jump-unhide org
   (autoload 'org-bookmark-jump-unhide "org"))
 
 ;; end of require
@@ -33,9 +33,9 @@
   ;; define keys
   (define-key% (current-global-map) (kbd% "C-c o l") #'org-store-link)
   (define-key% (current-global-map) (kbd% "C-c o a") #'org-agenda)
-  (when-fn% 'org-capture 'org
+  (when-fn% org-capture org
     (define-key% (current-global-map) (kbd% "C-c o c") #'org-capture))
-  (when-fn% 'org-switchb 'org
+  (when-fn% org-switchb org
     (define-key% (current-global-map) (kbd% "C-c o s") #'org-switchb)))
 
 

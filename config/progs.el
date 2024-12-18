@@ -182,7 +182,7 @@ And copy the qualified buffer name to kill ring."
 
 (defun on-ido-init! ()
   "On \\=`ido\\=' intialization."
-  (if-fn% 'ido-mode 'ido
+  (if-fn% ido-mode ido
           (progn
             (ido-mode t)
             (define-key% (current-global-map) "5r"
@@ -208,7 +208,7 @@ And copy the qualified buffer name to kill ring."
   (let ((km (if-var% minibuffer-local-completion-map minibuffer
                      minibuffer-local-completion-map
               minibuffer-local-map))
-        (kf (if-fn% 'minibuffer-complete 'minibuffer
+        (kf (if-fn% minibuffer-complete minibuffer
                     #'minibuffer-complete
               (if-fn% #'completion-at-point 'minibuffer
                       #'completion-at-point
@@ -231,7 +231,7 @@ And copy the qualified buffer name to kill ring."
   (define-key% (current-global-map) "sr" #'reverse-region)
   (define-key% (current-global-map) "sd" #'delete-duplicate-lines))
 
-(when-fn% 'whitespace-mode 'whitespace
+(when-fn% whitespace-mode whitespace
   (defun on-whitespace-init! ()
     "On \\=`sort\\=' intialization."
     (define-key% (current-global-map) (kbd% "C-x x SPC") #'whitespace-mode)
@@ -247,7 +247,7 @@ And copy the qualified buffer name to kill ring."
 
 (defun on-progs-env! ()
   ;; count region
-  (unless-fn% 'count-words-region 'simple
+  (unless-fn% count-words-region simple
     (defalias 'count-words-region #'count-lines-region
       "\\=`count-lines-region\\=' had been obsoleted since Emacs24.1+"))
   ;; title bar with full path
@@ -294,7 +294,7 @@ And copy the qualified buffer name to kill ring."
   (unless-key-insert-char%
     (define-key% (current-global-map) "8" #'insert-char*))
   ;; open file or url at point
-  (when-fn% 'find-file-at-point 'ffap
+  (when-fn% find-file-at-point ffap
     (define-key% (current-global-map) "ff" #'find-file-at-point))
   ;; shows a list of buffers
   (define-key% (current-global-map) "" #'ibuffer)
@@ -316,24 +316,24 @@ And copy the qualified buffer name to kill ring."
   (define-key% (current-global-map) (kbd% "C-x RET =")
                #'get-buffer-coding-system)
   (define-key% (current-global-map) "xg"
-               (if-fn% 'revert-buffer-quick nil
+               (if-fn% revert-buffer-quick nil
                        #'revert-buffer-quick
                  #'revert-buffer))
   ;; line number mode
   (define-key (current-global-map) "xl"
-              (if-fn% 'display-line-numbers-mode 'display-line-numbers
+              (if-fn% display-line-numbers-mode display-line-numbers
                       (prog1 #'display-line-numbers-mode
                         (setq% display-line-numbers-type 'relative
                                display-line-numbers)
                         (setq% display-line-numbers-current-absolute nil
                                display-line-numbers))
-                (if-fn% 'linum-mode 'linum
+                (if-fn% linum-mode linum
                         #'linum-mode
                   #'(lambda (&optional _)
                       (interactive)
                       (error (kbd% "%s") "No line number mode found")))))
   (define-key% (current-global-map) "xr" #'rename-buffer)
-  (when-fn% 'toggle-word-wrap 'simple
+  (when-fn% toggle-word-wrap simple
     (define-key% (current-global-map) "xw" #'toggle-word-wrap))
   (define-key% (current-global-map) "xu" #'rename-uniquely)
   ;; `messages-buffer-mode'
@@ -342,7 +342,7 @@ And copy the qualified buffer name to kill ring."
     ;; [DEL] for `scroll-down'
     ;; [SPC] for `scroll-up'
     (with-current-buffer (get-buffer "*Messages*")
-      (if-fn% 'read-only-mode nil
+      (if-fn% read-only-mode nil
               (read-only-mode 1)
         (toggle-read-only t))
       (local-set-key "q" #'quit-window)
@@ -357,7 +357,7 @@ And copy the qualified buffer name to kill ring."
 
 (defun on-progs-mode! ()
   ;; no cursor blinking, it's distracting
-  (when-fn% 'blink-cursor-mode nil (blink-cursor-mode 0))
+  (when-fn% blink-cursor-mode nil (blink-cursor-mode 0))
   ;; enable `column-number-mode'
   (setq% column-number-mode t simple)
   ;; highlights matching parenthesis
@@ -389,7 +389,7 @@ And copy the qualified buffer name to kill ring."
   (on-ido-init!)
   (on-minibuffer-init!)
   (on-sort-init!)
-  (when-fn% 'whitespace-mode 'whitespace
+  (when-fn% whitespace-mode whitespace
     (on-whitespace-init!)))
 
 

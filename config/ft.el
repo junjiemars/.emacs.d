@@ -3,7 +3,7 @@
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; feature.el
+;; ft.el
 ;;;;
 ;; Commentary: builtin features checking.
 ;;;;
@@ -29,7 +29,7 @@
         (nonfn (intern-function-name 'treesit nil)))
     (cond ((intern-soft hasfn) `(progn% ,@body))
           ((intern-soft nonfn) `(comment ,@body))
-          ((when-fn% 'treesit-available-p nil t)
+          ((when-fn% treesit-available-p nil t)
            (cond ((treesit-available-p) (intern hasfn) `(progn%,@body))
                  (t (intern nonfn) `(comment ,@body))))
           (t (intern nonfn) `(comment ,@body)))))
@@ -43,11 +43,11 @@
         (nonfn (intern-function-name 'vc-dir nil)))
     (cond ((intern-soft hasfn) `(progn% ,@body))
           ((intern-soft nonfn) `(comment ,@body))
-          ((when-fn% 'vc-dir 'vc-dir t) (intern hasfn) `(progn% ,@body))
+          ((when-fn% vc-dir vc-dir t) (intern hasfn) `(progn% ,@body))
           (t (intern nonfn) `(comment ,@body)))))
 
 
 
-(provide 'feature)
+(provide 'ft)
 
-;; end of feature.el
+;; end of ft.el

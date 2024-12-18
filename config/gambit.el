@@ -373,7 +373,7 @@ end of buffer, otherwise just popup the buffer."
   (gambit-switch-to-last-buffer (current-buffer))
   (if no-select
       (display-buffer (*gambit*)
-                      (if-fn% 'display-buffer-pop-up-window nil
+                      (if-fn% display-buffer-pop-up-window nil
                               #'display-buffer-pop-up-window
                         t))
     ;; switch to REPL and select it

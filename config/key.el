@@ -25,7 +25,7 @@
           (set (car x) (cdr x)))))
     ;; disable suspend-frame
     (when-platform% 'darwin
-      (when-fn% 'suspend-frame 'frame
+      (when-fn% suspend-frame frame
         (fset 'suspend-frame
               (lambda () (interactive)
                 (user-error

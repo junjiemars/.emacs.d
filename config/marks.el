@@ -14,11 +14,21 @@
 
 (defmacro unless-fn-thing-at-point-bounds-of-string-at-point% (&rest body)
   (declare (indent 0))
-  (let ((hasfn (intern-function-name 'tapbosap t))
-        (nonfn (intern-function-name 'tapbosap nil)))
+  (let ((hasfn (intern-function-name "thingatpt-bosap" t))
+        (nonfn (intern-function-name "thingatpt-bosap" nil)))
     (cond ((intern-soft nonfn) `(progn% ,@body))
           ((intern-soft hasfn) `(comment ,@body))
-          ((unless-fn% 'thing-at-point-bounds-of-string-at-point 'thingatpt t)
+          ((unless-fn% thing-at-point-bounds-of-string-at-point thingatpt t)
+           (intern nonfn) `(progn% ,@body))
+          (t (intern hasfn) `(comment ,@body)))))
+
+(defmacro unless-fn-thing-at-point-bounds-of-list-at-point% (&rest body)
+  (declare (indent 0))
+  (let ((hasfn (intern-function-name "thingatp-bolap" t))
+        (nonfn (intern-function-name "thingatp-bolap" nil)))
+    (cond ((intern-soft nonfn) `(progn% ,@body))
+          ((intern-soft hasfn) `(comment ,@body))
+          ((unless-fn% thing-at-point-bounds-of-list-at-point thingatpt t)
            (intern nonfn) `(progn% ,@body))
           (t (intern hasfn) `(comment ,@body)))))
 
@@ -35,16 +45,6 @@
 (unless-fn-thing-at-point-bounds-of-string-at-point%
   (put 'string 'bounds-of-thing-at-point
        'thing-at-point-bounds-of-string-at-point))
-
-(defmacro unless-fn-thing-at-point-bounds-of-list-at-point% (&rest body)
-  (declare (indent 0))
-  (let ((hasfn (intern-function-name 'tapbolap t))
-        (nonfn (intern-function-name 'tapbolap nil)))
-    (cond ((intern-soft nonfn) `(progn% ,@body))
-          ((intern-soft hasfn) `(comment ,@body))
-          ((unless-fn% 'thing-at-point-bounds-of-list-at-point 'thingatpt t)
-           (intern nonfn) `(progn% ,@body))
-          (t (intern hasfn) `(comment ,@body)))))
 
 (unless-fn-thing-at-point-bounds-of-list-at-point%
   (defun thing-at-point-bounds-of-list-at-point ()
@@ -72,7 +72,6 @@
   (put 'defun 'forward-op   'end-of-defun))
 
 ;; end of require
-
 
 ;;; mark-* macro
 

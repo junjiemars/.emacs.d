@@ -208,7 +208,7 @@
     (url callback &optional cbargs silent inhibit-cookies)
   "Retrieve URL asynchronously and call CALLBACK with CBARGS when
 finished."
-  (when-fn% 'url-retrieve 'url
+  (when-fn% url-retrieve url
     (if-version%
         <= 24
         `(url-retrieve ,url ,callback ,cbargs ,silent ,inhibit-cookies)

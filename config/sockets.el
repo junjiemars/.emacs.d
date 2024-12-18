@@ -17,7 +17,7 @@
 (defmacro when-fn-url-open-stream% (&rest body)
   "When% \\=`url-open-stream\\='."
   `(when-feature% socks
-     (when-fn% 'url-open-stream 'url-gw
+     (when-fn% url-open-stream url-gw
        ,@body)))
 
 (when-fn-url-open-stream%

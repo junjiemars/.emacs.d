@@ -229,7 +229,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 
 
 (defmacro when-fn-ff-find-other-file% (&rest body)
-  (when-fn% 'ff-find-other-file 'find-file
+  (when-fn% ff-find-other-file find-file
     `(progn% ,@body)))
 
 (when-fn-ff-find-other-file%
@@ -244,7 +244,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
                              (string-trim> (path- pwd) "/"))))
                    (cc*-system-include :read (ssh-remote-p file))))
           find-file)
-   (when-fn% 'xref-push-marker-stack 'xref
+   (when-fn% xref-push-marker-stack xref
      (autoload 'xref-push-marker-stack "xref")
      (xref-push-marker-stack))
    (ff-find-other-file in-other-window nil)))
@@ -347,11 +347,9 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
      (inline-open . 0)
      (brace-list-intro
       first
-      ,(when-fn% 'c-lineup-2nd-brace-entry-in-arglist
-           'cc-align
+      ,(when-fn% c-lineup-2nd-brace-entry-in-arglist cc-align
          #'c-lineup-2nd-brace-entry-in-arglist)
-      ,(when-fn% 'c-lineup-class-decl-init-+
-           'cc-align
+      ,(when-fn% c-lineup-class-decl-init-+ cc-align
          #'c-lineup-class-decl-init-+)
       +)
      (arglist-cont-nonempty
@@ -365,7 +363,7 @@ https://nginx.org/en/docs/dev/development_guide.html#code_style")
 BEGIN and END mark the extent of the region.
 N specify the number of spaces when align."
   (interactive "r\nP")
-  (when-fn% 'align-entire 'align
+  (when-fn% align-entire align
     (when-var% align-default-spacing align
       (fluid-let (align-default-spacing (or n 2))
         (align-entire begin end)))))
@@ -401,7 +399,7 @@ N specify the number of spaces when align."
 
 (defmacro when-fn-c-macro-expand% (&rest body)
   (declare (indent 0))
-  (when-fn% 'c-macro-expand 'cmacexp
+  (when-fn% c-macro-expand cmacexp
     `(progn% ,@body)))
 
 (when-fn-c-macro-expand%
@@ -487,11 +485,11 @@ N specify the number of spaces when align."
     (ad-enable-advice #'c-macro-expand 'around "c-macro-expand-around")
     (ad-activate #'c-macro-expand t))
   ;; indent line or region
-  (when-fn% 'c-indent-line-or-region 'cc-cmds
+  (when-fn% c-indent-line-or-region cc-cmds
     (define-key% c-mode-map (kbd% "TAB") #'c-indent-line-or-region))
   ;; `subword-mode'
   (define-key% c-mode-map ""
-               (if-fn% 'subword-mode 'subword
+               (if-fn% subword-mode subword
                        #'subword-mode
                  #'c-subword-mode))
   (when (boundp 'c-mode-map)

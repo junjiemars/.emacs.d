@@ -347,7 +347,7 @@ If ONLY-COMPILE is t, do not load DST."
     (let ((vc (make-v-comp-file (emacs-home "config/vcomp.el"))))
       (compile-and-load-file* (car vc) (cdr vc)))
     (compile! (compile-unit* (emacs-home* "config/fn.el")))
-    (compile! (compile-unit* (emacs-home* "config/feature.el")))
+    (compile! (compile-unit* (emacs-home* "config/ft.el")))
     (compile! (compile-unit* (emacs-home* "config/boot.el")))))
 
 ;; end of Boot

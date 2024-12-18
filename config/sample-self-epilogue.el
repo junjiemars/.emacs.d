@@ -44,7 +44,7 @@
  (with-eval-after-load 'org
    ;; define key bindings after `org-mode' had been loaded
    ;; publish blog
-   (when-fn% 'org-babel-do-load-languages 'org
+   (when-fn% org-babel-do-load-languages org
      (org-babel-do-load-languages
       'org-babel-load-languages
       (delq nil `(,(when-fn% 'cc*-cc 'cc

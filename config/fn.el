@@ -53,7 +53,7 @@
 ;; *-fn%: checking fn existing
 ;;;
 
-(defmacro if-fn%1 (fn feature then &rest else)
+(defmacro if-fn% (fn feature then &rest else)
   "If the FN of FEATURE is bounded yield non-nil, do THEN, else do ELSE..."
   (declare (indent 3))
   (cond ((fboundp `,fn) `,then)
@@ -61,39 +61,17 @@
                        (t `(progn% ,@else))))
         (t `(progn% ,@else))))
 
-(defmacro when-fn%1 (fn feature &rest body)
-  "When the FN of FEATURE is bounded yield non-nil, do BODY."
-  (declare (indent 2))
-  `(if-fn%1 ,fn ,feature (progn% ,@body)))
-
-(defmacro unless-fn%1 (fn feature &rest body)
-  "Unless the FN FEATURE is bounded yield non-nil, do BODY."
-  (declare (indent 2))
-  `(if-fn%1 ,fn ,feature nil ,@body))
-
-(defmacro if-fn% (fn feature then &rest else)
-  "If FN is bounded yield non-nil, do THEN, else do ELSE...\n
-Argument FEATURE that FN dependent on, be loaded at compile time."
-  (declare (indent 3))
-  `(if% (cond ((null ,feature) (fboundp ,fn))
-              (t (and (require ,feature nil t)
-                      (fboundp ,fn))))
-       ,then
-     (progn% ,@else)))
-
 (defmacro when-fn% (fn feature &rest body)
-  "When FN is bounded yield non-nil, do BODY.\n
-Argument FEATURE that FN dependent on, be loaded at compile time."
+  "When the FN of FEATURE is bounded yield non-nil, do BODY."
   (declare (indent 2))
   `(if-fn% ,fn ,feature (progn% ,@body)))
 
 (defmacro unless-fn% (fn feature &rest body)
-  "Unless FN is bounded yield non-nil, do BODY.\n
-Argument FEATURE that FN dependent on, be loaded at compile time."
+  "Unless the FN FEATURE is bounded yield non-nil, do BODY."
   (declare (indent 2))
   `(if-fn% ,fn ,feature nil ,@body))
 
-(unless-fn% 'declare-function nil
+(unless-fn% declare-function nil
   (defmacro declare-function (&rest _)))
 
 ;; end of *-fn% macro
@@ -160,7 +138,7 @@ Argument FEATURE that FN dependent on, be loaded at compile time."
                     (let ,varlist ,@body)
          (let ((lexical-binding t))
            (let ,varlist ,@body)))
-     (when-fn% 'lexical-let 'cl
+     (when-fn% lexical-let cl
        ;; `lexical-let' since Emacs22
        (lexical-let ,varlist ,@body))))
 
@@ -315,10 +293,10 @@ Argument SPEC (VAR LIST [RESULT])."
 
 (fset 'range #'number-sequence)
 
-(unless-fn% 'char= nil
+(unless-fn% char= nil
   (fset 'char= #'char-equal))
 
-(unless-fn% 'characterp nil
+(unless-fn% characterp nil
   (fset 'characterp #'char-valid-p))
 
 ;; end of alias
@@ -333,7 +311,7 @@ Argument SPEC (VAR LIST [RESULT])."
         ((null (cdr seq)) (flatten (car seq)))
         (t (append (flatten (car seq)) (flatten (cdr seq))))))
 
-(unless-fn% 'take nil
+(unless-fn% take nil
   (defun take (n seq)
     "Return a sequence of the first N items in SEQ."
     (let ((s nil))
@@ -418,7 +396,7 @@ If optional UNIQUELY is non-nil then append uniquely."
 
 (defmacro make-thread* (fn &optional join name)
   "Threading call FN with NAME or in JOIN mode."
-  `(if-fn% 'make-thread nil
+  `(if-fn% make-thread nil
            (if% ,join
                (thread-join (make-thread ,fn ,name))
              (make-thread ,fn ,name))
@@ -427,7 +405,7 @@ If optional UNIQUELY is non-nil then append uniquely."
 
 (defmacro thread-yield* ()
   "Yield the CPU to another thread."
-  `(when-fn% 'thread-yield nil (thread-yield)))
+  `(when-fn% thread-yield nil (thread-yield)))
 
 ;; end of thread
 
@@ -731,7 +709,7 @@ If optional N is non-nil compare no more than N parts, default N is 4."
 ;; compatible macro
 ;;;
 
-(unless-fn% 'user-error nil
+(unless-fn% user-error nil
   (defun user-error (format &rest args)
     "Signal a pilot error."
     (signal 'user-error
@@ -739,12 +717,12 @@ If optional N is non-nil compare no more than N parts, default N is 4."
 
 (defmacro called-interactively-p* (&optional kind)
   "Return t if called by \\=`call-interactively\\='."
-  (if-fn% 'called-interactively-p nil
+  (if-fn% called-interactively-p nil
           `(called-interactively-p ,kind)
     (ignore* kind)
     `(interactive-p)))
 
-(unless-fn% 'with-eval-after-load nil
+(unless-fn% with-eval-after-load nil
   (defmacro with-eval-after-load (file &rest body)
     "Execute BODY after FILE is loaded."
     (declare (indent 1) (debug t))

@@ -16,7 +16,7 @@
 
 (defun self-glyph-font! (name size scripts)
   "Set glyph font's NAME and SIZE in graphic mode."
-  (when-fn% 'set-fontset-font nil
+  (when-fn% set-fontset-font nil
     (let ((fs (font-spec :family name :size size)))
       (dolist* (c scripts)
         (if-version%

@@ -228,21 +228,21 @@
   ;; preferred coding system
   (prefer-coding-system 'utf-8)
   (self-graphic-init!)
-  (when-fn% 'self-shell-read! nil (self-shell-read!))
-  (when-fn% 'self-socks-init! nil (self-socks-init!))
+  (when-fn% self-shell-read! nil (self-shell-read!))
+  (when-fn% self-socks-init! nil (self-socks-init!))
   (setq% history-length (emacs-arch))
   (setq% message-log-max 512)
   (load-prologue-modes!)
   (load-compiling-modes!)
   (load-conditional-modes!)
-  (when-fn% 'self-edit-init! nil (self-edit-init!))
-  (when-fn% 'self-key-init! nil (self-key-init!))
+  (when-fn% self-edit-init! nil (self-edit-init!))
+  (when-fn% self-key-init! nil (self-key-init!))
   (when-font% (make-thread* #'self-glyph-init!))
-  (when-fn% 'self-module-init! nil
+  (when-fn% self-module-init! nil
     (condition-case err
         (self-module-init!)
       (error "self-module-init!: %s" err)))
-  (when-fn% 'self-desktop-read! nil
+  (when-fn% self-desktop-read! nil
     (condition-case err
         (self-desktop-read!)
       (error "self-desktop-read!: %s" err)))

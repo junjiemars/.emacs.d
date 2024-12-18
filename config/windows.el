@@ -11,7 +11,7 @@
 ;;;
 
 (defmacro unless-fn-recenter-top-bottom% (&rest body)
-  `(unless-fn% 'recenter-top-bottom nil
+  `(unless-fn% recenter-top-bottom nil
      ,@body))
 
 (unless-fn-recenter-top-bottom%

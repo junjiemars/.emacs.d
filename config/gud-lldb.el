@@ -217,7 +217,7 @@ Return init file name and ~/.lldbinit-lldb file no touched."
 ;;   "Enable/disable breakpoint at current line of breakpoints buffer."
 ;;   (save-excursion
 ;;     (beginning-of-line)
-;;     (let ((enabled (if-fn% 'gud-toggle-breakpoint-notation 'guds
+;;     (let ((enabled (if-fn% gud-toggle-breakpoint-notation guds
 ;;                            (progn (require 'guds)
 ;;                                   (gud-toggle-breakpoint-notation))
 ;;                      t)))

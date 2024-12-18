@@ -15,7 +15,7 @@
       (if (null n) b (setq b n))))
   "Program of docker/podman.")
 
-(when-fn% 'tramp-set-completion-function 'tramp
+(when-fn% tramp-set-completion-function tramp
   (defun tramp*-parse-docker-containers (program)
     "Return a list name of running docker/podman containers."
     (let ((cmd (shell-command* program "ps" "--format {{.Names}}")))

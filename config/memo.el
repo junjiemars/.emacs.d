@@ -39,7 +39,7 @@
 
     ;; remove unnecessary hooks of `kill-emacs-hook'
     (setq kill-emacs-hook
-          (if-fn% 'desktop--on-kill 'desktop
+          (if-fn% desktop--on-kill desktop
                   (delq 'desktop--on-kill kill-emacs-hook)
             (delq 'desktop-kill kill-emacs-hook)))
 

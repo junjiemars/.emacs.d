@@ -16,33 +16,38 @@
 
 (defmacro when-sql-feature% (&rest body)
   (declare (indent 0))
-  `(when-fn% 'sql-execute-feature 'sql
-     ,@body))
+  (let ((hasfn (intern-function-name "sql" t))
+        (nonfn (intern-function-name "sql" nil)))
+    (cond ((intern-soft hasfn) `(progn% ,@body))
+          ((intern-soft nonfn) `(comment ,@body))
+          ((when-fn% sql-execute-feature sql t)
+           (intern hasfn) `(progn% ,@body))
+          (t (intern nonfn) `(comment ,@bofy)))))
 
 (defmacro when-sql-oracle-feature% (&rest body)
   (declare (indent 0))
-  `(when-sql-feature%
-     ,@body))
+  (when-sql-feature%
+    `(progn% ,@body)))
 
 (defmacro when-sql-mysql-feature% (&rest body)
   (declare (indent 0))
-  `(when-sql-feature%
-     ,@body))
+  (when-sql-feature%
+    `(progn% ,@body)))
 
 (defmacro when-sql-oceanbase-feature% (&rest body)
   (declare (indent 0))
-  `(when-sql-feature%
-     ,@body))
+  (when-sql-feature%
+    `(progn% ,@body)))
 
 (defmacro when-fn-sql-show-sqli-buffer% (&rest body)
   (declare (indent 0))
-  `(when-fn% 'sql-show-sqli-buffer 'sql
-     ,@body))
+  (when-fn% sql-show-sqli-buffer sql
+    `(progn% ,@body)))
 
 (defmacro when-fn-sql-send-magic-terminator% (&rest body)
   (declare (indent 0))
-  `(when-fn% 'sql-send-magic-terminator 'sql
-     ,@body))
+  (when-fn% sql-send-magic-terminator sql
+    `(progn% ,@body)))
 
 ;; end of when-* macro
 
@@ -190,14 +195,14 @@ Optional prefix argument ENHANCED, displays additional details."
 ;; oracle
 ;;;
 
-(unless-fn% 'sql-oracle--list-object-name 'sql
+(unless-fn% sql-oracle--list-object-name sql
   (defun sql-oracle--list-object-name (obj-name)
     (format (concat
              "CASE WHEN REGEXP_LIKE (%s, q'/^[A-Z0-9_#$]+$/','c')"
              " THEN %s ELSE '\"'|| %s ||'\"' END ")
             obj-name obj-name obj-name)))
 
-(unless-fn% 'sql-oracle-restore-settings 'sql
+(unless-fn% sql-oracle-restore-settings sql
   (defun sql-oracle-restore-settings (sqlbuf saved-settings)
     (mapc
      (lambda (one-cur-setting)

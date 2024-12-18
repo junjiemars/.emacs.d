@@ -19,11 +19,11 @@
 
 (defmacro if-fn-xref-find-definitions% (then &rest body)
   (declare (indent 1))
-  (let ((hasfn (intern-function-name 'xfd t))
-        (nonfn (intern-function-name 'xfd nil)))
+  (let ((hasfn (intern-function-name "xref-xfd" t))
+        (nonfn (intern-function-name "xref-xfd" nil)))
     (cond ((intern-soft hasfn) `,then)
           ((intern-soft nonfn) `(progn% ,@body))
-          ((when-fn% 'xref-find-definitions 'xref t)
+          ((when-fn% xref-find-definitions xref t)
            (intern hasfn) `,then)
           (t (intern nonfn) `(progn% ,@body)))))
 
@@ -45,11 +45,11 @@
 
 (defmacro when-fn-xref--show-location% (&rest body)
   (declare (indent 0))
-  (let ((hasfn (intern-function-name 'xsl t))
-        (nonfn (intern-function-name 'xsl nil)))
+  (let ((hasfn (intern-function-name "xref-xsl" t))
+        (nonfn (intern-function-name "xref-xsl" nil)))
     (cond ((intern-soft hasfn) `(progn% ,@body))
           ((intern-soft nonfn) `(comment ,@body))
-          ((when-fn% 'xref--show-location 'xref t)
+          ((when-fn% xref--show-location xref t)
            (intern hasfn) `(progn% ,@body))
           (t (intern nonfn) `(comment ,@body)))))
 
@@ -108,7 +108,7 @@
     (set-face-foreground 'xref-match +term-foreground-color+)))
 
 
-(unless-fn% 'xref-find-references 'xref
+(unless-fn% xref-find-references xref
   (defun xref-find-references (what)
     "Alias of \\=`tags-apropos\\='."
     (interactive

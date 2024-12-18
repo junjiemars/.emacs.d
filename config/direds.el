@@ -136,7 +136,7 @@
 
 
 (defun dired*-get-filename ()
-  (if-fn% 'dired-get-file-for-visit 'dired
+  (if-fn% dired-get-file-for-visit dired
           (dired-get-file-for-visit)
     (or (dired-get-filename nil t)
         (user-error "%s" "No file on this line"))))
@@ -251,7 +251,7 @@
 
 (defmacro when-fn-archive-summarize-files% (&rest body)
   (declare (indent 0))
-  (when-fn% 'archive-summarize-files 'arc-mode
+  (when-fn% archive-summarize-files arc-mode
     `(unless-default-file-name-coding-system%
        ,@body)))
 
@@ -307,7 +307,7 @@
             (push! (list "\\.7z\\'" "" uncompress)
                    dired-compress-file-suffixes)))
         ;; [c] compress to .7z
-        (when-fn% 'dired-do-compress-to 'dired-aux
+        (when-fn% dired-do-compress-to dired-aux
           (let ((compress (concat 7za? " a -t7z %o %i")))
             (require 'format-spec)
             (if% (assoc-string "\\.7z\\'" dired-compress-files-alist)
@@ -346,7 +346,7 @@
                         (list "" 7za?))
               (push! (cons "\\.gz\\'" 7za?) dired-compress-file-suffixes))))
 
-        (when-fn% 'dired-compress-file 'dired-aux
+        (when-fn% dired-compress-file dired-aux
           (ad-enable-advice #'dired-compress-file 'before
                             "dired-compress-file-before")
           (ad-activate #'dired-compress-file t))))))

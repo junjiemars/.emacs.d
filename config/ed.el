@@ -19,7 +19,7 @@
 
 (defmacro delete-line* ()
   "Delete current line."
-  `(if-fn% 'delete-line nil
+  `(if-fn% delete-line nil
            (delete-line)
      (let ((inhibit-field-text-motion t))
        (delete-region (line-beginning-position)
@@ -185,7 +185,7 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
 ;;            (while (and (forward-line 1)
 ;;                        (< (point) (point-max)))
 ;;              (delete-char -1 t))))
-;;       (if-fn% 'json-pretty-print 'json
+;;       (if-fn% json-pretty-print json
 ;;               (make-thread* (lambda ()
 ;;                               (json-pretty-print begin end)))
 ;;         (message (propertize "No implemented"
