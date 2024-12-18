@@ -78,9 +78,9 @@
                                   (setq xs (cons x1 xs))))))))))))
 
 (defalias '*dict-debug-log*
-  (lexical-let% ((b `(:log nil ;; t
-                      :dict ,(emacs-home% ".dict/dict.log")
-                      :lookup ,(emacs-home% ".dict/lookup.log"))))
+  (lexical-let% ((b `( :log nil ;; t
+                       :dict ,(emacs-home% ".dict/dict.log")
+                       :lookup ,(emacs-home% ".dict/lookup.log"))))
     (lambda (w &optional n)
       (cond (n (plist-put b w n))
             (t (plist-get b w)))))
@@ -199,7 +199,7 @@
                                   'face 'font-lock-comment-face)
                     (propertize "No match"
                                 'face 'font-lock-warning-face)))
-    (when-var% execute-extended-command--binding-timer 'simple
+    (when-var% execute-extended-command--binding-timer simple
       (sit-for 30))))
 
 ;; end of `on-lookup-dict'

@@ -14,12 +14,12 @@
 ;;;
 
 (defmacro intern-feature-name (feature has)
-  "Intern FEATURE name with or without HAS prefix."
+  "Intern FEATURE name with HAS prefix."
   `(cond (,has (format "has-ft-%s%%" ,feature))
          (t (format "non-ft-%s%%" ,feature))))
 
 (defmacro intern-function-name (function has)
-  "Intern FUNCTION name with or without HAS prefix."
+  "Intern FUNCTION name with HAS prefix."
   `(cond (,has (format "has-fn-%s%%" ,function))
          (t (format "non-fn-%s%%" ,function))))
 
@@ -52,6 +52,24 @@
 ;;;
 ;; *-fn%: checking fn existing
 ;;;
+
+(defmacro if-fn%1 (fn feature then &rest else)
+  "If the FN of FEATURE is bounded yield non-nil, do THEN, else do ELSE..."
+  (declare (indent 3))
+  (cond ((fboundp `,fn) `,then)
+        (feature (cond ((and (require feature nil t) (fboundp `,fn)) `,then)
+                       (t `(progn% ,@else))))
+        (t `(progn% ,@else))))
+
+(defmacro when-fn%1 (fn feature &rest body)
+  "When the FN of FEATURE is bounded yield non-nil, do BODY."
+  (declare (indent 2))
+  `(if-fn%1 ,fn ,feature (progn% ,@body)))
+
+(defmacro unless-fn%1 (fn feature &rest body)
+  "Unless the FN FEATURE is bounded yield non-nil, do BODY."
+  (declare (indent 2))
+  `(if-fn%1 ,fn ,feature nil ,@body))
 
 (defmacro if-fn% (fn feature then &rest else)
   "If FN is bounded yield non-nil, do THEN, else do ELSE...\n
@@ -86,29 +104,25 @@ Argument FEATURE that FN dependent on, be loaded at compile time."
 ;;;
 
 (defmacro if-var% (var feature then &rest else)
-  "If VAR is bounded yield non-nil, do THEN, else do ELSE...\n
-Argument FEATURE that VAR dependent on, load at compile time."
+  "If the VAR of FEATURE is bounded yield non-nil, do THEN, else do ELSE..."
   (declare (indent 3))
-  `(if% (or (and ,feature (require ,feature nil t) (boundp ',var))
-            (boundp ',var))
-       ,then
-     (progn% ,@else)))
+  (cond ((boundp `,var) `,then)
+        (feature (cond ((and (require feature nil t) (boundp `,var)) `,then)
+                       (t `(progn% ,@else))))
+        (t `(progn% ,@else))))
 
 (defmacro when-var% (var feature &rest body)
-  "When VAR is bounded yield non-nil, do BODY.\n
-Argument FEATURE that VAR dependent on, load at compile time."
+  "When the VAR FEATURE is bounded yield non-nil, do BODY."
   (declare (indent 2))
   `(if-var% ,var ,feature (progn% ,@body)))
 
 (defmacro unless-var% (var feature &rest body)
-  "Unless VAR is bounded yield non-nil, do BODY.\n
-Argument FEATURE that VAR dependent on, load at compile time."
+  "Unless the VAR FEATURE is bounded yield non-nil, do BODY."
   (declare (indent 2))
   `(if-var% ,var ,feature nil ,@body))
 
 (defmacro setq% (x val &optional feature)
-  "Set X to the value of VAL when X is bound.\n
-Argument FEATURE that X dependent on, load at compile time."
+  "Set X of FEATURE to the VAL when X is bound."
   ;; (declare (debug t))
   `(when-var% ,x ,feature
      (setq ,x ,val)))

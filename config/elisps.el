@@ -25,7 +25,7 @@
 ;; (with-eval-after-load 'scheme
 
 ;;   ;; disable auto active other scheme hooks
-;;   (when-var% scheme-mode-hook 'scheme
+;;   (when-var% scheme-mode-hook scheme
 ;;     (setq scheme-mode-hook nil)))
 
 ;; end of `scheme'
@@ -40,7 +40,7 @@
 
 (defun on-ielm-init! ()
   "On \\=`ielm\\=' initialization."
-  (when-var% ielm-mode-hook 'ielm
+  (when-var% ielm-mode-hook ielm
     (append! #'set-ielm-mode! ielm-mode-hook)))
 
 ;; end of `ielm'

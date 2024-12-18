@@ -190,9 +190,9 @@
             (lambda (bin)
               (let ((dired (shell-command* bin "--dired")))
                 (zerop (car dired)))))
-           'dired)
+           dired)
     ;; using `insert-directory-program'
-    (setq% ls-lisp-use-insert-directory-program t 'ls-lisp))
+    (setq% ls-lisp-use-insert-directory-program t ls-lisp))
   ;; keys
   (define-key dired-mode-map "b" #'dired*-hexl-find-file)
   (define-key dired-mode-map "B" #'dired*-browse-file)
@@ -289,7 +289,7 @@
   ;; on ancient Emacs, `dired' can't recognize .zip archive.
   ;; [! zip x.zip ?] compress marked files to x.zip，
   ;; see `dired-compress-file-suffixes'.
-  (when-var% dired-compress-files-suffixes 'dired-aux
+  (when-var% dired-compress-files-suffixes dired-aux
     (when% (and (not (assoc-string "\\.zip\\'" dired-compress-file-suffixes))
                 (executable-find% "zip")
                 (executable-find% "unzip"))
@@ -298,7 +298,7 @@
   (when% (or (executable-find% "7z")
              (executable-find% "7za"))
     (let ((7za? (if (executable-find% "7z") "7z" "7za")))
-      (when-var% dired-compress-file-suffixes 'dired-aux
+      (when-var% dired-compress-file-suffixes dired-aux
         ;; [Z] uncompress from .7z
         (let ((uncompress (concat 7za? " x -t7z -aoa -o%o %i")))
           (if% (assoc-string "\\.7z\\'" dired-compress-file-suffixes)
@@ -328,7 +328,7 @@
       (ad-activate #'dired-shell-stuff-it t)
       (ad-activate #'dired-shell-command t))
     ;; [Z] to compress or uncompress .gz file
-    (when-var% dired-compress-file-suffixes 'dired-aux
+    (when-var% dired-compress-file-suffixes dired-aux
       (when% (or (executable-find% "gzip")
                  (executable-find% "7z")
                  (executable-find% "7za"))

@@ -73,13 +73,13 @@ determine whether inside a virtual env. Another way is using
                    (error "Panic, %s" (string-trim> (cdr rc))))))
               (t (error "%s" "No python's venv found"))))
       (prog1 d
-        (when-var% python-shell-interpreter 'python
+        (when-var% python-shell-interpreter python
           (setq python-shell-interpreter (concat d "bin/python")))
-        (if-var% python-shell-virtualenv-root 'python
+        (if-var% python-shell-virtualenv-root python
                  (setq python-shell-virtualenv-root d)
-          (if-var% python-shell-virtualenv-path 'python
+          (if-var% python-shell-virtualenv-path python
                    (setq python-shell-virtualenv-path d)
-            (if-var% python-shell-process-environment 'python
+            (if-var% python-shell-process-environment python
                      (setq python-shell-process-environment
                            (list
                             (concat "PYTHONPATH=" d)
@@ -124,7 +124,7 @@ determine whether inside a virtual env. Another way is using
   (defun python*-eglot-sever-program ()
     (let ((pylsp (python*-venv :pylsp)))
       (when (and pylsp (file-exists-p pylsp))
-        (when-var% eglot-server-programs 'eglot
+        (when-var% eglot-server-programs eglot
           (unless (boundp 'eglot-server-programs)
             (require 'eglot))
           (let ((ent (assoc '(python-mode python-ts-mode)
@@ -198,7 +198,7 @@ determine whether inside a virtual env. Another way is using
     (python*-venv :venv venv)
     (python*-venv :mirror (python*-pip-mirror! venv mirror))
     (python*-pylsp-make! venv (python*-venv :pylsp))
-    (setq% python-shell-interpreter (python*-venv :python) 'python)
+    (setq% python-shell-interpreter (python*-venv :python) python)
     (save-sexp-to-file (python*-venv) (python*-venv :file))))
 
 (defun python*-format-buffer ()
@@ -224,8 +224,8 @@ determine whether inside a virtual env. Another way is using
 
 (defmacro python*-define-keys (keymap)
   `(progn
-    (define-key ,keymap (kbd% "C-c C-z") #'run-python)
-    (define-key ,keymap (kbd% "C-c M-c f") #'python*-format-buffer)))
+     (define-key ,keymap (kbd% "C-c C-z") #'run-python)
+     (define-key ,keymap (kbd% "C-c M-c f") #'python*-format-buffer)))
 
 ;; end of keys
 
@@ -240,15 +240,15 @@ determine whether inside a virtual env. Another way is using
                    (and (file-exists-p (python*-venv :python))
                         (python*-venv :python))))
                (python*-program :bin))))
-      (setq% python-shell-interpreter interpreter 'python)
-      (setq% python-interpreter interpreter 'python)))
+      (setq% python-shell-interpreter interpreter python)
+      (setq% python-interpreter interpreter python)))
   ;; completion
   (setq% python-shell-completion-native-enable
-         (when-platform% 'gnu/linux t) 'python)
+         (when-platform% 'gnu/linux t) python)
   ;; keys
-  (when-var% python-mode-map 'python
+  (when-var% python-mode-map python
     (python*-define-keys python-mode-map))
-  (when-var% python-ts-mode-map 'python-ts-mode
+  (when-var% python-ts-mode-map python-ts-mode
     (python*-define-keys python-ts-mode-map)))
 
 

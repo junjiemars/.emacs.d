@@ -23,17 +23,17 @@
 (defun self-desktop-read! ()
   "Read the desktop of the previous Emacs instance."
   (when (desktop-spec->* :allowed)
-    (setq% desktop-dirname (v-home! ".desktop/") 'desktop)
+    (setq% desktop-dirname (v-home! ".desktop/") desktop)
     (inhibit-blinking
       ;; restrict eager
-      (setq% desktop-restore-eager 0 'desktop)
-      ;; (setq% desktop-restore-frames nil 'desktop)
+      (setq% desktop-restore-eager 0 desktop)
+      ;; (setq% desktop-restore-frames nil desktop)
       ;; disable stupid resizing
-      (setq% desktop-restore-forces-onscreen nil 'desktop)
-      ;; (setq% desktop-restore-in-current-display t 'desktop)
-      ;; (setq% desktop-restore-reuses-frames t 'desktop)
+      (setq% desktop-restore-forces-onscreen nil desktop)
+      ;; (setq% desktop-restore-in-current-display t desktop)
+      ;; (setq% desktop-restore-reuses-frames t desktop)
       ;; quiet
-      (setq% desktop-lazy-verbose nil 'desktop)
+      (setq% desktop-lazy-verbose nil desktop)
       ;; `desktop-read'
       (desktop-read desktop-dirname))
 
@@ -74,14 +74,14 @@
               "\\|\\.[lL][oO][gG]$"
               "\\|^/sudo:\\|^/sshx?:\\|ftp:"
               (when ss (concat "\\|" ss))))
-           'desktop)
+           desktop)
 
     (setq% desktop-buffers-not-to-save
            (let ((ss (desktop-spec->* :buffers-not-to-save)))
              (concat
               "\\*.*?\\*"
               (and ss (concat "\\|" ss))))
-           'desktop)
+           desktop)
 
     (setq% desktop-modes-not-to-save
            (append '(archive-mode
@@ -92,7 +92,7 @@
                      tags-table-mode
                      vc-dir-mode)
                    (desktop-spec->* :modes-not-to-save))
-           'desktop)
+           desktop)
 
     (when-window% 'ns
       (when-version% <= 26

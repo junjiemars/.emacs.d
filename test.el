@@ -169,7 +169,15 @@
                (unless-feature% ertxxx t)
                (null (when-feature% ertxxx nil)))))
 
-(ert-deftest %e:boot:if/when/unless-fn% ()
+(ert-deftest %d:fn:if/when/unless-fn%1 ()
+  (should (and (if-fn%1 should ert t)
+               (when-fn%1 should ert t)
+               (null (unless-fn%1 should ert t))))
+  (should (and (if-fn%1 shouldXXX nil nil t)
+               (unless-fn%1 shouldXXX nil t)
+               (null (when-fn%1 shouldXXX t)))))
+
+(ert-deftest %d:fn:if/when/unless-fn% ()
   (should (null (if-fn% 'shouldx 'ert t)))
   (should (and (if-fn% 'should 'ert t)
                (when-fn% 'should 'ert t)
@@ -180,6 +188,16 @@
   (should (equal '(progn (+ 1 2) (* 3 4))
                  (macroexpand '(unless-fn% 'shouldx 'ert
                                  (+ 1 2) (* 3 4))))))
+
+(ert-deftest %d:fn:if/when/unless-var% ()
+  (should (and (if-var% ert-batch-backtrace-right-margin ert t)
+               (when-var% ert-batch-backtrace-right-margin ert t)
+               (not (unless-var% ert-batch-backtrace-right-margin ert t))
+               (unless-var% ert-batch-xxx ert t))))
+
+(ert-deftest %d:fn:setq% ()
+  (should-not (setq%1 zzz "zzz"))
+  (should-not (setq%1 zzz "xxx" xxx)))
 
 (ert-deftest %d:fn:v-home% ()
   (should (directory-name-p (v-home%)))
@@ -591,16 +609,6 @@
 ;;;
 ;; `boot'
 ;;;
-
-(ert-deftest %e:boot:setq% ()
-  (should-not (setq% zzz 'xx))
-  (should-not (setq% zzz nil)))
-
-(ert-deftest %e:boot:if/when/unless-var% ()
-  (should (and (if-var% ert-batch-backtrace-right-margin 'ert t)
-               (when-var% ert-batch-backtrace-right-margin 'ert t)
-               (not (unless-var% ert-batch-backtrace-right-margin 'ert))
-               (unless-var% ert-batch-xxx 'ert t))))
 
 (ert-deftest %e:boot:self-spec-> ()
   (should (null (self-spec-> nil nil)))

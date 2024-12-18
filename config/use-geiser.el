@@ -15,15 +15,15 @@
     (lambda (&optional new)
       (setq% geiser-active-implementations
              (if new (push! new ls) ls)
-             'geiser)))
+             geiser)))
   "Parameterized set `geiser-active-implementations'.")
 
 (defun use-geiser-init! ()
-  ;;; builtin `chez-mode' and `gambit-mode' better than `geiser'
+  ;; builtin `chez-mode' and `gambit-mode' better than `geiser'
   (geiser*-lisp-implementations)
   (setq% geiser-default-implementation
          (car geiser-active-implementations)
-         'geiser-mode))
+         geiser-mode))
 
 
 (provide 'use-geiser)

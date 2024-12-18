@@ -62,6 +62,14 @@
 (defconst +emacs-version+ (string-to-number emacs-version)
   "The \\=`float\\=' version number of Emacs.")
 
+(defmacro if-version%1 (cmp version then &rest else)
+  "If (CMP VERSION \\=`+emacs-version+\\=') yield non-nil, do THEN,
+else do ELSE..."
+  (declare (indent 3))
+  (if `(,cmp ,version +emacs-version+)
+      `,then
+    (progn% ,@else)))
+
 (defmacro if-version% (cmp version then &rest else)
   "If (CMP VERSION \\=`+emacs-version+\\=') yield non-nil, do THEN,
 else do ELSE..."

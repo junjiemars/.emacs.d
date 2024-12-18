@@ -205,7 +205,7 @@ Run the hook \\=`jshell-repl-mode-hook\\=' after the \\=`comint-mode-hook\\='."
                            "--startup" (*jshell-start-file*))
                      (split-string* command-line "\\s-+" t)))
       (jshell-repl-mode)
-      (add-hook (if-var% completion-at-point-functions 'minibuffer
+      (add-hook (if-var% completion-at-point-functions minibuffer
                          'completion-at-point-functions
                   'comint-dynamic-complete-functions)
                 #'jshell-completion 0 'local)
@@ -339,7 +339,7 @@ interacting with the Jshell REPL is at your disposal.
   :lighter (:eval (jshell-mode--lighter))
   :group 'jshell-mode
   :keymap jshell-mode-map
-  (add-hook (if-var% completion-at-point-functions 'minibuffer
+  (add-hook (if-var% completion-at-point-functions minibuffer
                      'completion-at-point-functions
               'comint-dynamic-complete-functions)
             #'jshell-completion 0 'local)

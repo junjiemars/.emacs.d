@@ -45,8 +45,8 @@
     (setq% x-select-enable-clipboard t))
   (if-version%
       <= 25.1
-      (setq% select-enable-primary t 'select)
-    (setq% x-select-enable-primary t 'select))
+      (setq% select-enable-primary t select)
+    (setq% x-select-enable-primary t select))
 
   ;; kill/yank
   (unless-platform% 'windows-nt

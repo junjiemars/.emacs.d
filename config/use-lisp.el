@@ -35,7 +35,7 @@
 (defun use-scheme-init! ()
   "On \\=`scheme\\=' initialization."
   ;; disable auto active other scheme hooks
-  (setq% scheme-mode-hook nil 'scheme)
+  (setq% scheme-mode-hook nil scheme)
   (append! #'lisp*-featured! scheme-mode-hook))
 
 ;;; `paredit'

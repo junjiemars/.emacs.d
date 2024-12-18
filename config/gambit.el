@@ -38,30 +38,28 @@
   :group 'scheme)
 
 (defcustom% gambit-program
-  (cond ((executable-find% "gsc-script"
-                           (lambda (gsc)
-                             (let ((x (shell-command* gsc
-                                        "-e \"(+ 1 2 3)\"")))
-                               (zerop (car x)))))
-         "gsc-script")
-        (t "gsc-script"))
-  "Program invoked by the `run-gambit' command."
-  :type 'string
-  :group 'gambit)
+            (cond ((executable-find% "gsc-script"
+                                     (lambda (gsc)
+                                       (let ((x (shell-command* gsc
+                                                  "-e \"(+ 1 2 3)\"")))
+                                         (zerop (car x)))))
+                   "gsc-script")
+                  (t "gsc-script"))
+            "Program invoked by the `run-gambit' command."
+            :type 'string
+            :group 'gambit)
 
 (defcustom% gambit-input-filter-regexp "\\`\\s *\\S ?\\S ?\\s *\\'"
-  "Input matching this regexp are not saved on the history list.
-
+            "Input matching this regexp are not saved on the history list.\n
 Defaults to a regexp ignoring all inputs of 0, 1, or 2 letters."
-  :type 'regexp
-  :group 'gambit)
+            :type 'regexp
+            :group 'gambit)
 
 (defcustom% gambit-repl-mode-hook nil
-  "Hook run upon entry to `gambit-repl-mode'.
-
+            "Hook run upon entry to \\=`gambit-repl-mod\\='\n
 This is run before the process is cranked up."
-  :type 'hook
-  :group 'gambit)
+            :type 'hook
+            :group 'gambit)
 
 (defalias '*gambit*
   (lexical-let% ((b))
@@ -202,7 +200,7 @@ This is run before the process is cranked up."
 (defun gambit-get-old-input ()
   "Snarf the sexp ending at point."
   (let ((old (buffer-substring (save-excursion (backward-sexp) (point))
-                             (point))))
+                               (point))))
     (cond ((and (>= (length old) 2)
                 (string= "> " (substring old 0 2)))
            (substring old 2))
@@ -355,7 +353,7 @@ Run the hook `gambit-repl-mode-hook' after the `comint-mode-hook'."
              (split-string* command-line "\\s-+" t))
       (*gambit* (current-buffer))
       (gambit-repl-mode)
-      (add-hook (if-var% completion-at-point-functions 'minibuffer
+      (add-hook (if-var% completion-at-point-functions minibuffer
                          'completion-at-point-functions
                   'comint-dynamic-complete-functions)
                 #'gambit-completion 0 'local)))
@@ -488,7 +486,7 @@ interacting with the Gambit REPL is at your disposal.
   :lighter (:eval (gambit-mode--lighter))
   :group 'gambit-mode
   :keymap gambit-mode-map
-  (add-hook (if-var% completion-at-point-functions 'minibuffer
+  (add-hook (if-var% completion-at-point-functions minibuffer
                      'completion-at-point-functions
               'comint-dynamic-complete-functions)
             #'gambit-completion 0 'local)

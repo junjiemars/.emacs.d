@@ -9,7 +9,7 @@
 
 (defun mixal*-fix-operation-codes-alist ()
   "Fix some data in \\=`mixal-mode\\='."
-  (when-var% mixal-operation-codes-alist 'mixal-mode
+  (when-var% mixal-operation-codes-alist mixal-mode
     (let ((aa '((NUM :a 5 :ai 3 :w 0 :wi 4 :l 7)
                 (CHAR :a 5 :ai 3 :w 1 :wi 4 :l 7)
                 (HLT :a 5 :ai 3 :w 2 :wi 4 :l 7)

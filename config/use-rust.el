@@ -148,10 +148,10 @@
 ;;    (rust*-make-tags :new)))
 
 ;; (setq% *tags-option-history*
-;;        (let ((p (and (file-exists-p (rust*-sysroot :tag))
-;;                      (concat "--options=" (rust*-sysroot :tag)))))
-;;          (append! p *tags-option-history* t))
-;;        'tags)
+;;         (let ((p (and (file-exists-p (rust*-sysroot :tag))
+;;                       (concat "--options=" (rust*-sysroot :tag)))))
+;;           (append! p *tags-option-history* t))
+;;         tags)
 
 
 

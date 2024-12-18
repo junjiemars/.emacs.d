@@ -13,8 +13,8 @@
   (fset 'geiser-mode--maybe-activate #'true))
 
 ;;; Disable auto `geiser-mode' for `scheme-mode'
-(when-var% geiser-mode-auto-p 'geiser-mode
-  (setq% geiser-mode-auto-p nil 'geiser-mode))
+(when-var% geiser-mode-auto-p geiser-mode
+  (setq% geiser-mode-auto-p nil geiser-mode))
 
 ;; `geiser' after load
 (with-eval-after-load 'geiser

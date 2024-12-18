@@ -33,10 +33,10 @@
 
 (defun package*-init-repo! ()
   (setq% package-check-signature
-         (module-spec->* :package-check-signature) 'package)
+         (module-spec->* :package-check-signature) package)
   (let ((archives (module-spec->* :package-archives)))
     (when archives
-      (setq% package-archives archives 'package)))
+      (setq% package-archives archives package)))
   (when-version%
       <= 25.1
     (setq% package-archive-priorities
@@ -44,7 +44,7 @@
                   ("melpa-stable" . 5)
                   ("melpa" . 3)
                   ("nongnu" . 1))
-           'package))
+           package))
   (package-refresh-contents))
 
 (defmacro package*-check-name (package)
@@ -118,8 +118,8 @@
       <= 25.1
     (setq custom-file (v-home! ".transient/packages.el")))
   ;; define package user dir
-  (setq% package-gnupghome-dir (v-home! ".elpa/gnupg/") 'package)
-  (setq% package-user-dir package*-user-dir 'package)
+  (setq% package-gnupghome-dir (v-home! ".elpa/gnupg/") package)
+  (setq% package-user-dir package*-user-dir package)
   ;; load self :packages-spec
   (compile! (compile-unit* (*self-paths* :get :mod-spec)))
   (package-initialize)

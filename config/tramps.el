@@ -33,7 +33,7 @@
   ;;; docker
   ;; `C-x C-f' /docker:[<user>@]<container>:/path/to/file
   ;; `C-x d' /docker:[<user>@]<container>:/path/
-  (when-var% tramp-methods 'tramp
+  (when-var% tramp-methods tramp
     (unless% (catch 'br
                (dolist* (x tramp-methods)
                  (let ((x1 (car x)))

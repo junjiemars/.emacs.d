@@ -29,9 +29,8 @@
            (eshell-spec->* :visual-options)))
   ;; abbreviated `eshell' prompt
   (when-version% > 23
-    (setq% eshell-save-history-on-exit t 'em-hist)
-    (when% (and (require 'em-prompt)
-                (require 'em-dirs))
+    (setq% eshell-save-history-on-exit t em-hist)
+    (when% (and (require 'em-prompt) (require 'em-dirs))
       (setq eshell-prompt-function
             #'(lambda ()
                 (concat (abbreviate-file-name (eshell/pwd))

@@ -243,7 +243,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
                        (list (string-trim> pwd "/")
                              (string-trim> (path- pwd) "/"))))
                    (cc*-system-include :read (ssh-remote-p file))))
-          'find-file)
+          find-file)
    (when-fn% 'xref-push-marker-stack 'xref
      (autoload 'xref-push-marker-stack "xref")
      (xref-push-marker-stack))
@@ -366,7 +366,7 @@ BEGIN and END mark the extent of the region.
 N specify the number of spaces when align."
   (interactive "r\nP")
   (when-fn% 'align-entire 'align
-    (when-var% align-default-spacing 'align
+    (when-var% align-default-spacing align
       (fluid-let (align-default-spacing (or n 2))
         (align-entire begin end)))))
 
@@ -408,26 +408,26 @@ N specify the number of spaces when align."
   (defun cc*-macro-expand ()
     "Macro expanding current buffer."
     (let ((remote (ssh-remote-p (buffer-file-name (current-buffer)))))
-      (setq% c-macro-prompt-flag t 'cmacexp)
+      (setq% c-macro-prompt-flag t cmacexp)
       (setq% c-macro-buffer-name
-             (if remote
-                 (format "*Macro Expanded@%s*"
-                         (ssh-remote->user@host remote))
-               "*Macro Expanded*")
-             'cmacexp)
+              (if remote
+                  (format "*Macro Expanded@%s*"
+                          (ssh-remote->user@host remote))
+                "*Macro Expanded*")
+              cmacexp)
       (setq% c-macro-preprocessor
-             (if remote
-                 (format "ssh %s %s"
-                         (ssh-remote->user@host remote)
-                         "cc -E -o - -")
-               (if-platform% 'windows-nt
-                   ;; cl.exe can't compile on the fly without xargs
-                   (let ((tmp (make-temp-file "cc-m-" nil ".c")))
-                     (format "%s -0 > %s && %s && cl -E %s"
-                             +cc*-xargs-bin+ tmp
-                             (cc*-cc) tmp))
-                 (format "%s -E -o - -" (cc*-cc))))
-             'cmacexp))))
+              (if remote
+                  (format "ssh %s %s"
+                          (ssh-remote->user@host remote)
+                          "cc -E -o - -")
+                (if-platform% 'windows-nt
+                    ;; cl.exe can't compile on the fly without xargs
+                    (let ((tmp (make-temp-file "cc-m-" nil ".c")))
+                      (format "%s -0 > %s && %s && cl -E %s"
+                              +cc*-xargs-bin+ tmp
+                              (cc*-cc) tmp))
+                  (format "%s -E -o - -" (cc*-cc))))
+              cmacexp))))
 
 (when-fn-c-macro-expand%
   (defadvice c-macro-expand
@@ -445,9 +445,9 @@ N specify the number of spaces when align."
 (defun on-man-init! ()
   "On \\=`man\\=' initialization."
   ;; fix cannot find include path on Darwin in `Man-mode'
-  (when-var% manual-program 'man
+  (when-var% manual-program man
     (when (executable-find* manual-program)
-      (setq% Man-header-file-path (cc*-system-include :read) 'man))))
+      (setq% Man-header-file-path (cc*-system-include :read) man))))
 
 ;; end of `man'
 
@@ -483,7 +483,7 @@ N specify the number of spaces when align."
   ;; (c-add-style (car cc*-style-nginx) (cdr cc*-style-nginx))
   (when-fn-c-macro-expand%
     ;; [C-c C-e] `c-macro-expand'
-    (setq% c-macro-prompt-flag t 'cmacexp)
+    (setq% c-macro-prompt-flag t cmacexp)
     (ad-enable-advice #'c-macro-expand 'around "c-macro-expand-around")
     (ad-activate #'c-macro-expand t))
   ;; indent line or region
@@ -509,7 +509,7 @@ N specify the number of spaces when align."
   (defun on-c-ts-mode-init! ()
     "On \\=`c-ts-mode\\=' initialization."
     (when-fn-c-macro-expand%
-      (setq% c-macro-prompt-flag t 'cmacexp)
+      (setq% c-macro-prompt-flag t cmacexp)
       (ad-enable-advice #'c-macro-expand 'around "c-macro-expand-around")
       (ad-activate #'c-macro-expand t))
     (when (boundp 'c-ts-mode-map)

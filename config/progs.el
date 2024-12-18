@@ -191,7 +191,7 @@ And copy the qualified buffer name to kill ring."
                          #'ido-find-file-read-only-other-window)
             (define-key% (current-global-map) ""
                          #'ido-find-file-read-only)
-            (setq% ido-enable-flex-matching t 'ido))
+            (setq% ido-enable-flex-matching t ido))
     ;; default view file keybindings
     (define-key% (current-global-map) "5r" #'view-file-other-frame)
     (define-key% (current-global-map) "4r" #'view-file-other-window)
@@ -205,7 +205,7 @@ And copy the qualified buffer name to kill ring."
 ;;;
 
 (defun on-minibuffer-init! ()
-  (let ((km (if-var% minibuffer-local-completion-map 'minibuffer
+  (let ((km (if-var% minibuffer-local-completion-map minibuffer
                      minibuffer-local-completion-map
               minibuffer-local-map))
         (kf (if-fn% 'minibuffer-complete 'minibuffer
@@ -262,11 +262,11 @@ And copy the qualified buffer name to kill ring."
   ;; shows all options when running apropos. For more info,
   ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html
   ;;enable apropos-do-all, but slower
-  (setq% apropos-do-all t 'apropos)
+  (setq% apropos-do-all t apropos)
   ;; save before kill
-  (setq% save-interprogram-paste-before-kill t 'simple)
+  (setq% save-interprogram-paste-before-kill t simple)
   ;; mouse yank commands yank at point instead of at click.
-  (setq% mouse-yank-at-point t 'mouse)
+  (setq% mouse-yank-at-point t mouse)
   ;; no need for .# files when editing
   (setq% create-lockfiles nil)
   ;; enable upcase/downcase region
@@ -324,9 +324,9 @@ And copy the qualified buffer name to kill ring."
               (if-fn% 'display-line-numbers-mode 'display-line-numbers
                       (prog1 #'display-line-numbers-mode
                         (setq% display-line-numbers-type 'relative
-                               'display-line-numbers)
+                               display-line-numbers)
                         (setq% display-line-numbers-current-absolute nil
-                               'display-line-numbers))
+                               display-line-numbers))
                 (if-fn% 'linum-mode 'linum
                         #'linum-mode
                   #'(lambda (&optional _)
@@ -359,7 +359,7 @@ And copy the qualified buffer name to kill ring."
   ;; no cursor blinking, it's distracting
   (when-fn% 'blink-cursor-mode nil (blink-cursor-mode 0))
   ;; enable `column-number-mode'
-  (setq% column-number-mode t 'simple)
+  (setq% column-number-mode t simple)
   ;; highlights matching parenthesis
   (inhibit-blinking (show-paren-mode 1))
   ;; enable save minibuffer history
@@ -371,7 +371,7 @@ And copy the qualified buffer name to kill ring."
   (if-version%
       <= 25.1
       (save-place-mode t)
-    (setq% save-place t 'saveplace))
+    (setq% save-place t saveplace))
   (require 'view nil t)
   ;; fix: `uniquify' may not be autoloaded on ancient Emacs.
   (when-version% > 24

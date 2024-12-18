@@ -8,9 +8,9 @@
 
 
 (when-version% > 28.1
-  (when-var% js-js-tmpdir 'js
+  (when-var% js-js-tmpdir js
     (with-eval-after-load
-        (setq% js-js-tmpdir (v-home! ".js/") 'js))))
+        (setq% js-js-tmpdir (v-home! ".js/") js))))
 
 
 ;;; end of on-js-autoload.el

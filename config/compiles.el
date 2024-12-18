@@ -72,8 +72,7 @@
 
 (defun on-compile-init! ()
   "On \\=`compile\\=' initialization."
-  (setq% compilation-buffer-name-function #'compile*-buffer-name-fn
-         'compile)
+  (setq% compilation-buffer-name-function #'compile*-buffer-name-fn compile)
   (when-platform% 'windows-nt
     ;; compile and activate `compilation-find-file' advice on Windows
     (ad-enable-advice #'compilation-find-file 'before
@@ -85,17 +84,17 @@
               #'compile*-make-change-dir
               (emacs-arch)))
   (add-hook 'compilation-filter-hook #'compile*-colorize-buffer!)
-  (when-var% compilation-mode-map 'compile
+  (when-var% compilation-mode-map compile
     ;; define `recompile' and `quit-window' key bindings
     (define-key compilation-mode-map "g" #'compile*-recompile)
     (define-key% compilation-mode-map "q" #'quit-window))
-  (setq% compilation-scroll-output t 'compile))
+  (setq% compilation-scroll-output t compile))
 
 
 (defun on-grep-init! ()
   "On \\=`grep\\=' initialization."
   ;; define `recompile' and `quit-window' key binding for `grep'
-  (when-var% grep-mode-map 'grep
+  (when-var% grep-mode-map grep
     (define-key grep-mode-map "g" #'compile*-recompile)
     (define-key% grep-mode-map "q" #'quit-window)))
 
@@ -103,7 +102,7 @@
 (defun on-make-mode-init! ()
   "On \\=`make-mode\\=' intialization."
   ;; spaced blackslash-region for makefile.
-  (when-var% makefile-mode-map 'make-mode
+  (when-var% makefile-mode-map make-mode
     (when-fn% 'makefile-backslash-region 'make-mode
       (define-key
        makefile-mode-map (kbd% "C-c C-\\")

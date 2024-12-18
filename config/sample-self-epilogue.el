@@ -12,7 +12,7 @@
 
 ;; (message "#self epilogue ...")
 
-;; (setq% enable-local-variables :safe 'files)
+;; (setq% enable-local-variables :safe files)
 
 ;; (require 'financial)
 
@@ -33,7 +33,7 @@
    (when (file-exists-p srcdir)
      (xref*-read-only-dirs :push (setq source-directory srcdir))
      (setq% find-function-C-source-directory
-            (concat source-directory "src/") 'find-func))))
+            (concat source-directory "src/") find-func))))
 
 ;; end of tag
 
@@ -48,8 +48,7 @@
      (org-babel-do-load-languages
       'org-babel-load-languages
       (delq nil `(,(when-fn% 'cc*-cc 'cc
-                     (setq% org-babel-C-compiler
-                            (cc*-cc) 'ob-C)
+                     (setq% org-babel-C-compiler (cc*-cc) ob-C)
                      `(C . t))
                   (emacs-lisp . t)
                   ,(when% (require 'ob-shell nil t)
@@ -73,7 +72,7 @@
 ;;  ;; receive mail
 ;;  (require 'rmail)
 ;;  (setq rmail-primary-inbox-list '("<protocal://user:passwd@host>"))
-;;  (setq% rmail-remote-password-required t 'rmail)
+;;  (setq% rmail-remote-password-required t rmail)
 ;;  ;; send mail
 ;;  (require 'sendmail)
 ;;  (setq send-mail-function 'smtpmail-send-it)
@@ -113,7 +112,7 @@
            (sql-database "example")
            (sql-user "ocean@example")
            (sql-password "example")))
-        'sql))
+        sql))
 
 ;; end of sql
 
@@ -121,7 +120,7 @@
 
 (comment
  ;; (setq yas-indent-line 'auto 'yasnippet)
- (setq% yas-snippet-dirs '("<where>") 'yasnippet))
+ (setq% yas-snippet-dirs '("<where>") yasnippet))
 
 ;; end of snippet
 
@@ -132,10 +131,8 @@
  ;; httpd: M-x httpd-start
  ;; skewer: M-x run-skewer
 
- (setq% httpd-root
-        (path! (emacs-home% "private/httpd/"))
-        'simple-httpd)
- (setq% httpd-port 8080 'simple-httpd)
+ (setq% httpd-root (path! (emacs-home% "private/httpd/")) simple-httpd)
+ (setq% httpd-port 8080 simple-httpd)
 
  ;; web-mode, http://web-mode.org
  (when-feature% web-mode

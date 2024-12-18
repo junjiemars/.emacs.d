@@ -17,7 +17,7 @@
 
 ;; default `c-mode-hook'
 ;; involving useless `macrostep-c-mode-hook'.
-;; (setq% c-mode-hook nil 'cc-mode)
+;; (setq% c-mode-hook nil cc-mode)
 
 ;;; `cc-mode' after load
 (with-eval-after-load 'cc-mode

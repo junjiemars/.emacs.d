@@ -63,24 +63,24 @@ With prefix argument ARG, \\=`url-gatewary-method\\=' via socks
 if ARG is greater than 1, otherwise via native."
     (interactive "p")
     (let ((native (lambda ()
-                    (setq% url-gateway-method 'native 'url-vars)
+                    (setq% url-gateway-method 'native url-vars)
                     (setq% socks-server
                            (list "Default server"
                                  nil
                                  (socks-spec->* :port)
                                  (socks-spec->* :version))
-                           'socks)
+                           socks)
                     (when *open-network-stream*
                       (setf (symbol-function 'open-network-stream)
                             *open-network-stream*))))
           (socks (lambda ()
-                   (setq% url-gateway-method 'socks 'url-vars)
+                   (setq% url-gateway-method 'socks url-vars)
                    (setq% socks-server
                           (list "Default server"
                                 (socks-spec->* :server)
                                 (socks-spec->* :port)
                                 (socks-spec->* :version))
-                          'socks)
+                          socks)
                    (setf (symbol-function 'open-network-stream)
                          #'socks-open-network-stream)))
           (ver (if (null arg) 4 arg)))

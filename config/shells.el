@@ -189,7 +189,7 @@ See \\=`setenv\\='."
          ;; `shell-file-name'
          (let ((shell (shells-spec->* :shell-file-name)))
            (when shell
-             (setq% explicit-shell-file-name shell 'shell)
+             (setq% explicit-shell-file-name shell shell)
              (setq shell-file-name shell)
              (setenv* (shells-spec->% :SHELL) shell)))
          ;; :copy-vars

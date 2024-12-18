@@ -12,9 +12,7 @@
                         (let ((bin (executable-find (symbol-name x))))
                           (when bin (push! (list x (list bin)) ns)))))))
     (lambda (&optional n)
-      (setq% slime-lisp-implementations
-             (if n (push! n b) b)
-             'slime)))
+      (setq% slime-lisp-implementations (if n (push! n b) b) slime)))
   "Parameterized \\=`slime-lisp-implementations\\='.")
 
 (defalias 'slime*-source-locations

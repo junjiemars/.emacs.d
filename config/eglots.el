@@ -96,7 +96,7 @@
   ;; load recipe
   (or (eglot*-server-programs :read) (eglot*-server-programs))
   ;; most reduced `eldoc'
-  (setq% eldoc-echo-area-use-multiline-p nil 'eldoc)
+  (setq% eldoc-echo-area-use-multiline-p nil eldoc)
 
   ;; shutdown when `kill-emacs'
   (when-var% kill-emacs-query-functions nil

@@ -201,7 +201,7 @@ Run the hook `node-repl-mode-hook' after the `comint-mode-hook'."
              (*node-start-file*)
              (split-string* command-line "\\s-+" t))
       (node-repl-mode)
-      (add-hook (if-var% completion-at-point-functions 'minibuffer
+      (add-hook (if-var% completion-at-point-functions minibuffer
                          'completion-at-point-functions
                   'comint-dynamic-complete-functions)
                 #'node-completion 0 'local)
@@ -353,7 +353,7 @@ interacting with the Node REPL is at your disposal.
   :lighter (:eval (node-mode--lighter))
   :group 'node-mode
   :keymap node-mode-map
-  (add-hook (if-var% completion-at-point-functions 'minibuffer
+  (add-hook (if-var% completion-at-point-functions minibuffer
                      'completion-at-point-functions
               'comint-dynamic-complete-functions)
             #'node-completion 0 'local)

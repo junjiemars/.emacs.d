@@ -104,7 +104,7 @@ No matter the declaration order, the executing order is:
 ;; reset user emacs dir
 (setq% user-emacs-directory (emacs-home%))
 ;; default `:safe'
-(setq% enable-local-variables :safe 'files)
+(setq% enable-local-variables :safe files)
 ;; let `lexical-binding' var safe under Emacs24.1-
 (unless-lexical% (safe-local-variable 'lexical-binding))
 ;; string hash test: see `%fn:save/read-sexp-to/from-file' in test.el
@@ -137,7 +137,7 @@ No matter the declaration order, the executing order is:
       (declare-function self-key-init! (v-home%> "config/key"))))
   (progn
     ;;; --batch mode: disable `desktop'
-    (setq% desktop-save-mode nil 'desktop)
+    (setq% desktop-save-mode nil desktop)
     (when-interactive%
       (when (env-spec->* :desktop :allowed)
         (prog1

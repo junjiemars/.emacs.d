@@ -357,7 +357,7 @@ invoked."
   (gud*-def "\C-p" #'gud-lldb-print)
 
   ;; `lldb-completion'
-  (add-hook (if-var% completion-at-point-functions 'minibuffer
+  (add-hook (if-var% completion-at-point-functions minibuffer
                      'completion-at-point-functions
               'comint-dynamic-complete-functions)
             #'lldb-completion 0 'local)
