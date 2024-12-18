@@ -22,6 +22,7 @@
 
 ;;; `ed'
 
+(autoload 'called-interactively-p* (v-home%> "config/ed") nil nil 'macro)
 (autoload 'delete-line* (v-home%> "config/ed") nil nil 'macro)
 (autoload 'file-in-dirs-p (v-home%> "config/ed"))
 (autoload 'newline* (v-home%> "config/ed") nil t)

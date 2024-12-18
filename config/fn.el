@@ -715,29 +715,11 @@ If optional N is non-nil compare no more than N parts, default N is 4."
     (signal 'user-error
             (list (apply #'format-message format args)))))
 
-(defmacro called-interactively-p* (&optional kind)
-  "Return t if called by \\=`call-interactively\\='."
-  (if-fn% called-interactively-p nil
-          `(called-interactively-p ,kind)
-    (ignore* kind)
-    `(interactive-p)))
-
 (unless-fn% with-eval-after-load nil
   (defmacro with-eval-after-load (file &rest body)
     "Execute BODY after FILE is loaded."
-    (declare (indent 1) (debug t))
+    (declare (indent 1))
     `(eval-after-load ,file (lambda () ,@body))))
-
-(defmacro defcustom% (symbol standard doc &rest args)
-  "Declare SYMBOL as a customizable variable with the STANDARD value.
-See \\=`defcustom\\='."
-  (declare (doc-string 3) (debug (name body)))
-  (let ((-dc-std- (funcall `(lambda () ,standard))))
-    `(custom-declare-variable
-      ',symbol
-      ',-dc-std-
-      ,doc
-      ,@args)))
 
 (defmacro require% (feature &optional filename noerror)
   "Require feature at compile-time."

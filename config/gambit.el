@@ -37,29 +37,23 @@
   "Run a gambit process in a buffer."
   :group 'scheme)
 
-(defcustom% gambit-program
-            (cond ((executable-find% "gsc-script"
-                                     (lambda (gsc)
-                                       (let ((x (shell-command* gsc
-                                                  "-e \"(+ 1 2 3)\"")))
-                                         (zerop (car x)))))
-                   "gsc-script")
-                  (t "gsc-script"))
-            "Program invoked by the `run-gambit' command."
-            :type 'string
-            :group 'gambit)
+(defvar gambit-program
+  (cond ((executable-find% "gsc-script"
+                           (lambda (gsc)
+                             (let ((x (shell-command* gsc
+                                        "-e \"(+ 1 2 3)\"")))
+                               (zerop (car x)))))
+         "gsc-script")
+        (t "gsc-script"))
+  "Program invoked by the `run-gambit' command.")
 
-(defcustom% gambit-input-filter-regexp "\\`\\s *\\S ?\\S ?\\s *\\'"
-            "Input matching this regexp are not saved on the history list.\n
-Defaults to a regexp ignoring all inputs of 0, 1, or 2 letters."
-            :type 'regexp
-            :group 'gambit)
+(defvar gambit-input-filter-regexp "\\`\\s *\\S ?\\S ?\\s *\\'"
+  "Input matching this regexp are not saved on the history list.\n
+Defaults to a regexp ignoring all inputs of 0, 1, or 2 letters.")
 
-(defcustom% gambit-repl-mode-hook nil
-            "Hook run upon entry to \\=`gambit-repl-mod\\='\n
-This is run before the process is cranked up."
-            :type 'hook
-            :group 'gambit)
+(defvar gambit-repl-mode-hook nil
+  "Hook run upon entry to \\=`gambit-repl-mod\\='\n
+This is run before the process is cranked up.")
 
 (defalias '*gambit*
   (lexical-let% ((b))

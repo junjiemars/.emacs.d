@@ -127,32 +127,20 @@
 (defvar gud-cdb-history nil
   "History of argument lists passed to cdb.")
 
-(defcustom% gud-cdb-directories nil
-  "*A list of directories that cdb should search for source code.
-If nil, only source files in the program directory
-will be known to cdb.
-
+(defvar gud-cdb-directories nil
+  "*A list of directories that cdb should search for source code.\n
+If nil, only source files in the program directory will be known to cdb.\n
 The file names should be absolute, or relative to the directory
-containing the executable being debugged."
-  :type '(choice (const :tag "Current Directory" nil)
-                 (repeat :value ("")
-                         directory))
-  :group 'gud)
+containing the executable being debugged.")
 
-(defcustom% gud-cdb-command-line-hook nil
-  "Hook run by \\=`cdb\\=' on command line."
-  :type 'hook
-  :group 'gud)
+(defvar gud-cdb-command-line-hook nil
+  "Hook run by \\=`cdb\\=' on command line.")
 
-(defcustom% gud-cdb-mode-hook nil
-  "Mode hook run by \\=`cdb\\=' before \\=`gud-cdb-init-hook\\='."
-  :type 'hook
-  :group 'gud)
+(defvar gud-cdb-mode-hook nil
+  "Mode hook run by \\=`cdb\\=' before \\=`gud-cdb-init-hook\\='.")
 
-(defcustom% gud-cdb-init-hook nil
-  "Hook run by \\=`cdb\\=' process."
-  :type 'hook
-  :group 'gud)
+(defvar gud-cdb-init-hook nil
+  "Hook run by \\=`cdb\\=' process.")
 
 
 (defconst +cdb-prompt-regexp+ "^\\(?:[0-9]:[0-9][0-9][0-9]> *\\)"

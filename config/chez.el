@@ -60,17 +60,13 @@
             (t b))))
   "Program invoked by the \\=`run-chez\\=' command.")
 
-(defcustom% chez-input-filter-regexp "\\`\\s *\\S ?\\S ?\\s *\\'"
-  "Input matching this regexp are not saved on the history list.
-Defaults to a regexp ignoring all inputs of 0, 1, or 2 letters."
-  :type 'regexp
-  :group 'chez)
+(defvar chez-input-filter-regexp "\\`\\s *\\S ?\\S ?\\s *\\'"
+  "Input matching this regexp are not saved on the history list.\n
+Defaults to a regexp ignoring all inputs of 0, 1, or 2 letters.")
 
-(defcustom% chez-repl-mode-hook nil
-  "Hook run upon entry to \\=`chez-repl-mode'\\=.
-This is run before the process is cranked up."
-  :type 'hook
-  :group 'chez)
+(defvar chez-repl-mode-hook nil
+  "Hook run upon entry to \\=`chez-repl-mode'\\=.\n
+This is run before the process is cranked up.")
 
 (defalias '*chez*
   (lexical-let% ((b))

@@ -46,16 +46,12 @@
   "History of argument lists passed to lldb.")
 
 
-(defcustom% gud-lldb-command-line-hook nil
-            "Hook run by `lldb' on command line."
-            :type 'hook
-            :group 'gud)
+(defvar gud-lldb-command-line-hook nil
+  "Hook run by `lldb' on command line.")
 
 
-(defcustom% gud-lldb-init-hook nil
-            "Hook run by \\=`lldb\\=' process."
-            :type 'hook
-            :group 'gud)
+(defvar gud-lldb-init-hook nil
+  "Hook run by \\=`lldb\\=' process.")
 
 
 (defvar gud-lldb-directories '(".")
