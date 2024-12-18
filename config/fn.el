@@ -13,11 +13,6 @@
 ;; feature
 ;;;
 
-(defmacro intern-feature-name (feature has)
-  "Intern FEATURE name with HAS prefix."
-  `(cond (,has (format "has-ft-%s%%" ,feature))
-         (t (format "non-ft-%s%%" ,feature))))
-
 (defmacro intern-function-name (function has)
   "Intern FUNCTION name with HAS prefix."
   `(cond (,has (format "has-fn-%s%%" ,function))
@@ -26,8 +21,8 @@
 (defmacro if-feature% (feature then &rest else)
   "If has the FEAUTURE do THEN, otherwise do ELSE..."
   (declare (indent 2))
-  (let ((hasft (intern-feature-name feature t))
-        (nonft (intern-feature-name feature nil)))
+  (let ((hasft (format "has-ft-%s%%" feature))
+        (nonft (format "non-ft-%s%%" feature)))
     (cond ((intern-soft hasft) `,then)
           ((intern-soft nonft) `(progn% ,@else))
           ((require feature nil t) (intern hasft) `,then)
@@ -577,7 +572,7 @@ Return the name of FILE when successed otherwise nil."
          (to (strrchr path ?.)))
     (substring-no-properties path from (and to (> to from) to))))
 
-(unless% (fboundp 'directory-name-p)
+(unless-fn% directory-name-p nil
   (defun directory-name-p (name)
     "Return t if NAME ends with a directory separator character."
     (let ((len (length name)))
@@ -657,52 +652,6 @@ Call FN with the path if FN is non-nil."
           (cond ((zerop (car m)) (string-trim> (cdr m)))
                 (t nil)))))))
 
-(defun version-strncmp (v1 v2 &optional n)
-  "Return 0 if V1 equals V2, -1 if V1 less than V2, otherwise 1.\n
-If optional N is non-nil compare no more than N parts, default N is 4."
-  (let ((l1 (length v1)) (l2 (length v2))
-        (nv1 0) (nv2 0)
-        (n (or (and (integerp n) (> n 0) n) 4))
-        (i 0) (j1 0) (j2 0) (k1 0) (k2 0))
-    (cond ((and (= l1 0) (= l2 0)) 0)
-          ((and (= l1 0) (> l2 0)) -1)
-          ((and (> l1 0) (= l2 0) 1))
-          (t (catch 'br
-               (while (< i n)
-                 (setq nv1
-                       (catch 'br1
-                         (when (= j1 l1) (throw 'br1 0))
-                         (while (< j1 l1)
-                           (when (= ?. (aref v1 j1))
-                             (throw 'br1
-                                    (string-to-number
-                                     (substring-no-properties
-                                      v1 k1
-                                      (prog1 j1
-                                        (setq j1 (1+ j1) k1 j1))))))
-                           (setq j1 (1+ j1)))
-                         (string-to-number
-                          (substring-no-properties v1 k1 j1)))
-                       nv2
-                       (catch 'br2
-                         (when (= j2 l2) (throw 'br2 0))
-                         (while (< j2 l2)
-                           (when (= ?. (aref v2 j2))
-                             (throw 'br2
-                                    (string-to-number
-                                     (substring-no-properties
-                                      v2 k2
-                                      (prog1 j2
-                                        (setq j2 (1+ j2) k2 j2))))))
-                           (setq j2 (1+ j2)))
-                         (string-to-number
-                          (substring-no-properties v2 k2 j2))))
-                 (cond ((< nv1 nv2) (throw 'br -1))
-                       ((> nv1 nv2) (throw 'br 1))
-                       ((= i (- n 1)) (throw 'br 0))
-                       ((and (= j1 l1) (= j2 l2)) (throw 'br 0))
-                       (t (setq i (1+ i))))))))))
-
 ;; end of platform
 
 ;;;
@@ -772,27 +721,6 @@ If optional N is non-nil compare no more than N parts, default N is 4."
   (let* ((-f1- (funcall `(lambda () ,filename)))
          (-n1- (and -f1- (file-name-nondirectory -f1-))))
     `,-n1-))
-
-(defmacro ssh-remote-p (file)
-  "Return an identification when FILE specifies a location on a
-remote system.\n
-On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
-  `(string-match* "^\\(/sshx?:[_-a-zA-Z0-9]+@?[._-a-zA-Z0-9]+:\\)" ,file 1))
-
-(defmacro ssh-remote->ids (remote)
-  "Norm the REMOTE to (method {user|id} [host]) form."
-  (let ((r (gensym*)))
-    `(let ((,r ,remote))
-       (and (stringp ,r)
-            (split-string* ,r "[:@]" t "\\(^/[^ssh].*$\\|^/\\)")))))
-
-(defun ssh-remote->user@host (remote)
-  "Norm the REMOTE to {user|id}[@host] form."
-  (let ((rid (ssh-remote->ids remote)))
-    (when (consp rid)
-      (concat (cadr rid)
-              (and (car (cddr rid))
-                   (concat "@" (car (cddr rid))))))))
 
 ;; end of file
 

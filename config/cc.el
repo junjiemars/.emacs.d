@@ -12,6 +12,7 @@
 
 (require% 'ed (v-home%> "config/ed"))
 (require% 'tags (v-home%> "config/tags"))
+(require% 'ssh (v-home%> "config/ssh"))
 
 ;; end of require
 

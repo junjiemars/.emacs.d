@@ -31,6 +31,7 @@
 (autoload 'delete-line* (v-home%> "config/ed") nil nil 'macro)
 (autoload 'shell-format-buffer (v-home%> "config/ed") nil nil 'macro)
 (autoload 'symbol@ (v-home%> "config/ed") nil nil 'macro)
+(autoload 'version-strncmp (v-home%> "config/ed"))
 
 ;; end of `ed'
 
@@ -58,6 +59,14 @@
 (autoload 'mark-word@ (v-home%> "config/mill") nil t)
 
 ;; end of `mill'
+
+;;; `ssh'
+
+(autoload 'ssh-remote-p (v-home%> "config/ssh") nil nil 'macro)
+(autoload 'ssh-remote->ids (v-home%> "config/ssh") nil nil 'macro)
+(autoload 'ssh-remote->user@host (v-home%> "config/ssh"))
+
+;; end of `ssh'
 
 ;;; `tags'
 

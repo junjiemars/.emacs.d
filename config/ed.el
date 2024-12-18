@@ -143,6 +143,52 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
        (let ((,ss (thing-at-point (or ,thing 'symbol))))
          (and ,ss (cons nil (substring-no-properties ,ss)))))))
 
+(defun version-strncmp (v1 v2 &optional n)
+  "Return 0 if V1 equals V2, -1 if V1 less than V2, otherwise 1.\n
+If optional N is non-nil compare no more than N parts, default N is 4."
+  (let ((l1 (length v1)) (l2 (length v2))
+        (nv1 0) (nv2 0)
+        (n (or (and (integerp n) (> n 0) n) 4))
+        (i 0) (j1 0) (j2 0) (k1 0) (k2 0))
+    (cond ((and (= l1 0) (= l2 0)) 0)
+          ((and (= l1 0) (> l2 0)) -1)
+          ((and (> l1 0) (= l2 0) 1))
+          (t (catch 'br
+               (while (< i n)
+                 (setq nv1
+                       (catch 'br1
+                         (when (= j1 l1) (throw 'br1 0))
+                         (while (< j1 l1)
+                           (when (= ?. (aref v1 j1))
+                             (throw 'br1
+                                    (string-to-number
+                                     (substring-no-properties
+                                      v1 k1
+                                      (prog1 j1
+                                        (setq j1 (1+ j1) k1 j1))))))
+                           (setq j1 (1+ j1)))
+                         (string-to-number
+                          (substring-no-properties v1 k1 j1)))
+                       nv2
+                       (catch 'br2
+                         (when (= j2 l2) (throw 'br2 0))
+                         (while (< j2 l2)
+                           (when (= ?. (aref v2 j2))
+                             (throw 'br2
+                                    (string-to-number
+                                     (substring-no-properties
+                                      v2 k2
+                                      (prog1 j2
+                                        (setq j2 (1+ j2) k2 j2))))))
+                           (setq j2 (1+ j2)))
+                         (string-to-number
+                          (substring-no-properties v2 k2 j2))))
+                 (cond ((< nv1 nv2) (throw 'br -1))
+                       ((> nv1 nv2) (throw 'br 1))
+                       ((= i (- n 1)) (throw 'br 0))
+                       ((and (= j1 l1) (= j2 l2)) (throw 'br 0))
+                       (t (setq i (1+ i))))))))))
+
 ;; (when-version% >= 25
 ;;   (declare-function forward-whitespace "subr"))
 

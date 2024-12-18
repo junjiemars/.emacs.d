@@ -479,34 +479,6 @@
   (should (string= "c.c" (file-name-nondirectory%
                           (concat "/a/b/" "c.c")))))
 
-
-(ert-deftest %d:fn:ssh-remote-/p/>ids/>user@host ()
-  (should (and (null (ssh-remote-p nil))
-               (null (ssh-remote-p "/xxh:abc:/a/b.c"))
-               (string= "/sshx:pi:"
-                        (ssh-remote-p "/sshx:pi:/a/b.c"))
-               (string= "/ssh:pi@circle:"
-                        (ssh-remote-p
-                         "/ssh:pi@circle:/a/b/c.d"))
-               (string= "/ssh:u@h.i.j:"
-                        (ssh-remote-p
-                         "/ssh:u@h.i.j:/a/b.c"))))
-  (should (and (null (ssh-remote->ids nil))
-               (equal '("abc") (ssh-remote->ids "abc"))
-               (equal '("sshx" "pi")
-                      (ssh-remote->ids "/sshx:pi:"))
-               (equal '("ssh" "u" "h")
-                      (ssh-remote->ids "/ssh:u@h:"))
-               (equal '("ssh" "u" "h.i.j")
-                      (ssh-remote->ids "/ssh:u@h.i.j:/a/b.c"))))
-  (should (and (null (ssh-remote->user@host nil))
-               (string= "pi@circle"
-                        (ssh-remote->user@host
-                         "/ssh:pi@circle:/a/b.c"))
-               (string= "u@h.i.j"
-                        (ssh-remote->user@host
-                         "/sshx:u@h.i.j:/a/b.c")))))
-
 (ert-deftest %d:fn:path+ ()
   (should-not (path+ nil))
   (should (string= "a/" (path+ "a")))
@@ -904,5 +876,37 @@
 
  ;; end of conditional `trans'
 
+;;;
+;; `ssh'
+;;;
+
+(ert-deftest %u:ssh:ssh-remote-/p/>ids/>user@host ()
+  (should (and (null (ssh-remote-p nil))
+               (null (ssh-remote-p "/xxh:abc:/a/b.c"))
+               (string= "/sshx:pi:"
+                        (ssh-remote-p "/sshx:pi:/a/b.c"))
+               (string= "/ssh:pi@circle:"
+                        (ssh-remote-p
+                         "/ssh:pi@circle:/a/b/c.d"))
+               (string= "/ssh:u@h.i.j:"
+                        (ssh-remote-p
+                         "/ssh:u@h.i.j:/a/b.c"))))
+  (should (and (null (ssh-remote->ids nil))
+               (equal '("abc") (ssh-remote->ids "abc"))
+               (equal '("sshx" "pi")
+                      (ssh-remote->ids "/sshx:pi:"))
+               (equal '("ssh" "u" "h")
+                      (ssh-remote->ids "/ssh:u@h:"))
+               (equal '("ssh" "u" "h.i.j")
+                      (ssh-remote->ids "/ssh:u@h.i.j:/a/b.c"))))
+  (should (and (null (ssh-remote->user@host nil))
+               (string= "pi@circle"
+                        (ssh-remote->user@host
+                         "/ssh:pi@circle:/a/b.c"))
+               (string= "u@h.i.j"
+                        (ssh-remote->user@host
+                         "/sshx:u@h.i.j:/a/b.c")))))
+
+;; end of `ssh'
 
  ;; end of test.el

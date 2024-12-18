@@ -33,6 +33,7 @@
     (compile-unit% (emacs-home* "config/cls.el") t)
     (compile-unit% (emacs-home* "config/ed.el") t)
     (compile-unit% (emacs-home* "config/marks.el") t)
+    (compile-unit% (emacs-home* "config/ssh.el") t)
     (compile-unit% (emacs-home* "config/tags.el") t)
     (compile-unit% (emacs-home* "config/on-firstload.el"))))
 
