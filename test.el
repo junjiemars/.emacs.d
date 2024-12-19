@@ -495,19 +495,17 @@
   (should (= 3 (path-depth "/a/b/c"))))
 
 (ert-deftest %d:fn:kbd% ()
-  (should (equal [tab ret] (kbd% "<tab> <ret>")))
-  (should (string= "fi" (kbd% "C-c f i"))))
+  (should (equal (kbd% "<tab> <ret>") (kbd "<tab> <ret>")))
+  (should (string= (kbd% "C-c f i") (kbd "C-c f i"))))
 
 (ert-deftest %d:fn:if-key% ()
   (let ((b (if-key% (current-global-map) (kbd "C-c C-c C-c") #'+ 1 0)))
     (cond ((= b 0)
            (should
-            (eq #'+ (define-key% (current-global-map)
-                                 (kbd "C-c C-c C-c") #'+))))
+            (eq #'+ (define-key% (current-global-map) "" #'+))))
           ((= b 1)
            (should
-            (null (define-key% (current-global-map)
-                               (kbd "C-c C-c C-c") nil)))))))
+            (null (define-key% (current-global-map) "" nil)))))))
 
 (ert-deftest %d:fn:if-region-active ()
   ;; interactive

@@ -623,14 +623,14 @@ Optional prefix argument ENHANCED, displays additional details."
   (on-sql-oracle-init!)
   (on-sql-oceanbase-init!)
   (when-fn-sql-show-sqli-buffer%
-    (define-key% sql-mode-map (kbd% "C-c C-z") #'sql-show-sqli-buffer*))
+    (define-key% sql-mode-map "" #'sql-show-sqli-buffer*))
   ;; features' keybindings
   (when-sql-feature%
-    (define-key% sql-mode-map (kbd% "C-c C-l a") #'sql-list-all)
-    (define-key% sql-mode-map (kbd% "C-c C-l c") #'sql-list-code)
-    (define-key% sql-mode-map (kbd% "C-c C-l p") #'sql-desc-plan)
-    (define-key% sql-mode-map (kbd% "C-c C-l t") #'sql-desc-table)
-    (define-key% sql-mode-map (kbd% "C-c C-l x") #'sql-export-query)))
+    (define-key% sql-mode-map "a" #'sql-list-all)
+    (define-key% sql-mode-map "c" #'sql-list-code)
+    (define-key% sql-mode-map "p" #'sql-desc-plan)
+    (define-key% sql-mode-map "t" #'sql-desc-table)
+    (define-key% sql-mode-map "x" #'sql-export-query)))
 
 ;; end of init!
 

@@ -44,7 +44,7 @@
                     (ignore-errors (read (concat "?\\u" character)))))))
       (unless (characterp c)
         (error "%s" "Invalid character"))
-      (insert-char c count))))
+      (insert-char c count inherit))))
 
 ;; end of `insert-char*'
 
@@ -234,7 +234,7 @@ And copy the qualified buffer name to kill ring."
 (when-fn% whitespace-mode whitespace
   (defun on-whitespace-init! ()
     "On \\=`sort\\=' intialization."
-    (define-key% (current-global-map) (kbd% "C-x x SPC") #'whitespace-mode)
+    (define-key% (current-global-map) (kbd "C-x x SPC") #'whitespace-mode)
     (unless-graphic%
       (with-eval-after-load 'whitespace
         (set-face-background 'whitespace-space nil)))))
@@ -281,10 +281,10 @@ And copy the qualified buffer name to kill ring."
 
 (defun on-progs-key! ()
   ;; line
-  (define-key% (current-global-map) (kbd% "C-o") #'open-next-line)
-  (define-key% (current-global-map) (kbd% "C-M-o") #'open-previous-line)
+  (define-key% (current-global-map) (kbd "C-o") #'open-next-line)
+  (define-key% (current-global-map) (kbd "C-M-o") #'open-previous-line)
   ;; comment
-  (define-key% (current-global-map) (kbd% "C-x M-;") #'toggle-comment)
+  (define-key% (current-global-map) (kbd "C-x M-;") #'toggle-comment)
   (define-key% (current-global-map) ";" #'comment-indent)
   ;; surround
   (define-key% (current-global-map) "r[" #'surround-region)
@@ -308,12 +308,12 @@ And copy the qualified buffer name to kill ring."
   (define-key% (current-global-map) "rv" #'view-register)
   ;; line
   (define-key (current-global-map) (kbd% "RET") #'newline*)
-  (define-key% (current-global-map) (kbd% "C-j") #'newline-and-indent)
+  (define-key% (current-global-map) (kbd "C-j") #'newline-and-indent)
   ;; buffers
   (define-key% (current-global-map) "xc" #'clone-buffer)
   (define-key% (current-global-map) "xn" #'echo-buffer-name)
   (define-key% (current-global-map) "xt" #'toggle-truncate-lines)
-  (define-key% (current-global-map) (kbd% "C-x RET =")
+  (define-key% (current-global-map) (kbd "C-x RET =")
                #'get-buffer-coding-system)
   (define-key% (current-global-map) "xg"
                (if-fn% revert-buffer-quick nil

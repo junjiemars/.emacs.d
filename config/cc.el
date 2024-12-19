@@ -481,12 +481,11 @@ N specify the number of spaces when align."
     (ad-activate #'c-macro-expand t))
   ;; indent line or region
   (when-fn% c-indent-line-or-region cc-cmds
-    (define-key% c-mode-map (kbd% "TAB") #'c-indent-line-or-region))
+    (define-key% c-mode-map (kbd "TAB") #'c-indent-line-or-region))
   ;; `subword-mode'
-  (define-key% c-mode-map ""
-               (if-fn% subword-mode subword
-                       #'subword-mode
-                 #'c-subword-mode))
+  (if-fn% subword-mode subword
+          (define-key% c-mode-map "" #'subword-mode)
+    (define-key% c-mode-map "" #'c-subword-mode))
   (when (boundp 'c-mode-map)
     (cc*-define-keys c-mode-map))
   (when (boundp 'c++-mode-map)

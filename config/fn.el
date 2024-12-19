@@ -671,28 +671,28 @@ Call FN with the path if FN is non-nil."
 ;; key
 ;;;
 
-(defmacro kbd% (keys)
-  "Convert KEYS to the internal Emacs key representation."
-  (let ((-k1- (kbd keys)))
-    `,-k1-))
+(defmacro kbd% (key)
+  "Convert KEY to the internal Emacs key representation."
+  (kbd key))
 
-(defmacro if-key% (keymap key test then &rest else)
-  "If TEST yield t for KEY in KEYMAP do then, else do ELSE..."
+(defmacro if-key% (keymap key def then &rest else)
+  "If DEF for KEY in KEYMAP do THEN, else do ELSE..."
   (declare (indent 4))
-  (let ((-ik-m1- keymap)
-        (-ik-k1- key)
-        (-ik-t1- test))
-    `(if (eq ,-ik-t1- (lookup-key ,-ik-m1- ,-ik-k1-))
-         ,then
-       ,@else)))
+  (if (eq def (lookup-key keymap (cond ((consp key)
+                                        (funcall `(lambda () ,key)))
+                                       (t key))))
+      `,then
+    `(progn% ,@else)))
 
 (defmacro define-key% (keymap key def)
   "Define KEY to DEF in KEYMAP."
-  (let ((-dk-m1- keymap)
-        (-dk-k1- key)
-        (-dk-d1- def))
-    `(unless (eq ,-dk-d1- (lookup-key ,-dk-m1- ,-dk-k1-))
-       (define-key ,-dk-m1- ,-dk-k1- ,-dk-d1-))))
+  (declare (debug t))
+  (let ((-dk3- (cond ((consp key) (funcall `(lambda () ,key)))
+                     (t key))))
+    (unless (eq def (lookup-key (cond ((atom keymap) (symbol-value keymap))
+                                      (t keymap))
+                                -dk3-))
+      `(define-key ,keymap ,-dk3- ,def))))
 
 ;; end of key
 
