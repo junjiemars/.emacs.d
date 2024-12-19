@@ -7,6 +7,13 @@
 ;;;;
 
 
+;;; require
+
+;; (require% 'eshell)
+;; (require 'em-term)
+
+ ;; end of require
+
 (defun eshell-spec->* (&optional key)
   "Extract :eshell from env-spec via KEY."
   (cond (key (env-spec->* :eshell key))
@@ -16,21 +23,20 @@
 
 (defun on-eshell-init! ()
   "On \\=`eshell-mode\\=' initialization."
-  (eval-when-compile (require 'em-term))
-  (require 'em-term)
   (when (eshell-spec->* :allowed)
-    (dolist (x (eshell-spec->* :visual-commands))
-      (append! x eshell-visual-commands t))
+    (when-var% eshell-visual-commands eshell
+      (dolist (x (eshell-spec->* :visual-commands))
+        (append! x eshell-visual-commands t)))
     (setq% eshell-destroy-buffer-when-process-dies
-           (eshell-spec->* :destroy-buffer-when-process-dies))
+           (eshell-spec->* :destroy-buffer-when-process-dies) eshell)
     (setq% eshell-visual-subcommands
-           (eshell-spec->* :visual-subcommands))
+           (eshell-spec->* :visual-subcommands) eshell)
     (setq% eshell-visual-options
-           (eshell-spec->* :visual-options)))
+           (eshell-spec->* :visual-options) eshell))
   ;; abbreviated `eshell' prompt
   (when-version% > 23
     (setq% eshell-save-history-on-exit t em-hist)
-    (when% (and (require 'em-prompt) (require 'em-dirs))
+    (when% (and (require 'em-prompt nil t) (require 'em-dirs nil t))
       (setq eshell-prompt-function
             #'(lambda ()
                 (concat (abbreviate-file-name (eshell/pwd))

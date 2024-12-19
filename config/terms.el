@@ -5,13 +5,18 @@
 ;;;;
 ;; terms.el
 ;;;;
+
 
+;;; require
+
+(require% 'term)
+
+ ;; end of require
 
 (defun term*-unify-shell-prompt ()
   "Unify the shell prompt in \\=`term\\='."
   (interactive)
-  (unless (eq 'term-mode (buffer-local-value
-                          'major-mode (current-buffer)))
+  (unless (eq 'term-mode (buffer-local-value 'major-mode (current-buffer)))
     (user-error "%s" "Not in term-mode"))
   (let ((proc (get-buffer-process (current-buffer))))
     (unless proc

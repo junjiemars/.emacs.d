@@ -199,14 +199,6 @@ else do ELSE..."
       `,then
     `(progn% ,@else)))
 
-;; (defmacro if-window% (window then &rest else)
-;;   "If WINDOW eq \\=`initial-window-system\\=' yield non-nil, do THEN,
-;; else do ELSE..."
-;;   (declare (indent 2))
-;;   `(if% (eq initial-window-system ,window)
-;;        ,then
-;;      (progn% ,@else)))
-
 (defmacro when-window% (window &rest body)
   "When WINDOW eq \\=`initial-window-system\\=' yield non-nil, do BODY."
   (declare (indent 1))
@@ -226,9 +218,9 @@ else do ELSE..."
 (defmacro if-interactive% (then &rest body)
   "If not \\=`noninteractive\\=' do THEN, else do BODY."
   (declare (indent 1))
-  `(if% (null noninteractive)
-       ,then
-     (progn% ,@body)))
+  (if (null noninteractive)
+      `,then
+    `(progn% ,@body)))
 
 (defmacro when-interactive% (&rest body)
   "When not \\=`noninteractive\\=' do BODY."
@@ -666,12 +658,6 @@ Call FN with the path if FN is non-nil."
   "Return the depth of PATH."
   (cond ((= 0 (length path)) 0)
         (t (- (length (split-string* path (or separator "/") nil)) 1))))
-
-(defmacro file-name-nondirectory% (filename)
-  "Return file name FILENAME sans its directory at compile-time."
-  (let* ((-f1- (funcall `(lambda () ,filename)))
-         (-n1- (and -f1- (file-name-nondirectory -f1-))))
-    `,-n1-))
 
 ;; end of file
 

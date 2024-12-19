@@ -113,7 +113,7 @@
   (when-platform% darwin
     (when-fn% makefile-gmake-mode make-mode
       (when% (and (assoc-string "[Mm]akefile\\'" auto-mode-alist)
-                  (executable-find%
+                  (executable-find*
                    "make"
                    (lambda (make)
                      (let ((x (shell-command* make "--version")))

@@ -465,11 +465,6 @@
   (should (file-in-dirs-p (emacs-home* "init.el")
                           (list (string-trim> (emacs-home*) "/")))))
 
-(ert-deftest %d:fn:file-name-nondirectory% ()
-  (should (string= "c.c" (file-name-nondirectory% "/a/b/c.c")))
-  (should (string= "c.c" (file-name-nondirectory%
-                          (concat "/a/b/" "c.c")))))
-
 (ert-deftest %d:fn:path+ ()
   (should-not (path+ nil))
   (should (string= "a/" (path+ "a")))

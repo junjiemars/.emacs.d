@@ -118,7 +118,7 @@
                          "\n:end\n"))))
          (v-home% ".exec/zip.bat"))))
 
-    (unless (executable-find% "zip")
+    (unless% (executable-find% "zip")
       ;; zip external program
       ;; prefer 7z, because 7za less archive formats supported
       (cond ((executable-find% "7z") (_make_zip_bat_ "7z"))
@@ -178,7 +178,7 @@
   ;; prefer GNU's ls (--dired option) on Windows or Darwin. on
   ;; Windows: `dired-mode' does not display executable flag in file
   ;; mode，see `dired-use-ls-dired' and `ido-dired' for more defails
-  (when% (executable-find%
+  (when% (executable-find*
           "ls"
           (lambda (bin)
             (let ((home (shell-command* bin (emacs-home%))))
@@ -291,13 +291,13 @@
   ;; see `dired-compress-file-suffixes'.
   (when-var% dired-compress-files-suffixes dired-aux
     (when% (and (not (assoc-string "\\.zip\\'" dired-compress-file-suffixes))
-                (executable-find% "zip")
-                (executable-find% "unzip"))
+                (executable-find* "zip")
+                (executable-find* "unzip"))
       (push! '("\\.zip\\'" ".zip" "unzip") dired-compress-file-suffixes)))
   ;; uncompress/compress .7z file
-  (when% (or (executable-find% "7z")
-             (executable-find% "7za"))
-    (let ((7za? (if (executable-find% "7z") "7z" "7za")))
+  (when% (or (executable-find* "7z")
+             (executable-find* "7za"))
+    (let ((7za? (if% (executable-find* "7z") "7z" "7za")))
       (when-var% dired-compress-file-suffixes dired-aux
         ;; [Z] uncompress from .7z
         (let ((uncompress (concat 7za? " x -t7z -aoa -o%o %i")))
@@ -336,9 +336,9 @@
           (setq dired-compress-file-suffixes
                 (remove (assoc-string ":" dired-compress-file-suffixes)
                         dired-compress-file-suffixes)))
-        (when% (and (not (executable-find% "gunzip"))
-                    (or (executable-find% "7z")
-                        (executable-find% "7za")))
+        (when% (and (null (executable-find* "gunzip"))
+                    (or (executable-find* "7z")
+                        (executable-find* "7za")))
           (let ((7za? (concat (if (executable-find% "7z") "7z" "7za")
                               " x -tgz -aoa %i")))
             (if% (assoc-string "\\.gz\\'" dired-compress-file-suffixes)

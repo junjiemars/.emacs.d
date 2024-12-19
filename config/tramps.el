@@ -27,7 +27,7 @@
 
 (defun on-tramp-init! ()
   "On \\=`tramp\\=' initialization."
-  (when% (executable-find% "ssh")
+  (when% (executable-find* "ssh")
     ;; ssh faster than scp on ancient Emacs?
     (setq% tramp-default-method "ssh"))
   ;;; docker
