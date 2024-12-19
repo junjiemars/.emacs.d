@@ -28,11 +28,11 @@
            (vswhere (concat vsroot "Installer/vswhere.exe")))
       (when (file-exists-p vswhere)
         (posix-path
-         (or (let* ((cmd (shell-command* (shell-quote-argument vswhere)
-                           "-nologo -latest -property installationPath"))
-                    (bat (and (zerop (car cmd))
+         (or (let* ((rc (shell-command* (shell-quote-argument vswhere)
+                          "-nologo -latest -property installationPath"))
+                    (bat (and (zerop (car rc))
                               (concat
-                               (string-trim> (cdr cmd))
+                               (string-trim> (cdr rc))
                                "/VC/Auxiliary/Build/vcvarsall.bat"))))
                (when (file-exists-p bat) bat))
              (let* ((ver (car (directory-files
@@ -74,10 +74,7 @@
 
 (defun cc*-cc-check ()
   (let ((cx (if-platform% 'windows-nt
-                (progn%
-                 (unless (executable-find% "cc-env.bat")
-                   (cc*-make-env-bat))
-                 '("cc-env.bat" "cl" "gcc"))
+                '("cc-env.bat" "cl" "gcc")
               '("cc" "gcc" "clang")))
         (o (make-temp-file "cc-c-" nil
                            (if-platform% 'windows-nt
@@ -91,19 +88,20 @@
             (make-temp-file "cc-s-" nil ".c"))))
     (catch 'br
       (dolist (cc cx)
-        (when (zerop (car (shell-command*
-                              (format (if-platform% 'windows-nt
-                                          (if (string= "cc-env.bat" cc)
-                                              (concat "%s %s -Fe%s -Fo")
-                                            "%s %s -o%s")
-                                        "%s %s -o%s")
-                                      (if-platform% 'windows-nt
-                                          (if (string= "cc-env.bat" cc)
-                                              "cc-env.bat && cl"
-                                            cc)
-                                        cc)
-                                      i o))))
-          (throw 'br cc))))))
+        (let ((rc (shell-command*
+                      (format (if-platform% 'windows-nt
+                                  (if (string= "cc-env.bat" cc)
+                                      (concat "%s %s -Fe%s -Fo")
+                                    "%s %s -o%s")
+                                "%s %s -o%s")
+                              (if-platform% 'windows-nt
+                                  (if (string= "cc-env.bat" cc)
+                                      "cc-env.bat && cl"
+                                    cc)
+                                cc)
+                              i o))))
+          (when (zerop (car rc))
+            (throw 'br cc)))))))
 
 (defalias 'cc*-cc
   (let ((b (cc*-cc-check)))
@@ -142,8 +140,8 @@
                      "  return 0;\n"
                      "}\n")
              c)
-        (let ((cmd (shell-command* cc)))
-          (when (zerop (car cmd))
+        (let ((rc (shell-command* cc)))
+          (when (zerop (car rc))
             (file-name-nondirectory exe)))))))
 
 (when-platform% 'windows-nt
@@ -167,30 +165,24 @@
 
 (defun cc*-include-check (&optional remote)
   "Return a list of system cc include path."
-  (let ((cmd (if remote
-                 (when% (executable-find% "ssh")
-                   (shell-command* "ssh"
-                     (concat
-                      (ssh-remote->user@host remote)
-                      " \"echo ''|cc -v -E 2>&1 >/dev/null -\"")))
-               (if-platform% 'windows-nt
-                   ;; Windows: msmvc
-                   (shell-command* (cc*-cc))
-                 ;; Darwin/Linux: clang or gcc
-                 (shell-command*
-                     (concat "echo ''|"
-                             (cc*-cc)
-                             " -v -E 2>&1 >/dev/null -"))))))
-    (when (zerop (car cmd))
-      (let ((pre (cdr cmd)) (inc nil) (beg nil))
+  (let ((rc (if remote
+                (shell-command* "ssh"
+                  (concat (ssh-remote->user@host remote)
+                          " \"echo ''|cc -v -E 2>&1 >/dev/null -\""))
+              (if-platform% 'windows-nt
+                  (shell-command* (cc*-cc))
+                ;; Darwin/Linux
+                (shell-command* "echo ''|" (cc*-cc)
+                                " -v -E 2>&1 >/dev/null -")))))
+    (when (zerop (car rc))
+      (let ((pre (cdr rc)) (inc nil) (beg nil))
         (if-platform% 'windows-nt
-            ;; Windows: msvc
             (dolist (x (var->paths
-                         (car
-                          (nreverse (split-string* pre "\n" t "[ \"]*"))))
-                        (nreverse inc))
+                        (car
+                         (nreverse (split-string* pre "\n" t "[ \"]*"))))
+                       (nreverse inc))
               (setq inc (cons (posix-path x) inc)))
-          ;; Darwin/Linux: clang or gcc
+          ;; Darwin/Linux
           (catch 'br
             (dolist (x (split-string* pre "\n" t "[ \t\n]"))
               (when (and beg (string-match "End of search list\\." x))
@@ -209,18 +201,23 @@
             (and (file-exists-p x1)
                  (setq xs (cons x1 xs))))))))
 
+(defun cc*-system-include-file (&optional remote)
+  (let* ((ss (if remote
+                 (intern (mapconcat #'identity
+                                    (ssh-remote->ids remote)
+                                    "-"))
+               'native))
+         (fs (format "%s-%s.el" (v-home% ".exec/cc-inc") ss)))
+    (cons ss fs)))
+
 (defalias 'cc*-system-include
   (let ((dx nil))
     (lambda (&optional op remote)
-      (let* ((ss (if remote
-                     (intern (mapconcat #'identity
-                                        (ssh-remote->ids remote)
-                                        "-"))
-                   'native))
-             (fs (concat (v-home% ".exec/cc-inc-") (symbol-name ss) ".el")))
+      (let* ((ssfs (cc*-system-include-file remote))
+             (ss (car ssfs)) (fs (cdr ssfs)))
         (cond ((eq op :read)
-               (let ((ds (cc*-system-include-read fs remote)))
-                 (plist-get (setq dx (plist-put dx ss ds)) ss)))
+               (let ((r (cc*-system-include-read fs remote)))
+                 (plist-get (setq dx (plist-put dx ss r)) ss)))
               ((eq op :save) (save-sexp-to-file (plist-get dx ss) fs))
               (t (plist-get dx ss))))))
   "Return a list of system include directories.\n
@@ -279,11 +276,10 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
   (let* ((remote (ssh-remote-p (buffer-file-name (current-buffer))))
          (cc (if remote "cc" (cc*-cc)))
          (opts  (format "%s -dM -E -" options))
-         (rc (cond (remote
-                    (fluid-let (shell-file-name "sh")
-                      (shell-command* "ssh"
-                        (ssh-remote->user@host remote)
-                        cc opts)))
+         (rc (cond (remote (fluid-let (shell-file-name "sh")
+                             (shell-command* "ssh"
+                               (ssh-remote->user@host remote)
+                               cc opts)))
                    (t (if-platform% 'windows-nt
                           (cc*-make-macro-dump-bin options)
                         (shell-command* cc opts))))))
@@ -444,9 +440,7 @@ N specify the number of spaces when align."
 (defun on-man-init! ()
   "On \\=`man\\=' initialization."
   ;; fix cannot find include path on Darwin in `Man-mode'
-  (when-var% manual-program man
-    (when (executable-find* manual-program)
-      (setq% Man-header-file-path (cc*-system-include :read) man))))
+  (setq% Man-header-file-path (cc*-system-include :read) man))
 
 ;; end of `man'
 
