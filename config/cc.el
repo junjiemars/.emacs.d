@@ -20,7 +20,7 @@
 ;; msvc host environment
 ;;;
 
-(when-platform% 'windows-nt
+(when-platform% windows-nt
   (defun cc*-check-vcvarsall-bat ()
     "Return the path of vcvarsall.bat if which exists."
     (let* ((pfroot (posix-path (getenv "PROGRAMFILES")))
@@ -43,7 +43,7 @@
                           "/BuildTools/VC/Auxiliary/Build/vcvarsall.bat")))
                (when (file-exists-p bat) bat))))))))
 
-(when-platform% 'windows-nt
+(when-platform% windows-nt
   (defun cc*-make-env-bat ()
     "Make cc-env.bat in \\=`exec-path\\='."
     (let ((vcvarsall (cc*-check-vcvarsall-bat))
@@ -73,11 +73,11 @@
 ;;;
 
 (defun cc*-cc-check ()
-  (let ((cx (if-platform% 'windows-nt
+  (let ((cx (if-platform% windows-nt
                 '("cc-env.bat" "cl" "gcc")
               '("cc" "gcc" "clang")))
         (o (make-temp-file "cc-c-" nil
-                           (if-platform% 'windows-nt
+                           (if-platform% windows-nt
                                ".exe"
                              ".out")))
         (i (save-str-to-file
@@ -89,12 +89,12 @@
     (catch 'br
       (dolist (cc cx)
         (let ((rc (shell-command*
-                      (format (if-platform% 'windows-nt
+                      (format (if-platform% windows-nt
                                   (if (string= "cc-env.bat" cc)
                                       (concat "%s %s -Fe%s -Fo")
                                     "%s %s -o%s")
                                 "%s %s -o%s")
-                              (if-platform% 'windows-nt
+                              (if-platform% windows-nt
                                   (if (string= "cc-env.bat" cc)
                                       "cc-env.bat && cl"
                                     cc)
@@ -115,7 +115,7 @@
 ;; xargs
 ;;;
 
-(when-platform% 'windows-nt
+(when-platform% windows-nt
   (defun cc*-make-xargs-bin ()
     "Make a GNU's xargs alternation in \\=`exec-path\\='."
     (let* ((c (make-temp-file "cc-xargs-" nil ".c"))
@@ -144,7 +144,7 @@
           (when (zerop (car rc))
             (file-name-nondirectory exe)))))))
 
-(when-platform% 'windows-nt
+(when-platform% windows-nt
   (defconst +cc*-xargs-bin+
     (file-name-nondirectory%
      (or (executable-find% "xargs"
@@ -169,14 +169,14 @@
                 (shell-command* "ssh"
                   (concat (ssh-remote->user@host remote)
                           " \"echo ''|cc -v -E 2>&1 >/dev/null -\""))
-              (if-platform% 'windows-nt
+              (if-platform% windows-nt
                   (shell-command* (cc*-cc))
                 ;; Darwin/Linux
                 (shell-command* "echo ''|" (cc*-cc)
                                 " -v -E 2>&1 >/dev/null -")))))
     (when (zerop (car rc))
       (let ((pre (cdr rc)) (inc nil) (beg nil))
-        (if-platform% 'windows-nt
+        (if-platform% windows-nt
             (dolist (x (var->paths
                         (car
                          (nreverse (split-string* pre "\n" t "[ \"]*"))))
@@ -253,7 +253,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 ;; #define
 ;;;
 
-(when-platform% 'windows-nt
+(when-platform% windows-nt
   (defun cc*-make-macro-dump-bin (&optional options)
     "Make cc-dump-macro.exe for printing predefined macros."
     (let ((c (v-home% ".exec/cc-dump-macro.c"))
@@ -280,7 +280,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
                              (shell-command* "ssh"
                                (ssh-remote->user@host remote)
                                cc opts)))
-                   (t (if-platform% 'windows-nt
+                   (t (if-platform% windows-nt
                           (cc*-make-macro-dump-bin options)
                         (shell-command* cc opts))))))
     (with-current-buffer
@@ -415,7 +415,7 @@ N specify the number of spaces when align."
                   (format "ssh %s %s"
                           (ssh-remote->user@host remote)
                           "cc -E -o - -")
-                (if-platform% 'windows-nt
+                (if-platform% windows-nt
                     ;; cl.exe can't compile on the fly without xargs
                     (let ((tmp (make-temp-file "cc-m-" nil ".c")))
                       (format "%s -0 > %s && %s && cl -E %s"

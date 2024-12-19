@@ -41,7 +41,7 @@
 (defun echo-var (var &optional options)
   "Return the value of $VAR via echo."
   (when (stringp var)
-    (let ((rc (if-platform% 'windows-nt
+    (let ((rc (if-platform% windows-nt
                   (if (string-match "cmdproxy\\.exe$" shell-file-name)
                       (shell-command* (format "echo %%%s%%" var))
                     ;; non cmdproxy
@@ -122,7 +122,7 @@ See \\=`setenv\\='."
 ;; windows
 ;;;
 
-(when-platform% 'windows-nt
+(when-platform% windows-nt
 
   (defun windows-nt-env-path+ (dir &optional append)
     "APPEND or push DIR to %PATH%."
@@ -156,7 +156,7 @@ See \\=`setenv\\='."
             (when (string= v (shells-spec->% :PATH))
               (let ((paths nil))
                 (dolist (p (var->paths val))
-                  (let ((p1 (if-platform% 'windows-nt
+                  (let ((p1 (if-platform% windows-nt
                                 (posix-path p)
                               p)))
                     (when (and (stringp p1) (file-exists-p p1))

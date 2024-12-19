@@ -39,7 +39,7 @@
   "On using \\=`magit\\=' initialization."
   ;; toggle on `magit-auto-revert-mode'
   (setq% magit-auto-revert-mode t magit-autorevert)
-  (when-platform% 'windows-nt
+  (when-platform% windows-nt
     (when% (executable-find% "git")
       ;; On Windows try to open remote git repo via sshx
       ;; will trigger `magit' error: No such file or directory.

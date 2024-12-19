@@ -415,9 +415,9 @@ GUI mode only.
    :put :frame
    (list :initial `((width . 80)
                     (height . 32)
-                    (font . ,(if-platform% 'darwin
+                    (font . ,(if-platform% darwin
                                  "Monaco-17"
-                               (if-platform% 'windows-nt
+                               (if-platform% windows-nt
                                    "Consolas-13"
                                  "Monaco-13"))))
          :default nil ; `((fullscreen . fullheight))
@@ -444,18 +444,18 @@ as [[https://en.wikipedia.org/wiki/CJK_characters][CJK]], etc., the default enco
 #+BEGIN_SRC emacs-lisp
   (*self-env-spec*
    :put :glyph
-   `((:name ,(if-platform% 'darwin
+   `((:name ,(if-platform% darwin
                  "Hack"
-               (if-platform% 'windows-nt
+               (if-platform% windows-nt
                    "Courier New"
                  "DejaVu Sans Mono"))
             :size 17
             :scale nil
             :scripts (greek)
             :allowed t)
-     (:name ,(if-platform% 'darwin
+     (:name ,(if-platform% darwin
                  "PingFang"
-               (if-platform% 'windows-nt
+               (if-platform% windows-nt
                    "Microsoft YaHei"
                  "Noto Sans"))
             :size 12

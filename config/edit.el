@@ -78,7 +78,7 @@
                                (regexp-quote
                                 (number-to-string +emacs-version+)))
                               f))))
-          (let ((cmd (if-platform% 'windows-nt
+          (let ((cmd (if-platform% windows-nt
                          (concat "rmdir /Q /S " (concat d f))
                        (concat "rm -r " (concat d f)))))
             (message "%s ..." cmd)

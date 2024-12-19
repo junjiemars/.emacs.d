@@ -24,7 +24,7 @@
         (dolist (x modifier)
           (set (car x) (cdr x)))))
     ;; disable suspend-frame
-    (when-platform% 'darwin
+    (when-platform% darwin
       (when-fn% suspend-frame frame
         (fset 'suspend-frame
               (lambda () (interactive)

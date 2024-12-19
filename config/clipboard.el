@@ -13,9 +13,9 @@
   "Kill TEXT to system clipboard."
   (with-temp-buffer
     (insert text)
-    (let ((kill (if-platform% 'darwin
+    (let ((kill (if-platform% darwin
                     `("pbcopy" . nil)
-                  (if-platform% 'gnu/linux
+                  (if-platform% gnu/linux
                       `("xsel" . ("--clipboard" "--input"))))))
       (unless kill
         (error "%s" "No kill command found"))
@@ -24,9 +24,9 @@
 
 (defun x-yank ()
   "Yank from system clipboard."
-  (let ((yank (if-platform% 'darwin
+  (let ((yank (if-platform% darwin
                   `("pbpaste" . nil)
-                (if-platform% 'gnu/linux
+                (if-platform% gnu/linux
                     `("xsel" . ("--clipboard" "--output"))))))
     (unless yank
       (error "%s" "No yank command found"))
@@ -49,7 +49,7 @@
     (setq% x-select-enable-primary t select))
 
   ;; kill/yank
-  (unless-platform% 'windows-nt
+  (unless-platform% windows-nt
     (setq interprogram-cut-function #'x-kill
           interprogram-paste-function #'x-yank)))
 

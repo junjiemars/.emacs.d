@@ -27,9 +27,9 @@
  :put :frame
  (list :initial `((width . 80)
                   (height . 32)
-                  (font . ,(if-platform% 'darwin
+                  (font . ,(if-platform% darwin
                                "Monaco-17"
-                             (if-platform% 'windows-nt
+                             (if-platform% windows-nt
                                  "Consolas-13"
                                "Monaco-13"))))
        :default nil ; `((fullscreen . fullheight))
@@ -41,18 +41,18 @@
 ;;; glyph
 (*self-env-spec*
  :put :glyph
- `((:name ,(if-platform% 'darwin
+ `((:name ,(if-platform% darwin
                "Hack"
-             (if-platform% 'windows-nt
+             (if-platform% windows-nt
                  "Courier New"
                "DejaVu Sans Mono"))
           :size 17
           :scale nil
           :scripts (greek)
           :allowed (if-graphic% t))
-   (:name ,(if-platform% 'darwin
+   (:name ,(if-platform% darwin
                "PingFang"
-             (if-platform% 'windows-nt
+             (if-platform% windows-nt
                  "SimHei"
                "Noto Sans CJK"))
           :size 12

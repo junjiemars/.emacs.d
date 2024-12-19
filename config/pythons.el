@@ -243,7 +243,7 @@ determine whether inside a virtual env. Another way is using
       (setq% python-interpreter interpreter python)))
   ;; completion
   (setq% python-shell-completion-native-enable
-         (when-platform% 'gnu/linux t) python)
+         (when-platform% gnu/linux t) python)
   ;; keys
   (when-var% python-mode-map python
     (python*-define-keys python-mode-map))

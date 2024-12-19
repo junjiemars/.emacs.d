@@ -93,7 +93,7 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
   "Return the matched dir if FILE in DIRS, otherwise nil."
   (when (and (stringp file) (consp dirs))
     (inhibit-file-name-handler
-      (let ((case-fold-search (when-platform% 'windows-nt t))
+      (let ((case-fold-search (when-platform% windows-nt t))
             (d (file-name-directory file)))
         (catch 'br
           (dolist (x dirs)

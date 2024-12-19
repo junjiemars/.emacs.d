@@ -46,7 +46,7 @@
     (compile-unit% (emacs-home* "config/compiles.el") t)
     (compile-unit% (emacs-home* "config/dict.el") t)
     (compile-unit% (emacs-home* "config/direds.el") t)
-    (when-platform% 'windows-nt
+    (when-platform% windows-nt
       (compile-unit% (emacs-home* "config/docs.el") t))
     (when-feature% eglot
       (compile-unit% (emacs-home* "config/eglots.el") t))
@@ -93,7 +93,7 @@
     ;; on `direds'
     (compile-unit% (emacs-home* "config/on-dired-autoload.el"))
     ;; on `docs'
-    (when-platform% 'windows-nt
+    (when-platform% windows-nt
       (compile-unit% (emacs-home* "config/on-docview-autoload.el")))
     ;; on `elisp'
     (compile-unit% (emacs-home* "config/on-elisp-autoload.el"))
@@ -109,7 +109,7 @@
           (compile-unit% (emacs-home* "config/glyph.el"))
         (declare-function self-glyph-init! (v-home%> "config/glyph"))))
     ;; `gud': `gud-cdb'
-    (when-platform% 'windows-nt
+    (when-platform% windows-nt
       (prog1
           (compile-unit% (emacs-home* "config/gud-cdb.el") t)
         (autoload 'gud-cdb (v-home%> "config/gud-cdb")

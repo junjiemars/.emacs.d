@@ -70,7 +70,7 @@
         (x (concat "/rustc/" (rust*-sysroot :hash)))
         (s (path+ (rust*-sysroot :src) "rust"))
         (f (concat (rust*-sysroot :etc)
-                   (if-platform% 'gnu/linux
+                   (if-platform% gnu/linux
                        "gdb_load_rust_pretty_printers.py"
                      "lldb_commands"))))
     (unwind-protect
@@ -80,7 +80,7 @@
               (insert-file-contents-literally* f)
               (goto-char (point-min))
               (when (re-search-forward
-                     (concat (if-platform% 'gnu/linux
+                     (concat (if-platform% gnu/linux
                                  "set substitute-path"
                                "^settings set target\\.source-map")
                              " " x)
@@ -88,7 +88,7 @@
                 (throw 'br f))
               (goto-char (point-min))
               (when (re-search-forward
-                     (if-platform% 'gnu/linux
+                     (if-platform% gnu/linux
                          "set substitute-path"
                        "^settings set target\\.source-map")
                      nil t)
@@ -96,7 +96,7 @@
               (goto-char (point-max))
               (forward-line 1)
               (insert
-               (if-platform% 'gnu/linux
+               (if-platform% gnu/linux
                    (format "gdb.execute('set substitute-path %s %s')"
                            x s)
                  (format "settings set target.source-map %s %s"

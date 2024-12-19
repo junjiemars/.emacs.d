@@ -23,7 +23,7 @@
 
 ;; end of macro
 
-(when-platform% 'windows-nt
+(when-platform% windows-nt
   ;; on Windows: there are no builtin zip program
   ;; so try to use minzip in Emacs dep for Windows.
   ;; zip.bat works with `dired-do-compress-to' and `org-odt-export-to-odt'.
@@ -164,7 +164,7 @@
 
 (defun on-dired-init! ()
   "On \\=`dired\\=' initialization."
-  (when-platform% 'windows-nt
+  (when-platform% windows-nt
     ;; prefer GNU find on Windows, such for `find-dired' or `find-name-dired'.
     (let ((find (executable-find%
                  "find"
@@ -203,7 +203,7 @@
 
 ;;; detect-coding-string
 
-(when-platform% 'windows-nt
+(when-platform% windows-nt
 
   (unless% (eq default-file-name-coding-system locale-coding-system)
 
@@ -319,7 +319,7 @@
   ;; Reading directory: "ls --dired -al -- d:/abc/中文/" exited with status 2
   ;; https://lists.gnu.org/archive/html/emacs-devel/2016-01/msg00406.html
   ;; (setq file-name-coding-system locale-coding-system)
-  (when-platform% 'windows-nt
+  (when-platform% windows-nt
     (unless% (eq default-file-name-coding-system locale-coding-system)
       (ad-enable-advice #'dired-shell-stuff-it 'before
                         "dired-shell-stuff-it-before")

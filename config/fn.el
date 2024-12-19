@@ -171,9 +171,16 @@
 (defmacro if-platform% (os then &rest else)
   "If OS eq \\=`system-type\\=' yield non-nil, do THEN, else do ELSE..."
   (declare (indent 2))
-  `(if% (eq system-type ,os)
-       ,then
-     (progn% ,@else)))
+  (if (eq system-type os)
+      `,then
+    `(progn% ,@else)))
+
+;; (defmacro if-platform% (os then &rest else)
+;;   "If OS eq \\=`system-type\\=' yield non-nil, do THEN, else do ELSE..."
+;;   (declare (indent 2))
+;;   `(if% (eq system-type ,os)
+;;        ,then
+;;      (progn% ,@else)))
 
 (defmacro when-platform% (os &rest body)
   "When OS eq \\=`system-type\\=' yield non-nil, do BODY."
@@ -561,14 +568,14 @@ Optional argument ARGS for COMMAND."
 (defun executable-find* (command &optional fn)
   "Return the path of COMMAND.\n
 Call FN with the path if FN is non-nil."
-  (let ((rc (shell-command* (if-platform% 'windows-nt
+  (let ((rc (shell-command* (if-platform% windows-nt
                                 "where"
                               "command -v")
               command)))
     (when (zerop (car rc))
       (let ((ss (string-trim> (cdr rc))))
         (cond (fn (funcall fn (shell-quote-argument ss)))
-              (t (if-platform% 'windows-nt
+              (t (if-platform% windows-nt
                      (posix-path ss)
                    ss)))))))
 
@@ -587,7 +594,7 @@ Call FN with the path if FN is non-nil."
   (let* ((m64 "\\([xX]86_64\\|[aA][mM][dD]64\\|aarch64\\|arm64\\)")
          (x64 (string-match* m64 system-configuration 1)))
     (if x64 x64
-      (if-platform% 'windows-nt
+      (if-platform% windows-nt
           (let* ((cpu "PROCESSOR_ARCHITECTURE")
                  (c64 (string-match* m64 (getenv-internal cpu) 1)))
             (if c64 c64 (getenv-internal cpu)))

@@ -516,7 +516,7 @@ Optional prefix argument ENHANCED, displays additional details."
   ;; `sql-mysql-program'
   (setq sql-mysql-program
         (or (executable-find% "mysql")
-            (when-platform% 'darwin
+            (when-platform% darwin
               (executable-find%
                "/Applications/MySQLWorkbench.app/Contents/MacOS/mysql"))
             "mysql"))

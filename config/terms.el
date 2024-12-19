@@ -40,7 +40,7 @@ esac
                (*self-env-spec* :get :shell :prompt :bash))
           "\\u@\\h \\W \\$ ")))))
 
-(when-platform% 'windows-nt
+(when-platform% windows-nt
   (defadvice ansi-term (before ansi-term-before first compile disable)
     (set-window-buffer
      (selected-window)
@@ -48,7 +48,7 @@ esac
 
 (defun on-term-init! ()
   "On \\=`term\\=' initialization."
-  (when-platform% 'windows-nt
+  (when-platform% windows-nt
   	(ad-enable-advice #'ansi-term 'before "ansi-term-before")
   	(ad-activate #'ansi-term t)))
 

@@ -13,7 +13,7 @@
 
 ;; end of require
 
-(when-platform% 'windows-nt
+(when-platform% windows-nt
   ;; There are no builtin `grep' in Windows, GNU's `grep' may use
   ;; the UNIX path in Windows which cannot be recognized by Emacs.
   ;; When such case occurred, we try to translate UNIX path to POSIX path.
@@ -32,7 +32,7 @@
       (let ((inhibit-read-only t))
         (ansi-color-apply-on-region (point-min) (point-max))))))
 
-(when-platform% 'darwin
+(when-platform% darwin
   ;; `next-error' cannot find the source file on Darwin.
   (defun compile*-make-change-dir (&optional buffer how)
     "Add the argument of make's -C option to \\=`compilation-search-path\\='."
@@ -73,12 +73,12 @@
 (defun on-compile-init! ()
   "On \\=`compile\\=' initialization."
   (setq% compilation-buffer-name-function #'compile*-buffer-name-fn compile)
-  (when-platform% 'windows-nt
+  (when-platform% windows-nt
     ;; compile and activate `compilation-find-file' advice on Windows
     (ad-enable-advice #'compilation-find-file 'before
                       "compilation-find-file-before")
     (ad-activate #'compilation-find-file t))
-  (when-platform% 'darwin
+  (when-platform% darwin
     ;; `next-error' find source file
     (add-hook 'compilation-finish-functions
               #'compile*-make-change-dir
@@ -110,7 +110,7 @@
          (interactive "r\nP")
          (fluid-let (indent-tabs-mode nil)
            (makefile-backslash-region from to delete-flag))))))
-  (when-platform% 'darwin
+  (when-platform% darwin
     (when-fn% makefile-gmake-mode make-mode
       (when% (and (assoc-string "[Mm]akefile\\'" auto-mode-alist)
                   (executable-find%
