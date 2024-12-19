@@ -15,8 +15,8 @@
 
 (defmacro intern-function-name (function has)
   "Intern FUNCTION name with HAS prefix."
-  `(cond (,has (format "has-fn-%s%%" ,function))
-         (t (format "non-fn-%s%%" ,function))))
+  (cond (has `(format "has-fn-%s%%" ,function))
+        (t `(format "non-fn-%s%%" ,function))))
 
 (defmacro if-feature% (feature then &rest else)
   "If has the FEAUTURE do THEN, otherwise do ELSE..."
@@ -423,9 +423,9 @@ See \\=`string-match\\=' and \\=`match-string\\='."
 Optional argument OMIT-NULLS omit null strings.
 Optional argument TRIM regexp used to trim."
   (if-version%
-      <= 24.4
-      `(split-string ,string ,separators ,omit-nulls ,trim)
-    `(split-string4 ,string ,separators ,omit-nulls ,trim)))
+      > 24.4
+      `(split-string4 ,string ,separators ,omit-nulls ,trim)
+    `(split-string ,string ,separators ,omit-nulls ,trim)))
 
 ;; end of string
 
@@ -433,41 +433,36 @@ Optional argument TRIM regexp used to trim."
 ;; IO
 ;;;
 
-(defmacro get-buffer-create*
-    (buffer-or-name &optional inhibit-buffer-hooks)
+(defmacro get-buffer-create* (buffer-or-name &optional inhibit-buffer-hooks)
   "See \\=`get-buffer-create\\='."
   (if-version%
       <= 28
       `(get-buffer-create ,buffer-or-name ,inhibit-buffer-hooks)
     `(if ,inhibit-buffer-hooks
-         (let
-             ((kill-buffer-hook nil)
-              (kill-buffer-query-functions nil)
-              (buffer-list-update-hook nil))
+         (let ((kill-buffer-hook nil)
+               (kill-buffer-query-functions nil)
+               (buffer-list-update-hook nil))
            (get-buffer-create ,buffer-or-name))
        (get-buffer-create ,buffer-or-name))))
 
 (defmacro insert-file-contents-literally*
     (filename &optional visit beg end replace)
   "See \\=`insert-file-contents-literally\\='."
-  `(let
-       ((format-alist nil)
-        (after-insert-file-functions nil)
-        (file-coding-system-alist nil)
-        (coding-system-for-read 'no-conversion)
-        (coding-system-for-write 'no-conversion))
+  `(let ((format-alist nil)
+         (after-insert-file-functions nil)
+         (file-coding-system-alist nil)
+         (coding-system-for-read 'no-conversion)
+         (coding-system-for-write 'no-conversion))
      (insert-file-contents ,filename ,visit ,beg ,end ,replace)))
 
 (defmacro write-region*
     (start end filename &optional append visit lockname mustbenew)
   "See \\=`write-region\\='."
-  `(let
-       ((format-alist nil)
-        (coding-system-for-write 'no-conversion)
-        (write-region-inhibit-fsync t)
-        (write-region-annotate-functions nil))
-     (write-region ,start ,end ,filename
-                   ,append ,visit ,lockname ,mustbenew)))
+  `(let ((format-alist nil)
+         (coding-system-for-write 'no-conversion)
+         (write-region-inhibit-fsync t)
+         (write-region-annotate-functions nil))
+     (write-region ,start ,end ,filename ,append ,visit ,lockname ,mustbenew)))
 
 (defun save-sexp-to-file (sexp file)
   "Save SEXP to FILE.\n
@@ -553,18 +548,14 @@ Optional argument ARGS for COMMAND."
   (let ((b (get-buffer-create* (symbol-name (gensym*)) t)))
     (unwind-protect
         (with-current-buffer b
-          (let ((x (call-process
-                    shell-file-name nil b nil
-                    shell-command-switch
-                    (mapconcat #'identity (nconc (list command) args) " "))))
-            (cons (cond ((integerp x) x)
-                        ((string-match "^.*\\([0-9]+\\).*$" x)
-                         (match-string-no-properties 1 x))
-                        (t -1))
-                  (let ((s (buffer-substring-no-properties
-                            (point-min) (point-max))))
-                    (cond ((string= s "\n") nil)
-                          (t s))))))
+          (let* ((c (if (consp args)
+                        (mapconcat #'identity (nconc (list command) args) " ")
+                      command))
+                 (x (call-process
+                     shell-file-name nil b nil
+                     shell-command-switch
+                     c)))
+            (cons x (buffer-substring-no-properties 1 (point-max)))))
       (and b (kill-buffer b)))))
 
 (defun executable-find* (command &optional fn)
