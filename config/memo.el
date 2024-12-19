@@ -94,7 +94,7 @@
                    (desktop-spec->* :modes-not-to-save))
            desktop)
 
-    (when-window% 'ns
+    (when-window% ns
       (when-version% <= 26
         ;; fix: title bar text color broken #55
         ;; https://github.com/d12frosted/homebrew-emacs-plus/issues/55#issuecomment-408317248

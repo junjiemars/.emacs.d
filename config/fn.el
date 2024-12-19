@@ -175,13 +175,6 @@
       `,then
     `(progn% ,@else)))
 
-;; (defmacro if-platform% (os then &rest else)
-;;   "If OS eq \\=`system-type\\=' yield non-nil, do THEN, else do ELSE..."
-;;   (declare (indent 2))
-;;   `(if% (eq system-type ,os)
-;;        ,then
-;;      (progn% ,@else)))
-
 (defmacro when-platform% (os &rest body)
   "When OS eq \\=`system-type\\=' yield non-nil, do BODY."
   (declare (indent 1))
@@ -202,9 +195,17 @@
   "If WINDOW eq \\=`initial-window-system\\=' yield non-nil, do THEN,
 else do ELSE..."
   (declare (indent 2))
-  `(if% (eq initial-window-system ,window)
-       ,then
-     (progn% ,@else)))
+  (if (eq initial-window-system window)
+      `,then
+    `(progn% ,@else)))
+
+;; (defmacro if-window% (window then &rest else)
+;;   "If WINDOW eq \\=`initial-window-system\\=' yield non-nil, do THEN,
+;; else do ELSE..."
+;;   (declare (indent 2))
+;;   `(if% (eq initial-window-system ,window)
+;;        ,then
+;;      (progn% ,@else)))
 
 (defmacro when-window% (window &rest body)
   "When WINDOW eq \\=`initial-window-system\\=' yield non-nil, do BODY."
