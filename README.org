@@ -112,7 +112,7 @@ Elisp@@html:</kbd>@@) and navigate to the Elisp documentation.
    :CUSTOM_ID: requirements
    :END:
 
-- Emacs [22.1,29.1]
+- Emacs [22.1,29.4]
 - Keyboard+
 
 ** Where

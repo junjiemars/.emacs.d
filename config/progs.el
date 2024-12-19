@@ -289,7 +289,7 @@ And copy the qualified buffer name to kill ring."
   ;; surround
   (define-key% (current-global-map) "r[" #'surround-region)
   ;; `imenu'
-  (define-key% (current-global-map) (kbd% "M-g i") #'imenu)
+  (define-key% (current-global-map) (kbd "M-g i") #'imenu)
   ;; `insert-char*'
   (unless-key-insert-char%
     (define-key% (current-global-map) "8" #'insert-char*))
@@ -299,8 +299,8 @@ And copy the qualified buffer name to kill ring."
   ;; shows a list of buffers
   (define-key% (current-global-map) "" #'ibuffer)
   ;; interactive query replace key bindings.
-  (define-key% (current-global-map) (kbd% "M-%") #'query-replace-regexp)
-  (define-key% (current-global-map) (kbd% "C-M-%") #'query-replace)
+  (define-key% (current-global-map) (kbd "M-%") #'query-replace-regexp)
+  (define-key% (current-global-map) (kbd "C-M-%") #'query-replace)
   ;; register:
   ;; `C-x r g' and `C-x r i' are all bound to insert-register
   ;; let `C-x r g' do `string-insert-rectangle'

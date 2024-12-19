@@ -672,21 +672,27 @@ Call FN with the path if FN is non-nil."
 (defmacro if-key% (keymap key def then &rest else)
   "If DEF for KEY in KEYMAP do THEN, else do ELSE..."
   (declare (indent 4))
-  (if (eq def (lookup-key keymap (cond ((consp key)
-                                        (funcall `(lambda () ,key)))
-                                       (t key))))
+  (if (eq def (lookup-key
+               (cond ((consp keymap) (if-version% <= 27.1
+                                                  keymap
+                                       (funcall `(lambda () ,keymap))))
+                     (t (symbol-value keymap)))
+               (cond ((consp key) (funcall `(lambda () ,key)))
+                     (t key))))
       `,then
     `(progn% ,@else)))
 
 (defmacro define-key% (keymap key def)
   "Define KEY to DEF in KEYMAP."
-  (declare (debug t))
-  (let ((-dk3- (cond ((consp key) (funcall `(lambda () ,key)))
-                     (t key))))
-    (unless (eq def (lookup-key (cond ((atom keymap) (symbol-value keymap))
-                                      (t keymap))
-                                -dk3-))
-      `(define-key ,keymap ,-dk3- ,def))))
+  ;; (declare (debug t))
+  (let ((-dkm3- (cond ((consp keymap) (if-version% <= 27.1
+                                                   keymap
+                                        (funcall `(lambda () ,keymap))))
+                      (t (symbol-value keymap))))
+        (-dkk3- (cond ((consp key) (funcall `(lambda () ,key)))
+                      (t key))))
+    (unless (eq def (lookup-key -dkm3- -dkk3-))
+      `(define-key ,keymap ,-dkk3- ,def))))
 
 ;; end of key
 
