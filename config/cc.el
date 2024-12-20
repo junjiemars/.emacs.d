@@ -428,7 +428,6 @@ N specify the number of spaces when align."
 (when-fn-c-macro-expand%
   (defadvice c-macro-expand
       (around c-macro-expand-around first compile disable)
-    "Expand C macros in the region, using the C preprocessor."
     (cc*-macro-expand)
     ad-do-it))
 
@@ -449,21 +448,19 @@ N specify the number of spaces when align."
 ;; keys
 ;;;
 
-(defmacro cc*-define-keys (keymap)
-  `(progn
-     ;; dump predefined macros
-     (define-key ,keymap "#" #'cc*-dump-predefined-macros)
-     ;; raw newline
-     (define-key ,keymap (kbd% "RET") #'newline*)
-     ;; align style
-     (define-key ,keymap "|" #'cc*-style-align-entire)
-     ;; format buffer
-     (define-key ,keymap (kbd% "C-c M-c f") #'cc*-format-buffer)
-     (when-fn-ff-find-other-file%
-      ;; find include file
-      (define-key ,keymap "fi" #'cc*-find-include-file))
-     (when-fn-c-macro-expand%
-       (define-key ,keymap "" #'c-macro-expand))))
+(defun cc*-define-keys (keymap)
+  ;; dump predefined macros
+  (define-key keymap "#" #'cc*-dump-predefined-macros)
+  ;; raw newline
+  (define-key keymap (kbd% "RET") #'newline*)
+  ;; align style
+  (define-key keymap "|" #'cc*-style-align-entire)
+  ;; format buffer
+  (define-key keymap (kbd% "C-c M-c f") #'cc*-format-buffer)
+  (when-fn-ff-find-other-file%
+   (define-key keymap "fi" #'cc*-find-include-file))
+  (when-fn-c-macro-expand%
+   (define-key keymap "" #'c-macro-expand)))
 
 ;; end of keys
 
