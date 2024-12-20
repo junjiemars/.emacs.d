@@ -494,14 +494,12 @@
   (should (equal (kbd% "<tab> <ret>") (kbd "<tab> <ret>")))
   (should (string= (kbd% "C-c f i") (kbd "C-c f i"))))
 
-(ert-deftest %d:fn:if-key% ()
-  (let ((b (if-key% (current-global-map) (kbd "C-c C-c C-c") #'+ 1 0)))
-    (cond ((= b 0)
-           (should
-            (eq #'+ (define-key% (current-global-map) "" #'+))))
-          ((= b 1)
-           (should
-            (null (define-key% (current-global-map) "" nil)))))))
+(ert-deftest %d:fn:if/define-key% ()
+  (should (and (null (define-key global-map "" nil))
+               (if-key% global-map "" #'+ nil t)))
+  (should (eq #'+ (define-global-key% "" #'+)))
+  (should-not (define-key global-map "" nil))
+  (should (eq #'+ (define-key% global-map "" #'+))))
 
 (ert-deftest %d:fn:if-region-active ()
   ;; interactive

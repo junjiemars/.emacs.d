@@ -23,6 +23,6 @@
   (make-thread* #'on-make-mode-init!))
 
 ;; `compile' global key
-(define-key% (current-global-map) "pc" #'compile)
+(define-global-key% "pc" #'compile)
 
 ;; end of on-compile-autoload.el

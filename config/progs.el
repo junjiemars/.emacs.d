@@ -185,17 +185,17 @@ And copy the qualified buffer name to kill ring."
   (if-fn% ido-mode ido
           (progn
             (ido-mode t)
-            (define-key% (current-global-map) "5r"
+            (define-global-key% "5r"
                          #'ido-find-file-read-only-other-frame)
-            (define-key% (current-global-map) "4r"
+            (define-global-key% "4r"
                          #'ido-find-file-read-only-other-window)
-            (define-key% (current-global-map) ""
+            (define-global-key% ""
                          #'ido-find-file-read-only)
             (setq% ido-enable-flex-matching t ido))
     ;; default view file keybindings
-    (define-key% (current-global-map) "5r" #'view-file-other-frame)
-    (define-key% (current-global-map) "4r" #'view-file-other-window)
-    (define-key% (current-global-map) "" #'view-file))
+    (define-global-key% "5r" #'view-file-other-frame)
+    (define-global-key% "4r" #'view-file-other-window)
+    (define-global-key% "" #'view-file))
   (when-version% > 28 (require 'dired-x nil t)))
 
 ;; end of ido
@@ -224,17 +224,17 @@ And copy the qualified buffer name to kill ring."
 
 (defun on-sort-init! ()
   "On \\=`sort\\=' intialization."
-  (define-key% (current-global-map) "sf" #'sort-fields)
-  (define-key% (current-global-map) "sn" #'sort-numeric-fields)
-  (define-key% (current-global-map) "sx" #'sort-regexp-fields)
-  (define-key% (current-global-map) "sl" #'sort-lines)
-  (define-key% (current-global-map) "sr" #'reverse-region)
-  (define-key% (current-global-map) "sd" #'delete-duplicate-lines))
+  (define-global-key% "sf" #'sort-fields)
+  (define-global-key% "sn" #'sort-numeric-fields)
+  (define-global-key% "sx" #'sort-regexp-fields)
+  (define-global-key% "sl" #'sort-lines)
+  (define-global-key% "sr" #'reverse-region)
+  (define-global-key% "sd" #'delete-duplicate-lines))
 
 (when-fn% whitespace-mode whitespace
   (defun on-whitespace-init! ()
     "On \\=`sort\\=' intialization."
-    (define-key% (current-global-map) (kbd "C-x x SPC") #'whitespace-mode)
+    (define-global-key% (kbd "C-x x SPC") #'whitespace-mode)
     (unless-graphic%
       (with-eval-after-load 'whitespace
         (set-face-background 'whitespace-space nil)))))
@@ -281,41 +281,41 @@ And copy the qualified buffer name to kill ring."
 
 (defun on-progs-key! ()
   ;; line
-  (define-key% (current-global-map) (kbd "C-o") #'open-next-line)
-  (define-key% (current-global-map) (kbd "C-M-o") #'open-previous-line)
+  (define-global-key% (kbd "C-o") #'open-next-line)
+  (define-global-key% (kbd "C-M-o") #'open-previous-line)
   ;; comment
-  (define-key% (current-global-map) (kbd "C-x M-;") #'toggle-comment)
-  (define-key% (current-global-map) ";" #'comment-indent)
+  (define-global-key% (kbd "C-x M-;") #'toggle-comment)
+  (define-global-key% ";" #'comment-indent)
   ;; surround
-  (define-key% (current-global-map) "r[" #'surround-region)
+  (define-global-key% "r[" #'surround-region)
   ;; `imenu'
-  (define-key% (current-global-map) (kbd "M-g i") #'imenu)
+  (define-global-key% (kbd "M-g i") #'imenu)
   ;; `insert-char*'
   (unless-key-insert-char%
-    (define-key% (current-global-map) "8" #'insert-char*))
+    (define-global-key% "8" #'insert-char*))
   ;; open file or url at point
   (when-fn% find-file-at-point ffap
-    (define-key% (current-global-map) "ff" #'find-file-at-point))
+    (define-global-key% "ff" #'find-file-at-point))
   ;; shows a list of buffers
-  (define-key% (current-global-map) "" #'ibuffer)
+  (define-global-key% "" #'ibuffer)
   ;; interactive query replace key bindings.
-  (define-key% (current-global-map) (kbd "M-%") #'query-replace-regexp)
-  (define-key% (current-global-map) (kbd "C-M-%") #'query-replace)
+  (define-global-key% (kbd "M-%") #'query-replace-regexp)
+  (define-global-key% (kbd "C-M-%") #'query-replace)
   ;; register:
   ;; `C-x r g' and `C-x r i' are all bound to insert-register
   ;; let `C-x r g' do `string-insert-rectangle'
-  (define-key% (current-global-map) "rg" #'string-insert-rectangle)
-  (define-key% (current-global-map) "rv" #'view-register)
+  (define-global-key% "rg" #'string-insert-rectangle)
+  (define-global-key% "rv" #'view-register)
   ;; line
   (define-key (current-global-map) (kbd% "RET") #'newline*)
-  (define-key% (current-global-map) (kbd "C-j") #'newline-and-indent)
+  (define-global-key% (kbd "C-j") #'newline-and-indent)
   ;; buffers
-  (define-key% (current-global-map) "xc" #'clone-buffer)
-  (define-key% (current-global-map) "xn" #'echo-buffer-name)
-  (define-key% (current-global-map) "xt" #'toggle-truncate-lines)
-  (define-key% (current-global-map) (kbd "C-x RET =")
+  (define-global-key% "xc" #'clone-buffer)
+  (define-global-key% "xn" #'echo-buffer-name)
+  (define-global-key% "xt" #'toggle-truncate-lines)
+  (define-global-key% (kbd "C-x RET =")
                #'get-buffer-coding-system)
-  (define-key% (current-global-map) "xg"
+  (define-global-key% "xg"
                (if-fn% revert-buffer-quick nil
                        #'revert-buffer-quick
                  #'revert-buffer))
@@ -332,10 +332,10 @@ And copy the qualified buffer name to kill ring."
                   #'(lambda (&optional _)
                       (interactive)
                       (error (kbd% "%s") "No line number mode found")))))
-  (define-key% (current-global-map) "xr" #'rename-buffer)
+  (define-global-key% "xr" #'rename-buffer)
   (when-fn% toggle-word-wrap simple
-    (define-key% (current-global-map) "xw" #'toggle-word-wrap))
-  (define-key% (current-global-map) "xu" #'rename-uniquely)
+    (define-global-key% "xw" #'toggle-word-wrap))
+  (define-global-key% "xu" #'rename-uniquely)
   ;; `messages-buffer-mode'
   (when-version% > 24.4
     ;; fix: no quit key to hide *Messages* buffer for ancient Emacs

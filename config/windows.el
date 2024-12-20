@@ -48,7 +48,7 @@
                      (recenter (round (* recenter-last-op
                                          (window-height)))))))))))
 
-(define-key% (current-global-map) "" #'recenter-top-bottom)
+(define-global-key% "" #'recenter-top-bottom)
 
 ;; end of `recenter-top-bottom'
 
@@ -56,10 +56,10 @@
 ;; `windmove'
 ;;;
 
-(define-key% (current-global-map) "wl" #'windmove-left)
-(define-key% (current-global-map) "wr" #'windmove-right)
-(define-key% (current-global-map) "wu" #'windmove-up)
-(define-key% (current-global-map) "wd" #'windmove-down)
+(define-global-key% "wl" #'windmove-left)
+(define-global-key% "wr" #'windmove-right)
+(define-global-key% "wu" #'windmove-up)
+(define-global-key% "wd" #'windmove-down)
 
 ;; end of `windmove'
 

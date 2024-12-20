@@ -31,12 +31,12 @@
   ;; disable _ sub-superscripts
   (setq% org-use-sub-superscripts nil org)
   ;; define keys
-  (define-key% (current-global-map) (kbd "C-c o l") #'org-store-link)
-  (define-key% (current-global-map) (kbd "C-c o a") #'org-agenda)
+  (define-global-key% (kbd "C-c o l") #'org-store-link)
+  (define-global-key% (kbd "C-c o a") #'org-agenda)
   (when-fn% org-capture org
-    (define-key% (current-global-map) (kbd "C-c o c") #'org-capture))
+    (define-global-key% (kbd "C-c o c") #'org-capture))
   (when-fn% org-switchb org
-    (define-key% (current-global-map) (kbd "C-c o s") #'org-switchb)))
+    (define-global-key% (kbd "C-c o s") #'org-switchb)))
 
 
 
