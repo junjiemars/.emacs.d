@@ -705,10 +705,10 @@ Call FN with the path if FN is non-nil."
        ,then
      (progn% ,@else)))
 
-(defmacro unless-region-active (&rest then)
-  "Unless \\=`mark-active\\=' is non-nil, do THEN."
+(defmacro unless-region-active (&rest body)
+  "Unless \\=`mark-active\\=' is non-nil, do BODY."
   (declare (indent 0))
-  `(if-region-active nil ,@then))
+  `(if-region-active nil ,@body))
 
  ;; end of interactive
 
