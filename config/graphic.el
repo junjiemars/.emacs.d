@@ -29,11 +29,6 @@
      (when-version% < 23
        ,@body)))
 
-(defmacro when-font% (&rest body)
-  (declare (indent 0))
-  `(when-graphic%
-     ,@body))
-
 (defmacro inhibit-blinking (&rest body)
   (declare (indent 0))
   `(let ((inhibit-redisplay t)

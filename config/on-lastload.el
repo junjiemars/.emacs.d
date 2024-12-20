@@ -8,6 +8,14 @@
 
 
 
+;;; `chez'
+
+;; (*org-babel-schemes* :put 'chez "scheme")
+(autoload 'chez-mode (v-home%> "config/chez") "Toggle chez mode." t)
+(autoload 'run-chez (v-home%> "config/chez") "Toggle chez process." t)
+
+;; end of `chez'
+
 ;;; `clipboard'
 
 (unless-graphic%
@@ -23,6 +31,26 @@
 (define-key (current-global-map) (kbd% "M-s d") 'lookup-dict)
 
 ;; end of `dict'
+
+;;; `gud-cdb'
+(when-platform% windows-nt
+  (autoload 'gud-cdb (v-home%> "config/gud-cdb") "Run cdb." t))
+
+;; end of `gud-cdb'
+
+;;; `gud-lldb'
+
+(autoload 'gud-lldb (v-home%> "config/gud-lldb") "Run lldb." t)
+
+;; end of `gud-lldb'
+
+;;; `jshell'
+
+(autoload 'jshell-mode (v-home%> "config/jshell") "Toggle jshell mode." t)
+(autoload 'run-jshell (v-home%> "config/jshell") "Toggle jshell process." t)
+(push! `("\\.jsh\\'" . java-mode) auto-mode-alist)
+
+;; end of `jshell'
 
 ;;; `mill'
 
@@ -49,12 +77,37 @@
 
 ;; end of `mill'
 
+;;; `mixval'
+
+(autoload 'mixvm (v-home%> "config/mixvm") "Run mixvm." t)
+
+;; end of `mixval'
+
+;;; `node'
+
+(autoload 'node-mode (v-home%> "config/node") "Toggle node mode." t)
+(autoload 'run-node (v-home%> "config/node") "Toggle node process." t)
+
+;; end of `node'
+
 ;;; `progs'
 (declare-function on-progs-init! (v-home%> "config/progs"))
 (autoload 'on-progs-init! (v-home%> "config/progs"))
 (make-thread* #'on-progs-init!)
 
 ;; end of `progs'
+
+;;; `scratch'
+
+(autoload 'scratch (v-home%> "config/scratch") "Scratch" t)
+
+;; end of `scratch'
+
+;;; `sudoku'
+
+(autoload 'sudoku (v-home%> "config/sudoku") "Play sudoku." t)
+
+;; end of `sudoku'
 
 ;;; `trans'
 

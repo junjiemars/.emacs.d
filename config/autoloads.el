@@ -103,22 +103,14 @@
     ;; on `ewws'
     (when-feature% eww
       (compile-unit% (emacs-home* "config/on-eww-autoload.el")))
-    ;; self :glyph
-    (when-font%
-      (prog1
-          (compile-unit% (emacs-home* "config/glyph.el"))
-        (declare-function self-glyph-init! (v-home%> "config/glyph"))))
+    ;; self : `glyph'
+    (when-graphic%
+      (compile-unit% (emacs-home* "config/glyph.el")))
     ;; `gud': `gud-cdb'
     (when-platform% windows-nt
-      (prog1
-          (compile-unit% (emacs-home* "config/gud-cdb.el") t)
-        (autoload 'gud-cdb (v-home%> "config/gud-cdb")
-          "Run cdb." t)))
+      (compile-unit% (emacs-home* "config/gud-cdb.el") t))
     ;; `gud': `gud-lldb'
-    (prog1
-        (compile-unit% (emacs-home* "config/gud-lldb.el") t)
-      (autoload 'gud-lldb (v-home%> "config/gud-lldb")
-        "Run lldb." t))
+    (compile-unit% (emacs-home* "config/gud-lldb.el") t)
     ;; on `helps'
     (compile-unit% (emacs-home* "config/on-help-autoload.el"))
     ;; on `hippies'
@@ -128,27 +120,13 @@
     ;; ;; `js'
     ;; (compile-unit% (emacs-home* "config/on-js-autoload.el"))
     ;; `jshell'
-    (prog1
-        (compile-unit% (emacs-home* "config/jshell.el") t)
-      (autoload 'jshell-mode (v-home%> "config/jshell")
-        "Toggle jshell mode." t)
-      (autoload 'run-jshell (v-home%> "config/jshell")
-        "Toggle jshell process." t)
-      (push! `("\\.jsh\\'" . java-mode) auto-mode-alist))
+    (compile-unit% (emacs-home* "config/jshell.el") t)
     ;; `mixvm'
-    (prog1
-        (compile-unit% (emacs-home* "config/mixvm.el") t)
-      (autoload 'mixvm (v-home%> "config/mixvm")
-        "Run mixvm." t))
+    (compile-unit% (emacs-home* "config/mixvm.el") t)
     ;; on `mixal'
     (compile-unit% (emacs-home* "config/on-mixal-autoload.el"))
     ;; `node'
-    (prog1
-        (compile-unit% (emacs-home* "config/node.el") t)
-      (autoload 'node-mode (v-home%> "config/node")
-        "Toggle node mode." t)
-      (autoload 'run-node (v-home%> "config/node")
-        "Toggle node process." t))
+    (compile-unit% (emacs-home* "config/node.el") t)
     ;; on `orgs'
     (compile-unit% (emacs-home* "config/on-org-autoload.el"))
     ;; on `projects'
@@ -164,18 +142,9 @@
     ;;   (autoload! 'run-gambit (v-home%> "config/gambit")
     ;;              "Toggle gambit process." t))
     ;; `scheme': `chez-mode'
-    (prog1
-        (compile-unit% (emacs-home* "config/chez.el") t)
-      ;; (*org-babel-schemes* :put 'chez "scheme")
-      (autoload 'chez-mode (v-home%> "config/chez")
-        "Toggle chez mode." t)
-      (autoload! 'run-chez (v-home%> "config/chez")
-                 "Toggle chez process." t))
+    (compile-unit% (emacs-home* "config/chez.el") t)
     ;; `scratch'
-    (prog1
-        (compile-unit% (emacs-home* "config/scratch.el") t)
-      (autoload 'scratch (v-home%> "config/scratch")
-        "Scratch" t))
+    (compile-unit% (emacs-home* "config/scratch.el") t)
     ;; on `sqls'
     (compile-unit% (emacs-home* "config/on-sql-autoload.el"))
 
@@ -189,10 +158,7 @@
     ;;     (fset 'org-babel-execute:scheme 'org-babel-execute:scheme*)))
 
     ;; `sudoku'
-    (prog1
-        (compile-unit% (emacs-home* "config/sudoku.el") t)
-      (autoload 'sudoku (v-home%> "config/sudoku")
-        "Play sudoku." t))
+    (compile-unit% (emacs-home* "config/sudoku.el") t)
     ;; on `terms'
     (compile-unit% (emacs-home* "config/on-term-autoload.el"))
     ;; on `transients'
@@ -238,7 +204,7 @@
   (load-conditional-modes!)
   (when-fn% self-edit-init! nil (self-edit-init!))
   (when-fn% self-key-init! nil (self-key-init!))
-  (when-font% (make-thread* #'self-glyph-init!))
+  (when-fn% self-glyph-init! nil (make-thread* #'self-glyph-init!))
   (when-fn% self-module-init! nil
     (condition-case err
         (self-module-init!)
