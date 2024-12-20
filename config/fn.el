@@ -322,10 +322,8 @@ If optional UNIQUELY is non-nil then append uniquely."
 
 (defmacro insert! (newelt seq idx)
   "Insert NEWELT into the SEQ."
-  (let ((n1 (gensym*))
-        (i1 (gensym*)))
-    `(let ((,n1 ,newelt)
-           (,i1 ,idx))
+  (let ((n1 (gensym*)) (i1 (gensym*)))
+    `(let ((,n1 ,newelt) (,i1 ,idx))
        (let ((l (length ,seq)))
          (when (and (integerp ,i1) (>= ,i1 0) (< ,i1 l))
            (let ((c1 (copy-sequence ,seq))
@@ -342,17 +340,18 @@ If optional UNIQUELY is non-nil then append uniquely."
 ;;;
 
 (defmacro make-thread* (fn &optional join name)
-  "Threading call FN with NAME or in JOIN mode."
-  `(if-fn% make-thread nil
-           (if% ,join
-               (thread-join (make-thread ,fn ,name))
-             (make-thread ,fn ,name))
-     (ignore* ,join ,name)
-     (funcall ,fn)))
+  "Threading call FN with NAME in JOIN mode."
+  (if (fboundp 'make-thread)
+      (if join
+          `(thread-join (make-thread ,fn ,name))
+        `(make-thread ,fn ,name))
+    `(ignore* ,join ,name)
+    `(funcall ,fn)))
 
 (defmacro thread-yield* ()
   "Yield the CPU to another thread."
-  `(when-fn% thread-yield nil (thread-yield)))
+  (when (fboundp 'thread-yield)
+    `(thread-yield)))
 
 ;; end of thread
 

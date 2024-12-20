@@ -7,15 +7,15 @@
 ;;;;
 
 
-(defmacro /. (dividend &rest divisors)
+(defun /. (dividend &rest divisors)
   "Return first float-point DIVIDEND divided by all the remaining DIVISORS."
   (declare (indent 1))
-  `(/ (+ ,dividend 0.0) ,@divisors))
+  (apply #'/ (+ dividend 0.0) divisors))
 
 
-(defmacro rate. (rate &optional periods)
+(defun rate. (rate &optional periods)
   "Return the periodic rate of RATE in the spedified periods."
-  `(/. ,rate (if ,periods ,periods 1)))
+  (/. rate (if periods periods 1)))
 
 
 (defun interest (principal rate times &optional periods)
