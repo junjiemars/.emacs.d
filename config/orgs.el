@@ -17,26 +17,16 @@
 
 (defun on-org-init! ()
   "On \\=`org-mode\\=' initialization."
-  ;; load `ox-reveal' if it had been installed.
-  ;; `ox-reveal' raising "package cl is deprecated".
-  (when-feature% ox-reveal
-    (when-var% org-reveal-root ox-reveal
-      (require 'ox-reveal)
-      (setq org-reveal-root
-            (let ((root (emacs-home% ".reveal.js/")))
-              (if (file-exists-p root)
-                  root
-                ;; "https://cdn.jsdelivr.net/reveal.js/3.8.0/"
-                "https://pagecdn.io/lib/reveal/3.8.0/")))))
+
   ;; disable _ sub-superscripts
   (setq% org-use-sub-superscripts nil org)
   ;; define keys
-  (define-global-key% (kbd "C-c o l") #'org-store-link)
-  (define-global-key% (kbd "C-c o a") #'org-agenda)
+  (define-global-key% "ol" #'org-store-link)
+  (define-global-key% "oa" #'org-agenda)
   (when-fn% org-capture org
-    (define-global-key% (kbd "C-c o c") #'org-capture))
+    (define-global-key% "oc" #'org-capture))
   (when-fn% org-switchb org
-    (define-global-key% (kbd "C-c o s") #'org-switchb)))
+    (define-global-key% "os" #'org-switchb)))
 
 
 
