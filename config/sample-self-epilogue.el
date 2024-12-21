@@ -12,14 +12,12 @@
 
 ;; (message "#self epilogue ...")
 
-;; (setq% enable-local-variables :safe files)
-
-;; (require 'financial)
+(comment (require 'financial))
 
 
 
 ;; eww as default browser
-;; (if-feature-eww% (toggle-browser! t)))
+(comment (when-feature% eww (toggle-browser! t)))
 
 ;; end of eww
 
@@ -27,7 +25,7 @@
 ;;; tag
 
 (comment
- ;; using etags to view Emacs's source code: C and Elisp
+ ;; using `tags' to view Emacs's source code: C and Elisp
  (let ((srcdir (format "/opt/open/emacs/emacs-%s/"
                        emacs-major-version)))
    (when (file-exists-p srcdir)
@@ -47,7 +45,7 @@
    (when-fn% org-babel-do-load-languages org
      (org-babel-do-load-languages
       'org-babel-load-languages
-      (delq nil `(,(when-fn% 'cc*-cc 'cc
+      (delq nil `(,(when-fn% cc*-cc cc
                      (setq% org-babel-C-compiler (cc*-cc) ob-C)
                      `(C . t))
                   (emacs-lisp . t)
@@ -61,23 +59,23 @@
 
 (comment
  (when-feature% slime
-   (when-fn% '*slime-source-locations* nil
-     (*slime-source-locations* "<source-dir>"))))
+   (when-fn% slime*-source-locations use-slime
+     (slime*-source-locations "<source-dir>"))))
 
 ;; end of slime
 
 ;;; mail
 
-;; (comment
-;;  ;; receive mail
-;;  (require 'rmail)
-;;  (setq rmail-primary-inbox-list '("<protocal://user:passwd@host>"))
-;;  (setq% rmail-remote-password-required t rmail)
-;;  ;; send mail
-;;  (require 'sendmail)
-;;  (setq send-mail-function 'smtpmail-send-it)
-;;  (setq smtpmail-smtp-server "<smtp-server>")
-;;  (setq smtpmail-smtp-server 587))
+(comment
+ ;; receive mail
+ (require 'rmail)
+ (setq rmail-primary-inbox-list '("<protocal://user:passwd@host>"))
+ (setq% rmail-remote-password-required t rmail)
+ ;; send mail
+ (require 'sendmail)
+ (setq send-mail-function 'smtpmail-send-it)
+ (setq smtpmail-smtp-server "<smtp-server>")
+ (setq smtpmail-smtp-server 587))
 
 ;; end of mail
 
@@ -130,10 +128,8 @@
 (comment
  ;; httpd: M-x httpd-start
  ;; skewer: M-x run-skewer
-
  (setq% httpd-root (path! (emacs-home% "private/httpd/")) simple-httpd)
  (setq% httpd-port 8080 simple-httpd)
-
  ;; web-mode, http://web-mode.org
  (when-feature% web-mode
    (push! '("\\.html\\'" . web-mode) auto-mode-alist)
@@ -148,11 +144,6 @@
 
 ;; end of web
 
-;;;; start server
-;; (unless (and server-process
-;;              (eq 'listen (process-status server-process)))
-;;   (when server-process (server-force-stop))
-;;   (server-start))
 
 (when-interactive%
   (message "Elapsed %s" (emacs-init-time)))
