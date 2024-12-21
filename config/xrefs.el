@@ -19,13 +19,9 @@
 
 (defmacro if-fn-xref-find-definitions% (then &rest body)
   (declare (indent 1))
-  (let ((hasfn (intern-function-name "xref-xfd" t))
-        (nonfn (intern-function-name "xref-xfd" nil)))
-    (cond ((intern-soft hasfn) `,then)
-          ((intern-soft nonfn) `(progn% ,@body))
-          ((when-fn% xref-find-definitions xref t)
-           (intern hasfn) `,then)
-          (t (intern nonfn) `(progn% ,@body)))))
+  (if-fn 'xref-find-definitions 'xref
+         `,then
+    `(progn% ,@body)))
 
 (defmacro when-fn-xref-find-definitions% (&rest body)
   (declare (indent 0))
@@ -45,13 +41,9 @@
 
 (defmacro when-fn-xref--show-location% (&rest body)
   (declare (indent 0))
-  (let ((hasfn (intern-function-name "xref-xsl" t))
-        (nonfn (intern-function-name "xref-xsl" nil)))
-    (cond ((intern-soft hasfn) `(progn% ,@body))
-          ((intern-soft nonfn) `(comment ,@body))
-          ((when-fn% xref--show-location xref t)
-           (intern hasfn) `(progn% ,@body))
-          (t (intern nonfn) `(comment ,@body)))))
+  (if-fn 'xref--show-location 'xref
+         `(progn% ,@body)
+    `(comment ,@body)))
 
 ;; end of `xref--show-location' associated macro
 

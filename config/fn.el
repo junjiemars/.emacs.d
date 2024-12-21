@@ -13,20 +13,12 @@
 ;; feature
 ;;;
 
-(defmacro intern-function-name (function has)
-  "Intern FUNCTION name with HAS prefix."
-  (cond (has `(format "has-fn-%s%%" ,function))
-        (t `(format "non-fn-%s%%" ,function))))
-
 (defmacro if-feature% (feature then &rest else)
   "If has the FEAUTURE do THEN, otherwise do ELSE..."
   (declare (indent 2))
-  (let ((hasft (format "has-ft-%s%%" feature))
-        (nonft (format "non-ft-%s%%" feature)))
-    (cond ((intern-soft hasft) `,then)
-          ((intern-soft nonft) `(progn% ,@else))
-          ((require feature nil t) (intern hasft) `,then)
-          (t (intern nonft) `(progn% ,@else)))))
+  (if-feature `,feature
+      `,then
+    `(progn% ,@else)))
 
 (defmacro when-feature% (feature &rest body)
   "When FEATURE do BODY."
@@ -51,10 +43,9 @@
 (defmacro if-fn% (fn feature then &rest else)
   "If the FN of FEATURE is bounded yield non-nil, do THEN, else do ELSE..."
   (declare (indent 3))
-  (cond ((fboundp `,fn) `,then)
-        (feature (cond ((and (require feature nil t) (fboundp `,fn)) `,then)
-                       (t `(progn% ,@else))))
-        (t `(progn% ,@else))))
+  (if-fn `,fn `,feature
+         `,then
+    `(progn% ,@else)))
 
 (defmacro when-fn% (fn feature &rest body)
   "When the FN of FEATURE is bounded yield non-nil, do BODY."
@@ -79,10 +70,9 @@
 (defmacro if-var% (var feature then &rest else)
   "If the VAR of FEATURE is bounded yield non-nil, do THEN, else do ELSE..."
   (declare (indent 3))
-  (cond ((boundp `,var) `,then)
-        (feature (cond ((and (require feature nil t) (boundp `,var)) `,then)
-                       (t `(progn% ,@else))))
-        (t `(progn% ,@else))))
+  (if-var `,var `,feature
+          `,then
+    `(progn% ,@else)))
 
 (defmacro when-var% (var feature &rest body)
   "When the VAR FEATURE is bounded yield non-nil, do BODY."

@@ -16,13 +16,9 @@
 
 (defmacro when-sql-feature% (&rest body)
   (declare (indent 0))
-  (let ((hasfn (intern-function-name "sql" t))
-        (nonfn (intern-function-name "sql" nil)))
-    (cond ((intern-soft hasfn) `(progn% ,@body))
-          ((intern-soft nonfn) `(comment ,@body))
-          ((when-fn% sql-execute-feature sql t)
-           (intern hasfn) `(progn% ,@body))
-          (t (intern nonfn) `(comment ,@bofy)))))
+  (if-fn 'sql-execute-feature 'sql
+         `(progn% ,@body)
+    `(comment ,@body)))
 
 (defmacro when-sql-oracle-feature% (&rest body)
   (declare (indent 0))
@@ -41,13 +37,15 @@
 
 (defmacro when-fn-sql-show-sqli-buffer% (&rest body)
   (declare (indent 0))
-  (when-fn% sql-show-sqli-buffer sql
-    `(progn% ,@body)))
+  (if-fn 'sql-show-sqli-buffer 'sql
+         `(progn% ,@body)
+    `(comment ,@body)))
 
 (defmacro when-fn-sql-send-magic-terminator% (&rest body)
   (declare (indent 0))
-  (when-fn% sql-send-magic-terminator sql
-    `(progn% ,@body)))
+  (if-fn 'sql-send-magic-terminator 'sql
+         `(progn% ,@body)
+    `(comment ,@body)))
 
 ;; end of when-* macro
 

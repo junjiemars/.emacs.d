@@ -28,25 +28,22 @@
 (defun v-comp-file! (src)
   (make-v-comp-file src))
 
-
-
-(defmacro emacs-home% (&optional file)
-  "Return path of FILE under \\='~/.emacs.d\\=' at compile-time."
-  (emacs-home* file))
-
-(defmacro v-home% (&optional file)
-  "Return versioned path of FILE under \\=`v-home\\=' at compile-time."
-  (v-home* file))
-
-(defmacro v-home%> (file)
-  "Return the \\=`v-home\\=' FILE with the extension of compiled file."
-  (concat (v-home* file) (comp-file-extension%)))
-
-(defmacro v-home! (file)
-  "Make versioned path of FILE under \\=`v-home\\=' at compile-time."
-  (make-v-home* file))
-
 ;; end of compiled init fn
+
+;;;
+;; `gensym*' since Emacs-26+
+;;;
+
+(defvar *gensym-counter* 0 "The counter of \\=`gensym*\\='.")
+
+(defun gensym* (&optional prefix)
+  "Generate a new uninterned symbol, PREFIX default is \"n\"."
+  (make-symbol
+   (concat (or prefix "n")
+           (prog1 (number-to-string *gensym-counter*)
+             (setq *gensym-counter* (1+ *gensym-counter*))))))
+
+;; end of `gensym*'
 
 ;;;
 ;; compile-*: compiling instrument
@@ -67,7 +64,6 @@
 
 (defun compile! (&rest units)
   "Compile and load UNITS."
-  (declare (indent 0))
   (while units
     (let ((u (car units)))
       (and u (compile-and-load-file*
@@ -76,21 +72,8 @@
               (aref u 2))))
     (setq units (cdr units))))
 
-
 ;; end of compile-* macro
 
-;;; `gensym*' since Emacs-26+
-
-(defvar *gensym-counter* 0 "The counter of \\=`gensym*\\='.")
-
-(defun gensym* (&optional prefix)
-  "Generate a new uninterned symbol, PREFIX default is \"n\"."
-  (make-symbol
-   (concat (or prefix "n")
-           (prog1 (number-to-string *gensym-counter*)
-             (setq *gensym-counter* (1+ *gensym-counter*))))))
-
-;; end of `gensym*'
 
 (provide 'vcomp)
 

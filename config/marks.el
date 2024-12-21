@@ -14,23 +14,15 @@
 
 (defmacro unless-fn-thing-at-point-bounds-of-string-at-point% (&rest body)
   (declare (indent 0))
-  (let ((hasfn (intern-function-name "thingatpt-bosap" t))
-        (nonfn (intern-function-name "thingatpt-bosap" nil)))
-    (cond ((intern-soft nonfn) `(progn% ,@body))
-          ((intern-soft hasfn) `(comment ,@body))
-          ((unless-fn% thing-at-point-bounds-of-string-at-point thingatpt t)
-           (intern nonfn) `(progn% ,@body))
-          (t (intern hasfn) `(comment ,@body)))))
+  (if-fn 'thing-at-point-bounds-of-string-at-point 'thingatpt
+         `(comment ,@body)
+    `(progn% ,@body)))
 
 (defmacro unless-fn-thing-at-point-bounds-of-list-at-point% (&rest body)
   (declare (indent 0))
-  (let ((hasfn (intern-function-name "thingatp-bolap" t))
-        (nonfn (intern-function-name "thingatp-bolap" nil)))
-    (cond ((intern-soft nonfn) `(progn% ,@body))
-          ((intern-soft hasfn) `(comment ,@body))
-          ((unless-fn% thing-at-point-bounds-of-list-at-point thingatpt t)
-           (intern nonfn) `(progn% ,@body))
-          (t (intern hasfn) `(comment ,@body)))))
+  (if-fn 'thing-at-point-bounds-of-list-at-point 'thingatpt
+         `(comment ,@body)
+    `(progn% ,@body)))
 
 (unless-fn-thing-at-point-bounds-of-string-at-point%
   (defun thing-at-point-bounds-of-string-at-point ()
