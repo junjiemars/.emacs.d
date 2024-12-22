@@ -19,7 +19,7 @@
   "Parameterized set `geiser-active-implementations'.")
 
 (defun use-geiser-init! ()
-  ;; builtin `chez-mode' and `gambit-mode' better than `geiser'
+  ;; builtin `chez-mode' and `gambit-mode' better than `geiser-mode'
   (geiser*-lisp-implementations)
   (setq% geiser-default-implementation
          (car geiser-active-implementations)

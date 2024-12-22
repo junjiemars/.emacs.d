@@ -66,10 +66,9 @@
  :put :scheme
  `( :cond ,(comment (and (when-version% <= 23.2 t)
                          ;; Nore Emacs has builtin supports for Chez
-                         ;; scheme and gambitC scheme, and does not need to
-                         ;; install the dumb geiser.
+                         ;; scheme and gambitC scheme, and does not
+                         ;; need to install the dumb geiser.
                          (or (executable-find% "racket")
-                             (executable-find% "scheme")
                              (executable-find% "chicken")
                              (executable-find% "guile"))))
     :packages  (geiser)

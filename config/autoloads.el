@@ -6,7 +6,7 @@
 ;; autoloads.el
 ;;;;
 
-;;; macro
+;;; require
 
 ;; (defalias '*org-babel-schemes*
 ;;   (let ((i '()))
@@ -16,14 +16,7 @@
 ;;             (t i))))
 ;;   "The available Scheme's implementations for `ob'.")
 
-
-(defun autoload! (symbol file &optional docstring interactive type)
-  "Force autoload SYMBOL."
-  (fset symbol nil)
-  (setplist symbol nil)
-  (fset symbol (list 'autoload file docstring interactive type)))
-
-;; end of macro
+;; end of require
 
 (defun load-prologue-modes! ()
   "Load prologue modes."

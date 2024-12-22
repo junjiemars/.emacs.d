@@ -12,7 +12,7 @@
 
 ;; (*org-babel-schemes* :put 'chez "scheme")
 (autoload 'chez-mode (v-home%> "config/chez") "Toggle chez mode." t)
-(autoload! 'run-chez (v-home%> "config/chez") "Toggle chez process." t)
+(autoload 'run-chez (v-home%> "config/chez") "Toggle chez process." t)
 
 ;; end of `chez'
 
