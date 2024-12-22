@@ -8,13 +8,11 @@
 
 (autoload 'on-elisp-init! (v-home%> "config/elisps"))
 
-;; `elisp-mode'
-(when-version% <= 25.0
-  (with-eval-after-load 'elisp-mode
-    (make-thread* #'on-elisp-init!)))
-
-;; `lisp-mode' after load
-(when-version% > 25.0
+;; `elisp-mode' and `lisp-mode' after load
+(if-version%
+    <= 25.0
+    (with-eval-after-load 'elisp-mode
+      (make-thread* #'on-elisp-init!))
   (with-eval-after-load 'lisp-mode
     (make-thread* #'on-elisp-init!)))
 

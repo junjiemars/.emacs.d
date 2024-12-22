@@ -17,7 +17,6 @@
 
 (defun on-org-init! ()
   "On \\=`org-mode\\=' initialization."
-
   ;; disable _ sub-superscripts
   (setq% org-use-sub-superscripts nil org)
   ;; define keys
