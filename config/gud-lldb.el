@@ -137,17 +137,17 @@ Return absolute filename when FILENAME exists, otherwise nil."
   `(mapconcat #'identity (list "settings" ,subcommand ,@args) " "))
 
 
-(defmacro lldb-init-statement ()
+(defun lldb-init-statement ()
   "Make lldb's init statements."
-  `(concat
-    (lldb-settings
-        "set" "frame-format"
-        "frame #${frame.index}: ${frame.pc}{ ${module.file.basename}{`${function.name-with-args}{${frame.no-debug}${function.pc-offset}}}}{ at ${line.file.fullpath}:${line.number}}{${function.is-optimized} [opt]}\\n\n")
-    (lldb-settings "set" "stop-disassembly-display" "no-debuginfo\n")
-    (lldb-settings "set" "stop-line-count-before" "0\n")
-    (lldb-settings "set" "stop-line-count-after" "0\n")
-    (format "script import sys;sys.path.append('%s');import gud_lldb;"
-            ,(v-home% ".exec/"))))
+  (concat
+   (lldb-settings
+       "set" "frame-format"
+       "frame #${frame.index}: ${frame.pc}{ ${module.file.basename}{`${function.name-with-args}{${frame.no-debug}${function.pc-offset}}}}{ at ${line.file.fullpath}:${line.number}}{${function.is-optimized} [opt]}\\n\n")
+   (lldb-settings "set" "stop-disassembly-display" "no-debuginfo\n")
+   (lldb-settings "set" "stop-line-count-before" "0\n")
+   (lldb-settings "set" "stop-line-count-after" "0\n")
+   (format "script import sys;sys.path.append('%s');import gud_lldb;"
+           (v-home% ".exec/"))))
 
 (defun lldb-start-file (&optional force)
   "Make lldb's init file if FORCE or the init file is missing.\n
