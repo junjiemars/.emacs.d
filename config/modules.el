@@ -47,71 +47,47 @@
            package))
   (package-refresh-contents))
 
-(defmacro package*-check-name (package)
+(defun package*-check-name (package)
   "Check PACKAGE is a symbol or a tar file."
-  (let ((p (gensym*)))
-    `(let ((,p ,package))
-       (cond ((and (symbolp ,p) ,p) (cons ,p nil))
-             ((and (stringp ,p) (inhibit-file-name-handler
-                                  (file-exists-p ,p)))
-              (cons (intern (string-match* "\\(.*\\)-[.0-9]+\\'"
-                                           (file-name-base* ,p) 1))
-                    ,p))
-             (t nil)))))
+  (cond ((null package) nil)
+        ((symbolp package) (cons package nil))
+        ((and (stringp package)
+              (inhibit-file-name-handler (file-exists-p package)))
+         (cons (intern (string-match* "\\(.*\\)-[.0-9]+\\'"
+                                      (file-name-base* package) 1))
+               package))
+        (t nil)))
 
-(defmacro package*-delete! (package)
+(defun package*-delete! (package)
   "Delete PACKAGE."
-  (let ((p (gensym*)))
-    `(let ((,p ,package))
-       (when (and (symbolp ,p) ,p)
-         (if-version%
-             <= 25.0
-             (package-delete (cadr (assq ,p package-alist)) t nil)
-           (if-version%
-               <= 24.4
-               (package-delete (cadr (assq ,p package-alist)))
-             (package-delete
-              (symbol-name ,p)
-              (mapconcat
-               #'identity
-               (let ((xs nil))
-                 (dolist (x (aref (cdr (assq ,p package-alist)) 0)
-                             (nreverse xs))
-                   (setq xs (cons (number-to-string x) xs))))
-               "."))))))))
+  (when (and package (symbolp package))
+    (if-version%
+        <= 25.0
+        (package-delete (cadr (assq package package-alist)) t nil)
+      (if-version%
+          <= 24.4
+          (package-delete (cadr (assq package package-alist)))
+        (package-delete
+         (symbol-name package)
+         (mapconcat
+          #'identity
+          (let ((xs nil))
+            (dolist (x (aref (cdr (assq package package-alist)) 0)
+                       (nreverse xs))
+              (setq xs (cons (number-to-string x) xs))))
+          "."))))))
 
-(defmacro package*-install! (package &optional tar)
+(defun package*-install! (package &optional tar)
   "Install PACKAGE optional via TAR."
-  (let ((p (gensym*))
-        (f (gensym*)))
-    `(let ((,p ,package)
-           (,f ,tar))
-       (if ,f
-           (package-install-file ,p)
-         (unless (*package-init-repo*)
-           (package*-init-repo!)
-           (*package-init-repo* t))
-         (if-version%
-             <= 25.0
-             (package-install ,p t)
-           (package-install ,p))))))
-
-
-;; (defun package*-parse-spec! (spec &optional remove-unused)
-;;   "Parse SPEC, install, REMOVE-UNUSED packages."
-;;   (dolist (s spec)
-;;     (let ((ss (cdr s)))
-;;       (when (and (consp ss) (module-unit-spec->* ss :cond))
-;;         (dolist (p (module-unit-spec->* ss :packages))
-;;           (let ((ns (package*-check-name p)))
-;;             (and (consp ns)
-;;                  (let ((n (car ns)) (tar (cdr ns)))
-;;                    (if (package-installed-p n)
-;;                        (and remove-unused
-;;                             (null (module-unit-spec->* ss :cond))
-;;                             (package*-delete! n))
-;;                      (package*-install! (if tar tar n) tar))))))
-;;         (apply #'compile! (module-unit-spec->* ss :compile))))))
+  (if tar
+      (package-install-file package)
+    (unless (*package-init-repo*)
+      (package*-init-repo!)
+      (*package-init-repo* t))
+    (if-version%
+        <= 25.0
+        (package-install package t)
+      (package-install package))))
 
 (defun package*-parse-spec! (spec &optional remove-unused)
   "Parse SPEC, install, REMOVE-UNUSED packages."
