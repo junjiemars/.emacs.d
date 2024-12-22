@@ -96,21 +96,44 @@
              (package-install ,p t)
            (package-install ,p))))))
 
+
+;; (defun package*-parse-spec! (spec &optional remove-unused)
+;;   "Parse SPEC, install, REMOVE-UNUSED packages."
+;;   (dolist (s spec)
+;;     (let ((ss (cdr s)))
+;;       (when (and (consp ss) (module-unit-spec->* ss :cond))
+;;         (dolist (p (module-unit-spec->* ss :packages))
+;;           (let ((ns (package*-check-name p)))
+;;             (and (consp ns)
+;;                  (let ((n (car ns)) (tar (cdr ns)))
+;;                    (if (package-installed-p n)
+;;                        (and remove-unused
+;;                             (null (module-unit-spec->* ss :cond))
+;;                             (package*-delete! n))
+;;                      (package*-install! (if tar tar n) tar))))))
+;;         (apply #'compile! (module-unit-spec->* ss :compile))))))
+
 (defun package*-parse-spec! (spec &optional remove-unused)
   "Parse SPEC, install, REMOVE-UNUSED packages."
   (dolist (s spec)
     (let ((ss (cdr s)))
-      (when (and (consp ss) (module-unit-spec->* ss :cond))
-        (dolist (p (module-unit-spec->* ss :packages))
-          (let ((ns (package*-check-name p)))
-            (and (consp ns)
-                 (let ((n (car ns)) (tar (cdr ns)))
-                   (if (package-installed-p n)
-                       (and remove-unused
-                            (null (module-unit-spec->* ss :cond))
-                            (package*-delete! n))
-                     (package*-install! (if tar tar n) tar))))))
-        (apply #'compile! (module-unit-spec->* ss :compile))))))
+      (when (consp ss)
+        (cond ((module-unit-spec->* ss :cond)
+               (dolist (p (module-unit-spec->* ss :packages))
+                 (let ((ns (package*-check-name p))
+                       (cs (module-unit-spec->* ss :compile)))
+                   (when (consp ns)
+                     (let ((n (car ns)) (tar (cdr ns)))
+                       (cond ((package-installed-p n) nil)
+                             (t (package*-install! (if tar tar n) tar))))
+                     (and (consp cs) (apply #'compile! cs))))))
+              (remove-unused
+               (dolist (p (module-unit-spec->* ss :packages))
+                 (let ((ns (package*-check-name p)))
+                   (when (consp ns)
+                     (let ((n (car ns)))
+                       (and (package-installed-p n)
+                            (package*-delete! n))))))))))))
 
 (defun self-module-init! ()
   "Initialize :package spec from \\=`*self-env-spec*\\='."

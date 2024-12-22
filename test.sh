@@ -212,6 +212,7 @@ test_profile() {
 (*self-env-spec*
   :put :module
   (list
+    :remove-unused t
     :package-check-signature 'allow-unsigned
     :package-archives
     \`(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
