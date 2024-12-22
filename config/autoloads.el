@@ -17,13 +17,11 @@
 ;;   "The available Scheme's implementations for `ob'.")
 
 
-(defmacro autoload! (symbol file &optional docstring interactive type)
+(defun autoload! (symbol file &optional docstring interactive type)
   "Force autoload SYMBOL."
-  (declare (indent 0))
-  `(progn
-     (fset ,symbol nil)
-     (setplist ,symbol nil)
-     (fset ,symbol (list 'autoload ,file ,docstring ,interactive ,type))))
+  (fset symbol nil)
+  (setplist symbol nil)
+  (fset symbol (list 'autoload file docstring interactive type)))
 
 ;; end of macro
 

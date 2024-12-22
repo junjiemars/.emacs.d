@@ -8,9 +8,8 @@
 
 (autoload 'on-transient-init! (v-home%> "config/transients"))
 
-(when-feature% transient
-  (with-eval-after-load 'transient
-    (make-thread* #'on-transient-init!)))
+(with-eval-after-load 'transient
+  (make-thread* #'on-transient-init!))
 
 
 ;;; `transient-mark-mode'
