@@ -130,38 +130,19 @@ Return absolute filename when FILENAME exists, otherwise nil."
             (and (file-exists-p p)
                  (throw 'br p)))))))
 
-
-(defmacro lldb-settings (subcommand &rest args)
-  "Make lldb's setting statement."
-  (declare (indent 1))
-  `(mapconcat #'identity (list "settings" ,subcommand ,@args) " "))
-
-
-(defun lldb-init-statement ()
-  "Make lldb's init statements."
-  (concat
-   (lldb-settings
-       "set" "frame-format"
-       "frame #${frame.index}: ${frame.pc}{ ${module.file.basename}{`${function.name-with-args}{${frame.no-debug}${function.pc-offset}}}}{ at ${line.file.fullpath}:${line.number}}{${function.is-optimized} [opt]}\\n\n")
-   (lldb-settings "set" "stop-disassembly-display" "no-debuginfo\n")
-   (lldb-settings "set" "stop-line-count-before" "0\n")
-   (lldb-settings "set" "stop-line-count-after" "0\n")
-   (format "script import sys;sys.path.append('%s');import gud_lldb;"
-           (v-home% ".exec/"))))
-
 (defun lldb-start-file (&optional force)
   "Make lldb's init file if FORCE or the init file is missing.\n
 Return init file name and ~/.lldbinit-lldb file no touched."
   (let ((init (v-home% ".exec/gud_lldb.rc"))
-        (proc (get-buffer-process (*lldb*)))
-        (ss (lldb-init-statement)))
+        (proc (get-buffer-process (*lldb*))))
     (when (or force (null (file-exists-p init)))
-      (save-str-to-file ss init)
+      (copy-file (emacs-home% "config/gud_lldb.rc") init t)
       (copy-file (emacs-home% "config/gud_lldb.py")
                  (v-home% ".exec/gud_lldb.py") t))
     (unless proc
       (error "%s" "No lldb process found"))
-    (gud-basic-call ss)
+    (gud-basic-call
+     (format (read-str-from-file init) (v-home% ".exec/")))
     init))
 
 (defvar *lldb-completion-filter*
