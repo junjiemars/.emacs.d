@@ -23,11 +23,7 @@
       (mkdir* file))))
 
 (defun make-v-home* (file)
-  (inhibit-file-name-handler
-    (let ((vf (v-home file)))
-      (if (file-exists-p vf)
-          vf
-        (mkdir* vf)))))
+  (make-v-home file))
 
 (defun v-home* (&optional file)
   (inhibit-file-name-handler

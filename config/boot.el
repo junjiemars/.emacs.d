@@ -57,15 +57,15 @@ No matter the declaration order, the executing order is:
 
 (defalias '*self-env-spec*
   (let ((env (list :desktop nil
-                            :edit nil
-                            :eshell nil
-                            :frame nil
-                            :glyph nil
-                            :key nil
-                            :module nil
-                            :shell nil
-                            :socks nil
-                            :theme nil)))
+                   :edit nil
+                   :eshell nil
+                   :frame nil
+                   :glyph nil
+                   :key nil
+                   :module nil
+                   :shell nil
+                   :socks nil
+                   :theme nil)))
     (lambda (&optional op &rest keys)
       (cond ((eq :get op) (let ((rs env) (ks keys))
                             (while ks
