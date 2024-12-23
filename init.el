@@ -103,25 +103,20 @@ else do ELSE..."
 
 (defmacro mkdir* (file)
   "Make and return the path of posixed FILE."
-  `(inhibit-file-name-handler
-     (let ((-m-f1- ,file))
-       (if (file-exists-p -m-f1-)
-           -m-f1-
-         (prog1 -m-f1-
-           (let ((dir (file-name-directory -m-f1-)))
-             (unless (file-exists-p dir)
-               (let ((i (1- (length dir)))
-                     (ds nil))
-                 (catch 'br
-                   (while (> i 0)
-                     (when (= ?/ (aref dir i))
-                       (let ((s (substring-no-properties dir 0 (1+ i))))
-                         (cond ((file-exists-p s) (throw 'br t))
-                               (t (setq ds (cons s ds))))))
-                     (setq i (1- i))))
-                 (while (car ds)
-                   (make-directory-internal (car ds))
-                   (setq ds (cdr ds)))))))))))
+  `(let* ((-md-f1- ,file)
+          (dir -md-f1-) (i (1- (length dir))) (ds nil))
+     (catch 'br
+       (while (> i 0)
+         (when (= ?/ (aref dir i))
+           (let ((s (substring-no-properties dir 0 (1+ i))))
+             (if (file-exists-p s)
+                 (throw 'br t)
+               (setq ds (cons s ds)))))
+         (setq i (1- i))))
+     (while (car ds)
+       (make-directory-internal (car ds))
+       (setq ds (cdr ds)))
+     -md-f1-))
 
 
 ;; end of file macro
@@ -138,11 +133,10 @@ else do ELSE..."
 
 (defmacro v-path (file)
   "Return versioned FILE."
-  `(inhibit-file-name-handler
-     (let ((-vp-f1- ,file))
-       (concat (file-name-directory -vp-f1-)
-               ,(v-name) "/"
-               (file-name-nondirectory -vp-f1-)))))
+  `(let ((-vp-f1- ,file))
+     (concat (file-name-directory -vp-f1-)
+             ,(v-name) "/"
+             (file-name-nondirectory -vp-f1-))))
 
 (defmacro v-home (&optional file)
   "Return versioned FILE under \\=`emacs-home\\='."
@@ -150,7 +144,10 @@ else do ELSE..."
 
 (defmacro make-v-home (file)
   "Make \\=`v-home\\='."
-  `(mkdir* (v-home ,file)))
+  `(inhibit-file-name-handler
+     (if (file-exists-p ,file)
+         ,file
+       (mkdir* (v-home ,file)))))
 
 ;; end of versioned file macro
 
@@ -178,15 +175,15 @@ else do ELSE..."
   "Make a versioned cons copy of SRC."
   `(inhibit-file-name-handler
      (let* ((-mvcf-s1- ,src)
-            (-mvcf-d1- (v-path -mvcf-s1-))
-            (-mvcf-d2- (concat (file-name-sans-extension* -mvcf-d1-)
-                               ,(comp-file-extension%))))
-       (when (file-newer-than-file-p -mvcf-s1- -mvcf-d1-)
-         (if (file-exists-p -mvcf-d2-)
-             (delete-file -mvcf-d2-)
-           (mkdir* -mvcf-d1-))
-         (copy-file -mvcf-s1- -mvcf-d1- t t))
-       (cons -mvcf-d1- -mvcf-d2-))))
+            (d1 (v-path -mvcf-s1-))
+            (d2 (concat (file-name-sans-extension* d1)
+                        ,(comp-file-extension%))))
+       (when (file-newer-than-file-p -mvcf-s1- d1)
+         (cond ((file-exists-p d2) (delete-file d2))
+               ((file-exists-p d1) d1)
+               (t (mkdir* d1)))
+         (copy-file -mvcf-s1- d1 t t))
+       (cons d1 d2))))
 
 (defmacro time (id &rest form)
   "Run FORM and summarize resource usage."

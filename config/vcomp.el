@@ -17,16 +17,25 @@
   (emacs-home file))
 
 (defun path! (file)
-  (mkdir* file))
+  (inhibit-file-name-handler
+    (if (file-exists-p file)
+        file
+      (mkdir* file))))
 
 (defun make-v-home* (file)
-  (mkdir* (v-home file)))
+  (inhibit-file-name-handler
+    (let ((vf (v-home file)))
+      (if (file-exists-p vf)
+          vf
+        (mkdir* vf)))))
 
 (defun v-home* (&optional file)
-  (v-home file))
+  (inhibit-file-name-handler
+    (v-home file)))
 
 (defun v-comp-file! (src)
   (make-v-comp-file src))
+
 
 ;; end of compiled init fn
 
