@@ -37,7 +37,6 @@
 ;;  gud-* declarations
 ;;;;
 
-(declare-function gud*-find-c-last-expr "guds")
 (declare-function gud-basic-call    "gud")
 (declare-function gud-break         "gud")
 (declare-function gud-call          "gud")

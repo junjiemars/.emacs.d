@@ -46,7 +46,6 @@
     (when-feature% eww
       (compile-unit% (emacs-home* "config/ewws.el") t))
     (compile-unit% (emacs-home* "config/financial.el") t)
-    (compile-unit% (emacs-home* "config/guds.el") t)
     (compile-unit% (emacs-home* "config/helps.el") t)
     (compile-unit% (emacs-home* "config/hippies.el") t)
     (compile-unit% (emacs-home* "config/isearchs.el") t)

@@ -33,7 +33,6 @@
 ;;;;
 
 (require 'gud)
-(require% 'guds (v-home%> "config/guds") t)
 
 
 
@@ -87,8 +86,7 @@ If nil, only source files in the program directory will be known
 ;;  gud-* declarations
 ;;;
 
-(declare-function gud*-def (v-home%> "config/guds"))
-(declare-function gud*-find-c-last-expr (v-home%> "config/guds"))
+(declare-function gud-def           "gud")
 (declare-function gud-basic-call    "gud")
 (declare-function gud-break         "gud")
 (declare-function gud-call          "gud")
@@ -108,6 +106,13 @@ If nil, only source files in the program directory will be known
 (declare-function gud-tbreak        "gud")
 (declare-function gud-until         "gud")
 (declare-function gud-up            "gud")
+
+(defun gud*-lldb-def (key fn)
+  "Define KEY bind to FN.\n
+Avoid bugs in \\=`gud-format-command\\=' and \\=`gud-find-c-expr\\='."
+  (local-set-key (concat "\C-c" key) fn)
+  (global-set-key (vconcat gud-key-prefix key) fn))
+
 ;; (autoload 'gud*-def (v-home%> "config/guds") nil nil 'macro)
 ;; (autoload 'gud*-find-c-last-expr (v-home%> "config/guds"))
 
@@ -263,10 +268,10 @@ As the 3rd argument of \\=`gud-common-init\\=': marker-filter"
   (interactive (list (if current-prefix-arg
                          (read-string "expression options: ")
                        "--")))
-  (let* ((expr (if-region-active
-                   (buffer-substring-no-properties
-                    (region-beginning) (region-end))
-                 (gud*-find-c-last-expr)))
+  (let* ((expr (let ((bs (if-region-active
+                             (cons (region-beginning) (region-end))
+                           (bounds-of-thing-at-point 'sexp))))
+                 (buffer-substring-no-properties (car bs) (cdr bs))))
          (cmd (concat "expression " options " ( " expr " )")))
     (message "Command: %s" cmd)
     (gud-basic-call cmd)))
@@ -331,7 +336,7 @@ invoked."
            "down %p"
            ">" "Down N stack frames (numeric arg).")
 
-  (gud*-def "\C-p" #'gud-lldb-print)
+  (gud*-lldb-def "\C-p" #'gud-lldb-print)
 
   ;; `lldb-completion'
   (add-hook (if-var% completion-at-point-functions minibuffer

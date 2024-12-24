@@ -113,8 +113,6 @@
 ;; require
 ;;;;
 
-;; (eval-when-compile (require 'cl))
-
 (require 'gud)
 
 
@@ -179,25 +177,28 @@ containing the executable being debugged.")
 ;;  gud-* declarations
 ;;;
 
-(declare-function gud*-def (v-home%> "config/guds"))
-(declare-function gud*-find-c-last-expr (v-home%> "config/guds"))
-(declare-function gud-statement "gud" (arg))
-(declare-function gud-until     "gud" (arg))
-(declare-function gud-pv        "gud" (arg))
-(declare-function gud-print     "gud" (arg))
-(declare-function gud-down      "gud" (arg))
-(declare-function gud-up        "gud" (arg))
-(declare-function gud-jump      "gud" (arg))
-(declare-function gud-finish    "gud" (arg))
-(declare-function gud-cont      "gud" (arg))
-(declare-function gud-next      "gud" (arg))
-(declare-function gud-stepi     "gud" (arg))
-(declare-function gud-step      "gud" (arg))
-(declare-function gud-remove    "gud" (arg))
-(declare-function gud-tbreak    "gud" (arg))
-(declare-function gud-break     "gud" (arg))
-(autoload 'gud*-def (v-home%> "config/guds") nil nil 'macro)
-(autoload 'gud*-find-c-last-expr (v-home%> "config/guds"))
+(declare-function gud-def       "gud")
+(declare-function gud-statement "gud")
+(declare-function gud-until     "gud")
+(declare-function gud-pv        "gud")
+(declare-function gud-print     "gud")
+(declare-function gud-down      "gud")
+(declare-function gud-up        "gud")
+(declare-function gud-jump      "gud")
+(declare-function gud-finish    "gud")
+(declare-function gud-cont      "gud")
+(declare-function gud-next      "gud")
+(declare-function gud-stepi     "gud")
+(declare-function gud-step      "gud")
+(declare-function gud-remove    "gud")
+(declare-function gud-tbreak    "gud")
+(declare-function gud-break     "gud")
+
+(defun gud*-cdb-def (key fn)
+  "Define KEY bind to FN.\n
+Avoid bugs in \\=`gud-format-command\\=' and \\=`gud-find-c-expr\\='."
+  (local-set-key (concat "\C-c" key) fn)
+  (global-set-key (vconcat gud-key-prefix key) fn))
 
  ;; end of gud-* declarations
 
