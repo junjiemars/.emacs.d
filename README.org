@@ -312,7 +312,6 @@ Introduce the rules of naming /files/ and /functions/.
     ├── on-trans-autoload.el
     ├── on-shell-autoload.el
     ├── on-eww-autoload.el
-    ├── on-font-autoload.el
     └── (comment "more ...")
 #+END_EXAMPLE
 
