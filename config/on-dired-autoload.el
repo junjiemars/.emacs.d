@@ -11,7 +11,11 @@
 (autoload 'on-arc-mode-init! (v-home%> "config/direds"))
 (autoload 'dired*-use-ls-dired (v-home%> "config/direds"))
 
-(add-hook 'dired-load-hook #'dired*-use-ls-dired)
+(if-version%
+    <= 28.1
+    (dired*-use-ls-dired)
+  (add-hook 'dired-load-hook #'dired*-use-ls-dired))
+
 
 ;;; `dired' after load
 (with-eval-after-load 'dired

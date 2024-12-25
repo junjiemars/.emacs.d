@@ -9,7 +9,7 @@
 (defalias 'geiser*-lisp-implementations
   (let ((ls (let ((ns nil))
               (dolist (x ns)
-                (let ((bin (executable-find (symbol-name x))))
+                (let ((bin (executable-find* (symbol-name x))))
                   (when bin (push! x ns))))
               '(chicken guile racket))))
     (lambda (&optional new)
