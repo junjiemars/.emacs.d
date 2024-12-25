@@ -94,6 +94,8 @@ No matter the declaration order, the executing order is:
 
 ;; disable `package' at startup
 (when-package% (setq package-enable-at-startup nil))
+;; preferred coding system
+(prefer-coding-system 'utf-8)
 ;; make `v-home' .exec/
 (v-home! ".exec/")
 ;; make `v-home' private/

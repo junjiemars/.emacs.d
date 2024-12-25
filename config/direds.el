@@ -162,37 +162,27 @@
   (let ((interprogram-paste-function nil))
     (dired-copy-filename-as-kill arg)))
 
+(defun dired*-use-ls-dired ()
+  ;; prefer GNU's ls (--dired option) on Windows or Darwin. on
+  ;; Windows: `dired-mode' does not display executable flag in file
+  ;; mode，see `dired-use-ls-dired' and `ido-dired' for more defails
+  (if% (executable-find* "ls")
+      (if% (zerop (car (shell-command* "ls" "--dired")))
+          ;; on Drawin: the builtin `ls' does not support --dired option
+          (setq% dired-use-ls-dired t dired)
+        (setq% dired-use-ls-dired nil dired)
+        (setq% ls-lisp-use-insert-directory-program t ls-lisp))
+    (setq% dired-use-ls-dired nil dired)
+    (setq% ls-lisp-use-insert-directory-program nil ls-lisp)))
+
 (defun on-dired-init! ()
   "On \\=`dired\\=' initialization."
   (when-platform% windows-nt
     ;; prefer GNU find on Windows, such for `find-dired' or `find-name-dired'.
-    (let ((find (executable-find%
-                 "find"
-                 (lambda (bin)
-                   (let ((ver (shell-command* bin "--version")))
-                     (and (zerop (car ver))
-                          (string-match "^find (GNU findutils)"
-                                        (cdr ver))))))))
-      (when find
-        (windows-nt-env-path+ (file-name-directory find)))))
-  ;; prefer GNU's ls (--dired option) on Windows or Darwin. on
-  ;; Windows: `dired-mode' does not display executable flag in file
-  ;; mode，see `dired-use-ls-dired' and `ido-dired' for more defails
-  (when% (executable-find*
-          "ls"
-          (lambda (bin)
-            (let ((home (shell-command* bin (emacs-home%))))
-              (zerop (car home)))))
-    ;; on Drawin: the builtin ls does not support --dired option
-    (setq% dired-use-ls-dired
-           (executable-find%
-            "ls"
-            (lambda (bin)
-              (let ((dired (shell-command* bin "--dired")))
-                (zerop (car dired)))))
-           dired)
-    ;; using `insert-directory-program'
-    (setq% ls-lisp-use-insert-directory-program t ls-lisp))
+    (when% (let ((ver (shell-command* "find" "--version")))
+             (and (zerop (car ver))
+                  (string-match "^find (GNU findutils)" (cdr ver))))
+      (windows-nt-env-path+ (file-name-directory (executable-find* "find")))))
   ;; keys
   (define-key dired-mode-map "b" #'dired*-hexl-find-file)
   (define-key dired-mode-map "B" #'dired*-browse-file)

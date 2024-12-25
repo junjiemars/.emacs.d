@@ -9,6 +9,9 @@
 (autoload 'on-dired-init! (v-home%> "config/direds"))
 (autoload 'on-dired-aux-init! (v-home%> "config/direds"))
 (autoload 'on-arc-mode-init! (v-home%> "config/direds"))
+(autoload 'dired*-use-ls-dired (v-home%> "config/direds"))
+
+(add-hook 'dired-load-hook #'dired*-use-ls-dired)
 
 ;;; `dired' after load
 (with-eval-after-load 'dired
