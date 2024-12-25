@@ -8,15 +8,14 @@
 
 ;;; require
 
-;; fix: Warning (bytecomp): `org-bookmark-jump-unhide' fn
-;; might not be defined at runtime.
-(when-fn% org-bookmark-jump-unhide org
-  (autoload 'org-bookmark-jump-unhide "org"))
-
 ;; end of require
 
 (defun on-org-init! ()
   "On \\=`org-mode\\=' initialization."
+  ;; fix: Warning (bytecomp): `org-bookmark-jump-unhide' fn
+  ;; might not be defined at runtime.
+  (when-fn% org-bookmark-jump-unhide org
+    (autoload 'org-bookmark-jump-unhide "org"))
   ;; disable _ sub-superscripts
   (setq% org-use-sub-superscripts nil org)
   ;; define keys
