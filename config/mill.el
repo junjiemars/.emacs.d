@@ -22,7 +22,7 @@
   (let ((bs (_mark_symbol@_)))
     (unless (and bs (car bs) (cdr bs))
       (user-error "%s" "No symbol found"))
-    (_mark_thing_ (car bs) (cdr bs))))
+    (mark-thing (car bs) (cdr bs))))
 
 
 ;; end of `mark-symbol@' `kill-symbol@'
@@ -39,8 +39,8 @@ Otherwise mark the whole string."
         (n1 (if (consp current-prefix-arg) 0 n)))
     (unless bs
       (user-error "%s" "No string found"))
-    (_mark_thing_ (if (> n1 0) (point) (1+ (car bs)))
-                  (if (< n1 0) (point) (1- (cdr bs))))))
+    (mark-thing (if (> n1 0) (point) (1+ (car bs)))
+                (if (< n1 0) (point) (1- (cdr bs))))))
 
 (defun kill-string@ (&optional n)
   "Kill the partial string at point.\n
@@ -70,7 +70,7 @@ Otherwise, select the whole list."
     (unless (and bs (car bs) (cdr bs)
                  (null (= (car bs) (cdr bs))))
       (user-error "%s" "No sexp found"))
-    (_mark_thing_ (car bs) (cdr bs))))
+    (mark-thing (car bs) (cdr bs))))
 
 (defun kill-sexp@ (&optional n)
   "Kill the whole sexp at point.\n
@@ -95,7 +95,7 @@ If prefix N is non nil, then forward or backward N words."
   (let ((ws (_mark_word@_ n)))
     (unless ws
       (user-error "%s" "No word found"))
-    (_mark_thing_ (car ws) (cdr ws))))
+    (mark-thing (car ws) (cdr ws))))
 
 (defun kill-word@ (&optional n)
   "Kill the whole word at point.\n
@@ -119,7 +119,7 @@ If prefix N is non nil, then forward or backward N lines."
   (let ((ls (_mark_line@_ n)))
     (unless ls
       (user-error "%s" "No line found"))
-    (_mark_thing_ (car ls) (cdr ls))))
+    (mark-thing (car ls) (cdr ls))))
 
 ;; end of `mark-line@'
 
@@ -133,7 +133,7 @@ If prefix N is non-nil, then forward or backward N functions."
   (let ((bs (_mark_defun@_ n)))
     (unless (and bs (car bs) (cdr bs))
       (user-error "%s" "No defun found"))
-    (_mark_thing_ (cdr bs) (car bs))))
+    (mark-thing (cdr bs) (car bs))))
 
 ;; end of `mark-defun@'
 
@@ -146,7 +146,7 @@ If prefix N is non-nil, then forward or backward N functions."
   (let ((bs (_mark_filename@_)))
     (unless (and bs (car bs) (cdr bs))
       (user-error "%s" "No filename found"))
-    (_mark_thing_ (car bs) (cdr bs))))
+    (mark-thing (car bs) (cdr bs))))
 
 ;; end of `mark-filename@'
 
@@ -159,8 +159,8 @@ If prefix BOUNDARY is non-nil, then mark the whole quoted thing."
   (let ((bs (_mark_quoted_symmetry@_)))
     (unless (and bs (car bs) (cdr bs))
       (user-error "%s" "No quoted thing found"))
-    (_mark_thing_ (if boundary (car bs) (1+ (car bs)))
-                  (if boundary (cdr bs) (1- (cdr bs))))))
+    (mark-thing (if boundary (car bs) (1+ (car bs)))
+                (if boundary (cdr bs) (1- (cdr bs))))))
 
 (defun kill-quoted-symmetry@ (&optional boundary)
   "Kill symmetry quoted thing at point.\n
@@ -184,8 +184,8 @@ If prefix BOUNDARY is non-nil, then mark the whole quoted thing."
   (let ((bs (_mark_quoted_asymmetry@_)))
     (unless (and bs (car bs) (cdr bs))
       (user-error "%s" "No quoted thing found"))
-    (_mark_thing_ (if boundary (car bs) (1+ (car bs)))
-                  (if boundary (cdr bs) (1- (cdr bs))))))
+    (mark-thing (if boundary (car bs) (1+ (car bs)))
+                (if boundary (cdr bs) (1- (cdr bs))))))
 
 (defun kill-quoted-asymmetry@ (&optional boundary)
   "Kill asymmetry quoted thing at point.\n

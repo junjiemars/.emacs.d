@@ -21,154 +21,152 @@
 (defun load-prologue-modes! ()
   "Load prologue modes."
   (compile!
-    (compile-unit% (emacs-home* "config/cls.el") t)
-    (compile-unit% (emacs-home* "config/ed.el") t)
-    (compile-unit% (emacs-home* "config/marks.el") t)
-    (compile-unit% (emacs-home* "config/ssh.el") t)
-    (compile-unit% (emacs-home* "config/tags.el") t)
-    (compile-unit% (emacs-home* "config/on-firstload.el"))))
+   (compile-unit% (emacs-home* "config/cls.el") t)
+   (compile-unit% (emacs-home* "config/ed.el") t)
+   (compile-unit% (emacs-home* "config/marks.el") t)
+   (compile-unit% (emacs-home* "config/ssh.el") t)
+   (compile-unit% (emacs-home* "config/tags.el") t)
+   (compile-unit% (emacs-home* "config/on-firstload.el"))))
 
 (defun load-compiling-modes! ()
   "Load compiling modes."
   (compile!
-    (compile-unit% (emacs-home* "config/cc.el") t)
-    (unless-graphic%
-      (compile-unit% (emacs-home* "config/clipboard.el") t))
-    (compile-unit% (emacs-home* "config/compiles.el") t)
-    (compile-unit% (emacs-home* "config/dict.el") t)
-    (compile-unit% (emacs-home* "config/direds.el") t)
-    (when-platform% windows-nt
-      (compile-unit% (emacs-home* "config/docs.el") t))
-    (when-feature% eglot
-      (compile-unit% (emacs-home* "config/eglots.el") t))
-    (compile-unit% (emacs-home* "config/elisps.el") t)
-    (compile-unit% (emacs-home* "config/eshells.el") t)
-    (when-feature% eww
-      (compile-unit% (emacs-home* "config/ewws.el") t))
-    (compile-unit% (emacs-home* "config/financial.el") t)
-    (compile-unit% (emacs-home* "config/helps.el") t)
-    (compile-unit% (emacs-home* "config/hippies.el") t)
-    (compile-unit% (emacs-home* "config/isearchs.el") t)
-    (compile-unit% (emacs-home* "config/mill.el") t)
-    (compile-unit% (emacs-home* "config/mixal.el") t)
-    (compile-unit% (emacs-home* "config/orgs.el") t)
-    (when-feature% project
-      (compile-unit% (emacs-home* "config/projects.el") t))
-    (compile-unit% (emacs-home* "config/progs.el") t)
-    (compile-unit% (emacs-home* "config/pythons.el") t)
-    (compile-unit% (emacs-home* "config/sqls.el") t)
-    (compile-unit% (emacs-home* "config/terms.el") t)
-    (compile-unit% (emacs-home* "config/trans.el") t)
-    (when-feature% transient
-      (compile-unit% (emacs-home* "config/transients.el") t))
-    (when-feature-treesit%
-      (compile-unit% (emacs-home* "config/treesits.el") t))
-    (compile-unit% (emacs-home* "config/tramps.el") t)
-    (compile-unit% (emacs-home* "config/xrefs.el") t)
-    (when-feature-vc%
-      (compile-unit% (emacs-home* "config/vcs.el") t))))
+   (compile-unit% (emacs-home* "config/cc.el") t)
+   (unless-graphic%
+     (compile-unit% (emacs-home* "config/clipboard.el") t))
+   (compile-unit% (emacs-home* "config/compiles.el") t)
+   (compile-unit% (emacs-home* "config/dict.el") t)
+   (compile-unit% (emacs-home* "config/direds.el") t)
+   (when-platform% windows-nt
+     (compile-unit% (emacs-home* "config/docs.el") t))
+   (when-feature% eglot
+     (compile-unit% (emacs-home* "config/eglots.el") t))
+   (compile-unit% (emacs-home* "config/elisps.el") t)
+   (compile-unit% (emacs-home* "config/eshells.el") t)
+   (when-feature% eww
+     (compile-unit% (emacs-home* "config/ewws.el") t))
+   (compile-unit% (emacs-home* "config/financial.el") t)
+   (compile-unit% (emacs-home* "config/helps.el") t)
+   (compile-unit% (emacs-home* "config/hippies.el") t)
+   (compile-unit% (emacs-home* "config/isearchs.el") t)
+   (compile-unit% (emacs-home* "config/mill.el") t)
+   (compile-unit% (emacs-home* "config/mixal.el") t)
+   (compile-unit% (emacs-home* "config/orgs.el") t)
+   (when-feature% project
+     (compile-unit% (emacs-home* "config/projects.el") t))
+   (compile-unit% (emacs-home* "config/progs.el") t)
+   (compile-unit% (emacs-home* "config/pythons.el") t)
+   (compile-unit% (emacs-home* "config/sqls.el") t)
+   (compile-unit% (emacs-home* "config/terms.el") t)
+   (compile-unit% (emacs-home* "config/trans.el") t)
+   (when-feature% transient
+     (compile-unit% (emacs-home* "config/transients.el") t))
+   (when-feature-treesit%
+    (compile-unit% (emacs-home* "config/treesits.el") t))
+   (compile-unit% (emacs-home* "config/tramps.el") t)
+   (compile-unit% (emacs-home* "config/xrefs.el") t)
+   (when-feature-vc%
+     (compile-unit% (emacs-home* "config/vcs.el") t))))
 
 ;; end of `load-compiling-modes!'
 
 (defun load-conditional-modes! ()
   "Load conditional modes."
   (compile!
-    ;; on `cc'
-    (compile-unit% (emacs-home* "config/on-cc-autoload.el"))
-    ;; ;; on `clipboard'
-    ;; (unless-graphic%
-    ;;   (compile-unit% (emacs-home* "config/on-clipboard-autoload.el")))
-    ;; on `compiles'
-    (compile-unit% (emacs-home* "config/on-compile-autoload.el"))
-    ;; on `direds'
-    (compile-unit% (emacs-home* "config/on-dired-autoload.el"))
-    ;; on `docs'
-    (when-platform% windows-nt
-      (compile-unit% (emacs-home* "config/on-docview-autoload.el")))
-    ;; on `elisp'
-    (compile-unit% (emacs-home* "config/on-elisp-autoload.el"))
-    ;; on `eglot'
-    (when-feature% eglot
-      (compile-unit% (emacs-home* "config/on-eglot-autoload.el")))
-    ;; on `ewws'
-    (when-feature% eww
-      (compile-unit% (emacs-home* "config/on-eww-autoload.el")))
-    ;; self : `glyph'
-    (when-graphic%
-      (compile-unit% (emacs-home* "config/glyph.el")))
-    ;; `gud': `gud-cdb'
-    (when-platform% windows-nt
-      (compile-unit% (emacs-home* "config/gud-cdb.el") t))
-    ;; `gud': `gud-lldb'
-    (compile-unit% (emacs-home* "config/gud-lldb.el") t)
-    ;; on `helps'
-    (compile-unit% (emacs-home* "config/on-help-autoload.el"))
-    ;; on `hippies'
-    (compile-unit% (emacs-home* "config/on-hippie-autoload.el"))
-    ;; on `isearchs'
-    (compile-unit% (emacs-home* "config/on-isearch-autoload.el"))
-    ;; ;; `js'
-    ;; (compile-unit% (emacs-home* "config/on-js-autoload.el"))
-    ;; `jshell'
-    (compile-unit% (emacs-home* "config/jshell.el") t)
-    ;; `mixvm'
-    (compile-unit% (emacs-home* "config/mixvm.el") t)
-    ;; on `mixal'
-    (compile-unit% (emacs-home* "config/on-mixal-autoload.el"))
-    ;; `node'
-    (compile-unit% (emacs-home* "config/node.el") t)
-    ;; on `orgs'
-    (compile-unit% (emacs-home* "config/on-org-autoload.el"))
-    ;; on `projects'
-    (when-feature% project
-      (compile-unit% (emacs-home* "config/on-project-autoload.el")))
-    ;; on `pythons'
-    (compile-unit% (emacs-home* "config/on-python-autoload.el"))
-    ;; `scheme': `gambit-mode' abandoned
-    ;; (prog1
-    ;;     (compile-unit% (emacs-home* "config/gambit.el") t)
-    ;;   (autoload 'gambit-mode (v-home%> "config/gambit")
-    ;;     "Toggle gambit mode." t)
-    ;;   (autoload! 'run-gambit (v-home%> "config/gambit")
-    ;;              "Toggle gambit process." t))
-    ;; `scheme': `chez-mode'
-    (compile-unit% (emacs-home* "config/chez.el") t)
-    ;; `scratch'
-    (compile-unit% (emacs-home* "config/scratch.el") t)
-    ;; on `sqls'
-    (compile-unit% (emacs-home* "config/on-sql-autoload.el"))
+   ;; on `cc'
+   (compile-unit% (emacs-home* "config/on-cc-autoload.el"))
+   ;; ;; on `clipboard'
+   ;; (unless-graphic%
+   ;;   (compile-unit% (emacs-home* "config/on-clipboard-autoload.el")))
+   ;; on `compiles'
+   (compile-unit% (emacs-home* "config/on-compile-autoload.el"))
+   ;; on `direds'
+   (compile-unit% (emacs-home* "config/on-dired-autoload.el"))
+   ;; on `docs'
+   (when-platform% windows-nt
+     (compile-unit% (emacs-home* "config/on-docview-autoload.el")))
+   ;; on `elisp'
+   (compile-unit% (emacs-home* "config/on-elisp-autoload.el"))
+   ;; on `eglot'
+   (when-feature% eglot
+     (compile-unit% (emacs-home* "config/on-eglot-autoload.el")))
+   ;; on `ewws'
+   (when-feature% eww
+     (compile-unit% (emacs-home* "config/on-eww-autoload.el")))
+   ;; self : `glyph'
+   (when-graphic%
+     (compile-unit% (emacs-home* "config/glyph.el")))
+   ;; `gud': `gud-cdb'
+   (when-platform% windows-nt
+     (compile-unit% (emacs-home* "config/gud-cdb.el") t))
+   ;; `gud': `gud-lldb'
+   (compile-unit% (emacs-home* "config/gud-lldb.el") t)
+   ;; on `helps'
+   (compile-unit% (emacs-home* "config/on-help-autoload.el"))
+   ;; on `hippies'
+   (compile-unit% (emacs-home* "config/on-hippie-autoload.el"))
+   ;; `js'
+   ;; (compile-unit% (emacs-home* "config/on-js-autoload.el"))
+   ;; `jshell'
+   (compile-unit% (emacs-home* "config/jshell.el") t)
+   ;; `mixvm'
+   (compile-unit% (emacs-home* "config/mixvm.el") t)
+   ;; on `mixal'
+   (compile-unit% (emacs-home* "config/on-mixal-autoload.el"))
+   ;; `node'
+   (compile-unit% (emacs-home* "config/node.el") t)
+   ;; on `orgs'
+   (compile-unit% (emacs-home* "config/on-org-autoload.el"))
+   ;; on `projects'
+   (when-feature% project
+     (compile-unit% (emacs-home* "config/on-project-autoload.el")))
+   ;; on `pythons'
+   (compile-unit% (emacs-home* "config/on-python-autoload.el"))
+   ;; `scheme': `gambit-mode' abandoned
+   ;; (prog1
+   ;;     (compile-unit% (emacs-home* "config/gambit.el") t)
+   ;;   (autoload 'gambit-mode (v-home%> "config/gambit")
+   ;;     "Toggle gambit mode." t)
+   ;;   (autoload! 'run-gambit (v-home%> "config/gambit")
+   ;;              "Toggle gambit process." t))
+   ;; `scheme': `chez-mode'
+   (compile-unit% (emacs-home* "config/chez.el") t)
+   ;; `scratch'
+   (compile-unit% (emacs-home* "config/scratch.el") t)
+   ;; on `sqls'
+   (compile-unit% (emacs-home* "config/on-sql-autoload.el"))
 
-    ;; ;; Org `ob' for Scheme
-    ;; (prog1
-    ;;     (compile-unit% (emacs-home* "config/ob-schemes.el") t)
-    ;;   (when (*org-babel-schemes*)
-    ;;     (autoload! 'org-babel-execute:scheme*
-    ;;                (v-home%> "config/ob-schemes")
-    ;;                "Autoload `org-babel-execute:scheme*'." t)
-    ;;     (fset 'org-babel-execute:scheme 'org-babel-execute:scheme*)))
+   ;; ;; Org `ob' for Scheme
+   ;; (prog1
+   ;;     (compile-unit% (emacs-home* "config/ob-schemes.el") t)
+   ;;   (when (*org-babel-schemes*)
+   ;;     (autoload! 'org-babel-execute:scheme*
+   ;;                (v-home%> "config/ob-schemes")
+   ;;                "Autoload `org-babel-execute:scheme*'." t)
+   ;;     (fset 'org-babel-execute:scheme 'org-babel-execute:scheme*)))
 
-    ;; `sudoku'
-    (compile-unit% (emacs-home* "config/sudoku.el") t)
-    ;; on `terms'
-    (compile-unit% (emacs-home* "config/on-term-autoload.el"))
-    ;; on `transients'
-    (when-feature% transient
-      (compile-unit% (emacs-home* "config/on-transient-autoload.el")))
-    ;; on `treesits'
-    (when-feature-treesit%
-      (compile-unit% (emacs-home* "config/on-treesit-autoload.el")))
-    ;; on `tramps'
-    (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))
-    ;; on `xrefs'
-    (compile-unit% (emacs-home* "config/on-xref-autoload.el"))
-    ;; on `vcs'
-    (when-feature-vc%
-      (compile-unit% (emacs-home* "config/on-vcs-autoload.el")))
-    ;; `windows'
-    (compile-unit% (emacs-home* "config/windows.el"))
-    ;; on last:
-    (compile-unit% (emacs-home* "config/on-lastload.el"))
-    ) ;; end of compile!
+   ;; `sudoku'
+   (compile-unit% (emacs-home* "config/sudoku.el") t)
+   ;; on `terms'
+   (compile-unit% (emacs-home* "config/on-term-autoload.el"))
+   ;; on `transients'
+   (when-feature% transient
+     (compile-unit% (emacs-home* "config/on-transient-autoload.el")))
+   ;; on `treesits'
+   (when-feature-treesit%
+    (compile-unit% (emacs-home* "config/on-treesit-autoload.el")))
+   ;; on `tramps'
+   (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))
+   ;; on `xrefs'
+   (compile-unit% (emacs-home* "config/on-xref-autoload.el"))
+   ;; on `vcs'
+   (when-feature-vc%
+     (compile-unit% (emacs-home* "config/on-vcs-autoload.el")))
+   ;; `windows'
+   (compile-unit% (emacs-home* "config/windows.el"))
+   ;; on last:
+   (compile-unit% (emacs-home* "config/on-lastload.el"))
+   ) ;; end of compile!
   )
 ;; end of `load-conditional-modes!'
 

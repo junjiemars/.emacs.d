@@ -67,14 +67,13 @@
 
 ;;; mark-* macro
 
-(defmacro _mark_thing_ (begin end)
+(defun mark-thing (begin end)
   "Mark thing at point."
-  `(progn
-     (goto-char ,begin)
-     (set-mark (point))
-     (goto-char ,end)))
+  (goto-char begin)
+  (set-mark (point))
+  (goto-char end))
 
-;; end of `_mark_thing_'
+;; end of `mark_thing'
 
 
 (defmacro _mark_symbol@_ ()
