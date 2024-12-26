@@ -131,17 +131,6 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
                      (insert ss)))
                  (goto-char p)))))))))
 
-(defmacro symbol@ (&optional thing)
-  "Return the (cons \\='region|nil THING) at point."
-  (let ((ss (gensym*)))
-    `(if-region-active
-         (let ((,ss (buffer-substring-no-properties
-                     (region-beginning)
-                     (region-end))))
-           (setq mark-active nil)
-           (cons 'region ,ss))
-       (let ((,ss (thing-at-point (or ,thing 'symbol))))
-         (and ,ss (cons nil (substring-no-properties ,ss)))))))
 
 (defun version-strncmp (v1 v2 &optional n)
   "Return 0 if V1 equals V2, -1 if V1 less than V2, otherwise 1.\n

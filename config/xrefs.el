@@ -11,8 +11,6 @@
 
 ;;; require
 
-(require% 'ed (v-home%> "config/ed"))
-
 ;; end of require
 
 ;;; `xref-find-definitions' associated macro, since emacs25
@@ -105,8 +103,7 @@
   (defun xref-find-references (what)
     "Alias of \\=`tags-apropos\\='."
     (interactive
-     (list (read-string "Find references of: "
-                        (cdr (symbol@ 'symbol)))))
+     (list (read-string "Find references of: " (cdr (symbol@ 'symbol)))))
     (tags-apropos what)))
 
 

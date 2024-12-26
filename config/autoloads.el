@@ -21,6 +21,7 @@
 (defun load-prologue-modes! ()
   "Load prologue modes."
   (compile!
+   (compile-unit% (emacs-home* "config/thingatpts.el"))
    (compile-unit% (emacs-home* "config/cls.el") t)
    (compile-unit% (emacs-home* "config/ed.el") t)
    (compile-unit% (emacs-home* "config/marks.el") t)

@@ -145,9 +145,10 @@ else do ELSE..."
 (defmacro make-v-home (file)
   "Make \\=`v-home\\='."
   `(inhibit-file-name-handler
-     (if (file-exists-p ,file)
-         ,file
-       (mkdir* (v-home ,file)))))
+     (let ((vf (v-home ,file)))
+       (if (file-exists-p vf)
+           vf
+         (mkdir* vf)))))
 
 ;; end of versioned file macro
 

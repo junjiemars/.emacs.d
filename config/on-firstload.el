@@ -30,13 +30,11 @@
 (autoload 'open-previous-line (v-home%> "config/ed") nil t)
 (autoload 'delete-line* (v-home%> "config/ed") nil nil 'macro)
 (autoload 'shell-format-buffer (v-home%> "config/ed") nil nil 'macro)
-(autoload 'symbol@ (v-home%> "config/ed") nil nil 'macro)
 (autoload 'version-strncmp (v-home%> "config/ed"))
 
 ;; end of `ed'
 
 ;;; `marks'
-(autoload 'mark-thing (v-home%> "config/marks"))
 (autoload '_mark_quoted_asymmetry@_ (v-home%> "config/marks"))
 (autoload '_mark_quoted_symmetry@_ (v-home%> "config/marks"))
 

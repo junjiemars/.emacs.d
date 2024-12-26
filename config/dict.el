@@ -8,8 +8,6 @@
 
 ;;; require
 
-(require% 'ed (v-home%> "config/ed"))
-
 ;; end of require
 
 
