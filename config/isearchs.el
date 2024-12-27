@@ -8,18 +8,9 @@
 
 ;;; require
 
-(require% 'ed (v-home%> "config/ed"))
 (require% 'marks (v-home%> "config/marks"))
 
 ;; end of require
-
-(defvar *isearch-style-minibuffer-prompt*
-  (format "(%s)egexp (%s)ymbol (%s)ord (%s)ile (%s)uoted"
-          (propertize "r" 'face 'minibuffer-prompt)
-          (propertize "s" 'face 'minibuffer-prompt)
-          (propertize "w" 'face 'minibuffer-prompt)
-          (propertize "f" 'face 'minibuffer-prompt)
-          (propertize "q" 'face 'minibuffer-prompt)))
 
 (defun isearch*-forward (&optional style backward)
   "Search incrementally forward or BACKWARD in STYLE."
@@ -28,7 +19,12 @@
            (read-key
             (format "%s: %s"
                     (propertize "I-search" 'face 'minibuffer-prompt)
-                    *isearch-style-minibuffer-prompt*)))))
+                    (format "(%s)egexp (%s)ymbol (%s)ord (%s)ile (%s)uoted"
+                            (propertize "r" 'face 'minibuffer-prompt)
+                            (propertize "s" 'face 'minibuffer-prompt)
+                            (propertize "w" 'face 'minibuffer-prompt)
+                            (propertize "f" 'face 'minibuffer-prompt)
+                            (propertize "q" 'face 'minibuffer-prompt)))))))
   (let ((regexp-p (and style (or (char= ?\r style) (char= ?r style)))))
     (cond (backward (isearch-backward regexp-p 1))
           (t (isearch-forward regexp-p 1)))
@@ -79,7 +75,12 @@
            (read-key
             (format "%s: %s"
                     (propertize "I-search backward" 'face 'minibuffer-prompt)
-                    *isearch-style-minibuffer-prompt*)))))
+                    (format "(%s)egexp (%s)ymbol (%s)ord (%s)ile (%s)uoted"
+                            (propertize "r" 'face 'minibuffer-prompt)
+                            (propertize "s" 'face 'minibuffer-prompt)
+                            (propertize "w" 'face 'minibuffer-prompt)
+                            (propertize "f" 'face 'minibuffer-prompt)
+                            (propertize "q" 'face 'minibuffer-prompt)))))))
   (isearch*-forward style t))
 
 
@@ -87,24 +88,6 @@
   "Search symbol incrementally forward or BACKWARD."
   (interactive "P")
   (isearch*-forward ?s backward))
-
-
-(defun isearch*-forward-word (&optional backward)
-  "Search word incrementally forward or BACKWARD."
-  (interactive "P")
-  (isearch*-forward ?w backward))
-
-
-(defun isearch*-forward-file (&optional backward)
-  "Search filename incrementally forward or BACKWARD."
-  (interactive "P")
-  (isearch*-forward ?f backward))
-
-
-(defun isearch*-forward-quoted (&optional backward)
-  "Search quoted string incrementally search forward or BACKWARD."
-  (interactive "P")
-  (isearch*-forward ?q backward))
 
 
 

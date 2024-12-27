@@ -5,7 +5,7 @@
 ;;;;
 ;; mill.el
 ;;;;
-;; Commentary: mark and kill keys
+;; Commentary: Mark and Kill keys
 ;;;;
 
 ;;; require
