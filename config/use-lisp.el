@@ -22,7 +22,8 @@
     (when-feature% paredit
       (use-paredit-init!))
     ;; `rainbow-delimiters': hilighting parentheses, brackets
-    (rainbow-delimiters-mode)))
+    (when-feature% rainbow-delimiters
+      (rainbow-delimiters-mode 1))))
 
 (defun use-emacs-lisp-init! ()
   "On \\=`elisp-mode\\=' initialization."
