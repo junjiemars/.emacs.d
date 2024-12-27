@@ -71,10 +71,7 @@
   "Compile and load UNITS."
   (while units
     (let ((u (car units)))
-      (and u (compile-and-load-file*
-              (aref u 0)
-              (aref u 1)
-              (aref u 2))))
+      (and u (compile-and-load-file* (aref u 0) (aref u 1) (aref u 2))))
     (setq units (cdr units))))
 
 ;; end of compile-* macro
