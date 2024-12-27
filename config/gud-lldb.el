@@ -59,7 +59,7 @@ If nil, only source files in the program directory will be known
   o lldb.")
 
 
-(defconst +gud-lldb-prompt-regexp+ "^\\(?:(lldb) *\\)"
+(defconst +gud-lldb-prompt-regexp+ "^\\(?:(lldb) \\)"
   "The regexp pattern of \\=`lldb\\=' prompt.")
 
 
