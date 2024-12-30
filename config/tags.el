@@ -257,8 +257,8 @@ RENEW overwrite the existing tags file when t else create it."
     (let ((d1 (path+ (expand-file-name dir)))
           (f1 (expand-file-name tags))
           (o1 (concat "--options=" (expand-file-name options))))
-      (message "%s %s %s %s ..." (tags-spec->% :prompt) dir tp o1)
-      (let* ((rc (shell-command* tp "-R" "-e" "-o" f1 o1 d1))
+      (message "%s %s %s %s ..." (tags-spec->% :prompt) tp o1 dir )
+      (let* ((rc (shell-command* tp "-e" o1 "-o" f1 "-R"d1))
              (done (zerop (car rc))))
         (message "%s for %s...%s"
                  (tags-spec->% :prompt) dir (if done "done" "failed"))

@@ -8,8 +8,11 @@
 
 ;;; require
 
+;; `delete-line*'
 (require% 'ed (v-home%> "config/ed"))
+;; `tags-spec->%', `make-dir-ctags'
 (require% 'tags (v-home%> "config/tags"))
+;; `xref*-read-only-dirs'
 (require% 'xrefs (v-home%> "config/xrefs"))
 
 ;; end of require
@@ -18,37 +21,21 @@
 
 (defun rust*-sysroot-spec ()
   "Return rust sysroot spec."
-  (let ((rc (shell-command* "~/.cargo/bin/rustc"
-              "--print sysroot 2>/dev/null")))
+  (let ((rc (shell-command* "~/.cargo/bin/rustc --print sysroot 2>/dev/null")))
     (when (zerop (car rc))
       (let ((sysroot (path+ (string-trim> (cdr rc)))))
         (list
          :sysroot sysroot
-         :hash
-         (let ((h (shell-command* (concat sysroot "bin/rustc")
-                    "-vV")))
-           (when (zerop (car h))
-             (string-match* "^commit-hash: \\([a-z0-9]+\\)"
-                            (cdr h) 1)))
+         :hash (let ((h (shell-command* (concat sysroot "bin/rustc -vV"))))
+                 (when (zerop (car h))
+                   (string-match* "^commit-hash: \\([a-z0-9]+\\)"
+                                  (cdr h) 1)))
          :etc (path+ sysroot "lib/rustlib/etc")
          :src (path+ sysroot "lib/rustlib/src")
-         :tag
-         (let ((ctags (concat (tags-spec->% :root) "ctags.rust")))
-           (prog1 ctags
-             (unless (file-exists-p ctags)
-               (save-str-to-file
-                "--langdef=Rust
---langmap=Rust:.rs
---regex-Rust=/^[ \\t]*(#\\[[^\\]]\\][ \\t]*)*(pub[ \\t]+)?(extern[ \\t]+)?(\"[^\"]+\"[ \\t]+)?(unsafe[ \\t]+)?fn[ \\t]+([a-zA-Z0-9_]+)/\\6/f,functions,function definitions/
---regex-Rust=/^[ \\t]*(pub[ \\t]+)?type[ \\t]+([a-zA-Z0-9_]+)/\\2/T,types,type definitions/
---regex-Rust=/^[ \\t]*(pub[ \\t]+)?enum[ \\t]+([a-zA-Z0-9_]+)/\\2/g,enum,enumeration names/
---regex-Rust=/^[ \\t]*(pub[ \\t]+)?struct[ \\t]+([a-zA-Z0-9_]+)/\\2/s,structure names/
---regex-Rust=/^[ \\t]*(pub[ \\t]+)?mod[ \\t]+([a-zA-Z0-9_]+)/\\2/m,modules,module names/
---regex-Rust=/^[ \\t]*(pub[ \\t]+)?(static|const)[ \\t]+(mut[ \\t]+)?([a-zA-Z0-9_]+)/\\4/c,consts,static constants/
---regex-Rust=/^[ \\t]*(pub[ \\t]+)?(unsafe[ \\t]+)?trait[ \\t]+([a-zA-Z0-9_]+)/\\3/t,traits,traits/
---regex-Rust=/^[ \\t]*(pub[ \\t]+)?(unsafe[ \\t]+)?impl([ \\t\\n]*<[^>]*>)?[ \\t]+(([a-zA-Z0-9_:]+)[ \\t]*(<[^>]*>)?[ \\t]+(for)[ \\t]+)?([a-zA-Z0-9_]+)/\\5 \\7 \\8/i,impls,trait implementations/
---regex-Rust=/^[ \\t]*macro_rules![ \\t]+([a-zA-Z0-9_]+)/\\1/d,macros,macro definitions/"
-                ctags)))))))))
+         :tag (let ((ctags (concat (tags-spec->% :root) "ctags.rust")))
+                (unless (file-exists-p ctags)
+                  (copy-file (emacs-home* "config/use-rust.ctags") ctags))
+                ctags))))))
 
 (defalias 'rust*-sysroot
   (let ((b (rust*-sysroot-spec)))
@@ -117,22 +104,13 @@
 ;; tags
 ;;;
 
-(defun rust*-tags-spec ()
-  "Return rust tags spec."
-  (format "%srust.%s.TAGS"
-          (tags-spec->% :root) (rust*-sysroot :hash)))
-
 (defun rust*-make-tags (&optional renew)
   "Make rust tags."
-  (let ((file (rust*-tags-spec)))
-    (cond (renew (make-dir-ctags (rust*-sysroot :src)
-                                 (rust*-tags-spec)
-                                 (rust*-sysroot :tag)))
+  (let ((file (format "%srust.%s.TAGS"
+                      (tags-spec->% :root) (rust*-sysroot :hash))))
+    (cond (renew (make-dir-ctags
+                  (rust*-sysroot :src) file (rust*-sysroot :tag)))
           (t file))))
-
-(defalias 'rust*-make-tags
-
-  "")
 
 ;; end of tags
 
