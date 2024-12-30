@@ -16,18 +16,18 @@
 
 ;;; require
 
-(eval-when-compile
-  (require 'ed (v-home%> "config/ed")))
+;; `shell-format-buffer'
+(require 'ed (v-home%> "config/ed"))
 
 ;; end of require
 
 ;;; version/program
 
-(defmacro python*-version (python)
+(defun python*-version (python)
   "Return the version of PYTHON"
-  `(let ((rc (shell-command* ,python "--version")))
-     (when (zerop (car rc))
-       (string-match* "^Python \\([.0-9]+\\)$" (cdr rc) 1))))
+  (let ((rc (shell-command* python "--version")))
+    (when (zerop (car rc))
+      (string-match* "^Python \\([.0-9]+\\)$" (cdr rc) 1))))
 
 (defalias 'python*-program
   (let ((b (let ((p (or (executable-find% "python3")
@@ -95,25 +95,22 @@ determine whether inside a virtual env. Another way is using
 ;; lsp
 ;;;
 
-(defalias 'python*-pip-mirror
-  (let ((b '("https://pypi.tuna.tsinghua.edu.cn/simple/"
-             "https://pypi.mirrors.ustc.edu.cn/simple/"
-             "http://pypi.hustunique.com/"
-             "http://pypi.sdutlinux.org/")))
-    (lambda (&optional n)
-      (cond (n (nth (% n (length b)) b))
-            (t b))))
-  "List pip mirror.")
+(defconst +python*-pip-mirror+
+  '("https://pypi.tuna.tsinghua.edu.cn/simple/"
+    "https://pypi.mirrors.ustc.edu.cn/simple/"
+    "http://pypi.hustunique.com/"
+    "http://pypi.sdutlinux.org/")
+  "List of pip mirror.")
 
 (defun python*-pip-mirror! (venv &optional mirror)
   "Set pip MIRROR in VENV."
   (let* ((x (or (and (> (length mirror) 0) mirror)
                 (catch 'br
-                  (dolist (a (python*-pip-mirror))
+                  (dolist (a +python*-pip-mirror+)
                     (let ((rc (shell-command* "curl" "-fsIL" a)))
                       (when (zerop (car rc))
                         (throw 'br a)))))
-                (python*-pip-mirror 0)))
+                (car +python*-pip-mirror+)))
          (rc (shell-command* "source"
                (concat venv "/bin/activate")
                "&& pip config set global.index-url"
@@ -153,11 +150,14 @@ determine whether inside a virtual env. Another way is using
 
 ;; end of lsp
 
+(defun python*-venv-scratch ()
+  (let ((pyvenv (emacs-home% "scratch/pyvenv/")))
+    (unless (file-exists-p pyvenv)
+      (path! pyvenv))
+    pyvenv))
+
 (defalias 'python*-venv
-  (let* ((b (let ((pyvenv (emacs-home% "scratch/pyvenv/")))
-              (prog1 pyvenv
-                (unless (file-exists-p pyvenv)
-                  (path! pyvenv)))))
+  (let* ((b (python*-venv-scratch))
          (file (v-home% ".exec/python-venv.el"))
          (env (list :venv b
                     :pylsp (v-home% ".exec/pylsp.sh")
@@ -221,10 +221,9 @@ determine whether inside a virtual env. Another way is using
 ;; keys
 ;;;
 
-(defmacro python*-define-keys (keymap)
-  `(progn
-     (define-key ,keymap (kbd% "C-c C-z") #'run-python)
-     (define-key ,keymap (kbd% "C-c M-c f") #'python*-format-buffer)))
+(defun python*-define-keys (keymap)
+  (define-key keymap (kbd% "C-c C-z") #'run-python)
+  (define-key keymap (kbd% "C-c M-c f") #'python*-format-buffer))
 
 ;; end of keys
 
