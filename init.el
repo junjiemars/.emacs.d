@@ -333,6 +333,8 @@ If ONLY-COMPILE is t, do not load DST."
 
 ;; boot
 (unless (boundp '*nore-emacs-no-boot*)
+  ;; disable `package' at startup
+  (when-package% (setq package-enable-at-startup nil))
   (inhibit-gc
     (let ((vc (make-v-comp-file (emacs-home "config/vcomp.el"))))
       (compile-and-load-file* (car vc) (cdr vc)))

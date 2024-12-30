@@ -92,24 +92,21 @@ No matter the declaration order, the executing order is:
 ;; boot
 ;;;
 
-;; disable `package' at startup
-(when-package% (setq package-enable-at-startup nil))
-;; preferred coding system
-(prefer-coding-system 'utf-8)
+;; reset user emacs dir
+(setq% user-emacs-directory (emacs-home%))
+;; let `lexical-binding' var safe under Emacs24.1-
+(if-lexical%
+    (setq lexical-binding t)
+  (safe-local-variable 'lexical-binding))
+;; default `:safe'
+(setq% enable-local-variables :safe files)
 ;; make `v-home' .exec/
 (v-home! ".exec/")
 ;; make `v-home' private/
 (v-home! "private/")
 ;; duplicate spec files
 (*self-paths* :dup)
-;; reset user emacs dir
-(setq% user-emacs-directory (emacs-home%))
-;; default `:safe'
-(setq% enable-local-variables :safe files)
-;; let `lexical-binding' var safe under Emacs24.1-
-(unless-lexical% (safe-local-variable 'lexical-binding))
-;; string hash test: see `%fn:save/read-sexp-to/from-file' in test.el
-(define-hash-table-test 'nore-emacs-string-hash= #'string= #'sxhash)
+
 
 ;;; <1> prologue
 (compile! (compile-unit% (emacs-home* "config/vdir.el"))

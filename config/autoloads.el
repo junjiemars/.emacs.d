@@ -172,6 +172,8 @@
   (when-fn% self-socks-init! nil (self-socks-init!))
   (setq% history-length (emacs-arch))
   (setq% message-log-max 512)
+  ;; preferred coding system
+  (prefer-coding-system 'utf-8)
   (load-prologue-modes!)
   (load-compiling-modes!)
   (load-conditional-modes!)

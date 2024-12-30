@@ -419,6 +419,8 @@
     (should (string= p (posix-path "c:\\a\\b\\c.c")))))
 
 (ert-deftest %d:fn:save/read-sexp-to/from-file ()
+  ;; string hash test: see `%fn:save/read-sexp-to/from-file' in test.el
+  (define-hash-table-test 'nore-emacs-string-hash= #'string= #'sxhash)
   (let ((f1 (concat temporary-file-directory
                     (make-temp-name (symbol-name (gensym*)))))
         (f2 (concat temporary-file-directory
