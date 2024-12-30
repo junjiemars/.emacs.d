@@ -14,38 +14,44 @@
 
 ;;; when-*macro
 
-(defmacro when-sql-feature% (&rest body)
-  (declare (indent 0))
-  (if-fn 'sql-execute-feature 'sql
-         `(progn% ,@body)
-    `(comment ,@body)))
+(eval-when-compile
+  (defmacro when-sql-feature% (&rest body)
+    (declare (indent 0))
+    (if-fn% sql-execute-feature sql
+            `(progn% ,@body)
+      `(comment ,@body))))
 
-(defmacro when-sql-oracle-feature% (&rest body)
-  (declare (indent 0))
-  (when-sql-feature%
-    `(progn% ,@body)))
+(eval-when-compile
+  (defmacro when-sql-oracle-feature% (&rest body)
+    (declare (indent 0))
+    (when-sql-feature%
+      `(progn% ,@body))))
 
-(defmacro when-sql-mysql-feature% (&rest body)
-  (declare (indent 0))
-  (when-sql-feature%
-    `(progn% ,@body)))
+(eval-when-compile
+  (defmacro when-sql-mysql-feature% (&rest body)
+    (declare (indent 0))
+    (when-sql-feature%
+      `(progn% ,@body))))
 
-(defmacro when-sql-oceanbase-feature% (&rest body)
-  (declare (indent 0))
-  (when-sql-feature%
-    `(progn% ,@body)))
+(eval-when-compile
+  (defmacro when-sql-oceanbase-feature% (&rest body)
+    (declare (indent 0))
+    (when-sql-feature%
+      `(progn% ,@body))))
 
-(defmacro when-fn-sql-show-sqli-buffer% (&rest body)
-  (declare (indent 0))
-  (if-fn 'sql-show-sqli-buffer 'sql
-         `(progn% ,@body)
-    `(comment ,@body)))
+(eval-when-compile
+  (defmacro when-fn-sql-show-sqli-buffer% (&rest body)
+    (declare (indent 0))
+    (if-fn% sql-show-sqli-buffer sql
+            `(progn% ,@body)
+      `(comment ,@body))))
 
-(defmacro when-fn-sql-send-magic-terminator% (&rest body)
-  (declare (indent 0))
-  (if-fn 'sql-send-magic-terminator 'sql
-         `(progn% ,@body)
-    `(comment ,@body)))
+(eval-when-compile
+  (defmacro when-fn-sql-send-magic-terminator% (&rest body)
+    (declare (indent 0))
+    (if-fn% sql-send-magic-terminator sql
+            `(progn% ,@body)
+      `(comment ,@body))))
 
 ;; end of when-* macro
 
