@@ -53,40 +53,21 @@
 
 ;; end of require
 
+(defun on-thingatpt-init! ()
 ;;; fix wrong behavior on ancient Emacs.
+  (unless-fn-thing-at-point-bounds-of-string-at-point%
+   (put 'string 'bounds-of-thing-at-point
+        'thing-at-point-bounds-of-string-at-point))
+  (unless-fn-thing-at-point-bounds-of-list-at-point%
+   (put 'list 'bounds-of-thing-at-point
+        'thing-at-point-bounds-of-list-at-point))
 
-(unless-fn-thing-at-point-bounds-of-string-at-point%
-  (put 'string 'bounds-of-thing-at-point
-       'thing-at-point-bounds-of-string-at-point))
-
-(unless-fn-thing-at-point-bounds-of-list-at-point%
-  (put 'list 'bounds-of-thing-at-point
-       'thing-at-point-bounds-of-list-at-point))
-
-(unless% (eq 'beginning-of-defun (get 'defun 'beginning-op))
-  (put 'defun 'beginning-op 'beginning-of-defun))
-(unless% (eq 'end-of-defun (get 'defun 'end-op))
-  (put 'defun 'end-op 'end-of-defun))
-(unless% (eq 'end-of-defun (get 'defun 'forward-op))
-  (put 'defun 'forward-op 'end-of-defun))
-
-
-
-(defun mark-thing (begin end)
-  "Mark thing at point."
-  (goto-char begin)
-  (set-mark (point))
-  (goto-char end))
-
-(defun symbol@ (&optional thing)
-  "Return the (cons \\='region|nil THING) at point."
-  (if-region-active
-      (let ((ss (buffer-substring-no-properties
-                 (region-beginning) (region-end))))
-        (setq mark-active nil)
-        (cons 'region ss))
-    (let ((ss (thing-at-point (or thing 'symbol))))
-      (and ss (cons nil (substring-no-properties ss))))))
+  (unless% (eq 'beginning-of-defun (get 'defun 'beginning-op))
+    (put 'defun 'beginning-op 'beginning-of-defun))
+  (unless% (eq 'end-of-defun (get 'defun 'end-op))
+    (put 'defun 'end-op 'end-of-defun))
+  (unless% (eq 'end-of-defun (get 'defun 'forward-op))
+    (put 'defun 'forward-op 'end-of-defun)))
 
 
 

@@ -37,6 +37,9 @@
 ;;; `marks'
 (autoload '_mark_quoted_asymmetry@_ (v-home%> "config/marks"))
 (autoload '_mark_quoted_symmetry@_ (v-home%> "config/marks"))
+(autoload 'mark-thing (v-home%> "config/marks"))
+(autoload 'symbol@ (v-home%> "config/marks"))
+
 
 ;; end of `marks'
 

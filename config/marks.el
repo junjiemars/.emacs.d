@@ -11,6 +11,24 @@
 
 ;; end of require
 
+(defun mark-thing (begin end)
+  "Mark thing at point."
+  (goto-char begin)
+  (set-mark (point))
+  (goto-char end))
+
+(defun symbol@ (&optional thing)
+  "Return the (cons \\='region|nil THING) at point."
+  (if-region-active
+      (let ((ss (buffer-substring-no-properties
+                 (region-beginning) (region-end))))
+        (setq mark-active nil)
+        (cons 'region ss))
+    (let ((ss (thing-at-point (or thing 'symbol))))
+      (and ss (cons nil (substring-no-properties ss))))))
+
+
+
 (defmacro _mark_symbol@_ ()
   `(bounds-of-thing-at-point 'symbol))
 

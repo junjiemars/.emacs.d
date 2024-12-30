@@ -38,6 +38,10 @@
 
 ;; end of `gud-cdb'
 
+;;; `gambit'
+;; (autoload 'gambit-mode (v-home%> "config/gambit") "Toggle gambit mode." t)
+;; end of `gambit'
+
 ;;; `gud-lldb'
 
 (autoload 'gud-lldb (v-home%> "config/gud-lldb") "Run lldb." t)
