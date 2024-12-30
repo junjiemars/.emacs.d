@@ -15,33 +15,30 @@
 
 ;;; `xref-find-definitions' associated macro, since emacs25
 
-(defmacro if-fn-xref-find-definitions% (then &rest body)
-  (declare (indent 1))
-  (if-fn 'xref-find-definitions 'xref
-         `,then
-    `(progn% ,@body)))
+(eval-when-compile
+  (defmacro when-fn-xref-find-definitions% (&rest body)
+    (declare (indent 0))
+    (if-fn% xref-find-definitions xref
+            `(progn% ,@body)
+      `(comment ,@body))))
 
-(defmacro when-fn-xref-find-definitions% (&rest body)
-  (declare (indent 0))
-  `(if-fn-xref-find-definitions%
-       (progn% ,@body)
-     (comment ,@body)))
-
-(defmacro unless-fn-xref-find-definitions% (&rest body)
-  (declare (indent 0))
-  `(if-fn-xref-find-definitions%
-       (comment ,@body)
-     (progn% ,@body)))
+(eval-when-compile
+  (defmacro unless-fn-xref-find-definitions% (&rest body)
+    (declare (indent 0))
+    (if-fn% xref-find-definitions xref
+            `(comment ,@body)
+      `(progn% ,@body))))
 
 ;; end of `xref-find-definitions' associated macro
 
 ;;; `xref--show-location' associated macro, since emacs25
 
-(defmacro when-fn-xref--show-location% (&rest body)
-  (declare (indent 0))
-  (if-fn 'xref--show-location 'xref
-         `(progn% ,@body)
-    `(comment ,@body)))
+(eval-when-compile
+  (defmacro when-fn-xref--show-location% (&rest body)
+    (declare (indent 0))
+    (if-fn% xref--show-location xref
+            `(progn% ,@body)
+      `(comment ,@body))))
 
 ;; end of `xref--show-location' associated macro
 

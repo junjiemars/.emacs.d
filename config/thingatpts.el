@@ -16,16 +16,16 @@
 (eval-when-compile
   (defmacro unless-fn-thing-at-point-bounds-of-string-at-point% (&rest body)
     (declare (indent 0))
-    `(if-fn% thing-at-point-bounds-of-string-at-point thingatpt
-             (comment ,@body)
-       ,@body)))
+    (if-fn% thing-at-point-bounds-of-string-at-point thingatpt
+            `(comment ,@body)
+      `(progn% ,@body))))
 
 (eval-when-compile
   (defmacro unless-fn-thing-at-point-bounds-of-list-at-point% (&rest body)
     (declare (indent 0))
-    `(if-fn% thing-at-point-bounds-of-list-at-point thingatpt
-             (comment ,@body)
-       ,@body)))
+    (if-fn% thing-at-point-bounds-of-list-at-point thingatpt
+            `(comment ,@body)
+      `(progn% ,@body))))
 
 (unless-fn-thing-at-point-bounds-of-string-at-point%
   (defun thing-at-point-bounds-of-string-at-point ()
@@ -53,15 +53,14 @@
 
 ;; end of require
 
-(defun on-thingatpt-init! ()
 ;;; fix wrong behavior on ancient Emacs.
+(defun on-thingatpt-init! ()
   (unless-fn-thing-at-point-bounds-of-string-at-point%
-   (put 'string 'bounds-of-thing-at-point
-        'thing-at-point-bounds-of-string-at-point))
+    (put 'string 'bounds-of-thing-at-point
+         'thing-at-point-bounds-of-string-at-point))
   (unless-fn-thing-at-point-bounds-of-list-at-point%
-   (put 'list 'bounds-of-thing-at-point
-        'thing-at-point-bounds-of-list-at-point))
-
+    (put 'list 'bounds-of-thing-at-point
+         'thing-at-point-bounds-of-list-at-point))
   (unless% (eq 'beginning-of-defun (get 'defun 'beginning-op))
     (put 'defun 'beginning-op 'beginning-of-defun))
   (unless% (eq 'end-of-defun (get 'defun 'end-op))
