@@ -33,8 +33,8 @@
 (defmacro when-feature-vc% (&rest body)
   "When \\=`vc\\=', do BODY."
   (declare (indent 0))
-  (if-fn 'vc-dir 'vc-dir
-         `(progn% ,@body)
+  (if-fn% vc-dir vc-dir
+          `(progn% ,@body)
     `(comment ,@body)))
 
 

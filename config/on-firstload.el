@@ -23,12 +23,11 @@
 ;;; `ed'
 
 (autoload 'called-interactively-p* (v-home%> "config/ed") nil nil 'macro)
-(autoload 'delete-line* (v-home%> "config/ed") nil nil 'macro)
+(autoload 'delete-line* (v-home%> "config/ed"))
 (autoload 'file-in-dirs-p (v-home%> "config/ed"))
 (autoload 'newline* (v-home%> "config/ed") nil t)
 (autoload 'open-next-line (v-home%> "config/ed") nil t)
 (autoload 'open-previous-line (v-home%> "config/ed") nil t)
-(autoload 'delete-line* (v-home%> "config/ed") nil nil 'macro)
 (autoload 'shell-format-buffer (v-home%> "config/ed") nil nil 'macro)
 (autoload 'version-strncmp (v-home%> "config/ed"))
 

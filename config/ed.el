@@ -30,13 +30,13 @@
 ;; line
 ;;;
 
-(defmacro delete-line* ()
+(defun delete-line* ()
   "Delete current line."
-  `(if-fn% delete-line nil
-           (delete-line)
-     (let ((inhibit-field-text-motion t))
-       (delete-region (line-beginning-position)
-                      (line-beginning-position 2)))))
+  (if-fn% delete-line nil
+          (delete-line)
+    (let ((inhibit-field-text-motion t))
+      (delete-region (line-beginning-position)
+                     (line-beginning-position 2)))))
 
 (defun newline* (&optional arg)
   "Raw newline."
