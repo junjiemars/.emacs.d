@@ -10,7 +10,9 @@
 
 ;;; require
 
+;; `shell-format-buffer'
 (require% 'ed (v-home%> "config/ed"))
+;; `(tags-spec->% :root)'
 (require% 'tags (v-home%> "config/tags"))
 (require% 'ssh (v-home%> "config/ssh"))
 
@@ -226,10 +228,11 @@ Load \\=`cc*-system-include\\=' from file when CACHED is t,
 otherwise check cc include on the fly.
 The REMOTE argument from \\=`ssh-remote-p\\='.")
 
-
-(defmacro when-fn-ff-find-other-file% (&rest body)
-  (when-fn% ff-find-other-file find-file
-    `(progn% ,@body)))
+(eval-when-compile
+  (defmacro when-fn-ff-find-other-file% (&rest body)
+    (if-fn% ff-find-other-file find-file
+            `(progn% ,@body)
+      `(comment ,@body))))
 
 (when-fn-ff-find-other-file%
  (defun cc*-find-include-file (&optional in-other-window)
@@ -330,7 +333,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
     (cond ((= col 0) 'c-basic-offset)
           (t 'c-lineup-arglist))))
 
-(defvar cc*-style-nginx
+(defconst +cc*-style-nginx+
   `("nginx"
     (c-basic-offset . 4)
     (c-comment-only-line-offset . 0)
@@ -395,10 +398,12 @@ N specify the number of spaces when align."
 ;; `cmacexp'
 ;;;
 
-(defmacro when-fn-c-macro-expand% (&rest body)
-  (declare (indent 0))
-  (when-fn% c-macro-expand cmacexp
-    `(progn% ,@body)))
+(eval-when-compile
+  (defmacro when-fn-c-macro-expand% (&rest body)
+    (declare (indent 0))
+    (if-fn% c-macro-expand cmacexp
+            `(progn% ,@body)
+      `(comment ,@body))))
 
 (when-fn-c-macro-expand%
   (defun cc*-macro-expand ()
@@ -471,7 +476,7 @@ N specify the number of spaces when align."
 (defun on-cc-mode-init! ()
   "On \\=`cc-mode\\=' initialization."
   ;; add styles
-  ;; (c-add-style (car cc*-style-nginx) (cdr cc*-style-nginx))
+  ;; (c-add-style (car +cc*-style-nginx+) (cdr +cc*-style-nginx+))
   (when-fn-c-macro-expand%
     ;; [C-c C-e] `c-macro-expand'
     (setq% c-macro-prompt-flag t cmacexp)
