@@ -10,9 +10,11 @@
 ;; `recenter-top-bottom' for Emacs23.2-
 ;;;
 
-(defmacro unless-fn-recenter-top-bottom% (&rest body)
-  `(unless-fn% recenter-top-bottom nil
-     ,@body))
+(eval-when-compile
+  (defmacro unless-fn-recenter-top-bottom% (&rest body)
+    (if-fn% recenter-top-bottom nil
+            `(comment ,@body)
+      `(progn% ,@body))))
 
 (unless-fn-recenter-top-bottom%
  (defvar recenter-last-op nil
