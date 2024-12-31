@@ -185,7 +185,7 @@
   "If WINDOW eq \\=`initial-window-system\\=' yield non-nil, do THEN,
 else do ELSE..."
   (declare (indent 2))
-  (if (eq initial-window-system window)
+  (if (eq window-system window)
       `,then
     `(progn% ,@else)))
 
