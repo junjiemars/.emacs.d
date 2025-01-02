@@ -581,8 +581,7 @@ Call FN with the path if FN is non-nil."
                  (c64 (string-match* m64 (getenv-internal cpu) 1)))
             (if c64 c64 (getenv-internal cpu)))
         (let ((m (shell-command* "uname" "-m")))
-          (cond ((zerop (car m)) (string-trim> (cdr m)))
-                (t nil)))))))
+          (and (zerop (car m)) (string-trim> (cdr m))))))))
 
 ;; end of platform
 
