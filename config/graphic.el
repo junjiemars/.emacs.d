@@ -86,8 +86,7 @@
     (when (frame-spec->* :allowed)
       (modify-frame-parameters
        frame
-       (list (cons 'fullscreen nil)
-             (cons 'fullscreen-restore nil)))
+       `((fullscreen . nil) (fullscreen-restore . nil)))
       (let ((w (cdr (assq 'width default-frame-alist)))
             (h (cdr (assq 'height default-frame-alist))))
         (when w (set-frame-width nil w))
@@ -105,15 +104,14 @@
 
 (when-theme%
 
-  (defmacro load-theme! (name &optional dir)
+  (defun load-theme! (name &optional dir)
     "\\=`load-theme\\=' by NAME.\n
 If DIR is nil then load the built-in \\=`customize-themes\\=' by NAME."
-    (let ((n (gensym*)) (d (gensym*)))
-      `(let ((,n ,name) (,d ,dir))
-         (when ,d (setq custom-theme-directory ,d))
-         (if-version% >= 24.1
-                      (load-theme ,n)
-           (load-theme ,n t))))))
+    (when dir (setq custom-theme-directory dir))
+    (if-version%
+        < 24.1
+        (load-theme name t)
+      (load-theme name))))
 
 
 (when-theme%
@@ -145,12 +143,11 @@ If RESET is true then reset before load."
 ;; end of when-theme%
 
 (defun self-graphic-init! ()
-  (inhibit-blinking
-    (self-frame-init!)
-    (when-theme%
-      (if (*self-env-spec* :get :desktop :allowed)
-          (make-thread* #'self-theme-init!)
-        (self-theme-init!)))))
+  (inhibit-blinking (self-frame-init!))
+  (when-theme%
+    (if (*self-env-spec* :get :desktop :allowed)
+        (make-thread* #'self-theme-init!)
+      (self-theme-init!))))
 
 
 
