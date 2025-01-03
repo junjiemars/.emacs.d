@@ -11,8 +11,8 @@
 
 (defun desktop-spec->* (&optional key)
   "Extract :desktop from env-spec via KEY."
-  (cond (key (env-spec->* :desktop key))
-        (t (env-spec->* :desktop key))))
+  (cond (key (*self-env-spec* :get :desktop key))
+        (t (*self-env-spec* :get :desktop key))))
 
 
 
@@ -99,7 +99,7 @@
         ;; fix: title bar text color broken #55
         ;; https://github.com/d12frosted/homebrew-emacs-plus/issues/55#issuecomment-408317248
         (dolist (x '((ns-transparent-titlebar . unbound)
-                      (ns-appearance . unbound)))
+                     (ns-appearance . unbound)))
           (push! x frameset-filter-alist))))
 
     (when-theme% (self-theme-init! t))

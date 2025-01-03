@@ -11,8 +11,8 @@
 
 (defun edit-spec->* (&optional key)
   "Extract :edit from env-spec via KEY."
-  (cond (key (env-spec->* :edit key))
-        (t (env-spec->* :edit))))
+  (cond (key (*self-env-spec* :get :edit key))
+        (t (*self-env-spec* :get :edit))))
 
 
 

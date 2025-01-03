@@ -540,16 +540,11 @@
 ;; `boot'
 ;;;
 
-(ert-deftest %e:boot:self-spec->/<- ()
-  (should (null (self-spec-> nil nil)))
-  (should (null (self-spec-> '(a 1) nil)))
-  (should (= 1 (self-spec-> '(a 1) 'a)))
-  (should (= 1 (self-spec-> '(a (b (c 1))) 'a 'b 'c)))
-  (should (= 1 (self-spec-> (self-spec<- 'a 1 nil) 'a)))
-  (should (= 1 (self-spec-> (self-spec<- 'c 1 '(a (b (c 3))) 'a 'b) 'c))))
-
 (ert-deftest %e:boot:*self-paths* ()
   (should (*self-paths*)))
+
+(ert-deftest %e:boot:*self-env-spec* ()
+  (should (*self-env-spec*)))
 
 ;; end of `boot'
 

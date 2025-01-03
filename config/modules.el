@@ -16,8 +16,8 @@
 
 (defun module-spec->* (&optional key)
   "Extract :module from env-spec via KEY."
-  (cond (key (env-spec->* :module key))
-        (t (env-spec->* :module))))
+  (cond (key (*self-env-spec* :get :module key))
+        (t (*self-env-spec* :get :module))))
 
 (defmacro module-unit-spec->* (module key)
   "Extract unit spec from MODULE via KEY."

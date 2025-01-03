@@ -16,8 +16,8 @@
 
 (defun eshell-spec->* (&optional key)
   "Extract :eshell from env-spec via KEY."
-  (cond (key (env-spec->* :eshell key))
-        (t (env-spec->* :eshell))))
+  (cond (key (*self-env-spec* :get :eshell key))
+        (t (*self-env-spec* :get :eshell))))
 
 
 
