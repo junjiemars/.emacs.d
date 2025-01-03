@@ -65,12 +65,12 @@
 (*self-env-spec*
  :put :key
  `( :modifier ,(if-window% mac
-                   '( ; (mac-right-option-modifier . control)
-                      ; (mac-right-command-modifier ; . meta)
+                   '( ;; (mac-right-option-modifier . control)
+                      ;; (mac-right-command-modifier . meta)
                      (mac-option-modifier . meta))
                  (when-window% ns
-                   '( ; (ns-right-option-modifier . control)
-                      ; (ns-right-command-modifier . meta)
+                   '( ;; (ns-right-option-modifier . control)
+                      ;; (ns-right-command-modifier . meta)
                      (ns-option-modifier . meta))))
     :allowed ,(when-graphic% t)))
 
