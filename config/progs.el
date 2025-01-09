@@ -271,7 +271,16 @@ And copy the qualified buffer name to kill ring."
   (setq% create-lockfiles nil)
   ;; enable upcase/downcase region
   (put 'downcase-region 'disabled nil)
-  (put 'upcase-region 'disabled nil))
+  (put 'upcase-region 'disabled nil)
+  ;; fix some terminal theme confused with background and foreground.
+  (unless-graphic%
+    (set-face-background 'region +term-background-color+)
+    (set-face-foreground 'region +term-foreground-color+)
+    (set-face-background 'match +term-background-color+)
+    (set-face-foreground 'match +term-foreground-color+)
+    (when% (facep 'completions-highlight)
+      (set-face-background 'completions-highlight +term-background-color+)
+      (set-face-foreground 'completions-highlight +term-foreground-color+))))
 
 ;; end of `on-progs-env!'
 
