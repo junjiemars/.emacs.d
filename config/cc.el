@@ -359,15 +359,22 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
   "nginx style for \\=`cc-styles\\='.
 https://nginx.org/en/docs/dev/development_guide.html#code_style")
 
-(defun cc*-style-align-entire (begin end &optional n)
-  "Align the selected region as if it were one alignment section.\n
-BEGIN and END mark the extent of the region.
-N specify the number of spaces when align."
-  (interactive "r\nP")
-  (when-fn% align-entire align
-    (when-var% align-default-spacing align
-      (set-default 'align-default-spacing (or n 2))
-      (align-entire begin end))))
+(when-fn% align-entire align
+  (defun cc*-style-align-entire ()
+    "See \\=`align-entire\\='."
+    (interactive)
+    (let ((align-default-spacing 2))
+      (ignore* align-default-spacing)
+      (call-interactively #'align-entire))))
+
+(when-fn% c-backslash-region cc-cmds
+  (defun cc*-style-align-backslash ()
+    "See \\=`c-backslash-region\\='."
+    (interactive)
+    (let ((c-backslash-column 48)
+          (c-backslash-max-column 72))
+      (ignore* c-backslash-column c-backslash-max-column)
+      (call-interactively #'c-backslash-region))))
 
 ;; end of `cc-styles'
 
@@ -460,14 +467,18 @@ N specify the number of spaces when align."
   (define-key keymap "#" #'cc*-dump-predefined-macros)
   ;; raw newline
   (define-key keymap (kbd% "RET") #'newline*)
-  ;; align style
-  (define-key keymap "|" #'cc*-style-align-entire)
+  ;; align entire style
+  (when-fn% align-entire align
+    (define-key keymap "|" #'cc*-style-align-entire))
+  ;; align backslash style
+  (when-fn% c-backslash-region cc-cmds
+    (define-key keymap "" #'cc*-style-align-backslash))
   ;; format buffer
   (define-key keymap (kbd% "C-c M-c f") #'cc*-format-buffer)
   (when-fn-ff-find-other-file%
    (define-key keymap "fi" #'cc*-find-include-file))
   (when-fn-c-macro-expand%
-   (define-key keymap "" #'c-macro-expand)))
+    (define-key keymap "" #'c-macro-expand)))
 
 ;; end of keys
 
