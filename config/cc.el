@@ -366,8 +366,8 @@ N specify the number of spaces when align."
   (interactive "r\nP")
   (when-fn% align-entire align
     (when-var% align-default-spacing align
-      (fluid-let (align-default-spacing (or n 2))
-        (align-entire begin end)))))
+      (set-default 'align-default-spacing (or n 2))
+      (align-entire begin end))))
 
 ;; end of `cc-styles'
 
@@ -503,16 +503,16 @@ N specify the number of spaces when align."
 ;;;
 
 (when-feature-treesit%
-  (defun on-c-ts-mode-init! ()
-    "On \\=`c-ts-mode\\=' initialization."
-    (when-fn-c-macro-expand%
-      (setq% c-macro-prompt-flag t cmacexp)
-      (ad-enable-advice #'c-macro-expand 'around "c-macro-expand-around")
-      (ad-activate #'c-macro-expand t))
-    (when (boundp 'c-ts-mode-map)
-      (cc*-define-keys c-ts-mode-map))
-    (when (boundp 'c++-ts-mode-map)
-      (cc*-define-keys c++-ts-mode-map))))
+ (defun on-c-ts-mode-init! ()
+   "On \\=`c-ts-mode\\=' initialization."
+   (when-fn-c-macro-expand%
+     (setq% c-macro-prompt-flag t cmacexp)
+     (ad-enable-advice #'c-macro-expand 'around "c-macro-expand-around")
+     (ad-activate #'c-macro-expand t))
+   (when (boundp 'c-ts-mode-map)
+     (cc*-define-keys c-ts-mode-map))
+   (when (boundp 'c++-ts-mode-map)
+     (cc*-define-keys c++-ts-mode-map))))
 
 ;; end of `c-ts-mode'
 
