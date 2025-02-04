@@ -360,7 +360,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 https://nginx.org/en/docs/dev/development_guide.html#code_style")
 
 (when-fn% align-entire align
-  (defun cc*-style-align-entire ()
+  (defun cc*-style-align-entire (&rest _)
     "See \\=`align-entire\\='."
     (interactive)
     (let ((align-default-spacing 2))
@@ -368,7 +368,7 @@ https://nginx.org/en/docs/dev/development_guide.html#code_style")
       (call-interactively #'align-entire))))
 
 (when-fn% c-backslash-region cc-cmds
-  (defun cc*-style-align-backslash ()
+  (defun cc*-style-align-backslash (&rest _)
     "See \\=`c-backslash-region\\='."
     (interactive)
     (let ((c-backslash-column 48)
@@ -472,6 +472,7 @@ https://nginx.org/en/docs/dev/development_guide.html#code_style")
     (define-key keymap "|" #'cc*-style-align-entire))
   ;; align backslash style
   (when-fn% c-backslash-region cc-cmds
+    (autoload 'c-backslash-region "cc-cmds")
     (define-key keymap "" #'cc*-style-align-backslash))
   ;; format buffer
   (define-key keymap (kbd% "C-c M-c f") #'cc*-format-buffer)
