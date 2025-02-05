@@ -423,7 +423,8 @@ Returns the name of FILE when successed otherwise nil."
 
 (defun read-sexp-from-file (file)
   "Read the first sexp from FILE."
-  (when (and (stringp file) (file-exists-p file))
+  (when (and (stringp file)
+             (inhibit-file-name-handler (file-exists-p file)))
     (let ((b (get-buffer-create* (symbol-name (gensym*)) t)))
       (unwind-protect
           (with-current-buffer b
@@ -444,7 +445,8 @@ Return the name of FILE when successed otherwise nil."
 
 (defun read-str-from-file (file)
   "Read string from FILE."
-  (when (and (stringp file) (file-exists-p file))
+  (when (and (stringp file)
+             (inhibit-file-name-handler (file-exists-p file)))
     (let ((b (get-buffer-create* (symbol-name (gensym*)) t)))
       (unwind-protect
           (with-current-buffer b
