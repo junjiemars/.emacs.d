@@ -61,6 +61,62 @@
 
 ;; end of common-lisp
 
+;;;
+;; seq
+;;;
+
+(defmacro drop (n seq)
+  "Return rest sequence after drop the first N items in SEQ."
+  `(nthcdr ,n ,seq))
+
+(defun drop-while (pred seq)
+  "Return a sequence of items from SEQ drop while PRED is t."
+  (while (and seq (funcall pred (car seq)))
+    (setq seq (cdr seq)))
+  seq)
+
+(defmacro insert! (newelt seq idx)
+  "Insert NEWELT into the SEQ."
+  (let ((n1 (gensym*)) (i1 (gensym*)))
+    `(let ((,n1 ,newelt) (,i1 ,idx))
+       (let ((l (length ,seq)))
+         (when (and (integerp ,i1) (>= ,i1 0) (< ,i1 l))
+           (let ((c1 (copy-sequence ,seq))
+                 (j (1+ ,i1)))
+             (while (< j l)
+               (setf (nth j c1) (nth (1- j) ,seq) j (1+ j)))
+             (setf (nth ,i1 c1) ,n1)
+             (setq ,seq (append c1 `(,(nth (1- l) ,seq))))))))))
+
+(defun flatten (seq)
+  "Flatten SEQ."
+  (cond ((atom seq) (list seq))
+        ((null (cdr seq)) (flatten (car seq)))
+        (t (append (flatten (car seq)) (flatten (cdr seq))))))
+
+(unless-fn% take nil
+  (defun take (n seq)
+    "Return a sequence of the first N items in SEQ."
+    (let ((s nil))
+      (while (and (> n 0) seq)
+        (setq s (cons (car seq) s)
+              n (1- n)
+              seq (cdr seq)))
+      (nreverse s))))
+
+(defmacro take* (n seq)
+  `(take ,n ,seq))
+
+(defun take-while (pred seq)
+  "Return a sequence of items from SEQ just take while PRED is t."
+  (let ((s nil))
+    (while (and seq (not (funcall pred (car seq))))
+      (setq s (cons (car seq) s)
+            seq (cdr seq)))
+    (nreverse s)))
+
+;; end of seq
+
 (provide 'cls)
 
 ;; end of cls.el

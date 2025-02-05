@@ -11,12 +11,15 @@
 ;;; `cls'
 
 (autoload 'assoc** (v-home%> "config/cls"))
-(autoload 'mapcar** (v-home%> "config/cls"))
-(autoload 'remove-if* (v-home%> "config/cls"))
-(autoload 'member-if* (v-home%> "config/cls"))
+(autoload 'drop (v-home%> "config/cls") nil nil 'macro)
 (autoload 'every* (v-home%> "config/cls"))
-(autoload 'some* (v-home%> "config/cls"))
+(autoload 'insert! (v-home%> "config/cls") nil nil 'macro)
 (autoload 'loop* (v-home%> "config/cls"))
+(autoload 'mapcar** (v-home%> "config/cls"))
+(autoload 'member-if* (v-home%> "config/cls"))
+(autoload 'remove-if* (v-home%> "config/cls"))
+(autoload 'some* (v-home%> "config/cls"))
+(autoload 'take* (v-home%> "config/cls") nil nil 'macro)
 
 ;; end of `cls'
 

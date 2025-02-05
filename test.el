@@ -261,34 +261,6 @@
   (should (eq (when-interactive% t) (not (unless-interactive% t))))
   (should (eq (not (when-interactive% t)) (unless-interactive% t))))
 
-(ert-deftest %d:fn:flatten ()
-  (should (equal '(nil) (flatten nil)))
-  (should (equal '(a) (flatten 'a)))
-  (should (equal '(a b) (flatten '(a (b)))))
-  (should (equal '(a b c) (flatten '(a (b (c)))))))
-
-(ert-deftest %d:fn:take ()
-  (should-not (take 3 nil))
-  (should (equal '(1 2 3) (take 3 (range 1 10 1))))
-  (should (= 3 (length (take 3 (range 1 10 1)))))
-  (should (= 10 (length (take 100 (range 1 10 1))))))
-
-(ert-deftest %d:fn:drop ()
-  (should-not (drop 3 nil))
-  (should (equal '(8 9 10) (drop 7 (range 1 10 1))))
-  (should (= 3 (length (drop 7 (range 1 10 1)))))
-  (should (= 0 (length (drop 100 (range 1 10 1))))))
-
-(ert-deftest %d:fn:drop-while ()
-  (should-not (drop-while nil nil))
-  (should-not (drop-while (lambda (x) (= x 1)) nil))
-  (should (= 1 (car (drop-while (lambda (x) (< x 1))
-                                (range 1 10 1)))))
-  (should (equal '(2 3) (drop-while (lambda (x) (= x 1))
-                                    (range 1 3 1))))
-  (should (= 10 (length (drop-while (lambda (x) (> x 3))
-                                    (range 1 10 1))))))
-
 (ert-deftest %d:fn:ignore* ()
   (if-lexical%
       (should-not (let ((a 1) (b 2)) (ignore* a b)))
@@ -722,6 +694,34 @@
                              (loop* for i from 1 upto 3
                                     do (aset v i (* i i))
                                     finally return v)))))
+
+(ert-deftest %j:cls:flatten ()
+  (should (equal '(nil) (flatten nil)))
+  (should (equal '(a) (flatten 'a)))
+  (should (equal '(a b) (flatten '(a (b)))))
+  (should (equal '(a b c) (flatten '(a (b (c)))))))
+
+(ert-deftest %j:cls:take ()
+  (should-not (take 3 nil))
+  (should (equal '(1 2 3) (take 3 (range 1 10 1))))
+  (should (= 3 (length (take 3 (range 1 10 1)))))
+  (should (= 10 (length (take 100 (range 1 10 1))))))
+
+(ert-deftest %j:cls:drop ()
+  (should-not (drop 3 nil))
+  (should (equal '(8 9 10) (drop 7 (range 1 10 1))))
+  (should (= 3 (length (drop 7 (range 1 10 1)))))
+  (should (= 0 (length (drop 100 (range 1 10 1))))))
+
+(ert-deftest %j:cls:drop-while ()
+  (should-not (drop-while nil nil))
+  (should-not (drop-while (lambda (x) (= x 1)) nil))
+  (should (= 1 (car (drop-while (lambda (x) (< x 1))
+                                (range 1 10 1)))))
+  (should (equal '(2 3) (drop-while (lambda (x) (= x 1))
+                                    (range 1 3 1))))
+  (should (= 10 (length (drop-while (lambda (x) (> x 3))
+                                    (range 1 10 1))))))
 
 ;; end of `cls'
 
