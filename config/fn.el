@@ -16,7 +16,7 @@
 (defmacro if-feature% (feature then &rest else)
   "If has the FEAUTURE do THEN, otherwise do ELSE..."
   (declare (indent 2))
-  (if-feature `,feature
+  (if (feature? `,feature)
       `,then
     `(progn% ,@else)))
 
@@ -43,8 +43,8 @@
 (defmacro if-fn% (fn feature then &rest else)
   "If the FN of FEATURE is bounded yield non-nil, do THEN, else do ELSE..."
   (declare (indent 3))
-  (if-fn `,fn `,feature
-         `,then
+  (if (fn? `,fn `,feature)
+      `,then
     `(progn% ,@else)))
 
 (defmacro when-fn% (fn feature &rest body)
@@ -70,8 +70,8 @@
 (defmacro if-var% (var feature then &rest else)
   "If the VAR of FEATURE is bounded yield non-nil, do THEN, else do ELSE..."
   (declare (indent 3))
-  (if-var `,var `,feature
-          `,then
+  (if (var? `,var `,feature)
+      `,then
     `(progn% ,@else)))
 
 (defmacro when-var% (var feature &rest body)
@@ -625,25 +625,24 @@ Call FN with the path if FN is non-nil."
 (defmacro if-key% (keymap key def then &rest else)
   "If DEF for KEY in KEYMAP do THEN, else do ELSE..."
   (declare (indent 4))
-  `(if% (eq ,def (lookup-key ,keymap ,key))
-       ,then
-     (progn% ,@else)))
+  (let ((-ik1- (funcall `(lambda () (key? ,keymap ,key ,def)))))
+    (if (cdr -ik1-)
+        `,then
+      `(progn% ,@else))))
 
 (defmacro define-key% (keymap key def)
   "Define KEY to DEF in KEYMAP."
   ;; (declare (debug t))
-  (let ((-dkk3- (cond ((consp key) (funcall `(lambda () ,key)))
-                      (t key))))
-    (unless (eq def (lookup-key (symbol-value keymap) -dkk3-))
-      `(define-key ,keymap ,-dkk3- ,def))))
+  (let ((-dk1- (funcall `(lambda () (key? ,keymap ,key ,def)))))
+    (unless (cdr -dk1-)
+      `(define-key ,keymap ,(car -dk1-) ,def))))
 
 (defmacro define-global-key% (key def)
   "Define KEY to DEF in \\=`global-map\\='."
   ;; (declare (debug t))
-  (let ((-dkk3- (cond ((consp key) (funcall `(lambda () ,key)))
-                      (t key))))
-    (unless (eq def (lookup-key global-map -dkk3-))
-      `(define-key global-map ,-dkk3- ,def))))
+  (let ((-dgk1- (funcall `(lambda () (key? global-map ,key ,def)))))
+    (unless (cdr -dgk1-)
+      `(define-key global-map ,(car -dgk1-) ,def))))
 
 ;; end of key
 

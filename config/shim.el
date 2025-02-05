@@ -53,41 +53,39 @@
 (defvar *if-obarray* (make-vector 512 nil)
   "Interned obarray at compile-time.")
 
-(defun if-feature (feature then &optional else)
-  "If has the FEAUTURE do THEN, otherwise do ELSE."
-  (declare (indent 2))
+(defun feature? (feature)
+  "Return t if has the FEAUTURE, otherwise nil."
   (let ((hasft (format "%s_ft+" feature))
         (nonft (format "%s_ft-" feature)))
-    (cond ((intern-soft hasft *if-obarray*) then)
-          ((intern-soft nonft *if-obarray*) else)
-          ((require feature nil t) (intern hasft *if-obarray*) then)
-          (t (intern nonft *if-obarray*) else))))
+    (cond ((intern-soft hasft *if-obarray*) t)
+          ((intern-soft nonft *if-obarray*) nil)
+          ((require feature nil t) (intern hasft *if-obarray*) t)
+          (t (intern nonft *if-obarray*) nil))))
 
-(defun if-fn (fn feature then &optional else)
-  "If the FN of FEATURE is bounded yield non-nil, do THEN, else do ELSE."
-  (declare (indent 3))
+(defun fn? (fn feature)
+  "Return t if the FN of FEATURE is bounded, otherwise nil."
   (let ((hasfn (format "%s_fn+" fn))
         (nonfn (format "%s_fn-" fn)))
-    (cond ((intern-soft hasfn *if-obarray*) then)
-          ((intern-soft nonfn *if-obarray*) else)
-          ((fboundp fn) (intern hasfn *if-obarray*) then)
+    (cond ((intern-soft hasfn *if-obarray*) t)
+          ((intern-soft nonfn *if-obarray*) nil)
+          ((fboundp fn) (intern hasfn *if-obarray*) t)
           (feature (cond ((and (require feature nil t) (fboundp fn))
-                          (intern hasfn *if-obarray*) then)
-                         (t (intern nonfn) else)))
-          (t (intern nonfn *if-obarray*) else))))
+                          (intern hasfn *if-obarray*) t)
+                         (t (intern nonfn) nil)))
+          (t (intern nonfn *if-obarray*) nil))))
 
-(defun if-var (var feature then &optional else)
-  "If the VAR of FEATURE is bounded yield non-nil, do THEN, else do ELSE."
+(defun var? (var feature)
+  "Return t if the VAR of FEATURE is bounded, otherwise nil."
   (declare (indent 3))
   (let ((hasvar (format "%s_var+" var))
         (nonvar (format "%s_var-" var)))
-    (cond ((intern-soft hasvar *if-obarray*) then)
-          ((intern-soft nonvar *if-obarray*) else)
-          ((boundp var) (intern hasvar *if-obarray*) then)
+    (cond ((intern-soft hasvar *if-obarray*) t)
+          ((intern-soft nonvar *if-obarray*) nil)
+          ((boundp var) (intern hasvar *if-obarray*) t)
           (feature (cond ((and (require feature nil t) (boundp var))
-                          (intern hasvar *if-obarray*) then)
-                         (t (intern nonvar *if-obarray*) else)))
-          (t (intern nonvar *if-obarray*) else))))
+                          (intern hasvar *if-obarray*) t)
+                         (t (intern nonvar *if-obarray*) nil)))
+          (t (intern nonvar *if-obarray*) nil))))
 
 ;; (defun unintern-if* (name)
 ;;   "Delete NAME from \\=`*if-obarray*\\='."
@@ -99,6 +97,18 @@
 ;;   (unintern (format "%s_var-" name) *if-obarray*))
 
 ;; end of if-*
+
+;;;
+;; key*
+;;;
+
+(defun key? (keymap key def)
+  "Return KEY if DEF for KEY in KEYMAP, otherwise nil"
+  (if (eq def (lookup-key keymap key))
+      (cons key def)
+    (cons key nil)))
+
+;; end of key*
 
 (provide 'shim)
 
