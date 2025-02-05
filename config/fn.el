@@ -613,6 +613,12 @@ Call FN with the path if FN is non-nil."
 ;; file
 ;;;
 
+(defun path! (file)
+  (inhibit-file-name-handler
+    (if (file-exists-p file)
+        file
+      (mkdir* file))))
+
 (defun path+ (root &rest path)
   "Append a list of PATH to ROOT."
   (declare (indent 1))

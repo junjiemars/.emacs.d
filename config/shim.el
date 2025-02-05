@@ -29,6 +29,23 @@
   "Make an compile unit at compile time for \\=`compile!\\='"
   (funcall `(lambda () (compile-unit* ,file ,only-compile))))
 
+
+
+;;;
+;; `gensym*' since Emacs-26+
+;;;
+
+(defvar *gensym-counter* 0 "The counter of \\=`gensym*\\='.")
+
+(defun gensym* (&optional prefix)
+  "Generate a new uninterned symbol, PREFIX default is \"n\"."
+  (make-symbol
+   (concat (or prefix "n")
+           (prog1 (number-to-string *gensym-counter*)
+             (setq *gensym-counter* (1+ *gensym-counter*))))))
+
+;; end of `gensym*'
+
 ;;;
 ;; if-*
 ;;;
