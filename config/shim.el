@@ -25,6 +25,10 @@
   "Make versioned path of FILE under \\=`v-home\\=' at compile-time."
   (make-v-home* file))
 
+(defmacro compile-unit% (file &optional only-compile)
+  "Make an compile unit at compile time for \\=`compile!\\='"
+  (funcall `(lambda () (compile-unit* ,file ,only-compile))))
+
 ;;;
 ;; if-*
 ;;;

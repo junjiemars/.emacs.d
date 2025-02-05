@@ -60,13 +60,6 @@
        (let ((u1 (v-comp-file! file)))
          (vector (car u1) (cdr u1) only-compile nil))))
 
-(defmacro compile-unit% (file &optional only-compile)
-  "Make an compile unit at compile time for \\=`compile!\\='"
-  (let* ((-cu-u1- (v-comp-file! (funcall `(lambda () ,file))))
-         (-cu-src1- (car -cu-u1-))
-         (-cu-dst1- (cdr -cu-u1-)))
-    (and -cu-u1- (vector -cu-src1- -cu-dst1- only-compile nil))))
-
 (defun compile! (&rest units)
   "Compile and load UNITS."
   (while units
