@@ -18,15 +18,13 @@
 (eval-when-compile
   (defmacro when-fn-xref-find-definitions% (&rest body)
     (declare (indent 0))
-    (if-fn% xref-find-definitions xref
-            `(progn% ,@body)
-      `(comment ,@body))))
+    `(when-fn% xref-find-definitions xref
+       (progn% ,@body))))
 
 (eval-when-compile
   (defmacro unless-fn-xref-find-definitions% (&rest body)
     (declare (indent 0))
-    (if-fn% xref-find-definitions xref
-            `(comment ,@body)
+    (unless (when-fn% xref-find-definitions xref t)
       `(progn% ,@body))))
 
 ;; end of `xref-find-definitions' associated macro

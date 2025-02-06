@@ -459,8 +459,8 @@
   (should (string= (kbd% "C-c f i") (kbd "C-c f i"))))
 
 (ert-deftest %d:fn:if/define-key% ()
-  (should (and (null (define-key global-map "" nil))
-               (if-key% global-map "" #'+ nil t)))
+  (define-key global-map "" nil)
+  (should-not (if-key% global-map "" #'+ t nil))
   (should (eq #'+ (define-global-key% "" #'+)))
   (should-not (define-key global-map "" nil))
   (should (eq #'+ (define-key% global-map "" #'+))))

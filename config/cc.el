@@ -230,9 +230,8 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 
 (eval-when-compile
   (defmacro when-fn-ff-find-other-file% (&rest body)
-    (if-fn% ff-find-other-file find-file
-            `(progn% ,@body)
-      `(comment ,@body))))
+    `(when-fn% ff-find-other-file find-file
+       (progn% ,@body))))
 
 (when-fn-ff-find-other-file%
  (defun cc*-find-include-file (&optional in-other-window)

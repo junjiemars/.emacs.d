@@ -16,16 +16,14 @@
 (eval-when-compile
   (defmacro unless-fn-thing-at-point-bounds-of-string-at-point% (&rest body)
     (declare (indent 0))
-    (if-fn% thing-at-point-bounds-of-string-at-point thingatpt
-            `(comment ,@body)
-      `(progn% ,@body))))
+    `(unless-fn% thing-at-point-bounds-of-string-at-point thingatpt
+       (progn% ,@body))))
 
 (eval-when-compile
   (defmacro unless-fn-thing-at-point-bounds-of-list-at-point% (&rest body)
     (declare (indent 0))
-    (if-fn% thing-at-point-bounds-of-list-at-point thingatpt
-            `(comment ,@body)
-      `(progn% ,@body))))
+    `(unless-fn% thing-at-point-bounds-of-list-at-point thingatpt
+       (progn% ,@body))))
 
 (unless-fn-thing-at-point-bounds-of-string-at-point%
   (defun thing-at-point-bounds-of-string-at-point ()
