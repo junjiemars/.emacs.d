@@ -22,9 +22,12 @@
 (when-feature% transient)
 
 ;;; `treesit' builtin since Emacs-29+
-(defmacro when-feature-treesit% (&rest body)
+(eval-when-compile
   (when (and (fboundp 'treesit-available-p) (treesit-available-p))
-    `(progn% ,@body)))
+    (when-fn% treesit-available-p nil)))
+(defmacro when-feature-treesit% (&rest body)
+  `(when-fn% treesit-available-p nil
+     (progn% ,@body)))
 
 ;;; `vc'
 (defmacro when-feature-vc% (&rest body)

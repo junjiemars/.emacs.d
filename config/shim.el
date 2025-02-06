@@ -50,7 +50,7 @@
 ;; if-*
 ;;;
 
-(defvar *nore-obarray* (make-vector 512 nil)
+(defvar *nore-obarray* (make-vector 251 nil)
   "Interned obarray at compile-time.")
 
 (defun feature? (feature)
