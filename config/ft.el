@@ -26,6 +26,7 @@
   (when (and (fboundp 'treesit-available-p) (treesit-available-p))
     (when-fn% treesit-available-p nil)))
 (defmacro when-feature-treesit% (&rest body)
+  (declare (indent 0))
   `(when-fn% treesit-available-p nil
      (progn% ,@body)))
 

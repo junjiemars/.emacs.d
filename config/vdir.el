@@ -85,7 +85,7 @@
 
 ;; `treesit'
 (when-feature-treesit%
-  (setq treesit-extra-load-path `(,(v-home! ".treesit/"))))
+  (set-default 'treesit-extra-load-path `(,(v-home! ".treesit/"))))
 
 ;; `url'
 (setq% url-configuration-directory (v-home! ".url/") url)
