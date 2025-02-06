@@ -524,13 +524,16 @@ Call FN with the path if FN is non-nil."
   "Return from \\=excutable-find*\\= at compile time."
   (executable-find* command fn))
 
-(defmacro emacs-arch ()
+(defun emacs-arch ()
   "Return emacs architecture, 64bits or 32bits."
   (cond ((= most-positive-fixnum (1- (expt 2 61))) 64)
         ((= most-positive-fixnum (1- (expt 2 29))) 32)
         (t 16)))
 
-(defmacro platform-arch ()
+(defmacro emacs-arch% ()
+  (emacs-arch))
+
+(defun platform-arch ()
   "Return platform architecture."
   (let* ((m64 "\\([xX]86_64\\|[aA][mM][dD]64\\|aarch64\\|arm64\\)")
          (x64 (string-match* m64 system-configuration 1)))
@@ -541,6 +544,9 @@ Call FN with the path if FN is non-nil."
             (if c64 c64 (getenv-internal cpu)))
         (let ((m (shell-command* "uname" "-m")))
           (and (zerop (car m)) (string-trim> (cdr m))))))))
+
+(defmacro platform-arch% ()
+  (platform-arch))
 
 ;; end of platform
 

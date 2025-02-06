@@ -82,7 +82,7 @@
     ;; `next-error' find source file
     (add-hook 'compilation-finish-functions
               #'compile*-make-change-dir
-              (emacs-arch)))
+              (emacs-arch%)))
   (add-hook 'compilation-filter-hook #'compile*-colorize-buffer!)
   (when-var% compilation-mode-map compile
     ;; define `recompile' and `quit-window' key bindings

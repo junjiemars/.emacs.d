@@ -170,7 +170,7 @@
   (self-graphic-init!)
   (when-fn% self-shell-read! nil (self-shell-read!))
   (when-fn% self-socks-init! nil (self-socks-init!))
-  (setq% history-length (emacs-arch))
+  (setq% history-length (emacs-arch%))
   (setq% message-log-max 512)
   ;; preferred coding system
   (prefer-coding-system 'utf-8)
