@@ -53,7 +53,7 @@
 
 ;; `project'
 (when-feature% project
-  (setq% project-list-file (v-home! ".project/list") project))
+  (set-default 'project-list-file (v-home! ".project/list")))
 
 ;; Savehist: save minibuffer history
 (setq% savehist-file (v-home! ".minibuffer/history") savehist)
