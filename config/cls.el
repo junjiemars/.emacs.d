@@ -71,9 +71,12 @@
 
 (defun drop-while (pred seq)
   "Return a sequence of items from SEQ drop while PRED is t."
-  (while (and seq (funcall pred (car seq)))
-    (setq seq (cdr seq)))
-  seq)
+  (let ((s nil))
+    (while seq
+      (unless (funcall pred (car seq))
+        (setq s (cons (car seq) s)))
+      (setq seq (cdr seq)))
+    (nreverse s)))
 
 (defmacro insert! (newelt seq idx)
   "Insert NEWELT into the SEQ."
@@ -110,9 +113,10 @@
 (defun take-while (pred seq)
   "Return a sequence of items from SEQ just take while PRED is t."
   (let ((s nil))
-    (while (and seq (not (funcall pred (car seq))))
-      (setq s (cons (car seq) s)
-            seq (cdr seq)))
+    (while seq
+      (when (funcall pred (car seq))
+        (setq s (cons (car seq) s)))
+      (setq seq (cdr seq)))
     (nreverse s)))
 
 ;; end of seq

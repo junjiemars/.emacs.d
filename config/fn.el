@@ -122,7 +122,7 @@
     (list 'prog1 nil (cons 'list `,@vars))))
 
 (defun true (&rest x)
-  "Return true value ignore X."
+  "Return true value and ignore X."
   (prog1 t (ignore* x)))
 
 (defmacro safe-local-variable* (var &optional fn)

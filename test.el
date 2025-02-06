@@ -266,16 +266,6 @@
       (should-not (let ((a 1) (b 2)) (ignore* a b)))
     (should-not (let ((a 1) (b 2)) (ignore* a b)))))
 
-(ert-deftest %d:fn:take-while ()
-  (should-not (take-while nil nil))
-  (should-not (take-while (lambda (x) (= x 1)) nil))
-  (should-not (take-while (lambda (x) (>= x 1))
-                          (range 1 10 1)))
-  (should (equal '(1 2) (take-while (lambda (x) (> x 2))
-                                    (range 1 3 1))))
-  (should (= 2 (length (take-while (lambda (x) (>= x 3))
-                                   (range 1 10 1))))))
-
 (ert-deftest %d:fn:push! ()
   (should (equal '(a b c) (let ((s '(a b c)))
                             (push! 'a s t)
@@ -702,10 +692,10 @@
   (should (equal '(a b c) (flatten '(a (b (c)))))))
 
 (ert-deftest %j:cls:take ()
-  (should-not (take 3 nil))
-  (should (equal '(1 2 3) (take 3 (range 1 10 1))))
-  (should (= 3 (length (take 3 (range 1 10 1)))))
-  (should (= 10 (length (take 100 (range 1 10 1))))))
+  (should-not (take* 3 nil))
+  (should (equal '(1 2 3) (take* 3 (range 1 10 1))))
+  (should (= 3 (length (take* 3 (range 1 10 1)))))
+  (should (= 10 (length (take* 100 (range 1 10 1))))))
 
 (ert-deftest %j:cls:drop ()
   (should-not (drop 3 nil))
@@ -716,12 +706,15 @@
 (ert-deftest %j:cls:drop-while ()
   (should-not (drop-while nil nil))
   (should-not (drop-while (lambda (x) (= x 1)) nil))
-  (should (= 1 (car (drop-while (lambda (x) (< x 1))
-                                (range 1 10 1)))))
-  (should (equal '(2 3) (drop-while (lambda (x) (= x 1))
-                                    (range 1 3 1))))
-  (should (= 10 (length (drop-while (lambda (x) (> x 3))
-                                    (range 1 10 1))))))
+  (should (= 1 (car (drop-while (lambda (x) (> x 1)) (range 1 10 1)))))
+  (should (equal '(1 10) (drop-while (lambda (x) (and (> x 1) (< x 10)))
+                                     (range 1 10 1)))))
+
+(ert-deftest %j:cls:take-while ()
+  (should-not (take-while nil nil))
+  (should-not (take-while (lambda (x) (= x 1)) nil))
+  (should (equal '(2) (take-while (lambda (x) (and (> x 1) (< x 3)))
+                                  (range 1 10 1)))))
 
 ;; end of `cls'
 
