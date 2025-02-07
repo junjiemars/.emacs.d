@@ -50,51 +50,42 @@
 ;; if-*
 ;;;
 
-(defvar *nore-obarray* (make-vector 503 nil)
-  "Interned obarray at compile-time.")
+(defvar *nore-has-obarray* (make-vector 251 nil)
+  "Interned has obarray at compile-time.")
+
+(defvar *nore-non-obarray* (make-vector 251 nil)
+  "Interned non obarray at compile-time.")
 
 (defun feature? (feature)
   "Return t if has the FEAUTURE, otherwise nil."
-  (let ((has (concat (symbol-name feature) "_ft+"))
-        (non (concat (symbol-name feature) "_ft-")))
-    (cond ((intern-soft has *nore-obarray*) t)
-          ((intern-soft non *nore-obarray*) nil)
-          ((require feature nil t) (intern has *nore-obarray*) t)
-          (t (intern non *nore-obarray*) nil))))
+  (let ((name (symbol-name feature)))
+    (cond ((intern-soft name *nore-has-obarray*) t)
+          ((intern-soft name *nore-non-obarray*) nil)
+          ((featurep feature) (intern name *nore-has-obarray*))
+          ((require feature nil t) (intern name *nore-has-obarray*) t)
+          (t (intern name *nore-non-obarray*) nil))))
 
 (defun fn? (fn feature)
   "Return t if the FN of FEATURE is bounded, otherwise nil."
-  (let ((has (concat (symbol-name fn) "_fn+"))
-        (non (concat (symbol-name fn) "_fn-")))
-    (cond ((intern-soft has *nore-obarray*) t)
-          ((intern-soft non *nore-obarray*) nil)
-          ((fboundp fn) (intern has *nore-obarray*) t)
+  (let ((name (symbol-name fn)))
+    (cond ((intern-soft name *nore-has-obarray*) t)
+          ((intern-soft name *nore-non-obarray*) nil)
+          ((fboundp fn) (intern name *nore-has-obarray*) t)
           (feature (cond ((and (require feature nil t) (fboundp fn))
-                          (intern has *nore-obarray*) t)
-                         (t (intern non *nore-obarray*) nil)))
-          (t (intern non *nore-obarray*) nil))))
+                          (intern name *nore-has-obarray*) t)
+                         (t (intern name *nore-non-obarray*) nil)))
+          (t (intern name *nore-non-obarray*) nil))))
 
 (defun var? (var feature)
   "Return t if the VAR of FEATURE is bounded, otherwise nil."
-  (declare (indent 3))
-  (let ((has (concat (symbol-name var) "_var+"))
-        (non (concat (symbol-name var) "_var-")))
-    (cond ((intern-soft has *nore-obarray*) t)
-          ((intern-soft non *nore-obarray*) nil)
-          ((boundp var) (intern has *nore-obarray*) t)
+  (let ((name (symbol-name var)))
+    (cond ((intern-soft name *nore-has-obarray*) t)
+          ((intern-soft name *nore-non-obarray*) nil)
+          ((boundp var) (intern name *nore-has-obarray*) t)
           (feature (cond ((and (require feature nil t) (boundp var))
-                          (intern has *nore-obarray*) t)
-                         (t (intern non *nore-obarray*) nil)))
-          (t (intern non *nore-obarray*) nil))))
-
-;; (defun unintern-if* (name)
-;;   "Delete NAME from \\=`*if-obarray*\\='."
-;;   (unintern (format "%s_ft+" name) *if-obarray*)
-;;   (unintern (format "%s_ft-" name) *if-obarray*)
-;;   (unintern (format "%s_fn+" name) *if-obarray*)
-;;   (unintern (format "%s_fn-" name) *if-obarray*)
-;;   (unintern (format "%s_var+" name) *if-obarray*)
-;;   (unintern (format "%s_var-" name) *if-obarray*))
+                          (intern name *nore-has-obarray*) t)
+                         (t (intern name *nore-non-obarray*) nil)))
+          (t (intern name *nore-non-obarray*) nil))))
 
 ;; end of if-*
 

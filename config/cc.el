@@ -332,32 +332,6 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
     (cond ((= col 0) 'c-basic-offset)
           (t 'c-lineup-arglist))))
 
-(defconst +cc*-style-nginx+
-  `("nginx"
-    (c-basic-offset . 4)
-    (c-comment-only-line-offset . 0)
-    (c-backslash-max-column . 78)
-    (c-backslash-column . 77)
-    (c-offsets-alist
-     (statement-block-intro . +)
-     (substatement-open . 0)
-     (substatement-label . 0)
-     (label . 0)
-     (statement-cont . +)
-     (inline-open . 0)
-     (brace-list-intro
-      first
-      ,(when-fn% c-lineup-2nd-brace-entry-in-arglist cc-align
-         #'c-lineup-2nd-brace-entry-in-arglist)
-      ,(when-fn% c-lineup-class-decl-init-+ cc-align
-         #'c-lineup-class-decl-init-+)
-      +)
-     (arglist-cont-nonempty
-      .
-      #'cc*-style-arglist-cont-nonempty)))
-  "nginx style for \\=`cc-styles\\='.
-https://nginx.org/en/docs/dev/development_guide.html#code_style")
-
 (when-fn% align-entire align
   (defun cc*-style-align-entire (&rest _)
     "See \\=`align-entire\\='."
@@ -488,8 +462,6 @@ https://nginx.org/en/docs/dev/development_guide.html#code_style")
 
 (defun on-cc-mode-init! ()
   "On \\=`cc-mode\\=' initialization."
-  ;; add styles
-  ;; (c-add-style (car +cc*-style-nginx+) (cdr +cc*-style-nginx+))
   (when-fn-c-macro-expand%
     ;; [C-c C-e] `c-macro-expand'
     (setq% c-macro-prompt-flag t cmacexp)
