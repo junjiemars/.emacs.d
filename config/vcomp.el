@@ -33,7 +33,7 @@
   "Make an compile unit for \\=`compile!\\='."
   (and (stringp file) (inhibit-file-name-handler (file-exists-p file))
        (let ((u1 (make-v-comp-file file)))
-         (vector (car u1) (cdr u1) only-compile nil))))
+         (vector (car u1) (cdr u1) only-compile))))
 
 (defun compile! (&rest units)
   "Compile and load UNITS."
