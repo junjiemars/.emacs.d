@@ -59,8 +59,12 @@
 ;; *-version% macro
 ;;;
 
-(defconst +emacs-version+ (string-to-number emacs-version)
-  "The \\=`float\\=' version number of Emacs.")
+(defmacro emacs-version% ()
+  "The \\=`float\\=' xx.x version number of Emacs."
+  (string-to-number emacs-version))
+
+(defconst +emacs-version+ (emacs-version%)
+  "Version number of Emacs.")
 
 (defmacro if-version% (cmp version then &rest else)
   "If (CMP VERSION \\=`+emacs-version+\\=') yield non-nil, do THEN,
@@ -75,10 +79,10 @@ else do ELSE..."
   (declare (indent 2))
   `(if-version% ,cmp ,version (progn% ,@body)))
 
-(defmacro v-name ()
+(defmacro v-name% ()
   "Return the versioned name."
-  `(concat (if (display-graphic-p) "g_" "t_")
-           (number-to-string +emacs-version+)))
+  (concat (if (display-graphic-p) "g_" "t_")
+          (number-to-string +emacs-version+)))
 
 ;; end of *-version% macro
 
@@ -135,7 +139,7 @@ else do ELSE..."
   "Return versioned FILE."
   `(let ((-vp-f1- ,file))
      (concat (file-name-directory -vp-f1-)
-             ,(v-name) "/"
+             ,(v-name%) "/"
              (file-name-nondirectory -vp-f1-))))
 
 (defmacro v-home (&optional file)

@@ -133,7 +133,7 @@ If RESET is true then reset before load."
                                     "-theme.el")))
                      (compile! (compile-unit* f t))
                      (load-theme!
-                      name (concat dir "/" (v-name) "/")))
+                      name (concat dir "/" (v-name%) "/")))
                  (load-theme! name dir))))
             (t
              ;; load builtin theme
