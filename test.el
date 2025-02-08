@@ -194,11 +194,11 @@
   (should (string-match "\\.el[cn]$" (file-name-nondirectory (v-home%> nil))))
   (should (string-match "[gt]_[.0-9]+.*x\\.el[cn]?$" (v-home%> "x"))))
 
-(ert-deftest %d:fn:emacs-arch ()
-  (should (= (logand (emacs-arch) 2) 0)))
+(ert-deftest %d:fn:emacs-arch% ()
+  (should (= (logand (emacs-arch%) 2) 0)))
 
-(ert-deftest %d:fn:platform-arch ()
-  (should (platform-arch)))
+(ert-deftest %d:fn:platform-arch% ()
+  (should (platform-arch%)))
 
 (ert-deftest %d:fn:if/when/unless-lexical% ()
   (if (if-lexical% t nil)

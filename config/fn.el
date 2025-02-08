@@ -527,15 +527,15 @@ Call FN with the path if FN is non-nil."
 
 (defun platform-arch ()
   "Return platform architecture."
-  (let* ((m64 "\\([xX]86_64\\|[aA][mM][dD]64\\|aarch64\\|arm64\\)")
-         (x64 (string-match* m64 system-configuration 1)))
-    (if x64 x64
-      (if-platform% windows-nt
-          (let* ((cpu "PROCESSOR_ARCHITECTURE")
-                 (c64 (string-match* m64 (getenv-internal cpu) 1)))
-            (if c64 c64 (getenv-internal cpu)))
-        (let ((m (shell-command* "uname" "-m")))
-          (and (zerop (car m)) (string-trim> (cdr m))))))))
+  (let ((d (strchr system-configuration ?-)))
+    (if (and d (> d 0))
+        (downcase (substring-no-properties system-configuration 0 d))
+      (let ((p (when-platform% 'windows-nt
+                 (getenv-internal "PROCESSOR_ARCHITECTURE"))))
+        (if p (downcase p)
+          (let ((m (shell-command* "uname" "-m")))
+            (and (zerop (car m))
+                 (downcase (string-trim> (cdr m))))))))))
 
 (defmacro platform-arch% ()
   (platform-arch))
