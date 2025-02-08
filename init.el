@@ -167,16 +167,18 @@ else do ELSE..."
   (declare (indent 0))
   `(if-native-comp% (progn% ,@body)))
 
-(defmacro comp-file-extension% ()
-  "Return extension of compiled file."
-  `(if-native-comp% ".eln" ".elc"))
+(defconst +comp-file-extension+ (if-native-comp% ".eln" ".elc"))
+
+;; (defmacro comp-file-extension% ()
+;;   "Return extension of compiled file."
+;;   `(if-native-comp% ".eln" ".elc"))
 
 (defmacro make-v-comp-file (src)
   "Make a versioned cons copy of SRC."
   `(let* ((-mvcf-s1- ,src)
           (d1 (v-path -mvcf-s1-))
           (d2 (concat (file-name-sans-extension* d1)
-                      ,(comp-file-extension%))))
+                      +comp-file-extension+)))
      (when (file-newer-than-file-p -mvcf-s1- d1)
        (cond ((file-exists-p d2) (delete-file d2))
              ((file-exists-p d1) d1)
