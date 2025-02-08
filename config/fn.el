@@ -522,12 +522,6 @@ Call FN with the path if FN is non-nil."
   "Return from \\=excutable-find*\\= at compile time."
   (executable-find* command fn))
 
-(defun emacs-arch ()
-  "Return emacs architecture, 64bits or 32bits."
-  (cond ((= most-positive-fixnum (1- (expt 2 61))) 64)
-        ((= most-positive-fixnum (1- (expt 2 29))) 32)
-        (t 16)))
-
 (defmacro emacs-arch% ()
   (emacs-arch))
 

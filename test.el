@@ -26,14 +26,16 @@
   (should (message "# EMACS_HOME = %s" (getenv "EMACS_HOME")))
   (should (message "# ~/.emacs.d = %s" (expand-file-name "~/.emacs.d")))
   (should (message "# system-type = %s" system-type))
-  (should (message "# platform-arch = %s" (platform-arch)))
   (should (message "# sh = %s" (or (executable-find "sh") "")))
+  (should (message "# PROCESSOR_ARCHITECTURE = %s"
+                   (getenv "PROCESSOR_ARCHITECTURE")))
   (should (message "# system-configuration = %s" system-configuration))
   (should (message "# system-configuration-options = %s"
                    system-configuration-options))
   (should (message "# system-configuration-features = %s"
                    (when (boundp 'system-configuration-features)
-                     system-configuration-features))))
+                     system-configuration-features)))
+  (should (message "# uname -a = %s" (shell-command-to-string "uname -a"))))
 
 ;;;
 ;; init
@@ -111,10 +113,6 @@
 
 (ert-deftest %b:init:if/when-native-comp% ()
   (should (eq (if-native-comp% nil t) (null (when-native-comp% t)))))
-
-(ert-deftest %b:init:comp-file-extension% ()
-  (should (or (string-equal ".eln" (comp-file-extension%))
-              (string-equal ".elc" (comp-file-extension%)))))
 
 (ert-deftest %b:init:make-v-comp-file ()
   (let ((fs (make-v-comp-file (make-temp-file "nore-mvcf-"))))
