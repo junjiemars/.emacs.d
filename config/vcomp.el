@@ -14,10 +14,12 @@
 ;;;
 
 (defun emacs-home* (&optional file)
-  (emacs-home file))
+  (inhibit-file-name-handler
+    (emacs-home file)))
 
 (defun make-v-home* (file)
-  (make-v-home file))
+  (inhibit-file-name-handler
+    (make-v-home file)))
 
 (defun v-home* (&optional file)
   (inhibit-file-name-handler
@@ -31,9 +33,10 @@
 
 (defun compile-unit* (file &optional only-compile)
   "Make an compile unit for \\=`compile!\\='."
-  (and (stringp file) (inhibit-file-name-handler (file-exists-p file))
-       (let ((u1 (make-v-comp-file file)))
-         (vector (car u1) (cdr u1) only-compile))))
+  (inhibit-file-name-handler
+    (and (stringp file) (file-exists-p file)
+         (let ((u1 (make-v-comp-file file)))
+           (vector (car u1) (cdr u1) only-compile)))))
 
 (defun compile! (&rest units)
   "Compile and load UNITS."

@@ -59,12 +59,8 @@
 ;; *-version% macro
 ;;;
 
-(defmacro emacs-version% ()
-  "The \\=`float\\=' xx.x version number of Emacs."
-  (string-to-number emacs-version))
-
-(defconst +emacs-version+ (emacs-version%)
-  "Version number of Emacs.")
+(defconst +emacs-version+ (string-to-number emacs-version)
+  "The \\=`float\\=' xx.x version number of Emacs.")
 
 (defmacro if-version% (cmp version then &rest else)
   "If (CMP VERSION \\=`+emacs-version+\\=') yield non-nil, do THEN,
@@ -72,17 +68,17 @@ else do ELSE..."
   (declare (indent 3))
   `(if% (,cmp ,version +emacs-version+)
        ,then
-     (progn% ,@else)))
+     ,@else))
 
 (defmacro when-version% (cmp version &rest body)
   "When (CMP VERSION \\=`+emacs-version+\\=') yield non-nil, do BODY."
   (declare (indent 2))
   `(if-version% ,cmp ,version (progn% ,@body)))
 
-(defmacro v-name% ()
+(defmacro v-name ()
   "Return the versioned name."
-  (concat (if (display-graphic-p) "g_" "t_")
-          (number-to-string +emacs-version+)))
+  `(concat ,(if (display-graphic-p) "g_" "t_")
+           ,(number-to-string +emacs-version+)))
 
 ;; end of *-version% macro
 
@@ -139,7 +135,7 @@ else do ELSE..."
   "Return versioned FILE."
   `(let ((-vp-f1- ,file))
      (concat (file-name-directory -vp-f1-)
-             ,(v-name%) "/"
+             ,(v-name) "/"
              (file-name-nondirectory -vp-f1-))))
 
 (defmacro v-home (&optional file)
@@ -148,11 +144,10 @@ else do ELSE..."
 
 (defmacro make-v-home (file)
   "Make \\=`v-home\\='."
-  `(inhibit-file-name-handler
-     (let ((vf (v-home ,file)))
-       (if (file-exists-p vf)
-           vf
-         (mkdir* vf)))))
+  `(let ((vf (v-home ,file)))
+     (if (file-exists-p vf)
+         vf
+       (mkdir* vf))))
 
 ;; end of versioned file macro
 
@@ -178,17 +173,16 @@ else do ELSE..."
 
 (defmacro make-v-comp-file (src)
   "Make a versioned cons copy of SRC."
-  `(inhibit-file-name-handler
-     (let* ((-mvcf-s1- ,src)
-            (d1 (v-path -mvcf-s1-))
-            (d2 (concat (file-name-sans-extension* d1)
-                        ,(comp-file-extension%))))
-       (when (file-newer-than-file-p -mvcf-s1- d1)
-         (cond ((file-exists-p d2) (delete-file d2))
-               ((file-exists-p d1) d1)
-               (t (mkdir* d1)))
-         (copy-file -mvcf-s1- d1 t t))
-       (cons d1 d2))))
+  `(let* ((-mvcf-s1- ,src)
+          (d1 (v-path -mvcf-s1-))
+          (d2 (concat (file-name-sans-extension* d1)
+                      ,(comp-file-extension%))))
+     (when (file-newer-than-file-p -mvcf-s1- d1)
+       (cond ((file-exists-p d2) (delete-file d2))
+             ((file-exists-p d1) d1)
+             (t (mkdir* d1)))
+       (copy-file -mvcf-s1- d1 t t))
+     (cons d1 d2)))
 
 (defmacro time (id &rest form)
   "Run FORM and summarize resource usage."

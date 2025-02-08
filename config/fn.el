@@ -100,10 +100,7 @@
 (defmacro if-lexical% (then &rest else)
   "If lexical binding is built-in do THEN, otherwise do ELSE..."
   (declare (indent 1))
-  `(if-version%
-       <= 24.1
-       ,then
-     (progn% ,@else)))
+  `(if-version% <= 24.1 ,then ,@else))
 
 (defmacro when-lexical% (&rest body)
   "When lexical binding is built-in do BODY."
@@ -118,8 +115,7 @@
 (defmacro ignore* (&rest vars)
   "Return nil, list VARS at compile time if in lexical context."
   (declare (indent 0))
-  (when-lexical%
-    (list 'prog1 nil (cons 'list `,@vars))))
+  `(when-lexical% (prog1 nil ,@vars)))
 
 (defun true (&rest x)
   "Return true value and ignore X."

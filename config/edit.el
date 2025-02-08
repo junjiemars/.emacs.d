@@ -71,12 +71,12 @@
                     ((eq :< scope)
                      (< (string-to-number
                          (string-match* "^[gt]_\\(.*\\)$" f 1))
-                        (emacs-version%)))
+                        +emacs-version+))
                     (t (null (string-match
                               (format
                                "^[gt]_%s\\'"
                                (regexp-quote
-                                (number-to-string (emacs-version%))))
+                                (number-to-string +emacs-version+)))
                               f))))
           (let ((cmd (if-platform% windows-nt
                          (concat "rmdir /Q /S " (concat d f))
