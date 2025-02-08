@@ -50,47 +50,39 @@
 ;; if-*
 ;;;
 
-(defvar *nore-has-obarray* (make-vector 251 nil)
-  "Interned has obarray at compile-time.")
-
 (defvar *nore-non-obarray* (make-vector 251 nil)
   "Interned non obarray at compile-time.")
 
 (defun feature? (feature)
   "Return t if has the FEAUTURE, otherwise nil."
   (let ((name (symbol-name feature)))
-    (cond ((intern-soft name *nore-has-obarray*) t)
-          ((intern-soft name *nore-non-obarray*) nil)
-          ((featurep feature) (intern name *nore-has-obarray*))
-          ((require feature nil t) (intern name *nore-has-obarray*) t)
+    (cond ((intern-soft name *nore-non-obarray*) nil)
+          ((featurep feature) t)
+          ((require feature nil t) t)
           (t (intern name *nore-non-obarray*) nil))))
 
 (defun fn? (fn feature)
   "Return t if the FN of FEATURE is bounded, otherwise nil."
   (let ((name (symbol-name fn)))
-    (cond ((intern-soft name *nore-has-obarray*) t)
-          ((intern-soft name *nore-non-obarray*) nil)
-          ((fboundp fn) (intern name *nore-has-obarray*) t)
-          (feature (cond ((and (require feature nil t) (fboundp fn))
-                          (intern name *nore-has-obarray*) t)
+    (cond ((intern-soft name *nore-non-obarray*) nil)
+          ((fboundp fn) t)
+          (feature (cond ((and (require feature nil t) (fboundp fn)) t)
                          (t (intern name *nore-non-obarray*) nil)))
           (t (intern name *nore-non-obarray*) nil))))
 
 (defun var? (var feature)
   "Return t if the VAR of FEATURE is bounded, otherwise nil."
   (let ((name (symbol-name var)))
-    (cond ((intern-soft name *nore-has-obarray*) t)
-          ((intern-soft name *nore-non-obarray*) nil)
-          ((boundp var) (intern name *nore-has-obarray*) t)
-          (feature (cond ((and (require feature nil t) (boundp var))
-                          (intern name *nore-has-obarray*) t)
+    (cond ((intern-soft name *nore-non-obarray*) nil)
+          ((boundp var) t)
+          (feature (cond ((and (require feature nil t) (boundp var)) t)
                          (t (intern name *nore-non-obarray*) nil)))
           (t (intern name *nore-non-obarray*) nil))))
 
 ;; end of if-*
 
 ;;;
-;; key*
+;; key
 ;;;
 
 (defun key? (keymap key def)
@@ -99,10 +91,10 @@
       (cons key def)
     (cons key nil)))
 
-;; end of key*
+;; end of key
 
 ;;;
-;; platform*
+;; platform
 ;;;
 
 (defun emacs-arch ()
@@ -111,7 +103,7 @@
         ((= most-positive-fixnum (1- (expt 2 29))) 32)
         (t 16)))
 
-;; end of platform*
+;; end of platform
 
 (provide 'shim)
 
