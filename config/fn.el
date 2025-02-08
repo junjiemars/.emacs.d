@@ -100,7 +100,9 @@
 (defmacro if-lexical% (then &rest else)
   "If lexical binding is built-in do THEN, otherwise do ELSE..."
   (declare (indent 1))
-  `(if-version% <= 24.1 ,then ,@else))
+  `(if-var% lexical-binding nil
+            ,then
+     (progn% ,@else)))
 
 (defmacro when-lexical% (&rest body)
   "When lexical binding is built-in do BODY."
