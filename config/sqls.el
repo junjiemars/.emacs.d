@@ -17,9 +17,9 @@
 (eval-when-compile
   (defmacro when-sql-feature% (&rest body)
     (declare (indent 0))
-    `(if-fn% sql-execute-feature sql
-             (progn% ,@body)
-       (comment ,@body))))
+    (if-fn% sql-execute-feature sql
+            `(progn% ,@body)
+      `(comment ,@body))))
 
 (eval-when-compile
   (defmacro when-sql-oracle-feature% (&rest body)
