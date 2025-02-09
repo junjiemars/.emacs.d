@@ -12,6 +12,7 @@
 ;;; require
 
 ;; `call-interactively?'
+;; `new-line*'
 (require% 'ed (v-home%> "config/ed"))
 
 ;; end of require

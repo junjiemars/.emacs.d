@@ -49,9 +49,11 @@
                  (newline arg 'interactive)
       (newline arg))))
 
-;;; open-next/previous-line fn
-;;; control indent or not: `open-next-line' and `open-previous-line'.
-;;; see also: https://www.emacswiki.org/emacs/OpenNextLine
+;;;
+;; open-next/previous-line fn
+;; control indent or not: `open-next-line' and `open-previous-line'.
+;; see also: https://www.emacswiki.org/emacs/OpenNextLine
+;;;
 
 (defun open-next-line (n &optional indent)
   "Move to the next line and then open N lines, like vi\\=' \\=`o\\=' command.\n
@@ -106,6 +108,10 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
 
 ;; end of file
 
+;;;
+;; buffer
+;;;
+
 (defmacro shell-format-buffer (modes alternate src shell*)
   "Format the current buffer via SHELL\\=*."
   (declare (indent 1))
@@ -132,6 +138,11 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
                      (insert ss)))
                  (goto-char p)))))))))
 
+;; end of buffer
+
+;;;
+;; version
+;;;
 
 (defun version-strncmp (v1 v2 &optional n)
   "Return 0 if V1 equals V2, -1 if V1 less than V2, otherwise 1.\n
@@ -178,6 +189,9 @@ If optional N is non-nil compare no more than N parts, default N is 4."
                        ((= i (- n 1)) (throw 'br 0))
                        ((and (= j1 l1) (= j2 l2)) (throw 'br 0))
                        (t (setq i (1+ i))))))))))
+
+;; end of version
+
 
 ;; (when-version% >= 25
 ;;   (declare-function forward-whitespace "subr"))
