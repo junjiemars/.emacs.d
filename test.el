@@ -197,9 +197,6 @@
 (ert-deftest %d:fn:emacs-arch% ()
   (should (= (logand (emacs-arch%) 2) 0)))
 
-(ert-deftest %d:fn:platform-arch% ()
-  (should (platform-arch%)))
-
 (ert-deftest %d:fn:if/when/unless-lexical% ()
   (if (if-lexical% t nil)
       (should (and (when-lexical% t)
@@ -236,7 +233,7 @@
         ((if-platform% windows-nt t)
          (should (and (when-platform% windows-nt t)
                       (not (unless-platform% windows-nt t)))))
-        ((if-platform% 'cygwin t)
+        ((if-platform% cygwin t)
          (should (and (when-platform% cygwin t)
                       (not (unless-platform% cygwin)))))))
 
@@ -727,7 +724,9 @@
   (should (message "# clang = %s" (or (executable-find "clang") "")))
   (should (message "# make = %s" (or (executable-find "make") "")))
   (when (fboundp 'cc*-cc)
-    (should (message "# (cc*-cc) = %s" (or (cc*-cc) "")))))
+    (should (message "# (cc*-cc) = %s" (or (cc*-cc) ""))))
+  (when (fboundp 'platform-arch)
+    (should (message "# (platform-arch) = %s" (or (platform-arch) "")))))
 
 (ert-deftest %q:cc:cc*-system-include ()
   (when (fboundp 'cc*-system-include)

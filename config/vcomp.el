@@ -48,6 +48,59 @@
 ;; end of compile-* macro
 
 
+;;;
+;; `gensym*' since Emacs-26+
+;;;
+
+(defvar *gensym-counter* 0 "The counter of \\=`gensym*\\='.")
+
+(defun gensym* (&optional prefix)
+  "Generate a new uninterned symbol, PREFIX default is \"n\"."
+  (make-symbol
+   (concat (or prefix "n")
+           (prog1 (number-to-string *gensym-counter*)
+             (setq *gensym-counter* (1+ *gensym-counter*))))))
+
+;; end of `gensym*'
+
+;;;
+;; if-*
+;;;
+
+(defvar *nore-non-obarray* (make-vector 251 nil)
+  "Interned non obarray at compile-time.")
+
+(defun vector-take-while (pred vec)
+  (let ((i 0) (l (length vec)) (s nil))
+    (while (< i l)
+      (let ((v (aref vec i)))
+        (when (funcall pred v) (setq s (cons v s))))
+      (setq i (1+ i)))
+    (nreverse s)))
+
+(defun feature? (feature)
+  "Return t if has the FEAUTURE, otherwise nil."
+  (cond ((featurep feature) t)
+        ((intern-soft (symbol-name feature) *nore-non-obarray*) nil)
+        ((require feature nil t) t)
+        (t (intern (symbol-name feature) *nore-non-obarray*) nil)))
+
+(defun fn? (fn &optional feature)
+  "Return t if the FN of FEATURE is bounded, otherwise nil."
+  (cond ((fboundp fn) t)
+        ((intern-soft (symbol-name fn) *nore-non-obarray*) nil)
+        ((and feature (require feature nil t) (fboundp fn)) t)
+        (t (intern (symbol-name fn) *nore-non-obarray*) nil)))
+
+(defun var? (var &optional feature)
+  "Return t if the VAR of FEATURE is bounded, otherwise nil."
+  (cond ((boundp var) t)
+        ((intern-soft (symbol-name var) *nore-non-obarray*) nil)
+        ((and feature (require feature nil t) (boundp var)) t)
+        (t (intern (symbol-name var) *nore-non-obarray*) nil)))
+
+;; end of if-*
+
 (provide 'vcomp)
 
 ;; end of vcomp.el

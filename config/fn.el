@@ -540,23 +540,14 @@ Call FN with the path if FN is non-nil."
   "Return from \\=excutable-find*\\= at compile time."
   (executable-find* command fn))
 
+(defun emacs-arch ()
+  "Return emacs architecture, 64bits or 32bits."
+  (cond ((= most-positive-fixnum (1- (expt 2 61))) 64)
+        ((= most-positive-fixnum (1- (expt 2 29))) 32)
+        (t 16)))
+
 (defmacro emacs-arch% ()
   (emacs-arch))
-
-(defun platform-arch ()
-  "Return platform architecture."
-  (let ((d (strchr system-configuration ?-)))
-    (if (and d (> d 0))
-        (downcase (substring-no-properties system-configuration 0 d))
-      (let ((p (when-platform% 'windows-nt
-                 (getenv-internal "PROCESSOR_ARCHITECTURE"))))
-        (if p (downcase p)
-          (let ((m (shell-command* "uname" "-m")))
-            (and (zerop (car m))
-                 (downcase (string-trim> (cdr m))))))))))
-
-(defmacro platform-arch% ()
-  (platform-arch))
 
 ;; end of platform
 
@@ -633,6 +624,12 @@ Call FN with the path if FN is non-nil."
 ;;;
 ;; key
 ;;;
+
+(defun key? (keymap key def)
+  "Return KEY if DEF for KEY in KEYMAP, otherwise nil"
+  (if (eq def (lookup-key keymap key))
+      (cons key def)
+    (cons key nil)))
 
 (defmacro kbd% (key)
   "Convert KEY to the internal Emacs key representation."

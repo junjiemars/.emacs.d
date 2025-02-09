@@ -46,10 +46,23 @@
                (when (file-exists-p bat) bat))))))))
 
 (when-platform% windows-nt
+  (defun platform-arch ()
+    "Return platform architecture."
+    (let ((d (strchr system-configuration ?-)))
+      (if (and d (> d 0))
+          (downcase (substring-no-properties system-configuration 0 d))
+        (let ((p (when-platform% windows-nt
+                   (getenv-internal "PROCESSOR_ARCHITECTURE"))))
+          (if p (downcase p)
+            (let ((m (shell-command* "uname -m")))
+              (and (zerop (car m))
+                   (downcase (string-trim> (cdr m)))))))))))
+
+(when-platform% windows-nt
   (defun cc*-make-env-bat ()
     "Make cc-env.bat in \\=`exec-path\\='."
     (let ((vcvarsall (cc*-check-vcvarsall-bat))
-          (arch (platform-arch%)))
+          (arch (platform-arch)))
       (when (and vcvarsall arch)
         (save-str-to-file
          (concat "@echo off\n"
@@ -62,8 +75,7 @@
                  "set AS=ml" (if (string-match "[_a-zA-Z]*64" arch)
                                  "64"
                                "")
-                 "\n"
-                 "\n"
+                 "\n\n"
                  "popd\n"
                  "echo \"%INCLUDE%\"\n")
          (v-home% ".exec/cc-env.bat"))))))
@@ -152,9 +164,7 @@
      (or (executable-find%
           "xargs"
           (lambda (xargs)
-            (let ((x (shell-command* "echo xxx"
-                       "&& echo zzz"
-                       "|xargs -0")))
+            (let ((x (shell-command* "echo xxx && echo zzz|xargs -0")))
               (and (zerop (car x))
                    (string-match "^zzz" (cdr x))))))
          (and (cc*-cc) (cc*-make-xargs-bin))))
