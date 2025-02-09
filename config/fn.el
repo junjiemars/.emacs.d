@@ -23,16 +23,14 @@
 (defmacro when-feature% (feature &rest body)
   "When FEATURE do BODY."
   (declare (indent 1))
-  `(if-feature% ,feature
-       (progn% ,@body)
-     (comment ,@body)))
+  (when (feature? `,feature)
+    `(progn% ,@body)))
 
 (defmacro unless-feature% (feature &rest body)
   "Unless FEATURE do BODY."
   (declare (indent 1))
-  `(if-feature% ,feature
-       (comment ,@body)
-     ,@body))
+  (unless (feature? `,feature)
+    `(progn% ,@body)))
 
 ;; end of feature
 
@@ -50,12 +48,14 @@
 (defmacro when-fn% (fn feature &rest body)
   "When the FN of FEATURE is bounded yield non-nil, do BODY."
   (declare (indent 2))
-  `(if-fn% ,fn ,feature (progn% ,@body)))
+  (when (fn? `,fn `,feature)
+    `(progn% ,@body)))
 
 (defmacro unless-fn% (fn feature &rest body)
   "Unless the FN FEATURE is bounded yield non-nil, do BODY."
   (declare (indent 2))
-  `(if-fn% ,fn ,feature nil ,@body))
+  (unless (fn? `,fn `,feature)
+    `(progn% ,@body)))
 
 (unless-fn% declare-function nil
   (defmacro declare-function (&rest _)))
@@ -77,18 +77,20 @@
 (defmacro when-var% (var feature &rest body)
   "When the VAR FEATURE is bounded yield non-nil, do BODY."
   (declare (indent 2))
-  `(if-var% ,var ,feature (progn% ,@body)))
+  (when (var? `,var `,feature)
+    `(progn% ,@body)))
 
 (defmacro unless-var% (var feature &rest body)
   "Unless the VAR FEATURE is bounded yield non-nil, do BODY."
   (declare (indent 2))
-  `(if-var% ,var ,feature nil ,@body))
+  (unless (var? `,var `,feature)
+    `(progn% ,@body)))
 
 (defmacro setq% (x val &optional feature)
   "Set X of FEATURE to the VAL when X is bound."
   ;; (declare (debug t))
-  `(when-var% ,x ,feature
-     (setq ,x ,val)))
+  (when (var? `,x `,feature)
+    `(setq ,x ,val)))
 
 ;; end of *-var% macro
 
@@ -100,24 +102,28 @@
 (defmacro if-lexical% (then &rest else)
   "If lexical binding is built-in do THEN, otherwise do ELSE..."
   (declare (indent 1))
-  `(if-var% lexical-binding nil
-            ,then
-     (progn% ,@else)))
+  (if (var? lexical-binding)
+      `,then
+    `(progn% ,@else)))
 
 (defmacro when-lexical% (&rest body)
   "When lexical binding is built-in do BODY."
   (declare (indent 0))
-  `(if-lexical% (progn% ,@body)))
+  (if-lexical%
+      `(progn% ,@body)
+    `(comment ,@body)))
 
 (defmacro unless-lexical% (&rest body)
   "Unless lexical binding is built-in do BODY."
   (declare (indent 0))
-  `(if-lexical% nil ,@body))
+  (if-lexical%
+      `(comment ,@body)
+    `(progn% ,@body)))
 
 (defmacro ignore* (&rest vars)
   "Return nil, list VARS at compile time if in lexical context."
   (declare (indent 0))
-  `(when-lexical% (prog1 nil ,@vars)))
+  (when-lexical% `(prog1 nil ,@vars)))
 
 (defun true (&rest x)
   "Return true value and ignore X."
@@ -143,12 +149,16 @@
 (defmacro when-graphic% (&rest body)
   "When \\=`display-graphic-p\\=' yield non-nil, do BODY."
   (declare (indent 0))
-  `(if-graphic% (progn% ,@body)))
+  (if-graphic%
+      `(progn% ,@body)
+    `(comment ,@body)))
 
 (defmacro unless-graphic% (&rest body)
   "Unless \\=`display-graphic-p\\=' yield nil, do BODY."
   (declare (indent 0))
-  `(if-graphic% nil ,@body))
+  (if-graphic%
+      `(comment ,@body)
+    `(progn% ,@body)))
 
 ;; end of *-graphic% macro
 
@@ -159,19 +169,21 @@
 (defmacro if-platform% (os then &rest else)
   "If OS eq \\=`system-type\\=' yield non-nil, do THEN, else do ELSE..."
   (declare (indent 2))
-  (if (eq system-type os)
+  (if (eq system-type `,os)
       `,then
     `(progn% ,@else)))
 
 (defmacro when-platform% (os &rest body)
   "When OS eq \\=`system-type\\=' yield non-nil, do BODY."
   (declare (indent 1))
-  `(if-platform% ,os (progn% ,@body)))
+  (when (eq system-type `,os)
+    `(progn% ,@body)))
 
 (defmacro unless-platform% (os &rest body)
   "Unless OS eq \\=`system-type\\=' yield non-nil do BODY."
   (declare (indent 1))
-  `(if-platform% ,os nil ,@body))
+  (unless (eq system-type `,os)
+    `(progn% ,@body)))
 
 ;; end of *-platform% macro
 
@@ -190,12 +202,14 @@ else do ELSE..."
 (defmacro when-window% (window &rest body)
   "When WINDOW eq \\=`initial-window-system\\=' yield non-nil, do BODY."
   (declare (indent 1))
-  `(if-window% ,window (progn% ,@body)))
+  (when (eq window-system `,window)
+    `(progn% ,@body)))
 
 (defmacro unless-window% (window &rest body)
   "Unless WINDOW eq \\=`initial-window-system\\=' yield non-nil, do BODY."
   (declare (indent 1))
-  `(if-window% ,window nil ,@body))
+  (unless (eq window-system `,window)
+    `(progn% ,@body)))
 
 ;; end of *-window% macro
 
@@ -213,12 +227,16 @@ else do ELSE..."
 (defmacro when-interactive% (&rest body)
   "When not \\=`noninteractive\\=' do BODY."
   (declare (indent 0))
-  `(if-interactive% (progn% ,@body)))
+  (if-interactive%
+      `(progn% ,@body)
+    `(comment ,@body)))
 
 (defmacro unless-interactive% (&rest body)
   "Unless not \\=`noninteractive\\=' do BODY."
   (declare (indent 0))
-  `(if-interactive% nil ,@body))
+  (if-interactive%
+      `(comment ,@body)
+    `(progn% ,@body)))
 
 ;; end of if/when/unless-interactive% macro
 
