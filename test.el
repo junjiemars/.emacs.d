@@ -580,15 +580,15 @@
 ;; `ed'
 ;;;
 
-(ert-deftest %h:ed:version-strncmp ()
-  (should (= 0 (version-strncmp "" "")))
-  (should (= 1 (version-strncmp "1" "")))
-  (should (= -1 (version-strncmp "" "1")))
-  (should (= 0 (version-strncmp "1" "1")))
-  (should (= 0 (version-strncmp "1.0" "1")))
-  (should (= 1 (version-strncmp "1.21" "1.2.12" 2)))
-  (should (= 0 (version-strncmp "1.2.3.1" "1.2.3.2" 3)))
-  (should (= -1 (version-strncmp "1.2.3.1" "1.2.3.2" 4))))
+(ert-deftest %h:ed:vstrncmp ()
+  (should (= 0 (vstrncmp "" "")))
+  (should (> (vstrncmp "1" "") 0))
+  (should (< (vstrncmp "" "1") 0))
+  (should (= 0 (vstrncmp "1" "1")))
+  (should (= 0 (vstrncmp "1.0" "1")))
+  (should (> (vstrncmp "1.21" "1.2.12") 0))
+  (should (= 0 (vstrncmp "1.2.3.1" "1.2.3.2" 3)))
+  (should (< (vstrncmp "1.2.3.1" "1.2.3.2") 0)))
 
 ;; end of `ed'
 
