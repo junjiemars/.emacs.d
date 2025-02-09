@@ -11,6 +11,7 @@
 
 ;;; require
 
+;; `call-interactively?'
 (require% 'ed (v-home%> "config/ed"))
 
 ;; end of require
@@ -166,11 +167,11 @@ And copy the qualified buffer name to kill ring."
     (kill-new name t)
     (message "%s" name)))
 
-(defun get-buffer-coding-system (&optional buffer)
-  "Return the coding system of current buffer or BUFFER."
+(defun echo-buffer-coding-system (&optional buffer)
+  "Echo the coding system of current buffer or BUFFER."
   (interactive)
   (with-current-buffer (or buffer (current-buffer))
-    (if (called-interactively-p*)
+    (if (called-interactively?)
         (message "%s" buffer-file-coding-system)
       buffer-file-coding-system)))
 
@@ -322,8 +323,7 @@ And copy the qualified buffer name to kill ring."
   (define-global-key% "xc" #'clone-buffer)
   (define-global-key% "xn" #'echo-buffer-name)
   (define-global-key% "xt" #'toggle-truncate-lines)
-  (define-global-key% (kbd "C-x RET =")
-               #'get-buffer-coding-system)
+  (define-global-key% (kbd "C-x RET =") #'echo-buffer-coding-system)
   (define-global-key% "xg"
                (if-fn% revert-buffer-quick nil
                        #'revert-buffer-quick

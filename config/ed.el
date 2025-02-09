@@ -17,12 +17,13 @@
 ;; interactive checking
 ;;;
 
-(defmacro called-interactively-p* (&optional kind)
+(defmacro called-interactively? (&optional kind)
   "Return t if called by \\=`call-interactively\\='."
-  `(if-fn% called-interactively-p nil
-           (called-interactively-p ,kind)
-     (ignore* ,kind)
-     (interactive-p)))
+  (if-fn% called-interactively-p nil
+          `(called-interactively-p ,kind)
+    `(prog1
+         (interactive-p)
+       (ignore* ,kind))))
 
 ;; end of interactive checking
 
