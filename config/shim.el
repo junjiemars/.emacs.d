@@ -53,31 +53,34 @@
 (defvar *nore-non-obarray* (make-vector 251 nil)
   "Interned non obarray at compile-time.")
 
+(defun vector-take-while (pred vec)
+  (let ((i 0) (l (length vec)) (s nil))
+    (while (< i l)
+      (let ((v (aref vec i)))
+        (when (funcall pred v) (setq s (cons v s))))
+      (setq i (1+ i)))
+    (nreverse s)))
+
 (defun feature? (feature)
   "Return t if has the FEAUTURE, otherwise nil."
-  (let ((name (symbol-name feature)))
-    (cond ((intern-soft name *nore-non-obarray*) nil)
-          ((featurep feature) t)
-          ((require feature nil t) t)
-          (t (intern name *nore-non-obarray*) nil))))
+  (cond ((featurep feature) t)
+        ((intern-soft (symbol-name feature) *nore-non-obarray*) nil)
+        ((require feature nil t) t)
+        (t (intern (symbol-name feature) *nore-non-obarray*) nil)))
 
-(defun fn? (fn feature)
+(defun fn? (fn &optional feature)
   "Return t if the FN of FEATURE is bounded, otherwise nil."
-  (let ((name (symbol-name fn)))
-    (cond ((intern-soft name *nore-non-obarray*) nil)
-          ((fboundp fn) t)
-          (feature (cond ((and (require feature nil t) (fboundp fn)) t)
-                         (t (intern name *nore-non-obarray*) nil)))
-          (t (intern name *nore-non-obarray*) nil))))
+  (cond ((fboundp fn) t)
+        ((intern-soft (symbol-name fn) *nore-non-obarray*) nil)
+        ((and feature (require feature nil t) (fboundp fn)) t)
+        (t (intern (symbol-name fn) *nore-non-obarray*) nil)))
 
-(defun var? (var feature)
+(defun var? (var &optional feature)
   "Return t if the VAR of FEATURE is bounded, otherwise nil."
-  (let ((name (symbol-name var)))
-    (cond ((intern-soft name *nore-non-obarray*) nil)
-          ((boundp var) t)
-          (feature (cond ((and (require feature nil t) (boundp var)) t)
-                         (t (intern name *nore-non-obarray*) nil)))
-          (t (intern name *nore-non-obarray*) nil))))
+  (cond ((boundp var) t)
+        ((intern-soft (symbol-name var) *nore-non-obarray*) nil)
+        ((and feature (require feature nil t) (boundp var)) t)
+        (t (intern (symbol-name var) *nore-non-obarray*) nil)))
 
 ;; end of if-*
 
