@@ -327,7 +327,7 @@ If optional UNIQUELY is non-nil then push uniquely."
   (let ((i 0) (l (length str)))
     (catch 'br
       (while (< i l)
-        (and (= chr (aref str i)) (throw 'br i))
+        (and (char-equal chr (aref str i)) (throw 'br i))
         (setq i (1+ i))))))
 
 (defun strrchr (str chr)
@@ -335,7 +335,7 @@ If optional UNIQUELY is non-nil then push uniquely."
   (let* ((l (length str)) (i (1- l)))
     (catch 'br
       (while (>= i 0)
-        (and (= chr (aref str i)) (throw 'br i))
+        (and (char-equal chr (aref str i)) (throw 'br i))
         (setq i (1- i))))))
 
 (defun string-trim> (s &optional rr)
@@ -487,7 +487,7 @@ Return the name of FILE when successed otherwise nil."
   (defun directory-name-p (name)
     "Return t if NAME ends with a directory separator character."
     (let ((len (length name)))
-      (and (> len 0) (= ?/ (aref name (1- len)))))))
+      (and (> len 0) (char-equal ?/ (aref name (1- len)))))))
 
 (defun posix-path (path)
   "Transpose PATH to posix path."

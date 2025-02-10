@@ -66,14 +66,15 @@
   "If (CMP VERSION \\=`+emacs-version+\\=') yield non-nil, do THEN,
 else do ELSE..."
   (declare (indent 3))
-  `(if% (,cmp ,version +emacs-version+)
-       ,then
-     ,@else))
+  (if (funcall `,cmp `,version +emacs-version+)
+      `,then
+    `(progn% ,@else)))
 
 (defmacro when-version% (cmp version &rest body)
   "When (CMP VERSION \\=`+emacs-version+\\=') yield non-nil, do BODY."
   (declare (indent 2))
-  `(if-version% ,cmp ,version (progn% ,@body)))
+  (when (funcall `,cmp `,version +emacs-version+)
+    `(progn% ,@body)))
 
 (defmacro v-name ()
   "Return the versioned name."
@@ -97,8 +98,8 @@ else do ELSE..."
           (catch 'br
             (while (>= i 0)
               (let ((c (aref -fnse-f1- i)))
-                (cond ((= ?/ c) (throw 'br l))
-                      ((= ?. c) (throw 'br i))
+                (cond ((char-equal ?/ c) (throw 'br l))
+                      ((char-equal ?. c) (throw 'br i))
                       (t (setq i (1- i))))))))))))
 
 (defmacro mkdir* (file)
@@ -107,7 +108,7 @@ else do ELSE..."
           (dir -md-f1-) (i (1- (length dir))) (ds nil))
      (catch 'br
        (while (> i 0)
-         (when (= ?/ (aref dir i))
+         (when (char-equal ?/ (aref dir i))
            (let ((s (substring-no-properties dir 0 (1+ i))))
              (if (file-exists-p s)
                  (throw 'br t)
