@@ -66,14 +66,14 @@
   "If (CMP VERSION \\=`+emacs-version+\\=') yield non-nil, do THEN,
 else do ELSE..."
   (declare (indent 3))
-  (if (funcall `,cmp `,version +emacs-version+)
+  (if (funcall cmp version +emacs-version+)
       `,then
     `(progn% ,@else)))
 
 (defmacro when-version% (cmp version &rest body)
   "When (CMP VERSION \\=`+emacs-version+\\=') yield non-nil, do BODY."
   (declare (indent 2))
-  (when (funcall `,cmp `,version +emacs-version+)
+  (when (funcall cmp version +emacs-version+)
     `(progn% ,@body)))
 
 (defmacro v-name ()

@@ -16,20 +16,20 @@
 (defmacro if-feature% (feature then &rest else)
   "If has the FEAUTURE do THEN, otherwise do ELSE..."
   (declare (indent 2))
-  (if (feature? `,feature)
+  (if (feature? feature)
       `,then
     `(progn% ,@else)))
 
 (defmacro when-feature% (feature &rest body)
   "When FEATURE do BODY."
   (declare (indent 1))
-  (when (feature? `,feature)
+  (when (feature? feature)
     `(progn% ,@body)))
 
 (defmacro unless-feature% (feature &rest body)
   "Unless FEATURE do BODY."
   (declare (indent 1))
-  (unless (feature? `,feature)
+  (unless (feature? feature)
     `(progn% ,@body)))
 
 ;; end of feature
@@ -41,20 +41,20 @@
 (defmacro if-fn% (fn feature then &rest else)
   "If the FN of FEATURE is bounded yield non-nil, do THEN, else do ELSE..."
   (declare (indent 3))
-  (if (fn? `,fn `,feature)
+  (if (fn? fn feature)
       `,then
     `(progn% ,@else)))
 
 (defmacro when-fn% (fn feature &rest body)
   "When the FN of FEATURE is bounded yield non-nil, do BODY."
   (declare (indent 2))
-  (when (fn? `,fn `,feature)
+  (when (fn? fn feature)
     `(progn% ,@body)))
 
 (defmacro unless-fn% (fn feature &rest body)
   "Unless the FN FEATURE is bounded yield non-nil, do BODY."
   (declare (indent 2))
-  (unless (fn? `,fn `,feature)
+  (unless (fn? fn feature)
     `(progn% ,@body)))
 
 (unless-fn% declare-function nil
@@ -70,26 +70,26 @@
 (defmacro if-var% (var feature then &rest else)
   "If the VAR of FEATURE is bounded yield non-nil, do THEN, else do ELSE..."
   (declare (indent 3))
-  (if (var? `,var `,feature)
+  (if (var? var feature)
       `,then
     `(progn% ,@else)))
 
 (defmacro when-var% (var feature &rest body)
   "When the VAR FEATURE is bounded yield non-nil, do BODY."
   (declare (indent 2))
-  (when (var? `,var `,feature)
+  (when (var? var feature)
     `(progn% ,@body)))
 
 (defmacro unless-var% (var feature &rest body)
   "Unless the VAR FEATURE is bounded yield non-nil, do BODY."
   (declare (indent 2))
-  (unless (var? `,var `,feature)
+  (unless (var? var feature)
     `(progn% ,@body)))
 
 (defmacro setq% (x val &optional feature)
   "Set X of FEATURE to the VAL when X is bound."
   ;; (declare (debug t))
-  (when (var? `,x `,feature)
+  (when (var? x feature)
     `(setq ,x ,val)))
 
 ;; end of *-var% macro
@@ -169,20 +169,20 @@
 (defmacro if-platform% (os then &rest else)
   "If OS eq \\=`system-type\\=' yield non-nil, do THEN, else do ELSE..."
   (declare (indent 2))
-  (if (eq system-type `,os)
+  (if (eq system-type os)
       `,then
     `(progn% ,@else)))
 
 (defmacro when-platform% (os &rest body)
   "When OS eq \\=`system-type\\=' yield non-nil, do BODY."
   (declare (indent 1))
-  (when (eq system-type `,os)
+  (when (eq system-type os)
     `(progn% ,@body)))
 
 (defmacro unless-platform% (os &rest body)
   "Unless OS eq \\=`system-type\\=' yield non-nil do BODY."
   (declare (indent 1))
-  (unless (eq system-type `,os)
+  (unless (eq system-type os)
     `(progn% ,@body)))
 
 ;; end of *-platform% macro
@@ -202,13 +202,13 @@ else do ELSE..."
 (defmacro when-window% (window &rest body)
   "When WINDOW eq \\=`initial-window-system\\=' yield non-nil, do BODY."
   (declare (indent 1))
-  (when (eq window-system `,window)
+  (when (eq window-system window)
     `(progn% ,@body)))
 
 (defmacro unless-window% (window &rest body)
   "Unless WINDOW eq \\=`initial-window-system\\=' yield non-nil, do BODY."
   (declare (indent 1))
-  (unless (eq window-system `,window)
+  (unless (eq window-system window)
     `(progn% ,@body)))
 
 ;; end of *-window% macro
