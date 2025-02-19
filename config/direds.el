@@ -134,12 +134,17 @@
     (kill-new d)
     (message "%s" d)))
 
-
 (defun dired*-get-filename ()
   (if-fn% dired-get-file-for-visit dired
           (dired-get-file-for-visit)
     (or (dired-get-filename nil t)
         (user-error "%s" "No file on this line"))))
+
+(when-platform% darwin
+  (when-version% <= 28
+    (defun browse-url-default-macosx-browser* (url &optional _)
+      (interactive)
+      (start-process (concat "open " url) nil "open" url))))
 
 (defun dired*-browse-file ()
   "Browse the file using external browser."
@@ -148,7 +153,16 @@
         (name (if (eq 'dired-mode major-mode)
                   (dired*-get-filename)
                 (buffer-file-name))))
-    (and name (browse-url name))))
+    (and name
+         (if-platform% darwin
+             (let ((fn (symbol-function 'browse-url-default-macosx-browser)))
+               (unwind-protect
+                   (progn
+                     (fset 'browse-url-default-macosx-browser
+                           #'browse-url-default-macosx-browser*)
+                     (browse-url name))
+                 (fset 'browse-url-default-macosx-browser fn)))
+           (browse-url name)))))
 
 
 (defun dired*-hexl-find-file ()
