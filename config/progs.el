@@ -11,7 +11,6 @@
 
 ;;; require
 
-;; `call-interactively?'
 ;; `new-line*'
 (require% 'ed (v-home%> "config/ed"))
 
@@ -187,12 +186,9 @@ And copy the qualified buffer name to kill ring."
   (if-fn% ido-mode ido
           (progn
             (ido-mode t)
-            (define-global-key% "5r"
-                         #'ido-find-file-read-only-other-frame)
-            (define-global-key% "4r"
-                         #'ido-find-file-read-only-other-window)
-            (define-global-key% ""
-                         #'ido-find-file-read-only)
+            (define-global-key% "5r" #'ido-find-file-read-only-other-frame)
+            (define-global-key% "4r" #'ido-find-file-read-only-other-window)
+            (define-global-key% "" #'ido-find-file-read-only)
             (setq% ido-enable-flex-matching t ido))
     ;; default view file keybindings
     (define-global-key% "5r" #'view-file-other-frame)
@@ -212,7 +208,7 @@ And copy the qualified buffer name to kill ring."
               minibuffer-local-map))
         (kf (if-fn% minibuffer-complete minibuffer
                     #'minibuffer-complete
-              (if-fn% #'completion-at-point 'minibuffer
+              (if-fn% completion-at-point minibuffer
                       #'completion-at-point
                 #'lisp-complete-symbol))))
     (define-key km (kbd% "TAB") kf)
