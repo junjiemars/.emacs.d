@@ -14,20 +14,6 @@
 ;; end of require
 
 ;;;
-;; interactive checking
-;;;
-
-(defmacro called-interactively? (&optional kind)
-  "Return t if called by \\=`call-interactively\\='."
-  (if-fn% called-interactively-p nil
-          `(called-interactively-p ,kind)
-    `(prog1
-         (interactive-p)
-       (ignore* ,kind))))
-
-;; end of interactive checking
-
-;;;
 ;; line
 ;;;
 

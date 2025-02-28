@@ -664,6 +664,14 @@ Call FN with the path if FN is non-nil."
   (declare (indent 0))
   `(if-region-active nil ,@body))
 
+(defmacro called-interactively? (&optional kind)
+  "Return t if called by \\=`call-interactively\\='."
+  (if (fn? 'called-interactively-p nil)
+      `(called-interactively-p ,kind)
+    `(prog1
+         (interactive-p)
+       (ignore* ,kind))))
+
  ;; end of interactive
 
 (provide 'fn)
