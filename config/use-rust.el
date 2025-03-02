@@ -40,7 +40,7 @@
 (defalias 'rust*-sysroot
   (let ((b (rust*-sysroot-spec)))
     (lambda (&optional op)
-      (cond ((eq op :new) (setq b (rust*-sysroot-spec)))
+      (cond ((and op (eq op :new)) (setq b (rust*-sysroot-spec)))
             (op (plist-get b op))
             (t b))))
   "Rust sysroot.")
@@ -94,7 +94,7 @@
 (defalias 'rust*-make-debug!
   (let ((b (rust*-debug-spec)))
     (lambda (&optional op)
-      (cond ((eq op :new) (setq b (rust*-debug-spec)))
+      (cond ((and op (eq op :new)) (setq b (rust*-debug-spec)))
             (t b))))
   "Make rust source debuggable.")
 

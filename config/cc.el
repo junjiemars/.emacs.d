@@ -228,10 +228,10 @@
     (lambda (&optional op remote)
       (let* ((ssfs (cc*-system-include-file remote))
              (ss (car ssfs)) (fs (cdr ssfs)))
-        (cond ((eq op :read)
+        (cond ((and op (eq op :read))
                (let ((r (cc*-system-include-read fs remote)))
                  (plist-get (setq dx (plist-put dx ss r)) ss)))
-              ((eq op :save) (save-sexp-to-file (plist-get dx ss) fs))
+              ((and op (eq op :save)) (save-sexp-to-file (plist-get dx ss) fs))
               (t (plist-get dx ss))))))
   "Return a list of system include directories.\n
 Load \\=`cc*-system-include\\=' from file when CACHED is t,

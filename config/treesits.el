@@ -26,9 +26,9 @@
                     :url "https://github.com/tree-sitter/tree-sitter-python"
                     :map python-ts-mode))))
     (lambda (&optional op sexp)
-      (cond ((eq op :put) (dolist (x sexp) (push! x m t)))
-            ((eq op :read) (setq m (read-sexp-from-file b)))
-            ((eq op :dump) (when m (save-sexp-to-file m b)))
+      (cond ((and op (eq op :put)) (dolist (x sexp) (push! x m t)))
+            ((and op (eq op :read)) (setq m (read-sexp-from-file b)))
+            ((and op (eq op :dump)) (when m (save-sexp-to-file m b)))
             (t m))))
   "The \\=`treesit\\=' recipe.")
 

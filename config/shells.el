@@ -19,16 +19,16 @@
 
 (defmacro shells-spec->% (key)
   "Return :shell spec of \\=`+nore-spec+\\='."
-  (cond ((eq key :file) (v-home% ".exec/shell-env.el"))
-        ((eq key :SHELL) "SHELL")
-        ((eq key :PATH) "PATH")))
+  (cond ((and key (eq key :file)) (v-home% ".exec/shell-env.el"))
+        ((and key (eq key :SHELL)) "SHELL")
+        ((and key (eq key :PATH)) "PATH")))
 
 (defalias '*default-shell-env*
   (let ((dx nil))
     (lambda (&optional op k n)
-      (cond ((eq :get op) (plist-get dx k))
-            ((eq :put! op) (setq dx (plist-put dx k n)))
-            ((eq :set! op) (setq dx k))
+      (cond ((and op (eq :get op)) (plist-get dx k))
+            ((and op (eq :put! op)) (setq dx (plist-put dx k n)))
+            ((and op (eq :set! op)) (setq dx k))
             (t dx))))
   "Default shell\\='s environment.")
 

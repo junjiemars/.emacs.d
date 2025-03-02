@@ -27,9 +27,9 @@
               (:epilogue
                . ,(emacs-home% "config/sample-self-epilogue.el")))))
     (lambda (&optional op k v)
-      (cond ((eq :get op) (plist-get ps k))
-            ((eq :put op) (setq ps (plist-put ps k v)))
-            ((eq :dup op)
+      (cond ((and op (eq :get op)) (plist-get ps k))
+            ((and op (eq :put op)) (setq ps (plist-put ps k v)))
+            ((and op (eq :dup op))
              (inhibit-file-name-handler
                (dolist (fs ss)
                  (let ((dst (plist-get ps (car fs)))
@@ -53,19 +53,20 @@ No matter the declaration order, the executing order is:
                 :socks nil
                 :theme nil)))
     (lambda (&optional op &rest keys)
-      (cond ((eq :get op) (let ((rs env) (ks keys))
-                            (while ks
-                              (setq rs (plist-get rs (car ks))
-                                    ks (cdr ks)))
-                            rs))
-            ((eq :put op) (setq env (plist-put env (car keys) (cadr keys))))
+      (cond ((and op (eq :get op)) (let ((rs env) (ks keys))
+                                     (while ks
+                                       (setq rs (plist-get rs (car ks))
+                                             ks (cdr ks)))
+                                     rs))
+            ((and op (eq :put op))
+             (setq env (plist-put env (car keys) (cadr keys))))
             (t env)))))
 
 (defalias '*self-mod-spec*
   (let ((ps nil))
     (lambda (&optional op k v)
-      (cond ((eq :get op) (list (assq k ps)))
-            ((eq :put op) (setq ps (cons (cons k v) ps)))
+      (cond ((and op (eq :get op)) (list (assq k ps)))
+            ((and op (eq :put op)) (setq ps (cons (cons k v) ps)))
             (t ps)))))
 
 ;; end of self-spec* macro

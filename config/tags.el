@@ -15,16 +15,16 @@
 
 (defmacro tags-spec->% (key)
   "Return :tags of \\=`+nore-spec+\\='."
-  (cond ((eq key :root) (emacs-home% ".tags/"))
-        ((eq key :nore) (v-home% ".tags/nore.emacs.TAGS"))
-        ((eq key :emacs) (v-home% ".tags/emacs.TAGS"))
-        ((eq key :prompt)
+  (cond ((and key (eq key :root)) (emacs-home% ".tags/"))
+        ((and key (eq key :nore)) (v-home% ".tags/nore.emacs.TAGS"))
+        ((and key (eq key :emacs)) (v-home% ".tags/emacs.TAGS"))
+        ((and key (eq key :prompt))
          (propertize "Make tags" 'face 'minibuffer-prompt))
-        ((eq key :out-dir)
+        ((and key (eq key :out-dir))
          "^\\.\\|^out$\\|^bin$\\|^objs$\\|^[dD]ebug$\\|^[rR]elease$")
-        ((eq key :vcs-dir)
+        ((and key (eq key :vcs-dir))
          ".git$\\|\\.hg$\\|\\.svn$")
-        ((eq key :arc-dir)
+        ((and key (eq key :arc-dir))
          "\\.bz2$\\|\\.gz$\\|\\.tgz$\\|\\.xz$\\|\\.Z$")))
 
 (defun tags-program-check ()

@@ -36,10 +36,10 @@
          (b (concat d "sudoku-board"))
          (s (concat d "sudoku-sample")))
     (lambda (&optional k)
-      (cond ((eq :dir k) d)
-            ((eq :puzzle k) p)
-            ((eq :board k) b)
-            ((eq :sample k) s))))
+      (cond ((and k (eq :dir k)) d)
+            ((and k (eq :puzzle k)) p)
+            ((and k (eq :board k)) b)
+            ((and k (eq :sample k)) s))))
   "The sudoku\\='s files.")
 
 
@@ -63,12 +63,12 @@
         (g "gray")
         (w "red"))
     (lambda (&optional k c)
-      (cond ((eq :b k) b)
-            ((eq :g k) g)
-            ((eq :w k) w)
-            ((eq :b! k) (setq b c))
-            ((eq :g! k) (setq g c))
-            ((eq :w! k) (setq w c))
+      (cond ((and k (eq :b k)) b)
+            ((and k (eq :g k)) g)
+            ((and k (eq :w k)) w)
+            ((and k (eq :b! k)) (setq b c))
+            ((and k (eq :g! k)) (setq g c))
+            ((and k (eq :w! k)) (setq w c))
             (t (list b g w)))))
   "The sudoku\\='s colors.")
 
@@ -84,17 +84,17 @@
 (defalias '*sudoku-puzzle-d*
   (let ((l) (d) (s) (sum))
     (lambda (&optional k n)
-      (cond ((eq :set! k) (let* ((n1 (length n))
-                                 (sqr1 (sqrt n1))
-                                 (d1 (floor sqr1)))
-                            (setq d d1
-                                  s (floor (sqrt d1))
-                                  sum (apply #'+ (range 1 d1 1))
-                                  l n1)))
-            ((eq :d k) d)
-            ((eq :len k) l)
-            ((eq :sqr k) s)
-            ((eq :sum k) sum)
+      (cond ((and k (eq :set! k)) (let* ((n1 (length n))
+                                         (sqr1 (sqrt n1))
+                                         (d1 (floor sqr1)))
+                                    (setq d d1
+                                          s (floor (sqrt d1))
+                                          sum (apply #'+ (range 1 d1 1))
+                                          l n1)))
+            ((and k (eq :d k)) d)
+            ((and k (eq :len k)) l)
+            ((and k (eq :sqr k)) s)
+            ((and k (eq :sum k)) sum)
             (t (list :len l :d d :sqr s)))))
   "The sudoku\\='s dimensions.")
 
@@ -162,11 +162,11 @@
       (cond ((eq :set! k) (progn
                             (*sudoku-puzzle-d* :set! i)
                             (setq v i)))
-            ((eq :row k) (sudoku-puzzle-vec-row v i))
-            ((eq :col k) (sudoku-puzzle-vec-col v i))
-            ((eq :sqr k) (sudoku-puzzle-vec-sqr v i))
-            ((eq :box k) (aref v (% i (*sudoku-puzzle-d* :len))))
-            ((eq :box! k) (aset v (% i (*sudoku-puzzle-d* :len)) n))
+            ((and k (eq :row k)) (sudoku-puzzle-vec-row v i))
+            ((and k (eq :col k)) (sudoku-puzzle-vec-col v i))
+            ((and k (eq :sqr k)) (sudoku-puzzle-vec-sqr v i))
+            ((and k (eq :box k)) (aref v (% i (*sudoku-puzzle-d* :len))))
+            ((and k (eq :box! k)) (aset v (% i (*sudoku-puzzle-d* :len)) n))
             (t v))))
   "The \\=`sudoku\\=' puzzle in 1-dimension vector.")
 
@@ -181,7 +181,7 @@
   (let ((l nil) (d nil) (c nil)
         (xs nil))
     (lambda (&optional k level dimension)
-      (cond ((eq :new! k)
+      (cond ((and k (eq :new! k))
              (setq c (cond ((eq 'sandbox level)
                             (make-vector (cond ((eq '4x4 dimension) (* 4 4))
                                                (t (* 9 9)))
@@ -189,7 +189,7 @@
                            (t (unless xs (setq xs (sudoku-puzzle--sample)))
                               (plist-get (plist-get xs (setq l (or level l)))
                                          (setq d (or dimension d)))))))
-            ((eq :rld k) c)
+            ((and k (eq :rld k)) c)
             (t c))))
   "Make sudoku puzzle at LEVEL.")
 
@@ -387,23 +387,15 @@
 (defalias '*sudoku-board*
   (let ((o) (d) (p))
     (lambda (&optional k i j)
-      (cond ((eq :cor! k) (setq o i d j p i))
-            ((eq :pos k) p)
-
-            ((eq :in k) (sudoku-board-in o d))
-
-            ((eq :nex! k) (setq p (sudoku-board-nex! o d p i j)))
-
-            ((eq :mov! k) (setq p (sudoku-board-mov! o d p i j)))
-
-            ((eq :ori! k) (setq p (sudoku-board-ori! o)))
-
-            ((eq :dia! k) (setq p (sudoku-board-dia! d)))
-
-            ((eq :prop k) (sudoku-board-prop))
-
-            ((eq :props k) (sudoku-board-props))
-
+      (cond ((and k (eq :cor! k)) (setq o i d j p i))
+            ((and k (eq :pos k)) p)
+            ((and k (eq :in k)) (sudoku-board-in o d))
+            ((and k (eq :nex! k)) (setq p (sudoku-board-nex! o d p i j)))
+            ((and k (eq :mov! k)) (setq p (sudoku-board-mov! o d p i j)))
+            ((and k (eq :ori! k)) (setq p (sudoku-board-ori! o)))
+            ((and k (eq :dia! k)) (setq p (sudoku-board-dia! d)))
+            ((and k (eq :prop k)) (sudoku-board-prop))
+            ((and k (eq :props k)) (sudoku-board-props))
             (t (list :ori o :dia d :pos p)))))
   "The \\=`sudoku\\=' board.")
 
@@ -580,10 +572,10 @@
               (*sudoku-puzzle* :box! idx (cdr cell))
 
               (let ((rc (sudoku-puzzle-solved-p idx)))
-                (cond ((eq :unique rc)
+                (cond ((and rc (eq :unique rc))
                        (put-text-property pos (1+ pos) 'face f)
                        (throw 'br nil))
-                      ((eq :solve rc)
+                      ((and rc (eq :solve rc))
                        (message "Solved, %s." (*sudoku-idiom*)))))
 
               (put-text-property pos (1+ pos)
