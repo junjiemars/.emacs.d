@@ -351,7 +351,7 @@ case "${_TEST_}" in
   axiom)          test_axiom            ;;
   module)         test_module           ;;
   profile)        test_profile          ;;
-  profile_module) test_profile "module" ;;
+  profile_module) test_profile t        ;;
   clean)          test_clean            ;;
   boot)           test_boot             ;;
   debug)          test_debug            ;;

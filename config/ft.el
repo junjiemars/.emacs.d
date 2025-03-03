@@ -24,15 +24,16 @@
 ;;; `treesit' builtin since Emacs-29+
 (defmacro when-feature-treesit% (&rest body)
   (declare (indent 0))
-  (when (and (fboundp 'treesit-available-p) (treesit-available-p))
-    `(progn% ,@body)))
+  (when-fn% treesit-available-p nil
+    (when (treesit-available-p)
+      `(progn ,@body))))
 
 ;;; `vc'
 (defmacro when-feature-vc% (&rest body)
   "When \\=`vc\\=', do BODY."
   (declare (indent 0))
-  `(when-fn% vc-dir vc-dir
-     (progn% ,@body)))
+  (when-fn% vc-dir vc-dir
+    `(progn% ,@body)))
 
 
 
