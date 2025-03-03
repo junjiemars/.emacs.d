@@ -18,4 +18,6 @@ if [ -f "$PROF_FILE" ]; then
 		| sort -k3nr -k1nr -k2nr
 	printf "# profile: resource\n# ------------\n"
 	awk -f ${PROF_ROOT}/res.awk "$PROF_FILE"
+  printf "# profile: summary\n# ------------\n"
+	awk -f ${PROF_ROOT}/sum.awk "$PROF_FILE"
 fi

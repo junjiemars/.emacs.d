@@ -347,15 +347,15 @@ make_env
 
 # test
 case "${_TEST_}" in
-  bone)           test_bone        ;;
-  axiom)          test_axiom       ;;
-  module)         test_module      ;;
-  profile)        test_profile     ;;
-  profile_module) test_profile mod ;;
-  clean)          test_clean       ;;
-  boot)           test_boot        ;;
-  debug)          test_debug       ;;
-  reset)          test_reset       ;;
+  bone)           test_bone             ;;
+  axiom)          test_axiom            ;;
+  module)         test_module           ;;
+  profile)        test_profile          ;;
+  profile_module) test_profile "module" ;;
+  clean)          test_clean            ;;
+  boot)           test_boot             ;;
+  debug)          test_debug            ;;
+  reset)          test_reset            ;;
   *) ;;
 esac
 
