@@ -67,8 +67,8 @@
   (dolist (d dirs)
     (when (and d (file-exists-p d))
       (dolist (f (directory-files d nil "^[gt]_.*$"))
-        (when (cond ((eq :8 scope) t)
-                    ((eq :< scope)
+        (when (cond ((and scope (eq :8 scope)) t)
+                    ((and scope (eq :< scope))
                      (< (string-to-number
                          (string-match* "^[gt]_\\(.*\\)$" f 1))
                         +emacs-version+))

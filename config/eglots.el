@@ -57,12 +57,12 @@
                           ,(format "--query-driver=%s"
                                    (executable-find% "c++")))))))
     (lambda (&optional op sexp)
-      (cond ((eq op :read) (let ((s1 (read-sexp-from-file f)))
-                             (dolist (x s1 s1)
-                               (push! x b t)
-                               (push! x eglot-server-programs t))))
-            ((eq op :save) (save-sexp-to-file (or sexp b) f))
-            ((eq op :file) f)
+      (cond ((and op (eq op :read)) (let ((s1 (read-sexp-from-file f)))
+                                      (dolist (x s1 s1)
+                                        (push! x b t)
+                                        (push! x eglot-server-programs t))))
+            ((and op (eq op :save)) (save-sexp-to-file (or sexp b) f))
+            ((and op (eq op :file)) f)
             (t b))))
   "The \\=`eglot-server-programs\\=' cache.")
 

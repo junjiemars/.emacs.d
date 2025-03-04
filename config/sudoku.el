@@ -159,9 +159,9 @@
 (defalias '*sudoku-puzzle*
   (let ((v))
     (lambda (&optional k i n)
-      (cond ((eq :set! k) (progn
-                            (*sudoku-puzzle-d* :set! i)
-                            (setq v i)))
+      (cond ((and k (eq :set! k)) (progn
+                                    (*sudoku-puzzle-d* :set! i)
+                                    (setq v i)))
             ((and k (eq :row k)) (sudoku-puzzle-vec-row v i))
             ((and k (eq :col k)) (sudoku-puzzle-vec-col v i))
             ((and k (eq :sqr k)) (sudoku-puzzle-vec-sqr v i))
