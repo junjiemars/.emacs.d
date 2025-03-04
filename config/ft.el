@@ -15,7 +15,7 @@
 ;;; `eww' builtin since Emacs-24.4+
 (when-feature% eww)
 
-;;; `project' builtin since Emacs-26+
+;;; `project' builtin since Emacs-25+
 (when-feature% project)
 
 ;;; `transient'
