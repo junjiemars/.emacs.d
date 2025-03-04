@@ -223,7 +223,8 @@ determine whether inside a virtual env. Another way is using
 
 (defun python*-define-keys (keymap)
   (define-key keymap (kbd% "C-c C-z") #'run-python)
-  (define-key keymap (kbd% "C-c M-c f") #'python*-format-buffer))
+  (define-key keymap (kbd% "C-c M-c f") #'python*-format-buffer)
+  (define-key keymap (kbd% "C-c C-j") nil))
 
 ;; end of keys
 
