@@ -38,6 +38,9 @@
 ;; `ido' saved state between invocations
 (setq% ido-save-directory-list-file (v-home! ".ido/ido.last") ido)
 
+;; `ielm' history
+(setq% ielm-history-file-name (v-home! ".ielm/history.eld") ielm)
+
 ;; `image-dired': where thumbnail images are stored
 (setq% image-dired-dir (v-home! ".dired/") image-dired)
 

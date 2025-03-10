@@ -51,7 +51,10 @@
   (defmacro when-fn-sql-send-magic-terminator% (&rest body)
     (declare (indent 0))
     (if-fn% sql-send-magic-terminator sql
-            `(progn% ,@body)
+            `(progn
+               (fset '_sql-send-magic-terminator_
+                     (symbol-function 'sql-send-magic-terminator))
+               ,@body)
       `(comment ,@body))))
 
 ;; end of when-* macro
@@ -76,14 +79,12 @@
         sql-buffer))))
 
 (when-fn-sql-send-magic-terminator%
-  (defadvice sql-send-magic-terminator
-      (before sql-send-magic-terminator-before first compile disable)
+  (defun sql-send-magic-terminator* (buf str terminator)
     "Send TERMINATOR to buffer BUF if its not present in STR."
-    ;; terminator
-    (cond ((eq 'mysql sql-product)
-           (ad-set-arg 2 t))
-          ((eq 'oceanbase sql-product)
-           (ad-set-arg 2 t)))))
+    (cond ((eq 'mysql sql-product) (setq terminator t))
+          ((eq 'oceanbase sql-product) (setq terminator t)))
+    (funcall (symbol-function '_sql-send-magic-terminator_)
+             buf str terminator)))
 
 ;; end of sqli
 
@@ -515,9 +516,7 @@ Optional prefix argument ENHANCED, displays additional details."
      (cdr (assq 'mysql sql-product-alist))
      :terminator
      '("^.*\\G" . ""))
-    (ad-enable-advice #'sql-send-magic-terminator 'before
-                      "sql-send-magic-terminator-before")
-    (ad-activate #'sql-send-magic-terminator t))
+    (fset 'sql-send-magic-terminator #'sql-send-magic-terminator*))
   ;; `sql-mysql-program'
   (setq sql-mysql-program
         (or (executable-find% "mysql")
@@ -582,7 +581,7 @@ Optional prefix argument ENHANCED, displays additional details."
 (defun on-sql-oceanbase-init! ()
   "On \\=`sql\\=' oceanbase initialization."
   (when (assq 'oceanbase sql-product-alist)
-    (assq-delete-all 'oceanbase sql-product-alist))
+    (setq sql-product-alist (assq-delete-all 'oceanbase sql-product-alist)))
   (append! '(oceanbase
              :name "Oceanbase"
              :font-lock sql-mode-oracle-font-lock-keywords
@@ -601,9 +600,7 @@ Optional prefix argument ENHANCED, displays additional details."
      (cdr (assq 'oceanbase sql-product-alist))
      :terminator
      '("^.*\\G" . ""))
-    (ad-enable-advice #'sql-send-magic-terminator 'before
-                      "sql-send-magic-terminator-before")
-    (ad-activate #'sql-send-magic-terminator t))
+    (fset 'sql-send-magic-terminator #'sql-send-magic-terminator*))
   (when-sql-oceanbase-feature%
     ;; :list-all
     (plist-put (cdr (assq 'oceanbase sql-product-alist))

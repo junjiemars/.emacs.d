@@ -80,18 +80,27 @@
     (when-interactive%
       (message "treesit %s" (if on "off" "on")))))
 
-(defadvice treesit--install-language-grammar-1
-    (before treesit--install-language-grammar-1-before first compile disable)
-  (unless (ad-get-arg 0)
-    (ad-set-arg 0 (car treesit-extra-load-path))))
+(when-version% > 30
+  (defun treesit*-grammar-install (&rest args)
+    (let ((dir (car treesit-extra-load-path)))
+      (apply #'treesit--install-language-grammar-1
+             (append (list dir) (cdr args))))))
+
+;; (defadvice treesit--install-language-grammar-1
+;;     (before treesit--install-language-grammar-1-before first compile disable)
+;;   (unless (ad-get-arg 0)
+;;     (ad-set-arg 0 (car treesit-extra-load-path))))
 
 (defun on-treesit-init! ()
   "On \\=`treesit\\=' initialization."
-  ;; activate grammar
-  (ad-enable-advice #'treesit--install-language-grammar-1 'before
-                    "treesit--install-language-grammar-1-before")
-  (ad-activate #'treesit--install-language-grammar-1 t)
-
+  ;; default load path
+  (if-version%
+      < 30
+      (when-var% treesit--install-language-grammar-out-dir-history treesit
+        (setq treesit--install-language-grammar-out-dir-history
+              (list (car treesit-extra-load-path)
+                    (cdr treesit--install-language-grammar-out-dir-history))))
+    (fset 'treesit--install-language-grammar-1 #'treesit*-grammar-install))
   ;;; `on-c-ts-mode-init!'
   (declare-function on-c-ts-mode-init! (v-home%> "config/cc"))
   (autoload 'on-c-ts-mode-init! (v-home%> "config/cc"))

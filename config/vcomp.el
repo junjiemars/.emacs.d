@@ -67,7 +67,8 @@
 ;; if-*
 ;;;
 
-(defvar *nore-non-obarray* (make-vector 251 nil)
+(defvar *nore-non-obarray*
+  (if-version% < 30 (obarray-make 251) (make-vector 251 nil))
   "Interned non obarray at compile-time.")
 
 (defun vector-take-while (pred vec)

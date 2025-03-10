@@ -241,13 +241,13 @@ RENEW overwrite the existing tags file when t else create it."
                      "\\|" (tags-spec->% :arc-dir)
                      (unless (string= exclude "") "\\|" exclude)))
         (inc (unless (string= include "") "\\|" include)))
-    (when (make-tags home
-                     store
-                     #'tags--file-filter
-                     #'tags--dir-filter
-                     option
-                     renew
-                     (list :exc exc :inc inc)))))
+    (make-tags home
+               store
+               #'tags--file-filter
+               #'tags--dir-filter
+               option
+               renew
+               (list :exc exc :inc inc))))
 
 (defun make-dir-ctags (dir tags options)
   "Make tags via ctags for specified DIR."

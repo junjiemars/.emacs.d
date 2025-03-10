@@ -397,35 +397,31 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
       `(comment ,@body))))
 
 (when-fn-c-macro-expand%
-  (defun cc*-macro-expand ()
+  (defun cc*-macro-expand (&rest args)
     "Macro expanding current buffer."
+    (interactive "r\nP")
     (let ((remote (ssh-remote-p (buffer-file-name (current-buffer)))))
       (setq% c-macro-prompt-flag t cmacexp)
       (setq% c-macro-buffer-name
-              (if remote
-                  (format "*Macro Expanded@%s*"
-                          (ssh-remote->user@host remote))
-                "*Macro Expanded*")
-              cmacexp)
+             (if remote
+                 (format "*Macro Expanded@%s*"
+                         (ssh-remote->user@host remote))
+               "*Macro Expanded*")
+             cmacexp)
       (setq% c-macro-preprocessor
-              (if remote
-                  (format "ssh %s %s"
-                          (ssh-remote->user@host remote)
-                          "cc -E -o - -")
-                (if-platform% windows-nt
-                    ;; cl.exe can't compile on the fly without xargs
-                    (let ((tmp (make-temp-file "cc-m-" nil ".c")))
-                      (format "%s -0 > %s && %s && cl -E %s"
-                              +cc*-xargs-bin+ tmp
-                              (cc*-cc) tmp))
-                  (format "%s -E -o - -" (cc*-cc))))
-              cmacexp))))
-
-(when-fn-c-macro-expand%
-  (defadvice c-macro-expand
-      (around c-macro-expand-around first compile disable)
-    (cc*-macro-expand)
-    ad-do-it))
+             (if remote
+                 (format "ssh %s %s"
+                         (ssh-remote->user@host remote)
+                         "cc -E -o - -")
+               (if-platform% windows-nt
+                   ;; cl.exe can't compile on the fly without xargs
+                   (let ((tmp (make-temp-file "cc-m-" nil ".c")))
+                     (format "%s -0 > %s && %s && cl -E %s"
+                             +cc*-xargs-bin+ tmp
+                             (cc*-cc) tmp))
+                 (format "%s -E -o - -" (cc*-cc))))
+             cmacexp)
+      (apply #'c-macro-expand args))))
 
 ;; end of `cmacexp'
 
@@ -463,7 +459,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
   (when-fn-ff-find-other-file%
    (define-key keymap "fi" #'cc*-find-include-file))
   (when-fn-c-macro-expand%
-    (define-key keymap "" #'c-macro-expand)))
+    (define-key keymap "" #'cc*-macro-expand)))
 
 ;; end of keys
 
@@ -473,11 +469,6 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 
 (defun on-cc-mode-init! ()
   "On \\=`cc-mode\\=' initialization."
-  (when-fn-c-macro-expand%
-    ;; [C-c C-e] `c-macro-expand'
-    (setq% c-macro-prompt-flag t cmacexp)
-    (ad-enable-advice #'c-macro-expand 'around "c-macro-expand-around")
-    (ad-activate #'c-macro-expand t))
   ;; indent line or region
   (when-fn% c-indent-line-or-region cc-cmds
     (define-key% c-mode-map (kbd "TAB") #'c-indent-line-or-region))
@@ -497,16 +488,12 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 ;;;
 
 (when-feature-treesit%
- (defun on-c-ts-mode-init! ()
-   "On \\=`c-ts-mode\\=' initialization."
-   (when-fn-c-macro-expand%
-     (setq% c-macro-prompt-flag t cmacexp)
-     (ad-enable-advice #'c-macro-expand 'around "c-macro-expand-around")
-     (ad-activate #'c-macro-expand t))
-   (when (boundp 'c-ts-mode-map)
-     (cc*-define-keys c-ts-mode-map))
-   (when (boundp 'c++-ts-mode-map)
-     (cc*-define-keys c++-ts-mode-map))))
+  (defun on-c-ts-mode-init! ()
+    "On \\=`c-ts-mode\\=' initialization."
+    (when (boundp 'c-ts-mode-map)
+      (cc*-define-keys c-ts-mode-map))
+    (when (boundp 'c++-ts-mode-map)
+      (cc*-define-keys c++-ts-mode-map))))
 
 ;; end of `c-ts-mode'
 
