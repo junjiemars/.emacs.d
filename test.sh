@@ -110,6 +110,7 @@ test_module() {
   test_clean_env
   test_echo_env "module|prologue"
   cat <<END> "${_ENV_PRO_}"
+;; -*- lexical-binding:t -*-
 (*self-paths* :put :mod-spec nil)
 (*self-paths* :put :env-spec nil)
 (*self-paths* :put :epilogue nil)
@@ -175,6 +176,7 @@ test_profile() {
   fi
   test_echo_env "profile(module=$mod)|prologue"
   cat <<END> "${_ENV_PRO_}"
+;; -*- lexical-binding:t -*-
 (*self-paths* :put :mod-spec nil)
 (*self-paths* :put :env-spec nil)
 (*self-paths* :put :epilogue nil)
