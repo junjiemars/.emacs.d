@@ -238,7 +238,8 @@ determine whether inside a virtual env. Another way is using
                    (python*-venv :load (read-sexp-from-file f))
                    (when (file-exists-p (python*-venv :python))
                      (prog1 (python*-venv :python)
-                       (python*-eglot-sever-program)))))
+                       (when-feature% eglot
+                         (python*-eglot-sever-program))))))
                (python*-program :bin))))
       (setq% python-shell-interpreter interpreter python)
       (setq% python-interpreter interpreter python)))
