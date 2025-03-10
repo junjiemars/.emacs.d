@@ -24,9 +24,11 @@
 ;;; `treesit' builtin since Emacs-29+
 (defmacro when-feature-treesit% (&rest body)
   (declare (indent 0))
-  (when-fn% treesit-available-p nil
-    (when (treesit-available-p)
-      `(progn ,@body))))
+  (if-fn% treesit-available-p nil
+          (if (treesit-available-p)
+              `(progn% ,@body)
+            `(comment ,@body))
+    `(comment ,@body)))
 
 ;;; `vc'
 (defmacro when-feature-vc% (&rest body)
