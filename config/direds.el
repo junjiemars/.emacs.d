@@ -198,43 +198,47 @@
 
   (unless% (eq default-file-name-coding-system locale-coding-system)
 
-    (defadvice insert-directory (before insert-directory-before compile)
+    (defun insert-directory* (file switches &optional wildcard full-directory-p)
       "\\=`dired-find-file\\=' should failed when using GNU's ls program on Windows.
        We try to encode multibyte directory name with
        \\=`locale-coding-system\\=' when the multibyte directory name
        encoded with non \\=`locale-coding-system\\='."
-      (when (multibyte-string-p (ad-get-arg 0))
-        (ad-set-arg 0 (encode-coding-string (ad-get-arg 0)
-                                            locale-coding-system))))
+      (let ((file (if (multibyte-string-p file)
+                      (encode-coding-string file locale-coding-system)
+                    file)))
+        (funcall (symbol-function '_insert-directory_)
+                 file switches wildcard full-directory-p)))
 
-    (defadvice dired-shell-stuff-it (before dired-shell-stuff-it-before disable)
+    (defun dired-shell-stuff-it* (command file-list on-each &optional _)
       "\\=`dired-do-shell-command\\=' or \\=`dired-do-async-shell-command\\='
        should failed when open the files which does not been
        encoded with \\=`locale-coding-system\\='."
-      (ad-set-arg 1 (let ((arg1 (ad-get-arg 1))
-                          (files nil))
-                      (dolist (x arg1 files)
-                        (append! (if (multibyte-string-p x)
-                                     (encode-coding-string
-                                      x
-                                      locale-coding-system)
-                                   x)
-                                 files t)))))
+      (let ((file-list (let ((arg1 file-list) (fs nil))
+                         (dolist (x arg1 fs)
+                           (append!
+                            (if (multibyte-string-p x)
+                                (encode-coding-string x locale-coding-system)
+                              x)
+                            fs t)))))
+        (funcall (symbol-function '_dired-shell-stuff-it_)
+                 command file-list on-each)))
 
-    (defadvice dired-shell-command (before dired-shell-command-before disable)
+    (defun dired-shell-command* (cmd)
       "\\=`dired-do-compress-to\\=' should failed when
        \\=`default-directory\\=' or \\=`dired-get-marked-files\\=' does not
        encoded with \\=`locale-coding-system\\='."
-      (let ((arg0 (ad-get-arg 0)))
-        (when (multibyte-string-p arg0)
-          (ad-set-arg 0 (encode-coding-string arg0 locale-coding-system)))))
+      (let ((cmd (if (multibyte-string-p cmd)
+                     (encode-coding-string cmd locale-coding-system)
+                   cmd)))
+        (funcall (symbol-function '_dired-shell-command_) cmd)))
 
-    (defadvice dired-compress-file (before dired-compress-file-before disable)
+    (defun dired-compress-file* (file)
       "\\=`dired-compress-file\\=' should failed when FILE arg does not
        encoded with \\=`locale-coding-string\\='."
-      (let ((arg0 (ad-get-arg 0)))
-        (when (multibyte-string-p arg0)
-          (ad-set-arg 0 (encode-coding-string arg0 locale-coding-system)))))))
+      (let ((file (if (multibyte-string-p file)
+                      (encode-coding-string file locale-coding-system)
+                    file)))
+        (funcall (symbol-function '_dired-compress-file_) file)))))
 
 ;;
 
@@ -247,29 +251,25 @@
        ,@body)))
 
 (when-fn-archive-summarize-files%
-  (defadvice archive-summarize-files
-      (before archive-summarize-files-before first compile disable)
-    "\\=`archive-summarize-files\\=' may not display file name in right
-       coding system."
-    (let ((arg0 (ad-get-arg 0))
-          (files nil))
-      (when (consp arg0)
-        (ad-set-arg
-         0
-         (dolist (x arg0 files)
-           (when (and (arrayp x) (= 3 (length x)))
-             (let ((decode (substring-no-properties
-                            (decode-coding-string
-                             (aref x 0) locale-coding-system))))
-               (aset x 0 decode)
-               (aset x 2 (length decode))))
-           (append! x files t)))))))
+  (defun archive-summarize-files* (files)
+    "\\=`archive-summarize-files\\=' may not display file name."
+    (let ((files (if (consp files)
+                     (let ((fs nil))
+                       (dolist (x files fs)
+                         (when (and (arrayp x) (= 3 (length x)))
+                           (let ((decode (substring-no-properties
+                                          (decode-coding-string
+                                           (aref x 0) locale-coding-system))))
+                             (aset x 0 decode)
+                             (aset x 2 (length decode))))
+                         (append! x fs t)))
+                   files))))
+    (funcall (symbol-function '_archive-summarize-files_) files)))
 
 (defun on-arc-mode-init! ()
   (when-fn-archive-summarize-files%
-    (ad-enable-advice #'archive-summarize-files 'before
-                      "archive-summarize-files-before")
-    (ad-activate #'archive-summarize-files t)))
+    (defadvice* 'archive-summarize-files
+      'archive-summarize-files #'archive-summarize-files*)))
 
 ;; end of `arc-mode'
 
@@ -312,12 +312,11 @@
   ;; (setq file-name-coding-system locale-coding-system)
   (when-platform% windows-nt
     (unless% (eq default-file-name-coding-system locale-coding-system)
-      (ad-enable-advice #'dired-shell-stuff-it 'before
-                        "dired-shell-stuff-it-before")
-      (ad-enable-advice #'dired-shell-command 'before
-                        "dired-shell-command-before")
-      (ad-activate #'dired-shell-stuff-it t)
-      (ad-activate #'dired-shell-command t))
+      ;; (defadvice* '_insert-directory_ 'insert-directory #'insert-directory*)
+      (defadvice* '_dired-shell-stuff-it_
+        'dired-shell-stuff-it #'dired-shell-stuff-it*)
+      (defadvice* '_dired-shell-command_
+        'dired-shell-command #'dired-shell-command*))
     ;; [Z] to compress or uncompress .gz file
     (when-var% dired-compress-file-suffixes dired-aux
       (when% (or (executable-find% "gzip")
@@ -338,9 +337,8 @@
               (push! (cons "\\.gz\\'" 7za?) dired-compress-file-suffixes))))
 
         (when-fn% dired-compress-file dired-aux
-          (ad-enable-advice #'dired-compress-file 'before
-                            "dired-compress-file-before")
-          (ad-activate #'dired-compress-file t))))))
+          (defadvice* 'dired-compress-file
+            'dired-compress-file #'dired-compress-file*))))))
 
 ;; end of `dired-aux'
 

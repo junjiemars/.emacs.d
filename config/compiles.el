@@ -17,13 +17,11 @@
   ;; There are no builtin `grep' in Windows, GNU's `grep' may use
   ;; the UNIX path in Windows which cannot be recognized by Emacs.
   ;; When such case occurred, we try to translate UNIX path to POSIX path.
-  (defadvice compilation-find-file
-      (before compilation-find-file-before first compile disable)
-    (when (string-match "^/\\([a-zA-Z]\\)/" (ad-get-arg 1))
-      (ad-set-arg
-       1 ;; filename argument
-       (replace-match (concat (match-string 1 (ad-get-arg 1)) ":/")
-                      t t (ad-get-arg 1))))))
+  (defun compilation-find-file* (marker filename directory &rest formats)
+    (when (string-match "^/\\([a-zA-Z]\\)/" filename)
+      (setq filename (replace-match (concat (match-string 1 filename) ":/")
+                                    t t filename)))
+    (compilation-find-file marker filename directory &rest formats)))
 
 (defun compile*-colorize-buffer! ()
   "Colorize compilation buffer."
@@ -74,10 +72,8 @@
   "On \\=`compile\\=' initialization."
   (setq% compilation-buffer-name-function #'compile*-buffer-name-fn compile)
   (when-platform% windows-nt
-    ;; compile and activate `compilation-find-file' advice on Windows
-    (ad-enable-advice #'compilation-find-file 'before
-                      "compilation-find-file-before")
-    (ad-activate #'compilation-find-file t))
+    (defadvice* '_compilation-find-file_
+      'compilation-find-file #'compilation-find-file*))
   (when-platform% darwin
     ;; `next-error' find source file
     (add-hook 'compilation-finish-functions
