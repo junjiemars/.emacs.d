@@ -117,44 +117,47 @@ test_module() {
 (*self-paths* :put :epilogue nil)
 (*self-env-spec*
   :put :module
-  (list
-    :package-check-signature 'allow-unsigned
-    :package-archives
-    \`(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-      ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
-      ("melpa-stable" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
-      ("melpa" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))
-    :allowed t))
+  (list :remove-unused t
+        :package-check-signature 'allow-unsigned
+        :package-archives
+       '(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+         ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
+         ("melpa-stable" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
+         ("melpa" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))
+        :allowed t))
 (*self-mod-spec*
- :put :common-lisp
- (list
-  :cond (or (executable-find% "sbcl")
-            (executable-find% "ecl")
-            (executable-find% "acl"))
-  :packages '(slime)
-  :compile \`(,(compile-unit% (emacs-home* "config/use-slime.el") t)
-             ,(compile-unit% (emacs-home* "config/use-slime-autoload.el")))))
+ :put :lisp
+ \`( :cond t
+    :packages (paredit rainbow-delimiters)
+    :compile (,(compile-unit* (emacs-home* "config/use-lisp.el") t)
+              ,(compile-unit* (emacs-home* "config/use-lisp-autoload.el")))))
 (*self-mod-spec*
-  :put :lisp
-  (list
-    :cond t
-    :packages '(paredit)
-    :compile \`(,(compile-unit% (emacs-home* "config/use-lisp-autoload.el")))))
+ :put :lua
+ \`( :cond ,(executable-find% "lua")
+    :packages (lua-mode)))
+(*self-mod-spec*
+ :put :org
+ \`( :cond ,(executable-find% "latex")
+    :packages (auctex cdlatex ,(when-version% <= 25 'ox-reveal))
+    :compile (,(compile-unit* (emacs-home* "config/use-org.el") t)
+              ,(compile-unit* (emacs-home* "config/use-org-autoload.el")))))
 (*self-mod-spec*
  :put :rust
- (list
-  :cond (and (executable-find% "rustc") (executable-find% "cargo"))
-  :packages '(rust-mode)
-  :compile \`(,(compile-unit% (emacs-home* "config/use-rust.el") t)
-             ,(compile-unit% (emacs-home* "config/use-rust-autoload.el")))))
+\`( :cond ,(and (executable-find% "rustc") (executable-find% "cargo"))
+    :packages (rust-mode)
+    :compile (,(compile-unit* (emacs-home* "config/use-rust.el") t)
+              ,(compile-unit* (emacs-home* "config/use-rust-autoload.el")))))
 (*self-mod-spec*
-  :put :vc
-  (list
-    :cond (executable-find% "git")
-    :packages (prog1 '(magit)
-                (set-default 'magit-define-global-key-bindings nil))
-    :compile \`(,(compile-unit% (emacs-home* "config/use-magit.el") t)
-               ,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
+ :put :vlang
+ \`( :cond ,(executable-find% "v")
+    :packages (v-mode)))
+(*self-mod-spec*
+ :put :vcs
+ \`( :cond ,(and (when-version% <= 24.4 t) (executable-find% "git"))
+    :packages ,(prog1 '(magit)
+                 (set-default 'magit-define-global-key-bindings nil))
+    :compile (,(compile-unit* (emacs-home* "config/use-magit.el") t)
+              ,(compile-unit* (emacs-home* "config/use-magit-autoload.el")))))
 END
   echo "# cat <${_ENV_PRO_}"
   cat <"${_ENV_PRO_}"
@@ -183,8 +186,8 @@ test_profile() {
 (*self-paths* :put :epilogue nil)
 (*self-env-spec*
  :put :shell
- (list :copy-vars \`("PATH")
-       :spin-vars \`(("ZZZ" . "123"))
+ (list :copy-vars '("PATH")
+       :spin-vars '(("ZZZ" . "123"))
        :exec-path t
        :shell-file-name (or (executable-find% "zsh")
                             (executable-find% "bash"))
@@ -214,45 +217,14 @@ test_profile() {
        :allowed nil))
 (*self-env-spec*
   :put :module
-  (list
-    :remove-unused t
-    :package-check-signature 'allow-unsigned
-    :package-archives
-    \`(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-      ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
-      ("melpa-stable" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
-      ("melpa" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))
-    :allowed $mod))
-(*self-mod-spec*
- :put :common-lisp
- (list
-  :cond (or (executable-find% "sbcl")
-            (executable-find% "ecl")
-            (executable-find% "acl"))
-  :packages '(slime)
-  :compile \`(,(compile-unit% (emacs-home* "config/use-slime.el") t)
-             ,(compile-unit% (emacs-home* "config/use-slime-autoload.el")))))
-(*self-mod-spec*
-  :put :lisp
-  (list
-    :cond t
-    :packages '(paredit)
-    :compile \`(,(compile-unit% (emacs-home* "config/use-lisp-autoload.el")))))
-(*self-mod-spec*
- :put :rust
- (list
-  :cond (and (executable-find% "rustc") (executable-find% "cargo"))
-  :packages '(rust-mode)
-  :compile \`(,(compile-unit% (emacs-home* "config/use-rust.el") t)
-             ,(compile-unit% (emacs-home* "config/use-rust-autoload.el")))))
-(*self-mod-spec*
-  :put :vc
-  (list
-    :cond (executable-find% "git")
-    :packages (prog1 '(magit)
-                (set-default 'magit-define-global-key-bindings nil))
-    :compile \`(,(compile-unit% (emacs-home* "config/use-magit.el") t)
-               ,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
+  (list :remove-unused nil
+        :package-check-signature 'allow-unsigned
+        :package-archives
+       '(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+         ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
+         ("melpa-stable" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
+         ("melpa" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))
+        :allowed $mod))
 END
   echo "# cat <${_ENV_PRO_}"
   cat <"${_ENV_PRO_}"

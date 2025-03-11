@@ -14,8 +14,8 @@
                         (executable-find% "ecl")
                         (executable-find% "acl")))
     :packages (slime)
-    :compile (,(compile-unit% (emacs-home* "config/use-slime.el") t)
-              ,(compile-unit% (emacs-home* "config/use-slime-autoload.el")))))
+    :compile (,(compile-unit* (emacs-home* "config/use-slime.el") t)
+              ,(compile-unit* (emacs-home* "config/use-slime-autoload.el")))))
 
 ;;; :doc
 (*self-mod-spec*
@@ -37,8 +37,8 @@
  :put :lisp
  `( :cond ,(comment t)
     :packages (paredit rainbow-delimiters)
-    :compile (,(compile-unit% (emacs-home* "config/use-lisp.el") t)
-              ,(compile-unit% (emacs-home* "config/use-lisp-autoload.el")))))
+    :compile (,(compile-unit* (emacs-home* "config/use-lisp.el") t)
+              ,(compile-unit* (emacs-home* "config/use-lisp-autoload.el")))))
 
 ;;; :lua
 (*self-mod-spec*
@@ -50,7 +50,9 @@
 (*self-mod-spec*
  :put :org
  `( :cond ,(comment (executable-find% "latex"))
-    :packages (auctex cdlatex ,(when-version% <= 25 'ox-reveal))))
+    :packages (auctex cdlatex ,(when-version% <= 25 'ox-reveal))
+    :compile (,(compile-unit* (emacs-home* "config/use-org.el") t)
+              ,(compile-unit* (emacs-home* "config/use-org-autoload.el")))))
 
 ;;; :rust
 (*self-mod-spec*
@@ -58,8 +60,8 @@
  `( :cond ,(comment (and (executable-find% "rustc")
                          (executable-find% "cargo")))
     :packages (rust-mode)
-    :compile (,(compile-unit% (emacs-home* "config/use-rust.el") t)
-              ,(compile-unit% (emacs-home* "config/use-rust-autoload.el")))))
+    :compile (,(compile-unit* (emacs-home* "config/use-rust.el") t)
+              ,(compile-unit* (emacs-home* "config/use-rust-autoload.el")))))
 
 ;;; :scheme
 (*self-mod-spec*
@@ -72,8 +74,8 @@
                              (executable-find% "chicken")
                              (executable-find% "guile"))))
     :packages  (geiser)
-    :compile (,(compile-unit% (emacs-home* "config/use-geiser.el") t)
-              ,(compile-unit% (emacs-home* "config/use-geiser-autoload.el")))))
+    :compile (,(compile-unit* (emacs-home* "config/use-geiser.el") t)
+              ,(compile-unit* (emacs-home* "config/use-geiser-autoload.el")))))
 
 ;;; :vlang
 (*self-mod-spec*
@@ -88,8 +90,8 @@
                          (executable-find% "git")))
     :packages ,(prog1 '(magit)
                  (set-default 'magit-define-global-key-bindings nil))
-    :compile (,(compile-unit% (emacs-home* "config/use-magit.el") t)
-              ,(compile-unit% (emacs-home* "config/use-magit-autoload.el")))))
+    :compile (,(compile-unit* (emacs-home* "config/use-magit.el") t)
+              ,(compile-unit* (emacs-home* "config/use-magit-autoload.el")))))
 
 ;;; :web
 (*self-mod-spec*

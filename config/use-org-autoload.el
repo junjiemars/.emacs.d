@@ -6,13 +6,10 @@
 ;; use-org-autoload.el
 ;;;;
 
-;; (defun use-org-init! ())
-(setq% org-reveal-root
-       (let ((root (emacs-home% ".reveal.js/")))
-         (if (file-exists-p root)
-             root
-           "https://cdn.jsdelivr.net/npm/reveal.js"))
-       ox-reveal)
+(autoload 'use-org-init! (v-home%> "config/use-org"))
+
+(with-eval-after-load 'org-mode
+  (make-thread* #'use-org-init!))
 
 
 
