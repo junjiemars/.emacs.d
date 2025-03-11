@@ -83,19 +83,19 @@
 (when-version% > 30
   (defun treesit*-grammar-install (&rest args)
     (let ((dir (car treesit-extra-load-path)))
-      (apply #'treesit--install-language-grammar-1
+      (apply (symbol-function '_treesit--install-language-grammar-1_)
              (append (list dir) (cdr args))))))
 
 (defun on-treesit-init! ()
   "On \\=`treesit\\=' initialization."
   ;; default load path
   (if-version%
-      < 30
+      <= 30
       (when-var% treesit--install-language-grammar-out-dir-history treesit
-        (setq treesit--install-language-grammar-out-dir-history
-              (list (car treesit-extra-load-path)
-                    (cdr treesit--install-language-grammar-out-dir-history))))
-    (fset 'treesit--install-language-grammar-1 #'treesit*-grammar-install))
+        (push! (car treesit-extra-load-path)
+               treesit--install-language-grammar-out-dir-history))
+    (defadvice* '_treesit--install-language-grammar-1_
+      'treesit--install-language-grammar-1 #'treesit*-grammar-install))
   ;;; `on-c-ts-mode-init!'
   (declare-function on-c-ts-mode-init! (v-home%> "config/cc"))
   (autoload 'on-c-ts-mode-init! (v-home%> "config/cc"))

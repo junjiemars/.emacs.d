@@ -16,36 +16,28 @@
 ;;; `xref-find-definitions' associated macro, since emacs25
 
 (eval-when-compile
-  (defmacro when-fn-xref-find-definitions% (&rest body)
+  (defmacro when-xref-find-definitions% (&rest body)
     (declare (indent 0))
     (if-fn% xref-find-definitions xref
-            `(progn
-               (fset '_xref-find-definitions_
-                     (symbol-function 'xref-find-definitions))
-               ,@body)
+            `(progn% ,@body)
       `(comment ,@body))))
 
 (eval-when-compile
-  (defmacro unless-fn-xref-find-definitions% (&rest body)
+  (defmacro unless-xref-find-definitions% (&rest body)
     (declare (indent 0))
     (if-fn% xref-find-definitions xref
             `(comment ,@body)
-      `(progn
-         (fset '_find-tag_ (symbol-function 'find-tag))
-         ,@body))))
+      `(progn% ,@body))))
 
 ;; end of `xref-find-definitions' associated macro
 
 ;;; `xref--show-location' associated macro, since emacs25
 
 (eval-when-compile
-  (defmacro when-fn-xref--show-location% (&rest body)
+  (defmacro when-xref--show-location% (&rest body)
     (declare (indent 0))
     (if-fn% xref--show-location xref
-            `(progn
-               (fset '_xref--show-location_
-                     (symbol-function 'xref--show-location))
-               ,@body)
+            `(progn% ,@body)
       `(comment ,@body))))
 
 ;; end of `xref--show-location' associated macro
@@ -75,14 +67,14 @@
       (with-current-buffer buf
         (view-mode 1)))))
 
-(when-fn-xref-find-definitions%
+(when-xref-find-definitions%
   (defun xref-find-definitions* (&rest _)
     "Into \\=`view-mode\\=' after call \\=`xref-find-definitions\\='."
     (interactive)
     (call-interactively (symbol-function '_xref-find-definitions_))
     (xref*-buffer-in-view-mode)))
 
-(when-fn-xref--show-location%
+(when-xref--show-location%
   (defun xref--show-location* (&rest args)
     "Into \\=`view-mode\\=' after call \\=`xref--show-location\\='."
     (let ((r (apply (symbol-function '_xref--show-location_) args)))
@@ -91,10 +83,12 @@
 (defun on-xref-init! ()
   (when (file-exists-p (xref*-read-only-dirs :file))
     (xref*-read-only-dirs :read))
-  (when-fn-xref-find-definitions%
-    (fset 'xref-find-definitions #'xref-find-definitions*))
-  (when-fn-xref--show-location%
-    (fset 'xref--show-location #'xref--show-location*))
+  (when-xref-find-definitions%
+    (defadvice* '_xref-find-definitions_
+      'xref-find-definitions #'xref-find-definitions*))
+  (when-xref--show-location%
+    (defadvice* '_xref--show-location_
+      'xref--show-location #'xref--show-location*))
   (unless-graphic%
     (when% (facep 'xref-match)
       (set-face-background 'xref-match +term-background-color+)
@@ -116,7 +110,7 @@
 ;; `pop-tag-mark' same as Emacs22+ for ancient Emacs
 ;;;
 
-(unless-fn-xref-find-definitions%
+(unless-xref-find-definitions%
   (defun find-tag* (&rest _)
     "Into \\=`view-mode\\=' after call \\=`find-tag\\='."
     (interactive)
@@ -125,11 +119,11 @@
 
 (defun on-etags-init! ()
   "On \\=`etags\\=' initialization."
-  (unless-fn-xref-find-definitions%
+  (unless-xref-find-definitions%
     ;; define keys for `pop-tag-mark' and `tags-loop-continue'
     (define-global-key% (kbd "M-,") #'pop-tag-mark)
     (define-global-key% (kbd "M-*") #'tags-loop-continue)
-    (fset 'find-tag #'find-tag)))
+    (defadvice* '_find-tag_ 'find-tag #'find-tag)))
 
 ;; end of `etags'
 

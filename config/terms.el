@@ -45,16 +45,7 @@ esac
                (*self-env-spec* :get :shell :prompt :bash))
           "\\u@\\h \\W \\$ ")))))
 
-(eval-when-compile
-  (defmacro when-fn-ansi-term% (&rest body)
-    (declare (indent 0))
-    (if-platform% windows-nt
-        `(progn
-           (fset '_ansi-term_ (symbol-function 'ansi-term))
-           ,@body)
-      `(comment ,@body))))
-
-(when-fn-ansi-term%
+(when-platform% windows-nt
   (defun ansi-term* (&rest _)
     (interactive)
     (set-window-buffer
@@ -64,7 +55,8 @@ esac
 
 (defun on-term-init! ()
   "On \\=`term\\=' initialization."
-  (when-fn-ansi-term% (fset 'ansi-term #'ansi-term*)))
+  (when-platform% windows-nt
+    (defadvice* '_ansi_term_ 'ansi-term #'ansi-term*)))
 
 
 

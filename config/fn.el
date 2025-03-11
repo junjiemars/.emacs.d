@@ -555,6 +555,13 @@ Call FN with the path if FN is non-nil."
 ;; compatible macro
 ;;;
 
+(defmacro defadvice* (symbol fn1 fn2)
+  "Define the FN2 advice for FN1."
+  (declare (indent 1))
+  `(progn
+     (fset ,symbol (symbol-function ,fn1))
+     (fset ,fn1 ,fn2)))
+
 (unless-fn% user-error nil
   (defun user-error (format &rest args)
     "Signal a pilot error."

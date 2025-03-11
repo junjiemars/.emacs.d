@@ -42,9 +42,8 @@
   (when-fn% slime-selector slime
     (define-global-key% "\C-css" #'slime-selector))
   (when-fn% slime-show-source-location slime
-    (fset '_slime-show-source-location_
-          (symbol-function 'slime-show-source-location))
-    (fset 'slime-show-source-location 'slime-show-source-location*)))
+    (defadvice* '_slime-show-source-location_
+      'slime-show-source-location #'slime-show-source-location*)))
 
 
 

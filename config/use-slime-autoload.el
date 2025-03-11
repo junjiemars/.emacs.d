@@ -7,6 +7,7 @@
 ;;;;
 
 (autoload 'use-slime-init! (v-home%> "config/use-slime"))
+(autoload 'slime*-source-locations (v-home%> "config/use-slime"))
 
 ;; `slime' after load
 (with-eval-after-load 'slime

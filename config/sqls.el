@@ -41,50 +41,47 @@
       `(progn% ,@body))))
 
 (eval-when-compile
-  (defmacro when-fn-sql-show-sqli-buffer% (&rest body)
+  (defmacro when-sql-show-sqli-buffer% (&rest body)
     (declare (indent 0))
     (if-fn% sql-show-sqli-buffer sql
             `(progn% ,@body)
       `(comment ,@body))))
 
 (eval-when-compile
-  (defmacro when-fn-sql-send-magic-terminator% (&rest body)
+  (defmacro when-sql-send-magic-terminator% (&rest body)
     (declare (indent 0))
     (if-fn% sql-send-magic-terminator sql
-            `(progn
-               (fset '_sql-send-magic-terminator_
-                     (symbol-function 'sql-send-magic-terminator))
-               ,@body)
+            `(progn% ,@body)
       `(comment ,@body))))
 
 ;; end of when-* macro
 
 ;;; sqli
 
-(when-fn-sql-show-sqli-buffer%
-  (defun sql-show-sqli-buffer* ()
-    "Display the current SQLi buffer."
-    (interactive)
-    (with-current-buffer (current-buffer)
-      (when (or current-prefix-arg
-                (null (get-buffer-process sql-buffer)))
-        (call-interactively #'sql-connect))
-      (call-interactively #'sql-show-sqli-buffer))))
+(when-sql-show-sqli-buffer%
+ (defun sql-show-sqli-buffer* ()
+   "Display the current SQLi buffer."
+   (interactive)
+   (with-current-buffer (current-buffer)
+     (when (or current-prefix-arg
+               (null (get-buffer-process sql-buffer)))
+       (call-interactively #'sql-connect))
+     (call-interactively #'sql-show-sqli-buffer))))
 
-(when-fn-sql-show-sqli-buffer%
-  (defun sql-find-sqli-buffer* ()
-    "Return the living \\=`sql-buffer\\='."
-    (with-current-buffer (current-buffer)
-      (when (and sql-buffer (get-buffer-process sql-buffer))
-        sql-buffer))))
+(when-sql-show-sqli-buffer%
+ (defun sql-find-sqli-buffer* ()
+   "Return the living \\=`sql-buffer\\='."
+   (with-current-buffer (current-buffer)
+     (when (and sql-buffer (get-buffer-process sql-buffer))
+       sql-buffer))))
 
-(when-fn-sql-send-magic-terminator%
+(when-sql-send-magic-terminator%
   (defun sql-send-magic-terminator* (buf str terminator)
     "Send TERMINATOR to buffer BUF if its not present in STR."
-    (cond ((eq 'mysql sql-product) (setq terminator t))
-          ((eq 'oceanbase sql-product) (setq terminator t)))
     (funcall (symbol-function '_sql-send-magic-terminator_)
-             buf str terminator)))
+             buf str (cond ((eq 'mysql sql-product) (setq terminator t))
+                           ((eq 'oceanbase sql-product) (setq terminator t))
+                           (t terminator)))))
 
 ;; end of sqli
 
@@ -511,12 +508,13 @@ Optional prefix argument ENHANCED, displays additional details."
 (defun on-sql-mysql-init! ()
   "On \\=`sql\\=' mysql initialization."
   ;; mysql: \\=`:terminator\\='
-  (when-fn-sql-send-magic-terminator%
+  (when-sql-send-magic-terminator%
     (plist-put
      (cdr (assq 'mysql sql-product-alist))
      :terminator
      '("^.*\\G" . ""))
-    (fset 'sql-send-magic-terminator #'sql-send-magic-terminator*))
+    (defadvice* '_sql-send-magic-terminator_
+      'sql-send-magic-terminator #'sql-send-magic-terminator*))
   ;; `sql-mysql-program'
   (setq sql-mysql-program
         (or (executable-find% "mysql")
@@ -595,12 +593,13 @@ Optional prefix argument ENHANCED, displays additional details."
              :syntax-alist ((?# . "< b") (?\\ . "\\"))
              :input-filter sql-remove-tabs-filter)
            sql-product-alist)
-  (when-fn-sql-send-magic-terminator%
+  (when-sql-send-magic-terminator%
     (plist-put
      (cdr (assq 'oceanbase sql-product-alist))
      :terminator
      '("^.*\\G" . ""))
-    (fset 'sql-send-magic-terminator #'sql-send-magic-terminator*))
+    (defadvice* '_sql-send-magic-terminator_
+      'sql-send-magic-terminator #'sql-send-magic-terminator*))
   (when-sql-oceanbase-feature%
     ;; :list-all
     (plist-put (cdr (assq 'oceanbase sql-product-alist))
@@ -624,8 +623,8 @@ Optional prefix argument ENHANCED, displays additional details."
   (on-sql-mysql-init!)
   (on-sql-oracle-init!)
   (on-sql-oceanbase-init!)
-  (when-fn-sql-show-sqli-buffer%
-    (define-key% sql-mode-map "" #'sql-show-sqli-buffer*))
+  (when-sql-show-sqli-buffer%
+   (define-key% sql-mode-map "" #'sql-show-sqli-buffer*))
   ;; features' keybindings
   (when-sql-feature%
     (define-key% sql-mode-map "a" #'sql-list-all)

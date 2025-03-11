@@ -390,38 +390,38 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 ;;;
 
 (eval-when-compile
-  (defmacro when-fn-c-macro-expand% (&rest body)
+  (defmacro when-c-macro-expand% (&rest body)
     (declare (indent 0))
     (if-fn% c-macro-expand cmacexp
             `(progn% ,@body)
       `(comment ,@body))))
 
-(when-fn-c-macro-expand%
-  (defun cc*-macro-expand (&rest args)
-    "Macro expanding current buffer."
-    (interactive "r\nP")
-    (let ((remote (ssh-remote-p (buffer-file-name (current-buffer)))))
-      (setq% c-macro-prompt-flag t cmacexp)
-      (setq% c-macro-buffer-name
-             (if remote
-                 (format "*Macro Expanded@%s*"
-                         (ssh-remote->user@host remote))
-               "*Macro Expanded*")
-             cmacexp)
-      (setq% c-macro-preprocessor
-             (if remote
-                 (format "ssh %s %s"
-                         (ssh-remote->user@host remote)
-                         "cc -E -o - -")
-               (if-platform% windows-nt
-                   ;; cl.exe can't compile on the fly without xargs
-                   (let ((tmp (make-temp-file "cc-m-" nil ".c")))
-                     (format "%s -0 > %s && %s && cl -E %s"
-                             +cc*-xargs-bin+ tmp
-                             (cc*-cc) tmp))
-                 (format "%s -E -o - -" (cc*-cc))))
-             cmacexp)
-      (apply #'c-macro-expand args))))
+(when-c-macro-expand%
+ (defun cc*-macro-expand (&rest args)
+   "Macro expanding current buffer."
+   (interactive "r\nP")
+   (let ((remote (ssh-remote-p (buffer-file-name (current-buffer)))))
+     (setq% c-macro-prompt-flag t cmacexp)
+     (setq% c-macro-buffer-name
+            (if remote
+                (format "*Macro Expanded@%s*"
+                        (ssh-remote->user@host remote))
+              "*Macro Expanded*")
+            cmacexp)
+     (setq% c-macro-preprocessor
+            (if remote
+                (format "ssh %s %s"
+                        (ssh-remote->user@host remote)
+                        "cc -E -o - -")
+              (if-platform% windows-nt
+                  ;; cl.exe can't compile on the fly without xargs
+                  (let ((tmp (make-temp-file "cc-m-" nil ".c")))
+                    (format "%s -0 > %s && %s && cl -E %s"
+                            +cc*-xargs-bin+ tmp
+                            (cc*-cc) tmp))
+                (format "%s -E -o - -" (cc*-cc))))
+            cmacexp)
+     (apply #'c-macro-expand args))))
 
 ;; end of `cmacexp'
 
@@ -458,8 +458,8 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
   (define-key keymap (kbd% "C-c M-c f") #'cc*-format-buffer)
   (when-fn-ff-find-other-file%
    (define-key keymap "fi" #'cc*-find-include-file))
-  (when-fn-c-macro-expand%
-    (define-key keymap "" #'cc*-macro-expand)))
+  (when-c-macro-expand%
+   (define-key keymap "" #'cc*-macro-expand)))
 
 ;; end of keys
 
