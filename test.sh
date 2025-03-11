@@ -18,6 +18,7 @@ test_echo_env() {
 
 test_clean_env() {
   cat <<END>"${_ENV_PRO_}"
+;; -*- lexical-binding:t -*-
 (*self-paths* :put :env-spec nil)
 (*self-paths* :put :package-spec nil)
 (*self-paths* :put :epilogue nil)

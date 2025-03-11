@@ -86,11 +86,6 @@
       (apply #'treesit--install-language-grammar-1
              (append (list dir) (cdr args))))))
 
-;; (defadvice treesit--install-language-grammar-1
-;;     (before treesit--install-language-grammar-1-before first compile disable)
-;;   (unless (ad-get-arg 0)
-;;     (ad-set-arg 0 (car treesit-extra-load-path))))
-
 (defun on-treesit-init! ()
   "On \\=`treesit\\=' initialization."
   ;; default load path
