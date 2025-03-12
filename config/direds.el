@@ -16,10 +16,11 @@
 
 ;;; macro
 
-(defmacro unless-default-file-name-coding-system% (&rest body)
-  (declare (indent 0))
-  `(unless% (eq default-file-name-coding-system locale-coding-system)
-     ,@body))
+(eval-when-compile
+  (defmacro unless-default-file-name-coding-system% (&rest body)
+    (declare (indent 0))
+    `(unless% (eq default-file-name-coding-system locale-coding-system)
+       ,@body)))
 
 ;; end of macro
 
@@ -58,10 +59,10 @@
           "REM ignore options\n"
           (let ((options nil))
             (dolist (x (cond ((string= "minizip" zip)
-                               (append '("-r" "--filesync" "-rmTq") ignore))
-                              ((string-match "7za?" zip)
-                               (append '("-r" "--filesync" "-rmTq"))))
-                        options)
+                              (append '("-r" "--filesync" "-rmTq") ignore))
+                             ((string-match "7za?" zip)
+                              (append '("-r" "--filesync" "-rmTq"))))
+                       options)
               (setq options
                     (concat options
                             (format "if \"%%1\"==\"%s\" set _OPT=%%_OPT:%s=%% & shift & goto :getopt\n" x x)))))
@@ -244,13 +245,14 @@
 
 ;;; `arc-mode'
 
-(defmacro when-fn-archive-summarize-files% (&rest body)
-  (declare (indent 0))
-  (when-fn% archive-summarize-files arc-mode
-    `(unless-default-file-name-coding-system%
-       ,@body)))
+(eval-when-compile
+  (defmacro when-archive-summarize-files% (&rest body)
+    (declare (indent 0))
+    (when-fn% archive-summarize-files arc-mode
+      `(unless-default-file-name-coding-system%
+         ,@body))))
 
-(when-fn-archive-summarize-files%
+(when-archive-summarize-files%
   (defun archive-summarize-files* (files)
     "\\=`archive-summarize-files\\=' may not display file name."
     (let ((files (if (consp files)
@@ -263,12 +265,12 @@
                              (aset x 0 decode)
                              (aset x 2 (length decode))))
                          (append! x fs t)))
-                   files))))
-    (funcall (symbol-function '_archive-summarize-files_) files)))
+                   files)))
+      (funcall (symbol-function '_archive-summarize-files_) files))))
 
 (defun on-arc-mode-init! ()
-  (when-fn-archive-summarize-files%
-    (defadvice* 'archive-summarize-files
+  (when-archive-summarize-files%
+    (defadvice* '_archive-summarize-files_
       'archive-summarize-files #'archive-summarize-files*)))
 
 ;; end of `arc-mode'
@@ -312,7 +314,7 @@
   ;; (setq file-name-coding-system locale-coding-system)
   (when-platform% windows-nt
     (unless% (eq default-file-name-coding-system locale-coding-system)
-      ;; (defadvice* '_insert-directory_ 'insert-directory #'insert-directory*)
+      (defadvice* '_insert-directory_ 'insert-directory #'insert-directory*)
       (defadvice* '_dired-shell-stuff-it_
         'dired-shell-stuff-it #'dired-shell-stuff-it*)
       (defadvice* '_dired-shell-command_

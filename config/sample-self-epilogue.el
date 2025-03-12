@@ -25,9 +25,8 @@
 ;;; tag
 
 (comment
- ;; using `tags' to view Emacs's source code: C and Elisp
- (let ((srcdir (format "/opt/open/emacs/emacs-%s/"
-                       emacs-major-version)))
+ ;; using `tags' to view Emacs's source code
+ (let ((srcdir (format "/opt/open/emacs/emacs-%s/" emacs-major-version)))
    (when (file-exists-p srcdir)
      (xref*-read-only-dirs :push (setq source-directory srcdir))
      (setq% find-function-C-source-directory
@@ -60,7 +59,7 @@
 (comment
  (when-feature% slime
    (when-fn% slime*-source-locations use-slime
-     (slime*-source-locations "<source-dir>"))))
+     (slime*-source-locations "/opt/open/lisp/"))))
 
 ;; end of slime
 

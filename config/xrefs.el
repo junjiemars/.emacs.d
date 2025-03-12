@@ -71,14 +71,16 @@
   (defun xref-find-definitions* (&rest _)
     "Into \\=`view-mode\\=' after call \\=`xref-find-definitions\\='."
     (interactive)
-    (call-interactively (symbol-function '_xref-find-definitions_))
-    (xref*-buffer-in-view-mode)))
+    (let ((r (call-interactively (symbol-function '_xref-find-definitions_))))
+      (prog1 r
+	(xref*-buffer-in-view-mode)))))
 
 (when-xref--show-location%
   (defun xref--show-location* (&rest args)
     "Into \\=`view-mode\\=' after call \\=`xref--show-location\\='."
     (let ((r (apply (symbol-function '_xref--show-location_) args)))
-      (xref*-buffer-in-view-mode (window-buffer r)))))
+      (prog1 r
+	(xref*-buffer-in-view-mode (window-buffer r))))))
 
 (defun on-xref-init! ()
   (when (file-exists-p (xref*-read-only-dirs :file))
@@ -114,8 +116,9 @@
   (defun find-tag* (&rest _)
     "Into \\=`view-mode\\=' after call \\=`find-tag\\='."
     (interactive)
-    (call-interactively (symbol-function '_find-tag_))
-    (xref*-buffer-in-view-mode)))
+    (let ((r (call-interactively (symbol-function '_find-tag_))))
+      (prog1 r
+        (xref*-buffer-in-view-mode)))))
 
 (defun on-etags-init! ()
   "On \\=`etags\\=' initialization."
@@ -123,7 +126,7 @@
     ;; define keys for `pop-tag-mark' and `tags-loop-continue'
     (define-global-key% (kbd "M-,") #'pop-tag-mark)
     (define-global-key% (kbd "M-*") #'tags-loop-continue)
-    (defadvice* '_find-tag_ 'find-tag #'find-tag)))
+    (defadvice* '_find-tag_ 'find-tag #'find-tag*)))
 
 ;; end of `etags'
 

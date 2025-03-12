@@ -18,10 +18,12 @@
   ;; the UNIX path in Windows which cannot be recognized by Emacs.
   ;; When such case occurred, we try to translate UNIX path to POSIX path.
   (defun compilation-find-file* (marker filename directory &rest formats)
-    (when (string-match "^/\\([a-zA-Z]\\)/" filename)
-      (setq filename (replace-match (concat (match-string 1 filename) ":/")
-                                    t t filename)))
-    (compilation-find-file marker filename directory &rest formats)))
+    (let ((filename (if (string-match "^/\\([a-zA-Z]\\)/" filename)
+                        (replace-match (concat (match-string 1 filename) ":/")
+                                       t t filename)
+                      filename)))
+      (funcall (symbol-function '_compilation-find-file_)
+               marker filename directory &rest formats))))
 
 (defun compile*-colorize-buffer! ()
   "Colorize compilation buffer."
