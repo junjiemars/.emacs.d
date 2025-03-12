@@ -638,8 +638,8 @@ implement almost functionalities that =use-pacakge= does and more.
   (*self-env-spec*
    :put :module
    `( :remove-unused nil
-      :package-check-signature allow-unsigned
-      :package-archives nil
+      :package-check-signature all
+      :package-archives
       (comment
        (("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
         ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")

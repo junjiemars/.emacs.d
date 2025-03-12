@@ -118,7 +118,7 @@ test_module() {
 (*self-env-spec*
   :put :module
   (list :remove-unused t
-        :package-check-signature 'allow-unsigned
+        :package-check-signature nil
         :package-archives
        '(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
          ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
@@ -218,7 +218,7 @@ test_profile() {
 (*self-env-spec*
   :put :module
   (list :remove-unused nil
-        :package-check-signature 'allow-unsigned
+        :package-check-signature nil
         :package-archives
        '(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
          ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")

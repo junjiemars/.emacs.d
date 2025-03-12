@@ -117,6 +117,7 @@
                                c-mode
                                emacs-lisp-mode
                                mixal-mode
+                               org-mode
                                scheme-mode
                                sh-mode
                                sql-mode)
@@ -134,8 +135,8 @@
 (*self-env-spec*
  :put :module
  `( :remove-unused nil
-    :package-check-signature allow-unsigned
-    :package-archives nil
+    :package-check-signature nil        ; t
+    :package-archives
     (comment
      (("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
       ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
