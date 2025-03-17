@@ -120,37 +120,36 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
                              (buffer-substring-no-properties
                               (match-beginning 1) (match-end 1)))))
                 (goto-char (point-max))
-                (save-excursion
-                  (while (search-backward-regexp
-                          "<replacement offset='\\([0-9]+\\)' length='\\([0-9]+\\)'>\\(.*?\\)</replacement>"
-                          nil t)
-                    (let ((off (string-to-number
-                                (buffer-substring-no-properties
-                                 (match-beginning 1) (match-end 1))))
-                          (len (string-to-number
-                                (buffer-substring-no-properties
-                                 (match-beginning 2) (match-end 2))))
-                          (txt (buffer-substring-no-properties
-                                (match-beginning 3) (match-end 3))))
-                      (with-current-buffer buf
-                        (let ((lhs (byte-to-position (1+ off)))
-                              (rhs (byte-to-position (1+ (+ off len))))
-                              (xml 0))
-                          (when (and (<= beg lhs) (>= end rhs))
+                (while (search-backward-regexp
+                        "<replacement offset='\\([0-9]+\\)' length='\\([0-9]+\\)'>\\(.*?\\)</replacement>"
+                        nil t)
+                  (let ((off (string-to-number
+                              (buffer-substring-no-properties
+                               (match-beginning 1) (match-end 1))))
+                        (len (string-to-number
+                              (buffer-substring-no-properties
+                               (match-beginning 2) (match-end 2))))
+                        (txt (buffer-substring-no-properties
+                              (match-beginning 3) (match-end 3))))
+                    (with-current-buffer buf
+                      (let ((lhs (byte-to-position (1+ off)))
+                            (rhs (byte-to-position (1+ (+ off len))))
+                            (xml 0))
+                        (when (and (<= beg lhs) (>= end rhs))
+                          (and (< lhs rhs) (delete-region lhs rhs))
+                          (when txt
                             (goto-char lhs)
-                            (and (< lhs rhs) (delete-region lhs rhs))
-                            (when txt
-                              (while (string-match "&#\\([0-9]+\\);" txt xml)
-                                (setq txt (replace-match
-                                           (char-to-string
-                                            (string-to-number
-                                             (substring-no-properties
-                                              txt
-                                              (match-beginning 1)
-                                              (match-end 1))))
-                                           nil nil txt)
-                                      xml (1+ (match-beginning 0))))
-                              (insert txt))))))))
+                            (while (string-match "&#\\([0-9]+\\);" txt xml)
+                              (setq txt (replace-match
+                                         (char-to-string
+                                          (string-to-number
+                                           (substring-no-properties
+                                            txt
+                                            (match-beginning 1)
+                                            (match-end 1))))
+                                         nil nil txt)
+                                    xml (1+ (match-beginning 0))))
+                            (insert txt)))))))
                 (setq cur (byte-to-position cur))))))
       (and tmp (kill-buffer tmp))
       cur)))
@@ -164,8 +163,9 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
            (and (fboundp 'eglot-managed-p) (eglot-managed-p)))
          (eglot-format beg end))
         ((executable-find% "clang-format")
-         (let ((cur (shell-format-region beg end (current-buffer))))
-           (and cur (goto-char cur))))))
+         (save-excursion
+           (let ((cur (shell-format-region beg end (current-buffer))))
+             (and cur (goto-char cur)))))))
 
 ;; end of buffer
 
