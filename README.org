@@ -1341,7 +1341,7 @@ life easy and if [[https://github.com/junjiemars/nore][Nore]] already on your ma
 #+ATTR_HTML: :style text-align:left
 Formatting C source code.
 
-- =cc*-format-buffer= @@html:<kbd>@@C-c C-f@@html:</kbd>@@
+- =shell-format-buffer= @@html:<kbd>@@C-c M-c C-f@@html:</kbd>@@
 
 * Troubleshooting
    :PROPERTIES:

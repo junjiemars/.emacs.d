@@ -32,6 +32,12 @@
 
 ;; end of `dict'
 
+;;; `ed'
+
+(define-key (current-global-map) (kbd% "C-c M-c f") #'shell-format-buffer)
+
+;; end of `ed'
+
 ;;; `gud-cdb'
 (when-platform% windows-nt
   (autoload 'gud-cdb (v-home%> "config/gud-cdb") "Run cdb." t))

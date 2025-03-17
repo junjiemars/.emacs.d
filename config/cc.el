@@ -10,8 +10,6 @@
 
 ;;; require
 
-;; `shell-format-buffer'
-(require% 'ed (v-home%> "config/ed"))
 ;; `(tags-spec->% :root)'
 (require% 'tags (v-home%> "config/tags"))
 (require% 'ssh (v-home%> "config/ssh"))
@@ -363,29 +361,6 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 ;; end of `cc-styles'
 
 ;;;
-;; format
-;;;
-
-(defun cc*-format-buffer-shell (src)
-  (let ((dst (make-temp-file "cc-fmt-dst-" nil ".c")))
-    (let ((x (shell-command* "cat <" src "|clang-format >" dst)))
-      (and (zerop (car x)) dst))))
-
-(defun cc*-format-buffer ()
-  "Format the current buffer via clang-format."
-  (interactive)
-  (shell-format-buffer `(c-mode c-ts-mode)
-    (when-feature% eglot
-      (when (and (fboundp 'eglot-managed-p) (eglot-managed-p))
-        (catch 'br
-          (call-interactively #'eglot-format-buffer)
-          (throw 'br t))))
-    (make-temp-file "cc-fmt-src-" nil ".c")
-    #'cc*-format-buffer-shell))
-
-;; end of format
-
-;;;
 ;; `cmacexp'
 ;;;
 
@@ -454,8 +429,6 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
   (when-fn% c-backslash-region cc-cmds
     (autoload 'c-backslash-region "cc-cmds")
     (define-key keymap "" #'cc*-style-align-backslash))
-  ;; format buffer
-  (define-key keymap (kbd% "C-c M-c f") #'cc*-format-buffer)
   (when-fn-ff-find-other-file%
    (define-key keymap "fi" #'cc*-find-include-file))
   (when-c-macro-expand%

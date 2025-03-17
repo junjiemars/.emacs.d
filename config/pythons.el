@@ -16,9 +16,6 @@
 
 ;;; require
 
-;; `shell-format-buffer'
-(require 'ed (v-home%> "config/ed"))
-
 ;; end of require
 
 ;;; version/program
@@ -200,21 +197,6 @@ determine whether inside a virtual env. Another way is using
     (setq% python-shell-interpreter (python*-venv :python) python)
     (save-sexp-to-file (python*-venv) (python*-venv :file))))
 
-(defun python*-format-buffer ()
-  "Format the current buffer."
-  (interactive)
-  (shell-format-buffer `(python-mode python-ts-mode)
-    (when-feature% eglot
-      (when (and (fboundp 'eglot-managed-p) (eglot-managed-p))
-        (catch 'br
-          (call-interactively #'eglot-format-buffer)
-          (throw 'br t))))
-    (make-temp-file "py-fmt-src-" nil ".py")
-    (lambda (src)
-      (let ((x (shell-command* (concat (python*-venv :venv) "bin/ruff")
-                 "format" src)))
-        (and (zerop (car x)) src)))))
-
 
 
 ;;;
@@ -223,7 +205,6 @@ determine whether inside a virtual env. Another way is using
 
 (defun python*-define-keys (keymap)
   (define-key keymap (kbd% "C-c C-z") #'run-python)
-  (define-key keymap (kbd% "C-c M-c f") #'python*-format-buffer)
   (define-key keymap (kbd% "C-c C-j") nil))
 
 ;; end of keys
