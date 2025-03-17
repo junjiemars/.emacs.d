@@ -95,7 +95,36 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
 ;; end of file
 
 ;;;
-;; buffer
+;; parse
+;;;
+
+(defun parse-xml-entity (str &optional dtd)
+  (let ((es `(("&lt;"   . "<")
+              ("&gt;"   . ">")
+              ("&apos;" . "'")
+              ("&quot;" . "\"")
+              ("&amp;"  . "&")
+              ("&#\\([0-9]+\\);" . 0)
+              ,@dtd)))
+    (dolist (e1 es str)
+      (let ((start 0))
+        (while (string-match (car e1) str start)
+          (setq str (replace-match
+                     (cond ((stringp (cdr e1)) (cdr e1))
+                           ((integerp (cdr e1))
+                            (char-to-string
+                             (string-to-number
+                              (substring-no-properties
+                               str (match-beginning 1) (match-end 1)))))
+                           ((functionp (cdr e1)) (funcall (cdr e1) str))
+                           (t str))
+                     nil nil str)
+                start (match-beginning 0)))))))
+
+ ;; end of parse
+
+;;;
+;; shell
 ;;;
 
 (defun shell-format-region (&optional beg end buf)
@@ -121,7 +150,10 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
                               (match-beginning 1) (match-end 1)))))
                 (goto-char (point-max))
                 (while (search-backward-regexp
-                        "<replacement offset='\\([0-9]+\\)' length='\\([0-9]+\\)'>\\(.*?\\)</replacement>"
+                        (concat
+                         "<replacement offset='\\([0-9]+\\)'"
+                         " length='\\([0-9]+\\)'>\\(.*?\\)"
+                         "</replacement>")
                         nil t)
                   (let ((off (string-to-number
                               (buffer-substring-no-properties
@@ -139,18 +171,8 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
                           (and (< lhs rhs) (delete-region lhs rhs))
                           (when txt
                             (goto-char lhs)
-                            (while (string-match "&#\\([0-9]+\\);" txt xml)
-                              (setq txt (replace-match
-                                         (char-to-string
-                                          (string-to-number
-                                           (substring-no-properties
-                                            txt
-                                            (match-beginning 1)
-                                            (match-end 1))))
-                                         nil nil txt)
-                                    xml (1+ (match-beginning 0))))
-                            (insert txt)))))))
-                (setq cur (byte-to-position cur))))))
+                            (insert (parse-xml-entity txt))))))))
+                (and cur (setq cur (byte-to-position cur)))))))
       (and tmp (kill-buffer tmp))
       cur)))
 
@@ -168,7 +190,7 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
              (and cur (goto-char cur)))))
         (t (error "%s" "No formater found"))))
 
-;; end of buffer
+;; end of shell
 
 ;;;
 ;; version
