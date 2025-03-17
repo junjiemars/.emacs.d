@@ -165,8 +165,7 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
                               (match-beginning 3) (match-end 3))))
                     (with-current-buffer buf
                       (let ((lhs (byte-to-position (1+ off)))
-                            (rhs (byte-to-position (1+ (+ off len))))
-                            (xml 0))
+                            (rhs (byte-to-position (1+ (+ off len)))))
                         (when (and (<= beg lhs) (>= end rhs))
                           (and (< lhs rhs) (delete-region lhs rhs))
                           (when txt
