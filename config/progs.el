@@ -199,6 +199,24 @@ And copy the qualified buffer name to kill ring."
 ;; end of ido
 
 ;;;
+;; line number
+;;;
+
+(defun display-line-numbers-mode* (&rest _)
+  (interactive)
+  (if-fn% display-line-numbers-mode display-line-numbers
+	        (progn
+            (setq% display-line-numbers-type 'relative
+                   display-line-numbers)
+            (setq% display-line-numbers-current-absolute nil)
+	          (call-interactively #'display-line-numbers-mode))
+    (if-fn% linum-mode linum
+            (call-interactively #'linum-mode)
+      (error "%s" "No line number mode found"))))
+
+;; end of line number
+
+;;;
 ;; `minibuffer'
 ;;;
 
@@ -326,18 +344,7 @@ And copy the qualified buffer name to kill ring."
                        #'revert-buffer-quick
                  #'revert-buffer))
   ;; line number mode
-  (define-key (current-global-map) "xl"
-              (if-fn% display-line-numbers-mode display-line-numbers
-                      (prog1 #'display-line-numbers-mode
-                        (setq% display-line-numbers-type 'relative
-                               display-line-numbers)
-                        (setq% display-line-numbers-current-absolute nil
-                               display-line-numbers))
-                (if-fn% linum-mode linum
-                        #'linum-mode
-                  #'(lambda (&optional _)
-                      (interactive)
-                      (error (kbd% "%s") "No line number mode found")))))
+  (define-key (current-global-map) "xl" #'display-line-numbers-mode*)
   (define-global-key% "xr" #'rename-buffer)
   (when-fn% toggle-word-wrap simple
     (define-global-key% "xw" #'toggle-word-wrap))

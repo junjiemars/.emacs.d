@@ -165,7 +165,8 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
         ((executable-find% "clang-format")
          (save-excursion
            (let ((cur (shell-format-region beg end (current-buffer))))
-             (and cur (goto-char cur)))))))
+             (and cur (goto-char cur)))))
+        (t (error "%s" "No formater found"))))
 
 ;; end of buffer
 
