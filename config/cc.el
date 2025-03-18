@@ -10,6 +10,8 @@
 
 ;;; require
 
+;; `newline*', `parse-xml-entity'
+(require% 'ed (v-home%> "config/ed"))
 ;; `(tags-spec->% :root)'
 (require% 'tags (v-home%> "config/tags"))
 (require% 'ssh (v-home%> "config/ssh"))
@@ -401,6 +403,67 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 ;; end of `cmacexp'
 
 ;;;
+;; format
+;;;
+
+(defun cc*-format-region (&optional beg end)
+  "Format the region in (BEG,END) of current buffer via clang-format."
+  (interactive (if-region-active
+                   (list (region-beginning) (region-end))
+                 (list (point-min) (point-max))))
+  (let* ((buf (current-buffer))
+         (tmp (get-buffer-create* (symbol-name (gensym* "cc-fmt-")) t))
+         (cur (with-current-buffer buf (point))))
+    (unwind-protect
+        (let ((rc (call-process-region
+                   nil nil "clang-format" nil tmp nil
+                   "-output-replacements-xml"
+                   "-fallback-style" "gnu"
+                   "-offset" (number-to-string (1- (position-bytes beg)))
+                   "-length" (number-to-string
+                              (- (position-bytes end) (position-bytes beg)))
+                   "-cursor" (number-to-string (1- (position-bytes cur)))))
+              (c1 cur))
+          (when (and rc (= rc 0))
+            (with-current-buffer tmp
+              (goto-char (point-min))
+              (when (search-forward-regexp "incomplete_format='false'" nil t 1)
+                (when (search-forward-regexp "<cursor>\\([0-9]+\\)</cursor>"
+                                             nil t 1)
+                  (setq c1 (string-to-number
+                            (buffer-substring-no-properties
+                             (match-beginning 1) (match-end 1)))))
+                (goto-char (point-max))
+                (while (search-backward-regexp
+                        (concat
+                         "<replacement offset='\\([0-9]+\\)'"
+                         " length='\\([0-9]+\\)'>\\(.*?\\)"
+                         "</replacement>")
+                        nil t)
+                  (let ((off (string-to-number
+                              (buffer-substring-no-properties
+                               (match-beginning 1) (match-end 1))))
+                        (len (string-to-number
+                              (buffer-substring-no-properties
+                               (match-beginning 2) (match-end 2))))
+                        (txt (buffer-substring-no-properties
+                              (match-beginning 3) (match-end 3))))
+                    (with-current-buffer buf
+                      (let ((lhs (byte-to-position (1+ off)))
+                            (rhs (byte-to-position (1+ (+ off len)))))
+                        (when (and (<= beg lhs) (>= end rhs))
+                          (and (< lhs rhs) (delete-region lhs rhs))
+                          (when txt
+                            (goto-char lhs)
+                            (insert (parse-xml-entity txt))))))))
+                (and c1 (setq c1 (byte-to-position c1)))))
+            (goto-char (setq cur (or c1 cur)))))
+      (and tmp (kill-buffer tmp))
+      cur)))
+
+;; end of format
+
+;;;
 ;; `man'
 ;;;
 
@@ -432,7 +495,8 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
   (when-fn-ff-find-other-file%
    (define-key keymap "fi" #'cc*-find-include-file))
   (when-c-macro-expand%
-   (define-key keymap "" #'cc*-macro-expand)))
+   (define-key keymap "" #'cc*-macro-expand))
+  (define-key keymap (kbd% "C-c M-c f") #'cc*-format-region))
 
 ;; end of keys
 

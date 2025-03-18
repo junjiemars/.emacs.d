@@ -124,74 +124,6 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
  ;; end of parse
 
 ;;;
-;; shell
-;;;
-
-(defun shell-format-region (&optional beg end buf)
-  (let ((tmp (get-buffer-create* (symbol-name (gensym*)) t))
-        (cur (with-current-buffer buf (point))))
-    (unwind-protect
-        (let ((rc (call-process-region
-                   nil nil "clang-format" nil tmp nil
-                   "-output-replacements-xml"
-                   "-fallback-style" "gnu"
-                   "-offset" (number-to-string (1- (position-bytes beg)))
-                   "-length" (number-to-string
-                              (- (position-bytes end) (position-bytes beg)))
-                   "-cursor" (number-to-string (1- (position-bytes cur))))))
-          (when (and rc (= rc 0))
-            (with-current-buffer tmp
-              (goto-char (point-min))
-              (when (search-forward-regexp "incomplete_format='false'" nil t 1)
-                (when (search-forward-regexp "<cursor>\\([0-9]+\\)</cursor>"
-                                             nil t 1)
-                  (setq cur (string-to-number
-                             (buffer-substring-no-properties
-                              (match-beginning 1) (match-end 1)))))
-                (goto-char (point-max))
-                (while (search-backward-regexp
-                        (concat
-                         "<replacement offset='\\([0-9]+\\)'"
-                         " length='\\([0-9]+\\)'>\\(.*?\\)"
-                         "</replacement>")
-                        nil t)
-                  (let ((off (string-to-number
-                              (buffer-substring-no-properties
-                               (match-beginning 1) (match-end 1))))
-                        (len (string-to-number
-                              (buffer-substring-no-properties
-                               (match-beginning 2) (match-end 2))))
-                        (txt (buffer-substring-no-properties
-                              (match-beginning 3) (match-end 3))))
-                    (with-current-buffer buf
-                      (let ((lhs (byte-to-position (1+ off)))
-                            (rhs (byte-to-position (1+ (+ off len)))))
-                        (when (and (<= beg lhs) (>= end rhs))
-                          (and (< lhs rhs) (delete-region lhs rhs))
-                          (when txt
-                            (goto-char lhs)
-                            (insert (parse-xml-entity txt))))))))
-                (and cur (setq cur (byte-to-position cur)))))))
-      (and tmp (kill-buffer tmp))
-      cur)))
-
-(defun shell-format-buffer (&optional beg end)
-  "Format the region in (BEG,END) of current buffer via SHELL\\=*."
-  (interactive (if-region-active
-                   (list (region-beginning) (region-end))
-                 (list (point-min) (point-max))))
-  (cond ((when-feature% eglot
-           (and (fboundp 'eglot-managed-p) (eglot-managed-p)))
-         (eglot-format beg end))
-        ((executable-find% "clang-format")
-         (save-excursion
-           (let ((cur (shell-format-region beg end (current-buffer))))
-             (and cur (goto-char cur)))))
-        (t (error "%s" "No formater found"))))
-
-;; end of shell
-
-;;;
 ;; version
 ;;;
 

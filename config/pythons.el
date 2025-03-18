@@ -16,6 +16,9 @@
 
 ;;; require
 
+;; ;; `newline*', `parse-xml-entity'
+;; (require% 'ed (v-home%> "config/ed"))
+
 ;; end of require
 
 ;;; version/program
@@ -160,22 +163,24 @@ determine whether inside a virtual env. Another way is using
                     :pylsp (v-home% ".exec/pylsp.sh")
                     :python (concat b "bin/python")
                     :pip (concat b "bin/pip")
+                    :fmt (concat b "bin/ruff")
                     :mirror (python*-pip-mirror! b))))
     (lambda (&optional op n)
       (cond ((and op (eq op :file)) file)
-            ((and (and op (eq op :load)) n) (setq env n))
             ((and op (eq op :scratch)) b)
-            ((and (and op (eq op :venv)) n)
-             (plist-put env :venv n)
-             (plist-put env :python (concat n "bin/python"))
-             (plist-put env :pip (concat n "bin/pip")))
             ((and op (eq op :venv)) (plist-get env :venv))
-            ((and (and op (eq op :pylsp)) n) (plist-put env :pylsp n))
             ((and op (eq op :pylsp)) (plist-get env :pylsp))
             ((and op (eq op :python)) (plist-get env :python))
             ((and op (eq op :pip)) (plist-get env :pip))
-            ((and (and op (eq op :mirror)) n) (plist-put env :mirror n))
             ((and op (eq op :mirror)) (plist-get env :mirror))
+            ((and op (eq op :fmt)) (plist-get env :fmt))
+            ((and op (eq op :load) n) (setq env n))
+            ((and op (eq op :venv) n)
+             (plist-put env :venv n)
+             (plist-put env :python (concat n "bin/python"))
+             (plist-put env :pip (concat n "bin/pip")))
+            ((and op (eq op :pylsp) n) (plist-put env :pylsp n))
+            ((and op (eq op :mirror) n) (plist-put env :mirror n))
             (t env))))
   "Python\\='s venv.")
 
@@ -200,14 +205,41 @@ determine whether inside a virtual env. Another way is using
 
 
 ;;;
+;; format
+;;;
+
+(defun python*-format-region (&optional beg end)
+  "Format the region in (BEG,END) of current buffer via ruff."
+  (interactive (if-region-active
+                   (list (region-beginning) (region-end))
+                 (list (point-min) (point-max))))
+  (let ((cur (point)))
+    (unwind-protect
+        (let ((src (buffer-substring-no-properties beg end))
+              (tmp (make-temp-file "py-fmt-")))
+          (save-str-to-file src tmp)
+          (let ((x (shell-command* (python*-venv :fmt) "format" tmp)))
+            (when (= 0 (car x))
+              (with-current-buffer (current-buffer)
+                (delete-region beg end)
+                (insert (read-str-from-file tmp))))))
+      (goto-char cur)
+      cur)))
+
+
+;; end of format
+
+;;;
 ;; keys
 ;;;
 
 (defun python*-define-keys (keymap)
   (define-key keymap (kbd% "C-c C-z") #'run-python)
-  (define-key keymap (kbd% "C-c C-j") nil))
+  (define-key keymap (kbd% "C-c C-j") nil)
+  (define-key keymap (kbd% "C-c M-c f") #'python*-format-region))
 
 ;; end of keys
+
 
 (defun on-python-init! ()
   "On \\=`python\\=' initialization."
