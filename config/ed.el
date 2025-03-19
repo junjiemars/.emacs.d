@@ -119,7 +119,7 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
                                str (match-beginning 1) (match-end 1))
                               (cdr e1))))
                            ((functionp (cdr e1)) (funcall (cdr e1) str))
-                           (t str))
+                           (t ""))
                      nil nil str)
                 start (match-beginning 0)))))))
 

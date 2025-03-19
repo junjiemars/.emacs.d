@@ -585,12 +585,13 @@
            "<a>b'\"&a中A"
            (parse-xml-entity "&lt;a&gt;b&apos;&quot;&amp;a&#x4e2d;&#65;")))
   (should (string-equal
-           "... |xxx"
+           "... |xxx|"
            (parse-xml-entity
-            "&hellip;&nbsp;|&xxx;"
+            "&hellip;&nbsp;|&xxx;|&yyy;"
             `("&hellip;" . "...")
             `("&nbsp;" . " ")
-            `("&xxx;" . (lambda (s) "xxx"))))))
+            `("&xxx;" . (lambda (s) "xxx"))
+            `("&yyy;" . nil)))))
 
 (ert-deftest %h:ed:vstrncmp ()
   (should (= 0 (vstrncmp "" "")))
