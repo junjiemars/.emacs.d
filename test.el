@@ -580,6 +580,18 @@
 ;; `ed'
 ;;;
 
+(ert-deftest %h:ed:parse-xml-entity ()
+  (should (string-equal
+           "<a>b'\"&a中A"
+           (parse-xml-entity "&lt;a&gt;b&apos;&quot;&amp;a&#x4e2d;&#65;")))
+  (should (string-equal
+           "... |xxx"
+           (parse-xml-entity
+            "&hellip;&nbsp;|&xxx;"
+            `("&hellip;" . "...")
+            `("&nbsp;" . " ")
+            `("&xxx;" . (lambda (s) "xxx"))))))
+
 (ert-deftest %h:ed:vstrncmp ()
   (should (= 0 (vstrncmp "" "")))
   (should (> (vstrncmp "1" "") 0))

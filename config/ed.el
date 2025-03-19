@@ -98,13 +98,14 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
 ;; parse
 ;;;
 
-(defun parse-xml-entity (str &optional dtd)
+(defun parse-xml-entity (str &rest dtd)
   (let ((es `(("&lt;"   . "<")
               ("&gt;"   . ">")
               ("&apos;" . "'")
               ("&quot;" . "\"")
               ("&amp;"  . "&")
-              ("&#\\([0-9]+\\);" . 0)
+              ("&#\\([0-9]+\\);" . 10)
+              ("&#[xX]\\([0-9a-fA-F]+\\);" . 16)
               ,@dtd)))
     (dolist (e1 es str)
       (let ((start 0))
@@ -115,7 +116,8 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
                             (char-to-string
                              (string-to-number
                               (substring-no-properties
-                               str (match-beginning 1) (match-end 1)))))
+                               str (match-beginning 1) (match-end 1))
+                              (cdr e1))))
                            ((functionp (cdr e1)) (funcall (cdr e1) str))
                            (t str))
                      nil nil str)
