@@ -307,6 +307,16 @@
   (should (null (strrchr "abc" ?d)))
   (should (= 0 (strrchr "abc" ?a))))
 
+(ert-deftest %d:fn:strawk ()
+  (should (null (strawk nil nil)))
+  (should (string-equal "Ac" (strawk "abc" `(("a" . "A") ("b" . nil)))))
+  (should (string-equal
+           "aAbc中XXX"
+           (strawk "a&#65;bc&#x4e2d;xxx"
+                   `(("&#\\([0-9]+\\);" . 10)
+                     ("&#[xX]\\([0-9a-fA-F]+\\);" . 16)
+                     ("xxx" . (lambda (_) "XXX")))))))
+
 (ert-deftest %d:fn:split-string* ()
   (should (equal '("a" "b" "c")
                  (split-string* "a,b,,cXX" "," t "XX")))
@@ -585,12 +595,12 @@
            "<a>b'\"&a中A"
            (parse-xml-entity "&lt;a&gt;b&apos;&quot;&amp;a&#x4e2d;&#65;")))
   (should (string-equal
-           "... |xxx|"
+           "A... |XXX|"
            (parse-xml-entity
-            "&hellip;&nbsp;|&xxx;|&yyy;"
+            "&#65;&hellip;&nbsp;|&xxx;|&yyy;"
             `("&hellip;" . "...")
             `("&nbsp;" . " ")
-            `("&xxx;" . (lambda (s) "xxx"))
+            `("&xxx;" . (lambda (_) "XXX"))
             `("&yyy;" . nil)))))
 
 (ert-deftest %h:ed:vstrncmp ()

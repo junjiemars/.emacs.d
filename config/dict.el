@@ -86,69 +86,37 @@
 
 (defun dict-fn-norm-pron-us (ss)
   "Normalize the pronounce of SS to us."
-  (format "|%s|" (string-match* "^[/]?\\(.*?\\)[/]?$"
-                                (string-trim>< ss) 1)))
+  (format "|%s|" (string-match* "^[/]?\\(.*?\\)[/]?$" (string-trim>< ss) 1)))
 
 (defun dict-fn-norm-pron-uk (ss)
   "Normalize the pronounce of SS to uk."
-  (format "/%s/" (string-match* "^[/]?\\(.*?\\)[/]?$"
-                                (string-trim>< ss) 1)))
+  (format "/%s/" (string-match* "^[/]?\\(.*?\\)[/]?$" (string-trim>< ss) 1)))
 
 (defun dict-fn-norm-punc (ss)
   "Normalize the punctuation of SS to en."
-  (with-temp-buffer
-    (insert ss)
-    (let ((punc '(("，\s*" . ", ")
-                  ("；\s*" . "; ")
-                  ("：\s*" . ": ")
-                  ("（" . "(")
-                  ("）" . ")")
-                  ("“" . "\"")
-                  ("”" . "\"")
-                  ("\n" . " ")
-                  ("[ ]+" . " "))))
-      (dolist (s punc)
-        (goto-char (point-min))
-        (while (search-forward-regexp (car s) nil t)
-          (replace-match (cdr s))))
-      (buffer-substring (point-min) (point-max)))))
-
-(defun dict-fn-decode-char (ss)
-  "Decode &#[0-9]+; to string."
-  (with-temp-buffer
-    (insert ss)
-    (goto-char (point-min))
-    (while (search-forward-regexp "&#\\([0-9]+\\);" nil t)
-      (replace-match (char-to-string (string-to-number (match-string 1)))))
-    (buffer-substring-no-properties (point-min) (point-max))))
+  (strawk ss `(("，\s*" . ", ")
+               ("；\s*" . "; ")
+               ("：\s*" . ": ")
+               ("（" . "(")
+               ("）" . ")")
+               ("“" . "\"")
+               ("”" . "\"")
+               ("\n" . " ")
+               ("[ ]+" . " "))))
 
 (defun dict-fn-decode-html-char (ss)
   "Decode &#[a-z]+; to string."
-  (with-temp-buffer
-    (insert ss)
-    (let ((m '(("&nbsp;" . " ")
+  (strawk ss `(("&nbsp;" . " ")
                ("&#lt;" . "<")
                ("&#gt;" . ">")
                ("&hellip;" .  "..."))))
-      (dolist (s m)
-        (goto-char (point-min))
-        (while (search-forward (car s) nil t)
-          (replace-match (cdr s))))
-      (buffer-substring (point-min) (point-max)))))
 
 (defun dict-fn-remove-html-tag (ss)
   "Remove html tags."
-  (with-temp-buffer
-    (insert ss)
-    (let ((tags `( "<.*?>"
-                   "</[a-zA-Z]+>"
-                   "/>")))
-      (dolist (x tags)
-        (goto-char (point-min))
-        (while (search-forward-regexp x nil t)
-          (replace-match "" t t)))
-      (string-trim><
-       (buffer-substring-no-properties (point-min) (point-max))))))
+  (strawk ss `(("^[ ]+" . nil)
+               ("<.*?>" . nil)
+               ("</[a-zA-Z]+>" . nil)
+               ("/>" . nil))))
 
 ;; end of definition
 

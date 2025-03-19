@@ -338,6 +338,26 @@ If optional UNIQUELY is non-nil then push uniquely."
         (and (char-equal chr (aref str i)) (throw 'br i))
         (setq i (1- i))))))
 
+(defun strawk (str pattern)
+  "Return the processed STR via awk\\='s PATTERN processing."
+  (while (car pattern)
+    (let ((s1 (car (car pattern))) (s2 (cdr (car pattern)))
+          (start 0) (r1 nil))
+      (while (string-match s1 str start)
+        (setq r1 (cond ((stringp s2) s2)
+                       ((integerp s2)
+                        (char-to-string
+                         (string-to-number
+                          (substring-no-properties
+                           str (match-beginning 1) (match-end 1))
+                          s2)))
+                       ((functionp s2) (funcall s2 str))
+                       (t ""))
+              str (replace-match r1 nil nil str)
+              start (+ (match-beginning 0) (length r1)))))
+    (setq pattern (cdr pattern)))
+  str)
+
 (defun string-trim> (s &optional rr)
   "Remove tailing whitespaces or matching of RR at the end of S."
   (and (stringp s)
