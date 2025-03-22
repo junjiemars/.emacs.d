@@ -25,6 +25,12 @@
 
 ;; end of `clipboard'
 
+;;; `cscope'
+
+(autoload 'cscope (v-home%> "config/cscope") "Run cscope process." t)
+
+;; end of `cscope'
+
 ;;; `dict'
 
 (autoload 'lookup-dict (v-home%> "config/dict") "Lookup dict." t)

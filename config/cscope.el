@@ -5,8 +5,8 @@
 ;;;;
 ;; cscope.el
 ;;;;
-;; 1. `compile' interact with cscope -L .
-;; 2. todo: `comint' interact with cscope -l and in `compile' mode.
+;; 1. `cscope -L' interact with `compile'.
+;; 2. TODO: `cscope -l' interact with `comint' in `compile' mode.
 ;;;;
 
 
@@ -21,47 +21,48 @@
 ;; cscope environment
 ;;;
 
-(defgroup cscope nil
-  "Run a cscope process in a buffer."
-  :group 'tools
-  :group 'cscope)
+(defvar *cscope-option-history* (list "cscope -dL -0 ")
+  "Cscope option history list.")
 
-(defvar *cscope-option-history*
-  (list "cscope -dL -0 ")
-  "cscope option history list.")
-
-(defvar *cscope-last-buffer* nil
-  "The most recent cscope buffer.")
-
-(defvar *cscope-src-dir* nil)
+(defvar *cscope-src-dir* nil
+  "Cscope source directory.")
 
 (defconst +cscope-line-regexp+
   "^\\([^[:space:]]+\\)[[:space:]]\\([^[:space:]]+\\)[[:space:]]\\([[:digit:]]+\\)[[:space:]]\\(.*\\)$")
 
 (defconst +cscope-error-regexp+
-  `((,+cscope-line-regexp+ 1 3 nil (1 . 0) 1)))
+  `((,+cscope-line-regexp+ 1 3 nil 1 1)))
 
 ;; end of cscope environment
 
-(defun cscope-parse-errors-filename (file)
+(defun cscope--parse-filename (file)
   (cond ((file-exists-p file) file)
-        (t (concat *cscope-src-dir* file))))
+        ((null (char-equal ?/ (aref file 0))) (concat *cscope-src-dir* file))
+        (t file)))
+
+(defun cscope-recompile ()
+  "Re-cscope."
+  (interactive)
+  (cond ((null current-prefix-arg) (call-interactively #'recompile))
+        (t (call-interactively #'cscope))))
 
 (define-compilation-mode cscope-mode "cscope-mode"
-  (setq cscope-last-buffer (current-buffer))
+  "A minor mode of \\=`compile\\='."
   (set (make-local-variable 'compilation-disable-input) t)
   (set (make-local-variable 'compilation-error-screen-columns) nil)
-  (set (make-local-variable 'compilation-warning-face)
-       compilation-info-face)
+  (set (make-local-variable 'compilation-directory-matcher) (list "\\`a\\`"))
+  (set (make-local-variable 'compilation-warning-face) compilation-info-face)
   (set (make-local-variable 'compilation-parse-errors-filename-function)
-       #'cscope-parse-errors-filename)
+       #'cscope--parse-filename)
   (set (make-local-variable 'compilation-error-regexp-alist)
        +cscope-error-regexp+)
-  (set (make-local-variable 'compilation-directory-matcher)
-       (list "\\`a\\`")))
+  (let ((cscope-keymap (make-sparse-keymap)))
+    (set-keymap-parent cscope-keymap compilation-minor-mode-map)
+    (define-key cscope-keymap (kbd% "g") #'cscope-recompile)
+    (use-local-map cscope-keymap)))
 
 (defun cscope (&optional command-line)
-  "Run cscope with user-specified COMMAND-ARGS."
+  "Run cscope with user-specified COMMAND-LINE."
   (interactive (list (funcall (if-fn% read-shell-command nil
                                       #'read-shell-command
                                 #'read-string)
@@ -70,7 +71,7 @@
                               '*cscope-option-history*)))
   (setq *cscope-src-dir*
         (or (if (string-match
-                 "-f *\\([^[:blank:]]+\\)" command-line)
+                 "-f[[:blank:]]*\\([^[:blank:]]+\\)" command-line)
                 (file-name-directory
                  (substring-no-properties
                   command-line (match-beginning 1) (match-end 1)))

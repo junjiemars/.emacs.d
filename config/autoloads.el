@@ -37,6 +37,7 @@
      (compile-unit% (emacs-home* "config/clipboard.el") t))
    (compile-unit% (emacs-home* "config/chez.el") t)
    (compile-unit% (emacs-home* "config/compiles.el") t)
+   (compile-unit% (emacs-home* "config/cscope.el") t)
    (compile-unit% (emacs-home* "config/dict.el") t)
    (compile-unit% (emacs-home* "config/direds.el") t)
    (when-platform% windows-nt
