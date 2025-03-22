@@ -21,8 +21,8 @@
 ;; cscope environment
 ;;;
 
-(defvar *cscope-option-history* (list "cscope -dL -0 ")
-  "Cscope option history list.")
+(defvar *cscope-history* nil
+  "Cscope history list.")
 
 (defvar *cscope-src-dir* nil
   "Cscope source directory.")
@@ -67,8 +67,11 @@
                                       #'read-shell-command
                                 #'read-string)
                               "Run cscope (like this): "
-                              (car *cscope-option-history*)
-                              '*cscope-option-history*)))
+                              (or (car *cscope-history*)
+                                  (format
+                                   "cscope -dL -P %s -f %scscope.out -0 "
+                                   default-directory default-directory))
+                              '*cscope-history*)))
   (setq *cscope-src-dir*
         (or (if (string-match
                  "-f[[:blank:]]*\\([^[:blank:]]+\\)" command-line)

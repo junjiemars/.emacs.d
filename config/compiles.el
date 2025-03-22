@@ -65,10 +65,21 @@
 (defun compile*-recompile (&optional _ __)
   "Re-compile."
   (interactive)
-  (cond ((null current-prefix-arg)
-         (call-interactively #'recompile))
+  (cond ((null current-prefix-arg) (call-interactively #'recompile))
         (t (let ((current-prefix-arg nil))
              (call-interactively #'compile)))))
+
+(defun compile*-regrep (&optional _)
+  "Re-grep."
+  (interactive)
+  (cond (current-prefix-arg
+         (cond ((save-excursion
+                  (goto-char (point-min))
+                  (forward-line 3)
+                  (search-forward-regexp "^find" nil t 1))
+                (call-interactively #'grep-find))
+               (t (call-interactively #'grep))))
+        (t (call-interactively #'recompile))))
 
 (defun on-compile-init! ()
   "On \\=`compile\\=' initialization."
@@ -93,7 +104,7 @@
   "On \\=`grep\\=' initialization."
   ;; define `recompile' and `quit-window' key binding for `grep'
   (when-var% grep-mode-map grep
-    (define-key grep-mode-map "g" #'compile*-recompile)
+    (define-key grep-mode-map "g" #'compile*-regrep)
     (define-key% grep-mode-map "q" #'quit-window)))
 
 
