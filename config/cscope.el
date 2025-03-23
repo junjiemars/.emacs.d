@@ -30,9 +30,6 @@
 (defconst +cscope-line-regexp+
   "^\\([^[:space:]]+\\)[[:space:]]\\([^[:space:]]+\\)[[:space:]]\\([[:digit:]]+\\)[[:space:]]\\(.*\\)$")
 
-(defconst +cscope-error-regexp+
-  `((,+cscope-line-regexp+ 1 3 nil 1 1)))
-
 ;; end of cscope environment
 
 (defun cscope--parse-filename (file)
@@ -54,8 +51,24 @@
   (set (make-local-variable 'compilation-warning-face) compilation-info-face)
   (set (make-local-variable 'compilation-parse-errors-filename-function)
        #'cscope--parse-filename)
+  ;; treat the output of cscope as `compilation warn'
   (set (make-local-variable 'compilation-error-regexp-alist)
-       +cscope-error-regexp+)
+       `((,+cscope-line-regexp+ 1 3 nil 1 1)))
+  ;; swap `compilation-num-warnings-found' and `compilation-num-infos-found'
+  (set (make-local-variable 'compilation-mode-line-errors)
+       `(" ["
+         (:propertize (:eval (number-to-string compilation-num-errors-found))
+							        face compilation-error
+                      help-echo "Number of errors so far")
+         " "
+         (:propertize (:eval (number-to-string compilation-num-infos-found))
+							        face compilation-warning
+                      help-echo "Number of warnings so far")
+         " "
+         (:propertize (:eval (number-to-string compilation-num-warnings-found))
+                      face compilation-info
+                      help-echo "Number of informational messages so far")
+         "]"))
   (let ((cscope-keymap (make-sparse-keymap)))
     (set-keymap-parent cscope-keymap compilation-minor-mode-map)
     (define-key cscope-keymap (kbd% "g") #'cscope-recompile)
