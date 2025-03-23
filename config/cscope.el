@@ -51,7 +51,7 @@
   (set (make-local-variable 'compilation-warning-face) compilation-info-face)
   (set (make-local-variable 'compilation-parse-errors-filename-function)
        #'cscope--parse-filename)
-  ;; treat the output of cscope as `compilation warn'
+  ;; treat the output of cscope as `compilation warnings'
   (set (make-local-variable 'compilation-error-regexp-alist)
        `((,+cscope-line-regexp+ 1 3 nil 1 1)))
   ;; swap `compilation-num-warnings-found' and `compilation-num-infos-found'
