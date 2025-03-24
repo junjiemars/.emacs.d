@@ -77,6 +77,12 @@
     :compile (,(compile-unit* (emacs-home* "config/use-geiser.el") t)
               ,(compile-unit* (emacs-home* "config/use-geiser-autoload.el")))))
 
+;;; :swift
+(*self-mod-spec*
+ :put :swift
+ `( :cond ,(executable-find% "swift")
+    :packages (swift-mode)))
+
 ;;; :vlang
 (*self-mod-spec*
  :put :vlang
