@@ -16,9 +16,6 @@
 
 ;;; require
 
-;; ;; `newline*', `parse-xml-entity'
-;; (require% 'ed (v-home%> "config/ed"))
-
 ;; end of require
 
 ;;; version/program

@@ -98,16 +98,6 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
 ;; parse
 ;;;
 
-(defun parse-xml-entity (str &rest dtd)
-  (strawk str
-          `(("&lt;"   . "<")
-            ("&gt;"   . ">")
-            ("&apos;" . "'")
-            ("&quot;" . "\"")
-            ("&amp;"  . "&")
-            ("&#\\([0-9]+\\);" . 10)
-            ("&#[xX]\\([0-9a-fA-F]+\\);" . 16)
-            ,@dtd)))
 
  ;; end of parse
 

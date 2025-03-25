@@ -31,7 +31,6 @@
 (autoload 'newline* (v-home%> "config/ed") nil t)
 (autoload 'open-next-line (v-home%> "config/ed") nil t)
 (autoload 'open-previous-line (v-home%> "config/ed") nil t)
-(autoload 'parse-xml-entity (v-home%> "config/ed"))
 (autoload 'vstrncmp (v-home%> "config/ed"))
 
 ;; end of `ed'

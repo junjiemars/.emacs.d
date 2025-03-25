@@ -10,7 +10,7 @@
 
 ;;; require
 
-;; `newline*', `parse-xml-entity'
+;; `newline*'
 (require% 'ed (v-home%> "config/ed"))
 ;; `(tags-spec->% :root)'
 (require% 'tags (v-home%> "config/tags"))
@@ -423,13 +423,20 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
                    "-length" (number-to-string
                               (- (position-bytes end) (position-bytes beg)))
                    "-cursor" (number-to-string (1- (position-bytes cur)))))
-              (c1 cur))
+              (c1 cur)
+              (xml `(("&lt;"   . "<")
+                     ("&gt;"   . ">")
+                     ("&apos;" . "'")
+                     ("&quot;" . "\"")
+                     ("&amp;"  . "&")
+                     ("&#\\([0-9]+\\);" . 10)
+                     ("&#[xX]\\([0-9a-fA-F]+\\);" . 16))))
           (when (and rc (= rc 0))
             (with-current-buffer tmp
               (goto-char (point-min))
               (when (search-forward-regexp "incomplete_format='false'" nil t 1)
-                (when (search-forward-regexp "<cursor>\\([0-9]+\\)</cursor>"
-                                             nil t 1)
+                (when (search-forward-regexp
+                       "<cursor>\\([0-9]+\\)</cursor>" nil t 1)
                   (setq c1 (string-to-number
                             (buffer-substring-no-properties
                              (match-beginning 1) (match-end 1)))))
@@ -455,7 +462,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
                           (and (< lhs rhs) (delete-region lhs rhs))
                           (when txt
                             (goto-char lhs)
-                            (insert (parse-xml-entity txt))))))))
+                            (insert (strawk txt xml))))))))
                 (and c1 (setq c1 (byte-to-position c1)))))
             (goto-char (setq cur (or c1 cur)))))
       (and tmp (kill-buffer tmp))
