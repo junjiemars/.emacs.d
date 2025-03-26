@@ -77,8 +77,8 @@
 
 (defalias '*dict-debug-log*
   (let ((b `( :log nil ;; t
-                       :dict ,(emacs-home% ".dict/dict.log")
-                       :lookup ,(emacs-home% ".dict/lookup.log"))))
+              :dict ,(emacs-home% ".dict/dict.log")
+              :lookup ,(emacs-home% ".dict/lookup.log"))))
     (lambda (w &optional n)
       (cond (n (plist-put b w n))
             (t (plist-get b w)))))
@@ -157,14 +157,10 @@
     (when (*dict-debug-log* :log)
       (save-sexp-to-file ss (path! (*dict-debug-log* :lookup))))
     (kill-buffer (current-buffer))
-    (message "%s" (if (car ss)
-                      (propertize (string-trim>
-                                   (mapconcat #'identity
-                                              (mapcar #'cdr ss)
-                                              " "))
-                                  'face 'font-lock-comment-face)
-                    (propertize "No match"
-                                'face 'font-lock-warning-face)))
+    (let ((txt (string-trim> (mapconcat #'identity (mapcar #'cdr ss) " "))))
+      (message "%s" (if (> (length txt) 0)
+                        (propertize txt 'face 'font-lock-comment-face)
+                      (propertize "No match" 'face 'font-lock-warning-face))))
     (when-var% execute-extended-command--binding-timer simple
       (sit-for 30))))
 
