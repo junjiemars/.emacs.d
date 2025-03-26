@@ -168,8 +168,7 @@
 
 (defmacro url-retrieve*
     (url callback &optional cbargs silent inhibit-cookies)
-  "Retrieve URL asynchronously and call CALLBACK with CBARGS when
-finished."
+  "Retrieve URL asynchronously and call CALLBACK with CBARGS when finished."
   (if-version%
       <= 24
       `(url-retrieve ,url ,callback ,cbargs ,silent ,inhibit-cookies)
