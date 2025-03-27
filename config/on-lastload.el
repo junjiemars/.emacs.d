@@ -28,6 +28,7 @@
 ;;; `cscope'
 
 (autoload 'cscope (v-home%> "config/cscope") "Run cscope process." t)
+(autoload 'run-cscope (v-home%> "config/cscope") "Run cscope REPL process." t)
 
 ;; end of `cscope'
 

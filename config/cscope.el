@@ -6,13 +6,15 @@
 ;; cscope.el
 ;;;;
 ;; 1. `cscope -L' interact with `compile'.
-;; 2. TODO: `cscope -l' interact with `comint' in `compile' mode.
+;; 2. `cscope -l' interact with `comint'.
+;; 3. `cscope-repl-mode' interact with `xref'.
 ;;;;
 
 
 
 ;;; require
 
+(require 'comint)
 (require 'compile)
 
 ;; end of require
@@ -22,15 +24,39 @@
 ;;;
 
 (defvar *cscope-history* nil
-  "Cscope history list.")
+  "History list for \\=`cscope\\='.")
+
+(defvar *cscope-repl-history* nil
+  "History list for \\=`run-cscope\\='.")
 
 (defvar *cscope-src-dir* nil
   "Cscope source directory.")
 
 (defconst +cscope-line-regexp+
-  "^\\([^[:space:]]+\\)[[:space:]]\\([^[:space:]]+\\)[[:space:]]\\([[:digit:]]+\\)[[:space:]]\\(.*\\)$")
+  "^\\([^[:space:]]+\\)[[:space:]]\\([^[:space:]]+\\)[[:space:]]\\([[:digit:]]+\\)[[:space:]]\\(.*\\)$"
+  "Line regexp for \\=`compile\\='.")
+
+(defalias '*cscope*
+  (let ((b))
+    (lambda (&optional n)
+      (cond (n (setq b (get-buffer-create* n)))
+            ((or (null b) (not (buffer-live-p b)))
+             (setq b (get-buffer-create* "*cscope*")))
+            (t b))))
+  "The *cscope* REPL process buffer.")
+
+(defalias '*cscope-out*
+  (let ((b "*out|cscope*"))
+    (lambda (&optional n)
+      (cond (n (setq b n))
+            (t (get-buffer-create* b)))))
+  "The output buffer of \\=`cscope-send-command'\\=.")
 
 ;; end of cscope environment
+
+;;;
+;; `cscope-mode'
+;;;
 
 (defun cscope--parse-filename (file)
   (cond ((file-exists-p file) file)
@@ -94,7 +120,48 @@
               default-directory)))
   (compilation-start command-line #'cscope-mode))
 
-
+;; end of `cscope-mode'
+
+;;;
+;; `cscope-repl-mode'
+;;;
+
+(defun cscope-send-command (command)
+  "Send COMMAND to cscope REPL."
+  (let ((out (*cscope-out*)))
+    (with-current-buffer out (erase-buffer))
+    (comint-redirect-send-command-to-process command out (*cscope*) nil t)))
+
+(define-derived-mode cscope-repl-mode comint-mode "REPL"
+  "Major mode for a cscope REPL process."
+  (setq comint-prompt-regexp "^>>"
+        comint-prompt-read-only t)
+  (setq mode-line-process '("" ":%s")))
+
+(defun run-cscope (&optional command-line)
+  "Run a cscope REPL process, input and output via buffer *cscope*."
+  (interactive (list (funcall (if-fn% read-shell-command nil
+                                      #'read-shell-command
+                                #'read-string)
+                              "Run cscope: "
+                              (or (car *cscope-repl-history*)
+                                  "-dl -f ")
+                              '*cscope-repl-history*)))
+  (unless (comint-check-proc (*cscope*))
+    (unless (executable-find* "cscope")
+      (error "%s" "No cscope program found"))
+    (with-current-buffer (*cscope*)
+      (apply #'make-comint-in-buffer
+             (buffer-name (current-buffer))
+             (current-buffer)
+             "cscope"
+             nil
+             (split-string* command-line "\\s-+" t))
+      (cscope-repl-mode)))
+  (switch-to-buffer-other-window (*cscope*)))
+
+;; end of `cscope-repl-mode'
+
 
 (provide 'cscope)
 
