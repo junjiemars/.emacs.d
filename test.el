@@ -132,7 +132,7 @@
 ;;;
 
 (ert-deftest %c:vcomp:emacs-home* ()
-  (should (string= (emacs-home) (emacs-home*))))
+  (should (string-equal (emacs-home) (emacs-home*))))
 
 (ert-deftest %c:vcomp:path! ()
   (let ((p (concat temporary-file-directory (make-temp-name "path!") "/")))
@@ -144,8 +144,8 @@
   (should (string-match "[gt]_[.0-9]+" (make-v-home* "xxx"))))
 
 (ert-deftest %c:vcomp:v-home* ()
-  (should (string= (v-home) (v-home*)))
-  (should (string= (v-home "xxx/yyy") (v-home* "xxx/yyy"))))
+  (should (string-equal (v-home) (v-home*)))
+  (should (string-equal (v-home "xxx/yyy") (v-home* "xxx/yyy"))))
 
 (ert-deftest %c:vcomp:gensym* ()
   (should (string-match "^n[0-9]+" (format "%s" (gensym*))))
@@ -333,34 +333,34 @@
 
 (ert-deftest %d:fn:string-trim> ()
   (should-not (string-trim> nil "X"))
-  (should (string= "abc" (string-trim> "abc \n  ")))
-  (should (string= "abc" (string-trim> "abcXX" "XX")))
-  (should (string= "abc" (string-trim> "abcXX" "X+"))))
+  (should (string-equal "abc" (string-trim> "abc \n  ")))
+  (should (string-equal "abc" (string-trim> "abcXX" "XX")))
+  (should (string-equal "abc" (string-trim> "abcXX" "X+"))))
 
 (ert-deftest %d:fn:string-trim< ()
   (should-not (string-trim< nil "X"))
-  (should (string= "abc" (string-trim< "  \n abc")))
-  (should (string= "abc" (string-trim< "XXabc" "XX")))
-  (should (string= "abc" (string-trim< "XXabc" "X+"))))
+  (should (string-equal "abc" (string-trim< "  \n abc")))
+  (should (string-equal "abc" (string-trim< "XXabc" "XX")))
+  (should (string-equal "abc" (string-trim< "XXabc" "X+"))))
 
 (ert-deftest %d:fn:string-trim>< ()
   (should-not (string-trim>< nil "X" "Z"))
-  (should (string= "abc" (string-trim>< " \n abc \n ")))
-  (should (string= "abc" (string-trim>< "ZZabcXX" "X+" "Z+"))))
+  (should (string-equal "abc" (string-trim>< " \n abc \n ")))
+  (should (string-equal "abc" (string-trim>< "ZZabcXX" "X+" "Z+"))))
 
 (ert-deftest %d:fn:string-match* ()
   (should-not (string-match* nil nil 0))
   (should-not (string-match* nil 123 0))
-  (should (string= "XXabcXX"
-                   (string-match* "XX\\(abc\\)XX" "XXabcXX" 0)))
+  (should (string-equal "XXabcXX"
+                        (string-match* "XX\\(abc\\)XX" "XXabcXX" 0)))
   (should-not (string-match* "XX\\(abc\\)XX" "XXabcXX" 2))
-  (should (string= "abc"
-                   (string-match* "XX\\(abc\\)XX" "XXabcXX" 1))))
+  (should (string-equal "abc"
+                        (string-match* "XX\\(abc\\)XX" "XXabcXX" 1))))
 
 (ert-deftest %d:fn:file-name-base* ()
-  (should (string= "x" (file-name-base* "x")))
-  (should (string= "x" (file-name-base* "x.z")))
-  (should (string= "x" (file-name-base* "/a/b.c/x.z"))))
+  (should (string-equal "x" (file-name-base* "x")))
+  (should (string-equal "x" (file-name-base* "x.z")))
+  (should (string-equal "x" (file-name-base* "/a/b.c/x.z"))))
 
 (ert-deftest %d:fn:directory-name-p ()
   (should (directory-name-p "a/"))
@@ -382,12 +382,12 @@
 (ert-deftest %d:fn:posix-path ()
   (should-not (posix-path nil))
   (let ((p "c:/a/b/c.c"))
-    (should (string= p (posix-path "c:/a/b/c.c")))
-    (should (string= p (posix-path "c:\\a\\b\\c.c")))))
+    (should (string-equal p (posix-path "c:/a/b/c.c")))
+    (should (string-equal p (posix-path "c:\\a\\b\\c.c")))))
 
 (ert-deftest %d:fn:save/read-sexp-to/from-file ()
   ;; string hash test: see `%fn:save/read-sexp-to/from-file' in test.el
-  (define-hash-table-test 'nore-emacs-string-hash= #'string= #'sxhash)
+  (define-hash-table-test 'nore-emacs-string-hash= #'string-equal #'sxhash)
   (let ((f1 (concat temporary-file-directory
                     (make-temp-name (symbol-name (gensym*)))))
         (f2 (concat temporary-file-directory
@@ -407,11 +407,11 @@
   (let ((f (concat temporary-file-directory
                    (symbol-name (gensym*)))))
     (should (and (save-str-to-file "abc" f)
-                 (string= "abc" (read-str-from-file f))))))
+                 (string-equal "abc" (read-str-from-file f))))))
 
 (ert-deftest %d:fn:shell-command* ()
   (should (let ((x (shell-command* "echo" "a")))
-            (and (= (car x) 0) (string= (cdr x) "a\n"))))
+            (and (= (car x) 0) (string-equal (cdr x) "a\n"))))
   (should (let ((x (shell-command* "wc" "-l" (emacs-home* "test.el"))))
             (or (= (car x) 0)
                 (= (car x) 127)))))
@@ -437,14 +437,14 @@
 
 (ert-deftest %d:fn:path+ ()
   (should-not (path+ nil))
-  (should (string= "a/" (path+ "a")))
-  (should (string= "a/b/c/" (path+ "a/" "b/" "c/")))
-  (should (string= "a/b/c/" (path+ "a/" "b" "c"))))
+  (should (string-equal "a/" (path+ "a")))
+  (should (string-equal "a/b/c/" (path+ "a/" "b/" "c/")))
+  (should (string-equal "a/b/c/" (path+ "a/" "b" "c"))))
 
 (ert-deftest %d:fn:path- ()
   (should-not (path- nil))
-  (should (string= "a/b/" (path- "a/b/c")))
-  (should (string= "a/b/" (path- "a/b/c/"))))
+  (should (string-equal "a/b/" (path- "a/b/c")))
+  (should (string-equal "a/b/" (path- "a/b/c/"))))
 
 (ert-deftest %d:fn:path-depth ()
   (should (= 0 (path-depth nil)))
@@ -461,7 +461,7 @@
 
 (ert-deftest %d:fn:kbd% ()
   (should (equal (kbd% "<tab> <ret>") (kbd "<tab> <ret>")))
-  (should (string= (kbd% "C-c f i") (kbd "C-c f i"))))
+  (should (string-equal (kbd% "C-c f i") (kbd "C-c f i"))))
 
 (ert-deftest %d:fn:if/define-key% ()
   (define-key global-map "" nil)
@@ -499,7 +499,7 @@
 ;;       (should (null (car (symbol@))))
 ;;       (set-mark (point-min))
 ;;       (set-mark (point-max))
-;;       (should (string= "a bb" (cdr (symbol@)))))))
+;;       (should (string-equal "a bb" (cdr (symbol@)))))))
 
 ;; end of `fn'
 
@@ -522,20 +522,20 @@
 
 (ert-deftest %f:shells:shell-env->/<- ()
   (should (*default-shell-env* :put! :xx "aa"))
-  (should (string= "aa" (*default-shell-env* :get :xx))))
+  (should (string-equal "aa" (*default-shell-env* :get :xx))))
 
 (ert-deftest %f:shells:echo-var ()
-  (should (string= "1" (let ((process-environment
-                              (cons "A=1" process-environment)))
-                         (echo-var "A")))))
+  (should (string-equal "1" (let ((process-environment
+                                   (cons "A=1" process-environment)))
+                              (echo-var "A")))))
 
 (ert-deftest %f:shells:paths->var ()
   (let ((path-separator ":"))
-    (should (string= "a:b:c" (paths->var '("a" "b" "c"))))
-    (should (string= "b" (paths->var '("a" "b" "c")
-                                     (lambda (x) (string= "b" x)))))
-    (should (string= "" (paths->var '("a" "b" "c")
-                                    (lambda (x) (file-exists-p x)))))))
+    (should (string-equal "a:b:c" (paths->var '("a" "b" "c"))))
+    (should (string-equal "b" (paths->var '("a" "b" "c")
+                                          (lambda (x) (string-equal "b" x)))))
+    (should (string-equal "" (paths->var '("a" "b" "c")
+                                         (lambda (x) (file-exists-p x)))))))
 
 (ert-deftest %f:shells:var->paths ()
   (let ((path-separator ":"))
@@ -611,9 +611,9 @@
   (should (equal '(a 1) (assoc** 'a '((b 2) (a 1)) :test #'eq)))
   (let ((lst '((b 2) (a 1))))
     (should (equal (assoc** 'a lst :test #'eq) (assq 'a lst))))
-  (should (equal '("a" a) (assoc** "a" '(("b" b) ("a" a)) :test #'string=)))
+  (should (equal '("a" a) (assoc** "a" '(("b" b) ("a" a)) :test #'string-equal)))
   (let ((k "a") (lst '(("b" b) ("a" a))))
-    (should (equal (assoc** k lst :test #'string=) (assoc-string k lst)))))
+    (should (equal (assoc** k lst :test #'string-equal) (assoc-string k lst)))))
 
 (ert-deftest %j:cls:mapcar** ()
   (should (equal '(a b c) (mapcar** #'identity '(a b c))))
@@ -624,30 +624,30 @@
   (should-not (remove-if* nil nil))
   (should-not (remove-if* (lambda (x) (eq x 'a)) nil))
   (should (equal '(b c) (remove-if* (lambda (x) (eq x 'a)) '(a b c))))
-  (should (equal '("a") (remove-if* (lambda (x) (string= x "b"))
+  (should (equal '("a") (remove-if* (lambda (x) (string-equal x "b"))
                                     '("a" "b"))))
   (should (equal '((1 "a"))
-                 (remove-if* (lambda (x) (string= x "b"))
+                 (remove-if* (lambda (x) (string-equal x "b"))
                              '((1 "a") (2 "b") (2 "b") (2 "b"))
                              :key #'cadr)))
   (should (equal '((1 "a") (2 "b"))
-                 (remove-if* (lambda (x) (string= x "b"))
+                 (remove-if* (lambda (x) (string-equal x "b"))
                              '((1 "a") (2 "b") (2 "b") (2 "b"))
                              :key #'cadr :count 2)))
   (should (equal '((1 "a"))
-                 (remove-if* (lambda (x) (string= x "b"))
+                 (remove-if* (lambda (x) (string-equal x "b"))
                              '((1 "a") (2 "b") (2 "b") (2 "b"))
                              :key #'cadr :count 3)))
   (should (equal '((1 "a") (2 "b"))
-                 (remove-if* (lambda (x) (string= x "c"))
+                 (remove-if* (lambda (x) (string-equal x "c"))
                              '((1 "a") (2 "b") (3 "c"))
                              :key #'cadr :from-end t)))
   (should (equal '((1 "a") (2 "b"))
-                 (remove-if* (lambda (x) (string= x "b"))
+                 (remove-if* (lambda (x) (string-equal x "b"))
                              '((1 "a") (2 "b") (2 "b") (2 "b"))
                              :key #'cadr :start 2)))
   (should (equal '((1 "a") (2 "b") (2 "b"))
-                 (remove-if* (lambda (x) (string= x "b"))
+                 (remove-if* (lambda (x) (string-equal x "b"))
                              '((1 "a") (2 "b") (2 "b") (2 "b"))
                              :key #'cadr :end 2))))
 
@@ -655,9 +655,9 @@
   (should-not (member-if* nil nil))
   (should-not (member-if* (lambda (x) (eq x 'a)) nil))
   (should (equal '(a) (member-if* (lambda (x) (eq x 'a)) '(b a))))
-  (should (equal '("a") (member-if* (lambda (x) (string= x "a"))
+  (should (equal '("a") (member-if* (lambda (x) (string-equal x "a"))
                                     '("b" "a"))))
-  (should (equal '((3 "c")) (member-if* (lambda (x) (string= x "c"))
+  (should (equal '((3 "c")) (member-if* (lambda (x) (string-equal x "c"))
                                         '((1 "a") (2 "b") (3 "c"))
                                         :key #'cadr))))
 
@@ -677,14 +677,14 @@
   (should (= 3 (loop* for x in '(a b c)
                       count x)))
   (should (= 5050 (loop* for i from 1 to 100 sum i)))
-  (should (string= "b" (loop* for d in '("a" "b" "c")
-                              when (string= d "b")
-                              return d)))
-  (should (string= "b" (loop* for d in '("a" "b" "c")
-                              with d1 = nil
-                              do (setq d1 (concat d "/" "1"))
-                              when (string= d1 "b/1")
-                              return d)))
+  (should (string-equal "b" (loop* for d in '("a" "b" "c")
+                                   when (string-equal d "b")
+                                   return d)))
+  (should (string-equal "b" (loop* for d in '("a" "b" "c")
+                                   with d1 = nil
+                                   do (setq d1 (concat d "/" "1"))
+                                   when (string-equal d1 "b/1")
+                                   return d)))
   (should (equal [0 1 4 9] (let ((v (make-vector 4 0)))
                              (loop* for i from 1 upto 3
                                     do (aset v i (* i i))
@@ -751,57 +751,57 @@
 
 (ert-deftest %r:tags:dir-iterate ()
   (when (fboundp 'dir-iterate)
-    (should (string= "init.el"
-                     (catch 'br
-                       (dir-iterate (emacs-home*)
-                                    (lambda (f &rest _)
-                                      (when (string= "init.el" f)
-                                        (throw 'br f)))))))
+    (should (string-equal "init.el"
+                          (catch 'br
+                            (dir-iterate (emacs-home*)
+                                         (lambda (f &rest _)
+                                           (when (string-equal "init.el" f)
+                                             (throw 'br f)))))))
     (should (string-match "init\\.el$"
                           (catch 'br
                             (dir-iterate (emacs-home*)
                                          (lambda (f &rest _)
-                                           (string= "init.el" f))
+                                           (string-equal "init.el" f))
                                          nil
                                          (lambda (a _)
                                            (throw 'br a))))))
-    (should (string= "config"
-                     (catch 'br
-                       (dir-iterate (emacs-home*)
-                                    nil
-                                    (lambda (f &rest _)
-                                      (when (string= "config" f)
-                                        (throw 'br f)))))))
+    (should (string-equal "config"
+                          (catch 'br
+                            (dir-iterate (emacs-home*)
+                                         nil
+                                         (lambda (f &rest _)
+                                           (when (string-equal "config" f)
+                                             (throw 'br f)))))))
     (should (string-match "config$"
                           (catch 'br
                             (dir-iterate (emacs-home*)
                                          nil
                                          (lambda (f &rest _)
-                                           (string= "config" f))
+                                           (string-equal "config" f))
                                          nil
                                          (lambda (a &rest _)
                                            (throw 'br a))))))
-    (should (string= "xy"
-                     (catch 'br
-                       (dir-iterate (emacs-home*)
-                                    (lambda (f &rest _)
-                                      (string= "test.el" f))
-                                    (lambda (d &rest _)
-                                      (string= ".emacs.d" d))
-                                    (lambda (a env)
-                                      (let ((k1 (plist-get env :k1))
-                                            (k2 (plist-get env :k2)))
-                                        (throw 'br (format "%s%s" k1 k2))))
-                                    nil
-                                    (list :k1 "x" :k2 "y")))))
+    (should (string-equal "xy"
+                          (catch 'br
+                            (dir-iterate (emacs-home*)
+                                         (lambda (f &rest _)
+                                           (string-equal "test.el" f))
+                                         (lambda (d &rest _)
+                                           (string-equal ".emacs.d" d))
+                                         (lambda (a env)
+                                           (let ((k1 (plist-get env :k1))
+                                                 (k2 (plist-get env :k2)))
+                                             (throw 'br (format "%s%s" k1 k2))))
+                                         nil
+                                         (list :k1 "x" :k2 "y")))))
     (should (= 1 (let ((fcnt 0) (dcnt 0))
                    (catch 'br
                      (dir-iterate
                       (emacs-home*)
                       (lambda (f &rest _)
-                        (string= "tags.el" f))
+                        (string-equal "tags.el" f))
                       (lambda (d a &rest _)
-                        (unless (cond ((string= ".git" d) t)
+                        (unless (cond ((string-equal ".git" d) t)
                                       ((string-match "^[gt]_[0-9]+" d) t)
                                       (t nil))
                           (string-match "config" a)))
@@ -820,14 +820,14 @@
     (let ((ss "https://a/b/ ?c=中abc"))
       (let* ((s1 (with-temp-buffer (insert ss) (encode-url)))
              (d1 (with-temp-buffer (insert s1) (decode-url))))
-        (should (string= ss d1))))))
+        (should (string-equal ss d1))))))
 
 (ert-deftest %s:trans:encode-base64 ()
   (when (fboundp 'encode-base64)
     (let ((ss "https://a/b/ ?c=中abc"))
       (let* ((s1 (with-temp-buffer (insert ss) (encode-base64)))
              (d1 (with-temp-buffer (insert s1) (decode-base64))))
-        (should (string= ss d1))))))
+        (should (string-equal ss d1))))))
 
 (ert-deftest %s:trans:encode-ipv4 ()
   (when (fboundp 'encode-ipv4)
@@ -835,7 +835,7 @@
       (let* ((s1 (with-temp-buffer (insert ss) (encode-ipv4)))
              (d1 (with-temp-buffer (insert (number-to-string s1))
                                    (decode-ipv4))))
-        (should (string= ss d1))))))
+        (should (string-equal ss d1))))))
 
 (ert-deftest %s:trans:roman->arabic ()
   (when (fboundp 'roman->arabic)
@@ -869,14 +869,14 @@
 (ert-deftest %u:ssh:ssh-remote-/p/>ids/>user@host ()
   (should (and (null (ssh-remote-p nil))
                (null (ssh-remote-p "/xxh:abc:/a/b.c"))
-               (string= "/sshx:pi:"
-                        (ssh-remote-p "/sshx:pi:/a/b.c"))
-               (string= "/ssh:pi@circle:"
-                        (ssh-remote-p
-                         "/ssh:pi@circle:/a/b/c.d"))
-               (string= "/ssh:u@h.i.j:"
-                        (ssh-remote-p
-                         "/ssh:u@h.i.j:/a/b.c"))))
+               (string-equal "/sshx:pi:"
+                             (ssh-remote-p "/sshx:pi:/a/b.c"))
+               (string-equal "/ssh:pi@circle:"
+                             (ssh-remote-p
+                              "/ssh:pi@circle:/a/b/c.d"))
+               (string-equal "/ssh:u@h.i.j:"
+                             (ssh-remote-p
+                              "/ssh:u@h.i.j:/a/b.c"))))
   (should (and (null (ssh-remote->ids nil))
                (equal '("abc") (ssh-remote->ids "abc"))
                (equal '("sshx" "pi")
@@ -886,12 +886,12 @@
                (equal '("ssh" "u" "h.i.j")
                       (ssh-remote->ids "/ssh:u@h.i.j:/a/b.c"))))
   (should (and (null (ssh-remote->user@host nil))
-               (string= "pi@circle"
-                        (ssh-remote->user@host
-                         "/ssh:pi@circle:/a/b.c"))
-               (string= "u@h.i.j"
-                        (ssh-remote->user@host
-                         "/sshx:u@h.i.j:/a/b.c")))))
+               (string-equal "pi@circle"
+                             (ssh-remote->user@host
+                              "/ssh:pi@circle:/a/b.c"))
+               (string-equal "u@h.i.j"
+                             (ssh-remote->user@host
+                              "/sshx:u@h.i.j:/a/b.c")))))
 
 ;; end of `ssh'
 
