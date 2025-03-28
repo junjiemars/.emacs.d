@@ -99,7 +99,8 @@
   (let ((cscope-keymap (make-sparse-keymap)))
     (set-keymap-parent cscope-keymap compilation-minor-mode-map)
     (define-key cscope-keymap "g" #'cscope-recompile)
-    (unless (key? cscope-keymap "n" #'next-error-no-select)
+    (if-key% compilation-minor-mode-map "n" #'next-error-no-select
+             (comment "ignore if Emacs25+")
       (define-key cscope-keymap "n" #'next-error-no-select)
       (define-key cscope-keymap "p" #'previous-error-no-select))
     (use-local-map cscope-keymap)))
