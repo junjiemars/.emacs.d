@@ -78,7 +78,7 @@ when \\=`desktop-globals-to-save\\=' include it.")
 (defalias 'mount-tags #'visit-tags-table
   "Mount existing TAGS into \\=`tags-table-list\\='.")
 
-(defun unmount-tags-prompt ()
+(defun tags--unmount-tags-prompt ()
   (list
    (cond (current-prefix-arg (yes-or-no-p "unmount all? ") nil)
          ((consp tags-table-list)
@@ -91,7 +91,7 @@ when \\=`desktop-globals-to-save\\=' include it.")
 
 (defun unmount-tags (&optional tags)
   "Unmount TAGS from \\=`tags-table-list\\='."
-  (interactive (unmount-tags-prompt))
+  (interactive (tags--unmount-tags-prompt))
   (setq tags-file-name nil
         tags-table-list
         (when tags
@@ -108,21 +108,21 @@ DF dir-filter (lambda (dirname absolute-name env)...),
 FP file-processor (lambda (filename-absolute env)...),
 DP dir-processor (lambda (dirname-absolute env)...),
 ENV (:k1 v1 :k2 v2 ...)."
-  ;; (inhibit-file-name-handler)
-  (let ((files (directory-files dir t)))
-    (while files
-      (let* ((a (car files))
-             (s (file-attributes a)) (ft (nth 0 s))
-             (f (file-name-nondirectory a))
-             (len (length f)))
-        (cond ((eq ft t) (cond ((char-equal (aref f (1- len)) ?.) nil)
-                               ((and df (funcall df f a env))
-                                (and dp (funcall dp a env))
-                                (dir-iterate a ff df fp dp env))))
-              ((stringp ft) nil)
-              ((null ft) (and ff (funcall ff f a env)
-                              fp (funcall fp a env))))
-        (setq files (cdr files))))))
+  (inhibit-file-name-handler
+    (let ((files (directory-files dir t)))
+      (while files
+        (let* ((a (car files))
+               (s (file-attributes a)) (ft (nth 0 s))
+               (f (file-name-nondirectory a))
+               (len (length f)))
+          (cond ((eq ft t) (cond ((char-equal (aref f (1- len)) ?.) nil)
+                                 ((and df (funcall df f a env))
+                                  (and dp (funcall dp a env))
+                                  (dir-iterate a ff df fp dp env))))
+                ((stringp ft) nil)
+                ((null ft) (and ff (funcall ff f a env)
+                                fp (funcall fp a env))))
+          (setq files (cdr files)))))))
 
 (defun tags--file-processor (f &optional env)
   (let ((tf (plist-get env :file))
@@ -221,19 +221,19 @@ RENEW overwrite the existing tags file when t else create it."
                 :exc ,(concat (tags-spec->% :vcs-dir)
                               "\\|" (tags-spec->% :arc-dir)))))
 
-(defun make-emacs-tags-prompt ()
+(defun tags--make-emacs-tags-prompt ()
   (list (read-directory-name "make tags for " source-directory)
         (tags--read-option)
         (y-or-n-p "tags renew? ")))
 
 (defun make-emacs-tags (source &optional option renew)
   "Make tags for Emacs\\=' C and Lisp SOURCE code."
-  (interactive (make-emacs-tags-prompt))
+  (interactive (tags--make-emacs-tags-prompt))
   (make-c-tags (concat source "src/") (tags-spec->% :emacs) option
                nil nil renew)
   (make-lisp-tags (concat source "lisp/") (tags-spec->% :emacs) option))
 
-(defun make-dir-tags-prompt ()
+(defun tags--make-dir-tags-prompt ()
   (list (read-directory-name "make tags for ")
         (read-file-name "store tags in " nil nil nil ".tags")
         (when current-prefix-arg
@@ -245,7 +245,7 @@ RENEW overwrite the existing tags file when t else create it."
 
 (defun make-dir-tags (dir store &optional include exclude option renew)
   "Make tags for specified DIR."
-  (interactive (make-dir-tags-prompt))
+  (interactive (tags--make-dir-tags-prompt))
   (let ((home (path+ (expand-file-name dir)))
         (exc (concat (tags-spec->% :out-dir)
                      "\\|" (tags-spec->% :vcs-dir)

@@ -140,20 +140,7 @@
                        " -Fo" temporary-file-directory
                        " -Fe" exe
                        " -link -release")))
-      (when (save-str-to-file
-             (concat "#include <stdio.h>\n"
-                     "int main(int argc, char **argv) {\n"
-                     "  int ch;\n"
-                     "  while (EOF != (ch = fgetc(stdin))) {\n"
-                     "    fputc(ch, stdout);\n"
-                     "  }\n"
-                     "  if (ferror(stdin)) {\n"
-                     "    perror(\"read failed from stdin\");\n"
-                     "    return 1;\n"
-                     "  }\n"
-                     "  return 0;\n"
-                     "}\n")
-             c)
+      (when (copy-file (emacs-home% "config/cc_xargs.c") c t)
         (let ((rc (shell-command* cc)))
           (when (zerop (car rc))
             (file-name-nondirectory exe)))))))
@@ -191,8 +178,7 @@
       (let ((pre (cdr rc)) (inc nil) (beg nil))
         (if-platform% windows-nt
             (dolist (x (var->paths
-                        (car
-                         (nreverse (split-string* pre "\n" t "[ \"]*"))))
+                        (car (nreverse (split-string* pre "\n" t "[ \"]*"))))
                        (nreverse inc))
               (setq inc (cons (posix-path x) inc)))
           ;; Darwin/Linux
@@ -303,16 +289,16 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
                  (if remote
                      (concat "@" (ssh-remote->user@host remote))
                    "")))
-      (view-mode -1)
-      (erase-buffer)
-      (insert (if (zerop (car rc))
-                  (if (> (length (cdr rc)) 0)
-                      (cdr rc)
-                    "/* C preprocessor no output! */")
-                (cdr rc)))
-      (c-mode)
-      (goto-char (point-min))
-      (view-mode 1))))
+      (let ((inhibit-read-only t))
+        (erase-buffer)
+        (insert (if (zerop (car rc))
+                    (if (> (length (cdr rc)) 0)
+                        (cdr rc)
+                      "/* C preprocessor no output! */")
+                  (cdr rc)))
+        (c-mode)
+        (goto-char (point-min))
+        (view-mode 1)))))
 
 ;; end of #define
 
@@ -320,10 +306,10 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 ;; `tags'
 ;;;
 
-(defun cc*-make-tags (&optional renew)
+(defun cc*-make-tags (&optional renew option)
   "Make system C tags."
   (let ((file (concat (tags-spec->% :root) "os.TAGS"))
-        (opt "--langmap=c:.h.c --c-kinds=+ptesgux --extra=+fq"))
+        (opt (or option "--langmap=c:.h.c --c-kinds=+ptesgux --extra=+fq")))
     (cond (renew (let ((inc (cc*-system-include :read)))
                    (make-c-tags (car inc) file opt nil nil t)
                    (dolist (p (cdr inc) file)
@@ -335,13 +321,6 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 ;;;
 ;; `cc-styles'
 ;;;
-
-(defun cc*-style-arglist-cont-nonempty (langem)
-  (let ((col (save-excursion
-               (goto-char (cdr langem))
-               (current-column))))
-    (cond ((= col 0) 'c-basic-offset)
-          (t 'c-lineup-arglist))))
 
 (when-fn% align-entire align
   (defun cc*-style-align-entire (&rest _)

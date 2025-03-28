@@ -217,8 +217,7 @@ This is run before the process is cranked up.")
 
 (defun gambit-check-proc (&optional spawn)
   "Return the `*gambit*' process or start one if necessary."
-  (when (and spawn
-             (not (eq 'run (car (comint-check-proc (*gambit*))))))
+  (when (and spawn (null (eq 'run (car (comint-check-proc (*gambit*))))))
     (save-window-excursion (call-interactively #'run-gambit)))
   (or (get-buffer-process (*gambit*))
       (error "%s" "No *gambit* process")))

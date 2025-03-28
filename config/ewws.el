@@ -78,7 +78,7 @@ is non-nil, otherwise is not. See also:
 (defalias 'web-find-def
   (let ((b '()))
     (lambda  (&optional en)
-      (cond ((or en (not b))
+      (cond ((or en (null b))
              (setq b (assoc-string (or en
                                        (car *lookup-web-history*)
                                        (caar (*web-defs*)))

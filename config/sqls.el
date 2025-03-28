@@ -91,7 +91,7 @@
   (defun sql-first-word (sql)
     "Return the first word in SQL."
     (let* ((i 0) (j nil) (c (aref sql i)))
-      (while (not (or (and (>= c ?A) (<= c ?Z))
+      (while (null (or (and (>= c ?A) (<= c ?Z))
                       (and (>= c ?a) (<= c ?z))))
         (setq i (1+ i) c (aref sql i)))
       (setq j i)
@@ -421,13 +421,13 @@ Optional prefix argument ENHANCED, displays additional details."
   (let ((params
          (append
           options
-          (if (not (string-equal "" sql-user))
+          (if (null (string-equal "" sql-user))
               (list (concat "--user=" sql-user)))
-          (if (not (string-equal "" sql-password))
+          (if (null (string-equal "" sql-password))
               (list (concat "--password=" sql-password)))
-          (if (not (= 0 sql-port))
+          (if (null (= 0 sql-port))
               (list (concat "--port=" (number-to-string sql-port))))
-          (if (not (string-equal "" sql-server))
+          (if (null (string-equal "" sql-server))
               (list (concat "--host=" sql-server))))))
     (if-version% > 25
                  (sql-comint product params _buf-name)

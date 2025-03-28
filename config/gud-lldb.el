@@ -157,7 +157,7 @@ Return init file name and ~/.lldbinit-lldb file no touched."
   (with-current-buffer buffer
     (let ((alts nil) (xs *lldb-completion-filter*))
       (goto-char (point-min))
-      (while (not (eobp))
+      (while (null (eobp))
         (let ((ln (buffer-substring-no-properties
                    (line-beginning-position) (line-end-position))))
           (cond ((string-match xs ln) nil)

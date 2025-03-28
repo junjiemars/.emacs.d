@@ -14,7 +14,7 @@
         (i nil))
     (lambda (&optional n)
       (cond (n (append! n b t))
-            ((and (not i) vc*-frontend-hook)
+            ((and (null i) vc*-frontend-hook)
              (dolist (x vc*-frontend-hook)
                (append! x b t))
              (setq i t)

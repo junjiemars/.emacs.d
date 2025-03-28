@@ -74,13 +74,13 @@ This function is called by `org-babel-execute-src-block'."
             ((or (member "code" result-params)
                  (member "pp" result-params))
              (format "(pretty (out \"/dev/null\" %s))" full-body))
-            ((and (member "value" result-params) (not session))
+            ((and (member "value" result-params) (null session))
              (format "(print (out \"/dev/null\" %s))" full-body))
             ((member "value" result-params)
              (format "(out \"/dev/null\" %s)" full-body))
             (t full-body)))
           (result
-           (if (not (string-equal session-name "none"))
+           (if (null (string-equal session-name "none"))
                ;; Session based evaluation.
                (mapconcat ;; <- joins the list back into a single string
                 #'identity

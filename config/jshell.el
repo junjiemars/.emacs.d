@@ -48,7 +48,7 @@
   (let ((b))
     (lambda (&optional n)
       (cond (n (setq b (get-buffer-create n)))
-            ((or (null b) (not (buffer-live-p b)))
+            ((or (null b) (null (buffer-live-p b)))
              (setq b (get-buffer-create "*jshell*")))
             (t b))))
   "The current *jshell* process buffer.")
@@ -99,7 +99,7 @@
 
 (defun jshell-check-proc (&optional spawn)
   "Return the \\`*jshell*\\=' process or start one if necessary."
-  (when (and spawn (not (eq 'run (car (comint-check-proc (*jshell*))))))
+  (when (and spawn (null (eq 'run (car (comint-check-proc (*jshell*))))))
     (save-window-excursion (call-interactively #'run-jshell)))
   (or (get-buffer-process (*jshell*))
       (error "%s" "No *jshell* process")))
@@ -108,7 +108,7 @@
   "Return the position of left side of the last symbol."
   (save-excursion
     (catch 'br
-      (while (not (or (char-equal (char-before) ?\;)
+      (while (null (or (char-equal (char-before) ?\;)
                       (char-equal (char-before) ?\n)
                       (eq (char-syntax (char-before)) ? )))
         (cond ((or (char-equal (char-before) ?.)

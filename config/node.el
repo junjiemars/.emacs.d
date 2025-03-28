@@ -59,7 +59,7 @@
   (let ((b))
     (lambda (&optional n)
       (cond (n (setq b (get-buffer-create n)))
-            ((or (null b) (not (buffer-live-p b)))
+            ((or (null b) (null (buffer-live-p b)))
              (setq b (get-buffer-create "*node*")))
             (t b))))
   "The current *node* process buffer.")
@@ -97,7 +97,7 @@
 
 (defun node-check-proc (&optional spawn)
   "Return the \\=`*node*\\=' process or start one if necessary."
-  (when (and spawn (not (eq 'run (car (comint-check-proc (*node*))))))
+  (when (and spawn (null (eq 'run (car (comint-check-proc (*node*))))))
     (save-window-excursion (call-interactively #'run-node)))
   (or (get-buffer-process (*node*))
       (error "%s" "No *node* process")))
@@ -106,7 +106,7 @@
   "Return the position of left side of the last symbol."
   (save-excursion
     (catch 'br
-      (while (not (or (char-equal (char-before) ?\;)
+      (while (null (or (char-equal (char-before) ?\;)
                       (char-equal (char-before) ?\n)
                       (eq (char-syntax (char-before)) ? )))
         (cond ((or (char-equal (char-before) ?.)
@@ -124,7 +124,7 @@
   (with-current-buffer buffer
     (let ((alts nil) (xs *node-completion-filter*))
       (goto-char (point-min))
-      (while (not (eobp))
+      (while (null (eobp))
         (let ((ln (buffer-substring-no-properties
                    (line-beginning-position) (line-end-position))))
           (cond ((string-match xs ln) nil)

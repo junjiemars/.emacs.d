@@ -41,7 +41,7 @@
     (save-excursion
       (let* ((st (parse-partial-sexp (point-min) (point)))
              (beg (or (and (eq 4 (car (syntax-after (point))))
-                           (not (nth 8 st))
+                           (null (nth 8 st))
                            (point))
                       (nth 1 st))))
         (when beg

@@ -64,7 +64,7 @@ determine whether inside a virtual env. Another way is using
                (let ((rc (shell-command* "virtualenv" "-p" p d)))
                  (unless (zerop (car rc))
                    (error "Panic, %s" (string-trim> (cdr rc))))))
-              ((and p (not v-))
+              ((and p (null v-))
                (let ((rc (shell-command* p "-m" "venv" d)))
                  (unless (zerop (car rc))
                    (error "Panic, %s" (string-trim> (cdr rc))))))

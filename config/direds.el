@@ -283,7 +283,7 @@
   ;; [! zip x.zip ?] compress marked files to x.zip，
   ;; see `dired-compress-file-suffixes'.
   (when-var% dired-compress-files-suffixes dired-aux
-    (when% (and (not (assoc-string "\\.zip\\'" dired-compress-file-suffixes))
+    (when% (and (null (assoc-string "\\.zip\\'" dired-compress-file-suffixes))
                 (executable-find* "zip")
                 (executable-find* "unzip"))
       (push! '("\\.zip\\'" ".zip" "unzip") dired-compress-file-suffixes)))

@@ -72,7 +72,7 @@ This is run before the process is cranked up.")
   (let ((b))
     (lambda (&optional n)
       (cond (n (setq b (get-buffer-create n)))
-            ((or (null b) (not (buffer-live-p b)))
+            ((or (null b) (null (buffer-live-p b)))
              (setq b (get-buffer-create "*chez*")))
             (t b))))
   "The current *chez* process buffer.")
@@ -113,7 +113,7 @@ This is run before the process is cranked up.")
 
 (defun chez-input-filter (in)
   "Don't save anything matching \\=`chez-input-filter-regexp'\\=."
-  (not (string-match chez-input-filter-regexp in)))
+  (null (string-match chez-input-filter-regexp in)))
 
 (defun chez-get-old-input ()
   "Snarf the sexp ending at point."
@@ -142,7 +142,7 @@ This is run before the process is cranked up.")
 
 (defun chez-check-proc (&optional spawn)
   "Return the \\=`*chez*\\=' process or start one if necessary."
-  (when (and spawn (not (eq 'run (car (comint-check-proc (*chez*))))))
+  (when (and spawn (null (eq 'run (car (comint-check-proc (*chez*))))))
     (save-window-excursion (call-interactively #'run-chez)))
   (or (get-buffer-process (*chez*))
       (error "%s" "No *chez* process")))

@@ -127,8 +127,8 @@ See \\=`setenv\\='."
   (defun windows-nt-env-path+ (dir &optional append)
     "APPEND or push DIR to %PATH%."
     (let ((env (var->paths (getenv (shells-spec->% :PATH)))))
-      (when (or (and (null append) (not (string-equal dir (car env))))
-                (and append (not (string-equal dir (last env)))))
+      (when (or (and (null append) (null (string-equal dir (car env))))
+                (and append (null (string-equal dir (last env)))))
         (let ((path (let ((xs nil))
                       ;; remove dir
                       (dolist (x env (nreverse xs))
