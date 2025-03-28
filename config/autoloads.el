@@ -187,7 +187,7 @@
       (error "self-module-init!: %s" err)))
   (when-fn% self-desktop-read! nil
     (condition-case err
-        (make-thread* #'self-desktop-read!)
+        (self-desktop-read!)
       (error "self-desktop-read!: %s" err)))
   ;; `load-path' versioned dirs
   (push! (v-home% "config/") load-path)
