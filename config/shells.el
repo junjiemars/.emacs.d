@@ -90,7 +90,7 @@ See \\=`setenv\\='."
          (newval (concat name= value)))
     (if (catch 'br
           (while (car env)
-            (and (string= name= (car env))
+            (and (string-equal name= (car env))
                  (setcar env newval)
                  (throw 'br t))
             (setq env (cdr env))))
@@ -127,12 +127,12 @@ See \\=`setenv\\='."
   (defun windows-nt-env-path+ (dir &optional append)
     "APPEND or push DIR to %PATH%."
     (let ((env (var->paths (getenv (shells-spec->% :PATH)))))
-      (when (or (and (null append) (not (string= dir (car env))))
-                (and append (not (string= dir (last env)))))
+      (when (or (and (null append) (not (string-equal dir (car env))))
+                (and append (not (string-equal dir (last env)))))
         (let ((path (let ((xs nil))
                       ;; remove dir
                       (dolist (x env (nreverse xs))
-                        (unless (string= x dir)
+                        (unless (string-equal x dir)
                           (setq xs (cons x xs)))))))
           (setenv* (shells-spec->% :PATH)
                    (paths->var (if append
@@ -153,7 +153,7 @@ See \\=`setenv\\='."
       (when (stringp v)
         (let ((val (echo-var v (shells-spec->* :options))))
           (when (and val (> (length val) 0))
-            (when (string= v (shells-spec->% :PATH))
+            (when (string-equal v (shells-spec->% :PATH))
               (let ((paths nil))
                 (dolist (p (var->paths val))
                   (let ((p1 (if-platform% windows-nt

@@ -14,8 +14,8 @@
 
 (defun lisp*-featured! ()
   "Featured \\=`lisp-mode\\='."
-  (unless (or (string= "*scratch*" (buffer-name))
-              (string= "*ielm*" (buffer-name)))
+  (unless (or (string-equal "*scratch*" (buffer-name))
+              (string-equal "*ielm*" (buffer-name)))
     ;; don't autoload: `aggressive' indent
     ;; (if-feature-aggressive-indent% (make-thread* #'aggressive-indent-mode))
     ;; `paredit' structured editing of s-expression data

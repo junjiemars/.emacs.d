@@ -247,11 +247,6 @@ else do ELSE..."
 (defmacro range (from &optional to inc)
   `(number-sequence ,from ,to ,inc))
 
-(unless-fn% char= nil
-  (defmacro char= (c1 c2)
-    `(char-equal ,c1 ,c2))
-  (fset 'char= #'char-equal))
-
 (unless-fn% characterp nil
   (defmacro characterp (object)
     `(char-valid-p ,object)))
@@ -281,9 +276,10 @@ If optional UNIQUELY is non-nil then append uniquely."
     `(let ((,old ,(car binding))
            (,new ,(cadr binding)))
        (prog1
-           (unwind-protect (progn
-                             (setq ,var ,new)
-                             ,@body)
+           (unwind-protect
+               (progn
+                 (setq ,var ,new)
+                 ,@body)
              (setq ,var ,old))
          (setq ,var ,old)))))
 

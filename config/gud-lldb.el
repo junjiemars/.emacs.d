@@ -166,7 +166,7 @@ Return init file name and ~/.lldbinit-lldb file no touched."
                           (ls1 (substring-no-properties in 0 w1))
                           (rs1 (substring-no-properties in w1))
                           (ln> (string-trim> ln)))
-                     (cond ((string= rs1 ln>) nil)
+                     (cond ((string-equal rs1 ln>) nil)
                            ((string-match rs1 ln>)
                             (let ((a (list (concat ls1 ln>))))
                               (setq alts (nconc alts a)))))))))

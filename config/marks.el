@@ -123,7 +123,7 @@
   `(let ((cur ,pos))
      (catch 'br
        (while (< cur ,rx)
-         (when (char= ,chr (char-after cur))
+         (when (char-equal ,chr (char-after cur))
            (throw 'br cur))
          (setq cur (1+ cur))))))
 
@@ -131,7 +131,7 @@
   `(let ((cur ,pos))
      (catch 'br
        (while (> cur ,lx)
-         (when (char= ,chr (char-before cur))
+         (when (char-equal ,chr (char-before cur))
            (throw 'br cur))
          (setq cur (1- cur))))))
 

@@ -57,7 +57,7 @@
 
 (defun compile*-buffer-name-fn (command-or-mode)
   "Classify compilation buffer name with COMMAND-OR-MODE."
-  (let ((c (cond ((string= "compilation" command-or-mode)
+  (let ((c (cond ((string-equal "compilation" command-or-mode)
                   (compile*-command-name compile-command))
                  (t command-or-mode))))
     (compile*-buffer-name c)))
@@ -76,7 +76,7 @@
          (cond ((save-excursion
                   (goto-char (point-min))
                   (forward-line 3)
-                  (search-forward-regexp "^find" nil t 1))
+                  (re-search-forward "^find" nil t 1))
                 (call-interactively #'grep-find))
                (t (call-interactively #'grep))))
         (t (call-interactively #'recompile))))

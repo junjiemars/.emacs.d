@@ -72,7 +72,7 @@
                     (list (let ((xs nil))
                             (dolist (x dd (nreverse xs))
                               (let ((x1 (car x)))
-                                (unless (string= x1 "url")
+                                (unless (string-equal x1 "url")
                                   (setq xs (cons x1 xs))))))))))))
 
 (defalias '*dict-debug-log*
@@ -200,7 +200,7 @@
                   (sr (let ((xs nil))
                         (dolist (x dd (nreverse xs))
                           (let ((x1 (car x)))
-                            (unless (string= x1 "url")
+                            (unless (string-equal x1 "url")
                               (setq xs (cons x1 xs)))))))
                   (ss (completing-read
                        (format "Choose (all|%s) "
@@ -210,7 +210,7 @@
                        '*dict-style-history*
                        (car sr))))
              (cons d (if (and (stringp ss)
-                              (or (string= "all" ss)
+                              (or (string-equal "all" ss)
                                   (string-match* "\\(all\\)" ss 1)))
                          `(, sr)
                        `(,(split-string* ss "," t "[ \n]*"))))))))

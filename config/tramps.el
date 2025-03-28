@@ -37,14 +37,14 @@
     (unless% (catch 'br
                (dolist (x tramp-methods)
                  (let ((x1 (car x)))
-                   (and (or (string= "docker" x1) (string= "podman" x1))
+                   (and (or (string-equal "docker" x1) (string-equal "podman" x1))
                         (throw 'br t)))))
       (setq tramp-methods
             ;; podman is compatible with docker
             (let ((ts (let ((xs nil))
                         (dolist (x tramp-methods (nreverse xs))
                           (let ((x1 (car x)))
-                            (unless (string= "docker" x1)
+                            (unless (string-equal "docker" x1)
                               (setq xs (cons x xs))))))))
               (push! `("docker"
                        (tramp-login-program ,(docker-program))

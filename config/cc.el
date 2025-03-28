@@ -104,12 +104,12 @@
       (dolist (cc cx)
         (let ((rc (shell-command*
                       (format (if-platform% windows-nt
-                                  (if (string= "cc-env.bat" cc)
+                                  (if (string-equal "cc-env.bat" cc)
                                       (concat "%s %s -Fe%s -Fo")
                                     "%s %s -o%s")
                                 "%s %s -o%s")
                               (if-platform% windows-nt
-                                  (if (string= "cc-env.bat" cc)
+                                  (if (string-equal "cc-env.bat" cc)
                                       "cc-env.bat && cl"
                                     cc)
                                 cc)
@@ -434,14 +434,14 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
           (when (and rc (= rc 0))
             (with-current-buffer tmp
               (goto-char (point-min))
-              (when (search-forward-regexp "incomplete_format='false'" nil t 1)
-                (when (search-forward-regexp
+              (when (re-search-forward "incomplete_format='false'" nil t 1)
+                (when (re-search-forward
                        "<cursor>\\([0-9]+\\)</cursor>" nil t 1)
                   (setq c1 (string-to-number
                             (buffer-substring-no-properties
                              (match-beginning 1) (match-end 1)))))
                 (goto-char (point-max))
-                (while (search-backward-regexp
+                (while (re-search-backward
                         (concat
                          "<replacement offset='\\([0-9]+\\)'"
                          " length='\\([0-9]+\\)'>\\(.*?\\)"

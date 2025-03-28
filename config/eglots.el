@@ -15,7 +15,7 @@
         (goto-char (point-min))
         (let* ((r (concat "\"Running language server: "
                           "\\([.-/a-zA-Z0-9_]+\\) *?.*?\""))
-               (i (search-forward-regexp r nil t)))
+               (i (re-search-forward r nil t)))
           (when i (buffer-substring-no-properties
                    (match-beginning 1)
                    (match-end 1))))))))
@@ -31,7 +31,7 @@
             (s (eglot*-lsp-server)))
         (when (and p s)
           (cond ((eq major-mode 'c-mode)
-                 (cond ((string= "clangd" (file-name-base* s))
+                 (cond ((string-equal "clangd" (file-name-base* s))
                         (save-str-to-file
                          (concat
                           "BasedOnStyle: "
@@ -53,9 +53,8 @@
 (defalias 'eglot*-server-programs
   (let ((f (v-home% ".exec/eglot-server.el"))
         (b `((c-mode . ("clangd" "--header-insertion=never"))
-             (c++-mode . ("clangd"
-                          ,(format "--query-driver=%s"
-                                   (executable-find% "c++")))))))
+             (c++-mode . ("clangd" ,(format "--query-driver=%s"
+                                            (executable-find* "c++")))))))
     (lambda (&optional op sexp)
       (cond ((and op (eq op :read)) (let ((s1 (read-sexp-from-file f)))
                                       (dolist (x s1 s1)
@@ -67,8 +66,7 @@
   "The \\=`eglot-server-programs\\=' cache.")
 
 (defun eglot*-eldoc-no-builtins ()
-  "Remove the builtin \\=`eldoc\\=' fns from
-\\=`eglot--managed-mode\\=' mode."
+  "Remove the builtin \\=`eldoc\\=' fns from \\=`eglot--managed-mode\\=' mode."
   (with-current-buffer (current-buffer)
     (when (eglot-managed-p)
       (let ((p (caddr (eglot--current-project)))

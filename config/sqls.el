@@ -365,7 +365,7 @@ Optional prefix argument ENHANCED, displays additional details."
       (goto-char (point-min))
       (flush-lines "[ \t]*\\(--+\\|#+\\).*")
       (goto-char (point-min))
-      (while (search-forward-regexp "[ \t\n]+" nil t)
+      (while (re-search-forward "[ \t\n]+" nil t)
         (replace-match " " t t))
       (buffer-substring (point-min) (point-max)))))
 
@@ -421,13 +421,13 @@ Optional prefix argument ENHANCED, displays additional details."
   (let ((params
          (append
           options
-          (if (not (string= "" sql-user))
+          (if (not (string-equal "" sql-user))
               (list (concat "--user=" sql-user)))
-          (if (not (string= "" sql-password))
+          (if (not (string-equal "" sql-password))
               (list (concat "--password=" sql-password)))
           (if (not (= 0 sql-port))
               (list (concat "--port=" (number-to-string sql-port))))
-          (if (not (string= "" sql-server))
+          (if (not (string-equal "" sql-server))
               (list (concat "--host=" sql-server))))))
     (if-version% > 25
                  (sql-comint product params _buf-name)

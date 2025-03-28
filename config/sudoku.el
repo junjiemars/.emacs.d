@@ -530,7 +530,7 @@
 
         (when (plist-get tp :zero)
           (delete-char 1)
-          (cond ((char= ?0 c) (insert-char ?_ 1))
+          (cond ((char-equal ?0 c) (insert-char ?_ 1))
                 (t (insert-char c 1)))
           (forward-char -1)
           (set-text-properties pos (1+ pos) tp)

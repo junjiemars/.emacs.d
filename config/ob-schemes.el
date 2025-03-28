@@ -80,7 +80,7 @@ This function is called by `org-babel-execute-src-block'."
              (format "(out \"/dev/null\" %s)" full-body))
             (t full-body)))
           (result
-           (if (not (string= session-name "none"))
+           (if (not (string-equal session-name "none"))
                ;; Session based evaluation.
                (mapconcat ;; <- joins the list back into a single string
                 #'identity
@@ -93,7 +93,7 @@ This function is called by `org-babel-execute-src-block'."
                              (cond
                               ;; Remove leading "-> " from return values.
                               ((and (>= (length line) 3)
-                                    (string= "-> " (substring line 0 3)))
+                                    (string-equal "-> " (substring line 0 3)))
                                (substring line 3))
                               ;; Remove trailing "-> <<return-value>>" on the
                               ;; last line of output.
@@ -103,7 +103,7 @@ This function is called by `org-babel-execute-src-block'."
                               (t line)
                               )
                              ;;(if (and (>= (length line) 3);Remove leading "<-"
-                             ;;         (string= "-> " (substring line 0 3)))
+                             ;;         (string-equal "-> " (substring line 0 3)))
                              ;;    (substring line 3)
                              ;;  line)
                              )))
@@ -133,7 +133,7 @@ This function is called by `org-babel-execute-src-block'."
  (defun org-babel-picolisp-initiate-session (&optional session-name)
    "If there is not a current inferior-process-buffer in SESSION
   hen create.  Return the initialized session."
-   (unless (string= session-name "none")
+   (unless (string-equal session-name "none")
      (require 'inferior-picolisp)
      ;; provide a reasonable default session name
      (let ((session (or session-name "*inferior-picolisp*")))

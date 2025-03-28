@@ -48,7 +48,7 @@
           "\n"
           "REM parsing command line arguments\n\n"
           ":getopt\n"
-          (cond ((string= "minizip" zip)
+          (cond ((string-equal "minizip" zip)
                  "if \"%1\"==\"-mX0\" set _OPT=%_OPT:-mX0=-0% & shift & goto :getopt\n")
                 ((string-match "7za?" zip)
                  (concat
@@ -58,7 +58,7 @@
           "\n"
           "REM ignore options\n"
           (let ((options nil))
-            (dolist (x (cond ((string= "minizip" zip)
+            (dolist (x (cond ((string-equal "minizip" zip)
                               (append '("-r" "--filesync" "-rmTq") ignore))
                              ((string-match "7za?" zip)
                               (append '("-r" "--filesync" "-rmTq"))))
@@ -88,7 +88,7 @@
                                    "  %s d %%_OPT%% -tzip -- %%_ZIP%% %%_ZIP%%\n"
                                    ")\n")
                            7z 7z 7z)))
-                ((string= "minizip" zip)
+                ((string-equal "minizip" zip)
                  (concat "REM minizip recursive call\n\n"
                          "call :loop %_ARGV%\n"
                          "goto :end\n"

@@ -108,11 +108,11 @@
   "Return the position of left side of the last symbol."
   (save-excursion
     (catch 'br
-      (while (not (or (char= (char-before) ?\;)
-                      (char= (char-before) ?\n)
+      (while (not (or (char-equal (char-before) ?\;)
+                      (char-equal (char-before) ?\n)
                       (eq (char-syntax (char-before)) ? )))
-        (cond ((or (char= (char-before) ?.)
-                   (char= (char-before) ?_))
+        (cond ((or (char-equal (char-before) ?.)
+                   (char-equal (char-before) ?_))
                (backward-char))
               ((eq (char-syntax (char-before)) ?w)
                (backward-word))
@@ -123,7 +123,7 @@
   (with-current-buffer buffer
     (goto-char (point-min))
     (let ((ss nil) (in1 (concat in "[._a-zA-Z0-9]+")))
-      (while (search-forward-regexp in1 nil t)
+      (while (re-search-forward in1 nil t)
         (let ((sym (buffer-substring-no-properties
                     (match-beginning 0) (match-end 0))))
           (setq ss (append! sym ss t))))

@@ -135,8 +135,8 @@
 (define-derived-mode cscope-repl-mode comint-mode "REPL"
   "Major mode for a cscope REPL process."
   (setq comint-prompt-regexp "^>>"
-        comint-prompt-read-only t)
-  (setq mode-line-process '("" ":%s")))
+        comint-prompt-read-only t
+        mode-line-process '("" ":%s")))
 
 (defun run-cscope (&optional command-line)
   "Run a cscope REPL process, input and output via buffer *cscope*."

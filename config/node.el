@@ -106,11 +106,11 @@
   "Return the position of left side of the last symbol."
   (save-excursion
     (catch 'br
-      (while (not (or (char= (char-before) ?\;)
-                      (char= (char-before) ?\n)
+      (while (not (or (char-equal (char-before) ?\;)
+                      (char-equal (char-before) ?\n)
                       (eq (char-syntax (char-before)) ? )))
-        (cond ((or (char= (char-before) ?.)
-                   (char= (char-before) ?_))
+        (cond ((or (char-equal (char-before) ?.)
+                   (char-equal (char-before) ?_))
                (backward-char))
               ((eq (char-syntax (char-before)) ?w)
                (backward-word))
@@ -128,7 +128,7 @@
         (let ((ln (buffer-substring-no-properties
                    (line-beginning-position) (line-end-position))))
           (cond ((string-match xs ln) nil)
-                ((string= in ln) nil)
+                ((string-equal in ln) nil)
                 (t (setq alts (nconc alts (list ln))))))
         (forward-line 1))
       alts)))

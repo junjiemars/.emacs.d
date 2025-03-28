@@ -73,7 +73,7 @@
               '*scratch-recipe-history* (caar *scratch-recipe*))
            (caar *scratch-recipe*))))
   (switch-to-buffer
-   (let ((n (format "*%s*" (if (string= "*" recipe)
+   (let ((n (format "*%s*" (if (string-equal "*" recipe)
                                "scratch"
                              (concat "scratch-" recipe)))))
      (or (get-buffer n)
