@@ -133,9 +133,13 @@
 
 (defun cscope-send-command (command)
   "Send COMMAND to cscope REPL."
-  (let ((out (*cscope-out*)))
-    (with-current-buffer out (erase-buffer))
-    (comint-redirect-send-command-to-process command out (*cscope*) nil t)))
+  (unless (eq 'run (car (comint-check-proc (*cscope*))))
+    (user-error "%s" "No *cscope* process"))
+  (let ((out (*cscope-out*))
+        (inhibit-read-only t))
+    (with-current-buffer out
+      (erase-buffer)
+      (comint-redirect-send-command-to-process command out (*cscope*) nil))))
 
 (define-derived-mode cscope-repl-mode comint-mode "REPL"
   "Major mode for a cscope REPL process."
