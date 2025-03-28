@@ -96,7 +96,9 @@
   (when-var% compilation-mode-map compile
     ;; define `recompile' and `quit-window' key bindings
     (define-key compilation-mode-map "g" #'compile*-recompile)
-    (define-key% compilation-mode-map "q" #'quit-window))
+    (define-key% compilation-mode-map "q" #'quit-window)
+    (define-key% compilation-mode-map "n" #'next-error-no-select)
+    (define-key% compilation-mode-map "p" #'previous-error-no-select))
   (setq% compilation-scroll-output t compile))
 
 

@@ -81,23 +81,24 @@
   (set (make-local-variable 'compilation-error-regexp-alist)
        `((,+cscope-line-regexp+ 1 3 nil 1 1)))
   ;; swap `compilation-num-warnings-found' and `compilation-num-infos-found'
-  (set (make-local-variable 'compilation-mode-line-errors)
-       `(" ["
-         (:propertize (:eval (number-to-string compilation-num-errors-found))
-							        face compilation-error
-                      help-echo "Number of errors so far")
-         " "
-         (:propertize (:eval (number-to-string compilation-num-infos-found))
-							        face compilation-warning
-                      help-echo "Number of warnings so far")
-         " "
-         (:propertize (:eval (number-to-string compilation-num-warnings-found))
-                      face compilation-info
-                      help-echo "Number of informational messages so far")
-         "]"))
+  (when-var% compilation-mode-line-errors compile
+    (set (make-local-variable 'compilation-mode-line-errors)
+         `(" [" (:propertize
+                 (:eval (number-to-string compilation-num-errors-found))
+						     face compilation-error
+                 help-echo "Number of errors so far")
+           " " (:propertize
+                (:eval (number-to-string compilation-num-infos-found))
+						    face compilation-warning
+                help-echo "Number of warnings so far")
+           " " (:propertize
+                (:eval (number-to-string compilation-num-warnings-found))
+                face compilation-info
+                help-echo "Number of informational messages so far")
+           "]")))
   (let ((cscope-keymap (make-sparse-keymap)))
     (set-keymap-parent cscope-keymap compilation-minor-mode-map)
-    (define-key cscope-keymap (kbd% "g") #'cscope-recompile)
+    (define-key cscope-keymap "g" #'cscope-recompile)
     (use-local-map cscope-keymap)))
 
 (defun cscope (&optional command-line)
