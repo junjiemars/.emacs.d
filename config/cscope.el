@@ -71,6 +71,18 @@
   (cond ((null current-prefix-arg) (call-interactively #'recompile))
         (t (call-interactively #'cscope))))
 
+(defun cscope-next-error-no-select (&optional n)
+  (interactive "p")
+  (when (eq major-mode 'cscope-mode)
+    (unless (eq next-error-last-buffer (current-buffer))
+      (setq next-error-last-buffer (current-buffer)))
+    (next-error-no-select n)))
+
+(defun cscope-prev-error-no-select (&optional n)
+  (interactive "p")
+  (cscope-next-error-no-select (- (or n 1))))
+
+
 (define-compilation-mode cscope-mode "cscope-mode"
   "A minor mode of \\=`compile\\='."
   (set (make-local-variable 'compilation-disable-input) t)
@@ -100,11 +112,11 @@
            "]")))
   (let ((cscope-keymap (make-sparse-keymap)))
     (set-keymap-parent cscope-keymap compilation-minor-mode-map)
-    (define-key cscope-keymap "g" #'cscope-recompile)
-    (if-key% compilation-minor-mode-map "n" #'next-error-no-select
-             (comment "ignore if Emacs25+")
-      (define-key cscope-keymap "n" #'next-error-no-select)
-      (define-key cscope-keymap "p" #'previous-error-no-select))
+    (define-key cscope-keymap "n" #'cscope-next-error-no-select)
+    (define-key cscope-keymap "p" #'cscope-prev-error-no-select)
+    (if (eq (*cscope-out*) (current-buffer))
+        (define-key cscope-keymap "g" nil)
+      (define-key cscope-keymap "g" #'cscope-recompile))
     (use-local-map cscope-keymap)))
 
 (defun cscope (&optional command-line)
@@ -137,7 +149,7 @@
          (concat *cscope--repl-src-dir* file))
         (t file)))
 
-(defun cscope-send-command (command &optional no-display in-cscope-mode)
+(defun cscope-send-command (command &optional no-display)
   "Send COMMAND to cscope REPL."
   (unless (eq 'run (car (comint-check-proc (*cscope*))))
     (user-error "%s" "No *cscope* process"))
@@ -153,77 +165,49 @@
               (while (or quit-flag (null comint-redirect-completed))
                 (accept-process-output proc 2))
             (comint-redirect-cleanup)))
-        (when in-cscope-mode
-          (cscope-mode)
-          (set (make-local-variable '*cscope--src-dir*)
-               *cscope--repl-src-dir*))))))
-
-(defun cscope--find-symbol (symbol &optional no-display in-cscope-mode)
-  (cscope-send-command (concat "0" symbol) no-display in-cscope-mode))
-
-(defun cscope--find-definition (symbol &optional no-display in-cscope-mode)
-  (cscope-send-command (concat "1" symbol) no-display in-cscope-mode))
+        (cscope-mode)
+        (set (make-local-variable '*cscope--src-dir*)
+             *cscope--repl-src-dir*)))))
 
 (defun cscope--find-prompt (prompt)
   (list (read-string prompt)))
 
 (defun cscope-find-c-symbol (&optional symbol)
   (interactive (cscope--find-prompt "Find this C symbol: "))
-  (cscope--find-symbol symbol nil t))
+  (cscope-send-command (concat "0" symbol) nil))
 
 (defun cscope-find-this-function-definition (&optional symbol)
   (interactive (cscope--find-prompt "Find this function definition: "))
-  (cscope--find-definition symbol nil t))
+  (cscope-send-command (concat "1" symbol) nil))
 
 (defun cscope-find-functions-called-by-this-function (&optional symbol)
   (interactive
    (cscope--find-prompt "Find functions called by this function: "))
-  (cscope-send-command (concat "2" symbol) nil t))
+  (cscope-send-command (concat "2" symbol) nil))
 
 (defun cscope-find-functions-calling-by-function (&optional symbol)
   (interactive (cscope--find-prompt "Find functions calling this function: "))
-  (cscope-send-command (concat "3" symbol) nil t))
+  (cscope-send-command (concat "3" symbol) nil))
 
 (defun cscope-find-this-text-string (&optional text)
   (interactive (cscope--find-prompt "Find this text string: "))
-  (cscope-send-command (concat "4" text) nil t))
+  (cscope-send-command (concat "4" text) nil))
 
 (defun cscope-find-this-egrep-pattern (&optional pattern)
   (interactive (cscope--find-prompt "Find this egrep pattern: "))
-  (cscope-send-command (concat "6" pattern) nil t))
+  (cscope-send-command (concat "6" pattern) nil))
 
 (defun cscope-find-this-file (&optional filename)
   (interactive (cscope--find-prompt "Find this file: "))
-  (cscope-send-command (concat "7" filename) nil t))
+  (cscope-send-command (concat "7" filename) nil))
 
 (defun cscope-find-files-including-this-file (&optional symbol)
   (interactive (cscope--find-prompt "Find files #including this file: "))
-  (cscope-send-command (concat "8" symbol) nil t))
+  (cscope-send-command (concat "8" symbol) nil))
 
 (defun cscope-find-assignments-to-this-symbol (&optional symbol)
   (interactive (cscope--find-prompt "Find assignments to this symbol: "))
-  (cscope-send-command (concat "9" symbol) nil t))
-
-(defun cscope--line-count ()
-  (let ((n nil))
-    (with-current-buffer (*cscope-out*)
-      (goto-char (point-min))
-      (setq n (string-match*
-               "cscope: \\([0-9]+\\) lines"
-               (buffer-substring-no-properties
-                (line-beginning-position) (line-end-position))
-               1))
-      (forward-line 1))
-    (and n (string-to-number n))))
-
-(defun cscope--line-fields (line)
-  (and
-   (string-match +cscope-line-regexp+ line)
-   (list
-    :file (substring-no-properties line (match-beginning 1) (match-end 1))
-    :scope (substring-no-properties line (match-beginning 2) (match-end 3))
-    :line (substring-no-properties line (match-beginning 3) (match-end 3))
-    :text (substring-no-properties line (match-beginning 4) (match-end 4)))))
+  (cscope-send-command (concat "9" symbol) nil))
 
 (define-derived-mode cscope-repl-mode comint-mode "REPL"
   "Major mode for a cscope REPL process."
