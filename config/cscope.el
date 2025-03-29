@@ -7,7 +7,8 @@
 ;;;;
 ;; 1. `cscope -L' interact with `compile'.
 ;; 2. `cscope -l' interact with `comint'.
-;; 3. `cscope-repl-mode' interact with `xref'.
+;; 3. `cscope-find-c-symbol' [0,9] commands.
+;; 4. `cscope-repl-mode' interact with `xref'.
 ;;;;
 
 
@@ -16,6 +17,7 @@
 
 (require 'comint)
 (require 'compile)
+(when-xref-find-definitions% (require 'xref))
 
 ;; end of require
 
@@ -29,28 +31,25 @@
 (defvar *cscope-repl-history* nil
   "History list for \\=`run-cscope\\='.")
 
-(defvar *cscope-src-dir* nil
-  "Cscope source directory.")
-
 (defconst +cscope-line-regexp+
-  "^\\([^[:space:]]+\\)[[:space:]]\\([^[:space:]]+\\)[[:space:]]\\([[:digit:]]+\\)[[:space:]]\\(.*\\)$"
+  "^\\([^[:space:]]+\\)[[:space:]]\\([^[:space:]]+\\)[[:space:]]\\([[:digit:]]+\\)[[:space:]]+\\(.*\\)$"
   "Line regexp for \\=`compile\\='.")
 
-(defalias '*cscope*
-  (let ((b))
-    (lambda (&optional n)
-      (cond (n (setq b (get-buffer-create* n)))
-            ((or (null b) (null (buffer-live-p b)))
-             (setq b (get-buffer-create* "*cscope*")))
-            (t b))))
-  "The *cscope* REPL process buffer.")
+(defun *cscope* ()
+  "The *cscope* REPL process buffer."
+  (get-buffer-create* "*cscope*"))
 
-(defalias '*cscope-out*
-  (let ((b "*out|cscope*"))
-    (lambda (&optional n)
-      (cond (n (setq b n))
-            (t (get-buffer-create* b)))))
-  "The output buffer of \\=`cscope-send-command'\\=.")
+(defun *cscope-out* ()
+  "The output buffer of \\=`cscope-send-command'\\=."
+  (get-buffer-create* "*out|cscope*"))
+
+(defun cscope--parse-src-dir (command-line)
+  (or (if (string-match
+           "-f[[:blank:]]*\\([^[:blank:]]+\\)" command-line)
+          (file-name-directory
+           (substring-no-properties
+            command-line (match-beginning 1) (match-end 1)))
+        default-directory)))
 
 ;; end of cscope environment
 
@@ -58,9 +57,14 @@
 ;; `cscope-mode'
 ;;;
 
+(defvar *cscope--src-dir* nil
+  "Cscope source directory.")
+
 (defun cscope--parse-filename (file)
   (cond ((file-exists-p file) file)
-        ((null (char-equal ?/ (aref file 0))) (concat *cscope-src-dir* file))
+        ((and (> (length *cscope--src-dir*) 0)
+              (null (char-equal ?/ (aref file 0))))
+         (concat *cscope--src-dir* file))
         (t file)))
 
 (defun cscope-recompile ()
@@ -116,13 +120,7 @@
                                    "cscope -dL -P %s -f %scscope.out -0 "
                                    default-directory default-directory))
                               '*cscope-history*)))
-  (setq *cscope-src-dir*
-        (or (if (string-match
-                 "-f[[:blank:]]*\\([^[:blank:]]+\\)" command-line)
-                (file-name-directory
-                 (substring-no-properties
-                  command-line (match-beginning 1) (match-end 1)))
-              default-directory)))
+  (setq *cscope--src-dir* (cscope--parse-src-dir command-line))
   (compilation-start command-line #'cscope-mode))
 
 ;; end of `cscope-mode'
@@ -131,15 +129,103 @@
 ;; `cscope-repl-mode'
 ;;;
 
-(defun cscope-send-command (command)
+(defvar *cscope--repl-src-dir* nil
+  "Cscope REPL source directory.")
+
+(defun cscope--repl-parse-filename (file)
+  (cond ((file-exists-p file) file)
+        ((and (> (length *cscope--repl-src-dir*) 0)
+              (null (char-equal ?/ (aref file 0))))
+         (concat *cscope--repl-src-dir* file))
+        (t file)))
+
+(defun cscope-send-command (command &optional no-display in-cscope-mode)
   "Send COMMAND to cscope REPL."
   (unless (eq 'run (car (comint-check-proc (*cscope*))))
     (user-error "%s" "No *cscope* process"))
   (let ((out (*cscope-out*))
-        (inhibit-read-only t))
+        (proc (get-buffer-process (*cscope*))))
     (with-current-buffer out
-      (erase-buffer)
-      (comint-redirect-send-command-to-process command out (*cscope*) nil))))
+      (fluid-let (buffer-read-only nil)
+        (erase-buffer)
+        (comint-redirect-send-command-to-process
+         command out proc nil no-display)
+        (with-current-buffer (*cscope*)
+          (unwind-protect
+              (while (or quit-flag (null comint-redirect-completed))
+                (accept-process-output proc 2))
+            (comint-redirect-cleanup)))
+        (when in-cscope-mode
+          (cscope-mode)
+          (set (make-local-variable '*cscope--src-dir*)
+               *cscope--repl-src-dir*))))))
+
+(defun cscope--find-symbol (symbol &optional no-display in-cscope-mode)
+  (cscope-send-command (concat "0" symbol) no-display in-cscope-mode))
+
+(defun cscope--find-definition (symbol &optional no-display in-cscope-mode)
+  (cscope-send-command (concat "1" symbol) no-display in-cscope-mode))
+
+(defun cscope--find-prompt (prompt)
+  (list (read-string prompt)))
+
+(defun cscope-find-c-symbol (&optional symbol)
+  (interactive (cscope--find-prompt "Find this C symbol: "))
+  (cscope--find-symbol symbol nil t))
+
+(defun cscope-find-this-function-definition (&optional symbol)
+  (interactive (cscope--find-prompt "Find this function definition: "))
+  (cscope--find-definition symbol nil t))
+
+(defun cscope-find-functions-called-by-this-function (&optional symbol)
+  (interactive
+   (cscope--find-prompt "Find functions called by this function: "))
+  (cscope-send-command (concat "2" symbol) nil t))
+
+(defun cscope-find-functions-calling-by-function (&optional symbol)
+  (interactive (cscope--find-prompt "Find functions calling this function: "))
+  (cscope-send-command (concat "3" symbol) nil t))
+
+(defun cscope-find-this-text-string (&optional text)
+  (interactive (cscope--find-prompt "Find this text string: "))
+  (cscope-send-command (concat "4" text) nil t))
+
+(defun cscope-find-this-egrep-pattern (&optional pattern)
+  (interactive (cscope--find-prompt "Find this egrep pattern: "))
+  (cscope-send-command (concat "6" pattern) nil t))
+
+(defun cscope-find-this-file (&optional filename)
+  (interactive (cscope--find-prompt "Find this file: "))
+  (cscope-send-command (concat "7" filename) nil t))
+
+(defun cscope-find-files-including-this-file (&optional symbol)
+  (interactive (cscope--find-prompt "Find files #including this file: "))
+  (cscope-send-command (concat "8" symbol) nil t))
+
+(defun cscope-find-assignments-to-this-symbol (&optional symbol)
+  (interactive (cscope--find-prompt "Find assignments to this symbol: "))
+  (cscope-send-command (concat "9" symbol) nil t))
+
+(defun cscope--line-count ()
+  (let ((n nil))
+    (with-current-buffer (*cscope-out*)
+      (goto-char (point-min))
+      (setq n (string-match*
+               "cscope: \\([0-9]+\\) lines"
+               (buffer-substring-no-properties
+                (line-beginning-position) (line-end-position))
+               1))
+      (forward-line 1))
+    (and n (string-to-number n))))
+
+(defun cscope--line-fields (line)
+  (and
+   (string-match +cscope-line-regexp+ line)
+   (list
+    :file (substring-no-properties line (match-beginning 1) (match-end 1))
+    :scope (substring-no-properties line (match-beginning 2) (match-end 3))
+    :line (substring-no-properties line (match-beginning 3) (match-end 3))
+    :text (substring-no-properties line (match-beginning 4) (match-end 4)))))
 
 (define-derived-mode cscope-repl-mode comint-mode "REPL"
   "Major mode for a cscope REPL process."
@@ -167,9 +253,67 @@
              nil
              (split-string* command-line "\\s-+" t))
       (cscope-repl-mode)))
+  (setq *cscope--repl-src-dir* (cscope--parse-src-dir command-line))
+  (add-hook 'c-mode-hook 'cscope-xref-hook)
+  (add-hook 'c++-mode-hook 'cscope-xref-book)
+  (when-feature-treesit%
+    (add-hook 'c-ts-mode-hook 'cscope-xref-hook)
+    (add-hook 'c++-ts-mode-hook 'cscope-xref-hook))
   (switch-to-buffer-other-window (*cscope*)))
 
 ;; end of `cscope-repl-mode'
+
+;;;
+;; `xref'
+;;;
+
+(when-xref-find-definitions%
+  (defun cscope-xref-backend ()
+    "Cscope xref backend."
+    (and (memq major-mode '(c-mode c++-mode c-ts-mode c++-ts-mode))
+         'cscope)))
+(when-xref-find-definitions%
+  (defun cscope-xref-hook ()
+    (add-to-list 'xref-backend-functions #'cscope-xref-backend)))
+
+(when-xref-find-definitions%
+  (cl-defmethod xref-backend-definitions ((_backend (eql 'cscope)) symbol)
+    (cscope--xref-find-definitions symbol)))
+(when-xref-find-definitions%
+  (defun cscope--xref-line-fields (fields symbol)
+    (plist-put fields :line (string-to-number (plist-get fields :line)))
+    (plist-put fields :column (string-match symbol (plist-get fields :text)))
+    fields))
+
+(when-xref-find-definitions%
+  (defun cscope--xref-find-definitions (symbol)
+    (cscope--find-symbol symbol t)
+    (let ((n (cscope--line-count)) (ln nil) (fs nil) (rs nil))
+      (when (and n (> n 0))
+        (with-current-buffer (*cscope-out*)
+          (while (and (> n 0) (null (eobp) ))
+            (setq ln (buffer-substring-no-properties
+                      (line-beginning-position) (line-end-position))
+                  fs (cscope--xref-line-fields (cscope--line-fields ln) symbol)
+                  rs (cons
+                      (xref-make-match
+                       (plist-get fs :text)
+                       (xref-make-file-location
+                        (cscope--repl-parse-filename (plist-get fs :file))
+                        (plist-get fs :line)
+                        (plist-get fs :column))
+                       1)
+                      rs)
+                  n (1- n))
+            (forward-line 1))))
+      (nreverse rs))))
+
+;; (defun)
+;; xref-find-references
+
+
+
+;; end of `xref'
 
 
 (provide 'cscope)
