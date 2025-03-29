@@ -53,12 +53,9 @@
             (t b))))
   "The current *jshell* process buffer.")
 
-(defalias '*jshell-out*
-  (let ((b "*out|jshell*"))
-    (lambda (&optional n)
-      (if n (setq b n)
-        (get-buffer-create b))))
-  "The output buffer of \\=`jshell-completion\\='.")
+(defun *jshell-out* ()
+  "The output buffer of \\=`jshell-completion\\='."
+  (get-buffer-create "*out|jshell*"))
 
 (defalias '*jshell-start-file*
   (let ((b (v-home% ".exec/jshell.jsh")))

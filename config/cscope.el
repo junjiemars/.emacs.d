@@ -272,6 +272,7 @@
     "Cscope xref backend."
     (and (memq major-mode '(c-mode c++-mode c-ts-mode c++-ts-mode))
          'cscope)))
+
 (when-xref-find-definitions%
   (defun cscope-xref-hook ()
     (add-to-list 'xref-backend-functions #'cscope-xref-backend)))
@@ -279,6 +280,7 @@
 (when-xref-find-definitions%
   (cl-defmethod xref-backend-definitions ((_backend (eql 'cscope)) symbol)
     (cscope--xref-find-definitions symbol)))
+
 (when-xref-find-definitions%
   (defun cscope--xref-line-fields (fields symbol)
     (plist-put fields :line (string-to-number (plist-get fields :line)))

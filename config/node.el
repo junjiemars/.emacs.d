@@ -55,21 +55,13 @@
       (if (null n) b (setq b n))))
   "Program invoked by the \\=`run-node\\=' command.")
 
-(defalias '*node*
-  (let ((b))
-    (lambda (&optional n)
-      (cond (n (setq b (get-buffer-create n)))
-            ((or (null b) (null (buffer-live-p b)))
-             (setq b (get-buffer-create "*node*")))
-            (t b))))
-  "The current *node* process buffer.")
+(defun *node* ()
+  "The current *node* process buffer."
+  (get-buffer-create "*node*"))
 
-(defalias '*node-out*
-  (let ((b "*out|node*"))
-    (lambda (&optional n)
-      (if n (setq b n)
-        (get-buffer-create b))))
-  "The output buffer of \\=`node-completion\\='.")
+(defun *node-out* ()
+  "The output buffer of \\=`node-completion\\='."
+  (get-buffer-create "*out|node*"))
 
 (defalias '*node-start-file*
   (let ((b (v-home% ".exec/node.js")))

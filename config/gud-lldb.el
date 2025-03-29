@@ -71,13 +71,9 @@ If nil, only source files in the program directory will be known
   "The current *lldb* process buffer.")
 
 
-(defalias '*lldb-out*
-  (let ((b "*out|lldb*"))
-    (lambda (&optional n)
-      (cond (n (setq b n))
-            (t (get-buffer-create b)))))
-  "The output buffer of \\=`lldb-completion\\='.")
-
+(defun *lldb-out* ()
+  "The output buffer of \\=`lldb-completion\\='."
+  (get-buffer-create "*out|lldb*"))
 
  ;; end of variable declarations
 

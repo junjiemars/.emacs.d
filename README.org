@@ -1341,7 +1341,17 @@ life easy and if [[https://github.com/junjiemars/nore][Nore]] already on your ma
 #+ATTR_HTML: :style text-align:left
 Formatting C source code.
 
-- =shell-format-buffer= @@html:<kbd>@@C-c M-c C-f@@html:</kbd>@@
+- =cc*-format-region= @@html:<kbd>@@C-c M-c C-f@@html:</kbd>@@
+*** Browsing
+    :PROPERTIES:
+    :CUSTOM_ID: c-programming-browsing
+    :END:
+
+#+ATTR_HTML: :style text-align:left
+Browsing C code.
+
+- =cscope=
+- =eglot=
 
 * Troubleshooting
    :PROPERTIES:

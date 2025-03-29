@@ -68,21 +68,13 @@ Defaults to a regexp ignoring all inputs of 0, 1, or 2 letters.")
   "Hook run upon entry to \\=`chez-repl-mode'\\=.\n
 This is run before the process is cranked up.")
 
-(defalias '*chez*
-  (let ((b))
-    (lambda (&optional n)
-      (cond (n (setq b (get-buffer-create n)))
-            ((or (null b) (null (buffer-live-p b)))
-             (setq b (get-buffer-create "*chez*")))
-            (t b))))
-  "The current *chez* process buffer.")
+(defun *chez* ()
+  "The current *chez* process buffer."
+  (get-buffer-create "*chez*"))
 
-(defalias '*chez-out*
-  (let ((b "*out|chez*"))
-    (lambda (&optional n)
-      (cond (n (setq b n))
-            (t (get-buffer-create b)))))
-  "The output buffer of \\=`chez-completion'\\=.")
+(defun *chez-out* ()
+  "The output buffer of \\=`chez-completion'\\=."
+  (get-buffer-create "*out|chez*"))
 
 (defalias '*chez-start-file*
   (let ((b (v-home% ".exec/chez.ss")))
