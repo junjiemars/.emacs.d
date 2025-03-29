@@ -13,6 +13,21 @@
 
 ;; end of require
 
+;;; `xref-find-definitions' since emacs-25+
+
+(eval-when-compile
+  (defmacro when-xref-find-definitions% (&rest body)
+    (declare (indent 0))
+    (if-fn% xref-find-definitions xref
+            `(progn% ,@body)
+      `(comment ,@body))))
+
+(eval-when-compile
+  (defmacro unless-xref-find-definitions% (&rest body)
+    (declare (indent 0))
+    (if-fn% xref-find-definitions xref
+            `(comment ,@body)
+      `(progn% ,@body))))
 
 ;;; `xref--show-location' associated macro, since emacs-25+
 

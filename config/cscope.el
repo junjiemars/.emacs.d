@@ -8,7 +8,6 @@
 ;; 1. `cscope -L' interact with `compile'.
 ;; 2. `cscope -l' interact with `comint'.
 ;; 3. `cscope-find-c-symbol' [0,9] commands.
-;; 4. `cscope-repl-mode' interact with `xref'.
 ;;;;
 
 
@@ -17,7 +16,6 @@
 
 (require 'comint)
 (require 'compile)
-(when-xref-find-definitions% (require 'xref))
 
 ;; end of require
 
@@ -254,69 +252,9 @@
              (split-string* command-line "\\s-+" t))
       (cscope-repl-mode)))
   (setq *cscope--repl-src-dir* (cscope--parse-src-dir command-line))
-  (add-hook 'c-mode-hook 'cscope-xref-hook)
-  (add-hook 'c++-mode-hook 'cscope-xref-book)
-  (when-feature-treesit%
-    (add-hook 'c-ts-mode-hook 'cscope-xref-hook)
-    (add-hook 'c++-ts-mode-hook 'cscope-xref-hook))
   (switch-to-buffer-other-window (*cscope*)))
 
 ;; end of `cscope-repl-mode'
-
-;;;
-;; `xref'
-;;;
-
-(when-xref-find-definitions%
-  (defun cscope-xref-backend ()
-    "Cscope xref backend."
-    (and (memq major-mode '(c-mode c++-mode c-ts-mode c++-ts-mode))
-         'cscope)))
-
-(when-xref-find-definitions%
-  (defun cscope-xref-hook ()
-    (add-to-list 'xref-backend-functions #'cscope-xref-backend)))
-
-(when-xref-find-definitions%
-  (cl-defmethod xref-backend-definitions ((_backend (eql 'cscope)) symbol)
-    (cscope--xref-find-definitions symbol)))
-
-(when-xref-find-definitions%
-  (defun cscope--xref-line-fields (fields symbol)
-    (plist-put fields :line (string-to-number (plist-get fields :line)))
-    (plist-put fields :column (string-match symbol (plist-get fields :text)))
-    fields))
-
-(when-xref-find-definitions%
-  (defun cscope--xref-find-definitions (symbol)
-    (cscope--find-symbol symbol t)
-    (let ((n (cscope--line-count)) (ln nil) (fs nil) (rs nil))
-      (when (and n (> n 0))
-        (with-current-buffer (*cscope-out*)
-          (while (and (> n 0) (null (eobp) ))
-            (setq ln (buffer-substring-no-properties
-                      (line-beginning-position) (line-end-position))
-                  fs (cscope--xref-line-fields (cscope--line-fields ln) symbol)
-                  rs (cons
-                      (xref-make-match
-                       (plist-get fs :text)
-                       (xref-make-file-location
-                        (cscope--repl-parse-filename (plist-get fs :file))
-                        (plist-get fs :line)
-                        (plist-get fs :column))
-                       1)
-                      rs)
-                  n (1- n))
-            (forward-line 1))))
-      (nreverse rs))))
-
-;; (defun)
-;; xref-find-references
-
-
-
-;; end of `xref'
-
 
 (provide 'cscope)
 
