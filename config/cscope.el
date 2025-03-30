@@ -113,14 +113,14 @@
                 face compilation-info
                 help-echo "Number of informational messages so far")
            "]")))
-  (let ((cscope-keymap (make-sparse-keymap)))
-    (set-keymap-parent cscope-keymap compilation-minor-mode-map)
-    (define-key cscope-keymap "n" #'cscope-next-error-no-select)
-    (define-key cscope-keymap "p" #'cscope-prev-error-no-select)
+  (let ((m (make-sparse-keymap)))
+    (set-keymap-parent m compilation-minor-mode-map)
+    (define-key m "n" #'cscope-next-error-no-select)
+    (define-key m "p" #'cscope-prev-error-no-select)
     (if (eq (*cscope-out*) (current-buffer))
-        (define-key cscope-keymap "g" nil)
-      (define-key cscope-keymap "g" #'cscope-recompile))
-    (use-local-map cscope-keymap)))
+        (define-key m "g" nil)
+      (define-key m "g" #'cscope-recompile))
+    (use-local-map m)))
 
 (defun cscope (&optional command-line)
   "Run cscope with user-specified COMMAND-LINE."

@@ -28,30 +28,24 @@
 ;; jshell environtment
 ;;;
 
-(defgroup jshell nil
-  "Run a jshell process in a buffer."
-  :group 'jshell)
+(defun jshell-program-check ()
+  "Check jshell program path."
+  (executable-find*
+   "jshell"
+   (lambda (jshell)
+     (let ((x (shell-command* jshell "--version")))
+       (and (zerop (car x)) jshell)))))
 
 (defalias 'jshell-program
-  (let ((b (executable-find%
-            "jshell"
-            (lambda (jshell)
-              (let ((x (shell-command* jshell "--version")))
-                (or (and (zerop (car x)) jshell)
-                    "jshell"))))))
+  (let ((b (jshell-program-check)))
     (lambda (&optional n)
       (cond (n (setq b n))
             (t b))))
   "Program invoked by the \\=`run-jshell\\=' command.")
 
-(defalias '*jshell*
-  (let ((b))
-    (lambda (&optional n)
-      (cond (n (setq b (get-buffer-create n)))
-            ((or (null b) (null (buffer-live-p b)))
-             (setq b (get-buffer-create "*jshell*")))
-            (t b))))
-  "The current *jshell* process buffer.")
+(defun *jshell* ()
+  "The current *jshell* process buffer."
+  (get-buffer-create "*jshell*"))
 
 (defun *jshell-out* ()
   "The output buffer of \\=`jshell-completion\\='."
@@ -60,8 +54,9 @@
 (defalias '*jshell-start-file*
   (let ((b (v-home% ".exec/jshell.jsh")))
     (lambda ()
-      (cond ((file-exists-p b) b)
-            (t (copy-file (emacs-home% "config/jshell.jsh") b)))))
+      (inhibit-file-name-handler
+        (cond ((file-exists-p b) b)
+              (t (copy-file (emacs-home% "config/jshell.jsh") b))))))
   "The \\=`*jshell*\\=' process start file.")
 
 (defalias 'jshell-switch-to-last-buffer
@@ -106,8 +101,8 @@
   (save-excursion
     (catch 'br
       (while (null (or (char-equal (char-before) ?\;)
-                      (char-equal (char-before) ?\n)
-                      (eq (char-syntax (char-before)) ? )))
+                       (char-equal (char-before) ?\n)
+                       (eq (char-syntax (char-before)) ? )))
         (cond ((or (char-equal (char-before) ?.)
                    (char-equal (char-before) ?_))
                (backward-char))
@@ -131,7 +126,7 @@
   (let* ((jshell (*jshell*)) (proc (get-buffer-process jshell))
          (sym nil) (last nil))
     (when proc
-      (with-current-buffer jshell
+      (with-current-buffer (current-buffer)
         (setq sym (bounds-of-thing-at-point 'symbol)
               last (cons (jshell-last-symbol) (point))))
       (when (and sym last)
@@ -156,12 +151,6 @@
 ;; REPL
 ;;;
 
-(defvar jshell-repl-mode-map
-  (let ((m (make-sparse-keymap "jshell")))
-    (define-key m "\C-c\C-b" #'jshell-switch-to-last-buffer)
-    m)
-  "The keymap for \\=`*jshell*\\=' REPL.")
-
 (define-derived-mode jshell-repl-mode comint-mode "REPL"
   "Major mode for interacting with a jshell process.\n
 The following commands are available:
@@ -178,16 +167,25 @@ Entry to this mode runs the hooks on \\=`comint-mode-hook\\=' and
         mode-line-process '("" ":%s"))
   (add-hook 'comint-preoutput-filter-functions
             #'jshell-preoutput-filter nil 'local)
-  (use-local-map jshell-repl-mode-map))
+  (let ((m (make-sparse-keymap "jshell")))
+    (set-keymap-parent m comint-mode-map)
+    (define-key m "\C-c\C-b" #'jshell-switch-to-last-buffer)
+    (use-local-map m)))
+
+(defun jshell--run-prompt ()
+  (list (funcall (if-fn% read-shell-command nil
+                         #'read-shell-command
+                   #'read-string)
+                 "Run jshell: "
+                 (car *jshell-option-history*)
+                 '*jshell-option-history*)))
 
 (defun run-jshell (&optional command-line)
   "Run a jshell process, input and output via buffer *jshell*.\n
 If there is a process already running in \\=`*jshell*\\=', switch to that
 buffer. With prefix COMMAND-LINE, allows you to edit the command line.\n
 Run the hook \\=`jshell-repl-mode-hook\\=' after the \\=`comint-mode-hook\\='."
-  (interactive (list (read-string "Run jshell: "
-                                  (car *jshell-option-history*)
-                                  '*jshell-option-history*)))
+  (interactive (jshell--run-prompt))
   (unless (comint-check-proc (*jshell*))
     (unless (jshell-program)
       (error "%s" "No jshell program found"))
@@ -232,18 +230,23 @@ end of buffer, otherwise just popup the buffer."
 ;; load
 ;;;
 
+(defun jshell--load-file-prompt ()
+  (inhibit-file-name-handler
+    (comint-get-source
+     "Load java file: "
+     (let ((n (buffer-file-name)))
+       (cons (file-name-directory n)
+             (file-name-nondirectory n)))
+     '(java-mode) nil)))
+
 (defun jshell-load-file (file)
   "Load a java FILE into \\=`*jshell*\\='."
-  (interactive (comint-get-source "Load java file: "
-                                  (let ((n (buffer-file-name)))
-                                    (cons (file-name-directory n)
-                                          (file-name-nondirectory n)))
-                                  '(java-mode) nil))
+  (interactive (jshell--load-file-prompt))
   (comint-check-source file)
-  (comint-send-string (jshell-check-proc t)
-                      (format "/open %s%s\n"
-                              (file-name-directory file)
-                              (file-name-nondirectory file)))
+  (comint-send-string
+   (jshell-check-proc t)
+   (format "/open %s%s\n"
+           (file-name-directory file) (file-name-nondirectory file)))
   (jshell-switch-to-last-buffer (current-buffer))
   (jshell-switch-to-repl))
 
@@ -303,26 +306,26 @@ end of buffer, otherwise just popup the buffer."
                 rhs (1+ (cdr bounds))))
         (jshell-send-region lhs rhs)))))
 
-(defvar jshell-mode-map
-  (let ((m (make-sparse-keymap)))
-    (define-key m "\M-\C-x" #'jshell-send-definition)
-    (define-key m "\C-c\C-j" #'jshell-send-line)
-    (define-key m "\C-c\C-l" #'jshell-load-file)
-    ;; (define-key m "\C-c\C-k" #'jshell-compile-file)
-    (define-key m "\C-c\C-r" #'jshell-send-region)
-    (define-key m "\C-c\C-z" #'jshell-switch-to-repl)
-    (define-key m "\C-cI" #'jshell-inspect-object)
-    m))
-
 (make-variable-buffer-local
  (defvar jshell-mode-string nil
    "Modeline indicator for \\=`jshell-mode\\='."))
 
-(defun jshell-mode--lighter ()
-  (or jshell-mode-string " Jshell"))
-
 (defun jshell-syntax-indent ()
   "Jshell java syntax indent.")
+
+(defun jshell--mode-keymap ()
+  (let ((keymap (make-sparse-keymap)))
+    (define-key keymap "\M-\C-x" #'jshell-send-definition)
+    (define-key keymap "\C-c\C-j" #'jshell-send-line)
+    (define-key keymap "\C-c\C-l" #'jshell-load-file)
+    ;; (define-key keymap "\C-c\C-k" #'jshell-compile-file)
+    (define-key keymap "\C-c\C-r" #'jshell-send-region)
+    (define-key keymap "\C-c\C-z" #'jshell-switch-to-repl)
+    (define-key keymap "\C-x\C-e" #'jshell-inspect-object)
+    keymap))
+
+(defvar jshell-mode-map (jshell--mode-keymap)
+  "The keymap of \\=`jshell-mode\\='.")
 
 (define-minor-mode jshell-mode
   "Toggle Jshell's mode.\n
@@ -333,9 +336,9 @@ When Jshell mode is enabled, a host of nice utilities for
 interacting with the Jshell REPL is at your disposal.
 \\{jshell-mode-map}"
   :init-value nil
-  :lighter (:eval (jshell-mode--lighter))
-  :group 'jshell-mode
+  :lighter " Jshell"
   :keymap jshell-mode-map
+  :group 'java
   (add-hook (if-var% completion-at-point-functions minibuffer
                      'completion-at-point-functions
               'comint-dynamic-complete-functions)

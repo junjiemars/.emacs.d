@@ -29,10 +29,6 @@
 ;; node environment
 ;;;
 
-(defgroup node nil
-  "Run a node process in a buffer."
-  :group 'node)
-
 (defun nvm (command)
   "Node version manager."
   (let ((nvmsh (expand-file-name "~/.nvm/nvm.sh")))
@@ -40,17 +36,18 @@
         (shell-command* "source" nvmsh "; nvm" command)
       (cons 1 (format "%s no found" nvmsh)))))
 
+(defun node-program-check ()
+  "Check node program path."
+  (or (let ((out (nvm "which node")))
+        (and (zerop (car out)) (string-trim> (cdr out))))
+      (executable-find*
+       "node"
+       (lambda (node)
+         (let ((x (shell-command* "echo '1+2+3'|" node "-p")))
+           (zerop (car x)))))))
+
 (defalias 'node-program
-  (let ((b (or (let ((out (nvm "which node")))
-                 (and (zerop (car out))
-                      (string-trim> (cdr out))))
-               (executable-find%
-                "node"
-                (lambda (node)
-                  (let ((x (shell-command* "echo"
-                             "'1+2+3'|" node "-p")))
-                    (zerop (car x)))))
-               "node")))
+  (let ((b (node-program-check)))
     (lambda (&optional n)
       (if (null n) b (setq b n))))
   "Program invoked by the \\=`run-node\\=' command.")
@@ -66,8 +63,9 @@
 (defalias '*node-start-file*
   (let ((b (v-home% ".exec/node.js")))
     (lambda ()
-      (cond ((file-exists-p b) b)
-            (t (copy-file (emacs-home% "config/node.js") b)))))
+      (inhibit-file-name-handler
+        (cond ((file-exists-p b) b)
+              (t (copy-file (emacs-home% "config/node.js") b))))))
   "the \\=`*node*\\=' process start file.")
 
 (defalias 'node-switch-to-last-buffer
@@ -99,8 +97,8 @@
   (save-excursion
     (catch 'br
       (while (null (or (char-equal (char-before) ?\;)
-                      (char-equal (char-before) ?\n)
-                      (eq (char-syntax (char-before)) ? )))
+                       (char-equal (char-before) ?\n)
+                       (eq (char-syntax (char-before)) ? )))
         (cond ((or (char-equal (char-before) ?.)
                    (char-equal (char-before) ?_))
                (backward-char))
@@ -130,7 +128,7 @@
   (let* ((node (*node*)) (proc (get-buffer-process node))
          (start nil) (end nil) (in nil))
     (when proc
-      (with-current-buffer node
+      (with-current-buffer (current-buffer)
         (let ((bs (cons (save-excursion (node-last-symbol)) (point))))
           (setq start (car bs)
                 end (cdr bs)
@@ -153,12 +151,6 @@
 ;; REPL
 ;;;
 
-(defvar node-repl-mode-map
-  (let ((m (make-sparse-keymap "node")))
-    (define-key m "\C-c\C-b" #'node-switch-to-last-buffer)
-    m)
-  "The keymap for `*node*' REPL.")
-
 (define-derived-mode node-repl-mode comint-mode "REPL"
   "Major mode for interacting with a node process.\n
 The following commands are available:
@@ -171,7 +163,18 @@ Entry to this mode runs the hooks on `comint-mode-hook' and
   (setq comint-prompt-regexp "^[^>\n-\"]*>+ *"
         comint-prompt-read-only t
         mode-line-process '("" ":%s"))
-  (use-local-map node-repl-mode-map))
+  (let ((m (make-sparse-keymap "node")))
+    (set-keymap-parent m comint-mode-map)
+    (define-key m "\C-c\C-b" #'node-switch-to-last-buffer)
+    (use-local-map m)))
+
+(defun node--run-prompt ()
+  (list (funcall (if-fn% read-shell-command nil
+                         #'read-shell-command
+                   #'read-string)
+                 "Run node: "
+                 (car *node-option-history*)
+                 '*node-option-history*)))
 
 (defun run-node (&optional command-line)
   "Run a node process, input and output via buffer *node*.\n
@@ -179,9 +182,7 @@ If there is a process already running in \\=`*node*\\=', switch
 to that buffer. With prefix COMMAND-LINE, allows you to edit the
 command line.
 Run the hook `node-repl-mode-hook' after the `comint-mode-hook'."
-  (interactive (list (read-string "Run node: "
-                                  (car *node-option-history*)
-                                  '*node-option-history*)))
+  (interactive (node--run-prompt))
   (unless (comint-check-proc (*node*))
     (unless (node-program)
       (error "%s" "No node program found"))
@@ -224,14 +225,17 @@ end of buffer, otherwise just popup the buffer."
 ;; compile / load
 ;;;
 
+(defun node--file-prompt (prompt)
+  (comint-get-source
+   prompt
+   (let ((n (buffer-file-name)))
+     (cons (file-name-directory n)
+           (file-name-nondirectory n)))
+   '(js-mode) nil))
+
 (defun node-compile-file (file)
   "Compile a javascript FILE in \\=`*node*\\='."
-  (interactive (comint-get-source
-                "Compile javascript file: "
-                (let ((n (buffer-file-name)))
-                  (cons (file-name-directory n)
-                        (file-name-nondirectory n)))
-                '(js-mode) nil))
+  (interactive (node--file-prompt "Compile javascript file: "))
   (comint-check-source file)
   (comint-send-string (node-check-proc t)
                       (format "console.info('\"%s\"')\n" file))
@@ -240,12 +244,7 @@ end of buffer, otherwise just popup the buffer."
 
 (defun node-load-file (file)
   "Load a javascript FILE into \\=`*node*\\='."
-  (interactive (comint-get-source
-                "Load javascript file: "
-                (let ((n (buffer-file-name)))
-                  (cons (file-name-directory n)
-                        (file-name-nondirectory n)))
-                '(js-mode) nil))
+  (interactive (node--file-prompt "Load javascript file: "))
   (comint-check-source file)
   (comint-send-string (node-check-proc t)
                       (format "process.chdir('%s');\n.load %s\n"
@@ -309,8 +308,14 @@ end of buffer, otherwise just popup the buffer."
                 rhs (1+ (cdr bounds))))
         (node-send-region lhs rhs)))))
 
+(make-variable-buffer-local
+ (defvar node-mode-string nil
+   "Modeline indicator for \\=`node-mode\\='."))
 
-(defvar node-mode-map
+(defun node-syntax-indent ()
+  "Node javascript syntax indent.")
+
+(defun node--mode-keymap ()
   (let ((m (make-sparse-keymap)))
     (define-key m "\M-\C-x" #'node-send-definition)
     (define-key m "\C-c\C-j" #'node-send-line)
@@ -318,20 +323,11 @@ end of buffer, otherwise just popup the buffer."
     (define-key m "\C-c\C-k" #'node-compile-file)
     (define-key m "\C-c\C-r" #'node-send-region)
     (define-key m "\C-c\C-z" #'node-switch-to-repl)
-    (define-key m "\C-cI" #'node-inspect-object)
+    (define-key m "\C-x\C-e" #'node-inspect-object)
     m))
 
-
-(make-variable-buffer-local
- (defvar node-mode-string nil
-   "Modeline indicator for \\=`node-mode\\='."))
-
-(defun node-mode--lighter ()
-  (or node-mode-string " Node"))
-
-(defun node-syntax-indent ()
-  "Node javascript syntax indent.")
-
+(defvar node-mode-map (node--mode-keymap)
+  "The keymap of \\=`node-mode\\='.")
 
 (define-minor-mode node-mode
   "Toggle Node's mode.\n
@@ -342,9 +338,9 @@ When Node mode is enabled, a host of nice utilities for
 interacting with the Node REPL is at your disposal.
 \\{node-mode-map}"
   :init-value nil
-  :lighter (:eval (node-mode--lighter))
-  :group 'node-mode
+  :lighter " Node"
   :keymap node-mode-map
+  :group 'node
   (add-hook (if-var% completion-at-point-functions minibuffer
                      'completion-at-point-functions
               'comint-dynamic-complete-functions)

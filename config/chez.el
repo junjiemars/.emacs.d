@@ -43,10 +43,6 @@
 ;; chez environment
 ;;;
 
-(defgroup chez nil
-  "Run a chez process in a buffer."
-  :group 'scheme)
-
 (defun chez-program-check ()
   "Check chez program path."
   (executable-find*
@@ -208,19 +204,6 @@ This is run before the process is cranked up.")
       (insert ")")))
   (chez-repl-return))
 
-(defvar chez-repl-mode-map
-  (let ((m (make-sparse-keymap "chez")))
-    (if-graphic%
-        (progn
-          (define-key m [return] #'chez-repl-return)
-          (define-key m [(control return)]
-                      #'chez-repl-closing-return))
-      (define-key m "\C-m" #'chez-repl-return)
-      (define-key m "\C-\M-m" #'chez-repl-closing-return))
-    (define-key m "\C-c\C-b" #'chez-switch-to-last-buffer)
-    m)
-  "The keymap for \\=`*chez*\\=' REPL.")
-
 (defun chez-syntax-table ()
   "Specify special character in \\=`syntax-table\\='."
   (modify-syntax-entry ?| "_" (syntax-table)))
@@ -249,9 +232,18 @@ Enter this mode runs the hooks on \\=`comint-mode-hook\\=' and
   (add-hook 'comint-preoutput-filter-functions
             #'chez-preoutput-filter nil 'local)
   (scheme-mode-variables)
-  (use-local-map chez-repl-mode-map)
   (chez-syntax-table)
-  (setq mode-line-process '("" ":%s")))
+  (setq mode-line-process '("" ":%s"))
+  (let ((m (make-sparse-keymap "chez")))
+    (set-keymap-parent m comint-mode-map)
+    (if-graphic%
+        (progn
+          (define-key m [return] #'chez-repl-return)
+          (define-key m [(control return)] #'chez-repl-closing-return))
+      (define-key m "\C-m" #'chez-repl-return)
+      (define-key m "\C-\M-m" #'chez-repl-closing-return))
+    (define-key m "\C-c\C-b" #'chez-switch-to-last-buffer)
+    (use-local-map m)))
 
 (defun run-chez (&optional command-line)
   "Run a chez process, input and output via buffer *chez*.\n
@@ -313,8 +305,8 @@ end of buffer, otherwise just popup the buffer."
   "Compile a Scheme FILE in \\=`*chez*\\='."
   (interactive (chez--file-prompt "Compile Scheme file: "))
   (comint-check-source file)
-  (comint-send-string
-   (chez-check-proc t) (format "(compile-file \"%s\")\n" file))
+  (comint-send-string (chez-check-proc t)
+                      (format "(compile-file \"%s\")\n" file))
   (chez-switch-to-last-buffer (current-buffer))
   (chez-switch-to-repl))
 
@@ -375,24 +367,23 @@ determined by the prefix UNTRACE argument."
    (format "(%s %s)\n" (if untrace "untrace" "trace") proc))
   (chez-switch-to-repl t))
 
-(defvar chez-mode-map
-  (let ((m (make-sparse-keymap)))
-    (define-key m "\C-c\C-k" #'chez-compile-file)
-    (define-key m "\C-c\C-l" #'chez-load-file)
-    (define-key m "\C-c\C-r" #'chez-send-region)
-    (define-key m "\C-c\C-t" #'chez-trace-procedure)
-    (define-key m "\C-c\C-z" #'chez-switch-to-repl)
-    (define-key m "\C-x\C-e" #'chez-send-last-sexp)
-    (define-key m "\M-\C-x" #'chez-send-definition)
-    m)
-  "The keymap of \\=`chez-mode\\='.")
-
 (make-variable-buffer-local
  (defvar chez-mode-string nil
    "Modeline indicator for \\=`chez-mode\\='."))
 
-(defun chez-mode--lighter ()
-  (or chez-mode-string " Chez"))
+(defun chez--mode-keymap ()
+  (let ((keymap (make-sparse-keymap)))
+    (define-key keymap "\C-c\C-k" #'chez-compile-file)
+    (define-key keymap "\C-c\C-l" #'chez-load-file)
+    (define-key keymap "\C-c\C-r" #'chez-send-region)
+    (define-key keymap "\C-c\C-t" #'chez-trace-procedure)
+    (define-key keymap "\C-c\C-z" #'chez-switch-to-repl)
+    (define-key keymap "\C-x\C-e" #'chez-send-last-sexp)
+    (define-key keymap "\M-\C-x" #'chez-send-definition)
+    keymap))
+
+(defvar chez-mode-map (chez--mode-keymap)
+  "The keymap of \\=`chez-mode\\='.")
 
 (define-minor-mode chez-mode
   "Toggle Chez's mode.\n
@@ -403,10 +394,9 @@ When Chez mode is enabled, a host of nice utilities for
 interacting with the Chez REPL is at your disposal.
 \\{chez-mode-map}"
   :init-value nil
-  :lighter (:eval (chez-mode--lighter))
-  :group 'chez-mode
-  ;; :keymap chez-mode-map
-  (use-local-map chez-mode-map)
+  :lighter " Chez"
+  :keymap chez-mode-map
+  :group 'scheme
   (add-hook (if-var% completion-at-point-functions minibuffer
                      'completion-at-point-functions
               'comint-dynamic-complete-functions)
