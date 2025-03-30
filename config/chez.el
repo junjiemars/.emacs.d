@@ -47,25 +47,23 @@
   "Run a chez process in a buffer."
   :group 'scheme)
 
+(defun chez-program-check ()
+  "Check chez program path."
+  (executable-find*
+   "scheme"
+   (lambda (chez)
+     (let ((x (shell-command* "echo '(scheme-version)'|" chez "-q")))
+       (and (zerop (car x)) chez)))))
+
 (defalias 'chez-program
-  (let ((b (executable-find%
-            "scheme"
-            (lambda (chez)
-              (let ((x (shell-command* "echo"
-                         "'(scheme-version)'|" chez "-q")))
-                (or (and (zerop (car x)) chez)
-                    "scheme"))))))
+  (let ((b (chez-program-check)))
     (lambda (&optional n)
       (cond (n (setq b n))
             (t b))))
   "Program invoked by the \\=`run-chez\\=' command.")
 
-(defvar chez-input-filter-regexp "\\`\\s *\\S ?\\S ?\\s *\\'"
-  "Input matching this regexp are not saved on the history list.\n
-Defaults to a regexp ignoring all inputs of 0, 1, or 2 letters.")
-
 (defvar chez-repl-mode-hook nil
-  "Hook run upon entry to \\=`chez-repl-mode'\\=.\n
+  "Hook run upon entry to \\=`chez-repl-mode\\='.\n
 This is run before the process is cranked up.")
 
 (defun *chez* ()
@@ -73,15 +71,16 @@ This is run before the process is cranked up.")
   (get-buffer-create "*chez*"))
 
 (defun *chez-out* ()
-  "The output buffer of \\=`chez-completion'\\=."
+  "The output buffer of \\=`chez-completion\\='."
   (get-buffer-create "*out|chez*"))
 
 (defalias '*chez-start-file*
   (let ((b (v-home% ".exec/chez.ss")))
     (lambda ()
-      (cond ((file-exists-p b) b)
-            (t (copy-file (emacs-home% "config/chez.ss") b)))))
-  "The \\=`*chez*'\\= process start file.")
+      (inhibit-file-name-handler
+        (cond ((file-exists-p b) b)
+              (t (copy-file (emacs-home% "config/chez.ss") b))))))
+  "The \\=`*chez*\\=' process start file.")
 
 (defalias 'chez-switch-to-last-buffer
   (let ((b nil))
@@ -89,7 +88,7 @@ This is run before the process is cranked up.")
       (interactive "P")
       (cond (n (setq b n))
             (b (switch-to-buffer-other-window b)))))
-  "Switch to the last \\=`chez-mode'\\= buffer from \\=`*chez*'\\= buffer.")
+  "Switch to the last \\=`chez-mode\\=' buffer from \\=`*chez*\\=' buffer.")
 
 (defvar *chez-option-history* nil
   "Chez option history list.")
@@ -104,14 +103,13 @@ This is run before the process is cranked up.")
 ;;;
 
 (defun chez-input-filter (in)
-  "Don't save anything matching \\=`chez-input-filter-regexp'\\=."
-  (null (string-match chez-input-filter-regexp in)))
+  "Don't save empty string in the history list."
+  (null (string-match "\\`\\s *\\S ?\\S ?\\s *\\'" in)))
 
 (defun chez-get-old-input ()
   "Snarf the sexp ending at point."
   (let ((old (buffer-substring
-              (save-excursion (backward-sexp) (point))
-              (point))))
+              (save-excursion (backward-sexp) (point)) (point))))
     (cond ((and (>= (length old) 2)
                 (string-equal "> " (substring old 0 2)))
            (substring old 2))
@@ -156,18 +154,17 @@ This is run before the process is cranked up.")
             (t t)))))
 
 (defun chez-completion-read (buffer)
-  (car
-   (read-from-string
-    (with-current-buffer buffer
-      (buffer-substring-no-properties
-       (point-min) (point-max))))))
+  (car (read-from-string
+        (with-current-buffer buffer
+          (buffer-substring-no-properties
+           (point-min) (point-max))))))
 
 (defun chez-completion ()
   (interactive)
   (let* ((chez (*chez*)) (proc (get-buffer-process (*chez*)))
          (start nil) (end nil) (in nil))
     (when proc
-      (with-current-buffer chez
+      (with-current-buffer (current-buffer)
         (let ((bs (bounds-of-thing-at-point 'symbol)))
           (when bs
             (setq start (car bs)
@@ -178,7 +175,7 @@ This is run before the process is cranked up.")
               (out (*chez-out*)))
           (with-current-buffer out (erase-buffer))
           (comint-redirect-send-command-to-process cmd out proc nil t)
-          (with-current-buffer (*chez*)
+          (with-current-buffer chez
             (unwind-protect
                 (while (or quit-flag (null comint-redirect-completed))
                   (accept-process-output proc 2))
@@ -204,8 +201,9 @@ This is run before the process is cranked up.")
   (interactive)
   (goto-char (point-max))
   (save-restriction
-    (narrow-to-region (save-excursion (comint-goto-process-mark) (point))
-                      (point))
+    (narrow-to-region
+     (save-excursion (comint-goto-process-mark) (point))
+     (point))
     (while (ignore-errors (save-excursion (backward-up-list 1)) t)
       (insert ")")))
   (chez-repl-return))
@@ -221,10 +219,10 @@ This is run before the process is cranked up.")
       (define-key m "\C-\M-m" #'chez-repl-closing-return))
     (define-key m "\C-c\C-b" #'chez-switch-to-last-buffer)
     m)
-  "The keymap for \\=`*chez*'\\= REPL.")
+  "The keymap for \\=`*chez*\\=' REPL.")
 
 (defun chez-syntax-table ()
-  "Specify special character in \\=`syntax-table'\\=."
+  "Specify special character in \\=`syntax-table\\='."
   (modify-syntax-entry ?| "_" (syntax-table)))
 
 (defun chez-syntax-indent ()
@@ -239,10 +237,10 @@ This is run before the process is cranked up.")
   "Major mode for interacting with a chez process.\n
 The following commands are available:
 \\{chez-repl-mode-map}\n
-A chez process can be fired up with M-x \\=`run-chez'\\=.
+A chez process can be fired up with M-x \\=`run-chez\\='.
 Customization:
-Enter this mode runs the hooks on \\=`comint-mode-hook'\\= and
-  \\=`chez-repl-mode-hook'\\= (in that order)."
+Enter this mode runs the hooks on \\=`comint-mode-hook\\=' and
+  \\=`chez-repl-mode-hook\\=' (in that order)."
   :group 'chez                          ; keyword args
   (setq comint-prompt-regexp "^[^>\n-\"]*>+ *"
         comint-prompt-read-only t
@@ -257,11 +255,10 @@ Enter this mode runs the hooks on \\=`comint-mode-hook'\\= and
 
 (defun run-chez (&optional command-line)
   "Run a chez process, input and output via buffer *chez*.\n
-If there is a process already running in \\=`*chez*'\\=, switch
+If there is a process already running in \\=`*chez*\\=', switch
 to that buffer. With prefix COMMAND-LINE, allows you to edit the
 command line.
-Run the hook \\=`chez-repl-mode-hook'\\= after the
-\\=`comint-mode-hook'\\=."
+Run the hook \\=`chez-repl-mode-hook\\=' after the \\=`comint-mode-hook\\='."
   (interactive (list (read-string "Run chez: "
                                   (car *chez-option-history*)
                                   '*chez-option-history*)))
@@ -283,7 +280,7 @@ Run the hook \\=`chez-repl-mode-hook'\\= after the
   (switch-to-buffer-other-window (*chez*)))
 
 (defun chez-switch-to-repl (&optional no-select)
-  "Switch to the \\=`*chez*'\\= buffer.\n
+  "Switch to the \\=`*chez*\\=' buffer.\n
 If NO-SELECT is nil then select the buffer and put the cursor at
 end of buffer, otherwise just popup the buffer."
   (interactive "P")
@@ -305,31 +302,27 @@ end of buffer, otherwise just popup the buffer."
 ;; compile / load
 ;;;
 
+(defun chez--file-prompt (prompt)
+  (comint-get-source
+   prompt
+   (let ((n (buffer-file-name)))
+     (cons (file-name-directory n) (file-name-nondirectory n)))
+   '(scheme-mode) nil))
+
 (defun chez-compile-file (file)
-  "Compile a Scheme FILE in \\=`*chez*'\\=."
-  (interactive (comint-get-source
-                "Compile Scheme file: "
-                (let ((n (buffer-file-name)))
-                  (cons (file-name-directory n)
-                        (file-name-nondirectory n)))
-                '(scheme-mode) nil))
+  "Compile a Scheme FILE in \\=`*chez*\\='."
+  (interactive (chez--file-prompt "Compile Scheme file: "))
   (comint-check-source file)
-  (comint-send-string (chez-check-proc t)
-                      (format "(compile-file \"%s\")\n" file))
+  (comint-send-string
+   (chez-check-proc t) (format "(compile-file \"%s\")\n" file))
   (chez-switch-to-last-buffer (current-buffer))
   (chez-switch-to-repl))
 
 (defun chez-load-file (file)
-  "Load a Scheme FILE into \\=`*chez*'\\=."
-  (interactive (comint-get-source
-                "Load Scheme file: "
-                (let ((n (buffer-file-name)))
-                  (cons (file-name-directory n)
-                        (file-name-nondirectory n)))
-                '(scheme-mode) nil))
+  "Load a Scheme FILE into \\=`*chez*\\='."
+  (interactive (chez--file-prompt "Load Scheme file: "))
   (comint-check-source file)
-  (comint-send-string (chez-check-proc t)
-                      (format "(load \"%s\")\n" file))
+  (comint-send-string (chez-check-proc t) (format "(load \"%s\")\n" file))
   (chez-switch-to-last-buffer (current-buffer))
   (chez-switch-to-repl))
 
@@ -340,62 +333,63 @@ end of buffer, otherwise just popup the buffer."
 ;;;
 
 (defun chez-send-region (start end)
-  "Send the current region to \\=`*chez*'\\=."
+  "Send the current region to \\=`*chez*\\='."
   (interactive "r")
   (process-send-region (chez-check-proc) start end)
   (comint-send-string (*chez*) "\n")
   (chez-switch-to-repl t))
 
 (defun chez-send-last-sexp ()
-  "Send the previous sexp to \\=`*chez*'\\=."
+  "Send the previous sexp to \\=`*chez*\\='."
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'sexp)))
     (when bounds
       (chez-send-region (car bounds) (cdr bounds)))))
 
 (defun chez-send-definition ()
-  "Send the current definition to \\=`*chez*'\\=."
+  "Send the current definition to \\=`*chez*\\='."
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'defun)))
     (when bounds
       (chez-send-region (car bounds) (cdr bounds)))))
 
+(defun chez--trace-procedure-prompt ()
+  (list (read-string (format "%s procedure: "
+                             (if current-prefix-arg
+                                 "Untrace"
+                               "Trace"))
+                     (if current-prefix-arg
+                         (car *chez-trace-history*)
+                       (when (symbol-at-point)
+                         (symbol-name (symbol-at-point))))
+                     '*chez-trace-history*)
+        current-prefix-arg))
+
 (defun chez-trace-procedure (proc &optional untrace)
-  "Trace or untrace procedure PROC in \\=`*chez*'\\= process.\n
+  "Trace or untrace procedure PROC in \\=`*chez*\\=' process.\n
 If PROC is nil then untrace or list all traced procedures
 determined by the prefix UNTRACE argument."
-  (interactive
-   (list (read-string (format "%s procedure: "
-                              (if current-prefix-arg
-                                  "Untrace"
-                                "Trace"))
-                      (if current-prefix-arg
-                          (car *chez-trace-history*)
-                        (when (symbol-at-point)
-                          (symbol-name (symbol-at-point))))
-                      '*chez-trace-history*)
-         current-prefix-arg))
-  (comint-send-string (chez-check-proc)
-                      (format "(%s %s)\n"
-                              (if untrace "untrace" "trace")
-                              proc))
+  (interactive (chez--trace-procedure-prompt))
+  (comint-send-string
+   (chez-check-proc)
+   (format "(%s %s)\n" (if untrace "untrace" "trace") proc))
   (chez-switch-to-repl t))
 
 (defvar chez-mode-map
   (let ((m (make-sparse-keymap)))
-    (define-key m "\M-\C-x" #'chez-send-definition)
-    (define-key m "\C-x\C-e" #'chez-send-last-sexp)
-    (define-key m "\C-c\C-l" #'chez-load-file)
     (define-key m "\C-c\C-k" #'chez-compile-file)
+    (define-key m "\C-c\C-l" #'chez-load-file)
     (define-key m "\C-c\C-r" #'chez-send-region)
     (define-key m "\C-c\C-t" #'chez-trace-procedure)
     (define-key m "\C-c\C-z" #'chez-switch-to-repl)
+    (define-key m "\C-x\C-e" #'chez-send-last-sexp)
+    (define-key m "\M-\C-x" #'chez-send-definition)
     m)
   "The keymap of \\=`chez-mode\\='.")
 
 (make-variable-buffer-local
  (defvar chez-mode-string nil
-   "Modeline indicator for \\=`chez-mode'\\=."))
+   "Modeline indicator for \\=`chez-mode\\='."))
 
 (defun chez-mode--lighter ()
   (or chez-mode-string " Chez"))
