@@ -208,7 +208,7 @@ Run the hook \\=`jshell-repl-mode-hook\\=' after the \\=`comint-mode-hook\\='."
   (switch-to-buffer-other-window (*jshell*)))
 
 (defun jshell-switch-to-repl (&optional no-select)
-  "Switch to the `*jshell*' buffer.\n
+  "Switch to the \\=`*jshell*\\=' buffer.\n
 If NO-SELECT is nil then select the buffer and put the cursor at
 end of buffer, otherwise just popup the buffer."
   (interactive "P")
