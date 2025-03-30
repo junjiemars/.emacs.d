@@ -121,10 +121,6 @@
 ;; gud-cdb-* variables
 ;;;
 
-
-(defvar gud-cdb-history nil
-  "History of argument lists passed to cdb.")
-
 (defvar gud-cdb-directories nil
   "*A list of directories that cdb should search for source code.\n
 If nil, only source files in the program directory will be known to cdb.\n
@@ -229,7 +225,7 @@ in \\=`gud-cdb-directories\\='."
         (when (file-exists-p f) f))
       (catch 'br
         (dolist (d gud-cdb-directories)
-          (let ((p (concat d "/" filename)))
+          (let ((p (path+ d filename)))
             (and (file-exists-p p)
                  (throw 'br p)))))))
 
@@ -339,7 +335,7 @@ some and passing on the rest."
 The job of the find-file method is to visit and return the buffer
 indicated by the car of gud-tag-frame.  This may be a file name,
 a tag name, or something else."
-  (save-excursion
+  (inhibit-file-name-handler
     (let ((f (cdb-file-name filename)))
       (if f
           (find-file-noselect f t)
@@ -402,6 +398,7 @@ directory and source-file directory for your debugger."
   (add-hook 'completion-at-point-functions
             #'cdb-completion-at-point nil 'local))
 
+
 
 (provide 'gud-cdb)
 

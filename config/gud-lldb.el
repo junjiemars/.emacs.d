@@ -15,7 +15,7 @@
 ;;;;
 ;; sample C code:
 ;;; generated via Nore (https://github.com/junjiemars/nore)
-;;; ./configure --new
+;;; ./configure new
 ;;; make clean test
 ;;;;
 ;; references:
@@ -40,13 +40,8 @@
 ;;  variables
 ;;;;
 
-
-(defvar gud-lldb-history nil
-  "History of argument lists passed to lldb.")
-
-
 (defvar gud-lldb-command-line-hook nil
-  "Hook run by `lldb' on command line.")
+  "Hook run by \\=`lldb\\=' on command line.")
 
 
 (defvar gud-lldb-init-hook nil
@@ -127,31 +122,31 @@ Return absolute filename when FILENAME exists, otherwise nil."
         (and (file-exists-p f) f))
       (catch 'br
         (dolist (d gud-lldb-directories)
-          (let ((p (concat d "/" filename)))
+          (let ((p (path+ d filename)))
             (and (file-exists-p p)
                  (throw 'br p)))))))
 
 (defun lldb-start-file (&optional force)
-  "Make lldb's init file if FORCE or the init file is missing.\n
-Return init file name and ~/.lldbinit-lldb file no touched."
+  "Make lldb\\='s init file if FORCE or the init file is missing.\n
+Return the name of init file and ~/.lldbinit-lldb file no touched."
   (let ((init (v-home% ".exec/gud_lldb.rc"))
         (proc (get-buffer-process (*lldb*))))
-    (when (or force (null (file-exists-p init)))
-      (copy-file (emacs-home% "config/gud_lldb.rc") init t)
-      (copy-file (emacs-home% "config/gud_lldb.py")
-                 (v-home% ".exec/gud_lldb.py") t))
+    (inhibit-file-name-handler
+      (when (or force (null (file-exists-p init)))
+        (copy-file (emacs-home% "config/gud_lldb.rc") init t)
+        (copy-file
+         (emacs-home% "config/gud_lldb.py")
+         (v-home% ".exec/gud_lldb.py") t)))
     (unless proc
       (error "%s" "No lldb process found"))
     (gud-basic-call
      (format (read-str-from-file init) (v-home% ".exec/")))
     init))
 
-(defvar *lldb-completion-filter*
-  "^\\(script gud_lldb\\|[[:digit:]]+\\|\\[None\\|[ \t]*$\\)")
-
 (defun lldb-completion-read (in buffer)
   (with-current-buffer buffer
-    (let ((alts nil) (xs *lldb-completion-filter*))
+    (let ((alts nil)
+          (xs "^\\(script gud_lldb\\|[[:digit:]]+\\|\\[None\\|[ \t]*$\\)"))
       (goto-char (point-min))
       (while (null (eobp))
         (let ((ln (buffer-substring-no-properties
@@ -222,7 +217,7 @@ Return init file name and ~/.lldbinit-lldb file no touched."
 (defun gud-lldb-find-file (filename)
   "Find the source file associated with FILENAME.\n
 As the optional argument of \\=`gud-common-init\\=': find-file."
-  (save-excursion
+  (inhibit-file-name-handler
     (or (let ((f (lldb-file-name filename)))
           (when f (find-file-noselect f t)))
         (find-file-noselect filename 'nowarn))))
@@ -240,7 +235,7 @@ As the 2nd argument of \\=`gud-common-init\\=': massage-args."
 
 (defun gud-lldb-marker-filter (string)
   "Detect the file/line markers in STRING.\n
-As the 3rd argument of \\=`gud-common-init\\=': marker-filter"
+As the 3rd argument of \\=`gud-common-init\\=': marker-filter."
   (cond ((string-match "[ \t]*frame.*at \\([^:]+\\):\\([0-9]+\\)" string)
          ;; frame format: `lldb-settings-frame-format'
          ;; (lldb) r
@@ -280,10 +275,9 @@ buffer named *gud-FILE*, and the directory containing FILE
 becomes the initial working directory and source-file directory
 for your debugger.
 If COMMAND-LINE requests that lldb attaches to a process PID,
-lldb will run in *gud-PID*, otherwise it will run in *lldb*; in
-  hese cases the initial working directory is the
-\\=`default-directory\\=' of the buffer in which this command was
-invoked."
+lldb will run in *gud-PID*, otherwise it will run in *lldb*; in these
+cases the initial working directory is the \\=`default-directory\\=' of
+the buffer in which this command was invoked."
   (interactive (list (gud-query-cmdline 'lldb)))
 
   (gud-common-init command-line
