@@ -30,24 +30,27 @@
   "History list for \\=`run-cscope\\='.")
 
 (defconst +cscope-line-regexp+
-  "^\\([^[:space:]]+\\)[[:space:]]\\([^[:space:]]+\\)[[:space:]]\\([[:digit:]]+\\)[[:space:]]+\\(.*\\)$"
+  "^\\([^[:space:]]+\\)[[:space:]]\\([^[:space:]]+\\)[[:space:]]\\([[:digit:]]+\\)[[:space:]]\\(.*\\)$"
   "Line regexp for \\=`compile\\='.")
 
 (defun *cscope* ()
-  "The *cscope* REPL process buffer."
+  "The REPL process buffer of \\=`*cscope*\\='."
   (get-buffer-create* "*cscope*"))
 
 (defun *cscope-out* ()
-  "The output buffer of \\=`cscope-send-command'\\=."
+  "The output buffer of \\=`cscope-send-command\\='."
   (get-buffer-create* "*out|cscope*"))
 
 (defun cscope--parse-src-dir (command-line)
-  (or (if (string-match
-           "-f[[:blank:]]*\\([^[:blank:]]+\\)" command-line)
-          (file-name-directory
-           (substring-no-properties
-            command-line (match-beginning 1) (match-end 1)))
-        default-directory)))
+  (cond ((string-match "-P[[:blank:]]*\\([^[:blank:]]+\\)" command-line)
+         (file-name-as-directory
+          (substring-no-properties
+           command-line (match-beginning 1) (match-end 1))))
+        ((string-match "-f[[:blank:]]*\\([^[:blank:]]+\\)" command-line)
+         (file-name-directory
+          (substring-no-properties
+           command-line (match-beginning 1) (match-end 1))))
+        (t default-directory)))
 
 ;; end of cscope environment
 
@@ -56,7 +59,7 @@
 ;;;
 
 (defvar *cscope--src-dir* nil
-  "Cscope source directory.")
+  "The source directory of \\=`cscope-mode\\='.")
 
 (defun cscope--parse-filename (file)
   (cond ((file-exists-p file) file)
@@ -140,7 +143,7 @@
 ;;;
 
 (defvar *cscope--repl-src-dir* nil
-  "Cscope REPL source directory.")
+  "The source directory of \\=`*cscope*\\='.")
 
 (defun cscope--repl-parse-filename (file)
   (cond ((file-exists-p file) file)
@@ -149,7 +152,7 @@
          (concat *cscope--repl-src-dir* file))
         (t file)))
 
-(defun cscope-send-command (command &optional no-display)
+(defun cscope-send-command (command)
   "Send COMMAND to cscope REPL."
   (unless (eq 'run (car (comint-check-proc (*cscope*))))
     (user-error "%s" "No *cscope* process"))
@@ -158,56 +161,50 @@
     (with-current-buffer out
       (fluid-let (buffer-read-only nil)
         (erase-buffer)
-        (comint-redirect-send-command-to-process
-         command out proc nil no-display)
-        (with-current-buffer (*cscope*)
-          (unwind-protect
-              (while (or quit-flag (null comint-redirect-completed))
-                (accept-process-output proc 2))
-            (comint-redirect-cleanup)))
+        (comint-redirect-send-command-to-process command out proc nil)
         (cscope-mode)
-        (set (make-local-variable '*cscope--src-dir*)
-             *cscope--repl-src-dir*)))))
+        (set (make-local-variable '*cscope--src-dir*) *cscope--repl-src-dir*)))
+    (switch-to-buffer-other-window out)))
 
 (defun cscope--find-prompt (prompt)
   (list (read-string prompt)))
 
-(defun cscope-find-c-symbol (&optional symbol)
+(defun cscope-find-this-c-symbol (&optional symbol)
   (interactive (cscope--find-prompt "Find this C symbol: "))
-  (cscope-send-command (concat "0" symbol) nil))
+  (cscope-send-command (concat "0" symbol)))
 
 (defun cscope-find-this-function-definition (&optional symbol)
   (interactive (cscope--find-prompt "Find this function definition: "))
-  (cscope-send-command (concat "1" symbol) nil))
+  (cscope-send-command (concat "1" symbol)))
 
 (defun cscope-find-functions-called-by-this-function (&optional symbol)
   (interactive
    (cscope--find-prompt "Find functions called by this function: "))
-  (cscope-send-command (concat "2" symbol) nil))
+  (cscope-send-command (concat "2" symbol)))
 
-(defun cscope-find-functions-calling-by-function (&optional symbol)
+(defun cscope-find-functions-calling-this-function (&optional symbol)
   (interactive (cscope--find-prompt "Find functions calling this function: "))
-  (cscope-send-command (concat "3" symbol) nil))
+  (cscope-send-command (concat "3" symbol)))
 
 (defun cscope-find-this-text-string (&optional text)
   (interactive (cscope--find-prompt "Find this text string: "))
-  (cscope-send-command (concat "4" text) nil))
+  (cscope-send-command (concat "4" text)))
 
 (defun cscope-find-this-egrep-pattern (&optional pattern)
   (interactive (cscope--find-prompt "Find this egrep pattern: "))
-  (cscope-send-command (concat "6" pattern) nil))
+  (cscope-send-command (concat "6" pattern)))
 
 (defun cscope-find-this-file (&optional filename)
   (interactive (cscope--find-prompt "Find this file: "))
-  (cscope-send-command (concat "7" filename) nil))
+  (cscope-send-command (concat "7" filename)))
 
 (defun cscope-find-files-including-this-file (&optional symbol)
   (interactive (cscope--find-prompt "Find files #including this file: "))
-  (cscope-send-command (concat "8" symbol) nil))
+  (cscope-send-command (concat "8" symbol)))
 
 (defun cscope-find-assignments-to-this-symbol (&optional symbol)
   (interactive (cscope--find-prompt "Find assignments to this symbol: "))
-  (cscope-send-command (concat "9" symbol) nil))
+  (cscope-send-command (concat "9" symbol)))
 
 (define-derived-mode cscope-repl-mode comint-mode "REPL"
   "Major mode for a cscope REPL process."
