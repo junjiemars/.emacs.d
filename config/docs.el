@@ -24,7 +24,7 @@
   (declare (indent 0))
   `(if% (and (executable-find% "mudraw")
              (executable-find% "pdfinfo"))
-       (comment ,then)
+       (comment ,@body)
      (progn% ,@body)))
 
 (unless-bin-gswin64/32c%
