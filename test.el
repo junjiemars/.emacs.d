@@ -742,7 +742,7 @@
                      (or (cc*-check-vcvarsall-bat) ""))))
   (when (fboundp 'cc*-make-env-bat)
     (should (message "# (cc*-make-env-bat) = %s" (or (cc*-make-env-bat) ""))))
-  (when (foundp 'cc*-make-xargs-bin)
+  (when (fboundp 'cc*-make-xargs-bin)
     (should (message "# (cc*-make-xargs-bin)" (or (cc*-make-xargs-bin) "")))))
 
 (ert-deftest %q:cc:cc*-system-include ()

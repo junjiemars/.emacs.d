@@ -188,10 +188,11 @@
 (defun cc*-system-include-read (file &optional remote)
   (or (read-sexp-from-file file)
       (let ((xs nil))
-        (dolist (x (cc*-include-check remote) (nreverse xs))
+        (dolist (x (cc*-include-check remote) (setq xs (nreverse xs)))
           (let ((x1 (if remote (concat remote x) x)))
             (and (file-exists-p x1)
-                 (setq xs (cons x1 xs))))))))
+                 (setq xs (cons x1 xs)))))
+        (save-sexp-to-file xs file))))
 
 (defun cc*-system-include-file (&optional remote)
   (let* ((ss (if remote
