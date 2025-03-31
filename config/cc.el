@@ -192,7 +192,8 @@
           (let ((x1 (if remote (concat remote x) x)))
             (and (file-exists-p x1)
                  (setq xs (cons x1 xs)))))
-        (save-sexp-to-file xs file))))
+        (prog1 xs
+          (and xs (save-sexp-to-file xs file))))))
 
 (defun cc*-system-include-file (&optional remote)
   (let* ((ss (if remote
