@@ -738,14 +738,12 @@
   (when (fboundp 'platform-arch)
     (should (message "# (platform-arch) = %s" (or (platform-arch) ""))))
   (when (fboundp 'cc*-check-vcvarsall-bat)
-    (should (message "# (cc*-check-vcvarsall-bat) = %s")
-            (cc*-check-vcvarsall-bat) ""))
+    (should (message "# (cc*-check-vcvarsall-bat) = %s"
+                     (or (cc*-check-vcvarsall-bat) ""))))
   (when (fboundp 'cc*-make-env-bat)
-    (should (message "# (cc*-make-env-bat) = %s")
-            (or (cc*-make-env-bat) "")))
+    (should (message "# (cc*-make-env-bat) = %s" (or (cc*-make-env-bat) ""))))
   (when (foundp 'cc*-make-xargs-bin)
-    (should (message "# (cc*-make-xargs-bin)")
-            (or (cc*-make-xargs-bin) ""))))
+    (should (message "# (cc*-make-xargs-bin)" (or (cc*-make-xargs-bin) "")))))
 
 (ert-deftest %q:cc:cc*-system-include ()
   (when (fboundp 'cc*-system-include)
