@@ -741,7 +741,9 @@
                         (cc*-system-include :read)))))
 
 (ert-deftest %q:cc:cc*-on-windows ()
+  (message "%s" "# try cc* on windows ...")
   (when (eq system-type 'windows-nt)
+    (require 'cc)
     (should (message "# (platform-arch) = %s"
                      (and (fboundp 'platform-arch)
                           (platform-arch))))
@@ -793,19 +795,20 @@
                                          nil
                                          (lambda (a &rest _)
                                            (throw 'br a))))))
-    (should (string-equal "xy"
-                          (catch 'br
-                            (dir-iterate (emacs-home*)
-                                         (lambda (f &rest _)
-                                           (string-equal "test.el" f))
-                                         (lambda (d &rest _)
-                                           (string-equal ".emacs.d" d))
-                                         (lambda (a env)
-                                           (let ((k1 (plist-get env :k1))
-                                                 (k2 (plist-get env :k2)))
-                                             (throw 'br (format "%s%s" k1 k2))))
-                                         nil
-                                         (list :k1 "x" :k2 "y")))))
+    (should (string-equal
+             "xy"
+             (catch 'br
+               (dir-iterate (emacs-home*)
+                            (lambda (f &rest _)
+                              (string-equal "test.el" f))
+                            (lambda (d &rest _)
+                              (string-equal ".emacs.d" d))
+                            (lambda (a env)
+                              (let ((k1 (plist-get env :k1))
+                                    (k2 (plist-get env :k2)))
+                                (throw 'br (format "%s%s" k1 k2))))
+                            nil
+                            (list :k1 "x" :k2 "y")))))
     (should (= 1 (let ((fcnt 0) (dcnt 0))
                    (catch 'br
                      (dir-iterate
