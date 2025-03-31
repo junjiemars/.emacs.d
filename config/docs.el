@@ -60,8 +60,7 @@
   "On \\=`doc-view\\=' initialization."
   (if-bin-gswin64/32c%
       (setq% doc-view-ghostscript-program
-             (or (executable-find% (format "gswin%sc" (emacs-arch%)))
-                 (executable-find% "gswin32c")
+             (or (executable-find% "gswin32c")
                  (executable-find% "gswin64c"))
              doc-view)
     ;; unless gswin64c/gswin32c
