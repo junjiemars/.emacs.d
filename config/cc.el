@@ -43,7 +43,7 @@
                  ((and cmd (eq cmd :macro))
                   (let ((tmp (make-temp-file "cc_macro_" nil ".c")))
                     ;; cl.exe can't compile on the fly without xargs
-                    (format "%s -0 > %s && %s && cl -E %s"
+                    (format "%s -0 >%s && %s && cl -E %s"
                             xargs tmp msvc tmp)))
                  ((and cmd (eq cmd :env)) msvc)
                  ((and cmd (eq cmd :xargs)) xargs))))))
