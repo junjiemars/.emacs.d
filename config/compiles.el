@@ -23,7 +23,7 @@
                                        t t filename)
                       filename)))
       (funcall (symbol-function '_compilation-find-file_)
-               marker filename directory &rest formats))))
+               marker filename directory formats))))
 
 (defun compile*-colorize-buffer! ()
   "Colorize compilation buffer."
