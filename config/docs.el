@@ -52,7 +52,7 @@
 (when-bin-mudraw%
   ;; fix: the builtin `doc-view-mode-p' does not support mupdf.
   (defun doc-view-mode-p* (type)
-    (let ((r (apply (symbol-function '_doc-view-mode-p_) args)))
+    (let ((r (apply (symbol-function '_doc-view-mode-p_) type)))
       (cond ((eq 'pdf type) t)
             (t r)))))
 
@@ -60,7 +60,7 @@
   "On \\=`doc-view\\=' initialization."
   (if-bin-gswin64/32c%
       (setq% doc-view-ghostscript-program
-             (or (executable-find% (format "gswin%dc" (emacs-arch%)))
+             (or (executable-find% (format "gswin%sc" (emacs-arch%)))
                  (executable-find% "gswin32c")
                  (executable-find% "gswin64c"))
              doc-view)
