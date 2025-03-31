@@ -733,22 +733,27 @@
   (should (message "# gcc = %s" (or (executable-find "gcc") "")))
   (should (message "# clang = %s" (or (executable-find "clang") "")))
   (should (message "# make = %s" (or (executable-find "make") "")))
-  (when (fboundp 'cc*-cc)
-    (should (message "# (cc*-cc) = %s" (or (cc*-cc) ""))))
-  (when (fboundp 'platform-arch)
-    (should (message "# (platform-arch) = %s" (or (platform-arch) ""))))
-  (when (fboundp 'cc*-check-vcvarsall-bat)
-    (should (message "# (cc*-check-vcvarsall-bat) = %s"
-                     (or (cc*-check-vcvarsall-bat) ""))))
-  (when (fboundp 'cc*-make-env-bat)
-    (should (message "# (cc*-make-env-bat) = %s" (or (cc*-make-env-bat) ""))))
-  (when (fboundp 'cc*-make-xargs-bin)
-    (should (message "# (cc*-make-xargs-bin)" (or (cc*-make-xargs-bin) "")))))
+  (should (message "# (cc*-cc) = %s" (and (fboundp 'cc*-cc) (cc*-cc)))))
 
 (ert-deftest %q:cc:cc*-system-include ()
-  (when (fboundp 'cc*-system-include)
-    (should (message "# (cc*-system-include) = %s"
-                     (or (cc*-system-include :read) "")))))
+  (should (message "# (cc*-system-include) = %s"
+                   (and (fboundp 'cc*-system-include)
+                        (cc*-system-include :read)))))
+
+(ert-deftest %q:cc:cc*-on-windows ()
+  (when (eq system-type 'windows-nt)
+    (should (message "# (platform-arch) = %s"
+                     (and (fboundp 'platform-arch)
+                          (platform-arch))))
+    (should (message "# (cc*-check-vcvarsall-bat) = %s"
+                     (and (fboundp 'cc*-check-vcvarsall-bat)
+                          (cc*-check-vcvarsall-bat))))
+    (should (message "# (cc*-make-env-bat) = %s"
+                     (and (fboundp 'cc*-make-env-bat)
+                          (cc*-make-env-bat))))
+    (should (message "# (cc*-make-xargs-bin)"
+                     (and (fboundp 'cc*-make-xargs-bin)
+                          (cc*-make-xargs-bin))))))
 
 ;; end of `cc'
 
