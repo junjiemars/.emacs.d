@@ -31,7 +31,7 @@
                ((and cmd (eq cmd :define)) "cc %s -dM -E -")
                ((and cmd (eq cmd :macro)) "cc -E -o - -")))
         ((and cc (eq cc :msvc))
-         (let ((msvc (v-home% ".exec/cc-env.bat"))
+         (let ((msvc (v-home% ".exec/cc_msvc.bat"))
                (xargs (v-home% ".exec/cc_xargs")))
            (cond ((and cmd (eq cmd :compile))
                   (concat msvc " && cl %s %s"
@@ -92,12 +92,13 @@
 
 (when-platform% windows-nt
   (defun cc*-make-env-bat ()
-    "Make cc-env.bat for msvc in \\=`exec-path\\='."
+    "Make cc_msvc.bat for msvc in \\=`exec-path\\='."
     (let ((vcvarsall (cc*-check-vcvarsall-bat))
           (arch (platform-arch))
+          (src (emacs-home% "config/cc_msvc.bat"))
           (env (cc-spec->* :msvc :env)))
       (when (and vcvarsall arch)
-        (let ((bat (read-str-from-file env)))
+        (let ((bat (read-str-from-file src)))
           (save-str-to-file
            (format bat (file-name-directory vcvarsall) arch)
            env))))))
@@ -109,7 +110,7 @@
 ;;;
 
 (defun cc*--cc-check ()
-  (let ((cx '(:cc :clang :gcc :cl))
+  (let ((cx '(:cc :clang :gcc :msvc))
         (o (inhibit-file-name-handler
              (make-temp-file
               "cc_check_" nil (if-platform% windows-nt ".exe" ".out"))))
@@ -119,8 +120,8 @@
                chk))))
     (catch 'br
       (dolist (cc cx)
-        (let ((compile (cc-spec->* cc :compile)))
-          (let ((rc (shell-command* (format compile "" i o))))
+        (let ((cmd (cc-spec->* cc :compile)))
+          (let ((rc (shell-command* (format cmd "" i o))))
             (when (zerop (car rc))
               (throw 'br cc))))))))
 
@@ -166,7 +167,7 @@
                   (concat (ssh-remote->user@host remote)
                           " \"" (cc-spec->* (cc*-cc) :include) "\""))
               (shell-command* (cc-spec->* (cc*-cc) :include)))))
-    (when (zerop (car rc))
+    (when (= 0 (car rc))
       (let ((pre (cdr rc)) (inc nil) (beg nil))
         (cond ((eq :msvc (cc*-cc))
                (dolist (x (var->paths
