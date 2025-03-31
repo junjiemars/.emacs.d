@@ -741,9 +741,7 @@
                         (cc*-system-include :read)))))
 
 (ert-deftest %q:cc:cc*-on-windows ()
-  (message "%s" "# try cc* on windows ...")
-  (when (eq system-type 'windows-nt)
-    (require 'cc)
+  (when (memq system-type '(windows-nt cygwin))
     (should (message "# (platform-arch) = %s"
                      (and (fboundp 'platform-arch)
                           (platform-arch))))
