@@ -736,7 +736,7 @@
   (should (message "# xargs = %s" (executable-find "xargs"))))
 
 (ert-deftest %q:cc:cc*--platform-check ()
-  (should (message "(cc-spec->* %s :include) = \n%s"
+  (should (message "# (cc-spec->* %s :include) = \n%s"
                    (or (and (fboundp 'cc*-cc) (cc*-cc))  "<unbound-(cc*-cc)>")
                    (or (and (fboundp 'cc-spec->*)
                             (shell-command* (cc-spec->* :cc :include)))

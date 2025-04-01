@@ -98,19 +98,22 @@
 
 (defun cc*--cc-check ()
   (let ((cx '(:cc :clang :gcc :msvc))
-        (o (inhibit-file-name-handler
-             (make-temp-file
-              "cc_check_" nil (if-platform% windows-nt ".exe" ".out"))))
-        (i (inhibit-file-name-handler
-             (let ((chk (make-temp-file "cc_check_" nil ".c")))
-               (copy-file (emacs-home% "config/cc_check.c") chk t)
-               chk))))
-    (catch 'br
+        (o (concat (v-home% ".exec/cc_check")
+                   (if% (or (when-platform% cygwin t)
+                            (when-platform% dos t)
+                            (when-platform% windows-nt t))
+                       ".exe"
+                     ".out")))
+        (i (v-home% ".exec/cc_check.c")))
+    (catch :br
+      (inhibit-file-name-handler
+        (unless (file-exists-p i)
+          (copy-file (emacs-home% "config/cc_check.c") i)))
       (dolist (cc cx)
-        (let ((cmd (cc-spec->* cc :compile)))
-          (let ((rc (shell-command* (format cmd "" i o))))
-            (when (zerop (car rc))
-              (throw 'br cc))))))))
+        (let* ((cmd (cc-spec->* cc :compile))
+               (rc (shell-command* (format cmd "" i o))))
+          (when (= 0 (car rc))
+            (throw :br cc)))))))
 
 (defalias 'cc*-cc
   (let ((b (cc*--cc-check)))
@@ -139,13 +142,25 @@
                                      dst
                                      xargs))
                         (rc (shell-command* cmd)))
-                   (and (zerop (car rc)) xargs))))))))
+                   (and (= 0 (car rc)) xargs))))))))
 
 ;; end of xargs
 
 ;;;
 ;; #include
 ;;;
+
+(defun cc*--include-parse (pre)
+  (let ((inc nil) (beg nil))
+    (catch :br
+      (dolist (x (split-string* pre "\n" t "[ \t\n]"))
+        (when (and beg (string-match "End of search list\\." x))
+          (throw :br (nreverse inc)))
+        (when beg (setq inc (cons x inc)))
+        (when (and (null beg)
+                   (string-match
+                    "#include <\\.\\.\\.> search starts here:" x))
+          (setq beg t))))))
 
 (defun cc*-include-check (&optional remote)
   "Return a list of system cc include path."
@@ -155,23 +170,17 @@
                           " \"" (cc-spec->* (cc*-cc) :include) "\""))
               (shell-command* (cc-spec->* (cc*-cc) :include)))))
     (when (= 0 (car rc))
-      (let ((pre (cdr rc)) (inc nil) (beg nil))
-        (cond ((eq :msvc (cc*-cc))
-               (dolist (x (var->paths
-                           (car
-                            (nreverse
-                             (split-string* pre "\n" t "[ \"]*"))))
-                          (nreverse inc))
-                 (setq inc (cons (posix-path x) inc))))
-              (t (catch 'br
-                   (dolist (x (split-string* pre "\n" t "[ \t\n]"))
-                     (when (and beg (string-match "End of search list\\." x))
-                       (throw 'br (nreverse inc)))
-                     (when beg (setq inc (cons x inc)))
-                     (when (and (null beg)
-                                (string-match
-                                 "#include <\\.\\.\\.> search starts here:" x))
-                       (setq beg t))))))))))
+      (let ((pre (cdr rc)))
+        (if-platform% windows-nt
+            (cond ((eq :msvc (cc*-cc))
+                   (dolist (x (var->paths
+                               (car
+                                (nreverse
+                                 (split-string* pre "\n" t "[ \"]*"))))
+                              (nreverse inc))
+                     (setq inc (cons (posix-path x) inc))))
+                  (t (cc*--include-parse pre)))
+          (cc*--include-parse pre))))))
 
 (defun cc*-system-include-read (file &optional remote)
   (or (read-sexp-from-file file)
@@ -254,7 +263,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
            "*Macro Predefined*"))
       (let ((inhibit-read-only t))
         (erase-buffer)
-        (insert (if (zerop (car rc))
+        (insert (if (= 0 (car rc))
                     (if (> (length (cdr rc)) 0)
                         (cdr rc)
                       "/* C preprocessor no output! */")
@@ -316,24 +325,24 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
       `(comment ,@body))))
 
 (when-c-macro-expand%
- (defun cc*-macro-expand (&rest args)
-   "Macro expanding current buffer."
-   (interactive "r\nP")
-   (let ((remote (ssh-remote-p (buffer-file-name (current-buffer)))))
-     (setq% c-macro-prompt-flag t cmacexp)
-     (setq% c-macro-buffer-name
-            (if remote
-                (format "*Macro Expanded@%s*" (ssh-remote->user@host remote))
-              "*Macro Expanded*")
-            cmacexp)
-     (setq% c-macro-preprocessor
-            (if remote
-                (cc-spec->* :cc :macro)
-              (when-platform% windows-nt
-                (and (eq :msvc (cc*-cc)) (cc*-make-xargs-bin)))
-              (cc-spec->* (cc*-cc) :macro))
-            cmacexp)
-     (apply #'c-macro-expand args))))
+  (defun cc*-macro-expand (&rest args)
+    "Macro expanding current buffer."
+    (interactive "r\nP")
+    (let ((remote (ssh-remote-p (buffer-file-name (current-buffer)))))
+      (setq% c-macro-prompt-flag t cmacexp)
+      (setq% c-macro-buffer-name
+             (if remote
+                 (format "*Macro Expanded@%s*" (ssh-remote->user@host remote))
+               "*Macro Expanded*")
+             cmacexp)
+      (setq% c-macro-preprocessor
+             (if remote
+                 (cc-spec->* :cc :macro)
+               (when-platform% windows-nt
+                 (and (eq :msvc (cc*-cc)) (cc*-make-xargs-bin)))
+               (cc-spec->* (cc*-cc) :macro))
+             cmacexp)
+      (apply #'c-macro-expand args))))
 
 ;; end of `cmacexp'
 
@@ -437,7 +446,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
   (when-fn-ff-find-other-file%
    (define-key keymap "fi" #'cc*-find-include-file))
   (when-c-macro-expand%
-   (define-key keymap "" #'cc*-macro-expand))
+    (define-key keymap "" #'cc*-macro-expand))
   (define-key keymap (kbd% "C-c M-c f") #'cc*-format-region))
 
 ;; end of keys
