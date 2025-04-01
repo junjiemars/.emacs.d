@@ -61,7 +61,7 @@ jobs:
   #         _TEST_=bone ./test.sh
   #         _TEST_=axiom ./test.sh
   #         _TEST_=module ./test.sh
-          
+
   Windows:
     runs-on: windows-latest
     defaults:
@@ -76,9 +76,13 @@ jobs:
       with:
         update: true
         install: >-
-          make
-          mingw-w64-x86_64-gcc
+          base-devel
           emacs
+          mingw-w64-x86_64-toolchain
+    - name: Verify CC
+      run: |
+        gcc --version
+        make --version
     - name: Test
       run: |
         _TEST_=bone ./test.sh
