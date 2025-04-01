@@ -38,6 +38,7 @@
                           " -Fo" temporary-file-directory
                           " -Fe%s"))
                  ((and cmd (eq cmd :include)) msvc)
+                 ((and cmd (eq cmd :define)) "")
                  ((and cmd (eq cmd :macro))
                   (let ((tmp (make-temp-file "cc_macro_" nil ".c")))
                     ;; cl.exe can't compile on the fly without xargs
@@ -236,7 +237,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 ;; #define
 ;;;
 
-(when-platform% 'windows-nt
+(when-platform% windows-nt
   (defun cc*--msvc-define-dump (&optional option)
     (let ((c (v-home% ".exec/cc_define.c"))
           (x (v-home% ".exec/cc_define.exe"))
@@ -244,7 +245,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
       (unless (file-exists-p c)
         (copy-file (emacs-home% "config/cc_msvc_def.c") c))
       (unless (and option (null (file-exists-p x)))
-        (let ((cmd (format (cc-spec->* :cc :compile) (or option "") c x)))
+        (let ((cmd (format (cc-spec->* :msvc :compile) (or option "") c x)))
           (setq rc (shell-command* cmd))))
       (when (and rc (= 0 (car rc)))
         (shell-command* x)))))
@@ -261,21 +262,22 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
                (if-platform% windows-nt
                    (cc*--msvc-define-dump option)
                  (shell-command* cmd)))))
-    (with-current-buffer
-        (switch-to-buffer
-         (if remote
-             (format "*Macro Ddefined@%s*" (ssh-remote->user@host remote))
-           "*Macro Defined*"))
-      (let ((inhibit-read-only t))
-        (erase-buffer)
-        (insert (if (= 0 (car rc))
-                    (if (> (length (cdr rc)) 0)
-                        (cdr rc)
-                      "/* C preprocessor no output! */")
-                  (cdr rc)))
-        (c-mode)
-        (goto-char (point-min))
-        (view-mode 1)))))
+    (when (and rc (= 0 (car rc)))
+      (with-current-buffer
+          (switch-to-buffer
+           (if remote
+               (format "*Macro Ddefined@%s*" (ssh-remote->user@host remote))
+             "*Macro Defined*"))
+        (let ((inhibit-read-only t))
+          (erase-buffer)
+          (insert (if (= 0 (car rc))
+                      (if (> (length (cdr rc)) 0)
+                          (cdr rc)
+                        "/* C preprocessor no output! */")
+                    (cdr rc)))
+          (c-mode)
+          (goto-char (point-min))
+          (view-mode 1))))))
 
 ;; end of #define
 
