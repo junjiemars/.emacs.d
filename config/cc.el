@@ -38,8 +38,6 @@
                           " -Fo" temporary-file-directory
                           " -Fe%s"))
                  ((and cmd (eq cmd :include)) msvc)
-                 ((and cmd (eq cmd :define))
-                  (concat msvc " && cl -E nul"))
                  ((and cmd (eq cmd :macro))
                   (let ((tmp (make-temp-file "cc_macro_" nil ".c")))
                     ;; cl.exe can't compile on the fly without xargs
@@ -100,7 +98,7 @@
   (let ((cx '(:cc :clang :gcc :msvc))
         (o (concat (v-home% ".exec/cc_check")
                    (if% (or (when-platform% cygwin t)
-                            (when-platform% dos t)
+                            (when-platform% ms-dos t)
                             (when-platform% windows-nt t))
                        ".exe"
                      ".out")))
@@ -136,12 +134,11 @@
       (inhibit-file-name-handler
         (cond ((file-exists-p xargs) xargs)
               (t (unless (null (file-exists-p dst))
-                   (copy-file src dst t))
-                 (let* ((cmd (format (cc-spec->* :msvc :compile)
-                                     "-nologo -DNDEBUG=1 -O2 -utf-8"
-                                     dst
-                                     xargs))
-                        (rc (shell-command* cmd)))
+                   (copy-file src dst))
+                 (let ((rc (shell-command*
+                               (format (cc-spec->* :msvc :compile)
+                                       "-nologo -DNDEBUG=1 -O2 -utf-8"
+                                       dst xargs))))
                    (and (= 0 (car rc)) xargs))))))))
 
 ;; end of xargs
@@ -149,18 +146,6 @@
 ;;;
 ;; #include
 ;;;
-
-(defun cc*--include-parse (pre)
-  (let ((inc nil) (beg nil))
-    (catch :br
-      (dolist (x (split-string* pre "\n" t "[ \t\n]"))
-        (when (and beg (string-match "End of search list\\." x))
-          (throw :br (nreverse inc)))
-        (when beg (setq inc (cons x inc)))
-        (when (and (null beg)
-                   (string-match
-                    "#include <\\.\\.\\.> search starts here:" x))
-          (setq beg t))))))
 
 (defun cc*-include-check (&optional remote)
   "Return a list of system cc include path."
@@ -170,25 +155,31 @@
                           " \"" (cc-spec->* (cc*-cc) :include) "\""))
               (shell-command* (cc-spec->* (cc*-cc) :include)))))
     (when (= 0 (car rc))
-      (let ((pre (cdr rc)))
+      (let ((pre (cdr rc)) (inc nil))
         (if-platform% windows-nt
-            (cond ((eq :msvc (cc*-cc))
-                   (dolist (x (var->paths
-                               (car
-                                (nreverse
-                                 (split-string* pre "\n" t "[ \"]*"))))
-                              (nreverse inc))
-                     (setq inc (cons (posix-path x) inc))))
-                  (t (cc*--include-parse pre)))
-          (cc*--include-parse pre))))))
+            ;; msvc
+            (dolist (x (var->paths
+                        (car (nreverse (split-string* pre "\n" t "[ \"]*"))))
+                       (nreverse inc))
+              (setq inc (cons (posix-path x) inc)))
+          ;; Darwin/Linux
+          (let ((beg nil))
+            (catch :br
+              (dolist (x (split-string* pre "\n" t "[ \t\n]"))
+                (when (and beg (string-match "End of search list\\." x))
+                  (throw :br (nreverse inc)))
+                (when beg (setq inc (cons x inc)))
+                (when (and (null beg)
+                           (string-match
+                            "#include <\\.\\.\\.> search starts here:" x))
+                  (setq beg t))))))))))
 
 (defun cc*-system-include-read (file &optional remote)
   (or (read-sexp-from-file file)
       (let ((xs nil))
         (dolist (x (cc*-include-check remote) (setq xs (nreverse xs)))
           (let ((x1 (if remote (concat remote x) x)))
-            (and (file-exists-p x1)
-                 (setq xs (cons x1 xs)))))
+            (and (file-exists-p x1) (setq xs (cons x1 xs)))))
         (prog1 xs
           (and xs (save-sexp-to-file xs file))))))
 
@@ -245,22 +236,36 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 ;; #define
 ;;;
 
-(defun cc*-dump-predefined-macros (&optional options)
-  "Dump predefined macros."
-  (interactive "sInput C compiler's options: ")
+(when-platform% 'windows-nt
+  (defun cc*--msvc-define-dump (&optional option)
+    (let ((c (v-home% ".exec/cc_define.c"))
+          (x (v-home% ".exec/cc_define.exe"))
+          (rc nil))
+      (unless (file-exists-p c)
+        (copy-file (emacs-home% "config/cc_msvc_def.c") c))
+      (unless (and option (null (file-exists-p x)))
+        (let ((cmd (format (cc-spec->* :cc :compile) (or option "") c x)))
+          (setq rc (shell-command* cmd))))
+      (when (and rc (= 0 (car rc)))
+        (shell-command* x)))))
+
+(defun cc*-define-dump (&optional option)
+  "Dump define."
+  (interactive "sInput C compiler's option: ")
   (let* ((remote (ssh-remote-p (buffer-file-name (current-buffer))))
          (cc (if remote :cc (cc*-cc)))
-         (cmd (format (cc-spec->* cc :define) (or options "")))
-         (rc (cond (remote (fluid-let (shell-file-name "sh")
-                             (shell-command* "ssh"
-                               (ssh-remote->user@host remote)
-                               cmd)))
-                   (t (shell-command* cmd)))))
+         (cmd (format (cc-spec->* cc :define) (or option "")))
+         (rc (if remote
+                 (fluid-let (shell-file-name "sh")
+                   (shell-command* "ssh" (ssh-remote->user@host remote) cmd))
+               (if-platform% windows-nt
+                   (cc*--msvc-define-dump option)
+                 (shell-command* cmd)))))
     (with-current-buffer
         (switch-to-buffer
          (if remote
-             (format "*Macro Predefined@%s*" (ssh-remote->user@host remote))
-           "*Macro Predefined*"))
+             (format "*Macro Ddefined@%s*" (ssh-remote->user@host remote))
+           "*Macro Defined*"))
       (let ((inhibit-read-only t))
         (erase-buffer)
         (insert (if (= 0 (car rc))
@@ -433,7 +438,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 
 (defun cc*-define-keys (keymap)
   ;; dump predefined macros
-  (define-key keymap "#" #'cc*-dump-predefined-macros)
+  (define-key keymap "#" #'cc*-define-dump)
   ;; raw newline
   (define-key keymap (kbd% "RET") #'newline*)
   ;; align entire style
