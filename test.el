@@ -736,11 +736,15 @@
   (should (message "# xargs = %s" (executable-find "xargs"))))
 
 (ert-deftest %q:cc:cc*--platform-check ()
-  (should (message "# (cc-spec->* %s :include) = \n%s"
-                   (or (and (fboundp 'cc*-cc) (cc*-cc))  "<unbound-(cc*-cc)>")
-                   (or (and (fboundp 'cc-spec->*)
-                            (shell-command* (cc-spec->* :cc :include)))
-                       "<unbound-(cc-spec->*)>")))
+  (should (message "# (cc-spec->* (cc*-cc) :include) = %s "
+                   (when (and (fboundp 'cc-spec->*) (fboundp 'cc*-cc))
+                     (shell-command* (cc-spec->* (cc*-cc) :include)))))
+  (should (message "# (cc*-system-include-file) = %s"
+                   (when (fboundp 'cc*-system-include-file)
+                     (cc*-system-include-file))))
+  (should (message "# (cc-spec->* :X :include) = \n%s"
+                   (when (and (fboundp 'cc*-cc) (fboundp 'cc-spec->*))
+                     (shell-command* (cc-spec->* (cc*-cc) :include)))))
   (should (message "# (cc*-check-vcvarsall-bat) = %s"
                    (and (fboundp 'cc*-check-vcvarsall-bat)
                         (cc*-check-vcvarsall-bat))))
