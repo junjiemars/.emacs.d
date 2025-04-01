@@ -29,7 +29,8 @@
                ((and cmd (eq cmd :include))
                 "echo ''| cc -v -E 2>&1 >/dev/null -")
                ((and cmd (eq cmd :define)) "cc %s -dM -E -")
-               ((and cmd (eq cmd :macro)) "cc -E -o - -")))
+               ((and cmd (eq cmd :macro)) "cc -E -o - -")
+               ((and cmd (eq cmd :version) "cc -v"))))
         ((and cc (eq cc :msvc))
          (let ((msvc (v-home% ".exec/cc_msvc.bat"))
                (xargs (v-home% ".exec/cc_xargs")))
@@ -45,7 +46,9 @@
                     (format "%s -0 >%s && %s && cl -E %s"
                             xargs tmp msvc tmp)))
                  ((and cmd (eq cmd :env)) msvc)
-                 ((and cmd (eq cmd :xargs)) xargs))))))
+                 ((and cmd (eq cmd :xargs)) xargs)
+                 ((and cmd (eq cmd :version)
+                       (concat msvc " && cl 2>&1"))))))))
 
 ;; end of env
 
@@ -63,7 +66,7 @@
         (posix-path
          (or (let* ((rc (shell-command* (shell-quote-argument vswhere)
                           "-nologo -latest -property installationPath"))
-                    (bat (and (zerop (car rc))
+                    (bat (and (= 0 (car rc))
                               (concat
                                (string-trim> (cdr rc))
                                "/VC/Auxiliary/Build/vcvarsall.bat"))))
@@ -274,7 +277,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
       (with-current-buffer
           (switch-to-buffer
            (if remote
-               (format "*Macro Ddefined@%s*" (ssh-remote->user@host remote))
+               (format "*Macro Defined@%s*" (ssh-remote->user@host remote))
              "*Macro Defined*"))
         (let ((inhibit-read-only t))
           (erase-buffer)
@@ -354,7 +357,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
              (if remote
                  (cc-spec->* :cc :macro)
                (when-platform% windows-nt
-                 (and (eq :msvc (cc*-cc)) (cc*-make-xargs-bin)))
+                 (cc*-make-xargs-bin))
                (cc-spec->* (cc*-cc) :macro))
              cmacexp)
       (apply #'c-macro-expand args))))

@@ -729,44 +729,54 @@
 
 (ert-deftest %q:cc:cc*--executable-check ()
   (should (message "# cl = %s" (executable-find "cl")))
-  (should (message "# gcc = %s" (executable-find "gcc")))
   (should (message "# clang = %s" (executable-find "clang")))
+  (should (message "# gcc = %s" (executable-find "gcc")))
   (should (message "# make = %s" (executable-find "make")))
   (should (message "# xargs = %s" (executable-find "xargs"))))
 
 (ert-deftest %q:cc:cc*-cc ()
-  (should (message "# (cc*-cc) = %s" (and (fboundp 'cc*-cc) (cc*-cc)))))
+  (should (message "# (cc*-cc) = %s %s"
+                   (when (fboundp 'cc*-cc)
+                     (cc*-cc))
+                   (when (and (fboundp 'cc-spec->*) (fboundp 'cc*-cc))
+                     (shell-command* (cc-spec->* (cc*-cc) :version))))))
+
 
 (ert-deftest %q:cc:cc*--cc-check ()
   (should (message "# (cc*--cc-check) = %s"
                    (and (fboundp 'cc*--cc-check) (cc*--cc-check t)))))
 
 (ert-deftest %q:cc:cc*-check-vcvarsall-bat ()
-  (should (message "# (cc*-check-vcvarsall-bat) = %s"
-                   (when (fboundp 'cc*-check-vcvarsall-bat)
-                     (cc*-check-vcvarsall-bat)))))
+  (when (eq system-type 'windows-nt)
+    (should (message "# (cc*-check-vcvarsall-bat) = %s"
+                     (when (fboundp 'cc*-check-vcvarsall-bat)
+                       (cc*-check-vcvarsall-bat))))))
 
 (ert-deftest %q:cc:cc*-make-env-bat ()
-  (should (message "# (cc*-make-env-bat) = %s"
-                   (when (fboundp 'cc*-make-env-bat)
-                     (cc*-make-env-bat)))))
+  (when (eq system-type 'windows-nt)
+    (should (message "# (cc*-make-env-bat) = %s"
+                     (when (fboundp 'cc*-make-env-bat)
+                       (cc*-make-env-bat))))))
 
 (ert-deftest %q:cc:cc*-make-xargs-bin ()
-  (should (message "# (cc*-make-xargs-bin) = %s"
-                   (when (fboundp 'cc*-make-xargs-bin)
-                     (cc*-make-xargs-bin)))))
+  (when (eq system-type 'windows-nt)
+    (should (message "# (cc*-make-xargs-bin) = %s"
+                     (when (fboundp 'cc*-make-xargs-bin)
+                       (cc*-make-xargs-bin))))))
 
 (ert-deftest %q:cc:cc*-system-include-file ()
-  (should (message "# (cc*-system-include-file) = %s"
-                   (when (fboundp 'cc*-system-include-file)
-                     (cc*-system-include-file)))))
+  (when (memq system-type `(cygwin ms-dos windows-nt))
+    (should (message "# (cc*-system-include-file) = %s"
+                     (when (fboundp 'cc*-system-include-file)
+                       (cc*-system-include-file))))))
 
 (ert-deftest %q:cc:cc*-system-include-read ()
-  (should (message "# (cc*-system-includ-read) = %s"
-                   (when (and (fboundp 'cc*-system-include-read)
-                              (fboundp 'cc*-system-include-file))
-                     (cc*-system-include-read
-                      (cdr (cc*-system-include-file)))))))
+  (when (memq system-type `(cygwin ms-dos windows-nt))
+    (should (message "# (cc*-system-includ-read) = %s"
+                     (when (and (fboundp 'cc*-system-include-read)
+                                (fboundp 'cc*-system-include-file))
+                       (cc*-system-include-read
+                        (cdr (cc*-system-include-file))))))))
 
 (ert-deftest %q:cc:cc*-system-include ()
   (should (message "# (cc*-system-include) = %s"
