@@ -74,16 +74,11 @@ jobs:
     - name: Install Dependencies
       uses: msys2/setup-msys2@v2
       with:
-        install: mingw64
         update: true
         install: >-
-          base-devel
           emacs
-          mingw-w64-x86_64-toolchain
-    - name: Verify CC
-      run: |
-        gcc --version
-        make --version
+          git
+          mingw-w64-x86_64-gcc
     - name: Test
       run: |
         _TEST_=bone ./test.sh
