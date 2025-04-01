@@ -74,6 +74,7 @@ jobs:
     - name: Install Dependencies
       uses: msys2/setup-msys2@v2
       with:
+        install: mingw64
         update: true
         install: >-
           base-devel
