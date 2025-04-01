@@ -223,11 +223,11 @@ Return absolute filename when FILENAME existing or it's existing
 in \\=`gud-cdb-directories\\='."
   (or (let ((f (expand-file-name filename)))
         (when (file-exists-p f) f))
-      (catch 'br
+      (catch :br
         (dolist (d gud-cdb-directories)
           (let ((p (path+ d filename)))
             (and (file-exists-p p)
-                 (throw 'br p)))))))
+                 (throw :br p)))))))
 
 
 (defun cdb-annotate-completion (s)

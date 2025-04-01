@@ -88,11 +88,11 @@ See \\=`setenv\\='."
   (let* ((env process-environment)
          (name= (concat name "="))
          (newval (concat name= value)))
-    (if (catch 'br
+    (if (catch :br
           (while (car env)
             (and (string-equal name= (car env))
                  (setcar env newval)
-                 (throw 'br t))
+                 (throw :br t))
             (setq env (cdr env))))
         process-environment
       (setq process-environment (cons newval process-environment)))))

@@ -28,11 +28,11 @@
       (prog1 r
         (with-current-buffer (current-buffer)
           (let ((b (current-buffer)))
-            (catch 'br
+            (catch :br
               (dolist (ss (slime*-source-locations))
                 (when (and (stringp ss) (string-match ss (buffer-file-name b)))
                   (view-mode 1)
-                  (throw 'br t))))))))))
+                  (throw :br t))))))))))
 
 (defun use-slime-init! ()
   "On \\=`slime\\=' initialization."

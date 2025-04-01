@@ -95,23 +95,23 @@ else do ELSE..."
        (let ((i (1- l)))
          (substring-no-properties
           -fnse-f1- 0
-          (catch 'br
+          (catch :br
             (while (>= i 0)
               (let ((c (aref -fnse-f1- i)))
-                (cond ((char-equal ?/ c) (throw 'br l))
-                      ((char-equal ?. c) (throw 'br i))
+                (cond ((char-equal ?/ c) (throw :br l))
+                      ((char-equal ?. c) (throw :br i))
                       (t (setq i (1- i))))))))))))
 
 (defmacro mkdir* (file)
   "Make and return the path of posixed FILE."
   `(let* ((-md-f1- ,file)
           (dir -md-f1-) (i (1- (length dir))) (ds nil))
-     (catch 'br
+     (catch :br
        (while (> i 0)
          (when (char-equal ?/ (aref dir i))
            (let ((s (substring-no-properties dir 0 (1+ i))))
              (if (file-exists-p s)
-                 (throw 'br t)
+                 (throw :br t)
                (setq ds (cons s ds)))))
          (setq i (1- i))))
      (while (car ds)

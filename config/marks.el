@@ -50,26 +50,26 @@
 
 (defmacro _forward_symmetry_ (chr pos rx ls rs)
   `(let ((cur ,pos) (ss (cons ,chr nil)))
-     (catch 'br
+     (catch :br
        (while (< cur ,rx)
          (let ((l (and (= ,ls (char-after cur)) ,chr))
                (r (and (= ,rs (char-after cur)) ,chr)))
            (cond ((and r ss (= r (car ss)))
                   (setq ss (cdr ss)))
                  (l (setq ss (cons l ss)))))
-         (when (null ss) (throw 'br cur))
+         (when (null ss) (throw :br cur))
          (setq cur (1+ cur))))))
 
 (defmacro _backward_symmetry_ (chr pos lx ls rs)
   `(let ((cur ,pos) (ss (cons ,chr nil)))
-     (catch 'br
+     (catch :br
        (while (> cur ,lx)
          (let ((l (and (= ,ls (char-before cur)) ,chr))
                (r (and (= ,rs (char-before cur)) ,chr)))
            (cond ((and l ss (= l (car ss)))
                   (setq ss (cdr ss)))
                  (r (setq ss (cons r ss)))))
-         (when (null ss) (throw 'br cur))
+         (when (null ss) (throw :br cur))
          (setq cur (1- cur))))))
 
 ;; `_forward_symmetry_' `_backward_symmetry_'
@@ -121,18 +121,18 @@
 
 (defmacro _forward_asymmetry_ (chr pos rx)
   `(let ((cur ,pos))
-     (catch 'br
+     (catch :br
        (while (< cur ,rx)
          (when (char-equal ,chr (char-after cur))
-           (throw 'br cur))
+           (throw :br cur))
          (setq cur (1+ cur))))))
 
 (defmacro _backward_asymmetry_ (chr pos lx)
   `(let ((cur ,pos))
-     (catch 'br
+     (catch :br
        (while (> cur ,lx)
          (when (char-equal ,chr (char-before cur))
-           (throw 'br cur))
+           (throw :br cur))
          (setq cur (1- cur))))))
 
 

@@ -61,7 +61,7 @@
                        "gdb_load_rust_pretty_printers.py"
                      "lldb_commands"))))
     (unwind-protect
-        (catch 'br
+        (catch :br
           (prog1 f
             (with-current-buffer w
               (insert-file-contents-literally* f)
@@ -72,7 +72,7 @@
                                "^settings set target\\.source-map")
                              " " x)
                      nil t)
-                (throw 'br f))
+                (throw :br f))
               (goto-char (point-min))
               (when (re-search-forward
                      (if-platform% gnu/linux

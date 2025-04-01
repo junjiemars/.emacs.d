@@ -34,13 +34,13 @@
 
 (defun treesit*-on/off-check (recipe)
   "Return t if \\=`treesit\\=' is on, otherwise nil."
-  (catch 'br
+  (catch :br
     (dolist (x recipe)
       (let ((m (plist-get x :map)))
         (dolist (a major-mode-remap-alist)
-          (and (eq m (cdr a)) (throw 'br t)))
+          (and (eq m (cdr a)) (throw :br t)))
         (dolist (a auto-mode-alist)
-          (and (eq m (cdr a)) (throw 'br t)))))))
+          (and (eq m (cdr a)) (throw :br t)))))))
 
 (defun toggle-treesit! ()
   "Toggle \\=`treesit\\=' on or off."
@@ -50,18 +50,18 @@
     (cond (on (setq auto-mode-alist
                     (let ((as nil))
                       (dolist (a auto-mode-alist (nreverse as))
-                        (unless (catch 'br
+                        (unless (catch :br
                                   (dolist (x ts)
                                     (and (eq (plist-get x :map) (cdr a))
-                                         (throw 'br t))))
+                                         (throw :br t))))
                           (setq as (cons a as)))))
                     major-mode-remap-alist
                     (let ((as nil))
                       (dolist (a major-mode-remap-alist (nreverse as))
-                        (unless (catch 'br
+                        (unless (catch :br
                                   (dolist (x ts)
                                     (and (eq (plist-get x :map) (cdr a))
-                                         (throw 'br t))))
+                                         (throw :br t))))
                           (setq as (cons a as)))))
                     treesit-language-source-alist nil))
           (t (let ((aa (copy-sequence auto-mode-alist)))

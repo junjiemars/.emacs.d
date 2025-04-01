@@ -120,11 +120,11 @@ Avoid bugs in \\=`gud-format-command\\=' and \\=`gud-find-c-expr\\='."
 Return absolute filename when FILENAME exists, otherwise nil."
   (or (let ((f (expand-file-name filename)))
         (and (file-exists-p f) f))
-      (catch 'br
+      (catch :br
         (dolist (d gud-lldb-directories)
           (let ((p (path+ d filename)))
             (and (file-exists-p p)
-                 (throw 'br p)))))))
+                 (throw :br p)))))))
 
 (defun lldb-start-file (&optional force)
   "Make lldb\\='s init file if FORCE or the init file is missing.\n

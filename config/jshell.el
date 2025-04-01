@@ -99,7 +99,7 @@
 (defun jshell-last-symbol ()
   "Return the position of left side of the last symbol."
   (save-excursion
-    (catch 'br
+    (catch :br
       (while (null (or (char-equal (char-before) ?\;)
                        (char-equal (char-before) ?\n)
                        (eq (char-syntax (char-before)) ? )))
@@ -108,7 +108,7 @@
                (backward-char))
               ((eq (char-syntax (char-before)) ?w)
                (backward-word))
-              (t (throw 'br (point))))))
+              (t (throw :br (point))))))
     (point)))
 
 (defun jshell-completion-read (in buffer)

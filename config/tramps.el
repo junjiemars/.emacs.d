@@ -34,11 +34,11 @@
   ;; `C-x C-f' /docker:[<user>@]<container>:/path/to/file
   ;; `C-x d' /docker:[<user>@]<container>:/path/
   (when-var% tramp-methods tramp
-    (unless% (catch 'br
+    (unless% (catch :br
                (dolist (x tramp-methods)
                  (let ((x1 (car x)))
                    (and (or (string-equal "docker" x1) (string-equal "podman" x1))
-                        (throw 'br t)))))
+                        (throw :br t)))))
       (setq tramp-methods
             ;; podman is compatible with docker
             (let ((ts (let ((xs nil))

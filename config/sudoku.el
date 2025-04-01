@@ -191,7 +191,7 @@
 
 (defun sudoku-puzzle-vec-unique (vector)
   "Predicate sudoku puzzle\\='s VECTOR is unique."
-  (catch 'br
+  (catch :br
     (let ((len (length vector))
           (i 0)
           (j 0))
@@ -200,7 +200,7 @@
         (while (< j len)
           (when (and (/= 0 (aref vector i))
                      (= (aref vector i) (aref vector j)))
-            (throw 'br nil))
+            (throw :br nil))
           (setq j (1+ j)))
         (setq i (1+ i)
               j (+ i 1)))
@@ -209,29 +209,29 @@
 
 (defun sudoku-puzzle-solved-p (&optional idx)
   "Predicate sudoku\\='s puzzle is resovled."
-  (catch 'br
+  (catch :br
     (let ((d (*sudoku-puzzle-d* :d))
           (sqr (*sudoku-puzzle-d* :sqr))
           (i 0) (j 0))
 
       (when idx
         (unless (sudoku-puzzle-vec-unique (*sudoku-puzzle* :row idx))
-          (throw 'br :unique))
+          (throw :br :unique))
         (unless (sudoku-puzzle-vec-unique (*sudoku-puzzle* :col idx))
-          (throw 'br :unique))
+          (throw :br :unique))
         (unless (sudoku-puzzle-vec-unique (*sudoku-puzzle* :sqr idx))
-          (throw 'br :unique)))
+          (throw :br :unique)))
 
       (while (< i d)
         (unless (sudoku-puzzle-vec-unique
                  (*sudoku-puzzle* :row (sudoku-puzzle--1d d i 0)))
-          (throw 'br :unique))
+          (throw :br :unique))
         (setq i (1+ i)))
 
       (while (< j d)
         (unless (sudoku-puzzle-vec-unique
                  (*sudoku-puzzle* :col (sudoku-puzzle--1d d 0 j)))
-          (throw 'br :unique))
+          (throw :br :unique))
         (setq j (1+ j)))
 
       (setq i 0 j 0)
@@ -239,7 +239,7 @@
         (while (< j d)
           (unless (sudoku-puzzle-vec-unique
                    (*sudoku-puzzle* :sqr (sudoku-puzzle--1d d i j)))
-            (throw 'br :unique))
+            (throw :br :unique))
           (setq j (+ j sqr)))
         (setq j 0 i (+ i sqr)))
 
@@ -247,14 +247,14 @@
       (while (< i d)
         (unless (sudoku-puzzle-vec-complete
                  (*sudoku-puzzle* :row (sudoku-puzzle--1d d i 0)))
-          (throw 'br :complete))
+          (throw :br :complete))
         (setq i (1+ i)))
 
       (setq j 0)
       (while (< j d)
         (unless (sudoku-puzzle-vec-complete
                  (*sudoku-puzzle* :col (sudoku-puzzle--1d d 0 j)))
-          (throw 'br :complete))
+          (throw :br :complete))
         (setq j (1+ j)))
 
       (setq i 0 j 0)
@@ -262,7 +262,7 @@
         (while (< j d)
           (unless (sudoku-puzzle-vec-complete
                    (*sudoku-puzzle* :sqr (sudoku-puzzle--1d d i j)))
-            (throw 'br :complete))
+            (throw :br :complete))
           (setq j (+ j sqr)))
         (setq j 0 i (+ i sqr))))
     :solve))
@@ -521,7 +521,7 @@
 (defun sudoku-board-input (num &rest properties)
   "Input on sudoku\\='s board with NUM and PROPERTIES."
   (declare (indent 1))
-  (catch 'br
+  (catch :br
     (with-current-buffer (*sudoku*)
       (let ((inhibit-read-only t)
             (c (string-to-char (number-to-string num)))
@@ -548,7 +548,7 @@
             (let ((rc (sudoku-puzzle-solved-p idx)))
               (cond ((and rc (eq :unique rc))
                      (put-text-property pos (1+ pos) 'face f)
-                     (throw 'br nil))
+                     (throw :br nil))
                     ((and rc (eq :solve rc))
                      (message "Solved, %s." (*sudoku-idiom*)))))
 
