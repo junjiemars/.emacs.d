@@ -95,24 +95,32 @@
 ;; CC
 ;;;
 
-(defun cc*--cc-check ()
-  (let ((cx '(:cc :clang :gcc :msvc))
-        (o (concat (v-home% ".exec/cc_check")
-                   (if% (or (when-platform% cygwin t)
-                            (when-platform% ms-dos t)
-                            (when-platform% windows-nt t))
-                       ".exe"
-                     ".out")))
-        (i (v-home% ".exec/cc_check.c")))
+(defun cc*--cc-check (&optional run)
+  (let ((cx `((:cc . "cc")
+              (:clang . "clang")
+              (:gcc . "gcc")
+              (:msvc . "msvc")))
+        (pre (v-home% ".exec/cc_"))
+        (ext (if% (or (when-platform% cygwin t)
+                      (when-platform% ms-dos t)
+                      (when-platform% windows-nt t))
+                 ".exe"
+               ".out"))
+        (in (v-home% ".exec/cc_check.c")))
     (catch :br
       (inhibit-file-name-handler
-        (unless (file-exists-p i)
-          (copy-file (emacs-home% "config/cc_check.c") i)))
-      (dolist (cc cx)
-        (let* ((cmd (cc-spec->* cc :compile))
-               (rc (shell-command* (format cmd "" i o))))
-          (when (= 0 (car rc))
-            (throw :br cc)))))))
+        (unless (file-exists-p in)
+          (copy-file (emacs-home% "config/cc_check.c") in))
+        (catch :br
+          (dolist (cc cx)
+            (let* ((out (concat pre (cdr cc) ext))
+                   (cmd (format (cc-spec->* (car cc) :compile) "" in out)))
+              (cond ((and (null run) (file-exists-p out)) (throw :br (car cc)))
+                    ((null run) (and (= 0 (car (shell-command* cmd)))
+                                     (throw :br (car cc))))
+                    (t (and (= 0 (car (shell-command* cmd)))
+                            (= 0 (car (shell-command* out)))
+                            (throw :br (car cc))))))))))))
 
 (defalias 'cc*-cc
   (let ((b (cc*--cc-check)))
