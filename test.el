@@ -727,12 +727,29 @@
 ;; conditional: `cc'
 ;;;
 
-(ert-deftest %q:cc:cc*-cc ()
+(ert-deftest %q:cc:cc*--executable-check ()
   (should (message "# cc-env.bat = %s" (executable-find "cc-env.bat")))
   (should (message "# cl = %s" (executable-find "cl")))
   (should (message "# gcc = %s" (executable-find "gcc")))
   (should (message "# clang = %s" (executable-find "clang")))
   (should (message "# make = %s" (executable-find "make")))
+  (should (message "# xargs = %s" (executable-find "xargs"))))
+
+(ert-deftest %q:cc:cc*--platform-check ()
+  (should (message "(cc-spec->* %s :include) = \n%s"
+                   (or (and (fboundp 'cc*-cc) (cc*-cc))  "<unbound-(cc*-cc)>")
+                   (or (and (fboundp 'cc-spec->*)
+                            (shell-command* (cc-spec->* :cc :include)))
+                       "<unbound-(cc-spec->*)>")))
+  (should (message "# (cc*-check-vcvarsall-bat) = %s"
+                   (and (fboundp 'cc*-check-vcvarsall-bat)
+                        (cc*-check-vcvarsall-bat))))
+  (should (message "# (cc*-make-env-bat) = %s"
+                   (and (fboundp 'cc*-make-env-bat) (cc*-make-env-bat))))
+  (should (message "# (cc*-make-xargs-bin) = %s"
+                   (and (fboundp 'cc*-make-xargs-bin) (cc*-make-xargs-bin)))))
+
+(ert-deftest %q:cc:cc*-cc ()
   (should (message "# (cc*-cc) = %s" (and (fboundp 'cc*-cc) (cc*-cc)))))
 
 (ert-deftest %q:cc:cc*-system-include ()
@@ -740,24 +757,7 @@
                    (and (fboundp 'cc*-system-include)
                         (cc*-system-include :read)))))
 
-(ert-deftest %q:cc:cc*-on-windows ()
-  (should (message "# xargs = %s" (executable-find "xargs")))
-  (should (message "# (platform-arch) = %s"
-                   (and (fboundp 'platform-arch) (platform-arch))))
-  (should (message "# (cc*-check-vcvarsall-bat) = %s"
-                   (and (fboundp 'cc*-check-vcvarsall-bat)
-                        (cc*-check-vcvarsall-bat))))
-  (should (message "# (cc*-make-env-bat) = %s"
-                   (and (fboundp 'cc*-make-env-bat)
-                        (cc*-make-env-bat))))
-  (should (message "# (cc*-make-xargs-bin)"
-                   (and (fboundp 'cc*-make-xargs-bin)
-                        (cc*-make-xargs-bin))))
-  (when-platform% cygwin
-    (when (fboundp 'cc-spec->*)
-      (let* ((cmd (cc-spec->* :cc :include))
-             (rc (shell-command* cmd)))
-        (message "cygwin :include =\n%s" rc)))))
+
 
 ;; end of `cc'
 
