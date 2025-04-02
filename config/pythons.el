@@ -207,9 +207,7 @@ determine whether inside a virtual env. Another way is using
 
 (defun python*-format-region (&optional beg end)
   "Format the region in (BEG,END) of current buffer via ruff."
-  (interactive (if-region-active
-                   (list (region-beginning) (region-end))
-                 (list (point-min) (point-max))))
+  (interactive (select-region-prompt))
   (let ((cur (point)))
     (unwind-protect
         (let ((src (buffer-substring-no-properties beg end))

@@ -743,7 +743,7 @@
 (ert-deftest %q:cc:cc*-system-include ()
   (should (message "# (cc*-system-include) = %s"
                    (when (fboundp 'cc*-system-include)
-                     (cc*-system-include :read)))))
+                     (cc*-system-include)))))
 
 (ert-deftest %q:cc:cc*--cc-check ()
   (should (message "# (cc*--cc-check) = %s"
@@ -761,19 +761,19 @@
                      (when (fboundp 'cc*-make-env-bat)
                        (cc*-make-env-bat))))))
 
-(ert-deftest %q:cc:cc*-system-include-file ()
+(ert-deftest %q:cc:cc*--include-file ()
   (when (memq system-type `(cygwin ms-dos windows-nt))
-    (should (message "# (cc*-system-include-file) = %s"
-                     (when (fboundp 'cc*-system-include-file)
+    (should (message "# (cc*--include-file) = %s"
+                     (when (fboundp 'cc*--include-file)
                        (cc*-system-include-file))))))
 
 (ert-deftest %q:cc:cc*-system-include-read ()
   (when (memq system-type `(cygwin ms-dos windows-nt))
-    (should (message "# (cc*-system-includ-read) = %s"
-                     (when (and (fboundp 'cc*-system-include-read)
-                                (fboundp 'cc*-system-include-file))
-                       (cc*-system-include-read
-                        (cdr (cc*-system-include-file))))))
+    (should (message "# (cc*--includ-read) = %s"
+                     (when (and (fboundp 'cc*--include-read)
+                                (fboundp 'cc*--include-file))
+                       (cc*--include-read
+                        (cdr (cc*--include-file))))))
     (should (message "# cc*-system-include-read raw = %s"
                      (when (and (fboundp 'shell-command*)
                                 (fboundp 'cc-spec->*)

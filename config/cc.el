@@ -10,11 +10,19 @@
 
 ;;; require
 
-;; `newline*'
-(require% 'ed (v-home%> "config/ed"))
-;; `(tags-spec->% :root)'
-(require% 'tags (v-home%> "config/tags"))
-(require% 'ssh (v-home%> "config/ssh"))
+(eval-when-compile
+  ;; `newline*'
+  (require 'ed (v-home%> "config/ed"))
+  ;; `(tags-spec->% :root)'
+  (require 'tags (v-home%> "config/tags"))
+  (require 'ssh (v-home%> "config/ssh"))
+  (defmacro when-fn-ff-find-other-file% (&rest body)
+    (if-fn% ff-find-other-file find-file
+            `(progn% ,@body)
+      `(comment ,@body))))
+
+(when-fn% xref-push-marker-stack xref
+  (autoload 'xref-push-marker-stack "xref"))
 
 ;; end of require
 
@@ -53,14 +61,6 @@
 
 (defvar *cc-option-history* nil
   "History list for C compiler\\='s option.")
-
-(defun cc*--compiler-option-prompt ()
-  (list (funcall (if-fn% read-shell-command nil
-                         #'read-shell-command
-                   #'read-string)
-                 "Input C compiler's option: "
-                 (car *cc-option-history*)
-                 '*cc-option-history*)))
 
 ;;;
 ;; msvc host environment
@@ -119,21 +119,20 @@
                ".out"))
         (in (v-home% ".exec/cc_check.c")))
     (catch :br
-      (inhibit-file-name-handler
-        (unless (file-exists-p in)
-          (copy-file (emacs-home% "config/cc_check.c") in))
-        (catch :br
-          (dolist (cc cx)
-            (let* ((out (concat pre (cdr cc) ext))
-                   (cmd (format (cc-spec->* (car cc) :compile) "" in out)))
-              (cond ((and (null restrict) (file-exists-p out))
-                     (throw :br (car cc)))
-                    ((null restrict)
-                     (and (= 0 (car (shell-command* cmd)))
-                          (throw :br (car cc))))
-                    (t (and (= 0 (car (shell-command* cmd)))
-                            (= 0 (car (shell-command* out)))
-                            (throw :br (car cc))))))))))))
+      (unless (file-exists-p in)
+        (copy-file (emacs-home% "config/cc_check.c") in))
+      (catch :br
+        (dolist (cc cx)
+          (let* ((out (concat pre (cdr cc) ext))
+                 (cmd (format (cc-spec->* (car cc) :compile) "" in out)))
+            (cond ((and (null restrict) (file-exists-p out))
+                   (throw :br (car cc)))
+                  ((null restrict)
+                   (and (= 0 (car (shell-command* cmd)))
+                        (throw :br (car cc))))
+                  (t (and (= 0 (car (shell-command* cmd)))
+                          (= 0 (car (shell-command* out)))
+                          (throw :br (car cc)))))))))))
 
 (defalias 'cc*-cc
   (let ((b (cc*--cc-check)))
@@ -147,45 +146,43 @@
 ;; #include
 ;;;
 
+(when-platform% windows-nt
+  (defun cc*--include-parse (str)
+    (let ((inc nil))
+      (dolist (x (var->paths
+                  (car (nreverse (split-string* str "\n" t "[ \"]*"))))
+                 (nreverse inc))
+        (setq inc (cons (posix-path x) inc))))))
+
+(unless-platform% windows-nt
+  (defun cc*--include-parse (str)
+    (let ((inc nil) (beg nil))
+      (catch :br
+        (dolist (x (split-string* str "\n" t "[ \t\n]"))
+          (when (and beg (string-match "End of search list\\." x))
+            (throw :br (nreverse inc)))
+          (when beg (setq inc (cons x inc)))
+          (when (and (null beg)
+                     (string-match
+                      "#include <\\.\\.\\.> search starts here:" x))
+            (setq beg t)))))))
+
 (defun cc*-include-check (&optional remote)
   "Return a list of system cc include path."
-  (let* ((cc (cc*-cc))
+  (let* ((cc (if remote :cc (cc*-cc)))
          (inc (cc-spec->* cc :include))
          (rc (if remote
                  (shell-command* "ssh"
                    (concat (ssh-remote->user@host remote) " \"" inc "\""))
                (shell-command* inc))))
     (when (= 0 (car rc))
-      (let ((pre (cdr rc)) (inc nil))
-        (if-platform% windows-nt
-            ;; msvc
-            (dolist (x (var->paths
-                        (car (nreverse (split-string* pre "\n" t "[ \"]*"))))
-                       (nreverse inc))
-              (setq inc (cons (posix-path x) inc)))
-          ;; Darwin/Linux
-          (let ((beg nil))
-            (catch :br
-              (dolist (x (split-string* pre "\n" t "[ \t\n]"))
-                (when (and beg (string-match "End of search list\\." x))
-                  (throw :br (nreverse inc)))
-                (when beg (setq inc (cons x inc)))
-                (when (and (null beg)
-                           (string-match
-                            "#include <\\.\\.\\.> search starts here:" x))
-                  (setq beg t))))))))))
+      (if-platform% windows-nt
+          ;; msvc
+          (cc*--include-parse (cdr rc))
+        ;; Darwin/Linux
+        (cc*--include-parse (cdr rc))))))
 
-(defun cc*-system-include-read (file &optional remote)
-  (inhibit-file-name-handler
-    (or (read-sexp-from-file file)
-        (let ((xs nil))
-          (dolist (x (cc*-include-check remote) (setq xs (nreverse xs)))
-            (let ((x1 (if remote (concat remote x) x)))
-              (and (file-exists-p x1) (setq xs (cons x1 xs)))))
-          (prog1 xs
-            (and xs (save-sexp-to-file xs file)))))))
-
-(defun cc*-system-include-file (&optional remote)
+(defun cc*--include-file (&optional remote)
   (let* ((ss (if remote
                  (intern (mapconcat #'identity
                                     (ssh-remote->ids remote)
@@ -194,26 +191,29 @@
          (fs (format "%s-%s.el" (v-home% ".exec/cc-inc") ss)))
     (cons ss fs)))
 
+(defun cc*--include-read (&optional remote save)
+  (let* ((pair (cc*--include-file remote))
+         (key (car pair)) (file (cdr pair))
+         (prefix (if remote (ssh-remote-p remote) nil)))
+    (or (read-sexp-from-file file)
+        (let ((xs nil))
+          (dolist (x (cc*-include-check remote) (setq xs (nreverse xs)))
+            (let ((x1 (concat prefix x)))
+              (and (file-exists-p x1) (setq xs (cons x1 xs)))))
+          (prog1 (cons key xs)
+            (and save xs (save-sexp-to-file xs file)))))))
+
 (defalias 'cc*-system-include
   (let ((dx nil))
-    (lambda (&optional op remote)
-      (let* ((ssfs (cc*-system-include-file remote))
-             (ss (car ssfs)) (fs (cdr ssfs)))
-        (cond ((and op (eq op :read))
-               (let ((r (cc*-system-include-read fs remote)))
-                 (plist-get (setq dx (plist-put dx ss r)) ss)))
-              ((and op (eq op :save)) (save-sexp-to-file (plist-get dx ss) fs))
-              (t (plist-get dx ss))))))
+    (lambda (&optional remote)
+      (let ((pair (cc*--include-file remote)))
+        (or (plist-get dx (car pair))
+            (plist-get
+             (setq dx (plist-put dx (car pair)
+                                 (cc*--include-read remote t)))
+             (car pair))))))
   "Return a list of system include directories.\n
-Load \\=`cc*-system-include\\=' from file when CACHED is t,
-otherwise check cc include on the fly.
 The REMOTE argument from \\=`ssh-remote-p\\='.")
-
-(eval-when-compile
-  (defmacro when-fn-ff-find-other-file% (&rest body)
-    (if-fn% ff-find-other-file find-file
-            `(progn% ,@body)
-      `(comment ,@body))))
 
 (when-fn-ff-find-other-file%
  (defun cc*-find-include-file (&optional in-other-window)
@@ -225,11 +225,9 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
                      (let ((pwd (file-name-directory file)))
                        (list (string-trim> pwd "/")
                              (string-trim> (path- pwd) "/"))))
-                   (cc*-system-include :read (ssh-remote-p file))))
+                   (cc*-system-include (ssh-remote-p file))))
           find-file)
-   (when-fn% xref-push-marker-stack xref
-     (autoload 'xref-push-marker-stack "xref")
-     (xref-push-marker-stack))
+   (xref-push-marker-stack)
    (ff-find-other-file in-other-window nil)))
 
 ;; end of #include
@@ -253,7 +251,8 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 
 (defun cc*-define-dump (&optional option)
   "Dump define."
-  (interactive (cc*--compiler-option-prompt))
+  (interactive (read-string-prompt
+                "Input C compiler's option: " '*cc-option-history* ))
   (let* ((remote (ssh-remote-p (buffer-file-name (current-buffer))))
          (cc (if remote :cc (cc*-cc)))
          (cmd (format (cc-spec->* cc :define) (or option "")))
@@ -288,7 +287,8 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 
 (defun cc*-macro-expand (&optional option)
   "Expand Macro."
-  (interactive (cc*--compiler-option-prompt))
+  (interactive (read-string-prompt
+		"Input C compiler's option: " '*cc-option-history*))
   (let* ((remote (ssh-remote-p (buffer-file-name (current-buffer))))
          (cc (if remote :cc (cc*-cc)))
          (cmd (format (cc-spec->* cc :macro) (or option "")))
@@ -360,7 +360,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
   "Make system C tags."
   (let ((file (concat (tags-spec->% :root) "os.TAGS"))
         (opt (or option "--langmap=c:.h.c --c-kinds=+ptesgux --extra=+fq")))
-    (cond (renew (let ((inc (cc*-system-include :read)))
+    (cond (renew (let ((inc (cc*-system-include)))
                    (make-c-tags (car inc) file opt nil nil t)
                    (dolist (p (cdr inc) file)
                      (make-c-tags p file opt))))
@@ -397,9 +397,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 
 (defun cc*-format-region (&optional beg end)
   "Format the region in (BEG,END) of current buffer via clang-format."
-  (interactive (if-region-active
-                   (list (region-beginning) (region-end))
-                 (list (point-min) (point-max))))
+  (interactive (select-region-prompt))
   (let* ((buf (current-buffer))
          (tmp (get-buffer-create* (symbol-name (gensym* "cc-fmt-")) t))
          (cur (with-current-buffer buf (point))))
@@ -468,7 +466,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
   (when-platform% darwin
     (setq% manual-program "/usr/bin/man" man))
   ;; fix cannot find include path in `Man-mode'
-  (setq% Man-header-file-path (cc*-system-include :read) man))
+  (setq% Man-header-file-path (cc*-system-include) man))
 
 ;; end of `man'
 

@@ -214,13 +214,8 @@
 
 (defun run-cscope (&optional command-line)
   "Run a cscope REPL process, input and output via buffer *cscope*."
-  (interactive (list (funcall (if-fn% read-shell-command nil
-                                      #'read-shell-command
-                                #'read-string)
-                              "Run cscope: "
-                              (or (car *cscope-repl-history*)
-                                  "-dl -f ")
-                              '*cscope-repl-history*)))
+  (interactive (read-string-prompt
+                "Run cscope: " '*cscope-repl-history* "-dl -f "))
   (unless (comint-check-proc (*cscope*))
     (unless (executable-find* "cscope")
       (error "%s" "No cscope program found"))

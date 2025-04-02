@@ -695,6 +695,19 @@ Call FN with the path if FN is non-nil."
          (interactive-p)
        (ignore* ,kind))))
 
+(defun read-string-prompt (prompt &optional history option)
+  (list (funcall (if-fn% read-shell-command nil
+                         #'read-shell-command
+                   #'read-string)
+                 prompt
+                 (or (car (symbol-value history)) option)
+                 history)))
+
+(defun select-region-prompt ()
+  (if-region-active
+      (list (region-beginning) (region-end))
+    (list (point-min) (point-max))))
+
  ;; end of interactive
 
 (provide 'fn)
