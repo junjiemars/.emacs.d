@@ -731,7 +731,9 @@
   (should (message "# (cc*-cc) = %s %s"
                    (when (fboundp 'cc*-cc)
                      (cc*-cc))
-                   (when (and (fboundp 'cc-spec->*) (fboundp 'cc*-cc))
+                   (when (and (fboundp 'cc-spec->*)
+                              (fboundp 'cc*-cc)
+                              (fboundp 'shell-command*))
                      (shell-command* (cc-spec->* (cc*-cc) :ver)))))
   (should (message "# cl = %s" (executable-find "cl")))
   (should (message "# clang = %s" (executable-find "clang")))
@@ -758,12 +760,6 @@
     (should (message "# (cc*-make-env-bat) = %s"
                      (when (fboundp 'cc*-make-env-bat)
                        (cc*-make-env-bat))))))
-
-(ert-deftest %q:cc:cc*-make-xargs-bin ()
-  (when (eq system-type 'windows-nt)
-    (should (message "# (cc*-make-xargs-bin) = %s"
-                     (when (fboundp 'cc*-make-xargs-bin)
-                       (cc*-make-xargs-bin))))))
 
 (ert-deftest %q:cc:cc*-system-include-file ()
   (when (memq system-type `(cygwin ms-dos windows-nt))

@@ -144,28 +144,6 @@
 ;; end of CC
 
 ;;;
-;; xargs
-;;;
-
-(when-platform% windows-nt
-  (defun cc*-make-xargs-bin ()
-    "Make a GNU\\='s xargs alternation in Windows."
-    (let ((src (emacs-home% "config/cc_xargs.c"))
-          (dst (v-home% ".exec/cc_xargs.c"))
-          (xargs (cc-spec->* :msvc :xargs)))
-      (inhibit-file-name-handler
-        (cond ((file-exists-p xargs) xargs)
-              (t (unless (null (file-exists-p dst))
-                   (copy-file src dst))
-                 (let ((rc (shell-command*
-                               (format (cc-spec->* :msvc :compile)
-                                       "-nologo -DNDEBUG=1 -O2 -utf-8"
-                                       dst xargs))))
-                   (and (= 0 (car rc)) xargs))))))))
-
-;; end of xargs
-
-;;;
 ;; #include
 ;;;
 
