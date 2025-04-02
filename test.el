@@ -727,20 +727,21 @@
 ;; conditional: `cc'
 ;;;
 
-(ert-deftest %q:cc:cc*--executable-check ()
-  (should (message "# cl = %s" (executable-find "cl")))
-  (should (message "# clang = %s" (executable-find "clang")))
-  (should (message "# gcc = %s" (executable-find "gcc")))
-  (should (message "# make = %s" (executable-find "make")))
-  (should (message "# xargs = %s" (executable-find "xargs"))))
-
 (ert-deftest %q:cc:cc*-cc ()
   (should (message "# (cc*-cc) = %s %s"
                    (when (fboundp 'cc*-cc)
                      (cc*-cc))
                    (when (and (fboundp 'cc-spec->*) (fboundp 'cc*-cc))
-                     (shell-command* (cc-spec->* (cc*-cc) :version))))))
+                     (shell-command* (cc-spec->* (cc*-cc) :ver)))))
+  (should (message "# cl = %s" (executable-find "cl")))
+  (should (message "# clang = %s" (executable-find "clang")))
+  (should (message "# gcc = %s" (executable-find "gcc")))
+  (should (message "# make = %s" (executable-find "make"))))
 
+(ert-deftest %q:cc:cc*-system-include ()
+  (should (message "# (cc*-system-include) = %s"
+                   (when (fboundp 'cc*-system-include)
+                     (cc*-system-include :read)))))
 
 (ert-deftest %q:cc:cc*--cc-check ()
   (should (message "# (cc*--cc-check) = %s"
@@ -776,12 +777,12 @@
                      (when (and (fboundp 'cc*-system-include-read)
                                 (fboundp 'cc*-system-include-file))
                        (cc*-system-include-read
-                        (cdr (cc*-system-include-file))))))))
-
-(ert-deftest %q:cc:cc*-system-include ()
-  (should (message "# (cc*-system-include) = %s"
-                   (when (fboundp 'cc*-system-include)
-                     (cc*-system-include :read)))))
+                        (cdr (cc*-system-include-file))))))
+    (should (message "# cc*-system-include-read raw = %s"
+                     (when (and (fboundp 'shell-command*)
+                                (fboundp 'cc-spec->*)
+                                (fboundp 'cc*-cc))
+                       (shell-command* (cc-spec->* (cc*-cc) :include)))))))
 
 ;; end of `cc'
 

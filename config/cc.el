@@ -29,8 +29,10 @@
                ((and cmd (eq cmd :include))
                 "echo ''| cc -v -E 2>&1 >/dev/null -")
                ((and cmd (eq cmd :define)) "cc %s -dM -E -")
-               ((and cmd (eq cmd :macro)) "cc -E -o - -")
-               ((and cmd (eq cmd :version) "cc -v"))))
+               ((and cmd (eq cmd :macro)) "cc %s -E")
+               ((and cmd (eq cmd :line-fmt) "# %d \"%s\""))
+               ((and cmd (eq cmd :line-re) "# \\([0-9]+\\)"))
+               ((and cmd (eq cmd :ver) "cc -v"))))
         ((and cc (eq cc :msvc))
          (let ((msvc (v-home% ".exec/cc_msvc.bat"))
                (xargs (v-home% ".exec/cc_xargs")))
@@ -40,17 +42,25 @@
                           " -Fe%s"))
                  ((and cmd (eq cmd :include)) msvc)
                  ((and cmd (eq cmd :define)) "")
-                 ((and cmd (eq cmd :macro))
-                  (let ((tmp (make-temp-file "cc_macro_" nil ".c")))
-                    ;; cl.exe can't compile on the fly without xargs
-                    (format "%s -0 >%s && %s && cl -E %s"
-                            xargs tmp msvc tmp)))
-                 ((and cmd (eq cmd :env)) msvc)
+                 ((and cmd (eq cmd :macro)) (concat msvc " &cl %s -E"))
                  ((and cmd (eq cmd :xargs)) xargs)
-                 ((and cmd (eq cmd :version)
-                       (concat msvc " && cl 2>&1"))))))))
+                 ((and cmd (eq cmd :env)) msvc)
+                 ((and cmd (eq cmd :line-fmt) "#line %d \"%s\""))
+                 ((and cmd (eq cmd :line-re) "#line \\([0-9]+\\)"))
+                 ((and cmd (eq cmd :ver) (concat msvc " && cl 2>nul"))))))))
 
 ;; end of env
+
+(defvar *cc-option-history* nil
+  "History list for C compiler\\='s option.")
+
+(defun cc*--compiler-option-prompt ()
+  (list (funcall (if-fn% read-shell-command nil
+                         #'read-shell-command
+                   #'read-string)
+                 "Input C compiler's option: "
+                 (car *cc-option-history*)
+                 '*cc-option-history*)))
 
 ;;;
 ;; msvc host environment
@@ -83,7 +93,7 @@
   (defun cc*-make-env-bat ()
     "Make cc_msvc.bat for msvc in \\=`exec-path\\='."
     (let ((vcvarsall (cc*-check-vcvarsall-bat))
-          (arch (getenv-internal "PROCESSOR_ARCHITECTURE"))
+          (arch (getenv "PROCESSOR_ARCHITECTURE"))
           (src (emacs-home% "config/cc_msvc.bat"))
           (env (cc-spec->* :msvc :env)))
       (when (and vcvarsall arch)
@@ -98,15 +108,13 @@
 ;; CC
 ;;;
 
-(defun cc*--cc-check (&optional run)
+(defun cc*--cc-check (&optional restrict)
   (let ((cx `((:cc . "cc")
               (:clang . "clang")
               (:gcc . "gcc")
               (:msvc . "msvc")))
         (pre (v-home% ".exec/cc_"))
-        (ext (if% (or (when-platform% cygwin t)
-                      (when-platform% ms-dos t)
-                      (when-platform% windows-nt t))
+        (ext (if% (memq system-type '(cygwin ms-dos windows-nt))
                  ".exe"
                ".out"))
         (in (v-home% ".exec/cc_check.c")))
@@ -118,9 +126,11 @@
           (dolist (cc cx)
             (let* ((out (concat pre (cdr cc) ext))
                    (cmd (format (cc-spec->* (car cc) :compile) "" in out)))
-              (cond ((and (null run) (file-exists-p out)) (throw :br (car cc)))
-                    ((null run) (and (= 0 (car (shell-command* cmd)))
-                                     (throw :br (car cc))))
+              (cond ((and (null restrict) (file-exists-p out))
+                     (throw :br (car cc)))
+                    ((null restrict)
+                     (and (= 0 (car (shell-command* cmd)))
+                          (throw :br (car cc))))
                     (t (and (= 0 (car (shell-command* cmd)))
                             (= 0 (car (shell-command* out)))
                             (throw :br (car cc))))))))))))
@@ -161,11 +171,12 @@
 
 (defun cc*-include-check (&optional remote)
   "Return a list of system cc include path."
-  (let ((rc (if remote
-                (shell-command* "ssh"
-                  (concat (ssh-remote->user@host remote)
-                          " \"" (cc-spec->* (cc*-cc) :include) "\""))
-              (shell-command* (cc-spec->* (cc*-cc) :include)))))
+  (let* ((cc (cc*-cc))
+         (inc (cc-spec->* cc :include))
+         (rc (if remote
+                 (shell-command* "ssh"
+                   (concat (ssh-remote->user@host remote) " \"" inc "\""))
+               (shell-command* inc))))
     (when (= 0 (car rc))
       (let ((pre (cdr rc)) (inc nil))
         (if-platform% windows-nt
@@ -187,13 +198,14 @@
                   (setq beg t))))))))))
 
 (defun cc*-system-include-read (file &optional remote)
-  (or (read-sexp-from-file file)
-      (let ((xs nil))
-        (dolist (x (cc*-include-check remote) (setq xs (nreverse xs)))
-          (let ((x1 (if remote (concat remote x) x)))
-            (and (file-exists-p x1) (setq xs (cons x1 xs)))))
-        (prog1 xs
-          (and xs (save-sexp-to-file xs file))))))
+  (inhibit-file-name-handler
+    (or (read-sexp-from-file file)
+        (let ((xs nil))
+          (dolist (x (cc*-include-check remote) (setq xs (nreverse xs)))
+            (let ((x1 (if remote (concat remote x) x)))
+              (and (file-exists-p x1) (setq xs (cons x1 xs)))))
+          (prog1 xs
+            (and xs (save-sexp-to-file xs file)))))))
 
 (defun cc*-system-include-file (&optional remote)
   (let* ((ss (if remote
@@ -263,7 +275,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 
 (defun cc*-define-dump (&optional option)
   "Dump define."
-  (interactive "sInput C compiler's option: ")
+  (interactive (cc*--compiler-option-prompt))
   (let* ((remote (ssh-remote-p (buffer-file-name (current-buffer))))
          (cc (if remote :cc (cc*-cc)))
          (cmd (format (cc-spec->* cc :define) (or option "")))
@@ -291,6 +303,76 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
           (view-mode 1))))))
 
 ;; end of #define
+
+;;;
+;; macro
+;;;
+
+(defun cc*-macro-expand (&optional option)
+  "Expand Macro."
+  (interactive (cc*--compiler-option-prompt))
+  (let* ((remote (ssh-remote-p (buffer-file-name (current-buffer))))
+         (cc (if remote :cc (cc*-cc)))
+         (cmd (format (cc-spec->* cc :macro) (or option "")))
+         (reg (if-region-active
+                  (cons (region-beginning) (region-end))
+                (cons (point-min) (point-max))))
+         (src (buffer-string))
+         (buf (get-buffer-create*
+               (if remote
+                   (format "*Macro Expanded@%s*"
+                           (ssh-remote->user@host remote))
+                 "*Macro Expanded*")))
+         (out (concat (make-temp-file "cc_macro_") ".c"))
+         (fmt (cc-spec->* cc :line-fmt)) (re (cc-spec->* cc :line-re))
+         (beg nil) (end nil)
+         (rc nil))
+    (with-current-buffer buf
+      (erase-buffer)
+      (goto-char (point-min))
+      (insert src)
+      (goto-char (car reg))
+      (beginning-of-line)
+      (open-line 1)
+      (insert (setq beg (format fmt (line-number-at-pos) out)))
+      (goto-char (+ (cdr reg) (length beg)))
+      (forward-line 1)
+      (open-line 1)
+      (beginning-of-line)
+      (insert (setq end (format fmt (line-number-at-pos) out)))
+      (setq rc (shell-command* cmd (save-str-to-file (buffer-string) out)))
+      (erase-buffer)
+      (goto-char (point-min))
+      (cond ((= 0 (car rc))
+             (insert (cdr rc))
+             (goto-char (point-min))
+             (when (re-search-forward beg nil t 1)
+               (let ((p1 (point-min)) (p2 (point-max)))
+                 (forward-line 1)
+                 (beginning-of-line)
+                 (delete-region (point-min) (point))
+                 (setq p1 (point))
+                 (goto-char (point-max))
+                 (when (re-search-backward end nil t 1)
+                   (beginning-of-line)
+                   (delete-region (point) (point-max))
+                   (setq p2 (point))
+                   (goto-char p1)
+                   (beginning-of-line)
+                   (open-line 1)
+                   (insert "/* " (string-match* re beg 1) " */\n")
+                   (goto-char p2)
+                   (beginning-of-line)
+                   (forward-line 4)
+                   (insert "\n/* " (string-match* re end 1) " */\n")))))
+            (t (insert "/* Error: " (number-to-string (car rc)) "\n\n"
+                       (cdr rc)
+                       "\n\n*/")))
+      (goto-char (point-min))
+      (c-mode))
+    (switch-to-buffer buf)))
+
+;; end of macro
 
 ;;;
 ;; `tags'
@@ -330,39 +412,6 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
       (call-interactively #'c-backslash-region))))
 
 ;; end of `cc-styles'
-
-;;;
-;; `cmacexp'
-;;;
-
-(eval-when-compile
-  (defmacro when-c-macro-expand% (&rest body)
-    (declare (indent 0))
-    (if-fn% c-macro-expand cmacexp
-            `(progn% ,@body)
-      `(comment ,@body))))
-
-(when-c-macro-expand%
-  (defun cc*-macro-expand (&rest args)
-    "Macro expanding current buffer."
-    (interactive "r\nP")
-    (let ((remote (ssh-remote-p (buffer-file-name (current-buffer)))))
-      (setq% c-macro-prompt-flag t cmacexp)
-      (setq% c-macro-buffer-name
-             (if remote
-                 (format "*Macro Expanded@%s*" (ssh-remote->user@host remote))
-               "*Macro Expanded*")
-             cmacexp)
-      (setq% c-macro-preprocessor
-             (if remote
-                 (cc-spec->* :cc :macro)
-               (when-platform% windows-nt
-                 (cc*-make-xargs-bin))
-               (cc-spec->* (cc*-cc) :macro))
-             cmacexp)
-      (apply #'c-macro-expand args))))
-
-;; end of `cmacexp'
 
 ;;;
 ;; format
@@ -463,8 +512,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
     (define-key keymap "" #'cc*-style-align-backslash))
   (when-fn-ff-find-other-file%
    (define-key keymap "fi" #'cc*-find-include-file))
-  (when-c-macro-expand%
-    (define-key keymap "" #'cc*-macro-expand))
+  (define-key keymap "" #'cc*-macro-expand)
   (define-key keymap (kbd% "C-c M-c f") #'cc*-format-region))
 
 ;; end of keys
@@ -475,13 +523,14 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 
 (defun on-cc-mode-init! ()
   "On \\=`cc-mode\\=' initialization."
-  ;; indent line or region
-  (when-fn% c-indent-line-or-region cc-cmds
-    (define-key% c-mode-map (kbd "TAB") #'c-indent-line-or-region))
-  ;; `subword-mode'
-  (if-fn% subword-mode subword
-          (define-key% c-mode-map "" #'subword-mode)
-    (define-key% c-mode-map "" #'c-subword-mode))
+  (when-var% c-mode-map cc-mode
+    ;; indent line or region
+    (when-fn% c-indent-line-or-region cc-cmds
+      (define-key% c-mode-map (kbd "TAB") #'c-indent-line-or-region))
+    ;; `subword-mode'
+    (if-fn% subword-mode subword
+            (define-key% c-mode-map "" #'subword-mode)
+      (define-key% c-mode-map "" #'c-subword-mode)))
   (when (boundp 'c-mode-map)
     (cc*-define-keys c-mode-map))
   (when (boundp 'c++-mode-map)
