@@ -288,7 +288,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 (defun cc*-macro-expand (&optional option)
   "Expand Macro."
   (interactive (read-string-prompt
-		"Input C compiler's option: " '*cc-option-history*))
+		            "Input C compiler's option: " '*cc-option-history*))
   (let* ((remote (ssh-remote-p (buffer-file-name (current-buffer))))
          (cc (if remote :cc (cc*-cc)))
          (cmd (format (cc-spec->* cc :macro) (or option "")))
@@ -343,9 +343,10 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
                    (beginning-of-line)
                    (forward-line 4)
                    (insert "\n/* " (string-match* re end 1) " */\n")))))
-            (t (insert "/* Error: " (number-to-string (car rc)) "\n\n"
-                       (cdr rc)
-                       "\n\n*/")))
+            (t (let ((errno (number-to-string (car rc))))
+                 (insert "/* Error: " errno " */\n\n"
+                         (cdr rc)
+                         "\n\n/* Error " errno " */"))))
       (goto-char (point-min))
       (c-mode))
     (switch-to-buffer buf)))

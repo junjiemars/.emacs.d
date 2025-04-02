@@ -765,15 +765,13 @@
   (when (memq system-type `(cygwin ms-dos windows-nt))
     (should (message "# (cc*--include-file) = %s"
                      (when (fboundp 'cc*--include-file)
-                       (cc*-system-include-file))))))
+                       (cc*--include-file))))))
 
-(ert-deftest %q:cc:cc*-system-include-read ()
+(ert-deftest %q:cc:cc*--include-read ()
   (when (memq system-type `(cygwin ms-dos windows-nt))
     (should (message "# (cc*--includ-read) = %s"
-                     (when (and (fboundp 'cc*--include-read)
-                                (fboundp 'cc*--include-file))
-                       (cc*--include-read
-                        (cdr (cc*--include-file))))))
+                     (when (fboundp 'cc*--include-read)
+                       (cc*--include-read))))
     (should (message "# cc*-system-include-read raw = %s"
                      (when (and (fboundp 'shell-command*)
                                 (fboundp 'cc-spec->*)
