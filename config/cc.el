@@ -167,8 +167,7 @@
                       "#include <\\.\\.\\.> search starts here:" x))
             (setq beg t)))))))
 
-(defun cc*-include-check (&optional remote)
-  "Return a list of system cc include path."
+(defun cc*--include-probe (&optional remote)
   (let* ((cc (if remote :cc (cc*-cc)))
          (inc (cc-spec->* cc :include))
          (rc (if remote
@@ -197,7 +196,7 @@
          (prefix (if remote (ssh-remote-p remote) nil)))
     (or (read-sexp-from-file file)
         (let ((xs nil))
-          (dolist (x (cc*-include-check remote) (setq xs (nreverse xs)))
+          (dolist (x (cc*--include-probe remote) (setq xs (nreverse xs)))
             (let ((x1 (concat prefix x)))
               (and (file-exists-p x1) (setq xs (cons x1 xs)))))
           (prog1 (cons key xs)
@@ -237,7 +236,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 ;;;
 
 (when-platform% windows-nt
-  (defun cc*--msvc-define-dump (&optional option)
+  (defun cc*--define-dump (&optional option)
     (let ((c (v-home% ".exec/cc_define.c"))
           (x (v-home% ".exec/cc_define.exe"))
           (rc nil))
@@ -260,7 +259,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
                  (fluid-let (shell-file-name "sh")
                    (shell-command* "ssh" (ssh-remote->user@host remote) cmd))
                (if-platform% windows-nt
-                   (cc*--msvc-define-dump option)
+                   (cc*--define-dump option)
                  (shell-command* cmd)))))
     (when (and rc (= 0 (car rc)))
       (with-current-buffer
@@ -286,7 +285,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 ;;;
 
 (defun cc*-macro-expand (&optional option)
-  "Expand Macro."
+  "Expand macro."
   (interactive (read-string-prompt
 		            "Input C compiler's option: " '*cc-option-history*))
   (let* ((remote (ssh-remote-p (buffer-file-name (current-buffer))))
@@ -323,26 +322,18 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
       (goto-char (point-min))
       (cond ((= 0 (car rc))
              (insert (cdr rc))
-             (goto-char (point-min))
-             (when (re-search-forward beg nil t 1)
-               (let ((p1 (point-min)) (p2 (point-max)))
-                 (forward-line 1)
-                 (beginning-of-line)
+             (goto-char (point-max))
+             (when (re-search-backward end nil t 1)
+               (beginning-of-line)
+               (delete-region (point) (point-max))
+               (beginning-of-line)
+               (insert "\n/* # " (string-match* re end 1) " */\n")
+               (goto-char (point-min))
+               (when (re-search-forward beg nil t 1)
+                 (end-of-line)
                  (delete-region (point-min) (point))
-                 (setq p1 (point))
-                 (goto-char (point-max))
-                 (when (re-search-backward end nil t 1)
-                   (beginning-of-line)
-                   (delete-region (point) (point-max))
-                   (setq p2 (point))
-                   (goto-char p1)
-                   (beginning-of-line)
-                   (open-line 1)
-                   (insert "/* " (string-match* re beg 1) " */\n")
-                   (goto-char p2)
-                   (beginning-of-line)
-                   (forward-line 4)
-                   (insert "\n/* " (string-match* re end 1) " */\n")))))
+                 (beginning-of-line)
+                 (insert "/* # " (string-match* re beg 1) " */\n"))))
             (t (let ((errno (number-to-string (car rc))))
                  (insert "/* Error: " errno " */\n\n"
                          (cdr rc)
