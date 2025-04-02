@@ -172,20 +172,12 @@ Entry to this mode runs the hooks on \\=`comint-mode-hook\\=' and
     (define-key m "\C-c\C-b" #'jshell-switch-to-last-buffer)
     (use-local-map m)))
 
-(defun jshell--run-prompt ()
-  (list (funcall (if-fn% read-shell-command nil
-                         #'read-shell-command
-                   #'read-string)
-                 "Run jshell: "
-                 (car *jshell-option-history*)
-                 '*jshell-option-history*)))
-
 (defun run-jshell (&optional command-line)
   "Run a jshell process, input and output via buffer *jshell*.\n
 If there is a process already running in \\=`*jshell*\\=', switch to that
 buffer. With prefix COMMAND-LINE, allows you to edit the command line.\n
 Run the hook \\=`jshell-repl-mode-hook\\=' after the \\=`comint-mode-hook\\='."
-  (interactive (jshell--run-prompt))
+  (interactive (read-string-prompt "Run jshell: " '*jshell-option-history*))
   (unless (comint-check-proc (*jshell*))
     (unless (jshell-program)
       (error "%s" "No jshell program found"))

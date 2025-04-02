@@ -251,9 +251,7 @@ If there is a process already running in \\=`*chez*\\=', switch
 to that buffer. With prefix COMMAND-LINE, allows you to edit the
 command line.
 Run the hook \\=`chez-repl-mode-hook\\=' after the \\=`comint-mode-hook\\='."
-  (interactive (list (read-string "Run chez: "
-                                  (car *chez-option-history*)
-                                  '*chez-option-history*)))
+  (interactive (read-string-prompt "Run chez: " '*chez-option-history*))
   (unless (comint-check-proc (*chez*))
     (unless (chez-program)
       (error "%s" "No chez program found"))

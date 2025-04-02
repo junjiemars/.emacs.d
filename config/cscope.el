@@ -41,7 +41,7 @@
   "The output buffer of \\=`cscope-send-command\\='."
   (get-buffer-create* "*out|cscope*"))
 
-(defun cscope--parse-src-dir (command-line)
+(defun cscope--path-parse (command-line)
   (cond ((string-match "-P[[:blank:]]*\\([^[:blank:]]+\\)" command-line)
          (file-name-as-directory
           (substring-no-properties
@@ -61,7 +61,7 @@
 (defvar *cscope--src-dir* nil
   "The source directory of \\=`cscope-mode\\='.")
 
-(defun cscope--parse-filename (file)
+(defun cscope--filename-parse (file)
   (cond ((file-exists-p file) file)
         ((and (> (length *cscope--src-dir*) 0)
               (null (char-equal ?/ (aref file 0))))
@@ -93,7 +93,7 @@
   (set (make-local-variable 'compilation-directory-matcher) (list "\\`a\\`"))
   (set (make-local-variable 'compilation-warning-face) compilation-info-face)
   (set (make-local-variable 'compilation-parse-errors-filename-function)
-       #'cscope--parse-filename)
+       #'cscope--filename-parse)
   ;; treat the output of cscope as `compilation warnings'
   (set (make-local-variable 'compilation-error-regexp-alist)
        `((,+cscope-line-regexp+ 1 3 nil 1 1)))
@@ -124,16 +124,13 @@
 
 (defun cscope (&optional command-line)
   "Run cscope with user-specified COMMAND-LINE."
-  (interactive (list (funcall (if-fn% read-shell-command nil
-                                      #'read-shell-command
-                                #'read-string)
-                              "Run cscope (like this): "
-                              (or (car *cscope-history*)
-                                  (format
-                                   "cscope -dL -P %s -f %scscope.out -0 "
-                                   default-directory default-directory))
-                              '*cscope-history*)))
-  (setq *cscope--src-dir* (cscope--parse-src-dir command-line))
+  (interactive (read-string-prompt
+                "Run cscope (like this): "
+                '*cscope-history*
+                (format
+                 "cscope -dL -P %s -f %scscope.out -0 "
+                 default-directory default-directory)))
+  (setq *cscope--src-dir* (cscope--path-parse command-line))
   (compilation-start command-line #'cscope-mode))
 
 ;; end of `cscope-mode'
@@ -227,7 +224,7 @@
              nil
              (split-string* command-line "\\s-+" t))
       (cscope-repl-mode)))
-  (setq *cscope--repl-src-dir* (cscope--parse-src-dir command-line))
+  (setq *cscope--repl-src-dir* (cscope--path-parse command-line))
   (switch-to-buffer-other-window (*cscope*)))
 
 ;; end of `cscope-repl-mode'

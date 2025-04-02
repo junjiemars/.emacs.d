@@ -168,21 +168,13 @@ Entry to this mode runs the hooks on `comint-mode-hook' and
     (define-key m "\C-c\C-b" #'node-switch-to-last-buffer)
     (use-local-map m)))
 
-(defun node--run-prompt ()
-  (list (funcall (if-fn% read-shell-command nil
-                         #'read-shell-command
-                   #'read-string)
-                 "Run node: "
-                 (car *node-option-history*)
-                 '*node-option-history*)))
-
 (defun run-node (&optional command-line)
   "Run a node process, input and output via buffer *node*.\n
 If there is a process already running in \\=`*node*\\=', switch
 to that buffer. With prefix COMMAND-LINE, allows you to edit the
 command line.
 Run the hook `node-repl-mode-hook' after the `comint-mode-hook'."
-  (interactive (node--run-prompt))
+  (interactive (read-string-prompt "Run node: " '*node-option-history*))
   (unless (comint-check-proc (*node*))
     (unless (node-program)
       (error "%s" "No node program found"))
