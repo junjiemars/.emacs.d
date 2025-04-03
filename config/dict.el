@@ -10,70 +10,69 @@
 
 ;; end of require
 
+;;;
+;; env
+;;;
 
-(defalias '*dict-defs*
-  (let
-      ((b `(("bing"
-             ("url" . "https://cn.bing.com/dict/search?q=")
-             ("pron-us" . (("<meta name=\"description\".*?美\\[" . 1)
-                           "\\].*?英\\[\\(.+?\\)\\]，"
-                           . (dict-fn-norm-pron-us)))
-             ("pron-uk" . (("<meta name=\"description\".*?美.*?英\\[" . 1)
-                           "\\]，" . (dict-fn-norm-pron-uk)))
-             ("meta" . (("<meta name=\"description\".*?英\\[\\(.+?\\)\\]，?")
-                        "\" /><" . (dict-fn-norm-punc))))
-            ("camb"
-             ("url" . "https://dictionary.cambridge.org/dictionary/english/")
-             ("pron-us" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
-                           "<" . (dict-fn-norm-pron-us)))
-             ("pron-uk" . (("<span class=\"ipa dipa lpr-2 lpl-1\">" . 1)
-                           "<" . (dict-fn-norm-pron-uk)))
-             ("meta" .
-              (("<meta name=\"description\" content=\".*? definition: ")
-               " Learn" . (dict-fn-decode-html-char))))
-            ("longman"
-             ("url" . "https://www.ldoceonline.com/dictionary/")
-             ("pron-uk" . (("<span class=\"PRON\">")
-                           "</span>" . (dict-fn-remove-html-tag
-                                        dict-fn-norm-pron-uk)))
-             ("meta" . (("<span class=\"DEF\">")
-                        "</span>" . (dict-fn-remove-html-tag))))
-            ("webster"
-             ("url" . "https://www.merriam-webster.com/dictionary/")
-             ("pron-us" . (("title=\"How to pronounce.*?(audio)\">" . 1)
-                           "<img" . (dict-fn-decode-html-char
-                                     dict-fn-norm-pron-us)))
-             ("meta"
-              .
-              (("<meta name=\"description\" content=\"The meaning of ")
-               " How to use" . (dict-fn-remove-html-tag)))))))
-    (lambda (&optional n)
-      (cond (n (let ((x (assoc-string (car n) b)))
-                 (if x (setcdr x (cdr n))
-                   (setq b (cons n b)))))
-            (t b))))
-  "Dictionaries using by \\=`lookup-dict\\='.")
+(defun dict-spec->* (dict spec)
+  (cond ((and dict (eq dict :bing))
+         (cond ((and spec (eq spec :url))
+                "https://cn.bing.com/dict/search?q=")
+               ((and spec (eq spec :AmE))
+                `(("<meta name=\"description\".*?美\\[" . 1)
+                  "\\].*?英\\[\\(.+?\\)\\]，"
+                  . (dict--norm-pron-us)))
+               ((and spec (eq spec :BrE))
+                `(("<meta name=\"description\".*?美.*?英\\[" . 1)
+                  "\\]，" . (dict--norm-pron-uk)))
+               ((and spec (eq spec :meta))
+                `(("<meta name=\"description\".*?英\\[\\(.+?\\)\\]，?")
+                  "\" /><" . (dict--norm-punc)))))
+        ((and dict (eq dict :longman))
+         (cond ((and spec (eq spec :url))
+                "https://www.ldoceonline.com/dictionary/")
+               ((and spec (eq spec :BrE))
+                `(("<span class=\"PRON\">")
+                  "</span>" . (dict--remove-html-tag
+                               dict--norm-pron-uk)))
+               ((and spec (eq spec :meta))
+                `(("<span class=\"DEF\">")
+                  "</span>" . (dict--remove-html-tag)))))
+        ((and dict (eq dict :webster))
+         (cond ((and spec (eq spec :url))
+                "https://www.merriam-webster.com/dictionary/")
+               ((and spec (eq spec :AmE))
+                `(("title=\"How to pronounce.*?(audio)\">" . 1)
+                  "<img" . (dict--decode-html-char
+                            dict--norm-pron-us)))
+               ((and spec (eq spec :meta))
+                `(("<meta name=\"description\" content=\"The meaning of ")
+                  " How to use" . (dict--remove-html-tag)))))
+        ((and dict (eq dict :cambridge))
+         (cond ((and spec (eq spec :url))
+                "https://dictionary.cambridge.org/dictionary/english/")
+               ((and spec (eq spec :AmE))
+                `(("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
+                  "<" . (dict--norm-pron-us)))
+               ((and spec (eq spec :BrE))
+                `(("<span class=\"ipa dipa lpr-2 lpl-1\">" . 1)
+                  "<" . (dict--norm-pron-uk)))
+               ((and spec (eq spec :meta))
+                `(("<meta name=\"description\" content=\".*? definition: ")
+                  " Learn" . (dict--decode-html-char)))))
+        ((and dict (eq dict :meta))
+         (cond ((and spec (eq spec :list))
+                `("bing" "cambridge" "longman" "webster"))
+               ((and spec (eq spec :bing)) `(:AmE :BrE :meta))
+               ((and spec (eq spec :cambridge)) `(:AmE :BrE :meta))
+               ((and spec (eq spec :longman)) `(:BrE :meta))
+               ((and spec (eq spec :webster)) `(:AmE :meta))))))
 
 (defvar *dict-name-history* nil
   "Dictionary choosing history list.")
 
-(defvar *dict-style-history* nil
-  "Dictionary style choosing history list.")
-
-(defun dict-def-find (dict)
-  "Find dictionary's definition in \\=`*dict-defs*\\='."
-  (let ((dd (cdr (assoc-string (or (car dict)
-                                   (car *dict-name-history*)
-                                   (caar (*dict-defs*)))
-                               (*dict-defs*)))))
-    (list (cons 'dict (list dd))
-          (cons 'style
-                (or (cdr dict)
-                    (list (let ((xs nil))
-                            (dolist (x dd (nreverse xs))
-                              (let ((x1 (car x)))
-                                (unless (string-equal x1 "url")
-                                  (setq xs (cons x1 xs))))))))))))
+(defvar *dict-spec-history* nil
+  "Dictionary spec choosing history list.")
 
 (defalias '*dict-debug-log*
   (let ((b `( :log nil ;; t
@@ -84,15 +83,27 @@
             (t (plist-get b w)))))
   "Dictonary logging switch.")
 
-(defun dict-fn-norm-pron-us (ss)
+(defun dict--keyword->string (keyword)
+  (substring-no-properties (symbol-name keyword) 1))
+
+(defun dict--string->keyword (string)
+  (intern (concat ":" string)))
+
+;; end of env
+
+;;;
+;; pipeline
+;;;
+
+(defun dict--norm-pron-us (ss)
   "Normalize the pronounce of SS to us."
   (format "|%s|" (string-match* "^[/]?\\(.*?\\)[/]?$" (string-trim>< ss) 1)))
 
-(defun dict-fn-norm-pron-uk (ss)
+(defun dict--norm-pron-uk (ss)
   "Normalize the pronounce of SS to uk."
   (format "/%s/" (string-match* "^[/]?\\(.*?\\)[/]?$" (string-trim>< ss) 1)))
 
-(defun dict-fn-norm-punc (ss)
+(defun dict--norm-punc (ss)
   "Normalize the punctuation of SS to en."
   (strawk ss `(("，\s*" . ", ")
                ("；\s*" . "; ")
@@ -104,42 +115,40 @@
                ("\n" . " ")
                ("[ ]+" . " "))))
 
-(defun dict-fn-decode-html-char (ss)
+(defun dict--decode-html-char (ss)
   "Decode &#[a-z]+; to string."
   (strawk ss `(("&nbsp;" . " ")
                ("&#lt;" . "<")
                ("&#gt;" . ">")
                ("&hellip;" .  "..."))))
 
-(defun dict-fn-remove-html-tag (ss)
+(defun dict--remove-html-tag (ss)
   "Remove html tags."
   (strawk ss `(("^[ ]+" . nil)
                ("<.*?>" . nil)
                ("</[a-zA-Z]+>" . nil)
                ("/>" . nil))))
 
-;; end of definition
-
-
-(defun dict-lookup-pipeline (dict style)
-  "Pipeline dictionary lookup."
+(defun dict--lookup-pipeline (dict specs)
   (let ((xs nil))
-    (dolist (x style (nreverse xs))
+    (dolist (x specs (nreverse xs))
       (goto-char (point-min))
-      (let* ((re (cdr (assoc-string x dict)))
-             (b (re-search-forward (caar re) nil t (cdar re)))
-             (e (and b (re-search-forward (cadr re) nil t)
-                     (re-search-backward (cadr re) nil t)))
-             (html (and b e (< b e)
-                        (buffer-substring-no-properties b e)))
-             (fns (cddr re))
-             (txt html))
-        (setq xs (cons (cons x (when (> (length html) 0)
-                                 (dolist (fn fns txt)
-                                   (if (functionp fn)
-                                       (setq txt (funcall fn txt))
-                                     txt))))
-                       xs))))))
+      (let ((re (dict-spec->* dict x)))
+        (when re
+          (let* ((b (re-search-forward (caar re) nil t (cdar re)))
+                 (e (and b (re-search-forward (cadr re) nil t)
+                         (re-search-backward (cadr re) nil t)))
+                 (html (and b e (< b e) (buffer-substring-no-properties b e)))
+                 (fns (cddr re))
+                 (txt html))
+            (setq xs (cons (cons x (when (> (length html) 0)
+                                     (dolist (fn fns txt)
+                                       (if (functionp fn)
+                                           (setq txt (funcall fn txt))
+                                         txt))))
+                           xs))))))))
+
+;; end of pipeline
 
 (defun on-lookup-dict (status &rest args)
   "Callback after \\=`lookup-dict\\='."
@@ -151,9 +160,8 @@
   (set-buffer-multibyte t)
   (when (*dict-debug-log* :log)
     (write-region (point-min) (point-max) (path! (*dict-debug-log* :dict))))
-  (let* ((dict (cadr (assq 'dict args)))
-         (style (cadr (assq 'style args)))
-         (ss (dict-lookup-pipeline dict style)))
+  (let ((ss (dict--lookup-pipeline
+             (plist-get args :dict) (plist-get args :specs))))
     (when (*dict-debug-log* :log)
       (save-sexp-to-file ss (path! (*dict-debug-log* :lookup))))
     (kill-buffer (current-buffer))
@@ -175,52 +183,66 @@
     (ignore* silent inhibit-cookies)
     `(url-retrieve ,url ,callback ,cbargs)))
 
-(defun dict-lookup-retrieve (what url def)
-  (let ((url-history-track nil))
+(defun dict-lookup-retrieve (what dict specs)
+  "Return the meta of WHAT."
+  (let ((url-history-track nil)
+        (url (dict-spec->* dict :url))
+        (cbargs (list :what what :dict dict :specs specs)))
     (when-version% > 25
       (ignore* url-history-track))
     (url-retrieve*
-     (concat url (url-hexify-string what))
-     #'on-lookup-dict def t t)))
+     (concat url (url-hexify-string what)) #'on-lookup-dict cbargs t t)))
+
+(defun dict--lookup-prompt ()
+  (list
+   (read-string "Lookup dict for " (cdr (symbol@ 'word)))
+   (let ((dict nil) (specs nil) (all "all"))
+     (when current-prefix-arg
+       (setq dict
+             (let ((ds (dict-spec->* :meta :list)))
+               (completing-read
+                (format "Choose (%s) " (mapconcat #'identity ds "|"))
+                ds
+                nil nil
+                (or (car *dict-name-history*) (car ds))
+                '*dict-name-history*
+                (car ds)))
+             specs
+             (let ((ss (mapcar
+                        #'dict--keyword->string
+                        (dict-spec->* :meta (dict--string->keyword dict)))))
+               (completing-read
+                (format "Choose (all|%s) " (mapconcat #'identity ss ","))
+                (cons all ss)
+                nil nil
+                (car *dict-spec-history*)
+                '*dict-spec-history*
+                (mapconcat #'identity ss ",")))))
+     (setq dict
+           (cond ((and (null dict) (null (car *dict-name-history*))) :bing)
+                 ((car *dict-name-history*)
+                  (dict--string->keyword (car *dict-name-history*)))
+                 (t (dict--string->keyword dict)))
+           specs
+           (cond ((and (null specs) (null (car *dict-spec-history*)))
+                  (dict-spec->* :meta dict))
+                 ((string-equal all specs) (dict-spec->* :meta dict))
+                 ((string-equal all (car *dict-spec-history*))
+                  (dict-spec->* :meta dict))
+                 (t (let ((ss (split-string*
+                               (or specs (car *dict-spec-history*))
+                               "," t "[ \n]*")))
+                      (mapcar #'dict--string->keyword ss)))))
+     (cons dict specs))))
 
 (defun lookup-dict (what &optional dict)
   "Lookup WORD in DICT then show the result in the echo area."
-  (interactive
-   (list (read-string "Lookup dict for " (cdr (symbol@ 'word)))
-         (when current-prefix-arg
-           (let* ((ns (mapcar #'car (*dict-defs*)))
-                  (d (completing-read
-                      (format "Choose (%s) " (mapconcat #'identity ns "|"))
-                      ns nil nil
-                      (or (car *dict-name-history*)
-                          (car ns))
-                      '*dict-name-history*
-                      (car ns)))
-                  (dd (cdr (assoc-string d (*dict-defs*))))
-                  (sr (let ((xs nil))
-                        (dolist (x dd (nreverse xs))
-                          (let ((x1 (car x)))
-                            (unless (string-equal x1 "url")
-                              (setq xs (cons x1 xs)))))))
-                  (ss (completing-read
-                       (format "Choose (all|%s) "
-                               (mapconcat #'identity sr ","))
-                       (cons "all" sr) nil nil
-                       (car *dict-style-history*)
-                       '*dict-style-history*
-                       (car sr))))
-             (cons d (if (and (stringp ss)
-                              (or (string-equal "all" ss)
-                                  (string-match* "\\(all\\)" ss 1)))
-                         `(, sr)
-                       `(,(split-string* ss "," t "[ \n]*"))))))))
-  (let* ((def (dict-def-find dict))
-         (url (cdr (assoc-string "url" (cadr (assq 'dict def))))))
-    (make-thread* (lambda () (dict-lookup-retrieve what url def)))))
+  (interactive (dict--lookup-prompt))
+  (make-thread*
+   (lambda ()
+     (dict-lookup-retrieve what (car dict) (cdr dict)))))
 
 ;; end of `lookup-dict'
-
-
 
 (provide 'dict)
 
