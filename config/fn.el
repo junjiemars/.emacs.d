@@ -611,14 +611,19 @@ Call FN with the path if FN is non-nil."
 (defun path+ (root &rest path)
   "Append a list of PATH to ROOT."
   (declare (indent 1))
-  (and root
-       (if (strrchr root ?/) root (setq root (concat root "/")))
-       (cond ((null path) (if (strrchr root ?/) root (concat root "/")))
-             (t (apply #'path+
-                       (concat root (if (strrchr (car path) ?/)
-                                        (car path)
-                                      (concat (car path) "/")))
-                       (cdr path))))))
+  (cond ((null path) root)
+        ((= 0 (length root)) (apply #'path+ (car path) (cdr path)))
+        ((char-equal ?/ (aref root (1- (length root))))
+         (let ((p1 (car path)))
+           (cond ((char-equal ?/ (aref p1 0))
+                  (apply #'path+
+                         (concat root (substring-no-properties p1 1))
+                         (cdr path)))
+                 (t (apply #'path+ (concat root p1) (cdr path))))))
+        (t (let ((p2 (car path)))
+             (cond ((char-equal ?/ (aref p2 0))
+                    (apply #'path+ (concat root p2) (cdr path)))
+                   (t (apply #'path+ (concat root "/" p2) (cdr path))))))))
 
 (defun path- (file)
   "Return the parent path of FILE."

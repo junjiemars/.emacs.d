@@ -56,7 +56,7 @@ determine whether inside a virtual env. Another way is using
   (let ((pv (python*-program)))
     (unless pv
       (error "%s" "No python program found"))
-    (let ((d (path! (path+ (expand-file-name dir))))
+    (let ((d (path! (path+ (expand-file-name dir) "/")))
           (p (car pv))
           (v- (= -1 (vstrncmp (cdr pv) "3.3" 3))))
       (unless (file-exists-p (concat d "/bin/activate"))

@@ -254,7 +254,7 @@ RENEW overwrite the existing tags file when t else create it."
 (defun make-dir-tags (dir store &optional include exclude option renew)
   "Make tags for specified DIR."
   (interactive (tags--dir-prompt))
-  (let ((home (path+ (expand-file-name dir)))
+  (let ((home (path+ (expand-file-name dir) "/"))
         (exc (concat (tags-spec->* :out-dir)
                      "\\|" (tags-spec->* :vcs-dir)
                      "\\|" (tags-spec->* :arc-dir)
@@ -273,7 +273,7 @@ RENEW overwrite the existing tags file when t else create it."
   (let ((tp (symbol-name (*tags* :bin))))
     (unless (string-equal "ctags" tp)
       (error "%s" "No ctags program found"))
-    (let ((d1 (path+ (expand-file-name dir)))
+    (let ((d1 (path+ (expand-file-name dir) "/"))
           (f1 (expand-file-name tags))
           (o1 (concat "--options=" (expand-file-name options)))
           (prompt (tags-spec->* :prompt)))

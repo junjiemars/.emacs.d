@@ -10,7 +10,7 @@
 
 ;; `delete-line*'
 (require% 'ed (v-home%> "config/ed"))
-;; `tags-spec->%', `make-dir-ctags'
+;; `tags-spec->*', `make-dir-ctags'
 (require% 'tags (v-home%> "config/tags"))
 ;; `xref*-read-only-dirs'
 (require% 'xrefs (v-home%> "config/xrefs"))
@@ -23,16 +23,16 @@
   "Return rust sysroot spec."
   (let ((rc (shell-command* "~/.cargo/bin/rustc --print sysroot 2>/dev/null")))
     (when (zerop (car rc))
-      (let ((sysroot (path+ (string-trim> (cdr rc)))))
+      (let ((sysroot (string-trim> (cdr rc))))
         (list
          :sysroot sysroot
-         :hash (let ((h (shell-command* (concat sysroot "bin/rustc -vV"))))
+         :hash (let ((h (shell-command* (path+ sysroot "bin/rustc -vV"))))
                  (when (zerop (car h))
                    (string-match* "^commit-hash: \\([a-z0-9]+\\)"
                                   (cdr h) 1)))
          :etc (path+ sysroot "lib/rustlib/etc")
          :src (path+ sysroot "lib/rustlib/src")
-         :tag (let ((ctags (concat (tags-spec->% :root) "ctags.rust")))
+         :tag (let ((ctags (concat (tags-spec->* :root) "ctags.rust")))
                 (unless (file-exists-p ctags)
                   (copy-file (emacs-home* "config/use_rust.ctags") ctags))
                 ctags))))))
@@ -56,10 +56,10 @@
   (let ((w (get-buffer-create* (symbol-name (gensym*)) t))
         (x (concat "/rustc/" (rust*-sysroot :hash)))
         (s (path+ (rust*-sysroot :src) "rust"))
-        (f (concat (rust*-sysroot :etc)
-                   (if-platform% gnu/linux
-                       "gdb_load_rust_pretty_printers.py"
-                     "lldb_commands"))))
+        (f (path+ (rust*-sysroot :etc)
+             (if-platform% gnu/linux
+                 "gdb_load_rust_pretty_printers.py"
+               "lldb_commands"))))
     (unwind-protect
         (catch :br
           (prog1 f
@@ -107,7 +107,7 @@
 (defun rust*-make-tags (&optional renew)
   "Make rust tags."
   (let ((file (format "%srust.%s.TAGS"
-                      (tags-spec->% :root) (rust*-sysroot :hash))))
+                      (tags-spec->* :root) (rust*-sysroot :hash))))
     (cond (renew (make-dir-ctags
                   (rust*-sysroot :src) file (rust*-sysroot :tag)))
           (t file))))
