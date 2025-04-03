@@ -5,6 +5,9 @@
 ;;;;
 ;; dict.el
 ;;;;
+;; Commentary: lookup dictionary
+;;;;
+
 
 ;;; require
 

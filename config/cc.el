@@ -13,7 +13,7 @@
 (eval-when-compile
   ;; `newline*'
   (require 'ed (v-home%> "config/ed"))
-  ;; `(tags-spec->% :root)'
+  ;; `(tags-spec->* :root)'
   (require 'tags (v-home%> "config/tags"))
   (require 'ssh (v-home%> "config/ssh"))
   (defmacro when-fn-ff-find-other-file% (&rest body)
@@ -351,7 +351,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 
 (defun cc*-make-tags (&optional renew option)
   "Make system C tags."
-  (let ((file (concat (tags-spec->% :root) "os.TAGS"))
+  (let ((file (concat (tags-spec->* :root) "os.TAGS"))
         (opt (or option "--langmap=c:.h.c --c-kinds=+ptesgux --extra=+fq")))
     (cond (renew (let ((inc (cc*-system-include)))
                    (make-c-tags (car inc) file opt nil nil t)

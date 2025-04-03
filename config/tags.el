@@ -10,29 +10,31 @@
 
 
 ;;;
-;; tags envrionment
+;; envrionment
 ;;;
 
-(defmacro tags-spec->% (key)
+(defun tags-spec->* (spec)
   "Return :tags of \\=`+nore-spec+\\='."
-  (cond ((and key (eq key :root)) (emacs-home% ".tags/"))
-        ((and key (eq key :nore)) (v-home% ".tags/nore.emacs.TAGS"))
-        ((and key (eq key :emacs)) (v-home% ".tags/emacs.TAGS"))
-        ((and key (eq key :prompt))
+  (cond ((and spec (eq spec :root)) (emacs-home% ".tags/"))
+        ((and spec (eq spec :nore)) (v-home% ".tags/nore.emacs.TAGS"))
+        ((and spec (eq spec :emacs)) (v-home% ".tags/emacs.TAGS"))
+        ((and spec (eq spec :prompt))
          (propertize "Make tags" 'face 'minibuffer-prompt))
-        ((and key (eq key :out-dir))
+        ((and spec (eq spec :out-dir))
          "^\\.\\|^out$\\|^bin$\\|^objs$\\|^[dD]ebug$\\|^[rR]elease$")
-        ((and key (eq key :vcs-dir))
+        ((and spec (eq spec :vcs-dir))
          ".git$\\|\\.hg$\\|\\.svn$")
-        ((and key (eq key :arc-dir))
-         "\\.bz2$\\|\\.gz$\\|\\.tgz$\\|\\.xz$\\|\\.Z$")))
+        ((and spec (eq spec :arc-dir))
+         "\\.bz2$\\|\\.gz$\\|\\.tgz$\\|\\.xz$\\|\\.Z$")
+        ((and spec (eq spec :done)) "done")
+        ((and spec (eq spec :failed)) "failed")))
 
 (defun tags-program-check ()
   (or (executable-find*
        "ctags"
        (lambda (bin)
          (let ((ver (shell-command* bin "--version")))
-           (and (zerop (car ver))
+           (and (= 0 (car ver))
                 (string-match "Exuberant Ctags [.0-9]+"
                               (cdr ver))
                 `( :bin ctags
@@ -44,7 +46,7 @@
        "etags"
        (lambda (bin)
          (let ((ver (shell-command* bin "--version")))
-           (and (zerop (car ver))
+           (and (= 0 (car ver))
                 (string-match "etags (GNU Emacs [.0-9]+)"
                               (cdr ver))
                 `( :bin etags
@@ -73,25 +75,47 @@ when \\=`desktop-globals-to-save\\=' include it.")
 (defvar *tags-option-history* nil
   "Tags option history list.")
 
-;; end of tags environment
+(defun tags--read-option ()
+  (read-string (concat (symbol-name (*tags* :bin)) " option: ")
+               (car (or *tags-option-history*
+                        (setq *tags-option-history* (*tags* :opt))))
+               '*tags-option-history*))
 
-(defalias 'mount-tags #'visit-tags-table
-  "Mount existing TAGS into \\=`tags-table-list\\='.")
-
-(defun tags--unmount-tags-prompt ()
+(defun tags--unmount-prompt ()
   (list
-   (cond (current-prefix-arg (yes-or-no-p "unmount all? ") nil)
+   (cond (current-prefix-arg (yes-or-no-p "Unmount all? ") nil)
          ((consp tags-table-list)
-          (read-file-name "unmount from "
+          (read-file-name "Unmount from "
                           (file-name-directory (car tags-table-list))
                           tags-table-list
                           nil
                           (file-name-nondirectory (car tags-table-list))))
          (t (user-error "%s" "No mounted tags-table-list")))))
 
+(defun tags--make-prompt ()
+  (list (read-directory-name "Make tags for " source-directory)
+        (tags--read-option)
+        (y-or-n-p "Renew tags? ")))
+
+(defun tags--dir-prompt ()
+  (list (read-directory-name "Make tags for ")
+        (read-file-name "Store tags in " nil nil nil ".tags")
+        (when current-prefix-arg
+          (read-string "Tags include regexp: " nil))
+        (when current-prefix-arg
+          (read-string "Tags exclude regexp: " nil))
+        (tags--read-option)
+        (y-or-n-p "Renew tags? ")))
+
+;; end of environment
+
+
+(defalias 'mount-tags #'visit-tags-table
+  "Mount existing TAGS into \\=`tags-table-list\\='.")
+
 (defun unmount-tags (&optional tags)
   "Unmount TAGS from \\=`tags-table-list\\='."
-  (interactive (tags--unmount-tags-prompt))
+  (interactive (tags--unmount-prompt))
   (setq tags-file-name nil
         tags-table-list
         (when tags
@@ -112,7 +136,8 @@ ENV (:k1 v1 :k2 v2 ...)."
     (let ((files (directory-files dir t)))
       (while files
         (let* ((a (car files))
-               (s (file-attributes a)) (ft (nth 0 s))
+               (s (file-attributes a))
+               (ft (nth 0 s))
                (f (file-name-nondirectory a))
                (len (length f)))
           (cond ((eq ft t) (cond ((char-equal (aref f (1- len)) ?.) nil)
@@ -124,20 +149,21 @@ ENV (:k1 v1 :k2 v2 ...)."
                                 fp (funcall fp a env))))
           (setq files (cdr files)))))))
 
-(defun tags--file-processor (f &optional env)
-  (let ((tf (plist-get env :file))
-        (opt (plist-get env :option))
-        (fmt (plist-get env :cmd))
-        (qf (shell-quote-argument f)))
-    (let* ((cmd (format fmt (or opt "") tf qf))
-           (rc (shell-command* cmd))
-           (done (zerop (car rc))))
-      (message "%s %s...%s"
-               (tags-spec->% :prompt) cmd (if done "ok" "failed"))
-      (and done f))))
+(defun tags--file-processor (file &optional env)
+  (let* ((env-file (plist-get env :file))
+         (env-option (plist-get env :option))
+         (env-cmd (plist-get env :cmd))
+         (quoted (shell-quote-argument file))
+         (cmd (format env-cmd (or env-option "") env-file quoted))
+         (rc (shell-command* cmd))
+         (done (= 0 (car rc))))
+    (message "%s %s...%s"
+             (tags-spec->* :prompt) cmd
+             (if done (tags-spec->* :done) (tags-spec->* :failed)))
+    (and done file)))
 
-(defun make-tags (home tags-file file-filter dir-filter
-                       &optional tags-option renew env)
+(defun make-tags
+    (home tags-file file-filter dir-filter &optional tags-option renew env)
   "Make tags.\n
 HOME where the source files locate,
 TAGS-FILE where the tags file to save,
@@ -149,23 +175,25 @@ RENEW overwrite the existing tags file when t else create it."
     (error "%s" "No tags program found"))
   (when (file-exists-p home)
     (let* ((tf (expand-file-name tags-file))
-           (td (file-name-directory tf)))
-      (cond ((file-exists-p tf) (when renew (delete-file tf)))
+           (td (file-name-directory tf))
+           (prompt (tags-spec->* :prompt)))
+      (cond ((file-exists-p tf) (and renew (delete-file tf)))
             (t (path! td)))
-      (let ((env (append (list :file tf
-                               :option tags-option
-                               :prompt (tags-spec->% :prompt)
-                               :cmd (*tags* :cmd))
-                         env)))
-        (dir-iterate home
-                     file-filter
-                     dir-filter
-                     #'tags--file-processor
-                     nil
-                     env)
-        (message "%s for %s...%s"
-                 (tags-spec->% :prompt) tf
-                 (if (file-exists-p tf) "done" "failed"))))))
+      (dir-iterate home
+                   file-filter
+                   dir-filter
+                   #'tags--file-processor
+                   nil
+                   (append (list :file tf
+                                 :option tags-option
+                                 :prompt prompt
+                                 :cmd (*tags* :cmd))
+                           env))
+      (message "%s for %s...%s"
+               prompt tf
+               (if (file-exists-p tf)
+                   (tags-spec->* :done)
+                 (tags-spec->* :failed))))))
 
 ;;; file/dir filters
 
@@ -188,12 +216,6 @@ RENEW overwrite the existing tags file when t else create it."
 
 ;;; make tags
 
-(defun tags--read-option ()
-  (read-string (concat (symbol-name (*tags* :bin)) " option: ")
-               (car (or *tags-option-history*
-                        (setq *tags-option-history* (*tags* :opt))))
-               '*tags-option-history*))
-
 (defun make-c-tags
     (home tags-file &optional option file-filter dir-filter renew)
   "Make TAGS-FILE for C source code in HOME."
@@ -204,9 +226,9 @@ RENEW overwrite the existing tags file when t else create it."
              option
              renew
              `( :inc "\\.[ch]+$"
-                :exc ,(concat (tags-spec->% :vcs-dir)
-                              "\\|" (tags-spec->% :arc-dir)
-                              "\\|" (tags-spec->% :out-dir)))))
+                :exc ,(concat (tags-spec->* :vcs-dir)
+                              "\\|" (tags-spec->* :arc-dir)
+                              "\\|" (tags-spec->* :out-dir)))))
 
 (defun make-lisp-tags
     (home tags-file &optional option file-filter dir-filter renew)
@@ -218,38 +240,24 @@ RENEW overwrite the existing tags file when t else create it."
              option
              renew
              `( :inc "\\.el$\\|\\.cl$\\|\\.lis[p]?$\\|\\.ss$\\|\\.scm$"
-                :exc ,(concat (tags-spec->% :vcs-dir)
-                              "\\|" (tags-spec->% :arc-dir)))))
-
-(defun tags--make-emacs-tags-prompt ()
-  (list (read-directory-name "make tags for " source-directory)
-        (tags--read-option)
-        (y-or-n-p "tags renew? ")))
+                :exc ,(concat (tags-spec->* :vcs-dir)
+                              "\\|" (tags-spec->* :arc-dir)))))
 
 (defun make-emacs-tags (source &optional option renew)
   "Make tags for Emacs\\=' C and Lisp SOURCE code."
-  (interactive (tags--make-emacs-tags-prompt))
-  (make-c-tags (concat source "src/") (tags-spec->% :emacs) option
-               nil nil renew)
-  (make-lisp-tags (concat source "lisp/") (tags-spec->% :emacs) option))
-
-(defun tags--make-dir-tags-prompt ()
-  (list (read-directory-name "make tags for ")
-        (read-file-name "store tags in " nil nil nil ".tags")
-        (when current-prefix-arg
-          (read-string "tags include regexp: " nil))
-        (when current-prefix-arg
-          (read-string "tags exclude regexp: " nil))
-        (tags--read-option)
-        (y-or-n-p "tags renew? ")))
+  (interactive (tags--make-prompt))
+  (let ((file (tags-spec->* :emacs)))
+    (make-c-tags (concat source "src/") file option
+                 nil nil renew)
+    (make-lisp-tags (concat source "lisp/") file option)))
 
 (defun make-dir-tags (dir store &optional include exclude option renew)
   "Make tags for specified DIR."
-  (interactive (tags--make-dir-tags-prompt))
+  (interactive (tags--dir-prompt))
   (let ((home (path+ (expand-file-name dir)))
-        (exc (concat (tags-spec->% :out-dir)
-                     "\\|" (tags-spec->% :vcs-dir)
-                     "\\|" (tags-spec->% :arc-dir)
+        (exc (concat (tags-spec->* :out-dir)
+                     "\\|" (tags-spec->* :vcs-dir)
+                     "\\|" (tags-spec->* :arc-dir)
                      (unless (string-equal exclude "") "\\|" exclude)))
         (inc (unless (string-equal include "") "\\|" include)))
     (make-tags home
@@ -267,12 +275,16 @@ RENEW overwrite the existing tags file when t else create it."
       (error "%s" "No ctags program found"))
     (let ((d1 (path+ (expand-file-name dir)))
           (f1 (expand-file-name tags))
-          (o1 (concat "--options=" (expand-file-name options))))
-      (message "%s %s %s %s ..." (tags-spec->% :prompt) tp o1 dir )
+          (o1 (concat "--options=" (expand-file-name options)))
+          (prompt (tags-spec->* :prompt)))
+      (message "%s %s %s %s ..." prompt tp o1 dir )
       (let* ((rc (shell-command* tp "-e" o1 "-o" f1 "-R"d1))
              (done (zerop (car rc))))
         (message "%s for %s...%s"
-                 (tags-spec->% :prompt) dir (if done "done" "failed"))
+                 prompt dir
+                 (if done
+                     (tags-spec->* :done)
+                   (tags-spec->* :failed)))
         (and done f1)))))
 
 ;; end of make tags
