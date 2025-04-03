@@ -33,29 +33,25 @@
 (defun cc-spec->* (cc cmd)
   "The spec of \\=`cc\\='."
   (cond ((and cc (memq cc '(:cc :clang :gcc)))
-         (cond ((and cmd (eq cmd :compile)) "cc %s %s -o%s")
-               ((and cmd (eq cmd :include))
-                "echo ''| cc -v -E 2>&1 >/dev/null -")
-               ((and cmd (eq cmd :define)) "cc %s -dM -E -")
-               ((and cmd (eq cmd :macro)) "cc %s -E")
-               ((and cmd (eq cmd :line-fmt) "# %d \"%s\""))
-               ((and cmd (eq cmd :line-re) "# \\([0-9]+\\)"))
-               ((and cmd (eq cmd :ver) "cc -v"))))
+         (cond ((eq cmd :compile) "cc %s %s -o%s")
+               ((eq cmd :include) "echo ''| cc -v -E 2>&1 >/dev/null -")
+               ((eq cmd :define) "cc %s -dM -E -")
+               ((eq cmd :macro) "cc %s -E")
+               ((eq cmd :line-fmt) "# %d \"%s\"")
+               ((eq cmd :line-re) "# \\([0-9]+\\)")
+               ((eq cmd :ver) "cc -v")))
         ((and cc (eq cc :msvc))
-         (let ((msvc (v-home% ".exec/cc_msvc.bat"))
-               (xargs (v-home% ".exec/cc_xargs")))
-           (cond ((and cmd (eq cmd :compile))
-                  (concat msvc " && cl %s %s"
-                          " -Fo" temporary-file-directory
-                          " -Fe%s"))
-                 ((and cmd (eq cmd :include)) msvc)
-                 ((and cmd (eq cmd :define)) "")
-                 ((and cmd (eq cmd :macro)) (concat msvc " &cl %s -E"))
-                 ((and cmd (eq cmd :xargs)) xargs)
-                 ((and cmd (eq cmd :env)) msvc)
-                 ((and cmd (eq cmd :line-fmt) "#line %d \"%s\""))
-                 ((and cmd (eq cmd :line-re) "#line \\([0-9]+\\)"))
-                 ((and cmd (eq cmd :ver) (concat msvc " && cl 2>nul"))))))))
+         (let ((msvc (v-home% ".exec/cc_msvc.bat")))
+           (cond ((eq cmd :compile) (concat msvc " && cl %s %s"
+                                            " -Fo" temporary-file-directory
+                                            " -Fe%s"))
+                 ((eq cmd :include) msvc)
+                 ((eq cmd :define) "")
+                 ((eq cmd :macro) (concat msvc " &cl %s -E"))
+                 ((eq cmd :env) msvc)
+                 ((eq cmd :line-fmt) "#line %d \"%s\"")
+                 ((eq cmd :line-re) "#line \\([0-9]+\\)")
+                 ((eq cmd :ver) (concat msvc " && cl 2>nul")))))))
 
 ;; end of env
 

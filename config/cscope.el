@@ -163,44 +163,40 @@
         (set (make-local-variable '*cscope--src-dir*) *cscope--repl-src-dir*)))
     (switch-to-buffer-other-window out)))
 
-(defun cscope--find-prompt (prompt)
-  (list (read-string prompt)))
-
 (defun cscope-find-this-c-symbol (&optional symbol)
-  (interactive (cscope--find-prompt "Find this C symbol: "))
+  (interactive "sFind this C symbol: ")
   (cscope-send-command (concat "0" symbol)))
 
 (defun cscope-find-this-function-definition (&optional symbol)
-  (interactive (cscope--find-prompt "Find this function definition: "))
+  (interactive "sFind this function definition: ")
   (cscope-send-command (concat "1" symbol)))
 
 (defun cscope-find-functions-called-by-this-function (&optional symbol)
-  (interactive
-   (cscope--find-prompt "Find functions called by this function: "))
+  (interactive "sFind functions called by this function: ")
   (cscope-send-command (concat "2" symbol)))
 
 (defun cscope-find-functions-calling-this-function (&optional symbol)
-  (interactive (cscope--find-prompt "Find functions calling this function: "))
+  (interactive "sFind functions calling this function: ")
   (cscope-send-command (concat "3" symbol)))
 
 (defun cscope-find-this-text-string (&optional text)
-  (interactive (cscope--find-prompt "Find this text string: "))
+  (interactive "sFind this text string: ")
   (cscope-send-command (concat "4" text)))
 
 (defun cscope-find-this-egrep-pattern (&optional pattern)
-  (interactive (cscope--find-prompt "Find this egrep pattern: "))
+  (interactive "sFind this egrep pattern: ")
   (cscope-send-command (concat "6" pattern)))
 
 (defun cscope-find-this-file (&optional filename)
-  (interactive (cscope--find-prompt "Find this file: "))
+  (interactive "sFind this file: ")
   (cscope-send-command (concat "7" filename)))
 
 (defun cscope-find-files-including-this-file (&optional symbol)
-  (interactive (cscope--find-prompt "Find files #including this file: "))
+  (interactive "sFind files #including this file: ")
   (cscope-send-command (concat "8" symbol)))
 
 (defun cscope-find-assignments-to-this-symbol (&optional symbol)
-  (interactive (cscope--find-prompt "Find assignments to this symbol: "))
+  (interactive "sFind assignments to this symbol: ")
   (cscope-send-command (concat "9" symbol)))
 
 (define-derived-mode cscope-repl-mode comint-mode "REPL"
