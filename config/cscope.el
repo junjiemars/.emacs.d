@@ -10,6 +10,9 @@
 ;;; 2. `run-cscope' interacts with `cscope -l' using `comint'.
 ;;; 3. `cscope-find-this-c-symbol', `-[0,9]pattern' commands.
 ;;;;
+;; references:
+;;; 1. https://cscope.sourceforge.net/
+;;;;
 
 
 ;;; require

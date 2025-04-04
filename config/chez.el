@@ -10,9 +10,8 @@
 ;;; 2. switch/back to chez REPL.
 ;;; 3. send sexp/definition/region to chez REPL.
 ;;; 4. compile/load scheme file.
-;;; 5. indentation in REPL.
-;;; 6. completion in REPL and scheme source.
-;;; 7. indentation for chez scheme.
+;;; 5. indentation in REPL and scheme buffer.
+;;; 6. completion in REPL and scheme buffer.
 ;;;;
 ;; references:
 ;;; https://scheme.com
@@ -22,10 +21,6 @@
 ;;; https://www.emacswiki.org/emacs/r5rs.el
 ;;; https://groups.csail.mit.edu/mac/ftpdir/
 ;;;;
-;; bugs:
-;;;
-;;;;;
-
 
 
 ;;; require

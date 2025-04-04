@@ -8,6 +8,7 @@
 ;; features:
 ;;; 1. `mount-tags' and `unmount-tags'.
 ;;; 2. make tags for Directory, Emacs, and C.
+;;; 3. support `etags' and `ctags'.
 ;;;;
 
 

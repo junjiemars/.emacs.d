@@ -11,6 +11,13 @@
 ;;; 3. dump C's #define.
 ;;; 4. preprocess code segments in buffer.
 ;;; 5. support remote C environment.
+;;; 6. format code.
+;;;;
+;; references:
+;;; 1. https://gcc.gnu.org/
+;;; 2. https://www.gnu.org/software/gnu-c-manual/gnu-c-manual.html
+;;; 3. https://clang.llvm.org/
+;;; 4. https://clang.llvm.org/docs/ClangFormat.html
 ;;;;
 
 

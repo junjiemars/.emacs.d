@@ -10,6 +10,10 @@
 ;;; 2. make `rust-lldb' debugging environment.
 ;;; 3. make tags file.
 ;;;;
+;; references:
+;;; 1. https://www.rust-lang.org/
+;;; 2. https://rustc-dev-guide.rust-lang.org/debugging-support-in-rustc.html
+;;;;
 
 
 ;;; require
