@@ -5,10 +5,12 @@
 ;;;;
 ;; isearchs.el
 ;;;;
+
 
 ;;; require
 
-(require% 'marks (v-home%> "config/marks"))
+(eval-when-compile
+  (require 'marks (v-home%> "config/marks")))
 
 ;; end of require
 

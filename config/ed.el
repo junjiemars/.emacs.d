@@ -84,13 +84,13 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
     (inhibit-file-name-handler
       (let ((case-fold-search (when-platform% windows-nt t))
             (d (file-name-directory file)))
-        (catch 'br
+        (catch :br
           (dolist (x dirs)
             (and (stringp x)
                  (eq 't (compare-strings
                          x 0 (length x) d 0 (length x)
                          case-fold-search))
-                 (throw 'br x))))))))
+                 (throw :br x))))))))
 
 ;; end of file
 

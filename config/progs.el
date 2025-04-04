@@ -11,8 +11,9 @@
 
 ;;; require
 
-;; `new-line*'
-(require% 'ed (v-home%> "config/ed"))
+(eval-when-compile
+  ;; `new-line*'
+  (require 'ed (v-home%> "config/ed")))
 
 ;; end of require
 

@@ -8,8 +8,9 @@
 
 ;;; require
 
-;; `delete-line*'
-(require% 'ed (v-home%> "config/ed"))
+(eval-when-compile
+  ;; `delete-line*'
+  (require 'ed (v-home%> "config/ed")))
 
 ;; end of require
 

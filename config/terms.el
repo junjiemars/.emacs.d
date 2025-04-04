@@ -9,7 +9,8 @@
 
 ;;; require
 
-(require% 'term)
+(eval-when-compile
+  (require 'term))
 
  ;; end of require
 

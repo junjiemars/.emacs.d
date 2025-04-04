@@ -18,12 +18,13 @@
 
 ;;; require
 
-;; `delete-line*'
-(require% 'ed (v-home%> "config/ed"))
-;; `tags-spec->*', `make-dir-ctags'
-(require% 'tags (v-home%> "config/tags"))
-;; `xref*-read-only-dirs'
-(require% 'xrefs (v-home%> "config/xrefs"))
+(eval-when-compile
+  ;; `delete-line*'
+  (require 'ed (v-home%> "config/ed"))
+  ;; `tags-spec->*', `make-dir-ctags'
+  (require 'tags (v-home%> "config/tags"))
+  ;; `xref*-read-only-dirs'
+  (require 'xrefs (v-home%> "config/xrefs")))
 
 ;; end of require
 

@@ -9,9 +9,6 @@
 
 ;;; require
 
-;; (require% 'eshell)
-;; (require 'em-term)
-
  ;; end of require
 
 (defun eshell-spec->* (&optional key)

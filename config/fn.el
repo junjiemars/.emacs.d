@@ -321,17 +321,17 @@ If optional UNIQUELY is non-nil then push uniquely."
 (defun strchr (str chr)
   "Return the index of the located CHR of STR from left side."
   (let ((i 0) (l (length str)))
-    (catch 'br
+    (catch :br
       (while (< i l)
-        (and (char-equal chr (aref str i)) (throw 'br i))
+        (and (char-equal chr (aref str i)) (throw :br i))
         (setq i (1+ i))))))
 
 (defun strrchr (str chr)
   "Return the index of the located CHR of STR from right side."
   (let* ((l (length str)) (i (1- l)))
-    (catch 'br
+    (catch :br
       (while (>= i 0)
-        (and (char-equal chr (aref str i)) (throw 'br i))
+        (and (char-equal chr (aref str i)) (throw :br i))
         (setq i (1- i))))))
 
 (defun strawk (str pattern)
@@ -589,12 +589,6 @@ Call FN with the path if FN is non-nil."
     "Execute BODY after FILE is loaded."
     (declare (indent 1))
     `(eval-after-load ,file (lambda () ,@body))))
-
-(defmacro require% (feature &optional filename noerror)
-  "Require feature at compile-time."
-  `(eval-when-compile
-     (unless (featurep ,feature)
-       (require ,feature ,filename ,noerror))))
 
  ;; end of compatible macro
 
