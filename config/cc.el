@@ -6,12 +6,11 @@
 ;; cc.el
 ;;;;
 ;; features:
-;;; 1. probe C compilers environment.
-;;; 2. list the system C headers.
-;;; 3. dump C's #define.
-;;; 4. preprocess code segments in buffer.
-;;; 5. support remote C environment.
-;;; 6. format code.
+;;; 1. probe C compiler environment.
+;;; 2. dump C's `#define'.
+;;; 3. preprocess code segments in buffer.
+;;; 4. support remote C environment.
+;;; 5. format code.
 ;;;;
 ;; references:
 ;;; 1. https://gcc.gnu.org/
@@ -317,7 +316,8 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
          (out (concat (make-temp-file "cc_macro_") ".c"))
          (fmt (cc-spec->* cc :line-fmt)) (re (cc-spec->* cc :line-re))
          (beg nil) (end nil)
-         (rc nil))
+         (rc nil)
+         (inhibit-read-only t))
     (with-current-buffer buf
       (erase-buffer)
       (goto-char (point-min))
@@ -353,7 +353,8 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
                          (cdr rc)
                          "\n\n/* Error " errno " */"))))
       (goto-char (point-min))
-      (c-mode))
+      (c-mode)
+      (view-mode 1))
     (switch-to-buffer buf)))
 
 ;; end of macro
