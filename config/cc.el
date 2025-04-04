@@ -7,7 +7,7 @@
 ;;;;
 ;; features:
 ;;; 1. probe C compilers environment.
-;;; 2. list the system C header files.
+;;; 2. list the system C headers.
 ;;; 3. dump C's #define.
 ;;; 4. preprocess code segments in buffer.
 ;;; 5. support remote C environment.
