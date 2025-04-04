@@ -5,6 +5,8 @@
 ;;;;
 ;; isearchs.el
 ;;;;
+;; Commentary: `isearch' for Regexp, Symbol, Word, File, and Quoted string.
+;;;;
 
 
 ;;; require
@@ -14,20 +16,29 @@
 
 ;; end of require
 
+;;;
+;; env
+;;;
+
+(defun isearch*--prompt (prompt)
+  (list
+   (when current-prefix-arg
+     (read-key
+      (format "%s: %s"
+              (propertize prompt 'face 'minibuffer-prompt)
+              (format "(%s)egexp (%s)ymbol (%s)ord (%s)ile (%s)uoted"
+                      (propertize "r" 'face 'minibuffer-prompt)
+                      (propertize "s" 'face 'minibuffer-prompt)
+                      (propertize "w" 'face 'minibuffer-prompt)
+                      (propertize "f" 'face 'minibuffer-prompt)
+                      (propertize "q" 'face 'minibuffer-prompt)))))))
+;; end of env
+
 (defun isearch*-forward (&optional style backward)
   "Search incrementally forward or BACKWARD in STYLE."
-  (interactive
-   (list (when current-prefix-arg
-           (read-key
-            (format "%s: %s"
-                    (propertize "I-search" 'face 'minibuffer-prompt)
-                    (format "(%s)egexp (%s)ymbol (%s)ord (%s)ile (%s)uoted"
-                            (propertize "r" 'face 'minibuffer-prompt)
-                            (propertize "s" 'face 'minibuffer-prompt)
-                            (propertize "w" 'face 'minibuffer-prompt)
-                            (propertize "f" 'face 'minibuffer-prompt)
-                            (propertize "q" 'face 'minibuffer-prompt)))))))
-  (let ((regexp-p (and style (or (char-equal ?\r style) (char-equal ?r style)))))
+  (interactive (isearch*--prompt "I-search"))
+  (let ((regexp-p (and style (or (char-equal ?\r style)
+                                 (char-equal ?r style)))))
     (cond (backward (isearch-backward regexp-p 1))
           (t (isearch-forward regexp-p 1)))
     (let ((ms (cond ((null style) nil)
@@ -72,19 +83,8 @@
 
 (defun isearch*-backward (&optional style)
   "Search incrementally backward in STYLE."
-  (interactive
-   (list (when current-prefix-arg
-           (read-key
-            (format "%s: %s"
-                    (propertize "I-search backward" 'face 'minibuffer-prompt)
-                    (format "(%s)egexp (%s)ymbol (%s)ord (%s)ile (%s)uoted"
-                            (propertize "r" 'face 'minibuffer-prompt)
-                            (propertize "s" 'face 'minibuffer-prompt)
-                            (propertize "w" 'face 'minibuffer-prompt)
-                            (propertize "f" 'face 'minibuffer-prompt)
-                            (propertize "q" 'face 'minibuffer-prompt)))))))
+  (interactive (isearch*--prompt "I-search backward"))
   (isearch*-forward style t))
-
 
 (defun isearch*-forward-symbol (&optional backward)
   "Search symbol incrementally forward or BACKWARD."
