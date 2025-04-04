@@ -23,7 +23,7 @@
 ;;; https://lldb.llvm.org/python_api/lldb.SBCommandInterpreter.html
 ;;; https://opensource.apple.com/source/lldb/lldb-69/utils/emacs/gud.el.auto.html
 ;;;;
-;; lldb builtin:
+;; LLDB help instructions:
 ;;; apropos
 ;;;;
 

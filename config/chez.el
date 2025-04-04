@@ -11,7 +11,7 @@
 ;;; 3. send sexp/definition/region to chez REPL.
 ;;; 4. compile/load scheme file.
 ;;; 5. indentation in REPL and scheme buffer.
-;;; 6. completion in REPL and scheme buffer.
+;;; 6. code completion in REPL and scheme buffer.
 ;;;;
 ;; references:
 ;;; https://scheme.com

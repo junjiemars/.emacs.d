@@ -5,31 +5,39 @@
 ;;;;
 ;; pythons.el
 ;;;;
-
-;;;
-;; Python help instructions
-;; help:    help(help)
-;; dir:     list of strings, dir(sys.prefix)
-;; inspect: inspect living objects, needs import
-;; dis:     disassembler
-;;;
+;; features:
+;;; 1. probe Python environment.
+;;; 2. make Python's virtual environment.
+;;; 3. support `LSP'.
+;;; 4. format code.
+;;;;
+;; Python help instructions:
+;;; help:    help(help)
+;;; dir:     list of strings, dir(sys.prefix)
+;;; inspect: inspect living objects, needs import
+;;; dis:     disassembler
+;;;;
+
 
 ;;; require
 
-;; end of require
+ ;; end of require
 
-;;; version/program
+;;; env
 
 (defun python*-version (python)
   "Return the version of PYTHON"
   (let ((rc (shell-command* python "--version")))
-    (when (zerop (car rc))
+    (when (= 0 (car rc))
       (string-match* "^Python \\([.0-9]+\\)$" (cdr rc) 1))))
 
+(defun python*--program-check ()
+  (let ((p (or (executable-find* "python3")
+               (executable-find* "python"))))
+    (and p (cons p (python*-version p)))))
+
 (defalias 'python*-program
-  (let ((b (let ((p (or (executable-find% "python3")
-                        (executable-find% "python"))))
-             (when p (cons p (python*-version p))))))
+  (let ((b (python*--program-check)))
     (lambda (&optional op n)
       (cond ((and op (eq :new op)) (setq b (cons n (python*-version n))))
             ((and op (eq :bin op)) (car b))
@@ -37,7 +45,21 @@
             (t b))))
   "Adjoint of \\=`python-shell-interpreter\\='.")
 
-;; end of version/program
+(defconst +python*-pip-mirror+
+  '("https://pypi.tuna.tsinghua.edu.cn/simple/"
+    "https://pypi.mirrors.ustc.edu.cn/simple/"
+    "http://pypi.hustunique.com/"
+    "http://pypi.sdutlinux.org/")
+  "List of pip mirror.")
+
+(defun python*--venv-prompt ()
+  (if current-prefix-arg
+      (list (read-directory-name "Make venv for ")
+            (read-string "Set pip mirror "))
+    (list (python*-venv :scratch)
+          (python*-venv :mirror))))
+
+;; end of env
 
 ;;;
 ;; venv
@@ -60,13 +82,13 @@ determine whether inside a virtual env. Another way is using
           (p (car pv))
           (v- (= -1 (vstrncmp (cdr pv) "3.3" 3))))
       (unless (file-exists-p (concat d "/bin/activate"))
-        (cond ((and p v- (executable-find% "virtualenv"))
+        (cond ((and p v- (executable-find* "virtualenv"))
                (let ((rc (shell-command* "virtualenv" "-p" p d)))
-                 (unless (zerop (car rc))
+                 (unless (= 0 (car rc))
                    (error "Panic, %s" (string-trim> (cdr rc))))))
               ((and p (null v-))
                (let ((rc (shell-command* p "-m" "venv" d)))
-                 (unless (zerop (car rc))
+                 (unless (= 0 (car rc))
                    (error "Panic, %s" (string-trim> (cdr rc))))))
               (t (error "%s" "No python's venv found"))))
       (prog1 d
@@ -89,15 +111,8 @@ determine whether inside a virtual env. Another way is using
 ;; end of venv
 
 ;;;
-;; lsp
+;; LSP
 ;;;
-
-(defconst +python*-pip-mirror+
-  '("https://pypi.tuna.tsinghua.edu.cn/simple/"
-    "https://pypi.mirrors.ustc.edu.cn/simple/"
-    "http://pypi.hustunique.com/"
-    "http://pypi.sdutlinux.org/")
-  "List of pip mirror.")
 
 (defun python*-pip-mirror! (venv &optional mirror)
   "Set pip MIRROR in VENV."
@@ -105,14 +120,14 @@ determine whether inside a virtual env. Another way is using
                 (catch :br
                   (dolist (a +python*-pip-mirror+)
                     (let ((rc (shell-command* "curl" "-fsIL" a)))
-                      (when (zerop (car rc))
+                      (when (= 0 (car rc))
                         (throw :br a)))))
                 (car +python*-pip-mirror+)))
          (rc (shell-command* "source"
                (concat venv "/bin/activate")
                "&& pip config set global.index-url"
                x)))
-    (and (zerop (car rc)) x)))
+    (and (= 0 (car rc)) x)))
 
 (when-feature% eglot
   (defun python*-eglot-sever-program ()
@@ -140,21 +155,15 @@ determine whether inside a virtual env. Another way is using
                   "fi\n"
                   "exec " venv "bin/pylsp $@\n")
                  pylsp))))
-    (when (zerop (car rc))
+    (when (= 0 (car rc))
       (prog1 pylsp
         (when-feature% eglot
           (python*-eglot-sever-program))))))
 
-;; end of lsp
-
-(defun python*-venv-scratch ()
-  (let ((pyvenv (emacs-home% "scratch/pyvenv/")))
-    (unless (file-exists-p pyvenv)
-      (path! pyvenv))
-    pyvenv))
+;; end of LSP
 
 (defalias 'python*-venv
-  (let* ((b (python*-venv-scratch))
+  (let* ((b (path! (emacs-home% "scratch/pyvenv/")))
          (file (v-home% ".exec/python-venv.el"))
          (env (list :venv b
                     :pylsp (v-home% ".exec/pylsp.sh")
@@ -183,16 +192,12 @@ determine whether inside a virtual env. Another way is using
 
 (defun python*-venv-make! (&optional dir mirror)
   "Make Python\\='s venv for DIR."
-  (interactive (if current-prefix-arg
-                   (list (read-directory-name "make venv for ")
-                         (read-string "set pip mirror "))
-                 (list (python*-venv :scratch)
-                       (python*-venv :mirror))))
+  (interactive (python*--venv-prompt))
   (let* ((dir (or dir (python*-venv :scratch)))
          (mirror (or mirror (python*-venv :mirror)))
          (venv (python*-venv-activate! dir)))
     (unless venv
-      (user-error "%s" "python venv unavailable"))
+      (user-error "%s" "No python's venv available"))
     (python*-venv :venv venv)
     (python*-venv :mirror (python*-pip-mirror! venv mirror))
     (python*-pylsp-make! venv (python*-venv :pylsp))
@@ -206,7 +211,7 @@ determine whether inside a virtual env. Another way is using
 ;;;
 
 (defun python*-format-region (&optional beg end)
-  "Format the region in (BEG,END) of current buffer via ruff."
+  "Format the region of current buffer via ruff."
   (interactive (select-region-prompt))
   (let ((cur (point)))
     (unwind-protect
