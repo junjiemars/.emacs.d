@@ -86,8 +86,6 @@
 (define-key (current-global-map) (kbd% "C-c M-f") #'mark-filename@)
 (define-key (current-global-map) (kbd% "C-c M-h") #'mark-defun@)
 (define-key (current-global-map) (kbd% "C-c M-l") #'mark-line@)
-(define-key (current-global-map) (kbd% "C-c M-q a") #'mark-quoted-asymmetry@)
-(define-key (current-global-map) (kbd% "C-c M-q s") #'mark-quoted-symmetry@)
 (define-key (current-global-map) (kbd% "C-c M-s") #'mark-string@)
 (define-global-key% (kbd "C-M-@") #'mark-sexp)
 (define-global-key% (kbd "C-M-SPC") #'mark-sexp)

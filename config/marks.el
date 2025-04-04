@@ -20,13 +20,17 @@
 
  ;; end of require
 
+;;;
+;; env
+;;;
+
 (defun mark-thing (begin end)
   "Mark thing at point."
   (goto-char begin)
   (set-mark (point))
   (goto-char end))
 
-
+;; end of env
 
 ;;;
 ;; symbol
@@ -257,164 +261,6 @@ If prefix N is non-nil, then forward or backward N functions."
     (mark-thing (car bs) (cdr bs))))
 
 ;; end of filename
-
-;;;
-;; quoted symmetry
-;;;
-
-(defun forward-quoted-symmetry (chr pos rx ls rs)
-  (let ((cur pos) (ss (cons chr nil)))
-    (catch :br
-      (while (< cur rx)
-        (let ((l (and (= ls (char-after cur)) chr))
-              (r (and (= rs (char-after cur)) chr)))
-          (cond ((and r ss (= r (car ss)))
-                 (setq ss (cdr ss)))
-                (l (setq ss (cons l ss)))))
-        (when (null ss) (throw :br cur))
-        (setq cur (1+ cur))))))
-
-(defun backward-quoted-symmetry (chr pos lx ls rs)
-  (let ((cur pos) (ss (cons chr nil)))
-    (catch :br
-      (while (> cur lx)
-        (let ((l (and (= ls (char-before cur)) chr))
-              (r (and (= rs (char-before cur)) chr)))
-          (cond ((and l ss (= l (car ss)))
-                 (setq ss (cdr ss)))
-                (r (setq ss (cons r ss)))))
-        (when (null ss) (throw :br cur))
-        (setq cur (1- cur))))))
-
-(defun quoted-symmetry@ ()
-  (let* ((p (point)) (l1 p) (r1 p)
-         (lx (point-min)) (rx (point-max))
-         (ls "\"'`([{<")
-         (rs "\"'`)]}>"))
-    (while (and (> l1 lx)
-                (null (strchr ls (char-before l1))))
-      (setq l1 (1- l1)))
-    (while (and (< r1 rx)
-                (null (strchr rs (char-after r1))))
-      (setq r1 (1+ r1)))
-    (when (and l1 r1)
-      (let* ((l2 (and r1 (let* ((c (char-after r1))
-                                (i (strchr rs c)))
-                           (backward-quoted-symmetry c r1 lx (aref ls i) c))))
-             (r2 (and l1 (let* ((c (char-before l1))
-                                (i (strchr ls c)))
-                           (forward-quoted-symmetry c l1 rx c (aref rs i)))))
-             (l3 (and r2 (let* ((c (char-after r2))
-                                (i (strchr rs c)))
-                           (backward-quoted-symmetry c r2 lx (aref ls i) c))))
-             (r3 (and l2 (let* ((c (char-before l2))
-                                (i (strchr ls c)))
-                           (forward-quoted-symmetry c l2 rx c (aref rs i))))))
-        (cond ((and l2 r2 l3 r3
-                    (and (= l1 l2) (= l2 l3))
-                    (and (= r1 r2) (= r2 r3)))
-               (cons (1- l1) (1+ r1)))
-              ((and l2 l3 r3 (= l1 l3) (= r1 r3) (> r2 r3))
-               (cons (1- l1) (1+ r2)))
-              ((and l2 l3 r3 (= l1 l3) (= r1 r3))
-               (cons (1- l2) (1+ r3)))
-              ((and r2 l3 (= l1 l3))
-               (cons (1- l1) (1+ r2)))
-              ((and l2 r3 (= r1 r3))
-               (cons (1- l2) (1+ r1)))
-              (t (cons (1- (if l2 (min l1 l2) l1))
-                       (1+ (if r2 (max r1 r2) r1)))))))))
-
-(defun mark-quoted-symmetry@ (&optional boundary)
-  "Mark symmetry quoted thing at point.\n
-If prefix BOUNDARY is non-nil, then mark the whole quoted thing."
-  (interactive "P")
-  (let ((bs (quoted-symmetry@)))
-    (unless (and bs (car bs) (cdr bs))
-      (user-error "%s" "No quoted thing found"))
-    (mark-thing (if boundary (car bs) (1+ (car bs)))
-                (if boundary (cdr bs) (1- (cdr bs))))))
-
-(defun kill-quoted-symmetry@ (&optional boundary)
-  "Kill symmetry quoted thing at point.\n
-If prefix BOUNDARY is non-nil, then mark the whole quoted thing."
-  (interactive "P")
-  (let ((bs (quoted-symmetry@)))
-    (unless (and bs (car bs) (cdr bs))
-      (user-error "%s" "No quoted thing found"))
-    (kill-region (if boundary (car bs) (1+ (car bs)))
-                 (if boundary (cdr bs) (1- (cdr bs))))))
-
-;; end of quoted symmetry
-
-;;;
-;; quoted asymmetry
-;;;
-
-(defun forward-quoted-asymmetry (chr pos rx)
-  (let ((cur pos))
-    (catch :br
-      (while (< cur rx)
-        (when (char-equal chr (char-after cur))
-          (throw :br cur))
-        (setq cur (1+ cur))))))
-
-(defun backward-quoted-asymmetry (chr pos lx)
-  (let ((cur pos))
-    (catch :br
-      (while (> cur lx)
-        (when (char-equal chr (char-before cur))
-          (throw :br cur))
-        (setq cur (1- cur))))))
-
-(defun quoted-asymmetry@ ()
-  (let* ((p (point)) (l1 p) (r1 p)
-         (lx (point-min)) (rx (point-max))
-         (ls "\"'`([{<")
-         (rs "\"'`)]}>"))
-    (while (and (> l1 lx)
-                (null (strchr ls (char-before l1))))
-      (setq l1 (1- l1)))
-    (while (and (< r1 rx)
-                (null (strchr rs (char-after r1))))
-      (setq r1 (1+ r1)))
-    (when (and l1 r1)
-      (let* ((l2 (and r1 (backward-quoted-asymmetry
-                          (aref
-                           ls (strchr rs (char-after r1)))
-                          r1 lx)))
-             (r2 (and l1 (forward-quoted-asymmetry
-                          (aref
-                           rs (strchr ls (char-before l1)))
-                          l1 rx))))
-        (cond ((and l2 r2 (and (= l1 l2) (= r1 r2)))
-               (cons (1- l1) (1+ r1)))
-              ((and l2 r2 (= r1 r2))
-               (cons (1- l1) (1+ r2)))
-              (l2 (cons (1- l2) (1+ r1)))
-              (r2 (cons (1- l1) (1+ r2))))))))
-
-(defun mark-quoted-asymmetry@ (&optional boundary)
-  "Mark asymmetry quoted thing at point.\n
-If prefix BOUNDARY is non-nil, then mark the whole quoted thing."
-  (interactive "P")
-  (let ((bs (quoted-asymmetry@)))
-    (unless (and bs (car bs) (cdr bs))
-      (user-error "%s" "No quoted thing found"))
-    (mark-thing (if boundary (car bs) (1+ (car bs)))
-                (if boundary (cdr bs) (1- (cdr bs))))))
-
-(defun kill-quoted-asymmetry@ (&optional boundary)
-  "Kill asymmetry quoted thing at point.\n
-If prefix BOUNDARY is non-nil, then mark the whole quoted thing."
-  (interactive "P")
-  (let ((bs (quoted-asymmetry@)))
-    (unless (and bs (car bs) (cdr bs))
-      (user-error "%s" "No quoted thing found"))
-    (kill-region (if boundary (car bs) (1+ (car bs)))
-                 (if boundary (cdr bs) (1- (cdr bs))))))
-
-;; end of quoted asymmetry
 
 (provide 'marks)
 

@@ -49,8 +49,7 @@
                     ((char-equal ?f style)
                      (cons "file" (unless-region-active (mark-filename@))))
                     ((char-equal ?q style)
-                     (cons "quoted" (unless-region-active
-                                      (mark-quoted-symmetry@)))))))
+                     (cons "quoted" (unless-region-active (mark-string@)))))))
       (let ((ss (symbol@)))
         (if (eq 'region (car ss))
             (isearch-yank-string (cdr ss))
