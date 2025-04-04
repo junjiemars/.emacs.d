@@ -5,6 +5,12 @@
 ;;;;
 ;; use-rust.el
 ;;;;
+;; features:
+;;; 1. `rust' environment info.
+;;; 2. make `rust-lldb' debugging environment.
+;;; 3. make tags file.
+;;;;
+
 
 ;;; require
 
@@ -20,7 +26,7 @@
 ;;; sysroot
 
 (defun rust*-sysroot-spec ()
-  "Return rust sysroot spec."
+  "Rust sysroot spec."
   (let ((rc (shell-command* "~/.cargo/bin/rustc --print sysroot 2>/dev/null")))
     (when (zerop (car rc))
       (let ((sysroot (string-trim> (cdr rc))))
@@ -52,7 +58,7 @@
 ;;;
 
 (defun rust*-debug-spec ()
-  "Return rust debugger spec."
+  "Rust debugging spec."
   (let ((w (get-buffer-create* (symbol-name (gensym*)) t))
         (x (concat "/rustc/" (rust*-sysroot :hash)))
         (s (path+ (rust*-sysroot :src) "rust"))
@@ -91,7 +97,7 @@
               (write-region* (point-min) (point-max) f nil :slient))))
       (when w (kill-buffer w)))))
 
-(defalias 'rust*-make-debug!
+(defalias 'rust*-debug-env-make!
   (let ((b (rust*-debug-spec)))
     (lambda (&optional op)
       (cond ((and op (eq op :new)) (setq b (rust*-debug-spec)))
@@ -116,20 +122,8 @@
 
 (defun use-rust-init! ()
   "On \\=`rust\\=' initialization."
-  (xref*-read-only-dirs :push (rust*-sysroot :sysroot)))
-
-;; compile-time
-;; (comment
-;;  (unless (rust*-sysroot)
-;;    (rust*-sysroot :new)
-;;    (rust*-make-debug! :new)
-;;    (rust*-make-tags :new)))
-
-;; (setq% *tags-option-history*
-;;         (let ((p (and (file-exists-p (rust*-sysroot :tag))
-;;                       (concat "--options=" (rust*-sysroot :tag)))))
-;;           (append! p *tags-option-history* t))
-;;         tags)
+  (xref*-read-only-dirs :push (rust*-sysroot :sysroot))
+  (rust*-debug-env-make!))
 
 
 
