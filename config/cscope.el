@@ -5,11 +5,11 @@
 ;;;;
 ;; cscope.el
 ;;;;
-;; 1. `cscope -L' interact with `compile'.
-;; 2. `cscope -l' interact with `comint'.
-;; 3. `cscope-find-c-symbol' [0,9] commands.
+;; features:
+;;; 1. one-shot `cscope -L' `compile' command.
+;;; 2. `run-cscope' interacts with `cscope -l' using `comint'.
+;;; 3. `cscope-find-this-c-symbol', `-[0,9]pattern' commands.
 ;;;;
-
 
 
 ;;; require
