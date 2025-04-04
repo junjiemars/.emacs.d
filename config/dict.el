@@ -23,21 +23,32 @@
                 "https://cn.bing.com/dict/search?q=")
                ((and spec (eq spec :AmE))
                 `(("<meta name=\"description\".*?美\\[" . 1)
-                  "\\].*?英\\[\\(.+?\\)\\]，"
-                  . (dict--norm-pron-us)))
+                  "\\].*?英\\[\\(.+?\\)\\]，" . (dict--norm-AmE)))
                ((and spec (eq spec :BrE))
                 `(("<meta name=\"description\".*?美.*?英\\[" . 1)
-                  "\\]，" . (dict--norm-pron-uk)))
+                  "\\]，" . (dict--norm-BrE)))
                ((and spec (eq spec :meta))
                 `(("<meta name=\"description\".*?英\\[\\(.+?\\)\\]，?")
                   "\" /><" . (dict--norm-punc)))))
+        ((and dict (eq dict :cambridge))
+         (cond ((and spec (eq spec :url))
+                "https://dictionary.cambridge.org/dictionary/english/")
+               ((and spec (eq spec :AmE))
+                `(("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
+                  "<" . (dict--norm-AmE)))
+               ((and spec (eq spec :BrE))
+                `(("<span class=\"ipa dipa lpr-2 lpl-1\">" . 1)
+                  "<" . (dict--norm-BrE)))
+               ((and spec (eq spec :meta))
+                `(("<meta name=\"description\" content=\".*? definition: ")
+                  " Learn" . (dict--decode-html-char)))))
         ((and dict (eq dict :longman))
          (cond ((and spec (eq spec :url))
                 "https://www.ldoceonline.com/dictionary/")
                ((and spec (eq spec :BrE))
                 `(("<span class=\"PRON\">")
                   "</span>" . (dict--remove-html-tag
-                               dict--norm-pron-uk)))
+                               dict--norm-BrE)))
                ((and spec (eq spec :meta))
                 `(("<span class=\"DEF\">")
                   "</span>" . (dict--remove-html-tag)))))
@@ -47,22 +58,10 @@
                ((and spec (eq spec :AmE))
                 `(("title=\"How to pronounce.*?(audio)\">" . 1)
                   "<img" . (dict--decode-html-char
-                            dict--norm-pron-us)))
+                            dict--norm-AmE)))
                ((and spec (eq spec :meta))
                 `(("<meta name=\"description\" content=\"The meaning of ")
                   " How to use" . (dict--remove-html-tag)))))
-        ((and dict (eq dict :cambridge))
-         (cond ((and spec (eq spec :url))
-                "https://dictionary.cambridge.org/dictionary/english/")
-               ((and spec (eq spec :AmE))
-                `(("<span class=\"ipa dipa lpr-2 lpl-1\">" . 2)
-                  "<" . (dict--norm-pron-us)))
-               ((and spec (eq spec :BrE))
-                `(("<span class=\"ipa dipa lpr-2 lpl-1\">" . 1)
-                  "<" . (dict--norm-pron-uk)))
-               ((and spec (eq spec :meta))
-                `(("<meta name=\"description\" content=\".*? definition: ")
-                  " Learn" . (dict--decode-html-char)))))
         ((and dict (eq dict :meta))
          (cond ((and spec (eq spec :list))
                 `("bing" "cambridge" "longman" "webster"))
@@ -98,16 +97,15 @@
 ;; pipeline
 ;;;
 
-(defun dict--norm-pron-us (ss)
-  "Normalize the pronounce of SS to us."
-  (format "|%s|" (string-match* "^[/]?\\(.*?\\)[/]?$" (string-trim>< ss) 1)))
+(defun dict--norm-AmE (ss _)
+  (format "|%s|"
+          (string-match* "^[/]?\\(.*?\\)[/]?$" (string-trim>< ss) 1)))
 
-(defun dict--norm-pron-uk (ss)
-  "Normalize the pronounce of SS to uk."
-  (format "/%s/" (string-match* "^[/]?\\(.*?\\)[/]?$" (string-trim>< ss) 1)))
+(defun dict--norm-BrE (ss _)
+  (format "/%s/"
+          (string-match* "^[/]?\\(.*?\\)[/]?$" (string-trim>< ss) 1)))
 
-(defun dict--norm-punc (ss)
-  "Normalize the punctuation of SS to en."
+(defun dict--norm-punc (ss _)
   (strawk ss `(("，\s*" . ", ")
                ("；\s*" . "; ")
                ("：\s*" . ": ")
@@ -118,21 +116,19 @@
                ("\n" . " ")
                ("[ ]+" . " "))))
 
-(defun dict--decode-html-char (ss)
-  "Decode &#[a-z]+; to string."
+(defun dict--decode-html-char (ss _)
   (strawk ss `(("&nbsp;" . " ")
                ("&#lt;" . "<")
                ("&#gt;" . ">")
                ("&hellip;" .  "..."))))
 
-(defun dict--remove-html-tag (ss)
-  "Remove html tags."
+(defun dict--remove-html-tag (ss _)
   (strawk ss `(("^[ ]+" . nil)
                ("<.*?>" . nil)
                ("</[a-zA-Z]+>" . nil)
                ("/>" . nil))))
 
-(defun dict--lookup-pipeline (dict specs)
+(defun dict--lookup-pipeline (what dict specs)
   (let ((xs nil))
     (dolist (x specs (nreverse xs))
       (goto-char (point-min))
@@ -147,7 +143,7 @@
             (setq xs (cons (cons x (when (> (length html) 0)
                                      (dolist (fn fns txt)
                                        (if (functionp fn)
-                                           (setq txt (funcall fn txt))
+                                           (setq txt (funcall fn txt what))
                                          txt))))
                            xs))))))))
 
@@ -163,8 +159,9 @@
   (set-buffer-multibyte t)
   (when (*dict-debug-log* :log)
     (write-region (point-min) (point-max) (path! (*dict-debug-log* :dict))))
-  (let ((ss (dict--lookup-pipeline
-             (plist-get args :dict) (plist-get args :specs))))
+  (let ((ss (dict--lookup-pipeline (plist-get args :what)
+                                   (plist-get args :dict)
+                                   (plist-get args :specs))))
     (when (*dict-debug-log* :log)
       (save-sexp-to-file ss (path! (*dict-debug-log* :lookup))))
     (kill-buffer (current-buffer))
