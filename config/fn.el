@@ -686,27 +686,6 @@ Call FN with the path if FN is non-nil."
   (declare (indent 0))
   `(if-region-active nil ,@body))
 
-(defmacro called-interactively? (&optional kind)
-  "Return t if called by \\=`call-interactively\\='."
-  (if (fn? 'called-interactively-p nil)
-      `(called-interactively-p ,kind)
-    `(prog1
-         (interactive-p)
-       (ignore* ,kind))))
-
-(defun read-string-prompt (prompt &optional history option)
-  (list (funcall (if-fn% read-shell-command nil
-                         #'read-shell-command
-                   #'read-string)
-                 prompt
-                 (or (car (symbol-value history)) option)
-                 history)))
-
-(defun select-region-prompt ()
-  (if-region-active
-      (list (region-beginning) (region-end))
-    (list (point-min) (point-max))))
-
  ;; end of interactive
 
 (provide 'fn)

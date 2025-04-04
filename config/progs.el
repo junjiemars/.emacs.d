@@ -12,15 +12,30 @@
 ;;; require
 
 (eval-when-compile
-  ;; `new-line*'
   (require 'ed (v-home%> "config/ed")))
 
 ;; end of require
 
 ;;;
+;; env
+;;;
+
+(defmacro called-interactively? (&optional kind)
+  "Return t if called by \\=`call-interactively\\='."
+  (if (fn? 'called-interactively-p nil)
+      `(called-interactively-p ,kind)
+    `(prog1
+         (interactive-p)
+       (ignore* ,kind))))
+
+;; end of env
+
+;;;
+;; `insert-char*'
+;;;
+
 ;; bind `insert-char*' to [C-x 8 RET] for ancient Emacs
 ;; greek letters C-x 8 <RET> greek small letter lambda
-;;;
 
 (defmacro unless-key-insert-char% (&rest body)
   "Unless [C-x 8 RET] key bind to \\=`insert-char\\='."

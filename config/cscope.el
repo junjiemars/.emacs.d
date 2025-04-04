@@ -20,6 +20,8 @@
 (require 'comint)
 (require 'compile)
 
+(eval-when-compile (require 'ed (v-home%> "config/ed")))
+
 ;; end of require
 
 ;;;

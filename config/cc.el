@@ -23,11 +23,10 @@
 ;;; require
 
 (eval-when-compile
-  ;; `newline*'
   (require 'ed (v-home%> "config/ed"))
-  ;; `(tags-spec->* :root)'
   (require 'tags (v-home%> "config/tags"))
   (require 'ssh (v-home%> "config/ssh"))
+
   (defmacro when-fn-ff-find-other-file% (&rest body)
     (if-fn% ff-find-other-file find-file
             `(progn% ,@body)
