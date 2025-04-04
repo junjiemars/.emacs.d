@@ -26,7 +26,6 @@
    (compile-unit% (emacs-home* "config/marks.el") t)
    (compile-unit% (emacs-home* "config/ssh.el") t)
    (compile-unit% (emacs-home* "config/tags.el") t)
-   (compile-unit% (emacs-home* "config/thingatpts.el") t)
    (compile-unit% (emacs-home* "config/on-firstload.el"))))
 
 (defun load-compiling-modes! ()
@@ -58,7 +57,6 @@
    (when-platform% windows-nt
      (compile-unit% (emacs-home* "config/gud-cdb.el") t))
    (compile-unit% (emacs-home* "config/gud-lldb.el") t)
-   (compile-unit% (emacs-home* "config/mill.el") t)
    (compile-unit% (emacs-home* "config/mixal.el") t)
    (compile-unit% (emacs-home* "config/node.el") t)
    (compile-unit% (emacs-home* "config/orgs.el") t)
@@ -70,6 +68,7 @@
    (compile-unit% (emacs-home* "config/sqls.el") t)
    (compile-unit% (emacs-home* "config/sudoku.el") t)
    (compile-unit% (emacs-home* "config/terms.el") t)
+   (compile-unit% (emacs-home* "config/thingatpts.el") t)
    (compile-unit% (emacs-home* "config/trans.el") t)
    (when-feature% transient
      (compile-unit% (emacs-home* "config/transients.el") t))

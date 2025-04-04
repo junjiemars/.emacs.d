@@ -36,31 +36,24 @@
 ;; end of `ed'
 
 ;;; `marks'
-(autoload '_mark_quoted_asymmetry@_ (v-home%> "config/marks"))
-(autoload '_mark_quoted_symmetry@_ (v-home%> "config/marks"))
 (autoload 'mark-thing (v-home%> "config/marks"))
 (autoload 'symbol@ (v-home%> "config/marks"))
-
+(autoload 'kill-quoted-asymmetry@ (v-home%> "config/marks") nil t)
+(autoload 'kill-quoted-symmetry@ (v-home%> "config/marks") nil t)
+(autoload 'kill-sexp@ (v-home%> "config/marks") nil t)
+(autoload 'kill-string@ (v-home%> "config/marks") nil t)
+(autoload 'kill-word@ (v-home%> "config/marks") nil t)
+(autoload 'mark-defun@ (v-home%> "config/marks") nil t)
+(autoload 'mark-filename@ (v-home%> "config/marks") nil t)
+(autoload 'mark-line@ (v-home%> "config/marks") nil t)
+(autoload 'mark-quoted-asymmetry@ (v-home%> "config/marks") nil t)
+(autoload 'mark-quoted-symmetry@ (v-home%> "config/marks") nil t)
+(autoload 'mark-sexp@ (v-home%> "config/marks") nil t)
+(autoload 'mark-string@ (v-home%> "config/marks") nil t)
+(autoload 'mark-symbol@ (v-home%> "config/marks") nil t)
+(autoload 'mark-word@ (v-home%> "config/marks") nil t)
 
 ;; end of `marks'
-
-;;; `mill'
-
-(autoload 'kill-quoted-asymmetry@ (v-home%> "config/mill") nil t)
-(autoload 'kill-quoted-symmetry@ (v-home%> "config/mill") nil t)
-(autoload 'kill-sexp@ (v-home%> "config/mill") nil t)
-(autoload 'kill-string@ (v-home%> "config/mill") nil t)
-(autoload 'kill-word@ (v-home%> "config/mill") nil t)
-(autoload 'mark-defun@ (v-home%> "config/mill") nil t)
-(autoload 'mark-filename@ (v-home%> "config/mill") nil t)
-(autoload 'mark-line@ (v-home%> "config/mill") nil t)
-(autoload 'mark-quoted-asymmetry@ (v-home%> "config/mill") nil t)
-(autoload 'mark-quoted-symmetry@ (v-home%> "config/mill") nil t)
-(autoload 'mark-sexp@ (v-home%> "config/mill") nil t)
-(autoload 'mark-string@ (v-home%> "config/mill") nil t)
-(autoload 'mark-word@ (v-home%> "config/mill") nil t)
-
-;; end of `mill'
 
 ;;; `ssh'
 

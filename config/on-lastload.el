@@ -72,15 +72,14 @@
 
 ;; end of `jshell'
 
-;;; `mill'
+;;; `marks'
 
 ;; Kill
 (define-key (current-global-map) (kbd% "C-x M-d") #'kill-word@)
 (define-key (current-global-map) (kbd% "C-x M-e") #'kill-sexp@)
-(define-key (current-global-map) (kbd% "C-x M-q a") #'kill-quoted-asymmetry@)
-(define-key (current-global-map) (kbd% "C-x M-q s") #'kill-quoted-symmetry@)
 (define-key (current-global-map) (kbd% "C-x M-s") #'kill-string@)
 (define-global-key% (kbd "C-x M-l") #'kill-whole-line)
+
 ;; Mark
 (define-key (current-global-map) (kbd% "C-c C-M-@") #'mark-sexp@)
 (define-key (current-global-map) (kbd% "C-c M-@") #'mark-word@)
@@ -95,7 +94,7 @@
 (define-global-key% (kbd "C-M-h") #'mark-defun)
 (define-global-key% (kbd "M-@") #'mark-word)
 
-;; end of `mill'
+;; end of `marks'
 
 ;;; `mixval'
 

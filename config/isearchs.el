@@ -43,33 +43,14 @@
           (t (isearch-forward regexp-p 1)))
     (let ((ms (cond ((null style) nil)
                     ((char-equal ?s style)
-                     (cons "symbol"
-                           (unless-region-active
-                             (let ((bs (_mark_symbol@_)))
-                               (unless bs
-                                 (user-error "%s" "No symbol at point"))
-                               (mark-thing (car bs) (cdr bs))))))
+                     (cons "symbol" (unless-region-active (mark-symbol@))))
                     ((char-equal ?w style)
-                     (cons "word"
-                           (unless-region-active
-                             (let ((bs (_mark_word@_)))
-                               (unless bs
-                                 (user-error "%s" "No word at point"))
-                               (mark-thing (car bs) (cdr bs))))))
+                     (cons "word" (unless-region-active (mark-word@))))
                     ((char-equal ?f style)
-                     (cons "file"
-                           (unless-region-active
-                             (let ((bs (_mark_filename@_)))
-                               (unless bs
-                                 (user-error "%s" "No file at point"))
-                               (mark-thing (car bs) (cdr bs))))))
+                     (cons "file" (unless-region-active (mark-filename@))))
                     ((char-equal ?q style)
-                     (cons "quoted"
-                           (unless-region-active
-                             (let ((bs (_mark_quoted_symmetry@_)))
-                               (unless bs
-                                 (user-error "%s" "No quoted thing at point"))
-                               (mark-thing (car bs) (cdr bs)))))))))
+                     (cons "quoted" (unless-region-active
+                                      (mark-quoted-symmetry@)))))))
       (let ((ss (symbol@)))
         (if (eq 'region (car ss))
             (isearch-yank-string (cdr ss))
