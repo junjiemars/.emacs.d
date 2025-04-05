@@ -492,6 +492,10 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
   (when-fn% c-backslash-region cc-cmds
     (autoload 'c-backslash-region "cc-cmds")
     (define-key keymap "" #'cc*-style-align-backslash))
+  ;; `subword-mode'
+  (if-fn% subword-mode subword
+          (define-key keymap "" #'subword-mode)
+    (define-key keymap "" #'c-subword-mode))
   (when-fn-ff-find-other-file%
    (define-key keymap "fi" #'cc*-find-include-file))
   (define-key keymap "" #'cc*-macro-expand)
@@ -508,11 +512,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
   (when-var% c-mode-map cc-mode
     ;; indent line or region
     (when-fn% c-indent-line-or-region cc-cmds
-      (define-key% c-mode-map (kbd "TAB") #'c-indent-line-or-region))
-    ;; `subword-mode'
-    (if-fn% subword-mode subword
-            (define-key% c-mode-map "" #'subword-mode)
-      (define-key% c-mode-map "" #'c-subword-mode)))
+      (define-key% c-mode-map (kbd "TAB") #'c-indent-line-or-region)))
   (when (boundp 'c-mode-map)
     (cc*-define-keys c-mode-map))
   (when (boundp 'c++-mode-map)

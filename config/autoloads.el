@@ -58,7 +58,8 @@
    (when-platform% windows-nt
      (compile-unit% (emacs-home* "config/gud-cdb.el") t))
    (compile-unit% (emacs-home* "config/gud-lldb.el") t)
-   (compile-unit% (emacs-home* "config/mixal.el") t)
+   ;; TODO: recast
+   ;; (compile-unit% (emacs-home* "config/mixal.el") t)
    (compile-unit% (emacs-home* "config/node.el") t)
    (compile-unit% (emacs-home* "config/orgs.el") t)
    (when-feature% project
@@ -111,10 +112,10 @@
    (compile-unit% (emacs-home* "config/on-help-autoload.el"))
    ;; on `hippies'
    (compile-unit% (emacs-home* "config/on-hippie-autoload.el"))
-   ;; `js'
+   ;; on `js'
    ;; (compile-unit% (emacs-home* "config/on-js-autoload.el"))
    ;; on `mixal'
-   (compile-unit% (emacs-home* "config/on-mixal-autoload.el"))
+   ;; (compile-unit% (emacs-home* "config/on-mixal-autoload.el"))
    ;; on `orgs'
    (compile-unit% (emacs-home* "config/on-org-autoload.el"))
    ;; on `projects'

@@ -94,9 +94,9 @@
 
 ;; end of `marks'
 
-;;; `mixval'
+;;; `mixval' TODO: recast
 
-(autoload 'mixvm (v-home%> "config/mixvm") "Run mixvm." t)
+;; (autoload 'mixvm (v-home%> "config/mixvm") "Run mixvm." t)
 
 ;; end of `mixval'
 
