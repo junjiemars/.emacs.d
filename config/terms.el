@@ -57,7 +57,7 @@ esac
 (defun on-term-init! ()
   "On \\=`term\\=' initialization."
   (when-platform% windows-nt
-    (defadvice* '_ansi_term_ 'ansi-term #'ansi-term*)))
+    (defadvice* '_ansi-term_ 'ansi-term #'ansi-term*)))
 
 
 
