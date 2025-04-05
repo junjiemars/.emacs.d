@@ -16,7 +16,11 @@
 ;;; require
 
 (eval-when-compile
-  (require 'thingatpt))
+  (require 'thingatpt)
+  (when-feature-treesit%
+    (declare-function treesit-language-at "treesit")
+    (declare-function treesit-beginning-of-defun "treesit")
+    (declare-function treesit-end-of-defun "treesit")))
 
  ;; end of require
 
@@ -235,11 +239,30 @@ If prefix N is non nil, then forward or backward N lines."
          (beginning-of-defun (- n1)))
        (point)))))
 
+(when-feature-treesit%
+  (defun defun-ts@ (&optional n)
+    (let* ((n1 (or n 1))
+           (fp (save-excursion
+                 (treesit-end-of-defun n1)
+                 (point)))
+           (bp (save-excursion
+                 (goto-char fp)
+                 (treesit-beginning-of-defun n1)
+                 (point))))
+      (if (>= n1 0)
+          (cons bp fp)
+        (cons fp bp)))))
+
+
 (defun mark-defun@ (&optional n)
   "Mark function at point.\n
 If prefix N is non-nil, then forward or backward N functions."
   (interactive "p")
-  (let ((bs (defun@ n)))
+  (let ((bs (if-feature-treesit%
+                (if (treesit-language-at (point))
+                    (defun-ts@ n)
+                  (defun@ n))
+              (defun@ n))))
     (unless (and bs (car bs) (cdr bs))
       (user-error "%s" "No defun found"))
     (mark-thing (cdr bs) (car bs))))
