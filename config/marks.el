@@ -16,7 +16,7 @@
 ;;; require
 
 (eval-when-compile
-  (require 'thingatpt nil t))
+  (require 'thingatpt))
 
  ;; end of require
 
@@ -24,9 +24,9 @@
 ;; env
 ;;;
 
-(defun mark-thing (begin end)
-  "Mark thing at point."
-  (goto-char begin)
+(defun mark-thing (beg end)
+  "Mark thing at (BEG, END)."
+  (goto-char beg)
   (set-mark (point))
   (goto-char end))
 
@@ -36,21 +36,21 @@
 ;; symbol
 ;;;
 
-(defun symbol@ (&optional thing)
-  "Return the (cons \\='region|nil THING) at point."
+(defun symbol@* (&optional thing)
+  "Return the string of THING at point."
   (if-region-active
       (let ((ss (buffer-substring-no-properties
                  (region-beginning) (region-end))))
-        (setq mark-active nil)
-        (cons 'region ss))
+        (prog1 ss
+          (setq mark-active nil)))
     (let ((ss (thing-at-point (or thing 'symbol))))
-      (and ss (cons nil (substring-no-properties ss))))))
+      (and ss (substring-no-properties ss)))))
 
 (defun mark-symbol@ (&optional _)
   "Mark the symbol at point."
   (interactive)
   (let ((bs (bounds-of-thing-at-point 'symbol)))
-    (unless (and bs (car bs) (cdr bs))
+    (unless bs
       (user-error "%s" "No symbol found"))
     (mark-thing (car bs) (cdr bs))))
 
@@ -135,8 +135,7 @@ Otherwise, select the whole list."
   (interactive "p")
   (let ((bs (cond ((consp current-prefix-arg) (whole-sexp@))
                   (t (sexp@ n)))))
-    (unless (and bs (car bs) (cdr bs)
-                 (null (= (car bs) (cdr bs))))
+    (unless (and bs (car bs) (cdr bs) (null (= (car bs) (cdr bs))))
       (user-error "%s" "No sexp found"))
     (mark-thing (car bs) (cdr bs))))
 
@@ -146,8 +145,7 @@ If prefix N is a number, killing forward or backward N sexps."
   (interactive "p")
   (let ((bs (cond ((consp current-prefix-arg) (whole-sexp@))
                   (t (sexp@ n)))))
-    (unless (and bs (car bs) (cdr bs)
-                 (null (= (car bs) (cdr bs))))
+    (unless (and bs (car bs) (cdr bs) (null (= (car bs) (cdr bs))))
       (user-error "%s" "No sexp found"))
     (kill-region (car bs) (cdr bs))))
 

@@ -195,7 +195,7 @@
 
 (defun dict--lookup-prompt ()
   (list
-   (read-string "Lookup dict for " (cdr (symbol@ 'word)))
+   (read-string "Lookup dict for " (symbol@* 'word))
    (let ((dict nil) (specs nil) (all "all"))
      (when current-prefix-arg
        (setq dict

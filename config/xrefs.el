@@ -98,7 +98,7 @@
   (defun xref-find-references (what)
     "Alias of \\=`tags-apropos\\='."
     (interactive
-     (list (read-string "Find references of: " (cdr (symbol@ 'symbol)))))
+     (list (read-string "Find references of: " (symbol@* 'symbol))))
     (tags-apropos what)))
 
 

@@ -89,7 +89,7 @@ is non-nil, otherwise is not. See also:
 (defun lookup-web (what &optional engine)
   "Lookup web via search ENGINE."
   (interactive
-   (list (read-string "Lookup web for " (cdr (symbol@)))
+   (list (read-string "Lookup web for " (symbol@*))
          (when current-prefix-arg
            (let ((se (mapcar #'car (*web-defs*))))
              (completing-read

@@ -32,33 +32,34 @@
                       (propertize "w" 'face 'minibuffer-prompt)
                       (propertize "f" 'face 'minibuffer-prompt)
                       (propertize "q" 'face 'minibuffer-prompt)))))))
+
 ;; end of env
 
 (defun isearch*-forward (&optional style backward)
   "Search incrementally forward or BACKWARD in STYLE."
   (interactive (isearch*--prompt "I-search"))
-  (let ((regexp-p (and style (or (char-equal ?\r style)
-                                 (char-equal ?r style)))))
+  (let ((regexp-p (and style (or (char-equal ?r style)
+                                 ;; suppose (r)egexp
+                                 (char-equal ?\r style))))
+        (bs nil) (ss nil))
     (cond (backward (isearch-backward regexp-p 1))
           (t (isearch-forward regexp-p 1)))
-    (let ((ms (cond ((null style) nil)
-                    ((char-equal ?s style)
-                     (cons "symbol" (unless-region-active (mark-symbol@))))
-                    ((char-equal ?w style)
-                     (cons "word" (unless-region-active (mark-word@))))
-                    ((char-equal ?f style)
-                     (cons "file" (unless-region-active (mark-filename@))))
-                    ((char-equal ?q style)
-                     (cons "quoted" (unless-region-active (mark-string@)))))))
-      (let ((ss (symbol@)))
-        (if (eq 'region (car ss))
-            (isearch-yank-string (cdr ss))
-          (when ms
-            (message "%s: [No %s at point]"
-                     (propertize "I-search"
-                                 'face 'minibuffer-prompt)
-                     (propertize (car ms)
-                                 'face 'font-lock-warning-face))))))))
+    (if-region-active
+        (isearch-yank-x-selection)
+      (cond ((null style) nil)
+            ((char-equal ?s style)
+             (setq bs (bounds-of-thing-at-point 'symbol) ss "symbol"))
+            ((char-equal ?w style) (setq bs (word@) ss "word"))
+            ((char-equal ?f style)
+             (setq bs (bounds-of-thing-at-point 'filename) ss "file"))
+            ((char-equal ?q style)
+             (setq bs (bounds-of-thing-at-point 'string) ss "quoted")))
+      (cond (bs (let ((marked (buffer-substring-no-properties
+                               (car bs) (cdr bs))))
+                  (and marked (isearch-yank-string marked))))
+            (ss (message "%s: No %s at point"
+                         (propertize "I-search" 'face 'minibuffer-prompt)
+                         (propertize ss 'face 'font-lock-warning-face)))))))
 
 
 (defun isearch*-backward (&optional style)

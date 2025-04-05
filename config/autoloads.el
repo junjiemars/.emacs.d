@@ -26,6 +26,7 @@
    (compile-unit% (emacs-home* "config/marks.el") t)
    (compile-unit% (emacs-home* "config/ssh.el") t)
    (compile-unit% (emacs-home* "config/tags.el") t)
+   (compile-unit% (emacs-home* "config/thingatpts.el") t)
    (compile-unit% (emacs-home* "config/on-firstload.el"))))
 
 (defun load-compiling-modes! ()
@@ -68,7 +69,6 @@
    (compile-unit% (emacs-home* "config/sqls.el") t)
    (compile-unit% (emacs-home* "config/sudoku.el") t)
    (compile-unit% (emacs-home* "config/terms.el") t)
-   (compile-unit% (emacs-home* "config/thingatpts.el") t)
    (compile-unit% (emacs-home* "config/trans.el") t)
    (when-feature% transient
      (compile-unit% (emacs-home* "config/transients.el") t))
@@ -134,8 +134,6 @@
    ;;     (fset 'org-babel-execute:scheme 'org-babel-execute:scheme*)))
    ;; on `terms'
    (compile-unit% (emacs-home* "config/on-term-autoload.el"))
-   ;; on `thingatpt'
-   (compile-unit% (emacs-home* "config/on-thingatpt-autoload.el"))
    ;; on `transients'
    (when-feature% transient
      (compile-unit% (emacs-home* "config/on-transient-autoload.el")))

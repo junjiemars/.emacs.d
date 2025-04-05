@@ -38,8 +38,9 @@
 ;; end of `ed'
 
 ;;; `marks'
-(autoload 'mark-thing (v-home%> "config/marks"))
-(autoload 'symbol@ (v-home%> "config/marks"))
+
+(autoload 'symbol@* (v-home%> "config/marks"))
+(autoload 'word@ (v-home%> "config/marks"))
 (autoload 'kill-sexp@ (v-home%> "config/marks") nil t)
 (autoload 'kill-string@ (v-home%> "config/marks") nil t)
 (autoload 'kill-word@ (v-home%> "config/marks") nil t)
@@ -72,4 +73,12 @@
 
 ;; end of `tags'
 
-;; end of on-autoload.el
+;;; `thingatpt'
+
+(autoload 'on-thingatpt-init! (v-home%> "config/thingatpts"))
+(with-eval-after-load 'thingatpt
+  (make-thread* #'on-thingatpt-init!))
+
+ ;; end of `thingatpt'
+
+ ;; end of on-autoload.el
