@@ -11,9 +11,9 @@
 ;; toggle off `magit-auto-revert-mode' in `magit-autorevert'
 (set-default 'magit-auto-revert-mode nil)
 
+;; avoid lower `transient-version' issue
 (eval-when-compile
   (when-feature% transient
-    ;; avoid lower `transient-version' issue
     (unload-feature 'transient t)
     (require 'transient)))
 
