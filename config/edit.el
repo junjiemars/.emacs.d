@@ -72,12 +72,11 @@
                      (< (string-to-number
                          (string-match* "^[gt]_\\(.*\\)$" f 1))
                         +emacs-version+))
-                    (t (null (string-match
-                              (format
-                               "^[gt]_%s\\'"
-                               (regexp-quote
-                                (number-to-string +emacs-version+)))
-                              f))))
+                    (t (string-match
+                        (format
+                         "^[gt]_%s\\'"
+                         (regexp-quote (number-to-string +emacs-version+)))
+                        f)))
           (let ((cmd (if-platform% windows-nt
                          (concat "rmdir /Q /S " (concat d f))
                        (concat "rm -r " (concat d f)))))
@@ -96,8 +95,7 @@
        (dolist (d (directory-files (emacs-home%) nil "^\\.[a-z]+") xs)
          (unless (member d '(".git" ".gitignore" ".github"))
            (setq xs (cons (concat (emacs-home* d) "/") xs)))))
-     :8)
-    (clean-compiled-files)
+     (comment :8))                      ; current version
     (setq kill-emacs-hook nil)
     (kill-emacs 0)))
 

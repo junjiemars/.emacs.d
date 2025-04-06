@@ -7,7 +7,6 @@
 ;;;;
 
 (defun on-transient-init! ()
-  (v-home! ".transient/history.el")
   (setq transient-history-file (v-home% ".transient/history.el")
         transient-levels-file (v-home% ".transient/levels.el")
         transient-values-file (v-home%".transient/values.el")

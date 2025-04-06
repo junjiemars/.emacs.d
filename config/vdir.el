@@ -84,6 +84,7 @@
 
 ;; `transient'
 (when-feature% transient
+  (set-default 'transient-history-file (v-home! ".transient/history.el"))
   (set-default 'transient-save-history nil))
 
 ;; `treesit'
