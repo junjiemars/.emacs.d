@@ -13,6 +13,15 @@
 ;; self-spec*: self specifications
 ;;;
 
+(defun self-path--dup (paths keys)
+  (inhibit-file-name-handler
+    (while (car keys)
+      (let ((dst (plist-get paths (caar keys)))
+            (src (cdar keys)))
+        (unless (file-exists-p dst)
+          (copy-file src dst))
+        (setq keys (cdr keys))))))
+
 (defalias '*self-paths*
   (let ((ps `(;; paths
               :prologue ,(emacs-home% "private/self-prologue.el")
@@ -29,17 +38,21 @@
     (lambda (&optional op k v)
       (cond ((and op (eq :get op)) (plist-get ps k))
             ((and op (eq :put op)) (setq ps (plist-put ps k v)))
-            ((and op (eq :dup op))
-             (inhibit-file-name-handler
-               (dolist (fs ss)
-                 (let ((dst (plist-get ps (car fs)))
-                       (src (cdr fs)))
-                   (unless (file-exists-p dst)
-                     (copy-file src dst t))))))
+            ((and op (eq :dup op)) (self-path--dup ps ss))
             (t ps))))
   "Define the PATH references.\n
 No matter the declaration order, the executing order is:
 \\=`:env-spec -> :mod-spec -> :epilogue\\='")
+
+(defun self-env--get (env keys)
+  (let ((rs env) (ks keys))
+    (while ks
+      (setq rs (plist-get rs (car ks))
+            ks (cdr ks)))
+    rs))
+
+(defun self-env--put (env keys)
+  (plist-put env (car keys) (cadr keys)))
 
 (defalias '*self-env-spec*
   (let ((env `( :desktop nil
@@ -53,13 +66,8 @@ No matter the declaration order, the executing order is:
                 :socks nil
                 :theme nil)))
     (lambda (&optional op &rest keys)
-      (cond ((and op (eq :get op)) (let ((rs env) (ks keys))
-                                     (while ks
-                                       (setq rs (plist-get rs (car ks))
-                                             ks (cdr ks)))
-                                     rs))
-            ((and op (eq :put op))
-             (setq env (plist-put env (car keys) (cadr keys))))
+      (cond ((and op (eq :get op)) (self-env--get env keys))
+            ((and op (eq :put op)) (setq env (self-env--put env keys)))
             (t env)))))
 
 (defalias '*self-mod-spec*

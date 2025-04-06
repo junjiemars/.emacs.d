@@ -116,7 +116,6 @@
     :disable-indent-tabs-mode (awk-mode
                                c-mode
                                emacs-lisp-mode
-                               mixal-mode
                                org-mode
                                scheme-mode
                                sh-mode
@@ -135,13 +134,13 @@
 (*self-env-spec*
  :put :module
  `( :remove-unused nil
-    :package-check-signature nil        ; t
+    :package-check-signature t          ; allow-unsigned
     :package-archives
     (comment
      (("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
       ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
       ("melpa-stable" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
       ("melpa" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
-    :allowed nil))
+    :allowed ,(when-package% t)))
 
 ;; end of sample-self-env-spec.el

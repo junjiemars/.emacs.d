@@ -80,7 +80,7 @@
 ;;; :swift
 (*self-mod-spec*
  :put :swift
- `( :cond ,(executable-find% "swift")
+ `( :cond ,(comment (executable-find% "swift"))
     :packages (swift-mode)))
 
 ;;; :vlang
