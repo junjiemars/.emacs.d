@@ -9,14 +9,14 @@
 ;;;;
 
 
-(defun frame-spec->* (&optional key)
-  "Extract :frame from env-spec via KEY."
-  (cond (key (*self-env-spec* :get :frame key))
+(defun frame-spec->* (&optional spec)
+  "Extract :frame from env-spec via SPEC."
+  (cond (spec (*self-env-spec* :get :frame spec))
         (t (*self-env-spec* :get :frame))))
 
-(defun theme-spec->* (&optional key)
-  "Extract from :theme env-spec via KEY."
-  (cond (key (*self-env-spec* :get :theme key))
+(defun theme-spec->* (&optional spec)
+  "Extract from :theme env-spec via SPEC."
+  (cond (spec (*self-env-spec* :get :theme spec))
         (t (*self-env-spec* :get :theme))))
 
 
