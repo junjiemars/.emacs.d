@@ -96,7 +96,9 @@
          (unless (member d '(".git" ".gitignore" ".github"))
            (setq xs (cons (concat (emacs-home* d) "/") xs)))))
      (comment :8))                      ; current version
+    (clean-compiled-files)
     (setq kill-emacs-hook nil)
+    (setq% kill-emacs-query-functions nil nil)
     (kill-emacs 0)))
 
 ;; end of Clean Emacs' user files
