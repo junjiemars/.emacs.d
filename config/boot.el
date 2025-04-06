@@ -70,11 +70,17 @@ No matter the declaration order, the executing order is:
             ((and op (eq :put op)) (setq env (self-env--put env keys)))
             (t env)))))
 
+(defun self-mod--put (ps k v)
+  (let ((a1 (assq k ps)))
+    (if a1
+        (progn (setcdr a1 v) ps)
+      (cons (cons k v) ps))))
+
 (defalias '*self-mod-spec*
   (let ((ps nil))
     (lambda (&optional op k v)
-      (cond ((and op (eq :get op)) (list (assq k ps)))
-            ((and op (eq :put op)) (setq ps (cons (cons k v) ps)))
+      (cond ((and op (eq :get op)) (assq k ps))
+            ((and op (eq :put op)) (setq ps (self-mod--put ps k v)))
             (t ps)))))
 
 ;; end of self-spec* macro
