@@ -281,8 +281,6 @@ And copy the qualified buffer name to kill ring."
   ;; title bar with full path
   (when-graphic%
     (setq% frame-title-format "%b (%f)"))
-  ;; avoid line number mode after switch to other buffer
-  (setq% display-line-numbers-current-absolute nil)
   ;; shows all options when running apropos. For more info,
   ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html
   ;;enable apropos-do-all, but slower
