@@ -107,7 +107,7 @@ Otherwise kill the whole string."
          (bp (condition-case _
                  (save-excursion
                    (goto-char fp)
-                   (forward-sexp (* -1 n1))
+                   (forward-sexp (- n1))
                    (point))
                (scan-error p))))
     (if (>= n1 0)
@@ -162,7 +162,7 @@ If prefix N is a number, killing forward or backward N sexps."
 (defun word@ (&optional n)
   (let* ((n1 (or n 1))
          (fp (save-excursion (forward-word n1) (point)))
-         (bp (save-excursion (goto-char fp) (forward-word (* -1 n1))
+         (bp (save-excursion (goto-char fp) (forward-word (- n1))
                              (point))))
     (if (>= n1 0)
         (cons bp fp)
@@ -243,11 +243,15 @@ If prefix N is non nil, then forward or backward N lines."
   (defun defun-ts@ (&optional n)
     (let* ((n1 (or n 1))
            (fp (save-excursion
-                 (treesit-end-of-defun n1)
+                 (if (> n1 0)
+                     (treesit-end-of-defun n1)
+                   (treesit-beginning-of-defun (- n1)))
                  (point)))
            (bp (save-excursion
                  (goto-char fp)
-                 (treesit-beginning-of-defun n1)
+                 (if (> n1 0)
+                     (treesit-beginning-of-defun n1)
+                   (treesit-end-of-defun (- n1)))
                  (point))))
       (if (>= n1 0)
           (cons bp fp)
@@ -259,7 +263,8 @@ If prefix N is non nil, then forward or backward N lines."
 If prefix N is non-nil, then forward or backward N functions."
   (interactive "p")
   (let ((bs (if-feature-treesit%
-                (if (treesit-language-at (point))
+                (if (and (fboundp 'treesit-language-at)
+                         (treesit-language-at (point)))
                     (defun-ts@ n)
                   (defun@ n))
               (defun@ n))))
