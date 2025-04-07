@@ -218,14 +218,15 @@ And copy the qualified buffer name to kill ring."
 ;; line number
 ;;;
 
-(defun display-line-numbers-mode* (&rest _)
+(defun toggle-line-number-mode (&rest _)
   (interactive)
   (if-fn% display-line-numbers-mode display-line-numbers
 	        (progn
-            (setq% display-line-numbers-type 'relative
-                   display-line-numbers)
+            (setq% display-line-numbers-type 'relative display-line-numbers)
             (setq% display-line-numbers-current-absolute nil)
-	          (call-interactively #'display-line-numbers-mode))
+	          (call-interactively #'display-line-numbers-mode)
+            (set (make-local-variable display-line-numbers)
+                 display-line-numbers-mode))
     (if-fn% linum-mode linum
             (call-interactively #'linum-mode)
       (error "%s" "No line number mode found"))))
@@ -356,11 +357,11 @@ And copy the qualified buffer name to kill ring."
   (define-global-key% "xt" #'toggle-truncate-lines)
   (define-global-key% (kbd "C-x RET =") #'echo-buffer-coding-system)
   (define-global-key% "xg"
-               (if-fn% revert-buffer-quick nil
-                       #'revert-buffer-quick
-                 #'revert-buffer))
+                      (if-fn% revert-buffer-quick nil
+                              #'revert-buffer-quick
+                        #'revert-buffer))
   ;; line number mode
-  (define-key (current-global-map) "xl" #'display-line-numbers-mode*)
+  (define-key (current-global-map) "xl" #'toggle-line-number-mode)
   (define-global-key% "xr" #'rename-buffer)
   (when-fn% toggle-word-wrap simple
     (define-global-key% "xw" #'toggle-word-wrap))
