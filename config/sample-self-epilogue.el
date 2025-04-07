@@ -12,20 +12,21 @@
 
 ;; (message "#self epilogue ...")
 
-(comment (require 'financial))
+(comment
+ (require 'financial))
 
 
 
 ;; eww as default browser
-(comment (when-feature% eww (toggle-browser! t)))
+(comment
+ (when-feature% eww (toggle-browser! t)))
 
 ;; end of eww
 
 
-;;; tag
+;;; using `tags' to view Emacs's source code
 
 (comment
- ;; using `tags' to view Emacs's source code
  (let ((srcdir (format "/opt/open/emacs/emacs-%s/" emacs-major-version)))
    (when (file-exists-p srcdir)
      (xref*-read-only-dirs :push (setq source-directory srcdir))

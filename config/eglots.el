@@ -5,6 +5,7 @@
 ;;;;
 ;; eglots.el
 ;;;;
+
 
 (defun eglot*-lsp-server ()
   "Return the name of lsp-server program."
@@ -81,23 +82,12 @@
                              completion-at-point-functions)))
                 (t nil)))))))
 
-(defun eglot*-shutdown-all ()
-  (condition-case _
-      (prog1 t
-        (let ((debug-on-signal nil))
-          (eglot-shutdown-all)))
-    (error t)))
-
 (defun on-eglot-init! ()
   "On \\=`eglot\\=' initialization."
   ;; load recipe
   (or (eglot*-server-programs :read) (eglot*-server-programs))
   ;; most reduced `eldoc'
   (setq% eldoc-echo-area-use-multiline-p nil eldoc)
-
-  ;; shutdown when `kill-emacs'
-  (when-var% kill-emacs-query-functions nil
-    (push! 'eglot*-shutdown-all kill-emacs-query-functions))
   ;; keys
   (define-key eglot-mode-map (kbd% "C-c M-c f") #'eglot-format-buffer)
   (define-key eglot-mode-map (kbd% "C-c M-c r") #'eglot-rename))

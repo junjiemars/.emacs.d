@@ -9,12 +9,28 @@
 ;;;;
 
 
+;;; env
+
 (defun desktop-spec->* (&optional key)
   "Extract :desktop from env-spec via KEY."
   (cond (key (*self-env-spec* :get :desktop key))
         (t (*self-env-spec* :get :desktop key))))
 
-
+(defun self-desktop-not-to-save! ()
+  (condition-case _
+      (prog1 t
+        (let ((debug-on-signal nil))
+          (when-feature% eglot
+            (and (fboundp 'eglot-shutdown-all)
+                 (eglot-shutdown-all)))
+          (when-fn% global-display-line-numbers-mode display-line-numbers
+            (and (fboundp 'global-display-line-numbers-mode)
+                 (global-display-line-numbers-mode -1)))
+          (setq% display-line-numbers nil)
+          (setq% display-line-numbers-current-absolute nil)))
+    (error t)))
+
+;; end of env
 
 ;;;
 ;; read
@@ -43,6 +59,10 @@
                   (delq 'desktop--on-kill kill-emacs-hook)
             (delq 'desktop-kill kill-emacs-hook)))
 
+    ;; (if-var% kill-emacs-query-functions nil
+    ;;          (append! #'self-desktop-not-to-save kill-emacs-query-functions)
+    ;;   (append! #'self-desktop-not-to-save kill-emacs-hook))
+
     ;; remove unnecessary hooks of `kill-emacs-query-functions'
     (if-var% kill-emacs-query-functions nil
              (progn
@@ -62,6 +82,8 @@
 (defun self-desktop-save! ()
   "Save the desktop of the current Emacs instance."
   (when (desktop-spec->* :allowed)
+
+    (self-desktop-not-to-save!)
 
     (setq% desktop-files-not-to-save
            (let ((ss (desktop-spec->* :files-not-to-save)))

@@ -199,13 +199,14 @@ And copy the qualified buffer name to kill ring."
 
 (defun on-ido-init! ()
   "On \\=`ido\\=' intialization."
-  (if-fn% ido-mode ido
-          (progn
-            (ido-mode t)
-            (define-global-key% "5r" #'ido-find-file-read-only-other-frame)
-            (define-global-key% "4r" #'ido-find-file-read-only-other-window)
-            (define-global-key% "" #'ido-find-file-read-only)
-            (setq% ido-enable-flex-matching t ido))
+  (if-fn% ido-mode
+      ido
+      (progn
+        (ido-mode t)
+        (define-global-key% "5r" #'ido-find-file-read-only-other-frame)
+        (define-global-key% "4r" #'ido-find-file-read-only-other-window)
+        (define-global-key% "" #'ido-find-file-read-only)
+        (setq% ido-enable-flex-matching t ido))
     ;; default view file keybindings
     (define-global-key% "5r" #'view-file-other-frame)
     (define-global-key% "4r" #'view-file-other-window)
@@ -218,17 +219,15 @@ And copy the qualified buffer name to kill ring."
 ;; line number
 ;;;
 
-(defun toggle-line-number-mode (&rest _)
+(defun toggle-line-number! (&rest _)
   (interactive)
-  (if-fn% display-line-numbers-mode display-line-numbers
-	        (progn
-            (setq% display-line-numbers-type 'relative display-line-numbers)
-            (setq% display-line-numbers-current-absolute nil)
-	          (call-interactively #'display-line-numbers-mode)
-            (set (make-local-variable display-line-numbers)
-                 display-line-numbers-mode))
-    (if-fn% linum-mode linum
-            (call-interactively #'linum-mode)
+  (if-fn% display-line-numbers-mode
+      display-line-numbers
+      (progn
+        (setq% display-line-numbers-type 'relative display-line-numbers)
+        (setq% display-line-numbers-current-absolute nil)
+        (call-interactively #'display-line-numbers-mode))
+    (if-fn% linum-mode linum (call-interactively #'linum-mode)
       (error "%s" "No line number mode found"))))
 
 ;; end of line number
@@ -279,23 +278,23 @@ And copy the qualified buffer name to kill ring."
 ;;;
 
 (defun on-progs-env! ()
+  ;; title bar with full path
+  (when-graphic%
+    (setq% frame-title-format "%b (%f)"))
+  ;; shows all options when running apropos. For more info,
+  ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html
+  ;;enable apropos-do-all, but slower
+  (setq% apropos-do-all t apropos)
   ;; count region
   (unless-fn% count-words-region simple
     (defalias 'count-words-region #'count-lines-region
       "\\=`count-lines-region\\=' had been obsoleted since Emacs24.1+"))
-  ;; title bar with full path
-  (when-graphic%
-    (setq% frame-title-format "%b (%f)"))
   ;; ignore ring bell
   (setq% ring-bell-function 'ignore)
   ;; treat `read-only-mode' as `view-mode'
   (setq view-read-only t)
   ;; Changes all yes/no questions to y/n type
   (defalias 'yes-or-no-p 'y-or-n-p)
-  ;; shows all options when running apropos. For more info,
-  ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html
-  ;;enable apropos-do-all, but slower
-  (setq% apropos-do-all t apropos)
   ;; save before kill
   (setq% save-interprogram-paste-before-kill t simple)
   ;; mouse yank commands yank at point instead of at click.
@@ -361,7 +360,7 @@ And copy the qualified buffer name to kill ring."
                               #'revert-buffer-quick
                         #'revert-buffer))
   ;; line number mode
-  (define-key (current-global-map) "xl" #'toggle-line-number-mode)
+  (define-key (current-global-map) "xl" #'toggle-line-number!)
   (define-global-key% "xr" #'rename-buffer)
   (when-fn% toggle-word-wrap simple
     (define-global-key% "xw" #'toggle-word-wrap))
