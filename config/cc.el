@@ -261,15 +261,15 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
         (shell-command* x)))))
 
 (defun cc*-define-dump (&optional option)
-  "Dump define."
-  (interactive (read-string-prompt
-                "Input C compiler's option: " '*cc-option-history* ))
+  "Dump #define."
+  (interactive
+   (read-string-prompt "Input C compiler's option: " '*cc-option-history* ))
   (let* ((remote (ssh-remote-p (buffer-file-name (current-buffer))))
          (cc (if remote :cc (cc*-cc)))
          (cmd (format (cc-spec->* cc :define) (or option "")))
-         (rc (if remote
-                 (fluid-let (shell-file-name "sh")
-                   (shell-command* "ssh" (ssh-remote->user@host remote) cmd))
+         (user@host (and remote (ssh-remote->user@host remote)))
+         (rc (if user@host
+                 (ssh-remote-command user@host cmd)
                (if-platform% windows-nt
                    (cc*--define-dump option)
                  (shell-command* cmd)))))
@@ -277,7 +277,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
       (with-current-buffer
           (switch-to-buffer
            (if remote
-               (format "*Macro Defined@%s*" (ssh-remote->user@host remote))
+               (format "*Macro Defined@%s*" user@host)
              "*Macro Defined*"))
         (let ((inhibit-read-only t))
           (erase-buffer)
@@ -298,8 +298,8 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 
 (defun cc*-macro-expand (&optional option)
   "Expand macro."
-  (interactive (read-string-prompt
-		            "Input C compiler's option: " '*cc-option-history*))
+  (interactive
+   (read-string-prompt "Input C compiler's option: " '*cc-option-history*))
   (let* ((remote (ssh-remote-p (buffer-file-name (current-buffer))))
          (cc (if remote :cc (cc*-cc)))
          (cmd (format (cc-spec->* cc :macro) (or option "")))
@@ -307,15 +307,19 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
                   (cons (region-beginning) (region-end))
                 (cons (point-min) (point-max))))
          (src (buffer-string))
-         (buf (get-buffer-create*
-               (if remote
-                   (format "*Macro Expanded@%s*"
-                           (ssh-remote->user@host remote))
-                 "*Macro Expanded*")))
          (out (concat (make-temp-file "cc_macro_") ".c"))
+         (user@host (and remote (ssh-remote->user@host remote)))
+         (rout (and user@host (let ((mktemp (ssh-remote-command user@host
+                                              "mktemp -t cc_macro_XXXXXX.c")))
+                                (unless (= 0 (car mktemp))
+                                  (error "Panic, mktemp: %s" mktemp))
+                                (string-trim> (cdr mktemp)))))
          (fmt (cc-spec->* cc :line-fmt)) (re (cc-spec->* cc :line-re))
-         (beg nil) (end nil)
          (rc nil)
+         (beg nil) (end nil)
+         (buf (get-buffer-create* (if user@host
+                                      (format "*Macro Expanded@%s*" user@host)
+                                    "*Macro Expanded*")))
          (inhibit-read-only t))
     (with-current-buffer buf
       (erase-buffer)
@@ -330,7 +334,13 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
       (open-line 1)
       (beginning-of-line)
       (insert (setq end (format fmt (1- (line-number-at-pos)) out)))
-      (setq rc (shell-command* cmd (save-str-to-file (buffer-string) out)))
+      (save-str-to-file (buffer-string) out)
+      (setq rc (cond (user@host (let ((rc1 (shell-command* "scp"
+                                             out (concat user@host ":" rout))))
+                                  (unless (= 0 (car rc1))
+                                    (error "Panic, scp: %s" rc1))
+                                  (ssh-remote-command user@host cmd rout)))
+                     (t (shell-command* cmd out))))
       (erase-buffer)
       (goto-char (point-min))
       (cond ((= 0 (car rc))

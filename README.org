@@ -1,7 +1,7 @@
 #+TITLE: Nore Emacs
 #+AUTHOR: Junjie Mars
 #+STARTUP: overview
-#+OPTIONS: num:nil toc:nil
+# #+OPTIONS: num:nil toc:nil
 #+REVEAL_HLEVEL: 2
 #+REVEAL_SLIDE_NUMBER: h
 #+REVEAL_THEME: moon
@@ -54,7 +54,7 @@ exceptionally fast.
 - [[#story][Story]]
 - [[#recipe][Recipe]]
 - [[#programming][Programming]]
-- [[#troubleshoting][Troubleshoting]]
+- [[#troubleshooting][Troubleshooting]]
 - [[#mnemonic][Mnemonic]]
 
 * Story
@@ -1168,7 +1168,7 @@ Change the /option/ modifier or swap /control/ and /meta/ on window system.
 #+REVEAL: split
 - =:allowed= =t= enabled, =nil= disabled
 
-* Programming
+* PROGRAMMING
   :PROPERTIES:
   :CUSTOM_ID: programming
   :END:
@@ -1214,58 +1214,56 @@ for [[http://www.gambitscheme.org/wiki/index.php/Main_Page][Gambit]] Scheme syst
 - =*gambit*=: @@html:<kbd>@@M-x run-gambit@@html:</kbd>@@
 - =*chez*=: @@html:<kbd>@@M-x run-chez@@html:</kbd>@@
 
-** C programming
+** C PROGRAMMING
    :PROPERTIES:
    :CUSTOM_ID: c-programming
    :END:
 
 #+ATTR_HTML: :style text-align:left
-Now, we are in the cycle of editing, compiling, debugging.
+Nore Emacs provides cross-platform support for /Clang/, /GCC/, and
+/MSVC/ compilers through its unified development framework.  Its
+remote C programming environment mirrors the local workflow, enabling
+seamless editing, compiling, and debugging across distributed system.
+
+*** EDITING
+    :PROPERTIES:
+    :CUSTOM_ID: c-programming-editing
+    :END:
 
 #+ATTR_HTML: :style display:none
 /screenshots/:
 #+ATTR_HTML: :style display:none
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-editing-on-darwin-gui.png][editing on Darwin]]
-- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-darwin.png][debugging via lldb on Darwin]]
-- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-linux.png][debugging via lldb on Ubuntu]]
-- [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-cdb-on-windows.png][debugging via cdb]]
-
-*** Editing
-    :PROPERTIES:
-    :CUSTOM_ID: c-programming-editing
-    :END:
-
-#+ATTR_HTML: :style text-align:left
-Change C programming style using @@html:<kbd>@@C-c .@@html:</kbd>@@.
-And there is a new elegant and practical style: =cc*-style-nginx=.
 
 #+REVEAL: split
-**** View C system include
+**** View C system *#include*
      :PROPERTIES:
-     :CUSTOM_ID: c-programming-view-c-system-include
+     :CUSTOM_ID: c-programming-editing-view-c-system-include
      :END:
 
 #+ATTR_HTML: :style text-align:left
 Like /vi/'s @@html:<kbd>@@gf@@html:</kbd>@@ command, you can using
-@@html:<kbd>@@C-c f i@@html:</kbd>@@ to open C system include file on
-local or remote in =view-mode= and via
-@@html:<kbd>@@M-,@@html:</kbd>@@ to go back. It supports /gcc/,
-/clang/, and /msvc/.
-
-#+ATTR_HTML: :style text-align:left
-On Darwin, you can find correct include path in =Man-mode= now.
+@@html:<kbd>@@C-c f i@@html:</kbd>@@ to open C system include file in
+=view-mode= and via @@html:<kbd>@@M-,@@html:</kbd>@@ to go back.
 
 #+REVEAL: split
-**** Macro expand
+**** View *man* pages
      :PROPERTIES:
-     :CUSTOM_ID: c-programming-macro-expand
+     :CUSTOM_ID: c-programming-editing-view-man-pages
+     :END:
+
+Also, the /#include/ in /man/ pages is viewable.
+
+#+REVEAL: split
+**** Expand macro
+     :PROPERTIES:
+     :CUSTOM_ID: c-programming-editing-expand-macro
      :END:
 
 #+ATTR_HTML: :style text-align:left
-Mark the code that include a macro call then @@html:<kbd>@@C-c
-C-e@@html:</kbd>@@, you should see the expansion of the macro in
-=*Macro Expanded*=, whatever you are using /gcc/, /clang/ and /msvc/,
-locally or remotely.
+Mark the code containing /macro/ invocations and then
+@@html:<kbd>@@C-c C-e@@html:</kbd>@@, and observe the expanded
+results in the dedicated =*Macro Expanded*= buffer.
 
 #+ATTR_HTML: :style display:none
 /screenshots/:
@@ -1274,57 +1272,59 @@ locally or remotely.
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
-**** Dump predefined macros
+**** Dump *#define*
      :PROPERTIES:
-     :CUSTOM_ID: c-programming-dump-predefined-macros
+     :CUSTOM_ID: c-programming-editing-dump-define
      :END:
 
 #+ATTR_HTML: :style text-align:left
-Dump compiler predefined macros, @@html:<kbd>@@C-c #@@html:</kbd>@@,
-you should see the predefined macros in =*Macros Predefined*=,
-whatever you are using /gcc/ and /clang/ locally or remotely.
+@@html:<kbd>@@C-c #@@html:</kbd>@@ to dump compiler's /#define/ into
+=*Macros Defined*= buffer.
 
 #+ATTR_HTML: :style display:none
 /screenshots/:
 #+ATTR_HTML: :style display:none
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-dump-predefined-macros.png][dump predefined macros for clang]]
 
-*** Compiling
+#+REVEAL: split
+**** Set code style
+     :PROPERTIES:
+     :CUSTOM_ID: c-programming-editing-set-code-style
+     :END:
+
+#+ATTR_HTML: :style text-align:left
+@@html:<kbd>@@C-c .@@html:</kbd>@@ to set the style of C code.
+
+*** COMPILING
     :PROPERTIES:
     :CUSTOM_ID: c-programming-compiling
     :END:
 
 #+ATTR_HTML: :style text-align:left
-Press @@html:<kbd>@@M-x compile@@html:</kbd>@@ then:
+To build, press @@html:<kbd>@@C-x p c@@html:</kbd>@@ and then:
 - Unix-like:
   - raw: ~cc c.c -oa.out~
   - make: ~make~
 - Windows:
-  - raw: ~cc-env.bat && cl c.c -Fea.exe~
-  - make: ~cc-env.bat && make~
+  - raw: ~cc_msvc.bat && cl c.c -Fea.exe~
+  - make: ~cc_msvc.bat && make~
 - Remote:
   - raw: ~/bin/sh -c "ssh <remote> cc c.c -oa.out"~
-to /build/.
-
-#+ATTR_HTML: :style text-align:left
-For /msvc/ there are need tricks to works with Emacs. Nore Emacs will
-generate a /msvc/'s host environment =cc-env.bat= for you that make
-life easy and if [[https://github.com/junjiemars/nore][Nore]] already on your machine, now life is perfect.
 
 #+ATTR_HTML: :style display:none
 /screenshots/:
 #+ATTR_HTML: :style display:none
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-compile-on-windows.png][compile via msvc]]
 
-*** Debugging
+*** DEBUGGING
     :PROPERTIES:
     :CUSTOM_ID: c-programming-debugging
     :END:
 
 #+ATTR_HTML: :style text-align:left
-[[https://lldb.llvm.org/][lldb]] and [[https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/][cdb]] had been perfectly integrated.
-- =gud-lldb=
-- =gud-cdb=
+- =gud-gdb= builtin.
+- =gud-lldb= Nore Emacs builtin.
+- =gud-cdb= Nore Emacs builtin.
 
 #+ATTR_HTML: :style display:none
 /screenshots/:
@@ -1333,46 +1333,43 @@ life easy and if [[https://github.com/junjiemars/nore][Nore]] already on your ma
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-lldb-on-linux.png][debugging via lldb on Ubuntu]]
 - [[https://raw.githubusercontent.com/junjiemars/images/master/.emacs.d/c-programming-debugging-via-cdb-on-windows.png][debugging via cdb]]
 
-*** Formatting
+*** FORMATTING
     :PROPERTIES:
     :CUSTOM_ID: c-programming-formatting
     :END:
 
 #+ATTR_HTML: :style text-align:left
-Formatting C source code.
+@@html:<kbd>@@C-c M-c C-f@@html:</kbd>@@ to format C code.
 
-- =cc*-format-region= @@html:<kbd>@@C-c M-c C-f@@html:</kbd>@@
-*** Browsing
+*** BROWSING
     :PROPERTIES:
     :CUSTOM_ID: c-programming-browsing
     :END:
 
-#+ATTR_HTML: :style text-align:left
-Browsing C code.
+Nore Emacs provides support for /etags/, /ctags/, /cscope/, and /eglot/.
 
-- =cscope=
-- =eglot=
+- go to @@html:<kbd>@@M-.@@html:</kbd>@@
+- go back @@html:<kbd>@@M-,@@html:</kbd>@@
+- navigate @@html:<kbd>@@n@@html:</kbd>@@ and @@html:<kbd>@@p@@html:</kbd>@@
 
-* Troubleshooting
+* TROUBLESHOOTING
    :PROPERTIES:
-   :CUSTOM_ID: troubleshoting
+   :CUSTOM_ID: troubleshooting
    :END:
 
 #+REVEAL: split
-- I. @@html:<kbd>@@M-x clean-compiled-files@@html:</kbd>@@ then exit
+1. @@html:<kbd>@@M-x clean-compiled-files@@html:</kbd>@@ then exit
    and reopen Emacs.
-#+REVEAL: split
-- II. Check Emacs configurations:
-  - @@html:<kbd>@@M: system-configuration-options@@html:</kbd>@@
-  - @@html:<kbd>@@M: system-configuration-features@@html:</kbd>@@
-  - @@html:<kbd>@@M: features@@html:</kbd>@@
-  - @@html:<kbd>@@M: load-history@@html:</kbd>@@
+2. Check Emacs configurations:
+  - @@html:<kbd>@@M-x: system-configuration-options@@html:</kbd>@@
+  - @@html:<kbd>@@M-x: system-configuration-features@@html:</kbd>@@
+  - @@html:<kbd>@@M-x: features@@html:</kbd>@@
+  - @@html:<kbd>@@M-x: load-history@@html:</kbd>@@
   then do =I=.
-#+REVEAL: split
-- III. Check =*Compilation-Log*= buffer, then do =I=.
-- IV. Check =(*self-paths*)=, then do =I=.
-- V. Disable the problematic item in =(*self-env-spec*)=, then do =I=.
-- VI. Disable the problematic item in =(*self-mod-spec*)=, then do =I=.
+3. Check =*Compilation-Log*= buffer, then do *1*.
+4. Check =(*self-paths*)=, then do *1*.
+5. Disable the problematic item in =(*self-env-spec*)=, then do *1*.
+6. Disable the problematic item in =(*self-mod-spec*)=, then do *1*.
 
 * Mnemonic
   :PROPERTIES:

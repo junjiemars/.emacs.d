@@ -59,6 +59,7 @@
 (autoload 'ssh-remote-p (v-home%> "config/ssh"))
 (autoload 'ssh-remote->ids (v-home%> "config/ssh"))
 (autoload 'ssh-remote->user@host (v-home%> "config/ssh"))
+(autoload 'ssh-remote-command (v-home%> "config/ssh"))
 
 ;; end of `ssh'
 
