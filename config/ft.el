@@ -25,11 +25,11 @@
 
 (defmacro if-feature-treesit% (then &rest body)
   (declare (indent 1) (debug t))
-  (if-fn% treesit-available-p nil
-          (if (treesit-available-p)
-              `,then
-            `(progn% ,@body))
-    `(progn% ,@body)))
+  `(if-fn% treesit-available-p nil
+           (if (treesit-available-p)
+               ,then
+             (progn% ,@body))
+     (progn% ,@body)))
 
 (defmacro when-feature-treesit% (&rest body)
   (declare (indent 0))
