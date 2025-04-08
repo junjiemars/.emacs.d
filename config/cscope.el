@@ -135,7 +135,7 @@
                 "Run cscope (like this): "
                 '*cscope-history*
                 (format
-                 "cscope -dL -P %s -f %scscope.out -0 "
+                 "cscope -dL -P %s -f %scscope.out -0"
                  default-directory default-directory)))
   (setq *cscope--src-dir* (cscope--path-parse command-line))
   (compilation-start command-line #'cscope-mode))
