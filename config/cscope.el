@@ -9,6 +9,7 @@
 ;;; 1. one-shot `cscope -L' `compile' command.
 ;;; 2. `run-cscope' interacts with `cscope -l' using `comint'.
 ;;; 3. `cscope-find-this-c-symbol', `-[0,9]pattern' commands.
+;;; 4. re-compile.
 ;;;;
 ;; references:
 ;;; 1. https://cscope.sourceforge.net/
@@ -148,6 +149,9 @@
 (defvar *cscope--repl-src-dir* nil
   "The source directory of \\=`*cscope*\\='.")
 
+(defvar *cscope--repl-recompile-history* nil
+  "Re-cscope REPL history.")
+
 (defun cscope--repl-parse-filename (file)
   (cond ((file-exists-p file) file)
         ((and (> (length *cscope--repl-src-dir*) 0)
@@ -155,7 +159,7 @@
          (concat *cscope--repl-src-dir* file))
         (t file)))
 
-(defun cscope-send-command (command)
+(defun cscope-send-command (command &optional switch-window)
   "Send COMMAND to cscope REPL."
   (unless (eq 'run (car (comint-check-proc (*cscope*))))
     (user-error "%s" "No *cscope* process"))
@@ -166,44 +170,55 @@
         (erase-buffer)
         (comint-redirect-send-command-to-process command out proc nil)
         (cscope-mode)
+        (define-key (current-local-map) "g" 'cscope-repl-recompile)
+        (push! command *cscope--repl-recompile-history*)
         (set (make-local-variable '*cscope--src-dir*) *cscope--repl-src-dir*)))
-    (switch-to-buffer-other-window out)))
+    (and switch-window (switch-to-buffer-other-window out))))
 
-(defun cscope-find-this-c-symbol (&optional symbol)
-  (interactive "sFind this C symbol: ")
-  (cscope-send-command (concat "0" symbol)))
+(defun cscope-repl-recompile ()
+  "Re-cscope find."
+  (interactive)
+  (cond ((null current-prefix-arg) (call-interactively #'recompile))
+        (t (let ((cmd (read-string "cscope Find: "
+                                   (car *cscope--repl-recompile-history*)
+                                   '*cscope-repl--cmd-history*)))
+             (and cmd (cscope-send-command cmd))))))
 
-(defun cscope-find-this-function-definition (&optional symbol)
-  (interactive "sFind this function definition: ")
-  (cscope-send-command (concat "1" symbol)))
+(defun cscope-find-0-this-c-symbol (&optional symbol)
+  (interactive "sFind this C symbol [0]: ")
+  (cscope-send-command (concat "0" symbol) t))
 
-(defun cscope-find-functions-called-by-this-function (&optional symbol)
-  (interactive "sFind functions called by this function: ")
-  (cscope-send-command (concat "2" symbol)))
+(defun cscope-find-1-this-function-definition (&optional symbol)
+  (interactive "sFind this function definition [1]: ")
+  (cscope-send-command (concat "1" symbol) t))
 
-(defun cscope-find-functions-calling-this-function (&optional symbol)
-  (interactive "sFind functions calling this function: ")
-  (cscope-send-command (concat "3" symbol)))
+(defun cscope-find-2-functions-called-by-this-function (&optional symbol)
+  (interactive "sFind functions called by this function [2]: ")
+  (cscope-send-command (concat "2" symbol) t))
 
-(defun cscope-find-this-text-string (&optional text)
-  (interactive "sFind this text string: ")
-  (cscope-send-command (concat "4" text)))
+(defun cscope-find-3-functions-calling-this-function (&optional symbol)
+  (interactive "sFind functions calling this function [3]: ")
+  (cscope-send-command (concat "3" symbol) t))
 
-(defun cscope-find-this-egrep-pattern (&optional pattern)
-  (interactive "sFind this egrep pattern: ")
-  (cscope-send-command (concat "6" pattern)))
+(defun cscope-find-4-this-text-string (&optional text)
+  (interactive "sFind this text string [4]: ")
+  (cscope-send-command (concat "4" text) t))
 
-(defun cscope-find-this-file (&optional filename)
-  (interactive "sFind this file: ")
-  (cscope-send-command (concat "7" filename)))
+(defun cscope-find-6-this-egrep-pattern (&optional pattern)
+  (interactive "sFind this egrep pattern [6]: ")
+  (cscope-send-command (concat "6" pattern) t))
 
-(defun cscope-find-files-including-this-file (&optional symbol)
-  (interactive "sFind files #including this file: ")
-  (cscope-send-command (concat "8" symbol)))
+(defun cscope-find-7-this-file (&optional filename)
+  (interactive "sFind this file [7]: ")
+  (cscope-send-command (concat "7" filename) t))
 
-(defun cscope-find-assignments-to-this-symbol (&optional symbol)
-  (interactive "sFind assignments to this symbol: ")
-  (cscope-send-command (concat "9" symbol)))
+(defun cscope-find-8-files-including-this-file (&optional symbol)
+  (interactive "sFind files #including this file [8]: ")
+  (cscope-send-command (concat "8" symbol) t))
+
+(defun cscope-find-9-assignments-to-this-symbol (&optional symbol)
+  (interactive "sFind assignments to this symbol [9]: ")
+  (cscope-send-command (concat "9" symbol) t))
 
 (define-derived-mode cscope-repl-mode comint-mode "REPL"
   "Major mode for a cscope REPL process."
