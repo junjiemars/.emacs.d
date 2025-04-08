@@ -44,9 +44,9 @@
   "The REPL process buffer of \\=`*cscope*\\='."
   (get-buffer-create* "*cscope*"))
 
-(defun *cscope-out* ()
+(defun *cscope-find* ()
   "The output buffer of \\=`cscope-send-command\\='."
-  (get-buffer-create* "*out|cscope*"))
+  (get-buffer-create* "*find|cscope*"))
 
 (defun cscope--path-parse (command-line)
   (cond ((string-match "-P[[:blank:]]*\\([^[:blank:]]+\\)" command-line)
@@ -124,7 +124,7 @@
     (set-keymap-parent m compilation-minor-mode-map)
     (define-key m "n" #'cscope-next-error-no-select)
     (define-key m "p" #'cscope-prev-error-no-select)
-    (if (eq (*cscope-out*) (current-buffer))
+    (if (eq (*cscope-find*) (current-buffer))
         (define-key m "g" nil)
       (define-key m "g" #'cscope-recompile))
     (use-local-map m)))
@@ -163,7 +163,7 @@
   "Send COMMAND to cscope REPL."
   (unless (eq 'run (car (comint-check-proc (*cscope*))))
     (user-error "%s" "No *cscope* process"))
-  (let ((out (*cscope-out*))
+  (let ((out (*cscope-find*))
         (proc (get-buffer-process (*cscope*))))
     (with-current-buffer out
       (fluid-let (buffer-read-only nil)
@@ -184,39 +184,39 @@
                                    '*cscope-repl--cmd-history*)))
              (and cmd (cscope-send-command cmd))))))
 
-(defun cscope-find-0-this-c-symbol (&optional symbol)
+(defun cscope-find-this-c-symbol (&optional symbol)
   (interactive "sFind this C symbol: 0")
   (cscope-send-command (concat "0" symbol) t))
 
-(defun cscope-find-1-this-function-definition (&optional symbol)
+(defun cscope-find-this-function-definition (&optional symbol)
   (interactive "sFind this function definition: 1")
   (cscope-send-command (concat "1" symbol) t))
 
-(defun cscope-find-2-functions-called-by-this-function (&optional symbol)
+(defun cscope-find-functions-called-by-this-function (&optional symbol)
   (interactive "sFind functions called by this function: 2")
   (cscope-send-command (concat "2" symbol) t))
 
-(defun cscope-find-3-functions-calling-this-function (&optional symbol)
+(defun cscope-find-functions-calling-this-function (&optional symbol)
   (interactive "sFind functions calling this function: 3")
   (cscope-send-command (concat "3" symbol) t))
 
-(defun cscope-find-4-this-text-string (&optional text)
+(defun cscope-find-this-text-string (&optional text)
   (interactive "sFind this text string: 4")
   (cscope-send-command (concat "4" text) t))
 
-(defun cscope-find-6-this-egrep-pattern (&optional pattern)
+(defun cscope-find-this-egrep-pattern (&optional pattern)
   (interactive "sFind this egrep pattern: 6")
   (cscope-send-command (concat "6" pattern) t))
 
-(defun cscope-find-7-this-file (&optional filename)
+(defun cscope-find-this-file (&optional filename)
   (interactive "sFind this file: 7")
   (cscope-send-command (concat "7" filename) t))
 
-(defun cscope-find-8-files-including-this-file (&optional symbol)
+(defun cscope-find-files-including-this-file (&optional symbol)
   (interactive "sFind files #including this file: 8")
   (cscope-send-command (concat "8" symbol) t))
 
-(defun cscope-find-9-assignments-to-this-symbol (&optional symbol)
+(defun cscope-find-assignments-to-this-symbol (&optional symbol)
   (interactive "sFind assignments to this symbol: 9")
   (cscope-send-command (concat "9" symbol) t))
 
