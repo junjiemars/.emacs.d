@@ -51,15 +51,14 @@
 
 
 (defun cscope--path-parse (command-line)
-  (cond ((string-match "-P[[:blank:]]*\\([^[:blank:]]+\\)" command-line)
-         (file-name-as-directory
-          (substring-no-properties
-           command-line (match-beginning 1) (match-end 1))))
-        ((string-match "-f[[:blank:]]*\\([^[:blank:]]+\\)" command-line)
-         (file-name-directory
-          (substring-no-properties
-           command-line (match-beginning 1) (match-end 1))))
-        (t default-directory)))
+  (catch :br
+    (dolist (x '("-P[[:blank:]]*\\([^[:blank:]]+\\)"
+                 "-f[[:blank:]]*\\([^[:blank:]]+\\)"
+                 "-s[[:blank:]]*\\([^:[:blank:]]+\\)"))
+      (when (string-match x command-line)
+        (throw :br (file-name-as-directory
+                    (substring-no-properties
+                     command-line (match-beginning 1) (match-end 1))))))))
 
 ;; end of cscope environment
 
@@ -136,9 +135,8 @@
   (interactive (read-string-prompt
                 "Run cscope (like this): "
                 '*cscope-history*
-                (format
-                 "cscope -dL -P %s -f %scscope.out -0"
-                 default-directory default-directory)))
+                (let ((dd (expand-file-name default-directory)))
+                  (format "cscope -dL -P %s -f %scscope.out -0" dd dd))))
   (setq *cscope--src-dir* (cscope--path-parse command-line))
   (compilation-start command-line #'cscope-mode))
 
@@ -218,19 +216,20 @@
 (defun run-cscope (&optional command-line)
   "Run a cscope REPL process, input and output via buffer *cscope*."
   (interactive (read-string-prompt
-                "Run cscope: " '*cscope-repl-history* "-dl -f "))
+                "Run cscope: " '*cscope-repl-history* "-dl -P "))
   (unless (comint-check-proc (*cscope*))
     (unless (executable-find* "cscope")
       (error "%s" "No cscope program found"))
+    (setq *cscope--repl-src-dir* (cscope--path-parse command-line))
     (with-current-buffer (*cscope*)
-      (apply #'make-comint-in-buffer
-             (buffer-name (current-buffer))
-             (current-buffer)
-             "cscope"
-             nil
-             (split-string* command-line "\\s-+" t))
+      (let ((default-directory (or *cscope--repl-src-dir* default-directory)))
+        (apply #'make-comint-in-buffer
+               (buffer-name (current-buffer))
+               (current-buffer)
+               "cscope"
+               nil
+               (split-string* command-line "\\s-+" t)))
       (cscope-repl-mode)))
-  (setq *cscope--repl-src-dir* (cscope--path-parse command-line))
   (switch-to-buffer-other-window (*cscope*)))
 
 ;; end of `cscope-repl-mode'
