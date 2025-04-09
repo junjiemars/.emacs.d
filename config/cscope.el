@@ -133,12 +133,13 @@
 (defun cscope (&optional command-line)
   "Run cscope with user-specified COMMAND-LINE."
   (interactive (read-string-prompt
-                "Run cscope (like this): "
-                '*cscope-history*
-                (let ((dd (expand-file-name default-directory)))
-                  (format "cscope -dL -P %s -f %scscope.out -0" dd dd))))
+                "Run cscope (like this): " '*cscope-history*
+                (format "cscope -dL -P %s -0"
+			                  (expand-file-name default-directory))))
   (setq *cscope--src-dir* (cscope--path-parse command-line))
-  (compilation-start command-line #'cscope-mode))
+  (let ((default-directory (or *cscope--src-dir* default-directory)))
+    ;; or using `cd <dir> && cscope ...'
+    (compilation-start command-line #'cscope-mode)))
 
 ;; end of `cscope-mode'
 
@@ -170,7 +171,7 @@
           mode-name (if new "REPL>" "REPL"))
     (force-mode-line-update)))
 
-(defun cscope-send-command (command &optional switch-window)
+(defun cscope-send-command (command)
   "Send COMMAND to cscope REPL."
   (unless (eq 'run (car (comint-check-proc (*cscope*))))
     (user-error "%s" "No *cscope* process"))
@@ -179,19 +180,20 @@
     (with-current-buffer out
       (fluid-let (buffer-read-only nil)
         (erase-buffer)
-        (comint-redirect-send-command-to-process command out proc nil)
+        (comint-redirect-send-command-to-process command out proc nil nil)
         (cscope-mode)
         (define-key (current-local-map) "g" 'cscope-repl-recompile)
         (push! command *cscope--repl-recompile-history*)
-        (set (make-local-variable '*cscope--src-dir*) *cscope--repl-src-dir*)))
-    (and switch-window (switch-to-buffer-other-window out))))
+        (set (make-local-variable '*cscope--src-dir*)
+             *cscope--repl-src-dir*)))))
 
 (defun cscope-repl-send-input (&optional _ __)
   (interactive)
   (cond (*cscope--repl-redirect*
          (let ((input (buffer-substring-no-properties
                        (comint-line-beginning-position) (point-max))))
-           (cscope-send-command input t)))
+           (cscope-send-command input)
+           (switch-to-buffer-other-window (*cscope-find*))))
         (t (call-interactively 'comint-send-input))))
 
 (defun cscope-repl-recompile ()
@@ -216,13 +218,17 @@
 (defun run-cscope (&optional command-line)
   "Run a cscope REPL process, input and output via buffer *cscope*."
   (interactive (read-string-prompt
-                "Run cscope: " '*cscope-repl-history* "-dl -P "))
+                "Run cscope: " '*cscope-repl-history*
+                (format "-dl -P %s " (expand-file-name default-directory))))
   (unless (comint-check-proc (*cscope*))
     (unless (executable-find* "cscope")
       (error "%s" "No cscope program found"))
-    (setq *cscope--repl-src-dir* (cscope--path-parse command-line))
+    (setq *cscope--repl-src-dir* (cscope--path-parse command-line)
+          *cscope--repl-redirect* nil)
+    (kill-buffer (*cscope*))
     (with-current-buffer (*cscope*)
-      (let ((default-directory (or *cscope--repl-src-dir* default-directory)))
+      (let ((default-directory (or *cscope--repl-src-dir*
+                                   (expand-file-name default-directory))))
         (apply #'make-comint-in-buffer
                (buffer-name (current-buffer))
                (current-buffer)
