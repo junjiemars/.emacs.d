@@ -8,8 +8,9 @@
 ;; features:
 ;;; 1. one-shot `cscope -L' `compile' command.
 ;;; 2. `run-cscope' interacts with `cscope -l' using `comint'.
-;;; 3. `cscope-find-this-c-symbol', `-[0,9]pattern' commands.
-;;; 4. re-compile.
+;;; 3. `cscope-send-command', `-[0,9]pattern' commands.
+;;; 4. `cscope-repl-mode' redirect.
+;;; 5. re-cscope.
 ;;;;
 ;; references:
 ;;; 1. https://cscope.sourceforge.net/
@@ -47,6 +48,7 @@
 (defun *cscope-find* ()
   "The output buffer of \\=`cscope-send-command\\='."
   (get-buffer-create* "*find|cscope*"))
+
 
 (defun cscope--path-parse (command-line)
   (cond ((string-match "-P[[:blank:]]*\\([^[:blank:]]+\\)" command-line)
@@ -150,7 +152,10 @@
   "The source directory of \\=`*cscope*\\='.")
 
 (defvar *cscope--repl-recompile-history* nil
-  "Re-cscope REPL history.")
+  "Re-cscope REPL history list.")
+
+(defvar *cscope--repl-redirect* nil
+  "Redirect? to \\=`*cscope-find*\\='buffer.")
 
 (defun cscope--repl-parse-filename (file)
   (cond ((file-exists-p file) file)
@@ -158,6 +163,14 @@
               (null (char-equal ?/ (aref file 0))))
          (concat *cscope--repl-src-dir* file))
         (t file)))
+
+(defun cscope-repl-toggle-redirect ()
+  "Toggle the redirect of \\=`cscope-repl-mode\\' on or off."
+  (interactive)
+  (let ((new (null *cscope--repl-redirect*)))
+    (setq *cscope--repl-redirect* new
+          mode-name (if new "REPL>" "REPL"))
+    (force-mode-line-update)))
 
 (defun cscope-send-command (command &optional switch-window)
   "Send COMMAND to cscope REPL."
@@ -175,56 +188,32 @@
         (set (make-local-variable '*cscope--src-dir*) *cscope--repl-src-dir*)))
     (and switch-window (switch-to-buffer-other-window out))))
 
+(defun cscope-repl-send-input (&optional _ __)
+  (interactive nil comint-mode)
+  (cond (*cscope--repl-redirect*
+         (let ((input (buffer-substring-no-properties
+                       (comint-line-beginning-position) (point-max))))
+           (cscope-send-command input t)))
+        (t (call-interactively 'comint-send-input))))
+
 (defun cscope-repl-recompile ()
   "Re-cscope find."
   (interactive)
-  (cond ((null current-prefix-arg) (call-interactively #'recompile))
-        (t (let ((cmd (read-string "cscope Find: "
-                                   (car *cscope--repl-recompile-history*)
-                                   '*cscope-repl--cmd-history*)))
-             (and cmd (cscope-send-command cmd))))))
-
-(defun cscope-find-this-c-symbol (&optional symbol)
-  (interactive "sFind this C symbol: 0")
-  (cscope-send-command (concat "0" symbol) t))
-
-(defun cscope-find-this-function-definition (&optional symbol)
-  (interactive "sFind this function definition: 1")
-  (cscope-send-command (concat "1" symbol) t))
-
-(defun cscope-find-functions-called-by-this-function (&optional symbol)
-  (interactive "sFind functions called by this function: 2")
-  (cscope-send-command (concat "2" symbol) t))
-
-(defun cscope-find-functions-calling-this-function (&optional symbol)
-  (interactive "sFind functions calling this function: 3")
-  (cscope-send-command (concat "3" symbol) t))
-
-(defun cscope-find-this-text-string (&optional text)
-  (interactive "sFind this text string: 4")
-  (cscope-send-command (concat "4" text) t))
-
-(defun cscope-find-this-egrep-pattern (&optional pattern)
-  (interactive "sFind this egrep pattern: 6")
-  (cscope-send-command (concat "6" pattern) t))
-
-(defun cscope-find-this-file (&optional filename)
-  (interactive "sFind this file: 7")
-  (cscope-send-command (concat "7" filename) t))
-
-(defun cscope-find-files-including-this-file (&optional symbol)
-  (interactive "sFind files #including this file: 8")
-  (cscope-send-command (concat "8" symbol) t))
-
-(defun cscope-find-assignments-to-this-symbol (&optional symbol)
-  (interactive "sFind assignments to this symbol: 9")
-  (cscope-send-command (concat "9" symbol) t))
+  (let ((cmd (if current-prefix-arg
+                 (read-string "cscope Find: "
+                              (car *cscope--repl-recompile-history*)
+                              '*cscope-repl--cmd-history*)
+               (car *cscope--repl-recompile-history*))))
+    (and cmd (cscope-send-command cmd))))
 
 (define-derived-mode cscope-repl-mode comint-mode "REPL"
   "Major mode for a cscope REPL process."
   (setq comint-prompt-regexp "^>>"
         comint-prompt-read-only t
-        mode-line-process '("" ":%s")))
+        mode-line-process '("" ":%s"))
+  (let ((keymap (current-local-map)))
+    (define-key keymap ">" #'cscope-repl-toggle-redirect)
+    (define-key keymap "" #'cscope-repl-send-input)))
 
 (defun run-cscope (&optional command-line)
   "Run a cscope REPL process, input and output via buffer *cscope*."
