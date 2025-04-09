@@ -264,7 +264,7 @@
                              (aset x 2 (length decode))))
                          (append! x fs t)))
                    files)))
-      (funcall '_archive-summarize-files_ files))))
+      (funcall (symbol-function '_archive-summarize-files_) files))))
 
 (defun on-arc-mode-init! ()
   (when-archive-summarize-files%

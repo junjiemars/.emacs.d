@@ -189,7 +189,7 @@
     (and switch-window (switch-to-buffer-other-window out))))
 
 (defun cscope-repl-send-input (&optional _ __)
-  (interactive nil comint-mode)
+  (interactive)
   (cond (*cscope--repl-redirect*
          (let ((input (buffer-substring-no-properties
                        (comint-line-beginning-position) (point-max))))
