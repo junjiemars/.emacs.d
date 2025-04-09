@@ -68,14 +68,14 @@
   (defun xref-find-definitions* (&rest _)
     "Into \\=`view-mode\\=' after call \\=`xref-find-definitions\\='."
     (interactive)
-    (let ((r (call-interactively (symbol-function '_xref-find-definitions_))))
+    (let ((r (call-interactively '_xref-find-definitions_)))
       (prog1 r
 	(xref*-buffer-in-view-mode)))))
 
 (when-xref--show-location%
   (defun xref--show-location* (&rest args)
     "Into \\=`view-mode\\=' after call \\=`xref--show-location\\='."
-    (let ((r (apply (symbol-function '_xref--show-location_) args)))
+    (let ((r (apply '_xref--show-location_ args)))
       (prog1 r
 	(xref*-buffer-in-view-mode (window-buffer r))))))
 
@@ -113,7 +113,7 @@
   (defun find-tag* (&rest _)
     "Into \\=`view-mode\\=' after call \\=`find-tag\\='."
     (interactive)
-    (let ((r (call-interactively (symbol-function '_find-tag_))))
+    (let ((r (call-interactively '_find-tag_)))
       (prog1 r
         (xref*-buffer-in-view-mode)))))
 

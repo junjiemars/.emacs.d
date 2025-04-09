@@ -27,11 +27,9 @@
        (let ((gateway-method (if (eq 'socks url-gateway-method)
                                  'socks
                                gateway-method)))
-         (funcall (symbol-function '_url-open-stream_)
-                  name buffer host service gateway-method))
+         (funcall '_url-open-stream_ name buffer host service gateway-method))
      (let ((url-gateway-method *url-gateway-method*))
-       (funcall (symbol-function '_url-open-stream_)
-                name buffer host service gateway-method)))))
+       (funcall '_url-open-stream_ name buffer host service gateway-method)))))
 
 (when-feature% socks
   (when-version% > 25

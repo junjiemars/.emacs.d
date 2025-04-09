@@ -52,7 +52,7 @@ esac
     (set-window-buffer
      (selected-window)
      (make-comint-in-buffer "ansi-term" nil "cmd"))
-    (call-interactively (symbol-function '_ansi-term_))))
+    (call-interactively '_ansi-term_)))
 
 (defun on-term-init! ()
   "On \\=`term\\=' initialization."

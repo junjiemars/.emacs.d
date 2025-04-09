@@ -52,7 +52,7 @@
 (when-bin-mudraw%
   ;; fix: the builtin `doc-view-mode-p' does not support mupdf.
   (defun doc-view-mode-p* (type)
-    (let ((r (apply (symbol-function '_doc-view-mode-p_) type)))
+    (let ((r (apply '_doc-view-mode-p_ type)))
       (cond ((eq 'pdf type) t)
             (t r)))))
 

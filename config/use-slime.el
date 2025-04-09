@@ -24,7 +24,7 @@
 
 (when-fn% slime-show-source-location slime
   (defun slime-show-source-location* (&rest args)
-    (let ((r (apply (symbol-function '_slime-show-source-location_) args)))
+    (let ((r (apply '_slime-show-source-location_ args)))
       (prog1 r
         (with-current-buffer (current-buffer)
           (let ((b (current-buffer)))

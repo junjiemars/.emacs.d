@@ -207,8 +207,7 @@
       (let ((file (if (multibyte-string-p file)
                       (encode-coding-string file locale-coding-system)
                     file)))
-        (funcall (symbol-function '_insert-directory_)
-                 file switches wildcard full-directory-p)))
+        (funcall '_insert-directory_ file switches wildcard full-directory-p)))
 
     (defun dired-shell-stuff-it* (command file-list on-each &optional _)
       "\\=`dired-do-shell-command\\=' or \\=`dired-do-async-shell-command\\='
@@ -221,8 +220,7 @@
                                 (encode-coding-string x locale-coding-system)
                               x)
                             fs t)))))
-        (funcall (symbol-function '_dired-shell-stuff-it_)
-                 command file-list on-each)))
+        (funcall '_dired-shell-stuff-it_ command file-list on-each)))
 
     (defun dired-shell-command* (cmd)
       "\\=`dired-do-compress-to\\=' should failed when
@@ -231,7 +229,7 @@
       (let ((cmd (if (multibyte-string-p cmd)
                      (encode-coding-string cmd locale-coding-system)
                    cmd)))
-        (funcall (symbol-function '_dired-shell-command_) cmd)))
+        (funcall '_dired-shell-command_ cmd)))
 
     (defun dired-compress-file* (file)
       "\\=`dired-compress-file\\=' should failed when FILE arg does not
@@ -239,7 +237,7 @@
       (let ((file (if (multibyte-string-p file)
                       (encode-coding-string file locale-coding-system)
                     file)))
-        (funcall (symbol-function '_dired-compress-file_) file)))))
+        (funcall '_dired-compress-file_ file)))))
 
 ;;
 
@@ -266,7 +264,7 @@
                              (aset x 2 (length decode))))
                          (append! x fs t)))
                    files)))
-      (funcall (symbol-function '_archive-summarize-files_) files))))
+      (funcall '_archive-summarize-files_ files))))
 
 (defun on-arc-mode-init! ()
   (when-archive-summarize-files%
@@ -339,7 +337,7 @@
               (push! (cons "\\.gz\\'" 7za?) dired-compress-file-suffixes))))
 
         (when-fn% dired-compress-file dired-aux
-          (defadvice* 'dired-compress-file
+          (defadvice* '_dired-compress-file_
             'dired-compress-file #'dired-compress-file*))))))
 
 ;; end of `dired-aux'

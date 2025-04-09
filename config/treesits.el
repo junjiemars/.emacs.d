@@ -83,7 +83,7 @@
 (when-version% > 30
   (defun treesit--install-language-grammar-1* (&rest args)
     (let ((dir (car treesit-extra-load-path)))
-      (apply (symbol-function '_treesit--install-language-grammar-1_)
+      (apply '_treesit--install-language-grammar-1_
              (append (list dir) (cdr args))))))
 
 (defun on-treesit-init! ()

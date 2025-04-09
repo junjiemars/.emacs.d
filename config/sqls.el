@@ -76,12 +76,12 @@
        sql-buffer))))
 
 (when-sql-send-magic-terminator%
-  (defun sql-send-magic-terminator* (buf str terminator)
-    "Send TERMINATOR to buffer BUF if its not present in STR."
-    (funcall (symbol-function '_sql-send-magic-terminator_)
-             buf str (cond ((eq 'mysql sql-product) (setq terminator t))
-                           ((eq 'oceanbase sql-product) (setq terminator t))
-                           (t terminator)))))
+ (defun sql-send-magic-terminator* (buf str terminator)
+   "Send TERMINATOR to buffer BUF if its not present in STR."
+   (funcall (symbol-function'_sql-send-magic-terminator_)
+            buf str (cond ((eq 'mysql sql-product) (setq terminator t))
+                          ((eq 'oceanbase sql-product) (setq terminator t))
+                          (t terminator)))))
 
 ;; end of sqli
 
