@@ -202,7 +202,7 @@
          (let ((in (buffer-substring-no-properties
                     (comint-line-beginning-position) (point-max))))
            (cscope-send-command in)
-           (switch-to-buffer-other-window (*cscope-find*))))
+           (pop-to-buffer (*cscope-find*))))
         (t (call-interactively 'comint-send-input))))
 
 (defun cscope-repl-recompile ()
@@ -217,8 +217,9 @@
 
 (define-derived-mode cscope-repl-mode comint-mode "REPL"
   "Major mode for a cscope REPL process."
-  (setq comint-prompt-regexp "^>>"
+  (setq comint-prompt-regexp "^>> "
         comint-prompt-read-only t
+        comint-use-prompt-regexp t
         mode-line-process '("" ":%s"))
   (let ((keymap (current-local-map)))
     (define-key keymap ">" #'cscope-repl-toggle-redirect!)
