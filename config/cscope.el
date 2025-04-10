@@ -7,8 +7,8 @@
 ;;;;
 ;; features:
 ;;; 1. one-shot `cscope -L' `compile' command.
-;;; 2. `run-cscope' interacts with `cscope -l' using `comint'.
-;;; 3. `cscope-send-command', `-[0,9]pattern' commands.
+;;; 2. `run-cscope' REPL with `cscope -l' using `comint'.
+;;; 3. `cscope-send-command', `[0,9]pattern' commands.
 ;;; 4. `cscope-repl-mode' redirect.
 ;;; 5. re-cscope.
 ;;;;
@@ -43,11 +43,11 @@
 
 (defun *cscope* ()
   "The REPL process buffer of \\=`*cscope*\\='."
-  (get-buffer-create* "*cscope*"))
+  (get-buffer-create* "*cscope*" t))
 
 (defun *cscope-find* ()
   "The output buffer of \\=`cscope-send-command\\='."
-  (get-buffer-create* "*find|cscope*"))
+  (get-buffer-create* "*find|cscope*" t))
 
 
 (defun cscope--path-parse (command-line)
@@ -66,15 +66,19 @@
 ;; `cscope-mode'
 ;;;
 
+;;; `cscope-mode' env
+
 (defvar *cscope--src-dir* nil
   "The source directory of \\=`cscope-mode\\='.")
 
 (defun cscope--filename-parse (file)
-  (cond ((file-exists-p file) file)
+  (cond ((inhibit-file-name-handler (file-exists-p file)) file)
         ((and (> (length *cscope--src-dir*) 0)
               (null (char-equal ?/ (aref file 0))))
          (concat *cscope--src-dir* file))
         (t file)))
+
+;; end of `cscope-mode' env
 
 (defun cscope-recompile ()
   "Re-cscope."
@@ -138,7 +142,7 @@
 			                  (expand-file-name default-directory))))
   (setq *cscope--src-dir* (cscope--path-parse command-line))
   (let ((default-directory (or *cscope--src-dir* default-directory)))
-    ;; or using `cd <dir> && cscope ...'
+    ;; or using `cd <dir> && cscope <args...>'
     (compilation-start command-line #'cscope-mode)))
 
 ;; end of `cscope-mode'
@@ -146,6 +150,8 @@
 ;;;
 ;; `cscope-repl-mode'
 ;;;
+
+;;; cscope-repl env
 
 (defvar *cscope--repl-src-dir* nil
   "The source directory of \\=`*cscope*\\='.")
@@ -163,13 +169,15 @@
          (concat *cscope--repl-src-dir* file))
         (t file)))
 
-(defun cscope-repl-toggle-redirect ()
+(defun cscope-repl-toggle-redirect! ()
   "Toggle the redirect of \\=`cscope-repl-mode\\' on or off."
   (interactive)
   (let ((new (null *cscope--repl-redirect*)))
     (setq *cscope--repl-redirect* new
           mode-name (if new "REPL>" "REPL"))
     (force-mode-line-update)))
+
+;; end of cscope-repl env
 
 (defun cscope-send-command (command)
   "Send COMMAND to cscope REPL."
@@ -190,9 +198,9 @@
 (defun cscope-repl-send-input (&optional _ __)
   (interactive)
   (cond (*cscope--repl-redirect*
-         (let ((input (buffer-substring-no-properties
-                       (comint-line-beginning-position) (point-max))))
-           (cscope-send-command input)
+         (let ((in (buffer-substring-no-properties
+                    (comint-line-beginning-position) (point-max))))
+           (cscope-send-command in)
            (switch-to-buffer-other-window (*cscope-find*))))
         (t (call-interactively 'comint-send-input))))
 
@@ -212,7 +220,7 @@
         comint-prompt-read-only t
         mode-line-process '("" ":%s"))
   (let ((keymap (current-local-map)))
-    (define-key keymap ">" #'cscope-repl-toggle-redirect)
+    (define-key keymap ">" #'cscope-repl-toggle-redirect!)
     (define-key keymap "" #'cscope-repl-send-input)))
 
 (defun run-cscope (&optional command-line)
