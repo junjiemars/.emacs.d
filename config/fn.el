@@ -288,9 +288,9 @@ If optional UNIQUELY is non-nil then append uniquely."
 If optional UNIQUELY is non-nil then push uniquely."
   (let ((n1 (gensym*)))
     `(let ((,n1 ,newelt))
-       (setq ,seq (if ,uniquely
-                      (cons ,n1 (delete ,n1 ,seq))
-                    (cons ,n1 ,seq))))))
+       (setq ,seq ,(if uniquely
+                       `(cons ,n1 (delete ,n1 ,seq))
+                     `(cons ,n1 ,seq))))))
 
 ;; end of sequence
 
