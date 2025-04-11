@@ -97,6 +97,9 @@
         ((null (cdr seq)) (flatten (car seq)))
         (t (append (flatten (car seq)) (flatten (cdr seq))))))
 
+(defmacro range (from &optional to inc)
+  `(number-sequence ,from ,to ,inc))
+
 (unless-fn% take nil
   (defun take (n seq)
     "Return a sequence of the first N items in SEQ."

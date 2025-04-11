@@ -244,9 +244,6 @@ else do ELSE..."
 ;; alias
 ;;;
 
-(defmacro range (from &optional to inc)
-  `(number-sequence ,from ,to ,inc))
-
 (unless-fn% characterp nil
   (defmacro characterp (object)
     `(char-valid-p ,object)))

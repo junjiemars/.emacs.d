@@ -18,6 +18,7 @@
 (autoload 'mapcar** (v-home%> "config/cls"))
 (autoload 'member-if* (v-home%> "config/cls"))
 (autoload 'remove-if* (v-home%> "config/cls"))
+(autoload 'range (v-home%> "config/cls"))
 (autoload 'some* (v-home%> "config/cls"))
 (autoload 'take* (v-home%> "config/cls") nil nil 'macro)
 (autoload 'take-while (v-home%> "config/cls"))

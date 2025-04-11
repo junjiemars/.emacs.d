@@ -699,30 +699,34 @@
   (should (equal '(a b) (flatten '(a (b)))))
   (should (equal '(a b c) (flatten '(a (b (c)))))))
 
+(ert-deftest %j:cls:range ()
+  (should (equal '(1 2 3) (range 1 3 1))))
+
 (ert-deftest %j:cls:take ()
   (should-not (take* 3 nil))
-  (should (equal '(1 2 3) (take* 3 (range 1 10 1))))
-  (should (= 3 (length (take* 3 (range 1 10 1)))))
-  (should (= 10 (length (take* 100 (range 1 10 1))))))
+  (should (equal '(1 2 3) (take* 3 (number-sequence 1 10 1))))
+  (should (= 3 (length (take* 3 (number-sequence 1 10 1)))))
+  (should (= 10 (length (take* 100 (number-sequence 1 10 1))))))
 
 (ert-deftest %j:cls:drop ()
   (should-not (drop 3 nil))
-  (should (equal '(8 9 10) (drop 7 (range 1 10 1))))
-  (should (= 3 (length (drop 7 (range 1 10 1)))))
-  (should (= 0 (length (drop 100 (range 1 10 1))))))
+  (should (equal '(8 9 10) (drop 7 (number-sequence 1 10 1))))
+  (should (= 3 (length (drop 7 (number-sequence 1 10 1)))))
+  (should (= 0 (length (drop 100 (number-sequence 1 10 1))))))
 
 (ert-deftest %j:cls:drop-while ()
   (should-not (drop-while nil nil))
   (should-not (drop-while (lambda (x) (= x 1)) nil))
-  (should (= 1 (car (drop-while (lambda (x) (> x 1)) (range 1 10 1)))))
+  (should (= 1 (car (drop-while (lambda (x) (> x 1))
+                                (number-sequence 1 10 1)))))
   (should (equal '(1 10) (drop-while (lambda (x) (and (> x 1) (< x 10)))
-                                     (range 1 10 1)))))
+                                     (number-sequence 1 10 1)))))
 
 (ert-deftest %j:cls:take-while ()
   (should-not (take-while nil nil))
   (should-not (take-while (lambda (x) (= x 1)) nil))
   (should (equal '(2) (take-while (lambda (x) (and (> x 1) (< x 3)))
-                                  (range 1 10 1)))))
+                                  (number-sequence 1 10 1)))))
 
 ;; end of `cls'
 
