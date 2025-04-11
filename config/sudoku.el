@@ -21,21 +21,22 @@
 
 ;;; env
 
-(defalias '*sudoku*
-  (let ((b))
-    (lambda (&optional n)
-      (cond (n (setq b (get-buffer-create n)))
-            ((or (null b) (null (buffer-live-p b)))
-             (setq b (get-buffer-create "*sudoku*")))
-            (t b))))
-  "The sudoku\\='s process buffer.")
+(defun sudoku-spec->* (spec)
+  "The spec of \\=`sudoku\\='."
+  (cond ((and spec (eq spec :puzzle)) (v-home% ".games/sudoku-puzzle"))
+        ((and spec (eq spec :board )) (v-home% ".games/sudoku-board"))
+        ((and spec (eq spec :sample)) (v-home% ".games/sudoku-sample"))
+        ((and spec (eq spec :dir!)) (v-home! ".games/"))
+        ((and spec (eq spec :red)) "red")
+        ((and spec (eq spec :idiom*))
+         (let ((s '("a busted clock still be right twice a day"
+                    "even a blind pig can find an acorn once in a while"
+                    "every dog has its day")))
+           (nth (random (length s)) s)))))
 
-(defmacro *sudoku-file* (&optional k)
-  "The sudoku\\='s files."
-  (cond ((and k (eq :puzzle k)) (v-home% ".games/sudoku-puzzle"))
-        ((and k (eq :board k)) (v-home% ".games/sudoku-board"))
-        ((and k (eq :sample k)) (v-home% ".games/sudoku-sample"))
-        ((and k (eq :dir! k)) (v-home! ".games/"))))
+(defun *sudoku* ()
+  "The sudoku\\='s process buffer."
+  (get-buffer-create "*sudoku*"))
 
 (defconst +sudoku-level+ '(easy medium hard sandbox)
   "Sudoku levels.")
@@ -49,137 +50,108 @@
 (defvar *sudoku-dimension-history* nil
   "Sudoku dimension history list.")
 
-(defalias '*sudoku-color*
-  (let ((b "black")
-        (g "gray")
-        (w "red"))
-    (lambda (&optional k c)
-      (cond ((and k (eq :b k)) b)
-            ((and k (eq :g k)) g)
-            ((and k (eq :w k)) w)
-            ((and k (eq :b! k)) (setq b c))
-            ((and k (eq :g! k)) (setq g c))
-            ((and k (eq :w! k)) (setq w c))
-            (t (list b g w)))))
-  "The sudoku\\='s colors.")
-
-
-(defun *sudoku-idiom* ()
-  "The sudoku\\='s idiom."
-  (let ((s '("a busted clock still be right twice a day"
-             "even a blind pig can find an acorn once in a while"
-             "every dog has its day")))
-    (nth (random (length s)) s)))
-
-
-(defalias '*sudoku-puzzle-d*
-  (let ((l) (d) (s) (sum))
-    (lambda (&optional k n)
-      (cond ((and k (eq :set! k)) (let* ((n1 (length n))
-                                         (sqr1 (sqrt n1))
-                                         (d1 (floor sqr1)))
-                                    (setq d d1
-                                          s (floor (sqrt d1))
-                                          sum (apply #'+ (range 1 d1 1))
-                                          l n1)))
-            ((and k (eq :d k)) d)
-            ((and k (eq :len k)) l)
-            ((and k (eq :sqr k)) s)
-            ((and k (eq :sum k)) sum)
-            (t (list :len l :d d :sqr s)))))
-  "The sudoku\\='s dimensions.")
-
 ;; end of env
 
-(defun sudoku-puzzle--1d (d i j)
-  "Transform sudoku\\='s puzzle from 2d(I,J) to 1d."
+;;;
+;; puzzle
+;;;
+
+(defun sudoku--puzzle-spec (matrix)
+  (let* ((n1 (length matrix))
+         (sqr1 (sqrt n1))
+         (d1 (floor sqr1)))
+    (vector d1 (floor (sqrt d1)) (apply #'+ (number-sequence 1 d1 1)) n1)))
+
+(defun sudoku--puzzle-spec-> (spec key)
+  (cond ((and spec key (eq :dim key)) (aref spec 0))
+        ((and spec key (eq :sqr key)) (aref spec 1))
+        ((and spec key (eq :sum key)) (aref spec 2))
+        ((and spec key (eq :len key)) (aref spec 3))))
+
+(defun sudoku--puzzle-make (level dimension)
+  "Make puzzle at LEVEL and DIMENSION."
+  (cond ((eq 'sandbox level)
+         (make-vector (cond ((eq '4x4 dimension) (* 4 4))
+                            (t (* 9 9)))
+                      0))
+        (t (let ((dst (sudoku-spec->* :sample)))
+             (unless (file-exists-p dst)
+               (copy-file (emacs-home% "config/sample-sudoku-puzzle.el") dst))
+             (plist-get (plist-get (read-sexp-from-file dst) level)
+                        dimension)))))
+
+(defun sudoku--puzzle-1d (d i j)
+  "Transform to 1d from 2d(I,J)."
   (+ (* (% i d) d) (% j d)))
 
-(defun sudoku-puzzle--row (d i)
+(defun sudoku--puzzle-row (d i)
   "Locate row via 1d(I)."
   (% (/ i d) d))
 
-(defun sudoku-puzzle--col (d i)
+(defun sudoku--puzzle-col (d i)
   "Locate col via 1d(I)."
   (% i d))
 
-(defun sudoku-puzzle--sqr (d l s i)
+(defun sudoku--puzzle-sqr (d l s i)
   "Locate sqr via 1d(I)."
   (cons (/ (/ (% i l) d) s)
         (/ (% (% i l) d) s)))
 
-
-(defun sudoku-puzzle-vec-row (matrix index)
-  "Return MATRIX\\='s row vector on INDEX"
-  (let* ((d (*sudoku-puzzle-d* :d))
+(defun sudoku--puzzle-vec-row (spec matrix index)
+  "Return MATRIX\\='s row vector at INDEX of SPEC."
+  (let* ((d (sudoku--puzzle-spec-> spec :dim))
          (m matrix)
-         (r (* (sudoku-puzzle--row d index) d))
+         (r (* (sudoku--puzzle-row d index) d))
          (v (make-vector d 0)))
-    (dolist (x (range 0 (1- d) 1) v)
+    (dolist (x (number-sequence 0 (1- d) 1) v)
       (aset v x (aref m (+ r x))))))
 
-(defun sudoku-puzzle-vec-col (matrix index)
-  "Return MATRIX's col vector on INDEX."
-  (let* ((d (*sudoku-puzzle-d* :d))
+(defun sudoku--puzzle-vec-col (spec matrix index)
+  "Return MATRIX's col vector at INDEX of SPEC."
+  (let* ((d (sudoku--puzzle-spec-> spec :dim))
          (m matrix)
-         (c (% (sudoku-puzzle--col d index) d))
+         (c (% (sudoku--puzzle-col d index) d))
          (v (make-vector d 0)))
-    (dolist (x (range 0 (1- d) 1) v)
+    (dolist (x (number-sequence 0 (1- d) 1) v)
       (aset v x (aref m (+ c (* x d)))))))
 
-(defun sudoku-puzzle-vec-sqr (matrix index)
-  "Return MATRIX\\='s sqr vector on INDEX."
-  (let* ((d (*sudoku-puzzle-d* :d))
-         (l (*sudoku-puzzle-d* :len))
-         (s (*sudoku-puzzle-d* :sqr))
+(defun sudoku--puzzle-vec-sub (spec matrix index)
+  "Return MATRIX\\='s sub vector at INDEX of SPEC."
+  (let* ((d (sudoku--puzzle-spec-> spec :dim))
+         (l (sudoku--puzzle-spec-> spec :len))
+         (s (sudoku--puzzle-spec-> spec :sqr))
          (m matrix)
-         (s1 (sudoku-puzzle--sqr d l s index))
+         (s1 (sudoku--puzzle-sqr d l s index))
          (r (* (car s1) s d))
          (c (* (cdr s1) s))
          (v (make-vector d 0)))
-    (dolist (x (range 0 (1- d) 1) v)
+    (dolist (x (number-sequence 0 (1- d) 1) v)
       (aset v x (aref m (+ r (* (/ x s) d) c (% x s)))))))
 
-
+(defun sudoku--puzzle-box (spec index)
+  "Return box vector at INDEX of SPEC."
+  (% index (sudoku--puzzle-spec-> spec :len)))
 
 (defalias '*sudoku-puzzle*
-  (let ((v))
+  (let ((v nil) (c nil) (s nil))
     (lambda (&optional k i n)
-      (cond ((and k (eq :set! k)) (progn
-                                    (*sudoku-puzzle-d* :set! i)
-                                    (setq v i)))
-            ((and k (eq :row k)) (sudoku-puzzle-vec-row v i))
-            ((and k (eq :col k)) (sudoku-puzzle-vec-col v i))
-            ((and k (eq :sqr k)) (sudoku-puzzle-vec-sqr v i))
-            ((and k (eq :box k)) (aref v (% i (*sudoku-puzzle-d* :len))))
-            ((and k (eq :box! k)) (aset v (% i (*sudoku-puzzle-d* :len)) n))
-            (t v))))
+      (cond ((and i k (eq :row k)) (sudoku--puzzle-vec-row s c i))
+            ((and i k (eq :col k)) (sudoku--puzzle-vec-col s c i))
+            ((and i k (eq :sub k)) (sudoku--puzzle-vec-sub s c i))
+            ((and i k (eq :box k)) (aref c (sudoku--puzzle-box s i)))
+            ((and i k (eq :box! k)) (aset c (sudoku--puzzle-box s i) n))
+            ((and i k (eq :new! k)) (setq s (sudoku--puzzle-spec i)
+                                          v i
+                                          c (copy-sequence v)))
+            ((and k (eq :dim k)) (sudoku--puzzle-spec-> s :dim))
+            ((and k (eq :sqr k)) (sudoku--puzzle-spec-> s :sqr))
+            ((and k (eq :sum k)) (sudoku--puzzle-spec-> s :sum))
+            ((and k (eq :len k)) (sudoku--puzzle-spec-> s :len))
+            ((and k (eq :pre! k)) (setq c (copy-sequence v)))
+            (t c))))
   "The \\=`sudoku\\=' puzzle in 1-dimension vector.")
 
-
-(defun sudoku-puzzle-sample ()
-  (let ((dst (*sudoku-file* :sample)))
-    (unless (file-exists-p dst)
-      (copy-file (emacs-home% "config/sample-sudoku-puzzle.el") dst))
-    (read-sexp-from-file dst)))
-
-(defalias '*sudoku-puzzle-make*
-  (let ((l nil) (d nil) (c nil)
-        (xs nil))
-    (lambda (&optional k level dimension)
-      (cond ((and k (eq :new! k))
-             (setq c (cond ((eq 'sandbox level)
-                            (make-vector (cond ((eq '4x4 dimension) (* 4 4))
-                                               (t (* 9 9)))
-                                         0))
-                           (t (unless xs (setq xs (sudoku-puzzle-sample)))
-                              (plist-get (plist-get xs (setq l (or level l)))
-                                         (setq d (or dimension d)))))))
-            ((and k (eq :rld k)) c)
-            (t c))))
-  "Make sudoku puzzle at LEVEL.")
-
-(defun sudoku-puzzle-vec-complete (vector)
+(defun sudoku--puzzle-vec-complete? (vector)
   "Predicate sudoku puzzle\\='s VECTOR is complete."
   (let ((len (length vector))
         (sum 0)
@@ -187,9 +159,9 @@
     (while (< i len)
       (setq sum (+ sum (aref vector i))
             i (1+ i)))
-    (= sum (*sudoku-puzzle-d* :sum))))
+    (= sum (*sudoku-puzzle* :sum))))
 
-(defun sudoku-puzzle-vec-unique (vector)
+(defun sudoku--puzzle-vec-unique? (vector)
   "Predicate sudoku puzzle\\='s VECTOR is unique."
   (catch :br
     (let ((len (length vector))
@@ -206,75 +178,80 @@
               j (+ i 1)))
       t)))
 
-
 (defun sudoku-puzzle-solved-p (&optional idx)
   "Predicate sudoku\\='s puzzle is resovled."
   (catch :br
-    (let ((d (*sudoku-puzzle-d* :d))
-          (sqr (*sudoku-puzzle-d* :sqr))
+    (let ((d (*sudoku-puzzle* :dim))
+          (sqr (*sudoku-puzzle* :sqr))
           (i 0) (j 0))
 
       (when idx
-        (unless (sudoku-puzzle-vec-unique (*sudoku-puzzle* :row idx))
+        (unless (sudoku--puzzle-vec-unique? (*sudoku-puzzle* :row idx))
           (throw :br :unique))
-        (unless (sudoku-puzzle-vec-unique (*sudoku-puzzle* :col idx))
+        (unless (sudoku--puzzle-vec-unique? (*sudoku-puzzle* :col idx))
           (throw :br :unique))
-        (unless (sudoku-puzzle-vec-unique (*sudoku-puzzle* :sqr idx))
+        (unless (sudoku--puzzle-vec-unique? (*sudoku-puzzle* :sub idx))
           (throw :br :unique)))
 
       (while (< i d)
-        (unless (sudoku-puzzle-vec-unique
-                 (*sudoku-puzzle* :row (sudoku-puzzle--1d d i 0)))
+        (unless (sudoku--puzzle-vec-unique?
+                 (*sudoku-puzzle* :row (sudoku--puzzle-1d d i 0)))
           (throw :br :unique))
         (setq i (1+ i)))
 
       (while (< j d)
-        (unless (sudoku-puzzle-vec-unique
-                 (*sudoku-puzzle* :col (sudoku-puzzle--1d d 0 j)))
+        (unless (sudoku--puzzle-vec-unique?
+                 (*sudoku-puzzle* :col (sudoku--puzzle-1d d 0 j)))
           (throw :br :unique))
         (setq j (1+ j)))
 
       (setq i 0 j 0)
       (while (< i d)
         (while (< j d)
-          (unless (sudoku-puzzle-vec-unique
-                   (*sudoku-puzzle* :sqr (sudoku-puzzle--1d d i j)))
+          (unless (sudoku--puzzle-vec-unique?
+                   (*sudoku-puzzle* :sub (sudoku--puzzle-1d d i j)))
             (throw :br :unique))
           (setq j (+ j sqr)))
         (setq j 0 i (+ i sqr)))
 
       (setq i 0)
       (while (< i d)
-        (unless (sudoku-puzzle-vec-complete
-                 (*sudoku-puzzle* :row (sudoku-puzzle--1d d i 0)))
+        (unless (sudoku--puzzle-vec-complete?
+                 (*sudoku-puzzle* :row (sudoku--puzzle-1d d i 0)))
           (throw :br :complete))
         (setq i (1+ i)))
 
       (setq j 0)
       (while (< j d)
-        (unless (sudoku-puzzle-vec-complete
-                 (*sudoku-puzzle* :col (sudoku-puzzle--1d d 0 j)))
+        (unless (sudoku--puzzle-vec-complete?
+                 (*sudoku-puzzle* :col (sudoku--puzzle-1d d 0 j)))
           (throw :br :complete))
         (setq j (1+ j)))
 
       (setq i 0 j 0)
       (while (< i d)
         (while (< j d)
-          (unless (sudoku-puzzle-vec-complete
-                   (*sudoku-puzzle* :sqr (sudoku-puzzle--1d d i j)))
+          (unless (sudoku--puzzle-vec-complete?
+                   (*sudoku-puzzle* :sub (sudoku--puzzle-1d d i j)))
             (throw :br :complete))
           (setq j (+ j sqr)))
         (setq j 0 i (+ i sqr))))
     :solve))
 
-(defun sudoku-board-in (o d)
+;; end of puzzle
+
+;;;
+;; board
+;;;
+
+(defun sudoku--board-in? (o d)
   (with-current-buffer (*sudoku*)
     (let ((row (line-number-at-pos))
           (col (current-column)))
       (and (<= (car o) row) (<= row (car d))
            (<= (cdr o) col) (<= col (cdr d))))))
 
-(defun sudoku-board-nex! (o d p i j)
+(defun sudoku--board-nex! (o d p i j)
   (with-current-buffer (*sudoku*)
     (let* ((i1 (cond ((> i (car d)) (car d))
                      ((< i (car o)) (car o))
@@ -310,7 +287,7 @@
           (setq h1 (+ h1 h))))
       (cons (+ (car p) v1) (+ (cdr p) h1)))))
 
-(defun sudoku-board-mov! (o d p i j)
+(defun sudoku--board-mov! (o d p i j)
   (with-current-buffer (*sudoku*)
     (let* ((v (- (car p) (cond ((> i (car d)) (car d))
                                ((< i (car o)) (car o))
@@ -327,25 +304,25 @@
         (forward-char (- h)))
       (cons (+ (- v) (car p)) (+ (- h) (cdr p))))))
 
-(defun sudoku-board-ori! (o)
+(defun sudoku--board-ori! (o)
   (with-current-buffer (*sudoku*)
     (goto-char (point-min))
     (forward-line (1- (car o)))
     (forward-char (cdr o))
     o))
 
-(defun sudoku-board-dia! (d)
+(defun sudoku--board-dia! (d)
   (with-current-buffer (*sudoku*)
     (goto-char (point-min))
     (forward-line (1- (car d)))
     (forward-char (cdr d))
     d))
 
-(defun sudoku-board-prop ()
+(defun sudoku--board-prop ()
   (with-current-buffer (*sudoku*)
     (text-properties-at (point))))
 
-(defun sudoku-board-props ()
+(defun sudoku--board-props ()
   (with-current-buffer (*sudoku*)
     (let ((ps)
           (max (1- (point-max)))
@@ -365,22 +342,21 @@
     (lambda (&optional k i j)
       (cond ((and k (eq :cor! k)) (setq o i d j p i))
             ((and k (eq :pos k)) p)
-            ((and k (eq :in k)) (sudoku-board-in o d))
-            ((and k (eq :nex! k)) (setq p (sudoku-board-nex! o d p i j)))
-            ((and k (eq :mov! k)) (setq p (sudoku-board-mov! o d p i j)))
-            ((and k (eq :ori! k)) (setq p (sudoku-board-ori! o)))
-            ((and k (eq :dia! k)) (setq p (sudoku-board-dia! d)))
-            ((and k (eq :prop k)) (sudoku-board-prop))
-            ((and k (eq :props k)) (sudoku-board-props))
+            ((and k (eq :in? k)) (sudoku--board-in? o d))
+            ((and k (eq :nex! k)) (setq p (sudoku--board-nex! o d p i j)))
+            ((and k (eq :mov! k)) (setq p (sudoku--board-mov! o d p i j)))
+            ((and k (eq :ori! k)) (setq p (sudoku--board-ori! o)))
+            ((and k (eq :dia! k)) (setq p (sudoku--board-dia! d)))
+            ((and k (eq :prop k)) (sudoku--board-prop))
+            ((and k (eq :props k)) (sudoku--board-props))
             (t (list :ori o :dia d :pos p)))))
   "The \\=`sudoku\\=' board.")
-
 
 (defun sudoku-board-make (puzzle)
   "Make sudoku\\='s board with PUZZLE."
   (let ((i 0)
         (bs nil)
-        (len (*sudoku-puzzle-d* :len)))
+        (len (*sudoku-puzzle* :len)))
     (while (< i len)
       (let ((x (aref puzzle i)))
         (setq bs (append bs (list (list :puzzle (cons i x)
@@ -388,12 +364,11 @@
               i (1+ i))))
     bs))
 
-
 (defun sudoku-board-draw (board)
-  "Draw sudoku BOARD."
+  "Draw sudoku\\='s BOARD."
   (switch-to-buffer (*sudoku*))
-  (let ((d (*sudoku-puzzle-d* :d))
-        (sqr (*sudoku-puzzle-d* :sqr))
+  (let ((d (*sudoku-puzzle* :dim))
+        (sqr (*sudoku-puzzle* :sqr))
         (w 3))
     (with-current-buffer (*sudoku*)
       (let ((inhibit-read-only t))
@@ -444,81 +419,74 @@
                           (+ (* w d) (mod d 2))))
     (*sudoku-board* :ori!)))
 
-
-(defun sudoku-board-move ()
-  "Move to board."
-  (or (*sudoku-board* :in)
+(defun sudoku--board-move ()
+  "Move on board."
+  (or (*sudoku-board* :in?)
       (null (let* ((pos (*sudoku-board* :pos)))
-             (*sudoku-board* :ori!)
-             (*sudoku-board* :mov! (car pos) (cdr pos))))))
-
+              (*sudoku-board* :ori!)
+              (*sudoku-board* :mov! (car pos) (cdr pos))))))
 
 (defun sudoku-board-move-right ()
   "Move one step right."
   (interactive)
-  (when (sudoku-board-move)
+  (when (sudoku--board-move)
     (let ((pos (*sudoku-board* :pos)))
       (*sudoku-board* :nex! (car pos) (1+ (cdr pos))))))
 
 (defun sudoku-board-move-left ()
   "Move one step left."
   (interactive)
-  (when (sudoku-board-move)
+  (when (sudoku--board-move)
     (let ((pos (*sudoku-board* :pos)))
       (*sudoku-board* :nex! (car pos) (1- (cdr pos))))))
 
 (defun sudoku-board-move-down ()
   "Move one step down."
   (interactive)
-  (when (sudoku-board-move)
+  (when (sudoku--board-move)
     (let ((pos (*sudoku-board* :pos)))
       (*sudoku-board* :nex! (1+ (car pos)) (cdr pos)))))
 
 (defun sudoku-board-move-up ()
   "Move one step up."
   (interactive)
-  (when (sudoku-board-move)
+  (when (sudoku--board-move)
     (let ((pos (*sudoku-board* :pos)))
       (*sudoku-board* :nex! (1- (car pos)) (cdr pos)))))
 
 (defun sudoku-board-move-leftmost ()
   "Move to leftmost point."
   (interactive)
-  (when (sudoku-board-move)
+  (when (sudoku--board-move)
     (let ((cor (*sudoku-board*)))
-      (*sudoku-board* :mov!
-                      (car (plist-get cor :pos))
-                      (cdr (plist-get cor :ori))))))
+      (*sudoku-board*
+       :mov! (car (plist-get cor :pos)) (cdr (plist-get cor :ori))))))
 
 (defun sudoku-board-move-rightmost ()
   "Move to rightmost point."
   (interactive)
-  (when (sudoku-board-move)
+  (when (sudoku--board-move)
     (let ((cor (*sudoku-board*)))
-      (*sudoku-board* :mov!
-                      (car (plist-get cor :pos))
-                      (cdr (plist-get cor :dia))))))
+      (*sudoku-board*
+       :mov! (car (plist-get cor :pos)) (cdr (plist-get cor :dia))))))
 
 (defun sudoku-board-move-topmost ()
   "Move to topmost point."
   (interactive)
-  (when (sudoku-board-move)
+  (when (sudoku--board-move)
     (let ((cor (*sudoku-board*)))
-      (*sudoku-board* :mov!
-                      (car (plist-get cor :ori))
-                      (cdr (plist-get cor :pos))))))
+      (*sudoku-board*
+       :mov! (car (plist-get cor :ori)) (cdr (plist-get cor :pos))))))
 
 (defun sudoku-board-move-bottom ()
   "Move to bottom point."
   (interactive)
-  (when (sudoku-board-move)
+  (when (sudoku--board-move)
     (let ((cor (*sudoku-board*)))
-      (*sudoku-board* :mov!
-                      (car (plist-get cor :dia))
-                      (cdr (plist-get cor :pos))))))
+      (*sudoku-board*
+       :mov! (car (plist-get cor :dia)) (cdr (plist-get cor :pos))))))
 
-
-(defun sudoku-board-input (num &rest properties)
+(defun sudoku--board-input (num &rest properties)
   "Input on sudoku\\='s board with NUM and PROPERTIES."
   (declare (indent 1))
   (catch :br
@@ -540,7 +508,7 @@
 
           (let* ((idx (car (plist-get tp :puzzle)))
                  (cell (cons idx num))
-                 (f (list :underline t :foreground (*sudoku-color* :w))))
+                 (f (list :underline t :foreground (sudoku-spec->* :red))))
 
             (put-text-property pos (1+ pos) :puzzle cell)
             (*sudoku-puzzle* :box! idx (cdr cell))
@@ -550,24 +518,25 @@
                      (put-text-property pos (1+ pos) 'face f)
                      (throw :br nil))
                     ((and rc (eq :solve rc))
-                     (message "Solved, %s." (*sudoku-idiom*)))))
+                     (message "Solved, %s." (sudoku-spec->* :idiom*)))))
 
             (put-text-property pos (1+ pos) 'face 'underline)))))))
-
 
 (defun sudoku-board-input-erase ()
   "Erase at point."
   (interactive)
-  (sudoku-board-input 0 (cons 'face nil)))
+  (sudoku--board-input 0 (cons 'face nil)))
 
+(defun sudoku-board-input-ignore ()
+  "Ignore input."
+  (interactive))
 
 (defun sudoku--board-input-n (n)
   "Input N at point."
-  (let ((d (*sudoku-puzzle-d* :d)))
+  (let ((d (*sudoku-puzzle* :dim)))
     (if (>= d n)
-        (sudoku-board-input n (cons 'face 'underline))
+        (sudoku--board-input n (cons 'face 'underline))
       (message "%d is invalid on %sx%s" n d d))))
-
 
 (defun sudoku-board-input-1 ()
   "Input 1 at point."
@@ -614,22 +583,41 @@
   (interactive)
   (sudoku--board-input-n 9))
 
+(defun sudoku--board-save ()
+  "Save sudoku\\='s board to file."
+  (save-sexp-to-file (*sudoku-board* :props) (sudoku-spec->* :board)))
 
-(defun sudoku-board-disabled-key ()
-  "Disabled key."
-  (interactive))
+;; end of board
 
+;;;
+;; new
+;;;
 
-(defun sudoku-board-save ()
-  "Save sudoku\\='s board to \\=`*sudoku-file*\\='."
-  (save-sexp-to-file (*sudoku-board* :props) (*sudoku-file* :board)))
+(defun sudoku-quit ()
+  "Quit \\=`*sudoku*\\='."
+  (interactive)
+  (when (and current-prefix-arg (yes-or-no-p "Save board? "))
+    (sudoku--board-save))
+  (kill-buffer (*sudoku*)))
 
+(defun sudoku-save ()
+  "Save \\=`*sudoku*\\='."
+  (interactive)
+  (sudoku--board-save))
 
-(defun sudoku-board-load ()
-  "Load sudoku\\='s board from \\=`*sudoku-file*\\='."
-  (let ((b (read-sexp-from-file (*sudoku-file* :board))))
+(defun sudoku-new (&optional level dimension)
+  "New \\=`*sudoku*\\=' with LEVEL and DIMENSION."
+  (interactive)
+  (sudoku-board-draw
+   (sudoku-board-make
+    (*sudoku-puzzle* :new! (sudoku--puzzle-make level dimension))))
+  (sudoku-mode))
+
+(defun sudoku-load (file)
+  "Load sudoku\\='s board from FILE."
+  (let ((b (read-sexp-from-file file)))
     (*sudoku-puzzle*
-     :set!
+     :new!
      (let ((i 0)
            (p (make-vector (length b) 0)))
        (dolist (x b p)
@@ -638,40 +626,46 @@
     (sudoku-board-draw b)
     (sudoku-mode)))
 
-
-(defun sudoku-quit ()
-  "Quit \\=`*sudoku*\\='."
-  (interactive)
-  (when (and current-prefix-arg (yes-or-no-p "Save board? "))
-    (sudoku-board-save))
-  (kill-buffer (*sudoku*)))
-
-(defun sudoku-save ()
-  "Save \\=`*sudoku*\\='."
-  (interactive)
-  (sudoku-board-save))
-
-(defun sudoku-new (&optional level dimension)
-  "New \\=`*sudoku*\\=' with LEVEL and DIMENSION."
-  (interactive)
-  (sudoku-board-draw
-   (sudoku-board-make
-    (*sudoku-puzzle*
-     :set! (copy-sequence (*sudoku-puzzle-make* :new! level dimension)))))
-  (sudoku-mode))
-
 (defun sudoku-reload ()
   "Reload \\=`*sudoku*\\='."
   (interactive)
   (sudoku-board-draw
    (sudoku-board-make
-    (*sudoku-puzzle*
-     :set! (copy-sequence (*sudoku-puzzle-make* :rld)))))
+    (*sudoku-puzzle* :pre!)))
   (sudoku-mode))
 
-;;; sudoku-mode
+;; end of new
 
-(defvar sudoku-mode-map
+;;;
+;; sudoku-mode
+;;;
+
+(defun sudoku--prompt ()
+  (let ((board (sudoku-spec->* :board))
+        (resume? nil))
+    (when (and (null current-prefix-arg) (file-exists-p board))
+      (setq resume? (yes-or-no-p "Continue the last game?")))
+    (cond (resume? (list board nil nil))
+          (t (list
+              nil                         ; no file
+              (intern
+               (completing-read
+                (format "Choose level (%s): "
+                        (mapconcat #'symbol-name +sudoku-level+ "|"))
+                +sudoku-level+ nil nil
+                (or (car *sudoku-level-history*)
+                    (symbol-name (car +sudoku-level+)))
+                '*sudoku-level-history*))
+              (intern
+               (completing-read
+                (format "Choose dimension (%s): "
+                        (mapconcat #'symbol-name +sudoku-dimension+ "|"))
+                +sudoku-dimension+ nil nil
+                (or (car *sudoku-dimension-history*)
+                    (symbol-name (car +sudoku-dimension+)))
+                '*sudoku-dimension-history*)))))))
+
+(defun sudoku--mode-keymap ()
   (let ((m (make-sparse-keymap)))
 
     (define-key m "q" #'sudoku-quit)
@@ -718,17 +712,15 @@
     (define-key m "8" #'sudoku-board-input-8)
     (define-key m "9" #'sudoku-board-input-9)
 
-    (define-key m "\C-k" #'sudoku-board-disabled-key)
-    (define-key m "\C-l" #'sudoku-board-disabled-key)
-    (define-key m [mouse-1] #'sudoku-board-disabled-key)
-    (define-key m [down-mouse-1] #'sudoku-board-disabled-key)
-    (define-key m [drag-mouse-1] #'sudoku-board-disabled-key)
-    (define-key m [double-mouse-1] #'sudoku-board-disabled-key)
+    (define-key m "\C-k" #'sudoku-board-input-ignore)
+    (define-key m "\C-l" #'sudoku-board-input-ignore)
+    (define-key m [mouse-1] #'sudoku-board-input-ignore)
+    (define-key m [down-mouse-1] #'sudoku-board-input-ignore)
+    (define-key m [drag-mouse-1] #'sudoku-board-input-ignore)
+    (define-key m [double-mouse-1] #'sudoku-board-input-ignore)
 
-    ;; (define-key m "\C-h" #'sudoku-board-disabled-key)
-
-    m)
-  "The keymap of \\=`sudoku-mode\\='.")
+    ;; (define-key m "\C-h" #'sudoku-board-input-ignore)
+    m))
 
 (defun sudoku-mode ()
   "Switch to sudoku\\='s mode'.\n
@@ -737,43 +729,21 @@ The following commands are available:
   (interactive)
   (with-current-buffer (*sudoku*)
     (kill-all-local-variables)
-    (use-local-map sudoku-mode-map)
+    (use-local-map (sudoku--mode-keymap))
+    (buffer-disable-undo)
     (setq major-mode 'sudoku-mode
-          mode-name  "Sudoku")
-    (setq buffer-read-only t)
-    (buffer-disable-undo)))
+          mode-name  "Sudoku"
+          buffer-read-only t)))
 
+(defun sudoku (&optional resume level dimension)
+  "Play sudoku with LEVEL and DIMENSION or RESUME your last session."
+  (interactive (sudoku--prompt))
+  (sudoku-spec->* :dir!)
+  (if resume
+      (sudoku-load resume)
+    (sudoku-new level dimension)))
 
-(defun sudoku (&optional level dimension)
-  "Play sudoku on optional LEVEL and DIMENSION."
-  (interactive
-   (cond ((and (file-exists-p (*sudoku-file* :board))
-               (null current-prefix-arg))
-          (list (completing-read
-                 "Sudoku load (file): "
-                 (*sudoku-file* :board) nil nil
-                 (*sudoku-file* :board))
-                nil))
-         (t (list (completing-read
-                   (format "Sudoku level (%s): "
-                           (mapconcat #'symbol-name +sudoku-level+ "|"))
-                   +sudoku-level+ nil nil
-                   (or (car *sudoku-level-history*)
-                       (symbol-name (car +sudoku-level+)))
-                   '*sudoku-level-history*)
-                  (completing-read
-                   (format "Sudoku dimension (%s): "
-                           (mapconcat #'symbol-name +sudoku-dimension+ "|"))
-                   +sudoku-dimension+ nil nil
-                   (or (car *sudoku-dimension-history*)
-                       (symbol-name (car +sudoku-dimension+)))
-                   '*sudoku-dimension-history*)))))
-  (*sudoku-file* :dir!)
-  (if (file-exists-p level)
-      (sudoku-board-load)
-    (sudoku-new (intern level) (intern dimension))))
-
-
+;; end of `sudoku-mode'
 
 (provide 'sudoku)
 
