@@ -31,8 +31,6 @@
 (eval-when-compile
   (require 'ed (v-home%> "config/ed")))
 
-;; (require 'thingatpt)
-
 ;; end of require
 
 ;;;
@@ -69,9 +67,8 @@ This is run before the process is cranked up.")
 (defalias '*chez-start-file*
   (let ((b (v-home% ".exec/chez.ss")))
     (lambda ()
-      (inhibit-file-name-handler
-        (cond ((file-exists-p b) b)
-              (t (copy-file (emacs-home% "config/chez.ss") b))))))
+      (cond ((file-exists-p b) b)
+            (t (copy-file (emacs-home% "config/chez.ss") b t) b))))
   "The \\=`*chez*\\=' process start file.")
 
 (defalias 'chez-switch-to-last-buffer
@@ -153,10 +150,10 @@ This is run before the process is cranked up.")
 
 (defun chez-completion ()
   (interactive)
-  (let* ((chez (*chez*)) (proc (get-buffer-process (*chez*)))
+  (let* ((chez (*chez*)) (proc (get-buffer-process chez))
          (start nil) (end nil) (in nil))
     (when proc
-      (with-current-buffer (current-buffer)
+      (with-current-buffer chez
         (let ((bs (bounds-of-thing-at-point 'symbol)))
           (when bs
             (setq start (car bs)
