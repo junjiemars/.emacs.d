@@ -542,7 +542,7 @@ Call FN with the path if FN is non-nil."
                                 "where"
                               "command -v")
               command)))
-    (when (zerop (car rc))
+    (when (= 0 (car rc))
       (let ((ss (string-trim> (cdr rc))))
         (cond (fn (funcall fn (shell-quote-argument ss)))
               (t (if-platform% windows-nt

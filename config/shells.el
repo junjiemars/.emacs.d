@@ -49,7 +49,7 @@
                 (shell-command* shell-file-name
                   (mapconcat #'identity options " ")
                   (format "-c 'echo $%s'" var)))))
-      (and (zerop (car rc))
+      (and (= 0 (car rc))
            (string-trim> (cdr rc))))))
 
 

@@ -19,7 +19,7 @@
   (defun tramp*-parse-docker-containers (program)
     "Return a list name of running docker/podman containers."
     (let ((cmd (shell-command* program "ps" "--format {{.Names}}")))
-      (when (zerop (car cmd))
+      (when (= 0 (car cmd))
         (let ((xs nil) (ss (split-string* (cdr cmd) "\n" t "\n")))
           (dolist (x ss (nreverse xs))
             (setq xs (cons (list nil x) xs))))))))

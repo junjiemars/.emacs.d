@@ -127,7 +127,7 @@
                    "make"
                    (lambda (make)
                      (let ((x (shell-command* make "--version")))
-                       (and (zerop (car x))
+                       (and (= 0 (car x))
                             (string-match "^GNU Make.*" (cdr x)))))))
         (when% (assoc-string "[Mm]akefile\\'" auto-mode-alist)
           (setcdr (assoc-string "[Mm]akefile\\'" auto-mode-alist)

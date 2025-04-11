@@ -182,7 +182,7 @@
   (when-platform% windows-nt
     ;; prefer GNU find on Windows, such for `find-dired' or `find-name-dired'.
     (when% (let ((ver (shell-command* "find" "--version")))
-             (and (zerop (car ver))
+             (and (= 0 (car ver))
                   (string-match "^find (GNU findutils)" (cdr ver))))
       (windows-nt-env-path+ (file-name-directory (executable-find* "find")))))
   ;; keys

@@ -17,7 +17,7 @@
   ;; on Drawin: the builtin `ls' does not support --dired option
   (when-var% dired-use-ls-dired dired
     (if% (executable-find* "ls")
-        (if% (zerop (car (shell-command* "ls" "--dired")))
+        (if% (= 0 (car (shell-command* "ls" "--dired")))
             (set-default 'dired-use-ls-dired t)
           (set-default 'dired-use-ls-dired nil)
           (set-default 'ls-lisp-use-insert-directory-program t))

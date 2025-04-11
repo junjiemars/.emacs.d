@@ -282,7 +282,7 @@ RENEW overwrite the existing tags file when t else create it."
           (prompt (tags-spec->* :prompt)))
       (message "%s %s %s %s ..." prompt tp o1 dir )
       (let* ((rc (shell-command* tp "-e" o1 "-o" f1 "-R"d1))
-             (done (zerop (car rc))))
+             (done (= 0 (car rc))))
         (message "%s for %s...%s"
                  prompt dir
                  (if done

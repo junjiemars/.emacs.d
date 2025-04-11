@@ -30,12 +30,12 @@
 (defun rust*-sysroot-spec ()
   "Rust sysroot spec."
   (let ((rc (shell-command* "~/.cargo/bin/rustc --print sysroot 2>/dev/null")))
-    (when (zerop (car rc))
+    (when (= 0 (car rc))
       (let ((sysroot (string-trim> (cdr rc))))
         (list
          :sysroot sysroot
          :hash (let ((h (shell-command* (path+ sysroot "bin/rustc -vV"))))
-                 (when (zerop (car h))
+                 (when (= 0 (car h))
                    (string-match* "^commit-hash: \\([a-z0-9]+\\)"
                                   (cdr h) 1)))
          :etc (path+ sysroot "lib/rustlib/etc")

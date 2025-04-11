@@ -39,12 +39,12 @@
 (defun node-program-check ()
   "Check node program path."
   (or (let ((out (nvm "which node")))
-        (and (zerop (car out)) (string-trim> (cdr out))))
+        (and (= 0 (car out)) (string-trim> (cdr out))))
       (executable-find*
        "node"
        (lambda (node)
          (let ((x (shell-command* "echo '1+2+3'|" node "-p")))
-           (zerop (car x)))))))
+           (= 0 (car x)))))))
 
 (defalias 'node-program
   (let ((b (node-program-check)))

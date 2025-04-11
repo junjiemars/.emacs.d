@@ -78,7 +78,7 @@
                              (concat "scratch-" recipe)))))
      (or (get-buffer n)
          (with-current-buffer (get-buffer-create n)
-           (when (zerop (buffer-size))
+           (when (= 0 (buffer-size))
              (let ((k (cdr (assoc-string recipe *scratch-recipe*))))
                (insert (substring-no-properties (plist-get k :msg)))
                (funcall (plist-get k :mod))

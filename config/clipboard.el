@@ -31,7 +31,7 @@
     (unless yank
       (error "%s" "No yank command found"))
     (let ((out (apply #'shell-command* (car yank) (cdr yank))))
-      (when (zerop (car out))
+      (when (= 0 (car out))
         (cdr out)))))
 
 

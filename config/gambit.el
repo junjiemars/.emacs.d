@@ -42,7 +42,7 @@
                            (lambda (gsc)
                              (let ((x (shell-command* gsc
                                         "-e \"(+ 1 2 3)\"")))
-                               (zerop (car x)))))
+                               (= 0 (car x)))))
          "gsc-script")
         (t "gsc-script"))
   "Program invoked by the `run-gambit' command.")

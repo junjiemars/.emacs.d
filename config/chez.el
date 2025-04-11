@@ -43,7 +43,7 @@
    "scheme"
    (lambda (chez)
      (let ((x (shell-command* "echo '(scheme-version)'|" chez "-q")))
-       (and (zerop (car x)) chez)))))
+       (and (= 0 (car x)) chez)))))
 
 (defalias 'chez-program
   (let ((b (chez-program-check)))
