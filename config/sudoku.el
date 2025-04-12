@@ -191,7 +191,7 @@
           (throw :br :unique))
         (setq i (1+ i)))
 
-      (while (< j d)
+      (while (< j dim)
         (unless (sudoku--puzzle-vec-unique?
                  (sudoku--puzzle-vec-col (sudoku--puzzle-1d 0 j)))
           (throw :br :unique))
@@ -358,7 +358,7 @@
 
 (defun sudoku-board-draw (board)
   "Draw sudoku\\='s BOARD."
-  (let ((d (*sudoku-puzzle* :dim))
+  (let ((dim (*sudoku-puzzle* :dim))
         (sqr (*sudoku-puzzle* :sqr))
         (w 3)
         (buf (*sudoku*)))
@@ -388,14 +388,14 @@
               (u "_")
               (row 0)
               (idx 0))
-          (while (< row d)
+          (while (< row dim)
             (when (= 0 (% row sqr))
               (insert s))
             (insert
              (apply
               #'format v
               (let ((xs nil))
-                (dolist (x (take d board) (nreverse xs))
+                (dolist (x (take dim board) (nreverse xs))
                   (setq xs (cons (apply #'propertize
                                         (let ((n (cdr (plist-get x :puzzle))))
                                           (cond ((= n 0) u)
@@ -403,13 +403,13 @@
                                         x)
                                  xs))
                   (setq idx (1+ idx))))))
-            (setq board (drop d board)
+            (setq board (drop dim board)
                   row (1+ row)))
           (insert s))))
     (*sudoku-board* :cor!
                     (cons 2 2)
-                    (cons (+ 1 d (1- sqr))
-                          (+ (* w d) (mod d 2))))
+                    (cons (+ 1 dim (1- sqr))
+                          (+ (* w dim) (mod dim 2))))
     (*sudoku-board* :ori!)))
 
 (defun sudoku--board-move ()
