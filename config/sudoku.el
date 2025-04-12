@@ -76,12 +76,6 @@
             (t c))))
   "The \\=`sudoku\\=' puzzle in 1-dimension vector.")
 
-(defun sudoku--puzzle-spec-> (spec key)
-  (cond ((and spec key (eq :dim key)) (aref spec 0))
-        ((and spec key (eq :sqr key)) (aref spec 1))
-        ((and spec key (eq :sum key)) (aref spec 2))
-        ((and spec key (eq :len key)) (aref spec 3))))
-
 (defun sudoku--puzzle-make (level dimension)
   "Make puzzle at LEVEL and DIMENSION."
   (cond ((eq 'sandbox level)
