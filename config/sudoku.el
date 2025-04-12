@@ -366,11 +366,12 @@
 
 (defun sudoku-board-draw (board)
   "Draw sudoku\\='s BOARD."
-  (switch-to-buffer (*sudoku*))
   (let ((d (*sudoku-puzzle* :dim))
         (sqr (*sudoku-puzzle* :sqr))
-        (w 3))
-    (with-current-buffer (*sudoku*)
+        (w 3)
+        (buf (*sudoku*)))
+    (switch-to-buffer buf)
+    (with-current-buffer buf
       (let ((inhibit-read-only t))
         (erase-buffer)
         (goto-char 0)
@@ -644,7 +645,7 @@
   (let ((board (sudoku-spec->* :board))
         (resume? nil))
     (when (and (null current-prefix-arg) (file-exists-p board))
-      (setq resume? (yes-or-no-p "Continue the last game?")))
+      (setq resume? (yes-or-no-p "Resume the last game?")))
     (cond (resume? (list board nil nil))
           (t (list
               nil                         ; no file
