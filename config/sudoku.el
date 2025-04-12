@@ -62,6 +62,20 @@
          (d1 (floor sqr1)))
     (vector d1 (floor (sqrt d1)) (apply #'+ (number-sequence 1 d1 1)) n1)))
 
+(defalias '*sudoku-puzzle*
+  (let ((v nil) (c nil) (s nil))
+    (lambda (&optional k n)
+      (cond ((and k (eq :dim k)) (aref s 0))
+            ((and k (eq :sqr k)) (aref s 1))
+            ((and k (eq :sum k)) (aref s 2))
+            ((and k (eq :len k)) (aref s 3))
+            ((and k (eq :pre! k)) (setq c (copy-sequence v)))
+            ((and n k (eq :new! k)) (setq s (sudoku--puzzle-spec n)
+                                          v n
+                                          c (copy-sequence v)))
+            (t c))))
+  "The \\=`sudoku\\=' puzzle in 1-dimension vector.")
+
 (defun sudoku--puzzle-spec-> (spec key)
   (cond ((and spec key (eq :dim key)) (aref spec 0))
         ((and spec key (eq :sqr key)) (aref spec 1))
@@ -80,76 +94,54 @@
              (plist-get (plist-get (read-sexp-from-file dst) level)
                         dimension)))))
 
-(defun sudoku--puzzle-1d (d i j)
+(defun sudoku--puzzle-1d (i j)
   "Transform to 1d from 2d(I,J)."
-  (+ (* (% i d) d) (% j d)))
+  (let ((d (*sudoku-puzzle* :dim)))
+    (+ (* (% i d) d) (% j d))))
 
-(defun sudoku--puzzle-row (d i)
-  "Locate row via 1d(I)."
-  (% (/ i d) d))
-
-(defun sudoku--puzzle-col (d i)
-  "Locate col via 1d(I)."
-  (% i d))
-
-(defun sudoku--puzzle-sqr (d l s i)
-  "Locate sqr via 1d(I)."
-  (cons (/ (/ (% i l) d) s)
-        (/ (% (% i l) d) s)))
-
-(defun sudoku--puzzle-vec-row (spec matrix index)
-  "Return MATRIX\\='s row vector at INDEX of SPEC."
-  (let* ((d (sudoku--puzzle-spec-> spec :dim))
-         (m matrix)
-         (r (* (sudoku--puzzle-row d index) d))
+(defun sudoku--puzzle-vec-row (index)
+  "Return row vector at INDEX."
+  (let* ((d (*sudoku-puzzle* :dim))
+         (p (*sudoku-puzzle*))
+         (r (* (% (/ index d) d) d))
          (v (make-vector d 0)))
     (dolist (x (number-sequence 0 (1- d) 1) v)
-      (aset v x (aref m (+ r x))))))
+      (aset v x (aref p (+ r x))))))
 
-(defun sudoku--puzzle-vec-col (spec matrix index)
-  "Return MATRIX's col vector at INDEX of SPEC."
-  (let* ((d (sudoku--puzzle-spec-> spec :dim))
-         (m matrix)
-         (c (% (sudoku--puzzle-col d index) d))
+(defun sudoku--puzzle-vec-col (index)
+  "Return column vector at INDEX."
+  (let* ((d (*sudoku-puzzle* :dim))
+         (p (*sudoku-puzzle*))
+         (c (% (% index d) d))
          (v (make-vector d 0)))
     (dolist (x (number-sequence 0 (1- d) 1) v)
-      (aset v x (aref m (+ c (* x d)))))))
+      (aset v x (aref p (+ c (* x d)))))))
 
-(defun sudoku--puzzle-vec-sub (spec matrix index)
-  "Return MATRIX\\='s sub vector at INDEX of SPEC."
-  (let* ((d (sudoku--puzzle-spec-> spec :dim))
-         (l (sudoku--puzzle-spec-> spec :len))
-         (s (sudoku--puzzle-spec-> spec :sqr))
-         (m matrix)
-         (s1 (sudoku--puzzle-sqr d l s index))
+(defun sudoku--puzzle-vec-sub (index)
+  "Return sub vector at INDEX."
+  (let* ((d (*sudoku-puzzle* :dim))
+         (l (*sudoku-puzzle* :len))
+         (s (*sudoku-puzzle* :sqr))
+         (p (*sudoku-puzzle*))
+         (s1 (cons (/ (/ (% index l) d) s)
+                   (/ (% (% index l) d) s)))
          (r (* (car s1) s d))
          (c (* (cdr s1) s))
          (v (make-vector d 0)))
     (dolist (x (number-sequence 0 (1- d) 1) v)
-      (aset v x (aref m (+ r (* (/ x s) d) c (% x s)))))))
+      (aset v x (aref p (+ r (* (/ x s) d) c (% x s)))))))
 
-(defun sudoku--puzzle-box (spec index)
-  "Return box vector at INDEX of SPEC."
-  (% index (sudoku--puzzle-spec-> spec :len)))
+(defun sudoku--puzzle-vec-box (index)
+  "Return box vector at INDEX."
+  (let ((p (*sudoku-puzzle*))
+        (len (*sudoku-puzzle* :len)))
+    (aref p (% index len))))
 
-(defalias '*sudoku-puzzle*
-  (let ((v nil) (c nil) (s nil))
-    (lambda (&optional k i n)
-      (cond ((and i k (eq :row k)) (sudoku--puzzle-vec-row s c i))
-            ((and i k (eq :col k)) (sudoku--puzzle-vec-col s c i))
-            ((and i k (eq :sub k)) (sudoku--puzzle-vec-sub s c i))
-            ((and i k (eq :box k)) (aref c (sudoku--puzzle-box s i)))
-            ((and i k (eq :box! k)) (aset c (sudoku--puzzle-box s i) n))
-            ((and i k (eq :new! k)) (setq s (sudoku--puzzle-spec i)
-                                          v i
-                                          c (copy-sequence v)))
-            ((and k (eq :dim k)) (sudoku--puzzle-spec-> s :dim))
-            ((and k (eq :sqr k)) (sudoku--puzzle-spec-> s :sqr))
-            ((and k (eq :sum k)) (sudoku--puzzle-spec-> s :sum))
-            ((and k (eq :len k)) (sudoku--puzzle-spec-> s :len))
-            ((and k (eq :pre! k)) (setq c (copy-sequence v)))
-            (t c))))
-  "The \\=`sudoku\\=' puzzle in 1-dimension vector.")
+(defun sudoku--puzzle-vec-box! (index value)
+  "Set box vector at INDEX with VALUE."
+  (let ((p (*sudoku-puzzle*))
+        (len (*sudoku-puzzle* :len)))
+    (aset p (% index len) value)))
 
 (defun sudoku--puzzle-vec-complete? (vector)
   "Predicate sudoku puzzle\\='s VECTOR is complete."
@@ -181,58 +173,58 @@
 (defun sudoku-puzzle-solved-p (&optional idx)
   "Predicate sudoku\\='s puzzle is resovled."
   (catch :br
-    (let ((d (*sudoku-puzzle* :dim))
+    (let ((dim (*sudoku-puzzle* :dim))
           (sqr (*sudoku-puzzle* :sqr))
           (i 0) (j 0))
 
       (when idx
-        (unless (sudoku--puzzle-vec-unique? (*sudoku-puzzle* :row idx))
+        (unless (sudoku--puzzle-vec-unique? (sudoku--puzzle-vec-row idx))
           (throw :br :unique))
-        (unless (sudoku--puzzle-vec-unique? (*sudoku-puzzle* :col idx))
+        (unless (sudoku--puzzle-vec-unique? (sudoku--puzzle-vec-col idx))
           (throw :br :unique))
-        (unless (sudoku--puzzle-vec-unique? (*sudoku-puzzle* :sub idx))
+        (unless (sudoku--puzzle-vec-unique? (sudoku--puzzle-vec-sub idx))
           (throw :br :unique)))
 
-      (while (< i d)
+      (while (< i dim)
         (unless (sudoku--puzzle-vec-unique?
-                 (*sudoku-puzzle* :row (sudoku--puzzle-1d d i 0)))
+                 (sudoku--puzzle-vec-row (sudoku--puzzle-1d i 0)))
           (throw :br :unique))
         (setq i (1+ i)))
 
       (while (< j d)
         (unless (sudoku--puzzle-vec-unique?
-                 (*sudoku-puzzle* :col (sudoku--puzzle-1d d 0 j)))
+                 (sudoku--puzzle-vec-col (sudoku--puzzle-1d 0 j)))
           (throw :br :unique))
         (setq j (1+ j)))
 
       (setq i 0 j 0)
-      (while (< i d)
-        (while (< j d)
+      (while (< i dim)
+        (while (< j dim)
           (unless (sudoku--puzzle-vec-unique?
-                   (*sudoku-puzzle* :sub (sudoku--puzzle-1d d i j)))
+                   (sudoku--puzzle-vec-sub (sudoku--puzzle-1d i j)))
             (throw :br :unique))
           (setq j (+ j sqr)))
         (setq j 0 i (+ i sqr)))
 
       (setq i 0)
-      (while (< i d)
+      (while (< i dim)
         (unless (sudoku--puzzle-vec-complete?
-                 (*sudoku-puzzle* :row (sudoku--puzzle-1d d i 0)))
+                 (sudoku--puzzle-vec-row (sudoku--puzzle-1d i 0)))
           (throw :br :complete))
         (setq i (1+ i)))
 
       (setq j 0)
-      (while (< j d)
+      (while (< j dim)
         (unless (sudoku--puzzle-vec-complete?
-                 (*sudoku-puzzle* :col (sudoku--puzzle-1d d 0 j)))
+                 (sudoku--puzzle-vec-col (sudoku--puzzle-1d 0 j)))
           (throw :br :complete))
         (setq j (1+ j)))
 
       (setq i 0 j 0)
-      (while (< i d)
-        (while (< j d)
+      (while (< i dim)
+        (while (< j dim)
           (unless (sudoku--puzzle-vec-complete?
-                   (*sudoku-puzzle* :sub (sudoku--puzzle-1d d i j)))
+                   (sudoku--puzzle-vec-sub (sudoku--puzzle-1d i j)))
             (throw :br :complete))
           (setq j (+ j sqr)))
         (setq j 0 i (+ i sqr))))
@@ -512,7 +504,7 @@
                  (f (list :underline t :foreground (sudoku-spec->* :red))))
 
             (put-text-property pos (1+ pos) :puzzle cell)
-            (*sudoku-puzzle* :box! idx (cdr cell))
+            (sudoku--puzzle-vec-box! idx (cdr cell))
 
             (let ((rc (sudoku-puzzle-solved-p idx)))
               (cond ((and rc (eq :unique rc))
