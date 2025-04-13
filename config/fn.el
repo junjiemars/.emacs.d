@@ -272,12 +272,10 @@ If optional UNIQUELY is non-nil then append uniquely."
         (new (gensym*)))
     `(let ((,old ,(car binding))
            (,new ,(cadr binding)))
-       (prog1
-           (unwind-protect
-               (progn
-                 (setq ,var ,new)
-                 ,@body)
-             (setq ,var ,old))
+       (unwind-protect
+           (progn
+             (setq ,var ,new)
+             ,@body)
          (setq ,var ,old)))))
 
 (defmacro push! (newelt seq &optional uniquely)

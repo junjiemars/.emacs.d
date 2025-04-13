@@ -290,9 +290,27 @@
 
 
 (ert-deftest %d:fn:fluid-let ()
-  (let ((x 123))
+
+  (let ((x 123) (a 3))
     (fluid-let (x 456)
-      (should (= x 456)))
+      (should (= x 456))
+      (setq a (1+ a)))
+    (should (and (= x 123) (= a 4))))
+
+  (let ((x 123) (a 3))
+    (catch :br
+      (fluid-let (x 456)
+        (should (= x 456))
+        (throw :br a)
+        (setq a (1+ a))))
+    (should (= x 123)))
+
+  (let ((x 123) (a 3))
+    (condition-case err
+        (fluid-let (x 456)
+          (should (= x 456))
+          (user-error "%s" a))
+      (error "%s" err))
     (should (= x 123))))
 
 (ert-deftest %d:fn:strchr ()
