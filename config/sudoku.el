@@ -231,14 +231,12 @@
 ;;;
 
 (defalias '*sudoku-board*
-  (let ((o nil) (d nil) (p nil))
-    (lambda (&optional k i j)
+  (let ((o [2 2]) (d nil) (p [2 2]))
+    (lambda (&optional k i)
       (cond ((and k (eq :ori k)) o)
             ((and k (eq :dia k)) d)
             ((and k (eq :pos k)) p)
-            ((and i j k (eq :cor! k)) (setq o i
-                                            d j
-                                            p (copy-sequence i)))
+            ((and i k (eq :cor! k)) (setq d i))
             (t (list :ori o :dia d :pos p)))))
   "The \\=`sudoku\\=' board.")
 
@@ -418,7 +416,6 @@
                   row (1+ row)))
           (insert s))))
     (*sudoku-board* :cor!
-                    (vector 2 2)
                     (vector (+ 1 dim (1- sqr))
                             (+ (* w dim) (mod dim 2))))
     (sudoku--board-ori!)))
