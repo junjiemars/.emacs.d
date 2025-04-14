@@ -259,9 +259,9 @@ else do ELSE..."
 If optional UNIQUELY is non-nil then append uniquely."
   (let ((n1 (gensym*)) (s1 (gensym*)))
     `(let ((,n1 ,newelt) (,s1 ,seq))
-       (setq ,seq (nconc (if ,uniquely
-                             (delete ,n1 ,s1)
-                           ,s1)
+       (setq ,seq (nconc ,(if uniquely
+                              `(delete ,n1 ,s1)
+                            `,s1)
                          (list ,n1))))))
 
 (defmacro fluid-let (binding &rest body)
