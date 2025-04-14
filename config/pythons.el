@@ -74,7 +74,7 @@
                "&& pip config set global.index-url"
                x)))
     (unless (and (= 0 (car rc)) x)
-      (user-error "%s" "No python's mirror available"))
+      (user-error "Panic, %s" (string-trim> (cdr rc))))
     x))
 
 (when-feature% eglot
@@ -188,7 +188,7 @@ Using \\=`sys.prefix\\=' or \\=`pip -V\\=' to check virtual env."
   "Make Python\\='s venv for DIR."
   (interactive (python*--venv-prompt))
   (unless (python*-program :ver)
-    (user-error "Panic, %s is not an executable" python))
+    (user-error "%s is not an executable" python))
   (let* ((venv (python*--venv-activate! dir))
          (mirror (python*-pip-mirror!
                   venv (or mirror (python*-venv :mirror)))))
