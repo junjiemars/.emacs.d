@@ -31,17 +31,19 @@
     (when (= 0 (car rc))
       (string-match* "^Python \\([.0-9]+\\)$" (cdr rc) 1))))
 
-(defun python*--program-check ()
+(defun python*-program-check ()
   (let ((p (or (executable-find* "python3")
                (executable-find* "python"))))
-    (and p (cons p (python*-version p)))))
+    (cond (p (vector p (python*-version p)))
+          (t [nil nil]))))
 
 (defalias 'python*-program
-  (let ((b (python*--program-check)))
+  (let ((b (python*-program-check)))
     (lambda (&optional op n)
-      (cond ((and op (eq :new op)) (setq b (cons n (python*-version n))))
-            ((and op (eq :bin op)) (car b))
-            ((and op (eq :ver op)) (cdr b))
+      (cond ((and op (eq :bin op)) (aref b 0))
+            ((and op (eq :ver op)) (aref b 1))
+            ((and n op (eq :new op))
+             (aset b 0 n) (aset b 1 (python*-version n)))
             (t b))))
   "Adjoint of \\=`python-shell-interpreter\\='.")
 
@@ -52,63 +54,7 @@
     "http://pypi.sdutlinux.org/")
   "List of pip mirror.")
 
-(defun python*--venv-prompt ()
-  (if current-prefix-arg
-      (list (read-directory-name "Make venv for ")
-            (read-string "Set pip mirror "))
-    (list (python*-venv :scratch)
-          (python*-venv :mirror))))
-
 ;; end of env
-
-;;;
-;; venv
-;;;
-
-(defun python*-venv-activate! (dir)
-  "Activate Python\\='s virtualenv at DIR.\n
-PYTHONPATH: augment the default search path for module files. The
-            format is the same as the shell’s PATH.
-PYTHONHOME: change the location of the standard Python libraries.
-VIRTUALENV: virtualenv root path.\n
-After Python3.3+, we can use \\=`python -m venv DIR\\=' to create
-a new virtual env at DIR, then Using \\=`sys.prefix\\=' to
-determine whether inside a virtual env. Another way is using
-\\=`pip -V\\='."
-  (let ((pv (python*-program)))
-    (unless pv
-      (error "%s" "No python program found"))
-    (let ((d (path! (path+ (expand-file-name dir) "/")))
-          (p (car pv))
-          (v- (= -1 (vstrncmp (cdr pv) "3.3" 3))))
-      (unless (file-exists-p (concat d "/bin/activate"))
-        (cond ((and p v- (executable-find* "virtualenv"))
-               (let ((rc (shell-command* "virtualenv" "-p" p d)))
-                 (unless (= 0 (car rc))
-                   (error "Panic, %s" (string-trim> (cdr rc))))))
-              ((and p (null v-))
-               (let ((rc (shell-command* p "-m" "venv" d)))
-                 (unless (= 0 (car rc))
-                   (error "Panic, %s" (string-trim> (cdr rc))))))
-              (t (error "%s" "No python's venv found"))))
-      (prog1 d
-        (when-var% python-shell-interpreter python
-          (setq python-shell-interpreter (concat d "bin/python")))
-        (if-var% python-shell-virtualenv-root python
-                 (setq python-shell-virtualenv-root d)
-          (if-var% python-shell-virtualenv-path python
-                   (setq python-shell-virtualenv-path d)
-            (if-var% python-shell-process-environment python
-                     (setq python-shell-process-environment
-                           (list
-                            (concat "PYTHONPATH=" d)
-                            (concat "PYTHONHOME=" d)
-                            (concat "VIRTUAL_ENV=" d)))
-              (setenv "PYTHONPATH" d)
-              (setenv "PYTHONHOME" d)
-              (setenv "VIRTUAL_ENV" d))))))))
-
-;; end of venv
 
 ;;;
 ;; LSP
@@ -127,7 +73,9 @@ determine whether inside a virtual env. Another way is using
                (concat venv "/bin/activate")
                "&& pip config set global.index-url"
                x)))
-    (and (= 0 (car rc)) x)))
+    (unless (and (= 0 (car rc)) x)
+      (user-error "%s" "No python's mirror available"))
+    x))
 
 (when-feature% eglot
   (defun python*-eglot-sever-program ()
@@ -147,13 +95,10 @@ determine whether inside a virtual env. Another way is using
   (let ((rc (shell-command*
                 "chmod" "u+x"
                 (save-str-to-file
-                 (concat
-                  "#!/bin/sh\n"
-                  ". " venv "bin/activate\n"
-                  "if ! pip -qqq show python-lsp-server; then\n"
-                  "  pip install python-lsp-server python-lsp-ruff pyflakes isort\n"
-                  "fi\n"
-                  "exec " venv "bin/pylsp $@\n")
+                 (format
+                  (read-str-from-file
+                   (emacs-home* "config/pythons_lsp.sh"))
+                  venv venv)
                  pylsp))))
     (when (= 0 (car rc))
       (prog1 pylsp
@@ -162,15 +107,70 @@ determine whether inside a virtual env. Another way is using
 
 ;; end of LSP
 
+;;;
+;; venv
+;;;
+
+(defun python*--interpreter! (interpreter)
+  (setq% python-shell-interpreter interpreter python)
+  (setq% python-interpreter interpreter python))
+
+(defun python*--env-build (dir &optional mirror)
+  (list :venv dir
+        :pylsp (v-home% ".exec/pylsp.sh")
+        :python (concat dir "bin/python")
+        :pip (concat dir "bin/pip")
+        :fmt (concat dir "bin/ruff")
+        :mirror mirror))
+
+(defun python*--venv-prompt ()
+  (if current-prefix-arg
+      (list (read-file-name "Python executable at ")
+            (read-directory-name "Make venv for ")
+            (read-string "Has a pip mirror "))
+    (list (python*-program :bin)
+          (python*-venv :scratch)
+          (python*-venv :mirror))))
+
+(defun python*--venv-activate! (dir)
+  "Activate Python\\='s virtualenv at DIR.\n
+Using \\=`sys.prefix\\=' or \\=`pip -V\\=' to check virtual env."
+  (let ((p (python*-program :bin))
+        (v (python*-program :ver)))
+    (unless (or p v)
+      (error "%s" "No python program found"))
+    (let ((d (path! (path+ (expand-file-name dir) "/")))
+          (v- (= -1 (vstrncmp v "3.3" 3))))
+      (unless (file-exists-p (concat d "/bin/activate"))
+        (cond ((and p v- (executable-find* "virtualenv"))
+               (let ((rc (shell-command* "virtualenv" "-p" p d)))
+                 (unless (= 0 (car rc))
+                   (error "Panic, %s" (string-trim> (cdr rc))))))
+              ((and p (null v-))
+               (let ((rc (shell-command* p "-m" "venv" d)))
+                 (unless (= 0 (car rc))
+                   (error "Panic, %s" (string-trim> (cdr rc))))))
+              (t (error "%s" "No python's venv found"))))
+      (prog1 d
+        (python*--interpreter! (concat d "bin/python"))
+        (if-var% python-shell-virtualenv-root python
+                 (setq python-shell-virtualenv-root d)
+          (if-var% python-shell-virtualenv-path python
+                   (setq python-shell-virtualenv-path d)
+            (if-var% python-shell-process-environment python
+                     (setq python-shell-process-environment
+                           (list
+                            (concat "PYTHONPATH=" d)
+                            (concat "PYTHONHOME=" d)
+                            (concat "VIRTUAL_ENV=" d)))
+              (setenv "PYTHONPATH" d)
+              (setenv "PYTHONHOME" d)
+              (setenv "VIRTUAL_ENV" d))))))))
+
 (defalias 'python*-venv
   (let* ((b (path! (emacs-home% "scratch/pyvenv/")))
-         (file (v-home% ".exec/python-venv.el"))
-         (env (list :venv b
-                    :pylsp (v-home% ".exec/pylsp.sh")
-                    :python (concat b "bin/python")
-                    :pip (concat b "bin/pip")
-                    :fmt (concat b "bin/ruff")
-                    :mirror (python*-pip-mirror! b))))
+         (file (v-home% ".exec/python-env.el"))
+         (env (python*--env-build b (python*-pip-mirror! b))))
     (lambda (&optional op n)
       (cond ((and op (eq op :file)) file)
             ((and op (eq op :scratch)) b)
@@ -180,31 +180,24 @@ determine whether inside a virtual env. Another way is using
             ((and op (eq op :pip)) (plist-get env :pip))
             ((and op (eq op :mirror)) (plist-get env :mirror))
             ((and op (eq op :fmt)) (plist-get env :fmt))
-            ((and op (eq op :load) n) (setq env n))
-            ((and op (eq op :venv) n)
-             (plist-put env :venv n)
-             (plist-put env :python (concat n "bin/python"))
-             (plist-put env :pip (concat n "bin/pip")))
-            ((and op (eq op :pylsp) n) (plist-put env :pylsp n))
-            ((and op (eq op :mirror) n) (plist-put env :mirror n))
+            ((and n op (eq op :load)) (setq env n))
             (t env))))
   "Python\\='s venv.")
 
-(defun python*-venv-make! (&optional dir mirror)
+(defun python*-venv-make! (&optional python dir mirror)
   "Make Python\\='s venv for DIR."
   (interactive (python*--venv-prompt))
-  (let* ((dir (or dir (python*-venv :scratch)))
-         (mirror (or mirror (python*-venv :mirror)))
-         (venv (python*-venv-activate! dir)))
-    (unless venv
-      (user-error "%s" "No python's venv available"))
-    (python*-venv :venv venv)
-    (python*-venv :mirror (python*-pip-mirror! venv mirror))
+  (unless (python*-program :ver)
+    (user-error "Panic, %s is not an executable" python))
+  (let* ((venv (python*--venv-activate! dir))
+         (mirror (python*-pip-mirror!
+                  venv (or mirror (python*-venv :mirror)))))
+    (python*-venv :load (python*--env-build venv mirror))
     (python*-pylsp-make! venv (python*-venv :pylsp))
-    (setq% python-shell-interpreter (python*-venv :python) python)
+    (python*--interpreter! (python*-venv :python))
     (save-sexp-to-file (python*-venv) (python*-venv :file))))
 
-
+;; end of venv
 
 ;;;
 ;; format
@@ -230,16 +223,13 @@ determine whether inside a virtual env. Another way is using
 ;; end of format
 
 ;;;
-;; keys
+;; init
 ;;;
 
 (defun python*-define-keys (keymap)
   (define-key keymap (kbd% "C-c C-z") #'run-python)
   (define-key keymap (kbd% "C-c C-j") nil)
   (define-key keymap (kbd% "C-c M-c f") #'python*-format-region))
-
-;; end of keys
-
 
 (defun on-python-init! ()
   "On \\=`python\\=' initialization."
@@ -249,13 +239,15 @@ determine whether inside a virtual env. Another way is using
            (or (let ((f (python*-venv :file)))
                  (when (file-exists-p f)
                    (python*-venv :load (read-sexp-from-file f))
-                   (when (file-exists-p (python*-venv :python))
-                     (prog1 (python*-venv :python)
-                       (when-feature% eglot
-                         (python*-eglot-sever-program))))))
+                   (condition-case _
+                       (when (file-exists-p (python*-venv :venv))
+                         (python*--venv-activate! (python*-venv :venv))
+                         (prog1 (python*-venv :python)
+                           (when-feature% eglot
+                             (python*-eglot-sever-program))))
+                     (error nil))))
                (python*-program :bin))))
-      (setq% python-shell-interpreter interpreter python)
-      (setq% python-interpreter interpreter python)))
+      (python*--interpreter! interpreter)))
   ;; completion
   (setq% python-shell-completion-native-enable
          (when-platform% gnu/linux t) python)
@@ -263,9 +255,10 @@ determine whether inside a virtual env. Another way is using
   (when-var% python-mode-map python
     (python*-define-keys python-mode-map))
   (when-var% python-ts-mode-map python-ts-mode
-    (python*-define-keys python-ts-mode-map)))
+    (python*-define-keys python-ts-mode-map))
+  t)
 
-
+;; end of init
 
 
 (provide 'pythons)
