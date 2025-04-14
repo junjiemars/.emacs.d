@@ -285,8 +285,15 @@
                            (append! "b" x t)))))))
 
 (ert-deftest %d:fn:insert! ()
-  (should (equal '(a X b) (let ((s '(a b)))
-                            (insert! 'X s 1)))))
+  (should (equal '(X)
+                 (let ((seq nil))
+                   (insert! 'X seq 0))))
+  (should (equal '(X a b c d)
+                 (let ((seq '(a b c d)))
+                   (insert! 'X seq 0))))
+  (should (equal '(a X b c d)
+                 (let ((seq '(a b c d)))
+                   (insert! 'X seq 1)))))
 
 
 (ert-deftest %d:fn:fluid-let ()

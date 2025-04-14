@@ -78,18 +78,15 @@
       (setq seq (cdr seq)))
     (nreverse s)))
 
+(defun insert-at (newelt seq idx &optional acc)
+  (cond ((null (integerp idx)) seq)
+        ((null seq) (list newelt))
+        ((= idx 0) (nconc (nreverse acc) (cons newelt seq)))
+        (t (insert-at newelt (cdr seq) (1- idx) (cons (car seq) acc)))))
+
 (defmacro insert! (newelt seq idx)
   "Insert NEWELT into the SEQ."
-  (let ((n1 (gensym*)) (i1 (gensym*)))
-    `(let ((,n1 ,newelt) (,i1 ,idx))
-       (let ((l (length ,seq)))
-         (when (and (integerp ,i1) (>= ,i1 0) (< ,i1 l))
-           (let ((c1 (copy-sequence ,seq))
-                 (j (1+ ,i1)))
-             (while (< j l)
-               (setf (nth j c1) (nth (1- j) ,seq) j (1+ j)))
-             (setf (nth ,i1 c1) ,n1)
-             (setq ,seq (append c1 `(,(nth (1- l) ,seq))))))))))
+  `(setq ,seq (insert-at ,newelt ,seq ,idx, nil)))
 
 (defun flatten (seq)
   "Flatten SEQ."

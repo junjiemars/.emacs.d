@@ -7,6 +7,13 @@
 ;;;;
 
 
+;;; require
+
+(eval-when-compile
+  (require 'cls (v-home%> "config/cls"))
+
+;; end of require
+
 (defun mixal*-fix-operation-codes-alist ()
   "Fix some data in \\=`mixal-mode\\='."
   (when-var% mixal-operation-codes-alist mixal-mode
