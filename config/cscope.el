@@ -180,29 +180,40 @@
 
 ;; end of cscope-repl env
 
-(defun cscope-send-command (command)
+(defun cscope-send-command (proc command)
   "Send COMMAND to cscope REPL."
-  (unless (eq 'run (car (comint-check-proc (*cscope*))))
-    (user-error "%s" "No *cscope* process"))
-  (let ((out (*cscope-find*))
-        (proc (get-buffer-process (*cscope*))))
+  (let ((out (*cscope-find*)))
     (with-current-buffer out
       (fluid-let (buffer-read-only nil)
         (erase-buffer)
-        (comint-redirect-send-command-to-process command out proc nil nil)
+        (comint-redirect-send-command-to-process command out proc t nil)
         (cscope-mode))
       (define-key (current-local-map) "g" 'cscope-repl-recompile)
       (push! command *cscope--repl-recompile-history*)
       (set (make-local-variable '*cscope--src-dir*)
            *cscope--repl-src-dir*))))
 
+(defun cscope-repl-simple-send (proc in)
+  (cscope-send-command proc in)
+  (comint-snapshot-last-prompt))
+
+(defun cscope-repl-preoutput-filter (out)
+  (cond (*cscope--repl-redirect*
+         (let* ((ln (strchr out ?\n))
+                (in (and ln (substring-no-properties out 0 (1+ ln)))))
+           (if (and in (string-match
+                        "^\\(cscope: .*\\|Unable to search database\\)$"
+                        in 0))
+               (concat (propertize in 'font-lock-face 'shadow) ">> ")
+             "")))
+        (t out)))
+
 (defun cscope-repl-send-input (&optional _ __)
   (interactive)
   (cond (*cscope--repl-redirect*
-         (let ((in (buffer-substring-no-properties
-                    (comint-line-beginning-position) (point-max))))
-           (cscope-send-command in)
-           (pop-to-buffer (*cscope-find*))))
+         (let ((comint-input-sender #'cscope-repl-simple-send))
+           (call-interactively 'comint-send-input))
+         (pop-to-buffer (*cscope-find*)))
         (t (call-interactively 'comint-send-input))))
 
 (defun cscope-repl-recompile ()
@@ -213,7 +224,7 @@
                               (car *cscope--repl-recompile-history*)
                               '*cscope-repl--cmd-history*)
                (car *cscope--repl-recompile-history*))))
-    (and cmd (cscope-send-command cmd))))
+    (and cmd (cscope-send-command (get-buffer-process (*cscope*)) cmd))))
 
 (define-derived-mode cscope-repl-mode comint-mode "REPL"
   "Major mode for a cscope REPL process."
@@ -221,6 +232,8 @@
         comint-prompt-read-only t
         comint-use-prompt-regexp t
         mode-line-process '("" ":%s"))
+  (add-hook 'comint-preoutput-filter-functions
+            #'cscope-repl-preoutput-filter nil 'local)
   (let ((keymap (current-local-map)))
     (define-key keymap ">" #'cscope-repl-toggle-redirect!)
     (define-key keymap "" #'cscope-repl-send-input)))

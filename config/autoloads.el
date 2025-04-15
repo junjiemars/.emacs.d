@@ -160,9 +160,7 @@
   (condition-case err
       (prog1 t
         (compile! (compile-unit* (*self-paths* :get :epilogue))))
-    (error (if-interactive%
-               (prog1 nil (message "self-epilogue-init!: %s" err))
-             err))))
+    (error (prog1 nil (message "self-epilogue-init!: %s" err)))))
 
 ;; end of `self-epilogue-init!'
 
@@ -185,15 +183,11 @@
   (when-fn% self-module-init! nil
     (condition-case err
         (self-module-init!)
-      (error (if-interactive%
-                 (prog1 nil (message "self-module-init!: %s" err))
-               err))))
+      (error (prog1 nil (message "self-module-init!: %s" err)))))
   (when-fn% self-desktop-read! nil
     (condition-case err
         (self-desktop-read!)
-      (error (if-interactive%
-                 (prog1 nil (message "self-desktop-read!: %s" err))
-               err))))
+      (error (prog1 nil (message "self-desktop-read!: %s" err)))))
   ;; `load-path' versioned dirs
   (push! (v-home% "config/") load-path)
   (push! (v-home% "private/") load-path)

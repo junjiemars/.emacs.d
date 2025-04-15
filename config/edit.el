@@ -98,7 +98,7 @@
      (comment :8))                      ; current version
     (clean-compiled-files)
     (setq kill-emacs-hook nil)
-    (setq% kill-emacs-query-functions nil nil)
+    (setq% kill-emacs-query-functions nil)
     (kill-emacs 0)))
 
 ;; end of Clean Emacs' user files
