@@ -18,17 +18,16 @@
 
 (defun self-desktop-not-to-save! ()
   (condition-case _
-      (prog1 t
-        (let ((debug-on-signal nil))
-          (when-feature% eglot
-            (and (fboundp 'eglot-shutdown-all)
-                 (eglot-shutdown-all)))
-          (when-fn% global-display-line-numbers-mode display-line-numbers
-            (and (fboundp 'global-display-line-numbers-mode)
-                 (global-display-line-numbers-mode -1)))
-          (setq% display-line-numbers nil)
-          (setq% display-line-numbers-current-absolute nil)))
-    (error t)))
+      (let ((debug-on-signal nil))
+        (when-feature% eglot
+          (and (fboundp 'eglot-shutdown-all)
+               (eglot-shutdown-all)))
+        (when-fn% global-display-line-numbers-mode display-line-numbers
+          (and (fboundp 'global-display-line-numbers-mode)
+               (global-display-line-numbers-mode -1)))
+        (setq% display-line-numbers nil)
+        (setq% display-line-numbers-current-absolute nil))
+    (t t)))
 
 ;; end of env
 
@@ -71,7 +70,8 @@
                            kill-emacs-query-functions))
                (append! #'self-desktop-save!
                         kill-emacs-query-functions))
-      (append! #'self-desktop-save! kill-emacs-hook))))
+      (append! #'self-desktop-save! kill-emacs-hook)))
+  t)
 
 ;; end of read
 

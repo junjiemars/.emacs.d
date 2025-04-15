@@ -239,13 +239,12 @@ Using \\=`sys.prefix\\=' or \\=`pip -V\\=' to check virtual env."
            (or (let ((f (python*-venv :file)))
                  (when (file-exists-p f)
                    (python*-venv :load (read-sexp-from-file f))
-                   (condition-case _
-                       (when (file-exists-p (python*-venv :venv))
-                         (python*--venv-activate! (python*-venv :venv))
-                         (prog1 (python*-venv :python)
-                           (when-feature% eglot
-                             (python*-eglot-sever-program))))
-                     (error nil))))
+                   (when (condition-case _
+                             (python*--venv-activate! (python*-venv :venv))
+                           (error nil))
+                     (prog1 (python*-venv :python)
+                       (when-feature% eglot
+                         (python*-eglot-sever-program))))))
                (python*-program :bin))))
       (python*--interpreter! interpreter)))
   ;; completion

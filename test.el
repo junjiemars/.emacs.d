@@ -313,11 +313,11 @@
     (should (= x 123)))
 
   (let ((x 123) (a 3))
-    (condition-case err
+    (condition-case _
         (fluid-let (x 456)
           (should (= x 456))
           (user-error "%s" a))
-      (error "%s" err))
+      (t nil))
     (should (= x 123))))
 
 (ert-deftest %d:fn:strchr ()

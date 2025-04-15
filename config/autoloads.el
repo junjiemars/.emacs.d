@@ -74,7 +74,7 @@
    (when-feature% transient
      (compile-unit% (emacs-home* "config/transients.el") t))
    (when-feature-treesit%
-    (compile-unit% (emacs-home* "config/treesits.el") t))
+     (compile-unit% (emacs-home* "config/treesits.el") t))
    (compile-unit% (emacs-home* "config/tramps.el") t)
    (compile-unit% (emacs-home* "config/xrefs.el") t)
    (when-feature-vc%
@@ -140,7 +140,7 @@
      (compile-unit% (emacs-home* "config/on-transient-autoload.el")))
    ;; on `treesits'
    (when-feature-treesit%
-    (compile-unit% (emacs-home* "config/on-treesit-autoload.el")))
+     (compile-unit% (emacs-home* "config/on-treesit-autoload.el")))
    ;; on `tramps'
    (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))
    ;; on `xrefs'
@@ -158,8 +158,11 @@
 
 (defun self-epilogue-init! ()
   (condition-case err
-      (compile! (compile-unit* (*self-paths* :get :epilogue)))
-    (error "self-epilogue: %s" err)))
+      (prog1 t
+        (compile! (compile-unit* (*self-paths* :get :epilogue))))
+    (error (if-interactive%
+               (prog1 nil (message "self-epilogue-init!: %s" err))
+             err))))
 
 ;; end of `self-epilogue-init!'
 
@@ -182,11 +185,15 @@
   (when-fn% self-module-init! nil
     (condition-case err
         (self-module-init!)
-      (error "self-module-init!: %s" err)))
+      (error (if-interactive%
+                 (prog1 nil (message "self-module-init!: %s" err))
+               err))))
   (when-fn% self-desktop-read! nil
     (condition-case err
         (self-desktop-read!)
-      (error "self-desktop-read!: %s" err)))
+      (error (if-interactive%
+                 (prog1 nil (message "self-desktop-read!: %s" err))
+               err))))
   ;; `load-path' versioned dirs
   (push! (v-home% "config/") load-path)
   (push! (v-home% "private/") load-path)
