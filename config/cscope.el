@@ -202,7 +202,7 @@
          (let* ((ln (strchr out ?\n))
                 (in (and ln (substring-no-properties out 0 (1+ ln)))))
            (if (and in (string-match
-                        "^\\(cscope: .*\\|Unable to search database\\)$"
+                        "^\\(cscope:\\|Unable\\|Cannot\\) .*$"
                         in 0))
                (concat (propertize in 'font-lock-face 'shadow) ">> ")
              "")))
