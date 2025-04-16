@@ -27,7 +27,7 @@
                (global-display-line-numbers-mode -1)))
         (setq% display-line-numbers nil)
         (setq% display-line-numbers-current-absolute nil))
-    (t t)))
+    (error t)))
 
 ;; end of env
 

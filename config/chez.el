@@ -356,7 +356,8 @@ determined by the prefix UNTRACE argument."
   (comint-send-string
    (chez-check-proc)
    (format "(%s %s)\n" (if untrace "untrace" "trace") proc))
-  (chez-switch-to-repl t))
+  (unless (eq (current-buffer) (*chez*))
+    (chez-switch-to-repl t)))
 
 (make-variable-buffer-local
  (defvar chez-mode-string nil
