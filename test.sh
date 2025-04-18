@@ -265,6 +265,7 @@ test_reset() {
   test_echo_env "reset|clean"
   test_clean_env
   cat <<END> "${_ENV_PRO_}"
+;; -*- lexical-binding:t -*-
 (*self-paths* :put :mod-spec nil)
 (*self-paths* :put :env-spec nil)
 (*self-paths* :put :epilogue nil)
@@ -282,7 +283,7 @@ END
 (progn\
   (setq debug-on-error t)\
   (load \"${_ROOT_}/init.el\")\
-  (reset-emacs t))\
+  (reset-emacs t :8))\
 "
 }
 

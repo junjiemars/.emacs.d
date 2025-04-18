@@ -76,10 +76,12 @@ else do ELSE..."
   (when (funcall cmp version +emacs-version+)
     `(progn% ,@body)))
 
+(defconst +v-prefix+ (if (display-graphic-p) "g_" "t_")
+  "The versioned prefix.")
+
 (defmacro v-name ()
   "Return the versioned name."
-  `(concat ,(if (display-graphic-p) "g_" "t_")
-           ,(number-to-string +emacs-version+)))
+  `(concat ,+v-prefix+ ,(number-to-string +emacs-version+)))
 
 ;; end of *-version% macro
 

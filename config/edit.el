@@ -65,38 +65,34 @@
 (defun clean-versioned-dirs (dirs &optional scope)
   "Clean versioned SCOPEd DIRS."
   (dolist (d dirs)
+    (setq d (concat (emacs-home* d) "/"))
     (when (and d (file-exists-p d))
-      (dolist (f (directory-files d nil "^[gt]_.*$"))
+      (dolist (f (directory-files d nil "^[gt]_[0-9]+[.0-9]*"))
         (when (cond ((and scope (eq :8 scope)) t)
                     ((and scope (eq :< scope))
-                     (< (string-to-number
-                         (string-match* "^[gt]_\\(.*\\)$" f 1))
-                        +emacs-version+))
-                    (t (string-match
-                        (format
-                         "^[gt]_%s\\'"
-                         (regexp-quote (number-to-string +emacs-version+)))
-                        f)))
-          (let ((cmd (if-platform% windows-nt
-                         (concat "rmdir /Q /S " (concat d f))
-                       (concat "rm -r " (concat d f)))))
-            (message "%s ..." cmd)
-            (with-temp-buffer
-              (shell-command cmd (current-buffer)))))))))
+                     (let ((v (string-match*
+                               (format "^%s\\([.0-9]+\\)$" +v-prefix+)
+                               f 1)))
+                       (and v (< (string-to-number v) +emacs-version+))))
+                    (t (string-equal (v-name) f)))
+          (shell-command* (if-platform% windows-nt
+                              (concat "rmdir /Q /S ")
+                            (concat "rm -r "))
+            (concat d f)))))))
 
-(defun reset-emacs (&optional do?)
+(defun reset-emacs (&optional do? ver?)
   "Clean all compiled files and dot files, then kill Emacs."
   (interactive)
   (when (if-interactive%
             (or do? (yes-or-no-p "Reset emacs?"))
           do?)
-    (clean-versioned-dirs
-     (let ((xs nil))
-       (dolist (d (directory-files (emacs-home%) nil "^\\.[a-z]+") xs)
-         (unless (member d '(".git" ".gitignore" ".github"))
-           (setq xs (cons (concat (emacs-home* d) "/") xs)))))
-     (comment :8))                      ; current version
-    (clean-compiled-files)
+    (let ((ds (let ((xs nil)
+                    (d1 (directory-files (emacs-home%) nil "^\\.[a-z]+")))
+                (dolist (d d1 xs)
+                  (unless (member d '(".git" ".gitignore" ".github"))
+                    (setq xs (cons d xs))))))
+          (ns `("private" "config" "theme")))
+      (clean-versioned-dirs (nconc ds ns) ver?))
     (setq kill-emacs-hook nil)
     (setq% kill-emacs-query-functions nil)
     (kill-emacs 0)))
