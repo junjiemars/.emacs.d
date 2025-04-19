@@ -89,68 +89,70 @@ No matter the declaration order, the executing order is:
 ;; boot
 ;;;
 
-;; reset user emacs dir
-(setq% user-emacs-directory (emacs-home%))
-;; let `lexical-binding' var safe under Emacs24.1-
-(if-lexical%
-    (setq lexical-binding t)
-  (safe-local-variable 'lexical-binding))
-;; default `:safe'
-(setq% enable-local-variables :safe files)
-;; make `v-home' .exec/
-(v-home! ".exec/")
-;; make `v-home' private/
-(v-home! "private/")
-;; duplicate spec files
-(*self-paths* :dup)
+(defun boot! ()
+
+  ;; reset user emacs dir
+  (setq% user-emacs-directory (emacs-home%))
+  ;; let `lexical-binding' var safe under Emacs24.1-
+  (if-lexical%
+      (setq lexical-binding t)
+    (safe-local-variable 'lexical-binding))
+  ;; default `:safe'
+  (setq% enable-local-variables :safe files)
+  ;; make `v-home' .exec/
+  (v-home! ".exec/")
+  ;; make `v-home' private/
+  (v-home! "private/")
+  ;; duplicate spec files
+  (*self-paths* :dup)
 
 
 ;;; <1> prologue
-(compile! (compile-unit% (emacs-home* "config/vdir.el"))
-          (compile-unit* (*self-paths* :get :prologue)))
+  (compile! (compile-unit% (emacs-home* "config/vdir.el"))
+            (compile-unit* (*self-paths* :get :prologue)))
 
 ;;; <2> env
-(compile!
- (compile-unit* (*self-paths* :get :env-spec))
- (compile-unit% (emacs-home* "config/graphic.el"))
- (prog1
-     (compile-unit% (emacs-home* "config/shells.el") t)
-   (autoload 'self-shell-read! (v-home%> "config/shells"))
-   (declare-function self-shell-read! (v-home%> "config/shells"))))
+  (compile!
+   (compile-unit* (*self-paths* :get :env-spec))
+   (compile-unit% (emacs-home* "config/graphic.el"))
+   (prog1
+       (compile-unit% (emacs-home* "config/shells.el") t)
+     (autoload 'self-shell-read! (v-home%> "config/shells"))
+     (declare-function self-shell-read! (v-home%> "config/shells"))))
 
 ;;; <3> epilogue
-(compile!
- (when (*self-env-spec* :get :edit :allowed)
-   (prog1
-       (compile-unit% (emacs-home* "config/edit.el") t)
-     (autoload 'self-edit-init! (v-home%> "config/edit"))
-     (declare-function self-edit-init! (v-home%> "config/edit"))))
- (when (*self-env-spec* :get :key :allowed)
-   (prog1
-       (compile-unit% (emacs-home* "config/key.el") t)
-     (autoload 'self-key-init! (v-home%> "config/key"))
-     (declare-function self-key-init! (v-home%> "config/key"))))
- (progn
-    ;;; --batch mode: disable `desktop'
-   (setq% desktop-save-mode nil desktop)
-   (when-interactive%
-     (when (*self-env-spec* :get :desktop :allowed)
-       (prog1
-           (compile-unit% (emacs-home* "config/memo.el") t)
-         (autoload 'self-desktop-read! (v-home%> "config/memo"))
-         (declare-function self-desktop-read! (v-home%> "config/memo"))))))
- (when (*self-env-spec* :get :socks :allowed)
-   (prog1
-       (compile-unit% (emacs-home* "config/sockets.el") t)
-     (autoload 'self-socks-init! (v-home%> "config/sockets"))
-     (declare-function self-socks-init! (v-home%> "config/sockets"))))
- (when-package%
-   (when (*self-env-spec* :get :module :allowed)
+  (compile!
+   (when (*self-env-spec* :get :edit :allowed)
      (prog1
-         (compile-unit% (emacs-home* "config/modules.el") t)
-       (autoload 'self-module-init! (v-home%> "config/modules"))
-       (declare-function self-module-init! (v-home%> "config/modules")))))
- (compile-unit% (emacs-home* "config/autoloads.el")))
+         (compile-unit% (emacs-home* "config/edit.el") t)
+       (autoload 'self-edit-init! (v-home%> "config/edit"))
+       (declare-function self-edit-init! (v-home%> "config/edit"))))
+   (when (*self-env-spec* :get :key :allowed)
+     (prog1
+         (compile-unit% (emacs-home* "config/key.el") t)
+       (autoload 'self-key-init! (v-home%> "config/key"))
+       (declare-function self-key-init! (v-home%> "config/key"))))
+   (progn
+    ;;; --batch mode: disable `desktop'
+     (setq% desktop-save-mode nil desktop)
+     (when-interactive%
+       (when (*self-env-spec* :get :desktop :allowed)
+         (prog1
+             (compile-unit% (emacs-home* "config/memo.el") t)
+           (autoload 'self-desktop-read! (v-home%> "config/memo"))
+           (declare-function self-desktop-read! (v-home%> "config/memo"))))))
+   (when (*self-env-spec* :get :socks :allowed)
+     (prog1
+         (compile-unit% (emacs-home* "config/sockets.el") t)
+       (autoload 'self-socks-init! (v-home%> "config/sockets"))
+       (declare-function self-socks-init! (v-home%> "config/sockets"))))
+   (when-package%
+     (when (*self-env-spec* :get :module :allowed)
+       (prog1
+           (compile-unit% (emacs-home* "config/modules.el") t)
+         (autoload 'self-module-init! (v-home%> "config/modules"))
+         (declare-function self-module-init! (v-home%> "config/modules")))))
+   (compile-unit% (emacs-home* "config/autoloads.el"))))
 
 ;; end of boot
 

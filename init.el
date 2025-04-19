@@ -344,7 +344,8 @@ If ONLY-COMPILE is t, do not load DST."
     (compile! (compile-unit* (emacs-home* "config/shim.el")))
     (compile! (compile-unit* (emacs-home* "config/fn.el")))
     (compile! (compile-unit* (emacs-home* "config/ft.el")))
-    (compile! (compile-unit* (emacs-home* "config/boot.el")))))
+    (compile! (compile-unit* (emacs-home* "config/boot.el")))
+    (boot!)))
 
 ;; end of Boot
 
