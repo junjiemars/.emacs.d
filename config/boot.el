@@ -106,7 +106,6 @@ No matter the declaration order, the executing order is:
   ;; duplicate spec files
   (*self-paths* :dup)
 
-
 ;;; <1> prologue
   (compile! (compile-unit% (emacs-home* "config/vdir.el"))
             (compile-unit* (*self-paths* :get :prologue)))
@@ -120,7 +119,7 @@ No matter the declaration order, the executing order is:
      (autoload 'self-shell-read! (v-home%> "config/shells"))
      (declare-function self-shell-read! (v-home%> "config/shells"))))
 
-;;; <3> epilogue
+;;; <3> elements
   (compile!
    (when (*self-env-spec* :get :edit :allowed)
      (prog1
@@ -151,12 +150,13 @@ No matter the declaration order, the executing order is:
        (prog1
            (compile-unit% (emacs-home* "config/modules.el") t)
          (autoload 'self-module-init! (v-home%> "config/modules"))
-         (declare-function self-module-init! (v-home%> "config/modules")))))
+         (declare-function self-module-init! (v-home%> "config/modules"))))))
+
+;;; <4> epilogue
+  (compile!
    (prog1
        (compile-unit% (emacs-home* "config/autoloads.el"))
      (autoload 'on-autoloads! (v-home%> "config/autoload"))))
-
-;;; autoload when interactive or not
   (if-interactive%
       (set 'after-init-hook `(on-autoloads!))
     (on-autoloads!)))

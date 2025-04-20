@@ -230,10 +230,11 @@ If ONLY-COMPILE is t, do not load DST."
        (if-native-comp%
            (native-compile -calf-s1- -calf-d1-)
          (byte-compile-file -calf-s1-)))
-     (cond (-calf-c1- -calf-d1-)
-           (t (if-native-comp%
-                  (native-elisp-load -calf-d1-)
-                (load -calf-d1- nil nil t))))))
+     (if -calf-c1-
+         -calf-d1-
+       (if-native-comp%
+           (native-elisp-load -calf-d1-)
+         (load -calf-d1- nil nil t)))))
 
 (defun clean-compiled-files ()
   "Clean all compiled files."
