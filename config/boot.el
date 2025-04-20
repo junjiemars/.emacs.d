@@ -133,7 +133,7 @@ No matter the declaration order, the executing order is:
        (autoload 'self-key-init! (v-home%> "config/key"))
        (declare-function self-key-init! (v-home%> "config/key"))))
    (progn
-    ;;; --batch mode: disable `desktop'
+     ;; --batch mode: disable `desktop'
      (setq% desktop-save-mode nil desktop)
      (when-interactive%
        (when (*self-env-spec* :get :desktop :allowed)
@@ -152,7 +152,14 @@ No matter the declaration order, the executing order is:
            (compile-unit% (emacs-home* "config/modules.el") t)
          (autoload 'self-module-init! (v-home%> "config/modules"))
          (declare-function self-module-init! (v-home%> "config/modules")))))
-   (compile-unit% (emacs-home* "config/autoloads.el"))))
+   (prog1
+       (compile-unit% (emacs-home* "config/autoloads.el"))
+     (autoload 'on-autoloads! (v-home%> "config/autoload"))))
+
+;;; autoload when interactive or not
+  (if-interactive%
+      (set 'after-init-hook `(on-autoloads!))
+    (on-autoloads!)))
 
 ;; end of boot
 

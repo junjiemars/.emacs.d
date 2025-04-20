@@ -167,6 +167,7 @@
 ;; after-init
 (defun on-autoloads! ()
   "Autoload after init."
+  (set 'after-init-hook nil)
   (self-graphic-init!)
   (when-fn% self-shell-read! nil (self-shell-read!))
   (when-fn% self-socks-init! nil (self-socks-init!))
@@ -193,10 +194,5 @@
   (push! (v-home% "private/") load-path)
   (when (*self-paths* :get :epilogue)
     (make-thread* #'self-epilogue-init! (unless-interactive% t))))
-
-;;; autoload when interactive or not
-(if-interactive%
-    (append! #'on-autoloads! after-init-hook)
-  (on-autoloads!))
 
 ;; end of autoloads.el

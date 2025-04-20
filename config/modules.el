@@ -123,6 +123,8 @@
   (compile! (compile-unit* (*self-paths* :get :mod-spec)))
   (package-initialize)
   (package*-parse-spec! (*self-mod-spec*) (module-spec->* :remove-unused))
+  ;; clean dumb hooks
+  (set 'after-init-hook nil)
   t)
 
 ;; end of package*
