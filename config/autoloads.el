@@ -157,6 +157,12 @@
 ;; end of `load-conditional-modes!'
 
 (defun self-epilogue-init! ()
+  (when-graphic%
+    (when-platform% darwin
+      (when-fn% mac-process-deferred-apple-events nil
+        (mac-process-deferred-apple-events))
+      (when-fn% mac-mouse-wheel-mode mac-win
+        (mac-mouse-wheel-mode 1))))
   (condition-case err
       (prog1 t
         (compile! (compile-unit* (*self-paths* :get :epilogue))))
