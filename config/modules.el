@@ -35,16 +35,10 @@
   (setq% package-check-signature
          (module-spec->* :package-check-signature) package)
   (let ((archives (module-spec->* :package-archives)))
-    (when archives
-      (setq% package-archives archives package)))
-  (when-version%
-      <= 25.1
-    (setq% package-archive-priorities
-           `(list ("gnu" . 7)
-                  ("melpa-stable" . 5)
-                  ("melpa" . 3)
-                  ("nongnu" . 1))
-           package))
+    (and archives (setq package-archives archives)))
+  (when-var% package-archive-priorities package
+    (let ((priorities (module-spec->* :package-archive-priorities)))
+      (and priorities (setq package-archive-priorities priorities))))
   (package-refresh-contents))
 
 (defun package*-check-name (package)
@@ -118,7 +112,12 @@
     (setq custom-file (v-home! ".transient/packages.el")))
   ;; define package user dir
   (setq% package-user-dir package*-user-dir package)
-  (setq% package-gnupghome-dir (v-home! ".gnupg/") package)
+  ;; chmod .gnupg dir
+  (when-var% package-gnupghome-dir package
+    (eval-when-compile
+      (let ((d (v-home! ".gnupg/")))
+        (set-file-modes d #o700)
+        (setq package-gnupghome-dir d))))
   ;; load self :packages-spec
   (compile! (compile-unit* (*self-paths* :get :mod-spec)))
   (package-initialize)

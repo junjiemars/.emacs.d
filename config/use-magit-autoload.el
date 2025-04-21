@@ -14,7 +14,9 @@
 ;; avoid lower `transient-version' issue
 (eval-when-compile
   (when-feature% transient
-    (unload-feature 'transient t)
+    (condition-case _
+        (unload-feature 'transient t)
+      (error nil))
     (require 'transient)))
 
 ;;; add `magit' into `vc*-frontend'

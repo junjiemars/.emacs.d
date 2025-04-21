@@ -136,11 +136,14 @@
  `( :remove-unused nil
     :package-check-signature t          ; allow-unsigned
     :package-archives
-    (comment
-     (("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-      ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
-      ("melpa-stable" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
-      ("melpa" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
+    :package-archives
+    (("gnu" . "https://elpa.gnu.org/packages/")
+     ("melpa" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
+     ("nongnu" . "https://elpa.nongnu.org/nongnu/"))
+    :package-archive-priorities
+    ((gnu . 6)
+     (melpa . 3)
+     (nongnu . 1))
     :allowed ,(when-package% t)))
 
 ;; end of sample-self-env-spec.el
