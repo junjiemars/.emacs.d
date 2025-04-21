@@ -189,6 +189,8 @@
     (condition-case err
         (self-desktop-read!)
       (error (prog1 nil (message "self-desktop-read!: %s" err)))))
+  ;; clean dumb hooks
+  (set 'after-init-hook nil)
   ;; `load-path' versioned dirs
   (push! (v-home% "config/") load-path)
   (push! (v-home% "private/") load-path)
