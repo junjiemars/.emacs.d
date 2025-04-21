@@ -198,11 +198,11 @@ test_profile() {
                             (executable-find% "bash"))
        :allowed t))
 (*self-env-spec*
-  :put :edit
-  (list :tab-width 2
-        :narrow-to-region t
-        :delete-trailing-whitespace '(prog-mode)
-        :allowed t))
+ :put :edit
+ (list :tab-width 2
+       :narrow-to-region t
+       :delete-trailing-whitespace '(prog-mode)
+       :allowed t))
 (*self-env-spec*
  :put :key
  (list :modifier
@@ -211,7 +211,7 @@ test_profile() {
  :put :eshell
  (list :visual-commands '("mtr")
        :destroy-buffer-when-process-dies nil
-       :visual-subcommands nil ;; '(("git" "log"))
+       :visual-subcommands nil
        :visual-options nil
        :allowed t))
 (*self-env-spec*
@@ -221,15 +221,20 @@ test_profile() {
        :version 5
        :allowed nil))
 (*self-env-spec*
-  :put :module
-  (list :remove-unused nil
-        :package-check-signature nil
-        :package-archives
-       '(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-         ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
+ :put :module
+ (list :remove-unused nil
+       :package-check-signature nil
+       :package-archives
+       '(("gnu" . "https://elpa.gnu.org/packages/")
          ("melpa-stable" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
-         ("melpa" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))
-        :allowed $mod))
+         ("melpa" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+         ("nongnu" . "https://elpa.nongnu.org/nongnu/"))
+       :package-archive-priorities
+       '((gnu . 4)
+         (melpa-stable . 3)
+         (melpa . 2)
+         (nongnu . 1))
+       :allowed $mod))
 END
   echo "# cat <${_ENV_PRO_}"
   cat <"${_ENV_PRO_}"
