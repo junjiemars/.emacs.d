@@ -42,7 +42,7 @@
 (setq% ielm-history-file-name (v-home! ".ielm/history.eld") ielm)
 
 ;; `image-dired': where thumbnail images are stored
-(setq% image-dired-dir (v-home! ".dired/") image-dired)
+(setq% image-dired-dir (v-home! ".direds/") image-dired)
 
 ;; `multisession': where multisession variables stored
 (setq% multisession-directory (v-home! ".multisession/") multisession)
