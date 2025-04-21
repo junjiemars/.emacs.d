@@ -116,15 +116,20 @@ test_module() {
 (*self-paths* :put :env-spec nil)
 (*self-paths* :put :epilogue nil)
 (*self-env-spec*
-  :put :module
-  (list :remove-unused t
-        :package-check-signature nil
-        :package-archives
-       '(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-         ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
-         ("melpa-stable" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
-         ("melpa" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))
-        :allowed t))
+ :put :module
+ \`( :remove-unused t
+    :package-check-signature nil
+    :package-archives
+    '(("gnu" . "https://elpa.gnu.org/packages/")
+      ("melpa-stable" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
+      ("melpa" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+      ("nongnu" . "https://elpa.nongnu.org/nongnu/"))
+    :package-archive-priorities
+    '((gnu . 4)
+      (melpa-stable . 3)
+      (melpa . 2)
+      (nongnu . 1))
+    :allowed t))
 (*self-mod-spec*
  :put :lisp
  \`( :cond t
@@ -153,7 +158,7 @@ test_module() {
     :packages (v-mode)))
 (*self-mod-spec*
  :put :vcs
- \`( :cond ,(and (when-version% <= 24.4 t) (executable-find% "git"))
+ \`( :cond ,(when-version% <= 27.1 (executable-find% "git"))
     :packages ,(prog1 '(magit)
                  (set-default 'magit-define-global-key-bindings nil))
     :compile (,(compile-unit* (emacs-home* "config/use-magit.el") t)
