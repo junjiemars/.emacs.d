@@ -163,10 +163,11 @@
         (mac-process-deferred-apple-events))
       (when-fn% mac-mouse-wheel-mode mac-win
         (mac-mouse-wheel-mode 1))))
-  (condition-case err
-      (prog1 t
-        (compile! (compile-unit* (*self-paths* :get :epilogue))))
-    (error (prog1 nil (message "self-epilogue-init!: %s" err)))))
+  (when (*self-paths* :get :epilogue)
+    (condition-case err
+        (prog1 t
+          (compile! (compile-unit* (*self-paths* :get :epilogue))))
+      (error (prog1 nil (message "self-epilogue-init!: %s" err))))))
 
 ;; end of `self-epilogue-init!'
 
@@ -200,7 +201,6 @@
   ;; `load-path' versioned dirs
   (push! (v-home% "config/") load-path)
   (push! (v-home% "private/") load-path)
-  (when (*self-paths* :get :epilogue)
-    (make-thread* #'self-epilogue-init! (unless-interactive% t))))
+  (make-thread* #'self-epilogue-init! (unless-interactive% t)))
 
 ;; end of autoloads.el
