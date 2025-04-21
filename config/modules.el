@@ -41,17 +41,6 @@
       (and priorities (setq package-archive-priorities priorities))))
   (package-refresh-contents))
 
-(defun package*-check-name (package)
-  "Check PACKAGE is a symbol or a tar file."
-  (cond ((null package) nil)
-        ((symbolp package) (cons package nil))
-        ((and (stringp package)
-              (inhibit-file-name-handler (file-exists-p package)))
-         (cons (intern (string-match* "\\(.*\\)-[.0-9]+\\'"
-                                      (file-name-base* package) 1))
-               package))
-        (t nil)))
-
 (defun package*-delete! (package)
   "Delete PACKAGE."
   (when (and package (symbolp package))
@@ -71,10 +60,10 @@
               (setq xs (cons (number-to-string x) xs))))
           "."))))))
 
-(defun package*-install! (package &optional tar)
-  "Install PACKAGE optional via TAR."
-  (if tar
-      (package-install-file package)
+(defun package*-install! (package &optional file)
+  "Install PACKAGE optional via FILE."
+  (if file
+      (package-install-file file)
     (unless (*package-init-repo*)
       (package*-init-repo!)
       (*package-init-repo* t))
@@ -90,26 +79,26 @@
       (when (consp ss)
         (cond ((module-unit-spec->* ss :cond)
                (dolist (p (module-unit-spec->* ss :packages))
-                 (let ((ns (package*-check-name p))
-                       (cs (module-unit-spec->* ss :compile)))
-                   (when (consp ns)
-                     (let ((n (car ns)) (tar (cdr ns)))
-                       (cond ((package-installed-p n) nil)
-                             (t (package*-install! (if tar tar n) tar))))
-                     (and (consp cs) (apply #'compile! cs))))))
+                 (let ((n (if (consp p) (car p) p)))
+                   (and
+                    (cond ((and n (package-installed-p n)) t)
+                          ((and (cond ((consp p)
+                                       (and n (stringp (cdr p))
+                                            (package*-install! n (cdr p))))
+                                      (n (package*-install! n))))))
+                    (let ((cs (module-unit-spec->* ss :compile)))
+                      (and cs (apply #'compile! cs)))))))
               (remove-unused
                (dolist (p (module-unit-spec->* ss :packages))
-                 (let ((ns (package*-check-name p)))
-                   (when (consp ns)
-                     (let ((n (car ns)))
-                       (and (package-installed-p n)
-                            (package*-delete! n))))))))))))
+                 (let ((n (if (consp p) (car p) p)))
+                   (and n (package-installed-p n)
+                        (package*-delete! n))))))))))
 
 (defun self-module-init! ()
   "Initialize :package spec from \\=`*self-env-spec*\\='."
   (when-version%
       <= 25.1
-    (setq custom-file (v-home! ".transient/packages.el")))
+    (setq custom-file (v-home! ".gnupg/packages.el")))
   ;; define package user dir
   (setq% package-user-dir package*-user-dir package)
   ;; chmod .gnupg dir

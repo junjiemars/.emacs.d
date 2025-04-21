@@ -48,7 +48,8 @@
     ;; fix inconsistent `C-)' and `C-c )' behavior:#9
     ;; On Terminal mode, Ctrl+Shift combination can't send to Emacs
     (let ((map (make-sparse-keymap)))
-      (define-key map (kbd% "C-d") #'paredit-delete-char)
+      (when-fn% paredit-delete-char paredit
+        (define-key map (kbd% "C-d") #'paredit-delete-char))
       (define-key map (kbd% "DEL") #'paredit-backward-delete)
       (define-key map (kbd% "<deletechar>") #'paredit-forward-delete)
       (define-key map (kbd% "[") #'paredit-open-square)

@@ -10,9 +10,9 @@
 ;;; :common-lisp
 (*self-mod-spec*
  :put :common-lisp
- `( :cond ,(comment (or (executable-find% "sbcl")
-                        (executable-find% "ecl")
-                        (executable-find% "acl")))
+ `( :cond ,(comment (or (executable-find* "sbcl")
+                        (executable-find* "ecl")
+                        (executable-find* "acl")))
     :packages (slime)
     :compile (,(compile-unit* (emacs-home* "config/use-slime.el") t)
               ,(compile-unit* (emacs-home* "config/use-slime-autoload.el")))))
@@ -21,15 +21,23 @@
 (*self-mod-spec*
  :put :doc
  `( :cond nil
-    :packages (,(when% (executable-find% "gnuplot") 'gnuplot-mode)
-               ,(when-version% <= 24.3 'yasnippet)
-               markdown-mode
-               vlf)))
+    :packages (,(when% (executable-find* "gnuplot") 'gnuplot-mode)
+               ,(when-version% < 25.3 'yasnippet)
+               ,(if-version%
+                    <= 28.1
+                    'markdown-mode
+                  (if-version%
+                      <= 27.1
+                      `(markdown-mode
+                        . ,(emacs-home* "scratch/markdown-mode-2.6/"))
+                    `(markdown-mode
+                      . ,(emacs-home* "scratch/markdown-mode-2.5.el"))))
+               ,(when-version% < 25.3 'vlf))))
 
 ;;; :erlang
 (*self-mod-spec*
  :put :erlang
- `( :cond ,(comment (executable-find% "erlc"))
+ `( :cond ,(comment (executable-find* "erlc"))
     :packages (erlang)))
 
 ;;; :lisp
@@ -43,22 +51,22 @@
 ;;; :lua
 (*self-mod-spec*
  :put :lua
- `( :cond ,(comment (executable-find% "lua"))
+ `( :cond ,(comment (executable-find* "lua"))
     :packages (lua-mode)))
 
 ;;; :org
 (*self-mod-spec*
  :put :org
- `( :cond ,(comment (executable-find% "latex"))
-    :packages (auctex cdlatex ,(when-version% <= 25 'ox-reveal))
+ `( :cond ,(comment (executable-find* "latex"))
+    :packages (auctex cdlatex ,(when-version% < 25 'ox-reveal))
     :compile (,(compile-unit* (emacs-home* "config/use-org.el") t)
               ,(compile-unit* (emacs-home* "config/use-org-autoload.el")))))
 
 ;;; :rust
 (*self-mod-spec*
  :put :rust
- `( :cond ,(comment (and (executable-find% "rustc")
-                         (executable-find% "cargo")))
+ `( :cond ,(comment (and (executable-find* "rustc")
+                         (executable-find* "cargo")))
     :packages (rust-mode)
     :compile (,(compile-unit* (emacs-home* "config/use-rust.el") t)
               ,(compile-unit* (emacs-home* "config/use-rust-autoload.el")))))
@@ -66,13 +74,13 @@
 ;;; :scheme
 (*self-mod-spec*
  :put :scheme
- `( :cond ,(comment (and (when-version% <= 23.2 t)
-                         ;; Nore Emacs has builtin supports for Chez
-                         ;; scheme and gambitC scheme, and does not
-                         ;; need to install the dumb geiser.
-                         (or (executable-find% "racket")
-                             (executable-find% "chicken")
-                             (executable-find% "guile"))))
+ `( :cond ,(comment
+            ;; Nore Emacs has builtin supports for Chez
+            ;; scheme and gambitC scheme, and does not
+            ;; need to install the dumb geiser.
+            (or (executable-find* "racket")
+                (executable-find* "chicken")
+                (executable-find* "guile")))
     :packages  (geiser)
     :compile (,(compile-unit* (emacs-home* "config/use-geiser.el") t)
               ,(compile-unit* (emacs-home* "config/use-geiser-autoload.el")))))
@@ -80,20 +88,19 @@
 ;;; :swift
 (*self-mod-spec*
  :put :swift
- `( :cond ,(comment (executable-find% "swift"))
+ `( :cond ,(comment (executable-find* "swift"))
     :packages (swift-mode)))
 
 ;;; :vlang
 (*self-mod-spec*
  :put :vlang
- `( :cond ,(comment (executable-find% "v"))
+ `( :cond ,(comment (executable-find* "v"))
     :packages (v-mode)))
 
 ;;; :vcs
 (*self-mod-spec*
  :put :vcs
- `( :cond ,(comment (and (when-version% <= 27.1 t)
-                         (executable-find% "git")))
+ `( :cond ,(comment (when-version% <= 27.1 (executable-find* "git")))
     :packages ,(prog1 '(magit)
                  (set-default 'magit-define-global-key-bindings nil))
     :compile (,(compile-unit* (emacs-home* "config/use-magit.el") t)
@@ -113,7 +120,7 @@
 ;;; :zig
 (*self-mod-spec*
  :put :zig
- `( :cond ,(comment (executable-find% "zig"))
+ `( :cond ,(comment (executable-find* "zig"))
     :packages (zig-mode)))
 
 
