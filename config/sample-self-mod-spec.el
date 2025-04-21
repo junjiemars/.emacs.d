@@ -92,7 +92,7 @@
 ;;; :vcs
 (*self-mod-spec*
  :put :vcs
- `( :cond ,(comment (and (when-version% <= 24.4 t)
+ `( :cond ,(comment (and (when-version% <= 27.1 t)
                          (executable-find% "git")))
     :packages ,(prog1 '(magit)
                  (set-default 'magit-define-global-key-bindings nil))

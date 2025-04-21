@@ -153,12 +153,10 @@ No matter the declaration order, the executing order is:
          (declare-function self-module-init! (v-home%> "config/modules"))))))
 
 ;;; <4> epilogue
-  (compile!
-   (prog1
-       (compile-unit% (emacs-home* "config/autoloads.el"))
-     (autoload 'on-autoloads! (v-home%> "config/autoload"))))
+  (compile! (compile-unit% (emacs-home* "config/autoloads.el")))
   (if-interactive%
       (set 'after-init-hook `(on-autoloads!))
+    (declare-function on-autoloads! (v-home%> "config/autoload"))
     (on-autoloads!)))
 
 ;; end of boot

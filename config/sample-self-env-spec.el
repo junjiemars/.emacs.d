@@ -136,13 +136,14 @@
  `( :remove-unused nil
     :package-check-signature t          ; allow-unsigned
     :package-archives
-    :package-archives
     (("gnu" . "https://elpa.gnu.org/packages/")
-     ("melpa" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
+     ("melpa-stable" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
+     ("melpa" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
      ("nongnu" . "https://elpa.nongnu.org/nongnu/"))
     :package-archive-priorities
-    ((gnu . 6)
-     (melpa . 3)
+    ((gnu . 4)
+     (melpa-stable . 3)
+     (melpa . 2)
      (nongnu . 1))
     :allowed ,(when-package% t)))
 

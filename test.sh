@@ -283,7 +283,7 @@ END
 (progn\
   (setq debug-on-error t)\
   (load \"${_ROOT_}/init.el\")\
-  (reset-emacs t :8))\
+  (reset-emacs t :=))\
 "
 }
 
