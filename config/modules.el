@@ -74,7 +74,9 @@
               (package-install package t)
             (package-install package)))
         t)
-    (error (prog1 nil (message "Panic, package*-install!: %s" err)))))
+    (error (prog1 nil
+             (message "Panic, package*-install!(%s): %s"
+                      package err)))))
 
 (defun package*-parse-spec! (spec &optional remove-unused)
   "Parse SPEC, install, REMOVE-UNUSED packages."
