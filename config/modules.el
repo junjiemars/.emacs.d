@@ -62,15 +62,19 @@
 
 (defun package*-install! (package &optional file)
   "Install PACKAGE optional via FILE."
-  (if file
-      (package-install-file file)
-    (unless (*package-init-repo*)
-      (package*-init-repo!)
-      (*package-init-repo* t))
-    (if-version%
-        <= 25.0
-        (package-install package t)
-      (package-install package))))
+  (condition-case err
+      (progn
+        (if file
+            (package-install-file file)
+          (unless (*package-init-repo*)
+            (package*-init-repo!)
+            (*package-init-repo* t))
+          (if-version%
+              <= 25.0
+              (package-install package t)
+            (package-install package)))
+        t)
+    (error (prog1 nil (message "Panic, package*-install!: %s" err)))))
 
 (defun package*-parse-spec! (spec &optional remove-unused)
   "Parse SPEC, install, REMOVE-UNUSED packages."
@@ -79,16 +83,17 @@
       (when (consp ss)
         (setq ps (module-unit-spec->* ss :packages))
         (cond ((module-unit-spec->* ss :cond)
-               (dolist (p ps)
-                 (let ((n (if (consp p) (car p) p)) (cs nil))
-                   (and
-                    (cond ((and n (package-installed-p n)) t)
-                          ((and (cond ((consp p)
-                                       (and n (stringp (cdr p))
-                                            (package*-install! n (cdr p))))
-                                      (n (package*-install! n))))))
-                    (setq cs (module-unit-spec->* ss :compile))
-                    (and cs (apply #'compile! cs))))))
+               (let ((n nil) (f nil) (ns 0) (np 0) (cs nil))
+                 (dolist (p ps)
+                   (if (consp p)
+                       (setq n (car p) f (cdr p))
+                     (setq n p f nil))
+                   (and n (setq ns (1+ ns))
+                        (or (package-installed-p n) (package*-install! n f))
+                        (setq np (1+ np))))
+                 (and (= ns np)
+                      (setq cs (module-unit-spec->* ss :compile))
+                      (apply #'compile! cs))))
               (remove-unused
                (dolist (p ps)
                  (let ((n (if (consp p) (car p) p)))
