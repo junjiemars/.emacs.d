@@ -35,12 +35,6 @@
   (set-mark (point))
   (goto-char end))
 
-;; end of env
-
-;;;
-;; symbol
-;;;
-
 (defun symbol@* (&optional thing)
   "Return the string of THING at point."
   (if-region-active
@@ -50,6 +44,12 @@
           (setq mark-active nil)))
     (let ((ss (thing-at-point (or thing 'symbol))))
       (and ss (substring-no-properties ss)))))
+
+;; end of env
+
+;;;
+;; symbol
+;;;
 
 (defun mark-symbol@ (&optional _)
   "Mark the symbol at point."
@@ -64,16 +64,6 @@
 ;;;
 ;; string
 ;;;
-
-(defun string@* ()
-  "Return the string at point."
-  (if-region-active
-      (let ((ss (buffer-substring-no-properties
-                 (region-beginning) (region-end))))
-        (prog1 ss
-          (setq mark-active nil)))
-    (let ((ss (thing-at-point 'string)))
-      (and ss (substring-no-properties ss)))))
 
 (defun mark-string@ (&optional n)
   "Mark the partial string at point.\n
@@ -169,16 +159,6 @@ If prefix N is a number, killing forward or backward N sexps."
 ;;;
 ;; word
 ;;;
-
-(defun word@* ()
-  "Return the word at point."
-  (if-region-active
-      (let ((ss (buffer-substring-no-properties
-                 (region-beginning) (region-end))))
-        (prog1 ss
-          (setq mark-active nil)))
-    (let ((ss (thing-at-point 'word)))
-      (and ss (substring-no-properties ss)))))
 
 (defun word@ (&optional n)
   (let* ((n1 (or n 1))
@@ -298,16 +278,6 @@ If prefix N is non-nil, then forward or backward N functions."
 ;;;
 ;; filename
 ;;;
-
-(defun filename@* ()
-  "Return the filename at point."
-  (if-region-active
-      (let ((ss (buffer-substring-no-properties
-                 (region-beginning) (region-end))))
-        (prog1 ss
-          (setq mark-active nil)))
-    (let ((ss (thing-at-point 'filename)))
-      (and ss (substring-no-properties ss)))))
 
 (defun mark-filename@ (&optional _)
   "Mark filename at point."

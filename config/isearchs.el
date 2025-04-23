@@ -56,11 +56,11 @@
             ((char-equal ?s style)
              (isearch*--yank-string (symbol@*) "symbol"))
             ((char-equal ?w style)
-             (isearch*--yank-string (word@*) "word"))
+             (isearch*--yank-string (symbol@* 'word) "word"))
             ((char-equal ?f style)
-             (isearch*--yank-string (filename@*) "file"))
+             (isearch*--yank-string (symbol@* 'filename) "file"))
             ((char-equal ?q style)
-             (isearch*--yank-string (string@*) "quoted"))))))
+             (isearch*--yank-string (symbol@* 'string) "quoted"))))))
 
 
 (defun isearch*-backward (&optional style)

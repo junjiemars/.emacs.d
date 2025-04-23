@@ -293,7 +293,7 @@
 
 (defun cscope-find-files-including-this-file (what)
   (interactive (cscope--find-prompt "Find files #including this file: "
-                                    (filename@*)))
+                                    (symbol@* 'filename)))
   (cscope--find-command (concat "8" what)))
 
 (defun cscope-find-assignments-to-this-symbol (what)
