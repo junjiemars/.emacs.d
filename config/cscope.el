@@ -257,7 +257,7 @@
       (unless (or proc (eq 'run (condition-case _
                                     (process-status proc)
                                   (error nil))))
-        (user-error "%s" "No cscope living process found")))
+        (user-error "%s" "No cscope living process found, M-x run-cscope")))
     (cscope-send-command proc what)
     (when-fn% xref-push-marker-stack xref
       (xref-push-marker-stack))
