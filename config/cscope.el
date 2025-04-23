@@ -328,9 +328,13 @@
     (define-key keymap "" #'cscope-repl-send-input))
   (when (boundp 'c-mode-map)
     (cscope--find-define-keys c-mode-map))
+  (when (boundp 'c++-mode-map)
+    (cscope--find-define-keys c++-mode-map))
   (when-feature-treesit%
     (when (boundp 'c-ts-mode-map)
-      (cscope--find-define-keys c-ts-mode-map))))
+      (cscope--find-define-keys c-ts-mode-map))
+    (when (boundp 'c++-ts-mode-map)
+      (cscope--find-define-keys c++-ts-mode-map))))
 
 (defun run-cscope (&optional command-line)
   "Run a cscope REPL process, input and output via buffer *cscope*."
