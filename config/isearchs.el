@@ -33,6 +33,13 @@
                       (propertize "f" 'face 'minibuffer-prompt)
                       (propertize "q" 'face 'minibuffer-prompt)))))))
 
+(defun isearch*--yank-string (string style)
+  (if string
+      (isearch-yank-string string)
+    (message "%s: No %s at point"
+             (propertize "I-search" 'face 'minibuffer-prompt)
+             (propertize style 'face 'font-lock-warning-face))))
+
 ;; end of env
 
 (defun isearch*-forward (&optional style backward)
@@ -40,26 +47,20 @@
   (interactive (isearch*--prompt "I-search"))
   (let ((regexp-p (and style (or (char-equal ?r style)
                                  ;; suppose (r)egexp
-                                 (char-equal ?\r style))))
-        (bs nil) (ss nil))
+                                 (char-equal ?\r style)))))
     (cond (backward (isearch-backward regexp-p 1))
           (t (isearch-forward regexp-p 1)))
     (if-region-active
         (isearch-yank-x-selection)
       (cond ((null style) nil)
             ((char-equal ?s style)
-             (setq bs (bounds-of-thing-at-point 'symbol) ss "symbol"))
-            ((char-equal ?w style) (setq bs (word@) ss "word"))
+             (isearch*--yank-string (symbol@*) "symbol"))
+            ((char-equal ?w style)
+             (isearch*--yank-string (word@*) "word"))
             ((char-equal ?f style)
-             (setq bs (bounds-of-thing-at-point 'filename) ss "file"))
+             (isearch*--yank-string (filename@*) "file"))
             ((char-equal ?q style)
-             (setq bs (bounds-of-thing-at-point 'string) ss "quoted")))
-      (cond (bs (let ((marked (buffer-substring-no-properties
-                               (car bs) (cdr bs))))
-                  (and marked (isearch-yank-string marked))))
-            (ss (message "%s: No %s at point"
-                         (propertize "I-search" 'face 'minibuffer-prompt)
-                         (propertize ss 'face 'font-lock-warning-face)))))))
+             (isearch*--yank-string (string@*) "quoted"))))))
 
 
 (defun isearch*-backward (&optional style)

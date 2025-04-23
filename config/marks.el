@@ -8,8 +8,9 @@
 ;; commentary: mark or kill thing.
 ;;;;
 ;; naming:
-;;; 1. `xxx@' is function.
-;;; 2. `mark-xxx@' is command.
+;;; 1. `xxx@*' the string of thing
+;;; 2. `xxx@' the bounds of thing.
+;;; 3. `mark-xxx@' mark the thing
 ;;;;
 
 
@@ -63,6 +64,16 @@
 ;;;
 ;; string
 ;;;
+
+(defun string@* ()
+  "Return the string at point."
+  (if-region-active
+      (let ((ss (buffer-substring-no-properties
+                 (region-beginning) (region-end))))
+        (prog1 ss
+          (setq mark-active nil)))
+    (let ((ss (thing-at-point 'string)))
+      (and ss (substring-no-properties ss)))))
 
 (defun mark-string@ (&optional n)
   "Mark the partial string at point.\n
@@ -158,6 +169,16 @@ If prefix N is a number, killing forward or backward N sexps."
 ;;;
 ;; word
 ;;;
+
+(defun word@* ()
+  "Return the word at point."
+  (if-region-active
+      (let ((ss (buffer-substring-no-properties
+                 (region-beginning) (region-end))))
+        (prog1 ss
+          (setq mark-active nil)))
+    (let ((ss (thing-at-point 'word)))
+      (and ss (substring-no-properties ss)))))
 
 (defun word@ (&optional n)
   (let* ((n1 (or n 1))
@@ -279,7 +300,7 @@ If prefix N is non-nil, then forward or backward N functions."
 ;;;
 
 (defun filename@* ()
-  "Return the string of THING at point."
+  "Return the filename at point."
   (if-region-active
       (let ((ss (buffer-substring-no-properties
                  (region-beginning) (region-end))))

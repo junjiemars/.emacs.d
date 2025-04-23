@@ -41,8 +41,9 @@
 ;;; `marks'
 
 (autoload 'filename@* (v-home%> "config/marks"))
+(autoload 'string@* (v-home%> "config/marks"))
 (autoload 'symbol@* (v-home%> "config/marks"))
-(autoload 'word@ (v-home%> "config/marks"))
+(autoload 'word@* (v-home%> "config/marks"))
 (autoload 'kill-sexp@ (v-home%> "config/marks") nil t)
 (autoload 'kill-string@ (v-home%> "config/marks") nil t)
 (autoload 'kill-word@ (v-home%> "config/marks") nil t)
