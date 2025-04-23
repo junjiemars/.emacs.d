@@ -278,6 +278,16 @@ If prefix N is non-nil, then forward or backward N functions."
 ;; filename
 ;;;
 
+(defun filename@* ()
+  "Return the string of THING at point."
+  (if-region-active
+      (let ((ss (buffer-substring-no-properties
+                 (region-beginning) (region-end))))
+        (prog1 ss
+          (setq mark-active nil)))
+    (let ((ss (thing-at-point 'filename)))
+      (and ss (substring-no-properties ss)))))
+
 (defun mark-filename@ (&optional _)
   "Mark filename at point."
   (interactive)

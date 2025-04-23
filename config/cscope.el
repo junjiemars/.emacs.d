@@ -24,7 +24,8 @@
 (require 'compile)
 
 (eval-when-compile
-  (require 'ed (v-home%> "config/ed")))
+  (require 'ed (v-home%> "config/ed"))
+  (require 'marks (v-home%> "config/marks")))
 
 ;; end of require
 
@@ -46,9 +47,12 @@
   "The REPL process buffer of \\=`*cscope*\\='."
   (get-buffer-create* "*cscope*" t))
 
-(defun *cscope-find* ()
+(defun *cscope-find* (&optional no-create)
   "The output buffer of \\=`cscope-send-command\\='."
-  (get-buffer-create* "*find|cscope*" t))
+  (let ((name "*find|cscope*"))
+    (if no-create
+        (get-buffer name)
+      (get-buffer-create* name t))))
 
 
 (defun cscope--path-parse (command-line)
@@ -136,7 +140,7 @@
     (set-keymap-parent m compilation-minor-mode-map)
     (define-key m "n" #'cscope-next-error-no-select)
     (define-key m "p" #'cscope-prev-error-no-select)
-    (if (eq (*cscope-find*) (current-buffer))
+    (if (eq (*cscope-find* t) (current-buffer))
         (define-key m "g" nil)
       (define-key m "g" #'cscope-recompile))
     (use-local-map m)))
@@ -190,13 +194,13 @@
 
 ;;; cscope repl command
 
-(defun cscope-send-command (proc command)
+(defun cscope-send-command (proc command &optional echo)
   "Send COMMAND to cscope REPL."
   (let ((out (*cscope-find*)))
     (with-current-buffer out
       (fluid-let (buffer-read-only nil)
         (erase-buffer)
-        (comint-redirect-send-command-to-process command out proc t nil)
+        (comint-redirect-send-command-to-process command out proc echo nil)
         (cscope-mode))
       (define-key (current-local-map) "g" 'cscope-repl-recompile)
       (push! command *cscope--repl-recompile-history*)
@@ -204,7 +208,7 @@
            *cscope--repl-src-dir*))))
 
 (defun cscope-repl-simple-send (proc in)
-  (cscope-send-command proc in)
+  (cscope-send-command proc in t)
   (comint-snapshot-last-prompt))
 
 (defun cscope-repl-preoutput-filter (out)
@@ -240,8 +244,11 @@
 
 ;;; cscope-find*
 
-(defun cscope--find-prompt ()
-  (list (symbol@*)))
+(defun cscope--find-prompt (prompt &optional default-value)
+  (list (let ((s (or default-value (symbol@*))))
+          (if current-prefix-arg
+              (read-string prompt s)
+            s))))
 
 (defun cscope--find-command (what)
   (let* ((buf (*cscope*))
@@ -255,39 +262,40 @@
     (pop-to-buffer (*cscope-find*))))
 
 (defun cscope-find-this-c-symbol (what)
-  (interactive (cscope--find-prompt))
+  (interactive (cscope--find-prompt "Find this C symbol: "))
   (cscope--find-command (concat "0" what)))
 
 (defun cscope-find-this-function-definition (what)
-  (interactive (cscope--find-prompt))
+  (interactive (cscope--find-prompt "Find this function definition: "))
   (cscope--find-command (concat "1" what)))
 
 (defun cscope-find-functions-called-by-this-function (what)
-  (interactive (cscope--find-prompt))
+  (interactive (cscope--find-prompt "Find functions called by this function: "))
   (cscope--find-command (concat "2" what)))
 
 (defun cscope-find-functions-calling-this-function (what)
-  (interactive (cscope--find-prompt))
+  (interactive (cscope--find-prompt "Find functions calling this function: "))
   (cscope--find-command (concat "3" what)))
 
 (defun cscope-find-this-text-string (what)
-  (interactive (cscope--find-prompt))
+  (interactive (cscope--find-prompt "Find this text string: "))
   (cscope--find-command (concat "4" what)))
 
 (defun cscope-find-this-egrep-pattern (what)
-  (interactive "sfind this egrep pattern: ")
+  (interactive (cscope--find-prompt "Find this egrep pattern: "))
   (cscope--find-command (concat "6" what)))
 
 (defun cscope-find-this-file (what)
-  (interactive "sfind this file: ")
+  (interactive (cscope--find-prompt "Find this file: "))
   (cscope--find-command (concat "7" what)))
 
 (defun cscope-find-files-including-this-file (what)
-  (interactive "sfind files #including this file: ")
+  (interactive (cscope--find-prompt "Find files #including this file: "
+                                    (filename@*)))
   (cscope--find-command (concat "8" what)))
 
 (defun cscope-find-assignments-to-this-symbol (what)
-  (interactive (cscope--find-prompt))
+  (interactive (cscope--find-prompt "Find assignments to this symbol: "))
   (cscope--find-command (concat "9" what)))
 
 ;; end of cscope-find*
