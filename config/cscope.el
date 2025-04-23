@@ -11,6 +11,7 @@
 ;;; 3. `cscope-send-command', `[0,9]pattern' commands.
 ;;; 4. `cscope-repl-mode' redirect.
 ;;; 5. re-cscope.
+;;; 6. cscope-find-[0,9] commands in `c-mode'.
 ;;;;
 ;; references:
 ;;; 1. https://cscope.sourceforge.net/
@@ -78,6 +79,12 @@
          (concat *cscope--src-dir* file))
         (t file)))
 
+(defun cscope--run-prompt ()
+  (read-string-prompt
+   "Run cscope (like this): " '*cscope-history*
+   (format "cscope -dL -P %s -0"
+           (expand-file-name default-directory))))
+
 ;; end of `cscope-mode' env
 
 (defun cscope-recompile ()
@@ -96,7 +103,6 @@
 (defun cscope-prev-error-no-select (&optional n)
   (interactive "p")
   (cscope-next-error-no-select (- (or n 1))))
-
 
 (define-compilation-mode cscope-mode "cscope-mode"
   "A minor mode of \\=`compile\\='."
@@ -137,10 +143,7 @@
 
 (defun cscope (&optional command-line)
   "Run cscope with user-specified COMMAND-LINE."
-  (interactive (read-string-prompt
-                "Run cscope (like this): " '*cscope-history*
-                (format "cscope -dL -P %s -0"
-			                  (expand-file-name default-directory))))
+  (interactive (cscope--run-prompt))
   (setq *cscope--src-dir* (cscope--path-parse command-line))
   (let ((default-directory (or *cscope--src-dir* default-directory)))
     ;; or using `cd <dir> && cscope <args...>'
@@ -163,6 +166,11 @@
 (defvar *cscope--repl-redirect* nil
   "Redirect? to \\=`*cscope-find*\\='buffer.")
 
+(defun cscope--repl-run-prompt ()
+  (read-string-prompt
+   "Run cscope: " '*cscope-repl-history*
+   (format "-dl -P %s " (expand-file-name default-directory))))
+
 (defun cscope--repl-parse-filename (file)
   (cond ((file-exists-p file) file)
         ((and (> (length *cscope--repl-src-dir*) 0)
@@ -179,6 +187,8 @@
     (force-mode-line-update)))
 
 ;; end of cscope-repl env
+
+;;; cscope repl command
 
 (defun cscope-send-command (proc command)
   "Send COMMAND to cscope REPL."
@@ -226,6 +236,62 @@
                (car *cscope--repl-recompile-history*))))
     (and cmd (cscope-send-command (get-buffer-process (*cscope*)) cmd))))
 
+;; cscope repl command
+
+;;; cscope-find*
+
+(defun cscope--find-prompt ()
+  (list (symbol@*)))
+
+(defun cscope--find-command (what)
+  (let* ((buf (*cscope*))
+         (proc (get-buffer-process buf)))
+    (with-current-buffer buf
+      (unless (or proc (eq 'run (condition-case _
+                                    (process-status proc)
+                                  (error nil))))
+        (user-error "%s" "No cscope living process found")))
+    (cscope-send-command proc what)
+    (pop-to-buffer (*cscope-find*))))
+
+(defun cscope-find-this-c-symbol (what)
+  (interactive (cscope--find-prompt))
+  (cscope--find-command (concat "0" what)))
+
+(defun cscope-find-this-function-definition (what)
+  (interactive (cscope--find-prompt))
+  (cscope--find-command (concat "1" what)))
+
+(defun cscope-find-functions-called-by-this-function (what)
+  (interactive (cscope--find-prompt))
+  (cscope--find-command (concat "2" what)))
+
+(defun cscope-find-functions-calling-this-function (what)
+  (interactive (cscope--find-prompt))
+  (cscope--find-command (concat "3" what)))
+
+(defun cscope-find-this-text-string (what)
+  (interactive (cscope--find-prompt))
+  (cscope--find-command (concat "4" what)))
+
+(defun cscope-find-this-egrep-pattern (what)
+  (interactive "sfind this egrep pattern: ")
+  (cscope--find-command (concat "6" what)))
+
+(defun cscope-find-this-file (what)
+  (interactive "sfind this file: ")
+  (cscope--find-command (concat "7" what)))
+
+(defun cscope-find-files-including-this-file (what)
+  (interactive "sfind files #including this file: ")
+  (cscope--find-command (concat "8" what)))
+
+(defun cscope-find-assignments-to-this-symbol (what)
+  (interactive (cscope--find-prompt))
+  (cscope--find-command (concat "9" what)))
+
+;; end of cscope-find*
+
 (define-derived-mode cscope-repl-mode comint-mode "REPL"
   "Major mode for a cscope REPL process."
   (setq comint-prompt-regexp "^>> "
@@ -236,13 +302,23 @@
             #'cscope-repl-preoutput-filter nil 'local)
   (let ((keymap (current-local-map)))
     (define-key keymap ">" #'cscope-repl-toggle-redirect!)
-    (define-key keymap "" #'cscope-repl-send-input)))
+    (define-key keymap "" #'cscope-repl-send-input))
+  (when (boundp 'c-mode-map)
+    (define-key c-mode-map "0" #'cscope-find-this-c-symbol)
+    (define-key c-mode-map "1" #'cscope-find-this-function-definition)
+    (define-key c-mode-map "2"
+                #'cscope-find-functions-called-by-this-function)
+    (define-key c-mode-map "3"
+                #'cscope-find-functions-calling-this-function)
+    (define-key c-mode-map "4" #'cscope-find-this-text-string)
+    (define-key c-mode-map "6" #'cscope-find-this-egrep-pattern)
+    (define-key c-mode-map "7" #'cscope-find-this-file)
+    (define-key c-mode-map "8" #'cscope-find-files-including-this-file)
+    (define-key c-mode-map "9" #'cscope-find-assignments-to-this-symbol)))
 
 (defun run-cscope (&optional command-line)
   "Run a cscope REPL process, input and output via buffer *cscope*."
-  (interactive (read-string-prompt
-                "Run cscope: " '*cscope-repl-history*
-                (format "-dl -P %s " (expand-file-name default-directory))))
+  (interactive (cscope--repl-run-prompt))
   (unless (comint-check-proc (*cscope*))
     (unless (executable-find* "cscope")
       (error "%s" "No cscope program found"))
