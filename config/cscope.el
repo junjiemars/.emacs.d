@@ -259,6 +259,8 @@
                                   (error nil))))
         (user-error "%s" "No cscope living process found")))
     (cscope-send-command proc what)
+    (when-fn% xref-push-marker-stack xref
+      (xref-push-marker-stack))
     (pop-to-buffer (*cscope-find*))))
 
 (defun cscope-find-this-c-symbol (what)
