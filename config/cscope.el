@@ -298,6 +298,19 @@
   (interactive (cscope--find-prompt "Find assignments to this symbol: "))
   (cscope--find-command (concat "9" what)))
 
+(defun cscope--find-define-keys (keymap)
+  (define-key keymap "0" #'cscope-find-this-c-symbol)
+  (define-key keymap "1" #'cscope-find-this-function-definition)
+  (define-key keymap "2"
+              #'cscope-find-functions-called-by-this-function)
+  (define-key keymap "3"
+              #'cscope-find-functions-calling-this-function)
+  (define-key keymap "4" #'cscope-find-this-text-string)
+  (define-key keymap "6" #'cscope-find-this-egrep-pattern)
+  (define-key keymap "7" #'cscope-find-this-file)
+  (define-key keymap "8" #'cscope-find-files-including-this-file)
+  (define-key keymap "9" #'cscope-find-assignments-to-this-symbol))
+
 ;; end of cscope-find*
 
 (define-derived-mode cscope-repl-mode comint-mode "REPL"
@@ -312,17 +325,10 @@
     (define-key keymap ">" #'cscope-repl-toggle-redirect!)
     (define-key keymap "" #'cscope-repl-send-input))
   (when (boundp 'c-mode-map)
-    (define-key c-mode-map "0" #'cscope-find-this-c-symbol)
-    (define-key c-mode-map "1" #'cscope-find-this-function-definition)
-    (define-key c-mode-map "2"
-                #'cscope-find-functions-called-by-this-function)
-    (define-key c-mode-map "3"
-                #'cscope-find-functions-calling-this-function)
-    (define-key c-mode-map "4" #'cscope-find-this-text-string)
-    (define-key c-mode-map "6" #'cscope-find-this-egrep-pattern)
-    (define-key c-mode-map "7" #'cscope-find-this-file)
-    (define-key c-mode-map "8" #'cscope-find-files-including-this-file)
-    (define-key c-mode-map "9" #'cscope-find-assignments-to-this-symbol)))
+    (cscope--find-define-keys c-mode-map))
+  (when-feature-treesit%
+    (when (boundp 'c-ts-mode-map)
+      (cscope--find-define-keys c-ts-mode-map))))
 
 (defun run-cscope (&optional command-line)
   "Run a cscope REPL process, input and output via buffer *cscope*."
