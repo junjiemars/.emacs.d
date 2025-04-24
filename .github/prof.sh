@@ -6,7 +6,7 @@ PROF_FILE="$1"
 if [ -f "$PROF_FILE" ]; then
   printf "# profile: elspsed time\n# ------------\n"
   awk -f ${PROF_ROOT}/elapsed.awk "$PROF_FILE" \
-      | sort -k1nr -k2nr -k3nr
+    | sort -k1nr -k2nr -k3nr
   printf "# profile: elapsed real time\n# ------------\n"
   awk -f ${PROF_ROOT}/elapsed.awk "$PROF_FILE" \
     | sort -k4nr -k1nr -k2nr

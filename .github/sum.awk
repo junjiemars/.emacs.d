@@ -4,9 +4,9 @@
 #
 
 /^[0-9]+\.[0-9]+/ {
-    elapsed_time += $1;
-    gc_count += $2;
-    gc_elapsed += $3;
+    elapsed_time += $1
+    gc_count += $2
+    gc_elapsed += $3
 }
 
 END {
