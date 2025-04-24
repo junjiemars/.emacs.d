@@ -331,16 +331,16 @@
     (define-key keymap ">" #'cscope-repl-toggle-redirect!)
     (define-key keymap "" #'cscope-repl-send-input))
   (with-eval-after-load 'cc-mode
-    (when-var% c-mode-map cc-mode
-      (cscope--find-define-keys c-mode-map))
-    (when-var% c++-mode-map cc-mode
-      (cscope--find-define-keys c++-mode-map)))
+    (and (boundp 'c-mode-map)
+         (cscope--find-define-keys c-mode-map))
+    (and (boundp 'c++-mode-map)
+         (cscope--find-define-keys c++-mode-map)))
   (when-feature-treesit%
     (with-eval-after-load 'c-ts-mode
-      (when-var% c-ts-mode-map c-ts-mode
-        (cscope--find-define-keys c-ts-mode-map))
-      (when-var% c++-ts-mode-map c-ts-mode
-        (cscope--find-define-keys c++-ts-mode-map)))))
+      (and (boundp 'c-ts-mode-map)
+           (cscope--find-define-keys c-ts-mode-map))
+      (and (boundp 'c++-ts-mode-map)
+           (cscope--find-define-keys c++-ts-mode-map)))))
 
 (defun run-cscope (&optional command-line)
   "Run a cscope REPL process, input and output via buffer *cscope*."
