@@ -24,8 +24,8 @@
 
 (eval-when-compile
   (require 'ed (v-home%> "config/ed"))
-  (require 'tags (v-home%> "config/tags"))
   (require 'ssh (v-home%> "config/ssh"))
+  (require 'tags (v-home%> "config/tags"))
 
   (defmacro when-fn-ff-find-other-file% (&rest body)
     (if-fn% ff-find-other-file find-file
@@ -72,10 +72,13 @@
                ((and cmd (eq cmd :gcc)) "gcc")
                ((and cmd (eq cmd :msvc)) "msvc")))))
 
-;; end of env
-
 (defvar *cc-option-history* nil
   "History list for C compiler\\='s option.")
+
+(defun cc*--option-prompt ()
+  (read-string-prompt "Input C compiler's option: " '*cc-option-history*))
+
+;; end of env
 
 ;;;
 ;; msvc host environment
@@ -220,8 +223,7 @@
       (let ((pair (cc*--include-file remote)))
         (or (plist-get dx (car pair))
             (plist-get
-             (setq dx (plist-put dx (car pair)
-                                 (cc*--include-read remote t)))
+             (setq dx (plist-put dx (car pair) (cc*--include-read remote t)))
              (car pair))))))
   "Return a list of system include directories.\n
 The REMOTE argument from \\=`ssh-remote-p\\='.")
@@ -238,7 +240,8 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
                              (string-trim> (path- pwd) "/"))))
                    (cc*-system-include (ssh-remote-p file))))
           find-file)
-   (xref-push-marker-stack)
+   (when-fn% xref-push-marker-stack xref
+     (xref-push-marker-stack))
    (ff-find-other-file in-other-window nil)))
 
 ;; end of #include
@@ -262,8 +265,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 
 (defun cc*-define-dump (&optional option)
   "Dump #define."
-  (interactive
-   (read-string-prompt "Input C compiler's option: " '*cc-option-history* ))
+  (interactive (cc*--option-prompt))
   (let* ((remote (ssh-remote-p (buffer-file-name (current-buffer))))
          (cc (if remote :cc (cc*-cc)))
          (cmd (format (cc-spec->* cc :define) (or option "")))
@@ -298,8 +300,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 
 (defun cc*-macro-expand (&optional option)
   "Expand macro."
-  (interactive
-   (read-string-prompt "Input C compiler's option: " '*cc-option-history*))
+  (interactive (cc*--option-prompt))
   (let* ((remote (ssh-remote-p (buffer-file-name (current-buffer))))
          (cc (if remote :cc (cc*-cc)))
          (cmd (format (cc-spec->* cc :macro) (or option "")))
@@ -523,10 +524,8 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
     ;; indent line or region
     (when-fn% c-indent-line-or-region cc-cmds
       (define-key% c-mode-map (kbd "TAB") #'c-indent-line-or-region)))
-  (when (boundp 'c-mode-map)
-    (cc*-define-keys c-mode-map))
-  (when (boundp 'c++-mode-map)
-    (cc*-define-keys c++-mode-map)))
+  (and (boundp 'c-mode-map) (cc*-define-keys c-mode-map))
+  (and (boundp 'c++-mode-map) (cc*-define-keys c++-mode-map)))
 
 ;; end of `cc-mode'
 
@@ -537,10 +536,8 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 (when-feature-treesit%
   (defun on-c-ts-mode-init! ()
     "On \\=`c-ts-mode\\=' initialization."
-    (when (boundp 'c-ts-mode-map)
-      (cc*-define-keys c-ts-mode-map))
-    (when (boundp 'c++-ts-mode-map)
-      (cc*-define-keys c++-ts-mode-map))))
+    (and (boundp 'c-ts-mode-map) (cc*-define-keys c-ts-mode-map))
+    (and (boundp 'c++-ts-mode-map) (cc*-define-keys c++-ts-mode-map))))
 
 ;; end of `c-ts-mode'
 
