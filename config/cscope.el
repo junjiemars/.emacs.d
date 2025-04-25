@@ -7,7 +7,7 @@
 ;;;;
 ;; features:
 ;;; 1. one-shot `cscope -L' `compile' command.
-;;; 2. `run-cscope' REPL with `cscope -l' using `comint'.
+;;; 2. `run-cscope' REPL `comint' with `cscope -l' line-oriented.
 ;;; 3. `cscope-send-command', `[0,9]pattern' commands.
 ;;; 4. `cscope-repl-mode' redirect.
 ;;; 5. re-cscope.
@@ -244,7 +244,7 @@
   (let ((cmd (if current-prefix-arg
                  (read-string "cscope Find: "
                               (car *cscope--repl-recompile-history*)
-                              '*cscope-repl--cmd-history*)
+                              '*cscope--repl-recompmile-history*)
                (car *cscope--repl-recompile-history*))))
     (and cmd (cscope-send-command (get-buffer-process (*cscope*)) cmd))))
 
