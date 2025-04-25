@@ -128,11 +128,11 @@
     (set (make-local-variable 'compilation-mode-line-errors)
          `(" [" (:propertize
                  (:eval (number-to-string compilation-num-errors-found))
-						     face compilation-error
+                 face compilation-error
                  help-echo "Number of errors so far")
            " " (:propertize
                 (:eval (number-to-string compilation-num-infos-found))
-						    face compilation-warning
+                face compilation-warning
                 help-echo "Number of warnings so far")
            " " (:propertize
                 (:eval (number-to-string compilation-num-warnings-found))
@@ -201,7 +201,7 @@
 ;;; cscope repl command
 
 (defun cscope-send-command (proc command &optional echo)
-  "Send COMMAND to cscope REPL."
+  "Send COMMAND to cscope REPL PROC."
   (let ((out (*cscope-find*)))
     (with-current-buffer out
       (fluid-let (buffer-read-only nil)
@@ -230,6 +230,7 @@
         (t out)))
 
 (defun cscope-repl-send-input (&optional _ __)
+  "Send input to process."
   (interactive)
   (cond (*cscope--repl-redirect*
          (let ((comint-input-sender #'cscope-repl-simple-send))
@@ -246,6 +247,12 @@
                               '*cscope-repl--cmd-history*)
                (car *cscope--repl-recompile-history*))))
     (and cmd (cscope-send-command (get-buffer-process (*cscope*)) cmd))))
+
+(defun cscope-repl-delete-output ()
+  "Delete all output or last input."
+  (interactive)
+  (cond (*cscope--repl-redirect* (call-interactively 'comint-kill-input))
+        (t (call-interactively 'comint-delete-output))))
 
 ;; cscope repl command
 
@@ -333,7 +340,8 @@
             #'cscope-repl-preoutput-filter nil 'local)
   (let ((keymap (current-local-map)))
     (define-key keymap ">" #'cscope-repl-toggle-redirect!)
-    (define-key keymap "" #'cscope-repl-send-input))
+    (define-key keymap "" #'cscope-repl-send-input)
+    (define-key keymap "" #'cscope-repl-delete-output))
   (with-eval-after-load 'cc-mode
     (and (boundp 'c-mode-map)
          (cscope--find-define-keys c-mode-map))
