@@ -89,7 +89,7 @@
 (defun cscope--run-prompt ()
   (read-string-prompt
    "Run cscope (like this): " '*cscope-history*
-   (format "cscope -dL -P %s -0"
+   (format "cscope -dqL -P %s -0"
            (expand-file-name default-directory))))
 
 ;; end of `cscope-mode' env
@@ -176,7 +176,7 @@
 (defun cscope--repl-run-prompt ()
   (read-string-prompt
    "Run cscope: " '*cscope-repl-history*
-   (format "-dl -P %s " (expand-file-name default-directory))))
+   (format "-dql -P %s " (expand-file-name default-directory))))
 
 (defun cscope--repl-parse-filename (file)
   (cond ((file-exists-p file) file)
@@ -193,6 +193,9 @@
           mode-name (if new "REPL>" "REPL"))
     (force-mode-line-update)))
 
+(defun cscope--repl-echo-shadow (str)
+  (propertize str 'font-lock-face 'shadow))
+
 ;; end of cscope-repl env
 
 ;;; cscope repl command
@@ -203,6 +206,7 @@
     (with-current-buffer out
       (fluid-let (buffer-read-only nil)
         (erase-buffer)
+        (insert (cscope--repl-echo-shadow (concat command "\n")))
         (comint-redirect-send-command-to-process command out proc echo nil)
         (cscope-mode))
       (define-key (current-local-map) "g" 'cscope-repl-recompile)
@@ -221,7 +225,7 @@
            (if (and in (string-match
                         "^\\(cscope:\\|Unable to search\\) .*$"
                         in 0))
-               (concat (propertize in 'font-lock-face 'shadow) ">> ")
+               (concat (cscope--repl-echo-shadow in) ">> ")
              "")))
         (t out)))
 
