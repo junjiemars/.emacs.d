@@ -6,79 +6,62 @@
 ;; treesits.el
 ;;;;
 
+;;; require
+
 (require 'treesit)
 
+;; end of require
+
 (defalias 'treesit*-recipe
-  (let ((b (v-home% ".exec/treesit-settings.el"))
-        (m '((:lang cpp
-                    :mode c++-mode
-                    :url "https://github.com/tree-sitter/tree-sitter-cpp"
-                    :map c++-ts-mode)
-             (:lang c
-                    :mode c-mode
-                    :url "https://github.com/tree-sitter/tree-sitter-c"
-                    :map c-ts-mode)
-             (:lang c-or-c++
-                    :mode c-or-c++-mode
-                    :map c-or-c++-ts-mode)
-             (:lang python
-                    :mode python-mode
-                    :url "https://github.com/tree-sitter/tree-sitter-python"
-                    :map python-ts-mode))))
-    (lambda (&optional op sexp)
-      (cond ((and op (eq op :put)) (dolist (x sexp) (push! x m delete)))
-            ((and op (eq op :read)) (setq m (read-sexp-from-file b)))
-            ((and op (eq op :dump)) (when m (save-sexp-to-file m b)))
-            (t m))))
+  (let ((b (emacs-home% "config/treesit-recipe.el"))
+        (file (v-home% ".exec/treesit-recipe.el"))
+        (env nil))
+    (lambda (&optional op n)
+      (cond ((and op (eq op :file)) file)
+            ((and op (eq op :scratch)) b)
+            ((and op (eq op :save)) (and env (save-sexp-to-file env file)))
+            ((and n op (eq op :load)) (setq env n))
+            (t env))))
   "The \\=`treesit\\=' recipe.")
 
-(defun treesit*-on/off-check (recipe)
+(defun treesit*-on? ()
   "Return t if \\=`treesit\\=' is on, otherwise nil."
   (catch :br
-    (dolist (x recipe)
+    (dolist (x (treesit*-recipe) nil)
       (let ((m (plist-get x :map)))
-        (dolist (a major-mode-remap-alist)
-          (and (eq m (cdr a)) (throw :br t)))
-        (dolist (a auto-mode-alist)
-          (and (eq m (cdr a)) (throw :br t)))))))
+        (when (or (rassq m major-mode-remap-alist)
+                  (rassq m auto-mode-alist))
+          (throw :br t))))))
 
-(defun toggle-treesit! ()
+(defun treesit*--auto-mode-remap (recipe lhs rhs)
+  (dolist (a auto-mode-alist)
+    (dolist (x recipe)
+      (when (eq (cdr a) (plist-get x lhs))
+        (setcdr a (plist-get x rhs))))))
+
+(defun treesit*--major-mode-remap (recipe lhs rhs)
+  (setq% major-mode-remap-defaults nil)
+  (dolist (x recipe)
+    (let* ((lhv (plist-get x lhs))
+           (rhv (plist-get x rhs))
+           (r1 (assq lhv major-mode-remap-alist))
+           (r2 (assq rhv major-mode-remap-alist)))
+      (cond (r1 (setcdr r1 rhv))
+            (r2 (setcar r2 lhv) (setcdr r2 rhv))
+            (t (push! (cons lhv rhv) major-mode-remap-alist))))))
+
+(defun toggle-treesit! (&optional no-echo)
   "Toggle \\=`treesit\\=' on or off."
   (interactive)
-  (let* ((ts (treesit*-recipe))
-         (on (treesit*-on/off-check ts)))
-    (cond (on (setq auto-mode-alist
-                    (let ((as nil))
-                      (dolist (a auto-mode-alist (nreverse as))
-                        (unless (catch :br
-                                  (dolist (x ts)
-                                    (and (eq (plist-get x :map) (cdr a))
-                                         (throw :br t))))
-                          (setq as (cons a as)))))
-                    major-mode-remap-alist
-                    (let ((as nil))
-                      (dolist (a major-mode-remap-alist (nreverse as))
-                        (unless (catch :br
-                                  (dolist (x ts)
-                                    (and (eq (plist-get x :map) (cdr a))
-                                         (throw :br t))))
-                          (setq as (cons a as)))))
-                    treesit-language-source-alist nil))
-          (t (let ((aa (copy-sequence auto-mode-alist)))
-               (dolist (x ts)
-                 (let ((l1 (plist-get x :lang))
-                       (m1 (plist-get x :mode))
-                       (u1 (plist-get x :url))
-                       (r1 (plist-get x :map)))
-                   (when u1
-                     (push! (list l1 u1) treesit-language-source-alist delete))
-                   (push! (cons m1 r1) major-mode-remap-alist delete)
-                   (dolist (y auto-mode-alist)
-                     (and (eq (cdr y) m1)
-                          (push! (cons (car y) r1) aa)))))
-               (setq auto-mode-alist aa))))
+  (let ((ts (treesit*-recipe))
+        (on (treesit*-on?)))
+    (cond (on (treesit*--auto-mode-remap ts :map :mode)
+              (treesit*--major-mode-remap ts :map :mode))
+          (t (treesit*--auto-mode-remap ts :mode :map)
+             (treesit*--major-mode-remap ts :mode :map)))
     (when-interactive%
-      (message "treesit %s" (if on "off" "on")))))
+      (unless no-echo
+        (message "treesit %s" (if (treesit*-on?) "enabled" "disabled"))))))
 
 (when-version% > 30
   (defun treesit--install-language-grammar-1* (&rest args)
@@ -97,12 +80,16 @@
     (defadvice* '_treesit--install-language-grammar-1_
       'treesit--install-language-grammar-1
       #'treesit--install-language-grammar-1*))
-  ;;; `on-c-ts-mode-init!'
+  ;; load recipe
+  (let ((recipe (treesit*-recipe :file)))
+    (unless (file-exists-p recipe)
+      (copy-file (treesit*-recipe :scratch) recipe t))
+    (treesit*-recipe :load (read-sexp-from-file recipe)))
+  ;; `on-c-ts-mode-init!'
   (declare-function on-c-ts-mode-init! (v-home%> "config/cc"))
   (autoload 'on-c-ts-mode-init! (v-home%> "config/cc"))
   (with-eval-after-load 'c-ts-mode (on-c-ts-mode-init!))
-
-  ;;; `on-python-init!' for `python-ts-mode'
+  ;; `on-python-init!' for `python-ts-mode'
   (declare-function on-python-init! (v-home%> "config/pythons"))
   (autoload 'on-python-init! (v-home%> "config/pythons"))
   (with-eval-after-load 'python-ts-mode (on-python-init!)))
