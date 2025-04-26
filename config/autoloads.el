@@ -35,6 +35,10 @@
      (autoload 'some* (v-home%> "config/cls"))
      (unless-fn% take nil (autoload 'take (v-home%> "config/cls")))
      (autoload 'take-while (v-home%> "config/cls")))
+   (unless-graphic%
+     (prog1 (compile-unit% (emacs-home* "config/clipboard.el") t)
+       (declare-function on-clipboard-init! (v-home%> "config/clipboard"))
+       (autoload 'on-clipboard-init! (v-home%> "config/clipboard"))))
    (prog1 (compile-unit% (emacs-home* "config/ed.el") t)
      (autoload 'delete-line* (v-home%> "config/ed"))
      (autoload 'file-in-dirs-p (v-home%> "config/ed"))
@@ -81,19 +85,12 @@
      (autoload 'unmount-tags (v-home%> "config/tags") nil t))
    (prog1 (compile-unit% (emacs-home* "config/thingatpts.el") t)
      (declare-function on-thingatpt-init! (v-home%> "config/thingatpts"))
-     (autoload 'on-thingatpt-init! (v-home%> "config/thingatpts"))
-     (with-eval-after-load 'thingatpt
-       (make-thread* #'on-thingatpt-init!)))))
+     (autoload 'on-thingatpt-init! (v-home%> "config/thingatpts")))))
 
 (defun load-compiling-modes! ()
   "Load compiling modes."
   (compile!
    (compile-unit% (emacs-home* "config/cc.el") t)
-   (unless-graphic%
-     (prog1 (compile-unit% (emacs-home* "config/clipboard.el") t)
-       (declare-function on-clipboard-init! (v-home%> "config/clipboard"))
-       (autoload 'on-clipboard-init! (v-home%> "config/clipboard"))
-       (make-thread* #'on-clipboard-init!)))
    (prog1 (compile-unit% (emacs-home* "config/chez.el") t)
      (autoload 'chez-mode (v-home%> "config/chez") "Toggle chez mode." t)
      (autoload 'run-chez (v-home%> "config/chez") "Toggle chez process." t))
@@ -140,8 +137,7 @@
      (compile-unit% (emacs-home* "config/projects.el") t))
    (prog1 (compile-unit% (emacs-home* "config/progs.el") t)
      (declare-function on-progs-init! (v-home%> "config/progs"))
-     (autoload 'on-progs-init! (v-home%> "config/progs"))
-     (make-thread* #'on-progs-init!))
+     (autoload 'on-progs-init! (v-home%> "config/progs")))
    (compile-unit% (emacs-home* "config/pythons.el") t)
    (prog1 (compile-unit% (emacs-home* "config/scratch.el") t)
      (autoload 'scratch (v-home%> "config/scratch") "Scratch" t))
@@ -243,6 +239,10 @@
    ;; `windows'
    (compile-unit% (emacs-home* "config/windows.el"))
    ) ;; end of compile!
+  (with-eval-after-load 'thingatpt
+    (make-thread* #'on-thingatpt-init!))
+  (make-thread* #'on-clipboard-init!)
+  (make-thread* #'on-progs-init!)
   )
 ;; end of `load-conditional-modes!'
 
