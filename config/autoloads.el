@@ -241,7 +241,8 @@
    ) ;; end of compile!
   (with-eval-after-load 'thingatpt
     (make-thread* #'on-thingatpt-init!))
-  (make-thread* #'on-clipboard-init!)
+  (unless-graphic%
+    (make-thread* #'on-clipboard-init!))
   (make-thread* #'on-progs-init!)
   )
 ;; end of `load-conditional-modes!'
