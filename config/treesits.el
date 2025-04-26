@@ -58,6 +58,14 @@
 
 (defun treesit*--init! ()
   "On \\=`treesit\\=' initialization."
+  ;; `on-c-ts-mode-init!'
+  (declare-function on-c-ts-mode-init! (v-home%> "config/cc"))
+  (autoload 'on-c-ts-mode-init! (v-home%> "config/cc"))
+  (with-eval-after-load 'c-ts-mode (on-c-ts-mode-init!))
+  ;; `on-python-init!' for `python-ts-mode'
+  (declare-function on-python-init! (v-home%> "config/pythons"))
+  (autoload 'on-python-init! (v-home%> "config/pythons"))
+  (with-eval-after-load 'python-ts-mode (on-python-init!))
   ;; default load path
   (if-version%
       <= 30
@@ -67,20 +75,13 @@
     (defadvice* '_treesit--install-language-grammar-1_
       'treesit--install-language-grammar-1
       #'treesit--install-language-grammar-1*))
-  ;; `on-c-ts-mode-init!'
-  (declare-function on-c-ts-mode-init! (v-home%> "config/cc"))
-  (autoload 'on-c-ts-mode-init! (v-home%> "config/cc"))
-  (with-eval-after-load 'c-ts-mode (on-c-ts-mode-init!))
-  ;; `on-python-init!' for `python-ts-mode'
-  (declare-function on-python-init! (v-home%> "config/pythons"))
-  (autoload 'on-python-init! (v-home%> "config/pythons"))
-  (with-eval-after-load 'python-ts-mode (on-python-init!))
+  ;; load recipe
   (let ((recipe (treesit*-recipe :file)))
     (unless (file-exists-p recipe)
       (copy-file (treesit*-recipe :scratch) recipe t))
     (treesit*-recipe :load (read-sexp-from-file recipe))))
 
-(defun toggle-treesit! (&optional no-echo)
+(defun toggle-treesit! ()
   "Toggle \\=`treesit\\=' on or off."
   (interactive)
   (let ((ts (or (treesit*-recipe) (treesit*--init!)))
@@ -90,8 +91,7 @@
           (t (treesit*--auto-mode-remap ts :mode :map)
              (treesit*--major-mode-remap ts :mode :map)))
     (when-interactive%
-      (unless no-echo
-        (message "treesit %s" (if (treesit*-on?) "enabled" "disabled"))))))
+      (message "treesit %s" (if (treesit*-on?) "enabled" "disabled")))))
 
 
 
