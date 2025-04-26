@@ -51,21 +51,24 @@
                          ;; /* clang-format off */
                          (concat p ".clang-format")))))))))))
 
-(defalias 'eglot*-server-programs
-  (let ((f (v-home% ".exec/eglot-server.el"))
+(defalias 'eglot*-recipe
+  (let ((f (v-home% ".exec/eglot-recipe.el"))
         (b `((c-mode . ("clangd" "--header-insertion=never"))
              (c++-mode . ("clangd" ,(format "--query-driver=%s"
-                                            (executable-find* "c++")))))))
-    (lambda (&optional op sexp)
-      (cond ((and op (eq op :read)) (let ((s1 (read-sexp-from-file f)))
-                                      (dolist (x s1 s1)
-                                        (push! x b delete)
-                                        (push! x eglot-server-programs
-                                               delete))))
-            ((and op (eq op :save)) (save-sexp-to-file (or sexp b) f))
+                                            (executable-find* "c++"))))))
+        (env nil))
+    (lambda (&optional op n)
+      (cond ((and op (eq op :save)) (save-sexp-to-file (or env b) f))
             ((and op (eq op :file)) f)
-            (t b))))
+            ((and n op (eq op :load)) (setq env n))
+            (t env))))
   "The \\=`eglot-server-programs\\=' cache.")
+
+(defun eglot*--recipe-init! ()
+  (let ((recipe (eglot*-recipe :file)))
+    (unless (file-exists-p recipe)
+      (eglot*-recipe :save))
+    (eglot*-recipe :load (read-sexp-from-file recipe))))
 
 (defun eglot*-eldoc-no-builtins ()
   "Remove the builtin \\=`eldoc\\=' fns from \\=`eglot--managed-mode\\=' mode."
@@ -85,13 +88,14 @@
 
 (defun on-eglot-init! ()
   "On \\=`eglot\\=' initialization."
-  ;; load recipe
-  (or (eglot*-server-programs :read) (eglot*-server-programs))
+  ;; init recipe
+  (eglot*--recipe-init!)
   ;; most reduced `eldoc'
   (setq% eldoc-echo-area-use-multiline-p nil eldoc)
   ;; keys
   (define-key eglot-mode-map (kbd% "C-c M-c f") #'eglot-format-buffer)
-  (define-key eglot-mode-map (kbd% "C-c M-c r") #'eglot-rename))
+  (define-key eglot-mode-map (kbd% "C-c M-c r") #'eglot-rename)
+  t)
 
 
 

@@ -56,7 +56,7 @@
       (apply '_treesit--install-language-grammar-1_
              (append (list dir) (cdr args))))))
 
-(defun treesit*--init! ()
+(defun treesit*--recipe-init! ()
   "On \\=`treesit\\=' initialization."
   ;; `on-c-ts-mode-init!'
   (declare-function on-c-ts-mode-init! (v-home%> "config/cc"))
@@ -84,7 +84,7 @@
 (defun toggle-treesit! ()
   "Toggle \\=`treesit\\=' on or off."
   (interactive)
-  (let ((ts (or (treesit*-recipe) (treesit*--init!)))
+  (let ((ts (or (treesit*-recipe) (treesit*--recipe-init!)))
         (on (treesit*-on?)))
     (cond (on (treesit*--auto-mode-remap ts :map :mode)
               (treesit*--major-mode-remap ts :map :mode))
