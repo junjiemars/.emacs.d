@@ -138,9 +138,6 @@
    ;; on `transients'
    (when-feature% transient
      (compile-unit% (emacs-home* "config/on-transient-autoload.el")))
-   ;; on `treesits'
-   (when-feature-treesit%
-     (compile-unit% (emacs-home* "config/on-treesit-autoload.el")))
    ;; on `tramps'
    (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))
    ;; on `xrefs'

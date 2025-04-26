@@ -50,26 +50,13 @@
             (r2 (setcar r2 lhv) (setcdr r2 rhv))
             (t (push! (cons lhv rhv) major-mode-remap-alist))))))
 
-(defun toggle-treesit! (&optional no-echo)
-  "Toggle \\=`treesit\\=' on or off."
-  (interactive)
-  (let ((ts (treesit*-recipe))
-        (on (treesit*-on?)))
-    (cond (on (treesit*--auto-mode-remap ts :map :mode)
-              (treesit*--major-mode-remap ts :map :mode))
-          (t (treesit*--auto-mode-remap ts :mode :map)
-             (treesit*--major-mode-remap ts :mode :map)))
-    (when-interactive%
-      (unless no-echo
-        (message "treesit %s" (if (treesit*-on?) "enabled" "disabled"))))))
-
 (when-version% > 30
   (defun treesit--install-language-grammar-1* (&rest args)
     (let ((dir (car treesit-extra-load-path)))
       (apply '_treesit--install-language-grammar-1_
              (append (list dir) (cdr args))))))
 
-(defun on-treesit-init! ()
+(defun treesit*--init! ()
   "On \\=`treesit\\=' initialization."
   ;; default load path
   (if-version%
@@ -80,11 +67,6 @@
     (defadvice* '_treesit--install-language-grammar-1_
       'treesit--install-language-grammar-1
       #'treesit--install-language-grammar-1*))
-  ;; load recipe
-  (let ((recipe (treesit*-recipe :file)))
-    (unless (file-exists-p recipe)
-      (copy-file (treesit*-recipe :scratch) recipe t))
-    (treesit*-recipe :load (read-sexp-from-file recipe)))
   ;; `on-c-ts-mode-init!'
   (declare-function on-c-ts-mode-init! (v-home%> "config/cc"))
   (autoload 'on-c-ts-mode-init! (v-home%> "config/cc"))
@@ -92,7 +74,24 @@
   ;; `on-python-init!' for `python-ts-mode'
   (declare-function on-python-init! (v-home%> "config/pythons"))
   (autoload 'on-python-init! (v-home%> "config/pythons"))
-  (with-eval-after-load 'python-ts-mode (on-python-init!)))
+  (with-eval-after-load 'python-ts-mode (on-python-init!))
+  (let ((recipe (treesit*-recipe :file)))
+    (unless (file-exists-p recipe)
+      (copy-file (treesit*-recipe :scratch) recipe t))
+    (treesit*-recipe :load (read-sexp-from-file recipe))))
+
+(defun toggle-treesit! (&optional no-echo)
+  "Toggle \\=`treesit\\=' on or off."
+  (interactive)
+  (let ((ts (or (treesit*-recipe) (treesit*--init!)))
+        (on (treesit*-on?)))
+    (cond (on (treesit*--auto-mode-remap ts :map :mode)
+              (treesit*--major-mode-remap ts :map :mode))
+          (t (treesit*--auto-mode-remap ts :mode :map)
+             (treesit*--major-mode-remap ts :mode :map)))
+    (when-interactive%
+      (unless no-echo
+        (message "treesit %s" (if (treesit*-on?) "enabled" "disabled"))))))
 
 
 

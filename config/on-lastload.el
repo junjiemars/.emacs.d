@@ -145,4 +145,9 @@
 
 ;; end of `trans'
 
+;;; `treesits'
+(when-feature-treesit%
+  (autoload 'toggle-treesit! (v-home%> "config/treesits") nil t))
+;; end of `treesits'
+
 ;; end of on-afterload.el
