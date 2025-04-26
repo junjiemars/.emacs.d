@@ -712,10 +712,10 @@
   (should (equal '(1 2 3) (range 1 3 1))))
 
 (ert-deftest %j:cls:take ()
-  (should-not (take* 3 nil))
-  (should (equal '(1 2 3) (take* 3 (number-sequence 1 10 1))))
-  (should (= 3 (length (take* 3 (number-sequence 1 10 1)))))
-  (should (= 10 (length (take* 100 (number-sequence 1 10 1))))))
+  (should-not (take 3 nil))
+  (should (equal '(1 2 3) (take 3 (number-sequence 1 10 1))))
+  (should (= 3 (length (take 3 (number-sequence 1 10 1)))))
+  (should (= 10 (length (take 100 (number-sequence 1 10 1))))))
 
 (ert-deftest %j:cls:drop ()
   (should-not (drop 3 nil))
@@ -737,16 +737,16 @@
   (should (equal '(2) (take-while (lambda (x) (and (> x 1) (< x 3)))
                                   (number-sequence 1 10 1)))))
 
-(ert-deftest %j:cls:insert! ()
+(ert-deftest %j:cls:insert-at ()
   (should (equal '(X)
                  (let ((seq nil))
-                   (insert! 'X seq 0))))
+                   (insert-at 'X seq 0))))
   (should (equal '(X a b c d)
                  (let ((seq '(a b c d)))
-                   (insert! 'X seq 0))))
+                   (insert-at 'X seq 0))))
   (should (equal '(a X b c d)
                  (let ((seq '(a b c d)))
-                   (insert! 'X seq 1)))))
+                   (insert-at 'X seq 1)))))
 
 ;; end of `cls'
 

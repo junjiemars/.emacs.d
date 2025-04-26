@@ -65,9 +65,8 @@
 ;; seq
 ;;;
 
-(defmacro drop (n seq)
-  "Return rest sequence after drop the first N items in SEQ."
-  `(nthcdr ,n ,seq))
+(fset 'drop #'nthcdr)
+(fset 'range 'number-sequence)
 
 (defun drop-while (pred seq)
   "Return a sequence of items from SEQ drop while PRED is t."
@@ -98,9 +97,6 @@
         ((null (cdr seq)) (flatten (car seq)))
         (t (append (flatten (car seq)) (flatten (cdr seq))))))
 
-(defmacro range (from &optional to inc)
-  `(number-sequence ,from ,to ,inc))
-
 (unless-fn% take nil
   (defun take (n seq)
     "Return a sequence of the first N items in SEQ."
@@ -110,9 +106,6 @@
               n (1- n)
               seq (cdr seq)))
       (nreverse s))))
-
-(defmacro take* (n seq)
-  `(take ,n ,seq))
 
 (defun take-while (pred seq)
   "Return a sequence of items from SEQ just take while PRED is t."
