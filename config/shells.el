@@ -162,7 +162,7 @@ See \\=`setenv\\='."
                     (when (and (stringp p1) (file-exists-p p1))
                       (when cp-exec-path?
                         (push! p1 exec-path))
-                      (append! p1 paths t))))
+                      (append! p1 paths delete))))
                 (setq val (paths->var paths))))
             (push! (cons v val) vars)))))
     (*default-shell-env* :set! nil)
@@ -171,8 +171,8 @@ See \\=`setenv\\='."
       (let ((paths '()))
         (dolist (p exec-path)
           (and (and (stringp p) (file-exists-p p))
-               (append! p paths t)))
-        (append! (v-home% ".exec/") paths t)
+               (append! p paths delete)))
+        (append! (v-home% ".exec/") paths delete)
         (*default-shell-env* :put! :exec-path paths))))
   (save-sexp-to-file (*default-shell-env*) (shell-spec->* :file)))
 

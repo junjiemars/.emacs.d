@@ -118,7 +118,7 @@
       (while (re-search-forward in1 nil t)
         (let ((sym (buffer-substring-no-properties
                     (match-beginning 0) (match-end 0))))
-          (setq ss (append! sym ss t))))
+          (setq ss (append! sym ss delete))))
       ss)))
 
 (defun jshell-completion ()

@@ -58,18 +58,13 @@
                   (delq 'desktop--on-kill kill-emacs-hook)
             (delq 'desktop-kill kill-emacs-hook)))
 
-    ;; (if-var% kill-emacs-query-functions nil
-    ;;          (append! #'self-desktop-not-to-save kill-emacs-query-functions)
-    ;;   (append! #'self-desktop-not-to-save kill-emacs-hook))
-
     ;; remove unnecessary hooks of `kill-emacs-query-functions'
     (if-var% kill-emacs-query-functions nil
              (progn
                (setq kill-emacs-query-functions
                      (delq 'desktop-kill
                            kill-emacs-query-functions))
-               (append! #'self-desktop-save!
-                        kill-emacs-query-functions))
+               (append! #'self-desktop-save! kill-emacs-query-functions))
       (append! #'self-desktop-save! kill-emacs-hook)))
   t)
 

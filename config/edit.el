@@ -53,8 +53,7 @@
       (put 'narrow-to-page 'disabled nil))
 
     ;; `delete-trailing-whitespace' before save
-    (append! #'self-edit-env->delete-trailing-whitespace
-             before-save-hook)))
+    (append! #'self-edit-env->delete-trailing-whitespace before-save-hook)))
 
 ;; end of self-edit
 

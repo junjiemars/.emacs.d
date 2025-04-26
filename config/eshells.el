@@ -23,7 +23,7 @@
   (when (eshell-spec->* :allowed)
     (when-var% eshell-visual-commands eshell
       (dolist (x (eshell-spec->* :visual-commands))
-        (append! x eshell-visual-commands t)))
+        (append! x eshell-visual-commands delete)))
     (setq% eshell-destroy-buffer-when-process-dies
            (eshell-spec->* :destroy-buffer-when-process-dies) eshell)
     (setq% eshell-visual-subcommands

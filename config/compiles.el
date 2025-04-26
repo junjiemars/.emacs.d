@@ -42,7 +42,7 @@
                 compile-command
                 1)))
         (when (and d (file-exists-p d))
-          (push! d compilation-search-path t))))))
+          (push! d compilation-search-path delete))))))
 
 (defmacro compile*-command-name (command)
   "Return classified compile COMMAND name."

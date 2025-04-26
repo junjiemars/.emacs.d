@@ -26,7 +26,7 @@
                     :url "https://github.com/tree-sitter/tree-sitter-python"
                     :map python-ts-mode))))
     (lambda (&optional op sexp)
-      (cond ((and op (eq op :put)) (dolist (x sexp) (push! x m t)))
+      (cond ((and op (eq op :put)) (dolist (x sexp) (push! x m delete)))
             ((and op (eq op :read)) (setq m (read-sexp-from-file b)))
             ((and op (eq op :dump)) (when m (save-sexp-to-file m b)))
             (t m))))
@@ -71,8 +71,8 @@
                        (u1 (plist-get x :url))
                        (r1 (plist-get x :map)))
                    (when u1
-                     (push! (list l1 u1) treesit-language-source-alist t))
-                   (push! (cons m1 r1) major-mode-remap-alist t)
+                     (push! (list l1 u1) treesit-language-source-alist delete))
+                   (push! (cons m1 r1) major-mode-remap-alist delete)
                    (dolist (y auto-mode-alist)
                      (and (eq (cdr y) m1)
                           (push! (cons (car y) r1) aa)))))

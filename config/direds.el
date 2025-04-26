@@ -219,7 +219,8 @@
                             (if (multibyte-string-p x)
                                 (encode-coding-string x locale-coding-system)
                               x)
-                            fs t)))))
+                            fs
+                            delete)))))
         (funcall '_dired-shell-stuff-it_ command file-list on-each)))
 
     (defun dired-shell-command* (cmd)
@@ -262,7 +263,7 @@
                                            (aref x 0) locale-coding-system))))
                              (aset x 0 decode)
                              (aset x 2 (length decode))))
-                         (append! x fs t)))
+                         (append! x fs delete)))
                    files)))
       (funcall (symbol-function '_archive-summarize-files_) files))))
 

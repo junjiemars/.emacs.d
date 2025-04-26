@@ -57,7 +57,8 @@
                        (tramp-remote-shell "/bin/sh")
                        (tramp-remote-shell-login ("-l"))
                        (tramp-remote-shell-args ("-i" "-c")))
-                     ts t)))
+                     ts
+                     delete)))
       ;; completion for docker container
       (tramp-set-completion-function
        "docker"

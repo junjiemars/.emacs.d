@@ -59,8 +59,9 @@
     (lambda (&optional op sexp)
       (cond ((and op (eq op :read)) (let ((s1 (read-sexp-from-file f)))
                                       (dolist (x s1 s1)
-                                        (push! x b t)
-                                        (push! x eglot-server-programs t))))
+                                        (push! x b delete)
+                                        (push! x eglot-server-programs
+                                               delete))))
             ((and op (eq op :save)) (save-sexp-to-file (or sexp b) f))
             ((and op (eq op :file)) f)
             (t b))))
