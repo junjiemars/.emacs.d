@@ -39,13 +39,13 @@
    (compile-unit% (emacs-home* "config/chez.el") t)
    (compile-unit% (emacs-home* "config/cscope.el") t)
    (compile-unit% (emacs-home* "config/dict.el") t)
-   (compile-unit% (emacs-home* "config/direds.el") t)
    (compile-unit% (emacs-home* "config/financial.el") t)
    (compile-unit% (emacs-home* "config/isearchs.el") t)
    (compile-unit% (emacs-home* "config/jshell.el") t)
    (when-platform% windows-nt
      (compile-unit% (emacs-home* "config/gud-cdb.el") t))
    (compile-unit% (emacs-home* "config/gud-lldb.el") t)
+   (compile-unit% (emacs-home* "config/direds-ls.el") t)
    (compile-unit% (emacs-home* "config/node.el") t)
    (compile-unit% (emacs-home* "config/scratch.el") t)
    (compile-unit% (emacs-home* "config/sudoku.el") t)
@@ -74,7 +74,7 @@
      (compile-unit% (emacs-home* "config/ewws.el") t))
    (compile-unit% (emacs-home* "config/helps.el") t)
    (compile-unit% (emacs-home* "config/hippies.el") t)
-   (compile-unit% (emacs-home* "config/on-dired-autoload.el"))
+   (compile-unit% (emacs-home* "config/direds.el") t)
    (compile-unit% (emacs-home* "config/orgs.el") t)
    (when-feature% project
      (compile-unit% (emacs-home* "config/projects.el") t))
@@ -185,6 +185,10 @@
     (autoload 'gud-cdb (v-home%> "config/gud-cdb") "Run cdb." t))
   ;; `gud-lldb'
   (autoload 'gud-lldb (v-home%> "config/gud-lldb") "Run lldb." t)
+  ;; `direds-ls'
+  (declare-function on-direds-ls-init! (v-home%> "config/direds-ls"))
+  (autoload 'on-direds-ls-init! (v-home%> "config/direds-ls"))
+  (make-thread* #'on-direds-ls-init!)
   ;; `node'
   (autoload 'node-mode (v-home%> "config/node") "Toggle node mode." t)
   (autoload 'run-node (v-home%> "config/node") "Run node REPL." t)
@@ -246,6 +250,19 @@
     (make-thread* #'on-grep-init!))
   (with-eval-after-load 'make-mode
     (make-thread* #'on-make-mode-init!))
+  ;; `direds'
+  (declare-function on-dired-init! (v-home%> "config/direds"))
+  (declare-function on-dired-aux-init! (v-home%> "config/direds"))
+  (declare-function on-arc-mode-init! (v-home%> "config/direds"))
+  (autoload 'on-dired-init! (v-home%> "config/direds"))
+  (autoload 'on-dired-aux-init! (v-home%> "config/direds"))
+  (autoload 'on-arc-mode-init! (v-home%> "config/direds"))
+  (with-eval-after-load 'dired
+    (make-thread* #'on-dired-init!))
+  (with-eval-after-load 'dired-aux
+    (make-thread* #'on-dired-aux-init!))
+  (with-eval-after-load 'arc-mode
+    (make-thread* #'on-arc-mode-init!))
   ;; `docs'
   (when-platform% windows-nt
     (declare-function on-doc-view-init! (v-home%> "config/docs"))

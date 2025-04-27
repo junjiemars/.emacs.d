@@ -3,12 +3,8 @@
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; on-dired-autoload.el
+;; direds-ls.el
 ;;;;
-
-(autoload 'on-dired-init! (v-home%> "config/direds"))
-(autoload 'on-dired-aux-init! (v-home%> "config/direds"))
-(autoload 'on-arc-mode-init! (v-home%> "config/direds"))
 
 (defun dired*-use-ls-dired ()
   ;; prefer GNU's ls (--dired option) on Windows or Darwin. on
@@ -24,22 +20,14 @@
       (set-default 'dired-use-ls-dired nil)
       (set-default 'ls-lisp-use-insert-directory-program nil))))
 
-(if-version%
-    <= 28.1
-    (dired*-use-ls-dired)
-  (add-hook 'dired-load-hook #'dired*-use-ls-dired))
+(defun on-direds-ls-init! ()
+  (if-version%
+      <= 28.1
+      (dired*-use-ls-dired)
+    (add-hook 'dired-load-hook #'dired*-use-ls-dired)))
 
+;;
 
-;;; `dired' after load
-(with-eval-after-load 'dired
-  (make-thread* #'on-dired-init!))
+(provide 'direds-ls)
 
-;;; `dired-aux' after load
-(with-eval-after-load 'dired-aux
-  (make-thread* #'on-dired-aux-init!))
-
-;;; `arc-mode' after load
-(with-eval-after-load 'arc-mode
-  (make-thread* #'on-arc-mode-init!))
-
-;; end of on-dired-autoload.el
+;; end of direds-ls.el

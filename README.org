@@ -298,24 +298,6 @@ Introduce the rules of naming /files/ and /functions/.
 #+END_EXAMPLE
 
 #+REVEAL: split
-- /autoload extension/ for Emacs builtin packages:
-  =<package>.el=
-  =on-<package-name>-autoload.el=
-#+BEGIN_EXAMPLE
-    (emacs-home "config/")
-    ├── on-cc-autoload.el
-    ├── on-compile-autoload.el
-    ├── on-dired-autoload.el
-    ├── on-docview-autoload.el
-    ├── on-edit-autoload.el
-    ├── on-eglot-autoload.el
-    ├── on-trans-autoload.el
-    ├── on-shell-autoload.el
-    ├── on-eww-autoload.el
-    └── (comment "more ...")
-#+END_EXAMPLE
-
-#+REVEAL: split
 - /extension/ for /non/ Emacs builtin packages:
   =use-<package-name>.el=
   =use-<package-name>-autoload.el=
