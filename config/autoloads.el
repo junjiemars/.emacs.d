@@ -6,102 +6,64 @@
 ;; autoloads.el
 ;;;;
 
-;;; require
+;;; recast
+;; 1. config/ob-schemes.el: `ob-schemes', Org `ob' for Scheme.
+;; 2. config/mixal.el
+;; 3. config/mixvm.el
+;;
+;; end of recast
 
-;; (defalias '*org-babel-schemes*
-;;   (let ((i '()))
-;;     (lambda (&optional op key val)
-;;       (cond ((eq :get op) (plist-get i key))
-;;             ((eq :put op) (setq i (plist-put i key val)))
-;;             (t i))))
-;;   "The available Scheme's implementations for `ob'.")
+;;; abandoned
+;; 1. config/gambit.el: `gambit-mode'.
+;; 2. config/on-js-autoload.el.
+;;
+ ;; end of abandoned
 
-;; end of require
-
-(defun load-prologue-modes! ()
-  "Load prologue modes."
+(defun define-prologue-mode ()
+  "Define prologue modes."
   (compile!
-   (prog1 (compile-unit% (emacs-home* "config/cls.el") t)
-     (autoload 'assoc** (v-home%> "config/cls"))
-     (autoload 'drop (v-home%> "config/cls"))
-     (autoload 'every* (v-home%> "config/cls"))
-     (autoload 'insert-at (v-home%> "config/cls"))
-     ;; (autoload 'insert! (v-home%> "config/cls") nil nil 'macro)
-     (autoload 'loop* (v-home%> "config/cls"))
-     (autoload 'mapcar** (v-home%> "config/cls"))
-     (autoload 'member-if* (v-home%> "config/cls"))
-     (autoload 'remove-if* (v-home%> "config/cls"))
-     (autoload 'range (v-home%> "config/cls"))
-     (autoload 'some* (v-home%> "config/cls"))
-     (unless-fn% take nil (autoload 'take (v-home%> "config/cls")))
-     (autoload 'take-while (v-home%> "config/cls")))
+   (compile-unit% (emacs-home* "config/cls.el") t)
    (unless-graphic%
-     (prog1 (compile-unit% (emacs-home* "config/clipboard.el") t)
-       (declare-function on-clipboard-init! (v-home%> "config/clipboard"))
-       (autoload 'on-clipboard-init! (v-home%> "config/clipboard"))))
-   (prog1 (compile-unit% (emacs-home* "config/ed.el") t)
-     (autoload 'delete-line* (v-home%> "config/ed"))
-     (autoload 'file-in-dirs-p (v-home%> "config/ed"))
-     (autoload 'newline* (v-home%> "config/ed") nil t)
-     (autoload 'open-next-line (v-home%> "config/ed") nil t)
-     (autoload 'open-previous-line (v-home%> "config/ed") nil t)
-     (autoload 'read-string-prompt (v-home%> "config/ed"))
-     (autoload 'select-region-prompt (v-home%> "config/ed"))
-     (autoload 'vstrncmp (v-home%> "config/ed")))
-   (prog1 (compile-unit% (emacs-home* "config/marks.el") t)
-     (declare-function symbol@* (v-home%> "config/marks"))
-     (declare-function kill-sexp@ (v-home%> "config/marks") nil t)
-     (declare-function kill-string@ (v-home%> "config/marks") nil t)
-     (declare-function kill-word@ (v-home%> "config/marks") nil t)
-     (declare-function mark-defun@ (v-home%> "config/marks") nil t)
-     (declare-function mark-filename@ (v-home%> "config/marks") nil t)
-     (declare-function mark-line@ (v-home%> "config/marks") nil t)
-     (declare-function mark-sexp@ (v-home%> "config/marks") nil t)
-     (declare-function mark-string@ (v-home%> "config/marks") nil t)
-     (declare-function mark-symbol@ (v-home%> "config/marks") nil t)
-     (declare-function mark-word@ (v-home%> "config/marks") nil t)
-     (autoload 'symbol@* (v-home%> "config/marks"))
-     (autoload 'kill-sexp@ (v-home%> "config/marks") nil t)
-     (autoload 'kill-string@ (v-home%> "config/marks") nil t)
-     (autoload 'kill-word@ (v-home%> "config/marks") nil t)
-     (autoload 'mark-defun@ (v-home%> "config/marks") nil t)
-     (autoload 'mark-filename@ (v-home%> "config/marks") nil t)
-     (autoload 'mark-line@ (v-home%> "config/marks") nil t)
-     (autoload 'mark-sexp@ (v-home%> "config/marks") nil t)
-     (autoload 'mark-string@ (v-home%> "config/marks") nil t)
-     (autoload 'mark-symbol@ (v-home%> "config/marks") nil t)
-     (autoload 'mark-word@ (v-home%> "config/marks") nil t))
-   (prog1 (compile-unit% (emacs-home* "config/ssh.el") t)
-     (autoload 'ssh-remote-p (v-home%> "config/ssh"))
-     (autoload 'ssh-remote->ids (v-home%> "config/ssh"))
-     (autoload 'ssh-remote->user@host (v-home%> "config/ssh"))
-     (autoload 'ssh-remote-command (v-home%> "config/ssh")))
-   (prog1 (compile-unit% (emacs-home* "config/tags.el") t)
-     (autoload 'tags-spec->* (v-home%> "config/tags"))
-     (autoload 'make-c-tags (v-home%> "config/tags"))
-     (autoload 'make-dir-ctags (v-home%> "config/tags"))
-     (autoload 'make-dir-tags (v-home%> "config/tags") nil t)
-     (autoload 'mount-tags (v-home%> "config/tags") nil t)
-     (autoload 'unmount-tags (v-home%> "config/tags") nil t))
-   (prog1 (compile-unit% (emacs-home* "config/thingatpts.el") t)
-     (declare-function on-thingatpt-init! (v-home%> "config/thingatpts"))
-     (autoload 'on-thingatpt-init! (v-home%> "config/thingatpts")))))
+     (compile-unit% (emacs-home* "config/clipboard.el") t))
+   (compile-unit% (emacs-home* "config/ed.el") t)
+   (compile-unit% (emacs-home* "config/marks.el") t)
+   (compile-unit% (emacs-home* "config/ssh.el") t)
+   (compile-unit% (emacs-home* "config/tags.el") t)
+   (compile-unit% (emacs-home* "config/thingatpts.el") t)))
 
-(defun load-compiling-modes! ()
-  "Load compiling modes."
+;; end of `define-prologue-mode'
+
+(defun define-compile-only-mode ()
+  "Define compile-only modes."
+  (compile!
+   (compile-unit% (emacs-home* "config/chez.el") t)
+   (compile-unit% (emacs-home* "config/cscope.el") t)
+   (compile-unit% (emacs-home* "config/dict.el") t)
+   (compile-unit% (emacs-home* "config/direds.el") t)
+   (compile-unit% (emacs-home* "config/financial.el") t)
+   (compile-unit% (emacs-home* "config/isearchs.el") t)
+   (compile-unit% (emacs-home* "config/jshell.el") t)
+   (when-platform% windows-nt
+     (compile-unit% (emacs-home* "config/gud-cdb.el") t))
+   (compile-unit% (emacs-home* "config/gud-lldb.el") t)
+   (compile-unit% (emacs-home* "config/node.el") t)
+   (compile-unit% (emacs-home* "config/scratch.el") t)
+   (compile-unit% (emacs-home* "config/sudoku.el") t)
+   (compile-unit% (emacs-home* "config/trans.el") t)
+   (when-feature-treesit%
+     (compile-unit% (emacs-home* "config/treesits.el") t))
+   (when-feature-vc%
+     (compile-unit% (emacs-home* "config/vcs.el") t))
+   (unless-fn% recenter-top-bottom nil
+     (compile-unit% (emacs-home* "config/winmoves.el") t))))
+
+;; end of `define-compile-only-mode'
+
+(defun define-after-load-mode ()
+  "Load autoload modes."
   (compile!
    (compile-unit% (emacs-home* "config/cc.el") t)
-   (prog1 (compile-unit% (emacs-home* "config/chez.el") t)
-     (autoload 'chez-mode (v-home%> "config/chez") "Toggle chez mode." t)
-     (autoload 'run-chez (v-home%> "config/chez") "Toggle chez process." t))
    (compile-unit% (emacs-home* "config/compiles.el") t)
-   (prog1 (compile-unit% (emacs-home* "config/cscope.el") t)
-     (autoload 'cscope (v-home%> "config/cscope") "Run cscope." t)
-     (autoload 'run-cscope (v-home%> "config/cscope") "Run cscope REPL." t))
-   (prog1 (compile-unit% (emacs-home* "config/dict.el") t)
-     (autoload 'lookup-dict (v-home%> "config/dict") "Lookup dict." t)
-     (define-key (current-global-map) (kbd% "M-s d") 'lookup-dict))
-   (compile-unit% (emacs-home* "config/direds.el") t)
    (when-platform% windows-nt
      (compile-unit% (emacs-home* "config/docs.el") t))
    (when-feature% eglot
@@ -110,173 +72,337 @@
    (compile-unit% (emacs-home* "config/eshells.el") t)
    (when-feature% eww
      (compile-unit% (emacs-home* "config/ewws.el") t))
-   (compile-unit% (emacs-home* "config/financial.el") t)
    (compile-unit% (emacs-home* "config/helps.el") t)
    (compile-unit% (emacs-home* "config/hippies.el") t)
-   (compile-unit% (emacs-home* "config/isearchs.el") t)
-   (prog1 (compile-unit% (emacs-home* "config/jshell.el") t)
-     (autoload 'jshell-mode (v-home%> "config/jshell") "Toggle jshell mode." t)
-     (autoload 'run-jshell (v-home%> "config/jshell")
-       "Toggle jshell process." t)
-     (push! `("\\.jsh\\'" . java-mode) auto-mode-alist))
-   ;; `scheme': `gambit-mode' abandoned
-   ;; (prog1 (compile-unit% (emacs-home* "config/gambit.el") t)
-   ;;   (autoload 'gambit-mode (v-home%> "config/gambit") "Toggle gambit." t))
-   (when-platform% windows-nt
-     (prog1 (compile-unit% (emacs-home* "config/gud-cdb.el") t)
-       (autoload 'gud-cdb (v-home%> "config/gud-cdb") "Run cdb." t)))
-   (prog1 (compile-unit% (emacs-home* "config/gud-lldb.el") t)
-     (autoload 'gud-lldb (v-home%> "config/gud-lldb") "Run lldb." t))
-   ;; TODO: recast
-   ;; (compile-unit% (emacs-home* "config/mixal.el") t)
-   (prog1 (compile-unit% (emacs-home* "config/node.el") t)
-     (autoload 'node-mode (v-home%> "config/node") "Toggle node mode." t)
-     (autoload 'run-node (v-home%> "config/node") "Toggle node process." t))
+   (compile-unit% (emacs-home* "config/on-dired-autoload.el"))
    (compile-unit% (emacs-home* "config/orgs.el") t)
    (when-feature% project
      (compile-unit% (emacs-home* "config/projects.el") t))
-   (prog1 (compile-unit% (emacs-home* "config/progs.el") t)
-     (declare-function on-progs-init! (v-home%> "config/progs"))
-     (autoload 'on-progs-init! (v-home%> "config/progs")))
+   (compile-unit% (emacs-home* "config/progs.el") t)
    (compile-unit% (emacs-home* "config/pythons.el") t)
-   (prog1 (compile-unit% (emacs-home* "config/scratch.el") t)
-     (autoload 'scratch (v-home%> "config/scratch") "Scratch" t))
    (compile-unit% (emacs-home* "config/sqls.el") t)
-   (prog1 (compile-unit% (emacs-home* "config/sudoku.el") t)
-     (autoload 'sudoku (v-home%> "config/sudoku") "Play sudoku." t))
    (compile-unit% (emacs-home* "config/terms.el") t)
-   (prog1 (compile-unit% (emacs-home* "config/trans.el") t)
-     (autoload 'ascii-table (v-home%> "config/trans") nil t)
-     (autoload 'chinese->arabic (v-home%> "config/trans") nil t)
-     (autoload 'decode-base64 (v-home%> "config/trans") nil t)
-     (autoload 'decode-chinese-number (v-home%> "config/trans") nil t)
-     (autoload 'decode-ipv4 (v-home%> "config/trans") nil t)
-     (autoload 'decode-roman-number (v-home%> "config/trans") nil t)
-     (autoload 'decode-url (v-home%> "config/trans") nil t)
-     (autoload 'encode-base64 (v-home%> "config/trans") nil t)
-     (autoload 'encode-ipv4 (v-home%> "config/trans") nil t)
-     (autoload 'encode-url (v-home%> "config/trans") nil t)
-     (autoload 'greek-alphabet (v-home%> "config/trans") nil t)
-     (autoload 'int->ipv4 (v-home%> "config/trans") nil t)
-     (autoload 'ipv4->int (v-home%> "config/trans") nil t)
-     (autoload 'roman->arabic (v-home%> "config/trans") nil t))
    (when-feature% transient
      (compile-unit% (emacs-home* "config/transients.el") t))
-   (when-feature-treesit%
-     (prog1 (compile-unit% (emacs-home* "config/treesits.el") t)
-       (autoload 'toggle-treesit! (v-home%> "config/treesits") nil t
-         "Toggle treesit.")))
    (compile-unit% (emacs-home* "config/tramps.el") t)
-   (compile-unit% (emacs-home* "config/xrefs.el") t)
-   (when-feature-vc%
-     (compile-unit% (emacs-home* "config/vcs.el") t))))
+   (compile-unit% (emacs-home* "config/xrefs.el") t)))
 
-;; end of `load-compiling-modes!'
+;; end of `define-after-load-mode'
 
-(defun load-conditional-modes! ()
-  "Load conditional modes."
-  (compile!
-   ;; on `cc'
-   (compile-unit% (emacs-home* "config/on-cc-autoload.el"))
-   ;; ;; on `clipboard'
-   ;; (unless-graphic%
-   ;;   (compile-unit% (emacs-home* "config/on-clipboard-autoload.el")))
-   ;; on `compiles'
-   (compile-unit% (emacs-home* "config/on-compile-autoload.el"))
-   ;; on `direds'
-   (compile-unit% (emacs-home* "config/on-dired-autoload.el"))
-   ;; on `docs'
-   (when-platform% windows-nt
-     (compile-unit% (emacs-home* "config/on-docview-autoload.el")))
-   ;; on `elisp'
-   (compile-unit% (emacs-home* "config/on-elisp-autoload.el"))
-   ;; on `eglot'
-   (when-feature% eglot
-     (compile-unit% (emacs-home* "config/on-eglot-autoload.el")))
-   ;; on `ewws'
-   (when-feature% eww
-     (compile-unit% (emacs-home* "config/on-eww-autoload.el")))
-   ;; self : `glyph'
-   (when-graphic%
-     (compile-unit% (emacs-home* "config/glyph.el")))
-   ;; on `helps'
-   (compile-unit% (emacs-home* "config/on-help-autoload.el"))
-   ;; on `hippies'
-   (compile-unit% (emacs-home* "config/on-hippie-autoload.el"))
-   ;; on `js'
-   ;; (compile-unit% (emacs-home* "config/on-js-autoload.el"))
-   ;; on `mixal'
-   ;; (compile-unit% (emacs-home* "config/on-mixal-autoload.el"))
-   ;; on `orgs'
-   (compile-unit% (emacs-home* "config/on-org-autoload.el"))
-   ;; on `projects'
-   (when-feature% project
-     (compile-unit% (emacs-home* "config/on-project-autoload.el")))
-   ;; on `pythons'
-   (compile-unit% (emacs-home* "config/on-python-autoload.el"))
-   ;; on `sqls'
-   (compile-unit% (emacs-home* "config/on-sql-autoload.el"))
-   ;; ;; Org `ob' for Scheme
-   ;; (prog1
-   ;;     (compile-unit% (emacs-home* "config/ob-schemes.el") t)
-   ;;   (when (*org-babel-schemes*)
-   ;;     (autoload! 'org-babel-execute:scheme*
-   ;;                (v-home%> "config/ob-schemes")
-   ;;                "Autoload `org-babel-execute:scheme*'." t)
-   ;;     (fset 'org-babel-execute:scheme 'org-babel-execute:scheme*)))
-   ;; on `terms'
-   (compile-unit% (emacs-home* "config/on-term-autoload.el"))
-   ;; on `transients'
-   (when-feature% transient
-     (compile-unit% (emacs-home* "config/on-transient-autoload.el")))
-   ;; on `tramps'
-   (compile-unit% (emacs-home* "config/on-tramp-autoload.el"))
-   ;; on `xrefs'
-   (compile-unit% (emacs-home* "config/on-xref-autoload.el"))
-   ;; on `vcs'
-   (when-feature-vc%
-     (compile-unit% (emacs-home* "config/on-vcs-autoload.el")))
-   ;; `windows'
-   (compile-unit% (emacs-home* "config/windows.el"))
-   ) ;; end of compile!
-  (with-eval-after-load 'thingatpt
-    (make-thread* #'on-thingatpt-init!))
+(defun declare-prologue-mode! ()
+  ;; `cls'
+  (autoload 'assoc** (v-home%> "config/cls"))
+  (autoload 'drop (v-home%> "config/cls"))
+  (autoload 'every* (v-home%> "config/cls"))
+  (autoload 'insert-at (v-home%> "config/cls"))
+  (autoload 'insert! (v-home%> "config/cls") nil nil 'macro)
+  (autoload 'loop* (v-home%> "config/cls"))
+  (autoload 'mapcar** (v-home%> "config/cls"))
+  (autoload 'member-if* (v-home%> "config/cls"))
+  (autoload 'remove-if* (v-home%> "config/cls"))
+  (autoload 'range (v-home%> "config/cls"))
+  (autoload 'some* (v-home%> "config/cls"))
+  (unless-fn% take nil (autoload 'take (v-home%> "config/cls")))
+  (autoload 'take-while (v-home%> "config/cls"))
+  ;; `clipboard'
   (unless-graphic%
+    (declare-function on-clipboard-init! (v-home%> "config/clipboard"))
+    (autoload 'on-clipboard-init! (v-home%> "config/clipboard"))
     (make-thread* #'on-clipboard-init!))
+  ;; `ed'
+  (autoload 'delete-line* (v-home%> "config/ed"))
+  (autoload 'file-in-dirs-p (v-home%> "config/ed"))
+  (autoload 'newline* (v-home%> "config/ed") nil t)
+  (autoload 'open-next-line (v-home%> "config/ed") nil t)
+  (autoload 'open-previous-line (v-home%> "config/ed") nil t)
+  (autoload 'read-string-prompt (v-home%> "config/ed"))
+  (autoload 'select-region-prompt (v-home%> "config/ed"))
+  (autoload 'vstrncmp (v-home%> "config/ed"))
+  ;; `marks'
+  (declare-function symbol@* (v-home%> "config/marks"))
+  (declare-function kill-sexp@ (v-home%> "config/marks") nil t)
+  (declare-function kill-string@ (v-home%> "config/marks") nil t)
+  (declare-function kill-word@ (v-home%> "config/marks") nil t)
+  (declare-function mark-defun@ (v-home%> "config/marks") nil t)
+  (declare-function mark-filename@ (v-home%> "config/marks") nil t)
+  (declare-function mark-line@ (v-home%> "config/marks") nil t)
+  (declare-function mark-sexp@ (v-home%> "config/marks") nil t)
+  (declare-function mark-string@ (v-home%> "config/marks") nil t)
+  (declare-function mark-symbol@ (v-home%> "config/marks") nil t)
+  (declare-function mark-word@ (v-home%> "config/marks") nil t)
+  (autoload 'symbol@* (v-home%> "config/marks"))
+  (autoload 'kill-sexp@ (v-home%> "config/marks") nil t)
+  (autoload 'kill-string@ (v-home%> "config/marks") nil t)
+  (autoload 'kill-word@ (v-home%> "config/marks") nil t)
+  (autoload 'mark-defun@ (v-home%> "config/marks") nil t)
+  (autoload 'mark-filename@ (v-home%> "config/marks") nil t)
+  (autoload 'mark-line@ (v-home%> "config/marks") nil t)
+  (autoload 'mark-sexp@ (v-home%> "config/marks") nil t)
+  (autoload 'mark-string@ (v-home%> "config/marks") nil t)
+  (autoload 'mark-symbol@ (v-home%> "config/marks") nil t)
+  (autoload 'mark-word@ (v-home%> "config/marks") nil t)
+  ;; `ssh'
+  (autoload 'ssh-remote-p (v-home%> "config/ssh"))
+  (autoload 'ssh-remote->ids (v-home%> "config/ssh"))
+  (autoload 'ssh-remote->user@host (v-home%> "config/ssh"))
+  (autoload 'ssh-remote-command (v-home%> "config/ssh"))
+  ;; `tags'
+  (autoload 'tags-spec->* (v-home%> "config/tags"))
+  (autoload 'make-c-tags (v-home%> "config/tags"))
+  (autoload 'make-dir-ctags (v-home%> "config/tags"))
+  (autoload 'make-dir-tags (v-home%> "config/tags") nil t)
+  (autoload 'mount-tags (v-home%> "config/tags") nil t)
+  (autoload 'unmount-tags (v-home%> "config/tags") nil t)
+  ;; `thingsatpts'
+  (declare-function on-thingatpt-init! (v-home%> "config/thingatpts"))
+  (autoload 'on-thingatpt-init! (v-home%> "config/thingatpts"))
+  (with-eval-after-load 'thingatpt
+    (make-thread* #'on-thingatpt-init!)))
+
+(defun declare-compile-only-mode! ()
+  ;; `chez'
+  (autoload 'chez-mode (v-home%> "config/chez") "Toggle chez mode." t)
+  (autoload 'run-chez (v-home%> "config/chez") "Run chez REPL." t)
+  ;; `cscope'
+  (autoload 'cscope (v-home%> "config/cscope") "Run cscope." t)
+  (autoload 'run-cscope (v-home%> "config/cscope") "Run cscope REPL." t)
+  ;; `dict'
+  (autoload 'lookup-dict (v-home%> "config/dict") "Lookup dict." t)
+  (define-key (current-global-map) (kbd% "M-s d") 'lookup-dict)
+  ;; `isearchs'
+  (declare-function isearch*-forward (v-home%> "config/isearchs"))
+  (declare-function isearch*-backward (v-home%> "config/isearchs"))
+  (declare-function isearch*-forward-symbol (v-home%> "config/isearchs"))
+  (autoload 'isearch*-forward (v-home%> "config/isearchs"))
+  (autoload 'isearch*-backward (v-home%> "config/isearchs"))
+  (autoload 'isearch*-forward-symbol (v-home%> "config/isearchs"))
+  ;; `jshell'
+  (autoload 'jshell-mode (v-home%> "config/jshell") "Toggle jshell mode." t)
+  (autoload 'run-jshell (v-home%> "config/jshell") "Run jshell REPL" t)
+  (push! `("\\.jsh\\'" . java-mode) auto-mode-alist)
+  ;; `gud-cdb'
+  (when-platform% windows-nt
+    (autoload 'gud-cdb (v-home%> "config/gud-cdb") "Run cdb." t))
+  ;; `gud-lldb'
+  (autoload 'gud-lldb (v-home%> "config/gud-lldb") "Run lldb." t)
+  ;; `node'
+  (autoload 'node-mode (v-home%> "config/node") "Toggle node mode." t)
+  (autoload 'run-node (v-home%> "config/node") "Run node REPL." t)
+  ;; `scratch'
+  (autoload 'scratch (v-home%> "config/scratch") "Scratch" t)
+  ;; `sudoku'
+  (autoload 'sudoku (v-home%> "config/sudoku") "Play sudoku." t)
+  ;; `trans'
+  (autoload 'ascii-table (v-home%> "config/trans") nil t)
+  (autoload 'chinese->arabic (v-home%> "config/trans") nil t)
+  (autoload 'decode-base64 (v-home%> "config/trans") nil t)
+  (autoload 'decode-chinese-number (v-home%> "config/trans") nil t)
+  (autoload 'decode-ipv4 (v-home%> "config/trans") nil t)
+  (autoload 'decode-roman-number (v-home%> "config/trans") nil t)
+  (autoload 'decode-url (v-home%> "config/trans") nil t)
+  (autoload 'encode-base64 (v-home%> "config/trans") nil t)
+  (autoload 'encode-ipv4 (v-home%> "config/trans") nil t)
+  (autoload 'encode-url (v-home%> "config/trans") nil t)
+  (autoload 'greek-alphabet (v-home%> "config/trans") nil t)
+  (autoload 'int->ipv4 (v-home%> "config/trans") nil t)
+  (autoload 'ipv4->int (v-home%> "config/trans") nil t)
+  (autoload 'roman->arabic (v-home%> "config/trans") nil t)
+  ;; `treesits'
+  (when-feature-treesit%
+    (declare-function toggle-treesit! (v-home%> "config/treesits"))
+    (autoload 'toggle-treesit! (v-home%> "config/treesits") nil t
+      "Toggle treesit."))
+  ;; `vcs'
+  (when-feature-vc%
+    (declare-function vc*-dir (v-home%> "config/vcs"))
+    (autoload 'vc*-dir (v-home%> "config/vcs") nil t))
+  (unless-fn% recenter-top-bottom nil
+    (declare-function recenter-top-bottom (v-home%> "config/winmoves"))
+    (autoload 'recenter-top-bottom (v-home%> "config/winmoves"))))
+
+(defun declare-after-load-mode! ()
+  ;; `cc'
+  (declare-function on-cc-mode-init! (v-home%> "config/cc"))
+  (declare-function on-man-init! (v-home%> "config/cc"))
+  (autoload 'on-cc-mode-init! (v-home%> "config/cc"))
+  (autoload 'on-man-init! (v-home%> "config/cc"))
+  (autoload 'cc*-cc (v-home%> "config/cc"))
+  (autoload 'cc*-system-include (v-home%> "config/cc"))
+  (autoload 'cc*-make-tags (v-home%> "config/cc"))
+  (with-eval-after-load 'cc-mode
+    (make-thread* #'on-cc-mode-init!))
+  (with-eval-after-load 'man
+    (make-thread* #'on-man-init!))
+  ;; `compiles'
+  (declare-function on-compile-init! (v-home%> "config/compiles"))
+  (declare-function on-grep-init! (v-home%> "config/compiles"))
+  (declare-function on-make-mode-init! (v-home%> "config/compiles"))
+  (autoload 'on-compile-init! (v-home%> "config/compiles"))
+  (autoload 'on-grep-init! (v-home%> "config/compiles"))
+  (autoload 'on-make-mode-init! (v-home%> "config/compiles"))
+  (with-eval-after-load 'compile
+    (make-thread* #'on-compile-init!))
+  (with-eval-after-load 'grep
+    (make-thread* #'on-grep-init!))
+  (with-eval-after-load 'make-mode
+    (make-thread* #'on-make-mode-init!))
+  ;; `docs'
+  (when-platform% windows-nt
+    (declare-function on-doc-view-init! (v-home%> "config/docs"))
+    (autoload 'on-doc-view-init! (v-home%> "config/docs"))
+    (with-eval-after-load 'doc-view
+      (make-thread* #'on-doc-view-init!)))
+  ;; `eglots'
+  (when-feature% eglot
+    (declare-function on-eglot-init! (v-home%> "config/eglots"))
+    (autoload 'on-eglot-init! (v-home%> "config/eglots"))
+    (with-eval-after-load 'eglot
+      (make-thread* #'on-eglot-init!)))
+  ;; `elisps'
+  (declare-function on-elisp-init! (v-home%> "config/elisps"))
+  (autoload 'on-elisp-init! (v-home%> "config/elisps"))
+  (if-version%
+      <= 25.0
+      (with-eval-after-load 'elisp-mode
+        (make-thread* #'on-elisp-init!))
+    (with-eval-after-load 'lisp-mode
+      (make-thread* #'on-elisp-init!)))
+  ;; `ewws'
+  (when-feature% eww
+    (declare-function on-eww-init! (v-home%> "config/ewws"))
+    (declare-function lookup-web (v-home%> "config/ewws") nil t)
+    (autoload 'on-eww-init! (v-home%> "config/ewws"))
+    (autoload 'lookup-web (v-home%> "config/ewws") nil t)
+    (autoload 'toggle-browser! (v-home%> "config/ewws") nil t)
+    (with-eval-after-load 'eww
+      (make-thread* #'on-eww-init!)))
+  ;; `helps'
+  (declare-function on-help-init! (v-home%> "config/helps"))
+  (autoload 'on-help-init! (v-home%> "config/helps"))
+  (with-eval-after-load 'help-mode
+    (make-thread* #'on-help-init!))
+  ;; `hippies'
+  (declare-function on-hippie-init! (v-home%> "config/hippies"))
+  (autoload 'on-hippie-init! (v-home%> "config/hippies"))
+  (with-eval-after-load 'hippie-exp
+    (make-thread* #'on-hippie-init!))
+  ;; `orgs'
+  (declare-function on-org-init! (v-home%> "config/orgs"))
+  (autoload 'on-org-init! (v-home%> "config/orgs"))
+  (with-eval-after-load 'org
+    (make-thread* #'on-org-init!))
+  (when-version% >= 23
+    (push! (cons "\\.org\\'" 'org-mode) auto-mode-alist))
+  ;; `projects'
+  (when-feature% project
+    (declare-function on-project-init! (v-home%> "config/projects"))
+    (autoload 'on-project-init! (v-home%> "config/projects"))
+    (autoload 'project*-root-dirs (v-home%> "config/projects"))
+    (with-eval-after-load 'project
+      (make-thread* #'on-project-init!)))
+  ;; `progs'
+  (declare-function on-progs-init! (v-home%> "config/progs"))
+  (autoload 'on-progs-init! (v-home%> "config/progs"))
   (make-thread* #'on-progs-init!)
-  )
-;; end of `load-conditional-modes!'
+  ;; `pythons'
+  (declare-function on-python-init! (v-home%> "config/pythons"))
+  (autoload 'on-python-init! (v-home%> "config/pythons"))
+  (autoload 'python*-program (v-home%> "config/pythons"))
+  (autoload 'python*-venv (v-home%> "config/pythons"))
+  (autoload 'python*-venv-make! (v-home%> "config/pythons") nil t)
+  (with-eval-after-load 'python
+    (make-thread* #'on-python-init!))
+  ;; `sqls'
+  (declare-function on-sql-init! (v-home%> "config/sqls"))
+  (autoload 'on-sql-init! (v-home%> "config/sqls"))
+  (with-eval-after-load 'sql
+    (make-thread* #'on-sql-init!))
+  ;; `terms'
+  (declare-function on-eshell-init! (v-home%> "config/eshells"))
+  (declare-function on-ielm-init! (v-home%> "config/elisps"))
+  (declare-function on-term-init! (v-home%> "config/terms"))
+  (autoload 'on-eshell-init! (v-home%> "config/eshells"))
+  (autoload 'on-ielm-init! (v-home%> "config/elisps"))
+  (autoload 'on-term-init! (v-home%> "config/terms"))
+  (autoload 'term*-unify-shell-prompt (v-home%> "config/terms") nil t)
+  (with-eval-after-load 'term
+    (make-thread* #'on-term-init!))
+  (with-eval-after-load 'eshell
+    (make-thread* #'on-eshell-init!))
+  (with-eval-after-load 'ielm
+    (make-thread* #'on-ielm-init!))
+  ;; `tramps'
+  (declare-function on-tramp-init! (v-home%> "config/tramps"))
+  (autoload 'on-tramp-init! (v-home%> "config/tramps"))
+  (with-eval-after-load 'tramp
+    (make-thread* #'on-tramp-init!))
+  ;; `transients'
+  (when-feature% transient
+    (declare-function on-transient-init! (v-home%> "config/transients"))
+    (autoload 'on-transient-init! (v-home%> "config/transients"))
+    (with-eval-after-load 'transient
+      (make-thread* #'on-transient-init!))
+    (unless-graphic%
+      (when-version% > 23 (transient-mark-mode t))))
+  ;; `xrefs'
+  (declare-function on-xref-init! (v-home%> "config/xrefs"))
+  (declare-function on-etags-init! (v-home%> "config/xrefs"))
+  (autoload 'on-xref-init! (v-home%> "config/xrefs"))
+  (autoload 'on-etags-init! (v-home%> "config/xrefs"))
+  (autoload 'xref*-read-only-dirs (v-home%> "config/xrefs"))
+  (with-eval-after-load 'xref
+    (make-thread* #'on-xref-init!))
+  (with-eval-after-load 'etags
+    (make-thread* #'on-etags-init!)))
 
-(defun define-global-keys! ()
-  (let ((keymap (current-global-map)))
-    ;; `isearchs'
-    (declare-function isearch*-forward (v-home%> "config/isearchs"))
-    (declare-function isearch*-backward (v-home%> "config/isearchs"))
-    (declare-function isearch*-forward-symbol (v-home%> "config/isearchs"))
-    (autoload 'isearch*-forward (v-home%> "config/isearchs"))
-    (autoload 'isearch*-backward (v-home%> "config/isearchs"))
-    (autoload 'isearch*-forward-symbol (v-home%> "config/isearchs"))
-    (define-key keymap "" #'isearch*-forward)
-    (define-key keymap "" #'isearch*-backward)
-    (define-key keymap (kbd "M-s .") #'isearch*-forward-symbol)
-    ;; kill
-    (define-key keymap (kbd% "C-x M-d") #'kill-word@)
-    (define-key keymap (kbd% "C-x M-e") #'kill-sexp@)
-    (define-key keymap (kbd% "C-x M-s") #'kill-string@)
-    (define-key keymap (kbd% "C-x M-l") #'kill-whole-line)
-    ;; mark
-    (define-key keymap (kbd% "C-c C-M-@") #'mark-sexp@)
-    (define-key keymap (kbd% "C-c M-@") #'mark-word@)
-    (define-key keymap (kbd% "C-c M-f") #'mark-filename@)
-    (define-key keymap (kbd% "C-c M-h") #'mark-defun@)
-    (define-key keymap (kbd% "C-c M-l") #'mark-line@)
-    (define-key keymap (kbd% "C-c M-s") #'mark-string@)
-    (define-key keymap (kbd% "C-M-@") #'mark-sexp)
-    (define-key keymap (kbd% "C-M-SPC") #'mark-sexp)
-    (define-key keymap (kbd% "C-M-h") #'mark-defun)
-    (define-key keymap (kbd% "M-@") #'mark-word)))
+(defun define-global-key! ()
+  ;; `compiles'
+  (define-global-key% "pc" #'compile)
+  ;; `ewws'
+  (when-feature% eww
+    (define-global-key% (kbd "M-s w") #'lookup-web)
+    (when-fn% eww-list-bookmarks eww
+      (define-global-key% (kbd "M-s M-b") #'eww-list-bookmarks)))
+  ;; `hippies'
+  (define-global-key% (kbd "M-/") #'hippie-expand)
+  ;; `isearchs'
+  (define-global-key% "" #'isearch*-forward)
+  (define-global-key% "" #'isearch*-backward)
+  (define-global-key% (kbd "M-s .") #'isearch*-forward-symbol)
+  ;; `marks' kill
+  (define-global-key% (kbd "C-x M-d") #'kill-word@)
+  (define-global-key% (kbd "C-x M-e") #'kill-sexp@)
+  (define-global-key% (kbd "C-x M-s") #'kill-string@)
+  (define-global-key% (kbd "C-x M-l") #'kill-whole-line)
+  ;; `marks' mark
+  (define-global-key% (kbd "C-c C-M-@") #'mark-sexp@)
+  (define-global-key% (kbd "C-c M-@") #'mark-word@)
+  (define-global-key% (kbd "C-c M-f") #'mark-filename@)
+  (define-global-key% (kbd "C-c M-h") #'mark-defun@)
+  (define-global-key% (kbd "C-c M-l") #'mark-line@)
+  (define-global-key% (kbd "C-c M-s") #'mark-string@)
+  (define-global-key% (kbd "C-M-@") #'mark-sexp)
+  (define-global-key% (kbd "C-M-SPC") #'mark-sexp)
+  (define-global-key% (kbd "C-M-h") #'mark-defun)
+  (define-global-key% (kbd "M-@") #'mark-word)
+  ;; `projects'
+  (when-feature% project
+    (when-fn% project-find-file project
+      (define-global-key% "pf" #'project-find-file))
+    (when-fn% project-find-regexp project
+      (define-global-key% "pg" #'project-find-regexp)))
+  ;; `vcs'
+  (when-feature-vc%
+    (define-global-key% "vd" #'vc*-dir))
+  ;; `winmoves'
+  (unless-fn% recenter-top-bottom nil
+    (define-global-key% "" #'recenter-top-bottom))
+  (define-global-key% "wl" #'windmove-left)
+  (define-global-key% "wr" #'windmove-right)
+  (define-global-key% "wu" #'windmove-up)
+  (define-global-key% "wd" #'windmove-down))
 
-;; end of `define-global-keys!'
+;; end of `define-global-key!'
 
 (defun self-epilogue-init! ()
   (when-graphic%
@@ -304,10 +430,14 @@
   (setq% message-log-max 512)
   ;; preferred coding system
   (prefer-coding-system 'utf-8)
-  (load-prologue-modes!)
-  (load-compiling-modes!)
-  (load-conditional-modes!)
-  (define-global-keys!)
+  ;; define modes
+  (define-prologue-mode)
+  (declare-prologue-mode!)
+  (define-compile-only-mode)
+  (declare-compile-only-mode!)
+  (define-after-load-mode)
+  (declare-after-load-mode!)
+  (define-global-key!)
   (when-fn% self-edit-init! nil (self-edit-init!))
   (when-fn% self-key-init! nil (self-key-init!))
   (when-fn% self-glyph-init! nil (make-thread* #'self-glyph-init!))

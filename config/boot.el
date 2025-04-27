@@ -131,6 +131,12 @@ No matter the declaration order, the executing order is:
          (compile-unit% (emacs-home* "config/key.el") t)
        (autoload 'self-key-init! (v-home%> "config/key"))
        (declare-function self-key-init! (v-home%> "config/key"))))
+   (when-graphic%
+     (when (*self-env-spec* :get :glyph :allowed)
+       (prog1
+           (compile-unit% (emacs-home* "config/glyph.el") t)
+         (autoload 'self-glyph-init! (v-home%> "config/glyph"))
+         (declare-function self-glyph-init! (v-home%> "config/glyph")))))
    (progn
      ;; --batch mode: disable `desktop'
      (setq% desktop-save-mode nil desktop)

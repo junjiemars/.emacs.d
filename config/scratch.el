@@ -10,12 +10,12 @@
 (defvar *scratch-recipe*
   `(("*"
      .
-     (:msg ,(substitute-command-keys initial-scratch-message)
-           :mod ,(lambda () (lisp-interaction-mode))))
+     ( :msg ,(substitute-command-keys initial-scratch-message)
+       :mod ,(lambda () (lisp-interaction-mode))))
     ("org"
      .
-     (:msg
-      "#+title: Scratch Org
+     ( :msg
+       "#+title: Scratch Org
 #+author: Nore Emacs
 
 * scratch
@@ -27,14 +27,14 @@
 
 
 "
-      :mod ,(lambda () (org-mode))
-      :pos ,(lambda ()
-              (goto-char (point-min))
-              (forward-line 8))))
+       :mod ,(lambda () (org-mode))
+       :pos ,(lambda ()
+               (goto-char (point-min))
+               (forward-line 8))))
     ("tex"
      .
-     (:msg
-      "\\documentclass{article}
+     ( :msg
+       "\\documentclass{article}
 \\title{Scratch Tex}
 \\author{Nore Emacs}
 \\usepackage{amsmath}
@@ -45,15 +45,15 @@
 
 \\end{document}
 "
-      ;; % \\usepackage{amssymb}
-      ;; % \\usepackage{xeCJK}
-      ;; % \\setCJKmainfont{SimSong}
-      ;; % \\setmainfont{Times New Roman}
-      ;; % (setq TeX-engine 'xetex)
-      :mod latex-mode
-      :pos ,(lambda ()
-              (goto-char (point-min))
-              (forward-line 5)))))
+       ;; % \\usepackage{amssymb}
+       ;; % \\usepackage{xeCJK}
+       ;; % \\setCJKmainfont{SimSong}
+       ;; % \\setmainfont{Times New Roman}
+       ;; % (setq TeX-engine 'xetex)
+       :mod latex-mode
+       :pos ,(lambda ()
+               (goto-char (point-min))
+               (forward-line 5)))))
   "The recipes of scratch.")
 
 (defvar *scratch-recipe-history* nil

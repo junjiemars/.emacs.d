@@ -3,7 +3,7 @@
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; windows.el
+;; winmoves.el
 ;;;;
 
 ;;;
@@ -49,21 +49,8 @@
                      (recenter (round (* recenter-last-op
                                          (window-height)))))))))))
 
-(define-global-key% "" #'recenter-top-bottom)
-
 ;; end of `recenter-top-bottom'
 
-;;;
-;; `windmove'
-;;;
+(provide 'winmoves)
 
-(define-global-key% "wl" #'windmove-left)
-(define-global-key% "wr" #'windmove-right)
-(define-global-key% "wu" #'windmove-up)
-(define-global-key% "wd" #'windmove-down)
-
-;; end of `windmove'
-
-(provide 'windows)
-
-;; end of windows.el
+;; end of winmoves.el
