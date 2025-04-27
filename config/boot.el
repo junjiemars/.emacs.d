@@ -41,8 +41,8 @@
             ((and op (eq :dup op)) (self-path--dup ps ss))
             (t ps))))
   "Define the PATH references.\n
-No matter the declaration order, the executing order is:
-\\=`:env-spec -> :mod-spec -> :epilogue\\='")
+The executing order is:
+\\=`:prologue -> :env-spec -> :mod-spec -> :epilogue\\='")
 
 (defun self-env--get (env keys)
   (let ((rs env) (ks keys))
@@ -68,7 +68,8 @@ No matter the declaration order, the executing order is:
     (lambda (&optional op &rest keys)
       (cond ((and op (eq :get op)) (self-env--get env keys))
             ((and op (eq :put op)) (setq env (self-env--put env keys)))
-            (t env)))))
+            (t env))))
+  "The environment spec.")
 
 (defun self-mod--put (ps k v)
   (let ((a1 (assq k ps)))
@@ -81,7 +82,8 @@ No matter the declaration order, the executing order is:
     (lambda (&optional op k v)
       (cond ((and op (eq :get op)) (assq k ps))
             ((and op (eq :put op)) (setq ps (self-mod--put ps k v)))
-            (t ps)))))
+            (t ps))))
+  "The module spec.")
 
 ;; end of self-spec* macro
 

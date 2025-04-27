@@ -1359,18 +1359,18 @@ Nore Emacs provides support for /etags/, /ctags/, /cscope/, and /eglot/.
    :END:
 
 #+REVEAL: split
-1. @@html:<kbd>@@M-x clean-compiled-files@@html:</kbd>@@ then exit
-   and reopen Emacs.
-2. Check Emacs configurations:
-  - @@html:<kbd>@@M-x: system-configuration-options@@html:</kbd>@@
-  - @@html:<kbd>@@M-x: system-configuration-features@@html:</kbd>@@
-  - @@html:<kbd>@@M-x: features@@html:</kbd>@@
-  - @@html:<kbd>@@M-x: load-history@@html:</kbd>@@
-  then do =I=.
-3. Check =*Compilation-Log*= buffer, then do *1*.
-4. Check =(*self-paths*)=, then do *1*.
-5. Disable the problematic item in =(*self-env-spec*)=, then do *1*.
-6. Disable the problematic item in =(*self-mod-spec*)=, then do *1*.
+1. @@html:<kbd>@@M-x clean-compiled-files@@html:</kbd>@@ then reopen
+   Emacs.
+2. Check =*Compilation-Log*= buffer.
+3. Check =*Messages*= buffer.
+4. Check Emacs configurations:
+   - @@html:<kbd>@@M-: system-configuration-options@@html:</kbd>@@
+   - @@html:<kbd>@@M-: system-configuration-features@@html:</kbd>@@
+   - @@html:<kbd>@@M-: features@@html:</kbd>@@
+   - @@html:<kbd>@@M-: load-history@@html:</kbd>@@
+5. Check =(*self-paths*)=.
+6. Disable the problematic item in =(*self-env-spec*)=, then do =1=.
+7. Disable the problematic item in =(*self-mod-spec*)=, then do =1=.
 
 * Mnemonic
   :PROPERTIES:
