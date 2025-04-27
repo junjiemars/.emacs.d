@@ -95,7 +95,7 @@
   (autoload 'drop (v-home%> "config/cls"))
   (autoload 'every* (v-home%> "config/cls"))
   (autoload 'insert-at (v-home%> "config/cls"))
-  (autoload 'insert! (v-home%> "config/cls") nil nil 'macro)
+  ;; (autoload 'insert! (v-home%> "config/cls") nil nil 'macro)
   (autoload 'loop* (v-home%> "config/cls"))
   (autoload 'mapcar** (v-home%> "config/cls"))
   (autoload 'member-if* (v-home%> "config/cls"))
