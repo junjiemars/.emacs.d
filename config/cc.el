@@ -18,6 +18,12 @@
 ;;; 3. https://clang.llvm.org/
 ;;; 4. https://clang.llvm.org/docs/ClangFormat.html
 ;;;;
+;; use cases:
+;;; 1. open #include file: M-x `cc*-find-include-file'.
+;;; 2. expand macro: M-x `cc*-macro-expand'.
+;;; 3. dump #define: M-x `cc*-define-dump'.
+;;; 4. format code: M-x `cc*-format-region'.
+;;;;
 
 
 ;;; require

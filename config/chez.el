@@ -21,6 +21,10 @@
 ;;; https://www.emacswiki.org/emacs/r5rs.el
 ;;; https://groups.csail.mit.edu/mac/ftpdir/
 ;;;;
+;; usage:
+;;; 1. M-x `chez-mode'.
+;;; 2. M-x `run-chez'.
+;;;;
 
 
 ;;; require
@@ -58,11 +62,11 @@ This is run before the process is cranked up.")
 
 (defun *chez* ()
   "The current *chez* process buffer."
-  (get-buffer-create "*chez*"))
+  (get-buffer-create* "*chez*" t))
 
 (defun *chez-out* ()
   "The output buffer of \\=`chez-completion\\='."
-  (get-buffer-create "*out|chez*"))
+  (get-buffer-create* "*out|chez*" t))
 
 (defalias '*chez-start-file*
   (let ((b (v-home% ".exec/chez.ss")))
@@ -365,12 +369,12 @@ determined by the prefix UNTRACE argument."
 
 (defun chez--mode-keymap ()
   (let ((keymap (make-sparse-keymap)))
-    (define-key keymap "\C-c\C-k" #'chez-compile-file)
-    (define-key keymap "\C-c\C-l" #'chez-load-file)
-    (define-key keymap "\C-c\C-r" #'chez-send-region)
-    (define-key keymap "\C-c\C-t" #'chez-trace-procedure)
-    (define-key keymap "\C-c\C-z" #'chez-switch-to-repl)
-    (define-key keymap "\C-x\C-e" #'chez-send-last-sexp)
+    (define-key keymap "" #'chez-compile-file)
+    (define-key keymap "" #'chez-load-file)
+    (define-key keymap "" #'chez-send-region)
+    (define-key keymap "" #'chez-trace-procedure)
+    (define-key keymap "" #'chez-switch-to-repl)
+    (define-key keymap "" #'chez-send-last-sexp)
     (define-key keymap "\M-\C-x" #'chez-send-definition)
     keymap))
 

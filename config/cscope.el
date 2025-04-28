@@ -16,6 +16,10 @@
 ;; references:
 ;;; 1. https://cscope.sourceforge.net/
 ;;;;
+;; use cases:
+;;; 1. one-shot: M-x `cscope'.
+;;; 2. interactive navigation: M-x `run-cscope'.
+;;;;
 
 
 ;;; require

@@ -17,6 +17,11 @@
 ;;; inspect: inspect living objects, needs import
 ;;; dis:     disassembler
 ;;;;
+;; use cases:
+;;; 1. ordinary.
+;;; 2. venv: M-x `python*-venv-make!'.
+;;; 3. switch Python's version: M-ESC `(python*-program <path>)'.
+;;;;
 
 
 ;;; require
