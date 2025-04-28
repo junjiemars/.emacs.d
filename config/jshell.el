@@ -14,9 +14,11 @@
 ;; references:
 ;;; https://docs.oracle.com/en/java/javase/21/jshell/introduction-jshell.html
 ;;;;
-;;; bugs:
-;;;
-;;;;;
+;; use case:
+;;; 1. M-x `jshell-mode', then M-x `jshell-load-file'.
+;;; 2. M-x `run-jshell'.
+;;;;
+
 
 ;;; require
 
@@ -45,11 +47,11 @@
 
 (defun *jshell* ()
   "The current *jshell* process buffer."
-  (get-buffer-create "*jshell*"))
+  (get-buffer-create* "*jshell*" t))
 
 (defun *jshell-out* ()
   "The output buffer of \\=`jshell-completion\\='."
-  (get-buffer-create "*out|jshell*"))
+  (get-buffer-create* "*out|jshell*" t))
 
 (defalias '*jshell-start-file*
   (let ((b (v-home% ".exec/jshell.jsh")))
@@ -76,18 +78,9 @@
 ;; proc
 ;;;
 
-(defun jshell-input-filter (in)
-  ;; raw
-  in)
-
 (defun jshell-get-old-input ()
   "Snarf the sexp ending at point."
   (buffer-substring (point-min) (point-max)))
-
-(defun jshell-preoutput-filter (out)
-  "Output start a newline when empty out or tracing."
-  ;; raw
-  out)
 
 (defun jshell-check-proc (&optional spawn)
   "Return the \\`*jshell*\\=' process or start one if necessary."
@@ -162,11 +155,8 @@ Entry to this mode runs the hooks on \\=`comint-mode-hook\\=' and
   :group 'jshell                        ; keyword args
   (setq comint-prompt-regexp "^\\(?:jshell> *\\)"
         comint-prompt-read-only t
-        comint-input-filter #'jshell-input-filter
         comint-get-old-input #'jshell-get-old-input
         mode-line-process '("" ":%s"))
-  (add-hook 'comint-preoutput-filter-functions
-            #'jshell-preoutput-filter nil 'local)
   (let ((m (make-sparse-keymap "jshell")))
     (set-keymap-parent m comint-mode-map)
     (define-key m "\C-c\C-b" #'jshell-switch-to-last-buffer)
@@ -311,9 +301,9 @@ end of buffer, otherwise just popup the buffer."
     (define-key keymap "\C-c\C-j" #'jshell-send-line)
     (define-key keymap "\C-c\C-l" #'jshell-load-file)
     ;; (define-key keymap "\C-c\C-k" #'jshell-compile-file)
-    (define-key keymap "\C-c\C-r" #'jshell-send-region)
-    (define-key keymap "\C-c\C-z" #'jshell-switch-to-repl)
-    (define-key keymap "\C-x\C-e" #'jshell-inspect-object)
+    (define-key keymap "" #'jshell-send-region)
+    (define-key keymap "" #'jshell-switch-to-repl)
+    (define-key keymap "" #'jshell-inspect-object)
     keymap))
 
 (defvar jshell-mode-map (jshell--mode-keymap)
@@ -338,7 +328,6 @@ interacting with the Jshell REPL is at your disposal.
   (jshell-syntax-indent))
 
 ;; end of jshell-mode
-
 
 (provide 'jshell)
 

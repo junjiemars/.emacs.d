@@ -370,7 +370,7 @@ determined by the prefix UNTRACE argument."
 (defun chez--mode-keymap ()
   (let ((keymap (make-sparse-keymap)))
     (define-key keymap "" #'chez-compile-file)
-    (define-key keymap "" #'chez-load-file)
+    (define-key keymap "\C-c\C-l" #'chez-load-file)
     (define-key keymap "" #'chez-send-region)
     (define-key keymap "" #'chez-trace-procedure)
     (define-key keymap "" #'chez-switch-to-repl)

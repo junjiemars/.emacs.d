@@ -312,8 +312,8 @@ end of buffer, otherwise just popup the buffer."
 (defun node--mode-keymap ()
   (let ((m (make-sparse-keymap)))
     (define-key m "\M-\C-x" #'node-send-definition)
-    (define-key m "" #'node-send-line)
-    (define-key m "" #'node-load-file)
+    (define-key m "\C-c\C-j" #'node-send-line)
+    (define-key m "\C-c\C-l" #'node-load-file)
     (define-key m "" #'node-compile-file)
     (define-key m "" #'node-send-region)
     (define-key m "" #'node-switch-to-repl)
