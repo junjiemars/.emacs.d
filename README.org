@@ -1,7 +1,7 @@
 #+TITLE: Nore Emacs
 #+AUTHOR: Junjie Mars
 #+STARTUP: overview
-# #+OPTIONS: num:nil toc:nil
+#+OPTIONS: num:nil toc:nil
 #+REVEAL_HLEVEL: 2
 #+REVEAL_SLIDE_NUMBER: h
 #+REVEAL_THEME: moon
@@ -17,38 +17,36 @@
 
 @@html:<img src="https://github.com/junjiemars/.emacs.d/actions/workflows/ci.yml/badge.svg" alt="Darwin, Linux and Windows"/>@@
 
-* Quick start
+* QUICK START
   :PROPERTIES:
   :CUSTOM_ID: quick-start
   :END:
 
 #+REVEAL: split
-- more consistent
-- more cleaner
-- more faster
-- more organized code
+KEY FEATURES
+- Consistent: ensures a uniform experience.
+- Transparency: operates in a clear and understandable way.
+- Faster: offers rapid performance.
 
 #+REVEAL: split
 #+ATTR_HTML: :style text-align:left
-It works on Emacs version 22.1.1+ , provides more reasonable styles:
-more organized code, more consistent, more cleaner and more
-faster. You can run it on any environment Emacs itself runs on: GUI or
-Terminal, even you can run multiple Emacs instances with different
-version on the same machine at the same time.
+It is compatible with Emacs version =22.1= and the latest releases.
+It adheres to the principles of consistency, transparency, and speed.
+You can run it in any environment where Emacs is supported, whether
+it's a GUI (Graphical User Interface) or a TUI (Terminal User
+Interface).  Furthermore, you can run multiple Emacs instances of
+different versions simultaneously on the same machine.
 
 #+REVEAL: split
-#+ATTR_HTML: :style text-align:left
+STEPS
 - clone Nore Emacs from [[https://github.com/junjiemars/.emacs.d][github]]
 #+BEGIN_SRC sh
-git clone --depth=1 https://github.com/junjiemars/.emacs.d.git ~/.emacs.d
+  git clone --depth=1 https://github.com/junjiemars/.emacs.d.git ~/.emacs.d
 #+END_SRC
-
-- open Emacs, after Emacs compile all elisp files, then reopen Emacs
-- want more functionalities see [[#recipe][Recipe]] section
-
+- Open Emacs, after all /Elisp/ files are compiled, reopen Emacs.
+- For more optional features, refer to [[#recipe][Recipe]] section.
 #+ATTR_HTML: :style text-align:left
-Additionally, it is important to remind you to take care as it is
-exceptionally fast.
+Note: Be cautious as it is extremely fast.
 
 #+ATTR_HTML: :style display:none
 - [[#story][Story]]

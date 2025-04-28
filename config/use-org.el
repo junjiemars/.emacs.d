@@ -12,6 +12,7 @@
 
 (defun use-org-init! ()
   "On \\=`org\\=' initialization."
+  ;; export .org to reveal.js-ed html
   (setq% org-reveal-root
          (let ((root (emacs-home% ".reveal.js/")))
            (if (file-exists-p root)
