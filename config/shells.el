@@ -35,20 +35,16 @@
 ;; vars/paths
 ;;;
 
-(defun echo-var (var &optional options)
+(defun echo-var (var)
   "Return the value of $VAR via echo."
   (when (stringp var)
     (let ((rc (if-platform% windows-nt
                   (if (string-match "cmdproxy\\.exe$" shell-file-name)
                       (shell-command* (format "echo %%%s%%" var))
                     ;; non cmdproxy
-                    (shell-command* shell-file-name
-                      (mapconcat #'identity options " ")
-                      (format "-c 'echo $%s'" var)))
+                    (shell-command* (format "echo $%s 2>/dev/null" var)))
                 ;; other platforms
-                (shell-command* shell-file-name
-                  (mapconcat #'identity options " ")
-                  (format "-c 'echo $%s'" var)))))
+                (shell-command* (format "echo $%s 2>/dev/null" var)))))
       (and (= 0 (car rc))
            (string-trim> (cdr rc))))))
 
@@ -147,11 +143,10 @@ See \\=`setenv\\='."
   (let ((vars nil)
         (default-directory (emacs-home%))
         (PATH (shell-spec->* :PATH))
-        (shopt (shell-spec->* :options))
         (cp-exec-path? (shell-spec->* :exec-path)))
     (dolist (v (shell-spec->* :copy-vars) vars)
       (when (stringp v)
-        (let ((val (echo-var v shopt)))
+        (let ((val (echo-var v)))
           (when (and val (> (length val) 0))
             (when (string-equal v PATH)
               (let ((paths nil))
@@ -187,11 +182,15 @@ See \\=`setenv\\='."
           :set!
           (read-sexp-from-file (shell-spec->* :file)))
          ;; `shell-file-name'
-         (let ((shell (shell-spec->* :shell-file-name)))
-           (when shell
-             (setq% explicit-shell-file-name shell shell)
-             (setq shell-file-name shell)
-             (setenv* (shell-spec->* :SHELL) shell)))
+         (let ((bin (shell-spec->* :shell-file-name)))
+           (when bin
+             (setq% explicit-shell-file-name bin shell)
+             (setq shell-file-name bin)
+             (setenv* (shell-spec->* :SHELL) bin)))
+         ;; `shell-command-switch'
+         (let ((switch (shell-spec->* :shell-command-switch)))
+           (when switch
+             (setq shell-command-switch switch)))
          ;; :copy-vars
          (copy-env-vars! (*default-shell-env* :get :copy-vars)
                          (shell-spec->* :copy-vars))

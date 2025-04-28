@@ -87,9 +87,9 @@
                       idx (1- idx)))
              (nconc (nreverse acc) (cons newelt seq))))))
 
-(defmacro insert! (newelt seq idx)
-  "Insert NEWELT into the SEQ."
-  `(setq ,seq (insert-at ,newelt ,seq ,idx)))
+;; (defmacro insert! (newelt seq idx)
+;;   "Insert NEWELT into the SEQ."
+;;   `(setq ,seq (insert-at ,newelt ,seq ,idx)))
 
 (defun flatten (seq)
   "Flatten SEQ."

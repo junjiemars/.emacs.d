@@ -25,12 +25,9 @@
 (eval-when-compile
   (require 'ed (v-home%> "config/ed"))
   (require 'ssh (v-home%> "config/ssh"))
-  (require 'tags (v-home%> "config/tags"))
-
-  (defmacro when-fn-ff-find-other-file% (&rest body)
-    (if-fn% ff-find-other-file find-file
-            `(progn% ,@body)
-      `(comment ,@body))))
+  (require 'tags (v-home%> "config/tags")))
+;; `ff-find-other-file'
+(require 'find-file)
 
 (when-fn% xref-push-marker-stack xref
   (autoload 'xref-push-marker-stack "xref"))
@@ -186,8 +183,8 @@
   (let* ((cc (if remote :cc (cc*-cc)))
          (inc (cc-spec->* cc :include))
          (rc (if remote
-                 (shell-command* "ssh"
-                   (concat (ssh-remote->user@host remote) " \"" inc "\""))
+                 (shell-command* "ssh" (ssh-remote->user@host remote)
+                                 " \"" inc "\"")
                (shell-command* inc))))
     (when (= 0 (car rc))
       (if-platform% windows-nt
@@ -197,52 +194,49 @@
         (cc*--include-parse (cdr rc))))))
 
 (defun cc*--include-file (&optional remote)
-  (let* ((ss (if remote
-                 (intern (mapconcat #'identity
-                                    (ssh-remote->ids remote)
-                                    "-"))
-               'native))
-         (fs (format "%s-%s.el" (v-home% ".exec/cc-inc") ss)))
-    (cons ss fs)))
+  (let ((id (if remote
+                (intern (mapconcat #'identity (ssh-remote->ids remote) "-"))
+              'native)))
+    (cons id (format "%s-%s.el" (v-home% ".exec/cc-inc") id))))
 
 (defun cc*--include-read (&optional remote save)
   (let* ((pair (cc*--include-file remote))
-         (key (car pair)) (file (cdr pair))
+         (id (car pair)) (file (cdr pair))
          (prefix (if remote (ssh-remote-p remote) nil)))
     (or (read-sexp-from-file file)
         (let ((xs nil))
           (dolist (x (cc*--include-probe remote) (setq xs (nreverse xs)))
             (let ((x1 (concat prefix x)))
               (and (file-exists-p x1) (setq xs (cons x1 xs)))))
-          (prog1 (cons key xs)
+          (prog1 (cons id xs)
             (and save xs (save-sexp-to-file xs file)))))))
 
 (defalias 'cc*-system-include
   (let ((dx nil))
     (lambda (&optional remote)
-      (let ((pair (cc*--include-file remote)))
-        (or (plist-get dx (car pair))
+      (let* ((pair (cc*--include-file remote))
+             (id (car pair)))
+        (or (plist-get dx id)
             (plist-get
-             (setq dx (plist-put dx (car pair) (cc*--include-read remote t)))
-             (car pair))))))
+             (setq dx (plist-put dx id (cc*--include-read remote t)))
+             id)))))
   "Return a list of system include directories.\n
 The REMOTE argument from \\=`ssh-remote-p\\='.")
 
-(when-fn-ff-find-other-file%
- (defun cc*-find-include-file (&optional in-other-window)
-   "Find C include file in \\=`cc*-system-include\\=' or specified directory."
-   (interactive "P")
-   (setq% cc-search-directories
-          (let ((file (buffer-file-name (current-buffer))))
-            (nconc (when (stringp file)
-                     (let ((pwd (file-name-directory file)))
-                       (list (string-trim> pwd "/")
-                             (string-trim> (path- pwd) "/"))))
-                   (cc*-system-include (ssh-remote-p file))))
-          find-file)
-   (when-fn% xref-push-marker-stack xref
-     (xref-push-marker-stack))
-   (ff-find-other-file in-other-window nil)))
+(defun cc*-find-include-file (&optional in-other-window)
+  "Find C include file in \\=`cc*-system-include\\=' or specified directory."
+  (interactive "P")
+  (setq% cc-search-directories
+         (let ((file (buffer-file-name (current-buffer))))
+           (nconc (when (stringp file)
+                    (let ((pwd (file-name-directory file)))
+                      (list (string-trim> pwd "/")
+                            (string-trim> (path- pwd) "/"))))
+                  (cc*-system-include (ssh-remote-p file))))
+         find-file)
+  (when-fn% xref-push-marker-stack xref
+    (xref-push-marker-stack))
+  (ff-find-other-file in-other-window nil))
 
 ;; end of #include
 
@@ -271,7 +265,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
          (cmd (format (cc-spec->* cc :define) (or option "")))
          (user@host (and remote (ssh-remote->user@host remote)))
          (rc (if user@host
-                 (ssh-remote-command user@host cmd)
+                 (shell-command* "ssh" user@host cmd)
                (if-platform% windows-nt
                    (cc*--define-dump option)
                  (shell-command* cmd)))))
@@ -310,8 +304,9 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
          (src (buffer-string))
          (out (concat (make-temp-file "cc_macro_") ".c"))
          (user@host (and remote (ssh-remote->user@host remote)))
-         (rout (and user@host (let ((mktemp (ssh-remote-command user@host
-                                              "mktemp -t cc_macro_XXXXXX.c")))
+         (rout (and user@host (let ((mktemp (shell-command*
+                                                "ssh" user@host
+                                                "mktemp -t cc_macro_XXXXXX.c")))
                                 (unless (= 0 (car mktemp))
                                   (error "Panic, mktemp: %s" mktemp))
                                 (string-trim> (cdr mktemp)))))
@@ -340,7 +335,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
                                              out (concat user@host ":" rout))))
                                   (unless (= 0 (car rc1))
                                     (error "Panic, scp: %s" rc1))
-                                  (ssh-remote-command user@host cmd rout)))
+                                  (shell-command* "ssh" user@host cmd rout)))
                      (t (shell-command* cmd out))))
       (erase-buffer)
       (goto-char (point-min))
@@ -507,8 +502,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
   (if-fn% subword-mode subword
           (define-key keymap "" #'subword-mode)
     (define-key keymap "" #'c-subword-mode))
-  (when-fn-ff-find-other-file%
-   (define-key keymap "fi" #'cc*-find-include-file))
+  (define-key keymap "fi" #'cc*-find-include-file)
   (define-key keymap "" #'cc*-macro-expand)
   (define-key keymap (kbd% "C-c M-c f") #'cc*-format-region))
 

@@ -32,12 +32,6 @@ On ancient Emacs, \\=`file-remote-p\\=' will return a vector."
               (and (car (cddr rid))
                    (concat "@" (car (cddr rid))))))))
 
-(defun ssh-remote-command (user@host command &rest args)
-  "Execute COMMAND with ARGS on USER@HOST via ssh."
-  (declare (indent 1))
-  (fluid-let (shell-file-name "sh")
-    (apply #'shell-command* "ssh" user@host command args)))
-
 
 
 (provide 'ssh)

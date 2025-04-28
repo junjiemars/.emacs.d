@@ -80,8 +80,8 @@
  :put :shell
  `( :copy-vars ("PATH")
     :spin-vars nil              ; (("ZZZ" . "123"))
-    :options nil                ; ("-i" "2>/dev/null") ; ("--login")
     :exec-path t
+    :shell-command-switch "-c"
     :shell-file-name ,(or (executable-find% "zsh")
                           (executable-find% "bash"))
     :prompt ( :bash "\\u@\\h \\W \\$ "

@@ -511,14 +511,14 @@ Return the name of FILE when successed otherwise nil."
       path)))
 
 (defun shell-command* (command &rest args)
-  "Return a cons cell (code . output) after execute COMMAND
- in inferior shell.\n
-See \\=`shell-command\\=' and \\=`shell-command-to-string\\=' for
-details. If you want to set the environment temporarily that
-\\=`shell-command*\\=' run in:
- (let ((process-environment (cons \"XXX=zzz\" process-environment)))
+  "Return a cons cell (code . output) after execute COMMAND.\n
+Optional ARGS for COMMAND.
+If you want to set the environment temporarily such that:
+ (let ((process-environment (cons \"XXX=zzz\" process-environment))
+       (shell-file-name \"sh\")
+       (shell-command-switch \"-c\")
    (shell-command* \"echo $XXX\"))\n
-Optional argument ARGS for COMMAND."
+See \\=`shell-command\\=' and \\=`shell-command-to-string\\='."
   (declare (indent 1))
   (let ((b (get-buffer-create* (symbol-name (gensym*)) t)))
     (unwind-protect

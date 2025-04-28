@@ -145,7 +145,6 @@
   (autoload 'ssh-remote-p (v-home%> "config/ssh"))
   (autoload 'ssh-remote->ids (v-home%> "config/ssh"))
   (autoload 'ssh-remote->user@host (v-home%> "config/ssh"))
-  (autoload 'ssh-remote-command (v-home%> "config/ssh"))
   ;; `tags'
   (autoload 'tags-spec->* (v-home%> "config/tags"))
   (autoload 'make-c-tags (v-home%> "config/tags"))
