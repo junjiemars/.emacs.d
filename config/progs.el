@@ -322,7 +322,7 @@ And copy the qualified buffer name to kill ring."
 
 (defun on-progs-key! ()
   ;; line
-  (define-global-key% (kbd "C-o") #'open-next-line)
+  (define-global-key% "" #'open-next-line)
   (define-global-key% (kbd "C-M-o") #'open-previous-line)
   ;; comment
   (define-global-key% (kbd "C-x M-;") #'toggle-comment)

@@ -320,7 +320,8 @@
   ;; `progs'
   (declare-function on-progs-init! (v-home%> "config/progs"))
   (autoload 'on-progs-init! (v-home%> "config/progs"))
-  (make-thread* #'on-progs-init!)
+  (with-eval-after-load 'prog-mode
+    (make-thread* #'on-progs-init!))
   ;; `pythons'
   (declare-function on-python-init! (v-home%> "config/pythons"))
   (autoload 'on-python-init! (v-home%> "config/pythons"))
