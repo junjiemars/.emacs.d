@@ -226,14 +226,13 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 (defun cc*-find-include-file (&optional in-other-window)
   "Find C include file in \\=`cc*-system-include\\=' or specified directory."
   (interactive "P")
-  (setq% cc-search-directories
-         (let ((file (buffer-file-name (current-buffer))))
-           (nconc (when (stringp file)
-                    (let ((pwd (file-name-directory file)))
-                      (list (string-trim> pwd "/")
-                            (string-trim> (path- pwd) "/"))))
-                  (cc*-system-include (ssh-remote-p file))))
-         find-file)
+  (setq cc-search-directories
+        (let ((file (buffer-file-name (current-buffer))))
+          (nconc (when (stringp file)
+                   (let ((pwd (file-name-directory file)))
+                     (list (string-trim> pwd "/")
+                           (string-trim> (path- pwd) "/"))))
+                 (cc*-system-include (ssh-remote-p file)))))
   (when-fn% xref-push-marker-stack xref
     (xref-push-marker-stack))
   (ff-find-other-file in-other-window nil))
@@ -503,7 +502,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
           (define-key keymap "" #'subword-mode)
     (define-key keymap "" #'c-subword-mode))
   (define-key keymap "fi" #'cc*-find-include-file)
-  (define-key keymap "" #'cc*-macro-expand)
+  (define-key keymap "E" #'cc*-macro-expand)
   (define-key keymap (kbd% "C-c M-c f") #'cc*-format-region))
 
 ;; end of keys
@@ -519,7 +518,8 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
     (when-fn% c-indent-line-or-region cc-cmds
       (define-key% c-mode-map (kbd "TAB") #'c-indent-line-or-region)))
   (and (boundp 'c-mode-map) (cc*-define-keys c-mode-map))
-  (and (boundp 'c++-mode-map) (cc*-define-keys c++-mode-map)))
+  (and (boundp 'c++-mode-map) (cc*-define-keys c++-mode-map))
+  t)
 
 ;; end of `cc-mode'
 
@@ -531,7 +531,8 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
   (defun on-c-ts-mode-init! ()
     "On \\=`c-ts-mode\\=' initialization."
     (and (boundp 'c-ts-mode-map) (cc*-define-keys c-ts-mode-map))
-    (and (boundp 'c++-ts-mode-map) (cc*-define-keys c++-ts-mode-map))))
+    (and (boundp 'c++-ts-mode-map) (cc*-define-keys c++-ts-mode-map))
+    t))
 
 ;; end of `c-ts-mode'
 
