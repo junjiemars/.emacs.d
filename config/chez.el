@@ -21,8 +21,8 @@
 ;;; https://www.emacswiki.org/emacs/r5rs.el
 ;;; https://groups.csail.mit.edu/mac/ftpdir/
 ;;;;
-;; usage:
-;;; 1. M-x `chez-mode'.
+;; use cases:
+;;; 1. M-x `chez-mode', then M-x `chez-load-file'.
 ;;; 2. M-x `run-chez'.
 ;;;;
 

@@ -15,9 +15,11 @@
 ;; references:
 ;;; https://nodejs.org
 ;;;;
-;;; bugs:
-;;;
+;; use cases:
+;;; 1. M-x `node-mode', then M-x `node-load-file'.
+;;; 2. M-x `run-node'.
 ;;;;;
+
 
 ;;; require
 
@@ -54,11 +56,11 @@
 
 (defun *node* ()
   "The current *node* process buffer."
-  (get-buffer-create "*node*"))
+  (get-buffer-create* "*node*" t))
 
 (defun *node-out* ()
   "The output buffer of \\=`node-completion\\='."
-  (get-buffer-create "*out|node*"))
+  (get-buffer-create* "*out|node*" t))
 
 (defalias '*node-start-file*
   (let ((b (v-home% ".exec/node.js")))
@@ -310,12 +312,12 @@ end of buffer, otherwise just popup the buffer."
 (defun node--mode-keymap ()
   (let ((m (make-sparse-keymap)))
     (define-key m "\M-\C-x" #'node-send-definition)
-    (define-key m "\C-c\C-j" #'node-send-line)
-    (define-key m "\C-c\C-l" #'node-load-file)
-    (define-key m "\C-c\C-k" #'node-compile-file)
-    (define-key m "\C-c\C-r" #'node-send-region)
-    (define-key m "\C-c\C-z" #'node-switch-to-repl)
-    (define-key m "\C-x\C-e" #'node-inspect-object)
+    (define-key m "" #'node-send-line)
+    (define-key m "" #'node-load-file)
+    (define-key m "" #'node-compile-file)
+    (define-key m "" #'node-send-region)
+    (define-key m "" #'node-switch-to-repl)
+    (define-key m "" #'node-inspect-object)
     m))
 
 (defvar node-mode-map (node--mode-keymap)
