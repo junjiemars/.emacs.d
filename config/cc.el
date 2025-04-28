@@ -223,14 +223,14 @@
       (let* ((pair (cc*--include-file remote))
              (id (car pair)))
         (or (plist-get dx id)
-            (plist-get
-             (setq dx (plist-put dx id (cc*--include-read remote t)))
-             id)))))
+            (progn
+              (setq dx (plist-put dx id (cc*--include-read remote t)))
+              (plist-get dx id))))))
   "Return a list of system include directories.\n
 The REMOTE argument from \\=`ssh-remote-p\\='.")
 
 (defun cc*-find-include-file (&optional in-other-window)
-  "Find C include file in \\=`cc*-system-include\\=' or specified directory."
+  "Find C #include file in \\=`cc*-system-include\\='."
   (interactive "P")
   (setq cc-search-directories
         (let ((file (buffer-file-name (current-buffer))))
