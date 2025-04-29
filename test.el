@@ -788,11 +788,11 @@
                      (when (fboundp 'cc*-make-env-bat)
                        (cc*-make-env-bat))))))
 
-(ert-deftest %q:cc:cc*--include-file ()
+(ert-deftest %q:cc:cc*--include-id-file ()
   (when (memq system-type `(cygwin ms-dos windows-nt))
-    (should (message "# (cc*--include-file) = %s"
-                     (when (fboundp 'cc*--include-file)
-                       (cc*--include-file))))))
+    (should (message "# (cc*--include-id-file) = %s"
+                     (when (fboundp 'cc*--include-id-file)
+                       (cc*--include-id-file :file))))))
 
 (ert-deftest %q:cc:cc*--include-read ()
   (when (memq system-type `(cygwin ms-dos windows-nt))

@@ -32,7 +32,9 @@
   (require 'ed (v-home%> "config/ed"))
   (require 'ssh (v-home%> "config/ssh"))
   (require 'tags (v-home%> "config/tags")))
+
 ;; `ff-find-other-file'
+;; `cc-search-directories'
 (require 'find-file)
 
 (when-fn% xref-push-marker-stack xref
@@ -46,7 +48,13 @@
 
 (defun cc-spec->* (cc cmd)
   "The spec of \\=`cc\\='."
-  (cond ((and cc (memq cc '(:cc :clang :gcc)))
+  (cond ((and cc (eq cc :meta))
+         (cond ((and cmd (eq cmd :list)) '(:cc :clang :gcc :msvc))
+               ((and cmd (eq cmd :cc)) "cc")
+               ((and cmd (eq cmd :clang)) "clang")
+               ((and cmd (eq cmd :gcc)) "gcc")
+               ((and cmd (eq cmd :msvc)) "msvc")))
+        ((and cc (memq cc '(:cc :clang :gcc)))
          (cond ((and cmd (eq cmd :compile)) "cc %s %s -o%s")
                ((and cmd (eq cmd :include))
                 "echo ''| cc -v -E 2>&1 >/dev/null -")
@@ -56,24 +64,19 @@
                ((and cmd (eq cmd :line-re)) "# \\([0-9]+\\)")
                ((and cmd (eq cmd :ver)) "cc -v")))
         ((and cc (eq cc :msvc))
-         (let ((msvc (v-home% ".exec/cc_msvc.bat")))
-           (cond ((and cmd (eq cmd :compile))
-                  (concat msvc " && cl %s %s"
-                          " -Fo" temporary-file-directory
-                          " -Fe%s"))
-                 ((and cmd (eq cmd :include)) msvc)
-                 ((and cmd (eq cmd :define)) "")
-                 ((and cmd (eq cmd :macro)) (concat msvc " &cl %s -E"))
-                 ((and cmd (eq cmd :env)) msvc)
-                 ((and cmd (eq cmd :line-fmt)) "#line %d \"%s\"")
-                 ((and cmd (eq cmd :line-re)) "#line \\([0-9]+\\)")
-                 ((and cmd (eq cmd :ver)) (concat msvc " && cl 2>nul")))))
-        ((and cc (eq cc :meta))
-         (cond ((and cmd (eq cmd :list)) '(:cc :clang :gcc :msvc))
-               ((and cmd (eq cmd :cc)) "cc")
-               ((and cmd (eq cmd :clang)) "clang")
-               ((and cmd (eq cmd :gcc)) "gcc")
-               ((and cmd (eq cmd :msvc)) "msvc")))))
+         (when-platform% windows-nt
+           (let ((msvc (v-home% ".exec/cc_msvc.bat")))
+             (cond ((and cmd (eq cmd :compile))
+                    (concat msvc " && cl %s %s"
+                            " -Fo" temporary-file-directory
+                            " -Fe%s"))
+                   ((and cmd (eq cmd :include)) msvc)
+                   ((and cmd (eq cmd :define)) "")
+                   ((and cmd (eq cmd :macro)) (concat msvc " &cl %s -E"))
+                   ((and cmd (eq cmd :env)) msvc)
+                   ((and cmd (eq cmd :line-fmt)) "#line %d \"%s\"")
+                   ((and cmd (eq cmd :line-re)) "#line \\([0-9]+\\)")
+                   ((and cmd (eq cmd :ver)) (concat msvc " && cl 2>nul"))))))))
 
 (defvar *cc-option-history* nil
   "History list for C compiler\\='s option.")
@@ -199,49 +202,49 @@
         ;; Darwin/Linux
         (cc*--include-parse (cdr rc))))))
 
-(defun cc*--include-file (&optional remote)
+(defun cc*--include-id-file (part &optional remote)
   (let ((id (if remote
                 (intern (mapconcat #'identity (ssh-remote->ids remote) "-"))
               'native)))
-    (cons id (format "%s-%s.el" (v-home% ".exec/cc-inc") id))))
+    (cond ((and part (eq :id part)) id)
+          ((and part (eq :file part))
+           (format "%s-%s.el" (v-home% ".exec/cc-inc") id)))))
 
 (defun cc*--include-read (&optional remote save)
-  (let* ((pair (cc*--include-file remote))
-         (id (car pair)) (file (cdr pair))
-         (prefix (if remote (ssh-remote-p remote) nil)))
+  (let ((file (cc*--include-id-file :file remote))
+        (prefix (if remote (ssh-remote-p remote) nil)))
     (or (read-sexp-from-file file)
         (let ((xs nil))
-          (dolist (x (cc*--include-probe remote) (setq xs (nreverse xs)))
-            (let ((x1 (concat prefix x)))
-              (and (file-exists-p x1) (setq xs (cons x1 xs)))))
-          (prog1 (cons id xs)
-            (and save xs (save-sexp-to-file xs file)))))))
+          (when (setq xs (dolist (x (cc*--include-probe remote) (nreverse xs))
+                           (setq xs (cons (concat prefix x) xs))))
+            (and save (save-sexp-to-file xs file))
+            xs)))))
 
 (defalias 'cc*-system-include
   (let ((dx nil))
     (lambda (&optional remote)
-      (let* ((pair (cc*--include-file remote))
-             (id (car pair)))
+      (let ((id (cc*--include-id-file :id remote)))
         (or (plist-get dx id)
-            (progn
-              (setq dx (plist-put dx id (cc*--include-read remote t)))
-              (plist-get dx id))))))
+            (plist-get
+             (setq dx (plist-put dx id (cc*--include-read remote t)))
+             id)))))
   "Return a list of system include directories.\n
 The REMOTE argument from \\=`ssh-remote-p\\='.")
 
 (defun cc*-find-include-file (&optional in-other-window)
   "Find C #include file in \\=`cc*-system-include\\='."
   (interactive "P")
-  (setq cc-search-directories
-        (let ((file (buffer-file-name (current-buffer))))
-          (nconc (when (stringp file)
-                   (let ((pwd (file-name-directory file)))
-                     (list (string-trim> pwd "/")
-                           (string-trim> (path- pwd) "/"))))
-                 (cc*-system-include (ssh-remote-p file)))))
-  (when-fn% xref-push-marker-stack xref
-    (xref-push-marker-stack))
-  (ff-find-other-file in-other-window nil))
+  (let ((cc-search-directories nil))
+    (setq cc-search-directories
+          (let ((file (buffer-file-name (current-buffer))))
+            (nconc (when (stringp file)
+                     (let ((pwd (file-name-directory file)))
+                       (list (string-trim> pwd "/")
+                             (string-trim> (path- pwd) "/"))))
+                   (cc*-system-include (ssh-remote-p file)))))
+    (when-fn% xref-push-marker-stack xref
+      (xref-push-marker-stack))
+    (ff-find-other-file in-other-window nil)))
 
 ;; end of #include
 
