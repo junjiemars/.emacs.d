@@ -234,17 +234,16 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
 (defun cc*-find-include-file (&optional in-other-window)
   "Find C #include file in \\=`cc*-system-include\\='."
   (interactive "P")
-  (let ((cc-search-directories nil))
-    (setq cc-search-directories
-          (let ((file (buffer-file-name (current-buffer))))
-            (nconc (when (stringp file)
-                     (let ((pwd (file-name-directory file)))
-                       (list (string-trim> pwd "/")
-                             (string-trim> (path- pwd) "/"))))
-                   (cc*-system-include (ssh-remote-p file)))))
-    (when-fn% xref-push-marker-stack xref
-      (xref-push-marker-stack))
-    (ff-find-other-file in-other-window nil)))
+  (setq cc-search-directories
+        (let ((file (buffer-file-name (current-buffer))))
+          (nconc (when (stringp file)
+                   (let ((pwd (file-name-directory file)))
+                     (list (string-trim> pwd "/")
+                           (string-trim> (path- pwd) "/"))))
+                 (cc*-system-include (ssh-remote-p file)))))
+  (when-fn% xref-push-marker-stack xref
+    (xref-push-marker-stack))
+  (ff-find-other-file in-other-window nil))
 
 ;; end of #include
 
