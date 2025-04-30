@@ -103,13 +103,7 @@ See \\=`setenv\\='."
     (and (stringp (car v)) (stringp (cdr v))
          (setenv* (car v) (cdr v)))))
 
-
-(defmacro copy-exec-path! (path)
-  (let ((p (gensym*)))
-    `(let ((,p ,path))
-       (and ,p (setq exec-path ,p)))))
-
-;; end of env
+ ;; end of env
 
 ;;;
 ;; windows
@@ -140,42 +134,36 @@ See \\=`setenv\\='."
 
 (defun self-shell-save! ()
   "Save \\=`*default-shell-env*\\=' to file."
-  (let ((vars nil)
+  (let ((vars nil) (paths nil)
         (default-directory (emacs-home%))
         (PATH (shell-spec->* :PATH))
-        (cp-exec-path? (shell-spec->* :exec-path)))
-    (dolist (v (shell-spec->* :copy-vars) vars)
+        (exec-path? (shell-spec->* :exec-path)))
+    (dolist (v (shell-spec->* :copy-vars))
       (when (stringp v)
-        (let ((val (echo-var v)))
-          (when (and val (> (length val) 0))
-            (when (string-equal v PATH)
-              (let ((paths nil))
-                (dolist (p (var->paths val))
-                  (let ((p1 (if-platform% windows-nt
-                                (posix-path p)
-                              p)))
-                    (when (and (stringp p1) (file-exists-p p1))
-                      (when cp-exec-path?
-                        (push! p1 exec-path))
-                      (append! p1 paths delete))))
-                (setq val (paths->var paths))))
-            (push! (cons v val) vars)))))
+        (let ((s (echo-var v)))
+          (when (and s (> (length s) 0))
+            (and (string-equal v PATH)
+                 (setq s (if-platform% windows-nt (posix-path s) s)))
+            (push! (cons v s) vars)))))
+    (when exec-path?
+      (dolist (p (var->paths (echo-var PATH)))
+        (let ((p1 (if-platform% windows-nt (posix-path p) p)))
+          (when (and (stringp p1) (> (length p1) 0))
+            (push! p1 paths delete)))))
+    (setq vars (nreverse vars)
+          paths (nreverse paths))
     (*default-shell-env* :set! nil)
     (*default-shell-env* :put! :copy-vars vars)
-    (when cp-exec-path?
-      (let ((paths '()))
-        (dolist (p exec-path)
-          (and (and (stringp p) (file-exists-p p))
-               (append! p paths delete)))
-        (append! (v-home% ".exec/") paths delete)
-        (*default-shell-env* :put! :exec-path paths))))
+    (push! (v-home% ".exec/") paths delete)
+    (append! exec-directory paths delete)
+    (*default-shell-env* :put! :exec-path paths))
   (save-sexp-to-file (*default-shell-env*) (shell-spec->* :file)))
 
 
 (defun self-shell-read! ()
   "Read \\=`*default-shell-env*\\=' from file."
   (cond ((null (shell-spec->* :allowed))
-         (append! (v-home% ".exec/") exec-path))
+         (push! (v-home% ".exec/") exec-path))
         (t
          ;; read from file
          (*default-shell-env*
@@ -194,12 +182,13 @@ See \\=`setenv\\='."
          ;; :copy-vars
          (copy-env-vars! (*default-shell-env* :get :copy-vars)
                          (shell-spec->* :copy-vars))
+         ;; :spin-vars
+         (spin-env-vars! (shell-spec->* :spin-vars))
          ;; :exec-path
          (when (shell-spec->* :exec-path)
-           (copy-exec-path!
-            (*default-shell-env* :get :exec-path)))
-         ;; :spin-vars
-         (spin-env-vars! (shell-spec->* :spin-vars))))
+           (let ((path (*default-shell-env* :get :exec-path)))
+             (when path
+               (setq exec-path path))))))
   (append! #'self-shell-save! kill-emacs-hook))
 
 
