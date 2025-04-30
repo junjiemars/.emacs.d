@@ -59,7 +59,10 @@
     "http://pypi.sdutlinux.org/")
   "List of pip mirror.")
 
-;; end of env
+(defvar *python-mirror-history* +python*-pip-mirror+
+  "Python mirror history list.")
+
+ ;; end of env
 
 ;;;
 ;; LSP
@@ -75,7 +78,7 @@
                         (throw :br a)))))
                 (car +python*-pip-mirror+)))
          (rc (shell-command* "source"
-               (concat venv "/bin/activate")
+               (path+ venv "/bin/activate")
                "&& pip config set global.index-url"
                x)))
     (unless (and (= 0 (car rc)) x)
@@ -123,19 +126,21 @@
 (defun python*--env-build (dir &optional mirror)
   (list :venv dir
         :pylsp (v-home% ".exec/pylsp.sh")
-        :python (concat dir "bin/python")
-        :pip (concat dir "bin/pip")
-        :fmt (concat dir "bin/ruff")
+        :python (path+ dir "/bin/python")
+        :pip (path+ dir "/bin/pip")
+        :fmt (path+ dir "/bin/ruff")
         :mirror mirror))
 
 (defun python*--venv-prompt ()
   (if current-prefix-arg
       (list (read-file-name "Python executable at ")
             (read-directory-name "Make venv for ")
-            (read-string "Has a pip mirror "))
+            (read-string "Has a pip mirror "
+                         (car *python-mirror-history*)
+                         '*python-mirror-history*))
     (list (python*-program :bin)
           (python*-venv :scratch)
-          (python*-venv :mirror))))
+          nil)))
 
 (defun python*--venv-activate! (dir)
   "Activate Python\\='s virtualenv at DIR.\n
@@ -146,7 +151,7 @@ Using \\=`sys.prefix\\=' or \\=`pip -V\\=' to check virtual env."
       (error "%s" "No python program found"))
     (let ((d (path! (path+ (expand-file-name dir) "/")))
           (v- (= -1 (vstrncmp v "3.3" 3))))
-      (unless (file-exists-p (concat d "/bin/activate"))
+      (unless (file-exists-p (path+ d "/bin/activate"))
         (cond ((and p v- (executable-find* "virtualenv"))
                (let ((rc (shell-command* "virtualenv" "-p" p d)))
                  (unless (= 0 (car rc))
@@ -157,7 +162,7 @@ Using \\=`sys.prefix\\=' or \\=`pip -V\\=' to check virtual env."
                    (error "Panic, %s" (string-trim> (cdr rc))))))
               (t (error "%s" "No python's venv found"))))
       (prog1 d
-        (python*--interpreter! (concat d "bin/python"))
+        (python*--interpreter! (path+ d "/bin/python"))
         (if-var% python-shell-virtualenv-root python
                  (setq python-shell-virtualenv-root d)
           (if-var% python-shell-virtualenv-path python
@@ -175,7 +180,7 @@ Using \\=`sys.prefix\\=' or \\=`pip -V\\=' to check virtual env."
 (defalias 'python*-venv
   (let* ((b (path! (emacs-home% "scratch/pyvenv/")))
          (file (v-home% ".exec/python-env.el"))
-         (env (python*--env-build b (python*-pip-mirror! b))))
+         (env (python*--env-build b)))
     (lambda (&optional op n)
       (cond ((and op (eq op :file)) file)
             ((and op (eq op :scratch)) b)
@@ -192,14 +197,13 @@ Using \\=`sys.prefix\\=' or \\=`pip -V\\=' to check virtual env."
 (defun python*-venv-make! (&optional python dir mirror)
   "Make Python\\='s venv for DIR."
   (interactive (python*--venv-prompt))
+  (python*-program :new python)
   (unless (python*-program :ver)
     (user-error "%s is not an executable" python))
   (let* ((venv (python*--venv-activate! dir))
-         (mirror (python*-pip-mirror!
-                  venv (or mirror (python*-venv :mirror)))))
+         (mirror (python*-pip-mirror! venv mirror)))
     (python*-venv :load (python*--env-build venv mirror))
     (python*-pylsp-make! venv (python*-venv :pylsp))
-    (python*--interpreter! (python*-venv :python))
     (save-sexp-to-file (python*-venv) (python*-venv :file))))
 
 ;; end of venv
