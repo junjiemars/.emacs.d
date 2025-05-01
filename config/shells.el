@@ -5,8 +5,12 @@
 ;;;;
 ;; shells.el
 ;;;;
-;; Commentary: shell's environment
+;; features:
+;;; 1. copy environment variable to `process-environment'.
+;;; 2. spin specified variable to `process-environment'.
+;;; 3. duplicate PATH to `exec-path'.
 ;;;;
+
 
 ;;;
 ;; spec
@@ -90,13 +94,11 @@ See \\=`setenv\\='."
         process-environment
       (setq process-environment (cons newval process-environment)))))
 
-
 (defun copy-env-vars! (env vars)
   (dolist (v vars)
     (and (> (length v) 0)
          (let ((v1 (cdr (assoc-string v env))))
            (and (stringp v1) (setenv* v v1))))))
-
 
 (defun spin-env-vars! (vars)
   (dolist (v vars)
