@@ -52,21 +52,6 @@
       (and (= 0 (car rc))
            (string-trim> (cdr rc))))))
 
-
-(defun paths->var (path &optional predicate)
-  "Convert a list of PATH to $PATH like var that separated by
-\\=`path-separator\\='."
-  (string-trim>
-   (let ((vs))
-     (dolist (s path vs)
-       (setq vs (concat vs (if (null predicate)
-                               (concat s path-separator)
-                             (when (and (functionp predicate)
-                                        (funcall predicate s))
-                               (concat s path-separator)))))))
-   path-separator))
-
-
 (defun var->paths (var)
   "Refine VAR like $PATH to list by \\=`path-separator\\='.\n
 See also: \\=`parse-colon-path\\='."
@@ -84,15 +69,16 @@ See also: \\=`parse-colon-path\\='."
 See \\=`setenv\\='."
   (let* ((env process-environment)
          (name= (concat name "="))
-         (newval (concat name= value)))
-    (if (catch :br
-          (while (car env)
-            (and (string-equal name= (car env))
-                 (setcar env newval)
-                 (throw :br t))
-            (setq env (cdr env))))
-        process-environment
-      (setq process-environment (cons newval process-environment)))))
+         (new (concat name= value)))
+    (catch :br
+      (while (car env)
+        (when (string-equal
+               name=
+               (substring-no-properties (car env) 0 (length name=)))
+          (setcar env new)
+          (throw :br process-environment))
+        (setq env (cdr env)))
+      (push! new process-environment))))
 
 (defun copy-env-vars! (env vars)
   (dolist (v vars)
@@ -112,7 +98,20 @@ See \\=`setenv\\='."
 ;;;
 
 (when-platform% windows-nt
+  (defun paths->var (path &optional predicate)
+    "Convert a list of PATH to $PATH like var that separated by
+\\=`path-separator\\='."
+    (string-trim>
+     (let ((vs))
+       (dolist (s path vs)
+         (setq vs (concat vs (if (null predicate)
+                                 (concat s path-separator)
+                               (when (and (functionp predicate)
+                                          (funcall predicate s))
+                                 (concat s path-separator)))))))
+     path-separator)))
 
+(when-platform% windows-nt
   (defun windows-nt-env-path+ (dir &optional append)
     "APPEND or push DIR to %PATH%."
     (let ((env (var->paths (getenv (shell-spec->* :PATH)))))
@@ -139,16 +138,18 @@ See \\=`setenv\\='."
   (let ((vars nil) (paths nil)
         (default-directory (emacs-home%))
         (PATH (shell-spec->* :PATH))
-        (exec-path? (shell-spec->* :exec-path)))
+        (exec-path? (shell-spec->* :exec-path))
+        (switch "-ic"))
     (dolist (v (shell-spec->* :copy-vars))
-      (when (stringp v)
-        (let ((s (echo-var v)))
-          (when (and s (> (length s) 0))
-            (and (string-equal v PATH)
-                 (setq s (if-platform% windows-nt (posix-path s) s)))
-            (push! (cons v s) vars)))))
+      (let ((s (let ((shell-command-switch switch))
+                 (echo-var v))))
+        (when (and s (> (length s) 0))
+          (and (string-equal v PATH)
+               (setq s (if-platform% windows-nt (posix-path s) s)))
+          (push! (cons v s) vars))))
     (when exec-path?
-      (dolist (p (var->paths (echo-var PATH)))
+      (dolist (p (var->paths (let ((shell-command-switch switch))
+                               (echo-var PATH))))
         (let ((p1 (if-platform% windows-nt (posix-path p) p)))
           (when (and (stringp p1) (> (length p1) 0))
             (push! p1 paths delete)))))
@@ -177,10 +178,6 @@ See \\=`setenv\\='."
              (setq% explicit-shell-file-name bin shell)
              (setq shell-file-name bin)
              (setenv* (shell-spec->* :SHELL) bin)))
-         ;; `shell-command-switch'
-         (let ((switch (shell-spec->* :shell-command-switch)))
-           (when switch
-             (setq shell-command-switch switch)))
          ;; :copy-vars
          (copy-env-vars! (*default-shell-env* :get :copy-vars)
                          (shell-spec->* :copy-vars))

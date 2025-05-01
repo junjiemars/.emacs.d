@@ -274,7 +274,7 @@
 
 (ert-deftest %d:fn:append! ()
   (should (equal '(a) (let ((s nil)) (append! 'a s))))
-  (should (equal '(a b c) (let ((s '(a b))) (append! 'c s))))
+  (should (equal '(a b c) (let ((s (list 'a 'b))) (append! 'c s))))
   (should (equal (list (list "a" "b") (list "c" "d"))
                  (let ((xs (list (list "a" "b"))))
                    (append! (list "a" "b") xs delete)
@@ -476,8 +476,9 @@
   (should (string-equal (kbd% "C-c f i") (kbd "C-c f i"))))
 
 (ert-deftest %d:fn:if/define-key% ()
-  (define-key global-map "" nil)
-  (should-not (if-key% global-map "" #'+ t nil))
+  (should-not (progn
+                (define-key global-map "" nil)
+                (if-key% global-map "" #'+ t nil)))
   (should (eq #'+ (define-global-key% "" #'+)))
   (should-not (define-key global-map "" nil))
   (should (eq #'+ (define-key% global-map "" #'+))))
@@ -541,17 +542,28 @@
                                    (cons "A=1" process-environment)))
                               (echo-var "A")))))
 
-(ert-deftest %f:shells:paths->var ()
-  (let ((path-separator ":"))
-    (should (string-equal "a:b:c" (paths->var '("a" "b" "c"))))
-    (should (string-equal "b" (paths->var '("a" "b" "c")
-                                          (lambda (x) (string-equal "b" x)))))
-    (should (string-equal "" (paths->var '("a" "b" "c")
-                                         (lambda (x) (file-exists-p x)))))))
-
 (ert-deftest %f:shells:var->paths ()
   (let ((path-separator ":"))
     (should (equal '("a" "b" "c") (var->paths "a:b:c")))))
+
+(ert-deftest %f:shells:paths->var ()
+  (when (fboundp 'paths->var)
+    (let ((path-separator ":"))
+      (should (string-equal "a:b:c" (paths->var '("a" "b" "c"))))
+      (should (string-equal
+               "b"
+               (paths->var '("a" "b" "c")
+                           (lambda (x) (string-equal "b" x)))))
+      (should (string-equal
+               ""
+               (paths->var '("a" "b" "c")
+                           (lambda (x) (file-exists-p x))))))))
+
+(ert-deftest %f:shells:windows-nt-env-path+ ()
+  (when (fboundp 'windows-nt-env-path+)
+    (should (equal '("PATH=/a/b/c")
+                   (let ((process-environment nil))
+                     (windows-nt-env-path+ "/a/b/c"))))))
 
 (ert-deftest %f:shells:setenv* ()
   (should (member "D=44"

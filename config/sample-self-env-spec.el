@@ -81,7 +81,6 @@
  `( :copy-vars ("PATH")
     :spin-vars nil              ; (("ZZZ" . "123"))
     :exec-path t
-    :shell-command-switch "-c"
     :shell-file-name ,(or (executable-find% "zsh")
                           (executable-find% "bash"))
     :prompt ( :bash "\\u@\\h \\W \\$ "
