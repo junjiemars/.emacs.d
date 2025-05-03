@@ -26,6 +26,8 @@
 
 ;;; require
 
+(declare-function vstrncmp (v-home%> "config/ed"))
+
  ;; end of require
 
 ;;; env
@@ -102,13 +104,13 @@
   "Make PYLSP for VENV."
   (set-file-modes
    (save-str-to-file
-    (format
-     (read-str-from-file (emacs-home* "config/pythons_lsp.sh"))
-     venv venv)
+    (format (read-str-from-file (emacs-home* "config/pythons_lsp.sh"))
+            venv venv)
     pylsp)
    #o744)
   (when-feature% eglot
-    (python*-eglot-sever-program)))
+    (python*-eglot-sever-program))
+  pylsp)
 
 ;; end of LSP
 

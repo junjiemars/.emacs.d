@@ -110,6 +110,9 @@
     (autoload 'on-clipboard-init! (v-home%> "config/clipboard"))
     (make-thread* #'on-clipboard-init!))
   ;; `ed'
+  (declare-function newline* (v-home%> "config/ed"))
+  (declare-function open-next-line (v-home%> "config/ed"))
+  (declare-function open-previous-line (v-home%> "config/ed"))
   (autoload 'delete-line* (v-home%> "config/ed"))
   (autoload 'file-in-dirs-p (v-home%> "config/ed"))
   (autoload 'newline* (v-home%> "config/ed") nil t)
@@ -375,6 +378,10 @@
 (defun define-global-key! ()
   ;; `compiles'
   (define-global-key% "pc" #'compile)
+  ;; `ed'
+  (define-global-key% "" #'open-next-line)
+  (define-global-key% (kbd "C-M-o") #'open-previous-line)
+  (define-global-key% "" #'newline*)
   ;; `ewws'
   (when-feature% eww
     (define-global-key% (kbd "M-s w") #'lookup-web)

@@ -18,10 +18,9 @@
 
 ;;; require
 
-(eval-when-compile
-  (require 'ed (v-home%> "config/ed"))
-  (require 'tags (v-home%> "config/tags"))
-  (require 'xrefs (v-home%> "config/xrefs")))
+(declare-function newline* (v-home%> "config/ed"))
+(declare-function make-dir-ctags (v-home%> "config/tags"))
+(declare-function xref*-read-only-dirs (v-home%> "config/xrefs"))
 
 ;; end of require
 

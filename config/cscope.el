@@ -27,9 +27,8 @@
 (require 'comint)
 (require 'compile)
 
-(eval-when-compile
-  (require 'ed (v-home%> "config/ed"))
-  (require 'marks (v-home%> "config/marks")))
+(declare-function read-string-prompt (v-home%> "config/ed"))
+(declare-function symbol@* (v-home%> "config/marks"))
 
 (when-fn% xref-push-marker-stack xref
   (autoload 'xref-push-marker-stack "xref"))

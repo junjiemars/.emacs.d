@@ -8,8 +8,7 @@
 
 ;;; requires
 
-(eval-when-compile
-  (require 'ed (v-home%> "config/ed")))
+(declare-function file-in-dirs-p (v-home%> "config/ed"))
 
 ;; end of requires
 

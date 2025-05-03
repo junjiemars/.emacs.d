@@ -11,8 +11,9 @@
 
 ;;; require
 
-(eval-when-compile
-  (require 'ed (v-home%> "config/ed")))
+(declare-function newline* (v-home%> "config/ed"))
+(declare-function open-next-line (v-home%> "config/ed"))
+(declare-function open-previous-line (v-home%> "config/ed"))
 
 ;; end of require
 
@@ -321,9 +322,6 @@ And copy the qualified buffer name to kill ring."
 ;;;
 
 (defun on-progs-key! ()
-  ;; line
-  (define-global-key% "" #'open-next-line)
-  (define-global-key% (kbd "C-M-o") #'open-previous-line)
   ;; comment
   (define-global-key% (kbd "C-x M-;") #'toggle-comment)
   (define-global-key% ";" #'comment-indent)
@@ -347,8 +345,6 @@ And copy the qualified buffer name to kill ring."
   ;; let `C-x r g' do `string-insert-rectangle'
   (define-global-key% "rg" #'string-insert-rectangle)
   (define-global-key% "rv" #'view-register)
-  ;; line
-  (define-key (current-global-map) (kbd% "RET") #'newline*)
   (define-global-key% (kbd "C-j") #'newline-and-indent)
   ;; buffers
   (define-global-key% "xc" #'clone-buffer)
