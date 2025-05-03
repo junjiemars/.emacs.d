@@ -100,18 +100,15 @@
 
 (defun python*-pylsp-make! (venv pylsp)
   "Make PYLSP for VENV."
-  (let ((rc (shell-command*
-                "chmod" "u+x"
-                (save-str-to-file
-                 (format
-                  (read-str-from-file
-                   (emacs-home* "config/pythons_lsp.sh"))
-                  venv venv)
-                 pylsp))))
-    (when (= 0 (car rc))
-      (prog1 pylsp
-        (when-feature% eglot
-          (python*-eglot-sever-program))))))
+  (set-file-modes
+   (save-str-to-file
+    (format
+     (read-str-from-file (emacs-home* "config/pythons_lsp.sh"))
+     venv venv)
+    pylsp)
+   #o744)
+  (when-feature% eglot
+    (python*-eglot-sever-program)))
 
 ;; end of LSP
 
