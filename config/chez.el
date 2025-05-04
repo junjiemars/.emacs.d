@@ -364,19 +364,15 @@ determined by the prefix UNTRACE argument."
  (defvar chez-mode-string nil
    "Modeline indicator for \\=`chez-mode\\='."))
 
-(defun chez--mode-keymap ()
-  (let ((keymap (make-sparse-keymap)))
-    (define-key keymap "" #'chez-compile-file)
-    (define-key keymap "\C-c\C-l" #'chez-load-file)
-    (define-key keymap "" #'chez-send-region)
-    (define-key keymap "" #'chez-trace-procedure)
-    (define-key keymap "" #'chez-switch-to-repl)
-    (define-key keymap "" #'chez-send-last-sexp)
-    (define-key keymap "\M-\C-x" #'chez-send-definition)
-    keymap))
-
-(defvar chez-mode-map (chez--mode-keymap)
-  "The keymap of \\=`chez-mode\\='.")
+(defun chez--mode-keymap (keymap)
+  (define-key keymap "" #'chez-compile-file)
+  (define-key keymap "\C-c\C-l" #'chez-load-file)
+  (define-key keymap "" #'chez-send-region)
+  (define-key keymap "" #'chez-trace-procedure)
+  (define-key keymap "" #'chez-switch-to-repl)
+  (define-key keymap "" #'chez-send-last-sexp)
+  (define-key keymap "\M-\C-x" #'chez-send-definition)
+  keymap)
 
 (define-minor-mode chez-mode
   "Toggle Chez's mode.\n
@@ -388,13 +384,13 @@ interacting with the Chez REPL is at your disposal.
 \\{chez-mode-map}"
   :init-value nil
   :lighter " Chez"
-  :keymap chez-mode-map
   :group 'scheme
   (add-hook (if-var% completion-at-point-functions minibuffer
                      'completion-at-point-functions
               'comint-dynamic-complete-functions)
             #'chez-completion 0 'local)
-  (chez-syntax-indent))
+  (chez-syntax-indent)
+  (chez--mode-keymap (current-local-map)))
 
 ;; end of `chez-mode'
 

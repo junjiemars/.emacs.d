@@ -295,19 +295,15 @@ end of buffer, otherwise just popup the buffer."
 (defun jshell-syntax-indent ()
   "Jshell java syntax indent.")
 
-(defun jshell--mode-keymap ()
-  (let ((keymap (make-sparse-keymap)))
-    (define-key keymap "\M-\C-x" #'jshell-send-definition)
-    (define-key keymap "\C-c\C-j" #'jshell-send-line)
-    (define-key keymap "\C-c\C-l" #'jshell-load-file)
-    ;; (define-key keymap "\C-c\C-k" #'jshell-compile-file)
-    (define-key keymap "" #'jshell-send-region)
-    (define-key keymap "" #'jshell-switch-to-repl)
-    (define-key keymap "" #'jshell-inspect-object)
-    keymap))
-
-(defvar jshell-mode-map (jshell--mode-keymap)
-  "The keymap of \\=`jshell-mode\\='.")
+(defun jshell--mode-keymap (keymap)
+  (define-key keymap "\M-\C-x" #'jshell-send-definition)
+  (define-key keymap "\C-c\C-j" #'jshell-send-line)
+  (define-key keymap "\C-c\C-l" #'jshell-load-file)
+  ;; (define-key keymap "\C-c\C-k" #'jshell-compile-file)
+  (define-key keymap "" #'jshell-send-region)
+  (define-key keymap "" #'jshell-switch-to-repl)
+  (define-key keymap "" #'jshell-inspect-object)
+  keymap)
 
 (define-minor-mode jshell-mode
   "Toggle Jshell's mode.\n
@@ -319,13 +315,13 @@ interacting with the Jshell REPL is at your disposal.
 \\{jshell-mode-map}"
   :init-value nil
   :lighter " Jshell"
-  :keymap jshell-mode-map
   :group 'java
   (add-hook (if-var% completion-at-point-functions minibuffer
                      'completion-at-point-functions
               'comint-dynamic-complete-functions)
             #'jshell-completion 0 'local)
-  (jshell-syntax-indent))
+  (jshell-syntax-indent)
+  (jshell--mode-keymap (current-local-map)))
 
 ;; end of jshell-mode
 

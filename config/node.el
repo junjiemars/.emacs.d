@@ -309,19 +309,15 @@ end of buffer, otherwise just popup the buffer."
 (defun node-syntax-indent ()
   "Node javascript syntax indent.")
 
-(defun node--mode-keymap ()
-  (let ((m (make-sparse-keymap)))
-    (define-key m "\M-\C-x" #'node-send-definition)
-    (define-key m "\C-c\C-j" #'node-send-line)
-    (define-key m "\C-c\C-l" #'node-load-file)
-    (define-key m "" #'node-compile-file)
-    (define-key m "" #'node-send-region)
-    (define-key m "" #'node-switch-to-repl)
-    (define-key m "" #'node-inspect-object)
-    m))
-
-(defvar node-mode-map (node--mode-keymap)
-  "The keymap of \\=`node-mode\\='.")
+(defun node--mode-keymap (keymap)
+  (define-key keymap "\M-\C-x" #'node-send-definition)
+  (define-key keymap "\C-c\C-j" #'node-send-line)
+  (define-key keymap "\C-c\C-l" #'node-load-file)
+  (define-key keymap "" #'node-compile-file)
+  (define-key keymap "" #'node-send-region)
+  (define-key keymap "" #'node-switch-to-repl)
+  (define-key keymap "" #'node-inspect-object)
+  keymap)
 
 (define-minor-mode node-mode
   "Toggle Node's mode.\n
@@ -333,13 +329,13 @@ interacting with the Node REPL is at your disposal.
 \\{node-mode-map}"
   :init-value nil
   :lighter " Node"
-  :keymap node-mode-map
   :group 'node
   (add-hook (if-var% completion-at-point-functions minibuffer
                      'completion-at-point-functions
               'comint-dynamic-complete-functions)
             #'node-completion 0 'local)
-  (node-syntax-indent))
+  (node-syntax-indent)
+  (node--mode-keymap (current-local-map)))
 
 ;; end of `node-mode'
 
