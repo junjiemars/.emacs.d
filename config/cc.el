@@ -28,12 +28,6 @@
 
 ;;; require
 
-(declare-function make-c-tags (v-home%> "config/tags"))
-(declare-function newline* (v-home%> "config/ed"))
-(declare-function ssh-remote-p (v-home%> "config/ssh"))
-(declare-function ssh-remote->ids (v-home%> "config/ssh"))
-(declare-function ssh-remote->user@host (v-home%> "config/ssh"))
-
 ;; `ff-find-other-file'
 ;; `cc-search-directories'
 (require 'find-file)

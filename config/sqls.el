@@ -8,7 +8,6 @@
 
 ;;; require
 
-(declare-function delete-line* (v-home%> "config/ed"))
 
 ;; end of require
 

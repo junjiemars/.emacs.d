@@ -18,10 +18,6 @@
 
 ;;; require
 
-(declare-function newline* (v-home%> "config/ed"))
-(declare-function make-dir-ctags (v-home%> "config/tags"))
-(declare-function xref*-read-only-dirs (v-home%> "config/xrefs"))
-
 ;; end of require
 
 ;;; sysroot

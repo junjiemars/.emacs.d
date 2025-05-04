@@ -25,9 +25,6 @@
 
 (require 'comint)
 (require 'scheme)
-;; (require 'thingatpt)
-
-(declare-function newline* (v-home%> "config/ed"))
 
 ;; end of require
 

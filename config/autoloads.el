@@ -111,8 +111,12 @@
     (make-thread* #'on-clipboard-init!))
   ;; `ed'
   (declare-function newline* (v-home%> "config/ed"))
+  (declare-function delete-line* (v-home%> "config/ed"))
+  (declare-function file-in-dirs-p (v-home%> "config/ed"))
   (declare-function open-next-line (v-home%> "config/ed"))
   (declare-function open-previous-line (v-home%> "config/ed"))
+  (declare-function read-string-prompt (v-home%> "config/ed"))
+  (declare-function vstrncmp (v-home%> "config/ed"))
   (autoload 'delete-line* (v-home%> "config/ed"))
   (autoload 'file-in-dirs-p (v-home%> "config/ed"))
   (autoload 'newline* (v-home%> "config/ed") nil t)
@@ -145,10 +149,16 @@
   (autoload 'mark-symbol@ (v-home%> "config/marks") nil t)
   (autoload 'mark-word@ (v-home%> "config/marks") nil t)
   ;; `ssh'
+  (declare-function ssh-remote-p (v-home%> "config/ssh"))
+  (declare-function ssh-remote->ids (v-home%> "config/ssh"))
+  (declare-function ssh-remote->user@host (v-home%> "config/ssh"))
   (autoload 'ssh-remote-p (v-home%> "config/ssh"))
   (autoload 'ssh-remote->ids (v-home%> "config/ssh"))
   (autoload 'ssh-remote->user@host (v-home%> "config/ssh"))
   ;; `tags'
+  (declare-function tags-spec->* (v-home%> "config/tags"))
+  (declare-function make-c-tags (v-home%> "config/tags"))
+  (declare-function make-dir-ctags (v-home%> "config/tags"))
   (autoload 'tags-spec->* (v-home%> "config/tags"))
   (autoload 'make-c-tags (v-home%> "config/tags"))
   (autoload 'make-dir-ctags (v-home%> "config/tags"))
@@ -367,6 +377,7 @@
   ;; `xrefs'
   (declare-function on-xref-init! (v-home%> "config/xrefs"))
   (declare-function on-etags-init! (v-home%> "config/xrefs"))
+  (declare-function xref*-read-only-dirs (v-home%> "config/xrefs"))
   (autoload 'on-xref-init! (v-home%> "config/xrefs"))
   (autoload 'on-etags-init! (v-home%> "config/xrefs"))
   (autoload 'xref*-read-only-dirs (v-home%> "config/xrefs"))

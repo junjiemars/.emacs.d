@@ -8,8 +8,6 @@
 
 ;;; requires
 
-(declare-function file-in-dirs-p (v-home%> "config/ed"))
-
 ;; end of requires
 
 (defalias 'project*-root-dirs

@@ -11,10 +11,6 @@
 
 ;;; require
 
-(declare-function newline* (v-home%> "config/ed"))
-(declare-function open-next-line (v-home%> "config/ed"))
-(declare-function open-previous-line (v-home%> "config/ed"))
-
 ;; end of require
 
 ;;;

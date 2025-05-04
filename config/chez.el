@@ -32,9 +32,6 @@
 (require 'comint)
 (require 'scheme)
 
-(declare-function newline* (v-home%> "config/ed"))
-(declare-function read-string-prompt (v-home%> "config/ed"))
-
 ;; end of require
 
 ;;;

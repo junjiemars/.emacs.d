@@ -26,8 +26,6 @@
 
 ;;; require
 
-(declare-function vstrncmp (v-home%> "config/ed"))
-
  ;; end of require
 
 ;;; env

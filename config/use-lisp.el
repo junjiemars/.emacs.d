@@ -8,8 +8,6 @@
 
 ;;; require
 
-(declare-function newline* (v-home%> "config/ed"))
-
 ;; end of require
 
 (defun lisp*-featured! ()
