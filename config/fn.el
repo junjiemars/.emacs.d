@@ -536,16 +536,14 @@ See \\=`shell-command\\=' and \\=`shell-command-to-string\\='."
 (defun executable-find* (command &optional fn)
   "Return the path of COMMAND.\n
 Call FN with the path if FN is non-nil."
-  (let ((rc (shell-command* (if-platform% windows-nt
-                                "where"
-                              "command -v")
-              command)))
-    (when (= 0 (car rc))
-      (let ((ss (string-trim> (cdr rc))))
-        (cond (fn (funcall fn (shell-quote-argument ss)))
-              (t (if-platform% windows-nt
-                     (posix-path ss)
-                   ss)))))))
+  (let* ((path exec-path)
+         (X_OK 1)
+         (rc (locate-file-internal command path nil X_OK)))
+    (when rc
+      (cond (fn (funcall fn (shell-quote-argument rc)))
+            (t (if-platform% windows-nt
+                   (posix-path rc)
+                 rc))))))
 
 (defmacro executable-find% (command &optional fn)
   "Return from \\=excutable-find*\\= at compile time."
