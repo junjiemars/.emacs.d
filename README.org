@@ -1106,7 +1106,7 @@ Global for all Emacs' version.
 #+REVEAL: split
 - @@html:<kbd>@@C-c M-@@@html:</kbd>@@: =mark-word@=
 - @@html:<kbd>@@C-c C-M-@@@html:</kbd>@@: =mark-sexp@=
-- @@html:<kbd>@@C-c M-h@@html:</kbd>@@: =mark-defun@=
+- @@html:<kbd>@@C-c C-M-h@@html:</kbd>@@: =mark-defun@=
 - @@html:<kbd>@@C-c M-l@@html:</kbd>@@: =mark-line@=
 - @@html:<kbd>@@C-c M-f@@html:</kbd>@@: =mark-filename@=
 - @@html:<kbd>@@C-c M-s@@html:</kbd>@@: =mark-string@=

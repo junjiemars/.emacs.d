@@ -413,7 +413,7 @@
   (define-global-key% (kbd "C-c C-M-@") #'mark-sexp@)
   (define-global-key% (kbd "C-c M-@") #'mark-word@)
   (define-global-key% (kbd "C-c M-f") #'mark-filename@)
-  (define-global-key% (kbd "C-c M-h") #'mark-defun@)
+  (define-global-key% (kbd "C-c C-M-h") #'mark-defun@)
   (define-global-key% (kbd "C-c M-l") #'mark-line@)
   (define-global-key% (kbd "C-c M-s") #'mark-string@)
   (define-global-key% (kbd "C-M-@") #'mark-sexp)
