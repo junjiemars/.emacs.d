@@ -29,6 +29,11 @@
                 (goto-char (point-max)))))
         ((and recipe (eq :tex recipe))
          (cond ((and spec (eq spec :txt))
+                ;; for CJK:
+                ;; % \\usepackage{xeCJK}
+                ;; % \\setCJKmainfont{SimSong}
+                ;; % \\setmainfont{Times New Roman}
+                ;; % (setq TeX-engine 'xetex)
                 (read-str-from-file
                  (dup-file
                   (emacs-home% "config/scratch.tex")
