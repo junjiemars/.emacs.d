@@ -65,13 +65,6 @@ This is run before the process is cranked up.")
   "The output buffer of \\=`chez-completion\\='."
   (get-buffer-create* "*out|chez*" t))
 
-(defalias '*chez-start-file*
-  (let ((b (v-home% ".exec/chez.ss")))
-    (lambda ()
-      (cond ((file-exists-p b) b)
-            (t (copy-file (emacs-home% "config/chez.ss") b t) b))))
-  "The \\=`*chez*\\=' process start file.")
-
 (defalias 'chez-switch-to-last-buffer
   (let ((b nil))
     (lambda (&optional n)
@@ -254,7 +247,8 @@ Run the hook \\=`chez-repl-mode-hook\\=' after the \\=`comint-mode-hook\\='."
              (buffer-name (current-buffer))
              (current-buffer)
              (chez-program)
-             (*chez-start-file*)
+             (dup-file (emacs-home% "config/chez.ss")
+                       (v-home% ".exec/chez.ss"))
              (cdr (split-string* command-line "\\s-+" t)))
       (chez-repl-mode)
       (add-hook (if-var% completion-at-point-functions minibuffer

@@ -6,86 +6,75 @@
 ;; scratch.el
 ;;;;
 
+;;; env
 
-(defvar *scratch-recipe*
-  `(("*"
-     .
-     ( :msg ,(substitute-command-keys initial-scratch-message)
-       :mod ,(lambda () (lisp-interaction-mode))))
-    ("org"
-     .
-     ( :msg
-       "#+title: Scratch Org
-#+author: Nore Emacs
-
-* scratch
-  :PROPERTIES:
-  :CUSTOM_ID: scratch
-  :END:
-
-# This buffer is for /Org/ that is not saved.
-
-
-"
-       :mod ,(lambda () (org-mode))
-       :pos ,(lambda ()
-               (goto-char (point-min))
-               (forward-line 8))))
-    ("tex"
-     .
-     ( :msg
-       "\\documentclass{article}
-\\title{Scratch Tex}
-\\author{Nore Emacs}
-\\usepackage{amsmath}
-\\begin{document}
-\\maketitle
-
-% This buffer is for \\TeX{} that is not saved.
-
-\\end{document}
-"
-       ;; % \\usepackage{amssymb}
-       ;; % \\usepackage{xeCJK}
-       ;; % \\setCJKmainfont{SimSong}
-       ;; % \\setmainfont{Times New Roman}
-       ;; % (setq TeX-engine 'xetex)
-       :mod latex-mode
-       :pos ,(lambda ()
-               (goto-char (point-min))
-               (forward-line 5)))))
-  "The recipes of scratch.")
+(defun scratch-spec->* (recipe spec)
+  (cond ((and recipe (eq :* recipe))
+         (cond ((and spec (eq spec :txt))
+                (substitute-command-keys initial-scratch-message))
+               ((and spec (eq spec :mod))
+                (lisp-interaction-mode))
+               ((and spec (eq spec :pos))
+                (goto-char (point-max))
+                (forward-line 1))))
+        ((and recipe (eq :org recipe))
+         (cond ((and spec (eq spec :txt))
+                (read-str-from-file
+                 (dup-file
+                  (emacs-home% "config/scratch.org")
+                  (v-home% ".exec/scratch.org"))))
+               ((and spec (eq spec :mod))
+                (org-mode))
+               ((and spec (eq spec :pos))
+                (goto-char (point-max)))))
+        ((and recipe (eq :tex recipe))
+         (cond ((and spec (eq spec :txt))
+                (read-str-from-file
+                 (dup-file
+                  (emacs-home% "config/scratch.tex")
+                  (v-home% ".exec/scratch.txt"))))
+               ((and spec (eq spec :mod))
+                (latex-mode))
+               ((and spec (eq spec :pos))
+                (goto-char (point-max))
+                (forward-line -3))))
+        ((and recipe (eq :meta recipe))
+         (cond ((and spec (eq spec :list))
+                (list "*" "org" "tex"))
+               ((and spec (string-equal spec "*")) :*)
+               ((and spec (string-equal spec "org")) :org)
+               ((and spec (string-equal spec "tex")) :tex)))))
 
 (defvar *scratch-recipe-history* nil
   "The scratch recipe choosing history list.")
 
+(defun scratch--prompt ()
+  (let ((recipes (scratch-spec->* :meta :list)))
+    (list (if current-prefix-arg
+              (completing-read
+               (format "Choose (%s) "
+                       (mapconcat #'identity recipes "|"))
+               recipes
+               nil nil (car *scratch-recipe-history*)
+               '*scratch-recipe-history* (car recipes))
+            (car recipes)))))
+
+;; end of env
+
 (defun scratch (&optional recipe)
   "New a *scratch* buffer by RECIPE or switch to the existing one."
-  (interactive
-   (list (if current-prefix-arg
-             (completing-read
-              (format "Choose (%s) "
-                      (mapconcat #'identity
-                                 (mapcar #'car *scratch-recipe*)
-                                 "|"))
-              (mapcar #'car *scratch-recipe*)
-              nil nil (car *scratch-recipe-history*)
-              '*scratch-recipe-history* (caar *scratch-recipe*))
-           (caar *scratch-recipe*))))
+  (interactive (scratch--prompt))
   (switch-to-buffer
    (let ((n (format "*%s*" (if (string-equal "*" recipe)
                                "scratch"
-                             (concat "scratch-" recipe)))))
-     (or (get-buffer n)
-         (with-current-buffer (get-buffer-create n)
-           (when (= 0 (buffer-size))
-             (let ((k (cdr (assoc-string recipe *scratch-recipe*))))
-               (insert (substring-no-properties (plist-get k :msg)))
-               (funcall (plist-get k :mod))
-               (when (plist-get k :pos)
-                 (funcall (plist-get k :pos)))
-               (set-buffer-modified-p nil)))
-           (current-buffer))))))
+                             (concat "scratch-" recipe))))
+         (r (scratch-spec->* :meta recipe)))
+     (with-current-buffer (get-buffer-create n)
+       (when (= 0 (buffer-size))
+         (insert (scratch-spec->* r :txt))
+         (scratch-spec->* r :mod)
+         (scratch-spec->* r :pos))
+       (current-buffer)))))
 
 
 

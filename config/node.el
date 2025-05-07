@@ -62,14 +62,6 @@
   "The output buffer of \\=`node-completion\\='."
   (get-buffer-create* "*out|node*" t))
 
-(defalias '*node-start-file*
-  (let ((b (v-home% ".exec/node.js")))
-    (lambda ()
-      (inhibit-file-name-handler
-        (cond ((file-exists-p b) b)
-              (t (copy-file (emacs-home% "config/node.js") b))))))
-  "the \\=`*node*\\=' process start file.")
-
 (defalias 'node-switch-to-last-buffer
   (let ((b))
     (lambda (&optional n)
@@ -185,7 +177,8 @@ Run the hook `node-repl-mode-hook' after the `comint-mode-hook'."
              (buffer-name (current-buffer))
              (current-buffer)
              (node-program)
-             (*node-start-file*)
+             (dup-file (emacs-home% "config/node.js")
+                       (v-home% ".exec/node.js"))
              (split-string* command-line "\\s-+" t))
       (node-repl-mode)
       (add-hook (if-var% completion-at-point-functions minibuffer

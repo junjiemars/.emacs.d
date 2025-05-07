@@ -78,6 +78,13 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
 ;; file
 ;;;
 
+(defun dup-file (src dst &optional force)
+  "Dup SRC to DST when DST does not exist or FORCE."
+  (inhibit-file-name-handler
+    (when (or force (null (file-exists-p dst)))
+      (copy-file src dst t)))
+  dst)
+
 (defun file-in-dirs-p (file dirs)
   "Return the matched dir if FILE in DIRS, otherwise nil."
   (when (and (stringp file) (consp dirs))

@@ -130,17 +130,13 @@ Return absolute filename when FILENAME exists, otherwise nil."
   "Make lldb\\='s init file if FORCE or the init file is missing.\n
 Return the name of init file and ~/.lldbinit-lldb file no touched."
   (let ((init (v-home% ".exec/gud_lldb.rc"))
+        (apropos (v-home% ".exec/gud_lldb.py"))
         (proc (get-buffer-process (*lldb*))))
-    (inhibit-file-name-handler
-      (when (or force (null (file-exists-p init)))
-        (copy-file (emacs-home% "config/gud_lldb.rc") init t)
-        (copy-file
-         (emacs-home% "config/gud_lldb.py")
-         (v-home% ".exec/gud_lldb.py") t)))
+    (dup-file (emacs-home% "config/gud_lldb.rc") init force)
+    (dup-file (emacs-home% "config/gud_lldb.py") apropos force)
     (unless proc
       (error "%s" "No lldb process found"))
-    (gud-basic-call
-     (format (read-str-from-file init) (v-home% ".exec/")))
+    (gud-basic-call (format (read-str-from-file init) (v-home% ".exec/")))
     init))
 
 (defun lldb-completion-read (in buffer)
@@ -286,7 +282,7 @@ the buffer in which this command was invoked."
                    #'gud-lldb-find-file)
 
   (*lldb* (get-buffer (format "*gud-%s*" gud-target-name)))
-  (lldb-start-file t)
+  (lldb-start-file)
 
   (set (make-local-variable 'gud-minor-mode) 'lldb)
   (set (make-local-variable 'comint-prompt-regexp) +gud-lldb-prompt-regexp+)

@@ -53,14 +53,6 @@
   "The output buffer of \\=`jshell-completion\\='."
   (get-buffer-create* "*out|jshell*" t))
 
-(defalias '*jshell-start-file*
-  (let ((b (v-home% ".exec/jshell.jsh")))
-    (lambda ()
-      (inhibit-file-name-handler
-        (cond ((file-exists-p b) b)
-              (t (copy-file (emacs-home% "config/jshell.jsh") b))))))
-  "The \\=`*jshell*\\=' process start file.")
-
 (defalias 'jshell-switch-to-last-buffer
   (let ((b))
     (lambda (&optional n)
@@ -179,7 +171,9 @@ Run the hook \\=`jshell-repl-mode-hook\\=' after the \\=`comint-mode-hook\\='."
              nil
              (append (list "--startup" "DEFAULT"
                            "--startup" "PRINTING"
-                           "--startup" (*jshell-start-file*))
+                           "--startup" (dup-file
+                                        (emacs-home% "config/jshell.jsh")
+                                        (v-home% ".exec/jshell.jsh")))
                      (split-string* command-line "\\s-+" t)))
       (jshell-repl-mode)
       (add-hook (if-var% completion-at-point-functions minibuffer
