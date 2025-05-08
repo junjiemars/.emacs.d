@@ -46,14 +46,14 @@
 
 (defun compile*-command-name (command)
   "Return classified compile COMMAND name."
-  (let* ((p1 "/?\\([^ /]+\\) +")
+  (let* ((p1 "[./]?\\([^ /]+\\) +")
          (s1 (string-match* p1 command 1)))
     (cond ((string-equal s1 "cd")
-           (let ((cd (string-match* (concat "^ *cd.*?&&[ .]+" p1) command 1)))
+           (let ((cd (string-match* "[;&]+ *[./]*\\([^ ;&/]+\\)" command 1)))
              (or (and cd (concat "cd/" cd))
                  s1)))
           ((string-equal s1 "ssh")
-           (let ((ssh (string-match* (concat "^ *ssh *" p1) command 1)))
+           (let ((ssh (string-match* (concat "ssh *" p1) command 1)))
              (or (and ssh (concat "ssh/" ssh))
                  s1)))
           (t s1))))
