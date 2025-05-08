@@ -102,6 +102,18 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
 ;; end of file
 
 ;;;
+;; keyword
+;;;
+
+(defun keyword->string (keyword)
+  (substring-no-properties (symbol-name keyword) 1))
+
+(defun string->keyword (string)
+  (intern (concat ":" string)))
+
+;; end of keyword
+
+;;;
 ;; parse
 ;;;
 

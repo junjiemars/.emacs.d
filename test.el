@@ -614,6 +614,9 @@
 ;; `ed'
 ;;;
 
+(ert-deftest %h:ed:keyword->string ()
+  (should (eq :foo (string->keyword (keyword->string :foo)))))
+
 (ert-deftest %h:ed:vstrncmp ()
   (should (= 0 (vstrncmp "" "")))
   (should (> (vstrncmp "1" "") 0))

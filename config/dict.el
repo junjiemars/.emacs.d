@@ -64,7 +64,8 @@
                   " How to use" . (dict--remove-html-tag)))))
         ((and dict (eq dict :meta))
          (cond ((and spec (eq spec :list))
-                `("bing" "cambridge" "longman" "webster"))
+                (mapcar #'keyword->string
+                        `(:bing :cambridge :longman :webster)))
                ((and spec (eq spec :bing)) `(:AmE :BrE :meta))
                ((and spec (eq spec :cambridge)) `(:AmE :BrE :meta))
                ((and spec (eq spec :longman)) `(:BrE :meta))
@@ -84,12 +85,6 @@
       (cond (n (plist-put b w n))
             (t (plist-get b w)))))
   "Dictonary logging switch.")
-
-(defun dict--keyword->string (keyword)
-  (substring-no-properties (symbol-name keyword) 1))
-
-(defun dict--string->keyword (string)
-  (intern (concat ":" string)))
 
 ;; end of env
 
@@ -209,8 +204,8 @@
                 (car ds)))
              specs
              (let ((ss (mapcar
-                        #'dict--keyword->string
-                        (dict-spec->* :meta (dict--string->keyword dict)))))
+                        #'keyword->string
+                        (dict-spec->* :meta (string->keyword dict)))))
                (completing-read
                 (format "Choose (all|%s) " (mapconcat #'identity ss ","))
                 (cons all ss)
@@ -221,8 +216,8 @@
      (setq dict
            (cond ((and (null dict) (null (car *dict-name-history*))) :bing)
                  ((car *dict-name-history*)
-                  (dict--string->keyword (car *dict-name-history*)))
-                 (t (dict--string->keyword dict)))
+                  (string->keyword (car *dict-name-history*)))
+                 (t (string->keyword dict)))
            specs
            (cond ((and (null specs) (null (car *dict-spec-history*)))
                   (dict-spec->* :meta dict))
@@ -232,7 +227,7 @@
                  (t (let ((ss (split-string*
                                (or specs (car *dict-spec-history*))
                                "," t "[ \n]*")))
-                      (mapcar #'dict--string->keyword ss)))))
+                      (mapcar #'string->keyword ss)))))
      (cons dict specs))))
 
 (defun lookup-dict (what &optional dict)

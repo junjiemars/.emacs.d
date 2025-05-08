@@ -44,11 +44,7 @@
 (defun cc-spec->* (cc cmd)
   "The spec of \\=`cc\\='."
   (cond ((and cc (eq cc :meta))
-         (cond ((and cmd (eq cmd :list)) '(:cc :clang :gcc :msvc))
-               ((and cmd (eq cmd :cc)) "cc")
-               ((and cmd (eq cmd :clang)) "clang")
-               ((and cmd (eq cmd :gcc)) "gcc")
-               ((and cmd (eq cmd :msvc)) "msvc")))
+         (cond ((and cmd (eq cmd :list)) '(:cc :clang :gcc :msvc))))
         ((and cc (memq cc '(:cc :clang :gcc)))
          (cond ((and cmd (eq cmd :compile)) "cc %s %s -o%s")
                ((and cmd (eq cmd :include))
@@ -92,7 +88,7 @@
            (vsroot (concat pfroot " (x86)/Microsoft Visual Studio/"))
            (vswhere (concat vsroot "Installer/vswhere.exe")))
       (when (file-exists-p vswhere)
-        (posix-path
+p        (posix-path
          (or (let* ((rc (shell-command* (shell-quote-argument vswhere)
                           "-nologo -latest -property installationPath"))
                     (bat (and (= 0 (car rc))
@@ -138,7 +134,7 @@
       (copy-file (emacs-home% "config/cc_check.c") in))
     (catch :br
       (dolist (cc cx)
-        (let* ((out (concat pre (cc-spec->* :meta cc) ext))
+        (let* ((out (concat pre (keyword->string cc) ext))
                (cmd (format (cc-spec->* cc :compile) "" in out)))
           (cond ((and (null restrict) (file-exists-p out))
                  (throw :br cc))

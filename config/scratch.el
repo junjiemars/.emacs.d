@@ -45,10 +45,7 @@
                 (forward-line -3))))
         ((and recipe (eq :meta recipe))
          (cond ((and spec (eq spec :list))
-                (list "*" "org" "tex"))
-               ((and spec (string-equal spec "*")) :*)
-               ((and spec (string-equal spec "org")) :org)
-               ((and spec (string-equal spec "tex")) :tex)))))
+                (mapcar #'keyword->string `(:* :org :tex)))))))
 
 (defvar *scratch-recipe-history* nil
   "The scratch recipe choosing history list.")
@@ -72,8 +69,8 @@
   (switch-to-buffer
    (let ((n (format "*%s*" (if (string-equal "*" recipe)
                                "scratch"
-                             (concat "scratch-" recipe))))
-         (r (scratch-spec->* :meta recipe)))
+                             (concat "scratch/" recipe))))
+         (r (string->keyword recipe)))
      (with-current-buffer (get-buffer-create n)
        (when (= 0 (buffer-size))
          (insert (scratch-spec->* r :txt))
