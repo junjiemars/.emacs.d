@@ -10,10 +10,47 @@
 
 (require 'browse-url)
 
-;; (autoload 'browse-url-default-browser "browse-url")
-;; (autoload 'browse-url-url-encode-chars "browse-url")
-
 ;; end of require
+
+;;; env
+
+(defun eww-spec->* (recipe spec)
+  (cond ((and recipe (eq :bing recipe))
+         (cond ((and spec (eq spec :web))
+                "https://www.bing.com/")
+               ((and spec (eq spec :qry))
+                "search?ensearch=1&q=")))
+        ((and recipe (eq :duck recipe))
+         (cond ((and spec (eq spec :web))
+                "https://duckduckgo.com/")
+               ((and spec (eq spec :qry))
+                "?q=")))
+        ((and recipe (eq :google recipe))
+         (cond ((and spec (eq spec :web))
+                "https://www.google.com/")
+               ((and spec (eq spec :qry))
+                "search?q=")))
+        ((and recipe (eq :math recipe))
+         (cond ((and spec (eq spec :web))
+                "https://mathworld.wolfram.com/")
+               ((and spec (eq spec :qry))
+                "search?query=")))
+        ((and recipe (eq :so recipe))
+         (cond ((and spec (eq spec :web))
+                "https://stackoverflow.com/")
+               ((and spec (eq spec :qry))
+                "search?q=")))
+        ((and recipe (eq :wiki recipe))
+         (cond ((and spec (eq spec :web))
+                "https://en.wikipedia.org/")
+               ((and spec (eq spec :qry))
+                "w/index.php?search=")))
+        ((and recipe (eq :meta recipe))
+         (cond ((and spec (eq spec :list))
+                (mapcar #'keyword->string
+                        `(:bing :duck :google :math :so :wiki)))))))
+
+ ;; end of env
 
 (defun toggle-browser! (&optional arg)
   "Toggle default browser.\n
@@ -39,74 +76,43 @@ is non-nil, otherwise is not. See also:
   "Disable \\=`eww\\=' truncate long lines."
   (toggle-truncate-lines nil))
 
-(defalias '*web-defs*
-  (let ((b `(("bing" "https://www.bing.com/"
-              . "search?ensearch=1&q=")
-             ("duck" "https://duckduckgo.com/"
-              . "?q=")
-             ("google" "https://www.google.com/"
-              . "search?q=")
-             ("math" "https://mathworld.wolfram.com/"
-              . "search?query=")
-             ("so" "https://stackoverflow.com/"
-              . "search?q=")
-             ("wiki" "https://en.wikipedia.org/"
-              . "w/index.php?search="))))
-    (lambda (&optional n)
-      (if n (let ((x (assoc-string (car n) b)))
-              (if x (setcdr x (cdr n))
-                (setq b (cons n b))))
-        b)))
-  "Searching engines using by \\=`lookup-web\\='.")
-
 (defun on-eww-init! ()
   "On \\=`eww\\=' initialization."
   (add-hook 'eww-mode-hook #'eww*-truncate-lines)
-  (when (consp (*web-defs*))
-    (setq% eww-search-prefix
-           (concat (car (cdar (*web-defs*)))
-                   (cdr (cdar (*web-defs*)))))))
+  (setq% eww-search-prefix (eww-spec->* :bing :web)))
 
 ;; end of `eww'
 
 ;;; `lookup-web' find web via search engine
-;;; eww also has a new `eww-search-words' supports searching via web.
+
+;; eww also has a new `eww-search-words' supports searching via web.
 
 (defvar *lookup-web-history* nil
   "Searching history using by \\=`lookup-web\\='.")
 
-(defalias 'web-find-def
-  (let ((b '()))
-    (lambda  (&optional en)
-      (cond ((or en (null b))
-             (setq b (assoc-string (or en
-                                       (car *lookup-web-history*)
-                                       (caar (*web-defs*)))
-                                   (*web-defs*))))
-            (t b))))
-  "Find web's definition in \\=`*web-defs*\\='.")
+(defun lookup-web--prompt ()
+  (let ((recipes (eww-spec->* :meta :list)))
+    (list (read-string "Lookup web for " (symbol@*))
+          (if current-prefix-arg
+              (completing-read
+               (format "Choose (%s) "
+                       (mapconcat #'identity recipes "|"))
+               (car recipes)
+               nil nil (car *lookup-web-history*)
+               '*lookup-web-history* (car recipes))
+            (car recipes)))))
 
-(defun lookup-web (what &optional engine)
-  "Lookup web via search ENGINE."
-  (interactive
-   (list (read-string "Lookup web for " (symbol@*))
-         (when current-prefix-arg
-           (let ((se (mapcar #'car (*web-defs*))))
-             (completing-read
-              (format "Choose (%s) "
-                      (mapconcat #'identity se "|"))
-              (mapcar #'car (*web-defs*))
-              nil nil (car *lookup-web-history*)
-              '*lookup-web-history* (car se))))))
-  (let ((en (web-find-def engine)))
-    (make-thread*
-     (lambda ()
-       (funcall browse-url-browser-function
-                (let ((en1 (cdr en)))
-                  (require 'browse-url)
-                  (browse-url-url-encode-chars
-                   (concat (car en1) (cdr en1) what)
-                   "[ '()!`\"]")))))))
+(defun lookup-web (what &optional recipe)
+  "Lookup web via search RECIPE."
+  (interactive (lookup-web--prompt))
+  (make-thread*
+   (lambda ()
+     (funcall browse-url-browser-function
+              (browse-url-url-encode-chars
+               (concat (eww-spec->* recipe :web)
+                       (eww-spec->* recipe :qry)
+                       what)
+               "[ '()!`\"]")))))
 
 ;; end of `lookup-web'
 
