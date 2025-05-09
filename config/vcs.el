@@ -48,14 +48,6 @@
 
 ;; end of `vcs'
 
-;;; `log-view'
-
-(unless-graphic%
-  (with-eval-after-load 'log-view
-    (set-face-background 'log-view-message +tui-background-color+)
-    (set-face-foreground 'log-view-message +tui-foreground-color+)))
-
-;; end of `log-view'
 
 (provide 'vcs)
 

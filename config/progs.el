@@ -309,7 +309,15 @@ And copy the qualified buffer name to kill ring."
     (set-face-foreground 'match +tui-foreground-color+)
     (when% (facep 'completions-highlight)
       (set-face-background 'completions-highlight +tui-background-color+)
-      (set-face-foreground 'completions-highlight +tui-foreground-color+))))
+      (set-face-foreground 'completions-highlight +tui-foreground-color+))
+    (with-eval-after-load 'log-view
+      (set-face-background 'log-view-message +tui-background-color+)
+      (set-face-foreground 'log-view-message +tui-foreground-color+))
+    (with-eval-after-load 'diff-mode
+      (set-face-foreground 'diff-header +tui-foreground-color+)
+      (set-face-foreground 'diff-added +tui-foreground-color+)
+      (set-face-foreground 'diff-removed +tui-foreground-color+)))
+  t)
 
 ;; end of `on-progs-env!'
 
@@ -368,7 +376,8 @@ And copy the qualified buffer name to kill ring."
         (toggle-read-only t))
       (local-set-key "q" #'quit-window)
       (local-set-key (kbd% "DEL") #'scroll-down)
-      (local-set-key (kbd% "SPC") #'scroll-up))))
+      (local-set-key (kbd% "SPC") #'scroll-up)))
+  t)
 
 ;; end of `on-progs-key!'
 
@@ -399,7 +408,8 @@ And copy the qualified buffer name to kill ring."
     (when% (fluid-let (byte-compile-warnings nil)
              (require 'uniquify nil t))
       (require 'uniquify)
-      (setq uniquify-buffer-name-style 'post-forward-angle-brackets))))
+      (setq uniquify-buffer-name-style 'post-forward-angle-brackets)))
+  t)
 
 ;; end of `on-progs-mode!'
 
@@ -411,7 +421,8 @@ And copy the qualified buffer name to kill ring."
   (on-minibuffer-init!)
   (on-sort-init!)
   (when-fn% whitespace-mode whitespace
-    (on-whitespace-init!)))
+    (on-whitespace-init!))
+  t)
 
 
 
