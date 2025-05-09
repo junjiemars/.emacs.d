@@ -131,45 +131,6 @@ test_module() {
      (melpa . 2)
      (nongnu . 1))
    :allowed t))
-(*self-mod-spec*
- :put :lisp
- (list
-   :cond t
-   :packages '(paredit rainbow-delimiters)
-   :compile (list (compile-unit* (emacs-home* "config/use-lisp.el") t)
-              (compile-unit* (emacs-home* "config/use-lisp-autoload.el")))))
-(*self-mod-spec*
- :put :lua
- (list
-   :cond (executable-find* "lua")
-   :packages '(lua-mode)))
-(*self-mod-spec*
- :put :org
- (list
-   :cond (executable-find* "latex")
-   :packages (list 'auctex 'cdlatex (when-version% <= 25 'ox-reveal))
-   :compile (list (compile-unit* (emacs-home* "config/use-org.el") t)
-              (compile-unit* (emacs-home* "config/use-org-autoload.el")))))
-(*self-mod-spec*
- :put :vcs
- (list
-   :cond (when-version% <= 27.1 (executable-find* "git"))
-   :packages (prog1 '(magit)
-               (set-default 'magit-define-global-key-bindings nil))
-   :compile (list (compile-unit* (emacs-home* "config/use-magit.el") t)
-              (compile-unit* (emacs-home* "config/use-magit-autoload.el")))))
-(*self-mod-spec*
- :put :rust
- (list
-   :cond (and (executable-find* "rustc") (executable-find* "cargo"))
-   :packages '(rust-mode)
-   :compile (list (compile-unit* (emacs-home* "config/use-rust.el") t)
-              (compile-unit* (emacs-home* "config/use-rust-autoload.el")))))
-(*self-mod-spec*
- :put :vlang
- (list
-   :cond (executable-find* "v")
-   :packages '(v-mode)))
 END
   echo "# cat <${_ENV_PRO_}"
   cat <"${_ENV_PRO_}"
@@ -242,6 +203,49 @@ test_profile() {
          (melpa . 2)
          (nongnu . 1))
        :allowed $mod))
+(*self-mod-spec*
+ :put :lisp
+ (list
+   :cond t
+   :packages '(paredit rainbow-delimiters)
+   :compile (list (compile-unit* (emacs-home* "config/use-lisp.el") t)
+              (compile-unit* (emacs-home* "config/use-lisp-autoload.el")))))
+(*self-mod-spec*
+ :put :lua
+ (list
+   :cond (executable-find* "lua")
+   :packages '(lua-mode)))
+(*self-mod-spec*
+ :put :org
+ (list
+   :cond (executable-find* "latex")
+   :packages (list 'auctex 'cdlatex (when-version% <= 25 'ox-reveal))
+   :compile (list (compile-unit* (emacs-home* "config/use-org.el") t)
+              (compile-unit* (emacs-home* "config/use-org-autoload.el")))))
+(*self-mod-spec*
+ :put :vcs
+ (list
+   :cond (when-version% <= 27.1 (executable-find* "git"))
+   :packages (prog1 '(magit)
+               (set-default 'magit-define-global-key-bindings nil))
+   :compile (list (compile-unit* (emacs-home* "config/use-magit.el") t)
+              (compile-unit* (emacs-home* "config/use-magit-autoload.el")))))
+(*self-mod-spec*
+ :put :rust
+ (list
+   :cond (and (executable-find* "rustc") (executable-find* "cargo"))
+   :packages '(rust-mode)
+   :compile (list (compile-unit* (emacs-home* "config/use-rust.el") t)
+              (compile-unit* (emacs-home* "config/use-rust-autoload.el")))))
+(*self-mod-spec*
+ :put :common-lisp
+ (list
+   :cond (or (executable-find* "sbcl")
+             (executable-find* "ecl")
+             (executable-find* "acl"))
+   :packages '(slime)
+   :compile (list (compile-unit% (emacs-home* "config/use-slime.el") t)
+              (compile-unit% (emacs-home* "config/use-slime-autoload.el")))))
 END
   echo "# cat <${_ENV_PRO_}"
   cat <"${_ENV_PRO_}"

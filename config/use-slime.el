@@ -6,14 +6,14 @@
 ;; use-slime.el
 ;;;;
 
-(defalias 'slime*-lisp-implementations
-  (let ((b (let ((ns nil))
-             (dolist (x '(sbcl ecl acl) ns)
-               (let ((bin (executable-find* (symbol-name x))))
-                 (when bin (push! (list x (list bin)) ns)))))))
-    (lambda (&optional n)
-      (setq% slime-lisp-implementations (if n (push! n b) b) slime)))
-  "Parameterized \\=`slime-lisp-implementations\\='.")
+(defun slime*-lisp-implementations (&optional implementation)
+  "Parameterized \\=`slime-lisp-implementations\\='."
+  (setq% slime-lisp-implementations
+         (let ((ns nil))
+           (dolist (x (append implementation '("sbcl" "ecl" "acl")) ns)
+             (let ((bin (executable-find* x)))
+               (and bin (push! (list x (list bin)) ns)))))
+         slime))
 
 (defalias 'slime*-source-locations
   (let ((b nil))

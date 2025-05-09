@@ -43,8 +43,7 @@
 (defalias 'rust*-sysroot
   (let ((b (rust*-sysroot-spec)))
     (lambda (&optional op)
-      (cond ((and op (eq op :new)) (setq b (rust*-sysroot-spec)))
-            (op (plist-get b op))
+      (cond (op (plist-get b op))
             (t b))))
   "Rust sysroot.")
 
@@ -54,7 +53,7 @@
 ;; debug
 ;;;
 
-(defun rust*-debug-spec ()
+(defun rust*-debug-spec! ()
   "Rust debugging spec."
   (let ((w (get-buffer-create* (symbol-name (gensym*)) t))
         (x (concat "/rustc/" (rust*-sysroot :hash)))
@@ -94,13 +93,6 @@
               (write-region* (point-min) (point-max) f nil :slient))))
       (when w (kill-buffer w)))))
 
-(defalias 'rust*-debug-env-make!
-  (let ((b (rust*-debug-spec)))
-    (lambda (&optional op)
-      (cond ((and op (eq op :new)) (setq b (rust*-debug-spec)))
-            (t b))))
-  "Make rust source debuggable.")
-
 ;; end of debug
 
 ;;;
@@ -120,7 +112,8 @@
 (defun use-rust-init! ()
   "On \\=`rust\\=' initialization."
   (xref*-read-only-dirs :push (rust*-sysroot :sysroot))
-  (rust*-debug-env-make!))
+  (rust*-debug-spec!)
+  t)
 
 
 
