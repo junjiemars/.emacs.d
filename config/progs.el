@@ -303,13 +303,13 @@ And copy the qualified buffer name to kill ring."
   (put 'upcase-region 'disabled nil)
   ;; fix some terminal theme confused with background and foreground.
   (unless-graphic%
-    (set-face-background 'region +term-background-color+)
-    (set-face-foreground 'region +term-foreground-color+)
-    (set-face-background 'match +term-background-color+)
-    (set-face-foreground 'match +term-foreground-color+)
+    (set-face-background 'region +tui-background-color+)
+    (set-face-foreground 'region +tui-foreground-color+)
+    (set-face-background 'match +tui-background-color+)
+    (set-face-foreground 'match +tui-foreground-color+)
     (when% (facep 'completions-highlight)
-      (set-face-background 'completions-highlight +term-background-color+)
-      (set-face-foreground 'completions-highlight +term-foreground-color+))))
+      (set-face-background 'completions-highlight +tui-background-color+)
+      (set-face-foreground 'completions-highlight +tui-foreground-color+))))
 
 ;; end of `on-progs-env!'
 

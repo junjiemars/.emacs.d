@@ -93,8 +93,8 @@
         (when h (set-frame-height nil h))))))
 
 (unless-graphic%
-  (defconst +term-background-color+ "yellow")
-  (defconst +term-foreground-color+ "black"))
+  (defconst +tui-background-color+ "yellow")
+  (defconst +tui-foreground-color+ "black"))
 
 ;; end of Frame
 

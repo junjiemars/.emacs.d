@@ -47,8 +47,8 @@
       (setq% magit-git-executable "git" magit)))
   ;; contrast color for `magit-section-highlight'
   (unless-graphic%
-    (set-face-background 'magit-section-highlight +term-background-color+)
-    (set-face-foreground 'magit-section-highlight +term-foreground-color+)))
+    (set-face-background 'magit-section-highlight +tui-background-color+)
+    (set-face-foreground 'magit-section-highlight +tui-foreground-color+)))
 
 
 

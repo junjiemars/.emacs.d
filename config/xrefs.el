@@ -91,8 +91,8 @@
       'xref--show-location #'xref--show-location*))
   (unless-graphic%
     (when% (facep 'xref-match)
-      (set-face-background 'xref-match +term-background-color+)
-      (set-face-foreground 'xref-match +term-foreground-color+))))
+      (set-face-background 'xref-match +tui-background-color+)
+      (set-face-foreground 'xref-match +tui-foreground-color+))))
 
 
 (unless-fn% xref-find-references xref
