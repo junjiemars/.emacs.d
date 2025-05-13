@@ -219,13 +219,13 @@ If ONLY-COMPILE is t, do not load DST."
   `(let ((-calf-s1- ,src) (-calf-d1- ,dst) (-calf-c1- ,only-compile))
      (unless (file-exists-p -calf-d1-)
        ,(if +native-comp-available+
-            (list `native-compile `-calf-s1- `-calf-d1-)
-          (list `byte-compile-file `-calf-s1-)))
+            (list 'native-compile '-calf-s1- '-calf-d1-)
+          (list 'byte-compile-file '-calf-s1-)))
      (if -calf-c1-
          -calf-d1-
        ,(if +native-comp-available+
-            (list `native-elisp-load `-calf-d1-)
-          (list `load -calf-d1- nil nil t)))))
+            (list 'native-elisp-load '-calf-d1-)
+          (list 'load '-calf-d1- nil nil t)))))
 
 (defun clean-compiled-files ()
   "Clean all compiled files."
