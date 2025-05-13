@@ -126,8 +126,7 @@ If RESET is true then reset before load."
              ;; load theme from :custom-theme-directory
              (let ((dir (theme-spec->* :custom-theme-directory))
                    (name (theme-spec->* :name)))
-               (if (and (theme-spec->* :compile)
-                        (if-native-comp% nil t))
+               (if (theme-spec->* :compile)
                    (let ((f (concat dir
                                     (symbol-name name)
                                     "-theme.el")))

@@ -158,19 +158,14 @@ else do ELSE..."
 ;; compile macro
 ;;;
 
-(defmacro if-native-comp% (then &rest else)
-  "If native compilation is built-in, do THEN, else do ELSE..."
-  (declare (indent 1))
-  (if (and (fboundp 'native-comp-available-p) (native-comp-available-p))
-      `,then
-    `(progn% ,@else)))
+(defconst +native-comp-available+
+  (and (fboundp 'native-comp-available-p)
+       (native-comp-available-p))
+  "Whether native compilation is built-in.")
 
-(defmacro when-native-comp% (&rest body)
-  "When native compilation support is built-in, do BODY."
-  (declare (indent 0))
-  `(if-native-comp% (progn% ,@body)))
-
-(defconst +comp-file-extension+ (if-native-comp% ".eln" ".elc"))
+(defconst +comp-file-extension+
+  (if +native-comp-available+ ".eln" ".elc")
+  "The extension of compilation file.")
 
 (defmacro make-v-comp-file (src)
   "Make a versioned cons copy of SRC."
@@ -223,14 +218,14 @@ else do ELSE..."
 If ONLY-COMPILE is t, do not load DST."
   `(let ((-calf-s1- ,src) (-calf-d1- ,dst) (-calf-c1- ,only-compile))
      (unless (file-exists-p -calf-d1-)
-       (if-native-comp%
-           (native-compile -calf-s1- -calf-d1-)
-         (byte-compile-file -calf-s1-)))
+       ,(if +native-comp-available+
+            (list `native-compile `-calf-s1- `-calf-d1-)
+          (list `byte-compile-file `-calf-s1-)))
      (if -calf-c1-
          -calf-d1-
-       (if-native-comp%
-           (native-elisp-load -calf-d1-)
-         (load -calf-d1- nil nil t)))))
+       ,(if +native-comp-available+
+            (list `native-elisp-load `-calf-d1-)
+          (list `load -calf-d1- nil nil t)))))
 
 (defun clean-compiled-files ()
   "Clean all compiled files."
@@ -268,7 +263,7 @@ If ONLY-COMPILE is t, do not load DST."
 ;;;
 
 ;; native-comp env
-(when-native-comp%
+(when +native-comp-available+
   ;; slient native-comp warning
   (setq native-comp-async-report-warnings-errors 'silent)
   ;; first native-comp load
