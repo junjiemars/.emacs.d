@@ -52,16 +52,17 @@
 ;; `gensym*' since Emacs-26+
 ;;;
 
-(defvar *gensym-counter* 0 "The counter of \\=`gensym*\\='.")
+(defalias 'gensym*
+  (let ((pre "n") (cnt 0))
+    (lambda (&optional prefix)
+      (let ((pre1 (or prefix pre)))
+        (make-symbol
+         (concat pre1
+                 (prog1 (number-to-string cnt)
+                   (setq cnt (1+ cnt))))))))
+  "Generate a new uninterned symbol, PREFIX default is \"n\".")
 
-(defun gensym* (&optional prefix)
-  "Generate a new uninterned symbol, PREFIX default is \"n\"."
-  (make-symbol
-   (concat (or prefix "n")
-           (prog1 (number-to-string *gensym-counter*)
-             (setq *gensym-counter* (1+ *gensym-counter*))))))
-
-;; end of `gensym*'
+ ;; end of `gensym*'
 
 ;;;
 ;; if-*
