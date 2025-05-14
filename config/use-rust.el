@@ -56,7 +56,7 @@
 (defun rust*-debug-spec! ()
   "Rust debugging spec."
   (let ((w (get-buffer-create* (symbol-name (gensym*)) t))
-        (x (concat "/rustc/" (rust*-sysroot :hash)))
+        (x (path+ "/rustc" (rust*-sysroot :hash)))
         (s (path+ (rust*-sysroot :src) "rust"))
         (f (path+ (rust*-sysroot :etc)
              (if-platform% gnu/linux
@@ -66,7 +66,7 @@
         (catch :br
           (prog1 f
             (with-current-buffer w
-              (insert-file-contents-literally* f)
+              (insert-file-contents f)
               (goto-char (point-min))
               (when (re-search-forward
                      (concat (if-platform% gnu/linux
@@ -90,7 +90,7 @@
                            x s)
                  (format "settings set target.source-map %s %s"
                          x s)))
-              (write-region* (point-min) (point-max) f nil :slient))))
+              (write-region (point-min) (point-max) f nil :slient))))
       (when w (kill-buffer w)))))
 
 ;; end of debug

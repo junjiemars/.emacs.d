@@ -43,7 +43,7 @@
 
 (defmacro inhibit-file-name-handler (&rest body)
   "Inhibit BODY under \\=`file-name-handler-alist\\='."
-  (declare (indent 0))
+  (declare (indent 0) (debug t))
   `(let ((file-name-handler-alist nil))
      ,@body))
 

@@ -34,7 +34,7 @@
       "Make ZIP.bat in \\=`exec-path\\=' for minizip or 7z[a]."
       (declare (indent 1))
       (when (stringp zip)
-        (write-str-to-file
+        (write-file*
          (concat
           "@echo off\n"
           (format "REM zip.bat for %s on Windows\n" zip)

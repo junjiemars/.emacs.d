@@ -136,7 +136,7 @@ Return the name of init file and ~/.lldbinit-lldb file no touched."
     (dup-file (emacs-home% "config/gud_lldb.py") apropos force)
     (unless proc
       (error "%s" "No lldb process found"))
-    (gud-basic-call (format (read-str-from-file init) (v-home% ".exec/")))
+    (gud-basic-call (format (read-file* init) (v-home% ".exec/")))
     init))
 
 (defun lldb-completion-read (in buffer)

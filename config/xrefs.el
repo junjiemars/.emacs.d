@@ -51,10 +51,10 @@
                 (path- invocation-directory))
              ,(when-package% package*-user-dir))))
     (lambda (&optional op dir)
-      (cond ((and op (eq op :read)) (setq b (read-sexp-from-file f)))
+      (cond ((and op (eq op :read)) (setq b (read-file* f t)))
             ((and op (eq op :push)) (and (> (length dir) 0)
                                          (push! dir b delete)))
-            ((and op (eq op :save)) (write-sexp-to-file b f))
+            ((and op (eq op :save)) (write-file* b f))
             ((and op (eq op :file)) f)
             (t b)))))
 

@@ -19,7 +19,7 @@
     (lambda (&optional op n)
       (cond ((and op (eq op :file)) file)
             ((and op (eq op :scratch)) b)
-            ((and op (eq op :save)) (and env (write-sexp-to-file env file)))
+            ((and op (eq op :save)) (and env (write-file* env file)))
             ((and n op (eq op :load)) (setq env n))
             (t env))))
   "The \\=`treesit\\=' recipe.")
@@ -79,7 +79,7 @@
   (let ((recipe (treesit*-recipe :file)))
     (unless (file-exists-p recipe)
       (copy-file (treesit*-recipe :scratch) recipe t))
-    (treesit*-recipe :load (read-sexp-from-file recipe))))
+    (treesit*-recipe :load (read-file* recipe t))))
 
 (defun toggle-treesit! ()
   "Toggle \\=`treesit\\=' on or off."

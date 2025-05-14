@@ -101,8 +101,8 @@
 (defun python*-pylsp-make! (venv pylsp)
   "Make PYLSP for VENV."
   (set-file-modes
-   (write-str-to-file
-    (format (read-str-from-file (emacs-home* "config/pythons_lsp.sh"))
+   (write-file*
+    (format (read-file* (emacs-home* "config/pythons_lsp.sh"))
             venv venv)
     pylsp)
    #o744)
@@ -201,7 +201,7 @@ Using \\=`sys.prefix\\=' or \\=`pip -V\\=' to check virtual env."
          (mirror (python*-pip-mirror! venv mirror)))
     (python*-venv :load (python*--env-build venv mirror))
     (python*-pylsp-make! venv (python*-venv :pylsp))
-    (write-sexp-to-file (python*-venv) (python*-venv :file))))
+    (write-file* (python*-venv) (python*-venv :file))))
 
 ;; end of venv
 
@@ -216,12 +216,12 @@ Using \\=`sys.prefix\\=' or \\=`pip -V\\=' to check virtual env."
     (unwind-protect
         (let ((src (buffer-substring-no-properties beg end))
               (tmp (make-temp-file "py-fmt-")))
-          (write-str-to-file src tmp)
+          (write-file* src tmp)
           (let ((x (shell-command* (python*-venv :fmt) "format" tmp)))
             (when (= 0 (car x))
               (with-current-buffer (current-buffer)
                 (delete-region beg end)
-                (insert (read-str-from-file tmp))))))
+                (insert (read-file* tmp))))))
       (goto-char cur)
       cur)))
 
@@ -244,7 +244,7 @@ Using \\=`sys.prefix\\=' or \\=`pip -V\\=' to check virtual env."
     (let ((interpreter
            (or (let ((f (python*-venv :file)))
                  (when (file-exists-p f)
-                   (python*-venv :load (read-sexp-from-file f))
+                   (python*-venv :load (read-file* f t))
                    (when (condition-case _
                              (python*--venv-activate! (python*-venv :venv))
                            (error nil))

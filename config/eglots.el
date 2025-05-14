@@ -32,8 +32,8 @@
         (when (and p s)
           (cond ((eq major-mode 'c-mode)
                  (cond ((string-equal "clangd" (file-name-base* s))
-                        (write-str-to-file
-                         (format (read-str-from-file
+                        (write-file*
+                         (format (read-file*
                                   (emacs-home% "config/eglots-clangd"))
                                  (upcase
                                   (or style
@@ -54,7 +54,7 @@
                                             (executable-find* "c++"))))))
         (env nil))
     (lambda (&optional op n)
-      (cond ((and op (eq op :save)) (write-sexp-to-file (or env b) f))
+      (cond ((and op (eq op :save)) (write-file* (or env b) f))
             ((and op (eq op :file)) f)
             ((and n op (eq op :load)) (setq env n))
             (t env))))
@@ -64,7 +64,7 @@
   (let ((recipe (eglot*-recipe :file)))
     (unless (file-exists-p recipe)
       (eglot*-recipe :save))
-    (eglot*-recipe :load (read-sexp-from-file recipe))))
+    (eglot*-recipe :load (read-file* recipe t))))
 
 (defun eglot*-eldoc-no-builtins ()
   "Remove the builtin \\=`eldoc\\=' fns from \\=`eglot--managed-mode\\=' mode."

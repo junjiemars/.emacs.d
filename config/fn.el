@@ -444,69 +444,42 @@ Optional argument TRIM regexp used to trim."
            (get-buffer-create ,buffer-or-name))
        (get-buffer-create ,buffer-or-name))))
 
-(defmacro insert-file-contents-literally*
-    (filename &optional visit beg end replace)
-  "See \\=`insert-file-contents-literally\\='."
-  `(let ((format-alist nil)
-         (after-insert-file-functions nil)
-         (file-coding-system-alist nil)
-         (coding-system-for-read 'no-conversion)
-         (coding-system-for-write 'no-conversion))
-     (insert-file-contents ,filename ,visit ,beg ,end ,replace)))
-
-(defmacro write-region*
-    (start end filename &optional append visit lockname mustbenew)
-  "See \\=`write-region\\='."
-  `(let ((format-alist nil)
-         (coding-system-for-write 'no-conversion)
-         (write-region-inhibit-fsync t)
-         (write-region-annotate-functions nil))
-     (write-region ,start ,end ,filename ,append ,visit ,lockname ,mustbenew)))
-
-(defun write-sexp-to-file (sexp file)
-  "Save SEXP to FILE.\n
-Returns the name of FILE when successed otherwise nil."
-  (inhibit-file-name-handler
-    (let ((b (get-buffer-create* (symbol-name (gensym*)) t)))
-      (unwind-protect
-          (with-current-buffer b
-            (prin1 sexp b)
-            (write-region* (point-min) (point-max) file)
-            file)
-        (and b (kill-buffer b))))))
-
-(defun read-sexp-from-file (file)
-  "Read the first sexp from FILE."
-  (inhibit-file-name-handler
-    (when (and (stringp file) (file-exists-p file))
-      (let ((b (get-buffer-create* (symbol-name (gensym*)) t)))
-        (unwind-protect
-            (with-current-buffer b
-              (insert-file-contents-literally* file)
-              (read b))
-          (and b (kill-buffer b)))))))
-
-(defun write-str-to-file (str file)
-  "Write STR to FILE.\n
+(defun write-file* (object file)
+  "Write OBJECT to FILE.\n
 Return the name of FILE when successed otherwise nil."
   (inhibit-file-name-handler
     (let ((b (get-buffer-create* (symbol-name (gensym*)) t)))
       (unwind-protect
           (with-current-buffer b
-            (princ str b)
-            (write-region* (point-min) (point-max) file nil :slient)
+            (if (stringp object)
+                (princ object b)
+              (prin1 object b))
+            (let ((format-alist nil)
+                  (coding-system-for-write 'no-conversion)
+                  (write-region-inhibit-fsync t)
+                  (write-region-annotate-functions nil))
+              (write-region (point-min) (point-max) file nil :slient))
             file)
         (and b (kill-buffer b))))))
 
-(defun read-str-from-file (file)
-  "Read string from FILE."
+(defun read-file* (file &optional sexp?)
+  "Read the string or SEXP from FILE."
   (inhibit-file-name-handler
     (when (and (stringp file) (file-exists-p file))
       (let ((b (get-buffer-create* (symbol-name (gensym*)) t)))
         (unwind-protect
             (with-current-buffer b
-              (insert-file-contents-literally* file)
-              (buffer-substring-no-properties (point-min) (point-max)))
+              (let ((format-alist nil)
+                    (after-insert-file-functions nil)
+                    (file-coding-system-alist nil)
+                    (coding-system-for-read 'no-conversion)
+                    (coding-system-for-write 'no-conversion))
+                (insert-file-contents file))
+              (let ((s (buffer-substring-no-properties
+                        (point-min) (point-max))))
+                (if sexp?
+                    (and (> (length s) 0) (read s))
+                  s)))
           (and b (kill-buffer b)))))))
 
 ;; end of IO

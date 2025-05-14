@@ -19,7 +19,7 @@
                 (forward-line 1))))
         ((and recipe (eq :org recipe))
          (cond ((and spec (eq spec :txt))
-                (read-str-from-file
+                (read-file*
                  (dup-file
                   (emacs-home% "config/scratch.org")
                   (v-home% ".exec/scratch.org"))))
@@ -34,7 +34,7 @@
                 ;; % \\setCJKmainfont{SimSong}
                 ;; % \\setmainfont{Times New Roman}
                 ;; % (setq TeX-engine 'xetex)
-                (read-str-from-file
+                (read-file*
                  (dup-file
                   (emacs-home% "config/scratch.tex")
                   (v-home% ".exec/scratch.txt"))))

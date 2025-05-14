@@ -162,7 +162,7 @@ This is run before the process is cranked up.")
   (let ((b (v-home% ".exec/gambit.ss")))
     (lambda ()
       (cond ((file-exists-p b) b)
-            (t (write-str-to-file +gambit-emacs-library+ b)))))
+            (t (write-file* +gambit-emacs-library+ b)))))
   "The \\=`*gambit*\\=' process start file.")
 
 (defalias 'gambit-switch-to-last-buffer

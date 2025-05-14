@@ -85,7 +85,7 @@
         (t (let ((dst (sudoku-spec->* :sample)))
              (unless (file-exists-p dst)
                (copy-file (emacs-home% "config/sample-sudoku-puzzle.el") dst))
-             (plist-get (plist-get (read-sexp-from-file dst) level)
+             (plist-get (plist-get (read-file* dst t) level)
                         dimension)))))
 
 (defun sudoku--puzzle-1d (i j)
@@ -586,7 +586,7 @@
 
 (defun sudoku--board-save ()
   "Save sudoku\\='s board to file."
-  (write-sexp-to-file (sudoku--board-props) (sudoku-spec->* :board)))
+  (write-file* (sudoku--board-props) (sudoku-spec->* :board)))
 
 ;; end of board
 
@@ -616,7 +616,7 @@
 
 (defun sudoku-load (file)
   "Load sudoku\\='s board from FILE."
-  (let ((b (read-sexp-from-file file)))
+  (let ((b (read-file* file t)))
     (*sudoku-puzzle*
      :new!
      (let ((i 0)
