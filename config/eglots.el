@@ -14,8 +14,7 @@
       (with-current-buffer
           (jsonrpc-events-buffer (eglot-current-server))
         (goto-char (point-min))
-        (let* ((r (concat "\"Running language server: "
-                          "\\([.-/a-zA-Z0-9_]+\\) *?.*?\""))
+        (let* ((r "Running language server: \\([^\"\n]+\\)")
                (i (re-search-forward r nil t)))
           (when i (buffer-substring-no-properties
                    (match-beginning 1)
@@ -34,22 +33,19 @@
           (cond ((eq major-mode 'c-mode)
                  (cond ((string-equal "clangd" (file-name-base* s))
                         (write-str-to-file
-                         (concat
-                          "BasedOnStyle: "
-                          (upcase
-                           (or style
-                               (buffer-local-value
-                                'c-indentation-style (current-buffer))))
-                          "\n---\n"
-                          "Language: Cpp\n"
-                          "IndentWidth: "
-                          (number-to-string
-                           (or indent
-                               (buffer-local-value
-                                'c-basic-offset (current-buffer)))))
-                         ;; /* clang-format on */
-                         ;; /* clang-format off */
-                         (concat p ".clang-format")))))))))))
+                         (format (read-str-from-file
+                                  (emacs-home% "config/eglots-clangd"))
+                                 (upcase
+                                  (or style
+                                      (buffer-local-value
+                                       'c-indentation-style
+                                       (current-buffer))))
+                                 (number-to-string
+                                  (or indent
+                                      (buffer-local-value
+                                       'c-basic-offset
+                                       (current-buffer)))))
+                         (path+ p ".clang-format")))))))))))
 
 (defalias 'eglot*-recipe
   (let ((f (v-home% ".exec/eglot-recipe.el"))
