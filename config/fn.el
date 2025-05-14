@@ -378,9 +378,9 @@ If optional UNIQUELY is non-nil then push uniquely."
 (defun string-trim> (s &optional rr)
   "Remove tailing whitespaces or matching of RR at the end of S."
   (and (stringp s)
-       (let ((r1 (concat "\\(?:" (or rr "[ \t\n\r]+") "\\)\\'")))
-         (let ((i (string-match r1 s 0)))
-           (if i (substring-no-properties s 0 i) s)))))
+       (let* ((r1 (concat "\\(?:" (or rr "[ \t\n\r]+") "\\)\\'"))
+              (i (string-match r1 s 0)))
+         (if i (substring-no-properties s 0 i) s))))
 
 (defun string-trim< (s &optional lr)
   "Remove leading whitespaces or matching of LR from S."

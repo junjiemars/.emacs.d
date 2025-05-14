@@ -127,11 +127,9 @@ If RESET is true then reset before load."
              (let ((dir (theme-spec->* :custom-theme-directory))
                    (name (theme-spec->* :name)))
                (if (theme-spec->* :compile)
-                   (let ((f (concat dir
-                                    (symbol-name name)
-                                    "-theme.el")))
+                   (let ((f (concat dir (symbol-name name) "-theme.el")))
                      (compile! (compile-unit* f t))
-                     (load-theme! name (concat dir "/" (v-name) "/")))
+                     (load-theme! name (path+ dir (v-name) "/")))
                  (load-theme! name dir))))
             (t
              ;; load builtin theme
