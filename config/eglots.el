@@ -33,7 +33,7 @@
         (when (and p s)
           (cond ((eq major-mode 'c-mode)
                  (cond ((string-equal "clangd" (file-name-base* s))
-                        (save-str-to-file
+                        (write-str-to-file
                          (concat
                           "BasedOnStyle: "
                           (upcase
@@ -58,7 +58,7 @@
                                             (executable-find* "c++"))))))
         (env nil))
     (lambda (&optional op n)
-      (cond ((and op (eq op :save)) (save-sexp-to-file (or env b) f))
+      (cond ((and op (eq op :save)) (write-sexp-to-file (or env b) f))
             ((and op (eq op :file)) f)
             ((and n op (eq op :load)) (setq env n))
             (t env))))

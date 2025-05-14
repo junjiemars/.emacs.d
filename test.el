@@ -391,8 +391,8 @@
     (should (string-equal p (posix-path "c:/a/b/c.c")))
     (should (string-equal p (posix-path "c:\\a\\b\\c.c")))))
 
-(ert-deftest %d:fn:save/read-sexp-to/from-file ()
-  ;; string hash test: see `%fn:save/read-sexp-to/from-file' in test.el
+(ert-deftest %d:fn:write/read-sexp-to/from-file ()
+  ;; string hash test: see `%fn:write/read-sexp-to/from-file' in test.el
   (define-hash-table-test 'nore-emacs-string-hash= #'string-equal #'sxhash)
   (let ((f1 (concat temporary-file-directory
                     (make-temp-name (symbol-name (gensym*)))))
@@ -400,19 +400,19 @@
                     (make-temp-name (symbol-name (gensym*)))))
         (s1 '(defvar test%fn-srstff t))
         (t1 (make-hash-table :test 'nore-emacs-string-hash=)))
-    (should (and (save-sexp-to-file s1 f1)
+    (should (and (write-sexp-to-file s1 f1)
                  (equal s1 (read-sexp-from-file f1))))
     (should (eq 'nore-emacs-string-hash= (hash-table-test t1)))
     (puthash "a" 1 t1)
     (puthash "b" 2 t1)
     (should (= 2 (hash-table-count t1)))
-    (should (and (save-sexp-to-file t1 f2)
+    (should (and (write-sexp-to-file t1 f2)
                  (= 2 (gethash "b" (read-sexp-from-file f2)))))))
 
-(ert-deftest %d:fn:save/read-str-to/from-file ()
+(ert-deftest %d:fn:write/read-str-to/from-file ()
   (let ((f (concat temporary-file-directory
                    (symbol-name (gensym*)))))
-    (should (and (save-str-to-file "abc" f)
+    (should (and (write-str-to-file "abc" f)
                  (string-equal "abc" (read-str-from-file f))))))
 
 (ert-deftest %d:fn:shell-command* ()

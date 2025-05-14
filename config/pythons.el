@@ -101,7 +101,7 @@
 (defun python*-pylsp-make! (venv pylsp)
   "Make PYLSP for VENV."
   (set-file-modes
-   (save-str-to-file
+   (write-str-to-file
     (format (read-str-from-file (emacs-home* "config/pythons_lsp.sh"))
             venv venv)
     pylsp)
@@ -201,7 +201,7 @@ Using \\=`sys.prefix\\=' or \\=`pip -V\\=' to check virtual env."
          (mirror (python*-pip-mirror! venv mirror)))
     (python*-venv :load (python*--env-build venv mirror))
     (python*-pylsp-make! venv (python*-venv :pylsp))
-    (save-sexp-to-file (python*-venv) (python*-venv :file))))
+    (write-sexp-to-file (python*-venv) (python*-venv :file))))
 
 ;; end of venv
 
@@ -216,7 +216,7 @@ Using \\=`sys.prefix\\=' or \\=`pip -V\\=' to check virtual env."
     (unwind-protect
         (let ((src (buffer-substring-no-properties beg end))
               (tmp (make-temp-file "py-fmt-")))
-          (save-str-to-file src tmp)
+          (write-str-to-file src tmp)
           (let ((x (shell-command* (python*-venv :fmt) "format" tmp)))
             (when (= 0 (car x))
               (with-current-buffer (current-buffer)

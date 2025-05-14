@@ -19,7 +19,7 @@
     (lambda (&optional op n)
       (cond ((and op (eq op :file)) file)
             ((and op (eq op :scratch)) b)
-            ((and op (eq op :save)) (and env (save-sexp-to-file env file)))
+            ((and op (eq op :save)) (and env (write-sexp-to-file env file)))
             ((and n op (eq op :load)) (setq env n))
             (t env))))
   "The \\=`treesit\\=' recipe.")

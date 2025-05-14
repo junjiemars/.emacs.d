@@ -54,7 +54,7 @@
       (cond ((and op (eq op :read)) (setq b (read-sexp-from-file f)))
             ((and op (eq op :push)) (and (> (length dir) 0)
                                          (push! dir b delete)))
-            ((and op (eq op :save)) (save-sexp-to-file b f))
+            ((and op (eq op :save)) (write-sexp-to-file b f))
             ((and op (eq op :file)) f)
             (t b)))))
 

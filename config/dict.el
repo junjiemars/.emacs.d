@@ -158,7 +158,7 @@
                                    (plist-get args :dict)
                                    (plist-get args :specs))))
     (when (*dict-debug-log* :log)
-      (save-sexp-to-file ss (path! (*dict-debug-log* :lookup))))
+      (write-sexp-to-file ss (path! (*dict-debug-log* :lookup))))
     (kill-buffer (current-buffer))
     (let ((txt (string-trim> (mapconcat #'identity (mapcar #'cdr ss) " "))))
       (message "%s" (if (> (length txt) 0)

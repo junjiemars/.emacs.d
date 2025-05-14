@@ -113,7 +113,7 @@ p        (posix-path
           (env (cc-spec->* :msvc :env)))
       (when (and vcvarsall arch)
         (let ((bat (read-str-from-file src)))
-          (save-str-to-file
+          (write-str-to-file
            (format bat (file-name-directory vcvarsall) arch)
            env))))))
 
@@ -207,7 +207,7 @@ p        (posix-path
         (let ((xs nil))
           (when (setq xs (dolist (x (cc*--include-probe remote) (nreverse xs))
                            (setq xs (cons (concat prefix x) xs))))
-            (and save (save-sexp-to-file xs file))
+            (and save (write-sexp-to-file xs file))
             xs)))))
 
 (defalias 'cc*-system-include
@@ -327,7 +327,7 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
       (open-line 1)
       (beginning-of-line)
       (insert (setq end (format fmt (1- (line-number-at-pos)) out)))
-      (save-str-to-file (buffer-string) out)
+      (write-str-to-file (buffer-string) out)
       (setq rc (cond (user@host (let ((rc1 (shell-command* "scp"
                                              out (concat user@host ":" rout))))
                                   (unless (= 0 (car rc1))

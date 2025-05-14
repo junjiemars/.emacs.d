@@ -586,7 +586,7 @@
 
 (defun sudoku--board-save ()
   "Save sudoku\\='s board to file."
-  (save-sexp-to-file (sudoku--board-props) (sudoku-spec->* :board)))
+  (write-sexp-to-file (sudoku--board-props) (sudoku-spec->* :board)))
 
 ;; end of board
 

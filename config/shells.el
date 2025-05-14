@@ -157,7 +157,7 @@ See \\=`setenv\\='."
     (push! (v-home% ".exec/") paths delete)
     (append! exec-directory paths delete)
     (*default-shell-env* :put! :exec-path paths))
-  (save-sexp-to-file (*default-shell-env*) (shell-spec->* :file)))
+  (write-sexp-to-file (*default-shell-env*) (shell-spec->* :file)))
 
 
 (defun self-shell-read! ()

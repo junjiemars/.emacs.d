@@ -16,7 +16,7 @@
     (lambda (&optional op dir)
       (cond ((and op (eq op :find)) (file-in-dirs-p dir b))
             ((and op (eq op :read)) (setq b (read-sexp-from-file f)))
-            ((and op (eq op :save)) (save-sexp-to-file (or dir b) f))
+            ((and op (eq op :save)) (write-sexp-to-file (or dir b) f))
             ((and op (eq op :file)) f)
             (t b))))
   "The root dirs for \\=`project\\='.")
