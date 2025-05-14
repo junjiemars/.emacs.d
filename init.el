@@ -53,7 +53,11 @@
   `(let ((gc-cons-percentage 0.7))
      ,@body))
 
-;; end of compile-time macro
+(defconst +display-graphic+
+  (display-graphic-p)
+  "Whether or no in a graphic display.")
+
+ ;; end of compile-time macro
 
 ;;;
 ;; *-version% macro
@@ -161,7 +165,7 @@ else do ELSE..."
 (defconst +native-comp-available+
   (and (fboundp 'native-comp-available-p)
        (native-comp-available-p))
-  "Whether native compilation is built-in.")
+  "Whether or no native compilation is built-in.")
 
 (defconst +comp-file-extension+
   (if +native-comp-available+ ".eln" ".elc")

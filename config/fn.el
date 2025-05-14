@@ -168,7 +168,7 @@
 (defmacro if-graphic% (then &rest else)
   "If \\=`display-graphic-p\\=' yield non-nil, do THEN, else do ELSE..."
   (declare (indent 1))
-  (if (display-graphic-p)
+  (if +display-graphic+
       `,then
     `(progn% ,@else)))
 
