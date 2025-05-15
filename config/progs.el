@@ -207,8 +207,7 @@ And copy the qualified buffer name to kill ring."
     ;; default view file keybindings
     (define-global-key% "5r" #'view-file-other-frame)
     (define-global-key% "4r" #'view-file-other-window)
-    (define-global-key% "" #'view-file))
-  (when-version% > 28 (require 'dired-x nil t)))
+    (define-global-key% "" #'view-file)))
 
 ;; end of ido
 

@@ -45,7 +45,6 @@
    (when-platform% windows-nt
      (compile-unit% (emacs-home* "config/gud-cdb.el") t))
    (compile-unit% (emacs-home* "config/gud-lldb.el") t)
-   (compile-unit% (emacs-home* "config/direds-ls.el") t)
    (compile-unit% (emacs-home* "config/node.el") t)
    (compile-unit% (emacs-home* "config/scratch.el") t)
    (compile-unit% (emacs-home* "config/sudoku.el") t)
@@ -203,10 +202,6 @@
     (autoload 'gud-cdb (v-home%> "config/gud-cdb") "Run cdb." t))
   ;; `gud-lldb'
   (autoload 'gud-lldb (v-home%> "config/gud-lldb") "Run lldb." t)
-  ;; `direds-ls'
-  (declare-function on-direds-ls-init! (v-home%> "config/direds-ls"))
-  (autoload 'on-direds-ls-init! (v-home%> "config/direds-ls"))
-  (make-thread* #'on-direds-ls-init!)
   ;; `node'
   (autoload 'node-mode (v-home%> "config/node") "Toggle node mode." t)
   (autoload 'run-node (v-home%> "config/node") "Run node REPL." t)

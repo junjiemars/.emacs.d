@@ -179,6 +179,18 @@
 
 (defun on-dired-init! ()
   "On \\=`dired\\=' initialization."
+  (when-var% dired-use-ls-dired dired
+    ;; prefer GNU's ls (--dired option) on Windows or Darwin. on
+    ;; Windows: `dired-mode' does not display executable flag in file
+    ;; mode，see `dired-use-ls-dired' and `ido-dired' for more defails
+    ;; on Drawin: the builtin `ls' does not support --dired option
+    (if (executable-find* "ls")
+        (if (= 0 (car (shell-command* "ls" "--dired")))
+            (set-default 'dired-use-ls-dired t)
+          (set-default 'dired-use-ls-dired nil)
+          (set-default 'ls-lisp-use-insert-directory-program t))
+      (set-default 'dired-use-ls-dired nil)
+      (set-default 'ls-lisp-use-insert-directory-program nil)))
   (when-platform% windows-nt
     ;; prefer GNU find on Windows, such for `find-dired' or `find-name-dired'.
     (when% (let ((ver (shell-command* "find" "--version")))
@@ -189,7 +201,9 @@
   (define-key dired-mode-map "b" #'dired*-hexl-find-file)
   (define-key dired-mode-map "B" #'dired*-browse-file)
   (define-key dired-mode-map "w" #'dired*-copy-filename-as-kill)
-  (define-key dired-mode-map "W" #'dired*-echo-current-directory))
+  (define-key dired-mode-map "W" #'dired*-echo-current-directory)
+  (when-version% > 28 (require 'dired-x nil t))
+  t)
 
 ;; end of `dired' setting
 
