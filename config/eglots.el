@@ -34,7 +34,7 @@
                  (cond ((string-equal "clangd" (file-name-base* s))
                         (write-file*
                          (format (read-file*
-                                  (emacs-home% "config/eglots-clangd"))
+                                  (emacs-home% "config/eglots_clangd"))
                                  (upcase
                                   (or style
                                       (buffer-local-value
