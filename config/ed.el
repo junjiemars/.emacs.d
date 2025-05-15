@@ -146,33 +146,22 @@ Optional argument INDENT whether to indent lines. See also \\=`open-line\\='."
 (defun vstrncmp (v1 v2 &optional n)
   "Return 0 if V1 equals V2, < 0 if V1 less than V2, otherwise > 0.\n
 If optional N is non-nil compare no more than N parts, default N is 4."
-  (let ((n (or n 4)) (l1 (length v1)) (l2 (length v2)))
-    (cond ((and (= l1 0) (= l2 0)) 0)
-          ((and (= l1 0) (> l2 0))
+  (let ((n (or n 4)) (n1 0) (n2 0))
+    (cond ((= 0 n) 0)
+          ((= 0 (length v1) (length v2)) 0)
+          ((= 0 (length v1))
            (- (string-to-number
                (substring-no-properties v2 0 (strchr v2 ?.)))))
-          ((and (> l1 0) (= l2 0))
+          ((= 0 (length v2))
            (string-to-number (substring-no-properties v1 0 (strchr v1 ?.))))
-          ((= n 1)
-           (- (string-to-number
-               (substring-no-properties v1 0 (strchr v1 ?.)))
-              (string-to-number
-               (substring-no-properties v2 0 (strchr v2 ?.)))))
-          (t (let* ((i (strchr v1 ?.)) (j (strchr v2 ?.))
-                    (s1 (string-to-number (substring-no-properties v1 0 i)))
-                    (s2 (string-to-number (substring-no-properties v2 0 j))))
-               (cond ((null (= s1 s2)) (- s1 s2))
-                     ((and (null i) (null j)) (- s1 s2))
-                     ((and (null i) j)
-                      (vstrncmp
-                       nil (substring-no-properties v2 (1+ j)) (1- n)))
-                     ((and i (null j))
-                      (vstrncmp
-                       (substring-no-properties v1 (1+ i)) nil (1- n)))
-                     (t (vstrncmp
-                         (substring-no-properties v1 (1+ i))
-                         (substring-no-properties v2 (1+ j))
-                         (1- n)))))))))
+          ((progn (setq n1 (strchr v1 ?.) n2 (strchr v2 ?.))
+                  (string-equal (substring-no-properties v1 0 n1)
+                                (substring-no-properties v2 0 n2)))
+           (vstrncmp (and n1 (substring-no-properties v1 (1+ n1)))
+                     (and n2 (substring-no-properties v2 (1+ n2)))
+                     (setq n (1- n))))
+          (t (- (string-to-number (substring-no-properties v1 0 n1))
+                (string-to-number (substring-no-properties v2 0 n2)))))))
 
 ;; end of version
 

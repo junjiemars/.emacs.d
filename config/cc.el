@@ -88,7 +88,7 @@
            (vsroot (concat pfroot " (x86)/Microsoft Visual Studio/"))
            (vswhere (concat vsroot "Installer/vswhere.exe")))
       (when (file-exists-p vswhere)
-p        (posix-path
+        (posix-path
          (or (let* ((rc (shell-command* (shell-quote-argument vswhere)
                           "-nologo -latest -property installationPath"))
                     (bat (and (= 0 (car rc))
