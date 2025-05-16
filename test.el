@@ -463,7 +463,7 @@
   (should (= 0 (path-depth "abc")))
   (should (= 1 (path-depth "/abc")))
   (should (= 4 (path-depth "//a//b")))
-  (should (= 1 (path-depth "\\a" "\\\\")))
+  (should (= 1 (path-depth "\\a" ?\\)))
   (should (= 2 (path-depth "/a/b")))
   (should (= 3 (path-depth "/a/b/")))
   (should (= 3 (path-depth "/a/b/c"))))

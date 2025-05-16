@@ -588,7 +588,7 @@ Call FN with the path of COMMAND if FN is non-nil."
  ;; end of compatible macro
 
 ;;;
-;; file
+;; path
 ;;;
 
 (defun path! (file)
@@ -598,7 +598,7 @@ Call FN with the path of COMMAND if FN is non-nil."
       (mkdir* file))))
 
 (defun path+ (root &rest path)
-  "Append a list of PATH to ROOT."
+  "Join the ROOT and PATH."
   (declare (indent 1))
   (cond ((null path) root)
         ((= 0 (length root)) (apply #'path+ (car path) (cdr path)))
@@ -618,11 +618,16 @@ Call FN with the path of COMMAND if FN is non-nil."
       (file-name-directory (directory-file-name file)))))
 
 (defun path-depth (path &optional separator)
-  "Return the depth of PATH."
-  (cond ((= 0 (length path)) 0)
-        (t (- (length (split-string* path (or separator "/") nil)) 1))))
+  "Count SEPARATOR in PATH."
+  (let ((n 0) (sep (or separator ?/))
+        (i 0) (len (length path)))
+    (while (< i len)
+      (when (char-equal sep (aref path i))
+        (setq n (1+ n)))
+      (setq i (1+ i)))
+    n))
 
-;; end of file
+;; end of path
 
 ;;;
 ;; key
