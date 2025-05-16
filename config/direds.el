@@ -327,9 +327,12 @@
   ;; (setq file-name-coding-system locale-coding-system)
   (when-platform% windows-nt
     (unless% (eq default-file-name-coding-system locale-coding-system)
+      (declare-function _insert-directory_ (v-home%> "config/direds") t t)
       (defadvice* '_insert-directory_ 'insert-directory #'insert-directory*)
+      (declare-function _dired-shell-stuff-it_ (v-home%> "config/direds") t t)
       (defadvice* '_dired-shell-stuff-it_
         'dired-shell-stuff-it #'dired-shell-stuff-it*)
+      (declare-function _dired-shell-command_ (v-home%> "config/direds") t t)
       (defadvice* '_dired-shell-command_
         'dired-shell-command #'dired-shell-command*))
     ;; [Z] to compress or uncompress .gz file
@@ -352,6 +355,8 @@
               (push! (cons "\\.gz\\'" 7za?) dired-compress-file-suffixes))))
 
         (when-fn% dired-compress-file dired-aux
+          (declare-function _dired-compress-file_
+                            (v-home%> "config/direds") t t)
           (defadvice* '_dired-compress-file_
             'dired-compress-file #'dired-compress-file*))))))
 

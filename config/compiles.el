@@ -9,7 +9,6 @@
 ;;; require
 
 (require 'compile)
-(require 'ansi-color)
 
 ;; end of require
 
@@ -18,11 +17,12 @@
   ;; the UNIX path in Windows which cannot be recognized by Emacs.
   ;; When such case occurred, we try to translate UNIX path to POSIX path.
   (defun compilation-find-file* (marker filename directory &rest formats)
-    (let ((filename (if (string-match "^/\\([a-zA-Z]\\)/" filename)
-                        (replace-match (concat (match-string 1 filename) ":/")
-                                       t t filename)
-                      filename)))
-      (funcall '_compilation-find-file_ marker filename directory formats))))
+    (setq filename (if (string-match "^/\\([a-zA-Z]\\)/" filename)
+                       (replace-match (concat (match-string 1 filename) ":/")
+                                      t t filename)
+                     filename)
+          formats "%s")
+    (funcall '_compilation-find-file_ marker filename directory formats)))
 
 (defun compile*-colorize-buffer! ()
   "Colorize compilation buffer."
@@ -94,6 +94,7 @@
   "On \\=`compile\\=' initialization."
   (setq% compilation-buffer-name-function #'compile*-buffer-name-fn compile)
   (when-platform% windows-nt
+    (declare-function _compilation-find-file_ (v-home%> "config/compiles") t t)
     (defadvice* '_compilation-find-file_
       'compilation-find-file #'compilation-find-file*))
   (when-platform% darwin
