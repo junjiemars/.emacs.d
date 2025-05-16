@@ -194,10 +194,15 @@
         (set-default 'ls-lisp-use-insert-directory-program nil))))
   (when-platform% windows-nt
     ;; prefer GNU find on Windows, such for `find-dired' or `find-name-dired'.
-    (when% (let ((ver (shell-command* "find" "--version")))
-             (and (= 0 (car ver))
-                  (string-match "^find (GNU findutils)" (cdr ver))))
-      (windows-nt-env-path+ (file-name-directory (executable-find* "find")))))
+    (when-var% find-program grep
+      (let ((find (executable-find*
+                   "find"
+                   (lambda (find)
+                     (let ((ver (shell-command* find "--version")))
+                       (and (= 0 (car ver))
+                            (string-match "^find (GNU findutils)"
+                                          (cdr ver))))))))
+        (setq find-program (shell-quote-argument find)))))
   ;; keys
   (define-key dired-mode-map "b" #'dired*-hexl-find-file)
   (define-key dired-mode-map "B" #'dired*-browse-file)

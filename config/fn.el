@@ -547,11 +547,14 @@ If PREDICATE is non-nil, call it with the path of COMMAND."
             (if-platform% windows-nt
                 (posix-path rc)
               rc)
-          (let ((r1 nil) (p1 (copy-sequence ps)))
+          (let ((r1 nil) (p1 (if-platform% windows-nt
+                                 (mapcar #'posix-path ps)
+                               (copy-sequence ps))))
             (while (and rc (null r1))
               (setq r1 (funcall predicate (shell-quote-argument rc)))
               (unless r1
-                (setq p1 (delete (file-name-directory rc) p1)
+                (setq p1 (delete (directory-file-name (file-name-directory rc))
+                                 p1)
                       rc (locate-file-internal command p1 es X_OK))))
             (when (and rc r1)
               (if-platform% windows-nt

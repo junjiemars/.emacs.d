@@ -109,7 +109,8 @@
     (define-key% compilation-mode-map "q" #'quit-window)
     (define-key% compilation-mode-map "n" #'next-error-no-select)
     (define-key% compilation-mode-map "p" #'previous-error-no-select))
-  (setq% compilation-scroll-output t compile))
+  (setq% compilation-scroll-output t compile)
+  t)
 
 
 (defun on-grep-init! ()
@@ -117,7 +118,8 @@
   ;; define `recompile' and `quit-window' key binding for `grep'
   (when-var% grep-mode-map grep
     (define-key grep-mode-map "g" #'compile*-regrep)
-    (define-key% grep-mode-map "q" #'quit-window)))
+    (define-key% grep-mode-map "q" #'quit-window))
+  t)
 
 
 (defun on-make-mode-init! ()
