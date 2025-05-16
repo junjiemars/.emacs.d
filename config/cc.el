@@ -128,7 +128,7 @@
         (pre (v-home% ".exec/cc_"))
         (ext (if% (memq system-type '(cygwin ms-dos windows-nt))
                  ".exe"
-               ".out"))
+               ""))
         (in (v-home% ".exec/cc_check.c")))
     (unless (file-exists-p in)
       (copy-file (emacs-home% "config/cc_check.c") in))

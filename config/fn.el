@@ -538,9 +538,8 @@ See \\=`shell-command\\=' and \\=`shell-command-to-string\\='."
   "Return the path of COMMAND.\n
 If PREDICATE is non-nil, call it with the path of COMMAND."
   (inhibit-file-name-handler
-    (let* ((path exec-path)
-           (X_OK 1)
-           (rc (locate-file-internal command path exec-suffixes X_OK)))
+    (let* ((X_OK 1)
+           (rc (locate-file-internal command exec-path exec-suffixes X_OK)))
       (when rc
         (cond (predicate (funcall predicate (shell-quote-argument rc)))
               (t (if-platform% windows-nt
