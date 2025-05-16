@@ -90,16 +90,6 @@
         (set-default 'dired-use-ls-dired nil)
         (set-default 'ls-lisp-use-insert-directory-program nil))))
   (when-platform% windows-nt
-    ;; prefer GNU find on Windows, such for `find-dired' or `find-name-dired'.
-    (when-var% find-program grep
-      (let ((find (executable-find*
-                   "find"
-                   (lambda (find)
-                     (let ((ver (shell-command* find "--version")))
-                       (and (= 0 (car ver))
-                            (string-match "^find (GNU findutils)"
-                                          (cdr ver))))))))
-        (setq find-program (shell-quote-argument find))))
     ;; make zip.bat
     (unless% (executable-find* "zip")
       ;; on Windows: there are no builtin zip program. zip.bat works

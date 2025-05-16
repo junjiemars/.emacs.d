@@ -387,6 +387,20 @@
   (with-eval-after-load 'etags
     (make-thread* #'on-etags-init!)))
 
+(defun define-global-program ()
+  (when-platform% windows-nt
+    ;; prefer GNU find on Windows, such for `find-dired',
+    ;; `find-name-dired' or `project-find-regrep'.
+    (when-var% find-program grep
+      (let ((find (executable-find%
+                   "find"
+                   (lambda (find)
+                     (let ((ver (shell-command* find "--version")))
+                       (and (= 0 (car ver))
+                            (string-match "^find (GNU findutils)"
+                                          (cdr ver))))))))
+        (and find (setq find-program (shell-quote-argument find)))))))
+
 (defun define-global-key! ()
   ;; `compiles'
   (define-global-key% "pc" #'compile)
@@ -473,6 +487,7 @@
   (declare-compile-only-mode!)
   (define-after-load-mode)
   (declare-after-load-mode!)
+  (define-global-program)
   (define-global-key!)
   (when-fn% self-edit-init! nil (self-edit-init!))
   (when-fn% self-key-init! nil (self-key-init!))
