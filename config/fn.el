@@ -539,16 +539,28 @@ See \\=`shell-command\\=' and \\=`shell-command-to-string\\='."
 If PREDICATE is non-nil, call it with the path of COMMAND."
   (inhibit-file-name-handler
     (let* ((X_OK 1)
-           (rc (locate-file-internal command exec-path exec-suffixes X_OK)))
+           (ps exec-path)
+           (es exec-suffixes)
+           (rc (locate-file-internal command ps es X_OK)))
       (when rc
-        (cond (predicate (funcall predicate (shell-quote-argument rc)))
-              (t (if-platform% windows-nt
-                     (posix-path rc)
-                   rc)))))))
+        (if (null predicate)
+            (if-platform% windows-nt
+                (posix-path rc)
+              rc)
+          (let ((r1 nil) (p1 (copy-sequence ps)))
+            (while (and rc (null r1))
+              (setq r1 (funcall predicate (shell-quote-argument rc)))
+              (unless r1
+                (setq p1 (delete (file-name-directory rc) p1)
+                      rc (locate-file-internal command p1 es X_OK))))
+            (when (and rc r1)
+              (if-platform% windows-nt
+                  (posix-path rc)
+                rc))))))))
 
-(defmacro executable-find% (command &optional fn)
+(defmacro executable-find% (command &optional predicate)
   "Return from \\=excutable-find*\\= at compile time."
-  (executable-find* command fn))
+  (executable-find* command predicate))
 
 (defun emacs-arch ()
   "Return emacs architecture, 64bits or 32bits."

@@ -36,7 +36,7 @@
    "jshell"
    (lambda (jshell)
      (let ((x (shell-command* jshell "--version")))
-       (and (= 0 (car x)) jshell)))))
+       (= 0 (car x))))))
 
 (defalias 'jshell-program
   (let ((b (jshell-program-check)))

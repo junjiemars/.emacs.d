@@ -33,30 +33,28 @@
         ((and spec (eq spec :failed)) "failed")))
 
 (defun tags-program-check ()
-  (or (executable-find*
-       "ctags"
-       (lambda (bin)
-         (let ((ver (shell-command* bin "--version")))
-           (and (= 0 (car ver))
-                (string-match "Exuberant Ctags [.0-9]+"
-                              (cdr ver))
-                `( :bin ctags
-                   :cmd ,(concat bin " -e %s -o %s -a %s")
-                   :opt ("--options=<file>"
-                         "--langmap=c:.h.c --c-kinds=+ptesgux --extra=+fq"
-                         "--langmap=c++:.h.cc--c++-kinds=+px"))))))
-      (executable-find*
-       "etags"
-       (lambda (bin)
-         (let ((ver (shell-command* bin "--version")))
-           (and (= 0 (car ver))
-                (string-match "etags (GNU Emacs [.0-9]+)"
-                              (cdr ver))
-                `( :bin etags
-                   :cmd ,(concat bin " %s -o %s -a %s")
-                   :opt ("-l c" "-l lisp" "-l auto"))))))
-      (let ((etags (concat (path- (car command-line-args))
-                           "bin/etags")))
+  (or (let ((ctags (executable-find*
+                    "ctags"
+                    (lambda (bin)
+                      (let ((ver (shell-command* bin "--version")))
+                        (and (= 0 (car ver))
+                             (string-match "^Exuberant Ctags" (cdr ver))))))))
+        `( :bin ctags
+           :cmd ,(concat ctags " -e %s -o %s -a %s")
+           :opt ("--options=<file>"
+                 "--langmap=c:.h.c --c-kinds=+ptesgux --extra=+fq"
+                 "--langmap=c++:.h.cc--c++-kinds=+px")))
+      (let ((etags (executable-find*
+                    "etags"
+                    (lambda (bin)
+                      (let ((ver (shell-command* bin "--version")))
+                        (and (= 0 (car ver))
+                             (string-match "etags (GNU Emacs [.0-9]+)"
+                                           (cdr ver))))))))
+        `( :bin etags
+           :cmd ,(concat etags " %s -o %s -a %s")
+           :opt ("-l c" "-l lisp" "-l auto")))
+      (let ((etags (concat (path- (car command-line-args)) "bin/etags")))
         (and (file-exists-p etags)
              `( :bin etags
                 :cmd ,(concat etags " %s -o %s -a %s")

@@ -184,13 +184,14 @@
     ;; Windows: `dired-mode' does not display executable flag in file
     ;; mode，see `dired-use-ls-dired' and `ido-dired' for more defails
     ;; on Drawin: the builtin `ls' does not support --dired option
-    (if (executable-find* "ls")
-        (if (= 0 (car (shell-command* "ls" "--dired")))
-            (set-default 'dired-use-ls-dired t)
-          (set-default 'dired-use-ls-dired nil)
-          (set-default 'ls-lisp-use-insert-directory-program t))
-      (set-default 'dired-use-ls-dired nil)
-      (set-default 'ls-lisp-use-insert-directory-program nil)))
+    (let ((ls (executable-find* "ls")))
+      (if ls
+          (if (= 0 (car (shell-command* ls "--dired")))
+              (set-default 'dired-use-ls-dired t)
+            (set-default 'dired-use-ls-dired nil)
+            (set-default 'ls-lisp-use-insert-directory-program t))
+        (set-default 'dired-use-ls-dired nil)
+        (set-default 'ls-lisp-use-insert-directory-program nil))))
   (when-platform% windows-nt
     ;; prefer GNU find on Windows, such for `find-dired' or `find-name-dired'.
     (when% (let ((ver (shell-command* "find" "--version")))
