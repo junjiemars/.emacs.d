@@ -602,17 +602,14 @@ Call FN with the path of COMMAND if FN is non-nil."
   (declare (indent 1))
   (cond ((null path) root)
         ((= 0 (length root)) (apply #'path+ (car path) (cdr path)))
+        ((= 0 (length (car path))) (apply #'path+ root (cdr path)))
         ((char-equal ?/ (aref root (1- (length root))))
-         (let ((p1 (car path)))
-           (cond ((char-equal ?/ (aref p1 0))
-                  (apply #'path+
-                         (concat root (substring-no-properties p1 1))
-                         (cdr path)))
-                 (t (apply #'path+ (concat root p1) (cdr path))))))
-        (t (let ((p2 (car path)))
-             (cond ((char-equal ?/ (aref p2 0))
-                    (apply #'path+ (concat root p2) (cdr path)))
-                   (t (apply #'path+ (concat root "/" p2) (cdr path))))))))
+         (apply #'path+
+                (substring-no-properties root 0 (1- (length root)))
+                path))
+        ((char-equal ?/ (aref (car path) 0))
+         (apply #'path+ (concat root (car path)) (cdr path)))
+        (t (apply #'path+ (concat root "/" (car path)) (cdr path)))))
 
 (defun path- (file)
   "Return the parent path of FILE."

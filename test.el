@@ -448,7 +448,7 @@
   (should (string-equal "a/" (path+ "a/" "/")))
   (should (string-equal "a/b" (path+ "" "a/" "b")))
   (should (string-equal "a/b" (path+ "a/" "/b")))
-  (should (string-equal "a/b/c/d" (path+ "a" "b" "/c/d"))))
+  (should (string-equal "a/b/c/d" (path+ "" "/" "a" "b" "/c/d" ""))))
 
 (ert-deftest %d:fn:path- ()
   (should-not (path- nil))
