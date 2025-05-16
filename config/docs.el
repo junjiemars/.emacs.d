@@ -8,17 +8,17 @@
 
 (defmacro if-bin-gswin64/32c% (then &rest body)
   (declare (indent 1))
-  `(if% (or (executable-find% "gswin64c")
-            (executable-find% "gswin32c"))
-       ,then
-     (progn% ,@body)))
+  (if (or (executable-find* "gswin64c")
+          (executable-find* "gswin32c"))
+      `,then
+    `(progn% ,@body)))
 
 (defmacro unless-bin-gswin64/32c% (&rest body)
   (declare (indent 0))
   (if-bin-gswin64/32c%
-      `(comment ,body)
-    (when% (executable-find% "mutool")
-      `(progn% ,@body))))
+   `(comment ,body)
+   (when% (executable-find% "mutool")
+     `(progn% ,@body))))
 
 (defmacro when-bin-mudraw% (&rest body)
   (declare (indent 0))
