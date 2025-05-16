@@ -534,15 +534,15 @@ See \\=`shell-command\\=' and \\=`shell-command-to-string\\='."
             (cons x (buffer-substring-no-properties 1 (point-max)))))
       (and b (kill-buffer b)))))
 
-(defun executable-find* (command &optional fn)
+(defun executable-find* (command &optional predicate)
   "Return the path of COMMAND.\n
-Call FN with the path of COMMAND if FN is non-nil."
+If PREDICATE is non-nil, call it with the path of COMMAND."
   (inhibit-file-name-handler
     (let* ((path exec-path)
            (X_OK 1)
-           (rc (locate-file-internal command path nil X_OK)))
+           (rc (locate-file-internal command path exec-suffixes X_OK)))
       (when rc
-        (cond (fn (funcall fn (shell-quote-argument rc)))
+        (cond (predicate (funcall predicate (shell-quote-argument rc)))
               (t (if-platform% windows-nt
                      (posix-path rc)
                    rc)))))))
