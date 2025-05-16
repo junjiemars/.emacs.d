@@ -16,16 +16,16 @@
 (defmacro unless-bin-gswin64/32c% (&rest body)
   (declare (indent 0))
   (if-bin-gswin64/32c%
-   `(comment ,body)
-   (when% (executable-find% "mutool")
-     `(progn% ,@body))))
+      `(comment ,body)
+    (when (executable-find* "mutool")
+      `(progn% ,@body))))
 
 (defmacro when-bin-mudraw% (&rest body)
   (declare (indent 0))
-  `(if% (and (executable-find% "mudraw")
-             (executable-find% "pdfinfo"))
-       (comment ,@body)
-     (progn% ,@body)))
+  (if (and (executable-find* "mudraw")
+           (executable-find* "pdfinfo"))
+      `(comment ,@body)
+    `(progn% ,@body)))
 
 (unless-bin-gswin64/32c%
   (defun make-mudraw-bat (mutool)
@@ -64,14 +64,12 @@
                  (executable-find% "gswin64c"))
              doc-view)
     ;; unless gswin64c/gswin32c
-    (when% (executable-find% "mutool")
-      (unless (executable-find% "mudraw")
-        (make-mudraw-bat (executable-find% "mutool")))
-      (unless (executable-find% "pdfinfo")
-        (make-pdfinfo-bat (executable-find% "mutool")))
-      (when-bin-mudraw%
-        (defadvice* '_doc-view-mode-p_
-          'doc-view-mode-p #'doc-view-mode-p*)))))
+    (unless (executable-find* "mudraw")
+      (make-mudraw-bat (executable-find* "mutool")))
+    (unless (executable-find* "pdfinfo")
+      (make-pdfinfo-bat (executable-find* "mutool")))
+    (when-bin-mudraw%
+      (defadvice* '_doc-view-mode-p_ 'doc-view-mode-p #'doc-view-mode-p*))))
 
 
 
