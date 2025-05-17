@@ -14,7 +14,7 @@
 
 ;; end of require
 
-;;; macro
+;;; env
 
 (eval-when-compile
   (defmacro unless-default-file-name-coding-system% (&rest body)
@@ -22,7 +22,11 @@
     `(unless% (eq default-file-name-coding-system locale-coding-system)
        ,@body)))
 
-;; end of macro
+;; end of env
+
+;;;
+;; `dired'
+;;;
 
 (defun dired*-echo-current-directory (&optional localp)
   "Echo the current directory in \\=`dired-mode\\='."
@@ -91,19 +95,19 @@
         (set-default 'ls-lisp-use-insert-directory-program nil))))
   (when-platform% windows-nt
     ;; make zip.bat
-    (unless% (executable-find* "zip")
+    (unless% (executable-find% "zip")
       ;; on Windows: there are no builtin zip program. zip.bat works
       ;; with `dired-do-compress-to' and `org-odt-export-to-odt'.
       ;; prefer 7z, because 7za less archive formats supported.
-      (cond ((executable-find% "7z")
-             (dup-file (emacs-home% "config/direds_zip_7z.bat")
-                       (v-home% ".exec/zip.bat")))
-            ((executable-find% "7za")
-             (dup-file (emacs-home% "config/direds_zip_7za.bat")
-                       (v-home% ".exec/zip.bat")))
-            ((executable-find% "minizip")
-             (dup-file (emacs-home% "config/direds_zip_minizip.bat")
-                       (v-home% ".exec/zip.bat"))))))
+      (if% (executable-find% "7z")
+          (dup-file (emacs-home% "config/direds_zip_7z.bat")
+                    (v-home% ".exec/zip.bat"))
+        (if% (executable-find% "7za")
+            (dup-file (emacs-home% "config/direds_zip_7za.bat")
+                      (v-home% ".exec/zip.bat"))
+          (when% (executable-find% "minizip")
+            (dup-file (emacs-home% "config/direds_zip_minizip.bat")
+                      (v-home% ".exec/zip.bat")))))))
   ;; keys
   (define-key dired-mode-map "b" #'dired*-hexl-find-file)
   (define-key dired-mode-map "B" #'dired*-browse-file)
@@ -112,7 +116,7 @@
   (when-version% > 28 (require 'dired-x nil t))
   t)
 
-;; end of `dired' setting
+;; end of `dired'
 
 ;;; detect-coding-string
 
