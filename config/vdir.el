@@ -52,7 +52,7 @@
 
 ;; `package': default `package-usr-dir'
 (when-package%
-  (defconst package*-user-dir (v-home! ".module/elpa/")))
+  (defconst package*-user-dir (v-home! ".elpa/")))
 
 ;; `project'
 (when-feature% project

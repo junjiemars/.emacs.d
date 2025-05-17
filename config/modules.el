@@ -104,14 +104,14 @@
 
 (defun self-module-init! ()
   "Initialize :package spec from \\=`*self-env-spec*\\='."
-  ;; chmod .module/gnupg dir
+  ;; chmod .gnupg dir
   (when-var% package-gnupghome-dir package
     (eval-when-compile
-      (set-file-modes (v-home! ".module/gnupg/") #o700))
-    (setq package-gnupghome-dir (v-home% ".module/gnupg/")))
+      (set-file-modes (v-home! ".gnupg/") #o700))
+    (setq package-gnupghome-dir (v-home% ".gnupg/")))
   (when-version%
       <= 25.1
-    (setq custom-file (v-home! ".module/packages.el")))
+    (setq custom-file (v-home! ".gnupg/packages.el")))
   ;; define package user dir
   (setq% package-user-dir package*-user-dir package)
   ;; load self :packages-spec

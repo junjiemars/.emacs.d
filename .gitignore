@@ -17,6 +17,7 @@
 *~$
 .axiom/
 .dict
+.elpa
 .emacs.desktop
 .emacs.desktop.lock
 .mc-lists.el

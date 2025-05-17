@@ -271,7 +271,7 @@ If ONLY-COMPILE is t, do not load DST."
   ;; slient native-comp warning
   (setq native-comp-async-report-warnings-errors 'silent)
   ;; first native-comp load
-  (setcar native-comp-eln-load-path (make-v-home ".module/eln/"))
+  (setcar native-comp-eln-load-path (make-v-home ".eln/"))
   ;; darwin native-comp env
   (when (eq system-type 'darwin)
     (defun library-path ()

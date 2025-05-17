@@ -19,7 +19,7 @@
 (defun tags-spec->* (spec)
   "Return :tags of \\=`+nore-spec+\\='."
   (cond ((and spec (eq spec :root)) (emacs-home% ".tags/"))
-        ((and spec (eq spec :nore)) (v-home% ".tags/nore.emacs.TAGS"))
+        ((and spec (eq spec :nore)) (v-home% ".tags/nore.TAGS"))
         ((and spec (eq spec :emacs)) (v-home% ".tags/emacs.TAGS"))
         ((and spec (eq spec :prompt))
          (propertize "Make tags" 'face 'minibuffer-prompt))
