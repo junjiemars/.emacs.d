@@ -58,7 +58,8 @@
      :size 12
      :scale nil
      :scripts (han)
-     :allowed nil)))
+     :allowed nil)
+   :allowed nil))
 
 
 ;;; key

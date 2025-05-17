@@ -449,7 +449,8 @@ as [[https://en.wikipedia.org/wiki/CJK_characters][CJK]], etc., the default enco
        :size 12
        :scale nil
        :scripts (han)
-       :allowed nil)))
+       :allowed nil)
+     :allowed t))
 #+END_SRC
 
 #+REVEAL: split
