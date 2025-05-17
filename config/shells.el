@@ -111,22 +111,6 @@ See \\=`setenv\\='."
                                  (concat s path-separator)))))))
      path-separator)))
 
-(when-platform% windows-nt
-  (defun windows-nt-env-path+ (dir &optional append)
-    "APPEND or push DIR to %PATH%."
-    (let ((env (var->paths (getenv (shell-spec->* :PATH)))))
-      (when (or (and (null append) (null (string-equal dir (car env))))
-                (and append (null (string-equal dir (last env)))))
-        (let ((path (let ((xs nil))
-                      ;; remove dir
-                      (dolist (x env (nreverse xs))
-                        (unless (string-equal x dir)
-                          (setq xs (cons x xs)))))))
-          (setenv* (shell-spec->* :PATH)
-                   (paths->var (if append
-                                   (append path dir)
-                                 (cons dir path)))))))))
-
 ;; end of windows
 
 ;;;

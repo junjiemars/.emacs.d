@@ -556,12 +556,6 @@
                (paths->var '("a" "b" "c")
                            (lambda (x) (file-exists-p x))))))))
 
-(ert-deftest %f:shells:windows-nt-env-path+ ()
-  (when (fboundp 'windows-nt-env-path+)
-    (should (equal '("PATH=/a/b/c")
-                   (let ((process-environment nil))
-                     (windows-nt-env-path+ "/a/b/c"))))))
-
 (ert-deftest %f:shells:setenv* ()
   (should (member "D=44"
                   (let ((process-environment '("A=1" "B=2" "C=3")))
