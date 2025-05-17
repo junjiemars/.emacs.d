@@ -17,7 +17,7 @@
 ;;; theme
 (*self-env-spec*
  :put :theme
- `( :name nil                           ; tango-dark
+ `( :name whiteboard			; tango-dark
     :custom-theme-directory nil         ; ,(emacs-home% "theme/")
     :compile nil                        ; expert option
     :allowed nil))
@@ -49,7 +49,7 @@
      :size 17
      :scale nil
      :scripts (greek)
-     :allowed (when-graphic% t))
+     :allowed ,(when-graphic% t))
    ( :name ,(if-platform% darwin
                 "PingFang"
               (if-platform% windows-nt
@@ -59,7 +59,7 @@
      :scale nil
      :scripts (han)
      :allowed nil)
-   :allowed nil))
+   :allowed ,(when-graphic% t)))
 
 
 ;;; key
