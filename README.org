@@ -240,7 +240,7 @@ configuration or cached files.
 #+BEGIN_EXAMPLE
     (emacs-home)
     ├── .backup
-    ├── .bookmarks
+    ├── .bookmark
     ├── .desktop
     ├── .dired
     ├── .eshell

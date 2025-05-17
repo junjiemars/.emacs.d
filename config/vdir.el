@@ -24,16 +24,16 @@
 
 ;; `eww'
 (when-feature% eww
-  (set-default 'eww-bookmarks-directory (v-home! ".bookmarks/")))
+  (set-default 'eww-bookmarks-directory (v-home! ".bookmark/")))
 
 ;; `bookmark': file in which to save bookmarks
-(setq% bookmark-default-file (v-home! ".bookmarks/emacs.bmk") bookmark)
+(setq% bookmark-default-file (v-home! ".bookmark/emacs.bmk") bookmark)
 
 ;; `eshell'
 (setq% eshell-directory-name (v-home! ".eshell/") eshell)
 
 ;; `gamegrid': a directory for game scores
-(setq% gamegrid-user-score-file-directory (v-home! ".games/") gamegrid)
+(setq% gamegrid-user-score-file-directory (v-home! ".game/") gamegrid)
 
 ;; `ido' saved state between invocations
 (setq% ido-save-directory-list-file (v-home! ".ido/ido.last") ido)
@@ -52,7 +52,7 @@
 
 ;; `package': default `package-usr-dir'
 (when-package%
-  (defconst package*-user-dir (v-home! ".elpa/")))
+  (defconst package*-user-dir (v-home! ".module/elpa/")))
 
 ;; `project'
 (when-feature% project
@@ -71,7 +71,7 @@
 ;; When you visit a file, point goes to the last place where it
 ;; was when you previously visited the same file.
 ;; http://www.emacswiki.org/emacs/SavePlace
-(setq% save-place-file (v-home! ".places/places") saveplace)
+(setq% save-place-file (v-home! ".save/places") saveplace)
 
 ;; `server'
 (setq% server-auth-dir (v-home! ".server/") server)

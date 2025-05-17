@@ -23,10 +23,10 @@
 
 (defun sudoku-spec->* (spec)
   "The spec of \\=`sudoku\\='."
-  (cond ((and spec (eq spec :puzzle)) (v-home% ".games/sudoku-puzzle"))
-        ((and spec (eq spec :board )) (v-home% ".games/sudoku-board"))
-        ((and spec (eq spec :sample)) (v-home% ".games/sudoku-sample"))
-        ((and spec (eq spec :dir!)) (v-home! ".games/"))
+  (cond ((and spec (eq spec :puzzle)) (v-home% ".game/sudoku-puzzle"))
+        ((and spec (eq spec :board )) (v-home% ".game/sudoku-board"))
+        ((and spec (eq spec :sample)) (v-home% ".game/sudoku-sample"))
+        ((and spec (eq spec :dir!)) (v-home! ".game/"))
         ((and spec (eq spec :red)) "red")
         ((and spec (eq spec :idiom*))
          (let ((s '("a busted clock still be right twice a day"
