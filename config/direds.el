@@ -22,7 +22,21 @@
     `(unless% (eq default-file-name-coding-system locale-coding-system)
        ,@body)))
 
-;; end of env
+(eval-when-compile
+  (defmacro when-archive-summarize-files% (&rest body)
+    (declare (indent 0))
+    (when-fn% archive-summarize-files arc-mode
+      `(unless-default-file-name-coding-system%
+         ,@body))))
+
+(eval-when-compile
+  (when-platform% windows-nt
+    (defmacro unless-filename/locale-coding-system% (&rest body)
+      (if (eq default-file-name-coding-system locale-coding-system)
+          `(comment ,@body)
+        `(progn% ,@body)))))
+
+ ;; end of env
 
 ;;;
 ;; `dired'
@@ -93,21 +107,6 @@
             (set-default 'ls-lisp-use-insert-directory-program t))
         (set-default 'dired-use-ls-dired nil)
         (set-default 'ls-lisp-use-insert-directory-program nil))))
-  (when-platform% windows-nt
-    ;; make zip.bat
-    (unless% (executable-find% "zip")
-      ;; on Windows: there are no builtin zip program. zip.bat works
-      ;; with `dired-do-compress-to' and `org-odt-export-to-odt'.
-      ;; prefer 7z, because 7za less archive formats supported.
-      (if% (executable-find% "7z")
-          (dup-file (emacs-home% "config/direds_zip_7z.bat")
-                    (v-home% ".exec/zip.bat"))
-        (if% (executable-find% "7za")
-            (dup-file (emacs-home% "config/direds_zip_7za.bat")
-                      (v-home% ".exec/zip.bat"))
-          (when% (executable-find% "minizip")
-            (dup-file (emacs-home% "config/direds_zip_minizip.bat")
-                      (v-home% ".exec/zip.bat")))))))
   ;; keys
   (define-key dired-mode-map "b" #'dired*-hexl-find-file)
   (define-key dired-mode-map "B" #'dired*-browse-file)
@@ -118,63 +117,9 @@
 
 ;; end of `dired'
 
-;;; detect-coding-string
-
-(when-platform% windows-nt
-
-  (unless% (eq default-file-name-coding-system locale-coding-system)
-
-    (defun insert-directory* (file switches &optional wildcard full-directory-p)
-      "\\=`dired-find-file\\=' should failed when using GNU's ls program on Windows.
-       We try to encode multibyte directory name with
-       \\=`locale-coding-system\\=' when the multibyte directory name
-       encoded with non \\=`locale-coding-system\\='."
-      (let ((file (if (multibyte-string-p file)
-                      (encode-coding-string file locale-coding-system)
-                    file)))
-        (funcall '_insert-directory_ file switches wildcard full-directory-p)))
-
-    (defun dired-shell-stuff-it* (command file-list on-each &optional _)
-      "\\=`dired-do-shell-command\\=' or \\=`dired-do-async-shell-command\\='
-       should failed when open the files which does not been
-       encoded with \\=`locale-coding-system\\='."
-      (let ((file-list (let ((arg1 file-list) (fs nil))
-                         (dolist (x arg1 fs)
-                           (append!
-                            (if (multibyte-string-p x)
-                                (encode-coding-string x locale-coding-system)
-                              x)
-                            fs
-                            delete)))))
-        (funcall '_dired-shell-stuff-it_ command file-list on-each)))
-
-    (defun dired-shell-command* (cmd)
-      "\\=`dired-do-compress-to\\=' should failed when
-       \\=`default-directory\\=' or \\=`dired-get-marked-files\\=' does not
-       encoded with \\=`locale-coding-system\\='."
-      (let ((cmd (if (multibyte-string-p cmd)
-                     (encode-coding-string cmd locale-coding-system)
-                   cmd)))
-        (funcall '_dired-shell-command_ cmd)))
-
-    (defun dired-compress-file* (file)
-      "\\=`dired-compress-file\\=' should failed when FILE arg does not
-       encoded with \\=`locale-coding-string\\='."
-      (let ((file (if (multibyte-string-p file)
-                      (encode-coding-string file locale-coding-system)
-                    file)))
-        (funcall '_dired-compress-file_ file)))))
-
-;;
-
-;;; `arc-mode'
-
-(eval-when-compile
-  (defmacro when-archive-summarize-files% (&rest body)
-    (declare (indent 0))
-    (when-fn% archive-summarize-files arc-mode
-      `(unless-default-file-name-coding-system%
-         ,@body))))
+;;;
+;; `arc-mode'
+;;;
 
 (when-archive-summarize-files%
   (defun archive-summarize-files* (files)
@@ -199,77 +144,125 @@
 
 ;; end of `arc-mode'
 
-;;; `dired-aux'
+;;;
+;; coding
+;;;
+
+(when-platform% windows-nt
+  (unless-filename/locale-coding-system%
+   ;; `dired-find-file' should failed when using GNU's ls program on
+   ;; Windows. We try to encode multibyte directory name with
+   ;; `locale-coding-system' when the multibyte directory name encoded
+   ;; with non `locale-coding-system'.
+   (defun insert-directory* (file switches &optional wildcard full-directory-p)
+     (let ((file (if (multibyte-string-p file)
+                     (encode-coding-string file locale-coding-system)
+                   file)))
+       (funcall '_insert-directory_ file switches wildcard full-directory-p)))))
+
+(when-platform% windows-nt
+  (unless-filename/locale-coding-system%
+   ;; `dired-do-shell-command' or `dired-do-async-shell-command'
+   ;; should failed when open the files which does not been encoded
+   ;; with `locale-coding-system'."
+   (defun dired-shell-stuff-it* (command file-list on-each &optional _)
+     (let ((file-list (let ((arg1 file-list) (fs nil))
+                        (dolist (x arg1 fs)
+                          (append!
+                           (if (multibyte-string-p x)
+                               (encode-coding-string x locale-coding-system)
+                             x)
+                           fs
+                           delete)))))
+       (funcall '_dired-shell-stuff-it_ command file-list on-each)))))
+
+(when-platform% windows-nt
+  (unless-filename/locale-coding-system%
+   ;; `dired-do-compress-to' should failed when `default-directory' or
+   ;; `dired-get-marked-files' does not encoded with
+   ;; `locale-coding-system'.
+   (defun dired-shell-command* (cmd)
+     (let ((cmd (if (multibyte-string-p cmd)
+                    (encode-coding-string cmd locale-coding-system)
+                  cmd)))
+       (funcall '_dired-shell-command_ cmd)))))
+
+(when-platform% windows-nt
+  (unless-filename/locale-coding-system%
+   ;; `dired-compress-file' should failed when FILE arg does not
+   ;; encoded with `locale-coding-string'.
+   (defun dired-compress-file* (file)
+     (let ((file (if (multibyte-string-p file)
+                     (encode-coding-string file locale-coding-system)
+                   file)))
+       (funcall '_dired-compress-file_ file)))))
+
+;; end of coding
+
+;;;
+;; `dired-aux'
+;;;
+
+(when-platform% windows-nt
+  (defun dired*-decompre-file-rule (suffix program rule)
+    (when-var% dired-compress-file-suffixes dired-aux
+      (when (executable-find* program)
+        (let* ((re (format "\\%s\\'" suffix))
+               (a1 (assoc-string re dired-compress-file-suffixes)))
+          (cond (a1 (setcdr a1 (list "" rule)))
+                (t (push! (cons re rule)
+                          dired-compress-file-suffixes
+                          delete))))))))
+
+(when-platform% windows-nt
+  (defun dired*-compress-file-rule (suffix program rule)
+    (when-var% dired-compress-files-alist dired-aux
+      (when (executable-find* program)
+        (let* ((re (format "\\%s\\'" suffix))
+               (a1 (assoc-string re dired-compress-files-alist)))
+          (cond (a1 (setcdr a1 rule))
+                (t (push! (cons re rule)
+                          dired-compress-files-alist
+                          delete))))))))
 
 (defun on-dired-aux-init! ()
   "On \\=`dired-aux\\=' initialization."
-  ;; on ancient Emacs, `dired' can't recognize .zip archive.
-  ;; [! zip x.zip ?] compress marked files to x.zip，
-  ;; see `dired-compress-file-suffixes'.
-  (when-var% dired-compress-files-suffixes dired-aux
-    (when% (and (null (assoc-string "\\.zip\\'" dired-compress-file-suffixes))
-                (executable-find* "zip")
-                (executable-find* "unzip"))
-      (push! '("\\.zip\\'" ".zip" "unzip") dired-compress-file-suffixes)))
-  ;; uncompress/compress .7z file
-  (when% (or (executable-find* "7z")
-             (executable-find* "7za"))
-    (let ((7za? (if% (executable-find* "7z") "7z" "7za")))
-      (when-var% dired-compress-file-suffixes dired-aux
-        ;; [Z] uncompress from .7z
-        (let ((uncompress (concat 7za? " x -t7z -aoa -o%o %i")))
-          (if% (assoc-string "\\.7z\\'" dired-compress-file-suffixes)
-              (setcdr (assoc-string "\\.7z\\'" dired-compress-file-suffixes)
-                      (list "" uncompress))
-            (push! (list "\\.7z\\'" "" uncompress)
-                   dired-compress-file-suffixes)))
-        ;; [c] compress to .7z
-        (when-fn% dired-do-compress-to dired-aux
-          (let ((compress (concat 7za? " a -t7z %o %i")))
-            (require 'format-spec)
-            (if% (assoc-string "\\.7z\\'" dired-compress-files-alist)
-                (setcdr (assoc-string "\\.7z\\'" dired-compress-files-alist)
-                        compress)
-              (push! (cons "\\.7z\\'" compress)
-                     dired-compress-files-alist)))))))
-  ;; error at `dired-internal-noselect' on Windows:
-  ;; Reading directory: "ls --dired -al -- d:/abc/中文/" exited with status 2
-  ;; https://lists.gnu.org/archive/html/emacs-devel/2016-01/msg00406.html
-  ;; (setq file-name-coding-system locale-coding-system)
   (when-platform% windows-nt
-    (unless% (eq default-file-name-coding-system locale-coding-system)
-      (declare-function _insert-directory_ (v-home%> "config/direds") t t)
-      (defadvice* '_insert-directory_ 'insert-directory #'insert-directory*)
-      (declare-function _dired-shell-stuff-it_ (v-home%> "config/direds") t t)
-      (defadvice* '_dired-shell-stuff-it_
-        'dired-shell-stuff-it #'dired-shell-stuff-it*)
-      (declare-function _dired-shell-command_ (v-home%> "config/direds") t t)
-      (defadvice* '_dired-shell-command_
-        'dired-shell-command #'dired-shell-command*))
-    ;; [Z] to compress or uncompress .gz file
-    (when-var% dired-compress-file-suffixes dired-aux
-      (when% (or (executable-find% "gzip")
-                 (executable-find% "7z")
-                 (executable-find% "7za"))
-        (when% (assoc-string ":" dired-compress-file-suffixes)
-          (setq dired-compress-file-suffixes
-                (remove (assoc-string ":" dired-compress-file-suffixes)
-                        dired-compress-file-suffixes)))
-        (when% (and (null (executable-find* "gunzip"))
-                    (or (executable-find* "7z")
-                        (executable-find* "7za")))
-          (let ((7za? (concat (if (executable-find% "7z") "7z" "7za")
-                              " x -tgz -aoa %i")))
-            (if% (assoc-string "\\.gz\\'" dired-compress-file-suffixes)
-                (setcdr (assoc-string "\\.gz\\'" dired-compress-file-suffixes)
-                        (list "" 7za?))
-              (push! (cons "\\.gz\\'" 7za?) dired-compress-file-suffixes))))
-
-        (when-fn% dired-compress-file dired-aux
-          (declare-function _dired-compress-file_
-                            (v-home%> "config/direds") t t)
-          (defadvice* '_dired-compress-file_
-            'dired-compress-file #'dired-compress-file*))))))
+    ;; coding system
+    (unless-filename/locale-coding-system%
+     (when-fn% insert-directory nil
+       (declare-function _insert-directory_ (v-home%> "config/direds") t t)
+       (defadvice* '_insert-directory_
+         'insert-directory #'insert-directory*))
+     (when-fn% dired-shell-stuff-it dired-aux
+       (declare-function _dired-shell-stuff-it_ (v-home%> "config/direds") t t)
+       (defadvice* '_dired-shell-stuff-it_
+         'dired-shell-stuff-it #'dired-shell-stuff-it*))
+     (when-fn% dired-shell-command dired-aux
+       (declare-function _dired-shell-command_ (v-home%> "config/direds") t t)
+       (defadvice* '_dired-shell-command_
+         'dired-shell-command #'dired-shell-command*))
+     (when-fn% dired-compress-file dired-aux
+       (declare-function _dired-compress-file_ (v-home%> "config/direds") t t)
+       (defadvice* '_dired-compress-file_
+         'dired-compress-file #'dired-compress-file*)))
+    ;; [Z] remove default compress rule
+    ;; bug: using ":" to match the target file sucks.
+    ;; use [c] `dired-do-compress-to' to compress directory instead.
+    (when% (assoc-string ":" dired-compress-file-suffixes)
+      (setq dired-compress-file-suffixes
+            (remove (assoc-string ":" dired-compress-file-suffixes)
+                    dired-compress-file-suffixes)))
+    ;; [Z] .gz: decompress, prefer GNU's gzip
+    (unless (dired*-decompre-file-rule ".gz" "gzip" "gzip -d %i")
+      (dired*-decompre-file-rule ".gz" "7za" "7za x -aoa %i"))
+    ;; [c] .zip: compress, `dired-do-compress-to' or `org-odt-export-to-odt'.
+    (unless% (executable-find% "zip")
+      (unless (dired*-compress-file-rule ".zip" "7z" "7z a -tzip %o %i")
+        (dired*-compress-file-rule ".zip" "7za" "7za a -tzip %o %i")))
+    ;; required by `dired-aux', it sucks.
+    (autoload 'format-spec "format-spec"))
+  t)
 
 ;; end of `dired-aux'
 
