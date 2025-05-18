@@ -62,7 +62,7 @@
 (setq% savehist-file (v-home! ".minibuffer/history") savehist)
 
 ;; `recentf': save the recent list into
-(setq% recentf-save-file (v-home! ".recentf/recentf") recentf)
+(setq% recentf-save-file (v-home! ".save/recentf") recentf)
 
 ;; `rmail'
 (setq% rmail-file-name (v-home! ".mail/RMAIL") rmail)
