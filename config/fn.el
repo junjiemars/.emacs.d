@@ -553,8 +553,11 @@ If PREDICATE is non-nil, call it with the path of COMMAND."
             (while (and rc (null r1))
               (setq r1 (funcall predicate (shell-quote-argument rc)))
               (unless r1
-                (setq p1 (delete (directory-file-name (file-name-directory rc))
-                                 p1)
+                (setq p1 (let ((p2 nil)
+                               (d (file-name-directory rc)))
+                           (dolist (x p1 p2)
+                             (unless (string-equal d x)
+                               (setq p2 (cons x p2)))))
                       rc (locate-file-internal command p1 es X_OK))))
             (when (and rc r1)
               (if-platform% windows-nt
