@@ -63,8 +63,6 @@
   (compile!
    (compile-unit% (emacs-home* "config/cc.el") t)
    (compile-unit% (emacs-home* "config/compiles.el") t)
-   (when-platform% windows-nt
-     (compile-unit% (emacs-home* "config/docs.el") t))
    (when-feature% eglot
      (compile-unit% (emacs-home* "config/eglots.el") t))
    (compile-unit% (emacs-home* "config/elisps.el") t)
@@ -276,12 +274,6 @@
     (make-thread* #'on-dired-aux-init!))
   (with-eval-after-load 'arc-mode
     (make-thread* #'on-arc-mode-init!))
-  ;; `docs'
-  (when-platform% windows-nt
-    (declare-function on-doc-view-init! (v-home%> "config/docs"))
-    (autoload 'on-doc-view-init! (v-home%> "config/docs"))
-    (with-eval-after-load 'doc-view
-      (make-thread* #'on-doc-view-init!)))
   ;; `eglots'
   (when-feature% eglot
     (declare-function on-eglot-init! (v-home%> "config/eglots"))
