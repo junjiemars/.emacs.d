@@ -222,7 +222,8 @@ end of buffer, otherwise just popup the buffer."
   (comint-send-string
    (jshell-check-proc t)
    (format "/open %s%s\n"
-           (file-name-directory file) (file-name-nondirectory file)))
+           (file-name-directory file)
+           (file-name-nondirectory file)))
   (jshell-switch-to-last-buffer (current-buffer))
   (jshell-switch-to-repl))
 

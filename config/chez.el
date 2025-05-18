@@ -44,7 +44,8 @@
    "scheme"
    (lambda (chez)
      (let ((x (shell-command* "echo '(scheme-version)'|" chez "-q")))
-       (= 0 (car x))))))
+       (and (= 0 (car x))
+            (string-match "Chez Scheme" (cdr x)))))))
 
 (defalias 'chez-program
   (let ((b (chez-program-check)))
