@@ -27,6 +27,7 @@
      (compile-unit% (emacs-home* "config/clipboard.el") t))
    (compile-unit% (emacs-home* "config/ed.el") t)
    (compile-unit% (emacs-home* "config/marks.el") t)
+   (compile-unit% (emacs-home* "config/reset.el") t)
    (compile-unit% (emacs-home* "config/ssh.el") t)
    (compile-unit% (emacs-home* "config/tags.el") t)
    (compile-unit% (emacs-home* "config/thingatpts.el") t)))
@@ -151,6 +152,8 @@
   (autoload 'mark-string@ (v-home%> "config/marks") nil t)
   (autoload 'mark-symbol@ (v-home%> "config/marks") nil t)
   (autoload 'mark-word@ (v-home%> "config/marks") nil t)
+  ;; `reset'
+  (autoload 'reset-emacs (v-home%> "config/reseet") nil t)
   ;; `ssh'
   (declare-function ssh-remote-p (v-home%> "config/ssh"))
   (declare-function ssh-remote->ids (v-home%> "config/ssh"))
