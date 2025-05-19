@@ -35,7 +35,9 @@
   (should (message "# system-configuration-features = %s"
                    (when (boundp 'system-configuration-features)
                      system-configuration-features)))
-  (should (message "# uname -a = %s" (shell-command-to-string "uname -a"))))
+  (should (message "# uname -a = %s" (shell-command-to-string "uname -a")))
+  (should (message "# exec-path = %s" (or exec-path "")))
+  (should (message "# exec-directory = %s" (or exec-directory ""))))
 
 ;;;
 ;; init
@@ -423,11 +425,28 @@
                 (= (car x) 127)))))
 
 (ert-deftest %d:fn:executable-find* ()
-  (if (eq system-type 'windows-nt)
-      (should (executable-find* "dir"))
-    (should (executable-find* "ls"))
-    (should (executable-find* (concat "l" "s")))
-    (should (executable-find* "ls" (lambda (ls) ls)))))
+  (should (executable-find* "ls"))
+  (should (executable-find* "ls" (lambda (x) x)))
+  (when (eq system-type 'darwin)
+    (should (message
+             "# GNU ls? = %s"
+             (executable-find*
+              "ls"
+              (lambda (x)
+                (let ((r (shell-command-to-string
+                          (concat x " --version 2>/dev/null"))))
+                  (and (> (length r) 0)
+                       (string-match "^ls (GNU coreutils)" r))))))))
+  (when (eq system-type 'windows-nt)
+    (should (message
+             "# GNU find? = %s"
+             (executable-find*
+              "find"
+              (lambda (x)
+                (let ((r (shell-command-to-string
+                          (concat x " --version 2> nul"))))
+                  (and (> (length r) 0)
+                       (string-match "^find (GNU findutils)" r)))))))))
 
 (ert-deftest %d:fn:file-in-dirs-p ()
   (should-not (file-in-dirs-p nil nil))

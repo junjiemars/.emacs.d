@@ -426,6 +426,12 @@ Optional argument TRIM regexp used to trim."
       `(split-string4 ,string ,separators ,omit-nulls ,trim)
     `(split-string ,string ,separators ,omit-nulls ,trim)))
 
+(unless-fn% string-prefix-p (prefix string &optional ignore-case)
+  (let ((prefix-length (length prefix)))
+    (if (> prefix-length (length string)) nil
+      (eq t (compare-strings prefix 0 prefix-length string
+			                       0 prefix-length ignore-case)))))
+
 ;; end of string
 
 ;;;
@@ -554,9 +560,10 @@ If PREDICATE is non-nil, call it with the path of COMMAND."
               (setq r1 (funcall predicate (shell-quote-argument rc)))
               (unless r1
                 (setq p1 (let ((p2 nil)
-                               (d (file-name-directory rc)))
+                               (d (directory-file-name
+                                   (file-name-directory rc))))
                            (dolist (x p1 p2)
-                             (unless (string-equal d x)
+                             (unless (string-prefix-p d x)
                                (setq p2 (cons x p2)))))
                       rc (locate-file-internal command p1 es X_OK))))
             (when (and rc r1)
