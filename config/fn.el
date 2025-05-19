@@ -562,9 +562,10 @@ If PREDICATE is non-nil, call it with the path of COMMAND."
                 (setq p1 (let ((p2 nil)
                                (d (directory-file-name
                                    (file-name-directory rc))))
-                           (dolist (x p1 p2)
-                             (unless (string-prefix-p d x)
-                               (setq p2 (cons x p2)))))
+                           (while p1
+                             (unless (string-prefix-p d (car p1))
+                               (setq p2 (cons (car p1) p2)))
+                             (setq p1 (cdr p1))))
                       rc (locate-file-internal command p1 es X_OK))))
             (when (and rc r1)
               (if-platform% windows-nt

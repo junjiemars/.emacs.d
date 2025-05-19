@@ -132,8 +132,8 @@ Return the name of init file and ~/.lldbinit-lldb file no touched."
   (let ((init (v-home% ".exec/gud_lldb.rc"))
         (apropos (v-home% ".exec/gud_lldb.py"))
         (proc (get-buffer-process (*lldb*))))
-    (dup-file (emacs-home% "config/gud_lldb.rc") init force)
-    (dup-file (emacs-home% "config/gud_lldb.py") apropos force)
+    (dup-file (emacs-home% "config/gud_lldb.rc") init)
+    (dup-file (emacs-home% "config/gud_lldb.py") apropos)
     (unless proc
       (error "%s" "No lldb process found"))
     (gud-basic-call (format (read-file* init) (v-home% ".exec/")))

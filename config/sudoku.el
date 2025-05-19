@@ -83,8 +83,7 @@
                             (t (* 9 9)))
                       0))
         (t (let ((dst (sudoku-spec->* :sample)))
-             (unless (file-exists-p dst)
-               (copy-file (emacs-home% "config/sample-sudoku-puzzle.el") dst))
+             (dup-file (emacs-home% "config/sample-sudoku-puzzle.el") dst)
              (plist-get (plist-get (read-file* dst t) level)
                         dimension)))))
 

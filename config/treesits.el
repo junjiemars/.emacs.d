@@ -77,8 +77,7 @@
       #'treesit--install-language-grammar-1*))
   ;; load recipe
   (let ((recipe (treesit*-recipe :file)))
-    (unless (file-exists-p recipe)
-      (copy-file (treesit*-recipe :scratch) recipe t))
+    (dup-file (treesit*-recipe :scratch) recipe)
     (treesit*-recipe :load (read-file* recipe t))))
 
 (defun toggle-treesit! ()

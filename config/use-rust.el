@@ -35,10 +35,8 @@
                                   (cdr h) 1)))
          :etc (path+ sysroot "lib/rustlib/etc")
          :src (path+ sysroot "lib/rustlib/src")
-         :tag (let ((ctags (concat (tags-spec->* :root) "ctags.rust")))
-                (unless (file-exists-p ctags)
-                  (copy-file (emacs-home* "config/use_rust.ctags") ctags))
-                ctags))))))
+         :tag (dup-file (emacs-home* "config/use_rust.ctags")
+                        (concat (tags-spec->* :root) "ctags.rust")))))))
 
 (defalias 'rust*-sysroot
   (let ((b (rust*-sysroot-spec)))
