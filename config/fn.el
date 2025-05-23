@@ -559,13 +559,12 @@ If PREDICATE is non-nil, call it with the path of COMMAND."
             (while (and rc (null r1))
               (setq r1 (funcall predicate (shell-quote-argument rc)))
               (unless r1
-                (setq p1 (let ((p2 nil)
-                               (d (directory-file-name
-                                   (file-name-directory rc))))
+                (setq p1 (let ((p2 nil) (d (path- rc)))
                            (while p1
-                             (unless (string-prefix-p d (car p1))
+                             (unless (string-prefix-p (car p1) d)
                                (setq p2 (cons (car p1) p2)))
-                             (setq p1 (cdr p1))))
+                             (setq p1 (cdr p1)))
+                           p2)
                       rc (locate-file-internal command p1 es X_OK))))
             (when (and rc r1)
               (if-platform% windows-nt
@@ -637,7 +636,7 @@ If PREDICATE is non-nil, call it with the path of COMMAND."
         (t (apply #'path+ (concat root "/" (car path)) (cdr path)))))
 
 (defun path- (file)
-  "Return the parent path of FILE."
+  "Return the path of FILE."
   (when (stringp file)
     (inhibit-file-name-handler
       (file-name-directory (directory-file-name file)))))

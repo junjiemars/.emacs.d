@@ -226,9 +226,8 @@ The REMOTE argument from \\=`ssh-remote-p\\='.")
   (setq cc-search-directories
         (let ((file (buffer-file-name (current-buffer))))
           (nconc (when (stringp file)
-                   (let ((pwd (file-name-directory file)))
-                     (list (string-trim> pwd "/")
-                           (string-trim> (path- pwd) "/"))))
+                   (let ((pwd (path- file)))
+                     (list (substring-no-properties pwd 0 (1- (length pwd))))))
                  (cc*-system-include (ssh-remote-p file)))))
   (when-fn% xref-push-marker-stack xref
     (xref-push-marker-stack))

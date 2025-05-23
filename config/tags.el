@@ -54,7 +54,7 @@
         `( :bin etags
            :cmd ,(concat etags " %s -o %s -a %s")
            :opt ("-l c" "-l lisp" "-l auto")))
-      (let ((etags (concat (path- (car command-line-args)) "bin/etags")))
+      (let ((etags (path+ (path- (car command-line-args)) "bin/etags")))
         (and (file-exists-p etags)
              `( :bin etags
                 :cmd ,(concat etags " %s -o %s -a %s")
