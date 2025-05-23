@@ -47,7 +47,7 @@
      (compile-unit% (emacs-home* "config/gud-cdb.el") t))
    (compile-unit% (emacs-home* "config/gud-lldb.el") t)
    (compile-unit% (emacs-home* "config/node.el") t)
-   (compile-unit% (emacs-home* "config/rusts.el") t)
+   (compile-unit% (emacs-home* "config/rs.el") t)
    (compile-unit% (emacs-home* "config/scratch.el") t)
    (compile-unit% (emacs-home* "config/sudoku.el") t)
    (compile-unit% (emacs-home* "config/trans.el") t)
@@ -207,9 +207,9 @@
   ;; `node'
   (autoload 'node-mode (v-home%> "config/node") "Toggle node mode." t)
   (autoload 'run-node (v-home%> "config/node") "Run node REPL." t)
-  ;; `rusts'
-  (autoload 'rust*-sysroot (v-home%> "config/rusts"))
-  (autoload 'rust*-debug-spec! (v-home%> "config/rusts"))
+  ;; `rs'
+  (autoload 'rust*-sysroot (v-home%> "config/rs"))
+  (autoload 'rust*-debug-spec! (v-home%> "config/rs"))
   ;; `scratch'
   (autoload 'scratch (v-home%> "config/scratch") "Scratch" t)
   ;; `sudoku'

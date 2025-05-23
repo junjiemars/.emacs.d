@@ -3,7 +3,7 @@
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; rusts.el
+;; rs.el
 ;;;;
 ;; features:
 ;;; 1. `rust' environment info.
@@ -37,7 +37,7 @@
                                   (cdr h) 1)))
          :etc (path+ sysroot "lib/rustlib/etc")
          :src (path+ sysroot "lib/rustlib/src")
-         :tag (dup-file (emacs-home* "config/use_rust.ctags")
+         :tag (dup-file (emacs-home* "config/rs.ctags")
                         (concat (tags-spec->* :root) "ctags.rust")))))))
 
 (defalias 'rust*-sysroot
@@ -112,6 +112,6 @@
 
 
 
-(provide 'rusts)
+(provide 'rs)
 
-;; end of rusts.el
+;; end of rs.el

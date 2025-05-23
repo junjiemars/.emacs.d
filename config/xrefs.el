@@ -47,9 +47,9 @@
 
 (defalias 'xref*-read-only-dirs
   (let ((f (v-home% ".exec/xref-read-only-dirs.el"))
-        (b `(,(when% (> (path-depth invocation-directory) 1)
-                (path- invocation-directory))
-             ,(when-package% package*-user-dir))))
+        (b (list (when% (> (path-depth invocation-directory) 1)
+                   (path- invocation-directory))
+                 (when-package% package*-user-dir))))
     (lambda (&optional op dir)
       (cond ((and op (eq op :read)) (setq b (read-file* f t)))
             ((and op (eq op :push)) (and (> (length dir) 0)
@@ -92,7 +92,8 @@
   (unless-graphic%
     (when% (facep 'xref-match)
       (set-face-background 'xref-match +tui-background-color+)
-      (set-face-foreground 'xref-match +tui-foreground-color+))))
+      (set-face-foreground 'xref-match +tui-foreground-color+)))
+  t)
 
 
 (unless-fn% xref-find-references xref
