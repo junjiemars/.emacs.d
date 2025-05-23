@@ -210,6 +210,7 @@
   ;; `rs'
   (autoload 'rust*-sysroot (v-home%> "config/rs"))
   (autoload 'rust*-debug-spec! (v-home%> "config/rs"))
+  (autoload 'rust*-make-tags (v-home%> "config/rs"))
   ;; `scratch'
   (autoload 'scratch (v-home%> "config/scratch") "Scratch" t)
   ;; `sudoku'
