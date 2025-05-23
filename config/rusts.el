@@ -3,7 +3,7 @@
 ;; Nore Emacs
 ;; https://github.com/junjiemars/.emacs.d
 ;;;;
-;; use-rust.el
+;; rusts.el
 ;;;;
 ;; features:
 ;;; 1. `rust' environment info.
@@ -18,7 +18,9 @@
 
 ;;; require
 
-;; end of require
+(declare-function xref*-read-only-dirs (v-home%> "config/xrefs"))
+
+ ;; end of require
 
 ;;; sysroot
 
@@ -101,20 +103,15 @@
   "Make rust tags."
   (let ((file (format "%srust.%s.TAGS"
                       (tags-spec->* :root) (rust*-sysroot :hash))))
+    (xref*-read-only-dirs :push (rust*-sysroot :sysroot))
     (cond (renew (make-dir-ctags
                   (rust*-sysroot :src) file (rust*-sysroot :tag)))
           (t file))))
 
 ;; end of tags
 
-(defun use-rust-init! ()
-  "On \\=`rust\\=' initialization."
-  (xref*-read-only-dirs :push (rust*-sysroot :sysroot))
-  (rust*-debug-spec!)
-  t)
-
 
 
-(provide 'use-rust)
+(provide 'rusts)
 
-;; end of use-rust.el
+;; end of rusts.el

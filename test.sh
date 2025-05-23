@@ -231,13 +231,6 @@ test_profile() {
    :compile (list (compile-unit* (emacs-home* "config/use-magit.el") t)
               (compile-unit* (emacs-home* "config/use-magit-autoload.el")))))
 (*self-mod-spec*
- :put :rust
- (list
-   :cond (and (executable-find* "rustc") (executable-find* "cargo"))
-   :packages '(rust-mode)
-   :compile (list (compile-unit* (emacs-home* "config/use-rust.el") t)
-              (compile-unit* (emacs-home* "config/use-rust-autoload.el")))))
-(*self-mod-spec*
  :put :common-lisp
  (list
    :cond (or (executable-find* "sbcl")
