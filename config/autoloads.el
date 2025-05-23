@@ -154,7 +154,7 @@
   (autoload 'mark-symbol@ (v-home%> "config/marks") nil t)
   (autoload 'mark-word@ (v-home%> "config/marks") nil t)
   ;; `reset'
-  (autoload 'reset-emacs (v-home%> "config/reseet") nil t)
+  (autoload 'reset-emacs (v-home%> "config/reset") nil t)
   ;; `ssh'
   (declare-function ssh-remote-p (v-home%> "config/ssh"))
   (declare-function ssh-remote->ids (v-home%> "config/ssh"))

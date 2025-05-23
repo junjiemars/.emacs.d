@@ -81,8 +81,7 @@
 	(xref*-buffer-in-view-mode (window-buffer r))))))
 
 (defun on-xref-init! ()
-  (when (file-exists-p (xref*-read-only-dirs :file))
-    (xref*-read-only-dirs :read))
+  (xref*-read-only-dirs :read)
   (when-xref-find-definitions%
     (defadvice* '_xref-find-definitions_
       'xref-find-definitions #'xref-find-definitions*))
