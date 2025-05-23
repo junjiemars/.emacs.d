@@ -12,7 +12,7 @@
 
 (defalias 'project*-root-dirs
   (let ((f (v-home% ".exec/project-root-dirs.el"))
-        (b '()))
+        (b nil))
     (lambda (&optional op dir)
       (cond ((and op (eq op :find)) (file-in-dirs-p dir b))
             ((and op (eq op :read)) (setq b (read-file* f t)))
@@ -25,10 +25,15 @@
   (let ((d (project*-root-dirs :find dir)))
     (when d (list 'vc 'Git d))))
 
+(defun project*--save-root-dirs ()
+  (and (project*-root-dirs) (project*-root-dirs :save)))
+
 (defun on-project-init! ()
   "On \\=`project\\=' initialization."
   (project*-root-dirs :read)
-  (push! #'project*-try-root project-find-functions))
+  (push! #'project*-try-root project-find-functions)
+  (append! #'project*--save-root-dirs kill-emacs-hook delete)
+  t)
 
 
 

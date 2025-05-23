@@ -80,6 +80,9 @@
       (prog1 r
 	(xref*-buffer-in-view-mode (window-buffer r))))))
 
+(defun xref--save-read-only-dirs ()
+  (and (xref*-read-only-dirs) (xref*-read-only-dirs :save)))
+
 (defun on-xref-init! ()
   (xref*-read-only-dirs :read)
   (when-xref-find-definitions%
@@ -92,6 +95,7 @@
     (when% (facep 'xref-match)
       (set-face-background 'xref-match +tui-background-color+)
       (set-face-foreground 'xref-match +tui-foreground-color+)))
+  (append! #'xref--save-read-only-dirs kill-emacs-hook delete)
   t)
 
 
