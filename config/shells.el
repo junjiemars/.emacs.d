@@ -48,8 +48,7 @@
                     ;; non cmdproxy
                     (shell-command* (format "echo $%s 2>/dev/null" var)))
                 ;; other platforms, using interactive shell
-                (let ((shell-command-switch "-ic"))
-                  (shell-command* (format "echo $%s 2>/dev/null" var))))))
+                (shell-command* (format "echo \$%s" var)))))
       (and (= 0 (car rc))
            (string-trim> (cdr rc))))))
 
