@@ -256,6 +256,10 @@
     (make-thread* #'on-cc-mode-init!))
   (with-eval-after-load 'man
     (make-thread* #'on-man-init!))
+  (when-feature-treesit%
+    (declare-function on-c-ts-mode-init! (v-home%> "config/cc"))
+    (autoload 'on-c-ts-mode-init! (v-home%> "config/cc"))
+    (with-eval-after-load 'c-ts-mode (on-c-ts-mode-init!)))
   ;; `compiles'
   (declare-function on-compile-init! (v-home%> "config/compiles"))
   (declare-function on-grep-init! (v-home%> "config/compiles"))
@@ -343,6 +347,10 @@
   (autoload 'python*-venv-make! (v-home%> "config/pythons") nil t)
   (with-eval-after-load 'python
     (make-thread* #'on-python-init!))
+  (when-feature-treesit%
+    (declare-function on-python-init! (v-home%> "config/pythons"))
+    (autoload 'on-python-init! (v-home%> "config/pythons"))
+    (with-eval-after-load 'python-ts-mode (on-python-init!)))
   ;; `sqls'
   (declare-function on-sql-init! (v-home%> "config/sqls"))
   (autoload 'on-sql-init! (v-home%> "config/sqls"))

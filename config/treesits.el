@@ -58,14 +58,6 @@
 
 (defun treesit*--recipe-init! ()
   "On \\=`treesit\\=' initialization."
-  ;; `on-c-ts-mode-init!'
-  (declare-function on-c-ts-mode-init! (v-home%> "config/cc"))
-  (autoload 'on-c-ts-mode-init! (v-home%> "config/cc"))
-  (with-eval-after-load 'c-ts-mode (on-c-ts-mode-init!))
-  ;; `on-python-init!' for `python-ts-mode'
-  (declare-function on-python-init! (v-home%> "config/pythons"))
-  (autoload 'on-python-init! (v-home%> "config/pythons"))
-  (with-eval-after-load 'python-ts-mode (on-python-init!))
   ;; default load path
   (if-version%
       <= 30
