@@ -166,10 +166,12 @@
   (declare-function tags-spec->* (v-home%> "config/tags"))
   (declare-function make-c-tags (v-home%> "config/tags"))
   (declare-function make-dir-ctags (v-home%> "config/tags"))
+  (declare-function make-emacs-tags (v-home%> "config/tags"))
   (autoload 'tags-spec->* (v-home%> "config/tags"))
   (autoload 'make-c-tags (v-home%> "config/tags"))
   (autoload 'make-dir-ctags (v-home%> "config/tags"))
   (autoload 'make-dir-tags (v-home%> "config/tags") nil t)
+  (autoload 'make-emacs-tags (v-home%> "config/tags") nil t)
   (autoload 'mount-tags (v-home%> "config/tags") nil t)
   (autoload 'unmount-tags (v-home%> "config/tags") nil t)
   ;; `thingsatpts'
