@@ -155,10 +155,14 @@ See \\=`setenv\\='."
           (read-file* (shell-spec->* :file) t))
          ;; `shell-file-name'
          (let ((bin (shell-spec->* :shell-file-name)))
-           (when bin
+           (when (> (length bin))
              (setq% explicit-shell-file-name bin shell)
              (setq shell-file-name bin)
              (setenv* (shell-spec->* :SHELL) bin)))
+         ;; `shell-command-switch'
+         (let ((opt (shell-spec->* :shell-command-switch)))
+           (when (> (length opt) 0)
+             (setq shell-command-switch opt)))
          ;; :copy-vars
          (copy-env-vars! (*default-shell-env* :get :copy-vars)
                          (shell-spec->* :copy-vars))
@@ -169,7 +173,8 @@ See \\=`setenv\\='."
            (let ((path (*default-shell-env* :get :exec-path)))
              (when path
                (setq exec-path path))))))
-  (append! #'self-shell-save! kill-emacs-hook))
+  (append! #'self-shell-save! kill-emacs-hook delete)
+  t)
 
 
 ;; save/read env

@@ -490,6 +490,7 @@ The shell spec locate in =(*self-env-spec* :get :shell)=.
       :exec-path t
       :shell-file-name ,(or (executable-find% "zsh")
                             (executable-find% "bash"))
+      :shell-command-switch nil           ; "-ic"
       :prompt ( :bash "\\u@\\h \\W \\$ "
                 :zsh "%n@%m %1~ %# ")
       :allowed nil))

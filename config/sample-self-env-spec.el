@@ -80,10 +80,11 @@
 (*self-env-spec*
  :put :shell
  `( :copy-vars ("PATH")
-    :spin-vars nil              ; (("ZZZ" . "123"))
+    :spin-vars nil                      ; (("ZZZ" . "123"))
     :exec-path t
     :shell-file-name ,(or (executable-find% "zsh")
                           (executable-find% "bash"))
+    :shell-command-switch nil           ; "-ic"
     :prompt ( :bash "\\u@\\h \\W \\$ "
               :zsh "%n@%m %1~ %# ")
     :allowed nil))
