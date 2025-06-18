@@ -155,7 +155,7 @@ See \\=`setenv\\='."
           (read-file* (shell-spec->* :file) t))
          ;; `shell-file-name'
          (let ((bin (shell-spec->* :shell-file-name)))
-           (when (> (length bin))
+           (when (> (length bin) 0)
              (setq% explicit-shell-file-name bin shell)
              (setq shell-file-name bin)
              (setenv* (shell-spec->* :SHELL) bin)))
