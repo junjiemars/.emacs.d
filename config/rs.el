@@ -18,8 +18,6 @@
 
 ;;; require
 
-(declare-function xref*-read-only-dirs (v-home%> "config/xrefs"))
-
  ;; end of require
 
 ;;; sysroot
@@ -103,7 +101,7 @@
   "Make rust tags."
   (let ((file (format "%srust.%s.TAGS"
                       (tags-spec->* :root) (rust*-sysroot :hash))))
-    (xref*-read-only-dirs :push (rust*-sysroot :sysroot))
+    (tags-read-only-dirs :push (rust*-sysroot :sysroot))
     (cond (renew (make-dir-ctags
                   (rust*-sysroot :src) file (rust*-sysroot :tag)))
           (t file))))

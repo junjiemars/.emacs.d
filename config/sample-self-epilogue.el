@@ -27,11 +27,12 @@
 ;;; using `tags' to view Emacs's source code
 
 (comment
- (let ((srcdir (format "/opt/open/emacs/emacs-%s/" emacs-major-version)))
-   (when (file-exists-p srcdir)
-     (xref*-read-only-dirs :push (setq source-directory srcdir))
-     (setq% find-function-C-source-directory
-            (concat source-directory "src/") find-func))))
+ (unless (tags-read-only-dirs :read)
+   (let ((srcdir (format "/opt/open/emacs/emacs-%s/" emacs-major-version)))
+     (when (file-exists-p srcdir)
+       (tags-read-only-dirs :push (setq source-directory srcdir))
+       (setq% find-function-C-source-directory
+              (concat source-directory "src/") find-func)))))
 
 ;; end of tag
 

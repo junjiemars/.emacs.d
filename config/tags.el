@@ -78,6 +78,19 @@ when \\=`desktop-globals-to-save\\=' include it.")
 (defvar *tags-option-history* nil
   "Tags option history list.")
 
+(defalias 'tags-read-only-dirs
+  (let ((f (v-home% ".exec/tags-read-only-dirs.el"))
+        (b (list (when% (> (path-depth invocation-directory) 1)
+                   (path- invocation-directory))
+                 (when-package% package*-user-dir))))
+    (lambda (&optional op dir)
+      (cond ((and op (eq op :read)) (setq b (read-file* f t)))
+            ((and op (eq op :push)) (and (> (length dir) 0)
+                                         (push! dir b delete)))
+            ((and op (eq op :save)) (write-file* b f))
+            ((and op (eq op :file)) f)
+            (t b)))))
+
 (defun tags--read-option ()
   (read-string (concat (*tags* :bin) " option: ")
                (car (or *tags-option-history*

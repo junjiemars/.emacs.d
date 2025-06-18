@@ -174,6 +174,7 @@
   (autoload 'make-emacs-tags (v-home%> "config/tags") nil t)
   (autoload 'mount-tags (v-home%> "config/tags") nil t)
   (autoload 'unmount-tags (v-home%> "config/tags") nil t)
+  (autoload 'tags-read-only-dirs (v-home%> "config/tags"))
   ;; `thingsatpts'
   (declare-function on-thingatpt-init! (v-home%> "config/thingatpts"))
   (autoload 'on-thingatpt-init! (v-home%> "config/thingatpts"))
@@ -388,10 +389,8 @@
   ;; `xrefs'
   (declare-function on-xref-init! (v-home%> "config/xrefs"))
   (declare-function on-etags-init! (v-home%> "config/xrefs"))
-  (declare-function xref*-read-only-dirs (v-home%> "config/xrefs"))
   (autoload 'on-xref-init! (v-home%> "config/xrefs"))
   (autoload 'on-etags-init! (v-home%> "config/xrefs"))
-  (autoload 'xref*-read-only-dirs (v-home%> "config/xrefs"))
   (with-eval-after-load 'xref
     (make-thread* #'on-xref-init!))
   (with-eval-after-load 'etags
