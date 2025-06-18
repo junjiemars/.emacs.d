@@ -29,9 +29,10 @@
 (comment
  (let ((srcdir (format "/opt/open/emacs/emacs-%s/" emacs-major-version)))
    (when (file-exists-p srcdir)
-     (xref*-read-only-dirs :push (setq source-directory srcdir))
+     (tags-read-only-dirs :push (setq source-directory srcdir))
      (setq% find-function-C-source-directory
-            (concat source-directory "src/") find-func))))
+            (concat source-directory "src/") find-func)))
+ (tags-read-only-dirs :read))
 
 ;; end of tag
 

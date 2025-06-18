@@ -45,23 +45,10 @@
 ;; `xref-find-definitions' into `view-mode'
 ;;;
 
-(defalias 'xref*-read-only-dirs
-  (let ((f (v-home% ".exec/xref-read-only-dirs.el"))
-        (b (list (when% (> (path-depth invocation-directory) 1)
-                   (path- invocation-directory))
-                 (when-package% package*-user-dir))))
-    (lambda (&optional op dir)
-      (cond ((and op (eq op :read)) (setq b (read-file* f t)))
-            ((and op (eq op :push)) (and (> (length dir) 0)
-                                         (push! dir b delete)))
-            ((and op (eq op :save)) (write-file* b f))
-            ((and op (eq op :file)) f)
-            (t b)))))
-
 (defun xref*-buffer-in-view-mode (&optional buffer)
   (let* ((buf (or buffer (current-buffer)))
          (name (buffer-file-name buf)))
-    (when (and name (file-in-dirs-p name (xref*-read-only-dirs)))
+    (when (and name (file-in-dirs-p name (tags-read-only-dirs)))
       (with-current-buffer buf
         (view-mode 1)))))
 
@@ -81,10 +68,9 @@
 	(xref*-buffer-in-view-mode (window-buffer r))))))
 
 (defun xref--save-read-only-dirs ()
-  (and (xref*-read-only-dirs) (xref*-read-only-dirs :save)))
+  (and (tags-read-only-dirs) (tags-read-only-dirs :save)))
 
 (defun on-xref-init! ()
-  (xref*-read-only-dirs :read)
   (when-xref-find-definitions%
     (defadvice* '_xref-find-definitions_
       'xref-find-definitions #'xref-find-definitions*))
