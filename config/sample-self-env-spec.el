@@ -104,7 +104,6 @@
  `( :files-not-to-save nil              ; "\\(\\`/[^/:]*:\\|(ftp)\\'\\)"
     :buffers-not-to-save nil            ; "\\` "
     :modes-not-to-save nil              ; (tags-table-mode)
-    :desktop-restore-frames nil
     :allowed nil))
 
 ;;; edit

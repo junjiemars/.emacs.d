@@ -60,7 +60,7 @@
   "Initialize frame specs from \\=`*self-env-spec*\\='."
   (setq% frame-resize-pixelwise
          (frame-spec->* :frame-resize-pixelwise))
-  (setq initial-buffer-choice (null (cadr command-line-args))
+  (setq initial-buffer-choice nil    ; (null (cadr command-line-args))
         inhibit-splash-screen
         (or (and (frame-spec->* :allowed)
                  (frame-spec->* :inhibit-splash-screen))
