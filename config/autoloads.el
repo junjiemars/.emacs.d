@@ -464,6 +464,7 @@
 ;; end of `define-global-key!'
 
 (defun self-epilogue-init! ()
+  (declare-function tags-read-only-dirs (v-home%> "config/tags"))
   (when-graphic%
     (when-platform% darwin
       (when-fn% mac-process-deferred-apple-events nil
