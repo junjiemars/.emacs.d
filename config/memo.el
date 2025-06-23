@@ -100,6 +100,10 @@
               (and ss (concat "\\|" ss))))
            desktop)
 
+    (setq% desktop-restore-frames
+           (desktop-spec->* :desktop-restore-frames)
+           desktop)
+
     (setq% desktop-modes-not-to-save
            (append '(archive-mode
                      dired-mode

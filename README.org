@@ -551,6 +551,7 @@ The =desktop= spec locate in =(*self-env-spec* :get :desktop)=.
    `( :files-not-to-save nil            ; "\\(\\`/[^/:]*:\\|(ftp)\\'\\)"
       :buffers-not-to-save nil          ; "\\` "
       :modes-not-to-save nil            ; (tags-table-mode)
+      :desktop-restore-frames nil
       :allowed nil))
 #+END_SRC
 
@@ -558,6 +559,7 @@ The =desktop= spec locate in =(*self-env-spec* :get :desktop)=.
 - =:files-not-to-save= @@html:<kbd>@@C-h-v desktop-files-not-to-save@@html:</kbd>@@
 - =:buffers-not-to-save= @@html:<kbd>@@C-h-v desktop-buffers-not-to-save@@html:</kbd>@@
 - =:modes-not-to-save= @@html:<kbd>@@C-h-v desktop-modes-not-to-save@@html:</kbd>@@
+- =:desktop-restore-frames @@html:<kbd>@@C-h-v desktop-restore-frames@@html:</kbd>@@
 - =:allowed= =t= enabled, =nil= disabled
 
 ** Network
