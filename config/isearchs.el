@@ -47,10 +47,11 @@
   (let ((regexp-p (and style (or (char-equal ?r style)
                                  ;; suppose (r)egexp
                                  (char-equal ?\r style)))))
-    (cond (backward (isearch-backward regexp-p 1))
-          (t (isearch-forward regexp-p 1)))
+    (if backward
+        (isearch-backward regexp-p 1)
+      (isearch-forward regexp-p 1))
     (if-region-active
-        (isearch-yank-x-selection)
+        (isearch*--yank-string (symbol@*) "symbol")
       (cond ((null style) nil)
             ((char-equal ?s style)
              (isearch*--yank-string (symbol@*) "symbol"))
