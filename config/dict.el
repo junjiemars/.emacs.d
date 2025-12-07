@@ -209,7 +209,8 @@
                (completing-read
                 (format "Choose (all|%s) " (mapconcat #'identity ss ","))
                 (cons all ss)
-                nil nil
+                nil
+                t                       ; require match
                 (car *dict-spec-history*)
                 '*dict-spec-history*
                 (mapconcat #'identity ss ",")))))
