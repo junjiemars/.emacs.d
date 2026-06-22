@@ -146,6 +146,6 @@
      (melpa-stable . 3)
      (melpa . 2)
      (nongnu . 1))
-    :allowed ,(when-package% t)))
+    :allowed (comment (when-package% t))))
 
 ;; end of sample-self-env-spec.el
