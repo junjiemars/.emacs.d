@@ -36,9 +36,12 @@
         #'remove-if))
 
 (fset 'member-if*
-      (if-fn% cl-member-if cl-lib
-              (prog1 #'cl-member-if
-                (declare-function cl-member-if 'cl-lib))
+      (if-version%
+          < 31.1
+          (if-fn% cl-member-if cl-lib
+                  (prog1 #'cl-member-if
+                    (declare-function cl-member-if 'cl-lib))
+            #'member-if)
         #'member-if))
 
 (fset 'every*

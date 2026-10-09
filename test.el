@@ -694,9 +694,10 @@
   (should (equal '(a) (member-if* (lambda (x) (eq x 'a)) '(b a))))
   (should (equal '("a") (member-if* (lambda (x) (string-equal x "a"))
                                     '("b" "a"))))
-  (should (equal '((3 "c")) (member-if* (lambda (x) (string-equal x "c"))
-                                        '((1 "a") (2 "b") (3 "c"))
-                                        :key #'cadr))))
+  (should (equal '((3 "c"))
+                 (member-if*
+                  (lambda (x) (string-equal (cadr x) "c"))
+                  '((1 "a") (2 "b") (3 "c"))))))
 
 (ert-deftest %j:cls:every* ()
   (should (every* #'stringp "" "a" "b"))
