@@ -341,7 +341,7 @@
   (declare-function on-progs-init! (v-home%> "config/progs"))
   (autoload 'on-progs-init! (v-home%> "config/progs"))
   (with-eval-after-load 'prog-mode
-    (make-thread* #'on-progs-init!))
+    (on-progs-init!))
   ;; `pythons'
   (declare-function on-python-init! (v-home%> "config/pythons"))
   (autoload 'on-python-init! (v-home%> "config/pythons"))
@@ -501,7 +501,7 @@
   (define-global-key!)
   (when-fn% self-edit-init! nil (self-edit-init!))
   (when-fn% self-key-init! nil (self-key-init!))
-  (when-fn% self-glyph-init! nil (make-thread* #'self-glyph-init!))
+  (when-fn% self-glyph-init! nil (self-glyph-init!))
   (when-fn% self-module-init! nil
     (condition-case err
         (self-module-init!)
@@ -515,6 +515,6 @@
   ;; `load-path' versioned dirs
   (push! (v-home% "config/") load-path)
   (push! (v-home% "private/") load-path)
-  (make-thread* #'self-epilogue-init! (unless-interactive% t)))
+  (self-epilogue-init!))
 
 ;; end of autoloads.el

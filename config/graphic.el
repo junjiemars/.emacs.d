@@ -141,8 +141,7 @@ If RESET is true then reset before load."
 (defun self-graphic-init! ()
   (inhibit-blinking (self-frame-init!))
   (when-theme%
-    (if (*self-env-spec* :get :desktop :allowed)
-        (make-thread* #'self-theme-init!)
+    (unless (*self-env-spec* :get :desktop :allowed)
       (self-theme-init!))))
 
 
